@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddAPhoto
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -48,10 +47,6 @@ fun WardrobeScreen(
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
 
-    val signInLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.StartActivityForResult(),
-    ) { result -> viewModel.onSignInResult(result) }
-
     var hasCameraPermission by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
@@ -66,11 +61,6 @@ fun WardrobeScreen(
     }
 
     when (state.view) {
-        WardrobeView.SIGN_IN -> SignInContent(
-            onSignIn = { signInLauncher.launch(viewModel.getSignInIntent()) },
-            modifier = modifier,
-        )
-
         WardrobeView.GRID -> GridContent(
             state = state,
             onOpenCamera = {
@@ -80,7 +70,6 @@ fun WardrobeScreen(
             onDismissError = viewModel::clearError,
             modifier = modifier,
         )
-
         WardrobeView.CAPTURE -> CaptureScreen(
             onPhotoTaken = viewModel::uploadPhoto,
             onCancel = viewModel::closeCapture,
@@ -88,30 +77,6 @@ fun WardrobeScreen(
         )
     }
 }
-
-// ---------- Sign-in ----------
-
-@Composable
-private fun SignInContent(onSignIn: () -> Unit, modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-    ) {
-        Text("Your Wardrobe", style = MaterialTheme.typography.headlineMedium)
-        Spacer(Modifier.height(8.dp))
-        Text(
-            text = "Sign in to sync your outfits with Google Drive",
-            style = MaterialTheme.typography.bodyMedium,
-        )
-        Spacer(Modifier.height(24.dp))
-        Button(onClick = onSignIn) {
-            Text("Sign in with Google")
-        }
-    }
-}
-
-// ---------- Wardrobe grid ----------
 
 @Composable
 private fun GridContent(
@@ -121,16 +86,15 @@ private fun GridContent(
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier.fillMaxSize()) {
-
         when {
             state.isLoading -> {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
-
             state.images.isEmpty() -> {
                 Column(
                     modifier = Modifier.align(Alignment.Center),
                     horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
                 ) {
                     Text("No outfits yet", style = MaterialTheme.typography.bodyLarge)
                     Spacer(Modifier.height(4.dp))
@@ -140,7 +104,6 @@ private fun GridContent(
                     )
                 }
             }
-
             else -> {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(3),
@@ -160,12 +123,10 @@ private fun GridContent(
             }
         }
 
-        // Upload spinner overlay
         if (state.isUploading) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         }
 
-        // Camera FAB
         FloatingActionButton(
             onClick = onOpenCamera,
             modifier = Modifier
@@ -175,7 +136,6 @@ private fun GridContent(
             Icon(Icons.Default.AddAPhoto, contentDescription = "Add outfit")
         }
 
-        // Error snackbar
         state.error?.let { msg ->
             Snackbar(
                 modifier = Modifier
