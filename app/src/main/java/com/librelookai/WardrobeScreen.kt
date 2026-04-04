@@ -14,7 +14,9 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -149,26 +151,52 @@ private fun GridContent(
                 }
             }
             else -> {
-                LazyVerticalGrid(
-                    columns = GridCells.Adaptive(cellSizeDp.dp),
+                // Wrapper intercepts 2-finger pinch before LazyVerticalGrid
+                // sees it; single-finger scroll is left alone.
+                Box(
                     modifier = Modifier
                         .fillMaxSize()
                         .pointerInput(Unit) {
-                            detectTransformGestures { _, _, zoom, _ ->
-                                cellSizeDp = (cellSizeDp * zoom).coerceIn(56f, 320f)
+                            awaitEachGesture {
+                                awaitFirstDown(
+                                    requireUnconsumed = false,
+                                    pass = PointerEventPass.Initial,
+                                )
+                                var prevDistance = -1f
+                                do {
+                                    val event = awaitPointerEvent(PointerEventPass.Initial)
+                                    val pressed = event.changes.filter { it.pressed }
+                                    if (pressed.size >= 2) {
+                                        val dist = (pressed[1].position - pressed[0].position)
+                                            .getDistance()
+                                        if (prevDistance > 0f) {
+                                            val zoom = dist / prevDistance
+                                            cellSizeDp = (cellSizeDp * zoom).coerceIn(56f, 320f)
+                                        }
+                                        prevDistance = dist
+                                        pressed.forEach { it.consume() }
+                                    } else {
+                                        prevDistance = -1f
+                                    }
+                                } while (event.changes.any { it.pressed })
                             }
                         },
                 ) {
-                    itemsIndexed(state.images, key = { _, img -> img.driveId }) { index, image ->
-                        AsyncImage(
-                            model = image.localPath,
-                            contentDescription = image.name,
-                            modifier = Modifier
-                                .aspectRatio(1f)
-                                .padding(1.dp)
-                                .clickable { selectedIndex = index },
-                            contentScale = ContentScale.Crop,
-                        )
+                    LazyVerticalGrid(
+                        columns = GridCells.Adaptive(cellSizeDp.dp),
+                        modifier = Modifier.fillMaxSize(),
+                    ) {
+                        itemsIndexed(state.images, key = { _, img -> img.driveId }) { index, image ->
+                            AsyncImage(
+                                model = image.localPath,
+                                contentDescription = image.name,
+                                modifier = Modifier
+                                    .aspectRatio(1f)
+                                    .padding(1.dp)
+                                    .clickable { selectedIndex = index },
+                                contentScale = ContentScale.Crop,
+                            )
+                        }
                     }
                 }
             }
