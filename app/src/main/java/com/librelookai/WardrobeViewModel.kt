@@ -20,6 +20,8 @@ data class DriveImage(
     val localPath: String,
     val name: String,
     val tags: ClothingTags? = null,
+    /** Bumped on every local reprocess so Coil knows to reload from disk. */
+    val version: Long = 0L,
 )
 
 data class WardrobeUiState(
@@ -34,6 +36,7 @@ data class WardrobeUiState(
     val error: String? = null,
     /** driveId of the image currently being processed by an AI operation, or null. */
     val processingImageId: String? = null,
+    val selectedIds: Set<String> = emptySet(),
 )
 
 class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
@@ -169,7 +172,10 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     s.copy(
                         isUploading = false,
                         processingImageId = null,
-                        images = s.images.map { if (it.driveId == driveId) it.copy(localPath = newPath) else it },
+                        images = s.images.map {
+                            if (it.driveId == driveId) it.copy(localPath = newPath, version = System.currentTimeMillis())
+                            else it
+                        },
                     )
                 }
             }.onFailure { e ->
@@ -196,6 +202,35 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun clearError() = _state.update { it.copy(error = null) }
+
+    // ---------- Selection & Delete ----------
+
+    fun toggleSelection(driveId: String) {
+        _state.update { s ->
+            val next = s.selectedIds.toMutableSet()
+            if (!next.add(driveId)) next.remove(driveId)
+            s.copy(selectedIds = next)
+        }
+    }
+
+    fun clearSelection() = _state.update { it.copy(selectedIds = emptySet()) }
+
+    fun deleteSelected() {
+        val toDelete = _state.value.selectedIds
+        if (toDelete.isEmpty()) return
+        viewModelScope.launch {
+            _state.update { it.copy(isUploading = true, selectedIds = emptySet()) }
+            toDelete.forEach { id ->
+                runCatching { drive.deleteFile(id) }
+            }
+            _state.update { s ->
+                s.copy(
+                    isUploading = false,
+                    images = s.images.filter { it.driveId !in toDelete }
+                )
+            }
+        }
+    }
 }
 
 // ---------- appProperties ↔ ClothingTags ----------

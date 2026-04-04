@@ -18,8 +18,10 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -45,7 +47,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
@@ -81,6 +85,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 
 @Composable
 fun WardrobeScreen(
@@ -122,6 +127,9 @@ fun WardrobeScreen(
             onDismissError = viewModel::clearError,
             onTagImage = viewModel::tagImage,
             onRemoveBackground = viewModel::reprocessBackground,
+            onToggleSelection = viewModel::toggleSelection,
+            onClearSelection = viewModel::clearSelection,
+            onDeleteSelected = viewModel::deleteSelected,
             processingImageId = state.processingImageId,
             modifier = modifier,
         )
@@ -143,6 +151,9 @@ private fun GridContent(
     onDismissError: () -> Unit,
     onTagImage: (String) -> Unit,
     onRemoveBackground: (String) -> Unit,
+    onToggleSelection: (String) -> Unit,
+    onClearSelection: () -> Unit,
+    onDeleteSelected: () -> Unit,
     processingImageId: String?,
     modifier: Modifier = Modifier,
 ) {
@@ -152,6 +163,12 @@ private fun GridContent(
     // recomposition on change, just a GPU redraw).
     var pinchVisualScale by remember { mutableFloatStateOf(1f) }
     var selectedIndex by rememberSaveable { mutableStateOf<Int?>(null) }
+
+    val isSelectionMode = state.selectedIds.isNotEmpty()
+
+    if (isSelectionMode) {
+        BackHandler(onBack = onClearSelection)
+    }
 
     Box(modifier = modifier.fillMaxSize()) {
         when {
@@ -205,6 +222,7 @@ private fun GridContent(
                             }
                         },
                 ) {
+@OptIn(ExperimentalFoundationApi::class)
                     LazyVerticalGrid(
                         columns = GridCells.Adaptive(cellSizeDp.dp),
                         modifier = Modifier
@@ -216,15 +234,47 @@ private fun GridContent(
                             },
                     ) {
                         itemsIndexed(state.images, key = { _, img -> img.driveId }) { index, image ->
-                            AsyncImage(
-                                model = image.localPath,
-                                contentDescription = image.name,
+                            val isSelected = state.selectedIds.contains(image.driveId)
+                            val ctx = LocalContext.current
+                            Box(
                                 modifier = Modifier
                                     .aspectRatio(1f)
                                     .padding(1.dp)
-                                    .clickable { selectedIndex = index },
-                                contentScale = ContentScale.Crop,
-                            )
+                                    .combinedClickable(
+                                        onClick = {
+                                            if (isSelectionMode) onToggleSelection(image.driveId)
+                                            else selectedIndex = index
+                                        },
+                                        onLongClick = { onToggleSelection(image.driveId) }
+                                    )
+                            ) {
+                                AsyncImage(
+                                    model = remember(image.driveId, image.version) {
+                                        ImageRequest.Builder(ctx)
+                                            .data(image.localPath)
+                                            .memoryCacheKey("${image.driveId}_${image.version}")
+                                            .build()
+                                    },
+                                    contentDescription = image.name,
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentScale = ContentScale.Crop,
+                                )
+                                if (isSelected) {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .background(Color.White.copy(alpha = 0.4f)),
+                                        contentAlignment = Alignment.TopEnd
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.CheckCircle,
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.primary,
+                                            modifier = Modifier.padding(4.dp)
+                                        )
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -262,24 +312,35 @@ private fun GridContent(
 
         // Speed-dial FAB
         var fabExpanded by remember { mutableStateOf(false) }
-        if (fabExpanded) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.3f))
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                    ) { fabExpanded = false },
+        if (isSelectionMode) {
+            FloatingActionButton(
+                onClick = onDeleteSelected,
+                modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
+                containerColor = MaterialTheme.colorScheme.errorContainer,
+                contentColor = MaterialTheme.colorScheme.onErrorContainer,
+            ) {
+                Icon(Icons.Default.Delete, contentDescription = "Delete selected")
+            }
+        } else {
+            if (fabExpanded) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.3f))
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                        ) { fabExpanded = false },
+                )
+            }
+            SpeedDialFab(
+                expanded = fabExpanded,
+                onToggle = { fabExpanded = !fabExpanded },
+                onCamera = { fabExpanded = false; onOpenCamera() },
+                onGallery = { fabExpanded = false; onOpenGallery() },
+                modifier = Modifier.align(Alignment.BottomEnd),
             )
         }
-        SpeedDialFab(
-            expanded = fabExpanded,
-            onToggle = { fabExpanded = !fabExpanded },
-            onCamera = { fabExpanded = false; onOpenCamera() },
-            onGallery = { fabExpanded = false; onOpenGallery() },
-            modifier = Modifier.align(Alignment.BottomEnd),
-        )
 
         state.error?.let { msg ->
             Snackbar(
@@ -336,6 +397,7 @@ private fun FullScreenViewer(
             ZoomableImage(
                 localPath = images[page].localPath,
                 name = images[page].name,
+                cacheKey = "${images[page].driveId}_${images[page].version}",
                 onScaleChanged = { s -> if (page == pagerState.currentPage) pageScale = s },
             )
         }
@@ -375,13 +437,20 @@ private fun FullScreenViewer(
 private fun ZoomableImage(
     localPath: String,
     name: String,
+    cacheKey: String = localPath,
     onScaleChanged: (Float) -> Unit = {},
 ) {
     var scale by remember { mutableFloatStateOf(1f) }
     var offset by remember { mutableStateOf(Offset.Zero) }
+    val ctx = LocalContext.current
 
     AsyncImage(
-        model = localPath,
+        model = remember(cacheKey) {
+            ImageRequest.Builder(ctx)
+                .data(localPath)
+                .memoryCacheKey(cacheKey)
+                .build()
+        },
         contentDescription = name,
         modifier = Modifier
             .fillMaxSize()
@@ -396,7 +465,21 @@ private fun ZoomableImage(
                             pressed.size >= 2 -> {
                                 val dist = (pressed[1].position - pressed[0].position).getDistance()
                                 if (prevDistance > 0f) {
-                                    scale = (scale * (dist / prevDistance)).coerceIn(1f, 8f)
+                                    val focal = Offset(
+                                        (pressed[0].position.x + pressed[1].position.x) / 2f,
+                                        (pressed[0].position.y + pressed[1].position.y) / 2f,
+                                    )
+                                    val newScale = (scale * (dist / prevDistance)).coerceIn(1f, 8f)
+                                    val delta = newScale / scale
+                                    // Shift translation so the focal point stays fixed
+                                    val cx = size.width / 2f
+                                    val cy = size.height / 2f
+                                    offset = Offset(
+                                        (focal.x - cx) * (1f - delta) + offset.x * delta,
+                                        (focal.y - cy) * (1f - delta) + offset.y * delta,
+                                    )
+                                    scale = newScale
+                                    if (scale <= 1f) offset = Offset.Zero
                                     onScaleChanged(scale)
                                 }
                                 prevDistance = dist

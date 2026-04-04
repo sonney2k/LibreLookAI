@@ -139,6 +139,19 @@ class DriveRepository(
         http.newCall(req).await()
     }
 
+    /** Permanently deletes a file from Drive and local cache. */
+    suspend fun deleteFile(fileId: String) = withContext(Dispatchers.IO) {
+        val tok = token()
+        val req = Request.Builder()
+            .url("$API/files/$fileId")
+            .header("Authorization", "Bearer $tok")
+            .delete()
+            .build()
+        http.newCall(req).await()
+        cachedFile(fileId)?.delete()
+        File(cacheDir, "${fileId}_original.jpg").takeIf { it.exists() }?.delete()
+    }
+
     /** Downloads a Drive file to the local cache directory. Returns null on error. */
     suspend fun downloadToCache(driveId: String): File? = withContext(Dispatchers.IO) {
         val dest = File(cacheDir, "$driveId.jpg")
