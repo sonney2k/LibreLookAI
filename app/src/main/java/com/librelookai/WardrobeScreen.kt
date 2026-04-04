@@ -16,7 +16,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -50,6 +49,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -60,8 +60,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -118,6 +121,8 @@ fun WardrobeScreen(
     }
 }
 
+// ---------- Grid ----------
+
 @Composable
 private fun GridContent(
     state: WardrobeUiState,
@@ -126,9 +131,11 @@ private fun GridContent(
     onDismissError: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    // Cell size drives column count continuously via GridCells.Adaptive.
-    // 120 dp ≈ 3 columns on a typical phone; clamped 56–320 dp.
+    // cellSizeDp persists across recompositions; updated once per gesture end.
     var cellSizeDp by rememberSaveable { mutableFloatStateOf(120f) }
+    // pinchVisualScale is read inside graphicsLayer (draw phase only — no
+    // recomposition on change, just a GPU redraw).
+    var pinchVisualScale by remember { mutableFloatStateOf(1f) }
     var selectedIndex by rememberSaveable { mutableStateOf<Int?>(null) }
 
     Box(modifier = modifier.fillMaxSize()) {
@@ -151,8 +158,6 @@ private fun GridContent(
                 }
             }
             else -> {
-                // Wrapper intercepts 2-finger pinch before LazyVerticalGrid
-                // sees it; single-finger scroll is left alone.
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -170,8 +175,8 @@ private fun GridContent(
                                         val dist = (pressed[1].position - pressed[0].position)
                                             .getDistance()
                                         if (prevDistance > 0f) {
-                                            val zoom = dist / prevDistance
-                                            cellSizeDp = (cellSizeDp * zoom).coerceIn(56f, 320f)
+                                            // Accumulate into visual scale only — no layout work.
+                                            pinchVisualScale *= (dist / prevDistance)
                                         }
                                         prevDistance = dist
                                         pressed.forEach { it.consume() }
@@ -179,12 +184,21 @@ private fun GridContent(
                                         prevDistance = -1f
                                     }
                                 } while (event.changes.any { it.pressed })
+                                // Fingers lifted — commit once to cellSizeDp.
+                                cellSizeDp = (cellSizeDp * pinchVisualScale).coerceIn(56f, 320f)
+                                pinchVisualScale = 1f
                             }
                         },
                 ) {
                     LazyVerticalGrid(
                         columns = GridCells.Adaptive(cellSizeDp.dp),
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .graphicsLayer {
+                                clip = false
+                                scaleX = pinchVisualScale
+                                scaleY = pinchVisualScale
+                            },
                     ) {
                         itemsIndexed(state.images, key = { _, img -> img.driveId }) { index, image ->
                             AsyncImage(
@@ -233,7 +247,6 @@ private fun GridContent(
 
         // Speed-dial FAB
         var fabExpanded by remember { mutableStateOf(false) }
-
         if (fabExpanded) {
             Box(
                 modifier = Modifier
@@ -245,7 +258,6 @@ private fun GridContent(
                     ) { fabExpanded = false },
             )
         }
-
         SpeedDialFab(
             expanded = fabExpanded,
             onToggle = { fabExpanded = !fabExpanded },
@@ -264,7 +276,6 @@ private fun GridContent(
         }
     }
 
-    // Full-screen viewer
     selectedIndex?.let { startIndex ->
         FullScreenViewer(
             images = state.images,
@@ -284,10 +295,14 @@ private fun FullScreenViewer(
 ) {
     BackHandler(onBack = onDismiss)
 
+    // Tracks the current page's zoom so we can disable pager swipe when zoomed.
+    var pageScale by remember { mutableFloatStateOf(1f) }
     val pagerState = rememberPagerState(
         initialPage = initialIndex,
         pageCount = { images.size },
     )
+    // Reset zoom indicator whenever the user navigates to a new page.
+    LaunchedEffect(pagerState.currentPage) { pageScale = 1f }
 
     Box(
         modifier = Modifier
@@ -296,36 +311,83 @@ private fun FullScreenViewer(
     ) {
         HorizontalPager(
             state = pagerState,
+            userScrollEnabled = pageScale <= 1.01f,
             modifier = Modifier.fillMaxSize(),
         ) { page ->
-            AsyncImage(
-                model = images[page].localPath,
-                contentDescription = images[page].name,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Fit,
+            ZoomableImage(
+                localPath = images[page].localPath,
+                name = images[page].name,
+                onScaleChanged = { s -> if (page == pagerState.currentPage) pageScale = s },
             )
         }
 
-        // Close button
         IconButton(
             onClick = onDismiss,
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(8.dp),
+            modifier = Modifier.align(Alignment.TopStart).padding(8.dp),
         ) {
             Icon(Icons.Default.Close, contentDescription = "Close", tint = Color.White)
         }
 
-        // Page counter
         Text(
             text = "${pagerState.currentPage + 1} / ${images.size}",
             color = Color.White,
             style = MaterialTheme.typography.labelMedium,
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .padding(top = 20.dp),
+            modifier = Modifier.align(Alignment.TopCenter).padding(top = 20.dp),
         )
     }
+}
+
+@Composable
+private fun ZoomableImage(
+    localPath: String,
+    name: String,
+    onScaleChanged: (Float) -> Unit = {},
+) {
+    var scale by remember { mutableFloatStateOf(1f) }
+    var offset by remember { mutableStateOf(Offset.Zero) }
+
+    AsyncImage(
+        model = localPath,
+        contentDescription = name,
+        modifier = Modifier
+            .fillMaxSize()
+            .pointerInput(Unit) {
+                awaitEachGesture {
+                    awaitFirstDown(requireUnconsumed = false, pass = PointerEventPass.Initial)
+                    var prevDistance = -1f
+                    do {
+                        val event = awaitPointerEvent(PointerEventPass.Initial)
+                        val pressed = event.changes.filter { it.pressed }
+                        when {
+                            pressed.size >= 2 -> {
+                                val dist = (pressed[1].position - pressed[0].position).getDistance()
+                                if (prevDistance > 0f) {
+                                    scale = (scale * (dist / prevDistance)).coerceIn(1f, 8f)
+                                    onScaleChanged(scale)
+                                }
+                                prevDistance = dist
+                                pressed.forEach { it.consume() }
+                            }
+                            // Pan while zoomed — also consumes so pager doesn't swipe.
+                            pressed.size == 1 && scale > 1.01f -> {
+                                val delta = pressed[0].position - pressed[0].previousPosition
+                                offset = Offset(offset.x + delta.x, offset.y + delta.y)
+                                pressed[0].consume()
+                                prevDistance = -1f
+                            }
+                            else -> prevDistance = -1f
+                        }
+                    } while (event.changes.any { it.pressed })
+                }
+            }
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+                translationX = offset.x
+                translationY = offset.y
+            },
+        contentScale = ContentScale.Fit,
+    )
 }
 
 // ---------- Speed-dial FAB ----------
