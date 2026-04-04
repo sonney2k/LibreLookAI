@@ -138,7 +138,9 @@ class DriveRepository(
 
     /** Returns the locally cached file for a Drive ID, or null if not yet downloaded. */
     fun cachedFile(driveId: String): File? =
-        File(cacheDir, "$driveId.jpg").takeIf { it.exists() }
+        sequenceOf("$driveId.png", "$driveId.jpg")
+            .map { File(cacheDir, it) }
+            .firstOrNull { it.exists() }
 
     // ---------- Helpers ----------
 

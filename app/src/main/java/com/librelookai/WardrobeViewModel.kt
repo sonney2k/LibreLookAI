@@ -20,6 +20,7 @@ data class WardrobeUiState(
     val view: WardrobeView = WardrobeView.GRID,
     val images: List<DriveImage> = emptyList(),
     val isLoading: Boolean = false,
+    val isProcessing: Boolean = false, // Gemini background removal in progress
     val isUploading: Boolean = false,
     val error: String? = null,
 )
@@ -27,6 +28,7 @@ data class WardrobeUiState(
 class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
     private val drive = DriveRepository(app, GoogleAuthManager(app))
+    private val gemini = GeminiRepository()
 
     private val _state = MutableStateFlow(WardrobeUiState())
     val state: StateFlow<WardrobeUiState> = _state.asStateFlow()
@@ -60,15 +62,30 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     fun openCapture() = _state.update { it.copy(view = WardrobeView.CAPTURE) }
     fun closeCapture() = _state.update { it.copy(view = WardrobeView.GRID) }
 
-    fun uploadPhoto(file: File) {
+    fun uploadPhoto(rawFile: File) {
         viewModelScope.launch {
-            _state.update { it.copy(view = WardrobeView.GRID, isUploading = true, error = null) }
+            // Step 1 — remove background with Gemini
+            _state.update { it.copy(view = WardrobeView.GRID, isProcessing = true, error = null) }
+            val processedFile = gemini.removeBackground(rawFile, drive.cacheDir) ?: rawFile
+
+            // Step 2 — upload the processed image to Drive
+            _state.update { it.copy(isProcessing = false, isUploading = true) }
             runCatching {
                 val id = folderId ?: drive.getOrCreateFolder().also { folderId = it }
-                val uploaded = drive.uploadImage(id, file)
-                val cacheFile = File(drive.cacheDir, "${uploaded.id}.jpg")
-                file.copyTo(cacheFile, overwrite = true)
-                DriveImage(uploaded.id, cacheFile.absolutePath, uploaded.name)
+                val uploaded = drive.uploadImage(id, processedFile)
+
+                // Persist the processed image in cache under its Drive ID
+                val ext = if (processedFile.extension == "png") "png" else "jpg"
+                val displayCache = File(drive.cacheDir, "${uploaded.id}.$ext")
+                if (processedFile.absolutePath != displayCache.absolutePath) {
+                    processedFile.copyTo(displayCache, overwrite = true)
+                }
+
+                // Keep the original JPEG for local reference
+                val originalCache = File(drive.cacheDir, "${uploaded.id}_original.jpg")
+                rawFile.copyTo(originalCache, overwrite = true)
+
+                DriveImage(uploaded.id, displayCache.absolutePath, uploaded.name)
             }.onSuccess { newImage ->
                 _state.update { it.copy(isUploading = false, images = listOf(newImage) + it.images) }
             }.onFailure { e ->
