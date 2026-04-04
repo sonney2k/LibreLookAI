@@ -3,6 +3,7 @@ package com.librelookai
 import android.Manifest
 import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,10 +20,12 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddAPhoto
+import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -63,12 +66,21 @@ fun WardrobeScreen(
         if (granted) viewModel.openCapture()
     }
 
+    val galleryLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.PickMultipleVisualMedia(),
+    ) { uris -> viewModel.uploadGalleryPhotos(uris) }
+
     when (state.view) {
         WardrobeView.GRID -> GridContent(
             state = state,
             onOpenCamera = {
                 if (hasCameraPermission) viewModel.openCapture()
                 else permissionLauncher.launch(Manifest.permission.CAMERA)
+            },
+            onOpenGallery = {
+                galleryLauncher.launch(
+                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
+                )
             },
             onDismissError = viewModel::clearError,
             modifier = modifier,
@@ -85,6 +97,7 @@ fun WardrobeScreen(
 private fun GridContent(
     state: WardrobeUiState,
     onOpenCamera: () -> Unit,
+    onOpenGallery: () -> Unit,
     onDismissError: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -102,7 +115,7 @@ private fun GridContent(
                     Text("No outfits yet", style = MaterialTheme.typography.bodyLarge)
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        "Tap the camera button to add your first outfit",
+                        "Take a photo or pick from your gallery",
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 }
@@ -126,8 +139,12 @@ private fun GridContent(
             }
         }
 
-        // Processing / uploading pill
+        // Progress pill
         val overlayLabel = when {
+            state.isProcessing && state.batchTotal > 1 ->
+                "Removing background (${state.batchDone + 1}/${state.batchTotal})…"
+            state.isUploading && state.batchTotal > 1 ->
+                "Uploading (${state.batchDone + 1}/${state.batchTotal})…"
             state.isProcessing -> "Removing background…"
             state.isUploading  -> "Uploading to Drive…"
             else -> null
@@ -151,20 +168,27 @@ private fun GridContent(
             }
         }
 
-        FloatingActionButton(
-            onClick = onOpenCamera,
+        // Stacked FABs: gallery (small) above camera (main)
+        Column(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalAlignment = Alignment.End,
         ) {
-            Icon(Icons.Default.AddAPhoto, contentDescription = "Add outfit")
+            SmallFloatingActionButton(onClick = onOpenGallery) {
+                Icon(Icons.Default.PhotoLibrary, contentDescription = "Pick from gallery")
+            }
+            FloatingActionButton(onClick = onOpenCamera) {
+                Icon(Icons.Default.AddAPhoto, contentDescription = "Take photo")
+            }
         }
 
         state.error?.let { msg ->
             Snackbar(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
-                    .padding(start = 8.dp, end = 80.dp, bottom = 8.dp),
+                    .padding(start = 8.dp, end = 96.dp, bottom = 8.dp),
                 action = { TextButton(onClick = onDismissError) { Text("Dismiss") } },
             ) { Text(msg) }
         }

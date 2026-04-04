@@ -1,6 +1,7 @@
 package com.librelookai
 
 import android.app.Application
+import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.async
@@ -20,8 +21,11 @@ data class WardrobeUiState(
     val view: WardrobeView = WardrobeView.GRID,
     val images: List<DriveImage> = emptyList(),
     val isLoading: Boolean = false,
-    val isProcessing: Boolean = false, // Gemini background removal in progress
+    val isProcessing: Boolean = false,
     val isUploading: Boolean = false,
+    /** Number of items in the current batch (0 = single-item flow). */
+    val batchTotal: Int = 0,
+    val batchDone: Int = 0,
     val error: String? = null,
 )
 
@@ -35,9 +39,9 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
     private var folderId: String? = null
 
-    init {
-        loadImages()
-    }
+    init { loadImages() }
+
+    // ---------- Load ----------
 
     fun loadImages() {
         viewModelScope.launch {
@@ -45,9 +49,8 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             runCatching {
                 val id = folderId ?: drive.getOrCreateFolder().also { folderId = it }
                 val files = drive.listFiles(id)
-                files.map { file ->
-                    async { drive.cachedFile(file.id) ?: drive.downloadToCache(file.id) }
-                }.awaitAll()
+                files.map { file -> async { drive.cachedFile(file.id) ?: drive.downloadToCache(file.id) } }
+                    .awaitAll()
                 files.mapNotNull { file ->
                     drive.cachedFile(file.id)?.let { DriveImage(file.id, it.absolutePath, file.name) }
                 }
@@ -59,39 +62,74 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    // ---------- Navigation ----------
+
     fun openCapture() = _state.update { it.copy(view = WardrobeView.CAPTURE) }
     fun closeCapture() = _state.update { it.copy(view = WardrobeView.GRID) }
 
+    // ---------- Upload from camera ----------
+
     fun uploadPhoto(rawFile: File) {
         viewModelScope.launch {
-            // Step 1 — remove background with Gemini
-            _state.update { it.copy(view = WardrobeView.GRID, isProcessing = true, error = null) }
-            val processedFile = gemini.removeBackground(rawFile, drive.cacheDir) ?: rawFile
-
-            // Step 2 — upload the processed image to Drive
-            _state.update { it.copy(isProcessing = false, isUploading = true) }
-            runCatching {
-                val id = folderId ?: drive.getOrCreateFolder().also { folderId = it }
-                val uploaded = drive.uploadImage(id, processedFile)
-
-                // Persist the processed image in cache under its Drive ID
-                val ext = if (processedFile.extension == "png") "png" else "jpg"
-                val displayCache = File(drive.cacheDir, "${uploaded.id}.$ext")
-                if (processedFile.absolutePath != displayCache.absolutePath) {
-                    processedFile.copyTo(displayCache, overwrite = true)
-                }
-
-                // Keep the original JPEG for local reference
-                val originalCache = File(drive.cacheDir, "${uploaded.id}_original.jpg")
-                rawFile.copyTo(originalCache, overwrite = true)
-
-                DriveImage(uploaded.id, displayCache.absolutePath, uploaded.name)
-            }.onSuccess { newImage ->
-                _state.update { it.copy(isUploading = false, images = listOf(newImage) + it.images) }
-            }.onFailure { e ->
-                _state.update { it.copy(isUploading = false, error = e.message) }
+            _state.update { it.copy(view = WardrobeView.GRID, batchTotal = 0, batchDone = 0) }
+            processAndUpload(rawFile)?.let { newImage ->
+                _state.update { it.copy(images = listOf(newImage) + it.images) }
             }
         }
+    }
+
+    // ---------- Upload from gallery ----------
+
+    fun uploadGalleryPhotos(uris: List<Uri>) {
+        if (uris.isEmpty()) return
+        viewModelScope.launch {
+            _state.update { it.copy(batchTotal = uris.size, batchDone = 0, error = null) }
+            val cr = getApplication<Application>().contentResolver
+            uris.forEachIndexed { index, uri ->
+                _state.update { it.copy(batchDone = index) }
+                // Copy URI content to a temp file Gemini and Drive can consume
+                val tempFile = File(drive.cacheDir, "gallery_${System.currentTimeMillis()}.jpg")
+                runCatching {
+                    cr.openInputStream(uri)?.use { it.copyTo(tempFile.outputStream()) }
+                }.onFailure { e ->
+                    _state.update { it.copy(error = "Could not read image: ${e.message}") }
+                    return@forEachIndexed
+                }
+                processAndUpload(tempFile)?.let { newImage ->
+                    _state.update { it.copy(images = listOf(newImage) + it.images) }
+                }
+                tempFile.delete()
+            }
+            _state.update { it.copy(batchTotal = 0, batchDone = 0, isProcessing = false, isUploading = false) }
+        }
+    }
+
+    // ---------- Shared process + upload logic ----------
+
+    private suspend fun processAndUpload(rawFile: File): DriveImage? {
+        // Step 1 — Gemini background removal
+        _state.update { it.copy(isProcessing = true, error = null) }
+        val processedFile = gemini.removeBackground(rawFile, drive.cacheDir) ?: rawFile
+
+        // Step 2 — Upload to Drive
+        _state.update { it.copy(isProcessing = false, isUploading = true) }
+        return runCatching {
+            val id = folderId ?: drive.getOrCreateFolder().also { folderId = it }
+            val uploaded = drive.uploadImage(id, processedFile)
+
+            val ext = if (processedFile.extension == "png") "png" else "jpg"
+            val displayCache = File(drive.cacheDir, "${uploaded.id}.$ext")
+            if (processedFile.absolutePath != displayCache.absolutePath) {
+                processedFile.copyTo(displayCache, overwrite = true)
+            }
+            rawFile.copyTo(File(drive.cacheDir, "${uploaded.id}_original.jpg"), overwrite = true)
+
+            DriveImage(uploaded.id, displayCache.absolutePath, uploaded.name)
+        }.onFailure { e ->
+            _state.update { it.copy(error = e.message) }
+        }.onSuccess {
+            _state.update { it.copy(isUploading = false) }
+        }.getOrNull()
     }
 
     fun clearError() = _state.update { it.copy(error = null) }
