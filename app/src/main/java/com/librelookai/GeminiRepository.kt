@@ -16,13 +16,16 @@ import java.util.concurrent.TimeUnit
 class GeminiRepository {
 
     private val http = OkHttpClient.Builder()
-        .callTimeout(120, TimeUnit.SECONDS)
+        .connectTimeout(30, TimeUnit.SECONDS)
+        .writeTimeout(60, TimeUnit.SECONDS)  // uploading the image bytes
+        .readTimeout(120, TimeUnit.SECONDS)  // waiting for Gemini to process
+        .callTimeout(300, TimeUnit.SECONDS)  // hard ceiling for the whole call
         .build()
     private val gson = Gson()
 
     companion object {
         private const val TAG = "GeminiRepository"
-        private const val MODEL = "gemini-2.0-flash-preview-image-generation"
+        private const val MODEL = "gemini-3.1-flash-image-preview"
         private const val API_URL =
             "https://generativelanguage.googleapis.com/v1beta/models/$MODEL:generateContent"
         private const val PROMPT =
