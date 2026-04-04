@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -111,6 +112,7 @@ fun WardrobeScreen(
                 )
             },
             onDismissError = viewModel::clearError,
+            onTagImage = viewModel::tagImage,
             modifier = modifier,
         )
         WardrobeView.CAPTURE -> CaptureScreen(
@@ -129,6 +131,7 @@ private fun GridContent(
     onOpenCamera: () -> Unit,
     onOpenGallery: () -> Unit,
     onDismissError: () -> Unit,
+    onTagImage: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     // cellSizeDp persists across recompositions; updated once per gesture end.
@@ -281,6 +284,7 @@ private fun GridContent(
             images = state.images,
             initialIndex = startIndex,
             onDismiss = { selectedIndex = null },
+            onTagImage = onTagImage,
         )
     }
 }
@@ -292,16 +296,15 @@ private fun FullScreenViewer(
     images: List<DriveImage>,
     initialIndex: Int,
     onDismiss: () -> Unit,
+    onTagImage: (String) -> Unit,
 ) {
     BackHandler(onBack = onDismiss)
 
-    // Tracks the current page's zoom so we can disable pager swipe when zoomed.
     var pageScale by remember { mutableFloatStateOf(1f) }
     val pagerState = rememberPagerState(
         initialPage = initialIndex,
         pageCount = { images.size },
     )
-    // Reset zoom indicator whenever the user navigates to a new page.
     LaunchedEffect(pagerState.currentPage) { pageScale = 1f }
 
     Box(
@@ -323,7 +326,7 @@ private fun FullScreenViewer(
 
         IconButton(
             onClick = onDismiss,
-            modifier = Modifier.align(Alignment.TopStart).padding(8.dp),
+            modifier = Modifier.align(Alignment.TopStart).statusBarsPadding().padding(8.dp),
         ) {
             Icon(Icons.Default.Close, contentDescription = "Close", tint = Color.White)
         }
@@ -332,7 +335,17 @@ private fun FullScreenViewer(
             text = "${pagerState.currentPage + 1} / ${images.size}",
             color = Color.White,
             style = MaterialTheme.typography.labelMedium,
-            modifier = Modifier.align(Alignment.TopCenter).padding(top = 20.dp),
+            modifier = Modifier.align(Alignment.TopCenter).statusBarsPadding().padding(top = 12.dp),
+        )
+
+        val currentImage = images[pagerState.currentPage]
+        TagsOverlay(
+            tags = currentImage.tags,
+            onTagImage = { onTagImage(currentImage.driveId) },
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .statusBarsPadding()
+                .padding(top = 8.dp, end = 8.dp),
         )
     }
 }
@@ -388,6 +401,63 @@ private fun ZoomableImage(
             },
         contentScale = ContentScale.Fit,
     )
+}
+
+// ---------- Tags overlay ----------
+
+@Composable
+private fun TagsOverlay(
+    tags: ClothingTags?,
+    onTagImage: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        modifier = modifier,
+        shape = MaterialTheme.shapes.medium,
+        color = Color.Black.copy(alpha = 0.55f),
+    ) {
+        if (tags == null) {
+            TextButton(onClick = onTagImage) {
+                Text("Detect tags", color = Color.White, style = MaterialTheme.typography.labelMedium)
+            }
+        } else {
+            Column(
+                modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+                horizontalAlignment = Alignment.End,
+            ) {
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    if (tags.type.isNotEmpty()) TagChip(tags.type)
+                    if (tags.category.isNotEmpty()) TagChip(tags.category)
+                }
+                if (tags.uses.isNotEmpty()) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        tags.uses.forEach { TagChip(it) }
+                    }
+                }
+                if (tags.colors.isNotEmpty()) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        tags.colors.forEach { TagChip(it) }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun TagChip(label: String) {
+    Surface(
+        shape = MaterialTheme.shapes.extraSmall,
+        color = Color.White.copy(alpha = 0.18f),
+    ) {
+        Text(
+            text = label,
+            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+            style = MaterialTheme.typography.labelSmall,
+            color = Color.White,
+        )
+    }
 }
 
 // ---------- Speed-dial FAB ----------

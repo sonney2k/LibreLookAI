@@ -143,6 +143,17 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         }.getOrNull()
     }
 
+    fun tagImage(driveId: String) {
+        viewModelScope.launch {
+            val cachedFile = drive.cachedFile(driveId) ?: return@launch
+            val tags = gemini.classifyClothing(cachedFile) ?: return@launch
+            drive.updateAppProperties(driveId, tags.toAppProperties())
+            _state.update { s ->
+                s.copy(images = s.images.map { if (it.driveId == driveId) it.copy(tags = tags) else it })
+            }
+        }
+    }
+
     fun clearError() = _state.update { it.copy(error = null) }
 }
 

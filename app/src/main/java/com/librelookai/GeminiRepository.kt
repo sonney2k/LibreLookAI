@@ -33,7 +33,7 @@ class GeminiRepository {
             "Remove the background from this clothing item. Keep only the garment " +
                 "and return it as a high-quality cutout with a transparent background."
 
-        private const val CLASSIFY_MODEL = "gemini-3-flash"
+        private const val CLASSIFY_MODEL = "gemini-3-flash-preview"
         private const val CLASSIFY_URL =
             "https://generativelanguage.googleapis.com/v1beta/models/$CLASSIFY_MODEL:generateContent"
         private const val CLASSIFY_PROMPT =
