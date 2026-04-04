@@ -141,10 +141,10 @@ private data class GeminiContent(
 
 private data class GeminiPart(
     val text: String? = null,
-    @SerializedName("inline_data") val inlineData: GeminiInlineData? = null,
+    @SerializedName("inlineData") val inlineData: GeminiInlineData? = null,
 )
 
 private data class GeminiInlineData(
-    @SerializedName("mime_type") val mimeType: String? = null,
+    @SerializedName("mimeType") val mimeType: String? = null,
     val data: String? = null,
 )
