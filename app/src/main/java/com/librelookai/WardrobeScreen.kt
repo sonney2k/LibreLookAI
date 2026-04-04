@@ -51,7 +51,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -125,8 +124,9 @@ private fun GridContent(
     onDismissError: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var columnCount by rememberSaveable { mutableIntStateOf(3) }
-    var cumulativeScale by remember { mutableFloatStateOf(1f) }
+    // Cell size drives column count continuously via GridCells.Adaptive.
+    // 120 dp ≈ 3 columns on a typical phone; clamped 56–320 dp.
+    var cellSizeDp by rememberSaveable { mutableFloatStateOf(120f) }
     var selectedIndex by rememberSaveable { mutableStateOf<Int?>(null) }
 
     Box(modifier = modifier.fillMaxSize()) {
@@ -150,22 +150,12 @@ private fun GridContent(
             }
             else -> {
                 LazyVerticalGrid(
-                    columns = GridCells.Fixed(columnCount),
+                    columns = GridCells.Adaptive(cellSizeDp.dp),
                     modifier = Modifier
                         .fillMaxSize()
                         .pointerInput(Unit) {
                             detectTransformGestures { _, _, zoom, _ ->
-                                cumulativeScale *= zoom
-                                when {
-                                    cumulativeScale > 1.35f -> {
-                                        columnCount = (columnCount - 1).coerceAtLeast(1)
-                                        cumulativeScale = 1f
-                                    }
-                                    cumulativeScale < 0.75f -> {
-                                        columnCount = (columnCount + 1).coerceAtMost(5)
-                                        cumulativeScale = 1f
-                                    }
-                                }
+                                cellSizeDp = (cellSizeDp * zoom).coerceIn(56f, 320f)
                             }
                         },
                 ) {
