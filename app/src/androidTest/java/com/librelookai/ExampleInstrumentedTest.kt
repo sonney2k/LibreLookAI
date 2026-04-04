@@ -9,8 +9,8 @@ import org.junit.Assert.*
 @RunWith(AndroidJUnit4::class)
 class ExampleInstrumentedTest {
     @Test
-    fun useAppContext() {
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.librelookai", appContext.packageName)
+    fun useLibreLookAIContext() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        assertEquals("com.librelookai", context.packageName)
     }
 }
