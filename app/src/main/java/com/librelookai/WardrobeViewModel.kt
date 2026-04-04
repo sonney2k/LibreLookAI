@@ -32,6 +32,8 @@ data class WardrobeUiState(
     val batchTotal: Int = 0,
     val batchDone: Int = 0,
     val error: String? = null,
+    /** driveId of the image currently being processed by an AI operation, or null. */
+    val processingImageId: String? = null,
 )
 
 class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
@@ -143,13 +145,52 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         }.getOrNull()
     }
 
+    fun reprocessBackground(driveId: String) {
+        viewModelScope.launch {
+            _state.update { it.copy(isProcessing = true, processingImageId = driveId, error = null) }
+            // Prefer the original photo; fall back to whatever is cached
+            val source = File(drive.cacheDir, "${driveId}_original.jpg").takeIf { it.exists() }
+                ?: drive.cachedFile(driveId)
+                ?: run {
+                    _state.update { it.copy(isProcessing = false, error = "Original not in cache") }
+                    return@launch
+                }
+            val processedFile = gemini.removeBackground(source, drive.cacheDir)
+                ?: run { _state.update { it.copy(isProcessing = false, processingImageId = null) }; return@launch }
+
+            _state.update { it.copy(isProcessing = false, isUploading = true) }
+            runCatching {
+                drive.updateImage(driveId, processedFile)
+                val displayCache = File(drive.cacheDir, "$driveId.png")
+                processedFile.copyTo(displayCache, overwrite = true)
+                displayCache.absolutePath
+            }.onSuccess { newPath ->
+                _state.update { s ->
+                    s.copy(
+                        isUploading = false,
+                        processingImageId = null,
+                        images = s.images.map { if (it.driveId == driveId) it.copy(localPath = newPath) else it },
+                    )
+                }
+            }.onFailure { e ->
+                _state.update { it.copy(isUploading = false, processingImageId = null, error = e.message) }
+            }
+        }
+    }
+
     fun tagImage(driveId: String) {
         viewModelScope.launch {
-            val cachedFile = drive.cachedFile(driveId) ?: return@launch
-            val tags = gemini.classifyClothing(cachedFile) ?: return@launch
+            _state.update { it.copy(processingImageId = driveId) }
+            val cachedFile = drive.cachedFile(driveId)
+                ?: run { _state.update { it.copy(processingImageId = null) }; return@launch }
+            val tags = gemini.classifyClothing(cachedFile)
+                ?: run { _state.update { it.copy(processingImageId = null) }; return@launch }
             drive.updateAppProperties(driveId, tags.toAppProperties())
             _state.update { s ->
-                s.copy(images = s.images.map { if (it.driveId == driveId) it.copy(tags = tags) else it })
+                s.copy(
+                    processingImageId = null,
+                    images = s.images.map { if (it.driveId == driveId) it.copy(tags = tags) else it },
+                )
             }
         }
     }

@@ -1,5 +1,7 @@
 package com.librelookai
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Base64
 import android.util.Log
 import com.google.gson.Gson
@@ -30,8 +32,9 @@ class GeminiRepository {
         private const val BG_URL =
             "https://generativelanguage.googleapis.com/v1beta/models/$BG_MODEL:generateContent"
         private const val BG_PROMPT =
-            "Remove the background from this clothing item. Keep only the garment " +
-                "and return it as a high-quality cutout with a transparent background."
+            "Extract the clothing item from the background. Place the clothing item on a pure, " +
+                "solid neon green background (Hex #00FF00). Do not add any shadows, gradients, " +
+                "or checkerboard patterns."
 
         private const val CLASSIFY_MODEL = "gemini-3-flash-preview"
         private const val CLASSIFY_URL =
@@ -117,8 +120,11 @@ class GeminiRepository {
                     return@withContext null
                 }
 
+                val rawFile = File(outputDir, "${imageFile.nameWithoutExtension}_cutout_raw.png")
+                rawFile.writeBytes(Base64.decode(imagePart.inlineData!!.data!!, Base64.NO_WRAP))
                 val outFile = File(outputDir, "${imageFile.nameWithoutExtension}_cutout.png")
-                outFile.writeBytes(Base64.decode(imagePart.inlineData!!.data!!, Base64.NO_WRAP))
+                removeGreenScreen(rawFile, outFile)
+                rawFile.delete()
                 Log.d(TAG, "Background removed — saved ${outFile.length() / 1024}KB PNG")
                 outFile
             } catch (e: Exception) {
@@ -185,6 +191,29 @@ class GeminiRepository {
                 null
             }
         }
+
+    // ---------- Image processing ----------
+
+    private fun removeGreenScreen(inputFile: File, outputFile: File) {
+    val bmp = BitmapFactory.decodeFile(inputFile.absolutePath)
+        ?: run { inputFile.copyTo(outputFile, overwrite = true); return }
+    val mutable = bmp.copy(Bitmap.Config.ARGB_8888, true)
+    val w = mutable.width
+    val h = mutable.height
+    val pixels = IntArray(w * h)
+    mutable.getPixels(pixels, 0, w, 0, 0, w, h)
+    for (i in pixels.indices) {
+        val c = pixels[i]
+        val r = (c shr 16) and 0xFF
+        val g = (c shr 8) and 0xFF
+        val b = c and 0xFF
+        // Match neon green (#00FF00) with tolerance for JPEG compression artifacts
+        if (r < 80 && g > 180 && b < 80) pixels[i] = 0
+    }
+    mutable.setPixels(pixels, 0, w, 0, 0, w, h)
+    outputFile.outputStream().use { mutable.compress(Bitmap.CompressFormat.PNG, 100, it) }
+    Log.d(TAG, "Green screen removed: ${pixels.count { it == 0 }} transparent pixels")
+    }
 }
 
 // ---------- Public data classes ----------

@@ -7,7 +7,13 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -23,6 +29,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -36,6 +43,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.PhotoLibrary
@@ -113,6 +121,8 @@ fun WardrobeScreen(
             },
             onDismissError = viewModel::clearError,
             onTagImage = viewModel::tagImage,
+            onRemoveBackground = viewModel::reprocessBackground,
+            processingImageId = state.processingImageId,
             modifier = modifier,
         )
         WardrobeView.CAPTURE -> CaptureScreen(
@@ -132,6 +142,8 @@ private fun GridContent(
     onOpenGallery: () -> Unit,
     onDismissError: () -> Unit,
     onTagImage: (String) -> Unit,
+    onRemoveBackground: (String) -> Unit,
+    processingImageId: String?,
     modifier: Modifier = Modifier,
 ) {
     // cellSizeDp persists across recompositions; updated once per gesture end.
@@ -285,6 +297,8 @@ private fun GridContent(
             initialIndex = startIndex,
             onDismiss = { selectedIndex = null },
             onTagImage = onTagImage,
+            onRemoveBackground = onRemoveBackground,
+            processingImageId = processingImageId,
         )
     }
 }
@@ -297,6 +311,8 @@ private fun FullScreenViewer(
     initialIndex: Int,
     onDismiss: () -> Unit,
     onTagImage: (String) -> Unit,
+    onRemoveBackground: (String) -> Unit,
+    processingImageId: String?,
 ) {
     BackHandler(onBack = onDismiss)
 
@@ -339,9 +355,14 @@ private fun FullScreenViewer(
         )
 
         val currentImage = images[pagerState.currentPage]
+        if (currentImage.driveId == processingImageId) {
+            AiProcessingOverlay(modifier = Modifier.fillMaxSize())
+        }
+
         TagsOverlay(
             tags = currentImage.tags,
             onTagImage = { onTagImage(currentImage.driveId) },
+            onRemoveBackground = { onRemoveBackground(currentImage.driveId) },
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .statusBarsPadding()
@@ -403,12 +424,64 @@ private fun ZoomableImage(
     )
 }
 
+// ---------- AI processing overlay ----------
+
+@Composable
+private fun AiProcessingOverlay(modifier: Modifier = Modifier) {
+    val transition = rememberInfiniteTransition(label = "ai")
+    val rotation by transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(tween(2400, easing = LinearEasing)),
+        label = "rotate",
+    )
+    val pulse by transition.animateFloat(
+        initialValue = 0.5f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(tween(800), RepeatMode.Reverse),
+        label = "pulse",
+    )
+
+    Box(
+        modifier = modifier.background(Color.Black.copy(alpha = 0.55f)),
+        contentAlignment = Alignment.Center,
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(72.dp),
+                    strokeWidth = 2.dp,
+                    color = Color(0xFFFFD700),
+                )
+                Icon(
+                    imageVector = Icons.Default.AutoAwesome,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(32.dp)
+                        .rotate(rotation)
+                        .graphicsLayer { alpha = pulse },
+                    tint = Color(0xFFFFD700),
+                )
+            }
+            Text(
+                text = "AI is working…",
+                color = Color.White,
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+    }
+}
+
 // ---------- Tags overlay ----------
 
 @Composable
 private fun TagsOverlay(
     tags: ClothingTags?,
     onTagImage: () -> Unit,
+    onRemoveBackground: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Surface(
@@ -416,16 +489,12 @@ private fun TagsOverlay(
         shape = MaterialTheme.shapes.medium,
         color = Color.Black.copy(alpha = 0.55f),
     ) {
-        if (tags == null) {
-            TextButton(onClick = onTagImage) {
-                Text("Detect tags", color = Color.White, style = MaterialTheme.typography.labelMedium)
-            }
-        } else {
-            Column(
-                modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-                horizontalAlignment = Alignment.End,
-            ) {
+        Column(
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            horizontalAlignment = Alignment.End,
+        ) {
+            if (tags != null) {
                 Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     if (tags.type.isNotEmpty()) TagChip(tags.type)
                     if (tags.category.isNotEmpty()) TagChip(tags.category)
@@ -439,6 +508,14 @@ private fun TagsOverlay(
                     Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                         tags.colors.forEach { TagChip(it) }
                     }
+                }
+            }
+            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                TextButton(onClick = onTagImage, contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)) {
+                    Text("Detect tags", color = Color.White, style = MaterialTheme.typography.labelSmall)
+                }
+                TextButton(onClick = onRemoveBackground, contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)) {
+                    Text("Remove BG", color = Color.White, style = MaterialTheme.typography.labelSmall)
                 }
             }
         }

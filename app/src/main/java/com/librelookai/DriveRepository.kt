@@ -115,6 +115,18 @@ class DriveRepository(
         )
     }
 
+    /** Replaces the content of an existing Drive file in-place (preserves ID and metadata). */
+    suspend fun updateImage(fileId: String, imageFile: File) = withContext(Dispatchers.IO) {
+        val tok = token()
+        val mimeType = if (imageFile.extension == "png") "image/png" else "image/jpeg"
+        val req = Request.Builder()
+            .url("$UPLOAD_API/files/$fileId?uploadType=media&fields=id")
+            .header("Authorization", "Bearer $tok")
+            .method("PATCH", imageFile.readBytes().toRequestBody(mimeType.toMediaType()))
+            .build()
+        http.newCall(req).await()
+    }
+
     /** Merges [props] into the file's appProperties (PATCH — does not erase existing keys). */
     suspend fun updateAppProperties(fileId: String, props: Map<String, String>) = withContext(Dispatchers.IO) {
         val tok = token()
