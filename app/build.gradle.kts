@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.app"
+    namespace = "com.librelookai"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.app"
+        applicationId = "com.librelookai"
         minSdk = 26
         targetSdk = 35
         versionCode = 1

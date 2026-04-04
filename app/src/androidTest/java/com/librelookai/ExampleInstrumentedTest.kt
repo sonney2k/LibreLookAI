@@ -1,4 +1,4 @@
-package com.example.app
+package com.librelookai
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -11,6 +11,6 @@ class ExampleInstrumentedTest {
     @Test
     fun useAppContext() {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.example.app", appContext.packageName)
+        assertEquals("com.librelookai", appContext.packageName)
     }
 }

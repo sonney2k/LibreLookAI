@@ -1,4 +1,4 @@
-package com.example.app
+package com.librelookai
 
 import org.junit.Test
 import org.junit.Assert.*

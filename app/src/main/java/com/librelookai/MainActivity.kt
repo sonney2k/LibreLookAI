@@ -1,4 +1,4 @@
-package com.example.app
+package com.librelookai
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -34,7 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.example.app.ui.theme.AppTheme
+import com.librelookai.ui.theme.AppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

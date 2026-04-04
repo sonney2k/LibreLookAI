@@ -1,4 +1,4 @@
-package com.example.app.ui.theme
+package com.librelookai.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
