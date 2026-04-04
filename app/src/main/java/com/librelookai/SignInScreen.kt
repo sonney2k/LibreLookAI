@@ -18,7 +18,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun SignInScreen(onSignIn: () -> Unit, modifier: Modifier = Modifier) {
+fun SignInScreen(
+    onSignIn: () -> Unit,
+    error: String? = null,
+    modifier: Modifier = Modifier,
+) {
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -38,6 +42,14 @@ fun SignInScreen(onSignIn: () -> Unit, modifier: Modifier = Modifier) {
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
+        if (error != null) {
+            Spacer(Modifier.height(16.dp))
+            Text(
+                text = error,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.error,
+            )
+        }
         Spacer(Modifier.height(32.dp))
         Button(onClick = onSignIn) {
             Text("Sign in with Google")

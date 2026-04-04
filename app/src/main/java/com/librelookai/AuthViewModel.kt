@@ -29,8 +29,16 @@ class AuthViewModel(app: Application) : AndroidViewModel(app) {
             GoogleSignIn.getSignedInAccountFromIntent(result.data)
                 .getResult(ApiException::class.java)
             _isSignedIn.value = true
+            _error.value = null
         } catch (e: ApiException) {
-            _error.value = "Sign-in failed (code ${e.statusCode})"
+            // Fallback: Play Services sometimes throws even on success.
+            // If the account is already persisted with the required scope, accept it.
+            if (auth.isSignedIn()) {
+                _isSignedIn.value = true
+                _error.value = null
+            } else {
+                _error.value = "Sign-in failed (code ${e.statusCode})"
+            }
         }
     }
 

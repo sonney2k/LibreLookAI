@@ -45,6 +45,7 @@ class MainActivity : ComponentActivity() {
             LibreLookAITheme {
                 val authViewModel: AuthViewModel = viewModel()
                 val isSignedIn by authViewModel.isSignedIn.collectAsState()
+                val authError by authViewModel.error.collectAsState()
 
                 val signInLauncher = rememberLauncherForActivityResult(
                     ActivityResultContracts.StartActivityForResult(),
@@ -55,6 +56,7 @@ class MainActivity : ComponentActivity() {
                     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                         SignInScreen(
                             onSignIn = { signInLauncher.launch(authViewModel.getSignInIntent()) },
+                            error = authError,
                             modifier = Modifier.padding(innerPadding),
                         )
                     }
