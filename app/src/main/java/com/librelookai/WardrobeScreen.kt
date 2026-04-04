@@ -2,6 +2,7 @@ package com.librelookai
 
 import android.Manifest
 import android.content.pm.PackageManager
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -13,6 +14,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,14 +29,18 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Snackbar
@@ -44,14 +50,18 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -115,6 +125,10 @@ private fun GridContent(
     onDismissError: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    var columnCount by rememberSaveable { mutableIntStateOf(3) }
+    var cumulativeScale by remember { mutableFloatStateOf(1f) }
+    var selectedIndex by rememberSaveable { mutableStateOf<Int?>(null) }
+
     Box(modifier = modifier.fillMaxSize()) {
         when {
             state.isLoading -> {
@@ -136,16 +150,33 @@ private fun GridContent(
             }
             else -> {
                 LazyVerticalGrid(
-                    columns = GridCells.Fixed(3),
-                    modifier = Modifier.fillMaxSize(),
+                    columns = GridCells.Fixed(columnCount),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .pointerInput(Unit) {
+                            detectTransformGestures { _, _, zoom, _ ->
+                                cumulativeScale *= zoom
+                                when {
+                                    cumulativeScale > 1.35f -> {
+                                        columnCount = (columnCount - 1).coerceAtLeast(1)
+                                        cumulativeScale = 1f
+                                    }
+                                    cumulativeScale < 0.75f -> {
+                                        columnCount = (columnCount + 1).coerceAtMost(5)
+                                        cumulativeScale = 1f
+                                    }
+                                }
+                            }
+                        },
                 ) {
-                    items(state.images, key = { it.driveId }) { image ->
+                    itemsIndexed(state.images, key = { _, img -> img.driveId }) { index, image ->
                         AsyncImage(
                             model = image.localPath,
                             contentDescription = image.name,
                             modifier = Modifier
                                 .aspectRatio(1f)
-                                .padding(1.dp),
+                                .padding(1.dp)
+                                .clickable { selectedIndex = index },
                             contentScale = ContentScale.Crop,
                         )
                     }
@@ -185,7 +216,6 @@ private fun GridContent(
         // Speed-dial FAB
         var fabExpanded by remember { mutableStateOf(false) }
 
-        // Scrim — closes the menu when tapping outside
         if (fabExpanded) {
             Box(
                 modifier = Modifier
@@ -214,6 +244,69 @@ private fun GridContent(
                 action = { TextButton(onClick = onDismissError) { Text("Dismiss") } },
             ) { Text(msg) }
         }
+    }
+
+    // Full-screen viewer
+    selectedIndex?.let { startIndex ->
+        FullScreenViewer(
+            images = state.images,
+            initialIndex = startIndex,
+            onDismiss = { selectedIndex = null },
+        )
+    }
+}
+
+// ---------- Full-screen image viewer ----------
+
+@Composable
+private fun FullScreenViewer(
+    images: List<DriveImage>,
+    initialIndex: Int,
+    onDismiss: () -> Unit,
+) {
+    BackHandler(onBack = onDismiss)
+
+    val pagerState = rememberPagerState(
+        initialPage = initialIndex,
+        pageCount = { images.size },
+    )
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black),
+    ) {
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier.fillMaxSize(),
+        ) { page ->
+            AsyncImage(
+                model = images[page].localPath,
+                contentDescription = images[page].name,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Fit,
+            )
+        }
+
+        // Close button
+        IconButton(
+            onClick = onDismiss,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(8.dp),
+        ) {
+            Icon(Icons.Default.Close, contentDescription = "Close", tint = Color.White)
+        }
+
+        // Page counter
+        Text(
+            text = "${pagerState.currentPage + 1} / ${images.size}",
+            color = Color.White,
+            style = MaterialTheme.typography.labelMedium,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(top = 20.dp),
+        )
     }
 }
 
