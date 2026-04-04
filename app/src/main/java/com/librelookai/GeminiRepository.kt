@@ -25,18 +25,29 @@ class GeminiRepository {
 
     companion object {
         private const val TAG = "GeminiRepository"
-        private const val MODEL = "gemini-3.1-flash-image-preview"
-        private const val API_URL =
-            "https://generativelanguage.googleapis.com/v1beta/models/$MODEL:generateContent"
-        private const val PROMPT =
+
+        private const val BG_MODEL = "gemini-3.1-flash-image-preview"
+        private const val BG_URL =
+            "https://generativelanguage.googleapis.com/v1beta/models/$BG_MODEL:generateContent"
+        private const val BG_PROMPT =
             "Remove the background from this clothing item. Keep only the garment " +
                 "and return it as a high-quality cutout with a transparent background."
+
+        private const val CLASSIFY_MODEL = "gemini-3-flash"
+        private const val CLASSIFY_URL =
+            "https://generativelanguage.googleapis.com/v1beta/models/$CLASSIFY_MODEL:generateContent"
+        private const val CLASSIFY_PROMPT =
+            "Analyze this clothing item and return ONLY a JSON object (no markdown, no explanation) " +
+                "with these fields: " +
+                "\"type\" (specific item name, e.g. \"T-shirt\", \"Chinos\", \"Puffer jacket\"), " +
+                "\"category\" (one of: tops, bottoms, outerwear, footwear, accessories, dress, suit), " +
+                "\"uses\" (array of applicable tags from: casual, formal, business, sport, outdoor, beach, evening), " +
+                "\"colors\" (array of main colors as lowercase English words)."
     }
 
     /**
      * Sends [imageFile] to Gemini and returns a PNG with the background removed.
      * Returns null on any failure — callers should fall back to the original.
-     * All failure reasons are logged to Logcat under tag "GeminiRepository".
      */
     suspend fun removeBackground(imageFile: File, outputDir: File): File? =
         withContext(Dispatchers.IO) {
@@ -46,7 +57,7 @@ class GeminiRepository {
                 return@withContext null
             }
 
-            Log.d(TAG, "Sending ${imageFile.length() / 1024}KB image to Gemini ($MODEL)")
+            Log.d(TAG, "Sending ${imageFile.length() / 1024}KB image to Gemini ($BG_MODEL)")
 
             val imageBase64 = Base64.encodeToString(imageFile.readBytes(), Base64.NO_WRAP)
 
@@ -56,7 +67,7 @@ class GeminiRepository {
                         mapOf(
                             "role" to "user",
                             "parts" to listOf(
-                                mapOf("text" to PROMPT),
+                                mapOf("text" to BG_PROMPT),
                                 mapOf(
                                     "inline_data" to mapOf(
                                         "mime_type" to "image/jpeg",
@@ -73,7 +84,7 @@ class GeminiRepository {
             )
 
             val request = Request.Builder()
-                .url("$API_URL?key=$apiKey")
+                .url("$BG_URL?key=$apiKey")
                 .post(body.toRequestBody("application/json".toMediaType()))
                 .build()
 
@@ -115,7 +126,75 @@ class GeminiRepository {
                 null
             }
         }
+
+    /**
+     * Classifies the clothing item in [imageFile] using Gemini vision.
+     * Returns [ClothingTags] or null on failure.
+     */
+    suspend fun classifyClothing(imageFile: File): ClothingTags? =
+        withContext(Dispatchers.IO) {
+            val apiKey = BuildConfig.GEMINI_API_KEY
+            if (apiKey.isBlank() || apiKey == "YOUR_GEMINI_API_KEY_HERE") return@withContext null
+
+            Log.d(TAG, "Classifying clothing in ${imageFile.name} via $CLASSIFY_MODEL")
+            val mimeType = if (imageFile.extension == "png") "image/png" else "image/jpeg"
+            val imageBase64 = Base64.encodeToString(imageFile.readBytes(), Base64.NO_WRAP)
+
+            val body = gson.toJson(
+                mapOf(
+                    "contents" to listOf(
+                        mapOf(
+                            "role" to "user",
+                            "parts" to listOf(
+                                mapOf("text" to CLASSIFY_PROMPT),
+                                mapOf(
+                                    "inline_data" to mapOf(
+                                        "mime_type" to mimeType,
+                                        "data" to imageBase64,
+                                    ),
+                                ),
+                            ),
+                        ),
+                    ),
+                ),
+            )
+
+            val request = Request.Builder()
+                .url("$CLASSIFY_URL?key=$apiKey")
+                .post(body.toRequestBody("application/json".toMediaType()))
+                .build()
+
+            return@withContext try {
+                val response = http.newCall(request).await()
+                val responseBody = response.body!!.string()
+                Log.d(TAG, "Classify HTTP ${response.code}: ${responseBody.take(500)}")
+                if (!response.isSuccessful) return@withContext null
+
+                val parsed = gson.fromJson(responseBody, GeminiResponse::class.java)
+                val text = parsed.candidates
+                    ?.firstOrNull()?.content?.parts
+                    ?.firstOrNull { it.text != null }?.text
+                    ?: run { Log.w(TAG, "No text part in classify response"); return@withContext null }
+
+                val json = text.trim()
+                    .removePrefix("```json").removePrefix("```").removeSuffix("```").trim()
+                gson.fromJson(json, ClothingTags::class.java)
+                    .also { Log.d(TAG, "Tags: $it") }
+            } catch (e: Exception) {
+                Log.e(TAG, "Classification failed: ${e.message}", e)
+                null
+            }
+        }
 }
+
+// ---------- Public data classes ----------
+
+data class ClothingTags(
+    val type: String = "",
+    val category: String = "",
+    val uses: List<String> = emptyList(),
+    val colors: List<String> = emptyList(),
+)
 
 // ---------- Response DTOs ----------
 

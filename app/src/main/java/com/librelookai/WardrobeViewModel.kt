@@ -15,7 +15,12 @@ import java.io.File
 
 enum class WardrobeView { GRID, CAPTURE }
 
-data class DriveImage(val driveId: String, val localPath: String, val name: String)
+data class DriveImage(
+    val driveId: String,
+    val localPath: String,
+    val name: String,
+    val tags: ClothingTags? = null,
+)
 
 data class WardrobeUiState(
     val view: WardrobeView = WardrobeView.GRID,
@@ -52,7 +57,9 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 files.map { file -> async { drive.cachedFile(file.id) ?: drive.downloadToCache(file.id) } }
                     .awaitAll()
                 files.mapNotNull { file ->
-                    drive.cachedFile(file.id)?.let { DriveImage(file.id, it.absolutePath, file.name) }
+                    drive.cachedFile(file.id)?.let {
+                        DriveImage(file.id, it.absolutePath, file.name, file.appProperties?.toClothingTags())
+                    }
                 }
             }.onSuccess { images ->
                 _state.update { it.copy(images = images, isLoading = false) }
@@ -124,7 +131,11 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             }
             rawFile.copyTo(File(drive.cacheDir, "${uploaded.id}_original.jpg"), overwrite = true)
 
-            DriveImage(uploaded.id, displayCache.absolutePath, uploaded.name)
+            // Step 3 — Classify clothing tags and persist to Drive appProperties
+            val tags = gemini.classifyClothing(processedFile)
+            if (tags != null) drive.updateAppProperties(uploaded.id, tags.toAppProperties())
+
+            DriveImage(uploaded.id, displayCache.absolutePath, uploaded.name, tags)
         }.onFailure { e ->
             _state.update { it.copy(error = e.message) }
         }.onSuccess {
@@ -133,4 +144,24 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun clearError() = _state.update { it.copy(error = null) }
+}
+
+// ---------- appProperties ↔ ClothingTags ----------
+
+private fun ClothingTags.toAppProperties() = mapOf(
+    "clothing_type"     to type,
+    "clothing_category" to category,
+    "clothing_uses"     to uses.joinToString(","),
+    "clothing_colors"   to colors.joinToString(","),
+)
+
+private fun Map<String, String>.toClothingTags(): ClothingTags? {
+    val type = getOrDefault("clothing_type", "")
+    if (type.isEmpty()) return null
+    return ClothingTags(
+        type     = type,
+        category = getOrDefault("clothing_category", ""),
+        uses     = getOrDefault("clothing_uses", "").split(",").filter { it.isNotBlank() },
+        colors   = getOrDefault("clothing_colors", "").split(",").filter { it.isNotBlank() },
+    )
 }

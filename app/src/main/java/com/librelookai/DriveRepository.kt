@@ -25,6 +25,7 @@ import kotlin.coroutines.resumeWithException
 data class DriveFileDto(
     val id: String = "",
     val name: String = "",
+    val appProperties: Map<String, String>? = null,
 )
 
 private data class FilesListDto(
@@ -88,7 +89,7 @@ class DriveRepository(
             "UTF-8",
         )
         val req = Request.Builder()
-            .url("$API/files?q=$q&fields=files(id,name)&orderBy=createdTime+desc")
+            .url("$API/files?q=$q&fields=files(id,name,appProperties)&orderBy=createdTime+desc")
             .header("Authorization", "Bearer $tok")
             .build()
         gson.fromJson(
@@ -112,6 +113,18 @@ class DriveRepository(
             http.newCall(req).await().body!!.string(),
             DriveFileDto::class.java,
         )
+    }
+
+    /** Merges [props] into the file's appProperties (PATCH — does not erase existing keys). */
+    suspend fun updateAppProperties(fileId: String, props: Map<String, String>) = withContext(Dispatchers.IO) {
+        val tok = token()
+        val body = gson.toJson(mapOf("appProperties" to props))
+        val req = Request.Builder()
+            .url("$API/files/$fileId?fields=id")
+            .header("Authorization", "Bearer $tok")
+            .method("PATCH", body.toRequestBody("application/json".toMediaType()))
+            .build()
+        http.newCall(req).await()
     }
 
     /** Downloads a Drive file to the local cache directory. Returns null on error. */
