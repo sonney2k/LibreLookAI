@@ -51,6 +51,7 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.PhotoLibrary
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -163,6 +164,7 @@ private fun GridContent(
     // recomposition on change, just a GPU redraw).
     var pinchVisualScale by remember { mutableFloatStateOf(1f) }
     var selectedIndex by rememberSaveable { mutableStateOf<Int?>(null) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
 
     val isSelectionMode = state.selectedIds.isNotEmpty()
 
@@ -314,7 +316,7 @@ private fun GridContent(
         var fabExpanded by remember { mutableStateOf(false) }
         if (isSelectionMode) {
             FloatingActionButton(
-                onClick = onDeleteSelected,
+                onClick = { showDeleteDialog = true },
                 modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
                 containerColor = MaterialTheme.colorScheme.errorContainer,
                 contentColor = MaterialTheme.colorScheme.onErrorContainer,
@@ -350,6 +352,29 @@ private fun GridContent(
                 action = { TextButton(onClick = onDismissError) { Text("Dismiss") } },
             ) { Text(msg) }
         }
+    }
+
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("Delete items?") },
+            text = { Text("Are you sure you want to delete ${state.selectedIds.size} selected items? This cannot be undone.") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onDeleteSelected()
+                        showDeleteDialog = false
+                    }
+                ) {
+                    Text("Delete", color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
     }
 
     selectedIndex?.let { startIndex ->
