@@ -23,6 +23,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -64,6 +66,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.PhotoLibrary
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Sort
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
@@ -155,6 +158,7 @@ fun WardrobeScreen(
             onTagImage = viewModel::tagImage,
             onRemoveBackground = viewModel::reprocessBackground,
             onUpdateTags = viewModel::updateTags,
+            onRetagAll = viewModel::retagAll,
             onToggleSelection = viewModel::toggleSelection,
             onClearSelection = viewModel::clearSelection,
             onDeleteSelected = viewModel::deleteSelected,
@@ -291,6 +295,7 @@ private fun GridContent(
     onTagImage: (String) -> Unit,
     onRemoveBackground: (String) -> Unit,
     onUpdateTags: (String, ClothingTags) -> Unit,
+    onRetagAll: () -> Unit,
     onToggleSelection: (String) -> Unit,
     onClearSelection: () -> Unit,
     onDeleteSelected: () -> Unit,
@@ -303,6 +308,7 @@ private fun GridContent(
     var pinchVisualScale by remember { mutableFloatStateOf(1f) }
     var selectedIndex by remember { mutableStateOf<Int?>(null) }
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var showRetagDialog by remember { mutableStateOf(false) }
 
     // Filter + sort state
     var selectedTags by remember { mutableStateOf(emptyMap<String, Set<String>>()) }
@@ -349,6 +355,15 @@ private fun GridContent(
                     onTagsChanged = { selectedTags = it },
                     modifier = Modifier.weight(1f),
                 )
+                IconButton(
+                    onClick = { if (!state.isRetagging) showRetagDialog = true },
+                    modifier = Modifier.padding(end = 0.dp),
+                ) {
+                    if (state.isRetagging)
+                        CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
+                    else
+                        Icon(Icons.Default.Refresh, contentDescription = "Re-scan all tags")
+                }
                 SortButton(
                     sortBy = sortBy,
                     onSortChanged = { sortBy = it },
@@ -465,6 +480,8 @@ private fun GridContent(
 
         // Progress pill
         val overlayLabel = when {
+            state.isRetagging ->
+                "Re-scanning tags (${state.retagDone + 1}/${state.retagTotal})…"
             state.isProcessing && state.batchTotal > 1 ->
                 "Removing background (${state.batchDone + 1}/${state.batchTotal})…"
             state.isUploading && state.batchTotal > 1 ->
@@ -573,6 +590,22 @@ private fun GridContent(
                     Text("Cancel")
                 }
             }
+        )
+    }
+
+    if (showRetagDialog) {
+        AlertDialog(
+            onDismissRequest = { showRetagDialog = false },
+            title = { Text("Re-scan all tags?") },
+            text = { Text("Gemini will re-classify every item in your wardrobe. This will overwrite any manual tag edits and may take a while.") },
+            confirmButton = {
+                TextButton(onClick = { onRetagAll(); showRetagDialog = false }) {
+                    Text("Re-scan")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showRetagDialog = false }) { Text("Cancel") }
+            },
         )
     }
 
@@ -807,6 +840,14 @@ private fun TagsOverlay(
 
 // ---------- Tag edit sheet ----------
 
+// Predefined suggestion lists matching the Gemini classify prompt
+private val PRESET_USES        = listOf("casual", "formal", "business", "sport", "outdoor", "beach", "evening")
+private val PRESET_SEASONALITY = listOf("spring", "summer", "fall", "winter")
+private val PRESET_AESTHETIC   = listOf("minimalist", "streetwear", "preppy", "bohemian", "classic", "sporty", "romantic", "edgy", "business-casual", "luxury")
+private val PRESET_FIT         = listOf("slim", "regular", "relaxed", "oversized", "tailored")
+private val PRESET_MATERIAL    = listOf("cotton", "denim", "wool", "leather", "polyester", "linen", "silk", "knit")
+private val PRESET_PATTERN     = listOf("solid", "stripes", "plaid", "floral", "geometric", "animal-print", "graphic", "camo", "abstract")
+
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 private fun TagEditSheet(
@@ -815,22 +856,31 @@ private fun TagEditSheet(
     onSave: (ClothingTags) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    var type     by remember { mutableStateOf(image.tags?.type     ?: "") }
-    var category by remember { mutableStateOf(image.tags?.category ?: "") }
-    var uses     by remember { mutableStateOf(image.tags?.uses     ?: emptyList()) }
-    var colors   by remember { mutableStateOf(image.tags?.colors   ?: emptyList()) }
+    var type        by remember { mutableStateOf(image.tags?.type        ?: "") }
+    var category    by remember { mutableStateOf(image.tags?.category    ?: "") }
+    var uses        by remember { mutableStateOf(image.tags?.uses        ?: emptyList()) }
+    var colors      by remember { mutableStateOf(image.tags?.colors      ?: emptyList()) }
+    var seasonality by remember { mutableStateOf(image.tags?.seasonality ?: emptyList()) }
+    var aesthetic   by remember { mutableStateOf(image.tags?.aesthetic   ?: emptyList()) }
+    var fit         by remember { mutableStateOf(image.tags?.fit         ?: emptyList()) }
+    var material    by remember { mutableStateOf(image.tags?.material    ?: emptyList()) }
+    var pattern     by remember { mutableStateOf(image.tags?.pattern     ?: emptyList()) }
 
-    val allUses   = remember(allTagCategories) { allTagCategories.find { it.label == "Uses"   }?.tags.orEmpty() }
-    val allColors = remember(allTagCategories) { allTagCategories.find { it.label == "Colors" }?.tags.orEmpty() }
+    // Merge presets with anything already in the wardrobe for richer suggestions
+    fun suggestions(label: String, presets: List<String>): List<String> {
+        val fromWardrobe = allTagCategories.find { it.label == label }?.tags.orEmpty()
+        return (presets + fromWardrobe).distinct().sorted()
+    }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
-        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false),
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .navigationBarsPadding()
+                .verticalScroll(rememberScrollState())
                 .padding(horizontal = 20.dp)
                 .padding(bottom = 24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -843,10 +893,15 @@ private fun TagEditSheet(
                 Text("Edit Tags", style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
                 TextButton(onClick = {
                     onSave(ClothingTags(
-                        type     = type.trim(),
-                        category = category.trim(),
-                        uses     = uses.map { it.trim() }.filter { it.isNotEmpty() },
-                        colors   = colors.map { it.trim() }.filter { it.isNotEmpty() },
+                        type        = type.trim(),
+                        category    = category.trim(),
+                        uses        = uses.map { it.trim() }.filter { it.isNotEmpty() },
+                        colors      = colors.map { it.trim() }.filter { it.isNotEmpty() },
+                        seasonality = seasonality.map { it.trim() }.filter { it.isNotEmpty() },
+                        aesthetic   = aesthetic.map { it.trim() }.filter { it.isNotEmpty() },
+                        fit         = fit.map { it.trim() }.filter { it.isNotEmpty() },
+                        material    = material.map { it.trim() }.filter { it.isNotEmpty() },
+                        pattern     = pattern.map { it.trim() }.filter { it.isNotEmpty() },
                     ))
                 }) { Text("Save") }
             }
@@ -857,6 +912,7 @@ private fun TagEditSheet(
                 value = type,
                 onValueChange = { type = it },
                 label = { Text("Type") },
+                placeholder = { Text("e.g. T-shirt, Chinos, Puffer jacket") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -865,6 +921,7 @@ private fun TagEditSheet(
                 value = category,
                 onValueChange = { category = it },
                 label = { Text("Category") },
+                placeholder = { Text("tops, bottoms, outerwear, footwear, accessories, dress, suit") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -872,7 +929,7 @@ private fun TagEditSheet(
             ChipListEditor(
                 label = "Uses",
                 values = uses,
-                suggestions = allUses.filter { it !in uses },
+                suggestions = suggestions("Uses", PRESET_USES).filter { it !in uses },
                 onAdd    = { uses = uses + it },
                 onRemove = { uses = uses - it },
             )
@@ -880,9 +937,49 @@ private fun TagEditSheet(
             ChipListEditor(
                 label = "Colors",
                 values = colors,
-                suggestions = allColors.filter { it !in colors },
+                suggestions = suggestions("Colors", emptyList()).filter { it !in colors },
                 onAdd    = { colors = colors + it },
                 onRemove = { colors = colors - it },
+            )
+
+            ChipListEditor(
+                label = "Seasonality",
+                values = seasonality,
+                suggestions = suggestions("Seasonality", PRESET_SEASONALITY).filter { it !in seasonality },
+                onAdd    = { seasonality = seasonality + it },
+                onRemove = { seasonality = seasonality - it },
+            )
+
+            ChipListEditor(
+                label = "Aesthetic",
+                values = aesthetic,
+                suggestions = suggestions("Aesthetic", PRESET_AESTHETIC).filter { it !in aesthetic },
+                onAdd    = { aesthetic = aesthetic + it },
+                onRemove = { aesthetic = aesthetic - it },
+            )
+
+            ChipListEditor(
+                label = "Fit",
+                values = fit,
+                suggestions = suggestions("Fit", PRESET_FIT).filter { it !in fit },
+                onAdd    = { fit = fit + it },
+                onRemove = { fit = fit - it },
+            )
+
+            ChipListEditor(
+                label = "Material",
+                values = material,
+                suggestions = suggestions("Material", PRESET_MATERIAL).filter { it !in material },
+                onAdd    = { material = material + it },
+                onRemove = { material = material - it },
+            )
+
+            ChipListEditor(
+                label = "Pattern",
+                values = pattern,
+                suggestions = suggestions("Pattern", PRESET_PATTERN).filter { it !in pattern },
+                onAdd    = { pattern = pattern + it },
+                onRemove = { pattern = pattern - it },
             )
         }
     }

@@ -33,6 +33,9 @@ data class WardrobeUiState(
     /** Number of items in the current batch (0 = single-item flow). */
     val batchTotal: Int = 0,
     val batchDone: Int = 0,
+    val isRetagging: Boolean = false,
+    val retagDone: Int = 0,
+    val retagTotal: Int = 0,
     val error: String? = null,
     /** driveId of the image currently being processed by an AI operation, or null. */
     val processingImageId: String? = null,
@@ -214,6 +217,24 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    fun retagAll() {
+        val images = _state.value.images
+        if (images.isEmpty() || _state.value.isRetagging) return
+        viewModelScope.launch {
+            _state.update { it.copy(isRetagging = true, retagDone = 0, retagTotal = images.size) }
+            images.forEachIndexed { index, image ->
+                _state.update { it.copy(retagDone = index) }
+                val cachedFile = drive.cachedFile(image.driveId) ?: return@forEachIndexed
+                val tags = gemini.classifyClothing(cachedFile) ?: return@forEachIndexed
+                runCatching { drive.updateAppProperties(image.driveId, tags.toAppProperties()) }
+                _state.update { s ->
+                    s.copy(images = s.images.map { if (it.driveId == image.driveId) it.copy(tags = tags) else it })
+                }
+            }
+            _state.update { it.copy(isRetagging = false, retagDone = 0, retagTotal = 0) }
+        }
+    }
+
     fun clearError() = _state.update { it.copy(error = null) }
 
     // ---------- Selection & Delete ----------
@@ -249,19 +270,29 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 // ---------- appProperties ↔ ClothingTags ----------
 
 private fun ClothingTags.toAppProperties() = mapOf(
-    "clothing_type"     to type,
-    "clothing_category" to category,
-    "clothing_uses"     to uses.joinToString(","),
-    "clothing_colors"   to colors.joinToString(","),
+    "clothing_type"        to type,
+    "clothing_category"    to category,
+    "clothing_uses"        to uses.joinToString(","),
+    "clothing_colors"      to colors.joinToString(","),
+    "clothing_seasonality" to seasonality.joinToString(","),
+    "clothing_aesthetic"   to aesthetic.joinToString(","),
+    "clothing_fit"         to fit.joinToString(","),
+    "clothing_material"    to material.joinToString(","),
+    "clothing_pattern"     to pattern.joinToString(","),
 )
 
 private fun Map<String, String>.toClothingTags(): ClothingTags? {
     val type = getOrDefault("clothing_type", "")
     if (type.isEmpty()) return null
     return ClothingTags(
-        type     = type,
-        category = getOrDefault("clothing_category", ""),
-        uses     = getOrDefault("clothing_uses", "").split(",").filter { it.isNotBlank() },
-        colors   = getOrDefault("clothing_colors", "").split(",").filter { it.isNotBlank() },
+        type        = type,
+        category    = getOrDefault("clothing_category", ""),
+        uses        = getOrDefault("clothing_uses",        "").split(",").filter { it.isNotBlank() },
+        colors      = getOrDefault("clothing_colors",      "").split(",").filter { it.isNotBlank() },
+        seasonality = getOrDefault("clothing_seasonality", "").split(",").filter { it.isNotBlank() },
+        aesthetic   = getOrDefault("clothing_aesthetic",   "").split(",").filter { it.isNotBlank() },
+        fit         = getOrDefault("clothing_fit",         "").split(",").filter { it.isNotBlank() },
+        material    = getOrDefault("clothing_material",    "").split(",").filter { it.isNotBlank() },
+        pattern     = getOrDefault("clothing_pattern",     "").split(",").filter { it.isNotBlank() },
     )
 }
