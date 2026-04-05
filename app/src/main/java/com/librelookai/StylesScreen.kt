@@ -37,19 +37,25 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.AutoFixHigh
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Sort
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.OutlinedTextField
@@ -62,6 +68,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Snackbar
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -80,6 +87,22 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+
+private enum class StyleSortOption(val label: String) {
+    DATE_DESC("Newest first"),
+    DATE_ASC("Oldest first"),
+    NAME_AZ("Name A–Z"),
+    NAME_ZA("Name Z–A"),
+    ITEM_COUNT("Most items"),
+}
+
+private fun List<Style>.styleTagCategories(itemsById: Map<String, DriveImage>): List<TagCategory> {
+    val allImages = flatMap { style -> style.itemIds.mapNotNull { itemsById[it] } }
+    return allImages.tagCategories()
+}
+
+private fun Style.allTagStrings(itemsById: Map<String, DriveImage>): Set<String> =
+    itemIds.flatMap { id -> itemsById[id]?.allTagStrings() ?: emptySet() }.toSet()
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -204,38 +227,88 @@ private fun StyleListScreen(
 ) {
     val itemsById = remember(items) { items.associateBy { it.driveId } }
 
+    var selectedTags by remember { mutableStateOf(emptySet<String>()) }
+    var sortBy by remember { mutableStateOf(StyleSortOption.DATE_DESC) }
+
+    val tagCategories = remember(styles, itemsById) { styles.styleTagCategories(itemsById) }
+
+    val filteredStyles = remember(styles, selectedTags, itemsById) {
+        if (selectedTags.isEmpty()) styles
+        else styles.filter { style -> selectedTags.all { it in style.allTagStrings(itemsById) } }
+    }
+
+    val displayedStyles = remember(filteredStyles, sortBy) {
+        when (sortBy) {
+            StyleSortOption.DATE_DESC  -> filteredStyles
+            StyleSortOption.DATE_ASC   -> filteredStyles.reversed()
+            StyleSortOption.NAME_AZ    -> filteredStyles.sortedBy { it.name.lowercase() }
+            StyleSortOption.NAME_ZA    -> filteredStyles.sortedByDescending { it.name.lowercase() }
+            StyleSortOption.ITEM_COUNT -> filteredStyles.sortedByDescending { it.itemIds.size }
+        }
+    }
+
     Box(modifier = modifier.fillMaxSize()) {
-        when {
-            isLoading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            styles.isEmpty() -> {
-                Column(
-                    modifier = Modifier.align(Alignment.Center),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
+        Column(Modifier.fillMaxSize()) {
+            // Filter + sort bar (only when there's something to show)
+            if (styles.isNotEmpty()) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Text("No styles yet", style = MaterialTheme.typography.bodyLarge)
-                    Spacer(Modifier.height(4.dp))
-                    Text(
-                        "Tap + to build an outfit from your wardrobe",
-                        style = MaterialTheme.typography.bodyMedium,
+                    TagFilterBar(
+                        tagCategories = tagCategories,
+                        selectedTags = selectedTags,
+                        onTagsChanged = { selectedTags = it },
+                        modifier = Modifier.weight(1f),
+                    )
+                    StyleSortButton(
+                        sortBy = sortBy,
+                        onSortChanged = { sortBy = it },
+                        modifier = Modifier.padding(end = 4.dp),
                     )
                 }
             }
-            else -> {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(vertical = 8.dp, horizontal = 0.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    itemsIndexed(styles, key = { _, s -> s.id }) { _, style ->
-                        StyleCard(
-                            style = style,
-                            itemsById = itemsById,
-                            highlighted = prediction?.styleId == style.id,
-                            onEdit = { onEditStyle(style) },
-                            onDelete = { onDeleteStyle(style.id) },
-                            onWear = { onWearStyle(style.id) },
-                        )
+
+            when {
+                isLoading -> Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+                styles.isEmpty() -> {
+                    Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                        ) {
+                            Text("No styles yet", style = MaterialTheme.typography.bodyLarge)
+                            Spacer(Modifier.height(4.dp))
+                            Text(
+                                "Tap + to build an outfit from your wardrobe",
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                        }
+                    }
+                }
+                displayedStyles.isEmpty() -> {
+                    Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        Text("No styles match the filter", style = MaterialTheme.typography.bodyLarge)
+                    }
+                }
+                else -> {
+                    LazyColumn(
+                        modifier = Modifier.weight(1f).fillMaxWidth(),
+                        contentPadding = PaddingValues(vertical = 8.dp, horizontal = 0.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        itemsIndexed(displayedStyles, key = { _, s -> s.id }) { _, style ->
+                            StyleCard(
+                                style = style,
+                                itemsById = itemsById,
+                                highlighted = prediction?.styleId == style.id,
+                                onEdit = { onEditStyle(style) },
+                                onDelete = { onDeleteStyle(style.id) },
+                                onWear = { onWearStyle(style.id) },
+                            )
+                        }
                     }
                 }
             }
@@ -384,6 +457,39 @@ private fun SpeedDialItem(
             onClick = onClick,
             containerColor = containerColor,
         ) { icon() }
+    }
+}
+
+// ---------- Sort button ----------
+
+@Composable
+private fun StyleSortButton(
+    sortBy: StyleSortOption,
+    onSortChanged: (StyleSortOption) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var expanded by remember { mutableStateOf(false) }
+    Box(modifier = modifier) {
+        IconButton(onClick = { expanded = true }) {
+            Icon(Icons.Default.Sort, contentDescription = "Sort")
+        }
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            StyleSortOption.entries.forEach { option ->
+                DropdownMenuItem(
+                    text = {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            if (option == sortBy) Icon(Icons.Default.Check, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
+                            else Spacer(Modifier.size(18.dp))
+                            Text(option.label)
+                        }
+                    },
+                    onClick = { onSortChanged(option); expanded = false },
+                )
+            }
+        }
     }
 }
 
