@@ -12,10 +12,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Checkroom
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Style
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -40,7 +40,7 @@ import com.librelookai.ui.theme.LibreLookAITheme
 private data class NavItem(val label: String, val icon: ImageVector)
 
 private val navItems = listOf(
-    NavItem("Styles", Icons.Default.AutoAwesome),
+    NavItem("Styles", Icons.Default.Style),
     NavItem("Wardrobe", Icons.Default.Checkroom),
     NavItem("Calendar", Icons.Default.CalendarMonth),
     NavItem("Profile", Icons.Default.Person),

@@ -96,7 +96,9 @@ fun StylesScreen(
             selectedIds = stylesState.draftItemIds,
             isEditing = stylesState.editingStyle != null,
             styleName = stylesState.draftStyleName,
+            styleDescription = stylesState.draftStyleDescription,
             onNameChanged = stylesViewModel::updateDraftName,
+            onDescriptionChanged = stylesViewModel::updateDraftDescription,
             onToggleItem = stylesViewModel::toggleDraftItem,
             onConfirm = stylesViewModel::confirmDraft,
             onCancel = stylesViewModel::cancelCreating,
@@ -134,8 +136,9 @@ fun StylesScreen(
             },
             onAcceptComposition = { suggestion ->
                 stylesViewModel.startCreatingFromItems(
-                    itemIds = suggestion.itemIds.toSet(),
-                    name    = suggestion.name,
+                    itemIds     = suggestion.itemIds.toSet(),
+                    name        = suggestion.name,
+                    description = suggestion.description,
                 )
                 stylesViewModel.clearNewSuggestion()
             },
@@ -144,14 +147,6 @@ fun StylesScreen(
         )
     }
 
-    if (stylesState.showNameDialog) {
-        StyleNameDialog(
-            initialName = stylesState.editingStyle?.name
-                ?: "Style ${stylesState.styles.size + 1}",
-            onConfirm = stylesViewModel::saveStyle,
-            onDismiss = stylesViewModel::cancelCreating,
-        )
-    }
 }
 
 // ---------- Style list ----------
@@ -277,6 +272,14 @@ private fun StyleListScreen(
             }
         }
 
+        // AI progress overlay — covers the whole screen while Gemini is working
+        if (isPredicting || isComposing) {
+            AiProcessingOverlay(
+                label = if (isComposing) "Composing outfit…" else "Suggesting style…",
+                modifier = Modifier.fillMaxSize(),
+            )
+        }
+
         // Error snackbars (composition takes priority if both are set)
         val errorMsg = compositionError ?: predictionError
         val onClearError = if (compositionError != null) onClearComposition else onClearPrediction
@@ -390,6 +393,13 @@ private fun StyleCard(
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Text(style.name, style = MaterialTheme.typography.titleSmall)
+            if (style.description.isNotBlank()) {
+                Text(
+                    style.description,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
             val styleItems = style.itemIds.mapNotNull { itemsById[it] }
             if (styleItems.isEmpty()) {
                 Text(
@@ -454,7 +464,9 @@ private fun StyleItemPicker(
     selectedIds: Set<String>,
     isEditing: Boolean,
     styleName: String = "",
+    styleDescription: String = "",
     onNameChanged: (String) -> Unit = {},
+    onDescriptionChanged: (String) -> Unit = {},
     onToggleItem: (String) -> Unit,
     onConfirm: () -> Unit,
     onCancel: () -> Unit,
@@ -481,39 +493,55 @@ private fun StyleItemPicker(
             IconButton(onClick = onCancel) {
                 Icon(Icons.Default.Close, contentDescription = "Cancel")
             }
-            if (isEditing) {
-                BasicTextField(
-                    value = styleName,
-                    onValueChange = onNameChanged,
-                    textStyle = MaterialTheme.typography.titleMedium.copy(
-                        color = MaterialTheme.colorScheme.onSurface,
-                    ),
-                    singleLine = true,
-                    modifier = Modifier.weight(1f).padding(horizontal = 8.dp),
-                    decorationBox = { inner ->
-                        Box {
-                            if (styleName.isEmpty()) {
-                                Text(
-                                    "Style name",
-                                    style = MaterialTheme.typography.titleMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                )
-                            }
-                            inner()
+            BasicTextField(
+                value = styleName,
+                onValueChange = onNameChanged,
+                textStyle = MaterialTheme.typography.titleMedium.copy(
+                    color = MaterialTheme.colorScheme.onSurface,
+                ),
+                singleLine = true,
+                modifier = Modifier.weight(1f).padding(horizontal = 8.dp),
+                decorationBox = { inner ->
+                    Box {
+                        if (styleName.isEmpty()) {
+                            Text(
+                                "Style name",
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
                         }
-                    },
-                )
-            } else {
-                Text(
-                    text = if (selectedIds.isEmpty()) "Select items" else "${selectedIds.size} selected",
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.weight(1f),
-                )
-            }
+                        inner()
+                    }
+                },
+            )
             TextButton(onClick = onConfirm, enabled = selectedIds.isNotEmpty()) {
-                Text(if (isEditing) "Save" else "Create Style")
+                Text(if (isEditing) "Save" else "Create")
             }
         }
+
+        // Description field — always visible (creating or editing)
+        BasicTextField(
+            value = styleDescription,
+            onValueChange = onDescriptionChanged,
+            textStyle = MaterialTheme.typography.bodyMedium.copy(
+                color = MaterialTheme.colorScheme.onSurface,
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 4.dp),
+            decorationBox = { inner ->
+                Box {
+                    if (styleDescription.isEmpty()) {
+                        Text(
+                            "Description (optional)",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                    inner()
+                }
+            },
+        )
 
         // Reuse the shared filter bar
         TagFilterBar(
@@ -707,6 +735,14 @@ private fun NewStyleSuggestionSheet(
             HorizontalDivider()
 
             Text(suggestion.name, style = MaterialTheme.typography.titleSmall)
+
+            if (suggestion.description.isNotBlank()) {
+                Text(
+                    suggestion.description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
 
             if (styleItems.isEmpty()) {
                 Text(

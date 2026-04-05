@@ -714,56 +714,7 @@ private fun ZoomableImage(
     )
 }
 
-// ---------- AI processing overlay ----------
-
-@Composable
-private fun AiProcessingOverlay(modifier: Modifier = Modifier) {
-    val transition = rememberInfiniteTransition(label = "ai")
-    val rotation by transition.animateFloat(
-        initialValue = 0f,
-        targetValue = 360f,
-        animationSpec = infiniteRepeatable(tween(2400, easing = LinearEasing)),
-        label = "rotate",
-    )
-    val pulse by transition.animateFloat(
-        initialValue = 0.5f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(tween(800), RepeatMode.Reverse),
-        label = "pulse",
-    )
-
-    Box(
-        modifier = modifier.background(Color.Black.copy(alpha = 0.55f)),
-        contentAlignment = Alignment.Center,
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            Box(contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(72.dp),
-                    strokeWidth = 2.dp,
-                    color = Color(0xFFFFD700),
-                )
-                Icon(
-                    imageVector = Icons.Default.AutoAwesome,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(32.dp)
-                        .rotate(rotation)
-                        .graphicsLayer { alpha = pulse },
-                    tint = Color(0xFFFFD700),
-                )
-            }
-            Text(
-                text = "AI is working…",
-                color = Color.White,
-                style = MaterialTheme.typography.bodyMedium,
-            )
-        }
-    }
-}
+// AiProcessingOverlay lives in AiProcessingOverlay.kt (shared)
 
 // ---------- Tags overlay ----------
 

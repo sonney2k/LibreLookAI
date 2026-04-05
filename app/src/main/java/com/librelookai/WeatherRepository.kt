@@ -3,7 +3,9 @@ package com.librelookai
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Geocoder
 import androidx.core.content.ContextCompat
+import java.util.Locale
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
@@ -19,6 +21,7 @@ private const val PREFS_NAME  = "weather_cache"
 private const val KEY_TEMP    = "temp"
 private const val KEY_CODE    = "code"
 private const val KEY_FETCHED = "fetched_at"
+private const val KEY_CITY    = "city"
 private const val OPEN_METEO  =
     "https://api.open-meteo.com/v1/forecast?current=temperature_2m,weather_code"
 
@@ -40,8 +43,9 @@ class WeatherRepository(private val context: Context) {
         val temp    = prefs.getFloat(KEY_TEMP, Float.MIN_VALUE)
         val code    = prefs.getInt(KEY_CODE, -1)
         val fetched = prefs.getLong(KEY_FETCHED, 0L)
+        val city    = prefs.getString(KEY_CITY, "") ?: ""
         if (temp == Float.MIN_VALUE || code < 0) return null
-        return WeatherData(temp, code, fetched)
+        return WeatherData(temp, code, fetched, city)
     }
 
     /**
@@ -56,7 +60,8 @@ class WeatherRepository(private val context: Context) {
                 ?: return@withContext null
             val resp = gson.fromJson(body, OpenMeteoResponse::class.java)
             val block = resp.current ?: return@withContext null
-            WeatherData(block.temperature, block.weatherCode).also { cache(it) }
+            val city = getCityName(location.first, location.second)
+            WeatherData(block.temperature, block.weatherCode, cityName = city).also { cache(it) }
         } catch (_: Exception) {
             null
         }
@@ -67,8 +72,18 @@ class WeatherRepository(private val context: Context) {
             .putFloat(KEY_TEMP, data.temperatureCelsius)
             .putInt(KEY_CODE, data.weatherCode)
             .putLong(KEY_FETCHED, data.fetchedAt)
+            .putString(KEY_CITY, data.cityName)
             .apply()
     }
+
+    /** Reverse-geocodes [lat]/[lon] to a city name using the system Geocoder. */
+    private fun getCityName(lat: Double, lon: Double): String = try {
+        @Suppress("DEPRECATION")
+        Geocoder(context, Locale.ENGLISH).getFromLocation(lat, lon, 1)
+            ?.firstOrNull()
+            ?.let { it.locality ?: it.subAdminArea ?: it.adminArea }
+            ?: ""
+    } catch (_: Exception) { "" }
 
     /** Returns (latitude, longitude) or null when permission is missing or location unavailable. */
     private suspend fun getCoarseLocation(): Pair<Double, Double>? {
@@ -77,16 +92,8 @@ class WeatherRepository(private val context: Context) {
 
         val client = LocationServices.getFusedLocationProviderClient(context)
 
-        // Try last-known location first (free, instant)
-        val last = suspendCancellableCoroutine { cont ->
-            client.lastLocation
-                .addOnSuccessListener { cont.resume(it) }
-                .addOnFailureListener { cont.resume(null) }
-                .addOnCanceledListener  { cont.resume(null) }
-        }
-        if (last != null) return last.latitude to last.longitude
-
-        // Fall back to a single current-location request (uses network/WiFi, not GPS)
+        // Always request a fresh location — lastLocation can be arbitrarily old (days, different
+        // country) and is not reliable for current weather. Network/WiFi fix is fast and cheap.
         val cts = CancellationTokenSource()
         val current = suspendCancellableCoroutine { cont ->
             cont.invokeOnCancellation { cts.cancel() }
@@ -95,6 +102,18 @@ class WeatherRepository(private val context: Context) {
                 .addOnFailureListener { cont.resume(null) }
                 .addOnCanceledListener  { cont.resume(null) }
         }
-        return current?.let { it.latitude to it.longitude }
+        if (current != null) return current.latitude to current.longitude
+
+        // Last resort: accept lastLocation only if it is younger than 1 hour
+        val last = suspendCancellableCoroutine { cont ->
+            client.lastLocation
+                .addOnSuccessListener { cont.resume(it) }
+                .addOnFailureListener { cont.resume(null) }
+                .addOnCanceledListener  { cont.resume(null) }
+        }
+        val oneHourMs = 60 * 60 * 1000L
+        return last
+            ?.takeIf { System.currentTimeMillis() - it.time < oneHourMs }
+            ?.let { it.latitude to it.longitude }
     }
 }

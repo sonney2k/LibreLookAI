@@ -1,6 +1,8 @@
 package com.librelookai
 
 import android.app.Application
+import android.content.Context
+import android.telephony.TelephonyManager
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,6 +21,7 @@ data class StylePrediction(val styleId: String, val reason: String)
 /** Gemini-composed outfit that doesn't yet exist as a saved style. */
 data class NewStyleSuggestion(
     val name: String,
+    val description: String,
     val itemIds: List<String>,
     val reason: String,
 )
@@ -29,6 +32,7 @@ data class StylesUiState(
     val isCreating: Boolean = false,
     val draftItemIds: Set<String> = emptySet(),
     val draftStyleName: String = "",
+    val draftStyleDescription: String = "",
     /** Non-null when editing an existing style; null when creating a new one. */
     val editingStyle: Style? = null,
     val showNameDialog: Boolean = false,
@@ -79,21 +83,22 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
     // ---------- Create flow ----------
 
     fun startCreating() = _state.update {
-        it.copy(isCreating = true, draftItemIds = emptySet(), draftStyleName = "", editingStyle = null)
+        it.copy(isCreating = true, draftItemIds = emptySet(), draftStyleName = "", draftStyleDescription = "", editingStyle = null)
     }
 
-    fun startCreatingFromItems(itemIds: Set<String>, name: String = "") = _state.update {
-        it.copy(isCreating = true, draftItemIds = itemIds, draftStyleName = name, editingStyle = null)
+    fun startCreatingFromItems(itemIds: Set<String>, name: String = "", description: String = "") = _state.update {
+        it.copy(isCreating = true, draftItemIds = itemIds, draftStyleName = name, draftStyleDescription = description, editingStyle = null)
     }
 
     fun startEditing(style: Style) = _state.update {
-        it.copy(isCreating = true, draftItemIds = style.itemIds.toSet(), draftStyleName = style.name, editingStyle = style)
+        it.copy(isCreating = true, draftItemIds = style.itemIds.toSet(), draftStyleName = style.name, draftStyleDescription = style.description, editingStyle = style)
     }
 
     fun updateDraftName(name: String) = _state.update { it.copy(draftStyleName = name) }
+    fun updateDraftDescription(description: String) = _state.update { it.copy(draftStyleDescription = description) }
 
     fun cancelCreating() = _state.update {
-        it.copy(isCreating = false, draftItemIds = emptySet(), draftStyleName = "", editingStyle = null, showNameDialog = false)
+        it.copy(isCreating = false, draftItemIds = emptySet(), draftStyleName = "", draftStyleDescription = "", editingStyle = null, showNameDialog = false)
     }
 
     fun toggleDraftItem(driveId: String) = _state.update { s ->
@@ -105,12 +110,11 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
     fun confirmDraft() {
         val s = _state.value
         if (s.draftItemIds.isEmpty()) return
-        if (s.editingStyle != null) {
-            // Editing: name was set inline — save immediately without the dialog
-            saveStyle(s.draftStyleName.ifEmpty { s.editingStyle.name })
-        } else {
-            _state.update { it.copy(showNameDialog = true) }
+        // Name and description are always set inline in the picker — save directly, no popup.
+        val resolvedName = s.draftStyleName.ifEmpty {
+            s.editingStyle?.name ?: "Style ${s.styles.size + 1}"
         }
+        saveStyle(resolvedName)
     }
 
     fun saveStyle(name: String) {
@@ -121,11 +125,12 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
             val resolvedName = name.trim().ifEmpty {
                 s.editingStyle?.name ?: "Style ${s.styles.size + 1}"
             }
+            val description = s.draftStyleDescription.trim()
             val updated = if (s.editingStyle != null) {
-                val edited = s.editingStyle.copy(name = resolvedName, itemIds = draftIds.toList())
+                val edited = s.editingStyle.copy(name = resolvedName, description = description, itemIds = draftIds.toList())
                 s.styles.map { if (it.id == edited.id) edited else it }
             } else {
-                s.styles + Style(name = resolvedName, itemIds = draftIds.toList())
+                s.styles + Style(name = resolvedName, description = description, itemIds = draftIds.toList())
             }
             runCatching {
                 val id = folderId ?: drive.getOrCreateFolder().also { folderId = it }
@@ -178,16 +183,17 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
             _state.update { it.copy(isPredicting = true, prediction = null, predictionError = null) }
 
             // Fetch trending topics (non-fatal — empty list is fine)
-            val countryCode = Locale.getDefault().country.takeIf { it.isNotEmpty() } ?: "US"
+            val countryCode = deviceCountryCode()
             val trendingTopics = trends.fetchTrending(countryCode)
 
             val prompt = buildPredictionPrompt(
-                prefs         = prefs,
-                weather       = weather,
-                countryCode   = countryCode,
+                prefs          = prefs,
+                weather        = weather,
+                cityName       = weather?.cityName,
+                countryCode    = countryCode,
                 trendingTopics = trendingTopics,
-                images        = images,
-                styles        = styles,
+                images         = images,
+                styles         = styles,
             )
             Log.d("StylesVM", "Prediction prompt length: ${prompt.length} chars")
             prompt.chunked(3000).forEachIndexed { i, chunk ->
@@ -253,12 +259,13 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             _state.update { it.copy(isComposing = true, newSuggestion = null, compositionError = null) }
 
-            val countryCode = Locale.getDefault().country.takeIf { it.isNotEmpty() } ?: "US"
+            val countryCode = deviceCountryCode()
             val trendingTopics = trends.fetchTrending(countryCode)
 
             val prompt = buildCompositionPrompt(
                 prefs          = prefs,
                 weather        = weather,
+                cityName       = weather?.cityName,
                 countryCode    = countryCode,
                 trendingTopics = trendingTopics,
                 images         = images,
@@ -280,6 +287,7 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
 
             data class CompResp(
                 val name: String = "",
+                val description: String = "",
                 val itemIds: List<String> = emptyList(),
                 val reason: String = "",
             )
@@ -304,9 +312,10 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
                 it.copy(
                     isComposing = false,
                     newSuggestion = NewStyleSuggestion(
-                        name    = result.name.ifBlank { "AI Style" },
-                        itemIds = validIds,
-                        reason  = result.reason,
+                        name        = result.name.ifBlank { "AI Style" },
+                        description = result.description,
+                        itemIds     = validIds,
+                        reason      = result.reason,
                     ),
                 )
             }
@@ -316,6 +325,20 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
     fun clearNewSuggestion() = _state.update { it.copy(newSuggestion = null, compositionError = null) }
 
     fun clearError() = _state.update { it.copy(error = null) }
+
+    /**
+     * Returns the ISO 3166-1 alpha-2 country code for the device's current location.
+     * Prefers the mobile network registration country (accurate regardless of device language),
+     * falls back to SIM country, then device locale as a last resort.
+     */
+    private fun deviceCountryCode(): String {
+        val tel = getApplication<Application>()
+            .getSystemService(Context.TELEPHONY_SERVICE) as? TelephonyManager
+        return tel?.networkCountryIso?.uppercase()?.takeIf { it.isNotEmpty() }
+            ?: tel?.simCountryIso?.uppercase()?.takeIf { it.isNotEmpty() }
+            ?: Locale.getDefault().country.takeIf { it.isNotEmpty() }
+            ?: "US"
+    }
 }
 
 // ---------- Prompt builder ----------
@@ -323,6 +346,7 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
 private fun buildPredictionPrompt(
     prefs: UserPreferences?,
     weather: WeatherData?,
+    cityName: String?,
     countryCode: String,
     trendingTopics: List<String>,
     images: List<DriveImage>,
@@ -350,10 +374,11 @@ private fun buildPredictionPrompt(
         """{"id":"${s.id}","name":"${s.name}","items":$items}"""
     }
 
+    val locationStr = listOfNotNull(cityName?.takeIf { it.isNotEmpty() }, countryCode)
+        .joinToString(", ")
     val weatherStr = if (weather != null)
         "${weather.temperatureCelsius.toInt()}°C, ${wmoEmoji(weather.weatherCode)} (WMO ${weather.weatherCode})"
     else "unknown"
-
     val trendsStr = if (trendingTopics.isEmpty()) "not available"
     else trendingTopics.joinToString(", ")
 
@@ -365,7 +390,12 @@ private fun buildPredictionPrompt(
         appendLine("- Age: ${age?.toString() ?: "not specified"}")
         appendLine("- Style preferences: ${prefs?.preferences?.takeIf { it.isNotEmpty() } ?: "none provided"}")
         appendLine()
-        appendLine("## Today's Weather ($countryCode)")
+        appendLine("## Location")
+        appendLine("- City: ${cityName?.takeIf { it.isNotEmpty() } ?: "unknown"}")
+        appendLine("- Country: $countryCode")
+        appendLine("- Urban/rural: infer from city name (consider local style norms and practicality)")
+        appendLine()
+        appendLine("## Today's Weather ($locationStr)")
         appendLine(weatherStr)
         appendLine()
         appendLine("## Trending Topics Today in $countryCode")
@@ -380,8 +410,9 @@ private fun buildPredictionPrompt(
         appendLine("## Instructions")
         appendLine("Pick the single best style ID from the styles list that fits:")
         appendLine("1. The current weather (temperature, conditions)")
-        appendLine("2. The trending topics and cultural context of $countryCode")
+        appendLine("2. The trending topics and cultural context of $locationStr")
         appendLine("3. The user's personal preferences and profile")
+        appendLine("4. The urban/rural character of the location")
         appendLine()
         appendLine("Respond with ONLY a valid JSON object — no markdown, no extra text:")
         append("""{"styleId":"<id from the styles list>","reason":"<1-2 sentence explanation>"}""")
@@ -391,6 +422,7 @@ private fun buildPredictionPrompt(
 private fun buildCompositionPrompt(
     prefs: UserPreferences?,
     weather: WeatherData?,
+    cityName: String?,
     countryCode: String,
     trendingTopics: List<String>,
     images: List<DriveImage>,
@@ -409,10 +441,11 @@ private fun buildCompositionPrompt(
         }
     }
 
+    val locationStr = listOfNotNull(cityName?.takeIf { it.isNotEmpty() }, countryCode)
+        .joinToString(", ")
     val weatherStr = if (weather != null)
         "${weather.temperatureCelsius.toInt()}°C, ${wmoEmoji(weather.weatherCode)} (WMO ${weather.weatherCode})"
     else "unknown"
-
     val trendsStr = if (trendingTopics.isEmpty()) "not available"
     else trendingTopics.joinToString(", ")
 
@@ -424,7 +457,12 @@ private fun buildCompositionPrompt(
         appendLine("- Age: ${age?.toString() ?: "not specified"}")
         appendLine("- Style preferences: ${prefs?.preferences?.takeIf { it.isNotEmpty() } ?: "none provided"}")
         appendLine()
-        appendLine("## Today's Weather ($countryCode)")
+        appendLine("## Location")
+        appendLine("- City: ${cityName?.takeIf { it.isNotEmpty() } ?: "unknown"}")
+        appendLine("- Country: $countryCode")
+        appendLine("- Urban/rural: infer from city name (consider local style norms and practicality)")
+        appendLine()
+        appendLine("## Today's Weather ($locationStr)")
         appendLine(weatherStr)
         appendLine()
         appendLine("## Trending Topics Today in $countryCode")
@@ -436,12 +474,15 @@ private fun buildCompositionPrompt(
         appendLine("## Instructions")
         appendLine("Select 2–5 item IDs from the wardrobe that form a cohesive, well-coordinated outfit. Choose items that:")
         appendLine("1. Are appropriate for the current weather")
-        appendLine("2. Reflect the trending topics and cultural context of $countryCode")
+        appendLine("2. Reflect the trending topics and cultural context of $locationStr")
         appendLine("3. Match the user's personal preferences")
         appendLine("4. Work together visually (complementary colors, consistent style category)")
-        appendLine("Also propose a short, evocative name for the outfit.")
+        appendLine("5. Suit the urban/rural character of $locationStr")
+        appendLine("Also propose:")
+        appendLine("- A short, evocative name for the outfit (\"name\")")
+        appendLine("- A 1-2 sentence style description suitable as a caption (\"description\")")
         appendLine()
         appendLine("Respond with ONLY a valid JSON object — no markdown, no extra text:")
-        append("""{"name":"<outfit name>","itemIds":["<id1>","<id2>",...],"reason":"<1-2 sentence explanation>"}""")
+        append("""{"name":"<outfit name>","description":"<style caption>","itemIds":["<id1>","<id2>",...],"reason":"<1-2 sentence explanation>"}""")
     }
 }
