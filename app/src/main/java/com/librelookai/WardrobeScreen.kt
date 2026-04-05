@@ -44,15 +44,24 @@ import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -142,8 +151,33 @@ fun WardrobeScreen(
     }
 }
 
+private data class TagCategory(val label: String, val tags: List<String>)
+
+private fun List<DriveImage>.tagCategories(): List<TagCategory> {
+    val types   = mapNotNull { it.tags?.type }.filter { it.isNotEmpty() }.toSortedSet()
+    val cats    = mapNotNull { it.tags?.category }.filter { it.isNotEmpty() }.toSortedSet()
+    val uses    = flatMap { it.tags?.uses ?: emptyList() }.toSortedSet()
+    val colors  = flatMap { it.tags?.colors ?: emptyList() }.toSortedSet()
+    return listOfNotNull(
+        TagCategory("Type",     types.toList()).takeIf { it.tags.isNotEmpty() },
+        TagCategory("Category", cats.toList()).takeIf { it.tags.isNotEmpty() },
+        TagCategory("Uses",     uses.toList()).takeIf { it.tags.isNotEmpty() },
+        TagCategory("Colors",   colors.toList()).takeIf { it.tags.isNotEmpty() },
+    )
+}
+
+private fun DriveImage.allTagStrings() = buildSet {
+    tags?.let { t ->
+        if (t.type.isNotEmpty()) add(t.type)
+        if (t.category.isNotEmpty()) add(t.category)
+        addAll(t.uses)
+        addAll(t.colors)
+    }
+}
+
 // ---------- Grid ----------
 
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 private fun GridContent(
     state: WardrobeUiState,
@@ -158,122 +192,190 @@ private fun GridContent(
     processingImageId: String?,
     modifier: Modifier = Modifier,
 ) {
-    // cellSizeDp persists across recompositions; updated once per gesture end.
     var cellSizeDp by rememberSaveable { mutableFloatStateOf(120f) }
-    // pinchVisualScale is read inside graphicsLayer (draw phase only — no
-    // recomposition on change, just a GPU redraw).
     var pinchVisualScale by remember { mutableFloatStateOf(1f) }
-    var selectedIndex by rememberSaveable { mutableStateOf<Int?>(null) }
+    var selectedIndex by remember { mutableStateOf<Int?>(null) }
     var showDeleteDialog by remember { mutableStateOf(false) }
 
-    val isSelectionMode = state.selectedIds.isNotEmpty()
+    // Filter state
+    var selectedTags by remember { mutableStateOf(emptySet<String>()) }
+    var expandedCategory by remember { mutableStateOf<String?>(null) }
 
-    if (isSelectionMode) {
-        BackHandler(onBack = onClearSelection)
+    val tagCategories = remember(state.images) { state.images.tagCategories() }
+
+    // AND filter: image must contain every selected tag
+    val displayedImages = remember(state.images, selectedTags) {
+        if (selectedTags.isEmpty()) state.images
+        else state.images.filter { img -> selectedTags.all { it in img.allTagStrings() } }
     }
 
+    // Clear viewer when filter changes to avoid stale index
+    LaunchedEffect(selectedTags) { selectedIndex = null }
+
+    val isSelectionMode = state.selectedIds.isNotEmpty()
+    if (isSelectionMode) BackHandler(onBack = onClearSelection)
+
     Box(modifier = modifier.fillMaxSize()) {
-        when {
-            state.isLoading -> {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            }
-            state.images.isEmpty() && !state.isProcessing && !state.isUploading -> {
-                Column(
-                    modifier = Modifier.align(Alignment.Center),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
+        Column(Modifier.fillMaxSize()) {
+            // ---- Tag filter bar ----
+            if (tagCategories.isNotEmpty()) {
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Text("No outfits yet", style = MaterialTheme.typography.bodyLarge)
-                    Spacer(Modifier.height(4.dp))
-                    Text(
-                        "Take a photo or pick from your gallery",
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
+                    items(tagCategories) { category ->
+                        val activeCount = category.tags.count { it in selectedTags }
+                        Box {
+                            FilterChip(
+                                selected = activeCount > 0,
+                                onClick = {
+                                    expandedCategory =
+                                        if (expandedCategory == category.label) null else category.label
+                                },
+                                label = {
+                                    Text(if (activeCount > 0) "${category.label} ($activeCount)" else category.label)
+                                },
+                                trailingIcon = {
+                                    Icon(Icons.Default.ArrowDropDown, null, Modifier.size(16.dp))
+                                },
+                            )
+                            DropdownMenu(
+                                expanded = expandedCategory == category.label,
+                                onDismissRequest = { expandedCategory = null },
+                            ) {
+                                category.tags.forEach { tag ->
+                                    val checked = tag in selectedTags
+                                    DropdownMenuItem(
+                                        text = {
+                                            Row(
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                            ) {
+                                                if (checked) Icon(
+                                                    Icons.Default.Check,
+                                                    contentDescription = null,
+                                                    tint = MaterialTheme.colorScheme.primary,
+                                                    modifier = Modifier.size(18.dp),
+                                                ) else Spacer(Modifier.size(18.dp))
+                                                Text(tag)
+                                            }
+                                        },
+                                        onClick = {
+                                            selectedTags =
+                                                if (checked) selectedTags - tag else selectedTags + tag
+                                        },
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    if (selectedTags.isNotEmpty()) {
+                        item {
+                            TextButton(onClick = { selectedTags = emptySet() }) { Text("Clear") }
+                        }
+                    }
                 }
             }
-            else -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .pointerInput(Unit) {
-                            awaitEachGesture {
-                                awaitFirstDown(
-                                    requireUnconsumed = false,
-                                    pass = PointerEventPass.Initial,
+
+            // ---- Main content ----
+            when {
+                state.isLoading -> {
+                    Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+                    }
+                }
+                displayedImages.isEmpty() && !state.isProcessing && !state.isUploading -> {
+                    Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                        ) {
+                            if (selectedTags.isNotEmpty()) {
+                                Text("No items match the filter", style = MaterialTheme.typography.bodyLarge)
+                            } else {
+                                Text("No outfits yet", style = MaterialTheme.typography.bodyLarge)
+                                Spacer(Modifier.height(4.dp))
+                                Text(
+                                    "Take a photo or pick from your gallery",
+                                    style = MaterialTheme.typography.bodyMedium,
                                 )
-                                var prevDistance = -1f
-                                do {
-                                    val event = awaitPointerEvent(PointerEventPass.Initial)
-                                    val pressed = event.changes.filter { it.pressed }
-                                    if (pressed.size >= 2) {
-                                        val dist = (pressed[1].position - pressed[0].position)
-                                            .getDistance()
-                                        if (prevDistance > 0f) {
-                                            // Accumulate into visual scale only — no layout work.
-                                            pinchVisualScale *= (dist / prevDistance)
-                                        }
-                                        prevDistance = dist
-                                        pressed.forEach { it.consume() }
-                                    } else {
-                                        prevDistance = -1f
-                                    }
-                                } while (event.changes.any { it.pressed })
-                                // Fingers lifted — commit once to cellSizeDp.
-                                cellSizeDp = (cellSizeDp * pinchVisualScale).coerceIn(56f, 320f)
-                                pinchVisualScale = 1f
                             }
-                        },
-                ) {
-@OptIn(ExperimentalFoundationApi::class)
-                    LazyVerticalGrid(
-                        columns = GridCells.Adaptive(cellSizeDp.dp),
+                        }
+                    }
+                }
+                else -> {
+                    Box(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .graphicsLayer {
+                            .weight(1f)
+                            .fillMaxWidth()
+                            .pointerInput(Unit) {
+                                awaitEachGesture {
+                                    awaitFirstDown(requireUnconsumed = false, pass = PointerEventPass.Initial)
+                                    var prevDistance = -1f
+                                    do {
+                                        val event = awaitPointerEvent(PointerEventPass.Initial)
+                                        val pressed = event.changes.filter { it.pressed }
+                                        if (pressed.size >= 2) {
+                                            val dist = (pressed[1].position - pressed[0].position).getDistance()
+                                            if (prevDistance > 0f) pinchVisualScale *= (dist / prevDistance)
+                                            prevDistance = dist
+                                            pressed.forEach { it.consume() }
+                                        } else prevDistance = -1f
+                                    } while (event.changes.any { it.pressed })
+                                    cellSizeDp = (cellSizeDp * pinchVisualScale).coerceIn(56f, 320f)
+                                    pinchVisualScale = 1f
+                                }
+                            },
+                    ) {
+                        LazyVerticalGrid(
+                            columns = GridCells.Adaptive(cellSizeDp.dp),
+                            modifier = Modifier.fillMaxSize().graphicsLayer {
                                 clip = false
                                 scaleX = pinchVisualScale
                                 scaleY = pinchVisualScale
                             },
-                    ) {
-                        itemsIndexed(state.images, key = { _, img -> img.driveId }) { index, image ->
-                            val isSelected = state.selectedIds.contains(image.driveId)
-                            val ctx = LocalContext.current
-                            Box(
-                                modifier = Modifier
-                                    .aspectRatio(1f)
-                                    .padding(1.dp)
-                                    .combinedClickable(
-                                        onClick = {
-                                            if (isSelectionMode) onToggleSelection(image.driveId)
-                                            else selectedIndex = index
+                        ) {
+                            itemsIndexed(displayedImages, key = { _, img -> img.driveId }) { index, image ->
+                                val isSelected = state.selectedIds.contains(image.driveId)
+                                val ctx = LocalContext.current
+                                Box(
+                                    modifier = Modifier
+                                        .aspectRatio(1f)
+                                        .padding(1.dp)
+                                        .combinedClickable(
+                                            onClick = {
+                                                if (isSelectionMode) onToggleSelection(image.driveId)
+                                                else selectedIndex = index
+                                            },
+                                            onLongClick = { onToggleSelection(image.driveId) },
+                                        ),
+                                ) {
+                                    AsyncImage(
+                                        model = remember(image.driveId, image.version) {
+                                            ImageRequest.Builder(ctx)
+                                                .data(image.localPath)
+                                                .memoryCacheKey("${image.driveId}_${image.version}")
+                                                .build()
                                         },
-                                        onLongClick = { onToggleSelection(image.driveId) }
+                                        contentDescription = image.name,
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentScale = ContentScale.Crop,
                                     )
-                            ) {
-                                AsyncImage(
-                                    model = remember(image.driveId, image.version) {
-                                        ImageRequest.Builder(ctx)
-                                            .data(image.localPath)
-                                            .memoryCacheKey("${image.driveId}_${image.version}")
-                                            .build()
-                                    },
-                                    contentDescription = image.name,
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentScale = ContentScale.Crop,
-                                )
-                                if (isSelected) {
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .background(Color.White.copy(alpha = 0.4f)),
-                                        contentAlignment = Alignment.TopEnd
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Default.CheckCircle,
-                                            contentDescription = null,
-                                            tint = MaterialTheme.colorScheme.primary,
-                                            modifier = Modifier.padding(4.dp)
-                                        )
+                                    if (isSelected) {
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .background(Color.White.copy(alpha = 0.4f)),
+                                            contentAlignment = Alignment.TopEnd,
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Default.CheckCircle,
+                                                contentDescription = null,
+                                                tint = MaterialTheme.colorScheme.primary,
+                                                modifier = Modifier.padding(4.dp),
+                                            )
+                                        }
                                     }
                                 }
                             }
@@ -379,8 +481,8 @@ private fun GridContent(
 
     selectedIndex?.let { startIndex ->
         FullScreenViewer(
-            images = state.images,
-            initialIndex = startIndex,
+            images = displayedImages,
+            initialIndex = startIndex.coerceIn(0, (displayedImages.size - 1).coerceAtLeast(0)),
             onDismiss = { selectedIndex = null },
             onTagImage = onTagImage,
             onRemoveBackground = onRemoveBackground,
