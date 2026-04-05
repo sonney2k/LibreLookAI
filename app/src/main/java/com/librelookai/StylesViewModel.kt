@@ -16,6 +16,8 @@ data class StylesUiState(
     val isLoading: Boolean = false,
     val isCreating: Boolean = false,
     val draftItemIds: Set<String> = emptySet(),
+    /** Non-null when editing an existing style; null when creating a new one. */
+    val editingStyle: Style? = null,
     val showNameDialog: Boolean = false,
     val error: String? = null,
 )
@@ -53,10 +55,16 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
 
     // ---------- Create flow ----------
 
-    fun startCreating() = _state.update { it.copy(isCreating = true, draftItemIds = emptySet()) }
+    fun startCreating() = _state.update {
+        it.copy(isCreating = true, draftItemIds = emptySet(), editingStyle = null)
+    }
+
+    fun startEditing(style: Style) = _state.update {
+        it.copy(isCreating = true, draftItemIds = style.itemIds.toSet(), editingStyle = style)
+    }
 
     fun cancelCreating() = _state.update {
-        it.copy(isCreating = false, draftItemIds = emptySet(), showNameDialog = false)
+        it.copy(isCreating = false, draftItemIds = emptySet(), editingStyle = null, showNameDialog = false)
     }
 
     fun toggleDraftItem(driveId: String) = _state.update { s ->
@@ -70,19 +78,24 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun saveStyle(name: String) {
-        val draftIds = _state.value.draftItemIds
+        val s = _state.value
+        val draftIds = s.draftItemIds
         if (draftIds.isEmpty()) return
         viewModelScope.launch {
-            val style = Style(
-                name = name.trim().ifEmpty { "Style ${_state.value.styles.size + 1}" },
-                itemIds = draftIds.toList(),
-            )
-            val updated = _state.value.styles + style
+            val resolvedName = name.trim().ifEmpty {
+                s.editingStyle?.name ?: "Style ${s.styles.size + 1}"
+            }
+            val updated = if (s.editingStyle != null) {
+                val edited = s.editingStyle.copy(name = resolvedName, itemIds = draftIds.toList())
+                s.styles.map { if (it.id == edited.id) edited else it }
+            } else {
+                s.styles + Style(name = resolvedName, itemIds = draftIds.toList())
+            }
             runCatching {
                 val id = folderId ?: drive.getOrCreateFolder().also { folderId = it }
                 drive.saveStylesJson(id, gson.toJson(updated))
             }.onSuccess {
-                _state.update { it.copy(styles = updated, isCreating = false, draftItemIds = emptySet(), showNameDialog = false) }
+                _state.update { it.copy(styles = updated, isCreating = false, draftItemIds = emptySet(), editingStyle = null, showNameDialog = false) }
             }.onFailure { e ->
                 _state.update { it.copy(showNameDialog = false, error = e.message) }
             }

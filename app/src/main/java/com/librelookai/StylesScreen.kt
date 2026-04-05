@@ -69,6 +69,7 @@ fun StylesScreen(
         StyleItemPicker(
             items = wardrobeState.images,
             selectedIds = stylesState.draftItemIds,
+            isEditing = stylesState.editingStyle != null,
             onToggleItem = stylesViewModel::toggleDraftItem,
             onConfirm = stylesViewModel::confirmDraft,
             onCancel = stylesViewModel::cancelCreating,
@@ -80,6 +81,7 @@ fun StylesScreen(
             items = wardrobeState.images,
             isLoading = stylesState.isLoading,
             onCreateStyle = stylesViewModel::startCreating,
+            onEditStyle = stylesViewModel::startEditing,
             onDeleteStyle = stylesViewModel::deleteStyle,
             modifier = modifier,
         )
@@ -87,7 +89,8 @@ fun StylesScreen(
 
     if (stylesState.showNameDialog) {
         StyleNameDialog(
-            suggestedName = "Style ${stylesState.styles.size + 1}",
+            initialName = stylesState.editingStyle?.name
+                ?: "Style ${stylesState.styles.size + 1}",
             onConfirm = stylesViewModel::saveStyle,
             onDismiss = stylesViewModel::cancelCreating,
         )
@@ -102,6 +105,7 @@ private fun StyleListScreen(
     items: List<DriveImage>,
     isLoading: Boolean,
     onCreateStyle: () -> Unit,
+    onEditStyle: (Style) -> Unit,
     onDeleteStyle: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -133,6 +137,7 @@ private fun StyleListScreen(
                         StyleCard(
                             style = style,
                             itemsById = itemsById,
+                            onEdit = { onEditStyle(style) },
                             onDelete = { onDeleteStyle(style.id) },
                         )
                     }
@@ -156,6 +161,7 @@ private fun StyleListScreen(
 private fun StyleCard(
     style: Style,
     itemsById: Map<String, DriveImage>,
+    onEdit: () -> Unit,
     onDelete: () -> Unit,
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
@@ -180,7 +186,7 @@ private fun StyleCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 12.dp)
-            .combinedClickable(onClick = {}, onLongClick = { showDeleteDialog = true }),
+            .combinedClickable(onClick = onEdit, onLongClick = { showDeleteDialog = true }),
     ) {
         Column(
             modifier = Modifier.padding(12.dp),
@@ -223,6 +229,7 @@ private fun StyleCard(
 private fun StyleItemPicker(
     items: List<DriveImage>,
     selectedIds: Set<String>,
+    isEditing: Boolean,
     onToggleItem: (String) -> Unit,
     onConfirm: () -> Unit,
     onCancel: () -> Unit,
@@ -255,7 +262,7 @@ private fun StyleItemPicker(
                 modifier = Modifier.weight(1f),
             )
             TextButton(onClick = onConfirm, enabled = selectedIds.isNotEmpty()) {
-                Text("Create Style")
+                Text(if (isEditing) "Save" else "Create Style")
             }
         }
 
@@ -326,11 +333,11 @@ private fun StyleItemPicker(
 
 @Composable
 private fun StyleNameDialog(
-    suggestedName: String,
+    initialName: String,
     onConfirm: (String) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    var name by remember { mutableStateOf(suggestedName) }
+    var name by remember { mutableStateOf(initialName) }
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Name this style") },
