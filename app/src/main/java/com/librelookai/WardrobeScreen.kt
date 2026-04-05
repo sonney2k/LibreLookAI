@@ -151,9 +151,9 @@ fun WardrobeScreen(
     }
 }
 
-private data class TagCategory(val label: String, val tags: List<String>)
+internal data class TagCategory(val label: String, val tags: List<String>)
 
-private fun List<DriveImage>.tagCategories(): List<TagCategory> {
+internal fun List<DriveImage>.tagCategories(): List<TagCategory> {
     val types   = mapNotNull { it.tags?.type }.filter { it.isNotEmpty() }.toSortedSet()
     val cats    = mapNotNull { it.tags?.category }.filter { it.isNotEmpty() }.toSortedSet()
     val uses    = flatMap { it.tags?.uses ?: emptyList() }.toSortedSet()
@@ -166,12 +166,69 @@ private fun List<DriveImage>.tagCategories(): List<TagCategory> {
     )
 }
 
-private fun DriveImage.allTagStrings() = buildSet {
+internal fun DriveImage.allTagStrings() = buildSet {
     tags?.let { t ->
         if (t.type.isNotEmpty()) add(t.type)
         if (t.category.isNotEmpty()) add(t.category)
         addAll(t.uses)
         addAll(t.colors)
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+internal fun TagFilterBar(
+    tagCategories: List<TagCategory>,
+    selectedTags: Set<String>,
+    onTagsChanged: (Set<String>) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    if (tagCategories.isEmpty()) return
+    var expandedCategory by remember { mutableStateOf<String?>(null) }
+    LazyRow(
+        modifier = modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        items(tagCategories) { category ->
+            val activeCount = category.tags.count { it in selectedTags }
+            Box {
+                FilterChip(
+                    selected = activeCount > 0,
+                    onClick = {
+                        expandedCategory = if (expandedCategory == category.label) null else category.label
+                    },
+                    label = { Text(if (activeCount > 0) "${category.label} ($activeCount)" else category.label) },
+                    trailingIcon = { Icon(Icons.Default.ArrowDropDown, null, Modifier.size(16.dp)) },
+                )
+                DropdownMenu(
+                    expanded = expandedCategory == category.label,
+                    onDismissRequest = { expandedCategory = null },
+                ) {
+                    category.tags.forEach { tag ->
+                        val checked = tag in selectedTags
+                        DropdownMenuItem(
+                            text = {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                ) {
+                                    if (checked) Icon(Icons.Default.Check, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
+                                    else Spacer(Modifier.size(18.dp))
+                                    Text(tag)
+                                }
+                            },
+                            onClick = {
+                                onTagsChanged(if (checked) selectedTags - tag else selectedTags + tag)
+                            },
+                        )
+                    }
+                }
+            }
+        }
+        if (selectedTags.isNotEmpty()) {
+            item { TextButton(onClick = { onTagsChanged(emptySet()) }) { Text("Clear") } }
+        }
     }
 }
 
@@ -199,7 +256,6 @@ private fun GridContent(
 
     // Filter state
     var selectedTags by remember { mutableStateOf(emptySet<String>()) }
-    var expandedCategory by remember { mutableStateOf<String?>(null) }
 
     val tagCategories = remember(state.images) { state.images.tagCategories() }
 
@@ -218,65 +274,11 @@ private fun GridContent(
     Box(modifier = modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
             // ---- Tag filter bar ----
-            if (tagCategories.isNotEmpty()) {
-                LazyRow(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    items(tagCategories) { category ->
-                        val activeCount = category.tags.count { it in selectedTags }
-                        Box {
-                            FilterChip(
-                                selected = activeCount > 0,
-                                onClick = {
-                                    expandedCategory =
-                                        if (expandedCategory == category.label) null else category.label
-                                },
-                                label = {
-                                    Text(if (activeCount > 0) "${category.label} ($activeCount)" else category.label)
-                                },
-                                trailingIcon = {
-                                    Icon(Icons.Default.ArrowDropDown, null, Modifier.size(16.dp))
-                                },
-                            )
-                            DropdownMenu(
-                                expanded = expandedCategory == category.label,
-                                onDismissRequest = { expandedCategory = null },
-                            ) {
-                                category.tags.forEach { tag ->
-                                    val checked = tag in selectedTags
-                                    DropdownMenuItem(
-                                        text = {
-                                            Row(
-                                                verticalAlignment = Alignment.CenterVertically,
-                                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                            ) {
-                                                if (checked) Icon(
-                                                    Icons.Default.Check,
-                                                    contentDescription = null,
-                                                    tint = MaterialTheme.colorScheme.primary,
-                                                    modifier = Modifier.size(18.dp),
-                                                ) else Spacer(Modifier.size(18.dp))
-                                                Text(tag)
-                                            }
-                                        },
-                                        onClick = {
-                                            selectedTags =
-                                                if (checked) selectedTags - tag else selectedTags + tag
-                                        },
-                                    )
-                                }
-                            }
-                        }
-                    }
-                    if (selectedTags.isNotEmpty()) {
-                        item {
-                            TextButton(onClick = { selectedTags = emptySet() }) { Text("Clear") }
-                        }
-                    }
-                }
-            }
+            TagFilterBar(
+                tagCategories = tagCategories,
+                selectedTags = selectedTags,
+                onTagsChanged = { selectedTags = it },
+            )
 
             // ---- Main content ----
             when {
