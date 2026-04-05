@@ -31,6 +31,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.AutoFixHigh
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
@@ -40,6 +41,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -101,6 +103,9 @@ fun StylesScreen(
             isPredicting = stylesState.isPredicting,
             prediction = stylesState.prediction,
             predictionError = stylesState.predictionError,
+            isComposing = stylesState.isComposing,
+            newSuggestion = stylesState.newSuggestion,
+            compositionError = stylesState.compositionError,
             onCreateStyle = stylesViewModel::startCreating,
             onEditStyle = stylesViewModel::startEditing,
             onDeleteStyle = stylesViewModel::deleteStyle,
@@ -113,6 +118,21 @@ fun StylesScreen(
                 )
             },
             onClearPrediction = stylesViewModel::clearPrediction,
+            onComposeStyle = {
+                stylesViewModel.triggerComposition(
+                    prefs   = profileState.preferences,
+                    weather = weatherState.data,
+                    images  = wardrobeState.images,
+                )
+            },
+            onAcceptComposition = { suggestion ->
+                stylesViewModel.startCreatingFromItems(
+                    itemIds = suggestion.itemIds.toSet(),
+                    name    = suggestion.name,
+                )
+                stylesViewModel.clearNewSuggestion()
+            },
+            onClearComposition = stylesViewModel::clearNewSuggestion,
             modifier = modifier,
         )
     }
@@ -138,12 +158,18 @@ private fun StyleListScreen(
     isPredicting: Boolean,
     prediction: StylePrediction?,
     predictionError: String?,
+    isComposing: Boolean,
+    newSuggestion: NewStyleSuggestion?,
+    compositionError: String?,
     onCreateStyle: () -> Unit,
     onEditStyle: (Style) -> Unit,
     onDeleteStyle: (String) -> Unit,
     onWearStyle: (String) -> Unit,
     onSuggestStyle: () -> Unit,
     onClearPrediction: () -> Unit,
+    onComposeStyle: () -> Unit,
+    onAcceptComposition: (NewStyleSuggestion) -> Unit,
+    onClearComposition: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val itemsById = remember(items) { items.associateBy { it.driveId } }
@@ -185,18 +211,35 @@ private fun StyleListScreen(
             }
         }
 
-        // Suggest FAB (bottom-start)
-        ExtendedFloatingActionButton(
-            onClick = { if (!isPredicting) onSuggestStyle() },
-            modifier = Modifier.align(Alignment.BottomStart).padding(16.dp),
-            icon = {
-                if (isPredicting)
+        // Bottom-start: Compose (small) + Suggest (extended) stacked vertically
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(start = 16.dp, bottom = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalAlignment = Alignment.Start,
+        ) {
+            SmallFloatingActionButton(
+                onClick = { if (!isComposing) onComposeStyle() },
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            ) {
+                if (isComposing)
                     CircularProgressIndicator(modifier = Modifier.size(18.dp), strokeWidth = 2.dp)
                 else
-                    Icon(Icons.Default.AutoAwesome, contentDescription = null)
-            },
-            text = { Text(if (isPredicting) "Thinking…" else "Suggest") },
-        )
+                    Icon(Icons.Default.AutoFixHigh, contentDescription = "Compose new style")
+            }
+
+            ExtendedFloatingActionButton(
+                onClick = { if (!isPredicting) onSuggestStyle() },
+                icon = {
+                    if (isPredicting)
+                        CircularProgressIndicator(modifier = Modifier.size(18.dp), strokeWidth = 2.dp)
+                    else
+                        Icon(Icons.Default.AutoAwesome, contentDescription = null)
+                },
+                text = { Text(if (isPredicting) "Thinking…" else "Suggest") },
+            )
+        }
 
         // Create FAB (bottom-end)
         FloatingActionButton(
@@ -206,13 +249,15 @@ private fun StyleListScreen(
             Icon(Icons.Default.Add, contentDescription = "Create style")
         }
 
-        // Prediction error snackbar
-        predictionError?.let { msg ->
+        // Error snackbars (composition takes priority if both are set)
+        val errorMsg = compositionError ?: predictionError
+        val onClearError = if (compositionError != null) onClearComposition else onClearPrediction
+        errorMsg?.let { msg ->
             Snackbar(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(start = 8.dp, end = 8.dp, bottom = 80.dp),
-                action = { TextButton(onClick = onClearPrediction) { Text("OK") } },
+                action = { TextButton(onClick = onClearError) { Text("OK") } },
             ) { Text(msg) }
         }
     }
@@ -229,6 +274,16 @@ private fun StyleListScreen(
                 onWear = { onWearStyle(suggestedStyle.id); onClearPrediction() },
             )
         }
+    }
+
+    // Composition result sheet
+    newSuggestion?.let { suggestion ->
+        NewStyleSuggestionSheet(
+            suggestion = suggestion,
+            itemsById = itemsById,
+            onDismiss = onClearComposition,
+            onAccept = { onAcceptComposition(suggestion) },
+        )
     }
 }
 
@@ -548,6 +603,95 @@ private fun StyleSuggestionSheet(
                     Icon(Icons.Default.CalendarMonth, null, modifier = Modifier.size(16.dp))
                     Spacer(Modifier.width(4.dp))
                     Text("Wear today")
+                }
+            }
+        }
+    }
+}
+
+// ---------- New style composition sheet ----------
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun NewStyleSuggestionSheet(
+    suggestion: NewStyleSuggestion,
+    itemsById: Map<String, DriveImage>,
+    onDismiss: () -> Unit,
+    onAccept: () -> Unit,
+) {
+    val ctx = LocalContext.current
+    val styleItems = suggestion.itemIds.mapNotNull { itemsById[it] }
+
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .navigationBarsPadding()
+                .padding(horizontal = 20.dp)
+                .padding(bottom = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    Icons.Default.AutoFixHigh,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(20.dp),
+                )
+                Spacer(Modifier.width(8.dp))
+                Text("Composed for you", style = MaterialTheme.typography.titleMedium)
+            }
+
+            HorizontalDivider()
+
+            Text(suggestion.name, style = MaterialTheme.typography.titleSmall)
+
+            if (styleItems.isEmpty()) {
+                Text(
+                    "Items no longer in wardrobe",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.outline,
+                )
+            } else {
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    items(styleItems, key = { it.driveId }) { image ->
+                        AsyncImage(
+                            model = remember(image.driveId, image.version) {
+                                ImageRequest.Builder(ctx)
+                                    .data(image.localPath)
+                                    .memoryCacheKey("${image.driveId}_${image.version}")
+                                    .build()
+                            },
+                            contentDescription = image.name,
+                            modifier = Modifier
+                                .size(88.dp)
+                                .clip(MaterialTheme.shapes.small),
+                            contentScale = ContentScale.Crop,
+                        )
+                    }
+                }
+            }
+
+            if (suggestion.reason.isNotBlank()) {
+                Text(
+                    suggestion.reason,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
+            ) {
+                TextButton(onClick = onDismiss) { Text("Dismiss") }
+                androidx.compose.material3.Button(onClick = onAccept) {
+                    Icon(Icons.Default.Add, null, modifier = Modifier.size(16.dp))
+                    Spacer(Modifier.width(4.dp))
+                    Text("Create this style")
                 }
             }
         }

@@ -14,8 +14,12 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.Locale
 
-data class StylePrediction(
-    val styleId: String,
+data class StylePrediction(val styleId: String, val reason: String)
+
+/** Gemini-composed outfit that doesn't yet exist as a saved style. */
+data class NewStyleSuggestion(
+    val name: String,
+    val itemIds: List<String>,
     val reason: String,
 )
 
@@ -28,9 +32,14 @@ data class StylesUiState(
     /** Non-null when editing an existing style; null when creating a new one. */
     val editingStyle: Style? = null,
     val showNameDialog: Boolean = false,
+    // Predict existing style
     val isPredicting: Boolean = false,
     val prediction: StylePrediction? = null,
     val predictionError: String? = null,
+    // Compose brand-new style
+    val isComposing: Boolean = false,
+    val newSuggestion: NewStyleSuggestion? = null,
+    val compositionError: String? = null,
     val error: String? = null,
 )
 
@@ -73,8 +82,8 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
         it.copy(isCreating = true, draftItemIds = emptySet(), draftStyleName = "", editingStyle = null)
     }
 
-    fun startCreatingFromItems(itemIds: Set<String>) = _state.update {
-        it.copy(isCreating = true, draftItemIds = itemIds, draftStyleName = "", editingStyle = null)
+    fun startCreatingFromItems(itemIds: Set<String>, name: String = "") = _state.update {
+        it.copy(isCreating = true, draftItemIds = itemIds, draftStyleName = name, editingStyle = null)
     }
 
     fun startEditing(style: Style) = _state.update {
@@ -225,6 +234,87 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
 
     fun clearPrediction() = _state.update { it.copy(prediction = null, predictionError = null) }
 
+    // ---------- New style composition ----------
+
+    /**
+     * Asks Gemini to compose a brand-new outfit by selecting items from the full wardrobe.
+     * The result is a [NewStyleSuggestion] with a proposed name, item IDs, and reason.
+     * Call [startCreatingFromItems] with the suggestion's data to open the picker pre-filled.
+     */
+    fun triggerComposition(
+        prefs: UserPreferences?,
+        weather: WeatherData?,
+        images: List<DriveImage>,
+    ) {
+        if (images.isEmpty()) {
+            _state.update { it.copy(compositionError = "No wardrobe items to compose from.") }
+            return
+        }
+        viewModelScope.launch {
+            _state.update { it.copy(isComposing = true, newSuggestion = null, compositionError = null) }
+
+            val countryCode = Locale.getDefault().country.takeIf { it.isNotEmpty() } ?: "US"
+            val trendingTopics = trends.fetchTrending(countryCode)
+
+            val prompt = buildCompositionPrompt(
+                prefs          = prefs,
+                weather        = weather,
+                countryCode    = countryCode,
+                trendingTopics = trendingTopics,
+                images         = images,
+            )
+            Log.d("StylesVM", "=== COMPOSITION PROMPT (${prompt.length} chars) ===")
+            prompt.chunked(3000).forEachIndexed { i, chunk ->
+                Log.d("StylesVM", "CompositionPrompt[$i]: $chunk")
+            }
+
+            val raw = gemini.generateText(prompt)
+            if (raw == null) {
+                _state.update { it.copy(isComposing = false, compositionError = "Gemini did not respond.") }
+                return@launch
+            }
+            Log.d("StylesVM", "Composition raw response: $raw")
+
+            val json = raw.trim()
+                .removePrefix("```json").removePrefix("```").removeSuffix("```").trim()
+
+            data class CompResp(
+                val name: String = "",
+                val itemIds: List<String> = emptyList(),
+                val reason: String = "",
+            )
+            val result = runCatching { gson.fromJson(json, CompResp::class.java) }.getOrNull()
+
+            if (result == null || result.itemIds.isEmpty()) {
+                Log.w("StylesVM", "Failed to parse composition response: $json")
+                _state.update { it.copy(isComposing = false, compositionError = "Could not parse Gemini response.") }
+                return@launch
+            }
+
+            // Keep only IDs that actually exist in the wardrobe
+            val knownIds = images.map { it.driveId }.toSet()
+            val validIds = result.itemIds.filter { it in knownIds }
+            if (validIds.isEmpty()) {
+                Log.w("StylesVM", "Gemini returned no valid item IDs: ${result.itemIds}")
+                _state.update { it.copy(isComposing = false, compositionError = "Suggested items not found in wardrobe.") }
+                return@launch
+            }
+
+            _state.update {
+                it.copy(
+                    isComposing = false,
+                    newSuggestion = NewStyleSuggestion(
+                        name    = result.name.ifBlank { "AI Style" },
+                        itemIds = validIds,
+                        reason  = result.reason,
+                    ),
+                )
+            }
+        }
+    }
+
+    fun clearNewSuggestion() = _state.update { it.copy(newSuggestion = null, compositionError = null) }
+
     fun clearError() = _state.update { it.copy(error = null) }
 }
 
@@ -267,33 +357,91 @@ private fun buildPredictionPrompt(
     val trendsStr = if (trendingTopics.isEmpty()) "not available"
     else trendingTopics.joinToString(", ")
 
-    return """
-You are a personal fashion stylist AI. Choose exactly ONE existing style for the user to wear today.
+    return buildString {
+        appendLine("You are a personal fashion stylist AI. Choose exactly ONE existing style for the user to wear today.")
+        appendLine()
+        appendLine("## User Profile")
+        appendLine("- Gender: ${prefs?.gender?.takeIf { it.isNotEmpty() } ?: "not specified"}")
+        appendLine("- Age: ${age?.toString() ?: "not specified"}")
+        appendLine("- Style preferences: ${prefs?.preferences?.takeIf { it.isNotEmpty() } ?: "none provided"}")
+        appendLine()
+        appendLine("## Today's Weather ($countryCode)")
+        appendLine(weatherStr)
+        appendLine()
+        appendLine("## Trending Topics Today in $countryCode")
+        appendLine(trendsStr)
+        appendLine()
+        appendLine("## Wardrobe Items (id + tags)")
+        appendLine(wardrobeJson)
+        appendLine()
+        appendLine("## Existing Styles to Choose From")
+        appendLine(stylesJson)
+        appendLine()
+        appendLine("## Instructions")
+        appendLine("Pick the single best style ID from the styles list that fits:")
+        appendLine("1. The current weather (temperature, conditions)")
+        appendLine("2. The trending topics and cultural context of $countryCode")
+        appendLine("3. The user's personal preferences and profile")
+        appendLine()
+        appendLine("Respond with ONLY a valid JSON object — no markdown, no extra text:")
+        append("""{"styleId":"<id from the styles list>","reason":"<1-2 sentence explanation>"}""")
+    }
+}
 
-## User Profile
-- Gender: ${prefs?.gender?.takeIf { it.isNotEmpty() } ?: "not specified"}
-- Age: ${age?.toString() ?: "not specified"}
-- Style preferences: ${prefs?.preferences?.takeIf { it.isNotEmpty() } ?: "none provided"}
+private fun buildCompositionPrompt(
+    prefs: UserPreferences?,
+    weather: WeatherData?,
+    countryCode: String,
+    trendingTopics: List<String>,
+    images: List<DriveImage>,
+): String {
+    val age = prefs?.yearOfBirth?.let { LocalDate.now().year - it }
 
-## Today's Weather ($countryCode)
-$weatherStr
+    // Include all tagged items; untagged items are listed with null tags
+    val wardrobeJson = images.joinToString(",", "[", "]") { img ->
+        val t = img.tags
+        if (t == null) {
+            """{"id":"${img.driveId}","name":"${img.name}","tags":null}"""
+        } else {
+            val uses   = t.uses.joinToString(",", "[", "]") { "\"$it\"" }
+            val colors = t.colors.joinToString(",", "[", "]") { "\"$it\"" }
+            """{"id":"${img.driveId}","name":"${img.name}","tags":{"type":"${t.type}","category":"${t.category}","uses":$uses,"colors":$colors}}"""
+        }
+    }
 
-## Trending Topics Today in $countryCode
-$trendsStr
+    val weatherStr = if (weather != null)
+        "${weather.temperatureCelsius.toInt()}°C, ${wmoEmoji(weather.weatherCode)} (WMO ${weather.weatherCode})"
+    else "unknown"
 
-## Wardrobe Items (id + tags)
-$wardrobeJson
+    val trendsStr = if (trendingTopics.isEmpty()) "not available"
+    else trendingTopics.joinToString(", ")
 
-## Existing Styles to Choose From
-$stylesJson
-
-## Instructions
-Pick the single best style ID from the styles list that fits:
-1. The current weather (temperature, conditions)
-2. The trending topics and cultural context of $countryCode
-3. The user's personal preferences and profile
-
-Respond with ONLY a valid JSON object — no markdown, no extra text:
-{"styleId":"<id from the styles list>","reason":"<1-2 sentence explanation>"}
-    """.trimIndent()
+    return buildString {
+        appendLine("You are a personal fashion stylist AI. Compose a brand-new outfit by selecting items from the user's wardrobe.")
+        appendLine()
+        appendLine("## User Profile")
+        appendLine("- Gender: ${prefs?.gender?.takeIf { it.isNotEmpty() } ?: "not specified"}")
+        appendLine("- Age: ${age?.toString() ?: "not specified"}")
+        appendLine("- Style preferences: ${prefs?.preferences?.takeIf { it.isNotEmpty() } ?: "none provided"}")
+        appendLine()
+        appendLine("## Today's Weather ($countryCode)")
+        appendLine(weatherStr)
+        appendLine()
+        appendLine("## Trending Topics Today in $countryCode")
+        appendLine(trendsStr)
+        appendLine()
+        appendLine("## Available Wardrobe Items (id + name + tags)")
+        appendLine(wardrobeJson)
+        appendLine()
+        appendLine("## Instructions")
+        appendLine("Select 2–5 item IDs from the wardrobe that form a cohesive, well-coordinated outfit. Choose items that:")
+        appendLine("1. Are appropriate for the current weather")
+        appendLine("2. Reflect the trending topics and cultural context of $countryCode")
+        appendLine("3. Match the user's personal preferences")
+        appendLine("4. Work together visually (complementary colors, consistent style category)")
+        appendLine("Also propose a short, evocative name for the outfit.")
+        appendLine()
+        appendLine("Respond with ONLY a valid JSON object — no markdown, no extra text:")
+        append("""{"name":"<outfit name>","itemIds":["<id1>","<id2>",...],"reason":"<1-2 sentence explanation>"}""")
+    }
 }
