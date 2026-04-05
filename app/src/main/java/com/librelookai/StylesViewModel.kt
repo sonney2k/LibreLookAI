@@ -55,7 +55,6 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
 
     private val drive = DriveRepository(app, GoogleAuthManager(app))
     private val gemini = GeminiRepository()
-    private val trends = TrendsRepository()
     private val gson = Gson()
     private var folderId: String? = null
 
@@ -206,16 +205,17 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
             _state.update { it.copy(isPredicting = true, prediction = null, predictionError = null) }
 
             val countryCode = deviceCountryCode()
-            val trendingTopics = trends.fetchTrending(countryCode)
+            val region = listOfNotNull(weather?.cityName?.takeIf { it.isNotEmpty() }, countryCode).joinToString(", ")
+            val fashionTrends = gemini.searchFashionTrends(region)
 
             val prompt = buildPredictionPrompt(
-                prefs          = prefs,
-                weather        = weather,
-                cityName       = weather?.cityName,
-                countryCode    = countryCode,
-                trendingTopics = trendingTopics,
-                images         = images,
-                styles         = styles,
+                prefs           = prefs,
+                weather         = weather,
+                cityName        = weather?.cityName,
+                countryCode     = countryCode,
+                fashionTrends   = fashionTrends,
+                images          = images,
+                styles          = styles,
                 feedbackHistory = feedbackHistory,
             )
             Log.d("StylesVM", "Prediction prompt length: ${prompt.length} chars")
@@ -309,14 +309,15 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
             _state.update { it.copy(isComposing = true, newSuggestion = null, compositionError = null) }
 
             val countryCode = deviceCountryCode()
-            val trendingTopics = trends.fetchTrending(countryCode)
+            val region = listOfNotNull(weather?.cityName?.takeIf { it.isNotEmpty() }, countryCode).joinToString(", ")
+            val fashionTrends = gemini.searchFashionTrends(region)
 
             val prompt = buildCompositionPrompt(
                 prefs           = prefs,
                 weather         = weather,
                 cityName        = weather?.cityName,
                 countryCode     = countryCode,
-                trendingTopics  = trendingTopics,
+                fashionTrends   = fashionTrends,
                 images          = images,
                 requiredItemIds = requiredItemIds,
                 feedbackHistory = feedbackHistory,
@@ -400,7 +401,7 @@ private fun buildPredictionPrompt(
     weather: WeatherData?,
     cityName: String?,
     countryCode: String,
-    trendingTopics: List<String>,
+    fashionTrends: FashionTrends?,
     images: List<DriveImage>,
     styles: List<Style>,
     feedbackHistory: List<String> = emptyList(),
@@ -432,8 +433,6 @@ private fun buildPredictionPrompt(
     val weatherStr = if (weather != null)
         "${weather.temperatureCelsius.toInt()}°C, ${wmoEmoji(weather.weatherCode)} (WMO ${weather.weatherCode})"
     else "unknown"
-    val trendsStr = if (trendingTopics.isEmpty()) "not available"
-    else trendingTopics.joinToString(", ")
 
     return buildString {
         appendLine("You are a personal fashion stylist AI. Choose exactly ONE existing style for the user to wear today.")
@@ -451,8 +450,15 @@ private fun buildPredictionPrompt(
         appendLine("## Today's Weather ($locationStr)")
         appendLine(weatherStr)
         appendLine()
-        appendLine("## Trending Topics Today in $countryCode")
-        appendLine(trendsStr)
+        appendLine("## Current Fashion Trends in $locationStr")
+        if (fashionTrends != null) {
+            appendLine("- Trending colors: ${fashionTrends.trendingColors.joinToString(", ").ifEmpty { "n/a" }}")
+            appendLine("- Trending aesthetics: ${fashionTrends.trendingAesthetics.joinToString(", ").ifEmpty { "n/a" }}")
+            appendLine("- Must-have items right now: ${fashionTrends.mustHaveItems.joinToString(", ").ifEmpty { "n/a" }}")
+            appendLine("- Outdated / avoid: ${fashionTrends.outdatedItems.joinToString(", ").ifEmpty { "n/a" }}")
+        } else {
+            appendLine("not available")
+        }
         appendLine()
         appendLine("## Wardrobe Items (id + tags)")
         appendLine(wardrobeJson)
@@ -484,7 +490,7 @@ private fun buildCompositionPrompt(
     weather: WeatherData?,
     cityName: String?,
     countryCode: String,
-    trendingTopics: List<String>,
+    fashionTrends: FashionTrends?,
     images: List<DriveImage>,
     requiredItemIds: Set<String> = emptySet(),
     feedbackHistory: List<String> = emptyList(),
@@ -508,8 +514,6 @@ private fun buildCompositionPrompt(
     val weatherStr = if (weather != null)
         "${weather.temperatureCelsius.toInt()}°C, ${wmoEmoji(weather.weatherCode)} (WMO ${weather.weatherCode})"
     else "unknown"
-    val trendsStr = if (trendingTopics.isEmpty()) "not available"
-    else trendingTopics.joinToString(", ")
 
     return buildString {
         appendLine("You are a personal fashion stylist AI. Compose a brand-new outfit by selecting items from the user's wardrobe.")
@@ -527,8 +531,15 @@ private fun buildCompositionPrompt(
         appendLine("## Today's Weather ($locationStr)")
         appendLine(weatherStr)
         appendLine()
-        appendLine("## Trending Topics Today in $countryCode")
-        appendLine(trendsStr)
+        appendLine("## Current Fashion Trends in $locationStr")
+        if (fashionTrends != null) {
+            appendLine("- Trending colors: ${fashionTrends.trendingColors.joinToString(", ").ifEmpty { "n/a" }}")
+            appendLine("- Trending aesthetics: ${fashionTrends.trendingAesthetics.joinToString(", ").ifEmpty { "n/a" }}")
+            appendLine("- Must-have items right now: ${fashionTrends.mustHaveItems.joinToString(", ").ifEmpty { "n/a" }}")
+            appendLine("- Outdated / avoid: ${fashionTrends.outdatedItems.joinToString(", ").ifEmpty { "n/a" }}")
+        } else {
+            appendLine("not available")
+        }
         appendLine()
         appendLine("## Available Wardrobe Items (id + name + tags)")
         appendLine(wardrobeJson)

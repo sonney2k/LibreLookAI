@@ -33,8 +33,10 @@ class GeminiRepository {
             "https://generativelanguage.googleapis.com/v1beta/models/$BG_MODEL:generateContent"
         private const val BG_PROMPT =
             "Extract the clothing item from the background. Place the clothing item on a pure, " +
-                "solid neon green background (Hex #00FF00). Do not add any shadows, gradients, " +
-                "or checkerboard patterns."
+                "solid neon green background (Hex #00FF00). " +
+                "Macro product photography, studio lighting, no text, no UI elements. " +
+                "Do not add any shadows, gradients, or checkerboard patterns. " +
+                "Do not include any phones, apps, text, or website interfaces."
 
         private const val CLASSIFY_MODEL = "gemini-3-flash-preview"
         private const val CLASSIFY_URL =
@@ -196,6 +198,57 @@ class GeminiRepository {
         }
 
     /**
+     * Uses Gemini with Google Search grounding to fetch current street-fashion trends for [region].
+     * Returns null on failure so callers can proceed without trend data.
+     */
+    suspend fun searchFashionTrends(region: String): FashionTrends? = withContext(Dispatchers.IO) {
+        val apiKey = BuildConfig.GEMINI_API_KEY
+        if (apiKey.isBlank() || apiKey == "YOUR_GEMINI_API_KEY_HERE") return@withContext null
+
+        val prompt = """
+            Search the web for the current street fashion and clothing trends happening right now in $region.
+            Cover all of the following clothing categories: tops, bottoms, outerwear, footwear, accessories, dresses, suits.
+            For each category note what is trending and what is outdated where relevant.
+            Synthesize the search results and return ONLY a valid JSON object — no markdown, no explanation:
+            {"region":"$region","trending_colors":["color1","color2"],"trending_aesthetics":["aesthetic1","aesthetic2"],"must_have_items":["category: item description","..."],"outdated_items":["category: item description","..."]}
+        """.trimIndent()
+
+        val body = gson.toJson(
+            mapOf(
+                "contents" to listOf(
+                    mapOf("role" to "user", "parts" to listOf(mapOf("text" to prompt))),
+                ),
+                "tools" to listOf(mapOf("google_search" to emptyMap<String, Any>())),
+            ),
+        )
+        return@withContext try {
+            val response = http.newCall(
+                Request.Builder()
+                    .url("$PREDICT_URL?key=$apiKey")
+                    .post(body.toRequestBody("application/json".toMediaType()))
+                    .build(),
+            ).await()
+            val responseBody = response.body!!.string()
+            Log.d(TAG, "searchFashionTrends HTTP ${response.code}: ${responseBody.take(500)}")
+            if (!response.isSuccessful) return@withContext null
+
+            val parsed = gson.fromJson(responseBody, GeminiResponse::class.java)
+            val text = parsed.candidates
+                ?.firstOrNull()?.content?.parts
+                ?.firstOrNull { it.text != null }?.text
+                ?: return@withContext null
+
+            val json = text.trim()
+                .removePrefix("```json").removePrefix("```").removeSuffix("```").trim()
+            gson.fromJson(json, FashionTrends::class.java)
+                .also { Log.d(TAG, "FashionTrends for $region: $it") }
+        } catch (e: Exception) {
+            Log.w(TAG, "searchFashionTrends failed (non-fatal): ${e.message}")
+            null
+        }
+    }
+
+    /**
      * Sends a text-only prompt to Gemini and returns the raw text response, or null on failure.
      */
     suspend fun generateText(prompt: String): String? = withContext(Dispatchers.IO) {
@@ -258,6 +311,18 @@ class GeminiRepository {
 }
 
 // ---------- Public data classes ----------
+
+data class FashionTrends(
+    val region: String = "",
+    @com.google.gson.annotations.SerializedName("trending_colors")
+    val trendingColors: List<String> = emptyList(),
+    @com.google.gson.annotations.SerializedName("trending_aesthetics")
+    val trendingAesthetics: List<String> = emptyList(),
+    @com.google.gson.annotations.SerializedName("must_have_items")
+    val mustHaveItems: List<String> = emptyList(),
+    @com.google.gson.annotations.SerializedName("outdated_items")
+    val outdatedItems: List<String> = emptyList(),
+)
 
 data class ClothingTags(
     val type: String = "",
