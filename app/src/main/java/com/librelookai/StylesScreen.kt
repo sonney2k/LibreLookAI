@@ -1,6 +1,11 @@
 package com.librelookai
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.text.BasicTextField
@@ -31,6 +36,8 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.AutoFixHigh
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.CheckCircle
@@ -211,42 +218,63 @@ private fun StyleListScreen(
             }
         }
 
-        // Bottom-start: Compose (small) + Suggest (extended) stacked vertically
+        // Speed-dial FAB (bottom-end)
+        var fabExpanded by remember { mutableStateOf(false) }
         Column(
             modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(start = 16.dp, bottom = 16.dp),
+                .align(Alignment.BottomEnd)
+                .padding(end = 16.dp, bottom = 16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalAlignment = Alignment.Start,
+            horizontalAlignment = Alignment.End,
         ) {
-            SmallFloatingActionButton(
-                onClick = { if (!isComposing) onComposeStyle() },
-                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            // Sub-actions — slide up / fade in when expanded
+            AnimatedVisibility(
+                visible = fabExpanded,
+                enter = fadeIn() + slideInVertically(initialOffsetY = { it / 2 }),
+                exit = fadeOut() + slideOutVertically(targetOffsetY = { it / 2 }),
             ) {
-                if (isComposing)
-                    CircularProgressIndicator(modifier = Modifier.size(18.dp), strokeWidth = 2.dp)
-                else
-                    Icon(Icons.Default.AutoFixHigh, contentDescription = "Compose new style")
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalAlignment = Alignment.End,
+                ) {
+                    SpeedDialItem(
+                        label = "Create outfit manually",
+                        icon = { Icon(Icons.Default.Edit, contentDescription = null) },
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        onClick = { fabExpanded = false; onCreateStyle() },
+                    )
+                    SpeedDialItem(
+                        label = if (isPredicting) "Thinking…" else "Suggest existing style",
+                        icon = {
+                            if (isPredicting)
+                                CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
+                            else
+                                Icon(Icons.Default.AutoAwesome, contentDescription = null)
+                        },
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        onClick = { fabExpanded = false; if (!isPredicting) onSuggestStyle() },
+                    )
+                    SpeedDialItem(
+                        label = if (isComposing) "Thinking…" else "Compose new style",
+                        icon = {
+                            if (isComposing)
+                                CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
+                            else
+                                Icon(Icons.Default.AutoFixHigh, contentDescription = null)
+                        },
+                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                        onClick = { fabExpanded = false; if (!isComposing) onComposeStyle() },
+                    )
+                }
             }
 
-            ExtendedFloatingActionButton(
-                onClick = { if (!isPredicting) onSuggestStyle() },
-                icon = {
-                    if (isPredicting)
-                        CircularProgressIndicator(modifier = Modifier.size(18.dp), strokeWidth = 2.dp)
-                    else
-                        Icon(Icons.Default.AutoAwesome, contentDescription = null)
-                },
-                text = { Text(if (isPredicting) "Thinking…" else "Suggest") },
-            )
-        }
-
-        // Create FAB (bottom-end)
-        FloatingActionButton(
-            onClick = onCreateStyle,
-            modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
-        ) {
-            Icon(Icons.Default.Add, contentDescription = "Create style")
+            // Main toggle FAB
+            FloatingActionButton(onClick = { fabExpanded = !fabExpanded }) {
+                Icon(
+                    if (fabExpanded) Icons.Default.Close else Icons.Default.Add,
+                    contentDescription = if (fabExpanded) "Close" else "Actions",
+                )
+            }
         }
 
         // Error snackbars (composition takes priority if both are set)
@@ -284,6 +312,37 @@ private fun StyleListScreen(
             onDismiss = onClearComposition,
             onAccept = { onAcceptComposition(suggestion) },
         )
+    }
+}
+
+// ---------- Speed-dial helper ----------
+
+@Composable
+private fun SpeedDialItem(
+    label: String,
+    icon: @Composable () -> Unit,
+    containerColor: androidx.compose.ui.graphics.Color,
+    onClick: () -> Unit,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        androidx.compose.material3.Surface(
+            shape = MaterialTheme.shapes.small,
+            color = MaterialTheme.colorScheme.surface,
+            shadowElevation = 2.dp,
+        ) {
+            Text(
+                label,
+                style = MaterialTheme.typography.labelMedium,
+                modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+            )
+        }
+        SmallFloatingActionButton(
+            onClick = onClick,
+            containerColor = containerColor,
+        ) { icon() }
     }
 }
 
