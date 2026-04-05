@@ -44,6 +44,10 @@ data class StylesUiState(
     val isComposing: Boolean = false,
     val newSuggestion: NewStyleSuggestion? = null,
     val compositionError: String? = null,
+    // Refinement feedback (shared by prediction + composition loops)
+    val refinementInput: String = "",
+    val feedbackHistory: List<String> = emptyList(),
+    val lastCompositionRequiredIds: Set<String> = emptySet(),
     val error: String? = null,
 )
 
@@ -169,10 +173,29 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
      * @param weather current weather reading (may be null if location not yet available)
      * @param images  full wardrobe list with tags
      */
-    fun triggerPrediction(
+    fun triggerPrediction(prefs: UserPreferences?, weather: WeatherData?, images: List<DriveImage>) {
+        _state.update { it.copy(feedbackHistory = emptyList(), refinementInput = "") }
+        doTriggerPrediction(prefs, weather, images, emptyList())
+    }
+
+    fun refinePrediction(prefs: UserPreferences?, weather: WeatherData?, images: List<DriveImage>) {
+        val feedback = _state.value.refinementInput.trim().ifEmpty { return }
+        val history = _state.value.feedbackHistory + feedback
+        _state.update { it.copy(feedbackHistory = history, refinementInput = "") }
+        doTriggerPrediction(prefs, weather, images, history)
+    }
+
+    fun submitPresetPrediction(preset: String, prefs: UserPreferences?, weather: WeatherData?, images: List<DriveImage>) {
+        val history = _state.value.feedbackHistory + preset
+        _state.update { it.copy(feedbackHistory = history, refinementInput = "") }
+        doTriggerPrediction(prefs, weather, images, history)
+    }
+
+    private fun doTriggerPrediction(
         prefs: UserPreferences?,
         weather: WeatherData?,
         images: List<DriveImage>,
+        feedbackHistory: List<String>,
     ) {
         val styles = _state.value.styles
         if (styles.isEmpty()) {
@@ -182,7 +205,6 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             _state.update { it.copy(isPredicting = true, prediction = null, predictionError = null) }
 
-            // Fetch trending topics (non-fatal — empty list is fine)
             val countryCode = deviceCountryCode()
             val trendingTopics = trends.fetchTrending(countryCode)
 
@@ -194,6 +216,7 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
                 trendingTopics = trendingTopics,
                 images         = images,
                 styles         = styles,
+                feedbackHistory = feedbackHistory,
             )
             Log.d("StylesVM", "Prediction prompt length: ${prompt.length} chars")
             prompt.chunked(3000).forEachIndexed { i, chunk ->
@@ -206,7 +229,6 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
                 return@launch
             }
 
-            // Strip markdown fences if present
             val json = raw.trim()
                 .removePrefix("```json").removePrefix("```").removeSuffix("```").trim()
 
@@ -221,7 +243,6 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
                 return@launch
             }
 
-            // Validate the suggested style actually exists
             val matched = styles.find { it.id == result.styleId }
             if (matched == null) {
                 Log.w("StylesVM", "Gemini returned unknown styleId=${result.styleId}")
@@ -230,27 +251,55 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
             }
 
             _state.update {
-                it.copy(
-                    isPredicting = false,
-                    prediction = StylePrediction(result.styleId, result.reason),
-                )
+                it.copy(isPredicting = false, prediction = StylePrediction(result.styleId, result.reason))
             }
         }
     }
 
-    fun clearPrediction() = _state.update { it.copy(prediction = null, predictionError = null) }
+    fun clearPrediction() = _state.update {
+        it.copy(prediction = null, predictionError = null, feedbackHistory = emptyList(), refinementInput = "")
+    }
+
+    fun updateRefinementInput(text: String) = _state.update { it.copy(refinementInput = text) }
 
     // ---------- New style composition ----------
 
-    /**
-     * Asks Gemini to compose a brand-new outfit by selecting items from the full wardrobe.
-     * The result is a [NewStyleSuggestion] with a proposed name, item IDs, and reason.
-     * Call [startCreatingFromItems] with the suggestion's data to open the picker pre-filled.
-     */
-    fun triggerComposition(
+    fun triggerComposition(prefs: UserPreferences?, weather: WeatherData?, images: List<DriveImage>) {
+        _state.update { it.copy(feedbackHistory = emptyList(), refinementInput = "", lastCompositionRequiredIds = emptySet()) }
+        doTriggerComposition(prefs, weather, images, emptyList(), emptySet())
+    }
+
+    fun triggerCompositionFromItems(
+        requiredItemIds: Set<String>,
         prefs: UserPreferences?,
         weather: WeatherData?,
         images: List<DriveImage>,
+    ) {
+        _state.update { it.copy(feedbackHistory = emptyList(), refinementInput = "", lastCompositionRequiredIds = requiredItemIds) }
+        doTriggerComposition(prefs, weather, images, emptyList(), requiredItemIds)
+    }
+
+    fun refineComposition(prefs: UserPreferences?, weather: WeatherData?, images: List<DriveImage>) {
+        val feedback = _state.value.refinementInput.trim().ifEmpty { return }
+        val history = _state.value.feedbackHistory + feedback
+        val required = _state.value.lastCompositionRequiredIds
+        _state.update { it.copy(feedbackHistory = history, refinementInput = "") }
+        doTriggerComposition(prefs, weather, images, history, required)
+    }
+
+    fun submitPresetComposition(preset: String, prefs: UserPreferences?, weather: WeatherData?, images: List<DriveImage>) {
+        val history = _state.value.feedbackHistory + preset
+        val required = _state.value.lastCompositionRequiredIds
+        _state.update { it.copy(feedbackHistory = history, refinementInput = "") }
+        doTriggerComposition(prefs, weather, images, history, required)
+    }
+
+    private fun doTriggerComposition(
+        prefs: UserPreferences?,
+        weather: WeatherData?,
+        images: List<DriveImage>,
+        feedbackHistory: List<String>,
+        requiredItemIds: Set<String>,
     ) {
         if (images.isEmpty()) {
             _state.update { it.copy(compositionError = "No wardrobe items to compose from.") }
@@ -263,14 +312,16 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
             val trendingTopics = trends.fetchTrending(countryCode)
 
             val prompt = buildCompositionPrompt(
-                prefs          = prefs,
-                weather        = weather,
-                cityName       = weather?.cityName,
-                countryCode    = countryCode,
-                trendingTopics = trendingTopics,
-                images         = images,
+                prefs           = prefs,
+                weather         = weather,
+                cityName        = weather?.cityName,
+                countryCode     = countryCode,
+                trendingTopics  = trendingTopics,
+                images          = images,
+                requiredItemIds = requiredItemIds,
+                feedbackHistory = feedbackHistory,
             )
-            Log.d("StylesVM", "=== COMPOSITION PROMPT (${prompt.length} chars) ===")
+            Log.d("StylesVM", "=== COMPOSITION PROMPT (${prompt.length} chars, history=${feedbackHistory.size}) ===")
             prompt.chunked(3000).forEachIndexed { i, chunk ->
                 Log.d("StylesVM", "CompositionPrompt[$i]: $chunk")
             }
@@ -299,92 +350,10 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
                 return@launch
             }
 
-            // Keep only IDs that actually exist in the wardrobe
             val knownIds = images.map { it.driveId }.toSet()
-            val validIds = result.itemIds.filter { it in knownIds }
-            if (validIds.isEmpty()) {
-                Log.w("StylesVM", "Gemini returned no valid item IDs: ${result.itemIds}")
-                _state.update { it.copy(isComposing = false, compositionError = "Suggested items not found in wardrobe.") }
-                return@launch
-            }
-
-            _state.update {
-                it.copy(
-                    isComposing = false,
-                    newSuggestion = NewStyleSuggestion(
-                        name        = result.name.ifBlank { "AI Style" },
-                        description = result.description,
-                        itemIds     = validIds,
-                        reason      = result.reason,
-                    ),
-                )
-            }
-        }
-    }
-
-    /**
-     * Like [triggerComposition] but the given [requiredItemIds] MUST appear in the result.
-     * Gemini is asked to complete the outfit around them; the required IDs are force-merged
-     * into the response even if Gemini omits them.
-     */
-    fun triggerCompositionFromItems(
-        requiredItemIds: Set<String>,
-        prefs: UserPreferences?,
-        weather: WeatherData?,
-        images: List<DriveImage>,
-    ) {
-        if (images.isEmpty()) {
-            _state.update { it.copy(compositionError = "No wardrobe items to compose from.") }
-            return
-        }
-        viewModelScope.launch {
-            _state.update { it.copy(isComposing = true, newSuggestion = null, compositionError = null) }
-
-            val countryCode = deviceCountryCode()
-            val trendingTopics = trends.fetchTrending(countryCode)
-
-            val prompt = buildCompositionPrompt(
-                prefs           = prefs,
-                weather         = weather,
-                cityName        = weather?.cityName,
-                countryCode     = countryCode,
-                trendingTopics  = trendingTopics,
-                images          = images,
-                requiredItemIds = requiredItemIds,
-            )
-            Log.d("StylesVM", "=== COMPOSITION FROM ITEMS PROMPT (${prompt.length} chars) ===")
-            prompt.chunked(3000).forEachIndexed { i, chunk ->
-                Log.d("StylesVM", "CompositionFromItemsPrompt[$i]: $chunk")
-            }
-
-            val raw = gemini.generateText(prompt)
-            if (raw == null) {
-                _state.update { it.copy(isComposing = false, compositionError = "Gemini did not respond.") }
-                return@launch
-            }
-            Log.d("StylesVM", "CompositionFromItems raw response: $raw")
-
-            val json = raw.trim()
-                .removePrefix("```json").removePrefix("```").removeSuffix("```").trim()
-
-            data class CompResp(
-                val name: String = "",
-                val description: String = "",
-                val itemIds: List<String> = emptyList(),
-                val reason: String = "",
-            )
-            val result = runCatching { gson.fromJson(json, CompResp::class.java) }.getOrNull()
-
-            if (result == null) {
-                Log.w("StylesVM", "Failed to parse composition response: $json")
-                _state.update { it.copy(isComposing = false, compositionError = "Could not parse Gemini response.") }
-                return@launch
-            }
-
-            val knownIds = images.map { it.driveId }.toSet()
-            // Force-include required items; add any valid extras Gemini suggested
             val merged = (requiredItemIds + result.itemIds).filter { it in knownIds }.distinct()
             if (merged.isEmpty()) {
+                Log.w("StylesVM", "Gemini returned no valid item IDs: ${result.itemIds}")
                 _state.update { it.copy(isComposing = false, compositionError = "Suggested items not found in wardrobe.") }
                 return@launch
             }
@@ -403,7 +372,9 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    fun clearNewSuggestion() = _state.update { it.copy(newSuggestion = null, compositionError = null) }
+    fun clearNewSuggestion() = _state.update {
+        it.copy(newSuggestion = null, compositionError = null, feedbackHistory = emptyList(), refinementInput = "")
+    }
 
     fun clearError() = _state.update { it.copy(error = null) }
 
@@ -432,6 +403,7 @@ private fun buildPredictionPrompt(
     trendingTopics: List<String>,
     images: List<DriveImage>,
     styles: List<Style>,
+    feedbackHistory: List<String> = emptyList(),
 ): String {
     val age = prefs?.yearOfBirth?.let { LocalDate.now().year - it }
 
@@ -488,12 +460,19 @@ private fun buildPredictionPrompt(
         appendLine("## Existing Styles to Choose From")
         appendLine(stylesJson)
         appendLine()
+        if (feedbackHistory.isNotEmpty()) {
+            appendLine("## User Refinement Requests")
+            appendLine("The user reviewed a previous suggestion and wants these adjustments (apply all of them):")
+            feedbackHistory.forEachIndexed { i, fb -> appendLine("${i + 1}. $fb") }
+            appendLine()
+        }
         appendLine("## Instructions")
         appendLine("Pick the single best style ID from the styles list that fits:")
         appendLine("1. The current weather (temperature, conditions)")
         appendLine("2. The trending topics and cultural context of $locationStr")
         appendLine("3. The user's personal preferences and profile")
         appendLine("4. The urban/rural character of the location")
+        if (feedbackHistory.isNotEmpty()) appendLine("5. All of the user's refinement requests above")
         appendLine()
         appendLine("Respond with ONLY a valid JSON object — no markdown, no extra text:")
         append("""{"styleId":"<id from the styles list>","reason":"<1-2 sentence explanation>"}""")
@@ -508,6 +487,7 @@ private fun buildCompositionPrompt(
     trendingTopics: List<String>,
     images: List<DriveImage>,
     requiredItemIds: Set<String> = emptySet(),
+    feedbackHistory: List<String> = emptyList(),
 ): String {
     val age = prefs?.yearOfBirth?.let { LocalDate.now().year - it }
 
@@ -572,6 +552,14 @@ private fun buildCompositionPrompt(
         appendLine("3. Match the user's personal preferences")
         appendLine("4. Work together visually (complementary colors, consistent style category)")
         appendLine("5. Suit the urban/rural character of $locationStr")
+        if (feedbackHistory.isNotEmpty()) {
+            appendLine("6. Address all of the user's refinement requests listed below")
+            appendLine()
+            appendLine("## User Refinement Requests")
+            appendLine("The user reviewed a previous suggestion and wants these adjustments (apply all of them):")
+            feedbackHistory.forEachIndexed { i, fb -> appendLine("${i + 1}. $fb") }
+        }
+        appendLine()
         appendLine("Also propose:")
         appendLine("- A short, evocative name for the outfit (\"name\")")
         appendLine("- A 1-2 sentence style description suitable as a caption (\"description\")")

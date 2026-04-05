@@ -34,8 +34,11 @@ import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.AutoFixHigh
@@ -48,8 +51,11 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.InputChip
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -115,6 +121,8 @@ fun StylesScreen(
             isComposing = stylesState.isComposing,
             newSuggestion = stylesState.newSuggestion,
             compositionError = stylesState.compositionError,
+            refinementInput = stylesState.refinementInput,
+            feedbackHistory = stylesState.feedbackHistory,
             onCreateStyle = stylesViewModel::startCreating,
             onEditStyle = stylesViewModel::startEditing,
             onDeleteStyle = stylesViewModel::deleteStyle,
@@ -143,6 +151,19 @@ fun StylesScreen(
                 stylesViewModel.clearNewSuggestion()
             },
             onClearComposition = stylesViewModel::clearNewSuggestion,
+            onRefinementInputChange = stylesViewModel::updateRefinementInput,
+            onRefinePrediction = {
+                stylesViewModel.refinePrediction(profileState.preferences, weatherState.data, wardrobeState.images)
+            },
+            onPresetPrediction = { preset ->
+                stylesViewModel.submitPresetPrediction(preset, profileState.preferences, weatherState.data, wardrobeState.images)
+            },
+            onRefineComposition = {
+                stylesViewModel.refineComposition(profileState.preferences, weatherState.data, wardrobeState.images)
+            },
+            onPresetComposition = { preset ->
+                stylesViewModel.submitPresetComposition(preset, profileState.preferences, weatherState.data, wardrobeState.images)
+            },
             modifier = modifier,
         )
     }
@@ -163,6 +184,8 @@ private fun StyleListScreen(
     isComposing: Boolean,
     newSuggestion: NewStyleSuggestion?,
     compositionError: String?,
+    refinementInput: String,
+    feedbackHistory: List<String>,
     onCreateStyle: () -> Unit,
     onEditStyle: (Style) -> Unit,
     onDeleteStyle: (String) -> Unit,
@@ -172,6 +195,11 @@ private fun StyleListScreen(
     onComposeStyle: () -> Unit,
     onAcceptComposition: (NewStyleSuggestion) -> Unit,
     onClearComposition: () -> Unit,
+    onRefinementInputChange: (String) -> Unit,
+    onRefinePrediction: () -> Unit,
+    onPresetPrediction: (String) -> Unit,
+    onRefineComposition: () -> Unit,
+    onPresetComposition: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val itemsById = remember(items) { items.associateBy { it.driveId } }
@@ -301,8 +329,13 @@ private fun StyleListScreen(
                 style = suggestedStyle,
                 reason = pred.reason,
                 itemsById = itemsById,
+                refinementInput = refinementInput,
+                feedbackHistory = feedbackHistory,
                 onDismiss = onClearPrediction,
                 onWear = { onWearStyle(suggestedStyle.id); onClearPrediction() },
+                onRefinementInputChange = onRefinementInputChange,
+                onRefine = onRefinePrediction,
+                onPreset = onPresetPrediction,
             )
         }
     }
@@ -312,8 +345,13 @@ private fun StyleListScreen(
         NewStyleSuggestionSheet(
             suggestion = suggestion,
             itemsById = itemsById,
+            refinementInput = refinementInput,
+            feedbackHistory = feedbackHistory,
             onDismiss = onClearComposition,
             onAccept = { onAcceptComposition(suggestion) },
+            onRefinementInputChange = onRefinementInputChange,
+            onRefine = onRefineComposition,
+            onPreset = onPresetComposition,
         )
     }
 }
@@ -614,8 +652,13 @@ private fun StyleSuggestionSheet(
     style: Style,
     reason: String,
     itemsById: Map<String, DriveImage>,
+    refinementInput: String,
+    feedbackHistory: List<String>,
     onDismiss: () -> Unit,
     onWear: () -> Unit,
+    onRefinementInputChange: (String) -> Unit,
+    onRefine: () -> Unit,
+    onPreset: (String) -> Unit,
 ) {
     val ctx = LocalContext.current
     val styleItems = style.itemIds.mapNotNull { itemsById[it] }
@@ -681,6 +724,14 @@ private fun StyleSuggestionSheet(
                 )
             }
 
+            RefinementSection(
+                input = refinementInput,
+                feedbackHistory = feedbackHistory,
+                onInputChange = onRefinementInputChange,
+                onSubmitFreetext = onRefine,
+                onSubmitPreset = onPreset,
+            )
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
@@ -703,8 +754,13 @@ private fun StyleSuggestionSheet(
 private fun NewStyleSuggestionSheet(
     suggestion: NewStyleSuggestion,
     itemsById: Map<String, DriveImage>,
+    refinementInput: String,
+    feedbackHistory: List<String>,
     onDismiss: () -> Unit,
     onAccept: () -> Unit,
+    onRefinementInputChange: (String) -> Unit,
+    onRefine: () -> Unit,
+    onPreset: (String) -> Unit,
 ) {
     val ctx = LocalContext.current
     val styleItems = suggestion.itemIds.mapNotNull { itemsById[it] }
@@ -778,6 +834,14 @@ private fun NewStyleSuggestionSheet(
                 )
             }
 
+            RefinementSection(
+                input = refinementInput,
+                feedbackHistory = feedbackHistory,
+                onInputChange = onRefinementInputChange,
+                onSubmitFreetext = onRefine,
+                onSubmitPreset = onPreset,
+            )
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
@@ -788,6 +852,79 @@ private fun NewStyleSuggestionSheet(
                     Spacer(Modifier.width(4.dp))
                     Text("Create this style")
                 }
+            }
+        }
+    }
+}
+
+// ---------- Refinement section ----------
+
+private val REFINEMENT_PRESETS = listOf(
+    "More casual", "More formal", "Different colors",
+    "Warmer clothing", "Lighter clothing", "More trendy",
+    "Simpler", "More bold",
+)
+
+@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
+@Composable
+private fun RefinementSection(
+    input: String,
+    feedbackHistory: List<String>,
+    onInputChange: (String) -> Unit,
+    onSubmitFreetext: () -> Unit,
+    onSubmitPreset: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        HorizontalDivider()
+
+        Text(
+            "Refine with AI",
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.primary,
+        )
+
+        // Applied feedback chips (read-only history)
+        if (feedbackHistory.isNotEmpty()) {
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                feedbackHistory.forEach { fb ->
+                    InputChip(
+                        selected = true,
+                        onClick = {},
+                        label = { Text(fb, style = MaterialTheme.typography.labelSmall) },
+                    )
+                }
+            }
+        }
+
+        // Preset quick-picks
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            REFINEMENT_PRESETS.forEach { preset ->
+                SuggestionChip(
+                    onClick = { onSubmitPreset(preset) },
+                    label = { Text(preset, style = MaterialTheme.typography.labelSmall) },
+                )
+            }
+        }
+
+        // Freetext + send
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            OutlinedTextField(
+                value = input,
+                onValueChange = onInputChange,
+                placeholder = { Text("Custom feedback…", style = MaterialTheme.typography.bodySmall) },
+                singleLine = true,
+                textStyle = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.weight(1f),
+            )
+            androidx.compose.material3.IconButton(
+                onClick = onSubmitFreetext,
+                enabled = input.isNotBlank(),
+            ) {
+                Icon(Icons.Default.Send, contentDescription = "Refine")
             }
         }
     }
