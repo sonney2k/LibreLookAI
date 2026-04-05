@@ -201,6 +201,19 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    fun updateTags(driveId: String, tags: ClothingTags) {
+        _state.update { s ->
+            s.copy(images = s.images.map { if (it.driveId == driveId) it.copy(tags = tags) else it })
+        }
+        viewModelScope.launch {
+            runCatching {
+                drive.updateAppProperties(driveId, tags.toAppProperties())
+            }.onFailure { e ->
+                _state.update { it.copy(error = e.message) }
+            }
+        }
+    }
+
     fun clearError() = _state.update { it.copy(error = null) }
 
     // ---------- Selection & Delete ----------

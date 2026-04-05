@@ -25,6 +25,10 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -56,6 +60,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.Sort
 import androidx.compose.material3.AlertDialog
@@ -65,14 +70,19 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -140,6 +150,7 @@ fun WardrobeScreen(
             onDismissError = viewModel::clearError,
             onTagImage = viewModel::tagImage,
             onRemoveBackground = viewModel::reprocessBackground,
+            onUpdateTags = viewModel::updateTags,
             onToggleSelection = viewModel::toggleSelection,
             onClearSelection = viewModel::clearSelection,
             onDeleteSelected = viewModel::deleteSelected,
@@ -254,6 +265,7 @@ private fun GridContent(
     onDismissError: () -> Unit,
     onTagImage: (String) -> Unit,
     onRemoveBackground: (String) -> Unit,
+    onUpdateTags: (String, ClothingTags) -> Unit,
     onToggleSelection: (String) -> Unit,
     onClearSelection: () -> Unit,
     onDeleteSelected: () -> Unit,
@@ -530,9 +542,11 @@ private fun GridContent(
         FullScreenViewer(
             images = displayedImages,
             initialIndex = startIndex.coerceIn(0, (displayedImages.size - 1).coerceAtLeast(0)),
+            allTagCategories = tagCategories,
             onDismiss = { selectedIndex = null },
             onTagImage = onTagImage,
             onRemoveBackground = onRemoveBackground,
+            onUpdateTags = onUpdateTags,
             processingImageId = processingImageId,
         )
     }
@@ -540,13 +554,16 @@ private fun GridContent(
 
 // ---------- Full-screen image viewer ----------
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun FullScreenViewer(
     images: List<DriveImage>,
     initialIndex: Int,
+    allTagCategories: List<TagCategory>,
     onDismiss: () -> Unit,
     onTagImage: (String) -> Unit,
     onRemoveBackground: (String) -> Unit,
+    onUpdateTags: (String, ClothingTags) -> Unit,
     processingImageId: String?,
 ) {
     BackHandler(onBack = onDismiss)
@@ -557,6 +574,8 @@ private fun FullScreenViewer(
         pageCount = { images.size },
     )
     LaunchedEffect(pagerState.currentPage) { pageScale = 1f }
+
+    var showTagEdit by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -599,10 +618,24 @@ private fun FullScreenViewer(
             tags = currentImage.tags,
             onTagImage = { onTagImage(currentImage.driveId) },
             onRemoveBackground = { onRemoveBackground(currentImage.driveId) },
+            onEditTags = { showTagEdit = true },
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .statusBarsPadding()
                 .padding(top = 8.dp, end = 8.dp),
+        )
+    }
+
+    if (showTagEdit) {
+        val currentImage = images[pagerState.currentPage]
+        TagEditSheet(
+            image = currentImage,
+            allTagCategories = allTagCategories,
+            onSave = { tags ->
+                onUpdateTags(currentImage.driveId, tags)
+                showTagEdit = false
+            },
+            onDismiss = { showTagEdit = false },
         )
     }
 }
@@ -739,6 +772,7 @@ private fun TagsOverlay(
     tags: ClothingTags?,
     onTagImage: () -> Unit,
     onRemoveBackground: () -> Unit,
+    onEditTags: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Surface(
@@ -773,6 +807,164 @@ private fun TagsOverlay(
                 }
                 TextButton(onClick = onRemoveBackground, contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)) {
                     Text("Remove BG", color = Color.White, style = MaterialTheme.typography.labelSmall)
+                }
+                TextButton(onClick = onEditTags, contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)) {
+                    Text("Edit tags", color = Color.White, style = MaterialTheme.typography.labelSmall)
+                }
+            }
+        }
+    }
+}
+
+// ---------- Tag edit sheet ----------
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@Composable
+private fun TagEditSheet(
+    image: DriveImage,
+    allTagCategories: List<TagCategory>,
+    onSave: (ClothingTags) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    var type     by remember { mutableStateOf(image.tags?.type     ?: "") }
+    var category by remember { mutableStateOf(image.tags?.category ?: "") }
+    var uses     by remember { mutableStateOf(image.tags?.uses     ?: emptyList()) }
+    var colors   by remember { mutableStateOf(image.tags?.colors   ?: emptyList()) }
+
+    val allUses   = remember(allTagCategories) { allTagCategories.find { it.label == "Uses"   }?.tags.orEmpty() }
+    val allColors = remember(allTagCategories) { allTagCategories.find { it.label == "Colors" }?.tags.orEmpty() }
+
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .navigationBarsPadding()
+                .padding(horizontal = 20.dp)
+                .padding(bottom = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            // Header
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text("Edit Tags", style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
+                TextButton(onClick = {
+                    onSave(ClothingTags(
+                        type     = type.trim(),
+                        category = category.trim(),
+                        uses     = uses.map { it.trim() }.filter { it.isNotEmpty() },
+                        colors   = colors.map { it.trim() }.filter { it.isNotEmpty() },
+                    ))
+                }) { Text("Save") }
+            }
+
+            HorizontalDivider()
+
+            OutlinedTextField(
+                value = type,
+                onValueChange = { type = it },
+                label = { Text("Type") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+            )
+
+            OutlinedTextField(
+                value = category,
+                onValueChange = { category = it },
+                label = { Text("Category") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+            )
+
+            ChipListEditor(
+                label = "Uses",
+                values = uses,
+                suggestions = allUses.filter { it !in uses },
+                onAdd    = { uses = uses + it },
+                onRemove = { uses = uses - it },
+            )
+
+            ChipListEditor(
+                label = "Colors",
+                values = colors,
+                suggestions = allColors.filter { it !in colors },
+                onAdd    = { colors = colors + it },
+                onRemove = { colors = colors - it },
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
+@Composable
+private fun ChipListEditor(
+    label: String,
+    values: List<String>,
+    suggestions: List<String>,
+    onAdd: (String) -> Unit,
+    onRemove: (String) -> Unit,
+) {
+    var inputText by remember { mutableStateOf("") }
+    var showSuggestions by remember { mutableStateOf(false) }
+
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Text(label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+
+        // Current values as removable chips
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            values.forEach { value ->
+                InputChip(
+                    selected = false,
+                    onClick = {},
+                    label = { Text(value) },
+                    trailingIcon = {
+                        Icon(
+                            Icons.Default.Close,
+                            contentDescription = "Remove $value",
+                            modifier = Modifier.size(14.dp).clickable { onRemove(value) },
+                        )
+                    },
+                )
+            }
+        }
+
+        // Add field
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedTextField(
+                value = inputText,
+                onValueChange = { inputText = it; showSuggestions = it.isNotEmpty() },
+                placeholder = { Text("Add custom…") },
+                singleLine = true,
+                trailingIcon = if (inputText.isNotBlank()) {
+                    {
+                        IconButton(onClick = {
+                            onAdd(inputText.trim())
+                            inputText = ""
+                            showSuggestions = false
+                        }) {
+                            Icon(Icons.Default.Add, contentDescription = "Add")
+                        }
+                    }
+                } else null,
+                modifier = Modifier.weight(1f),
+            )
+        }
+
+        // Existing suggestions (filtered by input if any)
+        val filtered = if (inputText.isBlank()) suggestions
+                       else suggestions.filter { it.contains(inputText, ignoreCase = true) }
+        if (filtered.isNotEmpty()) {
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                filtered.forEach { suggestion ->
+                    FilterChip(
+                        selected = false,
+                        onClick = { onAdd(suggestion); inputText = "" },
+                        label = { Text(suggestion) },
+                    )
                 }
             }
         }
