@@ -129,6 +129,16 @@ class MainActivity : ComponentActivity() {
                                         wardrobeViewModel.clearSelection()
                                         selectedTab = 0
                                     },
+                                    onComposeStyleFromSelection = { itemIds ->
+                                        stylesViewModel.triggerCompositionFromItems(
+                                            requiredItemIds = itemIds,
+                                            prefs           = profileViewModel.state.value.preferences,
+                                            weather         = weatherViewModel.state.value.data,
+                                            images          = wardrobeViewModel.state.value.images,
+                                        )
+                                        wardrobeViewModel.clearSelection()
+                                        selectedTab = 0
+                                    },
                                     modifier = Modifier.padding(innerPadding),
                                 )
                                 2 -> CalendarScreen(

@@ -322,6 +322,87 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /**
+     * Like [triggerComposition] but the given [requiredItemIds] MUST appear in the result.
+     * Gemini is asked to complete the outfit around them; the required IDs are force-merged
+     * into the response even if Gemini omits them.
+     */
+    fun triggerCompositionFromItems(
+        requiredItemIds: Set<String>,
+        prefs: UserPreferences?,
+        weather: WeatherData?,
+        images: List<DriveImage>,
+    ) {
+        if (images.isEmpty()) {
+            _state.update { it.copy(compositionError = "No wardrobe items to compose from.") }
+            return
+        }
+        viewModelScope.launch {
+            _state.update { it.copy(isComposing = true, newSuggestion = null, compositionError = null) }
+
+            val countryCode = deviceCountryCode()
+            val trendingTopics = trends.fetchTrending(countryCode)
+
+            val prompt = buildCompositionPrompt(
+                prefs           = prefs,
+                weather         = weather,
+                cityName        = weather?.cityName,
+                countryCode     = countryCode,
+                trendingTopics  = trendingTopics,
+                images          = images,
+                requiredItemIds = requiredItemIds,
+            )
+            Log.d("StylesVM", "=== COMPOSITION FROM ITEMS PROMPT (${prompt.length} chars) ===")
+            prompt.chunked(3000).forEachIndexed { i, chunk ->
+                Log.d("StylesVM", "CompositionFromItemsPrompt[$i]: $chunk")
+            }
+
+            val raw = gemini.generateText(prompt)
+            if (raw == null) {
+                _state.update { it.copy(isComposing = false, compositionError = "Gemini did not respond.") }
+                return@launch
+            }
+            Log.d("StylesVM", "CompositionFromItems raw response: $raw")
+
+            val json = raw.trim()
+                .removePrefix("```json").removePrefix("```").removeSuffix("```").trim()
+
+            data class CompResp(
+                val name: String = "",
+                val description: String = "",
+                val itemIds: List<String> = emptyList(),
+                val reason: String = "",
+            )
+            val result = runCatching { gson.fromJson(json, CompResp::class.java) }.getOrNull()
+
+            if (result == null) {
+                Log.w("StylesVM", "Failed to parse composition response: $json")
+                _state.update { it.copy(isComposing = false, compositionError = "Could not parse Gemini response.") }
+                return@launch
+            }
+
+            val knownIds = images.map { it.driveId }.toSet()
+            // Force-include required items; add any valid extras Gemini suggested
+            val merged = (requiredItemIds + result.itemIds).filter { it in knownIds }.distinct()
+            if (merged.isEmpty()) {
+                _state.update { it.copy(isComposing = false, compositionError = "Suggested items not found in wardrobe.") }
+                return@launch
+            }
+
+            _state.update {
+                it.copy(
+                    isComposing = false,
+                    newSuggestion = NewStyleSuggestion(
+                        name        = result.name.ifBlank { "AI Style" },
+                        description = result.description,
+                        itemIds     = merged,
+                        reason      = result.reason,
+                    ),
+                )
+            }
+        }
+    }
+
     fun clearNewSuggestion() = _state.update { it.copy(newSuggestion = null, compositionError = null) }
 
     fun clearError() = _state.update { it.copy(error = null) }
@@ -426,6 +507,7 @@ private fun buildCompositionPrompt(
     countryCode: String,
     trendingTopics: List<String>,
     images: List<DriveImage>,
+    requiredItemIds: Set<String> = emptySet(),
 ): String {
     val age = prefs?.yearOfBirth?.let { LocalDate.now().year - it }
 
@@ -471,8 +553,20 @@ private fun buildCompositionPrompt(
         appendLine("## Available Wardrobe Items (id + name + tags)")
         appendLine(wardrobeJson)
         appendLine()
+        if (requiredItemIds.isNotEmpty()) {
+            appendLine("## Required Items (MUST be included)")
+            appendLine("The following item IDs MUST appear in your itemIds list — they are pre-selected by the user:")
+            appendLine(requiredItemIds.joinToString(", ") { "\"$it\"" })
+            appendLine("You may add 1–3 complementary items from the wardrobe to complete the outfit.")
+            appendLine()
+        }
         appendLine("## Instructions")
-        appendLine("Select 2–5 item IDs from the wardrobe that form a cohesive, well-coordinated outfit. Choose items that:")
+        val selectInstruction = if (requiredItemIds.isNotEmpty())
+            "Build a cohesive outfit around the required items above, adding complementary pieces as needed."
+        else
+            "Select 2–5 item IDs from the wardrobe that form a cohesive, well-coordinated outfit."
+        appendLine(selectInstruction)
+        appendLine("Choose items that:")
         appendLine("1. Are appropriate for the current weather")
         appendLine("2. Reflect the trending topics and cultural context of $locationStr")
         appendLine("3. Match the user's personal preferences")

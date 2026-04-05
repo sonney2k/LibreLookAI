@@ -55,6 +55,8 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.AutoFixHigh
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
@@ -69,6 +71,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -113,6 +116,7 @@ import coil.request.ImageRequest
 fun WardrobeScreen(
     viewModel: WardrobeViewModel = viewModel(),
     onCreateStyleFromSelection: (Set<String>) -> Unit = {},
+    onComposeStyleFromSelection: (Set<String>) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val state by viewModel.state.collectAsState()
@@ -155,6 +159,7 @@ fun WardrobeScreen(
             onClearSelection = viewModel::clearSelection,
             onDeleteSelected = viewModel::deleteSelected,
             onCreateStyleFromSelection = onCreateStyleFromSelection,
+            onComposeStyleFromSelection = onComposeStyleFromSelection,
             processingImageId = state.processingImageId,
             modifier = modifier,
         )
@@ -270,6 +275,7 @@ private fun GridContent(
     onClearSelection: () -> Unit,
     onDeleteSelected: () -> Unit,
     onCreateStyleFromSelection: (Set<String>) -> Unit,
+    onComposeStyleFromSelection: (Set<String>) -> Unit,
     processingImageId: String?,
     modifier: Modifier = Modifier,
 ) {
@@ -466,23 +472,30 @@ private fun GridContent(
         if (isSelectionMode) {
             Column(
                 modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.End,
             ) {
-                FloatingActionButton(
+                ExtendedFloatingActionButton(
                     onClick = { onCreateStyleFromSelection(state.selectedIds) },
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                ) {
-                    Icon(Icons.Default.AutoAwesome, contentDescription = "Create Style from selection")
-                }
-                FloatingActionButton(
+                    icon = { Icon(Icons.Default.Edit, contentDescription = null) },
+                    text = { Text("Create outfit manually") },
+                )
+                ExtendedFloatingActionButton(
+                    onClick = { onComposeStyleFromSelection(state.selectedIds) },
+                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                    icon = { Icon(Icons.Default.AutoFixHigh, contentDescription = null) },
+                    text = { Text("Compose with AI") },
+                )
+                ExtendedFloatingActionButton(
                     onClick = { showDeleteDialog = true },
                     containerColor = MaterialTheme.colorScheme.errorContainer,
                     contentColor = MaterialTheme.colorScheme.onErrorContainer,
-                ) {
-                    Icon(Icons.Default.Delete, contentDescription = "Delete selected")
-                }
+                    icon = { Icon(Icons.Default.Delete, contentDescription = null) },
+                    text = { Text("Delete") },
+                )
             }
         } else {
             if (fabExpanded) {
