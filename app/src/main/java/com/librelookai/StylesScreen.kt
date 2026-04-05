@@ -3,6 +3,7 @@ package com.librelookai
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -27,6 +29,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.AlertDialog
@@ -38,6 +41,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -60,6 +64,7 @@ import coil.request.ImageRequest
 fun StylesScreen(
     stylesViewModel: StylesViewModel = viewModel(),
     wardrobeViewModel: WardrobeViewModel = viewModel(),
+    outfitsViewModel: OutfitsViewModel = viewModel(),
     modifier: Modifier = Modifier,
 ) {
     val stylesState by stylesViewModel.state.collectAsState()
@@ -70,6 +75,8 @@ fun StylesScreen(
             items = wardrobeState.images,
             selectedIds = stylesState.draftItemIds,
             isEditing = stylesState.editingStyle != null,
+            styleName = stylesState.draftStyleName,
+            onNameChanged = stylesViewModel::updateDraftName,
             onToggleItem = stylesViewModel::toggleDraftItem,
             onConfirm = stylesViewModel::confirmDraft,
             onCancel = stylesViewModel::cancelCreating,
@@ -83,6 +90,7 @@ fun StylesScreen(
             onCreateStyle = stylesViewModel::startCreating,
             onEditStyle = stylesViewModel::startEditing,
             onDeleteStyle = stylesViewModel::deleteStyle,
+            onWearStyle = outfitsViewModel::recordOutfit,
             modifier = modifier,
         )
     }
@@ -107,6 +115,7 @@ private fun StyleListScreen(
     onCreateStyle: () -> Unit,
     onEditStyle: (Style) -> Unit,
     onDeleteStyle: (String) -> Unit,
+    onWearStyle: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier.fillMaxSize()) {
@@ -139,6 +148,7 @@ private fun StyleListScreen(
                             itemsById = itemsById,
                             onEdit = { onEditStyle(style) },
                             onDelete = { onDeleteStyle(style.id) },
+                            onWear = { onWearStyle(style.id) },
                         )
                     }
                 }
@@ -163,6 +173,7 @@ private fun StyleCard(
     itemsById: Map<String, DriveImage>,
     onEdit: () -> Unit,
     onDelete: () -> Unit,
+    onWear: () -> Unit,
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
 
@@ -218,6 +229,32 @@ private fun StyleCard(
                     }
                 }
             }
+            // "Wear today" action — sits inside the card to avoid conflicting with the card's onClick
+            var wornToday by remember { mutableStateOf(false) }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+            ) {
+                TextButton(
+                    onClick = { onWear(); wornToday = true },
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+                ) {
+                    Icon(
+                        Icons.Default.CalendarMonth,
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp),
+                        tint = if (wornToday) MaterialTheme.colorScheme.primary
+                               else MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Spacer(Modifier.width(4.dp))
+                    Text(
+                        if (wornToday) "Worn today!" else "Wear today",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = if (wornToday) MaterialTheme.colorScheme.primary
+                                else MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
         }
     }
 }
@@ -230,6 +267,8 @@ private fun StyleItemPicker(
     items: List<DriveImage>,
     selectedIds: Set<String>,
     isEditing: Boolean,
+    styleName: String = "",
+    onNameChanged: (String) -> Unit = {},
     onToggleItem: (String) -> Unit,
     onConfirm: () -> Unit,
     onCancel: () -> Unit,
@@ -256,11 +295,35 @@ private fun StyleItemPicker(
             IconButton(onClick = onCancel) {
                 Icon(Icons.Default.Close, contentDescription = "Cancel")
             }
-            Text(
-                text = if (selectedIds.isEmpty()) "Select items" else "${selectedIds.size} selected",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.weight(1f),
-            )
+            if (isEditing) {
+                BasicTextField(
+                    value = styleName,
+                    onValueChange = onNameChanged,
+                    textStyle = MaterialTheme.typography.titleMedium.copy(
+                        color = MaterialTheme.colorScheme.onSurface,
+                    ),
+                    singleLine = true,
+                    modifier = Modifier.weight(1f).padding(horizontal = 8.dp),
+                    decorationBox = { inner ->
+                        Box {
+                            if (styleName.isEmpty()) {
+                                Text(
+                                    "Style name",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                            inner()
+                        }
+                    },
+                )
+            } else {
+                Text(
+                    text = if (selectedIds.isEmpty()) "Select items" else "${selectedIds.size} selected",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.weight(1f),
+                )
+            }
             TextButton(onClick = onConfirm, enabled = selectedIds.isNotEmpty()) {
                 Text(if (isEditing) "Save" else "Create Style")
             }

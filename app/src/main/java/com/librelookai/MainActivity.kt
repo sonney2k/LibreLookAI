@@ -62,6 +62,9 @@ class MainActivity : ComponentActivity() {
                     }
                 } else {
                     var selectedTab by rememberSaveable { mutableIntStateOf(1) }
+                    val stylesViewModel: StylesViewModel = viewModel()
+                    val wardrobeViewModel: WardrobeViewModel = viewModel()
+                    val outfitsViewModel: OutfitsViewModel = viewModel()
                     Scaffold(
                         modifier = Modifier.fillMaxSize(),
                         bottomBar = {
@@ -78,9 +81,27 @@ class MainActivity : ComponentActivity() {
                         },
                     ) { innerPadding ->
                         when (selectedTab) {
-                            0 -> StylesScreen(modifier = Modifier.padding(innerPadding))
-                            1 -> WardrobeScreen(modifier = Modifier.padding(innerPadding))
-                            2 -> CalendarScreen(modifier = Modifier.padding(innerPadding))
+                            0 -> StylesScreen(
+                                stylesViewModel = stylesViewModel,
+                                wardrobeViewModel = wardrobeViewModel,
+                                outfitsViewModel = outfitsViewModel,
+                                modifier = Modifier.padding(innerPadding),
+                            )
+                            1 -> WardrobeScreen(
+                                viewModel = wardrobeViewModel,
+                                onCreateStyleFromSelection = { itemIds ->
+                                    stylesViewModel.startCreatingFromItems(itemIds)
+                                    wardrobeViewModel.clearSelection()
+                                    selectedTab = 0
+                                },
+                                modifier = Modifier.padding(innerPadding),
+                            )
+                            2 -> CalendarScreen(
+                                outfitsViewModel = outfitsViewModel,
+                                stylesViewModel = stylesViewModel,
+                                wardrobeViewModel = wardrobeViewModel,
+                                modifier = Modifier.padding(innerPadding),
+                            )
                             3 -> ProfileScreen(modifier = Modifier.padding(innerPadding))
                         }
                     }

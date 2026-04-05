@@ -16,6 +16,7 @@ data class StylesUiState(
     val isLoading: Boolean = false,
     val isCreating: Boolean = false,
     val draftItemIds: Set<String> = emptySet(),
+    val draftStyleName: String = "",
     /** Non-null when editing an existing style; null when creating a new one. */
     val editingStyle: Style? = null,
     val showNameDialog: Boolean = false,
@@ -56,15 +57,21 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
     // ---------- Create flow ----------
 
     fun startCreating() = _state.update {
-        it.copy(isCreating = true, draftItemIds = emptySet(), editingStyle = null)
+        it.copy(isCreating = true, draftItemIds = emptySet(), draftStyleName = "", editingStyle = null)
+    }
+
+    fun startCreatingFromItems(itemIds: Set<String>) = _state.update {
+        it.copy(isCreating = true, draftItemIds = itemIds, draftStyleName = "", editingStyle = null)
     }
 
     fun startEditing(style: Style) = _state.update {
-        it.copy(isCreating = true, draftItemIds = style.itemIds.toSet(), editingStyle = style)
+        it.copy(isCreating = true, draftItemIds = style.itemIds.toSet(), draftStyleName = style.name, editingStyle = style)
     }
 
+    fun updateDraftName(name: String) = _state.update { it.copy(draftStyleName = name) }
+
     fun cancelCreating() = _state.update {
-        it.copy(isCreating = false, draftItemIds = emptySet(), editingStyle = null, showNameDialog = false)
+        it.copy(isCreating = false, draftItemIds = emptySet(), draftStyleName = "", editingStyle = null, showNameDialog = false)
     }
 
     fun toggleDraftItem(driveId: String) = _state.update { s ->
@@ -74,7 +81,14 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun confirmDraft() {
-        if (_state.value.draftItemIds.isNotEmpty()) _state.update { it.copy(showNameDialog = true) }
+        val s = _state.value
+        if (s.draftItemIds.isEmpty()) return
+        if (s.editingStyle != null) {
+            // Editing: name was set inline — save immediately without the dialog
+            saveStyle(s.draftStyleName.ifEmpty { s.editingStyle.name })
+        } else {
+            _state.update { it.copy(showNameDialog = true) }
+        }
     }
 
     fun saveStyle(name: String) {

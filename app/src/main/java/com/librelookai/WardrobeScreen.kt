@@ -47,6 +47,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.AutoAwesome
@@ -56,6 +57,7 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.PhotoLibrary
+import androidx.compose.material.icons.filled.Sort
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
@@ -100,6 +102,7 @@ import coil.request.ImageRequest
 @Composable
 fun WardrobeScreen(
     viewModel: WardrobeViewModel = viewModel(),
+    onCreateStyleFromSelection: (Set<String>) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val state by viewModel.state.collectAsState()
@@ -140,6 +143,7 @@ fun WardrobeScreen(
             onToggleSelection = viewModel::toggleSelection,
             onClearSelection = viewModel::clearSelection,
             onDeleteSelected = viewModel::deleteSelected,
+            onCreateStyleFromSelection = onCreateStyleFromSelection,
             processingImageId = state.processingImageId,
             modifier = modifier,
         )
@@ -149,6 +153,13 @@ fun WardrobeScreen(
             modifier = modifier,
         )
     }
+}
+
+internal enum class SortOption(val label: String) {
+    DATE_DESC("Newest first"),
+    DATE_ASC("Oldest first"),
+    TYPE("Type"),
+    CATEGORY("Category"),
 }
 
 internal data class TagCategory(val label: String, val tags: List<String>)
@@ -246,6 +257,7 @@ private fun GridContent(
     onToggleSelection: (String) -> Unit,
     onClearSelection: () -> Unit,
     onDeleteSelected: () -> Unit,
+    onCreateStyleFromSelection: (Set<String>) -> Unit,
     processingImageId: String?,
     modifier: Modifier = Modifier,
 ) {
@@ -254,31 +266,52 @@ private fun GridContent(
     var selectedIndex by remember { mutableStateOf<Int?>(null) }
     var showDeleteDialog by remember { mutableStateOf(false) }
 
-    // Filter state
+    // Filter + sort state
     var selectedTags by remember { mutableStateOf(emptySet<String>()) }
+    var sortBy by remember { mutableStateOf(SortOption.DATE_DESC) }
 
     val tagCategories = remember(state.images) { state.images.tagCategories() }
 
     // AND filter: image must contain every selected tag
-    val displayedImages = remember(state.images, selectedTags) {
+    val filteredImages = remember(state.images, selectedTags) {
         if (selectedTags.isEmpty()) state.images
         else state.images.filter { img -> selectedTags.all { it in img.allTagStrings() } }
     }
 
-    // Clear viewer when filter changes to avoid stale index
-    LaunchedEffect(selectedTags) { selectedIndex = null }
+    val displayedImages = remember(filteredImages, sortBy) {
+        when (sortBy) {
+            SortOption.DATE_DESC -> filteredImages
+            SortOption.DATE_ASC  -> filteredImages.reversed()
+            SortOption.TYPE      -> filteredImages.sortedBy { it.tags?.type?.lowercase() ?: "" }
+            SortOption.CATEGORY  -> filteredImages.sortedBy { it.tags?.category?.lowercase() ?: "" }
+        }
+    }
+
+    // Clear viewer when filter/sort changes to avoid stale index
+    LaunchedEffect(selectedTags, sortBy) { selectedIndex = null }
 
     val isSelectionMode = state.selectedIds.isNotEmpty()
     if (isSelectionMode) BackHandler(onBack = onClearSelection)
 
     Box(modifier = modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
-            // ---- Tag filter bar ----
-            TagFilterBar(
-                tagCategories = tagCategories,
-                selectedTags = selectedTags,
-                onTagsChanged = { selectedTags = it },
-            )
+            // ---- Tag filter bar + sort ----
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                TagFilterBar(
+                    tagCategories = tagCategories,
+                    selectedTags = selectedTags,
+                    onTagsChanged = { selectedTags = it },
+                    modifier = Modifier.weight(1f),
+                )
+                SortButton(
+                    sortBy = sortBy,
+                    onSortChanged = { sortBy = it },
+                    modifier = Modifier.padding(end = 4.dp),
+                )
+            }
 
             // ---- Main content ----
             when {
@@ -419,13 +452,25 @@ private fun GridContent(
         // Speed-dial FAB
         var fabExpanded by remember { mutableStateOf(false) }
         if (isSelectionMode) {
-            FloatingActionButton(
-                onClick = { showDeleteDialog = true },
+            Column(
                 modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
-                containerColor = MaterialTheme.colorScheme.errorContainer,
-                contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalAlignment = Alignment.End,
             ) {
-                Icon(Icons.Default.Delete, contentDescription = "Delete selected")
+                FloatingActionButton(
+                    onClick = { onCreateStyleFromSelection(state.selectedIds) },
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                ) {
+                    Icon(Icons.Default.AutoAwesome, contentDescription = "Create Style from selection")
+                }
+                FloatingActionButton(
+                    onClick = { showDeleteDialog = true },
+                    containerColor = MaterialTheme.colorScheme.errorContainer,
+                    contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                ) {
+                    Icon(Icons.Default.Delete, contentDescription = "Delete selected")
+                }
             }
         } else {
             if (fabExpanded) {
@@ -786,6 +831,39 @@ private fun SpeedDialFab(
                 contentDescription = if (expanded) "Close menu" else "Add outfit",
                 modifier = Modifier.rotate(rotation),
             )
+        }
+    }
+}
+
+// ---------- Sort button ----------
+
+@Composable
+private fun SortButton(
+    sortBy: SortOption,
+    onSortChanged: (SortOption) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var expanded by remember { mutableStateOf(false) }
+    Box(modifier = modifier) {
+        IconButton(onClick = { expanded = true }) {
+            Icon(Icons.Default.Sort, contentDescription = "Sort")
+        }
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            SortOption.values().forEach { option ->
+                DropdownMenuItem(
+                    text = {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            if (option == sortBy) Icon(Icons.Default.Check, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
+                            else Spacer(Modifier.size(18.dp))
+                            Text(option.label)
+                        }
+                    },
+                    onClick = { onSortChanged(option); expanded = false },
+                )
+            }
         }
     }
 }

@@ -43,6 +43,7 @@ class DriveRepository(
         private const val UPLOAD_API = "https://www.googleapis.com/upload/drive/v3"
         private const val FOLDER_NAME = "LibreLookAI"
         private const val STYLES_FILE_NAME = "_styles_metadata.json"
+        private const val OUTFITS_FILE_NAME = "_outfits_metadata.json"
     }
 
     private val http = OkHttpClient()
@@ -212,6 +213,59 @@ class DriveRepository(
 
         val fileId = existingId ?: run {
             val meta = """{"name":"$STYLES_FILE_NAME","parents":["$folderId"],"mimeType":"application/json"}"""
+            gson.fromJson(
+                http.newCall(Request.Builder()
+                    .url("$API/files?fields=id")
+                    .header("Authorization", "Bearer $tok")
+                    .post(meta.toRequestBody("application/json".toMediaType()))
+                    .build()).await().body!!.string(),
+                DriveFileDto::class.java,
+            ).id
+        }
+        http.newCall(Request.Builder()
+            .url("$UPLOAD_API/files/$fileId?uploadType=media")
+            .header("Authorization", "Bearer $tok")
+            .method("PATCH", json.toRequestBody("application/json".toMediaType()))
+            .build()).await()
+    }
+
+    /** Loads the outfits JSON string from Drive, or null if not yet created. */
+    suspend fun loadOutfitsJson(folderId: String): String? = withContext(Dispatchers.IO) {
+        val tok = token()
+        val q = URLEncoder.encode(
+            "'$folderId' in parents and name='$OUTFITS_FILE_NAME' and trashed=false", "UTF-8",
+        )
+        val fileId = gson.fromJson(
+            http.newCall(Request.Builder()
+                .url("$API/files?q=$q&fields=files(id)")
+                .header("Authorization", "Bearer $tok")
+                .build()).await().body!!.string(),
+            FilesListDto::class.java,
+        ).files.firstOrNull()?.id ?: return@withContext null
+
+        val resp = http.newCall(Request.Builder()
+            .url("$API/files/$fileId?alt=media")
+            .header("Authorization", "Bearer $tok")
+            .build()).await()
+        if (resp.isSuccessful) resp.body?.string() else null
+    }
+
+    /** Creates or overwrites the outfits JSON file in Drive. */
+    suspend fun saveOutfitsJson(folderId: String, json: String) = withContext(Dispatchers.IO) {
+        val tok = token()
+        val q = URLEncoder.encode(
+            "'$folderId' in parents and name='$OUTFITS_FILE_NAME' and trashed=false", "UTF-8",
+        )
+        val existingId = gson.fromJson(
+            http.newCall(Request.Builder()
+                .url("$API/files?q=$q&fields=files(id)")
+                .header("Authorization", "Bearer $tok")
+                .build()).await().body!!.string(),
+            FilesListDto::class.java,
+        ).files.firstOrNull()?.id
+
+        val fileId = existingId ?: run {
+            val meta = """{"name":"$OUTFITS_FILE_NAME","parents":["$folderId"],"mimeType":"application/json"}"""
             gson.fromJson(
                 http.newCall(Request.Builder()
                     .url("$API/files?fields=id")
