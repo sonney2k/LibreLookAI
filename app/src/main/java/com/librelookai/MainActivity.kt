@@ -1,11 +1,14 @@
 package com.librelookai
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -18,13 +21,19 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.librelookai.ui.theme.LibreLookAITheme
 
@@ -52,7 +61,6 @@ class MainActivity : ComponentActivity() {
                 ) { result -> authViewModel.onSignInResult(result) }
 
                 if (!isSignedIn) {
-                    // Full-screen sign-in gate — shown once, never again after first login
                     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                         SignInScreen(
                             onSignIn = { signInLauncher.launch(authViewModel.getSignInIntent()) },
@@ -65,6 +73,29 @@ class MainActivity : ComponentActivity() {
                     val stylesViewModel: StylesViewModel = viewModel()
                     val wardrobeViewModel: WardrobeViewModel = viewModel()
                     val outfitsViewModel: OutfitsViewModel = viewModel()
+                    val weatherViewModel: WeatherViewModel = viewModel()
+                    val weatherState by weatherViewModel.state.collectAsState()
+
+                    // Location permission — request once; refresh weather when granted
+                    var hasLocationPermission by remember {
+                        mutableStateOf(
+                            ContextCompat.checkSelfPermission(
+                                this, Manifest.permission.ACCESS_COARSE_LOCATION,
+                            ) == PackageManager.PERMISSION_GRANTED,
+                        )
+                    }
+                    val locationPermLauncher = rememberLauncherForActivityResult(
+                        ActivityResultContracts.RequestPermission(),
+                    ) { granted ->
+                        hasLocationPermission = granted
+                        if (granted) weatherViewModel.refresh()
+                    }
+                    LaunchedEffect(Unit) {
+                        if (!hasLocationPermission) {
+                            locationPermLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
+                        }
+                    }
+
                     Scaffold(
                         modifier = Modifier.fillMaxSize(),
                         bottomBar = {
@@ -80,29 +111,44 @@ class MainActivity : ComponentActivity() {
                             }
                         },
                     ) { innerPadding ->
-                        when (selectedTab) {
-                            0 -> StylesScreen(
-                                stylesViewModel = stylesViewModel,
-                                wardrobeViewModel = wardrobeViewModel,
-                                outfitsViewModel = outfitsViewModel,
-                                modifier = Modifier.padding(innerPadding),
-                            )
-                            1 -> WardrobeScreen(
-                                viewModel = wardrobeViewModel,
-                                onCreateStyleFromSelection = { itemIds ->
-                                    stylesViewModel.startCreatingFromItems(itemIds)
-                                    wardrobeViewModel.clearSelection()
-                                    selectedTab = 0
-                                },
-                                modifier = Modifier.padding(innerPadding),
-                            )
-                            2 -> CalendarScreen(
-                                outfitsViewModel = outfitsViewModel,
-                                stylesViewModel = stylesViewModel,
-                                wardrobeViewModel = wardrobeViewModel,
-                                modifier = Modifier.padding(innerPadding),
-                            )
-                            3 -> ProfileScreen(modifier = Modifier.padding(innerPadding))
+                        Box(Modifier.fillMaxSize()) {
+                            when (selectedTab) {
+                                0 -> StylesScreen(
+                                    stylesViewModel = stylesViewModel,
+                                    wardrobeViewModel = wardrobeViewModel,
+                                    outfitsViewModel = outfitsViewModel,
+                                    modifier = Modifier.padding(innerPadding),
+                                )
+                                1 -> WardrobeScreen(
+                                    viewModel = wardrobeViewModel,
+                                    onCreateStyleFromSelection = { itemIds ->
+                                        stylesViewModel.startCreatingFromItems(itemIds)
+                                        wardrobeViewModel.clearSelection()
+                                        selectedTab = 0
+                                    },
+                                    modifier = Modifier.padding(innerPadding),
+                                )
+                                2 -> CalendarScreen(
+                                    outfitsViewModel = outfitsViewModel,
+                                    stylesViewModel = stylesViewModel,
+                                    wardrobeViewModel = wardrobeViewModel,
+                                    modifier = Modifier.padding(innerPadding),
+                                )
+                                3 -> ProfileScreen(modifier = Modifier.padding(innerPadding))
+                            }
+
+                            // Weather badge — bottom-left, floating above the nav bar
+                            weatherState.data?.let { weather ->
+                                WeatherBadge(
+                                    data = weather,
+                                    modifier = Modifier
+                                        .align(Alignment.BottomStart)
+                                        .padding(
+                                            start = 12.dp,
+                                            bottom = innerPadding.calculateBottomPadding() + 8.dp,
+                                        ),
+                                )
+                            }
                         }
                     }
                 }
