@@ -73,6 +73,7 @@ class MainActivity : ComponentActivity() {
                     val stylesViewModel: StylesViewModel = viewModel()
                     val wardrobeViewModel: WardrobeViewModel = viewModel()
                     val outfitsViewModel: OutfitsViewModel = viewModel()
+                    val profileViewModel: ProfileViewModel = viewModel()
                     val weatherViewModel: WeatherViewModel = viewModel()
                     val weatherState by weatherViewModel.state.collectAsState()
 
@@ -117,6 +118,8 @@ class MainActivity : ComponentActivity() {
                                     stylesViewModel = stylesViewModel,
                                     wardrobeViewModel = wardrobeViewModel,
                                     outfitsViewModel = outfitsViewModel,
+                                    profileViewModel = profileViewModel,
+                                    weatherViewModel = weatherViewModel,
                                     modifier = Modifier.padding(innerPadding),
                                 )
                                 1 -> WardrobeScreen(
@@ -134,7 +137,10 @@ class MainActivity : ComponentActivity() {
                                     wardrobeViewModel = wardrobeViewModel,
                                     modifier = Modifier.padding(innerPadding),
                                 )
-                                3 -> ProfileScreen(modifier = Modifier.padding(innerPadding))
+                                3 -> ProfileScreen(
+                                    viewModel = profileViewModel,
+                                    modifier = Modifier.padding(innerPadding),
+                                )
                             }
 
                             // Weather badge — bottom-left, floating above the nav bar

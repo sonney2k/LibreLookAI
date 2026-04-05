@@ -39,6 +39,9 @@ class GeminiRepository {
         private const val CLASSIFY_MODEL = "gemini-3-flash-preview"
         private const val CLASSIFY_URL =
             "https://generativelanguage.googleapis.com/v1beta/models/$CLASSIFY_MODEL:generateContent"
+
+        // Text-only model for style prediction (reuses classify endpoint)
+        private const val PREDICT_URL = CLASSIFY_URL
         private const val CLASSIFY_PROMPT =
             "Analyze this clothing item and return ONLY a JSON object (no markdown, no explanation) " +
                 "with these fields: " +
@@ -191,6 +194,44 @@ class GeminiRepository {
                 null
             }
         }
+
+    /**
+     * Sends a text-only prompt to Gemini and returns the raw text response, or null on failure.
+     */
+    suspend fun generateText(prompt: String): String? = withContext(Dispatchers.IO) {
+        val apiKey = BuildConfig.GEMINI_API_KEY
+        if (apiKey.isBlank() || apiKey == "YOUR_GEMINI_API_KEY_HERE") return@withContext null
+
+        val body = gson.toJson(
+            mapOf(
+                "contents" to listOf(
+                    mapOf(
+                        "role" to "user",
+                        "parts" to listOf(mapOf("text" to prompt)),
+                    ),
+                ),
+            ),
+        )
+        return@withContext try {
+            val response = http.newCall(
+                Request.Builder()
+                    .url("$PREDICT_URL?key=$apiKey")
+                    .post(body.toRequestBody("application/json".toMediaType()))
+                    .build(),
+            ).await()
+            val responseBody = response.body!!.string()
+            Log.d(TAG, "generateText HTTP ${response.code}: ${responseBody.take(500)}")
+            if (!response.isSuccessful) return@withContext null
+
+            val parsed = gson.fromJson(responseBody, GeminiResponse::class.java)
+            parsed.candidates
+                ?.firstOrNull()?.content?.parts
+                ?.firstOrNull { it.text != null }?.text
+        } catch (e: Exception) {
+            Log.e(TAG, "generateText failed: ${e.message}", e)
+            null
+        }
+    }
 
     // ---------- Image processing ----------
 

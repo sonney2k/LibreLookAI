@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -29,6 +30,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
@@ -36,14 +38,18 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -52,6 +58,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -65,10 +72,14 @@ fun StylesScreen(
     stylesViewModel: StylesViewModel = viewModel(),
     wardrobeViewModel: WardrobeViewModel = viewModel(),
     outfitsViewModel: OutfitsViewModel = viewModel(),
+    profileViewModel: ProfileViewModel = viewModel(),
+    weatherViewModel: WeatherViewModel = viewModel(),
     modifier: Modifier = Modifier,
 ) {
     val stylesState by stylesViewModel.state.collectAsState()
     val wardrobeState by wardrobeViewModel.state.collectAsState()
+    val profileState by profileViewModel.state.collectAsState()
+    val weatherState by weatherViewModel.state.collectAsState()
 
     if (stylesState.isCreating) {
         StyleItemPicker(
@@ -87,10 +98,21 @@ fun StylesScreen(
             styles = stylesState.styles,
             items = wardrobeState.images,
             isLoading = stylesState.isLoading,
+            isPredicting = stylesState.isPredicting,
+            prediction = stylesState.prediction,
+            predictionError = stylesState.predictionError,
             onCreateStyle = stylesViewModel::startCreating,
             onEditStyle = stylesViewModel::startEditing,
             onDeleteStyle = stylesViewModel::deleteStyle,
             onWearStyle = outfitsViewModel::recordOutfit,
+            onSuggestStyle = {
+                stylesViewModel.triggerPrediction(
+                    prefs   = profileState.preferences,
+                    weather = weatherState.data,
+                    images  = wardrobeState.images,
+                )
+            },
+            onClearPrediction = stylesViewModel::clearPrediction,
             modifier = modifier,
         )
     }
@@ -107,17 +129,25 @@ fun StylesScreen(
 
 // ---------- Style list ----------
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun StyleListScreen(
     styles: List<Style>,
     items: List<DriveImage>,
     isLoading: Boolean,
+    isPredicting: Boolean,
+    prediction: StylePrediction?,
+    predictionError: String?,
     onCreateStyle: () -> Unit,
     onEditStyle: (Style) -> Unit,
     onDeleteStyle: (String) -> Unit,
     onWearStyle: (String) -> Unit,
+    onSuggestStyle: () -> Unit,
+    onClearPrediction: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val itemsById = remember(items) { items.associateBy { it.driveId } }
+
     Box(modifier = modifier.fillMaxSize()) {
         when {
             isLoading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
@@ -136,7 +166,6 @@ private fun StyleListScreen(
                 }
             }
             else -> {
-                val itemsById = remember(items) { items.associateBy { it.driveId } }
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(vertical = 8.dp, horizontal = 0.dp),
@@ -146,6 +175,7 @@ private fun StyleListScreen(
                         StyleCard(
                             style = style,
                             itemsById = itemsById,
+                            highlighted = prediction?.styleId == style.id,
                             onEdit = { onEditStyle(style) },
                             onDelete = { onDeleteStyle(style.id) },
                             onWear = { onWearStyle(style.id) },
@@ -155,11 +185,49 @@ private fun StyleListScreen(
             }
         }
 
+        // Suggest FAB (bottom-start)
+        ExtendedFloatingActionButton(
+            onClick = { if (!isPredicting) onSuggestStyle() },
+            modifier = Modifier.align(Alignment.BottomStart).padding(16.dp),
+            icon = {
+                if (isPredicting)
+                    CircularProgressIndicator(modifier = Modifier.size(18.dp), strokeWidth = 2.dp)
+                else
+                    Icon(Icons.Default.AutoAwesome, contentDescription = null)
+            },
+            text = { Text(if (isPredicting) "Thinking…" else "Suggest") },
+        )
+
+        // Create FAB (bottom-end)
         FloatingActionButton(
             onClick = onCreateStyle,
             modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
         ) {
             Icon(Icons.Default.Add, contentDescription = "Create style")
+        }
+
+        // Prediction error snackbar
+        predictionError?.let { msg ->
+            Snackbar(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(start = 8.dp, end = 8.dp, bottom = 80.dp),
+                action = { TextButton(onClick = onClearPrediction) { Text("OK") } },
+            ) { Text(msg) }
+        }
+    }
+
+    // Prediction result sheet
+    prediction?.let { pred ->
+        val suggestedStyle = styles.find { it.id == pred.styleId }
+        if (suggestedStyle != null) {
+            StyleSuggestionSheet(
+                style = suggestedStyle,
+                reason = pred.reason,
+                itemsById = itemsById,
+                onDismiss = onClearPrediction,
+                onWear = { onWearStyle(suggestedStyle.id); onClearPrediction() },
+            )
         }
     }
 }
@@ -171,6 +239,7 @@ private fun StyleListScreen(
 private fun StyleCard(
     style: Style,
     itemsById: Map<String, DriveImage>,
+    highlighted: Boolean = false,
     onEdit: () -> Unit,
     onDelete: () -> Unit,
     onWear: () -> Unit,
@@ -198,6 +267,9 @@ private fun StyleCard(
             .fillMaxWidth()
             .padding(horizontal = 12.dp)
             .combinedClickable(onClick = onEdit, onLongClick = { showDeleteDialog = true }),
+        border = if (highlighted)
+            androidx.compose.foundation.BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
+        else null,
     ) {
         Column(
             modifier = Modifier.padding(12.dp),
@@ -386,6 +458,96 @@ private fun StyleItemPicker(
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+}
+
+// ---------- Style suggestion sheet ----------
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun StyleSuggestionSheet(
+    style: Style,
+    reason: String,
+    itemsById: Map<String, DriveImage>,
+    onDismiss: () -> Unit,
+    onWear: () -> Unit,
+) {
+    val ctx = LocalContext.current
+    val styleItems = style.itemIds.mapNotNull { itemsById[it] }
+
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .navigationBarsPadding()
+                .padding(horizontal = 20.dp)
+                .padding(bottom = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    Icons.Default.AutoAwesome,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(20.dp),
+                )
+                Spacer(Modifier.width(8.dp))
+                Text("Suggested for today", style = MaterialTheme.typography.titleMedium)
+            }
+
+            HorizontalDivider()
+
+            Text(style.name, style = MaterialTheme.typography.titleSmall)
+
+            if (styleItems.isEmpty()) {
+                Text(
+                    "Items no longer in wardrobe",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.outline,
+                )
+            } else {
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    items(styleItems, key = { it.driveId }) { image ->
+                        AsyncImage(
+                            model = remember(image.driveId, image.version) {
+                                ImageRequest.Builder(ctx)
+                                    .data(image.localPath)
+                                    .memoryCacheKey("${image.driveId}_${image.version}")
+                                    .build()
+                            },
+                            contentDescription = image.name,
+                            modifier = Modifier
+                                .size(88.dp)
+                                .clip(MaterialTheme.shapes.small),
+                            contentScale = ContentScale.Crop,
+                        )
+                    }
+                }
+            }
+
+            if (reason.isNotBlank()) {
+                Text(
+                    reason,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
+            ) {
+                TextButton(onClick = onDismiss) { Text("Dismiss") }
+                androidx.compose.material3.Button(onClick = onWear) {
+                    Icon(Icons.Default.CalendarMonth, null, modifier = Modifier.size(16.dp))
+                    Spacer(Modifier.width(4.dp))
+                    Text("Wear today")
                 }
             }
         }
