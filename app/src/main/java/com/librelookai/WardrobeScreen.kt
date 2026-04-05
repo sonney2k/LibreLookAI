@@ -181,15 +181,17 @@ internal enum class SortOption(val label: String) {
 internal data class TagCategory(val label: String, val tags: List<String>)
 
 internal fun List<DriveImage>.tagCategories(): List<TagCategory> {
-    val types   = mapNotNull { it.tags?.type }.filter { it.isNotEmpty() }.toSortedSet()
-    val cats    = mapNotNull { it.tags?.category }.filter { it.isNotEmpty() }.toSortedSet()
-    val uses    = flatMap { it.tags?.uses ?: emptyList() }.toSortedSet()
-    val colors  = flatMap { it.tags?.colors ?: emptyList() }.toSortedSet()
+    fun collect(vararg lists: List<String>) = lists.flatMap { it }.toSortedSet().toList()
     return listOfNotNull(
-        TagCategory("Type",     types.toList()).takeIf { it.tags.isNotEmpty() },
-        TagCategory("Category", cats.toList()).takeIf { it.tags.isNotEmpty() },
-        TagCategory("Uses",     uses.toList()).takeIf { it.tags.isNotEmpty() },
-        TagCategory("Colors",   colors.toList()).takeIf { it.tags.isNotEmpty() },
+        TagCategory("Type",        mapNotNull { it.tags?.type }.filter { it.isNotEmpty() }.toSortedSet().toList()).takeIf { it.tags.isNotEmpty() },
+        TagCategory("Category",    mapNotNull { it.tags?.category }.filter { it.isNotEmpty() }.toSortedSet().toList()).takeIf { it.tags.isNotEmpty() },
+        TagCategory("Uses",        collect(flatMap { it.tags?.uses ?: emptyList() })).takeIf { it.tags.isNotEmpty() },
+        TagCategory("Colors",      collect(flatMap { it.tags?.colors ?: emptyList() })).takeIf { it.tags.isNotEmpty() },
+        TagCategory("Seasonality", collect(flatMap { it.tags?.seasonality ?: emptyList() })).takeIf { it.tags.isNotEmpty() },
+        TagCategory("Aesthetic",   collect(flatMap { it.tags?.aesthetic ?: emptyList() })).takeIf { it.tags.isNotEmpty() },
+        TagCategory("Fit",         collect(flatMap { it.tags?.fit ?: emptyList() })).takeIf { it.tags.isNotEmpty() },
+        TagCategory("Material",    collect(flatMap { it.tags?.material ?: emptyList() })).takeIf { it.tags.isNotEmpty() },
+        TagCategory("Pattern",     collect(flatMap { it.tags?.pattern ?: emptyList() })).takeIf { it.tags.isNotEmpty() },
     )
 }
 
@@ -197,8 +199,24 @@ internal fun DriveImage.allTagStrings() = buildSet {
     tags?.let { t ->
         if (t.type.isNotEmpty()) add(t.type)
         if (t.category.isNotEmpty()) add(t.category)
-        addAll(t.uses)
-        addAll(t.colors)
+        addAll(t.uses); addAll(t.colors); addAll(t.seasonality)
+        addAll(t.aesthetic); addAll(t.fit); addAll(t.material); addAll(t.pattern)
+    }
+}
+
+internal fun DriveImage.tagStringsForCategory(categoryLabel: String): Set<String> {
+    val t = tags ?: return emptySet()
+    return when (categoryLabel) {
+        "Type"        -> if (t.type.isNotEmpty()) setOf(t.type) else emptySet()
+        "Category"    -> if (t.category.isNotEmpty()) setOf(t.category) else emptySet()
+        "Uses"        -> t.uses.toSet()
+        "Colors"      -> t.colors.toSet()
+        "Seasonality" -> t.seasonality.toSet()
+        "Aesthetic"   -> t.aesthetic.toSet()
+        "Fit"         -> t.fit.toSet()
+        "Material"    -> t.material.toSet()
+        "Pattern"     -> t.pattern.toSet()
+        else          -> emptySet()
     }
 }
 
@@ -206,8 +224,8 @@ internal fun DriveImage.allTagStrings() = buildSet {
 @Composable
 internal fun TagFilterBar(
     tagCategories: List<TagCategory>,
-    selectedTags: Set<String>,
-    onTagsChanged: (Set<String>) -> Unit,
+    selectedTags: Map<String, Set<String>>,
+    onTagsChanged: (Map<String, Set<String>>) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     if (tagCategories.isEmpty()) return
@@ -218,7 +236,8 @@ internal fun TagFilterBar(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         items(tagCategories) { category ->
-            val activeCount = category.tags.count { it in selectedTags }
+            val catSelected = selectedTags[category.label] ?: emptySet()
+            val activeCount = catSelected.size
             Box {
                 FilterChip(
                     selected = activeCount > 0,
@@ -233,7 +252,7 @@ internal fun TagFilterBar(
                     onDismissRequest = { expandedCategory = null },
                 ) {
                     category.tags.forEach { tag ->
-                        val checked = tag in selectedTags
+                        val checked = tag in catSelected
                         DropdownMenuItem(
                             text = {
                                 Row(
@@ -246,15 +265,16 @@ internal fun TagFilterBar(
                                 }
                             },
                             onClick = {
-                                onTagsChanged(if (checked) selectedTags - tag else selectedTags + tag)
+                                val updated = if (checked) catSelected - tag else catSelected + tag
+                                onTagsChanged(selectedTags + (category.label to updated))
                             },
                         )
                     }
                 }
             }
         }
-        if (selectedTags.isNotEmpty()) {
-            item { TextButton(onClick = { onTagsChanged(emptySet()) }) { Text("Clear") } }
+        if (selectedTags.values.any { it.isNotEmpty() }) {
+            item { TextButton(onClick = { onTagsChanged(emptyMap()) }) { Text("Clear") } }
         }
     }
 }
@@ -285,15 +305,20 @@ private fun GridContent(
     var showDeleteDialog by remember { mutableStateOf(false) }
 
     // Filter + sort state
-    var selectedTags by remember { mutableStateOf(emptySet<String>()) }
+    var selectedTags by remember { mutableStateOf(emptyMap<String, Set<String>>()) }
     var sortBy by remember { mutableStateOf(SortOption.DATE_DESC) }
 
     val tagCategories = remember(state.images) { state.images.tagCategories() }
 
-    // AND filter: image must contain every selected tag
+    // OR within each category, AND across categories
     val filteredImages = remember(state.images, selectedTags) {
-        if (selectedTags.isEmpty()) state.images
-        else state.images.filter { img -> selectedTags.all { it in img.allTagStrings() } }
+        val activeFilters = selectedTags.filter { (_, tags) -> tags.isNotEmpty() }
+        if (activeFilters.isEmpty()) state.images
+        else state.images.filter { img ->
+            activeFilters.all { (categoryLabel, catTags) ->
+                catTags.any { it in img.tagStringsForCategory(categoryLabel) }
+            }
+        }
     }
 
     val displayedImages = remember(filteredImages, sortBy) {
@@ -344,7 +369,7 @@ private fun GridContent(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center,
                         ) {
-                            if (selectedTags.isNotEmpty()) {
+                            if (selectedTags.values.any { it.isNotEmpty() }) {
                                 Text("No items match the filter", style = MaterialTheme.typography.bodyLarge)
                             } else {
                                 Text("No outfits yet", style = MaterialTheme.typography.bodyLarge)

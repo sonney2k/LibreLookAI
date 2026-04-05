@@ -49,8 +49,14 @@ class GeminiRepository {
                 "with these fields: " +
                 "\"type\" (specific item name, e.g. \"T-shirt\", \"Chinos\", \"Puffer jacket\"), " +
                 "\"category\" (one of: tops, bottoms, outerwear, footwear, accessories, dress, suit), " +
-                "\"uses\" (array of applicable tags from: casual, formal, business, sport, outdoor, beach, evening), " +
-                "\"colors\" (array of main colors as lowercase English words)."
+                "\"uses\" (array from: casual, formal, business, sport, outdoor, beach, evening), " +
+                "\"colors\" (array of main colors as lowercase English words), " +
+                "\"seasonality\" (array from: spring, summer, fall, winter), " +
+                "\"aesthetic\" (array from: minimalist, streetwear, preppy, bohemian, classic, sporty, romantic, edgy, business-casual, luxury), " +
+                "\"fit\" (array from: slim, regular, relaxed, oversized, tailored), " +
+                "\"material\" (array of detected/inferred materials, e.g. cotton, denim, wool, leather, polyester, linen, silk, knit), " +
+                "\"pattern\" (array from: solid, stripes, plaid, floral, geometric, animal-print, graphic, camo, abstract). " +
+                "Use empty arrays for fields that cannot be determined."
     }
 
     /**
@@ -329,6 +335,11 @@ data class ClothingTags(
     val category: String = "",
     val uses: List<String> = emptyList(),
     val colors: List<String> = emptyList(),
+    val seasonality: List<String> = emptyList(),
+    val aesthetic: List<String> = emptyList(),
+    val fit: List<String> = emptyList(),
+    val material: List<String> = emptyList(),
+    val pattern: List<String> = emptyList(),
 )
 
 // ---------- Response DTOs ----------

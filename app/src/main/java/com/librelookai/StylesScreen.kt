@@ -101,9 +101,6 @@ private fun List<Style>.styleTagCategories(itemsById: Map<String, DriveImage>): 
     return allImages.tagCategories()
 }
 
-private fun Style.allTagStrings(itemsById: Map<String, DriveImage>): Set<String> =
-    itemIds.flatMap { id -> itemsById[id]?.allTagStrings() ?: emptySet() }.toSet()
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun StylesScreen(
@@ -227,14 +224,23 @@ private fun StyleListScreen(
 ) {
     val itemsById = remember(items) { items.associateBy { it.driveId } }
 
-    var selectedTags by remember { mutableStateOf(emptySet<String>()) }
+    var selectedTags by remember { mutableStateOf(emptyMap<String, Set<String>>()) }
     var sortBy by remember { mutableStateOf(StyleSortOption.DATE_DESC) }
 
     val tagCategories = remember(styles, itemsById) { styles.styleTagCategories(itemsById) }
 
+    // OR within each category, AND across categories; a style matches if any of its items satisfies each active filter
     val filteredStyles = remember(styles, selectedTags, itemsById) {
-        if (selectedTags.isEmpty()) styles
-        else styles.filter { style -> selectedTags.all { it in style.allTagStrings(itemsById) } }
+        val activeFilters = selectedTags.filter { (_, tags) -> tags.isNotEmpty() }
+        if (activeFilters.isEmpty()) styles
+        else styles.filter { style ->
+            activeFilters.all { (categoryLabel, catTags) ->
+                style.itemIds.any { id ->
+                    val img = itemsById[id] ?: return@any false
+                    catTags.any { it in img.tagStringsForCategory(categoryLabel) }
+                }
+            }
+        }
     }
 
     val displayedStyles = remember(filteredStyles, sortBy) {
@@ -618,11 +624,16 @@ private fun StyleItemPicker(
 ) {
     BackHandler(onBack = onCancel)
 
-    var selectedTags by remember { mutableStateOf(emptySet<String>()) }
+    var selectedTags by remember { mutableStateOf(emptyMap<String, Set<String>>()) }
     val tagCategories = remember(items) { items.tagCategories() }
     val displayedItems = remember(items, selectedTags) {
-        if (selectedTags.isEmpty()) items
-        else items.filter { img -> selectedTags.all { it in img.allTagStrings() } }
+        val activeFilters = selectedTags.filter { (_, tags) -> tags.isNotEmpty() }
+        if (activeFilters.isEmpty()) items
+        else items.filter { img ->
+            activeFilters.all { (categoryLabel, catTags) ->
+                catTags.any { it in img.tagStringsForCategory(categoryLabel) }
+            }
+        }
     }
 
     Column(modifier = modifier.fillMaxSize()) {
@@ -698,7 +709,7 @@ private fun StyleItemPicker(
         if (displayedItems.isEmpty()) {
             Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
                 Text(
-                    if (selectedTags.isNotEmpty()) "No items match the filter"
+                    if (selectedTags.values.any { it.isNotEmpty() }) "No items match the filter"
                     else "No wardrobe items yet",
                     style = MaterialTheme.typography.bodyMedium,
                 )
