@@ -60,6 +60,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
@@ -95,6 +96,7 @@ fun TravelScreen(
     val stylesState   by stylesViewModel.state.collectAsState()
 
     val isWorking = state.isLoadingForecast || state.isGenerating
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     Box(modifier = modifier.fillMaxSize()) {
         LazyColumn(
@@ -178,6 +180,7 @@ fun TravelScreen(
 
                     Button(
                         onClick = {
+                            keyboardController?.hide()
                             travelViewModel.generate(
                                 prefs  = profileState.preferences,
                                 images = wardrobeState.images,
@@ -187,22 +190,7 @@ fun TravelScreen(
                         enabled = state.destination.isNotEmpty() && !isWorking,
                         modifier = Modifier.fillMaxWidth(),
                     ) {
-                        if (isWorking) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(18.dp),
-                                strokeWidth = 2.dp,
-                                color = MaterialTheme.colorScheme.onPrimary,
-                            )
-                            Spacer(Modifier.width(8.dp))
-                        }
-                        Text(
-                            when {
-                                state.isLoadingForecast -> "Fetching weather…"
-                                state.isGenerating      -> "Generating packing list…"
-                                state.packingList != null -> "Re-generate"
-                                else -> "Generate Packing List"
-                            }
-                        )
+                        Text(if (state.packingList != null) "Re-generate" else "Generate Packing List")
                     }
                 }
             }
@@ -335,6 +323,17 @@ fun TravelScreen(
                     }
                 }
             }
+        }
+
+        // AI processing overlay
+        if (isWorking) {
+            AiProcessingOverlay(
+                label = when {
+                    state.isLoadingForecast -> "Fetching weather…"
+                    else                   -> "Generating packing list…"
+                },
+                modifier = Modifier.fillMaxSize(),
+            )
         }
 
         // Error snackbar
