@@ -252,5 +252,8 @@ private fun buildPackingPrompt(
         appendLine()
         appendLine("Respond with ONLY a valid JSON object — no markdown, no extra text:")
         append("""{"outfits":[{"occasion":"<group label>","itemIds":["<id1>","<id2>",...],"description":"<1-sentence style note>"},...],"extraItems":["<item1>","<item2>",...],"reason":"<1-2 sentence summary>"}""")
+        appendLine()
+        appendLine()
+        appendLine("IMPORTANT: Write all user-facing text fields (occasion, description, reason, extraItems) in ${AppLanguage.toGeminiName(prefs?.language ?: AppLanguage.ENGLISH)}.")
     }
 }

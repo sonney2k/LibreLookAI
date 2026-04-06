@@ -105,5 +105,8 @@ private fun buildGapPrompt(images: List<DriveImage>, prefs: UserPreferences?): S
         appendLine()
         appendLine("Respond with ONLY a valid JSON object — no markdown, no extra text:")
         append("""{"suggestions":[{"missingItem":"<item name>","category":"<category>","colors":["<color1>","<color2>"],"reason":"<user-facing observation>","outfitCount":<integer>},...],"summary":"<1-2 sentence overall wardrobe assessment>"}""")
+        appendLine()
+        appendLine()
+        appendLine("IMPORTANT: Write all user-facing text fields (reason, summary) in ${AppLanguage.toGeminiName(prefs?.language ?: AppLanguage.ENGLISH)}.")
     }
 }

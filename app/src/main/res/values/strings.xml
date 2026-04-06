@@ -1,4 +1,174 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">LibreLookAI</string>
+
+    <!-- Navigation -->
+    <string name="nav_styles">Styles</string>
+    <string name="nav_wardrobe">Wardrobe</string>
+    <string name="nav_calendar">Calendar</string>
+    <string name="nav_travel">Travel</string>
+    <string name="nav_gaps">Gaps</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Common actions -->
+    <string name="action_ok">OK</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_dismiss">Dismiss</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_save">Save</string>
+    <string name="action_saving">Saving…</string>
+    <string name="action_clear">Clear</string>
+
+    <!-- Sign In -->
+    <string name="sign_in_prompt">Sign in to manage your wardrobe</string>
+    <string name="sign_in_button">Sign in with Google</string>
+
+    <!-- Settings -->
+    <string name="settings_tab_profile">Profile</string>
+    <string name="settings_tab_data">Data</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_gender">Gender</string>
+    <string name="settings_gender_select">Select…</string>
+    <string name="settings_gender_prefer_not">Prefer not to say</string>
+    <string name="settings_gender_female">Female</string>
+    <string name="settings_gender_male">Male</string>
+    <string name="settings_gender_nonbinary">Non-binary</string>
+    <string name="settings_gender_other">Other</string>
+    <string name="settings_year_of_birth">Year of Birth</string>
+    <string name="settings_year_placeholder">e.g. 1990</string>
+    <string name="settings_style_prefs">Style Preferences</string>
+    <string name="settings_style_placeholder">Describe what you like to wear, occasions you dress for, favourite colours, brands, or anything else that helps personalise your outfit recommendations…</string>
+    <string name="settings_saved">Preferences saved</string>
+    <string name="settings_data_tags_title">Wardrobe Tags</string>
+    <string name="settings_data_tags_desc">Re-classify every item in your wardrobe with Gemini. This overwrites any manual tag edits.</string>
+    <string name="settings_rescan_button">Re-scan All Tags</string>
+    <string name="settings_rescanning">Re-scanning %1$d of %2$d…</string>
+    <string name="settings_rescan_dialog_title">Re-scan all tags?</string>
+    <string name="settings_rescan_dialog_text">Gemini will re-classify every item in your wardrobe. This will overwrite any manual tag edits and may take a while.</string>
+    <string name="settings_rescan_confirm">Re-scan</string>
+
+    <!-- Wardrobe -->
+    <string name="wardrobe_empty_filter">No items match the filter</string>
+    <string name="wardrobe_empty">No items yet</string>
+    <string name="wardrobe_empty_hint">Take a photo or pick from your gallery</string>
+    <string name="wardrobe_create_outfit">Create outfit manually</string>
+    <string name="wardrobe_compose_ai">Compose with AI</string>
+    <string name="wardrobe_delete_title">Delete items?</string>
+    <string name="wardrobe_delete_text">Are you sure you want to delete %d selected items? This cannot be undone.</string>
+    <string name="wardrobe_sort_newest">Newest first</string>
+    <string name="wardrobe_sort_oldest">Oldest first</string>
+    <string name="wardrobe_sort_most_worn">Most worn</string>
+    <string name="wardrobe_sort_type">Type</string>
+    <string name="wardrobe_sort_category">Category</string>
+    <string name="wardrobe_tag_detect">Detect tags</string>
+    <string name="wardrobe_tag_remove_bg">Remove BG</string>
+    <string name="wardrobe_tag_edit">Edit tags</string>
+    <string name="wardrobe_tag_sheet_title">Edit Tags</string>
+    <string name="wardrobe_add_gallery">Gallery</string>
+    <string name="wardrobe_add_camera">Camera</string>
+    <string name="tag_type">Type</string>
+    <string name="tag_category">Category</string>
+    <string name="tag_uses">Uses</string>
+    <string name="tag_colors">Colors</string>
+    <string name="tag_seasonality">Seasonality</string>
+    <string name="tag_aesthetic">Aesthetic</string>
+    <string name="tag_fit">Fit</string>
+    <string name="tag_material">Material</string>
+    <string name="tag_pattern">Pattern</string>
+    <string name="tag_add_custom">Add custom…</string>
+    <string name="tag_type_placeholder">e.g. T-shirt, Chinos, Puffer jacket</string>
+    <string name="tag_category_placeholder">tops, bottoms, outerwear, footwear, accessories, dress, suit</string>
+
+    <!-- Styles -->
+    <string name="styles_empty">No styles yet</string>
+    <string name="styles_empty_hint">Tap + to build an outfit from your wardrobe</string>
+    <string name="styles_no_match">No styles match the filter</string>
+    <string name="styles_sort_newest">Newest first</string>
+    <string name="styles_sort_oldest">Oldest first</string>
+    <string name="styles_sort_most_worn">Most worn</string>
+    <string name="styles_sort_name_az">Name A–Z</string>
+    <string name="styles_sort_name_za">Name Z–A</string>
+    <string name="styles_sort_most_items">Most items</string>
+    <string name="styles_create_manual">Create outfit manually</string>
+    <string name="styles_suggest">Suggest existing style</string>
+    <string name="styles_compose">Compose new style</string>
+    <string name="styles_thinking">Thinking…</string>
+    <string name="styles_suggesting">Suggesting style…</string>
+    <string name="styles_composing">Composing outfit…</string>
+    <string name="styles_delete_title">Delete style?</string>
+    <string name="styles_delete_text">\"%s\" will be permanently removed.</string>
+    <string name="styles_wear_today">Wear today</string>
+    <string name="styles_worn_today">Worn today!</string>
+    <string name="styles_missing_items">Items no longer in wardrobe</string>
+    <string name="styles_suggested_title">Suggested for today</string>
+    <string name="styles_composed_title">Composed for you</string>
+    <string name="styles_name_dialog_title">Name this style</string>
+    <string name="styles_name_placeholder">Style name</string>
+    <string name="styles_description_placeholder">Description (optional)</string>
+    <string name="styles_create_this">Create this style</string>
+    <string name="styles_refine_label">Refine with AI</string>
+    <string name="styles_refine_custom">Custom feedback…</string>
+    <string name="styles_refine_casual">More casual</string>
+    <string name="styles_refine_formal">More formal</string>
+    <string name="styles_refine_diff_colors">Different colors</string>
+    <string name="styles_refine_warmer">Warmer clothing</string>
+    <string name="styles_refine_lighter">Lighter clothing</string>
+    <string name="styles_refine_trendy">More trendy</string>
+    <string name="styles_refine_simpler">Simpler</string>
+    <string name="styles_refine_bold">More bold</string>
+
+    <!-- Travel -->
+    <string name="travel_title">Travel Packing List</string>
+    <string name="travel_destination">Destination</string>
+    <string name="travel_destination_placeholder">e.g. Paris, Tokyo, New York</string>
+    <string name="travel_duration">Duration</string>
+    <string name="travel_start_date">Start date</string>
+    <string name="travel_generate">Generate Packing List</string>
+    <string name="travel_regenerate">Re-generate</string>
+    <string name="travel_packing_list">Packing List</string>
+    <string name="travel_clear">Clear</string>
+    <string name="travel_extra_items">Also pack (not in wardrobe)</string>
+    <string name="travel_empty">Enter a destination to get started</string>
+    <string name="travel_historical_note">Trip dates are outside the live forecast window — showing historical climate data.</string>
+    <string name="travel_refine_lighter">Pack lighter</string>
+    <string name="travel_refine_formal">More formal options</string>
+    <string name="travel_refine_casual">More casual</string>
+    <string name="travel_refine_rain">Better for rain</string>
+    <string name="travel_refine_evening">Add evening outfits</string>
+    <string name="travel_refine_reuse">Maximize outfit reuse</string>
+    <string name="travel_day">Day %d</string>
+
+    <!-- Calendar -->
+    <string name="calendar_tab_calendar">Calendar</string>
+    <string name="calendar_tab_stats">Statistics</string>
+    <string name="calendar_day_mo">Mo</string>
+    <string name="calendar_day_tu">Tu</string>
+    <string name="calendar_day_we">We</string>
+    <string name="calendar_day_th">Th</string>
+    <string name="calendar_day_fr">Fr</string>
+    <string name="calendar_day_sa">Sa</string>
+    <string name="calendar_day_su">Su</string>
+    <string name="calendar_stats_styles">Most Worn Styles</string>
+    <string name="calendar_stats_items">Most Worn Items</string>
+    <string name="calendar_empty">No outfit history yet</string>
+    <string name="calendar_empty_hint">Wear a style from the Styles tab to start tracking</string>
+
+    <!-- Gap Analyzer -->
+    <string name="gap_title">Wardrobe Gap Analyzer</string>
+    <string name="gap_description">Discover the 3 missing pieces that would unlock the most new outfit combinations from your existing wardrobe.</string>
+    <string name="gap_analyze">Analyze My Wardrobe</string>
+    <string name="gap_reanalyze">Re-analyze</string>
+    <string name="gap_outfits_pill">+%d outfits</string>
+    <string name="gap_shop_amazon">Amazon</string>
+    <string name="gap_shop_google">Google</string>
+    <string name="gap_empty_title">Find what\'s missing</string>
+    <string name="gap_empty_hint">Tap \"Analyze\" to let AI identify the foundational pieces that would complete the most outfits from your wardrobe.</string>
+
+    <!-- AI overlay -->
+    <string name="ai_working">AI is working…</string>
+    <string name="ai_fetching_weather">Fetching weather…</string>
+    <string name="ai_generating_packing">Generating packing list…</string>
+    <string name="ai_analyzing_wardrobe">Analyzing your wardrobe…</string>
+    <string name="ai_suggesting_style">Suggesting style…</string>
+    <string name="ai_composing_outfit">Composing outfit…</string>
 </resources>

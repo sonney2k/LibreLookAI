@@ -41,6 +41,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -78,13 +79,13 @@ fun WardrobeGapScreen(
                         )
                         Spacer(Modifier.width(8.dp))
                         Text(
-                            "Wardrobe Gap Analyzer",
+                            stringResource(R.string.gap_title),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.SemiBold,
                         )
                     }
                     Text(
-                        "Discover the 3 missing pieces that would unlock the most new outfit combinations from your existing wardrobe.",
+                        stringResource(R.string.gap_description),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -100,7 +101,7 @@ fun WardrobeGapScreen(
                     ) {
                         Icon(Icons.Default.AutoAwesome, contentDescription = null, modifier = Modifier.size(18.dp))
                         Spacer(Modifier.width(8.dp))
-                        Text(if (state.analysis != null) "Re-analyze" else "Analyze My Wardrobe")
+                        Text(if (state.analysis != null) stringResource(R.string.gap_reanalyze) else stringResource(R.string.gap_analyze))
                     }
                 }
             }
@@ -156,12 +157,12 @@ fun WardrobeGapScreen(
                                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                             Text(
-                                "Find what's missing",
+                                stringResource(R.string.gap_empty_title),
                                 style = MaterialTheme.typography.titleSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                             Text(
-                                "Tap \"Analyze\" to let AI identify the foundational pieces that would complete the most outfits from your wardrobe.",
+                                stringResource(R.string.gap_empty_hint),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -174,7 +175,7 @@ fun WardrobeGapScreen(
         // AI overlay
         if (state.isAnalyzing) {
             AiProcessingOverlay(
-                label = "Analyzing your wardrobe…",
+                label = stringResource(R.string.ai_analyzing_wardrobe),
                 modifier = Modifier.fillMaxSize(),
             )
         }
@@ -185,7 +186,7 @@ fun WardrobeGapScreen(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(16.dp),
-                action = { TextButton(onClick = gapViewModel::clearError) { Text("OK") } },
+                action = { TextButton(onClick = gapViewModel::clearError) { Text(stringResource(R.string.action_ok)) } },
             ) { Text(msg) }
         }
     }
@@ -245,7 +246,7 @@ private fun GapSuggestionCard(
                         shape = MaterialTheme.shapes.small,
                     ) {
                         Text(
-                            "+${suggestion.outfitCount} outfits",
+                            stringResource(R.string.gap_outfits_pill, suggestion.outfitCount),
                             style = MaterialTheme.typography.labelSmall,
                             fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -289,7 +290,7 @@ private fun GapSuggestionCard(
                 ) {
                     Icon(Icons.Default.ShoppingCart, contentDescription = null, modifier = Modifier.size(14.dp))
                     Spacer(Modifier.width(4.dp))
-                    Text("Amazon", style = MaterialTheme.typography.labelMedium)
+                    Text(stringResource(R.string.gap_shop_amazon), style = MaterialTheme.typography.labelMedium)
                 }
                 OutlinedButton(
                     onClick = {
@@ -301,7 +302,7 @@ private fun GapSuggestionCard(
                 ) {
                     Icon(Icons.Default.ShoppingCart, contentDescription = null, modifier = Modifier.size(14.dp))
                     Spacer(Modifier.width(4.dp))
-                    Text("Google", style = MaterialTheme.typography.labelMedium)
+                    Text(stringResource(R.string.gap_shop_google), style = MaterialTheme.typography.labelMedium)
                 }
             }
         }

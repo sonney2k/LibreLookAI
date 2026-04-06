@@ -110,6 +110,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -189,15 +190,32 @@ fun WardrobeScreen(
     }
 }
 
-internal enum class SortOption(val label: String) {
-    DATE_DESC("Newest first"),
-    DATE_ASC("Oldest first"),
-    POPULARITY("Most worn"),
-    TYPE("Type"),
-    CATEGORY("Category"),
+internal enum class SortOption { DATE_DESC, DATE_ASC, POPULARITY, TYPE, CATEGORY }
+
+@Composable
+internal fun SortOption.displayLabel(): String = when (this) {
+    SortOption.DATE_DESC  -> stringResource(R.string.wardrobe_sort_newest)
+    SortOption.DATE_ASC   -> stringResource(R.string.wardrobe_sort_oldest)
+    SortOption.POPULARITY -> stringResource(R.string.wardrobe_sort_most_worn)
+    SortOption.TYPE       -> stringResource(R.string.wardrobe_sort_type)
+    SortOption.CATEGORY   -> stringResource(R.string.wardrobe_sort_category)
 }
 
 internal data class TagCategory(val label: String, val tags: List<String>)
+
+@Composable
+internal fun tagCategoryDisplayLabel(key: String): String = when (key) {
+    "Type"        -> stringResource(R.string.tag_type)
+    "Category"    -> stringResource(R.string.tag_category)
+    "Uses"        -> stringResource(R.string.tag_uses)
+    "Colors"      -> stringResource(R.string.tag_colors)
+    "Seasonality" -> stringResource(R.string.tag_seasonality)
+    "Aesthetic"   -> stringResource(R.string.tag_aesthetic)
+    "Fit"         -> stringResource(R.string.tag_fit)
+    "Material"    -> stringResource(R.string.tag_material)
+    "Pattern"     -> stringResource(R.string.tag_pattern)
+    else          -> key
+}
 
 internal fun List<DriveImage>.tagCategories(): List<TagCategory> {
     fun collect(vararg lists: List<String>) = lists.flatMap { it }.toSortedSet().toList()
@@ -263,7 +281,7 @@ internal fun TagFilterBar(
                     onClick = {
                         expandedCategory = if (expandedCategory == category.label) null else category.label
                     },
-                    label = { Text(if (activeCount > 0) "${category.label} ($activeCount)" else category.label) },
+                    label = { val displayLabel = tagCategoryDisplayLabel(category.label); Text(if (activeCount > 0) "$displayLabel ($activeCount)" else displayLabel) },
                     trailingIcon = { Icon(Icons.Default.ArrowDropDown, null, Modifier.size(16.dp)) },
                 )
                 DropdownMenu(
@@ -293,7 +311,7 @@ internal fun TagFilterBar(
             }
         }
         if (selectedTags.values.any { it.isNotEmpty() }) {
-            item { TextButton(onClick = { onTagsChanged(emptyMap()) }) { Text("Clear") } }
+            item { TextButton(onClick = { onTagsChanged(emptyMap()) }) { Text(stringResource(R.string.action_clear)) } }
         }
     }
 }
@@ -391,12 +409,12 @@ private fun GridContent(
                             verticalArrangement = Arrangement.Center,
                         ) {
                             if (selectedTags.values.any { it.isNotEmpty() }) {
-                                Text("No items match the filter", style = MaterialTheme.typography.bodyLarge)
+                                Text(stringResource(R.string.wardrobe_empty_filter), style = MaterialTheme.typography.bodyLarge)
                             } else {
-                                Text("No outfits yet", style = MaterialTheme.typography.bodyLarge)
+                                Text(stringResource(R.string.wardrobe_empty), style = MaterialTheme.typography.bodyLarge)
                                 Spacer(Modifier.height(4.dp))
                                 Text(
-                                    "Take a photo or pick from your gallery",
+                                    stringResource(R.string.wardrobe_empty_hint),
                                     style = MaterialTheme.typography.bodyMedium,
                                 )
                             }
@@ -485,9 +503,9 @@ private fun GridContent(
         }
 
         // Progress pill
+        val retagLabel = if (state.isRetagging) stringResource(R.string.settings_rescanning, state.retagDone + 1, state.retagTotal) else null
         val overlayLabel = when {
-            state.isRetagging ->
-                "Re-scanning tags (${state.retagDone + 1}/${state.retagTotal})…"
+            state.isRetagging -> retagLabel
             state.isProcessing && state.batchTotal > 1 ->
                 "Removing background (${state.batchDone + 1}/${state.batchTotal})…"
             state.isUploading && state.batchTotal > 1 ->
@@ -528,21 +546,21 @@ private fun GridContent(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                     icon = { Icon(Icons.Default.Edit, contentDescription = null) },
-                    text = { Text("Create outfit manually") },
+                    text = { Text(stringResource(R.string.wardrobe_create_outfit)) },
                 )
                 ExtendedFloatingActionButton(
                     onClick = { onComposeStyleFromSelection(state.selectedIds) },
                     containerColor = MaterialTheme.colorScheme.tertiaryContainer,
                     contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
                     icon = { Icon(Icons.Default.AutoFixHigh, contentDescription = null) },
-                    text = { Text("Compose with AI") },
+                    text = { Text(stringResource(R.string.wardrobe_compose_ai)) },
                 )
                 ExtendedFloatingActionButton(
                     onClick = { showDeleteDialog = true },
                     containerColor = MaterialTheme.colorScheme.errorContainer,
                     contentColor = MaterialTheme.colorScheme.onErrorContainer,
                     icon = { Icon(Icons.Default.Delete, contentDescription = null) },
-                    text = { Text("Delete") },
+                    text = { Text(stringResource(R.string.action_delete)) },
                 )
             }
         } else {
@@ -571,7 +589,7 @@ private fun GridContent(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
                     .padding(start = 8.dp, end = 96.dp, bottom = 8.dp),
-                action = { TextButton(onClick = onDismissError) { Text("Dismiss") } },
+                action = { TextButton(onClick = onDismissError) { Text(stringResource(R.string.action_dismiss)) } },
             ) { Text(msg) }
         }
     }
@@ -579,8 +597,8 @@ private fun GridContent(
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Delete items?") },
-            text = { Text("Are you sure you want to delete ${state.selectedIds.size} selected items? This cannot be undone.") },
+            title = { Text(stringResource(R.string.wardrobe_delete_title)) },
+            text = { Text(stringResource(R.string.wardrobe_delete_text, state.selectedIds.size)) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -588,12 +606,12 @@ private fun GridContent(
                         showDeleteDialog = false
                     }
                 ) {
-                    Text("Delete", color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(R.string.action_delete), color = MaterialTheme.colorScheme.error)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = false }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.action_cancel))
                 }
             }
         )
@@ -815,13 +833,13 @@ private fun TagsOverlay(
             }
             Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 TextButton(onClick = onTagImage, contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)) {
-                    Text("Detect tags", color = Color.White, style = MaterialTheme.typography.labelSmall)
+                    Text(stringResource(R.string.wardrobe_tag_detect), color = Color.White, style = MaterialTheme.typography.labelSmall)
                 }
                 TextButton(onClick = onRemoveBackground, contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)) {
-                    Text("Remove BG", color = Color.White, style = MaterialTheme.typography.labelSmall)
+                    Text(stringResource(R.string.wardrobe_tag_remove_bg), color = Color.White, style = MaterialTheme.typography.labelSmall)
                 }
                 TextButton(onClick = onEditTags, contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)) {
-                    Text("Edit tags", color = Color.White, style = MaterialTheme.typography.labelSmall)
+                    Text(stringResource(R.string.wardrobe_tag_edit), color = Color.White, style = MaterialTheme.typography.labelSmall)
                 }
             }
         }
@@ -880,7 +898,7 @@ private fun TagEditSheet(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text("Edit Tags", style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
+                Text(stringResource(R.string.wardrobe_tag_sheet_title), style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
                 TextButton(onClick = {
                     onSave(ClothingTags(
                         type        = type.trim(),
@@ -893,7 +911,7 @@ private fun TagEditSheet(
                         material    = material.map { it.trim() }.filter { it.isNotEmpty() },
                         pattern     = pattern.map { it.trim() }.filter { it.isNotEmpty() },
                     ))
-                }) { Text("Save") }
+                }) { Text(stringResource(R.string.action_save)) }
             }
 
             HorizontalDivider()
@@ -901,8 +919,8 @@ private fun TagEditSheet(
             OutlinedTextField(
                 value = type,
                 onValueChange = { type = it },
-                label = { Text("Type") },
-                placeholder = { Text("e.g. T-shirt, Chinos, Puffer jacket") },
+                label = { Text(stringResource(R.string.tag_type)) },
+                placeholder = { Text(stringResource(R.string.tag_type_placeholder)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -910,14 +928,14 @@ private fun TagEditSheet(
             OutlinedTextField(
                 value = category,
                 onValueChange = { category = it },
-                label = { Text("Category") },
-                placeholder = { Text("tops, bottoms, outerwear, footwear, accessories, dress, suit") },
+                label = { Text(stringResource(R.string.tag_category)) },
+                placeholder = { Text(stringResource(R.string.tag_category_placeholder)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
 
             ChipListEditor(
-                label = "Uses",
+                label = stringResource(R.string.tag_uses),
                 values = uses,
                 suggestions = suggestions("Uses", PRESET_USES).filter { it !in uses },
                 onAdd    = { uses = uses + it },
@@ -925,7 +943,7 @@ private fun TagEditSheet(
             )
 
             ChipListEditor(
-                label = "Colors",
+                label = stringResource(R.string.tag_colors),
                 values = colors,
                 suggestions = suggestions("Colors", emptyList()).filter { it !in colors },
                 onAdd    = { colors = colors + it },
@@ -933,7 +951,7 @@ private fun TagEditSheet(
             )
 
             ChipListEditor(
-                label = "Seasonality",
+                label = stringResource(R.string.tag_seasonality),
                 values = seasonality,
                 suggestions = suggestions("Seasonality", PRESET_SEASONALITY).filter { it !in seasonality },
                 onAdd    = { seasonality = seasonality + it },
@@ -941,7 +959,7 @@ private fun TagEditSheet(
             )
 
             ChipListEditor(
-                label = "Aesthetic",
+                label = stringResource(R.string.tag_aesthetic),
                 values = aesthetic,
                 suggestions = suggestions("Aesthetic", PRESET_AESTHETIC).filter { it !in aesthetic },
                 onAdd    = { aesthetic = aesthetic + it },
@@ -949,7 +967,7 @@ private fun TagEditSheet(
             )
 
             ChipListEditor(
-                label = "Fit",
+                label = stringResource(R.string.tag_fit),
                 values = fit,
                 suggestions = suggestions("Fit", PRESET_FIT).filter { it !in fit },
                 onAdd    = { fit = fit + it },
@@ -957,7 +975,7 @@ private fun TagEditSheet(
             )
 
             ChipListEditor(
-                label = "Material",
+                label = stringResource(R.string.tag_material),
                 values = material,
                 suggestions = suggestions("Material", PRESET_MATERIAL).filter { it !in material },
                 onAdd    = { material = material + it },
@@ -965,7 +983,7 @@ private fun TagEditSheet(
             )
 
             ChipListEditor(
-                label = "Pattern",
+                label = stringResource(R.string.tag_pattern),
                 values = pattern,
                 suggestions = suggestions("Pattern", PRESET_PATTERN).filter { it !in pattern },
                 onAdd    = { pattern = pattern + it },
@@ -1013,7 +1031,7 @@ private fun ChipListEditor(
             OutlinedTextField(
                 value = inputText,
                 onValueChange = { inputText = it; showSuggestions = it.isNotEmpty() },
-                placeholder = { Text("Add custom…") },
+                placeholder = { Text(stringResource(R.string.tag_add_custom)) },
                 singleLine = true,
                 trailingIcon = if (inputText.isNotBlank()) {
                     {
@@ -1088,8 +1106,8 @@ private fun SpeedDialFab(
                 horizontalAlignment = Alignment.End,
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                SpeedDialItem(label = "Gallery", icon = Icons.Default.PhotoLibrary, onClick = onGallery)
-                SpeedDialItem(label = "Camera",  icon = Icons.Default.CameraAlt,    onClick = onCamera)
+                SpeedDialItem(label = stringResource(R.string.wardrobe_add_gallery), icon = Icons.Default.PhotoLibrary, onClick = onGallery)
+                SpeedDialItem(label = stringResource(R.string.wardrobe_add_camera),  icon = Icons.Default.CameraAlt,    onClick = onCamera)
             }
         }
 
@@ -1126,7 +1144,7 @@ private fun SortButton(
                         ) {
                             if (option == sortBy) Icon(Icons.Default.Check, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
                             else Spacer(Modifier.size(18.dp))
-                            Text(option.label)
+                            Text(option.displayLabel())
                         }
                     },
                     onClick = { onSortChanged(option); expanded = false },

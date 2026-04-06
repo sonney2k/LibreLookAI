@@ -482,6 +482,9 @@ private fun buildPredictionPrompt(
         appendLine()
         appendLine("Respond with ONLY a valid JSON object — no markdown, no extra text:")
         append("""{"styleId":"<id from the styles list>","reason":"<1-2 sentence explanation>"}""")
+        appendLine()
+        appendLine()
+        appendLine("IMPORTANT: Write all user-facing text fields (reason) in ${AppLanguage.toGeminiName(prefs?.language ?: AppLanguage.ENGLISH)}.")
     }
 }
 
@@ -577,5 +580,8 @@ private fun buildCompositionPrompt(
         appendLine()
         appendLine("Respond with ONLY a valid JSON object — no markdown, no extra text:")
         append("""{"name":"<outfit name>","description":"<style caption>","itemIds":["<id1>","<id2>",...],"reason":"<1-2 sentence explanation>"}""")
+        appendLine()
+        appendLine()
+        appendLine("IMPORTANT: Write all user-facing text fields (name, description, reason) in ${AppLanguage.toGeminiName(prefs?.language ?: AppLanguage.ENGLISH)}.")
     }
 }

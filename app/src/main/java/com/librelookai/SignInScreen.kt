@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -35,10 +36,10 @@ fun SignInScreen(
             tint = MaterialTheme.colorScheme.primary,
         )
         Spacer(Modifier.height(16.dp))
-        Text("LibreLookAI", style = MaterialTheme.typography.headlineMedium)
+        Text(stringResource(R.string.app_name), style = MaterialTheme.typography.headlineMedium)
         Spacer(Modifier.height(8.dp))
         Text(
-            text = "Sign in to manage your wardrobe",
+            text = stringResource(R.string.sign_in_prompt),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -52,7 +53,7 @@ fun SignInScreen(
         }
         Spacer(Modifier.height(32.dp))
         Button(onClick = onSignIn) {
-            Text("Sign in with Google")
+            Text(stringResource(R.string.sign_in_button))
         }
     }
 }

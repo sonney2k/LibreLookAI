@@ -17,7 +17,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -46,12 +45,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-
-private val GENDER_OPTIONS = listOf("Prefer not to say", "Female", "Male", "Non-binary", "Other")
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,8 +65,8 @@ fun SettingsScreen(
 
     Column(modifier = modifier.fillMaxSize()) {
         TabRow(selectedTabIndex = selectedTab) {
-            Tab(selected = selectedTab == 0, onClick = { selectedTab = 0 }, text = { Text("Profile") })
-            Tab(selected = selectedTab == 1, onClick = { selectedTab = 1 }, text = { Text("Data") })
+            Tab(selected = selectedTab == 0, onClick = { selectedTab = 0 }, text = { Text(stringResource(R.string.settings_tab_profile)) })
+            Tab(selected = selectedTab == 1, onClick = { selectedTab = 1 }, text = { Text(stringResource(R.string.settings_tab_data)) })
         }
 
         when (selectedTab) {
@@ -96,16 +94,25 @@ private fun ProfileTab(
     onClearSavedFlag: () -> Unit,
     onClearError: () -> Unit,
 ) {
-    // Local draft — initialized from loaded preferences, editable without saving
+    val genderOptions = listOf(
+        stringResource(R.string.settings_gender_prefer_not),
+        stringResource(R.string.settings_gender_female),
+        stringResource(R.string.settings_gender_male),
+        stringResource(R.string.settings_gender_nonbinary),
+        stringResource(R.string.settings_gender_other),
+    )
+
     var gender      by remember(state.preferences) { mutableStateOf(state.preferences.gender) }
     var yearOfBirth by remember(state.preferences) { mutableStateOf(state.preferences.yearOfBirth?.toString() ?: "") }
     var preferences by remember(state.preferences) { mutableStateOf(state.preferences.preferences) }
+    var language    by remember(state.preferences) { mutableStateOf(state.preferences.language) }
 
     LaunchedEffect(state.isLoading) {
         if (!state.isLoading) {
             gender      = state.preferences.gender
             yearOfBirth = state.preferences.yearOfBirth?.toString() ?: ""
             preferences = state.preferences.preferences
+            language    = state.preferences.language
         }
     }
 
@@ -119,6 +126,35 @@ private fun ProfileTab(
                     .padding(horizontal = 20.dp, vertical = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(20.dp),
             ) {
+                // --- Language ---
+                var languageExpanded by remember { mutableStateOf(false) }
+                ExposedDropdownMenuBox(
+                    expanded = languageExpanded,
+                    onExpandedChange = { languageExpanded = it },
+                ) {
+                    OutlinedTextField(
+                        value = language.ifEmpty { stringResource(R.string.settings_gender_select) },
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text(stringResource(R.string.settings_language)) },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = languageExpanded) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .menuAnchor(MenuAnchorType.PrimaryNotEditable),
+                    )
+                    ExposedDropdownMenu(
+                        expanded = languageExpanded,
+                        onDismissRequest = { languageExpanded = false },
+                    ) {
+                        AppLanguage.options.forEach { option ->
+                            DropdownMenuItem(
+                                text = { Text(option) },
+                                onClick = { language = option; languageExpanded = false },
+                            )
+                        }
+                    }
+                }
+
                 // --- Gender ---
                 var genderExpanded by remember { mutableStateOf(false) }
                 ExposedDropdownMenuBox(
@@ -126,10 +162,10 @@ private fun ProfileTab(
                     onExpandedChange = { genderExpanded = it },
                 ) {
                     OutlinedTextField(
-                        value = gender.ifEmpty { "Select…" },
+                        value = gender.ifEmpty { stringResource(R.string.settings_gender_select) },
                         onValueChange = {},
                         readOnly = true,
-                        label = { Text("Gender") },
+                        label = { Text(stringResource(R.string.settings_gender)) },
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = genderExpanded) },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -139,7 +175,7 @@ private fun ProfileTab(
                         expanded = genderExpanded,
                         onDismissRequest = { genderExpanded = false },
                     ) {
-                        GENDER_OPTIONS.forEach { option ->
+                        genderOptions.forEach { option ->
                             DropdownMenuItem(
                                 text = { Text(option) },
                                 onClick = { gender = option; genderExpanded = false },
@@ -154,8 +190,8 @@ private fun ProfileTab(
                     onValueChange = { v ->
                         if (v.length <= 4 && v.all { it.isDigit() }) yearOfBirth = v
                     },
-                    label = { Text("Year of Birth") },
-                    placeholder = { Text("e.g. 1990") },
+                    label = { Text(stringResource(R.string.settings_year_of_birth)) },
+                    placeholder = { Text(stringResource(R.string.settings_year_placeholder)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
@@ -165,14 +201,8 @@ private fun ProfileTab(
                 OutlinedTextField(
                     value = preferences,
                     onValueChange = { preferences = it },
-                    label = { Text("Style Preferences") },
-                    placeholder = {
-                        Text(
-                            "Describe what you like to wear, occasions you dress for, " +
-                            "favourite colours, brands, or anything else that helps " +
-                            "personalise your outfit recommendations…",
-                        )
-                    },
+                    label = { Text(stringResource(R.string.settings_style_prefs)) },
+                    placeholder = { Text(stringResource(R.string.settings_style_placeholder)) },
                     minLines = 6,
                     maxLines = 12,
                     modifier = Modifier.fillMaxWidth(),
@@ -186,6 +216,7 @@ private fun ProfileTab(
                                 gender      = gender,
                                 yearOfBirth = yearOfBirth.toIntOrNull(),
                                 preferences = preferences,
+                                language    = language,
                             )
                         )
                     },
@@ -199,7 +230,7 @@ private fun ProfileTab(
                             color = MaterialTheme.colorScheme.onPrimary,
                         )
                     }
-                    Text(if (state.isSaving) "Saving…" else "Save")
+                    Text(if (state.isSaving) stringResource(R.string.action_saving) else stringResource(R.string.action_save))
                 }
             }
         }
@@ -207,14 +238,14 @@ private fun ProfileTab(
         if (state.savedSuccessfully) {
             Snackbar(
                 modifier = Modifier.align(Alignment.BottomCenter).padding(16.dp),
-                action = { TextButton(onClick = onClearSavedFlag) { Text("OK") } },
-            ) { Text("Preferences saved") }
+                action = { TextButton(onClick = onClearSavedFlag) { Text(stringResource(R.string.action_ok)) } },
+            ) { Text(stringResource(R.string.settings_saved)) }
         }
 
         state.error?.let { msg ->
             Snackbar(
                 modifier = Modifier.align(Alignment.BottomCenter).padding(16.dp),
-                action = { TextButton(onClick = onClearError) { Text("Dismiss") } },
+                action = { TextButton(onClick = onClearError) { Text(stringResource(R.string.action_dismiss)) } },
             ) { Text(msg) }
         }
     }
@@ -236,11 +267,10 @@ private fun DataTab(
             .padding(horizontal = 20.dp, vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
-        // ---- Re-scan all tags ----
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("Wardrobe Tags", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+            Text(stringResource(R.string.settings_data_tags_title), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
             Text(
-                "Re-classify every item in your wardrobe with Gemini. This overwrites any manual tag edits.",
+                stringResource(R.string.settings_data_tags_desc),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -255,7 +285,7 @@ private fun DataTab(
                         modifier = Modifier.fillMaxWidth(),
                     )
                     Text(
-                        "Re-scanning ${wardrobeState.retagDone + 1} of ${wardrobeState.retagTotal}…",
+                        stringResource(R.string.settings_rescanning, wardrobeState.retagDone + 1, wardrobeState.retagTotal),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -267,7 +297,7 @@ private fun DataTab(
                 ) {
                     Icon(Icons.Default.Refresh, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.padding(start = 8.dp))
-                    Text("Re-scan All Tags")
+                    Text(stringResource(R.string.settings_rescan_button))
                 }
             }
         }
@@ -278,17 +308,17 @@ private fun DataTab(
     if (showRetagDialog) {
         AlertDialog(
             onDismissRequest = { showRetagDialog = false },
-            title = { Text("Re-scan all tags?") },
-            text = {
-                Text("Gemini will re-classify every item in your wardrobe. This will overwrite any manual tag edits and may take a while.")
-            },
+            title = { Text(stringResource(R.string.settings_rescan_dialog_title)) },
+            text = { Text(stringResource(R.string.settings_rescan_dialog_text)) },
             confirmButton = {
                 TextButton(onClick = { onRetagAll(); showRetagDialog = false }) {
-                    Text("Re-scan")
+                    Text(stringResource(R.string.settings_rescan_confirm))
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showRetagDialog = false }) { Text("Cancel") }
+                TextButton(onClick = { showRetagDialog = false }) {
+                    Text(stringResource(R.string.action_cancel))
+                }
             },
         )
     }

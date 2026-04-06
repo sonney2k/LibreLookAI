@@ -84,17 +84,23 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 
-private enum class StyleSortOption(val label: String) {
-    DATE_DESC("Newest first"),
-    DATE_ASC("Oldest first"),
-    POPULARITY("Most worn"),
-    NAME_AZ("Name A–Z"),
-    NAME_ZA("Name Z–A"),
-    ITEM_COUNT("Most items"),
+private enum class StyleSortOption {
+    DATE_DESC, DATE_ASC, POPULARITY, NAME_AZ, NAME_ZA, ITEM_COUNT
+}
+
+@Composable
+private fun StyleSortOption.displayLabel(): String = when (this) {
+    StyleSortOption.DATE_DESC  -> stringResource(R.string.styles_sort_newest)
+    StyleSortOption.DATE_ASC   -> stringResource(R.string.styles_sort_oldest)
+    StyleSortOption.POPULARITY -> stringResource(R.string.styles_sort_most_worn)
+    StyleSortOption.NAME_AZ    -> stringResource(R.string.styles_sort_name_az)
+    StyleSortOption.NAME_ZA    -> stringResource(R.string.styles_sort_name_za)
+    StyleSortOption.ITEM_COUNT -> stringResource(R.string.styles_sort_most_items)
 }
 
 private fun List<Style>.styleTagCategories(itemsById: Map<String, DriveImage>): List<TagCategory> {
@@ -295,10 +301,10 @@ private fun StyleListScreen(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center,
                         ) {
-                            Text("No styles yet", style = MaterialTheme.typography.bodyLarge)
+                            Text(stringResource(R.string.styles_empty), style = MaterialTheme.typography.bodyLarge)
                             Spacer(Modifier.height(4.dp))
                             Text(
-                                "Tap + to build an outfit from your wardrobe",
+                                stringResource(R.string.styles_empty_hint),
                                 style = MaterialTheme.typography.bodyMedium,
                             )
                         }
@@ -306,7 +312,7 @@ private fun StyleListScreen(
                 }
                 displayedStyles.isEmpty() -> {
                     Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
-                        Text("No styles match the filter", style = MaterialTheme.typography.bodyLarge)
+                        Text(stringResource(R.string.styles_no_match), style = MaterialTheme.typography.bodyLarge)
                     }
                 }
                 else -> {
@@ -350,13 +356,13 @@ private fun StyleListScreen(
                     horizontalAlignment = Alignment.End,
                 ) {
                     SpeedDialItem(
-                        label = "Create outfit manually",
+                        label = stringResource(R.string.styles_create_manual),
                         icon = { Icon(Icons.Default.Edit, contentDescription = null) },
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
                         onClick = { fabExpanded = false; onCreateStyle() },
                     )
                     SpeedDialItem(
-                        label = if (isPredicting) "Thinking…" else "Suggest existing style",
+                        label = if (isPredicting) stringResource(R.string.styles_thinking) else stringResource(R.string.styles_suggest),
                         icon = {
                             if (isPredicting)
                                 CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
@@ -367,7 +373,7 @@ private fun StyleListScreen(
                         onClick = { fabExpanded = false; if (!isPredicting) onSuggestStyle() },
                     )
                     SpeedDialItem(
-                        label = if (isComposing) "Thinking…" else "Compose new style",
+                        label = if (isComposing) stringResource(R.string.styles_thinking) else stringResource(R.string.styles_compose),
                         icon = {
                             if (isComposing)
                                 CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
@@ -392,7 +398,7 @@ private fun StyleListScreen(
         // AI progress overlay — covers the whole screen while Gemini is working
         if (isPredicting || isComposing) {
             AiProcessingOverlay(
-                label = if (isComposing) "Composing outfit…" else "Suggesting style…",
+                label = if (isComposing) stringResource(R.string.ai_composing_outfit) else stringResource(R.string.ai_suggesting_style),
                 modifier = Modifier.fillMaxSize(),
             )
         }
@@ -405,7 +411,7 @@ private fun StyleListScreen(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(start = 8.dp, end = 8.dp, bottom = 80.dp),
-                action = { TextButton(onClick = onClearError) { Text("OK") } },
+                action = { TextButton(onClick = onClearError) { Text(stringResource(R.string.action_ok)) } },
             ) { Text(msg) }
         }
     }
@@ -499,7 +505,7 @@ private fun StyleSortButton(
                         ) {
                             if (option == sortBy) Icon(Icons.Default.Check, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
                             else Spacer(Modifier.size(18.dp))
-                            Text(option.label)
+                            Text(option.displayLabel())
                         }
                     },
                     onClick = { onSortChanged(option); expanded = false },
@@ -526,15 +532,15 @@ private fun StyleCard(
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Delete style?") },
-            text = { Text("\"${style.name}\" will be permanently removed.") },
+            title = { Text(stringResource(R.string.styles_delete_title)) },
+            text = { Text(stringResource(R.string.styles_delete_text, style.name)) },
             confirmButton = {
                 TextButton(onClick = { onDelete(); showDeleteDialog = false }) {
-                    Text("Delete", color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(R.string.action_delete), color = MaterialTheme.colorScheme.error)
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) { Text("Cancel") }
+                TextButton(onClick = { showDeleteDialog = false }) { Text(stringResource(R.string.action_cancel)) }
             },
         )
     }
@@ -563,7 +569,7 @@ private fun StyleCard(
             val styleItems = style.itemIds.mapNotNull { itemsById[it] }
             if (styleItems.isEmpty()) {
                 Text(
-                    "Items no longer in wardrobe",
+                    stringResource(R.string.styles_missing_items),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.outline,
                 )
@@ -604,7 +610,7 @@ private fun StyleCard(
                     )
                     Spacer(Modifier.width(4.dp))
                     Text(
-                        if (wornToday) "Worn today!" else "Wear today",
+                        if (wornToday) stringResource(R.string.styles_worn_today) else stringResource(R.string.styles_wear_today),
                         style = MaterialTheme.typography.labelSmall,
                         color = if (wornToday) MaterialTheme.colorScheme.primary
                                 else MaterialTheme.colorScheme.onSurfaceVariant,
@@ -670,7 +676,7 @@ private fun StyleItemPicker(
                     Box {
                         if (styleName.isEmpty()) {
                             Text(
-                                "Style name",
+                                stringResource(R.string.styles_name_placeholder),
                                 style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -680,7 +686,7 @@ private fun StyleItemPicker(
                 },
             )
             TextButton(onClick = onConfirm, enabled = selectedIds.isNotEmpty()) {
-                Text(if (isEditing) "Save" else "Create")
+                Text(if (isEditing) stringResource(R.string.action_save) else stringResource(R.string.styles_create_this))
             }
         }
 
@@ -698,7 +704,7 @@ private fun StyleItemPicker(
                 Box {
                     if (styleDescription.isEmpty()) {
                         Text(
-                            "Description (optional)",
+                            stringResource(R.string.styles_description_placeholder),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
@@ -810,7 +816,7 @@ private fun StyleSuggestionSheet(
                     modifier = Modifier.size(20.dp),
                 )
                 Spacer(Modifier.width(8.dp))
-                Text("Suggested for today", style = MaterialTheme.typography.titleMedium)
+                Text(stringResource(R.string.styles_suggested_title), style = MaterialTheme.typography.titleMedium)
             }
 
             HorizontalDivider()
@@ -819,7 +825,7 @@ private fun StyleSuggestionSheet(
 
             if (styleItems.isEmpty()) {
                 Text(
-                    "Items no longer in wardrobe",
+                    stringResource(R.string.styles_missing_items),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.outline,
                 )
@@ -863,11 +869,11 @@ private fun StyleSuggestionSheet(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
             ) {
-                TextButton(onClick = onDismiss) { Text("Dismiss") }
+                TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_dismiss)) }
                 androidx.compose.material3.Button(onClick = onWear) {
                     Icon(Icons.Default.CalendarMonth, null, modifier = Modifier.size(16.dp))
                     Spacer(Modifier.width(4.dp))
-                    Text("Wear today")
+                    Text(stringResource(R.string.styles_wear_today))
                 }
             }
         }
@@ -912,7 +918,7 @@ private fun NewStyleSuggestionSheet(
                     modifier = Modifier.size(20.dp),
                 )
                 Spacer(Modifier.width(8.dp))
-                Text("Composed for you", style = MaterialTheme.typography.titleMedium)
+                Text(stringResource(R.string.styles_composed_title), style = MaterialTheme.typography.titleMedium)
             }
 
             HorizontalDivider()
@@ -929,7 +935,7 @@ private fun NewStyleSuggestionSheet(
 
             if (styleItems.isEmpty()) {
                 Text(
-                    "Items no longer in wardrobe",
+                    stringResource(R.string.styles_missing_items),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.outline,
                 )
@@ -973,11 +979,11 @@ private fun NewStyleSuggestionSheet(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
             ) {
-                TextButton(onClick = onDismiss) { Text("Dismiss") }
+                TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_dismiss)) }
                 androidx.compose.material3.Button(onClick = onAccept) {
                     Icon(Icons.Default.Add, null, modifier = Modifier.size(16.dp))
                     Spacer(Modifier.width(4.dp))
-                    Text("Create this style")
+                    Text(stringResource(R.string.styles_create_this))
                 }
             }
         }
@@ -986,10 +992,16 @@ private fun NewStyleSuggestionSheet(
 
 // ---------- Refinement section ----------
 
-private val REFINEMENT_PRESETS = listOf(
-    "More casual", "More formal", "Different colors",
-    "Warmer clothing", "Lighter clothing", "More trendy",
-    "Simpler", "More bold",
+@Composable
+private fun refinementPresets() = listOf(
+    stringResource(R.string.styles_refine_casual),
+    stringResource(R.string.styles_refine_formal),
+    stringResource(R.string.styles_refine_diff_colors),
+    stringResource(R.string.styles_refine_warmer),
+    stringResource(R.string.styles_refine_lighter),
+    stringResource(R.string.styles_refine_trendy),
+    stringResource(R.string.styles_refine_simpler),
+    stringResource(R.string.styles_refine_bold),
 )
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
@@ -1000,14 +1012,15 @@ internal fun RefinementSection(
     onInputChange: (String) -> Unit,
     onSubmitFreetext: () -> Unit,
     onSubmitPreset: (String) -> Unit,
-    presets: List<String> = REFINEMENT_PRESETS,
+    presets: List<String> = emptyList(),
     modifier: Modifier = Modifier,
 ) {
+    val effectivePresets = presets.ifEmpty { refinementPresets() }
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
         HorizontalDivider()
 
         Text(
-            "Refine with AI",
+            stringResource(R.string.styles_refine_label),
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.primary,
         )
@@ -1027,7 +1040,7 @@ internal fun RefinementSection(
 
         // Preset quick-picks
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            presets.forEach { preset ->
+            effectivePresets.forEach { preset ->
                 SuggestionChip(
                     onClick = { onSubmitPreset(preset) },
                     label = { Text(preset, style = MaterialTheme.typography.labelSmall) },
@@ -1043,7 +1056,7 @@ internal fun RefinementSection(
             OutlinedTextField(
                 value = input,
                 onValueChange = onInputChange,
-                placeholder = { Text("Custom feedback…", style = MaterialTheme.typography.bodySmall) },
+                placeholder = { Text(stringResource(R.string.styles_refine_custom), style = MaterialTheme.typography.bodySmall) },
                 singleLine = true,
                 textStyle = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.weight(1f),
@@ -1069,20 +1082,20 @@ private fun StyleNameDialog(
     var name by remember { mutableStateOf(initialName) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Name this style") },
+        title = { Text(stringResource(R.string.styles_name_dialog_title)) },
         text = {
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
-                label = { Text("Style name") },
+                label = { Text(stringResource(R.string.styles_name_placeholder)) },
                 singleLine = true,
             )
         },
         confirmButton = {
-            TextButton(onClick = { onConfirm(name) }) { Text("Save") }
+            TextButton(onClick = { onConfirm(name) }) { Text(stringResource(R.string.action_save)) }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancel") }
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
         },
     )
 }

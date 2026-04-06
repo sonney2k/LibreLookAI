@@ -66,19 +66,21 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-private val TRAVEL_PRESETS = listOf(
-    "Pack lighter",
-    "More formal options",
-    "More casual",
-    "Better for rain",
-    "Add evening outfits",
-    "Maximize outfit reuse",
+@Composable
+private fun travelPresets() = listOf(
+    stringResource(R.string.travel_refine_lighter),
+    stringResource(R.string.travel_refine_formal),
+    stringResource(R.string.travel_refine_casual),
+    stringResource(R.string.travel_refine_rain),
+    stringResource(R.string.travel_refine_evening),
+    stringResource(R.string.travel_refine_reuse),
 )
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -112,7 +114,7 @@ fun TravelScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     Text(
-                        "Travel Packing List",
+                        stringResource(R.string.travel_title),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold,
                     )
@@ -120,8 +122,8 @@ fun TravelScreen(
                     OutlinedTextField(
                         value = state.destination,
                         onValueChange = travelViewModel::updateDestination,
-                        label = { Text("Destination") },
-                        placeholder = { Text("e.g. Paris, Tokyo, New York") },
+                        label = { Text(stringResource(R.string.travel_destination)) },
+                        placeholder = { Text(stringResource(R.string.travel_destination_placeholder)) },
                         leadingIcon = { Icon(Icons.Default.FlightTakeoff, contentDescription = null) },
                         trailingIcon = if (state.destination.isNotEmpty()) {
                             { IconButton(onClick = { travelViewModel.updateDestination("") }) {
@@ -140,7 +142,7 @@ fun TravelScreen(
                     ) {
                         // Duration stepper (left)
                         Column(modifier = Modifier.weight(1f)) {
-                            Text("Duration", style = MaterialTheme.typography.bodySmall,
+                            Text(stringResource(R.string.travel_duration), style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant)
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
@@ -168,7 +170,7 @@ fun TravelScreen(
                         }
                         // Start date picker (right)
                         Column(modifier = Modifier.weight(1f)) {
-                            Text("Start date", style = MaterialTheme.typography.bodySmall,
+                            Text(stringResource(R.string.travel_start_date), style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant)
                             Spacer(Modifier.height(4.dp))
                             StartDatePicker(
@@ -190,7 +192,7 @@ fun TravelScreen(
                         enabled = state.destination.isNotEmpty() && !isWorking,
                         modifier = Modifier.fillMaxWidth(),
                     ) {
-                        Text(if (state.packingList != null) "Re-generate" else "Generate Packing List")
+                        Text(if (state.packingList != null) stringResource(R.string.travel_regenerate) else stringResource(R.string.travel_generate))
                     }
                 }
             }
@@ -204,14 +206,14 @@ fun TravelScreen(
                             if (state.isHistoricalForecast && state.historicalReferenceYear != null)
                                 "Historical climate (${state.historicalReferenceYear}) — ${state.resolvedDestination}"
                             else
-                                "Forecast — ${state.resolvedDestination}",
+                                "${state.resolvedDestination}",
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                         )
                         if (state.isHistoricalForecast) {
                             Text(
-                                "Trip dates are outside the live forecast window — showing historical climate data.",
+                                stringResource(R.string.travel_historical_note),
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.padding(horizontal = 16.dp).padding(bottom = 4.dp),
@@ -242,7 +244,7 @@ fun TravelScreen(
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
-                                "Packing List",
+                                stringResource(R.string.travel_packing_list),
                                 style = MaterialTheme.typography.titleSmall,
                                 fontWeight = FontWeight.SemiBold,
                             )
@@ -254,7 +256,7 @@ fun TravelScreen(
                                 )
                             }
                         }
-                        TextButton(onClick = travelViewModel::clearResult) { Text("Clear") }
+                        TextButton(onClick = travelViewModel::clearResult) { Text(stringResource(R.string.travel_clear)) }
                     }
                 }
 
@@ -282,7 +284,7 @@ fun TravelScreen(
                     RefinementSection(
                         input = state.refinementInput,
                         feedbackHistory = state.feedbackHistory,
-                        presets = TRAVEL_PRESETS,
+                        presets = travelPresets(),
                         onInputChange = travelViewModel::updateRefinementInput,
                         onSubmitFreetext = {
                             travelViewModel.refine(profileState.preferences, wardrobeState.images, stylesState.styles)
@@ -315,7 +317,7 @@ fun TravelScreen(
                                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                             Text(
-                                "Enter a destination to get started",
+                                stringResource(R.string.travel_empty),
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -329,8 +331,8 @@ fun TravelScreen(
         if (isWorking) {
             AiProcessingOverlay(
                 label = when {
-                    state.isLoadingForecast -> "Fetching weather…"
-                    else                   -> "Generating packing list…"
+                    state.isLoadingForecast -> stringResource(R.string.ai_fetching_weather)
+                    else                   -> stringResource(R.string.ai_generating_packing)
                 },
                 modifier = Modifier.fillMaxSize(),
             )
@@ -342,7 +344,7 @@ fun TravelScreen(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(16.dp),
-                action = { TextButton(onClick = travelViewModel::clearError) { Text("OK") } },
+                action = { TextButton(onClick = travelViewModel::clearError) { Text(stringResource(R.string.action_ok)) } },
             ) { Text(msg) }
         }
     }
@@ -361,7 +363,7 @@ private fun ForecastDayChip(dayIndex: Int, forecast: DayForecast) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(2.dp),
         ) {
-            Text("Day $dayIndex", style = MaterialTheme.typography.labelSmall,
+            Text(stringResource(R.string.travel_day, dayIndex), style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
             Text(wmoEmoji(forecast.weatherCode), style = MaterialTheme.typography.bodyMedium)
             Text(
@@ -422,7 +424,7 @@ private fun PackingOutfitCard(
                 }
             } else {
                 Text(
-                    "Items no longer in wardrobe",
+                    stringResource(R.string.styles_missing_items),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.outline,
                 )
@@ -453,7 +455,7 @@ private fun ExtraItemsCard(
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Text(
-                "Also pack (not in wardrobe)",
+                stringResource(R.string.travel_extra_items),
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.SemiBold,
             )
@@ -501,10 +503,10 @@ private fun StartDatePicker(
                         onDateSelected(LocalDate.ofEpochDay(it / 86_400_000L))
                     }
                     showDialog = false
-                }) { Text("OK") }
+                }) { Text(stringResource(R.string.action_ok)) }
             },
             dismissButton = {
-                TextButton(onClick = { showDialog = false }) { Text("Cancel") }
+                TextButton(onClick = { showDialog = false }) { Text(stringResource(R.string.action_cancel)) }
             },
         ) {
             DatePicker(state = datePickerState)

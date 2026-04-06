@@ -55,6 +55,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -64,7 +65,7 @@ import java.time.format.DateTimeFormatter
 
 private val MONTH_FORMATTER = DateTimeFormatter.ofPattern("MMMM yyyy")
 private val SHEET_DATE_FORMATTER = DateTimeFormatter.ofPattern("EEEE, MMMM d")
-private val DOW_LABELS = listOf("Mo", "Tu", "We", "Th", "Fr", "Sa", "Su")
+// DOW_LABELS is now computed via @Composable dowLabels()
 private const val MAX_THUMBNAILS = 4
 private val THUMBNAIL_SIZE = 14.dp
 private const val TOP_N = 10
@@ -136,12 +137,12 @@ fun CalendarScreen(
             Tab(
                 selected = selectedTab == 0,
                 onClick = { selectedTab = 0 },
-                text = { Text("Calendar") },
+                text = { Text(stringResource(R.string.calendar_tab_calendar)) },
             )
             Tab(
                 selected = selectedTab == 1,
                 onClick = { selectedTab = 1 },
-                text = { Text("Statistics") },
+                text = { Text(stringResource(R.string.calendar_tab_stats)) },
             )
         }
 
@@ -248,10 +249,10 @@ private fun StatisticsContent(
     if (topStyles.isEmpty() && topItems.isEmpty()) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("No outfit history yet", style = MaterialTheme.typography.bodyLarge)
+                Text(stringResource(R.string.calendar_empty), style = MaterialTheme.typography.bodyLarge)
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    "Wear a style from the Styles tab to start tracking",
+                    stringResource(R.string.calendar_empty_hint),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -266,7 +267,7 @@ private fun StatisticsContent(
         if (topStyles.isNotEmpty()) {
             item {
                 Text(
-                    "Most Worn Styles",
+                    stringResource(R.string.calendar_stats_styles),
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
@@ -283,7 +284,7 @@ private fun StatisticsContent(
             item {
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    "Most Worn Items",
+                    stringResource(R.string.calendar_stats_items),
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
@@ -513,8 +514,17 @@ private fun MonthHeader(
 
 @Composable
 private fun DayOfWeekRow() {
+    val labels = listOf(
+        stringResource(R.string.calendar_day_mo),
+        stringResource(R.string.calendar_day_tu),
+        stringResource(R.string.calendar_day_we),
+        stringResource(R.string.calendar_day_th),
+        stringResource(R.string.calendar_day_fr),
+        stringResource(R.string.calendar_day_sa),
+        stringResource(R.string.calendar_day_su),
+    )
     Row(modifier = Modifier.fillMaxWidth()) {
-        DOW_LABELS.forEach { label ->
+        labels.forEach { label ->
             Text(
                 text = label,
                 modifier = Modifier.weight(1f),
