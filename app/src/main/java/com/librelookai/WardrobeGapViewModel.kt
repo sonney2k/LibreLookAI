@@ -5,8 +5,6 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,14 +14,6 @@ import kotlinx.coroutines.launch
 data class WardrobeGapUiState(
     val isAnalyzing: Boolean = false,
     val analysis: GapAnalysis? = null,
-    /** True while image URLs are being fetched for each suggestion. */
-    val isLoadingImages: Boolean = false,
-    /** Map of suggestion index → list of product image URLs. */
-    val suggestionImages: Map<Int, List<String>> = emptyMap(),
-    /** Map of suggestion index → debug string ("Query: X • N results / error: …"). */
-    val imageDebugInfo: Map<Int, String> = emptyMap(),
-    /** True when google.cse.id is not configured in local.properties. */
-    val isCseMissing: Boolean = false,
     val error: String? = null,
 )
 
@@ -36,7 +26,7 @@ class WardrobeGapViewModel(app: Application) : AndroidViewModel(app) {
     val state: StateFlow<WardrobeGapUiState> = _state.asStateFlow()
 
     fun clearError()  = _state.update { it.copy(error = null) }
-    fun clearResult() = _state.update { it.copy(analysis = null, suggestionImages = emptyMap(), imageDebugInfo = emptyMap(), error = null) }
+    fun clearResult() = _state.update { it.copy(analysis = null, error = null) }
 
     fun analyze(images: List<DriveImage>, prefs: UserPreferences?) {
         if (images.isEmpty()) {
@@ -45,7 +35,7 @@ class WardrobeGapViewModel(app: Application) : AndroidViewModel(app) {
         }
 
         viewModelScope.launch {
-            _state.update { it.copy(isAnalyzing = true, analysis = null, suggestionImages = emptyMap(), error = null) }
+            _state.update { it.copy(isAnalyzing = true, analysis = null, error = null) }
 
             val prompt = buildGapPrompt(images, prefs)
             Log.d("GapVM", "Gap prompt length: ${prompt.length} chars")
@@ -66,36 +56,7 @@ class WardrobeGapViewModel(app: Application) : AndroidViewModel(app) {
                 return@launch
             }
 
-            val cseConfigured = BuildConfig.GOOGLE_CSE_ID.isNotBlank()
-            _state.update {
-                it.copy(
-                    isAnalyzing = false,
-                    analysis = result,
-                    isLoadingImages = cseConfigured,
-                    isCseMissing = !cseConfigured,
-                )
-            }
-
-            if (cseConfigured) {
-                // Fetch product images for each suggestion in parallel
-                val imageJobs = result.suggestions.mapIndexed { index, suggestion ->
-                    async {
-                        val colorHint = suggestion.colors.take(2).joinToString(" ")
-                        val query = "$colorHint ${suggestion.missingItem} clothing"
-                        val (urls, debugMsg) = gemini.searchProductImages(query)
-                        Log.d("GapVM", "[$index] $debugMsg")
-                        Triple(index, urls, debugMsg)
-                    }
-                }
-                val results = imageJobs.awaitAll()
-                _state.update {
-                    it.copy(
-                        isLoadingImages = false,
-                        suggestionImages = results.associate { (i, urls, _) -> i to urls },
-                        imageDebugInfo  = results.associate { (i, _, dbg) -> i to dbg },
-                    )
-                }
-            }
+            _state.update { it.copy(isAnalyzing = false, analysis = result) }
         }
     }
 }
