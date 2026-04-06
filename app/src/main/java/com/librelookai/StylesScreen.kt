@@ -725,8 +725,8 @@ private fun StyleItemPicker(
         if (displayedItems.isEmpty()) {
             Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
                 Text(
-                    if (selectedTags.values.any { it.isNotEmpty() }) "No items match the filter"
-                    else "No wardrobe items yet",
+                    if (selectedTags.values.any { it.isNotEmpty() }) stringResource(R.string.wardrobe_empty_filter)
+                    else stringResource(R.string.wardrobe_empty),
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }
