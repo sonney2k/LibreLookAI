@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.Checkroom
 import androidx.compose.material.icons.filled.FlightTakeoff
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Style
+import androidx.compose.material.icons.filled.TipsAndUpdates
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -45,6 +46,7 @@ private val navItems = listOf(
     NavItem("Wardrobe", Icons.Default.Checkroom),
     NavItem("Calendar", Icons.Default.CalendarMonth),
     NavItem("Travel", Icons.Default.FlightTakeoff),
+    NavItem("Gaps", Icons.Default.TipsAndUpdates),
     NavItem("Profile", Icons.Default.Person),
 )
 
@@ -78,6 +80,7 @@ class MainActivity : ComponentActivity() {
                     val profileViewModel: ProfileViewModel = viewModel()
                     val weatherViewModel: WeatherViewModel = viewModel()
                     val travelViewModel: TravelViewModel = viewModel()
+                    val gapViewModel: WardrobeGapViewModel = viewModel()
                     val weatherState by weatherViewModel.state.collectAsState()
 
                     // Location permission — request once; refresh weather when granted
@@ -157,7 +160,13 @@ class MainActivity : ComponentActivity() {
                                     stylesViewModel = stylesViewModel,
                                     modifier = Modifier.padding(innerPadding),
                                 )
-                                4 -> ProfileScreen(
+                                4 -> WardrobeGapScreen(
+                                    gapViewModel = gapViewModel,
+                                    wardrobeViewModel = wardrobeViewModel,
+                                    profileViewModel = profileViewModel,
+                                    modifier = Modifier.padding(innerPadding),
+                                )
+                                5 -> ProfileScreen(
                                     viewModel = profileViewModel,
                                     modifier = Modifier.padding(innerPadding),
                                 )
