@@ -130,6 +130,8 @@ class MainActivity : ComponentActivity() {
                                 )
                                 1 -> WardrobeScreen(
                                     viewModel = wardrobeViewModel,
+                                    outfitsViewModel = outfitsViewModel,
+                                    stylesViewModel = stylesViewModel,
                                     onCreateStyleFromSelection = { itemIds ->
                                         stylesViewModel.startCreatingFromItems(itemIds)
                                         wardrobeViewModel.clearSelection()

@@ -118,12 +118,27 @@ import coil.request.ImageRequest
 @Composable
 fun WardrobeScreen(
     viewModel: WardrobeViewModel = viewModel(),
+    outfitsViewModel: OutfitsViewModel = viewModel(),
+    stylesViewModel: StylesViewModel = viewModel(),
     onCreateStyleFromSelection: (Set<String>) -> Unit = {},
     onComposeStyleFromSelection: (Set<String>) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
-    val state by viewModel.state.collectAsState()
+    val state        by viewModel.state.collectAsState()
+    val outfitsState by outfitsViewModel.state.collectAsState()
+    val stylesState  by stylesViewModel.state.collectAsState()
     val context = LocalContext.current
+
+    // driveId → number of calendar wear events that include this item
+    val popularityMap = remember(outfitsState.events, stylesState.styles) {
+        val styleWearCount = outfitsState.events.groupingBy { it.styleId }.eachCount()
+        val itemCount = mutableMapOf<String, Int>()
+        stylesState.styles.forEach { style ->
+            val count = styleWearCount[style.id] ?: 0
+            if (count > 0) style.itemIds.forEach { id -> itemCount[id] = (itemCount[id] ?: 0) + count }
+        }
+        itemCount as Map<String, Int>
+    }
 
     var hasCameraPermission by remember {
         mutableStateOf(
@@ -145,6 +160,7 @@ fun WardrobeScreen(
     when (state.view) {
         WardrobeView.GRID -> GridContent(
             state = state,
+            popularityMap = popularityMap,
             onOpenCamera = {
                 if (hasCameraPermission) viewModel.openCapture()
                 else permissionLauncher.launch(Manifest.permission.CAMERA)
@@ -178,6 +194,7 @@ fun WardrobeScreen(
 internal enum class SortOption(val label: String) {
     DATE_DESC("Newest first"),
     DATE_ASC("Oldest first"),
+    POPULARITY("Most worn"),
     TYPE("Type"),
     CATEGORY("Category"),
 }
@@ -289,6 +306,7 @@ internal fun TagFilterBar(
 @Composable
 private fun GridContent(
     state: WardrobeUiState,
+    popularityMap: Map<String, Int> = emptyMap(),
     onOpenCamera: () -> Unit,
     onOpenGallery: () -> Unit,
     onDismissError: () -> Unit,
@@ -327,12 +345,13 @@ private fun GridContent(
         }
     }
 
-    val displayedImages = remember(filteredImages, sortBy) {
+    val displayedImages = remember(filteredImages, sortBy, popularityMap) {
         when (sortBy) {
-            SortOption.DATE_DESC -> filteredImages
-            SortOption.DATE_ASC  -> filteredImages.reversed()
-            SortOption.TYPE      -> filteredImages.sortedBy { it.tags?.type?.lowercase() ?: "" }
-            SortOption.CATEGORY  -> filteredImages.sortedBy { it.tags?.category?.lowercase() ?: "" }
+            SortOption.DATE_DESC  -> filteredImages
+            SortOption.DATE_ASC   -> filteredImages.reversed()
+            SortOption.POPULARITY -> filteredImages.sortedByDescending { popularityMap[it.driveId] ?: 0 }
+            SortOption.TYPE       -> filteredImages.sortedBy { it.tags?.type?.lowercase() ?: "" }
+            SortOption.CATEGORY   -> filteredImages.sortedBy { it.tags?.category?.lowercase() ?: "" }
         }
     }
 
