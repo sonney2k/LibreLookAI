@@ -20,6 +20,8 @@ data class WardrobeGapUiState(
     val isLoadingImages: Boolean = false,
     /** Map of suggestion index → list of product image URLs. */
     val suggestionImages: Map<Int, List<String>> = emptyMap(),
+    /** Map of suggestion index → debug string ("Query: X • N results / error: …"). */
+    val imageDebugInfo: Map<Int, String> = emptyMap(),
     /** True when google.cse.id is not configured in local.properties. */
     val isCseMissing: Boolean = false,
     val error: String? = null,
@@ -34,7 +36,7 @@ class WardrobeGapViewModel(app: Application) : AndroidViewModel(app) {
     val state: StateFlow<WardrobeGapUiState> = _state.asStateFlow()
 
     fun clearError()  = _state.update { it.copy(error = null) }
-    fun clearResult() = _state.update { it.copy(analysis = null, suggestionImages = emptyMap(), error = null) }
+    fun clearResult() = _state.update { it.copy(analysis = null, suggestionImages = emptyMap(), imageDebugInfo = emptyMap(), error = null) }
 
     fun analyze(images: List<DriveImage>, prefs: UserPreferences?) {
         if (images.isEmpty()) {
@@ -80,11 +82,19 @@ class WardrobeGapViewModel(app: Application) : AndroidViewModel(app) {
                     async {
                         val colorHint = suggestion.colors.take(2).joinToString(" ")
                         val query = "$colorHint ${suggestion.missingItem} clothing"
-                        index to gemini.searchProductImages(query)
+                        val (urls, debugMsg) = gemini.searchProductImages(query)
+                        Log.d("GapVM", "[$index] $debugMsg")
+                        Triple(index, urls, debugMsg)
                     }
                 }
-                val imageResults = imageJobs.awaitAll().toMap()
-                _state.update { it.copy(isLoadingImages = false, suggestionImages = imageResults) }
+                val results = imageJobs.awaitAll()
+                _state.update {
+                    it.copy(
+                        isLoadingImages = false,
+                        suggestionImages = results.associate { (i, urls, _) -> i to urls },
+                        imageDebugInfo  = results.associate { (i, _, dbg) -> i to dbg },
+                    )
+                }
             }
         }
     }

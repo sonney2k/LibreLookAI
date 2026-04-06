@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.BrokenImage
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.TipsAndUpdates
 import androidx.compose.material3.AssistChip
@@ -134,13 +135,13 @@ fun WardrobeGapScreen(
 
                 // ---- Suggestion cards ----
                 itemsIndexed(analysis.suggestions) { index, suggestion ->
-                    val images = state.suggestionImages[index] ?: emptyList()
                     GapSuggestionCard(
                         rank = index + 1,
                         suggestion = suggestion,
-                        imageUrls = images,
+                        imageUrls = state.suggestionImages[index] ?: emptyList(),
                         isLoadingImages = state.isLoadingImages,
                         isCseMissing = state.isCseMissing,
+                        debugInfo = state.imageDebugInfo[index],
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
                     )
                 }
@@ -212,6 +213,7 @@ private fun GapSuggestionCard(
     imageUrls: List<String>,
     isLoadingImages: Boolean,
     isCseMissing: Boolean,
+    debugInfo: String?,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -288,15 +290,32 @@ private fun GapSuggestionCard(
                 imageUrls.isNotEmpty() -> {
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         items(imageUrls) { url ->
-                            AsyncImage(
-                                model = url,
-                                contentDescription = suggestion.missingItem,
+                            Box(
                                 modifier = Modifier
                                     .size(88.dp)
                                     .clip(MaterialTheme.shapes.small),
-                                contentScale = ContentScale.Crop,
-                            )
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Surface(
+                                    color = MaterialTheme.colorScheme.surfaceVariant,
+                                    modifier = Modifier.fillMaxSize(),
+                                ) {}
+                                AsyncImage(
+                                    model = url,
+                                    contentDescription = suggestion.missingItem,
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentScale = ContentScale.Crop,
+                                )
+                            }
                         }
+                    }
+                    // Debug info
+                    if (debugInfo != null) {
+                        Text(
+                            debugInfo,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.outline,
+                        )
                     }
                 }
                 isCseMissing -> {
@@ -305,6 +324,25 @@ private fun GapSuggestionCard(
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
+                }
+                debugInfo != null -> {
+                    // CSE configured but returned 0 images — show why
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Icon(
+                            Icons.Default.BrokenImage,
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp),
+                            tint = MaterialTheme.colorScheme.outline,
+                        )
+                        Text(
+                            debugInfo,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.outline,
+                        )
+                    }
                 }
             }
 

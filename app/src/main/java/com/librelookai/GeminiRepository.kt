@@ -261,14 +261,13 @@ class GeminiRepository {
      * "Search the entire web" with Image search enabled. Uses the same gemini.api.key.
      * Create one at https://programmablesearchengine.google.com/
      *
-     * Returns up to 4 Google-hosted thumbnail URLs, or an empty list if not configured.
+     * Returns a Pair of (thumbnail URL list, human-readable debug string).
      */
-    suspend fun searchProductImages(query: String): List<String> = withContext(Dispatchers.IO) {
+    suspend fun searchProductImages(query: String): Pair<List<String>, String> = withContext(Dispatchers.IO) {
         val apiKey = BuildConfig.GEMINI_API_KEY
         val cseId  = BuildConfig.GOOGLE_CSE_ID
         if (apiKey.isBlank() || cseId.isBlank()) {
-            Log.d(TAG, "searchProductImages: missing API key or CSE ID — skipping")
-            return@withContext emptyList()
+            return@withContext emptyList<String>() to "CSE not configured"
         }
 
         val encodedQuery = java.net.URLEncoder.encode(query, "UTF-8")
@@ -276,17 +275,29 @@ class GeminiRepository {
             "?key=$apiKey&cx=$cseId&q=$encodedQuery&searchType=image&num=4" +
             "&safe=active&imgType=photo"
 
+        Log.d(TAG, "searchProductImages query=\"$query\" cx=$cseId")
+
         return@withContext try {
             val response = http.newCall(Request.Builder().url(url).build()).await()
-            val body = response.body?.string() ?: return@withContext emptyList()
-            Log.d(TAG, "searchProductImages HTTP ${response.code}: ${body.take(300)}")
-            if (!response.isSuccessful) return@withContext emptyList()
+            val body = response.body?.string() ?: return@withContext emptyList<String>() to "empty body"
+            Log.d(TAG, "searchProductImages HTTP ${response.code} — full body:\n$body")
+
+            if (!response.isSuccessful) {
+                return@withContext emptyList<String>() to "HTTP ${response.code}: $body"
+            }
 
             val root = gson.fromJson(body, CseResponse::class.java)
-            root.items.orEmpty().mapNotNull { it.image?.thumbnailLink }.filter { it.isNotBlank() }
+            val items = root.items.orEmpty()
+            Log.d(TAG, "searchProductImages: ${items.size} items")
+            items.forEachIndexed { i, item ->
+                Log.d(TAG, "  [$i] link=${item.link} | thumb=${item.image?.thumbnailLink}")
+            }
+
+            val thumbs = items.mapNotNull { it.image?.thumbnailLink }.filter { it.isNotBlank() }
+            thumbs to "Query: \"$query\" • ${items.size} items, ${thumbs.size} thumbs"
         } catch (e: Exception) {
-            Log.w(TAG, "searchProductImages failed: ${e.message}")
-            emptyList()
+            Log.w(TAG, "searchProductImages failed: ${e.message}", e)
+            emptyList<String>() to "Exception: ${e.message}"
         }
     }
 
