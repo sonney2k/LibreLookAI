@@ -66,7 +66,6 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.PhotoLibrary
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Sort
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
@@ -174,7 +173,6 @@ fun WardrobeScreen(
             onTagImage = viewModel::tagImage,
             onRemoveBackground = viewModel::reprocessBackground,
             onUpdateTags = viewModel::updateTags,
-            onRetagAll = viewModel::retagAll,
             onToggleSelection = viewModel::toggleSelection,
             onClearSelection = viewModel::clearSelection,
             onDeleteSelected = viewModel::deleteSelected,
@@ -313,7 +311,6 @@ private fun GridContent(
     onTagImage: (String) -> Unit,
     onRemoveBackground: (String) -> Unit,
     onUpdateTags: (String, ClothingTags) -> Unit,
-    onRetagAll: () -> Unit,
     onToggleSelection: (String) -> Unit,
     onClearSelection: () -> Unit,
     onDeleteSelected: () -> Unit,
@@ -326,7 +323,6 @@ private fun GridContent(
     var pinchVisualScale by remember { mutableFloatStateOf(1f) }
     var selectedIndex by remember { mutableStateOf<Int?>(null) }
     var showDeleteDialog by remember { mutableStateOf(false) }
-    var showRetagDialog by remember { mutableStateOf(false) }
 
     // Filter + sort state
     var selectedTags by remember { mutableStateOf(emptyMap<String, Set<String>>()) }
@@ -374,15 +370,6 @@ private fun GridContent(
                     onTagsChanged = { selectedTags = it },
                     modifier = Modifier.weight(1f),
                 )
-                IconButton(
-                    onClick = { if (!state.isRetagging) showRetagDialog = true },
-                    modifier = Modifier.padding(end = 0.dp),
-                ) {
-                    if (state.isRetagging)
-                        CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
-                    else
-                        Icon(Icons.Default.Refresh, contentDescription = "Re-scan all tags")
-                }
                 SortButton(
                     sortBy = sortBy,
                     onSortChanged = { sortBy = it },
@@ -609,22 +596,6 @@ private fun GridContent(
                     Text("Cancel")
                 }
             }
-        )
-    }
-
-    if (showRetagDialog) {
-        AlertDialog(
-            onDismissRequest = { showRetagDialog = false },
-            title = { Text("Re-scan all tags?") },
-            text = { Text("Gemini will re-classify every item in your wardrobe. This will overwrite any manual tag edits and may take a while.") },
-            confirmButton = {
-                TextButton(onClick = { onRetagAll(); showRetagDialog = false }) {
-                    Text("Re-scan")
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { showRetagDialog = false }) { Text("Cancel") }
-            },
         )
     }
 

@@ -15,7 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Checkroom
 import androidx.compose.material.icons.filled.FlightTakeoff
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Style
 import androidx.compose.material.icons.filled.TipsAndUpdates
 import androidx.compose.material3.Icon
@@ -47,7 +47,7 @@ private val navItems = listOf(
     NavItem("Calendar", Icons.Default.CalendarMonth),
     NavItem("Travel", Icons.Default.FlightTakeoff),
     NavItem("Gaps", Icons.Default.TipsAndUpdates),
-    NavItem("Profile", Icons.Default.Person),
+    NavItem("Settings", Icons.Default.Settings),
 )
 
 class MainActivity : ComponentActivity() {
@@ -168,8 +168,9 @@ class MainActivity : ComponentActivity() {
                                     profileViewModel = profileViewModel,
                                     modifier = Modifier.padding(innerPadding),
                                 )
-                                5 -> ProfileScreen(
-                                    viewModel = profileViewModel,
+                                5 -> SettingsScreen(
+                                    profileViewModel = profileViewModel,
+                                    wardrobeViewModel = wardrobeViewModel,
                                     modifier = Modifier.padding(innerPadding),
                                 )
                             }
