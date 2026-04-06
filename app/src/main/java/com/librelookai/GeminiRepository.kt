@@ -255,6 +255,57 @@ class GeminiRepository {
     }
 
     /**
+     * Uses Gemini with Google Search grounding to find product image URLs for [query].
+     * Returns up to 4 direct image URLs, or an empty list on failure.
+     */
+    suspend fun searchProductImages(query: String): List<String> = withContext(Dispatchers.IO) {
+        val apiKey = BuildConfig.GEMINI_API_KEY
+        if (apiKey.isBlank() || apiKey == "YOUR_GEMINI_API_KEY_HERE") return@withContext emptyList()
+
+        val prompt = "Search Google Images for \"$query\" fashion clothing product photos from " +
+            "retailers such as Zara, H&M, ASOS, Nordstrom, or similar. " +
+            "Return ONLY a JSON array of up to 4 direct image URLs (ending in .jpg, .jpeg, .png, or .webp). " +
+            "No markdown, no explanation. Example: [\"https://example.com/a.jpg\",\"https://example.com/b.webp\"]"
+
+        val body = gson.toJson(
+            mapOf(
+                "contents" to listOf(
+                    mapOf("role" to "user", "parts" to listOf(mapOf("text" to prompt))),
+                ),
+                "tools" to listOf(mapOf("google_search" to emptyMap<String, Any>())),
+            ),
+        )
+
+        return@withContext try {
+            val response = http.newCall(
+                Request.Builder()
+                    .url("$PREDICT_URL?key=$apiKey")
+                    .post(body.toRequestBody("application/json".toMediaType()))
+                    .build(),
+            ).await()
+            val responseBody = response.body!!.string()
+            Log.d(TAG, "searchProductImages HTTP ${response.code}: ${responseBody.take(300)}")
+            if (!response.isSuccessful) return@withContext emptyList()
+
+            val parsed = gson.fromJson(responseBody, GeminiResponse::class.java)
+            val text = parsed.candidates
+                ?.firstOrNull()?.content?.parts
+                ?.firstOrNull { it.text != null }?.text
+                ?: return@withContext emptyList()
+
+            val json = text.trim()
+                .removePrefix("```json").removePrefix("```").removeSuffix("```").trim()
+            val listType = object : com.google.gson.reflect.TypeToken<List<String>>() {}.type
+            @Suppress("UNCHECKED_CAST")
+            (gson.fromJson(json, listType) as? List<String>)?.filter { it.startsWith("http") }
+                ?: emptyList()
+        } catch (e: Exception) {
+            Log.w(TAG, "searchProductImages failed: ${e.message}")
+            emptyList()
+        }
+    }
+
+    /**
      * Sends a text-only prompt to Gemini and returns the raw text response, or null on failure.
      */
     suspend fun generateText(prompt: String): String? = withContext(Dispatchers.IO) {

@@ -1,5 +1,7 @@
 package com.librelookai
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,18 +17,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
-import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.TipsAndUpdates
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Surface
@@ -37,10 +43,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -124,9 +134,12 @@ fun WardrobeGapScreen(
 
                 // ---- Suggestion cards ----
                 itemsIndexed(analysis.suggestions) { index, suggestion ->
+                    val images = state.suggestionImages[index] ?: emptyList()
                     GapSuggestionCard(
                         rank = index + 1,
                         suggestion = suggestion,
+                        imageUrls = images,
+                        isLoadingImages = state.isLoadingImages,
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
                     )
                 }
@@ -195,14 +208,23 @@ fun WardrobeGapScreen(
 private fun GapSuggestionCard(
     rank: Int,
     suggestion: GapSuggestion,
+    imageUrls: List<String>,
+    isLoadingImages: Boolean,
     modifier: Modifier = Modifier,
 ) {
+    val context = LocalContext.current
+    val searchQuery = buildString {
+        append(suggestion.colors.take(2).joinToString(" "))
+        if (isNotEmpty()) append(" ")
+        append(suggestion.missingItem)
+    }
+
     OutlinedCard(modifier = modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            // Rank badge + item name
+            // Rank badge + item name + outfit count pill
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -227,7 +249,6 @@ private fun GapSuggestionCard(
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.weight(1f),
                 )
-                // Outfit count badge
                 if (suggestion.outfitCount > 0) {
                     Card(
                         colors = CardDefaults.cardColors(
@@ -246,6 +267,38 @@ private fun GapSuggestionCard(
                 }
             }
 
+            // Product image strip
+            when {
+                isLoadingImages && imageUrls.isEmpty() -> {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(vertical = 4.dp),
+                    ) {
+                        CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
+                        Text(
+                            "Finding products…",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+                imageUrls.isNotEmpty() -> {
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        items(imageUrls) { url ->
+                            AsyncImage(
+                                model = url,
+                                contentDescription = suggestion.missingItem,
+                                modifier = Modifier
+                                    .size(88.dp)
+                                    .clip(MaterialTheme.shapes.small),
+                                contentScale = ContentScale.Crop,
+                            )
+                        }
+                    }
+                }
+            }
+
             // Category + color chips
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -254,9 +307,7 @@ private fun GapSuggestionCard(
                 if (suggestion.category.isNotEmpty()) {
                     AssistChip(onClick = {}, label = { Text(suggestion.category) })
                 }
-                suggestion.colors.forEach { color ->
-                    ColorChip(color)
-                }
+                suggestion.colors.forEach { color -> ColorChip(color) }
             }
 
             // Reason
@@ -267,6 +318,35 @@ private fun GapSuggestionCard(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
+            }
+
+            // Shop buttons
+            HorizontalDivider()
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedButton(
+                    onClick = {
+                        val url = "https://www.amazon.com/s?k=${Uri.encode(searchQuery)}"
+                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                    },
+                    modifier = Modifier.weight(1f),
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
+                ) {
+                    Icon(Icons.Default.ShoppingCart, contentDescription = null, modifier = Modifier.size(14.dp))
+                    Spacer(Modifier.width(4.dp))
+                    Text("Amazon", style = MaterialTheme.typography.labelMedium)
+                }
+                OutlinedButton(
+                    onClick = {
+                        val url = "https://www.google.com/search?q=${Uri.encode(searchQuery)}&tbm=shop"
+                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                    },
+                    modifier = Modifier.weight(1f),
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
+                ) {
+                    Icon(Icons.Default.ShoppingCart, contentDescription = null, modifier = Modifier.size(14.dp))
+                    Spacer(Modifier.width(4.dp))
+                    Text("Google", style = MaterialTheme.typography.labelMedium)
+                }
             }
         }
     }

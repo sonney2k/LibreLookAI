@@ -5,6 +5,8 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,6 +16,10 @@ import kotlinx.coroutines.launch
 data class WardrobeGapUiState(
     val isAnalyzing: Boolean = false,
     val analysis: GapAnalysis? = null,
+    /** True while image URLs are being fetched for each suggestion. */
+    val isLoadingImages: Boolean = false,
+    /** Map of suggestion index → list of product image URLs. */
+    val suggestionImages: Map<Int, List<String>> = emptyMap(),
     val error: String? = null,
 )
 
@@ -26,7 +32,7 @@ class WardrobeGapViewModel(app: Application) : AndroidViewModel(app) {
     val state: StateFlow<WardrobeGapUiState> = _state.asStateFlow()
 
     fun clearError()  = _state.update { it.copy(error = null) }
-    fun clearResult() = _state.update { it.copy(analysis = null, error = null) }
+    fun clearResult() = _state.update { it.copy(analysis = null, suggestionImages = emptyMap(), error = null) }
 
     fun analyze(images: List<DriveImage>, prefs: UserPreferences?) {
         if (images.isEmpty()) {
@@ -35,7 +41,7 @@ class WardrobeGapViewModel(app: Application) : AndroidViewModel(app) {
         }
 
         viewModelScope.launch {
-            _state.update { it.copy(isAnalyzing = true, analysis = null, error = null) }
+            _state.update { it.copy(isAnalyzing = true, analysis = null, suggestionImages = emptyMap(), error = null) }
 
             val prompt = buildGapPrompt(images, prefs)
             Log.d("GapVM", "Gap prompt length: ${prompt.length} chars")
@@ -56,7 +62,18 @@ class WardrobeGapViewModel(app: Application) : AndroidViewModel(app) {
                 return@launch
             }
 
-            _state.update { it.copy(isAnalyzing = false, analysis = result) }
+            _state.update { it.copy(isAnalyzing = false, analysis = result, isLoadingImages = true) }
+
+            // Fetch product images for each suggestion in parallel
+            val imageJobs = result.suggestions.mapIndexed { index, suggestion ->
+                async {
+                    val colorHint = suggestion.colors.take(2).joinToString(" ")
+                    val query = "$colorHint ${suggestion.missingItem}"
+                    index to gemini.searchProductImages(query)
+                }
+            }
+            val imageResults = imageJobs.awaitAll().toMap()
+            _state.update { it.copy(isLoadingImages = false, suggestionImages = imageResults) }
         }
     }
 }
