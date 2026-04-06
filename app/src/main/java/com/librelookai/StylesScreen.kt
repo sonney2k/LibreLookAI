@@ -91,6 +91,7 @@ import coil.request.ImageRequest
 private enum class StyleSortOption(val label: String) {
     DATE_DESC("Newest first"),
     DATE_ASC("Oldest first"),
+    POPULARITY("Most worn"),
     NAME_AZ("Name A–Z"),
     NAME_ZA("Name Z–A"),
     ITEM_COUNT("Most items"),
@@ -111,10 +112,16 @@ fun StylesScreen(
     weatherViewModel: WeatherViewModel = viewModel(),
     modifier: Modifier = Modifier,
 ) {
-    val stylesState by stylesViewModel.state.collectAsState()
+    val stylesState  by stylesViewModel.state.collectAsState()
     val wardrobeState by wardrobeViewModel.state.collectAsState()
     val profileState by profileViewModel.state.collectAsState()
     val weatherState by weatherViewModel.state.collectAsState()
+    val outfitsState by outfitsViewModel.state.collectAsState()
+
+    // styleId → number of calendar wear events
+    val wearCounts = remember(outfitsState.events) {
+        outfitsState.events.groupingBy { it.styleId }.eachCount()
+    }
 
     if (stylesState.isCreating) {
         StyleItemPicker(
@@ -134,6 +141,7 @@ fun StylesScreen(
         StyleListScreen(
             styles = stylesState.styles,
             items = wardrobeState.images,
+            wearCounts = wearCounts,
             isLoading = stylesState.isLoading,
             isPredicting = stylesState.isPredicting,
             prediction = stylesState.prediction,
@@ -197,6 +205,7 @@ fun StylesScreen(
 private fun StyleListScreen(
     styles: List<Style>,
     items: List<DriveImage>,
+    wearCounts: Map<String, Int> = emptyMap(),
     isLoading: Boolean,
     isPredicting: Boolean,
     prediction: StylePrediction?,
@@ -243,10 +252,11 @@ private fun StyleListScreen(
         }
     }
 
-    val displayedStyles = remember(filteredStyles, sortBy) {
+    val displayedStyles = remember(filteredStyles, sortBy, wearCounts) {
         when (sortBy) {
             StyleSortOption.DATE_DESC  -> filteredStyles
             StyleSortOption.DATE_ASC   -> filteredStyles.reversed()
+            StyleSortOption.POPULARITY -> filteredStyles.sortedByDescending { wearCounts[it.id] ?: 0 }
             StyleSortOption.NAME_AZ    -> filteredStyles.sortedBy { it.name.lowercase() }
             StyleSortOption.NAME_ZA    -> filteredStyles.sortedByDescending { it.name.lowercase() }
             StyleSortOption.ITEM_COUNT -> filteredStyles.sortedByDescending { it.itemIds.size }
