@@ -20,6 +20,8 @@ data class WardrobeGapUiState(
     val isLoadingImages: Boolean = false,
     /** Map of suggestion index → list of product image URLs. */
     val suggestionImages: Map<Int, List<String>> = emptyMap(),
+    /** True when google.cse.id is not configured in local.properties. */
+    val isCseMissing: Boolean = false,
     val error: String? = null,
 )
 
@@ -62,18 +64,28 @@ class WardrobeGapViewModel(app: Application) : AndroidViewModel(app) {
                 return@launch
             }
 
-            _state.update { it.copy(isAnalyzing = false, analysis = result, isLoadingImages = true) }
-
-            // Fetch product images for each suggestion in parallel
-            val imageJobs = result.suggestions.mapIndexed { index, suggestion ->
-                async {
-                    val colorHint = suggestion.colors.take(2).joinToString(" ")
-                    val query = "$colorHint ${suggestion.missingItem}"
-                    index to gemini.searchProductImages(query)
-                }
+            val cseConfigured = BuildConfig.GOOGLE_CSE_ID.isNotBlank()
+            _state.update {
+                it.copy(
+                    isAnalyzing = false,
+                    analysis = result,
+                    isLoadingImages = cseConfigured,
+                    isCseMissing = !cseConfigured,
+                )
             }
-            val imageResults = imageJobs.awaitAll().toMap()
-            _state.update { it.copy(isLoadingImages = false, suggestionImages = imageResults) }
+
+            if (cseConfigured) {
+                // Fetch product images for each suggestion in parallel
+                val imageJobs = result.suggestions.mapIndexed { index, suggestion ->
+                    async {
+                        val colorHint = suggestion.colors.take(2).joinToString(" ")
+                        val query = "$colorHint ${suggestion.missingItem} clothing"
+                        index to gemini.searchProductImages(query)
+                    }
+                }
+                val imageResults = imageJobs.awaitAll().toMap()
+                _state.update { it.copy(isLoadingImages = false, suggestionImages = imageResults) }
+            }
         }
     }
 }

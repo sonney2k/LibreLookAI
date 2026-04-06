@@ -28,6 +28,11 @@ android {
             "GEMINI_API_KEY",
             "\"${localProps.getProperty("gemini.api.key", "")}\"",
         )
+        buildConfigField(
+            "String",
+            "GOOGLE_CSE_ID",
+            "\"${localProps.getProperty("google.cse.id", "")}\"",
+        )
     }
 
     buildTypes {

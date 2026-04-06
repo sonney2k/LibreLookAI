@@ -140,6 +140,7 @@ fun WardrobeGapScreen(
                         suggestion = suggestion,
                         imageUrls = images,
                         isLoadingImages = state.isLoadingImages,
+                        isCseMissing = state.isCseMissing,
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
                     )
                 }
@@ -210,6 +211,7 @@ private fun GapSuggestionCard(
     suggestion: GapSuggestion,
     imageUrls: List<String>,
     isLoadingImages: Boolean,
+    isCseMissing: Boolean,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -269,7 +271,7 @@ private fun GapSuggestionCard(
 
             // Product image strip
             when {
-                isLoadingImages && imageUrls.isEmpty() -> {
+                isLoadingImages -> {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically,
@@ -296,6 +298,13 @@ private fun GapSuggestionCard(
                             )
                         }
                     }
+                }
+                isCseMissing -> {
+                    Text(
+                        "Add google.cse.id to local.properties to enable product images.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
                 }
             }
 

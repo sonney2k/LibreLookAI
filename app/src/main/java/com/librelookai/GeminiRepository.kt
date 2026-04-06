@@ -255,50 +255,35 @@ class GeminiRepository {
     }
 
     /**
-     * Uses Gemini with Google Search grounding to find product image URLs for [query].
-     * Returns up to 4 direct image URLs, or an empty list on failure.
+     * Searches Google Custom Search for product images matching [query].
+     *
+     * Requires `google.cse.id` in local.properties. The CSE must be configured to
+     * "Search the entire web" with Image search enabled. Uses the same gemini.api.key.
+     * Create one at https://programmablesearchengine.google.com/
+     *
+     * Returns up to 4 Google-hosted thumbnail URLs, or an empty list if not configured.
      */
     suspend fun searchProductImages(query: String): List<String> = withContext(Dispatchers.IO) {
         val apiKey = BuildConfig.GEMINI_API_KEY
-        if (apiKey.isBlank() || apiKey == "YOUR_GEMINI_API_KEY_HERE") return@withContext emptyList()
+        val cseId  = BuildConfig.GOOGLE_CSE_ID
+        if (apiKey.isBlank() || cseId.isBlank()) {
+            Log.d(TAG, "searchProductImages: missing API key or CSE ID — skipping")
+            return@withContext emptyList()
+        }
 
-        val prompt = "Search Google Images for \"$query\" fashion clothing product photos from " +
-            "retailers such as Zara, H&M, ASOS, Nordstrom, or similar. " +
-            "Return ONLY a JSON array of up to 4 direct image URLs (ending in .jpg, .jpeg, .png, or .webp). " +
-            "No markdown, no explanation. Example: [\"https://example.com/a.jpg\",\"https://example.com/b.webp\"]"
-
-        val body = gson.toJson(
-            mapOf(
-                "contents" to listOf(
-                    mapOf("role" to "user", "parts" to listOf(mapOf("text" to prompt))),
-                ),
-                "tools" to listOf(mapOf("google_search" to emptyMap<String, Any>())),
-            ),
-        )
+        val encodedQuery = java.net.URLEncoder.encode(query, "UTF-8")
+        val url = "https://www.googleapis.com/customsearch/v1" +
+            "?key=$apiKey&cx=$cseId&q=$encodedQuery&searchType=image&num=4" +
+            "&safe=active&imgType=photo"
 
         return@withContext try {
-            val response = http.newCall(
-                Request.Builder()
-                    .url("$PREDICT_URL?key=$apiKey")
-                    .post(body.toRequestBody("application/json".toMediaType()))
-                    .build(),
-            ).await()
-            val responseBody = response.body!!.string()
-            Log.d(TAG, "searchProductImages HTTP ${response.code}: ${responseBody.take(300)}")
+            val response = http.newCall(Request.Builder().url(url).build()).await()
+            val body = response.body?.string() ?: return@withContext emptyList()
+            Log.d(TAG, "searchProductImages HTTP ${response.code}: ${body.take(300)}")
             if (!response.isSuccessful) return@withContext emptyList()
 
-            val parsed = gson.fromJson(responseBody, GeminiResponse::class.java)
-            val text = parsed.candidates
-                ?.firstOrNull()?.content?.parts
-                ?.firstOrNull { it.text != null }?.text
-                ?: return@withContext emptyList()
-
-            val json = text.trim()
-                .removePrefix("```json").removePrefix("```").removeSuffix("```").trim()
-            val listType = object : com.google.gson.reflect.TypeToken<List<String>>() {}.type
-            @Suppress("UNCHECKED_CAST")
-            (gson.fromJson(json, listType) as? List<String>)?.filter { it.startsWith("http") }
-                ?: emptyList()
+            val root = gson.fromJson(body, CseResponse::class.java)
+            root.items.orEmpty().mapNotNull { it.image?.thumbnailLink }.filter { it.isNotBlank() }
         } catch (e: Exception) {
             Log.w(TAG, "searchProductImages failed: ${e.message}")
             emptyList()
@@ -423,4 +408,20 @@ private data class GeminiPart(
 private data class GeminiInlineData(
     @SerializedName("mimeType") val mimeType: String? = null,
     val data: String? = null,
+)
+
+// ---------- Google Custom Search API DTOs ----------
+
+private data class CseResponse(
+    val items: List<CseItem>? = null,
+)
+
+private data class CseItem(
+    val link: String? = null,
+    val image: CseImage? = null,
+)
+
+private data class CseImage(
+    val thumbnailLink: String? = null,
+    val contextLink: String? = null,
 )
