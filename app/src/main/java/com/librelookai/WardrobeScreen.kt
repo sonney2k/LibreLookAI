@@ -217,6 +217,69 @@ internal fun tagCategoryDisplayLabel(key: String): String = when (key) {
     else          -> key
 }
 
+/** Maps a stored English tag value to its localized display string. Unknown values pass through. */
+@Composable
+internal fun String.localizedTagValue(): String = when (this.lowercase()) {
+    // Uses
+    "casual"          -> stringResource(R.string.tag_val_casual)
+    "formal"          -> stringResource(R.string.tag_val_formal)
+    "business"        -> stringResource(R.string.tag_val_business)
+    "sport"           -> stringResource(R.string.tag_val_sport)
+    "outdoor"         -> stringResource(R.string.tag_val_outdoor)
+    "beach"           -> stringResource(R.string.tag_val_beach)
+    "evening"         -> stringResource(R.string.tag_val_evening)
+    // Seasonality
+    "spring"          -> stringResource(R.string.tag_val_spring)
+    "summer"          -> stringResource(R.string.tag_val_summer)
+    "fall"            -> stringResource(R.string.tag_val_fall)
+    "winter"          -> stringResource(R.string.tag_val_winter)
+    // Aesthetic
+    "minimalist"      -> stringResource(R.string.tag_val_minimalist)
+    "streetwear"      -> stringResource(R.string.tag_val_streetwear)
+    "preppy"          -> stringResource(R.string.tag_val_preppy)
+    "bohemian"        -> stringResource(R.string.tag_val_bohemian)
+    "classic"         -> stringResource(R.string.tag_val_classic)
+    "sporty"          -> stringResource(R.string.tag_val_sporty)
+    "romantic"        -> stringResource(R.string.tag_val_romantic)
+    "edgy"            -> stringResource(R.string.tag_val_edgy)
+    "business-casual" -> stringResource(R.string.tag_val_business_casual)
+    "luxury"          -> stringResource(R.string.tag_val_luxury)
+    // Fit
+    "slim"            -> stringResource(R.string.tag_val_slim)
+    "regular"         -> stringResource(R.string.tag_val_regular)
+    "relaxed"         -> stringResource(R.string.tag_val_relaxed)
+    "oversized"       -> stringResource(R.string.tag_val_oversized)
+    "tailored"        -> stringResource(R.string.tag_val_tailored)
+    // Material
+    "cotton"          -> stringResource(R.string.tag_val_cotton)
+    "denim"           -> stringResource(R.string.tag_val_denim)
+    "wool"            -> stringResource(R.string.tag_val_wool)
+    "leather"         -> stringResource(R.string.tag_val_leather)
+    "polyester"       -> stringResource(R.string.tag_val_polyester)
+    "linen"           -> stringResource(R.string.tag_val_linen)
+    "silk"            -> stringResource(R.string.tag_val_silk)
+    "knit"            -> stringResource(R.string.tag_val_knit)
+    // Pattern
+    "solid"           -> stringResource(R.string.tag_val_solid)
+    "stripes"         -> stringResource(R.string.tag_val_stripes)
+    "plaid"           -> stringResource(R.string.tag_val_plaid)
+    "floral"          -> stringResource(R.string.tag_val_floral)
+    "geometric"       -> stringResource(R.string.tag_val_geometric)
+    "animal-print"    -> stringResource(R.string.tag_val_animal_print)
+    "graphic"         -> stringResource(R.string.tag_val_graphic)
+    "camo"            -> stringResource(R.string.tag_val_camo)
+    "abstract"        -> stringResource(R.string.tag_val_abstract)
+    // Category
+    "tops"            -> stringResource(R.string.tag_val_tops)
+    "bottoms"         -> stringResource(R.string.tag_val_bottoms)
+    "outerwear"       -> stringResource(R.string.tag_val_outerwear)
+    "footwear"        -> stringResource(R.string.tag_val_footwear)
+    "accessories"     -> stringResource(R.string.tag_val_accessories)
+    "dress"           -> stringResource(R.string.tag_val_dress)
+    "suit"            -> stringResource(R.string.tag_val_suit)
+    else              -> this
+}
+
 internal fun List<DriveImage>.tagCategories(): List<TagCategory> {
     fun collect(vararg lists: List<String>) = lists.flatMap { it }.toSortedSet().toList()
     return listOfNotNull(
@@ -298,7 +361,7 @@ internal fun TagFilterBar(
                                 ) {
                                     if (checked) Icon(Icons.Default.Check, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
                                     else Spacer(Modifier.size(18.dp))
-                                    Text(tag)
+                                    Text(tag.localizedTagValue())
                                 }
                             },
                             onClick = {
@@ -818,11 +881,11 @@ private fun TagsOverlay(
             if (tags != null) {
                 Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     if (tags.type.isNotEmpty()) TagChip(tags.type)
-                    if (tags.category.isNotEmpty()) TagChip(tags.category)
+                    if (tags.category.isNotEmpty()) TagChip(tags.category.localizedTagValue())
                 }
                 if (tags.uses.isNotEmpty()) {
                     Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                        tags.uses.forEach { TagChip(it) }
+                        tags.uses.forEach { TagChip(it.localizedTagValue()) }
                     }
                 }
                 if (tags.colors.isNotEmpty()) {
@@ -1014,7 +1077,7 @@ private fun ChipListEditor(
                 InputChip(
                     selected = false,
                     onClick = {},
-                    label = { Text(value) },
+                    label = { Text(value.localizedTagValue()) },
                     trailingIcon = {
                         Icon(
                             Icons.Default.Close,
@@ -1048,16 +1111,19 @@ private fun ChipListEditor(
             )
         }
 
-        // Existing suggestions (filtered by input if any)
+        // Existing suggestions (filtered by input if any); match on both English key and localized label
         val filtered = if (inputText.isBlank()) suggestions
-                       else suggestions.filter { it.contains(inputText, ignoreCase = true) }
+                       else suggestions.filter {
+                           it.contains(inputText, ignoreCase = true) ||
+                           it.localizedTagValue().contains(inputText, ignoreCase = true)
+                       }
         if (filtered.isNotEmpty()) {
             FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 filtered.forEach { suggestion ->
                     FilterChip(
                         selected = false,
                         onClick = { onAdd(suggestion); inputText = "" },
-                        label = { Text(suggestion) },
+                        label = { Text(suggestion.localizedTagValue()) },
                     )
                 }
             }
