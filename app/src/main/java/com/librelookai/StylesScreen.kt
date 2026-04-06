@@ -984,12 +984,13 @@ private val REFINEMENT_PRESETS = listOf(
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
-private fun RefinementSection(
+internal fun RefinementSection(
     input: String,
     feedbackHistory: List<String>,
     onInputChange: (String) -> Unit,
     onSubmitFreetext: () -> Unit,
     onSubmitPreset: (String) -> Unit,
+    presets: List<String> = REFINEMENT_PRESETS,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -1016,7 +1017,7 @@ private fun RefinementSection(
 
         // Preset quick-picks
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            REFINEMENT_PRESETS.forEach { preset ->
+            presets.forEach { preset ->
                 SuggestionChip(
                     onClick = { onSubmitPreset(preset) },
                     label = { Text(preset, style = MaterialTheme.typography.labelSmall) },
