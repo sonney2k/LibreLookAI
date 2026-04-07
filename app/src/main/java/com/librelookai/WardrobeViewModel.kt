@@ -4,6 +4,7 @@ import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,10 +43,16 @@ data class WardrobeUiState(
     val selectedIds: Set<String> = emptySet(),
 )
 
+// ---------- Wardrobe metadata (replaces per-file appProperties) ----------
+
+private data class WardrobeItemMeta(val name: String, val tags: ClothingTags?)
+private data class WardrobeMetadata(val items: List<WardrobeItemMeta> = emptyList())
+
 class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
     private val drive = DriveRepository(app, GoogleAuthManager(app))
     private val gemini = GeminiRepository()
+    private val gson = Gson()
 
     private val _state = MutableStateFlow(WardrobeUiState())
     val state: StateFlow<WardrobeUiState> = _state.asStateFlow()
@@ -62,11 +69,34 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             runCatching {
                 val id = folderId ?: drive.getOrCreateFolder().also { folderId = it }
                 val files = drive.listFiles(id)
+
+                // Load metadata file (filename → tags). Falls back to appProperties for migration.
+                val metaJson = drive.loadWardrobeMetadataJson(id)
+                val metaByName: Map<String, ClothingTags?> = if (metaJson != null) {
+                    gson.fromJson(metaJson, WardrobeMetadata::class.java)
+                        .items.associate { it.name to it.tags }
+                } else emptyMap()
+
+                // Download any uncached files in parallel
                 files.map { file -> async { drive.cachedFile(file.id) ?: drive.downloadToCache(file.id) } }
                     .awaitAll()
+
+                val hadLegacyProps = metaJson == null && files.any { it.appProperties?.isNotEmpty() == true }
+
                 files.mapNotNull { file ->
-                    drive.cachedFile(file.id)?.let {
-                        DriveImage(file.id, it.absolutePath, file.name, file.appProperties?.toClothingTags())
+                    drive.cachedFile(file.id)?.let { cached ->
+                        val tags = if (metaByName.containsKey(file.name)) {
+                            metaByName[file.name]           // primary: metadata file (by filename)
+                        } else {
+                            file.appProperties?.toClothingTags()  // fallback: legacy appProperties
+                        }
+                        DriveImage(file.id, cached.absolutePath, file.name, tags)
+                    }
+                }.also { images ->
+                    // Auto-migrate: if data came from appProperties, write metadata file now
+                    if (hadLegacyProps) {
+                        val meta = WardrobeMetadata(images.map { WardrobeItemMeta(it.name, it.tags) })
+                        runCatching { drive.saveWardrobeMetadataJson(id, gson.toJson(meta)) }
                     }
                 }
             }.onSuccess { images ->
@@ -74,6 +104,16 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             }.onFailure { e ->
                 _state.update { it.copy(isLoading = false, error = e.message) }
             }
+        }
+    }
+
+    /** Persists current wardrobe tags to the metadata file. Call after any tag change. */
+    private fun saveWardrobeMetadata() {
+        val images = _state.value.images
+        val id = folderId ?: return
+        viewModelScope.launch {
+            val meta = WardrobeMetadata(images.map { WardrobeItemMeta(it.name, it.tags) })
+            runCatching { drive.saveWardrobeMetadataJson(id, gson.toJson(meta)) }
         }
     }
 
@@ -139,15 +179,15 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             }
             rawFile.copyTo(File(drive.cacheDir, "${uploaded.id}_original.jpg"), overwrite = true)
 
-            // Step 3 — Classify clothing tags and persist to Drive appProperties
+            // Step 3 — Classify clothing tags
             val tags = gemini.classifyClothing(processedFile)
-            if (tags != null) drive.updateAppProperties(uploaded.id, tags.toAppProperties())
 
             DriveImage(uploaded.id, displayCache.absolutePath, uploaded.name, tags)
         }.onFailure { e ->
             _state.update { it.copy(error = e.message) }
         }.onSuccess {
             _state.update { it.copy(isUploading = false) }
+            saveWardrobeMetadata()
         }.getOrNull()
     }
 
@@ -194,13 +234,13 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 ?: run { _state.update { it.copy(processingImageId = null) }; return@launch }
             val tags = gemini.classifyClothing(cachedFile)
                 ?: run { _state.update { it.copy(processingImageId = null) }; return@launch }
-            drive.updateAppProperties(driveId, tags.toAppProperties())
             _state.update { s ->
                 s.copy(
                     processingImageId = null,
                     images = s.images.map { if (it.driveId == driveId) it.copy(tags = tags) else it },
                 )
             }
+            saveWardrobeMetadata()
         }
     }
 
@@ -208,13 +248,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         _state.update { s ->
             s.copy(images = s.images.map { if (it.driveId == driveId) it.copy(tags = tags) else it })
         }
-        viewModelScope.launch {
-            runCatching {
-                drive.updateAppProperties(driveId, tags.toAppProperties())
-            }.onFailure { e ->
-                _state.update { it.copy(error = e.message) }
-            }
-        }
+        saveWardrobeMetadata()
     }
 
     fun retagAll() {
@@ -226,12 +260,12 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 _state.update { it.copy(retagDone = index) }
                 val cachedFile = drive.cachedFile(image.driveId) ?: return@forEachIndexed
                 val tags = gemini.classifyClothing(cachedFile) ?: return@forEachIndexed
-                runCatching { drive.updateAppProperties(image.driveId, tags.toAppProperties()) }
                 _state.update { s ->
                     s.copy(images = s.images.map { if (it.driveId == image.driveId) it.copy(tags = tags) else it })
                 }
             }
             _state.update { it.copy(isRetagging = false, retagDone = 0, retagTotal = 0) }
+            saveWardrobeMetadata()
         }
     }
 
@@ -263,23 +297,12 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     images = s.images.filter { it.driveId !in toDelete }
                 )
             }
+            saveWardrobeMetadata()
         }
     }
 }
 
-// ---------- appProperties ↔ ClothingTags ----------
-
-private fun ClothingTags.toAppProperties() = mapOf(
-    "clothing_type"        to type,
-    "clothing_category"    to category,
-    "clothing_uses"        to uses.joinToString(","),
-    "clothing_colors"      to colors.joinToString(","),
-    "clothing_seasonality" to seasonality.joinToString(","),
-    "clothing_aesthetic"   to aesthetic.joinToString(","),
-    "clothing_fit"         to fit.joinToString(","),
-    "clothing_material"    to material.joinToString(","),
-    "clothing_pattern"     to pattern.joinToString(","),
-)
+// ---------- Legacy appProperties → ClothingTags (migration read-path only) ----------
 
 private fun Map<String, String>.toClothingTags(): ClothingTags? {
     val type = getOrDefault("clothing_type", "")

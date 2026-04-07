@@ -70,10 +70,20 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
             _state.update { it.copy(isLoading = true, error = null) }
             runCatching {
                 val id = folderId ?: drive.getOrCreateFolder().also { folderId = it }
+                // Build filename → Drive ID map so we can resolve itemNames → itemIds
+                val files = drive.listFiles(id)
+                val nameToId = files.associate { it.name to it.id }
+
                 val json = drive.loadStylesJson(id)
                 if (json != null) {
                     val type = object : TypeToken<List<Style>>() {}.type
-                    gson.fromJson<List<Style>>(json, type) ?: emptyList()
+                    val raw: List<Style> = gson.fromJson(json, type) ?: emptyList()
+                    // Resolve stable filenames to current Drive IDs (portable across account copies)
+                    raw.map { style ->
+                        if (style.itemNames.isNotEmpty()) {
+                            style.copy(itemIds = style.itemNames.mapNotNull { nameToId[it] })
+                        } else style
+                    }
                 } else emptyList()
             }.onSuccess { styles ->
                 _state.update { it.copy(styles = styles, isLoading = false) }
@@ -129,14 +139,25 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
                 s.editingStyle?.name ?: "Style ${s.styles.size + 1}"
             }
             val description = s.draftStyleDescription.trim()
+            val id = folderId ?: drive.getOrCreateFolder().also { folderId = it }
+
+            // Fetch fresh file listing to populate stable itemNames (portable across account copies)
+            val idToName = drive.listFiles(id).associate { it.id to it.name }
+            val itemNames = draftIds.mapNotNull { idToName[it] }
+
             val updated = if (s.editingStyle != null) {
-                val edited = s.editingStyle.copy(name = resolvedName, description = description, itemIds = draftIds.toList())
+                val edited = s.editingStyle.copy(
+                    name = resolvedName, description = description,
+                    itemIds = draftIds.toList(), itemNames = itemNames,
+                )
                 s.styles.map { if (it.id == edited.id) edited else it }
             } else {
-                s.styles + Style(name = resolvedName, description = description, itemIds = draftIds.toList())
+                s.styles + Style(
+                    name = resolvedName, description = description,
+                    itemIds = draftIds.toList(), itemNames = itemNames,
+                )
             }
             runCatching {
-                val id = folderId ?: drive.getOrCreateFolder().also { folderId = it }
                 drive.saveStylesJson(id, gson.toJson(updated))
             }.onSuccess {
                 _state.update { it.copy(styles = updated, isCreating = false, draftItemIds = emptySet(), editingStyle = null, showNameDialog = false) }
