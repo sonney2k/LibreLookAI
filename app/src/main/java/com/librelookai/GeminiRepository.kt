@@ -44,6 +44,8 @@ class GeminiRepository {
 
         // Text-only model for style prediction (reuses classify endpoint)
         private const val PREDICT_URL = CLASSIFY_URL
+
+
         private const val CLASSIFY_PROMPT =
             "Analyze this clothing item and return ONLY a JSON object (no markdown, no explanation) " +
                 "with these fields: " +
@@ -255,53 +257,6 @@ class GeminiRepository {
     }
 
     /**
-     * Searches Google Custom Search for product images matching [query].
-     *
-     * Requires `google.cse.id` in local.properties. The CSE must be configured to
-     * "Search the entire web" with Image search enabled. Uses the same gemini.api.key.
-     * Create one at https://programmablesearchengine.google.com/
-     *
-     * Returns a Pair of (thumbnail URL list, human-readable debug string).
-     */
-    suspend fun searchProductImages(query: String): Pair<List<String>, String> = withContext(Dispatchers.IO) {
-        val apiKey = BuildConfig.GEMINI_API_KEY
-        val cseId  = BuildConfig.GOOGLE_CSE_ID
-        if (apiKey.isBlank() || cseId.isBlank()) {
-            return@withContext emptyList<String>() to "CSE not configured"
-        }
-
-        val encodedQuery = java.net.URLEncoder.encode(query, "UTF-8")
-        val url = "https://www.googleapis.com/customsearch/v1" +
-            "?key=$apiKey&cx=$cseId&q=$encodedQuery&searchType=image&num=4" +
-            "&safe=active&imgType=photo"
-
-        Log.d(TAG, "searchProductImages query=\"$query\" cx=$cseId")
-
-        return@withContext try {
-            val response = http.newCall(Request.Builder().url(url).build()).await()
-            val body = response.body?.string() ?: return@withContext emptyList<String>() to "empty body"
-            Log.d(TAG, "searchProductImages HTTP ${response.code} — full body:\n$body")
-
-            if (!response.isSuccessful) {
-                return@withContext emptyList<String>() to "HTTP ${response.code}: $body"
-            }
-
-            val root = gson.fromJson(body, CseResponse::class.java)
-            val items = root.items.orEmpty()
-            Log.d(TAG, "searchProductImages: ${items.size} items")
-            items.forEachIndexed { i, item ->
-                Log.d(TAG, "  [$i] link=${item.link} | thumb=${item.image?.thumbnailLink}")
-            }
-
-            val thumbs = items.mapNotNull { it.image?.thumbnailLink }.filter { it.isNotBlank() }
-            thumbs to "Query: \"$query\" • ${items.size} items, ${thumbs.size} thumbs"
-        } catch (e: Exception) {
-            Log.w(TAG, "searchProductImages failed: ${e.message}", e)
-            emptyList<String>() to "Exception: ${e.message}"
-        }
-    }
-
-    /**
      * Sends a text-only prompt to Gemini and returns the raw text response, or null on failure.
      */
     suspend fun generateText(prompt: String): String? = withContext(Dispatchers.IO) {
@@ -421,18 +376,3 @@ private data class GeminiInlineData(
     val data: String? = null,
 )
 
-// ---------- Google Custom Search API DTOs ----------
-
-private data class CseResponse(
-    val items: List<CseItem>? = null,
-)
-
-private data class CseItem(
-    val link: String? = null,
-    val image: CseImage? = null,
-)
-
-private data class CseImage(
-    val thumbnailLink: String? = null,
-    val contextLink: String? = null,
-)
