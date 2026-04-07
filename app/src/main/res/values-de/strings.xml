@@ -42,6 +42,15 @@
     <string name="settings_rescan_dialog_title">Alle Tags neu scannen?</string>
     <string name="settings_rescan_dialog_text">Gemini klassifiziert alle Artikel in Ihrer Garderobe neu. Dies überschreibt manuelle Tag-Bearbeitungen und kann eine Weile dauern.</string>
     <string name="settings_rescan_confirm">Neu scannen</string>
+    <string name="settings_locations_title">Standorte</string>
+    <string name="settings_locations_desc">Verwalte mehrere Garderoben für verschiedene Standorte, z.B. Zuhause und Ferienhaus.</string>
+    <string name="settings_location_add">Standort hinzufügen</string>
+    <string name="settings_location_name_hint">Name des Standorts</string>
+    <string name="settings_location_add_title">Standort hinzufügen</string>
+    <string name="settings_location_rename_title">Standort umbenennen</string>
+    <string name="settings_location_delete_title">Standort löschen?</string>
+    <string name="settings_location_delete_text">Die Garderobendaten für \"%1$s\" bleiben in Drive gespeichert, sind aber hier nicht mehr zugänglich.</string>
+    <string name="settings_location_active">Aktiv</string>
 
     <string name="wardrobe_empty_filter">Keine Artikel entsprechen dem Filter</string>
     <string name="wardrobe_empty">Noch keine Artikel</string>
@@ -50,6 +59,8 @@
     <string name="wardrobe_compose_ai">Mit KI zusammenstellen</string>
     <string name="wardrobe_delete_title">Artikel löschen?</string>
     <string name="wardrobe_delete_text">Möchten Sie wirklich %d ausgewählte Artikel löschen? Dies kann nicht rückgängig gemacht werden.</string>
+    <string name="wardrobe_move_to">Verschieben nach…</string>
+    <string name="wardrobe_move_to_title">%d Teil(e) verschieben nach</string>
     <string name="wardrobe_sort_newest">Neueste zuerst</string>
     <string name="wardrobe_sort_oldest">Älteste zuerst</string>
     <string name="wardrobe_sort_most_worn">Am häufigsten getragen</string>
@@ -191,6 +202,7 @@
     <string name="styles_wear_today">Heute tragen</string>
     <string name="styles_worn_today">Heute getragen!</string>
     <string name="styles_missing_items">Artikel nicht mehr in der Garderobe</string>
+    <string name="styles_items_away">%d Teil(e) an einem anderen Standort</string>
     <string name="styles_suggested_title">Vorschlag für heute</string>
     <string name="styles_composed_title">Für Sie zusammengestellt</string>
     <string name="styles_name_dialog_title">Stil benennen</string>

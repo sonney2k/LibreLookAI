@@ -1,5 +1,6 @@
 package com.librelookai
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -24,12 +29,14 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Snackbar
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -56,10 +63,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 fun SettingsScreen(
     profileViewModel: ProfileViewModel = viewModel(),
     wardrobeViewModel: WardrobeViewModel = viewModel(),
+    locationViewModel: LocationViewModel = viewModel(),
     modifier: Modifier = Modifier,
 ) {
     val profileState  by profileViewModel.state.collectAsState()
     val wardrobeState by wardrobeViewModel.state.collectAsState()
+    val locationState by locationViewModel.state.collectAsState()
 
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
 
@@ -79,6 +88,11 @@ fun SettingsScreen(
             1 -> DataTab(
                 wardrobeState = wardrobeState,
                 onRetagAll = wardrobeViewModel::retagAll,
+                locationState = locationState,
+                onSetActiveLocation = locationViewModel::setActiveLocation,
+                onAddLocation = locationViewModel::addLocation,
+                onRenameLocation = locationViewModel::renameLocation,
+                onDeleteLocation = locationViewModel::deleteLocation,
             )
         }
     }
@@ -257,8 +271,16 @@ private fun ProfileTab(
 private fun DataTab(
     wardrobeState: WardrobeUiState,
     onRetagAll: () -> Unit,
+    locationState: LocationUiState,
+    onSetActiveLocation: (String) -> Unit,
+    onAddLocation: (String) -> Unit,
+    onRenameLocation: (String, String) -> Unit,
+    onDeleteLocation: (String) -> Unit,
 ) {
     var showRetagDialog by remember { mutableStateOf(false) }
+    var showAddLocationDialog by remember { mutableStateOf(false) }
+    var renameTarget by remember { mutableStateOf<Location?>(null) }
+    var deleteTarget by remember { mutableStateOf<Location?>(null) }
 
     Column(
         modifier = Modifier
@@ -267,6 +289,77 @@ private fun DataTab(
             .padding(horizontal = 20.dp, vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
+        // ---------- Locations ----------
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(stringResource(R.string.settings_locations_title), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+            Text(
+                stringResource(R.string.settings_locations_desc),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+
+            locationState.locations.forEach { location ->
+                val isActive = location.id == locationState.activeLocationId
+                Surface(
+                    shape = MaterialTheme.shapes.small,
+                    tonalElevation = if (isActive) 2.dp else 0.dp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(enabled = !isActive) { onSetActiveLocation(location.id) },
+                ) {
+                    Row(
+                        modifier = Modifier.padding(start = 12.dp, top = 4.dp, bottom = 4.dp, end = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        if (isActive) {
+                            Icon(
+                                Icons.Default.Check,
+                                contentDescription = stringResource(R.string.settings_location_active),
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(18.dp),
+                            )
+                            Spacer(Modifier.size(8.dp))
+                        } else {
+                            Spacer(Modifier.size(26.dp))
+                        }
+                        Text(
+                            location.name,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = if (isActive) FontWeight.SemiBold else FontWeight.Normal,
+                            modifier = Modifier.weight(1f),
+                        )
+                        IconButton(onClick = { renameTarget = location }) {
+                            Icon(Icons.Default.Edit, contentDescription = stringResource(R.string.settings_location_rename_title), modifier = Modifier.size(18.dp))
+                        }
+                        IconButton(
+                            onClick = { deleteTarget = location },
+                            enabled = locationState.locations.size > 1,
+                        ) {
+                            Icon(
+                                Icons.Default.Delete,
+                                contentDescription = stringResource(R.string.settings_location_delete_title),
+                                modifier = Modifier.size(18.dp),
+                                tint = if (locationState.locations.size > 1) MaterialTheme.colorScheme.error
+                                       else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+                            )
+                        }
+                    }
+                }
+            }
+
+            OutlinedButton(
+                onClick = { showAddLocationDialog = true },
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(18.dp))
+                Spacer(Modifier.padding(start = 8.dp))
+                Text(stringResource(R.string.settings_location_add))
+            }
+        }
+
+        HorizontalDivider()
+
+        // ---------- Tags ----------
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(stringResource(R.string.settings_data_tags_title), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
             Text(
@@ -305,6 +398,8 @@ private fun DataTab(
         HorizontalDivider()
     }
 
+    // ---------- Dialogs ----------
+
     if (showRetagDialog) {
         AlertDialog(
             onDismissRequest = { showRetagDialog = false },
@@ -317,6 +412,79 @@ private fun DataTab(
             },
             dismissButton = {
                 TextButton(onClick = { showRetagDialog = false }) {
+                    Text(stringResource(R.string.action_cancel))
+                }
+            },
+        )
+    }
+
+    if (showAddLocationDialog) {
+        var nameInput by remember { mutableStateOf("") }
+        AlertDialog(
+            onDismissRequest = { showAddLocationDialog = false; nameInput = "" },
+            title = { Text(stringResource(R.string.settings_location_add_title)) },
+            text = {
+                OutlinedTextField(
+                    value = nameInput,
+                    onValueChange = { nameInput = it },
+                    placeholder = { Text(stringResource(R.string.settings_location_name_hint)) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = { onAddLocation(nameInput); showAddLocationDialog = false; nameInput = "" },
+                    enabled = nameInput.isNotBlank(),
+                ) { Text(stringResource(R.string.action_save)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showAddLocationDialog = false; nameInput = "" }) {
+                    Text(stringResource(R.string.action_cancel))
+                }
+            },
+        )
+    }
+
+    renameTarget?.let { target ->
+        var nameInput by remember(target.id) { mutableStateOf(target.name) }
+        AlertDialog(
+            onDismissRequest = { renameTarget = null },
+            title = { Text(stringResource(R.string.settings_location_rename_title)) },
+            text = {
+                OutlinedTextField(
+                    value = nameInput,
+                    onValueChange = { nameInput = it },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = { onRenameLocation(target.id, nameInput); renameTarget = null },
+                    enabled = nameInput.isNotBlank(),
+                ) { Text(stringResource(R.string.action_save)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { renameTarget = null }) {
+                    Text(stringResource(R.string.action_cancel))
+                }
+            },
+        )
+    }
+
+    deleteTarget?.let { target ->
+        AlertDialog(
+            onDismissRequest = { deleteTarget = null },
+            title = { Text(stringResource(R.string.settings_location_delete_title)) },
+            text = { Text(stringResource(R.string.settings_location_delete_text, target.name)) },
+            confirmButton = {
+                TextButton(onClick = { onDeleteLocation(target.id); deleteTarget = null }) {
+                    Text(stringResource(R.string.action_delete))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { deleteTarget = null }) {
                     Text(stringResource(R.string.action_cancel))
                 }
             },

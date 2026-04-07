@@ -59,7 +59,12 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
     private var folderId: String? = null
 
-    init { loadImages() }
+    fun setLocation(newFolderId: String) {
+        if (folderId == newFolderId) return
+        folderId = newFolderId
+        _state.update { WardrobeUiState(isLoading = true) }
+        loadImages()
+    }
 
     // ---------- Load ----------
 
@@ -67,7 +72,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, error = null) }
             runCatching {
-                val id = folderId ?: drive.getOrCreateFolder().also { folderId = it }
+                val id = folderId ?: return@runCatching emptyList()
                 val files = drive.listFiles(id)
 
                 // Load metadata file (filename → tags). Falls back to appProperties for migration.
@@ -169,7 +174,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         // Step 2 — Upload to Drive
         _state.update { it.copy(isProcessing = false, isUploading = true) }
         return runCatching {
-            val id = folderId ?: drive.getOrCreateFolder().also { folderId = it }
+            val id = folderId ?: return null
             val uploaded = drive.uploadImage(id, processedFile)
 
             val ext = if (processedFile.extension == "png") "png" else "jpg"
@@ -266,6 +271,47 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             }
             _state.update { it.copy(isRetagging = false, retagDone = 0, retagTotal = 0) }
             saveWardrobeMetadata()
+        }
+    }
+
+    // ---------- Move to another location ----------
+
+    fun moveItemsToLocation(driveIds: Set<String>, targetFolderId: String) {
+        val toMove = _state.value.images.filter { it.driveId in driveIds }
+        if (toMove.isEmpty()) return
+        viewModelScope.launch {
+            val sourceFolderId = folderId ?: return@launch
+            _state.update { it.copy(isUploading = true, selectedIds = emptySet(), error = null) }
+
+            // Load existing target metadata so we can merge (not overwrite) it
+            val targetMetaJson = drive.loadWardrobeMetadataJson(targetFolderId)
+            val targetItems: MutableList<WardrobeItemMeta> = if (targetMetaJson != null) {
+                runCatching { gson.fromJson(targetMetaJson, WardrobeMetadata::class.java).items.toMutableList() }
+                    .getOrDefault(mutableListOf())
+            } else mutableListOf()
+
+            val successfulIds = mutableListOf<String>()
+            for (item in toMove) {
+                val cachedFile = drive.cachedFile(item.driveId) ?: continue
+                runCatching {
+                    drive.uploadImage(targetFolderId, cachedFile)
+                    targetItems.removeAll { it.name == item.name }   // dedup by filename
+                    targetItems.add(WardrobeItemMeta(item.name, item.tags))
+                    drive.deleteFile(item.driveId)
+                    successfulIds.add(item.driveId)
+                }.onFailure { e ->
+                    _state.update { it.copy(error = e.message) }
+                }
+            }
+
+            if (successfulIds.isNotEmpty()) {
+                // Save merged metadata in target folder
+                runCatching { drive.saveWardrobeMetadataJson(targetFolderId, gson.toJson(WardrobeMetadata(targetItems))) }
+                // Remove moved items from source state and save source metadata
+                _state.update { s -> s.copy(images = s.images.filter { it.driveId !in successfulIds }) }
+                saveWardrobeMetadata()
+            }
+            _state.update { it.copy(isUploading = false) }
         }
     }
 

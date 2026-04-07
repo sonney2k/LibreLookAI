@@ -66,6 +66,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.PhotoLibrary
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Sort
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
@@ -120,13 +121,15 @@ fun WardrobeScreen(
     viewModel: WardrobeViewModel = viewModel(),
     outfitsViewModel: OutfitsViewModel = viewModel(),
     stylesViewModel: StylesViewModel = viewModel(),
+    locationViewModel: LocationViewModel = viewModel(),
     onCreateStyleFromSelection: (Set<String>) -> Unit = {},
     onComposeStyleFromSelection: (Set<String>) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
-    val state        by viewModel.state.collectAsState()
-    val outfitsState by outfitsViewModel.state.collectAsState()
-    val stylesState  by stylesViewModel.state.collectAsState()
+    val state         by viewModel.state.collectAsState()
+    val outfitsState  by outfitsViewModel.state.collectAsState()
+    val stylesState   by stylesViewModel.state.collectAsState()
+    val locationState by locationViewModel.state.collectAsState()
     val context = LocalContext.current
 
     // driveId → number of calendar wear events that include this item
@@ -161,6 +164,8 @@ fun WardrobeScreen(
         WardrobeView.GRID -> GridContent(
             state = state,
             popularityMap = popularityMap,
+            locations = locationState.locations,
+            activeLocationId = locationState.activeLocationId,
             onOpenCamera = {
                 if (hasCameraPermission) viewModel.openCapture()
                 else permissionLauncher.launch(Manifest.permission.CAMERA)
@@ -177,6 +182,7 @@ fun WardrobeScreen(
             onToggleSelection = viewModel::toggleSelection,
             onClearSelection = viewModel::clearSelection,
             onDeleteSelected = viewModel::deleteSelected,
+            onMoveToLocation = viewModel::moveItemsToLocation,
             onCreateStyleFromSelection = onCreateStyleFromSelection,
             onComposeStyleFromSelection = onComposeStyleFromSelection,
             processingImageId = state.processingImageId,
@@ -431,6 +437,8 @@ internal fun TagFilterBar(
 private fun GridContent(
     state: WardrobeUiState,
     popularityMap: Map<String, Int> = emptyMap(),
+    locations: List<Location> = emptyList(),
+    activeLocationId: String = "",
     onOpenCamera: () -> Unit,
     onOpenGallery: () -> Unit,
     onDismissError: () -> Unit,
@@ -440,6 +448,7 @@ private fun GridContent(
     onToggleSelection: (String) -> Unit,
     onClearSelection: () -> Unit,
     onDeleteSelected: () -> Unit,
+    onMoveToLocation: (Set<String>, String) -> Unit,
     onCreateStyleFromSelection: (Set<String>) -> Unit,
     onComposeStyleFromSelection: (Set<String>) -> Unit,
     processingImageId: String?,
@@ -449,6 +458,7 @@ private fun GridContent(
     var pinchVisualScale by remember { mutableFloatStateOf(1f) }
     var selectedIndex by remember { mutableStateOf<Int?>(null) }
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var showMoveDialog by remember { mutableStateOf(false) }
 
     // Filter + sort state
     var selectedTags by remember { mutableStateOf(emptyMap<String, Set<String>>()) }
@@ -663,6 +673,15 @@ private fun GridContent(
                     icon = { Icon(Icons.Default.AutoFixHigh, contentDescription = null) },
                     text = { Text(stringResource(R.string.wardrobe_compose_ai)) },
                 )
+                if (locations.size > 1) {
+                    ExtendedFloatingActionButton(
+                        onClick = { showMoveDialog = true },
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                        icon = { Icon(Icons.Default.Place, contentDescription = null) },
+                        text = { Text(stringResource(R.string.wardrobe_move_to)) },
+                    )
+                }
                 ExtendedFloatingActionButton(
                     onClick = { showDeleteDialog = true },
                     containerColor = MaterialTheme.colorScheme.errorContainer,
@@ -722,6 +741,45 @@ private fun GridContent(
                     Text(stringResource(R.string.action_cancel))
                 }
             }
+        )
+    }
+
+    if (showMoveDialog) {
+        val otherLocations = locations.filter { it.id != activeLocationId }
+        AlertDialog(
+            onDismissRequest = { showMoveDialog = false },
+            title = { Text(stringResource(R.string.wardrobe_move_to_title, state.selectedIds.size)) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    otherLocations.forEach { location ->
+                        Surface(
+                            shape = MaterialTheme.shapes.small,
+                            tonalElevation = 1.dp,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    onMoveToLocation(state.selectedIds, location.folderId)
+                                    showMoveDialog = false
+                                },
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            ) {
+                                Icon(Icons.Default.Place, contentDescription = null, modifier = Modifier.size(18.dp))
+                                Text(location.name, style = MaterialTheme.typography.bodyMedium)
+                            }
+                        }
+                    }
+                }
+            },
+            confirmButton = {},
+            dismissButton = {
+                TextButton(onClick = { showMoveDialog = false }) {
+                    Text(stringResource(R.string.action_cancel))
+                }
+            },
         )
     }
 

@@ -46,6 +46,15 @@
     <string name="settings_rescan_dialog_title">Re-scan all tags?</string>
     <string name="settings_rescan_dialog_text">Gemini will re-classify every item in your wardrobe. This will overwrite any manual tag edits and may take a while.</string>
     <string name="settings_rescan_confirm">Re-scan</string>
+    <string name="settings_locations_title">Locations</string>
+    <string name="settings_locations_desc">Manage multiple wardrobes for different locations, e.g. home and holiday home.</string>
+    <string name="settings_location_add">Add location</string>
+    <string name="settings_location_name_hint">Location name</string>
+    <string name="settings_location_add_title">Add location</string>
+    <string name="settings_location_rename_title">Rename location</string>
+    <string name="settings_location_delete_title">Delete location?</string>
+    <string name="settings_location_delete_text">The wardrobe data for \"%1$s\" will remain in Drive but will no longer be accessible from here.</string>
+    <string name="settings_location_active">Active</string>
 
     <!-- Wardrobe -->
     <string name="wardrobe_empty_filter">No items match the filter</string>
@@ -55,6 +64,8 @@
     <string name="wardrobe_compose_ai">Compose with AI</string>
     <string name="wardrobe_delete_title">Delete items?</string>
     <string name="wardrobe_delete_text">Are you sure you want to delete %d selected items? This cannot be undone.</string>
+    <string name="wardrobe_move_to">Move to…</string>
+    <string name="wardrobe_move_to_title">Move %d item(s) to</string>
     <string name="wardrobe_sort_newest">Newest first</string>
     <string name="wardrobe_sort_oldest">Oldest first</string>
     <string name="wardrobe_sort_most_worn">Most worn</string>
@@ -197,6 +208,7 @@
     <string name="styles_wear_today">Wear today</string>
     <string name="styles_worn_today">Worn today!</string>
     <string name="styles_missing_items">Items no longer in wardrobe</string>
+    <string name="styles_items_away">%d item(s) at another location</string>
     <string name="styles_suggested_title">Suggested for today</string>
     <string name="styles_composed_title">Composed for you</string>
     <string name="styles_name_dialog_title">Name this style</string>

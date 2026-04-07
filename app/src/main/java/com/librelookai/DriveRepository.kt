@@ -46,6 +46,7 @@ class DriveRepository(
         private const val OUTFITS_FILE_NAME = "_outfits_metadata.json"
         private const val PREFERENCES_FILE_NAME = "_user_preferences.json"
         private const val WARDROBE_METADATA_FILE_NAME = "_wardrobe_metadata.json"
+        private const val LOCATIONS_FILE_NAME = "_locations.json"
     }
 
     private val http = OkHttpClient()
@@ -388,6 +389,87 @@ class DriveRepository(
             .header("Authorization", "Bearer $tok")
             .method("PATCH", json.toRequestBody("application/json".toMediaType()))
             .build()).await()
+    }
+
+    /** Loads the locations JSON string from the root Drive folder, or null if not yet created. */
+    suspend fun loadLocationsJson(rootFolderId: String): String? = withContext(Dispatchers.IO) {
+        val tok = token()
+        val q = URLEncoder.encode(
+            "'$rootFolderId' in parents and name='$LOCATIONS_FILE_NAME' and trashed=false", "UTF-8",
+        )
+        val fileId = gson.fromJson(
+            http.newCall(Request.Builder()
+                .url("$API/files?q=$q&fields=files(id)")
+                .header("Authorization", "Bearer $tok")
+                .build()).await().body!!.string(),
+            FilesListDto::class.java,
+        ).files.firstOrNull()?.id ?: return@withContext null
+
+        val resp = http.newCall(Request.Builder()
+            .url("$API/files/$fileId?alt=media")
+            .header("Authorization", "Bearer $tok")
+            .build()).await()
+        if (resp.isSuccessful) resp.body?.string() else null
+    }
+
+    /** Creates or overwrites the locations JSON file in the root Drive folder. */
+    suspend fun saveLocationsJson(rootFolderId: String, json: String) = withContext(Dispatchers.IO) {
+        val tok = token()
+        val q = URLEncoder.encode(
+            "'$rootFolderId' in parents and name='$LOCATIONS_FILE_NAME' and trashed=false", "UTF-8",
+        )
+        val existingId = gson.fromJson(
+            http.newCall(Request.Builder()
+                .url("$API/files?q=$q&fields=files(id)")
+                .header("Authorization", "Bearer $tok")
+                .build()).await().body!!.string(),
+            FilesListDto::class.java,
+        ).files.firstOrNull()?.id
+
+        val fileId = existingId ?: run {
+            val meta = """{"name":"$LOCATIONS_FILE_NAME","parents":["$rootFolderId"],"mimeType":"application/json"}"""
+            gson.fromJson(
+                http.newCall(Request.Builder()
+                    .url("$API/files?fields=id")
+                    .header("Authorization", "Bearer $tok")
+                    .post(meta.toRequestBody("application/json".toMediaType()))
+                    .build()).await().body!!.string(),
+                DriveFileDto::class.java,
+            ).id
+        }
+        http.newCall(Request.Builder()
+            .url("$UPLOAD_API/files/$fileId?uploadType=media")
+            .header("Authorization", "Bearer $tok")
+            .method("PATCH", json.toRequestBody("application/json".toMediaType()))
+            .build()).await()
+    }
+
+    /** Creates a subfolder with [name] inside [parentFolderId] and returns its Drive ID. */
+    suspend fun createSubfolder(parentFolderId: String, name: String): String = withContext(Dispatchers.IO) {
+        val tok = token()
+        val escapedName = name.replace("\\", "\\\\").replace("'", "\\'")
+        val q = URLEncoder.encode(
+            "mimeType='application/vnd.google-apps.folder' and name='$escapedName' and '$parentFolderId' in parents and trashed=false",
+            "UTF-8",
+        )
+        val existing = gson.fromJson(
+            http.newCall(Request.Builder()
+                .url("$API/files?q=$q&fields=files(id)")
+                .header("Authorization", "Bearer $tok")
+                .build()).await().body!!.string(),
+            FilesListDto::class.java,
+        ).files.firstOrNull()?.id
+        if (existing != null) return@withContext existing
+
+        val meta = """{"name":${gson.toJson(name)},"parents":["$parentFolderId"],"mimeType":"application/vnd.google-apps.folder"}"""
+        gson.fromJson(
+            http.newCall(Request.Builder()
+                .url("$API/files?fields=id")
+                .header("Authorization", "Bearer $tok")
+                .post(meta.toRequestBody("application/json".toMediaType()))
+                .build()).await().body!!.string(),
+            DriveFileDto::class.java,
+        ).id
     }
 
     /** Returns the locally cached file for a Drive ID, or null if not yet downloaded. */

@@ -27,13 +27,18 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
     private val _state = MutableStateFlow(OutfitsUiState())
     val state: StateFlow<OutfitsUiState> = _state.asStateFlow()
 
-    init { loadOutfits() }
+    fun setLocation(newFolderId: String) {
+        if (folderId == newFolderId) return
+        folderId = newFolderId
+        _state.update { OutfitsUiState(isLoading = true) }
+        loadOutfits()
+    }
 
     fun loadOutfits() {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, error = null) }
             runCatching {
-                val id = folderId ?: drive.getOrCreateFolder().also { folderId = it }
+                val id = folderId ?: return@runCatching emptyList()
                 val json = drive.loadOutfitsJson(id)
                 if (json != null) {
                     val type = object : TypeToken<List<OutfitEvent>>() {}.type
@@ -51,8 +56,8 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
         val event = OutfitEvent(styleId = styleId, date = LocalDate.now().toString())
         val updated = _state.value.events + event
         viewModelScope.launch {
+            val id = folderId ?: return@launch
             runCatching {
-                val id = folderId ?: drive.getOrCreateFolder().also { folderId = it }
                 drive.saveOutfitsJson(id, gson.toJson(updated))
             }.onSuccess {
                 _state.update { it.copy(events = updated) }

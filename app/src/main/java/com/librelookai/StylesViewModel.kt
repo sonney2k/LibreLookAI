@@ -61,7 +61,12 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
     private val _state = MutableStateFlow(StylesUiState())
     val state: StateFlow<StylesUiState> = _state.asStateFlow()
 
-    init { loadStyles() }
+    fun setLocation(newFolderId: String) {
+        if (folderId == newFolderId) return
+        folderId = newFolderId
+        _state.update { StylesUiState(isLoading = true) }
+        loadStyles()
+    }
 
     // ---------- Load ----------
 
@@ -69,7 +74,7 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, error = null) }
             runCatching {
-                val id = folderId ?: drive.getOrCreateFolder().also { folderId = it }
+                val id = folderId ?: return@runCatching emptyList()
                 // Build filename → Drive ID map so we can resolve itemNames → itemIds
                 val files = drive.listFiles(id)
                 val nameToId = files.associate { it.name to it.id }
@@ -139,7 +144,7 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
                 s.editingStyle?.name ?: "Style ${s.styles.size + 1}"
             }
             val description = s.draftStyleDescription.trim()
-            val id = folderId ?: drive.getOrCreateFolder().also { folderId = it }
+            val id = folderId ?: return@launch
 
             // Fetch fresh file listing to populate stable itemNames (portable across account copies)
             val idToName = drive.listFiles(id).associate { it.id to it.name }
@@ -172,8 +177,8 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
     fun deleteStyle(styleId: String) {
         val updated = _state.value.styles.filter { it.id != styleId }
         viewModelScope.launch {
+            val id = folderId ?: return@launch
             runCatching {
-                val id = folderId ?: drive.getOrCreateFolder().also { folderId = it }
                 drive.saveStylesJson(id, gson.toJson(updated))
             }.onSuccess {
                 _state.update { it.copy(styles = updated) }

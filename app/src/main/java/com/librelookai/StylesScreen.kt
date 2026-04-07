@@ -47,6 +47,7 @@ import androidx.compose.material.icons.filled.AutoFixHigh
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Sort
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -567,7 +568,11 @@ private fun StyleCard(
                 )
             }
             val styleItems = style.itemIds.mapNotNull { itemsById[it] }
-            if (styleItems.isEmpty()) {
+            val imageNames = remember(itemsById) { itemsById.values.map { it.name }.toSet() }
+            val awayCount = remember(style.itemNames, imageNames) {
+                if (style.itemNames.isEmpty()) 0 else style.itemNames.count { it !in imageNames }
+            }
+            if (styleItems.isEmpty() && awayCount == 0) {
                 Text(
                     stringResource(R.string.styles_missing_items),
                     style = MaterialTheme.typography.bodySmall,
@@ -589,6 +594,24 @@ private fun StyleCard(
                             contentScale = ContentScale.Crop,
                         )
                     }
+                }
+            }
+            if (awayCount > 0) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                ) {
+                    Icon(
+                        Icons.Default.Place,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.tertiary,
+                        modifier = Modifier.size(13.dp),
+                    )
+                    Text(
+                        stringResource(R.string.styles_items_away, awayCount),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.tertiary,
+                    )
                 }
             }
             // "Wear today" action — sits inside the card to avoid conflicting with the card's onClick

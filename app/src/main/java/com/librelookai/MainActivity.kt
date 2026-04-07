@@ -69,6 +69,7 @@ class MainActivity : ComponentActivity() {
                     }
                 } else {
                     var selectedTab by rememberSaveable { mutableIntStateOf(1) }
+                    val locationViewModel: LocationViewModel = viewModel()
                     val stylesViewModel: StylesViewModel = viewModel()
                     val wardrobeViewModel: WardrobeViewModel = viewModel()
                     val outfitsViewModel: OutfitsViewModel = viewModel()
@@ -76,8 +77,20 @@ class MainActivity : ComponentActivity() {
                     val weatherViewModel: WeatherViewModel = viewModel()
                     val travelViewModel: TravelViewModel = viewModel()
                     val gapViewModel: WardrobeGapViewModel = viewModel()
+                    val locationState by locationViewModel.state.collectAsState()
                     val weatherState by weatherViewModel.state.collectAsState()
                     val profileState by profileViewModel.state.collectAsState()
+
+                    // Reload wardrobe/styles/outfits whenever the active location changes
+                    val activeFolderId = locationState.locations
+                        .find { it.id == locationState.activeLocationId }?.folderId
+                    LaunchedEffect(activeFolderId) {
+                        activeFolderId?.let { folderId ->
+                            wardrobeViewModel.setLocation(folderId)
+                            stylesViewModel.setLocation(folderId)
+                            outfitsViewModel.setLocation(folderId)
+                        }
+                    }
 
                     // Apply selected language as the Compose context locale
                     val language = profileState.preferences.language
@@ -138,6 +151,7 @@ class MainActivity : ComponentActivity() {
                                         viewModel = wardrobeViewModel,
                                         outfitsViewModel = outfitsViewModel,
                                         stylesViewModel = stylesViewModel,
+                                        locationViewModel = locationViewModel,
                                         onCreateStyleFromSelection = { itemIds ->
                                             stylesViewModel.startCreatingFromItems(itemIds)
                                             wardrobeViewModel.clearSelection()
@@ -177,6 +191,7 @@ class MainActivity : ComponentActivity() {
                                     5 -> SettingsScreen(
                                         profileViewModel = profileViewModel,
                                         wardrobeViewModel = wardrobeViewModel,
+                                        locationViewModel = locationViewModel,
                                         modifier = Modifier.padding(innerPadding),
                                     )
                                 }
