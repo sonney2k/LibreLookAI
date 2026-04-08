@@ -1007,7 +1007,7 @@ private fun TagsOverlay(
                 }
                 if (tags.colors.isNotEmpty()) {
                     Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                        tags.colors.forEach { TagChip(it) }
+                        tags.colors.forEach { TagChip(it.localizedTagValue()) }
                     }
                 }
             }

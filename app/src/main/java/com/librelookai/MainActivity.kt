@@ -92,6 +92,12 @@ class MainActivity : ComponentActivity() {
                         }
                     }
 
+                    // Keep wardrobe tagging language in sync with the profile language
+                    val geminiLanguage = AppLanguage.toGeminiName(profileState.preferences.language)
+                    LaunchedEffect(geminiLanguage) {
+                        wardrobeViewModel.setLanguage(geminiLanguage)
+                    }
+
                     // Apply selected language as the Compose context locale
                     val language = profileState.preferences.language
                     val baseContext = LocalContext.current

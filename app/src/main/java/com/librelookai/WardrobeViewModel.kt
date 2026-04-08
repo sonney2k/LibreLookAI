@@ -58,6 +58,10 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     val state: StateFlow<WardrobeUiState> = _state.asStateFlow()
 
     private var folderId: String? = null
+    /** Gemini-facing language name (e.g. "English", "German") for label generation. */
+    private var geminiLanguage: String = "English"
+
+    fun setLanguage(geminiName: String) { geminiLanguage = geminiName }
 
     fun setLocation(newFolderId: String) {
         if (folderId == newFolderId) return
@@ -185,7 +189,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             rawFile.copyTo(File(drive.cacheDir, "${uploaded.id}_original.jpg"), overwrite = true)
 
             // Step 3 — Classify clothing tags
-            val tags = gemini.classifyClothing(processedFile)
+            val tags = gemini.classifyClothing(processedFile, geminiLanguage)
 
             DriveImage(uploaded.id, displayCache.absolutePath, uploaded.name, tags)
         }.onFailure { e ->
@@ -237,7 +241,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             _state.update { it.copy(processingImageId = driveId) }
             val cachedFile = drive.cachedFile(driveId)
                 ?: run { _state.update { it.copy(processingImageId = null) }; return@launch }
-            val tags = gemini.classifyClothing(cachedFile)
+            val tags = gemini.classifyClothing(cachedFile, geminiLanguage)
                 ?: run { _state.update { it.copy(processingImageId = null) }; return@launch }
             _state.update { s ->
                 s.copy(
@@ -264,7 +268,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             images.forEachIndexed { index, image ->
                 _state.update { it.copy(retagDone = index) }
                 val cachedFile = drive.cachedFile(image.driveId) ?: return@forEachIndexed
-                val tags = gemini.classifyClothing(cachedFile) ?: return@forEachIndexed
+                val tags = gemini.classifyClothing(cachedFile, geminiLanguage) ?: return@forEachIndexed
                 _state.update { s ->
                     s.copy(images = s.images.map { if (it.driveId == image.driveId) it.copy(tags = tags) else it })
                 }

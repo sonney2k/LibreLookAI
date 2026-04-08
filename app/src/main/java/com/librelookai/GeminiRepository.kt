@@ -46,10 +46,11 @@ class GeminiRepository {
         private const val PREDICT_URL = CLASSIFY_URL
 
 
+        // Language placeholder is replaced at runtime in classifyClothing()
         private const val CLASSIFY_PROMPT =
             "Analyze this clothing item and return ONLY a JSON object (no markdown, no explanation) " +
                 "with these fields: " +
-                "\"label\" (a short descriptive name for the item in English, e.g. \"Navy Chinos\", \"White Oxford Shirt\", \"Black Puffer Jacket\"), " +
+                "\"label\" (a short descriptive name for the item in {LANGUAGE}, e.g. \"Navy Chinos\", \"White Oxford Shirt\", \"Black Puffer Jacket\"), " +
                 "\"type\" (specific item name, e.g. \"T-shirt\", \"Chinos\", \"Puffer jacket\"), " +
                 "\"category\" (one of: tops, bottoms, outerwear, footwear, accessories, dress, suit), " +
                 "\"uses\" (array from: casual, formal, business, sport, outdoor, beach, evening), " +
@@ -149,16 +150,19 @@ class GeminiRepository {
 
     /**
      * Classifies the clothing item in [imageFile] using Gemini vision.
+     * [language] should be a Gemini-friendly language name such as "English" or "German";
+     * the generated `label` field will be written in that language.
      * Returns [ClothingTags] or null on failure.
      */
-    suspend fun classifyClothing(imageFile: File): ClothingTags? =
+    suspend fun classifyClothing(imageFile: File, language: String = "English"): ClothingTags? =
         withContext(Dispatchers.IO) {
             val apiKey = BuildConfig.GEMINI_API_KEY
             if (apiKey.isBlank() || apiKey == "YOUR_GEMINI_API_KEY_HERE") return@withContext null
 
-            Log.d(TAG, "Classifying clothing in ${imageFile.name} via $CLASSIFY_MODEL")
+            Log.d(TAG, "Classifying clothing in ${imageFile.name} via $CLASSIFY_MODEL (lang=$language)")
             val mimeType = if (imageFile.extension == "png") "image/png" else "image/jpeg"
             val imageBase64 = Base64.encodeToString(imageFile.readBytes(), Base64.NO_WRAP)
+            val prompt = CLASSIFY_PROMPT.replace("{LANGUAGE}", language)
 
             val body = gson.toJson(
                 mapOf(
@@ -166,7 +170,7 @@ class GeminiRepository {
                         mapOf(
                             "role" to "user",
                             "parts" to listOf(
-                                mapOf("text" to CLASSIFY_PROMPT),
+                                mapOf("text" to prompt),
                                 mapOf(
                                     "inline_data" to mapOf(
                                         "mime_type" to mimeType,
