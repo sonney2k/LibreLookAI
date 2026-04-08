@@ -14,12 +14,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -52,9 +57,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
@@ -70,6 +78,13 @@ fun SettingsScreen(
     val wardrobeState by wardrobeViewModel.state.collectAsState()
     val locationState by locationViewModel.state.collectAsState()
 
+    val context = LocalContext.current
+    var currentApiKey by remember { mutableStateOf(ApiKeyStore.get(context)) }
+
+    val importLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocumentTree(),
+    ) { uri -> uri?.let { wardrobeViewModel.importFromFolder(it) } }
+
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
 
     Column(modifier = modifier.fillMaxSize()) {
@@ -84,10 +99,16 @@ fun SettingsScreen(
                 onSave = profileViewModel::savePreferences,
                 onClearSavedFlag = profileViewModel::clearSavedFlag,
                 onClearError = profileViewModel::clearError,
+                currentApiKey = currentApiKey,
+                onSaveApiKey = { key ->
+                    ApiKeyStore.set(context, key)
+                    currentApiKey = key
+                },
             )
             1 -> DataTab(
                 wardrobeState = wardrobeState,
                 onRetagAll = wardrobeViewModel::retagAll,
+                onImportFromFolder = { importLauncher.launch(null) },
                 locationState = locationState,
                 onSetActiveLocation = locationViewModel::setActiveLocation,
                 onAddLocation = locationViewModel::addLocation,
@@ -107,6 +128,8 @@ private fun ProfileTab(
     onSave: (UserPreferences) -> Unit,
     onClearSavedFlag: () -> Unit,
     onClearError: () -> Unit,
+    onSaveApiKey: (String) -> Unit,
+    currentApiKey: String,
 ) {
     val genderOptions = listOf(
         stringResource(R.string.settings_gender_prefer_not),
@@ -120,6 +143,8 @@ private fun ProfileTab(
     var yearOfBirth by remember(state.preferences) { mutableStateOf(state.preferences.yearOfBirth?.toString() ?: "") }
     var preferences by remember(state.preferences) { mutableStateOf(state.preferences.preferences) }
     var language    by remember(state.preferences) { mutableStateOf(state.preferences.language) }
+    var apiKey      by remember(currentApiKey) { mutableStateOf(currentApiKey) }
+    var apiKeyVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(state.isLoading) {
         if (!state.isLoading) {
@@ -129,6 +154,7 @@ private fun ProfileTab(
             language    = state.preferences.language
         }
     }
+    LaunchedEffect(currentApiKey) { apiKey = currentApiKey }
 
     Box(modifier = Modifier.fillMaxSize()) {
         when {
@@ -222,9 +248,43 @@ private fun ProfileTab(
                     modifier = Modifier.fillMaxWidth(),
                 )
 
+                // --- Gemini API Key ---
+                HorizontalDivider()
+                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Text(
+                        stringResource(R.string.settings_api_key_title),
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                    Text(
+                        stringResource(R.string.settings_api_key_desc),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    OutlinedTextField(
+                        value = apiKey,
+                        onValueChange = { apiKey = it },
+                        label = { Text(stringResource(R.string.settings_api_key_label)) },
+                        placeholder = { Text(stringResource(R.string.settings_api_key_placeholder)) },
+                        singleLine = true,
+                        visualTransformation = if (apiKeyVisible) VisualTransformation.None
+                                               else PasswordVisualTransformation(),
+                        trailingIcon = {
+                            IconButton(onClick = { apiKeyVisible = !apiKeyVisible }) {
+                                Icon(
+                                    if (apiKeyVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                                    contentDescription = null,
+                                )
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+
                 // --- Save ---
                 Button(
                     onClick = {
+                        onSaveApiKey(apiKey)
                         onSave(
                             UserPreferences(
                                 gender      = gender,
@@ -271,6 +331,7 @@ private fun ProfileTab(
 private fun DataTab(
     wardrobeState: WardrobeUiState,
     onRetagAll: () -> Unit,
+    onImportFromFolder: () -> Unit,
     locationState: LocationUiState,
     onSetActiveLocation: (String) -> Unit,
     onAddLocation: (String) -> Unit,
@@ -391,6 +452,44 @@ private fun DataTab(
                     Icon(Icons.Default.Refresh, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.padding(start = 8.dp))
                     Text(stringResource(R.string.settings_rescan_button))
+                }
+            }
+        }
+
+        HorizontalDivider()
+
+        // ---------- Import ----------
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(stringResource(R.string.settings_import_title), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+            Text(
+                stringResource(R.string.settings_import_desc),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+
+            if (wardrobeState.isImporting) {
+                val progress = if (wardrobeState.importTotal > 0)
+                    wardrobeState.importDone.toFloat() / wardrobeState.importTotal
+                else 0f
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    LinearProgressIndicator(
+                        progress = { progress },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    Text(
+                        stringResource(R.string.settings_importing, wardrobeState.importDone + 1, wardrobeState.importTotal),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            } else {
+                OutlinedButton(
+                    onClick = onImportFromFolder,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Icon(Icons.Default.FolderOpen, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(Modifier.padding(start = 8.dp))
+                    Text(stringResource(R.string.settings_import_button))
                 }
             }
         }

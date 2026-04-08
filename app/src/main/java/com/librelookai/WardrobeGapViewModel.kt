@@ -19,7 +19,7 @@ data class WardrobeGapUiState(
 
 class WardrobeGapViewModel(app: Application) : AndroidViewModel(app) {
 
-    private val gemini = GeminiRepository()
+    private val gemini = GeminiRepository(app)
     private val gson   = Gson()
 
     private val _state = MutableStateFlow(WardrobeGapUiState())

@@ -34,7 +34,7 @@ data class TravelUiState(
 class TravelViewModel(app: Application) : AndroidViewModel(app) {
 
     private val weather = WeatherRepository(app)
-    private val gemini  = GeminiRepository()
+    private val gemini  = GeminiRepository(app)
     private val gson    = Gson()
 
     private val _state = MutableStateFlow(TravelUiState())

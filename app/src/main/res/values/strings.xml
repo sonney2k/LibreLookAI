@@ -39,6 +39,10 @@
     <string name="settings_style_prefs">Style Preferences</string>
     <string name="settings_style_placeholder">Describe what you like to wear, occasions you dress for, favourite colours, brands, or anything else that helps personalise your outfit recommendations…</string>
     <string name="settings_saved">Preferences saved</string>
+    <string name="settings_api_key_title">Gemini API Key</string>
+    <string name="settings_api_key_desc">All AI features (tagging, outfit suggestions, background removal) require a Gemini API key. Get a free key at aistudio.google.com → "Get API key". Your key is stored only on this device.</string>
+    <string name="settings_api_key_label">API Key</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">Wardrobe Tags</string>
     <string name="settings_data_tags_desc">Re-classify every item in your wardrobe with Gemini. This overwrites any manual tag edits.</string>
     <string name="settings_rescan_button">Re-scan All Tags</string>
@@ -46,6 +50,10 @@
     <string name="settings_rescan_dialog_title">Re-scan all tags?</string>
     <string name="settings_rescan_dialog_text">Gemini will re-classify every item in your wardrobe. This will overwrite any manual tag edits and may take a while.</string>
     <string name="settings_rescan_confirm">Re-scan</string>
+    <string name="settings_import_title">Import from Folder</string>
+    <string name="settings_import_desc">Copy all images from another Google Drive folder into your current wardrobe. Existing tag metadata will be re-used; new items will be tagged automatically by AI.</string>
+    <string name="settings_import_button">Import from Drive folder…</string>
+    <string name="settings_importing">Importing %1$d of %2$d…</string>
     <string name="settings_locations_title">Locations</string>
     <string name="settings_locations_desc">Manage multiple wardrobes for different locations, e.g. home and holiday home.</string>
     <string name="settings_location_add">Add location</string>

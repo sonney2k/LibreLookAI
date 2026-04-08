@@ -2,6 +2,7 @@ package com.librelookai
 
 import android.app.Application
 import android.net.Uri
+import android.provider.DocumentsContract
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
@@ -37,6 +38,9 @@ data class WardrobeUiState(
     val isRetagging: Boolean = false,
     val retagDone: Int = 0,
     val retagTotal: Int = 0,
+    val isImporting: Boolean = false,
+    val importDone: Int = 0,
+    val importTotal: Int = 0,
     val error: String? = null,
     /** driveId of the image currently being processed by an AI operation, or null. */
     val processingImageId: String? = null,
@@ -51,7 +55,7 @@ private data class WardrobeMetadata(val items: List<WardrobeItemMeta> = emptyLis
 class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
     private val drive = DriveRepository(app, GoogleAuthManager(app))
-    private val gemini = GeminiRepository()
+    private val gemini = GeminiRepository(app)
     private val gson = Gson()
 
     private val _state = MutableStateFlow(WardrobeUiState())
@@ -316,6 +320,85 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 saveWardrobeMetadata()
             }
             _state.update { it.copy(isUploading = false) }
+        }
+    }
+
+    // ---------- SAF Import ----------
+
+    fun importFromFolder(treeUri: Uri) {
+        val id = folderId ?: return
+        viewModelScope.launch {
+            val cr = getApplication<Application>().contentResolver
+
+            // List files in the selected tree
+            val treeDocId = DocumentsContract.getTreeDocumentId(treeUri)
+            val childrenUri = DocumentsContract.buildChildDocumentsUriUsingTree(treeUri, treeDocId)
+
+            data class SrcFile(val docId: String, val displayName: String, val mimeType: String)
+            val srcFiles = mutableListOf<SrcFile>()
+            var metaDocId: String? = null
+
+            cr.query(
+                childrenUri,
+                arrayOf(
+                    DocumentsContract.Document.COLUMN_DOCUMENT_ID,
+                    DocumentsContract.Document.COLUMN_DISPLAY_NAME,
+                    DocumentsContract.Document.COLUMN_MIME_TYPE,
+                ),
+                null, null, null,
+            )?.use { cursor ->
+                while (cursor.moveToNext()) {
+                    val docId = cursor.getString(0)
+                    val name  = cursor.getString(1) ?: continue
+                    val mime  = cursor.getString(2) ?: ""
+                    when {
+                        name == "_wardrobe_metadata.json" -> metaDocId = docId
+                        mime.startsWith("image/")         -> srcFiles.add(SrcFile(docId, name, mime))
+                    }
+                }
+            }
+
+            if (srcFiles.isEmpty()) return@launch
+
+            // Load existing tag metadata from the source folder if present
+            val metaByName: Map<String, ClothingTags?> = metaDocId?.let { docId ->
+                runCatching {
+                    val metaUri = DocumentsContract.buildDocumentUriUsingTree(treeUri, docId)
+                    val json = cr.openInputStream(metaUri)?.use { it.readBytes().toString(Charsets.UTF_8) }
+                    if (json != null) {
+                        gson.fromJson(json, WardrobeMetadata::class.java).items.associate { it.name to it.tags }
+                    } else emptyMap()
+                }.getOrDefault(emptyMap())
+            } ?: emptyMap()
+
+            _state.update { it.copy(isImporting = true, importDone = 0, importTotal = srcFiles.size, error = null) }
+
+            srcFiles.forEachIndexed { index, src ->
+                _state.update { it.copy(importDone = index) }
+                val ext = if (src.mimeType == "image/png") "png" else "jpg"
+                val tempFile = File(drive.cacheDir, "import_${System.currentTimeMillis()}.$ext")
+                runCatching {
+                    val srcUri = DocumentsContract.buildDocumentUriUsingTree(treeUri, src.docId)
+                    cr.openInputStream(srcUri)?.use { it.copyTo(tempFile.outputStream()) }
+                        ?: error("Cannot open stream for ${src.displayName}")
+
+                    // Re-use existing tags if available; classify with Gemini otherwise
+                    val tags = metaByName[src.displayName] ?: gemini.classifyClothing(tempFile, geminiLanguage)
+
+                    val uploaded = drive.uploadImage(id, tempFile)
+                    val displayCache = File(drive.cacheDir, "${uploaded.id}.$ext")
+                    tempFile.copyTo(displayCache, overwrite = true)
+
+                    val newImage = DriveImage(uploaded.id, displayCache.absolutePath, uploaded.name, tags)
+                    _state.update { it.copy(images = it.images + newImage) }
+                }.onFailure { e ->
+                    _state.update { it.copy(error = "Import failed for ${src.displayName}: ${e.message}") }
+                }
+                tempFile.delete()
+            }
+
+            _state.update { it.copy(isImporting = false, importDone = 0, importTotal = 0) }
+            saveWardrobeMetadata()
         }
     }
 

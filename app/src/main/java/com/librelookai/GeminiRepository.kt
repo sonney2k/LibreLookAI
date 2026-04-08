@@ -1,5 +1,6 @@
 package com.librelookai
 
+import android.app.Application
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
@@ -15,7 +16,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import java.util.concurrent.TimeUnit
 
-class GeminiRepository {
+class GeminiRepository(private val app: Application) {
 
     private val http = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
@@ -45,7 +46,6 @@ class GeminiRepository {
         // Text-only model for style prediction (reuses classify endpoint)
         private const val PREDICT_URL = CLASSIFY_URL
 
-
         // Language placeholder is replaced at runtime in classifyClothing()
         private const val CLASSIFY_PROMPT =
             "Analyze this clothing item and return ONLY a JSON object (no markdown, no explanation) " +
@@ -63,14 +63,21 @@ class GeminiRepository {
                 "Use empty arrays for fields that cannot be determined."
     }
 
+    /** Returns the active API key: user-supplied key takes precedence over the build-time key. */
+    private fun resolveApiKey(): String {
+        val userKey = ApiKeyStore.get(app)
+        if (userKey.isNotBlank()) return userKey
+        return BuildConfig.GEMINI_API_KEY
+    }
+
     /**
      * Sends [imageFile] to Gemini and returns a PNG with the background removed.
      * Returns null on any failure — callers should fall back to the original.
      */
     suspend fun removeBackground(imageFile: File, outputDir: File): File? =
         withContext(Dispatchers.IO) {
-            val apiKey = BuildConfig.GEMINI_API_KEY
-            if (apiKey.isBlank() || apiKey == "YOUR_GEMINI_API_KEY_HERE") {
+            val apiKey = resolveApiKey()
+            if (apiKey.isBlank()) {
                 Log.w(TAG, "API key not set — skipping background removal")
                 return@withContext null
             }
@@ -156,8 +163,8 @@ class GeminiRepository {
      */
     suspend fun classifyClothing(imageFile: File, language: String = "English"): ClothingTags? =
         withContext(Dispatchers.IO) {
-            val apiKey = BuildConfig.GEMINI_API_KEY
-            if (apiKey.isBlank() || apiKey == "YOUR_GEMINI_API_KEY_HERE") return@withContext null
+            val apiKey = resolveApiKey()
+            if (apiKey.isBlank()) return@withContext null
 
             Log.d(TAG, "Classifying clothing in ${imageFile.name} via $CLASSIFY_MODEL (lang=$language)")
             val mimeType = if (imageFile.extension == "png") "image/png" else "image/jpeg"
@@ -215,8 +222,8 @@ class GeminiRepository {
      * Returns null on failure so callers can proceed without trend data.
      */
     suspend fun searchFashionTrends(region: String): FashionTrends? = withContext(Dispatchers.IO) {
-        val apiKey = BuildConfig.GEMINI_API_KEY
-        if (apiKey.isBlank() || apiKey == "YOUR_GEMINI_API_KEY_HERE") return@withContext null
+        val apiKey = resolveApiKey()
+        if (apiKey.isBlank()) return@withContext null
 
         val prompt = """
             Search the web for the current street fashion and clothing trends happening right now in $region.
@@ -265,8 +272,8 @@ class GeminiRepository {
      * Sends a text-only prompt to Gemini and returns the raw text response, or null on failure.
      */
     suspend fun generateText(prompt: String): String? = withContext(Dispatchers.IO) {
-        val apiKey = BuildConfig.GEMINI_API_KEY
-        if (apiKey.isBlank() || apiKey == "YOUR_GEMINI_API_KEY_HERE") return@withContext null
+        val apiKey = resolveApiKey()
+        if (apiKey.isBlank()) return@withContext null
 
         val body = gson.toJson(
             mapOf(

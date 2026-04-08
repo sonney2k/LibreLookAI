@@ -54,7 +54,7 @@ data class StylesUiState(
 class StylesViewModel(app: Application) : AndroidViewModel(app) {
 
     private val drive = DriveRepository(app, GoogleAuthManager(app))
-    private val gemini = GeminiRepository()
+    private val gemini = GeminiRepository(app)
     private val gson = Gson()
     private var folderId: String? = null
 
