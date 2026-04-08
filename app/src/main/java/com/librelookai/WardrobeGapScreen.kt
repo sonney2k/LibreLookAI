@@ -207,6 +207,23 @@ private fun GapSuggestionCard(
         if (isNotEmpty()) append(" ")
         append(suggestion.missingItem)
     }
+    val amazonUrl = buildString {
+        append("https://www.amazon.com/s?k=")
+        append(Uri.encode(searchQuery))
+        val tag = BuildConfig.AMAZON_AFFILIATE_TAG
+        if (tag.isNotBlank()) { append("&tag="); append(tag) }
+    }
+    val shopStyleUrl = buildString {
+        val pid = BuildConfig.SHOPSTYLE_PUBLISHER_ID
+        if (pid.isNotBlank()) {
+            append("https://www.shopstyle.com/browse?q=")
+            append(Uri.encode(searchQuery))
+            append("&pid="); append(pid)
+        } else {
+            append("https://www.shopstyle.com/browse?q=")
+            append(Uri.encode(searchQuery))
+        }
+    }
 
     OutlinedCard(modifier = modifier.fillMaxWidth()) {
         Column(
@@ -282,8 +299,7 @@ private fun GapSuggestionCard(
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedButton(
                     onClick = {
-                        val url = "https://www.amazon.com/s?k=${Uri.encode(searchQuery)}"
-                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(amazonUrl)))
                     },
                     modifier = Modifier.weight(1f),
                     contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
@@ -294,15 +310,14 @@ private fun GapSuggestionCard(
                 }
                 OutlinedButton(
                     onClick = {
-                        val url = "https://www.google.com/search?q=${Uri.encode(searchQuery)}&tbm=shop"
-                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(shopStyleUrl)))
                     },
                     modifier = Modifier.weight(1f),
                     contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
                 ) {
                     Icon(Icons.Default.ShoppingCart, contentDescription = null, modifier = Modifier.size(14.dp))
                     Spacer(Modifier.width(4.dp))
-                    Text(stringResource(R.string.gap_shop_google), style = MaterialTheme.typography.labelMedium)
+                    Text(stringResource(R.string.gap_shop_shopstyle), style = MaterialTheme.typography.labelMedium)
                 }
             }
         }

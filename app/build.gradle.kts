@@ -28,6 +28,16 @@ android {
             "GEMINI_API_KEY",
             "\"${localProps.getProperty("gemini.api.key", "")}\"",
         )
+        buildConfigField(
+            "String",
+            "AMAZON_AFFILIATE_TAG",
+            "\"${localProps.getProperty("amazon.affiliate.tag", "")}\"",
+        )
+        buildConfigField(
+            "String",
+            "SHOPSTYLE_PUBLISHER_ID",
+            "\"${localProps.getProperty("shopstyle.publisher.id", "")}\"",
+        )
     }
 
     buildTypes {

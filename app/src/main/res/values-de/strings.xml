@@ -270,7 +270,7 @@
     <string name="gap_reanalyze">Erneut analysieren</string>
     <string name="gap_outfits_pill">+%d Outfits</string>
     <string name="gap_shop_amazon">Amazon</string>
-    <string name="gap_shop_google">Google</string>
+    <string name="gap_shop_shopstyle">ShopStyle</string>
     <string name="gap_empty_title">Finde, was fehlt</string>
     <string name="gap_empty_hint">Tippe auf \"Analysieren\", damit KI die grundlegenden Teile identifiziert, die die meisten Outfits aus deiner Garderobe vervollständigen.</string>
 
