@@ -49,6 +49,7 @@ class GeminiRepository {
         private const val CLASSIFY_PROMPT =
             "Analyze this clothing item and return ONLY a JSON object (no markdown, no explanation) " +
                 "with these fields: " +
+                "\"label\" (a short descriptive name for the item in English, e.g. \"Navy Chinos\", \"White Oxford Shirt\", \"Black Puffer Jacket\"), " +
                 "\"type\" (specific item name, e.g. \"T-shirt\", \"Chinos\", \"Puffer jacket\"), " +
                 "\"category\" (one of: tops, bottoms, outerwear, footwear, accessories, dress, suit), " +
                 "\"uses\" (array from: casual, formal, business, sport, outdoor, beach, evening), " +
@@ -333,6 +334,7 @@ data class FashionTrends(
 )
 
 data class ClothingTags(
+    val label: String = "",
     val type: String = "",
     val category: String = "",
     val uses: List<String> = emptyList(),

@@ -72,6 +72,8 @@
     <string name="wardrobe_tag_sheet_title">Tags bearbeiten</string>
     <string name="wardrobe_add_gallery">Galerie</string>
     <string name="wardrobe_add_camera">Kamera</string>
+    <string name="tag_label">Name</string>
+    <string name="tag_label_placeholder">z.B. Marine-Chinos, Weißes Oxford-Hemd</string>
     <string name="tag_type">Typ</string>
     <string name="tag_category">Kategorie</string>
     <string name="tag_uses">Verwendung</string>

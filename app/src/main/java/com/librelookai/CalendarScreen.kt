@@ -93,7 +93,11 @@ fun CalendarScreen(
                 ?: return@flatMap emptyList()
             style.itemIds.mapNotNull { itemId ->
                 val image = imagesById[itemId] ?: return@mapNotNull null
-                WornItem(date = date, imagePath = image.localPath, label = image.name)
+                WornItem(
+                    date = date,
+                    imagePath = image.localPath,
+                    label = image.tags?.label?.ifEmpty { null } ?: image.tags?.type?.ifEmpty { null } ?: image.name,
+                )
             }
         }
     }
@@ -417,24 +421,30 @@ private fun ItemStatRow(
         )
 
         Column(modifier = Modifier.weight(1f)) {
+            val displayName = image.tags?.label?.ifEmpty { null }
+                ?: image.tags?.type?.ifEmpty { null }
+                ?: image.name
             Text(
-                image.name,
+                displayName,
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Medium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
             image.tags?.let { t ->
-                Text(
-                    listOfNotNull(
-                        t.type.takeIf { it.isNotEmpty() },
-                        t.category.takeIf { it.isNotEmpty() },
-                    ).joinToString(" · "),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
+                val subtitle = listOfNotNull(
+                    t.type.takeIf { it.isNotEmpty() && t.label.isNotEmpty() },
+                    t.category.takeIf { it.isNotEmpty() },
+                ).joinToString(" · ")
+                if (subtitle.isNotEmpty()) {
+                    Text(
+                        subtitle,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
             }
         }
     }

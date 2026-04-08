@@ -77,6 +77,8 @@
     <string name="wardrobe_tag_sheet_title">Edit Tags</string>
     <string name="wardrobe_add_gallery">Gallery</string>
     <string name="wardrobe_add_camera">Camera</string>
+    <string name="tag_label">Name</string>
+    <string name="tag_label_placeholder">e.g. Navy Chinos, White Oxford Shirt</string>
     <string name="tag_type">Type</string>
     <string name="tag_category">Category</string>
     <string name="tag_uses">Uses</string>

@@ -108,6 +108,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -574,9 +575,8 @@ private fun GridContent(
                             itemsIndexed(displayedImages, key = { _, img -> img.driveId }) { index, image ->
                                 val isSelected = state.selectedIds.contains(image.driveId)
                                 val ctx = LocalContext.current
-                                Box(
+                                Column(
                                     modifier = Modifier
-                                        .aspectRatio(1f)
                                         .padding(1.dp)
                                         .combinedClickable(
                                             onClick = {
@@ -586,31 +586,45 @@ private fun GridContent(
                                             onLongClick = { onToggleSelection(image.driveId) },
                                         ),
                                 ) {
-                                    AsyncImage(
-                                        model = remember(image.driveId, image.version) {
-                                            ImageRequest.Builder(ctx)
-                                                .data(image.localPath)
-                                                .memoryCacheKey("${image.driveId}_${image.version}")
-                                                .build()
-                                        },
-                                        contentDescription = image.name,
-                                        modifier = Modifier.fillMaxSize(),
-                                        contentScale = ContentScale.Crop,
-                                    )
-                                    if (isSelected) {
-                                        Box(
-                                            modifier = Modifier
-                                                .fillMaxSize()
-                                                .background(Color.White.copy(alpha = 0.4f)),
-                                            contentAlignment = Alignment.TopEnd,
-                                        ) {
-                                            Icon(
-                                                imageVector = Icons.Default.CheckCircle,
-                                                contentDescription = null,
-                                                tint = MaterialTheme.colorScheme.primary,
-                                                modifier = Modifier.padding(4.dp),
-                                            )
+                                    Box(modifier = Modifier.aspectRatio(1f)) {
+                                        AsyncImage(
+                                            model = remember(image.driveId, image.version) {
+                                                ImageRequest.Builder(ctx)
+                                                    .data(image.localPath)
+                                                    .memoryCacheKey("${image.driveId}_${image.version}")
+                                                    .build()
+                                            },
+                                            contentDescription = image.tags?.label?.ifEmpty { image.name } ?: image.name,
+                                            modifier = Modifier.fillMaxSize(),
+                                            contentScale = ContentScale.Crop,
+                                        )
+                                        if (isSelected) {
+                                            Box(
+                                                modifier = Modifier
+                                                    .fillMaxSize()
+                                                    .background(Color.White.copy(alpha = 0.4f)),
+                                                contentAlignment = Alignment.TopEnd,
+                                            ) {
+                                                Icon(
+                                                    imageVector = Icons.Default.CheckCircle,
+                                                    contentDescription = null,
+                                                    tint = MaterialTheme.colorScheme.primary,
+                                                    modifier = Modifier.padding(4.dp),
+                                                )
+                                            }
                                         }
+                                    }
+                                    val itemLabel = image.tags?.label?.ifEmpty { null }
+                                    if (itemLabel != null) {
+                                        Text(
+                                            text = itemLabel,
+                                            style = MaterialTheme.typography.labelSmall,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(horizontal = 4.dp, vertical = 2.dp),
+                                        )
                                     }
                                 }
                             }
@@ -1030,6 +1044,7 @@ private fun TagEditSheet(
     onSave: (ClothingTags) -> Unit,
     onDismiss: () -> Unit,
 ) {
+    var label       by remember { mutableStateOf(image.tags?.label       ?: "") }
     var type        by remember { mutableStateOf(image.tags?.type        ?: "") }
     var category    by remember { mutableStateOf(image.tags?.category    ?: "") }
     var uses        by remember { mutableStateOf(image.tags?.uses        ?: emptyList()) }
@@ -1067,6 +1082,7 @@ private fun TagEditSheet(
                 Text(stringResource(R.string.wardrobe_tag_sheet_title), style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
                 TextButton(onClick = {
                     onSave(ClothingTags(
+                        label       = label.trim(),
                         type        = type.trim(),
                         category    = category.trim(),
                         uses        = uses.map { it.trim() }.filter { it.isNotEmpty() },
@@ -1081,6 +1097,15 @@ private fun TagEditSheet(
             }
 
             HorizontalDivider()
+
+            OutlinedTextField(
+                value = label,
+                onValueChange = { label = it },
+                label = { Text(stringResource(R.string.tag_label)) },
+                placeholder = { Text(stringResource(R.string.tag_label_placeholder)) },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+            )
 
             OutlinedTextField(
                 value = type,
