@@ -5,6 +5,11 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 }
 
+// Apply google-services only when google-services.json is present (opt-in for managed-mode builds)
+if (file("google-services.json").exists()) {
+    apply(plugin = "com.google.gms.google-services")
+}
+
 val localProps = Properties().apply {
     val f = rootProject.file("local.properties")
     if (f.exists()) load(f.inputStream())
@@ -37,6 +42,18 @@ android {
             "String",
             "SHOPSTYLE_PUBLISHER_ID",
             "\"${localProps.getProperty("shopstyle.publisher.id", "")}\"",
+        )
+        // Managed-mode: Firebase proxy base URL (e.g. https://us-central1-PROJECT.cloudfunctions.net)
+        buildConfigField(
+            "String",
+            "PROXY_BASE_URL",
+            "\"${localProps.getProperty("firebase.proxy.url", "")}\"",
+        )
+        // Firebase web client ID for Google Sign-In → Firebase Auth linking
+        buildConfigField(
+            "String",
+            "FIREBASE_WEB_CLIENT_ID",
+            "\"${localProps.getProperty("firebase.web.client.id", "")}\"",
         )
     }
 
@@ -93,6 +110,11 @@ dependencies {
     implementation(libs.androidx.camera.camera2)
     implementation(libs.androidx.camera.lifecycle)
     implementation(libs.androidx.camera.view)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.firestore.ktx)
+    implementation(libs.billing.ktx)
+    implementation(libs.kotlinx.coroutines.play.services)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

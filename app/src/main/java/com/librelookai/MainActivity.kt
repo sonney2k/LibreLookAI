@@ -77,6 +77,7 @@ class MainActivity : ComponentActivity() {
                     val weatherViewModel: WeatherViewModel = viewModel()
                     val travelViewModel: TravelViewModel = viewModel()
                     val gapViewModel: WardrobeGapViewModel = viewModel()
+                    val creditsViewModel: CreditsViewModel = viewModel()
                     val locationState by locationViewModel.state.collectAsState()
                     val weatherState by weatherViewModel.state.collectAsState()
                     val profileState by profileViewModel.state.collectAsState()
@@ -198,6 +199,7 @@ class MainActivity : ComponentActivity() {
                                         profileViewModel = profileViewModel,
                                         wardrobeViewModel = wardrobeViewModel,
                                         locationViewModel = locationViewModel,
+                                        creditsViewModel = creditsViewModel,
                                         modifier = Modifier.padding(innerPadding),
                                     )
                                 }

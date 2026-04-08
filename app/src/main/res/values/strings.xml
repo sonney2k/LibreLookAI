@@ -26,6 +26,7 @@
     <!-- Settings -->
     <string name="settings_tab_profile">Profile</string>
     <string name="settings_tab_data">Data</string>
+    <string name="settings_tab_credits">Credits</string>
     <string name="settings_language">Language</string>
     <string name="settings_gender">Gender</string>
     <string name="settings_gender_select">Select…</string>
@@ -282,6 +283,20 @@
     <string name="gap_shop_shopstyle">ShopStyle</string>
     <string name="gap_empty_title">Find what\'s missing</string>
     <string name="gap_empty_hint">Tap \"Analyze\" to let AI identify the foundational pieces that would complete the most outfits from your wardrobe.</string>
+
+    <!-- Credits / Managed Mode -->
+    <string name="credits_balance_label">AI Credits remaining</string>
+    <string name="credits_cost_title">Credit cost per action</string>
+    <string name="credits_action_bg_removal">Background removal</string>
+    <string name="credits_action_classify">Auto-tag item</string>
+    <string name="credits_action_style">Style suggestion / outfit composition</string>
+    <string name="credits_action_travel">Travel packing list</string>
+    <string name="credits_cost_each">%d credits</string>
+    <string name="credits_packs_title">Top-up packs</string>
+    <string name="credits_packs_unavailable">Credit packs not available on this device</string>
+    <string name="credits_pack_label">%d credits</string>
+    <string name="credits_best_value">Best value</string>
+    <string name="credits_buy">Buy</string>
 
     <!-- AI overlay -->
     <string name="ai_working">AI is working…</string>

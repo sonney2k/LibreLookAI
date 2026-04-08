@@ -25,20 +25,21 @@ class AuthViewModel(app: Application) : AndroidViewModel(app) {
     fun getSignInIntent(): Intent = auth.getSignInIntent()
 
     fun onSignInResult(result: ActivityResult) {
-        try {
+        val googleSuccess = try {
             GoogleSignIn.getSignedInAccountFromIntent(result.data)
                 .getResult(ApiException::class.java)
+            true
+        } catch (e: ApiException) {
+            auth.isSignedIn()   // fallback: already persisted with correct scope
+        }
+
+        if (googleSuccess) {
             _isSignedIn.value = true
             _error.value = null
-        } catch (e: ApiException) {
-            // Fallback: Play Services sometimes throws even on success.
-            // If the account is already persisted with the required scope, accept it.
-            if (auth.isSignedIn()) {
-                _isSignedIn.value = true
-                _error.value = null
-            } else {
-                _error.value = "Sign-in failed (code ${e.statusCode})"
-            }
+            // Best-effort Firebase sign-in for managed mode — runs in background
+            viewModelScope.launch { auth.signInToFirebase() }
+        } else {
+            _error.value = "Sign-in failed"
         }
     }
 

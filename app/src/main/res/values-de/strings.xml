@@ -22,6 +22,7 @@
 
     <string name="settings_tab_profile">Profil</string>
     <string name="settings_tab_data">Daten</string>
+    <string name="settings_tab_credits">Credits</string>
     <string name="settings_language">Sprache</string>
     <string name="settings_gender">Geschlecht</string>
     <string name="settings_gender_select">Auswählen…</string>
@@ -273,6 +274,19 @@
     <string name="gap_shop_shopstyle">ShopStyle</string>
     <string name="gap_empty_title">Finde, was fehlt</string>
     <string name="gap_empty_hint">Tippe auf \"Analysieren\", damit KI die grundlegenden Teile identifiziert, die die meisten Outfits aus deiner Garderobe vervollständigen.</string>
+
+    <string name="credits_balance_label">Verbleibende KI-Credits</string>
+    <string name="credits_cost_title">Credits pro Aktion</string>
+    <string name="credits_action_bg_removal">Hintergrund entfernen</string>
+    <string name="credits_action_classify">Artikel automatisch taggen</string>
+    <string name="credits_action_style">Stil-Vorschlag / Outfit-Zusammenstellung</string>
+    <string name="credits_action_travel">Reise-Packliste</string>
+    <string name="credits_cost_each">%d Credits</string>
+    <string name="credits_packs_title">Aufladen</string>
+    <string name="credits_packs_unavailable">Credit-Pakete auf diesem Gerät nicht verfügbar</string>
+    <string name="credits_pack_label">%d Credits</string>
+    <string name="credits_best_value">Bestes Angebot</string>
+    <string name="credits_buy">Kaufen</string>
 
     <string name="ai_working">KI arbeitet…</string>
     <string name="ai_fetching_weather">Wetter wird geladen…</string>

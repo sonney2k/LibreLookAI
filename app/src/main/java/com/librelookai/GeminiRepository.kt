@@ -5,9 +5,12 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
 import android.util.Log
+import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -15,6 +18,14 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import java.util.concurrent.TimeUnit
+
+/** Identifies the AI action sent to the proxy for credit-cost accounting. */
+private enum class GeminiAction(val header: String) {
+    REMOVE_BACKGROUND("removeBackground"),
+    CLASSIFY_CLOTHING("classifyClothing"),
+    GENERATE_TEXT("generateText"),
+    SEARCH_TRENDS("searchFashionTrends"),
+}
 
 class GeminiRepository(private val app: Application) {
 
@@ -70,14 +81,55 @@ class GeminiRepository(private val app: Application) {
         return BuildConfig.GEMINI_API_KEY
     }
 
+    private fun isProxyMode(): Boolean =
+        resolveApiKey().isBlank() && BuildConfig.PROXY_BASE_URL.isNotBlank()
+
+    private suspend fun getFirebaseIdToken(): String? = try {
+        if (FirebaseApp.getApps(app).isEmpty()) null
+        else FirebaseAuth.getInstance().currentUser?.getIdToken(false)?.await()?.token
+    } catch (e: Exception) { null }
+
+    /**
+     * Builds the OkHttp [Request] for a Gemini call.
+     * BYOK mode: attaches the API key as a query parameter to the direct Gemini URL.
+     * Proxy mode: routes to the Firebase Cloud Function with auth + action headers.
+     */
+    private suspend fun buildRequest(
+        directUrl: String,
+        model: String,
+        body: String,
+        action: GeminiAction,
+    ): Request {
+        val localKey = resolveApiKey()
+        if (localKey.isNotBlank()) {
+            return Request.Builder()
+                .url("$directUrl?key=$localKey")
+                .post(body.toRequestBody("application/json".toMediaType()))
+                .build()
+        }
+        val proxyBase = BuildConfig.PROXY_BASE_URL
+        if (proxyBase.isBlank()) error("No API key or proxy URL configured")
+        val token = getFirebaseIdToken() ?: error("Firebase not signed in — cannot use managed mode")
+        return Request.Builder()
+            .url("$proxyBase/geminiProxy")
+            .post(body.toRequestBody("application/json".toMediaType()))
+            .addHeader("Authorization", "Bearer $token")
+            .addHeader("X-AI-Action", action.header)
+            .addHeader("X-Gemini-Model", model)
+            .build()
+    }
+
+    /** Returns false when neither BYOK key nor proxy is configured. */
+    private fun isConfigured(): Boolean =
+        resolveApiKey().isNotBlank() || BuildConfig.PROXY_BASE_URL.isNotBlank()
+
     /**
      * Sends [imageFile] to Gemini and returns a PNG with the background removed.
      * Returns null on any failure — callers should fall back to the original.
      */
     suspend fun removeBackground(imageFile: File, outputDir: File): File? =
         withContext(Dispatchers.IO) {
-            val apiKey = resolveApiKey()
-            if (apiKey.isBlank()) {
+            if (!isConfigured()) {
                 Log.w(TAG, "API key not set — skipping background removal")
                 return@withContext null
             }
@@ -108,10 +160,7 @@ class GeminiRepository(private val app: Application) {
                 ),
             )
 
-            val request = Request.Builder()
-                .url("$BG_URL?key=$apiKey")
-                .post(body.toRequestBody("application/json".toMediaType()))
-                .build()
+            val request = buildRequest(BG_URL, BG_MODEL, body, GeminiAction.REMOVE_BACKGROUND)
 
             return@withContext try {
                 val response = http.newCall(request).await()
@@ -163,8 +212,7 @@ class GeminiRepository(private val app: Application) {
      */
     suspend fun classifyClothing(imageFile: File, language: String = "English"): ClothingTags? =
         withContext(Dispatchers.IO) {
-            val apiKey = resolveApiKey()
-            if (apiKey.isBlank()) return@withContext null
+            if (!isConfigured()) return@withContext null
 
             Log.d(TAG, "Classifying clothing in ${imageFile.name} via $CLASSIFY_MODEL (lang=$language)")
             val mimeType = if (imageFile.extension == "png") "image/png" else "image/jpeg"
@@ -190,10 +238,7 @@ class GeminiRepository(private val app: Application) {
                 ),
             )
 
-            val request = Request.Builder()
-                .url("$CLASSIFY_URL?key=$apiKey")
-                .post(body.toRequestBody("application/json".toMediaType()))
-                .build()
+            val request = buildRequest(CLASSIFY_URL, CLASSIFY_MODEL, body, GeminiAction.CLASSIFY_CLOTHING)
 
             return@withContext try {
                 val response = http.newCall(request).await()
@@ -222,8 +267,7 @@ class GeminiRepository(private val app: Application) {
      * Returns null on failure so callers can proceed without trend data.
      */
     suspend fun searchFashionTrends(region: String): FashionTrends? = withContext(Dispatchers.IO) {
-        val apiKey = resolveApiKey()
-        if (apiKey.isBlank()) return@withContext null
+        if (!isConfigured()) return@withContext null
 
         val prompt = """
             Search the web for the current street fashion and clothing trends happening right now in $region.
@@ -243,10 +287,7 @@ class GeminiRepository(private val app: Application) {
         )
         return@withContext try {
             val response = http.newCall(
-                Request.Builder()
-                    .url("$PREDICT_URL?key=$apiKey")
-                    .post(body.toRequestBody("application/json".toMediaType()))
-                    .build(),
+                buildRequest(PREDICT_URL, CLASSIFY_MODEL, body, GeminiAction.SEARCH_TRENDS),
             ).await()
             val responseBody = response.body!!.string()
             Log.d(TAG, "searchFashionTrends HTTP ${response.code}: ${responseBody.take(500)}")
@@ -272,8 +313,7 @@ class GeminiRepository(private val app: Application) {
      * Sends a text-only prompt to Gemini and returns the raw text response, or null on failure.
      */
     suspend fun generateText(prompt: String): String? = withContext(Dispatchers.IO) {
-        val apiKey = resolveApiKey()
-        if (apiKey.isBlank()) return@withContext null
+        if (!isConfigured()) return@withContext null
 
         val body = gson.toJson(
             mapOf(
@@ -287,10 +327,7 @@ class GeminiRepository(private val app: Application) {
         )
         return@withContext try {
             val response = http.newCall(
-                Request.Builder()
-                    .url("$PREDICT_URL?key=$apiKey")
-                    .post(body.toRequestBody("application/json".toMediaType()))
-                    .build(),
+                buildRequest(PREDICT_URL, CLASSIFY_MODEL, body, GeminiAction.GENERATE_TEXT),
             ).await()
             val responseBody = response.body!!.string()
             Log.d(TAG, "generateText HTTP ${response.code}: ${responseBody.take(500)}")

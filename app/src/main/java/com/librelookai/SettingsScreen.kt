@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -26,6 +27,7 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Badge
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
@@ -72,11 +74,13 @@ fun SettingsScreen(
     profileViewModel: ProfileViewModel = viewModel(),
     wardrobeViewModel: WardrobeViewModel = viewModel(),
     locationViewModel: LocationViewModel = viewModel(),
+    creditsViewModel: CreditsViewModel = viewModel(),
     modifier: Modifier = Modifier,
 ) {
     val profileState  by profileViewModel.state.collectAsState()
     val wardrobeState by wardrobeViewModel.state.collectAsState()
     val locationState by locationViewModel.state.collectAsState()
+    val creditsState  by creditsViewModel.state.collectAsState()
 
     val context = LocalContext.current
     var currentApiKey by remember { mutableStateOf(ApiKeyStore.get(context)) }
@@ -91,6 +95,19 @@ fun SettingsScreen(
         TabRow(selectedTabIndex = selectedTab) {
             Tab(selected = selectedTab == 0, onClick = { selectedTab = 0 }, text = { Text(stringResource(R.string.settings_tab_profile)) })
             Tab(selected = selectedTab == 1, onClick = { selectedTab = 1 }, text = { Text(stringResource(R.string.settings_tab_data)) })
+            Tab(
+                selected = selectedTab == 2,
+                onClick = { selectedTab = 2 },
+                text = {
+                    Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                        Text(stringResource(R.string.settings_tab_credits))
+                        if (creditsState.isManagedMode && creditsState.balance > 0) {
+                            Spacer(Modifier.padding(start = 4.dp))
+                            androidx.compose.material3.Badge { Text("${creditsState.balance}") }
+                        }
+                    }
+                },
+            )
         }
 
         when (selectedTab) {
@@ -114,6 +131,10 @@ fun SettingsScreen(
                 onAddLocation = locationViewModel::addLocation,
                 onRenameLocation = locationViewModel::renameLocation,
                 onDeleteLocation = locationViewModel::deleteLocation,
+            )
+            2 -> BuyCreditsScreen(
+                creditsViewModel = creditsViewModel,
+                modifier = Modifier.fillMaxSize(),
             )
         }
     }
