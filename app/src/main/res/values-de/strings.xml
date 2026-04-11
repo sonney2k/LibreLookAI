@@ -113,6 +113,8 @@
     <string name="wardrobe_empty_hint">Machen Sie ein Foto oder wählen Sie aus Ihrer Galerie</string>
     <string name="wardrobe_create_outfit">Outfit manuell erstellen</string>
     <string name="wardrobe_compose_ai">Mit KI zusammenstellen</string>
+    <string name="wardrobe_selected_count">%1$d ausgewählt</string>
+    <string name="wardrobe_select_all_count">Alle auswählen (%1$d)</string>
     <string name="wardrobe_delete_title">Artikel löschen?</string>
     <string name="wardrobe_delete_text">Möchten Sie wirklich %d ausgewählte Artikel löschen? Dies kann nicht rückgängig gemacht werden.</string>
     <string name="wardrobe_move_to">Verschieben nach…</string>

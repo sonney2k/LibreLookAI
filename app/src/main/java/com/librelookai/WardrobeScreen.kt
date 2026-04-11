@@ -516,6 +516,37 @@ private fun GridContent(
                 )
             }
 
+            // ---- Selection bar (shown when at least one item is selected) ----
+            if (isSelectionMode) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 2.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        stringResource(R.string.wardrobe_selected_count, state.selectedIds.size),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.weight(1f),
+                    )
+                    if (displayedImages.any { it.driveId !in state.selectedIds }) {
+                        TextButton(
+                            onClick = { onSelectAll(displayedImages.map { it.driveId }) },
+                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                        ) {
+                            Text(stringResource(R.string.wardrobe_select_all_count, displayedImages.size))
+                        }
+                    }
+                    TextButton(
+                        onClick = onClearSelection,
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                    ) {
+                        Text(stringResource(R.string.action_deselect_all))
+                    }
+                }
+            }
+
             // ---- Main content ----
             when {
                 state.isLoading -> {
@@ -675,15 +706,6 @@ private fun GridContent(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.End,
             ) {
-                if (displayedImages.any { it.driveId !in state.selectedIds }) {
-                    ExtendedFloatingActionButton(
-                        onClick = { onSelectAll(displayedImages.map { it.driveId }) },
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        icon = { Icon(Icons.Default.CheckCircle, contentDescription = null) },
-                        text = { Text(stringResource(R.string.action_select_all)) },
-                    )
-                }
                 ExtendedFloatingActionButton(
                     onClick = { onCreateStyleFromSelection(state.selectedIds) },
                     containerColor = MaterialTheme.colorScheme.primaryContainer,

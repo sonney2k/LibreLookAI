@@ -118,6 +118,8 @@
     <string name="wardrobe_empty_hint">Take a photo or pick from your gallery</string>
     <string name="wardrobe_create_outfit">Create outfit manually</string>
     <string name="wardrobe_compose_ai">Compose with AI</string>
+    <string name="wardrobe_selected_count">%1$d selected</string>
+    <string name="wardrobe_select_all_count">Select all (%1$d)</string>
     <string name="wardrobe_delete_title">Delete items?</string>
     <string name="wardrobe_delete_text">Are you sure you want to delete %d selected items? This cannot be undone.</string>
     <string name="wardrobe_move_to">Move to…</string>
