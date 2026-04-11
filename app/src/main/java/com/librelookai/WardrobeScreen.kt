@@ -29,8 +29,12 @@ import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -1146,6 +1150,7 @@ private fun TagEditSheet(
             modifier = Modifier
                 .fillMaxWidth()
                 .navigationBarsPadding()
+                .imePadding()
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 20.dp)
                 .padding(bottom = 24.dp),
@@ -1301,6 +1306,14 @@ private fun ChipListEditor(
                 onValueChange = { inputText = it; showSuggestions = it.isNotEmpty() },
                 placeholder = { Text(stringResource(R.string.tag_add_custom)) },
                 singleLine = true,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(onDone = {
+                    if (inputText.isNotBlank()) {
+                        onAdd(inputText.trim())
+                        inputText = ""
+                        showSuggestions = false
+                    }
+                }),
                 trailingIcon = if (inputText.isNotBlank()) {
                     {
                         IconButton(onClick = {
