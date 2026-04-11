@@ -721,10 +721,12 @@ private fun GridContent(
                 horizontalAlignment = Alignment.End,
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                SmallFloatingActionButton(onClick = onOpenGallery) {
+                FloatingActionButton(onClick = onOpenGallery) {
+                    Icon(Icons.Default.Add, contentDescription = null)
                     Icon(Icons.Default.PhotoLibrary, contentDescription = stringResource(R.string.wardrobe_add_gallery))
                 }
                 FloatingActionButton(onClick = onOpenCamera) {
+                    Icon(Icons.Default.Add, contentDescription = null)
                     Icon(Icons.Default.CameraAlt, contentDescription = stringResource(R.string.wardrobe_add_camera))
                 }
             }
