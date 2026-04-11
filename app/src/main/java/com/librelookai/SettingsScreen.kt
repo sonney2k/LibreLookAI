@@ -1,5 +1,6 @@
 package com.librelookai
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,6 +35,7 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Badge
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -531,6 +533,8 @@ private fun DataTab(
                 OutlinedButton(
                     onClick = { showRetagDialog = true },
                     modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.error),
                 ) {
                     Icon(Icons.Default.Refresh, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.padding(start = 8.dp))
@@ -569,6 +573,8 @@ private fun DataTab(
                 OutlinedButton(
                     onClick = { showRemoveBgDialog = true },
                     modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.error),
                 ) {
                     Icon(Icons.Default.AutoFixHigh, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.padding(start = 8.dp))
@@ -591,6 +597,8 @@ private fun DataTab(
                 onClick = { showClearCacheDialog = true },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = !wardrobeState.isLoading,
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.error),
             ) {
                 Icon(Icons.Default.DeleteSweep, contentDescription = null, modifier = Modifier.size(18.dp))
                 Spacer(Modifier.padding(start = 8.dp))
