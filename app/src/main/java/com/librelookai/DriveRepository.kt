@@ -47,6 +47,16 @@ class DriveRepository(
         private const val PREFERENCES_FILE_NAME = "_user_preferences.json"
         private const val WARDROBE_METADATA_FILE_NAME = "_wardrobe_metadata.json"
         private const val LOCATIONS_FILE_NAME = "_locations.json"
+
+        /**
+         * Suffix that marks a file as the background-removed cutout variant.
+         * Only files with this suffix are treated as wardrobe items; originals and
+         * raw uploads are excluded from [listFiles] and therefore never shown in the app.
+         */
+        const val CUTOUT_SUFFIX = "_cutout.png"
+
+        /** Suffix used when archiving the unprocessed original on Drive. */
+        const val ORIGINAL_SUFFIX = "_original.jpg"
     }
 
     private val http = OkHttpClient()
@@ -86,7 +96,11 @@ class DriveRepository(
         ).id
     }
 
-    /** Lists image files in the given Drive folder, newest first. */
+    /**
+     * Lists wardrobe image files in the given Drive folder, newest first.
+     * Only returns files whose name ends with [CUTOUT_SUFFIX] — originals and raw uploads
+     * are excluded so they never appear as wardrobe items.
+     */
     suspend fun listFiles(folderId: String): List<DriveFileDto> = withContext(Dispatchers.IO) {
         val tok = token()
         val q = URLEncoder.encode(
@@ -100,7 +114,7 @@ class DriveRepository(
         gson.fromJson(
             http.newCall(req).await().body!!.string(),
             FilesListDto::class.java,
-        ).files
+        ).files.filter { it.name.endsWith(CUTOUT_SUFFIX) }
     }
 
     /** Uploads a JPEG file to the given Drive folder via multipart/related. */
@@ -119,6 +133,21 @@ class DriveRepository(
             DriveFileDto::class.java,
         )
     }
+
+    /** Like [uploadImage] but uses [name] as the Drive filename instead of the local file name. */
+    suspend fun uploadImageWithName(folderId: String, imageFile: File, name: String): DriveFileDto =
+        withContext(Dispatchers.IO) {
+            val tok = token()
+            val boundary = "llai_${System.currentTimeMillis()}"
+            val meta = """{"name":"$name","parents":["$folderId"]}"""
+            val body = buildMultipartRelated(boundary, meta, imageFile)
+            val req = Request.Builder()
+                .url("$UPLOAD_API/files?uploadType=multipart&fields=id,name")
+                .header("Authorization", "Bearer $tok")
+                .post(body.toRequestBody("multipart/related; boundary=$boundary".toMediaType()))
+                .build()
+            gson.fromJson(http.newCall(req).await().body!!.string(), DriveFileDto::class.java)
+        }
 
     /** Replaces the content of an existing Drive file in-place (preserves ID and metadata). */
     suspend fun updateImage(fileId: String, imageFile: File) = withContext(Dispatchers.IO) {
@@ -157,9 +186,14 @@ class DriveRepository(
         File(cacheDir, "${fileId}_original.jpg").takeIf { it.exists() }?.delete()
     }
 
-    /** Downloads a Drive file to the local cache directory. Returns null on error. */
-    suspend fun downloadToCache(driveId: String): File? = withContext(Dispatchers.IO) {
-        val dest = File(cacheDir, "$driveId.jpg")
+    /**
+     * Downloads a Drive file to the local cache directory.
+     * Pass [driveName] (the Drive filename) to preserve the correct extension — cutout files
+     * end with [CUTOUT_SUFFIX] and are cached as `.png`; everything else as `.jpg`.
+     */
+    suspend fun downloadToCache(driveId: String, driveName: String = ""): File? = withContext(Dispatchers.IO) {
+        val ext = if (driveName.endsWith(CUTOUT_SUFFIX)) "png" else "jpg"
+        val dest = File(cacheDir, "$driveId.$ext")
         if (dest.exists()) return@withContext dest
         val tmp = File(cacheDir, "$driveId.tmp")
         return@withContext try {

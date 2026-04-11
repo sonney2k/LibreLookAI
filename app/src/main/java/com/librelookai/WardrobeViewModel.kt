@@ -8,11 +8,14 @@ import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.io.File
 
 enum class WardrobeView { GRID, CAPTURE }
@@ -50,12 +53,16 @@ data class WardrobeUiState(
     /** driveId of the image currently being processed by an AI operation, or null. */
     val processingImageId: String? = null,
     val selectedIds: Set<String> = emptySet(),
+    /** Number of photos queued or actively running background processing (bg removal + tagging). */
+    val pendingJobs: Int = 0,
 )
 
 // ---------- Wardrobe metadata (replaces per-file appProperties) ----------
 
 private data class WardrobeItemMeta(val name: String, val tags: ClothingTags?, val originalDriveId: String? = null)
 private data class WardrobeMetadata(val items: List<WardrobeItemMeta> = emptyList())
+
+private data class PendingJob(val driveId: String, val folderId: String)
 
 class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
@@ -69,6 +76,19 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     private var folderId: String? = null
     /** Gemini-facing language name (e.g. "English", "German") for label generation. */
     private var geminiLanguage: String = "English"
+
+    /** Serializes all Drive metadata writes to prevent concurrent saves overwriting each other. */
+    private val metaMutex = Mutex()
+
+    /**
+     * Background processing queue. Each item represents one uploaded photo that needs
+     * bg removal + classification. Processed serially so metadata writes are consistent.
+     */
+    private val workQueue = Channel<PendingJob>(Channel.UNLIMITED)
+
+    init {
+        viewModelScope.launch { processQueue() }
+    }
 
     fun setLanguage(geminiName: String) { geminiLanguage = geminiName }
 
@@ -95,8 +115,8 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                         .items.associateBy { it.name }
                 } else emptyMap()
 
-                // Download any uncached files in parallel
-                files.map { file -> async { drive.cachedFile(file.id) ?: drive.downloadToCache(file.id) } }
+                // Download any uncached files in parallel (pass name so PNG cutouts use .png extension)
+                files.map { file -> async { drive.cachedFile(file.id) ?: drive.downloadToCache(file.id, file.name) } }
                     .awaitAll()
 
                 val hadLegacyProps = metaJson == null && files.any { it.appProperties?.isNotEmpty() == true }
@@ -126,13 +146,81 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    /** Persists current wardrobe tags to the metadata file. Call after any tag change. */
+    /** Persists current wardrobe tags to the metadata file. Serialized via [metaMutex]. */
     private fun saveWardrobeMetadata() {
-        val images = _state.value.images
-        val id = folderId ?: return
         viewModelScope.launch {
-            val meta = WardrobeMetadata(images.map { WardrobeItemMeta(it.name, it.tags, it.originalDriveId) })
-            runCatching { drive.saveWardrobeMetadataJson(id, gson.toJson(meta)) }
+            metaMutex.withLock {
+                val images = _state.value.images
+                val id = folderId ?: return@withLock
+                val meta = WardrobeMetadata(images.map { WardrobeItemMeta(it.name, it.tags, it.originalDriveId) })
+                runCatching { drive.saveWardrobeMetadataJson(id, gson.toJson(meta)) }
+            }
+        }
+    }
+
+    // ---------- Background processing queue ----------
+
+    /** Drains [workQueue] serially — bg removal + tagging for each newly uploaded photo. */
+    private suspend fun processQueue() {
+        for (job in workQueue) {
+            runCatching { processQueuedImage(job) }
+                .onFailure { e -> _state.update { it.copy(error = e.message) } }
+            _state.update { it.copy(pendingJobs = maxOf(0, it.pendingJobs - 1)) }
+            saveWardrobeMetadata()
+        }
+    }
+
+    private suspend fun processQueuedImage(job: PendingJob) {
+        val rawFile = File(drive.cacheDir, "${job.driveId}_original.jpg")
+        if (!rawFile.exists()) return
+
+        // Derive the base name from the current Drive item name (e.g. "photo_1234" from "photo_1234.jpg")
+        val rawItem = _state.value.images.find { it.driveId == job.driveId } ?: return
+        val baseName = rawItem.name.substringBeforeLast(".")
+        val cutoutName = "$baseName${DriveRepository.CUTOUT_SUFFIX}"
+        val originalName = "$baseName${DriveRepository.ORIGINAL_SUFFIX}"
+
+        // Step 1 — background removal (falls back to raw image if Gemini fails)
+        val processedFile = gemini.removeBackground(rawFile, drive.cacheDir) ?: rawFile
+
+        // Step 2 — upload the cutout (or raw fallback) as ${baseName}_cutout.png
+        val cutoutDrive = runCatching {
+            drive.uploadImageWithName(job.folderId, processedFile, cutoutName)
+        }.getOrNull() ?: return
+
+        // Step 3 — upload original backup as ${baseName}_original.jpg (best-effort)
+        val originalDriveId = runCatching {
+            drive.uploadImageWithName(job.folderId, rawFile, originalName).id
+        }.getOrNull()
+
+        // Step 4 — delete the temporary raw upload (it has no _cutout.png suffix and must not appear in listings)
+        runCatching { drive.deleteFile(job.driveId) }
+
+        // Step 5 — write cutout to local cache under the new Drive ID
+        val localCutout = File(drive.cacheDir, "${cutoutDrive.id}.png")
+        if (processedFile.absolutePath != localCutout.absolutePath) {
+            processedFile.copyTo(localCutout, overwrite = true)
+        }
+
+        // Step 6 — update state: driveId, name, path, and originalDriveId all change
+        _state.update { s ->
+            s.copy(images = s.images.map { img ->
+                if (img.driveId == job.driveId) img.copy(
+                    driveId = cutoutDrive.id,
+                    name = cutoutDrive.name,
+                    localPath = localCutout.absolutePath,
+                    version = System.currentTimeMillis(),
+                    originalDriveId = originalDriveId,
+                ) else img
+            })
+        }
+
+        // Step 7 — classify clothing tags against the cutout image
+        val tags = gemini.classifyClothing(localCutout, geminiLanguage) ?: return
+        _state.update { s ->
+            s.copy(images = s.images.map { img ->
+                if (img.driveId == cutoutDrive.id) img.copy(tags = tags) else img
+            })
         }
     }
 
@@ -144,10 +232,31 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     // ---------- Upload from camera ----------
 
     fun uploadPhoto(rawFile: File) {
+        val id = folderId ?: run {
+            _state.update { it.copy(view = WardrobeView.GRID) }
+            return
+        }
         viewModelScope.launch {
-            _state.update { it.copy(view = WardrobeView.GRID, batchTotal = 0, batchDone = 0) }
-            processAndUpload(rawFile)?.let { newImage ->
-                _state.update { it.copy(images = listOf(newImage) + it.images) }
+            _state.update { it.copy(view = WardrobeView.GRID, isUploading = true, error = null) }
+            runCatching {
+                val uploaded = drive.uploadImage(id, rawFile)
+                val ext = if (rawFile.extension == "png") "png" else "jpg"
+                val displayCache = File(drive.cacheDir, "${uploaded.id}.$ext")
+                if (rawFile.absolutePath != displayCache.absolutePath) {
+                    rawFile.copyTo(displayCache, overwrite = true)
+                }
+                rawFile.copyTo(File(drive.cacheDir, "${uploaded.id}_original.jpg"), overwrite = true)
+                DriveImage(uploaded.id, displayCache.absolutePath, uploaded.name, tags = null)
+            }.onSuccess { newImage ->
+                _state.update { it.copy(
+                    isUploading = false,
+                    images = listOf(newImage) + it.images,
+                    pendingJobs = it.pendingJobs + 1,
+                ) }
+                saveWardrobeMetadata()
+                workQueue.send(PendingJob(newImage.driveId, id))
+            }.onFailure { e ->
+                _state.update { it.copy(isUploading = false, error = e.message) }
             }
         }
     }
@@ -156,65 +265,34 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
     fun uploadGalleryPhotos(uris: List<Uri>) {
         if (uris.isEmpty()) return
+        val id = folderId ?: return
         viewModelScope.launch {
-            _state.update { it.copy(batchTotal = uris.size, batchDone = 0, error = null) }
+            _state.update { it.copy(batchTotal = uris.size, batchDone = 0, isUploading = true, error = null) }
             val cr = getApplication<Application>().contentResolver
             uris.forEachIndexed { index, uri ->
                 _state.update { it.copy(batchDone = index) }
-                // Copy URI content to a temp file Gemini and Drive can consume
                 val tempFile = File(drive.cacheDir, "gallery_${System.currentTimeMillis()}.jpg")
                 runCatching {
                     cr.openInputStream(uri)?.use { it.copyTo(tempFile.outputStream()) }
+                    val uploaded = drive.uploadImage(id, tempFile)
+                    val displayCache = File(drive.cacheDir, "${uploaded.id}.jpg")
+                    tempFile.copyTo(displayCache, overwrite = true)
+                    tempFile.copyTo(File(drive.cacheDir, "${uploaded.id}_original.jpg"), overwrite = true)
+                    DriveImage(uploaded.id, displayCache.absolutePath, uploaded.name, tags = null)
+                }.onSuccess { newImage ->
+                    _state.update { it.copy(
+                        images = listOf(newImage) + it.images,
+                        pendingJobs = it.pendingJobs + 1,
+                    ) }
+                    workQueue.send(PendingJob(newImage.driveId, id))
                 }.onFailure { e ->
-                    _state.update { it.copy(error = "Could not read image: ${e.message}") }
-                    return@forEachIndexed
-                }
-                processAndUpload(tempFile)?.let { newImage ->
-                    _state.update { it.copy(images = listOf(newImage) + it.images) }
+                    _state.update { it.copy(error = "Upload failed: ${e.message}") }
                 }
                 tempFile.delete()
             }
-            _state.update { it.copy(batchTotal = 0, batchDone = 0, isProcessing = false, isUploading = false) }
-        }
-    }
-
-    // ---------- Shared process + upload logic ----------
-
-    private suspend fun processAndUpload(rawFile: File): DriveImage? {
-        // Step 1 — Gemini background removal
-        _state.update { it.copy(isProcessing = true, error = null) }
-        val processedFile = gemini.removeBackground(rawFile, drive.cacheDir) ?: rawFile
-        val bgWasRemoved = processedFile != rawFile
-
-        // Step 2 — Upload to Drive
-        _state.update { it.copy(isProcessing = false, isUploading = true) }
-        return runCatching {
-            val id = folderId ?: return null
-            val uploaded = drive.uploadImage(id, processedFile)
-
-            val ext = if (processedFile.extension == "png") "png" else "jpg"
-            val displayCache = File(drive.cacheDir, "${uploaded.id}.$ext")
-            if (processedFile.absolutePath != displayCache.absolutePath) {
-                processedFile.copyTo(displayCache, overwrite = true)
-            }
-
-            // Keep original in local cache and also upload to Drive for safe re-processing
-            val localOriginal = File(drive.cacheDir, "${uploaded.id}_original.jpg")
-            rawFile.copyTo(localOriginal, overwrite = true)
-            val originalDriveId: String? = if (bgWasRemoved) {
-                runCatching { drive.uploadImage(id, localOriginal).id }.getOrNull()
-            } else null
-
-            // Step 3 — Classify clothing tags
-            val tags = gemini.classifyClothing(processedFile, geminiLanguage)
-
-            DriveImage(uploaded.id, displayCache.absolutePath, uploaded.name, tags, originalDriveId = originalDriveId)
-        }.onFailure { e ->
-            _state.update { it.copy(error = e.message) }
-        }.onSuccess {
-            _state.update { it.copy(isUploading = false) }
+            _state.update { it.copy(batchTotal = 0, batchDone = 0, isUploading = false) }
             saveWardrobeMetadata()
-        }.getOrNull()
+        }
     }
 
     fun reprocessBackground(driveId: String) {

@@ -16,6 +16,7 @@
     <string name="action_save">Speichern</string>
     <string name="action_saving">Wird gespeichert…</string>
     <string name="action_clear">Löschen</string>
+    <string name="wardrobe_processing_photos">%1$d Foto(s) werden verarbeitet…</string>
     <string name="action_select_all">Alle auswählen</string>
     <string name="action_deselect_all">Auswahl aufheben</string>
 
