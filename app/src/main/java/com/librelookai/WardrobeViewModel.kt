@@ -6,8 +6,10 @@ import android.provider.DocumentsContract
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -114,7 +116,21 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         loadImages()
     }
 
-    // ---------- Local cache helpers ----------
+    // ---------- Cache ----------
+
+    /** Deletes all locally-cached image files and the JSON index, then re-fetches from Drive. */
+    fun clearCacheAndRefresh() {
+        val id = folderId ?: return
+        viewModelScope.launch(Dispatchers.IO) {
+            // Delete JSON cache index
+            localCacheFile(id).delete()
+            // Delete every locally cached image file for this folder
+            val dir = getApplication<Application>().filesDir.resolve("wardrobe")
+            dir.listFiles()?.forEach { it.delete() }
+            // Re-fetch everything fresh from Drive
+            withContext(Dispatchers.Main) { loadImages() }
+        }
+    }
 
     private fun localCacheFile(id: String) =
         File(getApplication<Application>().filesDir, "wardrobe_cache_$id.json")

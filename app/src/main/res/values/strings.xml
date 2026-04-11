@@ -62,6 +62,12 @@
     <string name="settings_rebg_dialog_text">This will process every item in your current wardrobe with Gemini. It may take a while and uses significant AI credits / API quota. Items that already have their original saved on Drive will use that; others will use the current image.</string>
     <string name="settings_rebg_confirm">Remove All BG</string>
     <string name="settings_rebging">Removing background %1$d of %2$d…</string>
+    <string name="settings_clear_cache_title">Clear Local Cache</string>
+    <string name="settings_clear_cache_desc">Delete all locally cached images and metadata and reload everything from Google Drive. Use this if your wardrobe looks out of sync.</string>
+    <string name="settings_clear_cache_button">Clear Cache &amp; Refresh</string>
+    <string name="settings_clear_cache_dialog_title">Clear Cache</string>
+    <string name="settings_clear_cache_dialog_text">All locally cached images will be deleted and re-downloaded from Google Drive. Your data on Drive is not affected.</string>
+    <string name="settings_clear_cache_confirm">Clear &amp; Refresh</string>
     <string name="settings_migrate_title">Migrate File Names</string>
     <string name="settings_migrate_desc">One-time rename of legacy Drive files to the new naming convention. Old files used the Drive ID as the original\'s prefix (e.g. 1iTa8U…_original.jpg) making pairs unrecognisable. After migration each pair shares the same prefix: photo_cutout.png + photo_original.jpg.</string>
     <string name="settings_migrate_button">Migrate File Names</string>

@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FolderOpen
+import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -150,6 +151,7 @@ fun SettingsScreen(
                 onRetagAll = wardrobeViewModel::retagAll,
                 onRemoveAllBackgrounds = wardrobeViewModel::removeAllBackgrounds,
                 onMigrateFilenames = wardrobeViewModel::migrateFilenames,
+                onClearCacheAndRefresh = wardrobeViewModel::clearCacheAndRefresh,
                 onImportFromFolder = { removeBg, autoTag, replace, overwrite, useDrive ->
                     pendingImportRemoveBg  = removeBg
                     pendingImportAutoTag   = autoTag
@@ -407,6 +409,7 @@ private fun DataTab(
     onRetagAll: () -> Unit,
     onRemoveAllBackgrounds: () -> Unit,
     onMigrateFilenames: () -> Unit,
+    onClearCacheAndRefresh: () -> Unit,
     onImportFromFolder: (removeBackground: Boolean, autoTag: Boolean, replaceExisting: Boolean, overwriteDuplicates: Boolean, useDrivePicker: Boolean) -> Unit,
     locationState: LocationUiState,
     onSetActiveLocation: (String) -> Unit,
@@ -417,6 +420,7 @@ private fun DataTab(
     var showRetagDialog by remember { mutableStateOf(false) }
     var showRemoveBgDialog by remember { mutableStateOf(false) }
     var showImportOptionsDialog by remember { mutableStateOf(false) }
+    var showClearCacheDialog by remember { mutableStateOf(false) }
     var showAddLocationDialog by remember { mutableStateOf(false) }
     var renameTarget by remember { mutableStateOf<Location?>(null) }
     var deleteTarget by remember { mutableStateOf<Location?>(null) }
@@ -575,6 +579,27 @@ private fun DataTab(
 
         HorizontalDivider()
 
+        // ---------- Clear cache ----------
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(stringResource(R.string.settings_clear_cache_title), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+            Text(
+                stringResource(R.string.settings_clear_cache_desc),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            OutlinedButton(
+                onClick = { showClearCacheDialog = true },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = !wardrobeState.isLoading,
+            ) {
+                Icon(Icons.Default.DeleteSweep, contentDescription = null, modifier = Modifier.size(18.dp))
+                Spacer(Modifier.padding(start = 8.dp))
+                Text(stringResource(R.string.settings_clear_cache_button))
+            }
+        }
+
+        HorizontalDivider()
+
         // ---------- File naming migration ----------
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(stringResource(R.string.settings_migrate_title), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
@@ -709,6 +734,24 @@ private fun DataTab(
             },
             dismissButton = {
                 TextButton(onClick = { showRemoveBgDialog = false }) {
+                    Text(stringResource(R.string.action_cancel))
+                }
+            },
+        )
+    }
+
+    if (showClearCacheDialog) {
+        AlertDialog(
+            onDismissRequest = { showClearCacheDialog = false },
+            title = { Text(stringResource(R.string.settings_clear_cache_dialog_title)) },
+            text = { Text(stringResource(R.string.settings_clear_cache_dialog_text)) },
+            confirmButton = {
+                TextButton(onClick = { onClearCacheAndRefresh(); showClearCacheDialog = false }) {
+                    Text(stringResource(R.string.settings_clear_cache_confirm), color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showClearCacheDialog = false }) {
                     Text(stringResource(R.string.action_cancel))
                 }
             },
