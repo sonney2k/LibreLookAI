@@ -396,17 +396,28 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
     /**
      * Imports all images from [treeUri] into the current wardrobe folder.
-     * Images are always uploaded and shown in the wardrobe regardless of the options.
-     * [removeBackground] — run Gemini BG removal on each image (5 credits/item).
-     * [autoTag]          — classify clothing tags with Gemini (2 credits/item).
-     * Both default to false so a plain import never touches the AI pipeline.
+     *
+     * Images are always uploaded/updated and immediately visible — AI processing is optional.
+     *
+     * [removeBackground]   — run Gemini BG removal on each image (5 credits/item).
+     * [autoTag]            — classify clothing tags with Gemini (2 credits/item).
+     * [replaceExisting]    — delete all current wardrobe items before importing (fresh start).
+     * [overwriteDuplicates]— when false (default) images whose filename already exists are
+     *                        skipped; when true the existing Drive file is replaced in-place.
+     *                        Ignored when [replaceExisting] is true.
      */
-    fun importFromFolder(treeUri: Uri, removeBackground: Boolean = false, autoTag: Boolean = false) {
+    fun importFromFolder(
+        treeUri: Uri,
+        removeBackground: Boolean = false,
+        autoTag: Boolean = false,
+        replaceExisting: Boolean = false,
+        overwriteDuplicates: Boolean = false,
+    ) {
         val id = folderId ?: return
         viewModelScope.launch {
             val cr = getApplication<Application>().contentResolver
 
-            // List files in the selected tree
+            // ---- Enumerate source files ----
             val treeDocId = DocumentsContract.getTreeDocumentId(treeUri)
             val childrenUri = DocumentsContract.buildChildDocumentsUriUsingTree(treeUri, treeDocId)
 
@@ -436,21 +447,38 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
             if (srcFiles.isEmpty()) return@launch
 
-            // Load existing tag metadata from the source folder if present
-            val metaByName: Map<String, WardrobeItemMeta> = metaDocId?.let { docId ->
+            // ---- Load source metadata (tags/originalDriveId carried over from a prior export) ----
+            val srcMetaByName: Map<String, WardrobeItemMeta> = metaDocId?.let { docId ->
                 runCatching {
                     val metaUri = DocumentsContract.buildDocumentUriUsingTree(treeUri, docId)
                     val json = cr.openInputStream(metaUri)?.use { it.readBytes().toString(Charsets.UTF_8) }
-                    if (json != null) {
-                        gson.fromJson(json, WardrobeMetadata::class.java).items.associateBy { it.name }
-                    } else emptyMap()
+                    if (json != null) gson.fromJson(json, WardrobeMetadata::class.java).items.associateBy { it.name }
+                    else emptyMap()
                 }.getOrDefault(emptyMap())
             } ?: emptyMap()
 
-            _state.update { it.copy(isImporting = true, importDone = 0, importTotal = srcFiles.size, error = null) }
+            // ---- Fresh-start: delete all existing wardrobe items first ----
+            if (replaceExisting) {
+                val toDelete = _state.value.images.map { it.driveId }
+                _state.update { it.copy(isImporting = true, importDone = 0, importTotal = srcFiles.size, images = emptyList(), error = null) }
+                toDelete.forEach { driveId -> runCatching { drive.deleteFile(driveId) } }
+            } else {
+                _state.update { it.copy(isImporting = true, importDone = 0, importTotal = srcFiles.size, error = null) }
+            }
 
+            // Build name → existing item map for duplicate detection (empty after fresh-start)
+            val existingByName: Map<String, DriveImage> = _state.value.images.associateBy { it.name }
+
+            // ---- Process each source image ----
             srcFiles.forEachIndexed { index, src ->
                 _state.update { it.copy(importDone = index) }
+
+                val duplicate = existingByName[src.displayName]
+                if (duplicate != null && !overwriteDuplicates) {
+                    // Skip — item with this name already in wardrobe
+                    return@forEachIndexed
+                }
+
                 val srcExt = if (src.mimeType == "image/png") "png" else "jpg"
                 val tempFile = File(drive.cacheDir, "import_${System.currentTimeMillis()}.$srcExt")
                 runCatching {
@@ -458,47 +486,63 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     cr.openInputStream(srcUri)?.use { it.copyTo(tempFile.outputStream()) }
                         ?: error("Cannot open stream for ${src.displayName}")
 
-                    val existingMeta = metaByName[src.displayName]
+                    val srcMeta = srcMetaByName[src.displayName]
 
-                    // Optional background removal (skipped when metadata already provides an original)
+                    // Optional background removal
                     var imageToUpload = tempFile
-                    var originalDriveId: String? = existingMeta?.originalDriveId
-                    if (removeBackground && existingMeta == null) {
+                    var originalDriveId: String? = srcMeta?.originalDriveId ?: duplicate?.originalDriveId
+                    if (removeBackground && srcMeta == null) {
                         val processed = gemini.removeBackground(tempFile, drive.cacheDir)
                         if (processed != null) {
-                            // Upload the raw original to Drive so re-removal is always possible
                             originalDriveId = runCatching { drive.uploadImage(id, tempFile).id }.getOrNull()
                             imageToUpload = processed
-                            // Keep original in local cache too
-                            tempFile.copyTo(File(drive.cacheDir, "orig_${System.currentTimeMillis()}.jpg"), overwrite = false)
                         }
                     }
 
-                    // Tags: existing metadata → Gemini (if autoTag) → none
+                    // Tags: source metadata → existing item tags → Gemini → none
                     val tags = when {
-                        existingMeta != null -> existingMeta.tags
-                        autoTag -> gemini.classifyClothing(imageToUpload, geminiLanguage)
-                        else -> null
+                        srcMeta != null     -> srcMeta.tags
+                        duplicate != null   -> duplicate.tags
+                        autoTag             -> gemini.classifyClothing(imageToUpload, geminiLanguage)
+                        else                -> null
                     }
 
-                    val uploaded = drive.uploadImage(id, imageToUpload)
                     val uploadExt = if (imageToUpload.extension == "png") "png" else srcExt
-                    val displayCache = File(drive.cacheDir, "${uploaded.id}.$uploadExt")
-                    imageToUpload.copyTo(displayCache, overwrite = true)
 
-                    // Save original to the well-known local cache path for future reprocessing
-                    if (imageToUpload != tempFile) {
-                        tempFile.copyTo(File(drive.cacheDir, "${uploaded.id}_original.jpg"), overwrite = true)
+                    if (duplicate != null) {
+                        // Overwrite existing item in-place — keep the same Drive ID
+                        drive.updateImage(duplicate.driveId, imageToUpload)
+                        val displayCache = File(drive.cacheDir, "${duplicate.driveId}.$uploadExt")
+                        imageToUpload.copyTo(displayCache, overwrite = true)
+                        if (imageToUpload != tempFile) {
+                            tempFile.copyTo(File(drive.cacheDir, "${duplicate.driveId}_original.jpg"), overwrite = true)
+                        }
+                        _state.update { s ->
+                            s.copy(images = s.images.map { img ->
+                                if (img.driveId == duplicate.driveId) img.copy(
+                                    localPath = displayCache.absolutePath,
+                                    tags = tags,
+                                    version = System.currentTimeMillis(),
+                                    originalDriveId = originalDriveId ?: img.originalDriveId,
+                                ) else img
+                            })
+                        }
+                    } else {
+                        // New item — upload fresh
+                        val uploaded = drive.uploadImage(id, imageToUpload)
+                        val displayCache = File(drive.cacheDir, "${uploaded.id}.$uploadExt")
+                        imageToUpload.copyTo(displayCache, overwrite = true)
+                        if (imageToUpload != tempFile) {
+                            tempFile.copyTo(File(drive.cacheDir, "${uploaded.id}_original.jpg"), overwrite = true)
+                        }
+                        _state.update { it.copy(images = it.images + DriveImage(
+                            driveId = uploaded.id,
+                            localPath = displayCache.absolutePath,
+                            name = uploaded.name,
+                            tags = tags,
+                            originalDriveId = originalDriveId,
+                        )) }
                     }
-
-                    val newImage = DriveImage(
-                        driveId = uploaded.id,
-                        localPath = displayCache.absolutePath,
-                        name = uploaded.name,
-                        tags = tags,
-                        originalDriveId = originalDriveId,
-                    )
-                    _state.update { it.copy(images = it.images + newImage) }
                 }.onFailure { e ->
                     _state.update { it.copy(error = "Import failed for ${src.displayName}: ${e.message}") }
                 }

@@ -51,6 +51,7 @@
     <string name="settings_rescan_dialog_title">Re-scan all tags?</string>
     <string name="settings_rescan_dialog_text">Gemini will re-classify every item in your wardrobe. This will overwrite any manual tag edits and may take a while.</string>
     <string name="settings_rescan_confirm">Re-scan</string>
+    <string name="settings_bulk_cost_line">%1$d items × %2$d credits = %3$d credits total</string>
     <string name="settings_rebg_title">Background Removal</string>
     <string name="settings_rebg_desc">Re-run AI background removal on every item in your wardrobe. Originals are safely stored on Drive so you can re-run this any time. Each item costs 5 AI credits (or Gemini API quota).</string>
     <string name="settings_rebg_button">Remove BG from All Items…</string>
@@ -64,12 +65,24 @@
     <string name="settings_importing">Importing %1$d of %2$d…</string>
     <string name="settings_import_later_hint">Tip: You can remove backgrounds and auto-tag all items at any time from the sections above.</string>
     <string name="settings_import_options_title">Import Options</string>
-    <string name="settings_import_options_desc">Images will be copied into your wardrobe immediately. The options below add AI processing on top — they are optional and can be run later from this screen.</string>
+    <string name="settings_import_options_desc">Images are always copied immediately and shown in your wardrobe. AI processing is optional and can be run later from this screen.</string>
+    <string name="settings_import_mode_title">Destination</string>
+    <string name="settings_import_mode_add">Add to wardrobe</string>
+    <string name="settings_import_mode_add_desc">New images are added alongside existing items.</string>
+    <string name="settings_import_mode_replace">Replace wardrobe (fresh start)</string>
+    <string name="settings_import_mode_replace_desc">All %1$d existing items will be permanently deleted before importing.</string>
+    <string name="settings_import_mode_replace_desc_empty">The wardrobe is currently empty.</string>
+    <string name="settings_import_duplicates_title">If a file name already exists</string>
+    <string name="settings_import_duplicates_skip">Skip duplicates</string>
+    <string name="settings_import_duplicates_skip_desc">Existing items with the same file name are left unchanged.</string>
+    <string name="settings_import_duplicates_overwrite">Overwrite duplicates</string>
+    <string name="settings_import_duplicates_overwrite_desc">Existing items with the same file name are replaced with the imported version.</string>
+    <string name="settings_import_ai_title">AI processing (optional)</string>
     <string name="settings_import_options_remove_bg">Remove backgrounds</string>
     <string name="settings_import_options_remove_bg_cost">5 credits per image</string>
     <string name="settings_import_options_auto_tag">Auto-tag items</string>
     <string name="settings_import_options_auto_tag_cost">2 credits per image</string>
-    <string name="settings_import_options_cost_warning">Warning: this uses significant AI credits / Gemini API quota. For large wardrobes consider doing it later in smaller batches.</string>
+    <string name="settings_import_options_cost_warning">%1$d credits per image will be used. For large wardrobes consider processing in smaller batches after import.</string>
     <string name="settings_import_options_start">Import</string>
     <string name="settings_locations_title">Locations</string>
     <string name="settings_locations_desc">Manage multiple wardrobes for different locations, e.g. home and holiday home.</string>

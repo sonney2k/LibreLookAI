@@ -47,6 +47,7 @@
     <string name="settings_rescan_dialog_title">Alle Tags neu scannen?</string>
     <string name="settings_rescan_dialog_text">Gemini klassifiziert alle Artikel in Ihrer Garderobe neu. Dies überschreibt manuelle Tag-Bearbeitungen und kann eine Weile dauern.</string>
     <string name="settings_rescan_confirm">Neu scannen</string>
+    <string name="settings_bulk_cost_line">%1$d Artikel × %2$d Credits = %3$d Credits gesamt</string>
     <string name="settings_rebg_title">Hintergrundentfernung</string>
     <string name="settings_rebg_desc">KI-Hintergrundentfernung für alle Artikel in Ihrer Garderobe erneut ausführen. Originale werden sicher auf Drive gespeichert, sodass Sie dies jederzeit wiederholen können. Jeder Artikel kostet 5 KI-Credits (oder Gemini-API-Kontingent).</string>
     <string name="settings_rebg_button">Hintergrund aller Artikel entfernen…</string>
@@ -60,12 +61,24 @@
     <string name="settings_importing">Importiere %1$d von %2$d…</string>
     <string name="settings_import_later_hint">Tipp: Hintergrundentfernung und automatisches Tagging können jederzeit über die Abschnitte oben nachgeholt werden.</string>
     <string name="settings_import_options_title">Import-Optionen</string>
-    <string name="settings_import_options_desc">Bilder werden sofort in Ihre Garderobe kopiert. Die folgenden Optionen fügen KI-Verarbeitung hinzu – sie sind optional und können später auf diesem Bildschirm ausgeführt werden.</string>
+    <string name="settings_import_options_desc">Bilder werden sofort hinzugefügt und in der Garderobe angezeigt. KI-Verarbeitung ist optional und kann später auf diesem Bildschirm nachgeholt werden.</string>
+    <string name="settings_import_mode_title">Ziel</string>
+    <string name="settings_import_mode_add">Zur Garderobe hinzufügen</string>
+    <string name="settings_import_mode_add_desc">Neue Bilder werden neben vorhandenen Artikeln hinzugefügt.</string>
+    <string name="settings_import_mode_replace">Garderobe ersetzen (Neustart)</string>
+    <string name="settings_import_mode_replace_desc">Alle %1$d vorhandenen Artikel werden vor dem Import dauerhaft gelöscht.</string>
+    <string name="settings_import_mode_replace_desc_empty">Die Garderobe ist derzeit leer.</string>
+    <string name="settings_import_duplicates_title">Falls ein Dateiname bereits existiert</string>
+    <string name="settings_import_duplicates_skip">Duplikate überspringen</string>
+    <string name="settings_import_duplicates_skip_desc">Vorhandene Artikel mit demselben Dateinamen bleiben unverändert.</string>
+    <string name="settings_import_duplicates_overwrite">Duplikate überschreiben</string>
+    <string name="settings_import_duplicates_overwrite_desc">Vorhandene Artikel mit demselben Dateinamen werden durch die importierte Version ersetzt.</string>
+    <string name="settings_import_ai_title">KI-Verarbeitung (optional)</string>
     <string name="settings_import_options_remove_bg">Hintergründe entfernen</string>
     <string name="settings_import_options_remove_bg_cost">5 Credits pro Bild</string>
     <string name="settings_import_options_auto_tag">Artikel automatisch taggen</string>
     <string name="settings_import_options_auto_tag_cost">2 Credits pro Bild</string>
-    <string name="settings_import_options_cost_warning">Warnung: Dies verbraucht erhebliche KI-Credits / Gemini-API-Kontingent. Bei großen Garderoben empfiehlt sich die Verarbeitung in kleineren Chargen.</string>
+    <string name="settings_import_options_cost_warning">%1$d Credits pro Bild werden verwendet. Bei großen Garderoben empfiehlt sich die Verarbeitung in kleineren Chargen nach dem Import.</string>
     <string name="settings_import_options_start">Importieren</string>
     <string name="settings_locations_title">Standorte</string>
     <string name="settings_locations_desc">Verwalte mehrere Garderoben für verschiedene Standorte, z.B. Zuhause und Ferienhaus.</string>

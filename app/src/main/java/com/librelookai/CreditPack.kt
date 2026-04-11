@@ -21,4 +21,8 @@ object CreditPacks {
     const val COST_CLASSIFY   = 2
     const val COST_TEXT       = 2
     const val COST_TRENDS     = 2
+
+    /** Total credits for running BG removal + optional tagging on [count] items. */
+    fun bulkCost(count: Int, removeBg: Boolean, autoTag: Boolean): Int =
+        count * ((if (removeBg) COST_BG_REMOVAL else 0) + (if (autoTag) COST_CLASSIFY else 0))
 }

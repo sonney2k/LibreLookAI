@@ -87,12 +87,24 @@ fun SettingsScreen(
     val context = LocalContext.current
     var currentApiKey by remember { mutableStateOf(ApiKeyStore.get(context)) }
 
-    // Options chosen in the import dialog are stored here so the launcher callback can read them
-    var pendingImportRemoveBg by rememberSaveable { mutableStateOf(false) }
-    var pendingImportAutoTag  by rememberSaveable { mutableStateOf(false) }
+    // Options chosen in the import dialog are captured here so the launcher callback can read them
+    var pendingImportRemoveBg    by rememberSaveable { mutableStateOf(false) }
+    var pendingImportAutoTag     by rememberSaveable { mutableStateOf(false) }
+    var pendingImportReplace     by rememberSaveable { mutableStateOf(false) }
+    var pendingImportOverwrite   by rememberSaveable { mutableStateOf(false) }
     val importLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.OpenDocumentTree(),
-    ) { uri -> uri?.let { wardrobeViewModel.importFromFolder(it, pendingImportRemoveBg, pendingImportAutoTag) } }
+    ) { uri ->
+        uri?.let {
+            wardrobeViewModel.importFromFolder(
+                treeUri = it,
+                removeBackground = pendingImportRemoveBg,
+                autoTag = pendingImportAutoTag,
+                replaceExisting = pendingImportReplace,
+                overwriteDuplicates = pendingImportOverwrite,
+            )
+        }
+    }
 
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
 
@@ -131,9 +143,11 @@ fun SettingsScreen(
                 wardrobeState = wardrobeState,
                 onRetagAll = wardrobeViewModel::retagAll,
                 onRemoveAllBackgrounds = wardrobeViewModel::removeAllBackgrounds,
-                onImportFromFolder = { removeBg, autoTag ->
-                    pendingImportRemoveBg = removeBg
-                    pendingImportAutoTag  = autoTag
+                onImportFromFolder = { removeBg, autoTag, replace, overwrite ->
+                    pendingImportRemoveBg  = removeBg
+                    pendingImportAutoTag   = autoTag
+                    pendingImportReplace   = replace
+                    pendingImportOverwrite = overwrite
                     importLauncher.launch(null)
                 },
                 locationState = locationState,
@@ -363,7 +377,7 @@ private fun DataTab(
     wardrobeState: WardrobeUiState,
     onRetagAll: () -> Unit,
     onRemoveAllBackgrounds: () -> Unit,
-    onImportFromFolder: (removeBackground: Boolean, autoTag: Boolean) -> Unit,
+    onImportFromFolder: (removeBackground: Boolean, autoTag: Boolean, replaceExisting: Boolean, overwriteDuplicates: Boolean) -> Unit,
     locationState: LocationUiState,
     onSetActiveLocation: (String) -> Unit,
     onAddLocation: (String) -> Unit,
@@ -577,10 +591,22 @@ private fun DataTab(
     // ---------- Dialogs ----------
 
     if (showRetagDialog) {
+        val count = wardrobeState.images.size
+        val cost  = count * CreditPacks.COST_CLASSIFY
         AlertDialog(
             onDismissRequest = { showRetagDialog = false },
             title = { Text(stringResource(R.string.settings_rescan_dialog_title)) },
-            text = { Text(stringResource(R.string.settings_rescan_dialog_text)) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(stringResource(R.string.settings_rescan_dialog_text))
+                    Text(
+                        stringResource(R.string.settings_bulk_cost_line, count, CreditPacks.COST_CLASSIFY, cost),
+                        style = MaterialTheme.typography.bodySmall,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            },
             confirmButton = {
                 TextButton(onClick = { onRetagAll(); showRetagDialog = false }) {
                     Text(stringResource(R.string.settings_rescan_confirm))
@@ -595,10 +621,22 @@ private fun DataTab(
     }
 
     if (showRemoveBgDialog) {
+        val count = wardrobeState.images.size
+        val cost  = count * CreditPacks.COST_BG_REMOVAL
         AlertDialog(
             onDismissRequest = { showRemoveBgDialog = false },
             title = { Text(stringResource(R.string.settings_rebg_dialog_title)) },
-            text = { Text(stringResource(R.string.settings_rebg_dialog_text)) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(stringResource(R.string.settings_rebg_dialog_text))
+                    Text(
+                        stringResource(R.string.settings_bulk_cost_line, count, CreditPacks.COST_BG_REMOVAL, cost),
+                        style = MaterialTheme.typography.bodySmall,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            },
             confirmButton = {
                 TextButton(onClick = { onRemoveAllBackgrounds(); showRemoveBgDialog = false }) {
                     Text(stringResource(R.string.settings_rebg_confirm), color = MaterialTheme.colorScheme.error)
@@ -614,9 +652,10 @@ private fun DataTab(
 
     if (showImportOptionsDialog) {
         ImportOptionsDialog(
-            onConfirm = { removeBg, autoTag ->
+            existingItemCount = wardrobeState.images.size,
+            onConfirm = { removeBg, autoTag, replace, overwrite ->
                 showImportOptionsDialog = false
-                onImportFromFolder(removeBg, autoTag)
+                onImportFromFolder(removeBg, autoTag, replace, overwrite)
             },
             onDismiss = { showImportOptionsDialog = false },
         )
@@ -700,62 +739,101 @@ private fun DataTab(
 
 @Composable
 private fun ImportOptionsDialog(
-    onConfirm: (removeBackground: Boolean, autoTag: Boolean) -> Unit,
+    existingItemCount: Int,
+    onConfirm: (removeBackground: Boolean, autoTag: Boolean, replaceExisting: Boolean, overwriteDuplicates: Boolean) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    var removeBackground by remember { mutableStateOf(false) }
-    var autoTag by remember { mutableStateOf(false) }
+    var removeBackground  by remember { mutableStateOf(false) }
+    var autoTag           by remember { mutableStateOf(false) }
+    var replaceExisting   by remember { mutableStateOf(false) }
+    var overwriteDuplicates by remember { mutableStateOf(false) }
+
+    val aiCostPerItem = (if (removeBackground) CreditPacks.COST_BG_REMOVAL else 0) +
+                        (if (autoTag) CreditPacks.COST_CLASSIFY else 0)
+    val showCostWarning = aiCostPerItem > 0
 
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.settings_import_options_title)) },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
                 Text(
                     stringResource(R.string.settings_import_options_desc),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
 
-                // Remove background toggle
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(stringResource(R.string.settings_import_options_remove_bg), style = MaterialTheme.typography.bodyMedium)
-                        Text(
-                            stringResource(R.string.settings_import_options_remove_bg_cost),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                    Switch(checked = removeBackground, onCheckedChange = { removeBackground = it })
+                HorizontalDivider()
+
+                // ---- Destination mode ----
+                Text(stringResource(R.string.settings_import_mode_title), style = MaterialTheme.typography.labelMedium)
+
+                OptionRow(
+                    label = stringResource(R.string.settings_import_mode_add),
+                    sublabel = stringResource(R.string.settings_import_mode_add_desc),
+                    checked = !replaceExisting,
+                    onCheckedChange = { replaceExisting = false },
+                )
+
+                OptionRow(
+                    label = stringResource(R.string.settings_import_mode_replace),
+                    sublabel = if (existingItemCount > 0)
+                        stringResource(R.string.settings_import_mode_replace_desc, existingItemCount)
+                    else
+                        stringResource(R.string.settings_import_mode_replace_desc_empty),
+                    checked = replaceExisting,
+                    onCheckedChange = { replaceExisting = true },
+                    dangerColor = existingItemCount > 0,
+                )
+
+                // ---- Duplicate handling (only relevant when adding) ----
+                if (!replaceExisting) {
+                    HorizontalDivider()
+                    Text(stringResource(R.string.settings_import_duplicates_title), style = MaterialTheme.typography.labelMedium)
+
+                    OptionRow(
+                        label = stringResource(R.string.settings_import_duplicates_skip),
+                        sublabel = stringResource(R.string.settings_import_duplicates_skip_desc),
+                        checked = !overwriteDuplicates,
+                        onCheckedChange = { overwriteDuplicates = false },
+                    )
+                    OptionRow(
+                        label = stringResource(R.string.settings_import_duplicates_overwrite),
+                        sublabel = stringResource(R.string.settings_import_duplicates_overwrite_desc),
+                        checked = overwriteDuplicates,
+                        onCheckedChange = { overwriteDuplicates = true },
+                    )
                 }
 
-                // Auto-tag toggle
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(stringResource(R.string.settings_import_options_auto_tag), style = MaterialTheme.typography.bodyMedium)
-                        Text(
-                            stringResource(R.string.settings_import_options_auto_tag_cost),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                    Switch(checked = autoTag, onCheckedChange = { autoTag = it })
-                }
+                HorizontalDivider()
 
-                if (removeBackground || autoTag) {
+                // ---- AI processing (optional) ----
+                Text(stringResource(R.string.settings_import_ai_title), style = MaterialTheme.typography.labelMedium)
+
+                SwitchRow(
+                    label = stringResource(R.string.settings_import_options_remove_bg),
+                    sublabel = stringResource(R.string.settings_import_options_remove_bg_cost),
+                    checked = removeBackground,
+                    onCheckedChange = { removeBackground = it },
+                )
+                SwitchRow(
+                    label = stringResource(R.string.settings_import_options_auto_tag),
+                    sublabel = stringResource(R.string.settings_import_options_auto_tag_cost),
+                    checked = autoTag,
+                    onCheckedChange = { autoTag = it },
+                )
+
+                if (showCostWarning) {
                     Surface(
                         shape = MaterialTheme.shapes.small,
                         color = MaterialTheme.colorScheme.errorContainer,
                     ) {
                         Text(
-                            stringResource(R.string.settings_import_options_cost_warning),
+                            stringResource(R.string.settings_import_options_cost_warning,
+                                aiCostPerItem),
                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onErrorContainer,
@@ -765,7 +843,7 @@ private fun ImportOptionsDialog(
             }
         },
         confirmButton = {
-            TextButton(onClick = { onConfirm(removeBackground, autoTag) }) {
+            TextButton(onClick = { onConfirm(removeBackground, autoTag, replaceExisting, overwriteDuplicates) }) {
                 Text(stringResource(R.string.settings_import_options_start))
             }
         },
@@ -775,4 +853,73 @@ private fun ImportOptionsDialog(
             }
         },
     )
+}
+
+@Composable
+private fun OptionRow(
+    label: String,
+    sublabel: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    dangerColor: Boolean = false,
+) {
+    Surface(
+        shape = MaterialTheme.shapes.small,
+        tonalElevation = if (checked) 3.dp else 0.dp,
+        color = when {
+            checked && dangerColor -> MaterialTheme.colorScheme.errorContainer
+            checked -> MaterialTheme.colorScheme.secondaryContainer
+            else -> MaterialTheme.colorScheme.surface
+        },
+        modifier = Modifier.fillMaxWidth().clickable { onCheckedChange(true) },
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    label,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = if (checked) FontWeight.SemiBold else FontWeight.Normal,
+                    color = if (checked && dangerColor) MaterialTheme.colorScheme.onErrorContainer
+                            else MaterialTheme.colorScheme.onSurface,
+                )
+                Text(
+                    sublabel,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = if (checked && dangerColor) MaterialTheme.colorScheme.onErrorContainer
+                            else MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            if (checked) Icon(
+                Icons.Default.Check,
+                contentDescription = null,
+                tint = if (dangerColor) MaterialTheme.colorScheme.onErrorContainer
+                       else MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(18.dp),
+            )
+        }
+    }
+}
+
+@Composable
+private fun SwitchRow(
+    label: String,
+    sublabel: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(label, style = MaterialTheme.typography.bodyMedium)
+            Text(sublabel, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        Switch(checked = checked, onCheckedChange = onCheckedChange)
+    }
 }
