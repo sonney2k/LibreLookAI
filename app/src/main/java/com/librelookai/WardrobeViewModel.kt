@@ -394,7 +394,14 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
     // ---------- SAF Import ----------
 
-    fun importFromFolder(treeUri: Uri) {
+    /**
+     * Imports all images from [treeUri] into the current wardrobe folder.
+     * Images are always uploaded and shown in the wardrobe regardless of the options.
+     * [removeBackground] — run Gemini BG removal on each image (5 credits/item).
+     * [autoTag]          — classify clothing tags with Gemini (2 credits/item).
+     * Both default to false so a plain import never touches the AI pipeline.
+     */
+    fun importFromFolder(treeUri: Uri, removeBackground: Boolean = false, autoTag: Boolean = false) {
         val id = folderId ?: return
         viewModelScope.launch {
             val cr = getApplication<Application>().contentResolver
@@ -430,12 +437,12 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             if (srcFiles.isEmpty()) return@launch
 
             // Load existing tag metadata from the source folder if present
-            val metaByName: Map<String, ClothingTags?> = metaDocId?.let { docId ->
+            val metaByName: Map<String, WardrobeItemMeta> = metaDocId?.let { docId ->
                 runCatching {
                     val metaUri = DocumentsContract.buildDocumentUriUsingTree(treeUri, docId)
                     val json = cr.openInputStream(metaUri)?.use { it.readBytes().toString(Charsets.UTF_8) }
                     if (json != null) {
-                        gson.fromJson(json, WardrobeMetadata::class.java).items.associate { it.name to it.tags }
+                        gson.fromJson(json, WardrobeMetadata::class.java).items.associateBy { it.name }
                     } else emptyMap()
                 }.getOrDefault(emptyMap())
             } ?: emptyMap()
@@ -444,21 +451,53 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
             srcFiles.forEachIndexed { index, src ->
                 _state.update { it.copy(importDone = index) }
-                val ext = if (src.mimeType == "image/png") "png" else "jpg"
-                val tempFile = File(drive.cacheDir, "import_${System.currentTimeMillis()}.$ext")
+                val srcExt = if (src.mimeType == "image/png") "png" else "jpg"
+                val tempFile = File(drive.cacheDir, "import_${System.currentTimeMillis()}.$srcExt")
                 runCatching {
                     val srcUri = DocumentsContract.buildDocumentUriUsingTree(treeUri, src.docId)
                     cr.openInputStream(srcUri)?.use { it.copyTo(tempFile.outputStream()) }
                         ?: error("Cannot open stream for ${src.displayName}")
 
-                    // Re-use existing tags if available; classify with Gemini otherwise
-                    val tags = metaByName[src.displayName] ?: gemini.classifyClothing(tempFile, geminiLanguage)
+                    val existingMeta = metaByName[src.displayName]
 
-                    val uploaded = drive.uploadImage(id, tempFile)
-                    val displayCache = File(drive.cacheDir, "${uploaded.id}.$ext")
-                    tempFile.copyTo(displayCache, overwrite = true)
+                    // Optional background removal (skipped when metadata already provides an original)
+                    var imageToUpload = tempFile
+                    var originalDriveId: String? = existingMeta?.originalDriveId
+                    if (removeBackground && existingMeta == null) {
+                        val processed = gemini.removeBackground(tempFile, drive.cacheDir)
+                        if (processed != null) {
+                            // Upload the raw original to Drive so re-removal is always possible
+                            originalDriveId = runCatching { drive.uploadImage(id, tempFile).id }.getOrNull()
+                            imageToUpload = processed
+                            // Keep original in local cache too
+                            tempFile.copyTo(File(drive.cacheDir, "orig_${System.currentTimeMillis()}.jpg"), overwrite = false)
+                        }
+                    }
 
-                    val newImage = DriveImage(uploaded.id, displayCache.absolutePath, uploaded.name, tags)
+                    // Tags: existing metadata → Gemini (if autoTag) → none
+                    val tags = when {
+                        existingMeta != null -> existingMeta.tags
+                        autoTag -> gemini.classifyClothing(imageToUpload, geminiLanguage)
+                        else -> null
+                    }
+
+                    val uploaded = drive.uploadImage(id, imageToUpload)
+                    val uploadExt = if (imageToUpload.extension == "png") "png" else srcExt
+                    val displayCache = File(drive.cacheDir, "${uploaded.id}.$uploadExt")
+                    imageToUpload.copyTo(displayCache, overwrite = true)
+
+                    // Save original to the well-known local cache path for future reprocessing
+                    if (imageToUpload != tempFile) {
+                        tempFile.copyTo(File(drive.cacheDir, "${uploaded.id}_original.jpg"), overwrite = true)
+                    }
+
+                    val newImage = DriveImage(
+                        driveId = uploaded.id,
+                        localPath = displayCache.absolutePath,
+                        name = uploaded.name,
+                        tags = tags,
+                        originalDriveId = originalDriveId,
+                    )
                     _state.update { it.copy(images = it.images + newImage) }
                 }.onFailure { e ->
                     _state.update { it.copy(error = "Import failed for ${src.displayName}: ${e.message}") }

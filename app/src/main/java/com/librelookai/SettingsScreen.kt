@@ -48,6 +48,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.Switch
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -86,9 +87,12 @@ fun SettingsScreen(
     val context = LocalContext.current
     var currentApiKey by remember { mutableStateOf(ApiKeyStore.get(context)) }
 
+    // Options chosen in the import dialog are stored here so the launcher callback can read them
+    var pendingImportRemoveBg by rememberSaveable { mutableStateOf(false) }
+    var pendingImportAutoTag  by rememberSaveable { mutableStateOf(false) }
     val importLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.OpenDocumentTree(),
-    ) { uri -> uri?.let { wardrobeViewModel.importFromFolder(it) } }
+    ) { uri -> uri?.let { wardrobeViewModel.importFromFolder(it, pendingImportRemoveBg, pendingImportAutoTag) } }
 
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
 
@@ -127,7 +131,11 @@ fun SettingsScreen(
                 wardrobeState = wardrobeState,
                 onRetagAll = wardrobeViewModel::retagAll,
                 onRemoveAllBackgrounds = wardrobeViewModel::removeAllBackgrounds,
-                onImportFromFolder = { importLauncher.launch(null) },
+                onImportFromFolder = { removeBg, autoTag ->
+                    pendingImportRemoveBg = removeBg
+                    pendingImportAutoTag  = autoTag
+                    importLauncher.launch(null)
+                },
                 locationState = locationState,
                 onSetActiveLocation = locationViewModel::setActiveLocation,
                 onAddLocation = locationViewModel::addLocation,
@@ -355,7 +363,7 @@ private fun DataTab(
     wardrobeState: WardrobeUiState,
     onRetagAll: () -> Unit,
     onRemoveAllBackgrounds: () -> Unit,
-    onImportFromFolder: () -> Unit,
+    onImportFromFolder: (removeBackground: Boolean, autoTag: Boolean) -> Unit,
     locationState: LocationUiState,
     onSetActiveLocation: (String) -> Unit,
     onAddLocation: (String) -> Unit,
@@ -364,6 +372,7 @@ private fun DataTab(
 ) {
     var showRetagDialog by remember { mutableStateOf(false) }
     var showRemoveBgDialog by remember { mutableStateOf(false) }
+    var showImportOptionsDialog by remember { mutableStateOf(false) }
     var showAddLocationDialog by remember { mutableStateOf(false) }
     var renameTarget by remember { mutableStateOf<Location?>(null) }
     var deleteTarget by remember { mutableStateOf<Location?>(null) }
@@ -547,13 +556,18 @@ private fun DataTab(
                 }
             } else {
                 OutlinedButton(
-                    onClick = onImportFromFolder,
+                    onClick = { showImportOptionsDialog = true },
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     Icon(Icons.Default.FolderOpen, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.padding(start = 8.dp))
                     Text(stringResource(R.string.settings_import_button))
                 }
+                Text(
+                    stringResource(R.string.settings_import_later_hint),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
         }
 
@@ -595,6 +609,16 @@ private fun DataTab(
                     Text(stringResource(R.string.action_cancel))
                 }
             },
+        )
+    }
+
+    if (showImportOptionsDialog) {
+        ImportOptionsDialog(
+            onConfirm = { removeBg, autoTag ->
+                showImportOptionsDialog = false
+                onImportFromFolder(removeBg, autoTag)
+            },
+            onDismiss = { showImportOptionsDialog = false },
         )
     }
 
@@ -670,4 +694,85 @@ private fun DataTab(
             },
         )
     }
+}
+
+// ---------- Import options dialog ----------
+
+@Composable
+private fun ImportOptionsDialog(
+    onConfirm: (removeBackground: Boolean, autoTag: Boolean) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    var removeBackground by remember { mutableStateOf(false) }
+    var autoTag by remember { mutableStateOf(false) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.settings_import_options_title)) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Text(
+                    stringResource(R.string.settings_import_options_desc),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+
+                // Remove background toggle
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(stringResource(R.string.settings_import_options_remove_bg), style = MaterialTheme.typography.bodyMedium)
+                        Text(
+                            stringResource(R.string.settings_import_options_remove_bg_cost),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                    Switch(checked = removeBackground, onCheckedChange = { removeBackground = it })
+                }
+
+                // Auto-tag toggle
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(stringResource(R.string.settings_import_options_auto_tag), style = MaterialTheme.typography.bodyMedium)
+                        Text(
+                            stringResource(R.string.settings_import_options_auto_tag_cost),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                    Switch(checked = autoTag, onCheckedChange = { autoTag = it })
+                }
+
+                if (removeBackground || autoTag) {
+                    Surface(
+                        shape = MaterialTheme.shapes.small,
+                        color = MaterialTheme.colorScheme.errorContainer,
+                    ) {
+                        Text(
+                            stringResource(R.string.settings_import_options_cost_warning),
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onErrorContainer,
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = { onConfirm(removeBackground, autoTag) }) {
+                Text(stringResource(R.string.settings_import_options_start))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.action_cancel))
+            }
+        },
+    )
 }
