@@ -299,7 +299,7 @@ private fun GapSuggestionCard(
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedButton(
                     onClick = {
-                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(amazonUrl)))
+                        runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(amazonUrl))) }
                     },
                     modifier = Modifier.weight(1f),
                     contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
@@ -310,7 +310,7 @@ private fun GapSuggestionCard(
                 }
                 OutlinedButton(
                     onClick = {
-                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(shopStyleUrl)))
+                        runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(shopStyleUrl))) }
                     },
                     modifier = Modifier.weight(1f),
                     contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
