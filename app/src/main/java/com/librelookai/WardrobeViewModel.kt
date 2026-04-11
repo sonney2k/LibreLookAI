@@ -66,6 +66,17 @@ data class WardrobeUiState(
 private data class WardrobeItemMeta(val name: String, val tags: ClothingTags?, val originalDriveId: String? = null)
 private data class WardrobeMetadata(val items: List<WardrobeItemMeta> = emptyList())
 
+// ---------- Local disk cache (instant startup, no network) ----------
+
+/** Full DriveImage snapshot stored on device for zero-latency startup. */
+private data class LocalCacheEntry(
+    val driveId: String,
+    val name: String,
+    val tags: ClothingTags?,
+    val originalDriveId: String? = null,
+)
+private data class LocalCache(val items: List<LocalCacheEntry> = emptyList())
+
 private data class PendingJob(val driveId: String, val folderId: String)
 
 class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
@@ -103,54 +114,88 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         loadImages()
     }
 
+    // ---------- Local cache helpers ----------
+
+    private fun localCacheFile(id: String) =
+        File(getApplication<Application>().filesDir, "wardrobe_cache_$id.json")
+
+    private fun saveLocalCache(id: String, images: List<DriveImage>) {
+        runCatching {
+            val cache = LocalCache(images.map { LocalCacheEntry(it.driveId, it.name, it.tags, it.originalDriveId) })
+            localCacheFile(id).writeText(gson.toJson(cache))
+        }
+    }
+
     // ---------- Load ----------
 
     fun loadImages() {
         viewModelScope.launch {
+            val id = folderId ?: return@launch
             _state.update { it.copy(isLoading = true, error = null) }
-            runCatching {
-                val id = folderId ?: return@runCatching emptyList()
-                val files = drive.listFiles(id)
 
-                // Load metadata file (filename → meta). Falls back to appProperties for migration.
-                val metaJson = drive.loadWardrobeMetadataJson(id)
+            // Phase 1 — instant: show whatever is already on disk (zero network calls)
+            val cacheFile = localCacheFile(id)
+            if (cacheFile.exists()) {
+                runCatching {
+                    val cache = gson.fromJson(cacheFile.readText(), LocalCache::class.java)
+                    cache.items.mapNotNull { entry ->
+                        drive.cachedFile(entry.driveId)?.let { f ->
+                            DriveImage(entry.driveId, f.absolutePath, entry.name, entry.tags,
+                                originalDriveId = entry.originalDriveId)
+                        }
+                    }
+                }.onSuccess { items ->
+                    if (items.isNotEmpty()) {
+                        _state.update { it.copy(images = items, isLoading = false) }
+                    }
+                }
+            }
+
+            // Phase 2 — background sync: fetch Drive file list and metadata in parallel
+            runCatching {
+                val filesDeferred = async { drive.listFiles(id) }
+                val metaDeferred  = async { drive.loadWardrobeMetadataJson(id) }
+                val files   = filesDeferred.await()
+                val metaJson = metaDeferred.await()
+
                 val metaByName: Map<String, WardrobeItemMeta> = if (metaJson != null) {
                     gson.fromJson(metaJson, WardrobeMetadata::class.java)
                         .items.associateBy { it.name }
                 } else emptyMap()
 
-                // Download any uncached files in parallel (pass name so PNG cutouts use .png extension)
-                files.map { file -> async { drive.cachedFile(file.id) ?: drive.downloadToCache(file.id, file.name) } }
-                    .awaitAll()
+                // Download any uncached files in parallel
+                files.map { file ->
+                    async { drive.cachedFile(file.id) ?: drive.downloadToCache(file.id, file.name) }
+                }.awaitAll()
 
                 val hadLegacyProps = metaJson == null && files.any { it.appProperties?.isNotEmpty() == true }
 
                 files.mapNotNull { file ->
                     drive.cachedFile(file.id)?.let { cached ->
                         val meta = metaByName[file.name]
-                        val tags = if (meta != null) {
-                            meta.tags                             // primary: metadata file (by filename)
-                        } else {
-                            file.appProperties?.toClothingTags()  // fallback: legacy appProperties
-                        }
-                        DriveImage(file.id, cached.absolutePath, file.name, tags, originalDriveId = meta?.originalDriveId)
+                        val tags = if (meta != null) meta.tags else file.appProperties?.toClothingTags()
+                        DriveImage(file.id, cached.absolutePath, file.name, tags,
+                            originalDriveId = meta?.originalDriveId)
                     }
                 }.also { images ->
-                    // Auto-migrate: if data came from appProperties, write metadata file now
                     if (hadLegacyProps) {
                         val meta = WardrobeMetadata(images.map { WardrobeItemMeta(it.name, it.tags) })
                         runCatching { drive.saveWardrobeMetadataJson(id, gson.toJson(meta)) }
                     }
+                    saveLocalCache(id, images)
                 }
             }.onSuccess { images ->
                 _state.update { it.copy(images = images, isLoading = false) }
             }.onFailure { e ->
-                _state.update { it.copy(isLoading = false, error = e.message) }
+                // Don't overwrite cached items already shown with an error banner
+                _state.update { s ->
+                    s.copy(isLoading = false, error = if (s.images.isEmpty()) e.message else null)
+                }
             }
         }
     }
 
-    /** Persists current wardrobe tags to the metadata file. Serialized via [metaMutex]. */
+    /** Persists current wardrobe tags to Drive and local disk cache. Serialized via [metaMutex]. */
     private fun saveWardrobeMetadata() {
         viewModelScope.launch {
             metaMutex.withLock {
@@ -158,6 +203,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 val id = folderId ?: return@withLock
                 val meta = WardrobeMetadata(images.map { WardrobeItemMeta(it.name, it.tags, it.originalDriveId) })
                 runCatching { drive.saveWardrobeMetadataJson(id, gson.toJson(meta)) }
+                saveLocalCache(id, images)
             }
         }
     }
