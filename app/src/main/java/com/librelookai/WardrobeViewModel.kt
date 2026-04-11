@@ -55,6 +55,10 @@ data class WardrobeUiState(
     val selectedIds: Set<String> = emptySet(),
     /** Number of photos queued or actively running background processing (bg removal + tagging). */
     val pendingJobs: Int = 0,
+    /** True while the one-time legacy filename migration is running. */
+    val isMigrating: Boolean = false,
+    val migrateDone: Int = 0,
+    val migrateTotal: Int = 0,
 )
 
 // ---------- Wardrobe metadata (replaces per-file appProperties) ----------
@@ -426,6 +430,74 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             }
             _state.update { it.copy(isRetagging = false, retagDone = 0, retagTotal = 0) }
             saveWardrobeMetadata()
+        }
+    }
+
+    // ---------- Legacy filename migration ----------
+
+    /**
+     * One-time migration from the old naming scheme to the new [DriveRepository.CUTOUT_SUFFIX] convention.
+     *
+     * Old scheme:
+     *   Cutout:   capture_1234.jpg          (Drive ID: abc, updated in-place after bg removal)
+     *   Original: abc_original.jpg          (prefix = cutout's Drive ID — not human-readable)
+     *
+     * New scheme:
+     *   Cutout:   capture_1234_cutout.png
+     *   Original: capture_1234_original.jpg (same prefix — clearly paired)
+     *
+     * Migration renames files in-place via Drive PATCH (no content re-upload, Drive IDs unchanged).
+     * Already-migrated files (ending in [DriveRepository.CUTOUT_SUFFIX]) are skipped.
+     */
+    fun migrateFilenames() {
+        val id = folderId ?: return
+        if (_state.value.isMigrating) return
+        viewModelScope.launch {
+            // List ALL image files including legacy ones (no suffix filter)
+            val allFiles = runCatching { drive.listAllImageFiles(id) }.getOrDefault(emptyList())
+            // Build name→id and id→name maps
+            val idByName = allFiles.associate { it.name to it.id }
+
+            // Load metadata to get originalDriveId mapping
+            val metaJson = drive.loadWardrobeMetadataJson(id)
+            val metaItems: List<WardrobeItemMeta> = if (metaJson != null)
+                runCatching { gson.fromJson(metaJson, WardrobeMetadata::class.java).items }
+                    .getOrDefault(emptyList())
+            else emptyList()
+
+            // Only items that haven't been migrated yet
+            val toMigrate = metaItems.filter { !it.name.endsWith(DriveRepository.CUTOUT_SUFFIX) }
+            if (toMigrate.isEmpty()) return@launch
+
+            _state.update { it.copy(isMigrating = true, migrateDone = 0, migrateTotal = toMigrate.size) }
+
+            toMigrate.forEachIndexed { index, item ->
+                _state.update { it.copy(migrateDone = index) }
+                val baseName = item.name.substringBeforeLast(".")
+                val cutoutName = "$baseName${DriveRepository.CUTOUT_SUFFIX}"
+                val originalName = "$baseName${DriveRepository.ORIGINAL_SUFFIX}"
+
+                // Rename the cutout file
+                val cutoutId = idByName[item.name]
+                if (cutoutId != null) {
+                    runCatching { drive.renameFile(cutoutId, cutoutName) }
+                    // Update local cache filename (.jpg → .png)
+                    val oldCache = drive.cachedFile(cutoutId)
+                    if (oldCache != null && !oldCache.name.endsWith(".png")) {
+                        val newCache = File(oldCache.parent, "${cutoutId}.png")
+                        oldCache.renameTo(newCache)
+                    }
+                }
+
+                // Rename the original backup (old name = ${cutoutId}_original.jpg, new name = ${baseName}_original.jpg)
+                if (item.originalDriveId != null) {
+                    runCatching { drive.renameFile(item.originalDriveId, originalName) }
+                }
+            }
+
+            _state.update { it.copy(isMigrating = false, migrateDone = 0, migrateTotal = 0) }
+            // Reload so state reflects the renamed files
+            loadImages()
         }
     }
 

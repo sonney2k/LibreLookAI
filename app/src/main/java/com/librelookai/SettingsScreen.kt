@@ -147,6 +147,7 @@ fun SettingsScreen(
                 wardrobeState = wardrobeState,
                 onRetagAll = wardrobeViewModel::retagAll,
                 onRemoveAllBackgrounds = wardrobeViewModel::removeAllBackgrounds,
+                onMigrateFilenames = wardrobeViewModel::migrateFilenames,
                 onImportFromFolder = { removeBg, autoTag, replace, overwrite, useDrive ->
                     pendingImportRemoveBg  = removeBg
                     pendingImportAutoTag   = autoTag
@@ -402,6 +403,7 @@ private fun DataTab(
     wardrobeState: WardrobeUiState,
     onRetagAll: () -> Unit,
     onRemoveAllBackgrounds: () -> Unit,
+    onMigrateFilenames: () -> Unit,
     onImportFromFolder: (removeBackground: Boolean, autoTag: Boolean, replaceExisting: Boolean, overwriteDuplicates: Boolean, useDrivePicker: Boolean) -> Unit,
     locationState: LocationUiState,
     onSetActiveLocation: (String) -> Unit,
@@ -563,6 +565,40 @@ private fun DataTab(
                     Icon(Icons.Default.AutoFixHigh, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.padding(start = 8.dp))
                     Text(stringResource(R.string.settings_rebg_button))
+                }
+            }
+        }
+
+        HorizontalDivider()
+
+        // ---------- File naming migration ----------
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(stringResource(R.string.settings_migrate_title), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+            Text(
+                stringResource(R.string.settings_migrate_desc),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            if (wardrobeState.isMigrating) {
+                val progress = if (wardrobeState.migrateTotal > 0)
+                    wardrobeState.migrateDone.toFloat() / wardrobeState.migrateTotal
+                else 0f
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    LinearProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxWidth())
+                    Text(
+                        stringResource(R.string.settings_migrating, wardrobeState.migrateDone + 1, wardrobeState.migrateTotal),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            } else {
+                OutlinedButton(
+                    onClick = onMigrateFilenames,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Icon(Icons.Default.Edit, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(Modifier.padding(start = 8.dp))
+                    Text(stringResource(R.string.settings_migrate_button))
                 }
             }
         }

@@ -149,6 +149,36 @@ class DriveRepository(
             gson.fromJson(http.newCall(req).await().body!!.string(), DriveFileDto::class.java)
         }
 
+    /**
+     * Renames a Drive file in-place (PATCH metadata only — no content re-upload, Drive ID unchanged).
+     * Used during file-naming migration.
+     */
+    suspend fun renameFile(fileId: String, newName: String) = withContext(Dispatchers.IO) {
+        val tok = token()
+        val body = """{"name":"$newName"}"""
+        http.newCall(
+            Request.Builder()
+                .url("$API/files/$fileId?fields=id")
+                .header("Authorization", "Bearer $tok")
+                .method("PATCH", body.toRequestBody("application/json".toMediaType()))
+                .build()
+        ).await()
+    }
+
+    /**
+     * Lists ALL image files in the given folder without any name filter.
+     * Used by the migration path to find legacy files that predate the [CUTOUT_SUFFIX] convention.
+     */
+    suspend fun listAllImageFiles(folderId: String): List<DriveFileDto> = withContext(Dispatchers.IO) {
+        val tok = token()
+        val q = URLEncoder.encode(
+            "'$folderId' in parents and mimeType contains 'image/' and trashed=false", "UTF-8")
+        val req = Request.Builder()
+            .url("$API/files?q=$q&fields=files(id,name)&orderBy=createdTime+desc")
+            .header("Authorization", "Bearer $tok").build()
+        gson.fromJson(http.newCall(req).await().body!!.string(), FilesListDto::class.java).files
+    }
+
     /** Replaces the content of an existing Drive file in-place (preserves ID and metadata). */
     suspend fun updateImage(fileId: String, imageFile: File) = withContext(Dispatchers.IO) {
         val tok = token()

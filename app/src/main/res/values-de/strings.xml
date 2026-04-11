@@ -58,6 +58,10 @@
     <string name="settings_rebg_dialog_text">Alle Artikel in Ihrer aktuellen Garderobe werden mit Gemini verarbeitet. Dies kann eine Weile dauern und verbraucht erhebliche KI-Credits / API-Kontingent. Artikel mit gespeichertem Original auf Drive verwenden dieses; andere verwenden das aktuelle Bild.</string>
     <string name="settings_rebg_confirm">Alle Hintergründe entfernen</string>
     <string name="settings_rebging">Hintergrund wird entfernt %1$d von %2$d…</string>
+    <string name="settings_migrate_title">Dateinamen migrieren</string>
+    <string name="settings_migrate_desc">Einmalige Umbenennung älterer Drive-Dateien auf die neue Namenskonvention. Alte Dateien nutzten die Drive-ID als Präfix des Originals (z.B. 1iTa8U…_original.jpg), was Paare unleserlich machte. Nach der Migration teilen alle Paare dasselbe Präfix: foto_cutout.png + foto_original.jpg.</string>
+    <string name="settings_migrate_button">Dateinamen migrieren</string>
+    <string name="settings_migrating">Benenne Datei %1$d von %2$d um…</string>
     <string name="settings_import_title">Aus Ordner importieren</string>
     <string name="settings_import_desc">Bilder aus einem beliebigen Ordner in die aktuelle Garderobe kopieren. Kein Metadaten-File erforderlich. Bilder werden sofort hinzugefügt; KI-Verarbeitung ist optional.</string>
     <string name="settings_import_button">Aus Ordner importieren…</string>
