@@ -115,6 +115,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -384,15 +385,61 @@ internal fun TagFilterBar(
     tagCategories: List<TagCategory>,
     selectedTags: Map<String, Set<String>>,
     onTagsChanged: (Map<String, Set<String>>) -> Unit,
+    locations: List<Location> = emptyList(),
+    activeLocationId: String = "",
+    onSetActiveLocation: ((String) -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
-    if (tagCategories.isEmpty()) return
     var expandedCategory by remember { mutableStateOf<String?>(null) }
+    val showLocationChip = locations.size > 1 && onSetActiveLocation != null
+    if (!showLocationChip && tagCategories.isEmpty()) return
+    val locationDropdownKey = "__location__"
     LazyRow(
         modifier = modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        // Location chip — always first
+        if (showLocationChip) {
+            item(key = locationDropdownKey) {
+                val activeName = locations.find { it.id == activeLocationId }?.name ?: stringResource(R.string.filter_location)
+                Box {
+                    FilterChip(
+                        selected = true,
+                        onClick = {
+                            expandedCategory = if (expandedCategory == locationDropdownKey) null else locationDropdownKey
+                        },
+                        leadingIcon = { Icon(Icons.Default.Place, null, Modifier.size(14.dp)) },
+                        label = { Text(activeName) },
+                        trailingIcon = { Icon(Icons.Default.ArrowDropDown, null, Modifier.size(16.dp)) },
+                    )
+                    DropdownMenu(
+                        expanded = expandedCategory == locationDropdownKey,
+                        onDismissRequest = { expandedCategory = null },
+                    ) {
+                        locations.forEach { loc ->
+                            val checked = loc.id == activeLocationId
+                            DropdownMenuItem(
+                                text = {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    ) {
+                                        if (checked) Icon(Icons.Default.Check, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
+                                        else Spacer(Modifier.size(18.dp))
+                                        Text(loc.name)
+                                    }
+                                },
+                                onClick = {
+                                    onSetActiveLocation!!(loc.id)
+                                    expandedCategory = null
+                                },
+                            )
+                        }
+                    }
+                }
+            }
+        }
         items(tagCategories) { category ->
             val catSelected = selectedTags[category.label] ?: emptySet()
             val activeCount = catSelected.size
@@ -513,6 +560,9 @@ private fun GridContent(
                     tagCategories = tagCategories,
                     selectedTags = selectedTags,
                     onTagsChanged = { selectedTags = it },
+                    locations = locations,
+                    activeLocationId = activeLocationId,
+                    onSetActiveLocation = onSetActiveLocation,
                     modifier = Modifier.weight(1f),
                 )
                 SortButton(
@@ -520,46 +570,6 @@ private fun GridContent(
                     onSortChanged = { sortBy = it },
                     modifier = Modifier.padding(end = 4.dp),
                 )
-            }
-
-            // ---- Location indicator / switcher ----
-            if (locations.size > 1) {
-                LazyRow(
-                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp),
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    items(locations) { loc ->
-                        FilterChip(
-                            selected = loc.id == activeLocationId,
-                            onClick = { onSetActiveLocation(loc.id) },
-                            label = { Text(loc.name, style = MaterialTheme.typography.labelSmall) },
-                            leadingIcon = if (loc.id == activeLocationId) {
-                                { Icon(Icons.Default.Place, contentDescription = null, modifier = Modifier.size(14.dp)) }
-                            } else null,
-                        )
-                    }
-                }
-            } else {
-                locations.firstOrNull()?.let { loc ->
-                    Row(
-                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 2.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    ) {
-                        Icon(
-                            Icons.Default.Place,
-                            contentDescription = null,
-                            modifier = Modifier.size(11.dp),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                        Text(
-                            loc.name,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                }
             }
 
             // ---- Selection bar (shown when at least one item is selected) ----
@@ -654,6 +664,9 @@ private fun GridContent(
                             itemsIndexed(displayedImages, key = { _, img -> img.driveId }) { index, image ->
                                 val isSelected = state.selectedIds.contains(image.driveId)
                                 val ctx = LocalContext.current
+                                val activeLocationName = remember(activeLocationId, locations) {
+                                    locations.find { it.id == activeLocationId }?.name
+                                }
                                 Column(
                                     modifier = Modifier
                                         .padding(1.dp)
@@ -677,6 +690,28 @@ private fun GridContent(
                                             modifier = Modifier.fillMaxSize(),
                                             contentScale = ContentScale.Crop,
                                         )
+                                        // Location badge — top-left, only when multiple locations exist
+                                        if (locations.size > 1 && activeLocationName != null) {
+                                            Box(
+                                                modifier = Modifier
+                                                    .align(Alignment.TopStart)
+                                                    .padding(3.dp)
+                                                    .background(
+                                                        color = Color.Black.copy(alpha = 0.45f),
+                                                        shape = MaterialTheme.shapes.extraSmall,
+                                                    )
+                                                    .padding(horizontal = 4.dp, vertical = 1.dp),
+                                            ) {
+                                                Text(
+                                                    text = activeLocationName,
+                                                    color = Color.White,
+                                                    fontSize = 8.sp,
+                                                    lineHeight = 10.sp,
+                                                    maxLines = 1,
+                                                    overflow = TextOverflow.Ellipsis,
+                                                )
+                                            }
+                                        }
                                         if (isSelected) {
                                             Box(
                                                 modifier = Modifier

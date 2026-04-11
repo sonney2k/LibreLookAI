@@ -18,6 +18,7 @@
     <string name="action_save">Save</string>
     <string name="action_saving">Saving…</string>
     <string name="action_clear">Clear</string>
+    <string name="filter_location">Location</string>
     <string name="wardrobe_processing_photos">Processing %1$d photo(s)…</string>
     <string name="action_select_all">Select all</string>
     <string name="action_deselect_all">Deselect all</string>
