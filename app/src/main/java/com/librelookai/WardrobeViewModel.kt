@@ -208,6 +208,68 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    // ---------- Naming helpers ----------
+
+    /**
+     * Uploads [imageFile] to [folderId], then immediately renames it to
+     * "{driveId}_cutout.png" (where driveId is the Drive-assigned ID).
+     * Returns the DriveFileDto with [name] already set to the final name.
+     */
+    private suspend fun uploadAsCutout(folderId: String, imageFile: File): DriveFileDto {
+        val uploaded = drive.uploadImage(folderId, imageFile)
+        val finalName = "${uploaded.id}${DriveRepository.CUTOUT_SUFFIX}"
+        runCatching { drive.renameFile(uploaded.id, finalName) }
+        return uploaded.copy(name = finalName)
+    }
+
+    /**
+     * Uploads [imageFile] to [folderId] with filename "{cutoutDriveId}_original.jpg".
+     * Returns the new Drive file ID.
+     */
+    private suspend fun uploadAsOriginal(folderId: String, imageFile: File, cutoutDriveId: String): String =
+        drive.uploadImageWithName(folderId, imageFile, "$cutoutDriveId${DriveRepository.ORIGINAL_SUFFIX}").id
+
+    /**
+     * Resolves the Drive ID of a cutout item given its [metaName] (possibly old-format).
+     * Checks by Drive ID directly (new format "{id}_cutout.png") or by filename (old formats).
+     */
+    private fun resolveCutoutDriveId(
+        metaName: String,
+        fileByName: Map<String, DriveFileDto>,
+        fileById: Map<String, DriveFileDto>,
+    ): String? {
+        if (metaName.endsWith(DriveRepository.CUTOUT_SUFFIX)) {
+            val possibleId = metaName.removeSuffix(DriveRepository.CUTOUT_SUFFIX)
+            if (fileById.containsKey(possibleId)) return possibleId
+        }
+        return fileByName[metaName]?.id
+    }
+
+    /**
+     * For an original file, find the Drive ID of its paired cutout.
+     * Strategy:
+     *  1. Metadata: look for an item whose originalDriveId matches this file.
+     *  2. Filename prefix is already the cutout's Drive ID (new convention).
+     *  3. Filename prefix is `capture_{ts}` → look up `capture_{ts}_cutout.png` (old convention).
+     */
+    private fun resolvePairedCutoutId(
+        originalFile: DriveFileDto,
+        metaItems: List<WardrobeItemMeta>,
+        fileById: Map<String, DriveFileDto>,
+        fileByName: Map<String, DriveFileDto>,
+    ): String? {
+        // 1. From metadata
+        val fromMeta = metaItems.find { it.originalDriveId == originalFile.id }
+        if (fromMeta != null) {
+            val cutoutId = fileByName[fromMeta.name]?.id
+            if (cutoutId != null) return cutoutId
+        }
+        // 2 & 3. From filename convention
+        val prefix = originalFile.name.removeSuffix(DriveRepository.ORIGINAL_SUFFIX)
+        if (fileById.containsKey(prefix)) return prefix
+        return fileByName["$prefix${DriveRepository.CUTOUT_SUFFIX}"]?.id
+    }
+
     // ---------- Background processing queue ----------
 
     /** Drains [workQueue] serially — bg removal + tagging for each newly uploaded photo. */
@@ -223,49 +285,43 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     private suspend fun processQueuedImage(job: PendingJob) {
         val rawFile = File(drive.cacheDir, "${job.driveId}_original.jpg")
         if (!rawFile.exists()) return
+        if (_state.value.images.none { it.driveId == job.driveId }) return
 
-        // Derive the base name from the current Drive item name (e.g. "photo_1234" from "photo_1234.jpg")
-        val rawItem = _state.value.images.find { it.driveId == job.driveId } ?: return
-        val baseName = rawItem.name.substringBeforeLast(".")
-        val cutoutName = "$baseName${DriveRepository.CUTOUT_SUFFIX}"
-        val originalName = "$baseName${DriveRepository.ORIGINAL_SUFFIX}"
-
-        // Step 1 — background removal (falls back to raw image if Gemini fails)
+        // Step 1 — background removal (falls back to raw if Gemini fails)
         val processedFile = gemini.removeBackground(rawFile, drive.cacheDir) ?: rawFile
 
-        // Step 2 — upload the cutout (or raw fallback) as ${baseName}_cutout.png
-        val cutoutDrive = runCatching {
-            drive.uploadImageWithName(job.folderId, processedFile, cutoutName)
-        }.getOrNull() ?: return
+        // Step 2 — upload cutout, then rename to "{cutoutId}_cutout.png"
+        val cutoutDrive = runCatching { uploadAsCutout(job.folderId, processedFile) }.getOrNull() ?: return
 
-        // Step 3 — upload original backup as ${baseName}_original.jpg (best-effort)
+        // Step 3 — upload original as "{cutoutId}_original.jpg" (best-effort)
         val originalDriveId = runCatching {
-            drive.uploadImageWithName(job.folderId, rawFile, originalName).id
+            uploadAsOriginal(job.folderId, rawFile, cutoutDrive.id)
         }.getOrNull()
 
-        // Step 4 — delete the temporary raw upload (it has no _cutout.png suffix and must not appear in listings)
+        // Step 4 — delete the temporary raw upload
         runCatching { drive.deleteFile(job.driveId) }
 
-        // Step 5 — write cutout to local cache under the new Drive ID
+        // Step 5 — write cutout to local cache; also cache original for fast future reprocessing
         val localCutout = File(drive.cacheDir, "${cutoutDrive.id}.png")
         if (processedFile.absolutePath != localCutout.absolutePath) {
             processedFile.copyTo(localCutout, overwrite = true)
         }
+        rawFile.copyTo(File(drive.cacheDir, "${cutoutDrive.id}_original.jpg"), overwrite = true)
 
-        // Step 6 — update state: driveId, name, path, and originalDriveId all change
+        // Step 6 — update state
         _state.update { s ->
             s.copy(images = s.images.map { img ->
                 if (img.driveId == job.driveId) img.copy(
-                    driveId = cutoutDrive.id,
-                    name = cutoutDrive.name,
-                    localPath = localCutout.absolutePath,
-                    version = System.currentTimeMillis(),
+                    driveId    = cutoutDrive.id,
+                    name       = cutoutDrive.name,          // "{cutoutId}_cutout.png"
+                    localPath  = localCutout.absolutePath,
+                    version    = System.currentTimeMillis(),
                     originalDriveId = originalDriveId,
                 ) else img
             })
         }
 
-        // Step 7 — classify clothing tags against the cutout image
+        // Step 7 — classify clothing tags
         val tags = gemini.classifyClothing(localCutout, geminiLanguage) ?: return
         _state.update { s ->
             s.copy(images = s.images.map { img ->
@@ -493,76 +549,74 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
      *   Original: capture_1234_original.jpg (same prefix — clearly paired)
      *
      * Migration renames files in-place via Drive PATCH (no content re-upload, Drive IDs unchanged).
-     * Already-migrated files (ending in [DriveRepository.CUTOUT_SUFFIX]) are skipped.
+     *
+     * New naming convention:
+     *   Cutout:   {cutoutDriveId}_cutout.png
+     *   Original: {cutoutDriveId}_original.jpg  (same prefix as the cutout)
+     *
+     * Old naming convention:
+     *   Cutout:   capture_{timestamp}_cutout.png
+     *   Original: capture_{timestamp}_original.jpg
      */
     fun migrateFilenames() {
         val id = folderId ?: return
         if (_state.value.isMigrating) return
         viewModelScope.launch {
-            // List ALL image files including legacy ones (no suffix filter)
-            val allFiles = runCatching { drive.listAllImageFiles(id) }.getOrDefault(emptyList())
-            val idByName = allFiles.associate { it.name to it.id }
-            // id→name lets us resolve "1tb2veN0…_original.jpg" → cutout Drive ID → cutout filename
-            val nameById = allFiles.associate { it.id to it.name }
+            _state.update { it.copy(isMigrating = true, migrateDone = 0, migrateTotal = 0) }
 
-            // Load metadata to get name→tags and name→originalDriveId mapping
+            // Snapshot all Drive image files before any renames
+            val allFiles = runCatching { drive.listAllImageFiles(id) }.getOrDefault(emptyList())
+            val fileById: Map<String, DriveFileDto> = allFiles.associateBy { it.id }
+            val fileByName: Map<String, DriveFileDto> = allFiles.associateBy { it.name }
+
+            // Load metadata for tag preservation and cutout↔original linkage
             val metaJson = drive.loadWardrobeMetadataJson(id)
             val metaItems: List<WardrobeItemMeta> = if (metaJson != null)
                 runCatching { gson.fromJson(metaJson, WardrobeMetadata::class.java).items }
                     .getOrDefault(emptyList())
             else emptyList()
 
-            val toMigrate = metaItems.filter { !it.name.endsWith(DriveRepository.CUTOUT_SUFFIX) }
-
-            val totalWork = toMigrate.size +
-                allFiles.count { it.name.endsWith(DriveRepository.ORIGINAL_SUFFIX) &&
-                    nameById.containsKey(it.name.removeSuffix(DriveRepository.ORIGINAL_SUFFIX)) }
-            if (totalWork == 0) return@launch
-
-            _state.update { it.copy(isMigrating = true, migrateDone = 0, migrateTotal = totalWork) }
-            var done = 0
-
-            // Pass 1 — rename cutouts and their paired originals using metadata
-            val updatedMeta = metaItems.map { item ->
-                if (item.name.endsWith(DriveRepository.CUTOUT_SUFFIX)) return@map item  // already migrated
-                _state.update { it.copy(migrateDone = done++) }
-
-                val baseName = item.name.substringBeforeLast(".")
-                val cutoutName = "$baseName${DriveRepository.CUTOUT_SUFFIX}"
-                val originalName = "$baseName${DriveRepository.ORIGINAL_SUFFIX}"
-
-                val cutoutId = idByName[item.name]
-                if (cutoutId != null) {
-                    runCatching { drive.renameFile(cutoutId, cutoutName) }
-                    val oldCache = drive.cachedFile(cutoutId)
-                    if (oldCache != null && !oldCache.name.endsWith(".png")) {
-                        oldCache.renameTo(File(oldCache.parent, "${cutoutId}.png"))
-                    }
-                }
-                if (item.originalDriveId != null) {
-                    runCatching { drive.renameFile(item.originalDriveId, originalName) }
-                }
-                item.copy(name = cutoutName)
+            // Determine which files actually need renaming
+            val cutoutsToRename = allFiles.filter { f ->
+                f.name.endsWith(DriveRepository.CUTOUT_SUFFIX) &&
+                    f.name != "${f.id}${DriveRepository.CUTOUT_SUFFIX}"
+            }
+            val originalsToRename = allFiles.filter { f ->
+                if (!f.name.endsWith(DriveRepository.ORIGINAL_SUFFIX)) return@filter false
+                val pairedId = resolvePairedCutoutId(f, metaItems, fileById, fileByName)
+                    ?: return@filter false
+                f.name != "$pairedId${DriveRepository.ORIGINAL_SUFFIX}"
             }
 
-            // Pass 2 — orphaned originals: name = "${cutoutDriveId}_original.jpg"
-            // The prefix IS the Drive ID of the corresponding cutout → look up its filename
-            val metaOriginalIds = metaItems.mapNotNull { it.originalDriveId }.toSet()
-            allFiles
-                .filter { it.name.endsWith(DriveRepository.ORIGINAL_SUFFIX) }
-                .forEach { originalFile ->
-                    val cutoutId = originalFile.name.removeSuffix(DriveRepository.ORIGINAL_SUFFIX)
-                    val cutoutName = nameById[cutoutId] ?: return@forEach   // not a Drive-ID prefix
-                    if (originalFile.id in metaOriginalIds) return@forEach  // already handled in pass 1
-                    _state.update { it.copy(migrateDone = done++) }
-                    val baseName = cutoutName.substringBeforeLast(".")
-                        .removeSuffix("_cutout")  // handle already-renamed cutouts
-                    runCatching {
-                        drive.renameFile(originalFile.id, "$baseName${DriveRepository.ORIGINAL_SUFFIX}")
-                    }
-                }
+            val total = cutoutsToRename.size + originalsToRename.size
+            if (total == 0) {
+                _state.update { it.copy(isMigrating = false) }
+                return@launch
+            }
+            _state.update { it.copy(migrateTotal = total) }
+            var done = 0
 
-            // Save metadata with updated names so tags survive the reload
+            // Pass 1 — rename every cutout to {ownDriveId}_cutout.png
+            for (f in cutoutsToRename) {
+                runCatching { drive.renameFile(f.id, "${f.id}${DriveRepository.CUTOUT_SUFFIX}") }
+                _state.update { it.copy(migrateDone = ++done) }
+            }
+
+            // Pass 2 — rename every original to {pairedCutoutId}_original.jpg
+            for (f in originalsToRename) {
+                val pairedCutoutId = resolvePairedCutoutId(f, metaItems, fileById, fileByName)
+                    ?: continue
+                runCatching { drive.renameFile(f.id, "$pairedCutoutId${DriveRepository.ORIGINAL_SUFFIX}") }
+                _state.update { it.copy(migrateDone = ++done) }
+            }
+
+            // Pass 3 — rewrite metadata names to {cutoutDriveId}_cutout.png
+            // fileByName snapshot (pre-rename) lets us map old name → Drive ID reliably
+            val updatedMeta = metaItems.map { item ->
+                val cutoutId = fileByName[item.name]?.id ?: return@map item  // file gone, keep as-is
+                item.copy(name = "${cutoutId}${DriveRepository.CUTOUT_SUFFIX}")
+            }
+
             metaMutex.withLock {
                 val fid = folderId ?: return@withLock
                 runCatching {
@@ -584,7 +638,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             val sourceFolderId = folderId ?: return@launch
             _state.update { it.copy(isUploading = true, selectedIds = emptySet(), error = null) }
 
-            // Load existing target metadata so we can merge (not overwrite) it
+            // Load existing target metadata so we can merge without overwriting
             val targetMetaJson = drive.loadWardrobeMetadataJson(targetFolderId)
             val targetItems: MutableList<WardrobeItemMeta> = if (targetMetaJson != null) {
                 runCatching { gson.fromJson(targetMetaJson, WardrobeMetadata::class.java).items.toMutableList() }
@@ -593,12 +647,15 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
             val successfulIds = mutableListOf<String>()
             for (item in toMove) {
-                val cachedFile = drive.cachedFile(item.driveId) ?: continue
                 runCatching {
-                    drive.uploadImage(targetFolderId, cachedFile)
-                    targetItems.removeAll { it.name == item.name }   // dedup by filename
-                    targetItems.add(WardrobeItemMeta(item.name, item.tags))
-                    drive.deleteFile(item.driveId)
+                    // Move cutout — Drive parent-change: keeps same ID, name, and content
+                    drive.moveFile(item.driveId, sourceFolderId, targetFolderId)
+                    // Move original too (best-effort)
+                    item.originalDriveId?.let { origId ->
+                        runCatching { drive.moveFile(origId, sourceFolderId, targetFolderId) }
+                    }
+                    targetItems.removeAll { it.name == item.name }
+                    targetItems.add(WardrobeItemMeta(item.name, item.tags, item.originalDriveId))
                     successfulIds.add(item.driveId)
                 }.onFailure { e ->
                     _state.update { it.copy(error = e.message) }
@@ -606,9 +663,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             }
 
             if (successfulIds.isNotEmpty()) {
-                // Save merged metadata in target folder
                 runCatching { drive.saveWardrobeMetadataJson(targetFolderId, gson.toJson(WardrobeMetadata(targetItems))) }
-                // Remove moved items from source state and save source metadata
                 _state.update { s -> s.copy(images = s.images.filter { it.driveId !in successfulIds }) }
                 saveWardrobeMetadata()
             }
@@ -712,59 +767,62 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
                     val srcMeta = srcMetaByName[src.displayName]
 
-                    // Optional background removal
+                    // Optional background removal — defer original upload until cutout ID is known
                     var imageToUpload = tempFile
+                    var rawOriginalFile: File? = null
                     var originalDriveId: String? = srcMeta?.originalDriveId ?: duplicate?.originalDriveId
                     if (removeBackground && srcMeta == null) {
                         val processed = gemini.removeBackground(tempFile, drive.cacheDir)
                         if (processed != null) {
-                            originalDriveId = runCatching { drive.uploadImage(id, tempFile).id }.getOrNull()
+                            rawOriginalFile = tempFile   // uploaded after we know the cutout ID
                             imageToUpload = processed
                         }
                     }
 
                     // Tags: source metadata → existing item tags → Gemini → none
                     val tags = when {
-                        srcMeta != null     -> srcMeta.tags
-                        duplicate != null   -> duplicate.tags
-                        autoTag             -> gemini.classifyClothing(imageToUpload, geminiLanguage)
-                        else                -> null
+                        srcMeta != null   -> srcMeta.tags
+                        duplicate != null -> duplicate.tags
+                        autoTag           -> gemini.classifyClothing(imageToUpload, geminiLanguage)
+                        else              -> null
                     }
 
-                    val uploadExt = if (imageToUpload.extension == "png") "png" else srcExt
-
                     if (duplicate != null) {
-                        // Overwrite existing item in-place — keep the same Drive ID
+                        // Overwrite in-place — keep the same Drive ID and name
                         drive.updateImage(duplicate.driveId, imageToUpload)
-                        val displayCache = File(drive.cacheDir, "${duplicate.driveId}.$uploadExt")
+                        val displayCache = File(drive.cacheDir, "${duplicate.driveId}.png")
                         imageToUpload.copyTo(displayCache, overwrite = true)
-                        if (imageToUpload != tempFile) {
-                            tempFile.copyTo(File(drive.cacheDir, "${duplicate.driveId}_original.jpg"), overwrite = true)
-                        }
+                        val finalOriginalId = rawOriginalFile?.let { orig ->
+                            val oid = runCatching { uploadAsOriginal(id, orig, duplicate.driveId) }.getOrNull()
+                            orig.copyTo(File(drive.cacheDir, "${duplicate.driveId}_original.jpg"), overwrite = true)
+                            oid
+                        } ?: originalDriveId ?: duplicate.originalDriveId
                         _state.update { s ->
                             s.copy(images = s.images.map { img ->
                                 if (img.driveId == duplicate.driveId) img.copy(
                                     localPath = displayCache.absolutePath,
                                     tags = tags,
                                     version = System.currentTimeMillis(),
-                                    originalDriveId = originalDriveId ?: img.originalDriveId,
+                                    originalDriveId = finalOriginalId,
                                 ) else img
                             })
                         }
                     } else {
-                        // New item — upload fresh
-                        val uploaded = drive.uploadImage(id, imageToUpload)
-                        val displayCache = File(drive.cacheDir, "${uploaded.id}.$uploadExt")
+                        // New item — upload as {cutoutId}_cutout.png
+                        val cutoutUploaded = uploadAsCutout(id, imageToUpload)
+                        val displayCache = File(drive.cacheDir, "${cutoutUploaded.id}.png")
                         imageToUpload.copyTo(displayCache, overwrite = true)
-                        if (imageToUpload != tempFile) {
-                            tempFile.copyTo(File(drive.cacheDir, "${uploaded.id}_original.jpg"), overwrite = true)
-                        }
+                        val finalOriginalId = rawOriginalFile?.let { orig ->
+                            val oid = runCatching { uploadAsOriginal(id, orig, cutoutUploaded.id) }.getOrNull()
+                            orig.copyTo(File(drive.cacheDir, "${cutoutUploaded.id}_original.jpg"), overwrite = true)
+                            oid
+                        } ?: originalDriveId
                         _state.update { it.copy(images = it.images + DriveImage(
-                            driveId = uploaded.id,
+                            driveId = cutoutUploaded.id,
                             localPath = displayCache.absolutePath,
-                            name = uploaded.name,
+                            name = cutoutUploaded.name,
                             tags = tags,
-                            originalDriveId = originalDriveId,
+                            originalDriveId = finalOriginalId,
                         )) }
                     }
                 }.onFailure { e ->
@@ -828,53 +886,56 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                         ?: error("Cannot download ${src.name}")
 
                     var imageToUpload = tempFile
+                    var rawOriginalFile: File? = null
                     var originalDriveId: String? = duplicate?.originalDriveId
                     if (removeBackground) {
                         val processed = gemini.removeBackground(tempFile, drive.cacheDir)
                         if (processed != null) {
-                            originalDriveId = runCatching { drive.uploadImage(id, tempFile).id }.getOrNull()
+                            rawOriginalFile = tempFile
                             imageToUpload = processed
                         }
                     }
 
                     val tags = when {
-                        autoTag       -> gemini.classifyClothing(imageToUpload, geminiLanguage)
-                        duplicate != null -> duplicate.tags   // preserve existing tags
-                        else          -> null
+                        autoTag           -> gemini.classifyClothing(imageToUpload, geminiLanguage)
+                        duplicate != null -> duplicate.tags
+                        else              -> null
                     }
-
-                    val uploadExt = if (imageToUpload.extension == "png") "png" else srcExt
 
                     if (duplicate != null) {
                         drive.updateImage(duplicate.driveId, imageToUpload)
-                        val displayCache = File(drive.cacheDir, "${duplicate.driveId}.$uploadExt")
+                        val displayCache = File(drive.cacheDir, "${duplicate.driveId}.png")
                         imageToUpload.copyTo(displayCache, overwrite = true)
-                        if (imageToUpload != tempFile) {
-                            tempFile.copyTo(File(drive.cacheDir, "${duplicate.driveId}_original.jpg"), overwrite = true)
-                        }
+                        val finalOriginalId = rawOriginalFile?.let { orig ->
+                            val oid = runCatching { uploadAsOriginal(id, orig, duplicate.driveId) }.getOrNull()
+                            orig.copyTo(File(drive.cacheDir, "${duplicate.driveId}_original.jpg"), overwrite = true)
+                            oid
+                        } ?: originalDriveId ?: duplicate.originalDriveId
                         _state.update { s ->
                             s.copy(images = s.images.map { img ->
                                 if (img.driveId == duplicate.driveId) img.copy(
                                     localPath = displayCache.absolutePath,
                                     tags = tags,
                                     version = System.currentTimeMillis(),
-                                    originalDriveId = originalDriveId ?: img.originalDriveId,
+                                    originalDriveId = finalOriginalId,
                                 ) else img
                             })
                         }
                     } else {
-                        val uploaded = drive.uploadImage(id, imageToUpload)
-                        val displayCache = File(drive.cacheDir, "${uploaded.id}.$uploadExt")
+                        val cutoutUploaded = uploadAsCutout(id, imageToUpload)
+                        val displayCache = File(drive.cacheDir, "${cutoutUploaded.id}.png")
                         imageToUpload.copyTo(displayCache, overwrite = true)
-                        if (imageToUpload != tempFile) {
-                            tempFile.copyTo(File(drive.cacheDir, "${uploaded.id}_original.jpg"), overwrite = true)
-                        }
+                        val finalOriginalId = rawOriginalFile?.let { orig ->
+                            val oid = runCatching { uploadAsOriginal(id, orig, cutoutUploaded.id) }.getOrNull()
+                            orig.copyTo(File(drive.cacheDir, "${cutoutUploaded.id}_original.jpg"), overwrite = true)
+                            oid
+                        } ?: originalDriveId
                         _state.update { it.copy(images = it.images + DriveImage(
-                            driveId = uploaded.id,
+                            driveId = cutoutUploaded.id,
                             localPath = displayCache.absolutePath,
-                            name = uploaded.name,
+                            name = cutoutUploaded.name,
                             tags = tags,
-                            originalDriveId = originalDriveId,
+                            originalDriveId = finalOriginalId,
                         )) }
                     }
                 }.onFailure { e ->
@@ -907,10 +968,13 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     fun deleteSelected() {
         val toDelete = _state.value.selectedIds
         if (toDelete.isEmpty()) return
+        val items = _state.value.images.filter { it.driveId in toDelete }
         viewModelScope.launch {
             _state.update { it.copy(isUploading = true, selectedIds = emptySet()) }
-            toDelete.forEach { id ->
-                runCatching { drive.deleteFile(id) }
+            items.forEach { img ->
+                runCatching { drive.deleteFile(img.driveId) }
+                // Also delete the Drive original (different Drive ID, paired by name convention)
+                img.originalDriveId?.let { origId -> runCatching { drive.deleteFile(origId) } }
             }
             _state.update { s ->
                 s.copy(

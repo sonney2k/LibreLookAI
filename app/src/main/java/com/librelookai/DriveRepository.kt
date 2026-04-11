@@ -150,8 +150,23 @@ class DriveRepository(
         }
 
     /**
+     * Moves [fileId] from [fromFolderId] to [toFolderId] via a single PATCH (changes parents).
+     * Drive ID, content, and name are all preserved — no re-upload.
+     */
+    suspend fun moveFile(fileId: String, fromFolderId: String, toFolderId: String) =
+        withContext(Dispatchers.IO) {
+            val tok = token()
+            http.newCall(
+                Request.Builder()
+                    .url("$API/files/$fileId?addParents=$toFolderId&removeParents=$fromFolderId&fields=id")
+                    .header("Authorization", "Bearer $tok")
+                    .method("PATCH", "{}".toRequestBody("application/json".toMediaType()))
+                    .build()
+            ).await()
+        }
+
+    /**
      * Renames a Drive file in-place (PATCH metadata only — no content re-upload, Drive ID unchanged).
-     * Used during file-naming migration.
      */
     suspend fun renameFile(fileId: String, newName: String) = withContext(Dispatchers.IO) {
         val tok = token()
