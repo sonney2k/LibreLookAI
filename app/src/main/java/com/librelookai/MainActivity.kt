@@ -180,6 +180,7 @@ class MainActivity : ComponentActivity() {
                                         outfitsViewModel = outfitsViewModel,
                                         stylesViewModel = stylesViewModel,
                                         wardrobeViewModel = wardrobeViewModel,
+                                        locationViewModel = locationViewModel,
                                         modifier = Modifier.padding(innerPadding),
                                     )
                                     3 -> TravelScreen(

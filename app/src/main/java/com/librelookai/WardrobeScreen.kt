@@ -185,6 +185,7 @@ fun WardrobeScreen(
             onClearSelection = viewModel::clearSelection,
             onDeleteSelected = viewModel::deleteSelected,
             onMoveToLocation = viewModel::moveItemsToLocation,
+            onSetActiveLocation = locationViewModel::setActiveLocation,
             onCreateStyleFromSelection = onCreateStyleFromSelection,
             onComposeStyleFromSelection = onComposeStyleFromSelection,
             processingImageId = state.processingImageId,
@@ -452,6 +453,7 @@ private fun GridContent(
     onClearSelection: () -> Unit,
     onDeleteSelected: () -> Unit,
     onMoveToLocation: (Set<String>, String) -> Unit,
+    onSetActiveLocation: (String) -> Unit,
     onCreateStyleFromSelection: (Set<String>) -> Unit,
     onComposeStyleFromSelection: (Set<String>) -> Unit,
     processingImageId: String?,
@@ -514,6 +516,46 @@ private fun GridContent(
                     onSortChanged = { sortBy = it },
                     modifier = Modifier.padding(end = 4.dp),
                 )
+            }
+
+            // ---- Location indicator / switcher ----
+            if (locations.size > 1) {
+                LazyRow(
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    items(locations) { loc ->
+                        FilterChip(
+                            selected = loc.id == activeLocationId,
+                            onClick = { onSetActiveLocation(loc.id) },
+                            label = { Text(loc.name, style = MaterialTheme.typography.labelSmall) },
+                            leadingIcon = if (loc.id == activeLocationId) {
+                                { Icon(Icons.Default.Place, contentDescription = null, modifier = Modifier.size(14.dp)) }
+                            } else null,
+                        )
+                    }
+                }
+            } else {
+                locations.firstOrNull()?.let { loc ->
+                    Row(
+                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    ) {
+                        Icon(
+                            Icons.Default.Place,
+                            contentDescription = null,
+                            modifier = Modifier.size(11.dp),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Text(
+                            loc.name,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
             }
 
             // ---- Selection bar (shown when at least one item is selected) ----
