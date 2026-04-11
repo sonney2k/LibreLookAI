@@ -875,6 +875,7 @@ private fun FullScreenViewer(
 
         TagsOverlay(
             tags = currentImage.tags,
+            hasOriginal = currentImage.originalDriveId != null,
             onTagImage = { onTagImage(currentImage.driveId) },
             onRemoveBackground = { onRemoveBackground(currentImage.driveId) },
             onEditTags = { showTagEdit = true },
@@ -980,6 +981,7 @@ private fun ZoomableImage(
 @Composable
 private fun TagsOverlay(
     tags: ClothingTags?,
+    hasOriginal: Boolean = false,
     onTagImage: () -> Unit,
     onRemoveBackground: () -> Unit,
     onEditTags: () -> Unit,
@@ -1016,7 +1018,11 @@ private fun TagsOverlay(
                     Text(stringResource(R.string.wardrobe_tag_detect), color = Color.White, style = MaterialTheme.typography.labelSmall)
                 }
                 TextButton(onClick = onRemoveBackground, contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)) {
-                    Text(stringResource(R.string.wardrobe_tag_remove_bg), color = Color.White, style = MaterialTheme.typography.labelSmall)
+                    Text(
+                        stringResource(if (hasOriginal) R.string.wardrobe_tag_re_remove_bg else R.string.wardrobe_tag_remove_bg),
+                        color = Color.White,
+                        style = MaterialTheme.typography.labelSmall,
+                    )
                 }
                 TextButton(onClick = onEditTags, contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)) {
                     Text(stringResource(R.string.wardrobe_tag_edit), color = Color.White, style = MaterialTheme.typography.labelSmall)

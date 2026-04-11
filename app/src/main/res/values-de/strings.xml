@@ -47,6 +47,13 @@
     <string name="settings_rescan_dialog_title">Alle Tags neu scannen?</string>
     <string name="settings_rescan_dialog_text">Gemini klassifiziert alle Artikel in Ihrer Garderobe neu. Dies überschreibt manuelle Tag-Bearbeitungen und kann eine Weile dauern.</string>
     <string name="settings_rescan_confirm">Neu scannen</string>
+    <string name="settings_rebg_title">Hintergrundentfernung</string>
+    <string name="settings_rebg_desc">KI-Hintergrundentfernung für alle Artikel in Ihrer Garderobe erneut ausführen. Originale werden sicher auf Drive gespeichert, sodass Sie dies jederzeit wiederholen können. Jeder Artikel kostet 5 KI-Credits (oder Gemini-API-Kontingent).</string>
+    <string name="settings_rebg_button">Hintergrund aller Artikel entfernen…</string>
+    <string name="settings_rebg_dialog_title">Hintergrund aller Artikel entfernen?</string>
+    <string name="settings_rebg_dialog_text">Alle Artikel in Ihrer aktuellen Garderobe werden mit Gemini verarbeitet. Dies kann eine Weile dauern und verbraucht erhebliche KI-Credits / API-Kontingent. Artikel mit gespeichertem Original auf Drive verwenden dieses; andere verwenden das aktuelle Bild.</string>
+    <string name="settings_rebg_confirm">Alle Hintergründe entfernen</string>
+    <string name="settings_rebging">Hintergrund wird entfernt %1$d von %2$d…</string>
     <string name="settings_import_title">Aus Ordner importieren</string>
     <string name="settings_import_desc">Alle Bilder aus einem anderen Google-Drive-Ordner in deine aktuelle Garderobe kopieren. Vorhandene Tag-Metadaten werden übernommen; neue Artikel werden automatisch mit KI getaggt.</string>
     <string name="settings_import_button">Aus Drive-Ordner importieren…</string>
@@ -77,6 +84,7 @@
     <string name="wardrobe_sort_category">Kategorie</string>
     <string name="wardrobe_tag_detect">Tags erkennen</string>
     <string name="wardrobe_tag_remove_bg">Hintergrund entfernen</string>
+    <string name="wardrobe_tag_re_remove_bg">Hintergrund erneut entfernen</string>
     <string name="wardrobe_tag_edit">Tags bearbeiten</string>
     <string name="wardrobe_tag_sheet_title">Tags bearbeiten</string>
     <string name="wardrobe_add_gallery">Galerie</string>

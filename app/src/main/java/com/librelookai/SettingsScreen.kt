@@ -19,6 +19,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AutoFixHigh
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -125,6 +126,7 @@ fun SettingsScreen(
             1 -> DataTab(
                 wardrobeState = wardrobeState,
                 onRetagAll = wardrobeViewModel::retagAll,
+                onRemoveAllBackgrounds = wardrobeViewModel::removeAllBackgrounds,
                 onImportFromFolder = { importLauncher.launch(null) },
                 locationState = locationState,
                 onSetActiveLocation = locationViewModel::setActiveLocation,
@@ -352,6 +354,7 @@ private fun ProfileTab(
 private fun DataTab(
     wardrobeState: WardrobeUiState,
     onRetagAll: () -> Unit,
+    onRemoveAllBackgrounds: () -> Unit,
     onImportFromFolder: () -> Unit,
     locationState: LocationUiState,
     onSetActiveLocation: (String) -> Unit,
@@ -360,6 +363,7 @@ private fun DataTab(
     onDeleteLocation: (String) -> Unit,
 ) {
     var showRetagDialog by remember { mutableStateOf(false) }
+    var showRemoveBgDialog by remember { mutableStateOf(false) }
     var showAddLocationDialog by remember { mutableStateOf(false) }
     var renameTarget by remember { mutableStateOf<Location?>(null) }
     var deleteTarget by remember { mutableStateOf<Location?>(null) }
@@ -479,6 +483,44 @@ private fun DataTab(
 
         HorizontalDivider()
 
+        // ---------- Background Removal ----------
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(stringResource(R.string.settings_rebg_title), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+            Text(
+                stringResource(R.string.settings_rebg_desc),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+
+            if (wardrobeState.isRemovingAllBg) {
+                val progress = if (wardrobeState.removeBgTotal > 0)
+                    wardrobeState.removeBgDone.toFloat() / wardrobeState.removeBgTotal
+                else 0f
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    LinearProgressIndicator(
+                        progress = { progress },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    Text(
+                        stringResource(R.string.settings_rebging, wardrobeState.removeBgDone + 1, wardrobeState.removeBgTotal),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            } else {
+                OutlinedButton(
+                    onClick = { showRemoveBgDialog = true },
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Icon(Icons.Default.AutoFixHigh, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(Modifier.padding(start = 8.dp))
+                    Text(stringResource(R.string.settings_rebg_button))
+                }
+            }
+        }
+
+        HorizontalDivider()
+
         // ---------- Import ----------
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(stringResource(R.string.settings_import_title), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
@@ -532,6 +574,24 @@ private fun DataTab(
             },
             dismissButton = {
                 TextButton(onClick = { showRetagDialog = false }) {
+                    Text(stringResource(R.string.action_cancel))
+                }
+            },
+        )
+    }
+
+    if (showRemoveBgDialog) {
+        AlertDialog(
+            onDismissRequest = { showRemoveBgDialog = false },
+            title = { Text(stringResource(R.string.settings_rebg_dialog_title)) },
+            text = { Text(stringResource(R.string.settings_rebg_dialog_text)) },
+            confirmButton = {
+                TextButton(onClick = { onRemoveAllBackgrounds(); showRemoveBgDialog = false }) {
+                    Text(stringResource(R.string.settings_rebg_confirm), color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showRemoveBgDialog = false }) {
                     Text(stringResource(R.string.action_cancel))
                 }
             },

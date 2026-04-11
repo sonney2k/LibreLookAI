@@ -24,6 +24,8 @@ data class DriveImage(
     val tags: ClothingTags? = null,
     /** Bumped on every local reprocess so Coil knows to reload from disk. */
     val version: Long = 0L,
+    /** Drive file ID of the unprocessed original, if one was saved to Drive. */
+    val originalDriveId: String? = null,
 )
 
 data class WardrobeUiState(
@@ -41,6 +43,9 @@ data class WardrobeUiState(
     val isImporting: Boolean = false,
     val importDone: Int = 0,
     val importTotal: Int = 0,
+    val isRemovingAllBg: Boolean = false,
+    val removeBgDone: Int = 0,
+    val removeBgTotal: Int = 0,
     val error: String? = null,
     /** driveId of the image currently being processed by an AI operation, or null. */
     val processingImageId: String? = null,
@@ -49,7 +54,7 @@ data class WardrobeUiState(
 
 // ---------- Wardrobe metadata (replaces per-file appProperties) ----------
 
-private data class WardrobeItemMeta(val name: String, val tags: ClothingTags?)
+private data class WardrobeItemMeta(val name: String, val tags: ClothingTags?, val originalDriveId: String? = null)
 private data class WardrobeMetadata(val items: List<WardrobeItemMeta> = emptyList())
 
 class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
@@ -83,11 +88,11 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 val id = folderId ?: return@runCatching emptyList()
                 val files = drive.listFiles(id)
 
-                // Load metadata file (filename → tags). Falls back to appProperties for migration.
+                // Load metadata file (filename → meta). Falls back to appProperties for migration.
                 val metaJson = drive.loadWardrobeMetadataJson(id)
-                val metaByName: Map<String, ClothingTags?> = if (metaJson != null) {
+                val metaByName: Map<String, WardrobeItemMeta> = if (metaJson != null) {
                     gson.fromJson(metaJson, WardrobeMetadata::class.java)
-                        .items.associate { it.name to it.tags }
+                        .items.associateBy { it.name }
                 } else emptyMap()
 
                 // Download any uncached files in parallel
@@ -98,12 +103,13 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
                 files.mapNotNull { file ->
                     drive.cachedFile(file.id)?.let { cached ->
-                        val tags = if (metaByName.containsKey(file.name)) {
-                            metaByName[file.name]           // primary: metadata file (by filename)
+                        val meta = metaByName[file.name]
+                        val tags = if (meta != null) {
+                            meta.tags                             // primary: metadata file (by filename)
                         } else {
                             file.appProperties?.toClothingTags()  // fallback: legacy appProperties
                         }
-                        DriveImage(file.id, cached.absolutePath, file.name, tags)
+                        DriveImage(file.id, cached.absolutePath, file.name, tags, originalDriveId = meta?.originalDriveId)
                     }
                 }.also { images ->
                     // Auto-migrate: if data came from appProperties, write metadata file now
@@ -125,7 +131,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         val images = _state.value.images
         val id = folderId ?: return
         viewModelScope.launch {
-            val meta = WardrobeMetadata(images.map { WardrobeItemMeta(it.name, it.tags) })
+            val meta = WardrobeMetadata(images.map { WardrobeItemMeta(it.name, it.tags, it.originalDriveId) })
             runCatching { drive.saveWardrobeMetadataJson(id, gson.toJson(meta)) }
         }
     }
@@ -178,6 +184,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         // Step 1 — Gemini background removal
         _state.update { it.copy(isProcessing = true, error = null) }
         val processedFile = gemini.removeBackground(rawFile, drive.cacheDir) ?: rawFile
+        val bgWasRemoved = processedFile != rawFile
 
         // Step 2 — Upload to Drive
         _state.update { it.copy(isProcessing = false, isUploading = true) }
@@ -190,12 +197,18 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             if (processedFile.absolutePath != displayCache.absolutePath) {
                 processedFile.copyTo(displayCache, overwrite = true)
             }
-            rawFile.copyTo(File(drive.cacheDir, "${uploaded.id}_original.jpg"), overwrite = true)
+
+            // Keep original in local cache and also upload to Drive for safe re-processing
+            val localOriginal = File(drive.cacheDir, "${uploaded.id}_original.jpg")
+            rawFile.copyTo(localOriginal, overwrite = true)
+            val originalDriveId: String? = if (bgWasRemoved) {
+                runCatching { drive.uploadImage(id, localOriginal).id }.getOrNull()
+            } else null
 
             // Step 3 — Classify clothing tags
             val tags = gemini.classifyClothing(processedFile, geminiLanguage)
 
-            DriveImage(uploaded.id, displayCache.absolutePath, uploaded.name, tags)
+            DriveImage(uploaded.id, displayCache.absolutePath, uploaded.name, tags, originalDriveId = originalDriveId)
         }.onFailure { e ->
             _state.update { it.copy(error = e.message) }
         }.onSuccess {
@@ -207,11 +220,9 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     fun reprocessBackground(driveId: String) {
         viewModelScope.launch {
             _state.update { it.copy(isProcessing = true, processingImageId = driveId, error = null) }
-            // Prefer the original photo; fall back to whatever is cached
-            val source = File(drive.cacheDir, "${driveId}_original.jpg").takeIf { it.exists() }
-                ?: drive.cachedFile(driveId)
+            val source = resolveOriginalFile(driveId)
                 ?: run {
-                    _state.update { it.copy(isProcessing = false, error = "Original not in cache") }
+                    _state.update { it.copy(isProcessing = false, error = "Original not available") }
                     return@launch
                 }
             val processedFile = gemini.removeBackground(source, drive.cacheDir)
@@ -237,6 +248,64 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             }.onFailure { e ->
                 _state.update { it.copy(isUploading = false, processingImageId = null, error = e.message) }
             }
+        }
+    }
+
+    /**
+     * Returns the best available original file for [driveId]:
+     * 1. Local cache `${driveId}_original.jpg`
+     * 2. Drive download via `originalDriveId` (cached locally for future use)
+     * 3. The current cached (processed) image as last resort
+     */
+    private suspend fun resolveOriginalFile(driveId: String): File? {
+        val localOriginal = File(drive.cacheDir, "${driveId}_original.jpg")
+        if (localOriginal.exists()) return localOriginal
+
+        val originalDriveId = _state.value.images.find { it.driveId == driveId }?.originalDriveId
+        if (originalDriveId != null) {
+            val downloaded = drive.downloadToCache(originalDriveId)
+            if (downloaded != null) {
+                downloaded.copyTo(localOriginal, overwrite = true)
+                return localOriginal
+            }
+        }
+
+        return drive.cachedFile(driveId)
+    }
+
+    fun removeAllBackgrounds() {
+        val images = _state.value.images
+        if (images.isEmpty() || _state.value.isRemovingAllBg) return
+        viewModelScope.launch {
+            _state.update { it.copy(isRemovingAllBg = true, removeBgDone = 0, removeBgTotal = images.size) }
+            images.forEachIndexed { index, image ->
+                _state.update { it.copy(removeBgDone = index) }
+                val source = resolveOriginalFile(image.driveId) ?: return@forEachIndexed
+                val processedFile = gemini.removeBackground(source, drive.cacheDir) ?: return@forEachIndexed
+
+                // Upload original to Drive if not already stored there
+                val id = folderId ?: return@forEachIndexed
+                val originalDriveId = image.originalDriveId ?: runCatching {
+                    drive.uploadImage(id, source).id
+                }.getOrNull()
+
+                runCatching {
+                    drive.updateImage(image.driveId, processedFile)
+                    val displayCache = File(drive.cacheDir, "${image.driveId}.png")
+                    processedFile.copyTo(displayCache, overwrite = true)
+                    _state.update { s ->
+                        s.copy(images = s.images.map {
+                            if (it.driveId == image.driveId) it.copy(
+                                localPath = displayCache.absolutePath,
+                                version = System.currentTimeMillis(),
+                                originalDriveId = originalDriveId ?: it.originalDriveId,
+                            ) else it
+                        })
+                    }
+                }
+            }
+            _state.update { it.copy(isRemovingAllBg = false, removeBgDone = 0, removeBgTotal = 0) }
+            saveWardrobeMetadata()
         }
     }
 
