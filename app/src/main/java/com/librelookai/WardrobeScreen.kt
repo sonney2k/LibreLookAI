@@ -646,6 +646,7 @@ private fun GridContent(
                 "Uploading (${state.batchDone + 1}/${state.batchTotal})…"
             state.isProcessing -> "Removing background…"
             state.isUploading  -> "Uploading to Drive…"
+            state.pendingJobs > 0 -> stringResource(R.string.wardrobe_processing_photos, state.pendingJobs)
             else -> null
         }
         if (overlayLabel != null) {
@@ -668,7 +669,6 @@ private fun GridContent(
         }
 
         // Speed-dial FAB
-        var fabExpanded by remember { mutableStateOf(false) }
         if (isSelectionMode) {
             Column(
                 modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
@@ -716,24 +716,18 @@ private fun GridContent(
                 )
             }
         } else {
-            if (fabExpanded) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.3f))
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null,
-                        ) { fabExpanded = false },
-                )
+            Column(
+                modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                SmallFloatingActionButton(onClick = onOpenGallery) {
+                    Icon(Icons.Default.PhotoLibrary, contentDescription = stringResource(R.string.wardrobe_add_gallery))
+                }
+                FloatingActionButton(onClick = onOpenCamera) {
+                    Icon(Icons.Default.CameraAlt, contentDescription = stringResource(R.string.wardrobe_add_camera))
+                }
             }
-            SpeedDialFab(
-                expanded = fabExpanded,
-                onToggle = { fabExpanded = !fabExpanded },
-                onCamera = { fabExpanded = false; onOpenCamera() },
-                onGallery = { fabExpanded = false; onOpenGallery() },
-                modifier = Modifier.align(Alignment.BottomEnd),
-            )
         }
 
         state.error?.let { msg ->
@@ -1291,47 +1285,6 @@ private fun TagChip(label: String) {
     }
 }
 
-// ---------- Speed-dial FAB ----------
-
-@Composable
-private fun SpeedDialFab(
-    expanded: Boolean,
-    onToggle: () -> Unit,
-    onCamera: () -> Unit,
-    onGallery: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val rotation by animateFloatAsState(targetValue = if (expanded) 45f else 0f, label = "fab_rotate")
-
-    Column(
-        modifier = modifier.padding(16.dp),
-        horizontalAlignment = Alignment.End,
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        AnimatedVisibility(
-            visible = expanded,
-            enter = fadeIn() + expandVertically(expandFrom = Alignment.Bottom),
-            exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Bottom),
-        ) {
-            Column(
-                horizontalAlignment = Alignment.End,
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                SpeedDialItem(label = stringResource(R.string.wardrobe_add_gallery), icon = Icons.Default.PhotoLibrary, onClick = onGallery)
-                SpeedDialItem(label = stringResource(R.string.wardrobe_add_camera),  icon = Icons.Default.CameraAlt,    onClick = onCamera)
-            }
-        }
-
-        FloatingActionButton(onClick = onToggle) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = if (expanded) "Close menu" else "Add outfit",
-                modifier = Modifier.rotate(rotation),
-            )
-        }
-    }
-}
-
 // ---------- Sort button ----------
 
 @Composable
@@ -1365,23 +1318,3 @@ private fun SortButton(
     }
 }
 
-@Composable
-private fun SpeedDialItem(label: String, icon: ImageVector, onClick: () -> Unit) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Surface(
-            shape = MaterialTheme.shapes.small,
-            tonalElevation = 2.dp,
-            shadowElevation = 2.dp,
-        ) {
-            Text(
-                text = label,
-                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                style = MaterialTheme.typography.labelLarge,
-            )
-        }
-        Spacer(Modifier.width(12.dp))
-        SmallFloatingActionButton(onClick = onClick) {
-            Icon(icon, contentDescription = label)
-        }
-    }
-}
