@@ -140,6 +140,8 @@ fun StylesScreen(
             onNameChanged = stylesViewModel::updateDraftName,
             onDescriptionChanged = stylesViewModel::updateDraftDescription,
             onToggleItem = stylesViewModel::toggleDraftItem,
+            onSelectAll = stylesViewModel::selectAllDraftItems,
+            onDeselectAll = stylesViewModel::deselectAllDraftItems,
             onConfirm = stylesViewModel::confirmDraft,
             onCancel = stylesViewModel::cancelCreating,
             modifier = modifier,
@@ -657,6 +659,8 @@ private fun StyleItemPicker(
     onNameChanged: (String) -> Unit = {},
     onDescriptionChanged: (String) -> Unit = {},
     onToggleItem: (String) -> Unit,
+    onSelectAll: (List<String>) -> Unit,
+    onDeselectAll: (List<String>) -> Unit,
     onConfirm: () -> Unit,
     onCancel: () -> Unit,
     modifier: Modifier = Modifier,
@@ -743,6 +747,27 @@ private fun StyleItemPicker(
             selectedTags = selectedTags,
             onTagsChanged = { selectedTags = it },
         )
+
+        // Select all / Deselect all row
+        if (displayedItems.isNotEmpty()) {
+            val allDisplayedSelected = displayedItems.all { it.driveId in selectedIds }
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+                horizontalArrangement = Arrangement.End,
+            ) {
+                TextButton(
+                    onClick = {
+                        val ids = displayedItems.map { it.driveId }
+                        if (allDisplayedSelected) onDeselectAll(ids) else onSelectAll(ids)
+                    },
+                ) {
+                    Text(
+                        if (allDisplayedSelected) stringResource(R.string.action_deselect_all)
+                        else stringResource(R.string.action_select_all),
+                    )
+                }
+            }
+        }
 
         // Item grid
         if (displayedItems.isEmpty()) {

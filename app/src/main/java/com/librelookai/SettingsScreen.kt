@@ -19,7 +19,10 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.AutoFixHigh
+import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -92,6 +95,7 @@ fun SettingsScreen(
     var pendingImportAutoTag     by rememberSaveable { mutableStateOf(false) }
     var pendingImportReplace     by rememberSaveable { mutableStateOf(false) }
     var pendingImportOverwrite   by rememberSaveable { mutableStateOf(false) }
+    var showDriveFolderPicker    by rememberSaveable { mutableStateOf(false) }
     val importLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.OpenDocumentTree(),
     ) { uri ->
@@ -143,12 +147,16 @@ fun SettingsScreen(
                 wardrobeState = wardrobeState,
                 onRetagAll = wardrobeViewModel::retagAll,
                 onRemoveAllBackgrounds = wardrobeViewModel::removeAllBackgrounds,
-                onImportFromFolder = { removeBg, autoTag, replace, overwrite ->
+                onImportFromFolder = { removeBg, autoTag, replace, overwrite, useDrive ->
                     pendingImportRemoveBg  = removeBg
                     pendingImportAutoTag   = autoTag
                     pendingImportReplace   = replace
                     pendingImportOverwrite = overwrite
-                    importLauncher.launch(null)
+                    if (useDrive) {
+                        showDriveFolderPicker = true
+                    } else {
+                        importLauncher.launch(null)
+                    }
                 },
                 locationState = locationState,
                 onSetActiveLocation = locationViewModel::setActiveLocation,
@@ -161,6 +169,23 @@ fun SettingsScreen(
                 modifier = Modifier.fillMaxSize(),
             )
         }
+    }
+
+    if (showDriveFolderPicker) {
+        DriveFolderPickerDialog(
+            wardrobeViewModel = wardrobeViewModel,
+            onFolderSelected = { folderId ->
+                showDriveFolderPicker = false
+                wardrobeViewModel.importFromDriveFolder(
+                    sourceFolderId = folderId,
+                    removeBackground = pendingImportRemoveBg,
+                    autoTag = pendingImportAutoTag,
+                    replaceExisting = pendingImportReplace,
+                    overwriteDuplicates = pendingImportOverwrite,
+                )
+            },
+            onDismiss = { showDriveFolderPicker = false },
+        )
     }
 }
 
@@ -377,7 +402,7 @@ private fun DataTab(
     wardrobeState: WardrobeUiState,
     onRetagAll: () -> Unit,
     onRemoveAllBackgrounds: () -> Unit,
-    onImportFromFolder: (removeBackground: Boolean, autoTag: Boolean, replaceExisting: Boolean, overwriteDuplicates: Boolean) -> Unit,
+    onImportFromFolder: (removeBackground: Boolean, autoTag: Boolean, replaceExisting: Boolean, overwriteDuplicates: Boolean, useDrivePicker: Boolean) -> Unit,
     locationState: LocationUiState,
     onSetActiveLocation: (String) -> Unit,
     onAddLocation: (String) -> Unit,
@@ -653,9 +678,9 @@ private fun DataTab(
     if (showImportOptionsDialog) {
         ImportOptionsDialog(
             existingItemCount = wardrobeState.images.size,
-            onConfirm = { removeBg, autoTag, replace, overwrite ->
+            onConfirm = { removeBg, autoTag, replace, overwrite, useDrive ->
                 showImportOptionsDialog = false
-                onImportFromFolder(removeBg, autoTag, replace, overwrite)
+                onImportFromFolder(removeBg, autoTag, replace, overwrite, useDrive)
             },
             onDismiss = { showImportOptionsDialog = false },
         )
@@ -740,13 +765,14 @@ private fun DataTab(
 @Composable
 private fun ImportOptionsDialog(
     existingItemCount: Int,
-    onConfirm: (removeBackground: Boolean, autoTag: Boolean, replaceExisting: Boolean, overwriteDuplicates: Boolean) -> Unit,
+    onConfirm: (removeBackground: Boolean, autoTag: Boolean, replaceExisting: Boolean, overwriteDuplicates: Boolean, useDrivePicker: Boolean) -> Unit,
     onDismiss: () -> Unit,
 ) {
     var removeBackground  by remember { mutableStateOf(false) }
     var autoTag           by remember { mutableStateOf(false) }
     var replaceExisting   by remember { mutableStateOf(false) }
     var overwriteDuplicates by remember { mutableStateOf(false) }
+    var useDrivePicker    by remember { mutableStateOf(false) }
 
     val aiCostPerItem = (if (removeBackground) CreditPacks.COST_BG_REMOVAL else 0) +
                         (if (autoTag) CreditPacks.COST_CLASSIFY else 0)
@@ -764,6 +790,24 @@ private fun ImportOptionsDialog(
                     stringResource(R.string.settings_import_options_desc),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+
+                HorizontalDivider()
+
+                // ---- Source ----
+                Text(stringResource(R.string.settings_import_source_title), style = MaterialTheme.typography.labelMedium)
+
+                OptionRow(
+                    label = stringResource(R.string.settings_import_source_local),
+                    sublabel = stringResource(R.string.settings_import_source_local_desc),
+                    checked = !useDrivePicker,
+                    onCheckedChange = { useDrivePicker = false },
+                )
+                OptionRow(
+                    label = stringResource(R.string.settings_import_source_drive),
+                    sublabel = stringResource(R.string.settings_import_source_drive_desc),
+                    checked = useDrivePicker,
+                    onCheckedChange = { useDrivePicker = true },
                 )
 
                 HorizontalDivider()
@@ -843,7 +887,7 @@ private fun ImportOptionsDialog(
             }
         },
         confirmButton = {
-            TextButton(onClick = { onConfirm(removeBackground, autoTag, replaceExisting, overwriteDuplicates) }) {
+            TextButton(onClick = { onConfirm(removeBackground, autoTag, replaceExisting, overwriteDuplicates, useDrivePicker) }) {
                 Text(stringResource(R.string.settings_import_options_start))
             }
         },
@@ -922,4 +966,144 @@ private fun SwitchRow(
         }
         Switch(checked = checked, onCheckedChange = onCheckedChange)
     }
+}
+
+// ---------- Drive folder picker dialog ----------
+
+private data class FolderEntry(val id: String, val name: String)
+
+@Composable
+private fun DriveFolderPickerDialog(
+    wardrobeViewModel: WardrobeViewModel,
+    onFolderSelected: (folderId: String) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val rootLabel = stringResource(R.string.settings_import_drive_root)
+    var breadcrumb by remember { mutableStateOf(listOf(FolderEntry("root", rootLabel))) }
+    var subfolders by remember { mutableStateOf<List<DriveFileDto>>(emptyList()) }
+    var imageCount by remember { mutableStateOf(-1) }
+    var isLoading  by remember { mutableStateOf(true) }
+
+    val currentFolder = breadcrumb.last()
+
+    LaunchedEffect(currentFolder.id) {
+        isLoading = true
+        subfolders = emptyList()
+        imageCount = -1
+        runCatching {
+            subfolders = wardrobeViewModel.listDriveSubfolders(currentFolder.id)
+            imageCount = wardrobeViewModel.countDriveImages(currentFolder.id)
+        }
+        isLoading = false
+    }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                if (breadcrumb.size > 1) {
+                    IconButton(
+                        onClick = { breadcrumb = breadcrumb.dropLast(1) },
+                        modifier = Modifier.size(32.dp),
+                    ) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.action_back),
+                            modifier = Modifier.size(20.dp),
+                        )
+                    }
+                    Spacer(Modifier.size(4.dp))
+                }
+                Text(currentFolder.name, style = MaterialTheme.typography.titleMedium)
+            }
+        },
+        text = {
+            if (isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(100.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    CircularProgressIndicator()
+                }
+            } else {
+                Column(
+                    modifier = Modifier.verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                ) {
+                    if (imageCount >= 0) {
+                        Text(
+                            stringResource(R.string.settings_import_drive_image_count, imageCount),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        if (subfolders.isNotEmpty()) Spacer(Modifier.height(4.dp))
+                    }
+
+                    if (subfolders.isEmpty() && imageCount == 0) {
+                        Text(
+                            stringResource(R.string.settings_import_drive_empty),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+
+                    subfolders.forEach { folder ->
+                        Surface(
+                            shape = MaterialTheme.shapes.small,
+                            tonalElevation = 1.dp,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    breadcrumb = breadcrumb + FolderEntry(folder.id, folder.name)
+                                },
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 12.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Icon(
+                                    Icons.Default.Folder,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(20.dp),
+                                    tint = MaterialTheme.colorScheme.primary,
+                                )
+                                Spacer(Modifier.size(10.dp))
+                                Text(
+                                    folder.name,
+                                    modifier = Modifier.weight(1f),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                )
+                                Icon(
+                                    Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp),
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = { onFolderSelected(currentFolder.id) },
+                enabled = !isLoading && imageCount > 0,
+            ) {
+                Text(
+                    if (imageCount > 0)
+                        stringResource(R.string.settings_import_drive_select, imageCount)
+                    else
+                        stringResource(R.string.settings_import_drive_no_images),
+                )
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.action_cancel))
+            }
+        },
+    )
 }

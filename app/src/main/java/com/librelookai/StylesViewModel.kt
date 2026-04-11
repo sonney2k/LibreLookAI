@@ -125,6 +125,10 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
         s.copy(draftItemIds = next)
     }
 
+    fun selectAllDraftItems(ids: List<String>) = _state.update { it.copy(draftItemIds = it.draftItemIds + ids) }
+
+    fun deselectAllDraftItems(ids: List<String>) = _state.update { it.copy(draftItemIds = it.draftItemIds - ids.toSet()) }
+
     fun confirmDraft() {
         val s = _state.value
         if (s.draftItemIds.isEmpty()) return

@@ -181,6 +181,7 @@ fun WardrobeScreen(
             onRemoveBackground = viewModel::reprocessBackground,
             onUpdateTags = viewModel::updateTags,
             onToggleSelection = viewModel::toggleSelection,
+            onSelectAll = viewModel::selectAll,
             onClearSelection = viewModel::clearSelection,
             onDeleteSelected = viewModel::deleteSelected,
             onMoveToLocation = viewModel::moveItemsToLocation,
@@ -447,6 +448,7 @@ private fun GridContent(
     onRemoveBackground: (String) -> Unit,
     onUpdateTags: (String, ClothingTags) -> Unit,
     onToggleSelection: (String) -> Unit,
+    onSelectAll: (List<String>) -> Unit,
     onClearSelection: () -> Unit,
     onDeleteSelected: () -> Unit,
     onMoveToLocation: (Set<String>, String) -> Unit,
@@ -673,6 +675,15 @@ private fun GridContent(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.End,
             ) {
+                if (displayedImages.any { it.driveId !in state.selectedIds }) {
+                    ExtendedFloatingActionButton(
+                        onClick = { onSelectAll(displayedImages.map { it.driveId }) },
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        icon = { Icon(Icons.Default.CheckCircle, contentDescription = null) },
+                        text = { Text(stringResource(R.string.action_select_all)) },
+                    )
+                }
                 ExtendedFloatingActionButton(
                     onClick = { onCreateStyleFromSelection(state.selectedIds) },
                     containerColor = MaterialTheme.colorScheme.primaryContainer,

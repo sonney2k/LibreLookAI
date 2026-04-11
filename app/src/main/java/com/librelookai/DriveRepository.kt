@@ -444,6 +444,63 @@ class DriveRepository(
             .build()).await()
     }
 
+    /** Lists direct subfolders of [parentFolderId]. Pass "root" for My Drive root. */
+    suspend fun listSubfolders(parentFolderId: String): List<DriveFileDto> = withContext(Dispatchers.IO) {
+        val tok = token()
+        val q = URLEncoder.encode(
+            "mimeType='application/vnd.google-apps.folder' and '$parentFolderId' in parents and trashed=false",
+            "UTF-8",
+        )
+        val req = Request.Builder()
+            .url("$API/files?q=$q&fields=files(id,name)&orderBy=name")
+            .header("Authorization", "Bearer $tok")
+            .build()
+        gson.fromJson(
+            http.newCall(req).await().body!!.string(),
+            FilesListDto::class.java,
+        ).files
+    }
+
+    /** Returns the number of image files directly inside [folderId]. */
+    suspend fun countImages(folderId: String): Int = withContext(Dispatchers.IO) {
+        val tok = token()
+        val q = URLEncoder.encode(
+            "'$folderId' in parents and mimeType contains 'image/' and trashed=false",
+            "UTF-8",
+        )
+        val req = Request.Builder()
+            .url("$API/files?q=$q&fields=files(id)&pageSize=1000")
+            .header("Authorization", "Bearer $tok")
+            .build()
+        gson.fromJson(
+            http.newCall(req).await().body!!.string(),
+            FilesListDto::class.java,
+        ).files.size
+    }
+
+    /**
+     * Downloads Drive file [fileId] directly to [dest] (bypasses the standard [cacheDir] naming).
+     * Returns null on error.
+     */
+    suspend fun downloadFileTo(fileId: String, dest: File): File? = withContext(Dispatchers.IO) {
+        val tmp = File(dest.parent, "${dest.name}.tmp")
+        return@withContext try {
+            val tok = token()
+            val req = Request.Builder()
+                .url("$API/files/$fileId?alt=media")
+                .header("Authorization", "Bearer $tok")
+                .build()
+            val resp = http.newCall(req).await()
+            if (!resp.isSuccessful) return@withContext null
+            tmp.outputStream().use { resp.body!!.byteStream().copyTo(it) }
+            tmp.renameTo(dest)
+            dest
+        } catch (e: Exception) {
+            tmp.delete()
+            null
+        }
+    }
+
     /** Creates a subfolder with [name] inside [parentFolderId] and returns its Drive ID. */
     suspend fun createSubfolder(parentFolderId: String, name: String): String = withContext(Dispatchers.IO) {
         val tok = token()

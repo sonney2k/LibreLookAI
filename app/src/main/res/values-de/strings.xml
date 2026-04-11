@@ -16,6 +16,8 @@
     <string name="action_save">Speichern</string>
     <string name="action_saving">Wird gespeichert…</string>
     <string name="action_clear">Löschen</string>
+    <string name="action_select_all">Alle auswählen</string>
+    <string name="action_deselect_all">Auswahl aufheben</string>
 
     <string name="sign_in_prompt">Anmelden zur Verwaltung Ihrer Garderobe</string>
     <string name="sign_in_button">Mit Google anmelden</string>
@@ -80,6 +82,17 @@
     <string name="settings_import_options_auto_tag_cost">2 Credits pro Bild</string>
     <string name="settings_import_options_cost_warning">%1$d Credits pro Bild werden verwendet. Bei großen Garderoben empfiehlt sich die Verarbeitung in kleineren Chargen nach dem Import.</string>
     <string name="settings_import_options_start">Importieren</string>
+    <string name="settings_import_source_title">Importquelle</string>
+    <string name="settings_import_source_local">Lokal / beliebiger Cloud-Ordner</string>
+    <string name="settings_import_source_local_desc">Systemdateiauswahl verwenden (lokaler Speicher, Google Drive App, Dropbox usw.)</string>
+    <string name="settings_import_source_drive">Google Drive (In-App-Browser)</string>
+    <string name="settings_import_source_drive_desc">Beliebigen Google Drive-Ordner direkt durchsuchen – keine App-Installation erforderlich.</string>
+    <string name="settings_import_drive_root">Meine Ablage</string>
+    <string name="settings_import_drive_image_count">%1$d Bilder in diesem Ordner</string>
+    <string name="settings_import_drive_empty">Keine Bilder oder Unterordner gefunden</string>
+    <string name="settings_import_drive_select">%1$d Bilder von hier importieren</string>
+    <string name="settings_import_drive_no_images">Keine Bilder in diesem Ordner</string>
+    <string name="action_back">Zurück</string>
     <string name="settings_locations_title">Standorte</string>
     <string name="settings_locations_desc">Verwalte mehrere Garderoben für verschiedene Standorte, z.B. Zuhause und Ferienhaus.</string>
     <string name="settings_location_add">Standort hinzufügen</string>

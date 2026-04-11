@@ -554,6 +554,116 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    // ---------- Drive folder browser helpers (called from composable via LaunchedEffect) ----------
+
+    suspend fun listDriveSubfolders(folderId: String): List<DriveFileDto> =
+        drive.listSubfolders(folderId)
+
+    suspend fun countDriveImages(folderId: String): Int =
+        drive.countImages(folderId)
+
+    // ---------- Drive Import ----------
+
+    /**
+     * Imports all images from a Google Drive folder ([sourceFolderId]) into the current wardrobe.
+     * Mirror of [importFromFolder] but uses the Drive REST API instead of SAF.
+     */
+    fun importFromDriveFolder(
+        sourceFolderId: String,
+        removeBackground: Boolean = false,
+        autoTag: Boolean = false,
+        replaceExisting: Boolean = false,
+        overwriteDuplicates: Boolean = false,
+    ) {
+        val id = folderId ?: return
+        viewModelScope.launch {
+            val srcFiles = runCatching { drive.listFiles(sourceFolderId) }.getOrDefault(emptyList())
+            if (srcFiles.isEmpty()) return@launch
+
+            if (replaceExisting) {
+                val toDelete = _state.value.images.map { it.driveId }
+                _state.update { it.copy(isImporting = true, importDone = 0, importTotal = srcFiles.size, images = emptyList(), error = null) }
+                toDelete.forEach { driveId -> runCatching { drive.deleteFile(driveId) } }
+            } else {
+                _state.update { it.copy(isImporting = true, importDone = 0, importTotal = srcFiles.size, error = null) }
+            }
+
+            val existingByName: Map<String, DriveImage> = _state.value.images.associateBy { it.name }
+
+            srcFiles.forEachIndexed { index, src ->
+                _state.update { it.copy(importDone = index) }
+
+                val duplicate = existingByName[src.name]
+                if (duplicate != null && !overwriteDuplicates) return@forEachIndexed
+
+                val srcExt = if (src.name.endsWith(".png", ignoreCase = true)) "png" else "jpg"
+                val tempFile = File(drive.cacheDir, "import_drive_${System.currentTimeMillis()}.$srcExt")
+
+                runCatching {
+                    drive.downloadFileTo(src.id, tempFile)
+                        ?: error("Cannot download ${src.name}")
+
+                    var imageToUpload = tempFile
+                    var originalDriveId: String? = duplicate?.originalDriveId
+                    if (removeBackground) {
+                        val processed = gemini.removeBackground(tempFile, drive.cacheDir)
+                        if (processed != null) {
+                            originalDriveId = runCatching { drive.uploadImage(id, tempFile).id }.getOrNull()
+                            imageToUpload = processed
+                        }
+                    }
+
+                    val tags = when {
+                        autoTag       -> gemini.classifyClothing(imageToUpload, geminiLanguage)
+                        duplicate != null -> duplicate.tags   // preserve existing tags
+                        else          -> null
+                    }
+
+                    val uploadExt = if (imageToUpload.extension == "png") "png" else srcExt
+
+                    if (duplicate != null) {
+                        drive.updateImage(duplicate.driveId, imageToUpload)
+                        val displayCache = File(drive.cacheDir, "${duplicate.driveId}.$uploadExt")
+                        imageToUpload.copyTo(displayCache, overwrite = true)
+                        if (imageToUpload != tempFile) {
+                            tempFile.copyTo(File(drive.cacheDir, "${duplicate.driveId}_original.jpg"), overwrite = true)
+                        }
+                        _state.update { s ->
+                            s.copy(images = s.images.map { img ->
+                                if (img.driveId == duplicate.driveId) img.copy(
+                                    localPath = displayCache.absolutePath,
+                                    tags = tags,
+                                    version = System.currentTimeMillis(),
+                                    originalDriveId = originalDriveId ?: img.originalDriveId,
+                                ) else img
+                            })
+                        }
+                    } else {
+                        val uploaded = drive.uploadImage(id, imageToUpload)
+                        val displayCache = File(drive.cacheDir, "${uploaded.id}.$uploadExt")
+                        imageToUpload.copyTo(displayCache, overwrite = true)
+                        if (imageToUpload != tempFile) {
+                            tempFile.copyTo(File(drive.cacheDir, "${uploaded.id}_original.jpg"), overwrite = true)
+                        }
+                        _state.update { it.copy(images = it.images + DriveImage(
+                            driveId = uploaded.id,
+                            localPath = displayCache.absolutePath,
+                            name = uploaded.name,
+                            tags = tags,
+                            originalDriveId = originalDriveId,
+                        )) }
+                    }
+                }.onFailure { e ->
+                    _state.update { it.copy(error = "Import failed for ${src.name}: ${e.message}") }
+                }
+                tempFile.delete()
+            }
+
+            _state.update { it.copy(isImporting = false, importDone = 0, importTotal = 0) }
+            saveWardrobeMetadata()
+        }
+    }
+
     fun clearError() = _state.update { it.copy(error = null) }
 
     // ---------- Selection & Delete ----------
@@ -565,6 +675,8 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             s.copy(selectedIds = next)
         }
     }
+
+    fun selectAll(ids: List<String>) = _state.update { it.copy(selectedIds = it.selectedIds + ids) }
 
     fun clearSelection() = _state.update { it.copy(selectedIds = emptySet()) }
 

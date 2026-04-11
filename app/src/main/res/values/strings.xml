@@ -18,6 +18,8 @@
     <string name="action_save">Save</string>
     <string name="action_saving">Saving…</string>
     <string name="action_clear">Clear</string>
+    <string name="action_select_all">Select all</string>
+    <string name="action_deselect_all">Deselect all</string>
 
     <!-- Sign In -->
     <string name="sign_in_prompt">Sign in to manage your wardrobe</string>
@@ -84,6 +86,17 @@
     <string name="settings_import_options_auto_tag_cost">2 credits per image</string>
     <string name="settings_import_options_cost_warning">%1$d credits per image will be used. For large wardrobes consider processing in smaller batches after import.</string>
     <string name="settings_import_options_start">Import</string>
+    <string name="settings_import_source_title">Import source</string>
+    <string name="settings_import_source_local">Local / any cloud folder</string>
+    <string name="settings_import_source_local_desc">Browse using the system file picker (local storage, Google Drive app, Dropbox, etc.)</string>
+    <string name="settings_import_source_drive">Google Drive (in-app browser)</string>
+    <string name="settings_import_source_drive_desc">Browse any Google Drive folder directly — no app installation required.</string>
+    <string name="settings_import_drive_root">My Drive</string>
+    <string name="settings_import_drive_image_count">%1$d images in this folder</string>
+    <string name="settings_import_drive_empty">No images or subfolders found</string>
+    <string name="settings_import_drive_select">Import %1$d images from here</string>
+    <string name="settings_import_drive_no_images">No images in this folder</string>
+    <string name="action_back">Back</string>
     <string name="settings_locations_title">Locations</string>
     <string name="settings_locations_desc">Manage multiple wardrobes for different locations, e.g. home and holiday home.</string>
     <string name="settings_location_add">Add location</string>
