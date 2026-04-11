@@ -554,89 +554,87 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     // ---------- Legacy filename migration ----------
 
     /**
-     * One-time migration from the old naming scheme to the new [DriveRepository.CUTOUT_SUFFIX] convention.
-     *
-     * Old scheme:
-     *   Cutout:   capture_1234.jpg          (Drive ID: abc, updated in-place after bg removal)
-     *   Original: abc_original.jpg          (prefix = cutout's Drive ID — not human-readable)
-     *
-     * New scheme:
-     *   Cutout:   capture_1234_cutout.png
-     *   Original: capture_1234_original.jpg (same prefix — clearly paired)
-     *
-     * Migration renames files in-place via Drive PATCH (no content re-upload, Drive IDs unchanged).
-     *
-     * New naming convention:
+     * Migrates ALL location folders to the new naming convention:
      *   Cutout:   {cutoutDriveId}_cutout.png
-     *   Original: {cutoutDriveId}_original.jpg  (same prefix as the cutout)
+     *   Original: {cutoutDriveId}_original.jpg
      *
-     * Old naming convention:
-     *   Cutout:   capture_{timestamp}_cutout.png
-     *   Original: capture_{timestamp}_original.jpg
+     * Old convention used a human-readable timestamp prefix:
+     *   capture_{timestamp}_cutout.png / capture_{timestamp}_original.jpg
+     *
+     * Runs across every folder in [allFolderIds] so that non-active locations
+     * are also fixed. Files are renamed in-place via Drive PATCH — no content
+     * re-upload, Drive IDs are preserved.
+     *
+     * Pass 3 also adds metadata entries for cutout files that exist in Drive
+     * but are absent from the folder's metadata JSON (orphaned files), so they
+     * appear in the wardrobe after migration.
      */
-    fun migrateFilenames() {
-        val id = folderId ?: return
+    fun migrateFilenames(allFolderIds: List<String>) {
         if (_state.value.isMigrating) return
+        val folderIds = allFolderIds.filter { it.isNotBlank() }.distinct()
+        if (folderIds.isEmpty()) return
         viewModelScope.launch {
             _state.update { it.copy(isMigrating = true, migrateDone = 0, migrateTotal = 0) }
+            var totalDone = 0
 
-            // Snapshot all Drive image files before any renames
-            val allFiles = runCatching { drive.listAllImageFiles(id) }.getOrDefault(emptyList())
-            val fileById: Map<String, DriveFileDto> = allFiles.associateBy { it.id }
-            val fileByName: Map<String, DriveFileDto> = allFiles.associateBy { it.name }
+            for (fid in folderIds) {
+                // --- Snapshot ---
+                val allFiles = runCatching { drive.listAllImageFiles(fid) }.getOrDefault(emptyList())
+                val fileById: Map<String, DriveFileDto> = allFiles.associateBy { it.id }
+                val fileByName: Map<String, DriveFileDto> = allFiles.associateBy { it.name }
 
-            // Load metadata for tag preservation and cutout↔original linkage
-            val metaJson = drive.loadWardrobeMetadataJson(id)
-            val metaItems: List<WardrobeItemMeta> = if (metaJson != null)
-                runCatching { gson.fromJson(metaJson, WardrobeMetadata::class.java).items }
-                    .getOrDefault(emptyList())
-            else emptyList()
+                val metaJson = drive.loadWardrobeMetadataJson(fid)
+                val metaItems: List<WardrobeItemMeta> = if (metaJson != null)
+                    runCatching { gson.fromJson(metaJson, WardrobeMetadata::class.java).items }
+                        .getOrDefault(emptyList())
+                else emptyList()
 
-            // Determine which files actually need renaming
-            val cutoutsToRename = allFiles.filter { f ->
-                f.name.endsWith(DriveRepository.CUTOUT_SUFFIX) &&
-                    f.name != "${f.id}${DriveRepository.CUTOUT_SUFFIX}"
-            }
-            val originalsToRename = allFiles.filter { f ->
-                if (!f.name.endsWith(DriveRepository.ORIGINAL_SUFFIX)) return@filter false
-                val pairedId = resolvePairedCutoutId(f, metaItems, fileById, fileByName)
-                    ?: return@filter false
-                f.name != "$pairedId${DriveRepository.ORIGINAL_SUFFIX}"
-            }
+                // --- Count work for this folder ---
+                val cutoutsToRename = allFiles.filter { f ->
+                    f.name.endsWith(DriveRepository.CUTOUT_SUFFIX) &&
+                        f.name != "${f.id}${DriveRepository.CUTOUT_SUFFIX}"
+                }
+                val originalsToRename = allFiles.filter { f ->
+                    if (!f.name.endsWith(DriveRepository.ORIGINAL_SUFFIX)) return@filter false
+                    val pairedId = resolvePairedCutoutId(f, metaItems, fileById, fileByName)
+                        ?: return@filter false
+                    f.name != "$pairedId${DriveRepository.ORIGINAL_SUFFIX}"
+                }
+                _state.update { it.copy(migrateTotal = it.migrateTotal + cutoutsToRename.size + originalsToRename.size) }
 
-            val total = cutoutsToRename.size + originalsToRename.size
-            if (total == 0) {
-                _state.update { it.copy(isMigrating = false) }
-                return@launch
-            }
-            _state.update { it.copy(migrateTotal = total) }
-            var done = 0
+                // --- Pass 1: rename cutouts to {ownDriveId}_cutout.png ---
+                for (f in cutoutsToRename) {
+                    runCatching { drive.renameFile(f.id, "${f.id}${DriveRepository.CUTOUT_SUFFIX}") }
+                    _state.update { it.copy(migrateDone = ++totalDone) }
+                }
 
-            // Pass 1 — rename every cutout to {ownDriveId}_cutout.png
-            for (f in cutoutsToRename) {
-                runCatching { drive.renameFile(f.id, "${f.id}${DriveRepository.CUTOUT_SUFFIX}") }
-                _state.update { it.copy(migrateDone = ++done) }
-            }
+                // --- Pass 2: rename originals to {pairedCutoutId}_original.jpg ---
+                for (f in originalsToRename) {
+                    val pairedCutoutId = resolvePairedCutoutId(f, metaItems, fileById, fileByName)
+                        ?: continue
+                    runCatching { drive.renameFile(f.id, "$pairedCutoutId${DriveRepository.ORIGINAL_SUFFIX}") }
+                    _state.update { it.copy(migrateDone = ++totalDone) }
+                }
 
-            // Pass 2 — rename every original to {pairedCutoutId}_original.jpg
-            for (f in originalsToRename) {
-                val pairedCutoutId = resolvePairedCutoutId(f, metaItems, fileById, fileByName)
-                    ?: continue
-                runCatching { drive.renameFile(f.id, "$pairedCutoutId${DriveRepository.ORIGINAL_SUFFIX}") }
-                _state.update { it.copy(migrateDone = ++done) }
-            }
+                // --- Pass 3: update metadata names + add entries for orphaned cutout files ---
+                // Use pre-rename fileByName snapshot to map old name → Drive ID
+                val updatedMeta = metaItems.map { item ->
+                    val cutoutId = fileByName[item.name]?.id ?: return@map item
+                    item.copy(name = "${cutoutId}${DriveRepository.CUTOUT_SUFFIX}")
+                }.toMutableList()
 
-            // Pass 3 — rewrite metadata names to {cutoutDriveId}_cutout.png
-            // fileByName snapshot (pre-rename) lets us map old name → Drive ID reliably
-            val updatedMeta = metaItems.map { item ->
-                val cutoutId = fileByName[item.name]?.id ?: return@map item  // file gone, keep as-is
-                item.copy(name = "${cutoutId}${DriveRepository.CUTOUT_SUFFIX}")
-            }
+                // Any cutout in Drive that has no metadata entry: add a blank one so it appears
+                val cutoutIdsCoveredByMeta = metaItems.mapNotNull { fileByName[it.name]?.id }.toSet()
+                allFiles.filter { it.name.endsWith(DriveRepository.CUTOUT_SUFFIX) }.forEach { f ->
+                    if (f.id !in cutoutIdsCoveredByMeta) {
+                        updatedMeta.add(WardrobeItemMeta("${f.id}${DriveRepository.CUTOUT_SUFFIX}", null, null))
+                    }
+                }
 
-            metaMutex.withLock {
-                val fid = folderId ?: return@withLock
-                runCatching {
-                    drive.saveWardrobeMetadataJson(fid, gson.toJson(WardrobeMetadata(updatedMeta)))
+                metaMutex.withLock {
+                    runCatching {
+                        drive.saveWardrobeMetadataJson(fid, gson.toJson(WardrobeMetadata(updatedMeta)))
+                    }
                 }
             }
 

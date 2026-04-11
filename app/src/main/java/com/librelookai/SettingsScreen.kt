@@ -408,7 +408,7 @@ private fun DataTab(
     wardrobeState: WardrobeUiState,
     onRetagAll: () -> Unit,
     onRemoveAllBackgrounds: () -> Unit,
-    onMigrateFilenames: () -> Unit,
+    onMigrateFilenames: (List<String>) -> Unit,
     onClearCacheAndRefresh: () -> Unit,
     onImportFromFolder: (removeBackground: Boolean, autoTag: Boolean, replaceExisting: Boolean, overwriteDuplicates: Boolean, useDrivePicker: Boolean) -> Unit,
     locationState: LocationUiState,
@@ -622,7 +622,7 @@ private fun DataTab(
                 }
             } else {
                 OutlinedButton(
-                    onClick = onMigrateFilenames,
+                    onClick = { onMigrateFilenames(locationState.locations.map { it.folderId }) },
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     Icon(Icons.Default.Edit, contentDescription = null, modifier = Modifier.size(18.dp))
