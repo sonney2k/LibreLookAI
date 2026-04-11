@@ -455,48 +455,76 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             // List ALL image files including legacy ones (no suffix filter)
             val allFiles = runCatching { drive.listAllImageFiles(id) }.getOrDefault(emptyList())
-            // Build name→id and id→name maps
             val idByName = allFiles.associate { it.name to it.id }
+            // id→name lets us resolve "1tb2veN0…_original.jpg" → cutout Drive ID → cutout filename
+            val nameById = allFiles.associate { it.id to it.name }
 
-            // Load metadata to get originalDriveId mapping
+            // Load metadata to get name→tags and name→originalDriveId mapping
             val metaJson = drive.loadWardrobeMetadataJson(id)
             val metaItems: List<WardrobeItemMeta> = if (metaJson != null)
                 runCatching { gson.fromJson(metaJson, WardrobeMetadata::class.java).items }
                     .getOrDefault(emptyList())
             else emptyList()
 
-            // Only items that haven't been migrated yet
             val toMigrate = metaItems.filter { !it.name.endsWith(DriveRepository.CUTOUT_SUFFIX) }
-            if (toMigrate.isEmpty()) return@launch
 
-            _state.update { it.copy(isMigrating = true, migrateDone = 0, migrateTotal = toMigrate.size) }
+            val totalWork = toMigrate.size +
+                allFiles.count { it.name.endsWith(DriveRepository.ORIGINAL_SUFFIX) &&
+                    nameById.containsKey(it.name.removeSuffix(DriveRepository.ORIGINAL_SUFFIX)) }
+            if (totalWork == 0) return@launch
 
-            toMigrate.forEachIndexed { index, item ->
-                _state.update { it.copy(migrateDone = index) }
+            _state.update { it.copy(isMigrating = true, migrateDone = 0, migrateTotal = totalWork) }
+            var done = 0
+
+            // Pass 1 — rename cutouts and their paired originals using metadata
+            val updatedMeta = metaItems.map { item ->
+                if (item.name.endsWith(DriveRepository.CUTOUT_SUFFIX)) return@map item  // already migrated
+                _state.update { it.copy(migrateDone = done++) }
+
                 val baseName = item.name.substringBeforeLast(".")
                 val cutoutName = "$baseName${DriveRepository.CUTOUT_SUFFIX}"
                 val originalName = "$baseName${DriveRepository.ORIGINAL_SUFFIX}"
 
-                // Rename the cutout file
                 val cutoutId = idByName[item.name]
                 if (cutoutId != null) {
                     runCatching { drive.renameFile(cutoutId, cutoutName) }
-                    // Update local cache filename (.jpg → .png)
                     val oldCache = drive.cachedFile(cutoutId)
                     if (oldCache != null && !oldCache.name.endsWith(".png")) {
-                        val newCache = File(oldCache.parent, "${cutoutId}.png")
-                        oldCache.renameTo(newCache)
+                        oldCache.renameTo(File(oldCache.parent, "${cutoutId}.png"))
+                    }
+                }
+                if (item.originalDriveId != null) {
+                    runCatching { drive.renameFile(item.originalDriveId, originalName) }
+                }
+                item.copy(name = cutoutName)
+            }
+
+            // Pass 2 — orphaned originals: name = "${cutoutDriveId}_original.jpg"
+            // The prefix IS the Drive ID of the corresponding cutout → look up its filename
+            val metaOriginalIds = metaItems.mapNotNull { it.originalDriveId }.toSet()
+            allFiles
+                .filter { it.name.endsWith(DriveRepository.ORIGINAL_SUFFIX) }
+                .forEach { originalFile ->
+                    val cutoutId = originalFile.name.removeSuffix(DriveRepository.ORIGINAL_SUFFIX)
+                    val cutoutName = nameById[cutoutId] ?: return@forEach   // not a Drive-ID prefix
+                    if (originalFile.id in metaOriginalIds) return@forEach  // already handled in pass 1
+                    _state.update { it.copy(migrateDone = done++) }
+                    val baseName = cutoutName.substringBeforeLast(".")
+                        .removeSuffix("_cutout")  // handle already-renamed cutouts
+                    runCatching {
+                        drive.renameFile(originalFile.id, "$baseName${DriveRepository.ORIGINAL_SUFFIX}")
                     }
                 }
 
-                // Rename the original backup (old name = ${cutoutId}_original.jpg, new name = ${baseName}_original.jpg)
-                if (item.originalDriveId != null) {
-                    runCatching { drive.renameFile(item.originalDriveId, originalName) }
+            // Save metadata with updated names so tags survive the reload
+            metaMutex.withLock {
+                val fid = folderId ?: return@withLock
+                runCatching {
+                    drive.saveWardrobeMetadataJson(fid, gson.toJson(WardrobeMetadata(updatedMeta)))
                 }
             }
 
             _state.update { it.copy(isMigrating = false, migrateDone = 0, migrateTotal = 0) }
-            // Reload so state reflects the renamed files
             loadImages()
         }
     }
