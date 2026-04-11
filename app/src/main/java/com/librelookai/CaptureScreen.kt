@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.RotateRight
@@ -159,6 +160,7 @@ fun CaptureScreen(
                 capturedFile = null
                 userRotation = 0
             },
+            onClose = onCancel,
             modifier = modifier,
         )
     }
@@ -171,6 +173,7 @@ private fun PhotoReviewScreen(
     onRotate: () -> Unit,
     onConfirm: (File, Int) -> Unit,
     onRetake: () -> Unit,
+    onClose: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scope = rememberCoroutineScope()
@@ -206,15 +209,26 @@ private fun PhotoReviewScreen(
             )
         }
 
-        // Retake (top-left)
+        // Close camera (top-left)
         IconButton(
-            onClick = onRetake,
+            onClick = onClose,
             enabled = !isProcessing,
             modifier = Modifier
                 .align(Alignment.TopStart)
                 .padding(8.dp),
         ) {
-            Icon(Icons.Default.Close, contentDescription = "Retake", tint = Color.White)
+            Icon(Icons.Default.Close, contentDescription = "Close camera", tint = Color.White)
+        }
+
+        // Retake (top-right)
+        IconButton(
+            onClick = onRetake,
+            enabled = !isProcessing,
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(8.dp),
+        ) {
+            Icon(Icons.Default.CameraAlt, contentDescription = "Retake", tint = Color.White)
         }
 
         // Rotate button (bottom-left)
