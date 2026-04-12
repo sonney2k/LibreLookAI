@@ -123,6 +123,10 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
     companion object {
         private const val TAG = "RepairAndSync"
+        /** Sidecars at or below this size are {} or {"tags":null} — definitely no tags. */
+        private const val SIDECAR_EMPTY_MAX = 20L
+        /** Sidecars at or above this size always contain a ClothingTags object. */
+        private const val SIDECAR_FULL_MIN  = 100L
     }
 
     private val drive = DriveRepository(app, GoogleAuthManager(app))
@@ -257,24 +261,42 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
                         // Every cutout needs a sidecar with non-empty tags.
                         // Flag missing sidecars AND sidecars whose content is just "{}".
+                        // Use file size to avoid downloading where possible:
+                        //   size ≤ 20 bytes  → definitely empty ({} or {"tags":null}), no download needed
+                        //   size ≥ 100 bytes → definitely has ClothingTags, skip download entirely
+                        //   otherwise        → download and parse to be sure
                         cutouts.forEach { cutout ->
                             val sidecar = sidecarByItemId[cutout.id]
                             if (sidecar == null) {
                                 Log.d(TAG, "Missing sidecar for cutout ${cutout.id} (${cutout.name})")
                                 needSidecar.add(AuditCutoutItem(fid, cutout.id, "${cutout.id}${DriveRepository.CUTOUT_SUFFIX}"))
                             } else {
-                                // Sidecar exists — check whether it actually has tags
-                                val content = runCatching { drive.loadFileContent(sidecar.id) }.getOrNull()
-                                val hasTags = content?.let {
-                                    runCatching {
-                                        gson.fromJson(it, ItemSidecar::class.java).tags != null
-                                    }.getOrDefault(false)
-                                } ?: false
-                                if (!hasTags) {
-                                    Log.d(TAG, "Empty sidecar for cutout ${cutout.id} (${cutout.name}) — content: $content")
-                                    needSidecar.add(AuditCutoutItem(fid, cutout.id, "${cutout.id}${DriveRepository.CUTOUT_SUFFIX}"))
-                                } else {
-                                    Log.d(TAG, "OK: cutout ${cutout.id} has sidecar with tags")
+                                val bytes = sidecar.sizeBytes
+                                when {
+                                    bytes in 1..SIDECAR_EMPTY_MAX -> {
+                                        // Too small to contain tags — skip download
+                                        Log.d(TAG, "Empty sidecar for cutout ${cutout.id} (size=${bytes}B)")
+                                        needSidecar.add(AuditCutoutItem(fid, cutout.id, "${cutout.id}${DriveRepository.CUTOUT_SUFFIX}"))
+                                    }
+                                    bytes >= SIDECAR_FULL_MIN -> {
+                                        // Large enough to hold ClothingTags — skip download
+                                        Log.d(TAG, "OK: cutout ${cutout.id} sidecar size=${bytes}B")
+                                    }
+                                    else -> {
+                                        // Unknown size or borderline — download and parse
+                                        val content = runCatching { drive.loadFileContent(sidecar.id) }.getOrNull()
+                                        val hasTags = content?.let {
+                                            runCatching {
+                                                gson.fromJson(it, ItemSidecar::class.java).tags != null
+                                            }.getOrDefault(false)
+                                        } ?: false
+                                        if (!hasTags) {
+                                            Log.d(TAG, "Empty sidecar for cutout ${cutout.id} — content: $content")
+                                            needSidecar.add(AuditCutoutItem(fid, cutout.id, "${cutout.id}${DriveRepository.CUTOUT_SUFFIX}"))
+                                        } else {
+                                            Log.d(TAG, "OK: cutout ${cutout.id} has sidecar with tags")
+                                        }
+                                    }
                                 }
                             }
                         }

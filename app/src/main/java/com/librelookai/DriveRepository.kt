@@ -26,7 +26,11 @@ data class DriveFileDto(
     val id: String = "",
     val name: String = "",
     val appProperties: Map<String, String>? = null,
-)
+    /** Raw Drive API size field (returned as a string); -1 if not requested or unavailable. */
+    private val size: String? = null,
+) {
+    val sizeBytes: Long get() = size?.toLongOrNull() ?: -1L
+}
 
 private data class FilesListDto(
     val files: List<DriveFileDto> = emptyList(),
@@ -548,7 +552,7 @@ class DriveRepository(
             "UTF-8",
         )
         val req = Request.Builder()
-            .url("$API/files?q=$q&fields=files(id,name)&pageSize=1000")
+            .url("$API/files?q=$q&fields=files(id,name,size)&pageSize=1000")
             .header("Authorization", "Bearer $tok")
             .build()
         gson.fromJson(
