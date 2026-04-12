@@ -883,11 +883,21 @@ private fun GridContent(
                 TextButton(
                     onClick = {
                         onDismissBatteryExemption()
-                        batteryContext.startActivity(
-                            Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
-                                data = Uri.parse("package:${batteryContext.packageName}")
+                        try {
+                            batteryContext.startActivity(
+                                Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
+                                    data = Uri.parse("package:${batteryContext.packageName}")
+                                }
+                            )
+                        } catch (_: Exception) {
+                            try {
+                                batteryContext.startActivity(
+                                    Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+                                )
+                            } catch (_: Exception) {
+                                batteryContext.startActivity(Intent(Settings.ACTION_SETTINGS))
                             }
-                        )
+                        }
                     }
                 ) { Text(stringResource(R.string.battery_exempt_action)) }
             },
