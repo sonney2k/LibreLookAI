@@ -883,21 +883,27 @@ private fun GridContent(
                 TextButton(
                     onClick = {
                         onDismissBatteryExemption()
-                        try {
-                            batteryContext.startActivity(
-                                Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
-                                    data = Uri.parse("package:${batteryContext.packageName}")
-                                }
-                            )
-                        } catch (_: Exception) {
-                            try {
-                                batteryContext.startActivity(
-                                    Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
-                                )
-                            } catch (_: Exception) {
-                                batteryContext.startActivity(Intent(Settings.ACTION_SETTINGS))
+                        fun launchIntent(vararg intents: Intent) {
+                            for (intent in intents) {
+                                try {
+                                    batteryContext.startActivity(intent)
+                                    return
+                                } catch (_: Exception) { }
                             }
                         }
+                        launchIntent(
+                            Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
+                                data = Uri.parse("package:${batteryContext.packageName}")
+                                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            },
+                            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                data = Uri.parse("package:${batteryContext.packageName}")
+                                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            },
+                            Intent(Settings.ACTION_SETTINGS).apply {
+                                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            },
+                        )
                     }
                 ) { Text(stringResource(R.string.battery_exempt_action)) }
             },
