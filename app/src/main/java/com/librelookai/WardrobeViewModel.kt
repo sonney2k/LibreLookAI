@@ -1367,39 +1367,36 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         val img = _state.value.images.find { it.driveId == driveId } ?: return
         viewModelScope.launch {
             acquireJobWakeLock()
-            _state.update { it.copy(processingImageId = driveId) }
             try {
+                // Rotate local cache files immediately so the UI can refresh without waiting.
                 withContext(Dispatchers.IO) {
-                    // Rotate cutout
                     val cutoutFile = drive.cachedFile(img.driveId)
                         ?: drive.downloadToCache(img.driveId, "${img.driveId}${DriveRepository.CUTOUT_SUFFIX}")
-                    if (cutoutFile != null) {
-                        rotateBitmapFileBy90(cutoutFile)
-                        drive.updateImage(img.driveId, cutoutFile)
-                    }
-                    // Rotate original if present
+                    if (cutoutFile != null) rotateBitmapFileBy90(cutoutFile)
                     img.originalDriveId?.let { origId ->
                         val origFile = drive.cachedFile(origId)
                             ?: drive.downloadToCache(origId, "${img.driveId}${DriveRepository.ORIGINAL_SUFFIX}")
-                        if (origFile != null) {
-                            rotateBitmapFileBy90(origFile)
-                            drive.updateImage(origId, origFile)
-                        }
+                        if (origFile != null) rotateBitmapFileBy90(origFile)
                     }
                 }
+                // Bump version so Coil reloads from the already-rotated local cache.
                 _state.update { s ->
-                    s.copy(
-                        processingImageId = null,
-                        images = s.images.map {
-                            if (it.driveId == driveId) it.copy(version = it.version + 1) else it
-                        },
-                    )
+                    s.copy(images = s.images.map {
+                        if (it.driveId == driveId) it.copy(version = it.version + 1) else it
+                    })
+                }
+                // Upload rotated files to Drive silently (no processingImageId = no overlay).
+                withContext(Dispatchers.IO) {
+                    drive.cachedFile(img.driveId)?.let { drive.updateImage(img.driveId, it) }
+                    img.originalDriveId?.let { origId ->
+                        drive.cachedFile(origId)?.let { drive.updateImage(origId, it) }
+                    }
                 }
                 val id = folderId
                 if (id != null) saveLocalCache(id, _state.value.images)
             } catch (e: Exception) {
                 Log.e("WardrobeVM", "rotateImage failed", e)
-                _state.update { it.copy(processingImageId = null, error = e.message) }
+                _state.update { it.copy(error = e.message) }
             } finally {
                 releaseJobWakeLock()
             }

@@ -1022,13 +1022,6 @@ private fun FullScreenViewer(
             )
         }
 
-        IconButton(
-            onClick = onDismiss,
-            modifier = Modifier.align(Alignment.TopStart).statusBarsPadding().padding(8.dp),
-        ) {
-            Icon(Icons.Default.Close, contentDescription = "Close", tint = Color.White)
-        }
-
         Text(
             text = "${pagerState.currentPage + 1} / ${images.size}",
             color = Color.White,
@@ -1046,13 +1039,36 @@ private fun FullScreenViewer(
             hasOriginal = currentImage.originalDriveId != null,
             onTagImage = { onTagImage(currentImage.driveId) },
             onRemoveBackground = { onRemoveBackground(currentImage.driveId) },
-            onRotateImage = { onRotateImage(currentImage.driveId) },
             onEditTags = { showTagEdit = true },
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .statusBarsPadding()
                 .padding(top = 8.dp, end = 8.dp),
         )
+
+        // Rotate button — BottomEnd, drawn after TagsOverlay so it stays on top.
+        IconButton(
+            onClick = { onRotateImage(currentImage.driveId) },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .navigationBarsPadding()
+                .padding(16.dp),
+        ) {
+            Icon(
+                Icons.AutoMirrored.Filled.RotateRight,
+                contentDescription = stringResource(R.string.wardrobe_tag_rotate),
+                tint = Color.White,
+                modifier = Modifier.size(28.dp),
+            )
+        }
+
+        // Close button — LAST child = highest Z-order, so TagsOverlay can never block it.
+        IconButton(
+            onClick = onDismiss,
+            modifier = Modifier.align(Alignment.TopStart).statusBarsPadding().padding(8.dp),
+        ) {
+            Icon(Icons.Default.Close, contentDescription = "Close", tint = Color.White)
+        }
     }
 
     if (showTagEdit) {
@@ -1153,7 +1169,6 @@ private fun TagsOverlay(
     hasOriginal: Boolean = false,
     onTagImage: () -> Unit,
     onRemoveBackground: () -> Unit,
-    onRotateImage: () -> Unit,
     onEditTags: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -1192,14 +1207,6 @@ private fun TagsOverlay(
                         stringResource(if (hasOriginal) R.string.wardrobe_tag_re_remove_bg else R.string.wardrobe_tag_remove_bg),
                         color = Color.White,
                         style = MaterialTheme.typography.labelSmall,
-                    )
-                }
-                TextButton(onClick = onRotateImage, contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)) {
-                    Icon(
-                        Icons.AutoMirrored.Filled.RotateRight,
-                        contentDescription = stringResource(R.string.wardrobe_tag_rotate),
-                        tint = Color.White,
-                        modifier = Modifier.size(16.dp),
                     )
                 }
                 TextButton(onClick = onEditTags, contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)) {
