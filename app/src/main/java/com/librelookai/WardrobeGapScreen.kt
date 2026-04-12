@@ -2,6 +2,7 @@ package com.librelookai
 
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -216,6 +217,11 @@ private fun GapSuggestionCard(
             append(Uri.encode(searchQuery))
         }
     }
+    Log.d("ShopButtons", "searchQuery='$searchQuery'")
+    Log.d("ShopButtons", "amazonUrl='$amazonUrl'")
+    Log.d("ShopButtons", "shopStyleUrl='$shopStyleUrl'")
+    Log.d("ShopButtons", "AMAZON_AFFILIATE_TAG='${BuildConfig.AMAZON_AFFILIATE_TAG}'")
+    Log.d("ShopButtons", "SHOPSTYLE_PUBLISHER_ID='${BuildConfig.SHOPSTYLE_PUBLISHER_ID}'")
 
     OutlinedCard(modifier = modifier.fillMaxWidth()) {
         Column(
@@ -291,7 +297,14 @@ private fun GapSuggestionCard(
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedButton(
                     onClick = {
-                        runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(amazonUrl))) }
+                        Log.d("ShopButtons", "Amazon button tapped, launching: $amazonUrl")
+                        runCatching {
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(amazonUrl))
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            context.startActivity(intent)
+                        }.onFailure { e ->
+                            Log.e("ShopButtons", "Failed to open Amazon URL: $amazonUrl", e)
+                        }
                     },
                     modifier = Modifier.weight(1f),
                     contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
@@ -302,7 +315,14 @@ private fun GapSuggestionCard(
                 }
                 OutlinedButton(
                     onClick = {
-                        runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(shopStyleUrl))) }
+                        Log.d("ShopButtons", "ShopStyle button tapped, launching: $shopStyleUrl")
+                        runCatching {
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(shopStyleUrl))
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            context.startActivity(intent)
+                        }.onFailure { e ->
+                            Log.e("ShopButtons", "Failed to open ShopStyle URL: $shopStyleUrl", e)
+                        }
                     },
                     modifier = Modifier.weight(1f),
                     contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
