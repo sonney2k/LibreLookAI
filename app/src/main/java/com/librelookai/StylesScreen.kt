@@ -82,12 +82,20 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -539,6 +547,11 @@ private fun StyleCard(
     onWear: () -> Unit,
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var viewerImage by remember { mutableStateOf<DriveImage?>(null) }
+
+    viewerImage?.let { image ->
+        WardrobeItemViewer(image = image, onDismiss = { viewerImage = null })
+    }
 
     if (showDeleteDialog) {
         AlertDialog(
@@ -600,7 +613,9 @@ private fun StyleCard(
                                     .build()
                             },
                             contentDescription = image.name,
-                            modifier = Modifier.size(72.dp),
+                            modifier = Modifier
+                                .size(72.dp)
+                                .clickable { viewerImage = image },
                             contentScale = ContentScale.Crop,
                         )
                     }
@@ -1162,4 +1177,173 @@ private fun StyleNameDialog(
             TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
         },
     )
+}
+
+// ---------- Read-only wardrobe item viewer (opened from style cards) ----------
+
+@Composable
+private fun WardrobeItemViewer(image: DriveImage, onDismiss: () -> Unit) {
+    BackHandler(onBack = onDismiss)
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black),
+    ) {
+        StyleZoomableImage(
+            localPath = image.localPath,
+            name = image.name,
+            cacheKey = "${image.driveId}_${image.version}",
+        )
+
+        image.tags?.let { tags ->
+            StyleTagsOverlay(
+                tags = tags,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .statusBarsPadding()
+                    .padding(top = 8.dp, end = 8.dp),
+            )
+        }
+
+        IconButton(
+            onClick = onDismiss,
+            modifier = Modifier.align(Alignment.TopStart).statusBarsPadding().padding(8.dp),
+        ) {
+            Icon(Icons.Default.Close, contentDescription = null, tint = Color.White)
+        }
+    }
+}
+
+@Composable
+private fun StyleZoomableImage(localPath: String, name: String, cacheKey: String) {
+    var scale by remember { mutableFloatStateOf(1f) }
+    var offset by remember { mutableStateOf(Offset.Zero) }
+    val ctx = LocalContext.current
+
+    AsyncImage(
+        model = remember(cacheKey) {
+            ImageRequest.Builder(ctx).data(localPath).memoryCacheKey(cacheKey).build()
+        },
+        contentDescription = name,
+        modifier = Modifier
+            .fillMaxSize()
+            .pointerInput(Unit) {
+                awaitEachGesture {
+                    awaitFirstDown(requireUnconsumed = false, pass = PointerEventPass.Initial)
+                    var prevDistance = -1f
+                    do {
+                        val event = awaitPointerEvent(PointerEventPass.Initial)
+                        val pressed = event.changes.filter { it.pressed }
+                        when {
+                            pressed.size >= 2 -> {
+                                val dist = (pressed[1].position - pressed[0].position).getDistance()
+                                if (prevDistance > 0f) {
+                                    val focal = Offset(
+                                        (pressed[0].position.x + pressed[1].position.x) / 2f,
+                                        (pressed[0].position.y + pressed[1].position.y) / 2f,
+                                    )
+                                    val newScale = (scale * (dist / prevDistance)).coerceIn(1f, 8f)
+                                    val delta = newScale / scale
+                                    val cx = size.width / 2f
+                                    val cy = size.height / 2f
+                                    offset = Offset(
+                                        (focal.x - cx) * (1f - delta) + offset.x * delta,
+                                        (focal.y - cy) * (1f - delta) + offset.y * delta,
+                                    )
+                                    scale = newScale
+                                    if (scale <= 1f) offset = Offset.Zero
+                                }
+                                prevDistance = dist
+                                pressed.forEach { it.consume() }
+                            }
+                            pressed.size == 1 && scale > 1.01f -> {
+                                val delta = pressed[0].position - pressed[0].previousPosition
+                                offset = Offset(offset.x + delta.x, offset.y + delta.y)
+                                pressed[0].consume()
+                                prevDistance = -1f
+                            }
+                            else -> prevDistance = -1f
+                        }
+                    } while (event.changes.any { it.pressed })
+                }
+            }
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+                translationX = offset.x
+                translationY = offset.y
+            },
+        contentScale = ContentScale.Fit,
+    )
+}
+
+@Composable
+private fun StyleTagsOverlay(tags: ClothingTags, modifier: Modifier = Modifier) {
+    Surface(
+        modifier = modifier,
+        shape = MaterialTheme.shapes.medium,
+        color = Color.Black.copy(alpha = 0.55f),
+    ) {
+        Column(
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            horizontalAlignment = Alignment.End,
+        ) {
+            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                if (tags.type.isNotEmpty()) StyleTagChip(tags.type)
+                if (tags.category.isNotEmpty()) StyleTagChip(tags.category.localizedTagValue())
+            }
+            if (tags.uses.isNotEmpty()) {
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    tags.uses.forEach { StyleTagChip(it.localizedTagValue()) }
+                }
+            }
+            if (tags.colors.isNotEmpty()) {
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    tags.colors.forEach { StyleTagChip(it.localizedTagValue()) }
+                }
+            }
+            if (tags.seasonality.isNotEmpty()) {
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    tags.seasonality.forEach { StyleTagChip(it.localizedTagValue()) }
+                }
+            }
+            if (tags.aesthetic.isNotEmpty()) {
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    tags.aesthetic.forEach { StyleTagChip(it.localizedTagValue()) }
+                }
+            }
+            if (tags.fit.isNotEmpty()) {
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    tags.fit.forEach { StyleTagChip(it.localizedTagValue()) }
+                }
+            }
+            if (tags.material.isNotEmpty()) {
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    tags.material.forEach { StyleTagChip(it.localizedTagValue()) }
+                }
+            }
+            if (tags.pattern.isNotEmpty()) {
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    tags.pattern.forEach { StyleTagChip(it.localizedTagValue()) }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun StyleTagChip(label: String) {
+    Surface(
+        shape = MaterialTheme.shapes.extraSmall,
+        color = Color.White.copy(alpha = 0.18f),
+    ) {
+        Text(
+            text = label,
+            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+            style = MaterialTheme.typography.labelSmall,
+            color = Color.White,
+        )
+    }
 }
