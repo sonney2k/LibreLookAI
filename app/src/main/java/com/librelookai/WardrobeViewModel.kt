@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.io.File
+import java.util.concurrent.atomic.AtomicInteger
 
 enum class WardrobeView { GRID, CAPTURE }
 
@@ -128,20 +129,30 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     private val gemini = GeminiRepository(app)
     private val gson = Gson()
 
-    private var repairWakeLock: PowerManager.WakeLock? = null
+    private var jobWakeLock: PowerManager.WakeLock? = null
+    private val activeJobCount = AtomicInteger(0)
 
-    private fun acquireRepairWakeLock() {
-        val pm = getApplication<Application>().getSystemService(Context.POWER_SERVICE) as PowerManager
-        repairWakeLock?.release()
-        repairWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "LibreLookAI:RepairAndSync")
-        repairWakeLock!!.acquire(30 * 60 * 1000L) // 30-minute safety timeout
-        Log.d(TAG, "Wake lock acquired")
+    private fun acquireJobWakeLock() {
+        if (activeJobCount.getAndIncrement() == 0) {
+            // Foreground service keeps the process alive while any job is running
+            JobForegroundService.acquire(getApplication())
+            // Wake lock keeps the CPU awake if the screen turns off mid-job
+            val pm = getApplication<Application>().getSystemService(Context.POWER_SERVICE) as PowerManager
+            if (jobWakeLock == null) {
+                jobWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "LibreLookAI:Jobs")
+                    .also { it.setReferenceCounted(false) }
+            }
+            jobWakeLock!!.acquire(30 * 60 * 1000L) // 30-minute safety timeout
+            Log.d(TAG, "Wake lock acquired")
+        }
     }
 
-    private fun releaseRepairWakeLock() {
-        repairWakeLock?.let { if (it.isHeld) it.release() }
-        repairWakeLock = null
-        Log.d(TAG, "Wake lock released")
+    private fun releaseJobWakeLock() {
+        if (activeJobCount.decrementAndGet() == 0) {
+            jobWakeLock?.let { if (it.isHeld) it.release() }
+            JobForegroundService.release(getApplication())
+            Log.d(TAG, "Wake lock released")
+        }
     }
 
     private val _state = MutableStateFlow(WardrobeUiState())
@@ -200,7 +211,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
      */
     fun startRepairAndRefresh(folderIds: List<String>) {
         if (folderIds.isEmpty()) return
-        acquireRepairWakeLock()
+        acquireJobWakeLock()
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 Log.d(TAG, "Scan started — ${folderIds.size} folder(s): $folderIds")
@@ -288,7 +299,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             } finally {
                 // Wake lock held until user responds to the confirmation dialog;
                 // continueRepairProcessing re-acquires for the processing phase.
-                releaseRepairWakeLock()
+                releaseJobWakeLock()
             }
         }
     }
@@ -323,7 +334,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         val processTotal = audit.orphanedOriginals.size + audit.cutoutsNeedingSidecar.size
         Log.d(TAG, "Processing started — ${audit.orphanedOriginals.size} orphaned original(s), ${audit.cutoutsNeedingSidecar.size} cutout(s) needing tagging")
         _state.update { it.copy(auditProgress = AuditProgress(isProcessing = true, processTotal = processTotal)) }
-        acquireRepairWakeLock()
+        acquireJobWakeLock()
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -403,7 +414,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 _state.update { it.copy(auditProgress = AuditProgress(isDone = true)) }
                 withContext(Dispatchers.Main) { loadImages() }
             } finally {
-                releaseRepairWakeLock()
+                releaseJobWakeLock()
             }
         }
     }
@@ -614,11 +625,16 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     /** Drains [workQueue] serially — bg removal + tagging for each newly uploaded photo. */
     private suspend fun processQueue() {
         for (job in workQueue) {
-            runCatching { processQueuedImage(job) }
-                .onFailure { e -> _state.update { it.copy(error = e.message) } }
-            _state.update { it.copy(pendingJobs = maxOf(0, it.pendingJobs - 1)) }
-            // Sidecar is saved inside processQueuedImage; update local cache here
-            folderId?.let { id -> saveLocalCache(id, _state.value.images) }
+            acquireJobWakeLock()
+            try {
+                runCatching { processQueuedImage(job) }
+                    .onFailure { e -> _state.update { it.copy(error = e.message) } }
+                _state.update { it.copy(pendingJobs = maxOf(0, it.pendingJobs - 1)) }
+                // Sidecar is saved inside processQueuedImage; update local cache here
+                folderId?.let { id -> saveLocalCache(id, _state.value.images) }
+            } finally {
+                releaseJobWakeLock()
+            }
         }
     }
 
@@ -822,35 +838,40 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         val images = _state.value.images
         if (images.isEmpty() || _state.value.isRemovingAllBg) return
         viewModelScope.launch {
-            _state.update { it.copy(isRemovingAllBg = true, removeBgDone = 0, removeBgTotal = images.size) }
-            images.forEachIndexed { index, image ->
-                _state.update { it.copy(removeBgDone = index) }
-                val source = resolveOriginalFile(image.driveId) ?: return@forEachIndexed
-                val processedFile = gemini.removeBackground(source, drive.cacheDir) ?: return@forEachIndexed
+            acquireJobWakeLock()
+            try {
+                _state.update { it.copy(isRemovingAllBg = true, removeBgDone = 0, removeBgTotal = images.size) }
+                images.forEachIndexed { index, image ->
+                    _state.update { it.copy(removeBgDone = index) }
+                    val source = resolveOriginalFile(image.driveId) ?: return@forEachIndexed
+                    val processedFile = gemini.removeBackground(source, drive.cacheDir) ?: return@forEachIndexed
 
-                // Upload original to Drive if not already stored there
-                val id = folderId ?: return@forEachIndexed
-                val originalDriveId = image.originalDriveId ?: runCatching {
-                    drive.uploadImage(id, source).id
-                }.getOrNull()
+                    // Upload original to Drive if not already stored there
+                    val id = folderId ?: return@forEachIndexed
+                    val originalDriveId = image.originalDriveId ?: runCatching {
+                        drive.uploadImage(id, source).id
+                    }.getOrNull()
 
-                runCatching {
-                    drive.updateImage(image.driveId, processedFile)
-                    val displayCache = File(drive.cacheDir, "${image.driveId}.png")
-                    processedFile.copyTo(displayCache, overwrite = true)
-                    _state.update { s ->
-                        s.copy(images = s.images.map {
-                            if (it.driveId == image.driveId) it.copy(
-                                localPath = displayCache.absolutePath,
-                                version = System.currentTimeMillis(),
-                                originalDriveId = originalDriveId ?: it.originalDriveId,
-                            ) else it
-                        })
+                    runCatching {
+                        drive.updateImage(image.driveId, processedFile)
+                        val displayCache = File(drive.cacheDir, "${image.driveId}.png")
+                        processedFile.copyTo(displayCache, overwrite = true)
+                        _state.update { s ->
+                            s.copy(images = s.images.map {
+                                if (it.driveId == image.driveId) it.copy(
+                                    localPath = displayCache.absolutePath,
+                                    version = System.currentTimeMillis(),
+                                    originalDriveId = originalDriveId ?: it.originalDriveId,
+                                ) else it
+                            })
+                        }
                     }
                 }
+                _state.update { it.copy(isRemovingAllBg = false, removeBgDone = 0, removeBgTotal = 0) }
+                images.forEach { img -> saveSidecar(img.driveId) }
+            } finally {
+                releaseJobWakeLock()
             }
-            _state.update { it.copy(isRemovingAllBg = false, removeBgDone = 0, removeBgTotal = 0) }
-            images.forEach { img -> saveSidecar(img.driveId) }
         }
     }
 
@@ -882,6 +903,8 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         val images = _state.value.images
         if (images.isEmpty() || _state.value.isRetagging) return
         viewModelScope.launch {
+            acquireJobWakeLock()
+            try {
             _state.update { it.copy(isRetagging = true, retagDone = 0, retagTotal = images.size) }
             images.forEachIndexed { index, image ->
                 _state.update { it.copy(retagDone = index) }
@@ -893,6 +916,9 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             }
             _state.update { it.copy(isRetagging = false, retagDone = 0, retagTotal = 0) }
             images.forEach { img -> saveSidecar(img.driveId) }
+            } finally {
+                releaseJobWakeLock()
+            }
         }
     }
 
@@ -955,6 +981,8 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     ) {
         val id = folderId ?: return
         viewModelScope.launch {
+            acquireJobWakeLock()
+            try {
             val cr = getApplication<Application>().contentResolver
 
             // ---- Enumerate source files ----
@@ -1095,6 +1123,9 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             _state.update { it.copy(isImporting = false, importDone = 0, importTotal = 0) }
             // Save sidecar for each newly-created or updated item
             _state.value.images.forEach { img -> if (img.sidecarDriveId == null) saveSidecar(img.driveId) }
+            } finally {
+                releaseJobWakeLock()
+            }
         }
     }
 
@@ -1121,6 +1152,8 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     ) {
         val id = folderId ?: return
         viewModelScope.launch {
+            acquireJobWakeLock()
+            try {
             val srcFiles = runCatching { drive.listFiles(sourceFolderId) }.getOrDefault(emptyList())
             if (srcFiles.isEmpty()) return@launch
 
@@ -1209,6 +1242,9 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             _state.update { it.copy(isImporting = false, importDone = 0, importTotal = 0) }
             // Save sidecar for each newly-created or updated item
             _state.value.images.forEach { img -> if (img.sidecarDriveId == null) saveSidecar(img.driveId) }
+            } finally {
+                releaseJobWakeLock()
+            }
         }
     }
 

@@ -372,4 +372,9 @@
     <string name="ai_analyzing_wardrobe">Analyzing your wardrobe…</string>
     <string name="ai_suggesting_style">Suggesting style…</string>
     <string name="ai_composing_outfit">Composing outfit…</string>
+
+    <!-- Foreground service notification -->
+    <string name="job_notif_channel_name">Background processing</string>
+    <string name="job_notif_title">LibreLookAI</string>
+    <string name="job_notif_text">Processing wardrobe items…</string>
 </resources>
