@@ -144,12 +144,17 @@ class MainActivity : ComponentActivity() {
                             }
                         }
 
+                        var dismissWardrobeViewerTrigger by remember { mutableIntStateOf(0) }
+
                         Scaffold(
                             modifier = Modifier.fillMaxSize(),
                             bottomBar = {
                                 AppNavBar(
                                     selectedTab = selectedTab,
                                     onTabSelected = { selectedTab = it },
+                                    onTabReselected = { tab ->
+                                        if (tab == 1) dismissWardrobeViewerTrigger++
+                                    },
                                 )
                             },
                         ) { innerPadding ->
@@ -183,6 +188,7 @@ class MainActivity : ComponentActivity() {
                                             wardrobeViewModel.clearSelection()
                                             selectedTab = 0
                                         },
+                                        dismissViewerTrigger = dismissWardrobeViewerTrigger,
                                         modifier = Modifier.padding(innerPadding),
                                     )
                                     2 -> CalendarScreen(
@@ -283,7 +289,11 @@ fun AppScreenHeader(
 }
 
 @Composable
-private fun AppNavBar(selectedTab: Int, onTabSelected: (Int) -> Unit) {
+private fun AppNavBar(
+    selectedTab: Int,
+    onTabSelected: (Int) -> Unit,
+    onTabReselected: (Int) -> Unit = {},
+) {
     data class NavItem(val labelRes: Int, val icon: androidx.compose.ui.graphics.vector.ImageVector)
     val items = listOf(
         NavItem(R.string.nav_styles,   Icons.Default.Style),
@@ -298,7 +308,9 @@ private fun AppNavBar(selectedTab: Int, onTabSelected: (Int) -> Unit) {
             val label = stringResource(item.labelRes)
             NavigationBarItem(
                 selected = selectedTab == index,
-                onClick = { onTabSelected(index) },
+                onClick = {
+                    if (index == selectedTab) onTabReselected(index) else onTabSelected(index)
+                },
                 icon = { Icon(item.icon, contentDescription = label) },
                 label = { Text(label) },
             )

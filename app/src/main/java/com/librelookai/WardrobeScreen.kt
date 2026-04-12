@@ -134,6 +134,7 @@ fun WardrobeScreen(
     locationViewModel: LocationViewModel = viewModel(),
     onCreateStyleFromSelection: (Set<String>) -> Unit = {},
     onComposeStyleFromSelection: (Set<String>) -> Unit = {},
+    dismissViewerTrigger: Int = 0,
     modifier: Modifier = Modifier,
 ) {
     val state         by viewModel.state.collectAsState()
@@ -200,6 +201,7 @@ fun WardrobeScreen(
             onComposeStyleFromSelection = onComposeStyleFromSelection,
             onDismissBatteryExemption = viewModel::dismissBatteryExemptionWarning,
             processingImageId = state.processingImageId,
+            dismissViewerTrigger = dismissViewerTrigger,
             modifier = modifier,
         )
         WardrobeView.CAPTURE -> CaptureScreen(
@@ -516,6 +518,7 @@ private fun GridContent(
     onComposeStyleFromSelection: (Set<String>) -> Unit,
     onDismissBatteryExemption: () -> Unit = {},
     processingImageId: String?,
+    dismissViewerTrigger: Int = 0,
     modifier: Modifier = Modifier,
 ) {
     var cellSizeDp by rememberSaveable { mutableFloatStateOf(120f) }
@@ -529,6 +532,9 @@ private fun GridContent(
     var sortBy by remember { mutableStateOf(SortOption.DATE_DESC) }
 
     val tagCategories = remember(state.images) { state.images.tagCategories() }
+
+    // Close the viewer when the wardrobe nav tab is re-tapped from the nav bar.
+    LaunchedEffect(dismissViewerTrigger) { if (dismissViewerTrigger > 0) selectedIndex = null }
 
     // OR within each category, AND across categories
     val filteredImages = remember(state.images, selectedTags) {
