@@ -280,24 +280,26 @@ private fun StyleListScreen(
 
     Box(modifier = modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
-            // Filter + sort bar (only when there's something to show)
+            // ---- Screen header with sort button ----
+            AppScreenHeader(
+                title = stringResource(R.string.nav_styles),
+                trailingContent = if (styles.isNotEmpty()) {
+                    {
+                        StyleSortButton(
+                            sortBy = sortBy,
+                            onSortChanged = { sortBy = it },
+                            modifier = Modifier.padding(end = 4.dp),
+                        )
+                    }
+                } else null,
+            )
+            // ---- Tag filter chips (only when there's something to show) ----
             if (styles.isNotEmpty()) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    TagFilterBar(
-                        tagCategories = tagCategories,
-                        selectedTags = selectedTags,
-                        onTagsChanged = { selectedTags = it },
-                        modifier = Modifier.weight(1f),
-                    )
-                    StyleSortButton(
-                        sortBy = sortBy,
-                        onSortChanged = { sortBy = it },
-                        modifier = Modifier.padding(end = 4.dp),
-                    )
-                }
+                TagFilterBar(
+                    tagCategories = tagCategories,
+                    selectedTags = selectedTags,
+                    onTagsChanged = { selectedTags = it },
+                )
             }
 
             when {

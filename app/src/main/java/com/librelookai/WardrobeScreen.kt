@@ -551,26 +551,26 @@ private fun GridContent(
 
     Box(modifier = modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
-            // ---- Tag filter bar + sort ----
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                TagFilterBar(
-                    tagCategories = tagCategories,
-                    selectedTags = selectedTags,
-                    onTagsChanged = { selectedTags = it },
-                    locations = locations,
-                    activeLocationId = activeLocationId,
-                    onSetActiveLocation = onSetActiveLocation,
-                    modifier = Modifier.weight(1f),
-                )
-                SortButton(
-                    sortBy = sortBy,
-                    onSortChanged = { sortBy = it },
-                    modifier = Modifier.padding(end = 4.dp),
-                )
-            }
+            // ---- Screen header with sort button ----
+            AppScreenHeader(
+                title = stringResource(R.string.nav_wardrobe),
+                trailingContent = {
+                    SortButton(
+                        sortBy = sortBy,
+                        onSortChanged = { sortBy = it },
+                        modifier = Modifier.padding(end = 4.dp),
+                    )
+                },
+            )
+            // ---- Tag filter chips ----
+            TagFilterBar(
+                tagCategories = tagCategories,
+                selectedTags = selectedTags,
+                onTagsChanged = { selectedTags = it },
+                locations = locations,
+                activeLocationId = activeLocationId,
+                onSetActiveLocation = onSetActiveLocation,
+            )
 
             // ---- Selection bar (shown when at least one item is selected) ----
             if (isSelectionMode) {

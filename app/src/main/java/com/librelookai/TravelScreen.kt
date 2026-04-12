@@ -100,7 +100,9 @@ fun TravelScreen(
     val isWorking = state.isLoadingForecast || state.isGenerating
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    Box(modifier = modifier.fillMaxSize()) {
+    Column(modifier = modifier.fillMaxSize()) {
+        AppScreenHeader(title = stringResource(R.string.travel_title))
+        Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
             contentPadding = PaddingValues(bottom = 24.dp),
             verticalArrangement = Arrangement.spacedBy(0.dp),
@@ -113,12 +115,6 @@ fun TravelScreen(
                         .padding(horizontal = 16.dp, vertical = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    Text(
-                        stringResource(R.string.travel_title),
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold,
-                    )
-
                     OutlinedTextField(
                         value = state.destination,
                         onValueChange = travelViewModel::updateDestination,
@@ -347,7 +343,8 @@ fun TravelScreen(
                 action = { TextButton(onClick = travelViewModel::clearError) { Text(stringResource(R.string.action_ok)) } },
             ) { Text(msg) }
         }
-    }
+        } // Box
+    } // Column
 }
 
 // ---------- Forecast day chip ----------

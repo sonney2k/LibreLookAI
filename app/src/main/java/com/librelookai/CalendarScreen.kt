@@ -141,6 +141,7 @@ fun CalendarScreen(
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
 
     Column(modifier = modifier.fillMaxSize()) {
+        AppScreenHeader(title = stringResource(R.string.nav_calendar))
         // ---- Location filter (only shown when multiple locations exist) ----
         if (locationState.locations.size > 1) {
             LazyRow(

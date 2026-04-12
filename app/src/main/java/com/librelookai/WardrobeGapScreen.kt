@@ -58,32 +58,23 @@ fun WardrobeGapScreen(
     val wardrobeState by wardrobeViewModel.state.collectAsState()
     val profileState  by profileViewModel.state.collectAsState()
 
-    Box(modifier = modifier.fillMaxSize()) {
+    Column(modifier = modifier.fillMaxSize()) {
+        AppScreenHeader(
+            title = stringResource(R.string.gap_title),
+            leadingIcon = Icons.Default.TipsAndUpdates,
+        )
+        Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
             contentPadding = PaddingValues(bottom = 24.dp),
         ) {
-            // ---- Header ----
+            // ---- Analyze button + description ----
             item {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 16.dp),
+                        .padding(horizontal = 16.dp, vertical = 12.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            Icons.Default.TipsAndUpdates,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(22.dp),
-                        )
-                        Spacer(Modifier.width(8.dp))
-                        Text(
-                            stringResource(R.string.gap_title),
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.SemiBold,
-                        )
-                    }
                     Text(
                         stringResource(R.string.gap_description),
                         style = MaterialTheme.typography.bodySmall,
@@ -189,7 +180,8 @@ fun WardrobeGapScreen(
                 action = { TextButton(onClick = gapViewModel::clearError) { Text(stringResource(R.string.action_ok)) } },
             ) { Text(msg) }
         }
-    }
+        } // Box
+    } // Column
 }
 
 // ---------- Suggestion card ----------
