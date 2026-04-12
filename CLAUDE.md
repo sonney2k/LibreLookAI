@@ -72,7 +72,7 @@ All ViewModels extend `AndroidViewModel` and receive `Application` for context. 
 - **Legacy fallback**: `_wardrobe_metadata.json` is read as a fallback when no sidecars exist yet; items are migrated to sidecars fire-and-forget on first load.
 - **Two-phase loading**: Phase 1 shows the local disk cache instantly (zero network). Phase 2 fetches cutout files + sidecar files from Drive in parallel, then downloads any uncached images and reads sidecar content, also in parallel.
 - **Local disk cache**: `wardrobe_cache_{folderId}.json` — a `LocalCache` snapshot of all `DriveImage` entries, rebuilt on every successful Phase 2 sync.
-- **Multi-location**: Each "location" corresponds to a Drive subfolder. `LocationViewModel` tracks the active location; `WardrobeViewModel.setLocation(folderId)` switches context.
+- **Multi-location**: Each "location" corresponds to a Drive subfolder. `LocationViewModel` tracks the active location; `WardrobeViewModel.setLocation(folderId)` switches context. `LocationViewModel.getOrCreateLocation(name, onResult)` finds an existing location by name (case-insensitive) or creates one, returning its folderId via callback.
 - **Local prefs**: `ApiKeyStore` (SharedPreferences) for user-supplied Gemini key only.
 
 ### Gemini routing
@@ -123,6 +123,21 @@ It shows: editable name + description, outfit items as 100 dp tappable tiles in 
 - `buildCompositionPrompt` — compose a brand-new outfit from the full wardrobe
 - `buildAlternativesPrompt` — suggest up to 10 swap alternatives for one item given the rest of the style as context
 - `buildCombinePrompt` — merge N selected styles into one cohesive outfit by choosing the best items from across them
+
+**`StylesViewModel.saveStyleDirectly(name, description, itemIds, onDone)`** saves a style without the draft editing flow. Used by `TravelScreen` to persist packing outfits directly as styles.
+
+### Travel packing screen
+
+`TravelScreen` receives `travelViewModel`, `wardrobeViewModel`, `profileViewModel`, `stylesViewModel`, and `locationViewModel`.
+
+**Packing list generation**: destination + date range → `WeatherRepository.fetchDestinationForecast()` → `buildPackingPrompt()` → Gemini → `PackingList` (list of `PackingOutfit` + `extraItems`). A refinement loop (free-text + preset chips) re-runs `buildPackingPrompt()` with accumulated `feedbackHistory`.
+
+**`PackingOutfit` cards** each show a "Save as style" `InputChip`. Tapping it calls `stylesViewModel.saveStyleDirectly()` and flips the chip to "Saved ✓" (local composable state; not persisted across recompositions).
+
+**"Move all to Travel location" button** appears in the packing list header when there are packed items:
+1. Calls `locationViewModel.getOrCreateLocation("Travel")` — finds an existing location named "Travel" (case-insensitive) or creates a new Drive subfolder + updates the locations JSON, then returns the folderId via callback.
+2. Calls `wardrobeViewModel.moveItemsToFolder(itemIds, toFolderId)` — moves each item's cutout + original + sidecar files via `DriveRepository.moveFile()` (single PATCH, no re-upload), then drops the moved items from in-memory state.
+3. A Snackbar confirms success or failure.
 
 ### Navigation
 
