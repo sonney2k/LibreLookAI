@@ -67,7 +67,11 @@ All ViewModels extend `AndroidViewModel` and receive `Application` for context. 
 ### Storage strategy
 
 - **Images**: Uploaded to the user's own Google Drive via `drive.file` scope only (app-private folder `LibreLookAI/`). Cached locally under `context.filesDir/wardrobe/`.
-- **Metadata**: Five JSON sidecar files stored in the same Drive folder: `_wardrobe_metadata.json`, `_styles_metadata.json`, `_outfits_metadata.json`, `_user_preferences.json`, `_locations.json`.
+- **Per-item sidecar metadata**: Each wardrobe item has its own `{cutoutDriveId}.json` sidecar stored beside the cutout in the same Drive folder. The sidecar holds `ClothingTags` and `originalDriveId`. Five system JSON files are excluded from sidecar handling: `_wardrobe_metadata.json`, `_styles_metadata.json`, `_outfits_metadata.json`, `_user_preferences.json`, `_locations.json`.
+- **File naming convention**: cutout = `{cutoutDriveId}_cutout.png`, original = `{cutoutDriveId}_original.jpg`, sidecar = `{cutoutDriveId}.json`. The Drive-assigned ID of the cutout file is the shared prefix for all three.
+- **Legacy fallback**: `_wardrobe_metadata.json` is read as a fallback when no sidecars exist yet; items are migrated to sidecars fire-and-forget on first load.
+- **Two-phase loading**: Phase 1 shows the local disk cache instantly (zero network). Phase 2 fetches cutout files + sidecar files from Drive in parallel, then downloads any uncached images and reads sidecar content, also in parallel.
+- **Local disk cache**: `wardrobe_cache_{folderId}.json` — a `LocalCache` snapshot of all `DriveImage` entries, rebuilt on every successful Phase 2 sync.
 - **Multi-location**: Each "location" corresponds to a Drive subfolder. `LocationViewModel` tracks the active location; `WardrobeViewModel.setLocation(folderId)` switches context.
 - **Local prefs**: `ApiKeyStore` (SharedPreferences) for user-supplied Gemini key only.
 
@@ -99,6 +103,24 @@ All Gemini calls return `null` on failure; callers must gracefully degrade.
 
 String resources live in `values/strings.xml` and `values-de/strings.xml`. Add new strings to both files.
 
+### UI shell
+
+All six main screens use `AppScreenHeader` (defined in `MainActivity.kt`) for a consistent top bar: leading icon (optional), `titleMedium/SemiBold` title, trailing slot (optional, e.g. sort button), followed by a `HorizontalDivider`.
+
+### Photo upload flow
+
+1. `WardrobeViewModel.uploadPhoto(rawFile)` uploads the raw JPEG to Drive and enqueues a `PendingJob`.
+2. `processQueue()` drains the queue serially: bg removal via Gemini → upload cutout (renamed to `{id}_cutout.png`) → upload original (renamed to `{cutoutId}_original.jpg`) → delete raw → classify tags → write sidecar.
+3. State is updated by matching on **either** the raw Drive ID or the cutout Drive ID to handle the race where `loadImages()` may have already placed the item with the cutout ID.
+
+### Repair & Sync
+
+`WardrobeViewModel.startRepairAndRefresh(folderIds)` runs a multi-phase audit across all location folders:
+1. **Scan**: `DriveRepository.listAllImageFiles()` returns every image (originals, cutouts, raws). Cutouts with wrong names are renamed in-place. Originals whose prefix does not match any cutout's Drive ID are flagged as orphaned. Cutouts missing a `.json` sidecar are flagged.
+2. **Confirmation**: `WardrobeUiState.auditProgress` enters `awaitingConfirmation`; the UI shows findings and asks the user whether to process.
+3. **Process** (`continueRepairProcessing(true)`): orphaned originals get full AI processing (bg removal + tagging + sidecar upload); sidecar-less cutouts get tagging + sidecar upload.
+4. **Refresh**: all local caches are cleared and `loadImages()` reloads from Drive. `auditProgress.isDone` signals completion.
+
 ### SAF import
 
-`WardrobeViewModel.importFromFolder(treeUri)` reads images from any OS-accessible folder using `DocumentsContract` + `ContentResolver` (no extra OAuth scopes needed), re-uploads them to the app's Drive folder, and re-uses existing `_wardrobe_metadata.json` tags or classifies new items with Gemini.
+`WardrobeViewModel.importFromFolder(treeUri)` reads images from any OS-accessible folder using `DocumentsContract` + `ContentResolver` (no extra OAuth scopes needed), re-uploads them to the app's Drive folder, and classifies new items with Gemini before writing per-item sidecars.
