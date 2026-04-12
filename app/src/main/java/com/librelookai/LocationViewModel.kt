@@ -133,6 +133,33 @@ class LocationViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /**
+     * Returns the folderId for a location with [name] (case-insensitive), creating it if absent.
+     * [onResult] is called on the main thread with the folderId, or null on failure.
+     */
+    fun getOrCreateLocation(name: String, onResult: (String?) -> Unit) {
+        viewModelScope.launch {
+            runCatching {
+                val existing = _state.value.locations.find { it.name.equals(name, ignoreCase = true) }
+                if (existing != null) {
+                    existing.folderId
+                } else {
+                    val rootId = rootFolderId ?: drive.getOrCreateFolder().also { rootFolderId = it }
+                    val newFolderId = drive.createSubfolder(rootId, name)
+                    val newLocation = Location(name = name, folderId = newFolderId)
+                    val updated = _state.value.locations + newLocation
+                    drive.saveLocationsJson(rootId, gson.toJson(updated))
+                    _state.update { it.copy(locations = updated) }
+                    newFolderId
+                }
+            }.onSuccess { onResult(it) }
+             .onFailure { e ->
+                _state.update { it.copy(error = e.message) }
+                onResult(null)
+            }
+        }
+    }
+
     fun clearError() = _state.update { it.copy(error = null) }
 
     companion object {

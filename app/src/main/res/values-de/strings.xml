@@ -331,6 +331,11 @@
     <string name="travel_refine_evening">Abendoutfits hinzufügen</string>
     <string name="travel_refine_reuse">Outfit-Wiederverwendung maximieren</string>
     <string name="travel_day">Tag %d</string>
+    <string name="travel_save_as_style">Als Stil speichern</string>
+    <string name="travel_saved_as_style">Gespeichert</string>
+    <string name="travel_move_to_travel">Alle in „Reise"-Standort verschieben</string>
+    <string name="travel_move_done">Kleidungsstücke in Reise-Standort verschoben</string>
+    <string name="travel_move_error">Kleidungsstücke konnten nicht verschoben werden</string>
 
     <string name="calendar_tab_calendar">Kalender</string>
     <string name="calendar_tab_stats">Statistiken</string>

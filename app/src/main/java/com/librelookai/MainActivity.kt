@@ -207,6 +207,7 @@ class MainActivity : ComponentActivity() {
                                         wardrobeViewModel = wardrobeViewModel,
                                         profileViewModel = profileViewModel,
                                         stylesViewModel = stylesViewModel,
+                                        locationViewModel = locationViewModel,
                                         modifier = Modifier.padding(innerPadding),
                                     )
                                     4 -> WardrobeGapScreen(

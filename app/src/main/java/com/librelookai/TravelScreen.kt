@@ -24,8 +24,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FlightTakeoff
+import androidx.compose.material.icons.filled.MoveToInbox
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.AssistChip
@@ -90,6 +92,7 @@ fun TravelScreen(
     wardrobeViewModel: WardrobeViewModel = viewModel(),
     profileViewModel: ProfileViewModel = viewModel(),
     stylesViewModel: StylesViewModel = viewModel(),
+    locationViewModel: LocationViewModel = viewModel(),
     modifier: Modifier = Modifier,
 ) {
     val state        by travelViewModel.state.collectAsState()
@@ -99,6 +102,8 @@ fun TravelScreen(
 
     val isWorking = state.isLoadingForecast || state.isGenerating
     val keyboardController = LocalSoftwareKeyboardController.current
+    var isMoveInProgress by remember { mutableStateOf(false) }
+    var moveMessage by remember { mutableStateOf<String?>(null) }
 
     Column(modifier = modifier.fillMaxSize()) {
         AppScreenHeader(title = stringResource(R.string.travel_title))
@@ -254,12 +259,56 @@ fun TravelScreen(
                         }
                         TextButton(onClick = travelViewModel::clearResult) { Text(stringResource(R.string.travel_clear)) }
                     }
+                    val allPackedIds = packing.outfits.flatMap { it.itemIds }.distinct()
+                    if (allPackedIds.isNotEmpty()) {
+                        val moveDoneLabel = stringResource(R.string.travel_move_done)
+                        val moveErrorLabel = stringResource(R.string.travel_move_error)
+                        OutlinedButton(
+                            onClick = {
+                                isMoveInProgress = true
+                                locationViewModel.getOrCreateLocation("Travel") { toFolderId ->
+                                    if (toFolderId == null) {
+                                        isMoveInProgress = false
+                                        moveMessage = moveErrorLabel
+                                        return@getOrCreateLocation
+                                    }
+                                    wardrobeViewModel.moveItemsToFolder(allPackedIds, toFolderId) { success ->
+                                        isMoveInProgress = false
+                                        moveMessage = if (success) moveDoneLabel else moveErrorLabel
+                                    }
+                                }
+                            },
+                            enabled = !isMoveInProgress,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                                .padding(bottom = 8.dp),
+                        ) {
+                            if (isMoveInProgress) {
+                                CircularProgressIndicator(modifier = Modifier.size(16.dp), strokeWidth = 2.dp)
+                                Spacer(Modifier.width(8.dp))
+                            } else {
+                                Icon(Icons.Default.MoveToInbox, contentDescription = null, modifier = Modifier.size(16.dp))
+                                Spacer(Modifier.width(8.dp))
+                            }
+                            Text(stringResource(R.string.travel_move_to_travel))
+                        }
+                    }
                 }
 
                 itemsIndexed(packing.outfits) { index, outfit ->
                     PackingOutfitCard(
                         outfit = outfit,
                         imagesById = wardrobeState.images.associateBy { it.driveId },
+                        onSaveAsStyle = if (outfit.itemIds.isNotEmpty()) {
+                            {
+                                stylesViewModel.saveStyleDirectly(
+                                    name = outfit.occasion,
+                                    description = outfit.description,
+                                    itemIds = outfit.itemIds,
+                                )
+                            }
+                        } else null,
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
                     )
                 }
@@ -343,6 +392,15 @@ fun TravelScreen(
                 action = { TextButton(onClick = travelViewModel::clearError) { Text(stringResource(R.string.action_ok)) } },
             ) { Text(msg) }
         }
+        // Move-to-travel result snackbar
+        moveMessage?.let { msg ->
+            Snackbar(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(16.dp),
+                action = { TextButton(onClick = { moveMessage = null }) { Text(stringResource(R.string.action_ok)) } },
+            ) { Text(msg) }
+        }
         } // Box
     } // Column
 }
@@ -377,17 +435,50 @@ private fun ForecastDayChip(dayIndex: Int, forecast: DayForecast) {
 private fun PackingOutfitCard(
     outfit: PackingOutfit,
     imagesById: Map<String, DriveImage>,
+    onSaveAsStyle: (() -> Unit)?,
     modifier: Modifier = Modifier,
 ) {
     val ctx = LocalContext.current
     val images = outfit.itemIds.mapNotNull { imagesById[it] }
+    var saved by remember { mutableStateOf(false) }
 
     OutlinedCard(modifier = modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier.padding(12.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Text(outfit.occasion, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    outfit.occasion,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.weight(1f),
+                )
+                if (onSaveAsStyle != null) {
+                    InputChip(
+                        selected = saved,
+                        onClick = {
+                            if (!saved) {
+                                onSaveAsStyle()
+                                saved = true
+                            }
+                        },
+                        label = {
+                            Text(
+                                if (saved) stringResource(R.string.travel_saved_as_style)
+                                else stringResource(R.string.travel_save_as_style),
+                                style = MaterialTheme.typography.labelSmall,
+                            )
+                        },
+                        leadingIcon = if (saved) {
+                            { Icon(Icons.Default.Check, contentDescription = null, modifier = Modifier.size(14.dp)) }
+                        } else null,
+                    )
+                }
+            }
 
             if (images.isNotEmpty()) {
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {

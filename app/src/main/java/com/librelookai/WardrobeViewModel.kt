@@ -209,6 +209,36 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         loadImages()
     }
 
+    /**
+     * Moves the given wardrobe items (cutout + original + sidecar) from the current location
+     * folder to [toFolderId]. Removed items are dropped from the in-memory state immediately.
+     */
+    fun moveItemsToFolder(
+        itemIds: List<String>,
+        toFolderId: String,
+        onDone: (success: Boolean) -> Unit = {},
+    ) {
+        val fromFolderId = folderId ?: run { onDone(false); return }
+        if (fromFolderId == toFolderId) { onDone(true); return }
+        viewModelScope.launch {
+            val idsSet = itemIds.toSet()
+            val toMove = _state.value.images.filter { it.driveId in idsSet }
+            runCatching {
+                toMove.forEach { item ->
+                    drive.moveFile(item.driveId, fromFolderId, toFolderId)
+                    item.originalDriveId?.let { drive.moveFile(it, fromFolderId, toFolderId) }
+                    item.sidecarDriveId?.let { drive.moveFile(it, fromFolderId, toFolderId) }
+                }
+            }.onSuccess {
+                _state.update { s -> s.copy(images = s.images.filter { it.driveId !in idsSet }) }
+                onDone(true)
+            }.onFailure { e ->
+                _state.update { it.copy(error = e.message) }
+                onDone(false)
+            }
+        }
+    }
+
     // ---------- Cache ----------
 
     /** Deletes all locally-cached image files and the JSON index, then re-fetches from Drive. */

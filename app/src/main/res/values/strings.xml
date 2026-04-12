@@ -338,6 +338,11 @@
     <string name="travel_refine_evening">Add evening outfits</string>
     <string name="travel_refine_reuse">Maximize outfit reuse</string>
     <string name="travel_day">Day %d</string>
+    <string name="travel_save_as_style">Save as style</string>
+    <string name="travel_saved_as_style">Saved</string>
+    <string name="travel_move_to_travel">Move all to Travel location</string>
+    <string name="travel_move_done">Items moved to Travel location</string>
+    <string name="travel_move_error">Could not move items</string>
 
     <!-- Calendar -->
     <string name="calendar_tab_calendar">Calendar</string>

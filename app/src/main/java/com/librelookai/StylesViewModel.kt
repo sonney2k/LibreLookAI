@@ -288,6 +288,39 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /**
+     * Saves a style directly without going through the draft editing flow.
+     * Used by Travel screen to persist packing outfits as styles.
+     */
+    fun saveStyleDirectly(
+        name: String,
+        description: String,
+        itemIds: List<String>,
+        onDone: (Boolean) -> Unit = {},
+    ) {
+        if (itemIds.isEmpty()) return
+        viewModelScope.launch {
+            val id = folderId ?: run { onDone(false); return@launch }
+            val idToName = drive.listFiles(id).associate { it.id to it.name }
+            val itemNames = itemIds.mapNotNull { idToName[it] }
+            val updated = _state.value.styles + Style(
+                name = name.ifBlank { "Travel style" },
+                description = description,
+                itemIds = itemIds,
+                itemNames = itemNames,
+            )
+            runCatching {
+                drive.saveStylesJson(id, gson.toJson(updated))
+            }.onSuccess {
+                _state.update { it.copy(styles = updated) }
+                onDone(true)
+            }.onFailure { e ->
+                _state.update { it.copy(error = e.message) }
+                onDone(false)
+            }
+        }
+    }
+
     // ---------- Delete ----------
 
     fun deleteStyle(styleId: String) {
