@@ -57,6 +57,18 @@ class DriveRepository(
 
         /** Suffix used when archiving the unprocessed original on Drive. */
         const val ORIGINAL_SUFFIX = "_original.jpg"
+
+        /** Suffix for per-item metadata sidecar files (named "{cutoutDriveId}.json"). */
+        const val SIDECAR_SUFFIX = ".json"
+
+        /** System-level JSON files that must never be treated as item sidecars. */
+        internal val SYSTEM_JSON_NAMES = setOf(
+            WARDROBE_METADATA_FILE_NAME,
+            STYLES_FILE_NAME,
+            OUTFITS_FILE_NAME,
+            PREFERENCES_FILE_NAME,
+            LOCATIONS_FILE_NAME,
+        )
     }
 
     private val http = OkHttpClient()
@@ -508,6 +520,74 @@ class DriveRepository(
             .method("PATCH", json.toRequestBody("application/json".toMediaType()))
             .build()).await()
     }
+
+    /** Lists per-item sidecar JSON files in [folderId], excluding system metadata files. */
+    suspend fun listSidecarFiles(folderId: String): List<DriveFileDto> = withContext(Dispatchers.IO) {
+        val tok = token()
+        val q = URLEncoder.encode(
+            "'$folderId' in parents and mimeType='application/json' and trashed=false",
+            "UTF-8",
+        )
+        val req = Request.Builder()
+            .url("$API/files?q=$q&fields=files(id,name)&pageSize=1000")
+            .header("Authorization", "Bearer $tok")
+            .build()
+        gson.fromJson(
+            http.newCall(req).await().body!!.string(),
+            FilesListDto::class.java,
+        ).files.filter { it.name !in SYSTEM_JSON_NAMES }
+    }
+
+    /** Downloads and returns the text content of Drive file [fileId], or null on failure. */
+    suspend fun loadFileContent(fileId: String): String? = withContext(Dispatchers.IO) {
+        val tok = token()
+        val resp = http.newCall(
+            Request.Builder()
+                .url("$API/files/$fileId?alt=media")
+                .header("Authorization", "Bearer $tok")
+                .build()
+        ).await()
+        if (resp.isSuccessful) resp.body?.string() else null
+    }
+
+    /**
+     * Creates or updates a JSON sidecar file named [name] in [folderId] with content [json].
+     * Returns the Drive file ID of the sidecar.
+     */
+    suspend fun upsertSidecar(folderId: String, name: String, json: String): String =
+        withContext(Dispatchers.IO) {
+            val tok = token()
+            val escapedName = name.replace("\\", "\\\\").replace("'", "\\'")
+            val q = URLEncoder.encode(
+                "'$folderId' in parents and name='$escapedName' and trashed=false",
+                "UTF-8",
+            )
+            val existingId = gson.fromJson(
+                http.newCall(Request.Builder()
+                    .url("$API/files?q=$q&fields=files(id)")
+                    .header("Authorization", "Bearer $tok")
+                    .build()).await().body!!.string(),
+                FilesListDto::class.java,
+            ).files.firstOrNull()?.id
+
+            val fileId = existingId ?: run {
+                val meta = """{"name":${gson.toJson(name)},"parents":["$folderId"],"mimeType":"application/json"}"""
+                gson.fromJson(
+                    http.newCall(Request.Builder()
+                        .url("$API/files?fields=id")
+                        .header("Authorization", "Bearer $tok")
+                        .post(meta.toRequestBody("application/json".toMediaType()))
+                        .build()).await().body!!.string(),
+                    DriveFileDto::class.java,
+                ).id
+            }
+            http.newCall(Request.Builder()
+                .url("$UPLOAD_API/files/$fileId?uploadType=media")
+                .header("Authorization", "Bearer $tok")
+                .method("PATCH", json.toRequestBody("application/json".toMediaType()))
+                .build()).await()
+            fileId
+        }
 
     /** Lists direct subfolders of [parentFolderId]. Pass "root" for My Drive root. */
     suspend fun listSubfolders(parentFolderId: String): List<DriveFileDto> = withContext(Dispatchers.IO) {

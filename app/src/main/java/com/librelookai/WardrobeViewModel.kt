@@ -31,6 +31,8 @@ data class DriveImage(
     val version: Long = 0L,
     /** Drive file ID of the unprocessed original, if one was saved to Drive. */
     val originalDriveId: String? = null,
+    /** Drive file ID of the per-item sidecar JSON (named "{driveId}.json"). */
+    val sidecarDriveId: String? = null,
 )
 
 data class WardrobeUiState(
@@ -59,7 +61,11 @@ data class WardrobeUiState(
     val pendingJobs: Int = 0,
 )
 
-// ---------- Wardrobe metadata (replaces per-file appProperties) ----------
+// ---------- Per-item sidecar metadata ----------
+
+private data class ItemSidecar(val tags: ClothingTags? = null, val originalDriveId: String? = null)
+
+// ---------- Legacy bulk metadata (read-only, migration fallback) ----------
 
 private data class WardrobeItemMeta(val name: String, val tags: ClothingTags?, val originalDriveId: String? = null)
 private data class WardrobeMetadata(val items: List<WardrobeItemMeta> = emptyList())
@@ -72,6 +78,7 @@ private data class LocalCacheEntry(
     val name: String,
     val tags: ClothingTags?,
     val originalDriveId: String? = null,
+    val sidecarDriveId: String? = null,
 )
 private data class LocalCache(val items: List<LocalCacheEntry> = emptyList())
 
@@ -133,7 +140,9 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
     private fun saveLocalCache(id: String, images: List<DriveImage>) {
         runCatching {
-            val cache = LocalCache(images.map { LocalCacheEntry(it.driveId, it.name, it.tags, it.originalDriveId) })
+            val cache = LocalCache(images.map {
+                LocalCacheEntry(it.driveId, it.name, it.tags, it.originalDriveId, it.sidecarDriveId)
+            })
             localCacheFile(id).writeText(gson.toJson(cache))
         }
     }
@@ -153,7 +162,8 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     cache.items.mapNotNull { entry ->
                         drive.cachedFile(entry.driveId)?.let { f ->
                             DriveImage(entry.driveId, f.absolutePath, entry.name, entry.tags,
-                                originalDriveId = entry.originalDriveId)
+                                originalDriveId = entry.originalDriveId,
+                                sidecarDriveId = entry.sidecarDriveId)
                         }
                     }
                 }.onSuccess { items ->
@@ -163,41 +173,95 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 }
             }
 
-            // Phase 2 — background sync: fetch Drive file list and metadata in parallel
+            // Phase 2 — background sync: fetch Drive cutouts + sidecars in parallel
             runCatching {
                 val filesDeferred = async { drive.listFiles(id) }
-                val metaDeferred  = async { drive.loadWardrobeMetadataJson(id) }
-                val files   = filesDeferred.await()
-                val metaJson = metaDeferred.await()
+                val sidecarFilesDeferred = async { drive.listSidecarFiles(id) }
+                val files = filesDeferred.await()
+                val sidecarFiles = sidecarFilesDeferred.await()
 
-                val metaByName: Map<String, WardrobeItemMeta> = if (metaJson != null) {
-                    gson.fromJson(metaJson, WardrobeMetadata::class.java)
-                        .items.associateBy { it.name }
-                } else emptyMap()
+                // Map cutout Drive ID → sidecar file ID (sidecar is named "{cutoutId}.json")
+                val sidecarIdByItemId: Map<String, String> = sidecarFiles.associate { sf ->
+                    sf.name.removeSuffix(DriveRepository.SIDECAR_SUFFIX) to sf.id
+                }
 
-                // Download any uncached files in parallel
+                // Download any uncached image files in parallel
                 files.map { file ->
                     async { drive.cachedFile(file.id) ?: drive.downloadToCache(file.id, file.name) }
                 }.awaitAll()
 
-                val hadLegacyProps = metaJson == null && files.any { it.appProperties?.isNotEmpty() == true }
+                // Load sidecar content in parallel
+                val sidecarContent: Map<String, ItemSidecar> = sidecarFiles
+                    .map { sf ->
+                        async {
+                            val itemId = sf.name.removeSuffix(DriveRepository.SIDECAR_SUFFIX)
+                            val content = drive.loadFileContent(sf.id)
+                            itemId to content?.let {
+                                runCatching { gson.fromJson(it, ItemSidecar::class.java) }.getOrNull()
+                            }
+                        }
+                    }
+                    .awaitAll()
+                    .mapNotNull { (k, v) -> v?.let { k to it } }
+                    .toMap()
 
-                files.mapNotNull { file ->
+                // Legacy metadata fallback — only fetch if no sidecars exist yet (migration)
+                val legacyMeta: Map<String, WardrobeItemMeta> = if (sidecarFiles.isEmpty()) {
+                    drive.loadWardrobeMetadataJson(id)?.let { json ->
+                        runCatching {
+                            gson.fromJson(json, WardrobeMetadata::class.java).items.associateBy { it.name }
+                        }.getOrDefault(emptyMap())
+                    } ?: emptyMap()
+                } else emptyMap()
+
+                val freshImages = files.mapNotNull { file ->
                     drive.cachedFile(file.id)?.let { cached ->
-                        val meta = metaByName[file.name]
-                        val tags = if (meta != null) meta.tags else file.appProperties?.toClothingTags()
-                        DriveImage(file.id, cached.absolutePath, file.name, tags,
-                            originalDriveId = meta?.originalDriveId)
+                        val sidecar = sidecarContent[file.id]
+                        val legacy = legacyMeta[file.name]
+                        val tags = sidecar?.tags ?: legacy?.tags ?: file.appProperties?.toClothingTags()
+                        val originalId = sidecar?.originalDriveId ?: legacy?.originalDriveId
+                        DriveImage(
+                            driveId = file.id,
+                            localPath = cached.absolutePath,
+                            name = file.name,
+                            tags = tags,
+                            originalDriveId = originalId,
+                            sidecarDriveId = sidecarIdByItemId[file.id],
+                        )
                     }
-                }.also { images ->
-                    if (hadLegacyProps) {
-                        val meta = WardrobeMetadata(images.map { WardrobeItemMeta(it.name, it.tags) })
-                        runCatching { drive.saveWardrobeMetadataJson(id, gson.toJson(meta)) }
-                    }
-                    saveLocalCache(id, images)
                 }
+
+                // Preserve raw/pending uploads that are in the queue but not yet on Drive as cutouts
+                val freshIds = freshImages.map { it.driveId }.toSet()
+                val pendingRaw = _state.value.images.filter { img ->
+                    img.driveId !in freshIds && !img.name.endsWith(DriveRepository.CUTOUT_SUFFIX)
+                }
+
+                // Migrate legacy items to sidecars fire-and-forget
+                if (legacyMeta.isNotEmpty()) {
+                    viewModelScope.launch(Dispatchers.IO) {
+                        freshImages.filter { it.sidecarDriveId == null }.forEach { img ->
+                            runCatching {
+                                val sidecar = ItemSidecar(img.tags, img.originalDriveId)
+                                val sidecarFileId = drive.upsertSidecar(
+                                    id, "${img.driveId}${DriveRepository.SIDECAR_SUFFIX}",
+                                    gson.toJson(sidecar),
+                                )
+                                _state.update { s ->
+                                    s.copy(images = s.images.map { i ->
+                                        if (i.driveId == img.driveId) i.copy(sidecarDriveId = sidecarFileId) else i
+                                    })
+                                }
+                            }
+                        }
+                        saveLocalCache(id, _state.value.images)
+                    }
+                }
+
+                freshImages + pendingRaw
             }.onSuccess { images ->
                 _state.update { it.copy(images = images, isLoading = false) }
+                saveLocalCache(id, images)
             }.onFailure { e ->
                 // Don't overwrite cached items already shown with an error banner
                 _state.update { s ->
@@ -207,15 +271,25 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    /** Persists current wardrobe tags to Drive and local disk cache. Serialized via [metaMutex]. */
-    private fun saveWardrobeMetadata() {
-        viewModelScope.launch {
+    /**
+     * Saves a per-item sidecar JSON for [driveId] to Drive, and updates local disk cache.
+     * Each item has its own file ("${driveId}.json") — no mutex needed; writes are independent.
+     */
+    private fun saveSidecar(driveId: String) {
+        val id = folderId ?: return
+        viewModelScope.launch(Dispatchers.IO) {
+            val img = _state.value.images.find { it.driveId == driveId } ?: return@launch
+            val sidecarJson = gson.toJson(ItemSidecar(img.tags, img.originalDriveId))
+            val sidecarFileId = runCatching {
+                drive.upsertSidecar(id, "$driveId${DriveRepository.SIDECAR_SUFFIX}", sidecarJson)
+            }.getOrNull() ?: return@launch
             metaMutex.withLock {
-                val images = _state.value.images
-                val id = folderId ?: return@withLock
-                val meta = WardrobeMetadata(images.map { WardrobeItemMeta(it.name, it.tags, it.originalDriveId) })
-                runCatching { drive.saveWardrobeMetadataJson(id, gson.toJson(meta)) }
-                saveLocalCache(id, images)
+                _state.update { s ->
+                    s.copy(images = s.images.map { i ->
+                        if (i.driveId == driveId) i.copy(sidecarDriveId = sidecarFileId) else i
+                    })
+                }
+                saveLocalCache(id, _state.value.images)
             }
         }
     }
@@ -265,14 +339,16 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             runCatching { processQueuedImage(job) }
                 .onFailure { e -> _state.update { it.copy(error = e.message) } }
             _state.update { it.copy(pendingJobs = maxOf(0, it.pendingJobs - 1)) }
-            saveWardrobeMetadata()
+            // Sidecar is saved inside processQueuedImage; update local cache here
+            folderId?.let { id -> saveLocalCache(id, _state.value.images) }
         }
     }
 
     private suspend fun processQueuedImage(job: PendingJob) {
         val rawFile = File(drive.cacheDir, "${job.driveId}_original.jpg")
         if (!rawFile.exists()) return
-        if (_state.value.images.none { it.driveId == job.driveId }) return
+        // NOTE: we intentionally do NOT check if job.driveId is still in state — loadImages()
+        // may have replaced it with the cutout ID already (race window). We always process.
 
         // Step 1 — background removal (falls back to raw if Gemini fails)
         val processedFile = gemini.removeBackground(rawFile, drive.cacheDir) ?: rawFile
@@ -295,10 +371,11 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         }
         rawFile.copyTo(File(drive.cacheDir, "${cutoutDrive.id}_original.jpg"), overwrite = true)
 
-        // Step 6 — update state
+        // Step 6 — update state. Match by rawId OR cutoutId: if loadImages() ran concurrently
+        // it may have already placed the item in state with cutoutDrive.id.
         _state.update { s ->
             s.copy(images = s.images.map { img ->
-                if (img.driveId == job.driveId) img.copy(
+                if (img.driveId == job.driveId || img.driveId == cutoutDrive.id) img.copy(
                     driveId    = cutoutDrive.id,
                     name       = cutoutDrive.name,          // "{cutoutId}_cutout.png"
                     localPath  = localCutout.absolutePath,
@@ -309,11 +386,27 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         }
 
         // Step 7 — classify clothing tags
-        val tags = gemini.classifyClothing(localCutout, geminiLanguage) ?: return
-        _state.update { s ->
-            s.copy(images = s.images.map { img ->
-                if (img.driveId == cutoutDrive.id) img.copy(tags = tags) else img
-            })
+        val tags = gemini.classifyClothing(localCutout, geminiLanguage)
+        if (tags != null) {
+            _state.update { s ->
+                s.copy(images = s.images.map { img ->
+                    if (img.driveId == cutoutDrive.id) img.copy(tags = tags) else img
+                })
+            }
+        }
+
+        // Step 8 — save sidecar (includes tags even if null, so item is discoverable on next load)
+        val sidecarJson = gson.toJson(ItemSidecar(tags, originalDriveId))
+        runCatching {
+            drive.upsertSidecar(
+                job.folderId, "${cutoutDrive.id}${DriveRepository.SIDECAR_SUFFIX}", sidecarJson,
+            )
+        }.onSuccess { sidecarId ->
+            _state.update { s ->
+                s.copy(images = s.images.map { img ->
+                    if (img.driveId == cutoutDrive.id) img.copy(sidecarDriveId = sidecarId) else img
+                })
+            }
         }
     }
 
@@ -346,7 +439,8 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     images = listOf(newImage) + it.images,
                     pendingJobs = it.pendingJobs + 1,
                 ) }
-                saveWardrobeMetadata()
+                // No sidecar yet — the item is raw; sidecar is written by processQueuedImage
+                saveLocalCache(id, _state.value.images)
                 workQueue.send(PendingJob(newImage.driveId, id))
             }.onFailure { e ->
                 _state.update { it.copy(isUploading = false, error = e.message) }
@@ -384,7 +478,8 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 tempFile.delete()
             }
             _state.update { it.copy(batchTotal = 0, batchDone = 0, isUploading = false) }
-            saveWardrobeMetadata()
+            // Sidecars are written per item by processQueuedImage; just save local cache
+            saveLocalCache(id, _state.value.images)
         }
     }
 
@@ -476,7 +571,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 }
             }
             _state.update { it.copy(isRemovingAllBg = false, removeBgDone = 0, removeBgTotal = 0) }
-            saveWardrobeMetadata()
+            images.forEach { img -> saveSidecar(img.driveId) }
         }
     }
 
@@ -493,7 +588,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     images = s.images.map { if (it.driveId == driveId) it.copy(tags = tags) else it },
                 )
             }
-            saveWardrobeMetadata()
+            saveSidecar(driveId)
         }
     }
 
@@ -501,7 +596,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         _state.update { s ->
             s.copy(images = s.images.map { if (it.driveId == driveId) it.copy(tags = tags) else it })
         }
-        saveWardrobeMetadata()
+        saveSidecar(driveId)
     }
 
     fun retagAll() {
@@ -518,7 +613,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 }
             }
             _state.update { it.copy(isRetagging = false, retagDone = 0, retagTotal = 0) }
-            saveWardrobeMetadata()
+            images.forEach { img -> saveSidecar(img.driveId) }
         }
     }
 
@@ -531,24 +626,19 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             val sourceFolderId = folderId ?: return@launch
             _state.update { it.copy(isUploading = true, selectedIds = emptySet(), error = null) }
 
-            // Load existing target metadata so we can merge without overwriting
-            val targetMetaJson = drive.loadWardrobeMetadataJson(targetFolderId)
-            val targetItems: MutableList<WardrobeItemMeta> = if (targetMetaJson != null) {
-                runCatching { gson.fromJson(targetMetaJson, WardrobeMetadata::class.java).items.toMutableList() }
-                    .getOrDefault(mutableListOf())
-            } else mutableListOf()
-
             val successfulIds = mutableListOf<String>()
             for (item in toMove) {
                 runCatching {
                     // Move cutout — Drive parent-change: keeps same ID, name, and content
                     drive.moveFile(item.driveId, sourceFolderId, targetFolderId)
-                    // Move original too (best-effort)
+                    // Move original (best-effort)
                     item.originalDriveId?.let { origId ->
                         runCatching { drive.moveFile(origId, sourceFolderId, targetFolderId) }
                     }
-                    targetItems.removeAll { it.name == item.name }
-                    targetItems.add(WardrobeItemMeta(item.name, item.tags, item.originalDriveId))
+                    // Move sidecar (best-effort; it travels with the cutout)
+                    item.sidecarDriveId?.let { sId ->
+                        runCatching { drive.moveFile(sId, sourceFolderId, targetFolderId) }
+                    }
                     successfulIds.add(item.driveId)
                 }.onFailure { e ->
                     _state.update { it.copy(error = e.message) }
@@ -556,9 +646,8 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             }
 
             if (successfulIds.isNotEmpty()) {
-                runCatching { drive.saveWardrobeMetadataJson(targetFolderId, gson.toJson(WardrobeMetadata(targetItems))) }
                 _state.update { s -> s.copy(images = s.images.filter { it.driveId !in successfulIds }) }
-                saveWardrobeMetadata()
+                saveLocalCache(sourceFolderId, _state.value.images)
             }
             _state.update { it.copy(isUploading = false) }
         }
@@ -725,7 +814,8 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             }
 
             _state.update { it.copy(isImporting = false, importDone = 0, importTotal = 0) }
-            saveWardrobeMetadata()
+            // Save sidecar for each newly-created or updated item
+            _state.value.images.forEach { img -> if (img.sidecarDriveId == null) saveSidecar(img.driveId) }
         }
     }
 
@@ -838,7 +928,8 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             }
 
             _state.update { it.copy(isImporting = false, importDone = 0, importTotal = 0) }
-            saveWardrobeMetadata()
+            // Save sidecar for each newly-created or updated item
+            _state.value.images.forEach { img -> if (img.sidecarDriveId == null) saveSidecar(img.driveId) }
         }
     }
 
@@ -863,11 +954,12 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         if (toDelete.isEmpty()) return
         val items = _state.value.images.filter { it.driveId in toDelete }
         viewModelScope.launch {
+            val id = folderId
             _state.update { it.copy(isUploading = true, selectedIds = emptySet()) }
             items.forEach { img ->
                 runCatching { drive.deleteFile(img.driveId) }
-                // Also delete the Drive original (different Drive ID, paired by name convention)
                 img.originalDriveId?.let { origId -> runCatching { drive.deleteFile(origId) } }
+                img.sidecarDriveId?.let { sId -> runCatching { drive.deleteFile(sId) } }
             }
             _state.update { s ->
                 s.copy(
@@ -875,7 +967,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     images = s.images.filter { it.driveId !in toDelete }
                 )
             }
-            saveWardrobeMetadata()
+            if (id != null) saveLocalCache(id, _state.value.images)
         }
     }
 }
