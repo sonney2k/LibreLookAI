@@ -73,6 +73,7 @@
     <string name="settings_repair_confirm_title">Repair &amp; Sync — Results</string>
     <string name="settings_repair_confirm_renamed">%1$d file(s) renamed to correct naming scheme</string>
     <string name="settings_repair_confirm_unprocessed">%1$d item(s) need background removal + tags</string>
+    <string name="settings_repair_confirm_raw">%1$d unrecognised image(s) need background removal + tags</string>
     <string name="settings_repair_confirm_sidecar">%1$d item(s) need tags only</string>
     <string name="settings_repair_confirm_all_ok">All files are consistent. Tap below to reload from Drive.</string>
     <string name="settings_repair_process">Process &amp; Refresh</string>

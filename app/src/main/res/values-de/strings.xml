@@ -69,6 +69,7 @@
     <string name="settings_repair_confirm_title">Reparieren &amp; Synchronisieren — Ergebnis</string>
     <string name="settings_repair_confirm_renamed">%1$d Datei(en) zur korrekten Benennung umbenannt</string>
     <string name="settings_repair_confirm_unprocessed">%1$d Artikel benötigen Hintergrundentfernung + Tags</string>
+    <string name="settings_repair_confirm_raw">%1$d unbekannte(s) Bild(er) benötigen Hintergrundentfernung + Tags</string>
     <string name="settings_repair_confirm_sidecar">%1$d Artikel benötigen nur Tags</string>
     <string name="settings_repair_confirm_all_ok">Alle Dateien sind konsistent. Tippe unten zum Neu-Laden von Drive.</string>
     <string name="settings_repair_process">Verarbeiten &amp; Aktualisieren</string>

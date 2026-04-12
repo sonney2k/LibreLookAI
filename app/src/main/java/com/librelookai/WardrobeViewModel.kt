@@ -81,6 +81,8 @@ data class AuditProgress(
     val awaitingConfirmation: Boolean = false,
     /** Originals with no matching cutout that need full AI processing. */
     val orphanedOriginals: Int = 0,
+    /** Unrecognised raw images (non-cutout, non-original) needing full AI processing. */
+    val rawImages: Int = 0,
     /** Cutouts that are missing a tag sidecar and need tagging. */
     val sidecarNeeded: Int = 0,
     val isProcessing: Boolean = false,
@@ -118,6 +120,7 @@ private data class AuditCutoutItem(val folderId: String, val cutoutDriveId: Stri
 private data class AuditIntermediate(
     val folderIds: List<String>,
     val orphanedOriginals: List<AuditItem>,
+    val rawImages: List<AuditItem>,
     val cutoutsNeedingSidecar: List<AuditCutoutItem>,
 )
 
@@ -235,6 +238,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
                 var totalRenamed = 0
                 val orphaned = mutableListOf<AuditItem>()
+                val rawImages = mutableListOf<AuditItem>()
                 val needSidecar = mutableListOf<AuditCutoutItem>()
 
                 folderIds.forEachIndexed { idx, fid ->
@@ -268,6 +272,15 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                             if (prefix !in cutoutIds) {
                                 Log.d(TAG, "Orphaned original: ${original.name} (${original.id})")
                                 orphaned.add(AuditItem(fid, original.id, original.name))
+                            }
+                        }
+
+                        // Collect raw/unknown images: not a cutout, not an original
+                        allImages.forEach { img ->
+                            if (!img.name.endsWith(DriveRepository.CUTOUT_SUFFIX) &&
+                                !img.name.endsWith(DriveRepository.ORIGINAL_SUFFIX)) {
+                                Log.d(TAG, "Raw/unknown image: ${img.name} (${img.id})")
+                                rawImages.add(AuditItem(fid, img.id, img.name))
                             }
                         }
 
@@ -320,13 +333,14 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     }
                 }
 
-                Log.d(TAG, "Scan complete — renamed=$totalRenamed orphaned=${orphaned.size} needSidecar=${needSidecar.size}")
-                pendingAudit = AuditIntermediate(folderIds, orphaned, needSidecar)
+                Log.d(TAG, "Scan complete — renamed=$totalRenamed orphaned=${orphaned.size} rawImages=${rawImages.size} needSidecar=${needSidecar.size}")
+                pendingAudit = AuditIntermediate(folderIds, orphaned, rawImages, needSidecar)
                 _state.update { it.copy(
                     auditProgress = AuditProgress(
                         awaitingConfirmation = true,
                         renamedCount = totalRenamed,
                         orphanedOriginals = orphaned.size,
+                        rawImages = rawImages.size,
                         sidecarNeeded = needSidecar.size,
                     )
                 )}
@@ -365,8 +379,8 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             return
         }
 
-        val processTotal = audit.orphanedOriginals.size + audit.cutoutsNeedingSidecar.size
-        Log.d(TAG, "Processing started — ${audit.orphanedOriginals.size} orphaned original(s), ${audit.cutoutsNeedingSidecar.size} cutout(s) needing tagging")
+        val processTotal = audit.orphanedOriginals.size + audit.rawImages.size + audit.cutoutsNeedingSidecar.size
+        Log.d(TAG, "Processing started — ${audit.orphanedOriginals.size} orphaned original(s), ${audit.rawImages.size} raw image(s), ${audit.cutoutsNeedingSidecar.size} cutout(s) needing tagging")
         _state.update { it.copy(auditProgress = AuditProgress(isProcessing = true, processTotal = processTotal)) }
         acquireJobWakeLock()
 
@@ -411,6 +425,48 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                         Log.d(TAG, "Sidecar written for ${cutoutDrive.id}")
                     }.onFailure { e ->
                         Log.e(TAG, "Failed processing orphaned original ${item.driveId}: ${e.message}", e)
+                    }
+                    done++
+                    _state.update { s -> s.copy(auditProgress = s.auditProgress?.copy(processDone = done)) }
+                }
+
+                // --- Raw/unknown images: full AI processing (same as orphaned originals) ---
+                audit.rawImages.forEach { item ->
+                    Log.d(TAG, "Processing raw image: ${item.name} (${item.driveId})")
+                    runCatching {
+                        val localOriginal = drive.downloadToCache(item.driveId, item.name)
+                            ?: run { Log.w(TAG, "Could not download raw image ${item.driveId}"); return@runCatching }
+                        Log.d(TAG, "Downloaded raw image to ${localOriginal.absolutePath}")
+                        val cutoutFile = gemini.removeBackground(localOriginal, drive.cacheDir)
+                            ?: localOriginal.also { Log.w(TAG, "BG removal failed for ${item.driveId} — using original") }
+                        Log.d(TAG, "Cutout file: ${cutoutFile.absolutePath}")
+                        val cutoutDrive = uploadAsCutout(item.folderId, cutoutFile)
+                        Log.d(TAG, "Cutout uploaded as ${cutoutDrive.id}")
+                        val newOrigId = runCatching {
+                            drive.deleteFile(item.driveId)
+                            drive.uploadImageWithName(
+                                item.folderId, localOriginal,
+                                "${cutoutDrive.id}${DriveRepository.ORIGINAL_SUFFIX}",
+                            ).id
+                        }.onFailure { Log.w(TAG, "Original re-upload failed: ${it.message}") }.getOrNull()
+                        Log.d(TAG, "Original re-uploaded as $newOrigId")
+                        val localCutout = File(drive.cacheDir, "${cutoutDrive.id}.png")
+                        if (cutoutFile.absolutePath != localCutout.absolutePath) {
+                            cutoutFile.copyTo(localCutout, overwrite = true)
+                        }
+                        localOriginal.copyTo(
+                            File(drive.cacheDir, "${cutoutDrive.id}_original.jpg"), overwrite = true,
+                        )
+                        val tags = gemini.classifyClothing(localCutout, geminiLanguage)
+                        Log.d(TAG, "Tags for ${cutoutDrive.id}: $tags")
+                        drive.upsertSidecar(
+                            item.folderId,
+                            "${cutoutDrive.id}${DriveRepository.SIDECAR_SUFFIX}",
+                            gson.toJson(ItemSidecar(tags, newOrigId)),
+                        )
+                        Log.d(TAG, "Sidecar written for ${cutoutDrive.id}")
+                    }.onFailure { e ->
+                        Log.e(TAG, "Failed processing raw image ${item.driveId}: ${e.message}", e)
                     }
                     done++
                     _state.update { s -> s.copy(auditProgress = s.auditProgress?.copy(processDone = done)) }

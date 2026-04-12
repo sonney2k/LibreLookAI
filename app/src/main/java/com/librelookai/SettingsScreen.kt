@@ -762,7 +762,7 @@ private fun DataTab(
             title = { Text(stringResource(R.string.settings_repair_confirm_title)) },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    val hasFindings = audit.renamedCount > 0 || audit.orphanedOriginals > 0 || audit.sidecarNeeded > 0
+                    val hasFindings = audit.renamedCount > 0 || audit.orphanedOriginals > 0 || audit.rawImages > 0 || audit.sidecarNeeded > 0
                     if (!hasFindings) {
                         Text(stringResource(R.string.settings_repair_confirm_all_ok))
                     } else {
@@ -776,6 +776,17 @@ private fun DataTab(
                                 style = MaterialTheme.typography.bodySmall)
                             Text(
                                 stringResource(R.string.settings_bulk_cost_line, audit.orphanedOriginals,
+                                    CreditPacks.COST_BG_REMOVAL + CreditPacks.COST_CLASSIFY, cost),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        if (audit.rawImages > 0) {
+                            val cost = audit.rawImages * (CreditPacks.COST_BG_REMOVAL + CreditPacks.COST_CLASSIFY)
+                            Text(stringResource(R.string.settings_repair_confirm_raw, audit.rawImages),
+                                style = MaterialTheme.typography.bodySmall)
+                            Text(
+                                stringResource(R.string.settings_bulk_cost_line, audit.rawImages,
                                     CreditPacks.COST_BG_REMOVAL + CreditPacks.COST_CLASSIFY, cost),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -796,7 +807,7 @@ private fun DataTab(
                 }
             },
             confirmButton = {
-                if (audit.orphanedOriginals > 0 || audit.sidecarNeeded > 0) {
+                if (audit.orphanedOriginals > 0 || audit.rawImages > 0 || audit.sidecarNeeded > 0) {
                     TextButton(onClick = { onContinueRepair(true) }) {
                         Text(stringResource(R.string.settings_repair_process))
                     }
