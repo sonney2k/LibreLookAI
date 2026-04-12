@@ -63,7 +63,7 @@ class JobForegroundService : Service() {
                 }
             }
         }
-        return START_NOT_STICKY
+        return START_STICKY
     }
 
     private fun ensureChannel() {

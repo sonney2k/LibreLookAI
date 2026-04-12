@@ -65,6 +65,8 @@ data class WardrobeUiState(
     val pendingJobs: Int = 0,
     /** Non-null while a repair-and-sync audit is in progress or awaiting user input. */
     val auditProgress: AuditProgress? = null,
+    /** True when a job is starting and the app is not exempt from battery optimization. */
+    val needsBatteryExemption: Boolean = false,
 )
 
 // ---------- Audit / repair progress ----------
@@ -148,7 +150,17 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             }
             jobWakeLock!!.acquire(30 * 60 * 1000L) // 30-minute safety timeout
             Log.d(TAG, "Wake lock acquired")
+            // Warn the user if battery optimization is not disabled — on many devices (especially
+            // OEM-customized ROMs) the OS will kill even foreground services unless the app is
+            // explicitly exempted from battery optimization.
+            if (!pm.isIgnoringBatteryOptimizations(getApplication<Application>().packageName)) {
+                _state.update { it.copy(needsBatteryExemption = true) }
+            }
         }
+    }
+
+    fun dismissBatteryExemptionWarning() {
+        _state.update { it.copy(needsBatteryExemption = false) }
     }
 
     private fun releaseJobWakeLock() {

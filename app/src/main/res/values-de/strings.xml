@@ -366,4 +366,9 @@
     <string name="job_notif_channel_name">Hintergrundverarbeitung</string>
     <string name="job_notif_title">LibreLookAI</string>
     <string name="job_notif_text">Garderobe wird verarbeitet…</string>
+
+    <!-- Battery optimization exemption dialog -->
+    <string name="battery_exempt_title">Hintergrundverarbeitung erlauben</string>
+    <string name="battery_exempt_text">Android kann die Verarbeitung stoppen, wenn der Bildschirm ausgeht. Um das zu verhindern, deaktiviere die Akku-Optimierung für LibreLookAI.</string>
+    <string name="battery_exempt_action">Einstellungen öffnen</string>
 </resources>

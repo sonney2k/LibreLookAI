@@ -1,7 +1,10 @@
 package com.librelookai
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.provider.Settings
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -193,6 +196,7 @@ fun WardrobeScreen(
             onSetActiveLocation = locationViewModel::setActiveLocation,
             onCreateStyleFromSelection = onCreateStyleFromSelection,
             onComposeStyleFromSelection = onComposeStyleFromSelection,
+            onDismissBatteryExemption = viewModel::dismissBatteryExemptionWarning,
             processingImageId = state.processingImageId,
             modifier = modifier,
         )
@@ -507,6 +511,7 @@ private fun GridContent(
     onSetActiveLocation: (String) -> Unit,
     onCreateStyleFromSelection: (Set<String>) -> Unit,
     onComposeStyleFromSelection: (Set<String>) -> Unit,
+    onDismissBatteryExemption: () -> Unit = {},
     processingImageId: String?,
     modifier: Modifier = Modifier,
 ) {
@@ -865,6 +870,32 @@ private fun GridContent(
                     Text(stringResource(R.string.action_cancel))
                 }
             }
+        )
+    }
+
+    if (state.needsBatteryExemption) {
+        val batteryContext = LocalContext.current
+        AlertDialog(
+            onDismissRequest = onDismissBatteryExemption,
+            title = { Text(stringResource(R.string.battery_exempt_title)) },
+            text = { Text(stringResource(R.string.battery_exempt_text)) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onDismissBatteryExemption()
+                        batteryContext.startActivity(
+                            Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
+                                data = Uri.parse("package:${batteryContext.packageName}")
+                            }
+                        )
+                    }
+                ) { Text(stringResource(R.string.battery_exempt_action)) }
+            },
+            dismissButton = {
+                TextButton(onClick = onDismissBatteryExemption) {
+                    Text(stringResource(R.string.action_cancel))
+                }
+            },
         )
     }
 

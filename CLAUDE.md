@@ -118,10 +118,11 @@ All six main screens use `AppScreenHeader` (defined in `MainActivity.kt`) for a 
 
 Long-running wardrobe operations are protected against process death and CPU sleep by two mechanisms managed together in `WardrobeViewModel`:
 
-- **`JobForegroundService`**: started when the first job begins, stopped when the last one ends. Promotes the app to foreground-service priority so Android will not kill the process. Shows a persistent notification (channel `librelookai_jobs`, low importance) while active.
+- **`JobForegroundService`**: started when the first job begins, stopped when the last one ends. Promotes the app to foreground-service priority so Android will not kill the process. Shows a persistent notification (channel `librelookai_jobs`, low importance) while active. Declared with `android:stopWithTask="false"` so it survives the user swiping the app away from recents. Returns `START_STICKY` so Android restarts it if killed under memory pressure.
 - **`PARTIAL_WAKE_LOCK`** (`LibreLookAI:Jobs`): keeps the CPU running if the screen turns off mid-job. 30-minute safety timeout.
+- **Battery optimization exemption**: on first job start, `acquireJobWakeLock()` checks `PowerManager.isIgnoringBatteryOptimizations()`. If the app is not exempt, `WardrobeUiState.needsBatteryExemption` is set to `true` and `GridContent` shows a one-shot `AlertDialog` prompting the user to open the system battery optimization settings (`Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS`). This is required on OEM-customized ROMs (Samsung, Xiaomi, etc.) that aggressively kill even foreground services. The prompt is dismissed via `WardrobeViewModel.dismissBatteryExemptionWarning()`.
 
-Both are reference-counted via `acquireJobWakeLock()` / `releaseJobWakeLock()` (using `AtomicInteger`). Covered operations: `processQueue`, `importFromFolder`, `importFromDriveFolder`, `removeAllBackgrounds`, `retagAll`, and both phases of Repair & Sync. Every caller wraps its coroutine body in `try/finally` to guarantee release.
+Both service and wake lock are reference-counted via `acquireJobWakeLock()` / `releaseJobWakeLock()` (using `AtomicInteger`). Covered operations: `processQueue`, `importFromFolder`, `importFromDriveFolder`, `removeAllBackgrounds`, `retagAll`, and both phases of Repair & Sync. Every caller wraps its coroutine body in `try/finally` to guarantee release.
 
 ### Repair & Sync
 
