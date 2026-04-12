@@ -353,6 +353,7 @@
     <string name="calendar_stats_items">Most Worn Items</string>
     <string name="calendar_empty">No outfit history yet</string>
     <string name="calendar_empty_hint">Wear a style from the Styles tab to start tracking</string>
+    <string name="calendar_wear_again">Wear again today</string>
 
     <!-- Gap Analyzer -->
     <string name="gap_title">Wardrobe Gap Analyzer</string>

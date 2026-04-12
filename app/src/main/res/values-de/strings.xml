@@ -345,6 +345,7 @@
     <string name="calendar_stats_items">Meist getragene Teile</string>
     <string name="calendar_empty">Noch keine Outfit-Historie</string>
     <string name="calendar_empty_hint">Tragen Sie einen Stil im Reiter Stile, um die Verfolgung zu starten</string>
+    <string name="calendar_wear_again">Heute wieder tragen</string>
 
     <string name="gap_title">Garderobe-Lücken-Analyse</string>
     <string name="gap_description">Entdecke die 3 fehlenden Teile, die die meisten neuen Outfit-Kombinationen aus deiner bestehenden Garderobe ermöglichen.</string>

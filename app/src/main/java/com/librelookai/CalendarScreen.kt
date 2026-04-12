@@ -25,6 +25,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
@@ -32,6 +33,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -46,6 +48,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -61,6 +64,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
@@ -79,6 +83,7 @@ fun CalendarScreen(
     stylesViewModel: StylesViewModel = viewModel(),
     wardrobeViewModel: WardrobeViewModel = viewModel(),
     locationViewModel: LocationViewModel = viewModel(),
+    onEditStyle: (Style) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val outfitsState by outfitsViewModel.state.collectAsState()
@@ -180,6 +185,8 @@ fun CalendarScreen(
                 wornItems = wornItems,
                 stylesByDate = stylesByDate,
                 imagesById = imagesById,
+                onWearAgainToday = { outfitsViewModel.recordOutfit(it) },
+                onEditStyle = onEditStyle,
             )
             1 -> StatisticsContent(
                 topStyles = topStyles,
@@ -198,6 +205,8 @@ private fun CalendarContent(
     wornItems: List<WornItem>,
     stylesByDate: Map<LocalDate, List<Style>>,
     imagesById: Map<String, DriveImage>,
+    onWearAgainToday: (String) -> Unit = {},
+    onEditStyle: (Style) -> Unit = {},
 ) {
     var yearMonth by rememberSaveable { mutableStateOf(YearMonth.now()) }
     val itemsByDate = remember(wornItems) { wornItems.groupBy { it.date } }
@@ -205,6 +214,7 @@ private fun CalendarContent(
     val today = remember { LocalDate.now() }
     var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val scope = rememberCoroutineScope()
 
     Column(modifier = Modifier.fillMaxSize()) {
         MonthHeader(
@@ -258,7 +268,22 @@ private fun CalendarContent(
                 HorizontalDivider()
                 LazyColumn(contentPadding = PaddingValues(vertical = 8.dp)) {
                     items(stylesOnDay, key = { it.id }) { style ->
-                        StyleSheetRow(style = style, imagesById = imagesById)
+                        StyleSheetRow(
+                            style = style,
+                            imagesById = imagesById,
+                            onWearAgainToday = {
+                                onWearAgainToday(style.id)
+                                scope.launch { sheetState.hide() }.invokeOnCompletion {
+                                    selectedDate = null
+                                }
+                            },
+                            onEditStyle = {
+                                scope.launch { sheetState.hide() }.invokeOnCompletion {
+                                    selectedDate = null
+                                    onEditStyle(style)
+                                }
+                            },
+                        )
                         if (style != stylesOnDay.last()) HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp))
                     }
                 }
@@ -481,16 +506,27 @@ private fun ItemStatRow(
 private fun StyleSheetRow(
     style: Style,
     imagesById: Map<String, DriveImage>,
+    onWearAgainToday: () -> Unit = {},
+    onEditStyle: () -> Unit = {},
 ) {
     val ctx = LocalContext.current
     val styleItems = style.itemIds.mapNotNull { imagesById[it] }
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 12.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+            .padding(horizontal = 20.dp, vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        Text(style.name, style = MaterialTheme.typography.titleSmall)
+        Text(style.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+        if (style.description.isNotEmpty()) {
+            Text(
+                style.description,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
         if (styleItems.isEmpty()) {
             Text(
                 "Items no longer in wardrobe",
@@ -498,7 +534,7 @@ private fun StyleSheetRow(
                 color = MaterialTheme.colorScheme.outline,
             )
         } else {
-            LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(styleItems, key = { it.driveId }) { image ->
                     AsyncImage(
                         model = remember(image.driveId, image.version) {
@@ -509,11 +545,28 @@ private fun StyleSheetRow(
                         },
                         contentDescription = image.name,
                         modifier = Modifier
-                            .size(80.dp)
-                            .clip(MaterialTheme.shapes.small),
+                            .size(120.dp)
+                            .clip(MaterialTheme.shapes.medium),
                         contentScale = ContentScale.Crop,
                     )
                 }
+            }
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Button(
+                onClick = onWearAgainToday,
+                modifier = Modifier.weight(1f),
+            ) {
+                Text(stringResource(R.string.calendar_wear_again))
+            }
+            OutlinedButton(
+                onClick = onEditStyle,
+                modifier = Modifier.weight(1f),
+            ) {
+                Text(stringResource(R.string.action_edit))
             }
         }
     }

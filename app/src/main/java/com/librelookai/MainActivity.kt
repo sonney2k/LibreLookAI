@@ -196,6 +196,10 @@ class MainActivity : ComponentActivity() {
                                         stylesViewModel = stylesViewModel,
                                         wardrobeViewModel = wardrobeViewModel,
                                         locationViewModel = locationViewModel,
+                                        onEditStyle = { style ->
+                                            stylesViewModel.startEditing(style)
+                                            selectedTab = 0
+                                        },
                                         modifier = Modifier.padding(innerPadding),
                                     )
                                     3 -> TravelScreen(
