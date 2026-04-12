@@ -16,6 +16,7 @@
     <string name="action_dismiss">Dismiss</string>
     <string name="action_delete">Delete</string>
     <string name="action_save">Save</string>
+    <string name="action_edit">Edit</string>
     <string name="action_saving">Saving…</string>
     <string name="action_clear">Clear</string>
     <string name="filter_location">Location</string>
@@ -305,6 +306,17 @@
     <string name="styles_refine_trendy">More trendy</string>
     <string name="styles_refine_simpler">Simpler</string>
     <string name="styles_refine_bold">More bold</string>
+    <string name="styles_items_label">Outfit items</string>
+    <string name="styles_add_item">Add item</string>
+    <string name="styles_swap_item_for">Swap: %s</string>
+    <string name="styles_suggest_alternatives">Suggest 10 alternatives</string>
+    <string name="styles_select_item">Select</string>
+    <string name="styles_saved_wear_today">Style saved! Wear today?</string>
+    <string name="styles_selected_count">%d selected</string>
+    <string name="styles_select_all_count">Select all %d</string>
+    <string name="styles_delete_selected_title">Delete styles?</string>
+    <string name="styles_delete_selected_text">%d styles will be permanently removed.</string>
+    <string name="styles_combine">Combine with AI</string>
 
     <!-- Travel -->
     <string name="travel_title">Travel Packing List</string>

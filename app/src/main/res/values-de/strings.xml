@@ -14,6 +14,7 @@
     <string name="action_dismiss">Verwerfen</string>
     <string name="action_delete">Löschen</string>
     <string name="action_save">Speichern</string>
+    <string name="action_edit">Bearbeiten</string>
     <string name="action_saving">Wird gespeichert…</string>
     <string name="action_clear">Löschen</string>
     <string name="filter_location">Standort</string>
@@ -299,6 +300,17 @@
     <string name="styles_refine_trendy">Modischer</string>
     <string name="styles_refine_simpler">Einfacher</string>
     <string name="styles_refine_bold">Gewagter</string>
+    <string name="styles_items_label">Outfit-Teile</string>
+    <string name="styles_add_item">Artikel hinzufügen</string>
+    <string name="styles_swap_item_for">Tauschen: %s</string>
+    <string name="styles_suggest_alternatives">10 Alternativen vorschlagen</string>
+    <string name="styles_select_item">Auswählen</string>
+    <string name="styles_saved_wear_today">Stil gespeichert! Heute tragen?</string>
+    <string name="styles_selected_count">%d ausgewählt</string>
+    <string name="styles_select_all_count">Alle %d auswählen</string>
+    <string name="styles_delete_selected_title">Stile löschen?</string>
+    <string name="styles_delete_selected_text">%d Stile werden dauerhaft entfernt.</string>
+    <string name="styles_combine">Mit KI kombinieren</string>
 
     <string name="travel_title">Reisepackliste</string>
     <string name="travel_destination">Reiseziel</string>

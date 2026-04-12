@@ -52,10 +52,10 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.AutoFixHigh
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Sort
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
@@ -64,6 +64,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SmallFloatingActionButton
@@ -73,13 +74,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -144,81 +145,150 @@ fun StylesScreen(
         outfitsState.events.groupingBy { it.styleId }.eachCount()
     }
 
-    if (stylesState.isCreating) {
-        StyleItemPicker(
-            items = wardrobeState.images,
-            selectedIds = stylesState.draftItemIds,
-            isEditing = stylesState.editingStyle != null,
-            styleName = stylesState.draftStyleName,
-            styleDescription = stylesState.draftStyleDescription,
-            onNameChanged = stylesViewModel::updateDraftName,
-            onDescriptionChanged = stylesViewModel::updateDraftDescription,
-            onToggleItem = stylesViewModel::toggleDraftItem,
-            onSelectAll = stylesViewModel::selectAllDraftItems,
-            onDeselectAll = stylesViewModel::deselectAllDraftItems,
-            onConfirm = stylesViewModel::confirmDraft,
-            onCancel = stylesViewModel::cancelCreating,
-            modifier = modifier,
-        )
-    } else {
-        StyleListScreen(
-            styles = stylesState.styles,
-            items = wardrobeState.images,
-            wearCounts = wearCounts,
-            isLoading = stylesState.isLoading,
-            isPredicting = stylesState.isPredicting,
-            prediction = stylesState.prediction,
-            predictionError = stylesState.predictionError,
-            isComposing = stylesState.isComposing,
-            newSuggestion = stylesState.newSuggestion,
-            compositionError = stylesState.compositionError,
-            refinementInput = stylesState.refinementInput,
-            feedbackHistory = stylesState.feedbackHistory,
-            onCreateStyle = stylesViewModel::startCreating,
-            onEditStyle = stylesViewModel::startEditing,
-            onDeleteStyle = stylesViewModel::deleteStyle,
-            onWearStyle = outfitsViewModel::recordOutfit,
-            onSuggestStyle = {
-                stylesViewModel.triggerPrediction(
-                    prefs   = profileState.preferences,
-                    weather = weatherState.data,
-                    images  = wardrobeState.images,
-                )
-            },
-            onClearPrediction = stylesViewModel::clearPrediction,
-            onComposeStyle = {
-                stylesViewModel.triggerComposition(
-                    prefs   = profileState.preferences,
-                    weather = weatherState.data,
-                    images  = wardrobeState.images,
-                )
-            },
-            onAcceptComposition = { suggestion ->
-                stylesViewModel.startCreatingFromItems(
-                    itemIds     = suggestion.itemIds.toSet(),
-                    name        = suggestion.name,
-                    description = suggestion.description,
-                )
-                stylesViewModel.clearNewSuggestion()
-            },
-            onClearComposition = stylesViewModel::clearNewSuggestion,
-            onRefinementInputChange = stylesViewModel::updateRefinementInput,
-            onRefinePrediction = {
-                stylesViewModel.refinePrediction(profileState.preferences, weatherState.data, wardrobeState.images)
-            },
-            onPresetPrediction = { preset ->
-                stylesViewModel.submitPresetPrediction(preset, profileState.preferences, weatherState.data, wardrobeState.images)
-            },
-            onRefineComposition = {
-                stylesViewModel.refineComposition(profileState.preferences, weatherState.data, wardrobeState.images)
-            },
-            onPresetComposition = { preset ->
-                stylesViewModel.submitPresetComposition(preset, profileState.preferences, weatherState.data, wardrobeState.images)
-            },
-            modifier = modifier,
-        )
+    // When Gemini returns a prediction, auto-open the style editing view with that style.
+    LaunchedEffect(stylesState.prediction) {
+        val pred = stylesState.prediction ?: return@LaunchedEffect
+        val style = stylesState.styles.find { it.id == pred.styleId } ?: return@LaunchedEffect
+        stylesViewModel.openPredictionInEditView(style)
     }
 
+    // When Gemini composes a new outfit, auto-open the style editing view with it.
+    LaunchedEffect(stylesState.newSuggestion) {
+        val suggestion = stylesState.newSuggestion ?: return@LaunchedEffect
+        stylesViewModel.openSuggestionInEditView(suggestion)
+    }
+
+    Box(modifier = modifier.fillMaxSize()) {
+        when {
+            stylesState.isEditingStyleView -> {
+                StyleEditingView(
+                    draftItemIds = stylesState.draftItemIds,
+                    draftStyleName = stylesState.draftStyleName,
+                    draftStyleDescription = stylesState.draftStyleDescription,
+                    isEditing = stylesState.editingStyle != null,
+                    prediction = stylesState.prediction,
+                    newSuggestion = stylesState.newSuggestion,
+                    allItems = wardrobeState.images,
+                    isLoadingAlternatives = stylesState.isLoadingAlternatives,
+                    alternativeIds = stylesState.alternativeIds,
+                    refinementInput = stylesState.refinementInput,
+                    feedbackHistory = stylesState.feedbackHistory,
+                    onNameChanged = stylesViewModel::updateDraftName,
+                    onDescriptionChanged = stylesViewModel::updateDraftDescription,
+                    onSwapItem = stylesViewModel::swapDraftItem,
+                    onRemoveItem = stylesViewModel::removeDraftItem,
+                    onAddItem = stylesViewModel::addDraftItem,
+                    onSuggestAlternatives = { itemId ->
+                        stylesViewModel.suggestAlternatives(itemId, wardrobeState.images, profileState.preferences)
+                    },
+                    onClearAlternatives = stylesViewModel::clearAlternatives,
+                    onConfirm = stylesViewModel::confirmDraft,
+                    onCancel = stylesViewModel::cancelStyleEditingView,
+                    onWear = if (stylesState.editingStyle != null) {
+                        { outfitsViewModel.recordOutfit(stylesState.editingStyle!!.id) }
+                    } else null,
+                    onRefinementInputChange = stylesViewModel::updateRefinementInput,
+                    onRefinePrediction = if (stylesState.prediction != null) {
+                        { stylesViewModel.refinePrediction(profileState.preferences, weatherState.data, wardrobeState.images) }
+                    } else null,
+                    onPresetPrediction = if (stylesState.prediction != null) {
+                        { preset -> stylesViewModel.submitPresetPrediction(preset, profileState.preferences, weatherState.data, wardrobeState.images) }
+                    } else null,
+                    onRefineComposition = if (stylesState.newSuggestion != null) {
+                        { stylesViewModel.refineComposition(profileState.preferences, weatherState.data, wardrobeState.images) }
+                    } else null,
+                    onPresetComposition = if (stylesState.newSuggestion != null) {
+                        { preset -> stylesViewModel.submitPresetComposition(preset, profileState.preferences, weatherState.data, wardrobeState.images) }
+                    } else null,
+                    isRefining = stylesState.isPredicting || stylesState.isComposing,
+                )
+            }
+            stylesState.isCreating -> {
+                StyleItemPicker(
+                    items = wardrobeState.images,
+                    selectedIds = stylesState.draftItemIds,
+                    isEditing = stylesState.editingStyle != null,
+                    styleName = stylesState.draftStyleName,
+                    styleDescription = stylesState.draftStyleDescription,
+                    onNameChanged = stylesViewModel::updateDraftName,
+                    onDescriptionChanged = stylesViewModel::updateDraftDescription,
+                    onToggleItem = stylesViewModel::toggleDraftItem,
+                    onSelectAll = stylesViewModel::selectAllDraftItems,
+                    onDeselectAll = stylesViewModel::deselectAllDraftItems,
+                    onConfirm = stylesViewModel::confirmDraft,
+                    onCancel = stylesViewModel::cancelCreating,
+                )
+            }
+            else -> {
+                StyleListScreen(
+                    styles = stylesState.styles,
+                    items = wardrobeState.images,
+                    wearCounts = wearCounts,
+                    isLoading = stylesState.isLoading,
+                    isPredicting = stylesState.isPredicting,
+                    predictionError = stylesState.predictionError,
+                    isComposing = stylesState.isComposing,
+                    compositionError = stylesState.compositionError,
+                    selectedStyleIds = stylesState.selectedStyleIds,
+                    onCreateStyle = stylesViewModel::startCreating,
+                    onEditStyle = stylesViewModel::startEditing,
+                    onDeleteStyle = stylesViewModel::deleteStyle,
+                    onWearStyle = outfitsViewModel::recordOutfit,
+                    onToggleStyleSelection = stylesViewModel::toggleStyleSelection,
+                    onSelectAllStyles = stylesViewModel::selectAllStyles,
+                    onClearStyleSelection = stylesViewModel::clearStyleSelection,
+                    onDeleteSelectedStyles = stylesViewModel::deleteSelectedStyles,
+                    onCombineSelectedStyles = {
+                        stylesViewModel.combineSelectedStyles(
+                            prefs   = profileState.preferences,
+                            weather = weatherState.data,
+                            images  = wardrobeState.images,
+                        )
+                    },
+                    onSuggestStyle = {
+                        stylesViewModel.triggerPrediction(
+                            prefs   = profileState.preferences,
+                            weather = weatherState.data,
+                            images  = wardrobeState.images,
+                        )
+                    },
+                    onClearPredictionError = stylesViewModel::clearPrediction,
+                    onComposeStyle = {
+                        stylesViewModel.triggerComposition(
+                            prefs   = profileState.preferences,
+                            weather = weatherState.data,
+                            images  = wardrobeState.images,
+                        )
+                    },
+                    onClearCompositionError = stylesViewModel::clearNewSuggestion,
+                )
+            }
+        }
+
+        // After saving a style, offer to wear it immediately
+        stylesState.pendingWearStyleId?.let { styleId ->
+            Snackbar(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(start = 8.dp, end = 8.dp, bottom = 16.dp),
+                action = {
+                    TextButton(onClick = {
+                        outfitsViewModel.recordOutfit(styleId)
+                        stylesViewModel.clearPendingWear()
+                    }) {
+                        Text(stringResource(R.string.styles_wear_today))
+                    }
+                },
+                dismissAction = {
+                    TextButton(onClick = stylesViewModel::clearPendingWear) {
+                        Text(stringResource(R.string.action_dismiss))
+                    }
+                },
+            ) {
+                Text(stringResource(R.string.styles_saved_wear_today))
+            }
+        }
+    }
 }
 
 // ---------- Style list ----------
@@ -231,27 +301,23 @@ private fun StyleListScreen(
     wearCounts: Map<String, Int> = emptyMap(),
     isLoading: Boolean,
     isPredicting: Boolean,
-    prediction: StylePrediction?,
     predictionError: String?,
     isComposing: Boolean,
-    newSuggestion: NewStyleSuggestion?,
     compositionError: String?,
-    refinementInput: String,
-    feedbackHistory: List<String>,
+    selectedStyleIds: Set<String> = emptySet(),
     onCreateStyle: () -> Unit,
     onEditStyle: (Style) -> Unit,
     onDeleteStyle: (String) -> Unit,
     onWearStyle: (String) -> Unit,
+    onToggleStyleSelection: (String) -> Unit = {},
+    onSelectAllStyles: (List<String>) -> Unit = {},
+    onClearStyleSelection: () -> Unit = {},
+    onDeleteSelectedStyles: () -> Unit = {},
+    onCombineSelectedStyles: () -> Unit = {},
     onSuggestStyle: () -> Unit,
-    onClearPrediction: () -> Unit,
+    onClearPredictionError: () -> Unit,
     onComposeStyle: () -> Unit,
-    onAcceptComposition: (NewStyleSuggestion) -> Unit,
-    onClearComposition: () -> Unit,
-    onRefinementInputChange: (String) -> Unit,
-    onRefinePrediction: () -> Unit,
-    onPresetPrediction: (String) -> Unit,
-    onRefineComposition: () -> Unit,
-    onPresetComposition: (String) -> Unit,
+    onClearCompositionError: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val itemsById = remember(items) { items.associateBy { it.driveId } }
@@ -286,12 +352,33 @@ private fun StyleListScreen(
         }
     }
 
+    val isSelectionMode = selectedStyleIds.isNotEmpty()
+    if (isSelectionMode) BackHandler(onBack = onClearStyleSelection)
+
+    var showDeleteDialog by remember { mutableStateOf(false) }
+
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text(stringResource(R.string.styles_delete_selected_title)) },
+            text = { Text(stringResource(R.string.styles_delete_selected_text, selectedStyleIds.size)) },
+            confirmButton = {
+                TextButton(onClick = { onDeleteSelectedStyles(); showDeleteDialog = false }) {
+                    Text(stringResource(R.string.action_delete), color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) { Text(stringResource(R.string.action_cancel)) }
+            },
+        )
+    }
+
     Box(modifier = modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
             // ---- Screen header with sort button ----
             AppScreenHeader(
                 title = stringResource(R.string.nav_styles),
-                trailingContent = if (styles.isNotEmpty()) {
+                trailingContent = if (styles.isNotEmpty() && !isSelectionMode) {
                     {
                         StyleSortButton(
                             sortBy = sortBy,
@@ -301,8 +388,34 @@ private fun StyleListScreen(
                     }
                 } else null,
             )
-            // ---- Tag filter chips (only when there's something to show) ----
-            if (styles.isNotEmpty()) {
+
+            // ---- Selection bar ----
+            if (isSelectionMode) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 2.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        stringResource(R.string.styles_selected_count, selectedStyleIds.size),
+                        modifier = Modifier.weight(1f),
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                    if (displayedStyles.any { it.id !in selectedStyleIds }) {
+                        TextButton(onClick = { onSelectAllStyles(displayedStyles.map { it.id }) }) {
+                            Text(stringResource(R.string.styles_select_all_count, displayedStyles.size))
+                        }
+                    }
+                    TextButton(onClick = onClearStyleSelection) {
+                        Text(stringResource(R.string.action_deselect_all))
+                    }
+                }
+                HorizontalDivider()
+            }
+
+            // ---- Tag filter chips (only when not in selection mode and there's something to show) ----
+            if (styles.isNotEmpty() && !isSelectionMode) {
                 TagFilterBar(
                     tagCategories = tagCategories,
                     selectedTags = selectedTags,
@@ -337,17 +450,24 @@ private fun StyleListScreen(
                 else -> {
                     LazyColumn(
                         modifier = Modifier.weight(1f).fillMaxWidth(),
-                        contentPadding = PaddingValues(vertical = 8.dp, horizontal = 0.dp),
+                        contentPadding = PaddingValues(
+                            top = 8.dp,
+                            bottom = if (isSelectionMode) 96.dp else 8.dp,
+                            start = 0.dp,
+                            end = 0.dp,
+                        ),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         itemsIndexed(displayedStyles, key = { _, s -> s.id }) { _, style ->
                             StyleCard(
                                 style = style,
                                 itemsById = itemsById,
-                                highlighted = prediction?.styleId == style.id,
+                                isSelected = style.id in selectedStyleIds,
+                                isSelectionMode = isSelectionMode,
                                 onEdit = { onEditStyle(style) },
                                 onDelete = { onDeleteStyle(style.id) },
                                 onWear = { onWearStyle(style.id) },
+                                onToggleSelection = { onToggleStyleSelection(style.id) },
                             )
                         }
                     }
@@ -355,62 +475,92 @@ private fun StyleListScreen(
             }
         }
 
-        // Speed-dial FAB (bottom-end)
-        var fabExpanded by remember { mutableStateOf(false) }
-        Column(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(end = 16.dp, bottom = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalAlignment = Alignment.End,
-        ) {
-            // Sub-actions — slide up / fade in when expanded
-            AnimatedVisibility(
-                visible = fabExpanded,
-                enter = fadeIn() + slideInVertically(initialOffsetY = { it / 2 }),
-                exit = fadeOut() + slideOutVertically(targetOffsetY = { it / 2 }),
+        // Selection mode FAB bar
+        if (isSelectionMode) {
+            Column(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(end = 16.dp, bottom = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = Alignment.End,
             ) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    horizontalAlignment = Alignment.End,
-                ) {
-                    SpeedDialItem(
-                        label = stringResource(R.string.styles_create_manual),
-                        icon = { Icon(Icons.Default.Edit, contentDescription = null) },
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        onClick = { fabExpanded = false; onCreateStyle() },
-                    )
-                    SpeedDialItem(
-                        label = if (isPredicting) stringResource(R.string.styles_thinking) else stringResource(R.string.styles_suggest),
-                        icon = {
-                            if (isPredicting)
-                                CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
-                            else
-                                Icon(Icons.Default.AutoAwesome, contentDescription = null)
-                        },
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                        onClick = { fabExpanded = false; if (!isPredicting) onSuggestStyle() },
-                    )
-                    SpeedDialItem(
-                        label = if (isComposing) stringResource(R.string.styles_thinking) else stringResource(R.string.styles_compose),
+                if (selectedStyleIds.size >= 2) {
+                    ExtendedFloatingActionButton(
+                        onClick = { if (!isComposing) onCombineSelectedStyles() },
+                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
                         icon = {
                             if (isComposing)
                                 CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
                             else
                                 Icon(Icons.Default.AutoFixHigh, contentDescription = null)
                         },
-                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                        onClick = { fabExpanded = false; if (!isComposing) onComposeStyle() },
+                        text = { Text(stringResource(R.string.styles_combine)) },
                     )
                 }
-            }
-
-            // Main toggle FAB
-            FloatingActionButton(onClick = { fabExpanded = !fabExpanded }) {
-                Icon(
-                    if (fabExpanded) Icons.Default.Close else Icons.Default.Add,
-                    contentDescription = if (fabExpanded) "Close" else "Actions",
+                ExtendedFloatingActionButton(
+                    onClick = { showDeleteDialog = true },
+                    containerColor = MaterialTheme.colorScheme.error,
+                    contentColor = MaterialTheme.colorScheme.onError,
+                    icon = { Icon(Icons.Default.Close, contentDescription = null) },
+                    text = { Text(stringResource(R.string.action_delete)) },
                 )
+            }
+        } else {
+            // Normal speed-dial FAB (bottom-end)
+            var fabExpanded by remember { mutableStateOf(false) }
+            Column(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(end = 16.dp, bottom = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = Alignment.End,
+            ) {
+                AnimatedVisibility(
+                    visible = fabExpanded,
+                    enter = fadeIn() + slideInVertically(initialOffsetY = { it / 2 }),
+                    exit = fadeOut() + slideOutVertically(targetOffsetY = { it / 2 }),
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        horizontalAlignment = Alignment.End,
+                    ) {
+                        SpeedDialItem(
+                            label = stringResource(R.string.styles_create_manual),
+                            icon = { Icon(Icons.Default.Edit, contentDescription = null) },
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            onClick = { fabExpanded = false; onCreateStyle() },
+                        )
+                        SpeedDialItem(
+                            label = if (isPredicting) stringResource(R.string.styles_thinking) else stringResource(R.string.styles_suggest),
+                            icon = {
+                                if (isPredicting)
+                                    CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
+                                else
+                                    Icon(Icons.Default.AutoAwesome, contentDescription = null)
+                            },
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            onClick = { fabExpanded = false; if (!isPredicting) onSuggestStyle() },
+                        )
+                        SpeedDialItem(
+                            label = if (isComposing) stringResource(R.string.styles_thinking) else stringResource(R.string.styles_compose),
+                            icon = {
+                                if (isComposing)
+                                    CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
+                                else
+                                    Icon(Icons.Default.AutoFixHigh, contentDescription = null)
+                            },
+                            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                            onClick = { fabExpanded = false; if (!isComposing) onComposeStyle() },
+                        )
+                    }
+                }
+                FloatingActionButton(onClick = { fabExpanded = !fabExpanded }) {
+                    Icon(
+                        if (fabExpanded) Icons.Default.Close else Icons.Default.Add,
+                        contentDescription = if (fabExpanded) "Close" else "Actions",
+                    )
+                }
             }
         }
 
@@ -424,7 +574,7 @@ private fun StyleListScreen(
 
         // Error snackbars (composition takes priority if both are set)
         val errorMsg = compositionError ?: predictionError
-        val onClearError = if (compositionError != null) onClearComposition else onClearPrediction
+        val onClearError = if (compositionError != null) onClearCompositionError else onClearPredictionError
         errorMsg?.let { msg ->
             Snackbar(
                 modifier = Modifier
@@ -433,40 +583,6 @@ private fun StyleListScreen(
                 action = { TextButton(onClick = onClearError) { Text(stringResource(R.string.action_ok)) } },
             ) { Text(msg) }
         }
-    }
-
-    // Prediction result sheet
-    prediction?.let { pred ->
-        val suggestedStyle = styles.find { it.id == pred.styleId }
-        if (suggestedStyle != null) {
-            StyleSuggestionSheet(
-                style = suggestedStyle,
-                reason = pred.reason,
-                itemsById = itemsById,
-                refinementInput = refinementInput,
-                feedbackHistory = feedbackHistory,
-                onDismiss = onClearPrediction,
-                onWear = { onWearStyle(suggestedStyle.id); onClearPrediction() },
-                onRefinementInputChange = onRefinementInputChange,
-                onRefine = onRefinePrediction,
-                onPreset = onPresetPrediction,
-            )
-        }
-    }
-
-    // Composition result sheet
-    newSuggestion?.let { suggestion ->
-        NewStyleSuggestionSheet(
-            suggestion = suggestion,
-            itemsById = itemsById,
-            refinementInput = refinementInput,
-            feedbackHistory = feedbackHistory,
-            onDismiss = onClearComposition,
-            onAccept = { onAcceptComposition(suggestion) },
-            onRefinementInputChange = onRefinementInputChange,
-            onRefine = onRefineComposition,
-            onPreset = onPresetComposition,
-        )
     }
 }
 
@@ -541,10 +657,12 @@ private fun StyleSortButton(
 private fun StyleCard(
     style: Style,
     itemsById: Map<String, DriveImage>,
-    highlighted: Boolean = false,
+    isSelected: Boolean = false,
+    isSelectionMode: Boolean = false,
     onEdit: () -> Unit,
     onDelete: () -> Unit,
     onWear: () -> Unit,
+    onToggleSelection: () -> Unit = {},
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
     var viewerImage by remember { mutableStateOf<DriveImage?>(null) }
@@ -573,8 +691,11 @@ private fun StyleCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 12.dp)
-            .combinedClickable(onClick = onEdit, onLongClick = { showDeleteDialog = true }),
-        border = if (highlighted)
+            .combinedClickable(
+                onClick = { if (isSelectionMode) onToggleSelection() else Unit },
+                onLongClick = onToggleSelection,
+            ),
+        border = if (isSelected)
             androidx.compose.foundation.BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
         else null,
     ) {
@@ -639,12 +760,30 @@ private fun StyleCard(
                     )
                 }
             }
-            // "Wear today" action — sits inside the card to avoid conflicting with the card's onClick
+            // Bottom action row: Edit (left) | Wear today (right) — hidden in selection mode
             var wornToday by remember { mutableStateOf(false) }
-            Row(
+            if (!isSelectionMode) Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
             ) {
+                TextButton(
+                    onClick = onEdit,
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+                ) {
+                    Icon(
+                        Icons.Default.Edit,
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Spacer(Modifier.width(4.dp))
+                    Text(
+                        stringResource(R.string.action_edit),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
                 TextButton(
                     onClick = { onWear(); wornToday = true },
                     contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
@@ -843,6 +982,601 @@ private fun StyleItemPicker(
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+// ---------- Style editing view ----------
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
+@Composable
+private fun StyleEditingView(
+    draftItemIds: Set<String>,
+    draftStyleName: String,
+    draftStyleDescription: String,
+    isEditing: Boolean,
+    prediction: StylePrediction?,
+    newSuggestion: NewStyleSuggestion?,
+    allItems: List<DriveImage>,
+    isLoadingAlternatives: Boolean,
+    alternativeIds: List<String>,
+    refinementInput: String,
+    feedbackHistory: List<String>,
+    onNameChanged: (String) -> Unit,
+    onDescriptionChanged: (String) -> Unit,
+    onSwapItem: (oldId: String, newId: String) -> Unit,
+    onRemoveItem: (String) -> Unit,
+    onAddItem: (String) -> Unit,
+    onSuggestAlternatives: (itemId: String) -> Unit,
+    onClearAlternatives: () -> Unit,
+    onConfirm: () -> Unit,
+    onCancel: () -> Unit,
+    onWear: (() -> Unit)?,
+    onRefinementInputChange: (String) -> Unit,
+    onRefinePrediction: (() -> Unit)?,
+    onPresetPrediction: ((String) -> Unit)?,
+    onRefineComposition: (() -> Unit)?,
+    onPresetComposition: ((String) -> Unit)?,
+    isRefining: Boolean = false,
+    modifier: Modifier = Modifier,
+) {
+    BackHandler(onBack = onCancel)
+
+    val itemsById = remember(allItems) { allItems.associateBy { it.driveId } }
+    // Preserve wardrobe order for consistent display
+    val draftItems = remember(draftItemIds, allItems) { allItems.filter { it.driveId in draftItemIds } }
+
+    // Item currently being swapped (null = no sheet open)
+    var swappingItemId by remember { mutableStateOf<String?>(null) }
+    // Item add sheet
+    var showAddSheet by remember { mutableStateOf(false) }
+    // Worn-today feedback
+    var wornToday by remember { mutableStateOf(false) }
+
+    // Item swap sheet
+    swappingItemId?.let { itemId ->
+        itemsById[itemId]?.let { targetItem ->
+            ItemSwapSheet(
+                targetItem = targetItem,
+                allItems = allItems,
+                currentStyleItemIds = draftItemIds,
+                isLoadingAlternatives = isLoadingAlternatives,
+                alternativeIds = alternativeIds,
+                onSuggestAlternatives = { onSuggestAlternatives(itemId) },
+                onSelectItem = { newId ->
+                    if (newId != itemId) onSwapItem(itemId, newId)
+                    swappingItemId = null
+                    onClearAlternatives()
+                },
+                onDismiss = {
+                    swappingItemId = null
+                    onClearAlternatives()
+                },
+            )
+        }
+    }
+
+    // Add item sheet
+    if (showAddSheet) {
+        AddItemSheet(
+            candidates = allItems.filter { it.driveId !in draftItemIds },
+            onSelectItem = { id -> onAddItem(id); showAddSheet = false },
+            onDismiss = { showAddSheet = false },
+        )
+    }
+
+    Box(modifier = modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize()) {
+        // Top bar
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .statusBarsPadding()
+                .padding(horizontal = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            IconButton(onClick = onCancel) {
+                Icon(Icons.Default.Close, contentDescription = "Cancel")
+            }
+            BasicTextField(
+                value = draftStyleName,
+                onValueChange = onNameChanged,
+                textStyle = MaterialTheme.typography.titleMedium.copy(
+                    color = MaterialTheme.colorScheme.onSurface,
+                ),
+                singleLine = true,
+                modifier = Modifier.weight(1f).padding(horizontal = 8.dp),
+                decorationBox = { inner ->
+                    Box {
+                        if (draftStyleName.isEmpty()) {
+                            Text(
+                                stringResource(R.string.styles_name_placeholder),
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        inner()
+                    }
+                },
+            )
+            // Wear today — only available when editing an existing saved style
+            if (onWear != null) {
+                IconButton(
+                    onClick = { onWear(); wornToday = true },
+                ) {
+                    Icon(
+                        Icons.Default.CalendarMonth,
+                        contentDescription = stringResource(R.string.styles_wear_today),
+                        tint = if (wornToday) MaterialTheme.colorScheme.primary
+                               else MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+            TextButton(
+                onClick = onConfirm,
+                enabled = draftItemIds.isNotEmpty(),
+            ) {
+                Text(if (isEditing) stringResource(R.string.action_save) else stringResource(R.string.styles_create_this))
+            }
+        }
+        HorizontalDivider()
+
+        // Scrollable content
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp)
+                .navigationBarsPadding()
+                .imePadding(),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Spacer(Modifier.height(4.dp))
+
+            // Description field
+            BasicTextField(
+                value = draftStyleDescription,
+                onValueChange = onDescriptionChanged,
+                textStyle = MaterialTheme.typography.bodyMedium.copy(
+                    color = MaterialTheme.colorScheme.onSurface,
+                ),
+                modifier = Modifier.fillMaxWidth(),
+                decorationBox = { inner ->
+                    Box {
+                        if (draftStyleDescription.isEmpty()) {
+                            Text(
+                                stringResource(R.string.styles_description_placeholder),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        inner()
+                    }
+                },
+            )
+
+            // AI reason (shown when opened from a Gemini suggestion)
+            val reason = prediction?.reason ?: newSuggestion?.reason
+            if (reason != null && reason.isNotBlank()) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                ) {
+                    Icon(
+                        if (newSuggestion != null) Icons.Default.AutoFixHigh else Icons.Default.AutoAwesome,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(16.dp),
+                    )
+                    Text(
+                        reason,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+
+            HorizontalDivider()
+
+            Text(
+                stringResource(R.string.styles_items_label),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.primary,
+            )
+
+            // Outfit items — tappable for swap, with remove button
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                draftItems.forEach { image ->
+                    StyleEditItemSlot(
+                        image = image,
+                        onTap = { swappingItemId = image.driveId },
+                        onRemove = { onRemoveItem(image.driveId) },
+                    )
+                }
+                // "+" slot to add a new item
+                Box(
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(MaterialTheme.shapes.small)
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .clickable { showAddSheet = true },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(2.dp),
+                    ) {
+                        Icon(
+                            Icons.Default.Add,
+                            contentDescription = stringResource(R.string.styles_add_item),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Text(
+                            stringResource(R.string.styles_add_item),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+            }
+
+            // Refinement section — only shown when opened from an AI suggestion
+            if (prediction != null || newSuggestion != null) {
+                RefinementSection(
+                    input = refinementInput,
+                    feedbackHistory = feedbackHistory,
+                    onInputChange = onRefinementInputChange,
+                    onSubmitFreetext = {
+                        if (prediction != null) onRefinePrediction?.invoke()
+                        else onRefineComposition?.invoke()
+                    },
+                    onSubmitPreset = { preset ->
+                        if (prediction != null) onPresetPrediction?.invoke(preset)
+                        else onPresetComposition?.invoke(preset)
+                    },
+                )
+            }
+
+            Spacer(Modifier.height(16.dp))
+        }
+    }
+
+    // AI-thinking overlay during refinement (sits on top of the whole view)
+    if (isRefining) {
+        AiProcessingOverlay(
+            label = if (prediction != null) stringResource(R.string.ai_suggesting_style)
+                    else stringResource(R.string.ai_composing_outfit),
+            modifier = Modifier.fillMaxSize(),
+        )
+    }
+    } // end Box
+}
+
+@Composable
+private fun StyleEditItemSlot(
+    image: DriveImage,
+    onTap: () -> Unit,
+    onRemove: () -> Unit,
+) {
+    val ctx = LocalContext.current
+    Box(
+        modifier = Modifier
+            .size(100.dp)
+            .clip(MaterialTheme.shapes.small)
+            .clickable { onTap() },
+    ) {
+        AsyncImage(
+            model = remember(image.driveId, image.version) {
+                ImageRequest.Builder(ctx)
+                    .data(image.localPath)
+                    .memoryCacheKey("${image.driveId}_${image.version}")
+                    .build()
+            },
+            contentDescription = image.name,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop,
+        )
+        // Label strip at bottom
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .background(Color.Black.copy(alpha = 0.45f)),
+        ) {
+            Text(
+                text = image.tags?.label?.take(16) ?: image.name.take(16),
+                style = MaterialTheme.typography.labelSmall,
+                color = Color.White,
+                maxLines = 1,
+                modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp),
+            )
+        }
+        // Tiny remove button at top-end
+        SmallFloatingActionButton(
+            onClick = onRemove,
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(2.dp)
+                .size(20.dp),
+            containerColor = MaterialTheme.colorScheme.errorContainer,
+            elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 0.dp),
+        ) {
+            Icon(Icons.Default.Close, contentDescription = "Remove", modifier = Modifier.size(12.dp))
+        }
+    }
+}
+
+// ---------- Item swap sheet ----------
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ItemSwapSheet(
+    targetItem: DriveImage,
+    allItems: List<DriveImage>,
+    currentStyleItemIds: Set<String>,
+    isLoadingAlternatives: Boolean,
+    alternativeIds: List<String>,
+    onSuggestAlternatives: () -> Unit,
+    onSelectItem: (String) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val ctx = LocalContext.current
+    val targetCategory = targetItem.tags?.category
+
+    // Pre-filter by same category; user can change the filter
+    var selectedTags by remember(targetCategory) {
+        mutableStateOf(
+            if (targetCategory != null) mapOf("Category" to setOf(targetCategory))
+            else emptyMap<String, Set<String>>()
+        )
+    }
+    var selectedId by remember { mutableStateOf(targetItem.driveId) }
+
+    val tagCategories = remember(allItems) { allItems.tagCategories() }
+
+    val altSet = remember(alternativeIds) { alternativeIds.toSet() }
+    val candidateItems = remember(allItems, selectedTags, altSet) {
+        val activeFilters = selectedTags.filter { (_, tags) -> tags.isNotEmpty() }
+        val filtered = if (activeFilters.isEmpty()) allItems
+        else allItems.filter { img ->
+            activeFilters.all { (categoryLabel, catTags) ->
+                catTags.any { it in img.tagStringsForCategory(categoryLabel) }
+            }
+        }
+        // Sort: AI alternatives first, then current item, then rest
+        filtered.sortedWith(
+            compareByDescending<DriveImage> { it.driveId in altSet }
+                .thenByDescending { it.driveId == targetItem.driveId }
+        )
+    }
+
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .navigationBarsPadding(),
+        ) {
+            // Header row
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 8.dp, top = 4.dp, bottom = 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    stringResource(R.string.styles_swap_item_for, targetItem.tags?.label ?: targetItem.name),
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier.weight(1f),
+                )
+                if (isLoadingAlternatives) {
+                    CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
+                    Spacer(Modifier.width(12.dp))
+                } else {
+                    TextButton(onClick = onSuggestAlternatives) {
+                        Icon(Icons.Default.AutoAwesome, null, modifier = Modifier.size(14.dp))
+                        Spacer(Modifier.width(4.dp))
+                        Text(stringResource(R.string.styles_suggest_alternatives), style = MaterialTheme.typography.labelSmall)
+                    }
+                }
+            }
+
+            TagFilterBar(
+                tagCategories = tagCategories,
+                selectedTags = selectedTags,
+                onTagsChanged = { selectedTags = it },
+            )
+
+            LazyVerticalGrid(
+                columns = GridCells.Adaptive(96.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(320.dp),
+                contentPadding = PaddingValues(4.dp),
+            ) {
+                itemsIndexed(candidateItems, key = { _, img -> img.driveId }) { _, image ->
+                    val isSelected = image.driveId == selectedId
+                    val isCurrent = image.driveId == targetItem.driveId
+                    val isAiSuggested = image.driveId in altSet
+                    Box(
+                        modifier = Modifier
+                            .aspectRatio(1f)
+                            .padding(2.dp)
+                            .clip(MaterialTheme.shapes.extraSmall)
+                            .clickable { selectedId = image.driveId },
+                    ) {
+                        AsyncImage(
+                            model = remember(image.driveId, image.version) {
+                                ImageRequest.Builder(ctx)
+                                    .data(image.localPath)
+                                    .memoryCacheKey("${image.driveId}_${image.version}")
+                                    .build()
+                            },
+                            contentDescription = image.name,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop,
+                        )
+                        if (isSelected) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.35f)),
+                                contentAlignment = Alignment.TopEnd,
+                            ) {
+                                Icon(
+                                    Icons.Default.CheckCircle,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.padding(4.dp).size(18.dp),
+                                )
+                            }
+                        }
+                        // AI suggestion badge
+                        if (isAiSuggested && !isSelected) {
+                            Icon(
+                                Icons.Default.AutoAwesome,
+                                contentDescription = "AI suggestion",
+                                tint = MaterialTheme.colorScheme.tertiary,
+                                modifier = Modifier
+                                    .align(Alignment.TopStart)
+                                    .padding(3.dp)
+                                    .size(14.dp),
+                            )
+                        }
+                        // "current" label for the item being replaced
+                        if (isCurrent) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .align(Alignment.BottomCenter)
+                                    .background(Color.Black.copy(alpha = 0.45f)),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Text(
+                                    "current",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = Color.White,
+                                    modifier = Modifier.padding(vertical = 2.dp),
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Action buttons
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
+            ) {
+                TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
+                Button(
+                    onClick = { onSelectItem(selectedId) },
+                    enabled = selectedId != targetItem.driveId,
+                ) {
+                    Text(stringResource(R.string.styles_select_item))
+                }
+            }
+        }
+    }
+}
+
+// ---------- Add item sheet ----------
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun AddItemSheet(
+    candidates: List<DriveImage>,
+    onSelectItem: (String) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val ctx = LocalContext.current
+    var selectedTags by remember { mutableStateOf(emptyMap<String, Set<String>>()) }
+    val tagCategories = remember(candidates) { candidates.tagCategories() }
+
+    val filteredItems = remember(candidates, selectedTags) {
+        val activeFilters = selectedTags.filter { (_, tags) -> tags.isNotEmpty() }
+        if (activeFilters.isEmpty()) candidates
+        else candidates.filter { img ->
+            activeFilters.all { (categoryLabel, catTags) ->
+                catTags.any { it in img.tagStringsForCategory(categoryLabel) }
+            }
+        }
+    }
+
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .navigationBarsPadding(),
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 8.dp, top = 4.dp, bottom = 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    stringResource(R.string.styles_add_item),
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier.weight(1f),
+                )
+            }
+
+            TagFilterBar(
+                tagCategories = tagCategories,
+                selectedTags = selectedTags,
+                onTagsChanged = { selectedTags = it },
+            )
+
+            LazyVerticalGrid(
+                columns = GridCells.Adaptive(96.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(320.dp),
+                contentPadding = PaddingValues(4.dp),
+            ) {
+                itemsIndexed(filteredItems, key = { _, img -> img.driveId }) { _, image ->
+                    Box(
+                        modifier = Modifier
+                            .aspectRatio(1f)
+                            .padding(2.dp)
+                            .clip(MaterialTheme.shapes.extraSmall)
+                            .clickable { onSelectItem(image.driveId) },
+                    ) {
+                        AsyncImage(
+                            model = remember(image.driveId, image.version) {
+                                ImageRequest.Builder(ctx)
+                                    .data(image.localPath)
+                                    .memoryCacheKey("${image.driveId}_${image.version}")
+                                    .build()
+                            },
+                            contentDescription = image.name,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop,
+                        )
+                    }
+                }
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.End,
+            ) {
+                TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
             }
         }
     }

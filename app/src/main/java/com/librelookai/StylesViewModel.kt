@@ -30,6 +30,8 @@ data class StylesUiState(
     val styles: List<Style> = emptyList(),
     val isLoading: Boolean = false,
     val isCreating: Boolean = false,
+    /** True when the new style-editing view (not the old item-picker) is open. */
+    val isEditingStyleView: Boolean = false,
     val draftItemIds: Set<String> = emptySet(),
     val draftStyleName: String = "",
     val draftStyleDescription: String = "",
@@ -48,6 +50,13 @@ data class StylesUiState(
     val refinementInput: String = "",
     val feedbackHistory: List<String> = emptyList(),
     val lastCompositionRequiredIds: Set<String> = emptySet(),
+    // After saving a style, offer to wear it immediately
+    val pendingWearStyleId: String? = null,
+    // Multi-select for bulk actions
+    val selectedStyleIds: Set<String> = emptySet(),
+    // Item-swap alternatives suggested by Gemini
+    val isLoadingAlternatives: Boolean = false,
+    val alternativeIds: List<String> = emptyList(),
     val error: String? = null,
 )
 
@@ -108,15 +117,60 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
         it.copy(isCreating = true, draftItemIds = itemIds, draftStyleName = name, draftStyleDescription = description, editingStyle = null)
     }
 
+    /** Opens the style-editing view for an existing saved style. */
     fun startEditing(style: Style) = _state.update {
-        it.copy(isCreating = true, draftItemIds = style.itemIds.toSet(), draftStyleName = style.name, draftStyleDescription = style.description, editingStyle = style)
+        it.copy(
+            isEditingStyleView = true,
+            isCreating = false,
+            draftItemIds = style.itemIds.toSet(),
+            draftStyleName = style.name,
+            draftStyleDescription = style.description,
+            editingStyle = style,
+        )
+    }
+
+    /** Called when Gemini predicts an existing style — opens edit view pre-populated with it. */
+    fun openPredictionInEditView(style: Style) = _state.update {
+        it.copy(
+            isEditingStyleView = true,
+            draftItemIds = style.itemIds.toSet(),
+            draftStyleName = style.name,
+            draftStyleDescription = style.description,
+            editingStyle = style,
+        )
+    }
+
+    /** Called when Gemini composes a new outfit — opens edit view pre-populated with it. */
+    fun openSuggestionInEditView(suggestion: NewStyleSuggestion) = _state.update {
+        it.copy(
+            isEditingStyleView = true,
+            draftItemIds = suggestion.itemIds.toSet(),
+            draftStyleName = suggestion.name,
+            draftStyleDescription = suggestion.description,
+            editingStyle = null,
+        )
+    }
+
+    fun cancelStyleEditingView() = _state.update {
+        it.copy(
+            isEditingStyleView = false,
+            draftItemIds = emptySet(),
+            draftStyleName = "",
+            draftStyleDescription = "",
+            editingStyle = null,
+            prediction = null,
+            newSuggestion = null,
+            alternativeIds = emptyList(),
+            feedbackHistory = emptyList(),
+            refinementInput = "",
+        )
     }
 
     fun updateDraftName(name: String) = _state.update { it.copy(draftStyleName = name) }
     fun updateDraftDescription(description: String) = _state.update { it.copy(draftStyleDescription = description) }
 
     fun cancelCreating() = _state.update {
-        it.copy(isCreating = false, draftItemIds = emptySet(), draftStyleName = "", draftStyleDescription = "", editingStyle = null, showNameDialog = false)
+        it.copy(isCreating = false, isEditingStyleView = false, draftItemIds = emptySet(), draftStyleName = "", draftStyleDescription = "", editingStyle = null, showNameDialog = false)
     }
 
     fun toggleDraftItem(driveId: String) = _state.update { s ->
@@ -128,6 +182,49 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
     fun selectAllDraftItems(ids: List<String>) = _state.update { it.copy(draftItemIds = it.draftItemIds + ids) }
 
     fun deselectAllDraftItems(ids: List<String>) = _state.update { it.copy(draftItemIds = it.draftItemIds - ids.toSet()) }
+
+    /** Replace one item in the style draft with another. */
+    fun swapDraftItem(oldId: String, newId: String) = _state.update { s ->
+        val next = s.draftItemIds.toMutableSet().apply { remove(oldId); add(newId) }
+        s.copy(draftItemIds = next)
+    }
+
+    fun addDraftItem(id: String) = _state.update { s -> s.copy(draftItemIds = s.draftItemIds + id) }
+
+    fun removeDraftItem(id: String) = _state.update { s -> s.copy(draftItemIds = s.draftItemIds - id) }
+
+    /**
+     * Asks Gemini to suggest up to 10 alternative items that could replace [itemId] in the
+     * current style draft, keeping the overall look coherent.
+     */
+    fun suggestAlternatives(itemId: String, images: List<DriveImage>, prefs: UserPreferences?) {
+        viewModelScope.launch {
+            _state.update { it.copy(isLoadingAlternatives = true, alternativeIds = emptyList()) }
+            val item = images.find { it.driveId == itemId } ?: run {
+                _state.update { it.copy(isLoadingAlternatives = false) }
+                return@launch
+            }
+            val otherIds = _state.value.draftItemIds - setOf(itemId)
+            val otherItems = images.filter { it.driveId in otherIds }
+            val prompt = buildAlternativesPrompt(item, otherItems, images, prefs)
+            val raw = gemini.generateText(prompt)
+            val ids: List<String> = if (raw != null) {
+                val json = raw.trim()
+                    .removePrefix("```json").removePrefix("```").removeSuffix("```").trim()
+                data class AltResp(val alternativeIds: List<String> = emptyList())
+                val knownIds = images.map { it.driveId }.toSet()
+                runCatching {
+                    val resp = gson.fromJson(json, AltResp::class.java)
+                    resp.alternativeIds.filter { it in knownIds && it != itemId }.take(10)
+                }.getOrDefault(emptyList())
+            } else emptyList()
+            _state.update { it.copy(isLoadingAlternatives = false, alternativeIds = ids) }
+        }
+    }
+
+    fun clearAlternatives() = _state.update { it.copy(alternativeIds = emptyList()) }
+
+    fun clearPendingWear() = _state.update { it.copy(pendingWearStyleId = null) }
 
     fun confirmDraft() {
         val s = _state.value
@@ -166,10 +263,25 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
                     itemIds = draftIds.toList(), itemNames = itemNames,
                 )
             }
+            val savedStyleId = if (s.editingStyle != null) s.editingStyle.id else updated.last().id
             runCatching {
                 drive.saveStylesJson(id, gson.toJson(updated))
             }.onSuccess {
-                _state.update { it.copy(styles = updated, isCreating = false, draftItemIds = emptySet(), editingStyle = null, showNameDialog = false) }
+                _state.update {
+                    it.copy(
+                        styles = updated,
+                        isCreating = false,
+                        isEditingStyleView = false,
+                        draftItemIds = emptySet(),
+                        editingStyle = null,
+                        showNameDialog = false,
+                        prediction = null,
+                        newSuggestion = null,
+                        feedbackHistory = emptyList(),
+                        refinementInput = "",
+                        pendingWearStyleId = savedStyleId,
+                    )
+                }
             }.onFailure { e ->
                 _state.update { it.copy(showNameDialog = false, error = e.message) }
             }
@@ -188,6 +300,96 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
                 _state.update { it.copy(styles = updated) }
             }.onFailure { e ->
                 _state.update { it.copy(error = e.message) }
+            }
+        }
+    }
+
+    // ---------- Multi-select ----------
+
+    fun toggleStyleSelection(styleId: String) = _state.update { s ->
+        val next = s.selectedStyleIds.toMutableSet()
+        if (!next.add(styleId)) next.remove(styleId)
+        s.copy(selectedStyleIds = next)
+    }
+
+    fun selectAllStyles(ids: List<String>) = _state.update { it.copy(selectedStyleIds = it.selectedStyleIds + ids) }
+
+    fun clearStyleSelection() = _state.update { it.copy(selectedStyleIds = emptySet()) }
+
+    fun deleteSelectedStyles() {
+        val toDelete = _state.value.selectedStyleIds
+        if (toDelete.isEmpty()) return
+        val updated = _state.value.styles.filter { it.id !in toDelete }
+        viewModelScope.launch {
+            val id = folderId ?: return@launch
+            runCatching {
+                drive.saveStylesJson(id, gson.toJson(updated))
+            }.onSuccess {
+                _state.update { it.copy(styles = updated, selectedStyleIds = emptySet()) }
+            }.onFailure { e ->
+                _state.update { it.copy(error = e.message) }
+            }
+        }
+    }
+
+    /**
+     * Asks Gemini to merge the selected styles into one cohesive outfit.
+     * The result surfaces as [newSuggestion], which auto-opens [StyleEditingView].
+     */
+    fun combineSelectedStyles(prefs: UserPreferences?, weather: WeatherData?, images: List<DriveImage>) {
+        val selectedIds = _state.value.selectedStyleIds
+        val selectedStyles = _state.value.styles.filter { it.id in selectedIds }
+        if (selectedStyles.size < 2) return
+        viewModelScope.launch {
+            _state.update { it.copy(isComposing = true, newSuggestion = null, compositionError = null) }
+            val countryCode = deviceCountryCode()
+            val region = listOfNotNull(weather?.cityName?.takeIf { it.isNotEmpty() }, countryCode).joinToString(", ")
+            val fashionTrends = gemini.searchFashionTrends(region)
+            val prompt = buildCombinePrompt(
+                prefs = prefs,
+                weather = weather,
+                countryCode = countryCode,
+                fashionTrends = fashionTrends,
+                styles = selectedStyles,
+                images = images,
+            )
+            Log.d("StylesVM", "Combine prompt length: ${prompt.length} chars")
+            val raw = gemini.generateText(prompt)
+            if (raw == null) {
+                _state.update { it.copy(isComposing = false, compositionError = "Gemini did not respond.") }
+                return@launch
+            }
+            val json = raw.trim()
+                .removePrefix("```json").removePrefix("```").removeSuffix("```").trim()
+            data class CompResp(
+                val name: String = "",
+                val description: String = "",
+                val itemIds: List<String> = emptyList(),
+                val reason: String = "",
+            )
+            val result = runCatching { gson.fromJson(json, CompResp::class.java) }.getOrNull()
+            if (result == null || result.itemIds.isEmpty()) {
+                Log.w("StylesVM", "Failed to parse combine response: $json")
+                _state.update { it.copy(isComposing = false, compositionError = "Could not parse Gemini response.") }
+                return@launch
+            }
+            val knownIds = images.map { it.driveId }.toSet()
+            val merged = result.itemIds.filter { it in knownIds }.distinct()
+            if (merged.isEmpty()) {
+                _state.update { it.copy(isComposing = false, compositionError = "Suggested items not found in wardrobe.") }
+                return@launch
+            }
+            _state.update {
+                it.copy(
+                    isComposing = false,
+                    selectedStyleIds = emptySet(),
+                    newSuggestion = NewStyleSuggestion(
+                        name        = result.name.ifBlank { "Combined Style" },
+                        description = result.description,
+                        itemIds     = merged,
+                        reason      = result.reason,
+                    ),
+                )
             }
         }
     }
@@ -518,6 +720,51 @@ private fun buildPredictionPrompt(
     }
 }
 
+private fun buildAlternativesPrompt(
+    item: DriveImage,
+    otherStyleItems: List<DriveImage>,
+    allImages: List<DriveImage>,
+    prefs: UserPreferences?,
+): String {
+    fun driveImageToJson(img: DriveImage): String {
+        val t = img.tags ?: return """{"id":"${img.driveId}","tags":null}"""
+        val uses   = t.uses.joinToString(",", "[", "]") { "\"$it\"" }
+        val colors = t.colors.joinToString(",", "[", "]") { "\"$it\"" }
+        return """{"id":"${img.driveId}","tags":{"label":"${t.label}","type":"${t.type}","category":"${t.category}","uses":$uses,"colors":$colors}}"""
+    }
+
+    val otherStyleIds = otherStyleItems.map { it.driveId }.toSet()
+    val candidatesJson = allImages
+        .filter { it.driveId != item.driveId && it.driveId !in otherStyleIds }
+        .joinToString(",", "[", "]") { driveImageToJson(it) }
+
+    return buildString {
+        appendLine("You are a personal fashion stylist AI. Suggest up to 10 alternative wardrobe items that could replace a specific item in an outfit.")
+        appendLine()
+        appendLine("## Item to replace")
+        appendLine(driveImageToJson(item))
+        appendLine()
+        appendLine("## Other items already in the outfit (context — do NOT suggest these)")
+        appendLine(otherStyleItems.joinToString(",", "[", "]") { driveImageToJson(it) })
+        appendLine()
+        appendLine("## Available wardrobe items to choose from")
+        appendLine(candidatesJson)
+        appendLine()
+        appendLine("## Instructions")
+        appendLine("Find up to 10 items from the available wardrobe that would work as a good replacement.")
+        appendLine("The replacement should:")
+        appendLine("1. Serve the same general purpose/category as the item being replaced")
+        appendLine("2. Coordinate well with the other outfit items (colors, style, aesthetic)")
+        appendLine("3. Be suitable for the same occasions as the original item")
+        appendLine()
+        appendLine("Respond with ONLY a valid JSON object — no markdown, no extra text:")
+        append("""{"alternativeIds":["<id1>","<id2>","<id3>"]}""")
+        appendLine()
+        appendLine()
+        appendLine("IMPORTANT: Return item IDs exactly as provided in the available wardrobe list.")
+    }
+}
+
 private fun buildCompositionPrompt(
     prefs: UserPreferences?,
     weather: WeatherData?,
@@ -607,6 +854,78 @@ private fun buildCompositionPrompt(
         appendLine("Also propose:")
         appendLine("- A short, evocative name for the outfit (\"name\")")
         appendLine("- A 1-2 sentence style description suitable as a caption (\"description\")")
+        appendLine()
+        appendLine("Respond with ONLY a valid JSON object — no markdown, no extra text:")
+        append("""{"name":"<outfit name>","description":"<style caption>","itemIds":["<id1>","<id2>",...],"reason":"<1-2 sentence explanation>"}""")
+        appendLine()
+        appendLine()
+        appendLine("IMPORTANT: Write all user-facing text fields (name, description, reason) in ${AppLanguage.toGeminiName(prefs?.language ?: AppLanguage.ENGLISH)}.")
+    }
+}
+
+private fun buildCombinePrompt(
+    prefs: UserPreferences?,
+    weather: WeatherData?,
+    countryCode: String,
+    fashionTrends: FashionTrends?,
+    styles: List<Style>,
+    images: List<DriveImage>,
+): String {
+    val age = prefs?.yearOfBirth?.let { LocalDate.now().year - it }
+    val idToImage = images.associateBy { it.driveId }
+
+    fun itemJson(img: DriveImage): String {
+        val t = img.tags ?: return """{"id":"${img.driveId}","tags":null}"""
+        val uses   = t.uses.joinToString(",", "[", "]") { "\"$it\"" }
+        val colors = t.colors.joinToString(",", "[", "]") { "\"$it\"" }
+        return """{"id":"${img.driveId}","tags":{"label":"${t.label}","type":"${t.type}","category":"${t.category}","uses":$uses,"colors":$colors}}"""
+    }
+
+    val stylesJson = styles.joinToString(",\n", "[\n", "\n]") { style ->
+        val itemsJson = style.itemIds.mapNotNull { idToImage[it] }
+            .joinToString(",", "[", "]") { itemJson(it) }
+        """  {"id":"${style.id}","name":"${style.name}","description":"${style.description}","items":$itemsJson}"""
+    }
+
+    val weatherStr = if (weather != null)
+        "${weather.temperatureCelsius.toInt()}°C, ${wmoEmoji(weather.weatherCode)} (WMO ${weather.weatherCode})"
+    else "unknown"
+
+    return buildString {
+        appendLine("You are a personal fashion stylist AI. Merge the following ${styles.size} existing styles into one new, cohesive outfit by selecting the best-matching items from across all of them.")
+        appendLine()
+        appendLine("## User Profile")
+        appendLine("- Gender: ${prefs?.gender?.takeIf { it.isNotEmpty() } ?: "not specified"}")
+        appendLine("- Age: ${age?.toString() ?: "not specified"}")
+        appendLine("- Style preferences: ${prefs?.preferences?.takeIf { it.isNotEmpty() } ?: "none provided"}")
+        appendLine()
+        appendLine("## Today's Weather")
+        appendLine(weatherStr)
+        appendLine()
+        appendLine("## Current Fashion Trends")
+        if (fashionTrends != null) {
+            appendLine("- Trending colors: ${fashionTrends.trendingColors.joinToString(", ").ifEmpty { "n/a" }}")
+            appendLine("- Trending aesthetics: ${fashionTrends.trendingAesthetics.joinToString(", ").ifEmpty { "n/a" }}")
+            appendLine("- Must-have items: ${fashionTrends.mustHaveItems.joinToString(", ").ifEmpty { "n/a" }}")
+        } else {
+            appendLine("not available")
+        }
+        appendLine()
+        appendLine("## Styles to Combine (each with their items)")
+        appendLine(stylesJson)
+        appendLine()
+        appendLine("## Instructions")
+        appendLine("Select 2–6 item IDs from across all the styles above to form one unified, well-coordinated outfit.")
+        appendLine("The combined outfit should:")
+        appendLine("1. Blend the aesthetic DNA of the source styles into something cohesive")
+        appendLine("2. Avoid redundancy (e.g., don't pick two pairs of trousers)")
+        appendLine("3. Work together visually (complementary colors, consistent formality level)")
+        appendLine("4. Be appropriate for the current weather")
+        appendLine()
+        appendLine("Also propose:")
+        appendLine("- A short, evocative name for the combined outfit (\"name\")")
+        appendLine("- A 1-2 sentence style description (\"description\")")
+        appendLine("- A brief reason explaining how you merged the styles (\"reason\")")
         appendLine()
         appendLine("Respond with ONLY a valid JSON object — no markdown, no extra text:")
         append("""{"name":"<outfit name>","description":"<style caption>","itemIds":["<id1>","<id2>",...],"reason":"<1-2 sentence explanation>"}""")
