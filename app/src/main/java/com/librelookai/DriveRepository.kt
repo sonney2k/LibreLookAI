@@ -521,6 +521,25 @@ class DriveRepository(
             .build()).await()
     }
 
+    /**
+     * Lists ALL image files in [folderId] (originals, cutouts, and raw uploads).
+     * Used by the repair-and-sync audit to examine every image regardless of suffix.
+     */
+    suspend fun listAllImageFiles(folderId: String): List<DriveFileDto> = withContext(Dispatchers.IO) {
+        val tok = token()
+        val q = URLEncoder.encode(
+            "'$folderId' in parents and mimeType contains 'image/' and trashed=false", "UTF-8",
+        )
+        val req = Request.Builder()
+            .url("$API/files?q=$q&fields=files(id,name)&pageSize=1000")
+            .header("Authorization", "Bearer $tok")
+            .build()
+        gson.fromJson(
+            http.newCall(req).await().body!!.string(),
+            FilesListDto::class.java,
+        ).files
+    }
+
     /** Lists per-item sidecar JSON files in [folderId], excluding system metadata files. */
     suspend fun listSidecarFiles(folderId: String): List<DriveFileDto> = withContext(Dispatchers.IO) {
         val tok = token()

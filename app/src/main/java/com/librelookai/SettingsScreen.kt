@@ -153,7 +153,11 @@ fun SettingsScreen(
                 wardrobeState = wardrobeState,
                 onRetagAll = wardrobeViewModel::retagAll,
                 onRemoveAllBackgrounds = wardrobeViewModel::removeAllBackgrounds,
-                onClearCacheAndRefresh = wardrobeViewModel::clearCacheAndRefresh,
+                onStartRepairAndRefresh = {
+                    wardrobeViewModel.startRepairAndRefresh(locationState.locations.map { it.folderId })
+                },
+                onContinueRepair = wardrobeViewModel::continueRepairProcessing,
+                onDismissAudit = wardrobeViewModel::dismissAuditResult,
                 onImportFromFolder = { removeBg, autoTag, replace, overwrite, useDrive ->
                     pendingImportRemoveBg  = removeBg
                     pendingImportAutoTag   = autoTag
@@ -410,7 +414,9 @@ private fun DataTab(
     wardrobeState: WardrobeUiState,
     onRetagAll: () -> Unit,
     onRemoveAllBackgrounds: () -> Unit,
-    onClearCacheAndRefresh: () -> Unit,
+    onStartRepairAndRefresh: () -> Unit,
+    onContinueRepair: (Boolean) -> Unit,
+    onDismissAudit: () -> Unit,
     onImportFromFolder: (removeBackground: Boolean, autoTag: Boolean, replaceExisting: Boolean, overwriteDuplicates: Boolean, useDrivePicker: Boolean) -> Unit,
     locationState: LocationUiState,
     onSetActiveLocation: (String) -> Unit,
@@ -418,10 +424,10 @@ private fun DataTab(
     onRenameLocation: (String, String) -> Unit,
     onDeleteLocation: (String) -> Unit,
 ) {
+    val audit = wardrobeState.auditProgress
     var showRetagDialog by remember { mutableStateOf(false) }
     var showRemoveBgDialog by remember { mutableStateOf(false) }
     var showImportOptionsDialog by remember { mutableStateOf(false) }
-    var showClearCacheDialog by remember { mutableStateOf(false) }
     var showAddLocationDialog by remember { mutableStateOf(false) }
     var renameTarget by remember { mutableStateOf<Location?>(null) }
     var deleteTarget by remember { mutableStateOf<Location?>(null) }
@@ -584,7 +590,7 @@ private fun DataTab(
 
         HorizontalDivider()
 
-        // ---------- Clear cache ----------
+        // ---------- Repair & Sync ----------
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(stringResource(R.string.settings_clear_cache_title), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
             Text(
@@ -592,16 +598,53 @@ private fun DataTab(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            OutlinedButton(
-                onClick = { showClearCacheDialog = true },
-                modifier = Modifier.fillMaxWidth(),
-                enabled = !wardrobeState.isLoading,
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.error),
-            ) {
-                Icon(Icons.Default.DeleteSweep, contentDescription = null, modifier = Modifier.size(18.dp))
-                Spacer(Modifier.padding(start = 8.dp))
-                Text(stringResource(R.string.settings_clear_cache_button))
+            when {
+                audit?.isScanning == true -> {
+                    val progress = if (audit.totalFolders > 0)
+                        audit.scannedFolders.toFloat() / audit.totalFolders else 0f
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        LinearProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxWidth())
+                        Text(
+                            stringResource(R.string.settings_repair_scanning, audit.scannedFolders + 1, audit.totalFolders),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+                audit?.isProcessing == true -> {
+                    val progress = if (audit.processTotal > 0)
+                        audit.processDone.toFloat() / audit.processTotal else 0f
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        LinearProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxWidth())
+                        Text(
+                            stringResource(R.string.settings_repair_processing, audit.processDone + 1, audit.processTotal),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+                audit?.isDone == true -> {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            stringResource(R.string.settings_repair_done),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.weight(1f),
+                        )
+                        TextButton(onClick = onDismissAudit) { Text(stringResource(R.string.action_ok)) }
+                    }
+                }
+                else -> OutlinedButton(
+                    onClick = onStartRepairAndRefresh,
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = !wardrobeState.isLoading && audit == null,
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.error),
+                ) {
+                    Icon(Icons.Default.DeleteSweep, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(Modifier.padding(start = 8.dp))
+                    Text(stringResource(R.string.settings_clear_cache_button))
+                }
             }
         }
 
@@ -713,19 +756,55 @@ private fun DataTab(
         )
     }
 
-    if (showClearCacheDialog) {
+    if (audit?.awaitingConfirmation == true) {
         AlertDialog(
-            onDismissRequest = { showClearCacheDialog = false },
-            title = { Text(stringResource(R.string.settings_clear_cache_dialog_title)) },
-            text = { Text(stringResource(R.string.settings_clear_cache_dialog_text)) },
+            onDismissRequest = { onContinueRepair(false) },
+            title = { Text(stringResource(R.string.settings_repair_confirm_title)) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    val hasFindings = audit.renamedCount > 0 || audit.orphanedOriginals > 0 || audit.sidecarNeeded > 0
+                    if (!hasFindings) {
+                        Text(stringResource(R.string.settings_repair_confirm_all_ok))
+                    } else {
+                        if (audit.renamedCount > 0) {
+                            Text(stringResource(R.string.settings_repair_confirm_renamed, audit.renamedCount),
+                                style = MaterialTheme.typography.bodySmall)
+                        }
+                        if (audit.orphanedOriginals > 0) {
+                            val cost = audit.orphanedOriginals * (CreditPacks.COST_BG_REMOVAL + CreditPacks.COST_CLASSIFY)
+                            Text(stringResource(R.string.settings_repair_confirm_unprocessed, audit.orphanedOriginals),
+                                style = MaterialTheme.typography.bodySmall)
+                            Text(
+                                stringResource(R.string.settings_bulk_cost_line, audit.orphanedOriginals,
+                                    CreditPacks.COST_BG_REMOVAL + CreditPacks.COST_CLASSIFY, cost),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        if (audit.sidecarNeeded > 0) {
+                            val cost = audit.sidecarNeeded * CreditPacks.COST_CLASSIFY
+                            Text(stringResource(R.string.settings_repair_confirm_sidecar, audit.sidecarNeeded),
+                                style = MaterialTheme.typography.bodySmall)
+                            Text(
+                                stringResource(R.string.settings_bulk_cost_line, audit.sidecarNeeded,
+                                    CreditPacks.COST_CLASSIFY, cost),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                    }
+                }
+            },
             confirmButton = {
-                TextButton(onClick = { onClearCacheAndRefresh(); showClearCacheDialog = false }) {
-                    Text(stringResource(R.string.settings_clear_cache_confirm), color = MaterialTheme.colorScheme.error)
+                if (audit.orphanedOriginals > 0 || audit.sidecarNeeded > 0) {
+                    TextButton(onClick = { onContinueRepair(true) }) {
+                        Text(stringResource(R.string.settings_repair_process))
+                    }
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showClearCacheDialog = false }) {
-                    Text(stringResource(R.string.action_cancel))
+                TextButton(onClick = { onContinueRepair(false) }) {
+                    Text(stringResource(R.string.settings_repair_skip))
                 }
             },
         )

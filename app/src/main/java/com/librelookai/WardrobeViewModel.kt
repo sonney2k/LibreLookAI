@@ -59,6 +59,28 @@ data class WardrobeUiState(
     val selectedIds: Set<String> = emptySet(),
     /** Number of photos queued or actively running background processing (bg removal + tagging). */
     val pendingJobs: Int = 0,
+    /** Non-null while a repair-and-sync audit is in progress or awaiting user input. */
+    val auditProgress: AuditProgress? = null,
+)
+
+// ---------- Audit / repair progress ----------
+
+data class AuditProgress(
+    val isScanning: Boolean = false,
+    val scannedFolders: Int = 0,
+    val totalFolders: Int = 0,
+    /** Files renamed on Drive during the scan to match the expected naming scheme. */
+    val renamedCount: Int = 0,
+    /** Scan finished — waiting for user confirmation before processing. */
+    val awaitingConfirmation: Boolean = false,
+    /** Originals with no matching cutout that need full AI processing. */
+    val orphanedOriginals: Int = 0,
+    /** Cutouts that are missing a tag sidecar and need tagging. */
+    val sidecarNeeded: Int = 0,
+    val isProcessing: Boolean = false,
+    val processDone: Int = 0,
+    val processTotal: Int = 0,
+    val isDone: Boolean = false,
 )
 
 // ---------- Per-item sidecar metadata ----------
@@ -84,6 +106,15 @@ private data class LocalCache(val items: List<LocalCacheEntry> = emptyList())
 
 private data class PendingJob(val driveId: String, val folderId: String)
 
+// Internal audit helpers
+private data class AuditItem(val folderId: String, val driveId: String, val name: String)
+private data class AuditCutoutItem(val folderId: String, val cutoutDriveId: String, val cutoutName: String)
+private data class AuditIntermediate(
+    val folderIds: List<String>,
+    val orphanedOriginals: List<AuditItem>,
+    val cutoutsNeedingSidecar: List<AuditCutoutItem>,
+)
+
 class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
     private val drive = DriveRepository(app, GoogleAuthManager(app))
@@ -99,6 +130,9 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Serializes all Drive metadata writes to prevent concurrent saves overwriting each other. */
     private val metaMutex = Mutex()
+
+    /** Holds the audit scan results while waiting for the user to confirm processing. */
+    private var pendingAudit: AuditIntermediate? = null
 
     /**
      * Background processing queue. Each item represents one uploaded photo that needs
@@ -125,14 +159,179 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     fun clearCacheAndRefresh() {
         val id = folderId ?: return
         viewModelScope.launch(Dispatchers.IO) {
-            // Delete JSON cache index
             localCacheFile(id).delete()
-            // Delete every locally cached image file for this folder
             val dir = getApplication<Application>().filesDir.resolve("wardrobe")
             dir.listFiles()?.forEach { it.delete() }
-            // Re-fetch everything fresh from Drive
             withContext(Dispatchers.Main) { loadImages() }
         }
+    }
+
+    /**
+     * Scans [folderIds] on Drive:
+     *  1. Renames cutout/original files that don't match the expected naming scheme.
+     *  2. Collects originals with no matching cutout (need full AI processing).
+     *  3. Collects cutouts missing a tag sidecar (need tagging only).
+     * After scanning, pauses with [AuditProgress.awaitingConfirmation] so the UI can
+     * show the user what was found before proceeding. Call [continueRepairProcessing]
+     * to either process the findings or just reload.
+     */
+    fun startRepairAndRefresh(folderIds: List<String>) {
+        if (folderIds.isEmpty()) return
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.update { it.copy(auditProgress = AuditProgress(isScanning = true, totalFolders = folderIds.size)) }
+
+            var totalRenamed = 0
+            val orphaned = mutableListOf<AuditItem>()
+            val needSidecar = mutableListOf<AuditCutoutItem>()
+
+            folderIds.forEachIndexed { idx, fid ->
+                runCatching {
+                    val allImages = drive.listAllImageFiles(fid)
+                    val sidecars  = drive.listSidecarFiles(fid)
+
+                    val cutouts   = allImages.filter { it.name.endsWith(DriveRepository.CUTOUT_SUFFIX) }
+                    val originals = allImages.filter { it.name.endsWith(DriveRepository.ORIGINAL_SUFFIX) }
+                    val cutoutIds = cutouts.map { it.id }.toSet()
+                    val sidecarItemIds = sidecars
+                        .map { it.name.removeSuffix(DriveRepository.SIDECAR_SUFFIX) }
+                        .toSet()
+
+                    // Ensure every cutout is named "{id}_cutout.png"
+                    cutouts.forEach { cutout ->
+                        val expected = "${cutout.id}${DriveRepository.CUTOUT_SUFFIX}"
+                        if (cutout.name != expected) {
+                            runCatching { drive.renameFile(cutout.id, expected) }
+                            totalRenamed++
+                        }
+                    }
+
+                    // Check originals: prefix must match a cutout Drive ID
+                    originals.forEach { original ->
+                        val prefix = original.name.removeSuffix(DriveRepository.ORIGINAL_SUFFIX)
+                        if (prefix !in cutoutIds) {
+                            // Orphaned original — no matching cutout exists
+                            orphaned.add(AuditItem(fid, original.id, original.name))
+                        }
+                    }
+
+                    // Ensure every cutout has a sidecar
+                    cutouts.forEach { cutout ->
+                        if (cutout.id !in sidecarItemIds) {
+                            needSidecar.add(AuditCutoutItem(fid, cutout.id, "${cutout.id}${DriveRepository.CUTOUT_SUFFIX}"))
+                        }
+                    }
+                }
+                _state.update { s ->
+                    s.copy(auditProgress = s.auditProgress?.copy(scannedFolders = idx + 1))
+                }
+            }
+
+            pendingAudit = AuditIntermediate(folderIds, orphaned, needSidecar)
+            _state.update { it.copy(
+                auditProgress = AuditProgress(
+                    awaitingConfirmation = true,
+                    renamedCount = totalRenamed,
+                    orphanedOriginals = orphaned.size,
+                    sidecarNeeded = needSidecar.size,
+                )
+            )}
+        }
+    }
+
+    /**
+     * Called after the user responds to the repair confirmation dialog.
+     *
+     * If [process] is true, runs AI bg-removal + tagging for orphaned originals and
+     * tagging-only for cutouts missing sidecars. Either way, clears all local caches
+     * and reloads from Drive when finished.
+     */
+    fun continueRepairProcessing(process: Boolean) {
+        val audit = pendingAudit ?: run {
+            _state.update { it.copy(auditProgress = null) }
+            clearCacheAndRefresh()
+            return
+        }
+        pendingAudit = null
+
+        if (!process) {
+            _state.update { it.copy(auditProgress = null) }
+            viewModelScope.launch(Dispatchers.IO) {
+                audit.folderIds.forEach { localCacheFile(it).delete() }
+                getApplication<Application>().filesDir.resolve("wardrobe")
+                    .listFiles()?.forEach { it.delete() }
+                withContext(Dispatchers.Main) { loadImages() }
+            }
+            return
+        }
+
+        val processTotal = audit.orphanedOriginals.size + audit.cutoutsNeedingSidecar.size
+        _state.update { it.copy(auditProgress = AuditProgress(isProcessing = true, processTotal = processTotal)) }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            var done = 0
+
+            // --- Orphaned originals: bg removal + cutout upload + tag + sidecar ---
+            audit.orphanedOriginals.forEach { item ->
+                runCatching {
+                    val localOriginal = drive.downloadToCache(item.driveId, item.name)
+                        ?: return@runCatching
+                    val cutoutFile = gemini.removeBackground(localOriginal, drive.cacheDir) ?: localOriginal
+                    val cutoutDrive = uploadAsCutout(item.folderId, cutoutFile)
+                    val newOrigId = runCatching {
+                        drive.deleteFile(item.driveId)
+                        drive.uploadImageWithName(
+                            item.folderId, localOriginal,
+                            "${cutoutDrive.id}${DriveRepository.ORIGINAL_SUFFIX}",
+                        ).id
+                    }.getOrNull()
+                    val localCutout = File(drive.cacheDir, "${cutoutDrive.id}.png")
+                    if (cutoutFile.absolutePath != localCutout.absolutePath) {
+                        cutoutFile.copyTo(localCutout, overwrite = true)
+                    }
+                    localOriginal.copyTo(
+                        File(drive.cacheDir, "${cutoutDrive.id}_original.jpg"), overwrite = true,
+                    )
+                    val tags = gemini.classifyClothing(localCutout, geminiLanguage)
+                    drive.upsertSidecar(
+                        item.folderId,
+                        "${cutoutDrive.id}${DriveRepository.SIDECAR_SUFFIX}",
+                        gson.toJson(ItemSidecar(tags, newOrigId)),
+                    )
+                }
+                done++
+                _state.update { s -> s.copy(auditProgress = s.auditProgress?.copy(processDone = done)) }
+            }
+
+            // --- Cutouts missing sidecars: tag + sidecar ---
+            audit.cutoutsNeedingSidecar.forEach { item ->
+                runCatching {
+                    val localCutout = drive.cachedFile(item.cutoutDriveId)
+                        ?: drive.downloadToCache(item.cutoutDriveId, item.cutoutName)
+                        ?: return@runCatching
+                    val tags = gemini.classifyClothing(localCutout, geminiLanguage)
+                    drive.upsertSidecar(
+                        item.folderId,
+                        "${item.cutoutDriveId}${DriveRepository.SIDECAR_SUFFIX}",
+                        gson.toJson(ItemSidecar(tags, null)),
+                    )
+                }
+                done++
+                _state.update { s -> s.copy(auditProgress = s.auditProgress?.copy(processDone = done)) }
+            }
+
+            // Clear all local caches and reload
+            audit.folderIds.forEach { localCacheFile(it).delete() }
+            getApplication<Application>().filesDir.resolve("wardrobe")
+                .listFiles()?.forEach { it.delete() }
+
+            _state.update { it.copy(auditProgress = AuditProgress(isDone = true)) }
+            withContext(Dispatchers.Main) { loadImages() }
+        }
+    }
+
+    /** Clears the audit result state (call after user dismisses the "done" message). */
+    fun dismissAuditResult() {
+        _state.update { it.copy(auditProgress = null) }
     }
 
     private fun localCacheFile(id: String) =
