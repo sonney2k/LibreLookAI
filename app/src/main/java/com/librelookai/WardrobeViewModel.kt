@@ -560,15 +560,16 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             uploadAsOriginal(job.folderId, rawFile, cutoutDrive.id)
         }.getOrNull()
 
-        // Step 4 — delete the temporary raw upload
-        runCatching { drive.deleteFile(job.driveId) }
-
-        // Step 5 — write cutout to local cache; also cache original for fast future reprocessing
+        // Step 4 — write cutout to local cache; also cache original for fast future reprocessing
+        // (must happen before deleteFile, which also removes the local _original.jpg)
         val localCutout = File(drive.cacheDir, "${cutoutDrive.id}.png")
         if (processedFile.absolutePath != localCutout.absolutePath) {
             processedFile.copyTo(localCutout, overwrite = true)
         }
         rawFile.copyTo(File(drive.cacheDir, "${cutoutDrive.id}_original.jpg"), overwrite = true)
+
+        // Step 5 — delete the temporary raw upload
+        runCatching { drive.deleteFile(job.driveId) }
 
         // Step 6 — update state. Match by rawId OR cutoutId: if loadImages() ran concurrently
         // it may have already placed the item in state with cutoutDrive.id.
