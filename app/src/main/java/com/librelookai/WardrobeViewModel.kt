@@ -403,14 +403,16 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                         Log.d(TAG, "Cutout file: ${cutoutFile.absolutePath}")
                         val cutoutDrive = uploadAsCutout(item.folderId, cutoutFile)
                         Log.d(TAG, "Cutout uploaded as ${cutoutDrive.id}")
+                        // Upload original to Drive with correct name before deleteFile, which also
+                        // removes the local cache file for item.driveId (= localOriginal).
                         val newOrigId = runCatching {
-                            drive.deleteFile(item.driveId)
                             drive.uploadImageWithName(
                                 item.folderId, localOriginal,
                                 "${cutoutDrive.id}${DriveRepository.ORIGINAL_SUFFIX}",
                             ).id
                         }.onFailure { Log.w(TAG, "Original re-upload failed: ${it.message}") }.getOrNull()
                         Log.d(TAG, "Original re-uploaded as $newOrigId")
+                        // Cache both files locally before deleting the raw Drive file.
                         val localCutout = File(drive.cacheDir, "${cutoutDrive.id}.png")
                         if (cutoutFile.absolutePath != localCutout.absolutePath) {
                             cutoutFile.copyTo(localCutout, overwrite = true)
@@ -418,6 +420,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                         localOriginal.copyTo(
                             File(drive.cacheDir, "${cutoutDrive.id}_original.jpg"), overwrite = true,
                         )
+                        runCatching { drive.deleteFile(item.driveId) }
                         val tags = gemini.classifyClothing(localCutout, geminiLanguage)
                         Log.d(TAG, "Tags for ${cutoutDrive.id}: $tags")
                         drive.upsertSidecar(
@@ -445,14 +448,16 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                         Log.d(TAG, "Cutout file: ${cutoutFile.absolutePath}")
                         val cutoutDrive = uploadAsCutout(item.folderId, cutoutFile)
                         Log.d(TAG, "Cutout uploaded as ${cutoutDrive.id}")
+                        // Upload original to Drive with correct name before deleteFile, which also
+                        // removes the local cache file for item.driveId (= localOriginal).
                         val newOrigId = runCatching {
-                            drive.deleteFile(item.driveId)
                             drive.uploadImageWithName(
                                 item.folderId, localOriginal,
                                 "${cutoutDrive.id}${DriveRepository.ORIGINAL_SUFFIX}",
                             ).id
                         }.onFailure { Log.w(TAG, "Original re-upload failed: ${it.message}") }.getOrNull()
                         Log.d(TAG, "Original re-uploaded as $newOrigId")
+                        // Cache both files locally before deleting the raw Drive file.
                         val localCutout = File(drive.cacheDir, "${cutoutDrive.id}.png")
                         if (cutoutFile.absolutePath != localCutout.absolutePath) {
                             cutoutFile.copyTo(localCutout, overwrite = true)
@@ -460,6 +465,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                         localOriginal.copyTo(
                             File(drive.cacheDir, "${cutoutDrive.id}_original.jpg"), overwrite = true,
                         )
+                        runCatching { drive.deleteFile(item.driveId) }
                         val tags = gemini.classifyClothing(localCutout, geminiLanguage)
                         Log.d(TAG, "Tags for ${cutoutDrive.id}: $tags")
                         drive.upsertSidecar(
