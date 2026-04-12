@@ -74,6 +74,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.automirrored.filled.RotateRight
 import androidx.compose.material.icons.filled.Sort
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
@@ -187,6 +188,7 @@ fun WardrobeScreen(
             onDismissError = viewModel::clearError,
             onTagImage = viewModel::tagImage,
             onRemoveBackground = viewModel::reprocessBackground,
+            onRotateImage = viewModel::rotateImage,
             onUpdateTags = viewModel::updateTags,
             onToggleSelection = viewModel::toggleSelection,
             onSelectAll = viewModel::selectAll,
@@ -502,6 +504,7 @@ private fun GridContent(
     onDismissError: () -> Unit,
     onTagImage: (String) -> Unit,
     onRemoveBackground: (String) -> Unit,
+    onRotateImage: (String) -> Unit,
     onUpdateTags: (String, ClothingTags) -> Unit,
     onToggleSelection: (String) -> Unit,
     onSelectAll: (List<String>) -> Unit,
@@ -962,6 +965,7 @@ private fun GridContent(
             onDismiss = { selectedIndex = null },
             onTagImage = onTagImage,
             onRemoveBackground = onRemoveBackground,
+            onRotateImage = onRotateImage,
             onUpdateTags = onUpdateTags,
             processingImageId = processingImageId,
         )
@@ -979,6 +983,7 @@ private fun FullScreenViewer(
     onDismiss: () -> Unit,
     onTagImage: (String) -> Unit,
     onRemoveBackground: (String) -> Unit,
+    onRotateImage: (String) -> Unit,
     onUpdateTags: (String, ClothingTags) -> Unit,
     processingImageId: String?,
 ) {
@@ -1035,6 +1040,7 @@ private fun FullScreenViewer(
             hasOriginal = currentImage.originalDriveId != null,
             onTagImage = { onTagImage(currentImage.driveId) },
             onRemoveBackground = { onRemoveBackground(currentImage.driveId) },
+            onRotateImage = { onRotateImage(currentImage.driveId) },
             onEditTags = { showTagEdit = true },
             modifier = Modifier
                 .align(Alignment.TopEnd)
@@ -1141,6 +1147,7 @@ private fun TagsOverlay(
     hasOriginal: Boolean = false,
     onTagImage: () -> Unit,
     onRemoveBackground: () -> Unit,
+    onRotateImage: () -> Unit,
     onEditTags: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -1179,6 +1186,14 @@ private fun TagsOverlay(
                         stringResource(if (hasOriginal) R.string.wardrobe_tag_re_remove_bg else R.string.wardrobe_tag_remove_bg),
                         color = Color.White,
                         style = MaterialTheme.typography.labelSmall,
+                    )
+                }
+                TextButton(onClick = onRotateImage, contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)) {
+                    Icon(
+                        Icons.AutoMirrored.Filled.RotateRight,
+                        contentDescription = stringResource(R.string.wardrobe_tag_rotate),
+                        tint = Color.White,
+                        modifier = Modifier.size(16.dp),
                     )
                 }
                 TextButton(onClick = onEditTags, contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)) {

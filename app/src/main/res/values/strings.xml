@@ -150,6 +150,7 @@
     <string name="wardrobe_tag_detect">Detect tags</string>
     <string name="wardrobe_tag_remove_bg">Remove BG</string>
     <string name="wardrobe_tag_re_remove_bg">Re-remove BG</string>
+    <string name="wardrobe_tag_rotate">Rotate</string>
     <string name="wardrobe_tag_edit">Edit tags</string>
     <string name="wardrobe_tag_sheet_title">Edit Tags</string>
     <string name="wardrobe_add_gallery">Gallery</string>

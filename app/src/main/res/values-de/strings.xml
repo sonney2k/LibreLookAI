@@ -145,6 +145,7 @@
     <string name="wardrobe_tag_detect">Tags erkennen</string>
     <string name="wardrobe_tag_remove_bg">Hintergrund entfernen</string>
     <string name="wardrobe_tag_re_remove_bg">Hintergrund erneut entfernen</string>
+    <string name="wardrobe_tag_rotate">Drehen</string>
     <string name="wardrobe_tag_edit">Tags bearbeiten</string>
     <string name="wardrobe_tag_sheet_title">Tags bearbeiten</string>
     <string name="wardrobe_add_gallery">Galerie</string>

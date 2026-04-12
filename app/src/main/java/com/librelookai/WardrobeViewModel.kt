@@ -2,6 +2,9 @@ package com.librelookai
 
 import android.app.Application
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.net.Uri
 import android.os.PowerManager
 import android.provider.DocumentsContract
@@ -1354,6 +1357,49 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
     fun clearSelection() = _state.update { it.copy(selectedIds = emptySet()) }
 
+    fun rotateImage(driveId: String) {
+        val img = _state.value.images.find { it.driveId == driveId } ?: return
+        viewModelScope.launch {
+            acquireJobWakeLock()
+            _state.update { it.copy(processingImageId = driveId) }
+            try {
+                withContext(Dispatchers.IO) {
+                    // Rotate cutout
+                    val cutoutFile = drive.cachedFile(img.driveId)
+                        ?: drive.downloadToCache(img.driveId, "${img.driveId}${DriveRepository.CUTOUT_SUFFIX}")
+                    if (cutoutFile != null) {
+                        rotateBitmapFileBy90(cutoutFile)
+                        drive.updateImage(img.driveId, cutoutFile)
+                    }
+                    // Rotate original if present
+                    img.originalDriveId?.let { origId ->
+                        val origFile = drive.cachedFile(origId)
+                            ?: drive.downloadToCache(origId, "${img.driveId}${DriveRepository.ORIGINAL_SUFFIX}")
+                        if (origFile != null) {
+                            rotateBitmapFileBy90(origFile)
+                            drive.updateImage(origId, origFile)
+                        }
+                    }
+                }
+                _state.update { s ->
+                    s.copy(
+                        processingImageId = null,
+                        images = s.images.map {
+                            if (it.driveId == driveId) it.copy(version = it.version + 1) else it
+                        },
+                    )
+                }
+                val id = folderId
+                if (id != null) saveLocalCache(id, _state.value.images)
+            } catch (e: Exception) {
+                Log.e("WardrobeVM", "rotateImage failed", e)
+                _state.update { it.copy(processingImageId = null, error = e.message) }
+            } finally {
+                releaseJobWakeLock()
+            }
+        }
+    }
+
     fun deleteSelected() {
         val toDelete = _state.value.selectedIds
         if (toDelete.isEmpty()) return
@@ -1375,6 +1421,18 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             if (id != null) saveLocalCache(id, _state.value.images)
         }
     }
+}
+
+// ---------- Bitmap rotation helper ----------
+
+private fun rotateBitmapFileBy90(file: File) {
+    val bmp = BitmapFactory.decodeFile(file.absolutePath) ?: return
+    val matrix = Matrix().apply { postRotate(90f) }
+    val rotated = Bitmap.createBitmap(bmp, 0, 0, bmp.width, bmp.height, matrix, true)
+    bmp.recycle()
+    val format = if (file.extension == "png") Bitmap.CompressFormat.PNG else Bitmap.CompressFormat.JPEG
+    file.outputStream().use { rotated.compress(format, 95, it) }
+    rotated.recycle()
 }
 
 // ---------- Legacy appProperties → ClothingTags (migration read-path only) ----------
