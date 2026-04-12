@@ -857,6 +857,23 @@ private fun GridContent(
                 action = { TextButton(onClick = onDismissError) { Text(stringResource(R.string.action_dismiss)) } },
             ) { Text(msg) }
         }
+
+        // Full-screen viewer rendered as the last (topmost) child of the padded Box so that
+        // the Scaffold's bottomBar insets are already consumed — the FAB at BottomEnd appears
+        // above the NavigationBar without any extra manual inset arithmetic.
+        selectedIndex?.let { startIndex ->
+            FullScreenViewer(
+                images = displayedImages,
+                initialIndex = startIndex.coerceIn(0, (displayedImages.size - 1).coerceAtLeast(0)),
+                allTagCategories = tagCategories,
+                onDismiss = { selectedIndex = null },
+                onTagImage = onTagImage,
+                onRemoveBackground = onRemoveBackground,
+                onRotateImage = onRotateImage,
+                onUpdateTags = onUpdateTags,
+                processingImageId = processingImageId,
+            )
+        }
     }
 
     if (showDeleteDialog) {
@@ -963,19 +980,6 @@ private fun GridContent(
         )
     }
 
-    selectedIndex?.let { startIndex ->
-        FullScreenViewer(
-            images = displayedImages,
-            initialIndex = startIndex.coerceIn(0, (displayedImages.size - 1).coerceAtLeast(0)),
-            allTagCategories = tagCategories,
-            onDismiss = { selectedIndex = null },
-            onTagImage = onTagImage,
-            onRemoveBackground = onRemoveBackground,
-            onRotateImage = onRotateImage,
-            onUpdateTags = onUpdateTags,
-            processingImageId = processingImageId,
-        )
-    }
 }
 
 // ---------- Full-screen image viewer ----------
@@ -1046,26 +1050,28 @@ private fun FullScreenViewer(
                 .padding(top = 8.dp, end = 8.dp),
         )
 
-        // Rotate button — BottomEnd, drawn after TagsOverlay so it stays on top.
-        SmallFloatingActionButton(
-            onClick = { onRotateImage(currentImage.driveId) },
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .navigationBarsPadding()
-                .padding(16.dp),
-        ) {
-            Icon(
-                Icons.AutoMirrored.Filled.RotateRight,
-                contentDescription = stringResource(R.string.wardrobe_tag_rotate),
-            )
-        }
-
-        // Close button — LAST child = highest Z-order, so TagsOverlay can never block it.
+        // Close button — second-to-last so rotate is the topmost element.
         IconButton(
             onClick = onDismiss,
             modifier = Modifier.align(Alignment.TopStart).statusBarsPadding().padding(8.dp),
         ) {
             Icon(Icons.Default.Close, contentDescription = "Close", tint = Color.White)
+        }
+
+        // Rotate button — LAST child = highest Z-order. Explicit white/black colours so it is
+        // always visible against the black viewer background regardless of dynamic theming.
+        SmallFloatingActionButton(
+            onClick = { onRotateImage(currentImage.driveId) },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp),
+            containerColor = Color.White,
+            contentColor = Color.Black,
+        ) {
+            Icon(
+                Icons.AutoMirrored.Filled.RotateRight,
+                contentDescription = stringResource(R.string.wardrobe_tag_rotate),
+            )
         }
     }
 
