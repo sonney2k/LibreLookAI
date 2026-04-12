@@ -1047,7 +1047,7 @@ private fun FullScreenViewer(
         )
 
         // Rotate button — BottomEnd, drawn after TagsOverlay so it stays on top.
-        IconButton(
+        SmallFloatingActionButton(
             onClick = { onRotateImage(currentImage.driveId) },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
@@ -1057,8 +1057,6 @@ private fun FullScreenViewer(
             Icon(
                 Icons.AutoMirrored.Filled.RotateRight,
                 contentDescription = stringResource(R.string.wardrobe_tag_rotate),
-                tint = Color.White,
-                modifier = Modifier.size(28.dp),
             )
         }
 
