@@ -34,6 +34,7 @@ data class DriveFileDto(
 
 private data class FilesListDto(
     val files: List<DriveFileDto> = emptyList(),
+    val nextPageToken: String? = null,
 )
 
 // ---------- Repository ----------
@@ -83,6 +84,25 @@ class DriveRepository(
 
     private suspend fun token() = auth.getAccessToken()
 
+    /**
+     * Fetches all pages from a Drive files.list [baseUrl] (must include all params except
+     * pageToken) and returns the concatenated file list.
+     */
+    private suspend fun fetchAllPages(baseUrl: String, tok: String): List<DriveFileDto> {
+        val result = mutableListOf<DriveFileDto>()
+        var pageToken: String? = null
+        do {
+            val url = if (pageToken != null) "$baseUrl&pageToken=${URLEncoder.encode(pageToken, "UTF-8")}" else baseUrl
+            val page = gson.fromJson(
+                http.newCall(Request.Builder().url(url).header("Authorization", "Bearer $tok").build()).await().body!!.string(),
+                FilesListDto::class.java,
+            )
+            result += page.files
+            pageToken = page.nextPageToken
+        } while (pageToken != null)
+        return result
+    }
+
     /** Returns the Drive folder ID, creating the folder if it doesn't exist. */
     suspend fun getOrCreateFolder(): String = withContext(Dispatchers.IO) {
         val tok = token()
@@ -123,14 +143,8 @@ class DriveRepository(
             "'$folderId' in parents and mimeType contains 'image/' and trashed=false",
             "UTF-8",
         )
-        val req = Request.Builder()
-            .url("$API/files?q=$q&fields=files(id,name,appProperties)&orderBy=createdTime+desc")
-            .header("Authorization", "Bearer $tok")
-            .build()
-        gson.fromJson(
-            http.newCall(req).await().body!!.string(),
-            FilesListDto::class.java,
-        ).files.filter { it.name.endsWith(CUTOUT_SUFFIX) }
+        val baseUrl = "$API/files?q=$q&fields=files(id,name,appProperties),nextPageToken&orderBy=createdTime+desc&pageSize=1000"
+        fetchAllPages(baseUrl, tok).filter { it.name.endsWith(CUTOUT_SUFFIX) }
     }
 
     /** Uploads a JPEG file to the given Drive folder via multipart/related. */
@@ -534,14 +548,7 @@ class DriveRepository(
         val q = URLEncoder.encode(
             "'$folderId' in parents and mimeType contains 'image/' and trashed=false", "UTF-8",
         )
-        val req = Request.Builder()
-            .url("$API/files?q=$q&fields=files(id,name)&pageSize=1000")
-            .header("Authorization", "Bearer $tok")
-            .build()
-        gson.fromJson(
-            http.newCall(req).await().body!!.string(),
-            FilesListDto::class.java,
-        ).files
+        fetchAllPages("$API/files?q=$q&fields=files(id,name),nextPageToken&pageSize=1000", tok)
     }
 
     /** Lists per-item sidecar JSON files in [folderId], excluding system metadata files. */
@@ -551,14 +558,8 @@ class DriveRepository(
             "'$folderId' in parents and mimeType='application/json' and trashed=false",
             "UTF-8",
         )
-        val req = Request.Builder()
-            .url("$API/files?q=$q&fields=files(id,name,size)&pageSize=1000")
-            .header("Authorization", "Bearer $tok")
-            .build()
-        gson.fromJson(
-            http.newCall(req).await().body!!.string(),
-            FilesListDto::class.java,
-        ).files.filter { it.name !in SYSTEM_JSON_NAMES }
+        fetchAllPages("$API/files?q=$q&fields=files(id,name,size),nextPageToken&pageSize=1000", tok)
+            .filter { it.name !in SYSTEM_JSON_NAMES }
     }
 
     /** Downloads and returns the text content of Drive file [fileId], or null on failure. */
