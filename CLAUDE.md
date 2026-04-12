@@ -114,9 +114,18 @@ All six main screens use `AppScreenHeader` (defined in `MainActivity.kt`) for a 
 3. The local `{driveId}_original.jpg` cache copy must happen **before** `deleteFile()` is called, because `DriveRepository.deleteFile()` also deletes the local `_original.jpg` file.
 4. State is updated by matching on **either** the raw Drive ID or the cutout Drive ID to handle the race where `loadImages()` may have already placed the item with the cutout ID.
 
+### Background job protection
+
+Long-running wardrobe operations are protected against process death and CPU sleep by two mechanisms managed together in `WardrobeViewModel`:
+
+- **`JobForegroundService`**: started when the first job begins, stopped when the last one ends. Promotes the app to foreground-service priority so Android will not kill the process. Shows a persistent notification (channel `librelookai_jobs`, low importance) while active.
+- **`PARTIAL_WAKE_LOCK`** (`LibreLookAI:Jobs`): keeps the CPU running if the screen turns off mid-job. 30-minute safety timeout.
+
+Both are reference-counted via `acquireJobWakeLock()` / `releaseJobWakeLock()` (using `AtomicInteger`). Covered operations: `processQueue`, `importFromFolder`, `importFromDriveFolder`, `removeAllBackgrounds`, `retagAll`, and both phases of Repair & Sync. Every caller wraps its coroutine body in `try/finally` to guarantee release.
+
 ### Repair & Sync
 
-`WardrobeViewModel.startRepairAndRefresh(folderIds)` runs a multi-phase audit across all location folders. A `PARTIAL_WAKE_LOCK` is held throughout so the job survives screen-off (30-minute safety timeout). All actions are logged to logcat under the tag `RepairAndSync`.
+`WardrobeViewModel.startRepairAndRefresh(folderIds)` runs a multi-phase audit across all location folders. A foreground service + `PARTIAL_WAKE_LOCK` are held throughout (via `acquireJobWakeLock`) so the job survives screen-off. All actions are logged to logcat under the tag `RepairAndSync`.
 
 1. **Scan**: `DriveRepository.listAllImageFiles()` returns every image (originals, cutouts, raws). Cutouts with wrong names are renamed in-place. Originals whose prefix does not match any cutout's Drive ID are flagged as orphaned. For each cutout that has a sidecar, the sidecar content is downloaded and parsed — if `tags` is null (i.e. the file is `{}` or `{"tags":null}`), the cutout is flagged for re-tagging just like a missing sidecar.
 2. **Confirmation**: `WardrobeUiState.auditProgress` enters `awaitingConfirmation`; the UI shows findings and asks the user whether to process.
