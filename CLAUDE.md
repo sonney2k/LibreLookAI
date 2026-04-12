@@ -110,15 +110,17 @@ All six main screens use `AppScreenHeader` (defined in `MainActivity.kt`) for a 
 ### Photo upload flow
 
 1. `WardrobeViewModel.uploadPhoto(rawFile)` uploads the raw JPEG to Drive and enqueues a `PendingJob`.
-2. `processQueue()` drains the queue serially: bg removal via Gemini → upload cutout (renamed to `{id}_cutout.png`) → upload original (renamed to `{cutoutId}_original.jpg`) → delete raw → classify tags → write sidecar.
-3. State is updated by matching on **either** the raw Drive ID or the cutout Drive ID to handle the race where `loadImages()` may have already placed the item with the cutout ID.
+2. `processQueue()` drains the queue serially: bg removal via Gemini → upload cutout (renamed to `{id}_cutout.png`) → copy local original cache → upload original (renamed to `{cutoutId}_original.jpg`) → delete raw → classify tags → write sidecar.
+3. The local `{driveId}_original.jpg` cache copy must happen **before** `deleteFile()` is called, because `DriveRepository.deleteFile()` also deletes the local `_original.jpg` file.
+4. State is updated by matching on **either** the raw Drive ID or the cutout Drive ID to handle the race where `loadImages()` may have already placed the item with the cutout ID.
 
 ### Repair & Sync
 
-`WardrobeViewModel.startRepairAndRefresh(folderIds)` runs a multi-phase audit across all location folders:
-1. **Scan**: `DriveRepository.listAllImageFiles()` returns every image (originals, cutouts, raws). Cutouts with wrong names are renamed in-place. Originals whose prefix does not match any cutout's Drive ID are flagged as orphaned. Cutouts missing a `.json` sidecar are flagged.
+`WardrobeViewModel.startRepairAndRefresh(folderIds)` runs a multi-phase audit across all location folders. A `PARTIAL_WAKE_LOCK` is held throughout so the job survives screen-off (30-minute safety timeout). All actions are logged to logcat under the tag `RepairAndSync`.
+
+1. **Scan**: `DriveRepository.listAllImageFiles()` returns every image (originals, cutouts, raws). Cutouts with wrong names are renamed in-place. Originals whose prefix does not match any cutout's Drive ID are flagged as orphaned. For each cutout that has a sidecar, the sidecar content is downloaded and parsed — if `tags` is null (i.e. the file is `{}` or `{"tags":null}`), the cutout is flagged for re-tagging just like a missing sidecar.
 2. **Confirmation**: `WardrobeUiState.auditProgress` enters `awaitingConfirmation`; the UI shows findings and asks the user whether to process.
-3. **Process** (`continueRepairProcessing(true)`): orphaned originals get full AI processing (bg removal + tagging + sidecar upload); sidecar-less cutouts get tagging + sidecar upload.
+3. **Process** (`continueRepairProcessing(true)`): orphaned originals get full AI processing (bg removal + tagging + sidecar upload); cutouts missing a sidecar or with empty tags get tagging (from the cutout image) + sidecar upsert.
 4. **Refresh**: all local caches are cleared and `loadImages()` reloads from Drive. `auditProgress.isDone` signals completion.
 
 ### SAF import
