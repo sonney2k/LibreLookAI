@@ -164,5 +164,6 @@ class LocationViewModel(app: Application) : AndroidViewModel(app) {
 
     companion object {
         private const val PREF_ACTIVE_ID = "active_location_id"
+        const val ALL_LOCATIONS_ID = "all_locations"
     }
 }

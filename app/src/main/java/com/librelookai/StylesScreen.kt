@@ -132,6 +132,7 @@ fun StylesScreen(
     outfitsViewModel: OutfitsViewModel = viewModel(),
     profileViewModel: ProfileViewModel = viewModel(),
     weatherViewModel: WeatherViewModel = viewModel(),
+    locationViewModel: LocationViewModel = viewModel(),
     modifier: Modifier = Modifier,
 ) {
     val stylesState  by stylesViewModel.state.collectAsState()
@@ -139,6 +140,7 @@ fun StylesScreen(
     val profileState by profileViewModel.state.collectAsState()
     val weatherState by weatherViewModel.state.collectAsState()
     val outfitsState by outfitsViewModel.state.collectAsState()
+    val locationState by locationViewModel.state.collectAsState()
 
     // styleId → number of calendar wear events
     val wearCounts = remember(outfitsState.events) {
@@ -226,6 +228,9 @@ fun StylesScreen(
                     wearCounts = wearCounts,
                     isLoading = stylesState.isLoading,
                     isPredicting = stylesState.isPredicting,
+                    locations = locationState.locations,
+                    activeLocationId = locationState.activeLocationId,
+                    onSetActiveLocation = locationViewModel::setActiveLocation,
                     predictionError = stylesState.predictionError,
                     isComposing = stylesState.isComposing,
                     compositionError = stylesState.compositionError,
@@ -305,6 +310,9 @@ private fun StyleListScreen(
     isComposing: Boolean,
     compositionError: String?,
     selectedStyleIds: Set<String> = emptySet(),
+    locations: List<Location> = emptyList(),
+    activeLocationId: String = "",
+    onSetActiveLocation: ((String) -> Unit)? = null,
     onCreateStyle: () -> Unit,
     onEditStyle: (Style) -> Unit,
     onDeleteStyle: (String) -> Unit,
@@ -420,6 +428,9 @@ private fun StyleListScreen(
                     tagCategories = tagCategories,
                     selectedTags = selectedTags,
                     onTagsChanged = { selectedTags = it },
+                    locations = locations,
+                    activeLocationId = activeLocationId,
+                    onSetActiveLocation = onSetActiveLocation,
                 )
             }
 

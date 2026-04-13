@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.Locale
@@ -66,13 +68,23 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
     private val gemini = GeminiRepository(app)
     private val gson = Gson()
     private var folderId: String? = null
+    private var allFolderIds: List<String>? = null
 
     private val _state = MutableStateFlow(StylesUiState())
     val state: StateFlow<StylesUiState> = _state.asStateFlow()
 
     fun setLocation(newFolderId: String) {
-        if (folderId == newFolderId) return
+        if (folderId == newFolderId && allFolderIds == null) return
         folderId = newFolderId
+        allFolderIds = null
+        _state.update { StylesUiState(isLoading = true) }
+        loadStyles()
+    }
+
+    fun setAllLocations(folderIds: List<String>) {
+        if (folderId == null && allFolderIds?.toSet() == folderIds.toSet()) return
+        folderId = null
+        allFolderIds = folderIds.toList()
         _state.update { StylesUiState(isLoading = true) }
         loadStyles()
     }
@@ -83,28 +95,34 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, error = null) }
             runCatching {
-                val id = folderId ?: return@runCatching emptyList()
-                // Build filename → Drive ID map so we can resolve itemNames → itemIds
-                val files = drive.listFiles(id)
-                val nameToId = files.associate { it.name to it.id }
-
-                val json = drive.loadStylesJson(id)
-                if (json != null) {
-                    val type = object : TypeToken<List<Style>>() {}.type
-                    val raw: List<Style> = gson.fromJson(json, type) ?: emptyList()
-                    // Resolve stable filenames to current Drive IDs (portable across account copies)
-                    raw.map { style ->
-                        if (style.itemNames.isNotEmpty()) {
-                            style.copy(itemIds = style.itemNames.mapNotNull { nameToId[it] })
-                        } else style
-                    }
-                } else emptyList()
+                val ids = allFolderIds
+                if (ids != null) {
+                    ids.map { id -> async { loadStylesFromFolder(id) } }.awaitAll().flatten()
+                } else {
+                    val id = folderId ?: return@runCatching emptyList()
+                    loadStylesFromFolder(id)
+                }
             }.onSuccess { styles ->
                 _state.update { it.copy(styles = styles, isLoading = false) }
             }.onFailure { e ->
                 _state.update { it.copy(isLoading = false, error = e.message) }
             }
         }
+    }
+
+    private suspend fun loadStylesFromFolder(id: String): List<Style> {
+        val files = drive.listFiles(id)
+        val nameToId = files.associate { it.name to it.id }
+        val json = drive.loadStylesJson(id)
+        return if (json != null) {
+            val type = object : TypeToken<List<Style>>() {}.type
+            val raw: List<Style> = gson.fromJson(json, type) ?: emptyList()
+            raw.map { style ->
+                if (style.itemNames.isNotEmpty()) {
+                    style.copy(itemIds = style.itemNames.mapNotNull { nameToId[it] })
+                } else style
+            }
+        } else emptyList()
     }
 
     // ---------- Create flow ----------

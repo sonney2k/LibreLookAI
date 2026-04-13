@@ -15,6 +15,7 @@ import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -181,6 +182,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     val state: StateFlow<WardrobeUiState> = _state.asStateFlow()
 
     private var folderId: String? = null
+    private var allFolderIds: List<String>? = null
     /** Gemini-facing language name (e.g. "English", "German") for label generation. */
     private var geminiLanguage: String = "English"
 
@@ -203,8 +205,17 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     fun setLanguage(geminiName: String) { geminiLanguage = geminiName }
 
     fun setLocation(newFolderId: String) {
-        if (folderId == newFolderId) return
+        if (folderId == newFolderId && allFolderIds == null) return
         folderId = newFolderId
+        allFolderIds = null
+        _state.update { WardrobeUiState(isLoading = true) }
+        loadImages()
+    }
+
+    fun setAllLocations(folderIds: List<String>) {
+        if (folderId == null && allFolderIds?.toSet() == folderIds.toSet()) return
+        folderId = null
+        allFolderIds = folderIds.toList()
         _state.update { WardrobeUiState(isLoading = true) }
         loadImages()
     }
@@ -569,6 +580,43 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
     fun loadImages() {
         viewModelScope.launch {
+            val ids = allFolderIds
+            if (ids != null) {
+                _state.update { it.copy(isLoading = true, error = null) }
+                // Phase 1 — instant: merge caches from all folders
+                val cachedAll = ids.flatMap { fid ->
+                    val cacheFile = localCacheFile(fid)
+                    if (!cacheFile.exists()) return@flatMap emptyList()
+                    runCatching {
+                        val cache = gson.fromJson(cacheFile.readText(), LocalCache::class.java)
+                        cache.items.mapNotNull { entry ->
+                            drive.cachedFile(entry.driveId)?.let { f ->
+                                DriveImage(entry.driveId, f.absolutePath, entry.name, entry.tags,
+                                    originalDriveId = entry.originalDriveId,
+                                    sidecarDriveId = entry.sidecarDriveId)
+                            }
+                        }
+                    }.getOrDefault(emptyList())
+                }
+                if (cachedAll.isNotEmpty()) _state.update { it.copy(images = cachedAll, isLoading = false) }
+                // Phase 2 — network: load all folders in parallel and merge
+                runCatching {
+                    val allFresh = ids.map { fid -> async { loadFolderImages(fid) } }.awaitAll().flatten()
+                    val freshIds = allFresh.map { it.driveId }.toSet()
+                    val pendingRaw = _state.value.images.filter { img ->
+                        img.driveId !in freshIds && !img.name.endsWith(DriveRepository.CUTOUT_SUFFIX)
+                    }
+                    allFresh + pendingRaw
+                }.onSuccess { images ->
+                    _state.update { it.copy(images = images, isLoading = false) }
+                }.onFailure { e ->
+                    _state.update { s ->
+                        s.copy(isLoading = false, error = if (s.images.isEmpty()) e.message else null)
+                    }
+                }
+                return@launch
+            }
+
             val id = folderId ?: return@launch
             _state.update { it.copy(isLoading = true, error = null) }
 
@@ -685,6 +733,52 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 _state.update { s ->
                     s.copy(isLoading = false, error = if (s.images.isEmpty()) e.message else null)
                 }
+            }
+        }
+    }
+
+    /** Loads images from a single Drive folder (Phase 2 network only, no legacy migration). */
+    private suspend fun loadFolderImages(id: String): List<DriveImage> = coroutineScope {
+        val filesDeferred = async { drive.listFiles(id) }
+        val sidecarFilesDeferred = async { drive.listSidecarFiles(id) }
+        val files = filesDeferred.await()
+        val sidecarFiles = sidecarFilesDeferred.await()
+
+        val sidecarIdByItemId: Map<String, String> = sidecarFiles.associate { sf ->
+            sf.name.removeSuffix(DriveRepository.SIDECAR_SUFFIX) to sf.id
+        }
+
+        files.map { file ->
+            async { drive.cachedFile(file.id) ?: drive.downloadToCache(file.id, file.name) }
+        }.awaitAll()
+
+        val sidecarContent: Map<String, ItemSidecar> = sidecarFiles
+            .map { sf ->
+                async {
+                    val itemId = sf.name.removeSuffix(DriveRepository.SIDECAR_SUFFIX)
+                    val content = drive.loadFileContent(sf.id)
+                    itemId to content?.let {
+                        runCatching { gson.fromJson(it, ItemSidecar::class.java) }.getOrNull()
+                    }
+                }
+            }
+            .awaitAll()
+            .mapNotNull { (k, v) -> v?.let { k to it } }
+            .toMap()
+
+        files.mapNotNull { file ->
+            drive.cachedFile(file.id)?.let { cached ->
+                val sidecar = sidecarContent[file.id]
+                val tags = sidecar?.tags ?: file.appProperties?.toClothingTags()
+                val originalId = sidecar?.originalDriveId
+                DriveImage(
+                    driveId = file.id,
+                    localPath = cached.absolutePath,
+                    name = file.name,
+                    tags = tags,
+                    originalDriveId = originalId,
+                    sidecarDriveId = sidecarIdByItemId[file.id],
+                )
             }
         }
     }

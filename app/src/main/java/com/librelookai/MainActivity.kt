@@ -92,13 +92,20 @@ class MainActivity : ComponentActivity() {
                     val profileState by profileViewModel.state.collectAsState()
 
                     // Reload wardrobe/styles/outfits whenever the active location changes
-                    val activeFolderId = locationState.locations
-                        .find { it.id == locationState.activeLocationId }?.folderId
-                    LaunchedEffect(activeFolderId) {
-                        activeFolderId?.let { folderId ->
-                            wardrobeViewModel.setLocation(folderId)
-                            stylesViewModel.setLocation(folderId)
-                            outfitsViewModel.setLocation(folderId)
+                    val activeLocationId = locationState.activeLocationId
+                    val locationList = locationState.locations
+                    val activeFolderId = locationList.find { it.id == activeLocationId }?.folderId
+                    LaunchedEffect(activeLocationId, locationList) {
+                        if (activeLocationId == LocationViewModel.ALL_LOCATIONS_ID) {
+                            val folderIds = locationList.map { it.folderId }
+                            wardrobeViewModel.setAllLocations(folderIds)
+                            stylesViewModel.setAllLocations(folderIds)
+                        } else {
+                            activeFolderId?.let { folderId ->
+                                wardrobeViewModel.setLocation(folderId)
+                                stylesViewModel.setLocation(folderId)
+                                outfitsViewModel.setLocation(folderId)
+                            }
                         }
                     }
 
@@ -166,6 +173,7 @@ class MainActivity : ComponentActivity() {
                                         outfitsViewModel = outfitsViewModel,
                                         profileViewModel = profileViewModel,
                                         weatherViewModel = weatherViewModel,
+                                        locationViewModel = locationViewModel,
                                         modifier = Modifier.padding(innerPadding),
                                     )
                                     1 -> WardrobeScreen(

@@ -410,7 +410,11 @@ internal fun TagFilterBar(
         // Location chip — always first
         if (showLocationChip) {
             item(key = locationDropdownKey) {
-                val activeName = locations.find { it.id == activeLocationId }?.name ?: stringResource(R.string.filter_location)
+                val allLocationsLabel = stringResource(R.string.filter_all_locations)
+                val activeName = when (activeLocationId) {
+                    LocationViewModel.ALL_LOCATIONS_ID -> allLocationsLabel
+                    else -> locations.find { it.id == activeLocationId }?.name ?: stringResource(R.string.filter_location)
+                }
                 Box {
                     FilterChip(
                         selected = true,
@@ -425,6 +429,24 @@ internal fun TagFilterBar(
                         expanded = expandedCategory == locationDropdownKey,
                         onDismissRequest = { expandedCategory = null },
                     ) {
+                        // "All" option first
+                        val allChecked = activeLocationId == LocationViewModel.ALL_LOCATIONS_ID
+                        DropdownMenuItem(
+                            text = {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                ) {
+                                    if (allChecked) Icon(Icons.Default.Check, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
+                                    else Spacer(Modifier.size(18.dp))
+                                    Text(allLocationsLabel)
+                                }
+                            },
+                            onClick = {
+                                onSetActiveLocation!!(LocationViewModel.ALL_LOCATIONS_ID)
+                                expandedCategory = null
+                            },
+                        )
                         locations.forEach { loc ->
                             val checked = loc.id == activeLocationId
                             DropdownMenuItem(
