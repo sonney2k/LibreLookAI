@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.File
 import java.time.LocalDate
 
 data class OutfitsUiState(
@@ -27,6 +28,9 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
     private val _state = MutableStateFlow(OutfitsUiState())
     val state: StateFlow<OutfitsUiState> = _state.asStateFlow()
 
+    private fun outfitsLocalCacheFile(id: String) =
+        File(getApplication<Application>().filesDir, "outfits_cache_${id}.json")
+
     fun setLocation(newFolderId: String) {
         if (folderId == newFolderId) return
         folderId = newFolderId
@@ -37,17 +41,37 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
     fun loadOutfits() {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, error = null) }
+            val id = folderId ?: run { _state.update { it.copy(isLoading = false) }; return@launch }
+
+            // Phase 1 — instant: show local cache
+            val cacheFile = outfitsLocalCacheFile(id)
+            if (cacheFile.exists()) {
+                runCatching {
+                    val type = object : TypeToken<List<OutfitEvent>>() {}.type
+                    gson.fromJson<List<OutfitEvent>>(cacheFile.readText(), type) ?: emptyList()
+                }.onSuccess { events ->
+                    if (events.isNotEmpty()) _state.update { it.copy(events = events, isLoading = false) }
+                }
+            }
+
+            // Phase 2 — Drive sync: skip when offline
+            if (!getApplication<Application>().isNetworkAvailable()) {
+                _state.update { it.copy(isLoading = false) }
+                return@launch
+            }
             runCatching {
-                val id = folderId ?: return@runCatching emptyList()
                 val json = drive.loadOutfitsJson(id)
                 if (json != null) {
                     val type = object : TypeToken<List<OutfitEvent>>() {}.type
                     gson.fromJson<List<OutfitEvent>>(json, type) ?: emptyList()
                 } else emptyList()
             }.onSuccess { events ->
+                runCatching { cacheFile.writeText(gson.toJson(events)) }
                 _state.update { it.copy(events = events, isLoading = false) }
             }.onFailure { e ->
-                _state.update { it.copy(isLoading = false, error = e.message) }
+                _state.update { s ->
+                    s.copy(isLoading = false, error = if (s.events.isEmpty()) e.message else null)
+                }
             }
         }
     }
@@ -60,6 +84,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             runCatching {
                 drive.saveOutfitsJson(id, gson.toJson(updated))
             }.onSuccess {
+                runCatching { outfitsLocalCacheFile(id).writeText(gson.toJson(updated)) }
                 _state.update { it.copy(events = updated) }
             }.onFailure { e ->
                 _state.update { it.copy(error = e.message) }

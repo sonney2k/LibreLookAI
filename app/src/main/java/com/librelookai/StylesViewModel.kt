@@ -91,21 +91,47 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
 
     // ---------- Load ----------
 
+    private fun stylesLocalCacheFile(folderId: String) =
+        java.io.File(getApplication<Application>().filesDir, "styles_cache_${folderId}.json")
+
+    private fun readStylesLocalCache(id: String): List<Style> {
+        val file = stylesLocalCacheFile(id)
+        if (!file.exists()) return emptyList()
+        val type = object : TypeToken<List<Style>>() {}.type
+        return runCatching { gson.fromJson<List<Style>>(file.readText(), type) ?: emptyList() }
+            .getOrDefault(emptyList())
+    }
+
     fun loadStyles() {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, error = null) }
+            val ids = allFolderIds
+            // Phase 1 — instant: show whatever is in local JSON cache
+            val cached = if (ids != null) {
+                ids.flatMap { readStylesLocalCache(it) }
+            } else {
+                folderId?.let { readStylesLocalCache(it) } ?: emptyList()
+            }
+            if (cached.isNotEmpty()) _state.update { it.copy(styles = cached, isLoading = false) }
+
+            // Phase 2 — Drive sync: skip when offline
+            if (!getApplication<Application>().isNetworkAvailable()) {
+                _state.update { it.copy(isLoading = false) }
+                return@launch
+            }
             runCatching {
-                val ids = allFolderIds
                 if (ids != null) {
                     ids.map { id -> async { loadStylesFromFolder(id) } }.awaitAll().flatten()
                 } else {
-                    val id = folderId ?: return@runCatching emptyList()
+                    val id = folderId ?: return@runCatching cached
                     loadStylesFromFolder(id)
                 }
             }.onSuccess { styles ->
                 _state.update { it.copy(styles = styles, isLoading = false) }
             }.onFailure { e ->
-                _state.update { it.copy(isLoading = false, error = e.message) }
+                _state.update { s ->
+                    s.copy(isLoading = false, error = if (s.styles.isEmpty()) e.message else null)
+                }
             }
         }
     }
@@ -114,7 +140,7 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
         val files = drive.listFiles(id)
         val nameToId = files.associate { it.name to it.id }
         val json = drive.loadStylesJson(id)
-        return if (json != null) {
+        val resolved = if (json != null) {
             val type = object : TypeToken<List<Style>>() {}.type
             val raw: List<Style> = gson.fromJson(json, type) ?: emptyList()
             raw.map { style ->
@@ -123,6 +149,8 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
                 } else style
             }
         } else emptyList()
+        runCatching { stylesLocalCacheFile(id).writeText(gson.toJson(resolved)) }
+        return resolved
     }
 
     // ---------- Create flow ----------

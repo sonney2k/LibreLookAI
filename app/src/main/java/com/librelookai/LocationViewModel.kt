@@ -36,13 +36,39 @@ class LocationViewModel(app: Application) : AndroidViewModel(app) {
             return s.locations.find { it.id == s.activeLocationId }?.folderId
         }
 
-    init { loadLocations() }
+    init {
+        // Phase 1: restore last-known locations from SharedPreferences — instant, no network.
+        restoreFromCache()
+        // Phase 2: refresh from Drive in the background.
+        loadLocations()
+    }
+
+    /**
+     * Synchronously restores the last-known locations from SharedPreferences so the wardrobe
+     * screen can start loading its disk cache immediately, without waiting for any Drive call.
+     */
+    private fun restoreFromCache() {
+        val cachedJson = prefs.getString(PREF_LOCATIONS_JSON, null) ?: return
+        val savedActiveId = prefs.getString(PREF_ACTIVE_ID, null) ?: return
+        val type = object : TypeToken<List<Location>>() {}.type
+        val locations: List<Location> = runCatching {
+            gson.fromJson<List<Location>>(cachedJson, type) ?: emptyList()
+        }.getOrNull() ?: return
+        if (locations.isEmpty()) return
+        val activeId = if (locations.any { it.id == savedActiveId }) savedActiveId else locations[0].id
+        // isLoading stays true so the UI knows a Drive refresh is still in flight.
+        _state.value = LocationUiState(locations = locations, activeLocationId = activeId, isLoading = true)
+    }
 
     fun loadLocations() {
         viewModelScope.launch {
+            // Don't reset existing cached locations to empty while refreshing.
             _state.update { it.copy(isLoading = true, error = null) }
             runCatching {
-                val rootId = drive.getOrCreateFolder().also { rootFolderId = it }
+                val rootId = drive.getOrCreateFolder().also {
+                    rootFolderId = it
+                    prefs.edit().putString(PREF_ROOT_FOLDER_ID, it).apply()
+                }
                 val savedActiveId = prefs.getString(PREF_ACTIVE_ID, null)
 
                 val json = drive.loadLocationsJson(rootId)
@@ -52,7 +78,7 @@ class LocationViewModel(app: Application) : AndroidViewModel(app) {
                 } else emptyList()
 
                 if (locations.isEmpty()) {
-                    // First run: default "Home" location pointing at the root folder
+                    // First run: default "Home" location pointing at the root folder.
                     val defaultLocation = Location(name = "Home", folderId = rootId)
                     val newList = listOf(defaultLocation)
                     drive.saveLocationsJson(rootId, gson.toJson(newList))
@@ -67,9 +93,14 @@ class LocationViewModel(app: Application) : AndroidViewModel(app) {
                     Pair(locations, activeId)
                 }
             }.onSuccess { (locations, activeId) ->
+                prefs.edit().putString(PREF_LOCATIONS_JSON, gson.toJson(locations)).apply()
                 _state.update { it.copy(locations = locations, activeLocationId = activeId, isLoading = false) }
             }.onFailure { e ->
-                _state.update { it.copy(isLoading = false, error = e.message) }
+                // If we already have cached locations, just stop the loading spinner; don't
+                // replace working content with an error banner.
+                _state.update { s ->
+                    s.copy(isLoading = false, error = if (s.locations.isEmpty()) e.message else null)
+                }
             }
         }
     }
@@ -90,6 +121,7 @@ class LocationViewModel(app: Application) : AndroidViewModel(app) {
                 drive.saveLocationsJson(rootId, gson.toJson(updated))
                 updated
             }.onSuccess { updated ->
+                prefs.edit().putString(PREF_LOCATIONS_JSON, gson.toJson(updated)).apply()
                 _state.update { it.copy(locations = updated) }
             }.onFailure { e ->
                 _state.update { it.copy(error = e.message) }
@@ -107,6 +139,7 @@ class LocationViewModel(app: Application) : AndroidViewModel(app) {
                 val rootId = rootFolderId ?: drive.getOrCreateFolder().also { rootFolderId = it }
                 drive.saveLocationsJson(rootId, gson.toJson(updated))
             }.onSuccess {
+                prefs.edit().putString(PREF_LOCATIONS_JSON, gson.toJson(updated)).apply()
                 _state.update { it.copy(locations = updated) }
             }.onFailure { e ->
                 _state.update { it.copy(error = e.message) }
@@ -126,6 +159,7 @@ class LocationViewModel(app: Application) : AndroidViewModel(app) {
                 val newActiveId = if (current.activeLocationId == locationId) {
                     updated[0].id.also { prefs.edit().putString(PREF_ACTIVE_ID, it).apply() }
                 } else current.activeLocationId
+                prefs.edit().putString(PREF_LOCATIONS_JSON, gson.toJson(updated)).apply()
                 _state.update { it.copy(locations = updated, activeLocationId = newActiveId) }
             }.onFailure { e ->
                 _state.update { it.copy(error = e.message) }
@@ -149,6 +183,7 @@ class LocationViewModel(app: Application) : AndroidViewModel(app) {
                     val newLocation = Location(name = name, folderId = newFolderId)
                     val updated = _state.value.locations + newLocation
                     drive.saveLocationsJson(rootId, gson.toJson(updated))
+                    prefs.edit().putString(PREF_LOCATIONS_JSON, gson.toJson(updated)).apply()
                     _state.update { it.copy(locations = updated) }
                     newFolderId
                 }
@@ -164,6 +199,8 @@ class LocationViewModel(app: Application) : AndroidViewModel(app) {
 
     companion object {
         private const val PREF_ACTIVE_ID = "active_location_id"
+        private const val PREF_ROOT_FOLDER_ID = "root_folder_id"
+        private const val PREF_LOCATIONS_JSON = "locations_json"
         const val ALL_LOCATIONS_ID = "all_locations"
     }
 }

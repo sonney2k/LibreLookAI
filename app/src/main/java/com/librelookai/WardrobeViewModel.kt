@@ -599,7 +599,11 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     }.getOrDefault(emptyList())
                 }
                 if (cachedAll.isNotEmpty()) _state.update { it.copy(images = cachedAll, isLoading = false) }
-                // Phase 2 — network: load all folders in parallel and merge
+                // Phase 2 — network: skip when offline
+                if (!getApplication<android.app.Application>().isNetworkAvailable()) {
+                    _state.update { it.copy(isLoading = false) }
+                    return@launch
+                }
                 runCatching {
                     val allFresh = ids.map { fid -> async { loadFolderImages(fid) } }.awaitAll().flatten()
                     val freshIds = allFresh.map { it.driveId }.toSet()
@@ -639,7 +643,12 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 }
             }
 
-            // Phase 2 — background sync: fetch Drive cutouts + sidecars in parallel
+            // Phase 2 — background sync: skip when offline
+            if (!getApplication<android.app.Application>().isNetworkAvailable()) {
+                _state.update { it.copy(isLoading = false) }
+                return@launch
+            }
+
             runCatching {
                 val filesDeferred = async { drive.listFiles(id) }
                 val sidecarFilesDeferred = async { drive.listSidecarFiles(id) }
