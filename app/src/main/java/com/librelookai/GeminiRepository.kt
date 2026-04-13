@@ -62,10 +62,10 @@ class GeminiRepository(private val app: Application) {
             "Analyze this clothing item and return ONLY a JSON object (no markdown, no explanation) " +
                 "with these fields: " +
                 "\"label\" (a short descriptive name for the item in {LANGUAGE}, e.g. \"Navy Chinos\", \"White Oxford Shirt\", \"Black Puffer Jacket\"), " +
-                "\"type\" (specific item name, e.g. \"T-shirt\", \"Chinos\", \"Puffer jacket\"), " +
+                "\"type\" (concise item name; prefer terms from: T-shirt, Long-sleeve shirt, Polo shirt, Oxford shirt, Button-up shirt, Blouse, Tank top, Crop top, Sweater, Hoodie, Cardigan, Vest, Jacket, Blazer, Coat, Puffer jacket, Trench coat, Jeans, Chinos, Trousers, Shorts, Skirt, Dress, Jumpsuit, Suit jacket, Suit trousers, Sneakers, Boots, Loafers, Sandals, Heels, Belt, Bag, Hat, Scarf, Gloves, Sunglasses — use the same concise style for unlisted items), " +
                 "\"category\" (one of: tops, bottoms, outerwear, footwear, accessories, dress, suit), " +
                 "\"uses\" (array from: casual, formal, business, sport, outdoor, beach, evening), " +
-                "\"colors\" (array of main colors as lowercase English words), " +
+                "\"colors\" (array of main colors as lowercase English words, e.g. gray not grey), " +
                 "\"seasonality\" (array from: spring, summer, fall, winter), " +
                 "\"aesthetic\" (array from: minimalist, streetwear, preppy, bohemian, classic, sporty, romantic, edgy, business-casual, luxury), " +
                 "\"fit\" (array from: slim, regular, relaxed, oversized, tailored), " +
@@ -255,6 +255,7 @@ class GeminiRepository(private val app: Application) {
                 val json = text.trim()
                     .removePrefix("```json").removePrefix("```").removeSuffix("```").trim()
                 gson.fromJson(json, ClothingTags::class.java)
+                    .normalize()
                     .also { Log.d(TAG, "Tags: $it") }
             } catch (e: Exception) {
                 Log.e(TAG, "Classification failed: ${e.message}", e)

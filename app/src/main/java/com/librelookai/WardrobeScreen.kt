@@ -350,20 +350,20 @@ internal fun String.localizedTagValue(): String = when (this.lowercase()) {
 internal fun List<DriveImage>.tagCategories(): List<TagCategory> {
     fun collect(vararg lists: List<String>) = lists.flatMap { it }.toSortedSet().toList()
     return listOfNotNull(
-        TagCategory("Type",        mapNotNull { it.tags?.type }.filter { it.isNotEmpty() }.toSortedSet().toList()).takeIf { it.tags.isNotEmpty() },
-        TagCategory("Category",    mapNotNull { it.tags?.category }.filter { it.isNotEmpty() }.toSortedSet().toList()).takeIf { it.tags.isNotEmpty() },
-        TagCategory("Uses",        collect(flatMap { it.tags?.uses ?: emptyList() })).takeIf { it.tags.isNotEmpty() },
-        TagCategory("Colors",      collect(flatMap { it.tags?.colors ?: emptyList() })).takeIf { it.tags.isNotEmpty() },
-        TagCategory("Seasonality", collect(flatMap { it.tags?.seasonality ?: emptyList() })).takeIf { it.tags.isNotEmpty() },
-        TagCategory("Aesthetic",   collect(flatMap { it.tags?.aesthetic ?: emptyList() })).takeIf { it.tags.isNotEmpty() },
-        TagCategory("Fit",         collect(flatMap { it.tags?.fit ?: emptyList() })).takeIf { it.tags.isNotEmpty() },
-        TagCategory("Material",    collect(flatMap { it.tags?.material ?: emptyList() })).takeIf { it.tags.isNotEmpty() },
-        TagCategory("Pattern",     collect(flatMap { it.tags?.pattern ?: emptyList() })).takeIf { it.tags.isNotEmpty() },
+        TagCategory("Type",        mapNotNull { it.tags?.type?.normalizeType() }.filter { it.isNotEmpty() }.toSortedSet().toList()).takeIf { it.tags.isNotEmpty() },
+        TagCategory("Category",    mapNotNull { it.tags?.category?.lowercase()?.trim() }.filter { it.isNotEmpty() }.toSortedSet().toList()).takeIf { it.tags.isNotEmpty() },
+        TagCategory("Uses",        collect(flatMap { it.tags?.uses?.map { v -> v.normalizeEnumTag() } ?: emptyList() })).takeIf { it.tags.isNotEmpty() },
+        TagCategory("Colors",      collect(flatMap { it.tags?.colors?.map { v -> v.normalizeColor() } ?: emptyList() })).takeIf { it.tags.isNotEmpty() },
+        TagCategory("Seasonality", collect(flatMap { it.tags?.seasonality?.map { v -> v.normalizeEnumTag() } ?: emptyList() })).takeIf { it.tags.isNotEmpty() },
+        TagCategory("Aesthetic",   collect(flatMap { it.tags?.aesthetic?.map { v -> v.normalizeAesthetic() } ?: emptyList() })).takeIf { it.tags.isNotEmpty() },
+        TagCategory("Fit",         collect(flatMap { it.tags?.fit?.map { v -> v.normalizeEnumTag() } ?: emptyList() })).takeIf { it.tags.isNotEmpty() },
+        TagCategory("Material",    collect(flatMap { it.tags?.material?.map { v -> v.normalizeMaterial() } ?: emptyList() })).takeIf { it.tags.isNotEmpty() },
+        TagCategory("Pattern",     collect(flatMap { it.tags?.pattern?.map { v -> v.normalizePattern() } ?: emptyList() })).takeIf { it.tags.isNotEmpty() },
     )
 }
 
 internal fun DriveImage.allTagStrings() = buildSet {
-    tags?.let { t ->
+    tags?.normalize()?.let { t ->
         if (t.type.isNotEmpty()) add(t.type)
         if (t.category.isNotEmpty()) add(t.category)
         addAll(t.uses); addAll(t.colors); addAll(t.seasonality)
@@ -372,7 +372,7 @@ internal fun DriveImage.allTagStrings() = buildSet {
 }
 
 internal fun DriveImage.tagStringsForCategory(categoryLabel: String): Set<String> {
-    val t = tags ?: return emptySet()
+    val t = tags?.normalize() ?: return emptySet()
     return when (categoryLabel) {
         "Type"        -> if (t.type.isNotEmpty()) setOf(t.type) else emptySet()
         "Category"    -> if (t.category.isNotEmpty()) setOf(t.category) else emptySet()
