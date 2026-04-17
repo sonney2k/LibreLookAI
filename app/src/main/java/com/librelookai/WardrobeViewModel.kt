@@ -41,6 +41,8 @@ data class DriveImage(
     val originalDriveId: String? = null,
     /** Drive file ID of the per-item sidecar JSON (named "{driveId}.json"). */
     val sidecarDriveId: String? = null,
+    /** Drive folder ID this item actually lives in. */
+    val folderId: String = "",
 )
 
 data class WardrobeUiState(
@@ -593,7 +595,8 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                             drive.cachedFile(entry.driveId)?.let { f ->
                                 DriveImage(entry.driveId, f.absolutePath, entry.name, entry.tags,
                                     originalDriveId = entry.originalDriveId,
-                                    sidecarDriveId = entry.sidecarDriveId)
+                                    sidecarDriveId = entry.sidecarDriveId,
+                                    folderId = fid)
                             }
                         }
                     }.getOrDefault(emptyList())
@@ -633,7 +636,8 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                         drive.cachedFile(entry.driveId)?.let { f ->
                             DriveImage(entry.driveId, f.absolutePath, entry.name, entry.tags,
                                 originalDriveId = entry.originalDriveId,
-                                sidecarDriveId = entry.sidecarDriveId)
+                                sidecarDriveId = entry.sidecarDriveId,
+                                folderId = id)
                         }
                     }
                 }.onSuccess { items ->
@@ -702,6 +706,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                             tags = tags,
                             originalDriveId = originalId,
                             sidecarDriveId = sidecarIdByItemId[file.id],
+                            folderId = id,
                         )
                     }
                 }
@@ -787,6 +792,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     tags = tags,
                     originalDriveId = originalId,
                     sidecarDriveId = sidecarIdByItemId[file.id],
+                    folderId = id,
                 )
             }
         }
@@ -1160,11 +1166,13 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         val toMove = _state.value.images.filter { it.driveId in driveIds }
         if (toMove.isEmpty()) return
         viewModelScope.launch {
-            val sourceFolderId = folderId ?: return@launch
             _state.update { it.copy(isUploading = true, selectedIds = emptySet(), error = null) }
 
             val successfulIds = mutableListOf<String>()
             for (item in toMove) {
+                // Use the item's own folderId so this works correctly in "All locations" mode
+                val sourceFolderId = item.folderId.ifEmpty { folderId } ?: continue
+                if (sourceFolderId == targetFolderId) { successfulIds.add(item.driveId); continue }
                 runCatching {
                     // Move cutout — Drive parent-change: keeps same ID, name, and content
                     drive.moveFile(item.driveId, sourceFolderId, targetFolderId)
@@ -1183,8 +1191,14 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             }
 
             if (successfulIds.isNotEmpty()) {
-                _state.update { s -> s.copy(images = s.images.filter { it.driveId !in successfulIds }) }
-                saveLocalCache(sourceFolderId, _state.value.images)
+                val successSet = successfulIds.toSet()
+                // Update cache for each affected source folder separately
+                val movedItems = toMove.filter { it.driveId in successSet }
+                val affectedFolderIds = movedItems.map { it.folderId }.filter { it.isNotEmpty() }.toSet()
+                _state.update { s -> s.copy(images = s.images.filter { it.driveId !in successSet }) }
+                affectedFolderIds.forEach { fid ->
+                    saveLocalCache(fid, _state.value.images.filter { it.folderId == fid })
+                }
             }
             _state.update { it.copy(isUploading = false) }
         }

@@ -700,9 +700,12 @@ private fun GridContent(
                             itemsIndexed(displayedImages, key = { _, img -> img.driveId }) { index, image ->
                                 val isSelected = state.selectedIds.contains(image.driveId)
                                 val ctx = LocalContext.current
-                                val activeLocationName = remember(activeLocationId, locations) {
-                                    locations.find { it.id == activeLocationId }?.name
-                                }
+                                // Show the item's actual location whenever multiple locations exist
+                                val itemLocationName = if (locations.size > 1) {
+                                    remember(image.folderId, locations) {
+                                        locations.find { it.folderId == image.folderId }?.name
+                                    }
+                                } else null
                                 Column(
                                     modifier = Modifier
                                         .padding(1.dp)
@@ -726,8 +729,8 @@ private fun GridContent(
                                             modifier = Modifier.fillMaxSize(),
                                             contentScale = ContentScale.Crop,
                                         )
-                                        // Location badge — top-left, only when multiple locations exist
-                                        if (locations.size > 1 && activeLocationName != null) {
+                                        // Location badge — top-left, only in "All locations" mode
+                                        if (itemLocationName != null) {
                                             Box(
                                                 modifier = Modifier
                                                     .align(Alignment.TopStart)
@@ -739,7 +742,7 @@ private fun GridContent(
                                                     .padding(horizontal = 4.dp, vertical = 1.dp),
                                             ) {
                                                 Text(
-                                                    text = activeLocationName,
+                                                    text = itemLocationName,
                                                     color = Color.White,
                                                     fontSize = 8.sp,
                                                     lineHeight = 10.sp,
