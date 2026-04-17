@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
@@ -94,7 +95,12 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
         if (folderId == null && allFolderIds?.toSet() == folderIds.toSet()) return
         folderId = null
         allFolderIds = folderIds.toList()
-        _state.update { StylesUiState(isLoading = true, wardrobeImages = readWardrobeImagesFromCache(folderIds)) }
+        _state.update { StylesUiState(isLoading = true) }
+        // Read wardrobe disk caches on IO thread in parallel with styles loading.
+        viewModelScope.launch(Dispatchers.IO) {
+            val images = readWardrobeImagesFromCache(folderIds)
+            _state.update { it.copy(wardrobeImages = images) }
+        }
         loadStyles()
     }
 
@@ -135,8 +141,10 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
      */
     fun refreshWardrobeImages() {
         val folderIds = allFolderIds ?: folderId?.let { listOf(it) } ?: return
-        val images = readWardrobeImagesFromCache(folderIds)
-        _state.update { it.copy(wardrobeImages = images) }
+        viewModelScope.launch(Dispatchers.IO) {
+            val images = readWardrobeImagesFromCache(folderIds)
+            _state.update { it.copy(wardrobeImages = images) }
+        }
     }
 
     // ---------- Load ----------
