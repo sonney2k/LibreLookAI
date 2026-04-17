@@ -124,15 +124,8 @@ class MainActivity : ComponentActivity() {
                                 outfitsViewModel.setLocation(folderId)
                             }
                         }
-                    }
-
-                    // Push default import folder to WardrobeViewModel whenever locations or prefs change
-                    val defaultImportLocationId = profileState.preferences.defaultImportLocationId
-                    LaunchedEffect(defaultImportLocationId, locationList) {
-                        val folderId = if (defaultImportLocationId.isNotEmpty()) {
-                            locationList.find { it.id == defaultImportLocationId }?.folderId
-                        } else null
-                        wardrobeViewModel.setDefaultImportFolderId(folderId)
+                        // Imports always go to the active location (first location when all are shown).
+                        wardrobeViewModel.setDefaultImportFolderId(activeFolderId ?: folderIds.firstOrNull())
                     }
 
                     // Keep wardrobe tagging language in sync with the profile language

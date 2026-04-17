@@ -38,9 +38,7 @@
     <string name="settings_tab_data">Daten</string>
     <string name="settings_tab_credits">Credits</string>
     <string name="settings_language">Sprache</string>
-    <string name="settings_default_import_location">Standard-Importort</string>
-    <string name="settings_default_import_location_none">Aktueller Ort</string>
-    <string name="settings_gender">Geschlecht</string>
+<string name="settings_gender">Geschlecht</string>
     <string name="settings_gender_select">Auswählen…</string>
     <string name="settings_gender_prefer_not">Keine Angabe</string>
     <string name="settings_gender_female">Weiblich</string>
