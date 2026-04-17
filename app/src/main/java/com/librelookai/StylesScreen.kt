@@ -329,6 +329,8 @@ private fun StyleListScreen(
     modifier: Modifier = Modifier,
 ) {
     val itemsById = remember(items) { items.associateBy { it.driveId } }
+    // Key: Drive filename (e.g. "{id}_cutout.png") — stable across location moves, matches style.itemNames
+    val imagesByName = remember(itemsById) { itemsById.values.associateBy { it.name } }
 
     var selectedTags by remember { mutableStateOf(emptyMap<String, Set<String>>()) }
     var sortBy by remember { mutableStateOf(StyleSortOption.DATE_DESC) }
@@ -338,10 +340,19 @@ private fun StyleListScreen(
 
     // OR within each category, AND across categories; a style matches if any of its items satisfies each active filter.
     // When a specific location is active, styles with any item not at that location are hidden.
-    val filteredStyles = remember(styles, selectedTags, itemsById, filterByLocation) {
+    // Uses itemNames (Drive filenames) for the availability check because itemIds are re-resolved per-folder
+    // on load — items at other locations are dropped from itemIds and would be invisible to an ID-based check.
+    val filteredStyles = remember(styles, selectedTags, imagesByName, filterByLocation) {
         val activeFilters = selectedTags.filter { (_, tags) -> tags.isNotEmpty() }
         styles.filter { style ->
-            if (filterByLocation && style.itemIds.any { id -> !itemsById.containsKey(id) }) return@filter false
+            if (filterByLocation) {
+                val away = if (style.itemNames.isNotEmpty()) {
+                    style.itemNames.any { it !in imagesByName }
+                } else {
+                    style.itemIds.any { id -> !itemsById.containsKey(id) }
+                }
+                if (away) return@filter false
+            }
             if (activeFilters.isEmpty()) return@filter true
             activeFilters.all { (categoryLabel, catTags) ->
                 style.itemIds.any { id ->
@@ -723,12 +734,11 @@ private fun StyleCard(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            // All items in the style: available ones resolved from itemsById, unavailable shown as placeholders
-            val allStyleEntries = remember(style.itemIds, style.itemNames, itemsById) {
-                style.itemIds.mapIndexed { idx, id -> Triple(id, itemsById[id], style.itemNames.getOrNull(idx)) }
-            }
-            val awayCount = allStyleEntries.count { (_, img, _) -> img == null }
-            if (allStyleEntries.isEmpty()) {
+            val styleItems = style.itemIds.mapNotNull { itemsById[it] }
+            val imageNames = remember(itemsById) { itemsById.values.map { it.name }.toSet() }
+            val awayCount = if (style.itemNames.isEmpty()) 0
+                            else style.itemNames.count { it !in imageNames }
+            if (styleItems.isEmpty() && awayCount == 0) {
                 Text(
                     stringResource(R.string.styles_missing_items),
                     style = MaterialTheme.typography.bodySmall,
@@ -736,37 +746,21 @@ private fun StyleCard(
                 )
             } else {
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    items(allStyleEntries, key = { (id, _, _) -> id }) { (_, image, name) ->
-                        if (image != null) {
-                            val ctx = LocalContext.current
-                            AsyncImage(
-                                model = remember(image.driveId, image.version) {
-                                    ImageRequest.Builder(ctx)
-                                        .data(image.localPath)
-                                        .memoryCacheKey("${image.driveId}_${image.version}")
-                                        .build()
-                                },
-                                contentDescription = image.name,
-                                modifier = Modifier
-                                    .size(72.dp)
-                                    .clickable { viewerImage = image },
-                                contentScale = ContentScale.Crop,
-                            )
-                        } else {
-                            Box(
-                                modifier = Modifier
-                                    .size(72.dp)
-                                    .background(MaterialTheme.colorScheme.surfaceVariant),
-                                contentAlignment = Alignment.Center,
-                            ) {
-                                Icon(
-                                    Icons.Default.Place,
-                                    contentDescription = name,
-                                    tint = MaterialTheme.colorScheme.tertiary,
-                                    modifier = Modifier.size(24.dp),
-                                )
-                            }
-                        }
+                    items(styleItems, key = { it.driveId }) { image ->
+                        val ctx = LocalContext.current
+                        AsyncImage(
+                            model = remember(image.driveId, image.version) {
+                                ImageRequest.Builder(ctx)
+                                    .data(image.localPath)
+                                    .memoryCacheKey("${image.driveId}_${image.version}")
+                                    .build()
+                            },
+                            contentDescription = image.name,
+                            modifier = Modifier
+                                .size(72.dp)
+                                .clickable { viewerImage = image },
+                            contentScale = ContentScale.Crop,
+                        )
                     }
                 }
             }
