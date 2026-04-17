@@ -45,7 +45,8 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.AutoAwesome
-import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Edit
@@ -53,7 +54,6 @@ import androidx.compose.material.icons.filled.AutoFixHigh
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Place
-import androidx.compose.material.icons.filled.Sort
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -637,7 +637,7 @@ private fun StyleSortButton(
     var expanded by remember { mutableStateOf(false) }
     Box(modifier = modifier) {
         IconButton(onClick = { expanded = true }) {
-            Icon(Icons.Default.Sort, contentDescription = "Sort")
+            Icon(Icons.AutoMirrored.Filled.Sort, contentDescription = "Sort")
         }
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             StyleSortOption.entries.forEach { option ->
@@ -1885,7 +1885,7 @@ internal fun RefinementSection(
                 onClick = onSubmitFreetext,
                 enabled = input.isNotBlank(),
             ) {
-                Icon(Icons.Default.Send, contentDescription = "Refine")
+                Icon(Icons.AutoMirrored.Filled.Send, contentDescription = "Refine")
             }
         }
     }
