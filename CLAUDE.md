@@ -31,6 +31,12 @@ cd firebase && firebase deploy --only functions
 cd firebase && firebase deploy --only firestore:rules
 ```
 
+Build release AAB (requires signing config in `local.properties`, see Release process below):
+```bash
+./gradlew bundleRelease
+# Output: app/build/outputs/bundle/release/app-release.aab
+```
+
 ## Required local.properties keys
 
 `local.properties` is never committed. Keys consumed at build time via `BuildConfig`:
@@ -44,6 +50,14 @@ firebase.web.client.id=  # OAuth 2.0 Web Client ID from Firebase Auth
 ```
 
 Firebase is **opt-in**: `google-services.json` must be present in `app/` for the plugin to be applied (checked in `app/build.gradle.kts`).
+
+Signing keys (for release builds, never committed):
+```
+signing.store.file=/absolute/path/to/librelookai-release.jks
+signing.store.password=
+signing.key.alias=librelookai
+signing.key.password=
+```
 
 ## Architecture overview
 
@@ -184,3 +198,50 @@ Both service and wake lock are reference-counted via `acquireJobWakeLock()` / `r
 ### SAF import
 
 `WardrobeViewModel.importFromFolder(treeUri)` reads images from any OS-accessible folder using `DocumentsContract` + `ContentResolver` (no extra OAuth scopes needed), re-uploads them to the app's Drive folder, and classifies new items with Gemini before writing per-item sidecars.
+
+## Release process (Play Store internal testing)
+
+### One-time setup
+
+1. **Create keystore** (store outside repo):
+   ```bash
+   keytool -genkey -v -keystore librelookai-release.jks \
+     -alias librelookai -keyalg RSA -keysize 2048 -validity 10000
+   ```
+
+2. **Add signing config** to `app/build.gradle.kts`:
+   ```kotlin
+   val signingRelease = android.signingConfigs.create("release") {
+       storeFile = file(localProps.getProperty("signing.store.file", ""))
+       storePassword = localProps.getProperty("signing.store.password", "")
+       keyAlias = localProps.getProperty("signing.key.alias", "")
+       keyPassword = localProps.getProperty("signing.key.password", "")
+   }
+   // inside buildTypes { release { ... } }
+   signingConfig = signingRelease
+   ```
+
+3. **Add release SHA-1 to Firebase Console** (Project Settings → Your apps → Android app):
+   ```bash
+   keytool -list -v -keystore librelookai-release.jks -alias librelookai
+   ```
+   Without this, Google Sign-In → Firebase Auth will fail on release builds.
+
+4. **Create the app in Play Console** (package: `com.librelookai`).
+
+### Per-release checklist
+
+- [ ] Increment `versionCode` in `app/build.gradle.kts`
+- [ ] `google-services.json` present in `app/` (Firebase enabled)
+- [ ] `firebase.proxy.url` and `firebase.web.client.id` set in `local.properties`
+- [ ] `./gradlew bundleRelease` succeeds
+- [ ] Firebase Functions deployed: `cd firebase && firebase deploy --only functions`
+- [ ] AAB uploaded to Play Console → Testing → Internal testing → Create new release
+- [ ] Testers added via email list on the Testers tab; they receive an opt-in link
+
+### Giving test credits to testers (managed mode)
+
+After a tester signs in, their Firebase UID appears in the Firestore `users` collection. Set their balance manually in the Firebase Console or with the Admin SDK:
+```
+/users/{uid}/credits = 100
+```

@@ -78,6 +78,7 @@ import androidx.compose.material.icons.automirrored.filled.RotateRight
 import androidx.compose.material.icons.filled.Sort
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -639,12 +640,33 @@ private fun GridContent(
                 }
             }
 
+            // ---- Sync progress bar (Phase 2 downloading, even when cached items visible) ----
+            if (state.syncTotal > 0) {
+                Column(Modifier.fillMaxWidth()) {
+                    LinearProgressIndicator(
+                        progress = { if (state.syncTotal > 0) state.syncDone.toFloat() / state.syncTotal else 0f },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    Text(
+                        stringResource(R.string.wardrobe_sync_progress, state.syncDone, state.syncTotal),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 2.dp),
+                    )
+                }
+            }
+
             // ---- Main content ----
             when {
-                state.isLoading -> {
+                state.isLoading && state.syncTotal == 0 -> {
+                    // Phase 1: reading local cache (very fast) or no network — show spinner
                     Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
                         CircularProgressIndicator()
                     }
+                }
+                state.isLoading && state.syncTotal > 0 -> {
+                    // Phase 2 with empty cache: progress bar above is already visible; fill the rest
+                    Box(Modifier.weight(1f).fillMaxWidth())
                 }
                 displayedImages.isEmpty() && !state.isProcessing && !state.isUploading -> {
                     Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {

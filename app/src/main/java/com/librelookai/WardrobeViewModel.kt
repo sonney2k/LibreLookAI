@@ -65,6 +65,10 @@ data class WardrobeUiState(
     val removeBgDone: Int = 0,
     val removeBgTotal: Int = 0,
     val error: String? = null,
+    /** Total images to download during Phase 2 Drive sync (0 = not syncing or unknown). */
+    val syncTotal: Int = 0,
+    /** Images downloaded so far during Phase 2 Drive sync. */
+    val syncDone: Int = 0,
     /** driveId of the image currently being processed by an AI operation, or null. */
     val processingImageId: String? = null,
     val selectedIds: Set<String> = emptySet(),
@@ -609,17 +613,78 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     return@launch
                 }
                 runCatching {
-                    val allFresh = ids.map { fid -> async { loadFolderImages(fid) } }.awaitAll().flatten()
+                    // Fetch file + sidecar lists for all folders in parallel
+                    data class FolderMeta(
+                        val id: String,
+                        val files: List<DriveFileDto>,
+                        val sidecarFiles: List<DriveFileDto>,
+                    )
+                    val folderMeta = ids.map { fid ->
+                        async {
+                            val files = async { drive.listFiles(fid) }
+                            val sidecars = async { drive.listSidecarFiles(fid) }
+                            FolderMeta(fid, files.await(), sidecars.await())
+                        }
+                    }.awaitAll()
+
+                    val totalCount = folderMeta.sumOf { it.files.size }
+                    if (totalCount > 0) _state.update { it.copy(syncTotal = totalCount, syncDone = 0) }
+                    val doneCount = AtomicInteger(0)
+
+                    // Download all uncached images in parallel across all folders
+                    folderMeta.flatMap { fd ->
+                        fd.files.map { file ->
+                            async {
+                                val r = drive.cachedFile(file.id) ?: drive.downloadToCache(file.id, file.name)
+                                _state.update { it.copy(syncDone = doneCount.incrementAndGet()) }
+                                r
+                            }
+                        }
+                    }.awaitAll()
+
+                    // Load all sidecar content in parallel
+                    val sidecarContent: Map<String, ItemSidecar> = folderMeta.flatMap { fd ->
+                        fd.sidecarFiles.map { sf ->
+                            async {
+                                val itemId = sf.name.removeSuffix(DriveRepository.SIDECAR_SUFFIX)
+                                val content = drive.loadFileContent(sf.id)
+                                itemId to content?.let {
+                                    runCatching { gson.fromJson(it, ItemSidecar::class.java) }.getOrNull()
+                                }
+                            }
+                        }
+                    }.awaitAll().mapNotNull { (k, v) -> v?.let { k to it } }.toMap()
+
+                    // Build DriveImage list per folder
+                    val allFresh = folderMeta.flatMap { fd ->
+                        val sidecarIdByItemId = fd.sidecarFiles.associate { sf ->
+                            sf.name.removeSuffix(DriveRepository.SIDECAR_SUFFIX) to sf.id
+                        }
+                        fd.files.mapNotNull { file ->
+                            drive.cachedFile(file.id)?.let { cached ->
+                                val sidecar = sidecarContent[file.id]
+                                DriveImage(
+                                    driveId = file.id,
+                                    localPath = cached.absolutePath,
+                                    name = file.name,
+                                    tags = sidecar?.tags ?: file.appProperties?.toClothingTags(),
+                                    originalDriveId = sidecar?.originalDriveId,
+                                    sidecarDriveId = sidecarIdByItemId[file.id],
+                                    folderId = fd.id,
+                                )
+                            }
+                        }
+                    }
                     val freshIds = allFresh.map { it.driveId }.toSet()
                     val pendingRaw = _state.value.images.filter { img ->
                         img.driveId !in freshIds && !img.name.endsWith(DriveRepository.CUTOUT_SUFFIX)
                     }
                     allFresh + pendingRaw
                 }.onSuccess { images ->
-                    _state.update { it.copy(images = images, isLoading = false) }
+                    _state.update { it.copy(images = images, isLoading = false, syncTotal = 0, syncDone = 0) }
                 }.onFailure { e ->
                     _state.update { s ->
-                        s.copy(isLoading = false, error = if (s.images.isEmpty()) e.message else null)
+                        s.copy(isLoading = false, syncTotal = 0, syncDone = 0, error = if (s.images.isEmpty()) e.message else null)
                     }
                 }
                 return@launch
@@ -665,9 +730,16 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     sf.name.removeSuffix(DriveRepository.SIDECAR_SUFFIX) to sf.id
                 }
 
-                // Download any uncached image files in parallel
+                // Download any uncached image files in parallel, tracking progress
+                val totalCount = files.size
+                if (totalCount > 0) _state.update { it.copy(syncTotal = totalCount, syncDone = 0) }
+                val doneCount = AtomicInteger(0)
                 files.map { file ->
-                    async { drive.cachedFile(file.id) ?: drive.downloadToCache(file.id, file.name) }
+                    async {
+                        val r = drive.cachedFile(file.id) ?: drive.downloadToCache(file.id, file.name)
+                        _state.update { it.copy(syncDone = doneCount.incrementAndGet()) }
+                        r
+                    }
                 }.awaitAll()
 
                 // Load sidecar content in parallel
@@ -741,12 +813,12 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
                 freshImages + pendingRaw
             }.onSuccess { images ->
-                _state.update { it.copy(images = images, isLoading = false) }
+                _state.update { it.copy(images = images, isLoading = false, syncTotal = 0, syncDone = 0) }
                 saveLocalCache(id, images)
             }.onFailure { e ->
                 // Don't overwrite cached items already shown with an error banner
                 _state.update { s ->
-                    s.copy(isLoading = false, error = if (s.images.isEmpty()) e.message else null)
+                    s.copy(isLoading = false, syncTotal = 0, syncDone = 0, error = if (s.images.isEmpty()) e.message else null)
                 }
             }
         }

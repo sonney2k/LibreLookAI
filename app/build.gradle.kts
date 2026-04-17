@@ -3,6 +3,8 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.google.firebase.appdistribution)
+    alias(libs.plugins.google.services)
 }
 
 // Apply google-services only when google-services.json is present (opt-in for managed-mode builds)
