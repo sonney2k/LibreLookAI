@@ -53,7 +53,6 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.AutoFixHigh
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -142,6 +141,17 @@ fun StylesScreen(
     val outfitsState by outfitsViewModel.state.collectAsState()
     val locationState by locationViewModel.state.collectAsState()
 
+    // Local location filter for the styles screen — always starts at ALL_LOCATIONS,
+    // independent of the settings-page default location.
+    var stylesActiveLocationId by remember { mutableStateOf(LocationViewModel.ALL_LOCATIONS_ID) }
+
+    // Refresh wardrobe image cache for styles once wardrobe Drive sync completes.
+    LaunchedEffect(wardrobeState.isSyncing, stylesState.isLoading) {
+        if (!wardrobeState.isSyncing && !stylesState.isLoading) {
+            stylesViewModel.refreshWardrobeImages()
+        }
+    }
+
     // styleId → number of calendar wear events
     val wearCounts = remember(outfitsState.events) {
         outfitsState.events.groupingBy { it.styleId }.eachCount()
@@ -224,13 +234,13 @@ fun StylesScreen(
             else -> {
                 StyleListScreen(
                     styles = stylesState.styles,
-                    items = wardrobeState.images,
+                    items = stylesState.wardrobeImages,
                     wearCounts = wearCounts,
-                    isLoading = stylesState.isLoading || wardrobeState.isLoading,
+                    isLoading = stylesState.isLoading || wardrobeState.isLoading || wardrobeState.isSyncing,
                     isPredicting = stylesState.isPredicting,
                     locations = locationState.locations,
-                    activeLocationId = locationState.activeLocationId,
-                    onSetActiveLocation = locationViewModel::setActiveLocation,
+                    activeLocationId = stylesActiveLocationId,
+                    onSetActiveLocation = { stylesActiveLocationId = it },
                     predictionError = stylesState.predictionError,
                     isComposing = stylesState.isComposing,
                     compositionError = stylesState.compositionError,
@@ -328,31 +338,39 @@ private fun StyleListScreen(
     onClearCompositionError: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    // itemsById: ALL locations — used to resolve item IDs to images for card display and tag filters.
     val itemsById = remember(items) { items.associateBy { it.driveId } }
-    // Key: Drive filename (e.g. "{id}_cutout.png") — stable across location moves, matches style.itemNames
-    val imagesByName = remember(itemsById) { itemsById.values.associateBy { it.name } }
+
+    // imagesByName: filtered to the selected location (or all locations when ALL_LOCATIONS_ID).
+    // Used for the "all items loaded" gate — styles with items at other locations are hidden when
+    // a specific location is selected.
+    val locationFolderId = remember(activeLocationId, locations) {
+        locations.find { it.id == activeLocationId }?.folderId
+    }
+    val imagesByName = remember(items, locationFolderId, activeLocationId) {
+        val filtered = if (activeLocationId == LocationViewModel.ALL_LOCATIONS_ID || locationFolderId == null)
+            items
+        else
+            items.filter { it.folderId == locationFolderId }
+        filtered.associateBy { it.name }
+    }
 
     var selectedTags by remember { mutableStateOf(emptyMap<String, Set<String>>()) }
     var sortBy by remember { mutableStateOf(StyleSortOption.DATE_DESC) }
-    val filterByLocation = activeLocationId != LocationViewModel.ALL_LOCATIONS_ID
 
     val tagCategories = remember(styles, itemsById) { styles.styleTagCategories(itemsById) }
 
-    // OR within each category, AND across categories; a style matches if any of its items satisfies each active filter.
-    // When a specific location is active, styles with any item not at that location are hidden.
-    // Uses itemNames (Drive filenames) for the availability check because itemIds are re-resolved per-folder
-    // on load — items at other locations are dropped from itemIds and would be invisible to an ID-based check.
-    val filteredStyles = remember(styles, selectedTags, imagesByName, filterByLocation) {
+    // A style is shown only when ALL its items are loaded for the current location filter.
+    // imagesByName already reflects the active location so this check enforces the filter naturally.
+    val filteredStyles = remember(styles, selectedTags, imagesByName) {
         val activeFilters = selectedTags.filter { (_, tags) -> tags.isNotEmpty() }
         styles.filter { style ->
-            if (filterByLocation) {
-                val away = if (style.itemNames.isNotEmpty()) {
-                    style.itemNames.any { it !in imagesByName }
-                } else {
-                    style.itemIds.any { id -> !itemsById.containsKey(id) }
-                }
-                if (away) return@filter false
+            val allLoaded = if (style.itemNames.isNotEmpty()) {
+                style.itemNames.all { it in imagesByName }
+            } else {
+                style.itemIds.isNotEmpty() && style.itemIds.all { id -> id in itemsById }
             }
+            if (!allLoaded) return@filter false
             if (activeFilters.isEmpty()) return@filter true
             activeFilters.all { (categoryLabel, catTags) ->
                 style.itemIds.any { id ->
@@ -735,10 +753,7 @@ private fun StyleCard(
                 )
             }
             val styleItems = style.itemIds.mapNotNull { itemsById[it] }
-            val imageNames = remember(itemsById) { itemsById.values.map { it.name }.toSet() }
-            val awayCount = if (style.itemNames.isEmpty()) 0
-                            else style.itemNames.count { it !in imageNames }
-            if (styleItems.isEmpty() && awayCount == 0) {
+            if (styleItems.isEmpty()) {
                 Text(
                     stringResource(R.string.styles_missing_items),
                     style = MaterialTheme.typography.bodySmall,
@@ -762,24 +777,6 @@ private fun StyleCard(
                             contentScale = ContentScale.Crop,
                         )
                     }
-                }
-            }
-            if (awayCount > 0) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                ) {
-                    Icon(
-                        Icons.Default.Place,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.tertiary,
-                        modifier = Modifier.size(13.dp),
-                    )
-                    Text(
-                        stringResource(R.string.styles_items_away, awayCount),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.tertiary,
-                    )
                 }
             }
             // Bottom action row: Edit (left) | Wear today (right) — hidden in selection mode

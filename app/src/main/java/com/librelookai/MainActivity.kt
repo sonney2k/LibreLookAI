@@ -110,14 +110,17 @@ class MainActivity : ComponentActivity() {
                     val locationList = locationState.locations
                     val activeFolderId = locationList.find { it.id == activeLocationId }?.folderId
                     LaunchedEffect(activeLocationId, locationList) {
+                        val folderIds = locationList.map { it.folderId }
+                        // Styles always loads from ALL locations — never filtered by the settings default.
+                        stylesViewModel.setAllLocations(folderIds)
+                        // Track which folder new styles should be saved to.
+                        val saveTarget = activeFolderId ?: folderIds.firstOrNull()
+                        if (saveTarget != null) stylesViewModel.updateSaveFolder(saveTarget)
                         if (activeLocationId == LocationViewModel.ALL_LOCATIONS_ID) {
-                            val folderIds = locationList.map { it.folderId }
                             wardrobeViewModel.setAllLocations(folderIds)
-                            stylesViewModel.setAllLocations(folderIds)
                         } else {
                             activeFolderId?.let { folderId ->
                                 wardrobeViewModel.setLocation(folderId)
-                                stylesViewModel.setLocation(folderId)
                                 outfitsViewModel.setLocation(folderId)
                             }
                         }

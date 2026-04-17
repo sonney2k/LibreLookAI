@@ -30,6 +30,8 @@ data class NewStyleSuggestion(
 
 data class StylesUiState(
     val styles: List<Style> = emptyList(),
+    /** All wardrobe images across all locations, for resolving style item icons. */
+    val wardrobeImages: List<DriveImage> = emptyList(),
     val isLoading: Boolean = false,
     val isCreating: Boolean = false,
     /** True when the new style-editing view (not the old item-picker) is open. */
@@ -69,9 +71,16 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
     private val gson = Gson()
     private var folderId: String? = null
     private var allFolderIds: List<String>? = null
+    /** Folder to save new styles into; set independently of load scope. */
+    private var saveFolderId: String? = null
 
     private val _state = MutableStateFlow(StylesUiState())
     val state: StateFlow<StylesUiState> = _state.asStateFlow()
+
+    /** Called by MainActivity to inform which folder newly created styles should be saved to. */
+    fun updateSaveFolder(folderId: String) {
+        saveFolderId = folderId
+    }
 
     fun setLocation(newFolderId: String) {
         if (folderId == newFolderId && allFolderIds == null) return
@@ -85,8 +94,49 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
         if (folderId == null && allFolderIds?.toSet() == folderIds.toSet()) return
         folderId = null
         allFolderIds = folderIds.toList()
-        _state.update { StylesUiState(isLoading = true) }
+        _state.update { StylesUiState(isLoading = true, wardrobeImages = readWardrobeImagesFromCache(folderIds)) }
         loadStyles()
+    }
+
+    // ---------- Wardrobe image cache (all locations, disk-only) ----------
+
+    /**
+     * Reads wardrobe disk caches for all given folder IDs and returns a flat list of
+     * [DriveImage] entries that have a locally cached file.  This is a pure disk read —
+     * no network calls — so it's safe to call from the main thread or from [setAllLocations].
+     */
+    private fun readWardrobeImagesFromCache(folderIds: List<String>): List<DriveImage> {
+        val filesDir = getApplication<Application>().filesDir
+        return folderIds.flatMap { fid ->
+            val cacheFile = java.io.File(filesDir, "wardrobe_cache_${fid}.json")
+            if (!cacheFile.exists()) return@flatMap emptyList()
+            runCatching {
+                val cache = gson.fromJson(cacheFile.readText(), LocalCache::class.java)
+                cache.items.mapNotNull { entry ->
+                    drive.cachedFile(entry.driveId)?.let { f ->
+                        DriveImage(
+                            driveId = entry.driveId,
+                            localPath = f.absolutePath,
+                            name = entry.name,
+                            tags = entry.tags,
+                            originalDriveId = entry.originalDriveId,
+                            sidecarDriveId = entry.sidecarDriveId,
+                            folderId = fid,
+                        )
+                    }
+                }
+            }.getOrDefault(emptyList())
+        }
+    }
+
+    /**
+     * Re-reads wardrobe disk caches and updates [StylesUiState.wardrobeImages].
+     * Call this after wardrobe Drive sync completes so style cards show fresh images.
+     */
+    fun refreshWardrobeImages() {
+        val folderIds = allFolderIds ?: folderId?.let { listOf(it) } ?: return
+        val images = readWardrobeImagesFromCache(folderIds)
+        _state.update { it.copy(wardrobeImages = images) }
     }
 
     // ---------- Load ----------
@@ -296,7 +346,7 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
                 s.editingStyle?.name ?: "Style ${s.styles.size + 1}"
             }
             val description = s.draftStyleDescription.trim()
-            val id = folderId ?: return@launch
+            val id = saveFolderId ?: folderId ?: return@launch
 
             // Fetch fresh file listing to populate stable itemNames (portable across account copies)
             val idToName = drive.listFiles(id).associate { it.id to it.name }
@@ -351,7 +401,7 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
     ) {
         if (itemIds.isEmpty()) return
         viewModelScope.launch {
-            val id = folderId ?: run { onDone(false); return@launch }
+            val id = saveFolderId ?: folderId ?: run { onDone(false); return@launch }
             val idToName = drive.listFiles(id).associate { it.id to it.name }
             val itemNames = itemIds.mapNotNull { idToName[it] }
             val updated = _state.value.styles + Style(

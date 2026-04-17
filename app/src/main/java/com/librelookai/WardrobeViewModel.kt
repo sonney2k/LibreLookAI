@@ -49,6 +49,7 @@ data class WardrobeUiState(
     val view: WardrobeView = WardrobeView.GRID,
     val images: List<DriveImage> = emptyList(),
     val isLoading: Boolean = false,
+    val isSyncing: Boolean = false,
     val isProcessing: Boolean = false,
     val isUploading: Boolean = false,
     val isMoving: Boolean = false,
@@ -114,14 +115,14 @@ private data class WardrobeMetadata(val items: List<WardrobeItemMeta> = emptyLis
 // ---------- Local disk cache (instant startup, no network) ----------
 
 /** Full DriveImage snapshot stored on device for zero-latency startup. */
-private data class LocalCacheEntry(
+data class LocalCacheEntry(
     val driveId: String,
     val name: String,
     val tags: ClothingTags?,
     val originalDriveId: String? = null,
     val sidecarDriveId: String? = null,
 )
-private data class LocalCache(val items: List<LocalCacheEntry> = emptyList())
+data class LocalCache(val items: List<LocalCacheEntry> = emptyList())
 
 private data class PendingJob(val driveId: String, val folderId: String)
 
@@ -608,8 +609,9 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 }
                 if (cachedAll.isNotEmpty()) _state.update { it.copy(images = cachedAll, isLoading = false) }
                 // Phase 2 — network: skip when offline
+                _state.update { it.copy(isSyncing = true) }
                 if (!getApplication<android.app.Application>().isNetworkAvailable()) {
-                    _state.update { it.copy(isLoading = false) }
+                    _state.update { it.copy(isLoading = false, isSyncing = false) }
                     return@launch
                 }
                 runCatching {
@@ -682,10 +684,10 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     }
                     allFresh + pendingRaw
                 }.onSuccess { images ->
-                    _state.update { it.copy(images = images, isLoading = false, syncTotal = 0, syncDone = 0) }
+                    _state.update { it.copy(images = images, isLoading = false, syncTotal = 0, syncDone = 0, isSyncing = false) }
                 }.onFailure { e ->
                     _state.update { s ->
-                        s.copy(isLoading = false, syncTotal = 0, syncDone = 0, error = if (s.images.isEmpty()) e.message else null)
+                        s.copy(isLoading = false, syncTotal = 0, syncDone = 0, isSyncing = false, error = if (s.images.isEmpty()) e.message else null)
                     }
                 }
                 return@launch
@@ -715,8 +717,9 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             }
 
             // Phase 2 — background sync: skip when offline
+            _state.update { it.copy(isSyncing = true) }
             if (!getApplication<android.app.Application>().isNetworkAvailable()) {
-                _state.update { it.copy(isLoading = false) }
+                _state.update { it.copy(isLoading = false, isSyncing = false) }
                 return@launch
             }
 
@@ -815,12 +818,12 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
                 freshImages + pendingRaw
             }.onSuccess { images ->
-                _state.update { it.copy(images = images, isLoading = false, syncTotal = 0, syncDone = 0) }
+                _state.update { it.copy(images = images, isLoading = false, syncTotal = 0, syncDone = 0, isSyncing = false) }
                 saveLocalCache(id, images)
             }.onFailure { e ->
                 // Don't overwrite cached items already shown with an error banner
                 _state.update { s ->
-                    s.copy(isLoading = false, syncTotal = 0, syncDone = 0, error = if (s.images.isEmpty()) e.message else null)
+                    s.copy(isLoading = false, syncTotal = 0, syncDone = 0, isSyncing = false, error = if (s.images.isEmpty()) e.message else null)
                 }
             }
         }
