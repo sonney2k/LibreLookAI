@@ -422,17 +422,15 @@ private fun StyleListScreen(
                 HorizontalDivider()
             }
 
-            // ---- Tag filter chips (only when not in selection mode and there's something to show) ----
-            if (styles.isNotEmpty() && !isSelectionMode) {
-                TagFilterBar(
-                    tagCategories = tagCategories,
-                    selectedTags = selectedTags,
-                    onTagsChanged = { selectedTags = it },
-                    locations = locations,
-                    activeLocationId = activeLocationId,
-                    onSetActiveLocation = onSetActiveLocation,
-                )
-            }
+            // ---- Tag filter chips ----
+            TagFilterBar(
+                tagCategories = tagCategories,
+                selectedTags = selectedTags,
+                onTagsChanged = { selectedTags = it },
+                locations = locations,
+                activeLocationId = activeLocationId,
+                onSetActiveLocation = onSetActiveLocation,
+            )
 
             when {
                 isLoading -> Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
