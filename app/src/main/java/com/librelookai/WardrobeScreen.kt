@@ -399,11 +399,12 @@ internal fun TagFilterBar(
     locations: List<Location> = emptyList(),
     activeLocationId: String = "",
     onSetActiveLocation: ((String) -> Unit)? = null,
+    trailingChip: (@Composable () -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
     var expandedCategory by remember { mutableStateOf<String?>(null) }
     val showLocationChip = locations.size > 1 && onSetActiveLocation != null
-    if (!showLocationChip && tagCategories.isEmpty()) return
+    if (!showLocationChip && tagCategories.isEmpty() && trailingChip == null) return
     val locationDropdownKey = "__location__"
     LazyRow(
         modifier = modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
@@ -513,6 +514,9 @@ internal fun TagFilterBar(
         }
         if (selectedTags.values.any { it.isNotEmpty() }) {
             item { TextButton(onClick = { onTagsChanged(emptyMap()) }) { Text(stringResource(R.string.action_clear)) } }
+        }
+        if (trailingChip != null) {
+            item { trailingChip() }
         }
     }
 }

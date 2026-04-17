@@ -300,6 +300,7 @@
     <string name="styles_worn_today">Worn today!</string>
     <string name="styles_missing_items">Items no longer in wardrobe</string>
     <string name="styles_items_away">%d item(s) at another location</string>
+    <string name="styles_filter_available_only">Available only</string>
     <string name="styles_suggested_title">Suggested for today</string>
     <string name="styles_composed_title">Composed for you</string>
     <string name="styles_name_dialog_title">Name this style</string>

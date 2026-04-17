@@ -332,6 +332,7 @@ private fun StyleListScreen(
 
     var selectedTags by remember { mutableStateOf(emptyMap<String, Set<String>>()) }
     var sortBy by remember { mutableStateOf(StyleSortOption.DATE_DESC) }
+    var availableOnly by remember { mutableStateOf(false) }
 
     val tagCategories = remember(styles, itemsById) { styles.styleTagCategories(itemsById) }
 
@@ -349,14 +350,17 @@ private fun StyleListScreen(
         }
     }
 
-    val displayedStyles = remember(filteredStyles, sortBy, wearCounts) {
+    val displayedStyles = remember(filteredStyles, sortBy, wearCounts, availableOnly, itemsById) {
+        val preFiltered = if (availableOnly) {
+            filteredStyles.filter { style -> style.itemIds.all { id -> itemsById.containsKey(id) } }
+        } else filteredStyles
         when (sortBy) {
-            StyleSortOption.DATE_DESC  -> filteredStyles
-            StyleSortOption.DATE_ASC   -> filteredStyles.reversed()
-            StyleSortOption.POPULARITY -> filteredStyles.sortedByDescending { wearCounts[it.id] ?: 0 }
-            StyleSortOption.NAME_AZ    -> filteredStyles.sortedBy { it.name.lowercase() }
-            StyleSortOption.NAME_ZA    -> filteredStyles.sortedByDescending { it.name.lowercase() }
-            StyleSortOption.ITEM_COUNT -> filteredStyles.sortedByDescending { it.itemIds.size }
+            StyleSortOption.DATE_DESC  -> preFiltered
+            StyleSortOption.DATE_ASC   -> preFiltered.reversed()
+            StyleSortOption.POPULARITY -> preFiltered.sortedByDescending { wearCounts[it.id] ?: 0 }
+            StyleSortOption.NAME_AZ    -> preFiltered.sortedBy { it.name.lowercase() }
+            StyleSortOption.NAME_ZA    -> preFiltered.sortedByDescending { it.name.lowercase() }
+            StyleSortOption.ITEM_COUNT -> preFiltered.sortedByDescending { it.itemIds.size }
         }
     }
 
@@ -430,6 +434,18 @@ private fun StyleListScreen(
                 locations = locations,
                 activeLocationId = activeLocationId,
                 onSetActiveLocation = onSetActiveLocation,
+                trailingChip = if (activeLocationId != LocationViewModel.ALL_LOCATIONS_ID) {
+                    {
+                        FilterChip(
+                            selected = availableOnly,
+                            onClick = { availableOnly = !availableOnly },
+                            label = { Text(stringResource(R.string.styles_filter_available_only)) },
+                            leadingIcon = if (availableOnly) {
+                                { Icon(Icons.Default.Check, null, Modifier.size(14.dp)) }
+                            } else null,
+                        )
+                    }
+                } else null,
             )
 
             when {
@@ -720,12 +736,12 @@ private fun StyleCard(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            val styleItems = style.itemIds.mapNotNull { itemsById[it] }
-            val imageNames = remember(itemsById) { itemsById.values.map { it.name }.toSet() }
-            val awayCount = remember(style.itemNames, imageNames) {
-                if (style.itemNames.isEmpty()) 0 else style.itemNames.count { it !in imageNames }
+            // All items in the style: available ones resolved from itemsById, unavailable shown as placeholders
+            val allStyleEntries = remember(style.itemIds, style.itemNames, itemsById) {
+                style.itemIds.mapIndexed { idx, id -> Triple(id, itemsById[id], style.itemNames.getOrNull(idx)) }
             }
-            if (styleItems.isEmpty() && awayCount == 0) {
+            val awayCount = allStyleEntries.count { (_, img, _) -> img == null }
+            if (allStyleEntries.isEmpty()) {
                 Text(
                     stringResource(R.string.styles_missing_items),
                     style = MaterialTheme.typography.bodySmall,
@@ -733,21 +749,37 @@ private fun StyleCard(
                 )
             } else {
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    items(styleItems, key = { it.driveId }) { image ->
-                        val ctx = LocalContext.current
-                        AsyncImage(
-                            model = remember(image.driveId, image.version) {
-                                ImageRequest.Builder(ctx)
-                                    .data(image.localPath)
-                                    .memoryCacheKey("${image.driveId}_${image.version}")
-                                    .build()
-                            },
-                            contentDescription = image.name,
-                            modifier = Modifier
-                                .size(72.dp)
-                                .clickable { viewerImage = image },
-                            contentScale = ContentScale.Crop,
-                        )
+                    items(allStyleEntries, key = { (id, _, _) -> id }) { (_, image, name) ->
+                        if (image != null) {
+                            val ctx = LocalContext.current
+                            AsyncImage(
+                                model = remember(image.driveId, image.version) {
+                                    ImageRequest.Builder(ctx)
+                                        .data(image.localPath)
+                                        .memoryCacheKey("${image.driveId}_${image.version}")
+                                        .build()
+                                },
+                                contentDescription = image.name,
+                                modifier = Modifier
+                                    .size(72.dp)
+                                    .clickable { viewerImage = image },
+                                contentScale = ContentScale.Crop,
+                            )
+                        } else {
+                            Box(
+                                modifier = Modifier
+                                    .size(72.dp)
+                                    .background(MaterialTheme.colorScheme.surfaceVariant),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Icon(
+                                    Icons.Default.Place,
+                                    contentDescription = name,
+                                    tint = MaterialTheme.colorScheme.tertiary,
+                                    modifier = Modifier.size(24.dp),
+                                )
+                            }
+                        }
                     }
                 }
             }
