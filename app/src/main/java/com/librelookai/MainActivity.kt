@@ -126,6 +126,15 @@ class MainActivity : ComponentActivity() {
                         }
                     }
 
+                    // Push default import folder to WardrobeViewModel whenever locations or prefs change
+                    val defaultImportLocationId = profileState.preferences.defaultImportLocationId
+                    LaunchedEffect(defaultImportLocationId, locationList) {
+                        val folderId = if (defaultImportLocationId.isNotEmpty()) {
+                            locationList.find { it.id == defaultImportLocationId }?.folderId
+                        } else null
+                        wardrobeViewModel.setDefaultImportFolderId(folderId)
+                    }
+
                     // Keep wardrobe tagging language in sync with the profile language
                     val geminiLanguage = AppLanguage.toGeminiName(profileState.preferences.language)
                     LaunchedEffect(geminiLanguage) {
@@ -183,6 +192,7 @@ class MainActivity : ComponentActivity() {
                             },
                         ) { innerPadding ->
                             Box(Modifier.fillMaxSize()) {
+                                val onSettingsClick = { selectedTab = 5 }
                                 when (selectedTab) {
                                     0 -> StylesScreen(
                                         stylesViewModel = stylesViewModel,
@@ -191,6 +201,7 @@ class MainActivity : ComponentActivity() {
                                         profileViewModel = profileViewModel,
                                         weatherViewModel = weatherViewModel,
                                         locationViewModel = locationViewModel,
+                                        onSettingsClick = onSettingsClick,
                                         modifier = Modifier.padding(innerPadding),
                                     )
                                     1 -> WardrobeScreen(
@@ -214,6 +225,7 @@ class MainActivity : ComponentActivity() {
                                             selectedTab = 0
                                         },
                                         dismissViewerTrigger = dismissWardrobeViewerTrigger,
+                                        onSettingsClick = onSettingsClick,
                                         modifier = Modifier.padding(innerPadding),
                                     )
                                     2 -> CalendarScreen(
@@ -225,6 +237,7 @@ class MainActivity : ComponentActivity() {
                                             stylesViewModel.startEditing(style)
                                             selectedTab = 0
                                         },
+                                        onSettingsClick = onSettingsClick,
                                         modifier = Modifier.padding(innerPadding),
                                     )
                                     3 -> TravelScreen(
@@ -233,12 +246,14 @@ class MainActivity : ComponentActivity() {
                                         profileViewModel = profileViewModel,
                                         stylesViewModel = stylesViewModel,
                                         locationViewModel = locationViewModel,
+                                        onSettingsClick = onSettingsClick,
                                         modifier = Modifier.padding(innerPadding),
                                     )
                                     4 -> WardrobeGapScreen(
                                         gapViewModel = gapViewModel,
                                         wardrobeViewModel = wardrobeViewModel,
                                         profileViewModel = profileViewModel,
+                                        onSettingsClick = onSettingsClick,
                                         modifier = Modifier.padding(innerPadding),
                                     )
                                     5 -> SettingsScreen(
@@ -246,6 +261,7 @@ class MainActivity : ComponentActivity() {
                                         wardrobeViewModel = wardrobeViewModel,
                                         locationViewModel = locationViewModel,
                                         creditsViewModel = creditsViewModel,
+                                        onBack = { selectedTab = 1 },
                                         modifier = Modifier.padding(innerPadding),
                                     )
                                 }
@@ -285,13 +301,14 @@ fun AppScreenHeader(
     modifier: Modifier = Modifier,
     leadingIcon: ImageVector? = null,
     trailingContent: @Composable (() -> Unit)? = null,
+    onSettingsClick: (() -> Unit)? = null,
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
             .padding(
                 start = if (leadingIcon != null) 12.dp else 16.dp,
-                end = if (trailingContent != null) 4.dp else 16.dp,
+                end = if (trailingContent != null || onSettingsClick != null) 4.dp else 16.dp,
                 top = 8.dp,
                 bottom = 8.dp,
             ),
@@ -314,6 +331,15 @@ fun AppScreenHeader(
             modifier = Modifier.weight(1f),
         )
         trailingContent?.invoke()
+        if (onSettingsClick != null) {
+            androidx.compose.material3.IconButton(onClick = onSettingsClick) {
+                Icon(
+                    Icons.Default.Settings,
+                    contentDescription = "Settings",
+                    modifier = Modifier.size(22.dp),
+                )
+            }
+        }
     }
     HorizontalDivider()
 }
@@ -331,7 +357,6 @@ private fun AppNavBar(
         NavItem(R.string.nav_calendar, Icons.Default.CalendarMonth),
         NavItem(R.string.nav_travel,   Icons.Default.FlightTakeoff),
         NavItem(R.string.nav_gaps,     Icons.Default.TipsAndUpdates),
-        NavItem(R.string.nav_settings, Icons.Default.Settings),
     )
     NavigationBar {
         items.forEachIndexed { index, item ->

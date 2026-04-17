@@ -42,6 +42,8 @@
     <string name="settings_tab_data">Data</string>
     <string name="settings_tab_credits">Credits</string>
     <string name="settings_language">Language</string>
+    <string name="settings_default_import_location">Default import location</string>
+    <string name="settings_default_import_location_none">Current location</string>
     <string name="settings_gender">Gender</string>
     <string name="settings_gender_select">Select…</string>
     <string name="settings_gender_prefer_not">Prefer not to say</string>

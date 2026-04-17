@@ -7,4 +7,6 @@ data class UserPreferences(
     val preferences: String = "",
     /** Display language for UI and AI responses. One of [AppLanguage.options]. */
     val language: String = AppLanguage.ENGLISH,
+    /** Location ID (from [Location.id]) new photos are always imported into. Empty = use current. */
+    val defaultImportLocationId: String = "",
 )

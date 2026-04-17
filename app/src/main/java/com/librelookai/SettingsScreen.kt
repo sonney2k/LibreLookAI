@@ -85,6 +85,7 @@ fun SettingsScreen(
     wardrobeViewModel: WardrobeViewModel = viewModel(),
     locationViewModel: LocationViewModel = viewModel(),
     creditsViewModel: CreditsViewModel = viewModel(),
+    onBack: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val profileState  by profileViewModel.state.collectAsState()
@@ -118,7 +119,14 @@ fun SettingsScreen(
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
 
     Column(modifier = modifier.fillMaxSize()) {
-        AppScreenHeader(title = stringResource(R.string.nav_settings))
+        AppScreenHeader(
+            title = stringResource(R.string.nav_settings),
+            trailingContent = {
+                androidx.compose.material3.IconButton(onClick = onBack) {
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                }
+            },
+        )
         TabRow(selectedTabIndex = selectedTab) {
             Tab(selected = selectedTab == 0, onClick = { selectedTab = 0 }, text = { Text(stringResource(R.string.settings_tab_profile)) })
             Tab(selected = selectedTab == 1, onClick = { selectedTab = 1 }, text = { Text(stringResource(R.string.settings_tab_data)) })
@@ -148,6 +156,7 @@ fun SettingsScreen(
                     ApiKeyStore.set(context, key)
                     currentApiKey = key
                 },
+                locations = locationState.locations,
             )
             1 -> DataTab(
                 wardrobeState = wardrobeState,
@@ -211,6 +220,7 @@ private fun ProfileTab(
     onClearError: () -> Unit,
     onSaveApiKey: (String) -> Unit,
     currentApiKey: String,
+    locations: List<Location> = emptyList(),
 ) {
     val genderOptions = listOf(
         stringResource(R.string.settings_gender_prefer_not),
@@ -220,19 +230,21 @@ private fun ProfileTab(
         stringResource(R.string.settings_gender_other),
     )
 
-    var gender      by remember(state.preferences) { mutableStateOf(state.preferences.gender) }
-    var yearOfBirth by remember(state.preferences) { mutableStateOf(state.preferences.yearOfBirth?.toString() ?: "") }
-    var preferences by remember(state.preferences) { mutableStateOf(state.preferences.preferences) }
-    var language    by remember(state.preferences) { mutableStateOf(state.preferences.language) }
+    var gender                  by remember(state.preferences) { mutableStateOf(state.preferences.gender) }
+    var yearOfBirth             by remember(state.preferences) { mutableStateOf(state.preferences.yearOfBirth?.toString() ?: "") }
+    var preferences             by remember(state.preferences) { mutableStateOf(state.preferences.preferences) }
+    var language                by remember(state.preferences) { mutableStateOf(state.preferences.language) }
+    var defaultImportLocationId by remember(state.preferences) { mutableStateOf(state.preferences.defaultImportLocationId) }
     var apiKey      by remember(currentApiKey) { mutableStateOf(currentApiKey) }
     var apiKeyVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(state.isLoading) {
         if (!state.isLoading) {
-            gender      = state.preferences.gender
-            yearOfBirth = state.preferences.yearOfBirth?.toString() ?: ""
-            preferences = state.preferences.preferences
-            language    = state.preferences.language
+            gender                  = state.preferences.gender
+            yearOfBirth             = state.preferences.yearOfBirth?.toString() ?: ""
+            preferences             = state.preferences.preferences
+            language                = state.preferences.language
+            defaultImportLocationId = state.preferences.defaultImportLocationId
         }
     }
     LaunchedEffect(currentApiKey) { apiKey = currentApiKey }
@@ -273,6 +285,43 @@ private fun ProfileTab(
                                 text = { Text(option) },
                                 onClick = { language = option; languageExpanded = false },
                             )
+                        }
+                    }
+                }
+
+                // --- Default import location ---
+                if (locations.isNotEmpty()) {
+                    var importLocExpanded by remember { mutableStateOf(false) }
+                    val selectedLocationName = locations.find { it.id == defaultImportLocationId }?.name
+                        ?: stringResource(R.string.settings_default_import_location_none)
+                    ExposedDropdownMenuBox(
+                        expanded = importLocExpanded,
+                        onExpandedChange = { importLocExpanded = it },
+                    ) {
+                        OutlinedTextField(
+                            value = selectedLocationName,
+                            onValueChange = {},
+                            readOnly = true,
+                            label = { Text(stringResource(R.string.settings_default_import_location)) },
+                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = importLocExpanded) },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .menuAnchor(MenuAnchorType.PrimaryNotEditable),
+                        )
+                        ExposedDropdownMenu(
+                            expanded = importLocExpanded,
+                            onDismissRequest = { importLocExpanded = false },
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.settings_default_import_location_none)) },
+                                onClick = { defaultImportLocationId = ""; importLocExpanded = false },
+                            )
+                            locations.forEach { loc ->
+                                DropdownMenuItem(
+                                    text = { Text(loc.name) },
+                                    onClick = { defaultImportLocationId = loc.id; importLocExpanded = false },
+                                )
+                            }
                         }
                     }
                 }
@@ -369,10 +418,11 @@ private fun ProfileTab(
                         onSaveApiKey(apiKey)
                         onSave(
                             UserPreferences(
-                                gender      = gender,
-                                yearOfBirth = yearOfBirth.toIntOrNull(),
-                                preferences = preferences,
-                                language    = language,
+                                gender                  = gender,
+                                yearOfBirth             = yearOfBirth.toIntOrNull(),
+                                preferences             = preferences,
+                                language                = language,
+                                defaultImportLocationId = defaultImportLocationId,
                             )
                         )
                     },

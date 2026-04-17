@@ -136,6 +136,7 @@ fun WardrobeScreen(
     onCreateStyleFromSelection: (Set<String>) -> Unit = {},
     onComposeStyleFromSelection: (Set<String>) -> Unit = {},
     dismissViewerTrigger: Int = 0,
+    onSettingsClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val state         by viewModel.state.collectAsState()
@@ -205,6 +206,7 @@ fun WardrobeScreen(
             isLocationLoading = locationState.isLoading,
             locationError = locationState.error,
             dismissViewerTrigger = dismissViewerTrigger,
+            onSettingsClick = onSettingsClick,
             modifier = modifier,
         )
         WardrobeView.CAPTURE -> CaptureScreen(
@@ -450,7 +452,7 @@ internal fun TagFilterBar(
                                 expandedCategory = null
                             },
                         )
-                        locations.forEach { loc ->
+                        locations.sortedBy { it.name }.forEach { loc ->
                             val checked = loc.id == activeLocationId
                             DropdownMenuItem(
                                 text = {
@@ -546,6 +548,7 @@ private fun GridContent(
     onDismissBatteryExemption: () -> Unit = {},
     processingImageId: String?,
     dismissViewerTrigger: Int = 0,
+    onSettingsClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     var cellSizeDp by rememberSaveable { mutableFloatStateOf(120f) }
@@ -602,6 +605,7 @@ private fun GridContent(
                         modifier = Modifier.padding(end = 4.dp),
                     )
                 },
+                onSettingsClick = onSettingsClick,
             )
             // ---- Tag filter chips ----
             TagFilterBar(

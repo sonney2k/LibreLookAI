@@ -84,6 +84,7 @@ fun CalendarScreen(
     wardrobeViewModel: WardrobeViewModel = viewModel(),
     locationViewModel: LocationViewModel = viewModel(),
     onEditStyle: (Style) -> Unit = {},
+    onSettingsClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val outfitsState by outfitsViewModel.state.collectAsState()
@@ -146,7 +147,7 @@ fun CalendarScreen(
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
 
     Column(modifier = modifier.fillMaxSize()) {
-        AppScreenHeader(title = stringResource(R.string.nav_calendar))
+        AppScreenHeader(title = stringResource(R.string.nav_calendar), onSettingsClick = onSettingsClick)
         // ---- Location filter (only shown when multiple locations exist) ----
         if (locationState.locations.size > 1) {
             LazyRow(

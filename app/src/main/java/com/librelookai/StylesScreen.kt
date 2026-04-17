@@ -134,6 +134,7 @@ fun StylesScreen(
     profileViewModel: ProfileViewModel = viewModel(),
     weatherViewModel: WeatherViewModel = viewModel(),
     locationViewModel: LocationViewModel = viewModel(),
+    onSettingsClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val stylesState  by stylesViewModel.state.collectAsState()
@@ -215,6 +216,7 @@ fun StylesScreen(
                         { preset -> stylesViewModel.submitPresetComposition(preset, profileState.preferences, weatherState.data, wardrobeState.images) }
                     } else null,
                     isRefining = stylesState.isPredicting || stylesState.isComposing,
+                    locations = locationState.locations,
                 )
             }
             stylesState.isCreating -> {
@@ -278,6 +280,7 @@ fun StylesScreen(
                         )
                     },
                     onClearCompositionError = stylesViewModel::clearNewSuggestion,
+                    onSettingsClick = onSettingsClick,
                 )
             }
         }
@@ -338,6 +341,7 @@ private fun StyleListScreen(
     onClearPredictionError: () -> Unit,
     onComposeStyle: () -> Unit,
     onClearCompositionError: () -> Unit,
+    onSettingsClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     // itemsById: ALL locations — used to resolve item IDs to images for card display and tag filters.
@@ -429,6 +433,7 @@ private fun StyleListScreen(
                         )
                     }
                 } else null,
+                onSettingsClick = onSettingsClick,
             )
 
             // ---- Selection bar ----
@@ -749,8 +754,12 @@ private fun StyleCard(
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             val locationName = if (locations.size > 1) {
-                remember(style.folderId, locations) {
-                    locations.find { it.folderId == style.folderId }?.name
+                remember(style.itemIds, itemsById, locations) {
+                    val folderIds = style.itemIds
+                        .mapNotNull { itemsById[it]?.folderId?.takeIf { f -> f.isNotEmpty() } }
+                        .toSet()
+                    val names = folderIds.mapNotNull { fid -> locations.find { it.folderId == fid }?.name }
+                    names.distinct().sorted().joinToString(", ").takeIf { it.isNotBlank() }
                 }
             } else null
             Row(
@@ -803,19 +812,46 @@ private fun StyleCard(
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     items(styleItems, key = { it.driveId }) { image ->
                         val ctx = LocalContext.current
-                        AsyncImage(
-                            model = remember(image.driveId, image.version) {
-                                ImageRequest.Builder(ctx)
-                                    .data(image.localPath)
-                                    .memoryCacheKey("${image.driveId}_${image.version}")
-                                    .build()
-                            },
-                            contentDescription = image.name,
-                            modifier = Modifier
-                                .size(72.dp)
-                                .clickable { viewerImage = image },
-                            contentScale = ContentScale.Crop,
-                        )
+                        val itemLocName = if (locations.size > 1)
+                            remember(image.folderId, locations) {
+                                locations.find { it.folderId == image.folderId }?.name
+                            }
+                        else null
+                        Box(modifier = Modifier.size(72.dp)) {
+                            AsyncImage(
+                                model = remember(image.driveId, image.version) {
+                                    ImageRequest.Builder(ctx)
+                                        .data(image.localPath)
+                                        .memoryCacheKey("${image.driveId}_${image.version}")
+                                        .build()
+                                },
+                                contentDescription = image.name,
+                                modifier = Modifier.fillMaxSize().clickable { viewerImage = image },
+                                contentScale = ContentScale.Crop,
+                            )
+                            if (itemLocName != null) {
+                                Box(
+                                    modifier = Modifier
+                                        .align(Alignment.TopEnd)
+                                        .padding(2.dp)
+                                        .background(
+                                            color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.85f),
+                                            shape = MaterialTheme.shapes.extraSmall,
+                                        )
+                                        .padding(horizontal = 3.dp, vertical = 1.dp),
+                                ) {
+                                    Text(
+                                        text = itemLocName,
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        fontSize = 7.sp,
+                                        lineHeight = 9.sp,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -1078,6 +1114,7 @@ private fun StyleEditingView(
     onRefineComposition: (() -> Unit)?,
     onPresetComposition: ((String) -> Unit)?,
     isRefining: Boolean = false,
+    locations: List<Location> = emptyList(),
     modifier: Modifier = Modifier,
 ) {
     BackHandler(onBack = onCancel)
@@ -1250,8 +1287,14 @@ private fun StyleEditingView(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 draftItems.forEach { image ->
+                    val locName = remember(image.folderId, locations) {
+                        if (locations.size > 1)
+                            locations.find { it.folderId == image.folderId }?.name
+                        else null
+                    }
                     StyleEditItemSlot(
                         image = image,
+                        locationName = locName,
                         onTap = { swappingItemId = image.driveId },
                         onRemove = { onRemoveItem(image.driveId) },
                     )
@@ -1318,6 +1361,7 @@ private fun StyleEditingView(
 @Composable
 private fun StyleEditItemSlot(
     image: DriveImage,
+    locationName: String? = null,
     onTap: () -> Unit,
     onRemove: () -> Unit,
 ) {
@@ -1354,17 +1398,40 @@ private fun StyleEditItemSlot(
                 modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp),
             )
         }
-        // Tiny remove button at top-end
-        SmallFloatingActionButton(
-            onClick = onRemove,
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(2.dp)
-                .size(20.dp),
-            containerColor = MaterialTheme.colorScheme.errorContainer,
-            elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 0.dp),
+        // Top-right: remove button + optional location badge stacked vertically
+        Column(
+            modifier = Modifier.align(Alignment.TopEnd).padding(2.dp),
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.spacedBy(2.dp),
         ) {
-            Icon(Icons.Default.Close, contentDescription = "Remove", modifier = Modifier.size(12.dp))
+            SmallFloatingActionButton(
+                onClick = onRemove,
+                modifier = Modifier.size(20.dp),
+                containerColor = MaterialTheme.colorScheme.errorContainer,
+                elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 0.dp),
+            ) {
+                Icon(Icons.Default.Close, contentDescription = "Remove", modifier = Modifier.size(12.dp))
+            }
+            if (locationName != null) {
+                Box(
+                    modifier = Modifier
+                        .background(
+                            color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.85f),
+                            shape = MaterialTheme.shapes.extraSmall,
+                        )
+                        .padding(horizontal = 3.dp, vertical = 1.dp),
+                ) {
+                    Text(
+                        text = locationName,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        fontSize = 7.sp,
+                        lineHeight = 9.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+            }
         }
     }
 }

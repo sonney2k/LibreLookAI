@@ -193,6 +193,8 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     private var allFolderIds: List<String>? = null
     /** Gemini-facing language name (e.g. "English", "German") for label generation. */
     private var geminiLanguage: String = "English"
+    /** When non-null, all new photo imports target this folder instead of the active view folder. */
+    private var defaultImportFolderId: String? = null
 
     /** Serializes all Drive metadata writes to prevent concurrent saves overwriting each other. */
     private val metaMutex = Mutex()
@@ -211,6 +213,9 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun setLanguage(geminiName: String) { geminiLanguage = geminiName }
+
+    /** Set the folder that new photo imports target. Null = fall back to the active view folder. */
+    fun setDefaultImportFolderId(folderId: String?) { defaultImportFolderId = folderId }
 
     fun setLocation(newFolderId: String) {
         if (folderId == newFolderId && allFolderIds == null) return
@@ -1029,7 +1034,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     // ---------- Upload from camera ----------
 
     fun uploadPhoto(rawFile: File) {
-        val id = folderId ?: run {
+        val id = (defaultImportFolderId ?: folderId) ?: run {
             _state.update { it.copy(view = WardrobeView.GRID) }
             return
         }
@@ -1063,7 +1068,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
     fun uploadGalleryPhotos(uris: List<Uri>) {
         if (uris.isEmpty()) return
-        val id = folderId ?: return
+        val id = (defaultImportFolderId ?: folderId) ?: return
         viewModelScope.launch {
             _state.update { it.copy(batchTotal = uris.size, batchDone = 0, isUploading = true, error = null) }
             val cr = getApplication<Application>().contentResolver
@@ -1302,7 +1307,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         replaceExisting: Boolean = false,
         overwriteDuplicates: Boolean = false,
     ) {
-        val id = folderId ?: return
+        val id = (defaultImportFolderId ?: folderId) ?: return
         viewModelScope.launch {
             acquireJobWakeLock()
             try {
@@ -1473,7 +1478,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         replaceExisting: Boolean = false,
         overwriteDuplicates: Boolean = false,
     ) {
-        val id = folderId ?: return
+        val id = (defaultImportFolderId ?: folderId) ?: return
         viewModelScope.launch {
             acquireJobWakeLock()
             try {

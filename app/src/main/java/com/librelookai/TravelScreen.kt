@@ -93,6 +93,7 @@ fun TravelScreen(
     profileViewModel: ProfileViewModel = viewModel(),
     stylesViewModel: StylesViewModel = viewModel(),
     locationViewModel: LocationViewModel = viewModel(),
+    onSettingsClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val state        by travelViewModel.state.collectAsState()
@@ -106,7 +107,7 @@ fun TravelScreen(
     var moveMessage by remember { mutableStateOf<String?>(null) }
 
     Column(modifier = modifier.fillMaxSize()) {
-        AppScreenHeader(title = stringResource(R.string.travel_title))
+        AppScreenHeader(title = stringResource(R.string.travel_title), onSettingsClick = onSettingsClick)
         Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
             contentPadding = PaddingValues(bottom = 24.dp),

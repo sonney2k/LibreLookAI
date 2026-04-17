@@ -53,6 +53,7 @@ fun WardrobeGapScreen(
     gapViewModel: WardrobeGapViewModel = viewModel(),
     wardrobeViewModel: WardrobeViewModel = viewModel(),
     profileViewModel: ProfileViewModel = viewModel(),
+    onSettingsClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val state         by gapViewModel.state.collectAsState()
@@ -63,6 +64,7 @@ fun WardrobeGapScreen(
         AppScreenHeader(
             title = stringResource(R.string.gap_title),
             leadingIcon = Icons.Default.TipsAndUpdates,
+            onSettingsClick = onSettingsClick,
         )
         Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
