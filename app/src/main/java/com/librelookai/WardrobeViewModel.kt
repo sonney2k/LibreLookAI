@@ -1168,34 +1168,33 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             _state.update { it.copy(isUploading = true, selectedIds = emptySet(), error = null) }
 
-            val successfulIds = mutableListOf<String>()
-            for (item in toMove) {
-                // Use the item's own folderId so this works correctly in "All locations" mode
-                val sourceFolderId = item.folderId.ifEmpty { folderId } ?: continue
-                if (sourceFolderId == targetFolderId) { successfulIds.add(item.driveId); continue }
-                runCatching {
-                    // Move cutout — Drive parent-change: keeps same ID, name, and content
-                    drive.moveFile(item.driveId, sourceFolderId, targetFolderId)
-                    // Move original (best-effort)
-                    item.originalDriveId?.let { origId ->
-                        runCatching { drive.moveFile(origId, sourceFolderId, targetFolderId) }
+            // Move all items in parallel; within each item move cutout + original + sidecar in parallel
+            val successfulIds = coroutineScope {
+                toMove.map { item ->
+                    async {
+                        val sourceFolderId = item.folderId.ifEmpty { folderId } ?: return@async null
+                        if (sourceFolderId == targetFolderId) return@async item.driveId
+                        runCatching {
+                            val moveOriginal = item.originalDriveId?.let { origId ->
+                                async { runCatching { drive.moveFile(origId, sourceFolderId, targetFolderId) } }
+                            }
+                            val moveSidecar = item.sidecarDriveId?.let { sId ->
+                                async { runCatching { drive.moveFile(sId, sourceFolderId, targetFolderId) } }
+                            }
+                            drive.moveFile(item.driveId, sourceFolderId, targetFolderId)
+                            moveOriginal?.await()
+                            moveSidecar?.await()
+                        }.onFailure { e ->
+                            _state.update { it.copy(error = e.message) }
+                        }.getOrNull()?.let { item.driveId }
                     }
-                    // Move sidecar (best-effort; it travels with the cutout)
-                    item.sidecarDriveId?.let { sId ->
-                        runCatching { drive.moveFile(sId, sourceFolderId, targetFolderId) }
-                    }
-                    successfulIds.add(item.driveId)
-                }.onFailure { e ->
-                    _state.update { it.copy(error = e.message) }
-                }
+                }.awaitAll().filterNotNull().toSet()
             }
 
             if (successfulIds.isNotEmpty()) {
-                val successSet = successfulIds.toSet()
-                // Update cache for each affected source folder separately
-                val movedItems = toMove.filter { it.driveId in successSet }
+                val movedItems = toMove.filter { it.driveId in successfulIds }
                 val affectedFolderIds = movedItems.map { it.folderId }.filter { it.isNotEmpty() }.toSet()
-                _state.update { s -> s.copy(images = s.images.filter { it.driveId !in successSet }) }
+                _state.update { s -> s.copy(images = s.images.filter { it.driveId !in successfulIds }) }
                 affectedFolderIds.forEach { fid ->
                     saveLocalCache(fid, _state.value.images.filter { it.folderId == fid })
                 }
