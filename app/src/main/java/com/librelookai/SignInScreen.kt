@@ -21,9 +21,16 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun SignInScreen(
     onSignIn: () -> Unit,
-    error: String? = null,
+    signInErrorCode: Int? = null,
     modifier: Modifier = Modifier,
 ) {
+    val errorMessage = when (signInErrorCode) {
+        null -> null
+        10   -> stringResource(R.string.sign_in_error_not_registered)   // DEVELOPER_ERROR
+        7    -> stringResource(R.string.sign_in_error_network)           // NETWORK_ERROR
+        else -> stringResource(R.string.sign_in_error_generic, signInErrorCode)
+    }
+
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -43,10 +50,10 @@ fun SignInScreen(
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        if (error != null) {
+        if (errorMessage != null) {
             Spacer(Modifier.height(16.dp))
             Text(
-                text = error,
+                text = errorMessage,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.error,
             )
