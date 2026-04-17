@@ -98,7 +98,9 @@ import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
@@ -503,6 +505,7 @@ private fun StyleListScreen(
                             StyleCard(
                                 style = style,
                                 itemsById = itemsById,
+                                locations = locations,
                                 isSelected = style.id in selectedStyleIds,
                                 isSelectionMode = isSelectionMode,
                                 onEdit = { onEditStyle(style) },
@@ -698,6 +701,7 @@ private fun StyleSortButton(
 private fun StyleCard(
     style: Style,
     itemsById: Map<String, DriveImage>,
+    locations: List<Location> = emptyList(),
     isSelected: Boolean = false,
     isSelectionMode: Boolean = false,
     onEdit: () -> Unit,
@@ -744,7 +748,43 @@ private fun StyleCard(
             modifier = Modifier.padding(12.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Text(style.name, style = MaterialTheme.typography.titleSmall)
+            val locationName = if (locations.size > 1) {
+                remember(style.folderId, locations) {
+                    locations.find { it.folderId == style.folderId }?.name
+                }
+            } else null
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top,
+            ) {
+                Text(
+                    style.name,
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier.weight(1f),
+                )
+                if (locationName != null) {
+                    Box(
+                        modifier = Modifier
+                            .padding(start = 6.dp)
+                            .background(
+                                color = MaterialTheme.colorScheme.secondaryContainer,
+                                shape = MaterialTheme.shapes.extraSmall,
+                            )
+                            .padding(horizontal = 4.dp, vertical = 1.dp),
+                    ) {
+                        Text(
+                            text = locationName,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            fontSize = 8.sp,
+                            lineHeight = 10.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
+                }
+            }
             if (style.description.isNotBlank()) {
                 Text(
                     style.description,

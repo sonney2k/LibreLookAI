@@ -15,4 +15,6 @@ data class Style(
      */
     val itemNames: List<String> = emptyList(),
     val createdAt: Long = System.currentTimeMillis(),
+    /** Runtime Drive folder ID this style was loaded from. Not persisted to JSON. */
+    @Transient val folderId: String = "",
 )

@@ -770,11 +770,11 @@ private fun GridContent(
                                             modifier = Modifier.fillMaxSize(),
                                             contentScale = ContentScale.Crop,
                                         )
-                                        // Location badge — top-left, only in "All locations" mode
+                                        // Location badge — top-right, only in "All locations" mode
                                         if (itemLocationName != null) {
                                             Box(
                                                 modifier = Modifier
-                                                    .align(Alignment.TopStart)
+                                                    .align(Alignment.TopEnd)
                                                     .padding(3.dp)
                                                     .background(
                                                         color = Color.Black.copy(alpha = 0.45f),

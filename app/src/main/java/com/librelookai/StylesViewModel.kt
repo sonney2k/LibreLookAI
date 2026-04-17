@@ -199,9 +199,12 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
             val type = object : TypeToken<List<Style>>() {}.type
             val raw: List<Style> = gson.fromJson(json, type) ?: emptyList()
             raw.map { style ->
-                if (style.itemNames.isNotEmpty()) {
-                    style.copy(itemIds = style.itemNames.mapNotNull { resolvedNameToId[it] })
-                } else style
+                style.copy(
+                    itemIds = if (style.itemNames.isNotEmpty())
+                        style.itemNames.mapNotNull { resolvedNameToId[it] }
+                    else style.itemIds,
+                    folderId = id,
+                )
             }
         } else emptyList()
         runCatching { stylesLocalCacheFile(id).writeText(gson.toJson(resolved)) }
