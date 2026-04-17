@@ -51,6 +51,7 @@ data class WardrobeUiState(
     val isLoading: Boolean = false,
     val isProcessing: Boolean = false,
     val isUploading: Boolean = false,
+    val isMoving: Boolean = false,
     /** Number of items in the current batch (0 = single-item flow). */
     val batchTotal: Int = 0,
     val batchDone: Int = 0,
@@ -1166,7 +1167,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         val toMove = _state.value.images.filter { it.driveId in driveIds }
         if (toMove.isEmpty()) return
         viewModelScope.launch {
-            _state.update { it.copy(isUploading = true, selectedIds = emptySet(), error = null) }
+            _state.update { it.copy(isMoving = true, selectedIds = emptySet(), error = null) }
 
             // Move all items in parallel; within each item move cutout + original + sidecar in parallel
             val successfulIds = coroutineScope {
@@ -1199,7 +1200,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     saveLocalCache(fid, _state.value.images.filter { it.folderId == fid })
                 }
             }
-            _state.update { it.copy(isUploading = false) }
+            _state.update { it.copy(isMoving = false) }
         }
     }
 

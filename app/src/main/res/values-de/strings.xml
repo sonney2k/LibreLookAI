@@ -20,6 +20,11 @@
     <string name="filter_location">Standort</string>
     <string name="filter_all_locations">Alle</string>
     <string name="wardrobe_processing_photos">%1$d Foto(s) werden verarbeitet…</string>
+    <string name="wardrobe_progress_uploading">Foto wird hochgeladen…</string>
+    <string name="wardrobe_progress_uploading_batch">Foto %1$d von %2$d wird hochgeladen…</string>
+    <string name="wardrobe_progress_removing_bg">Hintergrund wird entfernt…</string>
+    <string name="wardrobe_progress_removing_bg_batch">Hintergrund %1$d von %2$d wird entfernt…</string>
+    <string name="wardrobe_progress_moving">Wird in neuen Standort verschoben…</string>
     <string name="action_select_all">Alle auswählen</string>
     <string name="action_deselect_all">Auswahl aufheben</string>
 

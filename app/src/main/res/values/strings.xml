@@ -22,6 +22,11 @@
     <string name="filter_location">Location</string>
     <string name="filter_all_locations">All</string>
     <string name="wardrobe_processing_photos">Processing %1$d photo(s)…</string>
+    <string name="wardrobe_progress_uploading">Uploading photo…</string>
+    <string name="wardrobe_progress_uploading_batch">Uploading photo %1$d of %2$d…</string>
+    <string name="wardrobe_progress_removing_bg">Removing background…</string>
+    <string name="wardrobe_progress_removing_bg_batch">Removing background %1$d of %2$d…</string>
+    <string name="wardrobe_progress_moving">Moving to new location…</string>
     <string name="action_select_all">Select all</string>
     <string name="action_deselect_all">Deselect all</string>
 

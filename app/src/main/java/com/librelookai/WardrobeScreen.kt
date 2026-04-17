@@ -791,12 +791,13 @@ private fun GridContent(
         val retagLabel = if (state.isRetagging) stringResource(R.string.settings_rescanning, state.retagDone + 1, state.retagTotal) else null
         val overlayLabel = when {
             state.isRetagging -> retagLabel
+            state.isMoving -> stringResource(R.string.wardrobe_progress_moving)
             state.isProcessing && state.batchTotal > 1 ->
-                "Removing background (${state.batchDone + 1}/${state.batchTotal})…"
+                stringResource(R.string.wardrobe_progress_removing_bg_batch, state.batchDone + 1, state.batchTotal)
             state.isUploading && state.batchTotal > 1 ->
-                "Uploading (${state.batchDone + 1}/${state.batchTotal})…"
-            state.isProcessing -> "Removing background…"
-            state.isUploading  -> "Uploading to Drive…"
+                stringResource(R.string.wardrobe_progress_uploading_batch, state.batchDone + 1, state.batchTotal)
+            state.isProcessing -> stringResource(R.string.wardrobe_progress_removing_bg)
+            state.isUploading  -> stringResource(R.string.wardrobe_progress_uploading)
             state.pendingJobs > 0 -> stringResource(R.string.wardrobe_processing_photos, state.pendingJobs)
             else -> null
         }
