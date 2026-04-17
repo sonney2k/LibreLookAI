@@ -202,6 +202,8 @@ fun WardrobeScreen(
             onComposeStyleFromSelection = onComposeStyleFromSelection,
             onDismissBatteryExemption = viewModel::dismissBatteryExemptionWarning,
             processingImageId = state.processingImageId,
+            isLocationLoading = locationState.isLoading,
+            locationError = locationState.error,
             dismissViewerTrigger = dismissViewerTrigger,
             modifier = modifier,
         )
@@ -524,6 +526,8 @@ private fun GridContent(
     popularityMap: Map<String, Int> = emptyMap(),
     locations: List<Location> = emptyList(),
     activeLocationId: String = "",
+    isLocationLoading: Boolean = false,
+    locationError: String? = null,
     onOpenCamera: () -> Unit,
     onOpenGallery: () -> Unit,
     onDismissError: () -> Unit,
@@ -667,6 +671,21 @@ private fun GridContent(
                 state.isLoading && state.syncTotal > 0 -> {
                     // Phase 2 with empty cache: progress bar above is already visible; fill the rest
                     Box(Modifier.weight(1f).fillMaxWidth())
+                }
+                isLocationLoading && state.images.isEmpty() -> {
+                    // Locations not yet loaded from Drive (first launch after install/reinstall)
+                    Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+                    }
+                }
+                locationError != null && state.images.isEmpty() -> {
+                    Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        Text(
+                            text = locationError,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.error,
+                        )
+                    }
                 }
                 displayedImages.isEmpty() && !state.isProcessing && !state.isUploading -> {
                     Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {

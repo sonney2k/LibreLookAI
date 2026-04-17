@@ -121,7 +121,13 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
             }
             runCatching {
                 if (ids != null) {
-                    ids.map { id -> async { loadStylesFromFolder(id) } }.awaitAll().flatten()
+                    // Build a combined name→ID map from all folders so styles whose items have
+                    // been moved to a different location can still be resolved.
+                    val combinedNameToId: Map<String, String> = ids
+                        .map { id -> async { drive.listFiles(id).associate { it.name to it.id } } }
+                        .awaitAll()
+                        .fold(emptyMap()) { acc, m -> acc + m }
+                    ids.map { id -> async { loadStylesFromFolder(id, combinedNameToId) } }.awaitAll().flatten()
                 } else {
                     val id = folderId ?: return@runCatching cached
                     loadStylesFromFolder(id)
@@ -136,16 +142,15 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    private suspend fun loadStylesFromFolder(id: String): List<Style> {
-        val files = drive.listFiles(id)
-        val nameToId = files.associate { it.name to it.id }
+    private suspend fun loadStylesFromFolder(id: String, nameToId: Map<String, String>? = null): List<Style> {
+        val resolvedNameToId = nameToId ?: drive.listFiles(id).associate { it.name to it.id }
         val json = drive.loadStylesJson(id)
         val resolved = if (json != null) {
             val type = object : TypeToken<List<Style>>() {}.type
             val raw: List<Style> = gson.fromJson(json, type) ?: emptyList()
             raw.map { style ->
                 if (style.itemNames.isNotEmpty()) {
-                    style.copy(itemIds = style.itemNames.mapNotNull { nameToId[it] })
+                    style.copy(itemIds = style.itemNames.mapNotNull { resolvedNameToId[it] })
                 } else style
             }
         } else emptyList()

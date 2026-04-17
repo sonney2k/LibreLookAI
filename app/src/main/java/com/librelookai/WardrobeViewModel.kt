@@ -627,16 +627,17 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                         }
                     }.awaitAll()
 
-                    val totalCount = folderMeta.sumOf { it.files.size }
-                    if (totalCount > 0) _state.update { it.copy(syncTotal = totalCount, syncDone = 0) }
+                    val uncachedCount = folderMeta.sumOf { fd -> fd.files.count { drive.cachedFile(it.id) == null } }
+                    if (uncachedCount > 0) _state.update { it.copy(syncTotal = uncachedCount, syncDone = 0) }
                     val doneCount = AtomicInteger(0)
 
                     // Download all uncached images in parallel across all folders
                     folderMeta.flatMap { fd ->
                         fd.files.map { file ->
                             async {
-                                val r = drive.cachedFile(file.id) ?: drive.downloadToCache(file.id, file.name)
-                                _state.update { it.copy(syncDone = doneCount.incrementAndGet()) }
+                                val cached = drive.cachedFile(file.id)
+                                val r = cached ?: drive.downloadToCache(file.id, file.name)
+                                if (cached == null) _state.update { it.copy(syncDone = doneCount.incrementAndGet()) }
                                 r
                             }
                         }
@@ -731,13 +732,14 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 }
 
                 // Download any uncached image files in parallel, tracking progress
-                val totalCount = files.size
-                if (totalCount > 0) _state.update { it.copy(syncTotal = totalCount, syncDone = 0) }
+                val uncachedCount = files.count { drive.cachedFile(it.id) == null }
+                if (uncachedCount > 0) _state.update { it.copy(syncTotal = uncachedCount, syncDone = 0) }
                 val doneCount = AtomicInteger(0)
                 files.map { file ->
                     async {
-                        val r = drive.cachedFile(file.id) ?: drive.downloadToCache(file.id, file.name)
-                        _state.update { it.copy(syncDone = doneCount.incrementAndGet()) }
+                        val cached = drive.cachedFile(file.id)
+                        val r = cached ?: drive.downloadToCache(file.id, file.name)
+                        if (cached == null) _state.update { it.copy(syncDone = doneCount.incrementAndGet()) }
                         r
                     }
                 }.awaitAll()
