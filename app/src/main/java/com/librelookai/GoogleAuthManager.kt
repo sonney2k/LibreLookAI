@@ -1,23 +1,29 @@
 package com.librelookai
 
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.google.android.gms.auth.GoogleAuthUtil
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import androidx.activity.ComponentActivity
+import androidx.credentials.ClearCredentialStateRequest
+import androidx.credentials.CredentialManager
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.exceptions.GetCredentialCancellationException
+import com.google.android.gms.auth.api.identity.AuthorizationRequest
+import com.google.android.gms.auth.api.identity.AuthorizationResult
+import com.google.android.gms.auth.api.identity.Identity
+import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.Scope
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
-import kotlin.coroutines.resume
 
 private const val TAG = "GoogleAuthManager"
+private const val PREFS = "auth"
+private const val KEY_SIGNED_IN = "signed_in"
 
 class GoogleAuthManager(private val context: Context) {
 
@@ -25,53 +31,96 @@ class GoogleAuthManager(private val context: Context) {
         const val DRIVE_SCOPE = "https://www.googleapis.com/auth/drive"
     }
 
-    private val gsoBuilder = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-        .requestEmail()
-        .requestScopes(Scope(DRIVE_SCOPE))
+    private val credentialManager = CredentialManager.create(context)
+    private val authorizationClient = Identity.getAuthorizationClient(context)
 
-    private val gso = gsoBuilder.apply {
-        // Request ID token only when Firebase web client ID is configured
-        val webClientId = BuildConfig.FIREBASE_WEB_CLIENT_ID
-        if (webClientId.isNotBlank()) requestIdToken(webClientId)
-    }.build()
+    private fun prefs() = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
 
-    private val client = GoogleSignIn.getClient(context, gso)
+    fun isSignedIn(): Boolean = prefs().getBoolean(KEY_SIGNED_IN, false)
 
-    fun getSignInIntent(): Intent = client.signInIntent
-
-    fun currentAccount(): GoogleSignInAccount? = GoogleSignIn.getLastSignedInAccount(context)
-
-    fun isSignedIn(): Boolean {
-        val account = currentAccount() ?: return false
-        return GoogleSignIn.hasPermissions(account, Scope(DRIVE_SCOPE))
+    private fun setSignedIn(value: Boolean) {
+        prefs().edit().putBoolean(KEY_SIGNED_IN, value).apply()
     }
 
-    /** Returns a valid OAuth2 access token for the Drive.file scope. Blocks the calling thread. */
-    suspend fun getAccessToken(): String = withContext(Dispatchers.IO) {
-        val account = currentAccount() ?: error("Not signed in")
-        GoogleAuthUtil.getToken(context, account.account!!, "oauth2:$DRIVE_SCOPE")
+    private fun buildAuthRequest(): AuthorizationRequest = AuthorizationRequest.builder()
+        .setRequestedScopes(listOf(Scope(DRIVE_SCOPE)))
+        .build()
+
+    /**
+     * Starts the sign-in/authorization flow for the Drive scope.
+     * Returns null if already authorized (signed-in state is set automatically).
+     * Returns a [PendingIntent] that must be launched via [StartIntentSenderForResult] when user
+     * consent is required (first sign-in or scope not yet granted).
+     */
+    suspend fun beginSignIn(): PendingIntent? {
+        val result: AuthorizationResult = authorizationClient.authorize(buildAuthRequest()).await()
+        return if (result.hasResolution()) {
+            result.pendingIntent
+        } else {
+            setSignedIn(true)
+            null
+        }
     }
 
     /**
-     * Signs in to Firebase using the ID token from the most-recently signed-in Google account.
-     * No-op (returns false) if Firebase is not configured or the Google account has no ID token.
+     * Processes the result Intent from the authorization PendingIntent.
+     * Returns true if authorization was granted and Drive scope access is available.
      */
-    suspend fun signInToFirebase(): Boolean {
+    fun handleAuthorizationResult(data: Intent?): Boolean {
         return try {
-            if (FirebaseApp.getApps(context).isEmpty()) return false
-            val account = currentAccount() ?: return false
-            val idToken = account.idToken ?: return false
-            val credential = GoogleAuthProvider.getCredential(idToken, null)
-            FirebaseAuth.getInstance().signInWithCredential(credential).await()
-            Log.d(TAG, "Firebase sign-in successful")
-            true
+            val result = authorizationClient.getAuthorizationResultFromIntent(data ?: Intent())
+            val success = result.accessToken != null
+            if (success) setSignedIn(true)
+            success
+        } catch (e: ApiException) {
+            Log.w(TAG, "Authorization failed: status=${e.statusCode}")
+            false
         } catch (e: Exception) {
-            Log.w(TAG, "Firebase sign-in failed (non-fatal): ${e.message}")
+            Log.w(TAG, "Authorization result error: ${e.message}")
             false
         }
     }
 
-    suspend fun signOut() = suspendCancellableCoroutine<Unit> { cont ->
-        client.signOut().addOnCompleteListener { cont.resume(Unit) }
+    /** Returns a valid OAuth2 access token for the Drive scope. */
+    suspend fun getAccessToken(): String {
+        val result = authorizationClient.authorize(buildAuthRequest()).await()
+        return result.accessToken ?: error("No Drive access token; user must re-authorize")
+    }
+
+    /**
+     * Best-effort: sign in to Firebase using a silently fetched Google ID token.
+     * No-op if Firebase is not configured, already signed in, or silent fetch fails.
+     */
+    suspend fun signInToFirebase(activity: ComponentActivity) {
+        if (BuildConfig.FIREBASE_WEB_CLIENT_ID.isBlank()) return
+        if (FirebaseApp.getApps(context).isEmpty()) return
+        if (FirebaseAuth.getInstance().currentUser != null) return
+        try {
+            val option = GetGoogleIdOption.Builder()
+                .setFilterByAuthorizedAccounts(true)
+                .setServerClientId(BuildConfig.FIREBASE_WEB_CLIENT_ID)
+                .build()
+            val request = GetCredentialRequest.Builder()
+                .addCredentialOption(option)
+                .build()
+            val response = credentialManager.getCredential(activity, request)
+            val idToken = GoogleIdTokenCredential.createFrom(response.credential.data).idToken
+            val credential = GoogleAuthProvider.getCredential(idToken, null)
+            FirebaseAuth.getInstance().signInWithCredential(credential).await()
+            Log.d(TAG, "Firebase sign-in successful")
+        } catch (e: GetCredentialCancellationException) {
+            // User cancelled — not an error
+        } catch (e: Exception) {
+            Log.w(TAG, "Firebase sign-in failed (non-fatal): ${e.message}")
+        }
+    }
+
+    suspend fun signOut() {
+        try {
+            credentialManager.clearCredentialState(ClearCredentialStateRequest())
+        } catch (e: Exception) {
+            Log.w(TAG, "Clear credential state failed: ${e.message}")
+        }
+        setSignedIn(false)
     }
 }

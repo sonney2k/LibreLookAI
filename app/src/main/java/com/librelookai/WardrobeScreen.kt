@@ -75,7 +75,7 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.automirrored.filled.RotateRight
-import androidx.compose.material.icons.filled.Sort
+import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LinearProgressIndicator
@@ -1556,7 +1556,7 @@ private fun SortButton(
     var expanded by remember { mutableStateOf(false) }
     Box(modifier = modifier) {
         IconButton(onClick = { expanded = true }) {
-            Icon(Icons.Default.Sort, contentDescription = "Sort")
+            Icon(Icons.AutoMirrored.Filled.Sort, contentDescription = "Sort")
         }
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             SortOption.values().forEach { option ->

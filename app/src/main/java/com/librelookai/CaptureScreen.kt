@@ -22,7 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.RotateRight
+import androidx.compose.material.icons.automirrored.filled.RotateRight
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -244,7 +244,7 @@ private fun PhotoReviewScreen(
                 .background(Color.Black.copy(alpha = 0.5f)),
         ) {
             Icon(
-                Icons.Default.RotateRight,
+                Icons.AutoMirrored.Filled.RotateRight,
                 contentDescription = "Rotate 90°",
                 tint = Color.White,
                 modifier = Modifier.size(28.dp),
