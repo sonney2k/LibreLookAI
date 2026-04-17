@@ -226,7 +226,7 @@ fun StylesScreen(
                     styles = stylesState.styles,
                     items = wardrobeState.images,
                     wearCounts = wearCounts,
-                    isLoading = stylesState.isLoading,
+                    isLoading = stylesState.isLoading || wardrobeState.isLoading,
                     isPredicting = stylesState.isPredicting,
                     locations = locationState.locations,
                     activeLocationId = locationState.activeLocationId,
