@@ -294,7 +294,6 @@
     <string name="styles_worn_today">Heute getragen!</string>
     <string name="styles_missing_items">Artikel nicht mehr in der Garderobe</string>
     <string name="styles_items_away">%d Teil(e) an einem anderen Standort</string>
-    <string name="styles_filter_available_only">Nur verfügbar</string>
     <string name="styles_suggested_title">Vorschlag für heute</string>
     <string name="styles_composed_title">Für Sie zusammengestellt</string>
     <string name="styles_name_dialog_title">Stil benennen</string>

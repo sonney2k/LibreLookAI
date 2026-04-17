@@ -332,15 +332,17 @@ private fun StyleListScreen(
 
     var selectedTags by remember { mutableStateOf(emptyMap<String, Set<String>>()) }
     var sortBy by remember { mutableStateOf(StyleSortOption.DATE_DESC) }
-    var availableOnly by remember { mutableStateOf(false) }
+    val filterByLocation = activeLocationId != LocationViewModel.ALL_LOCATIONS_ID
 
     val tagCategories = remember(styles, itemsById) { styles.styleTagCategories(itemsById) }
 
-    // OR within each category, AND across categories; a style matches if any of its items satisfies each active filter
-    val filteredStyles = remember(styles, selectedTags, itemsById) {
+    // OR within each category, AND across categories; a style matches if any of its items satisfies each active filter.
+    // When a specific location is active, styles with any item not at that location are hidden.
+    val filteredStyles = remember(styles, selectedTags, itemsById, filterByLocation) {
         val activeFilters = selectedTags.filter { (_, tags) -> tags.isNotEmpty() }
-        if (activeFilters.isEmpty()) styles
-        else styles.filter { style ->
+        styles.filter { style ->
+            if (filterByLocation && style.itemIds.any { id -> !itemsById.containsKey(id) }) return@filter false
+            if (activeFilters.isEmpty()) return@filter true
             activeFilters.all { (categoryLabel, catTags) ->
                 style.itemIds.any { id ->
                     val img = itemsById[id] ?: return@any false
@@ -350,17 +352,14 @@ private fun StyleListScreen(
         }
     }
 
-    val displayedStyles = remember(filteredStyles, sortBy, wearCounts, availableOnly, itemsById) {
-        val preFiltered = if (availableOnly) {
-            filteredStyles.filter { style -> style.itemIds.all { id -> itemsById.containsKey(id) } }
-        } else filteredStyles
+    val displayedStyles = remember(filteredStyles, sortBy, wearCounts) {
         when (sortBy) {
-            StyleSortOption.DATE_DESC  -> preFiltered
-            StyleSortOption.DATE_ASC   -> preFiltered.reversed()
-            StyleSortOption.POPULARITY -> preFiltered.sortedByDescending { wearCounts[it.id] ?: 0 }
-            StyleSortOption.NAME_AZ    -> preFiltered.sortedBy { it.name.lowercase() }
-            StyleSortOption.NAME_ZA    -> preFiltered.sortedByDescending { it.name.lowercase() }
-            StyleSortOption.ITEM_COUNT -> preFiltered.sortedByDescending { it.itemIds.size }
+            StyleSortOption.DATE_DESC  -> filteredStyles
+            StyleSortOption.DATE_ASC   -> filteredStyles.reversed()
+            StyleSortOption.POPULARITY -> filteredStyles.sortedByDescending { wearCounts[it.id] ?: 0 }
+            StyleSortOption.NAME_AZ    -> filteredStyles.sortedBy { it.name.lowercase() }
+            StyleSortOption.NAME_ZA    -> filteredStyles.sortedByDescending { it.name.lowercase() }
+            StyleSortOption.ITEM_COUNT -> filteredStyles.sortedByDescending { it.itemIds.size }
         }
     }
 
@@ -434,18 +433,6 @@ private fun StyleListScreen(
                 locations = locations,
                 activeLocationId = activeLocationId,
                 onSetActiveLocation = onSetActiveLocation,
-                trailingChip = if (activeLocationId != LocationViewModel.ALL_LOCATIONS_ID) {
-                    {
-                        FilterChip(
-                            selected = availableOnly,
-                            onClick = { availableOnly = !availableOnly },
-                            label = { Text(stringResource(R.string.styles_filter_available_only)) },
-                            leadingIcon = if (availableOnly) {
-                                { Icon(Icons.Default.Check, null, Modifier.size(14.dp)) }
-                            } else null,
-                        )
-                    }
-                } else null,
             )
 
             when {
