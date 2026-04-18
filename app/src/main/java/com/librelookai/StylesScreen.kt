@@ -144,10 +144,6 @@ fun StylesScreen(
     val outfitsState by outfitsViewModel.state.collectAsState()
     val locationState by locationViewModel.state.collectAsState()
 
-    // Local location filter for the styles screen — always starts at ALL_LOCATIONS,
-    // independent of the settings-page default location.
-    var stylesActiveLocationId by remember { mutableStateOf(LocationViewModel.ALL_LOCATIONS_ID) }
-
     // Refresh wardrobe image cache for styles once wardrobe Drive sync completes.
     LaunchedEffect(wardrobeState.isSyncing, stylesState.isLoading) {
         if (!wardrobeState.isSyncing && !stylesState.isLoading) {
@@ -243,8 +239,8 @@ fun StylesScreen(
                     isLoading = stylesState.isLoading || wardrobeState.isLoading,
                     isPredicting = stylesState.isPredicting,
                     locations = locationState.locations,
-                    activeLocationId = stylesActiveLocationId,
-                    onSetActiveLocation = { stylesActiveLocationId = it },
+                    activeLocationId = locationState.activeLocationId,
+                    onSetActiveLocation = locationViewModel::setActiveLocation,
                     predictionError = stylesState.predictionError,
                     isComposing = stylesState.isComposing,
                     compositionError = stylesState.compositionError,

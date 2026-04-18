@@ -38,9 +38,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -65,18 +62,6 @@ fun WardrobeGapScreen(
     val profileState  by profileViewModel.state.collectAsState()
     val locationState by locationViewModel.state.collectAsState()
 
-    // Local location filter — always starts at ALL_LOCATIONS
-    var activeLocationId by remember { mutableStateOf(LocationViewModel.ALL_LOCATIONS_ID) }
-    val locationFolderId = remember(activeLocationId, locationState.locations) {
-        locationState.locations.find { it.id == activeLocationId }?.folderId
-    }
-    val filteredImages = remember(wardrobeState.images, activeLocationId, locationFolderId) {
-        if (activeLocationId == LocationViewModel.ALL_LOCATIONS_ID || locationFolderId == null)
-            wardrobeState.images
-        else
-            wardrobeState.images.filter { it.folderId == locationFolderId }
-    }
-
     Column(modifier = modifier.fillMaxSize()) {
         AppScreenHeader(
             title = stringResource(R.string.gap_title),
@@ -84,8 +69,8 @@ fun WardrobeGapScreen(
             trailingContent = {
                 LocationButton(
                     locations = locationState.locations,
-                    activeLocationId = activeLocationId,
-                    onSetActiveLocation = { activeLocationId = it },
+                    activeLocationId = locationState.activeLocationId,
+                    onSetActiveLocation = locationViewModel::setActiveLocation,
                 )
             },
             onSettingsClick = onSettingsClick,
@@ -110,11 +95,11 @@ fun WardrobeGapScreen(
                     Button(
                         onClick = {
                             gapViewModel.analyze(
-                                images = filteredImages,
+                                images = wardrobeState.images,
                                 prefs  = profileState.preferences,
                             )
                         },
-                        enabled = !state.isAnalyzing && filteredImages.isNotEmpty(),
+                        enabled = !state.isAnalyzing && wardrobeState.images.isNotEmpty(),
                         modifier = Modifier.fillMaxWidth(),
                     ) {
                         Icon(Icons.Default.AutoAwesome, contentDescription = null, modifier = Modifier.size(18.dp))
