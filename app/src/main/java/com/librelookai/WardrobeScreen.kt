@@ -218,6 +218,9 @@ fun WardrobeScreen(
         WardrobeView.CAPTURE -> CaptureScreen(
             onPhotoTaken = viewModel::uploadPhoto,
             onCancel = viewModel::closeCapture,
+            locations = locationState.locations,
+            importTargetFolderId = state.importTargetFolderId,
+            onSetImportTarget = viewModel::setDefaultImportFolderId,
             modifier = modifier,
         )
     }
@@ -846,8 +849,8 @@ private fun GridContent(
                 )
             }
         } else {
-            // Track which add action triggered the closet picker (null = none).
-            var closetPickerAction by remember { mutableStateOf<String?>(null) }
+            // Show closet picker before gallery when 2+ closets exist
+            var showGalleryClosetPicker by remember { mutableStateOf(false) }
 
             Column(
                 modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
@@ -855,25 +858,22 @@ private fun GridContent(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 FloatingActionButton(onClick = {
-                    if (locations.size >= 2) closetPickerAction = "gallery" else onOpenGallery()
+                    if (locations.size >= 2) showGalleryClosetPicker = true else onOpenGallery()
                 }) {
                     Icon(Icons.Default.Add, contentDescription = null)
                     Icon(Icons.Default.PhotoLibrary, contentDescription = stringResource(R.string.wardrobe_add_gallery))
                 }
-                FloatingActionButton(onClick = {
-                    if (locations.size >= 2) closetPickerAction = "camera" else onOpenCamera()
-                }) {
+                FloatingActionButton(onClick = onOpenCamera) {
                     Icon(Icons.Default.Add, contentDescription = null)
                     Icon(Icons.Default.CameraAlt, contentDescription = stringResource(R.string.wardrobe_add_camera))
                 }
             }
 
-            // Closet picker dialog — shown before camera/gallery when 2+ closets exist
-            closetPickerAction?.let { action ->
+            if (showGalleryClosetPicker) {
                 val initialFolderId = state.importTargetFolderId ?: locations.firstOrNull()?.folderId
-                var selectedFolderId by remember(action) { mutableStateOf(initialFolderId) }
+                var selectedFolderId by remember { mutableStateOf(initialFolderId) }
                 AlertDialog(
-                    onDismissRequest = { closetPickerAction = null },
+                    onDismissRequest = { showGalleryClosetPicker = false },
                     title = { Text(stringResource(R.string.wardrobe_add_to_closet_title)) },
                     text = {
                         Column {
@@ -896,12 +896,12 @@ private fun GridContent(
                     confirmButton = {
                         TextButton(onClick = {
                             selectedFolderId?.let { onSetImportTarget(it) }
-                            closetPickerAction = null
-                            if (action == "camera") onOpenCamera() else onOpenGallery()
+                            showGalleryClosetPicker = false
+                            onOpenGallery()
                         }) { Text(stringResource(R.string.action_continue)) }
                     },
                     dismissButton = {
-                        TextButton(onClick = { closetPickerAction = null }) {
+                        TextButton(onClick = { showGalleryClosetPicker = false }) {
                             Text(stringResource(R.string.action_cancel))
                         }
                     },

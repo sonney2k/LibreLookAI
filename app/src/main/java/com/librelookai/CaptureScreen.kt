@@ -47,6 +47,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import android.media.ExifInterface
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -58,6 +66,9 @@ import java.io.FileOutputStream
 fun CaptureScreen(
     onPhotoTaken: (File) -> Unit,
     onCancel: () -> Unit,
+    locations: List<Location> = emptyList(),
+    importTargetFolderId: String? = null,
+    onSetImportTarget: (String) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -109,6 +120,18 @@ fun CaptureScreen(
                 Icon(Icons.Default.Close, contentDescription = "Cancel", tint = Color.White)
             }
 
+            // Inline closet selector — top-end, visible when 2+ closets
+            if (locations.size >= 2) {
+                ClosetChip(
+                    locations = locations,
+                    importTargetFolderId = importTargetFolderId,
+                    onSetImportTarget = onSetImportTarget,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(8.dp),
+                )
+            }
+
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
@@ -154,13 +177,16 @@ fun CaptureScreen(
             onConfirm = { file, rotation ->
                 capturedFile = null
                 userRotation = 0
-                onPhotoTaken(file)  // file already has rotation baked in (done inside PhotoReviewScreen)
+                onPhotoTaken(file)
             },
             onRetake = {
                 capturedFile = null
                 userRotation = 0
             },
             onClose = onCancel,
+            locations = locations,
+            importTargetFolderId = importTargetFolderId,
+            onSetImportTarget = onSetImportTarget,
             modifier = modifier,
         )
     }
@@ -174,6 +200,9 @@ private fun PhotoReviewScreen(
     onConfirm: (File, Int) -> Unit,
     onRetake: () -> Unit,
     onClose: () -> Unit,
+    locations: List<Location> = emptyList(),
+    importTargetFolderId: String? = null,
+    onSetImportTarget: (String) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val scope = rememberCoroutineScope()
@@ -218,6 +247,18 @@ private fun PhotoReviewScreen(
                 .padding(8.dp),
         ) {
             Icon(Icons.Default.Close, contentDescription = "Close camera", tint = Color.White)
+        }
+
+        // Inline closet selector — top-center, visible when 2+ closets
+        if (locations.size >= 2) {
+            ClosetChip(
+                locations = locations,
+                importTargetFolderId = importTargetFolderId,
+                onSetImportTarget = onSetImportTarget,
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(8.dp),
+            )
         }
 
         // Retake (top-right)
@@ -337,4 +378,55 @@ private fun bakeRotation(exifNormalBitmap: Bitmap, userRotation: Int, source: Fi
     exif.saveAttributes()
     source.delete()
     return outFile
+}
+
+@Composable
+private fun ClosetChip(
+    locations: List<Location>,
+    importTargetFolderId: String?,
+    onSetImportTarget: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val targetFolderId = importTargetFolderId ?: locations.firstOrNull()?.folderId
+    val targetName = locations.find { it.folderId == targetFolderId }?.name
+        ?: locations.firstOrNull()?.name ?: ""
+    var expanded by remember { mutableStateOf(false) }
+    Box(modifier = modifier) {
+        Surface(
+            onClick = { expanded = true },
+            shape = MaterialTheme.shapes.small,
+            color = Color.Black.copy(alpha = 0.5f),
+            contentColor = Color.White,
+        ) {
+            Row(
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                Text(targetName, style = MaterialTheme.typography.labelMedium)
+                Icon(Icons.Default.ArrowDropDown, contentDescription = null, modifier = Modifier.size(18.dp))
+            }
+        }
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            locations.sortedBy { it.name }.forEach { loc ->
+                val checked = loc.folderId == targetFolderId
+                DropdownMenuItem(
+                    text = {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            if (checked) Icon(Icons.Default.Check, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
+                            else androidx.compose.foundation.layout.Spacer(Modifier.size(18.dp))
+                            Text(loc.name)
+                        }
+                    },
+                    onClick = {
+                        onSetImportTarget(loc.folderId)
+                        expanded = false
+                    },
+                )
+            }
+        }
+    }
 }
