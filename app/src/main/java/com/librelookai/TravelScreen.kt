@@ -100,6 +100,19 @@ fun TravelScreen(
     val wardrobeState by wardrobeViewModel.state.collectAsState()
     val profileState  by profileViewModel.state.collectAsState()
     val stylesState   by stylesViewModel.state.collectAsState()
+    val locationState by locationViewModel.state.collectAsState()
+
+    // Local location filter — always starts at ALL_LOCATIONS
+    var activeLocationId by remember { mutableStateOf(LocationViewModel.ALL_LOCATIONS_ID) }
+    val locationFolderId = remember(activeLocationId, locationState.locations) {
+        locationState.locations.find { it.id == activeLocationId }?.folderId
+    }
+    val filteredImages = remember(wardrobeState.images, activeLocationId, locationFolderId) {
+        if (activeLocationId == LocationViewModel.ALL_LOCATIONS_ID || locationFolderId == null)
+            wardrobeState.images
+        else
+            wardrobeState.images.filter { it.folderId == locationFolderId }
+    }
 
     val isWorking = state.isLoadingForecast || state.isGenerating
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -107,7 +120,17 @@ fun TravelScreen(
     var moveMessage by remember { mutableStateOf<String?>(null) }
 
     Column(modifier = modifier.fillMaxSize()) {
-        AppScreenHeader(title = stringResource(R.string.travel_title), onSettingsClick = onSettingsClick)
+        AppScreenHeader(
+            title = stringResource(R.string.travel_title),
+            trailingContent = {
+                LocationButton(
+                    locations = locationState.locations,
+                    activeLocationId = activeLocationId,
+                    onSetActiveLocation = { activeLocationId = it },
+                )
+            },
+            onSettingsClick = onSettingsClick,
+        )
         Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
             contentPadding = PaddingValues(bottom = 24.dp),
@@ -187,7 +210,7 @@ fun TravelScreen(
                             keyboardController?.hide()
                             travelViewModel.generate(
                                 prefs  = profileState.preferences,
-                                images = wardrobeState.images,
+                                images = filteredImages,
                                 styles = stylesState.styles,
                             )
                         },
@@ -300,7 +323,7 @@ fun TravelScreen(
                 itemsIndexed(packing.outfits) { index, outfit ->
                     PackingOutfitCard(
                         outfit = outfit,
-                        imagesById = wardrobeState.images.associateBy { it.driveId },
+                        imagesById = filteredImages.associateBy { it.driveId },
                         onSaveAsStyle = if (outfit.itemIds.isNotEmpty()) {
                             {
                                 stylesViewModel.saveStyleDirectly(
@@ -333,10 +356,10 @@ fun TravelScreen(
                         presets = travelPresets(),
                         onInputChange = travelViewModel::updateRefinementInput,
                         onSubmitFreetext = {
-                            travelViewModel.refine(profileState.preferences, wardrobeState.images, stylesState.styles)
+                            travelViewModel.refine(profileState.preferences, filteredImages, stylesState.styles)
                         },
                         onSubmitPreset = { preset ->
-                            travelViewModel.submitPreset(preset, profileState.preferences, wardrobeState.images, stylesState.styles)
+                            travelViewModel.submitPreset(preset, profileState.preferences, filteredImages, stylesState.styles)
                         },
                         modifier = Modifier.padding(16.dp),
                     )

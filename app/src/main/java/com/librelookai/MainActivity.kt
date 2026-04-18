@@ -125,6 +125,7 @@ class MainActivity : ComponentActivity() {
                         if (saveTarget != null) stylesViewModel.updateSaveFolder(saveTarget)
                         if (activeLocationId == LocationViewModel.ALL_LOCATIONS_ID) {
                             wardrobeViewModel.setAllLocations(folderIds)
+                            outfitsViewModel.setAllLocations(folderIds)
                         } else {
                             activeFolderId?.let { folderId ->
                                 wardrobeViewModel.setLocation(folderId)
@@ -253,6 +254,7 @@ class MainActivity : ComponentActivity() {
                                         gapViewModel = gapViewModel,
                                         wardrobeViewModel = wardrobeViewModel,
                                         profileViewModel = profileViewModel,
+                                        locationViewModel = locationViewModel,
                                         onSettingsClick = onSettingsClick,
                                         modifier = Modifier.padding(innerPadding),
                                     )

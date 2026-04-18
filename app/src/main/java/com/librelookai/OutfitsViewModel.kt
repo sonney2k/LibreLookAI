@@ -24,6 +24,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
     private val drive = DriveRepository(app, GoogleAuthManager(app))
     private val gson = Gson()
     private var folderId: String? = null
+    private var allFolderIds: List<String>? = null
 
     private val _state = MutableStateFlow(OutfitsUiState())
     val state: StateFlow<OutfitsUiState> = _state.asStateFlow()
@@ -32,27 +33,38 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
         File(getApplication<Application>().filesDir, "outfits_cache_${id}.json")
 
     fun setLocation(newFolderId: String) {
-        if (folderId == newFolderId) return
+        if (folderId == newFolderId && allFolderIds == null) return
         folderId = newFolderId
+        allFolderIds = null
+        _state.update { OutfitsUiState(isLoading = true) }
+        loadOutfits()
+    }
+
+    fun setAllLocations(folderIds: List<String>) {
+        if (folderId == null && allFolderIds?.toSet() == folderIds.toSet()) return
+        folderId = null
+        allFolderIds = folderIds.toList()
         _state.update { OutfitsUiState(isLoading = true) }
         loadOutfits()
     }
 
     fun loadOutfits() {
+        val ids = if (allFolderIds != null) allFolderIds!! else listOfNotNull(folderId)
+        if (ids.isEmpty()) { _state.update { it.copy(isLoading = false) }; return }
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, error = null) }
-            val id = folderId ?: run { _state.update { it.copy(isLoading = false) }; return@launch }
 
-            // Phase 1 — instant: show local cache
-            val cacheFile = outfitsLocalCacheFile(id)
-            if (cacheFile.exists()) {
-                runCatching {
-                    val type = object : TypeToken<List<OutfitEvent>>() {}.type
-                    gson.fromJson<List<OutfitEvent>>(cacheFile.readText(), type) ?: emptyList()
-                }.onSuccess { events ->
-                    if (events.isNotEmpty()) _state.update { it.copy(events = events, isLoading = false) }
-                }
+            // Phase 1 — instant: show merged local cache from all folders
+            val cachedAll = ids.flatMap { id ->
+                val cacheFile = outfitsLocalCacheFile(id)
+                if (cacheFile.exists()) {
+                    runCatching {
+                        val type = object : TypeToken<List<OutfitEvent>>() {}.type
+                        gson.fromJson<List<OutfitEvent>>(cacheFile.readText(), type) ?: emptyList()
+                    }.getOrDefault(emptyList())
+                } else emptyList()
             }
+            if (cachedAll.isNotEmpty()) _state.update { it.copy(events = cachedAll, isLoading = false) }
 
             // Phase 2 — Drive sync: skip when offline
             if (!getApplication<Application>().isNetworkAvailable()) {
@@ -60,13 +72,17 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 return@launch
             }
             runCatching {
-                val json = drive.loadOutfitsJson(id)
-                if (json != null) {
-                    val type = object : TypeToken<List<OutfitEvent>>() {}.type
-                    gson.fromJson<List<OutfitEvent>>(json, type) ?: emptyList()
-                } else emptyList()
+                ids.flatMap { id ->
+                    val json = drive.loadOutfitsJson(id)
+                    if (json != null) {
+                        val type = object : TypeToken<List<OutfitEvent>>() {}.type
+                        val events: List<OutfitEvent> = gson.fromJson(json, type) ?: emptyList()
+                        // Update per-folder cache
+                        runCatching { outfitsLocalCacheFile(id).writeText(gson.toJson(events)) }
+                        events
+                    } else emptyList()
+                }
             }.onSuccess { events ->
-                runCatching { cacheFile.writeText(gson.toJson(events)) }
                 _state.update { it.copy(events = events, isLoading = false) }
             }.onFailure { e ->
                 _state.update { s ->
@@ -80,7 +96,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
         val event = OutfitEvent(styleId = styleId, date = LocalDate.now().toString())
         val updated = _state.value.events + event
         viewModelScope.launch {
-            val id = folderId ?: return@launch
+            val id = folderId ?: allFolderIds?.firstOrNull() ?: return@launch
             runCatching {
                 drive.saveOutfitsJson(id, gson.toJson(updated))
             }.onSuccess {
