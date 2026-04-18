@@ -13,9 +13,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -201,6 +203,9 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Holds the audit scan results while waiting for the user to confirm processing. */
     private var pendingAudit: AuditIntermediate? = null
+
+    /** Active loadImages coroutine — cancelled when a new location is selected. */
+    private var loadJob: Job? = null
 
     /**
      * Background processing queue. Each item represents one uploaded photo that needs
@@ -592,7 +597,8 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     // ---------- Load ----------
 
     fun loadImages() {
-        viewModelScope.launch {
+        loadJob?.cancel()
+        loadJob = viewModelScope.launch {
             val ids = allFolderIds
             if (ids != null) {
                 _state.update { it.copy(isLoading = true, error = null) }

@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,6 +29,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
 
     private val _state = MutableStateFlow(OutfitsUiState())
     val state: StateFlow<OutfitsUiState> = _state.asStateFlow()
+    private var loadJob: Job? = null
 
     private fun outfitsLocalCacheFile(id: String) =
         File(getApplication<Application>().filesDir, "outfits_cache_${id}.json")
@@ -51,7 +53,8 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
     fun loadOutfits() {
         val ids = if (allFolderIds != null) allFolderIds!! else listOfNotNull(folderId)
         if (ids.isEmpty()) { _state.update { it.copy(isLoading = false) }; return }
-        viewModelScope.launch {
+        loadJob?.cancel()
+        loadJob = viewModelScope.launch {
             _state.update { it.copy(isLoading = true, error = null) }
 
             // Phase 1 — instant: show merged local cache from all folders
