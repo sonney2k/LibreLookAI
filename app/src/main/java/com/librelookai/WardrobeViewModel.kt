@@ -1638,8 +1638,10 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    fun deleteSelected() {
-        val toDelete = _state.value.selectedIds
+    fun deleteSelected() = deleteItems(_state.value.selectedIds)
+
+    fun deleteItems(driveIds: Set<String>) {
+        val toDelete = driveIds
         if (toDelete.isEmpty()) return
         val items = _state.value.images.filter { it.driveId in toDelete }
         viewModelScope.launch {

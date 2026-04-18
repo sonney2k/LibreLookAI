@@ -116,6 +116,9 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.platform.LocalContext
@@ -197,6 +200,7 @@ fun WardrobeScreen(
             onSelectAll = viewModel::selectAll,
             onClearSelection = viewModel::clearSelection,
             onDeleteSelected = viewModel::deleteSelected,
+            onDeleteItem = { driveId -> viewModel.deleteItems(setOf(driveId)) },
             onMoveToLocation = viewModel::moveItemsToLocation,
             onSetActiveLocation = locationViewModel::setActiveLocation,
             onCreateStyleFromSelection = onCreateStyleFromSelection,
@@ -473,6 +477,7 @@ private fun GridContent(
     onSelectAll: (List<String>) -> Unit,
     onClearSelection: () -> Unit,
     onDeleteSelected: () -> Unit,
+    onDeleteItem: (String) -> Unit,
     onMoveToLocation: (Set<String>, String) -> Unit,
     onSetActiveLocation: (String) -> Unit,
     onCreateStyleFromSelection: (Set<String>) -> Unit,
@@ -876,6 +881,18 @@ private fun GridContent(
                 onRemoveBackground = onRemoveBackground,
                 onRotateImage = onRotateImage,
                 onUpdateTags = onUpdateTags,
+                onDeleteItem = { driveId ->
+                    onDeleteItem(driveId)
+                    if (displayedImages.size <= 1) selectedIndex = null
+                },
+                onMoveToLocation = { ids, folderId ->
+                    onMoveToLocation(ids, folderId)
+                    if (displayedImages.size <= 1) selectedIndex = null
+                },
+                onCreateStyleFromSelection = onCreateStyleFromSelection,
+                onComposeStyleFromSelection = onComposeStyleFromSelection,
+                locations = locations,
+                activeLocationId = activeLocationId,
                 processingImageId = processingImageId,
             )
         }
@@ -1000,6 +1017,12 @@ private fun FullScreenViewer(
     onRemoveBackground: (String) -> Unit,
     onRotateImage: (String) -> Unit,
     onUpdateTags: (String, ClothingTags) -> Unit,
+    onDeleteItem: (String) -> Unit,
+    onMoveToLocation: (Set<String>, String) -> Unit,
+    onCreateStyleFromSelection: (Set<String>) -> Unit,
+    onComposeStyleFromSelection: (Set<String>) -> Unit,
+    locations: List<Location>,
+    activeLocationId: String,
     processingImageId: String?,
 ) {
     BackHandler(onBack = onDismiss)
@@ -1012,12 +1035,16 @@ private fun FullScreenViewer(
     LaunchedEffect(pagerState.currentPage) { pageScale = 1f }
 
     var showTagEdit by remember { mutableStateOf(false) }
+    var showItemActions by remember { mutableStateOf(false) }
+    var showMoveDialog by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black),
     ) {
+        val haptic = LocalHapticFeedback.current
         HorizontalPager(
             state = pagerState,
             userScrollEnabled = pageScale <= 1.01f,
@@ -1028,6 +1055,10 @@ private fun FullScreenViewer(
                 name = images[page].name,
                 cacheKey = "${images[page].driveId}_${images[page].version}",
                 onScaleChanged = { s -> if (page == pagerState.currentPage) pageScale = s },
+                onLongPress = {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    showItemActions = true
+                },
             )
         }
 
@@ -1092,6 +1123,161 @@ private fun FullScreenViewer(
             onDismiss = { showTagEdit = false },
         )
     }
+
+    if (showItemActions) {
+        val currentImage = images[pagerState.currentPage]
+        val otherLocations = locations.filter { it.id != activeLocationId }
+        ModalBottomSheet(
+            onDismissRequest = { showItemActions = false },
+        ) {
+            Column(modifier = Modifier.navigationBarsPadding()) {
+                val label = currentImage.tags?.label ?: currentImage.name
+                Text(
+                    text = label,
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                HorizontalDivider()
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            showItemActions = false
+                            onCreateStyleFromSelection(setOf(currentImage.driveId))
+                        },
+                ) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        Icon(Icons.Default.Edit, contentDescription = null, modifier = Modifier.size(20.dp))
+                        Text(stringResource(R.string.wardrobe_create_outfit), style = MaterialTheme.typography.bodyLarge)
+                    }
+                }
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            showItemActions = false
+                            onComposeStyleFromSelection(setOf(currentImage.driveId))
+                        },
+                ) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        Icon(Icons.Default.AutoFixHigh, contentDescription = null, modifier = Modifier.size(20.dp))
+                        Text(stringResource(R.string.wardrobe_compose_ai), style = MaterialTheme.typography.bodyLarge)
+                    }
+                }
+                if (otherLocations.isNotEmpty()) {
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                showItemActions = false
+                                showMoveDialog = true
+                            },
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        ) {
+                            Icon(Icons.Default.Place, contentDescription = null, modifier = Modifier.size(20.dp))
+                            Text(stringResource(R.string.wardrobe_move_to), style = MaterialTheme.typography.bodyLarge)
+                        }
+                    }
+                }
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            showItemActions = false
+                            showDeleteDialog = true
+                        },
+                ) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        Icon(Icons.Default.Delete, contentDescription = null, tint = MaterialTheme.colorScheme.error, modifier = Modifier.size(20.dp))
+                        Text(stringResource(R.string.action_delete), style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.error)
+                    }
+                }
+                Spacer(Modifier.height(8.dp))
+            }
+        }
+    }
+
+    if (showDeleteDialog) {
+        val currentImage = images[pagerState.currentPage]
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text(stringResource(R.string.wardrobe_delete_title)) },
+            text = { Text(stringResource(R.string.wardrobe_delete_text, 1)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    onDeleteItem(currentImage.driveId)
+                    showDeleteDialog = false
+                    if (images.size <= 1) onDismiss()
+                }) {
+                    Text(stringResource(R.string.action_delete), color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text(stringResource(R.string.action_cancel))
+                }
+            },
+        )
+    }
+
+    if (showMoveDialog) {
+        val currentImage = images[pagerState.currentPage]
+        val otherLocations = locations.filter { it.id != activeLocationId }
+        AlertDialog(
+            onDismissRequest = { showMoveDialog = false },
+            title = { Text(stringResource(R.string.wardrobe_move_to_title, 1)) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    otherLocations.forEach { location ->
+                        Surface(
+                            shape = MaterialTheme.shapes.small,
+                            tonalElevation = 1.dp,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    onMoveToLocation(setOf(currentImage.driveId), location.folderId)
+                                    showMoveDialog = false
+                                    if (images.size <= 1) onDismiss()
+                                },
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            ) {
+                                Icon(Icons.Default.Place, contentDescription = null, modifier = Modifier.size(18.dp))
+                                Text(location.name, style = MaterialTheme.typography.bodyMedium)
+                            }
+                        }
+                    }
+                }
+            },
+            confirmButton = {},
+            dismissButton = {
+                TextButton(onClick = { showMoveDialog = false }) {
+                    Text(stringResource(R.string.action_cancel))
+                }
+            },
+        )
+    }
 }
 
 @Composable
@@ -1100,6 +1286,7 @@ private fun ZoomableImage(
     name: String,
     cacheKey: String = localPath,
     onScaleChanged: (Float) -> Unit = {},
+    onLongPress: () -> Unit = {},
 ) {
     var scale by remember { mutableFloatStateOf(1f) }
     var offset by remember { mutableStateOf(Offset.Zero) }
@@ -1115,6 +1302,9 @@ private fun ZoomableImage(
         contentDescription = name,
         modifier = Modifier
             .fillMaxSize()
+            .pointerInput(Unit) {
+                detectTapGestures(onLongPress = { if (scale <= 1.01f) onLongPress() })
+            }
             .pointerInput(Unit) {
                 awaitEachGesture {
                     awaitFirstDown(requireUnconsumed = false, pass = PointerEventPass.Initial)
