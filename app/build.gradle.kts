@@ -1,3 +1,4 @@
+import com.google.firebase.appdistribution.gradle.firebaseAppDistribution
 import java.util.Properties
 
 plugins {
@@ -59,6 +60,15 @@ android {
         )
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = file(localProps.getProperty("signing.store.file", "").trim())
+            storePassword = localProps.getProperty("signing.store.password", "").trim()
+            keyAlias = localProps.getProperty("signing.key.alias", "").trim()
+            keyPassword = localProps.getProperty("signing.key.password", "").trim()
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -66,6 +76,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
+            firebaseAppDistribution {
+                artifactType = "APK"
+            }
         }
     }
 
