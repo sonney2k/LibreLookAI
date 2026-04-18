@@ -27,7 +27,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -41,7 +40,6 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Place
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -147,26 +145,17 @@ fun CalendarScreen(
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
 
     Column(modifier = modifier.fillMaxSize()) {
-        AppScreenHeader(title = stringResource(R.string.nav_calendar), onSettingsClick = onSettingsClick)
-        // ---- Location filter (only shown when multiple locations exist) ----
-        if (locationState.locations.size > 1) {
-            LazyRow(
-                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                items(locationState.locations) { loc ->
-                    FilterChip(
-                        selected = loc.id == locationState.activeLocationId,
-                        onClick = { locationViewModel.setActiveLocation(loc.id) },
-                        label = { Text(loc.name, style = MaterialTheme.typography.labelSmall) },
-                        leadingIcon = if (loc.id == locationState.activeLocationId) {
-                            { Icon(Icons.Default.Place, contentDescription = null, modifier = Modifier.size(14.dp)) }
-                        } else null,
-                    )
-                }
-            }
-        }
+        AppScreenHeader(
+            title = stringResource(R.string.nav_calendar),
+            trailingContent = {
+                LocationButton(
+                    locations = locationState.locations,
+                    activeLocationId = locationState.activeLocationId,
+                    onSetActiveLocation = locationViewModel::setActiveLocation,
+                )
+            },
+            onSettingsClick = onSettingsClick,
+        )
 
         TabRow(selectedTabIndex = selectedTab) {
             Tab(

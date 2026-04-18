@@ -10,6 +10,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,11 +23,17 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Checkroom
 import androidx.compose.material.icons.filled.FlightTakeoff
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Style
 import androidx.compose.material.icons.filled.TipsAndUpdates
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -335,6 +342,70 @@ fun AppScreenHeader(
         }
     }
     HorizontalDivider()
+}
+
+/**
+ * Location dropdown button for the top bar — mirrors [SortButton] style.
+ * Only renders content when there are 2+ locations.
+ */
+@Composable
+fun LocationButton(
+    locations: List<Location>,
+    activeLocationId: String,
+    onSetActiveLocation: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    if (locations.size < 2) return
+    var expanded by remember { mutableStateOf(false) }
+    val allLocationsLabel = stringResource(R.string.filter_all_locations)
+    val activeName = when (activeLocationId) {
+        LocationViewModel.ALL_LOCATIONS_ID -> allLocationsLabel
+        else -> locations.find { it.id == activeLocationId }?.name ?: allLocationsLabel
+    }
+    Box(modifier = modifier) {
+        IconButton(onClick = { expanded = true }) {
+            Icon(Icons.Default.Place, contentDescription = activeName, modifier = Modifier.size(22.dp))
+        }
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            // "All" option first
+            val allChecked = activeLocationId == LocationViewModel.ALL_LOCATIONS_ID
+            DropdownMenuItem(
+                text = {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        if (allChecked) Icon(Icons.Default.Check, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
+                        else Spacer(Modifier.size(18.dp))
+                        Text(allLocationsLabel)
+                    }
+                },
+                onClick = {
+                    onSetActiveLocation(LocationViewModel.ALL_LOCATIONS_ID)
+                    expanded = false
+                },
+            )
+            locations.sortedBy { it.name }.forEach { loc ->
+                val checked = loc.id == activeLocationId
+                DropdownMenuItem(
+                    text = {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            if (checked) Icon(Icons.Default.Check, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
+                            else Spacer(Modifier.size(18.dp))
+                            Text(loc.name)
+                        }
+                    },
+                    onClick = {
+                        onSetActiveLocation(loc.id)
+                        expanded = false
+                    },
+                )
+            }
+        }
+    }
 }
 
 @Composable

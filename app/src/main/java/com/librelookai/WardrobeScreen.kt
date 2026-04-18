@@ -398,83 +398,15 @@ internal fun TagFilterBar(
     tagCategories: List<TagCategory>,
     selectedTags: Map<String, Set<String>>,
     onTagsChanged: (Map<String, Set<String>>) -> Unit,
-    locations: List<Location> = emptyList(),
-    activeLocationId: String = "",
-    onSetActiveLocation: ((String) -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
     var expandedCategory by remember { mutableStateOf<String?>(null) }
-    val showLocationChip = locations.size > 1 && onSetActiveLocation != null
-    if (!showLocationChip && tagCategories.isEmpty()) return
-    val locationDropdownKey = "__location__"
+    if (tagCategories.isEmpty()) return
     LazyRow(
         modifier = modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        // Location chip — always first
-        if (showLocationChip) {
-            item(key = locationDropdownKey) {
-                val allLocationsLabel = stringResource(R.string.filter_all_locations)
-                val activeName = when (activeLocationId) {
-                    LocationViewModel.ALL_LOCATIONS_ID -> allLocationsLabel
-                    else -> locations.find { it.id == activeLocationId }?.name ?: stringResource(R.string.filter_location)
-                }
-                Box {
-                    FilterChip(
-                        selected = true,
-                        onClick = {
-                            expandedCategory = if (expandedCategory == locationDropdownKey) null else locationDropdownKey
-                        },
-                        leadingIcon = { Icon(Icons.Default.Place, null, Modifier.size(14.dp)) },
-                        label = { Text(activeName) },
-                        trailingIcon = { Icon(Icons.Default.ArrowDropDown, null, Modifier.size(16.dp)) },
-                    )
-                    DropdownMenu(
-                        expanded = expandedCategory == locationDropdownKey,
-                        onDismissRequest = { expandedCategory = null },
-                    ) {
-                        // "All" option first
-                        val allChecked = activeLocationId == LocationViewModel.ALL_LOCATIONS_ID
-                        DropdownMenuItem(
-                            text = {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                ) {
-                                    if (allChecked) Icon(Icons.Default.Check, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
-                                    else Spacer(Modifier.size(18.dp))
-                                    Text(allLocationsLabel)
-                                }
-                            },
-                            onClick = {
-                                onSetActiveLocation!!(LocationViewModel.ALL_LOCATIONS_ID)
-                                expandedCategory = null
-                            },
-                        )
-                        locations.sortedBy { it.name }.forEach { loc ->
-                            val checked = loc.id == activeLocationId
-                            DropdownMenuItem(
-                                text = {
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                    ) {
-                                        if (checked) Icon(Icons.Default.Check, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
-                                        else Spacer(Modifier.size(18.dp))
-                                        Text(loc.name)
-                                    }
-                                },
-                                onClick = {
-                                    onSetActiveLocation!!(loc.id)
-                                    expandedCategory = null
-                                },
-                            )
-                        }
-                    }
-                }
-            }
-        }
         items(tagCategories) { category ->
             val catSelected = selectedTags[category.label] ?: emptySet()
             val activeCount = catSelected.size
@@ -599,6 +531,11 @@ private fun GridContent(
             AppScreenHeader(
                 title = stringResource(R.string.nav_wardrobe),
                 trailingContent = {
+                    LocationButton(
+                        locations = locations,
+                        activeLocationId = activeLocationId,
+                        onSetActiveLocation = onSetActiveLocation,
+                    )
                     SortButton(
                         sortBy = sortBy,
                         onSortChanged = { sortBy = it },
@@ -612,9 +549,6 @@ private fun GridContent(
                 tagCategories = tagCategories,
                 selectedTags = selectedTags,
                 onTagsChanged = { selectedTags = it },
-                locations = locations,
-                activeLocationId = activeLocationId,
-                onSetActiveLocation = onSetActiveLocation,
             )
 
             // ---- Selection bar (shown when at least one item is selected) ----

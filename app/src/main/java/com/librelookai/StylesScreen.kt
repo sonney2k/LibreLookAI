@@ -424,15 +424,20 @@ private fun StyleListScreen(
             // ---- Screen header with sort button ----
             AppScreenHeader(
                 title = stringResource(R.string.nav_styles),
-                trailingContent = if (styles.isNotEmpty() && !isSelectionMode) {
-                    {
+                trailingContent = {
+                    LocationButton(
+                        locations = locations,
+                        activeLocationId = activeLocationId,
+                        onSetActiveLocation = onSetActiveLocation ?: {},
+                    )
+                    if (styles.isNotEmpty() && !isSelectionMode) {
                         StyleSortButton(
                             sortBy = sortBy,
                             onSortChanged = { sortBy = it },
                             modifier = Modifier.padding(end = 4.dp),
                         )
                     }
-                } else null,
+                },
                 onSettingsClick = onSettingsClick,
             )
 
@@ -466,9 +471,6 @@ private fun StyleListScreen(
                 tagCategories = tagCategories,
                 selectedTags = selectedTags,
                 onTagsChanged = { selectedTags = it },
-                locations = locations,
-                activeLocationId = activeLocationId,
-                onSetActiveLocation = onSetActiveLocation,
             )
 
             when {
