@@ -126,13 +126,14 @@
     <string name="settings_import_drive_select">%1$d Bilder von hier importieren</string>
     <string name="settings_import_drive_no_images">Keine Bilder in diesem Ordner</string>
     <string name="action_back">Zurück</string>
-    <string name="settings_locations_title">Standorte</string>
-    <string name="settings_locations_desc">Verwalte mehrere Garderoben für verschiedene Standorte, z.B. Zuhause und Ferienhaus.</string>
-    <string name="settings_location_add">Standort hinzufügen</string>
-    <string name="settings_location_name_hint">Name des Standorts</string>
-    <string name="settings_location_add_title">Standort hinzufügen</string>
-    <string name="settings_location_rename_title">Standort umbenennen</string>
-    <string name="settings_location_delete_title">Standort löschen?</string>
+    <string name="settings_locations_title">Kleiderschränke</string>
+    <string name="settings_locations_desc">Verwalte mehrere Garderoben für verschiedene Orte, z.\u00A0B. Zuhause und Ferienhaus. Optional mit Stadt für Wetterinfos.</string>
+    <string name="settings_location_add">Schrank hinzufügen</string>
+    <string name="settings_location_name_hint">Name des Schranks</string>
+    <string name="settings_location_geo_hint">Stadt für Wetter (optional)</string>
+    <string name="settings_location_add_title">Schrank hinzufügen</string>
+    <string name="settings_location_rename_title">Schrank bearbeiten</string>
+    <string name="settings_location_delete_title">Schrank löschen?</string>
     <string name="settings_location_delete_text">Die Garderobendaten für \"%1$s\" bleiben in Drive gespeichert, sind aber hier nicht mehr zugänglich.</string>
     <string name="settings_location_active">Aktiv</string>
 

@@ -130,13 +130,14 @@
     <string name="settings_import_drive_select">Import %1$d images from here</string>
     <string name="settings_import_drive_no_images">No images in this folder</string>
     <string name="action_back">Back</string>
-    <string name="settings_locations_title">Locations</string>
-    <string name="settings_locations_desc">Manage multiple wardrobes for different locations, e.g. home and holiday home.</string>
-    <string name="settings_location_add">Add location</string>
-    <string name="settings_location_name_hint">Location name</string>
-    <string name="settings_location_add_title">Add location</string>
-    <string name="settings_location_rename_title">Rename location</string>
-    <string name="settings_location_delete_title">Delete location?</string>
+    <string name="settings_locations_title">Closets</string>
+    <string name="settings_locations_desc">Manage multiple wardrobes for different places, e.g. home and holiday home. Optionally set a city for weather info.</string>
+    <string name="settings_location_add">Add closet</string>
+    <string name="settings_location_name_hint">Closet name</string>
+    <string name="settings_location_geo_hint">City for weather (optional)</string>
+    <string name="settings_location_add_title">Add closet</string>
+    <string name="settings_location_rename_title">Edit closet</string>
+    <string name="settings_location_delete_title">Delete closet?</string>
     <string name="settings_location_delete_text">The wardrobe data for \"%1$s\" will remain in Drive but will no longer be accessible from here.</string>
     <string name="settings_location_active">Active</string>
 

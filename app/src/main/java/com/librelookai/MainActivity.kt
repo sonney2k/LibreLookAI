@@ -25,7 +25,7 @@ import androidx.compose.material.icons.filled.Checkroom
 import androidx.compose.material.icons.filled.FlightTakeoff
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.filled.DoorSliding
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Style
 import androidx.compose.material.icons.filled.TipsAndUpdates
@@ -366,7 +366,7 @@ fun LocationButton(
     }
     Box(modifier = modifier) {
         IconButton(onClick = { expanded = true }) {
-            Icon(Icons.Default.Place, contentDescription = activeName, modifier = Modifier.size(22.dp))
+            Icon(Icons.Default.DoorSliding, contentDescription = activeName, modifier = Modifier.size(22.dp))
         }
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             // "All" option first

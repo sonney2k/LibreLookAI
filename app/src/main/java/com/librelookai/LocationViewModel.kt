@@ -110,13 +110,13 @@ class LocationViewModel(app: Application) : AndroidViewModel(app) {
         _state.update { it.copy(activeLocationId = locationId) }
     }
 
-    fun addLocation(name: String) {
+    fun addLocation(name: String, geoLocation: String = "") {
         if (name.isBlank()) return
         viewModelScope.launch {
             runCatching {
                 val rootId = rootFolderId ?: drive.getOrCreateFolder().also { rootFolderId = it }
                 val newFolderId = drive.createSubfolder(rootId, name.trim())
-                val newLocation = Location(name = name.trim(), folderId = newFolderId)
+                val newLocation = Location(name = name.trim(), folderId = newFolderId, geoLocation = geoLocation.trim())
                 val updated = _state.value.locations + newLocation
                 drive.saveLocationsJson(rootId, gson.toJson(updated))
                 updated
@@ -129,11 +129,11 @@ class LocationViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    fun renameLocation(locationId: String, newName: String) {
+    fun renameLocation(locationId: String, newName: String, geoLocation: String? = null) {
         if (newName.isBlank()) return
         viewModelScope.launch {
             val updated = _state.value.locations.map {
-                if (it.id == locationId) it.copy(name = newName.trim()) else it
+                if (it.id == locationId) it.copy(name = newName.trim(), geoLocation = geoLocation?.trim() ?: it.geoLocation) else it
             }
             runCatching {
                 val rootId = rootFolderId ?: drive.getOrCreateFolder().also { rootFolderId = it }

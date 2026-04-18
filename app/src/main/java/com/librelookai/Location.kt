@@ -6,4 +6,5 @@ data class Location(
     val id: String = UUID.randomUUID().toString(),
     val name: String = "",
     val folderId: String = "",
+    val geoLocation: String = "",
 )

@@ -428,8 +428,8 @@ private fun DataTab(
     onImportFromFolder: (removeBackground: Boolean, autoTag: Boolean, replaceExisting: Boolean, overwriteDuplicates: Boolean, useDrivePicker: Boolean) -> Unit,
     locationState: LocationUiState,
     onSetActiveLocation: (String) -> Unit,
-    onAddLocation: (String) -> Unit,
-    onRenameLocation: (String, String) -> Unit,
+    onAddLocation: (String, String) -> Unit,
+    onRenameLocation: (String, String, String?) -> Unit,
     onDeleteLocation: (String) -> Unit,
 ) {
     val audit = wardrobeState.auditProgress
@@ -481,12 +481,20 @@ private fun DataTab(
                         } else {
                             Spacer(Modifier.size(26.dp))
                         }
-                        Text(
-                            location.name,
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = if (isActive) FontWeight.SemiBold else FontWeight.Normal,
-                            modifier = Modifier.weight(1f),
-                        )
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                location.name,
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = if (isActive) FontWeight.SemiBold else FontWeight.Normal,
+                            )
+                            if (location.geoLocation.isNotBlank()) {
+                                Text(
+                                    location.geoLocation,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                        }
                         IconButton(onClick = { renameTarget = location }) {
                             Icon(Icons.Default.Edit, contentDescription = stringResource(R.string.settings_location_rename_title), modifier = Modifier.size(18.dp))
                         }
@@ -842,30 +850,41 @@ private fun DataTab(
 
     if (showAddLocationDialog) {
         var nameInput by remember { mutableStateOf("") }
+        var geoInput by remember { mutableStateOf("") }
         AlertDialog(
-            onDismissRequest = { showAddLocationDialog = false; nameInput = "" },
+            onDismissRequest = { showAddLocationDialog = false; nameInput = ""; geoInput = "" },
             title = { Text(stringResource(R.string.settings_location_add_title)) },
             text = {
-                OutlinedTextField(
-                    value = nameInput,
-                    onValueChange = { nameInput = it },
-                    placeholder = { Text(stringResource(R.string.settings_location_name_hint)) },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(onDone = {
-                        if (nameInput.isNotBlank()) { onAddLocation(nameInput); showAddLocationDialog = false; nameInput = "" }
-                    }),
-                    modifier = Modifier.fillMaxWidth(),
-                )
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedTextField(
+                        value = nameInput,
+                        onValueChange = { nameInput = it },
+                        placeholder = { Text(stringResource(R.string.settings_location_name_hint)) },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    OutlinedTextField(
+                        value = geoInput,
+                        onValueChange = { geoInput = it },
+                        placeholder = { Text(stringResource(R.string.settings_location_geo_hint)) },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(onDone = {
+                            if (nameInput.isNotBlank()) { onAddLocation(nameInput, geoInput); showAddLocationDialog = false; nameInput = ""; geoInput = "" }
+                        }),
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
             },
             confirmButton = {
                 TextButton(
-                    onClick = { onAddLocation(nameInput); showAddLocationDialog = false; nameInput = "" },
+                    onClick = { onAddLocation(nameInput, geoInput); showAddLocationDialog = false; nameInput = ""; geoInput = "" },
                     enabled = nameInput.isNotBlank(),
                 ) { Text(stringResource(R.string.action_save)) }
             },
             dismissButton = {
-                TextButton(onClick = { showAddLocationDialog = false; nameInput = "" }) {
+                TextButton(onClick = { showAddLocationDialog = false; nameInput = ""; geoInput = "" }) {
                     Text(stringResource(R.string.action_cancel))
                 }
             },
@@ -874,24 +893,36 @@ private fun DataTab(
 
     renameTarget?.let { target ->
         var nameInput by remember(target.id) { mutableStateOf(target.name) }
+        var geoInput by remember(target.id) { mutableStateOf(target.geoLocation) }
         AlertDialog(
             onDismissRequest = { renameTarget = null },
             title = { Text(stringResource(R.string.settings_location_rename_title)) },
             text = {
-                OutlinedTextField(
-                    value = nameInput,
-                    onValueChange = { nameInput = it },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(onDone = {
-                        if (nameInput.isNotBlank()) { onRenameLocation(target.id, nameInput); renameTarget = null }
-                    }),
-                    modifier = Modifier.fillMaxWidth(),
-                )
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedTextField(
+                        value = nameInput,
+                        onValueChange = { nameInput = it },
+                        placeholder = { Text(stringResource(R.string.settings_location_name_hint)) },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    OutlinedTextField(
+                        value = geoInput,
+                        onValueChange = { geoInput = it },
+                        placeholder = { Text(stringResource(R.string.settings_location_geo_hint)) },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(onDone = {
+                            if (nameInput.isNotBlank()) { onRenameLocation(target.id, nameInput, geoInput); renameTarget = null }
+                        }),
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
             },
             confirmButton = {
                 TextButton(
-                    onClick = { onRenameLocation(target.id, nameInput); renameTarget = null },
+                    onClick = { onRenameLocation(target.id, nameInput, geoInput); renameTarget = null },
                     enabled = nameInput.isNotBlank(),
                 ) { Text(stringResource(R.string.action_save)) }
             },
