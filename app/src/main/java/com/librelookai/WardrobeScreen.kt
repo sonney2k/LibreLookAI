@@ -92,6 +92,7 @@ import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Surface
@@ -206,6 +207,7 @@ fun WardrobeScreen(
             onCreateStyleFromSelection = onCreateStyleFromSelection,
             onComposeStyleFromSelection = onComposeStyleFromSelection,
             onDismissBatteryExemption = viewModel::dismissBatteryExemptionWarning,
+            onSetImportTarget = viewModel::setDefaultImportFolderId,
             processingImageId = state.processingImageId,
             isLocationLoading = locationState.isLoading,
             locationError = locationState.error,
@@ -483,6 +485,7 @@ private fun GridContent(
     onCreateStyleFromSelection: (Set<String>) -> Unit,
     onComposeStyleFromSelection: (Set<String>) -> Unit,
     onDismissBatteryExemption: () -> Unit = {},
+    onSetImportTarget: (String) -> Unit = {},
     processingImageId: String?,
     dismissViewerTrigger: Int = 0,
     onSettingsClick: () -> Unit = {},
@@ -843,19 +846,66 @@ private fun GridContent(
                 )
             }
         } else {
+            // Track which add action triggered the closet picker (null = none).
+            var closetPickerAction by remember { mutableStateOf<String?>(null) }
+
             Column(
                 modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
                 horizontalAlignment = Alignment.End,
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                FloatingActionButton(onClick = onOpenGallery) {
+                FloatingActionButton(onClick = {
+                    if (locations.size >= 2) closetPickerAction = "gallery" else onOpenGallery()
+                }) {
                     Icon(Icons.Default.Add, contentDescription = null)
                     Icon(Icons.Default.PhotoLibrary, contentDescription = stringResource(R.string.wardrobe_add_gallery))
                 }
-                FloatingActionButton(onClick = onOpenCamera) {
+                FloatingActionButton(onClick = {
+                    if (locations.size >= 2) closetPickerAction = "camera" else onOpenCamera()
+                }) {
                     Icon(Icons.Default.Add, contentDescription = null)
                     Icon(Icons.Default.CameraAlt, contentDescription = stringResource(R.string.wardrobe_add_camera))
                 }
+            }
+
+            // Closet picker dialog — shown before camera/gallery when 2+ closets exist
+            closetPickerAction?.let { action ->
+                val initialFolderId = state.importTargetFolderId ?: locations.firstOrNull()?.folderId
+                var selectedFolderId by remember(action) { mutableStateOf(initialFolderId) }
+                AlertDialog(
+                    onDismissRequest = { closetPickerAction = null },
+                    title = { Text(stringResource(R.string.wardrobe_add_to_closet_title)) },
+                    text = {
+                        Column {
+                            locations.sortedBy { it.name }.forEach { loc ->
+                                val selected = loc.folderId == selectedFolderId
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable { selectedFolderId = loc.folderId }
+                                        .padding(vertical = 10.dp, horizontal = 4.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                ) {
+                                    RadioButton(selected = selected, onClick = { selectedFolderId = loc.folderId })
+                                    Text(loc.name, style = MaterialTheme.typography.bodyLarge)
+                                }
+                            }
+                        }
+                    },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            selectedFolderId?.let { onSetImportTarget(it) }
+                            closetPickerAction = null
+                            if (action == "camera") onOpenCamera() else onOpenGallery()
+                        }) { Text(stringResource(R.string.action_continue)) }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { closetPickerAction = null }) {
+                            Text(stringResource(R.string.action_cancel))
+                        }
+                    },
+                )
             }
         }
 

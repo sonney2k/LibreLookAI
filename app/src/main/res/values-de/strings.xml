@@ -127,7 +127,7 @@
     <string name="settings_import_drive_no_images">Keine Bilder in diesem Ordner</string>
     <string name="action_back">Zurück</string>
     <string name="settings_locations_title">Kleiderschränke</string>
-    <string name="settings_locations_desc">Verwalte mehrere Garderoben für verschiedene Orte, z.\u00A0B. Zuhause und Ferienhaus. Optional mit Stadt für Wetterinfos.</string>
+    <string name="settings_locations_desc">Verwalte mehrere Garderoben für verschiedene Orte. Der aktive Schrank ist Standard beim Hinzufügen neuer Artikel. Optional mit Stadt für Wetterinfos.</string>
     <string name="settings_location_add">Schrank hinzufügen</string>
     <string name="settings_location_name_hint">Name des Schranks</string>
     <string name="settings_location_geo_hint">Stadt für Wetter (optional)</string>
@@ -162,6 +162,9 @@
     <string name="wardrobe_tag_sheet_title">Tags bearbeiten</string>
     <string name="wardrobe_add_gallery">Galerie</string>
     <string name="wardrobe_add_camera">Kamera</string>
+    <string name="wardrobe_add_to_closet">Hinzufügen zu %1$s</string>
+    <string name="wardrobe_add_to_closet_title">Zum Schrank hinzufügen</string>
+    <string name="action_continue">Weiter</string>
     <string name="tag_label">Name</string>
     <string name="tag_label_placeholder">z.B. Marine-Chinos, Weißes Oxford-Hemd</string>
     <string name="tag_type">Typ</string>

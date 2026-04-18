@@ -81,6 +81,8 @@ data class WardrobeUiState(
     val auditProgress: AuditProgress? = null,
     /** True when a job is starting and the app is not exempt from battery optimization. */
     val needsBatteryExemption: Boolean = false,
+    /** Drive folder ID that new photos will be uploaded to. */
+    val importTargetFolderId: String? = null,
 )
 
 // ---------- Audit / repair progress ----------
@@ -220,7 +222,10 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     fun setLanguage(geminiName: String) { geminiLanguage = geminiName }
 
     /** Set the folder that new photo imports target. Null = fall back to the active view folder. */
-    fun setDefaultImportFolderId(folderId: String?) { defaultImportFolderId = folderId }
+    fun setDefaultImportFolderId(folderId: String?) {
+        defaultImportFolderId = folderId
+        _state.update { it.copy(importTargetFolderId = folderId) }
+    }
 
     fun setLocation(newFolderId: String) {
         if (folderId == newFolderId && allFolderIds == null) return

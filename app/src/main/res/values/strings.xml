@@ -131,7 +131,7 @@
     <string name="settings_import_drive_no_images">No images in this folder</string>
     <string name="action_back">Back</string>
     <string name="settings_locations_title">Closets</string>
-    <string name="settings_locations_desc">Manage multiple wardrobes for different places, e.g. home and holiday home. Optionally set a city for weather info.</string>
+    <string name="settings_locations_desc">Manage multiple wardrobes for different places. The active closet is the default when adding new items. Optionally set a city for weather info.</string>
     <string name="settings_location_add">Add closet</string>
     <string name="settings_location_name_hint">Closet name</string>
     <string name="settings_location_geo_hint">City for weather (optional)</string>
@@ -167,6 +167,9 @@
     <string name="wardrobe_tag_sheet_title">Edit Tags</string>
     <string name="wardrobe_add_gallery">Gallery</string>
     <string name="wardrobe_add_camera">Camera</string>
+    <string name="wardrobe_add_to_closet">Add to %1$s</string>
+    <string name="wardrobe_add_to_closet_title">Add to closet</string>
+    <string name="action_continue">Continue</string>
     <string name="tag_label">Name</string>
     <string name="tag_label_placeholder">e.g. Navy Chinos, White Oxford Shirt</string>
     <string name="tag_type">Type</string>

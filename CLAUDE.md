@@ -175,6 +175,7 @@ All six main screens use `AppScreenHeader` (defined in `MainActivity.kt`) for a 
 2. `processQueue()` drains the queue serially: bg removal via Gemini → upload cutout (renamed to `{id}_cutout.png`) → copy local original cache → upload original (renamed to `{cutoutId}_original.jpg`) → delete raw → classify tags → write sidecar.
 3. The local `{driveId}_original.jpg` cache copy must happen **before** `deleteFile()` is called, because `DriveRepository.deleteFile()` also deletes the local `_original.jpg` file.
 4. State is updated by matching on **either** the raw Drive ID or the cutout Drive ID to handle the race where `loadImages()` may have already placed the item with the cutout ID.
+5. **Closet picker**: When 2+ closets exist, tapping the camera or gallery FAB shows an `AlertDialog` with radio buttons to choose the target closet before proceeding. The default is the active closet from Settings. `WardrobeUiState.importTargetFolderId` exposes the current target; `setDefaultImportFolderId()` updates both the private field and the UI state. With only one closet, the dialog is skipped.
 
 ### Background job protection
 
