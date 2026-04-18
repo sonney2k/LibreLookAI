@@ -86,7 +86,7 @@ All ViewModels extend `AndroidViewModel` and receive `Application` for context. 
 - **Legacy fallback**: `_wardrobe_metadata.json` is read as a fallback when no sidecars exist yet; items are migrated to sidecars fire-and-forget on first load.
 - **Two-phase loading**: Phase 1 shows the local disk cache instantly (zero network). Phase 2 fetches cutout files + sidecar files from Drive in parallel, then downloads any uncached images and reads sidecar content, also in parallel.
 - **Local disk cache**: `wardrobe_cache_{folderId}.json` — a `LocalCache` snapshot of all `DriveImage` entries, rebuilt on every successful Phase 2 sync.
-- **Multi-location**: Each "location" corresponds to a Drive subfolder. `LocationViewModel` tracks the active location; `WardrobeViewModel.setLocation(folderId)` switches context. `LocationViewModel.getOrCreateLocation(name, onResult)` finds an existing location by name (case-insensitive) or creates one, returning its folderId via callback.
+- **Multi-location**: Each "location" corresponds to a Drive subfolder. `LocationViewModel` tracks the active location (persisted in SharedPreferences); a `LaunchedEffect` in `MainActivity` reacts to changes and calls `WardrobeViewModel.setLocation(folderId)` / `setAllLocations(folderIds)` and `OutfitsViewModel.setLocation(folderId)` / `setAllLocations(folderIds)` to reload data. When `ALL_LOCATIONS_ID` is active, both ViewModels load and merge data from all folders. `LocationViewModel.getOrCreateLocation(name, onResult)` finds an existing location by name (case-insensitive) or creates one, returning its folderId via callback.
 - **Local prefs**: `ApiKeyStore` (SharedPreferences) for user-supplied Gemini key only.
 
 ### Gemini routing
@@ -155,7 +155,7 @@ It shows: editable name + description, outfit items as 100 dp tappable tiles in 
 
 ### Navigation
 
-`MainActivity` owns a single `selectedTab: Int` integer. There is no Navigation component — each tab renders its Screen composable directly inside a `when` block. All ViewModels are created once at the `MainActivity` level and passed down as parameters.
+`MainActivity` owns a single `selectedTab: Int` integer. There is no Navigation component — each tab renders its Screen composable directly inside a `when` block. All ViewModels are created once at the `MainActivity` level and passed down as parameters. A `LaunchedEffect(activeLocationId, locationList)` in `MainActivity` keeps `WardrobeViewModel`, `OutfitsViewModel`, and `StylesViewModel` in sync whenever the global location changes.
 
 `SettingsScreen` internally uses a `TabRow` with three tabs: Profile, Data, Credits (Credits only visible in managed mode).
 
@@ -167,7 +167,7 @@ String resources live in `values/strings.xml` and `values-de/strings.xml`. Add n
 
 ### UI shell
 
-All six main screens use `AppScreenHeader` (defined in `MainActivity.kt`) for a consistent top bar: leading icon (optional), `titleMedium/SemiBold` title, trailing slot (optional, e.g. sort button), followed by a `HorizontalDivider`.
+All six main screens use `AppScreenHeader` (defined in `MainActivity.kt`) for a consistent top bar: leading icon (optional), `titleMedium/SemiBold` title, trailing slot (optional), followed by a `HorizontalDivider`. The trailing slot typically contains a `LocationButton` (place icon with dropdown, defined in `MainActivity.kt`, only visible when 2+ locations exist) and optionally a sort button. The location selection is **global** — changing it on any screen updates `LocationViewModel.setActiveLocation()` which triggers the `MainActivity` `LaunchedEffect` to reload wardrobe images, outfits, and styles for the selected location(s). `StyleListScreen` additionally does client-side filtering by `folderId` because styles always load items from all locations.
 
 ### Photo upload flow
 
