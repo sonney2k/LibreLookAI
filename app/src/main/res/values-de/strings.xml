@@ -402,8 +402,8 @@
     <string name="job_notif_text">Garderobe wird verarbeitet…</string>
 
     <!-- Battery optimization exemption dialog -->
-    <string name="battery_exempt_title">Hintergrundverarbeitung erlauben</string>
-    <string name="battery_exempt_text">Android kann die Verarbeitung stoppen, wenn der Bildschirm ausgeht. Um das zu verhindern, deaktiviere die Akku-Optimierung für LibreLookAI.</string>
+    <string name="battery_exempt_title">Hintergrundverarbeitung erforderlich</string>
+    <string name="battery_exempt_text">LibreLookAI benötigt uneingeschränkte Hintergrundverarbeitung, um Fotos sicher zu importieren, Hintergründe zu entfernen und Kleidungsstücke mit KI zu taggen.\n\nOhne diese Berechtigung kann Android die App während der Verarbeitung beenden, was zu Datenverlust führen kann — teilweise importierte Artikel, fehlende Tags oder beschädigte Dateien.\n\nBitte deaktiviere die Akku-Optimierung für LibreLookAI, um fortzufahren.</string>
     <string name="battery_exempt_action">Einstellungen öffnen</string>
 
     <!-- Offline mode -->

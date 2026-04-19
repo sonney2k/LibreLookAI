@@ -1,9 +1,13 @@
 package com.librelookai
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.net.Uri
 import android.os.Bundle
+import android.os.PowerManager
+import android.provider.Settings as AndroidSettings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -32,6 +36,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Style
 import androidx.compose.material.icons.filled.TipsAndUpdates
 import androidx.compose.material.icons.filled.CloudOff
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
@@ -42,10 +47,12 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.activity.compose.LocalActivityResultRegistryOwner
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -62,6 +69,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.librelookai.ui.theme.LibreLookAITheme
 
@@ -166,6 +175,62 @@ class MainActivity : ComponentActivity() {
                         LocalOnBackPressedDispatcherOwner provides this@MainActivity,
                         LocalIsOffline provides isOffline,
                     ) {
+
+                        // Battery optimization exemption — block all interactions until granted
+                        val pm = remember {
+                            this@MainActivity.getSystemService(POWER_SERVICE) as PowerManager
+                        }
+                        val pkgName = this@MainActivity.packageName
+                        var isBatteryExempt by remember {
+                            mutableStateOf(pm.isIgnoringBatteryOptimizations(pkgName))
+                        }
+                        // Re-check when the user comes back from system settings
+                        DisposableEffect(Unit) {
+                            val observer = LifecycleEventObserver { _, event ->
+                                if (event == Lifecycle.Event.ON_RESUME) {
+                                    isBatteryExempt = pm.isIgnoringBatteryOptimizations(pkgName)
+                                }
+                            }
+                            this@MainActivity.lifecycle.addObserver(observer)
+                            onDispose { this@MainActivity.lifecycle.removeObserver(observer) }
+                        }
+
+                        if (!isBatteryExempt) {
+                            val batteryContext = LocalContext.current
+                            AlertDialog(
+                                onDismissRequest = { /* non-dismissable */ },
+                                title = { Text(stringResource(R.string.battery_exempt_title)) },
+                                text = { Text(stringResource(R.string.battery_exempt_text)) },
+                                confirmButton = {
+                                    TextButton(
+                                        onClick = {
+                                            fun launchIntent(vararg intents: Intent) {
+                                                for (intent in intents) {
+                                                    try {
+                                                        batteryContext.startActivity(intent)
+                                                        return
+                                                    } catch (_: Exception) { }
+                                                }
+                                            }
+                                            launchIntent(
+                                                Intent(AndroidSettings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
+                                                    data = Uri.parse("package:$pkgName")
+                                                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                                },
+                                                Intent(AndroidSettings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                                    data = Uri.parse("package:$pkgName")
+                                                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                                },
+                                                Intent(AndroidSettings.ACTION_SETTINGS).apply {
+                                                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                                },
+                                            )
+                                        }
+                                    ) { Text(stringResource(R.string.battery_exempt_action)) }
+                                },
+                            )
+                            return@CompositionLocalProvider
+                        }
 
                         // Location permission — request once; refresh weather when granted
                         var hasLocationPermission by remember {
