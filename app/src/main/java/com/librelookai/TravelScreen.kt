@@ -96,6 +96,7 @@ fun TravelScreen(
     onSettingsClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
+    val isOffline = LocalIsOffline.current
     val state        by travelViewModel.state.collectAsState()
     val wardrobeState by wardrobeViewModel.state.collectAsState()
     val profileState  by profileViewModel.state.collectAsState()
@@ -202,7 +203,7 @@ fun TravelScreen(
                                 styles = stylesState.styles,
                             )
                         },
-                        enabled = state.destination.isNotEmpty() && !isWorking,
+                        enabled = state.destination.isNotEmpty() && !isWorking && !isOffline,
                         modifier = Modifier.fillMaxWidth(),
                     ) {
                         Text(if (state.packingList != null) stringResource(R.string.travel_regenerate) else stringResource(R.string.travel_generate))
@@ -290,7 +291,7 @@ fun TravelScreen(
                                     }
                                 }
                             },
-                            enabled = !isMoveInProgress,
+                            enabled = !isMoveInProgress && !isOffline,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp)
@@ -334,23 +335,25 @@ fun TravelScreen(
                     }
                 }
 
-                // ---- Refinement section ----
-                item {
-                    Spacer(Modifier.height(8.dp))
-                    HorizontalDivider()
-                    RefinementSection(
-                        input = state.refinementInput,
-                        feedbackHistory = state.feedbackHistory,
-                        presets = travelPresets(),
-                        onInputChange = travelViewModel::updateRefinementInput,
-                        onSubmitFreetext = {
-                            travelViewModel.refine(profileState.preferences, wardrobeState.images, stylesState.styles)
-                        },
-                        onSubmitPreset = { preset ->
-                            travelViewModel.submitPreset(preset, profileState.preferences, wardrobeState.images, stylesState.styles)
-                        },
-                        modifier = Modifier.padding(16.dp),
-                    )
+                // ---- Refinement section (hidden when offline) ----
+                if (!isOffline) {
+                    item {
+                        Spacer(Modifier.height(8.dp))
+                        HorizontalDivider()
+                        RefinementSection(
+                            input = state.refinementInput,
+                            feedbackHistory = state.feedbackHistory,
+                            presets = travelPresets(),
+                            onInputChange = travelViewModel::updateRefinementInput,
+                            onSubmitFreetext = {
+                                travelViewModel.refine(profileState.preferences, wardrobeState.images, stylesState.styles)
+                            },
+                            onSubmitPreset = { preset ->
+                                travelViewModel.submitPreset(preset, profileState.preferences, wardrobeState.images, stylesState.styles)
+                            },
+                            modifier = Modifier.padding(16.dp),
+                        )
+                    }
                 }
             }
 

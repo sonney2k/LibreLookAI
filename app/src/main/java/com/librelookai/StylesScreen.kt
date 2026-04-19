@@ -340,6 +340,7 @@ private fun StyleListScreen(
     onSettingsClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
+    val isOffline = LocalIsOffline.current
     // itemsById: ALL locations — used to resolve item IDs to images for card display and tag filters.
     val itemsById = remember(items) { items.associateBy { it.driveId } }
 
@@ -531,7 +532,7 @@ private fun StyleListScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.End,
             ) {
-                if (selectedStyleIds.size >= 2) {
+                if (selectedStyleIds.size >= 2 && !isOffline) {
                     ExtendedFloatingActionButton(
                         onClick = { if (!isComposing) onCombineSelectedStyles() },
                         containerColor = MaterialTheme.colorScheme.tertiaryContainer,
@@ -578,28 +579,30 @@ private fun StyleListScreen(
                             containerColor = MaterialTheme.colorScheme.primaryContainer,
                             onClick = { fabExpanded = false; onCreateStyle() },
                         )
-                        SpeedDialItem(
-                            label = if (isPredicting) stringResource(R.string.styles_thinking) else stringResource(R.string.styles_suggest),
-                            icon = {
-                                if (isPredicting)
-                                    CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
-                                else
-                                    Icon(Icons.Default.AutoAwesome, contentDescription = null)
-                            },
-                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                            onClick = { fabExpanded = false; if (!isPredicting) onSuggestStyle() },
-                        )
-                        SpeedDialItem(
-                            label = if (isComposing) stringResource(R.string.styles_thinking) else stringResource(R.string.styles_compose),
-                            icon = {
-                                if (isComposing)
-                                    CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
-                                else
-                                    Icon(Icons.Default.AutoFixHigh, contentDescription = null)
-                            },
-                            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                            onClick = { fabExpanded = false; if (!isComposing) onComposeStyle() },
-                        )
+                        if (!isOffline) {
+                            SpeedDialItem(
+                                label = if (isPredicting) stringResource(R.string.styles_thinking) else stringResource(R.string.styles_suggest),
+                                icon = {
+                                    if (isPredicting)
+                                        CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
+                                    else
+                                        Icon(Icons.Default.AutoAwesome, contentDescription = null)
+                                },
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                onClick = { fabExpanded = false; if (!isPredicting) onSuggestStyle() },
+                            )
+                            SpeedDialItem(
+                                label = if (isComposing) stringResource(R.string.styles_thinking) else stringResource(R.string.styles_compose),
+                                icon = {
+                                    if (isComposing)
+                                        CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
+                                    else
+                                        Icon(Icons.Default.AutoFixHigh, contentDescription = null)
+                                },
+                                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                                onClick = { fabExpanded = false; if (!isComposing) onComposeStyle() },
+                            )
+                        }
                     }
                 }
                 FloatingActionButton(onClick = { fabExpanded = !fabExpanded }) {
@@ -1115,6 +1118,7 @@ private fun StyleEditingView(
     locations: List<Location> = emptyList(),
     modifier: Modifier = Modifier,
 ) {
+    val isOffline = LocalIsOffline.current
     BackHandler(onBack = onCancel)
 
     val itemsById = remember(allItems) { allItems.associateBy { it.driveId } }
@@ -1324,8 +1328,8 @@ private fun StyleEditingView(
                 }
             }
 
-            // Refinement section — only shown when opened from an AI suggestion
-            if (prediction != null || newSuggestion != null) {
+            // Refinement section — only shown when opened from an AI suggestion (hidden offline)
+            if (!isOffline && (prediction != null || newSuggestion != null)) {
                 RefinementSection(
                     input = refinementInput,
                     feedbackHistory = feedbackHistory,
@@ -1448,6 +1452,7 @@ private fun ItemSwapSheet(
     onSelectItem: (String) -> Unit,
     onDismiss: () -> Unit,
 ) {
+    val isOffline = LocalIsOffline.current
     val ctx = LocalContext.current
     val targetCategory = targetItem.tags?.category
 
@@ -1502,7 +1507,7 @@ private fun ItemSwapSheet(
                 if (isLoadingAlternatives) {
                     CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
                     Spacer(Modifier.width(12.dp))
-                } else {
+                } else if (!isOffline) {
                     TextButton(onClick = onSuggestAlternatives) {
                         Icon(Icons.Default.AutoAwesome, null, modifier = Modifier.size(14.dp))
                         Spacer(Modifier.width(4.dp))

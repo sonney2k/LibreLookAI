@@ -405,4 +405,7 @@
     <string name="battery_exempt_title">Hintergrundverarbeitung erlauben</string>
     <string name="battery_exempt_text">Android kann die Verarbeitung stoppen, wenn der Bildschirm ausgeht. Um das zu verhindern, deaktiviere die Akku-Optimierung für LibreLookAI.</string>
     <string name="battery_exempt_action">Einstellungen öffnen</string>
+
+    <!-- Offline mode -->
+    <string name="offline_banner">Offline — Nur-Ansicht-Modus</string>
 </resources>

@@ -416,4 +416,7 @@
     <string name="battery_exempt_title">Allow background jobs</string>
     <string name="battery_exempt_text">Android may stop wardrobe processing when the screen turns off. To prevent this, disable battery optimization for LibreLookAI.</string>
     <string name="battery_exempt_action">Open Settings</string>
+
+    <!-- Offline mode -->
+    <string name="offline_banner">You are offline — view-only mode</string>
 </resources>

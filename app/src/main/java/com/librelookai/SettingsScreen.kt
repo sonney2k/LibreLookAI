@@ -432,6 +432,7 @@ private fun DataTab(
     onRenameLocation: (String, String, String?) -> Unit,
     onDeleteLocation: (String) -> Unit,
 ) {
+    val isOffline = LocalIsOffline.current
     val audit = wardrobeState.auditProgress
     var showRetagDialog by remember { mutableStateOf(false) }
     var showRemoveBgDialog by remember { mutableStateOf(false) }
@@ -554,6 +555,7 @@ private fun DataTab(
                 OutlinedButton(
                     onClick = { showRetagDialog = true },
                     modifier = Modifier.fillMaxWidth(),
+                    enabled = !isOffline,
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
                     border = BorderStroke(1.dp, MaterialTheme.colorScheme.error),
                 ) {
@@ -594,6 +596,7 @@ private fun DataTab(
                 OutlinedButton(
                     onClick = { showRemoveBgDialog = true },
                     modifier = Modifier.fillMaxWidth(),
+                    enabled = !isOffline,
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
                     border = BorderStroke(1.dp, MaterialTheme.colorScheme.error),
                 ) {
@@ -653,7 +656,7 @@ private fun DataTab(
                 else -> OutlinedButton(
                     onClick = onStartRepairAndRefresh,
                     modifier = Modifier.fillMaxWidth(),
-                    enabled = !wardrobeState.isLoading && audit == null,
+                    enabled = !wardrobeState.isLoading && audit == null && !isOffline,
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
                     border = BorderStroke(1.dp, MaterialTheme.colorScheme.error),
                 ) {
@@ -694,6 +697,7 @@ private fun DataTab(
                 OutlinedButton(
                     onClick = { showImportOptionsDialog = true },
                     modifier = Modifier.fillMaxWidth(),
+                    enabled = !isOffline,
                 ) {
                     Icon(Icons.Default.FolderOpen, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.padding(start = 8.dp))

@@ -57,6 +57,7 @@ fun WardrobeGapScreen(
     onSettingsClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
+    val isOffline = LocalIsOffline.current
     val state         by gapViewModel.state.collectAsState()
     val wardrobeState by wardrobeViewModel.state.collectAsState()
     val profileState  by profileViewModel.state.collectAsState()
@@ -99,7 +100,7 @@ fun WardrobeGapScreen(
                                 prefs  = profileState.preferences,
                             )
                         },
-                        enabled = !state.isAnalyzing && wardrobeState.images.isNotEmpty(),
+                        enabled = !state.isAnalyzing && wardrobeState.images.isNotEmpty() && !isOffline,
                         modifier = Modifier.fillMaxWidth(),
                     ) {
                         Icon(Icons.Default.AutoAwesome, contentDescription = null, modifier = Modifier.size(18.dp))

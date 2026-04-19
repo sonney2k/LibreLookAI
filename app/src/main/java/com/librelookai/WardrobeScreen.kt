@@ -494,6 +494,7 @@ private fun GridContent(
     onSettingsClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
+    val isOffline = LocalIsOffline.current
     var cellSizeDp by rememberSaveable { mutableFloatStateOf(120f) }
     var pinchVisualScale by remember { mutableFloatStateOf(1f) }
     var selectedIndex by remember { mutableStateOf<Int?>(null) }
@@ -824,14 +825,16 @@ private fun GridContent(
                     icon = { Icon(Icons.Default.Edit, contentDescription = null) },
                     text = { Text(stringResource(R.string.wardrobe_create_outfit)) },
                 )
-                ExtendedFloatingActionButton(
-                    onClick = { onComposeStyleFromSelection(state.selectedIds) },
-                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                    icon = { Icon(Icons.Default.AutoFixHigh, contentDescription = null) },
-                    text = { Text(stringResource(R.string.wardrobe_compose_ai)) },
-                )
-                if (locations.size > 1) {
+                if (!isOffline) {
+                    ExtendedFloatingActionButton(
+                        onClick = { onComposeStyleFromSelection(state.selectedIds) },
+                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                        icon = { Icon(Icons.Default.AutoFixHigh, contentDescription = null) },
+                        text = { Text(stringResource(R.string.wardrobe_compose_ai)) },
+                    )
+                }
+                if (locations.size > 1 && !isOffline) {
                     ExtendedFloatingActionButton(
                         onClick = { showMoveDialog = true },
                         containerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -848,7 +851,7 @@ private fun GridContent(
                     text = { Text(stringResource(R.string.action_delete)) },
                 )
             }
-        } else {
+        } else if (!isOffline) {
             // Show closet picker before gallery when 2+ closets exist
             var showGalleryClosetPicker by remember { mutableStateOf(false) }
 
@@ -1447,14 +1450,15 @@ private fun TagsOverlay(
                     }
                 }
             }
+            val isOffline = LocalIsOffline.current
             Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                TextButton(onClick = onTagImage, contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)) {
-                    Text(stringResource(R.string.wardrobe_tag_detect), color = Color.White, style = MaterialTheme.typography.labelSmall)
+                TextButton(onClick = onTagImage, enabled = !isOffline, contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)) {
+                    Text(stringResource(R.string.wardrobe_tag_detect), color = if (isOffline) Color.White.copy(alpha = 0.38f) else Color.White, style = MaterialTheme.typography.labelSmall)
                 }
-                TextButton(onClick = onRemoveBackground, contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)) {
+                TextButton(onClick = onRemoveBackground, enabled = !isOffline, contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)) {
                     Text(
                         stringResource(if (hasOriginal) R.string.wardrobe_tag_re_remove_bg else R.string.wardrobe_tag_remove_bg),
-                        color = Color.White,
+                        color = if (isOffline) Color.White.copy(alpha = 0.38f) else Color.White,
                         style = MaterialTheme.typography.labelSmall,
                     )
                 }

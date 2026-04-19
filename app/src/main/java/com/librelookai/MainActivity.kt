@@ -10,8 +10,10 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,6 +31,7 @@ import androidx.compose.material.icons.filled.DoorSliding
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Style
 import androidx.compose.material.icons.filled.TipsAndUpdates
+import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
@@ -98,6 +101,10 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                 } else {
+                    val networkMonitor = remember { NetworkMonitor(this@MainActivity) }
+                    val isOnline by networkMonitor.isOnline.collectAsState()
+                    val isOffline = !isOnline
+
                     var selectedTab by rememberSaveable { mutableIntStateOf(1) }
                     val locationViewModel: LocationViewModel = viewModel()
                     val stylesViewModel: StylesViewModel = viewModel()
@@ -156,6 +163,7 @@ class MainActivity : ComponentActivity() {
                         LocalContext provides localizedContext,
                         LocalActivityResultRegistryOwner provides this@MainActivity,
                         LocalOnBackPressedDispatcherOwner provides this@MainActivity,
+                        LocalIsOffline provides isOffline,
                     ) {
 
                         // Location permission — request once; refresh weather when granted
@@ -192,93 +200,111 @@ class MainActivity : ComponentActivity() {
                                 )
                             },
                         ) { innerPadding ->
-                            Box(Modifier.fillMaxSize()) {
-                                val onSettingsClick = { selectedTab = 5 }
-                                when (selectedTab) {
-                                    0 -> StylesScreen(
-                                        stylesViewModel = stylesViewModel,
-                                        wardrobeViewModel = wardrobeViewModel,
-                                        outfitsViewModel = outfitsViewModel,
-                                        profileViewModel = profileViewModel,
-                                        weatherViewModel = weatherViewModel,
-                                        locationViewModel = locationViewModel,
-                                        onSettingsClick = onSettingsClick,
-                                        modifier = Modifier.padding(innerPadding),
-                                    )
-                                    1 -> WardrobeScreen(
-                                        viewModel = wardrobeViewModel,
-                                        outfitsViewModel = outfitsViewModel,
-                                        stylesViewModel = stylesViewModel,
-                                        locationViewModel = locationViewModel,
-                                        onCreateStyleFromSelection = { itemIds ->
-                                            stylesViewModel.startCreatingFromItems(itemIds)
-                                            wardrobeViewModel.clearSelection()
-                                            selectedTab = 0
-                                        },
-                                        onComposeStyleFromSelection = { itemIds ->
-                                            stylesViewModel.triggerCompositionFromItems(
-                                                requiredItemIds = itemIds,
-                                                prefs           = profileViewModel.state.value.preferences,
-                                                weather         = weatherViewModel.state.value.data,
-                                                images          = wardrobeViewModel.state.value.images,
-                                            )
-                                            wardrobeViewModel.clearSelection()
-                                            selectedTab = 0
-                                        },
-                                        dismissViewerTrigger = dismissWardrobeViewerTrigger,
-                                        onSettingsClick = onSettingsClick,
-                                        modifier = Modifier.padding(innerPadding),
-                                    )
-                                    2 -> CalendarScreen(
-                                        outfitsViewModel = outfitsViewModel,
-                                        stylesViewModel = stylesViewModel,
-                                        wardrobeViewModel = wardrobeViewModel,
-                                        locationViewModel = locationViewModel,
-                                        onEditStyle = { style ->
-                                            stylesViewModel.startEditing(style)
-                                            selectedTab = 0
-                                        },
-                                        onSettingsClick = onSettingsClick,
-                                        modifier = Modifier.padding(innerPadding),
-                                    )
-                                    3 -> TravelScreen(
-                                        travelViewModel = travelViewModel,
-                                        wardrobeViewModel = wardrobeViewModel,
-                                        profileViewModel = profileViewModel,
-                                        stylesViewModel = stylesViewModel,
-                                        locationViewModel = locationViewModel,
-                                        onSettingsClick = onSettingsClick,
-                                        modifier = Modifier.padding(innerPadding),
-                                    )
-                                    4 -> WardrobeGapScreen(
-                                        gapViewModel = gapViewModel,
-                                        wardrobeViewModel = wardrobeViewModel,
-                                        profileViewModel = profileViewModel,
-                                        locationViewModel = locationViewModel,
-                                        onSettingsClick = onSettingsClick,
-                                        modifier = Modifier.padding(innerPadding),
-                                    )
-                                    5 -> SettingsScreen(
-                                        profileViewModel = profileViewModel,
-                                        wardrobeViewModel = wardrobeViewModel,
-                                        locationViewModel = locationViewModel,
-                                        creditsViewModel = creditsViewModel,
-                                        onBack = { selectedTab = 1 },
-                                        modifier = Modifier.padding(innerPadding),
-                                    )
+                            Column(Modifier.fillMaxSize().padding(innerPadding)) {
+                                // Offline banner
+                                androidx.compose.animation.AnimatedVisibility(visible = isOffline) {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .background(MaterialTheme.colorScheme.errorContainer)
+                                            .padding(horizontal = 16.dp, vertical = 6.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.Center,
+                                    ) {
+                                        Icon(
+                                            Icons.Default.CloudOff,
+                                            contentDescription = null,
+                                            modifier = Modifier.size(16.dp),
+                                            tint = MaterialTheme.colorScheme.onErrorContainer,
+                                        )
+                                        Spacer(Modifier.width(8.dp))
+                                        Text(
+                                            stringResource(R.string.offline_banner),
+                                            style = MaterialTheme.typography.labelMedium,
+                                            color = MaterialTheme.colorScheme.onErrorContainer,
+                                        )
+                                    }
                                 }
 
-                                // Weather badge — bottom-left, floating above the nav bar
-                                weatherState.data?.let { weather ->
-                                    WeatherBadge(
-                                        data = weather,
-                                        modifier = Modifier
-                                            .align(Alignment.BottomStart)
-                                            .padding(
-                                                start = 12.dp,
-                                                bottom = innerPadding.calculateBottomPadding() + 8.dp,
-                                            ),
-                                    )
+                                Box(Modifier.fillMaxSize()) {
+                                    val onSettingsClick = { selectedTab = 5 }
+                                    when (selectedTab) {
+                                        0 -> StylesScreen(
+                                            stylesViewModel = stylesViewModel,
+                                            wardrobeViewModel = wardrobeViewModel,
+                                            outfitsViewModel = outfitsViewModel,
+                                            profileViewModel = profileViewModel,
+                                            weatherViewModel = weatherViewModel,
+                                            locationViewModel = locationViewModel,
+                                            onSettingsClick = onSettingsClick,
+                                        )
+                                        1 -> WardrobeScreen(
+                                            viewModel = wardrobeViewModel,
+                                            outfitsViewModel = outfitsViewModel,
+                                            stylesViewModel = stylesViewModel,
+                                            locationViewModel = locationViewModel,
+                                            onCreateStyleFromSelection = { itemIds ->
+                                                stylesViewModel.startCreatingFromItems(itemIds)
+                                                wardrobeViewModel.clearSelection()
+                                                selectedTab = 0
+                                            },
+                                            onComposeStyleFromSelection = { itemIds ->
+                                                stylesViewModel.triggerCompositionFromItems(
+                                                    requiredItemIds = itemIds,
+                                                    prefs           = profileViewModel.state.value.preferences,
+                                                    weather         = weatherViewModel.state.value.data,
+                                                    images          = wardrobeViewModel.state.value.images,
+                                                )
+                                                wardrobeViewModel.clearSelection()
+                                                selectedTab = 0
+                                            },
+                                            dismissViewerTrigger = dismissWardrobeViewerTrigger,
+                                            onSettingsClick = onSettingsClick,
+                                        )
+                                        2 -> CalendarScreen(
+                                            outfitsViewModel = outfitsViewModel,
+                                            stylesViewModel = stylesViewModel,
+                                            wardrobeViewModel = wardrobeViewModel,
+                                            locationViewModel = locationViewModel,
+                                            onEditStyle = { style ->
+                                                stylesViewModel.startEditing(style)
+                                                selectedTab = 0
+                                            },
+                                            onSettingsClick = onSettingsClick,
+                                        )
+                                        3 -> TravelScreen(
+                                            travelViewModel = travelViewModel,
+                                            wardrobeViewModel = wardrobeViewModel,
+                                            profileViewModel = profileViewModel,
+                                            stylesViewModel = stylesViewModel,
+                                            locationViewModel = locationViewModel,
+                                            onSettingsClick = onSettingsClick,
+                                        )
+                                        4 -> WardrobeGapScreen(
+                                            gapViewModel = gapViewModel,
+                                            wardrobeViewModel = wardrobeViewModel,
+                                            profileViewModel = profileViewModel,
+                                            locationViewModel = locationViewModel,
+                                            onSettingsClick = onSettingsClick,
+                                        )
+                                        5 -> SettingsScreen(
+                                            profileViewModel = profileViewModel,
+                                            wardrobeViewModel = wardrobeViewModel,
+                                            locationViewModel = locationViewModel,
+                                            creditsViewModel = creditsViewModel,
+                                            onBack = { selectedTab = 1 },
+                                        )
+                                    }
+
+                                    // Weather badge — bottom-left, floating above the nav bar
+                                    weatherState.data?.let { weather ->
+                                        WeatherBadge(
+                                            data = weather,
+                                            modifier = Modifier
+                                                .align(Alignment.BottomStart)
+                                                .padding(start = 12.dp, bottom = 8.dp),
+                                        )
+                                    }
                                 }
                             }
                         }

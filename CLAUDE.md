@@ -153,6 +153,27 @@ It shows: editable name + description, outfit items as 100 dp tappable tiles in 
 2. Calls `wardrobeViewModel.moveItemsToFolder(itemIds, toFolderId)` — moves each item's cutout + original + sidecar files via `DriveRepository.moveFile()` (single PATCH, no re-upload), then drops the moved items from in-memory state.
 3. A Snackbar confirms success or failure.
 
+### Offline mode
+
+The app works in view-only mode when offline. `NetworkMonitor` (in `NetworkUtils.kt`) uses `ConnectivityManager.NetworkCallback` to expose a `StateFlow<Boolean>` of real-time connectivity. `MainActivity` provides the state via `LocalIsOffline`, a `CompositionLocal` defined in `NetworkUtils.kt` — any composable reads `LocalIsOffline.current` without parameter threading.
+
+**UI indicator**: An animated banner (`errorContainer` background, `CloudOff` icon, localized text) appears at the top of the content area when offline and disappears when connectivity returns.
+
+**What works offline** (from local disk cache):
+- Browsing wardrobe items, styles, calendar, and previously generated travel packing lists
+- Manual style creation, editing style names/descriptions, deleting styles/items
+- Viewing tag overlays and item details
+
+**What is disabled offline** (hidden or greyed out):
+- **WardrobeScreen**: upload FABs (camera + gallery) hidden; "Compose with AI" and "Move to closet" hidden in selection mode
+- **StylesScreen**: AI speed-dial items (Suggest, Compose) hidden; "Combine with AI" hidden in multi-select; "Suggest alternatives" hidden in `ItemSwapSheet`; `RefinementSection` hidden in `StyleEditingView`
+- **TravelScreen**: Generate button greyed out; refinement section hidden; "Move all to Travel" button greyed out
+- **WardrobeGapScreen**: Analyze button greyed out
+- **SettingsScreen**: Retag All, Remove All Backgrounds, Repair & Sync, Import buttons greyed out
+- **Full-screen viewer**: "Detect tags" and "Remove background" buttons greyed out in `TagsOverlay`
+
+When adding new network-dependent UI actions, read `LocalIsOffline.current` and either hide the action or set `enabled = !isOffline`.
+
 ### Navigation
 
 `MainActivity` owns a single `selectedTab: Int` integer. There is no Navigation component — each tab renders its Screen composable directly inside a `when` block. All ViewModels are created once at the `MainActivity` level and passed down as parameters. A `LaunchedEffect(activeLocationId, locationList)` in `MainActivity` keeps `WardrobeViewModel`, `OutfitsViewModel`, and `StylesViewModel` in sync whenever the global location changes.
