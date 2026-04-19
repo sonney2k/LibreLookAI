@@ -419,4 +419,21 @@
 
     <!-- Offline mode -->
     <string name="offline_banner">You are offline — view-only mode</string>
+
+    <!-- About -->
+    <string name="settings_tab_about">About</string>
+    <string name="about_version">Version %1$s (%2$s)</string>
+    <string name="about_description">LibreLookAI is a free, open-source AI-powered wardrobe manager. It helps you organize your clothing, get outfit suggestions, plan travel packing lists, and discover wardrobe gaps — all powered by AI.</string>
+    <string name="about_open_source">This app is open source and free to use. The source code is available on GitHub.</string>
+    <string name="about_ai_title">AI Usage &amp; Costs</string>
+    <string name="about_ai_desc">LibreLookAI relies heavily on Google Gemini for vision and text AI. Every AI action (background removal, tagging, outfit suggestions, etc.) requires a Gemini API call, which has a small cost.</string>
+    <string name="about_cost_title">Cost per AI action</string>
+    <string name="about_cost_bg_removal">Background removal: 5 credits</string>
+    <string name="about_cost_classify">Auto-tag item: 2 credits</string>
+    <string name="about_cost_text">Style suggestion / outfit composition: 2 credits</string>
+    <string name="about_cost_travel">Travel packing list / wardrobe gap analysis: 2 credits</string>
+    <string name="about_byok_title">Bring Your Own Key (BYOK)</string>
+    <string name="about_byok_desc">You can use your own free Gemini API key to avoid credit costs entirely:\n\n1. Go to aistudio.google.com\n2. Click \"Get API key\" → \"Create API key\"\n3. Copy the key (starts with AIza…)\n4. Paste it in Settings → Profile → Gemini API Key\n\nYour key is stored only on this device and used directly with Google — no data passes through our servers.</string>
+    <string name="about_credits_title">Credits (Managed Mode)</string>
+    <string name="about_credits_desc">For users who prefer not to create their own API key, the app offers a coin-based credit system. Credits can be purchased in the Credits tab and are consumed per AI action at the rates listed above. This mode routes requests through a server-side proxy.</string>
 </resources>

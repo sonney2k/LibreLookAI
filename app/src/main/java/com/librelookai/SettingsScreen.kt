@@ -143,6 +143,7 @@ fun SettingsScreen(
                     }
                 },
             )
+            Tab(selected = selectedTab == 3, onClick = { selectedTab = 3 }, text = { Text(stringResource(R.string.settings_tab_about)) })
         }
 
         when (selectedTab) {
@@ -187,6 +188,7 @@ fun SettingsScreen(
                 creditsViewModel = creditsViewModel,
                 modifier = Modifier.fillMaxSize(),
             )
+            3 -> AboutTab()
         }
     }
 
@@ -1303,4 +1305,86 @@ private fun DriveFolderPickerDialog(
             }
         },
     )
+}
+
+// ---------- About tab ----------
+
+@Composable
+private fun AboutTab() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        // Version
+        Text(
+            stringResource(R.string.about_version, BuildConfig.VERSION_NAME, BuildConfig.GIT_HASH),
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
+        )
+
+        // App description
+        Text(
+            stringResource(R.string.about_description),
+            style = MaterialTheme.typography.bodyMedium,
+        )
+        Text(
+            stringResource(R.string.about_open_source),
+            style = MaterialTheme.typography.bodyMedium,
+        )
+
+        HorizontalDivider()
+
+        // AI usage
+        Text(
+            stringResource(R.string.about_ai_title),
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.SemiBold,
+        )
+        Text(
+            stringResource(R.string.about_ai_desc),
+            style = MaterialTheme.typography.bodyMedium,
+        )
+
+        // Cost table
+        Text(
+            stringResource(R.string.about_cost_title),
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.SemiBold,
+        )
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Text(stringResource(R.string.about_cost_bg_removal), style = MaterialTheme.typography.bodySmall)
+            Text(stringResource(R.string.about_cost_classify), style = MaterialTheme.typography.bodySmall)
+            Text(stringResource(R.string.about_cost_text), style = MaterialTheme.typography.bodySmall)
+            Text(stringResource(R.string.about_cost_travel), style = MaterialTheme.typography.bodySmall)
+        }
+
+        HorizontalDivider()
+
+        // BYOK
+        Text(
+            stringResource(R.string.about_byok_title),
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.SemiBold,
+        )
+        Text(
+            stringResource(R.string.about_byok_desc),
+            style = MaterialTheme.typography.bodyMedium,
+        )
+
+        HorizontalDivider()
+
+        // Credits / managed mode
+        Text(
+            stringResource(R.string.about_credits_title),
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.SemiBold,
+        )
+        Text(
+            stringResource(R.string.about_credits_desc),
+            style = MaterialTheme.typography.bodyMedium,
+        )
+    }
 }

@@ -18,6 +18,10 @@ val localProps = Properties().apply {
     if (f.exists()) load(f.inputStream())
 }
 
+val gitHash: String = providers.exec {
+    commandLine("git", "rev-parse", "--short", "HEAD")
+}.standardOutput.asText.get().trim()
+
 android {
     namespace = "com.librelookai"
     compileSdk = 35
@@ -58,6 +62,8 @@ android {
             "FIREBASE_WEB_CLIENT_ID",
             "\"${localProps.getProperty("firebase.web.client.id", "")}\"",
         )
+        // Git commit hash for debugging
+        buildConfigField("String", "GIT_HASH", "\"$gitHash\"")
     }
 
     signingConfigs {

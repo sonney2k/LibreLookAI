@@ -408,4 +408,21 @@
 
     <!-- Offline mode -->
     <string name="offline_banner">Offline — Nur-Ansicht-Modus</string>
+
+    <!-- About -->
+    <string name="settings_tab_about">Info</string>
+    <string name="about_version">Version %1$s (%2$s)</string>
+    <string name="about_description">LibreLookAI ist ein kostenloser, quelloffener, KI-gestützter Kleiderschrank-Manager. Er hilft dir, deine Kleidung zu organisieren, Outfit-Vorschläge zu erhalten, Reise-Packlisten zu planen und Garderobenlücken zu entdecken — alles mit KI.</string>
+    <string name="about_open_source">Diese App ist quelloffen und kostenlos nutzbar. Der Quellcode ist auf GitHub verfügbar.</string>
+    <string name="about_ai_title">KI-Nutzung &amp; Kosten</string>
+    <string name="about_ai_desc">LibreLookAI basiert stark auf Google Gemini für Bild- und Text-KI. Jede KI-Aktion (Hintergrundentfernung, Tagging, Outfit-Vorschläge usw.) erfordert einen Gemini-API-Aufruf, der geringe Kosten verursacht.</string>
+    <string name="about_cost_title">Kosten pro KI-Aktion</string>
+    <string name="about_cost_bg_removal">Hintergrundentfernung: 5 Credits</string>
+    <string name="about_cost_classify">Automatisches Tagging: 2 Credits</string>
+    <string name="about_cost_text">Stil-Vorschlag / Outfit-Zusammenstellung: 2 Credits</string>
+    <string name="about_cost_travel">Reise-Packliste / Garderobe-Lücken-Analyse: 2 Credits</string>
+    <string name="about_byok_title">Eigenen Schlüssel verwenden (BYOK)</string>
+    <string name="about_byok_desc">Du kannst deinen eigenen kostenlosen Gemini-API-Schlüssel verwenden, um Credits komplett zu vermeiden:\n\n1. Gehe zu aistudio.google.com\n2. Klicke auf \"Get API key\" → \"Create API key\"\n3. Kopiere den Schlüssel (beginnt mit AIza…)\n4. Füge ihn unter Einstellungen → Profil → Gemini API-Schlüssel ein\n\nDein Schlüssel wird nur auf diesem Gerät gespeichert und direkt mit Google verwendet — keine Daten gehen über unsere Server.</string>
+    <string name="about_credits_title">Credits (Verwalteter Modus)</string>
+    <string name="about_credits_desc">Für Nutzer, die keinen eigenen API-Schlüssel erstellen möchten, bietet die App ein münzbasiertes Credit-System. Credits können im Credits-Tab gekauft und pro KI-Aktion zu den oben genannten Preisen verbraucht werden. In diesem Modus werden Anfragen über einen serverseitigen Proxy geleitet.</string>
 </resources>
