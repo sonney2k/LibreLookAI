@@ -42,6 +42,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -61,6 +62,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
+import kotlin.math.abs
+import kotlin.math.roundToInt
 
 @Composable
 fun CaptureScreen(
@@ -79,6 +82,24 @@ fun CaptureScreen(
     // Non-null → show review screen
     var capturedFile by remember { mutableStateOf<File?>(null) }
     var userRotation by remember { mutableIntStateOf(0) }
+
+    // Track preview dimensions to crop captured image to match viewfinder
+    var previewWidth by remember { mutableIntStateOf(0) }
+    var previewHeight by remember { mutableIntStateOf(0) }
+
+    // Intermediate state: raw capture file triggers crop+resize before showing review
+    var rawCaptureFile by remember { mutableStateOf<File?>(null) }
+    LaunchedEffect(rawCaptureFile) {
+        val f = rawCaptureFile ?: return@LaunchedEffect
+        val pw = previewWidth
+        val ph = previewHeight
+        withContext(Dispatchers.IO) {
+            cropToPreviewAndResize(f, pw, ph)
+        }
+        isCapturing = false
+        capturedFile = f
+        userRotation = 0
+    }
 
     if (capturedFile == null) {
         // ── Camera viewfinder ──────────────────────────────────────────────
@@ -108,7 +129,12 @@ fun CaptureScreen(
                         }, ContextCompat.getMainExecutor(ctx))
                     }
                 },
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .onGloballyPositioned { coordinates ->
+                        previewWidth = coordinates.size.width
+                        previewHeight = coordinates.size.height
+                    },
             )
 
             IconButton(
@@ -149,9 +175,7 @@ fun CaptureScreen(
                             ContextCompat.getMainExecutor(context),
                             object : ImageCapture.OnImageSavedCallback {
                                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                                    isCapturing = false
-                                    capturedFile = file
-                                    userRotation = 0
+                                    rawCaptureFile = file // triggers crop+resize LaunchedEffect
                                 }
                                 override fun onError(exc: ImageCaptureException) {
                                     isCapturing = false
@@ -378,6 +402,66 @@ private fun bakeRotation(exifNormalBitmap: Bitmap, userRotation: Int, source: Fi
     exif.saveAttributes()
     source.delete()
     return outFile
+}
+
+/**
+ * Crop [file] to match the preview aspect ratio (center-crop, matching PreviewView FILL_CENTER)
+ * and resize so max(width, height) ≤ 1280. Overwrites the file in place with EXIF orientation NORMAL.
+ */
+private fun cropToPreviewAndResize(file: File, previewWidth: Int, previewHeight: Int) {
+    val bitmap = loadBitmapWithExif(file)
+    val imgW = bitmap.width
+    val imgH = bitmap.height
+
+    // Center-crop to match the preview's aspect ratio
+    val cropped = if (previewWidth > 0 && previewHeight > 0) {
+        val previewRatio = previewWidth.toFloat() / previewHeight.toFloat()
+        val imgRatio = imgW.toFloat() / imgH.toFloat()
+        if (abs(imgRatio - previewRatio) > 0.01f) {
+            val cropW: Int
+            val cropH: Int
+            if (imgRatio > previewRatio) {
+                // Image wider than preview → crop sides
+                cropH = imgH
+                cropW = (imgH * previewRatio).roundToInt()
+            } else {
+                // Image taller than preview → crop top/bottom
+                cropW = imgW
+                cropH = (imgW / previewRatio).roundToInt()
+            }
+            val x = (imgW - cropW) / 2
+            val y = (imgH - cropH) / 2
+            Bitmap.createBitmap(bitmap, x, y, cropW, cropH).also {
+                if (it !== bitmap) bitmap.recycle()
+            }
+        } else {
+            bitmap
+        }
+    } else {
+        bitmap
+    }
+
+    // Resize so max(width, height) ≤ 1280
+    val maxDim = maxOf(cropped.width, cropped.height)
+    val resized = if (maxDim > 1280) {
+        val scale = 1280f / maxDim
+        val newW = (cropped.width * scale).roundToInt()
+        val newH = (cropped.height * scale).roundToInt()
+        Bitmap.createScaledBitmap(cropped, newW, newH, true).also {
+            if (it !== cropped) cropped.recycle()
+        }
+    } else {
+        cropped
+    }
+
+    FileOutputStream(file).use { out ->
+        resized.compress(Bitmap.CompressFormat.JPEG, 95, out)
+    }
+    resized.recycle()
+
+    val exif = ExifInterface(file.absolutePath)
+    exif.setAttribute(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL.toString())
+    exif.saveAttributes()
 }
 
 @Composable
