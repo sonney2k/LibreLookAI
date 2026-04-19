@@ -16,8 +16,10 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.concurrent.TimeUnit
+import kotlin.math.roundToInt
 
 /** Identifies the AI action sent to the proxy for credit-cost accounting. */
 private enum class GeminiAction(val header: String) {
@@ -124,6 +126,34 @@ class GeminiRepository(private val app: Application) {
         resolveApiKey().isNotBlank() || BuildConfig.PROXY_BASE_URL.isNotBlank()
 
     /**
+     * Read [imageFile], downscale so max(width, height) ≤ 1280 if needed,
+     * and return the result as Base64. The [format] determines the compression
+     * used when re-encoding is necessary (JPEG for photos, PNG for cutouts).
+     */
+    private fun readAndResizeBase64(imageFile: File, format: Bitmap.CompressFormat): String {
+        val opts = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        BitmapFactory.decodeFile(imageFile.absolutePath, opts)
+        val maxDim = maxOf(opts.outWidth, opts.outHeight)
+        if (maxDim <= 1280) {
+            // Already small enough — skip decode/re-encode
+            return Base64.encodeToString(imageFile.readBytes(), Base64.NO_WRAP)
+        }
+        val bitmap = BitmapFactory.decodeFile(imageFile.absolutePath)
+            ?: return Base64.encodeToString(imageFile.readBytes(), Base64.NO_WRAP)
+        val scale = 1280f / maxDim
+        val newW = (bitmap.width * scale).roundToInt()
+        val newH = (bitmap.height * scale).roundToInt()
+        val resized = Bitmap.createScaledBitmap(bitmap, newW, newH, true)
+        if (resized !== bitmap) bitmap.recycle()
+        val quality = if (format == Bitmap.CompressFormat.PNG) 100 else 95
+        val baos = ByteArrayOutputStream()
+        resized.compress(format, quality, baos)
+        resized.recycle()
+        Log.d(TAG, "Resized ${opts.outWidth}x${opts.outHeight} → ${newW}x${newH} for Gemini")
+        return Base64.encodeToString(baos.toByteArray(), Base64.NO_WRAP)
+    }
+
+    /**
      * Sends [imageFile] to Gemini and returns a PNG with the background removed.
      * Returns null on any failure — callers should fall back to the original.
      */
@@ -136,7 +166,7 @@ class GeminiRepository(private val app: Application) {
 
             Log.d(TAG, "Sending ${imageFile.length() / 1024}KB image to Gemini ($BG_MODEL)")
 
-            val imageBase64 = Base64.encodeToString(imageFile.readBytes(), Base64.NO_WRAP)
+            val imageBase64 = readAndResizeBase64(imageFile, Bitmap.CompressFormat.JPEG)
 
             val body = gson.toJson(
                 mapOf(
@@ -216,7 +246,8 @@ class GeminiRepository(private val app: Application) {
 
             Log.d(TAG, "Classifying clothing in ${imageFile.name} via $CLASSIFY_MODEL (lang=$language)")
             val mimeType = if (imageFile.extension == "png") "image/png" else "image/jpeg"
-            val imageBase64 = Base64.encodeToString(imageFile.readBytes(), Base64.NO_WRAP)
+            val format = if (imageFile.extension == "png") Bitmap.CompressFormat.PNG else Bitmap.CompressFormat.JPEG
+            val imageBase64 = readAndResizeBase64(imageFile, format)
             val prompt = CLASSIFY_PROMPT.replace("{LANGUAGE}", language)
 
             val body = gson.toJson(
