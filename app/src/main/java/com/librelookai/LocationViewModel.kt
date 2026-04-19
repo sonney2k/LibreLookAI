@@ -32,8 +32,9 @@ class LocationViewModel(app: Application) : AndroidViewModel(app) {
     /** The folderId for the currently active location, or null while loading. */
     val activeFolderId: String?
         get() {
-            val s = _state.value
-            return s.locations.find { it.id == s.activeLocationId }?.folderId
+            val id = _state.value.activeLocationId
+            if (id == ALL_LOCATIONS_ID || id.isEmpty()) return null
+            return if (_state.value.locations.any { it.folderId == id }) id else null
         }
 
     init {
@@ -55,7 +56,11 @@ class LocationViewModel(app: Application) : AndroidViewModel(app) {
             gson.fromJson<List<Location>>(cachedJson, type) ?: emptyList()
         }.getOrNull() ?: return
         if (locations.isEmpty()) return
-        val activeId = if (locations.any { it.id == savedActiveId }) savedActiveId else locations[0].id
+        // activeLocationId is now folderId-based; migrate old id-based prefs transparently
+        val matchByFolder = locations.find { it.folderId == savedActiveId }
+        val matchById = if (matchByFolder == null) locations.find { it.id == savedActiveId } else null
+        val activeId = matchByFolder?.folderId ?: matchById?.folderId ?: locations[0].folderId
+        if (matchById != null) prefs.edit().putString(PREF_ACTIVE_ID, activeId).apply()
         // isLoading stays true so the UI knows a Drive refresh is still in flight.
         _state.value = LocationUiState(locations = locations, activeLocationId = activeId, isLoading = true)
     }
@@ -82,14 +87,15 @@ class LocationViewModel(app: Application) : AndroidViewModel(app) {
                     val defaultLocation = Location(name = "Home", folderId = rootId)
                     val newList = listOf(defaultLocation)
                     drive.saveLocationsJson(rootId, gson.toJson(newList))
-                    prefs.edit().putString(PREF_ACTIVE_ID, defaultLocation.id).apply()
-                    Pair(newList, defaultLocation.id)
+                    prefs.edit().putString(PREF_ACTIVE_ID, defaultLocation.folderId).apply()
+                    Pair(newList, defaultLocation.folderId)
                 } else {
-                    val activeId = if (savedActiveId != null && locations.any { it.id == savedActiveId }) {
-                        savedActiveId
-                    } else {
-                        locations[0].id.also { prefs.edit().putString(PREF_ACTIVE_ID, it).apply() }
-                    }
+                    // activeLocationId is folderId-based; also try legacy id-based match for migration
+                    val matchByFolder = if (savedActiveId != null) locations.find { it.folderId == savedActiveId } else null
+                    val matchById = if (matchByFolder == null && savedActiveId != null) locations.find { it.id == savedActiveId } else null
+                    val activeId = matchByFolder?.folderId ?: matchById?.folderId
+                        ?: locations[0].folderId.also { prefs.edit().putString(PREF_ACTIVE_ID, it).apply() }
+                    if (matchById != null) prefs.edit().putString(PREF_ACTIVE_ID, activeId).apply()
                     Pair(locations, activeId)
                 }
             }.onSuccess { (locations, activeId) ->
@@ -129,11 +135,11 @@ class LocationViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    fun renameLocation(locationId: String, newName: String, geoLocation: String? = null) {
+    fun renameLocation(locationFolderId: String, newName: String, geoLocation: String? = null) {
         if (newName.isBlank()) return
         viewModelScope.launch {
             val updated = _state.value.locations.map {
-                if (it.id == locationId) it.copy(name = newName.trim(), geoLocation = geoLocation?.trim() ?: it.geoLocation) else it
+                if (it.folderId == locationFolderId) it.copy(name = newName.trim(), geoLocation = geoLocation?.trim() ?: it.geoLocation) else it
             }
             runCatching {
                 val rootId = rootFolderId ?: drive.getOrCreateFolder().also { rootFolderId = it }
@@ -147,17 +153,17 @@ class LocationViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    fun deleteLocation(locationId: String) {
+    fun deleteLocation(locationFolderId: String) {
         val current = _state.value
         if (current.locations.size <= 1) return
         viewModelScope.launch {
-            val updated = current.locations.filter { it.id != locationId }
+            val updated = current.locations.filter { it.folderId != locationFolderId }
             runCatching {
                 val rootId = rootFolderId ?: drive.getOrCreateFolder().also { rootFolderId = it }
                 drive.saveLocationsJson(rootId, gson.toJson(updated))
             }.onSuccess {
-                val newActiveId = if (current.activeLocationId == locationId) {
-                    updated[0].id.also { prefs.edit().putString(PREF_ACTIVE_ID, it).apply() }
+                val newActiveId = if (current.activeLocationId == locationFolderId) {
+                    updated[0].folderId.also { prefs.edit().putString(PREF_ACTIVE_ID, it).apply() }
                 } else current.activeLocationId
                 prefs.edit().putString(PREF_LOCATIONS_JSON, gson.toJson(updated)).apply()
                 _state.update { it.copy(locations = updated, activeLocationId = newActiveId) }

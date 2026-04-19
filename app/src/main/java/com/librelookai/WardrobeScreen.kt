@@ -1017,7 +1017,7 @@ private fun GridContent(
     }
 
     if (showMoveDialog) {
-        val otherLocations = locations.filter { it.id != activeLocationId }
+        val otherLocations = locations.filter { it.folderId != activeLocationId }
         AlertDialog(
             onDismissRequest = { showMoveDialog = false },
             title = { Text(stringResource(R.string.wardrobe_move_to_title, state.selectedIds.size)) },
@@ -1179,7 +1179,7 @@ private fun FullScreenViewer(
 
     if (showItemActions) {
         val currentImage = images[pagerState.currentPage]
-        val otherLocations = locations.filter { it.id != activeLocationId }
+        val otherLocations = locations.filter { it.folderId != activeLocationId }
         ModalBottomSheet(
             onDismissRequest = { showItemActions = false },
         ) {
@@ -1293,7 +1293,7 @@ private fun FullScreenViewer(
 
     if (showMoveDialog) {
         val currentImage = images[pagerState.currentPage]
-        val otherLocations = locations.filter { it.id != activeLocationId }
+        val otherLocations = locations.filter { it.folderId != activeLocationId }
         AlertDialog(
             onDismissRequest = { showMoveDialog = false },
             title = { Text(stringResource(R.string.wardrobe_move_to_title, 1)) },

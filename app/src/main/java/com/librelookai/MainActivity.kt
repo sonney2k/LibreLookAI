@@ -122,7 +122,8 @@ class MainActivity : ComponentActivity() {
                     // Reload wardrobe/styles/outfits whenever the active location changes
                     val activeLocationId = locationState.activeLocationId
                     val locationList = locationState.locations
-                    val activeFolderId = locationList.find { it.id == activeLocationId }?.folderId
+                    val activeFolderId = if (activeLocationId != LocationViewModel.ALL_LOCATIONS_ID && activeLocationId.isNotEmpty())
+                        locationList.find { it.folderId == activeLocationId }?.folderId else null
                     LaunchedEffect(activeLocationId, locationList) {
                         val folderIds = locationList.map { it.folderId }
                         // Styles always loads from ALL locations — never filtered by the settings default.
@@ -388,7 +389,7 @@ fun LocationButton(
     val allLocationsLabel = stringResource(R.string.filter_all_locations)
     val activeName = when (activeLocationId) {
         LocationViewModel.ALL_LOCATIONS_ID -> allLocationsLabel
-        else -> locations.find { it.id == activeLocationId }?.name ?: allLocationsLabel
+        else -> locations.find { it.folderId == activeLocationId }?.name ?: allLocationsLabel
     }
     Box(modifier = modifier) {
         IconButton(onClick = { expanded = true }) {
@@ -414,7 +415,7 @@ fun LocationButton(
                 },
             )
             locations.sortedBy { it.name }.forEach { loc ->
-                val checked = loc.id == activeLocationId
+                val checked = loc.folderId == activeLocationId
                 DropdownMenuItem(
                     text = {
                         Row(
@@ -427,7 +428,7 @@ fun LocationButton(
                         }
                     },
                     onClick = {
-                        onSetActiveLocation(loc.id)
+                        onSetActiveLocation(loc.folderId)
                         expanded = false
                     },
                 )

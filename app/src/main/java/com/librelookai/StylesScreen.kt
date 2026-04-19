@@ -348,7 +348,8 @@ private fun StyleListScreen(
     // Used for the "all items loaded" gate — styles with items at other locations are hidden when
     // a specific location is selected.
     val locationFolderId = remember(activeLocationId, locations) {
-        locations.find { it.id == activeLocationId }?.folderId
+        if (activeLocationId != LocationViewModel.ALL_LOCATIONS_ID && activeLocationId.isNotEmpty())
+            locations.find { it.folderId == activeLocationId }?.folderId else null
     }
     val imagesByName = remember(items, locationFolderId, activeLocationId) {
         val filtered = if (activeLocationId == LocationViewModel.ALL_LOCATIONS_ID || locationFolderId == null)

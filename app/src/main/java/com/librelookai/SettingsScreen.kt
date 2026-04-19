@@ -459,13 +459,13 @@ private fun DataTab(
             )
 
             locationState.locations.forEach { location ->
-                val isActive = location.id == locationState.activeLocationId
+                val isActive = location.folderId == locationState.activeLocationId
                 Surface(
                     shape = MaterialTheme.shapes.small,
                     tonalElevation = if (isActive) 2.dp else 0.dp,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable(enabled = !isActive) { onSetActiveLocation(location.id) },
+                        .clickable(enabled = !isActive) { onSetActiveLocation(location.folderId) },
                 ) {
                     Row(
                         modifier = Modifier.padding(start = 12.dp, top = 4.dp, bottom = 4.dp, end = 4.dp),
@@ -918,7 +918,7 @@ private fun DataTab(
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                         keyboardActions = KeyboardActions(onDone = {
-                            if (nameInput.isNotBlank()) { onRenameLocation(target.id, nameInput, geoInput); renameTarget = null }
+                            if (nameInput.isNotBlank()) { onRenameLocation(target.folderId, nameInput, geoInput); renameTarget = null }
                         }),
                         modifier = Modifier.fillMaxWidth(),
                     )
@@ -926,7 +926,7 @@ private fun DataTab(
             },
             confirmButton = {
                 TextButton(
-                    onClick = { onRenameLocation(target.id, nameInput, geoInput); renameTarget = null },
+                    onClick = { onRenameLocation(target.folderId, nameInput, geoInput); renameTarget = null },
                     enabled = nameInput.isNotBlank(),
                 ) { Text(stringResource(R.string.action_save)) }
             },
@@ -944,7 +944,7 @@ private fun DataTab(
             title = { Text(stringResource(R.string.settings_location_delete_title)) },
             text = { Text(stringResource(R.string.settings_location_delete_text, target.name)) },
             confirmButton = {
-                TextButton(onClick = { onDeleteLocation(target.id); deleteTarget = null }) {
+                TextButton(onClick = { onDeleteLocation(target.folderId); deleteTarget = null }) {
                     Text(stringResource(R.string.action_delete))
                 }
             },
