@@ -53,8 +53,8 @@ class ProfileViewModel(app: Application) : AndroidViewModel(app) {
             runCatching {
                 val id = folderId ?: drive.getOrCreateFolder().also { folderId = it }
                 val json = drive.loadPreferencesJson(id)
-                if (json != null) gson.fromJson(json, UserPreferences::class.java) ?: UserPreferences()
-                else UserPreferences()
+                if (json != null) gson.fromJson(json, UserPreferences::class.java) ?: UserPreferences(language = cachedLanguage())
+                else UserPreferences(language = cachedLanguage())
             }.onSuccess { prefs ->
                 cacheLanguage(prefs.language)
                 _state.update { it.copy(preferences = prefs, isLoading = false) }

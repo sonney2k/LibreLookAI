@@ -547,13 +547,15 @@ private fun StyleListScreen(
                         text = { Text(stringResource(R.string.styles_combine)) },
                     )
                 }
-                ExtendedFloatingActionButton(
-                    onClick = { showDeleteDialog = true },
-                    containerColor = MaterialTheme.colorScheme.error,
-                    contentColor = MaterialTheme.colorScheme.onError,
-                    icon = { Icon(Icons.Default.Close, contentDescription = null) },
-                    text = { Text(stringResource(R.string.action_delete)) },
-                )
+                if (!isOffline) {
+                    ExtendedFloatingActionButton(
+                        onClick = { showDeleteDialog = true },
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError,
+                        icon = { Icon(Icons.Default.Close, contentDescription = null) },
+                        text = { Text(stringResource(R.string.action_delete)) },
+                    )
+                }
             }
         } else {
             // Normal speed-dial FAB (bottom-end)
@@ -716,6 +718,7 @@ private fun StyleCard(
     onWear: () -> Unit,
     onToggleSelection: () -> Unit = {},
 ) {
+    val isOffline = LocalIsOffline.current
     var showDeleteDialog by remember { mutableStateOf(false) }
     var viewerImage by remember { mutableStateOf<DriveImage?>(null) }
 
@@ -857,9 +860,9 @@ private fun StyleCard(
                     }
                 }
             }
-            // Bottom action row: Edit (left) | Wear today (right) — hidden in selection mode
+            // Bottom action row: Edit (left) | Wear today (right) — hidden in selection mode and offline
             var wornToday by remember { mutableStateOf(false) }
-            if (!isSelectionMode) Row(
+            if (!isSelectionMode && !isOffline) Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,

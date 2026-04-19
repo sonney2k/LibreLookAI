@@ -818,14 +818,14 @@ private fun GridContent(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.End,
             ) {
-                ExtendedFloatingActionButton(
-                    onClick = { onCreateStyleFromSelection(state.selectedIds) },
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    icon = { Icon(Icons.Default.Edit, contentDescription = null) },
-                    text = { Text(stringResource(R.string.wardrobe_create_outfit)) },
-                )
                 if (!isOffline) {
+                    ExtendedFloatingActionButton(
+                        onClick = { onCreateStyleFromSelection(state.selectedIds) },
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        icon = { Icon(Icons.Default.Edit, contentDescription = null) },
+                        text = { Text(stringResource(R.string.wardrobe_create_outfit)) },
+                    )
                     ExtendedFloatingActionButton(
                         onClick = { onComposeStyleFromSelection(state.selectedIds) },
                         containerColor = MaterialTheme.colorScheme.tertiaryContainer,
@@ -843,13 +843,15 @@ private fun GridContent(
                         text = { Text(stringResource(R.string.wardrobe_move_to)) },
                     )
                 }
-                ExtendedFloatingActionButton(
-                    onClick = { showDeleteDialog = true },
-                    containerColor = MaterialTheme.colorScheme.error,
-                    contentColor = MaterialTheme.colorScheme.onError,
-                    icon = { Icon(Icons.Default.Delete, contentDescription = null) },
-                    text = { Text(stringResource(R.string.action_delete)) },
-                )
+                if (!isOffline) {
+                    ExtendedFloatingActionButton(
+                        onClick = { showDeleteDialog = true },
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError,
+                        icon = { Icon(Icons.Default.Delete, contentDescription = null) },
+                        text = { Text(stringResource(R.string.action_delete)) },
+                    )
+                }
             }
         } else if (!isOffline) {
             // Show closet picker before gallery when 2+ closets exist
