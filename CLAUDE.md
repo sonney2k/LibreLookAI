@@ -97,6 +97,8 @@ All ViewModels extend `AndroidViewModel` and receive `Application` for context. 
 
 All Gemini calls return `null` on failure; callers must gracefully degrade.
 
+**Image resizing**: `GeminiRepository.readAndResizeBase64()` ensures every image sent to Gemini has `max(width, height) ≤ 1280`. Images already within bounds are sent as raw bytes (no re-encode); larger ones are decoded, scaled proportionally, and re-encoded (JPEG 95 for photos, PNG lossless for cutouts). `CaptureScreen` also crops captured photos to match the camera viewfinder aspect ratio and resizes to ≤ 1280 px before saving.
+
 ### Credit model
 
 - `CreditPack.kt` — SKU constants (`credits_100/500/2000`) and per-action costs.
@@ -192,7 +194,7 @@ All six main screens use `AppScreenHeader` (defined in `MainActivity.kt`) for a 
 
 ### Photo upload flow
 
-1. `WardrobeViewModel.uploadPhoto(rawFile)` uploads the raw JPEG to Drive and enqueues a `PendingJob`.
+1. `WardrobeViewModel.uploadPhoto(rawFile)` uploads the raw JPEG to Drive and enqueues a `PendingJob`. The initial `DriveImage` must include `folderId = targetFolderId` so the closet label appears immediately in the grid (same for `uploadGalleryPhotos`).
 2. `processQueue()` drains the queue serially: bg removal via Gemini → upload cutout (renamed to `{id}_cutout.png`) → copy local original cache → upload original (renamed to `{cutoutId}_original.jpg`) → delete raw → classify tags → write sidecar.
 3. The local `{driveId}_original.jpg` cache copy must happen **before** `deleteFile()` is called, because `DriveRepository.deleteFile()` also deletes the local `_original.jpg` file.
 4. State is updated by matching on **either** the raw Drive ID or the cutout Drive ID to handle the race where `loadImages()` may have already placed the item with the cutout ID.

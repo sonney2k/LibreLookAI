@@ -1059,7 +1059,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     rawFile.copyTo(displayCache, overwrite = true)
                 }
                 rawFile.copyTo(File(drive.cacheDir, "${uploaded.id}_original.jpg"), overwrite = true)
-                DriveImage(uploaded.id, displayCache.absolutePath, uploaded.name, tags = null)
+                DriveImage(uploaded.id, displayCache.absolutePath, uploaded.name, tags = null, folderId = id)
             }.onSuccess { newImage ->
                 _state.update { it.copy(
                     isUploading = false,
@@ -1092,7 +1092,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     val displayCache = File(drive.cacheDir, "${uploaded.id}.jpg")
                     tempFile.copyTo(displayCache, overwrite = true)
                     tempFile.copyTo(File(drive.cacheDir, "${uploaded.id}_original.jpg"), overwrite = true)
-                    DriveImage(uploaded.id, displayCache.absolutePath, uploaded.name, tags = null)
+                    DriveImage(uploaded.id, displayCache.absolutePath, uploaded.name, tags = null, folderId = id)
                 }.onSuccess { newImage ->
                     _state.update { it.copy(
                         images = listOf(newImage) + it.images,
