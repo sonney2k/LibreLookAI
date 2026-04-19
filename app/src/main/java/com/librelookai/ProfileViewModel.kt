@@ -1,6 +1,7 @@
 package com.librelookai
 
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
@@ -23,11 +24,28 @@ class ProfileViewModel(app: Application) : AndroidViewModel(app) {
     private val drive = DriveRepository(app, GoogleAuthManager(app))
     private val gson = Gson()
     private var folderId: String? = null
+    private val langPrefs = app.getSharedPreferences(LANG_PREFS, Context.MODE_PRIVATE)
 
-    private val _state = MutableStateFlow(ProfileUiState())
+    private val _state = MutableStateFlow(
+        ProfileUiState(
+            preferences = UserPreferences(language = cachedLanguage())
+        )
+    )
     val state: StateFlow<ProfileUiState> = _state.asStateFlow()
 
     init { loadPreferences() }
+
+    private fun cachedLanguage(): String =
+        langPrefs.getString(KEY_LANGUAGE, null) ?: AppLanguage.ENGLISH
+
+    private fun cacheLanguage(language: String) {
+        langPrefs.edit().putString(KEY_LANGUAGE, language).apply()
+    }
+
+    companion object {
+        private const val LANG_PREFS = "librelookai_lang"
+        private const val KEY_LANGUAGE = "language"
+    }
 
     fun loadPreferences() {
         viewModelScope.launch {
@@ -38,6 +56,7 @@ class ProfileViewModel(app: Application) : AndroidViewModel(app) {
                 if (json != null) gson.fromJson(json, UserPreferences::class.java) ?: UserPreferences()
                 else UserPreferences()
             }.onSuccess { prefs ->
+                cacheLanguage(prefs.language)
                 _state.update { it.copy(preferences = prefs, isLoading = false) }
             }.onFailure { e ->
                 _state.update { it.copy(isLoading = false, error = e.message) }
@@ -52,6 +71,7 @@ class ProfileViewModel(app: Application) : AndroidViewModel(app) {
                 val id = folderId ?: drive.getOrCreateFolder().also { folderId = it }
                 drive.savePreferencesJson(id, gson.toJson(prefs))
             }.onSuccess {
+                cacheLanguage(prefs.language)
                 _state.update { it.copy(preferences = prefs, isSaving = false, savedSuccessfully = true) }
             }.onFailure { e ->
                 _state.update { it.copy(isSaving = false, error = e.message) }

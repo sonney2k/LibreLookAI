@@ -1436,7 +1436,7 @@ private fun TagsOverlay(
         ) {
             if (tags != null) {
                 Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    if (tags.type.isNotEmpty()) TagChip(tags.type)
+                    if (tags.type.isNotEmpty()) TagChip(tags.type.localizedTagValue())
                     if (tags.category.isNotEmpty()) TagChip(tags.category.localizedTagValue())
                 }
                 if (tags.uses.isNotEmpty()) {
