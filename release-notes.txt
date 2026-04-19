@@ -1,0 +1,12 @@
+### LibreLookAI v1.3.0 Release Notes
+
+#### New Features & Improvements
+- **Photo Optimization**: Images are now automatically cropped to match the camera viewfinder and resized to a maximum of 1280px. This improves performance, reduces upload times, and optimizes Gemini API token usage.
+- **Stability**: Added battery optimization checks to ensure background tasks like AI background removal complete successfully without being killed by the system.
+- **Firebase Integration**: Full configuration for automated tester distributions.
+
+#### Bug Fixes
+- **Localization**: Fixed a startup bug where the UI would incorrectly show English instead of German.
+- **Wardrobe Management**: Resolved an issue where closet labels weren't appearing on newly added items.
+- **Styles**: Fixed a silent failure when attempting to delete styles while viewing "All Locations".
+- **General**: Cleaned up unused files and improved internal state management in ProfileViewModel.

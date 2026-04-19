@@ -542,21 +542,23 @@ private fun StyleSheetRow(
                 }
             }
         }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Button(
-                onClick = onWearAgainToday,
-                modifier = Modifier.weight(1f),
+        if (!LocalIsOffline.current) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                Text(stringResource(R.string.calendar_wear_again))
-            }
-            OutlinedButton(
-                onClick = onEditStyle,
-                modifier = Modifier.weight(1f),
-            ) {
-                Text(stringResource(R.string.action_edit))
+                Button(
+                    onClick = onWearAgainToday,
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Text(stringResource(R.string.calendar_wear_again))
+                }
+                OutlinedButton(
+                    onClick = onEditStyle,
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Text(stringResource(R.string.action_edit))
+                }
             }
         }
     }

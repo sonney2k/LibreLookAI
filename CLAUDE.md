@@ -159,22 +159,26 @@ It shows: editable name + description, outfit items as 100 dp tappable tiles in 
 
 The app works in view-only mode when offline. `NetworkMonitor` (in `NetworkUtils.kt`) uses `ConnectivityManager.NetworkCallback` to expose a `StateFlow<Boolean>` of real-time connectivity. `MainActivity` provides the state via `LocalIsOffline`, a `CompositionLocal` defined in `NetworkUtils.kt` — any composable reads `LocalIsOffline.current` without parameter threading.
 
+Online status requires **both** `NET_CAPABILITY_INTERNET` **and** `NET_CAPABILITY_VALIDATED`. Checking only `INTERNET` misses the common case where wifi stays associated but the uplink is dead — Android does not fire `onLost` for that, only `onCapabilitiesChanged` with `VALIDATED` dropped. All three callbacks (`onAvailable`, `onLost`, `onCapabilitiesChanged`) funnel through a single `recomputeOnline()` helper that re-reads the active network.
+
 **UI indicator**: An animated banner (`errorContainer` background, `CloudOff` icon, localized text) appears at the top of the content area when offline and disappears when connectivity returns.
 
 **What works offline** (from local disk cache):
 - Browsing wardrobe items, styles, calendar, and previously generated travel packing lists
-- Manual style creation, editing style names/descriptions, deleting styles/items
 - Viewing tag overlays and item details
 
-**What is disabled offline** (hidden or greyed out):
-- **WardrobeScreen**: upload FABs (camera + gallery) hidden; "Compose with AI" and "Move to closet" hidden in selection mode
-- **StylesScreen**: AI speed-dial items (Suggest, Compose) hidden; "Combine with AI" hidden in multi-select; "Suggest alternatives" hidden in `ItemSwapSheet`; `RefinementSection` hidden in `StyleEditingView`
+**What is disabled offline** (hidden or greyed out) — everything that writes to Drive or calls Gemini:
+- **WardrobeScreen**: upload FABs (camera + gallery) hidden; in selection mode, "Create outfit", "Compose with AI", "Move to closet", and "Delete" FABs all hidden
+- **FullScreenViewer**: long-press action sheet does not open (suppresses Create outfit / Compose with AI / Move to / Delete); rotate FAB hidden; "Detect tags" and "Remove background" greyed out in `TagsOverlay`
+- **StylesScreen**: AI speed-dial items (Suggest, Compose) hidden; per-card Edit+Wear row hidden in `StyleCard`; "Combine with AI" and "Delete" FABs hidden in multi-select; "Suggest alternatives" hidden in `ItemSwapSheet`; `RefinementSection` hidden in `StyleEditingView`
+- **CalendarScreen**: "Wear again today" and "Edit" buttons hidden in the day-detail `StyleSheetRow`
 - **TravelScreen**: Generate button greyed out; refinement section hidden; "Move all to Travel" button greyed out
 - **WardrobeGapScreen**: Analyze button greyed out
 - **SettingsScreen**: Retag All, Remove All Backgrounds, Repair & Sync, Import buttons greyed out
-- **Full-screen viewer**: "Detect tags" and "Remove background" buttons greyed out in `TagsOverlay`
 
 When adding new network-dependent UI actions, read `LocalIsOffline.current` and either hide the action or set `enabled = !isOffline`.
+
+**Language persistence offline**: `ProfileViewModel.loadPreferences()` falls back to `cachedLanguage()` (the `librelookai_lang` SharedPreferences cache) whenever the Drive JSON is null or cannot be parsed, instead of constructing a fresh `UserPreferences()` (which would default to English). This prevents the UI from flipping to English when Drive is unreachable.
 
 ### Navigation
 

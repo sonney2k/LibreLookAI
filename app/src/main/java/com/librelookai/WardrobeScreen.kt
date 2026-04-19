@@ -1082,6 +1082,7 @@ private fun FullScreenViewer(
 ) {
     BackHandler(onBack = onDismiss)
 
+    val isOffline = LocalIsOffline.current
     var pageScale by remember { mutableFloatStateOf(1f) }
     val pagerState = rememberPagerState(
         initialPage = initialIndex,
@@ -1111,8 +1112,10 @@ private fun FullScreenViewer(
                 cacheKey = "${images[page].driveId}_${images[page].version}",
                 onScaleChanged = { s -> if (page == pagerState.currentPage) pageScale = s },
                 onLongPress = {
-                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    showItemActions = true
+                    if (!isOffline) {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        showItemActions = true
+                    }
                 },
             )
         }
@@ -1151,18 +1154,20 @@ private fun FullScreenViewer(
 
         // Rotate button — LAST child = highest Z-order. Explicit white/black colours so it is
         // always visible against the black viewer background regardless of dynamic theming.
-        SmallFloatingActionButton(
-            onClick = { onRotateImage(currentImage.driveId) },
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp),
-            containerColor = Color.White,
-            contentColor = Color.Black,
-        ) {
-            Icon(
-                Icons.AutoMirrored.Filled.RotateRight,
-                contentDescription = stringResource(R.string.wardrobe_tag_rotate),
-            )
+        if (!isOffline) {
+            SmallFloatingActionButton(
+                onClick = { onRotateImage(currentImage.driveId) },
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp),
+                containerColor = Color.White,
+                contentColor = Color.Black,
+            ) {
+                Icon(
+                    Icons.AutoMirrored.Filled.RotateRight,
+                    contentDescription = stringResource(R.string.wardrobe_tag_rotate),
+                )
+            }
         }
     }
 

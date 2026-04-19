@@ -13,11 +13,15 @@ import kotlinx.coroutines.flow.asStateFlow
 /** `true` when the device has no internet connectivity. Read via `LocalIsOffline.current`. */
 val LocalIsOffline = compositionLocalOf { false }
 
+private fun NetworkCapabilities.hasValidatedInternet(): Boolean =
+    hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
+        hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+
 fun Context.isNetworkAvailable(): Boolean {
     val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     val network = cm.activeNetwork ?: return false
     val capabilities = cm.getNetworkCapabilities(network) ?: return false
-    return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+    return capabilities.hasValidatedInternet()
 }
 
 /**
@@ -31,25 +35,26 @@ class NetworkMonitor(context: Context) {
     private val _isOnline = MutableStateFlow(context.isNetworkAvailable())
     val isOnline: StateFlow<Boolean> = _isOnline.asStateFlow()
 
+    private fun recomputeOnline() {
+        _isOnline.value = cm.activeNetwork?.let {
+            cm.getNetworkCapabilities(it)?.hasValidatedInternet()
+        } ?: false
+    }
+
     private val callback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
-            _isOnline.value = true
+            recomputeOnline()
         }
 
         override fun onLost(network: Network) {
-            // Re-check: another network may still be active
-            _isOnline.value = cm.activeNetwork?.let {
-                cm.getNetworkCapabilities(it)
-                    ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-            } ?: false
+            recomputeOnline()
         }
 
         override fun onCapabilitiesChanged(
             network: Network,
             capabilities: NetworkCapabilities,
         ) {
-            _isOnline.value =
-                capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            recomputeOnline()
         }
     }
 
