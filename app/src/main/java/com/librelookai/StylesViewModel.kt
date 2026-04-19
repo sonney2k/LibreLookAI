@@ -464,11 +464,22 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
     fun deleteSelectedStyles() {
         val toDelete = _state.value.selectedStyleIds
         if (toDelete.isEmpty()) return
-        val updated = _state.value.styles.filter { it.id !in toDelete }
+        val allStyles = _state.value.styles
+        val updated = allStyles.filter { it.id !in toDelete }
+        val deleted = allStyles.filter { it.id in toDelete }
+        // Determine which folders need their styles JSON updated.
+        val affectedFolderIds = if (folderId != null) {
+            setOf(folderId!!)
+        } else {
+            deleted.map { it.folderId }.filter { it.isNotEmpty() }.toSet()
+        }
+        if (affectedFolderIds.isEmpty()) return
         viewModelScope.launch {
-            val id = folderId ?: return@launch
             runCatching {
-                drive.saveStylesJson(id, gson.toJson(updated))
+                for (id in affectedFolderIds) {
+                    val folderStyles = updated.filter { it.folderId == id }
+                    drive.saveStylesJson(id, gson.toJson(folderStyles))
+                }
             }.onSuccess {
                 _state.update { it.copy(styles = updated, selectedStyleIds = emptySet()) }
             }.onFailure { e ->

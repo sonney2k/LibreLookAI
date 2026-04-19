@@ -123,7 +123,7 @@ All Gemini calls return `null` on failure; callers must gracefully degrade.
 It shows: editable name + description, outfit items as 100 dp tappable tiles in a `FlowRow`, an "Add item" `+` tile, and — when opened from a Gemini result — the AI reason text and a `RefinementSection`. Tapping a tile opens **`ItemSwapSheet`**, a `ModalBottomSheet` that filters the wardrobe by the item's category and supports single-selection replacement. The sheet has a "Suggest 10 alternatives" button that calls `StylesViewModel.suggestAlternatives()` and surfaces results as starred tiles sorted to the top. After saving, `pendingWearStyleId` is set and a Snackbar offers "Wear today".
 
 `StyleListScreen` supports **multi-select**: long-press any card → enters selection mode (`selectedStyleIds.isNotEmpty()`). In selection mode: tapping toggles selection, back exits, a selection bar (count / select-all / deselect-all) replaces the sort button, card Edit+Wear buttons hide, and the speed-dial FAB is replaced by two action FABs:
-- **Delete** — confirmation dialog → `deleteSelectedStyles()`
+- **Delete** — confirmation dialog → `deleteSelectedStyles()`. Deletion groups affected styles by `Style.folderId` and saves each folder's `_styles_metadata.json` independently, so it works in both single-location and All Locations mode.
 - **Combine with AI** (≥ 2 selected) — `combineSelectedStyles()` calls `buildCombinePrompt()`, result surfaces as `newSuggestion` and auto-opens `StyleEditingView`
 
 **Styles ViewModel key state** (`StylesUiState`):
