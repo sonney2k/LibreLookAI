@@ -1,12 +1,5 @@
-### LibreLookAI v1.3.0 Release Notes
+### LibreLookAI v1.4.0 Release Notes
 
-#### New Features & Improvements
-- **Photo Optimization**: Images are now automatically cropped to match the camera viewfinder and resized to a maximum of 1280px. This improves performance, reduces upload times, and optimizes Gemini API token usage.
-- **Stability**: Added battery optimization checks to ensure background tasks like AI background removal complete successfully without being killed by the system.
-- **Firebase Integration**: Full configuration for automated tester distributions.
-
-#### Bug Fixes
-- **Localization**: Fixed a startup bug where the UI would incorrectly show English instead of German.
-- **Wardrobe Management**: Resolved an issue where closet labels weren't appearing on newly added items.
-- **Styles**: Fixed a silent failure when attempting to delete styles while viewing "All Locations".
-- **General**: Cleaned up unused files and improved internal state management in ProfileViewModel.
+#### Try-On Improvements
+- **Better Likeness Preservation**: The Try-On feature now treats your frontal reference photo as the authoritative source for your face. Generated images more faithfully match your facial structure, eye shape, hair, and skin tone — additional side/back photos are used only for body shape.
+- **Correct Photo Orientation**: Profile reference photos uploaded from your gallery now respect EXIF orientation, so portraits taken on your phone no longer appear sideways or upside-down after upload.
