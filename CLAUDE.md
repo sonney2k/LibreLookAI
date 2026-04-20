@@ -174,7 +174,8 @@ Online status requires **both** `NET_CAPABILITY_INTERNET` **and** `NET_CAPABILIT
 - **CalendarScreen**: "Wear again today" and "Edit" buttons hidden in the day-detail `StyleSheetRow`
 - **TravelScreen**: Generate button greyed out; refinement section hidden; "Move all to Travel" button greyed out
 - **WardrobeGapScreen**: Analyze button greyed out
-- **SettingsScreen**: Retag All, Remove All Backgrounds, Repair & Sync, Import buttons greyed out
+- **SettingsScreen**: Retag All, Remove All Backgrounds, Repair & Sync, Import buttons greyed out; Try-on photo slots hidden (upload requires Drive write)
+- **WardrobeScreen / StylesScreen**: Try-on FAB hidden (image generation requires Gemini)
 
 When adding new network-dependent UI actions, read `LocalIsOffline.current` and either hide the action or set `enabled = !isOffline`.
 

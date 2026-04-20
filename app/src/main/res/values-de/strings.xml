@@ -409,6 +409,29 @@
     <!-- Offline mode -->
     <string name="offline_banner">Offline — Nur-Ansicht-Modus</string>
 
+    <!-- Try on me -->
+    <string name="tryon_title">Auf mir anprobieren</string>
+    <string name="tryon_fab">Auf mir anprobieren</string>
+    <string name="tryon_section_title">Anprobe-Fotos</string>
+    <string name="tryon_section_desc">Lade Ganzkörperfotos von vorn, von der Seite und von hinten hoch. Die App nutzt sie als Referenz, um eine virtuelle Anprobe eines Stils oder Kleidungsstücks an dir zu erzeugen. Die Fotos bleiben in deinem eigenen Drive.</string>
+    <string name="tryon_slot_front">Vorne</string>
+    <string name="tryon_slot_side">Seite</string>
+    <string name="tryon_slot_back">Hinten</string>
+    <string name="tryon_add_photo">%1$s-Foto hinzufügen</string>
+    <string name="tryon_replace_photo">%1$s ersetzen</string>
+    <string name="tryon_remove_photo">%1$s entfernen</string>
+    <string name="tryon_uploading">Lädt hoch…</string>
+    <string name="tryon_generating">Deine Anprobe wird erstellt…</string>
+    <string name="tryon_error">Anprobe-Erstellung fehlgeschlagen</string>
+    <string name="tryon_no_photos">Lade unter Einstellungen → Profil ein Anprobe-Foto hoch, um diese Funktion zu nutzen.</string>
+    <string name="tryon_save_to_gallery">In Galerie speichern</string>
+    <string name="tryon_saved">Gespeichert unter Bilder/LibreLookAI</string>
+    <string name="tryon_save_failed">Speichern in Galerie fehlgeschlagen</string>
+    <string name="tryon_cost_line">Kostet %1$d Credits pro Anprobe</string>
+    <string name="tryon_camera">Kamera</string>
+    <string name="tryon_gallery">Galerie</string>
+    <string name="about_cost_tryon">Anprobe-Erstellung: 8 Credits</string>
+
     <!-- About -->
     <string name="settings_tab_about">Info</string>
     <string name="about_version">Version %1$s (%2$s)</string>

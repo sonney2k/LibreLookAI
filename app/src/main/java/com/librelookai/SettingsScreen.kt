@@ -1,12 +1,14 @@
 package com.librelookai
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
@@ -14,12 +16,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.AutoFixHigh
@@ -67,6 +73,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -77,6 +86,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
+import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -157,6 +168,8 @@ fun SettingsScreen(
                     ApiKeyStore.set(context, key)
                     currentApiKey = key
                 },
+                onUploadTryOnPhoto = profileViewModel::uploadTryOnPhoto,
+                onRemoveTryOnPhoto = profileViewModel::deleteTryOnPhoto,
             )
             1 -> DataTab(
                 wardrobeState = wardrobeState,
@@ -221,6 +234,8 @@ private fun ProfileTab(
     onClearError: () -> Unit,
     onSaveApiKey: (String) -> Unit,
     currentApiKey: String,
+    onUploadTryOnPhoto: (TryOnSlot, android.net.Uri) -> Unit,
+    onRemoveTryOnPhoto: (TryOnSlot) -> Unit,
 ) {
     val genderOptions = listOf(
         stringResource(R.string.settings_gender_prefer_not),
@@ -236,6 +251,15 @@ private fun ProfileTab(
     var language    by remember(state.preferences) { mutableStateOf(state.preferences.language) }
     var apiKey      by remember(currentApiKey) { mutableStateOf(currentApiKey) }
     var apiKeyVisible by remember { mutableStateOf(false) }
+
+    var pendingTryOnSlot by remember { mutableStateOf<TryOnSlot?>(null) }
+    val tryOnPickLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.PickVisualMedia(),
+    ) { uri ->
+        val slot = pendingTryOnSlot
+        pendingTryOnSlot = null
+        if (uri != null && slot != null) onUploadTryOnPhoto(slot, uri)
+    }
 
     LaunchedEffect(state.isLoading) {
         if (!state.isLoading) {
@@ -340,6 +364,46 @@ private fun ProfileTab(
                     modifier = Modifier.fillMaxWidth(),
                 )
 
+                // --- Try-on photos ---
+                HorizontalDivider()
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        stringResource(R.string.tryon_section_title),
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                    Text(
+                        stringResource(R.string.tryon_section_desc),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        TryOnSlot.entries.forEach { slot ->
+                            val label = when (slot) {
+                                TryOnSlot.FRONT -> stringResource(R.string.tryon_slot_front)
+                                TryOnSlot.SIDE  -> stringResource(R.string.tryon_slot_side)
+                                TryOnSlot.BACK  -> stringResource(R.string.tryon_slot_back)
+                            }
+                            TryOnPhotoSlot(
+                                label = label,
+                                localPath = state.tryOnLocalPaths[slot],
+                                isUploading = slot in state.tryOnUploading,
+                                onPick = {
+                                    pendingTryOnSlot = slot
+                                    tryOnPickLauncher.launch(
+                                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                                    )
+                                },
+                                onRemove = { onRemoveTryOnPhoto(slot) },
+                                modifier = Modifier.weight(1f),
+                            )
+                        }
+                    }
+                }
+
                 // --- Gemini API Key ---
                 HorizontalDivider()
                 Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -413,6 +477,82 @@ private fun ProfileTab(
                 modifier = Modifier.align(Alignment.BottomCenter).padding(16.dp),
                 action = { TextButton(onClick = onClearError) { Text(stringResource(R.string.action_dismiss)) } },
             ) { Text(msg) }
+        }
+    }
+}
+
+@Composable
+private fun TryOnPhotoSlot(
+    label: String,
+    localPath: String?,
+    isUploading: Boolean,
+    onPick: () -> Unit,
+    onRemove: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        Surface(
+            shape = RoundedCornerShape(8.dp),
+            tonalElevation = 1.dp,
+            color = MaterialTheme.colorScheme.surfaceVariant,
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(0.75f)
+                .clickable(enabled = !isUploading) { onPick() },
+        ) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                when {
+                    isUploading -> CircularProgressIndicator(strokeWidth = 2.dp, modifier = Modifier.size(28.dp))
+                    localPath != null -> {
+                        AsyncImage(
+                            model = File(localPath),
+                            contentDescription = label,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(8.dp)),
+                        )
+                        IconButton(
+                            onClick = onRemove,
+                            modifier = Modifier
+                                .align(Alignment.TopEnd)
+                                .size(32.dp),
+                        ) {
+                            Icon(
+                                Icons.Default.Close,
+                                contentDescription = stringResource(R.string.tryon_remove_photo, label),
+                                tint = Color.White,
+                                modifier = Modifier
+                                    .size(22.dp)
+                                    .clip(CircleShape)
+                                    .background(Color.Black.copy(alpha = 0.55f))
+                                    .padding(3.dp),
+                            )
+                        }
+                    }
+                    else -> Icon(
+                        Icons.Default.Add,
+                        contentDescription = stringResource(R.string.tryon_add_photo, label),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+        }
+        Text(
+            label,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        if (isUploading) {
+            Text(
+                stringResource(R.string.tryon_uploading),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
         }
     }
 }
@@ -1359,6 +1499,7 @@ private fun AboutTab() {
             Text(stringResource(R.string.about_cost_classify), style = MaterialTheme.typography.bodySmall)
             Text(stringResource(R.string.about_cost_text), style = MaterialTheme.typography.bodySmall)
             Text(stringResource(R.string.about_cost_travel), style = MaterialTheme.typography.bodySmall)
+            Text(stringResource(R.string.about_cost_tryon), style = MaterialTheme.typography.bodySmall)
         }
 
         HorizontalDivider()

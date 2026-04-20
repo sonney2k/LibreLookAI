@@ -27,6 +27,7 @@ private enum class GeminiAction(val header: String) {
     CLASSIFY_CLOTHING("classifyClothing"),
     GENERATE_TEXT("generateText"),
     SEARCH_TRENDS("searchFashionTrends"),
+    TRY_ON_OUTFIT("tryOnOutfit"),
 }
 
 class GeminiRepository(private val app: Application) {
@@ -233,6 +234,106 @@ class GeminiRepository(private val app: Application) {
                 null
             }
         }
+
+    /**
+     * Sends the user's person photos in [personFiles] together with the clothing items in
+     * [itemFiles] to the Gemini image-generation model and returns a single composited image
+     * that shows the person wearing those items. Returns null on any failure.
+     *
+     * [outputDir] is used as the destination for the generated PNG.
+     * [preferences] is optional free-text the user has set in their profile; it is woven
+     * into the prompt so that generations respect style context (e.g. gender, vibe).
+     */
+    suspend fun tryOnOutfit(
+        personFiles: List<File>,
+        itemFiles: List<File>,
+        outputDir: File,
+        preferences: String = "",
+    ): File? = withContext(Dispatchers.IO) {
+        if (!isConfigured()) {
+            Log.w(TAG, "API key not set — skipping try-on")
+            return@withContext null
+        }
+        if (personFiles.isEmpty() || itemFiles.isEmpty()) return@withContext null
+
+        val prefsHint = preferences.trim().takeIf { it.isNotEmpty() }
+            ?.let { " The person's style preferences: $it." } ?: ""
+        val personCountHint = when (personFiles.size) {
+            1 -> "a single reference photo of the person"
+            2 -> "two reference photos of the person (use them to recover their likeness from multiple angles)"
+            else -> "${personFiles.size} reference photos of the person from multiple angles"
+        }
+        val itemCountHint = if (itemFiles.size == 1) "this clothing item" else "these ${itemFiles.size} clothing items"
+        val prompt =
+            "You are given $personCountHint, followed by $itemCountHint. " +
+                "Generate a single photorealistic full-body image of the same person wearing $itemCountHint together " +
+                "as one outfit. Preserve the person's face, hair, skin tone and body proportions exactly. " +
+                "Dress them so all provided garments are visible and styled naturally. " +
+                "Use a clean, neutral studio background, soft even lighting, sharp focus. " +
+                "No text, watermarks, UI, extra people, or extra clothing that was not provided.$prefsHint"
+
+        val parts = mutableListOf<Map<String, Any>>(mapOf("text" to prompt))
+        personFiles.forEach { f ->
+            val mime = if (f.extension.equals("png", ignoreCase = true)) "image/png" else "image/jpeg"
+            val fmt = if (f.extension.equals("png", ignoreCase = true)) Bitmap.CompressFormat.PNG else Bitmap.CompressFormat.JPEG
+            parts += mapOf(
+                "inline_data" to mapOf(
+                    "mime_type" to mime,
+                    "data" to readAndResizeBase64(f, fmt),
+                ),
+            )
+        }
+        itemFiles.forEach { f ->
+            val mime = if (f.extension.equals("png", ignoreCase = true)) "image/png" else "image/jpeg"
+            val fmt = if (f.extension.equals("png", ignoreCase = true)) Bitmap.CompressFormat.PNG else Bitmap.CompressFormat.JPEG
+            parts += mapOf(
+                "inline_data" to mapOf(
+                    "mime_type" to mime,
+                    "data" to readAndResizeBase64(f, fmt),
+                ),
+            )
+        }
+
+        val body = gson.toJson(
+            mapOf(
+                "contents" to listOf(mapOf("role" to "user", "parts" to parts)),
+                "generationConfig" to mapOf(
+                    "responseModalities" to listOf("IMAGE", "TEXT"),
+                ),
+            ),
+        )
+
+        val request = buildRequest(BG_URL, BG_MODEL, body, GeminiAction.TRY_ON_OUTFIT)
+
+        return@withContext try {
+            val response = http.newCall(request).await()
+            val responseBody = response.body!!.string()
+            Log.d(TAG, "Try-on HTTP ${response.code}: ${responseBody.take(500)}")
+            if (!response.isSuccessful) return@withContext null
+
+            val parsed = gson.fromJson(responseBody, GeminiResponse::class.java)
+            val imagePart = parsed.candidates
+                ?.firstOrNull()
+                ?.content
+                ?.parts
+                ?.firstOrNull { it.inlineData?.mimeType?.startsWith("image/") == true }
+                ?: run {
+                    val textParts = parsed.candidates
+                        ?.firstOrNull()?.content?.parts
+                        ?.mapNotNull { it.text }?.joinToString(" ")
+                    Log.w(TAG, "No image part in try-on response. Text: $textParts")
+                    return@withContext null
+                }
+
+            val outFile = File(outputDir, "tryon_${System.currentTimeMillis()}.png")
+            outFile.writeBytes(Base64.decode(imagePart.inlineData!!.data!!, Base64.NO_WRAP))
+            Log.d(TAG, "Try-on image saved (${outFile.length() / 1024}KB)")
+            outFile
+        } catch (e: Exception) {
+            Log.e(TAG, "tryOnOutfit failed: ${e.message}", e)
+            null
+        }
+    }
 
     /**
      * Classifies the clothing item in [imageFile] using Gemini vision.

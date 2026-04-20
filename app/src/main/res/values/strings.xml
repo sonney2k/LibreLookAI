@@ -420,6 +420,29 @@
     <!-- Offline mode -->
     <string name="offline_banner">You are offline — view-only mode</string>
 
+    <!-- Try on me -->
+    <string name="tryon_title">Try on me</string>
+    <string name="tryon_fab">Try on me</string>
+    <string name="tryon_section_title">Try-on photos</string>
+    <string name="tryon_section_desc">Upload full-body photos from the front, side, and back. The app uses these as a reference when generating a Try-on preview of a style or wardrobe item on you. Photos stay in your own Drive.</string>
+    <string name="tryon_slot_front">Front</string>
+    <string name="tryon_slot_side">Side</string>
+    <string name="tryon_slot_back">Back</string>
+    <string name="tryon_add_photo">Add %1$s photo</string>
+    <string name="tryon_replace_photo">Replace %1$s</string>
+    <string name="tryon_remove_photo">Remove %1$s</string>
+    <string name="tryon_uploading">Uploading…</string>
+    <string name="tryon_generating">Generating your try-on…</string>
+    <string name="tryon_error">Try-on generation failed</string>
+    <string name="tryon_no_photos">Add a try-on photo in Settings → Profile to use this feature.</string>
+    <string name="tryon_save_to_gallery">Save to gallery</string>
+    <string name="tryon_saved">Saved to Pictures/LibreLookAI</string>
+    <string name="tryon_save_failed">Couldn\'t save to gallery</string>
+    <string name="tryon_cost_line">Costs %1$d credits per try-on</string>
+    <string name="tryon_camera">Camera</string>
+    <string name="tryon_gallery">Gallery</string>
+    <string name="about_cost_tryon">Try-on generation: 8 credits</string>
+
     <!-- About -->
     <string name="settings_tab_about">About</string>
     <string name="about_version">Version %1$s (%2$s)</string>

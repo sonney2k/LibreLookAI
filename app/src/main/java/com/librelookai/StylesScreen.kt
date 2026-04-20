@@ -134,6 +134,8 @@ fun StylesScreen(
     profileViewModel: ProfileViewModel = viewModel(),
     weatherViewModel: WeatherViewModel = viewModel(),
     locationViewModel: LocationViewModel = viewModel(),
+    onTryOnStyle: (Style) -> Unit = {},
+    canTryOn: Boolean = false,
     onSettingsClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
@@ -276,6 +278,8 @@ fun StylesScreen(
                         )
                     },
                     onClearCompositionError = stylesViewModel::clearNewSuggestion,
+                    onTryOnStyle = onTryOnStyle,
+                    canTryOn = canTryOn,
                     onSettingsClick = onSettingsClick,
                 )
             }
@@ -337,6 +341,8 @@ private fun StyleListScreen(
     onClearPredictionError: () -> Unit,
     onComposeStyle: () -> Unit,
     onClearCompositionError: () -> Unit,
+    onTryOnStyle: (Style) -> Unit = {},
+    canTryOn: Boolean = false,
     onSettingsClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
@@ -546,6 +552,18 @@ private fun StyleListScreen(
                         },
                         text = { Text(stringResource(R.string.styles_combine)) },
                     )
+                }
+                if (selectedStyleIds.size == 1 && canTryOn && !isOffline) {
+                    val selectedStyle = styles.firstOrNull { it.id in selectedStyleIds }
+                    if (selectedStyle != null) {
+                        ExtendedFloatingActionButton(
+                            onClick = { onTryOnStyle(selectedStyle) },
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            icon = { Icon(Icons.Default.AutoAwesome, contentDescription = null) },
+                            text = { Text(stringResource(R.string.tryon_fab)) },
+                        )
+                    }
                 }
                 if (!isOffline) {
                     ExtendedFloatingActionButton(

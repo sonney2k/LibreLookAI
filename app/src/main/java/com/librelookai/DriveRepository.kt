@@ -54,6 +54,13 @@ class DriveRepository(
         private const val LOCATIONS_FILE_NAME = "_locations.json"
 
         /**
+         * Subfolder of the root Drive folder used to hold the user's try-on photos
+         * (front/side/back). Kept separate from all location/closet folders so these
+         * images are never listed as wardrobe items or touched by Repair & Sync.
+         */
+        const val PROFILE_FOLDER_NAME = "_profile"
+
+        /**
          * Suffix that marks a file as the background-removed cutout variant.
          * Only files with this suffix are treated as wardrobe items; originals and
          * raw uploads are excluded from [listFiles] and therefore never shown in the app.
@@ -697,6 +704,42 @@ class DriveRepository(
             DriveFileDto::class.java,
         ).id
     }
+
+    /**
+     * Returns the Drive folder ID of the [PROFILE_FOLDER_NAME] subfolder inside [rootFolderId],
+     * creating it if it does not yet exist.
+     */
+    suspend fun getOrCreateProfileFolder(rootFolderId: String): String =
+        createSubfolder(rootFolderId, PROFILE_FOLDER_NAME)
+
+    /**
+     * Uploads [imageFile] as a JPEG into the profile subfolder of [rootFolderId] with name [name].
+     * If a file with the same [name] already exists it is replaced in-place (Drive ID preserved).
+     * Returns the final Drive file ID.
+     */
+    suspend fun uploadProfilePhoto(rootFolderId: String, name: String, imageFile: File): String =
+        withContext(Dispatchers.IO) {
+            val profileFolderId = getOrCreateProfileFolder(rootFolderId)
+            val tok = token()
+            val escapedName = name.replace("\\", "\\\\").replace("'", "\\'")
+            val q = URLEncoder.encode(
+                "'$profileFolderId' in parents and name='$escapedName' and trashed=false", "UTF-8",
+            )
+            val existingId = gson.fromJson(
+                http.newCall(Request.Builder()
+                    .url("$API/files?q=$q&fields=files(id)")
+                    .header("Authorization", "Bearer $tok")
+                    .build()).await().body!!.string(),
+                FilesListDto::class.java,
+            ).files.firstOrNull()?.id
+
+            if (existingId != null) {
+                updateImage(existingId, imageFile)
+                existingId
+            } else {
+                uploadImageWithName(profileFolderId, imageFile, name).id
+            }
+        }
 
     /** Returns the locally cached file for a Drive ID, or null if not yet downloaded. */
     fun cachedFile(driveId: String): File? =

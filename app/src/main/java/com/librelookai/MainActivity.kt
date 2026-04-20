@@ -124,9 +124,12 @@ class MainActivity : ComponentActivity() {
                     val travelViewModel: TravelViewModel = viewModel()
                     val gapViewModel: WardrobeGapViewModel = viewModel()
                     val creditsViewModel: CreditsViewModel = viewModel()
+                    val tryOnViewModel: TryOnViewModel = viewModel()
                     val locationState by locationViewModel.state.collectAsState()
                     val weatherState by weatherViewModel.state.collectAsState()
                     val profileState by profileViewModel.state.collectAsState()
+                    val tryOnState by tryOnViewModel.state.collectAsState()
+                    val canTryOn = profileState.tryOnLocalPaths.isNotEmpty()
 
                     // Reload wardrobe/styles/outfits whenever the active location changes
                     val activeLocationId = locationState.activeLocationId
@@ -294,6 +297,17 @@ class MainActivity : ComponentActivity() {
 
                                 Box(Modifier.fillMaxSize()) {
                                     val onSettingsClick = { selectedTab = 5 }
+                                    val runTryOn: (Set<String>) -> Unit = { itemIds ->
+                                        val files = wardrobeViewModel.state.value.images
+                                            .filter { it.driveId in itemIds }
+                                            .map { java.io.File(it.localPath) }
+                                            .filter { it.exists() }
+                                        tryOnViewModel.generate(
+                                            personFiles = profileViewModel.tryOnFiles(),
+                                            itemFiles   = files,
+                                            preferences = profileViewModel.state.value.preferences.preferences,
+                                        )
+                                    }
                                     when (selectedTab) {
                                         0 -> StylesScreen(
                                             stylesViewModel = stylesViewModel,
@@ -302,6 +316,11 @@ class MainActivity : ComponentActivity() {
                                             profileViewModel = profileViewModel,
                                             weatherViewModel = weatherViewModel,
                                             locationViewModel = locationViewModel,
+                                            onTryOnStyle = { style ->
+                                                stylesViewModel.clearStyleSelection()
+                                                runTryOn(style.itemIds.toSet())
+                                            },
+                                            canTryOn = canTryOn,
                                             onSettingsClick = onSettingsClick,
                                         )
                                         1 -> WardrobeScreen(
@@ -324,6 +343,11 @@ class MainActivity : ComponentActivity() {
                                                 wardrobeViewModel.clearSelection()
                                                 selectedTab = 0
                                             },
+                                            onTryOnSelection = { itemIds ->
+                                                runTryOn(itemIds)
+                                                wardrobeViewModel.clearSelection()
+                                            },
+                                            canTryOn = canTryOn,
                                             dismissViewerTrigger = dismissWardrobeViewerTrigger,
                                             onSettingsClick = onSettingsClick,
                                         )
@@ -371,6 +395,14 @@ class MainActivity : ComponentActivity() {
                                                 .padding(start = 12.dp, bottom = 8.dp),
                                         )
                                     }
+                                }
+
+                                if (tryOnState.isGenerating || tryOnState.resultPath != null || tryOnState.error != null) {
+                                    TryOnResultDialog(
+                                        state = tryOnState,
+                                        onDismiss = tryOnViewModel::dismiss,
+                                        onClearError = tryOnViewModel::clearError,
+                                    )
                                 }
                             }
                         }

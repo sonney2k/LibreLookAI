@@ -139,6 +139,8 @@ fun WardrobeScreen(
     locationViewModel: LocationViewModel = viewModel(),
     onCreateStyleFromSelection: (Set<String>) -> Unit = {},
     onComposeStyleFromSelection: (Set<String>) -> Unit = {},
+    onTryOnSelection: (Set<String>) -> Unit = {},
+    canTryOn: Boolean = false,
     dismissViewerTrigger: Int = 0,
     onSettingsClick: () -> Unit = {},
     modifier: Modifier = Modifier,
@@ -206,6 +208,8 @@ fun WardrobeScreen(
             onSetActiveLocation = locationViewModel::setActiveLocation,
             onCreateStyleFromSelection = onCreateStyleFromSelection,
             onComposeStyleFromSelection = onComposeStyleFromSelection,
+            onTryOnSelection = onTryOnSelection,
+            canTryOn = canTryOn,
             onDismissBatteryExemption = viewModel::dismissBatteryExemptionWarning,
             onSetImportTarget = viewModel::setDefaultImportFolderId,
             processingImageId = state.processingImageId,
@@ -487,6 +491,8 @@ private fun GridContent(
     onSetActiveLocation: (String) -> Unit,
     onCreateStyleFromSelection: (Set<String>) -> Unit,
     onComposeStyleFromSelection: (Set<String>) -> Unit,
+    onTryOnSelection: (Set<String>) -> Unit = {},
+    canTryOn: Boolean = false,
     onDismissBatteryExemption: () -> Unit = {},
     onSetImportTarget: (String) -> Unit = {},
     processingImageId: String?,
@@ -833,6 +839,15 @@ private fun GridContent(
                         icon = { Icon(Icons.Default.AutoFixHigh, contentDescription = null) },
                         text = { Text(stringResource(R.string.wardrobe_compose_ai)) },
                     )
+                    if (canTryOn) {
+                        ExtendedFloatingActionButton(
+                            onClick = { onTryOnSelection(state.selectedIds) },
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            icon = { Icon(Icons.Default.AutoAwesome, contentDescription = null) },
+                            text = { Text(stringResource(R.string.tryon_fab)) },
+                        )
+                    }
                 }
                 if (locations.size > 1 && !isOffline) {
                     ExtendedFloatingActionButton(
