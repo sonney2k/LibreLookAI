@@ -259,18 +259,25 @@ class GeminiRepository(private val app: Application) {
         val prefsHint = preferences.trim().takeIf { it.isNotEmpty() }
             ?.let { " The person's style preferences: $it." } ?: ""
         val personCountHint = when (personFiles.size) {
-            1 -> "a single reference photo of the person"
-            2 -> "two reference photos of the person (use them to recover their likeness from multiple angles)"
-            else -> "${personFiles.size} reference photos of the person from multiple angles"
+            1 -> "a single frontal reference photo of the person"
+            2 -> "two reference photos of the person — the FIRST is the frontal photo (authoritative for the face), the second is an additional angle"
+            else -> "${personFiles.size} reference photos of the person — the FIRST is the frontal photo (authoritative for the face), the rest are additional angles"
         }
         val itemCountHint = if (itemFiles.size == 1) "this clothing item" else "these ${itemFiles.size} clothing items"
         val prompt =
             "You are given $personCountHint, followed by $itemCountHint. " +
-                "Generate a single photorealistic full-body image of the same person wearing $itemCountHint together " +
-                "as one outfit. Preserve the person's face, hair, skin tone and body proportions exactly. " +
+                "Generate a single photorealistic full-body image of the same person wearing $itemCountHint together as one outfit. " +
+                "CRITICAL: the generated face must be as close as possible to the face in the FIRST (frontal) reference photo — " +
+                "match facial structure, features, proportions, eye shape and color, nose, mouth, jawline, eyebrows, skin tone, " +
+                "and hair exactly. Treat the frontal photo as the ground truth for identity; the other photos are only for " +
+                "recovering body shape and side/back details. Do not invent, beautify, age, or restyle the face. " +
+                "Preserve hair, skin tone and body proportions exactly. " +
                 "Dress them so all provided garments are visible and styled naturally. " +
                 "Use a clean, neutral studio background, soft even lighting, sharp focus. " +
                 "No text, watermarks, UI, extra people, or extra clothing that was not provided.$prefsHint"
+
+
+
 
         val parts = mutableListOf<Map<String, Any>>(mapOf("text" to prompt))
         personFiles.forEach { f ->

@@ -4,6 +4,8 @@ import android.app.Application
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.media.ExifInterface
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,7 +19,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.io.File
-import kotlin.math.roundToInt
 
 /** The three angles of the user's try-on reference photo. */
 enum class TryOnSlot(val fileName: String) {
@@ -207,30 +208,47 @@ class ProfileViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /**
-     * Reads [uri] via the content resolver, decodes it to a Bitmap, downscales so
-     * max(width, height) ≤ 1280, and writes a JPEG to the cache directory. Returns the
-     * cache file, or null on any failure.
+     * Reads [uri] via the content resolver, applies any EXIF orientation, downscales so
+     * max(width, height) ≤ 1280, and writes a JPEG (orientation NORMAL) to the cache
+     * directory. Returns the cache file, or null on any failure.
      */
     private fun resizeUriToCache(uri: Uri, slot: TryOnSlot): File? {
         val cr = getApplication<Application>().contentResolver
         val tmp = File(drive.cacheDir, "tryon_in_${slot.name.lowercase()}_${System.currentTimeMillis()}.jpg")
         cr.openInputStream(uri)?.use { input -> tmp.outputStream().use { input.copyTo(it) } } ?: return null
-        val opts = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-        BitmapFactory.decodeFile(tmp.absolutePath, opts)
-        val maxDim = maxOf(opts.outWidth, opts.outHeight)
-        if (maxDim <= 0) { tmp.delete(); return null }
-        if (maxDim <= 1280) return tmp
-        val bitmap = BitmapFactory.decodeFile(tmp.absolutePath) ?: return tmp
-        val scale = 1280f / maxDim
-        val newW = (bitmap.width * scale).roundToInt()
-        val newH = (bitmap.height * scale).roundToInt()
-        val resized = Bitmap.createScaledBitmap(bitmap, newW, newH, true)
-        if (resized !== bitmap) bitmap.recycle()
+
+        val orientation = ExifInterface(tmp.absolutePath)
+            .getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
+        val raw = BitmapFactory.decodeFile(tmp.absolutePath) ?: run { tmp.delete(); return null }
+
+        val maxDim = maxOf(raw.width, raw.height)
+        val scale = if (maxDim > 1280) 1280f / maxDim else 1f
+        val matrix = Matrix().apply {
+            if (scale != 1f) postScale(scale, scale)
+            when (orientation) {
+                ExifInterface.ORIENTATION_ROTATE_90 -> postRotate(90f)
+                ExifInterface.ORIENTATION_ROTATE_180 -> postRotate(180f)
+                ExifInterface.ORIENTATION_ROTATE_270 -> postRotate(270f)
+                ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> preScale(-1f, 1f)
+                ExifInterface.ORIENTATION_FLIP_VERTICAL -> preScale(1f, -1f)
+                ExifInterface.ORIENTATION_TRANSPOSE -> { preScale(-1f, 1f); postRotate(90f) }
+                ExifInterface.ORIENTATION_TRANSVERSE -> { preScale(-1f, 1f); postRotate(-90f) }
+            }
+        }
+        val transformed = if (matrix.isIdentity) raw
+        else Bitmap.createBitmap(raw, 0, 0, raw.width, raw.height, matrix, true)
+            .also { if (it !== raw) raw.recycle() }
+
         ByteArrayOutputStream().use { baos ->
-            resized.compress(Bitmap.CompressFormat.JPEG, 92, baos)
+            transformed.compress(Bitmap.CompressFormat.JPEG, 92, baos)
             tmp.writeBytes(baos.toByteArray())
         }
-        resized.recycle()
+        transformed.recycle()
+
+        ExifInterface(tmp.absolutePath).apply {
+            setAttribute(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL.toString())
+            saveAttributes()
+        }
         return tmp
     }
 }
