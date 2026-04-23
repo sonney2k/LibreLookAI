@@ -476,6 +476,7 @@
     <string name="composer_feedback_placeholder">Sag der KI, was sie anpassen soll…</string>
     <string name="composer_feedback_history">%1$d frühere Wünsche berücksichtigt</string>
     <string name="composer_enhance">Mit KI verbessern</string>
+    <string name="composer_enhancing">Gemini wird gefragt…</string>
     <string name="composer_add_items">Teile aus Garderobe hinzufügen</string>
     <string name="composer_picked_count">%1$d ausgewählt</string>
     <string name="composer_add_selected">Auswahl hinzufügen</string>

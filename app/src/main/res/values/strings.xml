@@ -487,6 +487,7 @@
     <string name="composer_feedback_placeholder">Tell the AI what to change or aim for…</string>
     <string name="composer_feedback_history">%1$d earlier request(s) kept in context</string>
     <string name="composer_enhance">Enhance with AI</string>
+    <string name="composer_enhancing">Asking Gemini…</string>
     <string name="composer_add_items">Add items from wardrobe</string>
     <string name="composer_picked_count">%1$d picked</string>
     <string name="composer_add_selected">Add selected</string>

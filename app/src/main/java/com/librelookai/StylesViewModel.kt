@@ -470,7 +470,13 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
      * their current tag categories.  The user supplies a preference string prefilled
      * from [prefs]; weather mode defaults to AUTO.
      */
-    fun openComposer(seedItemIds: Set<String>, images: List<DriveImage>, prefs: UserPreferences?) {
+    fun openComposer(
+        seedItemIds: Set<String>,
+        images: List<DriveImage>,
+        prefs: UserPreferences?,
+        initialName: String = "",
+        initialDescription: String = "",
+    ) {
         val ids = seedItemIds.toList()
         val targets = targetsFromSeed(ids, images)
         _state.update {
@@ -484,8 +490,8 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
                 composerVibes           = emptySet(),
                 composerTargets         = targets,
                 composerPrefOverride    = prefs?.preferences.orEmpty(),
-                composerName            = "",
-                composerDescription     = "",
+                composerName            = initialName,
+                composerDescription     = initialDescription,
                 composerFeedback        = "",
                 composerFeedbackHistory = emptyList(),
                 composerReason          = "",
@@ -493,6 +499,22 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
                 composerError           = null,
             )
         }
+    }
+
+    /** Opens the composer seeded with the union of all items from the currently-selected styles. */
+    fun openComposerFromSelectedStyles(images: List<DriveImage>, prefs: UserPreferences?) {
+        val selected = _state.value.styles.filter { it.id in _state.value.selectedStyleIds }
+        if (selected.size < 2) return
+        val unionIds = selected.flatMap { it.itemIds }.toSet()
+        val suggestedName = selected.joinToString(" + ") { it.name.ifBlank { "Style" } }
+            .take(60)
+        openComposer(
+            seedItemIds = unionIds,
+            images = images,
+            prefs = prefs,
+            initialName = suggestedName,
+        )
+        _state.update { it.copy(selectedStyleIds = emptySet()) }
     }
 
     fun closeComposer() = _state.update {
@@ -697,68 +719,6 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
                 _state.update { it.copy(styles = updated, selectedStyleIds = emptySet()) }
             }.onFailure { e ->
                 _state.update { it.copy(error = e.message) }
-            }
-        }
-    }
-
-    /**
-     * Asks Gemini to merge the selected styles into one cohesive outfit.
-     * The result surfaces as [newSuggestion], which auto-opens [StyleEditingView].
-     */
-    fun combineSelectedStyles(prefs: UserPreferences?, weather: WeatherData?, images: List<DriveImage>) {
-        val selectedIds = _state.value.selectedStyleIds
-        val selectedStyles = _state.value.styles.filter { it.id in selectedIds }
-        if (selectedStyles.size < 2) return
-        viewModelScope.launch {
-            _state.update { it.copy(isComposing = true, newSuggestion = null, compositionError = null) }
-            val countryCode = deviceCountryCode()
-            val region = listOfNotNull(weather?.cityName?.takeIf { it.isNotEmpty() }, countryCode).joinToString(", ")
-            val fashionTrends = gemini.searchFashionTrends(region)
-            val prompt = buildCombinePrompt(
-                prefs = prefs,
-                weather = weather,
-                countryCode = countryCode,
-                fashionTrends = fashionTrends,
-                styles = selectedStyles,
-                images = images,
-            )
-            Log.d("StylesVM", "Combine prompt length: ${prompt.length} chars")
-            val raw = gemini.generateText(prompt)
-            if (raw == null) {
-                _state.update { it.copy(isComposing = false, compositionError = "Gemini did not respond.") }
-                return@launch
-            }
-            val json = raw.trim()
-                .removePrefix("```json").removePrefix("```").removeSuffix("```").trim()
-            data class CompResp(
-                val name: String = "",
-                val description: String = "",
-                val itemIds: List<String> = emptyList(),
-                val reason: String = "",
-            )
-            val result = runCatching { gson.fromJson(json, CompResp::class.java) }.getOrNull()
-            if (result == null || result.itemIds.isEmpty()) {
-                Log.w("StylesVM", "Failed to parse combine response: $json")
-                _state.update { it.copy(isComposing = false, compositionError = "Could not parse Gemini response.") }
-                return@launch
-            }
-            val knownIds = images.map { it.driveId }.toSet()
-            val merged = result.itemIds.filter { it in knownIds }.distinct()
-            if (merged.isEmpty()) {
-                _state.update { it.copy(isComposing = false, compositionError = "Suggested items not found in wardrobe.") }
-                return@launch
-            }
-            _state.update {
-                it.copy(
-                    isComposing = false,
-                    selectedStyleIds = emptySet(),
-                    newSuggestion = NewStyleSuggestion(
-                        name        = result.name.ifBlank { "Combined Style" },
-                        description = result.description,
-                        itemIds     = merged,
-                        reason      = result.reason,
-                    ),
-                )
             }
         }
     }
@@ -1235,90 +1195,6 @@ private fun buildCompositionPrompt(
         appendLine("Also propose:")
         appendLine("- A short, evocative name for the outfit (\"name\")")
         appendLine("- A 1-2 sentence style description suitable as a caption (\"description\")")
-        appendLine()
-        appendLine("Respond with ONLY a valid JSON object — no markdown, no extra text:")
-        append("""{"name":"<outfit name>","description":"<style caption>","itemIds":["<id1>","<id2>",...],"reason":"<1-2 sentence explanation>"}""")
-        appendLine()
-        appendLine()
-        appendLine("IMPORTANT: Write all user-facing text fields (name, description, reason) in ${AppLanguage.toGeminiName(prefs?.language ?: AppLanguage.ENGLISH)}.")
-    }
-}
-
-private fun buildCombinePrompt(
-    prefs: UserPreferences?,
-    weather: WeatherData?,
-    countryCode: String,
-    fashionTrends: FashionTrends?,
-    styles: List<Style>,
-    images: List<DriveImage>,
-): String {
-    val age = prefs?.yearOfBirth?.let { LocalDate.now().year - it }
-    val idToImage = images.associateBy { it.driveId }
-
-    fun itemJson(img: DriveImage): String {
-        val t = img.tags ?: return """{"id":"${img.driveId}","tags":null}"""
-        val uses   = t.uses.joinToString(",", "[", "]") { "\"$it\"" }
-        val colors = t.colors.joinToString(",", "[", "]") { "\"$it\"" }
-        return """{"id":"${img.driveId}","tags":{"label":"${t.label}","type":"${t.type}","category":"${t.category}","uses":$uses,"colors":$colors}}"""
-    }
-
-    val stylesJson = styles.joinToString(",\n", "[\n", "\n]") { style ->
-        val itemsJson = style.itemIds.mapNotNull { idToImage[it] }
-            .joinToString(",", "[", "]") { itemJson(it) }
-        """  {"id":"${style.id}","name":"${style.name}","description":"${style.description}","items":$itemsJson}"""
-    }
-
-    val weatherStr = if (weather != null)
-        "${weather.temperatureCelsius.toInt()}°C, ${wmoEmoji(weather.weatherCode)} (WMO ${weather.weatherCode})"
-    else "unknown"
-
-    return buildString {
-        appendLine("You are a personal fashion stylist AI. Merge the following ${styles.size} existing styles into one new, cohesive outfit by selecting the best-matching items from across all of them.")
-        appendLine()
-        appendLine("## User Profile")
-        appendLine("- Gender: ${prefs?.gender?.takeIf { it.isNotEmpty() } ?: "not specified"}")
-        appendLine("- Age: ${age?.toString() ?: "not specified"}")
-        appendLine("- Style preferences: ${prefs?.preferences?.takeIf { it.isNotEmpty() } ?: "none provided"}")
-        appendLine()
-        appendLine("## Today's Weather")
-        appendLine(weatherStr)
-        appendLine()
-        appendLine("## Current Fashion Trends")
-        if (fashionTrends != null) {
-            appendLine("- Trending colors: ${fashionTrends.trendingColors.joinToString(", ").ifEmpty { "n/a" }}")
-            appendLine("- Trending aesthetics: ${fashionTrends.trendingAesthetics.joinToString(", ").ifEmpty { "n/a" }}")
-            appendLine("- Must-have items: ${fashionTrends.mustHaveItems.joinToString(", ").ifEmpty { "n/a" }}")
-        } else {
-            appendLine("not available")
-        }
-        appendLine()
-        appendLine("## Styles to Combine (each with their items)")
-        appendLine(stylesJson)
-        appendLine()
-        appendLine("## Instructions")
-        appendLine("Select 4–6 item IDs from across all the styles above to form one unified, well-coordinated outfit.")
-        appendLine()
-        appendLine("Every outfit MUST include all four of these layers (pick exactly one item per layer, unless unavailable):")
-        appendLine("  • Base top    — t-shirt, shirt, blouse, or similar inner layer")
-        appendLine("  • Bottom      — trousers, jeans, shorts, skirt, or similar")
-        appendLine("  • Shoes       — any footwear")
-        appendLine("  • Outer layer — jacket, coat, blazer, hoodie, or cardigan (add this OVER the base top; do NOT substitute it for a base top or shoes)")
-        appendLine()
-        appendLine("IMPORTANT outfit-structure rules:")
-        appendLine("- Outerwear is an ADDITIONAL layer on top of a base top — never pick outerwear instead of a base top")
-        appendLine("- Never build an outfit from only outerwear + shoes, or outerwear + t-shirt with no bottom")
-        appendLine("- Do NOT include two items of the same layer (e.g. two jackets, two pairs of trousers)")
-        appendLine()
-        appendLine("The combined outfit should:")
-        appendLine("1. Blend the aesthetic DNA of the source styles into something cohesive")
-        appendLine("2. Avoid redundancy (e.g., don't pick two pairs of trousers)")
-        appendLine("3. Work together visually (complementary colors, consistent formality level)")
-        appendLine("4. Be appropriate for the current weather")
-        appendLine()
-        appendLine("Also propose:")
-        appendLine("- A short, evocative name for the combined outfit (\"name\")")
-        appendLine("- A 1-2 sentence style description (\"description\")")
-        appendLine("- A brief reason explaining how you merged the styles (\"reason\")")
         appendLine()
         appendLine("Respond with ONLY a valid JSON object — no markdown, no extra text:")
         append("""{"name":"<outfit name>","description":"<style caption>","itemIds":["<id1>","<id2>",...],"reason":"<1-2 sentence explanation>"}""")

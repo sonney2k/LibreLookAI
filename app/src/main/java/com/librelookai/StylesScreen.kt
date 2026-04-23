@@ -256,10 +256,9 @@ fun StylesScreen(
                     onClearStyleSelection = stylesViewModel::clearStyleSelection,
                     onDeleteSelectedStyles = stylesViewModel::deleteSelectedStyles,
                     onCombineSelectedStyles = {
-                        stylesViewModel.combineSelectedStyles(
-                            prefs   = profileState.preferences,
-                            weather = weatherState.data,
-                            images  = wardrobeState.images,
+                        stylesViewModel.openComposerFromSelectedStyles(
+                            images = wardrobeState.images,
+                            prefs  = profileState.preferences,
                         )
                     },
                     onSuggestStyle = {

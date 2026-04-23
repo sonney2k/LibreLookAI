@@ -42,6 +42,7 @@ import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -210,6 +211,49 @@ fun StyleComposerScreen(
                                 )
                             }
                         }
+                        // Applied feedback history chips
+                        if (s.composerFeedbackHistory.isNotEmpty()) {
+                            FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                                s.composerFeedbackHistory.forEach { fb ->
+                                    InputChip(
+                                        selected = true,
+                                        onClick = {},
+                                        label = { Text(fb, style = MaterialTheme.typography.labelSmall) },
+                                    )
+                                }
+                            }
+                        }
+
+                        // Preset quick-pick chips — tapping one immediately enhances with that feedback
+                        val presets = listOf(
+                            stringResource(R.string.styles_refine_casual),
+                            stringResource(R.string.styles_refine_formal),
+                            stringResource(R.string.styles_refine_diff_colors),
+                            stringResource(R.string.styles_refine_warmer),
+                            stringResource(R.string.styles_refine_lighter),
+                            stringResource(R.string.styles_refine_trendy),
+                            stringResource(R.string.styles_refine_simpler),
+                            stringResource(R.string.styles_refine_bold),
+                        )
+                        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            presets.forEach { preset ->
+                                SuggestionChip(
+                                    onClick = {
+                                        if (!s.isComposerEnhancing) {
+                                            stylesViewModel.updateComposerFeedback(preset)
+                                            stylesViewModel.enhanceComposerWithAi(
+                                                prefs   = profile.preferences,
+                                                weather = weather.data,
+                                                images  = wardrobe.images,
+                                            )
+                                        }
+                                    },
+                                    label = { Text(preset, style = MaterialTheme.typography.labelSmall) },
+                                    enabled = !s.isComposerEnhancing,
+                                )
+                            }
+                        }
+
                         OutlinedTextField(
                             value = s.composerFeedback,
                             onValueChange = { stylesViewModel.updateComposerFeedback(it) },
@@ -219,13 +263,26 @@ fun StyleComposerScreen(
                             maxLines = 4,
                             enabled = !s.isComposerEnhancing,
                         )
-                        if (s.composerFeedbackHistory.isNotEmpty()) {
-                            Text(
-                                stringResource(R.string.composer_feedback_history, s.composerFeedbackHistory.size),
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
+
+                        if (s.isComposerEnhancing) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center,
+                            ) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(28.dp),
+                                    strokeWidth = 3.dp,
+                                )
+                                Spacer(Modifier.width(12.dp))
+                                Text(
+                                    stringResource(R.string.composer_enhancing),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
                         }
+
                         Button(
                             onClick = {
                                 stylesViewModel.enhanceComposerWithAi(

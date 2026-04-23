@@ -315,10 +315,12 @@ fun TravelScreen(
                         imagesById = wardrobeState.images.associateBy { it.driveId },
                         onSaveAsStyle = if (outfit.itemIds.isNotEmpty()) {
                             {
-                                stylesViewModel.saveStyleDirectly(
-                                    name = outfit.occasion,
-                                    description = outfit.description,
-                                    itemIds = outfit.itemIds,
+                                stylesViewModel.openComposer(
+                                    seedItemIds        = outfit.itemIds.toSet(),
+                                    images             = wardrobeState.images,
+                                    prefs              = profileState.preferences,
+                                    initialName        = outfit.occasion,
+                                    initialDescription = outfit.description,
                                 )
                             }
                         } else null,
@@ -455,7 +457,6 @@ private fun PackingOutfitCard(
 ) {
     val ctx = LocalContext.current
     val images = outfit.itemIds.mapNotNull { imagesById[it] }
-    var saved by remember { mutableStateOf(false) }
 
     OutlinedCard(modifier = modifier.fillMaxWidth()) {
         Column(
@@ -474,23 +475,14 @@ private fun PackingOutfitCard(
                 )
                 if (onSaveAsStyle != null) {
                     InputChip(
-                        selected = saved,
-                        onClick = {
-                            if (!saved) {
-                                onSaveAsStyle()
-                                saved = true
-                            }
-                        },
+                        selected = false,
+                        onClick = { onSaveAsStyle() },
                         label = {
                             Text(
-                                if (saved) stringResource(R.string.travel_saved_as_style)
-                                else stringResource(R.string.travel_save_as_style),
+                                stringResource(R.string.travel_save_as_style),
                                 style = MaterialTheme.typography.labelSmall,
                             )
                         },
-                        leadingIcon = if (saved) {
-                            { Icon(Icons.Default.Check, contentDescription = null, modifier = Modifier.size(14.dp)) }
-                        } else null,
                     )
                 }
             }
