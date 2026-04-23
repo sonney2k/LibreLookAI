@@ -21,6 +21,19 @@ import java.util.Locale
 
 data class StylePrediction(val styleId: String, val reason: String)
 
+enum class ComposerWeatherMode { AUTO, MANUAL }
+
+/** Per-layer target item counts for the unified style composer. */
+data class ComposerTargets(
+    val top: Int = 1,
+    val bottom: Int = 1,
+    val footwear: Int = 1,
+    val outerwear: Int = 1,
+    val accessory: Int = 0,
+) {
+    fun total(): Int = top + bottom + footwear + outerwear + accessory
+}
+
 /** Gemini-composed outfit that doesn't yet exist as a saved style. */
 data class NewStyleSuggestion(
     val name: String,
@@ -62,6 +75,23 @@ data class StylesUiState(
     // Item-swap alternatives suggested by Gemini
     val isLoadingAlternatives: Boolean = false,
     val alternativeIds: List<String> = emptyList(),
+    // Unified style composer (phase 1: Wardrobe-selection entry point)
+    val isComposerOpen: Boolean = false,
+    val composerItemIds: List<String> = emptyList(),
+    val composerWeatherMode: ComposerWeatherMode = ComposerWeatherMode.AUTO,
+    val composerManualSeason: String = "",        // "" / Spring / Summer / Fall / Winter
+    val composerManualTempC: Int? = null,          // null = unspecified
+    val composerManualPrecip: String = "",         // "" / None / Light / Heavy
+    val composerVibes: Set<String> = emptySet(),   // Casual / Sporty / Formal / …
+    val composerTargets: ComposerTargets = ComposerTargets(),
+    val composerPrefOverride: String = "",
+    val composerName: String = "",
+    val composerDescription: String = "",
+    val composerFeedback: String = "",
+    val composerFeedbackHistory: List<String> = emptyList(),
+    val composerReason: String = "",
+    val isComposerEnhancing: Boolean = false,
+    val composerError: String? = null,
     val error: String? = null,
 )
 
@@ -431,6 +461,189 @@ class StylesViewModel(app: Application) : AndroidViewModel(app) {
                 onDone(false)
             }
         }
+    }
+
+    // ---------- Unified style composer ----------
+
+    /**
+     * Opens the composer prefilled with [seedItemIds] and target counts derived from
+     * their current tag categories.  The user supplies a preference string prefilled
+     * from [prefs]; weather mode defaults to AUTO.
+     */
+    fun openComposer(seedItemIds: Set<String>, images: List<DriveImage>, prefs: UserPreferences?) {
+        val ids = seedItemIds.toList()
+        val targets = targetsFromSeed(ids, images)
+        _state.update {
+            it.copy(
+                isComposerOpen          = true,
+                composerItemIds         = ids,
+                composerWeatherMode     = ComposerWeatherMode.AUTO,
+                composerManualSeason    = "",
+                composerManualTempC     = null,
+                composerManualPrecip    = "",
+                composerVibes           = emptySet(),
+                composerTargets         = targets,
+                composerPrefOverride    = prefs?.preferences.orEmpty(),
+                composerName            = "",
+                composerDescription     = "",
+                composerFeedback        = "",
+                composerFeedbackHistory = emptyList(),
+                composerReason          = "",
+                isComposerEnhancing     = false,
+                composerError           = null,
+            )
+        }
+    }
+
+    fun closeComposer() = _state.update {
+        it.copy(
+            isComposerOpen          = false,
+            composerItemIds         = emptyList(),
+            composerFeedback        = "",
+            composerFeedbackHistory = emptyList(),
+            composerReason          = "",
+            composerError           = null,
+        )
+    }
+
+    fun addComposerItems(ids: Collection<String>) = _state.update { s ->
+        s.copy(composerItemIds = (s.composerItemIds + ids).distinct())
+    }
+    fun removeComposerItem(id: String) = _state.update { s ->
+        s.copy(composerItemIds = s.composerItemIds - id)
+    }
+    fun toggleComposerVibe(vibe: String) = _state.update { s ->
+        val next = s.composerVibes.toMutableSet()
+        if (!next.add(vibe)) next.remove(vibe)
+        s.copy(composerVibes = next)
+    }
+    fun setComposerWeatherMode(mode: ComposerWeatherMode) = _state.update { it.copy(composerWeatherMode = mode) }
+    fun setComposerManualSeason(season: String) = _state.update { it.copy(composerManualSeason = season) }
+    fun setComposerManualTempC(tempC: Int?) = _state.update { it.copy(composerManualTempC = tempC) }
+    fun setComposerManualPrecip(p: String) = _state.update { it.copy(composerManualPrecip = p) }
+    fun setComposerTargets(targets: ComposerTargets) = _state.update { it.copy(composerTargets = targets) }
+    fun updateComposerPrefOverride(s: String) = _state.update { it.copy(composerPrefOverride = s) }
+    fun updateComposerName(s: String) = _state.update { it.copy(composerName = s) }
+    fun updateComposerDescription(s: String) = _state.update { it.copy(composerDescription = s) }
+    fun updateComposerFeedback(s: String) = _state.update { it.copy(composerFeedback = s) }
+
+    /** Asks Gemini to complete the composer draft into a full outfit. */
+    fun enhanceComposerWithAi(
+        prefs: UserPreferences?,
+        weather: WeatherData?,
+        images: List<DriveImage>,
+    ) {
+        val s = _state.value
+        if (images.isEmpty()) {
+            _state.update { it.copy(composerError = "No wardrobe items to compose from.") }
+            return
+        }
+        val feedbackAdd = s.composerFeedback.trim()
+        val history = if (feedbackAdd.isNotEmpty()) s.composerFeedbackHistory + feedbackAdd else s.composerFeedbackHistory
+        _state.update {
+            it.copy(
+                isComposerEnhancing     = true,
+                composerError           = null,
+                composerFeedback        = "",
+                composerFeedbackHistory = history,
+            )
+        }
+        viewModelScope.launch {
+            val countryCode = deviceCountryCode()
+            val region = listOfNotNull(weather?.cityName?.takeIf { it.isNotEmpty() }, countryCode).joinToString(", ")
+            val fashionTrends = gemini.searchFashionTrends(region)
+            val prefString = s.composerPrefOverride.ifBlank { prefs?.preferences.orEmpty() }
+            val prompt = buildComposerPrompt(
+                prefs            = prefs,
+                prefOverride     = prefString,
+                weatherAuto      = if (s.composerWeatherMode == ComposerWeatherMode.AUTO) weather else null,
+                weatherManual    = if (s.composerWeatherMode == ComposerWeatherMode.MANUAL) Triple(
+                    s.composerManualSeason, s.composerManualTempC, s.composerManualPrecip
+                ) else null,
+                vibes            = s.composerVibes,
+                targets          = s.composerTargets,
+                requiredItemIds  = s.composerItemIds.toSet(),
+                images           = images,
+                countryCode      = countryCode,
+                cityName         = weather?.cityName,
+                fashionTrends    = fashionTrends,
+                feedbackHistory  = history,
+                language         = prefs?.language ?: AppLanguage.ENGLISH,
+            )
+            Log.d("StylesVM", "Composer prompt length: ${prompt.length} chars")
+            val raw = gemini.generateText(prompt)
+            if (raw == null) {
+                _state.update { it.copy(isComposerEnhancing = false, composerError = "Gemini did not respond.") }
+                return@launch
+            }
+            val json = raw.trim()
+                .removePrefix("```json").removePrefix("```").removeSuffix("```").trim()
+            data class CompResp(
+                val name: String = "",
+                val description: String = "",
+                val itemIds: List<String> = emptyList(),
+                val reason: String = "",
+            )
+            val result = runCatching { gson.fromJson(json, CompResp::class.java) }.getOrNull()
+            if (result == null || result.itemIds.isEmpty()) {
+                Log.w("StylesVM", "Failed to parse composer response: $json")
+                _state.update { it.copy(isComposerEnhancing = false, composerError = "Could not parse Gemini response.") }
+                return@launch
+            }
+            val knownIds = images.map { it.driveId }.toSet()
+            val required = s.composerItemIds
+            val merged = (required + result.itemIds).filter { it in knownIds }.distinct()
+            _state.update {
+                it.copy(
+                    isComposerEnhancing = false,
+                    composerItemIds     = merged,
+                    composerName        = if (it.composerName.isBlank()) result.name else it.composerName,
+                    composerDescription = if (it.composerDescription.isBlank()) result.description else it.composerDescription,
+                    composerReason      = result.reason,
+                )
+            }
+        }
+    }
+
+    /** Persists the composer draft as a new style. Invokes [onDone] with success/failure. */
+    fun saveComposer(onDone: (Boolean) -> Unit = {}) {
+        val s = _state.value
+        if (s.composerItemIds.isEmpty()) { onDone(false); return }
+        val name = s.composerName.ifBlank { "Style ${s.styles.size + 1}" }
+        saveStyleDirectly(
+            name        = name,
+            description = s.composerDescription,
+            itemIds     = s.composerItemIds,
+        ) { ok ->
+            if (ok) closeComposer()
+            onDone(ok)
+        }
+    }
+
+    fun clearComposerError() = _state.update { it.copy(composerError = null) }
+
+    /** Derives per-layer target counts from the tag categories of the seed items. */
+    private fun targetsFromSeed(ids: List<String>, images: List<DriveImage>): ComposerTargets {
+        val byId = images.associateBy { it.driveId }
+        var top = 0; var bottom = 0; var foot = 0; var outer = 0; var acc = 0
+        ids.forEach { id ->
+            val cat = byId[id]?.tags?.category?.lowercase().orEmpty()
+            when {
+                cat.contains("outer")                                   -> outer++
+                cat.contains("foot") || cat.contains("shoe")            -> foot++
+                cat.contains("bottom") || cat == "pants" || cat == "skirt" -> bottom++
+                cat.contains("accessor")                                -> acc++
+                cat.contains("top") || cat.contains("shirt") || cat == "dress" || cat == "suit" -> top++
+                else                                                    -> top++
+            }
+        }
+        return ComposerTargets(
+            top       = maxOf(top, 1),
+            bottom    = maxOf(bottom, 1),
+            footwear  = maxOf(foot, 1),
+            outerwear = maxOf(outer, 1),
+            accessory = acc,
+        )
     }
 
     // ---------- Delete ----------
@@ -1112,5 +1325,113 @@ private fun buildCombinePrompt(
         appendLine()
         appendLine()
         appendLine("IMPORTANT: Write all user-facing text fields (name, description, reason) in ${AppLanguage.toGeminiName(prefs?.language ?: AppLanguage.ENGLISH)}.")
+    }
+}
+
+private fun buildComposerPrompt(
+    prefs: UserPreferences?,
+    prefOverride: String,
+    weatherAuto: WeatherData?,
+    weatherManual: Triple<String, Int?, String>?,
+    vibes: Set<String>,
+    targets: ComposerTargets,
+    requiredItemIds: Set<String>,
+    images: List<DriveImage>,
+    countryCode: String,
+    cityName: String?,
+    fashionTrends: FashionTrends?,
+    feedbackHistory: List<String>,
+    language: String,
+): String {
+    val age = prefs?.yearOfBirth?.let { LocalDate.now().year - it }
+
+    val wardrobeJson = images.joinToString(",", "[", "]") { img ->
+        val t = img.tags
+        if (t == null) {
+            """{"id":"${img.driveId}","name":"${img.name}","tags":null}"""
+        } else {
+            val uses   = t.uses.joinToString(",", "[", "]") { "\"$it\"" }
+            val colors = t.colors.joinToString(",", "[", "]") { "\"$it\"" }
+            """{"id":"${img.driveId}","name":"${img.name}","tags":{"type":"${t.type}","category":"${t.category}","uses":$uses,"colors":$colors}}"""
+        }
+    }
+
+    val weatherStr = when {
+        weatherAuto != null ->
+            "${weatherAuto.temperatureCelsius.toInt()}°C, ${wmoEmoji(weatherAuto.weatherCode)} (WMO ${weatherAuto.weatherCode}) — auto-detected"
+        weatherManual != null -> {
+            val (season, tempC, precip) = weatherManual
+            listOfNotNull(
+                season.takeIf { it.isNotEmpty() }?.let { "season: $it" },
+                tempC?.let { "~${it}°C" },
+                precip.takeIf { it.isNotEmpty() }?.let { "precipitation: $it" },
+            ).joinToString(", ").ifEmpty { "unspecified (user did not set manual weather)" }
+        }
+        else -> "unknown"
+    }
+
+    val locationStr = listOfNotNull(cityName?.takeIf { it.isNotEmpty() }, countryCode).joinToString(", ")
+
+    return buildString {
+        appendLine("You are a personal fashion stylist AI. Compose a cohesive outfit from the user's wardrobe that MUST include the required items below and meets the target layer counts.")
+        appendLine()
+        appendLine("## User Profile")
+        appendLine("- Gender: ${prefs?.gender?.takeIf { it.isNotEmpty() } ?: "not specified"}")
+        appendLine("- Age: ${age?.toString() ?: "not specified"}")
+        appendLine("- Style preference (user-editable for this composition): ${prefOverride.ifBlank { "none provided" }}")
+        appendLine()
+        appendLine("## Weather")
+        appendLine(weatherStr)
+        appendLine()
+        if (vibes.isNotEmpty()) {
+            appendLine("## Desired vibe")
+            appendLine(vibes.joinToString(", "))
+            appendLine()
+        }
+        appendLine("## Target composition (per-layer counts)")
+        appendLine("- Base tops: ${targets.top}")
+        appendLine("- Bottoms: ${targets.bottom}")
+        appendLine("- Footwear: ${targets.footwear}")
+        appendLine("- Outerwear: ${targets.outerwear}")
+        appendLine("- Accessories: ${targets.accessory}")
+        appendLine("Total items: ${targets.total()}")
+        appendLine()
+        appendLine("## Location")
+        appendLine(locationStr.ifEmpty { "unknown" })
+        if (fashionTrends != null) {
+            appendLine()
+            appendLine("## Current fashion trends")
+            appendLine("- Trending colors: ${fashionTrends.trendingColors.joinToString(", ").ifEmpty { "n/a" }}")
+            appendLine("- Trending aesthetics: ${fashionTrends.trendingAesthetics.joinToString(", ").ifEmpty { "n/a" }}")
+            appendLine("- Must-have items: ${fashionTrends.mustHaveItems.joinToString(", ").ifEmpty { "n/a" }}")
+        }
+        appendLine()
+        appendLine("## Required items (MUST appear in itemIds verbatim)")
+        if (requiredItemIds.isNotEmpty()) {
+            appendLine(requiredItemIds.joinToString(", ") { "\"$it\"" })
+        } else {
+            appendLine("(none — compose freely)")
+        }
+        appendLine()
+        appendLine("## Available wardrobe (id + name + tags)")
+        appendLine(wardrobeJson)
+        appendLine()
+        if (feedbackHistory.isNotEmpty()) {
+            appendLine("## User refinement requests (apply ALL of them)")
+            feedbackHistory.forEachIndexed { i, fb -> appendLine("${i + 1}. $fb") }
+            appendLine()
+        }
+        appendLine("## Instructions")
+        appendLine("1. The itemIds list MUST include every required item id verbatim.")
+        appendLine("2. Add complementary items from the wardrobe to meet the target composition counts as closely as possible.")
+        appendLine("3. Items must work together visually (colors, style, formality).")
+        appendLine("4. Respect the weather and desired vibe.")
+        appendLine("5. Do not include two items of the same layer unless the target count requires it.")
+        appendLine()
+        appendLine("Respond with ONLY a valid JSON object — no markdown, no extra text:")
+        append("""{"name":"<outfit name>","description":"<1-2 sentence caption>","itemIds":["<id1>","<id2>",...],"reason":"<1-2 sentence explanation>"}""")
+        appendLine()
+        appendLine()
+        appendLine("IMPORTANT: Write all user-facing text fields (name, description, reason) in ${AppLanguage.toGeminiName(language)}.")
     }
 }

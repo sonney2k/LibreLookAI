@@ -138,7 +138,6 @@ fun WardrobeScreen(
     stylesViewModel: StylesViewModel = viewModel(),
     locationViewModel: LocationViewModel = viewModel(),
     onCreateStyleFromSelection: (Set<String>) -> Unit = {},
-    onComposeStyleFromSelection: (Set<String>) -> Unit = {},
     onTryOnSelection: (Set<String>) -> Unit = {},
     canTryOn: Boolean = false,
     dismissViewerTrigger: Int = 0,
@@ -207,7 +206,6 @@ fun WardrobeScreen(
             onMoveToLocation = viewModel::moveItemsToLocation,
             onSetActiveLocation = locationViewModel::setActiveLocation,
             onCreateStyleFromSelection = onCreateStyleFromSelection,
-            onComposeStyleFromSelection = onComposeStyleFromSelection,
             onTryOnSelection = onTryOnSelection,
             canTryOn = canTryOn,
             onDismissBatteryExemption = viewModel::dismissBatteryExemptionWarning,
@@ -490,7 +488,6 @@ private fun GridContent(
     onMoveToLocation: (Set<String>, String) -> Unit,
     onSetActiveLocation: (String) -> Unit,
     onCreateStyleFromSelection: (Set<String>) -> Unit,
-    onComposeStyleFromSelection: (Set<String>) -> Unit,
     onTryOnSelection: (Set<String>) -> Unit = {},
     canTryOn: Boolean = false,
     onDismissBatteryExemption: () -> Unit = {},
@@ -829,15 +826,8 @@ private fun GridContent(
                         onClick = { onCreateStyleFromSelection(state.selectedIds) },
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
                         contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        icon = { Icon(Icons.Default.Edit, contentDescription = null) },
-                        text = { Text(stringResource(R.string.wardrobe_create_outfit)) },
-                    )
-                    ExtendedFloatingActionButton(
-                        onClick = { onComposeStyleFromSelection(state.selectedIds) },
-                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
                         icon = { Icon(Icons.Default.AutoFixHigh, contentDescription = null) },
-                        text = { Text(stringResource(R.string.wardrobe_compose_ai)) },
+                        text = { Text(stringResource(R.string.wardrobe_create_style)) },
                     )
                     if (canTryOn) {
                         ExtendedFloatingActionButton(
@@ -960,7 +950,6 @@ private fun GridContent(
                     if (displayedImages.size <= 1) selectedIndex = null
                 },
                 onCreateStyleFromSelection = onCreateStyleFromSelection,
-                onComposeStyleFromSelection = onComposeStyleFromSelection,
                 locations = locations,
                 activeLocationId = activeLocationId,
                 processingImageId = processingImageId,
@@ -1090,7 +1079,6 @@ private fun FullScreenViewer(
     onDeleteItem: (String) -> Unit,
     onMoveToLocation: (Set<String>, String) -> Unit,
     onCreateStyleFromSelection: (Set<String>) -> Unit,
-    onComposeStyleFromSelection: (Set<String>) -> Unit,
     locations: List<Location>,
     activeLocationId: String,
     processingImageId: String?,
@@ -1228,25 +1216,8 @@ private fun FullScreenViewer(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
-                        Icon(Icons.Default.Edit, contentDescription = null, modifier = Modifier.size(20.dp))
-                        Text(stringResource(R.string.wardrobe_create_outfit), style = MaterialTheme.typography.bodyLarge)
-                    }
-                }
-                Surface(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            showItemActions = false
-                            onComposeStyleFromSelection(setOf(currentImage.driveId))
-                        },
-                ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    ) {
                         Icon(Icons.Default.AutoFixHigh, contentDescription = null, modifier = Modifier.size(20.dp))
-                        Text(stringResource(R.string.wardrobe_compose_ai), style = MaterialTheme.typography.bodyLarge)
+                        Text(stringResource(R.string.wardrobe_create_style), style = MaterialTheme.typography.bodyLarge)
                     }
                 }
                 if (otherLocations.isNotEmpty()) {

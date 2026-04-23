@@ -448,4 +448,36 @@
     <string name="about_byok_desc">Du kannst deinen eigenen kostenlosen Gemini-API-Schlüssel verwenden, um Credits komplett zu vermeiden:\n\n1. Gehe zu aistudio.google.com\n2. Klicke auf \"Get API key\" → \"Create API key\"\n3. Kopiere den Schlüssel (beginnt mit AIza…)\n4. Füge ihn unter Einstellungen → Profil → Gemini API-Schlüssel ein\n\nDein Schlüssel wird nur auf diesem Gerät gespeichert und direkt mit Google verwendet — keine Daten gehen über unsere Server.</string>
     <string name="about_credits_title">Credits (Verwalteter Modus)</string>
     <string name="about_credits_desc">Für Nutzer, die keinen eigenen API-Schlüssel erstellen möchten, bietet die App ein münzbasiertes Credit-System. Credits können im Credits-Tab gekauft und pro KI-Aktion zu den oben genannten Preisen verbraucht werden. In diesem Modus werden Anfragen über einen serverseitigen Proxy geleitet.</string>
+
+    <!-- Unified Style Composer -->
+    <string name="composer_title">Stil erstellen</string>
+    <string name="composer_save">Speichern</string>
+    <string name="composer_section_items">Teile</string>
+    <string name="composer_section_weather">Wetter</string>
+    <string name="composer_section_vibe">Stil-Vibe</string>
+    <string name="composer_section_targets">Zusammenstellung</string>
+    <string name="composer_section_pref">Vorlieben-Prompt</string>
+    <string name="composer_section_name">Name &amp; Beschreibung</string>
+    <string name="composer_section_ai">Mit KI verbessern</string>
+    <string name="composer_weather_auto">Aktuell</string>
+    <string name="composer_weather_manual">Manuell</string>
+    <string name="composer_weather_unknown">Kein Wetter verfügbar</string>
+    <string name="composer_weather_season">Jahreszeit</string>
+    <string name="composer_weather_temp">Temperatur</string>
+    <string name="composer_weather_precip">Niederschlag</string>
+    <string name="composer_layer_top">Oberteil</string>
+    <string name="composer_layer_bottom">Unterteil</string>
+    <string name="composer_layer_footwear">Schuhe</string>
+    <string name="composer_layer_outerwear">Jacke/Mantel</string>
+    <string name="composer_layer_accessory">Accessoire</string>
+    <string name="composer_pref_placeholder">z. B. minimalistisch, gedeckte Farben, keine Logos…</string>
+    <string name="composer_name_placeholder">Stilname (optional)</string>
+    <string name="composer_desc_placeholder">Kurze Beschreibung (optional)</string>
+    <string name="composer_feedback_placeholder">Sag der KI, was sie anpassen soll…</string>
+    <string name="composer_feedback_history">%1$d frühere Wünsche berücksichtigt</string>
+    <string name="composer_enhance">Mit KI verbessern</string>
+    <string name="composer_add_items">Teile aus Garderobe hinzufügen</string>
+    <string name="composer_picked_count">%1$d ausgewählt</string>
+    <string name="composer_add_selected">Auswahl hinzufügen</string>
+    <string name="wardrobe_create_style">Stil erstellen</string>
 </resources>

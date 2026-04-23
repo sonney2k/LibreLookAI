@@ -142,6 +142,35 @@ It shows: editable name + description, outfit items as 100 dp tappable tiles in 
 
 **`StylesViewModel.saveStyleDirectly(name, description, itemIds, onDone)`** saves a style without the draft editing flow. Used by `TravelScreen` to persist packing outfits directly as styles.
 
+### Unified style composer
+
+`StyleComposerScreen` (full-screen Dialog) is the single entry point for creating a new style from any screen. It replaces the Wardrobe-selection "Create outfit" + "Compose with AI" split and (in follow-ups) will also replace the Styles-multi-select "Combine with AI" FAB and the Travel "Save as style" chip.
+
+**Entry point**: `StylesViewModel.openComposer(seedItemIds)` — initializes composer state from a seed set of wardrobe items; `state.isComposerOpen` becomes `true`. `MainActivity` observes this and renders the composer on top of the tab content.
+
+**Sections** (all scrollable, inside a single `LazyColumn`):
+1. **Items** — grid of chosen items as 96 dp tiles; tap to remove; `+` tile opens an item picker bottom sheet that lists wardrobe filtered by optional category chips and supports multi-add.
+2. **Weather** — toggle chip between `Auto` (reads `WeatherViewModel.state.data`, shown as temp + WMO emoji) and `Manual` (season + temp-range + precip chips).
+3. **Style vibe** — multi-select chips: Casual, Sporty, Formal, Business, Streetwear, Minimalist, Classic, Elegant.
+4. **Composition targets** — per-layer count steppers (Top / Bottom / Footwear / Outerwear / Accessory). Defaults derived from seed item tags.
+5. **Preference prompt** — `OutlinedTextField` prefilled from `UserPreferences.preferences`, editable for this composition only (not saved back).
+6. **Name + description** — editable fields.
+7. **AI enhance** — feedback `TextField` + "Enhance with AI" button. Accumulates `composerFeedbackHistory`, calls `buildComposerPrompt`, and merges Gemini's item list / name / description / reason into the draft.
+8. **Save** — calls `StylesViewModel.saveComposer()` → `saveStyleDirectly`.
+
+**ViewModel additions** (`StylesUiState`): `isComposerOpen`, `composerItemIds`, `composerWeatherMode` (AUTO/MANUAL), `composerManualSeason`, `composerManualTempC`, `composerManualPrecip`, `composerVibes`, `composerTargets` (map `layer -> Int`), `composerPrefOverride`, `composerName`, `composerDescription`, `composerFeedback`, `composerFeedbackHistory`, `composerReason`, `isComposerEnhancing`, `composerError`.
+
+**Prompt**: `buildComposerPrompt(seedItems, wardrobePool, targetComposition, weatherDescriptor, vibes, userPref, feedbackHistory, currentDraftItemIds)` — one new top-level builder in `StylesViewModel.kt`. Asks Gemini to propose an outfit that MUST include `currentDraftItemIds` and add complementary items to meet the target composition counts. Pre-existing builders (`buildPredictionPrompt`, `buildCompositionPrompt`, `buildCombinePrompt`, `buildAlternativesPrompt`) are unchanged — they still serve their own flows.
+
+**Migrated entry points (phase 1)**:
+- Wardrobe selection mode: two FABs ("Create outfit" + "Compose with AI") collapsed into one "Create style" FAB that calls `openComposer(selectedIds)`.
+- FullScreenViewer long-press sheet: two rows ("Create outfit" + "Compose with AI") collapsed into one "Create style" row.
+
+**Not yet migrated (follow-ups)**:
+- Styles multi-select "Combine with AI" — still uses `combineSelectedStyles` + `newSuggestion` → `StyleEditingView`.
+- Styles speed-dial "Compose with AI" — still uses `triggerComposition`.
+- Travel "Save as style" — still uses `saveStyleDirectly` directly.
+
 ### Travel packing screen
 
 `TravelScreen` receives `travelViewModel`, `wardrobeViewModel`, `profileViewModel`, `stylesViewModel`, and `locationViewModel`.

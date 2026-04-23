@@ -329,19 +329,12 @@ class MainActivity : ComponentActivity() {
                                             stylesViewModel = stylesViewModel,
                                             locationViewModel = locationViewModel,
                                             onCreateStyleFromSelection = { itemIds ->
-                                                stylesViewModel.startCreatingFromItems(itemIds)
-                                                wardrobeViewModel.clearSelection()
-                                                selectedTab = 0
-                                            },
-                                            onComposeStyleFromSelection = { itemIds ->
-                                                stylesViewModel.triggerCompositionFromItems(
-                                                    requiredItemIds = itemIds,
-                                                    prefs           = profileViewModel.state.value.preferences,
-                                                    weather         = weatherViewModel.state.value.data,
-                                                    images          = wardrobeViewModel.state.value.images,
+                                                stylesViewModel.openComposer(
+                                                    seedItemIds = itemIds,
+                                                    images      = wardrobeViewModel.state.value.images,
+                                                    prefs       = profileViewModel.state.value.preferences,
                                                 )
                                                 wardrobeViewModel.clearSelection()
-                                                selectedTab = 0
                                             },
                                             onTryOnSelection = { itemIds ->
                                                 runTryOn(itemIds)
@@ -404,6 +397,14 @@ class MainActivity : ComponentActivity() {
                                         onClearError = tryOnViewModel::clearError,
                                     )
                                 }
+
+                                // Unified style composer — opened from any screen that seeds items.
+                                StyleComposerScreen(
+                                    stylesViewModel   = stylesViewModel,
+                                    wardrobeViewModel = wardrobeViewModel,
+                                    profileViewModel  = profileViewModel,
+                                    weatherViewModel  = weatherViewModel,
+                                )
                             }
                         }
                     }
