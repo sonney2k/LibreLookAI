@@ -120,72 +120,72 @@ private fun StyleSortOption.displayLabel(): String = when (this) {
     StyleSortOption.ITEM_COUNT -> stringResource(R.string.styles_sort_most_items)
 }
 
-private fun List<Style>.styleTagCategories(itemsById: Map<String, DriveImage>): List<TagCategory> {
+private fun List<Outfit>.styleTagCategories(itemsById: Map<String, DriveImage>): List<TagCategory> {
     val allImages = flatMap { style -> style.itemIds.mapNotNull { itemsById[it] } }
     return allImages.tagCategories()
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun StylesScreen(
-    stylesViewModel: StylesViewModel = viewModel(),
+fun OutfitsScreen(
+    stylesViewModel: OutfitsViewModel = viewModel(),
     wardrobeViewModel: WardrobeViewModel = viewModel(),
-    outfitsViewModel: OutfitsViewModel = viewModel(),
+    outfitEventsViewModel: OutfitEventsViewModel = viewModel(),
     profileViewModel: ProfileViewModel = viewModel(),
     weatherViewModel: WeatherViewModel = viewModel(),
     locationViewModel: LocationViewModel = viewModel(),
-    onTryOnStyle: (Style) -> Unit = {},
+    onTryOnStyle: (Outfit) -> Unit = {},
     canTryOn: Boolean = false,
     onSettingsClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
-    val stylesState  by stylesViewModel.state.collectAsState()
+    val outfitsState  by stylesViewModel.state.collectAsState()
     val wardrobeState by wardrobeViewModel.state.collectAsState()
     val profileState by profileViewModel.state.collectAsState()
     val weatherState by weatherViewModel.state.collectAsState()
-    val outfitsState by outfitsViewModel.state.collectAsState()
+    val outfitEventsState by outfitEventsViewModel.state.collectAsState()
     val locationState by locationViewModel.state.collectAsState()
 
     // Refresh wardrobe image cache for styles once wardrobe Drive sync completes.
-    LaunchedEffect(wardrobeState.isSyncing, stylesState.isLoading) {
-        if (!wardrobeState.isSyncing && !stylesState.isLoading) {
+    LaunchedEffect(wardrobeState.isSyncing, outfitsState.isLoading) {
+        if (!wardrobeState.isSyncing && !outfitsState.isLoading) {
             stylesViewModel.refreshWardrobeImages()
         }
     }
 
     // styleId → number of calendar wear events
-    val wearCounts = remember(outfitsState.events) {
-        outfitsState.events.groupingBy { it.styleId }.eachCount()
+    val wearCounts = remember(outfitEventsState.events) {
+        outfitEventsState.events.groupingBy { it.outfitId }.eachCount()
     }
 
     // When Gemini returns a prediction, auto-open the style editing view with that style.
-    LaunchedEffect(stylesState.prediction) {
-        val pred = stylesState.prediction ?: return@LaunchedEffect
-        val style = stylesState.styles.find { it.id == pred.styleId } ?: return@LaunchedEffect
+    LaunchedEffect(outfitsState.prediction) {
+        val pred = outfitsState.prediction ?: return@LaunchedEffect
+        val style = outfitsState.styles.find { it.id == pred.styleId } ?: return@LaunchedEffect
         stylesViewModel.openPredictionInEditView(style)
     }
 
     // When Gemini composes a new outfit, auto-open the style editing view with it.
-    LaunchedEffect(stylesState.newSuggestion) {
-        val suggestion = stylesState.newSuggestion ?: return@LaunchedEffect
+    LaunchedEffect(outfitsState.newSuggestion) {
+        val suggestion = outfitsState.newSuggestion ?: return@LaunchedEffect
         stylesViewModel.openSuggestionInEditView(suggestion)
     }
 
     Box(modifier = modifier.fillMaxSize()) {
         when {
-            stylesState.isEditingStyleView -> {
-                StyleEditingView(
-                    draftItemIds = stylesState.draftItemIds,
-                    draftStyleName = stylesState.draftStyleName,
-                    draftStyleDescription = stylesState.draftStyleDescription,
-                    isEditing = stylesState.editingStyle != null,
-                    prediction = stylesState.prediction,
-                    newSuggestion = stylesState.newSuggestion,
+            outfitsState.isEditingOutfitView -> {
+                OutfitEditingView(
+                    draftItemIds = outfitsState.draftItemIds,
+                    draftOutfitName = outfitsState.draftOutfitName,
+                    draftOutfitDescription = outfitsState.draftOutfitDescription,
+                    isEditing = outfitsState.editingOutfit != null,
+                    prediction = outfitsState.prediction,
+                    newSuggestion = outfitsState.newSuggestion,
                     allItems = wardrobeState.images,
-                    isLoadingAlternatives = stylesState.isLoadingAlternatives,
-                    alternativeIds = stylesState.alternativeIds,
-                    refinementInput = stylesState.refinementInput,
-                    feedbackHistory = stylesState.feedbackHistory,
+                    isLoadingAlternatives = outfitsState.isLoadingAlternatives,
+                    alternativeIds = outfitsState.alternativeIds,
+                    refinementInput = outfitsState.refinementInput,
+                    feedbackHistory = outfitsState.feedbackHistory,
                     onNameChanged = stylesViewModel::updateDraftName,
                     onDescriptionChanged = stylesViewModel::updateDraftDescription,
                     onSwapItem = stylesViewModel::swapDraftItem,
@@ -196,34 +196,34 @@ fun StylesScreen(
                     },
                     onClearAlternatives = stylesViewModel::clearAlternatives,
                     onConfirm = stylesViewModel::confirmDraft,
-                    onCancel = stylesViewModel::cancelStyleEditingView,
-                    onWear = if (stylesState.editingStyle != null) {
-                        { outfitsViewModel.recordOutfit(stylesState.editingStyle!!.id) }
+                    onCancel = stylesViewModel::cancelOutfitEditingView,
+                    onWear = if (outfitsState.editingOutfit != null) {
+                        { outfitEventsViewModel.recordOutfit(outfitsState.editingOutfit!!.id) }
                     } else null,
                     onRefinementInputChange = stylesViewModel::updateRefinementInput,
-                    onRefinePrediction = if (stylesState.prediction != null) {
+                    onRefinePrediction = if (outfitsState.prediction != null) {
                         { stylesViewModel.refinePrediction(profileState.preferences, weatherState.data, wardrobeState.images) }
                     } else null,
-                    onPresetPrediction = if (stylesState.prediction != null) {
+                    onPresetPrediction = if (outfitsState.prediction != null) {
                         { preset -> stylesViewModel.submitPresetPrediction(preset, profileState.preferences, weatherState.data, wardrobeState.images) }
                     } else null,
-                    onRefineComposition = if (stylesState.newSuggestion != null) {
+                    onRefineComposition = if (outfitsState.newSuggestion != null) {
                         { stylesViewModel.refineComposition(profileState.preferences, weatherState.data, wardrobeState.images) }
                     } else null,
-                    onPresetComposition = if (stylesState.newSuggestion != null) {
+                    onPresetComposition = if (outfitsState.newSuggestion != null) {
                         { preset -> stylesViewModel.submitPresetComposition(preset, profileState.preferences, weatherState.data, wardrobeState.images) }
                     } else null,
-                    isRefining = stylesState.isPredicting || stylesState.isComposing,
+                    isRefining = outfitsState.isPredicting || outfitsState.isComposing,
                     locations = locationState.locations,
                 )
             }
-            stylesState.isCreating -> {
-                StyleItemPicker(
+            outfitsState.isCreating -> {
+                OutfitItemPicker(
                     items = wardrobeState.images,
-                    selectedIds = stylesState.draftItemIds,
-                    isEditing = stylesState.editingStyle != null,
-                    styleName = stylesState.draftStyleName,
-                    styleDescription = stylesState.draftStyleDescription,
+                    selectedIds = outfitsState.draftItemIds,
+                    isEditing = outfitsState.editingOutfit != null,
+                    styleName = outfitsState.draftOutfitName,
+                    styleDescription = outfitsState.draftOutfitDescription,
                     onNameChanged = stylesViewModel::updateDraftName,
                     onDescriptionChanged = stylesViewModel::updateDraftDescription,
                     onToggleItem = stylesViewModel::toggleDraftItem,
@@ -234,29 +234,31 @@ fun StylesScreen(
                 )
             }
             else -> {
-                StyleListScreen(
-                    styles = stylesState.styles,
-                    items = stylesState.wardrobeImages,
+                OutfitListScreen(
+                    styles = outfitsState.styles,
+                    items = outfitsState.wardrobeImages,
                     wearCounts = wearCounts,
-                    isLoading = stylesState.isLoading || wardrobeState.isLoading,
-                    isPredicting = stylesState.isPredicting,
+                    isLoading = outfitsState.isLoading || wardrobeState.isLoading,
+                    isPredicting = outfitsState.isPredicting,
                     locations = locationState.locations,
                     activeLocationId = locationState.activeLocationId,
                     onSetActiveLocation = locationViewModel::setActiveLocation,
-                    predictionError = stylesState.predictionError,
-                    isComposing = stylesState.isComposing,
-                    compositionError = stylesState.compositionError,
-                    selectedStyleIds = stylesState.selectedStyleIds,
+                    predictionError = outfitsState.predictionError,
+                    isComposing = outfitsState.isComposing,
+                    compositionError = outfitsState.compositionError,
+                    selectedOutfitIds = outfitsState.selectedOutfitIds,
                     onCreateStyle = stylesViewModel::startCreating,
-                    onEditStyle = stylesViewModel::startEditing,
-                    onDeleteStyle = stylesViewModel::deleteStyle,
-                    onWearStyle = outfitsViewModel::recordOutfit,
-                    onToggleStyleSelection = stylesViewModel::toggleStyleSelection,
-                    onSelectAllStyles = stylesViewModel::selectAllStyles,
-                    onClearStyleSelection = stylesViewModel::clearStyleSelection,
-                    onDeleteSelectedStyles = stylesViewModel::deleteSelectedStyles,
+                    onEditOutfit = { style ->
+                        stylesViewModel.startEditing(style, wardrobeState.images, profileState.preferences)
+                    },
+                    onDeleteOutfit = stylesViewModel::deleteOutfit,
+                    onWearOutfit = outfitEventsViewModel::recordOutfit,
+                    onToggleOutfitSelection = stylesViewModel::toggleOutfitSelection,
+                    onSelectAllOutfits = stylesViewModel::selectAllOutfits,
+                    onClearOutfitSelection = stylesViewModel::clearOutfitSelection,
+                    onDeleteSelectedStyles = stylesViewModel::deleteSelectedOutfits,
                     onCombineSelectedStyles = {
-                        stylesViewModel.openComposerFromSelectedStyles(
+                        stylesViewModel.openComposerFromSelectedOutfits(
                             images = wardrobeState.images,
                             prefs  = profileState.preferences,
                         )
@@ -285,14 +287,14 @@ fun StylesScreen(
         }
 
         // After saving a style, offer to wear it immediately
-        stylesState.pendingWearStyleId?.let { styleId ->
+        outfitsState.pendingWearOutfitId?.let { styleId ->
             Snackbar(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(start = 8.dp, end = 8.dp, bottom = 16.dp),
                 action = {
                     TextButton(onClick = {
-                        outfitsViewModel.recordOutfit(styleId)
+                        outfitEventsViewModel.recordOutfit(styleId)
                         stylesViewModel.clearPendingWear()
                     }) {
                         Text(stringResource(R.string.styles_wear_today))
@@ -310,12 +312,12 @@ fun StylesScreen(
     }
 }
 
-// ---------- Style list ----------
+// ---------- Outfit list ----------
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun StyleListScreen(
-    styles: List<Style>,
+private fun OutfitListScreen(
+    styles: List<Outfit>,
     items: List<DriveImage>,
     wearCounts: Map<String, Int> = emptyMap(),
     isLoading: Boolean,
@@ -323,24 +325,24 @@ private fun StyleListScreen(
     predictionError: String?,
     isComposing: Boolean,
     compositionError: String?,
-    selectedStyleIds: Set<String> = emptySet(),
+    selectedOutfitIds: Set<String> = emptySet(),
     locations: List<Location> = emptyList(),
     activeLocationId: String = "",
     onSetActiveLocation: ((String) -> Unit)? = null,
     onCreateStyle: () -> Unit,
-    onEditStyle: (Style) -> Unit,
-    onDeleteStyle: (String) -> Unit,
-    onWearStyle: (String) -> Unit,
-    onToggleStyleSelection: (String) -> Unit = {},
-    onSelectAllStyles: (List<String>) -> Unit = {},
-    onClearStyleSelection: () -> Unit = {},
+    onEditOutfit: (Outfit) -> Unit,
+    onDeleteOutfit: (String) -> Unit,
+    onWearOutfit: (String) -> Unit,
+    onToggleOutfitSelection: (String) -> Unit = {},
+    onSelectAllOutfits: (List<String>) -> Unit = {},
+    onClearOutfitSelection: () -> Unit = {},
     onDeleteSelectedStyles: () -> Unit = {},
     onCombineSelectedStyles: () -> Unit = {},
     onSuggestStyle: () -> Unit,
     onClearPredictionError: () -> Unit,
     onComposeStyle: () -> Unit,
     onClearCompositionError: () -> Unit,
-    onTryOnStyle: (Style) -> Unit = {},
+    onTryOnStyle: (Outfit) -> Unit = {},
     canTryOn: Boolean = false,
     onSettingsClick: () -> Unit = {},
     modifier: Modifier = Modifier,
@@ -401,8 +403,8 @@ private fun StyleListScreen(
         }
     }
 
-    val isSelectionMode = selectedStyleIds.isNotEmpty()
-    if (isSelectionMode) BackHandler(onBack = onClearStyleSelection)
+    val isSelectionMode = selectedOutfitIds.isNotEmpty()
+    if (isSelectionMode) BackHandler(onBack = onClearOutfitSelection)
 
     var showDeleteDialog by remember { mutableStateOf(false) }
 
@@ -410,7 +412,7 @@ private fun StyleListScreen(
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
             title = { Text(stringResource(R.string.styles_delete_selected_title)) },
-            text = { Text(stringResource(R.string.styles_delete_selected_text, selectedStyleIds.size)) },
+            text = { Text(stringResource(R.string.styles_delete_selected_text, selectedOutfitIds.size)) },
             confirmButton = {
                 TextButton(onClick = { onDeleteSelectedStyles(); showDeleteDialog = false }) {
                     Text(stringResource(R.string.action_delete), color = MaterialTheme.colorScheme.error)
@@ -453,16 +455,16 @@ private fun StyleListScreen(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
-                        stringResource(R.string.styles_selected_count, selectedStyleIds.size),
+                        stringResource(R.string.styles_selected_count, selectedOutfitIds.size),
                         modifier = Modifier.weight(1f),
                         style = MaterialTheme.typography.bodyMedium,
                     )
-                    if (displayedStyles.any { it.id !in selectedStyleIds }) {
-                        TextButton(onClick = { onSelectAllStyles(displayedStyles.map { it.id }) }) {
+                    if (displayedStyles.any { it.id !in selectedOutfitIds }) {
+                        TextButton(onClick = { onSelectAllOutfits(displayedStyles.map { it.id }) }) {
                             Text(stringResource(R.string.styles_select_all_count, displayedStyles.size))
                         }
                     }
-                    TextButton(onClick = onClearStyleSelection) {
+                    TextButton(onClick = onClearOutfitSelection) {
                         Text(stringResource(R.string.action_deselect_all))
                     }
                 }
@@ -512,16 +514,16 @@ private fun StyleListScreen(
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         itemsIndexed(displayedStyles, key = { _, s -> s.id }) { _, style ->
-                            StyleCard(
+                            OutfitCard(
                                 style = style,
                                 itemsById = itemsById,
                                 locations = locations,
-                                isSelected = style.id in selectedStyleIds,
+                                isSelected = style.id in selectedOutfitIds,
                                 isSelectionMode = isSelectionMode,
-                                onEdit = { onEditStyle(style) },
-                                onDelete = { onDeleteStyle(style.id) },
-                                onWear = { onWearStyle(style.id) },
-                                onToggleSelection = { onToggleStyleSelection(style.id) },
+                                onEdit = { onEditOutfit(style) },
+                                onDelete = { onDeleteOutfit(style.id) },
+                                onWear = { onWearOutfit(style.id) },
+                                onToggleSelection = { onToggleOutfitSelection(style.id) },
                             )
                         }
                     }
@@ -538,7 +540,7 @@ private fun StyleListScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.End,
             ) {
-                if (selectedStyleIds.size >= 2 && !isOffline) {
+                if (selectedOutfitIds.size >= 2 && !isOffline) {
                     ExtendedFloatingActionButton(
                         onClick = { if (!isComposing) onCombineSelectedStyles() },
                         containerColor = MaterialTheme.colorScheme.tertiaryContainer,
@@ -552,8 +554,8 @@ private fun StyleListScreen(
                         text = { Text(stringResource(R.string.styles_combine)) },
                     )
                 }
-                if (selectedStyleIds.size == 1 && canTryOn && !isOffline) {
-                    val selectedStyle = styles.firstOrNull { it.id in selectedStyleIds }
+                if (selectedOutfitIds.size == 1 && canTryOn && !isOffline) {
+                    val selectedStyle = styles.firstOrNull { it.id in selectedOutfitIds }
                     if (selectedStyle != null) {
                         ExtendedFloatingActionButton(
                             onClick = { onTryOnStyle(selectedStyle) },
@@ -720,12 +722,12 @@ private fun StyleSortButton(
     }
 }
 
-// ---------- Style card ----------
+// ---------- Outfit card ----------
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun StyleCard(
-    style: Style,
+private fun OutfitCard(
+    style: Outfit,
     itemsById: Map<String, DriveImage>,
     locations: List<Location> = emptyList(),
     isSelected: Boolean = false,
@@ -929,7 +931,7 @@ private fun StyleCard(
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-private fun StyleItemPicker(
+private fun OutfitItemPicker(
     items: List<DriveImage>,
     selectedIds: Set<String>,
     isEditing: Boolean,
@@ -1104,17 +1106,17 @@ private fun StyleItemPicker(
     }
 }
 
-// ---------- Style editing view ----------
+// ---------- Outfit editing view ----------
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 @Composable
-private fun StyleEditingView(
+private fun OutfitEditingView(
     draftItemIds: Set<String>,
-    draftStyleName: String,
-    draftStyleDescription: String,
+    draftOutfitName: String,
+    draftOutfitDescription: String,
     isEditing: Boolean,
-    prediction: StylePrediction?,
-    newSuggestion: NewStyleSuggestion?,
+    prediction: OutfitPrediction?,
+    newSuggestion: NewOutfitSuggestion?,
     allItems: List<DriveImage>,
     isLoadingAlternatives: Boolean,
     alternativeIds: List<String>,
@@ -1199,7 +1201,7 @@ private fun StyleEditingView(
                 Icon(Icons.Default.Close, contentDescription = "Cancel")
             }
             BasicTextField(
-                value = draftStyleName,
+                value = draftOutfitName,
                 onValueChange = onNameChanged,
                 textStyle = MaterialTheme.typography.titleMedium.copy(
                     color = MaterialTheme.colorScheme.onSurface,
@@ -1208,7 +1210,7 @@ private fun StyleEditingView(
                 modifier = Modifier.weight(1f).padding(horizontal = 8.dp),
                 decorationBox = { inner ->
                     Box {
-                        if (draftStyleName.isEmpty()) {
+                        if (draftOutfitName.isEmpty()) {
                             Text(
                                 stringResource(R.string.styles_name_placeholder),
                                 style = MaterialTheme.typography.titleMedium,
@@ -1255,7 +1257,7 @@ private fun StyleEditingView(
 
             // Description field
             BasicTextField(
-                value = draftStyleDescription,
+                value = draftOutfitDescription,
                 onValueChange = onDescriptionChanged,
                 textStyle = MaterialTheme.typography.bodyMedium.copy(
                     color = MaterialTheme.colorScheme.onSurface,
@@ -1263,7 +1265,7 @@ private fun StyleEditingView(
                 modifier = Modifier.fillMaxWidth(),
                 decorationBox = { inner ->
                     Box {
-                        if (draftStyleDescription.isEmpty()) {
+                        if (draftOutfitDescription.isEmpty()) {
                             Text(
                                 stringResource(R.string.styles_description_placeholder),
                                 style = MaterialTheme.typography.bodyMedium,
@@ -1732,12 +1734,12 @@ private fun AddItemSheet(
     }
 }
 
-// ---------- Style suggestion sheet ----------
+// ---------- Outfit suggestion sheet ----------
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun StyleSuggestionSheet(
-    style: Style,
+    style: Outfit,
     reason: String,
     itemsById: Map<String, DriveImage>,
     refinementInput: String,
@@ -1841,8 +1843,8 @@ private fun StyleSuggestionSheet(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun NewStyleSuggestionSheet(
-    suggestion: NewStyleSuggestion,
+private fun NewOutfitSuggestionSheet(
+    suggestion: NewOutfitSuggestion,
     itemsById: Map<String, DriveImage>,
     refinementInput: String,
     feedbackHistory: List<String>,

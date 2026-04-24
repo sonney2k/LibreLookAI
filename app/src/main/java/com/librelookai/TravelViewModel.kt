@@ -53,12 +53,12 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
         )
     }
 
-    fun generate(prefs: UserPreferences?, images: List<DriveImage>, styles: List<Style>) {
+    fun generate(prefs: UserPreferences?, images: List<DriveImage>, styles: List<Outfit>) {
         _state.update { it.copy(feedbackHistory = emptyList(), refinementInput = "") }
         doGenerate(prefs, images, styles, emptyList())
     }
 
-    fun refine(prefs: UserPreferences?, images: List<DriveImage>, styles: List<Style>) {
+    fun refine(prefs: UserPreferences?, images: List<DriveImage>, styles: List<Outfit>) {
         val feedback = _state.value.refinementInput.trim().ifEmpty { return }
         val history  = _state.value.feedbackHistory + feedback
         _state.update { it.copy(feedbackHistory = history, refinementInput = "") }
@@ -69,7 +69,7 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
         preset: String,
         prefs: UserPreferences?,
         images: List<DriveImage>,
-        styles: List<Style>,
+        styles: List<Outfit>,
     ) {
         val history = _state.value.feedbackHistory + preset
         _state.update { it.copy(feedbackHistory = history, refinementInput = "") }
@@ -79,7 +79,7 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
     private fun doGenerate(
         prefs: UserPreferences?,
         images: List<DriveImage>,
-        styles: List<Style>,
+        styles: List<Outfit>,
         feedbackHistory: List<String>,
     ) {
         val dest      = _state.value.destination.trim()
@@ -180,7 +180,7 @@ private fun buildPackingPrompt(
     isHistorical: Boolean,
     referenceYear: Int?,
     images: List<DriveImage>,
-    styles: List<Style>,
+    styles: List<Outfit>,
     feedbackHistory: List<String>,
 ): String {
     val age    = prefs?.yearOfBirth?.let { LocalDate.now().year - it }
@@ -229,7 +229,7 @@ private fun buildPackingPrompt(
         appendLine("## User Profile")
         appendLine("- Gender: ${prefs?.gender?.takeIf { it.isNotEmpty() } ?: "not specified"}")
         appendLine("- Age: ${age?.toString() ?: "not specified"}")
-        appendLine("- Style preferences: ${prefs?.preferences?.takeIf { it.isNotEmpty() } ?: "none provided"}")
+        appendLine("- Outfit preferences: ${prefs?.preferences?.takeIf { it.isNotEmpty() } ?: "none provided"}")
         appendLine()
         appendLine("## Available Wardrobe Items (id + name + tags)")
         appendLine(wardrobeJson)

@@ -134,10 +134,10 @@ import coil.request.ImageRequest
 @Composable
 fun WardrobeScreen(
     viewModel: WardrobeViewModel = viewModel(),
-    outfitsViewModel: OutfitsViewModel = viewModel(),
-    stylesViewModel: StylesViewModel = viewModel(),
+    outfitEventsViewModel: OutfitEventsViewModel = viewModel(),
+    stylesViewModel: OutfitsViewModel = viewModel(),
     locationViewModel: LocationViewModel = viewModel(),
-    onCreateStyleFromSelection: (Set<String>) -> Unit = {},
+    onCreateOutfitFromSelection: (Set<String>) -> Unit = {},
     onTryOnSelection: (Set<String>) -> Unit = {},
     canTryOn: Boolean = false,
     dismissViewerTrigger: Int = 0,
@@ -145,17 +145,17 @@ fun WardrobeScreen(
     modifier: Modifier = Modifier,
 ) {
     val state         by viewModel.state.collectAsState()
-    val outfitsState  by outfitsViewModel.state.collectAsState()
-    val stylesState   by stylesViewModel.state.collectAsState()
+    val outfitEventsState  by outfitEventsViewModel.state.collectAsState()
+    val outfitsState   by stylesViewModel.state.collectAsState()
     val locationState by locationViewModel.state.collectAsState()
     val context = LocalContext.current
 
     // driveId → number of calendar wear events that include this item
-    val popularityMap = remember(outfitsState.events, stylesState.styles) {
-        val styleWearCount = outfitsState.events.groupingBy { it.styleId }.eachCount()
+    val popularityMap = remember(outfitEventsState.events, outfitsState.styles) {
+        val outfitWearCount = outfitEventsState.events.groupingBy { it.outfitId }.eachCount()
         val itemCount = mutableMapOf<String, Int>()
-        stylesState.styles.forEach { style ->
-            val count = styleWearCount[style.id] ?: 0
+        outfitsState.styles.forEach { style ->
+            val count = outfitWearCount[style.id] ?: 0
             if (count > 0) style.itemIds.forEach { id -> itemCount[id] = (itemCount[id] ?: 0) + count }
         }
         itemCount as Map<String, Int>
@@ -205,7 +205,7 @@ fun WardrobeScreen(
             onDeleteItem = { driveId -> viewModel.deleteItems(setOf(driveId)) },
             onMoveToLocation = viewModel::moveItemsToLocation,
             onSetActiveLocation = locationViewModel::setActiveLocation,
-            onCreateStyleFromSelection = onCreateStyleFromSelection,
+            onCreateOutfitFromSelection = onCreateOutfitFromSelection,
             onTryOnSelection = onTryOnSelection,
             canTryOn = canTryOn,
             onDismissBatteryExemption = viewModel::dismissBatteryExemptionWarning,
@@ -487,7 +487,7 @@ private fun GridContent(
     onDeleteItem: (String) -> Unit,
     onMoveToLocation: (Set<String>, String) -> Unit,
     onSetActiveLocation: (String) -> Unit,
-    onCreateStyleFromSelection: (Set<String>) -> Unit,
+    onCreateOutfitFromSelection: (Set<String>) -> Unit,
     onTryOnSelection: (Set<String>) -> Unit = {},
     canTryOn: Boolean = false,
     onDismissBatteryExemption: () -> Unit = {},
@@ -823,7 +823,7 @@ private fun GridContent(
             ) {
                 if (!isOffline) {
                     ExtendedFloatingActionButton(
-                        onClick = { onCreateStyleFromSelection(state.selectedIds) },
+                        onClick = { onCreateOutfitFromSelection(state.selectedIds) },
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
                         contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         icon = { Icon(Icons.Default.AutoFixHigh, contentDescription = null) },
@@ -949,7 +949,7 @@ private fun GridContent(
                     onMoveToLocation(ids, folderId)
                     if (displayedImages.size <= 1) selectedIndex = null
                 },
-                onCreateStyleFromSelection = onCreateStyleFromSelection,
+                onCreateOutfitFromSelection = onCreateOutfitFromSelection,
                 locations = locations,
                 activeLocationId = activeLocationId,
                 processingImageId = processingImageId,
@@ -1078,7 +1078,7 @@ private fun FullScreenViewer(
     onUpdateTags: (String, ClothingTags) -> Unit,
     onDeleteItem: (String) -> Unit,
     onMoveToLocation: (Set<String>, String) -> Unit,
-    onCreateStyleFromSelection: (Set<String>) -> Unit,
+    onCreateOutfitFromSelection: (Set<String>) -> Unit,
     locations: List<Location>,
     activeLocationId: String,
     processingImageId: String?,
@@ -1208,7 +1208,7 @@ private fun FullScreenViewer(
                         .fillMaxWidth()
                         .clickable {
                             showItemActions = false
-                            onCreateStyleFromSelection(setOf(currentImage.driveId))
+                            onCreateOutfitFromSelection(setOf(currentImage.driveId))
                         },
                 ) {
                     Row(

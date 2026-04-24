@@ -77,26 +77,26 @@ private const val TOP_N = 10
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalendarScreen(
-    outfitsViewModel: OutfitsViewModel = viewModel(),
-    stylesViewModel: StylesViewModel = viewModel(),
+    outfitEventsViewModel: OutfitEventsViewModel = viewModel(),
+    stylesViewModel: OutfitsViewModel = viewModel(),
     wardrobeViewModel: WardrobeViewModel = viewModel(),
     locationViewModel: LocationViewModel = viewModel(),
-    onEditStyle: (Style) -> Unit = {},
+    onEditOutfit: (Outfit) -> Unit = {},
     onSettingsClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
-    val outfitsState by outfitsViewModel.state.collectAsState()
-    val stylesState by stylesViewModel.state.collectAsState()
+    val outfitEventsState by outfitEventsViewModel.state.collectAsState()
+    val outfitsState by stylesViewModel.state.collectAsState()
     val wardrobeState by wardrobeViewModel.state.collectAsState()
     val locationState by locationViewModel.state.collectAsState()
 
-    val stylesById = remember(stylesState.styles) { stylesState.styles.associateBy { it.id } }
+    val outfitsById = remember(outfitsState.styles) { outfitsState.styles.associateBy { it.id } }
     val imagesById = remember(wardrobeState.images) { wardrobeState.images.associateBy { it.driveId } }
 
     // WornItem entries for thumbnail display in day cells
-    val wornItems = remember(outfitsState.events, stylesById, imagesById) {
-        outfitsState.events.flatMap { event ->
-            val style = stylesById[event.styleId] ?: return@flatMap emptyList<WornItem>()
+    val wornItems = remember(outfitEventsState.events, outfitsById, imagesById) {
+        outfitEventsState.events.flatMap { event ->
+            val style = outfitsById[event.outfitId] ?: return@flatMap emptyList<WornItem>()
             val date = runCatching { LocalDate.parse(event.date) }.getOrNull()
                 ?: return@flatMap emptyList()
             style.itemIds.mapNotNull { itemId ->
@@ -110,9 +110,9 @@ fun CalendarScreen(
         }
     }
 
-    val stylesByDate = remember(outfitsState.events, stylesById) {
-        outfitsState.events.mapNotNull { event ->
-            val style = stylesById[event.styleId] ?: return@mapNotNull null
+    val outfitsByDate = remember(outfitEventsState.events, outfitsById) {
+        outfitEventsState.events.mapNotNull { event ->
+            val style = outfitsById[event.outfitId] ?: return@mapNotNull null
             val date = runCatching { LocalDate.parse(event.date) }.getOrNull()
                 ?: return@mapNotNull null
             date to style
@@ -120,20 +120,20 @@ fun CalendarScreen(
     }
 
     // Statistics: top styles by wear count
-    val topStyles = remember(outfitsState.events, stylesById) {
-        outfitsState.events
-            .groupBy { it.styleId }
+    val topStyles = remember(outfitEventsState.events, outfitsById) {
+        outfitEventsState.events
+            .groupBy { it.outfitId }
             .mapValues { it.value.size }
             .entries
             .sortedByDescending { it.value }
             .take(TOP_N)
-            .mapNotNull { (styleId, count) -> stylesById[styleId]?.let { it to count } }
+            .mapNotNull { (outfitId, count) -> outfitsById[outfitId]?.let { it to count } }
     }
 
     // Statistics: top individual items by total appearances across all worn styles
-    val topItems = remember(outfitsState.events, stylesById, imagesById) {
-        outfitsState.events
-            .flatMap { event -> stylesById[event.styleId]?.itemIds ?: emptyList() }
+    val topItems = remember(outfitEventsState.events, outfitsById, imagesById) {
+        outfitEventsState.events
+            .flatMap { event -> outfitsById[event.outfitId]?.itemIds ?: emptyList() }
             .groupingBy { it }
             .eachCount()
             .entries
@@ -173,10 +173,10 @@ fun CalendarScreen(
         when (selectedTab) {
             0 -> CalendarContent(
                 wornItems = wornItems,
-                stylesByDate = stylesByDate,
+                outfitsByDate = outfitsByDate,
                 imagesById = imagesById,
-                onWearAgainToday = { outfitsViewModel.recordOutfit(it) },
-                onEditStyle = onEditStyle,
+                onWearAgainToday = { outfitEventsViewModel.recordOutfit(it) },
+                onEditOutfit = onEditOutfit,
             )
             1 -> StatisticsContent(
                 topStyles = topStyles,
@@ -193,10 +193,10 @@ fun CalendarScreen(
 @Composable
 private fun CalendarContent(
     wornItems: List<WornItem>,
-    stylesByDate: Map<LocalDate, List<Style>>,
+    outfitsByDate: Map<LocalDate, List<Outfit>>,
     imagesById: Map<String, DriveImage>,
     onWearAgainToday: (String) -> Unit = {},
-    onEditStyle: (Style) -> Unit = {},
+    onEditOutfit: (Outfit) -> Unit = {},
 ) {
     var yearMonth by rememberSaveable { mutableStateOf(YearMonth.now()) }
     val itemsByDate = remember(wornItems) { wornItems.groupBy { it.date } }
@@ -221,7 +221,7 @@ private fun CalendarContent(
                         .fillMaxWidth(),
                 ) {
                     week.forEach { date ->
-                        val hasStyles = date != null && stylesByDate[date].orEmpty().isNotEmpty()
+                        val hasStyles = date != null && outfitsByDate[date].orEmpty().isNotEmpty()
                         DayCell(
                             date = date,
                             items = if (date != null) itemsByDate[date].orEmpty() else emptyList(),
@@ -239,7 +239,7 @@ private fun CalendarContent(
     }
 
     selectedDate?.let { date ->
-        val stylesOnDay = stylesByDate[date].orEmpty()
+        val stylesOnDay = outfitsByDate[date].orEmpty()
         ModalBottomSheet(
             onDismissRequest = { selectedDate = null },
             sheetState = sheetState,
@@ -257,8 +257,8 @@ private fun CalendarContent(
                 )
                 HorizontalDivider()
                 LazyColumn(contentPadding = PaddingValues(vertical = 8.dp)) {
-                    items(stylesOnDay, key = { it.id }) { style ->
-                        StyleSheetRow(
+                    itemsIndexed(stylesOnDay, key = { index, style -> "${date}_${style.id}_$index" }) { index, style ->
+                        OutfitSheetRow(
                             style = style,
                             imagesById = imagesById,
                             onWearAgainToday = {
@@ -267,14 +267,14 @@ private fun CalendarContent(
                                     selectedDate = null
                                 }
                             },
-                            onEditStyle = {
+                            onEditOutfit = {
                                 scope.launch { sheetState.hide() }.invokeOnCompletion {
                                     selectedDate = null
-                                    onEditStyle(style)
+                                    onEditOutfit(style)
                                 }
                             },
                         )
-                        if (style != stylesOnDay.last()) HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp))
+                        if (index < stylesOnDay.lastIndex) HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp))
                     }
                 }
             }
@@ -286,7 +286,7 @@ private fun CalendarContent(
 
 @Composable
 private fun StatisticsContent(
-    topStyles: List<Pair<Style, Int>>,
+    topStyles: List<Pair<Outfit, Int>>,
     topItems: List<Pair<DriveImage, Int>>,
     imagesById: Map<String, DriveImage>,
 ) {
@@ -346,7 +346,7 @@ private fun StatisticsContent(
 @Composable
 private fun StyleStatRow(
     rank: Int,
-    style: Style,
+    style: Outfit,
     wearCount: Int,
     imagesById: Map<String, DriveImage>,
 ) {
@@ -387,7 +387,7 @@ private fun StyleStatRow(
             )
             if (styleItems.isNotEmpty()) {
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    items(styleItems.take(6), key = { it.driveId }) { image ->
+                    itemsIndexed(styleItems, key = { index, image -> "${image.driveId}_${index}" }) { index, image ->
                         AsyncImage(
                             model = remember(image.driveId, image.version) {
                                 ImageRequest.Builder(ctx)
@@ -490,14 +490,14 @@ private fun ItemStatRow(
     }
 }
 
-// ---------- Style row inside the day-detail sheet ----------
+// ---------- Outfit row inside the day-detail sheet ----------
 
 @Composable
-private fun StyleSheetRow(
-    style: Style,
+private fun OutfitSheetRow(
+    style: Outfit,
     imagesById: Map<String, DriveImage>,
     onWearAgainToday: () -> Unit = {},
-    onEditStyle: () -> Unit = {},
+    onEditOutfit: () -> Unit = {},
 ) {
     val ctx = LocalContext.current
     val styleItems = style.itemIds.mapNotNull { imagesById[it] }
@@ -525,7 +525,7 @@ private fun StyleSheetRow(
             )
         } else {
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                items(styleItems, key = { it.driveId }) { image ->
+                itemsIndexed(styleItems, key = { index, image -> "${image.driveId}_${index}" }) { index, image ->
                     AsyncImage(
                         model = remember(image.driveId, image.version) {
                             ImageRequest.Builder(ctx)
@@ -554,7 +554,7 @@ private fun StyleSheetRow(
                     Text(stringResource(R.string.calendar_wear_again))
                 }
                 OutlinedButton(
-                    onClick = onEditStyle,
+                    onClick = onEditOutfit,
                     modifier = Modifier.weight(1f),
                 ) {
                     Text(stringResource(R.string.action_edit))

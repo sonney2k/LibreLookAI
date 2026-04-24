@@ -88,7 +88,7 @@ private fun buildGapPrompt(images: List<DriveImage>, prefs: UserPreferences?): S
         appendLine("## User Profile")
         appendLine("- Gender: ${prefs?.gender?.takeIf { it.isNotEmpty() } ?: "not specified"}")
         appendLine("- Age: ${age?.toString() ?: "not specified"}")
-        appendLine("- Style preferences: ${prefs?.preferences?.takeIf { it.isNotEmpty() } ?: "none provided"}")
+        appendLine("- Outfit preferences: ${prefs?.preferences?.takeIf { it.isNotEmpty() } ?: "none provided"}")
         appendLine()
         appendLine("## Current Wardrobe (${images.size} items)")
         appendLine(wardrobeJson)

@@ -47,8 +47,12 @@ class DriveRepository(
         private const val API = "https://www.googleapis.com/drive/v3"
         private const val UPLOAD_API = "https://www.googleapis.com/upload/drive/v3"
         private const val FOLDER_NAME = "LibreLookAI"
-        private const val STYLES_FILE_NAME = "_styles_metadata.json"
-        private const val OUTFITS_FILE_NAME = "_outfits_metadata.json"
+        private const val OUTFITS_FILE_NAME = "_outfits.json"
+        private const val OUTFIT_EVENTS_FILE_NAME = "_outfit_events.json"
+        /** Legacy filename from before the Style→Outfit rename. Read-only fallback. */
+        private const val LEGACY_STYLES_FILE_NAME = "_styles_metadata.json"
+        /** Legacy filename from before the outfit-events rename. Read-only fallback. */
+        private const val LEGACY_OUTFIT_EVENTS_FILE_NAME = "_outfits_metadata.json"
         private const val PREFERENCES_FILE_NAME = "_user_preferences.json"
         private const val WARDROBE_METADATA_FILE_NAME = "_wardrobe_metadata.json"
         private const val LOCATIONS_FILE_NAME = "_locations.json"
@@ -76,8 +80,10 @@ class DriveRepository(
         /** System-level JSON files that must never be treated as item sidecars. */
         internal val SYSTEM_JSON_NAMES = setOf(
             WARDROBE_METADATA_FILE_NAME,
-            STYLES_FILE_NAME,
             OUTFITS_FILE_NAME,
+            OUTFIT_EVENTS_FILE_NAME,
+            LEGACY_STYLES_FILE_NAME,
+            LEGACY_OUTFIT_EVENTS_FILE_NAME,
             PREFERENCES_FILE_NAME,
             LOCATIONS_FILE_NAME,
         )
@@ -281,43 +287,46 @@ class DriveRepository(
         }
     }
 
-    /** Loads the styles JSON string from Drive, or null if not yet created. */
-    suspend fun loadStylesJson(folderId: String): String? = withContext(Dispatchers.IO) {
-        val tok = token()
-        val q = URLEncoder.encode(
-            "'$folderId' in parents and name='$STYLES_FILE_NAME' and trashed=false", "UTF-8",
-        )
-        val fileId = gson.fromJson(
-            http.newCall(Request.Builder()
-                .url("$API/files?q=$q&fields=files(id)")
-                .header("Authorization", "Bearer $tok")
-                .build()).await().body!!.string(),
-            FilesListDto::class.java,
-        ).files.firstOrNull()?.id ?: return@withContext null
-
-        val resp = http.newCall(Request.Builder()
-            .url("$API/files/$fileId?alt=media")
-            .header("Authorization", "Bearer $tok")
-            .build()).await()
-        if (resp.isSuccessful) resp.body?.string() else null
-    }
-
-    /** Creates or overwrites the styles JSON file in Drive. */
-    suspend fun saveStylesJson(folderId: String, json: String) = withContext(Dispatchers.IO) {
-        val tok = token()
-        val q = URLEncoder.encode(
-            "'$folderId' in parents and name='$STYLES_FILE_NAME' and trashed=false", "UTF-8",
-        )
-        val existingId = gson.fromJson(
+    /** Finds a file by exact [name] within [folderId]; null if missing. */
+    private suspend fun findFileIdByName(folderId: String, name: String, tok: String): String? {
+        val q = URLEncoder.encode("'$folderId' in parents and name='$name' and trashed=false", "UTF-8")
+        return gson.fromJson(
             http.newCall(Request.Builder()
                 .url("$API/files?q=$q&fields=files(id)")
                 .header("Authorization", "Bearer $tok")
                 .build()).await().body!!.string(),
             FilesListDto::class.java,
         ).files.firstOrNull()?.id
+    }
 
+    /** Downloads the raw content of [fileId] as a string, or null on HTTP failure. */
+    private suspend fun downloadFileText(fileId: String, tok: String): String? {
+        val resp = http.newCall(Request.Builder()
+            .url("$API/files/$fileId?alt=media")
+            .header("Authorization", "Bearer $tok")
+            .build()).await()
+        return if (resp.isSuccessful) resp.body?.string() else null
+    }
+
+    /**
+     * Loads the saved-outfits JSON from Drive. Reads the current filename [OUTFITS_FILE_NAME];
+     * falls back to the pre-rename [LEGACY_STYLES_FILE_NAME] so users who haven't re-saved yet
+     * still see their outfits. Returns null if neither file exists.
+     */
+    suspend fun loadOutfitsJson(folderId: String): String? = withContext(Dispatchers.IO) {
+        val tok = token()
+        val id = findFileIdByName(folderId, OUTFITS_FILE_NAME, tok)
+            ?: findFileIdByName(folderId, LEGACY_STYLES_FILE_NAME, tok)
+            ?: return@withContext null
+        downloadFileText(id, tok)
+    }
+
+    /** Creates or overwrites the saved-outfits JSON file in Drive (always writes [OUTFITS_FILE_NAME]). */
+    suspend fun saveOutfitsJson(folderId: String, json: String) = withContext(Dispatchers.IO) {
+        val tok = token()
+        val existingId = findFileIdByName(folderId, OUTFITS_FILE_NAME, tok)
         val fileId = existingId ?: run {
-            val meta = """{"name":"$STYLES_FILE_NAME","parents":["$folderId"],"mimeType":"application/json"}"""
+            val meta = """{"name":"$OUTFITS_FILE_NAME","parents":["$folderId"],"mimeType":"application/json"}"""
             gson.fromJson(
                 http.newCall(Request.Builder()
                     .url("$API/files?fields=id")
@@ -334,43 +343,24 @@ class DriveRepository(
             .build()).await()
     }
 
-    /** Loads the outfits JSON string from Drive, or null if not yet created. */
-    suspend fun loadOutfitsJson(folderId: String): String? = withContext(Dispatchers.IO) {
+    /**
+     * Loads the outfit-events (calendar wear history) JSON from Drive. Falls back to
+     * [LEGACY_OUTFIT_EVENTS_FILE_NAME] if the current filename isn't present yet.
+     */
+    suspend fun loadOutfitEventsJson(folderId: String): String? = withContext(Dispatchers.IO) {
         val tok = token()
-        val q = URLEncoder.encode(
-            "'$folderId' in parents and name='$OUTFITS_FILE_NAME' and trashed=false", "UTF-8",
-        )
-        val fileId = gson.fromJson(
-            http.newCall(Request.Builder()
-                .url("$API/files?q=$q&fields=files(id)")
-                .header("Authorization", "Bearer $tok")
-                .build()).await().body!!.string(),
-            FilesListDto::class.java,
-        ).files.firstOrNull()?.id ?: return@withContext null
-
-        val resp = http.newCall(Request.Builder()
-            .url("$API/files/$fileId?alt=media")
-            .header("Authorization", "Bearer $tok")
-            .build()).await()
-        if (resp.isSuccessful) resp.body?.string() else null
+        val id = findFileIdByName(folderId, OUTFIT_EVENTS_FILE_NAME, tok)
+            ?: findFileIdByName(folderId, LEGACY_OUTFIT_EVENTS_FILE_NAME, tok)
+            ?: return@withContext null
+        downloadFileText(id, tok)
     }
 
-    /** Creates or overwrites the outfits JSON file in Drive. */
-    suspend fun saveOutfitsJson(folderId: String, json: String) = withContext(Dispatchers.IO) {
+    /** Creates or overwrites the outfit-events JSON in Drive (always writes [OUTFIT_EVENTS_FILE_NAME]). */
+    suspend fun saveOutfitEventsJson(folderId: String, json: String) = withContext(Dispatchers.IO) {
         val tok = token()
-        val q = URLEncoder.encode(
-            "'$folderId' in parents and name='$OUTFITS_FILE_NAME' and trashed=false", "UTF-8",
-        )
-        val existingId = gson.fromJson(
-            http.newCall(Request.Builder()
-                .url("$API/files?q=$q&fields=files(id)")
-                .header("Authorization", "Bearer $tok")
-                .build()).await().body!!.string(),
-            FilesListDto::class.java,
-        ).files.firstOrNull()?.id
-
+        val existingId = findFileIdByName(folderId, OUTFIT_EVENTS_FILE_NAME, tok)
         val fileId = existingId ?: run {
-            val meta = """{"name":"$OUTFITS_FILE_NAME","parents":["$folderId"],"mimeType":"application/json"}"""
+            val meta = """{"name":"$OUTFIT_EVENTS_FILE_NAME","parents":["$folderId"],"mimeType":"application/json"}"""
             gson.fromJson(
                 http.newCall(Request.Builder()
                     .url("$API/files?fields=id")

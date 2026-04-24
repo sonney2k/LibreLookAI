@@ -2,7 +2,7 @@ package com.librelookai
 
 import java.util.UUID
 
-data class Style(
+data class Outfit(
     val id: String = UUID.randomUUID().toString(),
     val name: String = "",
     val description: String = "",

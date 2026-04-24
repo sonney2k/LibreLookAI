@@ -116,9 +116,9 @@ class MainActivity : ComponentActivity() {
 
                     var selectedTab by rememberSaveable { mutableIntStateOf(1) }
                     val locationViewModel: LocationViewModel = viewModel()
-                    val stylesViewModel: StylesViewModel = viewModel()
+                    val stylesViewModel: OutfitsViewModel = viewModel()
                     val wardrobeViewModel: WardrobeViewModel = viewModel()
-                    val outfitsViewModel: OutfitsViewModel = viewModel()
+                    val outfitEventsViewModel: OutfitEventsViewModel = viewModel()
                     val profileViewModel: ProfileViewModel = viewModel()
                     val weatherViewModel: WeatherViewModel = viewModel()
                     val travelViewModel: TravelViewModel = viewModel()
@@ -145,11 +145,11 @@ class MainActivity : ComponentActivity() {
                         if (saveTarget != null) stylesViewModel.updateSaveFolder(saveTarget)
                         if (activeLocationId == LocationViewModel.ALL_LOCATIONS_ID) {
                             wardrobeViewModel.setAllLocations(folderIds)
-                            outfitsViewModel.setAllLocations(folderIds)
+                            outfitEventsViewModel.setAllLocations(folderIds)
                         } else {
                             activeFolderId?.let { folderId ->
                                 wardrobeViewModel.setLocation(folderId)
-                                outfitsViewModel.setLocation(folderId)
+                                outfitEventsViewModel.setLocation(folderId)
                             }
                         }
                         // Imports always go to the active location (first location when all are shown).
@@ -309,15 +309,15 @@ class MainActivity : ComponentActivity() {
                                         )
                                     }
                                     when (selectedTab) {
-                                        0 -> StylesScreen(
+                                        0 -> OutfitsScreen(
                                             stylesViewModel = stylesViewModel,
                                             wardrobeViewModel = wardrobeViewModel,
-                                            outfitsViewModel = outfitsViewModel,
+                                            outfitEventsViewModel = outfitEventsViewModel,
                                             profileViewModel = profileViewModel,
                                             weatherViewModel = weatherViewModel,
                                             locationViewModel = locationViewModel,
                                             onTryOnStyle = { style ->
-                                                stylesViewModel.clearStyleSelection()
+                                                stylesViewModel.clearOutfitSelection()
                                                 runTryOn(style.itemIds.toSet())
                                             },
                                             canTryOn = canTryOn,
@@ -325,10 +325,10 @@ class MainActivity : ComponentActivity() {
                                         )
                                         1 -> WardrobeScreen(
                                             viewModel = wardrobeViewModel,
-                                            outfitsViewModel = outfitsViewModel,
+                                            outfitEventsViewModel = outfitEventsViewModel,
                                             stylesViewModel = stylesViewModel,
                                             locationViewModel = locationViewModel,
-                                            onCreateStyleFromSelection = { itemIds ->
+                                            onCreateOutfitFromSelection = { itemIds ->
                                                 stylesViewModel.openComposer(
                                                     seedItemIds = itemIds,
                                                     images      = wardrobeViewModel.state.value.images,
@@ -345,12 +345,16 @@ class MainActivity : ComponentActivity() {
                                             onSettingsClick = onSettingsClick,
                                         )
                                         2 -> CalendarScreen(
-                                            outfitsViewModel = outfitsViewModel,
+                                            outfitEventsViewModel = outfitEventsViewModel,
                                             stylesViewModel = stylesViewModel,
                                             wardrobeViewModel = wardrobeViewModel,
                                             locationViewModel = locationViewModel,
-                                            onEditStyle = { style ->
-                                                stylesViewModel.startEditing(style)
+                                            onEditOutfit = { style ->
+                                                stylesViewModel.startEditing(
+                                                    style  = style,
+                                                    images = wardrobeViewModel.state.value.images,
+                                                    prefs  = profileViewModel.state.value.preferences,
+                                                )
                                                 selectedTab = 0
                                             },
                                             onSettingsClick = onSettingsClick,
@@ -399,7 +403,7 @@ class MainActivity : ComponentActivity() {
                                 }
 
                                 // Unified style composer — opened from any screen that seeds items.
-                                StyleComposerScreen(
+                                OutfitComposerScreen(
                                     stylesViewModel   = stylesViewModel,
                                     wardrobeViewModel = wardrobeViewModel,
                                     profileViewModel  = profileViewModel,

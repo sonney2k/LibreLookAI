@@ -343,7 +343,7 @@ private fun ProfileTab(
                     modifier = Modifier.fillMaxWidth(),
                 )
 
-                // --- Style preferences ---
+                // --- Outfit preferences ---
                 OutlinedTextField(
                     value = preferences,
                     onValueChange = { preferences = it },

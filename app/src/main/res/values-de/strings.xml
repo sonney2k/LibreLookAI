@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">LibreLookAI</string>
 
-    <string name="nav_styles">Stile</string>
+    <string name="nav_styles">Outfits</string>
     <string name="nav_wardrobe">Garderobe</string>
     <string name="nav_calendar">Kalender</string>
     <string name="nav_travel">Reise</string>
@@ -47,7 +47,7 @@
     <string name="settings_gender_other">Sonstiges</string>
     <string name="settings_year_of_birth">Geburtsjahr</string>
     <string name="settings_year_placeholder">z.B. 1990</string>
-    <string name="settings_style_prefs">Stilpräferenzen</string>
+    <string name="settings_style_prefs">Outfit-Präferenzen</string>
     <string name="settings_style_placeholder">Beschreiben Sie, was Sie gerne tragen, Anlässe für die Sie sich kleiden, Lieblingsfarben, Marken oder alles andere, das Ihre Outfit-Empfehlungen personalisiert…</string>
     <string name="settings_saved">Einstellungen gespeichert</string>
     <string name="settings_api_key_title">Gemini API-Schlüssel</string>
@@ -277,9 +277,9 @@
     <string name="tag_val_multicolor">Mehrfarbig</string>
     <string name="tag_val_printed">Bedruckt</string>
 
-    <string name="styles_empty">Noch keine Stile</string>
+    <string name="styles_empty">Noch keine Outfits</string>
     <string name="styles_empty_hint">Tippe auf +, um ein Outfit aus deiner Garderobe zu erstellen</string>
-    <string name="styles_no_match">Keine Stile entsprechen dem Filter</string>
+    <string name="styles_no_match">Keine Outfits entsprechen dem Filter</string>
     <string name="styles_sort_newest">Neueste zuerst</string>
     <string name="styles_sort_oldest">Älteste zuerst</string>
     <string name="styles_sort_most_worn">Am häufigsten getragen</string>
@@ -287,12 +287,12 @@
     <string name="styles_sort_name_za">Name Z–A</string>
     <string name="styles_sort_most_items">Meiste Teile</string>
     <string name="styles_create_manual">Outfit manuell erstellen</string>
-    <string name="styles_suggest">Bestehenden Stil vorschlagen</string>
-    <string name="styles_compose">Neuen Stil zusammenstellen</string>
+    <string name="styles_suggest">Bestehendes Outfit vorschlagen</string>
+    <string name="styles_compose">Neues Outfit zusammenstellen</string>
     <string name="styles_thinking">Denkt nach…</string>
-    <string name="styles_suggesting">Stil wird vorgeschlagen…</string>
+    <string name="styles_suggesting">Outfit wird vorgeschlagen…</string>
     <string name="styles_composing">Outfit wird zusammengestellt…</string>
-    <string name="styles_delete_title">Stil löschen?</string>
+    <string name="styles_delete_title">Outfit löschen?</string>
     <string name="styles_delete_text">\"%s\" wird dauerhaft entfernt.</string>
     <string name="styles_wear_today">Heute tragen</string>
     <string name="styles_worn_today">Heute getragen!</string>
@@ -300,10 +300,10 @@
     <string name="styles_items_away">%d Teil(e) an einem anderen Standort</string>
     <string name="styles_suggested_title">Vorschlag für heute</string>
     <string name="styles_composed_title">Für Sie zusammengestellt</string>
-    <string name="styles_name_dialog_title">Stil benennen</string>
-    <string name="styles_name_placeholder">Stilname</string>
+    <string name="styles_name_dialog_title">Outfit benennen</string>
+    <string name="styles_name_placeholder">Outfitname</string>
     <string name="styles_description_placeholder">Beschreibung (optional)</string>
-    <string name="styles_create_this">Diesen Stil erstellen</string>
+    <string name="styles_create_this">Dieses Outfit erstellen</string>
     <string name="styles_refine_label">Mit KI verfeinern</string>
     <string name="styles_refine_custom">Eigenes Feedback…</string>
     <string name="styles_refine_casual">Legerer</string>
@@ -319,11 +319,11 @@
     <string name="styles_swap_item_for">Tauschen: %s</string>
     <string name="styles_suggest_alternatives">10 Alternativen vorschlagen</string>
     <string name="styles_select_item">Auswählen</string>
-    <string name="styles_saved_wear_today">Stil gespeichert! Heute tragen?</string>
+    <string name="styles_saved_wear_today">Outfit gespeichert! Heute tragen?</string>
     <string name="styles_selected_count">%d ausgewählt</string>
     <string name="styles_select_all_count">Alle %d auswählen</string>
-    <string name="styles_delete_selected_title">Stile löschen?</string>
-    <string name="styles_delete_selected_text">%d Stile werden dauerhaft entfernt.</string>
+    <string name="styles_delete_selected_title">Outfits löschen?</string>
+    <string name="styles_delete_selected_text">%d Outfits werden dauerhaft entfernt.</string>
     <string name="styles_combine">Mit KI kombinieren</string>
 
     <string name="travel_title">Reisepackliste</string>
@@ -345,7 +345,7 @@
     <string name="travel_refine_evening">Abendoutfits hinzufügen</string>
     <string name="travel_refine_reuse">Outfit-Wiederverwendung maximieren</string>
     <string name="travel_day">Tag %d</string>
-    <string name="travel_save_as_style">Als Stil speichern</string>
+    <string name="travel_save_as_style">Als Outfit speichern</string>
     <string name="travel_saved_as_style">Gespeichert</string>
     <string name="travel_move_to_travel">Alle in „Reise"-Standort verschieben</string>
     <string name="travel_move_done">Kleidungsstücke in Reise-Standort verschoben</string>
@@ -360,10 +360,10 @@
     <string name="calendar_day_fr">Fr</string>
     <string name="calendar_day_sa">Sa</string>
     <string name="calendar_day_su">So</string>
-    <string name="calendar_stats_styles">Meist getragene Stile</string>
+    <string name="calendar_stats_styles">Meist getragene Outfits</string>
     <string name="calendar_stats_items">Meist getragene Teile</string>
     <string name="calendar_empty">Noch keine Outfit-Historie</string>
-    <string name="calendar_empty_hint">Tragen Sie einen Stil im Reiter Stile, um die Verfolgung zu starten</string>
+    <string name="calendar_empty_hint">Tragen Sie ein Outfit im Reiter Outfits, um die Verfolgung zu starten</string>
     <string name="calendar_wear_again">Heute wieder tragen</string>
 
     <string name="gap_title">Garderobe-Lücken-Analyse</string>
@@ -380,7 +380,7 @@
     <string name="credits_cost_title">Credits pro Aktion</string>
     <string name="credits_action_bg_removal">Hintergrund entfernen</string>
     <string name="credits_action_classify">Artikel automatisch taggen</string>
-    <string name="credits_action_style">Stil-Vorschlag / Outfit-Zusammenstellung</string>
+    <string name="credits_action_style">Outfit-Vorschlag</string>
     <string name="credits_action_travel">Reise-Packliste</string>
     <string name="credits_cost_each">%d Credits</string>
     <string name="credits_packs_title">Aufladen</string>
@@ -393,7 +393,7 @@
     <string name="ai_fetching_weather">Wetter wird geladen…</string>
     <string name="ai_generating_packing">Packliste wird erstellt…</string>
     <string name="ai_analyzing_wardrobe">Garderobe wird analysiert…</string>
-    <string name="ai_suggesting_style">Stil wird vorgeschlagen…</string>
+    <string name="ai_suggesting_style">Outfit wird vorgeschlagen…</string>
     <string name="ai_composing_outfit">Outfit wird zusammengestellt…</string>
 
     <!-- Foreground service notification -->
@@ -413,7 +413,7 @@
     <string name="tryon_title">Auf mir anprobieren</string>
     <string name="tryon_fab">Auf mir anprobieren</string>
     <string name="tryon_section_title">Anprobe-Fotos</string>
-    <string name="tryon_section_desc">Lade Ganzkörperfotos von vorn, von der Seite und von hinten hoch. Die App nutzt sie als Referenz, um eine virtuelle Anprobe eines Stils oder Kleidungsstücks an dir zu erzeugen. Die Fotos bleiben in deinem eigenen Drive.</string>
+    <string name="tryon_section_desc">Lade Ganzkörperfotos von vorn, von der Seite und von hinten hoch. Die App nutzt sie als Referenz, um eine virtuelle Anprobe eines Outfits oder Kleidungsstücks an dir zu erzeugen. Die Fotos bleiben in deinem eigenen Drive.</string>
     <string name="tryon_slot_front">Vorne</string>
     <string name="tryon_slot_side">Seite</string>
     <string name="tryon_slot_back">Hinten</string>
@@ -442,7 +442,7 @@
     <string name="about_cost_title">Kosten pro KI-Aktion</string>
     <string name="about_cost_bg_removal">Hintergrundentfernung: 5 Credits</string>
     <string name="about_cost_classify">Automatisches Tagging: 2 Credits</string>
-    <string name="about_cost_text">Stil-Vorschlag / Outfit-Zusammenstellung: 2 Credits</string>
+    <string name="about_cost_text">Outfit-Vorschlag: 2 Credits</string>
     <string name="about_cost_travel">Reise-Packliste / Garderobe-Lücken-Analyse: 2 Credits</string>
     <string name="about_byok_title">Eigenen Schlüssel verwenden (BYOK)</string>
     <string name="about_byok_desc">Du kannst deinen eigenen kostenlosen Gemini-API-Schlüssel verwenden, um Credits komplett zu vermeiden:\n\n1. Gehe zu aistudio.google.com\n2. Klicke auf \"Get API key\" → \"Create API key\"\n3. Kopiere den Schlüssel (beginnt mit AIza…)\n4. Füge ihn unter Einstellungen → Profil → Gemini API-Schlüssel ein\n\nDein Schlüssel wird nur auf diesem Gerät gespeichert und direkt mit Google verwendet — keine Daten gehen über unsere Server.</string>
@@ -450,7 +450,7 @@
     <string name="about_credits_desc">Für Nutzer, die keinen eigenen API-Schlüssel erstellen möchten, bietet die App ein münzbasiertes Credit-System. Credits können im Credits-Tab gekauft und pro KI-Aktion zu den oben genannten Preisen verbraucht werden. In diesem Modus werden Anfragen über einen serverseitigen Proxy geleitet.</string>
 
     <!-- Unified Style Composer -->
-    <string name="composer_title">Stil erstellen</string>
+    <string name="composer_title">Outfit erstellen</string>
     <string name="composer_save">Speichern</string>
     <string name="composer_section_items">Teile</string>
     <string name="composer_section_weather">Wetter</string>
@@ -471,7 +471,7 @@
     <string name="composer_layer_outerwear">Jacke/Mantel</string>
     <string name="composer_layer_accessory">Accessoire</string>
     <string name="composer_pref_placeholder">z. B. minimalistisch, gedeckte Farben, keine Logos…</string>
-    <string name="composer_name_placeholder">Stilname (optional)</string>
+    <string name="composer_name_placeholder">Outfitname (optional)</string>
     <string name="composer_desc_placeholder">Kurze Beschreibung (optional)</string>
     <string name="composer_feedback_placeholder">Sag der KI, was sie anpassen soll…</string>
     <string name="composer_feedback_history">%1$d frühere Wünsche berücksichtigt</string>
@@ -480,5 +480,5 @@
     <string name="composer_add_items">Teile aus Garderobe hinzufügen</string>
     <string name="composer_picked_count">%1$d ausgewählt</string>
     <string name="composer_add_selected">Auswahl hinzufügen</string>
-    <string name="wardrobe_create_style">Stil erstellen</string>
+    <string name="wardrobe_create_style">Outfit erstellen</string>
 </resources>

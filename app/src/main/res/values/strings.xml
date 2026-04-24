@@ -3,7 +3,7 @@
     <string name="app_name">LibreLookAI</string>
 
     <!-- Navigation -->
-    <string name="nav_styles">Styles</string>
+    <string name="nav_styles">Outfits</string>
     <string name="nav_wardrobe">Wardrobe</string>
     <string name="nav_calendar">Calendar</string>
     <string name="nav_travel">Travel</string>
@@ -51,7 +51,7 @@
     <string name="settings_gender_other">Other</string>
     <string name="settings_year_of_birth">Year of Birth</string>
     <string name="settings_year_placeholder">e.g. 1990</string>
-    <string name="settings_style_prefs">Style Preferences</string>
+    <string name="settings_style_prefs">Outfit Preferences</string>
     <string name="settings_style_placeholder">Describe what you like to wear, occasions you dress for, favourite colours, brands, or anything else that helps personalise your outfit recommendations…</string>
     <string name="settings_saved">Preferences saved</string>
     <string name="settings_api_key_title">Gemini API Key</string>
@@ -282,10 +282,10 @@
     <string name="tag_val_multicolor">Multicolor</string>
     <string name="tag_val_printed">Printed</string>
 
-    <!-- Styles -->
-    <string name="styles_empty">No styles yet</string>
+    <!-- Outfits -->
+    <string name="styles_empty">No outfits yet</string>
     <string name="styles_empty_hint">Tap + to build an outfit from your wardrobe</string>
-    <string name="styles_no_match">No styles match the filter</string>
+    <string name="styles_no_match">No outfits match the filter</string>
     <string name="styles_sort_newest">Newest first</string>
     <string name="styles_sort_oldest">Oldest first</string>
     <string name="styles_sort_most_worn">Most worn</string>
@@ -293,12 +293,12 @@
     <string name="styles_sort_name_za">Name Z–A</string>
     <string name="styles_sort_most_items">Most items</string>
     <string name="styles_create_manual">Create outfit manually</string>
-    <string name="styles_suggest">Suggest existing style</string>
-    <string name="styles_compose">Compose new style</string>
+    <string name="styles_suggest">Suggest existing outfit</string>
+    <string name="styles_compose">Compose new outfit</string>
     <string name="styles_thinking">Thinking…</string>
-    <string name="styles_suggesting">Suggesting style…</string>
+    <string name="styles_suggesting">Suggesting outfit…</string>
     <string name="styles_composing">Composing outfit…</string>
-    <string name="styles_delete_title">Delete style?</string>
+    <string name="styles_delete_title">Delete outfit?</string>
     <string name="styles_delete_text">\"%s\" will be permanently removed.</string>
     <string name="styles_wear_today">Wear today</string>
     <string name="styles_worn_today">Worn today!</string>
@@ -306,10 +306,10 @@
     <string name="styles_items_away">%d item(s) at another location</string>
     <string name="styles_suggested_title">Suggested for today</string>
     <string name="styles_composed_title">Composed for you</string>
-    <string name="styles_name_dialog_title">Name this style</string>
-    <string name="styles_name_placeholder">Style name</string>
+    <string name="styles_name_dialog_title">Name this outfit</string>
+    <string name="styles_name_placeholder">Outfit name</string>
     <string name="styles_description_placeholder">Description (optional)</string>
-    <string name="styles_create_this">Create this style</string>
+    <string name="styles_create_this">Create this outfit</string>
     <string name="styles_refine_label">Refine with AI</string>
     <string name="styles_refine_custom">Custom feedback…</string>
     <string name="styles_refine_casual">More casual</string>
@@ -325,11 +325,11 @@
     <string name="styles_swap_item_for">Swap: %s</string>
     <string name="styles_suggest_alternatives">Suggest 10 alternatives</string>
     <string name="styles_select_item">Select</string>
-    <string name="styles_saved_wear_today">Style saved! Wear today?</string>
+    <string name="styles_saved_wear_today">Outfit saved! Wear today?</string>
     <string name="styles_selected_count">%d selected</string>
     <string name="styles_select_all_count">Select all %d</string>
-    <string name="styles_delete_selected_title">Delete styles?</string>
-    <string name="styles_delete_selected_text">%d styles will be permanently removed.</string>
+    <string name="styles_delete_selected_title">Delete outfits?</string>
+    <string name="styles_delete_selected_text">%d outfits will be permanently removed.</string>
     <string name="styles_combine">Combine with AI</string>
 
     <!-- Travel -->
@@ -352,7 +352,7 @@
     <string name="travel_refine_evening">Add evening outfits</string>
     <string name="travel_refine_reuse">Maximize outfit reuse</string>
     <string name="travel_day">Day %d</string>
-    <string name="travel_save_as_style">Save as style</string>
+    <string name="travel_save_as_style">Save as outfit</string>
     <string name="travel_saved_as_style">Saved</string>
     <string name="travel_move_to_travel">Move all to Travel location</string>
     <string name="travel_move_done">Items moved to Travel location</string>
@@ -368,10 +368,10 @@
     <string name="calendar_day_fr">Fr</string>
     <string name="calendar_day_sa">Sa</string>
     <string name="calendar_day_su">Su</string>
-    <string name="calendar_stats_styles">Most Worn Styles</string>
+    <string name="calendar_stats_styles">Most Worn Outfits</string>
     <string name="calendar_stats_items">Most Worn Items</string>
     <string name="calendar_empty">No outfit history yet</string>
-    <string name="calendar_empty_hint">Wear a style from the Styles tab to start tracking</string>
+    <string name="calendar_empty_hint">Wear an outfit from the Outfits tab to start tracking</string>
     <string name="calendar_wear_again">Wear again today</string>
 
     <!-- Gap Analyzer -->
@@ -390,7 +390,7 @@
     <string name="credits_cost_title">Credit cost per action</string>
     <string name="credits_action_bg_removal">Background removal</string>
     <string name="credits_action_classify">Auto-tag item</string>
-    <string name="credits_action_style">Style suggestion / outfit composition</string>
+    <string name="credits_action_style">Outfit suggestion</string>
     <string name="credits_action_travel">Travel packing list</string>
     <string name="credits_cost_each">%d credits</string>
     <string name="credits_packs_title">Top-up packs</string>
@@ -404,7 +404,7 @@
     <string name="ai_fetching_weather">Fetching weather…</string>
     <string name="ai_generating_packing">Generating packing list…</string>
     <string name="ai_analyzing_wardrobe">Analyzing your wardrobe…</string>
-    <string name="ai_suggesting_style">Suggesting style…</string>
+    <string name="ai_suggesting_style">Suggesting outfit…</string>
     <string name="ai_composing_outfit">Composing outfit…</string>
 
     <!-- Foreground service notification -->
@@ -424,7 +424,7 @@
     <string name="tryon_title">Try on me</string>
     <string name="tryon_fab">Try on me</string>
     <string name="tryon_section_title">Try-on photos</string>
-    <string name="tryon_section_desc">Upload full-body photos from the front, side, and back. The app uses these as a reference when generating a Try-on preview of a style or wardrobe item on you. Photos stay in your own Drive.</string>
+    <string name="tryon_section_desc">Upload full-body photos from the front, side, and back. The app uses these as a reference when generating a Try-on preview of an outfit or wardrobe item on you. Photos stay in your own Drive.</string>
     <string name="tryon_slot_front">Front</string>
     <string name="tryon_slot_side">Side</string>
     <string name="tryon_slot_back">Back</string>
@@ -453,15 +453,15 @@
     <string name="about_cost_title">Cost per AI action</string>
     <string name="about_cost_bg_removal">Background removal: 5 credits</string>
     <string name="about_cost_classify">Auto-tag item: 2 credits</string>
-    <string name="about_cost_text">Style suggestion / outfit composition: 2 credits</string>
+    <string name="about_cost_text">Outfit suggestion: 2 credits</string>
     <string name="about_cost_travel">Travel packing list / wardrobe gap analysis: 2 credits</string>
     <string name="about_byok_title">Bring Your Own Key (BYOK)</string>
     <string name="about_byok_desc">You can use your own free Gemini API key to avoid credit costs entirely:\n\n1. Go to aistudio.google.com\n2. Click \"Get API key\" → \"Create API key\"\n3. Copy the key (starts with AIza…)\n4. Paste it in Settings → Profile → Gemini API Key\n\nYour key is stored only on this device and used directly with Google — no data passes through our servers.</string>
     <string name="about_credits_title">Credits (Managed Mode)</string>
     <string name="about_credits_desc">For users who prefer not to create their own API key, the app offers a coin-based credit system. Credits can be purchased in the Credits tab and are consumed per AI action at the rates listed above. This mode routes requests through a server-side proxy.</string>
 
-    <!-- Unified Style Composer -->
-    <string name="composer_title">Create style</string>
+    <!-- Unified Outfit Composer -->
+    <string name="composer_title">Create outfit</string>
     <string name="composer_save">Save</string>
     <string name="composer_section_items">Items</string>
     <string name="composer_section_weather">Weather</string>
@@ -482,7 +482,7 @@
     <string name="composer_layer_outerwear">Outerwear</string>
     <string name="composer_layer_accessory">Accessory</string>
     <string name="composer_pref_placeholder">e.g. leans minimalist, prefers muted colors, avoids logos…</string>
-    <string name="composer_name_placeholder">Style name (optional)</string>
+    <string name="composer_name_placeholder">Outfit name (optional)</string>
     <string name="composer_desc_placeholder">Short caption (optional)</string>
     <string name="composer_feedback_placeholder">Tell the AI what to change or aim for…</string>
     <string name="composer_feedback_history">%1$d earlier request(s) kept in context</string>
@@ -491,5 +491,5 @@
     <string name="composer_add_items">Add items from wardrobe</string>
     <string name="composer_picked_count">%1$d picked</string>
     <string name="composer_add_selected">Add selected</string>
-    <string name="wardrobe_create_style">Create style</string>
+    <string name="wardrobe_create_style">Create outfit</string>
 </resources>

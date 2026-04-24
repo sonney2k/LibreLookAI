@@ -72,8 +72,8 @@ import coil.request.ImageRequest
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun StyleComposerScreen(
-    stylesViewModel: StylesViewModel,
+fun OutfitComposerScreen(
+    stylesViewModel: OutfitsViewModel,
     wardrobeViewModel: WardrobeViewModel,
     profileViewModel: ProfileViewModel,
     weatherViewModel: WeatherViewModel,

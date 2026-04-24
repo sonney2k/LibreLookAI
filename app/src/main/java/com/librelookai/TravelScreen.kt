@@ -91,7 +91,7 @@ fun TravelScreen(
     travelViewModel: TravelViewModel = viewModel(),
     wardrobeViewModel: WardrobeViewModel = viewModel(),
     profileViewModel: ProfileViewModel = viewModel(),
-    stylesViewModel: StylesViewModel = viewModel(),
+    stylesViewModel: OutfitsViewModel = viewModel(),
     locationViewModel: LocationViewModel = viewModel(),
     onSettingsClick: () -> Unit = {},
     modifier: Modifier = Modifier,
@@ -100,7 +100,7 @@ fun TravelScreen(
     val state        by travelViewModel.state.collectAsState()
     val wardrobeState by wardrobeViewModel.state.collectAsState()
     val profileState  by profileViewModel.state.collectAsState()
-    val stylesState   by stylesViewModel.state.collectAsState()
+    val outfitsState   by stylesViewModel.state.collectAsState()
     val locationState by locationViewModel.state.collectAsState()
 
     val isWorking = state.isLoadingForecast || state.isGenerating
@@ -200,7 +200,7 @@ fun TravelScreen(
                             travelViewModel.generate(
                                 prefs  = profileState.preferences,
                                 images = wardrobeState.images,
-                                styles = stylesState.styles,
+                                styles = outfitsState.styles,
                             )
                         },
                         enabled = state.destination.isNotEmpty() && !isWorking && !isOffline,
@@ -348,10 +348,10 @@ fun TravelScreen(
                             presets = travelPresets(),
                             onInputChange = travelViewModel::updateRefinementInput,
                             onSubmitFreetext = {
-                                travelViewModel.refine(profileState.preferences, wardrobeState.images, stylesState.styles)
+                                travelViewModel.refine(profileState.preferences, wardrobeState.images, outfitsState.styles)
                             },
                             onSubmitPreset = { preset ->
-                                travelViewModel.submitPreset(preset, profileState.preferences, wardrobeState.images, stylesState.styles)
+                                travelViewModel.submitPreset(preset, profileState.preferences, wardrobeState.images, outfitsState.styles)
                             },
                             modifier = Modifier.padding(16.dp),
                         )
@@ -610,4 +610,4 @@ private fun StartDatePicker(
 }
 
 // ---------- Refinement section (shared composable reuse) ----------
-// RefinementSection is defined in StylesScreen.kt and is internal to the package.
+// RefinementSection is defined in OutfitsScreen.kt and is internal to the package.
