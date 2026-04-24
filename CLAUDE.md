@@ -246,6 +246,8 @@ When adding new network-dependent UI actions, read `LocalIsOffline.current` and 
 
 `MainActivity` owns a single `selectedTab: Int` integer. There is no Navigation component — each tab renders its Screen composable directly inside a `when` block. All ViewModels are created once at the `MainActivity` level and passed down as parameters. A `LaunchedEffect(activeLocationId, locationList)` in `MainActivity` keeps `WardrobeViewModel`, `OutfitsViewModel`, and `OutfitEventsViewModel` in sync whenever the global location changes, and also calls `OutfitsViewModel.updateSaveFolder(...)` so new outfits save to the right folder.
 
+Tab indices: `0=Outfits, 1=Wardrobe, 2=Calendar, 3=Travel, 4=Gaps, 5=Shop, 6=Settings`. The bottom `AppNavBar` lists 0–5 (6 items); Settings is reachable via the gear icon in each screen's `AppScreenHeader`, not the nav bar.
+
 `SettingsScreen` internally uses a `TabRow` with three tabs: Profile, Data, Credits (Credits only visible in managed mode).
 
 ### Localisation
@@ -288,6 +290,33 @@ Both service and wake lock are reference-counted via `acquireJobWakeLock()` / `r
 ### SAF import
 
 `WardrobeViewModel.importFromFolder(treeUri)` reads images from any OS-accessible folder using `DocumentsContract` + `ContentResolver` (no extra OAuth scopes needed), re-uploads them to the app's Drive folder, and classifies new items with Gemini before writing per-item sidecars.
+
+### Visual wardrobe search (Shopping helper)
+
+On-device, zero-network visual similarity search powered by MediaPipe's `ImageEmbedder`. Lets the user snap a photo (e.g. of an item on a store shelf) and surfaces the most visually similar cutouts already in their wardrobe.
+
+**Entry point (v1)**: Dedicated bottom-nav tab "Shop" (index 5, `Icons.Default.ShoppingBag`). Settings moved from tab 5 → 6. No other entry points wired yet.
+
+**Pipeline**:
+
+```
+Camera → Bitmap
+  → MediaPipe ImageEmbedder (MobileNetV3-Small, L2-normalized 1024-dim)
+  → Dot product vs. each cached wardrobe embedding
+  → Top-N matches sorted by score
+```
+
+No background segmentation in v1 — the capture UI already constrains the subject and MobileNet embeddings are tolerant of moderate background clutter. We may layer `InteractiveSegmenter` in later if accuracy suffers.
+
+**Components**:
+- `EmbeddingRepository` — lazy singleton that holds the MediaPipe `ImageEmbedder`. `embed(file): FloatArray?` returns null if the model asset is missing (dev fallback — the UI surfaces a "download model" hint). Mutex-guarded; `close()` releases native resources. Embedder is configured with `setL2Normalize(true)` so cosine similarity reduces to a dot product.
+- `EmbeddingIndex` — in-memory `Map<cutoutDriveId, FloatArray>` + binary persistence at `filesDir/wardrobe_embeddings.bin` (format: `magic u32 | version u16 | dim u16 | count u32 | [idLen u16 | idUtf8 | float32[dim]]*`). Operations: `load`, `saveDebounced`, `upsert`, `remove`, `search(query, topK)`. All IO-dispatcher.
+- `ShoppingHelperViewModel` — holds the repo + index. `syncIndex(images)` walks the current wardrobe, embeds any item with a cached cutout that isn't in the index yet, drops orphaned index entries, and persists. `onCapturedFile(file)` embeds the query and publishes ranked matches. State exposes `isIndexing` with progress counts, `isMatching`, `query` thumbnail path, `matches: List<Match(driveId, score)>`, and `error`.
+- `ShoppingHelperScreen` — three visual states: (a) capture prompt with a big camera FAB, (b) inline `CaptureScreen` (reuses the existing one), (c) result — query thumbnail up top + ranked list of wardrobe items with similarity bars. Header shows the `LocationButton` (same as other screens). When `!isOffline` is irrelevant here — everything runs locally, so the shop tab is fully functional offline.
+
+**Indexing strategy**: No hooks in `WardrobeViewModel.processQueue`. Indexing is pull-based — the shop screen syncs the index every time it opens, and before every match. Empirically this takes <1s for ~100 items on modern devices; subsequent opens are near-instant since only new/deleted items cause work.
+
+**Model asset**: `app/src/main/assets/embedder/mobilenet_v3_small.tflite` (~4 MB). Download from `https://storage.googleapis.com/mediapipe-models/image_embedder/mobilenet_v3_small/float32/1/mobilenet_v3_small.tflite`. Not checked into git (added to `.gitignore`). If missing, the Shop screen shows a dev-facing warning and disables matching.
 
 ## Release process (Play Store internal testing)
 

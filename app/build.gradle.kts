@@ -110,6 +110,11 @@ android {
             excludes += "META-INF/DEPENDENCIES"
         }
     }
+
+    androidResources {
+        // Keep .tflite uncompressed so MediaPipe can mmap it directly from the APK
+        noCompress += listOf("tflite")
+    }
 }
 
 dependencies {
@@ -141,6 +146,7 @@ dependencies {
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.billing.ktx)
     implementation(libs.kotlinx.coroutines.play.services)
+    implementation(libs.mediapipe.tasks.vision)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

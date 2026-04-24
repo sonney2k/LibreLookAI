@@ -8,6 +8,7 @@
     <string name="nav_calendar">Calendar</string>
     <string name="nav_travel">Travel</string>
     <string name="nav_gaps">Gaps</string>
+    <string name="nav_shop">Shop</string>
     <string name="nav_settings">Settings</string>
 
     <!-- Common actions -->
@@ -556,4 +557,21 @@
     <string name="ai_prompt_packing_desc">Role and rules for building a packing list from wardrobe + forecast.</string>
     <string name="ai_prompt_gap_title">Wardrobe gap analysis</string>
     <string name="ai_prompt_gap_desc">Role and rules for suggesting the top missing pieces in your wardrobe.</string>
+
+    <!-- Shopping helper -->
+    <string name="shop_title">Shopping helper</string>
+    <string name="shop_description">Snap a photo of a piece you\'re considering and we\'ll show the most visually similar items already in your wardrobe — fully on-device.</string>
+    <string name="shop_take_photo">Take photo</string>
+    <string name="shop_take_another">Take another photo</string>
+    <string name="shop_clear">Clear</string>
+    <string name="shop_your_photo">Your photo</string>
+    <string name="shop_matching">Matching against your wardrobe…</string>
+    <string name="shop_matches_title">Top matches (%1$d)</string>
+    <string name="shop_no_matches">No matches yet. Try a closer, better-lit photo.</string>
+    <string name="shop_match_score">Similarity: %1$d%%</string>
+    <string name="shop_indexing">Indexing wardrobe… %1$d / %2$d</string>
+    <string name="shop_index_size">%1$d items indexed</string>
+    <string name="shop_model_missing">On-device model missing. Place mobilenet_v3_small.tflite under app/src/main/assets/embedder/.</string>
+    <string name="shop_error_model_missing">Visual search model is not installed.</string>
+    <string name="shop_error_embed_failed">Could not analyze that photo. Try another one.</string>
 </resources>

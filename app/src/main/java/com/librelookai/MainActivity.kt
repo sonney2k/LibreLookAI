@@ -34,6 +34,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.DoorSliding
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Style
+import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material.icons.filled.TipsAndUpdates
 import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material3.AlertDialog
@@ -125,6 +126,7 @@ class MainActivity : ComponentActivity() {
                     val gapViewModel: WardrobeGapViewModel = viewModel()
                     val creditsViewModel: CreditsViewModel = viewModel()
                     val tryOnViewModel: TryOnViewModel = viewModel()
+                    val shoppingViewModel: ShoppingHelperViewModel = viewModel()
                     val locationState by locationViewModel.state.collectAsState()
                     val weatherState by weatherViewModel.state.collectAsState()
                     val profileState by profileViewModel.state.collectAsState()
@@ -295,7 +297,7 @@ class MainActivity : ComponentActivity() {
                                 }
 
                                 Box(Modifier.fillMaxSize()) {
-                                    val onSettingsClick = { selectedTab = 5 }
+                                    val onSettingsClick = { selectedTab = 6 }
                                     val runTryOn: (Set<String>) -> Unit = { itemIds ->
                                         tryOnViewModel.openComposer(itemIds)
                                     }
@@ -365,7 +367,13 @@ class MainActivity : ComponentActivity() {
                                             locationViewModel = locationViewModel,
                                             onSettingsClick = onSettingsClick,
                                         )
-                                        5 -> SettingsScreen(
+                                        5 -> ShoppingHelperScreen(
+                                            shoppingViewModel = shoppingViewModel,
+                                            wardrobeViewModel = wardrobeViewModel,
+                                            locationViewModel = locationViewModel,
+                                            onSettingsClick = onSettingsClick,
+                                        )
+                                        6 -> SettingsScreen(
                                             profileViewModel = profileViewModel,
                                             wardrobeViewModel = wardrobeViewModel,
                                             locationViewModel = locationViewModel,
@@ -541,6 +549,7 @@ private fun AppNavBar(
         NavItem(R.string.nav_calendar, Icons.Default.CalendarMonth),
         NavItem(R.string.nav_travel,   Icons.Default.FlightTakeoff),
         NavItem(R.string.nav_gaps,     Icons.Default.TipsAndUpdates),
+        NavItem(R.string.nav_shop,     Icons.Default.ShoppingBag),
     )
     NavigationBar {
         items.forEachIndexed { index, item ->

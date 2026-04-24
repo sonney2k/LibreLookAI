@@ -8,3 +8,6 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# On-device ML model — download manually, see CLAUDE.md
+app/src/main/assets/embedder/*.tflite

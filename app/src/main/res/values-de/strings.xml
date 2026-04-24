@@ -7,6 +7,7 @@
     <string name="nav_calendar">Kalender</string>
     <string name="nav_travel">Reise</string>
     <string name="nav_gaps">Lücken</string>
+    <string name="nav_shop">Shop</string>
     <string name="nav_settings">Einstellungen</string>
 
     <string name="action_ok">OK</string>
@@ -545,4 +546,21 @@
     <string name="ai_prompt_packing_desc">Rolle und Regeln zum Erstellen einer Packliste aus Garderobe und Wetter.</string>
     <string name="ai_prompt_gap_title">Garderobenanalyse</string>
     <string name="ai_prompt_gap_desc">Rolle und Regeln, um die wichtigsten fehlenden Teile in deiner Garderobe vorzuschlagen.</string>
+
+    <!-- Einkaufshilfe -->
+    <string name="shop_title">Einkaufshilfe</string>
+    <string name="shop_description">Fotografiere ein Teil, das dich interessiert — wir zeigen dir die optisch ähnlichsten Stücke aus deiner Garderobe, komplett auf dem Gerät.</string>
+    <string name="shop_take_photo">Foto aufnehmen</string>
+    <string name="shop_take_another">Noch ein Foto</string>
+    <string name="shop_clear">Zurücksetzen</string>
+    <string name="shop_your_photo">Dein Foto</string>
+    <string name="shop_matching">Vergleiche mit deiner Garderobe…</string>
+    <string name="shop_matches_title">Beste Treffer (%1$d)</string>
+    <string name="shop_no_matches">Keine Treffer. Versuche es mit einem näheren, gut ausgeleuchteten Foto.</string>
+    <string name="shop_match_score">Ähnlichkeit: %1$d %%</string>
+    <string name="shop_indexing">Indexiere Garderobe… %1$d / %2$d</string>
+    <string name="shop_index_size">%1$d Teile indexiert</string>
+    <string name="shop_model_missing">Lokales Modell fehlt. Lege mobilenet_v3_small.tflite unter app/src/main/assets/embedder/ ab.</string>
+    <string name="shop_error_model_missing">Das Modell für die visuelle Suche ist nicht installiert.</string>
+    <string name="shop_error_embed_failed">Das Foto konnte nicht analysiert werden. Probiere es erneut.</string>
 </resources>
