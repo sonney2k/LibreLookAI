@@ -65,6 +65,16 @@ class DriveRepository(
         const val PROFILE_FOLDER_NAME = "_profile"
 
         /**
+         * Subfolder of the root Drive folder used to hold generated try-on PNGs.
+         * Kept out of every location/closet folder so these images are never treated
+         * as wardrobe items and never scanned by Repair & Sync.
+         */
+        const val TRYONS_FOLDER_NAME = "_tryons"
+
+        /** Index JSON listing all saved try-ons; lives at the root Drive folder. */
+        const val TRYONS_FILE_NAME = "_tryons.json"
+
+        /**
          * Suffix that marks a file as the background-removed cutout variant.
          * Only files with this suffix are treated as wardrobe items; originals and
          * raw uploads are excluded from [listFiles] and therefore never shown in the app.
@@ -86,6 +96,7 @@ class DriveRepository(
             LEGACY_OUTFIT_EVENTS_FILE_NAME,
             PREFERENCES_FILE_NAME,
             LOCATIONS_FILE_NAME,
+            TRYONS_FILE_NAME,
         )
     }
 
@@ -730,6 +741,66 @@ class DriveRepository(
                 uploadImageWithName(profileFolderId, imageFile, name).id
             }
         }
+
+    /**
+     * Returns the Drive folder ID of the [TRYONS_FOLDER_NAME] subfolder inside [rootFolderId],
+     * creating it if needed.
+     */
+    suspend fun getOrCreateTryOnsFolder(rootFolderId: String): String =
+        createSubfolder(rootFolderId, TRYONS_FOLDER_NAME)
+
+    /**
+     * Uploads [imageFile] (PNG) into the try-ons subfolder with [name]. Returns the new Drive ID.
+     */
+    suspend fun uploadTryOnImage(rootFolderId: String, name: String, imageFile: File): String =
+        withContext(Dispatchers.IO) {
+            val folderId = getOrCreateTryOnsFolder(rootFolderId)
+            val tok = token()
+            val boundary = "llai_${System.currentTimeMillis()}"
+            val meta = """{"name":"$name","parents":["$folderId"],"mimeType":"image/png"}"""
+            val out = ByteArrayOutputStream()
+            out.write(
+                "--$boundary\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n" +
+                    "$meta\r\n--$boundary\r\nContent-Type: image/png\r\n\r\n",
+            )
+            imageFile.inputStream().use { it.copyTo(out) }
+            out.write("\r\n--$boundary--")
+            val req = Request.Builder()
+                .url("$UPLOAD_API/files?uploadType=multipart&fields=id,name")
+                .header("Authorization", "Bearer $tok")
+                .post(out.toByteArray().toRequestBody("multipart/related; boundary=$boundary".toMediaType()))
+                .build()
+            gson.fromJson(http.newCall(req).await().body!!.string(), DriveFileDto::class.java).id
+        }
+
+    /** Loads the try-ons index JSON from the root Drive folder, or null if not yet created. */
+    suspend fun loadTryOnsJson(rootFolderId: String): String? = withContext(Dispatchers.IO) {
+        val tok = token()
+        val id = findFileIdByName(rootFolderId, TRYONS_FILE_NAME, tok) ?: return@withContext null
+        downloadFileText(id, tok)
+    }
+
+    /** Creates or overwrites the try-ons index JSON in the root Drive folder. */
+    suspend fun saveTryOnsJson(rootFolderId: String, json: String) = withContext(Dispatchers.IO) {
+        val tok = token()
+        val existingId = findFileIdByName(rootFolderId, TRYONS_FILE_NAME, tok)
+        val fileId = existingId ?: run {
+            val meta = """{"name":"$TRYONS_FILE_NAME","parents":["$rootFolderId"],"mimeType":"application/json"}"""
+            gson.fromJson(
+                http.newCall(Request.Builder()
+                    .url("$API/files?fields=id")
+                    .header("Authorization", "Bearer $tok")
+                    .post(meta.toRequestBody("application/json".toMediaType()))
+                    .build()).await().body!!.string(),
+                DriveFileDto::class.java,
+            ).id
+        }
+        http.newCall(Request.Builder()
+            .url("$UPLOAD_API/files/$fileId?uploadType=media")
+            .header("Authorization", "Bearer $tok")
+            .method("PATCH", json.toRequestBody("application/json".toMediaType()))
+            .build()).await()
+    }
 
     /** Returns the locally cached file for a Drive ID, or null if not yet downloaded. */
     fun cachedFile(driveId: String): File? =

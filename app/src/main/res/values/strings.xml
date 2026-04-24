@@ -443,6 +443,27 @@
     <string name="tryon_gallery">Gallery</string>
     <string name="about_cost_tryon">Try-on generation: 8 credits</string>
 
+    <!-- Try-on composer / history -->
+    <string name="action_add">Add</string>
+    <string name="tryon_composer_explain">All items shown below will be worn together in the generated try-on. Tap an item to remove it; tap \"+\" to add more.</string>
+    <string name="tryon_composer_items_title">Items in this try-on (%1$d)</string>
+    <string name="tryon_add_item">Add item</string>
+    <string name="tryon_add_items_title">Add wardrobe items</string>
+    <string name="tryon_generate">Generate try-on</string>
+    <string name="tryon_try_again">Try again</string>
+    <string name="tryon_change_items">Change items</string>
+    <string name="tryon_save_to_drive">Save to Drive</string>
+    <string name="tryon_saved_to_drive">Saved</string>
+    <string name="tryon_saving">Saving…</string>
+    <string name="tryon_history_action">History</string>
+    <string name="tryon_history_title">Past try-ons</string>
+    <string name="tryon_history_detail_title">Try-on details</string>
+    <string name="tryon_history_empty">No saved try-ons yet. Generate one and tap \"Save\" to keep it here.</string>
+    <string name="tryon_history_items_title">Items worn</string>
+    <string name="tryon_history_items_missing">Items no longer available in your wardrobe.</string>
+    <string name="tryon_delete_confirm_title">Delete try-on?</string>
+    <string name="tryon_delete_confirm_text">This removes the saved try-on image from Drive. The wardrobe items are kept.</string>
+
     <!-- About -->
     <string name="settings_tab_about">About</string>
     <string name="about_version">Version %1$s (%2$s)</string>

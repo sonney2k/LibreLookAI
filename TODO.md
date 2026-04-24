@@ -8,6 +8,10 @@ Before executing the implementation udpate CLAUDE.md with decisions/active tasks
 
 TODO
 ====
+
+Features:
+---------
+
 AI (stars) spinning wheel in create style
 
 Modify gaps screen into shopping helper that has 3 features:
@@ -24,12 +28,10 @@ in wardrobe view display counts of items after applying filter
 
 in settings add AI tab where all gemini prompts that are currently being used are being displayed and can be edited/overriden. add a reset to defaults on this page. add a setting as in what to consider by default when suggesting a style.
 
-unify the try on feature from style or from multiple items in wardrobe screen: create a new view that first shows those items and let's the user to add / remove items and then try on. save those try-ons in a dedicated folder on google drive and add option to view previous try-ons together with items
+
 add option to try on image from catalog
 
-
-Features:
----------
+groessen filter
 
 
 -------
@@ -101,7 +103,7 @@ Implement new feature: We are working on the refinancing/monetization aspect of 
 
 Bugs:
 -----
-fix usability issue on wardrobe screen: moving item to different closet and then switching to that closet - it won't immediately appear on wardrobe after moving to different closet. it took almost a minute to appear. Can this be sp
+fix usability issue on wardrobe screen: moving item to different closet and then switching to that closet - it won't immediately appear on wardrobe after moving to different closet. it took almost a minute to appear. Can this be sped up?
 
 bug or feature: persistance is working reliably now. What I noticed is that the closet selector in the header is being remebered too 
   but on app start it seems to be set to the same value as the one in settings data. on startup make it always show     
@@ -109,29 +111,10 @@ bug or feature: persistance is working reliably now. What I noticed is that the 
 
 offline check is not reliable offline/online status - listen to android. if previously online but it now goes offline also go offline in the app and ensure that the red offline bar is shown. also in wardrobe some the buttons for importing from gallery or picture do still exist.
 
-
+ensure that in all processes, images are smaller than max(width,height)<1280. In particular before uploading anything to Gemini.
 
 IN PROGRESS
 ===========
-rename style / Stile Screen to outfits as style is a different concept / meaning. Rename classes in code too.
-
-on settings screen move gemini api key to credits
-
-editing styles on any screen should use the new style creation composable  
-
-currently there are different ways to create new styles, one in wardrobe view when selecting one or more items then manual / suggest with AI. One when selecting a multiple style to combine them. One in travel. Unify them in the following way. When items are selected have one button to create new style... this style opens a window that gives the user a list of options: 1. weather (automatic current weather - show state; or self selected by e.g. season / temperature /precipitation) 2. current preferences (e.g. casual, sporty, ...) 3. showing all wardrobe items that are currently selected but allow adding more items from wardrobe 4. number and kind of items to combine (e.g. top, bottom, footwear). 5. user preference prompt from settings that can be overridden. 6. add button to enhance with AI with feedback via prompt keeping context
-
-
-Implement new feature: Wear on me: Idea is to view a selected style or wardrobe item on the person in the profile. To this end add an option to upload 3 pictures to ones profile: From front, from side and from back. Limit image size as usual. Store this on drive under a special name / folder such that these are not being mistaken for a wardrobe image. Then add option in wardrobe and style menu when a style or wardrobe item(s) are selected to "see this on myself" use again nanobanana to put on any style/wardrobe items.
-
-
-
-fix this bug: what is shown on camera screen is not exactly the image being photgraphed, image might be larger. Align such that only the part shown on the screen is used also resize image to max(width,height)<1280 keeping aspect ratio before storing or uploading to google drive or processing with gemini
-
-ensure that when repairing, retagging, background removal batch jobs images only the resized images are used and if larger images are there that they are resized in the same way max(width,height)<1280 
-
-
-bug: when starting the app ensure that it has background processing permission and point the user to settings if not. Recheck then and don't let the user to do any interactions without that. This is to ensure that there is no data loss when importing / converting / tagging. Explain that to the user. For any gemini image tagging / background removal add checks for that setting to ensure consistency.
 
 how can we unify tags? I see tags like "Long-sleeve T-shirt", "Long-sleeved t-shirt", "Long-sleeve shirt" that likely mean the same. Or "grey", "Gray"
 
@@ -140,14 +123,30 @@ why is the initial loading time on app start so long in wardrobe screen? can you
 travel packing. For each suggested style add option to add to styles. also add option to move all items to "Travel" location.
 
 
-when clicking on amazon and shop style button nothing happens, browser is installed. It was working before we addedd affiliate links. add debugging and instructions for logcat to check
+FIXED
+=====
+unify the try on feature from outfit or from multiple items in wardrobe screen: 1. create a new view that first shows those items and let's the user to add / remove items and then try on. explain that all those will be worn in the try-on. 2. show the try-on image make it zoomable 3. if the user likes it save the try-on in a dedicated folder on google drive together with the selected items. 4. add way to view previous try-ons together with items
+
+currently there are different ways to create new styles, one in wardrobe view when selecting one or more items then manual / suggest with AI. One when selecting a multiple style to combine them. One in travel. Unify them in the following way. When items are selected have one button to create new style... this style opens a window that gives the user a list of options: 1. weather (automatic current weather - show state; or self selected by e.g. season / temperature /precipitation) 2. current preferences (e.g. casual, sporty, ...) 3. showing all wardrobe items that are currently selected but allow adding more items from wardrobe 4. number and kind of items to combine (e.g. top, bottom, footwear). 5. user preference prompt from settings that can be overridden. 6. add button to enhance with AI with feedback via prompt keeping context
+
+editing styles on any screen should use the new style creation composable  
+
+on settings screen move gemini api key to credits
+
+rename style / Stile Screen to outfits as style is a different concept / meaning. Rename classes in code too.
+
+ensure that when repairing, retagging, background removal batch jobs images only the resized images are used and if larger images are there that they are resized in the same way max(width,height)<1280 
+
+Implement new feature: Wear on me: Idea is to view a selected style or wardrobe item on the person in the profile. To this end add an option to upload 3 pictures to ones profile: From front, from side and from back. Limit image size as usual. Store this on drive under a special name / folder such that these are not being mistaken for a wardrobe image. Then add option in wardrobe and style menu when a style or wardrobe item(s) are selected to "see this on myself" use again nanobanana to put on any style/wardrobe items.
+
+fix this bug: what is shown on camera screen is not exactly the image being photgraphed, image might be larger. Align such that only the part shown on the screen is used also resize image to max(width,height)<1280 keeping aspect ratio before storing or uploading to google drive or processing with gemini
+
+bug: when starting the app ensure that it has background processing permission and point the user to settings if not. Recheck then and don't let the user to do any interactions without that. This is to ensure that there is no data loss when importing / converting / tagging. Explain that to the user. For any gemini image tagging / background removal add checks for that setting to ensure consistency.
 
 ensure that when the app is doing jobs that it is not being killed
 
+when clicking on amazon and shop style button nothing happens, browser is installed. It was working before we addedd affiliate links. add debugging and instructions for logcat to check
 
-
-FIXED
-=====
 offline check is not reliable offline/online status - listen to android. if previously online but it now goes offline also go offline in the app. there are still options visible while offline that should not: 1. style view - one cannot edit. 2. style view long press one cannot delete. 3. wardrobe one cannot create outfil manually and one cannot delete. 4. wardrobe on individual item view one cannot delete, move to, compose with AI, create outfit manually, rotate. 5. calendar when viewing one cannot wear again today or edit. 6. localization is wrong when in offline mode it all switches to english then. use the correct locale from settings.
 
 in style view add edit button in lower area on the left: "edit". clicking this shows the style editing view.

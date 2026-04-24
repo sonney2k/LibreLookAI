@@ -201,6 +201,21 @@ It shows: editable name + description, outfit items as 100 dp tappable tiles in 
 2. Calls `wardrobeViewModel.moveItemsToFolder(itemIds, toFolderId)` — moves each item's cutout + original + sidecar files via `DriveRepository.moveFile()` (single PATCH, no re-upload), then drops the moved items from in-memory state.
 3. A Snackbar confirms success or failure.
 
+### Try-on (unified)
+
+`TryOnViewModel` + `TryOnComposerScreen` form the unified Try-on flow. The old `TryOnResultDialog` is gone — both the Wardrobe-selection "Try on" FAB and the single-outfit "Try on" FAB in `OutfitsScreen` now call `tryOnViewModel.openComposer(itemIds)` via the shared `runTryOn` lambda in `MainActivity`. `TryOnComposerScreen` is rendered unconditionally at the `MainActivity` level on top of the tab content; it returns early unless `state.isComposerOpen`.
+
+The composer has three modes, selected in `TryOnComposerScreen` by state check order:
+1. **Detail view** (`state.viewingTryOn != null`) — zoomable past try-on image + resolved item chips + Delete button.
+2. **History grid** (`state.isHistoryOpen`) — grid of saved try-ons; tap to open detail view.
+3. **Compose / Preview** (default) — when no `resultPath`: item grid (tap to remove, `+` tile to add via `ItemPickerSheet`), explanation surface ("All items shown will be worn together…"), and a "Generate try-on" button. Once a result arrives: the preview replaces the compose UI with a pinch-zoom image (`detectTransformGestures`, scale 1f..6f) + "Save to Drive" / "Try again" / "Change items" / "Save to gallery" actions.
+
+**Drive layout**: Generated PNGs live in a `_tryons` subfolder of the root Drive folder (`DriveRepository.getOrCreateTryOnsFolder`). The index `_tryons.json` is stored at the root — it holds `List<TryOn>`. `TryOn` stores both `imageDriveId` (for direct access) and `imageName` (stable handle across Drive folder copies), plus `itemNames` (cutout filenames — resolved back to current Drive IDs at load time by matching against `wardrobeImages`). `TRYONS_FILE_NAME` is added to `SYSTEM_JSON_NAMES` so it is never treated as a sidecar.
+
+**Caching**: Saved try-on PNGs are cached under `cacheDir/tryon_{driveId}.png` and re-downloaded via `DriveRepository.downloadFileTo(...)` on history load if missing. The pre-save result lives in `cacheDir/tryon_results/tryon_{timestamp}.png`; on save it is copied to the stable cached path.
+
+**Save flow** (`TryOnViewModel.saveCurrent`): ensures the root folder, uploads the PNG to `_tryons/`, records a `TryOn` entry, prepends it to the existing `_tryons.json`, and writes the updated list. `lastGeneratedItemIds/Files` captures which items were actually sent to Gemini for the current result — so Save reflects the generation's inputs even if the user edited the composer afterward.
+
 ### Offline mode
 
 The app works in view-only mode when offline. `NetworkMonitor` (in `NetworkUtils.kt`) uses `ConnectivityManager.NetworkCallback` to expose a `StateFlow<Boolean>` of real-time connectivity. `MainActivity` provides the state via `LocalIsOffline`, a `CompositionLocal` defined in `NetworkUtils.kt` — any composable reads `LocalIsOffline.current` without parameter threading.

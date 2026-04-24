@@ -128,7 +128,6 @@ class MainActivity : ComponentActivity() {
                     val locationState by locationViewModel.state.collectAsState()
                     val weatherState by weatherViewModel.state.collectAsState()
                     val profileState by profileViewModel.state.collectAsState()
-                    val tryOnState by tryOnViewModel.state.collectAsState()
                     val canTryOn = profileState.tryOnLocalPaths.isNotEmpty()
 
                     // Reload wardrobe/styles/outfits whenever the active location changes
@@ -298,15 +297,7 @@ class MainActivity : ComponentActivity() {
                                 Box(Modifier.fillMaxSize()) {
                                     val onSettingsClick = { selectedTab = 5 }
                                     val runTryOn: (Set<String>) -> Unit = { itemIds ->
-                                        val files = wardrobeViewModel.state.value.images
-                                            .filter { it.driveId in itemIds }
-                                            .map { java.io.File(it.localPath) }
-                                            .filter { it.exists() }
-                                        tryOnViewModel.generate(
-                                            personFiles = profileViewModel.tryOnFiles(),
-                                            itemFiles   = files,
-                                            preferences = profileViewModel.state.value.preferences.preferences,
-                                        )
+                                        tryOnViewModel.openComposer(itemIds)
                                     }
                                     when (selectedTab) {
                                         0 -> OutfitsScreen(
@@ -394,13 +385,11 @@ class MainActivity : ComponentActivity() {
                                     }
                                 }
 
-                                if (tryOnState.isGenerating || tryOnState.resultPath != null || tryOnState.error != null) {
-                                    TryOnResultDialog(
-                                        state = tryOnState,
-                                        onDismiss = tryOnViewModel::dismiss,
-                                        onClearError = tryOnViewModel::clearError,
-                                    )
-                                }
+                                TryOnComposerScreen(
+                                    tryOnViewModel   = tryOnViewModel,
+                                    wardrobeViewModel = wardrobeViewModel,
+                                    profileViewModel  = profileViewModel,
+                                )
 
                                 // Unified style composer — opened from any screen that seeds items.
                                 OutfitComposerScreen(

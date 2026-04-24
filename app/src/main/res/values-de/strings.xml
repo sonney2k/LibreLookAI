@@ -432,6 +432,27 @@
     <string name="tryon_gallery">Galerie</string>
     <string name="about_cost_tryon">Anprobe-Erstellung: 8 Credits</string>
 
+    <!-- Try-on composer / history -->
+    <string name="action_add">Hinzufügen</string>
+    <string name="tryon_composer_explain">Alle unten gezeigten Teile werden in der Anprobe gemeinsam getragen. Tippe auf ein Teil, um es zu entfernen; tippe auf \"+\", um weitere hinzuzufügen.</string>
+    <string name="tryon_composer_items_title">Teile in dieser Anprobe (%1$d)</string>
+    <string name="tryon_add_item">Teil hinzufügen</string>
+    <string name="tryon_add_items_title">Kleidungsstücke hinzufügen</string>
+    <string name="tryon_generate">Anprobe erzeugen</string>
+    <string name="tryon_try_again">Erneut versuchen</string>
+    <string name="tryon_change_items">Teile ändern</string>
+    <string name="tryon_save_to_drive">In Drive speichern</string>
+    <string name="tryon_saved_to_drive">Gespeichert</string>
+    <string name="tryon_saving">Speichert…</string>
+    <string name="tryon_history_action">Verlauf</string>
+    <string name="tryon_history_title">Frühere Anproben</string>
+    <string name="tryon_history_detail_title">Anprobe-Details</string>
+    <string name="tryon_history_empty">Noch keine gespeicherten Anproben. Erzeuge eine und tippe auf \"Speichern\", um sie hier zu behalten.</string>
+    <string name="tryon_history_items_title">Getragene Teile</string>
+    <string name="tryon_history_items_missing">Teile sind nicht mehr in deiner Garderobe verfügbar.</string>
+    <string name="tryon_delete_confirm_title">Anprobe löschen?</string>
+    <string name="tryon_delete_confirm_text">Dies entfernt das gespeicherte Anprobe-Bild aus Drive. Die Kleidungsstücke bleiben erhalten.</string>
+
     <!-- About -->
     <string name="settings_tab_about">Info</string>
     <string name="about_version">Version %1$s (%2$s)</string>
