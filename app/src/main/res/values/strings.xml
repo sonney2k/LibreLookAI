@@ -145,6 +145,12 @@
     <!-- Wardrobe -->
     <string name="wardrobe_sync_progress">Restoring wardrobe: %1$d / %2$d</string>
     <string name="wardrobe_empty_filter">No items match the filter</string>
+    <string name="wardrobe_item_count">%1$d items</string>
+    <string name="wardrobe_filtered_count">Showing %1$d of %2$d items</string>
+    <string name="wardrobe_stats">Statistics</string>
+    <string name="wardrobe_stats_title">Wardrobe statistics</string>
+    <string name="wardrobe_stats_total">%1$d items total</string>
+    <string name="wardrobe_stats_untagged">Untagged</string>
     <string name="wardrobe_empty">No items yet</string>
     <string name="wardrobe_empty_hint">Take a photo or pick from your gallery</string>
     <string name="wardrobe_create_outfit">Create outfit manually</string>

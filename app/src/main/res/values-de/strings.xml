@@ -140,6 +140,12 @@
 
     <string name="wardrobe_sync_progress">Garderobe wird wiederhergestellt: %1$d / %2$d</string>
     <string name="wardrobe_empty_filter">Keine Artikel entsprechen dem Filter</string>
+    <string name="wardrobe_item_count">%1$d Artikel</string>
+    <string name="wardrobe_filtered_count">%1$d von %2$d Artikeln</string>
+    <string name="wardrobe_stats">Statistik</string>
+    <string name="wardrobe_stats_title">Garderoben-Statistik</string>
+    <string name="wardrobe_stats_total">%1$d Artikel gesamt</string>
+    <string name="wardrobe_stats_untagged">Ohne Tags</string>
     <string name="wardrobe_empty">Noch keine Artikel</string>
     <string name="wardrobe_empty_hint">Machen Sie ein Foto oder wählen Sie aus Ihrer Galerie</string>
     <string name="wardrobe_create_outfit">Outfit manuell erstellen</string>

@@ -65,6 +65,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.AutoFixHigh
+import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Check
@@ -387,6 +388,38 @@ internal fun DriveImage.allTagStrings() = buildSet {
     }
 }
 
+internal data class TagCount(val value: String, val count: Int)
+internal data class TagCategoryCounts(val label: String, val counts: List<TagCount>)
+
+internal fun List<DriveImage>.tagCategoryCounts(): List<TagCategoryCounts> {
+    fun counted(values: List<String>): List<TagCount> =
+        values.filter { it.isNotEmpty() }
+            .groupingBy { it }.eachCount()
+            .map { TagCount(it.key, it.value) }
+            .sortedWith(compareByDescending<TagCount> { it.count }.thenBy { it.value })
+
+    return listOfNotNull(
+        counted(mapNotNull { it.tags?.type?.normalizeType() })
+            .takeIf { it.isNotEmpty() }?.let { TagCategoryCounts("Type", it) },
+        counted(mapNotNull { it.tags?.category?.lowercase()?.trim() })
+            .takeIf { it.isNotEmpty() }?.let { TagCategoryCounts("Category", it) },
+        counted(flatMap { it.tags?.uses?.map { v -> v.normalizeEnumTag() } ?: emptyList() })
+            .takeIf { it.isNotEmpty() }?.let { TagCategoryCounts("Uses", it) },
+        counted(flatMap { it.tags?.colors?.map { v -> v.normalizeColor() } ?: emptyList() })
+            .takeIf { it.isNotEmpty() }?.let { TagCategoryCounts("Colors", it) },
+        counted(flatMap { it.tags?.seasonality?.map { v -> v.normalizeEnumTag() } ?: emptyList() })
+            .takeIf { it.isNotEmpty() }?.let { TagCategoryCounts("Seasonality", it) },
+        counted(flatMap { it.tags?.aesthetic?.map { v -> v.normalizeAesthetic() } ?: emptyList() })
+            .takeIf { it.isNotEmpty() }?.let { TagCategoryCounts("Aesthetic", it) },
+        counted(flatMap { it.tags?.fit?.map { v -> v.normalizeEnumTag() } ?: emptyList() })
+            .takeIf { it.isNotEmpty() }?.let { TagCategoryCounts("Fit", it) },
+        counted(flatMap { it.tags?.material?.map { v -> v.normalizeMaterial() } ?: emptyList() })
+            .takeIf { it.isNotEmpty() }?.let { TagCategoryCounts("Material", it) },
+        counted(flatMap { it.tags?.pattern?.map { v -> v.normalizePattern() } ?: emptyList() })
+            .takeIf { it.isNotEmpty() }?.let { TagCategoryCounts("Pattern", it) },
+    )
+}
+
 internal fun DriveImage.tagStringsForCategory(categoryLabel: String): Set<String> {
     val t = tags?.normalize() ?: return emptySet()
     return when (categoryLabel) {
@@ -503,6 +536,7 @@ private fun GridContent(
     var selectedIndex by remember { mutableStateOf<Int?>(null) }
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showMoveDialog by remember { mutableStateOf(false) }
+    var showStatsSheet by remember { mutableStateOf(false) }
 
     // Filter + sort state
     var selectedTags by remember { mutableStateOf(emptyMap<String, Set<String>>()) }
@@ -551,6 +585,12 @@ private fun GridContent(
                         activeLocationId = activeLocationId,
                         onSetActiveLocation = onSetActiveLocation,
                     )
+                    IconButton(onClick = { showStatsSheet = true }) {
+                        Icon(
+                            Icons.Default.BarChart,
+                            contentDescription = stringResource(R.string.wardrobe_stats),
+                        )
+                    }
                     SortButton(
                         sortBy = sortBy,
                         onSortChanged = { sortBy = it },
@@ -565,6 +605,21 @@ private fun GridContent(
                 selectedTags = selectedTags,
                 onTagsChanged = { selectedTags = it },
             )
+
+            // ---- Filtered item count ----
+            if (state.images.isNotEmpty() && !isSelectionMode) {
+                val hasFilter = selectedTags.values.any { it.isNotEmpty() }
+                Text(
+                    text = if (hasFilter) {
+                        stringResource(R.string.wardrobe_filtered_count, displayedImages.size, state.images.size)
+                    } else {
+                        stringResource(R.string.wardrobe_item_count, state.images.size)
+                    },
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 2.dp),
+                )
+            }
 
             // ---- Selection bar (shown when at least one item is selected) ----
             if (isSelectionMode) {
@@ -1058,6 +1113,13 @@ private fun GridContent(
                     Text(stringResource(R.string.action_cancel))
                 }
             },
+        )
+    }
+
+    if (showStatsSheet) {
+        WardrobeStatsSheet(
+            images = state.images,
+            onDismiss = { showStatsSheet = false },
         )
     }
 
@@ -1716,6 +1778,108 @@ private fun TagChip(label: String) {
             modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
             style = MaterialTheme.typography.labelSmall,
             color = Color.White,
+        )
+    }
+}
+
+// ---------- Wardrobe statistics sheet ----------
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun WardrobeStatsSheet(
+    images: List<DriveImage>,
+    onDismiss: () -> Unit,
+) {
+    val counts = remember(images) { images.tagCategoryCounts() }
+    val untagged = remember(images) {
+        images.count { it.tags == null || (it.tags.type.isBlank() && it.tags.category.isBlank()) }
+    }
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .navigationBarsPadding()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 20.dp)
+                .padding(bottom = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Text(
+                stringResource(R.string.wardrobe_stats_title),
+                style = MaterialTheme.typography.titleMedium,
+            )
+            Text(
+                stringResource(R.string.wardrobe_stats_total, images.size),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            if (images.isNotEmpty() && counts.isEmpty()) {
+                Text(
+                    stringResource(R.string.wardrobe_empty),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
+            counts.forEach { categoryCounts ->
+                val maxCount = categoryCounts.counts.maxOf { it.count }
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text(
+                        tagCategoryDisplayLabel(categoryCounts.label),
+                        style = MaterialTheme.typography.titleSmall,
+                    )
+                    categoryCounts.counts.forEach { tc ->
+                        StatsRow(
+                            label = tc.value.localizedTagValue(),
+                            count = tc.count,
+                            fraction = tc.count.toFloat() / maxCount.toFloat(),
+                        )
+                    }
+                }
+            }
+            if (untagged > 0) {
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text(
+                        stringResource(R.string.wardrobe_stats_untagged),
+                        style = MaterialTheme.typography.titleSmall,
+                    )
+                    StatsRow(
+                        label = stringResource(R.string.wardrobe_stats_untagged),
+                        count = untagged,
+                        fraction = untagged.toFloat() / images.size.toFloat(),
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun StatsRow(label: String, count: Int, fraction: Float) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Text(
+            label,
+            style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier.width(110.dp),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+        LinearProgressIndicator(
+            progress = { fraction.coerceIn(0f, 1f) },
+            modifier = Modifier
+                .weight(1f)
+                .height(8.dp),
+        )
+        Text(
+            count.toString(),
+            style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier.width(36.dp),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
