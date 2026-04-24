@@ -66,7 +66,7 @@ signing.key.password=
 ```
 UI Screen (Compose)
     ↕ StateFlow / collectAsState
-AndroidViewModel  (e.g. WardrobeViewModel, StylesViewModel)
+AndroidViewModel  (e.g. WardrobeViewModel, OutfitsViewModel, OutfitEventsViewModel)
     ↕ suspend functions
 Repository layer
     ├── DriveRepository   — Google Drive REST API (images + JSON metadata files)
@@ -76,17 +76,19 @@ Repository layer
     └── CreditRepository  — Firestore balance + Firebase Cloud Functions purchase verification
 ```
 
+Note: `OutfitsViewModel` handles saved outfits (the list + composer + editor). `OutfitEventsViewModel` is a separate VM that handles calendar wear events (`OutfitEvent` — a timestamped record of which outfit was worn on which date). Both persist per-location JSON files to Drive.
+
 All ViewModels extend `AndroidViewModel` and receive `Application` for context. Repositories are instantiated directly inside ViewModels (no DI framework).
 
 ### Storage strategy
 
 - **Images**: Uploaded to the user's own Google Drive via `drive.file` scope only (app-private folder `LibreLookAI/`). Cached locally under `context.filesDir/wardrobe/`.
-- **Per-item sidecar metadata**: Each wardrobe item has its own `{cutoutDriveId}.json` sidecar stored beside the cutout in the same Drive folder. The sidecar holds `ClothingTags` and `originalDriveId`. Five system JSON files are excluded from sidecar handling: `_wardrobe_metadata.json`, `_styles_metadata.json`, `_outfits_metadata.json`, `_user_preferences.json`, `_locations.json`.
+- **Per-item sidecar metadata**: Each wardrobe item has its own `{cutoutDriveId}.json` sidecar stored beside the cutout in the same Drive folder. The sidecar holds `ClothingTags` and `originalDriveId`. System JSON files excluded from sidecar handling (set `SYSTEM_JSON_NAMES` in `DriveRepository`): `_wardrobe_metadata.json`, `_outfits.json`, `_outfit_events.json`, `_user_preferences.json`, `_locations.json`, plus two read-only legacy names kept for migration fallback — `_styles_metadata.json` (old name for `_outfits.json`) and `_outfits_metadata.json` (old name for `_outfit_events.json`). `DriveRepository.loadOutfitsJson()` / `loadOutfitEventsJson()` read the current filename first and fall back to the legacy one; writes always use the current name.
 - **File naming convention**: cutout = `{cutoutDriveId}_cutout.png`, original = `{cutoutDriveId}_original.jpg`, sidecar = `{cutoutDriveId}.json`. The Drive-assigned ID of the cutout file is the shared prefix for all three.
 - **Legacy fallback**: `_wardrobe_metadata.json` is read as a fallback when no sidecars exist yet; items are migrated to sidecars fire-and-forget on first load.
 - **Two-phase loading**: Phase 1 shows the local disk cache instantly (zero network). Phase 2 fetches cutout files + sidecar files from Drive in parallel, then downloads any uncached images and reads sidecar content, also in parallel.
 - **Local disk cache**: `wardrobe_cache_{folderId}.json` — a `LocalCache` snapshot of all `DriveImage` entries, rebuilt on every successful Phase 2 sync.
-- **Closets (multi-location)**: Each "closet" corresponds to a Drive subfolder. The UI labels them "Closets" (not "Locations") to separate the organizational concept from geographic locations. Each `Location` data class has a `geoLocation: String` field for an optional city/place name used for weather. `LocationViewModel` tracks the active closet (persisted in SharedPreferences as the Drive `folderId`); `activeLocationId` in `LocationUiState` stores the `folderId` of the selected closet (or `ALL_LOCATIONS_ID`). All location matching throughout the codebase uses `folderId`, never `Location.id` (which is an ephemeral UUID). A `LaunchedEffect` in `MainActivity` reacts to changes and calls `WardrobeViewModel.setLocation(folderId)` / `setAllLocations(folderIds)` and `OutfitsViewModel.setLocation(folderId)` / `setAllLocations(folderIds)` to reload data. When `ALL_LOCATIONS_ID` is active, both ViewModels load and merge data from all folders; the "All" option is only available in the global `LocationButton` header dropdown (not in Settings). `LocationViewModel.getOrCreateLocation(name, onResult)` finds an existing location by name (case-insensitive) or creates one, returning its folderId via callback.
+- **Closets (multi-location)**: Each "closet" corresponds to a Drive subfolder. The UI labels them "Closets" (not "Locations") to separate the organizational concept from geographic locations. Each `Location` data class has a `geoLocation: String` field for an optional city/place name used for weather. `LocationViewModel` tracks the active closet (persisted in SharedPreferences as the Drive `folderId`); `activeLocationId` in `LocationUiState` stores the `folderId` of the selected closet (or `ALL_LOCATIONS_ID`). All location matching throughout the codebase uses `folderId`, never `Location.id` (which is an ephemeral UUID). A `LaunchedEffect` in `MainActivity` reacts to changes and calls `setLocation(folderId)` / `setAllLocations(folderIds)` on `WardrobeViewModel`, `OutfitsViewModel`, and `OutfitEventsViewModel` to reload data. `OutfitsViewModel` also has an independent `updateSaveFolder(folderId)` that controls where newly-saved outfits are written (single-location mode uses the active folder; All Locations mode uses the first configured folder). When `ALL_LOCATIONS_ID` is active, all three ViewModels load and merge data from all folders; the "All" option is only available in the global `LocationButton` header dropdown (not in Settings). `LocationViewModel.getOrCreateLocation(name, onResult)` finds an existing location by name (case-insensitive) or creates one, returning its folderId via callback.
 - **Local prefs**: `ApiKeyStore` (SharedPreferences) for user-supplied Gemini key. `ProfileViewModel` caches the UI language in a separate `librelookai_lang` SharedPreferences so the correct locale is available synchronously on app start (before Drive preferences load).
 
 ### Gemini routing
@@ -107,79 +109,92 @@ All Gemini calls return `null` on failure; callers must gracefully degrade.
 - `CreditsViewModel.kt` — orchestrates billing + credits; processes pending purchases on resume.
 - `BuyCreditsScreen.kt` — shown as the Credits tab in Settings when `isManagedMode = true`.
 
-### Styles screen
+### Outfits screen
 
-`StylesScreen` branches on three mutually exclusive states (checked in order):
+**Naming note**: the user-facing term and all new data classes / VMs use "outfit". A few identifiers still read "style" for legacy reasons: the VM parameter name in downstream screens (`stylesViewModel: OutfitsViewModel`), a handful of state fields in `OutfitsUiState` that hold the saved list (`styles`, `newSuggestion.styleId` via `OutfitPrediction.styleId`), and all `values/strings.xml` keys (`styles_empty`, `styles_sort_newest`, …). The JSON field in `OutfitEvent` is serialized as `outfitId` but accepts the legacy `styleId` via `@SerializedName(alternate)`. When adding new code, prefer "outfit"; leave existing legacy identifiers alone until a dedicated cleanup pass.
 
-1. `stylesState.isEditingStyleView` → **`StyleEditingView`** (full-screen, see below)
-2. `stylesState.isCreating` → **`StyleItemPicker`** (full-screen grid for manual creation from scratch)
-3. otherwise → **`StyleListScreen`** (the list with cards and FABs)
+`OutfitsScreen` branches on three mutually exclusive states (checked in order):
 
-**`StyleEditingView`** is the unified editor used for:
-- Editing an existing saved style (`startEditing(style)` sets `isEditingStyleView = true`)
-- Reviewing / tweaking an AI-predicted existing style (auto-opened via `LaunchedEffect` when `prediction` arrives)
-- Reviewing / tweaking an AI-composed new outfit (auto-opened via `LaunchedEffect` when `newSuggestion` arrives)
+1. `outfitsState.isEditingOutfitView` → **`OutfitEditingView`** (full-screen, see below)
+2. `outfitsState.isCreating` → **`OutfitItemPicker`** (full-screen grid for manual creation from scratch)
+3. otherwise → **`OutfitListScreen`** (the list with `OutfitCard`s and FABs)
 
-It shows: editable name + description, outfit items as 100 dp tappable tiles in a `FlowRow`, an "Add item" `+` tile, and — when opened from a Gemini result — the AI reason text and a `RefinementSection`. Tapping a tile opens **`ItemSwapSheet`**, a `ModalBottomSheet` that filters the wardrobe by the item's category and supports single-selection replacement. The sheet has a "Suggest 10 alternatives" button that calls `StylesViewModel.suggestAlternatives()` and surfaces results as starred tiles sorted to the top. After saving, `pendingWearStyleId` is set and a Snackbar offers "Wear today".
+**`OutfitEditingView`** is the unified editor used for:
+- Editing an existing saved outfit (`startEditing(outfit)` routes through `openComposer(...)`)
+- Reviewing / tweaking an AI-predicted existing outfit (auto-opened via `LaunchedEffect` when `prediction` arrives → `openPredictionInEditView`)
+- Reviewing / tweaking an AI-composed new outfit (auto-opened via `LaunchedEffect` when `newSuggestion` arrives → `openSuggestionInEditView`)
 
-`StyleListScreen` supports **multi-select**: long-press any card → enters selection mode (`selectedStyleIds.isNotEmpty()`). In selection mode: tapping toggles selection, back exits, a selection bar (count / select-all / deselect-all) replaces the sort button, card Edit+Wear buttons hide, and the speed-dial FAB is replaced by two action FABs:
-- **Delete** — confirmation dialog → `deleteSelectedStyles()`. Deletion groups affected styles by `Style.folderId` and saves each folder's `_styles_metadata.json` independently, so it works in both single-location and All Locations mode.
-- **Combine with AI** (≥ 2 selected) — `openComposerFromSelectedStyles()` opens the unified composer seeded with the union of items from the selected styles, prefilled with a "StyleA + StyleB" name. The user can hit "Enhance with AI" to let Gemini cull + complete the outfit.
+It shows: editable name + description, outfit items as 100 dp tappable tiles in a `FlowRow`, an "Add item" `+` tile, and — when opened from a Gemini result — the AI reason text and a `RefinementSection`. Tapping a tile opens **`ItemSwapSheet`**, a `ModalBottomSheet` that filters the wardrobe by the item's category and supports single-selection replacement. The sheet has a "Suggest 10 alternatives" button that calls `OutfitsViewModel.suggestAlternatives()` and surfaces results as starred tiles sorted to the top. After saving, `pendingWearOutfitId` is set and a Snackbar offers "Wear today" (which calls `OutfitEventsViewModel.recordOutfit(id)`).
 
-**Styles ViewModel key state** (`StylesUiState`):
-- `isEditingStyleView` / `isCreating` — which full-screen view is open
-- `draftItemIds / draftStyleName / draftStyleDescription / editingStyle` — shared draft for both views
-- `prediction` / `newSuggestion` — AI results; `LaunchedEffect` in `StylesScreen` opens `StyleEditingView` when either arrives
-- `pendingWearStyleId` — set after save; cleared by "Wear today" Snackbar action or dismiss
-- `selectedStyleIds` — multi-select set for `StyleListScreen`
+`OutfitListScreen` supports **multi-select**: long-press any card → enters selection mode (`selectedOutfitIds.isNotEmpty()`). In selection mode: tapping toggles selection, back exits, a selection bar (count / select-all / deselect-all) replaces the sort button, card Edit+Wear buttons hide, and the speed-dial FAB is replaced by two action FABs:
+- **Delete** — confirmation dialog → `deleteSelectedOutfits()`. Deletion groups affected outfits by `Outfit.folderId` and saves each folder's `_outfits.json` independently, so it works in both single-location and All Locations mode.
+- **Combine with AI** (≥ 2 selected) — `openComposerFromSelectedOutfits()` opens the unified composer seeded with the union of items from the selected outfits, prefilled with a "NameA + NameB" name. The user can hit "Enhance with AI" to let Gemini cull + complete the outfit.
+
+**Outfits ViewModel key state** (`OutfitsUiState` in `OutfitsViewModel.kt`):
+- `isEditingOutfitView` / `isCreating` / `isComposerOpen` — which full-screen view is open
+- `draftItemIds / draftOutfitName / draftOutfitDescription / editingOutfit` — shared draft for editor + item-picker
+- `prediction` / `newSuggestion` — AI results; `LaunchedEffect`s in `OutfitsScreen` open `OutfitEditingView` when either arrives
+- `pendingWearOutfitId` — set after save; cleared by "Wear today" Snackbar action or dismiss
+- `selectedOutfitIds` — multi-select set for `OutfitListScreen`
 - `isLoadingAlternatives / alternativeIds` — per-item swap alternatives from Gemini
+- `styles` / `wardrobeImages` — list of saved outfits (field kept as `styles` for legacy reasons) + all wardrobe images across locations for resolving icons
 
-**Gemini prompt builders** (all private top-level functions in `StylesViewModel.kt`):
-- `buildPredictionPrompt` — pick best existing style for today
+**Gemini prompt builders** (all private top-level functions in `OutfitsViewModel.kt`):
+- `buildPredictionPrompt` — pick best existing outfit for today
 - `buildCompositionPrompt` — compose a brand-new outfit from the full wardrobe
-- `buildAlternativesPrompt` — suggest up to 10 swap alternatives for one item given the rest of the style as context
-- `buildComposerPrompt` — unified composer prompt (see Unified style composer below); also used for the multi-style "combine" flow since seeding the composer with the union of items is equivalent.
+- `buildAlternativesPrompt` — suggest up to 10 swap alternatives for one item given the rest of the outfit as context
+- `buildComposerPrompt` — unified composer prompt (see Unified outfit composer below); also used for the multi-outfit "combine" flow since seeding the composer with the union of items is equivalent.
 
-**`StylesViewModel.saveStyleDirectly(name, description, itemIds, onDone)`** is an internal helper used by `saveComposer()`. No UI code calls it directly.
+**`OutfitsViewModel.saveOutfitDirectly(name, description, itemIds, onDone)`** is an internal helper used by `saveComposer()`. No UI code calls it directly.
 
-### Unified style composer
+### Outfit wear events (calendar)
 
-`StyleComposerScreen` (full-screen Dialog) is the single entry point for creating a new style from any screen. It replaces the Wardrobe-selection "Create outfit" + "Compose with AI" split, the Styles-multi-select "Combine with AI" FAB, and the Travel "Save as style" chip.
+`OutfitEventsViewModel` is a separate VM — it owns the calendar wear history, not `OutfitsViewModel`. It reads `_outfit_events.json` from Drive (falling back to the legacy `_outfits_metadata.json`) per location folder and caches it locally as `outfit_events_cache_{folderId}.json`. The `OutfitEvent` data class has `outfitId` (JSON serialized with alternate `styleId` for backward compat) and an ISO `date`.
+
+- `setLocation(folderId)` / `setAllLocations(folderIds)` — kept in sync by `MainActivity`'s `LaunchedEffect(activeLocationId, locationList)`. In All Locations mode, events are loaded and merged from every folder.
+- `recordOutfit(outfitId)` — appends a new event dated today and saves back to Drive. When All Locations is active, the write goes to the first configured folder.
+- `CalendarScreen` reads this VM directly (via `outfitEventsViewModel: OutfitEventsViewModel = viewModel()`); `OutfitsScreen` also observes it to compute per-outfit `wearCounts` for sorting.
+
+### Unified outfit composer
+
+`OutfitComposerScreen` (full-screen Dialog) is the single entry point for creating a new outfit from any screen. It replaces the Wardrobe-selection "Create outfit" + "Compose with AI" split, the Outfits-multi-select "Combine with AI" FAB, and the Travel "Save as outfit" chip. `MainActivity` renders it unconditionally on top of the tab content; the composable itself returns early unless `state.isComposerOpen` is true.
 
 **Entry points**:
-- `StylesViewModel.openComposer(seedItemIds, images, prefs, initialName?, initialDescription?)` — initializes composer state from a seed set of wardrobe items; `state.isComposerOpen` becomes `true`. `MainActivity` observes this and renders the composer on top of the tab content.
-- `StylesViewModel.openComposerFromSelectedStyles(images, prefs)` — seeds with the union of items from `selectedStyleIds` and prefills a "StyleA + StyleB" name; also clears the selection.
+- `OutfitsViewModel.openComposer(seedItemIds, images, prefs, initialName?, initialDescription?, editingOutfitId?)` — initializes composer state from a seed set of wardrobe items; `state.isComposerOpen` becomes `true`. When `editingOutfitId` is non-null, `saveComposer()` updates that outfit in place instead of creating a new one.
+- `OutfitsViewModel.openComposerFromSelectedOutfits(images, prefs)` — seeds with the union of items from `selectedOutfitIds` and prefills a "NameA + NameB" name; also clears the selection.
+- `OutfitsViewModel.startEditing(outfit, images, prefs)` — opens the composer seeded with the existing outfit's items, name, and description, with `composerEditingOutfitId` set.
 
 **Sections** (all scrollable, inside a single `LazyColumn`):
 1. **Items** — grid of chosen items as 96 dp tiles; tap to remove; `+` tile opens an item picker bottom sheet that lists wardrobe filtered by optional category chips and supports multi-add.
 2. **Weather** — toggle chip between `Auto` (reads `WeatherViewModel.state.data`, shown as temp + WMO emoji) and `Manual` (season + temp-range + precip chips).
-3. **Style vibe** — multi-select chips: Casual, Sporty, Formal, Business, Streetwear, Minimalist, Classic, Elegant.
+3. **Vibe** — multi-select chips: Casual, Sporty, Formal, Business, Streetwear, Minimalist, Classic, Elegant.
 4. **Composition targets** — per-layer count steppers (Top / Bottom / Footwear / Outerwear / Accessory). Defaults derived from seed item tags.
 5. **Preference prompt** — `OutlinedTextField` prefilled from `UserPreferences.preferences`, editable for this composition only (not saved back).
 6. **Name + description** — editable fields.
 7. **AI enhance** — history chips of prior feedback + preset quick-picks (More casual, More formal, Different colors, Warmer, Lighter, More trendy, Simpler, More bold) + freetext `TextField` + a prominent progress row ("Asking Gemini…" + spinner) + "Enhance with AI" button. Preset taps immediately trigger enhance with that preset as feedback. Accumulates `composerFeedbackHistory`, calls `buildComposerPrompt`, and merges Gemini's item list / name / description / reason into the draft.
-8. **Save** — calls `StylesViewModel.saveComposer()` → `saveStyleDirectly`.
+8. **Save** — calls `OutfitsViewModel.saveComposer()` → `saveOutfitDirectly`.
 
-**ViewModel additions** (`StylesUiState`): `isComposerOpen`, `composerItemIds`, `composerWeatherMode` (AUTO/MANUAL), `composerManualSeason`, `composerManualTempC`, `composerManualPrecip`, `composerVibes`, `composerTargets` (map `layer -> Int`), `composerPrefOverride`, `composerName`, `composerDescription`, `composerFeedback`, `composerFeedbackHistory`, `composerReason`, `isComposerEnhancing`, `composerError`.
+**ViewModel additions** (`OutfitsUiState`): `isComposerOpen`, `composerEditingOutfitId`, `composerItemIds`, `composerWeatherMode` (AUTO/MANUAL), `composerManualSeason`, `composerManualTempC`, `composerManualPrecip`, `composerVibes`, `composerTargets` (`ComposerTargets` data class), `composerPrefOverride`, `composerName`, `composerDescription`, `composerFeedback`, `composerFeedbackHistory`, `composerReason`, `isComposerEnhancing`, `composerError`.
 
-**Prompt**: `buildComposerPrompt(...)` — one top-level builder in `StylesViewModel.kt`. Asks Gemini to propose an outfit that MUST include the current draft item IDs and add complementary items to meet the target composition counts.
+**Prompt**: `buildComposerPrompt(...)` — one top-level builder in `OutfitsViewModel.kt`. Asks Gemini to propose an outfit that MUST include the current draft item IDs and add complementary items to meet the target composition counts.
 
 **Migrated entry points**:
 - Wardrobe selection mode FAB → `openComposer(selectedIds)`.
 - Wardrobe FullScreenViewer long-press sheet → `openComposer(selectedIds)`.
-- Styles multi-select "Combine with AI" FAB → `openComposerFromSelectedStyles()`.
-- Travel `PackingOutfit` "Save as style" chip → `openComposer(outfit.itemIds, initialName=occasion, initialDescription=description)`.
+- Outfits list Edit button / `startEditing` → `openComposer(..., editingOutfitId=outfit.id)`.
+- Outfits multi-select "Combine with AI" FAB → `openComposerFromSelectedOutfits()`.
+- Travel `PackingOutfit` "Save as outfit" chip → `openComposer(outfit.itemIds, initialName=occasion, initialDescription=description)`.
 
 **Not yet migrated**:
-- Styles speed-dial "Compose with AI" — still uses `triggerComposition` → `newSuggestion` → `StyleEditingView`.
+- Outfits speed-dial "Compose new outfit" — still uses `triggerComposition` → `newSuggestion` → `OutfitEditingView`.
 
 ### Travel packing screen
 
-`TravelScreen` receives `travelViewModel`, `wardrobeViewModel`, `profileViewModel`, `stylesViewModel`, and `locationViewModel`.
+`TravelScreen` receives `travelViewModel`, `wardrobeViewModel`, `profileViewModel`, `stylesViewModel: OutfitsViewModel`, and `locationViewModel`. The `stylesViewModel` parameter name is legacy; its type is `OutfitsViewModel`.
 
 **Packing list generation**: destination + date range → `WeatherRepository.fetchDestinationForecast()` → `buildPackingPrompt()` → Gemini → `PackingList` (list of `PackingOutfit` + `extraItems`). A refinement loop (free-text + preset chips) re-runs `buildPackingPrompt()` with accumulated `feedbackHistory`.
 
-**`PackingOutfit` cards** each show a "Save as style" `InputChip`. Tapping it opens the unified composer (`stylesViewModel.openComposer(...)`) prefilled with the outfit's items, occasion (as name) and description, so the user can tweak + confirm the save there.
+**`PackingOutfit` cards** each show a "Save as outfit" `InputChip`. Tapping it opens the unified composer (`stylesViewModel.openComposer(...)`) prefilled with the outfit's items, occasion (as name) and description, so the user can tweak + confirm the save there.
 
 **"Move all to Travel location" button** appears in the packing list header when there are packed items:
 1. Calls `locationViewModel.getOrCreateLocation("Travel")` — finds an existing location named "Travel" (case-insensitive) or creates a new Drive subfolder + updates the locations JSON, then returns the folderId via callback.
@@ -195,18 +210,18 @@ Online status requires **both** `NET_CAPABILITY_INTERNET` **and** `NET_CAPABILIT
 **UI indicator**: An animated banner (`errorContainer` background, `CloudOff` icon, localized text) appears at the top of the content area when offline and disappears when connectivity returns.
 
 **What works offline** (from local disk cache):
-- Browsing wardrobe items, styles, calendar, and previously generated travel packing lists
+- Browsing wardrobe items, outfits, calendar, and previously generated travel packing lists
 - Viewing tag overlays and item details
 
 **What is disabled offline** (hidden or greyed out) — everything that writes to Drive or calls Gemini:
 - **WardrobeScreen**: upload FABs (camera + gallery) hidden; in selection mode, "Create outfit", "Compose with AI", "Move to closet", and "Delete" FABs all hidden
 - **FullScreenViewer**: long-press action sheet does not open (suppresses Create outfit / Compose with AI / Move to / Delete); rotate FAB hidden; "Detect tags" and "Remove background" greyed out in `TagsOverlay`
-- **StylesScreen**: AI speed-dial items (Suggest, Compose) hidden; per-card Edit+Wear row hidden in `StyleCard`; "Combine with AI" and "Delete" FABs hidden in multi-select; "Suggest alternatives" hidden in `ItemSwapSheet`; `RefinementSection` hidden in `StyleEditingView`
-- **CalendarScreen**: "Wear again today" and "Edit" buttons hidden in the day-detail `StyleSheetRow`
+- **OutfitsScreen**: AI speed-dial items (Suggest, Compose) hidden; per-card Edit+Wear row hidden in `OutfitCard`; "Combine with AI" and "Delete" FABs hidden in multi-select; "Suggest alternatives" hidden in `ItemSwapSheet`; `RefinementSection` hidden in `OutfitEditingView`
+- **CalendarScreen**: "Wear again today" and "Edit" buttons hidden in the day-detail sheet row
 - **TravelScreen**: Generate button greyed out; refinement section hidden; "Move all to Travel" button greyed out
 - **WardrobeGapScreen**: Analyze button greyed out
 - **SettingsScreen**: Retag All, Remove All Backgrounds, Repair & Sync, Import buttons greyed out; Try-on photo slots hidden (upload requires Drive write)
-- **WardrobeScreen / StylesScreen**: Try-on FAB hidden (image generation requires Gemini)
+- **WardrobeScreen / OutfitsScreen**: Try-on FAB hidden (image generation requires Gemini)
 
 When adding new network-dependent UI actions, read `LocalIsOffline.current` and either hide the action or set `enabled = !isOffline`.
 
@@ -214,7 +229,7 @@ When adding new network-dependent UI actions, read `LocalIsOffline.current` and 
 
 ### Navigation
 
-`MainActivity` owns a single `selectedTab: Int` integer. There is no Navigation component — each tab renders its Screen composable directly inside a `when` block. All ViewModels are created once at the `MainActivity` level and passed down as parameters. A `LaunchedEffect(activeLocationId, locationList)` in `MainActivity` keeps `WardrobeViewModel`, `OutfitsViewModel`, and `StylesViewModel` in sync whenever the global location changes.
+`MainActivity` owns a single `selectedTab: Int` integer. There is no Navigation component — each tab renders its Screen composable directly inside a `when` block. All ViewModels are created once at the `MainActivity` level and passed down as parameters. A `LaunchedEffect(activeLocationId, locationList)` in `MainActivity` keeps `WardrobeViewModel`, `OutfitsViewModel`, and `OutfitEventsViewModel` in sync whenever the global location changes, and also calls `OutfitsViewModel.updateSaveFolder(...)` so new outfits save to the right folder.
 
 `SettingsScreen` internally uses a `TabRow` with three tabs: Profile, Data, Credits (Credits only visible in managed mode).
 
@@ -226,7 +241,7 @@ String resources live in `values/strings.xml` and `values-de/strings.xml`. Add n
 
 ### UI shell
 
-All six main screens use `AppScreenHeader` (defined in `MainActivity.kt`) for a consistent top bar: leading icon (optional), `titleMedium/SemiBold` title, trailing slot (optional), followed by a `HorizontalDivider`. The trailing slot typically contains a `LocationButton` (closet door icon `DoorSliding` with dropdown, defined in `MainActivity.kt`, only visible when 2+ closets exist) and optionally a sort button. The closet selection is **global** — changing it on any screen updates `LocationViewModel.setActiveLocation()` which triggers the `MainActivity` `LaunchedEffect` to reload wardrobe images, outfits, and styles for the selected closet(s). `StyleListScreen` additionally does client-side filtering by `folderId` because styles always load items from all locations.
+All six main screens use `AppScreenHeader` (defined in `MainActivity.kt`) for a consistent top bar: leading icon (optional), `titleMedium/SemiBold` title, trailing slot (optional), followed by a `HorizontalDivider`. The trailing slot typically contains a `LocationButton` (closet door icon `DoorSliding` with dropdown, defined in `MainActivity.kt`, only visible when 2+ closets exist) and optionally a sort button. The closet selection is **global** — changing it on any screen updates `LocationViewModel.setActiveLocation()` which triggers the `MainActivity` `LaunchedEffect` to reload wardrobe images, outfits, and wear events for the selected closet(s). `OutfitListScreen` additionally does client-side filtering by `folderId` because outfits always load their items from all locations.
 
 ### Photo upload flow
 
