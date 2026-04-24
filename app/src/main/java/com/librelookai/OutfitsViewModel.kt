@@ -350,7 +350,13 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             }
             val otherIds = _state.value.draftItemIds - setOf(itemId)
             val otherItems = images.filter { it.driveId in otherIds }
-            val prompt = buildAlternativesPrompt(item, otherItems, images, prefs)
+            val prompt = buildAlternativesPrompt(
+                preamble = PromptStore.get(getApplication(), PromptKey.ALTERNATIVES),
+                item = item,
+                otherStyleItems = otherItems,
+                allImages = images,
+                prefs = prefs,
+            )
             val raw = gemini.generateText(prompt)
             val ids: List<String> = if (raw != null) {
                 val json = raw.trim()
@@ -581,6 +587,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             val fashionTrends = gemini.searchFashionTrends(region)
             val prefString = s.composerPrefOverride.ifBlank { prefs?.preferences.orEmpty() }
             val prompt = buildComposerPrompt(
+                preamble         = PromptStore.get(getApplication(), PromptKey.COMPOSER),
                 prefs            = prefs,
                 prefOverride     = prefString,
                 weatherAuto      = if (s.composerWeatherMode == ComposerWeatherMode.AUTO) weather else null,
@@ -804,6 +811,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             val fashionTrends = gemini.searchFashionTrends(region)
 
             val prompt = buildPredictionPrompt(
+                preamble        = PromptStore.get(getApplication(), PromptKey.PREDICTION),
                 prefs           = prefs,
                 weather         = weather,
                 cityName        = weather?.cityName,
@@ -908,6 +916,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             val fashionTrends = gemini.searchFashionTrends(region)
 
             val prompt = buildCompositionPrompt(
+                preamble        = PromptStore.get(getApplication(), PromptKey.COMPOSITION),
                 prefs           = prefs,
                 weather         = weather,
                 cityName        = weather?.cityName,
@@ -992,6 +1001,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
 // ---------- Prompt builder ----------
 
 private fun buildPredictionPrompt(
+    preamble: String,
     prefs: UserPreferences?,
     weather: WeatherData?,
     cityName: String?,
@@ -1001,6 +1011,7 @@ private fun buildPredictionPrompt(
     styles: List<Outfit>,
     feedbackHistory: List<String> = emptyList(),
 ): String {
+    val c = prefs?.aiConsiderations ?: AiConsiderations()
     val age = prefs?.yearOfBirth?.let { LocalDate.now().year - it }
 
     // Compact wardrobe encoding: only include items that belong to at least one style
@@ -1030,31 +1041,42 @@ private fun buildPredictionPrompt(
     else "unknown"
 
     return buildString {
-        appendLine("You are a personal fashion stylist AI. Choose exactly ONE existing style for the user to wear today.")
+        appendLine(preamble.trim())
         appendLine()
-        appendLine("## User Profile")
-        appendLine("- Gender: ${prefs?.gender?.takeIf { it.isNotEmpty() } ?: "not specified"}")
-        appendLine("- Age: ${age?.toString() ?: "not specified"}")
-        appendLine("- Outfit preferences: ${prefs?.preferences?.takeIf { it.isNotEmpty() } ?: "none provided"}")
-        appendLine()
-        appendLine("## Location")
-        appendLine("- City: ${cityName?.takeIf { it.isNotEmpty() } ?: "unknown"}")
-        appendLine("- Country: $countryCode")
-        appendLine("- Urban/rural: infer from city name (consider local style norms and practicality)")
-        appendLine()
-        appendLine("## Today's Weather ($locationStr)")
-        appendLine(weatherStr)
-        appendLine()
-        appendLine("## Current Fashion Trends in $locationStr")
-        if (fashionTrends != null) {
-            appendLine("- Trending colors: ${fashionTrends.trendingColors.joinToString(", ").ifEmpty { "n/a" }}")
-            appendLine("- Trending aesthetics: ${fashionTrends.trendingAesthetics.joinToString(", ").ifEmpty { "n/a" }}")
-            appendLine("- Must-have items right now: ${fashionTrends.mustHaveItems.joinToString(", ").ifEmpty { "n/a" }}")
-            appendLine("- Outdated / avoid: ${fashionTrends.outdatedItems.joinToString(", ").ifEmpty { "n/a" }}")
-        } else {
-            appendLine("not available")
+        val profileLines = buildList {
+            if (c.gender) add("- Gender: ${prefs?.gender?.takeIf { it.isNotEmpty() } ?: "not specified"}")
+            if (c.age) add("- Age: ${age?.toString() ?: "not specified"}")
+            if (c.preferences) add("- Outfit preferences: ${prefs?.preferences?.takeIf { it.isNotEmpty() } ?: "none provided"}")
         }
-        appendLine()
+        if (profileLines.isNotEmpty()) {
+            appendLine("## User Profile")
+            profileLines.forEach { appendLine(it) }
+            appendLine()
+        }
+        if (c.location) {
+            appendLine("## Location")
+            appendLine("- City: ${cityName?.takeIf { it.isNotEmpty() } ?: "unknown"}")
+            appendLine("- Country: $countryCode")
+            appendLine("- Urban/rural: infer from city name (consider local style norms and practicality)")
+            appendLine()
+        }
+        if (c.weather) {
+            appendLine("## Today's Weather ($locationStr)")
+            appendLine(weatherStr)
+            appendLine()
+        }
+        if (c.trends) {
+            appendLine("## Current Fashion Trends in $locationStr")
+            if (fashionTrends != null) {
+                appendLine("- Trending colors: ${fashionTrends.trendingColors.joinToString(", ").ifEmpty { "n/a" }}")
+                appendLine("- Trending aesthetics: ${fashionTrends.trendingAesthetics.joinToString(", ").ifEmpty { "n/a" }}")
+                appendLine("- Must-have items right now: ${fashionTrends.mustHaveItems.joinToString(", ").ifEmpty { "n/a" }}")
+                appendLine("- Outdated / avoid: ${fashionTrends.outdatedItems.joinToString(", ").ifEmpty { "n/a" }}")
+            } else {
+                appendLine("not available")
+            }
+            appendLine()
+        }
         appendLine("## Wardrobe Items (id + tags)")
         appendLine(wardrobeJson)
         appendLine()
@@ -1067,14 +1089,6 @@ private fun buildPredictionPrompt(
             feedbackHistory.forEachIndexed { i, fb -> appendLine("${i + 1}. $fb") }
             appendLine()
         }
-        appendLine("## Instructions")
-        appendLine("Pick the single best style ID from the styles list that fits:")
-        appendLine("1. The current weather (temperature, conditions)")
-        appendLine("2. The trending topics and cultural context of $locationStr")
-        appendLine("3. The user's personal preferences and profile")
-        appendLine("4. The urban/rural character of the location")
-        if (feedbackHistory.isNotEmpty()) appendLine("5. All of the user's refinement requests above")
-        appendLine()
         appendLine("Respond with ONLY a valid JSON object — no markdown, no extra text:")
         append("""{"styleId":"<id from the styles list>","reason":"<1-2 sentence explanation>"}""")
         appendLine()
@@ -1084,6 +1098,7 @@ private fun buildPredictionPrompt(
 }
 
 private fun buildAlternativesPrompt(
+    preamble: String,
     item: DriveImage,
     otherStyleItems: List<DriveImage>,
     allImages: List<DriveImage>,
@@ -1102,7 +1117,7 @@ private fun buildAlternativesPrompt(
         .joinToString(",", "[", "]") { driveImageToJson(it) }
 
     return buildString {
-        appendLine("You are a personal fashion stylist AI. Suggest up to 10 alternative wardrobe items that could replace a specific item in an outfit.")
+        appendLine(preamble.trim())
         appendLine()
         appendLine("## Item to replace")
         appendLine(driveImageToJson(item))
@@ -1113,13 +1128,6 @@ private fun buildAlternativesPrompt(
         appendLine("## Available wardrobe items to choose from")
         appendLine(candidatesJson)
         appendLine()
-        appendLine("## Instructions")
-        appendLine("Find up to 10 items from the available wardrobe that would work as a good replacement.")
-        appendLine("The replacement should:")
-        appendLine("1. Serve the same general purpose/category as the item being replaced")
-        appendLine("2. Coordinate well with the other outfit items (colors, style, aesthetic)")
-        appendLine("3. Be suitable for the same occasions as the original item")
-        appendLine()
         appendLine("Respond with ONLY a valid JSON object — no markdown, no extra text:")
         append("""{"alternativeIds":["<id1>","<id2>","<id3>"]}""")
         appendLine()
@@ -1129,6 +1137,7 @@ private fun buildAlternativesPrompt(
 }
 
 private fun buildCompositionPrompt(
+    preamble: String,
     prefs: UserPreferences?,
     weather: WeatherData?,
     cityName: String?,
@@ -1138,6 +1147,7 @@ private fun buildCompositionPrompt(
     requiredItemIds: Set<String> = emptySet(),
     feedbackHistory: List<String> = emptyList(),
 ): String {
+    val c = prefs?.aiConsiderations ?: AiConsiderations()
     val age = prefs?.yearOfBirth?.let { LocalDate.now().year - it }
 
     // Include all tagged items; untagged items are listed with null tags
@@ -1159,31 +1169,42 @@ private fun buildCompositionPrompt(
     else "unknown"
 
     return buildString {
-        appendLine("You are a personal fashion stylist AI. Compose a brand-new outfit by selecting items from the user's wardrobe.")
+        appendLine(preamble.trim())
         appendLine()
-        appendLine("## User Profile")
-        appendLine("- Gender: ${prefs?.gender?.takeIf { it.isNotEmpty() } ?: "not specified"}")
-        appendLine("- Age: ${age?.toString() ?: "not specified"}")
-        appendLine("- Outfit preferences: ${prefs?.preferences?.takeIf { it.isNotEmpty() } ?: "none provided"}")
-        appendLine()
-        appendLine("## Location")
-        appendLine("- City: ${cityName?.takeIf { it.isNotEmpty() } ?: "unknown"}")
-        appendLine("- Country: $countryCode")
-        appendLine("- Urban/rural: infer from city name (consider local style norms and practicality)")
-        appendLine()
-        appendLine("## Today's Weather ($locationStr)")
-        appendLine(weatherStr)
-        appendLine()
-        appendLine("## Current Fashion Trends in $locationStr")
-        if (fashionTrends != null) {
-            appendLine("- Trending colors: ${fashionTrends.trendingColors.joinToString(", ").ifEmpty { "n/a" }}")
-            appendLine("- Trending aesthetics: ${fashionTrends.trendingAesthetics.joinToString(", ").ifEmpty { "n/a" }}")
-            appendLine("- Must-have items right now: ${fashionTrends.mustHaveItems.joinToString(", ").ifEmpty { "n/a" }}")
-            appendLine("- Outdated / avoid: ${fashionTrends.outdatedItems.joinToString(", ").ifEmpty { "n/a" }}")
-        } else {
-            appendLine("not available")
+        val profileLines = buildList {
+            if (c.gender) add("- Gender: ${prefs?.gender?.takeIf { it.isNotEmpty() } ?: "not specified"}")
+            if (c.age) add("- Age: ${age?.toString() ?: "not specified"}")
+            if (c.preferences) add("- Outfit preferences: ${prefs?.preferences?.takeIf { it.isNotEmpty() } ?: "none provided"}")
         }
-        appendLine()
+        if (profileLines.isNotEmpty()) {
+            appendLine("## User Profile")
+            profileLines.forEach { appendLine(it) }
+            appendLine()
+        }
+        if (c.location) {
+            appendLine("## Location")
+            appendLine("- City: ${cityName?.takeIf { it.isNotEmpty() } ?: "unknown"}")
+            appendLine("- Country: $countryCode")
+            appendLine("- Urban/rural: infer from city name (consider local style norms and practicality)")
+            appendLine()
+        }
+        if (c.weather) {
+            appendLine("## Today's Weather ($locationStr)")
+            appendLine(weatherStr)
+            appendLine()
+        }
+        if (c.trends) {
+            appendLine("## Current Fashion Trends in $locationStr")
+            if (fashionTrends != null) {
+                appendLine("- Trending colors: ${fashionTrends.trendingColors.joinToString(", ").ifEmpty { "n/a" }}")
+                appendLine("- Trending aesthetics: ${fashionTrends.trendingAesthetics.joinToString(", ").ifEmpty { "n/a" }}")
+                appendLine("- Must-have items right now: ${fashionTrends.mustHaveItems.joinToString(", ").ifEmpty { "n/a" }}")
+                appendLine("- Outdated / avoid: ${fashionTrends.outdatedItems.joinToString(", ").ifEmpty { "n/a" }}")
+            } else {
+                appendLine("not available")
+            }
+            appendLine()
+        }
         appendLine("## Available Wardrobe Items (id + name + tags)")
         appendLine(wardrobeJson)
         appendLine()
@@ -1194,42 +1215,12 @@ private fun buildCompositionPrompt(
             appendLine("You may add 1–3 complementary items from the wardrobe to complete the outfit.")
             appendLine()
         }
-        appendLine("## Instructions")
-        val selectInstruction = if (requiredItemIds.isNotEmpty())
-            "Build a cohesive outfit around the required items above, adding complementary pieces as needed."
-        else
-            "Select 4–6 item IDs from the wardrobe that form a complete, well-coordinated outfit."
-        appendLine(selectInstruction)
-        appendLine()
-        appendLine("Every outfit MUST include all four of these layers (pick exactly one item per layer, unless the wardrobe has none):")
-        appendLine("  • Base top    — t-shirt, shirt, blouse, or similar inner layer")
-        appendLine("  • Bottom      — trousers, jeans, shorts, skirt, or similar")
-        appendLine("  • Shoes       — any footwear")
-        appendLine("  • Outer layer — jacket, coat, blazer, hoodie, or cardigan (add this OVER the base top; do NOT substitute it for a base top or shoes)")
-        appendLine()
-        appendLine("IMPORTANT outfit-structure rules:")
-        appendLine("- Outerwear (jacket, coat, blazer, hoodie, cardigan) is an ADDITIONAL layer on top of a base top — never pick outerwear instead of a base top")
-        appendLine("- Never build an outfit from only outerwear + shoes, or only outerwear + t-shirt with no bottom")
-        appendLine("- Do NOT include two items of the same layer (e.g. two pairs of trousers, two jackets, two t-shirts)")
-        appendLine()
-        appendLine("Choose items that:")
-        appendLine("1. Are appropriate for the current weather")
-        appendLine("2. Reflect the trending topics and cultural context of $locationStr")
-        appendLine("3. Match the user's personal preferences")
-        appendLine("4. Work together visually (complementary colors, consistent style category)")
-        appendLine("5. Suit the urban/rural character of $locationStr")
         if (feedbackHistory.isNotEmpty()) {
-            appendLine("6. Address all of the user's refinement requests listed below")
-            appendLine()
             appendLine("## User Refinement Requests")
             appendLine("The user reviewed a previous suggestion and wants these adjustments (apply all of them):")
             feedbackHistory.forEachIndexed { i, fb -> appendLine("${i + 1}. $fb") }
+            appendLine()
         }
-        appendLine()
-        appendLine("Also propose:")
-        appendLine("- A short, evocative name for the outfit (\"name\")")
-        appendLine("- A 1-2 sentence style description suitable as a caption (\"description\")")
-        appendLine()
         appendLine("Respond with ONLY a valid JSON object — no markdown, no extra text:")
         append("""{"name":"<outfit name>","description":"<style caption>","itemIds":["<id1>","<id2>",...],"reason":"<1-2 sentence explanation>"}""")
         appendLine()
@@ -1239,6 +1230,7 @@ private fun buildCompositionPrompt(
 }
 
 private fun buildComposerPrompt(
+    preamble: String,
     prefs: UserPreferences?,
     prefOverride: String,
     weatherAuto: WeatherData?,
@@ -1253,6 +1245,7 @@ private fun buildComposerPrompt(
     feedbackHistory: List<String>,
     language: String,
 ): String {
+    val c = prefs?.aiConsiderations ?: AiConsiderations()
     val age = prefs?.yearOfBirth?.let { LocalDate.now().year - it }
 
     val wardrobeJson = images.joinToString(",", "[", "]") { img ->
@@ -1283,16 +1276,23 @@ private fun buildComposerPrompt(
     val locationStr = listOfNotNull(cityName?.takeIf { it.isNotEmpty() }, countryCode).joinToString(", ")
 
     return buildString {
-        appendLine("You are a personal fashion stylist AI. Compose a cohesive outfit from the user's wardrobe that MUST include the required items below and meets the target layer counts.")
+        appendLine(preamble.trim())
         appendLine()
-        appendLine("## User Profile")
-        appendLine("- Gender: ${prefs?.gender?.takeIf { it.isNotEmpty() } ?: "not specified"}")
-        appendLine("- Age: ${age?.toString() ?: "not specified"}")
-        appendLine("- Outfit preference (user-editable for this composition): ${prefOverride.ifBlank { "none provided" }}")
-        appendLine()
-        appendLine("## Weather")
-        appendLine(weatherStr)
-        appendLine()
+        val profileLines = buildList {
+            if (c.gender) add("- Gender: ${prefs?.gender?.takeIf { it.isNotEmpty() } ?: "not specified"}")
+            if (c.age) add("- Age: ${age?.toString() ?: "not specified"}")
+            if (c.preferences) add("- Outfit preference (user-editable for this composition): ${prefOverride.ifBlank { "none provided" }}")
+        }
+        if (profileLines.isNotEmpty()) {
+            appendLine("## User Profile")
+            profileLines.forEach { appendLine(it) }
+            appendLine()
+        }
+        if (c.weather) {
+            appendLine("## Weather")
+            appendLine(weatherStr)
+            appendLine()
+        }
         if (vibes.isNotEmpty()) {
             appendLine("## Desired vibe")
             appendLine(vibes.joinToString(", "))
@@ -1306,16 +1306,18 @@ private fun buildComposerPrompt(
         appendLine("- Accessories: ${targets.accessory}")
         appendLine("Total items: ${targets.total()}")
         appendLine()
-        appendLine("## Location")
-        appendLine(locationStr.ifEmpty { "unknown" })
-        if (fashionTrends != null) {
+        if (c.location) {
+            appendLine("## Location")
+            appendLine(locationStr.ifEmpty { "unknown" })
             appendLine()
+        }
+        if (c.trends && fashionTrends != null) {
             appendLine("## Current fashion trends")
             appendLine("- Trending colors: ${fashionTrends.trendingColors.joinToString(", ").ifEmpty { "n/a" }}")
             appendLine("- Trending aesthetics: ${fashionTrends.trendingAesthetics.joinToString(", ").ifEmpty { "n/a" }}")
             appendLine("- Must-have items: ${fashionTrends.mustHaveItems.joinToString(", ").ifEmpty { "n/a" }}")
+            appendLine()
         }
-        appendLine()
         appendLine("## Required items (MUST appear in itemIds verbatim)")
         if (requiredItemIds.isNotEmpty()) {
             appendLine(requiredItemIds.joinToString(", ") { "\"$it\"" })
@@ -1331,13 +1333,6 @@ private fun buildComposerPrompt(
             feedbackHistory.forEachIndexed { i, fb -> appendLine("${i + 1}. $fb") }
             appendLine()
         }
-        appendLine("## Instructions")
-        appendLine("1. The itemIds list MUST include every required item id verbatim.")
-        appendLine("2. Add complementary items from the wardrobe to meet the target composition counts as closely as possible.")
-        appendLine("3. Items must work together visually (colors, style, formality).")
-        appendLine("4. Respect the weather and desired vibe.")
-        appendLine("5. Do not include two items of the same layer unless the target count requires it.")
-        appendLine()
         appendLine("Respond with ONLY a valid JSON object — no markdown, no extra text:")
         append("""{"name":"<outfit name>","description":"<1-2 sentence caption>","itemIds":["<id1>","<id2>",...],"reason":"<1-2 sentence explanation>"}""")
         appendLine()

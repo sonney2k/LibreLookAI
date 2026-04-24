@@ -513,4 +513,47 @@
     <string name="composer_picked_count">%1$d picked</string>
     <string name="composer_add_selected">Add selected</string>
     <string name="wardrobe_create_style">Create outfit</string>
+
+    <!-- AI tab -->
+    <string name="settings_tab_ai">AI</string>
+    <string name="ai_considerations_title">Default considerations</string>
+    <string name="ai_considerations_desc">What the AI should take into account when suggesting or composing outfits. Changes apply to prediction, composition, packing, and wardrobe-gap prompts.</string>
+    <string name="ai_consider_weather">Weather</string>
+    <string name="ai_consider_weather_desc">Include today\'s temperature and conditions.</string>
+    <string name="ai_consider_location">Location</string>
+    <string name="ai_consider_location_desc">Include city, country, and urban/rural context.</string>
+    <string name="ai_consider_trends">Fashion trends</string>
+    <string name="ai_consider_trends_desc">Include trending colors, aesthetics, and must-haves for your region.</string>
+    <string name="ai_consider_gender">Gender</string>
+    <string name="ai_consider_gender_desc">Include your profile gender.</string>
+    <string name="ai_consider_age">Age</string>
+    <string name="ai_consider_age_desc">Include your age (derived from year of birth).</string>
+    <string name="ai_consider_preferences">Style preferences</string>
+    <string name="ai_consider_preferences_desc">Include your free-text style preferences.</string>
+
+    <string name="ai_prompts_title">Prompts</string>
+    <string name="ai_prompts_desc">Every Gemini call in the app uses one of the prompts below. Tap to expand and edit. Stored locally; empty or default text clears the override.</string>
+    <string name="ai_prompts_reset_all">Reset all</string>
+    <string name="ai_prompts_reset_all_title">Reset all prompts?</string>
+    <string name="ai_prompts_reset_all_text">This restores every prompt to its default text. Your saved overrides will be lost.</string>
+    <string name="ai_prompts_reset_all_confirm">Reset all</string>
+    <string name="ai_prompt_reset">Reset to default</string>
+    <string name="ai_prompt_overridden_badge">edited</string>
+
+    <string name="ai_prompt_bg_title">Background removal</string>
+    <string name="ai_prompt_bg_desc">Sent with a clothing photo to extract the garment onto a neutral background.</string>
+    <string name="ai_prompt_classify_title">Auto-tag clothing</string>
+    <string name="ai_prompt_classify_desc">Extracts type, category, colors, seasonality, fit, and other tags from an item image. Use the placeholder {LANGUAGE} for the response language.</string>
+    <string name="ai_prompt_prediction_title">Suggest an existing outfit</string>
+    <string name="ai_prompt_prediction_desc">Role and rules for picking one of your saved outfits for today.</string>
+    <string name="ai_prompt_composition_title">Compose a new outfit</string>
+    <string name="ai_prompt_composition_desc">Role and rules for composing a brand-new outfit from your wardrobe.</string>
+    <string name="ai_prompt_composer_title">Outfit composer</string>
+    <string name="ai_prompt_composer_desc">Role and rules used by the unified composer (target layer counts + required items).</string>
+    <string name="ai_prompt_alternatives_title">Item swap alternatives</string>
+    <string name="ai_prompt_alternatives_desc">Role and rules for finding up to 10 alternatives for a single outfit item.</string>
+    <string name="ai_prompt_packing_title">Travel packing list</string>
+    <string name="ai_prompt_packing_desc">Role and rules for building a packing list from wardrobe + forecast.</string>
+    <string name="ai_prompt_gap_title">Wardrobe gap analysis</string>
+    <string name="ai_prompt_gap_desc">Role and rules for suggesting the top missing pieces in your wardrobe.</string>
 </resources>

@@ -127,6 +127,7 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
             _state.update { it.copy(isGenerating = true, packingList = null, error = null) }
 
             val prompt = buildPackingPrompt(
+                preamble        = PromptStore.get(getApplication(), PromptKey.PACKING),
                 prefs           = prefs,
                 destination     = resolvedDest,
                 startDate       = startDate,
@@ -172,6 +173,7 @@ private val DOW_FMT  = DateTimeFormatter.ofPattern("EEE MMM d")
 private val DATE_FMT = DateTimeFormatter.ofPattern("MMM d, yyyy")
 
 private fun buildPackingPrompt(
+    preamble: String,
     prefs: UserPreferences?,
     destination: String,
     startDate: LocalDate,
@@ -207,8 +209,9 @@ private fun buildPackingPrompt(
         """{"id":"${s.id}","name":"${s.name}","items":$items}"""
     }
 
+    val c = prefs?.aiConsiderations ?: AiConsiderations()
     return buildString {
-        appendLine("You are a travel packing assistant. Create a packing list from the user's wardrobe for their trip.")
+        appendLine(preamble.trim())
         appendLine()
         appendLine("## Trip Details")
         appendLine("- Destination: $destination")
@@ -226,11 +229,16 @@ private fun buildPackingPrompt(
         }
         appendLine()
 
-        appendLine("## User Profile")
-        appendLine("- Gender: ${prefs?.gender?.takeIf { it.isNotEmpty() } ?: "not specified"}")
-        appendLine("- Age: ${age?.toString() ?: "not specified"}")
-        appendLine("- Outfit preferences: ${prefs?.preferences?.takeIf { it.isNotEmpty() } ?: "none provided"}")
-        appendLine()
+        val profileLines = buildList {
+            if (c.gender) add("- Gender: ${prefs?.gender?.takeIf { it.isNotEmpty() } ?: "not specified"}")
+            if (c.age) add("- Age: ${age?.toString() ?: "not specified"}")
+            if (c.preferences) add("- Outfit preferences: ${prefs?.preferences?.takeIf { it.isNotEmpty() } ?: "none provided"}")
+        }
+        if (profileLines.isNotEmpty()) {
+            appendLine("## User Profile")
+            profileLines.forEach { appendLine(it) }
+            appendLine()
+        }
         appendLine("## Available Wardrobe Items (id + name + tags)")
         appendLine(wardrobeJson)
         appendLine()
@@ -244,12 +252,6 @@ private fun buildPackingPrompt(
             feedbackHistory.forEachIndexed { i, fb -> appendLine("${i + 1}. $fb") }
             appendLine()
         }
-        appendLine("## Instructions")
-        appendLine("Group the $days days into 2–5 occasion groups based on weather and activity type (e.g. 'Days 1–2: Sightseeing', 'Evenings', 'Rainy days').")
-        appendLine("For each group, select item IDs from the wardrobe that form a complete, weather-appropriate outfit.")
-        appendLine("Aim to reuse items across groups to keep the overall pack light.")
-        appendLine("Also list any items the user should pack that are NOT in their wardrobe (e.g. umbrella, adapter, sunscreen).")
-        appendLine()
         appendLine("Respond with ONLY a valid JSON object — no markdown, no extra text:")
         append("""{"outfits":[{"occasion":"<group label>","itemIds":["<id1>","<id2>",...],"description":"<1-sentence style note>"},...],"extraItems":["<item1>","<item2>",...],"reason":"<1-2 sentence summary>"}""")
         appendLine()

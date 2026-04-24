@@ -502,4 +502,47 @@
     <string name="composer_picked_count">%1$d ausgewählt</string>
     <string name="composer_add_selected">Auswahl hinzufügen</string>
     <string name="wardrobe_create_style">Outfit erstellen</string>
+
+    <!-- AI tab -->
+    <string name="settings_tab_ai">KI</string>
+    <string name="ai_considerations_title">Standardkriterien</string>
+    <string name="ai_considerations_desc">Was die KI beim Vorschlagen und Zusammenstellen von Outfits berücksichtigen soll. Wirkt sich auf Vorschläge, Kompositionen, Packlisten und Garderobenanalyse aus.</string>
+    <string name="ai_consider_weather">Wetter</string>
+    <string name="ai_consider_weather_desc">Aktuelle Temperatur und Bedingungen einbeziehen.</string>
+    <string name="ai_consider_location">Ort</string>
+    <string name="ai_consider_location_desc">Stadt, Land und städtischen/ländlichen Kontext einbeziehen.</string>
+    <string name="ai_consider_trends">Modetrends</string>
+    <string name="ai_consider_trends_desc">Aktuelle Farben, Ästhetik und Must-haves deiner Region einbeziehen.</string>
+    <string name="ai_consider_gender">Geschlecht</string>
+    <string name="ai_consider_gender_desc">Profil-Geschlecht einbeziehen.</string>
+    <string name="ai_consider_age">Alter</string>
+    <string name="ai_consider_age_desc">Alter (aus Geburtsjahr) einbeziehen.</string>
+    <string name="ai_consider_preferences">Stilpräferenzen</string>
+    <string name="ai_consider_preferences_desc">Deinen freien Stiltext einbeziehen.</string>
+
+    <string name="ai_prompts_title">Prompts</string>
+    <string name="ai_prompts_desc">Jeder Gemini-Aufruf in der App verwendet einen der Prompts unten. Zum Bearbeiten antippen. Lokal gespeichert; leer oder Standardtext entfernt die Anpassung.</string>
+    <string name="ai_prompts_reset_all">Alle zurücksetzen</string>
+    <string name="ai_prompts_reset_all_title">Alle Prompts zurücksetzen?</string>
+    <string name="ai_prompts_reset_all_text">Stellt alle Prompts auf ihren Standardtext zurück. Deine Anpassungen gehen verloren.</string>
+    <string name="ai_prompts_reset_all_confirm">Zurücksetzen</string>
+    <string name="ai_prompt_reset">Auf Standard zurücksetzen</string>
+    <string name="ai_prompt_overridden_badge">angepasst</string>
+
+    <string name="ai_prompt_bg_title">Hintergrundentfernung</string>
+    <string name="ai_prompt_bg_desc">Wird mit einem Kleidungsfoto geschickt, um das Teil freizustellen.</string>
+    <string name="ai_prompt_classify_title">Automatisch taggen</string>
+    <string name="ai_prompt_classify_desc">Extrahiert Typ, Kategorie, Farben, Saisonalität, Passform und weitere Tags aus einem Teilbild. Nutze {LANGUAGE} als Platzhalter für die Antwortsprache.</string>
+    <string name="ai_prompt_prediction_title">Gespeichertes Outfit vorschlagen</string>
+    <string name="ai_prompt_prediction_desc">Rolle und Regeln, um eines deiner gespeicherten Outfits für heute auszuwählen.</string>
+    <string name="ai_prompt_composition_title">Neues Outfit zusammenstellen</string>
+    <string name="ai_prompt_composition_desc">Rolle und Regeln, um aus deiner Garderobe ein neues Outfit zu komponieren.</string>
+    <string name="ai_prompt_composer_title">Outfit-Komposer</string>
+    <string name="ai_prompt_composer_desc">Rolle und Regeln des vereinheitlichten Komposers (Layer-Ziele + Pflicht-Teile).</string>
+    <string name="ai_prompt_alternatives_title">Alternativen tauschen</string>
+    <string name="ai_prompt_alternatives_desc">Rolle und Regeln, um bis zu 10 Alternativen für ein Outfit-Teil zu finden.</string>
+    <string name="ai_prompt_packing_title">Reise-Packliste</string>
+    <string name="ai_prompt_packing_desc">Rolle und Regeln zum Erstellen einer Packliste aus Garderobe und Wetter.</string>
+    <string name="ai_prompt_gap_title">Garderobenanalyse</string>
+    <string name="ai_prompt_gap_desc">Rolle und Regeln, um die wichtigsten fehlenden Teile in deiner Garderobe vorzuschlagen.</string>
 </resources>

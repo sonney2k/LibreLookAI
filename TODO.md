@@ -1,7 +1,9 @@
 CLAUDE progressing hint
 =======================
-Read CLAUDE.md and only the files listed in the 'Active Task' section. For context you were working on this:
+Read CLAUDE.md and only the files listed in the 'Active Task' section.
+in settings add AI tab where all gemini prompts that are currently being used are being displayed and can be edited/overriden. add a reset to defaults on this page. add a setting as in what to consider by default when suggesting a style.
 
+For context you were working on this:
 This is what you have already suggested and done:
 
 Before executing the implementation udpate CLAUDE.md with decisions/active tasks
@@ -13,6 +15,8 @@ Features:
 ---------
 
 AI (stars) spinning wheel in create style
+
+visualize statistics on wardrobe, e.g. how many t-shirts etc and by category
 
 Modify gaps screen into shopping helper that has 3 features:
 1. identify gaps (as before)

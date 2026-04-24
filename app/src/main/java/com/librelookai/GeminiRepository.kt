@@ -46,13 +46,6 @@ class GeminiRepository(private val app: Application) {
         private const val BG_MODEL = "gemini-3.1-flash-image-preview"
         private const val BG_URL =
             "https://generativelanguage.googleapis.com/v1beta/models/$BG_MODEL:generateContent"
-        private const val BG_PROMPT =
-            "Extract only the single largest clothing item from the image. " +
-                "Ensure the extracted item is fully visible, centered, oriented upright (portrait), and not cropped at the edges. " +
-                "Place the clothing item on a pure, solid neon green background (Hex #00FF00). " +
-                "Macro product photography, studio lighting, no text, no UI elements. " +
-                "Do not add any shadows, gradients, or checkerboard patterns. " +
-                "Do not include any phones, apps, text, or website interfaces."
 
         private const val CLASSIFY_MODEL = "gemini-3-flash-preview"
         private const val CLASSIFY_URL =
@@ -60,22 +53,6 @@ class GeminiRepository(private val app: Application) {
 
         // Text-only model for style prediction (reuses classify endpoint)
         private const val PREDICT_URL = CLASSIFY_URL
-
-        // Language placeholder is replaced at runtime in classifyClothing()
-        private const val CLASSIFY_PROMPT =
-            "Analyze this clothing item and return ONLY a JSON object (no markdown, no explanation) " +
-                "with these fields: " +
-                "\"label\" (a short descriptive name for the item in {LANGUAGE}, e.g. \"Navy Chinos\", \"White Oxford Shirt\", \"Black Puffer Jacket\"), " +
-                "\"type\" (concise item name; prefer terms from: T-shirt, Long-sleeve shirt, Polo shirt, Oxford shirt, Button-up shirt, Blouse, Tank top, Crop top, Sweater, Hoodie, Cardigan, Vest, Jacket, Blazer, Coat, Puffer jacket, Trench coat, Jeans, Chinos, Trousers, Shorts, Skirt, Dress, Jumpsuit, Suit jacket, Suit trousers, Sneakers, Boots, Loafers, Sandals, Heels, Belt, Bag, Hat, Scarf, Gloves, Sunglasses — use the same concise style for unlisted items), " +
-                "\"category\" (one of: tops, bottoms, outerwear, footwear, accessories, dress, suit), " +
-                "\"uses\" (array from: casual, formal, business, sport, outdoor, beach, evening), " +
-                "\"colors\" (array of main colors as lowercase English words, e.g. gray not grey), " +
-                "\"seasonality\" (array from: spring, summer, fall, winter), " +
-                "\"aesthetic\" (array from: minimalist, streetwear, preppy, bohemian, classic, sporty, romantic, edgy, business-casual, luxury), " +
-                "\"fit\" (array from: slim, regular, relaxed, oversized, tailored), " +
-                "\"material\" (array of detected/inferred materials, e.g. cotton, denim, wool, leather, polyester, linen, silk, knit), " +
-                "\"pattern\" (array from: solid, stripes, plaid, floral, geometric, animal-print, graphic, camo, abstract). " +
-                "Use empty arrays for fields that cannot be determined."
     }
 
     /** Returns the active API key: user-supplied key takes precedence over the build-time key. */
@@ -174,7 +151,7 @@ class GeminiRepository(private val app: Application) {
                         mapOf(
                             "role" to "user",
                             "parts" to listOf(
-                                mapOf("text" to BG_PROMPT),
+                                mapOf("text" to PromptStore.get(app, PromptKey.BG_REMOVAL)),
                                 mapOf(
                                     "inline_data" to mapOf(
                                         "mime_type" to "image/jpeg",
@@ -355,7 +332,7 @@ class GeminiRepository(private val app: Application) {
             val mimeType = if (imageFile.extension == "png") "image/png" else "image/jpeg"
             val format = if (imageFile.extension == "png") Bitmap.CompressFormat.PNG else Bitmap.CompressFormat.JPEG
             val imageBase64 = readAndResizeBase64(imageFile, format)
-            val prompt = CLASSIFY_PROMPT.replace("{LANGUAGE}", language)
+            val prompt = PromptStore.get(app, PromptKey.CLASSIFY).replace("{LANGUAGE}", language)
 
             val body = gson.toJson(
                 mapOf(

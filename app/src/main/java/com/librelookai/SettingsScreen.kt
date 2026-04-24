@@ -33,6 +33,8 @@ import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material.icons.filled.Refresh
@@ -64,6 +66,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -150,7 +153,8 @@ fun SettingsScreen(
                     }
                 },
             )
-            Tab(selected = selectedTab == 3, onClick = { selectedTab = 3 }, text = { Text(stringResource(R.string.settings_tab_about)) })
+            Tab(selected = selectedTab == 3, onClick = { selectedTab = 3 }, text = { Text(stringResource(R.string.settings_tab_ai)) })
+            Tab(selected = selectedTab == 4, onClick = { selectedTab = 4 }, text = { Text(stringResource(R.string.settings_tab_about)) })
         }
 
         when (selectedTab) {
@@ -197,7 +201,13 @@ fun SettingsScreen(
                 },
                 modifier = Modifier.fillMaxSize(),
             )
-            3 -> AboutTab()
+            3 -> AiTab(
+                preferences = profileState.preferences,
+                onSaveConsiderations = { c ->
+                    profileViewModel.savePreferences(profileState.preferences.copy(aiConsiderations = c))
+                },
+            )
+            4 -> AboutTab()
         }
     }
 
@@ -398,7 +408,7 @@ private fun ProfileTab(
                 Button(
                     onClick = {
                         onSave(
-                            UserPreferences(
+                            state.preferences.copy(
                                 gender      = gender,
                                 yearOfBirth = yearOfBirth.toIntOrNull(),
                                 preferences = preferences,
@@ -1401,6 +1411,229 @@ private fun DriveFolderPickerDialog(
             }
         },
     )
+}
+
+// ---------- AI tab ----------
+
+@Composable
+private fun AiTab(
+    preferences: UserPreferences,
+    onSaveConsiderations: (AiConsiderations) -> Unit,
+) {
+    val context = LocalContext.current
+    var considerations by remember(preferences.aiConsiderations) { mutableStateOf(preferences.aiConsiderations) }
+    var showResetAllDialog by remember { mutableStateOf(false) }
+    // bump to force re-reads from PromptStore after edits or resets
+    var promptRefresh by remember { mutableIntStateOf(0) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .imePadding()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 20.dp, vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp),
+    ) {
+        // ---- Considerations ----
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(
+                stringResource(R.string.ai_considerations_title),
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                stringResource(R.string.ai_considerations_desc),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            SwitchRow(
+                label = stringResource(R.string.ai_consider_weather),
+                sublabel = stringResource(R.string.ai_consider_weather_desc),
+                checked = considerations.weather,
+                onCheckedChange = {
+                    considerations = considerations.copy(weather = it)
+                    onSaveConsiderations(considerations)
+                },
+            )
+            SwitchRow(
+                label = stringResource(R.string.ai_consider_location),
+                sublabel = stringResource(R.string.ai_consider_location_desc),
+                checked = considerations.location,
+                onCheckedChange = {
+                    considerations = considerations.copy(location = it)
+                    onSaveConsiderations(considerations)
+                },
+            )
+            SwitchRow(
+                label = stringResource(R.string.ai_consider_trends),
+                sublabel = stringResource(R.string.ai_consider_trends_desc),
+                checked = considerations.trends,
+                onCheckedChange = {
+                    considerations = considerations.copy(trends = it)
+                    onSaveConsiderations(considerations)
+                },
+            )
+            SwitchRow(
+                label = stringResource(R.string.ai_consider_gender),
+                sublabel = stringResource(R.string.ai_consider_gender_desc),
+                checked = considerations.gender,
+                onCheckedChange = {
+                    considerations = considerations.copy(gender = it)
+                    onSaveConsiderations(considerations)
+                },
+            )
+            SwitchRow(
+                label = stringResource(R.string.ai_consider_age),
+                sublabel = stringResource(R.string.ai_consider_age_desc),
+                checked = considerations.age,
+                onCheckedChange = {
+                    considerations = considerations.copy(age = it)
+                    onSaveConsiderations(considerations)
+                },
+            )
+            SwitchRow(
+                label = stringResource(R.string.ai_consider_preferences),
+                sublabel = stringResource(R.string.ai_consider_preferences_desc),
+                checked = considerations.preferences,
+                onCheckedChange = {
+                    considerations = considerations.copy(preferences = it)
+                    onSaveConsiderations(considerations)
+                },
+            )
+        }
+
+        HorizontalDivider()
+
+        // ---- Prompts ----
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    stringResource(R.string.ai_prompts_title),
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.weight(1f),
+                )
+                TextButton(onClick = { showResetAllDialog = true }) {
+                    Text(stringResource(R.string.ai_prompts_reset_all))
+                }
+            }
+            Text(
+                stringResource(R.string.ai_prompts_desc),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+
+        PromptKey.entries.forEach { key ->
+            key(key, promptRefresh) {
+                PromptEditorCard(
+                    key = key,
+                    initialText = PromptStore.get(context, key),
+                    isOverridden = PromptStore.isOverridden(context, key),
+                    onSave = { text ->
+                        PromptStore.set(context, key, text)
+                        promptRefresh++
+                    },
+                    onReset = {
+                        PromptStore.reset(context, key)
+                        promptRefresh++
+                    },
+                )
+            }
+        }
+    }
+
+    if (showResetAllDialog) {
+        AlertDialog(
+            onDismissRequest = { showResetAllDialog = false },
+            title = { Text(stringResource(R.string.ai_prompts_reset_all_title)) },
+            text = { Text(stringResource(R.string.ai_prompts_reset_all_text)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    PromptStore.resetAll(context)
+                    promptRefresh++
+                    showResetAllDialog = false
+                }) { Text(stringResource(R.string.ai_prompts_reset_all_confirm)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showResetAllDialog = false }) {
+                    Text(stringResource(R.string.action_cancel))
+                }
+            },
+        )
+    }
+}
+
+@Composable
+private fun PromptEditorCard(
+    key: PromptKey,
+    initialText: String,
+    isOverridden: Boolean,
+    onSave: (String) -> Unit,
+    onReset: () -> Unit,
+) {
+    var expanded by remember { mutableStateOf(false) }
+    var text by remember(initialText) { mutableStateOf(initialText) }
+    val dirty = text.trim() != initialText.trim()
+
+    Surface(
+        shape = MaterialTheme.shapes.small,
+        tonalElevation = 1.dp,
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth().clickable { expanded = !expanded },
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            stringResource(key.titleRes),
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                        if (isOverridden) {
+                            Spacer(Modifier.size(6.dp))
+                            Badge { Text(stringResource(R.string.ai_prompt_overridden_badge)) }
+                        }
+                    }
+                    Text(
+                        stringResource(key.descRes),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                Icon(
+                    if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                    contentDescription = null,
+                )
+            }
+            if (expanded) {
+                OutlinedTextField(
+                    value = text,
+                    onValueChange = { text = it },
+                    minLines = 6,
+                    maxLines = 20,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedButton(
+                        onClick = {
+                            onReset()
+                            text = key.default
+                        },
+                        enabled = isOverridden || dirty,
+                    ) { Text(stringResource(R.string.ai_prompt_reset)) }
+                    Spacer(Modifier.weight(1f))
+                    Button(
+                        onClick = { onSave(text) },
+                        enabled = dirty,
+                    ) { Text(stringResource(R.string.action_save)) }
+                }
+            }
+        }
+    }
 }
 
 // ---------- About tab ----------

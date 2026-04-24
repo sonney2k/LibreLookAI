@@ -13,4 +13,16 @@ data class UserPreferences(
     val tryOnSideDriveId: String = "",
     /** Drive file ID of the user's back-facing photo used by the Try-on feature. */
     val tryOnBackDriveId: String = "",
+    /** Which context sections to feed into AI style suggestions. */
+    val aiConsiderations: AiConsiderations = AiConsiderations(),
+)
+
+/** Toggles controlling which context blocks the outfit-suggestion prompts include. */
+data class AiConsiderations(
+    val weather: Boolean = true,
+    val location: Boolean = true,
+    val trends: Boolean = true,
+    val gender: Boolean = true,
+    val age: Boolean = true,
+    val preferences: Boolean = true,
 )

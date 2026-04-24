@@ -37,7 +37,7 @@ class WardrobeGapViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             _state.update { it.copy(isAnalyzing = true, analysis = null, error = null) }
 
-            val prompt = buildGapPrompt(images, prefs)
+            val prompt = buildGapPrompt(PromptStore.get(getApplication(), PromptKey.GAP), images, prefs)
             Log.d("GapVM", "Gap prompt length: ${prompt.length} chars")
 
             val raw = gemini.generateText(prompt)
@@ -63,7 +63,8 @@ class WardrobeGapViewModel(app: Application) : AndroidViewModel(app) {
 
 // ---------- Prompt builder ----------
 
-private fun buildGapPrompt(images: List<DriveImage>, prefs: UserPreferences?): String {
+private fun buildGapPrompt(preamble: String, images: List<DriveImage>, prefs: UserPreferences?): String {
+    val c = prefs?.aiConsiderations ?: AiConsiderations()
     val age = prefs?.yearOfBirth?.let { java.time.LocalDate.now().year - it }
 
     val wardrobeJson = images.joinToString(",", "[", "]") { img ->
@@ -83,25 +84,20 @@ private fun buildGapPrompt(images: List<DriveImage>, prefs: UserPreferences?): S
     }
 
     return buildString {
-        appendLine("You are a personal stylist and wardrobe analyst.")
+        appendLine(preamble.trim())
         appendLine()
-        appendLine("## User Profile")
-        appendLine("- Gender: ${prefs?.gender?.takeIf { it.isNotEmpty() } ?: "not specified"}")
-        appendLine("- Age: ${age?.toString() ?: "not specified"}")
-        appendLine("- Outfit preferences: ${prefs?.preferences?.takeIf { it.isNotEmpty() } ?: "none provided"}")
-        appendLine()
+        val profileLines = buildList {
+            if (c.gender) add("- Gender: ${prefs?.gender?.takeIf { it.isNotEmpty() } ?: "not specified"}")
+            if (c.age) add("- Age: ${age?.toString() ?: "not specified"}")
+            if (c.preferences) add("- Outfit preferences: ${prefs?.preferences?.takeIf { it.isNotEmpty() } ?: "none provided"}")
+        }
+        if (profileLines.isNotEmpty()) {
+            appendLine("## User Profile")
+            profileLines.forEach { appendLine(it) }
+            appendLine()
+        }
         appendLine("## Current Wardrobe (${images.size} items)")
         appendLine(wardrobeJson)
-        appendLine()
-        appendLine("## Task")
-        appendLine("Analyze the wardrobe above. Identify the top 3 missing foundational pieces that would:")
-        appendLine("1. Unlock the highest number of new complete outfit combinations")
-        appendLine("2. Complement the user's existing color palette and aesthetic")
-        appendLine("3. Fill genuine category gaps (e.g. missing footwear type, missing layering piece)")
-        appendLine()
-        appendLine("For each suggestion, estimate how many additional complete outfits it would enable.")
-        appendLine("The 'reason' field must be phrased as a concrete, user-facing observation, e.g.:")
-        appendLine("  \"You have 4 formal shirts and 3 blazers, but no formal footwear to complete those looks.\"")
         appendLine()
         appendLine("Respond with ONLY a valid JSON object — no markdown, no extra text:")
         append("""{"suggestions":[{"missingItem":"<item name>","category":"<category>","colors":["<color1>","<color2>"],"reason":"<user-facing observation>","outfitCount":<integer>},...],"summary":"<1-2 sentence overall wardrobe assessment>"}""")
