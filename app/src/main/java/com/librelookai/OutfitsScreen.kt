@@ -43,7 +43,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.automirrored.filled.Sort
@@ -61,7 +60,6 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.InputChip
@@ -106,21 +104,21 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 
-private enum class StyleSortOption {
+private enum class OutfitSortOption {
     DATE_DESC, DATE_ASC, POPULARITY, NAME_AZ, NAME_ZA, ITEM_COUNT
 }
 
 @Composable
-private fun StyleSortOption.displayLabel(): String = when (this) {
-    StyleSortOption.DATE_DESC  -> stringResource(R.string.styles_sort_newest)
-    StyleSortOption.DATE_ASC   -> stringResource(R.string.styles_sort_oldest)
-    StyleSortOption.POPULARITY -> stringResource(R.string.styles_sort_most_worn)
-    StyleSortOption.NAME_AZ    -> stringResource(R.string.styles_sort_name_az)
-    StyleSortOption.NAME_ZA    -> stringResource(R.string.styles_sort_name_za)
-    StyleSortOption.ITEM_COUNT -> stringResource(R.string.styles_sort_most_items)
+private fun OutfitSortOption.displayLabel(): String = when (this) {
+    OutfitSortOption.DATE_DESC  -> stringResource(R.string.outfits_sort_newest)
+    OutfitSortOption.DATE_ASC   -> stringResource(R.string.outfits_sort_oldest)
+    OutfitSortOption.POPULARITY -> stringResource(R.string.outfits_sort_most_worn)
+    OutfitSortOption.NAME_AZ    -> stringResource(R.string.outfits_sort_name_az)
+    OutfitSortOption.NAME_ZA    -> stringResource(R.string.outfits_sort_name_za)
+    OutfitSortOption.ITEM_COUNT -> stringResource(R.string.outfits_sort_most_items)
 }
 
-private fun List<Outfit>.styleTagCategories(itemsById: Map<String, DriveImage>): List<TagCategory> {
+private fun List<Outfit>.outfitTagCategories(itemsById: Map<String, DriveImage>): List<TagCategory> {
     val allImages = flatMap { style -> style.itemIds.mapNotNull { itemsById[it] } }
     return allImages.tagCategories()
 }
@@ -128,7 +126,7 @@ private fun List<Outfit>.styleTagCategories(itemsById: Map<String, DriveImage>):
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun OutfitsScreen(
-    stylesViewModel: OutfitsViewModel = viewModel(),
+    outfitsViewModel: OutfitsViewModel = viewModel(),
     wardrobeViewModel: WardrobeViewModel = viewModel(),
     outfitEventsViewModel: OutfitEventsViewModel = viewModel(),
     profileViewModel: ProfileViewModel = viewModel(),
@@ -139,7 +137,7 @@ fun OutfitsScreen(
     onSettingsClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
-    val outfitsState  by stylesViewModel.state.collectAsState()
+    val outfitsState  by outfitsViewModel.state.collectAsState()
     val wardrobeState by wardrobeViewModel.state.collectAsState()
     val profileState by profileViewModel.state.collectAsState()
     val weatherState by weatherViewModel.state.collectAsState()
@@ -149,7 +147,7 @@ fun OutfitsScreen(
     // Refresh wardrobe image cache for styles once wardrobe Drive sync completes.
     LaunchedEffect(wardrobeState.isSyncing, outfitsState.isLoading) {
         if (!wardrobeState.isSyncing && !outfitsState.isLoading) {
-            stylesViewModel.refreshWardrobeImages()
+            outfitsViewModel.refreshWardrobeImages()
         }
     }
 
@@ -161,14 +159,14 @@ fun OutfitsScreen(
     // When Gemini returns a prediction, auto-open the style editing view with that style.
     LaunchedEffect(outfitsState.prediction) {
         val pred = outfitsState.prediction ?: return@LaunchedEffect
-        val style = outfitsState.styles.find { it.id == pred.styleId } ?: return@LaunchedEffect
-        stylesViewModel.openPredictionInEditView(style)
+        val style = outfitsState.outfits.find { it.id == pred.outfitId } ?: return@LaunchedEffect
+        outfitsViewModel.openPredictionInEditView(style)
     }
 
     // When Gemini composes a new outfit, auto-open the style editing view with it.
     LaunchedEffect(outfitsState.newSuggestion) {
         val suggestion = outfitsState.newSuggestion ?: return@LaunchedEffect
-        stylesViewModel.openSuggestionInEditView(suggestion)
+        outfitsViewModel.openSuggestionInEditView(suggestion)
     }
 
     Box(modifier = modifier.fillMaxSize()) {
@@ -186,32 +184,32 @@ fun OutfitsScreen(
                     alternativeIds = outfitsState.alternativeIds,
                     refinementInput = outfitsState.refinementInput,
                     feedbackHistory = outfitsState.feedbackHistory,
-                    onNameChanged = stylesViewModel::updateDraftName,
-                    onDescriptionChanged = stylesViewModel::updateDraftDescription,
-                    onSwapItem = stylesViewModel::swapDraftItem,
-                    onRemoveItem = stylesViewModel::removeDraftItem,
-                    onAddItem = stylesViewModel::addDraftItem,
+                    onNameChanged = outfitsViewModel::updateDraftName,
+                    onDescriptionChanged = outfitsViewModel::updateDraftDescription,
+                    onSwapItem = outfitsViewModel::swapDraftItem,
+                    onRemoveItem = outfitsViewModel::removeDraftItem,
+                    onAddItem = outfitsViewModel::addDraftItem,
                     onSuggestAlternatives = { itemId ->
-                        stylesViewModel.suggestAlternatives(itemId, wardrobeState.images, profileState.preferences)
+                        outfitsViewModel.suggestAlternatives(itemId, wardrobeState.images, profileState.preferences)
                     },
-                    onClearAlternatives = stylesViewModel::clearAlternatives,
-                    onConfirm = stylesViewModel::confirmDraft,
-                    onCancel = stylesViewModel::cancelOutfitEditingView,
+                    onClearAlternatives = outfitsViewModel::clearAlternatives,
+                    onConfirm = outfitsViewModel::confirmDraft,
+                    onCancel = outfitsViewModel::cancelOutfitEditingView,
                     onWear = if (outfitsState.editingOutfit != null) {
                         { outfitEventsViewModel.recordOutfit(outfitsState.editingOutfit!!.id) }
                     } else null,
-                    onRefinementInputChange = stylesViewModel::updateRefinementInput,
+                    onRefinementInputChange = outfitsViewModel::updateRefinementInput,
                     onRefinePrediction = if (outfitsState.prediction != null) {
-                        { stylesViewModel.refinePrediction(profileState.preferences, weatherState.data, wardrobeState.images) }
+                        { outfitsViewModel.refinePrediction(profileState.preferences, weatherState.data, wardrobeState.images) }
                     } else null,
                     onPresetPrediction = if (outfitsState.prediction != null) {
-                        { preset -> stylesViewModel.submitPresetPrediction(preset, profileState.preferences, weatherState.data, wardrobeState.images) }
+                        { preset -> outfitsViewModel.submitPresetPrediction(preset, profileState.preferences, weatherState.data, wardrobeState.images) }
                     } else null,
                     onRefineComposition = if (outfitsState.newSuggestion != null) {
-                        { stylesViewModel.refineComposition(profileState.preferences, weatherState.data, wardrobeState.images) }
+                        { outfitsViewModel.refineComposition(profileState.preferences, weatherState.data, wardrobeState.images) }
                     } else null,
                     onPresetComposition = if (outfitsState.newSuggestion != null) {
-                        { preset -> stylesViewModel.submitPresetComposition(preset, profileState.preferences, weatherState.data, wardrobeState.images) }
+                        { preset -> outfitsViewModel.submitPresetComposition(preset, profileState.preferences, weatherState.data, wardrobeState.images) }
                     } else null,
                     isRefining = outfitsState.isPredicting || outfitsState.isComposing,
                     locations = locationState.locations,
@@ -224,18 +222,18 @@ fun OutfitsScreen(
                     isEditing = outfitsState.editingOutfit != null,
                     styleName = outfitsState.draftOutfitName,
                     styleDescription = outfitsState.draftOutfitDescription,
-                    onNameChanged = stylesViewModel::updateDraftName,
-                    onDescriptionChanged = stylesViewModel::updateDraftDescription,
-                    onToggleItem = stylesViewModel::toggleDraftItem,
-                    onSelectAll = stylesViewModel::selectAllDraftItems,
-                    onDeselectAll = stylesViewModel::deselectAllDraftItems,
-                    onConfirm = stylesViewModel::confirmDraft,
-                    onCancel = stylesViewModel::cancelCreating,
+                    onNameChanged = outfitsViewModel::updateDraftName,
+                    onDescriptionChanged = outfitsViewModel::updateDraftDescription,
+                    onToggleItem = outfitsViewModel::toggleDraftItem,
+                    onSelectAll = outfitsViewModel::selectAllDraftItems,
+                    onDeselectAll = outfitsViewModel::deselectAllDraftItems,
+                    onConfirm = outfitsViewModel::confirmDraft,
+                    onCancel = outfitsViewModel::cancelCreating,
                 )
             }
             else -> {
                 OutfitListScreen(
-                    styles = outfitsState.styles,
+                    styles = outfitsState.outfits,
                     items = outfitsState.wardrobeImages,
                     wearCounts = wearCounts,
                     isLoading = outfitsState.isLoading || wardrobeState.isLoading,
@@ -247,38 +245,38 @@ fun OutfitsScreen(
                     isComposing = outfitsState.isComposing,
                     compositionError = outfitsState.compositionError,
                     selectedOutfitIds = outfitsState.selectedOutfitIds,
-                    onCreateStyle = stylesViewModel::startCreating,
+                    onCreateStyle = outfitsViewModel::startCreating,
                     onEditOutfit = { style ->
-                        stylesViewModel.startEditing(style, wardrobeState.images, profileState.preferences)
+                        outfitsViewModel.startEditing(style, wardrobeState.images, profileState.preferences)
                     },
-                    onDeleteOutfit = stylesViewModel::deleteOutfit,
+                    onDeleteOutfit = outfitsViewModel::deleteOutfit,
                     onWearOutfit = outfitEventsViewModel::recordOutfit,
-                    onToggleOutfitSelection = stylesViewModel::toggleOutfitSelection,
-                    onSelectAllOutfits = stylesViewModel::selectAllOutfits,
-                    onClearOutfitSelection = stylesViewModel::clearOutfitSelection,
-                    onDeleteSelectedStyles = stylesViewModel::deleteSelectedOutfits,
+                    onToggleOutfitSelection = outfitsViewModel::toggleOutfitSelection,
+                    onSelectAllOutfits = outfitsViewModel::selectAllOutfits,
+                    onClearOutfitSelection = outfitsViewModel::clearOutfitSelection,
+                    onDeleteSelectedStyles = outfitsViewModel::deleteSelectedOutfits,
                     onCombineSelectedStyles = {
-                        stylesViewModel.openComposerFromSelectedOutfits(
+                        outfitsViewModel.openComposerFromSelectedOutfits(
                             images = wardrobeState.images,
                             prefs  = profileState.preferences,
                         )
                     },
                     onSuggestStyle = {
-                        stylesViewModel.triggerPrediction(
+                        outfitsViewModel.triggerPrediction(
                             prefs   = profileState.preferences,
                             weather = weatherState.data,
                             images  = wardrobeState.images,
                         )
                     },
-                    onClearPredictionError = stylesViewModel::clearPrediction,
+                    onClearPredictionError = outfitsViewModel::clearPrediction,
                     onComposeStyle = {
-                        stylesViewModel.triggerComposition(
+                        outfitsViewModel.triggerComposition(
                             prefs   = profileState.preferences,
                             weather = weatherState.data,
                             images  = wardrobeState.images,
                         )
                     },
-                    onClearCompositionError = stylesViewModel::clearNewSuggestion,
+                    onClearCompositionError = outfitsViewModel::clearNewSuggestion,
                     onTryOnStyle = onTryOnStyle,
                     canTryOn = canTryOn,
                     onSettingsClick = onSettingsClick,
@@ -295,18 +293,18 @@ fun OutfitsScreen(
                 action = {
                     TextButton(onClick = {
                         outfitEventsViewModel.recordOutfit(styleId)
-                        stylesViewModel.clearPendingWear()
+                        outfitsViewModel.clearPendingWear()
                     }) {
-                        Text(stringResource(R.string.styles_wear_today))
+                        Text(stringResource(R.string.outfits_wear_today))
                     }
                 },
                 dismissAction = {
-                    TextButton(onClick = stylesViewModel::clearPendingWear) {
+                    TextButton(onClick = outfitsViewModel::clearPendingWear) {
                         Text(stringResource(R.string.action_dismiss))
                     }
                 },
             ) {
-                Text(stringResource(R.string.styles_saved_wear_today))
+                Text(stringResource(R.string.outfits_saved_wear_today))
             }
         }
     }
@@ -367,9 +365,9 @@ private fun OutfitListScreen(
     }
 
     var selectedTags by remember { mutableStateOf(emptyMap<String, Set<String>>()) }
-    var sortBy by remember { mutableStateOf(StyleSortOption.DATE_DESC) }
+    var sortBy by remember { mutableStateOf(OutfitSortOption.DATE_DESC) }
 
-    val tagCategories = remember(styles, itemsById) { styles.styleTagCategories(itemsById) }
+    val tagCategories = remember(styles, itemsById) { styles.outfitTagCategories(itemsById) }
 
     // A style is shown only when ALL its items are loaded for the current location filter.
     // imagesByName already reflects the active location so this check enforces the filter naturally.
@@ -394,12 +392,12 @@ private fun OutfitListScreen(
 
     val displayedStyles = remember(filteredStyles, sortBy, wearCounts) {
         when (sortBy) {
-            StyleSortOption.DATE_DESC  -> filteredStyles
-            StyleSortOption.DATE_ASC   -> filteredStyles.reversed()
-            StyleSortOption.POPULARITY -> filteredStyles.sortedByDescending { wearCounts[it.id] ?: 0 }
-            StyleSortOption.NAME_AZ    -> filteredStyles.sortedBy { it.name.lowercase() }
-            StyleSortOption.NAME_ZA    -> filteredStyles.sortedByDescending { it.name.lowercase() }
-            StyleSortOption.ITEM_COUNT -> filteredStyles.sortedByDescending { it.itemIds.size }
+            OutfitSortOption.DATE_DESC  -> filteredStyles
+            OutfitSortOption.DATE_ASC   -> filteredStyles.reversed()
+            OutfitSortOption.POPULARITY -> filteredStyles.sortedByDescending { wearCounts[it.id] ?: 0 }
+            OutfitSortOption.NAME_AZ    -> filteredStyles.sortedBy { it.name.lowercase() }
+            OutfitSortOption.NAME_ZA    -> filteredStyles.sortedByDescending { it.name.lowercase() }
+            OutfitSortOption.ITEM_COUNT -> filteredStyles.sortedByDescending { it.itemIds.size }
         }
     }
 
@@ -411,8 +409,8 @@ private fun OutfitListScreen(
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text(stringResource(R.string.styles_delete_selected_title)) },
-            text = { Text(stringResource(R.string.styles_delete_selected_text, selectedOutfitIds.size)) },
+            title = { Text(stringResource(R.string.outfits_delete_selected_title)) },
+            text = { Text(stringResource(R.string.outfits_delete_selected_text, selectedOutfitIds.size)) },
             confirmButton = {
                 TextButton(onClick = { onDeleteSelectedStyles(); showDeleteDialog = false }) {
                     Text(stringResource(R.string.action_delete), color = MaterialTheme.colorScheme.error)
@@ -455,13 +453,13 @@ private fun OutfitListScreen(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
-                        stringResource(R.string.styles_selected_count, selectedOutfitIds.size),
+                        stringResource(R.string.outfits_selected_count, selectedOutfitIds.size),
                         modifier = Modifier.weight(1f),
                         style = MaterialTheme.typography.bodyMedium,
                     )
                     if (displayedStyles.any { it.id !in selectedOutfitIds }) {
                         TextButton(onClick = { onSelectAllOutfits(displayedStyles.map { it.id }) }) {
-                            Text(stringResource(R.string.styles_select_all_count, displayedStyles.size))
+                            Text(stringResource(R.string.outfits_select_all_count, displayedStyles.size))
                         }
                     }
                     TextButton(onClick = onClearOutfitSelection) {
@@ -488,10 +486,10 @@ private fun OutfitListScreen(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center,
                         ) {
-                            Text(stringResource(R.string.styles_empty), style = MaterialTheme.typography.bodyLarge)
+                            Text(stringResource(R.string.outfits_empty), style = MaterialTheme.typography.bodyLarge)
                             Spacer(Modifier.height(4.dp))
                             Text(
-                                stringResource(R.string.styles_empty_hint),
+                                stringResource(R.string.outfits_empty_hint),
                                 style = MaterialTheme.typography.bodyMedium,
                             )
                         }
@@ -499,7 +497,7 @@ private fun OutfitListScreen(
                 }
                 displayedStyles.isEmpty() -> {
                     Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
-                        Text(stringResource(R.string.styles_no_match), style = MaterialTheme.typography.bodyLarge)
+                        Text(stringResource(R.string.outfits_no_match), style = MaterialTheme.typography.bodyLarge)
                     }
                 }
                 else -> {
@@ -551,7 +549,7 @@ private fun OutfitListScreen(
                             else
                                 Icon(Icons.Default.AutoFixHigh, contentDescription = null)
                         },
-                        text = { Text(stringResource(R.string.styles_combine)) },
+                        text = { Text(stringResource(R.string.outfits_combine)) },
                     )
                 }
                 if (selectedOutfitIds.size == 1 && canTryOn && !isOffline) {
@@ -596,14 +594,14 @@ private fun OutfitListScreen(
                         horizontalAlignment = Alignment.End,
                     ) {
                         SpeedDialItem(
-                            label = stringResource(R.string.styles_create_manual),
+                            label = stringResource(R.string.outfits_create_manual),
                             icon = { Icon(Icons.Default.Edit, contentDescription = null) },
                             containerColor = MaterialTheme.colorScheme.primaryContainer,
                             onClick = { fabExpanded = false; onCreateStyle() },
                         )
                         if (!isOffline) {
                             SpeedDialItem(
-                                label = if (isPredicting) stringResource(R.string.styles_thinking) else stringResource(R.string.styles_suggest),
+                                label = if (isPredicting) stringResource(R.string.outfits_thinking) else stringResource(R.string.outfits_suggest),
                                 icon = {
                                     if (isPredicting)
                                         CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
@@ -614,7 +612,7 @@ private fun OutfitListScreen(
                                 onClick = { fabExpanded = false; if (!isPredicting) onSuggestStyle() },
                             )
                             SpeedDialItem(
-                                label = if (isComposing) stringResource(R.string.styles_thinking) else stringResource(R.string.styles_compose),
+                                label = if (isComposing) stringResource(R.string.outfits_thinking) else stringResource(R.string.outfits_compose),
                                 icon = {
                                     if (isComposing)
                                         CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
@@ -693,8 +691,8 @@ private fun SpeedDialItem(
 
 @Composable
 private fun StyleSortButton(
-    sortBy: StyleSortOption,
-    onSortChanged: (StyleSortOption) -> Unit,
+    sortBy: OutfitSortOption,
+    onSortChanged: (OutfitSortOption) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -703,7 +701,7 @@ private fun StyleSortButton(
             Icon(Icons.AutoMirrored.Filled.Sort, contentDescription = "Sort")
         }
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            StyleSortOption.entries.forEach { option ->
+            OutfitSortOption.entries.forEach { option ->
                 DropdownMenuItem(
                     text = {
                         Row(
@@ -748,8 +746,8 @@ private fun OutfitCard(
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text(stringResource(R.string.styles_delete_title)) },
-            text = { Text(stringResource(R.string.styles_delete_text, style.name)) },
+            title = { Text(stringResource(R.string.outfits_delete_title)) },
+            text = { Text(stringResource(R.string.outfits_delete_text, style.name)) },
             confirmButton = {
                 TextButton(onClick = { onDelete(); showDeleteDialog = false }) {
                     Text(stringResource(R.string.action_delete), color = MaterialTheme.colorScheme.error)
@@ -828,7 +826,7 @@ private fun OutfitCard(
             val styleItems = style.itemIds.mapNotNull { itemsById[it] }
             if (styleItems.isEmpty()) {
                 Text(
-                    stringResource(R.string.styles_missing_items),
+                    stringResource(R.string.outfits_missing_items),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.outline,
                 )
@@ -916,7 +914,7 @@ private fun OutfitCard(
                     )
                     Spacer(Modifier.width(4.dp))
                     Text(
-                        if (wornToday) stringResource(R.string.styles_worn_today) else stringResource(R.string.styles_wear_today),
+                        if (wornToday) stringResource(R.string.outfits_worn_today) else stringResource(R.string.outfits_wear_today),
                         style = MaterialTheme.typography.labelSmall,
                         color = if (wornToday) MaterialTheme.colorScheme.primary
                                 else MaterialTheme.colorScheme.onSurfaceVariant,
@@ -984,7 +982,7 @@ private fun OutfitItemPicker(
                     Box {
                         if (styleName.isEmpty()) {
                             Text(
-                                stringResource(R.string.styles_name_placeholder),
+                                stringResource(R.string.outfits_name_placeholder),
                                 style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -994,7 +992,7 @@ private fun OutfitItemPicker(
                 },
             )
             TextButton(onClick = onConfirm, enabled = selectedIds.isNotEmpty()) {
-                Text(if (isEditing) stringResource(R.string.action_save) else stringResource(R.string.styles_create_this))
+                Text(if (isEditing) stringResource(R.string.action_save) else stringResource(R.string.outfits_create_this))
             }
         }
 
@@ -1012,7 +1010,7 @@ private fun OutfitItemPicker(
                 Box {
                     if (styleDescription.isEmpty()) {
                         Text(
-                            stringResource(R.string.styles_description_placeholder),
+                            stringResource(R.string.outfits_description_placeholder),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
@@ -1212,7 +1210,7 @@ private fun OutfitEditingView(
                     Box {
                         if (draftOutfitName.isEmpty()) {
                             Text(
-                                stringResource(R.string.styles_name_placeholder),
+                                stringResource(R.string.outfits_name_placeholder),
                                 style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -1228,7 +1226,7 @@ private fun OutfitEditingView(
                 ) {
                     Icon(
                         Icons.Default.CalendarMonth,
-                        contentDescription = stringResource(R.string.styles_wear_today),
+                        contentDescription = stringResource(R.string.outfits_wear_today),
                         tint = if (wornToday) MaterialTheme.colorScheme.primary
                                else MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -1238,7 +1236,7 @@ private fun OutfitEditingView(
                 onClick = onConfirm,
                 enabled = draftItemIds.isNotEmpty(),
             ) {
-                Text(if (isEditing) stringResource(R.string.action_save) else stringResource(R.string.styles_create_this))
+                Text(if (isEditing) stringResource(R.string.action_save) else stringResource(R.string.outfits_create_this))
             }
         }
         HorizontalDivider()
@@ -1267,7 +1265,7 @@ private fun OutfitEditingView(
                     Box {
                         if (draftOutfitDescription.isEmpty()) {
                             Text(
-                                stringResource(R.string.styles_description_placeholder),
+                                stringResource(R.string.outfits_description_placeholder),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -1301,7 +1299,7 @@ private fun OutfitEditingView(
             HorizontalDivider()
 
             Text(
-                stringResource(R.string.styles_items_label),
+                stringResource(R.string.outfits_items_label),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.primary,
             )
@@ -1317,7 +1315,7 @@ private fun OutfitEditingView(
                             locations.find { it.folderId == image.folderId }?.name
                         else null
                     }
-                    StyleEditItemSlot(
+                    OutfitEditItemSlot(
                         image = image,
                         locationName = locName,
                         onTap = { swappingItemId = image.driveId },
@@ -1339,11 +1337,11 @@ private fun OutfitEditingView(
                     ) {
                         Icon(
                             Icons.Default.Add,
-                            contentDescription = stringResource(R.string.styles_add_item),
+                            contentDescription = stringResource(R.string.outfits_add_item),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                         Text(
-                            stringResource(R.string.styles_add_item),
+                            stringResource(R.string.outfits_add_item),
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
@@ -1384,7 +1382,7 @@ private fun OutfitEditingView(
 }
 
 @Composable
-private fun StyleEditItemSlot(
+private fun OutfitEditItemSlot(
     image: DriveImage,
     locationName: String? = null,
     onTap: () -> Unit,
@@ -1523,7 +1521,7 @@ private fun ItemSwapSheet(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    stringResource(R.string.styles_swap_item_for, targetItem.tags?.label ?: targetItem.name),
+                    stringResource(R.string.outfits_swap_item_for, targetItem.tags?.label ?: targetItem.name),
                     style = MaterialTheme.typography.titleSmall,
                     modifier = Modifier.weight(1f),
                 )
@@ -1534,7 +1532,7 @@ private fun ItemSwapSheet(
                     TextButton(onClick = onSuggestAlternatives) {
                         Icon(Icons.Default.AutoAwesome, null, modifier = Modifier.size(14.dp))
                         Spacer(Modifier.width(4.dp))
-                        Text(stringResource(R.string.styles_suggest_alternatives), style = MaterialTheme.typography.labelSmall)
+                        Text(stringResource(R.string.outfits_suggest_alternatives), style = MaterialTheme.typography.labelSmall)
                     }
                 }
             }
@@ -1634,7 +1632,7 @@ private fun ItemSwapSheet(
                     onClick = { onSelectItem(selectedId) },
                     enabled = selectedId != targetItem.driveId,
                 ) {
-                    Text(stringResource(R.string.styles_select_item))
+                    Text(stringResource(R.string.outfits_select_item))
                 }
             }
         }
@@ -1680,7 +1678,7 @@ private fun AddItemSheet(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    stringResource(R.string.styles_add_item),
+                    stringResource(R.string.outfits_add_item),
                     style = MaterialTheme.typography.titleSmall,
                     modifier = Modifier.weight(1f),
                 )
@@ -1775,7 +1773,7 @@ private fun StyleSuggestionSheet(
                     modifier = Modifier.size(20.dp),
                 )
                 Spacer(Modifier.width(8.dp))
-                Text(stringResource(R.string.styles_suggested_title), style = MaterialTheme.typography.titleMedium)
+                Text(stringResource(R.string.outfits_suggested_title), style = MaterialTheme.typography.titleMedium)
             }
 
             HorizontalDivider()
@@ -1784,7 +1782,7 @@ private fun StyleSuggestionSheet(
 
             if (styleItems.isEmpty()) {
                 Text(
-                    stringResource(R.string.styles_missing_items),
+                    stringResource(R.string.outfits_missing_items),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.outline,
                 )
@@ -1832,7 +1830,7 @@ private fun StyleSuggestionSheet(
                 androidx.compose.material3.Button(onClick = onWear) {
                     Icon(Icons.Default.CalendarMonth, null, modifier = Modifier.size(16.dp))
                     Spacer(Modifier.width(4.dp))
-                    Text(stringResource(R.string.styles_wear_today))
+                    Text(stringResource(R.string.outfits_wear_today))
                 }
             }
         }
@@ -1879,7 +1877,7 @@ private fun NewOutfitSuggestionSheet(
                     modifier = Modifier.size(20.dp),
                 )
                 Spacer(Modifier.width(8.dp))
-                Text(stringResource(R.string.styles_composed_title), style = MaterialTheme.typography.titleMedium)
+                Text(stringResource(R.string.outfits_composed_title), style = MaterialTheme.typography.titleMedium)
             }
 
             HorizontalDivider()
@@ -1896,7 +1894,7 @@ private fun NewOutfitSuggestionSheet(
 
             if (styleItems.isEmpty()) {
                 Text(
-                    stringResource(R.string.styles_missing_items),
+                    stringResource(R.string.outfits_missing_items),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.outline,
                 )
@@ -1944,7 +1942,7 @@ private fun NewOutfitSuggestionSheet(
                 androidx.compose.material3.Button(onClick = onAccept) {
                     Icon(Icons.Default.Add, null, modifier = Modifier.size(16.dp))
                     Spacer(Modifier.width(4.dp))
-                    Text(stringResource(R.string.styles_create_this))
+                    Text(stringResource(R.string.outfits_create_this))
                 }
             }
         }
@@ -1955,14 +1953,14 @@ private fun NewOutfitSuggestionSheet(
 
 @Composable
 private fun refinementPresets() = listOf(
-    stringResource(R.string.styles_refine_casual),
-    stringResource(R.string.styles_refine_formal),
-    stringResource(R.string.styles_refine_diff_colors),
-    stringResource(R.string.styles_refine_warmer),
-    stringResource(R.string.styles_refine_lighter),
-    stringResource(R.string.styles_refine_trendy),
-    stringResource(R.string.styles_refine_simpler),
-    stringResource(R.string.styles_refine_bold),
+    stringResource(R.string.outfits_refine_casual),
+    stringResource(R.string.outfits_refine_formal),
+    stringResource(R.string.outfits_refine_diff_colors),
+    stringResource(R.string.outfits_refine_warmer),
+    stringResource(R.string.outfits_refine_lighter),
+    stringResource(R.string.outfits_refine_trendy),
+    stringResource(R.string.outfits_refine_simpler),
+    stringResource(R.string.outfits_refine_bold),
 )
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
@@ -1981,7 +1979,7 @@ internal fun RefinementSection(
         HorizontalDivider()
 
         Text(
-            stringResource(R.string.styles_refine_label),
+            stringResource(R.string.outfits_refine_label),
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.primary,
         )
@@ -2017,7 +2015,7 @@ internal fun RefinementSection(
             OutlinedTextField(
                 value = input,
                 onValueChange = onInputChange,
-                placeholder = { Text(stringResource(R.string.styles_refine_custom), style = MaterialTheme.typography.bodySmall) },
+                placeholder = { Text(stringResource(R.string.outfits_refine_custom), style = MaterialTheme.typography.bodySmall) },
                 singleLine = true,
                 textStyle = MaterialTheme.typography.bodySmall,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
@@ -2045,12 +2043,12 @@ private fun StyleNameDialog(
     var name by remember { mutableStateOf(initialName) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.styles_name_dialog_title)) },
+        title = { Text(stringResource(R.string.outfits_name_dialog_title)) },
         text = {
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
-                label = { Text(stringResource(R.string.styles_name_placeholder)) },
+                label = { Text(stringResource(R.string.outfits_name_placeholder)) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                 keyboardActions = KeyboardActions(onDone = { if (name.isNotBlank()) onConfirm(name) }),

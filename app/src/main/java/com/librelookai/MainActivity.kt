@@ -29,7 +29,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Checkroom
 import androidx.compose.material.icons.filled.FlightTakeoff
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.DoorSliding
 import androidx.compose.material.icons.filled.Settings
@@ -303,7 +302,7 @@ class MainActivity : ComponentActivity() {
                                     }
                                     when (selectedTab) {
                                         0 -> OutfitsScreen(
-                                            stylesViewModel = stylesViewModel,
+                                            outfitsViewModel = stylesViewModel,
                                             wardrobeViewModel = wardrobeViewModel,
                                             outfitEventsViewModel = outfitEventsViewModel,
                                             profileViewModel = profileViewModel,

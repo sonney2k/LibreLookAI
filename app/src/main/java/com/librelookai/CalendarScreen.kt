@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -90,7 +89,7 @@ fun CalendarScreen(
     val wardrobeState by wardrobeViewModel.state.collectAsState()
     val locationState by locationViewModel.state.collectAsState()
 
-    val outfitsById = remember(outfitsState.styles) { outfitsState.styles.associateBy { it.id } }
+    val outfitsById = remember(outfitsState.outfits) { outfitsState.outfits.associateBy { it.id } }
     val imagesById = remember(wardrobeState.images) { wardrobeState.images.associateBy { it.driveId } }
 
     // WornItem entries for thumbnail display in day cells

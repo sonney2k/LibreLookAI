@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.Locale
 
-data class OutfitPrediction(val styleId: String, val reason: String)
+data class OutfitPrediction(val outfitId: String, val reason: String)
 
 enum class ComposerWeatherMode { AUTO, MANUAL }
 
@@ -43,7 +43,7 @@ data class NewOutfitSuggestion(
 )
 
 data class OutfitsUiState(
-    val styles: List<Outfit> = emptyList(),
+    val outfits: List<Outfit> = emptyList(),
     /** All wardrobe images across all locations, for resolving style item icons. */
     val wardrobeImages: List<DriveImage> = emptyList(),
     val isLoading: Boolean = false,
@@ -202,7 +202,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             } else {
                 folderId?.let { readOutfitsLocalCache(it) } ?: emptyList()
             }
-            if (cached.isNotEmpty()) _state.update { it.copy(styles = cached, isLoading = false) }
+            if (cached.isNotEmpty()) _state.update { it.copy(outfits = cached, isLoading = false) }
 
             // Phase 2 — Drive sync: skip when offline
             if (!getApplication<Application>().isNetworkAvailable()) {
@@ -223,10 +223,10 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                     loadOutfitsFromFolder(id)
                 }
             }.onSuccess { styles ->
-                _state.update { it.copy(styles = styles, isLoading = false) }
+                _state.update { it.copy(outfits = styles, isLoading = false) }
             }.onFailure { e ->
                 _state.update { s ->
-                    s.copy(isLoading = false, error = if (s.styles.isEmpty()) e.message else null)
+                    s.copy(isLoading = false, error = if (s.outfits.isEmpty()) e.message else null)
                 }
             }
         }
@@ -381,7 +381,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
         if (s.draftItemIds.isEmpty()) return
         // Name and description are always set inline in the picker — save directly, no popup.
         val resolvedName = s.draftOutfitName.ifEmpty {
-            s.editingOutfit?.name ?: "Outfit ${s.styles.size + 1}"
+            s.editingOutfit?.name ?: "Outfit ${s.outfits.size + 1}"
         }
         saveOutfit(resolvedName)
     }
@@ -392,7 +392,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
         if (draftIds.isEmpty()) return
         viewModelScope.launch {
             val resolvedName = name.trim().ifEmpty {
-                s.editingOutfit?.name ?: "Outfit ${s.styles.size + 1}"
+                s.editingOutfit?.name ?: "Outfit ${s.outfits.size + 1}"
             }
             val description = s.draftOutfitDescription.trim()
             val id = saveFolderId ?: folderId ?: return@launch
@@ -406,9 +406,9 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                     name = resolvedName, description = description,
                     itemIds = draftIds.toList(), itemNames = itemNames,
                 )
-                s.styles.map { if (it.id == edited.id) edited else it }
+                s.outfits.map { if (it.id == edited.id) edited else it }
             } else {
-                s.styles + Outfit(
+                s.outfits + Outfit(
                     name = resolvedName, description = description,
                     itemIds = draftIds.toList(), itemNames = itemNames,
                 )
@@ -419,7 +419,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             }.onSuccess {
                 _state.update {
                     it.copy(
-                        styles = updated,
+                        outfits = updated,
                         isCreating = false,
                         isEditingOutfitView = false,
                         draftItemIds = emptySet(),
@@ -453,7 +453,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             val id = saveFolderId ?: folderId ?: run { onDone(false); return@launch }
             val idToName = drive.listFiles(id).associate { it.id to it.name }
             val itemNames = itemIds.mapNotNull { idToName[it] }
-            val updated = _state.value.styles + Outfit(
+            val updated = _state.value.outfits + Outfit(
                 name = name.ifBlank { "Travel style" },
                 description = description,
                 itemIds = itemIds,
@@ -462,7 +462,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             runCatching {
                 drive.saveOutfitsJson(id, gson.toJson(updated))
             }.onSuccess {
-                _state.update { it.copy(styles = updated) }
+                _state.update { it.copy(outfits = updated) }
                 onDone(true)
             }.onFailure { e ->
                 _state.update { it.copy(error = e.message) }
@@ -513,7 +513,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Opens the composer seeded with the union of all items from the currently-selected styles. */
     fun openComposerFromSelectedOutfits(images: List<DriveImage>, prefs: UserPreferences?) {
-        val selected = _state.value.styles.filter { it.id in _state.value.selectedOutfitIds }
+        val selected = _state.value.outfits.filter { it.id in _state.value.selectedOutfitIds }
         if (selected.size < 2) return
         val unionIds = selected.flatMap { it.itemIds }.toSet()
         val suggestedName = selected.joinToString(" + ") { it.name.ifBlank { "Outfit" } }
@@ -645,7 +645,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
         if (s.composerItemIds.isEmpty()) { onDone(false); return }
         val editingId = s.composerEditingOutfitId
         if (editingId == null) {
-            val name = s.composerName.ifBlank { "Outfit ${s.styles.size + 1}" }
+            val name = s.composerName.ifBlank { "Outfit ${s.outfits.size + 1}" }
             saveOutfitDirectly(
                 name        = name,
                 description = s.composerDescription,
@@ -656,7 +656,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             }
             return
         }
-        val existing = s.styles.find { it.id == editingId } ?: run { onDone(false); return }
+        val existing = s.outfits.find { it.id == editingId } ?: run { onDone(false); return }
         val name = s.composerName.ifBlank { existing.name }
         viewModelScope.launch {
             val saveId = existing.folderId.ifEmpty { saveFolderId ?: folderId ?: run { onDone(false); return@launch } }
@@ -668,12 +668,12 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 itemIds = s.composerItemIds,
                 itemNames = itemNames,
             )
-            val updated = s.styles.map { if (it.id == edited.id) edited else it }
+            val updated = s.outfits.map { if (it.id == edited.id) edited else it }
             runCatching {
                 val folderStyles = updated.filter { it.folderId == saveId || it.folderId.isEmpty() }
                 drive.saveOutfitsJson(saveId, gson.toJson(folderStyles))
             }.onSuccess {
-                _state.update { it.copy(styles = updated, pendingWearOutfitId = edited.id) }
+                _state.update { it.copy(outfits = updated, pendingWearOutfitId = edited.id) }
                 closeComposer()
                 onDone(true)
             }.onFailure { e ->
@@ -712,13 +712,13 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
     // ---------- Delete ----------
 
     fun deleteOutfit(outfitId: String) {
-        val updated = _state.value.styles.filter { it.id != outfitId }
+        val updated = _state.value.outfits.filter { it.id != outfitId }
         viewModelScope.launch {
             val id = folderId ?: return@launch
             runCatching {
                 drive.saveOutfitsJson(id, gson.toJson(updated))
             }.onSuccess {
-                _state.update { it.copy(styles = updated) }
+                _state.update { it.copy(outfits = updated) }
             }.onFailure { e ->
                 _state.update { it.copy(error = e.message) }
             }
@@ -740,7 +740,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
     fun deleteSelectedOutfits() {
         val toDelete = _state.value.selectedOutfitIds
         if (toDelete.isEmpty()) return
-        val allStyles = _state.value.styles
+        val allStyles = _state.value.outfits
         val updated = allStyles.filter { it.id !in toDelete }
         val deleted = allStyles.filter { it.id in toDelete }
         // Determine which folders need their styles JSON updated.
@@ -757,7 +757,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                     drive.saveOutfitsJson(id, gson.toJson(folderStyles))
                 }
             }.onSuccess {
-                _state.update { it.copy(styles = updated, selectedOutfitIds = emptySet()) }
+                _state.update { it.copy(outfits = updated, selectedOutfitIds = emptySet()) }
             }.onFailure { e ->
                 _state.update { it.copy(error = e.message) }
             }
@@ -798,7 +798,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
         images: List<DriveImage>,
         feedbackHistory: List<String>,
     ) {
-        val styles = _state.value.styles
+        val styles = _state.value.outfits
         if (styles.isEmpty()) {
             _state.update { it.copy(predictionError = "No styles to choose from yet.") }
             return
@@ -836,25 +836,25 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 .removePrefix("```json").removePrefix("```").removeSuffix("```").trim()
 
             val result = runCatching {
-                data class PredResp(val styleId: String = "", val reason: String = "")
+                data class PredResp(val outfitId: String = "", val reason: String = "")
                 gson.fromJson(json, PredResp::class.java)
             }.getOrNull()
 
-            if (result == null || result.styleId.isBlank()) {
+            if (result == null || result.outfitId.isBlank()) {
                 Log.w("StylesVM", "Failed to parse prediction response: $json")
                 _state.update { it.copy(isPredicting = false, predictionError = "Could not parse Gemini response.") }
                 return@launch
             }
 
-            val matched = styles.find { it.id == result.styleId }
+            val matched = styles.find { it.id == result.outfitId }
             if (matched == null) {
-                Log.w("StylesVM", "Gemini returned unknown styleId=${result.styleId}")
+                Log.w("StylesVM", "Gemini returned unknown styleId=${result.outfitId}")
                 _state.update { it.copy(isPredicting = false, predictionError = "Suggested style not found in wardrobe.") }
                 return@launch
             }
 
             _state.update {
-                it.copy(isPredicting = false, prediction = OutfitPrediction(result.styleId, result.reason))
+                it.copy(isPredicting = false, prediction = OutfitPrediction(result.outfitId, result.reason))
             }
         }
     }

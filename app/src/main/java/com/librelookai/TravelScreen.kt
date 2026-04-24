@@ -1,6 +1,5 @@
 package com.librelookai
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,20 +18,16 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FlightTakeoff
 import androidx.compose.material.icons.filled.MoveToInbox
 import androidx.compose.material.icons.filled.Remove
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
@@ -46,7 +41,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Snackbar
-import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -200,7 +194,7 @@ fun TravelScreen(
                             travelViewModel.generate(
                                 prefs  = profileState.preferences,
                                 images = wardrobeState.images,
-                                styles = outfitsState.styles,
+                                styles = outfitsState.outfits,
                             )
                         },
                         enabled = state.destination.isNotEmpty() && !isWorking && !isOffline,
@@ -348,10 +342,10 @@ fun TravelScreen(
                             presets = travelPresets(),
                             onInputChange = travelViewModel::updateRefinementInput,
                             onSubmitFreetext = {
-                                travelViewModel.refine(profileState.preferences, wardrobeState.images, outfitsState.styles)
+                                travelViewModel.refine(profileState.preferences, wardrobeState.images, outfitsState.outfits)
                             },
                             onSubmitPreset = { preset ->
-                                travelViewModel.submitPreset(preset, profileState.preferences, wardrobeState.images, outfitsState.styles)
+                                travelViewModel.submitPreset(preset, profileState.preferences, wardrobeState.images, outfitsState.outfits)
                             },
                             modifier = Modifier.padding(16.dp),
                         )
@@ -519,7 +513,7 @@ private fun PackingOutfitCard(
                 }
             } else {
                 Text(
-                    stringResource(R.string.styles_missing_items),
+                    stringResource(R.string.outfits_missing_items),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.outline,
                 )

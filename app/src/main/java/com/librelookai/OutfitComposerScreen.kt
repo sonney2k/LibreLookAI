@@ -226,14 +226,14 @@ fun OutfitComposerScreen(
 
                         // Preset quick-pick chips — tapping one immediately enhances with that feedback
                         val presets = listOf(
-                            stringResource(R.string.styles_refine_casual),
-                            stringResource(R.string.styles_refine_formal),
-                            stringResource(R.string.styles_refine_diff_colors),
-                            stringResource(R.string.styles_refine_warmer),
-                            stringResource(R.string.styles_refine_lighter),
-                            stringResource(R.string.styles_refine_trendy),
-                            stringResource(R.string.styles_refine_simpler),
-                            stringResource(R.string.styles_refine_bold),
+                            stringResource(R.string.outfits_refine_casual),
+                            stringResource(R.string.outfits_refine_formal),
+                            stringResource(R.string.outfits_refine_diff_colors),
+                            stringResource(R.string.outfits_refine_warmer),
+                            stringResource(R.string.outfits_refine_lighter),
+                            stringResource(R.string.outfits_refine_trendy),
+                            stringResource(R.string.outfits_refine_simpler),
+                            stringResource(R.string.outfits_refine_bold),
                         )
                         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                             presets.forEach { preset ->
