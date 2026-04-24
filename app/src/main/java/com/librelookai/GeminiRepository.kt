@@ -47,8 +47,9 @@ class GeminiRepository(private val app: Application) {
         private const val BG_URL =
             "https://generativelanguage.googleapis.com/v1beta/models/$BG_MODEL:generateContent"
         private const val BG_PROMPT =
-            "Extract the clothing item from the background. Place the clothing item on a pure, " +
-                "solid neon green background (Hex #00FF00). " +
+            "Extract only the single largest clothing item from the image. " +
+                "Ensure the extracted item is fully visible, centered, oriented upright (portrait), and not cropped at the edges. " +
+                "Place the clothing item on a pure, solid neon green background (Hex #00FF00). " +
                 "Macro product photography, studio lighting, no text, no UI elements. " +
                 "Do not add any shadows, gradients, or checkerboard patterns. " +
                 "Do not include any phones, apps, text, or website interfaces."
@@ -145,11 +146,9 @@ class GeminiRepository(private val app: Application) {
         val newW = (bitmap.width * scale).roundToInt()
         val newH = (bitmap.height * scale).roundToInt()
         val resized = Bitmap.createScaledBitmap(bitmap, newW, newH, true)
-        if (resized !== bitmap) bitmap.recycle()
         val quality = if (format == Bitmap.CompressFormat.PNG) 100 else 95
         val baos = ByteArrayOutputStream()
         resized.compress(format, quality, baos)
-        resized.recycle()
         Log.d(TAG, "Resized ${opts.outWidth}x${opts.outHeight} → ${newW}x${newH} for Gemini")
         return Base64.encodeToString(baos.toByteArray(), Base64.NO_WRAP)
     }
@@ -264,17 +263,17 @@ class GeminiRepository(private val app: Application) {
             else -> "${personFiles.size} reference photos of the person — the FIRST is the frontal photo (authoritative for the face), the rest are additional angles"
         }
         val itemCountHint = if (itemFiles.size == 1) "this clothing item" else "these ${itemFiles.size} clothing items"
-        val prompt =
-            "You are given $personCountHint, followed by $itemCountHint. " +
-                "Generate a single photorealistic full-body image of the same person wearing $itemCountHint together as one outfit. " +
-                "CRITICAL: the generated face must be as close as possible to the face in the FIRST (frontal) reference photo — " +
-                "match facial structure, features, proportions, eye shape and color, nose, mouth, jawline, eyebrows, skin tone, " +
-                "and hair exactly. Treat the frontal photo as the ground truth for identity; the other photos are only for " +
-                "recovering body shape and side/back details. Do not invent, beautify, age, or restyle the face. " +
-                "Preserve hair, skin tone and body proportions exactly. " +
-                "Dress them so all provided garments are visible and styled naturally. " +
-                "Use a clean, neutral studio background, soft even lighting, sharp focus. " +
-                "No text, watermarks, UI, extra people, or extra clothing that was not provided.$prefsHint"
+        val prompt = """
+            You are given $personCountHint, followed by $itemCountHint.
+            Generate a single photorealistic full-body image of the same person wearing $itemCountHint layered realistically as an outfit.
+
+            CRITICAL GARMENT INSTRUCTION: The clothing items must remain completely distinct and separate. Do NOT merge, blend, or fuse different items into a single hybrid garment (e.g., do not fuse an outerwear zipper or jacket with an underlying t-shirt). Maintain distinct layers, physical boundaries, and textures for each individual piece. Dress the person so all provided garments are visible and layered logically.
+
+            CRITICAL IDENTITY INSTRUCTION: The generated face must be as close as possible to the face in the FIRST (frontal) reference photo — match facial structure, features, proportions, eye shape and color, nose, mouth, jawline, eyebrows, skin tone, and hair exactly. Treat the frontal photo as the ground truth for identity; the other photos are only for recovering body shape and side/back details. Do not invent, beautify, age, or restyle the face. Preserve hair, skin tone, and body proportions exactly.
+
+            Use a clean, neutral studio background, soft even lighting, and sharp focus.
+            No text, watermarks, UI, extra people, or extra clothing that was not provided. $prefsHint
+        """.trimIndent()
 
 
 
