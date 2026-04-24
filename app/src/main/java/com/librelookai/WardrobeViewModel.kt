@@ -1674,10 +1674,8 @@ private fun rotateBitmapFileBy90(file: File) {
     val bmp = BitmapFactory.decodeFile(file.absolutePath) ?: return
     val matrix = Matrix().apply { postRotate(90f) }
     val rotated = Bitmap.createBitmap(bmp, 0, 0, bmp.width, bmp.height, matrix, true)
-    bmp.recycle()
     val format = if (file.extension == "png") Bitmap.CompressFormat.PNG else Bitmap.CompressFormat.JPEG
     file.outputStream().use { rotated.compress(format, 95, it) }
-    rotated.recycle()
 }
 
 // ---------- Legacy appProperties → ClothingTags (migration read-path only) ----------
