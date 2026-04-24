@@ -18,13 +18,18 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Stars
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -33,6 +38,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -46,10 +56,14 @@ import com.android.billingclient.api.ProductDetails
 @Composable
 fun BuyCreditsScreen(
     creditsViewModel: CreditsViewModel = viewModel(),
+    currentApiKey: String = "",
+    onSaveApiKey: (String) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val state by creditsViewModel.state.collectAsState()
     val context = LocalContext.current
+    var apiKey by remember(currentApiKey) { mutableStateOf(currentApiKey) }
+    var apiKeyVisible by remember { mutableStateOf(false) }
 
     // Process any interrupted purchases when the screen opens
     LaunchedEffect(Unit) { creditsViewModel.processPendingPurchases() }
@@ -143,6 +157,47 @@ fun BuyCreditsScreen(
                         onBuy = { creditsViewModel.purchase(context as Activity, product) },
                         isPurchasing = state.isPurchasing,
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
+                    )
+                }
+            }
+
+            // ---- Gemini API Key (BYOK) ----
+            item {
+                Column(
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp),
+                ) {
+                    HorizontalDivider(modifier = Modifier.padding(bottom = 10.dp))
+                    Text(
+                        stringResource(R.string.settings_api_key_title),
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                    Text(
+                        stringResource(R.string.settings_api_key_desc),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    OutlinedTextField(
+                        value = apiKey,
+                        onValueChange = {
+                            apiKey = it
+                            onSaveApiKey(it)
+                        },
+                        label = { Text(stringResource(R.string.settings_api_key_label)) },
+                        placeholder = { Text(stringResource(R.string.settings_api_key_placeholder)) },
+                        singleLine = true,
+                        visualTransformation = if (apiKeyVisible) VisualTransformation.None
+                                               else PasswordVisualTransformation(),
+                        trailingIcon = {
+                            IconButton(onClick = { apiKeyVisible = !apiKeyVisible }) {
+                                Icon(
+                                    if (apiKeyVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                                    contentDescription = null,
+                                )
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth(),
                     )
                 }
             }

@@ -36,8 +36,6 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Badge
 import androidx.compose.material3.Button
@@ -82,8 +80,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
@@ -163,11 +159,6 @@ fun SettingsScreen(
                 onSave = profileViewModel::savePreferences,
                 onClearSavedFlag = profileViewModel::clearSavedFlag,
                 onClearError = profileViewModel::clearError,
-                currentApiKey = currentApiKey,
-                onSaveApiKey = { key ->
-                    ApiKeyStore.set(context, key)
-                    currentApiKey = key
-                },
                 onUploadTryOnPhoto = profileViewModel::uploadTryOnPhoto,
                 onRemoveTryOnPhoto = profileViewModel::deleteTryOnPhoto,
             )
@@ -199,6 +190,11 @@ fun SettingsScreen(
             )
             2 -> BuyCreditsScreen(
                 creditsViewModel = creditsViewModel,
+                currentApiKey = currentApiKey,
+                onSaveApiKey = { key ->
+                    ApiKeyStore.set(context, key)
+                    currentApiKey = key
+                },
                 modifier = Modifier.fillMaxSize(),
             )
             3 -> AboutTab()
@@ -232,8 +228,6 @@ private fun ProfileTab(
     onSave: (UserPreferences) -> Unit,
     onClearSavedFlag: () -> Unit,
     onClearError: () -> Unit,
-    onSaveApiKey: (String) -> Unit,
-    currentApiKey: String,
     onUploadTryOnPhoto: (TryOnSlot, android.net.Uri) -> Unit,
     onRemoveTryOnPhoto: (TryOnSlot) -> Unit,
 ) {
@@ -249,8 +243,6 @@ private fun ProfileTab(
     var yearOfBirth by remember(state.preferences) { mutableStateOf(state.preferences.yearOfBirth?.toString() ?: "") }
     var preferences by remember(state.preferences) { mutableStateOf(state.preferences.preferences) }
     var language    by remember(state.preferences) { mutableStateOf(state.preferences.language) }
-    var apiKey      by remember(currentApiKey) { mutableStateOf(currentApiKey) }
-    var apiKeyVisible by remember { mutableStateOf(false) }
 
     var pendingTryOnSlot by remember { mutableStateOf<TryOnSlot?>(null) }
     val tryOnPickLauncher = rememberLauncherForActivityResult(
@@ -269,8 +261,6 @@ private fun ProfileTab(
             language    = state.preferences.language
         }
     }
-    LaunchedEffect(currentApiKey) { apiKey = currentApiKey }
-
     Box(modifier = Modifier.fillMaxSize()) {
         when {
             state.isLoading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
@@ -404,43 +394,9 @@ private fun ProfileTab(
                     }
                 }
 
-                // --- Gemini API Key ---
-                HorizontalDivider()
-                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Text(
-                        stringResource(R.string.settings_api_key_title),
-                        style = MaterialTheme.typography.titleSmall,
-                        fontWeight = FontWeight.SemiBold,
-                    )
-                    Text(
-                        stringResource(R.string.settings_api_key_desc),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                    OutlinedTextField(
-                        value = apiKey,
-                        onValueChange = { apiKey = it },
-                        label = { Text(stringResource(R.string.settings_api_key_label)) },
-                        placeholder = { Text(stringResource(R.string.settings_api_key_placeholder)) },
-                        singleLine = true,
-                        visualTransformation = if (apiKeyVisible) VisualTransformation.None
-                                               else PasswordVisualTransformation(),
-                        trailingIcon = {
-                            IconButton(onClick = { apiKeyVisible = !apiKeyVisible }) {
-                                Icon(
-                                    if (apiKeyVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                                    contentDescription = null,
-                                )
-                            }
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                }
-
                 // --- Save ---
                 Button(
                     onClick = {
-                        onSaveApiKey(apiKey)
                         onSave(
                             UserPreferences(
                                 gender      = gender,
