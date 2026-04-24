@@ -5,7 +5,10 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ServiceInfo
+import android.os.Build
 import android.os.IBinder
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -23,47 +26,78 @@ class JobForegroundService : Service() {
         const val ACTION_ACQUIRE = "com.librelookai.job.ACQUIRE"
         const val ACTION_RELEASE = "com.librelookai.job.RELEASE"
 
+        private const val TAG          = "JobForegroundService"
         private const val CHANNEL_ID   = "librelookai_jobs"
         private const val NOTIF_ID     = 1001
 
+        private val refCount = AtomicInteger(0)
+
         fun acquire(context: Context) {
+            Log.d(TAG, "acquire() called")
             context.startForegroundService(
                 Intent(context, JobForegroundService::class.java).setAction(ACTION_ACQUIRE)
             )
         }
 
         fun release(context: Context) {
+            Log.d(TAG, "release() called")
             context.startService(
                 Intent(context, JobForegroundService::class.java).setAction(ACTION_RELEASE)
             )
         }
     }
 
-    private val refCount = AtomicInteger(0)
-
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onCreate() {
         super.onCreate()
+        Log.d(TAG, "onCreate()")
         ensureChannel()
+        // Aggressively start foreground in onCreate to satisfy Android 12+ requirements
+        // as early as possible, regardless of which intent triggered the start.
+        safeStartForeground()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        when (intent?.action) {
+        val action = intent?.action
+        Log.d(TAG, "onStartCommand(action=$action, refCount=${refCount.get()})")
+
+        when (action) {
             ACTION_ACQUIRE -> {
-                if (refCount.getAndIncrement() == 0) {
-                    startForeground(NOTIF_ID, buildNotification())
-                }
+                refCount.incrementAndGet()
+                safeStartForeground()
             }
             ACTION_RELEASE -> {
                 if (refCount.decrementAndGet() <= 0) {
                     refCount.set(0)
+                    Log.d(TAG, "Stopping service (count reached 0)")
                     stopForeground(STOP_FOREGROUND_REMOVE)
+                    stopSelf()
+                } else {
+                    safeStartForeground()
+                }
+            }
+            null -> {
+                // Restarted by system
+                Log.d(TAG, "Restarted with null intent")
+                if (refCount.get() > 0) {
+                    safeStartForeground()
+                } else {
                     stopSelf()
                 }
             }
         }
+
         return START_STICKY
+    }
+
+    private fun safeStartForeground() {
+        val notification = buildNotification()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            startForeground(NOTIF_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+        } else {
+            startForeground(NOTIF_ID, notification)
+        }
     }
 
     private fun ensureChannel() {
