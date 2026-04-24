@@ -1,46 +1,137 @@
+CLAUDE progressing hint
+=======================
+Read CLAUDE.md and only the files listed in the 'Active Task' section. For context you were working on this:
+
+This is what you have already suggested and done:
+
+Before executing the implementation udpate CLAUDE.md with decisions/active tasks
+
 TODO
 ====
+AI (stars) spinning wheel in create style
+
+Modify gaps screen into shopping helper that has 3 features:
+1. identify gaps (as before)
+2. when shopping add feature to check if item would match wardrobe and with what it could be combined / shopping helper. to this end take picture like in wardrobe with same size and UI experience. remove bg and tag and find matching items like in style creation for wardrobe
+3.  When selecting multiple items in wardrobe add option remove / replace item / alternatives suggestion
 
 create human readable release notes between now and c40489226c3a4a01dd4033e959d83cee1d7b8ebb and release version 1.3.0 and upload to testers in firebase
 
+on repair & sync make preview all images that will be imported in a grid similar to how they are show in wardrobe view with them all selected. only the selected ones will be modified. support manual (un)selection with the common features of (un)select all, showing counts..
 
-Implement a new feature. When selecting multiple items in wardrobe add option remove / replace item / alternatives suggestion
+in wardrobe view display counts of items after applying filter
+
+
+in settings add AI tab where all gemini prompts that are currently being used are being displayed and can be edited/overriden. add a reset to defaults on this page. add a setting as in what to consider by default when suggesting a style.
+
+unify the try on feature from style or from multiple items in wardrobe screen: create a new view that first shows those items and let's the user to add / remove items and then try on. save those try-ons in a dedicated folder on google drive and add option to view previous try-ons together with items
+add option to try on image from catalog
+
+
+Features:
+---------
+
+
+-------
+Implement a new feature: I want a local AI / machine learning model that is super fast to detect for a picture that is taken in the app the cutouts that do exist in my cache that look similar.
+
+To solve this on an Android device locally and with blazing speed, you don't actually want a traditional "Image Classification" model (which requires retraining every time you add a new piece of clothing to the cache).
+
+Instead, you need an Image Retrieval (or Visual Search) architecture using Embeddings.
+
+Here is exactly how this works and the best stack to use for Android.
+
+The Core Concept: Image Embeddings
+An embedding model doesn't output a label like "red shirt." Instead, it looks at an image and outputs a long list of numbers (a vector, usually 512 or 1024 numbers long) that represents the "visual fingerprint" of that image.
+
+If two images look similar, their vectors will be mathematically close to each other.
+
+The Recommended Android Stack
+Use Google's MediaPipe. Specifically, the MediaPipe Tasks Vision API (ImageEmbedder). It is designed specifically for on-device, low-latency mobile ML.
+
+The Model: Use a pre-trained MobileNetV3 embedding model (available in .tflite format). It is incredibly lightweight, designed for mobile CPUs, and processes images in milliseconds.
+
+Step-by-Step Implementation
+Phase 1: Indexing your Cache (Background Task)
+You only do this once per cached item, or whenever a new cutout is downloaded to the cache.
+
+Load the Cutout: Read the cached image into a Bitmap.
+
+Generate Embedding: Pass the Bitmap to the MediaPipe ImageEmbedder. It will return a FloatArray (the vector).
+
+Store It: Save this FloatArray in your local database (Room, SQLite, or even just an in-memory HashMap if it's only a few dozen images) alongside the image's ID or file path.
+
+Phase 2: The Live Camera Picture (Real-Time)
+When the user snaps a picture in the app:
+
+Generate the Query Embedding: Pass the newly snapped picture through the exact same ImageEmbedder model to get its FloatArray vector.
+
+Calculate Similarity: Loop through all the stored vectors in your cache. Calculate the Cosine Similarity between the live picture's vector and each cached vector.
+
+Cosine similarity is a simple math formula that outputs a score between -1 and 1. A score closer to 1 means the images are visually identical.
+
+Check the Threshold: Find the highest score. If it is above a specific threshold (e.g., 0.85), you have a match! You now know exactly which cached cutout it corresponds to.
+
+Crucial Tip for Accuracy: The "Background" Problem
+You mentioned your cache has "cutouts" (which implies no background), but the user is taking a live picture (which will have a background, like a bedroom wall or a body).
+
+If you compare an image without a background to an image with a background, the embedding vectors might look too different, causing the match to fail.
+
+How to fix this:
+Before you pass the live camera picture to the ImageEmbedder, you should separate the clothing from the background. You can do this by chaining another lightning-fast MediaPipe tool called the Image Segmenter (specifically the Magic Touch or Selfie Segmentation models) to mask out the background of the live photo, turning it into a cutout before you extract the visual fingerprint.
+
+Summary of your Android Pipeline:
+Camera Input -> Bitmap
+
+(Optional but recommended) MediaPipe Image Segmenter -> Removes background.
+
+MediaPipe Image Embedder (MobileNet) -> Outputs FloatArray vector.
+
+Kotlin Math (Cosine Similarity loop) -> Compares against cached vectors.
+
+Result -> Highest score > Threshold = Match found.
+
+Because MediaPipe runs purely on-device (utilizing the CPU, GPU, or Android NPU), this entire pipeline will execute in real-time (often well under 100 milliseconds), require zero internet connection, and respect user privacy.
+-----
 
 
 
+
+Implement new feature: We are working on the refinancing/monetization aspect of the app: I want people to be able to buy coins that I then use to pay gemini cloud costs. would that work with RevenueCat (handles the money/receipts) + Firebase (database and secure Gemini API routing)? In addition, I still want to support the bring your own key option though.
+
+Bugs:
+-----
 fix usability issue on wardrobe screen: moving item to different closet and then switching to that closet - it won't immediately appear on wardrobe after moving to different closet. it took almost a minute to appear. Can this be sp
-
-
-
-
-We are working on the refinancing/monetization aspect of the app: I want people to be able to buy coins that I then use to pay gemini cloud costs. would that work with RevenueCat (handles the money/receipts) + Firebase (database and secure Gemini API routing)? In addition, I still want to support the bring your own key option though.
 
 bug or feature: persistance is working reliably now. What I noticed is that the closet selector in the header is being remebered too 
   but on app start it seems to be set to the same value as the one in settings data. on startup make it always show     
   all.                                                                                                                  
 
-
+offline check is not reliable offline/online status - listen to android. if previously online but it now goes offline also go offline in the app and ensure that the red offline bar is shown. also in wardrobe some the buttons for importing from gallery or picture do still exist.
 
 
 
 IN PROGRESS
 ===========
-offline check is not reliable offline/online status - listen to android. if previously online but it now goes offline also go offline in the app. there are still options visible while offline that should not: 1. style view - one cannot edit. 2. style view long press one cannot delete. 3. wardrobe one cannot create outfil manually and one cannot delete. 4. wardrobe on individual item view one cannot delete, move to, compose with AI, create outfit manually, rotate. 5. calendar when viewing one cannot wear again today or edit. 6. localization is wrong when in offline mode it all switches to english then. use the correct locale from settings.
+rename style / Stile Screen to outfits as style is a different concept / meaning. Rename classes in code too.
 
-bug localization: 1. the filters on top are not localized neither Filter themes like Seasonality etc nor the actual tags. 2. the buttom menu still has english 3. when the app is starting then tags in wardrobe screen are first displayed in english even if language is German
+on settings screen move gemini api key to credits
 
-fix this bug: I am long clicking on a style. then select delete. Confirm. However the style doesn't disappear. delete button is still visible.
+editing styles on any screen should use the new style creation composable  
 
-fix the bug: newly photographed items don't have a closet label visible in wardrobe
+currently there are different ways to create new styles, one in wardrobe view when selecting one or more items then manual / suggest with AI. One when selecting a multiple style to combine them. One in travel. Unify them in the following way. When items are selected have one button to create new style... this style opens a window that gives the user a list of options: 1. weather (automatic current weather - show state; or self selected by e.g. season / temperature /precipitation) 2. current preferences (e.g. casual, sporty, ...) 3. showing all wardrobe items that are currently selected but allow adding more items from wardrobe 4. number and kind of items to combine (e.g. top, bottom, footwear). 5. user preference prompt from settings that can be overridden. 6. add button to enhance with AI with feedback via prompt keeping context
+
+
+Implement new feature: Wear on me: Idea is to view a selected style or wardrobe item on the person in the profile. To this end add an option to upload 3 pictures to ones profile: From front, from side and from back. Limit image size as usual. Store this on drive under a special name / folder such that these are not being mistaken for a wardrobe image. Then add option in wardrobe and style menu when a style or wardrobe item(s) are selected to "see this on myself" use again nanobanana to put on any style/wardrobe items.
+
+
 
 fix this bug: what is shown on camera screen is not exactly the image being photgraphed, image might be larger. Align such that only the part shown on the screen is used also resize image to max(width,height)<1280 keeping aspect ratio before storing or uploading to google drive or processing with gemini
 
 ensure that when repairing, retagging, background removal batch jobs images only the resized images are used and if larger images are there that they are resized in the same way max(width,height)<1280 
 
-bump version to 1.1.0 and release to firebase
 
 bug: when starting the app ensure that it has background processing permission and point the user to settings if not. Recheck then and don't let the user to do any interactions without that. This is to ensure that there is no data loss when importing / converting / tagging. Explain that to the user. For any gemini image tagging / background removal add checks for that setting to ensure consistency.
-
 
 how can we unify tags? I see tags like "Long-sleeve T-shirt", "Long-sleeved t-shirt", "Long-sleeve shirt" that likely mean the same. Or "grey", "Gray"
 
@@ -48,7 +139,6 @@ why is the initial loading time on app start so long in wardrobe screen? can you
 
 travel packing. For each suggested style add option to add to styles. also add option to move all items to "Travel" location.
 
-in style view add edit button in lower area on the left: "edit". clicking this shows the style editing view.
 
 when clicking on amazon and shop style button nothing happens, browser is installed. It was working before we addedd affiliate links. add debugging and instructions for logcat to check
 
@@ -58,6 +148,18 @@ ensure that when the app is doing jobs that it is not being killed
 
 FIXED
 =====
+offline check is not reliable offline/online status - listen to android. if previously online but it now goes offline also go offline in the app. there are still options visible while offline that should not: 1. style view - one cannot edit. 2. style view long press one cannot delete. 3. wardrobe one cannot create outfil manually and one cannot delete. 4. wardrobe on individual item view one cannot delete, move to, compose with AI, create outfit manually, rotate. 5. calendar when viewing one cannot wear again today or edit. 6. localization is wrong when in offline mode it all switches to english then. use the correct locale from settings.
+
+in style view add edit button in lower area on the left: "edit". clicking this shows the style editing view.
+
+bump version to 1.1.0 and release to firebase
+
+bug localization: 1. the filters on top are not localized neither Filter themes like Seasonality etc nor the actual tags. 2. the buttom menu still has english 3. when the app is starting then tags in wardrobe screen are first displayed in english even if language is German
+
+fix this bug: I am long clicking on a style. then select delete. Confirm. However the style doesn't disappear. delete button is still visible.
+
+fix the bug: newly photographed items don't have a closet label visible in wardrobe
+
 fix this bug: after restarting app default closet is unselected in settings / data. Why is that?
 
 add an "about" under setting, that shows the software version of the app. make it have the version number but also add the git hash to enable debugging. Also describe the purpose of the app and that it is open source & free. That it is using AI heavily underneath (gemini) which has some API cost. List the cost per action also mention how one can create a key in AI Studio and where to put it (bring your own key BYOK) and that for ease of use payment via coins for users not intending to use that is enabled.
