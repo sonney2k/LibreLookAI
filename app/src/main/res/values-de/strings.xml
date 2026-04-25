@@ -98,6 +98,8 @@
     <string name="settings_repair_preview_deselect_all">Auswahl aufheben</string>
     <string name="settings_repair_preview_process_n">%1$d verarbeiten</string>
     <string name="settings_repair_preview_cost_total">Geschätzte Kosten: %1$d Credits</string>
+    <string name="settings_repair_clear_cache">Lokalen Cache leeren</string>
+    <string name="settings_repair_clear_cache_desc">Nach dem Lauf alle Bilder erneut von Drive laden. Langsamer; nur nötig, wenn lokale Dateien veraltet erscheinen.</string>
     <string name="settings_migrate_title">Dateinamen migrieren</string>
     <string name="settings_migrate_desc">Einmalige Umbenennung älterer Drive-Dateien auf die neue Namenskonvention. Alte Dateien nutzten die Drive-ID als Präfix des Originals (z.B. 1iTa8U…_original.jpg), was Paare unleserlich machte. Nach der Migration teilen alle Paare dasselbe Präfix: foto_cutout.png + foto_original.jpg.</string>
     <string name="settings_migrate_button">Dateinamen migrieren</string>

@@ -102,6 +102,8 @@
     <string name="settings_repair_preview_deselect_all">Deselect all</string>
     <string name="settings_repair_preview_process_n">Process %1$d</string>
     <string name="settings_repair_preview_cost_total">Estimated cost: %1$d credits</string>
+    <string name="settings_repair_clear_cache">Clear local cache</string>
+    <string name="settings_repair_clear_cache_desc">Re-download all images from Drive after the run. Slower; only needed if local files look out of date.</string>
     <string name="settings_migrate_title">Migrate File Names</string>
     <string name="settings_migrate_desc">One-time rename of legacy Drive files to the new naming convention. Old files used the Drive ID as the original\'s prefix (e.g. 1iTa8U…_original.jpg) making pairs unrecognisable. After migration each pair shares the same prefix: photo_cutout.png + photo_original.jpg.</string>
     <string name="settings_migrate_button">Migrate File Names</string>

@@ -560,13 +560,14 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
      * Called after the user responds to the repair confirmation dialog.
      *
      * If [process] is true, runs AI bg-removal + tagging for orphaned originals and
-     * tagging-only for cutouts missing sidecars. Either way, clears all local caches
-     * and reloads from Drive when finished.
+     * tagging-only for cutouts missing sidecars. When [clearCache] is true, also
+     * wipes the local image cache so everything is re-downloaded from Drive on reload;
+     * otherwise the existing cache is kept and only the metadata snapshot is refreshed.
      */
-    fun continueRepairProcessing(process: Boolean) {
+    fun continueRepairProcessing(process: Boolean, clearCache: Boolean = false) {
         val audit = pendingAudit ?: run {
             _state.update { it.copy(auditProgress = null) }
-            clearCacheAndRefresh()
+            if (clearCache) clearCacheAndRefresh() else loadImages()
             return
         }
         pendingAudit = null
@@ -583,12 +584,14 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             filteredSidecar.isNotEmpty() || filteredDuplicates.isNotEmpty()
 
         if (!process || !anySelected) {
-            Log.d(TAG, "User skipped processing (process=$process, selected=${selected.size}) — reloading")
+            Log.d(TAG, "User skipped processing (process=$process, selected=${selected.size}, clearCache=$clearCache) — reloading")
             _state.update { it.copy(auditProgress = null) }
             viewModelScope.launch(Dispatchers.IO) {
-                audit.folderIds.forEach { localCacheFile(it).delete() }
-                getApplication<Application>().filesDir.resolve("wardrobe")
-                    .listFiles()?.forEach { it.delete() }
+                if (clearCache) {
+                    audit.folderIds.forEach { localCacheFile(it).delete() }
+                    getApplication<Application>().filesDir.resolve("wardrobe")
+                        .listFiles()?.forEach { it.delete() }
+                }
                 withContext(Dispatchers.Main) { loadImages() }
             }
             return
@@ -736,11 +739,12 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     runCatching { EmbeddingService.index.save() }
                 }
 
-                Log.d(TAG, "Processing complete — clearing caches and reloading")
-                // Clear all local caches and reload
-                audit.folderIds.forEach { localCacheFile(it).delete() }
-                getApplication<Application>().filesDir.resolve("wardrobe")
-                    .listFiles()?.forEach { it.delete() }
+                Log.d(TAG, "Processing complete (clearCache=$clearCache) — reloading")
+                if (clearCache) {
+                    audit.folderIds.forEach { localCacheFile(it).delete() }
+                    getApplication<Application>().filesDir.resolve("wardrobe")
+                        .listFiles()?.forEach { it.delete() }
+                }
 
                 _state.update { it.copy(auditProgress = AuditProgress(isDone = true)) }
                 withContext(Dispatchers.Main) { loadImages() }

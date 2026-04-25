@@ -48,6 +48,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Badge
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -557,7 +558,7 @@ private fun DataTab(
     onRetagAll: () -> Unit,
     onRemoveAllBackgrounds: () -> Unit,
     onStartRepairAndRefresh: () -> Unit,
-    onContinueRepair: (Boolean) -> Unit,
+    onContinueRepair: (Boolean, Boolean) -> Unit,
     onDismissAudit: () -> Unit,
     onToggleAuditSelection: (String) -> Unit,
     onSetAuditSelection: (Set<String>) -> Unit,
@@ -935,14 +936,15 @@ private fun DataTab(
                 onToggleSelection = onToggleAuditSelection,
                 onSetSelection = onSetAuditSelection,
                 fetchThumbnail = fetchAuditThumbnail,
-                onProcess = { onContinueRepair(true) },
-                onCancel = { onContinueRepair(false) },
+                onProcess = { clearCache -> onContinueRepair(true, clearCache) },
+                onCancel = { clearCache -> onContinueRepair(false, clearCache) },
             )
         } else {
             // Nothing to process — keep the simple "all clean / renamed only" dialog so the
             // user gets confirmation and a refresh path without a heavyweight preview screen.
+            var clearCache by remember { mutableStateOf(false) }
             AlertDialog(
-                onDismissRequest = { onContinueRepair(false) },
+                onDismissRequest = { onContinueRepair(false, clearCache) },
                 title = { Text(stringResource(R.string.settings_repair_confirm_title)) },
                 text = {
                     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -951,11 +953,18 @@ private fun DataTab(
                                 style = MaterialTheme.typography.bodySmall)
                         }
                         Text(stringResource(R.string.settings_repair_confirm_all_ok))
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Checkbox(checked = clearCache, onCheckedChange = { clearCache = it })
+                            Text(
+                                stringResource(R.string.settings_repair_clear_cache),
+                                style = MaterialTheme.typography.bodySmall,
+                            )
+                        }
                     }
                 },
                 confirmButton = {},
                 dismissButton = {
-                    TextButton(onClick = { onContinueRepair(false) }) {
+                    TextButton(onClick = { onContinueRepair(false, clearCache) }) {
                         Text(stringResource(R.string.settings_repair_skip))
                     }
                 },
@@ -1787,11 +1796,12 @@ private fun RepairPreviewDialog(
     onToggleSelection: (String) -> Unit,
     onSetSelection: (Set<String>) -> Unit,
     fetchThumbnail: suspend (AuditFileEntry) -> File?,
-    onProcess: () -> Unit,
-    onCancel: () -> Unit,
+    onProcess: (Boolean) -> Unit,
+    onCancel: (Boolean) -> Unit,
 ) {
+    var clearCache by remember { mutableStateOf(false) }
     Dialog(
-        onDismissRequest = onCancel,
+        onDismissRequest = { onCancel(clearCache) },
         properties = DialogProperties(
             usePlatformDefaultWidth = false,
             dismissOnBackPress = true,
@@ -1810,7 +1820,7 @@ private fun RepairPreviewDialog(
                         .padding(horizontal = 8.dp, vertical = 6.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    IconButton(onClick = onCancel) {
+                    IconButton(onClick = { onCancel(clearCache) }) {
                         Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_cancel))
                     }
                     Column(modifier = Modifier.weight(1f)) {
@@ -1979,6 +1989,25 @@ private fun RepairPreviewDialog(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Checkbox(checked = clearCache, onCheckedChange = { clearCache = it })
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            stringResource(R.string.settings_repair_clear_cache),
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                        Text(
+                            stringResource(R.string.settings_repair_clear_cache_desc),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .padding(horizontal = 12.dp, vertical = 8.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -1988,12 +2017,12 @@ private fun RepairPreviewDialog(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.weight(1f),
                     )
-                    TextButton(onClick = onCancel) {
+                    TextButton(onClick = { onCancel(clearCache) }) {
                         Text(stringResource(R.string.settings_repair_skip))
                     }
                     Spacer(Modifier.size(4.dp))
                     Button(
-                        onClick = onProcess,
+                        onClick = { onProcess(clearCache) },
                         enabled = selectedCount > 0,
                     ) {
                         Text(stringResource(R.string.settings_repair_preview_process_n, selectedCount))
