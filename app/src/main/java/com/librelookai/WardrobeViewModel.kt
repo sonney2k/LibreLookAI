@@ -30,7 +30,17 @@ import kotlinx.coroutines.sync.withLock
 import java.io.File
 import java.util.concurrent.atomic.AtomicInteger
 
-enum class WardrobeView { GRID, CAPTURE }
+enum class WardrobeView { GRID, CAPTURE, FIND_BY_PHOTO_CAPTURE }
+
+/** A wardrobe item ranked against a "find item by photo" query, with cosine score. */
+data class FindByPhotoMatch(val image: DriveImage, val score: Float)
+
+/** State for the "find item by photo" overlay rendered on top of the wardrobe grid. */
+data class FindByPhoto(
+    val queryPath: String,
+    val matches: List<FindByPhotoMatch>,
+    val isSearching: Boolean = false,
+)
 
 data class DriveImage(
     val driveId: String,
@@ -101,6 +111,8 @@ data class WardrobeUiState(
     val importTargetFolderId: String? = null,
     /** Non-null while a captured photo is paused for duplicate confirmation. */
     val duplicateCheck: DuplicateCheck? = null,
+    /** Non-null while the user is reviewing matches from a "find item by photo" capture. */
+    val findByPhoto: FindByPhoto? = null,
 )
 
 // ---------- Audit / repair progress ----------
@@ -1135,6 +1147,46 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
     fun openCapture() = _state.update { it.copy(view = WardrobeView.CAPTURE) }
     fun closeCapture() = _state.update { it.copy(view = WardrobeView.GRID) }
+
+    /** Open the camera in "find item by photo" mode. */
+    fun openFindByPhoto() = _state.update { it.copy(view = WardrobeView.FIND_BY_PHOTO_CAPTURE) }
+
+    /** User cancelled the find-by-photo capture without taking a photo. */
+    fun closeFindByPhoto() = _state.update { it.copy(view = WardrobeView.GRID) }
+
+    /**
+     * Run the on-device similarity search after the user captured a photo for "find item by
+     * photo". Returns to GRID immediately and populates [WardrobeUiState.findByPhoto] so the
+     * results sheet appears once the search resolves.
+     */
+    fun onFindByPhotoCaptured(rawFile: File) {
+        viewModelScope.launch {
+            _state.update { it.copy(
+                view = WardrobeView.GRID,
+                findByPhoto = FindByPhoto(rawFile.absolutePath, emptyList(), isSearching = true),
+            ) }
+            EmbeddingService.syncIndex(_state.value.images, drive.cacheDir)
+            val matches = EmbeddingService.findSimilar(
+                file = rawFile,
+                threshold = -1f,
+                topK = 12,
+                segment = true,
+            )
+            val byId = _state.value.images.associateBy { it.driveId }
+            val resolved = matches.mapNotNull { m ->
+                byId[m.driveId]?.let { FindByPhotoMatch(it, m.score) }
+            }
+            _state.update {
+                it.copy(findByPhoto = FindByPhoto(rawFile.absolutePath, resolved, isSearching = false))
+            }
+        }
+    }
+
+    /** Dismiss the find-by-photo results sheet and discard the query thumbnail. */
+    fun dismissFindByPhoto() {
+        _state.value.findByPhoto?.queryPath?.let { runCatching { File(it).delete() } }
+        _state.update { it.copy(findByPhoto = null) }
+    }
 
     // ---------- Upload from camera ----------
 

@@ -57,6 +57,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.ImageSearch
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.automirrored.filled.RotateRight
@@ -150,11 +151,15 @@ fun WardrobeScreen(
                 == PackageManager.PERMISSION_GRANTED,
         )
     }
+    var pendingCameraAction by remember { mutableStateOf<(() -> Unit)?>(null) }
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission(),
     ) { granted ->
         hasCameraPermission = granted
-        if (granted) viewModel.openCapture()
+        if (granted) {
+            (pendingCameraAction ?: { viewModel.openCapture() }).invoke()
+        }
+        pendingCameraAction = null
     }
 
     val galleryLauncher = rememberLauncherForActivityResult(
@@ -177,7 +182,10 @@ fun WardrobeScreen(
             activeLocationId = locationState.activeLocationId,
             onOpenCamera = {
                 if (hasCameraPermission) viewModel.openCapture()
-                else permissionLauncher.launch(Manifest.permission.CAMERA)
+                else {
+                    pendingCameraAction = { viewModel.openCapture() }
+                    permissionLauncher.launch(Manifest.permission.CAMERA)
+                }
             },
             onOpenGallery = {
                 galleryLauncher.launch(
@@ -206,6 +214,14 @@ fun WardrobeScreen(
             locationError = locationState.error,
             dismissViewerTrigger = dismissViewerTrigger,
             onSettingsClick = onSettingsClick,
+            onOpenFindByPhoto = {
+                if (hasCameraPermission) viewModel.openFindByPhoto()
+                else {
+                    pendingCameraAction = { viewModel.openFindByPhoto() }
+                    permissionLauncher.launch(Manifest.permission.CAMERA)
+                }
+            },
+            onDismissFindByPhoto = viewModel::dismissFindByPhoto,
             modifier = modifier,
         )
         WardrobeView.CAPTURE -> CaptureScreen(
@@ -214,6 +230,13 @@ fun WardrobeScreen(
             locations = locationState.locations,
             importTargetFolderId = state.importTargetFolderId,
             onSetImportTarget = viewModel::setDefaultImportFolderId,
+            modifier = modifier,
+        )
+        WardrobeView.FIND_BY_PHOTO_CAPTURE -> CaptureScreen(
+            onPhotoTaken = viewModel::onFindByPhotoCaptured,
+            onCancel = viewModel::closeFindByPhoto,
+            locations = emptyList(),
+            showCenterCrosshair = true,
             modifier = modifier,
         )
     }
@@ -518,6 +541,8 @@ private fun GridContent(
     processingImageId: String?,
     dismissViewerTrigger: Int = 0,
     onSettingsClick: () -> Unit = {},
+    onOpenFindByPhoto: () -> Unit = {},
+    onDismissFindByPhoto: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val isOffline = LocalIsOffline.current
@@ -561,6 +586,17 @@ private fun GridContent(
     // Clear viewer when filter/sort changes to avoid stale index
     LaunchedEffect(selectedTags, sortBy) { selectedIndex = null }
 
+    // After find-by-photo, clear filters and open the matched item once it's visible.
+    var pendingDriveIdToOpen by remember { mutableStateOf<String?>(null) }
+    LaunchedEffect(pendingDriveIdToOpen, displayedImages) {
+        val target = pendingDriveIdToOpen ?: return@LaunchedEffect
+        val idx = displayedImages.indexOfFirst { it.driveId == target }
+        if (idx >= 0) {
+            selectedIndex = idx
+            pendingDriveIdToOpen = null
+        }
+    }
+
     val isSelectionMode = state.selectedIds.isNotEmpty()
     if (isSelectionMode) BackHandler(onBack = onClearSelection)
 
@@ -575,6 +611,12 @@ private fun GridContent(
                         activeLocationId = activeLocationId,
                         onSetActiveLocation = onSetActiveLocation,
                     )
+                    IconButton(onClick = onOpenFindByPhoto) {
+                        Icon(
+                            Icons.Default.ImageSearch,
+                            contentDescription = stringResource(R.string.wardrobe_find_by_photo),
+                        )
+                    }
                     IconButton(onClick = { showStatsSheet = true }) {
                         Icon(
                             Icons.Default.BarChart,
@@ -1110,6 +1152,18 @@ private fun GridContent(
         WardrobeStatsSheet(
             images = state.images,
             onDismiss = { showStatsSheet = false },
+        )
+    }
+
+    state.findByPhoto?.let { fbp ->
+        FindByPhotoResultsSheet(
+            findByPhoto = fbp,
+            onPickMatch = { driveId ->
+                selectedTags = emptyMap()
+                pendingDriveIdToOpen = driveId
+                onDismissFindByPhoto()
+            },
+            onDismiss = onDismissFindByPhoto,
         )
     }
 
@@ -2004,4 +2058,105 @@ private fun DuplicateCheckSheet(
         }
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun FindByPhotoResultsSheet(
+    findByPhoto: FindByPhoto,
+    onPickMatch: (driveId: String) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val context = LocalContext.current
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .navigationBarsPadding()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Text(
+                stringResource(R.string.wardrobe_find_by_photo),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(160.dp)
+                    .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.small),
+            ) {
+                AsyncImage(
+                    model = ImageRequest.Builder(context)
+                        .data(java.io.File(findByPhoto.queryPath))
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = stringResource(R.string.shop_your_photo),
+                    contentScale = androidx.compose.ui.layout.ContentScale.Fit,
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
+
+            when {
+                findByPhoto.isSearching -> Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    CircularProgressIndicator(modifier = Modifier.size(18.dp), strokeWidth = 2.dp)
+                    Text(
+                        stringResource(R.string.wardrobe_find_by_photo_searching),
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                }
+                findByPhoto.matches.isEmpty() -> Text(
+                    stringResource(R.string.wardrobe_find_by_photo_empty),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                else -> LazyVerticalGrid(
+                    columns = GridCells.Adaptive(minSize = 96.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.height(360.dp),
+                ) {
+                    itemsIndexed(findByPhoto.matches, key = { _, m -> m.image.driveId }) { _, match ->
+                        Column(
+                            modifier = Modifier
+                                .clickable { onPickMatch(match.image.driveId) },
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .aspectRatio(1f)
+                                    .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.small),
+                            ) {
+                                AsyncImage(
+                                    model = ImageRequest.Builder(context)
+                                        .data(java.io.File(match.image.localPath))
+                                        .crossfade(true)
+                                        .build(),
+                                    contentDescription = match.image.name,
+                                    contentScale = androidx.compose.ui.layout.ContentScale.Fit,
+                                    modifier = Modifier.fillMaxSize(),
+                                )
+                            }
+                            val pct = (match.score.coerceIn(-1f, 1f) * 100f).toInt().coerceIn(0, 100)
+                            Text(
+                                stringResource(R.string.dedupe_score, pct),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 

@@ -266,6 +266,10 @@ String resources live in `values/strings.xml` and `values-de/strings.xml`. Add n
 
 All six main screens use `AppScreenHeader` (defined in `MainActivity.kt`) for a consistent top bar: leading icon (optional), `titleMedium/SemiBold` title, trailing slot (optional), followed by a `HorizontalDivider`. The trailing slot typically contains a `LocationButton` (closet door icon `DoorSliding` with dropdown, defined in `MainActivity.kt`, only visible when 2+ closets exist) and optionally a sort button. The closet selection is **global** — changing it on any screen updates `LocationViewModel.setActiveLocation()` which triggers the `MainActivity` `LaunchedEffect` to reload wardrobe images, outfits, and wear events for the selected closet(s). `OutfitListScreen` additionally does client-side filtering by `folderId` because outfits always load their items from all locations.
 
+### Wardrobe find-by-photo
+
+Header icon (`Icons.Default.ImageSearch`) on the wardrobe trailing slot opens the camera in `WardrobeView.FIND_BY_PHOTO_CAPTURE` mode (reuses `CaptureScreen` with `showCenterCrosshair = true`). After the user accepts a photo, `WardrobeViewModel.onFindByPhotoCaptured` runs `EmbeddingService.findSimilar` (threshold = -1f so all top-K matches surface regardless of similarity) and populates `WardrobeUiState.findByPhoto`. `GridContent` renders `FindByPhotoResultsSheet` (modal bottom sheet) showing the query thumbnail + a 96 dp adaptive grid of matches with similarity scores. Tapping a match clears active tag filters and sets a `pendingDriveIdToOpen` state; a `LaunchedEffect` keyed on `displayedImages` resolves the index and opens the existing `FullScreenViewer`. Available offline because matching uses local cached cutouts only.
+
 ### Photo upload flow
 
 1. `WardrobeViewModel.uploadPhoto(rawFile)` uploads the raw JPEG to Drive and enqueues a `PendingJob`. The initial `DriveImage` must include `folderId = targetFolderId` so the closet label appears immediately in the grid (same for `uploadGalleryPhotos`).
