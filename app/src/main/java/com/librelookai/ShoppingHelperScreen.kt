@@ -2,6 +2,7 @@ package com.librelookai
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,11 +15,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.ShoppingBag
@@ -26,6 +29,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -35,15 +39,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -60,6 +72,8 @@ fun ShoppingHelperScreen(
     val state by shoppingViewModel.state.collectAsState()
     val wardrobeState by wardrobeViewModel.state.collectAsState()
     val locationState by locationViewModel.state.collectAsState()
+
+    var previewMatch by remember { mutableStateOf<ShopMatch?>(null) }
 
     // Kick off a catch-up index sync whenever the wardrobe list changes.
     LaunchedEffect(wardrobeState.images.size) {
@@ -141,7 +155,7 @@ fun ShoppingHelperScreen(
                         )
                     }
                     items(state.matches, key = { it.image.driveId }) { match ->
-                        MatchRow(match = match)
+                        MatchRow(match = match, onClick = { previewMatch = match })
                     }
                 } else if (state.queryPath != null && !state.isMatching) {
                     item {
@@ -155,6 +169,14 @@ fun ShoppingHelperScreen(
                 }
             }
         }
+    }
+
+    previewMatch?.let { match ->
+        MatchPreviewDialog(
+            match = match,
+            queryPath = state.queryPath,
+            onDismiss = { previewMatch = null },
+        )
     }
 }
 
@@ -276,13 +298,13 @@ private fun QueryCard(queryPath: String) {
 }
 
 @Composable
-private fun MatchRow(match: ShopMatch) {
+private fun MatchRow(match: ShopMatch, onClick: () -> Unit) {
     val context = LocalContext.current
     val percent = ((match.score.coerceIn(-1f, 1f) + 1f) / 2f * 100f).toInt()
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { /* future: open item detail */ }
+            .clickable(onClick = onClick)
             .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -322,4 +344,149 @@ private fun MatchRow(match: ShopMatch) {
         }
     }
     HorizontalDivider()
+}
+
+@Composable
+private fun MatchPreviewDialog(
+    match: ShopMatch,
+    queryPath: String?,
+    onDismiss: () -> Unit,
+) {
+    val context = LocalContext.current
+    val percent = ((match.score.coerceIn(-1f, 1f) + 1f) / 2f * 100f).toInt()
+    val label = match.image.tags?.label?.takeIf { it.isNotBlank() }
+        ?: match.image.tags?.type?.takeIf { it.isNotBlank() }
+        ?: match.image.name
+
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(usePlatformDefaultWidth = false),
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black),
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                Spacer(Modifier.statusBarsPadding())
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 4.dp, top = 8.dp, bottom = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            label,
+                            color = Color.White,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                        Text(
+                            stringResource(R.string.shop_match_score, percent),
+                            color = Color.White.copy(alpha = 0.7f),
+                            style = MaterialTheme.typography.labelMedium,
+                        )
+                    }
+                    IconButton(onClick = onDismiss) {
+                        Icon(Icons.Default.Close, contentDescription = "Close", tint = Color.White)
+                    }
+                }
+
+                if (queryPath != null) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 12.dp, vertical = 4.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        LabelledThumb(
+                            label = stringResource(R.string.shop_your_photo),
+                            file = File(queryPath),
+                            modifier = Modifier.weight(1f),
+                        )
+                        LabelledThumb(
+                            label = label,
+                            file = File(match.image.localPath),
+                            modifier = Modifier.weight(1f),
+                        )
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    ZoomableImage(file = File(match.image.localPath))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun LabelledThumb(
+    label: String,
+    file: File,
+    modifier: Modifier = Modifier,
+) {
+    val context = LocalContext.current
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            label,
+            color = Color.White.copy(alpha = 0.85f),
+            style = MaterialTheme.typography.labelSmall,
+            fontWeight = FontWeight.SemiBold,
+            maxLines = 1,
+        )
+        Spacer(Modifier.height(4.dp))
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(120.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(Color(0x22FFFFFF)),
+            contentAlignment = Alignment.Center,
+        ) {
+            AsyncImage(
+                model = ImageRequest.Builder(context).data(file).crossfade(true).build(),
+                contentDescription = null,
+                contentScale = ContentScale.Fit,
+                modifier = Modifier.fillMaxSize(),
+            )
+        }
+    }
+}
+
+@Composable
+private fun ZoomableImage(file: File) {
+    val context = LocalContext.current
+    var scale by remember { mutableStateOf(1f) }
+    var offset by remember { mutableStateOf(Offset.Zero) }
+    AsyncImage(
+        model = ImageRequest.Builder(context).data(file).crossfade(true).build(),
+        contentDescription = null,
+        contentScale = ContentScale.Fit,
+        modifier = Modifier
+            .fillMaxSize()
+            .pointerInput(Unit) {
+                detectTransformGestures { _, pan, zoom, _ ->
+                    scale = (scale * zoom).coerceIn(1f, 6f)
+                    offset = if (scale <= 1.01f) Offset.Zero
+                             else Offset(offset.x + pan.x, offset.y + pan.y)
+                }
+            }
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+                translationX = offset.x
+                translationY = offset.y
+            },
+    )
 }
