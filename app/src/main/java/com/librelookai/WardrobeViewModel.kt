@@ -47,6 +47,22 @@ data class DriveImage(
     val folderId: String = "",
 )
 
+/** One wardrobe item ranked above the dedupe threshold against an incoming import. */
+data class DuplicateMatch(val image: DriveImage, val score: Float)
+
+/**
+ * Pending capture/upload waiting for the user to confirm or cancel after the on-device
+ * similarity check surfaced one or more close matches in the existing wardrobe.
+ */
+data class DuplicateCheck(
+    /** Absolute path of the raw file the user just captured. */
+    val rawFilePath: String,
+    /** Drive folder ID the file would be uploaded to once the user confirms. */
+    val targetFolderId: String,
+    /** Wardrobe items above the configured similarity threshold, ordered most-similar first. */
+    val matches: List<DuplicateMatch>,
+)
+
 data class WardrobeUiState(
     val view: WardrobeView = WardrobeView.GRID,
     val images: List<DriveImage> = emptyList(),
@@ -83,6 +99,8 @@ data class WardrobeUiState(
     val needsBatteryExemption: Boolean = false,
     /** Drive folder ID that new photos will be uploaded to. */
     val importTargetFolderId: String? = null,
+    /** Non-null while a captured photo is paused for duplicate confirmation. */
+    val duplicateCheck: DuplicateCheck? = null,
 )
 
 // ---------- Audit / repair progress ----------
@@ -217,6 +235,10 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     private var geminiLanguage: String = "English"
     /** When non-null, all new photo imports target this folder instead of the active view folder. */
     private var defaultImportFolderId: String? = null
+    /** Mirrors UserPreferences.dedupeOnImport — flips capture/import similarity gate on/off. */
+    private var dedupeOnImport: Boolean = false
+    /** Mirrors UserPreferences.dedupeThreshold — cosine cutoff for "this is probably already in your wardrobe". */
+    private var dedupeThreshold: Float = 0.85f
 
     /** Serializes all Drive metadata writes to prevent concurrent saves overwriting each other. */
     private val metaMutex = Mutex()
@@ -238,6 +260,12 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun setLanguage(geminiName: String) { geminiLanguage = geminiName }
+
+    /** Push UserPreferences-derived similarity settings into the VM. Called from MainActivity. */
+    fun setDedupeSettings(enabled: Boolean, threshold: Float) {
+        dedupeOnImport = enabled
+        dedupeThreshold = threshold
+    }
 
     /** Set the folder that new photo imports target. Null = fall back to the active view folder. */
     fun setDefaultImportFolderId(folderId: String?) {
@@ -1115,6 +1143,54 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             _state.update { it.copy(view = WardrobeView.GRID) }
             return
         }
+        if (dedupeOnImport && EmbeddingService.isModelAvailable()) {
+            viewModelScope.launch {
+                _state.update { it.copy(view = WardrobeView.GRID, isUploading = true, error = null) }
+                EmbeddingService.syncIndex(_state.value.images, drive.cacheDir)
+                val matches = EmbeddingService.findSimilar(
+                    file = rawFile,
+                    threshold = dedupeThreshold,
+                    topK = 8,
+                    segment = true,
+                )
+                val byId = _state.value.images.associateBy { it.driveId }
+                val resolved = matches.mapNotNull { m ->
+                    byId[m.driveId]?.let { DuplicateMatch(it, m.score) }
+                }
+                if (resolved.isEmpty()) {
+                    proceedWithCameraUpload(rawFile, id)
+                } else {
+                    _state.update { it.copy(
+                        isUploading = false,
+                        duplicateCheck = DuplicateCheck(
+                            rawFilePath = rawFile.absolutePath,
+                            targetFolderId = id,
+                            matches = resolved,
+                        ),
+                    ) }
+                }
+            }
+            return
+        }
+        proceedWithCameraUpload(rawFile, id)
+    }
+
+    /** User confirmed they want to import despite a similarity match. */
+    fun confirmDuplicateImport() {
+        val dc = _state.value.duplicateCheck ?: return
+        _state.update { it.copy(duplicateCheck = null) }
+        proceedWithCameraUpload(File(dc.rawFilePath), dc.targetFolderId)
+    }
+
+    /** User cancelled the import — discard the raw file and clear the check. */
+    fun cancelDuplicateImport() {
+        val dc = _state.value.duplicateCheck ?: return
+        runCatching { File(dc.rawFilePath).delete() }
+        _state.update { it.copy(duplicateCheck = null) }
+    }
+
+    /** The original [uploadPhoto] body, extracted so the dedupe gate can call it once cleared. */
+    private fun proceedWithCameraUpload(rawFile: File, id: String) {
         viewModelScope.launch {
             _state.update { it.copy(view = WardrobeView.GRID, isUploading = true, error = null) }
             runCatching {

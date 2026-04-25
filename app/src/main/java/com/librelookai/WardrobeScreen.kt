@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -159,6 +160,14 @@ fun WardrobeScreen(
     val galleryLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.PickMultipleVisualMedia(),
     ) { uris -> viewModel.uploadGalleryPhotos(uris) }
+
+    state.duplicateCheck?.let { check ->
+        DuplicateCheckSheet(
+            check = check,
+            onConfirm = viewModel::confirmDuplicateImport,
+            onCancel = viewModel::cancelDuplicateImport,
+        )
+    }
 
     when (state.view) {
         WardrobeView.GRID -> GridContent(
@@ -1893,6 +1902,104 @@ private fun SortButton(
                     },
                     onClick = { onSortChanged(option); expanded = false },
                 )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun DuplicateCheckSheet(
+    check: DuplicateCheck,
+    onConfirm: () -> Unit,
+    onCancel: () -> Unit,
+) {
+    val context = LocalContext.current
+    ModalBottomSheet(
+        onDismissRequest = onCancel,
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .navigationBarsPadding()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Text(
+                stringResource(R.string.dedupe_dialog_title),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                stringResource(R.string.dedupe_dialog_desc, check.matches.size),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .aspectRatio(1f)
+                        .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.small),
+                ) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(context)
+                            .data(java.io.File(check.rawFilePath))
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = stringResource(R.string.shop_your_photo),
+                        contentScale = androidx.compose.ui.layout.ContentScale.Fit,
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
+                LazyRow(
+                    modifier = Modifier.weight(2f),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    items(check.matches, key = { it.image.driveId }) { m ->
+                        Column(
+                            modifier = Modifier.width(96.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .aspectRatio(1f)
+                                    .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.small),
+                            ) {
+                                AsyncImage(
+                                    model = ImageRequest.Builder(context)
+                                        .data(java.io.File(m.image.localPath))
+                                        .crossfade(true)
+                                        .build(),
+                                    contentDescription = m.image.name,
+                                    contentScale = androidx.compose.ui.layout.ContentScale.Fit,
+                                    modifier = Modifier.fillMaxSize(),
+                                )
+                            }
+                            val pct = (m.score.coerceIn(-1f, 1f) * 100f).toInt().coerceIn(0, 100)
+                            Text(
+                                stringResource(R.string.dedupe_score, pct),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                    }
+                }
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                TextButton(onClick = onCancel, modifier = Modifier.weight(1f)) {
+                    Text(stringResource(R.string.dedupe_dialog_cancel))
+                }
+                androidx.compose.material3.Button(onClick = onConfirm, modifier = Modifier.weight(1f)) {
+                    Text(stringResource(R.string.dedupe_dialog_import_anyway))
+                }
             }
         }
     }

@@ -163,6 +163,13 @@ class MainActivity : ComponentActivity() {
                         wardrobeViewModel.setLanguage(geminiLanguage)
                     }
 
+                    // Mirror similarity-check preferences into the wardrobe VM
+                    val dedupeOnImport = profileState.preferences.dedupeOnImport
+                    val dedupeThreshold = profileState.preferences.dedupeThreshold
+                    LaunchedEffect(dedupeOnImport, dedupeThreshold) {
+                        wardrobeViewModel.setDedupeSettings(dedupeOnImport, dedupeThreshold)
+                    }
+
                     // Apply selected language as the Compose context locale
                     val language = profileState.preferences.language
                     val baseContext = LocalContext.current
