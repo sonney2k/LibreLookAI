@@ -1460,6 +1460,44 @@ private fun AiTab(
             .padding(horizontal = 20.dp, vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
+        // ---- Similarity check ----
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(
+                stringResource(R.string.settings_dedupe_title),
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                stringResource(R.string.settings_dedupe_desc),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            SwitchRow(
+                label = stringResource(R.string.settings_dedupe_toggle),
+                sublabel = stringResource(R.string.settings_dedupe_toggle_desc),
+                checked = dedupeOnImport,
+                onCheckedChange = {
+                    dedupeOnImport = it
+                    onSaveDedupe(dedupeOnImport, dedupeThreshold)
+                },
+            )
+            Column {
+                Text(
+                    stringResource(R.string.settings_dedupe_threshold, (dedupeThreshold * 100).toInt()),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Slider(
+                    value = dedupeThreshold,
+                    onValueChange = { dedupeThreshold = it },
+                    onValueChangeFinished = { onSaveDedupe(dedupeOnImport, dedupeThreshold) },
+                    valueRange = 0.3f..0.95f,
+                    steps = 64,
+                )
+            }
+        }
+
+        HorizontalDivider()
+
         // ---- Considerations ----
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(
@@ -1526,44 +1564,6 @@ private fun AiTab(
                     onSaveConsiderations(considerations)
                 },
             )
-        }
-
-        HorizontalDivider()
-
-        // ---- Similarity check ----
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text(
-                stringResource(R.string.settings_dedupe_title),
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.SemiBold,
-            )
-            Text(
-                stringResource(R.string.settings_dedupe_desc),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            SwitchRow(
-                label = stringResource(R.string.settings_dedupe_toggle),
-                sublabel = stringResource(R.string.settings_dedupe_toggle_desc),
-                checked = dedupeOnImport,
-                onCheckedChange = {
-                    dedupeOnImport = it
-                    onSaveDedupe(dedupeOnImport, dedupeThreshold)
-                },
-            )
-            Column {
-                Text(
-                    stringResource(R.string.settings_dedupe_threshold, (dedupeThreshold * 100).toInt()),
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-                Slider(
-                    value = dedupeThreshold,
-                    onValueChange = { dedupeThreshold = it },
-                    onValueChangeFinished = { onSaveDedupe(dedupeOnImport, dedupeThreshold) },
-                    valueRange = 0.3f..0.95f,
-                    steps = 64,
-                )
-            }
         }
 
         HorizontalDivider()
