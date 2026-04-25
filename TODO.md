@@ -14,96 +14,37 @@ TODO
 Features:
 ---------
 
-AI (stars) spinning wheel in create style
+similarity search always includes all wardrobes
 
-visualize statistics on wardrobe, e.g. how many t-shirts etc and by category
+similarity search is still not reliable. Let's debug: Show the image once raw, once with background removed (white) and show the matching images with the same background removal applied. Also show the histograms. Note we are using efficientnet now to capture further textures. allow for swiping left / right to show next match
 
-Modify gaps screen into shopping helper that has 3 features:
-1. identify gaps (as before)
-2. when shopping add feature to check if item would match wardrobe and with what it could be combined / shopping helper. to this end take picture like in wardrobe with same size and UI experience. remove bg and tag and find matching items like in style creation for wardrobe
+similarity search on wardrobe: when tapping a found item don't open that item but scroll to the position where the item is in the grid view
+
+
+background removal prompt: put the "Place the clothing item on a pure, solid neon green background (Hex #00FF00).
+
+
+AI (stars) spinning wheel in create outfit
+
+Rework shopping helper by adding tools that are currently scattered across the app:
+1. Move current shopping helper under a tab Similarity Finder
+2. move the identify gaps on this Screen as a separate tab and drop previous screen
+3. Move wardrobe statistics over
+4. Move statistics from calender over 
+
+Future shopping helper
+1. When shopping add feature to check if item would match wardrobe and with what it could be combined / shopping helper. to this end take picture like in wardrobe with same size and UI experience. remove bg and tag and find matching items like in style creation for wardrobe
 3.  When selecting multiple items in wardrobe add option remove / replace item / alternatives suggestion
 
 create human readable release notes between now and c40489226c3a4a01dd4033e959d83cee1d7b8ebb and release version 1.3.0 and upload to testers in firebase
 
-on repair & sync make preview all images that will be imported in a grid similar to how they are show in wardrobe view with them all selected. only the selected ones will be modified. support manual (un)selection with the common features of (un)select all, showing counts..
-
-in wardrobe view display counts of items after applying filter
-
-
-in settings add AI tab where all gemini prompts that are currently being used are being displayed and can be edited/overriden. add a reset to defaults on this page. add a setting as in what to consider by default when suggesting a style.
-
+Implement new feature: We are working on the refinancing/monetization aspect of the app: I want people to be able to buy coins that I then use to pay gemini cloud costs. would that work with RevenueCat (handles the money/receipts) + Firebase (database and secure Gemini API routing)? In addition, I still want to support the bring your own key option though.
 
 add option to try on image from catalog
 
 groessen filter
 
-
--------
-Implement a new feature: I want a local AI / machine learning model that is super fast to detect for a picture that is taken in the app the cutouts that do exist in my cache that look similar.
-
-To solve this on an Android device locally and with blazing speed, you don't actually want a traditional "Image Classification" model (which requires retraining every time you add a new piece of clothing to the cache).
-
-Instead, you need an Image Retrieval (or Visual Search) architecture using Embeddings.
-
-Here is exactly how this works and the best stack to use for Android.
-
-The Core Concept: Image Embeddings
-An embedding model doesn't output a label like "red shirt." Instead, it looks at an image and outputs a long list of numbers (a vector, usually 512 or 1024 numbers long) that represents the "visual fingerprint" of that image.
-
-If two images look similar, their vectors will be mathematically close to each other.
-
-The Recommended Android Stack
-Use Google's MediaPipe. Specifically, the MediaPipe Tasks Vision API (ImageEmbedder). It is designed specifically for on-device, low-latency mobile ML.
-
-The Model: Use a pre-trained MobileNetV3 embedding model (available in .tflite format). It is incredibly lightweight, designed for mobile CPUs, and processes images in milliseconds.
-
-Step-by-Step Implementation
-Phase 1: Indexing your Cache (Background Task)
-You only do this once per cached item, or whenever a new cutout is downloaded to the cache.
-
-Load the Cutout: Read the cached image into a Bitmap.
-
-Generate Embedding: Pass the Bitmap to the MediaPipe ImageEmbedder. It will return a FloatArray (the vector).
-
-Store It: Save this FloatArray in your local database (Room, SQLite, or even just an in-memory HashMap if it's only a few dozen images) alongside the image's ID or file path.
-
-Phase 2: The Live Camera Picture (Real-Time)
-When the user snaps a picture in the app:
-
-Generate the Query Embedding: Pass the newly snapped picture through the exact same ImageEmbedder model to get its FloatArray vector.
-
-Calculate Similarity: Loop through all the stored vectors in your cache. Calculate the Cosine Similarity between the live picture's vector and each cached vector.
-
-Cosine similarity is a simple math formula that outputs a score between -1 and 1. A score closer to 1 means the images are visually identical.
-
-Check the Threshold: Find the highest score. If it is above a specific threshold (e.g., 0.85), you have a match! You now know exactly which cached cutout it corresponds to.
-
-Crucial Tip for Accuracy: The "Background" Problem
-You mentioned your cache has "cutouts" (which implies no background), but the user is taking a live picture (which will have a background, like a bedroom wall or a body).
-
-If you compare an image without a background to an image with a background, the embedding vectors might look too different, causing the match to fail.
-
-How to fix this:
-Before you pass the live camera picture to the ImageEmbedder, you should separate the clothing from the background. You can do this by chaining another lightning-fast MediaPipe tool called the Image Segmenter (specifically the Magic Touch or Selfie Segmentation models) to mask out the background of the live photo, turning it into a cutout before you extract the visual fingerprint.
-
-Summary of your Android Pipeline:
-Camera Input -> Bitmap
-
-(Optional but recommended) MediaPipe Image Segmenter -> Removes background.
-
-MediaPipe Image Embedder (MobileNet) -> Outputs FloatArray vector.
-
-Kotlin Math (Cosine Similarity loop) -> Compares against cached vectors.
-
-Result -> Highest score > Threshold = Match found.
-
-Because MediaPipe runs purely on-device (utilizing the CPU, GPU, or Android NPU), this entire pipeline will execute in real-time (often well under 100 milliseconds), require zero internet connection, and respect user privacy.
------
-
-
-
-
-Implement new feature: We are working on the refinancing/monetization aspect of the app: I want people to be able to buy coins that I then use to pay gemini cloud costs. would that work with RevenueCat (handles the money/receipts) + Firebase (database and secure Gemini API routing)? In addition, I still want to support the bring your own key option though.
+size
 
 Bugs:
 -----
@@ -119,6 +60,18 @@ ensure that in all processes, images are smaller than max(width,height)<1280. In
 
 IN PROGRESS
 ===========
+sync & repair: don't always clear cache make that optional
+
+Integrate similarity search on several places:
+1. when taking picture on wardrobe item import: when picture is taken check for similar ones automatically (make this optional via settings). if similar items are found (configurable threshold in settings) then let user see them and confirm if import should continue. for similarity comparison remove background of the photo in the same way as it is done for similarity search
+2. shopping helper (as it is now)
+3. in wardrobe view add option to go to item by taking picture, let the user see alternatives; when user selects one go to that item
+4. in sync & repair, for each found image run similarity search. if above a certain threshold mark the image with 'similar'. Clicking on 'similar' then shows the similar ones. make the user confirm that there are no similar ones then. like in 1. remove background
+5. in wardrobe import from folder: add same logic like in 4. sync & repair: preview images that would be imported and let user select and have similarity search
+
+on repair & sync make preview all images that will be imported in a grid similar to how they are show in wardrobe view with them all selected. only the selected ones will be modified. support manual (un)selection with the common features of (un)select all, showing counts..
+
+in settings add AI tab where all gemini prompts that are currently being used are being displayed and can be edited/overriden. add a reset to defaults on this page. add a setting as in what to consider by default when suggesting a style.
 
 how can we unify tags? I see tags like "Long-sleeve T-shirt", "Long-sleeved t-shirt", "Long-sleeve shirt" that likely mean the same. Or "grey", "Gray"
 
@@ -129,6 +82,13 @@ travel packing. For each suggested style add option to add to styles. also add o
 
 FIXED
 =====
+move similarity threshold setting to top of AI tab
+
+Implement a new feature: I want a local AI / machine learning model that is super fast to detect for a picture that is taken in the app the cutouts that do exist in my cache that look similar.
+
+visualize statistics on wardrobe, e.g. how many t-shirts etc and by category
+in wardrobe view display counts of items after applying filter
+
 unify the try on feature from outfit or from multiple items in wardrobe screen: 1. create a new view that first shows those items and let's the user to add / remove items and then try on. explain that all those will be worn in the try-on. 2. show the try-on image make it zoomable 3. if the user likes it save the try-on in a dedicated folder on google drive together with the selected items. 4. add way to view previous try-ons together with items
 
 currently there are different ways to create new styles, one in wardrobe view when selecting one or more items then manual / suggest with AI. One when selecting a multiple style to combine them. One in travel. Unify them in the following way. When items are selected have one button to create new style... this style opens a window that gives the user a list of options: 1. weather (automatic current weather - show state; or self selected by e.g. season / temperature /precipitation) 2. current preferences (e.g. casual, sporty, ...) 3. showing all wardrobe items that are currently selected but allow adding more items from wardrobe 4. number and kind of items to combine (e.g. top, bottom, footwear). 5. user preference prompt from settings that can be overridden. 6. add button to enhance with AI with feedback via prompt keeping context
