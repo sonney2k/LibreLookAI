@@ -87,6 +87,17 @@
     <string name="settings_repair_skip">Überspringen &amp; Aktualisieren</string>
     <string name="settings_repair_processing">Verarbeite Artikel %1$d von %2$d…</string>
     <string name="settings_repair_done">Reparatur abgeschlossen. Garderobe aktualisiert.</string>
+    <string name="settings_repair_preview_title">Reparieren &amp; Synchronisieren — Vorschau</string>
+    <string name="settings_repair_preview_subtitle">Ausgewählte Bilder werden verarbeitet. Tippe auf ein Vorschaubild, um es zu überspringen.</string>
+    <string name="settings_repair_preview_section_orphaned">Benötigen Hintergrundentfernung + Tags</string>
+    <string name="settings_repair_preview_section_raw">Unbekannte Bilder — benötigen Hintergrundentfernung + Tags</string>
+    <string name="settings_repair_preview_section_sidecar">Benötigen nur Tags</string>
+    <string name="settings_repair_preview_section_count">%1$d von %2$d ausgewählt</string>
+    <string name="settings_repair_preview_selected">%1$d von %2$d ausgewählt</string>
+    <string name="settings_repair_preview_select_all">Alle auswählen</string>
+    <string name="settings_repair_preview_deselect_all">Auswahl aufheben</string>
+    <string name="settings_repair_preview_process_n">%1$d verarbeiten</string>
+    <string name="settings_repair_preview_cost_total">Geschätzte Kosten: %1$d Credits</string>
     <string name="settings_migrate_title">Dateinamen migrieren</string>
     <string name="settings_migrate_desc">Einmalige Umbenennung älterer Drive-Dateien auf die neue Namenskonvention. Alte Dateien nutzten die Drive-ID als Präfix des Originals (z.B. 1iTa8U…_original.jpg), was Paare unleserlich machte. Nach der Migration teilen alle Paare dasselbe Präfix: foto_cutout.png + foto_original.jpg.</string>
     <string name="settings_migrate_button">Dateinamen migrieren</string>
@@ -322,7 +333,7 @@
     <string name="outfits_refine_simpler">Einfacher</string>
     <string name="outfits_refine_bold">Gewagter</string>
     <string name="outfits_items_label">Outfit-Teile</string>
-    <string name="outfit_add_item">Artikel hinzufügen</string>
+    <string name="outfits_add_item">Artikel hinzufügen</string>
     <string name="outfits_swap_item_for">Tauschen: %s</string>
     <string name="outfits_suggest_alternatives">10 Alternativen vorschlagen</string>
     <string name="outfits_select_item">Auswählen</string>

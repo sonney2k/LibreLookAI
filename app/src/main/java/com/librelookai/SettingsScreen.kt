@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +16,10 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -31,6 +36,7 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.AutoFixHigh
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExpandLess
@@ -69,6 +75,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -84,6 +91,8 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import java.io.File
@@ -175,6 +184,9 @@ fun SettingsScreen(
                 },
                 onContinueRepair = wardrobeViewModel::continueRepairProcessing,
                 onDismissAudit = wardrobeViewModel::dismissAuditResult,
+                onToggleAuditSelection = wardrobeViewModel::toggleAuditSelection,
+                onSetAuditSelection = wardrobeViewModel::setAuditSelection,
+                fetchAuditThumbnail = wardrobeViewModel::fetchAuditThumbnail,
                 onImportFromFolder = { removeBg, autoTag, replace, overwrite, useDrive ->
                     pendingImportRemoveBg  = removeBg
                     pendingImportAutoTag   = autoTag
@@ -533,6 +545,9 @@ private fun DataTab(
     onStartRepairAndRefresh: () -> Unit,
     onContinueRepair: (Boolean) -> Unit,
     onDismissAudit: () -> Unit,
+    onToggleAuditSelection: (String) -> Unit,
+    onSetAuditSelection: (Set<String>) -> Unit,
+    fetchAuditThumbnail: suspend (AuditFileEntry) -> File?,
     onImportFromFolder: (removeBackground: Boolean, autoTag: Boolean, replaceExisting: Boolean, overwriteDuplicates: Boolean, useDrivePicker: Boolean) -> Unit,
     locationState: LocationUiState,
     onSetActiveLocation: (String) -> Unit,
@@ -885,68 +900,39 @@ private fun DataTab(
     }
 
     if (audit?.awaitingConfirmation == true) {
-        AlertDialog(
-            onDismissRequest = { onContinueRepair(false) },
-            title = { Text(stringResource(R.string.settings_repair_confirm_title)) },
-            text = {
-                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    val hasFindings = audit.renamedCount > 0 || audit.orphanedOriginals > 0 || audit.rawImages > 0 || audit.sidecarNeeded > 0
-                    if (!hasFindings) {
-                        Text(stringResource(R.string.settings_repair_confirm_all_ok))
-                    } else {
+        val hasFindings = audit.orphanedOriginals > 0 || audit.rawImages > 0 || audit.sidecarNeeded > 0
+        if (hasFindings) {
+            RepairPreviewDialog(
+                audit = audit,
+                onToggleSelection = onToggleAuditSelection,
+                onSetSelection = onSetAuditSelection,
+                fetchThumbnail = fetchAuditThumbnail,
+                onProcess = { onContinueRepair(true) },
+                onCancel = { onContinueRepair(false) },
+            )
+        } else {
+            // Nothing to process — keep the simple "all clean / renamed only" dialog so the
+            // user gets confirmation and a refresh path without a heavyweight preview screen.
+            AlertDialog(
+                onDismissRequest = { onContinueRepair(false) },
+                title = { Text(stringResource(R.string.settings_repair_confirm_title)) },
+                text = {
+                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                         if (audit.renamedCount > 0) {
                             Text(stringResource(R.string.settings_repair_confirm_renamed, audit.renamedCount),
                                 style = MaterialTheme.typography.bodySmall)
                         }
-                        if (audit.orphanedOriginals > 0) {
-                            val cost = audit.orphanedOriginals * (CreditPacks.COST_BG_REMOVAL + CreditPacks.COST_CLASSIFY)
-                            Text(stringResource(R.string.settings_repair_confirm_unprocessed, audit.orphanedOriginals),
-                                style = MaterialTheme.typography.bodySmall)
-                            Text(
-                                stringResource(R.string.settings_bulk_cost_line, audit.orphanedOriginals,
-                                    CreditPacks.COST_BG_REMOVAL + CreditPacks.COST_CLASSIFY, cost),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        }
-                        if (audit.rawImages > 0) {
-                            val cost = audit.rawImages * (CreditPacks.COST_BG_REMOVAL + CreditPacks.COST_CLASSIFY)
-                            Text(stringResource(R.string.settings_repair_confirm_raw, audit.rawImages),
-                                style = MaterialTheme.typography.bodySmall)
-                            Text(
-                                stringResource(R.string.settings_bulk_cost_line, audit.rawImages,
-                                    CreditPacks.COST_BG_REMOVAL + CreditPacks.COST_CLASSIFY, cost),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        }
-                        if (audit.sidecarNeeded > 0) {
-                            val cost = audit.sidecarNeeded * CreditPacks.COST_CLASSIFY
-                            Text(stringResource(R.string.settings_repair_confirm_sidecar, audit.sidecarNeeded),
-                                style = MaterialTheme.typography.bodySmall)
-                            Text(
-                                stringResource(R.string.settings_bulk_cost_line, audit.sidecarNeeded,
-                                    CreditPacks.COST_CLASSIFY, cost),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        }
+                        Text(stringResource(R.string.settings_repair_confirm_all_ok))
                     }
-                }
-            },
-            confirmButton = {
-                if (audit.orphanedOriginals > 0 || audit.rawImages > 0 || audit.sidecarNeeded > 0) {
-                    TextButton(onClick = { onContinueRepair(true) }) {
-                        Text(stringResource(R.string.settings_repair_process))
+                },
+                confirmButton = {},
+                dismissButton = {
+                    TextButton(onClick = { onContinueRepair(false) }) {
+                        Text(stringResource(R.string.settings_repair_skip))
                     }
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { onContinueRepair(false) }) {
-                    Text(stringResource(R.string.settings_repair_skip))
-                }
-            },
-        )
+                },
+            )
+        }
     }
 
     if (showImportOptionsDialog) {
@@ -1716,5 +1702,341 @@ private fun AboutTab() {
             stringResource(R.string.about_credits_desc),
             style = MaterialTheme.typography.bodyMedium,
         )
+    }
+}
+
+// ---------- Repair & Sync preview dialog ----------
+
+/**
+ * Full-screen confirmation step for Repair & Sync. Shows a wardrobe-style grid of every
+ * affected file (orphaned originals, raw images, cutouts missing tags) grouped by section.
+ * All items start selected; tapping a tile toggles whether it will be processed.
+ */
+@Composable
+private fun RepairPreviewDialog(
+    audit: AuditProgress,
+    onToggleSelection: (String) -> Unit,
+    onSetSelection: (Set<String>) -> Unit,
+    fetchThumbnail: suspend (AuditFileEntry) -> File?,
+    onProcess: () -> Unit,
+    onCancel: () -> Unit,
+) {
+    Dialog(
+        onDismissRequest = onCancel,
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false,
+            dismissOnBackPress = true,
+            dismissOnClickOutside = false,
+        ),
+    ) {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background,
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                // Header
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp, vertical = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    IconButton(onClick = onCancel) {
+                        Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_cancel))
+                    }
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            stringResource(R.string.settings_repair_preview_title),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                        Text(
+                            stringResource(R.string.settings_repair_preview_subtitle),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+                HorizontalDivider()
+
+                // Selection bar
+                val totalCount = audit.items.size
+                val selectedCount = audit.selectedAuditIds.size
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        stringResource(R.string.settings_repair_preview_selected, selectedCount, totalCount),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.weight(1f),
+                    )
+                    if (selectedCount < totalCount) {
+                        TextButton(
+                            onClick = { onSetSelection(audit.items.map { it.driveId }.toSet()) },
+                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                        ) {
+                            Text(stringResource(R.string.settings_repair_preview_select_all))
+                        }
+                    }
+                    if (selectedCount > 0) {
+                        TextButton(
+                            onClick = { onSetSelection(emptySet()) },
+                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                        ) {
+                            Text(stringResource(R.string.settings_repair_preview_deselect_all))
+                        }
+                    }
+                }
+                if (audit.renamedCount > 0) {
+                    Text(
+                        stringResource(R.string.settings_repair_confirm_renamed, audit.renamedCount),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 2.dp),
+                    )
+                }
+
+                // Grid: items split by section, headers occupy a full row
+                LazyVerticalGrid(
+                    columns = GridCells.Adaptive(96.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .padding(horizontal = 6.dp),
+                ) {
+                    val orphaned = audit.items.filter { it.kind == AuditKind.ORPHANED_ORIGINAL }
+                    val raws     = audit.items.filter { it.kind == AuditKind.RAW }
+                    val sidecars = audit.items.filter { it.kind == AuditKind.NEEDS_SIDECAR }
+
+                    if (orphaned.isNotEmpty()) {
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+                            RepairSectionHeader(
+                                title = stringResource(R.string.settings_repair_preview_section_orphaned),
+                                items = orphaned,
+                                selected = audit.selectedAuditIds,
+                                costPerItem = CreditPacks.COST_BG_REMOVAL + CreditPacks.COST_CLASSIFY,
+                                onSetSelection = onSetSelection,
+                                allSelectedIds = audit.selectedAuditIds,
+                            )
+                        }
+                        items(orphaned, key = { it.driveId }) { entry ->
+                            RepairPreviewTile(
+                                entry = entry,
+                                isSelected = entry.driveId in audit.selectedAuditIds,
+                                onToggle = { onToggleSelection(entry.driveId) },
+                                fetchThumbnail = fetchThumbnail,
+                            )
+                        }
+                    }
+                    if (raws.isNotEmpty()) {
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+                            RepairSectionHeader(
+                                title = stringResource(R.string.settings_repair_preview_section_raw),
+                                items = raws,
+                                selected = audit.selectedAuditIds,
+                                costPerItem = CreditPacks.COST_BG_REMOVAL + CreditPacks.COST_CLASSIFY,
+                                onSetSelection = onSetSelection,
+                                allSelectedIds = audit.selectedAuditIds,
+                            )
+                        }
+                        items(raws, key = { it.driveId }) { entry ->
+                            RepairPreviewTile(
+                                entry = entry,
+                                isSelected = entry.driveId in audit.selectedAuditIds,
+                                onToggle = { onToggleSelection(entry.driveId) },
+                                fetchThumbnail = fetchThumbnail,
+                            )
+                        }
+                    }
+                    if (sidecars.isNotEmpty()) {
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+                            RepairSectionHeader(
+                                title = stringResource(R.string.settings_repair_preview_section_sidecar),
+                                items = sidecars,
+                                selected = audit.selectedAuditIds,
+                                costPerItem = CreditPacks.COST_CLASSIFY,
+                                onSetSelection = onSetSelection,
+                                allSelectedIds = audit.selectedAuditIds,
+                            )
+                        }
+                        items(sidecars, key = { it.driveId }) { entry ->
+                            RepairPreviewTile(
+                                entry = entry,
+                                isSelected = entry.driveId in audit.selectedAuditIds,
+                                onToggle = { onToggleSelection(entry.driveId) },
+                                fetchThumbnail = fetchThumbnail,
+                            )
+                        }
+                    }
+                }
+
+                HorizontalDivider()
+
+                // Bottom action bar with total cost + buttons
+                val totalCost = audit.items.count { it.driveId in audit.selectedAuditIds && it.kind != AuditKind.NEEDS_SIDECAR } *
+                        (CreditPacks.COST_BG_REMOVAL + CreditPacks.COST_CLASSIFY) +
+                    audit.items.count { it.driveId in audit.selectedAuditIds && it.kind == AuditKind.NEEDS_SIDECAR } *
+                        CreditPacks.COST_CLASSIFY
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        stringResource(R.string.settings_repair_preview_cost_total, totalCost),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.weight(1f),
+                    )
+                    TextButton(onClick = onCancel) {
+                        Text(stringResource(R.string.settings_repair_skip))
+                    }
+                    Spacer(Modifier.size(4.dp))
+                    Button(
+                        onClick = onProcess,
+                        enabled = selectedCount > 0,
+                    ) {
+                        Text(stringResource(R.string.settings_repair_preview_process_n, selectedCount))
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun RepairSectionHeader(
+    title: String,
+    items: List<AuditFileEntry>,
+    selected: Set<String>,
+    costPerItem: Int,
+    onSetSelection: (Set<String>) -> Unit,
+    allSelectedIds: Set<String>,
+) {
+    val sectionIds = remember(items) { items.map { it.driveId }.toSet() }
+    val sectionSelected = remember(items, selected) { items.count { it.driveId in selected } }
+    val cost = sectionSelected * costPerItem
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 6.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                title,
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                stringResource(R.string.settings_repair_preview_section_count, sectionSelected, items.size),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            if (sectionSelected > 0) {
+                Text(
+                    stringResource(R.string.settings_bulk_cost_line, sectionSelected, costPerItem, cost),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+        val allInSection = items.all { it.driveId in selected }
+        TextButton(
+            onClick = {
+                val next = if (allInSection) {
+                    allSelectedIds - sectionIds
+                } else {
+                    allSelectedIds + sectionIds
+                }
+                onSetSelection(next)
+            },
+            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+        ) {
+            Text(
+                if (allInSection) stringResource(R.string.settings_repair_preview_deselect_all)
+                else stringResource(R.string.settings_repair_preview_select_all)
+            )
+        }
+    }
+}
+
+/**
+ * One thumbnail tile in the repair preview grid. Lazily fetches the file from Drive (or the
+ * existing wardrobe cache) on first composition; shows a placeholder while loading or on
+ * failure. Tap toggles the selection state.
+ */
+@Composable
+private fun RepairPreviewTile(
+    entry: AuditFileEntry,
+    isSelected: Boolean,
+    onToggle: () -> Unit,
+    fetchThumbnail: suspend (AuditFileEntry) -> File?,
+) {
+    val thumbFile by produceState<File?>(initialValue = null, entry.driveId) {
+        value = fetchThumbnail(entry)
+    }
+    Box(
+        modifier = Modifier
+            .padding(2.dp)
+            .aspectRatio(1f)
+            .clip(MaterialTheme.shapes.small)
+            .clickable(onClick = onToggle),
+    ) {
+        if (thumbFile != null) {
+            AsyncImage(
+                model = thumbFile,
+                contentDescription = entry.name,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop,
+            )
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
+                contentAlignment = Alignment.Center,
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(20.dp),
+                    strokeWidth = 2.dp,
+                )
+            }
+        }
+        if (isSelected) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White.copy(alpha = 0.3f)),
+                contentAlignment = Alignment.TopEnd,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.CheckCircle,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(4.dp),
+                )
+            }
+        } else {
+            // Dim deselected tiles + show a subtle skip indicator so it's obvious they won't be processed.
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.45f)),
+                contentAlignment = Alignment.TopEnd,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.padding(4.dp).size(18.dp),
+                )
+            }
+        }
     }
 }

@@ -91,6 +91,17 @@
     <string name="settings_repair_skip">Skip &amp; Refresh</string>
     <string name="settings_repair_processing">Processing item %1$d of %2$d…</string>
     <string name="settings_repair_done">Repair complete. Wardrobe refreshed.</string>
+    <string name="settings_repair_preview_title">Repair &amp; Sync — Preview</string>
+    <string name="settings_repair_preview_subtitle">Selected items will be processed. Tap any thumbnail to skip it.</string>
+    <string name="settings_repair_preview_section_orphaned">Need background removal + tags</string>
+    <string name="settings_repair_preview_section_raw">Unrecognised images — need background removal + tags</string>
+    <string name="settings_repair_preview_section_sidecar">Need tags only</string>
+    <string name="settings_repair_preview_section_count">%1$d of %2$d selected</string>
+    <string name="settings_repair_preview_selected">%1$d of %2$d selected</string>
+    <string name="settings_repair_preview_select_all">Select all</string>
+    <string name="settings_repair_preview_deselect_all">Deselect all</string>
+    <string name="settings_repair_preview_process_n">Process %1$d</string>
+    <string name="settings_repair_preview_cost_total">Estimated cost: %1$d credits</string>
     <string name="settings_migrate_title">Migrate File Names</string>
     <string name="settings_migrate_desc">One-time rename of legacy Drive files to the new naming convention. Old files used the Drive ID as the original\'s prefix (e.g. 1iTa8U…_original.jpg) making pairs unrecognisable. After migration each pair shares the same prefix: photo_cutout.png + photo_original.jpg.</string>
     <string name="settings_migrate_button">Migrate File Names</string>

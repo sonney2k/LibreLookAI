@@ -101,10 +101,28 @@ data class AuditProgress(
     val rawImages: Int = 0,
     /** Cutouts that are missing a tag sidecar and need tagging. */
     val sidecarNeeded: Int = 0,
+    /** All audit findings as preview-grid entries; same items counted in the fields above. */
+    val items: List<AuditFileEntry> = emptyList(),
+    /** Drive IDs the user has selected for processing. Defaults to all items when scan completes. */
+    val selectedAuditIds: Set<String> = emptySet(),
     val isProcessing: Boolean = false,
     val processDone: Int = 0,
     val processTotal: Int = 0,
     val isDone: Boolean = false,
+)
+
+/** Kind of finding for a single audited file — drives processing path + section grouping in the UI. */
+enum class AuditKind { ORPHANED_ORIGINAL, RAW, NEEDS_SIDECAR }
+
+/**
+ * One entry in the Repair & Sync preview grid. For [AuditKind.NEEDS_SIDECAR] the [driveId] points
+ * at the existing cutout; otherwise it's the orphaned original / raw image awaiting processing.
+ */
+data class AuditFileEntry(
+    val driveId: String,
+    val name: String,
+    val folderId: String,
+    val kind: AuditKind,
 )
 
 // ---------- Per-item sidecar metadata ----------
@@ -402,6 +420,11 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
                 Log.d(TAG, "Scan complete — renamed=$totalRenamed orphaned=${orphaned.size} rawImages=${rawImages.size} needSidecar=${needSidecar.size}")
                 pendingAudit = AuditIntermediate(folderIds, orphaned, rawImages, needSidecar)
+                val previewItems = buildList<AuditFileEntry> {
+                    orphaned.forEach { add(AuditFileEntry(it.driveId, it.name, it.folderId, AuditKind.ORPHANED_ORIGINAL)) }
+                    rawImages.forEach { add(AuditFileEntry(it.driveId, it.name, it.folderId, AuditKind.RAW)) }
+                    needSidecar.forEach { add(AuditFileEntry(it.cutoutDriveId, it.cutoutName, it.folderId, AuditKind.NEEDS_SIDECAR)) }
+                }
                 _state.update { it.copy(
                     auditProgress = AuditProgress(
                         awaitingConfirmation = true,
@@ -409,6 +432,8 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                         orphanedOriginals = orphaned.size,
                         rawImages = rawImages.size,
                         sidecarNeeded = needSidecar.size,
+                        items = previewItems,
+                        selectedAuditIds = previewItems.map { e -> e.driveId }.toSet(),
                     )
                 )}
             } finally {
@@ -434,8 +459,17 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         }
         pendingAudit = null
 
-        if (!process) {
-            Log.d(TAG, "User skipped processing — reloading")
+        // Filter the scan results down to whatever the user left checked in the preview grid.
+        // When invoked with process=false, treat as "skip everything" regardless of selection.
+        val selected: Set<String> =
+            if (process) _state.value.auditProgress?.selectedAuditIds.orEmpty() else emptySet()
+        val filteredOrphaned = audit.orphanedOriginals.filter { it.driveId in selected }
+        val filteredRaw      = audit.rawImages.filter        { it.driveId in selected }
+        val filteredSidecar  = audit.cutoutsNeedingSidecar.filter { it.cutoutDriveId in selected }
+        val anySelected = filteredOrphaned.isNotEmpty() || filteredRaw.isNotEmpty() || filteredSidecar.isNotEmpty()
+
+        if (!process || !anySelected) {
+            Log.d(TAG, "User skipped processing (process=$process, selected=${selected.size}) — reloading")
             _state.update { it.copy(auditProgress = null) }
             viewModelScope.launch(Dispatchers.IO) {
                 audit.folderIds.forEach { localCacheFile(it).delete() }
@@ -446,8 +480,8 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             return
         }
 
-        val processTotal = audit.orphanedOriginals.size + audit.rawImages.size + audit.cutoutsNeedingSidecar.size
-        Log.d(TAG, "Processing started — ${audit.orphanedOriginals.size} orphaned original(s), ${audit.rawImages.size} raw image(s), ${audit.cutoutsNeedingSidecar.size} cutout(s) needing tagging")
+        val processTotal = filteredOrphaned.size + filteredRaw.size + filteredSidecar.size
+        Log.d(TAG, "Processing started — ${filteredOrphaned.size} orphaned original(s), ${filteredRaw.size} raw image(s), ${filteredSidecar.size} cutout(s) needing tagging (selection-filtered)")
         _state.update { it.copy(auditProgress = AuditProgress(isProcessing = true, processTotal = processTotal)) }
         acquireJobWakeLock()
 
@@ -456,7 +490,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 var done = 0
 
                 // --- Orphaned originals: bg removal + cutout upload + tag + sidecar ---
-                audit.orphanedOriginals.forEach { item ->
+                filteredOrphaned.forEach { item ->
                     Log.d(TAG, "Processing orphaned original: ${item.name} (${item.driveId})")
                     runCatching {
                         val localOriginal = drive.downloadToCache(item.driveId, item.name)
@@ -501,7 +535,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 }
 
                 // --- Raw/unknown images: full AI processing (same as orphaned originals) ---
-                audit.rawImages.forEach { item ->
+                filteredRaw.forEach { item ->
                     Log.d(TAG, "Processing raw image: ${item.name} (${item.driveId})")
                     runCatching {
                         val localOriginal = drive.downloadToCache(item.driveId, item.name)
@@ -546,7 +580,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 }
 
                 // --- Cutouts missing sidecars or with empty tags: tag from cutout + write sidecar ---
-                audit.cutoutsNeedingSidecar.forEach { item ->
+                filteredSidecar.forEach { item ->
                     Log.d(TAG, "Tagging cutout: ${item.cutoutName} (${item.cutoutDriveId})")
                     runCatching {
                         val localCutout = drive.cachedFile(item.cutoutDriveId)
@@ -585,6 +619,38 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     /** Clears the audit result state (call after user dismisses the "done" message). */
     fun dismissAuditResult() {
         _state.update { it.copy(auditProgress = null) }
+    }
+
+    /** Toggle whether [driveId] will be processed by Repair & Sync. No-op outside the confirmation step. */
+    fun toggleAuditSelection(driveId: String) {
+        _state.update { s ->
+            val a = s.auditProgress ?: return@update s
+            if (!a.awaitingConfirmation) return@update s
+            val next = a.selectedAuditIds.toMutableSet()
+            if (!next.add(driveId)) next.remove(driveId)
+            s.copy(auditProgress = a.copy(selectedAuditIds = next))
+        }
+    }
+
+    /** Replace the audit selection (used by Select all / Deselect all). */
+    fun setAuditSelection(driveIds: Set<String>) {
+        _state.update { s ->
+            val a = s.auditProgress ?: return@update s
+            if (!a.awaitingConfirmation) return@update s
+            s.copy(auditProgress = a.copy(selectedAuditIds = driveIds))
+        }
+    }
+
+    /**
+     * Lazily fetches a local thumbnail file for one [AuditFileEntry]. Falls back to
+     * the existing wardrobe cache for cutouts before downloading from Drive. Returns null
+     * on failure — callers should show a placeholder.
+     */
+    suspend fun fetchAuditThumbnail(entry: AuditFileEntry): File? = withContext(Dispatchers.IO) {
+        // Prefer an already-cached file (especially for NEEDS_SIDECAR cutouts, which the
+        // wardrobe load may have downloaded into cache as `{id}.png`).
+        drive.cachedFile(entry.driveId)?.let { return@withContext it }
+        runCatching { drive.downloadToCache(entry.driveId, entry.name) }.getOrNull()
     }
 
     private fun localCacheFile(id: String) =
