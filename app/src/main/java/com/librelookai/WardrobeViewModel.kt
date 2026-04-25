@@ -131,6 +131,10 @@ data class AuditProgress(
     val rawImages: Int = 0,
     /** Cutouts that are missing a tag sidecar and need tagging. */
     val sidecarNeeded: Int = 0,
+    /** Cutouts that have at least one visually-similar peer in the wardrobe. */
+    val duplicates: Int = 0,
+    /** True while the duplicate-detection pass is still running after the file scan. */
+    val isScanningDuplicates: Boolean = false,
     /** All audit findings as preview-grid entries; same items counted in the fields above. */
     val items: List<AuditFileEntry> = emptyList(),
     /** Drive IDs the user has selected for processing. Defaults to all items when scan completes. */
@@ -142,17 +146,26 @@ data class AuditProgress(
 )
 
 /** Kind of finding for a single audited file — drives processing path + section grouping in the UI. */
-enum class AuditKind { ORPHANED_ORIGINAL, RAW, NEEDS_SIDECAR }
+enum class AuditKind { ORPHANED_ORIGINAL, RAW, NEEDS_SIDECAR, DUPLICATE }
 
 /**
  * One entry in the Repair & Sync preview grid. For [AuditKind.NEEDS_SIDECAR] the [driveId] points
- * at the existing cutout; otherwise it's the orphaned original / raw image awaiting processing.
+ * at the existing cutout; for [AuditKind.DUPLICATE] it points at a cutout that has at least one
+ * visually-similar peer (listed in [similarTo]); otherwise it's the orphaned original / raw image
+ * awaiting processing.
+ *
+ * Selecting a [AuditKind.DUPLICATE] entry means "delete it from Drive" — duplicates do not consume
+ * credits.
  */
 data class AuditFileEntry(
     val driveId: String,
     val name: String,
     val folderId: String,
     val kind: AuditKind,
+    /** For [AuditKind.DUPLICATE], wardrobe Drive IDs the entry is similar to (best match first). */
+    val similarTo: List<String> = emptyList(),
+    /** For [AuditKind.DUPLICATE], cosine score against the closest peer in [similarTo]. */
+    val topScore: Float = 0f,
 )
 
 // ---------- Per-item sidecar metadata ----------
@@ -181,11 +194,19 @@ private data class PendingJob(val driveId: String, val folderId: String)
 // Internal audit helpers
 private data class AuditItem(val folderId: String, val driveId: String, val name: String)
 private data class AuditCutoutItem(val folderId: String, val cutoutDriveId: String, val cutoutName: String)
+private data class AuditDuplicateItem(
+    val folderId: String,
+    val cutoutDriveId: String,
+    val cutoutName: String,
+    val similarTo: List<String>,
+    val topScore: Float,
+)
 private data class AuditIntermediate(
     val folderIds: List<String>,
     val orphanedOriginals: List<AuditItem>,
     val rawImages: List<AuditItem>,
     val cutoutsNeedingSidecar: List<AuditCutoutItem>,
+    val duplicates: List<AuditDuplicateItem> = emptyList(),
 )
 
 class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
@@ -459,12 +480,25 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 }
 
                 Log.d(TAG, "Scan complete — renamed=$totalRenamed orphaned=${orphaned.size} rawImages=${rawImages.size} needSidecar=${needSidecar.size}")
-                pendingAudit = AuditIntermediate(folderIds, orphaned, rawImages, needSidecar)
+
+                // ---- Phase 1b: detect visually-similar cutouts using the on-device index. ----
+                _state.update { it.copy(auditProgress = it.auditProgress?.copy(isScanningDuplicates = true)) }
+                val duplicates = detectDuplicateCutouts(folderIds)
+                _state.update { it.copy(auditProgress = it.auditProgress?.copy(isScanningDuplicates = false)) }
+                Log.d(TAG, "Duplicate-detection complete — ${duplicates.size} cutout(s) flagged")
+
+                pendingAudit = AuditIntermediate(folderIds, orphaned, rawImages, needSidecar, duplicates)
                 val previewItems = buildList<AuditFileEntry> {
                     orphaned.forEach { add(AuditFileEntry(it.driveId, it.name, it.folderId, AuditKind.ORPHANED_ORIGINAL)) }
                     rawImages.forEach { add(AuditFileEntry(it.driveId, it.name, it.folderId, AuditKind.RAW)) }
                     needSidecar.forEach { add(AuditFileEntry(it.cutoutDriveId, it.cutoutName, it.folderId, AuditKind.NEEDS_SIDECAR)) }
+                    duplicates.forEach { d ->
+                        add(AuditFileEntry(d.cutoutDriveId, d.cutoutName, d.folderId, AuditKind.DUPLICATE,
+                            similarTo = d.similarTo, topScore = d.topScore))
+                    }
                 }
+                // Default selection: every fix-needed item (process), but no duplicates (delete is destructive).
+                val defaultSelection = previewItems.filter { it.kind != AuditKind.DUPLICATE }.map { it.driveId }.toSet()
                 _state.update { it.copy(
                     auditProgress = AuditProgress(
                         awaitingConfirmation = true,
@@ -472,8 +506,9 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                         orphanedOriginals = orphaned.size,
                         rawImages = rawImages.size,
                         sidecarNeeded = needSidecar.size,
+                        duplicates = duplicates.size,
                         items = previewItems,
-                        selectedAuditIds = previewItems.map { e -> e.driveId }.toSet(),
+                        selectedAuditIds = defaultSelection,
                     )
                 )}
             } finally {
@@ -506,7 +541,9 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         val filteredOrphaned = audit.orphanedOriginals.filter { it.driveId in selected }
         val filteredRaw      = audit.rawImages.filter        { it.driveId in selected }
         val filteredSidecar  = audit.cutoutsNeedingSidecar.filter { it.cutoutDriveId in selected }
-        val anySelected = filteredOrphaned.isNotEmpty() || filteredRaw.isNotEmpty() || filteredSidecar.isNotEmpty()
+        val filteredDuplicates = audit.duplicates.filter      { it.cutoutDriveId in selected }
+        val anySelected = filteredOrphaned.isNotEmpty() || filteredRaw.isNotEmpty() ||
+            filteredSidecar.isNotEmpty() || filteredDuplicates.isNotEmpty()
 
         if (!process || !anySelected) {
             Log.d(TAG, "User skipped processing (process=$process, selected=${selected.size}) — reloading")
@@ -520,8 +557,8 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             return
         }
 
-        val processTotal = filteredOrphaned.size + filteredRaw.size + filteredSidecar.size
-        Log.d(TAG, "Processing started — ${filteredOrphaned.size} orphaned original(s), ${filteredRaw.size} raw image(s), ${filteredSidecar.size} cutout(s) needing tagging (selection-filtered)")
+        val processTotal = filteredOrphaned.size + filteredRaw.size + filteredSidecar.size + filteredDuplicates.size
+        Log.d(TAG, "Processing started — ${filteredOrphaned.size} orphaned original(s), ${filteredRaw.size} raw image(s), ${filteredSidecar.size} cutout(s) needing tagging, ${filteredDuplicates.size} duplicate(s) to delete (selection-filtered)")
         _state.update { it.copy(auditProgress = AuditProgress(isProcessing = true, processTotal = processTotal)) }
         acquireJobWakeLock()
 
@@ -642,6 +679,26 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     _state.update { s -> s.copy(auditProgress = s.auditProgress?.copy(processDone = done)) }
                 }
 
+                // --- Duplicates: delete the cutout + original + sidecar from Drive ---
+                filteredDuplicates.forEach { item ->
+                    Log.d(TAG, "Deleting duplicate cutout: ${item.cutoutName} (${item.cutoutDriveId})")
+                    runCatching {
+                        // Find the in-memory item to grab its original + sidecar Drive IDs
+                        val existing = _state.value.images.find { it.driveId == item.cutoutDriveId }
+                        existing?.originalDriveId?.let { runCatching { drive.deleteFile(it) } }
+                        existing?.sidecarDriveId?.let { runCatching { drive.deleteFile(it) } }
+                        drive.deleteFile(item.cutoutDriveId)
+                        EmbeddingService.index.remove(item.cutoutDriveId)
+                    }.onFailure { e ->
+                        Log.e(TAG, "Failed deleting duplicate ${item.cutoutDriveId}: ${e.message}", e)
+                    }
+                    done++
+                    _state.update { s -> s.copy(auditProgress = s.auditProgress?.copy(processDone = done)) }
+                }
+                if (filteredDuplicates.isNotEmpty()) {
+                    runCatching { EmbeddingService.index.save() }
+                }
+
                 Log.d(TAG, "Processing complete — clearing caches and reloading")
                 // Clear all local caches and reload
                 audit.folderIds.forEach { localCacheFile(it).delete() }
@@ -654,6 +711,37 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 releaseJobWakeLock()
             }
         }
+    }
+
+    /**
+     * Embed every cached cutout across [folderIds] (skipping those already in the index) and
+     * search the index for above-threshold peers, excluding the cutout itself. Each entry in the
+     * returned list represents one cutout that has at least one visually-similar peer.
+     *
+     * Cutouts not present in the local cache are skipped — embedding requires the cutout file to
+     * be downloaded, which would be expensive during a scan and is not needed: those cutouts will
+     * be handled the next time the user opens the wardrobe.
+     */
+    private suspend fun detectDuplicateCutouts(folderIds: List<String>): List<AuditDuplicateItem> {
+        if (!EmbeddingService.isModelAvailable()) return emptyList()
+        // Embed any cached cutout that isn't yet in the index.
+        EmbeddingService.syncIndex(_state.value.images, drive.cacheDir)
+        val byDriveId = _state.value.images.associateBy { it.driveId }
+        val scope = byDriveId.keys
+        val clusters = EmbeddingService.findDuplicateClusters(dedupeThreshold, restrictToIds = scope)
+        if (clusters.isEmpty()) return emptyList()
+        // For each anchor with similar peers, build an audit entry. Anchors with the same set of
+        // peers are equally valid candidates for deletion — surface them all so the user picks.
+        return clusters.entries.mapNotNull { (anchorId, peers) ->
+            val img = byDriveId[anchorId] ?: return@mapNotNull null
+            AuditDuplicateItem(
+                folderId = img.folderId.ifEmpty { folderIds.firstOrNull().orEmpty() },
+                cutoutDriveId = anchorId,
+                cutoutName = img.name,
+                similarTo = peers.map { it.driveId },
+                topScore = peers.firstOrNull()?.score ?: 0f,
+            )
+        }.sortedByDescending { it.topScore }
     }
 
     /** Clears the audit result state (call after user dismisses the "done" message). */

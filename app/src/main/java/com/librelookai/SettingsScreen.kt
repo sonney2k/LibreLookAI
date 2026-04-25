@@ -1852,6 +1852,7 @@ private fun RepairPreviewDialog(
                     val orphaned = audit.items.filter { it.kind == AuditKind.ORPHANED_ORIGINAL }
                     val raws     = audit.items.filter { it.kind == AuditKind.RAW }
                     val sidecars = audit.items.filter { it.kind == AuditKind.NEEDS_SIDECAR }
+                    val duplicates = audit.items.filter { it.kind == AuditKind.DUPLICATE }
 
                     if (orphaned.isNotEmpty()) {
                         item(span = { GridItemSpan(maxLineSpan) }) {
@@ -1913,14 +1914,39 @@ private fun RepairPreviewDialog(
                             )
                         }
                     }
+                    if (duplicates.isNotEmpty()) {
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+                            RepairSectionHeader(
+                                title = stringResource(R.string.repair_section_duplicates),
+                                items = duplicates,
+                                selected = audit.selectedAuditIds,
+                                costPerItem = 0,
+                                onSetSelection = onSetSelection,
+                                allSelectedIds = audit.selectedAuditIds,
+                                helpText = stringResource(R.string.repair_duplicates_hint),
+                            )
+                        }
+                        items(duplicates, key = { it.driveId }) { entry ->
+                            RepairPreviewTile(
+                                entry = entry,
+                                isSelected = entry.driveId in audit.selectedAuditIds,
+                                onToggle = { onToggleSelection(entry.driveId) },
+                                fetchThumbnail = fetchThumbnail,
+                                badgeText = stringResource(R.string.import_preview_similar_badge),
+                            )
+                        }
+                    }
                 }
 
                 HorizontalDivider()
 
                 // Bottom action bar with total cost + buttons
-                val totalCost = audit.items.count { it.driveId in audit.selectedAuditIds && it.kind != AuditKind.NEEDS_SIDECAR } *
+                val billable = audit.items.filter {
+                    it.driveId in audit.selectedAuditIds && it.kind != AuditKind.DUPLICATE
+                }
+                val totalCost = billable.count { it.kind != AuditKind.NEEDS_SIDECAR } *
                         (CreditPacks.COST_BG_REMOVAL + CreditPacks.COST_CLASSIFY) +
-                    audit.items.count { it.driveId in audit.selectedAuditIds && it.kind == AuditKind.NEEDS_SIDECAR } *
+                    billable.count { it.kind == AuditKind.NEEDS_SIDECAR } *
                         CreditPacks.COST_CLASSIFY
                 Row(
                     modifier = Modifier
@@ -1958,6 +1984,7 @@ private fun RepairSectionHeader(
     costPerItem: Int,
     onSetSelection: (Set<String>) -> Unit,
     allSelectedIds: Set<String>,
+    helpText: String? = null,
 ) {
     val sectionIds = remember(items) { items.map { it.driveId }.toSet() }
     val sectionSelected = remember(items, selected) { items.count { it.driveId in selected } }
@@ -1979,9 +2006,16 @@ private fun RepairSectionHeader(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            if (sectionSelected > 0) {
+            if (sectionSelected > 0 && costPerItem > 0) {
                 Text(
                     stringResource(R.string.settings_bulk_cost_line, sectionSelected, costPerItem, cost),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            helpText?.let {
+                Text(
+                    it,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -2018,6 +2052,7 @@ private fun RepairPreviewTile(
     isSelected: Boolean,
     onToggle: () -> Unit,
     fetchThumbnail: suspend (AuditFileEntry) -> File?,
+    badgeText: String? = null,
 ) {
     val thumbFile by produceState<File?>(initialValue = null, entry.driveId) {
         value = fetchThumbnail(entry)
@@ -2076,6 +2111,22 @@ private fun RepairPreviewTile(
                     contentDescription = null,
                     tint = Color.White,
                     modifier = Modifier.padding(4.dp).size(18.dp),
+                )
+            }
+        }
+        if (badgeText != null) {
+            Surface(
+                color = MaterialTheme.colorScheme.errorContainer,
+                contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                shape = MaterialTheme.shapes.small,
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(4.dp),
+            ) {
+                Text(
+                    badgeText,
+                    style = MaterialTheme.typography.labelSmall,
+                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                 )
             }
         }

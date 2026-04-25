@@ -155,6 +155,32 @@ object EmbeddingService {
             .toList()
     }
 
+    /**
+     * Pairwise scan over the index: for each indexed item, return its peers with cosine score
+     * ≥ [threshold]. Restrict to [restrictToIds] when non-empty (the most common case is
+     * "only consider items still on Drive"). Returns a map keyed by anchor Drive ID.
+     */
+    suspend fun findDuplicateClusters(
+        threshold: Float,
+        restrictToIds: Set<String> = emptySet(),
+    ): Map<String, List<Match>> {
+        if (!isModelAvailable()) return emptyMap()
+        indexImpl.load()
+        val ids = indexImpl.ids().let { all ->
+            if (restrictToIds.isEmpty()) all else all.intersect(restrictToIds)
+        }
+        if (ids.isEmpty()) return emptyMap()
+        val out = HashMap<String, List<Match>>()
+        for (id in ids) {
+            val vec = indexImpl.vector(id) ?: continue
+            val similar = indexImpl.search(vec, topK = 8)
+                .filter { it.id != id && it.score >= threshold && it.id in ids }
+                .map { Match(it.id, it.score) }
+            if (similar.isNotEmpty()) out[id] = similar
+        }
+        return out
+    }
+
     suspend fun close() {
         if (!initialized) return
         embedderImpl.close()

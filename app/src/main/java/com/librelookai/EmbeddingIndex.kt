@@ -102,6 +102,12 @@ class EmbeddingIndex(private val context: Context) {
 
     suspend fun contains(id: String): Boolean = mutex.withLock { entries.containsKey(id) }
 
+    /** Snapshot of all currently-indexed IDs. */
+    suspend fun ids(): Set<String> = mutex.withLock { entries.keys.toSet() }
+
+    /** Defensive copy of the embedding stored for [id], or null if not indexed. */
+    suspend fun vector(id: String): FloatArray? = mutex.withLock { entries[id]?.copyOf() }
+
     suspend fun save() = withContext(Dispatchers.IO) {
         mutex.withLock {
             val file = indexFile()
