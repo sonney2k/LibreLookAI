@@ -310,7 +310,7 @@ Camera → Bitmap
   → MediaPipe InteractiveSegmenter (Magic Touch, seed = image center)
        → composite foreground onto opaque white
   → Center-crop to square
-  → MediaPipe ImageEmbedder (EfficientNet Lite0, L2-normalized)
+  → MediaPipe ImageEmbedder (MobileNet V3 Small, L2-normalized)
   → Dot product vs. each cached wardrobe embedding
   → Top-N matches sorted by score
 ```
@@ -327,8 +327,10 @@ Cached cutouts (transparent PNGs) skip the segmentation step but go through the 
 **Indexing strategy**: No hooks in `WardrobeViewModel.processQueue`. Indexing is pull-based — the shop screen syncs the index every time it opens, and before every match. Empirically this takes <1s for ~100 items on modern devices; subsequent opens are near-instant since only new/deleted items cause work.
 
 **Model assets** (both excluded from git):
-- `app/src/main/assets/embedder/efficientnet_lite0.tflite` (~18 MB). Download from `https://storage.googleapis.com/mediapipe-models/image_embedder/efficientnet_lite0/float32/1/efficientnet_lite0.tflite`.
-- `app/src/main/assets/segmenter/magic_touch.tflite` (~9 MB). Download from `https://storage.googleapis.com/mediapipe-models/interactive_segmenter/magic_touch/float32/1/magic_touch.tflite`.
+- `app/src/main/assets/embedder/efficientnet_lite0.tflite` (~4 MB; the filename is legacy — the bundled file is actually MobileNet V3 Small). Download from `https://storage.googleapis.com/mediapipe-models/image_embedder/mobilenet_v3_small/float32/1/mobilenet_v3_small.tflite` and save under the legacy name. The previous EfficientNet Lite0 GCS path is dead (404); if you change models, also update `EmbeddingRepository.MODEL_PATH`.
+- `app/src/main/assets/segmenter/magic_touch.tflite` (~6 MB). Download from `https://storage.googleapis.com/mediapipe-models/interactive_segmenter/magic_touch/float32/1/magic_touch.tflite`.
+
+After downloading, verify each file with `file <path>` — a non-200 response from GCS produces a ~250-byte XML error body that `EmbeddingRepository.isAvailable()` will happily accept (the asset opens fine), and you'll only find out when MediaPipe fails to construct and the Shop screen shows "Could not analyze that photo." Real models are multi-MB binary `data`.
 
 If either is missing, the Shop screen shows a dev-facing warning. The embedder is required; the segmenter is optional — when absent the pipeline falls back to embedding the raw query (with white-bg compositing only).
 
