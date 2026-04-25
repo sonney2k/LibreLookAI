@@ -75,6 +75,7 @@ fun ShoppingHelperScreen(
             locations = locationState.locations,
             importTargetFolderId = null,
             onSetImportTarget = {},
+            showCenterCrosshair = true,
             modifier = modifier,
         )
         return

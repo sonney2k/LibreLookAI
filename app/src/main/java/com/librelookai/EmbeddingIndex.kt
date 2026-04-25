@@ -14,8 +14,8 @@ import java.io.File
  * Persistent key→vector index for wardrobe cutout embeddings.
  *
  * Keys are cutout Drive IDs. Values are L2-normalized `FloatArray`s produced by
- * [EmbeddingRepository.embed]. Because vectors are unit-length, cosine similarity is a plain dot
- * product — [search] returns top-K by that score (range [-1, 1]).
+ * [EmbeddingRepository.embedFile]. Because vectors are unit-length, cosine similarity is a plain
+ * dot product — [search] returns top-K by that score (range [-1, 1]).
  *
  * On-disk format at `filesDir/wardrobe_embeddings.bin`:
  *   magic u32 ('LLAE' 0x4C4C4145)
@@ -158,6 +158,9 @@ class EmbeddingIndex(private val context: Context) {
         private const val TAG = "EmbeddingIndex"
         private const val INDEX_FILE = "wardrobe_embeddings.bin"
         private const val MAGIC = 0x4C4C4145 // 'LLAE'
-        private const val VERSION = 1
+        // Version bumped to 2 when the embedder swapped from MobileNetV3-Small (1024-d) to
+        // EfficientNet Lite0 (1280-d) and the bitmap pre-processing pipeline was changed.
+        // Old indexes are discarded on load and rebuilt on first sync.
+        private const val VERSION = 2
     }
 }

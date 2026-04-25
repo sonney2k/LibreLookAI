@@ -2,6 +2,12 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Working agreement
+
+- **Update CLAUDE.md before executing a plan.** When the user agrees on a plan that changes architecture, data flow, file layout, build inputs, or any of the conventions documented below, edit the relevant section of this file *first* — before writing the code. The doc is the source of truth; code follows.
+- **Update CLAUDE.md once done.** After finishing the work, do another pass and capture anything new that future-Claude would need to know: new components, new model assets, renamed concepts, new entry points, behavior changes. Remove or rewrite stale sections rather than letting them rot.
+- **Ask for a git commit at the end.** Once the work and the doc updates are both done, explicitly ask the user whether to commit (and, if yes, draft the commit). Do not commit without confirmation.
+
 ## Build commands
 
 ```bash
@@ -301,22 +307,30 @@ On-device, zero-network visual similarity search powered by MediaPipe's `ImageEm
 
 ```
 Camera → Bitmap
-  → MediaPipe ImageEmbedder (MobileNetV3-Small, L2-normalized 1024-dim)
+  → MediaPipe InteractiveSegmenter (Magic Touch, seed = image center)
+       → composite foreground onto opaque white
+  → Center-crop to square
+  → MediaPipe ImageEmbedder (EfficientNet Lite0, L2-normalized)
   → Dot product vs. each cached wardrobe embedding
   → Top-N matches sorted by score
 ```
 
-No background segmentation in v1 — the capture UI already constrains the subject and MobileNet embeddings are tolerant of moderate background clutter. We may layer `InteractiveSegmenter` in later if accuracy suffers.
+Cached cutouts (transparent PNGs) skip the segmentation step but go through the same composite-onto-white + center-crop preparation, so query and gallery images share an identical backdrop and aspect ratio before embedding.
 
 **Components**:
-- `EmbeddingRepository` — lazy singleton that holds the MediaPipe `ImageEmbedder`. `embed(file): FloatArray?` returns null if the model asset is missing (dev fallback — the UI surfaces a "download model" hint). Mutex-guarded; `close()` releases native resources. Embedder is configured with `setL2Normalize(true)` so cosine similarity reduces to a dot product.
-- `EmbeddingIndex` — in-memory `Map<cutoutDriveId, FloatArray>` + binary persistence at `filesDir/wardrobe_embeddings.bin` (format: `magic u32 | version u16 | dim u16 | count u32 | [idLen u16 | idUtf8 | float32[dim]]*`). Operations: `load`, `saveDebounced`, `upsert`, `remove`, `search(query, topK)`. All IO-dispatcher.
-- `ShoppingHelperViewModel` — holds the repo + index. `syncIndex(images)` walks the current wardrobe, embeds any item with a cached cutout that isn't in the index yet, drops orphaned index entries, and persists. `onCapturedFile(file)` embeds the query and publishes ranked matches. State exposes `isIndexing` with progress counts, `isMatching`, `query` thumbnail path, `matches: List<Match(driveId, score)>`, and `error`.
-- `ShoppingHelperScreen` — three visual states: (a) capture prompt with a big camera FAB, (b) inline `CaptureScreen` (reuses the existing one), (c) result — query thumbnail up top + ranked list of wardrobe items with similarity bars. Header shows the `LocationButton` (same as other screens). When `!isOffline` is irrelevant here — everything runs locally, so the shop tab is fully functional offline.
+- `EmbeddingRepository` — lazy singleton that holds the MediaPipe `ImageEmbedder`. `embedFile(file)` decodes, composites alpha onto white if present, center-crops to a square, and embeds. `embedBitmap(bitmap, compositeAlpha)` is the bitmap entry point used after segmentation. Mutex-guarded; `close()` releases native resources. Embedder is configured with `setL2Normalize(true)` so cosine similarity reduces to a dot product.
+- `SegmentationRepository` — lazy singleton holding MediaPipe's `InteractiveSegmenter`. `segmentForegroundOnWhite(bitmap)` runs the model with a center-keypoint seed and returns a new bitmap with foreground pixels preserved and background pixels replaced with opaque white. Returns null if the model asset is missing or the mask covers <2% of pixels (likely garbage); callers fall back to embedding the un-segmented image. The capture UI shows a center crosshair (`showCenterCrosshair = true`) so the user knows the seed point.
+- `EmbeddingIndex` — in-memory `Map<cutoutDriveId, FloatArray>` + binary persistence at `filesDir/wardrobe_embeddings.bin` (format: `magic u32 | version u16 | dim u16 | count u32 | [idLen u16 | idUtf8 | float32[dim]]*`). `VERSION = 2`. Old indexes are discarded on load and rebuilt on next sync.
+- `ShoppingHelperViewModel` — holds the repos + index. `syncIndex(images)` walks the current wardrobe, embeds any item with a cached cutout that isn't in the index yet, drops orphaned index entries, and persists. `onCapturedFile(file)` runs `embedQuery` (segment → composite → crop → embed) and publishes ranked matches. State exposes `isIndexing` with progress counts, `isMatching`, `query` thumbnail path, `matches: List<Match(driveId, score)>`, and `error`.
+- `ShoppingHelperScreen` — three visual states: (a) capture prompt with a big camera FAB, (b) inline `CaptureScreen` (reuses the existing one) with the center crosshair enabled, (c) result — query thumbnail up top + ranked list of wardrobe items with similarity bars. Header shows the `LocationButton` (same as other screens). Everything runs locally, so the shop tab is fully functional offline.
 
 **Indexing strategy**: No hooks in `WardrobeViewModel.processQueue`. Indexing is pull-based — the shop screen syncs the index every time it opens, and before every match. Empirically this takes <1s for ~100 items on modern devices; subsequent opens are near-instant since only new/deleted items cause work.
 
-**Model asset**: `app/src/main/assets/embedder/mobilenet_v3_small.tflite` (~4 MB). Download from `https://storage.googleapis.com/mediapipe-models/image_embedder/mobilenet_v3_small/float32/1/mobilenet_v3_small.tflite`. Not checked into git (added to `.gitignore`). If missing, the Shop screen shows a dev-facing warning and disables matching.
+**Model assets** (both excluded from git):
+- `app/src/main/assets/embedder/efficientnet_lite0.tflite` (~18 MB). Download from `https://storage.googleapis.com/mediapipe-models/image_embedder/efficientnet_lite0/float32/1/efficientnet_lite0.tflite`.
+- `app/src/main/assets/segmenter/magic_touch.tflite` (~9 MB). Download from `https://storage.googleapis.com/mediapipe-models/interactive_segmenter/magic_touch/float32/1/magic_touch.tflite`.
+
+If either is missing, the Shop screen shows a dev-facing warning. The embedder is required; the segmenter is optional — when absent the pipeline falls back to embedding the raw query (with white-bg compositing only).
 
 ## Release process (Play Store internal testing)
 

@@ -566,7 +566,8 @@
     <string name="shop_match_score">Ähnlichkeit: %1$d %%</string>
     <string name="shop_indexing">Indexiere Garderobe… %1$d / %2$d</string>
     <string name="shop_index_size">%1$d Teile indexiert</string>
-    <string name="shop_model_missing">Lokales Modell fehlt. Lege mobilenet_v3_small.tflite unter app/src/main/assets/embedder/ ab.</string>
+    <string name="shop_model_missing">Lokales Modell fehlt. Lege efficientnet_lite0.tflite unter app/src/main/assets/embedder/ und magic_touch.tflite unter app/src/main/assets/segmenter/ ab.</string>
     <string name="shop_error_model_missing">Das Modell für die visuelle Suche ist nicht installiert.</string>
     <string name="shop_error_embed_failed">Das Foto konnte nicht analysiert werden. Probiere es erneut.</string>
+    <string name="shop_crosshair_hint">Richte das Teil auf das Fadenkreuz aus</string>
 </resources>

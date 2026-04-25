@@ -72,6 +72,7 @@ fun CaptureScreen(
     locations: List<Location> = emptyList(),
     importTargetFolderId: String? = null,
     onSetImportTarget: (String) -> Unit = {},
+    showCenterCrosshair: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -136,6 +137,27 @@ fun CaptureScreen(
                         previewHeight = coordinates.size.height
                     },
             )
+
+            if (showCenterCrosshair) {
+                androidx.compose.foundation.layout.Column(
+                    modifier = Modifier.align(Alignment.Center),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    CenterCrosshair()
+                    Surface(
+                        shape = MaterialTheme.shapes.small,
+                        color = Color.Black.copy(alpha = 0.55f),
+                        contentColor = Color.White,
+                    ) {
+                        Text(
+                            androidx.compose.ui.res.stringResource(R.string.shop_crosshair_hint),
+                            style = MaterialTheme.typography.labelSmall,
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                        )
+                    }
+                }
+            }
 
             IconButton(
                 onClick = onCancel,
@@ -462,6 +484,40 @@ private fun cropToPreviewAndResize(file: File, previewWidth: Int, previewHeight:
     val exif = ExifInterface(file.absolutePath)
     exif.setAttribute(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL.toString())
     exif.saveAttributes()
+}
+
+/**
+ * Crosshair overlay shown at the viewfinder center to communicate that the center pixel is used as
+ * the seed point for on-device foreground segmentation. Caller positions it via the alignment
+ * modifier — its own size is fixed (~64 dp).
+ */
+@Composable
+private fun CenterCrosshair(modifier: Modifier = Modifier) {
+    androidx.compose.foundation.Canvas(
+        modifier = modifier.size(64.dp),
+    ) {
+        val w = size.width
+        val h = size.height
+        val cx = w / 2f
+        val cy = h / 2f
+        val arm = w * 0.45f
+        val gap = w * 0.12f
+        val stroke = 2.dp.toPx()
+        val shadowStroke = stroke + 1.5.dp.toPx()
+        // Faint dark halo for contrast over light backgrounds
+        drawLine(Color.Black.copy(alpha = 0.55f), start = androidx.compose.ui.geometry.Offset(cx - arm, cy), end = androidx.compose.ui.geometry.Offset(cx - gap, cy), strokeWidth = shadowStroke)
+        drawLine(Color.Black.copy(alpha = 0.55f), start = androidx.compose.ui.geometry.Offset(cx + gap, cy), end = androidx.compose.ui.geometry.Offset(cx + arm, cy), strokeWidth = shadowStroke)
+        drawLine(Color.Black.copy(alpha = 0.55f), start = androidx.compose.ui.geometry.Offset(cx, cy - arm), end = androidx.compose.ui.geometry.Offset(cx, cy - gap), strokeWidth = shadowStroke)
+        drawLine(Color.Black.copy(alpha = 0.55f), start = androidx.compose.ui.geometry.Offset(cx, cy + gap), end = androidx.compose.ui.geometry.Offset(cx, cy + arm), strokeWidth = shadowStroke)
+        // White arms
+        drawLine(Color.White, start = androidx.compose.ui.geometry.Offset(cx - arm, cy), end = androidx.compose.ui.geometry.Offset(cx - gap, cy), strokeWidth = stroke)
+        drawLine(Color.White, start = androidx.compose.ui.geometry.Offset(cx + gap, cy), end = androidx.compose.ui.geometry.Offset(cx + arm, cy), strokeWidth = stroke)
+        drawLine(Color.White, start = androidx.compose.ui.geometry.Offset(cx, cy - arm), end = androidx.compose.ui.geometry.Offset(cx, cy - gap), strokeWidth = stroke)
+        drawLine(Color.White, start = androidx.compose.ui.geometry.Offset(cx, cy + gap), end = androidx.compose.ui.geometry.Offset(cx, cy + arm), strokeWidth = stroke)
+        // Center dot
+        drawCircle(Color.White, radius = 2.dp.toPx(), center = androidx.compose.ui.geometry.Offset(cx, cy))
+        drawCircle(Color.Black.copy(alpha = 0.55f), radius = 3.dp.toPx(), center = androidx.compose.ui.geometry.Offset(cx, cy), style = androidx.compose.ui.graphics.drawscope.Stroke(width = 1.dp.toPx()))
+    }
 }
 
 @Composable

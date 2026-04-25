@@ -577,7 +577,8 @@
     <string name="shop_match_score">Similarity: %1$d%%</string>
     <string name="shop_indexing">Indexing wardrobe… %1$d / %2$d</string>
     <string name="shop_index_size">%1$d items indexed</string>
-    <string name="shop_model_missing">On-device model missing. Place mobilenet_v3_small.tflite under app/src/main/assets/embedder/.</string>
+    <string name="shop_model_missing">On-device model missing. Place efficientnet_lite0.tflite under app/src/main/assets/embedder/ and magic_touch.tflite under app/src/main/assets/segmenter/.</string>
     <string name="shop_error_model_missing">Visual search model is not installed.</string>
     <string name="shop_error_embed_failed">Could not analyze that photo. Try another one.</string>
+    <string name="shop_crosshair_hint">Center the item on the crosshair</string>
 </resources>

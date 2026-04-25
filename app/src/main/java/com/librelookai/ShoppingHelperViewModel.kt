@@ -1,6 +1,7 @@
 package com.librelookai
 
 import android.app.Application
+import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -44,6 +45,7 @@ data class ShoppingHelperUiState(
 class ShoppingHelperViewModel(app: Application) : AndroidViewModel(app) {
 
     private val embedder = EmbeddingRepository(app)
+    private val segmenter = SegmentationRepository(app)
     private val index = EmbeddingIndex(app)
 
     private val _state = MutableStateFlow(ShoppingHelperUiState(modelAvailable = embedder.isAvailable()))
@@ -106,7 +108,7 @@ class ShoppingHelperViewModel(app: Application) : AndroidViewModel(app) {
             var done = 0
             for (img in todo) {
                 val file = cutoutFile(img) ?: continue
-                val vec = embedder.embed(file)
+                val vec = embedder.embedFile(file)
                 if (vec != null) index.upsert(img.driveId, vec)
                 done++
                 _state.update { it.copy(indexDone = done) }
@@ -158,11 +160,11 @@ class ShoppingHelperViewModel(app: Application) : AndroidViewModel(app) {
                 val cached = cutoutFile(img) ?: continue
                 if (!cached.exists()) continue
                 if (index.contains(img.driveId)) continue
-                val vec = embedder.embed(cached) ?: continue
+                val vec = embedder.embedFile(cached) ?: continue
                 index.upsert(img.driveId, vec)
             }
 
-            val queryVec = embedder.embed(queryFile)
+            val queryVec = embedQuery(queryFile)
             if (queryVec == null) {
                 _state.update {
                     it.copy(
@@ -197,10 +199,39 @@ class ShoppingHelperViewModel(app: Application) : AndroidViewModel(app) {
 
     override fun onCleared() {
         super.onCleared()
-        viewModelScope.launch { embedder.close() }
+        viewModelScope.launch {
+            embedder.close()
+            segmenter.close()
+        }
     }
 
     // ---------- helpers ----------
+
+    /**
+     * Embed the live query: decode the JPEG, run interactive segmentation seeded at the image
+     * center to isolate the item from its background, then composite onto white and embed. Falls
+     * back to embedding the raw file (with white-bg compositing only) if segmentation is
+     * unavailable or fails.
+     */
+    private suspend fun embedQuery(queryFile: File): FloatArray? = withContext(Dispatchers.IO) {
+        val raw = runCatching { BitmapFactory.decodeFile(queryFile.absolutePath) }.getOrNull()
+            ?: return@withContext null
+        try {
+            val masked = segmenter.segmentForegroundOnWhite(raw)
+            if (masked != null) {
+                try {
+                    embedder.embedBitmap(masked, compositeAlpha = false)
+                } finally {
+                    if (!masked.isRecycled) masked.recycle()
+                }
+            } else {
+                Log.w(TAG, "embedQuery: segmentation unavailable, falling back to raw query")
+                embedder.embedFile(queryFile)
+            }
+        } finally {
+            if (!raw.isRecycled) raw.recycle()
+        }
+    }
 
     private fun cutoutFile(img: DriveImage): File? {
         val cacheDir = File(getApplication<Application>().filesDir, "wardrobe")
