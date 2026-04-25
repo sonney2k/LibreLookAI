@@ -224,6 +224,14 @@ fun SettingsScreen(
                 onSaveConsiderations = { c ->
                     profileViewModel.savePreferences(profileState.preferences.copy(aiConsiderations = c))
                 },
+                onSaveDedupe = { enabled, threshold ->
+                    profileViewModel.savePreferences(
+                        profileState.preferences.copy(
+                            dedupeOnImport = enabled,
+                            dedupeThreshold = threshold,
+                        )
+                    )
+                },
             )
             4 -> AboutTab()
         }
@@ -271,8 +279,6 @@ private fun ProfileTab(
     var yearOfBirth by remember(state.preferences) { mutableStateOf(state.preferences.yearOfBirth?.toString() ?: "") }
     var preferences by remember(state.preferences) { mutableStateOf(state.preferences.preferences) }
     var language    by remember(state.preferences) { mutableStateOf(state.preferences.language) }
-    var dedupeOnImport by remember(state.preferences) { mutableStateOf(state.preferences.dedupeOnImport) }
-    var dedupeThreshold by remember(state.preferences) { mutableFloatStateOf(state.preferences.dedupeThreshold) }
 
     var pendingTryOnSlot by remember { mutableStateOf<TryOnSlot?>(null) }
     val tryOnPickLauncher = rememberLauncherForActivityResult(
@@ -289,8 +295,6 @@ private fun ProfileTab(
             yearOfBirth = state.preferences.yearOfBirth?.toString() ?: ""
             preferences = state.preferences.preferences
             language    = state.preferences.language
-            dedupeOnImport  = state.preferences.dedupeOnImport
-            dedupeThreshold = state.preferences.dedupeThreshold
         }
     }
     Box(modifier = Modifier.fillMaxSize()) {
@@ -386,39 +390,6 @@ private fun ProfileTab(
                     modifier = Modifier.fillMaxWidth(),
                 )
 
-                // --- Similarity check ---
-                HorizontalDivider()
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text(
-                        stringResource(R.string.settings_dedupe_title),
-                        style = MaterialTheme.typography.titleSmall,
-                        fontWeight = FontWeight.SemiBold,
-                    )
-                    Text(
-                        stringResource(R.string.settings_dedupe_desc),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                    SwitchRow(
-                        label = stringResource(R.string.settings_dedupe_toggle),
-                        sublabel = stringResource(R.string.settings_dedupe_toggle_desc),
-                        checked = dedupeOnImport,
-                        onCheckedChange = { dedupeOnImport = it },
-                    )
-                    Column {
-                        Text(
-                            stringResource(R.string.settings_dedupe_threshold, (dedupeThreshold * 100).toInt()),
-                            style = MaterialTheme.typography.bodyMedium,
-                        )
-                        Slider(
-                            value = dedupeThreshold,
-                            onValueChange = { dedupeThreshold = it },
-                            valueRange = 0.7f..0.95f,
-                            steps = 24,
-                        )
-                    }
-                }
-
                 // --- Try-on photos ---
                 HorizontalDivider()
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -468,8 +439,6 @@ private fun ProfileTab(
                                 yearOfBirth = yearOfBirth.toIntOrNull(),
                                 preferences = preferences,
                                 language    = language,
-                                dedupeOnImport  = dedupeOnImport,
-                                dedupeThreshold = dedupeThreshold,
                             )
                         )
                     },
@@ -1464,9 +1433,12 @@ private fun DriveFolderPickerDialog(
 private fun AiTab(
     preferences: UserPreferences,
     onSaveConsiderations: (AiConsiderations) -> Unit,
+    onSaveDedupe: (Boolean, Float) -> Unit,
 ) {
     val context = LocalContext.current
     var considerations by remember(preferences.aiConsiderations) { mutableStateOf(preferences.aiConsiderations) }
+    var dedupeOnImport by remember(preferences) { mutableStateOf(preferences.dedupeOnImport) }
+    var dedupeThreshold by remember(preferences) { mutableFloatStateOf(preferences.dedupeThreshold) }
     var showResetAllDialog by remember { mutableStateOf(false) }
     // bump to force re-reads from PromptStore after edits or resets
     var promptRefresh by remember { mutableIntStateOf(0) }
@@ -1545,6 +1517,44 @@ private fun AiTab(
                     onSaveConsiderations(considerations)
                 },
             )
+        }
+
+        HorizontalDivider()
+
+        // ---- Similarity check ----
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(
+                stringResource(R.string.settings_dedupe_title),
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                stringResource(R.string.settings_dedupe_desc),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            SwitchRow(
+                label = stringResource(R.string.settings_dedupe_toggle),
+                sublabel = stringResource(R.string.settings_dedupe_toggle_desc),
+                checked = dedupeOnImport,
+                onCheckedChange = {
+                    dedupeOnImport = it
+                    onSaveDedupe(dedupeOnImport, dedupeThreshold)
+                },
+            )
+            Column {
+                Text(
+                    stringResource(R.string.settings_dedupe_threshold, (dedupeThreshold * 100).toInt()),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Slider(
+                    value = dedupeThreshold,
+                    onValueChange = { dedupeThreshold = it },
+                    onValueChangeFinished = { onSaveDedupe(dedupeOnImport, dedupeThreshold) },
+                    valueRange = 0.3f..0.95f,
+                    steps = 64,
+                )
+            }
         }
 
         HorizontalDivider()

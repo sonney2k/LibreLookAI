@@ -327,7 +327,7 @@ On-device, zero-network visual similarity search powered by MediaPipe's `ImageEm
 
 `ShoppingHelperViewModel` no longer constructs its own embedder/segmenter/index; it consumes `EmbeddingService` directly. Future similarity features should follow the same pattern.
 
-**User preferences** for similarity (`UserPreferences`): `dedupeOnImport: Boolean = true` (gate for capture/import duplicate checks), `dedupeThreshold: Float = 0.85f` (single threshold reused across all touchpoints; slider in Settings → Profile, range 0.7–0.95).
+**User preferences** for similarity (`UserPreferences`): `dedupeOnImport: Boolean = true` (gate for capture/import duplicate checks), `dedupeThreshold: Float = 0.85f` (single threshold reused across all touchpoints; slider in Settings → Profile, range 0.3–0.95).
 
 **Pipeline**:
 
