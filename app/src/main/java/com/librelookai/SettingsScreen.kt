@@ -200,6 +200,10 @@ fun SettingsScreen(
                         importLauncher.launch(null)
                     }
                 },
+                onToggleImportPreviewSelection = wardrobeViewModel::toggleImportPreviewSelection,
+                onSetImportPreviewSelection = wardrobeViewModel::setImportPreviewSelection,
+                onConfirmImportPreview = wardrobeViewModel::confirmImportPreview,
+                onCancelImportPreview = wardrobeViewModel::cancelImportPreview,
                 locationState = locationState,
                 onSetActiveLocation = locationViewModel::setActiveLocation,
                 onAddLocation = locationViewModel::addLocation,
@@ -590,6 +594,10 @@ private fun DataTab(
     onSetAuditSelection: (Set<String>) -> Unit,
     fetchAuditThumbnail: suspend (AuditFileEntry) -> File?,
     onImportFromFolder: (removeBackground: Boolean, autoTag: Boolean, replaceExisting: Boolean, overwriteDuplicates: Boolean, useDrivePicker: Boolean) -> Unit,
+    onToggleImportPreviewSelection: (String) -> Unit,
+    onSetImportPreviewSelection: (Set<String>) -> Unit,
+    onConfirmImportPreview: () -> Unit,
+    onCancelImportPreview: () -> Unit,
     locationState: LocationUiState,
     onSetActiveLocation: (String) -> Unit,
     onAddLocation: (String, String) -> Unit,
@@ -937,6 +945,16 @@ private fun DataTab(
                     Text(stringResource(R.string.action_cancel))
                 }
             },
+        )
+    }
+
+    wardrobeState.importPreview?.let { preview ->
+        ImportPreviewDialog(
+            preview = preview,
+            onToggle = onToggleImportPreviewSelection,
+            onSetSelection = onSetImportPreviewSelection,
+            onConfirm = onConfirmImportPreview,
+            onCancel = onCancelImportPreview,
         )
     }
 
@@ -2132,3 +2150,202 @@ private fun RepairPreviewTile(
         }
     }
 }
+
+@Composable
+private fun ImportPreviewDialog(
+    preview: ImportPreview,
+    onToggle: (String) -> Unit,
+    onSetSelection: (Set<String>) -> Unit,
+    onConfirm: () -> Unit,
+    onCancel: () -> Unit,
+) {
+    Dialog(
+        onDismissRequest = onCancel,
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false,
+            dismissOnBackPress = true,
+            dismissOnClickOutside = false,
+        ),
+    ) {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background,
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                // Header
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp, vertical = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    IconButton(onClick = onCancel) {
+                        Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_cancel))
+                    }
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            stringResource(R.string.import_preview_title, preview.entries.size),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                        Text(
+                            stringResource(R.string.import_preview_desc),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+                HorizontalDivider()
+
+                // Selection bar / scan progress
+                if (preview.isScanning) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 12.dp, vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        CircularProgressIndicator(modifier = Modifier.size(16.dp), strokeWidth = 2.dp)
+                        Text(
+                            stringResource(R.string.import_preview_scanning, preview.scanDone, preview.scanTotal),
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                    }
+                } else {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 12.dp, vertical = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            stringResource(R.string.settings_repair_preview_selected, preview.selectedKeys.size, preview.entries.size),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.weight(1f),
+                        )
+                        TextButton(
+                            onClick = { onSetSelection(preview.entries.map { it.key }.toSet()) },
+                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                        ) {
+                            Text(stringResource(R.string.import_preview_select_all))
+                        }
+                        TextButton(
+                            onClick = { onSetSelection(emptySet()) },
+                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                        ) {
+                            Text(stringResource(R.string.import_preview_deselect_all))
+                        }
+                    }
+                }
+
+                // Grid of candidates
+                LazyVerticalGrid(
+                    columns = GridCells.Adaptive(96.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .padding(horizontal = 6.dp),
+                ) {
+                    items(preview.entries, key = { it.key }) { entry ->
+                        ImportPreviewTile(
+                            entry = entry,
+                            isSelected = entry.key in preview.selectedKeys,
+                            onToggle = { onToggle(entry.key) },
+                        )
+                    }
+                }
+
+                HorizontalDivider()
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Spacer(Modifier.weight(1f))
+                    TextButton(onClick = onCancel) {
+                        Text(stringResource(R.string.action_cancel))
+                    }
+                    Spacer(Modifier.size(4.dp))
+                    Button(
+                        onClick = onConfirm,
+                        enabled = !preview.isScanning && preview.selectedKeys.isNotEmpty(),
+                    ) {
+                        Text(stringResource(R.string.import_preview_import, preview.selectedKeys.size))
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ImportPreviewTile(
+    entry: ImportPreviewEntry,
+    isSelected: Boolean,
+    onToggle: () -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .padding(2.dp)
+            .aspectRatio(1f)
+            .clip(MaterialTheme.shapes.small)
+            .clickable(onClick = onToggle),
+    ) {
+        AsyncImage(
+            model = File(entry.cachedFilePath),
+            contentDescription = entry.displayName,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop,
+        )
+        if (isSelected) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White.copy(alpha = 0.3f)),
+                contentAlignment = Alignment.TopEnd,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.CheckCircle,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(4.dp),
+                )
+            }
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.45f)),
+                contentAlignment = Alignment.TopEnd,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.padding(4.dp).size(18.dp),
+                )
+            }
+        }
+        if (entry.similar.isNotEmpty()) {
+            Surface(
+                color = MaterialTheme.colorScheme.errorContainer,
+                contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                shape = MaterialTheme.shapes.small,
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(4.dp),
+            ) {
+                Text(
+                    stringResource(R.string.import_preview_similar_badge),
+                    style = MaterialTheme.typography.labelSmall,
+                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                )
+            }
+        }
+    }
+}
+

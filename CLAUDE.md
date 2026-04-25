@@ -301,7 +301,15 @@ Both service and wake lock are reference-counted via `acquireJobWakeLock()` / `r
 
 ### SAF import
 
-`WardrobeViewModel.importFromFolder(treeUri)` reads images from any OS-accessible folder using `DocumentsContract` + `ContentResolver` (no extra OAuth scopes needed), re-uploads them to the app's Drive folder, and classifies new items with Gemini before writing per-item sidecars.
+`WardrobeViewModel.importFromFolder(treeUri)` reads images from any OS-accessible folder using `DocumentsContract` + `ContentResolver` (no extra OAuth scopes needed), re-uploads them to the app's Drive folder, and classifies new items with Gemini before writing per-item sidecars. `importFromDriveFolder(sourceFolderId)` mirrors this for a Drive source.
+
+Both go through a shared three-stage pipeline:
+
+1. **Enumerate** (`enumerateSafSources` / `enumerateDriveSources`): produce a list of `ImportPreviewEntry` records, one per source image, each with a stable per-entry cache file path the source has already been copied/downloaded into. SAF entries also carry `srcMetaTags` / `srcMetaOriginalDriveId` from any sibling `_wardrobe_metadata.json`.
+2. **Branch** (`kickoffImport`): when `dedupeOnImport` is on and the embedder is available, sync the index, run `EmbeddingService.findSimilar(threshold=dedupeThreshold)` over each entry, and pause with `WardrobeUiState.importPreview = ImportPreview(...)` for `ImportPreviewDialog` to render. Entries without a similarity hit start selected by default; entries with hits start unticked. When `dedupeOnImport` is off, the function jumps straight to step 3.
+3. **Run** (`runImportEntries`): the per-entry upload / bg-removal / tagging loop, operating on the already-cached files. Reused by both the fast path (full list of entries) and the preview path (only selected entries). `confirmImportPreview()` invokes it on selected entries; `cancelImportPreview()` skips the run entirely. Both also delete the unused cache files and release the foreground-service wake lock acquired by the original `importFromFolder` call.
+
+The Repair & Sync wake lock is released by the `importFromFolder` `finally` only when `importPreview == null` (i.e. the fast path completed synchronously); the preview path keeps it alive until confirm/cancel so the foreground service notification stays up while the user reviews.
 
 ### Visual wardrobe search (Shopping helper)
 
