@@ -581,4 +581,36 @@
     <string name="shop_error_model_missing">Das Modell für die visuelle Suche ist nicht installiert.</string>
     <string name="shop_error_embed_failed">Das Foto konnte nicht analysiert werden. Probiere es erneut.</string>
     <string name="shop_crosshair_hint">Richte das Teil auf das Fadenkreuz aus</string>
+
+    <!-- Ähnlichkeitsprüfung (Aufnahme / Import / Reparatur &amp; Sync) -->
+    <string name="settings_dedupe_title">Ähnlichkeitsprüfung</string>
+    <string name="settings_dedupe_desc">Erkennt vor dem Import optisch ähnliche Teile, die bereits in deiner Garderobe sind. Läuft komplett auf dem Gerät mit demselben Modell wie die Einkaufshilfe.</string>
+    <string name="settings_dedupe_toggle">Vor dem Import prüfen</string>
+    <string name="settings_dedupe_toggle_desc">Beim Fotografieren oder Importieren aus einem Ordner zuerst mögliche Duplikate anzeigen.</string>
+    <string name="settings_dedupe_threshold">Ähnlichkeits-Schwelle: %1$d %%</string>
+    <string name="dedupe_dialog_title">Mögliches Duplikat</string>
+    <string name="dedupe_dialog_desc">%1$d Teil(e) in deiner Garderobe sehen diesem Foto sehr ähnlich.</string>
+    <string name="dedupe_dialog_import_anyway">Trotzdem importieren</string>
+    <string name="dedupe_dialog_cancel">Abbrechen</string>
+    <string name="dedupe_no_matches">Keine Treffer</string>
+    <string name="dedupe_score">%1$d %% Übereinstimmung</string>
+
+    <!-- Teil per Foto finden (Garderobe) -->
+    <string name="wardrobe_find_by_photo">Teil per Foto suchen</string>
+    <string name="wardrobe_find_by_photo_empty">Keine ähnlichen Teile gefunden.</string>
+    <string name="wardrobe_find_by_photo_searching">Suche Treffer…</string>
+
+    <!-- Reparatur &amp; Sync — mögliche Duplikate -->
+    <string name="repair_section_duplicates">Mögliche Duplikate</string>
+    <string name="repair_duplicates_hint">Aktiviere Teile, um sie in Drive zu löschen. Tippen zeigt den Vergleich.</string>
+    <string name="repair_duplicate_of">Ähnlich zu %1$s</string>
+
+    <!-- Ordner-Import-Vorschau -->
+    <string name="import_preview_title">%1$d Teil(e) prüfen</string>
+    <string name="import_preview_desc">Hake Teile ab, die du nicht importieren willst. Mit \"Ähnlich\" markierte Teile haben bereits ein passendes Pendant in deiner Garderobe.</string>
+    <string name="import_preview_similar_badge">Ähnlich</string>
+    <string name="import_preview_select_all">Alles auswählen</string>
+    <string name="import_preview_deselect_all">Alles abwählen</string>
+    <string name="import_preview_import">%1$d importieren</string>
+    <string name="import_preview_scanning">Scanne %1$d / %2$d…</string>
 </resources>

@@ -592,4 +592,36 @@
     <string name="shop_error_model_missing">Visual search model is not installed.</string>
     <string name="shop_error_embed_failed">Could not analyze that photo. Try another one.</string>
     <string name="shop_crosshair_hint">Center the item on the crosshair</string>
+
+    <!-- Similarity check (capture / import / Repair & Sync) -->
+    <string name="settings_dedupe_title">Similarity check</string>
+    <string name="settings_dedupe_desc">Detects visually similar items already in your wardrobe before you import or scan duplicates. Runs fully on-device using the same model as the Shopping helper.</string>
+    <string name="settings_dedupe_toggle">Check before import</string>
+    <string name="settings_dedupe_toggle_desc">When taking a photo or importing from a folder, surface possible duplicates first.</string>
+    <string name="settings_dedupe_threshold">Similarity threshold: %1$d%%</string>
+    <string name="dedupe_dialog_title">Possible duplicate</string>
+    <string name="dedupe_dialog_desc">We found %1$d item(s) in your wardrobe that look very similar to this photo.</string>
+    <string name="dedupe_dialog_import_anyway">Import anyway</string>
+    <string name="dedupe_dialog_cancel">Cancel</string>
+    <string name="dedupe_no_matches">No matches</string>
+    <string name="dedupe_score">%1$d%% match</string>
+
+    <!-- Find item by photo (Wardrobe) -->
+    <string name="wardrobe_find_by_photo">Find item by photo</string>
+    <string name="wardrobe_find_by_photo_empty">No similar items found.</string>
+    <string name="wardrobe_find_by_photo_searching">Looking for matches…</string>
+
+    <!-- Repair &amp; Sync — possible duplicates section -->
+    <string name="repair_section_duplicates">Possible duplicates</string>
+    <string name="repair_duplicates_hint">Tick items to delete from Drive. Tap to see what they look like.</string>
+    <string name="repair_duplicate_of">Similar to %1$s</string>
+
+    <!-- Folder import preview -->
+    <string name="import_preview_title">Review %1$d item(s)</string>
+    <string name="import_preview_desc">Untick anything you don\'t want to import. Items flagged \"Similar\" already have a close match in your wardrobe.</string>
+    <string name="import_preview_similar_badge">Similar</string>
+    <string name="import_preview_select_all">Select all</string>
+    <string name="import_preview_deselect_all">Deselect all</string>
+    <string name="import_preview_import">Import %1$d</string>
+    <string name="import_preview_scanning">Scanning %1$d / %2$d…</string>
 </resources>

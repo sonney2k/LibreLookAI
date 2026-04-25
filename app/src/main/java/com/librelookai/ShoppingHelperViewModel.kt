@@ -1,7 +1,6 @@
 package com.librelookai
 
 import android.app.Application
-import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -44,19 +43,19 @@ data class ShoppingHelperUiState(
 
 class ShoppingHelperViewModel(app: Application) : AndroidViewModel(app) {
 
-    private val embedder = EmbeddingRepository(app)
-    private val segmenter = SegmentationRepository(app)
-    private val index = EmbeddingIndex(app)
-
-    private val _state = MutableStateFlow(ShoppingHelperUiState(modelAvailable = embedder.isAvailable()))
+    private val _state = MutableStateFlow(
+        ShoppingHelperUiState(modelAvailable = EmbeddingService.isModelAvailable())
+    )
     val state = _state.asStateFlow()
 
     private var indexJob: Job? = null
 
+    private val cacheDir: File get() = File(getApplication<Application>().filesDir, "wardrobe")
+
     init {
         viewModelScope.launch {
-            index.load()
-            _state.update { it.copy(indexedCount = index.size) }
+            EmbeddingService.index.load()
+            _state.update { it.copy(indexedCount = EmbeddingService.indexSize) }
         }
     }
 
@@ -69,7 +68,6 @@ class ShoppingHelperViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun clearResults() {
-        // Drop the old query file if it still lives in our cache dir
         _state.value.queryPath?.let { path ->
             runCatching { File(path).takeIf { it.parentFile?.name == QUERY_DIR }?.delete() }
         }
@@ -82,44 +80,24 @@ class ShoppingHelperViewModel(app: Application) : AndroidViewModel(app) {
      * overlapping calls are coalesced.
      */
     fun syncIndex(images: List<DriveImage>) {
-        if (!_state.value.modelAvailable) return
+        if (!EmbeddingService.isModelAvailable()) return
         if (indexJob?.isActive == true) return
         indexJob = viewModelScope.launch {
-            index.load()
-            val currentIds = images.map { it.driveId }.toSet()
-            val dropped = index.retainIds(currentIds)
-
-            val todo = withContext(Dispatchers.IO) {
-                images.filter { img ->
-                    val cached = cutoutFile(img) ?: return@filter false
-                    cached.exists() && !index.contains(img.driveId)
-                }
+            val total = images.count { img ->
+                val f = File(cacheDir, "${img.driveId}.png").exists() ||
+                        File(cacheDir, "${img.driveId}.jpg").exists()
+                f
             }
-
-            if (todo.isEmpty() && dropped == 0) {
-                _state.update { it.copy(indexedCount = index.size) }
-                return@launch
+            _state.update { it.copy(isIndexing = total > 0, indexTotal = total, indexDone = 0) }
+            EmbeddingService.syncIndex(images, cacheDir) { done, t ->
+                _state.update { it.copy(isIndexing = true, indexTotal = t, indexDone = done) }
             }
-
-            _state.update {
-                it.copy(isIndexing = todo.isNotEmpty(), indexTotal = todo.size, indexDone = 0)
-            }
-
-            var done = 0
-            for (img in todo) {
-                val file = cutoutFile(img) ?: continue
-                val vec = embedder.embedFile(file)
-                if (vec != null) index.upsert(img.driveId, vec)
-                done++
-                _state.update { it.copy(indexDone = done) }
-            }
-            index.save()
             _state.update {
                 it.copy(
                     isIndexing = false,
                     indexTotal = 0,
                     indexDone = 0,
-                    indexedCount = index.size,
+                    indexedCount = EmbeddingService.indexSize,
                 )
             }
         }
@@ -131,7 +109,7 @@ class ShoppingHelperViewModel(app: Application) : AndroidViewModel(app) {
      */
     fun onCapturedFile(file: File, images: List<DriveImage>) {
         viewModelScope.launch {
-            if (!_state.value.modelAvailable) {
+            if (!EmbeddingService.isModelAvailable()) {
                 _state.update {
                     it.copy(
                         isCapturing = false,
@@ -152,20 +130,15 @@ class ShoppingHelperViewModel(app: Application) : AndroidViewModel(app) {
                 )
             }
 
-            // Make sure the index reflects the current wardrobe before we search
-            index.load()
-            val currentIds = images.map { it.driveId }.toSet()
-            index.retainIds(currentIds)
-            for (img in images) {
-                val cached = cutoutFile(img) ?: continue
-                if (!cached.exists()) continue
-                if (index.contains(img.driveId)) continue
-                val vec = embedder.embedFile(cached) ?: continue
-                index.upsert(img.driveId, vec)
-            }
+            EmbeddingService.syncIndex(images, cacheDir)
 
-            val queryVec = embedQuery(queryFile)
-            if (queryVec == null) {
+            val rawMatches = EmbeddingService.findSimilar(
+                file = queryFile,
+                threshold = -1f,
+                topK = TOP_K,
+                segment = true,
+            )
+            if (rawMatches.isEmpty() && !EmbeddingService.isModelAvailable()) {
                 _state.update {
                     it.copy(
                         isMatching = false,
@@ -174,11 +147,9 @@ class ShoppingHelperViewModel(app: Application) : AndroidViewModel(app) {
                 }
                 return@launch
             }
-
-            val rawMatches = index.search(queryVec, TOP_K)
             val byId = images.associateBy { it.driveId }
             val resolved = rawMatches.mapNotNull { m ->
-                val img = byId[m.id] ?: return@mapNotNull null
+                val img = byId[m.driveId] ?: return@mapNotNull null
                 ShopMatch(image = img, score = m.score)
             }
 
@@ -186,10 +157,9 @@ class ShoppingHelperViewModel(app: Application) : AndroidViewModel(app) {
                 it.copy(
                     isMatching = false,
                     matches = resolved,
-                    indexedCount = index.size,
+                    indexedCount = EmbeddingService.indexSize,
                 )
             }
-            index.save()
         }
     }
 
@@ -197,50 +167,7 @@ class ShoppingHelperViewModel(app: Application) : AndroidViewModel(app) {
         _state.update { it.copy(error = null) }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        viewModelScope.launch {
-            embedder.close()
-            segmenter.close()
-        }
-    }
-
     // ---------- helpers ----------
-
-    /**
-     * Embed the live query: decode the JPEG, run interactive segmentation seeded at the image
-     * center to isolate the item from its background, then composite onto white and embed. Falls
-     * back to embedding the raw file (with white-bg compositing only) if segmentation is
-     * unavailable or fails.
-     */
-    private suspend fun embedQuery(queryFile: File): FloatArray? = withContext(Dispatchers.IO) {
-        val raw = runCatching { BitmapFactory.decodeFile(queryFile.absolutePath) }.getOrNull()
-            ?: return@withContext null
-        try {
-            val masked = segmenter.segmentForegroundOnWhite(raw)
-            if (masked != null) {
-                try {
-                    embedder.embedBitmap(masked, compositeAlpha = false)
-                } finally {
-                    if (!masked.isRecycled) masked.recycle()
-                }
-            } else {
-                Log.w(TAG, "embedQuery: segmentation unavailable, falling back to raw query")
-                embedder.embedFile(queryFile)
-            }
-        } finally {
-            if (!raw.isRecycled) raw.recycle()
-        }
-    }
-
-    private fun cutoutFile(img: DriveImage): File? {
-        val cacheDir = File(getApplication<Application>().filesDir, "wardrobe")
-        val png = File(cacheDir, "${img.driveId}.png")
-        if (png.exists()) return png
-        val jpg = File(cacheDir, "${img.driveId}.jpg")
-        if (jpg.exists()) return jpg
-        return null
-    }
 
     /** Move (or copy, if cross-filesystem) [source] into our private query cache. */
     private suspend fun adoptQueryFile(source: File): File = withContext(Dispatchers.IO) {

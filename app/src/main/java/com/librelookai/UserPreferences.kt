@@ -15,6 +15,10 @@ data class UserPreferences(
     val tryOnBackDriveId: String = "",
     /** Which context sections to feed into AI style suggestions. */
     val aiConsiderations: AiConsiderations = AiConsiderations(),
+    /** Run on-device similarity check on imports/captures so users can spot duplicates before committing. */
+    val dedupeOnImport: Boolean = true,
+    /** Cosine-similarity threshold (0..1) above which two items are treated as duplicates. */
+    val dedupeThreshold: Float = 0.85f,
 )
 
 /** Toggles controlling which context blocks the outfit-suggestion prompts include. */

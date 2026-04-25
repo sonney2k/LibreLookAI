@@ -299,9 +299,21 @@ Both service and wake lock are reference-counted via `acquireJobWakeLock()` / `r
 
 ### Visual wardrobe search (Shopping helper)
 
-On-device, zero-network visual similarity search powered by MediaPipe's `ImageEmbedder`. Lets the user snap a photo (e.g. of an item on a store shelf) and surfaces the most visually similar cutouts already in their wardrobe.
+On-device, zero-network visual similarity search powered by MediaPipe's `ImageEmbedder`. Used by the Shopping helper, capture-time duplicate detection, the Wardrobe "Find item by photo" entry point, Repair & Sync's duplicate detection, and the folder-import preview.
 
-**Entry point (v1)**: Dedicated bottom-nav tab "Shop" (index 5, `Icons.Default.ShoppingBag`). Settings moved from tab 5 → 6. No other entry points wired yet.
+**Entry point (v1)**: Dedicated bottom-nav tab "Shop" (index 5, `Icons.Default.ShoppingBag`). Settings moved from tab 5 → 6.
+
+**Shared service**: `EmbeddingService` is a process-wide `object` that owns the only `EmbeddingRepository`, `SegmentationRepository`, and `EmbeddingIndex` instances. `MainActivity.onCreate` calls `EmbeddingService.init(this)` before `setContent` so all consumers see the same MediaPipe handles and the persistent index file. Public API:
+
+- `syncIndex(images, cacheDir, onProgress)` — embed any cutout that has a local file but isn't in the index; drop entries no longer present.
+- `findSimilar(file, threshold, excludeIds, topK, segment=true)` — segment + composite-on-white + crop + embed + filter.
+- `findSimilarBitmap(bitmap, ...)` — same but for an in-memory bitmap (no segmentation).
+- `embedQuery(file, segment=true)` — embed-only, for callers that want to reuse the vector.
+- `searchVector(vec, threshold, excludeIds, topK)` — search with an already-computed embedding.
+
+`ShoppingHelperViewModel` no longer constructs its own embedder/segmenter/index; it consumes `EmbeddingService` directly. Future similarity features should follow the same pattern.
+
+**User preferences** for similarity (`UserPreferences`): `dedupeOnImport: Boolean = true` (gate for capture/import duplicate checks), `dedupeThreshold: Float = 0.85f` (single threshold reused across all touchpoints; slider in Settings → Profile, range 0.7–0.95).
 
 **Pipeline**:
 

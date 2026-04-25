@@ -78,6 +78,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        EmbeddingService.init(this)
         setContent {
             LibreLookAITheme {
                 val authViewModel: AuthViewModel = viewModel()

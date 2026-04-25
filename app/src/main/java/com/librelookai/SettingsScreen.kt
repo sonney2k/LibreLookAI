@@ -66,6 +66,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -74,6 +75,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
@@ -265,6 +267,8 @@ private fun ProfileTab(
     var yearOfBirth by remember(state.preferences) { mutableStateOf(state.preferences.yearOfBirth?.toString() ?: "") }
     var preferences by remember(state.preferences) { mutableStateOf(state.preferences.preferences) }
     var language    by remember(state.preferences) { mutableStateOf(state.preferences.language) }
+    var dedupeOnImport by remember(state.preferences) { mutableStateOf(state.preferences.dedupeOnImport) }
+    var dedupeThreshold by remember(state.preferences) { mutableFloatStateOf(state.preferences.dedupeThreshold) }
 
     var pendingTryOnSlot by remember { mutableStateOf<TryOnSlot?>(null) }
     val tryOnPickLauncher = rememberLauncherForActivityResult(
@@ -281,6 +285,8 @@ private fun ProfileTab(
             yearOfBirth = state.preferences.yearOfBirth?.toString() ?: ""
             preferences = state.preferences.preferences
             language    = state.preferences.language
+            dedupeOnImport  = state.preferences.dedupeOnImport
+            dedupeThreshold = state.preferences.dedupeThreshold
         }
     }
     Box(modifier = Modifier.fillMaxSize()) {
@@ -376,6 +382,39 @@ private fun ProfileTab(
                     modifier = Modifier.fillMaxWidth(),
                 )
 
+                // --- Similarity check ---
+                HorizontalDivider()
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        stringResource(R.string.settings_dedupe_title),
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                    Text(
+                        stringResource(R.string.settings_dedupe_desc),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    SwitchRow(
+                        label = stringResource(R.string.settings_dedupe_toggle),
+                        sublabel = stringResource(R.string.settings_dedupe_toggle_desc),
+                        checked = dedupeOnImport,
+                        onCheckedChange = { dedupeOnImport = it },
+                    )
+                    Column {
+                        Text(
+                            stringResource(R.string.settings_dedupe_threshold, (dedupeThreshold * 100).toInt()),
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                        Slider(
+                            value = dedupeThreshold,
+                            onValueChange = { dedupeThreshold = it },
+                            valueRange = 0.7f..0.95f,
+                            steps = 24,
+                        )
+                    }
+                }
+
                 // --- Try-on photos ---
                 HorizontalDivider()
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -425,6 +464,8 @@ private fun ProfileTab(
                                 yearOfBirth = yearOfBirth.toIntOrNull(),
                                 preferences = preferences,
                                 language    = language,
+                                dedupeOnImport  = dedupeOnImport,
+                                dedupeThreshold = dedupeThreshold,
                             )
                         )
                     },
