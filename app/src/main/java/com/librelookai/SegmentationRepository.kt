@@ -85,21 +85,66 @@ class SegmentationRepository(private val context: Context) {
 
         val white = Color.WHITE
         var fgPixelCount = 0
+        var bgPixelCount = 0
+        var bgRSum = 0L; var bgGSum = 0L; var bgBSum = 0L
+        // First pass: classify pixels and accumulate background colour stats.
         for (i in 0 until pixels.size) {
             val v = maskBytes.get(i).toInt() and 0xFF
-            if (v == fgValue) fgPixelCount++ else pixels[i] = white
+            if (v == fgValue) {
+                fgPixelCount++
+            } else {
+                val p = pixels[i]
+                bgRSum += (p ushr 16) and 0xFF
+                bgGSum += (p ushr 8) and 0xFF
+                bgBSum += p and 0xFF
+                bgPixelCount++
+            }
         }
-
-        if (rgb !== src) rgb.recycle()
 
         // Sanity check: if the mask claims <2% foreground, it's almost certainly bogus
         // (e.g. the model couldn't find anything at the center). Bail out so the caller falls
         // back to the un-segmented image.
         val totalPixels = w * h
         if (fgPixelCount * 100 < totalPixels * 2) {
+            if (rgb !== src) rgb.recycle()
             Log.w(TAG, "segmentation produced ${fgPixelCount}/$totalPixels foreground pixels — discarding")
             return@withContext null
         }
+
+        // Gray-world WB: derive per-channel gains from the background mean (the surface the item
+        // was photographed on, treated as a neutral reference). Only apply when the background is
+        // both large enough and not extreme exposure, otherwise the reference is unreliable.
+        var gainR = 1f; var gainG = 1f; var gainB = 1f
+        if (bgPixelCount * 100 >= totalPixels * 5) {
+            val meanR = bgRSum.toFloat() / bgPixelCount
+            val meanG = bgGSum.toFloat() / bgPixelCount
+            val meanB = bgBSum.toFloat() / bgPixelCount
+            val meanY = (meanR + meanG + meanB) / 3f
+            if (meanY in 40f..220f && meanR > 1f && meanG > 1f && meanB > 1f) {
+                gainR = (meanY / meanR).coerceIn(0.5f, 2.0f)
+                gainG = (meanY / meanG).coerceIn(0.5f, 2.0f)
+                gainB = (meanY / meanB).coerceIn(0.5f, 2.0f)
+            }
+        }
+        val applyWB = gainR != 1f || gainG != 1f || gainB != 1f
+
+        // Second pass: replace background with white; apply WB gains to foreground pixels.
+        maskBytes.rewind()
+        for (i in 0 until pixels.size) {
+            val v = maskBytes.get(i).toInt() and 0xFF
+            if (v != fgValue) {
+                pixels[i] = white
+            } else if (applyWB) {
+                val p = pixels[i]
+                val a = (p ushr 24) and 0xFF
+                val r = (((p ushr 16) and 0xFF) * gainR).toInt().coerceIn(0, 255)
+                val g = (((p ushr 8) and 0xFF) * gainG).toInt().coerceIn(0, 255)
+                val b = ((p and 0xFF) * gainB).toInt().coerceIn(0, 255)
+                pixels[i] = (a shl 24) or (r shl 16) or (g shl 8) or b
+            }
+        }
+
+        if (rgb !== src) rgb.recycle()
 
         Bitmap.createBitmap(pixels, w, h, Bitmap.Config.ARGB_8888)
     }

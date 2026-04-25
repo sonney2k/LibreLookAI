@@ -49,13 +49,15 @@ class EmbeddingRepository(private val context: Context) {
         return present
     }
 
+    /** Result of embedding a bitmap: the L2-normalized CNN embedding and the L1-normalized HSV histogram. */
+    data class EmbedResult(val vec: FloatArray, val hist: FloatArray)
+
     /**
      * Embed the image at [file]. The image is composited onto opaque white (collapsing any alpha
      * channel) and center-cropped to a square before being passed to MediaPipe. Returns a
-     * L2-normalized `FloatArray` on success, or null if the model is missing or decoding/embedding
-     * failed.
+     * [EmbedResult] on success, or null if the model is missing or decoding/embedding failed.
      */
-    suspend fun embedFile(file: File): FloatArray? = withContext(Dispatchers.IO) {
+    suspend fun embedFile(file: File): EmbedResult? = withContext(Dispatchers.IO) {
         val bitmap = runCatching {
             BitmapFactory.decodeFile(file.absolutePath)
         }.getOrNull() ?: run {
@@ -77,19 +79,24 @@ class EmbeddingRepository(private val context: Context) {
      * Set [compositeAlpha] to true if the input may have transparent pixels that should be
      * composited onto white before embedding.
      */
-    suspend fun embedBitmap(bitmap: Bitmap, compositeAlpha: Boolean = false): FloatArray? =
+    suspend fun embedBitmap(bitmap: Bitmap, compositeAlpha: Boolean = false): EmbedResult? =
         withContext(Dispatchers.IO) {
             embedBitmapInternal(bitmap, compositeAlpha)
         }
 
-    private suspend fun embedBitmapInternal(src: Bitmap, compositeAlpha: Boolean): FloatArray? {
+    private suspend fun embedBitmapInternal(src: Bitmap, compositeAlpha: Boolean): EmbedResult? {
         val emb = ensureEmbedder() ?: return null
         val prepared = prepareForEmbedding(src, compositeAlpha) ?: return null
         return try {
             val mpImage = BitmapImageBuilder(prepared).build()
             val result = emb.embed(mpImage)
             val embedding: Embedding? = result.embeddingResult().embeddings().firstOrNull()
-            embedding?.floatEmbedding()
+            val vec = embedding?.floatEmbedding() ?: return null
+            // Histogram is computed on the same prepared bitmap so query and gallery share
+            // identical preprocessing (composite-on-white + center-crop).
+            val rawHist = ColorHistogram.compute(prepared)
+            val hist = ColorHistogram.smoothH(rawHist, sigma = 1f)
+            EmbedResult(vec, hist)
         } catch (t: Throwable) {
             Log.w(TAG, "embed failed", t)
             null

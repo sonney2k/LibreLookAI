@@ -11,19 +11,24 @@ import java.io.DataOutputStream
 import java.io.File
 
 /**
- * Persistent key→vector index for wardrobe cutout embeddings.
+ * Persistent key→(embedding, color-histogram) index for wardrobe cutout entries.
  *
- * Keys are cutout Drive IDs. Values are L2-normalized `FloatArray`s produced by
- * [EmbeddingRepository.embedFile]. Because vectors are unit-length, cosine similarity is a plain
- * dot product — [search] returns top-K by that score (range [-1, 1]).
+ * Keys are cutout Drive IDs. Each entry holds a L2-normalized CNN embedding (cosine = dot product)
+ * and a L1-normalized HSV color histogram. [search] combines both into a single score:
+ *
+ *     score = α · cos(emb) + (1 − α) · cos(hist),   α = EMBED_WEIGHT
+ *
+ * The histogram channel exists because pure CNN embeddings are weak on hue and routinely confuse
+ * uniformly-colored garments (e.g. red vs. black). See `ColorHistogram` for the bin layout.
  *
  * On-disk format at `filesDir/wardrobe_embeddings.bin`:
  *   magic u32 ('LLAE' 0x4C4C4145)
- *   version u16 (currently 1)
+ *   version u16 (currently 3)
  *   dim u16
+ *   histDim u16
  *   count u32
  *   for each row:
- *     idLen u16 | idBytes utf8 | float32 * dim
+ *     idLen u16 | idBytes utf8 | float32 * dim | float32 * histDim
  *
  * All access goes through a single [Mutex] — callers can safely share one instance across
  * coroutines. Writes are eagerly flushed; a tiny delta doesn't justify debouncing yet.
@@ -31,10 +36,11 @@ import java.io.File
 class EmbeddingIndex(private val context: Context) {
 
     private val mutex = Mutex()
-    private val entries = LinkedHashMap<String, FloatArray>()
+    private val entries = LinkedHashMap<String, Entry>()
     @Volatile private var loaded = false
     @Volatile private var dim: Int = 0
 
+    data class Entry(val vec: FloatArray, val hist: FloatArray)
     data class Match(val id: String, val score: Float)
 
     val size: Int get() = entries.size
@@ -58,7 +64,12 @@ class EmbeddingIndex(private val context: Context) {
                         return@use
                     }
                     val fileDim = input.readUnsignedShort()
+                    val fileHistDim = input.readUnsignedShort()
                     val count = input.readInt()
+                    if (fileHistDim != HIST_DIM) {
+                        Log.w(TAG, "Index histDim $fileHistDim != $HIST_DIM — ignoring")
+                        return@use
+                    }
                     dim = fileDim
                     entries.clear()
                     repeat(count) {
@@ -67,7 +78,9 @@ class EmbeddingIndex(private val context: Context) {
                         input.readFully(idBytes)
                         val vec = FloatArray(fileDim)
                         for (i in 0 until fileDim) vec[i] = input.readFloat()
-                        entries[String(idBytes, Charsets.UTF_8)] = vec
+                        val hist = FloatArray(fileHistDim)
+                        for (i in 0 until fileHistDim) hist[i] = input.readFloat()
+                        entries[String(idBytes, Charsets.UTF_8)] = Entry(vec, hist)
                     }
                 }
             }.onFailure {
@@ -77,14 +90,18 @@ class EmbeddingIndex(private val context: Context) {
         }
     }
 
-    suspend fun upsert(id: String, vec: FloatArray) {
+    suspend fun upsert(id: String, vec: FloatArray, hist: FloatArray) {
         mutex.withLock {
             if (dim == 0) dim = vec.size
             if (vec.size != dim) {
                 Log.w(TAG, "upsert: dim mismatch ${vec.size} vs $dim — skipping $id")
                 return
             }
-            entries[id] = vec
+            if (hist.size != HIST_DIM) {
+                Log.w(TAG, "upsert: histDim mismatch ${hist.size} vs $HIST_DIM — skipping $id")
+                return
+            }
+            entries[id] = Entry(vec, hist)
         }
     }
 
@@ -105,8 +122,10 @@ class EmbeddingIndex(private val context: Context) {
     /** Snapshot of all currently-indexed IDs. */
     suspend fun ids(): Set<String> = mutex.withLock { entries.keys.toSet() }
 
-    /** Defensive copy of the embedding stored for [id], or null if not indexed. */
-    suspend fun vector(id: String): FloatArray? = mutex.withLock { entries[id]?.copyOf() }
+    /** Defensive copy of the entry stored for [id], or null if not indexed. */
+    suspend fun entry(id: String): Entry? = mutex.withLock {
+        entries[id]?.let { Entry(it.vec.copyOf(), it.hist.copyOf()) }
+    }
 
     suspend fun save() = withContext(Dispatchers.IO) {
         mutex.withLock {
@@ -117,12 +136,14 @@ class EmbeddingIndex(private val context: Context) {
                     out.writeInt(MAGIC)
                     out.writeShort(VERSION)
                     out.writeShort(dim)
+                    out.writeShort(HIST_DIM)
                     out.writeInt(entries.size)
-                    for ((id, vec) in entries) {
+                    for ((id, e) in entries) {
                         val idBytes = id.toByteArray(Charsets.UTF_8)
                         out.writeShort(idBytes.size)
                         out.write(idBytes)
-                        for (f in vec) out.writeFloat(f)
+                        for (f in e.vec) out.writeFloat(f)
+                        for (f in e.hist) out.writeFloat(f)
                     }
                 }
                 if (!tmp.renameTo(file)) {
@@ -137,15 +158,19 @@ class EmbeddingIndex(private val context: Context) {
     }
 
     /**
-     * Returns the top [topK] matches for [query] ordered by descending similarity. When the index
-     * is empty or dimensions mismatch, returns an empty list.
+     * Returns the top [topK] matches for the [queryVec] / [queryHist] pair, ordered by descending
+     * combined score. When the index is empty or vector dimensions mismatch, returns an empty list.
      */
-    suspend fun search(query: FloatArray, topK: Int): List<Match> {
+    suspend fun search(queryVec: FloatArray, queryHist: FloatArray, topK: Int): List<Match> {
         return mutex.withLock {
-            if (entries.isEmpty() || query.size != dim) return@withLock emptyList()
+            if (entries.isEmpty() || queryVec.size != dim || queryHist.size != HIST_DIM) {
+                return@withLock emptyList()
+            }
             val scored = ArrayList<Match>(entries.size)
-            for ((id, vec) in entries) {
-                scored.add(Match(id, dot(query, vec)))
+            for ((id, e) in entries) {
+                val embScore = dot(queryVec, e.vec)
+                val histScore = ColorHistogram.cosine(queryHist, e.hist)
+                scored.add(Match(id, EMBED_WEIGHT * embScore + (1f - EMBED_WEIGHT) * histScore))
             }
             scored.sortByDescending { it.score }
             if (scored.size <= topK) scored else scored.subList(0, topK).toList()
@@ -164,9 +189,17 @@ class EmbeddingIndex(private val context: Context) {
         private const val TAG = "EmbeddingIndex"
         private const val INDEX_FILE = "wardrobe_embeddings.bin"
         private const val MAGIC = 0x4C4C4145 // 'LLAE'
-        // Version bumped to 2 when the embedder swapped from MobileNetV3-Small (1024-d) to
-        // EfficientNet Lite0 (1280-d) and the bitmap pre-processing pipeline was changed.
-        // Old indexes are discarded on load and rebuilt on first sync.
-        private const val VERSION = 2
+        // Version 3 adds a per-entry HSV histogram (HIST_DIM floats) after the embedding so the
+        // search score can mix in a color channel. Earlier versions are discarded on load and
+        // rebuilt on next sync (`syncIndex` re-embeds every cached cutout — fast for ~100 items).
+        private const val VERSION = 3
+
+        /**
+         * Mixing weight for the combined similarity score. Higher → more weight on shape/texture
+         * (the CNN embedding); lower → more weight on color (HSV histogram). 0.65 means the
+         * embedding still dominates but a strong color disagreement (e.g. red vs. black) can
+         * meaningfully drag the score down.
+         */
+        const val EMBED_WEIGHT = 0.65f
     }
 }

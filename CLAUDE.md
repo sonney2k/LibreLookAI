@@ -327,26 +327,33 @@ On-device, zero-network visual similarity search powered by MediaPipe's `ImageEm
 
 `ShoppingHelperViewModel` no longer constructs its own embedder/segmenter/index; it consumes `EmbeddingService` directly. Future similarity features should follow the same pattern.
 
-**User preferences** for similarity (`UserPreferences`): `dedupeOnImport: Boolean = true` (gate for capture/import duplicate checks), `dedupeThreshold: Float = 0.85f` (single threshold reused across all touchpoints; slider in Settings → Profile, range 0.3–0.95).
+**User preferences** for similarity (`UserPreferences`): `dedupeOnImport: Boolean = true` (gate for capture/import duplicate checks), `dedupeThreshold: Float = 0.88f` (single threshold reused across all touchpoints; slider in Settings → Profile, range 0.3–0.95). The default is tuned for the **combined embedding + color-histogram score** (see Scoring below); pure-embedding cosine of 0.85 corresponds roughly to combined 0.88 once the histogram channel agrees.
 
 **Pipeline**:
 
 ```
 Camera → Bitmap
   → MediaPipe InteractiveSegmenter (Magic Touch, seed = image center)
+       → gray-world white-balance correction (background pixels as neutral reference)
        → composite foreground onto opaque white
   → Center-crop to square
-  → MediaPipe ImageEmbedder (MobileNet V3 Small, L2-normalized)
-  → Dot product vs. each cached wardrobe embedding
-  → Top-N matches sorted by score
+  → MediaPipe ImageEmbedder (L2-normalized) ─┐
+  → HSV histogram (12×4×4 = 192 bins, H-smoothed) ─┘
+  → Combined score: α·cos(emb) + (1−α)·cos(hist), α = 0.65
+  → Top-N matches sorted by combined score
 ```
 
-Cached cutouts (transparent PNGs) skip the segmentation step but go through the same composite-onto-white + center-crop preparation, so query and gallery images share an identical backdrop and aspect ratio before embedding.
+Cached cutouts (transparent PNGs) skip the segmentation step but go through the same composite-onto-white + center-crop preparation, so query and gallery images share an identical backdrop and aspect ratio before embedding. Gray-world WB only applies at capture time (when a background is available); already-cached cutouts use whatever WB the camera picked when they were originally taken.
+
+**Scoring**: pure CNN embeddings tend to collapse near-uniform garments to texture vectors and wash out hue, so red and black items often look similar. The HSV histogram channel — computed over non-transparent, non-near-white pixels and L1-normalized, then smoothed by a circular Gaussian along the H axis (σ ≈ 1 bin) so adjacent hues bleed together — is mixed in with weight `1 − α = 0.35`. `ColorHistogram.kt` owns the compute/smooth/cosine helpers.
+
+**White balance (gray-world)**: `SegmentationRepository.segmentForegroundOnWhite` uses the segmentation mask twice — once to identify foreground for the composite, once to identify *background* pixels as a neutral-color reference. It computes the per-channel mean of background pixels, derives gains `gainC = meanY / meanC` (where `meanY` is the average of the three channel means), clamps each gain to `[0.5, 2.0]`, and applies them to foreground pixels before compositing on white. Skipped (no correction) if the background covers <5% of the frame, or if the background mean luma is outside `[40, 220]` (too dark or blown out — unreliable reference).
 
 **Components**:
-- `EmbeddingRepository` — lazy singleton that holds the MediaPipe `ImageEmbedder`. `embedFile(file)` decodes, composites alpha onto white if present, center-crops to a square, and embeds. `embedBitmap(bitmap, compositeAlpha)` is the bitmap entry point used after segmentation. Mutex-guarded; `close()` releases native resources. Embedder is configured with `setL2Normalize(true)` so cosine similarity reduces to a dot product.
-- `SegmentationRepository` — lazy singleton holding MediaPipe's `InteractiveSegmenter`. `segmentForegroundOnWhite(bitmap)` runs the model with a center-keypoint seed and returns a new bitmap with foreground pixels preserved and background pixels replaced with opaque white. Returns null if the model asset is missing or the mask covers <2% of pixels (likely garbage); callers fall back to embedding the un-segmented image. The capture UI shows a center crosshair (`showCenterCrosshair = true`) so the user knows the seed point.
-- `EmbeddingIndex` — in-memory `Map<cutoutDriveId, FloatArray>` + binary persistence at `filesDir/wardrobe_embeddings.bin` (format: `magic u32 | version u16 | dim u16 | count u32 | [idLen u16 | idUtf8 | float32[dim]]*`). `VERSION = 2`. Old indexes are discarded on load and rebuilt on next sync.
+- `EmbeddingRepository` — lazy singleton that holds the MediaPipe `ImageEmbedder`. `embedFile(file)` and `embedBitmap(bitmap, compositeAlpha)` both return `EmbedResult(vec, hist)` — the L2-normalized embedding and the L1-normalized HSV histogram, computed on the same prepared bitmap so query and gallery preparation match exactly. Mutex-guarded; `close()` releases native resources. Embedder is configured with `setL2Normalize(true)` so cosine similarity reduces to a dot product.
+- `SegmentationRepository` — lazy singleton holding MediaPipe's `InteractiveSegmenter`. `segmentForegroundOnWhite(bitmap)` runs the model with a center-keypoint seed, applies gray-world WB to foreground pixels using the background mean as reference, and returns a new bitmap with foreground pixels preserved (and corrected) and background pixels set to opaque white. Returns null if the model asset is missing or the mask covers <2% of pixels (likely garbage); callers fall back to embedding the un-segmented image. The capture UI shows a center crosshair (`showCenterCrosshair = true`) so the user knows the seed point.
+- `ColorHistogram` — pure helper in `ColorHistogram.kt` (top-level functions in `com.librelookai`). `compute(bitmap)` returns a 192-float L1-normalized HSV histogram (skipping alpha < 200 and near-white pixels). `smoothH(hist, sigma)` convolves the H axis with a circular Gaussian. `cosine(a, b)` is the histogram similarity score. Shared by `EmbeddingRepository` and `EmbeddingIndex`.
+- `EmbeddingIndex` — in-memory `Map<cutoutDriveId, IndexEntry(vec, hist)>` + binary persistence at `filesDir/wardrobe_embeddings.bin` (format: `magic u32 | version u16 | dim u16 | histDim u16 | count u32 | [idLen u16 | idUtf8 | float32[dim] | float32[histDim]]*`). `VERSION = 3`. Old indexes are discarded on load and rebuilt on next sync. `search(qvec, qhist, topK)` returns matches by the combined score with α = `EMBED_WEIGHT` (0.65).
 - `ShoppingHelperViewModel` — holds the repos + index. `syncIndex(images)` walks the current wardrobe, embeds any item with a cached cutout that isn't in the index yet, drops orphaned index entries, and persists. `onCapturedFile(file)` runs `embedQuery` (segment → composite → crop → embed) and publishes ranked matches. State exposes `isIndexing` with progress counts, `isMatching`, `query` thumbnail path, `matches: List<Match(driveId, score)>`, and `error`.
 - `ShoppingHelperScreen` — three visual states: (a) capture prompt with a big camera FAB, (b) inline `CaptureScreen` (reuses the existing one) with the center crosshair enabled, (c) result — query thumbnail up top + ranked list of wardrobe items with similarity bars. Header shows the `LocationButton` (same as other screens). Everything runs locally, so the shop tab is fully functional offline.
 

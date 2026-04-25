@@ -308,7 +308,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     /** Mirrors UserPreferences.dedupeOnImport — flips capture/import similarity gate on/off. */
     private var dedupeOnImport: Boolean = false
     /** Mirrors UserPreferences.dedupeThreshold — cosine cutoff for "this is probably already in your wardrobe". */
-    private var dedupeThreshold: Float = 0.85f
+    private var dedupeThreshold: Float = 0.88f
 
     /** Serializes all Drive metadata writes to prevent concurrent saves overwriting each other. */
     private val metaMutex = Mutex()

@@ -71,7 +71,7 @@ object EmbeddingService {
         var done = 0
         for (img in todo) {
             val f = cutoutFile(img, cacheDir) ?: continue
-            embedderImpl.embedFile(f)?.let { indexImpl.upsert(img.driveId, it) }
+            embedderImpl.embedFile(f)?.let { indexImpl.upsert(img.driveId, it.vec, it.hist) }
             done++
             onProgress?.invoke(done, todo.size)
         }
@@ -95,8 +95,8 @@ object EmbeddingService {
         topK: Int = 20,
         segment: Boolean = true,
     ): List<Match> {
-        val vec = embedQuery(file, segment) ?: return emptyList()
-        return searchVector(vec, threshold, excludeIds, topK)
+        val q = embedQuery(file, segment) ?: return emptyList()
+        return searchVector(q.vec, q.hist, threshold, excludeIds, topK)
     }
 
     /**
@@ -110,8 +110,8 @@ object EmbeddingService {
         topK: Int = 20,
     ): List<Match> {
         if (!isModelAvailable()) return emptyList()
-        val vec = embedderImpl.embedBitmap(bitmap, compositeAlpha = bitmap.hasAlpha()) ?: return emptyList()
-        return searchVector(vec, threshold, excludeIds, topK)
+        val q = embedderImpl.embedBitmap(bitmap, compositeAlpha = bitmap.hasAlpha()) ?: return emptyList()
+        return searchVector(q.vec, q.hist, threshold, excludeIds, topK)
     }
 
     /**
@@ -119,7 +119,7 @@ object EmbeddingService {
      * vector for both indexing and ad-hoc comparisons (e.g. Repair & Sync flagging duplicates
      * within the wardrobe itself).
      */
-    suspend fun embedQuery(file: File, segment: Boolean = true): FloatArray? = withContext(Dispatchers.IO) {
+    suspend fun embedQuery(file: File, segment: Boolean = true): EmbeddingRepository.EmbedResult? = withContext(Dispatchers.IO) {
         if (!isModelAvailable()) return@withContext null
         if (!segment) return@withContext embedderImpl.embedFile(file)
         val raw = runCatching { BitmapFactory.decodeFile(file.absolutePath) }.getOrNull() ?: return@withContext null
@@ -137,16 +137,17 @@ object EmbeddingService {
         }
     }
 
-    /** Search the index with an already-computed embedding [vec]. */
+    /** Search the index with an already-computed embedding + histogram pair. */
     suspend fun searchVector(
         vec: FloatArray,
+        hist: FloatArray,
         threshold: Float,
         excludeIds: Set<String> = emptySet(),
         topK: Int = 20,
     ): List<Match> {
         if (!isModelAvailable()) return emptyList()
         indexImpl.load()
-        return indexImpl.search(vec, topK + excludeIds.size)
+        return indexImpl.search(vec, hist, topK + excludeIds.size)
             .asSequence()
             .filter { it.id !in excludeIds }
             .filter { it.score >= threshold }
@@ -172,8 +173,8 @@ object EmbeddingService {
         if (ids.isEmpty()) return emptyMap()
         val out = HashMap<String, List<Match>>()
         for (id in ids) {
-            val vec = indexImpl.vector(id) ?: continue
-            val similar = indexImpl.search(vec, topK = 8)
+            val e = indexImpl.entry(id) ?: continue
+            val similar = indexImpl.search(e.vec, e.hist, topK = 8)
                 .filter { it.id != id && it.score >= threshold && it.id in ids }
                 .map { Match(it.id, it.score) }
             if (similar.isNotEmpty()) out[id] = similar
