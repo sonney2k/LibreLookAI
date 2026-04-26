@@ -1,6 +1,8 @@
 package com.librelookai
 
 import android.app.Application
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,6 +26,14 @@ data class ShoppingHelperUiState(
     val isCapturing: Boolean = false,
     /** Absolute path of the most recent query photo (kept in cacheDir). */
     val queryPath: String? = null,
+    /** Absolute path of the post-segmentation, composited-on-white, center-cropped query
+     *  bitmap — the exact pixels fed to the embedder. Used by the debug preview. */
+    val queryProcessedPath: String? = null,
+    /** L1-normalized HSV histogram for the query (same one mixed into the score). */
+    val queryHist: FloatArray? = null,
+    /** L2-normalized embedding for the query, kept so the debug view can recompute
+     *  per-match embedding-cosine vs histogram-cosine. */
+    val queryVec: FloatArray? = null,
     /** True while the query image is being embedded and searched. */
     val isMatching: Boolean = false,
     /** Ranked matches from the last query, or empty if no query yet. */
@@ -68,10 +78,20 @@ class ShoppingHelperViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun clearResults() {
-        _state.value.queryPath?.let { path ->
+        val s = _state.value
+        listOfNotNull(s.queryPath, s.queryProcessedPath).forEach { path ->
             runCatching { File(path).takeIf { it.parentFile?.name == QUERY_DIR }?.delete() }
         }
-        _state.update { it.copy(queryPath = null, matches = emptyList(), error = null) }
+        _state.update {
+            it.copy(
+                queryPath = null,
+                queryProcessedPath = null,
+                queryHist = null,
+                queryVec = null,
+                matches = emptyList(),
+                error = null,
+            )
+        }
     }
 
     /**
@@ -105,7 +125,8 @@ class ShoppingHelperViewModel(app: Application) : AndroidViewModel(app) {
 
     /**
      * Called after [CaptureScreen] hands us a cropped photo. Moves the file into our own cache
-     * subdir, embeds it, searches the index, and publishes [matches].
+     * subdir, runs segmentation + prep manually so the debug preview can show the same pixels
+     * we hand to the embedder, embeds, searches the index, and publishes [matches].
      */
     fun onCapturedFile(file: File, images: List<DriveImage>) {
         viewModelScope.launch {
@@ -119,12 +140,20 @@ class ShoppingHelperViewModel(app: Application) : AndroidViewModel(app) {
                 return@launch
             }
 
+            // Discard any previous processed query so disk doesn't grow.
+            _state.value.queryProcessedPath?.let { path ->
+                runCatching { File(path).takeIf { it.parentFile?.name == QUERY_DIR }?.delete() }
+            }
+
             val queryFile = adoptQueryFile(file)
             _state.update {
                 it.copy(
                     isCapturing = false,
                     isMatching = true,
                     queryPath = queryFile.absolutePath,
+                    queryProcessedPath = null,
+                    queryHist = null,
+                    queryVec = null,
                     matches = emptyList(),
                     error = null,
                 )
@@ -132,13 +161,8 @@ class ShoppingHelperViewModel(app: Application) : AndroidViewModel(app) {
 
             EmbeddingService.syncIndex(images, cacheDir)
 
-            val rawMatches = EmbeddingService.findSimilar(
-                file = queryFile,
-                threshold = -1f,
-                topK = TOP_K,
-                segment = true,
-            )
-            if (rawMatches.isEmpty() && !EmbeddingService.isModelAvailable()) {
+            val prepared = prepareQueryBitmap(queryFile)
+            if (prepared == null) {
                 _state.update {
                     it.copy(
                         isMatching = false,
@@ -147,6 +171,26 @@ class ShoppingHelperViewModel(app: Application) : AndroidViewModel(app) {
                 }
                 return@launch
             }
+
+            val processedFile = saveProcessedQuery(prepared)
+            val emb = EmbeddingService.embedder.embedBitmap(prepared, compositeAlpha = false)
+            if (!prepared.isRecycled) prepared.recycle()
+            if (emb == null) {
+                _state.update {
+                    it.copy(
+                        isMatching = false,
+                        error = getApplication<Application>().getString(R.string.shop_error_embed_failed),
+                    )
+                }
+                return@launch
+            }
+
+            val rawMatches = EmbeddingService.searchVector(
+                vec = emb.vec,
+                hist = emb.hist,
+                threshold = -1f,
+                topK = TOP_K,
+            )
             val byId = images.associateBy { it.driveId }
             val resolved = rawMatches.mapNotNull { m ->
                 val img = byId[m.driveId] ?: return@mapNotNull null
@@ -157,10 +201,48 @@ class ShoppingHelperViewModel(app: Application) : AndroidViewModel(app) {
                 it.copy(
                     isMatching = false,
                     matches = resolved,
+                    queryProcessedPath = processedFile?.absolutePath,
+                    queryHist = emb.hist,
+                    queryVec = emb.vec,
                     indexedCount = EmbeddingService.indexSize,
                 )
             }
         }
+    }
+
+    /**
+     * Run the same prep [EmbeddingService.embedQuery] would (segment → composite-on-white →
+     * center-crop) but keep the resulting bitmap so the debug view can show it.
+     */
+    private suspend fun prepareQueryBitmap(file: File): Bitmap? = withContext(Dispatchers.IO) {
+        val raw = runCatching { BitmapFactory.decodeFile(file.absolutePath) }.getOrNull()
+            ?: return@withContext null
+        val segmented = try {
+            EmbeddingService.segmenter.segmentForegroundOnWhite(raw)
+        } catch (t: Throwable) {
+            Log.w(TAG, "segmentation threw, falling back", t)
+            null
+        }
+        // If segmentation worked, raw can go. Otherwise we'll use raw + composite-on-white.
+        val source: Bitmap = if (segmented != null) {
+            if (!raw.isRecycled) raw.recycle()
+            segmented
+        } else {
+            raw
+        }
+        val needsComposite = segmented == null && source.hasAlpha()
+        val prepared = EmbeddingRepository.prepareForEmbedding(source, compositeAlpha = needsComposite)
+        if (prepared !== source && !source.isRecycled) source.recycle()
+        prepared
+    }
+
+    private suspend fun saveProcessedQuery(bm: Bitmap): File? = withContext(Dispatchers.IO) {
+        val dir = File(getApplication<Application>().cacheDir, QUERY_DIR).also { it.mkdirs() }
+        val out = File(dir, "query_processed_${System.currentTimeMillis()}.png")
+        val ok = runCatching {
+            out.outputStream().buffered().use { bm.compress(Bitmap.CompressFormat.PNG, 100, it) }
+        }.isSuccess
+        if (ok) out else null
     }
 
     fun clearError() {
