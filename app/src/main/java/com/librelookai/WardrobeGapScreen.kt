@@ -11,19 +11,13 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material.icons.filled.TipsAndUpdates
 import androidx.compose.material3.AssistChip
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -31,13 +25,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
-import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,163 +35,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-fun WardrobeGapScreen(
-    gapViewModel: WardrobeGapViewModel = viewModel(),
-    wardrobeViewModel: WardrobeViewModel = viewModel(),
-    profileViewModel: ProfileViewModel = viewModel(),
-    locationViewModel: LocationViewModel = viewModel(),
-    onSettingsClick: () -> Unit = {},
-    modifier: Modifier = Modifier,
-) {
-    val isOffline = LocalIsOffline.current
-    val state         by gapViewModel.state.collectAsState()
-    val wardrobeState by wardrobeViewModel.state.collectAsState()
-    val profileState  by profileViewModel.state.collectAsState()
-    val locationState by locationViewModel.state.collectAsState()
-
-    Column(modifier = modifier.fillMaxSize()) {
-        AppScreenHeader(
-            title = stringResource(R.string.gap_title),
-            leadingIcon = Icons.Default.TipsAndUpdates,
-            trailingContent = {
-                LocationButton(
-                    locations = locationState.locations,
-                    activeLocationId = locationState.activeLocationId,
-                    onSetActiveLocation = locationViewModel::setActiveLocation,
-                )
-            },
-            onSettingsClick = onSettingsClick,
-        )
-        Box(modifier = Modifier.fillMaxSize()) {
-        LazyColumn(
-            contentPadding = PaddingValues(bottom = 24.dp),
-        ) {
-            // ---- Analyze button + description ----
-            item {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 12.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    Text(
-                        stringResource(R.string.gap_description),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                    Button(
-                        onClick = {
-                            gapViewModel.analyze(
-                                images = wardrobeState.images,
-                                prefs  = profileState.preferences,
-                            )
-                        },
-                        enabled = !state.isAnalyzing && wardrobeState.images.isNotEmpty() && !isOffline,
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Icon(Icons.Default.AutoAwesome, contentDescription = null, modifier = Modifier.size(18.dp))
-                        Spacer(Modifier.width(8.dp))
-                        Text(if (state.analysis != null) stringResource(R.string.gap_reanalyze) else stringResource(R.string.gap_analyze))
-                    }
-                }
-            }
-
-            // ---- Summary ----
-            state.analysis?.let { analysis ->
-                if (analysis.summary.isNotEmpty()) {
-                    item {
-                        HorizontalDivider()
-                        Surface(
-                            color = MaterialTheme.colorScheme.secondaryContainer,
-                            modifier = Modifier.fillMaxWidth(),
-                        ) {
-                            Text(
-                                analysis.summary,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-                            )
-                        }
-                        HorizontalDivider()
-                    }
-                }
-
-                // ---- Suggestion cards ----
-                itemsIndexed(analysis.suggestions) { index, suggestion ->
-                    GapSuggestionCard(
-                        rank = index + 1,
-                        suggestion = suggestion,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
-                    )
-                }
-            }
-
-            // ---- Empty state ----
-            if (!state.isAnalyzing && state.analysis == null && state.error == null) {
-                item {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 48.dp),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                            modifier = Modifier.padding(horizontal = 32.dp),
-                        ) {
-                            Icon(
-                                Icons.Default.TipsAndUpdates,
-                                contentDescription = null,
-                                modifier = Modifier.size(48.dp),
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                            Text(
-                                stringResource(R.string.gap_empty_title),
-                                style = MaterialTheme.typography.titleSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                            Text(
-                                stringResource(R.string.gap_empty_hint),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        }
-                    }
-                }
-            }
-        }
-
-        // AI overlay
-        if (state.isAnalyzing) {
-            AiProcessingOverlay(
-                label = stringResource(R.string.ai_analyzing_wardrobe),
-                modifier = Modifier.fillMaxSize(),
-            )
-        }
-
-        // Error snackbar
-        state.error?.let { msg ->
-            Snackbar(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(16.dp),
-                action = { TextButton(onClick = gapViewModel::clearError) { Text(stringResource(R.string.action_ok)) } },
-            ) { Text(msg) }
-        }
-        } // Box
-    } // Column
-}
+// Note: the screen-level entry composable lived here; it has been folded into
+// `ShoppingHelperScreen` (Insights → Identify Gaps tab). The card composables
+// below are kept for that tab to reuse.
 
 // ---------- Suggestion card ----------
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun GapSuggestionCard(
+internal fun GapSuggestionCard(
     rank: Int,
     suggestion: GapSuggestion,
     modifier: Modifier = Modifier,

@@ -6,9 +6,15 @@
     <string name="nav_wardrobe">Garderobe</string>
     <string name="nav_calendar">Kalender</string>
     <string name="nav_travel">Reise</string>
-    <string name="nav_gaps">Lücken</string>
-    <string name="nav_shop">Shop</string>
+    <string name="nav_insights">Einblicke</string>
     <string name="nav_settings">Einstellungen</string>
+
+    <!-- Insights tab -->
+    <string name="insights_title">Einblicke</string>
+    <string name="insights_tab_similarity">Ähnlichkeitssuche</string>
+    <string name="insights_tab_gaps">Lücken finden</string>
+    <string name="insights_tab_wardrobe_stats">Garderoben-Statistik</string>
+    <string name="insights_tab_calendar_stats">Kalender-Statistik</string>
 
     <string name="action_ok">OK</string>
     <string name="action_cancel">Abbrechen</string>
@@ -155,8 +161,6 @@
     <string name="wardrobe_empty_filter">Keine Artikel entsprechen dem Filter</string>
     <string name="wardrobe_item_count">%1$d Artikel</string>
     <string name="wardrobe_filtered_count">%1$d von %2$d Artikeln</string>
-    <string name="wardrobe_stats">Statistik</string>
-    <string name="wardrobe_stats_title">Garderoben-Statistik</string>
     <string name="wardrobe_stats_total">%1$d Artikel gesamt</string>
     <string name="wardrobe_stats_untagged">Ohne Tags</string>
     <string name="wardrobe_empty">Noch keine Artikel</string>
@@ -371,8 +375,6 @@
     <string name="travel_move_done">Kleidungsstücke in Reise-Standort verschoben</string>
     <string name="travel_move_error">Kleidungsstücke konnten nicht verschoben werden</string>
 
-    <string name="calendar_tab_calendar">Kalender</string>
-    <string name="calendar_tab_stats">Statistiken</string>
     <string name="calendar_day_mo">Mo</string>
     <string name="calendar_day_tu">Di</string>
     <string name="calendar_day_we">Mi</string>
@@ -386,7 +388,6 @@
     <string name="calendar_empty_hint">Tragen Sie ein Outfit im Reiter Outfits, um die Verfolgung zu starten</string>
     <string name="calendar_wear_again">Heute wieder tragen</string>
 
-    <string name="gap_title">Garderobe-Lücken-Analyse</string>
     <string name="gap_description">Entdecke die 3 fehlenden Teile, die die meisten neuen Outfit-Kombinationen aus deiner bestehenden Garderobe ermöglichen.</string>
     <string name="gap_analyze">Meine Garderobe analysieren</string>
     <string name="gap_reanalyze">Erneut analysieren</string>
@@ -567,7 +568,6 @@
     <string name="ai_prompt_gap_desc">Rolle und Regeln, um die wichtigsten fehlenden Teile in deiner Garderobe vorzuschlagen.</string>
 
     <!-- Einkaufshilfe -->
-    <string name="shop_title">Einkaufshilfe</string>
     <string name="shop_description">Fotografiere ein Teil, das dich interessiert — wir zeigen dir die optisch ähnlichsten Stücke aus deiner Garderobe, komplett auf dem Gerät.</string>
     <string name="shop_take_photo">Foto aufnehmen</string>
     <string name="shop_take_another">Noch ein Foto</string>

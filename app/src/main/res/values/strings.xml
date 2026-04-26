@@ -7,9 +7,15 @@
     <string name="nav_wardrobe">Wardrobe</string>
     <string name="nav_calendar">Calendar</string>
     <string name="nav_travel">Travel</string>
-    <string name="nav_gaps">Gaps</string>
-    <string name="nav_shop">Shop</string>
+    <string name="nav_insights">Insights</string>
     <string name="nav_settings">Settings</string>
+
+    <!-- Insights tab -->
+    <string name="insights_title">Insights</string>
+    <string name="insights_tab_similarity">Similarity Finder</string>
+    <string name="insights_tab_gaps">Identify Gaps</string>
+    <string name="insights_tab_wardrobe_stats">Wardrobe Stats</string>
+    <string name="insights_tab_calendar_stats">Calendar Stats</string>
 
     <!-- Common actions -->
     <string name="action_ok">OK</string>
@@ -160,8 +166,6 @@
     <string name="wardrobe_empty_filter">No items match the filter</string>
     <string name="wardrobe_item_count">%1$d items</string>
     <string name="wardrobe_filtered_count">Showing %1$d of %2$d items</string>
-    <string name="wardrobe_stats">Statistics</string>
-    <string name="wardrobe_stats_title">Wardrobe statistics</string>
     <string name="wardrobe_stats_total">%1$d items total</string>
     <string name="wardrobe_stats_untagged">Untagged</string>
     <string name="wardrobe_empty">No items yet</string>
@@ -379,8 +383,6 @@
     <string name="travel_move_error">Could not move items</string>
 
     <!-- Calendar -->
-    <string name="calendar_tab_calendar">Calendar</string>
-    <string name="calendar_tab_stats">Statistics</string>
     <string name="calendar_day_mo">Mo</string>
     <string name="calendar_day_tu">Tu</string>
     <string name="calendar_day_we">We</string>
@@ -395,7 +397,6 @@
     <string name="calendar_wear_again">Wear again today</string>
 
     <!-- Gap Analyzer -->
-    <string name="gap_title">Wardrobe Gap Analyzer</string>
     <string name="gap_description">Discover the 3 missing pieces that would unlock the most new outfit combinations from your existing wardrobe.</string>
     <string name="gap_analyze">Analyze My Wardrobe</string>
     <string name="gap_reanalyze">Re-analyze</string>
@@ -577,8 +578,7 @@
     <string name="ai_prompt_gap_title">Wardrobe gap analysis</string>
     <string name="ai_prompt_gap_desc">Role and rules for suggesting the top missing pieces in your wardrobe.</string>
 
-    <!-- Shopping helper -->
-    <string name="shop_title">Shopping helper</string>
+    <!-- Shopping helper / Similarity Finder -->
     <string name="shop_description">Snap a photo of a piece you\'re considering and we\'ll show the most visually similar items already in your wardrobe — fully on-device.</string>
     <string name="shop_take_photo">Take photo</string>
     <string name="shop_take_another">Take another photo</string>

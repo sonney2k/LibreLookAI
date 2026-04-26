@@ -32,8 +32,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material.icons.Icons
@@ -42,7 +40,6 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -71,7 +68,6 @@ private val SHEET_DATE_FORMATTER = DateTimeFormatter.ofPattern("EEEE, MMMM d")
 // DOW_LABELS is now computed via @Composable dowLabels()
 private const val MAX_THUMBNAILS = 4
 private val THUMBNAIL_SIZE = 14.dp
-private const val TOP_N = 10
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -118,31 +114,6 @@ fun CalendarScreen(
         }.groupBy({ it.first }, { it.second })
     }
 
-    // Statistics: top styles by wear count
-    val topStyles = remember(outfitEventsState.events, outfitsById) {
-        outfitEventsState.events
-            .groupBy { it.outfitId }
-            .mapValues { it.value.size }
-            .entries
-            .sortedByDescending { it.value }
-            .take(TOP_N)
-            .mapNotNull { (outfitId, count) -> outfitsById[outfitId]?.let { it to count } }
-    }
-
-    // Statistics: top individual items by total appearances across all worn styles
-    val topItems = remember(outfitEventsState.events, outfitsById, imagesById) {
-        outfitEventsState.events
-            .flatMap { event -> outfitsById[event.outfitId]?.itemIds ?: emptyList() }
-            .groupingBy { it }
-            .eachCount()
-            .entries
-            .sortedByDescending { it.value }
-            .take(TOP_N)
-            .mapNotNull { (itemId, count) -> imagesById[itemId]?.let { it to count } }
-    }
-
-    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
-
     Column(modifier = modifier.fillMaxSize()) {
         AppScreenHeader(
             title = stringResource(R.string.nav_calendar),
@@ -156,33 +127,13 @@ fun CalendarScreen(
             onSettingsClick = onSettingsClick,
         )
 
-        TabRow(selectedTabIndex = selectedTab) {
-            Tab(
-                selected = selectedTab == 0,
-                onClick = { selectedTab = 0 },
-                text = { Text(stringResource(R.string.calendar_tab_calendar)) },
-            )
-            Tab(
-                selected = selectedTab == 1,
-                onClick = { selectedTab = 1 },
-                text = { Text(stringResource(R.string.calendar_tab_stats)) },
-            )
-        }
-
-        when (selectedTab) {
-            0 -> CalendarContent(
-                wornItems = wornItems,
-                outfitsByDate = outfitsByDate,
-                imagesById = imagesById,
-                onWearAgainToday = { outfitEventsViewModel.recordOutfit(it) },
-                onEditOutfit = onEditOutfit,
-            )
-            1 -> StatisticsContent(
-                topStyles = topStyles,
-                topItems = topItems,
-                imagesById = imagesById,
-            )
-        }
+        CalendarContent(
+            wornItems = wornItems,
+            outfitsByDate = outfitsByDate,
+            imagesById = imagesById,
+            onWearAgainToday = { outfitEventsViewModel.recordOutfit(it) },
+            onEditOutfit = onEditOutfit,
+        )
     }
 }
 
@@ -275,214 +226,6 @@ private fun CalendarContent(
                         )
                         if (index < stylesOnDay.lastIndex) HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp))
                     }
-                }
-            }
-        }
-    }
-}
-
-// ---------- Statistics tab ----------
-
-@Composable
-private fun StatisticsContent(
-    topStyles: List<Pair<Outfit, Int>>,
-    topItems: List<Pair<DriveImage, Int>>,
-    imagesById: Map<String, DriveImage>,
-) {
-    if (topStyles.isEmpty() && topItems.isEmpty()) {
-        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(stringResource(R.string.calendar_empty), style = MaterialTheme.typography.bodyLarge)
-                Spacer(Modifier.height(4.dp))
-                Text(
-                    stringResource(R.string.calendar_empty_hint),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        }
-        return
-    }
-
-    LazyColumn(
-        contentPadding = PaddingValues(bottom = 24.dp),
-    ) {
-        if (topStyles.isNotEmpty()) {
-            item {
-                Text(
-                    stringResource(R.string.calendar_stats_styles),
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-                )
-                HorizontalDivider()
-            }
-            itemsIndexed(topStyles) { index, (style, count) ->
-                StyleStatRow(rank = index + 1, style = style, wearCount = count, imagesById = imagesById)
-                if (index < topStyles.lastIndex) HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
-            }
-        }
-
-        if (topItems.isNotEmpty()) {
-            item {
-                Spacer(Modifier.height(8.dp))
-                Text(
-                    stringResource(R.string.calendar_stats_items),
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-                )
-                HorizontalDivider()
-            }
-            itemsIndexed(topItems) { index, (image, count) ->
-                ItemStatRow(rank = index + 1, image = image, wearCount = count)
-                if (index < topItems.lastIndex) HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
-            }
-        }
-    }
-}
-
-@Composable
-private fun StyleStatRow(
-    rank: Int,
-    style: Outfit,
-    wearCount: Int,
-    imagesById: Map<String, DriveImage>,
-) {
-    val ctx = LocalContext.current
-    val styleItems = style.itemIds.mapNotNull { imagesById[it] }
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 10.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        // Rank + wear count
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.width(36.dp),
-        ) {
-            Text(
-                "#$rank",
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            Text(
-                "${wearCount}×",
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary,
-            )
-        }
-
-        Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text(
-                style.name,
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Medium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-            if (styleItems.isNotEmpty()) {
-                LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    itemsIndexed(styleItems, key = { index, image -> "${image.driveId}_${index}" }) { index, image ->
-                        AsyncImage(
-                            model = remember(image.driveId, image.version) {
-                                ImageRequest.Builder(ctx)
-                                    .data(image.localPath)
-                                    .memoryCacheKey("${image.driveId}_${image.version}")
-                                    .build()
-                            },
-                            contentDescription = image.name,
-                            modifier = Modifier
-                                .size(48.dp)
-                                .clip(MaterialTheme.shapes.small),
-                            contentScale = ContentScale.Crop,
-                        )
-                    }
-                }
-            } else {
-                Text(
-                    "Items no longer in wardrobe",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.outline,
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun ItemStatRow(
-    rank: Int,
-    image: DriveImage,
-    wearCount: Int,
-) {
-    val ctx = LocalContext.current
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 10.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        // Rank + wear count
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.width(36.dp),
-        ) {
-            Text(
-                "#$rank",
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            Text(
-                "${wearCount}×",
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary,
-            )
-        }
-
-        AsyncImage(
-            model = remember(image.driveId, image.version) {
-                ImageRequest.Builder(ctx)
-                    .data(image.localPath)
-                    .memoryCacheKey("${image.driveId}_${image.version}")
-                    .build()
-            },
-            contentDescription = image.name,
-            modifier = Modifier
-                .size(56.dp)
-                .clip(MaterialTheme.shapes.small),
-            contentScale = ContentScale.Crop,
-        )
-
-        Column(modifier = Modifier.weight(1f)) {
-            val displayName = image.tags?.label?.ifEmpty { null }
-                ?: image.tags?.type?.ifEmpty { null }
-                ?: image.name
-            Text(
-                displayName,
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Medium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-            image.tags?.let { t ->
-                val subtitle = listOfNotNull(
-                    t.type.takeIf { it.isNotEmpty() && t.label.isNotEmpty() },
-                    t.category.takeIf { it.isNotEmpty() },
-                ).joinToString(" · ")
-                if (subtitle.isNotEmpty()) {
-                    Text(
-                        subtitle,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
                 }
             }
         }
