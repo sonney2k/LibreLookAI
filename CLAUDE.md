@@ -130,7 +130,7 @@ The composer has three modes, selected in `TryOnComposerScreen` by state check o
 
 ### Offline mode
 
-The app works in view-only mode when offline. `NetworkMonitor` (in `NetworkUtils.kt`) uses `ConnectivityManager.NetworkCallback` to expose a `StateFlow<Boolean>` of real-time connectivity. `MainActivity` provides the state via `LocalIsOffline`, a `CompositionLocal` defined in `NetworkUtils.kt` — any composable reads `LocalIsOffline.current` without parameter threading.
+The app works in view-only mode when offline. `NetworkMonitor` (in `NetworkUtils.kt`) uses `ConnectivityManager.registerDefaultNetworkCallback` and exposes a `StateFlow<Boolean>` of real-time connectivity. The callback trusts its own `Network` / `NetworkCapabilities` arguments rather than re-querying `cm.activeNetwork` (which races during the offline transition and can leave the flow stuck at `true`). `MainActivity` instantiates the monitor with `remember { ... }` and pairs it with a `DisposableEffect` that calls `networkMonitor.unregister()` on dispose so the system callback is released across activity recreation. State is provided to composables via `LocalIsOffline`, a `CompositionLocal` defined in `NetworkUtils.kt` — any composable reads `LocalIsOffline.current` without parameter threading. When `isOffline` flips to true, screens hide write-path UI (e.g. the Wardrobe gallery + camera FABs gate on `!isOffline`).
 
 ### Navigation
 

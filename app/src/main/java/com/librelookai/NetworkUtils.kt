@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
-import android.net.NetworkRequest
 import androidx.compose.runtime.compositionLocalOf
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,7 +25,17 @@ fun Context.isNetworkAvailable(): Boolean {
 
 /**
  * Reactive network monitor that exposes a [StateFlow] reflecting the current
- * connectivity state. Register once in the Activity and collect from Compose.
+ * connectivity state of the device's *default* network.
+ *
+ * Implemented with [ConnectivityManager.registerDefaultNetworkCallback] so we
+ * only watch the route the OS would actually use for outbound traffic, and we
+ * trust the callback's [Network] argument rather than re-querying
+ * `cm.activeNetwork` (which races during the offline transition — the old
+ * implementation could observe a still-non-null active network in `onLost`
+ * and keep the flow stuck at `true`).
+ *
+ * Callers must invoke [unregister] when done (Activity `onDestroy`,
+ * `DisposableEffect.onDispose`) to avoid leaking the system callback.
  */
 class NetworkMonitor(context: Context) {
 
@@ -35,33 +44,28 @@ class NetworkMonitor(context: Context) {
     private val _isOnline = MutableStateFlow(context.isNetworkAvailable())
     val isOnline: StateFlow<Boolean> = _isOnline.asStateFlow()
 
-    private fun recomputeOnline() {
-        _isOnline.value = cm.activeNetwork?.let {
-            cm.getNetworkCapabilities(it)?.hasValidatedInternet()
-        } ?: false
-    }
-
     private val callback = object : ConnectivityManager.NetworkCallback() {
-        override fun onAvailable(network: Network) {
-            recomputeOnline()
-        }
-
-        override fun onLost(network: Network) {
-            recomputeOnline()
-        }
-
         override fun onCapabilitiesChanged(
             network: Network,
             capabilities: NetworkCapabilities,
         ) {
-            recomputeOnline()
+            _isOnline.value = capabilities.hasValidatedInternet()
+        }
+
+        override fun onLost(network: Network) {
+            _isOnline.value = false
+        }
+
+        override fun onUnavailable() {
+            _isOnline.value = false
         }
     }
 
     init {
-        val request = NetworkRequest.Builder()
-            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-            .build()
-        cm.registerNetworkCallback(request, callback)
+        cm.registerDefaultNetworkCallback(callback)
+    }
+
+    fun unregister() {
+        runCatching { cm.unregisterNetworkCallback(callback) }
     }
 }
