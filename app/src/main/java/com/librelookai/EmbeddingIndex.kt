@@ -193,10 +193,10 @@ class EmbeddingIndex(private val context: Context) {
         private const val TAG = "EmbeddingIndex"
         private const val INDEX_FILE = "wardrobe_embeddings.bin"
         private const val MAGIC = 0x4C4C4145 // 'LLAE'
-        // Version 3 adds a per-entry HSV histogram (HIST_DIM floats) after the embedding so the
+        // Version 5 adds a per-entry HSV histogram (HIST_DIM floats) after the embedding so the
         // search score can mix in a color channel. Earlier versions are discarded on load and
         // rebuilt on next sync (`syncIndex` re-embeds every cached cutout — fast for ~100 items).
-        private const val VERSION = 3
+        private const val VERSION = 5
 
         // Deprecated: previous weighted sum model replaced by multiplicative model.
         // const val EMBED_WEIGHT = 0.65f
