@@ -76,6 +76,14 @@ data class DuplicateCheck(
 data class WardrobeUiState(
     val view: WardrobeView = WardrobeView.GRID,
     val images: List<DriveImage> = emptyList(),
+    /**
+     * Cross-closet snapshot of every cached wardrobe item across all configured closets,
+     * regardless of the active location filter applied to [images]. Refreshed from per-folder
+     * `wardrobe_cache_{folderId}.json` files whenever [images] changes or
+     * `setAllConfiguredLocations` is called. Used by every similarity-search call site so
+     * matches always span all wardrobes.
+     */
+    val allLocationImages: List<DriveImage> = emptyList(),
     val isLoading: Boolean = false,
     val isSyncing: Boolean = false,
     val isProcessing: Boolean = false,
@@ -301,6 +309,12 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
     private var folderId: String? = null
     private var allFolderIds: List<String>? = null
+    /**
+     * Every closet folderId the user has configured, regardless of which one is currently
+     * displayed. Driven by [setAllConfiguredLocations] from MainActivity. Used to build the
+     * cross-closet [WardrobeUiState.allLocationImages] snapshot for similarity search.
+     */
+    private var allConfiguredFolderIds: List<String> = emptyList()
     /** Gemini-facing language name (e.g. "English", "German") for label generation. */
     private var geminiLanguage: String = "English"
     /** When non-null, all new photo imports target this folder instead of the active view folder. */
@@ -347,7 +361,9 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         if (folderId == newFolderId && allFolderIds == null) return
         folderId = newFolderId
         allFolderIds = null
-        _state.update { WardrobeUiState(isLoading = true) }
+        // Preserve [allLocationImages] across the location switch so similarity search keeps
+        // working immediately — it is independent of the active filter.
+        _state.update { WardrobeUiState(isLoading = true, allLocationImages = it.allLocationImages) }
         loadImages()
     }
 
@@ -355,8 +371,44 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         if (folderId == null && allFolderIds?.toSet() == folderIds.toSet()) return
         folderId = null
         allFolderIds = folderIds.toList()
-        _state.update { WardrobeUiState(isLoading = true) }
+        _state.update { WardrobeUiState(isLoading = true, allLocationImages = it.allLocationImages) }
         loadImages()
+    }
+
+    /**
+     * Tell the VM about every configured closet so it can keep [WardrobeUiState.allLocationImages]
+     * in sync. Called by `MainActivity` whenever the locations list changes. The snapshot is
+     * read from each per-folder cache file (no Drive calls); folders not yet downloaded simply
+     * contribute zero items until the user visits them.
+     */
+    fun setAllConfiguredLocations(folderIds: List<String>) {
+        if (allConfiguredFolderIds.toSet() == folderIds.toSet()) return
+        allConfiguredFolderIds = folderIds.toList()
+        refreshAllLocationImagesState()
+    }
+
+    /** Re-read every configured folder's cache and publish the merged snapshot. */
+    private fun refreshAllLocationImagesState() {
+        val merged = allConfiguredFolderIds.flatMap { readCacheAsImages(it) }
+        _state.update { it.copy(allLocationImages = merged) }
+    }
+
+    private fun readCacheAsImages(fid: String): List<DriveImage> {
+        val cacheFile = localCacheFile(fid)
+        if (!cacheFile.exists()) return emptyList()
+        return runCatching {
+            val cache = gson.fromJson(cacheFile.readText(), LocalCache::class.java)
+            cache.items.mapNotNull { entry ->
+                drive.cachedFile(entry.driveId)?.let { f ->
+                    DriveImage(
+                        entry.driveId, f.absolutePath, entry.name, entry.tags,
+                        originalDriveId = entry.originalDriveId,
+                        sidecarDriveId = entry.sidecarDriveId,
+                        folderId = fid,
+                    )
+                }
+            }
+        }.getOrDefault(emptyList())
     }
 
     /**
@@ -765,9 +817,13 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
      */
     private suspend fun detectDuplicateCutouts(folderIds: List<String>): List<AuditDuplicateItem> {
         if (!EmbeddingService.isModelAvailable()) return emptyList()
-        // Embed any cached cutout that isn't yet in the index.
-        EmbeddingService.syncIndex(_state.value.images, drive.cacheDir)
-        val byDriveId = _state.value.images.associateBy { it.driveId }
+        // Use the cross-closet snapshot so the duplicate scan covers every configured closet
+        // (matches the contract with [startRepairAndRefresh], which passes every folderId).
+        refreshAllLocationImagesState()
+        val crossClosetImages = _state.value.allLocationImages
+            .filter { folderIds.isEmpty() || it.folderId in folderIds }
+        EmbeddingService.syncIndex(crossClosetImages, drive.cacheDir)
+        val byDriveId = crossClosetImages.associateBy { it.driveId }
         val scope = byDriveId.keys
         val clusters = EmbeddingService.findDuplicateClusters(dedupeThreshold, restrictToIds = scope)
         if (clusters.isEmpty()) return emptyList()
@@ -832,6 +888,8 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             })
             localCacheFile(id).writeText(gson.toJson(cache))
         }
+        // Keep the cross-closet snapshot in sync so similarity search reflects the latest items.
+        refreshAllLocationImagesState()
     }
 
     // ---------- Load ----------
@@ -1294,14 +1352,18 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 view = WardrobeView.GRID,
                 findByPhoto = FindByPhoto(rawFile.absolutePath, emptyList(), isSearching = true),
             ) }
-            EmbeddingService.syncIndex(_state.value.images, drive.cacheDir)
+            // Always search across every configured closet so matches are not artificially
+            // limited by the active location filter.
+            refreshAllLocationImagesState()
+            val crossClosetImages = _state.value.allLocationImages
+            EmbeddingService.syncIndex(crossClosetImages, drive.cacheDir)
             val matches = EmbeddingService.findSimilar(
                 file = rawFile,
                 threshold = -1f,
                 topK = 12,
                 segment = true,
             )
-            val byId = _state.value.images.associateBy { it.driveId }
+            val byId = crossClosetImages.associateBy { it.driveId }
             val resolved = matches.mapNotNull { m ->
                 byId[m.driveId]?.let { FindByPhotoMatch(it, m.score) }
             }
@@ -1327,14 +1389,16 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         if (dedupeOnImport && EmbeddingService.isModelAvailable()) {
             viewModelScope.launch {
                 _state.update { it.copy(view = WardrobeView.GRID, isUploading = true, error = null) }
-                EmbeddingService.syncIndex(_state.value.images, drive.cacheDir)
+                refreshAllLocationImagesState()
+                val crossClosetImages = _state.value.allLocationImages
+                EmbeddingService.syncIndex(crossClosetImages, drive.cacheDir)
                 val matches = EmbeddingService.findSimilar(
                     file = rawFile,
                     threshold = dedupeThreshold,
                     topK = 8,
                     segment = true,
                 )
-                val byId = _state.value.images.associateBy { it.driveId }
+                val byId = crossClosetImages.associateBy { it.driveId }
                 val resolved = matches.mapNotNull { m ->
                     byId[m.driveId]?.let { DuplicateMatch(it, m.score) }
                 }
@@ -1791,8 +1855,10 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 targetFolderId = targetFolderId,
                 options = options,
             )) }
-            EmbeddingService.syncIndex(_state.value.images, drive.cacheDir)
-            val byId = _state.value.images.associateBy { it.driveId }
+            refreshAllLocationImagesState()
+            val crossClosetImages = _state.value.allLocationImages
+            EmbeddingService.syncIndex(crossClosetImages, drive.cacheDir)
+            val byId = crossClosetImages.associateBy { it.driveId }
             val scanned = mutableListOf<ImportPreviewEntry>()
             entries.forEachIndexed { idx, entry ->
                 val matches = EmbeddingService.findSimilar(

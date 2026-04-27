@@ -107,7 +107,8 @@ fun ShoppingHelperScreen(
     if (shoppingState.isCapturing) {
         CaptureScreen(
             onPhotoTaken = { file ->
-                shoppingViewModel.onCapturedFile(file, wardrobeState.images)
+                // Search across every configured closet, not just the active one.
+                shoppingViewModel.onCapturedFile(file, wardrobeState.allLocationImages)
             },
             onCancel = shoppingViewModel::cancelCapture,
             locations = locationState.locations,
@@ -194,9 +195,9 @@ private fun SimilarityFinderTab(
 
     var previewIndex by remember { mutableStateOf<Int?>(null) }
 
-    // Kick off a catch-up index sync whenever the wardrobe list changes.
-    LaunchedEffect(wardrobeState.images.size) {
-        shoppingViewModel.syncIndex(wardrobeState.images)
+    // Kick off a catch-up index sync whenever the cross-closet wardrobe snapshot changes.
+    LaunchedEffect(wardrobeState.allLocationImages.size) {
+        shoppingViewModel.syncIndex(wardrobeState.allLocationImages)
     }
 
     Box(modifier = Modifier.fillMaxSize()) {

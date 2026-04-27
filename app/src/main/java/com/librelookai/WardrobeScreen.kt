@@ -11,6 +11,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.awaitEachGesture
@@ -583,14 +584,20 @@ private fun GridContent(
     // Clear viewer when filter/sort changes to avoid stale index
     LaunchedEffect(selectedTags, sortBy) { selectedIndex = null }
 
-    // After find-by-photo, clear filters and open the matched item once it's visible.
-    var pendingDriveIdToOpen by remember { mutableStateOf<String?>(null) }
-    LaunchedEffect(pendingDriveIdToOpen, displayedImages) {
-        val target = pendingDriveIdToOpen ?: return@LaunchedEffect
+    // After find-by-photo: scroll the grid to the matched item and pulse a highlight ring on it
+    // (no longer opens the viewer — the user lands on it in the grid and chooses what to do next).
+    val gridState = androidx.compose.foundation.lazy.grid.rememberLazyGridState()
+    var pendingScrollDriveId by remember { mutableStateOf<String?>(null) }
+    var highlightedDriveId by remember { mutableStateOf<String?>(null) }
+    LaunchedEffect(pendingScrollDriveId, displayedImages) {
+        val target = pendingScrollDriveId ?: return@LaunchedEffect
         val idx = displayedImages.indexOfFirst { it.driveId == target }
         if (idx >= 0) {
-            selectedIndex = idx
-            pendingDriveIdToOpen = null
+            runCatching { gridState.animateScrollToItem(idx) }
+            highlightedDriveId = target
+            pendingScrollDriveId = null
+            kotlinx.coroutines.delay(2000)
+            if (highlightedDriveId == target) highlightedDriveId = null
         }
     }
 
@@ -762,6 +769,7 @@ private fun GridContent(
                             },
                     ) {
                         LazyVerticalGrid(
+                            state = gridState,
                             columns = GridCells.Adaptive(cellSizeDp.dp),
                             modifier = Modifier.fillMaxSize().graphicsLayer {
                                 clip = false
@@ -771,6 +779,7 @@ private fun GridContent(
                         ) {
                             itemsIndexed(displayedImages, key = { _, img -> img.driveId }) { index, image ->
                                 val isSelected = state.selectedIds.contains(image.driveId)
+                                val isHighlighted = image.driveId == highlightedDriveId
                                 val ctx = LocalContext.current
                                 // Show the item's actual location whenever multiple locations exist
                                 val itemLocationName = if (locations.size > 1) {
@@ -789,7 +798,16 @@ private fun GridContent(
                                             onLongClick = { onToggleSelection(image.driveId) },
                                         ),
                                 ) {
-                                    Box(modifier = Modifier.aspectRatio(1f)) {
+                                    Box(
+                                        modifier = Modifier
+                                            .aspectRatio(1f)
+                                            .then(
+                                                if (isHighlighted) Modifier.border(
+                                                    width = 3.dp,
+                                                    color = MaterialTheme.colorScheme.primary,
+                                                ) else Modifier,
+                                            ),
+                                    ) {
                                         AsyncImage(
                                             model = remember(image.driveId, image.version) {
                                                 ImageRequest.Builder(ctx)
@@ -1142,9 +1160,19 @@ private fun GridContent(
     state.findByPhoto?.let { fbp ->
         FindByPhotoResultsSheet(
             findByPhoto = fbp,
-            onPickMatch = { driveId ->
+            onPickMatch = { match ->
                 selectedTags = emptyMap()
-                pendingDriveIdToOpen = driveId
+                // If a single closet is active and the match lives in a different one, switch
+                // closets so the grid will contain the item once it reloads. In All Locations
+                // mode the grid already shows every closet — leave the filter alone. The
+                // pending-scroll LaunchedEffect retries when [displayedImages] updates, so the
+                // highlight lands on the right tile either way.
+                val matchFolder = match.image.folderId
+                val viewingAll = activeLocationId == LocationViewModel.ALL_LOCATIONS_ID
+                if (!viewingAll && matchFolder.isNotEmpty() && matchFolder != activeLocationId) {
+                    onSetActiveLocation(matchFolder)
+                }
+                pendingScrollDriveId = match.image.driveId
                 onDismissFindByPhoto()
             },
             onDismiss = onDismissFindByPhoto,
@@ -1945,7 +1973,7 @@ private fun DuplicateCheckSheet(
 @Composable
 private fun FindByPhotoResultsSheet(
     findByPhoto: FindByPhoto,
-    onPickMatch: (driveId: String) -> Unit,
+    onPickMatch: (FindByPhotoMatch) -> Unit,
     onDismiss: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -2008,7 +2036,7 @@ private fun FindByPhotoResultsSheet(
                     itemsIndexed(findByPhoto.matches, key = { _, m -> m.image.driveId }) { _, match ->
                         Column(
                             modifier = Modifier
-                                .clickable { onPickMatch(match.image.driveId) },
+                                .clickable { onPickMatch(match) },
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             Box(

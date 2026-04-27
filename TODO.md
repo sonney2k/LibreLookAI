@@ -16,12 +16,6 @@ Features:
 
 
 
-similarity search always includes all wardrobes
-
-
-similarity search on wardrobe: when tapping a found item don't open that item but scroll to the position where the item is in the grid view
-
-
 background removal prompt: put the "Place the clothing item on a pure, solid neon green background (Hex #00FF00).
 
 
@@ -87,6 +81,10 @@ travel packing. For each suggested style add option to add to styles. also add o
 
 FIXED
 =====
+similarity search always includes all wardrobes (cross-closet snapshot fed into every similarity-search call site)
+
+similarity search on wardrobe: when tapping a found item don't open that item but scroll to the position where the item is in the grid view (and switch closet if the match lives elsewhere)
+
 Fix the bug in similarity search: Taking a picture with the new debug screens it became apparent that the processed image still shows the background. So the segmentation is not happening and the background is not filled with white color for the newly taken photo. Likewise the processed item from wardrobe does not have a white background hinting at the segmentation / background removal not being applied in the same way.
 
 move similarity threshold setting to top of AI tab

@@ -138,6 +138,10 @@ class MainActivity : ComponentActivity() {
                         locationList.find { it.folderId == activeLocationId }?.folderId else null
                     LaunchedEffect(activeLocationId, locationList) {
                         val folderIds = locationList.map { it.folderId }
+                        // Always tell the wardrobe VM about every configured closet so the
+                        // cross-closet snapshot (used by all similarity-search call sites)
+                        // covers them, regardless of which one is currently displayed.
+                        wardrobeViewModel.setAllConfiguredLocations(folderIds)
                         // Styles always loads from ALL locations — never filtered by the settings default.
                         stylesViewModel.setAllLocations(folderIds)
                         // Track which folder new styles should be saved to.
