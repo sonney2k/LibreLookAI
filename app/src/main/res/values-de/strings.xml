@@ -4,17 +4,21 @@
 
     <string name="nav_styles">Outfits</string>
     <string name="nav_wardrobe">Garderobe</string>
-    <string name="nav_calendar">Kalender</string>
+    <string name="nav_shopping">Einkauf</string>
     <string name="nav_travel">Reise</string>
     <string name="nav_insights">Einblicke</string>
     <string name="nav_settings">Einstellungen</string>
 
     <!-- Insights tab -->
     <string name="insights_title">Einblicke</string>
-    <string name="insights_tab_similarity">Ähnlichkeitssuche</string>
-    <string name="insights_tab_gaps">Lücken finden</string>
+    <string name="insights_tab_calendar">Kalender</string>
     <string name="insights_tab_wardrobe_stats">Garderoben-Statistik</string>
     <string name="insights_tab_calendar_stats">Kalender-Statistik</string>
+
+    <!-- Shopping Helper tab -->
+    <string name="shopping_title">Einkaufshilfe</string>
+    <string name="shopping_tab_similarity">Ähnlichkeitssuche</string>
+    <string name="shopping_tab_gaps">Lücken finden</string>
 
     <!-- Outfits sub-tabs -->
     <string name="outfits_tab_outfits">Outfits</string>

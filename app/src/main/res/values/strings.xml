@@ -5,17 +5,21 @@
     <!-- Navigation -->
     <string name="nav_styles">Outfits</string>
     <string name="nav_wardrobe">Wardrobe</string>
-    <string name="nav_calendar">Calendar</string>
+    <string name="nav_shopping">Shopping</string>
     <string name="nav_travel">Travel</string>
     <string name="nav_insights">Insights</string>
     <string name="nav_settings">Settings</string>
 
     <!-- Insights tab -->
     <string name="insights_title">Insights</string>
-    <string name="insights_tab_similarity">Similarity Finder</string>
-    <string name="insights_tab_gaps">Identify Gaps</string>
+    <string name="insights_tab_calendar">Calendar</string>
     <string name="insights_tab_wardrobe_stats">Wardrobe Stats</string>
     <string name="insights_tab_calendar_stats">Calendar Stats</string>
+
+    <!-- Shopping Helper tab -->
+    <string name="shopping_title">Shopping Helper</string>
+    <string name="shopping_tab_similarity">Similarity Finder</string>
+    <string name="shopping_tab_gaps">Identify Gaps</string>
 
     <!-- Outfits sub-tabs -->
     <string name="outfits_tab_outfits">Outfits</string>

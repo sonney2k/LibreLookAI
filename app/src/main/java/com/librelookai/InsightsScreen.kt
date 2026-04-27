@@ -22,24 +22,31 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Insights
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -50,11 +57,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -63,32 +70,93 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 
+private const val TOP_N = 10
 private val MONTH_FORMATTER = DateTimeFormatter.ofPattern("MMMM yyyy")
 private val SHEET_DATE_FORMATTER = DateTimeFormatter.ofPattern("EEEE, MMMM d")
-// DOW_LABELS is now computed via @Composable dowLabels()
 private const val MAX_THUMBNAILS = 4
 private val THUMBNAIL_SIZE = 14.dp
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CalendarScreen(
+fun InsightsScreen(
+    wardrobeViewModel: WardrobeViewModel = viewModel(),
     outfitEventsViewModel: OutfitEventsViewModel = viewModel(),
     stylesViewModel: OutfitsViewModel = viewModel(),
-    wardrobeViewModel: WardrobeViewModel = viewModel(),
     locationViewModel: LocationViewModel = viewModel(),
     onEditOutfit: (Outfit) -> Unit = {},
     onSettingsClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
+    val locationState by locationViewModel.state.collectAsState()
+    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+
+    Column(modifier = modifier.fillMaxSize()) {
+        AppScreenHeader(
+            title = stringResource(R.string.insights_title),
+            leadingIcon = Icons.Default.Insights,
+            trailingContent = {
+                LocationButton(
+                    locations = locationState.locations,
+                    activeLocationId = locationState.activeLocationId,
+                    onSetActiveLocation = locationViewModel::setActiveLocation,
+                )
+            },
+            onSettingsClick = onSettingsClick,
+        )
+
+        TabRow(selectedTabIndex = selectedTab) {
+            Tab(
+                selected = selectedTab == 0,
+                onClick = { selectedTab = 0 },
+                text = { Text(stringResource(R.string.insights_tab_calendar)) },
+            )
+            Tab(
+                selected = selectedTab == 1,
+                onClick = { selectedTab = 1 },
+                text = { Text(stringResource(R.string.insights_tab_calendar_stats)) },
+            )
+            Tab(
+                selected = selectedTab == 2,
+                onClick = { selectedTab = 2 },
+                text = { Text(stringResource(R.string.insights_tab_wardrobe_stats)) },
+            )
+        }
+
+        when (selectedTab) {
+            0 -> CalendarTab(
+                outfitEventsViewModel = outfitEventsViewModel,
+                stylesViewModel = stylesViewModel,
+                wardrobeViewModel = wardrobeViewModel,
+                onEditOutfit = onEditOutfit,
+            )
+            1 -> CalendarStatsTab(
+                outfitEventsViewModel = outfitEventsViewModel,
+                stylesViewModel = stylesViewModel,
+                wardrobeViewModel = wardrobeViewModel,
+            )
+            2 -> WardrobeStatsTab(wardrobeViewModel = wardrobeViewModel)
+        }
+    }
+}
+
+// ============================================================================
+//  Tab 1: Calendar (former standalone CalendarScreen body)
+// ============================================================================
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun CalendarTab(
+    outfitEventsViewModel: OutfitEventsViewModel,
+    stylesViewModel: OutfitsViewModel,
+    wardrobeViewModel: WardrobeViewModel,
+    onEditOutfit: (Outfit) -> Unit,
+) {
     val outfitEventsState by outfitEventsViewModel.state.collectAsState()
     val outfitsState by stylesViewModel.state.collectAsState()
     val wardrobeState by wardrobeViewModel.state.collectAsState()
-    val locationState by locationViewModel.state.collectAsState()
 
     val outfitsById = remember(outfitsState.outfits) { outfitsState.outfits.associateBy { it.id } }
     val imagesById = remember(wardrobeState.images) { wardrobeState.images.associateBy { it.driveId } }
 
-    // WornItem entries for thumbnail display in day cells
     val wornItems = remember(outfitEventsState.events, outfitsById, imagesById) {
         outfitEventsState.events.flatMap { event ->
             val style = outfitsById[event.outfitId] ?: return@flatMap emptyList<WornItem>()
@@ -114,30 +182,14 @@ fun CalendarScreen(
         }.groupBy({ it.first }, { it.second })
     }
 
-    Column(modifier = modifier.fillMaxSize()) {
-        AppScreenHeader(
-            title = stringResource(R.string.nav_calendar),
-            trailingContent = {
-                LocationButton(
-                    locations = locationState.locations,
-                    activeLocationId = locationState.activeLocationId,
-                    onSetActiveLocation = locationViewModel::setActiveLocation,
-                )
-            },
-            onSettingsClick = onSettingsClick,
-        )
-
-        CalendarContent(
-            wornItems = wornItems,
-            outfitsByDate = outfitsByDate,
-            imagesById = imagesById,
-            onWearAgainToday = { outfitEventsViewModel.recordOutfit(it) },
-            onEditOutfit = onEditOutfit,
-        )
-    }
+    CalendarContent(
+        wornItems = wornItems,
+        outfitsByDate = outfitsByDate,
+        imagesById = imagesById,
+        onWearAgainToday = { outfitEventsViewModel.recordOutfit(it) },
+        onEditOutfit = onEditOutfit,
+    )
 }
-
-// ---------- Calendar tab ----------
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -145,8 +197,8 @@ private fun CalendarContent(
     wornItems: List<WornItem>,
     outfitsByDate: Map<LocalDate, List<Outfit>>,
     imagesById: Map<String, DriveImage>,
-    onWearAgainToday: (String) -> Unit = {},
-    onEditOutfit: (Outfit) -> Unit = {},
+    onWearAgainToday: (String) -> Unit,
+    onEditOutfit: (Outfit) -> Unit,
 ) {
     var yearMonth by rememberSaveable { mutableStateOf(YearMonth.now()) }
     val itemsByDate = remember(wornItems) { wornItems.groupBy { it.date } }
@@ -232,14 +284,12 @@ private fun CalendarContent(
     }
 }
 
-// ---------- Outfit row inside the day-detail sheet ----------
-
 @Composable
 private fun OutfitSheetRow(
     style: Outfit,
     imagesById: Map<String, DriveImage>,
-    onWearAgainToday: () -> Unit = {},
-    onEditOutfit: () -> Unit = {},
+    onWearAgainToday: () -> Unit,
+    onEditOutfit: () -> Unit,
 ) {
     val ctx = LocalContext.current
     val styleItems = style.itemIds.mapNotNull { imagesById[it] }
@@ -305,8 +355,6 @@ private fun OutfitSheetRow(
         }
     }
 }
-
-// ---------- Calendar chrome ----------
 
 @Composable
 private fun MonthHeader(
@@ -437,7 +485,6 @@ private fun DayCell(
     }
 }
 
-/** Returns a list of weeks, each week a list of 7 nullable LocalDates (null = padding day). */
 private fun buildCalendarWeeks(yearMonth: YearMonth): List<List<LocalDate?>> {
     val firstDay = yearMonth.atDay(1)
     val leadingBlanks = firstDay.dayOfWeek.value - 1
@@ -448,4 +495,338 @@ private fun buildCalendarWeeks(yearMonth: YearMonth): List<List<LocalDate?>> {
     }
     while (cells.size % 7 != 0) cells.add(null)
     return cells.chunked(7)
+}
+
+// ============================================================================
+//  Tab 2: Calendar Stats
+// ============================================================================
+
+@Composable
+private fun CalendarStatsTab(
+    outfitEventsViewModel: OutfitEventsViewModel,
+    stylesViewModel: OutfitsViewModel,
+    wardrobeViewModel: WardrobeViewModel,
+) {
+    val outfitEventsState by outfitEventsViewModel.state.collectAsState()
+    val outfitsState by stylesViewModel.state.collectAsState()
+    val wardrobeState by wardrobeViewModel.state.collectAsState()
+
+    val outfitsById = remember(outfitsState.outfits) { outfitsState.outfits.associateBy { it.id } }
+    val imagesById = remember(wardrobeState.images) { wardrobeState.images.associateBy { it.driveId } }
+
+    val topStyles = remember(outfitEventsState.events, outfitsById) {
+        outfitEventsState.events
+            .groupBy { it.outfitId }
+            .mapValues { it.value.size }
+            .entries
+            .sortedByDescending { it.value }
+            .take(TOP_N)
+            .mapNotNull { (outfitId, count) -> outfitsById[outfitId]?.let { it to count } }
+    }
+
+    val topItems = remember(outfitEventsState.events, outfitsById, imagesById) {
+        outfitEventsState.events
+            .flatMap { event -> outfitsById[event.outfitId]?.itemIds ?: emptyList() }
+            .groupingBy { it }
+            .eachCount()
+            .entries
+            .sortedByDescending { it.value }
+            .take(TOP_N)
+            .mapNotNull { (itemId, count) -> imagesById[itemId]?.let { it to count } }
+    }
+
+    if (topStyles.isEmpty() && topItems.isEmpty()) {
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(stringResource(R.string.calendar_empty), style = MaterialTheme.typography.bodyLarge)
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    stringResource(R.string.calendar_empty_hint),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+        return
+    }
+
+    LazyColumn(
+        contentPadding = PaddingValues(bottom = 24.dp),
+    ) {
+        if (topStyles.isNotEmpty()) {
+            item {
+                Text(
+                    stringResource(R.string.calendar_stats_styles),
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                )
+                HorizontalDivider()
+            }
+            itemsIndexed(topStyles) { index, (style, count) ->
+                StyleStatRow(rank = index + 1, style = style, wearCount = count, imagesById = imagesById)
+                if (index < topStyles.lastIndex) HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+            }
+        }
+
+        if (topItems.isNotEmpty()) {
+            item {
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    stringResource(R.string.calendar_stats_items),
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                )
+                HorizontalDivider()
+            }
+            itemsIndexed(topItems) { index, (image, count) ->
+                ItemStatRow(rank = index + 1, image = image, wearCount = count)
+                if (index < topItems.lastIndex) HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+            }
+        }
+    }
+}
+
+@Composable
+private fun StyleStatRow(
+    rank: Int,
+    style: Outfit,
+    wearCount: Int,
+    imagesById: Map<String, DriveImage>,
+) {
+    val ctx = LocalContext.current
+    val styleItems = style.itemIds.mapNotNull { imagesById[it] }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.width(36.dp),
+        ) {
+            Text(
+                "#$rank",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Text(
+                "${wearCount}×",
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary,
+            )
+        }
+
+        Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Text(
+                style.name,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Medium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            if (styleItems.isNotEmpty()) {
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    itemsIndexed(styleItems, key = { index, image -> "${image.driveId}_${index}" }) { _, image ->
+                        AsyncImage(
+                            model = remember(image.driveId, image.version) {
+                                ImageRequest.Builder(ctx)
+                                    .data(image.localPath)
+                                    .memoryCacheKey("${image.driveId}_${image.version}")
+                                    .build()
+                            },
+                            contentDescription = image.name,
+                            modifier = Modifier
+                                .size(48.dp)
+                                .clip(MaterialTheme.shapes.small),
+                            contentScale = ContentScale.Crop,
+                        )
+                    }
+                }
+            } else {
+                Text(
+                    "Items no longer in wardrobe",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.outline,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ItemStatRow(
+    rank: Int,
+    image: DriveImage,
+    wearCount: Int,
+) {
+    val ctx = LocalContext.current
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.width(36.dp),
+        ) {
+            Text(
+                "#$rank",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Text(
+                "${wearCount}×",
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary,
+            )
+        }
+
+        AsyncImage(
+            model = remember(image.driveId, image.version) {
+                ImageRequest.Builder(ctx)
+                    .data(image.localPath)
+                    .memoryCacheKey("${image.driveId}_${image.version}")
+                    .build()
+            },
+            contentDescription = image.name,
+            modifier = Modifier
+                .size(56.dp)
+                .clip(MaterialTheme.shapes.small),
+            contentScale = ContentScale.Crop,
+        )
+
+        Column(modifier = Modifier.weight(1f)) {
+            val displayName = image.tags?.label?.ifEmpty { null }
+                ?: image.tags?.type?.ifEmpty { null }
+                ?: image.name
+            Text(
+                displayName,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Medium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            image.tags?.let { t ->
+                val subtitle = listOfNotNull(
+                    t.type.takeIf { it.isNotEmpty() && t.label.isNotEmpty() },
+                    t.category.takeIf { it.isNotEmpty() },
+                ).joinToString(" · ")
+                if (subtitle.isNotEmpty()) {
+                    Text(
+                        subtitle,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+            }
+        }
+    }
+}
+
+// ============================================================================
+//  Tab 3: Wardrobe Stats
+// ============================================================================
+
+@Composable
+private fun WardrobeStatsTab(
+    wardrobeViewModel: WardrobeViewModel,
+) {
+    val wardrobeState by wardrobeViewModel.state.collectAsState()
+    val images = wardrobeState.images
+    val counts = remember(images) { images.tagCategoryCounts() }
+    val untagged = remember(images) {
+        images.count { img ->
+            val t = img.tags
+            t == null || (t.type.isBlank() && t.category.isBlank())
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .navigationBarsPadding()
+            .padding(horizontal = 20.dp)
+            .padding(top = 12.dp, bottom = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        Text(
+            stringResource(R.string.wardrobe_stats_total, images.size),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        if (images.isNotEmpty() && counts.isEmpty()) {
+            Text(
+                stringResource(R.string.wardrobe_empty),
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+        counts.forEach { categoryCounts ->
+            val maxCount = categoryCounts.counts.maxOf { it.count }
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text(
+                    tagCategoryDisplayLabel(categoryCounts.label),
+                    style = MaterialTheme.typography.titleSmall,
+                )
+                categoryCounts.counts.forEach { tc ->
+                    StatsBarRow(
+                        label = tc.value.localizedTagValue(),
+                        count = tc.count,
+                        fraction = tc.count.toFloat() / maxCount.toFloat(),
+                    )
+                }
+            }
+        }
+        if (untagged > 0) {
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text(
+                    stringResource(R.string.wardrobe_stats_untagged),
+                    style = MaterialTheme.typography.titleSmall,
+                )
+                StatsBarRow(
+                    label = stringResource(R.string.wardrobe_stats_untagged),
+                    count = untagged,
+                    fraction = untagged.toFloat() / images.size.toFloat(),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun StatsBarRow(label: String, count: Int, fraction: Float) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Text(
+            label,
+            style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier.width(110.dp),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+        LinearProgressIndicator(
+            progress = { fraction.coerceIn(0f, 1f) },
+            modifier = Modifier
+                .weight(1f)
+                .height(6.dp),
+        )
+        Text(
+            count.toString(),
+            style = MaterialTheme.typography.labelSmall,
+            modifier = Modifier.width(28.dp),
+        )
+    }
 }

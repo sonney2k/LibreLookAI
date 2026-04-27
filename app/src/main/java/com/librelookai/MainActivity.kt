@@ -26,12 +26,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Checkroom
 import androidx.compose.material.icons.filled.FlightTakeoff
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.DoorSliding
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material.icons.filled.Style
 import androidx.compose.material.icons.filled.Insights
 import androidx.compose.material.icons.filled.CloudOff
@@ -351,19 +351,12 @@ class MainActivity : ComponentActivity() {
                                             dismissViewerTrigger = dismissWardrobeViewerTrigger,
                                             onSettingsClick = onSettingsClick,
                                         )
-                                        2 -> CalendarScreen(
-                                            outfitEventsViewModel = outfitEventsViewModel,
-                                            stylesViewModel = stylesViewModel,
+                                        2 -> ShoppingHelperScreen(
+                                            shoppingViewModel = shoppingViewModel,
                                             wardrobeViewModel = wardrobeViewModel,
+                                            gapViewModel = gapViewModel,
+                                            profileViewModel = profileViewModel,
                                             locationViewModel = locationViewModel,
-                                            onEditOutfit = { style ->
-                                                stylesViewModel.startEditing(
-                                                    style  = style,
-                                                    images = wardrobeViewModel.state.value.images,
-                                                    prefs  = profileViewModel.state.value.preferences,
-                                                )
-                                                selectedTab = 0
-                                            },
                                             onSettingsClick = onSettingsClick,
                                         )
                                         3 -> TravelScreen(
@@ -374,14 +367,19 @@ class MainActivity : ComponentActivity() {
                                             locationViewModel = locationViewModel,
                                             onSettingsClick = onSettingsClick,
                                         )
-                                        4 -> ShoppingHelperScreen(
-                                            shoppingViewModel = shoppingViewModel,
+                                        4 -> InsightsScreen(
                                             wardrobeViewModel = wardrobeViewModel,
-                                            gapViewModel = gapViewModel,
                                             outfitEventsViewModel = outfitEventsViewModel,
                                             stylesViewModel = stylesViewModel,
-                                            profileViewModel = profileViewModel,
                                             locationViewModel = locationViewModel,
+                                            onEditOutfit = { style ->
+                                                stylesViewModel.startEditing(
+                                                    style  = style,
+                                                    images = wardrobeViewModel.state.value.images,
+                                                    prefs  = profileViewModel.state.value.preferences,
+                                                )
+                                                selectedTab = 0
+                                            },
                                             onSettingsClick = onSettingsClick,
                                         )
                                         5 -> SettingsScreen(
@@ -557,7 +555,7 @@ private fun AppNavBar(
     val items = listOf(
         NavItem(R.string.nav_styles,   Icons.Default.Style),
         NavItem(R.string.nav_wardrobe, Icons.Default.Checkroom),
-        NavItem(R.string.nav_calendar, Icons.Default.CalendarMonth),
+        NavItem(R.string.nav_shopping, Icons.Default.ShoppingBag),
         NavItem(R.string.nav_travel,   Icons.Default.FlightTakeoff),
         NavItem(R.string.nav_insights, Icons.Default.Insights),
     )

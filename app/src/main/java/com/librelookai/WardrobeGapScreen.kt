@@ -37,7 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 // Note: the screen-level entry composable lived here; it has been folded into
-// `ShoppingHelperScreen` (Insights → Identify Gaps tab). The card composables
+// `ShoppingHelperScreen` (Shopping → Identify Gaps tab). The card composables
 // below are kept for that tab to reuse.
 
 // ---------- Suggestion card ----------

@@ -136,7 +136,7 @@ The app works in view-only mode when offline. `NetworkMonitor` (in `NetworkUtils
 
 `MainActivity` owns a single `selectedTab: Int` integer. There is no Navigation component — each tab renders its Screen composable directly inside a `when` block. All ViewModels are created once at the `MainActivity` level and passed down as parameters. A `LaunchedEffect(activeLocationId, locationList)` in `MainActivity` keeps `WardrobeViewModel`, `OutfitsViewModel`, and `OutfitEventsViewModel` in sync whenever the global location changes, and also calls `OutfitsViewModel.updateSaveFolder(...)` so new outfits save to the right folder.
 
-Tab indices: `0=Outfits, 1=Wardrobe, 2=Calendar, 3=Travel, 4=Insights, 5=Settings`. The bottom `AppNavBar` lists 0–4 (5 items); Settings is reachable via the gear icon in each screen's `AppScreenHeader`, not the nav bar.
+Tab indices: `0=Outfits, 1=Wardrobe, 2=Shopping, 3=Travel, 4=Insights, 5=Settings`. The bottom `AppNavBar` lists 0–4 (5 items); Settings is reachable via the gear icon in each screen's `AppScreenHeader`, not the nav bar. The Calendar grid is no longer a top-level tab — it's the first sub-tab inside Insights.
 
 `SettingsScreen` internally uses a `TabRow` with three tabs: Profile, Data, Credits (Credits only visible in managed mode).
 
@@ -195,23 +195,31 @@ Both go through a shared three-stage pipeline:
 
 The Repair & Sync wake lock is released by the `importFromFolder` `finally` only when `importPreview == null` (i.e. the fast path completed synchronously); the preview path keeps it alive until confirm/cancel so the foreground service notification stays up while the user reviews.
 
-### Insights tab (Similarity Finder + Gaps + Stats)
+### Insights tab (Calendar + Stats)
 
-The bottom-nav "Insights" tab (`Icons.Default.Insights`, tab index 4) is a hub of read-only / shopping-adjacent tools. `ShoppingHelperScreen.kt` owns the screen and renders an `AppScreenHeader` followed by a `TabRow` with four sub-tabs:
+The bottom-nav "Insights" tab (`Icons.Default.Insights`, tab index 4) is a hub of read-only review tools. `InsightsScreen.kt` owns the screen and renders an `AppScreenHeader` followed by a `TabRow` with three sub-tabs:
 
-1. **Similarity Finder** — the on-device visual similarity search (formerly the standalone Shop screen). Camera capture → embed → match against wardrobe; powered by `ShoppingHelperViewModel` + `EmbeddingService`. See "Visual wardrobe search" below.
-2. **Identify Gaps** — wardrobe gap analysis (formerly the standalone Gaps screen). Powered by `WardrobeGapViewModel`; renders the existing `GapSuggestionCard` composable (still defined in `WardrobeGapScreen.kt` for reuse — the entry-point composable was removed). Greyed out offline.
+1. **Calendar** — month-grid view of past wear events. The grid composable, day-cell layout, day-detail bottom sheet, and `OutfitSheetRow` all live inline in `InsightsScreen.kt` (there is no longer a separate `CalendarScreen.kt`). Tapping "Edit" on an outfit in the day sheet calls back to `MainActivity`, which switches to tab 0 (Outfits) and opens the editor via `stylesViewModel.startEditing(...)`.
+2. **Calendar Stats** — top-N most-worn outfits and most-worn items. Computes from `OutfitEventsViewModel` + `OutfitsViewModel` + `WardrobeViewModel` state in the screen body.
 3. **Wardrobe Stats** — per-tag-category counts and untagged tally (formerly the BarChart sheet on the Wardrobe header). Uses the `internal` `tagCategoryCounts()` / `tagCategoryDisplayLabel()` helpers from `WardrobeScreen.kt`.
-4. **Calendar Stats** — top-N most-worn outfits and most-worn items (formerly the second tab on Calendar). Computes from `OutfitEventsViewModel` + `OutfitsViewModel` + `WardrobeViewModel` state in the screen body.
 
-`ShoppingHelperScreen` accepts `shoppingViewModel`, `wardrobeViewModel`, `gapViewModel`, `outfitEventsViewModel`, `stylesViewModel`, `profileViewModel`, and `locationViewModel`. The selected sub-tab is `rememberSaveable`. The `LocationButton` lives on the `AppScreenHeader` (above the TabRow) and applies globally as elsewhere.
+`InsightsScreen` accepts `wardrobeViewModel`, `outfitEventsViewModel`, `stylesViewModel`, `locationViewModel`, plus an `onEditOutfit: (Outfit) -> Unit` callback. The selected sub-tab is `rememberSaveable`. The `LocationButton` lives on the `AppScreenHeader` (above the TabRow) and applies globally as elsewhere.
+
+### Shopping Helper tab
+
+The bottom-nav "Shopping" tab (`Icons.Default.ShoppingBag`, tab index 2) bundles the two shopping-adjacent tools that used to live under Insights. `ShoppingHelperScreen.kt` renders an `AppScreenHeader` + `TabRow` with two sub-tabs:
+
+1. **Similarity Finder** — on-device visual similarity search. Camera capture → embed → match against the cross-closet wardrobe snapshot. Powered by `ShoppingHelperViewModel` + `EmbeddingService`. See "Visual wardrobe search" below for the full pipeline. The `MatchPreviewDialog` debug view (paged per-match score breakdown + processed thumbnails + hue histograms) lives here.
+2. **Identify Gaps** — wardrobe gap analysis powered by `WardrobeGapViewModel`; renders the existing `GapSuggestionCard` composable (defined in `WardrobeGapScreen.kt`, kept there as a reusable card — the standalone screen entry point is gone). Greyed out offline.
+
+`ShoppingHelperScreen` accepts `shoppingViewModel`, `wardrobeViewModel`, `gapViewModel`, `profileViewModel`, and `locationViewModel`. The `ShoppingHelperViewModel` name reflects its actual job (the similarity/embedding engine); it is not generic to the whole tab.
 
 
 ### Visual wardrobe search (Similarity Finder)
 
-On-device, zero-network visual similarity search powered by MediaPipe's `ImageEmbedder`. Used by the Insights → Similarity Finder tab, capture-time duplicate detection, the Wardrobe "Find item by photo" entry point, Repair & Sync's duplicate detection, and the folder-import preview. **Every call site feeds the index with `WardrobeUiState.allLocationImages`** (the cross-closet snapshot — see Closets section) rather than the location-filtered `state.images`, so similarity matches always cover all wardrobes regardless of which closet is active in the UI.
+On-device, zero-network visual similarity search powered by MediaPipe's `ImageEmbedder`. Used by the Shopping → Similarity Finder tab, capture-time duplicate detection, the Wardrobe "Find item by photo" entry point, Repair & Sync's duplicate detection, and the folder-import preview. **Every call site feeds the index with `WardrobeUiState.allLocationImages`** (the cross-closet snapshot — see Closets section) rather than the location-filtered `state.images`, so similarity matches always cover all wardrobes regardless of which closet is active in the UI.
 
-**Entry point**: Insights tab → Similarity Finder sub-tab (`ShoppingHelperScreen.kt`).
+**Entry point**: Shopping tab → Similarity Finder sub-tab (`ShoppingHelperScreen.kt`).
 
 **Shared service**: `EmbeddingService` is a process-wide `object` that owns the only `EmbeddingRepository`, `SegmentationRepository`, and `EmbeddingIndex` instances. `MainActivity.onCreate` calls `EmbeddingService.init(this)` before `setContent` so all consumers see the same MediaPipe handles and the persistent index file. Public API:
 
