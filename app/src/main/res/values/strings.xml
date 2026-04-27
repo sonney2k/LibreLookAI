@@ -17,6 +17,10 @@
     <string name="insights_tab_wardrobe_stats">Wardrobe Stats</string>
     <string name="insights_tab_calendar_stats">Calendar Stats</string>
 
+    <!-- Outfits sub-tabs -->
+    <string name="outfits_tab_outfits">Outfits</string>
+    <string name="outfits_tab_tryons">Try-Ons</string>
+
     <!-- Common actions -->
     <string name="action_ok">OK</string>
     <string name="action_cancel">Cancel</string>

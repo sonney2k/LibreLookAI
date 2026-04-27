@@ -81,8 +81,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -132,6 +134,7 @@ fun OutfitsScreen(
     profileViewModel: ProfileViewModel = viewModel(),
     weatherViewModel: WeatherViewModel = viewModel(),
     locationViewModel: LocationViewModel = viewModel(),
+    tryOnViewModel: TryOnViewModel = viewModel(),
     onTryOnStyle: (Outfit) -> Unit = {},
     canTryOn: Boolean = false,
     onSettingsClick: () -> Unit = {},
@@ -143,6 +146,7 @@ fun OutfitsScreen(
     val weatherState by weatherViewModel.state.collectAsState()
     val outfitEventsState by outfitEventsViewModel.state.collectAsState()
     val locationState by locationViewModel.state.collectAsState()
+    val tryOnState by tryOnViewModel.state.collectAsState()
 
     // Refresh wardrobe image cache for styles once wardrobe Drive sync completes.
     LaunchedEffect(wardrobeState.isSyncing, outfitsState.isLoading) {
@@ -280,6 +284,9 @@ fun OutfitsScreen(
                     onTryOnStyle = onTryOnStyle,
                     canTryOn = canTryOn,
                     onSettingsClick = onSettingsClick,
+                    tryOnHistory = tryOnState.history,
+                    onLoadTryOnHistory = tryOnViewModel::loadHistory,
+                    onOpenTryOnHistoryItem = tryOnViewModel::openHistoryDetail,
                 )
             }
         }
@@ -343,6 +350,9 @@ private fun OutfitListScreen(
     onTryOnStyle: (Outfit) -> Unit = {},
     canTryOn: Boolean = false,
     onSettingsClick: () -> Unit = {},
+    tryOnHistory: List<TryOn> = emptyList(),
+    onLoadTryOnHistory: () -> Unit = {},
+    onOpenTryOnHistoryItem: (TryOn) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val isOffline = LocalIsOffline.current
@@ -422,9 +432,17 @@ private fun OutfitListScreen(
         )
     }
 
+    var selectedSubTab by rememberSaveable { mutableIntStateOf(0) }
+    val onTryOnsTab = selectedSubTab == 1
+
+    // Lazily refresh history when entering the Try-Ons sub-tab.
+    LaunchedEffect(onTryOnsTab) {
+        if (onTryOnsTab) onLoadTryOnHistory()
+    }
+
     Box(modifier = modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
-            // ---- Screen header with sort button ----
+            // ---- Screen header with sort button (Outfits tab only) ----
             AppScreenHeader(
                 title = stringResource(R.string.nav_styles),
                 trailingContent = {
@@ -433,7 +451,7 @@ private fun OutfitListScreen(
                         activeLocationId = activeLocationId,
                         onSetActiveLocation = onSetActiveLocation ?: {},
                     )
-                    if (styles.isNotEmpty() && !isSelectionMode) {
+                    if (!onTryOnsTab && styles.isNotEmpty() && !isSelectionMode) {
                         StyleSortButton(
                             sortBy = sortBy,
                             onSortChanged = { sortBy = it },
@@ -443,6 +461,28 @@ private fun OutfitListScreen(
                 },
                 onSettingsClick = onSettingsClick,
             )
+
+            // ---- Sub-tab row ----
+            androidx.compose.material3.TabRow(selectedTabIndex = selectedSubTab) {
+                androidx.compose.material3.Tab(
+                    selected = selectedSubTab == 0,
+                    onClick = { selectedSubTab = 0 },
+                    text = { Text(stringResource(R.string.outfits_tab_outfits)) },
+                )
+                androidx.compose.material3.Tab(
+                    selected = selectedSubTab == 1,
+                    onClick = { selectedSubTab = 1 },
+                    text = { Text(stringResource(R.string.outfits_tab_tryons)) },
+                )
+            }
+
+            if (onTryOnsTab) {
+                TryOnHistoryGrid(
+                    history = tryOnHistory,
+                    onOpen  = onOpenTryOnHistoryItem,
+                )
+                return@Column
+            }
 
             // ---- Selection bar ----
             if (isSelectionMode) {
@@ -530,7 +570,7 @@ private fun OutfitListScreen(
         }
 
         // Selection mode FAB bar
-        if (isSelectionMode) {
+        if (!onTryOnsTab && isSelectionMode) {
             Column(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
@@ -574,7 +614,7 @@ private fun OutfitListScreen(
                     )
                 }
             }
-        } else {
+        } else if (!onTryOnsTab) {
             // Normal speed-dial FAB (bottom-end)
             var fabExpanded by remember { mutableStateOf(false) }
             Column(

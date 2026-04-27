@@ -82,6 +82,26 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
         loadHistory()
     }
 
+    /**
+     * Open the composer dialog directly into history-detail view for [tryOn].
+     * Used by the Outfits → Try-Ons sub-tab: tapping a tile lands on the detail
+     * page; dismissing detail returns to the in-dialog history grid; closing
+     * the dialog returns the user to the sub-tab.
+     */
+    fun openHistoryDetail(tryOn: TryOn) {
+        _state.update {
+            it.copy(
+                isComposerOpen = true,
+                isHistoryOpen  = true,
+                viewingTryOn   = tryOn,
+                itemIds        = emptySet(),
+                resultPath     = null,
+                isResultSaved  = false,
+                error          = null,
+            )
+        }
+    }
+
     fun close() {
         _state.value = TryOnUiState(history = _state.value.history)
     }

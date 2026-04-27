@@ -479,7 +479,7 @@ private fun TryOnResultContent(
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 @Composable
-private fun TryOnHistoryGrid(
+internal fun TryOnHistoryGrid(
     history: List<TryOn>,
     onOpen: (TryOn) -> Unit,
 ) {

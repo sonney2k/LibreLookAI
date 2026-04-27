@@ -315,6 +315,7 @@ class MainActivity : ComponentActivity() {
                                             profileViewModel = profileViewModel,
                                             weatherViewModel = weatherViewModel,
                                             locationViewModel = locationViewModel,
+                                            tryOnViewModel = tryOnViewModel,
                                             onTryOnStyle = { style ->
                                                 stylesViewModel.clearOutfitSelection()
                                                 runTryOn(style.itemIds.toSet())
