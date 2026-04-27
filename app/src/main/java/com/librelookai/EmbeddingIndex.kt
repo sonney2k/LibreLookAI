@@ -170,7 +170,11 @@ class EmbeddingIndex(private val context: Context) {
             for ((id, e) in entries) {
                 val embScore = dot(queryVec, e.vec)
                 val histScore = ColorHistogram.cosine(queryHist, e.hist)
-                scored.add(Match(id, EMBED_WEIGHT * embScore + (1f - EMBED_WEIGHT) * histScore))
+                // Use a multiplicative scoring model: Final Score = Embedding * Hist^2.
+                // This requires both shape and color to be strong; a poor color match (low histScore)
+                // will heavily penalize the overall score due to the square.
+                val finalScore = embScore * (histScore * histScore)
+                scored.add(Match(id, finalScore))
             }
             scored.sortByDescending { it.score }
             if (scored.size <= topK) scored else scored.subList(0, topK).toList()
@@ -194,12 +198,7 @@ class EmbeddingIndex(private val context: Context) {
         // rebuilt on next sync (`syncIndex` re-embeds every cached cutout — fast for ~100 items).
         private const val VERSION = 3
 
-        /**
-         * Mixing weight for the combined similarity score. Higher → more weight on shape/texture
-         * (the CNN embedding); lower → more weight on color (HSV histogram). 0.65 means the
-         * embedding still dominates but a strong color disagreement (e.g. red vs. black) can
-         * meaningfully drag the score down.
-         */
-        const val EMBED_WEIGHT = 0.65f
+        // Deprecated: previous weighted sum model replaced by multiplicative model.
+        // const val EMBED_WEIGHT = 0.65f
     }
 }

@@ -3,7 +3,9 @@ package com.librelookai
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.util.Log
+import android.media.ExifInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -35,6 +37,13 @@ object EmbeddingService {
             val app = context.applicationContext
             embedderImpl = EmbeddingRepository(app)
             segmenterImpl = SegmentationRepository(app)
+            // Always dump the last segmentation input + mask for debugging. We write to the
+            // *external* cache so `adb pull` works without root:
+            //   adb pull /sdcard/Android/data/com.librelookai/cache/segmenter_debug/
+            // — then upload `segmenter_input_last.png` to the public Magic Touch demo to verify
+            // whether the model itself can segment the exact frame we hand MediaPipe.
+            segmenterImpl.debugDumpDir = (app.externalCacheDir ?: app.cacheDir)
+                .let { File(it, "segmenter_debug") }
             indexImpl = EmbeddingIndex(app)
             initialized = true
         }
@@ -50,6 +59,37 @@ object EmbeddingService {
 
     /** One ranked match: a wardrobe Drive ID with its cosine similarity in [-1, 1]. */
     data class Match(val driveId: String, val score: Float)
+
+    /**
+     * Decode [file] and apply any EXIF rotation so the returned bitmap is in the orientation a
+     * human would see it (upright portrait when the photo was taken in portrait mode). Critical
+     * for the segmenter path: feeding a sideways bitmap to MediaPipe means the centre seed lands
+     * on the wrong pixel and the segmentation tracks a random patch of the background instead of
+     * the user's framed object. Returns null on decode failure.
+     */
+    fun decodeUpright(file: File): Bitmap? {
+        val raw = runCatching { BitmapFactory.decodeFile(file.absolutePath) }.getOrNull() ?: return null
+        val orientation = runCatching {
+            ExifInterface(file.absolutePath).getAttributeInt(
+                ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL,
+            )
+        }.getOrDefault(ExifInterface.ORIENTATION_NORMAL)
+        if (orientation == ExifInterface.ORIENTATION_NORMAL || orientation == ExifInterface.ORIENTATION_UNDEFINED) return raw
+        val matrix = Matrix()
+        when (orientation) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> matrix.postRotate(90f)
+            ExifInterface.ORIENTATION_ROTATE_180 -> matrix.postRotate(180f)
+            ExifInterface.ORIENTATION_ROTATE_270 -> matrix.postRotate(270f)
+            ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> matrix.preScale(-1f, 1f)
+            ExifInterface.ORIENTATION_FLIP_VERTICAL -> matrix.preScale(1f, -1f)
+            ExifInterface.ORIENTATION_TRANSPOSE -> { matrix.preScale(-1f, 1f); matrix.postRotate(90f) }
+            ExifInterface.ORIENTATION_TRANSVERSE -> { matrix.preScale(-1f, 1f); matrix.postRotate(-90f) }
+            else -> return raw
+        }
+        Log.d(TAG, "decodeUpright: applied EXIF orientation $orientation to ${file.name} (${raw.width}x${raw.height})")
+        return Bitmap.createBitmap(raw, 0, 0, raw.width, raw.height, matrix, true)
+            .also { if (it !== raw) raw.recycle() }
+    }
 
     /**
      * Ensures every cutout in [images] that has a local file has an embedding in the index.
@@ -110,7 +150,7 @@ object EmbeddingService {
         topK: Int = 20,
     ): List<Match> {
         if (!isModelAvailable()) return emptyList()
-        val q = embedderImpl.embedBitmap(bitmap, compositeAlpha = bitmap.hasAlpha()) ?: return emptyList()
+        val q = embedderImpl.embedBitmap(bitmap) ?: return emptyList()
         return searchVector(q.vec, q.hist, threshold, excludeIds, topK)
     }
 
@@ -122,11 +162,11 @@ object EmbeddingService {
     suspend fun embedQuery(file: File, segment: Boolean = true): EmbeddingRepository.EmbedResult? = withContext(Dispatchers.IO) {
         if (!isModelAvailable()) return@withContext null
         if (!segment) return@withContext embedderImpl.embedFile(file)
-        val raw = runCatching { BitmapFactory.decodeFile(file.absolutePath) }.getOrNull() ?: return@withContext null
+        val raw = decodeUpright(file) ?: return@withContext null
         try {
-            val masked = segmenterImpl.segmentForegroundOnWhite(raw)
+            val masked = segmenterImpl.segmentForegroundOnBlack(raw)
             if (masked != null) {
-                try { embedderImpl.embedBitmap(masked, compositeAlpha = false) }
+                try { embedderImpl.embedBitmap(masked) }
                 finally { if (!masked.isRecycled) masked.recycle() }
             } else {
                 Log.w(TAG, "embedQuery: segmentation unavailable, falling back to raw image")

@@ -17,53 +17,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # Run unit tests
 ./gradlew test
 
-# Run a single test class
-./gradlew test --tests "com.librelookai.ExampleUnitTest"
-
-# Run instrumented tests (requires connected device/emulator)
-./gradlew connectedAndroidTest
-
-# Lint
-./gradlew lint
-
-# Clean
-./gradlew clean
-```
-
-Firebase Cloud Functions (in `firebase/`):
-```bash
-cd firebase/functions && npm install
-cd firebase && firebase deploy --only functions
-cd firebase && firebase deploy --only firestore:rules
-```
-
-Build release AAB (requires signing config in `local.properties`, see Release process below):
-```bash
-./gradlew bundleRelease
-# Output: app/build/outputs/bundle/release/app-release.aab
-```
-
-## Required local.properties keys
-
-`local.properties` is never committed. Keys consumed at build time via `BuildConfig`:
-
-```
-gemini.api.key=          # default BYOK key (users can override in Settings)
-amazon.affiliate.tag=    # e.g. yourstore-20
-shopstyle.publisher.id=  # e.g. uid2500-XXXXX-XX
-firebase.proxy.url=      # e.g. https://us-central1-PROJECT.cloudfunctions.net
-firebase.web.client.id=  # OAuth 2.0 Web Client ID from Firebase Auth
-```
-
-Firebase is **opt-in**: `google-services.json` must be present in `app/` for the plugin to be applied (checked in `app/build.gradle.kts`).
-
-Signing keys (for release builds, never committed):
-```
-signing.store.file=/absolute/path/to/librelookai-release.jks
-signing.store.password=
-signing.key.alias=librelookai
-signing.key.password=
-```
 
 ## Architecture overview
 
@@ -117,33 +70,17 @@ All Gemini calls return `null` on failure; callers must gracefully degrade.
 
 ### Outfits screen
 
-**Naming note**: the user-facing term and all new data classes / VMs use "outfit". A few identifiers still read "style" for legacy reasons: the VM parameter name in downstream screens (`stylesViewModel: OutfitsViewModel`), a handful of state fields in `OutfitsUiState` that hold the saved list (`styles`, `newSuggestion.styleId` via `OutfitPrediction.styleId`), and all `values/strings.xml` keys (`styles_empty`, `styles_sort_newest`, …). The JSON field in `OutfitEvent` is serialized as `outfitId` but accepts the legacy `styleId` via `@SerializedName(alternate)`. When adding new code, prefer "outfit"; leave existing legacy identifiers alone until a dedicated cleanup pass.
 
 `OutfitsScreen` branches on three mutually exclusive states (checked in order):
 
 1. `outfitsState.isEditingOutfitView` → **`OutfitEditingView`** (full-screen, see below)
 2. `outfitsState.isCreating` → **`OutfitItemPicker`** (full-screen grid for manual creation from scratch)
-3. otherwise → **`OutfitListScreen`** (the list with `OutfitCard`s and FABs)
+3. otherwise → **`OutfitListScreen`** — wraps two sub-tabs under the screen header: **Outfits** (the existing list with `OutfitCard`s, sort button, tag filters, selection mode and FABs) and **Try-Ons** (a grid of saved `TryOn` images sourced from `tryOnViewModel.state.history`; tap a tile to open the unified composer dialog directly into history-detail view via `tryOnViewModel.openHistoryDetail(t)`). The sort button, tag filters, selection bar and speed-dial FAB only render on the Outfits sub-tab. `tryOnViewModel.loadHistory()` is invoked whenever the Try-Ons sub-tab is selected. `OutfitsScreen` therefore now also receives `tryOnViewModel: TryOnViewModel` from `MainActivity`.
 
 **`OutfitEditingView`** is the unified editor used for:
 - Editing an existing saved outfit (`startEditing(outfit)` routes through `openComposer(...)`)
 - Reviewing / tweaking an AI-predicted existing outfit (auto-opened via `LaunchedEffect` when `prediction` arrives → `openPredictionInEditView`)
 - Reviewing / tweaking an AI-composed new outfit (auto-opened via `LaunchedEffect` when `newSuggestion` arrives → `openSuggestionInEditView`)
-
-It shows: editable name + description, outfit items as 100 dp tappable tiles in a `FlowRow`, an "Add item" `+` tile, and — when opened from a Gemini result — the AI reason text and a `RefinementSection`. Tapping a tile opens **`ItemSwapSheet`**, a `ModalBottomSheet` that filters the wardrobe by the item's category and supports single-selection replacement. The sheet has a "Suggest 10 alternatives" button that calls `OutfitsViewModel.suggestAlternatives()` and surfaces results as starred tiles sorted to the top. After saving, `pendingWearOutfitId` is set and a Snackbar offers "Wear today" (which calls `OutfitEventsViewModel.recordOutfit(id)`).
-
-`OutfitListScreen` supports **multi-select**: long-press any card → enters selection mode (`selectedOutfitIds.isNotEmpty()`). In selection mode: tapping toggles selection, back exits, a selection bar (count / select-all / deselect-all) replaces the sort button, card Edit+Wear buttons hide, and the speed-dial FAB is replaced by two action FABs:
-- **Delete** — confirmation dialog → `deleteSelectedOutfits()`. Deletion groups affected outfits by `Outfit.folderId` and saves each folder's `_outfits.json` independently, so it works in both single-location and All Locations mode.
-- **Combine with AI** (≥ 2 selected) — `openComposerFromSelectedOutfits()` opens the unified composer seeded with the union of items from the selected outfits, prefilled with a "NameA + NameB" name. The user can hit "Enhance with AI" to let Gemini cull + complete the outfit.
-
-**Outfits ViewModel key state** (`OutfitsUiState` in `OutfitsViewModel.kt`):
-- `isEditingOutfitView` / `isCreating` / `isComposerOpen` — which full-screen view is open
-- `draftItemIds / draftOutfitName / draftOutfitDescription / editingOutfit` — shared draft for editor + item-picker
-- `prediction` / `newSuggestion` — AI results; `LaunchedEffect`s in `OutfitsScreen` open `OutfitEditingView` when either arrives
-- `pendingWearOutfitId` — set after save; cleared by "Wear today" Snackbar action or dismiss
-- `selectedOutfitIds` — multi-select set for `OutfitListScreen`
-- `isLoadingAlternatives / alternativeIds` — per-item swap alternatives from Gemini
-- `styles` / `wardrobeImages` — list of saved outfits (field kept as `styles` for legacy reasons) + all wardrobe images across locations for resolving icons
 
 **Gemini prompt builders** (all private top-level functions in `OutfitsViewModel.kt`):
 - `buildPredictionPrompt` — pick best existing outfit for today
@@ -157,42 +94,9 @@ It shows: editable name + description, outfit items as 100 dp tappable tiles in 
 
 `OutfitEventsViewModel` is a separate VM — it owns the calendar wear history, not `OutfitsViewModel`. It reads `_outfit_events.json` from Drive (falling back to the legacy `_outfits_metadata.json`) per location folder and caches it locally as `outfit_events_cache_{folderId}.json`. The `OutfitEvent` data class has `outfitId` (JSON serialized with alternate `styleId` for backward compat) and an ISO `date`.
 
-- `setLocation(folderId)` / `setAllLocations(folderIds)` — kept in sync by `MainActivity`'s `LaunchedEffect(activeLocationId, locationList)`. In All Locations mode, events are loaded and merged from every folder.
-- `recordOutfit(outfitId)` — appends a new event dated today and saves back to Drive. When All Locations is active, the write goes to the first configured folder.
-- `CalendarScreen` reads this VM directly (via `outfitEventsViewModel: OutfitEventsViewModel = viewModel()`); `OutfitsScreen` also observes it to compute per-outfit `wearCounts` for sorting.
-
 ### Unified outfit composer
 
 `OutfitComposerScreen` (full-screen Dialog) is the single entry point for creating a new outfit from any screen. It replaces the Wardrobe-selection "Create outfit" + "Compose with AI" split, the Outfits-multi-select "Combine with AI" FAB, and the Travel "Save as outfit" chip. `MainActivity` renders it unconditionally on top of the tab content; the composable itself returns early unless `state.isComposerOpen` is true.
-
-**Entry points**:
-- `OutfitsViewModel.openComposer(seedItemIds, images, prefs, initialName?, initialDescription?, editingOutfitId?)` — initializes composer state from a seed set of wardrobe items; `state.isComposerOpen` becomes `true`. When `editingOutfitId` is non-null, `saveComposer()` updates that outfit in place instead of creating a new one.
-- `OutfitsViewModel.openComposerFromSelectedOutfits(images, prefs)` — seeds with the union of items from `selectedOutfitIds` and prefills a "NameA + NameB" name; also clears the selection.
-- `OutfitsViewModel.startEditing(outfit, images, prefs)` — opens the composer seeded with the existing outfit's items, name, and description, with `composerEditingOutfitId` set.
-
-**Sections** (all scrollable, inside a single `LazyColumn`):
-1. **Items** — grid of chosen items as 96 dp tiles; tap to remove; `+` tile opens an item picker bottom sheet that lists wardrobe filtered by optional category chips and supports multi-add.
-2. **Weather** — toggle chip between `Auto` (reads `WeatherViewModel.state.data`, shown as temp + WMO emoji) and `Manual` (season + temp-range + precip chips).
-3. **Vibe** — multi-select chips: Casual, Sporty, Formal, Business, Streetwear, Minimalist, Classic, Elegant.
-4. **Composition targets** — per-layer count steppers (Top / Bottom / Footwear / Outerwear / Accessory). Defaults derived from seed item tags.
-5. **Preference prompt** — `OutlinedTextField` prefilled from `UserPreferences.preferences`, editable for this composition only (not saved back).
-6. **Name + description** — editable fields.
-7. **AI enhance** — history chips of prior feedback + preset quick-picks (More casual, More formal, Different colors, Warmer, Lighter, More trendy, Simpler, More bold) + freetext `TextField` + a prominent progress row ("Asking Gemini…" + spinner) + "Enhance with AI" button. Preset taps immediately trigger enhance with that preset as feedback. Accumulates `composerFeedbackHistory`, calls `buildComposerPrompt`, and merges Gemini's item list / name / description / reason into the draft.
-8. **Save** — calls `OutfitsViewModel.saveComposer()` → `saveOutfitDirectly`.
-
-**ViewModel additions** (`OutfitsUiState`): `isComposerOpen`, `composerEditingOutfitId`, `composerItemIds`, `composerWeatherMode` (AUTO/MANUAL), `composerManualSeason`, `composerManualTempC`, `composerManualPrecip`, `composerVibes`, `composerTargets` (`ComposerTargets` data class), `composerPrefOverride`, `composerName`, `composerDescription`, `composerFeedback`, `composerFeedbackHistory`, `composerReason`, `isComposerEnhancing`, `composerError`.
-
-**Prompt**: `buildComposerPrompt(...)` — one top-level builder in `OutfitsViewModel.kt`. Asks Gemini to propose an outfit that MUST include the current draft item IDs and add complementary items to meet the target composition counts.
-
-**Migrated entry points**:
-- Wardrobe selection mode FAB → `openComposer(selectedIds)`.
-- Wardrobe FullScreenViewer long-press sheet → `openComposer(selectedIds)`.
-- Outfits list Edit button / `startEditing` → `openComposer(..., editingOutfitId=outfit.id)`.
-- Outfits multi-select "Combine with AI" FAB → `openComposerFromSelectedOutfits()`.
-- Travel `PackingOutfit` "Save as outfit" chip → `openComposer(outfit.itemIds, initialName=occasion, initialDescription=description)`.
-
-**Not yet migrated**:
-- Outfits speed-dial "Compose new outfit" — still uses `triggerComposition` → `newSuggestion` → `OutfitEditingView`.
 
 ### Travel packing screen
 
@@ -200,12 +104,6 @@ It shows: editable name + description, outfit items as 100 dp tappable tiles in 
 
 **Packing list generation**: destination + date range → `WeatherRepository.fetchDestinationForecast()` → `buildPackingPrompt()` → Gemini → `PackingList` (list of `PackingOutfit` + `extraItems`). A refinement loop (free-text + preset chips) re-runs `buildPackingPrompt()` with accumulated `feedbackHistory`.
 
-**`PackingOutfit` cards** each show a "Save as outfit" `InputChip`. Tapping it opens the unified composer (`stylesViewModel.openComposer(...)`) prefilled with the outfit's items, occasion (as name) and description, so the user can tweak + confirm the save there.
-
-**"Move all to Travel location" button** appears in the packing list header when there are packed items:
-1. Calls `locationViewModel.getOrCreateLocation("Travel")` — finds an existing location named "Travel" (case-insensitive) or creates a new Drive subfolder + updates the locations JSON, then returns the folderId via callback.
-2. Calls `wardrobeViewModel.moveItemsToFolder(itemIds, toFolderId)` — moves each item's cutout + original + sidecar files via `DriveRepository.moveFile()` (single PATCH, no re-upload), then drops the moved items from in-memory state.
-3. A Snackbar confirms success or failure.
 
 ### Try-on (unified)
 
@@ -216,6 +114,13 @@ The composer has three modes, selected in `TryOnComposerScreen` by state check o
 2. **History grid** (`state.isHistoryOpen`) — grid of saved try-ons; tap to open detail view.
 3. **Compose / Preview** (default) — when no `resultPath`: item grid (tap to remove, `+` tile to add via `ItemPickerSheet`), explanation surface ("All items shown will be worn together…"), and a "Generate try-on" button. Once a result arrives: the preview replaces the compose UI with a pinch-zoom image (`detectTransformGestures`, scale 1f..6f) + "Save to Drive" / "Try again" / "Change items" / "Save to gallery" actions.
 
+**Entry points**:
+- Wardrobe selection → "Try on" FAB → `runTryOn(itemIds)` → `openComposer(itemIds)` → mode 3 (compose).
+- Outfits list single-selection → "Try on" FAB → same path.
+- Outfits → **Try-Ons sub-tab** → tap a saved try-on tile → `openHistoryDetail(tryOn)` → opens the composer dialog with `isHistoryOpen = true` and `viewingTryOn = tryOn` so dismissing detail returns to the in-dialog history grid; closing the dialog returns to the sub-tab.
+
+`TryOnHistoryGrid` is `internal` so it can be reused inline by the Outfits → Try-Ons sub-tab.
+
 **Drive layout**: Generated PNGs live in a `_tryons` subfolder of the root Drive folder (`DriveRepository.getOrCreateTryOnsFolder`). The index `_tryons.json` is stored at the root — it holds `List<TryOn>`. `TryOn` stores both `imageDriveId` (for direct access) and `imageName` (stable handle across Drive folder copies), plus `itemNames` (cutout filenames — resolved back to current Drive IDs at load time by matching against `wardrobeImages`). `TRYONS_FILE_NAME` is added to `SYSTEM_JSON_NAMES` so it is never treated as a sidecar.
 
 **Caching**: Saved try-on PNGs are cached under `cacheDir/tryon_{driveId}.png` and re-downloaded via `DriveRepository.downloadFileTo(...)` on history load if missing. The pre-save result lives in `cacheDir/tryon_results/tryon_{timestamp}.png`; on save it is copied to the stable cached path.
@@ -225,28 +130,6 @@ The composer has three modes, selected in `TryOnComposerScreen` by state check o
 ### Offline mode
 
 The app works in view-only mode when offline. `NetworkMonitor` (in `NetworkUtils.kt`) uses `ConnectivityManager.NetworkCallback` to expose a `StateFlow<Boolean>` of real-time connectivity. `MainActivity` provides the state via `LocalIsOffline`, a `CompositionLocal` defined in `NetworkUtils.kt` — any composable reads `LocalIsOffline.current` without parameter threading.
-
-Online status requires **both** `NET_CAPABILITY_INTERNET` **and** `NET_CAPABILITY_VALIDATED`. Checking only `INTERNET` misses the common case where wifi stays associated but the uplink is dead — Android does not fire `onLost` for that, only `onCapabilitiesChanged` with `VALIDATED` dropped. All three callbacks (`onAvailable`, `onLost`, `onCapabilitiesChanged`) funnel through a single `recomputeOnline()` helper that re-reads the active network.
-
-**UI indicator**: An animated banner (`errorContainer` background, `CloudOff` icon, localized text) appears at the top of the content area when offline and disappears when connectivity returns.
-
-**What works offline** (from local disk cache):
-- Browsing wardrobe items, outfits, calendar, and previously generated travel packing lists
-- Viewing tag overlays and item details
-
-**What is disabled offline** (hidden or greyed out) — everything that writes to Drive or calls Gemini:
-- **WardrobeScreen**: upload FABs (camera + gallery) hidden; in selection mode, "Create outfit", "Compose with AI", "Move to closet", and "Delete" FABs all hidden
-- **FullScreenViewer**: long-press action sheet does not open (suppresses Create outfit / Compose with AI / Move to / Delete); rotate FAB hidden; "Detect tags" and "Remove background" greyed out in `TagsOverlay`
-- **OutfitsScreen**: AI speed-dial items (Suggest, Compose) hidden; per-card Edit+Wear row hidden in `OutfitCard`; "Combine with AI" and "Delete" FABs hidden in multi-select; "Suggest alternatives" hidden in `ItemSwapSheet`; `RefinementSection` hidden in `OutfitEditingView`
-- **CalendarScreen**: "Wear again today" and "Edit" buttons hidden in the day-detail sheet row
-- **TravelScreen**: Generate button greyed out; refinement section hidden; "Move all to Travel" button greyed out
-- **WardrobeGapScreen**: Analyze button greyed out
-- **SettingsScreen**: Retag All, Remove All Backgrounds, Repair & Sync, Import buttons greyed out; Try-on photo slots hidden (upload requires Drive write)
-- **WardrobeScreen / OutfitsScreen**: Try-on FAB hidden (image generation requires Gemini)
-
-When adding new network-dependent UI actions, read `LocalIsOffline.current` and either hide the action or set `enabled = !isOffline`.
-
-**Language persistence offline**: `ProfileViewModel.loadPreferences()` falls back to `cachedLanguage()` (the `librelookai_lang` SharedPreferences cache) whenever the Drive JSON is null or cannot be parsed, instead of constructing a fresh `UserPreferences()` (which would default to English). This prevents the UI from flipping to English when Drive is unreachable.
 
 ### Navigation
 
@@ -322,7 +205,6 @@ The bottom-nav "Insights" tab (`Icons.Default.Insights`, tab index 4) is a hub o
 
 `ShoppingHelperScreen` accepts `shoppingViewModel`, `wardrobeViewModel`, `gapViewModel`, `outfitEventsViewModel`, `stylesViewModel`, `profileViewModel`, and `locationViewModel`. The selected sub-tab is `rememberSaveable`. The `LocationButton` lives on the `AppScreenHeader` (above the TabRow) and applies globally as elsewhere.
 
-`CalendarScreen` no longer has a TabRow — it is back to a single calendar-grid view. `WardrobeScreen` no longer renders the BarChart icon or `WardrobeStatsSheet`; the helpers `tagCategoryCounts` / `tagCategoryDisplayLabel` / `localizedTagValue` / `TagCategoryCounts` / `TagCount` remain `internal` so the Insights tab can call them. `WardrobeGapScreen.kt` keeps `GapSuggestionCard` + `ColorChip` + `COLOR_MAP` but no longer exports a screen-level composable.
 
 ### Visual wardrobe search (Similarity Finder)
 
@@ -363,8 +245,8 @@ Cached cutouts (transparent PNGs) skip the segmentation step but go through the 
 **White balance (gray-world)**: `SegmentationRepository.segmentForegroundOnWhite` uses the segmentation mask twice — once to identify foreground for the composite, once to identify *background* pixels as a neutral-color reference. It computes the per-channel mean of background pixels, derives gains `gainC = meanY / meanC` (where `meanY` is the average of the three channel means), clamps each gain to `[0.5, 2.0]`, and applies them to foreground pixels before compositing on white. Skipped (no correction) if the background covers <5% of the frame, or if the background mean luma is outside `[40, 220]` (too dark or blown out — unreliable reference).
 
 **Components**:
-- `EmbeddingRepository` — lazy singleton that holds the MediaPipe `ImageEmbedder`. `embedFile(file)` and `embedBitmap(bitmap, compositeAlpha)` both return `EmbedResult(vec, hist)` — the L2-normalized embedding and the L1-normalized HSV histogram, computed on the same prepared bitmap so query and gallery preparation match exactly. Mutex-guarded; `close()` releases native resources. Embedder is configured with `setL2Normalize(true)` so cosine similarity reduces to a dot product.
-- `SegmentationRepository` — lazy singleton holding MediaPipe's `InteractiveSegmenter`. `segmentForegroundOnWhite(bitmap)` runs the model with a center-keypoint seed, applies gray-world WB to foreground pixels using the background mean as reference, and returns a new bitmap with foreground pixels preserved (and corrected) and background pixels set to opaque white. Returns null if the model asset is missing or the mask covers <2% of pixels (likely garbage); callers fall back to embedding the un-segmented image. The capture UI shows a center crosshair (`showCenterCrosshair = true`) so the user knows the seed point.
+- `EmbeddingRepository` — lazy singleton that holds the MediaPipe `ImageEmbedder`. `embedFile(file)` and `embedBitmap(bitmap)` both return `EmbedResult(vec, hist)` — the L2-normalized embedding and the L1-normalized HSV histogram, computed on the same prepared bitmap so query and gallery preparation match exactly. `prepareForEmbedding(src)` always composites the source onto opaque white before center-cropping — `Bitmap.hasAlpha()` is unreliable across PNG encode/decode cycles, so the composite step runs unconditionally (it's idempotent for fully-opaque inputs). Mutex-guarded; `close()` releases native resources. Embedder is configured with `setL2Normalize(true)` so cosine similarity reduces to a dot product.
+- `SegmentationRepository` — lazy singleton holding MediaPipe's `InteractiveSegmenter`. `segmentForegroundOnWhite(bitmap)` runs the model with a center-keypoint seed, infers polarity by picking the *minority* class as foreground (the seeded clothing item should never cover the majority of a centered photo, and trusting the center pixel's value silently fails when the model returns "all background" — the center then inherits the background class and gets misread as foreground, leaving the entire frame untouched), applies gray-world WB to foreground pixels using the background mean as reference, and returns a new bitmap with foreground pixels preserved (and corrected) and background pixels set to opaque white. Returns null if the model asset is missing, the mask is single-class, or the foreground covers <2% of pixels (likely garbage); callers fall back to embedding the un-segmented image. The capture UI shows a center crosshair (`showCenterCrosshair = true`) so the user knows the seed point.
 - `ColorHistogram` — pure helper in `ColorHistogram.kt` (top-level functions in `com.librelookai`). `compute(bitmap)` returns a 192-float L1-normalized HSV histogram (skipping alpha < 200 and near-white pixels). `smoothH(hist, sigma)` convolves the H axis with a circular Gaussian. `cosine(a, b)` is the histogram similarity score. Shared by `EmbeddingRepository` and `EmbeddingIndex`.
 - `EmbeddingIndex` — in-memory `Map<cutoutDriveId, IndexEntry(vec, hist)>` + binary persistence at `filesDir/wardrobe_embeddings.bin` (format: `magic u32 | version u16 | dim u16 | histDim u16 | count u32 | [idLen u16 | idUtf8 | float32[dim] | float32[histDim]]*`). `VERSION = 3`. Old indexes are discarded on load and rebuilt on next sync. `search(qvec, qhist, topK)` returns matches by the combined score with α = `EMBED_WEIGHT` (0.65).
 - `ShoppingHelperViewModel` — holds the repos + index. `syncIndex(images)` walks the current wardrobe, embeds any item with a cached cutout that isn't in the index yet, drops orphaned index entries, and persists. `onCapturedFile(file)` runs the prep pipeline manually (segment → composite-on-white → center-crop) so the post-segmentation bitmap can be saved to `cacheDir/shop_queries/query_processed_*.png` for the debug preview, then embeds the prepared bitmap and searches the index. State exposes `isIndexing` with progress counts, `isMatching`, `queryPath` (raw camera shot), `queryProcessedPath` (the segmented + composited + cropped pixels we actually fed to the embedder), `queryHist` / `queryVec` (the live query's histogram + embedding so the debug view can recompute per-match score breakdowns), `matches: List<ShopMatch(image, score)>`, and `error`. `clearResults()` deletes both the raw and processed query files.
@@ -372,14 +254,6 @@ Cached cutouts (transparent PNGs) skip the segmentation step but go through the 
 - `MatchPreviewDialog` (debug preview) — opened by tapping any match row. Pages horizontally over the full match list (`HorizontalPager`); on each page shows: the **combined score** with the embedding-cosine and histogram-cosine broken out, the query side-by-side as **raw** vs. **processed** (segmented + composited-on-white + center-cropped), the match side-by-side as **raw cutout** (transparent PNG) vs. **processed** (composited-on-white + center-cropped — the exact transform `EmbeddingService.syncIndex` applied when generating the embedding), the **query and match hue histograms** (12 H bins, summed across S × V, colored by hue) so it's obvious when a high embedding score sits on a wildly different color, and a zoomable copy of the cutout. Match histograms are pulled lazily from `EmbeddingService.index.entry(driveId)?.hist` via `produceState` per page; match processed bitmaps are computed on the fly from `EmbeddingRepository.prepareForEmbedding(cutout, compositeAlpha=true)`. Swipe left/right to step through matches.
 
 **Indexing strategy**: No hooks in `WardrobeViewModel.processQueue`. Indexing is pull-based — the shop screen syncs the index every time it opens, and before every match. Empirically this takes <1s for ~100 items on modern devices; subsequent opens are near-instant since only new/deleted items cause work.
-
-**Model assets** (both excluded from git):
-- `app/src/main/assets/embedder/efficientnet_lite0.tflite` (~18 MB EfficientNet Lite0). The MediaPipe-hosted EfficientNet GCS path is `404`; the bundled file was sourced from a TFLite-compatible mirror and copied in by hand. Larger than MobileNet V3 Small but noticeably stronger on texture/material similarity. If you change models, also update `EmbeddingRepository.MODEL_PATH`. (A prior `efficientnet_lite0.tflite_mobilenet` file in the same dir is the previous MobileNet V3 Small model kept around as a fallback — not loaded.)
-- `app/src/main/assets/segmenter/magic_touch.tflite` (~6 MB). Download from `https://storage.googleapis.com/mediapipe-models/interactive_segmenter/magic_touch/float32/1/magic_touch.tflite`.
-
-After downloading, verify each file with `file <path>` — a non-200 response from GCS produces a ~250-byte XML error body that `EmbeddingRepository.isAvailable()` will happily accept (the asset opens fine), and you'll only find out when MediaPipe fails to construct and the Shop screen shows "Could not analyze that photo." Real models are multi-MB binary `data`.
-
-If either is missing, the Shop screen shows a dev-facing warning. The embedder is required; the segmenter is optional — when absent the pipeline falls back to embedding the raw query (with white-bg compositing only).
 
 ## Release process (Play Store internal testing)
 

@@ -34,6 +34,9 @@ data class ShoppingHelperUiState(
     /** L2-normalized embedding for the query, kept so the debug view can recompute
      *  per-match embedding-cosine vs histogram-cosine. */
     val queryVec: FloatArray? = null,
+    /** True when on-device segmentation isolated a foreground object for the current query;
+     *  false when it failed (or hadn't run yet) and we fell back to embedding the raw frame. */
+    val querySegmented: Boolean = false,
     /** True while the query image is being embedded and searched. */
     val isMatching: Boolean = false,
     /** Ranked matches from the last query, or empty if no query yet. */
@@ -88,6 +91,7 @@ class ShoppingHelperViewModel(app: Application) : AndroidViewModel(app) {
                 queryProcessedPath = null,
                 queryHist = null,
                 queryVec = null,
+                querySegmented = false,
                 matches = emptyList(),
                 error = null,
             )
@@ -154,6 +158,7 @@ class ShoppingHelperViewModel(app: Application) : AndroidViewModel(app) {
                     queryProcessedPath = null,
                     queryHist = null,
                     queryVec = null,
+                    querySegmented = false,
                     matches = emptyList(),
                     error = null,
                 )
@@ -161,8 +166,8 @@ class ShoppingHelperViewModel(app: Application) : AndroidViewModel(app) {
 
             EmbeddingService.syncIndex(images, cacheDir)
 
-            val prepared = prepareQueryBitmap(queryFile)
-            if (prepared == null) {
+            val preparedResult = prepareQueryBitmap(queryFile)
+            if (preparedResult == null) {
                 _state.update {
                     it.copy(
                         isMatching = false,
@@ -171,9 +176,10 @@ class ShoppingHelperViewModel(app: Application) : AndroidViewModel(app) {
                 }
                 return@launch
             }
+            val (prepared, segmented) = preparedResult
 
             val processedFile = saveProcessedQuery(prepared)
-            val emb = EmbeddingService.embedder.embedBitmap(prepared, compositeAlpha = false)
+            val emb = EmbeddingService.embedder.embedBitmap(prepared)
             if (!prepared.isRecycled) prepared.recycle()
             if (emb == null) {
                 _state.update {
@@ -204,6 +210,7 @@ class ShoppingHelperViewModel(app: Application) : AndroidViewModel(app) {
                     queryProcessedPath = processedFile?.absolutePath,
                     queryHist = emb.hist,
                     queryVec = emb.vec,
+                    querySegmented = segmented,
                     indexedCount = EmbeddingService.indexSize,
                 )
             }
@@ -211,29 +218,30 @@ class ShoppingHelperViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /**
-     * Run the same prep [EmbeddingService.embedQuery] would (segment → composite-on-white →
-     * center-crop) but keep the resulting bitmap so the debug view can show it.
+     * Run the same prep [EmbeddingService.embedQuery] would (segment → composite-on-black →
+     * center-crop) but keep the resulting bitmap so the debug view can show it. Returns the
+     * prepared bitmap together with a flag that's true iff segmentation succeeded — when it
+     * fails, we still embed the raw frame so the user gets matches, but the debug UI labels the
+     * thumbnail as a fallback.
      */
-    private suspend fun prepareQueryBitmap(file: File): Bitmap? = withContext(Dispatchers.IO) {
-        val raw = runCatching { BitmapFactory.decodeFile(file.absolutePath) }.getOrNull()
+    private suspend fun prepareQueryBitmap(file: File): Pair<Bitmap, Boolean>? = withContext(Dispatchers.IO) {
+        val raw = EmbeddingService.decodeUpright(file)
             ?: return@withContext null
-        val segmented = try {
-            EmbeddingService.segmenter.segmentForegroundOnWhite(raw)
+        val segmentedBm = try {
+            EmbeddingService.segmenter.segmentForegroundOnBlack(raw)
         } catch (t: Throwable) {
             Log.w(TAG, "segmentation threw, falling back", t)
             null
         }
-        // If segmentation worked, raw can go. Otherwise we'll use raw + composite-on-white.
-        val source: Bitmap = if (segmented != null) {
+        val source: Bitmap = if (segmentedBm != null) {
             if (!raw.isRecycled) raw.recycle()
-            segmented
+            segmentedBm
         } else {
             raw
         }
-        val needsComposite = segmented == null && source.hasAlpha()
-        val prepared = EmbeddingRepository.prepareForEmbedding(source, compositeAlpha = needsComposite)
+        val prepared = EmbeddingRepository.prepareForEmbedding(source)
         if (prepared !== source && !source.isRecycled) source.recycle()
-        prepared
+        prepared?.let { it to (segmentedBm != null) }
     }
 
     private suspend fun saveProcessedQuery(bm: Bitmap): File? = withContext(Dispatchers.IO) {

@@ -267,6 +267,7 @@ private fun SimilarityFinderTab(
                 initialIndex = idx,
                 queryRawPath = state.queryPath,
                 queryProcessedPath = state.queryProcessedPath,
+                querySegmented = state.querySegmented,
                 queryHist = state.queryHist,
                 queryVec = state.queryVec,
                 onDismiss = { previewIndex = null },
@@ -457,6 +458,7 @@ private fun MatchPreviewDialog(
     initialIndex: Int,
     queryRawPath: String?,
     queryProcessedPath: String?,
+    querySegmented: Boolean,
     queryHist: FloatArray?,
     queryVec: FloatArray?,
     onDismiss: () -> Unit,
@@ -517,6 +519,7 @@ private fun MatchPreviewDialog(
                         match = matches[page],
                         queryRawPath = queryRawPath,
                         queryProcessedPath = queryProcessedPath,
+                        querySegmented = querySegmented,
                         queryHist = queryHist,
                         queryVec = queryVec,
                     )
@@ -531,6 +534,7 @@ private fun MatchDebugPage(
     match: ShopMatch,
     queryRawPath: String?,
     queryProcessedPath: String?,
+    querySegmented: Boolean,
     queryHist: FloatArray?,
     queryVec: FloatArray?,
 ) {
@@ -579,9 +583,15 @@ private fun MatchDebugPage(
         }
 
         // --- Query row: raw + processed ---
+        val processedLabel = if (querySegmented) {
+            "Query  (raw → segmented + composited + cropped)"
+        } else {
+            "Query  (raw → cropped — segmentation FAILED, embedded raw frame)"
+        }
         Text(
-            "Query  (raw → segmented + composited + cropped)",
-            color = Color.White.copy(alpha = 0.85f),
+            processedLabel,
+            color = if (querySegmented) Color.White.copy(alpha = 0.85f)
+                    else Color(0xFFFFB4A0),
             style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight.SemiBold,
         )
@@ -723,14 +733,7 @@ private fun ProcessedCutoutThumb(
             val src = runCatching { BitmapFactory.decodeFile(file.absolutePath) }.getOrNull()
                 ?: return@withContext null
             try {
-                EmbeddingRepository.prepareForEmbedding(src, compositeAlpha = src.hasAlpha())
-                    ?.let { out ->
-                        // We MUST detach the prepared bitmap from the original since the helper
-                        // may have returned `src` directly when no work was needed. Make a copy
-                        // we own so we can recycle src safely.
-                        if (out === src) src.copy(android.graphics.Bitmap.Config.ARGB_8888, false)
-                        else out
-                    }
+                EmbeddingRepository.prepareForEmbedding(src)
             } finally {
                 if (!src.isRecycled) src.recycle()
             }

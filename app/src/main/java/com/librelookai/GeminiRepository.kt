@@ -478,6 +478,10 @@ class GeminiRepository(private val app: Application) {
         if (r < 80 && g > 180 && b < 80) pixels[i] = 0
     }
     mutable.setPixels(pixels, 0, w, 0, 0, w, h)
+    // Skia's PNG encoder writes a 24-bit RGB PNG when hasAlpha() is false, baking the cleared
+    // green-screen pixels in as solid black. Force the flag so we get a 32-bit RGBA PNG with
+    // genuine transparency.
+    mutable.setHasAlpha(true)
     outputFile.outputStream().use { mutable.compress(Bitmap.CompressFormat.PNG, 100, it) }
     Log.d(TAG, "Green screen removed: ${pixels.count { it == 0 }} transparent pixels")
     }

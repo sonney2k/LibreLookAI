@@ -65,28 +65,25 @@ class EmbeddingRepository(private val context: Context) {
             return@withContext null
         }
         try {
-            embedBitmapInternal(bitmap, compositeAlpha = bitmap.hasAlpha())
+            embedBitmapInternal(bitmap)
         } finally {
             if (!bitmap.isRecycled) bitmap.recycle()
         }
     }
 
     /**
-     * Embed an in-memory bitmap. Caller is responsible for any prior preparation (e.g. running
-     * [SegmentationRepository] over a query). The bitmap is still center-cropped to a square here.
-     * The input bitmap is NOT recycled; the caller owns its lifecycle.
-     *
-     * Set [compositeAlpha] to true if the input may have transparent pixels that should be
-     * composited onto white before embedding.
+     * Embed an in-memory bitmap. The bitmap is composited onto opaque white and center-cropped
+     * to a square inside [prepareForEmbedding] before being passed to MediaPipe. The input
+     * bitmap is NOT recycled; the caller owns its lifecycle.
      */
-    suspend fun embedBitmap(bitmap: Bitmap, compositeAlpha: Boolean = false): EmbedResult? =
+    suspend fun embedBitmap(bitmap: Bitmap): EmbedResult? =
         withContext(Dispatchers.IO) {
-            embedBitmapInternal(bitmap, compositeAlpha)
+            embedBitmapInternal(bitmap)
         }
 
-    private suspend fun embedBitmapInternal(src: Bitmap, compositeAlpha: Boolean): EmbedResult? {
+    private suspend fun embedBitmapInternal(src: Bitmap): EmbedResult? {
         val emb = ensureEmbedder() ?: return null
-        val prepared = prepareForEmbedding(src, compositeAlpha) ?: return null
+        val prepared = prepareForEmbedding(src) ?: return null
         return try {
             val mpImage = BitmapImageBuilder(prepared).build()
             val result = emb.embed(mpImage)
@@ -147,34 +144,69 @@ class EmbeddingRepository(private val context: Context) {
         const val MODEL_PATH = "embedder/efficientnet_lite0.tflite"
 
         /**
-         * Prepare a bitmap for the embedder: optionally composite alpha onto opaque white, then
-         * center-crop to a square. Returns the input unchanged when no work was needed (caller
-         * must check identity before recycling).
+         * Prepare a bitmap for the embedder: composite onto opaque white, then center-crop to a
+         * square. We composite unconditionally — `Bitmap.hasAlpha()` is unreliable across the
+         * decode/encode cycle (PNGs round-tripped through Android's encoder may report `false`
+         * even when the file contains transparent pixels), and the operation is idempotent for
+         * fully-opaque bitmaps. Returns null only on degenerate inputs.
+         *
+         * Self-heal for legacy cutouts saved without alpha: walks the pixel buffer and treats any
+         * pixel that is either fully transparent OR pure-black (RGB ≤ 4 with alpha == 255) as
+         * background. Freshly-segmented items are already opaque black on background pixels;
+         * this ensures the backdrop stays uniform for the embedder.
          */
-        fun prepareForEmbedding(src: Bitmap, compositeAlpha: Boolean): Bitmap? {
+        fun prepareForEmbedding(src: Bitmap): Bitmap? {
             if (src.isRecycled || src.width <= 0 || src.height <= 0) return null
 
-            val composited: Bitmap = if (compositeAlpha) {
-                val out = Bitmap.createBitmap(src.width, src.height, Bitmap.Config.ARGB_8888)
+            val w = src.width
+            val h = src.height
+            val srcPixels = IntArray(w * h)
+            try {
+                src.getPixels(srcPixels, 0, w, 0, 0, w, h)
+            } catch (_: Throwable) {
+                // hardware-config bitmap or similar — fall back to a Canvas composite.
+                val out = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
                 val c = Canvas(out)
-                c.drawColor(Color.WHITE)
+                c.drawColor(Color.BLACK)
                 c.drawBitmap(src, 0f, 0f, null)
-                out
-            } else {
-                src
+                return centerCropSquare(out)
             }
+            // Decide which signal indicates "background" for this image. If any pixel is partially
+            // transparent we trust the alpha channel; otherwise we look for pure-black pixels
+            // which are used as the background filler.
+            var transparentCount = 0
+            var pureBlackOpaqueCount = 0
+            for (p in srcPixels) {
+                val a = (p ushr 24) and 0xFF
+                if (a < 250) transparentCount++
+                else if ((p and 0x00FFFFFF) == 0) pureBlackOpaqueCount++
+            }
+            val sawAlpha = transparentCount > 0
+            Log.d(TAG, "prepareForEmbedding: ${w}x${h} hasAlpha=${src.hasAlpha()} config=${src.config} transparent=$transparentCount pureBlackOpaque=$pureBlackOpaqueCount → mode=${if (sawAlpha) "alpha" else "blackKey"}")
+            val blackARGB = Color.BLACK
+            if (sawAlpha) {
+                for (i in srcPixels.indices) {
+                    if (((srcPixels[i] ushr 24) and 0xFF) < 250) srcPixels[i] = blackARGB
+                }
+            } else {
+                // Background is already black, but this handles any near-black or alpha edge cases.
+                for (i in srcPixels.indices) {
+                    val p = srcPixels[i]
+                    if ((p and 0x00FFFFFF) == 0) srcPixels[i] = blackARGB
+                }
+            }
+            val composited = Bitmap.createBitmap(srcPixels, w, h, Bitmap.Config.ARGB_8888)
+            return centerCropSquare(composited)
+        }
 
-            val side = minOf(composited.width, composited.height)
-            val x = (composited.width - side) / 2
-            val y = (composited.height - side) / 2
-            val cropped = if (composited.width == side && composited.height == side) {
-                composited
-            } else {
-                val cb = Bitmap.createBitmap(composited, x, y, side, side)
-                if (composited !== src && composited !== cb) composited.recycle()
-                cb
-            }
-            return cropped
+        private fun centerCropSquare(bm: Bitmap): Bitmap {
+            val side = minOf(bm.width, bm.height)
+            if (bm.width == side && bm.height == side) return bm
+            val x = (bm.width - side) / 2
+            val y = (bm.height - side) / 2
+            val cb = Bitmap.createBitmap(bm, x, y, side, side)
+            if (bm !== cb) bm.recycle()
+            return cb
         }
     }
 }

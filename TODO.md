@@ -14,9 +14,10 @@ TODO
 Features:
 ---------
 
+
+
 similarity search always includes all wardrobes
 
-similarity search is still not reliable. Let's debug: Show the image once raw, once with background removed (white) and show the matching images with the same background removal applied. Also show the histograms. Note we are using efficientnet now to capture further textures. allow for swiping left / right to show next match
 
 similarity search on wardrobe: when tapping a found item don't open that item but scroll to the position where the item is in the grid view
 
@@ -25,12 +26,6 @@ background removal prompt: put the "Place the clothing item on a pure, solid neo
 
 
 AI (stars) spinning wheel in create outfit
-
-Rework shopping helper by adding tools that are currently scattered across the app:
-1. Move current shopping helper under a tab Similarity Finder
-2. move the identify gaps on this Screen as a separate tab and drop previous screen
-3. Move wardrobe statistics over
-4. Move statistics from calender over 
 
 Future shopping helper
 1. When shopping add feature to check if item would match wardrobe and with what it could be combined / shopping helper. to this end take picture like in wardrobe with same size and UI experience. remove bg and tag and find matching items like in style creation for wardrobe
@@ -60,6 +55,16 @@ ensure that in all processes, images are smaller than max(width,height)<1280. In
 
 IN PROGRESS
 ===========
+add a try-on tab under outfits, that shows all previously worn outfits
+
+similarity search is still not reliable. Let's debug: Show the image once raw, once with background removed (white) and show the matching images with the same background removal applied. Also show the histograms. Note we are using efficientnet now to capture further textures. allow for swiping left / right to show next match
+
+Rework shopping helper by adding tools that are currently scattered across the app:
+1. Move current shopping helper under a tab Similarity Finder
+2. move the identify gaps on this Screen as a separate tab and drop previous screen
+3. Move wardrobe statistics over
+4. Move statistics from calender over 
+
 sync & repair: don't always clear cache make that optional
 
 Integrate similarity search on several places:
@@ -82,6 +87,8 @@ travel packing. For each suggested style add option to add to styles. also add o
 
 FIXED
 =====
+Fix the bug in similarity search: Taking a picture with the new debug screens it became apparent that the processed image still shows the background. So the segmentation is not happening and the background is not filled with white color for the newly taken photo. Likewise the processed item from wardrobe does not have a white background hinting at the segmentation / background removal not being applied in the same way.
+
 move similarity threshold setting to top of AI tab
 
 Implement a new feature: I want a local AI / machine learning model that is super fast to detect for a picture that is taken in the app the cutouts that do exist in my cache that look similar.
