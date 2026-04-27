@@ -58,6 +58,7 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ImageSearch
+import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.automirrored.filled.RotateRight
@@ -192,6 +193,7 @@ fun WardrobeScreen(
                     PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
                 )
             },
+            onImportUrl = viewModel::importFromUrl,
             onDismissError = viewModel::clearError,
             onTagImage = viewModel::tagImage,
             onRemoveBackground = viewModel::reprocessBackground,
@@ -521,6 +523,7 @@ private fun GridContent(
     locationError: String? = null,
     onOpenCamera: () -> Unit,
     onOpenGallery: () -> Unit,
+    onImportUrl: (String) -> Unit = {},
     onDismissError: () -> Unit,
     onTagImage: (String) -> Unit,
     onRemoveBackground: (String) -> Unit,
@@ -957,12 +960,17 @@ private fun GridContent(
         } else if (!isOffline) {
             // Show closet picker before gallery when 2+ closets exist
             var showGalleryClosetPicker by remember { mutableStateOf(false) }
+            var showUrlImportDialog by remember { mutableStateOf(false) }
 
             Column(
                 modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
                 horizontalAlignment = Alignment.End,
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
+                FloatingActionButton(onClick = { showUrlImportDialog = true }) {
+                    Icon(Icons.Default.Add, contentDescription = null)
+                    Icon(Icons.Default.Link, contentDescription = stringResource(R.string.wardrobe_add_url))
+                }
                 FloatingActionButton(onClick = {
                     if (locations.size >= 2) showGalleryClosetPicker = true else onOpenGallery()
                 }) {
@@ -973,6 +981,19 @@ private fun GridContent(
                     Icon(Icons.Default.Add, contentDescription = null)
                     Icon(Icons.Default.CameraAlt, contentDescription = stringResource(R.string.wardrobe_add_camera))
                 }
+            }
+
+            if (showUrlImportDialog) {
+                UrlImportDialog(
+                    locations = locations,
+                    initialFolderId = state.importTargetFolderId ?: locations.firstOrNull()?.folderId,
+                    onSubmit = { url, folderId ->
+                        folderId?.let { onSetImportTarget(it) }
+                        showUrlImportDialog = false
+                        onImportUrl(url)
+                    },
+                    onDismiss = { showUrlImportDialog = false },
+                )
             }
 
             if (showGalleryClosetPicker) {
@@ -1179,6 +1200,73 @@ private fun GridContent(
         )
     }
 
+}
+
+/**
+ * URL import dialog: paste a shopping URL, optionally pick the target closet (when 2+ closets
+ * exist). Submit only enables once a non-blank URL is entered.
+ */
+@Composable
+private fun UrlImportDialog(
+    locations: List<Location>,
+    initialFolderId: String?,
+    onSubmit: (url: String, folderId: String?) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    var url by remember { mutableStateOf("") }
+    var selectedFolderId by remember { mutableStateOf(initialFolderId) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.wardrobe_url_import_title)) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(
+                    stringResource(R.string.wardrobe_url_import_hint),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                OutlinedTextField(
+                    value = url,
+                    onValueChange = { url = it },
+                    placeholder = { Text("https://…") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                if (locations.size >= 2) {
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        stringResource(R.string.wardrobe_add_to_closet_title),
+                        style = MaterialTheme.typography.labelLarge,
+                    )
+                    locations.sortedBy { it.name }.forEach { loc ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { selectedFolderId = loc.folderId }
+                                .padding(vertical = 6.dp, horizontal = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        ) {
+                            RadioButton(
+                                selected = loc.folderId == selectedFolderId,
+                                onClick = { selectedFolderId = loc.folderId },
+                            )
+                            Text(loc.name, style = MaterialTheme.typography.bodyMedium)
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(
+                enabled = url.isNotBlank(),
+                onClick = { onSubmit(url.trim(), selectedFolderId) },
+            ) { Text(stringResource(R.string.action_continue)) }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
+        },
+    )
 }
 
 // ---------- Full-screen image viewer ----------

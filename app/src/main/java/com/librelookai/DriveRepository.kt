@@ -71,6 +71,22 @@ class DriveRepository(
          */
         const val TRYONS_FOLDER_NAME = "_tryons"
 
+        /**
+         * Subfolder of the root Drive folder used to hold the user's shopping wishlist.
+         * Items here have the same cutout / original / sidecar layout as a regular closet
+         * so they can be moved to a real closet by file-rename only. The folder is **not**
+         * a [Location] — it never appears in `_locations.json`, the closet picker, or the
+         * outfits flow.
+         */
+        const val SHOPPING_FOLDER_NAME = "_shopping"
+
+        /** Names of root-level subfolders that are NOT user closets (filter from listSubfolders). */
+        val NON_CLOSET_SUBFOLDER_NAMES = setOf(
+            PROFILE_FOLDER_NAME,
+            TRYONS_FOLDER_NAME,
+            SHOPPING_FOLDER_NAME,
+        )
+
         /** Index JSON listing all saved try-ons; lives at the root Drive folder. */
         const val TRYONS_FILE_NAME = "_tryons.json"
 
@@ -748,6 +764,14 @@ class DriveRepository(
      */
     suspend fun getOrCreateTryOnsFolder(rootFolderId: String): String =
         createSubfolder(rootFolderId, TRYONS_FOLDER_NAME)
+
+    /**
+     * Returns the Drive folder ID of the [SHOPPING_FOLDER_NAME] subfolder inside [rootFolderId],
+     * creating it if needed. Items in this folder share the regular closet layout (cutout +
+     * original + sidecar) so they can be moved to a real closet by file-move only.
+     */
+    suspend fun getOrCreateShoppingFolder(rootFolderId: String): String =
+        createSubfolder(rootFolderId, SHOPPING_FOLDER_NAME)
 
     /**
      * Uploads [imageFile] (PNG) into the try-ons subfolder with [name]. Returns the new Drive ID.

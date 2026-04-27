@@ -1,8 +1,12 @@
 package com.librelookai
 
 import android.graphics.BitmapFactory
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +25,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -28,20 +35,32 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.PhotoCamera
+import androidx.compose.material.icons.filled.PhotoLibrary
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material.icons.filled.TipsAndUpdates
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
@@ -85,6 +104,7 @@ import java.io.File
 @Composable
 fun ShoppingHelperScreen(
     shoppingViewModel: ShoppingHelperViewModel = viewModel(),
+    shoppingClosetViewModel: ShoppingClosetViewModel = viewModel(),
     wardrobeViewModel: WardrobeViewModel = viewModel(),
     gapViewModel: WardrobeGapViewModel = viewModel(),
     profileViewModel: ProfileViewModel = viewModel(),
@@ -113,18 +133,41 @@ fun ShoppingHelperScreen(
         return
     }
 
+    // Shopping List camera capture (separate flag — local to this screen).
+    var isClosetCapturing by remember { mutableStateOf(false) }
+    if (isClosetCapturing) {
+        CaptureScreen(
+            onPhotoTaken = { file ->
+                isClosetCapturing = false
+                shoppingClosetViewModel.addFromCamera(file)
+            },
+            onCancel = { isClosetCapturing = false },
+            locations = emptyList(),
+            importTargetFolderId = null,
+            onSetImportTarget = {},
+            modifier = modifier,
+        )
+        return
+    }
+
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+
+    // Pull the wishlist as soon as the screen first composes.
+    LaunchedEffect(Unit) { shoppingClosetViewModel.loadItems() }
 
     Column(modifier = modifier.fillMaxSize()) {
         AppScreenHeader(
             title = stringResource(R.string.shopping_title),
             leadingIcon = Icons.Default.ShoppingBag,
             trailingContent = {
-                LocationButton(
-                    locations = locationState.locations,
-                    activeLocationId = locationState.activeLocationId,
-                    onSetActiveLocation = locationViewModel::setActiveLocation,
-                )
+                // Shopping List is location-independent; hide the LocationButton there.
+                if (selectedTab != 0) {
+                    LocationButton(
+                        locations = locationState.locations,
+                        activeLocationId = locationState.activeLocationId,
+                        onSetActiveLocation = locationViewModel::setActiveLocation,
+                    )
+                }
             },
             onSettingsClick = onSettingsClick,
         )
@@ -133,27 +176,366 @@ fun ShoppingHelperScreen(
             Tab(
                 selected = selectedTab == 0,
                 onClick = { selectedTab = 0 },
-                text = { Text(stringResource(R.string.shopping_tab_similarity)) },
+                text = { Text(stringResource(R.string.shopping_tab_list)) },
             )
             Tab(
                 selected = selectedTab == 1,
                 onClick = { selectedTab = 1 },
+                text = { Text(stringResource(R.string.shopping_tab_similarity)) },
+            )
+            Tab(
+                selected = selectedTab == 2,
+                onClick = { selectedTab = 2 },
                 text = { Text(stringResource(R.string.shopping_tab_gaps)) },
             )
         }
 
         when (selectedTab) {
-            0 -> SimilarityFinderTab(
+            0 -> ShoppingListTab(
+                shoppingClosetViewModel = shoppingClosetViewModel,
+                locations = locationState.locations,
+                onCaptureClick = { isClosetCapturing = true },
+                onRefreshWardrobe = wardrobeViewModel::loadImages,
+            )
+            1 -> SimilarityFinderTab(
                 shoppingViewModel = shoppingViewModel,
                 wardrobeViewModel = wardrobeViewModel,
             )
-            1 -> IdentifyGapsTab(
+            2 -> IdentifyGapsTab(
                 gapViewModel = gapViewModel,
                 wardrobeViewModel = wardrobeViewModel,
                 profileViewModel = profileViewModel,
             )
         }
     }
+}
+
+// ============================================================================
+//  Tab 0: Shopping List (wishlist)
+// ============================================================================
+
+@Composable
+private fun ShoppingListTab(
+    shoppingClosetViewModel: ShoppingClosetViewModel,
+    locations: List<Location>,
+    onCaptureClick: () -> Unit,
+    onRefreshWardrobe: () -> Unit,
+) {
+    val state by shoppingClosetViewModel.state.collectAsState()
+    val isOffline = LocalIsOffline.current
+    val isSelectionMode = state.selectedIds.isNotEmpty()
+
+    var showUrlDialog by remember { mutableStateOf(false) }
+    var showMoveDialog by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+
+    val galleryLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.PickMultipleVisualMedia(),
+    ) { uris ->
+        if (uris.isNotEmpty()) shoppingClosetViewModel.addFromGallery(uris)
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        if (state.items.isEmpty() && !state.isLoading) {
+            Column(
+                modifier = Modifier.fillMaxSize().padding(horizontal = 32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+                Icon(
+                    Icons.Default.ShoppingBag,
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    stringResource(R.string.shop_list_empty_title),
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    stringResource(R.string.shop_list_empty_hint),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        } else {
+            LazyVerticalGrid(
+                columns = GridCells.Adaptive(minSize = 120.dp),
+                contentPadding = PaddingValues(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxSize(),
+            ) {
+                items(state.items, key = { it.driveId }) { item ->
+                    ShoppingListTile(
+                        item = item,
+                        selected = item.driveId in state.selectedIds,
+                        selectionMode = isSelectionMode,
+                        onToggle = { shoppingClosetViewModel.toggleSelection(item.driveId) },
+                    )
+                }
+            }
+        }
+
+        if (state.isLoading || state.isUploading || state.isMoving || state.pendingJobs > 0) {
+            Surface(
+                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f),
+                tonalElevation = 4.dp,
+                modifier = Modifier.align(Alignment.TopCenter).padding(top = 8.dp),
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    CircularProgressIndicator(modifier = Modifier.size(16.dp), strokeWidth = 2.dp)
+                    val label = when {
+                        state.isUploading -> stringResource(R.string.shop_list_uploading)
+                        state.isMoving -> stringResource(R.string.shop_list_moving)
+                        state.pendingJobs > 0 -> stringResource(R.string.shop_list_processing, state.pendingJobs)
+                        else -> stringResource(R.string.shop_list_loading)
+                    }
+                    Text(label, style = MaterialTheme.typography.bodyMedium)
+                }
+            }
+        }
+
+        // Speed-dial FAB column
+        if (isSelectionMode) {
+            Column(
+                modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = Alignment.End,
+            ) {
+                if (locations.isNotEmpty() && !isOffline) {
+                    ExtendedFloatingActionButton(
+                        onClick = { showMoveDialog = true },
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        icon = { Icon(Icons.Default.Place, contentDescription = null) },
+                        text = { Text(stringResource(R.string.shop_list_move_to_closet)) },
+                    )
+                }
+                ExtendedFloatingActionButton(
+                    onClick = { showDeleteDialog = true },
+                    containerColor = MaterialTheme.colorScheme.error,
+                    contentColor = MaterialTheme.colorScheme.onError,
+                    icon = { Icon(Icons.Default.Delete, contentDescription = null) },
+                    text = { Text(stringResource(R.string.action_delete)) },
+                )
+                ExtendedFloatingActionButton(
+                    onClick = shoppingClosetViewModel::clearSelection,
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    icon = { Icon(Icons.Default.Close, contentDescription = null) },
+                    text = { Text(stringResource(R.string.action_cancel)) },
+                )
+            }
+        } else if (!isOffline) {
+            Column(
+                modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                FloatingActionButton(onClick = { showUrlDialog = true }) {
+                    Icon(Icons.Default.Add, contentDescription = null)
+                    Icon(Icons.Default.Link, contentDescription = stringResource(R.string.shop_list_add_url))
+                }
+                FloatingActionButton(onClick = {
+                    galleryLauncher.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
+                    )
+                }) {
+                    Icon(Icons.Default.Add, contentDescription = null)
+                    Icon(Icons.Default.PhotoLibrary, contentDescription = stringResource(R.string.shop_list_add_gallery))
+                }
+                FloatingActionButton(onClick = onCaptureClick) {
+                    Icon(Icons.Default.Add, contentDescription = null)
+                    Icon(Icons.Default.CameraAlt, contentDescription = stringResource(R.string.shop_list_add_camera))
+                }
+            }
+        }
+
+        state.error?.let { msg ->
+            Snackbar(
+                modifier = Modifier.align(Alignment.BottomStart).padding(start = 8.dp, end = 96.dp, bottom = 8.dp),
+                action = { TextButton(onClick = shoppingClosetViewModel::clearError) { Text(stringResource(R.string.action_dismiss)) } },
+            ) { Text(msg) }
+        }
+    }
+
+    if (showUrlDialog) {
+        ShopUrlImportDialog(
+            onSubmit = { url ->
+                showUrlDialog = false
+                shoppingClosetViewModel.addFromUrl(url)
+            },
+            onDismiss = { showUrlDialog = false },
+        )
+    }
+
+    if (showMoveDialog) {
+        MoveToClosetDialog(
+            locations = locations,
+            onConfirm = { folderId ->
+                showMoveDialog = false
+                shoppingClosetViewModel.moveToCloset(state.selectedIds, folderId) { moved ->
+                    if (moved.isNotEmpty()) onRefreshWardrobe()
+                }
+            },
+            onDismiss = { showMoveDialog = false },
+        )
+    }
+
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text(stringResource(R.string.shop_list_delete_title)) },
+            text = { Text(stringResource(R.string.shop_list_delete_text, state.selectedIds.size)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    shoppingClosetViewModel.deleteItems(state.selectedIds)
+                    showDeleteDialog = false
+                }) { Text(stringResource(R.string.action_delete)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text(stringResource(R.string.action_cancel))
+                }
+            },
+        )
+    }
+}
+
+@Composable
+private fun ShoppingListTile(
+    item: DriveImage,
+    selected: Boolean,
+    selectionMode: Boolean,
+    onToggle: () -> Unit,
+) {
+    val context = LocalContext.current
+    Box(
+        modifier = Modifier
+            .aspectRatio(1f)
+            .clip(RoundedCornerShape(10.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .let { m ->
+                if (selected) m.border(3.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp)) else m
+            }
+            .clickable { onToggle() },
+    ) {
+        AsyncImage(
+            model = ImageRequest.Builder(context).data(File(item.localPath)).crossfade(true).build(),
+            contentDescription = item.tags?.label ?: item.name,
+            contentScale = ContentScale.Fit,
+            modifier = Modifier.fillMaxSize(),
+        )
+        if (selectionMode && selected) {
+            Icon(
+                Icons.Default.CheckCircle,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.align(Alignment.TopEnd).padding(6.dp).size(22.dp),
+            )
+        }
+        item.tags?.label?.takeIf { it.isNotBlank() }?.let { label ->
+            Surface(
+                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f),
+                modifier = Modifier.align(Alignment.BottomStart).padding(4.dp),
+                shape = RoundedCornerShape(6.dp),
+            ) {
+                Text(
+                    label,
+                    style = MaterialTheme.typography.labelSmall,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ShopUrlImportDialog(
+    onSubmit: (String) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    var url by remember { mutableStateOf("") }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.shop_list_url_title)) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(
+                    stringResource(R.string.shop_list_url_hint),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                OutlinedTextField(
+                    value = url,
+                    onValueChange = { url = it },
+                    placeholder = { Text("https://…") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(enabled = url.isNotBlank(), onClick = { onSubmit(url.trim()) }) {
+                Text(stringResource(R.string.action_continue))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
+        },
+    )
+}
+
+@Composable
+private fun MoveToClosetDialog(
+    locations: List<Location>,
+    onConfirm: (folderId: String) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    var selectedFolderId by remember { mutableStateOf(locations.firstOrNull()?.folderId) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.shop_list_move_title)) },
+        text = {
+            Column {
+                locations.sortedBy { it.name }.forEach { loc ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { selectedFolderId = loc.folderId }
+                            .padding(vertical = 8.dp, horizontal = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        RadioButton(
+                            selected = loc.folderId == selectedFolderId,
+                            onClick = { selectedFolderId = loc.folderId },
+                        )
+                        Text(loc.name, style = MaterialTheme.typography.bodyLarge)
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(
+                enabled = selectedFolderId != null,
+                onClick = { selectedFolderId?.let(onConfirm) },
+            ) { Text(stringResource(R.string.action_continue)) }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
+        },
+    )
 }
 
 // ============================================================================

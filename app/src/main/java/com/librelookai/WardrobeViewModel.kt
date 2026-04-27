@@ -215,7 +215,7 @@ data class AuditFileEntry(
 
 // ---------- Per-item sidecar metadata ----------
 
-private data class ItemSidecar(val tags: ClothingTags? = null, val originalDriveId: String? = null)
+internal data class ItemSidecar(val tags: ClothingTags? = null, val originalDriveId: String? = null)
 
 // ---------- Legacy bulk metadata (read-only, migration fallback) ----------
 
@@ -1463,6 +1463,32 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     // ---------- Upload from gallery ----------
+
+    /**
+     * Fetches the hero product image from a shopping URL and runs it through the standard
+     * camera-import pipeline so the resulting wardrobe item gets bg removal + tagging + sidecar
+     * exactly like a captured photo. See [WebProductFetcher] for the parser strategy. Surfaces
+     * a clear error in [WardrobeUiState.error] when no image can be found.
+     */
+    fun importFromUrl(url: String) {
+        if (url.isBlank()) return
+        val id = (defaultImportFolderId ?: folderId) ?: return
+        viewModelScope.launch {
+            _state.update { it.copy(isUploading = true, error = null) }
+            val image = WebProductFetcher.fetchProductImage(url, drive.cacheDir)
+            if (image == null) {
+                _state.update {
+                    it.copy(
+                        isUploading = false,
+                        error = getApplication<Application>().getString(R.string.url_import_failed),
+                    )
+                }
+                return@launch
+            }
+            // Reuse the camera path so dedupe + processing behave exactly the same.
+            uploadPhoto(image)
+        }
+    }
 
     fun uploadGalleryPhotos(uris: List<Uri>) {
         if (uris.isEmpty()) return

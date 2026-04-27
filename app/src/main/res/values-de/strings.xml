@@ -17,8 +17,32 @@
 
     <!-- Shopping Helper tab -->
     <string name="shopping_title">Einkaufshilfe</string>
+    <string name="shopping_tab_list">Einkaufsliste</string>
     <string name="shopping_tab_similarity">Ähnlichkeitssuche</string>
     <string name="shopping_tab_gaps">Lücken finden</string>
+
+    <!-- Shopping list sub-tab -->
+    <string name="shop_list_empty_title">Deine Wunschliste ist leer</string>
+    <string name="shop_list_empty_hint">Füge Artikel hinzu, die du dir überlegst zu kaufen — per Kamera, Galerie oder Shopping-Link.</string>
+    <string name="shop_list_add_camera">Aus Kamera hinzufügen</string>
+    <string name="shop_list_add_gallery">Aus Galerie hinzufügen</string>
+    <string name="shop_list_add_url">Per URL hinzufügen</string>
+    <string name="shop_list_url_title">Per URL hinzufügen</string>
+    <string name="shop_list_url_hint">Füge die URL einer Shopping-Seite ein. Wir laden das Produktbild automatisch.</string>
+    <string name="shop_list_uploading">Wird hochgeladen…</string>
+    <string name="shop_list_moving">Wird verschoben…</string>
+    <string name="shop_list_loading">Wird geladen…</string>
+    <string name="shop_list_processing">%1$d Artikel werden verarbeitet…</string>
+    <string name="shop_list_move_to_closet">In Kleiderschrank verschieben</string>
+    <string name="shop_list_move_title">In Kleiderschrank verschieben</string>
+    <string name="shop_list_delete_title">Von Wunschliste löschen?</string>
+    <string name="shop_list_delete_text">%1$d Artikel dauerhaft von der Wunschliste entfernen?</string>
+
+    <!-- URL-Import (Garderobe + Einkaufsliste) -->
+    <string name="wardrobe_add_url">Per URL hinzufügen</string>
+    <string name="wardrobe_url_import_title">Import per Shopping-URL</string>
+    <string name="wardrobe_url_import_hint">Füge die URL einer Shopping-Seite ein. Wir laden das Produktbild automatisch.</string>
+    <string name="url_import_failed">Auf dieser URL konnte kein Produktbild gefunden werden.</string>
 
     <!-- Outfits sub-tabs -->
     <string name="outfits_tab_outfits">Outfits</string>

@@ -129,6 +129,7 @@ class MainActivity : ComponentActivity() {
                     val creditsViewModel: CreditsViewModel = viewModel()
                     val tryOnViewModel: TryOnViewModel = viewModel()
                     val shoppingViewModel: ShoppingHelperViewModel = viewModel()
+                    val shoppingClosetViewModel: ShoppingClosetViewModel = viewModel()
                     val locationState by locationViewModel.state.collectAsState()
                     val weatherState by weatherViewModel.state.collectAsState()
                     val profileState by profileViewModel.state.collectAsState()
@@ -139,12 +140,17 @@ class MainActivity : ComponentActivity() {
                     val locationList = locationState.locations
                     val activeFolderId = if (activeLocationId != LocationViewModel.ALL_LOCATIONS_ID && activeLocationId.isNotEmpty())
                         locationList.find { it.folderId == activeLocationId }?.folderId else null
-                    LaunchedEffect(activeLocationId, locationList) {
-                        val folderIds = locationList.map { it.folderId }
-                        // Always tell the wardrobe VM about every configured closet so the
-                        // cross-closet snapshot (used by all similarity-search call sites)
-                        // covers them, regardless of which one is currently displayed.
-                        wardrobeViewModel.setAllConfiguredLocations(folderIds)
+                    val shoppingClosetState by shoppingClosetViewModel.state.collectAsState()
+                    LaunchedEffect(activeLocationId, locationList, shoppingClosetState.folderId) {
+                        val closetFolderIds = locationList.map { it.folderId }
+                        // Always tell the wardrobe VM about every configured closet — and the
+                        // shopping closet — so the cross-closet snapshot (used by all
+                        // similarity-search call sites) covers wishlist items too. The shopping
+                        // folder is never a Location and never appears in `closetFolderIds`.
+                        val folderIds = closetFolderIds
+                        val snapshotFolderIds = shoppingClosetState.folderId
+                            ?.let { closetFolderIds + it } ?: closetFolderIds
+                        wardrobeViewModel.setAllConfiguredLocations(snapshotFolderIds)
                         // Styles always loads from ALL locations — never filtered by the settings default.
                         stylesViewModel.setAllLocations(folderIds)
                         // Track which folder new styles should be saved to.
@@ -167,6 +173,7 @@ class MainActivity : ComponentActivity() {
                     val geminiLanguage = AppLanguage.toGeminiName(profileState.preferences.language)
                     LaunchedEffect(geminiLanguage) {
                         wardrobeViewModel.setLanguage(geminiLanguage)
+                        shoppingClosetViewModel.setLanguage(geminiLanguage)
                     }
 
                     // Mirror similarity-check preferences into the wardrobe VM
@@ -353,6 +360,7 @@ class MainActivity : ComponentActivity() {
                                         )
                                         2 -> ShoppingHelperScreen(
                                             shoppingViewModel = shoppingViewModel,
+                                            shoppingClosetViewModel = shoppingClosetViewModel,
                                             wardrobeViewModel = wardrobeViewModel,
                                             gapViewModel = gapViewModel,
                                             profileViewModel = profileViewModel,
