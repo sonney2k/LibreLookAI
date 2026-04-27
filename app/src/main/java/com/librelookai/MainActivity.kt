@@ -118,6 +118,9 @@ class MainActivity : ComponentActivity() {
                     val isOffline = !isOnline
 
                     var selectedTab by rememberSaveable { mutableIntStateOf(1) }
+                    // Increments on every nav button tap (incl. re-tap and gear icon)
+                    // so screens with sub-tabs can reset to their default tab.
+                    var navResetTick by remember { mutableIntStateOf(0) }
                     val locationViewModel: LocationViewModel = viewModel()
                     val stylesViewModel: OutfitsViewModel = viewModel()
                     val wardrobeViewModel: WardrobeViewModel = viewModel()
@@ -283,9 +286,13 @@ class MainActivity : ComponentActivity() {
                             bottomBar = {
                                 AppNavBar(
                                     selectedTab = selectedTab,
-                                    onTabSelected = { selectedTab = it },
+                                    onTabSelected = {
+                                        selectedTab = it
+                                        navResetTick++
+                                    },
                                     onTabReselected = { tab ->
                                         if (tab == 1) dismissWardrobeViewerTrigger++
+                                        navResetTick++
                                     },
                                 )
                             },
@@ -317,7 +324,10 @@ class MainActivity : ComponentActivity() {
                                 }
 
                                 Box(Modifier.fillMaxSize()) {
-                                    val onSettingsClick = { selectedTab = 5 }
+                                    val onSettingsClick: () -> Unit = {
+                                        selectedTab = 5
+                                        navResetTick++
+                                    }
                                     val runTryOn: (Set<String>) -> Unit = { itemIds ->
                                         tryOnViewModel.openComposer(itemIds)
                                     }
@@ -336,6 +346,7 @@ class MainActivity : ComponentActivity() {
                                             },
                                             canTryOn = canTryOn,
                                             onSettingsClick = onSettingsClick,
+                                            navResetTick = navResetTick,
                                         )
                                         1 -> WardrobeScreen(
                                             viewModel = wardrobeViewModel,
@@ -366,6 +377,7 @@ class MainActivity : ComponentActivity() {
                                             profileViewModel = profileViewModel,
                                             locationViewModel = locationViewModel,
                                             onSettingsClick = onSettingsClick,
+                                            navResetTick = navResetTick,
                                         )
                                         3 -> TravelScreen(
                                             travelViewModel = travelViewModel,
@@ -389,6 +401,7 @@ class MainActivity : ComponentActivity() {
                                                 selectedTab = 0
                                             },
                                             onSettingsClick = onSettingsClick,
+                                            navResetTick = navResetTick,
                                         )
                                         5 -> SettingsScreen(
                                             profileViewModel = profileViewModel,
@@ -396,6 +409,7 @@ class MainActivity : ComponentActivity() {
                                             locationViewModel = locationViewModel,
                                             creditsViewModel = creditsViewModel,
                                             onBack = { selectedTab = 1 },
+                                            navResetTick = navResetTick,
                                         )
                                     }
 

@@ -110,6 +110,7 @@ fun ShoppingHelperScreen(
     profileViewModel: ProfileViewModel = viewModel(),
     locationViewModel: LocationViewModel = viewModel(),
     onSettingsClick: () -> Unit = {},
+    navResetTick: Int = 0,
     modifier: Modifier = Modifier,
 ) {
     val shoppingState by shoppingViewModel.state.collectAsState()
@@ -151,6 +152,7 @@ fun ShoppingHelperScreen(
     }
 
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+    LaunchedEffect(navResetTick) { selectedTab = 0 }
 
     // Pull the wishlist as soon as the screen first composes.
     LaunchedEffect(Unit) { shoppingClosetViewModel.loadItems() }

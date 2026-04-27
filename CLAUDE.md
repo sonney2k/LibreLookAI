@@ -141,6 +141,8 @@ Tab indices: `0=Outfits, 1=Wardrobe, 2=Shopping, 3=Travel, 4=Insights, 5=Setting
 
 `SettingsScreen` internally uses a `TabRow` with three tabs: Profile, Data, Credits (Credits only visible in managed mode).
 
+**Sub-tab reset on nav**: every nav button tap (bottom-nav `onTabSelected`, bottom-nav re-tap via `onTabReselected`, and the gear icon's `onSettingsClick`) increments `navResetTick: Int` in `MainActivity`. The four screens with sub-tabs (`OutfitsScreen` / `OutfitListScreen`, `ShoppingHelperScreen`, `InsightsScreen`, `SettingsScreen`) accept it as a parameter and run `LaunchedEffect(navResetTick) { selectedSubTab = 0 }`, so any nav-button tap lands on each screen's default sub-tab regardless of where the user left it.
+
 ### Localisation
 
 `AppLanguage.toLocale()` / `AppLanguage.toGeminiName()` convert the stored enum to a `Locale` and a Gemini-friendly language name respectively. The active locale is applied by wrapping the composable tree in a `CompositionLocalProvider(LocalContext provides localizedContext)` — there is no Activity restart on language change.

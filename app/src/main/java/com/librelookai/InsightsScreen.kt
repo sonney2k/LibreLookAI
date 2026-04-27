@@ -44,6 +44,7 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -84,10 +85,12 @@ fun InsightsScreen(
     locationViewModel: LocationViewModel = viewModel(),
     onEditOutfit: (Outfit) -> Unit = {},
     onSettingsClick: () -> Unit = {},
+    navResetTick: Int = 0,
     modifier: Modifier = Modifier,
 ) {
     val locationState by locationViewModel.state.collectAsState()
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+    LaunchedEffect(navResetTick) { selectedTab = 0 }
 
     Column(modifier = modifier.fillMaxSize()) {
         AppScreenHeader(

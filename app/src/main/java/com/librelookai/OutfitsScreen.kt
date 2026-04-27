@@ -138,6 +138,7 @@ fun OutfitsScreen(
     onTryOnStyle: (Outfit) -> Unit = {},
     canTryOn: Boolean = false,
     onSettingsClick: () -> Unit = {},
+    navResetTick: Int = 0,
     modifier: Modifier = Modifier,
 ) {
     val outfitsState  by outfitsViewModel.state.collectAsState()
@@ -287,6 +288,7 @@ fun OutfitsScreen(
                     tryOnHistory = tryOnState.history,
                     onLoadTryOnHistory = tryOnViewModel::loadHistory,
                     onOpenTryOnHistoryItem = tryOnViewModel::openHistoryDetail,
+                    navResetTick = navResetTick,
                 )
             }
         }
@@ -353,6 +355,7 @@ private fun OutfitListScreen(
     tryOnHistory: List<TryOn> = emptyList(),
     onLoadTryOnHistory: () -> Unit = {},
     onOpenTryOnHistoryItem: (TryOn) -> Unit = {},
+    navResetTick: Int = 0,
     modifier: Modifier = Modifier,
 ) {
     val isOffline = LocalIsOffline.current
@@ -433,6 +436,7 @@ private fun OutfitListScreen(
     }
 
     var selectedSubTab by rememberSaveable { mutableIntStateOf(0) }
+    LaunchedEffect(navResetTick) { selectedSubTab = 0 }
     val onTryOnsTab = selectedSubTab == 1
 
     // Lazily refresh history when entering the Try-Ons sub-tab.

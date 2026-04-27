@@ -108,6 +108,7 @@ fun SettingsScreen(
     locationViewModel: LocationViewModel = viewModel(),
     creditsViewModel: CreditsViewModel = viewModel(),
     onBack: () -> Unit = {},
+    navResetTick: Int = 0,
     modifier: Modifier = Modifier,
 ) {
     val profileState  by profileViewModel.state.collectAsState()
@@ -139,6 +140,7 @@ fun SettingsScreen(
     }
 
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+    LaunchedEffect(navResetTick) { selectedTab = 0 }
 
     Column(modifier = modifier.fillMaxSize()) {
         AppScreenHeader(
