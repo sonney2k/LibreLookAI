@@ -190,6 +190,7 @@ fun CaptureScreen(
                     .border(4.dp, Color.White, CircleShape)
                     .clickable(enabled = !isCapturing) {
                         val cap = imageCapture ?: return@clickable
+                        Analytics.action("Capture", "shutter")
                         isCapturing = true
                         val file = File(context.cacheDir, "capture_${System.currentTimeMillis()}.jpg")
                         cap.takePicture(
@@ -309,7 +310,10 @@ private fun PhotoReviewScreen(
 
         // Retake (top-right)
         IconButton(
-            onClick = onRetake,
+            onClick = {
+                Analytics.action("Capture/Review", "retake")
+                onRetake()
+            },
             enabled = !isProcessing,
             modifier = Modifier
                 .align(Alignment.TopEnd)
@@ -320,7 +324,10 @@ private fun PhotoReviewScreen(
 
         // Rotate button (bottom-left)
         IconButton(
-            onClick = onRotate,
+            onClick = {
+                Analytics.action("Capture/Review", "rotate")
+                onRotate()
+            },
             enabled = !isProcessing && bm != null,
             modifier = Modifier
                 .align(Alignment.BottomStart)
@@ -342,6 +349,7 @@ private fun PhotoReviewScreen(
         IconButton(
             onClick = {
                 if (!isProcessing && bm != null) {
+                    Analytics.action("Capture/Review", "confirm")
                     isProcessing = true
                     val rotation = userRotation
                     scope.launch(Dispatchers.IO) {

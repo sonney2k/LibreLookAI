@@ -638,7 +638,10 @@ private fun GridContent(
                         activeLocationId = activeLocationId,
                         onSetActiveLocation = onSetActiveLocation,
                     )
-                    IconButton(onClick = onOpenFindByPhoto) {
+                    IconButton(onClick = {
+                        Analytics.action("Wardrobe", "open_find_by_photo")
+                        onOpenFindByPhoto()
+                    }) {
                         Icon(
                             Icons.Default.ImageSearch,
                             contentDescription = stringResource(R.string.wardrobe_find_by_photo),
@@ -646,7 +649,10 @@ private fun GridContent(
                     }
                     SortButton(
                         sortBy = sortBy,
-                        onSortChanged = { sortBy = it },
+                        onSortChanged = {
+                            Analytics.action("Wardrobe", "sort_changed", mapOf("option" to it.name))
+                            sortBy = it
+                        },
                         modifier = Modifier.padding(end = 4.dp),
                     )
                 },
@@ -690,14 +696,20 @@ private fun GridContent(
                     )
                     if (displayedImages.any { it.driveId !in state.selectedIds }) {
                         TextButton(
-                            onClick = { onSelectAll(displayedImages.map { it.driveId }) },
+                            onClick = {
+                                Analytics.action("Wardrobe", "select_all", mapOf("count" to displayedImages.size.toString()))
+                                onSelectAll(displayedImages.map { it.driveId })
+                            },
                             contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
                         ) {
                             Text(stringResource(R.string.wardrobe_select_all_count, displayedImages.size))
                         }
                     }
                     TextButton(
-                        onClick = onClearSelection,
+                        onClick = {
+                            Analytics.action("Wardrobe", "clear_selection")
+                            onClearSelection()
+                        },
                         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
                     ) {
                         Text(stringResource(R.string.action_deselect_all))
@@ -772,10 +784,18 @@ private fun GridContent(
                         images = displayedImages,
                         selectedIds = state.selectedIds,
                         onClick = { index, image ->
-                            if (isSelectionMode) onToggleSelection(image.driveId)
-                            else selectedIndex = index
+                            if (isSelectionMode) {
+                                Analytics.action("Wardrobe", "toggle_selection")
+                                onToggleSelection(image.driveId)
+                            } else {
+                                Analytics.action("Wardrobe", "open_item_viewer")
+                                selectedIndex = index
+                            }
                         },
-                        onLongClick = { image -> onToggleSelection(image.driveId) },
+                        onLongClick = { image ->
+                            Analytics.action("Wardrobe", "long_press_select")
+                            onToggleSelection(image.driveId)
+                        },
                         modifier = Modifier.weight(1f).fillMaxWidth(),
                         gridState = gridState,
                         locationLookup = if (locations.size > 1) {
@@ -856,7 +876,10 @@ private fun GridContent(
                 }
                 if (locations.size > 1 && !isOffline) {
                     ExtendedFloatingActionButton(
-                        onClick = { showMoveDialog = true },
+                        onClick = {
+                            Analytics.action("Wardrobe", "open_move_dialog", mapOf("count" to state.selectedIds.size.toString()))
+                            showMoveDialog = true
+                        },
                         containerColor = MaterialTheme.colorScheme.secondaryContainer,
                         contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
                         icon = { Icon(Icons.Default.Place, contentDescription = null) },
@@ -865,7 +888,10 @@ private fun GridContent(
                 }
                 if (!isOffline) {
                     ExtendedFloatingActionButton(
-                        onClick = { showDeleteDialog = true },
+                        onClick = {
+                            Analytics.action("Wardrobe", "open_delete_dialog", mapOf("count" to state.selectedIds.size.toString()))
+                            showDeleteDialog = true
+                        },
                         containerColor = MaterialTheme.colorScheme.error,
                         contentColor = MaterialTheme.colorScheme.onError,
                         icon = { Icon(Icons.Default.Delete, contentDescription = null) },
@@ -883,17 +909,24 @@ private fun GridContent(
                 horizontalAlignment = Alignment.End,
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                FloatingActionButton(onClick = { showUrlImportDialog = true }) {
+                FloatingActionButton(onClick = {
+                    Analytics.action("Wardrobe", "open_url_import_dialog")
+                    showUrlImportDialog = true
+                }) {
                     Icon(Icons.Default.Add, contentDescription = null)
                     Icon(Icons.Default.Link, contentDescription = stringResource(R.string.wardrobe_add_url))
                 }
                 FloatingActionButton(onClick = {
+                    Analytics.action("Wardrobe", "open_gallery", mapOf("locations" to locations.size.toString()))
                     if (locations.size >= 2) showGalleryClosetPicker = true else onOpenGallery()
                 }) {
                     Icon(Icons.Default.Add, contentDescription = null)
                     Icon(Icons.Default.PhotoLibrary, contentDescription = stringResource(R.string.wardrobe_add_gallery))
                 }
-                FloatingActionButton(onClick = onOpenCamera) {
+                FloatingActionButton(onClick = {
+                    Analytics.action("Wardrobe", "open_camera")
+                    onOpenCamera()
+                }) {
                     Icon(Icons.Default.Add, contentDescription = null)
                     Icon(Icons.Default.CameraAlt, contentDescription = stringResource(R.string.wardrobe_add_camera))
                 }
@@ -998,6 +1031,7 @@ private fun GridContent(
             confirmButton = {
                 TextButton(
                     onClick = {
+                        Analytics.action("Wardrobe", "confirm_delete_selected", mapOf("count" to state.selectedIds.size.toString()))
                         onDeleteSelected()
                         showDeleteDialog = false
                     }
@@ -1069,6 +1103,7 @@ private fun GridContent(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
+                                    Analytics.action("Wardrobe", "confirm_move_selected", mapOf("count" to state.selectedIds.size.toString()))
                                     onMoveToLocation(state.selectedIds, location.folderId)
                                     showMoveDialog = false
                                 },
@@ -1181,7 +1216,10 @@ private fun UrlImportDialog(
         confirmButton = {
             TextButton(
                 enabled = url.isNotBlank(),
-                onClick = { onSubmit(url.trim(), selectedFolderId) },
+                onClick = {
+                    Analytics.action("Wardrobe", "submit_url_import")
+                    onSubmit(url.trim(), selectedFolderId)
+                },
             ) { Text(stringResource(R.string.action_continue)) }
         },
         dismissButton = {
@@ -1265,9 +1303,18 @@ private fun FullScreenViewer(
         TagsOverlay(
             tags = currentImage.tags,
             hasOriginal = currentImage.originalDriveId != null,
-            onTagImage = { onTagImage(currentImage.driveId) },
-            onRemoveBackground = { onRemoveBackground(currentImage.driveId) },
-            onEditTags = { showTagEdit = true },
+            onTagImage = {
+                Analytics.action("ItemViewer", "tag_image")
+                onTagImage(currentImage.driveId)
+            },
+            onRemoveBackground = {
+                Analytics.action("ItemViewer", "remove_background")
+                onRemoveBackground(currentImage.driveId)
+            },
+            onEditTags = {
+                Analytics.action("ItemViewer", "edit_tags")
+                showTagEdit = true
+            },
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .statusBarsPadding()
@@ -1286,7 +1333,10 @@ private fun FullScreenViewer(
         // always visible against the black viewer background regardless of dynamic theming.
         if (!isOffline) {
             SmallFloatingActionButton(
-                onClick = { onRotateImage(currentImage.driveId) },
+                onClick = {
+                    Analytics.action("ItemViewer", "rotate_image")
+                    onRotateImage(currentImage.driveId)
+                },
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(16.dp),
@@ -1334,6 +1384,7 @@ private fun FullScreenViewer(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable {
+                            Analytics.action("ItemViewer", "create_style_from_item")
                             showItemActions = false
                             onCreateOutfitFromSelection(setOf(currentImage.driveId))
                         },
@@ -1352,6 +1403,7 @@ private fun FullScreenViewer(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
+                                Analytics.action("ItemViewer", "open_move_dialog")
                                 showItemActions = false
                                 showMoveDialog = true
                             },
@@ -1370,6 +1422,7 @@ private fun FullScreenViewer(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable {
+                            Analytics.action("ItemViewer", "open_delete_dialog")
                             showItemActions = false
                             showDeleteDialog = true
                         },
@@ -1396,6 +1449,7 @@ private fun FullScreenViewer(
             text = { Text(stringResource(R.string.wardrobe_delete_text, 1)) },
             confirmButton = {
                 TextButton(onClick = {
+                    Analytics.action("ItemViewer", "confirm_delete_item")
                     onDeleteItem(currentImage.driveId)
                     showDeleteDialog = false
                     if (images.size <= 1) onDismiss()
@@ -1426,6 +1480,7 @@ private fun FullScreenViewer(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
+                                    Analytics.action("ItemViewer", "confirm_move_item")
                                     onMoveToLocation(setOf(currentImage.driveId), location.folderId)
                                     showMoveDialog = false
                                     if (images.size <= 1) onDismiss()

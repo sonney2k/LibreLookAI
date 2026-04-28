@@ -425,7 +425,10 @@ private fun OutfitListScreen(
             title = { Text(stringResource(R.string.outfits_delete_selected_title)) },
             text = { Text(stringResource(R.string.outfits_delete_selected_text, selectedOutfitIds.size)) },
             confirmButton = {
-                TextButton(onClick = { onDeleteSelectedStyles(); showDeleteDialog = false }) {
+                TextButton(onClick = {
+                    Analytics.action("Outfits", "confirm_delete_selected")
+                    onDeleteSelectedStyles(); showDeleteDialog = false
+                }) {
                     Text(stringResource(R.string.action_delete), color = MaterialTheme.colorScheme.error)
                 }
             },
@@ -468,6 +471,9 @@ private fun OutfitListScreen(
 
             // ---- Sub-tab row ----
             androidx.compose.material3.TabRow(selectedTabIndex = selectedSubTab) {
+                LaunchedEffect(selectedSubTab) {
+                    Analytics.screen(if (selectedSubTab == 0) "Outfits/List" else "Outfits/TryOns")
+                }
                 androidx.compose.material3.Tab(
                     selected = selectedSubTab == 0,
                     onClick = { selectedSubTab = 0 },
@@ -584,7 +590,10 @@ private fun OutfitListScreen(
             ) {
                 if (selectedOutfitIds.size >= 2 && !isOffline) {
                     ExtendedFloatingActionButton(
-                        onClick = { if (!isComposing) onCombineSelectedStyles() },
+                        onClick = {
+                            Analytics.action("Outfits", "combine_selected", mapOf("count" to selectedOutfitIds.size.toString()))
+                            if (!isComposing) onCombineSelectedStyles()
+                        },
                         containerColor = MaterialTheme.colorScheme.tertiaryContainer,
                         contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
                         icon = {
@@ -600,7 +609,10 @@ private fun OutfitListScreen(
                     val selectedStyle = styles.firstOrNull { it.id in selectedOutfitIds }
                     if (selectedStyle != null) {
                         ExtendedFloatingActionButton(
-                            onClick = { onTryOnStyle(selectedStyle) },
+                            onClick = {
+                                Analytics.action("Outfits", "try_on_selected_style")
+                                onTryOnStyle(selectedStyle)
+                            },
                             containerColor = MaterialTheme.colorScheme.primaryContainer,
                             contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                             icon = { Icon(Icons.Default.AutoAwesome, contentDescription = null) },
@@ -610,7 +622,10 @@ private fun OutfitListScreen(
                 }
                 if (!isOffline) {
                     ExtendedFloatingActionButton(
-                        onClick = { showDeleteDialog = true },
+                        onClick = {
+                            Analytics.action("Outfits", "open_delete_dialog", mapOf("count" to selectedOutfitIds.size.toString()))
+                            showDeleteDialog = true
+                        },
                         containerColor = MaterialTheme.colorScheme.error,
                         contentColor = MaterialTheme.colorScheme.onError,
                         icon = { Icon(Icons.Default.Close, contentDescription = null) },
@@ -641,7 +656,10 @@ private fun OutfitListScreen(
                             label = stringResource(R.string.outfits_create_manual),
                             icon = { Icon(Icons.Default.Edit, contentDescription = null) },
                             containerColor = MaterialTheme.colorScheme.primaryContainer,
-                            onClick = { fabExpanded = false; onCreateStyle() },
+                            onClick = {
+                                Analytics.action("Outfits", "create_manual_style")
+                                fabExpanded = false; onCreateStyle()
+                            },
                         )
                         if (!isOffline) {
                             SpeedDialItem(
@@ -653,7 +671,10 @@ private fun OutfitListScreen(
                                         Icon(Icons.Default.AutoAwesome, contentDescription = null)
                                 },
                                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                                onClick = { fabExpanded = false; if (!isPredicting) onSuggestStyle() },
+                                onClick = {
+                                    Analytics.action("Outfits", "suggest_style")
+                                    fabExpanded = false; if (!isPredicting) onSuggestStyle()
+                                },
                             )
                             SpeedDialItem(
                                 label = if (isComposing) stringResource(R.string.outfits_thinking) else stringResource(R.string.outfits_compose),
@@ -664,12 +685,18 @@ private fun OutfitListScreen(
                                         Icon(Icons.Default.AutoFixHigh, contentDescription = null)
                                 },
                                 containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                                onClick = { fabExpanded = false; if (!isComposing) onComposeStyle() },
+                                onClick = {
+                                    Analytics.action("Outfits", "compose_style")
+                                    fabExpanded = false; if (!isComposing) onComposeStyle()
+                                },
                             )
                         }
                     }
                 }
-                FloatingActionButton(onClick = { fabExpanded = !fabExpanded }) {
+                FloatingActionButton(onClick = {
+                    Analytics.action("Outfits", "toggle_speed_dial", mapOf("expanded" to (!fabExpanded).toString()))
+                    fabExpanded = !fabExpanded
+                }) {
                     Icon(
                         if (fabExpanded) Icons.Default.Close else Icons.Default.Add,
                         contentDescription = if (fabExpanded) "Close" else "Actions",
@@ -757,7 +784,10 @@ private fun StyleSortButton(
                             Text(option.displayLabel())
                         }
                     },
-                    onClick = { onSortChanged(option); expanded = false },
+                    onClick = {
+                        Analytics.action("Outfits", "sort_changed", mapOf("option" to option.name))
+                        onSortChanged(option); expanded = false
+                    },
                 )
             }
         }
@@ -793,7 +823,10 @@ private fun OutfitCard(
             title = { Text(stringResource(R.string.outfits_delete_title)) },
             text = { Text(stringResource(R.string.outfits_delete_text, style.name)) },
             confirmButton = {
-                TextButton(onClick = { onDelete(); showDeleteDialog = false }) {
+                TextButton(onClick = {
+                    Analytics.action("OutfitEditor", "confirm_delete")
+                    onDelete(); showDeleteDialog = false
+                }) {
                     Text(stringResource(R.string.action_delete), color = MaterialTheme.colorScheme.error)
                 }
             },
@@ -808,8 +841,16 @@ private fun OutfitCard(
             .fillMaxWidth()
             .padding(horizontal = 12.dp)
             .combinedClickable(
-                onClick = { if (isSelectionMode) onToggleSelection() else Unit },
-                onLongClick = onToggleSelection,
+                onClick = {
+                    if (isSelectionMode) {
+                        Analytics.action("Outfits", "toggle_selection")
+                        onToggleSelection()
+                    }
+                },
+                onLongClick = {
+                    Analytics.action("Outfits", "long_press_select")
+                    onToggleSelection()
+                },
             ),
         border = if (isSelected)
             androidx.compose.foundation.BorderStroke(2.dp, MaterialTheme.colorScheme.primary)

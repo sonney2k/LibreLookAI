@@ -179,20 +179,36 @@ fun ShoppingHelperScreen(
             onSettingsClick = onSettingsClick,
         )
 
+        LaunchedEffect(selectedTab) {
+            val name = when (selectedTab) {
+                0 -> "Shopping/List"; 1 -> "Shopping/Similarity"; 2 -> "Shopping/Gaps"
+                else -> "Shopping/Tab$selectedTab"
+            }
+            Analytics.screen(name)
+        }
         TabRow(selectedTabIndex = selectedTab) {
             Tab(
                 selected = selectedTab == 0,
-                onClick = { selectedTab = 0 },
+                onClick = {
+                    Analytics.action("Shopping", "subtab_list")
+                    selectedTab = 0
+                },
                 text = { Text(stringResource(R.string.shopping_tab_list)) },
             )
             Tab(
                 selected = selectedTab == 1,
-                onClick = { selectedTab = 1 },
+                onClick = {
+                    Analytics.action("Shopping", "subtab_similarity")
+                    selectedTab = 1
+                },
                 text = { Text(stringResource(R.string.shopping_tab_similarity)) },
             )
             Tab(
                 selected = selectedTab == 2,
-                onClick = { selectedTab = 2 },
+                onClick = {
+                    Analytics.action("Shopping", "subtab_gaps")
+                    selectedTab = 2
+                },
                 text = { Text(stringResource(R.string.shopping_tab_gaps)) },
             )
         }
@@ -358,9 +374,11 @@ private fun ShoppingListTab(
                     images = displayedItems,
                     selectedIds = state.selectedIds,
                     onClick = { _, image ->
+                        Analytics.action("Shopping", "toggle_selection")
                         shoppingClosetViewModel.toggleSelection(image.driveId)
                     },
                     onLongClick = { image ->
+                        Analytics.action("Shopping", "long_press_select")
                         shoppingClosetViewModel.toggleSelection(image.driveId)
                     },
                     modifier = Modifier.weight(1f).fillMaxWidth(),
@@ -400,7 +418,10 @@ private fun ShoppingListTab(
             ) {
                 if (locations.isNotEmpty() && !isOffline) {
                     ExtendedFloatingActionButton(
-                        onClick = { showMoveDialog = true },
+                        onClick = {
+                            Analytics.action("Shopping", "open_move_to_closet_dialog", mapOf("count" to state.selectedIds.size.toString()))
+                            showMoveDialog = true
+                        },
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
                         contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         icon = { Icon(Icons.Default.Place, contentDescription = null) },
@@ -408,14 +429,20 @@ private fun ShoppingListTab(
                     )
                 }
                 ExtendedFloatingActionButton(
-                    onClick = { showDeleteDialog = true },
+                    onClick = {
+                        Analytics.action("Shopping", "open_delete_dialog", mapOf("count" to state.selectedIds.size.toString()))
+                        showDeleteDialog = true
+                    },
                     containerColor = MaterialTheme.colorScheme.error,
                     contentColor = MaterialTheme.colorScheme.onError,
                     icon = { Icon(Icons.Default.Delete, contentDescription = null) },
                     text = { Text(stringResource(R.string.action_delete)) },
                 )
                 ExtendedFloatingActionButton(
-                    onClick = shoppingClosetViewModel::clearSelection,
+                    onClick = {
+                        Analytics.action("Shopping", "clear_selection")
+                        shoppingClosetViewModel.clearSelection()
+                    },
                     containerColor = MaterialTheme.colorScheme.surfaceVariant,
                     contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     icon = { Icon(Icons.Default.Close, contentDescription = null) },
@@ -428,11 +455,15 @@ private fun ShoppingListTab(
                 horizontalAlignment = Alignment.End,
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                FloatingActionButton(onClick = { showUrlDialog = true }) {
+                FloatingActionButton(onClick = {
+                    Analytics.action("Shopping", "open_url_import_dialog")
+                    showUrlDialog = true
+                }) {
                     Icon(Icons.Default.Add, contentDescription = null)
                     Icon(Icons.Default.Link, contentDescription = stringResource(R.string.shop_list_add_url))
                 }
                 FloatingActionButton(onClick = {
+                    Analytics.action("Shopping", "open_gallery")
                     galleryLauncher.launch(
                         PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
                     )
@@ -440,7 +471,10 @@ private fun ShoppingListTab(
                     Icon(Icons.Default.Add, contentDescription = null)
                     Icon(Icons.Default.PhotoLibrary, contentDescription = stringResource(R.string.shop_list_add_gallery))
                 }
-                FloatingActionButton(onClick = onCaptureClick) {
+                FloatingActionButton(onClick = {
+                    Analytics.action("Shopping", "open_camera")
+                    onCaptureClick()
+                }) {
                     Icon(Icons.Default.Add, contentDescription = null)
                     Icon(Icons.Default.CameraAlt, contentDescription = stringResource(R.string.shop_list_add_camera))
                 }
@@ -485,6 +519,7 @@ private fun ShoppingListTab(
             text = { Text(stringResource(R.string.shop_list_delete_text, state.selectedIds.size)) },
             confirmButton = {
                 TextButton(onClick = {
+                    Analytics.action("Shopping", "confirm_delete_selected", mapOf("count" to state.selectedIds.size.toString()))
                     shoppingClosetViewModel.deleteItems(state.selectedIds)
                     showDeleteDialog = false
                 }) { Text(stringResource(R.string.action_delete)) }
@@ -524,7 +559,10 @@ private fun ShopUrlImportDialog(
             }
         },
         confirmButton = {
-            TextButton(enabled = url.isNotBlank(), onClick = { onSubmit(url.trim()) }) {
+            TextButton(enabled = url.isNotBlank(), onClick = {
+                Analytics.action("Shopping", "submit_url_import")
+                onSubmit(url.trim())
+            }) {
                 Text(stringResource(R.string.action_continue))
             }
         },
@@ -567,7 +605,10 @@ private fun MoveToClosetDialog(
         confirmButton = {
             TextButton(
                 enabled = selectedFolderId != null,
-                onClick = { selectedFolderId?.let(onConfirm) },
+                onClick = {
+                    Analytics.action("Shopping", "confirm_move_to_closet")
+                    selectedFolderId?.let(onConfirm)
+                },
             ) { Text(stringResource(R.string.action_continue)) }
         },
         dismissButton = {
@@ -646,7 +687,10 @@ private fun SimilarityFinderTab(
                     )
                 }
                 itemsIndexed(state.matches, key = { _, m -> m.image.driveId }) { idx, match ->
-                    MatchRow(match = match, onClick = { previewIndex = idx })
+                    MatchRow(match = match, onClick = {
+                        Analytics.action("Shopping/Similarity", "open_match_preview", mapOf("index" to idx.toString()))
+                        previewIndex = idx
+                    })
                 }
             } else if (state.queryPath != null && !state.isMatching) {
                 item {
@@ -664,7 +708,10 @@ private fun SimilarityFinderTab(
                         val queryPath = state.queryPath
                         if (queryPath != null) {
                             Button(
-                                onClick = { shoppingClosetViewModel.importQuery(queryPath) },
+                                onClick = {
+                                    Analytics.action("Shopping/Similarity", "add_query_to_shopping_list")
+                                    shoppingClosetViewModel.importQuery(queryPath)
+                                },
                                 modifier = Modifier.fillMaxWidth(),
                             ) {
                                 Icon(Icons.Default.ShoppingBag, contentDescription = null, modifier = Modifier.size(18.dp))
@@ -694,6 +741,7 @@ private fun SimilarityFinderTab(
                     onShowInWardrobe(image)
                 },
                 onAddToShoppingList = {
+                    Analytics.action("Shopping/Similarity", "add_match_to_shopping_list")
                     state.queryPath?.let { shoppingClosetViewModel.importQuery(it) }
                     previewIndex = null
                 },
@@ -739,7 +787,10 @@ private fun IntroAndControls(
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             Button(
-                onClick = onCapture,
+                onClick = {
+                    Analytics.action("Shopping/Similarity", "capture_query")
+                    onCapture()
+                },
                 enabled = state.modelAvailable && !state.isMatching,
                 modifier = Modifier.weight(1f),
             ) {
@@ -752,7 +803,10 @@ private fun IntroAndControls(
             }
             if (state.hasQuery) {
                 Spacer(Modifier.width(8.dp))
-                OutlinedButton(onClick = onClear) {
+                OutlinedButton(onClick = {
+                    Analytics.action("Shopping/Similarity", "clear_results")
+                    onClear()
+                }) {
                     Icon(Icons.Default.Refresh, contentDescription = null, modifier = Modifier.size(16.dp))
                     Spacer(Modifier.width(6.dp))
                     Text(stringResource(R.string.shop_clear))

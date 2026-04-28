@@ -15,10 +15,6 @@ TODO
 Features:
 ---------
 
-
-
-firebase app analytics to understand what features are being used (zoomed in which buttons are pressed, things tapped in which order)
-
 AI (stars) spinning wheel in create outfit
 
 create human readable release notes between now and c40489226c3a4a01dd4033e959d83cee1d7b8ebb and release version 1.3.0 and upload to testers in firebase
@@ -31,6 +27,7 @@ size filter? default sizes in wardrobe? size tag?
 
 Bugs:
 -----
+
 when importing into wardrobe for local background removal ensure that image is centered. In general ensure that images are cropped.
 
 ensure that in all processes, images are smaller than max(width,height)<1280. In particular before uploading anything to Gemini.
@@ -49,6 +46,8 @@ bug or feature: persistance is working reliably now. What I noticed is that the 
 
 IN PROGRESS
 ===========
+firebase app analytics to understand what features are being used (zoomed in which buttons are pressed, things tapped in which order)
+
 when importing images/photo/url add option to do background removal via cheap local tflite model. let the model mark the background display the starting point as cross hair that the user can change
 
 add way to send feedback via firebase under settings -> feedback

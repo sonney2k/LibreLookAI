@@ -106,7 +106,10 @@ fun OutfitComposerScreen(
                         .padding(horizontal = 8.dp, vertical = 4.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    IconButton(onClick = { stylesViewModel.closeComposer() }) {
+                    IconButton(onClick = {
+                        Analytics.action("OutfitComposer", "close")
+                        stylesViewModel.closeComposer()
+                    }) {
                         Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_cancel))
                     }
                     Text(
@@ -115,7 +118,10 @@ fun OutfitComposerScreen(
                         modifier = Modifier.weight(1f).padding(start = 4.dp),
                     )
                     Button(
-                        onClick = { stylesViewModel.saveComposer() },
+                        onClick = {
+                            Analytics.action("OutfitComposer", "save", mapOf("count" to s.composerItemIds.size.toString()))
+                            stylesViewModel.saveComposer()
+                        },
                         enabled = s.composerItemIds.isNotEmpty(),
                     ) { Text(stringResource(R.string.composer_save)) }
                 }
@@ -240,6 +246,7 @@ fun OutfitComposerScreen(
                                 SuggestionChip(
                                     onClick = {
                                         if (!s.isComposerEnhancing) {
+                                            Analytics.action("OutfitComposer", "preset_chip", mapOf("preset" to preset))
                                             stylesViewModel.updateComposerFeedback(preset)
                                             stylesViewModel.enhanceComposerWithAi(
                                                 prefs   = profile.preferences,
@@ -285,6 +292,7 @@ fun OutfitComposerScreen(
 
                         Button(
                             onClick = {
+                                Analytics.action("OutfitComposer", "enhance_with_ai")
                                 stylesViewModel.enhanceComposerWithAi(
                                     prefs   = profile.preferences,
                                     weather = weather.data,

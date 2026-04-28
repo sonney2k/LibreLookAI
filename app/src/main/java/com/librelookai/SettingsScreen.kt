@@ -146,17 +146,34 @@ fun SettingsScreen(
         AppScreenHeader(
             title = stringResource(R.string.nav_settings),
             trailingContent = {
-                androidx.compose.material3.IconButton(onClick = onBack) {
+                androidx.compose.material3.IconButton(onClick = {
+                    Analytics.action("Settings", "back")
+                    onBack()
+                }) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                 }
             },
         )
+        LaunchedEffect(selectedTab) {
+            val n = when (selectedTab) {
+                0 -> "Settings/Profile"; 1 -> "Settings/Data"; 2 -> "Settings/Credits"
+                3 -> "Settings/AI"; 4 -> "Settings/Feedback"; 5 -> "Settings/About"
+                else -> "Settings/Tab$selectedTab"
+            }
+            Analytics.screen(n)
+        }
         TabRow(selectedTabIndex = selectedTab) {
-            Tab(selected = selectedTab == 0, onClick = { selectedTab = 0 }, text = { Text(stringResource(R.string.settings_tab_profile)) })
-            Tab(selected = selectedTab == 1, onClick = { selectedTab = 1 }, text = { Text(stringResource(R.string.settings_tab_data)) })
+            Tab(selected = selectedTab == 0, onClick = {
+                Analytics.action("Settings", "subtab_profile"); selectedTab = 0
+            }, text = { Text(stringResource(R.string.settings_tab_profile)) })
+            Tab(selected = selectedTab == 1, onClick = {
+                Analytics.action("Settings", "subtab_data"); selectedTab = 1
+            }, text = { Text(stringResource(R.string.settings_tab_data)) })
             Tab(
                 selected = selectedTab == 2,
-                onClick = { selectedTab = 2 },
+                onClick = {
+                    Analytics.action("Settings", "subtab_credits"); selectedTab = 2
+                },
                 text = {
                     Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
                         Text(stringResource(R.string.settings_tab_credits))
@@ -167,9 +184,15 @@ fun SettingsScreen(
                     }
                 },
             )
-            Tab(selected = selectedTab == 3, onClick = { selectedTab = 3 }, text = { Text(stringResource(R.string.settings_tab_ai)) })
-            Tab(selected = selectedTab == 4, onClick = { selectedTab = 4 }, text = { Text(stringResource(R.string.settings_tab_feedback)) })
-            Tab(selected = selectedTab == 5, onClick = { selectedTab = 5 }, text = { Text(stringResource(R.string.settings_tab_about)) })
+            Tab(selected = selectedTab == 3, onClick = {
+                Analytics.action("Settings", "subtab_ai"); selectedTab = 3
+            }, text = { Text(stringResource(R.string.settings_tab_ai)) })
+            Tab(selected = selectedTab == 4, onClick = {
+                Analytics.action("Settings", "subtab_feedback"); selectedTab = 4
+            }, text = { Text(stringResource(R.string.settings_tab_feedback)) })
+            Tab(selected = selectedTab == 5, onClick = {
+                Analytics.action("Settings", "subtab_about"); selectedTab = 5
+            }, text = { Text(stringResource(R.string.settings_tab_about)) })
         }
 
         when (selectedTab) {
@@ -353,7 +376,10 @@ private fun ProfileTab(
                         AppLanguage.options.forEach { option ->
                             DropdownMenuItem(
                                 text = { Text(option) },
-                                onClick = { language = option; languageExpanded = false },
+                                onClick = {
+                                    Analytics.action("Settings/Profile", "change_language", mapOf("value" to option))
+                                    language = option; languageExpanded = false
+                                },
                             )
                         }
                     }
@@ -382,7 +408,10 @@ private fun ProfileTab(
                         genderOptions.forEach { option ->
                             DropdownMenuItem(
                                 text = { Text(option) },
-                                onClick = { gender = option; genderExpanded = false },
+                                onClick = {
+                                    Analytics.action("Settings/Profile", "change_gender", mapOf("value" to option))
+                                    gender = option; genderExpanded = false
+                                },
                             )
                         }
                     }
@@ -455,6 +484,7 @@ private fun ProfileTab(
                 // --- Save ---
                 Button(
                     onClick = {
+                        Analytics.action("Settings/Profile", "save_preferences")
                         onSave(
                             state.preferences.copy(
                                 gender      = gender,
@@ -716,7 +746,10 @@ private fun DataTab(
                 }
             } else {
                 OutlinedButton(
-                    onClick = { showRetagDialog = true },
+                    onClick = {
+                        Analytics.action("Settings/Data", "open_retag_dialog")
+                        showRetagDialog = true
+                    },
                     modifier = Modifier.fillMaxWidth(),
                     enabled = !isOffline,
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
@@ -757,7 +790,10 @@ private fun DataTab(
                 }
             } else {
                 OutlinedButton(
-                    onClick = { showRemoveBgDialog = true },
+                    onClick = {
+                        Analytics.action("Settings/Data", "open_remove_bg_dialog")
+                        showRemoveBgDialog = true
+                    },
                     modifier = Modifier.fillMaxWidth(),
                     enabled = !isOffline,
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
@@ -817,7 +853,10 @@ private fun DataTab(
                     }
                 }
                 else -> OutlinedButton(
-                    onClick = onStartRepairAndRefresh,
+                    onClick = {
+                        Analytics.action("Settings/Data", "start_repair_and_refresh")
+                        onStartRepairAndRefresh()
+                    },
                     modifier = Modifier.fillMaxWidth(),
                     enabled = !wardrobeState.isLoading && audit == null && !isOffline,
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
@@ -858,7 +897,10 @@ private fun DataTab(
                 }
             } else {
                 OutlinedButton(
-                    onClick = { showImportOptionsDialog = true },
+                    onClick = {
+                        Analytics.action("Settings/Data", "open_import_dialog")
+                        showImportOptionsDialog = true
+                    },
                     modifier = Modifier.fillMaxWidth(),
                     enabled = !isOffline,
                 ) {
@@ -897,7 +939,10 @@ private fun DataTab(
                 }
             },
             confirmButton = {
-                TextButton(onClick = { onRetagAll(); showRetagDialog = false }) {
+                TextButton(onClick = {
+                    Analytics.action("Settings/Data", "confirm_retag_all", mapOf("count" to wardrobeState.images.size.toString()))
+                    onRetagAll(); showRetagDialog = false
+                }) {
                     Text(stringResource(R.string.settings_rescan_confirm))
                 }
             },
@@ -927,7 +972,10 @@ private fun DataTab(
                 }
             },
             confirmButton = {
-                TextButton(onClick = { onRemoveAllBackgrounds(); showRemoveBgDialog = false }) {
+                TextButton(onClick = {
+                    Analytics.action("Settings/Data", "confirm_remove_all_backgrounds", mapOf("count" to wardrobeState.images.size.toString()))
+                    onRemoveAllBackgrounds(); showRemoveBgDialog = false
+                }) {
                     Text(stringResource(R.string.settings_rebg_confirm), color = MaterialTheme.colorScheme.error)
                 }
             },
@@ -1502,6 +1550,7 @@ private fun AiTab(
                 sublabel = stringResource(R.string.settings_dedupe_toggle_desc),
                 checked = dedupeOnImport,
                 onCheckedChange = {
+                    Analytics.action("Settings/AI", "toggle_dedupe", mapOf("value" to it.toString()))
                     dedupeOnImport = it
                     onSaveDedupe(dedupeOnImport, dedupeThreshold)
                 },
@@ -1514,7 +1563,10 @@ private fun AiTab(
                 Slider(
                     value = dedupeThreshold,
                     onValueChange = { dedupeThreshold = it },
-                    onValueChangeFinished = { onSaveDedupe(dedupeOnImport, dedupeThreshold) },
+                    onValueChangeFinished = {
+                        Analytics.action("Settings/AI", "set_dedupe_threshold", mapOf("value" to ((dedupeThreshold * 100).toInt()).toString()))
+                        onSaveDedupe(dedupeOnImport, dedupeThreshold)
+                    },
                     valueRange = 0.3f..0.95f,
                     steps = 64,
                 )
@@ -1540,6 +1592,7 @@ private fun AiTab(
                 sublabel = stringResource(R.string.settings_local_bg_desc),
                 checked = preferLocalBg,
                 onCheckedChange = {
+                    Analytics.action("Settings/AI", "toggle_prefer_local_bg", mapOf("value" to it.toString()))
                     preferLocalBg = it
                     onSavePreferLocalBg(it)
                 },
@@ -1551,7 +1604,10 @@ private fun AiTab(
             Slider(
                 value = bgRemovalThreshold,
                 onValueChange = { bgRemovalThreshold = it },
-                onValueChangeFinished = { onSaveBgRemovalThreshold(bgRemovalThreshold) },
+                onValueChangeFinished = {
+                    Analytics.action("Settings/AI", "set_bg_threshold", mapOf("value" to ((bgRemovalThreshold * 100).toInt()).toString()))
+                    onSaveBgRemovalThreshold(bgRemovalThreshold)
+                },
                 valueRange = 0.05f..0.95f,
                 steps = 89,
             )

@@ -74,7 +74,37 @@ Create these one-time product SKUs under your app's "In-app products":
 ### Fallback behaviour
 
 If `google-services.json` is absent or `firebase.proxy.url` is not set, the app silently falls back to BYOK mode. The Credits tab in Settings is hidden; no Firebase code runs.
+---
 
+Firebase Analytics
+===================
+
+1. Confirm the Analytics product is enabled in the Firebase Console for the project that owns the google-services.json you already ship in app/google-services.json: 
+- Go to console.firebase.google.com → your project → Analytics in the left nav. If it asks you to set it up, accept the data-sharing terms and link/create a Google
+Analytics account. Without this, events accumulate but nothing appears in dashboards.                                                                               
+2. Test in DebugView before shipping:                     
+adb shell setprop debug.firebase.analytics.app com.librelookai                                                                                                       
+./gradlew installDebug                                                                                                                                               
+3. Open the app, navigate around. In the Firebase Console go to Analytics → DebugView — within ~10 s you should see screen_view, ui_action, sign_in_success events   
+stream in with their parameters.                                                                                                                                     
+Disable when done: adb shell setprop debug.firebase.analytics.app .none.
+4. Register custom parameters so they show up in standard reports (without this, params still flow into BigQuery but aren't aggregatable in the UI):                 
+- Analytics → Custom definitions → Create custom dimension, register at least:                                                                                     
+- Event parameter screen (event-scoped) — dimension name "Screen"                                                                                              
+- Event parameter action (event-scoped) — dimension name "Action"                                                                                                
+- Event parameter count (event-scoped) — dimension name "Count" (or as Metric if you want to sum it)                                                             
+- Event parameter index (event-scoped) — dimension name "Tab Index"                                                                                              
+- These start collecting from the moment you create them; historical events are not retroactively dimensionalised.                                                 
+5. Mark key events as conversions if you want funnels in the GA4 UI: Analytics → Events, toggle sign_in_success, ui_action (or specific actions you'll funnel on like
+suggest_replacements) as conversions/key events.                                                                                                                    
+6. Optional but recommended for "in which order" analysis: in the Google Analytics 4 property (not Firebase) → Admin → BigQuery Links, link the GA4 property to      
+BigQuery (free daily export tier). Once linked, every event lands in events_* tables with event_timestamp and you can run path queries (sequence of screen + action  
+per user_pseudo_id per session). This is by far the best surface for the "what gets tapped, in what order" question — the GA4 UI alone is too aggregated.
+7. Privacy: Firebase Analytics collects an Android Advertising ID and IP-derived geo by default. If you have a privacy policy / consent flow, either:                
+- Disable collection until consent: set <meta-data android:name="firebase_analytics_collection_enabled" android:value="false" /> in AndroidManifest.xml and call   
+FirebaseAnalytics.getInstance(ctx).setAnalyticsCollectionEnabled(true) after consent, or                                                                             
+- Document the existing default in your privacy policy. Worth thinking about before publishing.                                                                    
+                                                                                                                                                                       
 ---
 
 Partner Programs

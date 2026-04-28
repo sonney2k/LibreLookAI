@@ -127,6 +127,7 @@ fun TryOnComposerScreen(
                     },
                     navigationIcon = {
                         IconButton(onClick = {
+                            Analytics.action("TryOn", "close")
                             when {
                                 viewing != null     -> tryOnViewModel.dismissViewingTryOn()
                                 state.isHistoryOpen -> tryOnViewModel.closeHistory()
@@ -136,7 +137,10 @@ fun TryOnComposerScreen(
                     },
                     actions = {
                         if (viewing == null && !state.isHistoryOpen && state.history.isNotEmpty()) {
-                            IconButton(onClick = { tryOnViewModel.openHistory() }) {
+                            IconButton(onClick = {
+                                Analytics.action("TryOn", "open_history")
+                                tryOnViewModel.openHistory()
+                            }) {
                                 Icon(Icons.Default.History, contentDescription = stringResource(R.string.tryon_history_action))
                             }
                         }
@@ -159,14 +163,20 @@ fun TryOnComposerScreen(
 
                     state.resultPath != null -> TryOnResultContent(
                         state = state,
-                        onSave = { tryOnViewModel.saveCurrent(wardrobeState.images) },
-                        onDiscard = { tryOnViewModel.generate(
-                            personFiles     = profileViewModel.tryOnFiles(),
-                            wardrobeImages  = wardrobeState.images,
-                            preferences     = profileState.preferences.preferences,
-                        ) },
+                        onSave = {
+                            Analytics.action("TryOn/Result", "save")
+                            tryOnViewModel.saveCurrent(wardrobeState.images)
+                        },
+                        onDiscard = {
+                            Analytics.action("TryOn/Result", "regenerate")
+                            tryOnViewModel.generate(
+                                personFiles     = profileViewModel.tryOnFiles(),
+                                wardrobeImages  = wardrobeState.images,
+                                preferences     = profileState.preferences.preferences,
+                            )
+                        },
                         onChangeItems = {
-                            // Clear the result; stay in composer.
+                            Analytics.action("TryOn/Result", "change_items")
                             tryOnViewModel.openComposer(state.itemIds)
                         },
                     )
@@ -177,6 +187,7 @@ fun TryOnComposerScreen(
                         onRemoveItem = tryOnViewModel::removeItem,
                         onAddItems = { ids -> ids.forEach(tryOnViewModel::addItem) },
                         onGenerate = {
+                            Analytics.action("TryOn/Composer", "generate", mapOf("count" to state.itemIds.size.toString()))
                             tryOnViewModel.generate(
                                 personFiles     = profileViewModel.tryOnFiles(),
                                 wardrobeImages  = wardrobeState.images,
@@ -465,6 +476,7 @@ private fun TryOnResultContent(
                 }
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     OutlinedButton(onClick = {
+                        Analytics.action("TryOn/Result", "save_to_gallery")
                         state.resultPath?.let { saveImageToGallery(context, File(it)) }
                     }) {
                         Icon(Icons.Default.Download, null, modifier = Modifier.size(18.dp))
@@ -592,7 +604,10 @@ private fun TryOnDetailContent(
                 }
             }
             FilledTonalButton(
-                onClick = { confirmDelete = true },
+                onClick = {
+                    Analytics.action("TryOn/Detail", "open_delete_dialog")
+                    confirmDelete = true
+                },
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Icon(Icons.Default.Delete, null, modifier = Modifier.size(18.dp))
@@ -609,6 +624,7 @@ private fun TryOnDetailContent(
             text  = { Text(stringResource(R.string.tryon_delete_confirm_text)) },
             confirmButton = {
                 TextButton(onClick = {
+                    Analytics.action("TryOn/Detail", "confirm_delete")
                     confirmDelete = false
                     onDelete()
                 }) { Text(stringResource(R.string.action_delete)) }

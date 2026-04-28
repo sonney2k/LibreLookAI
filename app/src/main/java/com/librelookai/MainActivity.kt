@@ -77,6 +77,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        Analytics.init(applicationContext)
         EmbeddingService.init(this)
         setContent {
             LibreLookAITheme {
@@ -98,13 +99,19 @@ class MainActivity : ComponentActivity() {
                 }
 
                 LaunchedEffect(isSignedIn) {
-                    if (isSignedIn) authViewModel.attemptFirebaseSignIn(this@MainActivity)
+                    if (isSignedIn) {
+                        authViewModel.attemptFirebaseSignIn(this@MainActivity)
+                        Analytics.event("sign_in_success")
+                    }
                 }
 
                 if (!isSignedIn) {
                     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                         SignInScreen(
-                            onSignIn = { authViewModel.startSignIn() },
+                            onSignIn = {
+                                Analytics.action("SignIn", "start_sign_in")
+                                authViewModel.startSignIn()
+                            },
                             signInErrorCode = authError,
                             modifier = Modifier.padding(innerPadding),
                         )
@@ -118,6 +125,14 @@ class MainActivity : ComponentActivity() {
                     val isOffline = !isOnline
 
                     var selectedTab by rememberSaveable { mutableIntStateOf(1) }
+                    LaunchedEffect(selectedTab) {
+                        val name = when (selectedTab) {
+                            0 -> "Outfits"; 1 -> "Wardrobe"; 2 -> "Shopping"
+                            3 -> "Travel"; 4 -> "Insights"; 5 -> "Settings"
+                            else -> "Tab$selectedTab"
+                        }
+                        Analytics.screen(name)
+                    }
                     // Increments on every nav button tap (incl. re-tap and gear icon)
                     // so screens with sub-tabs can reset to their default tab.
                     var navResetTick by remember { mutableIntStateOf(0) }
@@ -301,10 +316,12 @@ class MainActivity : ComponentActivity() {
                                 AppNavBar(
                                     selectedTab = selectedTab,
                                     onTabSelected = {
+                                        Analytics.action("NavBar", "tab_select", mapOf("index" to it.toString()))
                                         selectedTab = it
                                         navResetTick++
                                     },
                                     onTabReselected = { tab ->
+                                        Analytics.action("NavBar", "tab_reselect", mapOf("index" to tab.toString()))
                                         if (tab == 1) dismissWardrobeViewerTrigger++
                                         navResetTick++
                                     },
@@ -339,10 +356,12 @@ class MainActivity : ComponentActivity() {
 
                                 Box(Modifier.fillMaxSize()) {
                                     val onSettingsClick: () -> Unit = {
+                                        Analytics.action("Toolbar", "open_settings")
                                         selectedTab = 5
                                         navResetTick++
                                     }
                                     val runTryOn: (Set<String>) -> Unit = { itemIds ->
+                                        Analytics.action("TryOn", "open_composer", mapOf("count" to itemIds.size.toString()))
                                         tryOnViewModel.openComposer(itemIds)
                                     }
                                     when (selectedTab) {
@@ -370,6 +389,7 @@ class MainActivity : ComponentActivity() {
                                             shoppingClosetViewModel = shoppingClosetViewModel,
                                             profileViewModel = profileViewModel,
                                             onCreateOutfitFromSelection = { itemIds ->
+                                                Analytics.action("Wardrobe", "create_outfit_from_selection", mapOf("count" to itemIds.size.toString()))
                                                 stylesViewModel.openComposer(
                                                     seedItemIds = itemIds,
                                                     images      = wardrobeViewModel.state.value.images,
@@ -382,6 +402,7 @@ class MainActivity : ComponentActivity() {
                                                 wardrobeViewModel.clearSelection()
                                             },
                                             onSuggestReplacements = { itemIds ->
+                                                Analytics.action("Wardrobe", "suggest_replacements", mapOf("count" to itemIds.size.toString()))
                                                 val all = wardrobeViewModel.state.value.images
                                                 val selected = all.filter { it.driveId in itemIds }
                                                 gapViewModel.suggestReplacements(
@@ -404,6 +425,7 @@ class MainActivity : ComponentActivity() {
                                             locationViewModel = locationViewModel,
                                             onSettingsClick = onSettingsClick,
                                             onShowInWardrobe = { image ->
+                                                Analytics.action("Shopping", "show_in_wardrobe")
                                                 val matchFolder = image.folderId
                                                 val viewingAll = locationState.activeLocationId == LocationViewModel.ALL_LOCATIONS_ID
                                                 if (!viewingAll && matchFolder.isNotEmpty()
