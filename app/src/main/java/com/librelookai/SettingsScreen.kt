@@ -236,6 +236,11 @@ fun SettingsScreen(
                         )
                     )
                 },
+                onSaveBgRemovalThreshold = { value ->
+                    profileViewModel.savePreferences(
+                        profileState.preferences.copy(bgRemovalThreshold = value)
+                    )
+                },
             )
             4 -> FeedbackTab(
                 preferences = profileState.preferences,
@@ -1454,11 +1459,13 @@ private fun AiTab(
     preferences: UserPreferences,
     onSaveConsiderations: (AiConsiderations) -> Unit,
     onSaveDedupe: (Boolean, Float) -> Unit,
+    onSaveBgRemovalThreshold: (Float) -> Unit,
 ) {
     val context = LocalContext.current
     var considerations by remember(preferences.aiConsiderations) { mutableStateOf(preferences.aiConsiderations) }
     var dedupeOnImport by remember(preferences) { mutableStateOf(preferences.dedupeOnImport) }
     var dedupeThreshold by remember(preferences) { mutableFloatStateOf(preferences.dedupeThreshold) }
+    var bgRemovalThreshold by remember(preferences) { mutableFloatStateOf(preferences.bgRemovalThreshold) }
     var showResetAllDialog by remember { mutableStateOf(false) }
     // bump to force re-reads from PromptStore after edits or resets
     var promptRefresh by remember { mutableIntStateOf(0) }
@@ -1505,6 +1512,33 @@ private fun AiTab(
                     steps = 64,
                 )
             }
+        }
+
+        HorizontalDivider()
+
+        // ---- Background-removal threshold ----
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(
+                stringResource(R.string.settings_bg_removal_title),
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                stringResource(R.string.settings_bg_removal_desc),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Text(
+                stringResource(R.string.settings_bg_removal_threshold, (bgRemovalThreshold * 100).toInt()),
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            Slider(
+                value = bgRemovalThreshold,
+                onValueChange = { bgRemovalThreshold = it },
+                onValueChangeFinished = { onSaveBgRemovalThreshold(bgRemovalThreshold) },
+                valueRange = 0.05f..0.95f,
+                steps = 89,
+            )
         }
 
         HorizontalDivider()

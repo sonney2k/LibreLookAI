@@ -19,6 +19,10 @@ data class UserPreferences(
     val dedupeOnImport: Boolean = true,
     /** Cosine-similarity threshold (0..1) above which two items are treated as duplicates. */
     val dedupeThreshold: Float = 0.88f,
+    /** Foreground-confidence cutoff (0..1) used by the on-device background-removal segmenter.
+     *  Lower values keep more pixels (looser cutout); higher values reject borderline pixels
+     *  (tighter cutout). Default 0.3 matches the original hardcoded threshold. */
+    val bgRemovalThreshold: Float = 0.3f,
     /** When true, the Similarity Finder match preview shows the per-channel debug breakdown
      *  (segmented thumbnails, per-engine cosine scores, hue histograms) instead of the default
      *  zoom-only view. */

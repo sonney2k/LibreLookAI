@@ -15,69 +15,32 @@ TODO
 Features:
 ---------
 
-when importing images/photo/url add option to do background removal via cheap local tflite model. let the model mark the background display the starting point as cross hair that the user can change and add threshold for tuninging
+when importing images/photo/url add option to do background removal via cheap local tflite model. let the model mark the background display the starting point as cross hair that the user can change
 
-add a feedback tab under settings. add debug setting under this tab add way to send feedback via firebase
+add way to send feedback via firebase under settings -> feedback
 
 firebase app analytics to understand what features are being used (zoomed in which buttons are pressed, things tapped in which order)
 
-
 AI (stars) spinning wheel in create outfit
-
-
-  ▎ Continue work on the LibreLookAI Shopping helper. Feature 1 (Wardrobe + Shopping List URL import) and Feature 2 (Shopping closet, _shopping/ Drive folder,         
-  ▎ ShoppingClosetViewModel, Shopping List sub-tab) are already shipped — see CLAUDE.md sections "Shopping closet (wishlist storage)", "URL import", and "Shopping     
-  ▎ Helper tab" for the architecture; the cross-closet snapshot already includes the shopping folderId so similarity search covers wishlist items too.                 
-  ▎                                                         
-  ▎ Now do these two features:                                                                                                                                         
-  ▎
-  ▎ Feature A — Similarity-search debug toggle + match actions, and unify "Find by photo" with Similarity Finder.                                                      
-  ▎                                                         
-  ▎ 1. Add debugSimilarityPreview: Boolean = false to UserPreferences (in UserPreferences.kt). Add a Settings → Profile toggle ("Show similarity debug preview"). Pipe 
-  ▎ through ProfileViewModel like the existing dedupeOnImport toggle.
-  ▎ 2. Refactor MatchPreviewDialog in ShoppingHelperScreen.kt into two render paths:                                                                                   
-  ▎   - Default path (when debugSimilarityPreview = false): zoomable match image + score header + two action buttons:                                                  
-  ▎       - "Show in wardrobe" → callback up to MainActivity → switch to Wardrobe tab (index 1), call LocationViewModel.setActiveLocation(...) with the match's        
-  ▎ folderId if it differs from the active one, then set pendingScrollDriveId on the wardrobe screen so the existing LaunchedEffect-driven scroll-to + ring-pulse fires
-  ▎  (same as FindByPhotoResultsSheet already does — see WardrobeScreen.kt). Plumb a new lambda onShowInWardrobe: (DriveImage) -> Unit from MainActivity →             
-  ▎ ShoppingHelperScreen → SimilarityFinderTab → MatchPreviewDialog.                                                                                                   
-  ▎     - "Add to shopping list" → calls shoppingClosetViewModel.importQuery(queryRawPath) (new method — adopts the file from cacheDir/shop_queries/ into the shopping 
-  ▎ folder via the same addFromCamera upload path).                                                                                                                    
-  ▎   - Debug path (when toggle is on): keep the current per-page breakdown UI but append the same two buttons.
-  ▎ Also: when state.matches.isEmpty() && state.queryPath != null && !state.isMatching, render an "Add to shopping list" button under the empty-results text.          
-  ▎ 3. Unify "Find by photo" with Similarity Finder — adopt the Shopping helper's interface and math for the wardrobe's existing find-by-photo entry point. The        
-  ▎ wardrobe header ImageSearch icon should now route through ShoppingHelperViewModel.onCapturedFile(...) (which uses the combined embedding + histogram score), or,   
-  ▎ equivalently, share the underlying EmbeddingService.findSimilar call but render results with the same MatchRow + MatchPreviewDialog pattern. Decide whether to (a) 
-  ▎ keep WardrobeUiState.findByPhoto and just rewrite FindByPhotoResultsSheet to look like the Shopping match list (recommended — least churn), or (b) drop            
-  ▎ find-by-photo entirely and always send users to Shopping → Similarity Finder. Either way: the resulting UI on both screens must show the same actions ("Show in 
-  ▎ wardrobe" / "Add to shopping list") so the two flows feel like one feature with two entry points.
-  ▎
-  ▎ Feature B — "Suggest replacements to buy" for selected wardrobe items.                                                                                             
-  ▎
-  ▎ 1. New FAB in Wardrobe selection mode: Icons.Default.SwapHoriz, label "Suggest alternatives". Gated on !isOffline && state.selectedIds.isNotEmpty().               
-  ▎ 2. Extend WardrobeGapViewModel with suggestReplacements(selected: List<DriveImage>, allImages: List<DriveImage>, prefs: UserPreferences) — uses a new prompt 
-  ▎ builder buildReplacementsPrompt(...) (top-level private fn in WardrobeGapViewModel.kt, mirroring buildAnalysisPrompt's style). The prompt must clearly tell Gemini:
-  ▎  "the user wants to retire these items (list with tags); suggest replacements that complement the remaining wardrobe (factor in remaining = allImages - selected); 
-  ▎ return List". Reuse the GapSuggestion schema unchanged.                                                                                                            
-  ▎ 3. Result UI: full-screen Dialog (or ModalBottomSheet) titled "Replacements for N items", scrolling LazyColumn of GapSuggestionCards. Loading + error states match 
-  ▎ the existing Identify Gaps tab. Triggered from MainActivity so the dialog can be hosted at the activity level (consistent with OutfitComposerScreen /              
-  ▎ TryOnComposerScreen).
-  ▎                                                                                                                                                                    
-  ▎ Working agreement (CLAUDE.md): update CLAUDE.md first before coding the architectural pieces (new VM methods, new prompt builder, new dialog), then code, then a   
-  ▎ second pass to capture anything new, and finally ask for a git commit. The two features are independent so land them as separate commits.
-
-
 
 create human readable release notes between now and c40489226c3a4a01dd4033e959d83cee1d7b8ebb and release version 1.3.0 and upload to testers in firebase
 
 Implement new feature: We are working on the refinancing/monetization aspect of the app: I want people to be able to buy coins that I then use to pay gemini cloud costs. would that work with RevenueCat (handles the money/receipts) + Firebase (database and secure Gemini API routing)? In addition, I still want to support the bring your own key option though.
 
+update design
 
 size filter? default sizes in wardrobe? size tag?
 
 Bugs:
 -----
 ensure that in all processes, images are smaller than max(width,height)<1280. In particular before uploading anything to Gemini.
+
+shopping "wardrobe" is slow to load and does not have the same functionality as wardrobe, make shopping "wardrobe" have the same features as wardrobe
+
+shopping -> similarity search when taking picture it displays the closet hide that. once picture is taken it jumps to shopping list but should stay on similarity search tab
+shopping -> similarity search when looking at matching picture the show in wardrobe and add to shopping list buttons are to far at the bottom (half outside the screen)
+
+find via photo in wardrobe -> result screen should not show button add to shopping list (only for shopping -> similarity search)
 
 fix bug in similarity search not all closets are being indexed initally I noticed only the default one is
 
@@ -91,11 +54,14 @@ security/function relevant parts of a prompts should not be appear in settings. 
 
 bug or feature: persistance is working reliably now. What I noticed is that the closet selector in the header is being remebered too 
 
-shopping "wardrobe" is slow to load and does not have the same functionality as wardrobe, make shopping "wardrobe" have the same features as wardrobe
 
 
 IN PROGRESS
 ===========
+add threshold for tuning bg removal algorithm under settings -> AI tab
+
+add a feedback tab under settings move debug setting under this tab
+
 Continue work on Shopping helper.
 
 1. In wardrobe one can currently import an item by taking a picture and by selecting an image from gallery. Add another option to fetch an item from a shopping site. To this end the user pastes a URL to a shopping page e.g. amazon and we need to detect and fetch the product image from that page

@@ -21,6 +21,7 @@ This file provides core guidance when working with code in this repository.
 * **Gemini Routing**: Uses either direct API (BYOK) or a Firebase Cloud Function proxy for managed mode. Images are strictly resized to `max(width, height) ≤ 1280` prior to sending.
 * **Offline Mode**: Uses `LocalIsOffline` `CompositionLocal` to instantly hide write-path UI elements (Drive/Gemini).
 * **Navigation**: Managed via a single `selectedTab: Int` in `MainActivity`; no Jetpack Navigation component is used.
+* **Background Removal**: `SegmentationRepository.foregroundThreshold` is the per-pixel confidence cutoff for the Magic Touch mask. Mirrored from `UserPreferences.bgRemovalThreshold` via a `LaunchedEffect` in `MainActivity`; tuned from Settings → AI tab.
 
 ## Key UI & Workflows
 * **Outfits Screen**: Branches exclusively into `OutfitEditingView` (editor), `OutfitItemPicker` (creation), or `OutfitListScreen` (list/try-on tabs).

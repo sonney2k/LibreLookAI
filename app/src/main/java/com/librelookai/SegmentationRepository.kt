@@ -41,6 +41,10 @@ class SegmentationRepository(private val context: Context) {
      */
     @Volatile var debugDumpDir: File? = null
 
+    /** Foreground-confidence cutoff used to threshold the per-pixel mask. Mirrors
+     *  [UserPreferences.bgRemovalThreshold]; the AI settings tab writes to this. */
+    @Volatile var foregroundThreshold: Float = 0.3f
+
     fun isAvailable(): Boolean {
         val cached = modelPresent
         if (cached != null) return cached
@@ -193,7 +197,7 @@ class SegmentationRepository(private val context: Context) {
         var bgPixelCount = 0
         var bgRSum = 0L; var bgGSum = 0L; var bgBSum = 0L
         val isFg = BooleanArray(pixels.size)
-        val threshold = 0.3f
+        val threshold = foregroundThreshold.coerceIn(0.05f, 0.95f)
         for (y in 0 until h) {
             val my = (y.toLong() * fgMask.mh / h).toInt().coerceIn(0, fgMask.mh - 1)
             val rowBase = my * fgMask.mw

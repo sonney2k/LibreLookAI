@@ -646,6 +646,9 @@
     <string name="settings_dedupe_toggle">Check before import</string>
     <string name="settings_dedupe_toggle_desc">When taking a photo or importing from a folder, surface possible duplicates first.</string>
     <string name="settings_dedupe_threshold">Similarity threshold: %1$d%%</string>
+    <string name="settings_bg_removal_title">Background removal</string>
+    <string name="settings_bg_removal_desc">Tunes the on-device cutout segmenter used during capture, import, and the Shopping helper. Lower values keep more pixels (looser cutout, may include background); higher values reject borderline pixels (tighter cutout, may chip away at the item).</string>
+    <string name="settings_bg_removal_threshold">Foreground threshold: %1$d%%</string>
     <string name="settings_debug_similarity_toggle">Show similarity debug preview</string>
     <string name="settings_debug_similarity_desc">When opening a Similarity Finder match, show the per-channel breakdown (segmented thumbnails, embedding/histogram cosine, hue histograms) instead of the default zoomable image.</string>
 

@@ -186,6 +186,13 @@ class MainActivity : ComponentActivity() {
                         wardrobeViewModel.setDedupeSettings(dedupeOnImport, dedupeThreshold)
                     }
 
+                    // Mirror the bg-removal threshold into the live segmenter so changes from the
+                    // AI tab take effect immediately on the next capture/import.
+                    val bgRemovalThreshold = profileState.preferences.bgRemovalThreshold
+                    LaunchedEffect(bgRemovalThreshold) {
+                        runCatching { EmbeddingService.segmenter.foregroundThreshold = bgRemovalThreshold }
+                    }
+
                     // Apply selected language as the Compose context locale
                     val language = profileState.preferences.language
                     val baseContext = LocalContext.current

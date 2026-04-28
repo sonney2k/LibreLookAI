@@ -622,6 +622,9 @@
     <string name="settings_dedupe_toggle">Vor dem Import prüfen</string>
     <string name="settings_dedupe_toggle_desc">Beim Fotografieren oder Importieren aus einem Ordner zuerst mögliche Duplikate anzeigen.</string>
     <string name="settings_dedupe_threshold">Ähnlichkeits-Schwelle: %1$d %%</string>
+    <string name="settings_bg_removal_title">Hintergrund­entfernung</string>
+    <string name="settings_bg_removal_desc">Stellt den On-Device-Freisteller ein, der bei Aufnahme, Import und in der Einkaufshilfe verwendet wird. Niedrigere Werte behalten mehr Pixel (lockerer Freisteller, evtl. mit Hintergrundresten); höhere Werte verwerfen Grenzpixel (engerer Freisteller, kann Teile abschneiden).</string>
+    <string name="settings_bg_removal_threshold">Vordergrund-Schwelle: %1$d %%</string>
     <string name="settings_debug_similarity_toggle">Debug-Ansicht für Ähnlichkeit anzeigen</string>
     <string name="settings_debug_similarity_desc">Beim Öffnen eines Treffers in der Ähnlichkeitssuche die Detailansicht (segmentierte Vorschauen, Embedding/Histogramm-Cosinus, Hue-Histogramme) anstelle des zoombaren Bildes anzeigen.</string>
 
