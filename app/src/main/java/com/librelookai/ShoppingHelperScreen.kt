@@ -110,6 +110,8 @@ fun ShoppingHelperScreen(
     profileViewModel: ProfileViewModel = viewModel(),
     locationViewModel: LocationViewModel = viewModel(),
     onSettingsClick: () -> Unit = {},
+    /** Switch to the wardrobe tab and scroll/highlight the picked match. */
+    onShowInWardrobe: (DriveImage) -> Unit = {},
     navResetTick: Int = 0,
     modifier: Modifier = Modifier,
 ) {
@@ -201,7 +203,10 @@ fun ShoppingHelperScreen(
             )
             1 -> SimilarityFinderTab(
                 shoppingViewModel = shoppingViewModel,
+                shoppingClosetViewModel = shoppingClosetViewModel,
                 wardrobeViewModel = wardrobeViewModel,
+                profileViewModel = profileViewModel,
+                onShowInWardrobe = onShowInWardrobe,
             )
             2 -> IdentifyGapsTab(
                 gapViewModel = gapViewModel,
@@ -547,10 +552,15 @@ private fun MoveToClosetDialog(
 @Composable
 private fun SimilarityFinderTab(
     shoppingViewModel: ShoppingHelperViewModel,
+    shoppingClosetViewModel: ShoppingClosetViewModel,
     wardrobeViewModel: WardrobeViewModel,
+    profileViewModel: ProfileViewModel,
+    onShowInWardrobe: (DriveImage) -> Unit,
 ) {
     val state by shoppingViewModel.state.collectAsState()
     val wardrobeState by wardrobeViewModel.state.collectAsState()
+    val profileState by profileViewModel.state.collectAsState()
+    val showDebug = profileState.preferences.debugSimilarityPreview
 
     var previewIndex by remember { mutableStateOf<Int?>(null) }
 
@@ -609,12 +619,29 @@ private fun SimilarityFinderTab(
                 }
             } else if (state.queryPath != null && !state.isMatching) {
                 item {
-                    Text(
-                        stringResource(R.string.shop_no_matches),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
-                    )
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        Text(
+                            stringResource(R.string.shop_no_matches),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        val queryPath = state.queryPath
+                        if (queryPath != null) {
+                            Button(
+                                onClick = { shoppingClosetViewModel.importQuery(queryPath) },
+                                modifier = Modifier.fillMaxWidth(),
+                            ) {
+                                Icon(Icons.Default.ShoppingBag, contentDescription = null, modifier = Modifier.size(18.dp))
+                                Spacer(Modifier.width(8.dp))
+                                Text(stringResource(R.string.shop_add_to_shopping_list))
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -630,6 +657,16 @@ private fun SimilarityFinderTab(
                 querySegmented = state.querySegmented,
                 queryHist = state.queryHist,
                 queryVec = state.queryVec,
+                showDebug = showDebug,
+                onShowInWardrobe = { image ->
+                    previewIndex = null
+                    onShowInWardrobe(image)
+                },
+                onAddToShoppingList = {
+                    state.queryPath?.let { shoppingClosetViewModel.importQuery(it) }
+                    previewIndex = null
+                },
+                canAddToShoppingList = state.queryPath != null,
                 onDismiss = { previewIndex = null },
             )
         }
@@ -754,7 +791,7 @@ private fun QueryCard(queryPath: String) {
 }
 
 @Composable
-private fun MatchRow(match: ShopMatch, onClick: () -> Unit) {
+internal fun MatchRow(match: ShopMatch, onClick: () -> Unit) {
     val context = LocalContext.current
     val percent = ((match.score.coerceIn(-1f, 1f) + 1f) / 2f * 100f).toInt()
     Row(
@@ -803,17 +840,13 @@ private fun MatchRow(match: ShopMatch, onClick: () -> Unit) {
 }
 
 /**
- * Debug-oriented match preview. Pages horizontally over [matches] starting at [initialIndex],
- * and on each page shows:
- *  - the raw query photo and its post-segmentation, composited-on-white, center-cropped
- *    counterpart (the exact pixels we hand to the embedder);
- *  - the match's raw cutout (transparent PNG) and the same composited+cropped variant we
- *    embed when the wardrobe is indexed;
- *  - the per-channel score breakdown (combined / embedding cosine / histogram cosine);
- *  - the H-axis (12 hue bins) of the query and match histograms side by side.
+ * Match preview dialog used by both the Similarity Finder and the wardrobe's "Find by photo"
+ * entry point. Pages horizontally over [matches] starting at [initialIndex]. The default render
+ * shows the match image + score header + action buttons; when [showDebug] is true (Settings →
+ * AI tab toggle) the per-channel breakdown is appended above the action buttons.
  */
 @Composable
-private fun MatchPreviewDialog(
+internal fun MatchPreviewDialog(
     matches: List<ShopMatch>,
     initialIndex: Int,
     queryRawPath: String?,
@@ -821,6 +854,10 @@ private fun MatchPreviewDialog(
     querySegmented: Boolean,
     queryHist: FloatArray?,
     queryVec: FloatArray?,
+    showDebug: Boolean,
+    onShowInWardrobe: (DriveImage) -> Unit,
+    onAddToShoppingList: () -> Unit,
+    canAddToShoppingList: Boolean,
     onDismiss: () -> Unit,
 ) {
     Dialog(
@@ -873,18 +910,91 @@ private fun MatchPreviewDialog(
 
                 HorizontalPager(
                     state = pagerState,
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.weight(1f).fillMaxWidth(),
                 ) { page ->
-                    MatchDebugPage(
-                        match = matches[page],
-                        queryRawPath = queryRawPath,
-                        queryProcessedPath = queryProcessedPath,
-                        querySegmented = querySegmented,
-                        queryHist = queryHist,
-                        queryVec = queryVec,
-                    )
+                    val match = matches[page]
+                    if (showDebug) {
+                        MatchDebugPage(
+                            match = match,
+                            queryRawPath = queryRawPath,
+                            queryProcessedPath = queryProcessedPath,
+                            querySegmented = querySegmented,
+                            queryHist = queryHist,
+                            queryVec = queryVec,
+                        )
+                    } else {
+                        MatchDefaultPage(match = match)
+                    }
                 }
+
+                MatchActionBar(
+                    onShowInWardrobe = { onShowInWardrobe(matches[pagerState.currentPage].image) },
+                    onAddToShoppingList = onAddToShoppingList,
+                    canAddToShoppingList = canAddToShoppingList,
+                )
             }
+        }
+    }
+}
+
+@Composable
+private fun MatchDefaultPage(match: ShopMatch) {
+    val combinedPercent = ((match.score.coerceIn(-1f, 1f) + 1f) / 2f * 100f).toInt()
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        Surface(
+            color = Color(0x22FFFFFF),
+            shape = RoundedCornerShape(8.dp),
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text(
+                stringResource(R.string.shop_match_score, combinedPercent),
+                color = Color.White,
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+            )
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .clip(RoundedCornerShape(8.dp))
+                .background(Color(0x11FFFFFF)),
+            contentAlignment = Alignment.Center,
+        ) {
+            ZoomableMatchImage(file = File(match.image.localPath))
+        }
+    }
+}
+
+@Composable
+private fun MatchActionBar(
+    onShowInWardrobe: () -> Unit,
+    onAddToShoppingList: () -> Unit,
+    canAddToShoppingList: Boolean,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.Black)
+            .padding(horizontal = 12.dp, vertical = 10.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Button(onClick = onShowInWardrobe, modifier = Modifier.weight(1f)) {
+            Text(stringResource(R.string.shop_show_in_wardrobe))
+        }
+        OutlinedButton(
+            onClick = onAddToShoppingList,
+            enabled = canAddToShoppingList,
+            modifier = Modifier.weight(1f),
+        ) {
+            Text(stringResource(R.string.shop_add_to_shopping_list))
         }
     }
 }

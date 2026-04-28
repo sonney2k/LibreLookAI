@@ -353,6 +353,8 @@ class MainActivity : ComponentActivity() {
                                             outfitEventsViewModel = outfitEventsViewModel,
                                             stylesViewModel = stylesViewModel,
                                             locationViewModel = locationViewModel,
+                                            shoppingClosetViewModel = shoppingClosetViewModel,
+                                            profileViewModel = profileViewModel,
                                             onCreateOutfitFromSelection = { itemIds ->
                                                 stylesViewModel.openComposer(
                                                     seedItemIds = itemIds,
@@ -377,6 +379,18 @@ class MainActivity : ComponentActivity() {
                                             profileViewModel = profileViewModel,
                                             locationViewModel = locationViewModel,
                                             onSettingsClick = onSettingsClick,
+                                            onShowInWardrobe = { image ->
+                                                val matchFolder = image.folderId
+                                                val viewingAll = locationState.activeLocationId == LocationViewModel.ALL_LOCATIONS_ID
+                                                if (!viewingAll && matchFolder.isNotEmpty()
+                                                    && matchFolder != locationState.activeLocationId
+                                                ) {
+                                                    locationViewModel.setActiveLocation(matchFolder)
+                                                }
+                                                wardrobeViewModel.requestScrollToImage(image.driveId)
+                                                selectedTab = 1
+                                                navResetTick++
+                                            },
                                             navResetTick = navResetTick,
                                         )
                                         3 -> TravelScreen(

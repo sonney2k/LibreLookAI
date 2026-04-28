@@ -235,6 +235,11 @@ fun SettingsScreen(
                         )
                     )
                 },
+                onSaveDebugSimilarityPreview = { enabled ->
+                    profileViewModel.savePreferences(
+                        profileState.preferences.copy(debugSimilarityPreview = enabled)
+                    )
+                },
             )
             4 -> AboutTab()
         }
@@ -1445,11 +1450,13 @@ private fun AiTab(
     preferences: UserPreferences,
     onSaveConsiderations: (AiConsiderations) -> Unit,
     onSaveDedupe: (Boolean, Float) -> Unit,
+    onSaveDebugSimilarityPreview: (Boolean) -> Unit,
 ) {
     val context = LocalContext.current
     var considerations by remember(preferences.aiConsiderations) { mutableStateOf(preferences.aiConsiderations) }
     var dedupeOnImport by remember(preferences) { mutableStateOf(preferences.dedupeOnImport) }
     var dedupeThreshold by remember(preferences) { mutableFloatStateOf(preferences.dedupeThreshold) }
+    var debugSimilarityPreview by remember(preferences) { mutableStateOf(preferences.debugSimilarityPreview) }
     var showResetAllDialog by remember { mutableStateOf(false) }
     // bump to force re-reads from PromptStore after edits or resets
     var promptRefresh by remember { mutableIntStateOf(0) }
@@ -1496,6 +1503,15 @@ private fun AiTab(
                     steps = 64,
                 )
             }
+            SwitchRow(
+                label = stringResource(R.string.settings_debug_similarity_toggle),
+                sublabel = stringResource(R.string.settings_debug_similarity_desc),
+                checked = debugSimilarityPreview,
+                onCheckedChange = {
+                    debugSimilarityPreview = it
+                    onSaveDebugSimilarityPreview(it)
+                },
+            )
         }
 
         HorizontalDivider()

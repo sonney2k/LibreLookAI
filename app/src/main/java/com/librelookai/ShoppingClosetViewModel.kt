@@ -184,6 +184,31 @@ class ShoppingClosetViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /**
+     * Adopt a Similarity Finder query photo (lives under `cacheDir/shop_queries/` and is owned by
+     * [ShoppingHelperViewModel]) into the shopping wishlist. Copies the file out of the query
+     * cache before handing it to [uploadRaw] so the caller can keep using the original to display
+     * the active query.
+     */
+    fun importQuery(queryRawPath: String) {
+        viewModelScope.launch {
+            val source = File(queryRawPath)
+            if (!source.exists()) {
+                _state.update { it.copy(error = "Query photo no longer exists") }
+                return@launch
+            }
+            val folderId = ensureFolder() ?: return@launch
+            val staged = withContext(Dispatchers.IO) {
+                val tempFile = File(drive.cacheDir, "shop_query_${System.currentTimeMillis()}.jpg")
+                runCatching { source.copyTo(tempFile, overwrite = true) }.getOrNull()
+            } ?: run {
+                _state.update { it.copy(error = "Failed to import query photo") }
+                return@launch
+            }
+            uploadRaw(staged, folderId)
+        }
+    }
+
     fun addFromGallery(uris: List<Uri>) {
         if (uris.isEmpty()) return
         viewModelScope.launch {

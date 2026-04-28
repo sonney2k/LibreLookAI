@@ -633,6 +633,12 @@
     <string name="settings_dedupe_toggle">Check before import</string>
     <string name="settings_dedupe_toggle_desc">When taking a photo or importing from a folder, surface possible duplicates first.</string>
     <string name="settings_dedupe_threshold">Similarity threshold: %1$d%%</string>
+    <string name="settings_debug_similarity_toggle">Show similarity debug preview</string>
+    <string name="settings_debug_similarity_desc">When opening a Similarity Finder match, show the per-channel breakdown (segmented thumbnails, embedding/histogram cosine, hue histograms) instead of the default zoomable image.</string>
+
+    <!-- Match preview dialog -->
+    <string name="shop_show_in_wardrobe">Show in wardrobe</string>
+    <string name="shop_add_to_shopping_list">Add to shopping list</string>
     <string name="dedupe_dialog_title">Possible duplicate</string>
     <string name="dedupe_dialog_desc">We found %1$d item(s) in your wardrobe that look very similar to this photo.</string>
     <string name="dedupe_dialog_import_anyway">Import anyway</string>

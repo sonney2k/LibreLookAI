@@ -38,6 +38,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -61,9 +62,11 @@ import androidx.compose.material.icons.filled.ImageSearch
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material.icons.automirrored.filled.RotateRight
 import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.DropdownMenu
@@ -122,6 +125,8 @@ fun WardrobeScreen(
     outfitEventsViewModel: OutfitEventsViewModel = viewModel(),
     stylesViewModel: OutfitsViewModel = viewModel(),
     locationViewModel: LocationViewModel = viewModel(),
+    shoppingClosetViewModel: ShoppingClosetViewModel = viewModel(),
+    profileViewModel: ProfileViewModel = viewModel(),
     onCreateOutfitFromSelection: (Set<String>) -> Unit = {},
     onTryOnSelection: (Set<String>) -> Unit = {},
     canTryOn: Boolean = false,
@@ -133,6 +138,7 @@ fun WardrobeScreen(
     val outfitEventsState  by outfitEventsViewModel.state.collectAsState()
     val outfitsState   by stylesViewModel.state.collectAsState()
     val locationState by locationViewModel.state.collectAsState()
+    val profileState  by profileViewModel.state.collectAsState()
     val context = LocalContext.current
 
     // driveId → number of calendar wear events that include this item
@@ -224,6 +230,9 @@ fun WardrobeScreen(
                 }
             },
             onDismissFindByPhoto = viewModel::dismissFindByPhoto,
+            onConsumePendingScroll = viewModel::consumePendingScroll,
+            onAddMatchToShoppingList = shoppingClosetViewModel::importQuery,
+            debugSimilarityPreview = profileState.preferences.debugSimilarityPreview,
             modifier = modifier,
         )
         WardrobeView.CAPTURE -> CaptureScreen(
@@ -546,6 +555,9 @@ private fun GridContent(
     onSettingsClick: () -> Unit = {},
     onOpenFindByPhoto: () -> Unit = {},
     onDismissFindByPhoto: () -> Unit = {},
+    onConsumePendingScroll: () -> Unit = {},
+    onAddMatchToShoppingList: (String) -> Unit = {},
+    debugSimilarityPreview: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
     val isOffline = LocalIsOffline.current
@@ -587,11 +599,17 @@ private fun GridContent(
     // Clear viewer when filter/sort changes to avoid stale index
     LaunchedEffect(selectedTags, sortBy) { selectedIndex = null }
 
-    // After find-by-photo: scroll the grid to the matched item and pulse a highlight ring on it
-    // (no longer opens the viewer — the user lands on it in the grid and chooses what to do next).
+    // After find-by-photo (or "Show in wardrobe" from Similarity Finder): scroll the grid to
+    // the matched item and pulse a highlight ring on it. The local var seeds either from a
+    // viewer-driven request (find-by-photo's onPickMatch) or from the VM-owned state.
     val gridState = androidx.compose.foundation.lazy.grid.rememberLazyGridState()
     var pendingScrollDriveId by remember { mutableStateOf<String?>(null) }
     var highlightedDriveId by remember { mutableStateOf<String?>(null) }
+    LaunchedEffect(state.pendingScrollDriveId) {
+        val external = state.pendingScrollDriveId ?: return@LaunchedEffect
+        pendingScrollDriveId = external
+        onConsumePendingScroll()
+    }
     LaunchedEffect(pendingScrollDriveId, displayedImages) {
         val target = pendingScrollDriveId ?: return@LaunchedEffect
         val idx = displayedImages.indexOfFirst { it.driveId == target }
@@ -1181,19 +1199,24 @@ private fun GridContent(
     state.findByPhoto?.let { fbp ->
         FindByPhotoResultsSheet(
             findByPhoto = fbp,
-            onPickMatch = { match ->
+            debugSimilarityPreview = debugSimilarityPreview,
+            onPickMatch = { image ->
                 selectedTags = emptyMap()
                 // If a single closet is active and the match lives in a different one, switch
                 // closets so the grid will contain the item once it reloads. In All Locations
                 // mode the grid already shows every closet — leave the filter alone. The
                 // pending-scroll LaunchedEffect retries when [displayedImages] updates, so the
                 // highlight lands on the right tile either way.
-                val matchFolder = match.image.folderId
+                val matchFolder = image.folderId
                 val viewingAll = activeLocationId == LocationViewModel.ALL_LOCATIONS_ID
                 if (!viewingAll && matchFolder.isNotEmpty() && matchFolder != activeLocationId) {
                     onSetActiveLocation(matchFolder)
                 }
-                pendingScrollDriveId = match.image.driveId
+                pendingScrollDriveId = image.driveId
+                onDismissFindByPhoto()
+            },
+            onAddToShoppingList = { queryPath ->
+                onAddMatchToShoppingList(queryPath)
                 onDismissFindByPhoto()
             },
             onDismiss = onDismissFindByPhoto,
@@ -2057,14 +2080,27 @@ private fun DuplicateCheckSheet(
     }
 }
 
+/**
+ * Find-by-photo bottom sheet. Shares the [MatchRow] + [MatchPreviewDialog] pattern with the
+ * Shopping helper's Similarity Finder so both flows feel like a single feature with two entry
+ * points: tapping a row opens the same preview dialog with the same "Show in wardrobe" /
+ * "Add to shopping list" actions.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun FindByPhotoResultsSheet(
     findByPhoto: FindByPhoto,
-    onPickMatch: (FindByPhotoMatch) -> Unit,
+    debugSimilarityPreview: Boolean,
+    onPickMatch: (DriveImage) -> Unit,
+    onAddToShoppingList: (queryPath: String) -> Unit,
     onDismiss: () -> Unit,
 ) {
     val context = LocalContext.current
+    val shopMatches = remember(findByPhoto.matches) {
+        findByPhoto.matches.map { ShopMatch(image = it.image, score = it.score) }
+    }
+    var previewIndex by remember { mutableStateOf<Int?>(null) }
+
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
@@ -2110,49 +2146,54 @@ private fun FindByPhotoResultsSheet(
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 }
-                findByPhoto.matches.isEmpty() -> Text(
-                    stringResource(R.string.wardrobe_find_by_photo_empty),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                else -> LazyVerticalGrid(
-                    columns = GridCells.Adaptive(minSize = 96.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.height(360.dp),
+                shopMatches.isEmpty() -> Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text(
+                        stringResource(R.string.wardrobe_find_by_photo_empty),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Button(
+                        onClick = { onAddToShoppingList(findByPhoto.queryPath) },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Icon(Icons.Default.ShoppingBag, contentDescription = null, modifier = Modifier.size(18.dp))
+                        Spacer(Modifier.width(8.dp))
+                        Text(stringResource(R.string.shop_add_to_shopping_list))
+                    }
+                }
+                else -> Column(
+                    modifier = Modifier.heightIn(max = 480.dp).verticalScroll(rememberScrollState()),
                 ) {
-                    itemsIndexed(findByPhoto.matches, key = { _, m -> m.image.driveId }) { _, match ->
-                        Column(
-                            modifier = Modifier
-                                .clickable { onPickMatch(match) },
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .aspectRatio(1f)
-                                    .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.small),
-                            ) {
-                                AsyncImage(
-                                    model = ImageRequest.Builder(context)
-                                        .data(java.io.File(match.image.localPath))
-                                        .crossfade(true)
-                                        .build(),
-                                    contentDescription = match.image.name,
-                                    contentScale = androidx.compose.ui.layout.ContentScale.Fit,
-                                    modifier = Modifier.fillMaxSize(),
-                                )
-                            }
-                            val pct = (match.score.coerceIn(-1f, 1f) * 100f).toInt().coerceIn(0, 100)
-                            Text(
-                                stringResource(R.string.dedupe_score, pct),
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        }
+                    shopMatches.forEachIndexed { idx, match ->
+                        MatchRow(match = match, onClick = { previewIndex = idx })
                     }
                 }
             }
+        }
+    }
+
+    previewIndex?.let { idx ->
+        if (idx in shopMatches.indices) {
+            MatchPreviewDialog(
+                matches = shopMatches,
+                initialIndex = idx,
+                queryRawPath = findByPhoto.queryPath,
+                queryProcessedPath = null,
+                querySegmented = false,
+                queryHist = null,
+                queryVec = null,
+                showDebug = debugSimilarityPreview,
+                onShowInWardrobe = { image ->
+                    previewIndex = null
+                    onPickMatch(image)
+                },
+                onAddToShoppingList = {
+                    previewIndex = null
+                    onAddToShoppingList(findByPhoto.queryPath)
+                },
+                canAddToShoppingList = true,
+                onDismiss = { previewIndex = null },
+            )
         }
     }
 }

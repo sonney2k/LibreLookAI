@@ -121,6 +121,10 @@ data class WardrobeUiState(
     val duplicateCheck: DuplicateCheck? = null,
     /** Non-null while the user is reviewing matches from a "find item by photo" capture. */
     val findByPhoto: FindByPhoto? = null,
+    /** Non-null when something outside the wardrobe screen (e.g. Similarity Finder's
+     *  "Show in wardrobe") has asked the grid to scroll to and pulse a specific item. The
+     *  wardrobe screen consumes this in a LaunchedEffect once the item is in the displayed list. */
+    val pendingScrollDriveId: String? = null,
     /** Non-null while a folder import is paused awaiting the user's review of pre-scanned candidates. */
     val importPreview: ImportPreview? = null,
 )
@@ -1378,6 +1382,13 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         _state.value.findByPhoto?.queryPath?.let { runCatching { File(it).delete() } }
         _state.update { it.copy(findByPhoto = null) }
     }
+
+    /** Request that the wardrobe grid scroll to and pulse the given item once it's loaded. */
+    fun requestScrollToImage(driveId: String) =
+        _state.update { it.copy(pendingScrollDriveId = driveId) }
+
+    /** Consumed by the wardrobe screen after it has scrolled to the pending target. */
+    fun consumePendingScroll() = _state.update { it.copy(pendingScrollDriveId = null) }
 
     // ---------- Upload from camera ----------
 

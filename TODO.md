@@ -11,47 +11,98 @@ Before executing the implementation udpate CLAUDE.md with decisions/active tasks
 TODO
 ====
 
+
 Features:
 ---------
 
+when importing images/photo/url add option to do background removal via cheap local tflite model. let the model mark the background display the starting point as cross hair that the user can change and add threshold for tuninging
 
+add a feedback tab under settings. add debug setting under this tab add way to send feedback via firebase
 
-background removal prompt: put the "Place the clothing item on a pure, solid neon green background (Hex #00FF00).
+firebase app analytics to understand what features are being used (zoomed in which buttons are pressed, things tapped in which order)
 
 
 AI (stars) spinning wheel in create outfit
 
-Future shopping helper
-1. When shopping add feature to check if item would match wardrobe and with what it could be combined / shopping helper. to this end take picture like in wardrobe with same size and UI experience. remove bg and tag and find matching items like in style creation for wardrobe
-3.  When selecting multiple items in wardrobe add option remove / replace item / alternatives suggestion
+
+  ▎ Continue work on the LibreLookAI Shopping helper. Feature 1 (Wardrobe + Shopping List URL import) and Feature 2 (Shopping closet, _shopping/ Drive folder,         
+  ▎ ShoppingClosetViewModel, Shopping List sub-tab) are already shipped — see CLAUDE.md sections "Shopping closet (wishlist storage)", "URL import", and "Shopping     
+  ▎ Helper tab" for the architecture; the cross-closet snapshot already includes the shopping folderId so similarity search covers wishlist items too.                 
+  ▎                                                         
+  ▎ Now do these two features:                                                                                                                                         
+  ▎
+  ▎ Feature A — Similarity-search debug toggle + match actions, and unify "Find by photo" with Similarity Finder.                                                      
+  ▎                                                         
+  ▎ 1. Add debugSimilarityPreview: Boolean = false to UserPreferences (in UserPreferences.kt). Add a Settings → Profile toggle ("Show similarity debug preview"). Pipe 
+  ▎ through ProfileViewModel like the existing dedupeOnImport toggle.
+  ▎ 2. Refactor MatchPreviewDialog in ShoppingHelperScreen.kt into two render paths:                                                                                   
+  ▎   - Default path (when debugSimilarityPreview = false): zoomable match image + score header + two action buttons:                                                  
+  ▎       - "Show in wardrobe" → callback up to MainActivity → switch to Wardrobe tab (index 1), call LocationViewModel.setActiveLocation(...) with the match's        
+  ▎ folderId if it differs from the active one, then set pendingScrollDriveId on the wardrobe screen so the existing LaunchedEffect-driven scroll-to + ring-pulse fires
+  ▎  (same as FindByPhotoResultsSheet already does — see WardrobeScreen.kt). Plumb a new lambda onShowInWardrobe: (DriveImage) -> Unit from MainActivity →             
+  ▎ ShoppingHelperScreen → SimilarityFinderTab → MatchPreviewDialog.                                                                                                   
+  ▎     - "Add to shopping list" → calls shoppingClosetViewModel.importQuery(queryRawPath) (new method — adopts the file from cacheDir/shop_queries/ into the shopping 
+  ▎ folder via the same addFromCamera upload path).                                                                                                                    
+  ▎   - Debug path (when toggle is on): keep the current per-page breakdown UI but append the same two buttons.
+  ▎ Also: when state.matches.isEmpty() && state.queryPath != null && !state.isMatching, render an "Add to shopping list" button under the empty-results text.          
+  ▎ 3. Unify "Find by photo" with Similarity Finder — adopt the Shopping helper's interface and math for the wardrobe's existing find-by-photo entry point. The        
+  ▎ wardrobe header ImageSearch icon should now route through ShoppingHelperViewModel.onCapturedFile(...) (which uses the combined embedding + histogram score), or,   
+  ▎ equivalently, share the underlying EmbeddingService.findSimilar call but render results with the same MatchRow + MatchPreviewDialog pattern. Decide whether to (a) 
+  ▎ keep WardrobeUiState.findByPhoto and just rewrite FindByPhotoResultsSheet to look like the Shopping match list (recommended — least churn), or (b) drop            
+  ▎ find-by-photo entirely and always send users to Shopping → Similarity Finder. Either way: the resulting UI on both screens must show the same actions ("Show in 
+  ▎ wardrobe" / "Add to shopping list") so the two flows feel like one feature with two entry points.
+  ▎
+  ▎ Feature B — "Suggest replacements to buy" for selected wardrobe items.                                                                                             
+  ▎
+  ▎ 1. New FAB in Wardrobe selection mode: Icons.Default.SwapHoriz, label "Suggest alternatives". Gated on !isOffline && state.selectedIds.isNotEmpty().               
+  ▎ 2. Extend WardrobeGapViewModel with suggestReplacements(selected: List<DriveImage>, allImages: List<DriveImage>, prefs: UserPreferences) — uses a new prompt 
+  ▎ builder buildReplacementsPrompt(...) (top-level private fn in WardrobeGapViewModel.kt, mirroring buildAnalysisPrompt's style). The prompt must clearly tell Gemini:
+  ▎  "the user wants to retire these items (list with tags); suggest replacements that complement the remaining wardrobe (factor in remaining = allImages - selected); 
+  ▎ return List". Reuse the GapSuggestion schema unchanged.                                                                                                            
+  ▎ 3. Result UI: full-screen Dialog (or ModalBottomSheet) titled "Replacements for N items", scrolling LazyColumn of GapSuggestionCards. Loading + error states match 
+  ▎ the existing Identify Gaps tab. Triggered from MainActivity so the dialog can be hosted at the activity level (consistent with OutfitComposerScreen /              
+  ▎ TryOnComposerScreen).
+  ▎                                                                                                                                                                    
+  ▎ Working agreement (CLAUDE.md): update CLAUDE.md first before coding the architectural pieces (new VM methods, new prompt builder, new dialog), then code, then a   
+  ▎ second pass to capture anything new, and finally ask for a git commit. The two features are independent so land them as separate commits.
+
+
 
 create human readable release notes between now and c40489226c3a4a01dd4033e959d83cee1d7b8ebb and release version 1.3.0 and upload to testers in firebase
 
 Implement new feature: We are working on the refinancing/monetization aspect of the app: I want people to be able to buy coins that I then use to pay gemini cloud costs. would that work with RevenueCat (handles the money/receipts) + Firebase (database and secure Gemini API routing)? In addition, I still want to support the bring your own key option though.
 
-add option to try on image from catalog
 
-groessen filter
-
-size
+size filter? default sizes in wardrobe? size tag?
 
 Bugs:
 -----
-fix usability issue on wardrobe screen: moving item to different closet and then switching to that closet - it won't immediately appear on wardrobe after moving to different closet. it took almost a minute to appear. Can this be sped up?
+ensure that in all processes, images are smaller than max(width,height)<1280. In particular before uploading anything to Gemini.
 
-bug or feature: persistance is working reliably now. What I noticed is that the closet selector in the header is being remebered too 
-  but on app start it seems to be set to the same value as the one in settings data. on startup make it always show     
-  all.                                                                                                                  
+fix bug in similarity search not all closets are being indexed initally I noticed only the default one is
+
+on try-on details the delete button is partially outside the screen and when clicking X in upper left it does not immediately go back to the try-on tab on outfits
+
+fix usability issue on wardrobe screen: moving item to different closet and then switching to that closet - it won't immediately appear on wardrobe after moving to different closet. it took almost a minute to appear. Can this be sped up?
 
 offline check is not reliable offline/online status - listen to android. if previously online but it now goes offline also go offline in the app and ensure that the red offline bar is shown. also in wardrobe some the buttons for importing from gallery or picture do still exist.
 
-ensure that in all processes, images are smaller than max(width,height)<1280. In particular before uploading anything to Gemini.
+security/function relevant parts of a prompts should not be appear in settings. e.g. "Place the clothing item on a pure, solid neon green background (Hex #00FF00).
+
+bug or feature: persistance is working reliably now. What I noticed is that the closet selector in the header is being remebered too 
+
+shopping "wardrobe" is slow to load and does not have the same functionality as wardrobe, make shopping "wardrobe" have the same features as wardrobe
+
 
 IN PROGRESS
 ===========
-add a try-on tab under outfits, that shows all previously worn outfits
+Continue work on Shopping helper.
 
-similarity search is still not reliable. Let's debug: Show the image once raw, once with background removed (white) and show the matching images with the same background removal applied. Also show the histograms. Note we are using efficientnet now to capture further textures. allow for swiping left / right to show next match
+1. In wardrobe one can currently import an item by taking a picture and by selecting an image from gallery. Add another option to fetch an item from a shopping site. To this end the user pastes a URL to a shopping page e.g. amazon and we need to detect and fetch the product image from that page
+2. Create a shopping closet that can contain potential items a user wants to shop. If a user indeed shops an item it can be moved over to one of his other closets. Do not display the shopping closet on wardrobe but show this shopping list as tab under Shopping. Have the same function as in wardrobe there but only every show items from the shopping list.
+3. Similarity search keep the debug code but disable it by default. Add button on match list and when match is displayed large go to the matching item in wardrobe. Add another button to import to shopping closet (if user finds no similar one also in both cases)
+4. When selecting one or multiple items in wardrobe and my intention is to get rid of those items and perhaps replace those add way to suggest alternatives I could buy
+
 
 Rework shopping helper by adding tools that are currently scattered across the app:
 1. Move current shopping helper under a tab Similarity Finder
@@ -59,7 +110,20 @@ Rework shopping helper by adding tools that are currently scattered across the a
 3. Move wardrobe statistics over
 4. Move statistics from calender over 
 
-sync & repair: don't always clear cache make that optional
+
+on repair & sync make preview all images that will be imported in a grid similar to how they are show in wardrobe view with them all selected. only the selected ones will be modified. support manual (un)selection with the common features of (un)select all, showing counts..
+
+
+how can we unify tags? I see tags like "Long-sleeve T-shirt", "Long-sleeved t-shirt", "Long-sleeve shirt" that likely mean the same. Or "grey", "Gray"
+
+
+
+
+FIXED
+=====
+when clicking on any screen button go to that screen with the default tab selected
+
+in settings add AI tab where all gemini prompts that are currently being used are being displayed and can be edited/overriden. add a reset to defaults on this page. add a setting as in what to consider by default when suggesting a style.
 
 Integrate similarity search on several places:
 1. when taking picture on wardrobe item import: when picture is taken check for similar ones automatically (make this optional via settings). if similar items are found (configurable threshold in settings) then let user see them and confirm if import should continue. for similarity comparison remove background of the photo in the same way as it is done for similarity search
@@ -68,19 +132,20 @@ Integrate similarity search on several places:
 4. in sync & repair, for each found image run similarity search. if above a certain threshold mark the image with 'similar'. Clicking on 'similar' then shows the similar ones. make the user confirm that there are no similar ones then. like in 1. remove background
 5. in wardrobe import from folder: add same logic like in 4. sync & repair: preview images that would be imported and let user select and have similarity search
 
-on repair & sync make preview all images that will be imported in a grid similar to how they are show in wardrobe view with them all selected. only the selected ones will be modified. support manual (un)selection with the common features of (un)select all, showing counts..
+sync & repair: don't always clear cache make that optional
 
-in settings add AI tab where all gemini prompts that are currently being used are being displayed and can be edited/overriden. add a reset to defaults on this page. add a setting as in what to consider by default when suggesting a style.
-
-how can we unify tags? I see tags like "Long-sleeve T-shirt", "Long-sleeved t-shirt", "Long-sleeve shirt" that likely mean the same. Or "grey", "Gray"
-
-why is the initial loading time on app start so long in wardrobe screen? can you speed this up and make the app work fully offline in "view only" and "manual" mode not enabling any of the AI suggestions at the same time?
+similarity search is still not reliable. Let's debug: Show the image once raw, once with background removed (white) and show the matching images with the same background removal applied. Also show the histograms. Note we are using efficientnet now to capture further textures. allow for swiping left / right to show next match
 
 travel packing. For each suggested style add option to add to styles. also add option to move all items to "Travel" location.
 
+why is the initial loading time on app start so long in wardrobe screen? can you speed this up and make the app work fully offline in "view only" and "manual" mode not enabling any of the AI suggestions at the same time?
 
-FIXED
-=====
+add a try-on tab under outfits, that shows all previously worn outfits
+
+Shopping helper
+1. Move the calendar screen as tab into insights
+2. Create a shopping helper screen and move the similarity search from insights there aswell as the gap analysis
+
 similarity search always includes all wardrobes (cross-closet snapshot fed into every similarity-search call site)
 
 similarity search on wardrobe: when tapping a found item don't open that item but scroll to the position where the item is in the grid view (and switch closet if the match lives elsewhere)
@@ -157,104 +222,9 @@ on repair & sync it takes very long just to scan about 100 files/images/jsons. C
 on several text input fields e.g. when giving feedback to gemini suggested styles, the keyboard appears but the text input field is not visible/under the keyboard. make it always visible (e.g. scrolling up) and have the submit key visible too so users don't have to push the android back button
 when taking pictures where the rotation option is add a button to retake picture and one to close the camera to cancel
 
-continue this
-❯ found another issue in sync & repair. Images that have wrong filenames and are subsequently imported are not tagged   
+found another issue in sync & repair. Images that have wrong filenames and are subsequently imported are not tagged   
   perhaps also not cutout?                                                                                              
                                                                                                                         
-⏺ Let me look at the Repair & Sync code to understand the current flow for wrongly-named images.                      
-                                                                                                                        
-  Searched for 6 patterns (ctrl+o to expand)                                                                            
-                                                                                         
-⏺ Now let me read the full raw image processing section in detail.                                                      
-                                                                                                                      
-  Read 1 file (ctrl+o to expand)                                                                                        
-                                                                                                                        
-⏺ Now let me look at downloadToCache and uploadAsCutout to understand what happens to the local file during raw image   
-  processing.                                                                                                           
-                                                                                                                        
-  Searched for 2 patterns, read 2 files (ctrl+o to expand)                                                              
-                                                                                                                        
-⏺ Now I can see the bug. Let me look at processQueue to confirm the correct ordering:                                   
-                                                            
-  Read 1 file (ctrl+o to expand)                                                                                        
-                                                                                                                        
-⏺ Found it. The bug is identical in both the orphaned originals block and the raw images block:                         
-                                                                                                                        
-  1. drive.deleteFile(item.driveId) runs first, which deletes localOriginal from the local cache ({item.driveId}.jpg)   
-  2. Then localOriginal.copyTo(...) throws NoSuchFileException                                                          
-  3. The outer runCatching catches it — tagging and sidecar write are never reached                                     
-                                                                                                                        
-  processQueuedImage does this correctly: upload original → copy files to cache → then delete raw. The Repair & Sync    
-  blocks have the order wrong. Also, uploadImageWithName is called after deleteFile using the now-deleted localOriginal 
-  file.                                                                                                                 
-                                                            
-  The fix mirrors processQueuedImage:                                                                                   
-  
-  Read 1 file (ctrl+o to expand)                                                                                        
-                                                            
-⏺ Now I'll apply the fix to both blocks — upload original to Drive first, then copy to local cache, then delete the old
-  raw file:                       
-                                                                                                                        
-⏺ Update(app/src/main/java/com/librelookai/WardrobeViewModel.kt)                                                        
-  ⎿  Added 4 lines, removed 1 line                                                                                      
-      403                          Log.d(TAG, "Cutout file: ${cutoutFile.absolutePath}")                                
-      404                          val cutoutDrive = uploadAsCutout(item.folderId, cutoutFile)
-      405                          Log.d(TAG, "Cutout uploaded as ${cutoutDrive.id}")                                   
-      406 +                        // Upload original to Drive with correct name before deleteFile, which also   
-      407 +                        // removes the local cache file for item.driveId (= localOriginal).                  
-      408                          val newOrigId = runCatching {
-      407 -                            drive.deleteFile(item.driveId)                                            
-      409                              drive.uploadImageWithName(
-      410                                  item.folderId, localOriginal,
-      411                                  "${cutoutDrive.id}${DriveRepository.ORIGINAL_SUFFIX}",
-      412                              ).id
-      413                          }.onFailure { Log.w(TAG, "Original re-upload failed: ${it.message}") }.getOrNu
-           ll()
-      414                          Log.d(TAG, "Original re-uploaded as $newOrigId")
-      415 +                        // Cache both files locally before deleting the raw Drive file.               
-      416                          val localCutout = File(drive.cacheDir, "${cutoutDrive.id}.png")
-      417                          if (cutoutFile.absolutePath != localCutout.absolutePath) {
-      418                              cutoutFile.copyTo(localCutout, overwrite = true)
-     ...
-      420                          localOriginal.copyTo(
-      421                              File(drive.cacheDir, "${cutoutDrive.id}_original.jpg"), overwrite = true,
-      422                          )
-      423 +                        runCatching { drive.deleteFile(item.driveId) }                                
-      424                          val tags = gemini.classifyClothing(localCutout, geminiLanguage)
-      425                          Log.d(TAG, "Tags for ${cutoutDrive.id}: $tags")
-      426                          drive.upsertSidecar(
-
-⏺ Update(app/src/main/java/com/librelookai/WardrobeViewModel.kt)
-  ⎿  Added 4 lines, removed 1 line
-      448                          Log.d(TAG, "Cutout file: ${cutoutFile.absolutePath}")                                
-      449                          val cutoutDrive = uploadAsCutout(item.folderId, cutoutFile)
-      450                          Log.d(TAG, "Cutout uploaded as ${cutoutDrive.id}")                                   
-      451 +                        // Upload original to Drive with correct name before deleteFile, which also   
-      452 +                        // removes the local cache file for item.driveId (= localOriginal).                  
-      453                          val newOrigId = runCatching {
-      452 -                            drive.deleteFile(item.driveId)                                            
-      454                              drive.uploadImageWithName(
-      455                                  item.folderId, localOriginal,
-      456                                  "${cutoutDrive.id}${DriveRepository.ORIGINAL_SUFFIX}",
-      457                              ).id
-      458                          }.onFailure { Log.w(TAG, "Original re-upload failed: ${it.message}") }.getOrNu
-           ll()
-      459                          Log.d(TAG, "Original re-uploaded as $newOrigId")
-      460 +                        // Cache both files locally before deleting the raw Drive file.               
-      461                          val localCutout = File(drive.cacheDir, "${cutoutDrive.id}.png")
-      462                          if (cutoutFile.absolutePath != localCutout.absolutePath) {
-      463                              cutoutFile.copyTo(localCutout, overwrite = true)
-     ...
-      465                          localOriginal.copyTo(
-      466                              File(drive.cacheDir, "${cutoutDrive.id}_original.jpg"), overwrite = true,
-      467                          )
-      468 +                        runCatching { drive.deleteFile(item.driveId) }                                
-      469                          val tags = gemini.classifyClothing(localCutout, geminiLanguage)
-      470                          Log.d(TAG, "Tags for ${cutoutDrive.id}: $tags")
-      471                          drive.upsertSidecar(
-
-
-
 add debug code to repair and sync that logs all actions to logcat. after running repair and sync all files that don't have an original file but just a cutout have empty tags (corresponding .json just contains "{}"). Hence ALWAYS run tagging based on the cutout image AND check if the json has more than just {} otherwise add also re-tag those. In addition, currently when the screen goes blank (android timeout) the app closes while in repair and sync procedure so the repair is not finished. fix that.
 
 Fix this error when importing via taking picture in wardrobe: After taking picture I see that original image is there, cutout is being generated, but .json with tag file is not there but I get an error message on the screen saying /data/user/0/com.librelookai/files/wardrobe/drivhash_orginal.jpg: The source file doesn't exist

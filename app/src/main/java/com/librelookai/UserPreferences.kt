@@ -19,6 +19,10 @@ data class UserPreferences(
     val dedupeOnImport: Boolean = true,
     /** Cosine-similarity threshold (0..1) above which two items are treated as duplicates. */
     val dedupeThreshold: Float = 0.88f,
+    /** When true, the Similarity Finder match preview shows the per-channel debug breakdown
+     *  (segmented thumbnails, per-engine cosine scores, hue histograms) instead of the default
+     *  zoom-only view. */
+    val debugSimilarityPreview: Boolean = false,
 )
 
 /** Toggles controlling which context blocks the outfit-suggestion prompts include. */
