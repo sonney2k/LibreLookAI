@@ -236,6 +236,29 @@ private fun ShoppingListTab(
     var showMoveDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
 
+    var selectedTags by remember { mutableStateOf(emptyMap<String, Set<String>>()) }
+    var sortBy by remember { mutableStateOf(SortOption.DATE_DESC) }
+
+    val tagCategories = remember(state.items) { state.items.tagCategories() }
+    val filteredItems = remember(state.items, selectedTags) {
+        val activeFilters = selectedTags.filter { (_, tags) -> tags.isNotEmpty() }
+        if (activeFilters.isEmpty()) state.items
+        else state.items.filter { img ->
+            activeFilters.all { (categoryLabel, catTags) ->
+                catTags.any { it in img.tagStringsForCategory(categoryLabel) }
+            }
+        }
+    }
+    val displayedItems = remember(filteredItems, sortBy) {
+        when (sortBy) {
+            SortOption.DATE_DESC  -> filteredItems
+            SortOption.DATE_ASC   -> filteredItems.reversed()
+            SortOption.POPULARITY -> filteredItems
+            SortOption.TYPE       -> filteredItems.sortedBy { it.tags?.type?.lowercase() ?: "" }
+            SortOption.CATEGORY   -> filteredItems.sortedBy { it.tags?.category?.lowercase() ?: "" }
+        }
+    }
+
     val galleryLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.PickMultipleVisualMedia(),
     ) { uris ->
@@ -243,47 +266,102 @@ private fun ShoppingListTab(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        if (state.items.isEmpty() && !state.isLoading) {
-            Column(
-                modifier = Modifier.fillMaxSize().padding(horizontal = 32.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-            ) {
-                Icon(
-                    Icons.Default.ShoppingBag,
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                Spacer(Modifier.height(8.dp))
-                Text(
-                    stringResource(R.string.shop_list_empty_title),
-                    style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                Spacer(Modifier.height(4.dp))
-                Text(
-                    stringResource(R.string.shop_list_empty_hint),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        } else {
-            LazyVerticalGrid(
-                columns = GridCells.Adaptive(minSize = 120.dp),
-                contentPadding = PaddingValues(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxSize(),
-            ) {
-                items(state.items, key = { it.driveId }) { item ->
-                    ShoppingListTile(
-                        item = item,
-                        selected = item.driveId in state.selectedIds,
-                        selectionMode = isSelectionMode,
-                        onToggle = { shoppingClosetViewModel.toggleSelection(item.driveId) },
+        Column(Modifier.fillMaxSize()) {
+            // Filter/sort toolbar — only useful when we actually have items.
+            if (state.items.isNotEmpty()) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    TagFilterBar(
+                        tagCategories = tagCategories,
+                        selectedTags = selectedTags,
+                        onTagsChanged = { selectedTags = it },
+                        modifier = Modifier.weight(1f),
+                    )
+                    SortButton(
+                        sortBy = sortBy,
+                        onSortChanged = { sortBy = it },
+                        modifier = Modifier.padding(end = 4.dp),
                     )
                 }
+                if (!isSelectionMode) {
+                    val hasFilter = selectedTags.values.any { it.isNotEmpty() }
+                    Text(
+                        text = if (hasFilter) {
+                            stringResource(R.string.wardrobe_filtered_count, displayedItems.size, state.items.size)
+                        } else {
+                            stringResource(R.string.wardrobe_item_count, state.items.size)
+                        },
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 2.dp),
+                    )
+                }
+                if (isSelectionMode) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 12.dp, vertical = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            stringResource(R.string.wardrobe_selected_count, state.selectedIds.size),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.weight(1f),
+                        )
+                        TextButton(
+                            onClick = shoppingClosetViewModel::clearSelection,
+                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                        ) {
+                            Text(stringResource(R.string.action_deselect_all))
+                        }
+                    }
+                }
+            }
+
+            if (state.items.isEmpty() && !state.isLoading) {
+                Column(
+                    modifier = Modifier.weight(1f).fillMaxWidth().padding(horizontal = 32.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    Icon(
+                        Icons.Default.ShoppingBag,
+                        contentDescription = null,
+                        modifier = Modifier.size(48.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        stringResource(R.string.shop_list_empty_title),
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        stringResource(R.string.shop_list_empty_hint),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            } else if (displayedItems.isEmpty()) {
+                Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    Text(stringResource(R.string.wardrobe_empty_filter), style = MaterialTheme.typography.bodyLarge)
+                }
+            } else {
+                WardrobeZoomableItemGrid(
+                    images = displayedItems,
+                    selectedIds = state.selectedIds,
+                    onClick = { _, image ->
+                        shoppingClosetViewModel.toggleSelection(image.driveId)
+                    },
+                    onLongClick = { image ->
+                        shoppingClosetViewModel.toggleSelection(image.driveId)
+                    },
+                    modifier = Modifier.weight(1f).fillMaxWidth(),
+                )
             }
         }
 
@@ -414,56 +492,6 @@ private fun ShoppingListTab(
                 }
             },
         )
-    }
-}
-
-@Composable
-private fun ShoppingListTile(
-    item: DriveImage,
-    selected: Boolean,
-    selectionMode: Boolean,
-    onToggle: () -> Unit,
-) {
-    val context = LocalContext.current
-    Box(
-        modifier = Modifier
-            .aspectRatio(1f)
-            .clip(RoundedCornerShape(10.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant)
-            .let { m ->
-                if (selected) m.border(3.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp)) else m
-            }
-            .clickable { onToggle() },
-    ) {
-        AsyncImage(
-            model = ImageRequest.Builder(context).data(File(item.localPath)).crossfade(true).build(),
-            contentDescription = item.tags?.label ?: item.name,
-            contentScale = ContentScale.Fit,
-            modifier = Modifier.fillMaxSize(),
-        )
-        if (selectionMode && selected) {
-            Icon(
-                Icons.Default.CheckCircle,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.align(Alignment.TopEnd).padding(6.dp).size(22.dp),
-            )
-        }
-        item.tags?.label?.takeIf { it.isNotBlank() }?.let { label ->
-            Surface(
-                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f),
-                modifier = Modifier.align(Alignment.BottomStart).padding(4.dp),
-                shape = RoundedCornerShape(6.dp),
-            ) {
-                Text(
-                    label,
-                    style = MaterialTheme.typography.labelSmall,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                )
-            }
-        }
     }
 }
 

@@ -18,6 +18,7 @@ This file provides core guidance when working with code in this repository.
 * **File Naming**: `{cutoutDriveId}_cutout.png`, `{cutoutDriveId}_original.jpg`, and `{cutoutDriveId}.json` share the cutout's Drive ID.
 * **Closets (Locations)**: Map to Drive subfolders. Logic relies strictly on `folderId`, never ephemeral `Location.id` UUIDs.
 * **Shopping Closet**: Uses a dedicated `_shopping/` folder and is intentionally excluded from standard location lists.
+* **Shared Grid (Wardrobe + Shopping)**: `WardrobeGridShared.kt` exposes `WardrobeTile` and `WardrobeItemGrid`, used by both the main Wardrobe grid and the Shopping List tab. Both get the same Coil `memoryCacheKey = "{driveId}_{version}"` (no re-decode on scroll) and identical visuals. Filter (`TagFilterBar`) and sort (`SortButton`, `SortOption`) are reused on shopping; `SortButton` is `internal` for cross-file use.
 * **Gemini Routing**: Uses either direct API (BYOK) or a Firebase Cloud Function proxy for managed mode. Images are strictly resized to `max(width, height) ≤ 1280` prior to sending.
 * **Offline Mode**: Uses `LocalIsOffline` `CompositionLocal` to instantly hide write-path UI elements (Drive/Gemini).
 * **Navigation**: Managed via a single `selectedTab: Int` in `MainActivity`; no Jetpack Navigation component is used.

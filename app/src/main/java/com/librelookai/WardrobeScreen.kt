@@ -565,8 +565,6 @@ private fun GridContent(
     modifier: Modifier = Modifier,
 ) {
     val isOffline = LocalIsOffline.current
-    var cellSizeDp by rememberSaveable { mutableFloatStateOf(120f) }
-    var pinchVisualScale by remember { mutableFloatStateOf(1f) }
     var selectedIndex by remember { mutableStateOf<Int?>(null) }
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showMoveDialog by remember { mutableStateOf(false) }
@@ -770,134 +768,23 @@ private fun GridContent(
                     }
                 }
                 else -> {
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxWidth()
-                            .pointerInput(Unit) {
-                                awaitEachGesture {
-                                    awaitFirstDown(requireUnconsumed = false, pass = PointerEventPass.Initial)
-                                    var prevDistance = -1f
-                                    do {
-                                        val event = awaitPointerEvent(PointerEventPass.Initial)
-                                        val pressed = event.changes.filter { it.pressed }
-                                        if (pressed.size >= 2) {
-                                            val dist = (pressed[1].position - pressed[0].position).getDistance()
-                                            if (prevDistance > 0f) pinchVisualScale *= (dist / prevDistance)
-                                            prevDistance = dist
-                                            pressed.forEach { it.consume() }
-                                        } else prevDistance = -1f
-                                    } while (event.changes.any { it.pressed })
-                                    cellSizeDp = (cellSizeDp * pinchVisualScale).coerceIn(56f, 320f)
-                                    pinchVisualScale = 1f
-                                }
-                            },
-                    ) {
-                        LazyVerticalGrid(
-                            state = gridState,
-                            columns = GridCells.Adaptive(cellSizeDp.dp),
-                            modifier = Modifier.fillMaxSize().graphicsLayer {
-                                clip = false
-                                scaleX = pinchVisualScale
-                                scaleY = pinchVisualScale
-                            },
-                        ) {
-                            itemsIndexed(displayedImages, key = { _, img -> img.driveId }) { index, image ->
-                                val isSelected = state.selectedIds.contains(image.driveId)
-                                val isHighlighted = image.driveId == highlightedDriveId
-                                val ctx = LocalContext.current
-                                // Show the item's actual location whenever multiple locations exist
-                                val itemLocationName = if (locations.size > 1) {
-                                    remember(image.folderId, locations) {
-                                        locations.find { it.folderId == image.folderId }?.name
-                                    }
-                                } else null
-                                Column(
-                                    modifier = Modifier
-                                        .padding(1.dp)
-                                        .combinedClickable(
-                                            onClick = {
-                                                if (isSelectionMode) onToggleSelection(image.driveId)
-                                                else selectedIndex = index
-                                            },
-                                            onLongClick = { onToggleSelection(image.driveId) },
-                                        ),
-                                ) {
-                                    Box(
-                                        modifier = Modifier
-                                            .aspectRatio(1f)
-                                            .then(
-                                                if (isHighlighted) Modifier.border(
-                                                    width = 3.dp,
-                                                    color = MaterialTheme.colorScheme.primary,
-                                                ) else Modifier,
-                                            ),
-                                    ) {
-                                        AsyncImage(
-                                            model = remember(image.driveId, image.version) {
-                                                ImageRequest.Builder(ctx)
-                                                    .data(image.localPath)
-                                                    .memoryCacheKey("${image.driveId}_${image.version}")
-                                                    .build()
-                                            },
-                                            contentDescription = image.tags?.label?.ifEmpty { image.name } ?: image.name,
-                                            modifier = Modifier.fillMaxSize(),
-                                            contentScale = ContentScale.Crop,
-                                        )
-                                        // Location badge — top-right, only in "All locations" mode
-                                        if (itemLocationName != null) {
-                                            Box(
-                                                modifier = Modifier
-                                                    .align(Alignment.TopEnd)
-                                                    .padding(3.dp)
-                                                    .background(
-                                                        color = Color.Black.copy(alpha = 0.45f),
-                                                        shape = MaterialTheme.shapes.extraSmall,
-                                                    )
-                                                    .padding(horizontal = 4.dp, vertical = 1.dp),
-                                            ) {
-                                                Text(
-                                                    text = itemLocationName,
-                                                    color = Color.White,
-                                                    fontSize = 8.sp,
-                                                    lineHeight = 10.sp,
-                                                    maxLines = 1,
-                                                    overflow = TextOverflow.Ellipsis,
-                                                )
-                                            }
-                                        }
-                                        if (isSelected) {
-                                            Box(
-                                                modifier = Modifier
-                                                    .fillMaxSize()
-                                                    .background(Color.White.copy(alpha = 0.4f)),
-                                                contentAlignment = Alignment.TopEnd,
-                                            ) {
-                                                Icon(
-                                                    imageVector = Icons.Default.CheckCircle,
-                                                    contentDescription = null,
-                                                    tint = MaterialTheme.colorScheme.primary,
-                                                    modifier = Modifier.padding(4.dp),
-                                                )
-                                            }
-                                        }
-                                    }
-                                    val itemLabel = image.tags?.label?.ifEmpty { null }
-                                    if (itemLabel != null) {
-                                        Text(
-                                            text = itemLabel,
-                                            style = MaterialTheme.typography.labelSmall,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis,
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(horizontal = 4.dp, vertical = 2.dp),
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    WardrobeZoomableItemGrid(
+                        images = displayedImages,
+                        selectedIds = state.selectedIds,
+                        onClick = { index, image ->
+                            if (isSelectionMode) onToggleSelection(image.driveId)
+                            else selectedIndex = index
+                        },
+                        onLongClick = { image -> onToggleSelection(image.driveId) },
+                        modifier = Modifier.weight(1f).fillMaxWidth(),
+                        gridState = gridState,
+                        locationLookup = if (locations.size > 1) {
+                            { image -> locations.find { it.folderId == image.folderId }?.name }
+                        } else {
+                            { null }
+                        },
+                        highlightedDriveId = highlightedDriveId,
+                    )
                 }
             }
         }
@@ -1963,7 +1850,7 @@ private fun TagChip(label: String) {
 // ---------- Sort button ----------
 
 @Composable
-private fun SortButton(
+internal fun SortButton(
     sortBy: SortOption,
     onSortChanged: (SortOption) -> Unit,
     modifier: Modifier = Modifier,
