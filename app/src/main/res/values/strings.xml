@@ -438,6 +438,11 @@
     <string name="gap_empty_title">Find what\'s missing</string>
     <string name="gap_empty_hint">Tap \"Analyze\" to let AI identify the foundational pieces that would complete the most outfits from your wardrobe.</string>
 
+    <!-- Suggest replacements (Wardrobe selection mode) -->
+    <string name="wardrobe_suggest_replacements">Suggest alternatives</string>
+    <string name="replacements_title">Replacements for %d items</string>
+    <string name="replacements_analyzing">Suggesting replacements…</string>
+
     <!-- Credits / Managed Mode -->
     <string name="credits_balance_label">AI Credits remaining</string>
     <string name="credits_cost_title">Credit cost per action</string>

@@ -367,6 +367,16 @@ class MainActivity : ComponentActivity() {
                                                 runTryOn(itemIds)
                                                 wardrobeViewModel.clearSelection()
                                             },
+                                            onSuggestReplacements = { itemIds ->
+                                                val all = wardrobeViewModel.state.value.images
+                                                val selected = all.filter { it.driveId in itemIds }
+                                                gapViewModel.suggestReplacements(
+                                                    selected  = selected,
+                                                    allImages = all,
+                                                    prefs     = profileViewModel.state.value.preferences,
+                                                )
+                                                wardrobeViewModel.clearSelection()
+                                            },
                                             canTryOn = canTryOn,
                                             dismissViewerTrigger = dismissWardrobeViewerTrigger,
                                             onSettingsClick = onSettingsClick,
@@ -451,6 +461,9 @@ class MainActivity : ComponentActivity() {
                                     profileViewModel  = profileViewModel,
                                     weatherViewModel  = weatherViewModel,
                                 )
+
+                                // Replacements result dialog — opened from Wardrobe selection FAB.
+                                ReplacementsResultDialog(gapViewModel = gapViewModel)
                             }
                         }
                     }

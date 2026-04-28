@@ -63,6 +63,7 @@ import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.ShoppingBag
+import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.automirrored.filled.RotateRight
 import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material3.AlertDialog
@@ -129,6 +130,7 @@ fun WardrobeScreen(
     profileViewModel: ProfileViewModel = viewModel(),
     onCreateOutfitFromSelection: (Set<String>) -> Unit = {},
     onTryOnSelection: (Set<String>) -> Unit = {},
+    onSuggestReplacements: (Set<String>) -> Unit = {},
     canTryOn: Boolean = false,
     dismissViewerTrigger: Int = 0,
     onSettingsClick: () -> Unit = {},
@@ -214,6 +216,7 @@ fun WardrobeScreen(
             onSetActiveLocation = locationViewModel::setActiveLocation,
             onCreateOutfitFromSelection = onCreateOutfitFromSelection,
             onTryOnSelection = onTryOnSelection,
+            onSuggestReplacements = onSuggestReplacements,
             canTryOn = canTryOn,
             onDismissBatteryExemption = viewModel::dismissBatteryExemptionWarning,
             onSetImportTarget = viewModel::setDefaultImportFolderId,
@@ -547,6 +550,7 @@ private fun GridContent(
     onSetActiveLocation: (String) -> Unit,
     onCreateOutfitFromSelection: (Set<String>) -> Unit,
     onTryOnSelection: (Set<String>) -> Unit = {},
+    onSuggestReplacements: (Set<String>) -> Unit = {},
     canTryOn: Boolean = false,
     onDismissBatteryExemption: () -> Unit = {},
     onSetImportTarget: (String) -> Unit = {},
@@ -955,6 +959,13 @@ private fun GridContent(
                             text = { Text(stringResource(R.string.tryon_fab)) },
                         )
                     }
+                    ExtendedFloatingActionButton(
+                        onClick = { onSuggestReplacements(state.selectedIds) },
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        icon = { Icon(Icons.Default.SwapHoriz, contentDescription = null) },
+                        text = { Text(stringResource(R.string.wardrobe_suggest_replacements)) },
+                    )
                 }
                 if (locations.size > 1 && !isOffline) {
                     ExtendedFloatingActionButton(
