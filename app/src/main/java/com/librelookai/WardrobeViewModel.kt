@@ -389,6 +389,32 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         if (allConfiguredFolderIds.toSet() == folderIds.toSet()) return
         allConfiguredFolderIds = folderIds.toList()
         refreshAllLocationImagesState()
+        prefetchUncachedClosets()
+    }
+
+    private var prefetchJob: Job? = null
+
+    /**
+     * For every configured closet that doesn't have a local cache yet, fetch its files +
+     * sidecars from Drive in the background and write the per-folder cache. This ensures
+     * similarity search covers all closets on first run, not just the one the user has visited.
+     * Skips folders that already have a cache file (those will refresh via normal loadImages).
+     */
+    private fun prefetchUncachedClosets() {
+        if (prefetchJob?.isActive == true) return
+        val app = getApplication<Application>()
+        if (!app.isNetworkAvailable()) return
+        val targets = allConfiguredFolderIds.filter { fid -> !localCacheFile(fid).exists() }
+        if (targets.isEmpty()) return
+        prefetchJob = viewModelScope.launch(Dispatchers.IO) {
+            targets.forEach { fid ->
+                runCatching {
+                    val images = loadFolderImages(fid)
+                    saveLocalCache(fid, images)
+                }
+            }
+            refreshAllLocationImagesState()
+        }
     }
 
     /** Re-read every configured folder's cache and publish the merged snapshot. */

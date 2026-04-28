@@ -2089,7 +2089,7 @@ private fun FindByPhotoResultsSheet(
                     previewIndex = null
                     onAddToShoppingList(findByPhoto.queryPath)
                 },
-                canAddToShoppingList = true,
+                canAddToShoppingList = false,
                 onDismiss = { previewIndex = null },
             )
         }

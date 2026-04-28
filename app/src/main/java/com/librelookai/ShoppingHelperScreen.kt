@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -119,15 +120,21 @@ fun ShoppingHelperScreen(
     val wardrobeState by wardrobeViewModel.state.collectAsState()
     val locationState by locationViewModel.state.collectAsState()
 
-    // Similarity Finder takes the camera over the whole screen.
+    // Hoisted above the camera early-returns so the active tab survives across capture —
+    // otherwise the rememberSaveable slot is never visited and resets to 0 on return.
+    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+    LaunchedEffect(navResetTick) { selectedTab = 0 }
+    var isClosetCapturing by rememberSaveable { mutableStateOf(false) }
+
+    // Similarity Finder takes the camera over the whole screen. The closet selector is hidden:
+    // similarity search reads from every closet and never imports.
     if (shoppingState.isCapturing) {
         CaptureScreen(
             onPhotoTaken = { file ->
-                // Search across every configured closet, not just the active one.
                 shoppingViewModel.onCapturedFile(file, wardrobeState.allLocationImages)
             },
             onCancel = shoppingViewModel::cancelCapture,
-            locations = locationState.locations,
+            locations = emptyList(),
             importTargetFolderId = null,
             onSetImportTarget = {},
             showCenterCrosshair = true,
@@ -137,7 +144,6 @@ fun ShoppingHelperScreen(
     }
 
     // Shopping List camera capture (separate flag — local to this screen).
-    var isClosetCapturing by remember { mutableStateOf(false) }
     if (isClosetCapturing) {
         CaptureScreen(
             onPhotoTaken = { file ->
@@ -152,9 +158,6 @@ fun ShoppingHelperScreen(
         )
         return
     }
-
-    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
-    LaunchedEffect(navResetTick) { selectedTab = 0 }
 
     // Pull the wishlist as soon as the screen first composes.
     LaunchedEffect(Unit) { shoppingClosetViewModel.loadItems() }
@@ -1010,6 +1013,7 @@ private fun MatchActionBar(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.Black)
+            .navigationBarsPadding()
             .padding(horizontal = 12.dp, vertical = 10.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -1017,12 +1021,13 @@ private fun MatchActionBar(
         Button(onClick = onShowInWardrobe, modifier = Modifier.weight(1f)) {
             Text(stringResource(R.string.shop_show_in_wardrobe))
         }
-        OutlinedButton(
-            onClick = onAddToShoppingList,
-            enabled = canAddToShoppingList,
-            modifier = Modifier.weight(1f),
-        ) {
-            Text(stringResource(R.string.shop_add_to_shopping_list))
+        if (canAddToShoppingList) {
+            OutlinedButton(
+                onClick = onAddToShoppingList,
+                modifier = Modifier.weight(1f),
+            ) {
+                Text(stringResource(R.string.shop_add_to_shopping_list))
+            }
         }
     }
 }
