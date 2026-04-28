@@ -168,7 +168,8 @@ fun SettingsScreen(
                 },
             )
             Tab(selected = selectedTab == 3, onClick = { selectedTab = 3 }, text = { Text(stringResource(R.string.settings_tab_ai)) })
-            Tab(selected = selectedTab == 4, onClick = { selectedTab = 4 }, text = { Text(stringResource(R.string.settings_tab_about)) })
+            Tab(selected = selectedTab == 4, onClick = { selectedTab = 4 }, text = { Text(stringResource(R.string.settings_tab_feedback)) })
+            Tab(selected = selectedTab == 5, onClick = { selectedTab = 5 }, text = { Text(stringResource(R.string.settings_tab_about)) })
         }
 
         when (selectedTab) {
@@ -235,13 +236,16 @@ fun SettingsScreen(
                         )
                     )
                 },
+            )
+            4 -> FeedbackTab(
+                preferences = profileState.preferences,
                 onSaveDebugSimilarityPreview = { enabled ->
                     profileViewModel.savePreferences(
                         profileState.preferences.copy(debugSimilarityPreview = enabled)
                     )
                 },
             )
-            4 -> AboutTab()
+            5 -> AboutTab()
         }
     }
 
@@ -1450,13 +1454,11 @@ private fun AiTab(
     preferences: UserPreferences,
     onSaveConsiderations: (AiConsiderations) -> Unit,
     onSaveDedupe: (Boolean, Float) -> Unit,
-    onSaveDebugSimilarityPreview: (Boolean) -> Unit,
 ) {
     val context = LocalContext.current
     var considerations by remember(preferences.aiConsiderations) { mutableStateOf(preferences.aiConsiderations) }
     var dedupeOnImport by remember(preferences) { mutableStateOf(preferences.dedupeOnImport) }
     var dedupeThreshold by remember(preferences) { mutableFloatStateOf(preferences.dedupeThreshold) }
-    var debugSimilarityPreview by remember(preferences) { mutableStateOf(preferences.debugSimilarityPreview) }
     var showResetAllDialog by remember { mutableStateOf(false) }
     // bump to force re-reads from PromptStore after edits or resets
     var promptRefresh by remember { mutableIntStateOf(0) }
@@ -1503,15 +1505,6 @@ private fun AiTab(
                     steps = 64,
                 )
             }
-            SwitchRow(
-                label = stringResource(R.string.settings_debug_similarity_toggle),
-                sublabel = stringResource(R.string.settings_debug_similarity_desc),
-                checked = debugSimilarityPreview,
-                onCheckedChange = {
-                    debugSimilarityPreview = it
-                    onSaveDebugSimilarityPreview(it)
-                },
-            )
         }
 
         HorizontalDivider()
@@ -1715,6 +1708,72 @@ private fun PromptEditorCard(
                 }
             }
         }
+    }
+}
+
+// ---------- Feedback tab ----------
+
+@Composable
+private fun FeedbackTab(
+    preferences: UserPreferences,
+    onSaveDebugSimilarityPreview: (Boolean) -> Unit,
+) {
+    val context = LocalContext.current
+    var debugSimilarityPreview by remember(preferences) { mutableStateOf(preferences.debugSimilarityPreview) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 20.dp, vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp),
+    ) {
+        Text(
+            stringResource(R.string.settings_feedback_title),
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.SemiBold,
+        )
+        Text(
+            stringResource(R.string.settings_feedback_desc),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedButton(onClick = {
+                val intent = android.content.Intent(
+                    android.content.Intent.ACTION_VIEW,
+                    android.net.Uri.parse("https://github.com/sonney2k/LibreLookAI/issues"),
+                )
+                runCatching { context.startActivity(intent) }
+            }) { Text(stringResource(R.string.settings_feedback_github)) }
+            OutlinedButton(onClick = {
+                val intent = android.content.Intent(android.content.Intent.ACTION_SENDTO).apply {
+                    data = android.net.Uri.parse("mailto:soeren.sonnenburg@gmail.com")
+                    putExtra(
+                        android.content.Intent.EXTRA_SUBJECT,
+                        "LibreLookAI feedback (${BuildConfig.VERSION_NAME}/${BuildConfig.GIT_HASH})",
+                    )
+                }
+                runCatching { context.startActivity(intent) }
+            }) { Text(stringResource(R.string.settings_feedback_email)) }
+        }
+
+        HorizontalDivider()
+
+        Text(
+            stringResource(R.string.settings_feedback_debug_section),
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.SemiBold,
+        )
+        SwitchRow(
+            label = stringResource(R.string.settings_debug_similarity_toggle),
+            sublabel = stringResource(R.string.settings_debug_similarity_desc),
+            checked = debugSimilarityPreview,
+            onCheckedChange = {
+                debugSimilarityPreview = it
+                onSaveDebugSimilarityPreview(it)
+            },
+        )
     }
 }
 

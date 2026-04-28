@@ -524,6 +524,14 @@
 
     <!-- About -->
     <string name="settings_tab_about">About</string>
+
+    <!-- Feedback -->
+    <string name="settings_tab_feedback">Feedback</string>
+    <string name="settings_feedback_title">Send feedback</string>
+    <string name="settings_feedback_desc">Found a bug or have a suggestion? Open an issue on GitHub or send us an email. Enabling the debug preview below makes bug reports easier to triage.</string>
+    <string name="settings_feedback_github">Open GitHub issues</string>
+    <string name="settings_feedback_email">Email feedback</string>
+    <string name="settings_feedback_debug_section">Debugging</string>
     <string name="about_version">Version %1$s (%2$s)</string>
     <string name="about_description">LibreLookAI is a free, open-source AI-powered wardrobe manager. It helps you organize your clothing, get outfit suggestions, plan travel packing lists, and discover wardrobe gaps — all powered by AI.</string>
     <string name="about_open_source">This app is open source and free to use. The source code is available on GitHub.</string>
