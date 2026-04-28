@@ -127,6 +127,21 @@ data class WardrobeUiState(
     val pendingScrollDriveId: String? = null,
     /** Non-null while a folder import is paused awaiting the user's review of pre-scanned candidates. */
     val importPreview: ImportPreview? = null,
+    /** Queue of imports waiting for the on-device background-removal review screen. The head item
+     *  is shown; on Apply / Skip / Cancel it is popped and the next (if any) is shown. Camera and
+     *  URL imports always enqueue a single item; gallery imports enqueue every selected URI when
+     *  [UserPreferences.preferLocalBgRemoval] is on. */
+    val localBgReviewQueue: List<LocalBgReviewItem> = emptyList(),
+)
+
+/** One pending entry in the on-device bg-removal review queue. */
+data class LocalBgReviewItem(
+    /** Local file path to the raw (pre-cutout) image. Owned by the VM until applied/skipped/cancelled. */
+    val rawFilePath: String,
+    /** Drive folder the eventual cutout will be uploaded to. */
+    val targetFolderId: String,
+    /** True when the review can be skipped (camera/gallery). URL imports must complete the review. */
+    val skippable: Boolean,
 )
 
 /** One candidate file in a paused folder-import preview. */
@@ -238,7 +253,14 @@ data class LocalCacheEntry(
 )
 data class LocalCache(val items: List<LocalCacheEntry> = emptyList())
 
-private data class PendingJob(val driveId: String, val folderId: String)
+private data class PendingJob(
+    val driveId: String,
+    val folderId: String,
+    /** When non-null, points to a locally-produced cutout PNG that [processQueuedImage] should
+     *  use directly instead of calling Gemini. The file lives in `drive.cacheDir` and is owned by
+     *  the worker once enqueued (it gets copied into `${cutoutId}.png` and then deleted). */
+    val prebuiltCutoutPath: String? = null,
+)
 
 // Internal audit helpers
 private data class AuditItem(val folderId: String, val driveId: String, val name: String)
@@ -327,6 +349,9 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     private var dedupeOnImport: Boolean = false
     /** Mirrors UserPreferences.dedupeThreshold — cosine cutoff for "this is probably already in your wardrobe". */
     private var dedupeThreshold: Float = 0.88f
+    /** Mirrors UserPreferences.preferLocalBgRemoval — when true, camera/gallery imports route through
+     *  the on-device segmenter review screen. URL imports always do. */
+    private var preferLocalBgRemoval: Boolean = false
 
     /** Serializes all Drive metadata writes to prevent concurrent saves overwriting each other. */
     private val metaMutex = Mutex()
@@ -354,6 +379,9 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         dedupeOnImport = enabled
         dedupeThreshold = threshold
     }
+
+    /** Push UserPreferences.preferLocalBgRemoval into the VM. Called from MainActivity. */
+    fun setPreferLocalBgRemoval(enabled: Boolean) { preferLocalBgRemoval = enabled }
 
     /** Set the folder that new photo imports target. Null = fall back to the active view folder. */
     fun setDefaultImportFolderId(folderId: String?) {
@@ -1299,8 +1327,12 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         // NOTE: we intentionally do NOT check if job.driveId is still in state — loadImages()
         // may have replaced it with the cutout ID already (race window). We always process.
 
-        // Step 1 — background removal (falls back to raw if Gemini fails)
-        val processedFile = gemini.removeBackground(rawFile, drive.cacheDir) ?: rawFile
+        // Step 1 — background removal. If the user produced a local cutout via the on-device
+        // segmenter review (LocalBgRemovalScreen), use it as-is and skip the paid Gemini call.
+        val processedFile: File = job.prebuiltCutoutPath
+            ?.let { File(it) }
+            ?.takeIf { it.exists() }
+            ?: (gemini.removeBackground(rawFile, drive.cacheDir) ?: rawFile)
 
         // Step 2 — upload cutout, then rename to "{cutoutId}_cutout.png"
         val cutoutDrive = runCatching { uploadAsCutout(job.folderId, processedFile) }.getOrNull() ?: return
@@ -1423,6 +1455,24 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             _state.update { it.copy(view = WardrobeView.GRID) }
             return
         }
+        uploadPhotoInternal(rawFile, id, skippableLocalReview = true)
+    }
+
+    /**
+     * Shared body for camera + gallery + URL imports. Runs the dedupe gate, then either opens the
+     * local-bg review queue (when wired) or proceeds straight to upload.
+     *
+     * @param skippableLocalReview true for camera/gallery (user can decline local cutout and fall
+     *   back to Gemini); false for URL imports, where the review is mandatory.
+     * @param forceLocalReview true to always enqueue the review even when [preferLocalBgRemoval]
+     *   is off — set by URL imports.
+     */
+    private fun uploadPhotoInternal(
+        rawFile: File,
+        id: String,
+        skippableLocalReview: Boolean,
+        forceLocalReview: Boolean = false,
+    ) {
         if (dedupeOnImport && EmbeddingService.isModelAvailable()) {
             viewModelScope.launch {
                 _state.update { it.copy(view = WardrobeView.GRID, isUploading = true, error = null) }
@@ -1440,7 +1490,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     byId[m.driveId]?.let { DuplicateMatch(it, m.score) }
                 }
                 if (resolved.isEmpty()) {
-                    proceedWithCameraUpload(rawFile, id)
+                    routeImportAfterDedupe(rawFile, id, skippableLocalReview, forceLocalReview)
                 } else {
                     _state.update { it.copy(
                         isUploading = false,
@@ -1450,29 +1500,64 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                             matches = resolved,
                         ),
                     ) }
+                    // Stash routing for confirmDuplicateImport to resume.
+                    pendingDedupeRouting = DedupeRouting(skippableLocalReview, forceLocalReview)
                 }
             }
             return
         }
-        proceedWithCameraUpload(rawFile, id)
+        routeImportAfterDedupe(rawFile, id, skippableLocalReview, forceLocalReview)
+    }
+
+    private data class DedupeRouting(val skippable: Boolean, val force: Boolean)
+    private var pendingDedupeRouting: DedupeRouting? = null
+
+    /** Either enqueue the local-bg review or proceed straight to upload. */
+    private fun routeImportAfterDedupe(
+        rawFile: File,
+        id: String,
+        skippable: Boolean,
+        force: Boolean,
+    ) {
+        val shouldReview = (force || preferLocalBgRemoval) &&
+            EmbeddingService.segmenter.isAvailable()
+        if (shouldReview) {
+            _state.update { it.copy(
+                isUploading = false,
+                localBgReviewQueue = it.localBgReviewQueue + LocalBgReviewItem(
+                    rawFilePath = rawFile.absolutePath,
+                    targetFolderId = id,
+                    skippable = skippable,
+                ),
+            ) }
+        } else {
+            proceedWithCameraUpload(rawFile, id)
+        }
     }
 
     /** User confirmed they want to import despite a similarity match. */
     fun confirmDuplicateImport() {
         val dc = _state.value.duplicateCheck ?: return
         _state.update { it.copy(duplicateCheck = null) }
-        proceedWithCameraUpload(File(dc.rawFilePath), dc.targetFolderId)
+        val routing = pendingDedupeRouting ?: DedupeRouting(skippable = true, force = false)
+        pendingDedupeRouting = null
+        routeImportAfterDedupe(File(dc.rawFilePath), dc.targetFolderId, routing.skippable, routing.force)
     }
 
     /** User cancelled the import — discard the raw file and clear the check. */
     fun cancelDuplicateImport() {
         val dc = _state.value.duplicateCheck ?: return
         runCatching { File(dc.rawFilePath).delete() }
+        pendingDedupeRouting = null
         _state.update { it.copy(duplicateCheck = null) }
     }
 
-    /** The original [uploadPhoto] body, extracted so the dedupe gate can call it once cleared. */
-    private fun proceedWithCameraUpload(rawFile: File, id: String) {
+    /**
+     * The original [uploadPhoto] body, extracted so the dedupe gate can call it once cleared.
+     * When [prebuiltCutout] is non-null, it is treated as a pre-rendered cutout PNG produced by
+     * the on-device segmenter; the worker will use it instead of running Gemini.
+     */
+    private fun proceedWithCameraUpload(rawFile: File, id: String, prebuiltCutout: File? = null) {
         viewModelScope.launch {
             _state.update { it.copy(view = WardrobeView.GRID, isUploading = true, error = null) }
             runCatching {
@@ -1483,8 +1568,18 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     rawFile.copyTo(displayCache, overwrite = true)
                 }
                 rawFile.copyTo(File(drive.cacheDir, "${uploaded.id}_original.jpg"), overwrite = true)
-                DriveImage(uploaded.id, displayCache.absolutePath, uploaded.name, tags = null, folderId = id)
-            }.onSuccess { newImage ->
+                Triple(uploaded.id, uploaded.name, displayCache)
+            }.onSuccess { (uploadedId, uploadedName, displayCache) ->
+                // Stash the local cutout under a stable per-job filename so processQueuedImage can
+                // find it after the raw upload completes — the final destination filename uses the
+                // *cutout's* drive ID, which we don't know yet.
+                val cutoutForJob = prebuiltCutout?.let { src ->
+                    val dest = File(drive.cacheDir, "${uploadedId}_local_cutout.png")
+                    runCatching { src.copyTo(dest, overwrite = true) }.getOrNull()
+                    runCatching { src.delete() }
+                    dest.takeIf { it.exists() }
+                }
+                val newImage = DriveImage(uploadedId, displayCache.absolutePath, uploadedName, tags = null, folderId = id)
                 _state.update { it.copy(
                     isUploading = false,
                     images = listOf(newImage) + it.images,
@@ -1492,11 +1587,42 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 ) }
                 // No sidecar yet — the item is raw; sidecar is written by processQueuedImage
                 saveLocalCache(id, _state.value.images)
-                workQueue.send(PendingJob(newImage.driveId, id))
+                workQueue.send(PendingJob(newImage.driveId, id, cutoutForJob?.absolutePath))
             }.onFailure { e ->
                 _state.update { it.copy(isUploading = false, error = e.message) }
             }
         }
+    }
+
+    // ---------- Local background-removal review ----------
+
+    /**
+     * User accepted the on-device cutout for the head item of the review queue. The cutout file
+     * has already been written to [cutoutFile] by the review screen; we hand both raw + cutout off
+     * to the regular upload pipeline, then advance the queue.
+     */
+    fun applyLocalBgCutout(cutoutFile: File) {
+        val head = _state.value.localBgReviewQueue.firstOrNull() ?: return
+        val raw = File(head.rawFilePath)
+        _state.update { it.copy(localBgReviewQueue = it.localBgReviewQueue.drop(1)) }
+        proceedWithCameraUpload(raw, head.targetFolderId, prebuiltCutout = cutoutFile)
+    }
+
+    /** User declined the on-device cutout — fall back to the regular Gemini path. Only valid
+     *  for entries with `skippable = true` (camera + gallery; not URL). */
+    fun skipLocalBgReview() {
+        val head = _state.value.localBgReviewQueue.firstOrNull() ?: return
+        if (!head.skippable) return
+        val raw = File(head.rawFilePath)
+        _state.update { it.copy(localBgReviewQueue = it.localBgReviewQueue.drop(1)) }
+        proceedWithCameraUpload(raw, head.targetFolderId)
+    }
+
+    /** User cancelled this import entirely — discard the raw file and advance the queue. */
+    fun cancelLocalBgReview() {
+        val head = _state.value.localBgReviewQueue.firstOrNull() ?: return
+        runCatching { File(head.rawFilePath).delete() }
+        _state.update { it.copy(localBgReviewQueue = it.localBgReviewQueue.drop(1)) }
     }
 
     // ---------- Upload from gallery ----------
@@ -1522,14 +1648,48 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 }
                 return@launch
             }
-            // Reuse the camera path so dedupe + processing behave exactly the same.
-            uploadPhoto(image)
+            // URL imports must always go through the on-device review screen so the user can
+            // confirm/refine the foreground seed before saving — webshop product photos often
+            // benefit from a tighter cutout.
+            val targetId = (defaultImportFolderId ?: folderId) ?: return@launch
+            uploadPhotoInternal(
+                rawFile = image,
+                id = targetId,
+                skippableLocalReview = false,
+                forceLocalReview = true,
+            )
         }
     }
 
     fun uploadGalleryPhotos(uris: List<Uri>) {
         if (uris.isEmpty()) return
         val id = (defaultImportFolderId ?: folderId) ?: return
+        // When local-bg review is enabled, route each gallery item through the same uploadPhoto
+        // pipeline so it is enqueued for the review screen one at a time. Otherwise stick with
+        // the original direct-upload path (faster, no per-item user interaction).
+        if (preferLocalBgRemoval && EmbeddingService.segmenter.isAvailable()) {
+            viewModelScope.launch {
+                _state.update { it.copy(batchTotal = uris.size, batchDone = 0, isUploading = true, error = null) }
+                val cr = getApplication<Application>().contentResolver
+                uris.forEachIndexed { index, uri ->
+                    _state.update { it.copy(batchDone = index) }
+                    val tempFile = File(drive.cacheDir, "gallery_${System.currentTimeMillis()}_$index.jpg")
+                    runCatching {
+                        cr.openInputStream(uri)?.use { it.copyTo(tempFile.outputStream()) }
+                        tempFile
+                    }.onSuccess { f ->
+                        // Enqueue for review; uploadPhotoInternal handles dedupe + queue routing.
+                        uploadPhotoInternal(f, id, skippableLocalReview = true)
+                    }.onFailure { e ->
+                        _state.update { it.copy(error = "Upload failed: ${e.message}") }
+                        runCatching { tempFile.delete() }
+                    }
+                }
+                _state.update { it.copy(batchTotal = 0, batchDone = 0, isUploading = false) }
+            }
+            return
+        }
+
         viewModelScope.launch {
             _state.update { it.copy(batchTotal = uris.size, batchDone = 0, isUploading = true, error = null) }
             val cr = getApplication<Application>().contentResolver

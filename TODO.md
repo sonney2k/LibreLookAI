@@ -15,9 +15,7 @@ TODO
 Features:
 ---------
 
-when importing images/photo/url add option to do background removal via cheap local tflite model. let the model mark the background display the starting point as cross hair that the user can change
 
-add way to send feedback via firebase under settings -> feedback
 
 firebase app analytics to understand what features are being used (zoomed in which buttons are pressed, things tapped in which order)
 
@@ -33,16 +31,9 @@ size filter? default sizes in wardrobe? size tag?
 
 Bugs:
 -----
+when importing into wardrobe for local background removal ensure that image is centered. In general ensure that images are cropped.
+
 ensure that in all processes, images are smaller than max(width,height)<1280. In particular before uploading anything to Gemini.
-
-shopping "wardrobe" is slow to load and does not have the same functionality as wardrobe, make shopping "wardrobe" have the same features as wardrobe
-
-shopping -> similarity search when taking picture it displays the closet hide that. once picture is taken it jumps to shopping list but should stay on similarity search tab
-shopping -> similarity search when looking at matching picture the show in wardrobe and add to shopping list buttons are to far at the bottom (half outside the screen)
-
-find via photo in wardrobe -> result screen should not show button add to shopping list (only for shopping -> similarity search)
-
-fix bug in similarity search not all closets are being indexed initally I noticed only the default one is
 
 on try-on details the delete button is partially outside the screen and when clicking X in upper left it does not immediately go back to the try-on tab on outfits
 
@@ -58,6 +49,16 @@ bug or feature: persistance is working reliably now. What I noticed is that the 
 
 IN PROGRESS
 ===========
+when importing images/photo/url add option to do background removal via cheap local tflite model. let the model mark the background display the starting point as cross hair that the user can change
+
+add way to send feedback via firebase under settings -> feedback
+
+1. shopping -> similarity search when taking picture it displays the closet hide that. once picture is taken it jumps to shopping list but should stay on similarity search tab
+2. shopping -> similarity search when looking at matching picture the show in wardrobe and add to shopping list buttons are to far at the bottom (half outside the screen)
+3. fix bug in similarity search not all closets are being indexed initally I noticed only the default one is 
+4. find via photo in wardrobe -> result screen should not show button add to shopping list (only for shopping -> similarity search)
+shopping "wardrobe" is slow to load and does not have the same functionality as wardrobe, make shopping "wardrobe" have the same features as wardrobe and make it use the same function
+
 add threshold for tuning bg removal algorithm under settings -> AI tab
 
 add a feedback tab under settings move debug setting under this tab

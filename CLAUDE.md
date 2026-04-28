@@ -23,6 +23,7 @@ This file provides core guidance when working with code in this repository.
 * **Offline Mode**: Uses `LocalIsOffline` `CompositionLocal` to instantly hide write-path UI elements (Drive/Gemini).
 * **Navigation**: Managed via a single `selectedTab: Int` in `MainActivity`; no Jetpack Navigation component is used.
 * **Background Removal**: `SegmentationRepository.foregroundThreshold` is the per-pixel confidence cutoff for the Magic Touch mask. Mirrored from `UserPreferences.bgRemovalThreshold` via a `LaunchedEffect` in `MainActivity`; tuned from Settings → AI tab.
+* **Local (On-Device) Background Removal**: `SegmentationRepository.segmentForegroundTransparent(src, seedX, seedY)` produces a transparent-bg cutout for any user-chosen seed point. `LocalBgRemovalScreen` is a full-screen review dialog hosted in `MainActivity`; `WardrobeViewModel.localBgReviewQueue` drives it (FIFO; head item is shown). On Apply, `PendingJob.prebuiltCutoutPath` is set and `processQueuedImage` uses the local cutout instead of calling `gemini.removeBackground`. Gated by `UserPreferences.preferLocalBgRemoval` for camera and gallery imports; **URL imports always show the review** regardless of the pref. The crosshair starts at the image center and is draggable/tap-to-place; segmentation re-runs ~150 ms after the user stops dragging.
 
 ## Key UI & Workflows
 * **Outfits Screen**: Branches exclusively into `OutfitEditingView` (editor), `OutfitItemPicker` (creation), or `OutfitListScreen` (list/try-on tabs).

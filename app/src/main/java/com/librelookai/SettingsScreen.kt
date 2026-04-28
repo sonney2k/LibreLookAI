@@ -241,6 +241,11 @@ fun SettingsScreen(
                         profileState.preferences.copy(bgRemovalThreshold = value)
                     )
                 },
+                onSavePreferLocalBg = { enabled ->
+                    profileViewModel.savePreferences(
+                        profileState.preferences.copy(preferLocalBgRemoval = enabled)
+                    )
+                },
             )
             4 -> FeedbackTab(
                 preferences = profileState.preferences,
@@ -1460,12 +1465,14 @@ private fun AiTab(
     onSaveConsiderations: (AiConsiderations) -> Unit,
     onSaveDedupe: (Boolean, Float) -> Unit,
     onSaveBgRemovalThreshold: (Float) -> Unit,
+    onSavePreferLocalBg: (Boolean) -> Unit,
 ) {
     val context = LocalContext.current
     var considerations by remember(preferences.aiConsiderations) { mutableStateOf(preferences.aiConsiderations) }
     var dedupeOnImport by remember(preferences) { mutableStateOf(preferences.dedupeOnImport) }
     var dedupeThreshold by remember(preferences) { mutableFloatStateOf(preferences.dedupeThreshold) }
     var bgRemovalThreshold by remember(preferences) { mutableFloatStateOf(preferences.bgRemovalThreshold) }
+    var preferLocalBg by remember(preferences) { mutableStateOf(preferences.preferLocalBgRemoval) }
     var showResetAllDialog by remember { mutableStateOf(false) }
     // bump to force re-reads from PromptStore after edits or resets
     var promptRefresh by remember { mutableIntStateOf(0) }
@@ -1527,6 +1534,15 @@ private fun AiTab(
                 stringResource(R.string.settings_bg_removal_desc),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            SwitchRow(
+                label = stringResource(R.string.settings_local_bg_toggle),
+                sublabel = stringResource(R.string.settings_local_bg_desc),
+                checked = preferLocalBg,
+                onCheckedChange = {
+                    preferLocalBg = it
+                    onSavePreferLocalBg(it)
+                },
             )
             Text(
                 stringResource(R.string.settings_bg_removal_threshold, (bgRemovalThreshold * 100).toInt()),

@@ -193,6 +193,13 @@ class MainActivity : ComponentActivity() {
                         runCatching { EmbeddingService.segmenter.foregroundThreshold = bgRemovalThreshold }
                     }
 
+                    // Mirror the local-bg-removal pref into the wardrobe VM so camera/gallery
+                    // imports route through the on-device segmenter review when enabled.
+                    val preferLocalBg = profileState.preferences.preferLocalBgRemoval
+                    LaunchedEffect(preferLocalBg) {
+                        wardrobeViewModel.setPreferLocalBgRemoval(preferLocalBg)
+                    }
+
                     // Apply selected language as the Compose context locale
                     val language = profileState.preferences.language
                     val baseContext = LocalContext.current
@@ -471,6 +478,10 @@ class MainActivity : ComponentActivity() {
 
                                 // Replacements result dialog — opened from Wardrobe selection FAB.
                                 ReplacementsResultDialog(gapViewModel = gapViewModel)
+
+                                // Local background-removal review — full-screen dialog shown when
+                                // an import is queued for on-device cutout refinement.
+                                LocalBgRemovalScreen(viewModel = wardrobeViewModel)
                             }
                         }
                     }

@@ -23,6 +23,10 @@ data class UserPreferences(
      *  Lower values keep more pixels (looser cutout); higher values reject borderline pixels
      *  (tighter cutout). Default 0.3 matches the original hardcoded threshold. */
     val bgRemovalThreshold: Float = 0.3f,
+    /** When true, camera and gallery imports route through the on-device Magic Touch segmenter
+     *  with an interactive seed-point review before saving, skipping the (paid) Gemini cutout.
+     *  URL imports always show the review regardless of this flag. */
+    val preferLocalBgRemoval: Boolean = false,
     /** When true, the Similarity Finder match preview shows the per-channel debug breakdown
      *  (segmented thumbnails, per-engine cosine scores, hue histograms) instead of the default
      *  zoom-only view. */

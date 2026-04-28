@@ -270,6 +270,89 @@ class SegmentationRepository(private val context: Context) {
         Bitmap.createBitmap(pixels, w, h, Bitmap.Config.ARGB_8888)
     }
 
+    /**
+     * Run interactive segmentation seeded at [seedX], [seedY] (absolute pixel coords) and return a
+     * new ARGB_8888 bitmap with foreground pixels preserved and background pixels fully transparent.
+     * Used by the import-time local background-removal review (cf. [LocalBgRemovalScreen]).
+     *
+     * Unlike [segmentForegroundOnBlack], this:
+     *  - accepts an arbitrary seed (the user-positioned crosshair),
+     *  - emits transparent (not black) background so the cutout can be saved as a `.png` cutout,
+     *  - skips the gray-world WB pass (we keep the user-picked colors faithful for review),
+     *  - does NOT enforce the 2–95% foreground sanity bounds, so the user always gets *some*
+     *    preview to react to even when the seed lands on a tiny or huge region.
+     *
+     * Returns null only if the model is missing or a hard MediaPipe error occurs.
+     */
+    suspend fun segmentForegroundTransparent(
+        src: Bitmap,
+        seedX: Float,
+        seedY: Float,
+    ): Bitmap? = withContext(Dispatchers.IO) {
+        val seg = ensureSegmenter() ?: return@withContext null
+        val rgb = if (src.config == Bitmap.Config.ARGB_8888) src
+            else src.copy(Bitmap.Config.ARGB_8888, false)
+        val w = rgb.width
+        val h = rgb.height
+        val sx = seedX.coerceIn(0f, (w - 1).toFloat())
+        val sy = seedY.coerceIn(0f, (h - 1).toFloat())
+
+        val mp = BitmapImageBuilder(rgb).build()
+        val roi = InteractiveSegmenter.RegionOfInterest.create(
+            listOf(NormalizedKeypoint.create(sx, sy))
+        )
+
+        data class FloatMask(val mw: Int, val mh: Int, val data: FloatArray)
+        val masks: List<FloatMask> = try {
+            val result = seg.segment(mp, roi)
+            val list = result.confidenceMasks().get()
+            list.map { mask ->
+                val mw = mask.width
+                val mh = mask.height
+                val bytes = ByteBufferExtractor.extract(mask)
+                bytes.order(java.nio.ByteOrder.nativeOrder())
+                val fb = bytes.asFloatBuffer()
+                val data = FloatArray(mw * mh)
+                fb.get(data)
+                FloatMask(mw, mh, data)
+            }
+        } catch (t: Throwable) {
+            Log.w(TAG, "segmentForegroundTransparent failed", t)
+            if (rgb !== src) rgb.recycle()
+            return@withContext null
+        }
+        if (masks.isEmpty()) {
+            if (rgb !== src) rgb.recycle()
+            return@withContext null
+        }
+
+        // Pick the class whose value at the *user's* seed (mapped into mask coords) is highest.
+        val fgIdx = masks.indices.maxByOrNull { idx ->
+            val m = masks[idx]
+            val mx = (sx.toLong() * m.mw / w).toInt().coerceIn(0, m.mw - 1)
+            val my = (sy.toLong() * m.mh / h).toInt().coerceIn(0, m.mh - 1)
+            m.data[my * m.mw + mx]
+        } ?: (masks.size - 1)
+        val fgMask = masks[fgIdx]
+
+        val pixels = IntArray(w * h)
+        rgb.getPixels(pixels, 0, w, 0, 0, w, h)
+        val threshold = foregroundThreshold.coerceIn(0.05f, 0.95f)
+        for (y in 0 until h) {
+            val my = (y.toLong() * fgMask.mh / h).toInt().coerceIn(0, fgMask.mh - 1)
+            val rowBase = my * fgMask.mw
+            val outBase = y * w
+            for (x in 0 until w) {
+                val mx = (x.toLong() * fgMask.mw / w).toInt().coerceIn(0, fgMask.mw - 1)
+                val v = fgMask.data[rowBase + mx]
+                if (v < threshold) pixels[outBase + x] = 0 // fully transparent
+            }
+        }
+
+        if (rgb !== src) rgb.recycle()
+        Bitmap.createBitmap(pixels, w, h, Bitmap.Config.ARGB_8888)
+    }
+
     suspend fun close() {
         mutex.withLock {
             runCatching { segmenter?.close() }

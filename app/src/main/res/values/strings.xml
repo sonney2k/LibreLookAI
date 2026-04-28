@@ -649,6 +649,16 @@
     <string name="settings_bg_removal_title">Background removal</string>
     <string name="settings_bg_removal_desc">Tunes the on-device cutout segmenter used during capture, import, and the Shopping helper. Lower values keep more pixels (looser cutout, may include background); higher values reject borderline pixels (tighter cutout, may chip away at the item).</string>
     <string name="settings_bg_removal_threshold">Foreground threshold: %1$d%%</string>
+    <string name="settings_local_bg_toggle">Use on-device background removal</string>
+    <string name="settings_local_bg_desc">When enabled, camera and gallery imports run the local Magic Touch segmenter and let you confirm or refine the foreground seed before saving — no Gemini call, no credits. URL imports always use this review.</string>
+
+    <!-- Local background-removal review screen -->
+    <string name="local_bg_title">Refine cutout</string>
+    <string name="local_bg_hint">Drag the crosshair onto the item you want to keep.</string>
+    <string name="local_bg_recomputing">Recomputing cutout…</string>
+    <string name="local_bg_apply">Use this cutout</string>
+    <string name="local_bg_skip">Skip (use Gemini)</string>
+    <string name="local_bg_failed">Could not compute a cutout — try moving the crosshair.</string>
     <string name="settings_debug_similarity_toggle">Show similarity debug preview</string>
     <string name="settings_debug_similarity_desc">When opening a Similarity Finder match, show the per-channel breakdown (segmented thumbnails, embedding/histogram cosine, hue histograms) instead of the default zoomable image.</string>
 
