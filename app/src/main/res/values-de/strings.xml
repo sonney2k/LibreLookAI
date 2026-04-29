@@ -627,6 +627,16 @@
     <string name="settings_bg_removal_threshold">Vordergrund-Schwelle: %1$d %%</string>
     <string name="settings_debug_similarity_toggle">Debug-Ansicht für Ähnlichkeit anzeigen</string>
     <string name="settings_debug_similarity_desc">Beim Öffnen eines Treffers in der Ähnlichkeitssuche die Detailansicht (segmentierte Vorschauen, Embedding/Histogramm-Cosinus, Hue-Histogramme) anstelle des zoombaren Bildes anzeigen.</string>
+    <string name="settings_local_bg_toggle">Hintergrund­entfernung auf dem Gerät</string>
+    <string name="settings_local_bg_desc">Wenn aktiviert, werden Aufnahmen und Galerie-Importe mit dem lokalen Magic-Touch-Freisteller bearbeitet. Du kannst den Vordergrund-Punkt vor dem Speichern bestätigen oder anpassen — kein Gemini-Aufruf, keine Credits. URL-Importe nutzen diese Überprüfung immer.</string>
+
+    <!-- On-Device-Hintergrund­entfernung (Überprüfungs-Dialog) -->
+    <string name="local_bg_title">Freisteller anpassen</string>
+    <string name="local_bg_hint">Ziehe das Fadenkreuz auf das Teil, das du behalten möchtest.</string>
+    <string name="local_bg_recomputing">Freisteller wird berechnet…</string>
+    <string name="local_bg_apply">Diesen Freisteller verwenden</string>
+    <string name="local_bg_skip">Überspringen (Gemini verwenden)</string>
+    <string name="local_bg_failed">Konnte keinen Freisteller berechnen — verschiebe das Fadenkreuz.</string>
 
     <!-- Treffer-Vorschau-Dialog -->
     <string name="shop_show_in_wardrobe">In Garderobe anzeigen</string>

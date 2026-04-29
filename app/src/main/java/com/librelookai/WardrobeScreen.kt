@@ -1943,6 +1943,11 @@ private fun DuplicateCheckSheet(
     onCancel: () -> Unit,
 ) {
     val context = LocalContext.current
+    val shopMatches = remember(check.matches) {
+        check.matches.map { ShopMatch(image = it.image, score = it.score) }
+    }
+    var previewIndex by remember { mutableStateOf<Int?>(null) }
+
     ModalBottomSheet(
         onDismissRequest = onCancel,
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
@@ -1965,56 +1970,28 @@ private fun DuplicateCheckSheet(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .aspectRatio(1f)
-                        .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.small),
-                ) {
-                    AsyncImage(
-                        model = ImageRequest.Builder(context)
-                            .data(java.io.File(check.rawFilePath))
-                            .crossfade(true)
-                            .build(),
-                        contentDescription = stringResource(R.string.shop_your_photo),
-                        contentScale = androidx.compose.ui.layout.ContentScale.Fit,
-                        modifier = Modifier.fillMaxSize(),
-                    )
-                }
-                LazyRow(
-                    modifier = Modifier.weight(2f),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    items(check.matches, key = { it.image.driveId }) { m ->
-                        Column(
-                            modifier = Modifier.width(96.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .aspectRatio(1f)
-                                    .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.small),
-                            ) {
-                                AsyncImage(
-                                    model = ImageRequest.Builder(context)
-                                        .data(java.io.File(m.image.localPath))
-                                        .crossfade(true)
-                                        .build(),
-                                    contentDescription = m.image.name,
-                                    contentScale = androidx.compose.ui.layout.ContentScale.Fit,
-                                    modifier = Modifier.fillMaxSize(),
-                                )
-                            }
-                            val pct = (m.score.coerceIn(-1f, 1f) * 100f).toInt().coerceIn(0, 100)
-                            Text(
-                                stringResource(R.string.dedupe_score, pct),
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        }
-                    }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(160.dp)
+                    .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.small),
+            ) {
+                AsyncImage(
+                    model = ImageRequest.Builder(context)
+                        .data(java.io.File(check.rawFilePath))
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = stringResource(R.string.shop_your_photo),
+                    contentScale = androidx.compose.ui.layout.ContentScale.Fit,
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
+
+            Column(
+                modifier = Modifier.heightIn(max = 360.dp).verticalScroll(rememberScrollState()),
+            ) {
+                shopMatches.forEachIndexed { idx, match ->
+                    MatchRow(match = match, onClick = { previewIndex = idx })
                 }
             }
 
@@ -2029,6 +2006,25 @@ private fun DuplicateCheckSheet(
                     Text(stringResource(R.string.dedupe_dialog_import_anyway))
                 }
             }
+        }
+    }
+
+    previewIndex?.let { idx ->
+        if (idx in shopMatches.indices) {
+            MatchPreviewDialog(
+                matches = shopMatches,
+                initialIndex = idx,
+                queryRawPath = check.rawFilePath,
+                queryProcessedPath = null,
+                querySegmented = false,
+                queryHist = null,
+                queryVec = null,
+                showDebug = false,
+                onShowInWardrobe = { previewIndex = null },
+                onAddToShoppingList = { previewIndex = null },
+                canAddToShoppingList = false,
+                onDismiss = { previewIndex = null },
+            )
         }
     }
 }

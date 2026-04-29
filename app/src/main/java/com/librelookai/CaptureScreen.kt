@@ -3,6 +3,7 @@ package com.librelookai
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import androidx.activity.compose.BackHandler
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -104,6 +105,7 @@ fun CaptureScreen(
 
     if (capturedFile == null) {
         // ── Camera viewfinder ──────────────────────────────────────────────
+        BackHandler(enabled = !isCapturing) { onCancel() }
         Box(modifier = modifier.fillMaxSize()) {
             AndroidView(
                 factory = { ctx ->
@@ -262,6 +264,10 @@ private fun PhotoReviewScreen(
             displayBitmap = loadBitmapWithExif(file)
         }
     }
+
+    // Back press in the review step should return to the viewfinder (retake), not exit the
+    // camera entirely — the user has already invested in framing the shot.
+    BackHandler(enabled = !isProcessing) { onRetake() }
 
     Box(
         modifier = modifier

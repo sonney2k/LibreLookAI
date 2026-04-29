@@ -13,7 +13,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -149,12 +151,15 @@ private fun LocalBgRemovalDialog(
             dismissOnBackPress = false,
             dismissOnClickOutside = false,
             usePlatformDefaultWidth = false,
+            decorFitsSystemWindows = false,
         ),
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.surface),
+                .background(MaterialTheme.colorScheme.surface)
+                .statusBarsPadding()
+                .navigationBarsPadding(),
         ) {
             Row(
                 modifier = Modifier
@@ -311,8 +316,10 @@ private fun LocalBgRemovalDialog(
                         val bm = cutout ?: return@Button
                         scope.launch {
                             val out = withContext(Dispatchers.IO) {
+                                val cropped = tightCropToAlpha(bm)
                                 val f = File(context.cacheDir, "local_bg_${System.currentTimeMillis()}.png")
-                                f.outputStream().buffered().use { bm.compress(Bitmap.CompressFormat.PNG, 100, it) }
+                                f.outputStream().buffered().use { cropped.compress(Bitmap.CompressFormat.PNG, 100, it) }
+                                if (cropped !== bm) cropped.recycle()
                                 f
                             }
                             onApply(out)
@@ -330,6 +337,46 @@ private fun LocalBgRemovalDialog(
  * Decode [path] downsampled so its longest edge is at most [maxEdge] pixels. Matches the standard
  * import-time downscaling: keeps segmentation fast while preserving the user's framing.
  */
+/**
+ * Crop [src] to the bounding box of its non-transparent pixels (with a small safety margin) so the
+ * stored cutout doesn't carry the raw photo's empty space around the item — matching the framing
+ * Gemini's removeBackground call produces.
+ */
+private fun tightCropToAlpha(src: Bitmap): Bitmap {
+    val w = src.width
+    val h = src.height
+    if (w <= 0 || h <= 0) return src
+    val pixels = IntArray(w * h)
+    src.getPixels(pixels, 0, w, 0, 0, w, h)
+    var minX = w
+    var minY = h
+    var maxX = -1
+    var maxY = -1
+    val alphaCutoff = 8 // ignore near-zero alpha noise
+    for (y in 0 until h) {
+        val row = y * w
+        for (x in 0 until w) {
+            val a = (pixels[row + x] ushr 24) and 0xFF
+            if (a >= alphaCutoff) {
+                if (x < minX) minX = x
+                if (x > maxX) maxX = x
+                if (y < minY) minY = y
+                if (y > maxY) maxY = y
+            }
+        }
+    }
+    if (maxX < 0 || maxY < 0) return src
+    val pad = (maxOf(w, h) * 0.02f).toInt().coerceAtLeast(2)
+    val left = (minX - pad).coerceAtLeast(0)
+    val top = (minY - pad).coerceAtLeast(0)
+    val right = (maxX + pad).coerceAtMost(w - 1)
+    val bottom = (maxY + pad).coerceAtMost(h - 1)
+    val cw = right - left + 1
+    val ch = bottom - top + 1
+    if (cw == w && ch == h) return src
+    return Bitmap.createBitmap(src, left, top, cw, ch)
+}
+
 private fun decodeDownsampled(path: String, maxEdge: Int): Bitmap? {
     val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
     BitmapFactory.decodeFile(path, bounds)

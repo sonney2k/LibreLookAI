@@ -8,7 +8,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.calculatePan
+import androidx.compose.foundation.gestures.calculateZoom
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -947,7 +950,10 @@ internal fun MatchPreviewDialog(
 ) {
     Dialog(
         onDismissRequest = onDismiss,
-        properties = DialogProperties(usePlatformDefaultWidth = false),
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false,
+            decorFitsSystemWindows = false,
+        ),
     ) {
         val pagerState = rememberPagerState(
             initialPage = initialIndex.coerceIn(0, (matches.size - 1).coerceAtLeast(0)),
@@ -1414,11 +1420,31 @@ private fun ZoomableMatchImage(file: File) {
         contentScale = ContentScale.Fit,
         modifier = Modifier
             .fillMaxSize()
+            // Only intercept pinch (2 pointers) for zoom and single-finger pan once zoomed.
+            // At scale 1, single-finger horizontal drags pass through to the parent
+            // HorizontalPager so the user can swipe between matches.
             .pointerInput(Unit) {
-                detectTransformGestures { _, pan, zoom, _ ->
-                    scale = (scale * zoom).coerceIn(1f, 6f)
-                    offset = if (scale <= 1.01f) Offset.Zero
-                             else Offset(offset.x + pan.x, offset.y + pan.y)
+                awaitEachGesture {
+                    awaitFirstDown(requireUnconsumed = false)
+                    do {
+                        val event = awaitPointerEvent()
+                        val pointerCount = event.changes.count { it.pressed }
+                        if (pointerCount >= 2) {
+                            val zoom = event.calculateZoom()
+                            val pan = event.calculatePan()
+                            val newScale = (scale * zoom).coerceIn(1f, 6f)
+                            scale = newScale
+                            offset = if (newScale <= 1.01f) Offset.Zero
+                                     else Offset(offset.x + pan.x, offset.y + pan.y)
+                            event.changes.forEach { it.consume() }
+                        } else if (scale > 1.01f) {
+                            val pan = event.calculatePan()
+                            offset = Offset(offset.x + pan.x, offset.y + pan.y)
+                            event.changes.forEach { it.consume() }
+                        }
+                        // else: single-finger drag at scale 1 — leave changes unconsumed so
+                        // the HorizontalPager receives them.
+                    } while (event.changes.any { it.pressed })
                 }
             }
             .graphicsLayer {
