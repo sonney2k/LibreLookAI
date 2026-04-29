@@ -116,6 +116,9 @@ fun ShoppingHelperScreen(
     onSettingsClick: () -> Unit = {},
     /** Switch to the wardrobe tab and scroll/highlight the picked match. */
     onShowInWardrobe: (DriveImage) -> Unit = {},
+    onCreateOutfitFromSelection: (Set<String>) -> Unit = {},
+    onTryOnSelection: (Set<String>) -> Unit = {},
+    canTryOn: Boolean = false,
     navResetTick: Int = 0,
     modifier: Modifier = Modifier,
 ) {
@@ -167,7 +170,7 @@ fun ShoppingHelperScreen(
 
     Column(modifier = modifier.fillMaxSize()) {
         AppScreenHeader(
-            title = stringResource(R.string.shopping_title),
+            title = stringResource(R.string.nav_shopping),
             leadingIcon = Icons.Default.ShoppingBag,
             trailingContent = {
                 // Shopping List is location-independent; hide the LocationButton there.
@@ -220,8 +223,12 @@ fun ShoppingHelperScreen(
             0 -> ShoppingListTab(
                 shoppingClosetViewModel = shoppingClosetViewModel,
                 locations = locationState.locations,
+                activeLocationId = locationState.activeLocationId,
                 onCaptureClick = { isClosetCapturing = true },
                 onRefreshWardrobe = wardrobeViewModel::loadImages,
+                onCreateOutfitFromSelection = onCreateOutfitFromSelection,
+                onTryOnSelection = onTryOnSelection,
+                canTryOn = canTryOn,
             )
             1 -> SimilarityFinderTab(
                 shoppingViewModel = shoppingViewModel,
@@ -247,8 +254,12 @@ fun ShoppingHelperScreen(
 private fun ShoppingListTab(
     shoppingClosetViewModel: ShoppingClosetViewModel,
     locations: List<Location>,
+    activeLocationId: String,
     onCaptureClick: () -> Unit,
     onRefreshWardrobe: () -> Unit,
+    onCreateOutfitFromSelection: (Set<String>) -> Unit,
+    onTryOnSelection: (Set<String>) -> Unit,
+    canTryOn: Boolean,
 ) {
     val state by shoppingClosetViewModel.state.collectAsState()
     val isOffline = LocalIsOffline.current
@@ -257,12 +268,12 @@ private fun ShoppingListTab(
     var showUrlDialog by remember { mutableStateOf(false) }
     var showMoveDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var selectedIndex by remember { mutableStateOf<Int?>(null) }
 
     var selectedTags by remember { mutableStateOf(emptyMap<String, Set<String>>()) }
-    var sortBy by remember { mutableStateOf(SortOption.DATE_DESC) }
 
     val tagCategories = remember(state.items) { state.items.tagCategories() }
-    val filteredItems = remember(state.items, selectedTags) {
+    val displayedItems = remember(state.items, selectedTags) {
         val activeFilters = selectedTags.filter { (_, tags) -> tags.isNotEmpty() }
         if (activeFilters.isEmpty()) state.items
         else state.items.filter { img ->
@@ -271,15 +282,7 @@ private fun ShoppingListTab(
             }
         }
     }
-    val displayedItems = remember(filteredItems, sortBy) {
-        when (sortBy) {
-            SortOption.DATE_DESC  -> filteredItems
-            SortOption.DATE_ASC   -> filteredItems.reversed()
-            SortOption.POPULARITY -> filteredItems
-            SortOption.TYPE       -> filteredItems.sortedBy { it.tags?.type?.lowercase() ?: "" }
-            SortOption.CATEGORY   -> filteredItems.sortedBy { it.tags?.category?.lowercase() ?: "" }
-        }
-    }
+    LaunchedEffect(selectedTags) { selectedIndex = null }
 
     val galleryLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.PickMultipleVisualMedia(),
@@ -289,24 +292,14 @@ private fun ShoppingListTab(
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
-            // Filter/sort toolbar — only useful when we actually have items.
+            // Filter toolbar — only useful when we actually have items.
             if (state.items.isNotEmpty()) {
-                Row(
+                TagFilterBar(
+                    tagCategories = tagCategories,
+                    selectedTags = selectedTags,
+                    onTagsChanged = { selectedTags = it },
                     modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    TagFilterBar(
-                        tagCategories = tagCategories,
-                        selectedTags = selectedTags,
-                        onTagsChanged = { selectedTags = it },
-                        modifier = Modifier.weight(1f),
-                    )
-                    SortButton(
-                        sortBy = sortBy,
-                        onSortChanged = { sortBy = it },
-                        modifier = Modifier.padding(end = 4.dp),
-                    )
-                }
+                )
                 if (!isSelectionMode) {
                     val hasFilter = selectedTags.values.any { it.isNotEmpty() }
                     Text(
@@ -376,9 +369,14 @@ private fun ShoppingListTab(
                 WardrobeZoomableItemGrid(
                     images = displayedItems,
                     selectedIds = state.selectedIds,
-                    onClick = { _, image ->
-                        Analytics.action("Shopping", "toggle_selection")
-                        shoppingClosetViewModel.toggleSelection(image.driveId)
+                    onClick = { index, image ->
+                        if (isSelectionMode) {
+                            Analytics.action("Shopping", "toggle_selection")
+                            shoppingClosetViewModel.toggleSelection(image.driveId)
+                        } else {
+                            Analytics.action("Shopping", "open_item_viewer")
+                            selectedIndex = index
+                        }
                     },
                     onLongClick = { image ->
                         Analytics.action("Shopping", "long_press_select")
@@ -419,6 +417,30 @@ private fun ShoppingListTab(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.End,
             ) {
+                if (!isOffline) {
+                    ExtendedFloatingActionButton(
+                        onClick = {
+                            Analytics.action("Shopping", "create_outfit_from_selection", mapOf("count" to state.selectedIds.size.toString()))
+                            onCreateOutfitFromSelection(state.selectedIds)
+                        },
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        icon = { Icon(Icons.Default.AutoAwesome, contentDescription = null) },
+                        text = { Text(stringResource(R.string.wardrobe_create_style)) },
+                    )
+                    if (canTryOn) {
+                        ExtendedFloatingActionButton(
+                            onClick = {
+                                Analytics.action("Shopping", "try_on_selection", mapOf("count" to state.selectedIds.size.toString()))
+                                onTryOnSelection(state.selectedIds)
+                            },
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            icon = { Icon(Icons.Default.AutoAwesome, contentDescription = null) },
+                            text = { Text(stringResource(R.string.tryon_fab)) },
+                        )
+                    }
+                }
                 if (locations.isNotEmpty() && !isOffline) {
                     ExtendedFloatingActionButton(
                         onClick = {
@@ -489,6 +511,36 @@ private fun ShoppingListTab(
                 modifier = Modifier.align(Alignment.BottomStart).padding(start = 8.dp, end = 96.dp, bottom = 8.dp),
                 action = { TextButton(onClick = shoppingClosetViewModel::clearError) { Text(stringResource(R.string.action_dismiss)) } },
             ) { Text(msg) }
+        }
+
+        // Full-screen item viewer — same UX as Wardrobe, with write-mode actions hidden
+        // (tag/bg/rotate aren't supported on shopping items yet).
+        selectedIndex?.let { startIndex ->
+            FullScreenViewer(
+                images = displayedItems,
+                initialIndex = startIndex.coerceIn(0, (displayedItems.size - 1).coerceAtLeast(0)),
+                allTagCategories = tagCategories,
+                onDismiss = { selectedIndex = null },
+                onTagImage = {},
+                onRemoveBackground = {},
+                onRotateImage = {},
+                onUpdateTags = { _, _ -> },
+                onDeleteItem = { driveId ->
+                    shoppingClosetViewModel.deleteItems(setOf(driveId))
+                    if (displayedItems.size <= 1) selectedIndex = null
+                },
+                onMoveToLocation = { ids, folderId ->
+                    shoppingClosetViewModel.moveToCloset(ids, folderId) { moved ->
+                        if (moved.isNotEmpty()) onRefreshWardrobe()
+                    }
+                    if (displayedItems.size <= 1) selectedIndex = null
+                },
+                onCreateOutfitFromSelection = onCreateOutfitFromSelection,
+                locations = locations,
+                activeLocationId = activeLocationId,
+                processingImageId = null,
+                writeMode = false,
+            )
         }
     }
 

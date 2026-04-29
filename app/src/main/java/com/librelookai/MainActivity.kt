@@ -437,6 +437,21 @@ class MainActivity : ComponentActivity() {
                                                 selectedTab = 1
                                                 navResetTick++
                                             },
+                                            onCreateOutfitFromSelection = { itemIds ->
+                                                Analytics.action("Shopping", "create_outfit_from_selection", mapOf("count" to itemIds.size.toString()))
+                                                stylesViewModel.openComposer(
+                                                    seedItemIds = itemIds,
+                                                    images      = wardrobeViewModel.state.value.images +
+                                                        shoppingClosetState.items,
+                                                    prefs       = profileViewModel.state.value.preferences,
+                                                )
+                                                shoppingClosetViewModel.clearSelection()
+                                            },
+                                            onTryOnSelection = { itemIds ->
+                                                runTryOn(itemIds)
+                                                shoppingClosetViewModel.clearSelection()
+                                            },
+                                            canTryOn = canTryOn,
                                             navResetTick = navResetTick,
                                         )
                                         3 -> TravelScreen(
@@ -488,6 +503,7 @@ class MainActivity : ComponentActivity() {
                                     tryOnViewModel   = tryOnViewModel,
                                     wardrobeViewModel = wardrobeViewModel,
                                     profileViewModel  = profileViewModel,
+                                    shoppingClosetViewModel = shoppingClosetViewModel,
                                 )
 
                                 // Unified style composer — opened from any screen that seeds items.
@@ -496,6 +512,7 @@ class MainActivity : ComponentActivity() {
                                     wardrobeViewModel = wardrobeViewModel,
                                     profileViewModel  = profileViewModel,
                                     weatherViewModel  = weatherViewModel,
+                                    shoppingClosetViewModel = shoppingClosetViewModel,
                                 )
 
                                 // Replacements result dialog — opened from Wardrobe selection FAB.

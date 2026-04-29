@@ -77,15 +77,23 @@ fun OutfitComposerScreen(
     wardrobeViewModel: WardrobeViewModel,
     profileViewModel: ProfileViewModel,
     weatherViewModel: WeatherViewModel,
+    shoppingClosetViewModel: ShoppingClosetViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
 ) {
     val s by stylesViewModel.state.collectAsState()
     val wardrobe by wardrobeViewModel.state.collectAsState()
     val profile by profileViewModel.state.collectAsState()
     val weather by weatherViewModel.state.collectAsState()
+    val shoppingState by shoppingClosetViewModel.state.collectAsState()
     val ctx = LocalContext.current
     val isOffline = LocalIsOffline.current
 
     if (!s.isComposerOpen) return
+
+    // Items can be seeded from either the wardrobe or the shopping closet (via the shopping
+    // selection FAB). Merge so id lookups + thumbnail rendering succeed regardless of source.
+    val composerImages = remember(wardrobe.images, shoppingState.items) {
+        wardrobe.images + shoppingState.items
+    }
 
     var showAddItemSheet by remember { mutableStateOf(false) }
 
@@ -139,7 +147,7 @@ fun OutfitComposerScreen(
                     SectionHeader(stringResource(R.string.composer_section_items))
                     ItemsGrid(
                         itemIds = s.composerItemIds,
-                        wardrobe = wardrobe.images,
+                        wardrobe = composerImages,
                         onRemove = { stylesViewModel.removeComposerItem(it) },
                         onAddClick = { showAddItemSheet = true },
                     )
@@ -251,7 +259,7 @@ fun OutfitComposerScreen(
                                             stylesViewModel.enhanceComposerWithAi(
                                                 prefs   = profile.preferences,
                                                 weather = weather.data,
-                                                images  = wardrobe.images,
+                                                images  = composerImages,
                                             )
                                         }
                                     },
@@ -296,7 +304,7 @@ fun OutfitComposerScreen(
                                 stylesViewModel.enhanceComposerWithAi(
                                     prefs   = profile.preferences,
                                     weather = weather.data,
-                                    images  = wardrobe.images,
+                                    images  = composerImages,
                                 )
                             },
                             enabled = !s.isComposerEnhancing,
@@ -328,7 +336,7 @@ fun OutfitComposerScreen(
 
     if (showAddItemSheet) {
         AddItemSheet(
-            allItems = wardrobe.images,
+            allItems = composerImages,
             alreadyChosen = s.composerItemIds.toSet(),
             onConfirm = { newIds ->
                 stylesViewModel.addComposerItems(newIds)

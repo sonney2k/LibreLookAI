@@ -95,12 +95,19 @@ fun TryOnComposerScreen(
     tryOnViewModel: TryOnViewModel,
     wardrobeViewModel: WardrobeViewModel,
     profileViewModel: ProfileViewModel,
+    shoppingClosetViewModel: ShoppingClosetViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
 ) {
     val state by tryOnViewModel.state.collectAsState()
     if (!state.isComposerOpen) return
 
     val wardrobeState by wardrobeViewModel.state.collectAsState()
     val profileState by profileViewModel.state.collectAsState()
+    val shoppingClosetState by shoppingClosetViewModel.state.collectAsState()
+    // Try-on must resolve item IDs that originate from either the wardrobe or the shopping
+    // closet (FAB available in both screens). Merge so id lookups succeed regardless of source.
+    val combinedImages = remember(wardrobeState.images, shoppingClosetState.items) {
+        wardrobeState.images + shoppingClosetState.items
+    }
 
     Dialog(
         onDismissRequest = tryOnViewModel::close,
@@ -153,7 +160,7 @@ fun TryOnComposerScreen(
                 when {
                     viewing != null -> TryOnDetailContent(
                         tryOn = viewing,
-                        wardrobeImages = wardrobeState.images,
+                        wardrobeImages = combinedImages,
                         onDelete = { tryOnViewModel.deleteTryOn(viewing) },
                     )
 
@@ -166,13 +173,13 @@ fun TryOnComposerScreen(
                         state = state,
                         onSave = {
                             Analytics.action("TryOn/Result", "save")
-                            tryOnViewModel.saveCurrent(wardrobeState.images)
+                            tryOnViewModel.saveCurrent(combinedImages)
                         },
                         onDiscard = {
                             Analytics.action("TryOn/Result", "regenerate")
                             tryOnViewModel.generate(
                                 personFiles     = profileViewModel.tryOnFiles(),
-                                wardrobeImages  = wardrobeState.images,
+                                wardrobeImages  = combinedImages,
                                 preferences     = profileState.preferences.preferences,
                             )
                         },
@@ -184,14 +191,14 @@ fun TryOnComposerScreen(
 
                     else -> TryOnComposerContent(
                         state = state,
-                        wardrobeImages = wardrobeState.images,
+                        wardrobeImages = combinedImages,
                         onRemoveItem = tryOnViewModel::removeItem,
                         onAddItems = { ids -> ids.forEach(tryOnViewModel::addItem) },
                         onGenerate = {
                             Analytics.action("TryOn/Composer", "generate", mapOf("count" to state.itemIds.size.toString()))
                             tryOnViewModel.generate(
                                 personFiles     = profileViewModel.tryOnFiles(),
-                                wardrobeImages  = wardrobeState.images,
+                                wardrobeImages  = combinedImages,
                                 preferences     = profileState.preferences.preferences,
                             )
                         },

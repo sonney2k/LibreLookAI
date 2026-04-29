@@ -1232,7 +1232,7 @@ private fun UrlImportDialog(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun FullScreenViewer(
+internal fun FullScreenViewer(
     images: List<DriveImage>,
     initialIndex: Int,
     allTagCategories: List<TagCategory>,
@@ -1247,6 +1247,7 @@ private fun FullScreenViewer(
     locations: List<Location>,
     activeLocationId: String,
     processingImageId: String?,
+    writeMode: Boolean = true,
 ) {
     BackHandler(onBack = onDismiss)
 
@@ -1303,6 +1304,7 @@ private fun FullScreenViewer(
         TagsOverlay(
             tags = currentImage.tags,
             hasOriginal = currentImage.originalDriveId != null,
+            showActions = writeMode,
             onTagImage = {
                 Analytics.action("ItemViewer", "tag_image")
                 onTagImage(currentImage.driveId)
@@ -1331,7 +1333,7 @@ private fun FullScreenViewer(
 
         // Rotate button — LAST child = highest Z-order. Explicit white/black colours so it is
         // always visible against the black viewer background regardless of dynamic theming.
-        if (!isOffline) {
+        if (!isOffline && writeMode) {
             SmallFloatingActionButton(
                 onClick = {
                     Analytics.action("ItemViewer", "rotate_image")
@@ -1594,11 +1596,13 @@ private fun ZoomableImage(
 private fun TagsOverlay(
     tags: ClothingTags?,
     hasOriginal: Boolean = false,
+    showActions: Boolean = true,
     onTagImage: () -> Unit,
     onRemoveBackground: () -> Unit,
     onEditTags: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    if (tags == null && !showActions) return
     Surface(
         modifier = modifier,
         shape = MaterialTheme.shapes.medium,
@@ -1626,7 +1630,7 @@ private fun TagsOverlay(
                 }
             }
             val isOffline = LocalIsOffline.current
-            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            if (showActions) Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 TextButton(onClick = onTagImage, enabled = !isOffline, contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)) {
                     Text(stringResource(R.string.wardrobe_tag_detect), color = if (isOffline) Color.White.copy(alpha = 0.38f) else Color.White, style = MaterialTheme.typography.labelSmall)
                 }
