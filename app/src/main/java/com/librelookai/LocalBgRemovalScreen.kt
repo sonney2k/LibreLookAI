@@ -157,13 +157,12 @@ private fun LocalBgRemovalDialog(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.surface)
-                .statusBarsPadding()
-                .navigationBarsPadding(),
+                .background(MaterialTheme.colorScheme.surface),
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .statusBarsPadding()
                     .padding(horizontal = 8.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -186,8 +185,8 @@ private fun LocalBgRemovalDialog(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
                     .weight(1f)
+                    .padding(16.dp)
                     .background(Color(0xFF202022))
                     .onSizeChanged { displaySize = it },
                 contentAlignment = Alignment.Center,
@@ -302,6 +301,7 @@ private fun LocalBgRemovalDialog(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .navigationBarsPadding()
                     .padding(16.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {

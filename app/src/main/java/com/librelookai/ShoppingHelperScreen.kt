@@ -1021,8 +1021,7 @@ internal fun MatchPreviewDialog(
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .navigationBarsPadding(),
+                    .fillMaxSize(),
             ) {
                 Spacer(Modifier.statusBarsPadding())
 
@@ -1135,6 +1134,7 @@ private fun MatchActionBar(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.Black)
+            .navigationBarsPadding()
             .padding(horizontal = 12.dp, vertical = 10.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,

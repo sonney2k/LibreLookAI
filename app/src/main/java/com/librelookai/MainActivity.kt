@@ -63,6 +63,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -234,6 +235,7 @@ class MainActivity : ComponentActivity() {
 
                     CompositionLocalProvider(
                         LocalContext provides localizedContext,
+                        LocalConfiguration provides localizedContext.resources.configuration,
                         LocalActivityResultRegistryOwner provides this@MainActivity,
                         LocalOnBackPressedDispatcherOwner provides this@MainActivity,
                         LocalIsOffline provides isOffline,
