@@ -28,10 +28,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.AutoFixHigh
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
@@ -143,6 +145,53 @@ fun OutfitComposerScreen(
                         .padding(horizontal = 16.dp, vertical = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
+                    // Quick-start AI shortcuts — only when starting from scratch (no seed items,
+                    // not editing). Manual creation is the default flow (just add items below).
+                    if (!isOffline
+                        && s.composerItemIds.isEmpty()
+                        && s.composerEditingOutfitId == null
+                    ) {
+                        SectionHeader(stringResource(R.string.composer_section_quick_start))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            OutlinedButton(
+                                onClick = {
+                                    Analytics.action("OutfitComposer", "suggest_existing")
+                                    stylesViewModel.closeComposer()
+                                    stylesViewModel.triggerPrediction(
+                                        prefs   = profile.preferences,
+                                        weather = weather.data,
+                                        images  = composerImages,
+                                    )
+                                },
+                                modifier = Modifier.weight(1f),
+                                enabled = !s.isComposerEnhancing,
+                            ) {
+                                Icon(Icons.Default.AutoAwesome, contentDescription = null, modifier = Modifier.size(16.dp))
+                                Spacer(Modifier.width(6.dp))
+                                Text(stringResource(R.string.outfits_suggest), style = MaterialTheme.typography.labelMedium)
+                            }
+                            OutlinedButton(
+                                onClick = {
+                                    Analytics.action("OutfitComposer", "compose_with_ai_quick")
+                                    stylesViewModel.enhanceComposerWithAi(
+                                        prefs   = profile.preferences,
+                                        weather = weather.data,
+                                        images  = composerImages,
+                                    )
+                                },
+                                modifier = Modifier.weight(1f),
+                                enabled = !s.isComposerEnhancing,
+                            ) {
+                                Icon(Icons.Default.AutoFixHigh, contentDescription = null, modifier = Modifier.size(16.dp))
+                                Spacer(Modifier.width(6.dp))
+                                Text(stringResource(R.string.outfits_compose), style = MaterialTheme.typography.labelMedium)
+                            }
+                        }
+                    }
+
                     // 1. Items
                     SectionHeader(stringResource(R.string.composer_section_items))
                     ItemsGrid(

@@ -1,11 +1,6 @@
 package com.librelookai
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.text.BasicTextField
@@ -250,7 +245,13 @@ fun OutfitsScreen(
                     isComposing = outfitsState.isComposing,
                     compositionError = outfitsState.compositionError,
                     selectedOutfitIds = outfitsState.selectedOutfitIds,
-                    onCreateStyle = outfitsViewModel::startCreating,
+                    onOpenCreateComposer = {
+                        outfitsViewModel.openComposer(
+                            seedItemIds = emptySet(),
+                            images      = wardrobeState.images,
+                            prefs       = profileState.preferences,
+                        )
+                    },
                     onEditOutfit = { style ->
                         outfitsViewModel.startEditing(style, wardrobeState.images, profileState.preferences)
                     },
@@ -266,21 +267,7 @@ fun OutfitsScreen(
                             prefs  = profileState.preferences,
                         )
                     },
-                    onSuggestStyle = {
-                        outfitsViewModel.triggerPrediction(
-                            prefs   = profileState.preferences,
-                            weather = weatherState.data,
-                            images  = wardrobeState.images,
-                        )
-                    },
                     onClearPredictionError = outfitsViewModel::clearPrediction,
-                    onComposeStyle = {
-                        outfitsViewModel.triggerComposition(
-                            prefs   = profileState.preferences,
-                            weather = weatherState.data,
-                            images  = wardrobeState.images,
-                        )
-                    },
                     onClearCompositionError = outfitsViewModel::clearNewSuggestion,
                     onTryOnStyle = onTryOnStyle,
                     canTryOn = canTryOn,
@@ -336,7 +323,7 @@ private fun OutfitListScreen(
     locations: List<Location> = emptyList(),
     activeLocationId: String = "",
     onSetActiveLocation: ((String) -> Unit)? = null,
-    onCreateStyle: () -> Unit,
+    onOpenCreateComposer: () -> Unit,
     onEditOutfit: (Outfit) -> Unit,
     onDeleteOutfit: (String) -> Unit,
     onWearOutfit: (String) -> Unit,
@@ -345,9 +332,7 @@ private fun OutfitListScreen(
     onClearOutfitSelection: () -> Unit = {},
     onDeleteSelectedStyles: () -> Unit = {},
     onCombineSelectedStyles: () -> Unit = {},
-    onSuggestStyle: () -> Unit,
     onClearPredictionError: () -> Unit,
-    onComposeStyle: () -> Unit,
     onClearCompositionError: () -> Unit,
     onTryOnStyle: (Outfit) -> Unit = {},
     canTryOn: Boolean = false,
@@ -634,74 +619,16 @@ private fun OutfitListScreen(
                 }
             }
         } else if (!onTryOnsTab) {
-            // Normal speed-dial FAB (bottom-end)
-            var fabExpanded by remember { mutableStateOf(false) }
-            Column(
+            FloatingActionButton(
+                onClick = {
+                    Analytics.action("Outfits", "open_create_composer")
+                    onOpenCreateComposer()
+                },
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(end = 16.dp, bottom = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalAlignment = Alignment.End,
             ) {
-                AnimatedVisibility(
-                    visible = fabExpanded,
-                    enter = fadeIn() + slideInVertically(initialOffsetY = { it / 2 }),
-                    exit = fadeOut() + slideOutVertically(targetOffsetY = { it / 2 }),
-                ) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        horizontalAlignment = Alignment.End,
-                    ) {
-                        SpeedDialItem(
-                            label = stringResource(R.string.outfits_create_manual),
-                            icon = { Icon(Icons.Default.Edit, contentDescription = null) },
-                            containerColor = MaterialTheme.colorScheme.primaryContainer,
-                            onClick = {
-                                Analytics.action("Outfits", "create_manual_style")
-                                fabExpanded = false; onCreateStyle()
-                            },
-                        )
-                        if (!isOffline) {
-                            SpeedDialItem(
-                                label = if (isPredicting) stringResource(R.string.outfits_thinking) else stringResource(R.string.outfits_suggest),
-                                icon = {
-                                    if (isPredicting)
-                                        CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
-                                    else
-                                        Icon(Icons.Default.AutoAwesome, contentDescription = null)
-                                },
-                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                                onClick = {
-                                    Analytics.action("Outfits", "suggest_style")
-                                    fabExpanded = false; if (!isPredicting) onSuggestStyle()
-                                },
-                            )
-                            SpeedDialItem(
-                                label = if (isComposing) stringResource(R.string.outfits_thinking) else stringResource(R.string.outfits_compose),
-                                icon = {
-                                    if (isComposing)
-                                        CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
-                                    else
-                                        Icon(Icons.Default.AutoFixHigh, contentDescription = null)
-                                },
-                                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                                onClick = {
-                                    Analytics.action("Outfits", "compose_style")
-                                    fabExpanded = false; if (!isComposing) onComposeStyle()
-                                },
-                            )
-                        }
-                    }
-                }
-                FloatingActionButton(onClick = {
-                    Analytics.action("Outfits", "toggle_speed_dial", mapOf("expanded" to (!fabExpanded).toString()))
-                    fabExpanded = !fabExpanded
-                }) {
-                    Icon(
-                        if (fabExpanded) Icons.Default.Close else Icons.Default.Add,
-                        contentDescription = if (fabExpanded) "Close" else "Actions",
-                    )
-                }
+                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.wardrobe_create_style))
             }
         }
 
@@ -724,37 +651,6 @@ private fun OutfitListScreen(
                 action = { TextButton(onClick = onClearError) { Text(stringResource(R.string.action_ok)) } },
             ) { Text(msg) }
         }
-    }
-}
-
-// ---------- Speed-dial helper ----------
-
-@Composable
-private fun SpeedDialItem(
-    label: String,
-    icon: @Composable () -> Unit,
-    containerColor: androidx.compose.ui.graphics.Color,
-    onClick: () -> Unit,
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        androidx.compose.material3.Surface(
-            shape = MaterialTheme.shapes.small,
-            color = MaterialTheme.colorScheme.surface,
-            shadowElevation = 2.dp,
-        ) {
-            Text(
-                label,
-                style = MaterialTheme.typography.labelMedium,
-                modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
-            )
-        }
-        SmallFloatingActionButton(
-            onClick = onClick,
-            containerColor = containerColor,
-        ) { icon() }
     }
 }
 

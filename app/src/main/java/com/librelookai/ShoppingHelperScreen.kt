@@ -453,16 +453,18 @@ private fun ShoppingListTab(
                         text = { Text(stringResource(R.string.shop_list_move_to_closet)) },
                     )
                 }
-                ExtendedFloatingActionButton(
-                    onClick = {
-                        Analytics.action("Shopping", "open_delete_dialog", mapOf("count" to state.selectedIds.size.toString()))
-                        showDeleteDialog = true
-                    },
-                    containerColor = MaterialTheme.colorScheme.error,
-                    contentColor = MaterialTheme.colorScheme.onError,
-                    icon = { Icon(Icons.Default.Delete, contentDescription = null) },
-                    text = { Text(stringResource(R.string.action_delete)) },
-                )
+                if (!isOffline) {
+                    ExtendedFloatingActionButton(
+                        onClick = {
+                            Analytics.action("Shopping", "open_delete_dialog", mapOf("count" to state.selectedIds.size.toString()))
+                            showDeleteDialog = true
+                        },
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError,
+                        icon = { Icon(Icons.Default.Delete, contentDescription = null) },
+                        text = { Text(stringResource(R.string.action_delete)) },
+                    )
+                }
                 ExtendedFloatingActionButton(
                     onClick = {
                         Analytics.action("Shopping", "clear_selection")
@@ -1017,7 +1019,11 @@ internal fun MatchPreviewDialog(
                 .fillMaxSize()
                 .background(Color.Black),
         ) {
-            Column(modifier = Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .navigationBarsPadding(),
+            ) {
                 Spacer(Modifier.statusBarsPadding())
 
                 val current = matches[pagerState.currentPage]
@@ -1047,7 +1053,11 @@ internal fun MatchPreviewDialog(
                         )
                     }
                     IconButton(onClick = onDismiss) {
-                        Icon(Icons.Default.Close, contentDescription = "Close", tint = Color.White)
+                        Icon(
+                            Icons.Default.Close,
+                            contentDescription = stringResource(R.string.action_dismiss),
+                            tint = Color.White,
+                        )
                     }
                 }
 
@@ -1125,7 +1135,6 @@ private fun MatchActionBar(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.Black)
-            .navigationBarsPadding()
             .padding(horizontal = 12.dp, vertical = 10.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,

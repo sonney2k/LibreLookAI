@@ -526,6 +526,7 @@
     <!-- Unified Style Composer -->
     <string name="composer_title">Outfit erstellen</string>
     <string name="composer_save">Speichern</string>
+    <string name="composer_section_quick_start">Schnellstart</string>
     <string name="composer_section_items">Teile</string>
     <string name="composer_section_weather">Wetter</string>
     <string name="composer_section_vibe">Stil-Vibe</string>

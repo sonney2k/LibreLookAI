@@ -38,7 +38,6 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Download
-import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.AlertDialog
@@ -142,16 +141,6 @@ fun TryOnComposerScreen(
                                 else                -> tryOnViewModel.close()
                             }
                         }) { Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_dismiss)) }
-                    },
-                    actions = {
-                        if (viewing == null && !state.isHistoryOpen && state.history.isNotEmpty()) {
-                            IconButton(onClick = {
-                                Analytics.action("TryOn", "open_history")
-                                tryOnViewModel.openHistory()
-                            }) {
-                                Icon(Icons.Default.History, contentDescription = stringResource(R.string.tryon_history_action))
-                            }
-                        }
                     },
                 )
             },

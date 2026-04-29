@@ -550,6 +550,7 @@
     <!-- Unified Outfit Composer -->
     <string name="composer_title">Create outfit</string>
     <string name="composer_save">Save</string>
+    <string name="composer_section_quick_start">Quick start</string>
     <string name="composer_section_items">Items</string>
     <string name="composer_section_weather">Weather</string>
     <string name="composer_section_vibe">Style vibe</string>
