@@ -25,8 +25,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -72,6 +70,7 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -91,6 +90,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -1002,6 +1002,9 @@ internal fun MatchPreviewDialog(
     canAddToShoppingList: Boolean,
     onDismiss: () -> Unit,
 ) {
+    val barInsets = LocalSystemBarsPadding.current
+    val parentContext = LocalContext.current
+    val parentConfiguration = LocalConfiguration.current
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(
@@ -1009,6 +1012,10 @@ internal fun MatchPreviewDialog(
             decorFitsSystemWindows = false,
         ),
     ) {
+      CompositionLocalProvider(
+          LocalContext provides parentContext,
+          LocalConfiguration provides parentConfiguration,
+      ) {
         val pagerState = rememberPagerState(
             initialPage = initialIndex.coerceIn(0, (matches.size - 1).coerceAtLeast(0)),
             pageCount = { matches.size },
@@ -1021,9 +1028,9 @@ internal fun MatchPreviewDialog(
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .padding(top = barInsets.calculateTopPadding()),
             ) {
-                Spacer(Modifier.statusBarsPadding())
 
                 val current = matches[pagerState.currentPage]
                 val label = current.image.tags?.label?.takeIf { it.isNotBlank() }
@@ -1086,6 +1093,7 @@ internal fun MatchPreviewDialog(
                 )
             }
         }
+      }
     }
 }
 
@@ -1130,11 +1138,12 @@ private fun MatchActionBar(
     onAddToShoppingList: () -> Unit,
     canAddToShoppingList: Boolean,
 ) {
+    val barInsets = LocalSystemBarsPadding.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.Black)
-            .navigationBarsPadding()
+            .padding(bottom = barInsets.calculateBottomPadding())
             .padding(horizontal = 12.dp, vertical = 10.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,

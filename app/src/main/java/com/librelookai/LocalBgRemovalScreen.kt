@@ -13,9 +13,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -27,6 +25,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -43,6 +42,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
@@ -145,6 +145,9 @@ private fun LocalBgRemovalDialog(
     }
     LaunchedEffect(rawFilePath) { recompute() }
 
+    val barInsets = LocalSystemBarsPadding.current
+    val parentContext = LocalContext.current
+    val parentConfiguration = LocalConfiguration.current
     Dialog(
         onDismissRequest = { /* require explicit Cancel */ },
         properties = DialogProperties(
@@ -154,6 +157,10 @@ private fun LocalBgRemovalDialog(
             decorFitsSystemWindows = false,
         ),
     ) {
+      CompositionLocalProvider(
+          LocalContext provides parentContext,
+          LocalConfiguration provides parentConfiguration,
+      ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -162,7 +169,7 @@ private fun LocalBgRemovalDialog(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .statusBarsPadding()
+                    .padding(top = barInsets.calculateTopPadding())
                     .padding(horizontal = 8.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -301,7 +308,7 @@ private fun LocalBgRemovalDialog(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .navigationBarsPadding()
+                    .padding(bottom = barInsets.calculateBottomPadding())
                     .padding(16.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
@@ -330,6 +337,7 @@ private fun LocalBgRemovalDialog(
                 ) { Text(stringResource(R.string.local_bg_apply)) }
             }
         }
+      }
     }
 }
 

@@ -55,8 +55,17 @@ class ProfileViewModel(app: Application) : AndroidViewModel(app) {
 
     init { loadPreferences() }
 
-    private fun cachedLanguage(): String =
-        langPrefs.getString(KEY_LANGUAGE, null) ?: AppLanguage.ENGLISH
+    /**
+     * First-run language defaults to the device locale if it matches a supported [AppLanguage]
+     * option, otherwise falls back to English. Once the user explicitly picks a language in
+     * Settings, that choice is persisted in [LANG_PREFS] and wins over the system locale.
+     */
+    private fun cachedLanguage(): String {
+        langPrefs.getString(KEY_LANGUAGE, null)?.let { return it }
+        val systemLang = java.util.Locale.getDefault().language
+        return if (systemLang.equals("de", ignoreCase = true)) AppLanguage.GERMAN
+        else AppLanguage.ENGLISH
+    }
 
     private fun cacheLanguage(language: String) {
         langPrefs.edit().putString(KEY_LANGUAGE, language).apply()

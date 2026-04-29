@@ -5,13 +5,25 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 /** `true` when the device has no internet connectivity. Read via `LocalIsOffline.current`. */
 val LocalIsOffline = compositionLocalOf { false }
+
+/**
+ * System-bar insets captured at the activity scope and propagated to UI hosted in
+ * `androidx.compose.ui.window.Dialog` windows. Compose's `WindowInsets.systemBars` (and modifier
+ * siblings like `navigationBarsPadding()`) report 0 inside Dialog windows on a number of devices
+ * because the OS only dispatches insets to the activity's window — meaning bottom buttons in a
+ * fullscreen Dialog get clipped under the gesture/nav bar. The activity reads the live insets and
+ * provides them here; dialog content applies the padding manually.
+ */
+val LocalSystemBarsPadding = compositionLocalOf { PaddingValues(0.dp) }
 
 private fun NetworkCapabilities.hasValidatedInternet(): Boolean =
     hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&

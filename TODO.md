@@ -15,8 +15,6 @@ TODO
 Features:
 ---------
 
-AI (stars) spinning wheel in create outfit
-
 create human readable release notes between now and c40489226c3a4a01dd4033e959d83cee1d7b8ebb and release version 1.3.0 and upload to testers in firebase
 
 Implement new feature: We are working on the refinancing/monetization aspect of the app: I want people to be able to buy coins that I then use to pay gemini cloud costs. would that work with RevenueCat (handles the money/receipts) + Firebase (database and secure Gemini API routing)? In addition, I still want to support the bring your own key option though.
@@ -28,24 +26,47 @@ size filter? default sizes in wardrobe? size tag?
 Bugs:
 -----
 
-when importing into wardrobe for local background removal ensure that image is centered. In general ensure that images are cropped.
+Fix closet usability:
+1. when starting the app set closet filter to all
+2. when creating outfits allow selecting closets
 
-ensure that in all processes, images are smaller than max(width,height)<1280. In particular before uploading anything to Gemini.
+Unify outfit generation:
+- re-use the wardrobe screen create outfit also for the '+' button on Outfits for ???
+- when AI is used to generate an outfit use the AI spinning wheel
 
-on try-on details the delete button is partially outside the screen and when clicking X in upper left it does not immediately go back to the try-on tab on outfits
-
-fix usability issue on wardrobe screen: moving item to different closet and then switching to that closet - it won't immediately appear on wardrobe after moving to different closet. it took almost a minute to appear. Can this be sped up?
-
-offline check is not reliable offline/online status - listen to android. if previously online but it now goes offline also go offline in the app and ensure that the red offline bar is shown. also in wardrobe some the buttons for importing from gallery or picture do still exist.
+The url based import does not work. Can we open a web browser with that page and have the user select the image to be used?
 
 security/function relevant parts of a prompts should not be appear in settings. e.g. "Place the clothing item on a pure, solid neon green background (Hex #00FF00).
 
-bug or feature: persistance is working reliably now. What I noticed is that the closet selector in the header is being remebered too 
+ensure that in all processes, images are smaller than max(width,height)<1024. In particular before uploading anything to Gemini. Ensure also that images are
+cropped to minimize number of pixels that need to be sent to gemini to reduce token usage. Also ensure that output of gemini cut outs is smaller than max(width,height)<1024
 
+fix usability issue on wardrobe screen: moving item to different closet and then switching to that closet - it won't immediately appear on wardrobe after moving to different closet. it took almost a minute to appear. Can this be sped up?
 
+1. similarity search buttons when displaying full matching image, button at bottom is does not fit on screen it is only half visible (happens in both shopping -> similarity search and in wardrobe when adding item by picture)
+2. when refining cutout the buttons Skip (use Gemini) and Use this cutout are only partially visible at the bottom of the screen. Ensure they are fully visibile.
+3. always show crosshair in camera
 
 IN PROGRESS
 ===========
+Fix those issues in wardrobe view:
+1. similarity search not localized: "Possible duplicate" "We found X item(s) in your wardrobe that look very similar to this photo.", "Similarity", Buttons: "Cancel" "Import Anyway"
+2. in shopping view similarity search is also not localized and looking at match full screen buttons at the bottom are outside of the screen
+3. when adding item to wardrobe and duplicate is found "Possible duplicate" it is not localized
+4. clicking on a similar item "Similarity" & "Show in wardrobe" are not localized and button is too far at bottom of the screen (partially outside the screen)
+5. when refining cutout the buttons Skip (use Gemini) and Use this cutout are only partially visible at the bottom of the screen. Ensure they are fully visibile. In addition they are not localized. Also "Refine cutout", "Drag the crosshair onto the item you want to keep." is not localized
+
+Fix the following bugs in shopping helper:
+1. when in offline mode don't allow delete
+2. similarity search not localized and looking at match full screen buttons at the bottom are outside of the screen
+
+
+Fix the following bugs in Outfits view:
+1. when creating try-on on "Try on me" remove the top right button that shows previous try-ons we now have a dedicated tab for that
+2. only have single + button and integrate the functionality to create manual outfit, suggest existing outfit and create new outfit with AI in the create outfit view that wardrobe is already using
+
+offline check is not reliable offline/online status - listen to android. if previously online but it now goes offline also go offline in the app and ensure that the red offline bar is shown. also in wardrobe some the buttons for importing from gallery or picture do still exist.
+
 firebase app analytics to understand what features are being used (zoomed in which buttons are pressed, things tapped in which order)
 
 when importing images/photo/url add option to do background removal via cheap local tflite model. let the model mark the background display the starting point as cross hair that the user can change
@@ -62,6 +83,25 @@ add threshold for tuning bg removal algorithm under settings -> AI tab
 
 add a feedback tab under settings move debug setting under this tab
 
+
+on repair & sync make preview all images that will be imported in a grid similar to how they are show in wardrobe view with them all selected. only the selected ones will be modified. support manual (un)selection with the common features of (un)select all, showing counts..
+
+
+how can we unify tags? I see tags like "Long-sleeve T-shirt", "Long-sleeved t-shirt", "Long-sleeve shirt" that likely mean the same. Or "grey", "Gray"
+
+
+
+
+FIXED
+=====
+Fix those issues in wardrobe view:
+1. when refining cutout the buttons Skip (use Gemini) and Use this cutout are only partially visible at the bottom of the screen. Ensure they are fully visibile. In addition they are not localized
+2. when finding image the buttons at the bottom (Show in Wardrobe)are only partially visible at the bottom of the screen. Ensure they are fully visibile. In addition they are not localized
+3. when finding image and clicking on a match swipe left & right no longer shows the previous next match
+4. when importing into wardrobe for local background removal ensure that image is centered. In general ensure that images are cropped.
+5. when taking a picture and pressing the back button closes the camera / cancels
+6. when taking a picture in wardrobe similar items should be shown in the same way like in find item view
+
 Continue work on Shopping helper.
 
 1. In wardrobe one can currently import an item by taking a picture and by selecting an image from gallery. Add another option to fetch an item from a shopping site. To this end the user pastes a URL to a shopping page e.g. amazon and we need to detect and fetch the product image from that page
@@ -76,17 +116,15 @@ Rework shopping helper by adding tools that are currently scattered across the a
 3. Move wardrobe statistics over
 4. Move statistics from calender over 
 
+Fix those issues in shopping view:
+1. enable try-on me on shopping view.
+2. display shopping closet name like on wardrobe view
+3. remove sorting
+4. tapping on an item should show the item in big like happens in wardrobe
+5. allow creation of outfit
 
-on repair & sync make preview all images that will be imported in a grid similar to how they are show in wardrobe view with them all selected. only the selected ones will be modified. support manual (un)selection with the common features of (un)select all, showing counts..
+on try-on details the delete button is partially outside the screen and when clicking X in upper left it does not immediately go back to the try-on tab on outfits
 
-
-how can we unify tags? I see tags like "Long-sleeve T-shirt", "Long-sleeved t-shirt", "Long-sleeve shirt" that likely mean the same. Or "grey", "Gray"
-
-
-
-
-FIXED
-=====
 when clicking on any screen button go to that screen with the default tab selected
 
 in settings add AI tab where all gemini prompts that are currently being used are being displayed and can be edited/overriden. add a reset to defaults on this page. add a setting as in what to consider by default when suggesting a style.
@@ -135,7 +173,7 @@ on settings screen move gemini api key to credits
 
 rename style / Stile Screen to outfits as style is a different concept / meaning. Rename classes in code too.
 
-ensure that when repairing, retagging, background removal batch jobs images only the resized images are used and if larger images are there that they are resized in the same way max(width,height)<1280 
+ensure that when repairing, retagging, background removal batch jobs images only the resized images are used and if larger images are there that they are resized in the same way max(width,height)<1024 and cropped to minimize number of pixels that need to be sent & gemini token usage
 
 Implement new feature: Wear on me: Idea is to view a selected style or wardrobe item on the person in the profile. To this end add an option to upload 3 pictures to ones profile: From front, from side and from back. Limit image size as usual. Store this on drive under a special name / folder such that these are not being mistaken for a wardrobe image. Then add option in wardrobe and style menu when a style or wardrobe item(s) are selected to "see this on myself" use again nanobanana to put on any style/wardrobe items.
 
