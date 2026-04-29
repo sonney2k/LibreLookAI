@@ -33,6 +33,12 @@ data class TryOnUiState(
     val isHistoryOpen: Boolean = false,
     /** Non-null when the user is viewing a past try-on from history. */
     val viewingTryOn: TryOn? = null,
+    /**
+     * True when the detail view was opened directly as the dialog root (e.g. from the
+     * Outfits → Try-Ons sub-tab). In that case the back/close action should close the
+     * whole dialog rather than fall back to the in-dialog history grid.
+     */
+    val historyDetailIsRoot: Boolean = false,
 
     val error: String? = null,
 )
@@ -94,6 +100,7 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
                 isComposerOpen = true,
                 isHistoryOpen  = true,
                 viewingTryOn   = tryOn,
+                historyDetailIsRoot = true,
                 itemIds        = emptySet(),
                 resultPath     = null,
                 isResultSaved  = false,
@@ -110,10 +117,10 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
     fun removeItem(driveId: String) = _state.update { it.copy(itemIds = it.itemIds - driveId) }
     fun setItems(ids: Set<String>) = _state.update { it.copy(itemIds = ids) }
 
-    fun openHistory() = _state.update { it.copy(isHistoryOpen = true, viewingTryOn = null) }
-    fun closeHistory() = _state.update { it.copy(isHistoryOpen = false, viewingTryOn = null) }
-    fun viewTryOn(t: TryOn) = _state.update { it.copy(viewingTryOn = t) }
-    fun dismissViewingTryOn() = _state.update { it.copy(viewingTryOn = null) }
+    fun openHistory() = _state.update { it.copy(isHistoryOpen = true, viewingTryOn = null, historyDetailIsRoot = false) }
+    fun closeHistory() = _state.update { it.copy(isHistoryOpen = false, viewingTryOn = null, historyDetailIsRoot = false) }
+    fun viewTryOn(t: TryOn) = _state.update { it.copy(viewingTryOn = t, historyDetailIsRoot = false) }
+    fun dismissViewingTryOn() = _state.update { it.copy(viewingTryOn = null, historyDetailIsRoot = false) }
 
     fun clearError() = _state.update { it.copy(error = null) }
 

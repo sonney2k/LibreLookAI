@@ -129,6 +129,7 @@ fun TryOnComposerScreen(
                         IconButton(onClick = {
                             Analytics.action("TryOn", "close")
                             when {
+                                viewing != null && state.historyDetailIsRoot -> tryOnViewModel.close()
                                 viewing != null     -> tryOnViewModel.dismissViewingTryOn()
                                 state.isHistoryOpen -> tryOnViewModel.closeHistory()
                                 else                -> tryOnViewModel.close()
@@ -567,7 +568,16 @@ private fun TryOnDetailContent(
             }
         }
         HorizontalDivider()
-        Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        // Items list scrolls when long; capped at its weight share so the image and the
+        // pinned Delete button below always remain on screen.
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .weight(1f, fill = false)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 12.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
             Text(
                 stringResource(R.string.tryon_history_items_title),
                 style = MaterialTheme.typography.titleSmall,
@@ -603,17 +613,19 @@ private fun TryOnDetailContent(
                     }
                 }
             }
-            FilledTonalButton(
-                onClick = {
-                    Analytics.action("TryOn/Detail", "open_delete_dialog")
-                    confirmDelete = true
-                },
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Icon(Icons.Default.Delete, null, modifier = Modifier.size(18.dp))
-                Spacer(Modifier.width(6.dp))
-                Text(stringResource(R.string.action_delete))
-            }
+        }
+        FilledTonalButton(
+            onClick = {
+                Analytics.action("TryOn/Detail", "open_delete_dialog")
+                confirmDelete = true
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 12.dp),
+        ) {
+            Icon(Icons.Default.Delete, null, modifier = Modifier.size(18.dp))
+            Spacer(Modifier.width(6.dp))
+            Text(stringResource(R.string.action_delete))
         }
     }
 
