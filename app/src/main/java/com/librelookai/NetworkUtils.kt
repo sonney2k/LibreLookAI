@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import androidx.compose.runtime.compositionLocalOf
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,45 +25,96 @@ fun Context.isNetworkAvailable(): Boolean {
 }
 
 /**
- * Reactive network monitor that exposes a [StateFlow] reflecting the current
- * connectivity state of the device's *default* network.
+ * Reactive network monitor that exposes a [StateFlow] reflecting whether the
+ * device currently has *any* network with validated internet.
  *
- * Implemented with [ConnectivityManager.registerDefaultNetworkCallback] so we
- * only watch the route the OS would actually use for outbound traffic, and we
- * trust the callback's [Network] argument rather than re-querying
- * `cm.activeNetwork` (which races during the offline transition — the old
- * implementation could observe a still-non-null active network in `onLost`
- * and keep the flow stuck at `true`).
+ * We track the set of networks the framework reports as INTERNET+VALIDATED via
+ * [ConnectivityManager.registerNetworkCallback] (a `NetworkRequest` rather than
+ * the default-network variant — the latter only watches one route at a time and
+ * has been observed to miss the offline transition on some OEMs when the
+ * default network is torn down without a replacement).
+ *
+ * The flow is `true` iff at least one tracked network is currently validated.
+ * [recheck] re-reads the active network as a backstop (e.g. on lifecycle
+ * resume) in case the system silently dropped a callback while the app was
+ * backgrounded — without it, the app could remain stuck "online" after coming
+ * back from a flight-mode toggle.
  *
  * Callers must invoke [unregister] when done (Activity `onDestroy`,
- * `DisposableEffect.onDispose`) to avoid leaking the system callback.
+ * `DisposableEffect.onDispose`).
  */
 class NetworkMonitor(context: Context) {
 
     private val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
+    private val validated = mutableSetOf<Network>()
+
     private val _isOnline = MutableStateFlow(context.isNetworkAvailable())
     val isOnline: StateFlow<Boolean> = _isOnline.asStateFlow()
 
     private val callback = object : ConnectivityManager.NetworkCallback() {
+        override fun onAvailable(network: Network) {
+            // Wait for onCapabilitiesChanged to confirm INTERNET+VALIDATED before
+            // flipping online — `onAvailable` alone fires for networks that are
+            // still being validated (e.g. captive portals).
+        }
+
         override fun onCapabilitiesChanged(
             network: Network,
             capabilities: NetworkCapabilities,
         ) {
-            _isOnline.value = capabilities.hasValidatedInternet()
+            synchronized(validated) {
+                if (capabilities.hasValidatedInternet()) validated.add(network)
+                else validated.remove(network)
+                _isOnline.value = validated.isNotEmpty()
+            }
         }
 
         override fun onLost(network: Network) {
-            _isOnline.value = false
+            synchronized(validated) {
+                validated.remove(network)
+                _isOnline.value = validated.isNotEmpty()
+            }
         }
 
         override fun onUnavailable() {
-            _isOnline.value = false
+            synchronized(validated) {
+                validated.clear()
+                _isOnline.value = false
+            }
         }
     }
 
     init {
-        cm.registerDefaultNetworkCallback(callback)
+        val request = NetworkRequest.Builder()
+            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            .build()
+        cm.registerNetworkCallback(request, callback)
+    }
+
+    /**
+     * Re-read the active network and reconcile the flow. Useful from
+     * `Lifecycle.Event.ON_RESUME` to recover from missed callbacks while the
+     * app was backgrounded.
+     */
+    fun recheck() {
+        val active = cm.activeNetwork
+        val caps = active?.let { cm.getNetworkCapabilities(it) }
+        val online = caps?.hasValidatedInternet() == true
+        synchronized(validated) {
+            if (!online) {
+                // Drop any cached entries that no longer report validated.
+                val it = validated.iterator()
+                while (it.hasNext()) {
+                    val n = it.next()
+                    val c = cm.getNetworkCapabilities(n)
+                    if (c == null || !c.hasValidatedInternet()) it.remove()
+                }
+            } else if (active != null) {
+                validated.add(active)
+            }
+            _isOnline.value = validated.isNotEmpty()
+        }
     }
 
     fun unregister() {

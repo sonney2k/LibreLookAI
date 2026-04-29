@@ -119,7 +119,14 @@ class MainActivity : ComponentActivity() {
                 } else {
                     val networkMonitor = remember { NetworkMonitor(this@MainActivity) }
                     DisposableEffect(networkMonitor) {
-                        onDispose { networkMonitor.unregister() }
+                        val observer = LifecycleEventObserver { _, event ->
+                            if (event == Lifecycle.Event.ON_RESUME) networkMonitor.recheck()
+                        }
+                        this@MainActivity.lifecycle.addObserver(observer)
+                        onDispose {
+                            this@MainActivity.lifecycle.removeObserver(observer)
+                            networkMonitor.unregister()
+                        }
                     }
                     val isOnline by networkMonitor.isOnline.collectAsState()
                     val isOffline = !isOnline
