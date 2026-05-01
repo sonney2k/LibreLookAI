@@ -40,6 +40,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
@@ -111,6 +112,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -1592,6 +1594,7 @@ private fun ZoomableImage(
 
 // ---------- Tags overlay ----------
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun TagsOverlay(
     tags: ClothingTags?,
@@ -1603,8 +1606,11 @@ private fun TagsOverlay(
     modifier: Modifier = Modifier,
 ) {
     if (tags == null && !showActions) return
+    // Cap width so chips wrap downward instead of letting the overlay swell
+    // across the screen on large font scales.
+    val maxWidth = LocalConfiguration.current.screenWidthDp.dp * 0.6f
     Surface(
-        modifier = modifier,
+        modifier = modifier.widthIn(max = maxWidth),
         shape = MaterialTheme.shapes.medium,
         color = Color.Black.copy(alpha = 0.55f),
     ) {
@@ -1614,23 +1620,23 @@ private fun TagsOverlay(
             horizontalAlignment = Alignment.End,
         ) {
             if (tags != null) {
-                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     if (tags.type.isNotEmpty()) TagChip(tags.type.localizedTagValue())
                     if (tags.category.isNotEmpty()) TagChip(tags.category.localizedTagValue())
                 }
                 if (tags.uses.isNotEmpty()) {
-                    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         tags.uses.forEach { TagChip(it.localizedTagValue()) }
                     }
                 }
                 if (tags.colors.isNotEmpty()) {
-                    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         tags.colors.forEach { TagChip(it.localizedTagValue()) }
                     }
                 }
             }
             val isOffline = LocalIsOffline.current
-            if (showActions) Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            if (showActions) FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 TextButton(onClick = onTagImage, enabled = !isOffline, contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)) {
                     Text(stringResource(R.string.wardrobe_tag_detect), color = if (isOffline) Color.White.copy(alpha = 0.38f) else Color.White, style = MaterialTheme.typography.labelSmall)
                 }
