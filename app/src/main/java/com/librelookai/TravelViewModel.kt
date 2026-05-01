@@ -141,7 +141,7 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
             )
             Log.d("TravelVM", "Packing prompt length: ${prompt.length} chars")
 
-            val raw = gemini.generateText(prompt)
+            val raw = gemini.generateText(prompt, UsageCategory.TRAVEL)
             if (raw == null) {
                 _state.update { it.copy(isGenerating = false, error = "Gemini did not respond.") }
                 return@launch

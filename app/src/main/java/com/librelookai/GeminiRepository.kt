@@ -39,6 +39,18 @@ class GeminiRepository(private val app: Application) {
         .callTimeout(300, TimeUnit.SECONDS)  // hard ceiling for the whole call
         .build()
     private val gson = Gson()
+    private val usage = TokenUsageRepository.get(app)
+
+    /** Pulls usageMetadata out of a parsed Gemini response and records one event. */
+    private fun recordUsage(parsed: GeminiResponse, model: String, category: UsageCategory) {
+        val meta = parsed.usageMetadata ?: return
+        usage.record(
+            category = category,
+            model = model,
+            inputTokens = meta.promptTokenCount ?: 0,
+            outputTokens = meta.candidatesTokenCount ?: 0,
+        )
+    }
 
     companion object {
         private const val TAG = "GeminiRepository"
@@ -183,6 +195,7 @@ class GeminiRepository(private val app: Application) {
                 }
 
                 val parsed = gson.fromJson(responseBody, GeminiResponse::class.java)
+                recordUsage(parsed, BG_MODEL, UsageCategory.BG_REMOVAL)
                 val imagePart = parsed.candidates
                     ?.firstOrNull()
                     ?.content
@@ -295,6 +308,7 @@ class GeminiRepository(private val app: Application) {
             if (!response.isSuccessful) return@withContext null
 
             val parsed = gson.fromJson(responseBody, GeminiResponse::class.java)
+            recordUsage(parsed, BG_MODEL, UsageCategory.TRY_ON)
             val imagePart = parsed.candidates
                 ?.firstOrNull()
                 ?.content
@@ -362,6 +376,7 @@ class GeminiRepository(private val app: Application) {
                 if (!response.isSuccessful) return@withContext null
 
                 val parsed = gson.fromJson(responseBody, GeminiResponse::class.java)
+                recordUsage(parsed, CLASSIFY_MODEL, UsageCategory.TAGGING)
                 val text = parsed.candidates
                     ?.firstOrNull()?.content?.parts
                     ?.firstOrNull { it.text != null }?.text
@@ -382,7 +397,10 @@ class GeminiRepository(private val app: Application) {
      * Uses Gemini with Google Search grounding to fetch current street-fashion trends for [region].
      * Returns null on failure so callers can proceed without trend data.
      */
-    suspend fun searchFashionTrends(region: String): FashionTrends? = withContext(Dispatchers.IO) {
+    suspend fun searchFashionTrends(
+        region: String,
+        category: UsageCategory = UsageCategory.TRENDS,
+    ): FashionTrends? = withContext(Dispatchers.IO) {
         if (!isConfigured()) return@withContext null
 
         val prompt = """
@@ -410,6 +428,7 @@ class GeminiRepository(private val app: Application) {
             if (!response.isSuccessful) return@withContext null
 
             val parsed = gson.fromJson(responseBody, GeminiResponse::class.java)
+            recordUsage(parsed, CLASSIFY_MODEL, category)
             val text = parsed.candidates
                 ?.firstOrNull()?.content?.parts
                 ?.firstOrNull { it.text != null }?.text
@@ -428,7 +447,10 @@ class GeminiRepository(private val app: Application) {
     /**
      * Sends a text-only prompt to Gemini and returns the raw text response, or null on failure.
      */
-    suspend fun generateText(prompt: String): String? = withContext(Dispatchers.IO) {
+    suspend fun generateText(
+        prompt: String,
+        category: UsageCategory = UsageCategory.OTHER,
+    ): String? = withContext(Dispatchers.IO) {
         if (!isConfigured()) return@withContext null
 
         val body = gson.toJson(
@@ -450,6 +472,7 @@ class GeminiRepository(private val app: Application) {
             if (!response.isSuccessful) return@withContext null
 
             val parsed = gson.fromJson(responseBody, GeminiResponse::class.java)
+            recordUsage(parsed, CLASSIFY_MODEL, category)
             parsed.candidates
                 ?.firstOrNull()?.content?.parts
                 ?.firstOrNull { it.text != null }?.text
@@ -519,6 +542,13 @@ data class ClothingTags(
 private data class GeminiResponse(
     val candidates: List<GeminiCandidate>? = null,
     val error: GeminiError? = null,
+    @SerializedName("usageMetadata") val usageMetadata: GeminiUsageMetadata? = null,
+)
+
+private data class GeminiUsageMetadata(
+    @SerializedName("promptTokenCount") val promptTokenCount: Int? = null,
+    @SerializedName("candidatesTokenCount") val candidatesTokenCount: Int? = null,
+    @SerializedName("totalTokenCount") val totalTokenCount: Int? = null,
 )
 
 private data class GeminiError(

@@ -457,6 +457,60 @@ class DriveRepository(
             .build()).await()
     }
 
+    /** Loads the token-usage JSONL log from Drive (returns null if no file exists yet). */
+    suspend fun loadTokenUsageJsonl(folderId: String): String? = withContext(Dispatchers.IO) {
+        val tok = token()
+        val q = URLEncoder.encode(
+            "'$folderId' in parents and name='${TokenUsageRepository.DRIVE_FILE_NAME}' and trashed=false", "UTF-8",
+        )
+        val fileId = gson.fromJson(
+            http.newCall(Request.Builder()
+                .url("$API/files?q=$q&fields=files(id)")
+                .header("Authorization", "Bearer $tok")
+                .build()).await().body!!.string(),
+            FilesListDto::class.java,
+        ).files.firstOrNull()?.id ?: return@withContext null
+
+        val resp = http.newCall(Request.Builder()
+            .url("$API/files/$fileId?alt=media")
+            .header("Authorization", "Bearer $tok")
+            .build()).await()
+        if (resp.isSuccessful) resp.body?.string() else null
+    }
+
+    /** Creates or overwrites the token-usage JSONL file in Drive. */
+    suspend fun saveTokenUsageJsonl(folderId: String, content: String) = withContext(Dispatchers.IO) {
+        val tok = token()
+        val name = TokenUsageRepository.DRIVE_FILE_NAME
+        val q = URLEncoder.encode(
+            "'$folderId' in parents and name='$name' and trashed=false", "UTF-8",
+        )
+        val existingId = gson.fromJson(
+            http.newCall(Request.Builder()
+                .url("$API/files?q=$q&fields=files(id)")
+                .header("Authorization", "Bearer $tok")
+                .build()).await().body!!.string(),
+            FilesListDto::class.java,
+        ).files.firstOrNull()?.id
+
+        val fileId = existingId ?: run {
+            val meta = """{"name":"$name","parents":["$folderId"],"mimeType":"application/x-ndjson"}"""
+            gson.fromJson(
+                http.newCall(Request.Builder()
+                    .url("$API/files?fields=id")
+                    .header("Authorization", "Bearer $tok")
+                    .post(meta.toRequestBody("application/json".toMediaType()))
+                    .build()).await().body!!.string(),
+                DriveFileDto::class.java,
+            ).id
+        }
+        http.newCall(Request.Builder()
+            .url("$UPLOAD_API/files/$fileId?uploadType=media")
+            .header("Authorization", "Bearer $tok")
+            .method("PATCH", content.toRequestBody("application/x-ndjson".toMediaType()))
+            .build()).await()
+    }
+
     /** Loads the wardrobe metadata JSON string from Drive, or null if not yet created. */
     suspend fun loadWardrobeMetadataJson(folderId: String): String? = withContext(Dispatchers.IO) {
         val tok = token()

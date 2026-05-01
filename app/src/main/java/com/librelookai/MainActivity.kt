@@ -61,6 +61,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -122,9 +124,17 @@ class MainActivity : ComponentActivity() {
                     }
                 } else {
                     val networkMonitor = remember { NetworkMonitor(this@MainActivity) }
+                    val usageRepo = remember { TokenUsageRepository.get(application) }
+                    val driveRepo = remember { DriveRepository(this@MainActivity, GoogleAuthManager(this@MainActivity)) }
+                    val usageScope = rememberCoroutineScope()
                     DisposableEffect(networkMonitor) {
                         val observer = LifecycleEventObserver { _, event ->
-                            if (event == Lifecycle.Event.ON_RESUME) networkMonitor.recheck()
+                            if (event == Lifecycle.Event.ON_RESUME) {
+                                networkMonitor.recheck()
+                                usageScope.launch { usageRepo.syncWithDrive(driveRepo) }
+                            } else if (event == Lifecycle.Event.ON_PAUSE) {
+                                usageScope.launch { usageRepo.flushToDrive(driveRepo) }
+                            }
                         }
                         this@MainActivity.lifecycle.addObserver(observer)
                         onDispose {

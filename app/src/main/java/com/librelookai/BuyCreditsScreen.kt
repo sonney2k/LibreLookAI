@@ -161,6 +161,11 @@ fun BuyCreditsScreen(
                 }
             }
 
+            // ---- Gemini token usage ----
+            item {
+                UsageSection(modifier = Modifier.padding(vertical = 12.dp))
+            }
+
             // ---- Gemini API Key (BYOK) ----
             item {
                 Column(

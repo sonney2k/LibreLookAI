@@ -57,7 +57,7 @@ class WardrobeGapViewModel(app: Application) : AndroidViewModel(app) {
             val prompt = buildGapPrompt(PromptStore.get(getApplication(), PromptKey.GAP), images, prefs)
             Log.d("GapVM", "Gap prompt length: ${prompt.length} chars")
 
-            val raw = gemini.generateText(prompt)
+            val raw = gemini.generateText(prompt, UsageCategory.GAP_ANALYSIS)
             if (raw == null) {
                 _state.update { it.copy(isAnalyzing = false, error = "Gemini did not respond.") }
                 return@launch
@@ -100,7 +100,7 @@ class WardrobeGapViewModel(app: Application) : AndroidViewModel(app) {
             val prompt = buildReplacementsPrompt(selected, remaining, prefs)
             Log.d("GapVM", "Replacements prompt length: ${prompt.length} chars")
 
-            val raw = gemini.generateText(prompt)
+            val raw = gemini.generateText(prompt, UsageCategory.REPLACEMENTS)
             if (raw == null) {
                 _state.update {
                     it.copy(

@@ -357,7 +357,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 allImages = images,
                 prefs = prefs,
             )
-            val raw = gemini.generateText(prompt)
+            val raw = gemini.generateText(prompt, UsageCategory.OUTFIT_PREDICT)
             val ids: List<String> = if (raw != null) {
                 val json = raw.trim()
                     .removePrefix("```json").removePrefix("```").removeSuffix("```").trim()
@@ -584,7 +584,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             val countryCode = deviceCountryCode()
             val region = listOfNotNull(weather?.cityName?.takeIf { it.isNotEmpty() }, countryCode).joinToString(", ")
-            val fashionTrends = gemini.searchFashionTrends(region)
+            val fashionTrends = gemini.searchFashionTrends(region, UsageCategory.OUTFIT_COMPOSE)
             val prefString = s.composerPrefOverride.ifBlank { prefs?.preferences.orEmpty() }
             val prompt = buildComposerPrompt(
                 preamble         = PromptStore.get(getApplication(), PromptKey.COMPOSER),
@@ -605,7 +605,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 language         = prefs?.language ?: AppLanguage.ENGLISH,
             )
             Log.d("StylesVM", "Composer prompt length: ${prompt.length} chars")
-            val raw = gemini.generateText(prompt)
+            val raw = gemini.generateText(prompt, UsageCategory.OUTFIT_COMPOSE)
             if (raw == null) {
                 _state.update { it.copy(isComposerEnhancing = false, composerError = "Gemini did not respond.") }
                 return@launch
@@ -808,7 +808,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
 
             val countryCode = deviceCountryCode()
             val region = listOfNotNull(weather?.cityName?.takeIf { it.isNotEmpty() }, countryCode).joinToString(", ")
-            val fashionTrends = gemini.searchFashionTrends(region)
+            val fashionTrends = gemini.searchFashionTrends(region, UsageCategory.OUTFIT_PREDICT)
 
             val prompt = buildPredictionPrompt(
                 preamble        = PromptStore.get(getApplication(), PromptKey.PREDICTION),
@@ -826,7 +826,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 Log.d("StylesVM", "Prompt[$i]: $chunk")
             }
 
-            val raw = gemini.generateText(prompt)
+            val raw = gemini.generateText(prompt, UsageCategory.OUTFIT_PREDICT)
             if (raw == null) {
                 _state.update { it.copy(isPredicting = false, predictionError = "Gemini did not respond.") }
                 return@launch
@@ -913,7 +913,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
 
             val countryCode = deviceCountryCode()
             val region = listOfNotNull(weather?.cityName?.takeIf { it.isNotEmpty() }, countryCode).joinToString(", ")
-            val fashionTrends = gemini.searchFashionTrends(region)
+            val fashionTrends = gemini.searchFashionTrends(region, UsageCategory.OUTFIT_COMPOSE)
 
             val prompt = buildCompositionPrompt(
                 preamble        = PromptStore.get(getApplication(), PromptKey.COMPOSITION),
@@ -931,7 +931,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 Log.d("StylesVM", "CompositionPrompt[$i]: $chunk")
             }
 
-            val raw = gemini.generateText(prompt)
+            val raw = gemini.generateText(prompt, UsageCategory.OUTFIT_COMPOSE)
             if (raw == null) {
                 _state.update { it.copy(isComposing = false, compositionError = "Gemini did not respond.") }
                 return@launch
