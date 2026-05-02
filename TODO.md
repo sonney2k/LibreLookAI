@@ -15,9 +15,14 @@ TODO
 Features:
 ---------
 
-create human readable release notes between now and c40489226c3a4a01dd4033e959d83cee1d7b8ebb and release version 1.3.0 and upload to testers in firebase
+create human readable release notes between now and v1.4.0 and release version 1.5.0 and upload to testers in firebase
+
+
+new feature
 
 Implement new feature: We are working on the refinancing/monetization aspect of the app: I want people to be able to buy coins that I then use to pay gemini cloud costs. would that work with RevenueCat (handles the money/receipts) + Firebase (database and secure Gemini API routing)? In addition, I still want to support the bring your own key option though.
+
+move costs statistics over to insights as another tab Costs. In addition to actual token use / cost add also counts and graphs of counts for how many items were imported etc
 
 update design
 
@@ -25,6 +30,8 @@ size filter? default sizes in wardrobe? size tag?
 
 Bugs:
 -----
+
+On wardrobe screen when viewing an item: I noticed that on screens with a large font size there is a large transparent rectangle that is hiding most of the item.    
 
 Fix closet usability:
 1. when starting the app set closet filter to all
@@ -34,7 +41,7 @@ Unify outfit generation:
 - re-use the wardrobe screen create outfit also for the '+' button on Outfits for ???
 - when AI is used to generate an outfit use the AI spinning wheel
 
-The url based import does not work. Can we open a web browser with that page and have the user select the image to be used?
+The url based import does not work (pasted link from Amazon) Can we open a web browser with that page and have the user select the image to be used?
 
 security/function relevant parts of a prompts should not be appear in settings. e.g. "Place the clothing item on a pure, solid neon green background (Hex #00FF00).
 
@@ -46,6 +53,11 @@ fix usability issue on wardrobe screen: moving item to different closet and then
 1. similarity search buttons when displaying full matching image, button at bottom is does not fit on screen it is only half visible (happens in both shopping -> similarity search and in wardrobe when adding item by picture)
 2. when refining cutout the buttons Skip (use Gemini) and Use this cutout are only partially visible at the bottom of the screen. Ensure they are fully visibile.
 3. always show crosshair in camera
+
+
+on shopping page when viewing an item show detect tags, remove background and edit tags like when viewing an item on wardrobe
+
+
 
 IN PROGRESS
 ===========
@@ -94,6 +106,8 @@ how can we unify tags? I see tags like "Long-sleeve T-shirt", "Long-sleeved t-sh
 
 FIXED
 =====
+new feature: keep track of used gemini tokens. store those internally in app and sync to drive. display total token usage, daily token usage and weekly token usage under settings / credits. add additional separation by use (bg removal, tagging, try-on, ...). In addition to tokens also show actual costs in EUR based on gemini rates
+
 Fix those issues in wardrobe view:
 1. when refining cutout the buttons Skip (use Gemini) and Use this cutout are only partially visible at the bottom of the screen. Ensure they are fully visibile. In addition they are not localized
 2. when finding image the buttons at the bottom (Show in Wardrobe)are only partially visible at the bottom of the screen. Ensure they are fully visibile. In addition they are not localized
