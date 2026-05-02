@@ -1,52 +1,15 @@
-### LibreLookAI v1.5.0 Release Notes
+### LibreLookAI v1.5.1 Release Notes
 
-#### Style → Outfit
-- The "Style" section is now called **Outfits** throughout the app, matching how most people actually think about it.
+#### Insights → Costs (new tab)
+- Token usage and Gemini cost statistics moved out of Settings → Credits and into a dedicated **Costs** tab in Insights, alongside the existing Calendar / Calendar Stats / Wardrobe Stats tabs.
+- New activity overview: at-a-glance counts of items, outfits, try-ons, and outfit wears.
+- 14-day daily activity charts: imports, outfits created, try-ons generated, and outfits worn — so you can see your styling activity trend at a glance.
+- The familiar Today / 7-day / Total token summary, daily-token bar chart, and per-category cost breakdown are still there, just in their new home.
 
-#### Shopping Helper (new tab)
-- Dedicated **Shopping Helper** tab with a wishlist closet for items you don't own yet. Add items by URL, gallery, or photo — same as your wardrobe.
-- **Find by photo**: take or pick a photo and instantly see which of your wardrobe items look most similar. Useful before you buy something to check whether you already own it.
-- **Similarity Finder**: browse visually similar items across your whole wardrobe and shopping list.
-- The Shopping List supports the same selection-mode actions as the Wardrobe: create outfit, try-on me, move to closet, delete.
+#### Gemini token & cost tracking (BYOK)
+- Each Gemini call is now recorded with its actual input/output tokens and attributed to the use that triggered it (background removal, tagging, try-on, outfit prediction/composition, gap analysis, replacements, fashion trends, travel packing).
+- Usage is stored locally and synced to your Drive (`LibreLookAI/_token_usage.jsonl`) so it survives reinstalls and roams across devices.
+- Costs shown in both USD and EUR based on current Gemini pricing.
 
-#### Smarter Similarity Search
-- Similarity search now spans **all closets**, not just the active one, and tapping a match scrolls straight to it in the wardrobe.
-- Mixes a color histogram with gray-world white-balance for noticeably better matches under different lighting.
-- Duplicate detection on import: when you add an item that looks like one you already own, you'll get a heads-up with the matching items shown side-by-side.
-- Repair & Sync flags possible duplicate cutouts so you can clean them up.
-- Zoomable full-screen match preview unified across Wardrobe, Shopping, and duplicate-import flows.
-
-#### On-Device Background Removal
-- New optional **local cutout** path for camera and gallery imports — no Gemini call needed, faster, and saves credits.
-- Review screen lets you drag a crosshair onto the item you want to keep before applying the cutout.
-- Tunable foreground threshold under Settings → AI for fine-tuning edge detection.
-- URL imports always show the review step so you can pick the right product on busy pages.
-
-#### Outfits & Try-On
-- Single unified **Outfit Composer**: manual creation, "Suggest existing outfit", and "Compose with AI" all live behind one + button.
-- Single unified **Try-On**: one screen for previewing and saving generated try-on images.
-- New **Try-Ons** sub-tab under Outfits for browsing your saved try-on history.
-- Try-on detail layout fixed so the delete button is no longer clipped, and the back button reliably returns to the Try-Ons tab.
-- "**Suggest alternatives**" — select wardrobe items and get AI-generated replacement suggestions that complement the rest of your wardrobe.
-
-#### Wardrobe
-- New **statistics view** with item counts and tag breakdowns.
-- Camera back-press now does the right thing: cancel from the viewfinder, retake from the review step.
-- Capture, cutout review, and similarity preview UX cleaned up across the board.
-- Repair & Sync previews findings as a selectable grid before any changes are applied; local-cache clearing is now opt-in.
-
-#### Settings
-- New **AI tab**: edit Gemini prompts, set default style considerations, tune similarity and background-removal thresholds.
-- New **Feedback tab** with the debug similarity-preview toggle moved here.
-
-#### Reliability & Performance
-- **Reactive offline detection**: the red offline bar now appears the instant your connection drops, and write-path buttons (URL/gallery/camera import, delete) hide automatically. No more stuck states after flight-mode toggles.
-- Wardrobe and Shopping List now share the same image grid, so scrolling is faster and visuals are consistent.
-- Foreground-service start timing hardened to avoid background-job crashes on some devices.
-- Various fixes to system-bar padding and locale handling in fullscreen dialogs (similarity preview, cutout review) — buttons no longer get clipped behind the gesture bar, and German UI stays German inside dialogs.
-
-#### Analytics
-- Firebase Analytics now logs screen views and key user actions (sign-in, settings, try-on, suggest replacements, create-outfit, show-in-wardrobe) to help us prioritize what to improve next.
-
-#### Localization
-- First-run language now follows the device locale (German if your phone is in German, English otherwise). You can still override in Settings.
+#### Fixes
+- Wardrobe item viewer no longer shows a large transparent rectangle covering the item on devices with a large system font size.

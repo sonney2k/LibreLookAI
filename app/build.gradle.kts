@@ -30,8 +30,8 @@ android {
         applicationId = "com.librelookai"
         minSdk = 26
         targetSdk = 35
-        versionCode = 6
-        versionName = "1.5.0"
+        versionCode = 7
+        versionName = "1.5.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -86,7 +86,7 @@ android {
             firebaseAppDistribution {
                 artifactType = "APK"
                 groups = "testers"
-                releaseNotesFile = "../release-notes.txt"
+                releaseNotesFile = rootProject.file("release-notes.txt").absolutePath
             }
         }
     }
