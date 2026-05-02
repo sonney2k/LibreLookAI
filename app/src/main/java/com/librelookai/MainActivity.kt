@@ -491,6 +491,7 @@ class MainActivity : ComponentActivity() {
                                             wardrobeViewModel = wardrobeViewModel,
                                             outfitEventsViewModel = outfitEventsViewModel,
                                             stylesViewModel = stylesViewModel,
+                                            tryOnViewModel = tryOnViewModel,
                                             locationViewModel = locationViewModel,
                                             onEditOutfit = { style ->
                                                 stylesViewModel.startEditing(

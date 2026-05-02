@@ -14,6 +14,13 @@
     <string name="insights_tab_calendar">Kalender</string>
     <string name="insights_tab_wardrobe_stats">Garderoben-Statistik</string>
     <string name="insights_tab_calendar_stats">Kalender-Statistik</string>
+    <string name="insights_tab_costs">Kosten</string>
+    <string name="costs_count_items">Teile</string>
+    <string name="costs_count_outfits">Outfits</string>
+    <string name="costs_count_tryons">Anproben</string>
+    <string name="costs_count_wears">Getragen</string>
+    <string name="costs_count_imports">Importe</string>
+    <string name="costs_activity_14d">Aktivität (letzte 14 Tage)</string>
 
     <!-- Shopping Helper tab -->
     <string name="shopping_title">Einkaufshilfe</string>
