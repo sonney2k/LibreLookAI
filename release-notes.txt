@@ -1,15 +1,4 @@
-### LibreLookAI v1.5.1 Release Notes
-
-#### Insights → Costs (new tab)
-- Token usage and Gemini cost statistics moved out of Settings → Credits and into a dedicated **Costs** tab in Insights, alongside the existing Calendar / Calendar Stats / Wardrobe Stats tabs.
-- New activity overview: at-a-glance counts of items, outfits, try-ons, and outfit wears.
-- 14-day daily activity charts: imports, outfits created, try-ons generated, and outfits worn — so you can see your styling activity trend at a glance.
-- The familiar Today / 7-day / Total token summary, daily-token bar chart, and per-category cost breakdown are still there, just in their new home.
-
-#### Gemini token & cost tracking (BYOK)
-- Each Gemini call is now recorded with its actual input/output tokens and attributed to the use that triggered it (background removal, tagging, try-on, outfit prediction/composition, gap analysis, replacements, fashion trends, travel packing).
-- Usage is stored locally and synced to your Drive (`LibreLookAI/_token_usage.jsonl`) so it survives reinstalls and roams across devices.
-- Costs shown in both USD and EUR based on current Gemini pricing.
+### LibreLookAI v1.5.2 Release Notes
 
 #### Fixes
-- Wardrobe item viewer no longer shows a large transparent rectangle covering the item on devices with a large system font size.
+- Wardrobe selection bar now stays compact at large system font sizes, preventing layout overflow on devices with accessibility-scaled text.
