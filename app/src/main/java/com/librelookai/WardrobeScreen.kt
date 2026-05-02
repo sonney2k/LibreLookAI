@@ -695,6 +695,8 @@ private fun GridContent(
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.weight(1f),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                     )
                     if (displayedImages.any { it.driveId !in state.selectedIds }) {
                         TextButton(
@@ -704,7 +706,11 @@ private fun GridContent(
                             },
                             contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
                         ) {
-                            Text(stringResource(R.string.wardrobe_select_all_count, displayedImages.size))
+                            Text(
+                                stringResource(R.string.wardrobe_select_all_count, displayedImages.size),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
                         }
                     }
                     TextButton(
@@ -714,7 +720,11 @@ private fun GridContent(
                         },
                         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
                     ) {
-                        Text(stringResource(R.string.action_deselect_all))
+                        Text(
+                            stringResource(R.string.action_deselect_all),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
                     }
                 }
             }

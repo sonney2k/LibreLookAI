@@ -491,14 +491,30 @@ private fun OutfitListScreen(
                         stringResource(R.string.outfits_selected_count, selectedOutfitIds.size),
                         modifier = Modifier.weight(1f),
                         style = MaterialTheme.typography.bodyMedium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                     )
                     if (displayedStyles.any { it.id !in selectedOutfitIds }) {
-                        TextButton(onClick = { onSelectAllOutfits(displayedStyles.map { it.id }) }) {
-                            Text(stringResource(R.string.outfits_select_all_count, displayedStyles.size))
+                        TextButton(
+                            onClick = { onSelectAllOutfits(displayedStyles.map { it.id }) },
+                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                        ) {
+                            Text(
+                                stringResource(R.string.outfits_select_all_count, displayedStyles.size),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
                         }
                     }
-                    TextButton(onClick = onClearOutfitSelection) {
-                        Text(stringResource(R.string.action_deselect_all))
+                    TextButton(
+                        onClick = onClearOutfitSelection,
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                    ) {
+                        Text(
+                            stringResource(R.string.action_deselect_all),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
                     }
                 }
                 HorizontalDivider()
