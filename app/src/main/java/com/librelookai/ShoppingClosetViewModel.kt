@@ -34,6 +34,8 @@ data class ShoppingClosetUiState(
     val error: String? = null,
     /** Drive folder ID of `_shopping/` once resolved (null while still loading the root folder). */
     val folderId: String? = null,
+    /** driveId currently being re-tagged / re-bg-removed; drives the AI overlay in the viewer. */
+    val processingImageId: String? = null,
 )
 
 private data class ShoppingPendingJob(val driveId: String)
@@ -418,6 +420,125 @@ class ShoppingClosetViewModel(app: Application) : AndroidViewModel(app) {
             }
             _state.update { s -> s.copy(items = s.items.filter { it.driveId !in driveIds }) }
             saveLocalCache(folderId, _state.value.items)
+        }
+    }
+
+    // ---------- Per-item AI ops (parity with WardrobeViewModel) ----------
+
+    fun tagImage(driveId: String) {
+        viewModelScope.launch {
+            _state.update { it.copy(processingImageId = driveId) }
+            val cachedFile = drive.cachedFile(driveId)
+                ?: run { _state.update { it.copy(processingImageId = null) }; return@launch }
+            val tags = gemini.classifyClothing(cachedFile, geminiLanguage)
+                ?: run { _state.update { it.copy(processingImageId = null) }; return@launch }
+            _state.update { s ->
+                s.copy(
+                    processingImageId = null,
+                    items = s.items.map { if (it.driveId == driveId) it.copy(tags = tags) else it },
+                )
+            }
+            saveSidecar(driveId)
+        }
+    }
+
+    fun updateTags(driveId: String, tags: ClothingTags) {
+        _state.update { s ->
+            s.copy(items = s.items.map { if (it.driveId == driveId) it.copy(tags = tags) else it })
+        }
+        saveSidecar(driveId)
+    }
+
+    fun reprocessBackground(driveId: String) {
+        viewModelScope.launch {
+            _state.update { it.copy(processingImageId = driveId, error = null) }
+            val source = resolveOriginalFile(driveId)
+                ?: run { _state.update { it.copy(processingImageId = null, error = "Original not available") }; return@launch }
+            val processedFile = gemini.removeBackground(source, drive.cacheDir)
+                ?: run { _state.update { it.copy(processingImageId = null) }; return@launch }
+            runCatching {
+                drive.updateImage(driveId, processedFile)
+                val displayCache = File(drive.cacheDir, "$driveId.png")
+                processedFile.copyTo(displayCache, overwrite = true)
+                displayCache.absolutePath
+            }.onSuccess { newPath ->
+                _state.update { s ->
+                    s.copy(
+                        processingImageId = null,
+                        items = s.items.map {
+                            if (it.driveId == driveId) it.copy(localPath = newPath, version = System.currentTimeMillis())
+                            else it
+                        },
+                    )
+                }
+                shoppingFolderId?.let { fid -> saveLocalCache(fid, _state.value.items) }
+            }.onFailure { e ->
+                _state.update { it.copy(processingImageId = null, error = e.message) }
+            }
+        }
+    }
+
+    fun rotateImage(driveId: String) {
+        val img = _state.value.items.find { it.driveId == driveId } ?: return
+        viewModelScope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    val cutoutFile = drive.cachedFile(img.driveId)
+                        ?: drive.downloadToCache(img.driveId, "${img.driveId}${DriveRepository.CUTOUT_SUFFIX}")
+                    if (cutoutFile != null) rotateBitmapFileBy90(cutoutFile)
+                    img.originalDriveId?.let { origId ->
+                        val origFile = drive.cachedFile(origId)
+                            ?: drive.downloadToCache(origId, "${img.driveId}${DriveRepository.ORIGINAL_SUFFIX}")
+                        if (origFile != null) rotateBitmapFileBy90(origFile)
+                    }
+                }
+                _state.update { s ->
+                    s.copy(items = s.items.map {
+                        if (it.driveId == driveId) it.copy(version = it.version + 1) else it
+                    })
+                }
+                withContext(Dispatchers.IO) {
+                    drive.cachedFile(img.driveId)?.let { drive.updateImage(img.driveId, it) }
+                    img.originalDriveId?.let { origId ->
+                        drive.cachedFile(origId)?.let { drive.updateImage(origId, it) }
+                    }
+                }
+                shoppingFolderId?.let { fid -> saveLocalCache(fid, _state.value.items) }
+            } catch (e: Exception) {
+                Log.w(TAG, "rotateImage failed", e)
+                _state.update { it.copy(error = e.message) }
+            }
+        }
+    }
+
+    private suspend fun resolveOriginalFile(driveId: String): File? {
+        val localOriginal = File(drive.cacheDir, "${driveId}_original.jpg")
+        if (localOriginal.exists()) return localOriginal
+        val originalDriveId = _state.value.items.find { it.driveId == driveId }?.originalDriveId
+        if (originalDriveId != null) {
+            val downloaded = drive.downloadToCache(originalDriveId)
+            if (downloaded != null) {
+                downloaded.copyTo(localOriginal, overwrite = true)
+                return localOriginal
+            }
+        }
+        return drive.cachedFile(driveId)
+    }
+
+    private fun saveSidecar(driveId: String) {
+        val id = shoppingFolderId ?: return
+        viewModelScope.launch(Dispatchers.IO) {
+            val img = _state.value.items.find { it.driveId == driveId } ?: return@launch
+            val sidecarJson = gson.toJson(ItemSidecar(img.tags, img.originalDriveId))
+            val sidecarFileId = runCatching {
+                drive.upsertSidecar(id, "$driveId${DriveRepository.SIDECAR_SUFFIX}", sidecarJson)
+            }.getOrNull() ?: return@launch
+            _state.update { s ->
+                s.copy(items = s.items.map { i ->
+                    if (i.driveId == driveId) i.copy(sidecarDriveId = sidecarFileId) else i
+                })
+            }
+            saveLocalCache(id, _state.value.items)
         }
     }
 

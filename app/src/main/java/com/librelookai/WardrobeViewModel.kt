@@ -2360,7 +2360,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
 // ---------- Bitmap rotation helper ----------
 
-private fun rotateBitmapFileBy90(file: File) {
+internal fun rotateBitmapFileBy90(file: File) {
     val bmp = BitmapFactory.decodeFile(file.absolutePath) ?: return
     val matrix = Matrix().apply { postRotate(90f) }
     val rotated = Bitmap.createBitmap(bmp, 0, 0, bmp.width, bmp.height, matrix, true)

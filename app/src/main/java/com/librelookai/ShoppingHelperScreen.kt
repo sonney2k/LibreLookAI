@@ -514,18 +514,17 @@ private fun ShoppingListTab(
             ) { Text(msg) }
         }
 
-        // Full-screen item viewer — same UX as Wardrobe, with write-mode actions hidden
-        // (tag/bg/rotate aren't supported on shopping items yet).
+        // Full-screen item viewer — same UX as Wardrobe (tag / remove-bg / rotate / edit tags).
         selectedIndex?.let { startIndex ->
             FullScreenViewer(
                 images = displayedItems,
                 initialIndex = startIndex.coerceIn(0, (displayedItems.size - 1).coerceAtLeast(0)),
                 allTagCategories = tagCategories,
                 onDismiss = { selectedIndex = null },
-                onTagImage = {},
-                onRemoveBackground = {},
-                onRotateImage = {},
-                onUpdateTags = { _, _ -> },
+                onTagImage = shoppingClosetViewModel::tagImage,
+                onRemoveBackground = shoppingClosetViewModel::reprocessBackground,
+                onRotateImage = shoppingClosetViewModel::rotateImage,
+                onUpdateTags = shoppingClosetViewModel::updateTags,
                 onDeleteItem = { driveId ->
                     shoppingClosetViewModel.deleteItems(setOf(driveId))
                     if (displayedItems.size <= 1) selectedIndex = null
@@ -539,8 +538,8 @@ private fun ShoppingListTab(
                 onCreateOutfitFromSelection = onCreateOutfitFromSelection,
                 locations = locations,
                 activeLocationId = activeLocationId,
-                processingImageId = null,
-                writeMode = false,
+                processingImageId = state.processingImageId,
+                writeMode = true,
             )
         }
     }
