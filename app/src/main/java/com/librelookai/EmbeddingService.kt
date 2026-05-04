@@ -61,6 +61,26 @@ object EmbeddingService {
     data class Match(val driveId: String, val score: Float)
 
     /**
+     * Full result of a similarity search, including the intermediate artifacts the debug
+     * preview needs (processed bitmap path, segmentation flag, histogram, embedding vector).
+     * All call sites — Shopping similarity, find-by-photo, import dedupe — go through
+     * [findSimilarWithDebug] so they produce identical embeddings and can render the same
+     * debug breakdown.
+     */
+    data class SimilarityResult(
+        val matches: List<Match>,
+        /** Absolute path of the processed PNG actually fed to the embedder, or null when
+         *  no [processedOutputDir] was supplied. */
+        val processedPath: String?,
+        /** True when on-device segmentation isolated a foreground object; false on fallback. */
+        val segmented: Boolean,
+        /** L1-normalized HSV histogram of the processed bitmap. */
+        val hist: FloatArray,
+        /** L2-normalized embedding vector of the processed bitmap. */
+        val vec: FloatArray,
+    )
+
+    /**
      * Decode [file] and apply any EXIF rotation so the returned bitmap is in the orientation a
      * human would see it (upright portrait when the photo was taken in portrait mode). Critical
      * for the segmenter path: feeding a sideways bitmap to MediaPipe means the centre seed lands
@@ -175,6 +195,59 @@ object EmbeddingService {
         } finally {
             if (!raw.isRecycled) raw.recycle()
         }
+    }
+
+    /**
+     * Unified entry point for off-disk similarity queries that need the same intermediate
+     * artifacts the debug preview consumes. Decodes [file] upright, runs interactive
+     * segmentation (with raw-frame fallback), composites onto white + center-crops via
+     * [EmbeddingRepository.prepareForEmbedding], embeds, and searches the index. When
+     * [processedOutputDir] is non-null the processed bitmap is also written there so the
+     * caller can show it in the debug breakdown.
+     */
+    suspend fun findSimilarWithDebug(
+        file: File,
+        threshold: Float,
+        excludeIds: Set<String> = emptySet(),
+        topK: Int = 20,
+        processedOutputDir: File? = null,
+    ): SimilarityResult? = withContext(Dispatchers.IO) {
+        if (!isModelAvailable()) return@withContext null
+        val raw = decodeUpright(file) ?: return@withContext null
+        val segmentedBm = try {
+            segmenterImpl.segmentForegroundOnBlack(raw)
+        } catch (t: Throwable) {
+            Log.w(TAG, "findSimilarWithDebug: segmentation threw, falling back", t)
+            null
+        }
+        val source: Bitmap = if (segmentedBm != null) {
+            if (!raw.isRecycled) raw.recycle()
+            segmentedBm
+        } else raw
+        val prepared = EmbeddingRepository.prepareForEmbedding(source)
+        if (prepared !== source && !source.isRecycled) source.recycle()
+        if (prepared == null) return@withContext null
+        val processedPath = processedOutputDir?.let { dir ->
+            runCatching {
+                dir.mkdirs()
+                val out = File(dir, "query_processed_${System.currentTimeMillis()}.png")
+                out.outputStream().buffered().use {
+                    prepared.compress(Bitmap.CompressFormat.PNG, 100, it)
+                }
+                out.absolutePath
+            }.getOrNull()
+        }
+        val emb = embedderImpl.embedBitmap(prepared)
+        if (!prepared.isRecycled) prepared.recycle()
+        if (emb == null) return@withContext null
+        val matches = searchVector(emb.vec, emb.hist, threshold, excludeIds, topK)
+        SimilarityResult(
+            matches = matches,
+            processedPath = processedPath,
+            segmented = segmentedBm != null,
+            hist = emb.hist,
+            vec = emb.vec,
+        )
     }
 
     /** Search the index with an already-computed embedding + histogram pair. */

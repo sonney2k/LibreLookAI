@@ -40,6 +40,12 @@ data class FindByPhoto(
     val queryPath: String,
     val matches: List<FindByPhotoMatch>,
     val isSearching: Boolean = false,
+    /** Debug artifacts from the same similarity helper used by Shopping's Similarity Finder.
+     *  Populated when the search finishes; null while still searching. */
+    val processedPath: String? = null,
+    val segmented: Boolean = false,
+    val hist: FloatArray? = null,
+    val vec: FloatArray? = null,
 )
 
 data class DriveImage(
@@ -71,6 +77,11 @@ data class DuplicateCheck(
     val targetFolderId: String,
     /** Wardrobe items above the configured similarity threshold, ordered most-similar first. */
     val matches: List<DuplicateMatch>,
+    /** Debug artifacts from the same similarity helper used by Shopping's Similarity Finder. */
+    val processedPath: String? = null,
+    val segmented: Boolean = false,
+    val hist: FloatArray? = null,
+    val vec: FloatArray? = null,
 )
 
 data class WardrobeUiState(
@@ -288,6 +299,8 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         private const val SIDECAR_EMPTY_MAX = 20L
         /** Sidecars at or above this size always contain a ClothingTags object. */
         private const val SIDECAR_FULL_MIN  = 100L
+        /** Cache subdir for the processed-query bitmaps fed to the similarity debug preview. */
+        private const val QUERY_DEBUG_DIR = "wardrobe_query_debug"
     }
 
     private val drive = DriveRepository(app, GoogleAuthManager(app))
@@ -1419,25 +1432,36 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             refreshAllLocationImagesState()
             val crossClosetImages = _state.value.allLocationImages
             EmbeddingService.syncIndex(crossClosetImages, drive.cacheDir)
-            val matches = EmbeddingService.findSimilar(
+            val sim = EmbeddingService.findSimilarWithDebug(
                 file = rawFile,
                 threshold = -1f,
                 topK = 12,
-                segment = true,
+                processedOutputDir = File(getApplication<Application>().cacheDir, QUERY_DEBUG_DIR),
             )
             val byId = crossClosetImages.associateBy { it.driveId }
-            val resolved = matches.mapNotNull { m ->
+            val resolved = sim?.matches.orEmpty().mapNotNull { m ->
                 byId[m.driveId]?.let { FindByPhotoMatch(it, m.score) }
             }
             _state.update {
-                it.copy(findByPhoto = FindByPhoto(rawFile.absolutePath, resolved, isSearching = false))
+                it.copy(findByPhoto = FindByPhoto(
+                    queryPath = rawFile.absolutePath,
+                    matches = resolved,
+                    isSearching = false,
+                    processedPath = sim?.processedPath,
+                    segmented = sim?.segmented ?: false,
+                    hist = sim?.hist,
+                    vec = sim?.vec,
+                ))
             }
         }
     }
 
     /** Dismiss the find-by-photo results sheet and discard the query thumbnail. */
     fun dismissFindByPhoto() {
-        _state.value.findByPhoto?.queryPath?.let { runCatching { File(it).delete() } }
+        _state.value.findByPhoto?.let { fbp ->
+            runCatching { File(fbp.queryPath).delete() }
+            fbp.processedPath?.let { runCatching { File(it).delete() } }
+        }
         _state.update { it.copy(findByPhoto = null) }
     }
 
@@ -1479,17 +1503,18 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 refreshAllLocationImagesState()
                 val crossClosetImages = _state.value.allLocationImages
                 EmbeddingService.syncIndex(crossClosetImages, drive.cacheDir)
-                val matches = EmbeddingService.findSimilar(
+                val sim = EmbeddingService.findSimilarWithDebug(
                     file = rawFile,
                     threshold = dedupeThreshold,
                     topK = 8,
-                    segment = true,
+                    processedOutputDir = File(getApplication<Application>().cacheDir, QUERY_DEBUG_DIR),
                 )
                 val byId = crossClosetImages.associateBy { it.driveId }
-                val resolved = matches.mapNotNull { m ->
+                val resolved = sim?.matches.orEmpty().mapNotNull { m ->
                     byId[m.driveId]?.let { DuplicateMatch(it, m.score) }
                 }
                 if (resolved.isEmpty()) {
+                    sim?.processedPath?.let { runCatching { File(it).delete() } }
                     routeImportAfterDedupe(rawFile, id, skippableLocalReview, forceLocalReview)
                 } else {
                     _state.update { it.copy(
@@ -1498,6 +1523,10 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                             rawFilePath = rawFile.absolutePath,
                             targetFolderId = id,
                             matches = resolved,
+                            processedPath = sim?.processedPath,
+                            segmented = sim?.segmented ?: false,
+                            hist = sim?.hist,
+                            vec = sim?.vec,
                         ),
                     ) }
                     // Stash routing for confirmDuplicateImport to resume.
@@ -1538,6 +1567,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     /** User confirmed they want to import despite a similarity match. */
     fun confirmDuplicateImport() {
         val dc = _state.value.duplicateCheck ?: return
+        dc.processedPath?.let { runCatching { File(it).delete() } }
         _state.update { it.copy(duplicateCheck = null) }
         val routing = pendingDedupeRouting ?: DedupeRouting(skippable = true, force = false)
         pendingDedupeRouting = null
@@ -1548,6 +1578,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     fun cancelDuplicateImport() {
         val dc = _state.value.duplicateCheck ?: return
         runCatching { File(dc.rawFilePath).delete() }
+        dc.processedPath?.let { runCatching { File(it).delete() } }
         pendingDedupeRouting = null
         _state.update { it.copy(duplicateCheck = null) }
     }

@@ -180,8 +180,17 @@ fun WardrobeScreen(
     state.duplicateCheck?.let { check ->
         DuplicateCheckSheet(
             check = check,
+            debugSimilarityPreview = profileState.preferences.debugSimilarityPreview,
             onConfirm = viewModel::confirmDuplicateImport,
             onCancel = viewModel::cancelDuplicateImport,
+            onShowMatchInWardrobe = { image ->
+                viewModel.cancelDuplicateImport()
+                viewModel.requestScrollToImage(image.driveId)
+            },
+            onAddQueryToShoppingList = { queryPath ->
+                shoppingClosetViewModel.importQuery(queryPath)
+                viewModel.cancelDuplicateImport()
+            },
         )
     }
 
@@ -1959,8 +1968,11 @@ internal fun SortButton(
 @Composable
 private fun DuplicateCheckSheet(
     check: DuplicateCheck,
+    debugSimilarityPreview: Boolean,
     onConfirm: () -> Unit,
     onCancel: () -> Unit,
+    onShowMatchInWardrobe: (DriveImage) -> Unit,
+    onAddQueryToShoppingList: (queryPath: String) -> Unit,
 ) {
     val context = LocalContext.current
     val shopMatches = remember(check.matches) {
@@ -2035,14 +2047,20 @@ private fun DuplicateCheckSheet(
                 matches = shopMatches,
                 initialIndex = idx,
                 queryRawPath = check.rawFilePath,
-                queryProcessedPath = null,
-                querySegmented = false,
-                queryHist = null,
-                queryVec = null,
-                showDebug = false,
-                onShowInWardrobe = { previewIndex = null },
-                onAddToShoppingList = { previewIndex = null },
-                canAddToShoppingList = false,
+                queryProcessedPath = check.processedPath,
+                querySegmented = check.segmented,
+                queryHist = check.hist,
+                queryVec = check.vec,
+                showDebug = debugSimilarityPreview,
+                onShowInWardrobe = { image ->
+                    previewIndex = null
+                    onShowMatchInWardrobe(image)
+                },
+                onAddToShoppingList = {
+                    previewIndex = null
+                    onAddQueryToShoppingList(check.rawFilePath)
+                },
+                canAddToShoppingList = true,
                 onDismiss = { previewIndex = null },
             )
         }
@@ -2147,10 +2165,10 @@ private fun FindByPhotoResultsSheet(
                 matches = shopMatches,
                 initialIndex = idx,
                 queryRawPath = findByPhoto.queryPath,
-                queryProcessedPath = null,
-                querySegmented = false,
-                queryHist = null,
-                queryVec = null,
+                queryProcessedPath = findByPhoto.processedPath,
+                querySegmented = findByPhoto.segmented,
+                queryHist = findByPhoto.hist,
+                queryVec = findByPhoto.vec,
                 showDebug = debugSimilarityPreview,
                 onShowInWardrobe = { image ->
                     previewIndex = null
@@ -2160,7 +2178,7 @@ private fun FindByPhotoResultsSheet(
                     previewIndex = null
                     onAddToShoppingList(findByPhoto.queryPath)
                 },
-                canAddToShoppingList = false,
+                canAddToShoppingList = true,
                 onDismiss = { previewIndex = null },
             )
         }
