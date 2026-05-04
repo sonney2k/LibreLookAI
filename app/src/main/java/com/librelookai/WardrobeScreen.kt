@@ -177,6 +177,18 @@ fun WardrobeScreen(
         ActivityResultContracts.PickMultipleVisualMedia(),
     ) { uris -> viewModel.uploadGalleryPhotos(uris) }
 
+    var showUrlImportDialog by remember { mutableStateOf(false) }
+    var showGalleryClosetPicker by remember { mutableStateOf(false) }
+    val openGallery: () -> Unit = {
+        Analytics.action("Wardrobe", "open_gallery", mapOf("locations" to locationState.locations.size.toString()))
+        if (locationState.locations.size >= 2) showGalleryClosetPicker = true
+        else galleryLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+    }
+    val openUrlImport: () -> Unit = {
+        Analytics.action("Wardrobe", "open_url_import_dialog")
+        showUrlImportDialog = true
+    }
+
     state.duplicateCheck?.let { check ->
         DuplicateCheckSheet(
             check = check,
@@ -207,11 +219,7 @@ fun WardrobeScreen(
                     permissionLauncher.launch(Manifest.permission.CAMERA)
                 }
             },
-            onOpenGallery = {
-                galleryLauncher.launch(
-                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
-                )
-            },
+            onOpenGallery = openGallery,
             onImportUrl = viewModel::importFromUrl,
             onDismissError = viewModel::clearError,
             onTagImage = viewModel::tagImage,
@@ -255,6 +263,10 @@ fun WardrobeScreen(
             locations = locationState.locations,
             importTargetFolderId = state.importTargetFolderId,
             onSetImportTarget = viewModel::setDefaultImportFolderId,
+            onOpenGallery = {
+                galleryLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            },
+            onOpenUrlImport = openUrlImport,
             modifier = modifier,
         )
         WardrobeView.FIND_BY_PHOTO_CAPTURE -> CaptureScreen(
@@ -263,6 +275,58 @@ fun WardrobeScreen(
             locations = emptyList(),
             showCenterCrosshair = true,
             modifier = modifier,
+        )
+    }
+
+    if (showUrlImportDialog) {
+        UrlImportDialog(
+            locations = locationState.locations,
+            initialFolderId = state.importTargetFolderId ?: locationState.locations.firstOrNull()?.folderId,
+            onSubmit = { url, folderId ->
+                folderId?.let { viewModel.setDefaultImportFolderId(it) }
+                showUrlImportDialog = false
+                viewModel.importFromUrl(url)
+            },
+            onDismiss = { showUrlImportDialog = false },
+        )
+    }
+
+    if (showGalleryClosetPicker) {
+        val initialFolderId = state.importTargetFolderId ?: locationState.locations.firstOrNull()?.folderId
+        var selectedFolderId by remember { mutableStateOf(initialFolderId) }
+        AlertDialog(
+            onDismissRequest = { showGalleryClosetPicker = false },
+            title = { Text(stringResource(R.string.wardrobe_add_to_closet_title)) },
+            text = {
+                Column {
+                    locationState.locations.sortedBy { it.name }.forEach { loc ->
+                        val selected = loc.folderId == selectedFolderId
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { selectedFolderId = loc.folderId }
+                                .padding(vertical = 10.dp, horizontal = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        ) {
+                            RadioButton(selected = selected, onClick = { selectedFolderId = loc.folderId })
+                            Text(loc.name, style = MaterialTheme.typography.bodyLarge)
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    selectedFolderId?.let { viewModel.setDefaultImportFolderId(it) }
+                    showGalleryClosetPicker = false
+                    galleryLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                }) { Text(stringResource(R.string.action_continue)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showGalleryClosetPicker = false }) {
+                    Text(stringResource(R.string.action_cancel))
+                }
+            },
         )
     }
 }
@@ -921,88 +985,14 @@ private fun GridContent(
                 }
             }
         } else if (!isOffline) {
-            // Show closet picker before gallery when 2+ closets exist
-            var showGalleryClosetPicker by remember { mutableStateOf(false) }
-            var showUrlImportDialog by remember { mutableStateOf(false) }
-
-            Column(
-                modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
-                horizontalAlignment = Alignment.End,
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                FloatingActionButton(onClick = {
-                    Analytics.action("Wardrobe", "open_url_import_dialog")
-                    showUrlImportDialog = true
-                }) {
-                    Icon(Icons.Default.Add, contentDescription = null)
-                    Icon(Icons.Default.Link, contentDescription = stringResource(R.string.wardrobe_add_url))
-                }
-                FloatingActionButton(onClick = {
-                    Analytics.action("Wardrobe", "open_gallery", mapOf("locations" to locations.size.toString()))
-                    if (locations.size >= 2) showGalleryClosetPicker = true else onOpenGallery()
-                }) {
-                    Icon(Icons.Default.Add, contentDescription = null)
-                    Icon(Icons.Default.PhotoLibrary, contentDescription = stringResource(R.string.wardrobe_add_gallery))
-                }
-                FloatingActionButton(onClick = {
+            FloatingActionButton(
+                onClick = {
                     Analytics.action("Wardrobe", "open_camera")
                     onOpenCamera()
-                }) {
-                    Icon(Icons.Default.Add, contentDescription = null)
-                    Icon(Icons.Default.CameraAlt, contentDescription = stringResource(R.string.wardrobe_add_camera))
-                }
-            }
-
-            if (showUrlImportDialog) {
-                UrlImportDialog(
-                    locations = locations,
-                    initialFolderId = state.importTargetFolderId ?: locations.firstOrNull()?.folderId,
-                    onSubmit = { url, folderId ->
-                        folderId?.let { onSetImportTarget(it) }
-                        showUrlImportDialog = false
-                        onImportUrl(url)
-                    },
-                    onDismiss = { showUrlImportDialog = false },
-                )
-            }
-
-            if (showGalleryClosetPicker) {
-                val initialFolderId = state.importTargetFolderId ?: locations.firstOrNull()?.folderId
-                var selectedFolderId by remember { mutableStateOf(initialFolderId) }
-                AlertDialog(
-                    onDismissRequest = { showGalleryClosetPicker = false },
-                    title = { Text(stringResource(R.string.wardrobe_add_to_closet_title)) },
-                    text = {
-                        Column {
-                            locations.sortedBy { it.name }.forEach { loc ->
-                                val selected = loc.folderId == selectedFolderId
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clickable { selectedFolderId = loc.folderId }
-                                        .padding(vertical = 10.dp, horizontal = 4.dp),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                ) {
-                                    RadioButton(selected = selected, onClick = { selectedFolderId = loc.folderId })
-                                    Text(loc.name, style = MaterialTheme.typography.bodyLarge)
-                                }
-                            }
-                        }
-                    },
-                    confirmButton = {
-                        TextButton(onClick = {
-                            selectedFolderId?.let { onSetImportTarget(it) }
-                            showGalleryClosetPicker = false
-                            onOpenGallery()
-                        }) { Text(stringResource(R.string.action_continue)) }
-                    },
-                    dismissButton = {
-                        TextButton(onClick = { showGalleryClosetPicker = false }) {
-                            Text(stringResource(R.string.action_cancel))
-                        }
-                    },
-                )
+                },
+                modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
+            ) {
+                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.wardrobe_add_camera))
             }
         }
 

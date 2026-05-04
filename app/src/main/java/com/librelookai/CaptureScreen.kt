@@ -23,8 +23,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Link
+import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.automirrored.filled.RotateRight
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -74,9 +77,12 @@ fun CaptureScreen(
     importTargetFolderId: String? = null,
     onSetImportTarget: (String) -> Unit = {},
     showCenterCrosshair: Boolean = false,
+    onOpenGallery: (() -> Unit)? = null,
+    onOpenUrlImport: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
+    val showImportFabs = onOpenGallery != null || onOpenUrlImport != null
     val lifecycleOwner = LocalLifecycleOwner.current
     var imageCapture by remember { mutableStateOf<ImageCapture?>(null) }
     var isCapturing by remember { mutableStateOf(false) }
@@ -161,13 +167,15 @@ fun CaptureScreen(
                 }
             }
 
-            IconButton(
-                onClick = onCancel,
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .padding(8.dp),
-            ) {
-                Icon(Icons.Default.Close, contentDescription = "Cancel", tint = Color.White)
+            if (!showImportFabs) {
+                IconButton(
+                    onClick = onCancel,
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(8.dp),
+                ) {
+                    Icon(Icons.Default.Close, contentDescription = "Cancel", tint = Color.White)
+                }
             }
 
             // Inline closet selector — top-end, visible when 2+ closets
@@ -209,6 +217,37 @@ fun CaptureScreen(
                         )
                     },
             )
+
+            if (showImportFabs) {
+                androidx.compose.foundation.layout.Column(
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .navigationBarsPadding()
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.End,
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    onOpenUrlImport?.let { action ->
+                        FloatingActionButton(onClick = {
+                            Analytics.action("Capture", "open_url_import_dialog")
+                            action()
+                        }) {
+                            Icon(Icons.Default.Link, contentDescription = "Import from URL")
+                        }
+                    }
+                    onOpenGallery?.let { action ->
+                        FloatingActionButton(onClick = {
+                            Analytics.action("Capture", "open_gallery")
+                            action()
+                        }) {
+                            Icon(Icons.Default.PhotoLibrary, contentDescription = "Import from gallery")
+                        }
+                    }
+                    FloatingActionButton(onClick = onCancel) {
+                        Icon(Icons.Default.Close, contentDescription = "Cancel")
+                    }
+                }
+            }
 
             if (isCapturing) {
                 CircularProgressIndicator(

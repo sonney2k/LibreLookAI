@@ -131,6 +131,10 @@ fun ShoppingHelperScreen(
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
     LaunchedEffect(navResetTick) { selectedTab = 0 }
     var isClosetCapturing by rememberSaveable { mutableStateOf(false) }
+    var showClosetUrlDialog by remember { mutableStateOf(false) }
+    val closetGalleryLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.PickMultipleVisualMedia(),
+    ) { uris -> if (uris.isNotEmpty()) shoppingClosetViewModel.addFromGallery(uris) }
 
     // Similarity Finder takes the camera over the whole screen. The closet selector is hidden:
     // similarity search reads from every closet and never imports.
@@ -160,8 +164,23 @@ fun ShoppingHelperScreen(
             locations = emptyList(),
             importTargetFolderId = null,
             onSetImportTarget = {},
+            onOpenGallery = {
+                closetGalleryLauncher.launch(
+                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
+                )
+            },
+            onOpenUrlImport = { showClosetUrlDialog = true },
             modifier = modifier,
         )
+        if (showClosetUrlDialog) {
+            ShopUrlImportDialog(
+                onSubmit = { url ->
+                    showClosetUrlDialog = false
+                    shoppingClosetViewModel.addFromUrl(url)
+                },
+                onDismiss = { showClosetUrlDialog = false },
+            )
+        }
         return
     }
 
@@ -477,34 +496,14 @@ private fun ShoppingListTab(
                 )
             }
         } else if (!isOffline) {
-            Column(
-                modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
-                horizontalAlignment = Alignment.End,
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                FloatingActionButton(onClick = {
-                    Analytics.action("Shopping", "open_url_import_dialog")
-                    showUrlDialog = true
-                }) {
-                    Icon(Icons.Default.Add, contentDescription = null)
-                    Icon(Icons.Default.Link, contentDescription = stringResource(R.string.shop_list_add_url))
-                }
-                FloatingActionButton(onClick = {
-                    Analytics.action("Shopping", "open_gallery")
-                    galleryLauncher.launch(
-                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
-                    )
-                }) {
-                    Icon(Icons.Default.Add, contentDescription = null)
-                    Icon(Icons.Default.PhotoLibrary, contentDescription = stringResource(R.string.shop_list_add_gallery))
-                }
-                FloatingActionButton(onClick = {
+            FloatingActionButton(
+                onClick = {
                     Analytics.action("Shopping", "open_camera")
                     onCaptureClick()
-                }) {
-                    Icon(Icons.Default.Add, contentDescription = null)
-                    Icon(Icons.Default.CameraAlt, contentDescription = stringResource(R.string.shop_list_add_camera))
-                }
+                },
+                modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
+            ) {
+                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.shop_list_add_camera))
             }
         }
 
