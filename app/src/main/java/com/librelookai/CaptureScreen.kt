@@ -146,13 +146,13 @@ fun CaptureScreen(
                     },
             )
 
-            if (showCenterCrosshair) {
-                androidx.compose.foundation.layout.Column(
-                    modifier = Modifier.align(Alignment.Center),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    CenterCrosshair()
+            androidx.compose.foundation.layout.Column(
+                modifier = Modifier.align(Alignment.Center),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                CenterCrosshair()
+                if (showCenterCrosshair) {
                     Surface(
                         shape = MaterialTheme.shapes.small,
                         color = Color.Black.copy(alpha = 0.55f),

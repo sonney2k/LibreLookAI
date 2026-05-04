@@ -485,28 +485,65 @@ class GeminiRepository(private val app: Application) {
     // ---------- Image processing ----------
 
     private fun removeGreenScreen(inputFile: File, outputFile: File) {
-    val bmp = BitmapFactory.decodeFile(inputFile.absolutePath)
-        ?: run { inputFile.copyTo(outputFile, overwrite = true); return }
-    val mutable = bmp.copy(Bitmap.Config.ARGB_8888, true)
-    val w = mutable.width
-    val h = mutable.height
-    val pixels = IntArray(w * h)
-    mutable.getPixels(pixels, 0, w, 0, 0, w, h)
-    for (i in pixels.indices) {
-        val c = pixels[i]
-        val r = (c shr 16) and 0xFF
-        val g = (c shr 8) and 0xFF
-        val b = c and 0xFF
-        // Match neon green (#00FF00) with tolerance for JPEG compression artifacts
-        if (r < 80 && g > 180 && b < 80) pixels[i] = 0
-    }
-    mutable.setPixels(pixels, 0, w, 0, 0, w, h)
-    // Skia's PNG encoder writes a 24-bit RGB PNG when hasAlpha() is false, baking the cleared
-    // green-screen pixels in as solid black. Force the flag so we get a 32-bit RGBA PNG with
-    // genuine transparency.
-    mutable.setHasAlpha(true)
-    outputFile.outputStream().use { mutable.compress(Bitmap.CompressFormat.PNG, 100, it) }
-    Log.d(TAG, "Green screen removed: ${pixels.count { it == 0 }} transparent pixels")
+        val bmp = BitmapFactory.decodeFile(inputFile.absolutePath)
+            ?: run { inputFile.copyTo(outputFile, overwrite = true); return }
+        val mutable = bmp.copy(Bitmap.Config.ARGB_8888, true)
+        if (mutable !== bmp) bmp.recycle()
+        val w = mutable.width
+        val h = mutable.height
+        val pixels = IntArray(w * h)
+        mutable.getPixels(pixels, 0, w, 0, 0, w, h)
+        var minX = w; var minY = h; var maxX = -1; var maxY = -1
+        for (y in 0 until h) {
+            val row = y * w
+            for (x in 0 until w) {
+                val c = pixels[row + x]
+                val r = (c shr 16) and 0xFF
+                val g = (c shr 8) and 0xFF
+                val b = c and 0xFF
+                // Match neon green (#00FF00) with tolerance for JPEG compression artifacts
+                if (r < 80 && g > 180 && b < 80) {
+                    pixels[row + x] = 0
+                } else if ((c ushr 24) and 0xFF != 0) {
+                    if (x < minX) minX = x
+                    if (x > maxX) maxX = x
+                    if (y < minY) minY = y
+                    if (y > maxY) maxY = y
+                }
+            }
+        }
+        mutable.setPixels(pixels, 0, w, 0, 0, w, h)
+        mutable.setHasAlpha(true)
+
+        // Tight-crop to opaque bbox (with 2% margin) to reduce stored / re-uploaded pixels.
+        val cropped = if (maxX >= minX && maxY >= minY) {
+            val margin = maxOf(2, (maxOf(maxX - minX + 1, maxY - minY + 1) * 0.02f).roundToInt())
+            val x0 = (minX - margin).coerceAtLeast(0)
+            val y0 = (minY - margin).coerceAtLeast(0)
+            val x1 = (maxX + margin).coerceAtMost(w - 1)
+            val y1 = (maxY + margin).coerceAtMost(h - 1)
+            val cw = x1 - x0 + 1
+            val ch = y1 - y0 + 1
+            if (cw < w || ch < h) {
+                Bitmap.createBitmap(mutable, x0, y0, cw, ch).also { if (it !== mutable) mutable.recycle() }
+            } else mutable
+        } else mutable
+
+        // Cap so max(width, height) ≤ 1280.
+        val maxDim = maxOf(cropped.width, cropped.height)
+        val finalBmp = if (maxDim > 1280) {
+            val scale = 1280f / maxDim
+            val nw = (cropped.width * scale).roundToInt()
+            val nh = (cropped.height * scale).roundToInt()
+            Bitmap.createScaledBitmap(cropped, nw, nh, true).also {
+                if (it !== cropped) cropped.recycle()
+                it.setHasAlpha(true)
+            }
+        } else cropped
+
+        outputFile.outputStream().use { finalBmp.compress(Bitmap.CompressFormat.PNG, 100, it) }
+        Log.d(TAG, "Cutout post-processed: ${w}x${h} → ${finalBmp.width}x${finalBmp.height}")
+        finalBmp.recycle()
     }
 }
 
