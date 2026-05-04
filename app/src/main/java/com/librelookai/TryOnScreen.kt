@@ -196,22 +196,10 @@ fun TryOnComposerScreen(
 
                 // Generating overlay — covers everything.
                 if (state.isGenerating) {
-                    Box(
-                        modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.55f)),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(12.dp),
-                        ) {
-                            CircularProgressIndicator(color = Color.White)
-                            Text(
-                                stringResource(R.string.tryon_generating),
-                                color = Color.White,
-                                style = MaterialTheme.typography.bodyMedium,
-                            )
-                        }
-                    }
+                    AiProcessingOverlay(
+                        label = stringResource(R.string.tryon_generating),
+                        modifier = Modifier.fillMaxSize(),
+                    )
                 }
 
                 // Error dialog.

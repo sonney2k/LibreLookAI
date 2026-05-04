@@ -107,6 +107,7 @@ fun OutfitComposerScreen(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.surface,
         ) {
+            Box(modifier = Modifier.fillMaxSize()) {
             Column(modifier = Modifier.fillMaxSize().navigationBarsPadding().imePadding()) {
                 // Header
                 Row(
@@ -328,25 +329,6 @@ fun OutfitComposerScreen(
                             enabled = !s.isComposerEnhancing,
                         )
 
-                        if (s.isComposerEnhancing) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center,
-                            ) {
-                                CircularProgressIndicator(
-                                    modifier = Modifier.size(28.dp),
-                                    strokeWidth = 3.dp,
-                                )
-                                Spacer(Modifier.width(12.dp))
-                                Text(
-                                    stringResource(R.string.composer_enhancing),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                )
-                            }
-                        }
-
                         Button(
                             onClick = {
                                 Analytics.action("OutfitComposer", "enhance_with_ai")
@@ -379,6 +361,13 @@ fun OutfitComposerScreen(
 
                     Spacer(Modifier.height(16.dp))
                 }
+            }
+            if (s.isComposerEnhancing) {
+                AiProcessingOverlay(
+                    label = stringResource(R.string.composer_enhancing),
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
             }
         }
     }
