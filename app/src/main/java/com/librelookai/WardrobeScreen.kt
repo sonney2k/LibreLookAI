@@ -92,6 +92,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -1965,6 +1966,11 @@ private fun DuplicateCheckSheet(
     onAddQueryToShoppingList: (queryPath: String) -> Unit,
 ) {
     val context = LocalContext.current
+    // Capture parent locale-aware context/configuration: ModalBottomSheet renders in its own
+    // window, so without this re-provide stringResource() would fall back to the system locale
+    // and ignore the in-app language toggle.
+    val parentContext = LocalContext.current
+    val parentConfiguration = LocalConfiguration.current
     val shopMatches = remember(check.matches) {
         check.matches.map { ShopMatch(image = it.image, score = it.score) }
     }
@@ -1974,6 +1980,10 @@ private fun DuplicateCheckSheet(
         onDismissRequest = onCancel,
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
     ) {
+      CompositionLocalProvider(
+          LocalContext provides parentContext,
+          LocalConfiguration provides parentConfiguration,
+      ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -2029,6 +2039,7 @@ private fun DuplicateCheckSheet(
                 }
             }
         }
+      }
     }
 
     previewIndex?.let { idx ->

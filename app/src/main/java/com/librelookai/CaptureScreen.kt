@@ -472,10 +472,12 @@ private fun loadBitmapWithExif(file: File): Bitmap {
  * Returns the new file.
  */
 private fun bakeRotation(exifNormalBitmap: Bitmap, userRotation: Int, source: File): File {
+    // Don't recycle [exifNormalBitmap]: it's still referenced by Compose's review screen until
+    // the next frame, and recycling here races with the UI thread (crashes "trying to use a
+    // recycled bitmap"). Let GC reclaim it once the screen is gone.
     val final = if (userRotation != 0) {
         val m = Matrix().apply { postRotate(userRotation.toFloat()) }
         Bitmap.createBitmap(exifNormalBitmap, 0, 0, exifNormalBitmap.width, exifNormalBitmap.height, m, true)
-            .also { if (it !== exifNormalBitmap) exifNormalBitmap.recycle() }
     } else {
         exifNormalBitmap
     }

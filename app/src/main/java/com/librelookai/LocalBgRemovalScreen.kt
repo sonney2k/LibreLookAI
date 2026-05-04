@@ -42,8 +42,11 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.window.DialogWindowProvider
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
@@ -157,6 +160,15 @@ private fun LocalBgRemovalDialog(
             decorFitsSystemWindows = false,
         ),
     ) {
+      // Force the dialog window to fill the screen. Without this, Compose's Dialog defaults
+      // to WRAP_CONTENT height in some versions and the bottom action row gets clipped.
+      val dialogView = LocalView.current
+      SideEffect {
+          (dialogView.parent as? DialogWindowProvider)?.window?.setLayout(
+              android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+              android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+          )
+      }
       CompositionLocalProvider(
           LocalContext provides parentContext,
           LocalConfiguration provides parentConfiguration,

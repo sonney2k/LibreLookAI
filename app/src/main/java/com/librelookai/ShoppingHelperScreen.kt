@@ -96,8 +96,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.DialogWindowProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -1010,6 +1013,15 @@ internal fun MatchPreviewDialog(
             decorFitsSystemWindows = false,
         ),
     ) {
+      // Force the dialog window to fill the screen. Without this, Compose's Dialog defaults
+      // to WRAP_CONTENT height in some versions and the bottom action row gets clipped.
+      val dialogView = LocalView.current
+      SideEffect {
+          (dialogView.parent as? DialogWindowProvider)?.window?.setLayout(
+              android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+              android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+          )
+      }
       CompositionLocalProvider(
           LocalContext provides parentContext,
           LocalConfiguration provides parentConfiguration,
