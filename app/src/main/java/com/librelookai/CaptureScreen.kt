@@ -31,7 +31,10 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import android.app.Activity
+import android.content.pm.ActivityInfo
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -82,6 +85,15 @@ fun CaptureScreen(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
+    DisposableEffect(Unit) {
+        val activity = context as? Activity
+        val previous = activity?.requestedOrientation
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
+        onDispose {
+            activity?.requestedOrientation =
+                previous ?: ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+    }
     val showImportFabs = onOpenGallery != null || onOpenUrlImport != null
     val lifecycleOwner = LocalLifecycleOwner.current
     var imageCapture by remember { mutableStateOf<ImageCapture?>(null) }
