@@ -13,8 +13,9 @@ import kotlin.math.sqrt
  * derailing the rest of the score; see `EmbeddingIndex.search` for the combined formula.
  *
  * Bins: H=12 × S=4 × V=4 = 192 floats, L1-normalized. We deliberately skip pixels that look like
- * the composite background (alpha < 200, or near-white) so the histogram describes the garment,
- * not the white backdrop both query and gallery images share.
+ * the composite background — fully transparent, near-black (the backdrop `prepareForEmbedding`
+ * fills in), or near-white (legacy cutouts that were composited on white) — so the histogram
+ * describes the garment, not the shared backdrop.
  */
 const val HIST_H_BINS = 12
 const val HIST_S_BINS = 4
@@ -42,8 +43,12 @@ object ColorHistogram {
             val r = (p ushr 16) and 0xFF
             val g = (p ushr 8) and 0xFF
             val b = p and 0xFF
+            // Drop the composite-on-black backdrop that `prepareForEmbedding` paints in. Without
+            // this every histogram is dominated by the (h=0,s=0,v=0) bin and unrelated garments
+            // score >0.9 against each other.
+            if (r <= 4 && g <= 4 && b <= 4) continue
             Color.RGBToHSV(r, g, b, hsv)
-            // Drop the composite-on-white backdrop: low saturation + high value.
+            // Also drop near-white in case we ever hit a legacy composite-on-white path.
             if (hsv[1] < 0.08f && hsv[2] > 0.92f) continue
             val hb = ((hsv[0] / 360f) * HIST_H_BINS).toInt().coerceIn(0, HIST_H_BINS - 1)
             val sb = (hsv[1] * HIST_S_BINS).toInt().coerceIn(0, HIST_S_BINS - 1)
@@ -98,6 +103,42 @@ object ColorHistogram {
         }
         val denom = sqrt(na) * sqrt(nb)
         return if (denom <= 0f) 0f else dot / denom
+    }
+
+    /**
+     * Bounding box of the pixels [compute] would keep — i.e. the foreground/garment region after
+     * the same alpha + near-black + near-white filters. Returns null if no pixel survives. Used
+     * by the similarity debug overlay to show exactly which area drives the histogram.
+     */
+    fun consideredBbox(bitmap: Bitmap): android.graphics.Rect? {
+        val w = bitmap.width
+        val h = bitmap.height
+        if (w <= 0 || h <= 0) return null
+        val pixels = IntArray(w * h)
+        bitmap.getPixels(pixels, 0, w, 0, 0, w, h)
+        var minX = Int.MAX_VALUE; var minY = Int.MAX_VALUE
+        var maxX = Int.MIN_VALUE; var maxY = Int.MIN_VALUE
+        val hsv = FloatArray(3)
+        for (y in 0 until h) {
+            val rowStart = y * w
+            for (x in 0 until w) {
+                val p = pixels[rowStart + x]
+                val a = (p ushr 24) and 0xFF
+                if (a < 200) continue
+                val r = (p ushr 16) and 0xFF
+                val g = (p ushr 8) and 0xFF
+                val b = p and 0xFF
+                if (r <= 4 && g <= 4 && b <= 4) continue
+                Color.RGBToHSV(r, g, b, hsv)
+                if (hsv[1] < 0.08f && hsv[2] > 0.92f) continue
+                if (x < minX) minX = x
+                if (y < minY) minY = y
+                if (x > maxX) maxX = x
+                if (y > maxY) maxY = y
+            }
+        }
+        if (minX == Int.MAX_VALUE) return null
+        return android.graphics.Rect(minX, minY, maxX + 1, maxY + 1)
     }
 
     private fun uniform(): FloatArray = FloatArray(HIST_DIM) { 1f / HIST_DIM }

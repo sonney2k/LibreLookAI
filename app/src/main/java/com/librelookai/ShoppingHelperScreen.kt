@@ -1233,9 +1233,10 @@ private fun MatchDebugPage(
                 path = queryRawPath,
                 modifier = Modifier.weight(1f),
             )
-            DebugThumbAsync(
+            ProcessedBboxThumb(
                 label = "processed",
-                path = queryProcessedPath,
+                file = queryProcessedPath?.let { File(it) },
+                alreadyPrepared = true,
                 fallbackText = "(segmentation failed)",
                 modifier = Modifier.weight(1f),
             )
@@ -1256,9 +1257,10 @@ private fun MatchDebugPage(
                 path = match.image.localPath,
                 modifier = Modifier.weight(1f),
             )
-            ProcessedCutoutThumb(
+            ProcessedBboxThumb(
                 label = "processed",
                 file = File(match.image.localPath),
+                alreadyPrepared = false,
                 modifier = Modifier.weight(1f),
             )
         }
@@ -1343,21 +1345,30 @@ private fun DebugThumbAsync(
     }
 }
 
+/**
+ * Renders a similarity-debug "processed" thumb with the histogram-considered bbox drawn on top.
+ * If [alreadyPrepared] is true the file is loaded as-is (already composited on black by
+ * `EmbeddingService.findSimilarWithDebug`); otherwise it is run through `prepareForEmbedding`.
+ */
 @Composable
-private fun ProcessedCutoutThumb(
+private fun ProcessedBboxThumb(
     label: String,
-    file: File,
+    file: File?,
+    alreadyPrepared: Boolean,
     modifier: Modifier = Modifier,
+    fallbackText: String? = null,
 ) {
-    val processed by produceState<android.graphics.Bitmap?>(initialValue = null, file.absolutePath) {
+    data class Prepared(val bitmap: android.graphics.Bitmap, val bbox: android.graphics.Rect?)
+    val prepared by produceState<Prepared?>(initialValue = null, file?.absolutePath, alreadyPrepared) {
         value = withContext(Dispatchers.IO) {
-            val src = runCatching { BitmapFactory.decodeFile(file.absolutePath) }.getOrNull()
+            val path = file?.absolutePath ?: return@withContext null
+            val src = runCatching { BitmapFactory.decodeFile(path) }.getOrNull()
                 ?: return@withContext null
-            try {
-                EmbeddingRepository.prepareForEmbedding(src)
-            } finally {
-                if (!src.isRecycled) src.recycle()
-            }
+            val bm = if (alreadyPrepared) src else {
+                try { EmbeddingRepository.prepareForEmbedding(src) }
+                finally { if (!src.isRecycled) src.recycle() }
+            } ?: return@withContext null
+            Prepared(bm, ColorHistogram.consideredBbox(bm))
         }
     }
 
@@ -1377,16 +1388,48 @@ private fun ProcessedCutoutThumb(
                 .fillMaxWidth()
                 .aspectRatio(1f)
                 .clip(RoundedCornerShape(6.dp))
-                .background(Color.White),
+                .background(Color.Black),
             contentAlignment = Alignment.Center,
         ) {
-            val bm = processed
-            if (bm != null) {
-                Image(
-                    bitmap = bm.asImageBitmap(),
-                    contentDescription = null,
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier.fillMaxSize(),
+            val p = prepared
+            if (p != null) {
+                val bm = p.bitmap
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Image(
+                        bitmap = bm.asImageBitmap(),
+                        contentDescription = null,
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                    val bbox = p.bbox
+                    if (bbox != null) {
+                        androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxSize()) {
+                            val bw = bm.width.toFloat()
+                            val bh = bm.height.toFloat()
+                            if (bw <= 0f || bh <= 0f) return@Canvas
+                            val scale = minOf(size.width / bw, size.height / bh)
+                            val drawW = bw * scale
+                            val drawH = bh * scale
+                            val offX = (size.width - drawW) / 2f
+                            val offY = (size.height - drawH) / 2f
+                            val left = offX + bbox.left * scale
+                            val top = offY + bbox.top * scale
+                            val w = (bbox.right - bbox.left) * scale
+                            val h = (bbox.bottom - bbox.top) * scale
+                            drawRect(
+                                color = Color(0xFF00E676),
+                                topLeft = androidx.compose.ui.geometry.Offset(left, top),
+                                size = androidx.compose.ui.geometry.Size(w, h),
+                                style = androidx.compose.ui.graphics.drawscope.Stroke(width = 2.dp.toPx()),
+                            )
+                        }
+                    }
+                }
+            } else if (file == null && fallbackText != null) {
+                Text(
+                    fallbackText,
+                    color = Color.White.copy(alpha = 0.6f),
+                    style = MaterialTheme.typography.labelSmall,
                 )
             } else {
                 CircularProgressIndicator(
