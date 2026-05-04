@@ -128,6 +128,19 @@ fun ShoppingHelperScreen(
     val shoppingState by shoppingViewModel.state.collectAsState()
     val wardrobeState by wardrobeViewModel.state.collectAsState()
     val locationState by locationViewModel.state.collectAsState()
+    val shoppingClosetStateTop by shoppingClosetViewModel.state.collectAsState()
+
+    // The URL-import picker (candidate grid + WebView fallback) is hosted at the screen root so
+    // it survives the camera early-returns that early-`return` below.
+    shoppingClosetStateTop.urlImportPicker?.let { picker ->
+        UrlImportPicker(
+            pageUrl = picker.pageUrl,
+            candidates = picker.candidates,
+            isDownloading = picker.isDownloading,
+            onPick = shoppingClosetViewModel::confirmUrlImportPick,
+            onDismiss = shoppingClosetViewModel::cancelUrlImport,
+        )
+    }
 
     // Hoisted above the camera early-returns so the active tab survives across capture —
     // otherwise the rememberSaveable slot is never visited and resets to 0 on return.

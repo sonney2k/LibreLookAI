@@ -143,6 +143,16 @@ data class WardrobeUiState(
      *  URL imports always enqueue a single item; gallery imports enqueue every selected URI when
      *  [UserPreferences.preferLocalBgRemoval] is on. */
     val localBgReviewQueue: List<LocalBgReviewItem> = emptyList(),
+    /** Non-null while the user is choosing an image from a pasted shopping URL. */
+    val urlImportPicker: UrlImportPickerState? = null,
+)
+
+/** State for the URL-import picker dialog (candidate grid + WebView fallback). */
+data class UrlImportPickerState(
+    val pageUrl: String,
+    val candidates: List<String>,
+    val targetFolderId: String? = null,
+    val isDownloading: Boolean = false,
 )
 
 /** One pending entry in the on-device bg-removal review queue. */
@@ -1666,11 +1676,11 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
      */
     fun importFromUrl(url: String) {
         if (url.isBlank()) return
-        val id = (defaultImportFolderId ?: folderId) ?: return
+        val targetId = (defaultImportFolderId ?: folderId) ?: return
         viewModelScope.launch {
             _state.update { it.copy(isUploading = true, error = null) }
-            val image = WebProductFetcher.fetchProductImage(url, drive.cacheDir)
-            if (image == null) {
+            val result = WebProductFetcher.fetchImageCandidates(url)
+            if (result == null) {
                 _state.update {
                     it.copy(
                         isUploading = false,
@@ -1679,10 +1689,38 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 }
                 return@launch
             }
-            // URL imports must always go through the on-device review screen so the user can
-            // confirm/refine the foreground seed before saving — webshop product photos often
-            // benefit from a tighter cutout.
-            val targetId = (defaultImportFolderId ?: folderId) ?: return@launch
+            // Always present the picker (even on empty candidates the WebView fallback opens).
+            _state.update {
+                it.copy(
+                    isUploading = false,
+                    urlImportPicker = UrlImportPickerState(
+                        pageUrl = result.pageUrl,
+                        candidates = result.candidates,
+                        targetFolderId = targetId,
+                    ),
+                )
+            }
+        }
+    }
+
+    /** Picker callback: download [absoluteImageUrl] and run the standard URL-import pipeline. */
+    fun confirmUrlImportPick(absoluteImageUrl: String) {
+        val picker = _state.value.urlImportPicker ?: return
+        val targetId = picker.targetFolderId ?: return
+        viewModelScope.launch {
+            _state.update { it.copy(urlImportPicker = picker.copy(isDownloading = true)) }
+            val image = WebProductFetcher.downloadImage(absoluteImageUrl, picker.pageUrl, drive.cacheDir)
+            if (image == null) {
+                _state.update {
+                    it.copy(
+                        urlImportPicker = picker.copy(isDownloading = false),
+                        error = getApplication<Application>().getString(R.string.url_import_failed),
+                    )
+                }
+                return@launch
+            }
+            _state.update { it.copy(urlImportPicker = null) }
+            // URL imports always go through on-device review so the user can refine the seed.
             uploadPhotoInternal(
                 rawFile = image,
                 id = targetId,
@@ -1690,6 +1728,10 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 forceLocalReview = true,
             )
         }
+    }
+
+    fun cancelUrlImport() {
+        _state.update { it.copy(urlImportPicker = null) }
     }
 
     fun uploadGalleryPhotos(uris: List<Uri>) {

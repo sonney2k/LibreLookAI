@@ -36,6 +36,8 @@ data class ShoppingClosetUiState(
     val folderId: String? = null,
     /** driveId currently being re-tagged / re-bg-removed; drives the AI overlay in the viewer. */
     val processingImageId: String? = null,
+    /** Non-null while the user is choosing an image from a pasted shopping URL. */
+    val urlImportPicker: UrlImportPickerState? = null,
 )
 
 private data class ShoppingPendingJob(val driveId: String)
@@ -231,11 +233,12 @@ class ShoppingClosetViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun addFromUrl(url: String) {
+        if (url.isBlank()) return
         viewModelScope.launch {
             val folderId = ensureFolder() ?: return@launch
             _state.update { it.copy(isUploading = true, error = null) }
-            val image = WebProductFetcher.fetchProductImage(url, drive.cacheDir)
-            if (image == null) {
+            val result = WebProductFetcher.fetchImageCandidates(url)
+            if (result == null) {
                 _state.update {
                     it.copy(
                         isUploading = false,
@@ -244,8 +247,41 @@ class ShoppingClosetViewModel(app: Application) : AndroidViewModel(app) {
                 }
                 return@launch
             }
+            _state.update {
+                it.copy(
+                    isUploading = false,
+                    urlImportPicker = UrlImportPickerState(
+                        pageUrl = result.pageUrl,
+                        candidates = result.candidates,
+                        targetFolderId = folderId,
+                    ),
+                )
+            }
+        }
+    }
+
+    fun confirmUrlImportPick(absoluteImageUrl: String) {
+        val picker = _state.value.urlImportPicker ?: return
+        val folderId = picker.targetFolderId ?: return
+        viewModelScope.launch {
+            _state.update { it.copy(urlImportPicker = picker.copy(isDownloading = true)) }
+            val image = WebProductFetcher.downloadImage(absoluteImageUrl, picker.pageUrl, drive.cacheDir)
+            if (image == null) {
+                _state.update {
+                    it.copy(
+                        urlImportPicker = picker.copy(isDownloading = false),
+                        error = getApplication<Application>().getString(R.string.url_import_failed),
+                    )
+                }
+                return@launch
+            }
+            _state.update { it.copy(urlImportPicker = null) }
             uploadRaw(image, folderId)
         }
+    }
+
+    fun cancelUrlImport() {
+        _state.update { it.copy(urlImportPicker = null) }
     }
 
     /** Common path: upload [rawFile] to Drive, queue for bg removal + tagging. */

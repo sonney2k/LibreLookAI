@@ -50,6 +50,13 @@
     <string name="wardrobe_url_import_title">Import per Shopping-URL</string>
     <string name="wardrobe_url_import_hint">Füge die URL einer Shopping-Seite ein. Wir laden das Produktbild automatisch.</string>
     <string name="url_import_failed">Auf dieser URL konnte kein Produktbild gefunden werden.</string>
+    <string name="url_import_pick_title">Produktbild auswählen</string>
+    <string name="url_import_pick_hint">Tippe auf das Bild, das du importieren möchtest. Wenn keins passt, öffne die Seite im Browser.</string>
+    <string name="url_import_browser_title">Seite öffnen</string>
+    <string name="url_import_browser_hint">Tippe auf ein Bild der Seite, um es zu importieren.</string>
+    <string name="url_import_open_browser">Seite öffnen</string>
+    <string name="url_import_show_candidates">Vorschläge</string>
+    <string name="url_import_no_candidates">Keine Bilder gefunden. Öffne die Seite im Browser, um eines auszuwählen.</string>
 
     <!-- Outfits sub-tabs -->
     <string name="outfits_tab_outfits">Outfits</string>

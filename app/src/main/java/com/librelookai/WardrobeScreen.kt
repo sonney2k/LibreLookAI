@@ -292,6 +292,16 @@ fun WardrobeScreen(
         )
     }
 
+    state.urlImportPicker?.let { picker ->
+        UrlImportPicker(
+            pageUrl = picker.pageUrl,
+            candidates = picker.candidates,
+            isDownloading = picker.isDownloading,
+            onPick = viewModel::confirmUrlImportPick,
+            onDismiss = viewModel::cancelUrlImport,
+        )
+    }
+
     if (showGalleryClosetPicker) {
         val initialFolderId = state.importTargetFolderId ?: locationState.locations.firstOrNull()?.folderId
         var selectedFolderId by remember { mutableStateOf(initialFolderId) }
