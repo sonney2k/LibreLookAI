@@ -42,17 +42,15 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.window.DialogWindowProvider
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
+import androidx.activity.compose.BackHandler
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -148,40 +146,24 @@ private fun LocalBgRemovalDialog(
     }
     LaunchedEffect(rawFilePath) { recompute() }
 
-    val barInsets = LocalSystemBarsPadding.current
-    val parentContext = LocalContext.current
-    val parentConfiguration = LocalConfiguration.current
-    Dialog(
-        onDismissRequest = { /* require explicit Cancel */ },
-        properties = DialogProperties(
-            dismissOnBackPress = false,
-            dismissOnClickOutside = false,
-            usePlatformDefaultWidth = false,
-            decorFitsSystemWindows = false,
-        ),
+    // Render as an in-tree fullscreen overlay rather than a Compose Dialog window. The activity
+    // is edge-to-edge, so WindowInsets.systemBars here returns the real status/nav bar values —
+    // unlike inside a Dialog window, where insets are not reliably reported and our action row
+    // ended up clipped behind the navigation bar.
+    BackHandler(enabled = true) { /* require explicit Cancel */ }
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.surface),
     ) {
-      // Force the dialog window to fill the screen. Without this, Compose's Dialog defaults
-      // to WRAP_CONTENT height in some versions and the bottom action row gets clipped.
-      val dialogView = LocalView.current
-      SideEffect {
-          (dialogView.parent as? DialogWindowProvider)?.window?.setLayout(
-              android.view.ViewGroup.LayoutParams.MATCH_PARENT,
-              android.view.ViewGroup.LayoutParams.MATCH_PARENT,
-          )
-      }
-      CompositionLocalProvider(
-          LocalContext provides parentContext,
-          LocalConfiguration provides parentConfiguration,
-      ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.surface),
+                .windowInsetsPadding(WindowInsets.systemBars),
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = barInsets.calculateTopPadding())
                     .padding(horizontal = 8.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -320,7 +302,6 @@ private fun LocalBgRemovalDialog(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = barInsets.calculateBottomPadding())
                     .padding(16.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
@@ -349,7 +330,6 @@ private fun LocalBgRemovalDialog(
                 ) { Text(stringResource(R.string.local_bg_apply)) }
             }
         }
-      }
     }
 }
 

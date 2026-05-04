@@ -1026,14 +1026,17 @@ internal fun MatchPreviewDialog(
             decorFitsSystemWindows = false,
         ),
     ) {
-      // Force the dialog window to fill the screen. Without this, Compose's Dialog defaults
-      // to WRAP_CONTENT height in some versions and the bottom action row gets clipped.
+      // Force the dialog window to fill the screen edge-to-edge. Without setDecorFitsSystemWindows
+      // the window may be inset above the navigation bar in 3-button nav mode, while our captured
+      // barInsets bottom padding still adds nav-bar height — net effect: action row clipped.
       val dialogView = LocalView.current
       SideEffect {
-          (dialogView.parent as? DialogWindowProvider)?.window?.setLayout(
+          val window = (dialogView.parent as? DialogWindowProvider)?.window ?: return@SideEffect
+          window.setLayout(
               android.view.ViewGroup.LayoutParams.MATCH_PARENT,
               android.view.ViewGroup.LayoutParams.MATCH_PARENT,
           )
+          androidx.core.view.WindowCompat.setDecorFitsSystemWindows(window, false)
       }
       CompositionLocalProvider(
           LocalContext provides parentContext,
@@ -1162,11 +1165,32 @@ private fun MatchActionBar(
     canAddToShoppingList: Boolean,
 ) {
     val barInsets = LocalSystemBarsPadding.current
+    // Inside a Compose Dialog window, both LocalSystemBarsPadding (captured from the activity) and
+    // the dialog view's rootWindowInsets can be reported as zero on some devices, leaving the
+    // action row clipped behind the navigation bar. Read whichever is available and fall back to
+    // a 48dp floor (3-button nav bar height) so the row always clears the nav bar.
+    val view = androidx.compose.ui.platform.LocalView.current
+    val density = androidx.compose.ui.platform.LocalDensity.current
+    val rootInsetBottomDp = remember(view) {
+        val raw = view.rootWindowInsets
+        val bottomPx = if (raw != null) {
+            androidx.core.view.WindowInsetsCompat
+                .toWindowInsetsCompat(raw, view)
+                .getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
+                .bottom
+        } else 0
+        with(density) { bottomPx.toDp() }
+    }
+    val effectiveBottom = maxOf(
+        barInsets.calculateBottomPadding(),
+        rootInsetBottomDp,
+        48.dp,
+    )
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.Black)
-            .padding(bottom = barInsets.calculateBottomPadding())
+            .padding(bottom = effectiveBottom)
             .padding(horizontal = 12.dp, vertical = 10.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,

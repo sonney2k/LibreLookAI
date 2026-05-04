@@ -523,6 +523,11 @@ class MainActivity : ComponentActivity() {
                                                 .padding(start = 12.dp, bottom = 8.dp),
                                         )
                                     }
+
+                                    // Local background-removal review — fullscreen overlay shown
+                                    // when an import is queued for on-device cutout refinement.
+                                    // Rendered inside this Box so it stacks on top of content.
+                                    LocalBgRemovalScreen(viewModel = wardrobeViewModel)
                                 }
 
                                 TryOnComposerScreen(
@@ -543,10 +548,6 @@ class MainActivity : ComponentActivity() {
 
                                 // Replacements result dialog — opened from Wardrobe selection FAB.
                                 ReplacementsResultDialog(gapViewModel = gapViewModel)
-
-                                // Local background-removal review — full-screen dialog shown when
-                                // an import is queued for on-device cutout refinement.
-                                LocalBgRemovalScreen(viewModel = wardrobeViewModel)
                             }
                         }
                     }
