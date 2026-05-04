@@ -195,7 +195,6 @@ class SegmentationRepository(private val context: Context) {
         val black = Color.BLACK
         var fgPixelCount = 0
         var bgPixelCount = 0
-        var bgRSum = 0L; var bgGSum = 0L; var bgBSum = 0L
         val isFg = BooleanArray(pixels.size)
         val threshold = foregroundThreshold.coerceIn(0.05f, 0.95f)
         for (y in 0 until h) {
@@ -210,10 +209,6 @@ class SegmentationRepository(private val context: Context) {
                 if (fg) {
                     fgPixelCount++
                 } else {
-                    val p = pixels[outBase + x]
-                    bgRSum += (p ushr 16) and 0xFF
-                    bgGSum += (p ushr 8) and 0xFF
-                    bgBSum += p and 0xFF
                     bgPixelCount++
                 }
             }
@@ -234,34 +229,10 @@ class SegmentationRepository(private val context: Context) {
         }
         Log.d(TAG, "segment: foreground=${fgPixelCount}/${totalPixels} background=${bgPixelCount}")
 
-        // Gray-world WB: derive per-channel gains from the background mean (the surface the item
-        // was photographed on, treated as a neutral reference). Only apply when the background is
-        // both large enough and not extreme exposure, otherwise the reference is unreliable.
-        var gainR = 1f; var gainG = 1f; var gainB = 1f
-        if (bgPixelCount * 100 >= totalPixels * 5) {
-            val meanR = bgRSum.toFloat() / bgPixelCount
-            val meanG = bgGSum.toFloat() / bgPixelCount
-            val meanB = bgBSum.toFloat() / bgPixelCount
-            val meanY = (meanR + meanG + meanB) / 3f
-            if (meanY in 40f..220f && meanR > 1f && meanG > 1f && meanB > 1f) {
-                gainR = (meanY / meanR).coerceIn(0.5f, 2.0f)
-                gainG = (meanY / meanG).coerceIn(0.5f, 2.0f)
-                gainB = (meanY / meanB).coerceIn(0.5f, 2.0f)
-            }
-        }
-        val applyWB = gainR != 1f || gainG != 1f || gainB != 1f
-
-        // Second pass: replace background with black; apply WB gains to foreground pixels.
+        // Second pass: replace background with black, leave foreground pixels untouched.
         for (i in 0 until pixels.size) {
             if (!isFg[i]) {
                 pixels[i] = black
-            } else if (applyWB) {
-                val p = pixels[i]
-                val a = (p ushr 24) and 0xFF
-                val r = (((p ushr 16) and 0xFF) * gainR).toInt().coerceIn(0, 255)
-                val g = (((p ushr 8) and 0xFF) * gainG).toInt().coerceIn(0, 255)
-                val b = ((p and 0xFF) * gainB).toInt().coerceIn(0, 255)
-                pixels[i] = (a shl 24) or (r shl 16) or (g shl 8) or b
             }
         }
 
@@ -278,7 +249,6 @@ class SegmentationRepository(private val context: Context) {
      * Unlike [segmentForegroundOnBlack], this:
      *  - accepts an arbitrary seed (the user-positioned crosshair),
      *  - emits transparent (not black) background so the cutout can be saved as a `.png` cutout,
-     *  - skips the gray-world WB pass (we keep the user-picked colors faithful for review),
      *  - does NOT enforce the 2–95% foreground sanity bounds, so the user always gets *some*
      *    preview to react to even when the seed lands on a tiny or huge region.
      *
