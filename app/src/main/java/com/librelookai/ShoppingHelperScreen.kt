@@ -806,6 +806,7 @@ private fun SimilarityFinderTab(
                 querySegmented = state.querySegmented,
                 queryHist = state.queryHist,
                 queryVec = state.queryVec,
+                queryPHash = state.queryPHash,
                 showDebug = showDebug,
                 onShowInWardrobe = { image ->
                     previewIndex = null
@@ -1010,6 +1011,7 @@ internal fun MatchPreviewDialog(
     querySegmented: Boolean,
     queryHist: FloatArray?,
     queryVec: FloatArray?,
+    queryPHash: Long?,
     showDebug: Boolean,
     onShowInWardrobe: (DriveImage) -> Unit,
     onAddToShoppingList: () -> Unit,
@@ -1106,6 +1108,7 @@ internal fun MatchPreviewDialog(
                             querySegmented = querySegmented,
                             queryHist = queryHist,
                             queryVec = queryVec,
+                            queryPHash = queryPHash,
                         )
                     } else {
                         MatchDefaultPage(match = match)
@@ -1217,6 +1220,7 @@ private fun MatchDebugPage(
     querySegmented: Boolean,
     queryHist: FloatArray?,
     queryVec: FloatArray?,
+    queryPHash: Long?,
 ) {
     // Pull the match's stored embedding + histogram from the persistent index. produceState
     // re-fetches whenever the visible page changes so HorizontalPager works smoothly.
@@ -1232,6 +1236,13 @@ private fun MatchDebugPage(
     val histCos = remember(queryHist, matchEntry) {
         val q = queryHist; val h = matchEntry?.hist
         if (q != null && h != null) ColorHistogram.cosine(q, h) else null
+    }
+    // Best Hamming similarity between the query's canonical pHash and the match's 24 rotated
+    // hashes. Mirrors the rotation-invariant pHash term that `EmbeddingIndex.search` folds into
+    // the combined score.
+    val pHashSim = remember(queryPHash, matchEntry) {
+        val q = queryPHash; val hashes = matchEntry?.pHashes
+        if (q != null && hashes != null && hashes.isNotEmpty()) PHash.bestSimilarity(q, hashes) else null
     }
 
     Column(
@@ -1254,7 +1265,7 @@ private fun MatchDebugPage(
                     fontWeight = FontWeight.SemiBold,
                 )
                 Text(
-                    "embedding cos = ${formatCos(embCos)}   ·   histogram cos = ${formatCos(histCos)}",
+                    "embedding cos = ${formatCos(embCos)}   ·   histogram cos = ${formatCos(histCos)}   ·   pHash sim = ${formatCos(pHashSim)}",
                     color = Color.White.copy(alpha = 0.8f),
                     style = MaterialTheme.typography.labelSmall,
                 )

@@ -78,6 +78,9 @@ object EmbeddingService {
         val hist: FloatArray,
         /** L2-normalized embedding vector of the processed bitmap. */
         val vec: FloatArray,
+        /** Canonical (0°) perceptual hash of the processed bitmap. The debug preview reports its
+         *  best-rotation Hamming similarity against each indexed match. */
+        val pHash: Long,
     )
 
     /**
@@ -131,7 +134,7 @@ object EmbeddingService {
         var done = 0
         for (img in todo) {
             val f = cutoutFile(img, cacheDir) ?: continue
-            embedderImpl.embedFile(f)?.let { indexImpl.upsert(img.driveId, it.vec, it.hist) }
+            embedderImpl.embedFile(f)?.let { indexImpl.upsert(img.driveId, it.vec, it.hist, it.pHashes) }
             done++
             onProgress?.invoke(done, todo.size)
         }
@@ -156,7 +159,7 @@ object EmbeddingService {
         segment: Boolean = true,
     ): List<Match> {
         val q = embedQuery(file, segment) ?: return emptyList()
-        return searchVector(q.vec, q.hist, threshold, excludeIds, topK)
+        return searchVector(q.vec, q.hist, q.pHashes.firstOrNull() ?: 0L, threshold, excludeIds, topK)
     }
 
     /**
@@ -171,7 +174,7 @@ object EmbeddingService {
     ): List<Match> {
         if (!isModelAvailable()) return emptyList()
         val q = embedderImpl.embedBitmap(bitmap) ?: return emptyList()
-        return searchVector(q.vec, q.hist, threshold, excludeIds, topK)
+        return searchVector(q.vec, q.hist, q.pHashes.firstOrNull() ?: 0L, threshold, excludeIds, topK)
     }
 
     /**
@@ -240,13 +243,14 @@ object EmbeddingService {
         val emb = embedderImpl.embedBitmap(prepared)
         if (!prepared.isRecycled) prepared.recycle()
         if (emb == null) return@withContext null
-        val matches = searchVector(emb.vec, emb.hist, threshold, excludeIds, topK)
+        val matches = searchVector(emb.vec, emb.hist, emb.pHashes.firstOrNull() ?: 0L, threshold, excludeIds, topK)
         SimilarityResult(
             matches = matches,
             processedPath = processedPath,
             segmented = segmentedBm != null,
             hist = emb.hist,
             vec = emb.vec,
+            pHash = emb.pHashes.firstOrNull() ?: 0L,
         )
     }
 
@@ -254,13 +258,14 @@ object EmbeddingService {
     suspend fun searchVector(
         vec: FloatArray,
         hist: FloatArray,
+        pHash: Long,
         threshold: Float,
         excludeIds: Set<String> = emptySet(),
         topK: Int = 20,
     ): List<Match> {
         if (!isModelAvailable()) return emptyList()
         indexImpl.load()
-        return indexImpl.search(vec, hist, topK + excludeIds.size)
+        return indexImpl.search(vec, hist, pHash, topK + excludeIds.size)
             .asSequence()
             .filter { it.id !in excludeIds }
             .filter { it.score >= threshold }
@@ -287,7 +292,7 @@ object EmbeddingService {
         val out = HashMap<String, List<Match>>()
         for (id in ids) {
             val e = indexImpl.entry(id) ?: continue
-            val similar = indexImpl.search(e.vec, e.hist, topK = 8)
+            val similar = indexImpl.search(e.vec, e.hist, e.pHashes.firstOrNull() ?: 0L, topK = 8)
                 .filter { it.id != id && it.score >= threshold && it.id in ids }
                 .map { Match(it.id, it.score) }
             if (similar.isNotEmpty()) out[id] = similar

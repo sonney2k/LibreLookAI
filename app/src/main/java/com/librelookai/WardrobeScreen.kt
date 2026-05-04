@@ -2062,6 +2062,7 @@ private fun DuplicateCheckSheet(
                 querySegmented = check.segmented,
                 queryHist = check.hist,
                 queryVec = check.vec,
+                queryPHash = check.pHash,
                 showDebug = debugSimilarityPreview,
                 onShowInWardrobe = { image ->
                     previewIndex = null
@@ -2180,6 +2181,7 @@ private fun FindByPhotoResultsSheet(
                 querySegmented = findByPhoto.segmented,
                 queryHist = findByPhoto.hist,
                 queryVec = findByPhoto.vec,
+                queryPHash = findByPhoto.pHash,
                 showDebug = debugSimilarityPreview,
                 onShowInWardrobe = { image ->
                     previewIndex = null

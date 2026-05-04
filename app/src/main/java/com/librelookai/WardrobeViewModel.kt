@@ -46,6 +46,7 @@ data class FindByPhoto(
     val segmented: Boolean = false,
     val hist: FloatArray? = null,
     val vec: FloatArray? = null,
+    val pHash: Long? = null,
 )
 
 data class DriveImage(
@@ -82,6 +83,7 @@ data class DuplicateCheck(
     val segmented: Boolean = false,
     val hist: FloatArray? = null,
     val vec: FloatArray? = null,
+    val pHash: Long? = null,
 )
 
 data class WardrobeUiState(
@@ -1461,6 +1463,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     segmented = sim?.segmented ?: false,
                     hist = sim?.hist,
                     vec = sim?.vec,
+                    pHash = sim?.pHash,
                 ))
             }
         }
@@ -1537,6 +1540,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                             segmented = sim?.segmented ?: false,
                             hist = sim?.hist,
                             vec = sim?.vec,
+                            pHash = sim?.pHash,
                         ),
                     ) }
                     // Stash routing for confirmDuplicateImport to resume.

@@ -50,7 +50,7 @@ class EmbeddingRepository(private val context: Context) {
     }
 
     /** Result of embedding a bitmap: the L2-normalized CNN embedding and the L1-normalized HSV histogram. */
-    data class EmbedResult(val vec: FloatArray, val hist: FloatArray)
+    data class EmbedResult(val vec: FloatArray, val hist: FloatArray, val pHashes: LongArray)
 
     /**
      * Embed the image at [file]. The image is composited onto opaque white (collapsing any alpha
@@ -93,7 +93,10 @@ class EmbeddingRepository(private val context: Context) {
             // identical preprocessing (composite-on-white + center-crop).
             val rawHist = ColorHistogram.compute(prepared)
             val hist = ColorHistogram.smoothH(rawHist, sigma = 1f)
-            EmbedResult(vec, hist)
+            // Rotation-aware perceptual hashes (every 15° → 24 longs). Used as a third channel
+            // in similarity scoring so a tilted/upside-down photo still matches its upright twin.
+            val pHashes = PHash.computeRotations(prepared)
+            EmbedResult(vec, hist, pHashes)
         } catch (t: Throwable) {
             Log.w(TAG, "embed failed", t)
             null

@@ -40,7 +40,7 @@ class EmbeddingIndex(private val context: Context) {
     @Volatile private var loaded = false
     @Volatile private var dim: Int = 0
 
-    data class Entry(val vec: FloatArray, val hist: FloatArray)
+    data class Entry(val vec: FloatArray, val hist: FloatArray, val pHashes: LongArray)
     data class Match(val id: String, val score: Float)
 
     val size: Int get() = entries.size
@@ -65,9 +65,14 @@ class EmbeddingIndex(private val context: Context) {
                     }
                     val fileDim = input.readUnsignedShort()
                     val fileHistDim = input.readUnsignedShort()
+                    val filePHashCount = input.readUnsignedShort()
                     val count = input.readInt()
                     if (fileHistDim != HIST_DIM) {
                         Log.w(TAG, "Index histDim $fileHistDim != $HIST_DIM — ignoring")
+                        return@use
+                    }
+                    if (filePHashCount != PHASH_COUNT) {
+                        Log.w(TAG, "Index pHashCount $filePHashCount != $PHASH_COUNT — ignoring")
                         return@use
                     }
                     dim = fileDim
@@ -80,7 +85,9 @@ class EmbeddingIndex(private val context: Context) {
                         for (i in 0 until fileDim) vec[i] = input.readFloat()
                         val hist = FloatArray(fileHistDim)
                         for (i in 0 until fileHistDim) hist[i] = input.readFloat()
-                        entries[String(idBytes, Charsets.UTF_8)] = Entry(vec, hist)
+                        val pHashes = LongArray(filePHashCount)
+                        for (i in 0 until filePHashCount) pHashes[i] = input.readLong()
+                        entries[String(idBytes, Charsets.UTF_8)] = Entry(vec, hist, pHashes)
                     }
                 }
             }.onFailure {
@@ -90,7 +97,7 @@ class EmbeddingIndex(private val context: Context) {
         }
     }
 
-    suspend fun upsert(id: String, vec: FloatArray, hist: FloatArray) {
+    suspend fun upsert(id: String, vec: FloatArray, hist: FloatArray, pHashes: LongArray) {
         mutex.withLock {
             if (dim == 0) dim = vec.size
             if (vec.size != dim) {
@@ -101,7 +108,11 @@ class EmbeddingIndex(private val context: Context) {
                 Log.w(TAG, "upsert: histDim mismatch ${hist.size} vs $HIST_DIM — skipping $id")
                 return
             }
-            entries[id] = Entry(vec, hist)
+            if (pHashes.size != PHASH_COUNT) {
+                Log.w(TAG, "upsert: pHashCount mismatch ${pHashes.size} vs $PHASH_COUNT — skipping $id")
+                return
+            }
+            entries[id] = Entry(vec, hist, pHashes)
         }
     }
 
@@ -124,7 +135,7 @@ class EmbeddingIndex(private val context: Context) {
 
     /** Defensive copy of the entry stored for [id], or null if not indexed. */
     suspend fun entry(id: String): Entry? = mutex.withLock {
-        entries[id]?.let { Entry(it.vec.copyOf(), it.hist.copyOf()) }
+        entries[id]?.let { Entry(it.vec.copyOf(), it.hist.copyOf(), it.pHashes.copyOf()) }
     }
 
     suspend fun save() = withContext(Dispatchers.IO) {
@@ -137,6 +148,7 @@ class EmbeddingIndex(private val context: Context) {
                     out.writeShort(VERSION)
                     out.writeShort(dim)
                     out.writeShort(HIST_DIM)
+                    out.writeShort(PHASH_COUNT)
                     out.writeInt(entries.size)
                     for ((id, e) in entries) {
                         val idBytes = id.toByteArray(Charsets.UTF_8)
@@ -144,6 +156,7 @@ class EmbeddingIndex(private val context: Context) {
                         out.write(idBytes)
                         for (f in e.vec) out.writeFloat(f)
                         for (f in e.hist) out.writeFloat(f)
+                        for (h in e.pHashes) out.writeLong(h)
                     }
                 }
                 if (!tmp.renameTo(file)) {
@@ -161,7 +174,7 @@ class EmbeddingIndex(private val context: Context) {
      * Returns the top [topK] matches for the [queryVec] / [queryHist] pair, ordered by descending
      * combined score. When the index is empty or vector dimensions mismatch, returns an empty list.
      */
-    suspend fun search(queryVec: FloatArray, queryHist: FloatArray, topK: Int): List<Match> {
+    suspend fun search(queryVec: FloatArray, queryHist: FloatArray, queryPHash: Long, topK: Int): List<Match> {
         return mutex.withLock {
             if (entries.isEmpty() || queryVec.size != dim || queryHist.size != HIST_DIM) {
                 return@withLock emptyList()
@@ -170,10 +183,14 @@ class EmbeddingIndex(private val context: Context) {
             for ((id, e) in entries) {
                 val embScore = dot(queryVec, e.vec)
                 val histScore = ColorHistogram.cosine(queryHist, e.hist)
-                // Use a multiplicative scoring model: Final Score = Embedding * Hist^2.
-                // This requires both shape and color to be strong; a poor color match (low histScore)
-                // will heavily penalize the overall score due to the square.
-                val finalScore = embScore * (histScore * histScore)
+                // pHashSim ∈ [0,1]: best match across the gallery entry's 24 rotated hashes.
+                // Folded in as a gentle multiplicative damper so identical-shape items at any
+                // orientation rank above near-matches that only agree on embedding + color.
+                val pHashSim = PHash.bestSimilarity(queryPHash, e.pHashes)
+                // Multiplicative scoring: embedding · hist² · (0.5 + 0.5·pHashSim).
+                // Both shape (CNN) and color must be strong; rotation-invariant pHash nudges by
+                // up to ±50% so it disambiguates ties without overpowering the primary channels.
+                val finalScore = embScore * (histScore * histScore) * (0.5f + 0.5f * pHashSim)
                 scored.add(Match(id, finalScore))
             }
             scored.sortByDescending { it.score }
@@ -193,12 +210,12 @@ class EmbeddingIndex(private val context: Context) {
         private const val TAG = "EmbeddingIndex"
         private const val INDEX_FILE = "wardrobe_embeddings.bin"
         private const val MAGIC = 0x4C4C4145 // 'LLAE'
-        // Version 6: histograms recomputed under a fixed `ColorHistogram.compute` that skips the
-        // black backdrop `prepareForEmbedding` paints in (v5 only filtered near-white, so every
-        // entry's histogram was dominated by the (h=0,s=0,v=0) bin and unrelated garments scored
-        // >0.9). Earlier versions are discarded on load and rebuilt on next sync (`syncIndex`
-        // re-embeds every cached cutout — fast for ~100 items).
-        private const val VERSION = 6
+        // Version 7: each entry now also stores 24 rotated pHashes (every 15°) consumed by
+        // `search` as a third similarity channel. v6 indices lack that block and are discarded
+        // on load — `syncIndex` re-embeds every cached cutout on next sync (fast for ~100 items).
+        private const val VERSION = 7
+        /** Number of rotated pHashes per entry (must match `PHash.computeRotations` step of 15°). */
+        private const val PHASH_COUNT = 24
 
         // Deprecated: previous weighted sum model replaced by multiplicative model.
         // const val EMBED_WEIGHT = 0.65f

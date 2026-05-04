@@ -32,6 +32,9 @@ data class ShoppingHelperUiState(
     /** L2-normalized embedding for the query, kept so the debug view can recompute
      *  per-match embedding-cosine vs histogram-cosine. */
     val queryVec: FloatArray? = null,
+    /** Canonical (0°) pHash of the query, compared against each match's 24 rotated hashes
+     *  in the debug breakdown. Null means "not computed yet". */
+    val queryPHash: Long? = null,
     /** True when on-device segmentation isolated a foreground object for the current query;
      *  false when it failed (or hadn't run yet) and we fell back to embedding the raw frame. */
     val querySegmented: Boolean = false,
@@ -89,6 +92,7 @@ class ShoppingHelperViewModel(app: Application) : AndroidViewModel(app) {
                 queryProcessedPath = null,
                 queryHist = null,
                 queryVec = null,
+                queryPHash = null,
                 querySegmented = false,
                 matches = emptyList(),
                 error = null,
@@ -156,6 +160,7 @@ class ShoppingHelperViewModel(app: Application) : AndroidViewModel(app) {
                     queryProcessedPath = null,
                     queryHist = null,
                     queryVec = null,
+                    queryPHash = null,
                     querySegmented = false,
                     matches = emptyList(),
                     error = null,
@@ -194,6 +199,7 @@ class ShoppingHelperViewModel(app: Application) : AndroidViewModel(app) {
                     queryProcessedPath = sim.processedPath,
                     queryHist = sim.hist,
                     queryVec = sim.vec,
+                    queryPHash = sim.pHash,
                     querySegmented = sim.segmented,
                     indexedCount = EmbeddingService.indexSize,
                 )
