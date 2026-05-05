@@ -14,7 +14,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,6 +37,8 @@ import androidx.compose.material.icons.filled.Checkroom
 import androidx.compose.material.icons.filled.FlightTakeoff
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.DoorSliding
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material.icons.filled.Style
@@ -67,12 +73,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -632,9 +640,37 @@ fun LocationButton(
         LocationViewModel.ALL_LOCATIONS_ID -> allLocationsLabel
         else -> locations.find { it.folderId == activeLocationId }?.name ?: allLocationsLabel
     }
+    val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
+    val shape = RoundedCornerShape(20.dp)
     Box(modifier = modifier) {
-        IconButton(onClick = { expanded = true }) {
-            Icon(Icons.Default.DoorSliding, contentDescription = activeName, modifier = Modifier.size(22.dp))
+        Row(
+            modifier = Modifier
+                .clip(shape)
+                .background(palette.chipBg)
+                .border(BorderStroke(1.dp, palette.border), shape)
+                .clickable { expanded = true }
+                .padding(horizontal = 10.dp, vertical = 6.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                Icons.Default.Place,
+                contentDescription = null,
+                tint = palette.chipFg,
+                modifier = Modifier.size(14.dp),
+            )
+            Text(
+                activeName,
+                color = palette.chipFg,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium,
+            )
+            Icon(
+                Icons.Default.KeyboardArrowDown,
+                contentDescription = null,
+                tint = palette.chipFg,
+                modifier = Modifier.size(14.dp),
+            )
         }
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             // "All" option first

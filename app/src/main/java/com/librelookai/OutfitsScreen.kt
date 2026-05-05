@@ -449,13 +449,6 @@ private fun OutfitListScreen(
                         activeLocationId = activeLocationId,
                         onSetActiveLocation = onSetActiveLocation ?: {},
                     )
-                    if (!onTryOnsTab && !isSelectionMode) {
-                        FiltersPill(
-                            appliedCount = appliedFilterCount,
-                            enabled = tagCategories.isNotEmpty(),
-                            onClick = { filterSheetOpen = true },
-                        )
-                    }
                     if (!onTryOnsTab && styles.isNotEmpty() && !isSelectionMode) {
                         StyleSortButton(
                             sortBy = sortBy,
@@ -536,9 +529,12 @@ private fun OutfitListScreen(
             // ---- Quick category chip row ----
             if (!onTryOnsTab && styles.isNotEmpty()) {
                 QuickCategoryRow(
-                    images = outfitItemImages,
-                    selectedTags = selectedTags,
-                    onSelectCategory = { key -> selectedTags = toggleQuickCategory(selectedTags, key) },
+                    totalCount = styles.size,
+                    filteredCount = filteredStyles.size,
+                    appliedFilterCount = appliedFilterCount,
+                    filtersEnabled = tagCategories.isNotEmpty(),
+                    onClearFilters = { selectedTags = emptyMap() },
+                    onOpenFilters = { filterSheetOpen = true },
                 )
             }
 

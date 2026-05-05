@@ -1,5 +1,7 @@
 package com.librelookai
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -7,28 +9,41 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterAlt
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -38,7 +53,7 @@ import androidx.compose.ui.unit.sp
  * Shared filter UI used by Wardrobe, Outfits and Shopping screens:
  *  - [FiltersPill]:        compact header pill that opens the filter sheet
  *  - [QuickCategoryRow]:   horizontal clothing-category chips with live counts
- *  - [WardrobeFilterSheet]: bottom-sheet hosting the full [TagFilterBar]
+ *  - [WardrobeFilterSheet]: bottom-sheet with collapsible sections (per design)
  */
 
 @Composable
@@ -99,35 +114,23 @@ internal fun FiltersPill(
     }
 }
 
+/**
+ * Second-row chip strip: an "All" pill (clears filters, shows total count) plus
+ * a Filters pill (opens the filter sheet, shows count of items matching the
+ * active filter).
+ */
 @Composable
 internal fun QuickCategoryRow(
-    images: List<DriveImage>,
-    selectedTags: Map<String, Set<String>>,
-    onSelectCategory: (String?) -> Unit,
+    totalCount: Int,
+    filteredCount: Int,
+    appliedFilterCount: Int,
+    filtersEnabled: Boolean,
+    onClearFilters: () -> Unit,
+    onOpenFilters: () -> Unit,
 ) {
     val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
-    data class Cat(val key: String?, val labelRes: Int)
-    val cats = listOf(
-        Cat(null, R.string.filter_all_locations),
-        Cat("tops", R.string.tag_val_tops),
-        Cat("bottoms", R.string.tag_val_bottoms),
-        Cat("outerwear", R.string.tag_val_outerwear),
-        Cat("footwear", R.string.tag_val_footwear),
-        Cat("accessories", R.string.tag_val_accessories),
-        Cat("dress", R.string.tag_val_dress),
-        Cat("suit", R.string.tag_val_suit),
-    )
-    val counts = remember(images) {
-        val m = HashMap<String, Int>()
-        for (it in images) {
-            val c = it.tags?.category?.lowercase().orEmpty()
-            if (c.isNotEmpty()) m[c] = (m[c] ?: 0) + 1
-        }
-        m
-    }
-    val activeCatSet = selectedTags["Category"].orEmpty()
-    val allActive = activeCatSet.isEmpty()
-    LazyRow(
+    val hasFilter = appliedFilterCount > 0
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .background(palette.surface)
@@ -135,34 +138,67 @@ internal fun QuickCategoryRow(
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        val visibleCats = cats.filter { c ->
-            c.key == null || (counts[c.key] ?: 0) > 0 || c.key in activeCatSet
+        // ── "All" pill ──
+        val allActive = !hasFilter
+        val allShape = RoundedCornerShape(18.dp)
+        val allBg = if (allActive) palette.primary else palette.chipBg
+        val allFg = if (allActive) palette.fabFg else palette.chipFg
+        val allBorder = if (allActive) palette.primary else palette.border
+        Row(
+            modifier = Modifier
+                .clip(allShape)
+                .background(allBg)
+                .border(BorderStroke(if (allActive) 1.5.dp else 1.dp, allBorder), allShape)
+                .clickable(enabled = hasFilter, onClick = onClearFilters)
+                .padding(horizontal = 11.dp, vertical = 5.dp),
+            horizontalArrangement = Arrangement.spacedBy(5.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                stringResource(R.string.filter_all_locations),
+                color = allFg,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                totalCount.toString(),
+                color = allFg,
+                fontSize = 10.sp,
+                fontWeight = FontWeight.Bold,
+            )
         }
-        items(visibleCats) { c ->
-            val active = if (c.key == null) allActive else c.key in activeCatSet
-            val n = if (c.key == null) images.size else (counts[c.key] ?: 0)
+
+        // ── Filters pill (right of All) ──
+        if (filtersEnabled) {
+            val active = hasFilter
             val shape = RoundedCornerShape(18.dp)
-            val bg = if (active) palette.primary else palette.chipBg
-            val fg = if (active) palette.fabFg else palette.chipFg
+            val bg = if (active) palette.primaryDim else palette.chipBg
+            val fg = if (active) palette.primary else palette.chipFg
             val borderColor = if (active) palette.primary else palette.border
             Row(
                 modifier = Modifier
                     .clip(shape)
                     .background(bg)
                     .border(BorderStroke(if (active) 1.5.dp else 1.dp, borderColor), shape)
-                    .clickable { onSelectCategory(c.key) }
+                    .clickable(onClick = onOpenFilters)
                     .padding(horizontal = 11.dp, vertical = 5.dp),
                 horizontalArrangement = Arrangement.spacedBy(5.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
+                Icon(
+                    Icons.Default.FilterAlt,
+                    contentDescription = null,
+                    tint = fg,
+                    modifier = Modifier.size(13.dp),
+                )
                 Text(
-                    stringResource(c.labelRes),
+                    stringResource(R.string.wardrobe_filters),
                     color = fg,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.SemiBold,
                 )
                 Text(
-                    n.toString(),
+                    filteredCount.toString(),
                     color = fg,
                     fontSize = 10.sp,
                     fontWeight = FontWeight.Bold,
@@ -172,20 +208,7 @@ internal fun QuickCategoryRow(
     }
 }
 
-/** Helper: toggle the "Category" entry in [selectedTags] when a quick-category chip is tapped. */
-internal fun toggleQuickCategory(
-    selectedTags: Map<String, Set<String>>,
-    key: String?,
-): Map<String, Set<String>> {
-    val cur = selectedTags["Category"].orEmpty()
-    return when {
-        key == null -> selectedTags - "Category"
-        cur.size == 1 && key in cur -> selectedTags - "Category"
-        else -> selectedTags + ("Category" to setOf(key))
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 internal fun WardrobeFilterSheet(
     tagCategories: List<TagCategory>,
@@ -195,37 +218,176 @@ internal fun WardrobeFilterSheet(
     onDismiss: () -> Unit,
 ) {
     if (tagCategories.isEmpty()) return
+    val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
+
+    // Pending state: edits stay local until Apply commits them.
+    val pending = remember(selectedTags) {
+        mutableStateMapOf<String, Set<String>>().apply {
+            selectedTags.forEach { (k, v) -> put(k, v.toSet()) }
+        }
+    }
+    val pendingCount = pending.values.sumOf { it.size }
+    var openSection by remember { mutableStateOf<String?>(tagCategories.firstOrNull()?.label) }
+
+    fun toggle(category: String, value: String) {
+        val cur = pending[category] ?: emptySet()
+        pending[category] = if (value in cur) cur - value else cur + value
+    }
+
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+        containerColor = palette.sheetBg,
     ) {
-        Column(Modifier.padding(horizontal = 8.dp, vertical = 8.dp)) {
+        // ── Sticky header ──
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 20.dp, end = 12.dp, top = 4.dp, bottom = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
             Text(
                 stringResource(R.string.wardrobe_filters),
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(start = 8.dp, bottom = 4.dp),
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = palette.text,
+                modifier = Modifier.weight(1f),
             )
-            TagFilterBar(
-                tagCategories = tagCategories,
-                selectedTags = selectedTags,
-                onTagsChanged = onTagsChanged,
-            )
-            Row(
+            Text(
+                stringResource(R.string.wardrobe_filters_reset),
+                fontSize = 13.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = palette.textMuted,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp, bottom = 16.dp, start = 8.dp, end = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically,
+                    .clip(RoundedCornerShape(20.dp))
+                    .clickable { pending.clear() }
+                    .padding(horizontal = 10.dp, vertical = 8.dp),
+            )
+            Spacer(Modifier.size(4.dp))
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(palette.fabBg)
+                    .clickable {
+                        onTagsChanged(
+                            pending
+                                .mapValues { it.value.toSet() }
+                                .filterValues { it.isNotEmpty() },
+                        )
+                        onDismiss()
+                    }
+                    .padding(horizontal = 18.dp, vertical = 8.dp),
             ) {
-                TextButton(
-                    onClick = { onTagsChanged(emptyMap()) },
-                    modifier = Modifier.weight(1f),
-                ) { Text(stringResource(R.string.wardrobe_filters_reset)) }
-                Button(
-                    onClick = onDismiss,
-                    modifier = Modifier.weight(1f),
-                ) { Text(stringResource(R.string.wardrobe_filters_apply, appliedCount)) }
+                Text(
+                    stringResource(R.string.wardrobe_filters_apply, pendingCount),
+                    color = palette.fabFg,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Bold,
+                )
             }
+        }
+        HorizontalDivider(color = palette.divider)
+
+        // ── Scrollable list of collapsible sections ──
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(max = 560.dp)
+                .verticalScroll(rememberScrollState()),
+        ) {
+            tagCategories.forEach { category ->
+                val isOpen = openSection == category.label
+                val activeInCat = (pending[category.label]?.size ?: 0)
+                Column(modifier = Modifier.animateContentSize()) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                openSection = if (isOpen) null else category.label
+                            }
+                            .padding(horizontal = 20.dp, vertical = 13.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Row(
+                            modifier = Modifier.weight(1f),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            Text(
+                                tagCategoryDisplayLabel(category.label),
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = palette.text,
+                            )
+                            if (activeInCat > 0) {
+                                Box(
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(10.dp))
+                                        .background(palette.primary)
+                                        .padding(horizontal = 7.dp, vertical = 1.dp),
+                                ) {
+                                    Text(
+                                        activeInCat.toString(),
+                                        color = palette.onPrimary,
+                                        fontSize = 10.sp,
+                                        fontWeight = FontWeight.Bold,
+                                    )
+                                }
+                            }
+                        }
+                        val rotation by animateFloatAsState(
+                            targetValue = if (isOpen) 180f else 0f,
+                            label = "chevron",
+                        )
+                        Icon(
+                            Icons.Default.KeyboardArrowDown,
+                            contentDescription = null,
+                            tint = palette.textMuted,
+                            modifier = Modifier
+                                .size(20.dp)
+                                .rotate(rotation),
+                        )
+                    }
+                    if (isOpen) {
+                        FlowRow(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 16.dp, end = 16.dp, bottom = 14.dp),
+                            horizontalArrangement = Arrangement.spacedBy(7.dp),
+                            verticalArrangement = Arrangement.spacedBy(7.dp),
+                        ) {
+                            val selectedSet = pending[category.label] ?: emptySet()
+                            category.tags.forEach { tag ->
+                                val active = tag in selectedSet
+                                val shape = RoundedCornerShape(20.dp)
+                                Box(
+                                    modifier = Modifier
+                                        .clip(shape)
+                                        .background(if (active) palette.primary else palette.chipBg)
+                                        .then(
+                                            if (active) Modifier
+                                            else Modifier.border(
+                                                BorderStroke(1.dp, palette.border),
+                                                shape,
+                                            ),
+                                        )
+                                        .clickable { toggle(category.label, tag) }
+                                        .padding(horizontal = 13.dp, vertical = 6.dp),
+                                ) {
+                                    Text(
+                                        tag.localizedTagValue(),
+                                        color = if (active) palette.fabFg else palette.chipFg,
+                                        fontSize = 13.sp,
+                                        fontWeight = FontWeight.SemiBold,
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+                HorizontalDivider(color = palette.divider)
+            }
+            Spacer(Modifier.height(16.dp))
         }
     }
 }

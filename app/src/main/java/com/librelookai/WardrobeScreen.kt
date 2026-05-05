@@ -728,14 +728,6 @@ private fun GridContent(
                         activeLocationId = activeLocationId,
                         onSetActiveLocation = onSetActiveLocation,
                     )
-                    FiltersPill(
-                        appliedCount = appliedFilterCount,
-                        enabled = tagCategories.isNotEmpty(),
-                        onClick = {
-                            Analytics.action("Wardrobe", "open_filter_sheet", mapOf("active" to appliedFilterCount.toString()))
-                            filterSheetOpen = true
-                        },
-                    )
                     IconButton(onClick = {
                         Analytics.action("Wardrobe", "open_find_by_photo")
                         onOpenFindByPhoto()
@@ -758,9 +750,15 @@ private fun GridContent(
             )
             // ---- Quick category chip row ----
             QuickCategoryRow(
-                images = state.images,
-                selectedTags = selectedTags,
-                onSelectCategory = { key -> selectedTags = toggleQuickCategory(selectedTags, key) },
+                totalCount = state.images.size,
+                filteredCount = filteredImages.size,
+                appliedFilterCount = appliedFilterCount,
+                filtersEnabled = tagCategories.isNotEmpty(),
+                onClearFilters = { selectedTags = emptyMap() },
+                onOpenFilters = {
+                    Analytics.action("Wardrobe", "open_filter_sheet", mapOf("active" to appliedFilterCount.toString()))
+                    filterSheetOpen = true
+                },
             )
 
             // ---- Selection bar (shown when at least one item is selected) ----
