@@ -364,8 +364,14 @@ private fun OutfitListScreen(
 
     var selectedTags by remember { mutableStateOf(emptyMap<String, Set<String>>()) }
     var sortBy by remember { mutableStateOf(OutfitSortOption.DATE_DESC) }
+    var filterSheetOpen by remember { mutableStateOf(false) }
+    val appliedFilterCount = selectedTags.values.sumOf { it.size }
 
     val tagCategories = remember(styles, itemsById) { styles.outfitTagCategories(itemsById) }
+    // Flattened wardrobe items referenced by any outfit — drives QuickCategoryRow counts.
+    val outfitItemImages = remember(styles, itemsById) {
+        styles.flatMap { it.itemIds.mapNotNull { id -> itemsById[id] } }
+    }
 
     // A style is shown only when ALL its items are loaded for the current location filter.
     // imagesByName already reflects the active location so this check enforces the filter naturally.
@@ -443,6 +449,13 @@ private fun OutfitListScreen(
                         activeLocationId = activeLocationId,
                         onSetActiveLocation = onSetActiveLocation ?: {},
                     )
+                    if (!onTryOnsTab && !isSelectionMode) {
+                        FiltersPill(
+                            appliedCount = appliedFilterCount,
+                            enabled = tagCategories.isNotEmpty(),
+                            onClick = { filterSheetOpen = true },
+                        )
+                    }
                     if (!onTryOnsTab && styles.isNotEmpty() && !isSelectionMode) {
                         StyleSortButton(
                             sortBy = sortBy,
@@ -520,12 +533,14 @@ private fun OutfitListScreen(
                 HorizontalDivider()
             }
 
-            // ---- Tag filter chips ----
-            TagFilterBar(
-                tagCategories = tagCategories,
-                selectedTags = selectedTags,
-                onTagsChanged = { selectedTags = it },
-            )
+            // ---- Quick category chip row ----
+            if (!onTryOnsTab && styles.isNotEmpty()) {
+                QuickCategoryRow(
+                    images = outfitItemImages,
+                    selectedTags = selectedTags,
+                    onSelectCategory = { key -> selectedTags = toggleQuickCategory(selectedTags, key) },
+                )
+            }
 
             when {
                 isLoading -> Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -646,6 +661,16 @@ private fun OutfitListScreen(
             ) {
                 Icon(Icons.Default.Add, contentDescription = stringResource(R.string.wardrobe_create_style))
             }
+        }
+
+        if (filterSheetOpen) {
+            WardrobeFilterSheet(
+                tagCategories = tagCategories,
+                selectedTags = selectedTags,
+                appliedCount = displayedStyles.size,
+                onTagsChanged = { selectedTags = it },
+                onDismiss = { filterSheetOpen = false },
+            )
         }
 
         // AI progress overlay — covers the whole screen while Gemini is working

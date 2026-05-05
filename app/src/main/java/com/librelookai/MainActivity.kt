@@ -86,7 +86,7 @@ class MainActivity : ComponentActivity() {
         Analytics.init(applicationContext)
         EmbeddingService.init(this)
         setContent {
-            LibreLookAITheme {
+            LibreLookAITheme(paletteId = ProfileViewModel.cachedTheme(this)) {
                 val authViewModel: AuthViewModel = viewModel()
                 val isSignedIn by authViewModel.isSignedIn.collectAsState()
                 val authError by authViewModel.signInErrorCode.collectAsState()

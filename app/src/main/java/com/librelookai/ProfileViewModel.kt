@@ -48,7 +48,10 @@ class ProfileViewModel(app: Application) : AndroidViewModel(app) {
 
     private val _state = MutableStateFlow(
         ProfileUiState(
-            preferences = UserPreferences(language = cachedLanguage())
+            preferences = UserPreferences(
+                language = cachedLanguage(),
+                wardrobeTheme = cachedTheme(),
+            )
         )
     )
     val state: StateFlow<ProfileUiState> = _state.asStateFlow()
@@ -71,9 +74,21 @@ class ProfileViewModel(app: Application) : AndroidViewModel(app) {
         langPrefs.edit().putString(KEY_LANGUAGE, language).apply()
     }
 
+    private fun cachedTheme(): String = cachedTheme(getApplication())
+
+    private fun cacheTheme(theme: String) {
+        langPrefs.edit().putString(KEY_THEME, theme).apply()
+    }
+
     companion object {
         private const val LANG_PREFS = "librelookai_lang"
         private const val KEY_LANGUAGE = "language"
+        private const val KEY_THEME = "wardrobe_theme"
+
+        /** Last-saved theme id, available before any user data is loaded from Drive. */
+        fun cachedTheme(context: Context): String =
+            context.getSharedPreferences(LANG_PREFS, Context.MODE_PRIVATE)
+                .getString(KEY_THEME, null) ?: UserPreferences().wardrobeTheme
     }
 
     fun loadPreferences() {
@@ -86,6 +101,7 @@ class ProfileViewModel(app: Application) : AndroidViewModel(app) {
                 else UserPreferences(language = cachedLanguage())
             }.onSuccess { prefs ->
                 cacheLanguage(prefs.language)
+                cacheTheme(prefs.wardrobeTheme)
                 _state.update { it.copy(preferences = prefs, isLoading = false) }
                 refreshTryOnCache(prefs)
             }.onFailure { e ->
@@ -110,6 +126,7 @@ class ProfileViewModel(app: Application) : AndroidViewModel(app) {
                 merged
             }.onSuccess { merged ->
                 cacheLanguage(merged.language)
+                cacheTheme(merged.wardrobeTheme)
                 _state.update { it.copy(preferences = merged, isSaving = false, savedSuccessfully = true) }
             }.onFailure { e ->
                 _state.update { it.copy(isSaving = false, error = e.message) }

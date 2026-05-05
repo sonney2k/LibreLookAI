@@ -14,55 +14,46 @@ TODO
 
 Features:
 ---------
-
-create human readable release notes between now and v1.4.0 and release version 1.5.0 and upload to testers in firebase
-
-
-new feature
-
-Implement new feature: We are working on the refinancing/monetization aspect of the app: I want people to be able to buy coins that I then use to pay gemini cloud costs. would that work with RevenueCat (handles the money/receipts) + Firebase (database and secure Gemini API routing)? In addition, I still want to support the bring your own key option though.
-
-move costs statistics over to insights as another tab Costs. In addition to actual token use / cost add also counts and graphs of counts for how many items were imported etc
-
 update design
 
 size filter? default sizes in wardrobe? size tag?
 
+create human readable release notes between now and v1.4.0 and release version 1.5.0 and upload to testers in firebase
+
+Implement new feature: We are working on the refinancing/monetization aspect of the app: I want people to be able to buy coins that I then use to pay gemini cloud costs. would that work with RevenueCat (handles the money/receipts) + Firebase (database and secure Gemini API routing)? In addition, I still want to support the bring your own key option though.
+
+
 Bugs:
 -----
 
-On wardrobe screen when viewing an item: I noticed that on screens with a large font size there is a large transparent rectangle that is hiding most of the item.    
+Fix those bugs
+1. similarity search buttons when displaying full matching image, button at bottom is does not fit on screen it is only half visible (happens in both shopping -> similarity search and in wardrobe when adding item by picture)
+2. when refining cutout the buttons Skip (use Gemini) and Use this cutout are only partially visible at the bottom of the screen. Ensure they are fully visibile.
+3. fix crash when importing item from camera. Crash happend when image was rotated.
+
+The url based import does not work (pasted link from Amazon) Can we open a web browser with that page and have the user select the image to be used or some other means of preview?
 
 Fix closet usability:
 1. when starting the app set closet filter to all
 2. when creating outfits allow selecting closets
 
-Unify outfit generation:
-- re-use the wardrobe screen create outfit also for the '+' button on Outfits for ???
-- when AI is used to generate an outfit use the AI spinning wheel
-
-The url based import does not work (pasted link from Amazon) Can we open a web browser with that page and have the user select the image to be used?
 
 security/function relevant parts of a prompts should not be appear in settings. e.g. "Place the clothing item on a pure, solid neon green background (Hex #00FF00).
 
-ensure that in all processes, images are smaller than max(width,height)<1024. In particular before uploading anything to Gemini. Ensure also that images are
-cropped to minimize number of pixels that need to be sent to gemini to reduce token usage. Also ensure that output of gemini cut outs is smaller than max(width,height)<1024
 
 fix usability issue on wardrobe screen: moving item to different closet and then switching to that closet - it won't immediately appear on wardrobe after moving to different closet. it took almost a minute to appear. Can this be sped up?
 
-1. similarity search buttons when displaying full matching image, button at bottom is does not fit on screen it is only half visible (happens in both shopping -> similarity search and in wardrobe when adding item by picture)
-2. when refining cutout the buttons Skip (use Gemini) and Use this cutout are only partially visible at the bottom of the screen. Ensure they are fully visibile.
-3. always show crosshair in camera
 
-
-on shopping page when viewing an item show detect tags, remove background and edit tags like when viewing an item on wardrobe
-
+similarity search not localized: "Possible duplicate" "We found X item(s) in your wardrobe that look very similar to this photo.", "Similarity", Buttons: "Cancel" "Import Anyway"
 
 
 IN PROGRESS
 ===========
+
+
+Similarity search on shopping screen, similarity search when importing and similarity search when finding an item on wardrobe seem to not work in the exact same way. The one on the shopping screen seems to work while the others don't.
+
 Fix those issues in wardrobe view:
-1. similarity search not localized: "Possible duplicate" "We found X item(s) in your wardrobe that look very similar to this photo.", "Similarity", Buttons: "Cancel" "Import Anyway"
 2. in shopping view similarity search is also not localized and looking at match full screen buttons at the bottom are outside of the screen
 3. when adding item to wardrobe and duplicate is found "Possible duplicate" it is not localized
 4. clicking on a similar item "Similarity" & "Show in wardrobe" are not localized and button is too far at bottom of the screen (partially outside the screen)
@@ -79,7 +70,6 @@ Fix the following bugs in Outfits view:
 
 offline check is not reliable offline/online status - listen to android. if previously online but it now goes offline also go offline in the app and ensure that the red offline bar is shown. also in wardrobe some the buttons for importing from gallery or picture do still exist.
 
-firebase app analytics to understand what features are being used (zoomed in which buttons are pressed, things tapped in which order)
 
 when importing images/photo/url add option to do background removal via cheap local tflite model. let the model mark the background display the starting point as cross hair that the user can change
 
@@ -91,10 +81,7 @@ add way to send feedback via firebase under settings -> feedback
 4. find via photo in wardrobe -> result screen should not show button add to shopping list (only for shopping -> similarity search)
 shopping "wardrobe" is slow to load and does not have the same functionality as wardrobe, make shopping "wardrobe" have the same features as wardrobe and make it use the same function
 
-add threshold for tuning bg removal algorithm under settings -> AI tab
-
 add a feedback tab under settings move debug setting under this tab
-
 
 on repair & sync make preview all images that will be imported in a grid similar to how they are show in wardrobe view with them all selected. only the selected ones will be modified. support manual (un)selection with the common features of (un)select all, showing counts..
 
@@ -106,6 +93,28 @@ how can we unify tags? I see tags like "Long-sleeve T-shirt", "Long-sleeved t-sh
 
 FIXED
 =====
+on shopping page when viewing an item show detect tags, remove background and edit tags like when viewing an item on wardrobe
+
+except for camera always keep the app in portrait mode
+
+Whenever AI is used to generate or suggest an outfit or for try-on use the AI spinning wheel in case gemini reports back a progress use this to show progress 0..100%
+
+Fix camera functions:
+1. ensure that in all processes, images are smaller than max(width,height)<1280. In particular before uploading anything to Gemini. Ensure also that images are cropped to minimize number of pixels that need to be sent to gemini to reduce token usage. Also ensure that output of gemini cut outs is smaller than max(width,height)<1280
+2. always show crosshair in camera
+
+when importing an item, after bg removal with gemini not the entire item is visible. Parts are cut off. In particular t-shirts are not fully shown arms are cut. When shoes are bg-removed sometimes only one shoe remains but a pair is the expected behavior. In addition favor clean catalog images if items can be clearly identified.Modify the prompt
+
+Improve useability on wardrobe and shopping screen: When importing a new item from camera, gallery or URL, just show a single + button on wardrobe and shopping screen that opens the camera. Once the camera is open the + button modifies into an X button (for cancel) and the more buttons for import via gallery or URL are being displayed. This is to unify the interface to outfits and limit the amount of overlapping buttons with the grid of items. it also makes offline mode easier. It is now sufficient to just hide the + button.
+
+firebase app analytics to understand what features are being used (zoomed in which buttons are pressed, things tapped in which order)
+
+add threshold for tuning bg removal algorithm under settings -> AI tab
+
+On wardrobe screen when viewing an item: I noticed that on screens with a large font size there is a large transparent rectangle that is hiding most of the item.    
+
+move costs statistics over to insights as another tab Costs. In addition to actual token use / cost add also counts and graphs of counts for how many items were imported etc
+
 new feature: keep track of used gemini tokens. store those internally in app and sync to drive. display total token usage, daily token usage and weekly token usage under settings / credits. add additional separation by use (bg removal, tagging, try-on, ...). In addition to tokens also show actual costs in EUR based on gemini rates
 
 Fix those issues in wardrobe view:
