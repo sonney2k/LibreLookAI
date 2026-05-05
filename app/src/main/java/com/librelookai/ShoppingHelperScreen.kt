@@ -306,6 +306,8 @@ private fun ShoppingListTab(
     var selectedIndex by remember { mutableStateOf<Int?>(null) }
 
     var selectedTags by remember { mutableStateOf(emptyMap<String, Set<String>>()) }
+    var filterSheetOpen by remember { mutableStateOf(false) }
+    val appliedFilterCount = selectedTags.values.sumOf { it.size }
 
     val tagCategories = remember(state.items) { state.items.tagCategories() }
     val displayedItems = remember(state.items, selectedTags) {
@@ -327,27 +329,7 @@ private fun ShoppingListTab(
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
-            // Filter toolbar — only useful when we actually have items.
             if (state.items.isNotEmpty()) {
-                TagFilterBar(
-                    tagCategories = tagCategories,
-                    selectedTags = selectedTags,
-                    onTagsChanged = { selectedTags = it },
-                    modifier = Modifier.fillMaxWidth(),
-                )
-                if (!isSelectionMode) {
-                    val hasFilter = selectedTags.values.any { it.isNotEmpty() }
-                    Text(
-                        text = if (hasFilter) {
-                            stringResource(R.string.wardrobe_filtered_count, displayedItems.size, state.items.size)
-                        } else {
-                            stringResource(R.string.wardrobe_item_count, state.items.size)
-                        },
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 2.dp),
-                    )
-                }
                 if (isSelectionMode) {
                     Row(
                         modifier = Modifier
@@ -558,6 +540,16 @@ private fun ShoppingListTab(
                 writeMode = true,
             )
         }
+    }
+
+    if (filterSheetOpen) {
+        WardrobeFilterSheet(
+            tagCategories = tagCategories,
+            selectedTags = selectedTags,
+            appliedCount = displayedItems.size,
+            onTagsChanged = { selectedTags = it },
+            onDismiss = { filterSheetOpen = false },
+        )
     }
 
     if (showUrlDialog) {
