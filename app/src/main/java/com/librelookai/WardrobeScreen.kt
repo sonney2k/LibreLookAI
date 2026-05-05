@@ -1294,7 +1294,7 @@ internal fun FullScreenViewer(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black),
+            .background(MaterialTheme.colorScheme.background),
     ) {
         val haptic = LocalHapticFeedback.current
         HorizontalPager(
@@ -1318,7 +1318,7 @@ internal fun FullScreenViewer(
 
         Text(
             text = "${pagerState.currentPage + 1} / ${images.size}",
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.labelMedium,
             modifier = Modifier.align(Alignment.TopCenter).statusBarsPadding().padding(top = 12.dp),
         )
@@ -1355,7 +1355,7 @@ internal fun FullScreenViewer(
             onClick = onDismiss,
             modifier = Modifier.align(Alignment.TopStart).statusBarsPadding().padding(8.dp),
         ) {
-            Icon(Icons.Default.Close, contentDescription = "Close", tint = Color.White)
+            Icon(Icons.Default.Close, contentDescription = "Close", tint = MaterialTheme.colorScheme.onBackground)
         }
 
         // Rotate button — LAST child = highest Z-order. Explicit white/black colours so it is
