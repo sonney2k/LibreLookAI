@@ -88,6 +88,19 @@
     <string name="sign_in_error_generic">Anmeldung fehlgeschlagen (Code %1$d). Bitte versuchen Sie es erneut oder kontaktieren Sie den Support.</string>
 
     <string name="settings_tab_profile">Profil</string>
+    <string name="settings_tab_display">Anzeige</string>
+    <string name="settings_display_theme">Farbschema</string>
+    <string name="settings_display_theme_desc">Farbpalette auswählen. Gilt app-weit.</string>
+    <string name="theme_green_light">Grün (hell)</string>
+    <string name="theme_green_dark">Grün (dunkel)</string>
+    <string name="theme_sand_light">Sand (hell)</string>
+    <string name="theme_indigo_dark">Indigo (dunkel)</string>
+    <string name="theme_pastel_mint">Pastell Minze</string>
+    <string name="theme_pastel_blush">Pastell Blush</string>
+    <string name="theme_pastel_lavender">Pastell Lavendel</string>
+    <string name="wardrobe_filters">Filter</string>
+    <string name="wardrobe_filters_apply">Anwenden (%1$d)</string>
+    <string name="wardrobe_filters_reset">Zurücksetzen</string>
     <string name="settings_tab_data">Daten</string>
     <string name="settings_tab_credits">Credits</string>
     <string name="settings_language">Sprache</string>

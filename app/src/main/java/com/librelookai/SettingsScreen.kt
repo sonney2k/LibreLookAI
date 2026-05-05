@@ -2,6 +2,8 @@ package com.librelookai
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.material3.RadioButton
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -156,23 +158,26 @@ fun SettingsScreen(
         )
         LaunchedEffect(selectedTab) {
             val n = when (selectedTab) {
-                0 -> "Settings/Profile"; 1 -> "Settings/Data"; 2 -> "Settings/Credits"
-                3 -> "Settings/AI"; 4 -> "Settings/Feedback"; 5 -> "Settings/About"
+                0 -> "Settings/Profile"; 1 -> "Settings/Display"; 2 -> "Settings/Data"; 3 -> "Settings/Credits"
+                4 -> "Settings/AI"; 5 -> "Settings/Feedback"; 6 -> "Settings/About"
                 else -> "Settings/Tab$selectedTab"
             }
             Analytics.screen(n)
         }
-        TabRow(selectedTabIndex = selectedTab) {
+        androidx.compose.material3.ScrollableTabRow(selectedTabIndex = selectedTab, edgePadding = 0.dp) {
             Tab(selected = selectedTab == 0, onClick = {
                 Analytics.action("Settings", "subtab_profile"); selectedTab = 0
             }, text = { Text(stringResource(R.string.settings_tab_profile)) })
             Tab(selected = selectedTab == 1, onClick = {
-                Analytics.action("Settings", "subtab_data"); selectedTab = 1
+                Analytics.action("Settings", "subtab_display"); selectedTab = 1
+            }, text = { Text(stringResource(R.string.settings_tab_display)) })
+            Tab(selected = selectedTab == 2, onClick = {
+                Analytics.action("Settings", "subtab_data"); selectedTab = 2
             }, text = { Text(stringResource(R.string.settings_tab_data)) })
             Tab(
-                selected = selectedTab == 2,
+                selected = selectedTab == 3,
                 onClick = {
-                    Analytics.action("Settings", "subtab_credits"); selectedTab = 2
+                    Analytics.action("Settings", "subtab_credits"); selectedTab = 3
                 },
                 text = {
                     Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
@@ -184,14 +189,14 @@ fun SettingsScreen(
                     }
                 },
             )
-            Tab(selected = selectedTab == 3, onClick = {
-                Analytics.action("Settings", "subtab_ai"); selectedTab = 3
-            }, text = { Text(stringResource(R.string.settings_tab_ai)) })
             Tab(selected = selectedTab == 4, onClick = {
-                Analytics.action("Settings", "subtab_feedback"); selectedTab = 4
-            }, text = { Text(stringResource(R.string.settings_tab_feedback)) })
+                Analytics.action("Settings", "subtab_ai"); selectedTab = 4
+            }, text = { Text(stringResource(R.string.settings_tab_ai)) })
             Tab(selected = selectedTab == 5, onClick = {
-                Analytics.action("Settings", "subtab_about"); selectedTab = 5
+                Analytics.action("Settings", "subtab_feedback"); selectedTab = 5
+            }, text = { Text(stringResource(R.string.settings_tab_feedback)) })
+            Tab(selected = selectedTab == 6, onClick = {
+                Analytics.action("Settings", "subtab_about"); selectedTab = 6
             }, text = { Text(stringResource(R.string.settings_tab_about)) })
         }
 
@@ -204,7 +209,13 @@ fun SettingsScreen(
                 onUploadTryOnPhoto = profileViewModel::uploadTryOnPhoto,
                 onRemoveTryOnPhoto = profileViewModel::deleteTryOnPhoto,
             )
-            1 -> DataTab(
+            1 -> DisplayTab(
+                preferences = profileState.preferences,
+                onSaveTheme = { id ->
+                    profileViewModel.savePreferences(profileState.preferences.copy(wardrobeTheme = id))
+                },
+            )
+            2 -> DataTab(
                 wardrobeState = wardrobeState,
                 onRetagAll = wardrobeViewModel::retagAll,
                 onRemoveAllBackgrounds = wardrobeViewModel::removeAllBackgrounds,
@@ -237,7 +248,7 @@ fun SettingsScreen(
                 onRenameLocation = locationViewModel::renameLocation,
                 onDeleteLocation = locationViewModel::deleteLocation,
             )
-            2 -> BuyCreditsScreen(
+            3 -> BuyCreditsScreen(
                 creditsViewModel = creditsViewModel,
                 currentApiKey = currentApiKey,
                 onSaveApiKey = { key ->
@@ -246,7 +257,7 @@ fun SettingsScreen(
                 },
                 modifier = Modifier.fillMaxSize(),
             )
-            3 -> AiTab(
+            4 -> AiTab(
                 preferences = profileState.preferences,
                 onSaveConsiderations = { c ->
                     profileViewModel.savePreferences(profileState.preferences.copy(aiConsiderations = c))
@@ -270,7 +281,7 @@ fun SettingsScreen(
                     )
                 },
             )
-            4 -> FeedbackTab(
+            5 -> FeedbackTab(
                 preferences = profileState.preferences,
                 onSaveDebugSimilarityPreview = { enabled ->
                     profileViewModel.savePreferences(
@@ -278,7 +289,7 @@ fun SettingsScreen(
                     )
                 },
             )
-            5 -> AboutTab()
+            6 -> AboutTab()
         }
     }
 
@@ -297,6 +308,79 @@ fun SettingsScreen(
             },
             onDismiss = { showDriveFolderPicker = false },
         )
+    }
+}
+
+// ---------- Display tab ----------
+
+@Composable
+private fun DisplayTab(
+    preferences: UserPreferences,
+    onSaveTheme: (String) -> Unit,
+) {
+    val palettes = com.librelookai.ui.theme.WardrobePalettes
+    val labels = mapOf(
+        "green-light" to R.string.theme_green_light,
+        "green-dark" to R.string.theme_green_dark,
+        "sand-light" to R.string.theme_sand_light,
+        "indigo-dark" to R.string.theme_indigo_dark,
+        "pastel-mint" to R.string.theme_pastel_mint,
+        "pastel-blush" to R.string.theme_pastel_blush,
+        "pastel-lavender" to R.string.theme_pastel_lavender,
+    )
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 20.dp, vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Text(
+            stringResource(R.string.settings_display_theme),
+            style = MaterialTheme.typography.titleMedium,
+        )
+        Text(
+            stringResource(R.string.settings_display_theme_desc),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        palettes.forEach { palette ->
+            val selected = palette.id == preferences.wardrobeTheme
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .clickable {
+                        Analytics.action("Settings/Display", "change_theme", mapOf("value" to palette.id))
+                        onSaveTheme(palette.id)
+                    }
+                    .background(if (selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface)
+                    .padding(horizontal = 12.dp, vertical = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                RadioButton(selected = selected, onClick = {
+                    Analytics.action("Settings/Display", "change_theme", mapOf("value" to palette.id))
+                    onSaveTheme(palette.id)
+                })
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    listOf(palette.bg, palette.surface, palette.primary, palette.primaryDim).forEach { c ->
+                        Box(
+                            Modifier
+                                .size(20.dp)
+                                .clip(CircleShape)
+                                .background(c)
+                                .border(BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant), CircleShape),
+                        )
+                    }
+                }
+                Text(
+                    text = stringResource(labels[palette.id] ?: R.string.theme_green_light),
+                    modifier = Modifier.weight(1f),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
+        }
     }
 }
 

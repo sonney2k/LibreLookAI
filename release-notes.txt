@@ -1,20 +1,11 @@
-### LibreLookAI v1.5.3 Release Notes
+### LibreLookAI v1.6.0 Release Notes
 
 #### New
-- Unified import: a single "+" button in Wardrobe and Shopping now opens the camera for adding items.
-- URL imports show a candidate picker so you can choose the right product image, with a WebView fallback when scraping fails.
-- Unified similarity search across Shopping, Find-by-Photo, and duplicate-import review — same preview dialog everywhere.
-- Shopping viewer now supports detect tags, remove background, and edit tags directly.
-- Try-On and outfit composer flows use the new AI processing overlay for clearer progress feedback.
+- Wardrobe redesign: header now shows Title · Closet · Filters pill · Find-by-Photo · Sort · Settings, with an active-filter count badge.
+- Filters pill opens a bottom sheet with all tag categories (Reset / Apply).
+- Quick-category chip row under the header — All / Tops / Bottoms / Outerwear / Footwear / Accessories / Dresses / Suits, each with live counts; tap to single-filter.
+- Theme picker in Settings → Display: 7 palettes (Green light/dark, Sand light, Indigo dark, Pastel Mint/Blush/Lavender) applied app-wide.
 
 #### Improvements
-- App is locked to portrait, except while the camera is open (so you can shoot in landscape).
-- Camera always shows a center crosshair to help frame items.
-- Gemini cutouts are tight-cropped and capped at 1280px for faster, cleaner results.
-- Background-removal prompt tightened to keep full items (both shoes, catalog-style framing).
-
-#### Fixes
-- Bottom buttons no longer get clipped in the cutout refine and similarity dialogs.
-- Fullscreen dialogs respect system bars and the in-app language toggle; fixes camera rotation crash and duplicate-sheet localization.
-- Similarity histogram filter now correctly skips the black backdrop instead of white.
-- Removed gray-world white balance from similarity segmentation for more consistent matches.
+- Rotation-invariant pHash channel added to similarity scoring for steadier matches when items are photographed at different angles.
+- Old "X of Y items" count line removed from the wardrobe header — counts now live on the category chips.

@@ -60,8 +60,10 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ImageSearch
-import androidx.compose.material.icons.filled.Link
-import androidx.compose.material.icons.filled.PhotoLibrary
+import androidx.compose.material.icons.filled.FilterAlt
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.clip
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material.icons.filled.SwapHoriz
@@ -549,6 +551,134 @@ internal fun DriveImage.tagStringsForCategory(categoryLabel: String): Set<String
     }
 }
 
+@Composable
+private fun FiltersPill(
+    appliedCount: Int,
+    enabled: Boolean,
+    onClick: () -> Unit,
+) {
+    if (!enabled) return
+    val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
+    val active = appliedCount > 0
+    val bg = if (active) palette.primaryDim else palette.chipBg
+    val fg = if (active) palette.primary else palette.chipFg
+    val borderColor = if (active) palette.primary else palette.border
+    val shape = RoundedCornerShape(20.dp)
+    Box(
+        modifier = Modifier
+            .padding(horizontal = 2.dp)
+            .clip(shape)
+            .background(bg)
+            .border(BorderStroke(if (active) 1.5.dp else 1.dp, borderColor), shape)
+            .clickable(onClick = onClick)
+            .padding(horizontal = 11.dp, vertical = 6.dp),
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Icon(
+                Icons.Default.FilterAlt,
+                contentDescription = null,
+                tint = fg,
+                modifier = Modifier.size(13.dp),
+            )
+            Text(
+                stringResource(R.string.wardrobe_filters),
+                color = fg,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold,
+            )
+            if (active) {
+                Box(
+                    modifier = Modifier
+                        .padding(start = 2.dp)
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(palette.primary)
+                        .padding(horizontal = 6.dp, vertical = 1.dp),
+                ) {
+                    Text(
+                        appliedCount.toString(),
+                        color = palette.onPrimary,
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun QuickCategoryRow(
+    images: List<DriveImage>,
+    selectedTags: Map<String, Set<String>>,
+    onSelectCategory: (String?) -> Unit,
+) {
+    val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
+    data class Cat(val key: String?, val labelRes: Int)
+    val cats = listOf(
+        Cat(null, R.string.filter_all_locations),
+        Cat("tops", R.string.tag_val_tops),
+        Cat("bottoms", R.string.tag_val_bottoms),
+        Cat("outerwear", R.string.tag_val_outerwear),
+        Cat("footwear", R.string.tag_val_footwear),
+        Cat("accessories", R.string.tag_val_accessories),
+        Cat("dress", R.string.tag_val_dress),
+        Cat("suit", R.string.tag_val_suit),
+    )
+    val counts = remember(images) {
+        val m = HashMap<String, Int>()
+        for (it in images) {
+            val c = it.tags?.category?.lowercase().orEmpty()
+            if (c.isNotEmpty()) m[c] = (m[c] ?: 0) + 1
+        }
+        m
+    }
+    val activeCatSet = selectedTags["Category"].orEmpty()
+    val allActive = activeCatSet.isEmpty()
+    androidx.compose.foundation.lazy.LazyRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(palette.surface)
+            .padding(horizontal = 12.dp, vertical = 6.dp),
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        items(cats) { c ->
+            val active = if (c.key == null) allActive else c.key in activeCatSet
+            val n = if (c.key == null) images.size else (counts[c.key] ?: 0)
+            val shape = RoundedCornerShape(18.dp)
+            val bg = if (active) palette.primary else palette.chipBg
+            val fg = if (active) palette.fabFg else palette.chipFg
+            val borderColor = if (active) palette.primary else palette.border
+            Row(
+                modifier = Modifier
+                    .clip(shape)
+                    .background(bg)
+                    .border(BorderStroke(if (active) 1.5.dp else 1.dp, borderColor), shape)
+                    .clickable { onSelectCategory(c.key) }
+                    .padding(horizontal = 11.dp, vertical = 5.dp),
+                horizontalArrangement = Arrangement.spacedBy(5.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    stringResource(c.labelRes),
+                    color = fg,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.SemiBold,
+                )
+                Text(
+                    n.toString(),
+                    color = fg,
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
+        }
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun TagFilterBar(
@@ -657,6 +787,8 @@ private fun GridContent(
     // Filter + sort state
     var selectedTags by remember { mutableStateOf(emptyMap<String, Set<String>>()) }
     var sortBy by remember { mutableStateOf(SortOption.DATE_DESC) }
+    var filterSheetOpen by remember { mutableStateOf(false) }
+    val appliedFilterCount = selectedTags.values.sumOf { it.size }
 
     val tagCategories = remember(state.images) { state.images.tagCategories() }
 
@@ -724,6 +856,14 @@ private fun GridContent(
                         activeLocationId = activeLocationId,
                         onSetActiveLocation = onSetActiveLocation,
                     )
+                    FiltersPill(
+                        appliedCount = appliedFilterCount,
+                        enabled = tagCategories.isNotEmpty(),
+                        onClick = {
+                            Analytics.action("Wardrobe", "open_filter_sheet", mapOf("active" to appliedFilterCount.toString()))
+                            filterSheetOpen = true
+                        },
+                    )
                     IconButton(onClick = {
                         Analytics.action("Wardrobe", "open_find_by_photo")
                         onOpenFindByPhoto()
@@ -744,27 +884,20 @@ private fun GridContent(
                 },
                 onSettingsClick = onSettingsClick,
             )
-            // ---- Tag filter chips ----
-            TagFilterBar(
-                tagCategories = tagCategories,
+            // ---- Quick category chip row ----
+            QuickCategoryRow(
+                images = state.images,
                 selectedTags = selectedTags,
-                onTagsChanged = { selectedTags = it },
+                onSelectCategory = { key ->
+                    val cur = selectedTags["Category"].orEmpty()
+                    val next = when {
+                        key == null -> selectedTags - "Category"
+                        cur.size == 1 && key in cur -> selectedTags - "Category"
+                        else -> selectedTags + ("Category" to setOf(key))
+                    }
+                    selectedTags = next
+                },
             )
-
-            // ---- Filtered item count ----
-            if (state.images.isNotEmpty() && !isSelectionMode) {
-                val hasFilter = selectedTags.values.any { it.isNotEmpty() }
-                Text(
-                    text = if (hasFilter) {
-                        stringResource(R.string.wardrobe_filtered_count, displayedImages.size, state.images.size)
-                    } else {
-                        stringResource(R.string.wardrobe_item_count, state.images.size)
-                    },
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 2.dp),
-                )
-            }
 
             // ---- Selection bar (shown when at least one item is selected) ----
             if (isSelectionMode) {
@@ -1014,6 +1147,42 @@ private fun GridContent(
                     .padding(start = 8.dp, end = 96.dp, bottom = 8.dp),
                 action = { TextButton(onClick = onDismissError) { Text(stringResource(R.string.action_dismiss)) } },
             ) { Text(msg) }
+        }
+
+        if (filterSheetOpen && tagCategories.isNotEmpty()) {
+            ModalBottomSheet(
+                onDismissRequest = { filterSheetOpen = false },
+                sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+            ) {
+                Column(Modifier.padding(horizontal = 8.dp, vertical = 8.dp)) {
+                    Text(
+                        stringResource(R.string.wardrobe_filters),
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.padding(start = 8.dp, bottom = 4.dp),
+                    )
+                    TagFilterBar(
+                        tagCategories = tagCategories,
+                        selectedTags = selectedTags,
+                        onTagsChanged = { selectedTags = it },
+                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp, bottom = 16.dp, start = 8.dp, end = 8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        TextButton(
+                            onClick = { selectedTags = emptyMap() },
+                            modifier = Modifier.weight(1f),
+                        ) { Text(stringResource(R.string.wardrobe_filters_reset)) }
+                        Button(
+                            onClick = { filterSheetOpen = false },
+                            modifier = Modifier.weight(1f),
+                        ) { Text(stringResource(R.string.wardrobe_filters_apply, displayedImages.size)) }
+                    }
+                }
+            }
         }
 
         // Full-screen viewer rendered as the last (topmost) child of the padded Box so that

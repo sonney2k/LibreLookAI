@@ -92,6 +92,19 @@
 
     <!-- Settings -->
     <string name="settings_tab_profile">Profile</string>
+    <string name="settings_tab_display">Display</string>
+    <string name="settings_display_theme">Theme</string>
+    <string name="settings_display_theme_desc">Choose a color palette. Applies app-wide.</string>
+    <string name="theme_green_light">Green (light)</string>
+    <string name="theme_green_dark">Green (dark)</string>
+    <string name="theme_sand_light">Sand (light)</string>
+    <string name="theme_indigo_dark">Indigo (dark)</string>
+    <string name="theme_pastel_mint">Pastel Mint</string>
+    <string name="theme_pastel_blush">Pastel Blush</string>
+    <string name="theme_pastel_lavender">Pastel Lavender</string>
+    <string name="wardrobe_filters">Filters</string>
+    <string name="wardrobe_filters_apply">Apply (%1$d)</string>
+    <string name="wardrobe_filters_reset">Reset</string>
     <string name="settings_tab_data">Data</string>
     <string name="settings_tab_credits">Credits</string>
     <string name="settings_language">Language</string>

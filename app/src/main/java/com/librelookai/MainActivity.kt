@@ -255,7 +255,7 @@ class MainActivity : ComponentActivity() {
                         LocalOnBackPressedDispatcherOwner provides this@MainActivity,
                         LocalIsOffline provides isOffline,
                         LocalSystemBarsPadding provides systemBarsPadding,
-                    ) {
+                    ) { LibreLookAITheme(paletteId = profileState.preferences.wardrobeTheme) {
 
                         // Battery optimization exemption — block all interactions until granted
                         val pm = remember {
@@ -310,8 +310,7 @@ class MainActivity : ComponentActivity() {
                                     ) { Text(stringResource(R.string.battery_exempt_action)) }
                                 },
                             )
-                            return@CompositionLocalProvider
-                        }
+                        } else {
 
                         // Location permission — request once; refresh weather when granted
                         var hasLocationPermission by remember {
@@ -550,7 +549,8 @@ class MainActivity : ComponentActivity() {
                                 ReplacementsResultDialog(gapViewModel = gapViewModel)
                             }
                         }
-                    }
+                        }
+                    } }
                 }
             }
         }

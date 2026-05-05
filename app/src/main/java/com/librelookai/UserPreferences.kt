@@ -31,6 +31,9 @@ data class UserPreferences(
      *  (segmented thumbnails, per-engine cosine scores, hue histograms) instead of the default
      *  zoom-only view. */
     val debugSimilarityPreview: Boolean = false,
+    /** Selected wardrobe-design palette id (see WardrobePalettes). Drives MaterialTheme colors
+     *  app-wide as well as the extended `LocalWardrobePalette` tokens. */
+    val wardrobeTheme: String = "green-light",
 )
 
 /** Toggles controlling which context blocks the outfit-suggestion prompts include. */
