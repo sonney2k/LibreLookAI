@@ -223,6 +223,15 @@ class MainActivity : ComponentActivity() {
                         shoppingClosetViewModel.setLanguage(geminiLanguage)
                     }
 
+                    // Pre-warm the Shopping wishlist and Try-On history at app start so that
+                    // tapping those tabs paints from the local cache immediately instead of
+                    // kicking off the load on first composition. Both view models are
+                    // two-phase (local cache → Drive refresh), so this is cheap.
+                    LaunchedEffect(Unit) {
+                        shoppingClosetViewModel.loadItems()
+                        tryOnViewModel.loadHistory()
+                    }
+
                     // Mirror similarity-check preferences into the wardrobe VM
                     val dedupeOnImport = profileState.preferences.dedupeOnImport
                     val dedupeThreshold = profileState.preferences.dedupeThreshold

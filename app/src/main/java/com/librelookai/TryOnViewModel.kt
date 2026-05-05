@@ -221,10 +221,30 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
 
     fun loadHistory() {
         viewModelScope.launch(Dispatchers.IO) {
+            // Phase 1 — instant: paint from the local sidecar cache so the history grid
+            // appears immediately when the user opens the Try-Ons tab. Mirrors the
+            // wardrobe two-phase load (CLAUDE.md → Storage / Wardrobe).
+            runCatching {
+                val cacheFile = historyCacheFile()
+                if (cacheFile.exists()) {
+                    val cached: List<TryOn> = gson.fromJson(
+                        cacheFile.readText(),
+                        object : TypeToken<List<TryOn>>() {}.type,
+                    ) ?: emptyList()
+                    val resolved = cached.mapNotNull { e ->
+                        val f = File(drive.cacheDir, "tryon_${e.imageDriveId}.png")
+                        if (f.exists()) e.copy(localPath = f.absolutePath) else null
+                    }
+                    if (resolved.isNotEmpty()) {
+                        _state.update { it.copy(history = resolved) }
+                    }
+                }
+            }
+
+            // Phase 2 — refresh from Drive.
             try {
                 val root = ensureRootFolder()
                 val entries = loadTryOnsEntries(root)
-                // Resolve local paths — download missing PNGs in the background.
                 val resolved = entries.map { e ->
                     val cached = File(drive.cacheDir, "tryon_${e.imageDriveId}.png")
                     if (!cached.exists()) {
@@ -233,11 +253,15 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
                     e.copy(localPath = cached.absolutePath.takeIf { cached.exists() } ?: "")
                 }
                 _state.update { it.copy(history = resolved) }
+                runCatching { historyCacheFile().writeText(gson.toJson(entries)) }
             } catch (e: Exception) {
                 Log.w("TryOnVM", "loadHistory failed: ${e.message}")
             }
         }
     }
+
+    private fun historyCacheFile(): File =
+        File(getApplication<Application>().filesDir, "tryons_cache.json")
 
     private suspend fun ensureRootFolder(): String {
         rootFolderId?.let { return it }

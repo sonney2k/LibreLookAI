@@ -507,7 +507,12 @@ internal fun TryOnHistoryGrid(
             ) {
                 if (t.localPath.isNotEmpty()) {
                     AsyncImage(
-                        model = ImageRequest.Builder(context).data(File(t.localPath)).build(),
+                        model = remember(t.imageDriveId, t.localPath) {
+                            ImageRequest.Builder(context)
+                                .data(File(t.localPath))
+                                .memoryCacheKey("tryon_${t.imageDriveId}")
+                                .build()
+                        },
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize(),
