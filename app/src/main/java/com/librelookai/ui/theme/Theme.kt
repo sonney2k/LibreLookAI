@@ -9,6 +9,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 @Composable
 fun LibreLookAITheme(
     paletteId: String? = null,
+    fontId: String = com.librelookai.AppFont.CAVEAT,
     content: @Composable () -> Unit,
 ) {
     val palette = wardrobePaletteById(paletteId)
@@ -55,10 +56,13 @@ fun LibreLookAITheme(
             error = palette.error,
         )
     }
-    CompositionLocalProvider(LocalWardrobePalette provides palette) {
+    CompositionLocalProvider(
+        LocalWardrobePalette provides palette,
+        LocalAppFont provides fontId,
+    ) {
         MaterialTheme(
             colorScheme = colorScheme,
-            typography = Typography,
+            typography = typographyFor(fontId),
             content = content,
         )
     }

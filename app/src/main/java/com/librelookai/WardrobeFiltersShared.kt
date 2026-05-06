@@ -129,6 +129,9 @@ internal fun QuickCategoryRow(
     onOpenFilters: () -> Unit,
 ) {
     val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
+    val isCaveat = com.librelookai.ui.theme.LocalAppFont.current == AppFont.CAVEAT
+    val labelSize = if (isCaveat) 16.sp else 12.sp
+    val countSize = if (isCaveat) 14.sp else 10.sp
     val hasFilter = appliedFilterCount > 0
     Row(
         modifier = Modifier
@@ -157,13 +160,13 @@ internal fun QuickCategoryRow(
             Text(
                 stringResource(R.string.filter_all_locations),
                 color = allFg,
-                fontSize = 12.sp,
+                fontSize = labelSize,
                 fontWeight = FontWeight.SemiBold,
             )
             Text(
                 totalCount.toString(),
                 color = allFg,
-                fontSize = 10.sp,
+                fontSize = countSize,
                 fontWeight = FontWeight.Bold,
             )
         }
@@ -194,13 +197,13 @@ internal fun QuickCategoryRow(
                 Text(
                     stringResource(R.string.wardrobe_filters),
                     color = fg,
-                    fontSize = 12.sp,
+                    fontSize = labelSize,
                     fontWeight = FontWeight.SemiBold,
                 )
                 Text(
                     filteredCount.toString(),
                     color = fg,
-                    fontSize = 10.sp,
+                    fontSize = countSize,
                     fontWeight = FontWeight.Bold,
                 )
             }

@@ -98,6 +98,10 @@
     <string name="theme_pastel_mint">Pastell Minze</string>
     <string name="theme_pastel_blush">Pastell Blush</string>
     <string name="theme_pastel_lavender">Pastell Lavendel</string>
+    <string name="settings_display_font">Schriftart</string>
+    <string name="settings_display_font_desc">Wähle die Schriftart der App.</string>
+    <string name="font_default">Systemstandard</string>
+    <string name="font_caveat">Caveat (handschriftlich)</string>
     <string name="wardrobe_filters">Filter</string>
     <string name="wardrobe_filters_apply">Anwenden (%1$d)</string>
     <string name="wardrobe_filters_reset">Zurücksetzen</string>

@@ -51,6 +51,7 @@ class ProfileViewModel(app: Application) : AndroidViewModel(app) {
             preferences = UserPreferences(
                 language = cachedLanguage(),
                 wardrobeTheme = cachedTheme(),
+                appFont = cachedFont(),
             )
         )
     )
@@ -80,15 +81,27 @@ class ProfileViewModel(app: Application) : AndroidViewModel(app) {
         langPrefs.edit().putString(KEY_THEME, theme).apply()
     }
 
+    private fun cachedFont(): String = cachedFont(getApplication())
+
+    private fun cacheFont(font: String) {
+        langPrefs.edit().putString(KEY_FONT, font).apply()
+    }
+
     companion object {
         private const val LANG_PREFS = "librelookai_lang"
         private const val KEY_LANGUAGE = "language"
         private const val KEY_THEME = "wardrobe_theme"
+        private const val KEY_FONT = "app_font"
 
         /** Last-saved theme id, available before any user data is loaded from Drive. */
         fun cachedTheme(context: Context): String =
             context.getSharedPreferences(LANG_PREFS, Context.MODE_PRIVATE)
                 .getString(KEY_THEME, null) ?: UserPreferences().wardrobeTheme
+
+        /** Last-saved font id, available before any user data is loaded from Drive. */
+        fun cachedFont(context: Context): String =
+            context.getSharedPreferences(LANG_PREFS, Context.MODE_PRIVATE)
+                .getString(KEY_FONT, null) ?: UserPreferences().appFont
     }
 
     fun loadPreferences() {
@@ -102,6 +115,7 @@ class ProfileViewModel(app: Application) : AndroidViewModel(app) {
             }.onSuccess { prefs ->
                 cacheLanguage(prefs.language)
                 cacheTheme(prefs.wardrobeTheme)
+                cacheFont(prefs.appFont)
                 _state.update { it.copy(preferences = prefs, isLoading = false) }
                 refreshTryOnCache(prefs)
             }.onFailure { e ->
@@ -127,6 +141,7 @@ class ProfileViewModel(app: Application) : AndroidViewModel(app) {
             }.onSuccess { merged ->
                 cacheLanguage(merged.language)
                 cacheTheme(merged.wardrobeTheme)
+                cacheFont(merged.appFont)
                 _state.update { it.copy(preferences = merged, isSaving = false, savedSuccessfully = true) }
             }.onFailure { e ->
                 _state.update { it.copy(isSaving = false, error = e.message) }

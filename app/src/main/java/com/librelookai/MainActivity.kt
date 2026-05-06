@@ -86,6 +86,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.librelookai.ui.theme.LibreLookAITheme
+import com.librelookai.AppFont
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,7 +95,10 @@ class MainActivity : ComponentActivity() {
         Analytics.init(applicationContext)
         EmbeddingService.init(this)
         setContent {
-            LibreLookAITheme(paletteId = ProfileViewModel.cachedTheme(this)) {
+            LibreLookAITheme(
+                paletteId = ProfileViewModel.cachedTheme(this),
+                fontId = ProfileViewModel.cachedFont(this),
+            ) {
                 val authViewModel: AuthViewModel = viewModel()
                 val isSignedIn by authViewModel.isSignedIn.collectAsState()
                 val authError by authViewModel.signInErrorCode.collectAsState()
@@ -272,7 +276,10 @@ class MainActivity : ComponentActivity() {
                         LocalOnBackPressedDispatcherOwner provides this@MainActivity,
                         LocalIsOffline provides isOffline,
                         LocalSystemBarsPadding provides systemBarsPadding,
-                    ) { LibreLookAITheme(paletteId = profileState.preferences.wardrobeTheme) {
+                    ) { LibreLookAITheme(
+                        paletteId = profileState.preferences.wardrobeTheme,
+                        fontId = profileState.preferences.appFont,
+                    ) {
 
                         // Battery optimization exemption — block all interactions until granted
                         val pm = remember {
@@ -610,10 +617,11 @@ fun AppScreenHeader(
             )
             Spacer(Modifier.width(8.dp))
         }
+        val isCaveat = com.librelookai.ui.theme.LocalAppFont.current == AppFont.CAVEAT
         Text(
             text = title,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.SemiBold,
+            style = if (isCaveat) MaterialTheme.typography.headlineLarge else MaterialTheme.typography.titleMedium,
+            fontWeight = if (isCaveat) FontWeight.Bold else FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.weight(1f),
         )
@@ -668,11 +676,12 @@ fun LocationButton(
                 tint = palette.chipFg,
                 modifier = Modifier.size(14.dp),
             )
+            val isCaveat = com.librelookai.ui.theme.LocalAppFont.current == AppFont.CAVEAT
             Text(
                 activeName,
                 color = palette.chipFg,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Medium,
+                fontSize = if (isCaveat) 16.sp else 12.sp,
+                fontWeight = if (isCaveat) FontWeight.SemiBold else FontWeight.Medium,
             )
             Icon(
                 Icons.Default.KeyboardArrowDown,
@@ -746,7 +755,18 @@ private fun AppNavBar(
                     if (index == selectedTab) onTabReselected(index) else onTabSelected(index)
                 },
                 icon = { Icon(item.icon, contentDescription = label) },
-                label = { Text(label) },
+                label = {
+                    val isCaveat = com.librelookai.ui.theme.LocalAppFont.current == AppFont.CAVEAT
+                    if (isCaveat) {
+                        Text(
+                            label,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                    } else {
+                        Text(label)
+                    }
+                },
             )
         }
     }

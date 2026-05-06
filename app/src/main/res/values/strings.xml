@@ -102,6 +102,10 @@
     <string name="theme_pastel_mint">Pastel Mint</string>
     <string name="theme_pastel_blush">Pastel Blush</string>
     <string name="theme_pastel_lavender">Pastel Lavender</string>
+    <string name="settings_display_font">Font</string>
+    <string name="settings_display_font_desc">Choose the typeface used across the app.</string>
+    <string name="font_default">System default</string>
+    <string name="font_caveat">Caveat (handwritten)</string>
     <string name="wardrobe_filters">Filters</string>
     <string name="wardrobe_filters_apply">Apply (%1$d)</string>
     <string name="wardrobe_filters_reset">Reset</string>

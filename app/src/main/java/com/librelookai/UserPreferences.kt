@@ -34,7 +34,16 @@ data class UserPreferences(
     /** Selected wardrobe-design palette id (see WardrobePalettes). Drives MaterialTheme colors
      *  app-wide as well as the extended `LocalWardrobePalette` tokens. */
     val wardrobeTheme: String = "green-light",
+    /** Selected app font id. One of [AppFont.options]. */
+    val appFont: String = AppFont.CAVEAT,
 )
+
+/** Available font choices for the app typography. */
+object AppFont {
+    const val DEFAULT = "default"
+    const val CAVEAT = "caveat"
+    val options = listOf(DEFAULT, CAVEAT)
+}
 
 /** Toggles controlling which context blocks the outfit-suggestion prompts include. */
 data class AiConsiderations(

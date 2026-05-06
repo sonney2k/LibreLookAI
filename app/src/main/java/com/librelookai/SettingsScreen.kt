@@ -96,6 +96,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -214,6 +215,9 @@ fun SettingsScreen(
                 onSaveTheme = { id ->
                     profileViewModel.savePreferences(profileState.preferences.copy(wardrobeTheme = id))
                 },
+                onSaveFont = { id ->
+                    profileViewModel.savePreferences(profileState.preferences.copy(appFont = id))
+                },
             )
             2 -> DataTab(
                 wardrobeState = wardrobeState,
@@ -317,6 +321,7 @@ fun SettingsScreen(
 private fun DisplayTab(
     preferences: UserPreferences,
     onSaveTheme: (String) -> Unit,
+    onSaveFont: (String) -> Unit,
 ) {
     val palettes = com.librelookai.ui.theme.WardrobePalettes
     val labels = mapOf(
@@ -378,6 +383,50 @@ private fun DisplayTab(
                     text = stringResource(labels[palette.id] ?: R.string.theme_green_light),
                     modifier = Modifier.weight(1f),
                     style = MaterialTheme.typography.bodyMedium,
+                )
+            }
+        }
+
+        Spacer(Modifier.height(8.dp))
+        Text(
+            stringResource(R.string.settings_display_font),
+            style = MaterialTheme.typography.titleMedium,
+        )
+        Text(
+            stringResource(R.string.settings_display_font_desc),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        val fontLabels = listOf(
+            AppFont.DEFAULT to R.string.font_default,
+            AppFont.CAVEAT to R.string.font_caveat,
+        )
+        fontLabels.forEach { (id, labelRes) ->
+            val selected = id == preferences.appFont
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .clickable {
+                        Analytics.action("Settings/Display", "change_font", mapOf("value" to id))
+                        onSaveFont(id)
+                    }
+                    .background(if (selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface)
+                    .padding(horizontal = 12.dp, vertical = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                RadioButton(selected = selected, onClick = {
+                    Analytics.action("Settings/Display", "change_font", mapOf("value" to id))
+                    onSaveFont(id)
+                })
+                Text(
+                    text = stringResource(labelRes),
+                    modifier = Modifier.weight(1f),
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontFamily = if (id == AppFont.CAVEAT) com.librelookai.ui.theme.CaveatFontFamily
+                                 else androidx.compose.ui.text.font.FontFamily.Default,
+                    fontSize = if (id == AppFont.CAVEAT) 22.sp else 16.sp,
                 )
             }
         }
