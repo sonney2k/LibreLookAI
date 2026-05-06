@@ -1,11 +1,18 @@
-### LibreLookAI v1.6.0 Release Notes
+### LibreLookAI v1.6.1 Release Notes
 
 #### New
-- Wardrobe redesign: header now shows Title · Closet · Filters pill · Find-by-Photo · Sort · Settings, with an active-filter count badge.
-- Filters pill opens a bottom sheet with all tag categories (Reset / Apply).
-- Quick-category chip row under the header — All / Tops / Bottoms / Outerwear / Footwear / Accessories / Dresses / Suits, each with live counts; tap to single-filter.
-- Theme picker in Settings → Display: 7 palettes (Green light/dark, Sand light, Indigo dark, Pastel Mint/Blush/Lavender) applied app-wide.
+- Wardrobe item detail viewer redesigned: item name shown at the top, with each tag as its own colored chip below — no more cluttered transparent box.
+- The rotate button has been replaced by an Edit speed-dial FAB (matching the Wardrobe + button) with options: Rotate, Detect tags, Remove background, and Delete.
+- Caveat handwriting font added as a new option in Settings → Display.
+- Colors filter now shows labeled swatch circles instead of plain text chips.
 
 #### Improvements
-- Rotation-invariant pHash channel added to similarity scoring for steadier matches when items are photographed at different angles.
-- Old "X of Y items" count line removed from the wardrobe header — counts now live on the category chips.
+- Closet badges on wardrobe tiles now use the same accent color as the Outfits screen for a consistent look.
+- Smarter similarity matching: combined embedding + color-histogram + rotation-invariant pHash blend produces steadier, more relevant matches.
+- Find-by-photo / Similarity Finder now returns up to 50 matches when debug preview is enabled.
+- Shopping and Try-Ons grids paint instantly when their tab is opened.
+- FullScreenViewer now uses the active theme background instead of hardcoded black.
+- Wardrobe/Outfits filter row redesigned with closet pill plus All/Filters bubbles.
+
+#### Fixes
+- Match actions are hidden in the duplicate-import preview to avoid accidental edits during review.
