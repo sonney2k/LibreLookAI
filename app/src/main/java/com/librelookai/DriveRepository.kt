@@ -28,8 +28,13 @@ data class DriveFileDto(
     val appProperties: Map<String, String>? = null,
     /** Raw Drive API size field (returned as a string); -1 if not requested or unavailable. */
     private val size: String? = null,
+    /** ISO-8601 createdTime from Drive (only populated when requested in `fields=`). */
+    val createdTime: String? = null,
 ) {
     val sizeBytes: Long get() = size?.toLongOrNull() ?: -1L
+    val createdTimeMs: Long get() = createdTime?.let {
+        runCatching { java.time.Instant.parse(it).toEpochMilli() }.getOrNull()
+    } ?: 0L
 }
 
 private data class FilesListDto(
@@ -183,7 +188,7 @@ class DriveRepository(
             "'$folderId' in parents and mimeType contains 'image/' and trashed=false",
             "UTF-8",
         )
-        val baseUrl = "$API/files?q=$q&fields=files(id,name,appProperties),nextPageToken&orderBy=createdTime+desc&pageSize=1000"
+        val baseUrl = "$API/files?q=$q&fields=files(id,name,appProperties,createdTime),nextPageToken&orderBy=createdTime+desc&pageSize=1000"
         fetchAllPages(baseUrl, tok).filter { it.name.endsWith(CUTOUT_SUFFIX) }
     }
 

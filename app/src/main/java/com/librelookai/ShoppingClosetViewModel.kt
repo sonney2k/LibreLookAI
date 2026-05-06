@@ -112,6 +112,7 @@ class ShoppingClosetViewModel(app: Application) : AndroidViewModel(app) {
                                 originalDriveId = entry.originalDriveId,
                                 sidecarDriveId = entry.sidecarDriveId,
                                 folderId = folderId,
+                                createdTimeMs = entry.createdTimeMs,
                             )
                         }
                     }
@@ -161,6 +162,7 @@ class ShoppingClosetViewModel(app: Application) : AndroidViewModel(app) {
                             originalDriveId = sidecar?.originalDriveId,
                             sidecarDriveId = sidecarIdByItemId[file.id],
                             folderId = folderId,
+                            createdTimeMs = file.createdTimeMs,
                         )
                     }
                 }
@@ -295,7 +297,7 @@ class ShoppingClosetViewModel(app: Application) : AndroidViewModel(app) {
                 rawFile.copyTo(displayCache, overwrite = true)
             }
             rawFile.copyTo(File(drive.cacheDir, "${uploaded.id}_original.jpg"), overwrite = true)
-            DriveImage(uploaded.id, displayCache.absolutePath, uploaded.name, tags = null, folderId = folderId)
+            DriveImage(uploaded.id, displayCache.absolutePath, uploaded.name, tags = null, folderId = folderId, createdTimeMs = System.currentTimeMillis())
         }.onSuccess { newImage ->
             _state.update { it.copy(
                 isUploading = false,
@@ -604,7 +606,7 @@ class ShoppingClosetViewModel(app: Application) : AndroidViewModel(app) {
     private fun saveLocalCache(id: String, items: List<DriveImage>) {
         runCatching {
             val cache = LocalCache(items.map {
-                LocalCacheEntry(it.driveId, it.name, it.tags, it.originalDriveId, it.sidecarDriveId)
+                LocalCacheEntry(it.driveId, it.name, it.tags, it.originalDriveId, it.sidecarDriveId, it.createdTimeMs)
             })
             localCacheFile(id).writeText(gson.toJson(cache))
         }

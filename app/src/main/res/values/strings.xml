@@ -614,6 +614,7 @@
     <string name="composer_picked_count">%1$d picked</string>
     <string name="composer_add_selected">Add selected</string>
     <string name="wardrobe_create_style">Create outfit</string>
+    <string name="wardrobe_imported_on">Imported %1$s</string>
 
     <!-- AI tab -->
     <string name="settings_tab_ai">AI</string>

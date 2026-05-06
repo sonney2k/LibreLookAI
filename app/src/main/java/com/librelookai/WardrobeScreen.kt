@@ -680,8 +680,8 @@ private fun GridContent(
 
     val displayedImages = remember(filteredImages, sortBy, popularityMap) {
         when (sortBy) {
-            SortOption.DATE_DESC  -> filteredImages
-            SortOption.DATE_ASC   -> filteredImages.reversed()
+            SortOption.DATE_DESC  -> filteredImages.sortedByDescending { it.createdTimeMs }
+            SortOption.DATE_ASC   -> filteredImages.sortedBy { it.createdTimeMs }
             SortOption.POPULARITY -> filteredImages.sortedByDescending { popularityMap[it.driveId] ?: 0 }
             SortOption.TYPE       -> filteredImages.sortedBy { it.tags?.type?.lowercase() ?: "" }
             SortOption.CATEGORY   -> filteredImages.sortedBy { it.tags?.category?.lowercase() ?: "" }
@@ -1288,85 +1288,97 @@ internal fun FullScreenViewer(
     LaunchedEffect(pagerState.currentPage) { pageScale = 1f }
 
     var showTagEdit by remember { mutableStateOf(false) }
-    var showItemActions by remember { mutableStateOf(false) }
     var showMoveDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showEditMenu by remember { mutableStateOf(false) }
+
+    val currentImage = images[pagerState.currentPage]
+    val headerLabel = currentImage.tags?.label?.takeIf { it.isNotBlank() } ?: currentImage.name
+    val importedDateText = remember(currentImage.createdTimeMs) {
+        if (currentImage.createdTimeMs > 0L) {
+            java.text.DateFormat
+                .getDateInstance(java.text.DateFormat.MEDIUM, java.util.Locale.getDefault())
+                .format(java.util.Date(currentImage.createdTimeMs))
+        } else null
+    }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
     ) {
-        val haptic = LocalHapticFeedback.current
-        HorizontalPager(
-            state = pagerState,
-            userScrollEnabled = pageScale <= 1.01f,
-            modifier = Modifier.fillMaxSize(),
-        ) { page ->
-            ZoomableImage(
-                localPath = images[page].localPath,
-                name = images[page].name,
-                cacheKey = "${images[page].driveId}_${images[page].version}",
-                onScaleChanged = { s -> if (page == pagerState.currentPage) pageScale = s },
-                onLongPress = {
-                    if (!isOffline) {
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        showItemActions = true
+        Column(modifier = Modifier.fillMaxSize()) {
+            // Header — name, imported date, pagination, tags. Sized to its content so the
+            // pager (and image) below never overlaps it, regardless of how many tags wrap.
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .statusBarsPadding()
+                    .padding(top = 8.dp, start = 56.dp, end = 56.dp, bottom = 8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                Text(
+                    text = headerLabel,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.titleMedium,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                if (importedDateText != null) {
+                    Text(
+                        text = stringResource(R.string.wardrobe_imported_on, importedDateText),
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                        style = MaterialTheme.typography.labelSmall,
+                    )
+                }
+                Text(
+                    text = "${pagerState.currentPage + 1} / ${images.size}",
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.labelMedium,
+                )
+                currentImage.tags?.let { tags ->
+                    val maxWidth = LocalConfiguration.current.screenWidthDp.dp * 0.7f
+                    FlowRow(
+                        modifier = Modifier
+                            .widthIn(max = maxWidth)
+                            .then(if (writeMode) Modifier.clickable {
+                                Analytics.action("ItemViewer", "edit_tags")
+                                showTagEdit = true
+                            } else Modifier),
+                        horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                    ) {
+                        if (tags.type.isNotEmpty()) DetailTagChip(tags.type.localizedTagValue())
+                        if (tags.category.isNotEmpty()) DetailTagChip(tags.category.localizedTagValue())
+                        tags.uses.forEach { DetailTagChip(it.localizedTagValue()) }
+                        tags.colors.forEach { DetailTagChip(it.localizedTagValue()) }
+                        tags.seasonality.forEach { DetailTagChip(it.localizedTagValue()) }
+                        tags.aesthetic.forEach { DetailTagChip(it.localizedTagValue()) }
+                        tags.fit.forEach { DetailTagChip(it.localizedTagValue()) }
+                        tags.material.forEach { DetailTagChip(it.localizedTagValue()) }
+                        tags.pattern.forEach { DetailTagChip(it.localizedTagValue()) }
                     }
-                },
-            )
-        }
-
-        val currentImage = images[pagerState.currentPage]
-        if (currentImage.driveId == processingImageId) {
-            AiProcessingOverlay(modifier = Modifier.fillMaxSize())
-        }
-
-        val headerLabel = currentImage.tags?.label?.takeIf { it.isNotBlank() } ?: currentImage.name
-        Column(
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .statusBarsPadding()
-                .padding(top = 8.dp, start = 56.dp, end = 56.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(6.dp),
-        ) {
-            Text(
-                text = headerLabel,
-                color = MaterialTheme.colorScheme.onBackground,
-                style = MaterialTheme.typography.titleMedium,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-            )
-            Text(
-                text = "${pagerState.currentPage + 1} / ${images.size}",
-                color = MaterialTheme.colorScheme.onBackground,
-                style = MaterialTheme.typography.labelMedium,
-            )
-            currentImage.tags?.let { tags ->
-                val maxWidth = LocalConfiguration.current.screenWidthDp.dp * 0.7f
-                FlowRow(
-                    modifier = Modifier
-                        .widthIn(max = maxWidth)
-                        .then(if (writeMode) Modifier.clickable {
-                            Analytics.action("ItemViewer", "edit_tags")
-                            showTagEdit = true
-                        } else Modifier),
-                    horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                ) {
-                    if (tags.type.isNotEmpty()) DetailTagChip(tags.type.localizedTagValue())
-                    if (tags.category.isNotEmpty()) DetailTagChip(tags.category.localizedTagValue())
-                    tags.uses.forEach { DetailTagChip(it.localizedTagValue()) }
-                    tags.colors.forEach { DetailTagChip(it.localizedTagValue()) }
-                    tags.seasonality.forEach { DetailTagChip(it.localizedTagValue()) }
-                    tags.aesthetic.forEach { DetailTagChip(it.localizedTagValue()) }
-                    tags.fit.forEach { DetailTagChip(it.localizedTagValue()) }
-                    tags.material.forEach { DetailTagChip(it.localizedTagValue()) }
-                    tags.pattern.forEach { DetailTagChip(it.localizedTagValue()) }
                 }
             }
+            HorizontalPager(
+                state = pagerState,
+                userScrollEnabled = pageScale <= 1.01f,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+            ) { page ->
+                ZoomableImage(
+                    localPath = images[page].localPath,
+                    name = images[page].name,
+                    cacheKey = "${images[page].driveId}_${images[page].version}",
+                    onScaleChanged = { s -> if (page == pagerState.currentPage) pageScale = s },
+                )
+            }
+        }
+
+        if (currentImage.driveId == processingImageId) {
+            AiProcessingOverlay(modifier = Modifier.fillMaxSize())
         }
 
         // Close button.
@@ -1385,6 +1397,17 @@ internal fun FullScreenViewer(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 if (showEditMenu) {
+                    ExtendedFloatingActionButton(
+                        onClick = {
+                            Analytics.action("ItemViewer", "create_style_from_item")
+                            showEditMenu = false
+                            onCreateOutfitFromSelection(setOf(currentImage.driveId))
+                        },
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        icon = { Icon(Icons.Default.AutoFixHigh, contentDescription = null) },
+                        text = { Text(stringResource(R.string.wardrobe_create_style)) },
+                    )
                     ExtendedFloatingActionButton(
                         onClick = {
                             Analytics.action("ItemViewer", "rotate_image")
@@ -1469,83 +1492,6 @@ internal fun FullScreenViewer(
             },
             onDismiss = { showTagEdit = false },
         )
-    }
-
-    if (showItemActions) {
-        val currentImage = images[pagerState.currentPage]
-        val otherLocations = locations.filter { it.folderId != activeLocationId }
-        ModalBottomSheet(
-            onDismissRequest = { showItemActions = false },
-        ) {
-            Column(modifier = Modifier.navigationBarsPadding()) {
-                val label = currentImage.tags?.label ?: currentImage.name
-                Text(
-                    text = label,
-                    style = MaterialTheme.typography.titleSmall,
-                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-                HorizontalDivider()
-                Surface(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            Analytics.action("ItemViewer", "create_style_from_item")
-                            showItemActions = false
-                            onCreateOutfitFromSelection(setOf(currentImage.driveId))
-                        },
-                ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    ) {
-                        Icon(Icons.Default.AutoFixHigh, contentDescription = null, modifier = Modifier.size(20.dp))
-                        Text(stringResource(R.string.wardrobe_create_style), style = MaterialTheme.typography.bodyLarge)
-                    }
-                }
-                if (otherLocations.isNotEmpty()) {
-                    Surface(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                Analytics.action("ItemViewer", "open_move_dialog")
-                                showItemActions = false
-                                showMoveDialog = true
-                            },
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        ) {
-                            Icon(Icons.Default.Place, contentDescription = null, modifier = Modifier.size(20.dp))
-                            Text(stringResource(R.string.wardrobe_move_to), style = MaterialTheme.typography.bodyLarge)
-                        }
-                    }
-                }
-                Surface(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            Analytics.action("ItemViewer", "open_delete_dialog")
-                            showItemActions = false
-                            showDeleteDialog = true
-                        },
-                ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    ) {
-                        Icon(Icons.Default.Delete, contentDescription = null, tint = MaterialTheme.colorScheme.error, modifier = Modifier.size(20.dp))
-                        Text(stringResource(R.string.action_delete), style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.error)
-                    }
-                }
-                Spacer(Modifier.height(8.dp))
-            }
-        }
     }
 
     if (showDeleteDialog) {

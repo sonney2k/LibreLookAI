@@ -590,6 +590,7 @@
     <string name="composer_picked_count">%1$d ausgewählt</string>
     <string name="composer_add_selected">Auswahl hinzufügen</string>
     <string name="wardrobe_create_style">Outfit erstellen</string>
+    <string name="wardrobe_imported_on">Importiert am %1$s</string>
 
     <!-- AI tab -->
     <string name="settings_tab_ai">KI</string>

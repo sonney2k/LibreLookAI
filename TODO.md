@@ -17,17 +17,25 @@ Features:
 
 size filter? default sizes in wardrobe? size tag?
 
+
 create human readable release notes between now and v1.6.0 and release version 1.6.1, git tag commit and upload to testers in firebase
 
 Implement new feature: We are working on the refinancing/monetization aspect of the app: I want people to be able to buy coins that I then use to pay gemini cloud costs. would that work with RevenueCat (handles the money/receipts) + Firebase (database and secure Gemini API routing)? In addition, I still want to support the bring your own key option though.
 
-in duplicate detection when importing an image when clicking on a match do not show the buttons show in wardrobe and add to shopping list
+show imported time below name of item in wardrobe item view. scale item such that it (initially is not overlapping with tags.
 
-when importing move progress bar as overlay on top of each image that are currently being processed.
+moving an item from one closet to another did change
+
+when scrolling through wardrobe, outfits, shopping list the scroll bar that is shown make it wider and add way that clicking and dragging the scrollbar moves
+
+remove the long press on wardrobe item functionality - add the the missing function create outfit to FAB
+
+add repair background in wardrobe item and a batch way in settings/data to fill the black background surrounding cutout images also cropping the image
+
+green border in cut out, how to get rid of it and make the other black stuff fully transparent
 
 similarity search needs improvement
 
-when viewing an item in detail. show the name of the item on top. below show tags separately. then modify the rotate button to become an edit button with same style as the + button on wardrobe and put the options: rotate, detect tags, remove bg as buttons
 
 overlay closet in wardrobe on top right of each item in grid use the same style color as on Outfits also on when viewing an item on wardrobe in detail use those colors for tags and make those tags not be contained in a transparent box but show each one separately
 
@@ -37,15 +45,13 @@ Bugs:
 
 consistency: the cross to cancel taking a picture in wardrobe is in the lower right. change the cross in similarity search to use the same button and move it from top left also to lower right ??? rotate button color??
 
-Fix closet usability:
-1. when starting the app set closet filter to all
-2. when creating outfits allow selecting closets
 
 
 security/function relevant parts of a prompts should not be appear in settings. e.g. "Place the clothing item on a pure, solid neon green background (Hex #00FF00).
 
 
 fix usability issue on wardrobe screen: moving item to different closet and then switching to that closet - it won't immediately appear on wardrobe after moving to different closet. it took almost a minute to appear. Can this be sped up?
+
 
 
 
@@ -102,6 +108,24 @@ how can we unify tags? I see tags like "Long-sleeve T-shirt", "Long-sleeved t-sh
 
 FIXED
 =====
+when scrolling through wardrobe, outfits, shopping list add a scrollbar when scrolling
+
+when viewing an item in wardrobe add option to move to different closet under FAB
+
+in find by image when clicking on a match do not show the button add to shopping list
+
+in duplicate detection when importing an image when clicking on a match do not show the buttons show in wardrobe and add to shopping list
+
+Fix closet usability:
+1. the closet filter on top can take up too much space if the closet name is too long. limit its width such that at least the wardrobe name fits there. if font size is too large also limit the wardrobe name on the left (ensure that it does not wrap).
+2. when starting the app set closet filter to all and do not save the default closet filter. at the same time make the default closet in settings data/closets an independent option that is persistet but it does not have an effect on the closet filter just on to which location the user is importing by default
+3. when creating outfits allow selecting closets from which outfits are generated but go with the default one
+when importing move progress bar as overlay on top of each image that are currently being processed.
+
+when viewing an item in detail. show the name of the item on top. below show tags separately. then modify the rotate button to become an edit button with same style as the + button on wardrobe and put the options: rotate, detect tags, remove bg as buttons
+
+in the header the sorting menu is not localized and the entire filter menu is not localized. fix that 
+
 update design
 
 The url based import does not work (pasted link from Amazon) Can we open a web browser with that page and have the user select the image to be used or some other means of preview?

@@ -62,6 +62,8 @@ data class DriveImage(
     val sidecarDriveId: String? = null,
     /** Drive folder ID this item actually lives in. */
     val folderId: String = "",
+    /** Drive's `createdTime` for the cutout file, in millis. 0 when unknown (legacy cache). */
+    val createdTimeMs: Long = 0L,
 )
 
 /** One wardrobe item ranked above the dedupe threshold against an incoming import. */
@@ -273,6 +275,7 @@ data class LocalCacheEntry(
     val tags: ClothingTags?,
     val originalDriveId: String? = null,
     val sidecarDriveId: String? = null,
+    val createdTimeMs: Long = 0L,
 )
 data class LocalCache(val items: List<LocalCacheEntry> = emptyList())
 
@@ -509,6 +512,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                         originalDriveId = entry.originalDriveId,
                         sidecarDriveId = entry.sidecarDriveId,
                         folderId = fid,
+                        createdTimeMs = entry.createdTimeMs,
                     )
                 }
             }
@@ -988,7 +992,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     private fun saveLocalCache(id: String, images: List<DriveImage>) {
         runCatching {
             val cache = LocalCache(images.map {
-                LocalCacheEntry(it.driveId, it.name, it.tags, it.originalDriveId, it.sidecarDriveId)
+                LocalCacheEntry(it.driveId, it.name, it.tags, it.originalDriveId, it.sidecarDriveId, it.createdTimeMs)
             })
             localCacheFile(id).writeText(gson.toJson(cache))
         }
@@ -1016,7 +1020,8 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                                 DriveImage(entry.driveId, f.absolutePath, entry.name, entry.tags,
                                     originalDriveId = entry.originalDriveId,
                                     sidecarDriveId = entry.sidecarDriveId,
-                                    folderId = fid)
+                                    folderId = fid,
+                                    createdTimeMs = entry.createdTimeMs)
                             }
                         }
                     }.getOrDefault(emptyList())
@@ -1088,6 +1093,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                                     originalDriveId = sidecar?.originalDriveId,
                                     sidecarDriveId = sidecarIdByItemId[file.id],
                                     folderId = fd.id,
+                                    createdTimeMs = file.createdTimeMs,
                                 )
                             }
                         }
@@ -1123,7 +1129,8 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                             DriveImage(entry.driveId, f.absolutePath, entry.name, entry.tags,
                                 originalDriveId = entry.originalDriveId,
                                 sidecarDriveId = entry.sidecarDriveId,
-                                folderId = id)
+                                folderId = id,
+                                createdTimeMs = entry.createdTimeMs)
                         }
                     }
                 }.onSuccess { items ->
@@ -1202,6 +1209,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                             originalDriveId = originalId,
                             sidecarDriveId = sidecarIdByItemId[file.id],
                             folderId = id,
+                            createdTimeMs = file.createdTimeMs,
                         )
                     }
                 }
@@ -1669,7 +1677,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     runCatching { src.delete() }
                     dest.takeIf { it.exists() }
                 }
-                val newImage = DriveImage(uploadedId, displayCache.absolutePath, uploadedName, tags = null, folderId = id)
+                val newImage = DriveImage(uploadedId, displayCache.absolutePath, uploadedName, tags = null, folderId = id, createdTimeMs = System.currentTimeMillis())
                 _state.update { it.copy(
                     isUploading = false,
                     images = listOf(newImage) + it.images,
@@ -1824,7 +1832,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     val displayCache = File(drive.cacheDir, "${uploaded.id}.jpg")
                     tempFile.copyTo(displayCache, overwrite = true)
                     tempFile.copyTo(File(drive.cacheDir, "${uploaded.id}_original.jpg"), overwrite = true)
-                    DriveImage(uploaded.id, displayCache.absolutePath, uploaded.name, tags = null, folderId = id)
+                    DriveImage(uploaded.id, displayCache.absolutePath, uploaded.name, tags = null, folderId = id, createdTimeMs = System.currentTimeMillis())
                 }.onSuccess { newImage ->
                     _state.update { it.copy(
                         images = listOf(newImage) + it.images,
@@ -2049,7 +2057,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             } else emptyList()
             val existingIds = existing.map { it.driveId }.toSet()
             val additions = items.filter { it.driveId !in existingIds }.map { img ->
-                LocalCacheEntry(img.driveId, img.name, img.tags, img.originalDriveId, img.sidecarDriveId)
+                LocalCacheEntry(img.driveId, img.name, img.tags, img.originalDriveId, img.sidecarDriveId, img.createdTimeMs)
             }
             if (additions.isNotEmpty()) {
                 cacheFile.writeText(gson.toJson(LocalCache(existing + additions)))
@@ -2351,6 +2359,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                             localPath = entry.cachedFilePath,
                             name = entry.displayName,
                             folderId = id,
+                            createdTimeMs = System.currentTimeMillis(),
                         ),
                         processingImageId = placeholderId,
                     )
@@ -2411,6 +2420,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                         tags = tags,
                         originalDriveId = finalOriginalId,
                         folderId = id,
+                        createdTimeMs = System.currentTimeMillis(),
                     )
                     _state.update { s ->
                         s.copy(images = if (placeholderId != null)
