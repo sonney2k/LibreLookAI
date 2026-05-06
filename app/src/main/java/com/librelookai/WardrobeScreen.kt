@@ -1423,6 +1423,19 @@ internal fun FullScreenViewer(
                             ))
                         },
                     )
+                    if (locations.any { it.folderId != activeLocationId }) {
+                        ExtendedFloatingActionButton(
+                            onClick = {
+                                Analytics.action("ItemViewer", "open_move_dialog")
+                                showEditMenu = false
+                                showMoveDialog = true
+                            },
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            icon = { Icon(Icons.Default.Place, contentDescription = null) },
+                            text = { Text(stringResource(R.string.wardrobe_move_to)) },
+                        )
+                    }
                     ExtendedFloatingActionButton(
                         onClick = {
                             Analytics.action("ItemViewer", "open_delete_dialog")
@@ -2282,11 +2295,8 @@ private fun FindByPhotoResultsSheet(
                     previewIndex = null
                     onPickMatch(image)
                 },
-                onAddToShoppingList = {
-                    previewIndex = null
-                    onAddToShoppingList(findByPhoto.queryPath)
-                },
-                canAddToShoppingList = true,
+                onAddToShoppingList = {},
+                canAddToShoppingList = false,
                 onDismiss = { previewIndex = null },
             )
         }
