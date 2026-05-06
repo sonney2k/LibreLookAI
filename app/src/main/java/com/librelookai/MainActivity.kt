@@ -257,6 +257,11 @@ class MainActivity : ComponentActivity() {
                         wardrobeViewModel.setPreferLocalBgRemoval(preferLocalBg)
                     }
 
+                    val debugSimilarityPreview = profileState.preferences.debugSimilarityPreview
+                    LaunchedEffect(debugSimilarityPreview) {
+                        wardrobeViewModel.setDebugSimilarityPreview(debugSimilarityPreview)
+                    }
+
                     // Apply selected language as the Compose context locale
                     val language = profileState.preferences.language
                     val baseContext = LocalContext.current

@@ -134,7 +134,7 @@ class ShoppingHelperViewModel(app: Application) : AndroidViewModel(app) {
      * subdir, runs segmentation + prep manually so the debug preview can show the same pixels
      * we hand to the embedder, embeds, searches the index, and publishes [matches].
      */
-    fun onCapturedFile(file: File, images: List<DriveImage>) {
+    fun onCapturedFile(file: File, images: List<DriveImage>, debug: Boolean = false) {
         viewModelScope.launch {
             if (!EmbeddingService.isModelAvailable()) {
                 _state.update {
@@ -173,7 +173,7 @@ class ShoppingHelperViewModel(app: Application) : AndroidViewModel(app) {
             val sim = EmbeddingService.findSimilarWithDebug(
                 file = queryFile,
                 threshold = -1f,
-                topK = TOP_K,
+                topK = if (debug) TOP_K_DEBUG else TOP_K,
                 processedOutputDir = processedDir,
             )
             if (sim == null) {
@@ -230,5 +230,6 @@ class ShoppingHelperViewModel(app: Application) : AndroidViewModel(app) {
         private const val TAG = "ShoppingHelperVM"
         private const val QUERY_DIR = "shop_queries"
         private const val TOP_K = 10
+        private const val TOP_K_DEBUG = 50
     }
 }

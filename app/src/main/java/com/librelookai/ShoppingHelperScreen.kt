@@ -127,6 +127,7 @@ fun ShoppingHelperScreen(
 ) {
     val shoppingState by shoppingViewModel.state.collectAsState()
     val wardrobeState by wardrobeViewModel.state.collectAsState()
+    val profileStateTop by profileViewModel.state.collectAsState()
     val locationState by locationViewModel.state.collectAsState()
     val shoppingClosetStateTop by shoppingClosetViewModel.state.collectAsState()
 
@@ -157,7 +158,11 @@ fun ShoppingHelperScreen(
     if (shoppingState.isCapturing) {
         CaptureScreen(
             onPhotoTaken = { file ->
-                shoppingViewModel.onCapturedFile(file, wardrobeState.allLocationImages)
+                shoppingViewModel.onCapturedFile(
+                    file,
+                    wardrobeState.allLocationImages,
+                    debug = profileStateTop.preferences.debugSimilarityPreview,
+                )
             },
             onCancel = shoppingViewModel::cancelCapture,
             locations = emptyList(),
@@ -942,7 +947,7 @@ private fun QueryCard(queryPath: String) {
 @Composable
 internal fun MatchRow(match: ShopMatch, onClick: () -> Unit) {
     val context = LocalContext.current
-    val percent = ((match.score.coerceIn(-1f, 1f) + 1f) / 2f * 100f).toInt()
+    val percent = (match.score.coerceIn(0f, 1f) * 100f).toInt()
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -1123,7 +1128,7 @@ internal fun MatchPreviewDialog(
 
 @Composable
 private fun MatchDefaultPage(match: ShopMatch) {
-    val combinedPercent = ((match.score.coerceIn(-1f, 1f) + 1f) / 2f * 100f).toInt()
+    val combinedPercent = (match.score.coerceIn(0f, 1f) * 100f).toInt()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -1223,14 +1228,14 @@ private fun MatchDebugPage(
         value = withContext(Dispatchers.IO) { EmbeddingService.index.entry(match.image.driveId) }
     }
 
-    val combinedPercent = ((match.score.coerceIn(-1f, 1f) + 1f) / 2f * 100f).toInt()
+    val combinedPercent = (match.score.coerceIn(0f, 1f) * 100f).toInt()
     val embCos = remember(queryVec, matchEntry) {
         val q = queryVec; val e = matchEntry?.vec
         if (q != null && e != null && q.size == e.size) dot(q, e) else null
     }
     val histCos = remember(queryHist, matchEntry) {
         val q = queryHist; val h = matchEntry?.hist
-        if (q != null && h != null) ColorHistogram.cosine(q, h) else null
+        if (q != null && h != null) ColorHistogram.intersection(q, h) else null
     }
     // Best Hamming similarity between the query's canonical pHash and the match's 24 rotated
     // hashes. Mirrors the rotation-invariant pHash term that `EmbeddingIndex.search` folds into
@@ -1260,7 +1265,7 @@ private fun MatchDebugPage(
                     fontWeight = FontWeight.SemiBold,
                 )
                 Text(
-                    "embedding cos = ${formatCos(embCos)}   ·   histogram cos = ${formatCos(histCos)}   ·   pHash sim = ${formatCos(pHashSim)}",
+                    "embedding cos = ${formatCos(embCos)}   ·   histogram ∩ = ${formatCos(histCos)}   ·   pHash sim = ${formatCos(pHashSim)}",
                     color = Color.White.copy(alpha = 0.8f),
                     style = MaterialTheme.typography.labelSmall,
                 )

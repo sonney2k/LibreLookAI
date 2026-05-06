@@ -377,6 +377,9 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     /** Mirrors UserPreferences.preferLocalBgRemoval — when true, camera/gallery imports route through
      *  the on-device segmenter review screen. URL imports always do. */
     private var preferLocalBgRemoval: Boolean = false
+    /** Mirrors UserPreferences.debugSimilarityPreview — when on, similarity searches return up to
+     *  50 matches so the debug breakdown has more candidates to scroll through. */
+    private var debugSimilarityPreview: Boolean = false
 
     /** Serializes all Drive metadata writes to prevent concurrent saves overwriting each other. */
     private val metaMutex = Mutex()
@@ -407,6 +410,9 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Push UserPreferences.preferLocalBgRemoval into the VM. Called from MainActivity. */
     fun setPreferLocalBgRemoval(enabled: Boolean) { preferLocalBgRemoval = enabled }
+
+    /** Push UserPreferences.debugSimilarityPreview into the VM. Called from MainActivity. */
+    fun setDebugSimilarityPreview(enabled: Boolean) { debugSimilarityPreview = enabled }
 
     /** Set the folder that new photo imports target. Null = fall back to the active view folder. */
     fun setDefaultImportFolderId(folderId: String?) {
@@ -1447,7 +1453,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             val sim = EmbeddingService.findSimilarWithDebug(
                 file = rawFile,
                 threshold = -1f,
-                topK = 12,
+                topK = if (debugSimilarityPreview) 50 else 12,
                 processedOutputDir = File(getApplication<Application>().cacheDir, QUERY_DEBUG_DIR),
             )
             val byId = crossClosetImages.associateBy { it.driveId }
@@ -1519,7 +1525,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 val sim = EmbeddingService.findSimilarWithDebug(
                     file = rawFile,
                     threshold = dedupeThreshold,
-                    topK = 8,
+                    topK = if (debugSimilarityPreview) 50 else 8,
                     processedOutputDir = File(getApplication<Application>().cacheDir, QUERY_DEBUG_DIR),
                 )
                 val byId = crossClosetImages.associateBy { it.driveId }
@@ -2164,7 +2170,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 val matches = EmbeddingService.findSimilar(
                     file = File(entry.cachedFilePath),
                     threshold = dedupeThreshold,
-                    topK = 4,
+                    topK = if (debugSimilarityPreview) 50 else 4,
                     segment = true,
                 )
                 val resolved = matches.mapNotNull { m ->
