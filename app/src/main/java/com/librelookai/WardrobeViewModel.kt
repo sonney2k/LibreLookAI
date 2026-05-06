@@ -1343,7 +1343,13 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             try {
                 runCatching { processQueuedImage(job) }
                     .onFailure { e -> _state.update { it.copy(error = e.message) } }
-                _state.update { it.copy(pendingJobs = maxOf(0, it.pendingJobs - 1)) }
+                _state.update { s ->
+                    s.copy(
+                        pendingJobs = maxOf(0, s.pendingJobs - 1),
+                        processingImageId = if (s.processingImageId == job.driveId)
+                            null else s.processingImageId,
+                    )
+                }
                 // Sidecar is saved inside processQueuedImage; update local cache here
                 folderId?.let { id -> saveLocalCache(id, _state.value.images) }
             } finally {
@@ -1355,6 +1361,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     private suspend fun processQueuedImage(job: PendingJob) {
         val rawFile = File(drive.cacheDir, "${job.driveId}_original.jpg")
         if (!rawFile.exists()) return
+        _state.update { it.copy(processingImageId = job.driveId) }
         // NOTE: we intentionally do NOT check if job.driveId is still in state — loadImages()
         // may have replaced it with the cutout ID already (race window). We always process.
 
@@ -1387,15 +1394,19 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         // Step 6 — update state. Match by rawId OR cutoutId: if loadImages() ran concurrently
         // it may have already placed the item in state with cutoutDrive.id.
         _state.update { s ->
-            s.copy(images = s.images.map { img ->
-                if (img.driveId == job.driveId || img.driveId == cutoutDrive.id) img.copy(
-                    driveId    = cutoutDrive.id,
-                    name       = cutoutDrive.name,          // "{cutoutId}_cutout.png"
-                    localPath  = localCutout.absolutePath,
-                    version    = System.currentTimeMillis(),
-                    originalDriveId = originalDriveId,
-                ) else img
-            })
+            s.copy(
+                images = s.images.map { img ->
+                    if (img.driveId == job.driveId || img.driveId == cutoutDrive.id) img.copy(
+                        driveId    = cutoutDrive.id,
+                        name       = cutoutDrive.name,          // "{cutoutId}_cutout.png"
+                        localPath  = localCutout.absolutePath,
+                        version    = System.currentTimeMillis(),
+                        originalDriveId = originalDriveId,
+                    ) else img
+                },
+                processingImageId = if (s.processingImageId == job.driveId)
+                    cutoutDrive.id else s.processingImageId,
+            )
         }
 
         // Step 7 — classify clothing tags
@@ -1420,6 +1431,10 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     if (img.driveId == cutoutDrive.id) img.copy(sidecarDriveId = sidecarId) else img
                 })
             }
+        }
+        _state.update { s ->
+            if (s.processingImageId == cutoutDrive.id || s.processingImageId == job.driveId)
+                s.copy(processingImageId = null) else s
         }
     }
 
@@ -2265,6 +2280,23 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 runCatching { tempFile.delete() }
                 return@forEachIndexed
             }
+            val placeholderId: String? = if (duplicate == null)
+                "__importing_${index}_${System.nanoTime()}" else null
+            if (placeholderId != null) {
+                _state.update { s ->
+                    s.copy(
+                        images = s.images + DriveImage(
+                            driveId = placeholderId,
+                            localPath = entry.cachedFilePath,
+                            name = entry.displayName,
+                            folderId = id,
+                        ),
+                        processingImageId = placeholderId,
+                    )
+                }
+            } else {
+                _state.update { it.copy(processingImageId = duplicate!!.driveId) }
+            }
             runCatching {
                 if (!tempFile.exists()) error("Cached file missing for ${entry.displayName}")
                 var imageToUpload = tempFile
@@ -2311,18 +2343,31 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                         orig.copyTo(File(drive.cacheDir, "${cutoutUploaded.id}_original.jpg"), overwrite = true)
                         oid
                     } ?: originalDriveId
-                    _state.update { it.copy(images = it.images + DriveImage(
+                    val newImage = DriveImage(
                         driveId = cutoutUploaded.id,
                         localPath = displayCache.absolutePath,
                         name = cutoutUploaded.name,
                         tags = tags,
                         originalDriveId = finalOriginalId,
                         folderId = id,
-                    )) }
+                    )
+                    _state.update { s ->
+                        s.copy(images = if (placeholderId != null)
+                            s.images.map { if (it.driveId == placeholderId) newImage else it }
+                        else s.images + newImage)
+                    }
                 }
             }.onFailure { e ->
-                _state.update { it.copy(error = "Import failed for ${entry.displayName}: ${e.message}") }
+                _state.update { s ->
+                    s.copy(
+                        error = "Import failed for ${entry.displayName}: ${e.message}",
+                        images = if (placeholderId != null)
+                            s.images.filterNot { it.driveId == placeholderId }
+                        else s.images,
+                    )
+                }
             }
+            _state.update { it.copy(processingImageId = null) }
             runCatching { tempFile.delete() }
         }
         _state.update { it.copy(isImporting = false, importDone = 0, importTotal = 0) }

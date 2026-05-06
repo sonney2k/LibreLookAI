@@ -895,6 +895,7 @@ private fun GridContent(
                             { null }
                         },
                         highlightedDriveId = highlightedDriveId,
+                        processingDriveId = state.processingImageId,
                     )
                 }
             }

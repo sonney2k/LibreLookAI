@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -57,6 +58,7 @@ internal fun WardrobeTile(
     image: DriveImage,
     isSelected: Boolean,
     isHighlighted: Boolean,
+    isProcessing: Boolean,
     locationName: String?,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
@@ -125,6 +127,19 @@ internal fun WardrobeTile(
                     )
                 }
             }
+            if (isProcessing) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.35f)),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.primary,
+                        strokeWidth = 3.dp,
+                    )
+                }
+            }
         }
         val itemLabel = image.tags?.label?.ifEmpty { null }
         if (itemLabel != null) {
@@ -156,6 +171,7 @@ internal fun WardrobeZoomableItemGrid(
     gridState: LazyGridState = rememberLazyGridState(),
     locationLookup: (DriveImage) -> String? = { null },
     highlightedDriveId: String? = null,
+    processingDriveId: String? = null,
 ) {
     var cellSizeDp by rememberSaveable { mutableFloatStateOf(120f) }
     var pinchVisualScale by remember { mutableFloatStateOf(1f) }
@@ -193,6 +209,7 @@ internal fun WardrobeZoomableItemGrid(
             cellSizeDp = cellSizeDp.dp,
             locationLookup = locationLookup,
             highlightedDriveId = highlightedDriveId,
+            processingDriveId = processingDriveId,
         )
     }
 }
@@ -215,6 +232,7 @@ internal fun WardrobeItemGrid(
     cellSizeDp: Dp = 120.dp,
     locationLookup: (DriveImage) -> String? = { null },
     highlightedDriveId: String? = null,
+    processingDriveId: String? = null,
 ) {
     LazyVerticalGrid(
         state = gridState,
@@ -226,6 +244,7 @@ internal fun WardrobeItemGrid(
                 image = image,
                 isSelected = image.driveId in selectedIds,
                 isHighlighted = image.driveId == highlightedDriveId,
+                isProcessing = image.driveId == processingDriveId,
                 locationName = locationLookup(image),
                 onClick = { onClick(index, image) },
                 onLongClick = { onLongClick(image) },
