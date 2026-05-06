@@ -237,7 +237,7 @@ internal fun WardrobeItemGrid(
     LazyVerticalGrid(
         state = gridState,
         columns = GridCells.Adaptive(cellSizeDp),
-        modifier = modifier,
+        modifier = modifier.scrollbar(gridState),
     ) {
         itemsIndexed(images, key = { _, img -> img.driveId }) { index, image ->
             WardrobeTile(

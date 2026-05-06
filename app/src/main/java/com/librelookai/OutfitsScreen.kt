@@ -29,6 +29,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
@@ -564,8 +565,10 @@ private fun OutfitListScreen(
                     }
                 }
                 else -> {
+                    val outfitsListState = rememberLazyListState()
                     LazyColumn(
-                        modifier = Modifier.weight(1f).fillMaxWidth(),
+                        state = outfitsListState,
+                        modifier = Modifier.weight(1f).fillMaxWidth().scrollbar(outfitsListState),
                         contentPadding = PaddingValues(
                             top = 8.dp,
                             bottom = if (isSelectionMode) 96.dp else 8.dp,
