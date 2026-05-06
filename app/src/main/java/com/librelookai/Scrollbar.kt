@@ -144,19 +144,15 @@ fun Modifier.scrollbar(state: LazyGridState): Modifier = composed {
     val scope = rememberCoroutineScope()
     var dragging by remember { mutableStateOf(false) }
     LaunchedEffect(state) {
-        snapshotFlow { state.isScrollInProgress }
+        snapshotFlow { state.isScrollInProgress || dragging }
             .distinctUntilChanged()
-            .collect { scrolling ->
-                if (scrolling) {
+            .collect { active ->
+                if (active) {
                     alpha.snapTo(1f)
-                } else if (!dragging) {
+                } else {
                     alpha.animateTo(0f, animationSpec = tween(durationMillis = 600, delayMillis = 400))
                 }
             }
-    }
-    LaunchedEffect(dragging) {
-        if (dragging) alpha.snapTo(1f)
-        else alpha.animateTo(0f, animationSpec = tween(durationMillis = 600, delayMillis = 400))
     }
     Modifier
         .pointerInput(state) {
@@ -192,19 +188,15 @@ fun Modifier.scrollbar(state: LazyListState): Modifier = composed {
     val scope = rememberCoroutineScope()
     var dragging by remember { mutableStateOf(false) }
     LaunchedEffect(state) {
-        snapshotFlow { state.isScrollInProgress }
+        snapshotFlow { state.isScrollInProgress || dragging }
             .distinctUntilChanged()
-            .collect { scrolling ->
-                if (scrolling) {
+            .collect { active ->
+                if (active) {
                     alpha.snapTo(1f)
-                } else if (!dragging) {
+                } else {
                     alpha.animateTo(0f, animationSpec = tween(durationMillis = 600, delayMillis = 400))
                 }
             }
-    }
-    LaunchedEffect(dragging) {
-        if (dragging) alpha.snapTo(1f)
-        else alpha.animateTo(0f, animationSpec = tween(durationMillis = 600, delayMillis = 400))
     }
     Modifier
         .pointerInput(state) {
