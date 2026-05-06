@@ -95,14 +95,14 @@ internal fun WardrobeTile(
                         .align(Alignment.TopEnd)
                         .padding(3.dp)
                         .background(
-                            color = Color.Black.copy(alpha = 0.45f),
+                            color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.85f),
                             shape = MaterialTheme.shapes.extraSmall,
                         )
                         .padding(horizontal = 4.dp, vertical = 1.dp),
                 ) {
                     Text(
                         text = locationName,
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
                         fontSize = 8.sp,
                         lineHeight = 10.sp,
                         maxLines = 1,

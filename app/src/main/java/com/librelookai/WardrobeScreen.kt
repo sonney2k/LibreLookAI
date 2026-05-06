@@ -59,6 +59,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ImageSearch
 import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.foundation.BorderStroke
@@ -87,7 +88,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
-import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -1257,7 +1257,7 @@ private fun UrlImportDialog(
 
 // ---------- Full-screen image viewer ----------
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 internal fun FullScreenViewer(
     images: List<DriveImage>,
@@ -1290,6 +1290,7 @@ internal fun FullScreenViewer(
     var showItemActions by remember { mutableStateOf(false) }
     var showMoveDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var showEditMenu by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -1316,41 +1317,58 @@ internal fun FullScreenViewer(
             )
         }
 
-        Text(
-            text = "${pagerState.currentPage + 1} / ${images.size}",
-            color = MaterialTheme.colorScheme.onBackground,
-            style = MaterialTheme.typography.labelMedium,
-            modifier = Modifier.align(Alignment.TopCenter).statusBarsPadding().padding(top = 12.dp),
-        )
-
         val currentImage = images[pagerState.currentPage]
         if (currentImage.driveId == processingImageId) {
             AiProcessingOverlay(modifier = Modifier.fillMaxSize())
         }
 
-        TagsOverlay(
-            tags = currentImage.tags,
-            hasOriginal = currentImage.originalDriveId != null,
-            showActions = writeMode,
-            onTagImage = {
-                Analytics.action("ItemViewer", "tag_image")
-                onTagImage(currentImage.driveId)
-            },
-            onRemoveBackground = {
-                Analytics.action("ItemViewer", "remove_background")
-                onRemoveBackground(currentImage.driveId)
-            },
-            onEditTags = {
-                Analytics.action("ItemViewer", "edit_tags")
-                showTagEdit = true
-            },
+        val headerLabel = currentImage.tags?.label?.takeIf { it.isNotBlank() } ?: currentImage.name
+        Column(
             modifier = Modifier
-                .align(Alignment.TopEnd)
+                .align(Alignment.TopCenter)
                 .statusBarsPadding()
-                .padding(top = 8.dp, end = 8.dp),
-        )
+                .padding(top = 8.dp, start = 56.dp, end = 56.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            Text(
+                text = headerLabel,
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.titleMedium,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Text(
+                text = "${pagerState.currentPage + 1} / ${images.size}",
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.labelMedium,
+            )
+            currentImage.tags?.let { tags ->
+                val maxWidth = LocalConfiguration.current.screenWidthDp.dp * 0.7f
+                FlowRow(
+                    modifier = Modifier
+                        .widthIn(max = maxWidth)
+                        .then(if (writeMode) Modifier.clickable {
+                            Analytics.action("ItemViewer", "edit_tags")
+                            showTagEdit = true
+                        } else Modifier),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                ) {
+                    if (tags.type.isNotEmpty()) DetailTagChip(tags.type.localizedTagValue())
+                    if (tags.category.isNotEmpty()) DetailTagChip(tags.category.localizedTagValue())
+                    tags.uses.forEach { DetailTagChip(it.localizedTagValue()) }
+                    tags.colors.forEach { DetailTagChip(it.localizedTagValue()) }
+                    tags.seasonality.forEach { DetailTagChip(it.localizedTagValue()) }
+                    tags.aesthetic.forEach { DetailTagChip(it.localizedTagValue()) }
+                    tags.fit.forEach { DetailTagChip(it.localizedTagValue()) }
+                    tags.material.forEach { DetailTagChip(it.localizedTagValue()) }
+                    tags.pattern.forEach { DetailTagChip(it.localizedTagValue()) }
+                }
+            }
+        }
 
-        // Close button — second-to-last so rotate is the topmost element.
+        // Close button.
         IconButton(
             onClick = onDismiss,
             modifier = Modifier.align(Alignment.TopStart).statusBarsPadding().padding(8.dp),
@@ -1358,24 +1376,70 @@ internal fun FullScreenViewer(
             Icon(Icons.Default.Close, contentDescription = "Close", tint = MaterialTheme.colorScheme.onBackground)
         }
 
-        // Rotate button — LAST child = highest Z-order. Explicit white/black colours so it is
-        // always visible against the black viewer background regardless of dynamic theming.
+        // Edit speed-dial — same style as Wardrobe + FAB. Expands to rotate / detect tags / remove bg.
         if (!isOffline && writeMode) {
-            SmallFloatingActionButton(
-                onClick = {
-                    Analytics.action("ItemViewer", "rotate_image")
-                    onRotateImage(currentImage.driveId)
-                },
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(16.dp),
-                containerColor = Color.White,
-                contentColor = Color.Black,
+            Column(
+                modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                Icon(
-                    Icons.AutoMirrored.Filled.RotateRight,
-                    contentDescription = stringResource(R.string.wardrobe_tag_rotate),
-                )
+                if (showEditMenu) {
+                    ExtendedFloatingActionButton(
+                        onClick = {
+                            Analytics.action("ItemViewer", "rotate_image")
+                            onRotateImage(currentImage.driveId)
+                            showEditMenu = false
+                        },
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        icon = { Icon(Icons.AutoMirrored.Filled.RotateRight, contentDescription = null) },
+                        text = { Text(stringResource(R.string.wardrobe_tag_rotate)) },
+                    )
+                    ExtendedFloatingActionButton(
+                        onClick = {
+                            Analytics.action("ItemViewer", "tag_image")
+                            onTagImage(currentImage.driveId)
+                            showEditMenu = false
+                        },
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        icon = { Icon(Icons.Default.AutoFixHigh, contentDescription = null) },
+                        text = { Text(stringResource(R.string.wardrobe_tag_detect)) },
+                    )
+                    ExtendedFloatingActionButton(
+                        onClick = {
+                            Analytics.action("ItemViewer", "remove_background")
+                            onRemoveBackground(currentImage.driveId)
+                            showEditMenu = false
+                        },
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        icon = { Icon(Icons.Default.ImageSearch, contentDescription = null) },
+                        text = {
+                            Text(stringResource(
+                                if (currentImage.originalDriveId != null) R.string.wardrobe_tag_re_remove_bg
+                                else R.string.wardrobe_tag_remove_bg
+                            ))
+                        },
+                    )
+                    ExtendedFloatingActionButton(
+                        onClick = {
+                            Analytics.action("ItemViewer", "open_delete_dialog")
+                            showEditMenu = false
+                            showDeleteDialog = true
+                        },
+                        containerColor = MaterialTheme.colorScheme.errorContainer,
+                        contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                        icon = { Icon(Icons.Default.Delete, contentDescription = null) },
+                        text = { Text(stringResource(R.string.action_delete)) },
+                    )
+                }
+                FloatingActionButton(onClick = { showEditMenu = !showEditMenu }) {
+                    Icon(
+                        if (showEditMenu) Icons.Default.Close else Icons.Default.Edit,
+                        contentDescription = stringResource(R.string.wardrobe_tag_edit),
+                    )
+                }
             }
         }
     }
@@ -1919,6 +1983,21 @@ private fun ChipListEditor(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun DetailTagChip(label: String) {
+    Surface(
+        shape = MaterialTheme.shapes.extraSmall,
+        color = MaterialTheme.colorScheme.secondaryContainer,
+    ) {
+        Text(
+            text = label,
+            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
+        )
     }
 }
 
