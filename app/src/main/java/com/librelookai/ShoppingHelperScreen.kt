@@ -265,7 +265,7 @@ fun ShoppingHelperScreen(
                 locations = locationState.locations,
                 activeLocationId = locationState.activeLocationId,
                 onCaptureClick = { isClosetCapturing = true },
-                onRefreshWardrobe = wardrobeViewModel::loadImages,
+                onItemsMovedToCloset = wardrobeViewModel::notifyItemsMovedTo,
                 onCreateOutfitFromSelection = onCreateOutfitFromSelection,
                 onTryOnSelection = onTryOnSelection,
                 canTryOn = canTryOn,
@@ -296,7 +296,7 @@ private fun ShoppingListTab(
     locations: List<Location>,
     activeLocationId: String,
     onCaptureClick: () -> Unit,
-    onRefreshWardrobe: () -> Unit,
+    onItemsMovedToCloset: (String, List<DriveImage>) -> Unit,
     onCreateOutfitFromSelection: (Set<String>) -> Unit,
     onTryOnSelection: (Set<String>) -> Unit,
     canTryOn: Boolean,
@@ -534,7 +534,7 @@ private fun ShoppingListTab(
                 },
                 onMoveToLocation = { ids, folderId ->
                     shoppingClosetViewModel.moveToCloset(ids, folderId) { moved ->
-                        if (moved.isNotEmpty()) onRefreshWardrobe()
+                        if (moved.isNotEmpty()) onItemsMovedToCloset(folderId, moved)
                     }
                     if (displayedItems.size <= 1) selectedIndex = null
                 },
@@ -573,7 +573,7 @@ private fun ShoppingListTab(
             onConfirm = { folderId ->
                 showMoveDialog = false
                 shoppingClosetViewModel.moveToCloset(state.selectedIds, folderId) { moved ->
-                    if (moved.isNotEmpty()) onRefreshWardrobe()
+                    if (moved.isNotEmpty()) onItemsMovedToCloset(folderId, moved)
                 }
             },
             onDismiss = { showMoveDialog = false },

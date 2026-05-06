@@ -391,6 +391,21 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     private var loadJob: Job? = null
 
     /**
+     * Tracks items recently moved into another closet. Drive's `q='<folder>' in parents` query
+     * is eventually consistent — after a move PATCH the destination folder's listing can lag
+     * by up to a minute. We use this map to (a) re-inject moved items into Phase 2 results
+     * while Drive catches up, so they don't briefly disappear after [setLocation] to the target.
+     * Keyed by cutout driveId → (targetFolderId, expiresAtMs).
+     */
+    private val recentlyMovedItems = java.util.concurrent.ConcurrentHashMap<String, Pair<String, Long>>()
+    private val recentlyMovedTtlMs: Long = 2 * 60 * 1000L
+
+    private fun pruneRecentlyMoved() {
+        val now = System.currentTimeMillis()
+        recentlyMovedItems.entries.removeAll { it.value.second < now }
+    }
+
+    /**
      * Background processing queue. Each item represents one uploaded photo that needs
      * bg removal + classification. Processed serially so metadata writes are consistent.
      */
@@ -985,6 +1000,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
     fun loadImages() {
         loadJob?.cancel()
+        pruneRecentlyMoved()
         loadJob = viewModelScope.launch {
             val ids = allFolderIds
             if (ids != null) {
@@ -1078,7 +1094,10 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     }
                     val freshIds = allFresh.map { it.driveId }.toSet()
                     val pendingRaw = _state.value.images.filter { img ->
-                        img.driveId !in freshIds && !img.name.endsWith(DriveRepository.CUTOUT_SUFFIX)
+                        img.driveId !in freshIds && (
+                            !img.name.endsWith(DriveRepository.CUTOUT_SUFFIX) ||
+                                recentlyMovedItems[img.driveId]?.first == img.folderId
+                            )
                     }
                     allFresh + pendingRaw
                 }.onSuccess { images ->
@@ -1187,10 +1206,15 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     }
                 }
 
-                // Preserve raw/pending uploads that are in the queue but not yet on Drive as cutouts
+                // Preserve raw/pending uploads that are in the queue but not yet on Drive as
+                // cutouts, plus items recently moved into this folder whose new parent Drive
+                // hasn't propagated to `q='<id>' in parents` yet (eventual consistency).
                 val freshIds = freshImages.map { it.driveId }.toSet()
                 val pendingRaw = _state.value.images.filter { img ->
-                    img.driveId !in freshIds && !img.name.endsWith(DriveRepository.CUTOUT_SUFFIX)
+                    img.driveId !in freshIds && (
+                        !img.name.endsWith(DriveRepository.CUTOUT_SUFFIX) ||
+                            recentlyMovedItems[img.driveId]?.first == id
+                        )
                 }
 
                 // Migrate legacy items to sidecars fire-and-forget
@@ -2000,9 +2024,46 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 affectedFolderIds.forEach { fid ->
                     saveLocalCache(fid, _state.value.images.filter { it.folderId == fid })
                 }
+                notifyItemsMovedTo(targetFolderId, movedItems.map { it.copy(folderId = targetFolderId) })
             }
             _state.update { it.copy(isMoving = false) }
         }
+    }
+
+    /**
+     * Records that [items] have been moved into [targetFolderId] (their cutout/original/sidecar
+     * Drive IDs are unchanged, so the local cache files are still valid). Merges them into the
+     * target folder's `wardrobe_cache_*.json` so [setLocation] to that folder shows them in
+     * Phase 1 instantly, and remembers them so Phase 2 won't drop them while Drive's listing
+     * is still propagating. Callable from other view models (e.g. shopping move-to-closet).
+     */
+    fun notifyItemsMovedTo(targetFolderId: String, items: List<DriveImage>) {
+        if (items.isEmpty() || targetFolderId.isEmpty()) return
+        val expiry = System.currentTimeMillis() + recentlyMovedTtlMs
+        items.forEach { recentlyMovedItems[it.driveId] = targetFolderId to expiry }
+        runCatching {
+            val cacheFile = localCacheFile(targetFolderId)
+            val existing: List<LocalCacheEntry> = if (cacheFile.exists()) {
+                runCatching { gson.fromJson(cacheFile.readText(), LocalCache::class.java).items }
+                    .getOrDefault(emptyList())
+            } else emptyList()
+            val existingIds = existing.map { it.driveId }.toSet()
+            val additions = items.filter { it.driveId !in existingIds }.map { img ->
+                LocalCacheEntry(img.driveId, img.name, img.tags, img.originalDriveId, img.sidecarDriveId)
+            }
+            if (additions.isNotEmpty()) {
+                cacheFile.writeText(gson.toJson(LocalCache(existing + additions)))
+            }
+        }
+        // If the target closet is the one currently shown, splice the items in immediately.
+        if (folderId == targetFolderId || allFolderIds?.contains(targetFolderId) == true) {
+            val currentIds = _state.value.images.map { it.driveId }.toSet()
+            val toAdd = items.filter { it.driveId !in currentIds }
+            if (toAdd.isNotEmpty()) {
+                _state.update { s -> s.copy(images = s.images + toAdd) }
+            }
+        }
+        refreshAllLocationImagesState()
     }
 
     // ---------- SAF Import ----------

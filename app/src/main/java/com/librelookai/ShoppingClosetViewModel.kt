@@ -401,13 +401,16 @@ class ShoppingClosetViewModel(app: Application) : AndroidViewModel(app) {
      * caller is responsible for telling [WardrobeViewModel] to reload the destination closet so
      * the items appear there.
      */
-    fun moveToCloset(driveIds: Set<String>, targetFolderId: String, onMoved: (Set<String>) -> Unit) {
-        if (driveIds.isEmpty()) { onMoved(emptySet()); return }
-        val sourceFolderId = shoppingFolderId ?: run { onMoved(emptySet()); return }
-        if (sourceFolderId == targetFolderId) { onMoved(driveIds); return }
+    fun moveToCloset(driveIds: Set<String>, targetFolderId: String, onMoved: (List<DriveImage>) -> Unit) {
+        if (driveIds.isEmpty()) { onMoved(emptyList()); return }
+        val sourceFolderId = shoppingFolderId ?: run { onMoved(emptyList()); return }
+        if (sourceFolderId == targetFolderId) {
+            onMoved(_state.value.items.filter { it.driveId in driveIds })
+            return
+        }
 
         val toMove = _state.value.items.filter { it.driveId in driveIds }
-        if (toMove.isEmpty()) { onMoved(emptySet()); return }
+        if (toMove.isEmpty()) { onMoved(emptyList()); return }
 
         viewModelScope.launch {
             _state.update { it.copy(isMoving = true, selectedIds = emptySet(), error = null) }
@@ -431,12 +434,14 @@ class ShoppingClosetViewModel(app: Application) : AndroidViewModel(app) {
                     }
                 }.awaitAll().filterNotNull().toSet()
             }
+            val movedItems = toMove.filter { it.driveId in movedIds }
+                .map { it.copy(folderId = targetFolderId) }
             if (movedIds.isNotEmpty()) {
                 _state.update { s -> s.copy(items = s.items.filter { it.driveId !in movedIds }) }
                 saveLocalCache(sourceFolderId, _state.value.items)
             }
             _state.update { it.copy(isMoving = false) }
-            onMoved(movedIds)
+            onMoved(movedItems)
         }
     }
 
