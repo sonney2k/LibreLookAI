@@ -2025,25 +2025,34 @@ internal fun SortButton(
     modifier: Modifier = Modifier,
 ) {
     var expanded by remember { mutableStateOf(false) }
+    // DropdownMenu renders in its own popup window; re-provide LocalContext/LocalConfiguration
+    // so stringResource() honors the in-app language toggle.
+    val parentContext = LocalContext.current
+    val parentConfiguration = LocalConfiguration.current
     Box(modifier = modifier) {
         IconButton(onClick = { expanded = true }) {
-            Icon(Icons.AutoMirrored.Filled.Sort, contentDescription = "Sort")
+            Icon(Icons.AutoMirrored.Filled.Sort, contentDescription = stringResource(R.string.wardrobe_sort))
         }
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            SortOption.values().forEach { option ->
-                DropdownMenuItem(
-                    text = {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
-                            if (option == sortBy) Icon(Icons.Default.Check, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
-                            else Spacer(Modifier.size(18.dp))
-                            Text(option.displayLabel())
-                        }
-                    },
-                    onClick = { onSortChanged(option); expanded = false },
-                )
+            CompositionLocalProvider(
+                LocalContext provides parentContext,
+                LocalConfiguration provides parentConfiguration,
+            ) {
+                SortOption.values().forEach { option ->
+                    DropdownMenuItem(
+                        text = {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            ) {
+                                if (option == sortBy) Icon(Icons.Default.Check, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
+                                else Spacer(Modifier.size(18.dp))
+                                Text(option.displayLabel())
+                            }
+                        },
+                        onClick = { onSortChanged(option); expanded = false },
+                    )
+                }
             }
         }
     }

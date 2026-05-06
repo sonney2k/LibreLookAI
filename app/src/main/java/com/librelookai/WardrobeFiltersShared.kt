@@ -34,6 +34,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -45,6 +46,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.font.FontWeight
@@ -224,6 +227,11 @@ internal fun WardrobeFilterSheet(
 ) {
     if (tagCategories.isEmpty()) return
     val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
+    // Capture parent locale-aware context/configuration: ModalBottomSheet renders in its own
+    // window, so without this re-provide stringResource() would fall back to the system locale
+    // and ignore the in-app language toggle.
+    val parentContext = LocalContext.current
+    val parentConfiguration = LocalConfiguration.current
 
     // Pending state: edits stay local until Apply commits them.
     val pending = remember(selectedTags) {
@@ -244,6 +252,10 @@ internal fun WardrobeFilterSheet(
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
         containerColor = palette.sheetBg,
     ) {
+      CompositionLocalProvider(
+          LocalContext provides parentContext,
+          LocalConfiguration provides parentConfiguration,
+      ) {
         // ── Sticky header ──
         Row(
             modifier = Modifier
@@ -437,6 +449,7 @@ internal fun WardrobeFilterSheet(
             }
             Spacer(Modifier.height(16.dp))
         }
+      }
     }
 }
 

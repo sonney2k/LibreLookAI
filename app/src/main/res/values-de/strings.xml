@@ -236,6 +236,7 @@
     <string name="wardrobe_delete_text">Möchten Sie wirklich %d ausgewählte Artikel löschen? Dies kann nicht rückgängig gemacht werden.</string>
     <string name="wardrobe_move_to">Verschieben nach…</string>
     <string name="wardrobe_move_to_title">%d Teil(e) verschieben nach</string>
+    <string name="wardrobe_sort">Sortieren</string>
     <string name="wardrobe_sort_newest">Neueste zuerst</string>
     <string name="wardrobe_sort_oldest">Älteste zuerst</string>
     <string name="wardrobe_sort_most_worn">Am häufigsten getragen</string>

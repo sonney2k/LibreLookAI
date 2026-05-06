@@ -241,6 +241,7 @@
     <string name="wardrobe_delete_text">Are you sure you want to delete %d selected items? This cannot be undone.</string>
     <string name="wardrobe_move_to">Move to…</string>
     <string name="wardrobe_move_to_title">Move %d item(s) to</string>
+    <string name="wardrobe_sort">Sort</string>
     <string name="wardrobe_sort_newest">Newest first</string>
     <string name="wardrobe_sort_oldest">Oldest first</string>
     <string name="wardrobe_sort_most_worn">Most worn</string>
