@@ -14,7 +14,18 @@ import kotlinx.coroutines.launch
 
 data class LocationUiState(
     val locations: List<Location> = emptyList(),
-    val activeLocationId: String = "",
+    /**
+     * Currently selected closet filter. Always starts at [LocationViewModel.ALL_LOCATIONS_ID]
+     * on app launch — it is intentionally NOT persisted across sessions. The persisted
+     * "default closet" is [defaultClosetFolderId], which only governs the import target.
+     */
+    val activeLocationId: String = LocationViewModel.ALL_LOCATIONS_ID,
+    /**
+     * Folder ID of the default closet — used as the import target and as the default
+     * source when generating outfits. Persisted; independent of [activeLocationId].
+     * Null while still loading on first launch (falls back to first location).
+     */
+    val defaultClosetFolderId: String? = null,
     val isLoading: Boolean = true,
     val error: String? = null,
 )
@@ -37,6 +48,15 @@ class LocationViewModel(app: Application) : AndroidViewModel(app) {
             return if (_state.value.locations.any { it.folderId == id }) id else null
         }
 
+    /** The folderId of the default closet, or the first location as a fallback. */
+    val effectiveDefaultClosetFolderId: String?
+        get() {
+            val s = _state.value
+            val pref = s.defaultClosetFolderId
+            if (pref != null && s.locations.any { it.folderId == pref }) return pref
+            return s.locations.firstOrNull()?.folderId
+        }
+
     init {
         // Phase 1: restore last-known locations from SharedPreferences — instant, no network.
         restoreFromCache()
@@ -50,19 +70,21 @@ class LocationViewModel(app: Application) : AndroidViewModel(app) {
      */
     private fun restoreFromCache() {
         val cachedJson = prefs.getString(PREF_LOCATIONS_JSON, null) ?: return
-        val savedActiveId = prefs.getString(PREF_ACTIVE_ID, null) ?: return
         val type = object : TypeToken<List<Location>>() {}.type
         val locations: List<Location> = runCatching {
             gson.fromJson<List<Location>>(cachedJson, type) ?: emptyList()
         }.getOrNull() ?: return
         if (locations.isEmpty()) return
-        // activeLocationId is now folderId-based; migrate old id-based prefs transparently
-        val matchByFolder = locations.find { it.folderId == savedActiveId }
-        val matchById = if (matchByFolder == null) locations.find { it.id == savedActiveId } else null
-        val activeId = matchByFolder?.folderId ?: matchById?.folderId ?: locations[0].folderId
-        if (matchById != null) prefs.edit().putString(PREF_ACTIVE_ID, activeId).apply()
-        // isLoading stays true so the UI knows a Drive refresh is still in flight.
-        _state.value = LocationUiState(locations = locations, activeLocationId = activeId, isLoading = true)
+        val savedDefault = prefs.getString(PREF_DEFAULT_CLOSET_ID, null)
+            ?.takeIf { id -> locations.any { it.folderId == id } }
+        // activeLocationId always starts at "All" — not persisted. isLoading stays true so
+        // the UI knows a Drive refresh is still in flight.
+        _state.value = LocationUiState(
+            locations = locations,
+            activeLocationId = ALL_LOCATIONS_ID,
+            defaultClosetFolderId = savedDefault,
+            isLoading = true,
+        )
     }
 
     fun loadLocations() {
@@ -74,7 +96,6 @@ class LocationViewModel(app: Application) : AndroidViewModel(app) {
                     rootFolderId = it
                     prefs.edit().putString(PREF_ROOT_FOLDER_ID, it).apply()
                 }
-                val savedActiveId = prefs.getString(PREF_ACTIVE_ID, null)
 
                 val json = drive.loadLocationsJson(rootId)
                 val locations: List<Location> = if (json != null) {
@@ -87,20 +108,25 @@ class LocationViewModel(app: Application) : AndroidViewModel(app) {
                     val defaultLocation = Location(name = "Home", folderId = rootId)
                     val newList = listOf(defaultLocation)
                     drive.saveLocationsJson(rootId, gson.toJson(newList))
-                    prefs.edit().putString(PREF_ACTIVE_ID, defaultLocation.folderId).apply()
+                    prefs.edit().putString(PREF_DEFAULT_CLOSET_ID, defaultLocation.folderId).apply()
                     Pair(newList, defaultLocation.folderId)
                 } else {
-                    // activeLocationId is folderId-based; also try legacy id-based match for migration
-                    val matchByFolder = if (savedActiveId != null) locations.find { it.folderId == savedActiveId } else null
-                    val matchById = if (matchByFolder == null && savedActiveId != null) locations.find { it.id == savedActiveId } else null
-                    val activeId = matchByFolder?.folderId ?: matchById?.folderId
-                        ?: locations[0].folderId.also { prefs.edit().putString(PREF_ACTIVE_ID, it).apply() }
-                    if (matchById != null) prefs.edit().putString(PREF_ACTIVE_ID, activeId).apply()
-                    Pair(locations, activeId)
+                    val savedDefault = prefs.getString(PREF_DEFAULT_CLOSET_ID, null)
+                        ?.takeIf { id -> locations.any { it.folderId == id } }
+                    val effectiveDefault = savedDefault ?: locations[0].folderId.also {
+                        prefs.edit().putString(PREF_DEFAULT_CLOSET_ID, it).apply()
+                    }
+                    Pair(locations, effectiveDefault)
                 }
-            }.onSuccess { (locations, activeId) ->
+            }.onSuccess { (locations, defaultId) ->
                 prefs.edit().putString(PREF_LOCATIONS_JSON, gson.toJson(locations)).apply()
-                _state.update { it.copy(locations = locations, activeLocationId = activeId, isLoading = false) }
+                _state.update {
+                    it.copy(
+                        locations = locations,
+                        defaultClosetFolderId = defaultId,
+                        isLoading = false,
+                    )
+                }
             }.onFailure { e ->
                 // If we already have cached locations, just stop the loading spinner; don't
                 // replace working content with an error banner.
@@ -111,9 +137,15 @@ class LocationViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /** Selects the closet filter. Intentionally NOT persisted — always resets to "All" on app launch. */
     fun setActiveLocation(locationId: String) {
-        prefs.edit().putString(PREF_ACTIVE_ID, locationId).apply()
         _state.update { it.copy(activeLocationId = locationId) }
+    }
+
+    /** Sets the persistent default closet (used as import target and outfit-source default). */
+    fun setDefaultClosetFolderId(folderId: String) {
+        prefs.edit().putString(PREF_DEFAULT_CLOSET_ID, folderId).apply()
+        _state.update { it.copy(defaultClosetFolderId = folderId) }
     }
 
     fun addLocation(name: String, geoLocation: String = "") {
@@ -163,10 +195,20 @@ class LocationViewModel(app: Application) : AndroidViewModel(app) {
                 drive.saveLocationsJson(rootId, gson.toJson(updated))
             }.onSuccess {
                 val newActiveId = if (current.activeLocationId == locationFolderId) {
-                    updated[0].folderId.also { prefs.edit().putString(PREF_ACTIVE_ID, it).apply() }
+                    ALL_LOCATIONS_ID
                 } else current.activeLocationId
+                // If the deleted closet was the persisted default, fall back to the first remaining one.
+                val newDefault = if (current.defaultClosetFolderId == locationFolderId) {
+                    updated[0].folderId.also { prefs.edit().putString(PREF_DEFAULT_CLOSET_ID, it).apply() }
+                } else current.defaultClosetFolderId
                 prefs.edit().putString(PREF_LOCATIONS_JSON, gson.toJson(updated)).apply()
-                _state.update { it.copy(locations = updated, activeLocationId = newActiveId) }
+                _state.update {
+                    it.copy(
+                        locations = updated,
+                        activeLocationId = newActiveId,
+                        defaultClosetFolderId = newDefault,
+                    )
+                }
             }.onFailure { e ->
                 _state.update { it.copy(error = e.message) }
             }
@@ -204,7 +246,7 @@ class LocationViewModel(app: Application) : AndroidViewModel(app) {
     fun clearError() = _state.update { it.copy(error = null) }
 
     companion object {
-        private const val PREF_ACTIVE_ID = "active_location_id"
+        private const val PREF_DEFAULT_CLOSET_ID = "default_closet_folder_id"
         private const val PREF_ROOT_FOLDER_ID = "root_folder_id"
         private const val PREF_LOCATIONS_JSON = "locations_json"
         const val ALL_LOCATIONS_ID = "all_locations"

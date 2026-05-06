@@ -250,6 +250,7 @@ fun OutfitsScreen(
                             seedItemIds = emptySet(),
                             images      = wardrobeState.images,
                             prefs       = profileState.preferences,
+                            defaultSourceFolderId = locationViewModel.effectiveDefaultClosetFolderId,
                         )
                     },
                     onEditOutfit = { style ->

@@ -14,24 +14,28 @@ TODO
 
 Features:
 ---------
-update design
 
 size filter? default sizes in wardrobe? size tag?
 
-create human readable release notes between now and v1.4.0 and release version 1.5.0 and upload to testers in firebase
+create human readable release notes between now and v1.6.0 and release version 1.6.1, git tag commit and upload to testers in firebase
 
 Implement new feature: We are working on the refinancing/monetization aspect of the app: I want people to be able to buy coins that I then use to pay gemini cloud costs. would that work with RevenueCat (handles the money/receipts) + Firebase (database and secure Gemini API routing)? In addition, I still want to support the bring your own key option though.
+
+in duplicate detection when importing an image when clicking on a match do not show the buttons show in wardrobe and add to shopping list
+
+when importing move progress bar as overlay on top of each image that are currently being processed.
+
+similarity search needs improvement
+
+when viewing an item in detail. show the name of the item on top. below show tags separately. then modify the rotate button to become an edit button with same style as the + button on wardrobe and put the options: rotate, detect tags, remove bg as buttons
+
+overlay closet in wardrobe on top right of each item in grid use the same style color as on Outfits also on when viewing an item on wardrobe in detail use those colors for tags and make those tags not be contained in a transparent box but show each one separately
 
 
 Bugs:
 -----
 
-Fix those bugs
-1. similarity search buttons when displaying full matching image, button at bottom is does not fit on screen it is only half visible (happens in both shopping -> similarity search and in wardrobe when adding item by picture)
-2. when refining cutout the buttons Skip (use Gemini) and Use this cutout are only partially visible at the bottom of the screen. Ensure they are fully visibile.
-3. fix crash when importing item from camera. Crash happend when image was rotated.
-
-The url based import does not work (pasted link from Amazon) Can we open a web browser with that page and have the user select the image to be used or some other means of preview?
+consistency: the cross to cancel taking a picture in wardrobe is in the lower right. change the cross in similarity search to use the same button and move it from top left also to lower right ??? rotate button color??
 
 Fix closet usability:
 1. when starting the app set closet filter to all
@@ -44,11 +48,16 @@ security/function relevant parts of a prompts should not be appear in settings. 
 fix usability issue on wardrobe screen: moving item to different closet and then switching to that closet - it won't immediately appear on wardrobe after moving to different closet. it took almost a minute to appear. Can this be sped up?
 
 
-similarity search not localized: "Possible duplicate" "We found X item(s) in your wardrobe that look very similar to this photo.", "Similarity", Buttons: "Cancel" "Import Anyway"
+
 
 
 IN PROGRESS
 ===========
+Fix those bugs
+1. similarity search buttons when displaying full matching image, button at bottom is does not fit on screen it is only half visible (happens in both shopping -> similarity search and in wardrobe when adding item by picture)
+2. when refining cutout the buttons Skip (use Gemini) and Use this cutout are only partially visible at the bottom of the screen. Ensure they are fully visibile.
+3. fix crash when importing item from camera. Crash happend when image was rotated.
+4. similarity search not localized: "Possible duplicate" "We found X item(s) in your wardrobe that look very similar to this photo.", "Similarity", Buttons: "Cancel" "Import Anyway"
 
 
 Similarity search on shopping screen, similarity search when importing and similarity search when finding an item on wardrobe seem to not work in the exact same way. The one on the shopping screen seems to work while the others don't.
@@ -93,6 +102,18 @@ how can we unify tags? I see tags like "Long-sleeve T-shirt", "Long-sleeved t-sh
 
 FIXED
 =====
+update design
+
+The url based import does not work (pasted link from Amazon) Can we open a web browser with that page and have the user select the image to be used or some other means of preview?
+
+Similarity search seems to be no longer working. I see orange t-shirts being matched for blue ones with histogram getting a high score >0.9. Could it be that we are computing the histogram over background pixels - are we doing something like this?
+
+// Only process pixels that are fully opaque
+if (Color.alpha(pixel) > 0) { 
+    // Calculate HSV and add to bin
+}
+
+In addition please plot a bounding box for the similarity search debug mode so it is clear what pixels are being considered.
 on shopping page when viewing an item show detect tags, remove background and edit tags like when viewing an item on wardrobe
 
 except for camera always keep the app in portrait mode

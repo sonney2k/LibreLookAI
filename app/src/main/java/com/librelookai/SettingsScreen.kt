@@ -247,7 +247,7 @@ fun SettingsScreen(
                 onConfirmImportPreview = wardrobeViewModel::confirmImportPreview,
                 onCancelImportPreview = wardrobeViewModel::cancelImportPreview,
                 locationState = locationState,
-                onSetActiveLocation = locationViewModel::setActiveLocation,
+                onSetDefaultCloset = locationViewModel::setDefaultClosetFolderId,
                 onAddLocation = locationViewModel::addLocation,
                 onRenameLocation = locationViewModel::renameLocation,
                 onDeleteLocation = locationViewModel::deleteLocation,
@@ -753,7 +753,7 @@ private fun DataTab(
     onConfirmImportPreview: () -> Unit,
     onCancelImportPreview: () -> Unit,
     locationState: LocationUiState,
-    onSetActiveLocation: (String) -> Unit,
+    onSetDefaultCloset: (String) -> Unit,
     onAddLocation: (String, String) -> Unit,
     onRenameLocation: (String, String, String?) -> Unit,
     onDeleteLocation: (String) -> Unit,
@@ -785,19 +785,19 @@ private fun DataTab(
             )
 
             locationState.locations.forEach { location ->
-                val isActive = location.folderId == locationState.activeLocationId
+                val isDefault = location.folderId == locationState.defaultClosetFolderId
                 Surface(
                     shape = MaterialTheme.shapes.small,
-                    tonalElevation = if (isActive) 2.dp else 0.dp,
+                    tonalElevation = if (isDefault) 2.dp else 0.dp,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable(enabled = !isActive) { onSetActiveLocation(location.folderId) },
+                        .clickable(enabled = !isDefault) { onSetDefaultCloset(location.folderId) },
                 ) {
                     Row(
                         modifier = Modifier.padding(start = 12.dp, top = 4.dp, bottom = 4.dp, end = 4.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        if (isActive) {
+                        if (isDefault) {
                             Icon(
                                 Icons.Default.Check,
                                 contentDescription = stringResource(R.string.settings_location_active),
@@ -812,7 +812,7 @@ private fun DataTab(
                             Text(
                                 location.name,
                                 style = MaterialTheme.typography.bodyMedium,
-                                fontWeight = if (isActive) FontWeight.SemiBold else FontWeight.Normal,
+                                fontWeight = if (isDefault) FontWeight.SemiBold else FontWeight.Normal,
                             )
                             if (location.geoLocation.isNotBlank()) {
                                 Text(

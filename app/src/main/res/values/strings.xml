@@ -214,7 +214,8 @@
     <string name="settings_import_drive_no_images">No images in this folder</string>
     <string name="action_back">Back</string>
     <string name="settings_locations_title">Closets</string>
-    <string name="settings_locations_desc">Manage multiple wardrobes for different places. The active closet is the default when adding new items. Optionally set a city for weather info.</string>
+    <string name="settings_locations_desc">Manage multiple wardrobes for different places. Tap a closet to make it the default — new items are imported there, and outfit creation starts from it. The closet filter on top of each screen is independent and always starts at \"All\". Optionally set a city for weather info.</string>
+    <string name="settings_location_default">Default</string>
     <string name="settings_location_add">Add closet</string>
     <string name="settings_location_name_hint">Closet name</string>
     <string name="settings_location_geo_hint">City for weather (optional)</string>
@@ -583,6 +584,7 @@
     <string name="composer_title">Create outfit</string>
     <string name="composer_save">Save</string>
     <string name="composer_section_quick_start">Quick start</string>
+    <string name="composer_section_sources">Source closets</string>
     <string name="composer_section_items">Items</string>
     <string name="composer_section_weather">Weather</string>
     <string name="composer_section_vibe">Style vibe</string>

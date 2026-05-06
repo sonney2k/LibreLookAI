@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
@@ -192,7 +193,7 @@ class MainActivity : ComponentActivity() {
                     val activeFolderId = if (activeLocationId != LocationViewModel.ALL_LOCATIONS_ID && activeLocationId.isNotEmpty())
                         locationList.find { it.folderId == activeLocationId }?.folderId else null
                     val shoppingClosetState by shoppingClosetViewModel.state.collectAsState()
-                    LaunchedEffect(activeLocationId, locationList, shoppingClosetState.folderId) {
+                    LaunchedEffect(activeLocationId, locationList, locationState.defaultClosetFolderId, shoppingClosetState.folderId) {
                         val closetFolderIds = locationList.map { it.folderId }
                         // Always tell the wardrobe VM about every configured closet — and the
                         // shopping closet — so the cross-closet snapshot (used by all
@@ -216,8 +217,12 @@ class MainActivity : ComponentActivity() {
                                 outfitEventsViewModel.setLocation(folderId)
                             }
                         }
-                        // Imports always go to the active location (first location when all are shown).
-                        wardrobeViewModel.setDefaultImportFolderId(activeFolderId ?: folderIds.firstOrNull())
+                        // Imports go to the persisted default closet (Settings → Data/Closets),
+                        // independent of the closet filter. Falls back to the first location.
+                        val defaultClosetId = locationState.defaultClosetFolderId
+                            ?.takeIf { id -> folderIds.contains(id) }
+                            ?: folderIds.firstOrNull()
+                        wardrobeViewModel.setDefaultImportFolderId(defaultClosetId)
                     }
 
                     // Keep wardrobe tagging language in sync with the profile language
@@ -447,6 +452,7 @@ class MainActivity : ComponentActivity() {
                                                     seedItemIds = itemIds,
                                                     images      = wardrobeViewModel.state.value.images,
                                                     prefs       = profileViewModel.state.value.preferences,
+                                                    defaultSourceFolderId = locationViewModel.effectiveDefaultClosetFolderId,
                                                 )
                                                 wardrobeViewModel.clearSelection()
                                             },
@@ -497,6 +503,7 @@ class MainActivity : ComponentActivity() {
                                                     images      = wardrobeViewModel.state.value.images +
                                                         shoppingClosetState.items,
                                                     prefs       = profileViewModel.state.value.preferences,
+                                                    defaultSourceFolderId = locationViewModel.effectiveDefaultClosetFolderId,
                                                 )
                                                 shoppingClosetViewModel.clearSelection()
                                             },
@@ -572,6 +579,7 @@ class MainActivity : ComponentActivity() {
                                     profileViewModel  = profileViewModel,
                                     weatherViewModel  = weatherViewModel,
                                     shoppingClosetViewModel = shoppingClosetViewModel,
+                                    locationViewModel = locationViewModel,
                                 )
 
                                 // Replacements result dialog — opened from Wardrobe selection FAB.
@@ -628,6 +636,11 @@ fun AppScreenHeader(
             style = if (isCaveat) MaterialTheme.typography.headlineLarge else MaterialTheme.typography.titleMedium,
             fontWeight = if (isCaveat) FontWeight.Bold else FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onSurface,
+            // weight(1f) lets the title take remaining space; maxLines=1 + Ellipsis prevents
+            // wrapping when trailing content (e.g. a long closet name) gets squeezed in.
+            maxLines = 1,
+            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+            softWrap = false,
             modifier = Modifier.weight(1f),
         )
         trailingContent?.invoke()
@@ -687,6 +700,11 @@ fun LocationButton(
                 color = palette.chipFg,
                 fontSize = if (isCaveat) 16.sp else 12.sp,
                 fontWeight = if (isCaveat) FontWeight.SemiBold else FontWeight.Medium,
+                // Cap chip width so a long closet name can't push the screen title to
+                // wrap or ellipsize away. The title still owns the remaining space.
+                maxLines = 1,
+                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                modifier = Modifier.widthIn(max = 120.dp),
             )
             Icon(
                 Icons.Default.KeyboardArrowDown,

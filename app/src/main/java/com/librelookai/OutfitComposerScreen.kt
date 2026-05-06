@@ -80,21 +80,28 @@ fun OutfitComposerScreen(
     profileViewModel: ProfileViewModel,
     weatherViewModel: WeatherViewModel,
     shoppingClosetViewModel: ShoppingClosetViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    locationViewModel: LocationViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
 ) {
     val s by stylesViewModel.state.collectAsState()
     val wardrobe by wardrobeViewModel.state.collectAsState()
     val profile by profileViewModel.state.collectAsState()
     val weather by weatherViewModel.state.collectAsState()
     val shoppingState by shoppingClosetViewModel.state.collectAsState()
+    val locationState by locationViewModel.state.collectAsState()
     val ctx = LocalContext.current
     val isOffline = LocalIsOffline.current
 
     if (!s.isComposerOpen) return
 
-    // Items can be seeded from either the wardrobe or the shopping closet (via the shopping
-    // selection FAB). Merge so id lookups + thumbnail rendering succeed regardless of source.
-    val composerImages = remember(wardrobe.images, shoppingState.items) {
-        wardrobe.images + shoppingState.items
+    // Source items: take the cross-closet snapshot (so we see items from every closet, not
+    // just the active filter), narrow to the selected source closets if any, then merge in
+    // the shopping closet so seeded shopping IDs still resolve.
+    val sourceFolders = s.composerSourceFolderIds
+    val crossClosetImages = wardrobe.allLocationImages.ifEmpty { wardrobe.images }
+    val composerImages = remember(crossClosetImages, shoppingState.items, sourceFolders) {
+        val filteredWardrobe = if (sourceFolders.isEmpty()) crossClosetImages
+        else crossClosetImages.filter { it.folderId in sourceFolders }
+        filteredWardrobe + shoppingState.items
     }
 
     var showAddItemSheet by remember { mutableStateOf(false) }
@@ -189,6 +196,21 @@ fun OutfitComposerScreen(
                                 Icon(Icons.Default.AutoFixHigh, contentDescription = null, modifier = Modifier.size(16.dp))
                                 Spacer(Modifier.width(6.dp))
                                 Text(stringResource(R.string.outfits_compose), style = MaterialTheme.typography.labelMedium)
+                            }
+                        }
+                    }
+
+                    // Source closets — only relevant when more than one closet exists.
+                    if (locationState.locations.size >= 2) {
+                        SectionHeader(stringResource(R.string.composer_section_sources))
+                        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            locationState.locations.forEach { loc ->
+                                val selected = loc.folderId in sourceFolders
+                                FilterChip(
+                                    selected = selected,
+                                    onClick = { stylesViewModel.toggleComposerSourceFolder(loc.folderId) },
+                                    label = { Text(loc.name, style = MaterialTheme.typography.labelSmall) },
+                                )
                             }
                         }
                     }

@@ -210,7 +210,8 @@
     <string name="settings_import_drive_no_images">Keine Bilder in diesem Ordner</string>
     <string name="action_back">Zurück</string>
     <string name="settings_locations_title">Kleiderschränke</string>
-    <string name="settings_locations_desc">Verwalte mehrere Garderoben für verschiedene Orte. Der aktive Schrank ist Standard beim Hinzufügen neuer Artikel. Optional mit Stadt für Wetterinfos.</string>
+    <string name="settings_locations_desc">Verwalte mehrere Garderoben für verschiedene Orte. Tippe auf einen Schrank, um ihn zum Standard zu machen — neue Artikel werden dort importiert, und die Outfit-Erstellung beginnt damit. Der Schrank-Filter oben in jedem Bildschirm ist davon unabhängig und startet immer bei \"Alle\". Optional mit Stadt für Wetterinfos.</string>
+    <string name="settings_location_default">Standard</string>
     <string name="settings_location_add">Schrank hinzufügen</string>
     <string name="settings_location_name_hint">Name des Schranks</string>
     <string name="settings_location_geo_hint">Stadt für Wetter (optional)</string>
@@ -559,6 +560,7 @@
     <string name="composer_title">Outfit erstellen</string>
     <string name="composer_save">Speichern</string>
     <string name="composer_section_quick_start">Schnellstart</string>
+    <string name="composer_section_sources">Quell-Schränke</string>
     <string name="composer_section_items">Teile</string>
     <string name="composer_section_weather">Wetter</string>
     <string name="composer_section_vibe">Stil-Vibe</string>

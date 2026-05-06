@@ -92,6 +92,12 @@ data class OutfitsUiState(
     val composerFeedback: String = "",
     val composerFeedbackHistory: List<String> = emptyList(),
     val composerReason: String = "",
+    /**
+     * Folder IDs of the closets to source items from when adding/suggesting/composing in the
+     * composer. Empty set = unrestricted (sources from every closet). Defaults to the user's
+     * default closet on open; the user can toggle other closets in the composer.
+     */
+    val composerSourceFolderIds: Set<String> = emptySet(),
     val isComposerEnhancing: Boolean = false,
     val composerError: String? = null,
     val error: String? = null,
@@ -485,9 +491,13 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
         initialName: String = "",
         initialDescription: String = "",
         editingStyleId: String? = null,
+        defaultSourceFolderId: String? = null,
     ) {
         val ids = seedItemIds.toList()
         val targets = targetsFromSeed(ids, images)
+        // Default the source-closet filter to the user's default closet so suggestions/composition
+        // start from a single curated wardrobe; user can broaden it via chips in the composer.
+        val sourceFolders = defaultSourceFolderId?.let { setOf(it) } ?: emptySet()
         _state.update {
             it.copy(
                 isComposerOpen          = true,
@@ -505,9 +515,19 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 composerFeedback        = "",
                 composerFeedbackHistory = emptyList(),
                 composerReason          = "",
+                composerSourceFolderIds = sourceFolders,
                 isComposerEnhancing     = false,
                 composerError           = null,
             )
+        }
+    }
+
+    /** Toggle whether [folderId] is included in the composer's source-closet filter. */
+    fun toggleComposerSourceFolder(folderId: String) {
+        _state.update { s ->
+            val next = s.composerSourceFolderIds.toMutableSet()
+            if (!next.add(folderId)) next.remove(folderId)
+            s.copy(composerSourceFolderIds = next)
         }
     }
 
