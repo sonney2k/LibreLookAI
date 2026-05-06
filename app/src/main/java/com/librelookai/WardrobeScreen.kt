@@ -2078,6 +2078,7 @@ private fun DuplicateCheckSheet(
                     onAddQueryToShoppingList(check.rawFilePath)
                 },
                 canAddToShoppingList = true,
+                showActions = false,
                 onDismiss = { previewIndex = null },
             )
         }

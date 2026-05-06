@@ -1008,6 +1008,7 @@ internal fun MatchPreviewDialog(
     onShowInWardrobe: (DriveImage) -> Unit,
     onAddToShoppingList: () -> Unit,
     canAddToShoppingList: Boolean,
+    showActions: Boolean = true,
     onDismiss: () -> Unit,
 ) {
     val barInsets = LocalSystemBarsPadding.current
@@ -1107,11 +1108,13 @@ internal fun MatchPreviewDialog(
                     }
                 }
 
-                MatchActionBar(
-                    onShowInWardrobe = { onShowInWardrobe(matches[pagerState.currentPage].image) },
-                    onAddToShoppingList = onAddToShoppingList,
-                    canAddToShoppingList = canAddToShoppingList,
-                )
+                if (showActions) {
+                    MatchActionBar(
+                        onShowInWardrobe = { onShowInWardrobe(matches[pagerState.currentPage].image) },
+                        onAddToShoppingList = onAddToShoppingList,
+                        canAddToShoppingList = canAddToShoppingList,
+                    )
+                }
             }
         }
       }
