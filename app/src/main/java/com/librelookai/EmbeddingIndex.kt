@@ -181,16 +181,10 @@ class EmbeddingIndex(private val context: Context) {
             }
             val scored = ArrayList<Match>(entries.size)
             for ((id, e) in entries) {
-                val embScore = dot(queryVec, e.vec)
-                val histScore = ColorHistogram.cosine(queryHist, e.hist)
-                // pHashSim ∈ [0,1]: best match across the gallery entry's 24 rotated hashes.
-                // Folded in as a gentle multiplicative damper so identical-shape items at any
-                // orientation rank above near-matches that only agree on embedding + color.
+                val embScore = dot(queryVec, e.vec).coerceIn(0f, 1f)
+                val histScore = ColorHistogram.intersection(queryHist, e.hist)
                 val pHashSim = PHash.bestSimilarity(queryPHash, e.pHashes)
-                // Multiplicative scoring: embedding · hist² · (0.5 + 0.5·pHashSim).
-                // Both shape (CNN) and color must be strong; rotation-invariant pHash nudges by
-                // up to ±50% so it disambiguates ties without overpowering the primary channels.
-                val finalScore = embScore * (histScore * histScore) * (0.5f + 0.5f * pHashSim)
+                val finalScore = embScore * 0.40f + histScore * 0.20f + pHashSim * 0.40f
                 scored.add(Match(id, finalScore))
             }
             scored.sortByDescending { it.score }

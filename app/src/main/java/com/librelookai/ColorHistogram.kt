@@ -106,6 +106,18 @@ object ColorHistogram {
     }
 
     /**
+     * Histogram intersection ∈ [0,1] for L1-normalized histograms (sum of per-bin minimums).
+     * Unlike cosine, this directly measures shared probability mass and is robust against the
+     * sparse-bin pattern these HSV histograms produce.
+     */
+    fun intersection(a: FloatArray, b: FloatArray): Float {
+        if (a.size != b.size) return 0f
+        var s = 0f
+        for (i in a.indices) s += if (a[i] < b[i]) a[i] else b[i]
+        return s.coerceIn(0f, 1f)
+    }
+
+    /**
      * Bounding box of the pixels [compute] would keep — i.e. the foreground/garment region after
      * the same alpha + near-black + near-white filters. Returns null if no pixel survives. Used
      * by the similarity debug overlay to show exactly which area drives the histogram.
