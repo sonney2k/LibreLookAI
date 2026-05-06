@@ -44,7 +44,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -352,37 +354,80 @@ internal fun WardrobeFilterSheet(
                         )
                     }
                     if (isOpen) {
-                        FlowRow(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 16.dp, end = 16.dp, bottom = 14.dp),
-                            horizontalArrangement = Arrangement.spacedBy(7.dp),
-                            verticalArrangement = Arrangement.spacedBy(7.dp),
-                        ) {
-                            val selectedSet = pending[category.label] ?: emptySet()
-                            category.tags.forEach { tag ->
-                                val active = tag in selectedSet
-                                val shape = RoundedCornerShape(20.dp)
-                                Box(
-                                    modifier = Modifier
-                                        .clip(shape)
-                                        .background(if (active) palette.primary else palette.chipBg)
-                                        .then(
-                                            if (active) Modifier
-                                            else Modifier.border(
-                                                BorderStroke(1.dp, palette.border),
-                                                shape,
-                                            ),
+                        val selectedSet = pending[category.label] ?: emptySet()
+                        if (category.label == "Colors") {
+                            FlowRow(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 16.dp, end = 16.dp, bottom = 14.dp),
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                verticalArrangement = Arrangement.spacedBy(10.dp),
+                            ) {
+                                category.tags.forEach { tag ->
+                                    val active = tag in selectedSet
+                                    val swatch = colorSwatchHex(tag)
+                                    Column(
+                                        modifier = Modifier
+                                            .clickable { toggle(category.label, tag) }
+                                            .padding(horizontal = 2.dp, vertical = 2.dp),
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .size(30.dp)
+                                                .clip(RoundedCornerShape(15.dp))
+                                                .background(swatch)
+                                                .border(
+                                                    BorderStroke(
+                                                        if (active) 2.dp else 1.dp,
+                                                        if (active) palette.primary else palette.border,
+                                                    ),
+                                                    RoundedCornerShape(15.dp),
+                                                ),
                                         )
-                                        .clickable { toggle(category.label, tag) }
-                                        .padding(horizontal = 13.dp, vertical = 6.dp),
-                                ) {
-                                    Text(
-                                        tag.localizedTagValue(),
-                                        color = if (active) palette.fabFg else palette.chipFg,
-                                        fontSize = 13.sp,
-                                        fontWeight = FontWeight.SemiBold,
-                                    )
+                                        Spacer(Modifier.height(4.dp))
+                                        Text(
+                                            tag.localizedTagValue(),
+                                            color = if (active) palette.primary else palette.textMuted,
+                                            fontSize = 10.sp,
+                                            fontWeight = if (active) FontWeight.SemiBold else FontWeight.Normal,
+                                            textAlign = TextAlign.Center,
+                                        )
+                                    }
+                                }
+                            }
+                        } else {
+                            FlowRow(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 16.dp, end = 16.dp, bottom = 14.dp),
+                                horizontalArrangement = Arrangement.spacedBy(7.dp),
+                                verticalArrangement = Arrangement.spacedBy(7.dp),
+                            ) {
+                                category.tags.forEach { tag ->
+                                    val active = tag in selectedSet
+                                    val shape = RoundedCornerShape(20.dp)
+                                    Box(
+                                        modifier = Modifier
+                                            .clip(shape)
+                                            .background(if (active) palette.primary else palette.chipBg)
+                                            .then(
+                                                if (active) Modifier
+                                                else Modifier.border(
+                                                    BorderStroke(1.dp, palette.border),
+                                                    shape,
+                                                ),
+                                            )
+                                            .clickable { toggle(category.label, tag) }
+                                            .padding(horizontal = 13.dp, vertical = 6.dp),
+                                    ) {
+                                        Text(
+                                            tag.localizedTagValue(),
+                                            color = if (active) palette.fabFg else palette.chipFg,
+                                            fontSize = 13.sp,
+                                            fontWeight = FontWeight.SemiBold,
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -393,4 +438,55 @@ internal fun WardrobeFilterSheet(
             Spacer(Modifier.height(16.dp))
         }
     }
+}
+
+/**
+ * Approximate display swatch for a normalized color tag (see [normalizeColor]).
+ * Mirrors the palette used in the design handoff (Wardrobe Grid Interactive v2).
+ */
+private fun colorSwatchHex(name: String): Color = when (name.lowercase().trim()) {
+    // Neutrals
+    "black"      -> Color(0xFF1A1A1A)
+    "charcoal"   -> Color(0xFF3A3A3A)
+    "gray"       -> Color(0xFF808080)
+    "silver"     -> Color(0xFFC0C0C0)
+    "white"      -> Color(0xFFF5F5F0)
+    "cream"      -> Color(0xFFF1E9D6)
+    // Browns / earth
+    "beige"      -> Color(0xFFE8DCCB)
+    "tan"        -> Color(0xFFB89968)
+    "camel"      -> Color(0xFFB87E45)
+    "khaki"      -> Color(0xFFA89968)
+    "brown"      -> Color(0xFF7A5030)
+    "rust"       -> Color(0xFFA34A28)
+    // Warm
+    "orange"     -> Color(0xFFD07030)
+    "peach"      -> Color(0xFFF5B891)
+    "coral"      -> Color(0xFFE5806A)
+    "red"        -> Color(0xFFB83030)
+    "burgundy"   -> Color(0xFF6A1B2A)
+    "pink"       -> Color(0xFFD48090)
+    "magenta"    -> Color(0xFFB02A7A)
+    // Purples
+    "purple"     -> Color(0xFF7060A0)
+    "lavender"   -> Color(0xFFB7A8D6)
+    "lilac"      -> Color(0xFFC8A8D8)
+    // Blues
+    "blue"       -> Color(0xFF3050A0)
+    "navy"       -> Color(0xFF1E2E4A)
+    "sky"        -> Color(0xFF8FB8E0)
+    "denim blue" -> Color(0xFF4A6B8A)
+    "teal"       -> Color(0xFF2E8A8A)
+    // Greens
+    "mint"       -> Color(0xFFA8D8C0)
+    "green"      -> Color(0xFF4A7040)
+    "olive"      -> Color(0xFF5A6030)
+    "forest"     -> Color(0xFF2E4A2E)
+    // Yellows / metallics
+    "yellow"     -> Color(0xFFC8B030)
+    "mustard"    -> Color(0xFFC59A2E)
+    "gold"       -> Color(0xFFC9A227)
+    // Special
+    "multicolor" -> Color(0xFFB0B0B0)
+    else         -> Color(0xFFB0B0B0)
 }
