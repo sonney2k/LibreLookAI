@@ -521,6 +521,31 @@ class GeminiRepository(private val app: Application) {
                 }
             }
         }
+        // Feather alpha at the cutout boundary: average a 3x3 neighborhood of alpha values
+        // on currently-opaque pixels. Softens hard matte edges that otherwise look like a
+        // sharp cut-out when composited on dark backgrounds.
+        val featherRadius = 1
+        val srcAlpha = ByteArray(w * h)
+        for (i in pixels.indices) srcAlpha[i] = ((pixels[i] ushr 24) and 0xFF).toByte()
+        for (y in featherRadius until h - featherRadius) {
+            val row = y * w
+            for (x in featherRadius until w - featherRadius) {
+                val idx = row + x
+                if ((srcAlpha[idx].toInt() and 0xFF) == 0) continue
+                var total = 0
+                for (ky in -featherRadius..featherRadius) {
+                    val nr = (y + ky) * w
+                    for (kx in -featherRadius..featherRadius) {
+                        total += srcAlpha[nr + x + kx].toInt() and 0xFF
+                    }
+                }
+                val side = featherRadius * 2 + 1
+                val newA = total / (side * side)
+                val c = pixels[idx]
+                pixels[idx] = (newA shl 24) or (c and 0x00FFFFFF)
+            }
+        }
+
         mutable.setPixels(pixels, 0, w, 0, 0, w, h)
         mutable.setHasAlpha(true)
 
