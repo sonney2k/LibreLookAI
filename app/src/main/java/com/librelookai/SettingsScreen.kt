@@ -89,8 +89,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.window.DialogWindowProvider
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.ui.text.input.ImeAction
@@ -2643,19 +2648,58 @@ private fun FixCutoutBgDialog(
     val visibleIds = remember(visible) { visible.map { it.driveId }.toSet() }
     val selectedVisible = state.selectedIds.intersect(visibleIds)
 
+    val barInsets = LocalSystemBarsPadding.current
+    val parentContext = LocalContext.current
+    val parentConfiguration = LocalConfiguration.current
+    val view = LocalView.current
+    val density = androidx.compose.ui.platform.LocalDensity.current
+    val rootInsetBottomDp = remember(view) {
+        val raw = view.rootWindowInsets
+        val bottomPx = if (raw != null) {
+            androidx.core.view.WindowInsetsCompat
+                .toWindowInsetsCompat(raw, view)
+                .getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
+                .bottom
+        } else 0
+        with(density) { bottomPx.toDp() }
+    }
+    val effectiveBottom = maxOf(
+        barInsets.calculateBottomPadding(),
+        rootInsetBottomDp,
+        48.dp,
+    )
+
     Dialog(
         onDismissRequest = onCancel,
         properties = DialogProperties(
             usePlatformDefaultWidth = false,
             dismissOnBackPress = true,
             dismissOnClickOutside = false,
+            decorFitsSystemWindows = false,
         ),
     ) {
+        val dialogView = LocalView.current
+        SideEffect {
+            val window = (dialogView.parent as? DialogWindowProvider)?.window ?: return@SideEffect
+            window.setLayout(
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+            )
+            androidx.core.view.WindowCompat.setDecorFitsSystemWindows(window, false)
+        }
+        CompositionLocalProvider(
+            LocalContext provides parentContext,
+            LocalConfiguration provides parentConfiguration,
+        ) {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background,
         ) {
-            Column(modifier = Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = barInsets.calculateTopPadding()),
+            ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -2753,6 +2797,7 @@ private fun FixCutoutBgDialog(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(bottom = effectiveBottom)
                         .padding(horizontal = 12.dp, vertical = 8.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -2769,6 +2814,7 @@ private fun FixCutoutBgDialog(
                     }
                 }
             }
+        }
         }
     }
 }
