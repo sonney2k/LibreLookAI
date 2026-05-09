@@ -128,6 +128,8 @@ data class WardrobeUiState(
     val pendingJobs: Int = 0,
     /** Non-null while a repair-and-sync audit is in progress or awaiting user input. */
     val auditProgress: AuditProgress? = null,
+    /** Non-null while the "Fix cutout backgrounds" flow is scanning, awaiting confirmation, or processing. */
+    val cutoutBgFix: CutoutBgFixProgress? = null,
     /** True when a job is starting and the app is not exempt from battery optimization. */
     val needsBatteryExemption: Boolean = false,
     /** Drive folder ID that new photos will be uploaded to. */
@@ -255,6 +257,35 @@ data class AuditFileEntry(
     val similarTo: List<String> = emptyList(),
     /** For [AuditKind.DUPLICATE], cosine score against the closest peer in [similarTo]. */
     val topScore: Float = 0f,
+)
+
+// ---------- Cutout background fix progress ----------
+
+/** Scan + apply state for Settings → Data → "Fix cutout backgrounds". Local-only processing
+ *  (no Gemini calls) — re-uploads fixed PNGs to Drive preserving the cutout's Drive ID. */
+data class CutoutBgFixProgress(
+    val isScanning: Boolean = false,
+    val totalFolders: Int = 0,
+    val scannedFolders: Int = 0,
+    val totalCutouts: Int = 0,
+    val scannedCutouts: Int = 0,
+    val items: List<CutoutFixEntry> = emptyList(),
+    val flaggedIds: Set<String> = emptySet(),
+    val selectedIds: Set<String> = emptySet(),
+    val showAll: Boolean = false,
+    val awaitingConfirmation: Boolean = false,
+    val isProcessing: Boolean = false,
+    val processTotal: Int = 0,
+    val processDone: Int = 0,
+    val isDone: Boolean = false,
+)
+
+data class CutoutFixEntry(
+    val driveId: String,
+    val name: String,
+    val folderId: String,
+    val hasBlackBackground: Boolean,
+    val hasGreenHalo: Boolean,
 )
 
 // ---------- Per-item sidecar metadata ----------
@@ -982,6 +1013,180 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     suspend fun fetchAuditThumbnail(entry: AuditFileEntry): File? = withContext(Dispatchers.IO) {
         // Prefer an already-cached file (especially for NEEDS_SIDECAR cutouts, which the
         // wardrobe load may have downloaded into cache as `{id}.png`).
+        drive.cachedFile(entry.driveId)?.let { return@withContext it }
+        runCatching { drive.downloadToCache(entry.driveId, entry.name) }.getOrNull()
+    }
+
+    // ---------- Fix cutout backgrounds (Settings → Data) ----------
+
+    /** Scans every cutout in [folderIds] for black-background / green-halo issues and pauses
+     *  with awaitingConfirmation=true. The user reviews the preview grid (flagged-only by
+     *  default; toggle to show all) and selects which to fix. */
+    fun startCutoutBgFixScan(folderIds: List<String>) {
+        if (folderIds.isEmpty()) return
+        acquireJobWakeLock()
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _state.update {
+                    it.copy(cutoutBgFix = CutoutBgFixProgress(
+                        isScanning = true,
+                        totalFolders = folderIds.size,
+                    ))
+                }
+                val items = mutableListOf<CutoutFixEntry>()
+                val flagged = mutableSetOf<String>()
+
+                folderIds.forEachIndexed { idx, fid ->
+                    val cutouts = runCatching {
+                        drive.listAllImageFiles(fid)
+                            .filter { it.name.endsWith(DriveRepository.CUTOUT_SUFFIX) }
+                    }.getOrDefault(emptyList())
+                    _state.update { s ->
+                        s.copy(cutoutBgFix = s.cutoutBgFix?.copy(
+                            totalCutouts = s.cutoutBgFix.totalCutouts + cutouts.size,
+                        ))
+                    }
+                    cutouts.forEach { cf ->
+                        val local = drive.cachedFile(cf.id)
+                            ?: runCatching { drive.downloadToCache(cf.id, cf.name) }.getOrNull()
+                        if (local != null) {
+                            val issues = runCatching { detectCutoutIssues(local) }
+                                .getOrDefault(CutoutIssues(false, false))
+                            val entry = CutoutFixEntry(
+                                driveId = cf.id,
+                                name = cf.name,
+                                folderId = fid,
+                                hasBlackBackground = issues.hasBlackBackground,
+                                hasGreenHalo = issues.hasGreenHalo,
+                            )
+                            items.add(entry)
+                            if (issues.any) flagged.add(cf.id)
+                        }
+                        _state.update { s ->
+                            s.copy(cutoutBgFix = s.cutoutBgFix?.copy(
+                                scannedCutouts = s.cutoutBgFix.scannedCutouts + 1,
+                            ))
+                        }
+                    }
+                    _state.update { s ->
+                        s.copy(cutoutBgFix = s.cutoutBgFix?.copy(scannedFolders = idx + 1))
+                    }
+                }
+
+                _state.update {
+                    it.copy(cutoutBgFix = CutoutBgFixProgress(
+                        awaitingConfirmation = true,
+                        items = items.toList(),
+                        flaggedIds = flagged.toSet(),
+                        selectedIds = flagged.toSet(),
+                        showAll = false,
+                        totalCutouts = items.size,
+                        scannedCutouts = items.size,
+                    ))
+                }
+            } finally {
+                releaseJobWakeLock()
+            }
+        }
+    }
+
+    /** Apply fixes for the currently selected entries, or just clear state if [process] is false. */
+    fun continueCutoutBgFix(process: Boolean) {
+        val cur = _state.value.cutoutBgFix
+        if (cur == null || !cur.awaitingConfirmation) return
+        if (!process || cur.selectedIds.isEmpty()) {
+            _state.update { it.copy(cutoutBgFix = null) }
+            return
+        }
+        val byId = cur.items.associateBy { it.driveId }
+        // Enforce: never run on entries without detected issues, even if "show all" let the user
+        // tick a clean cutout. The fixes are no-ops on clean items but we'd still re-upload.
+        val toFix = cur.selectedIds.mapNotNull { byId[it] }.filter {
+            it.hasBlackBackground || it.hasGreenHalo
+        }
+        if (toFix.isEmpty()) {
+            _state.update { it.copy(cutoutBgFix = null) }
+            return
+        }
+        acquireJobWakeLock()
+        _state.update {
+            it.copy(cutoutBgFix = CutoutBgFixProgress(
+                isProcessing = true,
+                processTotal = toFix.size,
+            ))
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                var done = 0
+                toFix.forEach { entry ->
+                    runCatching {
+                        val local = drive.cachedFile(entry.driveId)
+                            ?: drive.downloadToCache(entry.driveId, entry.name)
+                            ?: return@runCatching
+                        val issues = CutoutIssues(entry.hasBlackBackground, entry.hasGreenHalo)
+                        val tmp = File(drive.cacheDir, "${entry.driveId}_fix.png")
+                        fixCutoutBackground(local, tmp, issues)
+                        drive.updateImage(entry.driveId, tmp)
+                        val cached = File(drive.cacheDir, "${entry.driveId}.png")
+                        tmp.copyTo(cached, overwrite = true)
+                        tmp.delete()
+                    }.onFailure { e ->
+                        Log.w(TAG, "Cutout bg-fix failed for ${entry.driveId}: ${e.message}")
+                    }
+                    done++
+                    _state.update { s ->
+                        s.copy(cutoutBgFix = s.cutoutBgFix?.copy(processDone = done))
+                    }
+                }
+                // Bump version on every fixed item so Coil reloads from the updated local cache.
+                val fixedIds = toFix.map { it.driveId }.toSet()
+                _state.update { s ->
+                    s.copy(images = s.images.map {
+                        if (it.driveId in fixedIds) it.copy(version = it.version + 1) else it
+                    })
+                }
+                _state.update { s ->
+                    s.copy(cutoutBgFix = s.cutoutBgFix?.copy(
+                        isProcessing = false,
+                        isDone = true,
+                    ))
+                }
+            } finally {
+                releaseJobWakeLock()
+            }
+        }
+    }
+
+    fun toggleCutoutFixSelection(driveId: String) {
+        _state.update { s ->
+            val c = s.cutoutBgFix ?: return@update s
+            if (!c.awaitingConfirmation) return@update s
+            val next = c.selectedIds.toMutableSet()
+            if (!next.add(driveId)) next.remove(driveId)
+            s.copy(cutoutBgFix = c.copy(selectedIds = next))
+        }
+    }
+
+    fun setCutoutFixSelection(ids: Set<String>) {
+        _state.update { s ->
+            val c = s.cutoutBgFix ?: return@update s
+            if (!c.awaitingConfirmation) return@update s
+            s.copy(cutoutBgFix = c.copy(selectedIds = ids))
+        }
+    }
+
+    fun setCutoutFixShowAll(v: Boolean) {
+        _state.update { s ->
+            val c = s.cutoutBgFix ?: return@update s
+            s.copy(cutoutBgFix = c.copy(showAll = v))
+        }
+    }
+
+    fun dismissCutoutBgFix() {
+        _state.update { it.copy(cutoutBgFix = null) }
+    }
+
+    suspend fun fetchCutoutFixThumbnail(entry: CutoutFixEntry): File? = withContext(Dispatchers.IO) {
         drive.cachedFile(entry.driveId)?.let { return@withContext it }
         runCatching { drive.downloadToCache(entry.driveId, entry.name) }.getOrNull()
     }

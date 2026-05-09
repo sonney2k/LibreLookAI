@@ -231,6 +231,15 @@ fun SettingsScreen(
                 onToggleAuditSelection = wardrobeViewModel::toggleAuditSelection,
                 onSetAuditSelection = wardrobeViewModel::setAuditSelection,
                 fetchAuditThumbnail = wardrobeViewModel::fetchAuditThumbnail,
+                onStartCutoutBgFix = {
+                    wardrobeViewModel.startCutoutBgFixScan(locationState.locations.map { it.folderId })
+                },
+                onContinueCutoutBgFix = wardrobeViewModel::continueCutoutBgFix,
+                onToggleCutoutFixSelection = wardrobeViewModel::toggleCutoutFixSelection,
+                onSetCutoutFixSelection = wardrobeViewModel::setCutoutFixSelection,
+                onSetCutoutFixShowAll = wardrobeViewModel::setCutoutFixShowAll,
+                onDismissCutoutBgFix = wardrobeViewModel::dismissCutoutBgFix,
+                fetchCutoutFixThumbnail = wardrobeViewModel::fetchCutoutFixThumbnail,
                 onImportFromFolder = { removeBg, autoTag, replace, overwrite, useDrive ->
                     pendingImportRemoveBg  = removeBg
                     pendingImportAutoTag   = autoTag
@@ -747,6 +756,13 @@ private fun DataTab(
     onToggleAuditSelection: (String) -> Unit,
     onSetAuditSelection: (Set<String>) -> Unit,
     fetchAuditThumbnail: suspend (AuditFileEntry) -> File?,
+    onStartCutoutBgFix: () -> Unit,
+    onContinueCutoutBgFix: (Boolean) -> Unit,
+    onToggleCutoutFixSelection: (String) -> Unit,
+    onSetCutoutFixSelection: (Set<String>) -> Unit,
+    onSetCutoutFixShowAll: (Boolean) -> Unit,
+    onDismissCutoutBgFix: () -> Unit,
+    fetchCutoutFixThumbnail: suspend (CutoutFixEntry) -> File?,
     onImportFromFolder: (removeBackground: Boolean, autoTag: Boolean, replaceExisting: Boolean, overwriteDuplicates: Boolean, useDrivePicker: Boolean) -> Unit,
     onToggleImportPreviewSelection: (String) -> Unit,
     onSetImportPreviewSelection: (Set<String>) -> Unit,
@@ -760,6 +776,7 @@ private fun DataTab(
 ) {
     val isOffline = LocalIsOffline.current
     val audit = wardrobeState.auditProgress
+    val cutoutBgFix = wardrobeState.cutoutBgFix
     var showRetagDialog by remember { mutableStateOf(false) }
     var showRemoveBgDialog by remember { mutableStateOf(false) }
     var showImportOptionsDialog by remember { mutableStateOf(false) }
@@ -935,6 +952,81 @@ private fun DataTab(
                     Icon(Icons.Default.AutoFixHigh, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.padding(start = 8.dp))
                     Text(stringResource(R.string.settings_rebg_button))
+                }
+            }
+        }
+
+        HorizontalDivider()
+
+        // ---------- Fix cutout backgrounds ----------
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(
+                stringResource(R.string.settings_cutoutfix_title),
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                stringResource(R.string.settings_cutoutfix_desc),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            when {
+                cutoutBgFix?.isScanning == true -> {
+                    val progress = if (cutoutBgFix.totalCutouts > 0)
+                        cutoutBgFix.scannedCutouts.toFloat() / cutoutBgFix.totalCutouts else 0f
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        LinearProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxWidth())
+                        Text(
+                            stringResource(
+                                R.string.settings_cutoutfix_scanning,
+                                (cutoutBgFix.scannedCutouts + 1).coerceAtMost(cutoutBgFix.totalCutouts.coerceAtLeast(1)),
+                                cutoutBgFix.totalCutouts.coerceAtLeast(1),
+                            ),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+                cutoutBgFix?.isProcessing == true -> {
+                    val progress = if (cutoutBgFix.processTotal > 0)
+                        cutoutBgFix.processDone.toFloat() / cutoutBgFix.processTotal else 0f
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        LinearProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxWidth())
+                        Text(
+                            stringResource(
+                                R.string.settings_cutoutfix_processing,
+                                cutoutBgFix.processDone + 1,
+                                cutoutBgFix.processTotal,
+                            ),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+                cutoutBgFix?.isDone == true -> {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            stringResource(R.string.settings_cutoutfix_done, cutoutBgFix.processTotal),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.weight(1f),
+                        )
+                        TextButton(onClick = onDismissCutoutBgFix) {
+                            Text(stringResource(R.string.action_ok))
+                        }
+                    }
+                }
+                else -> OutlinedButton(
+                    onClick = {
+                        Analytics.action("Settings/Data", "start_cutout_bg_fix")
+                        onStartCutoutBgFix()
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = !isOffline && cutoutBgFix == null,
+                ) {
+                    Icon(Icons.Default.AutoFixHigh, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(Modifier.padding(start = 8.dp))
+                    Text(stringResource(R.string.settings_cutoutfix_button))
                 }
             }
         }
@@ -1170,6 +1262,33 @@ private fun DataTab(
                         Text(stringResource(R.string.settings_repair_skip))
                     }
                 },
+            )
+        }
+    }
+
+    if (cutoutBgFix?.awaitingConfirmation == true) {
+        val flaggedCount = cutoutBgFix.flaggedIds.size
+        if (flaggedCount == 0) {
+            // Nothing flagged — short alert, mirror the "all clean" repair path.
+            AlertDialog(
+                onDismissRequest = { onContinueCutoutBgFix(false) },
+                title = { Text(stringResource(R.string.settings_cutoutfix_dialog_title)) },
+                text = { Text(stringResource(R.string.settings_cutoutfix_no_issues)) },
+                confirmButton = {
+                    TextButton(onClick = { onContinueCutoutBgFix(false) }) {
+                        Text(stringResource(R.string.action_ok))
+                    }
+                },
+            )
+        } else {
+            FixCutoutBgDialog(
+                state = cutoutBgFix,
+                onToggleSelection = onToggleCutoutFixSelection,
+                onSetSelection = onSetCutoutFixSelection,
+                onSetShowAll = onSetCutoutFixShowAll,
+                fetchThumbnail = fetchCutoutFixThumbnail,
+                onFix = { onContinueCutoutBgFix(true) },
+                onCancel = { onContinueCutoutBgFix(false) },
             )
         }
     }
@@ -2501,6 +2620,254 @@ private fun RepairPreviewTile(
                     style = MaterialTheme.typography.labelSmall,
                     modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                 )
+            }
+        }
+    }
+}
+
+// ---------- Fix cutout backgrounds dialog ----------
+
+@Composable
+private fun FixCutoutBgDialog(
+    state: CutoutBgFixProgress,
+    onToggleSelection: (String) -> Unit,
+    onSetSelection: (Set<String>) -> Unit,
+    onSetShowAll: (Boolean) -> Unit,
+    fetchThumbnail: suspend (CutoutFixEntry) -> File?,
+    onFix: () -> Unit,
+    onCancel: () -> Unit,
+) {
+    val visible = remember(state.items, state.showAll, state.flaggedIds) {
+        if (state.showAll) state.items else state.items.filter { it.driveId in state.flaggedIds }
+    }
+    val visibleIds = remember(visible) { visible.map { it.driveId }.toSet() }
+    val selectedVisible = state.selectedIds.intersect(visibleIds)
+
+    Dialog(
+        onDismissRequest = onCancel,
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false,
+            dismissOnBackPress = true,
+            dismissOnClickOutside = false,
+        ),
+    ) {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background,
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp, vertical = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    IconButton(onClick = onCancel) {
+                        Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_cancel))
+                    }
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            stringResource(R.string.settings_cutoutfix_dialog_title),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                        Text(
+                            stringResource(R.string.settings_cutoutfix_dialog_subtitle),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+                HorizontalDivider()
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        stringResource(R.string.settings_cutoutfix_show_all),
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.weight(1f),
+                    )
+                    Switch(
+                        checked = state.showAll,
+                        onCheckedChange = onSetShowAll,
+                    )
+                }
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        stringResource(
+                            R.string.settings_cutoutfix_selected,
+                            selectedVisible.size,
+                            visible.size,
+                        ),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.weight(1f),
+                    )
+                    if (selectedVisible.size < visible.size) {
+                        TextButton(
+                            onClick = { onSetSelection(state.selectedIds + visibleIds) },
+                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                        ) {
+                            Text(stringResource(R.string.settings_repair_preview_select_all))
+                        }
+                    }
+                    if (selectedVisible.isNotEmpty()) {
+                        TextButton(
+                            onClick = { onSetSelection(state.selectedIds - visibleIds) },
+                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                        ) {
+                            Text(stringResource(R.string.settings_repair_preview_deselect_all))
+                        }
+                    }
+                }
+
+                LazyVerticalGrid(
+                    columns = GridCells.Adaptive(96.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .padding(horizontal = 6.dp),
+                ) {
+                    items(visible, key = { it.driveId }) { entry ->
+                        FixCutoutBgTile(
+                            entry = entry,
+                            isSelected = entry.driveId in state.selectedIds,
+                            onToggle = { onToggleSelection(entry.driveId) },
+                            fetchThumbnail = fetchThumbnail,
+                        )
+                    }
+                }
+
+                HorizontalDivider()
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Spacer(Modifier.weight(1f))
+                    TextButton(onClick = onCancel) {
+                        Text(stringResource(R.string.action_cancel))
+                    }
+                    Spacer(Modifier.size(4.dp))
+                    Button(
+                        onClick = onFix,
+                        enabled = state.selectedIds.isNotEmpty(),
+                    ) {
+                        Text(stringResource(R.string.settings_cutoutfix_fix_n, state.selectedIds.size))
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun FixCutoutBgTile(
+    entry: CutoutFixEntry,
+    isSelected: Boolean,
+    onToggle: () -> Unit,
+    fetchThumbnail: suspend (CutoutFixEntry) -> File?,
+) {
+    val thumbFile by produceState<File?>(initialValue = null, entry.driveId) {
+        value = fetchThumbnail(entry)
+    }
+    Box(
+        modifier = Modifier
+            .padding(2.dp)
+            .aspectRatio(1f)
+            .clip(MaterialTheme.shapes.small)
+            .clickable(onClick = onToggle),
+    ) {
+        if (thumbFile != null) {
+            AsyncImage(
+                model = thumbFile,
+                contentDescription = entry.name,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop,
+            )
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
+                contentAlignment = Alignment.Center,
+            ) {
+                CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
+            }
+        }
+        if (isSelected) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White.copy(alpha = 0.3f)),
+                contentAlignment = Alignment.TopEnd,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.CheckCircle,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(4.dp),
+                )
+            }
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.45f)),
+                contentAlignment = Alignment.TopEnd,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.padding(4.dp).size(18.dp),
+                )
+            }
+        }
+        // Issue badges in bottom-start corner.
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(4.dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            if (entry.hasBlackBackground) {
+                Surface(
+                    color = MaterialTheme.colorScheme.errorContainer,
+                    contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                    shape = MaterialTheme.shapes.small,
+                ) {
+                    Text(
+                        stringResource(R.string.settings_cutoutfix_badge_blackbg),
+                        style = MaterialTheme.typography.labelSmall,
+                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                    )
+                }
+            }
+            if (entry.hasGreenHalo) {
+                Surface(
+                    color = MaterialTheme.colorScheme.errorContainer,
+                    contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                    shape = MaterialTheme.shapes.small,
+                ) {
+                    Text(
+                        stringResource(R.string.settings_cutoutfix_badge_greenhalo),
+                        style = MaterialTheme.typography.labelSmall,
+                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                    )
+                }
             }
         }
     }

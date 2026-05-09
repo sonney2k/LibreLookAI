@@ -34,6 +34,7 @@ Core guidance for working in this repo. Detailed/historical notes live in `CLAUD
 * **Offline Mode**: `LocalIsOffline` `CompositionLocal` hides write-path UI. Backed by `NetworkMonitor` (`NetworkUtils.kt`) tracking `INTERNET+VALIDATED` networks; `MainActivity` calls `recheck()` on `ON_RESUME` as a backstop.
 * **Navigation**: Single `selectedTab: Int` in `MainActivity`; no Jetpack Navigation.
 * **Background Removal**: `SegmentationRepository.foregroundThreshold` mirrors `UserPreferences.bgRemovalThreshold` (Settings → AI). Local on-device path via `segmentForegroundTransparent(src, seedX, seedY)` + `LocalBgRemovalScreen` review dialog (gated by `preferLocalBgRemoval`; URL imports always review). On Apply, cutout is tight-cropped to alpha bbox and `PendingJob.prebuiltCutoutPath` skips `gemini.removeBackground`.
+* **Cutout BG Fix**: Settings → Data → "Fix cutout backgrounds" scans existing cutouts, flags black-background or green-halo issues (`detectCutoutIssues` in `GeminiRepository.kt`), and reapplies `blackBackgroundToAlphaInPlace`/`despillGreenInPlace`/`featherAlphaEdgesInPlace`/`cropAndCap` via `fixCutoutBackground`, re-uploading with `drive.updateImage` (preserves Drive ID). Pre-selects flagged items; toggle "show all" to include clean cutouts.
 * **Background Jobs**: Heavy ops protected by `JobForegroundService` + `PARTIAL_WAKE_LOCK`; OEM battery exemptions requested.
 
 ## Key UI & Workflows
