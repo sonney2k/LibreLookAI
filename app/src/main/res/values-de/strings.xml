@@ -178,6 +178,7 @@
     <string name="settings_cutoutfix_no_issues">Keine Cutouts mit Hintergrundresten gefunden.</string>
     <string name="settings_cutoutfix_badge_blackbg">Schwarz</string>
     <string name="settings_cutoutfix_badge_greenhalo">Grün</string>
+    <string name="settings_cutoutfix_badge_holes">Löcher</string>
     <string name="settings_cutoutfix_fix_n">%1$d reparieren</string>
     <string name="settings_cutoutfix_selected">%1$d von %2$d ausgewählt</string>
     <string name="settings_repair_preview_cost_total">Geschätzte Kosten: %1$d Credits</string>
@@ -260,6 +261,9 @@
     <string name="wardrobe_tag_detect">Tags erkennen</string>
     <string name="wardrobe_tag_remove_bg">Hintergrund entfernen</string>
     <string name="wardrobe_tag_re_remove_bg">Hintergrund erneut entfernen</string>
+    <string name="wardrobe_fix_cutout_bg">Cutout-Hintergrund reparieren</string>
+    <string name="wardrobe_fix_cutout_bg_done">Cutout-Hintergrund repariert.</string>
+    <string name="wardrobe_fix_cutout_bg_clean">Kein Hintergrund-Rest erkannt — nichts zu reparieren.</string>
     <string name="wardrobe_tag_rotate">Drehen</string>
     <string name="wardrobe_tag_edit">Tags bearbeiten</string>
     <string name="wardrobe_tag_sheet_title">Tags bearbeiten</string>

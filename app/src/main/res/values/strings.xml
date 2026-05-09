@@ -182,6 +182,7 @@
     <string name="settings_cutoutfix_no_issues">No cutouts with leftover backgrounds were found.</string>
     <string name="settings_cutoutfix_badge_blackbg">black bg</string>
     <string name="settings_cutoutfix_badge_greenhalo">green halo</string>
+    <string name="settings_cutoutfix_badge_holes">holes</string>
     <string name="settings_cutoutfix_fix_n">Fix %1$d</string>
     <string name="settings_cutoutfix_selected">%1$d of %2$d selected</string>
     <string name="settings_repair_preview_cost_total">Estimated cost: %1$d credits</string>
@@ -265,6 +266,9 @@
     <string name="wardrobe_tag_detect">Detect tags</string>
     <string name="wardrobe_tag_remove_bg">Remove BG</string>
     <string name="wardrobe_tag_re_remove_bg">Re-remove BG</string>
+    <string name="wardrobe_fix_cutout_bg">Fix cutout BG</string>
+    <string name="wardrobe_fix_cutout_bg_done">Cutout background fixed.</string>
+    <string name="wardrobe_fix_cutout_bg_clean">No leftover background detected — nothing to fix.</string>
     <string name="wardrobe_tag_rotate">Rotate</string>
     <string name="wardrobe_tag_edit">Edit tags</string>
     <string name="wardrobe_tag_sheet_title">Edit Tags</string>

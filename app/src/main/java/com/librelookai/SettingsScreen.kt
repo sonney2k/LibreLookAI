@@ -1271,34 +1271,11 @@ private fun DataTab(
         }
     }
 
-    if (cutoutBgFix?.awaitingConfirmation == true) {
-        val flaggedCount = cutoutBgFix.flaggedIds.size
-        if (flaggedCount == 0) {
-            // Nothing flagged — short alert, mirror the "all clean" repair path.
-            AlertDialog(
-                onDismissRequest = { onContinueCutoutBgFix(false) },
-                title = { Text(stringResource(R.string.settings_cutoutfix_dialog_title)) },
-                text = { Text(stringResource(R.string.settings_cutoutfix_no_issues)) },
-                confirmButton = {
-                    TextButton(onClick = { onContinueCutoutBgFix(false) }) {
-                        Text(stringResource(R.string.action_ok))
-                    }
-                },
-            )
-        } else {
-            FixCutoutBgDialog(
-                state = cutoutBgFix,
-                onToggleSelection = onToggleCutoutFixSelection,
-                onSetSelection = onSetCutoutFixSelection,
-                onSetShowAll = onSetCutoutFixShowAll,
-                fetchThumbnail = fetchCutoutFixThumbnail,
-                onFix = { onContinueCutoutBgFix(true) },
-                onCancel = { onContinueCutoutBgFix(false) },
-            )
-        }
-    }
+    // Confirmation dialog for "Fix cutout backgrounds" is hosted globally in
+    // MainActivity so it remains visible regardless of which tab triggered the scan
+    // (Wardrobe header or Settings → Data).
 
-    if (showImportOptionsDialog) {
+if (showImportOptionsDialog) {
         ImportOptionsDialog(
             existingItemCount = wardrobeState.images.size,
             onConfirm = { removeBg, autoTag, replace, overwrite, useDrive ->
@@ -2633,7 +2610,7 @@ private fun RepairPreviewTile(
 // ---------- Fix cutout backgrounds dialog ----------
 
 @Composable
-private fun FixCutoutBgDialog(
+internal fun FixCutoutBgDialog(
     state: CutoutBgFixProgress,
     onToggleSelection: (String) -> Unit,
     onSetSelection: (Set<String>) -> Unit,
@@ -2910,6 +2887,19 @@ private fun FixCutoutBgTile(
                 ) {
                     Text(
                         stringResource(R.string.settings_cutoutfix_badge_greenhalo),
+                        style = MaterialTheme.typography.labelSmall,
+                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                    )
+                }
+            }
+            if (entry.hasInteriorHoles) {
+                Surface(
+                    color = MaterialTheme.colorScheme.errorContainer,
+                    contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                    shape = MaterialTheme.shapes.small,
+                ) {
+                    Text(
+                        stringResource(R.string.settings_cutoutfix_badge_holes),
                         style = MaterialTheme.typography.labelSmall,
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                     )

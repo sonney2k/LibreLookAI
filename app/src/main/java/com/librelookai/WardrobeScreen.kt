@@ -228,6 +228,7 @@ fun WardrobeScreen(
             onTagImage = viewModel::tagImage,
             onRemoveBackground = viewModel::reprocessBackground,
             onRotateImage = viewModel::rotateImage,
+            onFixCutoutBg = viewModel::fixCutoutBgForItem,
             onUpdateTags = viewModel::updateTags,
             onToggleSelection = viewModel::toggleSelection,
             onSelectAll = viewModel::selectAll,
@@ -628,6 +629,7 @@ private fun GridContent(
     onTagImage: (String) -> Unit,
     onRemoveBackground: (String) -> Unit,
     onRotateImage: (String) -> Unit,
+    onFixCutoutBg: (String) -> Unit = {},
     onUpdateTags: (String, ClothingTags) -> Unit,
     onToggleSelection: (String) -> Unit,
     onSelectAll: (List<String>) -> Unit,
@@ -1044,6 +1046,7 @@ private fun GridContent(
                     if (displayedImages.size <= 1) selectedIndex = null
                 },
                 onCreateOutfitFromSelection = onCreateOutfitFromSelection,
+                onFixCutoutBg = onFixCutoutBg,
                 locations = locations,
                 activeLocationId = activeLocationId,
                 processingImageId = processingImageId,
@@ -1272,6 +1275,7 @@ internal fun FullScreenViewer(
     onDeleteItem: (String) -> Unit,
     onMoveToLocation: (Set<String>, String) -> Unit,
     onCreateOutfitFromSelection: (Set<String>) -> Unit,
+    onFixCutoutBg: (String) -> Unit = {},
     locations: List<Location>,
     activeLocationId: String,
     processingImageId: String?,
@@ -1445,6 +1449,17 @@ internal fun FullScreenViewer(
                                 else R.string.wardrobe_tag_remove_bg
                             ))
                         },
+                    )
+                    ExtendedFloatingActionButton(
+                        onClick = {
+                            Analytics.action("ItemViewer", "fix_cutout_bg")
+                            onFixCutoutBg(currentImage.driveId)
+                            showEditMenu = false
+                        },
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        icon = { Icon(Icons.Default.AutoFixHigh, contentDescription = null) },
+                        text = { Text(stringResource(R.string.wardrobe_fix_cutout_bg)) },
                     )
                     if (locations.any { it.folderId != activeLocationId }) {
                         ExtendedFloatingActionButton(

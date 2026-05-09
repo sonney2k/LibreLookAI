@@ -584,6 +584,22 @@ class MainActivity : ComponentActivity() {
 
                                 // Replacements result dialog — opened from Wardrobe selection FAB.
                                 ReplacementsResultDialog(gapViewModel = gapViewModel)
+
+                                // Cutout-background fix confirmation — globally hosted so it
+                                // appears whether the scan was started from Wardrobe header or
+                                // Settings → Data.
+                                val cutoutBgFix = wardrobeViewModel.state.collectAsState().value.cutoutBgFix
+                                if (cutoutBgFix?.awaitingConfirmation == true) {
+                                    FixCutoutBgDialog(
+                                        state = cutoutBgFix,
+                                        onToggleSelection = wardrobeViewModel::toggleCutoutFixSelection,
+                                        onSetSelection = wardrobeViewModel::setCutoutFixSelection,
+                                        onSetShowAll = wardrobeViewModel::setCutoutFixShowAll,
+                                        fetchThumbnail = wardrobeViewModel::fetchCutoutFixThumbnail,
+                                        onFix = { wardrobeViewModel.continueCutoutBgFix(true) },
+                                        onCancel = { wardrobeViewModel.continueCutoutBgFix(false) },
+                                    )
+                                }
                             }
                         }
                         }
