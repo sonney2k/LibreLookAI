@@ -61,6 +61,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ImageSearch
+import androidx.compose.material.icons.filled.Photo
 import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -100,6 +101,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -230,6 +232,7 @@ fun WardrobeScreen(
             onRemoveBackground = viewModel::reprocessBackground,
             onRotateImage = viewModel::rotateImage,
             onFixCutoutBg = viewModel::fixCutoutBgForItem,
+            onLoadOriginal = viewModel::ensureOriginalCached,
             onUpdateTags = viewModel::updateTags,
             onToggleSelection = viewModel::toggleSelection,
             onSelectAll = viewModel::selectAll,
@@ -631,6 +634,7 @@ private fun GridContent(
     onRemoveBackground: (String) -> Unit,
     onRotateImage: (String) -> Unit,
     onFixCutoutBg: (String, CutoutFixActions) -> Unit = { _, _ -> },
+    onLoadOriginal: (suspend (String) -> String?)? = null,
     onUpdateTags: (String, ClothingTags) -> Unit,
     onToggleSelection: (String) -> Unit,
     onSelectAll: (List<String>) -> Unit,
@@ -1048,6 +1052,7 @@ private fun GridContent(
                 },
                 onCreateOutfitFromSelection = onCreateOutfitFromSelection,
                 onFixCutoutBg = onFixCutoutBg,
+                onLoadOriginal = onLoadOriginal,
                 locations = locations,
                 activeLocationId = activeLocationId,
                 processingImageId = processingImageId,
@@ -1277,6 +1282,7 @@ internal fun FullScreenViewer(
     onMoveToLocation: (Set<String>, String) -> Unit,
     onCreateOutfitFromSelection: (Set<String>) -> Unit,
     onFixCutoutBg: (String, CutoutFixActions) -> Unit = { _, _ -> },
+    onLoadOriginal: (suspend (String) -> String?)? = null,
     locations: List<Location>,
     activeLocationId: String,
     processingImageId: String?,
@@ -1297,6 +1303,11 @@ internal fun FullScreenViewer(
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showEditMenu by remember { mutableStateOf(false) }
     var showFixCutoutBgDialog by remember { mutableStateOf(false) }
+    var showOriginal by remember { mutableStateOf(false) }
+    // driveId → resolved original local path. Cached across page swipes so revisiting the
+    // same item doesn't redownload.
+    val originalPaths = remember { mutableStateMapOf<String, String>() }
+    var loadingOriginal by remember { mutableStateOf(false) }
 
     val currentImage = images[pagerState.currentPage]
     val headerLabel = currentImage.tags?.label?.takeIf { it.isNotBlank() } ?: currentImage.name
@@ -1374,10 +1385,13 @@ internal fun FullScreenViewer(
                     .fillMaxWidth()
                     .weight(1f),
             ) { page ->
+                val img = images[page]
+                val origPath = originalPaths[img.driveId]
+                val useOriginal = showOriginal && page == pagerState.currentPage && origPath != null
                 ZoomableImage(
-                    localPath = images[page].localPath,
-                    name = images[page].name,
-                    cacheKey = "${images[page].driveId}_${images[page].version}",
+                    localPath = if (useOriginal) origPath!! else img.localPath,
+                    name = img.name,
+                    cacheKey = if (useOriginal) "${img.driveId}_original" else "${img.driveId}_${img.version}",
                     onScaleChanged = { s -> if (page == pagerState.currentPage) pageScale = s },
                 )
             }
@@ -1393,6 +1407,40 @@ internal fun FullScreenViewer(
             modifier = Modifier.align(Alignment.TopStart).statusBarsPadding().padding(8.dp),
         ) {
             Icon(Icons.Default.Close, contentDescription = "Close", tint = MaterialTheme.colorScheme.onBackground)
+        }
+
+        // View-original toggle (top-end). Shown only when the item has an original on Drive
+        // and the host wired up a loader.
+        if (onLoadOriginal != null && currentImage.originalDriveId != null) {
+            LaunchedEffect(showOriginal, currentImage.driveId) {
+                if (showOriginal && originalPaths[currentImage.driveId] == null) {
+                    loadingOriginal = true
+                    val path = runCatching { onLoadOriginal(currentImage.driveId) }.getOrNull()
+                    if (path != null) originalPaths[currentImage.driveId] = path
+                    loadingOriginal = false
+                }
+            }
+            IconButton(
+                onClick = {
+                    Analytics.action("ItemViewer", if (showOriginal) "hide_original" else "show_original")
+                    showOriginal = !showOriginal
+                },
+                modifier = Modifier.align(Alignment.TopEnd).statusBarsPadding().padding(8.dp),
+            ) {
+                Icon(
+                    imageVector = if (showOriginal) Icons.Default.ImageSearch else Icons.Default.Photo,
+                    contentDescription = stringResource(
+                        if (showOriginal) R.string.wardrobe_view_cutout else R.string.wardrobe_view_original
+                    ),
+                    tint = MaterialTheme.colorScheme.onBackground,
+                )
+            }
+            if (showOriginal && loadingOriginal) {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center),
+                    color = MaterialTheme.colorScheme.onBackground,
+                )
+            }
         }
 
         // Edit speed-dial — same style as Wardrobe + FAB. Expands to rotate / detect tags / remove bg.

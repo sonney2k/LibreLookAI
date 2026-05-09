@@ -1273,6 +1273,19 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         runCatching { drive.downloadToCache(entry.driveId, entry.name) }.getOrNull()
     }
 
+    /** Ensures the pre-cutout original for [cutoutDriveId] is cached at the canonical
+     *  `${cutoutDriveId}_original.jpg` path and returns its absolute path, or null if no
+     *  original exists or the download failed. */
+    suspend fun ensureOriginalCached(cutoutDriveId: String): String? = withContext(Dispatchers.IO) {
+        val image = _state.value.images.firstOrNull { it.driveId == cutoutDriveId } ?: return@withContext null
+        val origId = image.originalDriveId ?: return@withContext null
+        val local = File(drive.cacheDir, "${cutoutDriveId}_original.jpg")
+        if (local.exists()) return@withContext local.absolutePath
+        val downloaded = runCatching { drive.downloadToCache(origId) }.getOrNull() ?: return@withContext null
+        runCatching { downloaded.copyTo(local, overwrite = true) }
+        local.absolutePath
+    }
+
     private fun localCacheFile(id: String) =
         File(getApplication<Application>().filesDir, "wardrobe_cache_$id.json")
 

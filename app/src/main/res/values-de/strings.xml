@@ -614,6 +614,8 @@
     <string name="composer_add_selected">Auswahl hinzufügen</string>
     <string name="wardrobe_create_style">Outfit erstellen</string>
     <string name="wardrobe_imported_on">Importiert am %1$s</string>
+    <string name="wardrobe_view_original">Original anzeigen</string>
+    <string name="wardrobe_view_cutout">Freisteller anzeigen</string>
 
     <!-- AI tab -->
     <string name="settings_tab_ai">KI</string>

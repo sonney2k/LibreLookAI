@@ -493,7 +493,9 @@ class GeminiRepository(private val app: Application) {
         val h = mutable.height
         val pixels = IntArray(w * h)
         mutable.getPixels(pixels, 0, w, 0, 0, w, h)
-        // Neon-green (#00FF00) with tolerance for JPEG artifacts → fully transparent.
+        // Neon-green (#00FF00) with tolerance for JPEG artifacts → fully transparent. Kept
+        // tight so saturated-green or dark-green garments aren't keyed away by accident; any
+        // residual shadow halo is left to despill below.
         for (i in pixels.indices) {
             val c = pixels[i]
             val r = (c shr 16) and 0xFF
@@ -585,6 +587,14 @@ internal fun featherAlphaEdgesInPlace(pixels: IntArray, w: Int, h: Int, radius: 
         for (x in radius until w - radius) {
             val idx = row + x
             if ((srcAlpha[idx].toInt() and 0xFF) == 0) continue
+            // Only feather pixels that border a transparent pixel — otherwise we erode alpha
+            // on solid interior regions and create faint speckle holes.
+            val onEdge =
+                (srcAlpha[idx - 1].toInt() and 0xFF) == 0 ||
+                (srcAlpha[idx + 1].toInt() and 0xFF) == 0 ||
+                (srcAlpha[idx - w].toInt() and 0xFF) == 0 ||
+                (srcAlpha[idx + w].toInt() and 0xFF) == 0
+            if (!onEdge) continue
             var total = 0
             for (ky in -radius..radius) {
                 val nr = (y + ky) * w

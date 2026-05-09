@@ -554,6 +554,18 @@ class ShoppingClosetViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /** Public hook for the wardrobe viewer's "view original" toggle: returns the cached
+     *  pre-cutout image path, downloading from Drive if needed. */
+    suspend fun ensureOriginalCached(cutoutDriveId: String): String? = withContext(Dispatchers.IO) {
+        val item = _state.value.items.find { it.driveId == cutoutDriveId } ?: return@withContext null
+        if (item.originalDriveId == null) return@withContext null
+        val local = File(drive.cacheDir, "${cutoutDriveId}_original.jpg")
+        if (local.exists()) return@withContext local.absolutePath
+        val downloaded = runCatching { drive.downloadToCache(item.originalDriveId) }.getOrNull() ?: return@withContext null
+        runCatching { downloaded.copyTo(local, overwrite = true) }
+        local.absolutePath
+    }
+
     private suspend fun resolveOriginalFile(driveId: String): File? {
         val localOriginal = File(drive.cacheDir, "${driveId}_original.jpg")
         if (localOriginal.exists()) return localOriginal

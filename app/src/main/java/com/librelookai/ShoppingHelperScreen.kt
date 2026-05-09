@@ -540,6 +540,7 @@ private fun ShoppingListTab(
                     if (displayedItems.size <= 1) selectedIndex = null
                 },
                 onCreateOutfitFromSelection = onCreateOutfitFromSelection,
+                onLoadOriginal = shoppingClosetViewModel::ensureOriginalCached,
                 locations = locations,
                 activeLocationId = activeLocationId,
                 processingImageId = state.processingImageId,
