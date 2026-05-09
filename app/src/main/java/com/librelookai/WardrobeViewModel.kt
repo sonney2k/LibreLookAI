@@ -444,7 +444,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         allFolderIds = null
         // Preserve [allLocationImages] across the location switch so similarity search keeps
         // working immediately — it is independent of the active filter.
-        _state.update { WardrobeUiState(isLoading = true, allLocationImages = it.allLocationImages) }
+        _state.update { WardrobeUiState(isLoading = true, allLocationImages = it.allLocationImages, pendingScrollDriveId = it.pendingScrollDriveId) }
         loadImages()
     }
 
@@ -452,7 +452,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         if (folderId == null && allFolderIds?.toSet() == folderIds.toSet()) return
         folderId = null
         allFolderIds = folderIds.toList()
-        _state.update { WardrobeUiState(isLoading = true, allLocationImages = it.allLocationImages) }
+        _state.update { WardrobeUiState(isLoading = true, allLocationImages = it.allLocationImages, pendingScrollDriveId = it.pendingScrollDriveId) }
         loadImages()
     }
 
