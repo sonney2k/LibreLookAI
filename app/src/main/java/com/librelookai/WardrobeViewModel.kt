@@ -282,7 +282,6 @@ data class CutoutBgFixProgress(
     // (any flagged issue → that action defaults ON). Feather + tight-crop default ON.
     val applyBlackToAlpha: Boolean = false,
     val applyDespillGreen: Boolean = false,
-    val applyFillHoles: Boolean = false,
     val applyFeather: Boolean = true,
     val applyTightCrop: Boolean = true,
 )
@@ -293,7 +292,6 @@ data class CutoutFixEntry(
     val folderId: String,
     val hasBlackBackground: Boolean,
     val hasGreenHalo: Boolean,
-    val hasInteriorHoles: Boolean = false,
 )
 
 // ---------- Per-item sidecar metadata ----------
@@ -1066,7 +1064,6 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                                 folderId = fid,
                                 hasBlackBackground = issues.hasBlackBackground,
                                 hasGreenHalo = issues.hasGreenHalo,
-                                hasInteriorHoles = issues.hasInteriorHoles,
                             )
                             items.add(entry)
                             if (issues.any) flagged.add(cf.id)
@@ -1084,7 +1081,6 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
                 val anyBlack = items.any { it.hasBlackBackground }
                 val anyGreen = items.any { it.hasGreenHalo }
-                val anyHoles = items.any { it.hasInteriorHoles }
                 _state.update {
                     it.copy(cutoutBgFix = CutoutBgFixProgress(
                         awaitingConfirmation = true,
@@ -1096,7 +1092,6 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                         showAll = flagged.isEmpty(),
                         applyBlackToAlpha = anyBlack,
                         applyDespillGreen = anyGreen,
-                        applyFillHoles = anyHoles,
                         totalCutouts = items.size,
                         scannedCutouts = items.size,
                     ))
@@ -1120,7 +1115,6 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         val actions = CutoutFixActions(
             blackToAlpha = cur.applyBlackToAlpha,
             despillGreen = cur.applyDespillGreen,
-            fillHoles = cur.applyFillHoles,
             feather = cur.applyFeather,
             tightCrop = cur.applyTightCrop,
         )
@@ -1197,7 +1191,6 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     fun setCutoutFixAction(
         blackToAlpha: Boolean? = null,
         despillGreen: Boolean? = null,
-        fillHoles: Boolean? = null,
         feather: Boolean? = null,
         tightCrop: Boolean? = null,
     ) {
@@ -1207,7 +1200,6 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             s.copy(cutoutBgFix = c.copy(
                 applyBlackToAlpha = blackToAlpha ?: c.applyBlackToAlpha,
                 applyDespillGreen = despillGreen ?: c.applyDespillGreen,
-                applyFillHoles = fillHoles ?: c.applyFillHoles,
                 applyFeather = feather ?: c.applyFeather,
                 applyTightCrop = tightCrop ?: c.applyTightCrop,
             ))
@@ -1233,7 +1225,6 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         actions: CutoutFixActions = CutoutFixActions(
             blackToAlpha = true,
             despillGreen = true,
-            fillHoles = true,
             feather = true,
             tightCrop = true,
         ),

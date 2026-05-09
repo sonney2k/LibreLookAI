@@ -2615,7 +2615,7 @@ internal fun FixCutoutBgDialog(
     onToggleSelection: (String) -> Unit,
     onSetSelection: (Set<String>) -> Unit,
     onSetShowAll: (Boolean) -> Unit,
-    onSetAction: (Boolean?, Boolean?, Boolean?, Boolean?, Boolean?) -> Unit,
+    onSetAction: (Boolean?, Boolean?, Boolean?, Boolean?) -> Unit,
     fetchThumbnail: suspend (CutoutFixEntry) -> File?,
     onFix: () -> Unit,
     onCancel: () -> Unit,
@@ -2719,19 +2719,16 @@ internal fun FixCutoutBgDialog(
                     }
                 }
                 ActionToggleRow(R.string.settings_cutoutfix_action_blackbg, state.applyBlackToAlpha) {
-                    onSetAction(it, null, null, null, null)
+                    onSetAction(it, null, null, null)
                 }
                 ActionToggleRow(R.string.settings_cutoutfix_action_greenhalo, state.applyDespillGreen) {
-                    onSetAction(null, it, null, null, null)
-                }
-                ActionToggleRow(R.string.settings_cutoutfix_action_holes, state.applyFillHoles) {
-                    onSetAction(null, null, it, null, null)
+                    onSetAction(null, it, null, null)
                 }
                 ActionToggleRow(R.string.settings_cutoutfix_action_feather, state.applyFeather) {
-                    onSetAction(null, null, null, it, null)
+                    onSetAction(null, null, it, null)
                 }
                 ActionToggleRow(R.string.settings_cutoutfix_action_tightcrop, state.applyTightCrop) {
-                    onSetAction(null, null, null, null, it)
+                    onSetAction(null, null, null, it)
                 }
                 HorizontalDivider()
 
@@ -2818,7 +2815,7 @@ internal fun FixCutoutBgDialog(
                     }
                     Spacer(Modifier.size(4.dp))
                     val anyAction = state.applyBlackToAlpha || state.applyDespillGreen ||
-                        state.applyFillHoles || state.applyFeather || state.applyTightCrop
+                        state.applyFeather || state.applyTightCrop
                     Button(
                         onClick = onFix,
                         enabled = state.selectedIds.isNotEmpty() && anyAction,
@@ -2923,19 +2920,6 @@ private fun FixCutoutBgTile(
                 ) {
                     Text(
                         stringResource(R.string.settings_cutoutfix_badge_greenhalo),
-                        style = MaterialTheme.typography.labelSmall,
-                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                    )
-                }
-            }
-            if (entry.hasInteriorHoles) {
-                Surface(
-                    color = MaterialTheme.colorScheme.errorContainer,
-                    contentColor = MaterialTheme.colorScheme.onErrorContainer,
-                    shape = MaterialTheme.shapes.small,
-                ) {
-                    Text(
-                        stringResource(R.string.settings_cutoutfix_badge_holes),
                         style = MaterialTheme.typography.labelSmall,
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                     )

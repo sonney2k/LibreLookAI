@@ -669,9 +669,8 @@ internal fun cropAndCap(
 internal data class CutoutIssues(
     val hasBlackBackground: Boolean,
     val hasGreenHalo: Boolean,
-    val hasInteriorHoles: Boolean = false,
 ) {
-    val any: Boolean get() = hasBlackBackground || hasGreenHalo || hasInteriorHoles
+    val any: Boolean get() = hasBlackBackground || hasGreenHalo
 }
 
 /** Detects black background + green halo on an existing cutout PNG.
@@ -737,119 +736,7 @@ internal fun detectCutoutIssues(file: File): CutoutIssues {
     }
     val hasGreenHalo = edgeOpaque > 0 && edgeGreen.toFloat() / edgeOpaque > 0.005f
 
-    // --- Interior alpha-hole scan: transparent pixels NOT reachable from the image border via
-    //     a 4-way flood fill through transparent pixels are interior holes (e.g. a previous
-    //     over-aggressive black→alpha pass that ate a logo or a black t-shirt body). Threshold
-    //     filters out one-pixel JPEG noise so we don't flag clean cutouts as needing repair. */
-    val reachable = BooleanArray(w * h)
-    val stack = ArrayDeque<Int>()
-    var totalTransparent = 0
-    for (i in px.indices) {
-        if (((px[i] ushr 24) and 0xFF) == 0) totalTransparent++
-    }
-    fun seedHole(x: Int, y: Int) {
-        val i = y * w + x
-        if (reachable[i]) return
-        if (((px[i] ushr 24) and 0xFF) != 0) return
-        reachable[i] = true
-        stack.addLast(i)
-    }
-    for (x in 0 until w) { seedHole(x, 0); seedHole(x, h - 1) }
-    for (y in 0 until h) { seedHole(0, y); seedHole(w - 1, y) }
-    while (stack.isNotEmpty()) {
-        val i = stack.removeLast()
-        val x = i % w
-        val y = i / w
-        if (x > 0)     { val j = i - 1; if (!reachable[j] && ((px[j] ushr 24) and 0xFF) == 0) { reachable[j] = true; stack.addLast(j) } }
-        if (x < w - 1) { val j = i + 1; if (!reachable[j] && ((px[j] ushr 24) and 0xFF) == 0) { reachable[j] = true; stack.addLast(j) } }
-        if (y > 0)     { val j = i - w; if (!reachable[j] && ((px[j] ushr 24) and 0xFF) == 0) { reachable[j] = true; stack.addLast(j) } }
-        if (y < h - 1) { val j = i + w; if (!reachable[j] && ((px[j] ushr 24) and 0xFF) == 0) { reachable[j] = true; stack.addLast(j) } }
-    }
-    var holePixels = 0
-    for (i in px.indices) {
-        if (((px[i] ushr 24) and 0xFF) == 0 && !reachable[i]) holePixels++
-    }
-    // Need at least a small region (≥0.05% of image) to count — avoids false positives from
-    // antialiased edges that briefly drop to alpha=0 in the interior.
-    val holeThreshold = ((w * h) / 2000).coerceAtLeast(8)
-    val hasInteriorHoles = holePixels >= holeThreshold
-
-    return CutoutIssues(hasBlackBg, hasGreenHalo, hasInteriorHoles)
-}
-
-/** Fills interior alpha holes (transparent regions enclosed by opaque pixels) by morphological
- *  dilation: each iteration, every interior-hole pixel adjacent to an opaque pixel adopts the
- *  average color of those opaque neighbours and becomes opaque. Repeats until stable or
- *  [maxIterations] is hit, which bounds runtime on pathological inputs. */
-internal fun fillInteriorAlphaHolesInPlace(pixels: IntArray, w: Int, h: Int, maxIterations: Int = 64) {
-    if (w <= 0 || h <= 0) return
-    // First, build a "is reachable from border via transparent pixels" mask. Any transparent
-    // pixel NOT in this set is an interior hole eligible to be filled.
-    val reachable = BooleanArray(w * h)
-    val stack = ArrayDeque<Int>()
-    fun seed(i: Int) {
-        if (reachable[i]) return
-        if (((pixels[i] ushr 24) and 0xFF) != 0) return
-        reachable[i] = true
-        stack.addLast(i)
-    }
-    for (x in 0 until w) { seed(x); seed((h - 1) * w + x) }
-    for (y in 0 until h) { seed(y * w); seed(y * w + w - 1) }
-    while (stack.isNotEmpty()) {
-        val i = stack.removeLast()
-        val x = i % w
-        val y = i / w
-        if (x > 0)     { val j = i - 1; if (!reachable[j] && ((pixels[j] ushr 24) and 0xFF) == 0) { reachable[j] = true; stack.addLast(j) } }
-        if (x < w - 1) { val j = i + 1; if (!reachable[j] && ((pixels[j] ushr 24) and 0xFF) == 0) { reachable[j] = true; stack.addLast(j) } }
-        if (y > 0)     { val j = i - w; if (!reachable[j] && ((pixels[j] ushr 24) and 0xFF) == 0) { reachable[j] = true; stack.addLast(j) } }
-        if (y < h - 1) { val j = i + w; if (!reachable[j] && ((pixels[j] ushr 24) and 0xFF) == 0) { reachable[j] = true; stack.addLast(j) } }
-    }
-    val isHole = BooleanArray(w * h)
-    var remaining = 0
-    for (i in pixels.indices) {
-        if (((pixels[i] ushr 24) and 0xFF) == 0 && !reachable[i]) {
-            isHole[i] = true
-            remaining++
-        }
-    }
-    if (remaining == 0) return
-
-    var iter = 0
-    while (remaining > 0 && iter < maxIterations) {
-        iter++
-        var filledThisPass = 0
-        // Snapshot the hole mask so dilation in this pass uses the previous frontier only.
-        val snapshot = isHole.copyOf()
-        for (y in 0 until h) {
-            val row = y * w
-            for (x in 0 until w) {
-                val i = row + x
-                if (!snapshot[i]) continue
-                var rs = 0; var gs = 0; var bs = 0; var n = 0
-                fun consider(j: Int) {
-                    if (snapshot[j]) return
-                    val a = (pixels[j] ushr 24) and 0xFF
-                    if (a == 0) return
-                    rs += (pixels[j] shr 16) and 0xFF
-                    gs += (pixels[j] shr 8) and 0xFF
-                    bs += pixels[j] and 0xFF
-                    n++
-                }
-                if (x > 0)     consider(i - 1)
-                if (x < w - 1) consider(i + 1)
-                if (y > 0)     consider(i - w)
-                if (y < h - 1) consider(i + w)
-                if (n > 0) {
-                    val r = rs / n; val g = gs / n; val b = bs / n
-                    pixels[i] = (0xFF shl 24) or (r shl 16) or (g shl 8) or b
-                    isHole[i] = false
-                    filledThisPass++
-                }
-            }
-        }
-        remaining -= filledThisPass
-        if (filledThisPass == 0) break
-    }
+    return CutoutIssues(hasBlackBg, hasGreenHalo)
 }
 
 /** Per-action toggles for [fixCutoutBackground]. Each pixel transformation is independently
@@ -857,11 +744,11 @@ internal fun fillInteriorAlphaHolesInPlace(pixels: IntArray, w: Int, h: Int, max
 data class CutoutFixActions(
     val blackToAlpha: Boolean,
     val despillGreen: Boolean,
-    val fillHoles: Boolean,
     val feather: Boolean,
     val tightCrop: Boolean,
+    val clearAlpha: Boolean = false,
 ) {
-    val any: Boolean get() = blackToAlpha || despillGreen || fillHoles || feather || tightCrop
+    val any: Boolean get() = clearAlpha || blackToAlpha || despillGreen || feather || tightCrop
 }
 
 /** Applies the enabled passes from [actions]. Output is written as PNG. */
@@ -874,9 +761,11 @@ internal fun fixCutoutBackground(input: File, output: File, actions: CutoutFixAc
     val h = mutable.height
     val px = IntArray(w * h)
     mutable.getPixels(px, 0, w, 0, 0, w, h)
+    if (actions.clearAlpha) {
+        for (i in px.indices) px[i] = px[i] or 0xFF000000.toInt()
+    }
     if (actions.blackToAlpha) blackBackgroundToAlphaInPlace(px, w, h)
     if (actions.despillGreen) despillGreenInPlace(px)
-    if (actions.fillHoles) fillInteriorAlphaHolesInPlace(px, w, h)
     if (actions.feather) featherAlphaEdgesInPlace(px, w, h)
     mutable.setPixels(px, 0, w, 0, 0, w, h)
     mutable.setHasAlpha(true)

@@ -178,10 +178,9 @@
     <string name="settings_cutoutfix_no_issues">Keine Cutouts mit Hintergrundresten gefunden.</string>
     <string name="settings_cutoutfix_badge_blackbg">Schwarz</string>
     <string name="settings_cutoutfix_badge_greenhalo">Grün</string>
-    <string name="settings_cutoutfix_badge_holes">Löcher</string>
+    <string name="settings_cutoutfix_action_clearalpha">Alpha zurücksetzen (deckend)</string>
     <string name="settings_cutoutfix_action_blackbg">Schwarzer Hintergrund → transparent</string>
     <string name="settings_cutoutfix_action_greenhalo">Grünstich entfernen</string>
-    <string name="settings_cutoutfix_action_holes">Innere Löcher füllen</string>
     <string name="settings_cutoutfix_action_feather">Alphakanten weichzeichnen</string>
     <string name="settings_cutoutfix_action_tightcrop">Eng zuschneiden &amp; Größe begrenzen</string>
     <string name="settings_cutoutfix_fix_n">%1$d reparieren</string>

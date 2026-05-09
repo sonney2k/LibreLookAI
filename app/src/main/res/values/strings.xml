@@ -182,10 +182,9 @@
     <string name="settings_cutoutfix_no_issues">No cutouts with leftover backgrounds were found.</string>
     <string name="settings_cutoutfix_badge_blackbg">black bg</string>
     <string name="settings_cutoutfix_badge_greenhalo">green halo</string>
-    <string name="settings_cutoutfix_badge_holes">holes</string>
+    <string name="settings_cutoutfix_action_clearalpha">Clear alpha (make opaque)</string>
     <string name="settings_cutoutfix_action_blackbg">Black background → transparent</string>
     <string name="settings_cutoutfix_action_greenhalo">Despill green halo</string>
-    <string name="settings_cutoutfix_action_holes">Fill interior holes</string>
     <string name="settings_cutoutfix_action_feather">Feather alpha edges</string>
     <string name="settings_cutoutfix_action_tightcrop">Tight-crop &amp; cap size</string>
     <string name="settings_cutoutfix_fix_n">Fix %1$d</string>

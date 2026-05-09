@@ -2329,50 +2329,74 @@ private fun FixCutoutBgItemDialog(
     onConfirm: (CutoutFixActions) -> Unit,
     onDismiss: () -> Unit,
 ) {
+    var clearAlpha by remember { mutableStateOf(false) }
     var blackToAlpha by remember { mutableStateOf(true) }
     var despillGreen by remember { mutableStateOf(true) }
-    var fillHoles by remember { mutableStateOf(true) }
     var feather by remember { mutableStateOf(true) }
     var tightCrop by remember { mutableStateOf(true) }
-    val any = blackToAlpha || despillGreen || fillHoles || feather || tightCrop
+    val any = clearAlpha || blackToAlpha || despillGreen || feather || tightCrop
+    // AlertDialog renders in its own popup window; re-provide LocalContext/LocalConfiguration
+    // so stringResource() honors the in-app language toggle.
+    val parentContext = LocalContext.current
+    val parentConfiguration = LocalConfiguration.current
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.wardrobe_fix_cutout_bg)) },
+        title = {
+            CompositionLocalProvider(
+                LocalContext provides parentContext,
+                LocalConfiguration provides parentConfiguration,
+            ) { Text(stringResource(R.string.wardrobe_fix_cutout_bg)) }
+        },
         text = {
-            Column {
-                @Composable
-                fun Row(labelRes: Int, checked: Boolean, onChange: (Boolean) -> Unit) {
-                    androidx.compose.foundation.layout.Row(
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text(stringResource(labelRes), modifier = Modifier.weight(1f))
-                        Switch(checked = checked, onCheckedChange = onChange)
+            CompositionLocalProvider(
+                LocalContext provides parentContext,
+                LocalConfiguration provides parentConfiguration,
+            ) {
+                Column {
+                    @Composable
+                    fun Row(labelRes: Int, checked: Boolean, onChange: (Boolean) -> Unit) {
+                        androidx.compose.foundation.layout.Row(
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(stringResource(labelRes), modifier = Modifier.weight(1f))
+                            Switch(checked = checked, onCheckedChange = onChange)
+                        }
                     }
+                    Row(R.string.settings_cutoutfix_action_clearalpha, clearAlpha) { clearAlpha = it }
+                    Row(R.string.settings_cutoutfix_action_blackbg, blackToAlpha) { blackToAlpha = it }
+                    Row(R.string.settings_cutoutfix_action_greenhalo, despillGreen) { despillGreen = it }
+                    Row(R.string.settings_cutoutfix_action_feather, feather) { feather = it }
+                    Row(R.string.settings_cutoutfix_action_tightcrop, tightCrop) { tightCrop = it }
                 }
-                Row(R.string.settings_cutoutfix_action_blackbg, blackToAlpha) { blackToAlpha = it }
-                Row(R.string.settings_cutoutfix_action_greenhalo, despillGreen) { despillGreen = it }
-                Row(R.string.settings_cutoutfix_action_holes, fillHoles) { fillHoles = it }
-                Row(R.string.settings_cutoutfix_action_feather, feather) { feather = it }
-                Row(R.string.settings_cutoutfix_action_tightcrop, tightCrop) { tightCrop = it }
             }
         },
         confirmButton = {
-            TextButton(
-                enabled = any,
-                onClick = {
-                    onConfirm(CutoutFixActions(
-                        blackToAlpha = blackToAlpha,
-                        despillGreen = despillGreen,
-                        fillHoles = fillHoles,
-                        feather = feather,
-                        tightCrop = tightCrop,
-                    ))
-                },
-            ) { Text(stringResource(R.string.action_ok)) }
+            CompositionLocalProvider(
+                LocalContext provides parentContext,
+                LocalConfiguration provides parentConfiguration,
+            ) {
+                TextButton(
+                    enabled = any,
+                    onClick = {
+                        onConfirm(CutoutFixActions(
+                            blackToAlpha = blackToAlpha,
+                            despillGreen = despillGreen,
+                            feather = feather,
+                            tightCrop = tightCrop,
+                            clearAlpha = clearAlpha,
+                        ))
+                    },
+                ) { Text(stringResource(R.string.action_ok)) }
+            }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
+            CompositionLocalProvider(
+                LocalContext provides parentContext,
+                LocalConfiguration provides parentConfiguration,
+            ) {
+                TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
+            }
         },
     )
 }
