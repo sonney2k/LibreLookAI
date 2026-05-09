@@ -183,6 +183,11 @@
     <string name="settings_cutoutfix_badge_blackbg">black bg</string>
     <string name="settings_cutoutfix_badge_greenhalo">green halo</string>
     <string name="settings_cutoutfix_badge_holes">holes</string>
+    <string name="settings_cutoutfix_action_blackbg">Black background → transparent</string>
+    <string name="settings_cutoutfix_action_greenhalo">Despill green halo</string>
+    <string name="settings_cutoutfix_action_holes">Fill interior holes</string>
+    <string name="settings_cutoutfix_action_feather">Feather alpha edges</string>
+    <string name="settings_cutoutfix_action_tightcrop">Tight-crop &amp; cap size</string>
     <string name="settings_cutoutfix_fix_n">Fix %1$d</string>
     <string name="settings_cutoutfix_selected">%1$d of %2$d selected</string>
     <string name="settings_repair_preview_cost_total">Estimated cost: %1$d credits</string>

@@ -179,6 +179,11 @@
     <string name="settings_cutoutfix_badge_blackbg">Schwarz</string>
     <string name="settings_cutoutfix_badge_greenhalo">Grün</string>
     <string name="settings_cutoutfix_badge_holes">Löcher</string>
+    <string name="settings_cutoutfix_action_blackbg">Schwarzer Hintergrund → transparent</string>
+    <string name="settings_cutoutfix_action_greenhalo">Grünstich entfernen</string>
+    <string name="settings_cutoutfix_action_holes">Innere Löcher füllen</string>
+    <string name="settings_cutoutfix_action_feather">Alphakanten weichzeichnen</string>
+    <string name="settings_cutoutfix_action_tightcrop">Eng zuschneiden &amp; Größe begrenzen</string>
     <string name="settings_cutoutfix_fix_n">%1$d reparieren</string>
     <string name="settings_cutoutfix_selected">%1$d von %2$d ausgewählt</string>
     <string name="settings_repair_preview_cost_total">Geschätzte Kosten: %1$d Credits</string>

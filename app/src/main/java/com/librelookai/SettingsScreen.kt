@@ -2615,6 +2615,7 @@ internal fun FixCutoutBgDialog(
     onToggleSelection: (String) -> Unit,
     onSetSelection: (Set<String>) -> Unit,
     onSetShowAll: (Boolean) -> Unit,
+    onSetAction: (Boolean?, Boolean?, Boolean?, Boolean?, Boolean?) -> Unit,
     fetchThumbnail: suspend (CutoutFixEntry) -> File?,
     onFix: () -> Unit,
     onCancel: () -> Unit,
@@ -2701,6 +2702,39 @@ internal fun FixCutoutBgDialog(
                 }
                 HorizontalDivider()
 
+                @Composable
+                fun ActionToggleRow(labelRes: Int, checked: Boolean, onChange: (Boolean) -> Unit) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 12.dp, vertical = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            stringResource(labelRes),
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.weight(1f),
+                        )
+                        Switch(checked = checked, onCheckedChange = onChange)
+                    }
+                }
+                ActionToggleRow(R.string.settings_cutoutfix_action_blackbg, state.applyBlackToAlpha) {
+                    onSetAction(it, null, null, null, null)
+                }
+                ActionToggleRow(R.string.settings_cutoutfix_action_greenhalo, state.applyDespillGreen) {
+                    onSetAction(null, it, null, null, null)
+                }
+                ActionToggleRow(R.string.settings_cutoutfix_action_holes, state.applyFillHoles) {
+                    onSetAction(null, null, it, null, null)
+                }
+                ActionToggleRow(R.string.settings_cutoutfix_action_feather, state.applyFeather) {
+                    onSetAction(null, null, null, it, null)
+                }
+                ActionToggleRow(R.string.settings_cutoutfix_action_tightcrop, state.applyTightCrop) {
+                    onSetAction(null, null, null, null, it)
+                }
+                HorizontalDivider()
+
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -2783,9 +2817,11 @@ internal fun FixCutoutBgDialog(
                         Text(stringResource(R.string.action_cancel))
                     }
                     Spacer(Modifier.size(4.dp))
+                    val anyAction = state.applyBlackToAlpha || state.applyDespillGreen ||
+                        state.applyFillHoles || state.applyFeather || state.applyTightCrop
                     Button(
                         onClick = onFix,
-                        enabled = state.selectedIds.isNotEmpty(),
+                        enabled = state.selectedIds.isNotEmpty() && anyAction,
                     ) {
                         Text(stringResource(R.string.settings_cutoutfix_fix_n, state.selectedIds.size))
                     }

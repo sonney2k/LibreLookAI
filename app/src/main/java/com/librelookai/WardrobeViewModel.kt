@@ -278,6 +278,13 @@ data class CutoutBgFixProgress(
     val processTotal: Int = 0,
     val processDone: Int = 0,
     val isDone: Boolean = false,
+    // Per-action toggles. Defaults set in startCutoutBgFix once detection results are known
+    // (any flagged issue → that action defaults ON). Feather + tight-crop default ON.
+    val applyBlackToAlpha: Boolean = false,
+    val applyDespillGreen: Boolean = false,
+    val applyFillHoles: Boolean = false,
+    val applyFeather: Boolean = true,
+    val applyTightCrop: Boolean = true,
 )
 
 data class CutoutFixEntry(
@@ -1075,6 +1082,9 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     }
                 }
 
+                val anyBlack = items.any { it.hasBlackBackground }
+                val anyGreen = items.any { it.hasGreenHalo }
+                val anyHoles = items.any { it.hasInteriorHoles }
                 _state.update {
                     it.copy(cutoutBgFix = CutoutBgFixProgress(
                         awaitingConfirmation = true,
@@ -1084,6 +1094,9 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                         // When nothing is flagged, default to "show all" so the dialog stays
                         // useful — the user can still hand-pick clean cutouts to re-process.
                         showAll = flagged.isEmpty(),
+                        applyBlackToAlpha = anyBlack,
+                        applyDespillGreen = anyGreen,
+                        applyFillHoles = anyHoles,
                         totalCutouts = items.size,
                         scannedCutouts = items.size,
                     ))
@@ -1103,11 +1116,15 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             return
         }
         val byId = cur.items.associateBy { it.driveId }
-        // Run on every selected entry. For clean items the issue-flags are all false, so
-        // fixCutoutBackground only re-runs the feather/crop/cap pass — which is harmless and
-        // is exactly what the user asks for when they hand-pick a clean cutout from "show all".
         val toFix = cur.selectedIds.mapNotNull { byId[it] }
-        if (toFix.isEmpty()) {
+        val actions = CutoutFixActions(
+            blackToAlpha = cur.applyBlackToAlpha,
+            despillGreen = cur.applyDespillGreen,
+            fillHoles = cur.applyFillHoles,
+            feather = cur.applyFeather,
+            tightCrop = cur.applyTightCrop,
+        )
+        if (toFix.isEmpty() || !actions.any) {
             _state.update { it.copy(cutoutBgFix = null) }
             return
         }
@@ -1126,9 +1143,8 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                         val local = drive.cachedFile(entry.driveId)
                             ?: drive.downloadToCache(entry.driveId, entry.name)
                             ?: return@runCatching
-                        val issues = CutoutIssues(entry.hasBlackBackground, entry.hasGreenHalo, entry.hasInteriorHoles)
                         val tmp = File(drive.cacheDir, "${entry.driveId}_fix.png")
-                        fixCutoutBackground(local, tmp, issues)
+                        fixCutoutBackground(local, tmp, actions)
                         drive.updateImage(entry.driveId, tmp)
                         val cached = File(drive.cacheDir, "${entry.driveId}.png")
                         tmp.copyTo(cached, overwrite = true)
@@ -1178,6 +1194,26 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    fun setCutoutFixAction(
+        blackToAlpha: Boolean? = null,
+        despillGreen: Boolean? = null,
+        fillHoles: Boolean? = null,
+        feather: Boolean? = null,
+        tightCrop: Boolean? = null,
+    ) {
+        _state.update { s ->
+            val c = s.cutoutBgFix ?: return@update s
+            if (!c.awaitingConfirmation) return@update s
+            s.copy(cutoutBgFix = c.copy(
+                applyBlackToAlpha = blackToAlpha ?: c.applyBlackToAlpha,
+                applyDespillGreen = despillGreen ?: c.applyDespillGreen,
+                applyFillHoles = fillHoles ?: c.applyFillHoles,
+                applyFeather = feather ?: c.applyFeather,
+                applyTightCrop = tightCrop ?: c.applyTightCrop,
+            ))
+        }
+    }
+
     fun setCutoutFixShowAll(v: Boolean) {
         _state.update { s ->
             val c = s.cutoutBgFix ?: return@update s
@@ -1192,7 +1228,17 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     /** Detect + repair black-bg / green-halo / interior-hole issues on a single cutout, then
      *  re-upload preserving the Drive ID. Surfaces a status message via [_state.error]; UI
      *  treats it as a transient banner. */
-    fun fixCutoutBgForItem(driveId: String) {
+    fun fixCutoutBgForItem(
+        driveId: String,
+        actions: CutoutFixActions = CutoutFixActions(
+            blackToAlpha = true,
+            despillGreen = true,
+            fillHoles = true,
+            feather = true,
+            tightCrop = true,
+        ),
+    ) {
+        if (!actions.any) return
         val image = _state.value.images.firstOrNull { it.driveId == driveId } ?: return
         acquireJobWakeLock()
         _state.update { it.copy(processingImageId = driveId) }
@@ -1201,16 +1247,8 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 val local = drive.cachedFile(driveId)
                     ?: drive.downloadToCache(driveId, image.name)
                     ?: return@launch
-                // Always run the fix on user request — even on a cutout that detection considers
-                // clean. Force every repair pass on so any leftover issue detection misses gets
-                // cleaned up; feather/crop/cap then re-tighten the result.
-                val issues = CutoutIssues(
-                    hasBlackBackground = true,
-                    hasGreenHalo = true,
-                    hasInteriorHoles = true,
-                )
                 val tmp = File(drive.cacheDir, "${driveId}_fix.png")
-                fixCutoutBackground(local, tmp, issues)
+                fixCutoutBackground(local, tmp, actions)
                 drive.updateImage(driveId, tmp)
                 val cached = File(drive.cacheDir, "${driveId}.png")
                 tmp.copyTo(cached, overwrite = true)

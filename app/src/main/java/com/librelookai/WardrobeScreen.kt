@@ -71,6 +71,7 @@ import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.automirrored.filled.RotateRight
 import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LinearProgressIndicator
@@ -629,7 +630,7 @@ private fun GridContent(
     onTagImage: (String) -> Unit,
     onRemoveBackground: (String) -> Unit,
     onRotateImage: (String) -> Unit,
-    onFixCutoutBg: (String) -> Unit = {},
+    onFixCutoutBg: (String, CutoutFixActions) -> Unit = { _, _ -> },
     onUpdateTags: (String, ClothingTags) -> Unit,
     onToggleSelection: (String) -> Unit,
     onSelectAll: (List<String>) -> Unit,
@@ -1275,7 +1276,7 @@ internal fun FullScreenViewer(
     onDeleteItem: (String) -> Unit,
     onMoveToLocation: (Set<String>, String) -> Unit,
     onCreateOutfitFromSelection: (Set<String>) -> Unit,
-    onFixCutoutBg: (String) -> Unit = {},
+    onFixCutoutBg: (String, CutoutFixActions) -> Unit = { _, _ -> },
     locations: List<Location>,
     activeLocationId: String,
     processingImageId: String?,
@@ -1295,6 +1296,7 @@ internal fun FullScreenViewer(
     var showMoveDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showEditMenu by remember { mutableStateOf(false) }
+    var showFixCutoutBgDialog by remember { mutableStateOf(false) }
 
     val currentImage = images[pagerState.currentPage]
     val headerLabel = currentImage.tags?.label?.takeIf { it.isNotBlank() } ?: currentImage.name
@@ -1453,7 +1455,7 @@ internal fun FullScreenViewer(
                     ExtendedFloatingActionButton(
                         onClick = {
                             Analytics.action("ItemViewer", "fix_cutout_bg")
-                            onFixCutoutBg(currentImage.driveId)
+                            showFixCutoutBgDialog = true
                             showEditMenu = false
                         },
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -1506,6 +1508,16 @@ internal fun FullScreenViewer(
                 showTagEdit = false
             },
             onDismiss = { showTagEdit = false },
+        )
+    }
+
+    if (showFixCutoutBgDialog) {
+        FixCutoutBgItemDialog(
+            onConfirm = { actions ->
+                showFixCutoutBgDialog = false
+                onFixCutoutBg(currentImage.driveId, actions)
+            },
+            onDismiss = { showFixCutoutBgDialog = false },
         )
     }
 
@@ -2264,4 +2276,56 @@ private fun FindByPhotoResultsSheet(
     }
 }
 
+@Composable
+private fun FixCutoutBgItemDialog(
+    onConfirm: (CutoutFixActions) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    var blackToAlpha by remember { mutableStateOf(true) }
+    var despillGreen by remember { mutableStateOf(true) }
+    var fillHoles by remember { mutableStateOf(true) }
+    var feather by remember { mutableStateOf(true) }
+    var tightCrop by remember { mutableStateOf(true) }
+    val any = blackToAlpha || despillGreen || fillHoles || feather || tightCrop
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.wardrobe_fix_cutout_bg)) },
+        text = {
+            Column {
+                @Composable
+                fun Row(labelRes: Int, checked: Boolean, onChange: (Boolean) -> Unit) {
+                    androidx.compose.foundation.layout.Row(
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(stringResource(labelRes), modifier = Modifier.weight(1f))
+                        Switch(checked = checked, onCheckedChange = onChange)
+                    }
+                }
+                Row(R.string.settings_cutoutfix_action_blackbg, blackToAlpha) { blackToAlpha = it }
+                Row(R.string.settings_cutoutfix_action_greenhalo, despillGreen) { despillGreen = it }
+                Row(R.string.settings_cutoutfix_action_holes, fillHoles) { fillHoles = it }
+                Row(R.string.settings_cutoutfix_action_feather, feather) { feather = it }
+                Row(R.string.settings_cutoutfix_action_tightcrop, tightCrop) { tightCrop = it }
+            }
+        },
+        confirmButton = {
+            TextButton(
+                enabled = any,
+                onClick = {
+                    onConfirm(CutoutFixActions(
+                        blackToAlpha = blackToAlpha,
+                        despillGreen = despillGreen,
+                        fillHoles = fillHoles,
+                        feather = feather,
+                        tightCrop = tightCrop,
+                    ))
+                },
+            ) { Text(stringResource(R.string.action_ok)) }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
+        },
+    )
+}
 

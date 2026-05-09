@@ -595,6 +595,7 @@ class MainActivity : ComponentActivity() {
                                         onToggleSelection = wardrobeViewModel::toggleCutoutFixSelection,
                                         onSetSelection = wardrobeViewModel::setCutoutFixSelection,
                                         onSetShowAll = wardrobeViewModel::setCutoutFixShowAll,
+                                        onSetAction = wardrobeViewModel::setCutoutFixAction,
                                         fetchThumbnail = wardrobeViewModel::fetchCutoutFixThumbnail,
                                         onFix = { wardrobeViewModel.continueCutoutBgFix(true) },
                                         onCancel = { wardrobeViewModel.continueCutoutBgFix(false) },

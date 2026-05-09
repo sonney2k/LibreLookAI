@@ -842,9 +842,20 @@ internal fun fillInteriorAlphaHolesInPlace(pixels: IntArray, w: Int, h: Int, max
     }
 }
 
-/** Applies the configured fixes (black→alpha, despill) then always feathers + tight-crops + caps.
- *  Output is written as PNG. */
-internal fun fixCutoutBackground(input: File, output: File, issues: CutoutIssues) {
+/** Per-action toggles for [fixCutoutBackground]. Each pixel transformation is independently
+ *  gated so the UI can expose them as separate switches. */
+data class CutoutFixActions(
+    val blackToAlpha: Boolean,
+    val despillGreen: Boolean,
+    val fillHoles: Boolean,
+    val feather: Boolean,
+    val tightCrop: Boolean,
+) {
+    val any: Boolean get() = blackToAlpha || despillGreen || fillHoles || feather || tightCrop
+}
+
+/** Applies the enabled passes from [actions]. Output is written as PNG. */
+internal fun fixCutoutBackground(input: File, output: File, actions: CutoutFixActions) {
     val src = BitmapFactory.decodeFile(input.absolutePath)
         ?: run { input.copyTo(output, overwrite = true); return }
     val mutable = src.copy(Bitmap.Config.ARGB_8888, true)
@@ -853,13 +864,13 @@ internal fun fixCutoutBackground(input: File, output: File, issues: CutoutIssues
     val h = mutable.height
     val px = IntArray(w * h)
     mutable.getPixels(px, 0, w, 0, 0, w, h)
-    if (issues.hasBlackBackground) blackBackgroundToAlphaInPlace(px, w, h)
-    if (issues.hasGreenHalo) despillGreenInPlace(px)
-    if (issues.hasInteriorHoles) fillInteriorAlphaHolesInPlace(px, w, h)
-    featherAlphaEdgesInPlace(px, w, h)
+    if (actions.blackToAlpha) blackBackgroundToAlphaInPlace(px, w, h)
+    if (actions.despillGreen) despillGreenInPlace(px)
+    if (actions.fillHoles) fillInteriorAlphaHolesInPlace(px, w, h)
+    if (actions.feather) featherAlphaEdgesInPlace(px, w, h)
     mutable.setPixels(px, 0, w, 0, 0, w, h)
     mutable.setHasAlpha(true)
-    val finalBmp = cropAndCap(mutable)
+    val finalBmp = if (actions.tightCrop) cropAndCap(mutable) else mutable
     output.outputStream().use { finalBmp.compress(Bitmap.CompressFormat.PNG, 100, it) }
     finalBmp.recycle()
 }
