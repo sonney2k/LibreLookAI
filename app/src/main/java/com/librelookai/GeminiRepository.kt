@@ -504,11 +504,20 @@ class GeminiRepository(private val app: Application) {
                 // Match neon green (#00FF00) with tolerance for JPEG compression artifacts
                 if (r < 80 && g > 180 && b < 80) {
                     pixels[row + x] = 0
-                } else if ((c ushr 24) and 0xFF != 0) {
-                    if (x < minX) minX = x
-                    if (x > maxX) maxX = x
-                    if (y < minY) minY = y
-                    if (y > maxY) maxY = y
+                } else {
+                    val a = (c ushr 24) and 0xFF
+                    if (a != 0) {
+                        // Despill: if green dominates, clamp it to max(r, b) to neutralize the halo
+                        // left over from the green-screen matte without darkening the pixel.
+                        if (g > r && g > b) {
+                            val g2 = maxOf(r, b)
+                            pixels[row + x] = (a shl 24) or (r shl 16) or (g2 shl 8) or b
+                        }
+                        if (x < minX) minX = x
+                        if (x > maxX) maxX = x
+                        if (y < minY) minY = y
+                        if (y > maxY) maxY = y
+                    }
                 }
             }
         }
