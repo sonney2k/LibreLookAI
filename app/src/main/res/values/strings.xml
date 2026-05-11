@@ -433,6 +433,17 @@
     <string name="outfits_refine_bold">More bold</string>
     <string name="outfits_items_label">Outfit items</string>
     <string name="outfits_add_item">Add item</string>
+    <string name="outfits_tags_label">Tags</string>
+    <string name="outfits_tag_add">Add tag</string>
+    <string name="outfits_tag_add_placeholder">e.g. birthday, travel</string>
+    <string name="outfits_tag_remove">Remove tag %s</string>
+    <string name="outfits_unnamed">Untitled outfit</string>
+    <string name="outfit_layer_outerwear">Outerwear</string>
+    <string name="outfit_layer_tops">Tops</string>
+    <string name="outfit_layer_bottoms">Bottoms</string>
+    <string name="outfit_layer_footwear">Footwear</string>
+    <string name="outfit_layer_accessories">Accessories</string>
+    <string name="outfit_layer_other">Other</string>
     <string name="outfits_swap_item_for">Swap: %s</string>
     <string name="outfits_suggest_alternatives">Suggest 10 alternatives</string>
     <string name="outfits_select_item">Select</string>

@@ -427,6 +427,17 @@
     <string name="outfits_refine_bold">Gewagter</string>
     <string name="outfits_items_label">Outfit-Teile</string>
     <string name="outfits_add_item">Artikel hinzufügen</string>
+    <string name="outfits_tags_label">Tags</string>
+    <string name="outfits_tag_add">Tag hinzufügen</string>
+    <string name="outfits_tag_add_placeholder">z. B. Geburtstag, Reise</string>
+    <string name="outfits_tag_remove">Tag %s entfernen</string>
+    <string name="outfits_unnamed">Unbenanntes Outfit</string>
+    <string name="outfit_layer_outerwear">Oberbekleidung</string>
+    <string name="outfit_layer_tops">Oberteile</string>
+    <string name="outfit_layer_bottoms">Unterteile</string>
+    <string name="outfit_layer_footwear">Schuhe</string>
+    <string name="outfit_layer_accessories">Accessoires</string>
+    <string name="outfit_layer_other">Sonstiges</string>
     <string name="outfits_swap_item_for">Tauschen: %s</string>
     <string name="outfits_suggest_alternatives">10 Alternativen vorschlagen</string>
     <string name="outfits_select_item">Auswählen</string>

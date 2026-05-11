@@ -27,6 +27,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -94,6 +95,16 @@ import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.DialogWindowProvider
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.SideEffect
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -177,6 +188,9 @@ fun OutfitsScreen(
                     draftItemIds = outfitsState.draftItemIds,
                     draftOutfitName = outfitsState.draftOutfitName,
                     draftOutfitDescription = outfitsState.draftOutfitDescription,
+                    draftOutfitTags = outfitsState.draftOutfitTags,
+                    onAddTag = outfitsViewModel::addDraftTag,
+                    onRemoveTag = outfitsViewModel::removeDraftTag,
                     isEditing = outfitsState.editingOutfit != null,
                     prediction = outfitsState.prediction,
                     newSuggestion = outfitsState.newSuggestion,
@@ -410,6 +424,7 @@ private fun OutfitListScreen(
     val isSelectionMode = selectedOutfitIds.isNotEmpty()
     if (isSelectionMode) BackHandler(onBack = onClearOutfitSelection)
 
+    var fullscreenStyleId by rememberSaveable { mutableStateOf<String?>(null) }
     var showDeleteDialog by remember { mutableStateOf(false) }
 
     if (showDeleteDialog) {
@@ -587,6 +602,7 @@ private fun OutfitListScreen(
                                 onEdit = { onEditOutfit(style) },
                                 onDelete = { onDeleteOutfit(style.id) },
                                 onWear = { onWearOutfit(style.id) },
+                                onOpen = { fullscreenStyleId = style.id },
                                 onToggleSelection = { onToggleOutfitSelection(style.id) },
                             )
                         }
@@ -681,6 +697,29 @@ private fun OutfitListScreen(
             )
         }
 
+        // Full-screen outfit viewer (pager). Rendered on top of the list so its FAB
+        // overlays and the dialog handles its own back-press.
+        fullscreenStyleId?.let { styleId ->
+            val startIndex = displayedStyles.indexOfFirst { it.id == styleId }
+            if (startIndex >= 0 && displayedStyles.isNotEmpty()) {
+                OutfitFullScreenViewer(
+                    outfits = displayedStyles,
+                    initialIndex = startIndex,
+                    itemsById = itemsById,
+                    locations = locations,
+                    onDismiss = { fullscreenStyleId = null },
+                    onEdit = { o -> fullscreenStyleId = null; onEditOutfit(o) },
+                    onWear = { o -> onWearOutfit(o.id) },
+                    onDelete = { o ->
+                        onDeleteOutfit(o.id)
+                        if (displayedStyles.size <= 1) fullscreenStyleId = null
+                    },
+                )
+            } else {
+                LaunchedEffect(styleId) { fullscreenStyleId = null }
+            }
+        }
+
         // Error snackbars (composition takes priority if both are set)
         val errorMsg = compositionError ?: predictionError
         val onClearError = if (compositionError != null) onClearCompositionError else onClearPredictionError
@@ -733,7 +772,7 @@ private fun StyleSortButton(
 
 // ---------- Outfit card ----------
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 @Composable
 private fun OutfitCard(
     style: Outfit,
@@ -744,6 +783,7 @@ private fun OutfitCard(
     onEdit: () -> Unit,
     onDelete: () -> Unit,
     onWear: () -> Unit,
+    onOpen: () -> Unit = {},
     onToggleSelection: () -> Unit = {},
 ) {
     val isOffline = LocalIsOffline.current
@@ -782,6 +822,9 @@ private fun OutfitCard(
                     if (isSelectionMode) {
                         Analytics.action("Outfits", "toggle_selection")
                         onToggleSelection()
+                    } else {
+                        Analytics.action("Outfits", "open_fullscreen")
+                        onOpen()
                     }
                 },
                 onLongClick = {
@@ -844,6 +887,14 @@ private fun OutfitCard(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
+            }
+            if (style.tags.isNotEmpty()) {
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                ) {
+                    style.tags.forEach { OutfitTagChip(it) }
+                }
             }
             val styleItems = style.itemIds.mapNotNull { itemsById[it] }
             if (styleItems.isEmpty()) {
@@ -1134,6 +1185,9 @@ private fun OutfitEditingView(
     draftItemIds: Set<String>,
     draftOutfitName: String,
     draftOutfitDescription: String,
+    draftOutfitTags: List<String>,
+    onAddTag: (String) -> Unit,
+    onRemoveTag: (String) -> Unit,
     isEditing: Boolean,
     prediction: OutfitPrediction?,
     newSuggestion: NewOutfitSuggestion?,
@@ -1295,6 +1349,18 @@ private fun OutfitEditingView(
                         inner()
                     }
                 },
+            )
+
+            // Outfit tags
+            Text(
+                stringResource(R.string.outfits_tags_label),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.primary,
+            )
+            OutfitTagsEditor(
+                tags = draftOutfitTags,
+                onAdd = onAddTag,
+                onRemove = onRemoveTag,
             )
 
             // AI reason (shown when opened from a Gemini suggestion)
@@ -2253,3 +2319,367 @@ private fun StyleTagChip(label: String) {
         )
     }
 }
+
+@Composable
+private fun OutfitTagChip(label: String) {
+    Surface(
+        shape = MaterialTheme.shapes.extraSmall,
+        color = MaterialTheme.colorScheme.secondaryContainer,
+    ) {
+        Text(
+            text = label,
+            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
+        )
+    }
+}
+
+/**
+ * Pager-based full-screen viewer for outfits. Each page lays out the outfit's
+ * items grouped by category (tops, bottoms, footwear, outerwear, accessories,
+ * other). The FAB (bottom-right) hosts wear / edit / delete actions.
+ */
+@OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
+@Composable
+private fun OutfitFullScreenViewer(
+    outfits: List<Outfit>,
+    initialIndex: Int,
+    itemsById: Map<String, DriveImage>,
+    locations: List<Location>,
+    onDismiss: () -> Unit,
+    onEdit: (Outfit) -> Unit,
+    onWear: (Outfit) -> Unit,
+    onDelete: (Outfit) -> Unit,
+) {
+    val isOffline = LocalIsOffline.current
+    val barInsets = LocalSystemBarsPadding.current
+    val parentContext = LocalContext.current
+    val parentConfiguration = LocalConfiguration.current
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false,
+            decorFitsSystemWindows = false,
+        ),
+    ) {
+        val dialogView = LocalView.current
+        SideEffect {
+            val window = (dialogView.parent as? DialogWindowProvider)?.window ?: return@SideEffect
+            window.setLayout(
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+            )
+            androidx.core.view.WindowCompat.setDecorFitsSystemWindows(window, false)
+        }
+        CompositionLocalProvider(
+            LocalContext provides parentContext,
+            LocalConfiguration provides parentConfiguration,
+        ) {
+            BackHandler(onBack = onDismiss)
+            val pagerState = rememberPagerState(
+                initialPage = initialIndex.coerceIn(0, (outfits.size - 1).coerceAtLeast(0)),
+                pageCount = { outfits.size },
+            )
+            var showEditMenu by remember { mutableStateOf(false) }
+            var showDeleteDialog by remember { mutableStateOf(false) }
+            var viewerImage by remember { mutableStateOf<DriveImage?>(null) }
+
+            val current = outfits[pagerState.currentPage]
+
+            if (showDeleteDialog) {
+                AlertDialog(
+                    onDismissRequest = { showDeleteDialog = false },
+                    title = { Text(stringResource(R.string.outfits_delete_title)) },
+                    text = { Text(stringResource(R.string.outfits_delete_text, current.name)) },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            Analytics.action("OutfitViewer", "confirm_delete")
+                            showDeleteDialog = false
+                            onDelete(current)
+                        }) {
+                            Text(stringResource(R.string.action_delete), color = MaterialTheme.colorScheme.error)
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { showDeleteDialog = false }) { Text(stringResource(R.string.action_cancel)) }
+                    },
+                )
+            }
+
+            viewerImage?.let { img ->
+                WardrobeItemViewer(image = img, onDismiss = { viewerImage = null })
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background),
+            ) {
+                Column(modifier = Modifier.fillMaxSize()) {
+                    // Header
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = barInsets.calculateTopPadding())
+                            .padding(top = 8.dp, start = 56.dp, end = 56.dp, bottom = 8.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                    ) {
+                        Text(
+                            text = current.name.ifBlank { stringResource(R.string.outfits_unnamed) },
+                            color = MaterialTheme.colorScheme.onBackground,
+                            style = MaterialTheme.typography.titleMedium,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                        Text(
+                            text = "${pagerState.currentPage + 1} / ${outfits.size}",
+                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                            style = MaterialTheme.typography.labelMedium,
+                        )
+                        if (current.description.isNotBlank()) {
+                            Text(
+                                text = current.description,
+                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.85f),
+                                style = MaterialTheme.typography.bodySmall,
+                                maxLines = 3,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                        }
+                        if (current.tags.isNotEmpty()) {
+                            val maxWidth = LocalConfiguration.current.screenWidthDp.dp * 0.85f
+                            FlowRow(
+                                modifier = Modifier.widthIn(max = maxWidth),
+                                horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
+                                verticalArrangement = Arrangement.spacedBy(4.dp),
+                            ) {
+                                current.tags.forEach { OutfitTagChip(it) }
+                            }
+                        }
+                    }
+
+                    HorizontalPager(
+                        state = pagerState,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f),
+                    ) { page ->
+                        val outfit = outfits[page]
+                        OutfitPageBody(
+                            outfit = outfit,
+                            itemsById = itemsById,
+                            locations = locations,
+                            onItemClick = { viewerImage = it },
+                            bottomPadding = barInsets.calculateBottomPadding() + 96.dp,
+                        )
+                    }
+                }
+
+                // Close button
+                IconButton(
+                    onClick = onDismiss,
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(top = barInsets.calculateTopPadding())
+                        .padding(8.dp),
+                ) {
+                    Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_dismiss),
+                        tint = MaterialTheme.colorScheme.onBackground)
+                }
+
+                // Speed-dial FAB (wear / edit / delete) — hidden offline (writes only).
+                if (!isOffline) {
+                    Column(
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(bottom = barInsets.calculateBottomPadding())
+                            .padding(16.dp),
+                        horizontalAlignment = Alignment.End,
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        if (showEditMenu) {
+                            ExtendedFloatingActionButton(
+                                onClick = {
+                                    Analytics.action("OutfitViewer", "wear_today")
+                                    onWear(current); showEditMenu = false
+                                },
+                                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                icon = { Icon(Icons.Default.CalendarMonth, contentDescription = null) },
+                                text = { Text(stringResource(R.string.outfits_wear_today)) },
+                            )
+                            ExtendedFloatingActionButton(
+                                onClick = {
+                                    Analytics.action("OutfitViewer", "edit")
+                                    showEditMenu = false
+                                    onEdit(current)
+                                },
+                                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                icon = { Icon(Icons.Default.Edit, contentDescription = null) },
+                                text = { Text(stringResource(R.string.action_edit)) },
+                            )
+                            ExtendedFloatingActionButton(
+                                onClick = {
+                                    Analytics.action("OutfitViewer", "open_delete_dialog")
+                                    showEditMenu = false
+                                    showDeleteDialog = true
+                                },
+                                containerColor = MaterialTheme.colorScheme.errorContainer,
+                                contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                                icon = { Icon(Icons.Default.Delete, contentDescription = null) },
+                                text = { Text(stringResource(R.string.action_delete)) },
+                            )
+                        }
+                        FloatingActionButton(onClick = { showEditMenu = !showEditMenu }) {
+                            Icon(
+                                if (showEditMenu) Icons.Default.Close else Icons.Default.Edit,
+                                contentDescription = stringResource(R.string.action_edit),
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Body of one outfit page in the fullscreen viewer. Items are grouped by
+ * tag category so the layout reads top → bottom → footwear → outerwear →
+ * accessories → other.
+ */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun OutfitPageBody(
+    outfit: Outfit,
+    itemsById: Map<String, DriveImage>,
+    locations: List<Location>,
+    onItemClick: (DriveImage) -> Unit,
+    bottomPadding: androidx.compose.ui.unit.Dp,
+) {
+    val items = remember(outfit.itemIds, itemsById) {
+        outfit.itemIds.mapNotNull { itemsById[it] }
+    }
+    val bucketed = remember(items) {
+        val grouped = items.groupBy { bucketFor(it) }
+        OutfitItemBucket.entries.mapNotNull { b ->
+            val list = grouped[b].orEmpty()
+            if (list.isEmpty()) null else b to list
+        }
+    }
+    val groups = bucketed.map { (bucket, list) -> stringResource(bucket.resId) to list }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 12.dp)
+            .padding(bottom = bottomPadding),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        groups.forEach { (label, groupItems) ->
+            if (groupItems.isEmpty()) return@forEach
+            Text(
+                label,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.primary,
+            )
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                groupItems.forEach { image ->
+                    val locName = if (locations.size > 1)
+                        locations.find { it.folderId == image.folderId }?.name
+                    else null
+                    OutfitViewerItemTile(
+                        image = image,
+                        locationName = locName,
+                        onClick = { onItemClick(image) },
+                    )
+                }
+            }
+        }
+        if (items.isEmpty()) {
+            Text(
+                stringResource(R.string.outfits_missing_items),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.outline,
+            )
+        }
+    }
+}
+
+@Composable
+private fun OutfitViewerItemTile(
+    image: DriveImage,
+    locationName: String?,
+    onClick: () -> Unit,
+) {
+    val ctx = LocalContext.current
+    Box(
+        modifier = Modifier
+            .size(140.dp)
+            .clip(MaterialTheme.shapes.small)
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .clickable(onClick = onClick),
+    ) {
+        AsyncImage(
+            model = remember(image.driveId, image.version) {
+                ImageRequest.Builder(ctx)
+                    .data(image.localPath)
+                    .memoryCacheKey("${image.driveId}_${image.version}")
+                    .build()
+            },
+            contentDescription = image.name,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop,
+        )
+        if (locationName != null) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(4.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.85f),
+                        shape = MaterialTheme.shapes.extraSmall,
+                    )
+                    .padding(horizontal = 4.dp, vertical = 1.dp),
+            ) {
+                Text(
+                    text = locationName,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    fontSize = 8.sp,
+                    lineHeight = 10.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+        }
+    }
+}
+
+private enum class OutfitItemBucket(val resId: Int) {
+    Outerwear(R.string.outfit_layer_outerwear),
+    Top(R.string.outfit_layer_tops),
+    Bottom(R.string.outfit_layer_bottoms),
+    Footwear(R.string.outfit_layer_footwear),
+    Accessory(R.string.outfit_layer_accessories),
+    Other(R.string.outfit_layer_other),
+}
+
+private fun bucketFor(image: DriveImage): OutfitItemBucket {
+    val cat = image.tags?.category?.lowercase().orEmpty()
+    return when {
+        cat.contains("outer") -> OutfitItemBucket.Outerwear
+        cat.contains("foot") || cat.contains("shoe") -> OutfitItemBucket.Footwear
+        cat.contains("bottom") || cat == "pants" || cat == "skirt" -> OutfitItemBucket.Bottom
+        cat.contains("accessor") -> OutfitItemBucket.Accessory
+        cat.contains("top") || cat.contains("shirt") || cat == "dress" || cat == "suit" -> OutfitItemBucket.Top
+        cat.isEmpty() -> OutfitItemBucket.Other
+        else -> OutfitItemBucket.Other
+    }
+}
+

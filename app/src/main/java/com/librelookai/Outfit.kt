@@ -14,6 +14,11 @@ data class Outfit(
      * to current Drive IDs via the folder file listing.
      */
     val itemNames: List<String> = emptyList(),
+    /**
+     * Free-form outfit tags, e.g. "birthday", "travel", "work". Often suggested by Gemini
+     * when an outfit is composed/predicted, editable by the user.
+     */
+    val tags: List<String> = emptyList(),
     val createdAt: Long = System.currentTimeMillis(),
     /** Runtime Drive folder ID this style was loaded from. Not persisted to JSON. */
     @Transient val folderId: String = "",

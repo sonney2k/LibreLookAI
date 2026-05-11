@@ -40,6 +40,7 @@ data class NewOutfitSuggestion(
     val description: String,
     val itemIds: List<String>,
     val reason: String,
+    val tags: List<String> = emptyList(),
 )
 
 data class OutfitsUiState(
@@ -53,6 +54,7 @@ data class OutfitsUiState(
     val draftItemIds: Set<String> = emptySet(),
     val draftOutfitName: String = "",
     val draftOutfitDescription: String = "",
+    val draftOutfitTags: List<String> = emptyList(),
     /** Non-null when editing an existing style; null when creating a new one. */
     val editingOutfit: Outfit? = null,
     val showNameDialog: Boolean = false,
@@ -89,6 +91,7 @@ data class OutfitsUiState(
     val composerPrefOverride: String = "",
     val composerName: String = "",
     val composerDescription: String = "",
+    val composerTags: List<String> = emptyList(),
     val composerFeedback: String = "",
     val composerFeedbackHistory: List<String> = emptyList(),
     val composerReason: String = "",
@@ -260,11 +263,11 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
     // ---------- Create flow ----------
 
     fun startCreating() = _state.update {
-        it.copy(isCreating = true, draftItemIds = emptySet(), draftOutfitName = "", draftOutfitDescription = "", editingOutfit = null)
+        it.copy(isCreating = true, draftItemIds = emptySet(), draftOutfitName = "", draftOutfitDescription = "", draftOutfitTags = emptyList(), editingOutfit = null)
     }
 
     fun startCreatingFromItems(itemIds: Set<String>, name: String = "", description: String = "") = _state.update {
-        it.copy(isCreating = true, draftItemIds = itemIds, draftOutfitName = name, draftOutfitDescription = description, editingOutfit = null)
+        it.copy(isCreating = true, draftItemIds = itemIds, draftOutfitName = name, draftOutfitDescription = description, draftOutfitTags = emptyList(), editingOutfit = null)
     }
 
     /** Opens the unified composer for an existing saved style (update-in-place on save). */
@@ -286,6 +289,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             draftItemIds = style.itemIds.toSet(),
             draftOutfitName = style.name,
             draftOutfitDescription = style.description,
+            draftOutfitTags = style.tags,
             editingOutfit = style,
         )
     }
@@ -297,6 +301,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             draftItemIds = suggestion.itemIds.toSet(),
             draftOutfitName = suggestion.name,
             draftOutfitDescription = suggestion.description,
+            draftOutfitTags = suggestion.tags,
             editingOutfit = null,
         )
     }
@@ -307,6 +312,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             draftItemIds = emptySet(),
             draftOutfitName = "",
             draftOutfitDescription = "",
+            draftOutfitTags = emptyList(),
             editingOutfit = null,
             prediction = null,
             newSuggestion = null,
@@ -320,8 +326,19 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
     fun updateDraftDescription(description: String) = _state.update { it.copy(draftOutfitDescription = description) }
 
     fun cancelCreating() = _state.update {
-        it.copy(isCreating = false, isEditingOutfitView = false, draftItemIds = emptySet(), draftOutfitName = "", draftOutfitDescription = "", editingOutfit = null, showNameDialog = false)
+        it.copy(isCreating = false, isEditingOutfitView = false, draftItemIds = emptySet(), draftOutfitName = "", draftOutfitDescription = "", draftOutfitTags = emptyList(), editingOutfit = null, showNameDialog = false)
     }
+
+    fun updateDraftTags(tags: List<String>) = _state.update { it.copy(draftOutfitTags = tags.distinct()) }
+    fun addDraftTag(tag: String) {
+        val t = tag.trim()
+        if (t.isEmpty()) return
+        _state.update { s ->
+            if (s.draftOutfitTags.any { it.equals(t, ignoreCase = true) }) s
+            else s.copy(draftOutfitTags = s.draftOutfitTags + t)
+        }
+    }
+    fun removeDraftTag(tag: String) = _state.update { s -> s.copy(draftOutfitTags = s.draftOutfitTags - tag) }
 
     fun toggleDraftItem(driveId: String) = _state.update { s ->
         val next = s.draftItemIds.toMutableSet()
@@ -407,16 +424,19 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             val idToName = drive.listFiles(id).associate { it.id to it.name }
             val itemNames = draftIds.mapNotNull { idToName[it] }
 
+            val tags = s.draftOutfitTags
             val updated = if (s.editingOutfit != null) {
                 val edited = s.editingOutfit.copy(
                     name = resolvedName, description = description,
                     itemIds = draftIds.toList(), itemNames = itemNames,
+                    tags = tags,
                 )
                 s.outfits.map { if (it.id == edited.id) edited else it }
             } else {
                 s.outfits + Outfit(
                     name = resolvedName, description = description,
                     itemIds = draftIds.toList(), itemNames = itemNames,
+                    tags = tags,
                 )
             }
             val savedStyleId = if (s.editingOutfit != null) s.editingOutfit.id else updated.last().id
@@ -429,6 +449,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                         isCreating = false,
                         isEditingOutfitView = false,
                         draftItemIds = emptySet(),
+                        draftOutfitTags = emptyList(),
                         editingOutfit = null,
                         showNameDialog = false,
                         prediction = null,
@@ -452,6 +473,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
         name: String,
         description: String,
         itemIds: List<String>,
+        tags: List<String> = emptyList(),
         onDone: (Boolean) -> Unit = {},
     ) {
         if (itemIds.isEmpty()) return
@@ -464,6 +486,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 description = description,
                 itemIds = itemIds,
                 itemNames = itemNames,
+                tags = tags,
             )
             runCatching {
                 drive.saveOutfitsJson(id, gson.toJson(updated))
@@ -512,6 +535,9 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 composerPrefOverride    = prefs?.preferences.orEmpty(),
                 composerName            = initialName,
                 composerDescription     = initialDescription,
+                composerTags            = editingStyleId?.let { id ->
+                    it.outfits.find { o -> o.id == id }?.tags ?: emptyList()
+                } ?: emptyList(),
                 composerFeedback        = "",
                 composerFeedbackHistory = emptyList(),
                 composerReason          = "",
@@ -578,6 +604,15 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
     fun updateComposerPrefOverride(s: String) = _state.update { it.copy(composerPrefOverride = s) }
     fun updateComposerName(s: String) = _state.update { it.copy(composerName = s) }
     fun updateComposerDescription(s: String) = _state.update { it.copy(composerDescription = s) }
+    fun addComposerTag(tag: String) {
+        val t = tag.trim()
+        if (t.isEmpty()) return
+        _state.update { s ->
+            if (s.composerTags.any { it.equals(t, ignoreCase = true) }) s
+            else s.copy(composerTags = s.composerTags + t)
+        }
+    }
+    fun removeComposerTag(tag: String) = _state.update { s -> s.copy(composerTags = s.composerTags - tag) }
     fun updateComposerFeedback(s: String) = _state.update { it.copy(composerFeedback = s) }
 
     /** Asks Gemini to complete the composer draft into a full outfit. */
@@ -637,6 +672,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 val description: String = "",
                 val itemIds: List<String> = emptyList(),
                 val reason: String = "",
+                val tags: List<String> = emptyList(),
             )
             val result = runCatching { gson.fromJson(json, CompResp::class.java) }.getOrNull()
             if (result == null || result.itemIds.isEmpty()) {
@@ -647,12 +683,14 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             val knownIds = images.map { it.driveId }.toSet()
             val required = s.composerItemIds
             val merged = (required + result.itemIds).filter { it in knownIds }.distinct()
+            val cleanTags = result.tags.map { it.trim() }.filter { it.isNotEmpty() }.distinct()
             _state.update {
                 it.copy(
                     isComposerEnhancing = false,
                     composerItemIds     = merged,
                     composerName        = if (it.composerName.isBlank()) result.name else it.composerName,
                     composerDescription = if (it.composerDescription.isBlank()) result.description else it.composerDescription,
+                    composerTags        = if (it.composerTags.isEmpty()) cleanTags else it.composerTags,
                     composerReason      = result.reason,
                 )
             }
@@ -670,6 +708,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 name        = name,
                 description = s.composerDescription,
                 itemIds     = s.composerItemIds,
+                tags        = s.composerTags,
             ) { ok ->
                 if (ok) closeComposer()
                 onDone(ok)
@@ -687,6 +726,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 description = s.composerDescription,
                 itemIds = s.composerItemIds,
                 itemNames = itemNames,
+                tags = s.composerTags,
             )
             val updated = s.outfits.map { if (it.id == edited.id) edited else it }
             runCatching {
@@ -966,6 +1006,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 val description: String = "",
                 val itemIds: List<String> = emptyList(),
                 val reason: String = "",
+                val tags: List<String> = emptyList(),
             )
             val result = runCatching { gson.fromJson(json, CompResp::class.java) }.getOrNull()
 
@@ -991,6 +1032,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                         description = result.description,
                         itemIds     = merged,
                         reason      = result.reason,
+                        tags        = result.tags.map { it.trim() }.filter { it.isNotEmpty() }.distinct(),
                     ),
                 )
             }
@@ -1242,7 +1284,10 @@ private fun buildCompositionPrompt(
             appendLine()
         }
         appendLine("Respond with ONLY a valid JSON object — no markdown, no extra text:")
-        append("""{"name":"<outfit name>","description":"<style caption>","itemIds":["<id1>","<id2>",...],"reason":"<1-2 sentence explanation>"}""")
+        append("""{"name":"<outfit name>","description":"<style caption>","itemIds":["<id1>","<id2>",...],"reason":"<1-2 sentence explanation>","tags":["<short occasion/vibe tag>", "..."]}""")
+        appendLine()
+        appendLine()
+        appendLine("Include 1-4 short, lowercase free-form tags describing the occasion, season, or vibe of the outfit (e.g. \"birthday\", \"travel\", \"work\", \"summer\", \"date night\"). Keep each tag to 1-2 words.")
         appendLine()
         appendLine()
         appendLine("IMPORTANT: Write all user-facing text fields (name, description, reason) in ${AppLanguage.toGeminiName(prefs?.language ?: AppLanguage.ENGLISH)}.")
@@ -1354,7 +1399,10 @@ private fun buildComposerPrompt(
             appendLine()
         }
         appendLine("Respond with ONLY a valid JSON object — no markdown, no extra text:")
-        append("""{"name":"<outfit name>","description":"<1-2 sentence caption>","itemIds":["<id1>","<id2>",...],"reason":"<1-2 sentence explanation>"}""")
+        append("""{"name":"<outfit name>","description":"<1-2 sentence caption>","itemIds":["<id1>","<id2>",...],"reason":"<1-2 sentence explanation>","tags":["<short occasion/vibe tag>", "..."]}""")
+        appendLine()
+        appendLine()
+        appendLine("Include 1-4 short, lowercase free-form tags describing the occasion, season, or vibe of the outfit (e.g. \"birthday\", \"travel\", \"work\", \"summer\", \"date night\"). Keep each tag to 1-2 words.")
         appendLine()
         appendLine()
         appendLine("IMPORTANT: Write all user-facing text fields (name, description, reason) in ${AppLanguage.toGeminiName(language)}.")

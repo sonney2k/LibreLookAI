@@ -281,6 +281,14 @@ fun OutfitComposerScreen(
                         maxLines = 4,
                     )
 
+                    // Outfit tags
+                    SectionHeader(stringResource(R.string.outfits_tags_label))
+                    OutfitTagsEditor(
+                        tags = s.composerTags,
+                        onAdd = stylesViewModel::addComposerTag,
+                        onRemove = stylesViewModel::removeComposerTag,
+                    )
+
                     // 7. AI enhance
                     if (!isOffline) {
                         SectionHeader(stringResource(R.string.composer_section_ai))
@@ -684,6 +692,62 @@ private fun AddItemSheet(
                     Spacer(Modifier.width(6.dp))
                     Text(stringResource(R.string.composer_add_selected))
                 }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@Composable
+internal fun OutfitTagsEditor(
+    tags: List<String>,
+    onAdd: (String) -> Unit,
+    onRemove: (String) -> Unit,
+) {
+    var input by remember { mutableStateOf("") }
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        if (tags.isNotEmpty()) {
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                tags.forEach { tag ->
+                    InputChip(
+                        selected = true,
+                        onClick = { onRemove(tag) },
+                        label = { Text(tag, style = MaterialTheme.typography.labelSmall) },
+                        trailingIcon = {
+                            Icon(
+                                Icons.Default.Close,
+                                contentDescription = stringResource(R.string.outfits_tag_remove, tag),
+                                modifier = Modifier.size(14.dp),
+                            )
+                        },
+                    )
+                }
+            }
+        }
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            OutlinedTextField(
+                value = input,
+                onValueChange = { input = it },
+                placeholder = { Text(stringResource(R.string.outfits_tag_add_placeholder)) },
+                singleLine = true,
+                modifier = Modifier.weight(1f),
+            )
+            TextButton(
+                onClick = {
+                    val t = input.trim()
+                    if (t.isNotEmpty()) { onAdd(t); input = "" }
+                },
+                enabled = input.trim().isNotEmpty(),
+            ) {
+                Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(18.dp))
+                Spacer(Modifier.width(4.dp))
+                Text(stringResource(R.string.outfits_tag_add))
             }
         }
     }
