@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -2639,43 +2640,63 @@ private fun OutfitPageBody(
         }
     }
     val groups = bucketed.map { (bucket, list) -> stringResource(bucket.resId) to list }
-    Column(
+    BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
             .padding(horizontal = 12.dp)
             .padding(bottom = bottomPadding),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        groups.forEach { (label, groupItems) ->
-            if (groupItems.isEmpty()) return@forEach
-            Text(
-                label,
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.primary,
-            )
-            FlowRow(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                groupItems.forEach { image ->
-                    val locName = if (locations.size > 1)
-                        locations.find { it.folderId == image.folderId }?.name
-                    else null
-                    OutfitViewerItemTile(
-                        image = image,
-                        locationName = locName,
-                        onClick = { onItemClick(image) },
-                    )
+        // Reserve vertical space for the bucket labels + inter-bucket spacing.
+        val labelReserveDp = (groups.size * 28) + ((groups.size - 1).coerceAtLeast(0) * 12)
+        val availW = maxWidth - 0.dp
+        val availH = (maxHeight - labelReserveDp.dp).coerceAtLeast(120.dp)
+        val maxBucket = (groups.maxOfOrNull { it.second.size } ?: 1).coerceAtLeast(1)
+        val totalItems = groups.sumOf { it.second.size }.coerceAtLeast(1)
+        // Width-driven candidate: largest bucket fits one row if it can.
+        val byWidth = (availW - ((maxBucket - 1) * 8).dp) / maxBucket
+        // Height-driven candidate assuming everything in one row per bucket.
+        val byHeight = availH / groups.size.coerceAtLeast(1) - 4.dp
+        val tileSize = minOf(byWidth, byHeight).coerceIn(80.dp, 180.dp)
+        // If we still can't fit one row per bucket, allow scroll.
+        val needsScroll = byWidth < 80.dp || (tileSize * totalItems / maxBucket) > availH
+        val column = Modifier
+            .fillMaxSize()
+            .let { if (needsScroll) it.verticalScroll(rememberScrollState()) else it }
+        Column(
+            modifier = column,
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            groups.forEach { (label, groupItems) ->
+                if (groupItems.isEmpty()) return@forEach
+                Text(
+                    label,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    groupItems.forEach { image ->
+                        val locName = if (locations.size > 1)
+                            locations.find { it.folderId == image.folderId }?.name
+                        else null
+                        OutfitViewerItemTile(
+                            image = image,
+                            locationName = locName,
+                            size = tileSize,
+                            onClick = { onItemClick(image) },
+                        )
+                    }
                 }
             }
-        }
-        if (items.isEmpty()) {
-            Text(
-                stringResource(R.string.outfits_missing_items),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.outline,
-            )
+            if (items.isEmpty()) {
+                Text(
+                    stringResource(R.string.outfits_missing_items),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.outline,
+                )
+            }
         }
     }
 }
@@ -2684,12 +2705,13 @@ private fun OutfitPageBody(
 private fun OutfitViewerItemTile(
     image: DriveImage,
     locationName: String?,
+    size: androidx.compose.ui.unit.Dp = 140.dp,
     onClick: () -> Unit,
 ) {
     val ctx = LocalContext.current
     Box(
         modifier = Modifier
-            .size(140.dp)
+            .size(size)
             .clip(MaterialTheme.shapes.small)
             .background(MaterialTheme.colorScheme.surfaceVariant)
             .clickable(onClick = onClick),

@@ -32,6 +32,9 @@ import androidx.compose.material.icons.filled.AutoFixHigh
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.CircularProgressIndicator
@@ -105,6 +108,7 @@ fun OutfitComposerScreen(
     }
 
     var showAddItemSheet by remember { mutableStateOf(false) }
+    var advancedOpen by remember { mutableStateOf(false) }
 
     Dialog(
         onDismissRequest = { stylesViewModel.closeComposer() },
@@ -153,6 +157,74 @@ fun OutfitComposerScreen(
                         .padding(horizontal = 16.dp, vertical = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
+                    // Goal-first prompt: top-of-screen "what's the occasion?" feeds the AI
+                    // enhancer. Quick-pick chips append a token (no replace) so users can
+                    // build a phrase by tapping.
+                    if (!isOffline) {
+                        SectionHeader(stringResource(R.string.composer_section_goal))
+                        OutlinedTextField(
+                            value = s.composerFeedback,
+                            onValueChange = { stylesViewModel.updateComposerFeedback(it) },
+                            modifier = Modifier.fillMaxWidth(),
+                            placeholder = { Text(stringResource(R.string.composer_goal_placeholder)) },
+                            minLines = 2,
+                            maxLines = 4,
+                            enabled = !s.isComposerEnhancing,
+                            leadingIcon = { Icon(Icons.Default.AutoAwesome, contentDescription = null) },
+                        )
+                        val quickPicks = listOf(
+                            stringResource(R.string.composer_chip_work),
+                            stringResource(R.string.composer_chip_dinner),
+                            stringResource(R.string.composer_chip_casual),
+                            stringResource(R.string.composer_chip_workout),
+                            stringResource(R.string.composer_chip_travel),
+                            stringResource(R.string.composer_chip_date),
+                        )
+                        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            quickPicks.forEach { chip ->
+                                SuggestionChip(
+                                    onClick = {
+                                        if (!s.isComposerEnhancing) {
+                                            Analytics.action("OutfitComposer", "goal_chip", mapOf("chip" to chip))
+                                            val cur = s.composerFeedback.trim()
+                                            val next = if (cur.isEmpty()) chip
+                                            else if (cur.contains(chip, ignoreCase = true)) cur
+                                            else "$cur, $chip"
+                                            stylesViewModel.updateComposerFeedback(next)
+                                        }
+                                    },
+                                    label = { Text(chip, style = MaterialTheme.typography.labelSmall) },
+                                    enabled = !s.isComposerEnhancing,
+                                )
+                            }
+                        }
+                        Button(
+                            onClick = {
+                                Analytics.action("OutfitComposer", "goal_generate")
+                                stylesViewModel.enhanceComposerWithAi(
+                                    prefs   = profile.preferences,
+                                    weather = weather.data,
+                                    images  = composerImages,
+                                )
+                            },
+                            enabled = !s.isComposerEnhancing,
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            if (s.isComposerEnhancing) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(18.dp),
+                                    strokeWidth = 2.dp,
+                                    color = MaterialTheme.colorScheme.onPrimary,
+                                )
+                                Spacer(Modifier.width(8.dp))
+                            } else {
+                                Icon(Icons.Default.AutoAwesome, contentDescription = null, modifier = Modifier.size(18.dp))
+                                Spacer(Modifier.width(8.dp))
+                            }
+                            Text(stringResource(R.string.composer_goal_generate))
+                        }
+                    }
+
                     // Quick-start AI shortcuts — only when starting from scratch (no seed items,
                     // not editing). Manual creation is the default flow (just add items below).
                     if (!isOffline
@@ -224,44 +296,61 @@ fun OutfitComposerScreen(
                         onAddClick = { showAddItemSheet = true },
                     )
 
-                    // 2. Weather
-                    SectionHeader(stringResource(R.string.composer_section_weather))
-                    WeatherSection(
-                        mode = s.composerWeatherMode,
-                        onModeChange = { stylesViewModel.setComposerWeatherMode(it) },
-                        autoWeather = weather.data,
-                        season = s.composerManualSeason,
-                        onSeason = { stylesViewModel.setComposerManualSeason(it) },
-                        tempC = s.composerManualTempC,
-                        onTempC = { stylesViewModel.setComposerManualTempC(it) },
-                        precip = s.composerManualPrecip,
-                        onPrecip = { stylesViewModel.setComposerManualPrecip(it) },
-                    )
-
-                    // 3. Vibe
-                    SectionHeader(stringResource(R.string.composer_section_vibe))
-                    VibeSection(
-                        selected = s.composerVibes,
-                        onToggle = { stylesViewModel.toggleComposerVibe(it) },
-                    )
-
-                    // 4. Composition targets
-                    SectionHeader(stringResource(R.string.composer_section_targets))
-                    TargetsSection(
-                        targets = s.composerTargets,
-                        onChange = { stylesViewModel.setComposerTargets(it) },
-                    )
-
-                    // 5. Preference override
-                    SectionHeader(stringResource(R.string.composer_section_pref))
-                    OutlinedTextField(
-                        value = s.composerPrefOverride,
-                        onValueChange = { stylesViewModel.updateComposerPrefOverride(it) },
+                    // Collapsed advanced section — weather/vibe/composition/preference
+                    // overrides hide behind one tap so the goal-first flow stays uncluttered.
+                    TextButton(
+                        onClick = {
+                            advancedOpen = !advancedOpen
+                            Analytics.action("OutfitComposer", "advanced_toggle", mapOf("open" to advancedOpen.toString()))
+                        },
                         modifier = Modifier.fillMaxWidth(),
-                        placeholder = { Text(stringResource(R.string.composer_pref_placeholder)) },
-                        minLines = 2,
-                        maxLines = 5,
-                    )
+                    ) {
+                        Icon(
+                            if (advancedOpen) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp),
+                        )
+                        Spacer(Modifier.width(6.dp))
+                        Text(stringResource(R.string.composer_advanced), style = MaterialTheme.typography.labelLarge)
+                    }
+                    AnimatedVisibility(visible = advancedOpen) {
+                        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                            SectionHeader(stringResource(R.string.composer_section_weather))
+                            WeatherSection(
+                                mode = s.composerWeatherMode,
+                                onModeChange = { stylesViewModel.setComposerWeatherMode(it) },
+                                autoWeather = weather.data,
+                                season = s.composerManualSeason,
+                                onSeason = { stylesViewModel.setComposerManualSeason(it) },
+                                tempC = s.composerManualTempC,
+                                onTempC = { stylesViewModel.setComposerManualTempC(it) },
+                                precip = s.composerManualPrecip,
+                                onPrecip = { stylesViewModel.setComposerManualPrecip(it) },
+                            )
+
+                            SectionHeader(stringResource(R.string.composer_section_vibe))
+                            VibeSection(
+                                selected = s.composerVibes,
+                                onToggle = { stylesViewModel.toggleComposerVibe(it) },
+                            )
+
+                            SectionHeader(stringResource(R.string.composer_section_targets))
+                            TargetsSection(
+                                targets = s.composerTargets,
+                                onChange = { stylesViewModel.setComposerTargets(it) },
+                            )
+
+                            SectionHeader(stringResource(R.string.composer_section_pref))
+                            OutlinedTextField(
+                                value = s.composerPrefOverride,
+                                onValueChange = { stylesViewModel.updateComposerPrefOverride(it) },
+                                modifier = Modifier.fillMaxWidth(),
+                                placeholder = { Text(stringResource(R.string.composer_pref_placeholder)) },
+                                minLines = 2,
+                                maxLines = 5,
+                            )
+                        }
+                    }
 
                     // 6. Name & description
                     SectionHeader(stringResource(R.string.composer_section_name))
@@ -289,8 +378,9 @@ fun OutfitComposerScreen(
                         onRemove = stylesViewModel::removeComposerTag,
                     )
 
-                    // 7. AI enhance
-                    if (!isOffline) {
+                    // Refinement: shown only after the goal has produced a reason or
+                    // there's feedback history. One-tap preset chips re-enhance immediately.
+                    if (!isOffline && (s.composerReason.isNotBlank() || s.composerFeedbackHistory.isNotEmpty() || s.composerError != null)) {
                         SectionHeader(stringResource(R.string.composer_section_ai))
                         if (s.composerReason.isNotBlank()) {
                             Surface(
@@ -349,41 +439,6 @@ fun OutfitComposerScreen(
                             }
                         }
 
-                        OutlinedTextField(
-                            value = s.composerFeedback,
-                            onValueChange = { stylesViewModel.updateComposerFeedback(it) },
-                            modifier = Modifier.fillMaxWidth(),
-                            placeholder = { Text(stringResource(R.string.composer_feedback_placeholder)) },
-                            minLines = 2,
-                            maxLines = 4,
-                            enabled = !s.isComposerEnhancing,
-                        )
-
-                        Button(
-                            onClick = {
-                                Analytics.action("OutfitComposer", "enhance_with_ai")
-                                stylesViewModel.enhanceComposerWithAi(
-                                    prefs   = profile.preferences,
-                                    weather = weather.data,
-                                    images  = composerImages,
-                                )
-                            },
-                            enabled = !s.isComposerEnhancing,
-                            modifier = Modifier.fillMaxWidth(),
-                        ) {
-                            if (s.isComposerEnhancing) {
-                                CircularProgressIndicator(
-                                    modifier = Modifier.size(18.dp),
-                                    strokeWidth = 2.dp,
-                                    color = MaterialTheme.colorScheme.onPrimary,
-                                )
-                                Spacer(Modifier.width(8.dp))
-                            } else {
-                                Icon(Icons.Default.AutoAwesome, contentDescription = null, modifier = Modifier.size(18.dp))
-                                Spacer(Modifier.width(8.dp))
-                            }
-                            Text(stringResource(R.string.composer_enhance))
-                        }
                         s.composerError?.let {
                             Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
                         }

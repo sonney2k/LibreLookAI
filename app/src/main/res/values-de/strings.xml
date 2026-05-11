@@ -592,6 +592,16 @@
     <!-- Unified Style Composer -->
     <string name="composer_title">Outfit erstellen</string>
     <string name="composer_save">Speichern</string>
+    <string name="composer_section_goal">Wofür ist das Outfit?</string>
+    <string name="composer_goal_placeholder">z. B. Abendessen in Lissabon, warmer Abend</string>
+    <string name="composer_goal_generate">Vorschlagen</string>
+    <string name="composer_advanced">Erweiterte Optionen</string>
+    <string name="composer_chip_work">Arbeit</string>
+    <string name="composer_chip_dinner">Abendessen</string>
+    <string name="composer_chip_casual">Lässig</string>
+    <string name="composer_chip_workout">Training</string>
+    <string name="composer_chip_travel">Reise</string>
+    <string name="composer_chip_date">Date</string>
     <string name="composer_section_quick_start">Schnellstart</string>
     <string name="composer_section_sources">Quell-Schränke</string>
     <string name="composer_section_items">Teile</string>
