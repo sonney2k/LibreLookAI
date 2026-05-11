@@ -100,6 +100,7 @@ fun TryOnComposerScreen(
     wardrobeViewModel: WardrobeViewModel,
     profileViewModel: ProfileViewModel,
     shoppingClosetViewModel: ShoppingClosetViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    onShowItemInWardrobe: (DriveImage) -> Unit = {},
 ) {
     val state by tryOnViewModel.state.collectAsState()
     if (!state.isComposerOpen) return
@@ -174,6 +175,11 @@ fun TryOnComposerScreen(
                         tryOn = viewing,
                         wardrobeImages = combinedImages,
                         onDelete = { tryOnViewModel.deleteTryOn(viewing) },
+                        onShowItemInWardrobe = { img ->
+                            Analytics.action("TryOn/Detail", "show_in_wardrobe")
+                            tryOnViewModel.close()
+                            onShowItemInWardrobe(img)
+                        },
                     )
 
                     state.isHistoryOpen -> TryOnHistoryGrid(
@@ -564,9 +570,11 @@ private fun TryOnDetailContent(
     tryOn: TryOn,
     wardrobeImages: List<DriveImage>,
     onDelete: () -> Unit,
+    onShowItemInWardrobe: (DriveImage) -> Unit,
 ) {
     val context = LocalContext.current
     var confirmDelete by remember { mutableStateOf(false) }
+    var viewerImage by remember { mutableStateOf<DriveImage?>(null) }
 
     Column(Modifier.fillMaxSize()) {
         Box(
@@ -614,7 +622,11 @@ private fun TryOnDetailContent(
                             modifier = Modifier
                                 .size(72.dp)
                                 .clip(RoundedCornerShape(8.dp))
-                                .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(8.dp)),
+                                .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(8.dp))
+                                .clickable {
+                                    Analytics.action("TryOn/Detail", "view_item")
+                                    viewerImage = img
+                                },
                         ) {
                             AsyncImage(
                                 model = ImageRequest.Builder(context).data(File(img.localPath)).build(),
@@ -660,6 +672,52 @@ private fun TryOnDetailContent(
                 }
             },
         )
+    }
+
+    viewerImage?.let { img ->
+        TryOnItemViewerOverlay(
+            image = img,
+            onDismiss = { viewerImage = null },
+            onShowInWardrobe = {
+                viewerImage = null
+                onShowItemInWardrobe(img)
+            },
+        )
+    }
+}
+
+@Composable
+private fun TryOnItemViewerOverlay(
+    image: DriveImage,
+    onDismiss: () -> Unit,
+    onShowInWardrobe: () -> Unit,
+) {
+    androidx.activity.compose.BackHandler(onBack = onDismiss)
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black)
+            .clickable(
+                interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() },
+                indication = null,
+                onClick = {},
+            ),
+    ) {
+        ZoomableImage(file = File(image.localPath))
+        IconButton(
+            onClick = onDismiss,
+            modifier = Modifier.align(Alignment.TopStart).padding(8.dp),
+        ) {
+            Icon(Icons.Default.Close, contentDescription = null, tint = Color.White)
+        }
+        Button(
+            onClick = onShowInWardrobe,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 24.dp),
+        ) {
+            Text(stringResource(R.string.shop_show_in_wardrobe))
+        }
     }
 }
 

@@ -291,6 +291,8 @@ fun OutfitsScreen(
                     tryOnHistory = tryOnState.history,
                     onLoadTryOnHistory = tryOnViewModel::loadHistory,
                     onOpenTryOnHistoryItem = tryOnViewModel::openHistoryDetail,
+                    onOpenTryOnComposer = { tryOnViewModel.openComposer(emptySet()) },
+                    canTryOnComposer = canTryOn,
                     navResetTick = navResetTick,
                 )
             }
@@ -356,6 +358,8 @@ private fun OutfitListScreen(
     tryOnHistory: List<TryOn> = emptyList(),
     onLoadTryOnHistory: () -> Unit = {},
     onOpenTryOnHistoryItem: (TryOn) -> Unit = {},
+    onOpenTryOnComposer: () -> Unit = {},
+    canTryOnComposer: Boolean = false,
     navResetTick: Int = 0,
     modifier: Modifier = Modifier,
 ) {
@@ -381,9 +385,18 @@ private fun OutfitListScreen(
     var selectedTags by remember { mutableStateOf(emptyMap<String, Set<String>>()) }
     var sortBy by remember { mutableStateOf(OutfitSortOption.DATE_DESC) }
     var filterSheetOpen by remember { mutableStateOf(false) }
+    var tryOnSelectedTags by remember { mutableStateOf(emptyMap<String, Set<String>>()) }
+    var tryOnFilterSheetOpen by remember { mutableStateOf(false) }
     val appliedFilterCount = selectedTags.values.sumOf { it.size }
 
     val tagCategories = remember(styles, itemsById) { styles.outfitTagCategories(itemsById) }
+    // Items referenced by any try-on (resolved by filename, same as TryOnDetailContent).
+    val tryOnItemsByTryOn = remember(tryOnHistory, imagesByName) {
+        tryOnHistory.associateWith { t -> t.itemNames.mapNotNull { n -> imagesByName[n] } }
+    }
+    val tryOnTagCategories = remember(tryOnItemsByTryOn) {
+        tryOnItemsByTryOn.values.flatten().distinctBy { it.driveId }.tagCategories()
+    }
     // Flattened wardrobe items referenced by any outfit — drives QuickCategoryRow counts.
     val outfitItemImages = remember(styles, itemsById) {
         styles.flatMap { it.itemIds.mapNotNull { id -> itemsById[id] } }
@@ -495,8 +508,30 @@ private fun OutfitListScreen(
             }
 
             if (onTryOnsTab) {
+                val filteredTryOns = remember(tryOnHistory, tryOnSelectedTags, tryOnItemsByTryOn) {
+                    val active = tryOnSelectedTags.filter { (_, tags) -> tags.isNotEmpty() }
+                    if (active.isEmpty()) tryOnHistory
+                    else tryOnHistory.filter { t ->
+                        val tItems = tryOnItemsByTryOn[t].orEmpty()
+                        active.all { (categoryLabel, catTags) ->
+                            tItems.any { img ->
+                                catTags.any { it in img.tagStringsForCategory(categoryLabel) }
+                            }
+                        }
+                    }
+                }
+                if (tryOnHistory.isNotEmpty()) {
+                    QuickCategoryRow(
+                        totalCount = tryOnHistory.size,
+                        filteredCount = filteredTryOns.size,
+                        appliedFilterCount = tryOnSelectedTags.values.sumOf { it.size },
+                        filtersEnabled = tryOnTagCategories.isNotEmpty(),
+                        onClearFilters = { tryOnSelectedTags = emptyMap() },
+                        onOpenFilters = { tryOnFilterSheetOpen = true },
+                    )
+                }
                 TryOnHistoryGrid(
-                    history = tryOnHistory,
+                    history = filteredTryOns,
                     onOpen  = onOpenTryOnHistoryItem,
                 )
                 return@Column
@@ -677,6 +712,18 @@ private fun OutfitListScreen(
             ) {
                 Icon(Icons.Default.Add, contentDescription = stringResource(R.string.wardrobe_create_style))
             }
+        } else if (canTryOnComposer && !isOffline) {
+            FloatingActionButton(
+                onClick = {
+                    Analytics.action("Outfits/TryOns", "open_composer")
+                    onOpenTryOnComposer()
+                },
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(end = 16.dp, bottom = 16.dp),
+            ) {
+                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.tryon_title))
+            }
         }
 
         if (filterSheetOpen) {
@@ -686,6 +733,28 @@ private fun OutfitListScreen(
                 appliedCount = displayedStyles.size,
                 onTagsChanged = { selectedTags = it },
                 onDismiss = { filterSheetOpen = false },
+            )
+        }
+
+        if (tryOnFilterSheetOpen) {
+            val previewCount = run {
+                val active = tryOnSelectedTags.filter { (_, tags) -> tags.isNotEmpty() }
+                if (active.isEmpty()) tryOnHistory.size
+                else tryOnHistory.count { t ->
+                    val tItems = tryOnItemsByTryOn[t].orEmpty()
+                    active.all { (categoryLabel, catTags) ->
+                        tItems.any { img ->
+                            catTags.any { it in img.tagStringsForCategory(categoryLabel) }
+                        }
+                    }
+                }
+            }
+            WardrobeFilterSheet(
+                tagCategories = tryOnTagCategories,
+                selectedTags = tryOnSelectedTags,
+                appliedCount = previewCount,
+                onTagsChanged = { tryOnSelectedTags = it },
+                onDismiss = { tryOnFilterSheetOpen = false },
             )
         }
 

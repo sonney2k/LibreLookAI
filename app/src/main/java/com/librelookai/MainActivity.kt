@@ -570,6 +570,18 @@ class MainActivity : ComponentActivity() {
                                     wardrobeViewModel = wardrobeViewModel,
                                     profileViewModel  = profileViewModel,
                                     shoppingClosetViewModel = shoppingClosetViewModel,
+                                    onShowItemInWardrobe = { image ->
+                                        val matchFolder = image.folderId
+                                        val viewingAll = locationState.activeLocationId == LocationViewModel.ALL_LOCATIONS_ID
+                                        if (!viewingAll && matchFolder.isNotEmpty()
+                                            && matchFolder != locationState.activeLocationId
+                                        ) {
+                                            locationViewModel.setActiveLocation(matchFolder)
+                                        }
+                                        wardrobeViewModel.requestScrollToImage(image.driveId)
+                                        selectedTab = 1
+                                        navResetTick++
+                                    },
                                 )
 
                                 // Unified style composer — opened from any screen that seeds items.
