@@ -58,6 +58,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.InputChip
@@ -274,6 +275,10 @@ fun OutfitsScreen(
                     },
                     onDeleteOutfit = outfitsViewModel::deleteOutfit,
                     onWearOutfit = outfitEventsViewModel::recordOutfit,
+                    onSuggestOutfitTags = { o ->
+                        outfitsViewModel.suggestTagsForOutfit(o, wardrobeState.images, profileState.preferences)
+                    },
+                    onEditOutfitTags = { o -> outfitsViewModel.openOutfitTagsEditor(o.id) },
                     onToggleOutfitSelection = outfitsViewModel::toggleOutfitSelection,
                     onSelectAllOutfits = outfitsViewModel::selectAllOutfits,
                     onClearOutfitSelection = outfitsViewModel::clearOutfitSelection,
@@ -297,6 +302,27 @@ fun OutfitsScreen(
                     navResetTick = navResetTick,
                 )
             }
+        }
+
+        // Tag-edit dialog launched by tapping the tags row in the outfit detail viewer.
+        outfitsState.tagEditingOutfitId?.let { editId ->
+            val target = outfitsState.outfits.find { it.id == editId }
+            if (target != null) {
+                EditOutfitTagsDialog(
+                    initialTags = target.tags,
+                    onDismiss = outfitsViewModel::closeOutfitTagsEditor,
+                    onSave = { newTags -> outfitsViewModel.setOutfitTags(editId, newTags) },
+                )
+            }
+        }
+
+        // AI tag-suggestion dialog launched from the outfit detail viewer.
+        outfitsState.tagSuggestion?.let { sugg ->
+            SuggestTagsDialog(
+                state = sugg,
+                onDismiss = outfitsViewModel::dismissTagSuggestions,
+                onApply = { selected -> outfitsViewModel.applyTagSuggestions(sugg.outfitId, selected) },
+            )
         }
 
         // After saving a style, offer to wear it immediately
@@ -346,6 +372,8 @@ private fun OutfitListScreen(
     onEditOutfit: (Outfit) -> Unit,
     onDeleteOutfit: (String) -> Unit,
     onWearOutfit: (String) -> Unit,
+    onSuggestOutfitTags: (Outfit) -> Unit = {},
+    onEditOutfitTags: (Outfit) -> Unit = {},
     onToggleOutfitSelection: (String) -> Unit = {},
     onSelectAllOutfits: (List<String>) -> Unit = {},
     onClearOutfitSelection: () -> Unit = {},
@@ -784,6 +812,8 @@ private fun OutfitListScreen(
                         onDeleteOutfit(o.id)
                         if (displayedStyles.size <= 1) fullscreenStyleId = null
                     },
+                    onSuggestTags = onSuggestOutfitTags,
+                    onEditTags = onEditOutfitTags,
                 )
             } else {
                 LaunchedEffect(styleId) { fullscreenStyleId = null }
@@ -2421,6 +2451,8 @@ private fun OutfitFullScreenViewer(
     onEdit: (Outfit) -> Unit,
     onWear: (Outfit) -> Unit,
     onDelete: (Outfit) -> Unit,
+    onSuggestTags: (Outfit) -> Unit = {},
+    onEditTags: (Outfit) -> Unit = {},
 ) {
     val isOffline = LocalIsOffline.current
     val barInsets = LocalSystemBarsPadding.current
@@ -2517,15 +2549,31 @@ private fun OutfitFullScreenViewer(
                                 overflow = TextOverflow.Ellipsis,
                             )
                         }
+                        val maxWidth = LocalConfiguration.current.screenWidthDp.dp * 0.85f
+                        val tagsClickable = Modifier
+                            .widthIn(max = maxWidth)
+                            .then(if (!isOffline) Modifier.clickable {
+                                Analytics.action("OutfitViewer", "edit_tags")
+                                onEditTags(current)
+                            } else Modifier)
                         if (current.tags.isNotEmpty()) {
-                            val maxWidth = LocalConfiguration.current.screenWidthDp.dp * 0.85f
                             FlowRow(
-                                modifier = Modifier.widthIn(max = maxWidth),
+                                modifier = tagsClickable,
                                 horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
                                 verticalArrangement = Arrangement.spacedBy(4.dp),
                             ) {
                                 current.tags.forEach { OutfitTagChip(it) }
                             }
+                        } else if (!isOffline) {
+                            Text(
+                                text = stringResource(R.string.outfits_tag_add),
+                                modifier = Modifier.clickable {
+                                    Analytics.action("OutfitViewer", "edit_tags_empty")
+                                    onEditTags(current)
+                                },
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.primary,
+                            )
                         }
                     }
 
@@ -2589,6 +2637,17 @@ private fun OutfitFullScreenViewer(
                                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                                 icon = { Icon(Icons.Default.Edit, contentDescription = null) },
                                 text = { Text(stringResource(R.string.action_edit)) },
+                            )
+                            ExtendedFloatingActionButton(
+                                onClick = {
+                                    Analytics.action("OutfitViewer", "suggest_tags")
+                                    showEditMenu = false
+                                    onSuggestTags(current)
+                                },
+                                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                icon = { Icon(Icons.Default.AutoAwesome, contentDescription = null) },
+                                text = { Text(stringResource(R.string.outfits_suggest_tags)) },
                             )
                             ExtendedFloatingActionButton(
                                 onClick = {
@@ -2772,5 +2831,172 @@ private fun bucketFor(image: DriveImage): OutfitItemBucket {
         cat.isEmpty() -> OutfitItemBucket.Other
         else -> OutfitItemBucket.Other
     }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun SuggestTagsDialog(
+    state: TagSuggestionState,
+    onDismiss: () -> Unit,
+    onApply: (List<String>) -> Unit,
+) {
+    var selected by remember(state.suggestions) {
+        mutableStateOf(state.suggestions.toSet())
+    }
+    // Capture parent context/config OUTSIDE the dialog so stringResource honors the
+    // in-app language toggle inside the dialog window. (See CLAUDE.md.)
+    val parentContext = LocalContext.current
+    val parentConfiguration = LocalConfiguration.current
+    AlertDialog(
+        onDismissRequest = { if (!state.isSaving) onDismiss() },
+        title = {
+            CompositionLocalProvider(
+                LocalContext provides parentContext,
+                LocalConfiguration provides parentConfiguration,
+            ) { Text(stringResource(R.string.outfits_suggest_tags_title)) }
+        },
+        text = {
+            CompositionLocalProvider(
+                LocalContext provides parentContext,
+                LocalConfiguration provides parentConfiguration,
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    when {
+                        state.isLoading -> {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            ) {
+                                CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
+                                Text(stringResource(R.string.outfits_suggest_tags_loading))
+                            }
+                        }
+                        state.suggestions.isEmpty() -> {
+                            Text(state.error ?: stringResource(R.string.outfits_suggest_tags_empty))
+                        }
+                        else -> {
+                            Text(
+                                stringResource(R.string.outfits_suggest_tags_hint),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                            FlowRow(
+                                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                verticalArrangement = Arrangement.spacedBy(6.dp),
+                            ) {
+                                state.suggestions.forEach { tag ->
+                                    FilterChip(
+                                        selected = tag in selected,
+                                        onClick = {
+                                            selected = if (tag in selected) selected - tag else selected + tag
+                                        },
+                                        label = { Text(tag) },
+                                        enabled = !state.isSaving,
+                                    )
+                                }
+                            }
+                            if (state.error != null) {
+                                Text(
+                                    state.error,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.error,
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            CompositionLocalProvider(
+                LocalContext provides parentContext,
+                LocalConfiguration provides parentConfiguration,
+            ) {
+                if (state.suggestions.isNotEmpty()) {
+                    TextButton(
+                        onClick = { onApply(selected.toList()) },
+                        enabled = !state.isSaving && !state.isLoading && selected.isNotEmpty(),
+                    ) {
+                        if (state.isSaving) {
+                            CircularProgressIndicator(Modifier.size(16.dp), strokeWidth = 2.dp)
+                        } else {
+                            Text(stringResource(R.string.outfits_suggest_tags_apply))
+                        }
+                    }
+                } else {
+                    TextButton(onClick = onDismiss, enabled = !state.isSaving) {
+                        Text(stringResource(R.string.action_ok))
+                    }
+                }
+            }
+        },
+        dismissButton = {
+            CompositionLocalProvider(
+                LocalContext provides parentContext,
+                LocalConfiguration provides parentConfiguration,
+            ) {
+                if (state.suggestions.isNotEmpty()) {
+                    TextButton(onClick = onDismiss, enabled = !state.isSaving) {
+                        Text(stringResource(R.string.action_cancel))
+                    }
+                }
+            }
+        },
+    )
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun EditOutfitTagsDialog(
+    initialTags: List<String>,
+    onDismiss: () -> Unit,
+    onSave: (List<String>) -> Unit,
+) {
+    var working by remember(initialTags) { mutableStateOf(initialTags) }
+    val parentContext = LocalContext.current
+    val parentConfiguration = LocalConfiguration.current
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            CompositionLocalProvider(
+                LocalContext provides parentContext,
+                LocalConfiguration provides parentConfiguration,
+            ) { Text(stringResource(R.string.outfits_tags_label)) }
+        },
+        text = {
+            CompositionLocalProvider(
+                LocalContext provides parentContext,
+                LocalConfiguration provides parentConfiguration,
+            ) {
+                OutfitTagsEditor(
+                    tags = working,
+                    onAdd = { t ->
+                        if (working.none { it.equals(t, ignoreCase = true) }) working = working + t
+                    },
+                    onRemove = { t -> working = working - t },
+                )
+            }
+        },
+        confirmButton = {
+            CompositionLocalProvider(
+                LocalContext provides parentContext,
+                LocalConfiguration provides parentConfiguration,
+            ) {
+                TextButton(onClick = { onSave(working) }) {
+                    Text(stringResource(R.string.action_save))
+                }
+            }
+        },
+        dismissButton = {
+            CompositionLocalProvider(
+                LocalContext provides parentContext,
+                LocalConfiguration provides parentConfiguration,
+            ) {
+                TextButton(onClick = onDismiss) {
+                    Text(stringResource(R.string.action_cancel))
+                }
+            }
+        },
+    )
 }
 

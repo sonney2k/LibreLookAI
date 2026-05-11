@@ -436,6 +436,12 @@
     <string name="outfits_tags_label">Tags</string>
     <string name="outfits_tag_add">Add tag</string>
     <string name="outfits_tag_add_placeholder">e.g. birthday, travel</string>
+    <string name="outfits_suggest_tags">Suggest tags with AI</string>
+    <string name="outfits_suggest_tags_title">Suggested tags</string>
+    <string name="outfits_suggest_tags_loading">Suggesting tags…</string>
+    <string name="outfits_suggest_tags_empty">No new tags suggested.</string>
+    <string name="outfits_suggest_tags_apply">Add selected</string>
+    <string name="outfits_suggest_tags_hint">Tap tags to toggle. Selected tags are added to this outfit.</string>
     <string name="outfits_tag_remove">Remove tag %s</string>
     <string name="outfits_unnamed">Untitled outfit</string>
     <string name="outfit_layer_outerwear">Outerwear</string>

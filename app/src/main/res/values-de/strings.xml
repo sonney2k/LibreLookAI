@@ -430,6 +430,12 @@
     <string name="outfits_tags_label">Tags</string>
     <string name="outfits_tag_add">Tag hinzufügen</string>
     <string name="outfits_tag_add_placeholder">z. B. Geburtstag, Reise</string>
+    <string name="outfits_suggest_tags">Tags mit KI vorschlagen</string>
+    <string name="outfits_suggest_tags_title">Vorgeschlagene Tags</string>
+    <string name="outfits_suggest_tags_loading">Tags werden vorgeschlagen…</string>
+    <string name="outfits_suggest_tags_empty">Keine neuen Tags vorgeschlagen.</string>
+    <string name="outfits_suggest_tags_apply">Auswahl hinzufügen</string>
+    <string name="outfits_suggest_tags_hint">Tippe auf Tags, um sie auszuwählen. Ausgewählte Tags werden dem Outfit hinzugefügt.</string>
     <string name="outfits_tag_remove">Tag %s entfernen</string>
     <string name="outfits_unnamed">Unbenanntes Outfit</string>
     <string name="outfit_layer_outerwear">Oberbekleidung</string>
