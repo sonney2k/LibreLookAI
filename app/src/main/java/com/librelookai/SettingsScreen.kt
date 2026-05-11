@@ -2219,14 +2219,42 @@ private fun RepairPreviewDialog(
     var clearCache by remember { mutableStateOf(false) }
     val parentContext = LocalContext.current
     val parentConfiguration = LocalConfiguration.current
+    val barInsets = LocalSystemBarsPadding.current
+    val view = LocalView.current
+    val density = androidx.compose.ui.platform.LocalDensity.current
+    val rootInsetBottomDp = remember(view) {
+        val raw = view.rootWindowInsets
+        val bottomPx = if (raw != null) {
+            androidx.core.view.WindowInsetsCompat
+                .toWindowInsetsCompat(raw, view)
+                .getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
+                .bottom
+        } else 0
+        with(density) { bottomPx.toDp() }
+    }
+    val effectiveBottom = maxOf(
+        barInsets.calculateBottomPadding(),
+        rootInsetBottomDp,
+        48.dp,
+    )
     Dialog(
         onDismissRequest = { onCancel(clearCache) },
         properties = DialogProperties(
             usePlatformDefaultWidth = false,
             dismissOnBackPress = true,
             dismissOnClickOutside = false,
+            decorFitsSystemWindows = false,
         ),
     ) {
+        val dialogView = LocalView.current
+        SideEffect {
+            val window = (dialogView.parent as? DialogWindowProvider)?.window ?: return@SideEffect
+            window.setLayout(
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+            )
+            androidx.core.view.WindowCompat.setDecorFitsSystemWindows(window, false)
+        }
       CompositionLocalProvider(
           LocalContext provides parentContext,
           LocalConfiguration provides parentConfiguration,
@@ -2235,7 +2263,11 @@ private fun RepairPreviewDialog(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background,
         ) {
-            Column(modifier = Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = barInsets.calculateTopPadding()),
+            ) {
                 // Header
                 Row(
                     modifier = Modifier
@@ -2431,6 +2463,7 @@ private fun RepairPreviewDialog(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(bottom = effectiveBottom)
                         .padding(horizontal = 12.dp, vertical = 8.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
