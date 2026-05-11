@@ -2217,6 +2217,8 @@ private fun RepairPreviewDialog(
     onCancel: (Boolean) -> Unit,
 ) {
     var clearCache by remember { mutableStateOf(false) }
+    val parentContext = LocalContext.current
+    val parentConfiguration = LocalConfiguration.current
     Dialog(
         onDismissRequest = { onCancel(clearCache) },
         properties = DialogProperties(
@@ -2225,6 +2227,10 @@ private fun RepairPreviewDialog(
             dismissOnClickOutside = false,
         ),
     ) {
+      CompositionLocalProvider(
+          LocalContext provides parentContext,
+          LocalConfiguration provides parentConfiguration,
+      ) {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background,
@@ -2447,6 +2453,7 @@ private fun RepairPreviewDialog(
                 }
             }
         }
+      }
     }
 }
 

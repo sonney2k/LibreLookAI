@@ -57,6 +57,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -71,6 +72,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
@@ -111,6 +113,8 @@ fun TryOnComposerScreen(
         wardrobeState.images + shoppingClosetState.items
     }
 
+    val parentContext = LocalContext.current
+    val parentConfiguration = LocalConfiguration.current
     Dialog(
         onDismissRequest = tryOnViewModel::close,
         properties = DialogProperties(
@@ -131,6 +135,10 @@ fun TryOnComposerScreen(
             )
             androidx.core.view.WindowCompat.setDecorFitsSystemWindows(window, false)
         }
+        CompositionLocalProvider(
+            LocalContext provides parentContext,
+            LocalConfiguration provides parentConfiguration,
+        ) {
         val viewing = state.viewingTryOn
         Scaffold(
             modifier = Modifier.fillMaxSize(),
@@ -231,6 +239,7 @@ fun TryOnComposerScreen(
                     )
                 }
             }
+        }
         }
     }
 }
