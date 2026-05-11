@@ -300,6 +300,7 @@ fun OutfitsScreen(
                     onOpenTryOnComposer = { tryOnViewModel.openComposer(emptySet()) },
                     canTryOnComposer = canTryOn,
                     navResetTick = navResetTick,
+                    wardrobeViewModel = wardrobeViewModel,
                 )
             }
         }
@@ -391,6 +392,7 @@ private fun OutfitListScreen(
     canTryOnComposer: Boolean = false,
     navResetTick: Int = 0,
     modifier: Modifier = Modifier,
+    wardrobeViewModel: WardrobeViewModel,
 ) {
     val isOffline = LocalIsOffline.current
     // itemsById: ALL locations — used to resolve item IDs to images for card display and tag filters.
@@ -815,6 +817,7 @@ private fun OutfitListScreen(
                     },
                     onSuggestTags = onSuggestOutfitTags,
                     onEditTags = onEditOutfitTags,
+                    wardrobeViewModel = wardrobeViewModel,
                 )
             } else {
                 LaunchedEffect(styleId) { fullscreenStyleId = null }
@@ -2281,7 +2284,9 @@ private fun OutfitFullScreenViewer(
     onDelete: (Outfit) -> Unit,
     onSuggestTags: (Outfit) -> Unit = {},
     onEditTags: (Outfit) -> Unit = {},
+    wardrobeViewModel: WardrobeViewModel,
 ) {
+    val wardrobeState by wardrobeViewModel.state.collectAsState()
     val allTagCategories = remember(itemsById) { itemsById.values.toList().tagCategories() }
     val isOffline = LocalIsOffline.current
     val barInsets = LocalSystemBarsPadding.current
@@ -2524,17 +2529,19 @@ private fun OutfitFullScreenViewer(
                     initialIndex = startIdx,
                     allTagCategories = allTagCategories,
                     onDismiss = { viewerImage = null },
-                    onTagImage = {},
-                    onRemoveBackground = {},
-                    onRotateImage = {},
-                    onUpdateTags = { _, _ -> },
-                    onDeleteItem = {},
-                    onMoveToLocation = { _, _ -> },
+                    onTagImage = wardrobeViewModel::tagImage,
+                    onRemoveBackground = wardrobeViewModel::reprocessBackground,
+                    onRotateImage = wardrobeViewModel::rotateImage,
+                    onUpdateTags = wardrobeViewModel::updateTags,
+                    onDeleteItem = { driveId -> wardrobeViewModel.deleteItems(setOf(driveId)) },
+                    onMoveToLocation = wardrobeViewModel::moveItemsToLocation,
                     onCreateOutfitFromSelection = {},
+                    onFixCutoutBg = wardrobeViewModel::fixCutoutBgForItem,
+                    onLoadOriginal = wardrobeViewModel::ensureOriginalCached,
                     locations = locations,
                     activeLocationId = activeLocationId,
-                    processingImageId = null,
-                    writeMode = false,
+                    processingImageId = wardrobeState.processingImageId,
+                    writeMode = true,
                 )
             }
         }

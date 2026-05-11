@@ -1445,8 +1445,26 @@ internal fun FullScreenViewer(
 
         // Edit speed-dial — same style as Wardrobe + FAB. Expands to rotate / detect tags / remove bg.
         if (!isOffline && writeMode) {
+            val barInsets = LocalSystemBarsPadding.current
+            val view = androidx.compose.ui.platform.LocalView.current
+            val density = androidx.compose.ui.platform.LocalDensity.current
+            val rootInsetBottomDp = remember(view) {
+                val raw = view.rootWindowInsets
+                val bottomPx = if (raw != null) {
+                    androidx.core.view.WindowInsetsCompat
+                        .toWindowInsetsCompat(raw, view)
+                        .getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
+                        .bottom
+                } else 0
+                with(density) { bottomPx.toDp() }
+            }
+            val effectiveBottom = maxOf(
+                barInsets.calculateBottomPadding(),
+                rootInsetBottomDp,
+                48.dp,
+            )
             Column(
-                modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
+                modifier = Modifier.align(Alignment.BottomEnd).padding(bottom = effectiveBottom).padding(16.dp),
                 horizontalAlignment = Alignment.End,
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {

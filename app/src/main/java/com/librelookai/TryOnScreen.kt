@@ -141,6 +141,34 @@ fun TryOnComposerScreen(
             LocalConfiguration provides parentConfiguration,
         ) {
         val viewing = state.viewingTryOn
+        var detailViewerImage by remember { mutableStateOf<DriveImage?>(null) }
+        if (detailViewerImage != null && viewing != null) {
+            val items = remember(viewing.itemNames, combinedImages) {
+                viewing.itemNames.mapNotNull { n -> combinedImages.firstOrNull { it.name == n } }
+            }
+            val startIdx = items.indexOfFirst { it.driveId == detailViewerImage!!.driveId }.coerceAtLeast(0)
+            val allTagCategories = remember(items) { items.tagCategories() }
+            FullScreenViewer(
+                images = items,
+                initialIndex = startIdx,
+                allTagCategories = allTagCategories,
+                onDismiss = { detailViewerImage = null },
+                onTagImage = wardrobeViewModel::tagImage,
+                onRemoveBackground = wardrobeViewModel::reprocessBackground,
+                onRotateImage = wardrobeViewModel::rotateImage,
+                onUpdateTags = wardrobeViewModel::updateTags,
+                onDeleteItem = { driveId -> wardrobeViewModel.deleteItems(setOf(driveId)) },
+                onMoveToLocation = wardrobeViewModel::moveItemsToLocation,
+                onCreateOutfitFromSelection = {},
+                onFixCutoutBg = wardrobeViewModel::fixCutoutBgForItem,
+                onLoadOriginal = wardrobeViewModel::ensureOriginalCached,
+                locations = emptyList(),
+                activeLocationId = "",
+                processingImageId = wardrobeState.processingImageId,
+                writeMode = true,
+            )
+            return@CompositionLocalProvider
+        }
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
@@ -175,11 +203,7 @@ fun TryOnComposerScreen(
                         tryOn = viewing,
                         wardrobeImages = combinedImages,
                         onDelete = { tryOnViewModel.deleteTryOn(viewing) },
-                        onShowItemInWardrobe = { img ->
-                            Analytics.action("TryOn/Detail", "show_in_wardrobe")
-                            tryOnViewModel.close()
-                            onShowItemInWardrobe(img)
-                        },
+                        onItemTap = { img -> detailViewerImage = img },
                     )
 
                     state.isHistoryOpen -> TryOnHistoryGrid(
@@ -570,11 +594,10 @@ private fun TryOnDetailContent(
     tryOn: TryOn,
     wardrobeImages: List<DriveImage>,
     onDelete: () -> Unit,
-    onShowItemInWardrobe: (DriveImage) -> Unit,
+    onItemTap: (DriveImage) -> Unit,
 ) {
     val context = LocalContext.current
     var confirmDelete by remember { mutableStateOf(false) }
-    var viewerImage by remember { mutableStateOf<DriveImage?>(null) }
 
     Column(Modifier.fillMaxSize()) {
         Box(
@@ -625,7 +648,7 @@ private fun TryOnDetailContent(
                                 .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(8.dp))
                                 .clickable {
                                     Analytics.action("TryOn/Detail", "view_item")
-                                    viewerImage = img
+                                    onItemTap(img)
                                 },
                         ) {
                             AsyncImage(
@@ -674,51 +697,6 @@ private fun TryOnDetailContent(
         )
     }
 
-    viewerImage?.let { img ->
-        TryOnItemViewerOverlay(
-            image = img,
-            onDismiss = { viewerImage = null },
-            onShowInWardrobe = {
-                viewerImage = null
-                onShowItemInWardrobe(img)
-            },
-        )
-    }
-}
-
-@Composable
-private fun TryOnItemViewerOverlay(
-    image: DriveImage,
-    onDismiss: () -> Unit,
-    onShowInWardrobe: () -> Unit,
-) {
-    androidx.activity.compose.BackHandler(onBack = onDismiss)
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black)
-            .clickable(
-                interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() },
-                indication = null,
-                onClick = {},
-            ),
-    ) {
-        ZoomableImage(file = File(image.localPath))
-        IconButton(
-            onClick = onDismiss,
-            modifier = Modifier.align(Alignment.TopStart).padding(8.dp),
-        ) {
-            Icon(Icons.Default.Close, contentDescription = null, tint = Color.White)
-        }
-        Button(
-            onClick = onShowInWardrobe,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 24.dp),
-        ) {
-            Text(stringResource(R.string.shop_show_in_wardrobe))
-        }
-    }
 }
 
 /** Pinch-zoom & pan image, saturating at [1x .. 6x]. */

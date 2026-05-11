@@ -578,11 +578,17 @@ private fun WeatherSection(
     } else {
         Text(stringResource(R.string.composer_weather_season), style = MaterialTheme.typography.labelMedium)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            listOf("Spring", "Summer", "Fall", "Winter").forEach { opt ->
+            val seasons = listOf(
+                "Spring" to R.string.composer_season_spring,
+                "Summer" to R.string.composer_season_summer,
+                "Fall" to R.string.composer_season_fall,
+                "Winter" to R.string.composer_season_winter,
+            )
+            seasons.forEach { (value, labelRes) ->
                 FilterChip(
-                    selected = season == opt,
-                    onClick = { onSeason(if (season == opt) "" else opt) },
-                    label = { Text(opt) },
+                    selected = season == value,
+                    onClick = { onSeason(if (season == value) "" else value) },
+                    label = { Text(stringResource(labelRes)) },
                 )
             }
         }
@@ -592,17 +598,22 @@ private fun WeatherSection(
                 FilterChip(
                     selected = tempC == t,
                     onClick = { onTempC(if (tempC == t) null else t) },
-                    label = { Text("${t}°C") },
+                    label = { Text(stringResource(R.string.composer_temp_value, t)) },
                 )
             }
         }
         Text(stringResource(R.string.composer_weather_precip), style = MaterialTheme.typography.labelMedium)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            listOf("None", "Light", "Heavy").forEach { p ->
+            val precips = listOf(
+                "None" to R.string.composer_precip_none,
+                "Light" to R.string.composer_precip_light,
+                "Heavy" to R.string.composer_precip_heavy,
+            )
+            precips.forEach { (value, labelRes) ->
                 FilterChip(
-                    selected = precip == p,
-                    onClick = { onPrecip(if (precip == p) "" else p) },
-                    label = { Text(p) },
+                    selected = precip == value,
+                    onClick = { onPrecip(if (precip == value) "" else value) },
+                    label = { Text(stringResource(labelRes)) },
                 )
             }
         }
@@ -615,13 +626,22 @@ private fun VibeSection(
     selected: Set<String>,
     onToggle: (String) -> Unit,
 ) {
-    val vibes = listOf("Casual", "Sporty", "Formal", "Business", "Streetwear", "Minimalist", "Classic", "Elegant")
+    val vibes = listOf(
+        "Casual" to R.string.composer_vibe_casual,
+        "Sporty" to R.string.composer_vibe_sporty,
+        "Formal" to R.string.composer_vibe_formal,
+        "Business" to R.string.composer_vibe_business,
+        "Streetwear" to R.string.composer_vibe_streetwear,
+        "Minimalist" to R.string.composer_vibe_minimalist,
+        "Classic" to R.string.composer_vibe_classic,
+        "Elegant" to R.string.composer_vibe_elegant,
+    )
     FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        vibes.forEach { v ->
+        vibes.forEach { (value, labelRes) ->
             FilterChip(
-                selected = v in selected,
-                onClick = { onToggle(v) },
-                label = { Text(v) },
+                selected = value in selected,
+                onClick = { onToggle(value) },
+                label = { Text(stringResource(labelRes)) },
             )
         }
     }
@@ -639,9 +659,9 @@ private fun TargetsSection(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(label, modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
-            IconButton(onClick = { if (value > 0) onValue(value - 1) }) { Text("–") }
+            IconButton(onClick = { if (value > 0) onValue(value - 1) }) { Text(stringResource(R.string.composer_stepper_decrement)) }
             Text("$value", modifier = Modifier.width(24.dp), style = MaterialTheme.typography.bodyMedium)
-            IconButton(onClick = { if (value < 5) onValue(value + 1) }) { Text("+") }
+            IconButton(onClick = { if (value < 5) onValue(value + 1) }) { Text(stringResource(R.string.composer_stepper_increment)) }
         }
     }
     Column {
