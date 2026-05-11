@@ -805,6 +805,7 @@ private fun OutfitListScreen(
                     initialIndex = startIndex,
                     itemsById = itemsById,
                     locations = locations,
+                    activeLocationId = activeLocationId,
                     onDismiss = { fullscreenStyleId = null },
                     onEdit = { o -> fullscreenStyleId = null; onEditOutfit(o) },
                     onWear = { o -> onWearOutfit(o.id) },
@@ -888,11 +889,6 @@ private fun OutfitCard(
 ) {
     val isOffline = LocalIsOffline.current
     var showDeleteDialog by remember { mutableStateOf(false) }
-    var viewerImage by remember { mutableStateOf<DriveImage?>(null) }
-
-    viewerImage?.let { image ->
-        WardrobeItemViewer(image = image, onDismiss = { viewerImage = null })
-    }
 
     if (showDeleteDialog) {
         AlertDialog(
@@ -1021,7 +1017,7 @@ private fun OutfitCard(
                                         .build()
                                 },
                                 contentDescription = image.name,
-                                modifier = Modifier.fillMaxSize().clickable { viewerImage = image },
+                                modifier = Modifier.fillMaxSize(),
                                 contentScale = ContentScale.Crop,
                             )
                             if (itemLocName != null) {
@@ -2251,175 +2247,6 @@ private fun StyleNameDialog(
     )
 }
 
-// ---------- Read-only wardrobe item viewer (opened from style cards) ----------
-
-@Composable
-private fun WardrobeItemViewer(image: DriveImage, onDismiss: () -> Unit) {
-    BackHandler(onBack = onDismiss)
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black),
-    ) {
-        StyleZoomableImage(
-            localPath = image.localPath,
-            name = image.name,
-            cacheKey = "${image.driveId}_${image.version}",
-        )
-
-        image.tags?.let { tags ->
-            StyleTagsOverlay(
-                tags = tags,
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .statusBarsPadding()
-                    .padding(top = 8.dp, end = 8.dp),
-            )
-        }
-
-        IconButton(
-            onClick = onDismiss,
-            modifier = Modifier.align(Alignment.TopStart).statusBarsPadding().padding(8.dp),
-        ) {
-            Icon(Icons.Default.Close, contentDescription = null, tint = Color.White)
-        }
-    }
-}
-
-@Composable
-private fun StyleZoomableImage(localPath: String, name: String, cacheKey: String) {
-    var scale by remember { mutableFloatStateOf(1f) }
-    var offset by remember { mutableStateOf(Offset.Zero) }
-    val ctx = LocalContext.current
-
-    AsyncImage(
-        model = remember(cacheKey) {
-            ImageRequest.Builder(ctx).data(localPath).memoryCacheKey(cacheKey).build()
-        },
-        contentDescription = name,
-        modifier = Modifier
-            .fillMaxSize()
-            .pointerInput(Unit) {
-                awaitEachGesture {
-                    awaitFirstDown(requireUnconsumed = false, pass = PointerEventPass.Initial)
-                    var prevDistance = -1f
-                    do {
-                        val event = awaitPointerEvent(PointerEventPass.Initial)
-                        val pressed = event.changes.filter { it.pressed }
-                        when {
-                            pressed.size >= 2 -> {
-                                val dist = (pressed[1].position - pressed[0].position).getDistance()
-                                if (prevDistance > 0f) {
-                                    val focal = Offset(
-                                        (pressed[0].position.x + pressed[1].position.x) / 2f,
-                                        (pressed[0].position.y + pressed[1].position.y) / 2f,
-                                    )
-                                    val newScale = (scale * (dist / prevDistance)).coerceIn(1f, 8f)
-                                    val delta = newScale / scale
-                                    val cx = size.width / 2f
-                                    val cy = size.height / 2f
-                                    offset = Offset(
-                                        (focal.x - cx) * (1f - delta) + offset.x * delta,
-                                        (focal.y - cy) * (1f - delta) + offset.y * delta,
-                                    )
-                                    scale = newScale
-                                    if (scale <= 1f) offset = Offset.Zero
-                                }
-                                prevDistance = dist
-                                pressed.forEach { it.consume() }
-                            }
-                            pressed.size == 1 && scale > 1.01f -> {
-                                val delta = pressed[0].position - pressed[0].previousPosition
-                                offset = Offset(offset.x + delta.x, offset.y + delta.y)
-                                pressed[0].consume()
-                                prevDistance = -1f
-                            }
-                            else -> prevDistance = -1f
-                        }
-                    } while (event.changes.any { it.pressed })
-                }
-            }
-            .graphicsLayer {
-                scaleX = scale
-                scaleY = scale
-                translationX = offset.x
-                translationY = offset.y
-            },
-        contentScale = ContentScale.Fit,
-    )
-}
-
-@Composable
-private fun StyleTagsOverlay(tags: ClothingTags, modifier: Modifier = Modifier) {
-    Surface(
-        modifier = modifier,
-        shape = MaterialTheme.shapes.medium,
-        color = Color.Black.copy(alpha = 0.55f),
-    ) {
-        Column(
-            modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-            horizontalAlignment = Alignment.End,
-        ) {
-            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                if (tags.type.isNotEmpty()) StyleTagChip(tags.type)
-                if (tags.category.isNotEmpty()) StyleTagChip(tags.category.localizedTagValue())
-            }
-            if (tags.uses.isNotEmpty()) {
-                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    tags.uses.forEach { StyleTagChip(it.localizedTagValue()) }
-                }
-            }
-            if (tags.colors.isNotEmpty()) {
-                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    tags.colors.forEach { StyleTagChip(it.localizedTagValue()) }
-                }
-            }
-            if (tags.seasonality.isNotEmpty()) {
-                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    tags.seasonality.forEach { StyleTagChip(it.localizedTagValue()) }
-                }
-            }
-            if (tags.aesthetic.isNotEmpty()) {
-                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    tags.aesthetic.forEach { StyleTagChip(it.localizedTagValue()) }
-                }
-            }
-            if (tags.fit.isNotEmpty()) {
-                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    tags.fit.forEach { StyleTagChip(it.localizedTagValue()) }
-                }
-            }
-            if (tags.material.isNotEmpty()) {
-                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    tags.material.forEach { StyleTagChip(it.localizedTagValue()) }
-                }
-            }
-            if (tags.pattern.isNotEmpty()) {
-                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    tags.pattern.forEach { StyleTagChip(it.localizedTagValue()) }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun StyleTagChip(label: String) {
-    Surface(
-        shape = MaterialTheme.shapes.extraSmall,
-        color = Color.White.copy(alpha = 0.18f),
-    ) {
-        Text(
-            text = label,
-            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-            style = MaterialTheme.typography.labelSmall,
-            color = Color.White,
-        )
-    }
-}
-
 @Composable
 private fun OutfitTagChip(label: String) {
     Surface(
@@ -2447,6 +2274,7 @@ private fun OutfitFullScreenViewer(
     initialIndex: Int,
     itemsById: Map<String, DriveImage>,
     locations: List<Location>,
+    activeLocationId: String,
     onDismiss: () -> Unit,
     onEdit: (Outfit) -> Unit,
     onWear: (Outfit) -> Unit,
@@ -2454,10 +2282,28 @@ private fun OutfitFullScreenViewer(
     onSuggestTags: (Outfit) -> Unit = {},
     onEditTags: (Outfit) -> Unit = {},
 ) {
+    val allTagCategories = remember(itemsById) { itemsById.values.toList().tagCategories() }
     val isOffline = LocalIsOffline.current
     val barInsets = LocalSystemBarsPadding.current
     val parentContext = LocalContext.current
     val parentConfiguration = LocalConfiguration.current
+    val parentView = LocalView.current
+    val density = androidx.compose.ui.platform.LocalDensity.current
+    val rootInsetBottomDp = remember(parentView) {
+        val raw = parentView.rootWindowInsets
+        val bottomPx = if (raw != null) {
+            androidx.core.view.WindowInsetsCompat
+                .toWindowInsetsCompat(raw, parentView)
+                .getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
+                .bottom
+        } else 0
+        with(density) { bottomPx.toDp() }
+    }
+    val effectiveBottom = maxOf(
+        barInsets.calculateBottomPadding(),
+        rootInsetBottomDp,
+        48.dp,
+    )
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(
@@ -2507,10 +2353,6 @@ private fun OutfitFullScreenViewer(
                         TextButton(onClick = { showDeleteDialog = false }) { Text(stringResource(R.string.action_cancel)) }
                     },
                 )
-            }
-
-            viewerImage?.let { img ->
-                WardrobeItemViewer(image = img, onDismiss = { viewerImage = null })
             }
 
             Box(
@@ -2589,7 +2431,7 @@ private fun OutfitFullScreenViewer(
                             itemsById = itemsById,
                             locations = locations,
                             onItemClick = { viewerImage = it },
-                            bottomPadding = barInsets.calculateBottomPadding() + 96.dp,
+                            bottomPadding = effectiveBottom + 96.dp,
                         )
                     }
                 }
@@ -2611,7 +2453,7 @@ private fun OutfitFullScreenViewer(
                     Column(
                         modifier = Modifier
                             .align(Alignment.BottomEnd)
-                            .padding(bottom = barInsets.calculateBottomPadding())
+                            .padding(bottom = effectiveBottom)
                             .padding(16.dp),
                         horizontalAlignment = Alignment.End,
                         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -2669,6 +2511,31 @@ private fun OutfitFullScreenViewer(
                         }
                     }
                 }
+            }
+
+            viewerImage?.let { img ->
+                val viewerImages = remember(current.itemIds, itemsById) {
+                    current.itemIds.mapNotNull { itemsById[it] }
+                }
+                val startIdx = viewerImages.indexOfFirst { it.driveId == img.driveId }
+                    .coerceAtLeast(0)
+                FullScreenViewer(
+                    images = viewerImages,
+                    initialIndex = startIdx,
+                    allTagCategories = allTagCategories,
+                    onDismiss = { viewerImage = null },
+                    onTagImage = {},
+                    onRemoveBackground = {},
+                    onRotateImage = {},
+                    onUpdateTags = { _, _ -> },
+                    onDeleteItem = {},
+                    onMoveToLocation = { _, _ -> },
+                    onCreateOutfitFromSelection = {},
+                    locations = locations,
+                    activeLocationId = activeLocationId,
+                    processingImageId = null,
+                    writeMode = false,
+                )
             }
         }
     }
