@@ -70,6 +70,10 @@
     <string name="action_edit">Bearbeiten</string>
     <string name="action_saving">Wird gespeichert…</string>
     <string name="action_clear">Löschen</string>
+    <string name="action_sort">Sortieren</string>
+    <string name="action_remove">Entfernen</string>
+    <string name="cd_ai_suggestion">KI-Vorschlag</string>
+    <string name="cd_refine">Verfeinern</string>
     <string name="filter_location">Standort</string>
     <string name="filter_all_locations">Alle</string>
     <string name="wardrobe_processing_photos">%1$d Foto(s) werden verarbeitet…</string>
@@ -614,7 +618,6 @@
     <string name="composer_section_weather">Wetter</string>
     <string name="composer_section_vibe">Stil-Vibe</string>
     <string name="composer_section_targets">Zusammenstellung</string>
-    <string name="composer_section_pref">Vorlieben-Prompt</string>
     <string name="composer_section_name">Name &amp; Beschreibung</string>
     <string name="composer_section_ai">Mit KI verbessern</string>
     <string name="composer_weather_auto">Aktuell</string>
@@ -646,7 +649,6 @@
     <string name="composer_layer_footwear">Schuhe</string>
     <string name="composer_layer_outerwear">Jacke/Mantel</string>
     <string name="composer_layer_accessory">Accessoire</string>
-    <string name="composer_pref_placeholder">z. B. minimalistisch, gedeckte Farben, keine Logos…</string>
     <string name="composer_name_placeholder">Outfitname (optional)</string>
     <string name="composer_desc_placeholder">Kurze Beschreibung (optional)</string>
     <string name="composer_feedback_placeholder">Sag der KI, was sie anpassen soll…</string>

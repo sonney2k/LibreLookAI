@@ -849,7 +849,7 @@ private fun StyleSortButton(
     var expanded by remember { mutableStateOf(false) }
     Box(modifier = modifier) {
         IconButton(onClick = { expanded = true }) {
-            Icon(Icons.AutoMirrored.Filled.Sort, contentDescription = "Sort")
+            Icon(Icons.AutoMirrored.Filled.Sort, contentDescription = stringResource(R.string.action_sort))
         }
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             OutfitSortOption.entries.forEach { option ->
@@ -1140,7 +1140,7 @@ private fun OutfitItemPicker(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             IconButton(onClick = onCancel) {
-                Icon(Icons.Default.Close, contentDescription = "Cancel")
+                Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_cancel))
             }
             BasicTextField(
                 value = styleName,
@@ -1371,7 +1371,7 @@ private fun OutfitEditingView(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             IconButton(onClick = onCancel) {
-                Icon(Icons.Default.Close, contentDescription = "Cancel")
+                Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_cancel))
             }
             BasicTextField(
                 value = draftOutfitName,
@@ -1620,7 +1620,7 @@ private fun OutfitEditItemSlot(
                 containerColor = MaterialTheme.colorScheme.errorContainer,
                 elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 0.dp),
             ) {
-                Icon(Icons.Default.Close, contentDescription = "Remove", modifier = Modifier.size(12.dp))
+                Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_remove), modifier = Modifier.size(12.dp))
             }
             if (locationName != null) {
                 Box(
@@ -1778,7 +1778,7 @@ private fun ItemSwapSheet(
                         if (isAiSuggested && !isSelected) {
                             Icon(
                                 Icons.Default.AutoAwesome,
-                                contentDescription = "AI suggestion",
+                                contentDescription = stringResource(R.string.cd_ai_suggestion),
                                 tint = MaterialTheme.colorScheme.tertiary,
                                 modifier = Modifier
                                     .align(Alignment.TopStart)
@@ -2213,7 +2213,7 @@ internal fun RefinementSection(
                 onClick = onSubmitFreetext,
                 enabled = input.isNotBlank(),
             ) {
-                Icon(Icons.AutoMirrored.Filled.Send, contentDescription = "Refine")
+                Icon(Icons.AutoMirrored.Filled.Send, contentDescription = stringResource(R.string.cd_refine))
             }
         }
     }

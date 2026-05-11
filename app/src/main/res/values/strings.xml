@@ -72,6 +72,10 @@
     <string name="action_edit">Edit</string>
     <string name="action_saving">Saving…</string>
     <string name="action_clear">Clear</string>
+    <string name="action_sort">Sort</string>
+    <string name="action_remove">Remove</string>
+    <string name="cd_ai_suggestion">AI suggestion</string>
+    <string name="cd_refine">Refine</string>
     <string name="filter_location">Location</string>
     <string name="filter_all_locations">All</string>
     <string name="wardrobe_processing_photos">Processing %1$d photo(s)…</string>
@@ -638,7 +642,6 @@
     <string name="composer_section_weather">Weather</string>
     <string name="composer_section_vibe">Style vibe</string>
     <string name="composer_section_targets">Composition</string>
-    <string name="composer_section_pref">Preference prompt</string>
     <string name="composer_section_name">Name &amp; description</string>
     <string name="composer_section_ai">Enhance with AI</string>
     <string name="composer_weather_auto">Current</string>
@@ -670,7 +673,6 @@
     <string name="composer_layer_footwear">Footwear</string>
     <string name="composer_layer_outerwear">Outerwear</string>
     <string name="composer_layer_accessory">Accessory</string>
-    <string name="composer_pref_placeholder">e.g. leans minimalist, prefers muted colors, avoids logos…</string>
     <string name="composer_name_placeholder">Outfit name (optional)</string>
     <string name="composer_desc_placeholder">Short caption (optional)</string>
     <string name="composer_feedback_placeholder">Tell the AI what to change or aim for…</string>

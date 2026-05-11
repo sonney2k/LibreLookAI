@@ -88,7 +88,6 @@ data class OutfitsUiState(
     val composerManualPrecip: String = "",         // "" / None / Light / Heavy
     val composerVibes: Set<String> = emptySet(),   // Casual / Sporty / Formal / …
     val composerTargets: ComposerTargets = ComposerTargets(),
-    val composerPrefOverride: String = "",
     val composerName: String = "",
     val composerDescription: String = "",
     val composerTags: List<String> = emptyList(),
@@ -545,7 +544,6 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 composerManualPrecip    = "",
                 composerVibes           = emptySet(),
                 composerTargets         = targets,
-                composerPrefOverride    = prefs?.preferences.orEmpty(),
                 composerName            = initialName,
                 composerDescription     = initialDescription,
                 composerTags            = editingStyleId?.let { id ->
@@ -614,7 +612,6 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
     fun setComposerManualTempC(tempC: Int?) = _state.update { it.copy(composerManualTempC = tempC) }
     fun setComposerManualPrecip(p: String) = _state.update { it.copy(composerManualPrecip = p) }
     fun setComposerTargets(targets: ComposerTargets) = _state.update { it.copy(composerTargets = targets) }
-    fun updateComposerPrefOverride(s: String) = _state.update { it.copy(composerPrefOverride = s) }
     fun updateComposerName(s: String) = _state.update { it.copy(composerName = s) }
     fun updateComposerDescription(s: String) = _state.update { it.copy(composerDescription = s) }
     fun addComposerTag(tag: String) {
@@ -653,7 +650,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             val countryCode = deviceCountryCode()
             val region = listOfNotNull(weather?.cityName?.takeIf { it.isNotEmpty() }, countryCode).joinToString(", ")
             val fashionTrends = gemini.searchFashionTrends(region, UsageCategory.OUTFIT_COMPOSE)
-            val prefString = s.composerPrefOverride.ifBlank { prefs?.preferences.orEmpty() }
+            val prefString = prefs?.preferences.orEmpty()
             val prompt = buildComposerPrompt(
                 preamble         = PromptStore.get(getApplication(), PromptKey.COMPOSER),
                 prefs            = prefs,

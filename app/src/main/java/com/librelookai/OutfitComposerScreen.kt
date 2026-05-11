@@ -53,6 +53,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -63,6 +64,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -92,6 +94,10 @@ fun OutfitComposerScreen(
     val shoppingState by shoppingClosetViewModel.state.collectAsState()
     val locationState by locationViewModel.state.collectAsState()
     val ctx = LocalContext.current
+    // Capture outside the Dialog so `stringResource` inside honors the in-app
+    // language toggle. (See CLAUDE.md – Compose Dialog Quirks.)
+    val parentContext = LocalContext.current
+    val parentConfiguration = LocalConfiguration.current
     val isOffline = LocalIsOffline.current
 
     if (!s.isComposerOpen) return
@@ -114,6 +120,10 @@ fun OutfitComposerScreen(
         onDismissRequest = { stylesViewModel.closeComposer() },
         properties = DialogProperties(usePlatformDefaultWidth = false, dismissOnBackPress = true, dismissOnClickOutside = false),
     ) {
+        CompositionLocalProvider(
+            LocalContext provides parentContext,
+            LocalConfiguration provides parentConfiguration,
+        ) {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.surface,
@@ -340,15 +350,6 @@ fun OutfitComposerScreen(
                                 onChange = { stylesViewModel.setComposerTargets(it) },
                             )
 
-                            SectionHeader(stringResource(R.string.composer_section_pref))
-                            OutlinedTextField(
-                                value = s.composerPrefOverride,
-                                onValueChange = { stylesViewModel.updateComposerPrefOverride(it) },
-                                modifier = Modifier.fillMaxWidth(),
-                                placeholder = { Text(stringResource(R.string.composer_pref_placeholder)) },
-                                minLines = 2,
-                                maxLines = 5,
-                            )
                         }
                     }
 
@@ -454,6 +455,7 @@ fun OutfitComposerScreen(
                 )
             }
             }
+        }
         }
     }
 
