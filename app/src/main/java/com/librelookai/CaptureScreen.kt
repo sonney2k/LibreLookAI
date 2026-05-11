@@ -4,10 +4,13 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import androidx.activity.compose.BackHandler
+import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.FocusMeteringAction
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
+import java.util.concurrent.TimeUnit
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.background
@@ -16,6 +19,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -48,9 +52,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
@@ -97,7 +106,12 @@ fun CaptureScreen(
     val showImportFabs = onOpenGallery != null || onOpenUrlImport != null
     val lifecycleOwner = LocalLifecycleOwner.current
     var imageCapture by remember { mutableStateOf<ImageCapture?>(null) }
+    var camera by remember { mutableStateOf<Camera?>(null) }
+    var previewViewRef by remember { mutableStateOf<PreviewView?>(null) }
     var isCapturing by remember { mutableStateOf(false) }
+
+    // Crosshair position in preview pixel coords; null → centered.
+    var crosshairPx by remember { mutableStateOf<Offset?>(null) }
 
     // Non-null → show review screen
     var capturedFile by remember { mutableStateOf<File?>(null) }
@@ -138,7 +152,7 @@ fun CaptureScreen(
                                 .also { it.setSurfaceProvider(previewView.surfaceProvider) }
                             try {
                                 future.get().unbindAll()
-                                future.get().bindToLifecycle(
+                                camera = future.get().bindToLifecycle(
                                     lifecycleOwner,
                                     CameraSelector.DEFAULT_BACK_CAMERA,
                                     preview,
@@ -148,6 +162,7 @@ fun CaptureScreen(
                                 e.printStackTrace()
                             }
                         }, ContextCompat.getMainExecutor(ctx))
+                        previewViewRef = previewView
                     }
                 },
                 modifier = Modifier
@@ -158,12 +173,59 @@ fun CaptureScreen(
                     },
             )
 
+            // Gesture overlay: tap to move crosshair + AF/AE, pinch to zoom.
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .pointerInput(Unit) {
+                        detectTransformGestures { _, _, zoom, _ ->
+                            val cam = camera ?: return@detectTransformGestures
+                            if (zoom == 1f) return@detectTransformGestures
+                            val info = cam.cameraInfo.zoomState.value ?: return@detectTransformGestures
+                            val next = (info.zoomRatio * zoom)
+                                .coerceIn(info.minZoomRatio, info.maxZoomRatio)
+                            cam.cameraControl.setZoomRatio(next)
+                        }
+                    }
+                    .pointerInput(Unit) {
+                        detectTapGestures(onTap = { pos ->
+                            crosshairPx = pos
+                            val pv = previewViewRef
+                            val cam = camera
+                            if (pv != null && cam != null) {
+                                val point = pv.meteringPointFactory.createPoint(pos.x, pos.y)
+                                val action = FocusMeteringAction.Builder(
+                                    point,
+                                    FocusMeteringAction.FLAG_AF or FocusMeteringAction.FLAG_AE,
+                                )
+                                    .setAutoCancelDuration(3, TimeUnit.SECONDS)
+                                    .build()
+                                runCatching { cam.cameraControl.startFocusAndMetering(action) }
+                            }
+                        })
+                    },
+            )
+
+            val density = LocalDensity.current
+            val crosshairSize = 64.dp
+            val crosshairSizePx = with(density) { crosshairSize.toPx() }
+            val cx = crosshairPx?.x ?: (previewWidth / 2f)
+            val cy = crosshairPx?.y ?: (previewHeight / 2f)
+            val offsetXDp = with(density) { (cx - crosshairSizePx / 2f).toDp() }
+            val offsetYDp = with(density) { (cy - crosshairSizePx / 2f).toDp() }
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .offset(offsetXDp, offsetYDp)
+                    .size(crosshairSize),
+            ) {
+                CenterCrosshair(modifier = Modifier.fillMaxSize())
+            }
             androidx.compose.foundation.layout.Column(
                 modifier = Modifier.align(Alignment.Center),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                CenterCrosshair()
                 if (showCenterCrosshair) {
                     Surface(
                         shape = MaterialTheme.shapes.small,
