@@ -347,6 +347,8 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
     companion object {
         private const val TAG = "RepairAndSync"
+        /** Stricter floor for the Repair & Sync duplicate scan. */
+        private const val REPAIR_DUPE_THRESHOLD = 0.97f
         /** Sidecars at or below this size are {} or {"tags":null} — definitely no tags. */
         private const val SIDECAR_EMPTY_MAX = 20L
         /** Sidecars at or above this size always contain a ClothingTags object. */
@@ -970,7 +972,11 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         EmbeddingService.syncIndex(crossClosetImages, drive.cacheDir)
         val byDriveId = crossClosetImages.associateBy { it.driveId }
         val scope = byDriveId.keys
-        val clusters = EmbeddingService.findDuplicateClusters(dedupeThreshold, restrictToIds = scope)
+        // Repair & Sync uses a stricter threshold than capture/import dedupe: an unattended scan
+        // over the entire wardrobe surfaces far more near-collisions than a one-shot capture, so
+        // we want only very confident matches to appear in the delete-candidates list.
+        val repairThreshold = maxOf(dedupeThreshold, REPAIR_DUPE_THRESHOLD)
+        val clusters = EmbeddingService.findDuplicateClusters(repairThreshold, restrictToIds = scope)
         if (clusters.isEmpty()) return emptyList()
         // For each anchor with similar peers, build an audit entry. Anchors with the same set of
         // peers are equally valid candidates for deletion — surface them all so the user picks.
