@@ -463,15 +463,23 @@ fun OutfitComposerScreen(
     }
 
     if (showAddItemSheet) {
-        AddItemSheet(
-            allItems = composerImages,
-            alreadyChosen = s.composerItemIds.toSet(),
-            onConfirm = { newIds ->
-                stylesViewModel.addComposerItems(newIds)
-                showAddItemSheet = false
-            },
-            onDismiss = { showAddItemSheet = false },
-        )
+        // `ModalBottomSheet` opens in its own window — re-provide the activity's context
+        // and configuration so `stringResource` honors the in-app language toggle.
+        // (See CLAUDE.md – Compose Dialog Quirks.)
+        CompositionLocalProvider(
+            LocalContext provides parentContext,
+            LocalConfiguration provides parentConfiguration,
+        ) {
+            AddItemSheet(
+                allItems = composerImages,
+                alreadyChosen = s.composerItemIds.toSet(),
+                onConfirm = { newIds ->
+                    stylesViewModel.addComposerItems(newIds)
+                    showAddItemSheet = false
+                },
+                onDismiss = { showAddItemSheet = false },
+            )
+        }
     }
 }
 
