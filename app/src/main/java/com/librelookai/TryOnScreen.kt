@@ -1,11 +1,5 @@
 package com.librelookai
 
-import android.content.ContentValues
-import android.content.Context
-import android.net.Uri
-import android.os.Build
-import android.os.Environment
-import android.provider.MediaStore
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -37,8 +31,7 @@ import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Download
-import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -116,6 +109,7 @@ fun TryOnComposerScreen(
 
     val parentContext = LocalContext.current
     val parentConfiguration = LocalConfiguration.current
+    val barInsets = LocalSystemBarsPadding.current
     Dialog(
         onDismissRequest = tryOnViewModel::close,
         properties = DialogProperties(
@@ -170,7 +164,7 @@ fun TryOnComposerScreen(
             return@CompositionLocalProvider
         }
         Scaffold(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().padding(barInsets),
             topBar = {
                 TopAppBar(
                     title = {
@@ -216,14 +210,6 @@ fun TryOnComposerScreen(
                         onSave = {
                             Analytics.action("TryOn/Result", "save")
                             tryOnViewModel.saveCurrent(combinedImages)
-                        },
-                        onDiscard = {
-                            Analytics.action("TryOn/Result", "regenerate")
-                            tryOnViewModel.generate(
-                                personFiles     = profileViewModel.tryOnFiles(),
-                                wardrobeImages  = combinedImages,
-                                preferences     = profileState.preferences.preferences,
-                            )
                         },
                         onChangeItems = {
                             Analytics.action("TryOn/Result", "change_items")
@@ -462,10 +448,8 @@ private fun ItemPickerSheet(
 private fun TryOnResultContent(
     state: TryOnUiState,
     onSave: () -> Unit,
-    onDiscard: () -> Unit,
     onChangeItems: () -> Unit,
 ) {
-    val context = LocalContext.current
     Column(Modifier.fillMaxSize()) {
         Box(
             modifier = Modifier
@@ -476,53 +460,33 @@ private fun TryOnResultContent(
             ZoomableImage(file = File(state.resultPath!!))
         }
         HorizontalDivider()
-        Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxWidth(),
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Button(
+                onClick = onSave,
+                enabled = !state.isSaving && !state.isResultSaved,
+                modifier = Modifier.weight(1f),
             ) {
-                Button(
-                    onClick = onSave,
-                    enabled = !state.isSaving && !state.isResultSaved,
-                    modifier = Modifier.weight(1f),
-                ) {
-                    if (state.isSaving) {
-                        CircularProgressIndicator(Modifier.size(16.dp), strokeWidth = 2.dp, color = Color.White)
-                        Spacer(Modifier.width(8.dp))
-                        Text(stringResource(R.string.tryon_saving))
-                    } else if (state.isResultSaved) {
-                        Icon(Icons.Default.Check, null, modifier = Modifier.size(18.dp))
-                        Spacer(Modifier.width(8.dp))
-                        Text(stringResource(R.string.tryon_saved_to_drive))
-                    } else {
-                        Icon(Icons.Default.Save, null, modifier = Modifier.size(18.dp))
-                        Spacer(Modifier.width(8.dp))
-                        Text(stringResource(R.string.tryon_save_to_drive))
-                    }
-                }
-                OutlinedButton(onClick = onDiscard) {
-                    Icon(Icons.Default.Refresh, null, modifier = Modifier.size(18.dp))
-                    Spacer(Modifier.width(6.dp))
-                    Text(stringResource(R.string.tryon_try_again))
+                if (state.isSaving) {
+                    CircularProgressIndicator(Modifier.size(16.dp), strokeWidth = 2.dp, color = Color.White)
+                    Spacer(Modifier.width(8.dp))
+                    Text(stringResource(R.string.tryon_saving))
+                } else if (state.isResultSaved) {
+                    Icon(Icons.Default.Check, null, modifier = Modifier.size(18.dp))
+                    Spacer(Modifier.width(8.dp))
+                    Text(stringResource(R.string.tryon_saved_to_drive))
+                } else {
+                    Icon(Icons.Default.Save, null, modifier = Modifier.size(18.dp))
+                    Spacer(Modifier.width(8.dp))
+                    Text(stringResource(R.string.tryon_save_to_drive))
                 }
             }
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                OutlinedButton(onClick = onChangeItems, modifier = Modifier.weight(1f)) {
-                    Text(stringResource(R.string.tryon_change_items))
-                }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    OutlinedButton(onClick = {
-                        Analytics.action("TryOn/Result", "save_to_gallery")
-                        state.resultPath?.let { saveImageToGallery(context, File(it)) }
-                    }) {
-                        Icon(Icons.Default.Download, null, modifier = Modifier.size(18.dp))
-                        Spacer(Modifier.width(6.dp))
-                        Text(stringResource(R.string.tryon_save_to_gallery))
-                    }
-                }
+            OutlinedButton(onClick = onChangeItems, modifier = Modifier.weight(1f)) {
+                Icon(Icons.Default.Edit, null, modifier = Modifier.size(18.dp))
+                Spacer(Modifier.width(6.dp))
+                Text(stringResource(R.string.tryon_change_items))
             }
         }
     }
@@ -727,29 +691,3 @@ private fun ZoomableImage(file: File) {
     )
 }
 
-/**
- * Copies [file] into Pictures/LibreLookAI via MediaStore (API 29+; skips permission prompt).
- */
-private fun saveImageToGallery(context: Context, file: File): Boolean = try {
-    val resolver = context.contentResolver
-    val values = ContentValues().apply {
-        put(MediaStore.Images.Media.DISPLAY_NAME, "librelookai_tryon_${System.currentTimeMillis()}.png")
-        put(MediaStore.Images.Media.MIME_TYPE, "image/png")
-        put(MediaStore.Images.Media.RELATIVE_PATH, "${Environment.DIRECTORY_PICTURES}/LibreLookAI")
-        put(MediaStore.Images.Media.IS_PENDING, 1)
-    }
-    val uri: Uri? = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
-    if (uri == null) false else {
-        val ok = resolver.openOutputStream(uri)?.use { out ->
-            file.inputStream().use { it.copyTo(out) }; true
-        } ?: false
-        if (ok) {
-            values.clear()
-            values.put(MediaStore.Images.Media.IS_PENDING, 0)
-            resolver.update(uri, values, null, null)
-        }
-        ok
-    }
-} catch (_: Exception) {
-    false
-}
