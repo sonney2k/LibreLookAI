@@ -682,6 +682,13 @@
     <string name="composer_add_items">Add items from wardrobe</string>
     <string name="composer_picked_count">%1$d picked</string>
     <string name="composer_add_selected">Add selected</string>
+    <string name="composer_factors_label">Using</string>
+    <string name="composer_factor_weather_auto">Live weather</string>
+    <string name="composer_factor_weather_manual">Manual weather</string>
+    <string name="composer_factor_vibes">%1$d vibes</string>
+    <string name="composer_factor_items">%1$d items</string>
+    <string name="composer_factor_closets">%1$d closets</string>
+    <string name="composer_factor_composition">Custom composition</string>
     <string name="wardrobe_create_style">Create outfit</string>
     <string name="wardrobe_imported_on">Imported %1$s</string>
     <string name="wardrobe_view_original">View original</string>

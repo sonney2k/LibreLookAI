@@ -658,6 +658,13 @@
     <string name="composer_add_items">Teile aus Garderobe hinzufügen</string>
     <string name="composer_picked_count">%1$d ausgewählt</string>
     <string name="composer_add_selected">Auswahl hinzufügen</string>
+    <string name="composer_factors_label">Verwendet</string>
+    <string name="composer_factor_weather_auto">Aktuelles Wetter</string>
+    <string name="composer_factor_weather_manual">Manuelles Wetter</string>
+    <string name="composer_factor_vibes">%1$d Stile</string>
+    <string name="composer_factor_items">%1$d Teile</string>
+    <string name="composer_factor_closets">%1$d Schränke</string>
+    <string name="composer_factor_composition">Eigene Komposition</string>
     <string name="wardrobe_create_style">Outfit erstellen</string>
     <string name="wardrobe_imported_on">Importiert am %1$s</string>
     <string name="wardrobe_view_original">Original anzeigen</string>

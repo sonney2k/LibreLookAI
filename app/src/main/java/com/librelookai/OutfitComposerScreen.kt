@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -28,7 +27,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoAwesome
-import androidx.compose.material.icons.filled.AutoFixHigh
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
@@ -36,7 +34,6 @@ import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
@@ -116,6 +113,30 @@ fun OutfitComposerScreen(
     var showAddItemSheet by remember { mutableStateOf(false) }
     var advancedOpen by remember { mutableStateOf(false) }
 
+    // Fullscreen Dialog: `WindowInsets.systemBars` reports 0 inside the dialog window, so
+    // `.statusBarsPadding()` / `.navigationBarsPadding()` are no-ops. Read activity insets
+    // via LocalSystemBarsPadding, fall back to the view's rootWindowInsets, then a 48dp floor.
+    // (See CLAUDE.md – Compose Dialog Quirks.)
+    val barInsets = LocalSystemBarsPadding.current
+    val view = androidx.compose.ui.platform.LocalView.current
+    val density = androidx.compose.ui.platform.LocalDensity.current
+    val rootInsetBottomDp = remember(view) {
+        val raw = view.rootWindowInsets
+        val bottomPx = if (raw != null) {
+            androidx.core.view.WindowInsetsCompat
+                .toWindowInsetsCompat(raw, view)
+                .getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
+                .bottom
+        } else 0
+        with(density) { bottomPx.toDp() }
+    }
+    val effectiveBottom = maxOf(
+        barInsets.calculateBottomPadding(),
+        rootInsetBottomDp,
+        48.dp,
+    )
+    val effectiveTop = maxOf(barInsets.calculateTopPadding(), 0.dp)
+
     Dialog(
         onDismissRequest = { stylesViewModel.closeComposer() },
         properties = DialogProperties(usePlatformDefaultWidth = false, dismissOnBackPress = true, dismissOnClickOutside = false),
@@ -129,12 +150,12 @@ fun OutfitComposerScreen(
             color = MaterialTheme.colorScheme.surface,
         ) {
             Box(modifier = Modifier.fillMaxSize()) {
-            Column(modifier = Modifier.fillMaxSize().navigationBarsPadding().imePadding()) {
+            Column(modifier = Modifier.fillMaxSize().imePadding()) {
                 // Header
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .statusBarsPadding()
+                        .padding(top = effectiveTop)
                         .padding(horizontal = 8.dp, vertical = 4.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -149,13 +170,6 @@ fun OutfitComposerScreen(
                         style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier.weight(1f).padding(start = 4.dp),
                     )
-                    Button(
-                        onClick = {
-                            Analytics.action("OutfitComposer", "save", mapOf("count" to s.composerItemIds.size.toString()))
-                            stylesViewModel.saveComposer()
-                        },
-                        enabled = s.composerItemIds.isNotEmpty(),
-                    ) { Text(stringResource(R.string.composer_save)) }
                 }
                 HorizontalDivider()
 
@@ -233,32 +247,28 @@ fun OutfitComposerScreen(
                             }
                             Text(stringResource(R.string.composer_goal_generate))
                         }
+                        // Compact "factors in use" — surfaces what's feeding the AI so users
+                        // understand why a suggestion came out the way it did.
+                        FactorsRow(
+                            weatherMode = s.composerWeatherMode,
+                            vibesCount = s.composerVibes.size,
+                            itemsCount = s.composerItemIds.size,
+                            closetsCount = sourceFolders.size,
+                            hasCustomTargets = s.composerTargets.let {
+                                it.top + it.bottom + it.footwear + it.outerwear + it.accessory > 0
+                            },
+                            onClick = { advancedOpen = true },
+                        )
                     }
 
-                    // Quick-start AI shortcuts — only when starting from scratch (no seed items,
-                    // not editing). Manual creation is the default flow (just add items below).
-                    if (!isOffline
-                        && s.composerItemIds.isEmpty()
-                        && s.composerEditingOutfitId == null
-                    ) {
-                        SectionHeader(stringResource(R.string.composer_section_quick_start))
-                        OutlinedButton(
-                            onClick = {
-                                Analytics.action("OutfitComposer", "compose_with_ai_quick")
-                                stylesViewModel.enhanceComposerWithAi(
-                                    prefs   = profile.preferences,
-                                    weather = weather.data,
-                                    images  = composerImages,
-                                )
-                            },
-                            modifier = Modifier.fillMaxWidth(),
-                            enabled = !s.isComposerEnhancing,
-                        ) {
-                            Icon(Icons.Default.AutoFixHigh, contentDescription = null, modifier = Modifier.size(16.dp))
-                            Spacer(Modifier.width(6.dp))
-                            Text(stringResource(R.string.outfits_compose), style = MaterialTheme.typography.labelMedium)
-                        }
-                    }
+                    // Name — shown high up so users see the auto-populated name after Generate.
+                    OutlinedTextField(
+                        value = s.composerName,
+                        onValueChange = { stylesViewModel.updateComposerName(it) },
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true,
+                        placeholder = { Text(stringResource(R.string.composer_name_placeholder)) },
+                    )
 
                     // Source closets — only relevant when more than one closet exists.
                     if (locationState.locations.size >= 2) {
@@ -331,15 +341,7 @@ fun OutfitComposerScreen(
                         }
                     }
 
-                    // 6. Name & description
-                    SectionHeader(stringResource(R.string.composer_section_name))
-                    OutlinedTextField(
-                        value = s.composerName,
-                        onValueChange = { stylesViewModel.updateComposerName(it) },
-                        modifier = Modifier.fillMaxWidth(),
-                        singleLine = true,
-                        placeholder = { Text(stringResource(R.string.composer_name_placeholder)) },
-                    )
+                    // Description (name now lives at the top, near Generate)
                     OutlinedTextField(
                         value = s.composerDescription,
                         onValueChange = { stylesViewModel.updateComposerDescription(it) },
@@ -425,6 +427,29 @@ fun OutfitComposerScreen(
 
                     Spacer(Modifier.height(16.dp))
                 }
+                // Sticky bottom Save bar — primary action lives at the bottom where users
+                // expect it after scrolling through inputs.
+                HorizontalDivider()
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = effectiveBottom)
+                        .padding(horizontal = 16.dp, vertical = 10.dp),
+                    horizontalArrangement = Arrangement.End,
+                ) {
+                    Button(
+                        onClick = {
+                            Analytics.action("OutfitComposer", "save", mapOf("count" to s.composerItemIds.size.toString()))
+                            stylesViewModel.saveComposer()
+                        },
+                        enabled = s.composerItemIds.isNotEmpty(),
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Icon(Icons.Default.Check, contentDescription = null, modifier = Modifier.size(18.dp))
+                        Spacer(Modifier.width(6.dp))
+                        Text(stringResource(R.string.composer_save))
+                    }
+                }
             }
             if (s.isComposerEnhancing) {
                 AiProcessingOverlay(
@@ -446,6 +471,63 @@ fun OutfitComposerScreen(
                 showAddItemSheet = false
             },
             onDismiss = { showAddItemSheet = false },
+        )
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun FactorsRow(
+    weatherMode: ComposerWeatherMode,
+    vibesCount: Int,
+    itemsCount: Int,
+    closetsCount: Int,
+    hasCustomTargets: Boolean,
+    onClick: () -> Unit,
+) {
+    val weatherLabel = stringResource(
+        if (weatherMode == ComposerWeatherMode.AUTO) R.string.composer_factor_weather_auto
+        else R.string.composer_factor_weather_manual
+    )
+    val chips = buildList {
+        add(weatherLabel)
+        if (itemsCount > 0) add(stringResource(R.string.composer_factor_items, itemsCount))
+        if (vibesCount > 0) add(stringResource(R.string.composer_factor_vibes, vibesCount))
+        if (closetsCount > 0) add(stringResource(R.string.composer_factor_closets, closetsCount))
+        if (hasCustomTargets) add(stringResource(R.string.composer_factor_composition))
+    }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(MaterialTheme.shapes.small)
+            .clickable(onClick = onClick)
+            .padding(vertical = 2.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            stringResource(R.string.composer_factors_label) + ":",
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(Modifier.width(6.dp))
+        FlowRow(
+            modifier = Modifier.weight(1f),
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            chips.forEachIndexed { i, c ->
+                Text(
+                    if (i == 0) c else "· $c",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+        Icon(
+            Icons.Default.ExpandMore,
+            contentDescription = null,
+            modifier = Modifier.size(16.dp),
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
