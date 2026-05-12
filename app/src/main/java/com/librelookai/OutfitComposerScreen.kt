@@ -173,26 +173,26 @@ fun OutfitComposerScreen(
                 }
                 HorizontalDivider()
 
-                // Scrollable body
+                // Scrollable body — kept scrollable as a safety net, but the layout is
+                // tuned to fit on a single screen on typical phones.
                 Column(
                     modifier = Modifier
                         .weight(1f)
                         .verticalScroll(rememberScrollState())
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                        .padding(horizontal = 16.dp, vertical = 6.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     // Goal-first prompt: top-of-screen "what's the occasion?" feeds the AI
                     // enhancer. Quick-pick chips append a token (no replace) so users can
                     // build a phrase by tapping.
                     if (!isOffline) {
-                        SectionHeader(stringResource(R.string.composer_section_goal))
                         OutlinedTextField(
                             value = s.composerFeedback,
                             onValueChange = { stylesViewModel.updateComposerFeedback(it) },
                             modifier = Modifier.fillMaxWidth(),
                             placeholder = { Text(stringResource(R.string.composer_goal_placeholder)) },
-                            minLines = 2,
-                            maxLines = 4,
+                            minLines = 1,
+                            maxLines = 3,
                             enabled = !s.isComposerEnhancing,
                             leadingIcon = { Icon(Icons.Default.AutoAwesome, contentDescription = null) },
                         )
@@ -222,38 +222,18 @@ fun OutfitComposerScreen(
                                 )
                             }
                         }
-                        Button(
-                            onClick = {
-                                Analytics.action("OutfitComposer", "goal_generate")
-                                stylesViewModel.enhanceComposerWithAi(
-                                    prefs   = profile.preferences,
-                                    weather = weather.data,
-                                    images  = composerImages,
-                                )
-                            },
-                            enabled = !s.isComposerEnhancing,
-                            modifier = Modifier.fillMaxWidth(),
-                        ) {
-                            if (s.isComposerEnhancing) {
-                                CircularProgressIndicator(
-                                    modifier = Modifier.size(18.dp),
-                                    strokeWidth = 2.dp,
-                                    color = MaterialTheme.colorScheme.onPrimary,
-                                )
-                                Spacer(Modifier.width(8.dp))
-                            } else {
-                                Icon(Icons.Default.AutoAwesome, contentDescription = null, modifier = Modifier.size(18.dp))
-                                Spacer(Modifier.width(8.dp))
-                            }
-                            Text(stringResource(R.string.composer_goal_generate))
-                        }
                         // Compact "factors in use" — surfaces what's feeding the AI so users
                         // understand why a suggestion came out the way it did.
+                        val selectedClosetNames = remember(sourceFolders, locationState.locations) {
+                            locationState.locations.filter { it.folderId in sourceFolders }.map { it.name }
+                        }
                         FactorsRow(
                             weatherMode = s.composerWeatherMode,
+                            autoWeather = weather.data,
+                            manualTempC = s.composerManualTempC,
                             vibesCount = s.composerVibes.size,
                             itemsCount = s.composerItemIds.size,
-                            closetsCount = sourceFolders.size,
+                            closetNames = selectedClosetNames,
                             hasCustomTargets = s.composerTargets.let {
                                 it.top + it.bottom + it.footwear + it.outerwear + it.accessory > 0
                             },
@@ -261,32 +241,7 @@ fun OutfitComposerScreen(
                         )
                     }
 
-                    // Name — shown high up so users see the auto-populated name after Generate.
-                    OutlinedTextField(
-                        value = s.composerName,
-                        onValueChange = { stylesViewModel.updateComposerName(it) },
-                        modifier = Modifier.fillMaxWidth(),
-                        singleLine = true,
-                        placeholder = { Text(stringResource(R.string.composer_name_placeholder)) },
-                    )
-
-                    // Source closets — only relevant when more than one closet exists.
-                    if (locationState.locations.size >= 2) {
-                        SectionHeader(stringResource(R.string.composer_section_sources))
-                        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                            locationState.locations.forEach { loc ->
-                                val selected = loc.folderId in sourceFolders
-                                FilterChip(
-                                    selected = selected,
-                                    onClick = { stylesViewModel.toggleComposerSourceFolder(loc.folderId) },
-                                    label = { Text(loc.name, style = MaterialTheme.typography.labelSmall) },
-                                )
-                            }
-                        }
-                    }
-
                     // 1. Items
-                    SectionHeader(stringResource(R.string.composer_section_items))
                     ItemsGrid(
                         itemIds = s.composerItemIds,
                         wardrobe = composerImages,
@@ -312,7 +267,7 @@ fun OutfitComposerScreen(
                         Text(stringResource(R.string.composer_advanced), style = MaterialTheme.typography.labelLarge)
                     }
                     AnimatedVisibility(visible = advancedOpen) {
-                        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                             SectionHeader(stringResource(R.string.composer_section_weather))
                             WeatherSection(
                                 mode = s.composerWeatherMode,
@@ -332,32 +287,45 @@ fun OutfitComposerScreen(
                                 onToggle = { stylesViewModel.toggleComposerVibe(it) },
                             )
 
+                            // Source closets live here so the main screen stays compact;
+                            // the FactorsRow already lists which closets are in use.
+                            if (locationState.locations.size >= 2) {
+                                SectionHeader(stringResource(R.string.composer_section_sources))
+                                FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                    locationState.locations.forEach { loc ->
+                                        val selected = loc.folderId in sourceFolders
+                                        FilterChip(
+                                            selected = selected,
+                                            onClick = { stylesViewModel.toggleComposerSourceFolder(loc.folderId) },
+                                            label = { Text(loc.name, style = MaterialTheme.typography.labelSmall) },
+                                        )
+                                    }
+                                }
+                            }
+
                             SectionHeader(stringResource(R.string.composer_section_targets))
                             TargetsSection(
                                 targets = s.composerTargets,
                                 onChange = { stylesViewModel.setComposerTargets(it) },
                             )
 
+                            SectionHeader(stringResource(R.string.outfits_tags_label))
+                            OutfitTagsEditor(
+                                tags = s.composerTags,
+                                onAdd = stylesViewModel::addComposerTag,
+                                onRemove = stylesViewModel::removeComposerTag,
+                            )
+
+                            OutlinedTextField(
+                                value = s.composerDescription,
+                                onValueChange = { stylesViewModel.updateComposerDescription(it) },
+                                modifier = Modifier.fillMaxWidth(),
+                                placeholder = { Text(stringResource(R.string.composer_desc_placeholder)) },
+                                minLines = 2,
+                                maxLines = 4,
+                            )
                         }
                     }
-
-                    // Description (name now lives at the top, near Generate)
-                    OutlinedTextField(
-                        value = s.composerDescription,
-                        onValueChange = { stylesViewModel.updateComposerDescription(it) },
-                        modifier = Modifier.fillMaxWidth(),
-                        placeholder = { Text(stringResource(R.string.composer_desc_placeholder)) },
-                        minLines = 2,
-                        maxLines = 4,
-                    )
-
-                    // Outfit tags
-                    SectionHeader(stringResource(R.string.outfits_tags_label))
-                    OutfitTagsEditor(
-                        tags = s.composerTags,
-                        onAdd = stylesViewModel::addComposerTag,
-                        onRemove = stylesViewModel::removeComposerTag,
-                    )
 
                     // Refinement: shown only after the goal has produced a reason or
                     // there's feedback history. One-tap preset chips re-enhance immediately.
@@ -425,25 +393,59 @@ fun OutfitComposerScreen(
                         }
                     }
 
-                    Spacer(Modifier.height(16.dp))
+                    // Name at the very bottom — final step before saving.
+                    OutlinedTextField(
+                        value = s.composerName,
+                        onValueChange = { stylesViewModel.updateComposerName(it) },
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true,
+                        placeholder = { Text(stringResource(R.string.composer_name_placeholder)) },
+                    )
                 }
-                // Sticky bottom Save bar — primary action lives at the bottom where users
-                // expect it after scrolling through inputs.
+                // Sticky bottom action bar — Suggest (AI enhance) sits left of Save so
+                // primary action stays on the right where users expect it.
                 HorizontalDivider()
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = effectiveBottom)
                         .padding(horizontal = 16.dp, vertical = 10.dp),
-                    horizontalArrangement = Arrangement.End,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
+                    if (!isOffline) {
+                        Button(
+                            onClick = {
+                                Analytics.action("OutfitComposer", "goal_generate")
+                                stylesViewModel.enhanceComposerWithAi(
+                                    prefs   = profile.preferences,
+                                    weather = weather.data,
+                                    images  = composerImages,
+                                )
+                            },
+                            enabled = !s.isComposerEnhancing,
+                            modifier = Modifier.weight(1f),
+                        ) {
+                            if (s.isComposerEnhancing) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(18.dp),
+                                    strokeWidth = 2.dp,
+                                    color = MaterialTheme.colorScheme.onPrimary,
+                                )
+                            } else {
+                                Icon(Icons.Default.AutoAwesome, contentDescription = null, modifier = Modifier.size(18.dp))
+                            }
+                            Spacer(Modifier.width(6.dp))
+                            Text(stringResource(R.string.composer_goal_generate))
+                        }
+                    }
                     Button(
                         onClick = {
                             Analytics.action("OutfitComposer", "save", mapOf("count" to s.composerItemIds.size.toString()))
                             stylesViewModel.saveComposer()
                         },
                         enabled = s.composerItemIds.isNotEmpty(),
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.weight(1f),
                     ) {
                         Icon(Icons.Default.Check, contentDescription = null, modifier = Modifier.size(18.dp))
                         Spacer(Modifier.width(6.dp))
@@ -487,21 +489,27 @@ fun OutfitComposerScreen(
 @Composable
 private fun FactorsRow(
     weatherMode: ComposerWeatherMode,
+    autoWeather: WeatherData?,
+    manualTempC: Int?,
     vibesCount: Int,
     itemsCount: Int,
-    closetsCount: Int,
+    closetNames: List<String>,
     hasCustomTargets: Boolean,
     onClick: () -> Unit,
 ) {
-    val weatherLabel = stringResource(
-        if (weatherMode == ComposerWeatherMode.AUTO) R.string.composer_factor_weather_auto
-        else R.string.composer_factor_weather_manual
-    )
+    // Weather: prefer icon + temperature over the abstract "live/manual" label.
+    val weatherLabel: String = when (weatherMode) {
+        ComposerWeatherMode.AUTO -> autoWeather?.let {
+            "${wmoEmoji(it.weatherCode)} ${it.temperatureCelsius.toInt()}°C"
+        } ?: stringResource(R.string.composer_factor_weather_auto)
+        ComposerWeatherMode.MANUAL -> manualTempC?.let { "${it}°C" }
+            ?: stringResource(R.string.composer_factor_weather_manual)
+    }
     val chips = buildList {
         add(weatherLabel)
         if (itemsCount > 0) add(stringResource(R.string.composer_factor_items, itemsCount))
         if (vibesCount > 0) add(stringResource(R.string.composer_factor_vibes, vibesCount))
-        if (closetsCount > 0) add(stringResource(R.string.composer_factor_closets, closetsCount))
+        if (closetNames.isNotEmpty()) add(closetNames.joinToString(", "))
         if (hasCustomTargets) add(stringResource(R.string.composer_factor_composition))
     }
     Row(
