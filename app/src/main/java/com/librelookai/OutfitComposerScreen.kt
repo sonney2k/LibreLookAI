@@ -242,43 +242,21 @@ fun OutfitComposerScreen(
                         && s.composerEditingOutfitId == null
                     ) {
                         SectionHeader(stringResource(R.string.composer_section_quick_start))
-                        Row(
+                        OutlinedButton(
+                            onClick = {
+                                Analytics.action("OutfitComposer", "compose_with_ai_quick")
+                                stylesViewModel.enhanceComposerWithAi(
+                                    prefs   = profile.preferences,
+                                    weather = weather.data,
+                                    images  = composerImages,
+                                )
+                            },
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            enabled = !s.isComposerEnhancing,
                         ) {
-                            OutlinedButton(
-                                onClick = {
-                                    Analytics.action("OutfitComposer", "suggest_existing")
-                                    stylesViewModel.closeComposer()
-                                    stylesViewModel.triggerPrediction(
-                                        prefs   = profile.preferences,
-                                        weather = weather.data,
-                                        images  = composerImages,
-                                    )
-                                },
-                                modifier = Modifier.weight(1f),
-                                enabled = !s.isComposerEnhancing,
-                            ) {
-                                Icon(Icons.Default.AutoAwesome, contentDescription = null, modifier = Modifier.size(16.dp))
-                                Spacer(Modifier.width(6.dp))
-                                Text(stringResource(R.string.outfits_suggest), style = MaterialTheme.typography.labelMedium)
-                            }
-                            OutlinedButton(
-                                onClick = {
-                                    Analytics.action("OutfitComposer", "compose_with_ai_quick")
-                                    stylesViewModel.enhanceComposerWithAi(
-                                        prefs   = profile.preferences,
-                                        weather = weather.data,
-                                        images  = composerImages,
-                                    )
-                                },
-                                modifier = Modifier.weight(1f),
-                                enabled = !s.isComposerEnhancing,
-                            ) {
-                                Icon(Icons.Default.AutoFixHigh, contentDescription = null, modifier = Modifier.size(16.dp))
-                                Spacer(Modifier.width(6.dp))
-                                Text(stringResource(R.string.outfits_compose), style = MaterialTheme.typography.labelMedium)
-                            }
+                            Icon(Icons.Default.AutoFixHigh, contentDescription = null, modifier = Modifier.size(16.dp))
+                            Spacer(Modifier.width(6.dp))
+                            Text(stringResource(R.string.outfits_compose), style = MaterialTheme.typography.labelMedium)
                         }
                     }
 

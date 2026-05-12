@@ -285,6 +285,13 @@ fun OutfitsScreen(
                             defaultSourceFolderId = locationViewModel.effectiveDefaultClosetFolderId,
                         )
                     },
+                    onSuggestExisting = {
+                        outfitsViewModel.triggerPrediction(
+                            prefs   = profileState.preferences,
+                            weather = weatherState.data,
+                            images  = wardrobeState.images,
+                        )
+                    },
                     onEditOutfit = { style ->
                         outfitsViewModel.startEditing(style, wardrobeState.images, profileState.preferences)
                     },
@@ -385,6 +392,7 @@ private fun OutfitListScreen(
     activeLocationId: String = "",
     onSetActiveLocation: ((String) -> Unit)? = null,
     onOpenCreateComposer: () -> Unit,
+    onSuggestExisting: () -> Unit = {},
     onEditOutfit: (Outfit) -> Unit,
     onDeleteOutfit: (String) -> Unit,
     onWearOutfit: (String) -> Unit,
@@ -674,6 +682,24 @@ private fun OutfitListScreen(
                         modifier = Modifier.weight(1f),
                     )
                     if (!isSelectionMode) {
+                        if (!isOffline) {
+                            IconButton(
+                                onClick = {
+                                    Analytics.action("Outfits", "suggest_existing")
+                                    onSuggestExisting()
+                                },
+                                enabled = !isPredicting,
+                            ) {
+                                if (isPredicting) {
+                                    CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
+                                } else {
+                                    Icon(
+                                        Icons.Default.AutoAwesome,
+                                        contentDescription = stringResource(R.string.outfits_suggest),
+                                    )
+                                }
+                            }
+                        }
                         StyleSortButton(
                             sortBy = sortBy,
                             onSortChanged = { sortBy = it },

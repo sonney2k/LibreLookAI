@@ -906,17 +906,17 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 .removePrefix("```json").removePrefix("```").removeSuffix("```").trim()
 
             val result = runCatching {
-                data class PredResp(val outfitId: String = "", val reason: String = "")
+                data class PredResp(val outfitId: String? = "", val reason: String? = "")
                 gson.fromJson(json, PredResp::class.java)
             }.getOrNull()
 
-            if (result == null || result.outfitId.isBlank()) {
+            if (result == null || result.outfitId.isNullOrBlank()) {
                 Log.w("StylesVM", "Failed to parse prediction response: $json")
                 _state.update { it.copy(isPredicting = false, predictionError = "Could not parse Gemini response.") }
                 return@launch
             }
 
-            val matched = styles.find { it.id == result.outfitId }
+            val matched = styles.find { it.id == result.outfitId!! }
             if (matched == null) {
                 Log.w("StylesVM", "Gemini returned unknown styleId=${result.outfitId}")
                 _state.update { it.copy(isPredicting = false, predictionError = "Suggested style not found in wardrobe.") }
@@ -924,7 +924,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             }
 
             _state.update {
-                it.copy(isPredicting = false, prediction = OutfitPrediction(result.outfitId, result.reason))
+                it.copy(isPredicting = false, prediction = OutfitPrediction(result.outfitId.orEmpty(), result.reason.orEmpty()))
             }
         }
     }
@@ -1310,7 +1310,7 @@ private fun buildPredictionPrompt(
             appendLine()
         }
         appendLine("Respond with ONLY a valid JSON object — no markdown, no extra text:")
-        append("""{"styleId":"<id from the styles list>","reason":"<1-2 sentence explanation>"}""")
+        append("""{"outfitId":"<id from the outfits list>","reason":"<1-2 sentence explanation>"}""")
         appendLine()
         appendLine()
         appendLine("IMPORTANT: Write all user-facing text fields (reason) in ${AppLanguage.toGeminiName(prefs?.language ?: AppLanguage.ENGLISH)}.")
