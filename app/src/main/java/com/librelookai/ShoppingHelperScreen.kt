@@ -39,9 +39,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddShoppingCart
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Checkroom
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Link
@@ -1051,77 +1053,94 @@ internal fun MatchPreviewDialog(
             pageCount = { matches.size },
         )
 
+        // Bottom inset for the pager + floating action stack — same pattern as the
+        // wardrobe FullScreenViewer so the image fills the screen edge-to-edge while
+        // the close X (top-left) and action FABs (bottom-right) overlay it.
+        val pagerView = androidx.compose.ui.platform.LocalView.current
+        val pagerDensity = androidx.compose.ui.platform.LocalDensity.current
+        val rootInsetBottomDp = remember(pagerView) {
+            val raw = pagerView.rootWindowInsets
+            val bottomPx = if (raw != null) {
+                androidx.core.view.WindowInsetsCompat
+                    .toWindowInsetsCompat(raw, pagerView)
+                    .getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
+                    .bottom
+            } else 0
+            with(pagerDensity) { bottomPx.toDp() }
+        }
+        val effectiveBottom = maxOf(
+            barInsets.calculateBottomPadding(),
+            rootInsetBottomDp,
+            48.dp,
+        )
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.Black),
         ) {
-            Column(
+            HorizontalPager(
+                state = pagerState,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(top = barInsets.calculateTopPadding()),
+                    .padding(bottom = effectiveBottom),
+            ) { page ->
+                val match = matches[page]
+                if (showDebug) {
+                    MatchDebugPage(
+                        match = match,
+                        queryRawPath = queryRawPath,
+                        queryProcessedPath = queryProcessedPath,
+                        querySegmented = querySegmented,
+                        queryHist = queryHist,
+                        queryVec = queryVec,
+                        queryPHash = queryPHash,
+                    )
+                } else {
+                    MatchDefaultPage(match = match)
+                }
+            }
+
+            // Close X overlay (top-left).
+            IconButton(
+                onClick = onDismiss,
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(top = barInsets.calculateTopPadding())
+                    .padding(8.dp),
             ) {
+                Icon(
+                    Icons.Default.Close,
+                    contentDescription = stringResource(R.string.action_dismiss),
+                    tint = Color.White,
+                )
+            }
 
-                val current = matches[pagerState.currentPage]
-                val label = current.image.tags?.label?.takeIf { it.isNotBlank() }
-                    ?: current.image.tags?.type?.takeIf { it.isNotBlank() }
-                    ?: current.image.name
-
-                Row(
+            // Action FABs (bottom-right).
+            if (showActions) {
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 16.dp, end = 4.dp, top = 8.dp, bottom = 4.dp),
-                    verticalAlignment = Alignment.CenterVertically,
+                        .align(Alignment.BottomEnd)
+                        .padding(bottom = effectiveBottom)
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.End,
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            label,
-                            color = Color.White,
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.SemiBold,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                        Text(
-                            "${pagerState.currentPage + 1} / ${matches.size}",
-                            color = Color.White.copy(alpha = 0.7f),
-                            style = MaterialTheme.typography.labelMedium,
+                    if (canAddToShoppingList) {
+                        ExtendedFloatingActionButton(
+                            onClick = onAddToShoppingList,
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            icon = { Icon(Icons.Default.AddShoppingCart, contentDescription = null) },
+                            text = { Text(stringResource(R.string.shop_add_to_shopping_list)) },
                         )
                     }
-                    IconButton(onClick = onDismiss) {
-                        Icon(
-                            Icons.Default.Close,
-                            contentDescription = stringResource(R.string.action_dismiss),
-                            tint = Color.White,
-                        )
-                    }
-                }
-
-                HorizontalPager(
-                    state = pagerState,
-                    modifier = Modifier.weight(1f).fillMaxWidth(),
-                ) { page ->
-                    val match = matches[page]
-                    if (showDebug) {
-                        MatchDebugPage(
-                            match = match,
-                            queryRawPath = queryRawPath,
-                            queryProcessedPath = queryProcessedPath,
-                            querySegmented = querySegmented,
-                            queryHist = queryHist,
-                            queryVec = queryVec,
-                            queryPHash = queryPHash,
-                        )
-                    } else {
-                        MatchDefaultPage(match = match)
-                    }
-                }
-
-                if (showActions) {
-                    MatchActionBar(
-                        onShowInWardrobe = { onShowInWardrobe(matches[pagerState.currentPage].image) },
-                        onAddToShoppingList = onAddToShoppingList,
-                        canAddToShoppingList = canAddToShoppingList,
+                    ExtendedFloatingActionButton(
+                        onClick = { onShowInWardrobe(matches[pagerState.currentPage].image) },
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                        icon = { Icon(Icons.Default.Checkroom, contentDescription = null) },
+                        text = { Text(stringResource(R.string.shop_show_in_wardrobe)) },
                     )
                 }
             }
@@ -1132,87 +1151,11 @@ internal fun MatchPreviewDialog(
 
 @Composable
 private fun MatchDefaultPage(match: ShopMatch) {
-    val combinedPercent = (match.score.coerceIn(0f, 1f) * 100f).toInt()
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 12.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
     ) {
-        Surface(
-            color = Color(0x22FFFFFF),
-            shape = RoundedCornerShape(8.dp),
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Text(
-                stringResource(R.string.shop_match_score, combinedPercent),
-                color = Color.White,
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-            )
-        }
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .clip(RoundedCornerShape(8.dp))
-                .background(Color(0x11FFFFFF)),
-            contentAlignment = Alignment.Center,
-        ) {
-            ZoomableMatchImage(file = File(match.image.localPath))
-        }
-    }
-}
-
-@Composable
-private fun MatchActionBar(
-    onShowInWardrobe: () -> Unit,
-    onAddToShoppingList: () -> Unit,
-    canAddToShoppingList: Boolean,
-) {
-    val barInsets = LocalSystemBarsPadding.current
-    // Inside a Compose Dialog window, both LocalSystemBarsPadding (captured from the activity) and
-    // the dialog view's rootWindowInsets can be reported as zero on some devices, leaving the
-    // action row clipped behind the navigation bar. Read whichever is available and fall back to
-    // a 48dp floor (3-button nav bar height) so the row always clears the nav bar.
-    val view = androidx.compose.ui.platform.LocalView.current
-    val density = androidx.compose.ui.platform.LocalDensity.current
-    val rootInsetBottomDp = remember(view) {
-        val raw = view.rootWindowInsets
-        val bottomPx = if (raw != null) {
-            androidx.core.view.WindowInsetsCompat
-                .toWindowInsetsCompat(raw, view)
-                .getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
-                .bottom
-        } else 0
-        with(density) { bottomPx.toDp() }
-    }
-    val effectiveBottom = maxOf(
-        barInsets.calculateBottomPadding(),
-        rootInsetBottomDp,
-        48.dp,
-    )
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.Black)
-            .padding(bottom = effectiveBottom)
-            .padding(horizontal = 12.dp, vertical = 10.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Button(onClick = onShowInWardrobe, modifier = Modifier.weight(1f)) {
-            Text(stringResource(R.string.shop_show_in_wardrobe))
-        }
-        if (canAddToShoppingList) {
-            OutlinedButton(
-                onClick = onAddToShoppingList,
-                modifier = Modifier.weight(1f),
-            ) {
-                Text(stringResource(R.string.shop_add_to_shopping_list))
-            }
-        }
+        ZoomableMatchImage(file = File(match.image.localPath))
     }
 }
 

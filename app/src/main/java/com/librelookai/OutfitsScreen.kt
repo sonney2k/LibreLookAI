@@ -2607,7 +2607,6 @@ private fun OutfitFullScreenViewer(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = barInsets.calculateTopPadding())
                             .padding(top = 8.dp, start = 56.dp, end = 56.dp, bottom = 8.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -2673,7 +2672,7 @@ private fun OutfitFullScreenViewer(
                             itemsById = itemsById,
                             locations = locations,
                             onItemClick = { viewerImage = it },
-                            bottomPadding = effectiveBottom + 96.dp,
+                            bottomPadding = effectiveBottom,
                         )
                     }
                 }
@@ -2683,7 +2682,6 @@ private fun OutfitFullScreenViewer(
                     onClick = onDismiss,
                     modifier = Modifier
                         .align(Alignment.TopStart)
-                        .padding(top = barInsets.calculateTopPadding())
                         .padding(8.dp),
                 ) {
                     Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_dismiss),

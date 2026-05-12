@@ -1340,6 +1340,25 @@ internal fun FullScreenViewer(
         } else null
     }
 
+    val viewerBarInsets = LocalSystemBarsPadding.current
+    val viewerView = androidx.compose.ui.platform.LocalView.current
+    val viewerDensity = androidx.compose.ui.platform.LocalDensity.current
+    val viewerRootInsetBottomDp = remember(viewerView) {
+        val raw = viewerView.rootWindowInsets
+        val bottomPx = if (raw != null) {
+            androidx.core.view.WindowInsetsCompat
+                .toWindowInsetsCompat(raw, viewerView)
+                .getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
+                .bottom
+        } else 0
+        with(viewerDensity) { bottomPx.toDp() }
+    }
+    val viewerEffectiveBottom = maxOf(
+        viewerBarInsets.calculateBottomPadding(),
+        viewerRootInsetBottomDp,
+        48.dp,
+    )
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -1404,7 +1423,8 @@ internal fun FullScreenViewer(
                 userScrollEnabled = pageScale <= 1.01f,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f),
+                    .weight(1f)
+                    .padding(bottom = viewerEffectiveBottom),
             ) { page ->
                 val img = images[page]
                 val origPath = originalPaths[img.driveId]

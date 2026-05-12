@@ -564,7 +564,6 @@ private fun Header(filledLayers: Int, topPadding: Dp, onClose: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = topPadding)
             .padding(start = 8.dp, end = 8.dp, top = 0.dp, bottom = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -576,7 +575,7 @@ private fun Header(filledLayers: Int, topPadding: Dp, onClose: () -> Unit) {
             Text(
                 stringResource(R.string.composer_title),
                 style = MaterialTheme.typography.headlineSmall.copy(
-                    fontSize = 24.sp,
+                    fontSize = 36.sp,
                     fontWeight = FontWeight.Bold,
                 ),
             )
