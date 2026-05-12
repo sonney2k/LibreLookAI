@@ -87,7 +87,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.layout.offset
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.ui.geometry.Offset
@@ -2677,69 +2681,57 @@ private fun OutfitPageBody(
     val items = remember(outfit.itemIds, itemsById) {
         outfit.itemIds.mapNotNull { itemsById[it] }
     }
-    val bucketed = remember(items) {
+    // Order items by anatomical bucket so the natural stack reads top → bottom.
+    val rows: List<List<DriveImage>> = remember(items) {
         val grouped = items.groupBy { bucketFor(it) }
         OutfitItemBucket.entries.mapNotNull { b ->
-            val list = grouped[b].orEmpty()
-            if (list.isEmpty()) null else b to list
+            grouped[b]?.takeIf { it.isNotEmpty() }
         }
     }
-    val groups = bucketed.map { (bucket, list) -> stringResource(bucket.resId) to list }
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 12.dp)
             .padding(bottom = bottomPadding),
     ) {
-        // Reserve vertical space for the bucket labels + inter-bucket spacing.
-        val labelReserveDp = (groups.size * 28) + ((groups.size - 1).coerceAtLeast(0) * 12)
-        val availW = maxWidth - 0.dp
-        val availH = (maxHeight - labelReserveDp.dp).coerceAtLeast(120.dp)
-        val maxBucket = (groups.maxOfOrNull { it.second.size } ?: 1).coerceAtLeast(1)
-        val totalItems = groups.sumOf { it.second.size }.coerceAtLeast(1)
-        // Width-driven candidate: largest bucket fits one row if it can.
-        val byWidth = (availW - ((maxBucket - 1) * 8).dp) / maxBucket
-        // Height-driven candidate assuming everything in one row per bucket.
-        val byHeight = availH / groups.size.coerceAtLeast(1) - 4.dp
-        val tileSize = minOf(byWidth, byHeight).coerceIn(80.dp, 180.dp)
-        // If we still can't fit one row per bucket, allow scroll.
-        val needsScroll = byWidth < 80.dp || (tileSize * totalItems / maxBucket) > availH
-        val column = Modifier
-            .fillMaxSize()
-            .let { if (needsScroll) it.verticalScroll(rememberScrollState()) else it }
-        Column(
-            modifier = column,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            groups.forEach { (label, groupItems) ->
-                if (groupItems.isEmpty()) return@forEach
-                Text(
-                    label,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                )
-                FlowRow(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    groupItems.forEach { image ->
-                        val locName = if (locations.size > 1)
-                            locations.find { it.folderId == image.folderId }?.name
-                        else null
-                        OutfitViewerItemTile(
-                            image = image,
-                            locationName = locName,
-                            size = tileSize,
-                            onClick = { onItemClick(image) },
-                        )
-                    }
-                }
-            }
-            if (items.isEmpty()) {
-                Text(
-                    stringResource(R.string.outfits_missing_items),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.outline,
+        if (items.isEmpty()) {
+            Text(
+                stringResource(R.string.outfits_missing_items),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.outline,
+                modifier = Modifier.align(Alignment.Center),
+            )
+            return@BoxWithConstraints
+        }
+        val rowOverlap = 0.28f
+        val itemOverlap = 0.18f
+        val n = rows.size
+        val m = (rows.maxOfOrNull { it.size } ?: 1).coerceAtLeast(1)
+        val availW = maxWidth
+        val availH = maxHeight
+        val byH = availH / (1f + (1f - rowOverlap) * (n - 1))
+        val byW = availW / (1f + (1f - itemOverlap) * (m - 1))
+        val tileSize = minOf(byH, byW).coerceIn(96.dp, 320.dp)
+        val rowStride = tileSize * (1f - rowOverlap)
+        val itemStride = tileSize * (1f - itemOverlap)
+        val totalContentH = tileSize + rowStride * (n - 1)
+        val topOffset = ((availH - totalContentH) / 2).coerceAtLeast(0.dp)
+
+        rows.forEachIndexed { rowIdx, rowItems ->
+            val rowWidth = tileSize + itemStride * (rowItems.size - 1)
+            val rowLeft = ((availW - rowWidth) / 2).coerceAtLeast(0.dp)
+            val rowTop = topOffset + rowStride * rowIdx
+            rowItems.forEachIndexed { itemIdx, image ->
+                val left = rowLeft + itemStride * itemIdx
+                val locName = if (locations.size > 1)
+                    locations.find { it.folderId == image.folderId }?.name
+                else null
+                OutfitViewerItemTile(
+                    image = image,
+                    locationName = locName,
+                    size = tileSize,
+                    onClick = { onItemClick(image) },
+                    modifier = Modifier.offset(x = left, y = rowTop),
                 )
             }
         }
@@ -2752,25 +2744,37 @@ private fun OutfitViewerItemTile(
     locationName: String?,
     size: androidx.compose.ui.unit.Dp = 140.dp,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val ctx = LocalContext.current
+    val model = remember(image.driveId, image.version) {
+        ImageRequest.Builder(ctx)
+            .data(image.localPath)
+            .memoryCacheKey("${image.driveId}_${image.version}")
+            .build()
+    }
     Box(
-        modifier = Modifier
+        modifier = modifier
             .size(size)
-            .clip(MaterialTheme.shapes.small)
-            .background(MaterialTheme.colorScheme.surfaceVariant)
             .clickable(onClick = onClick),
     ) {
+        // Drop-shadow silhouette — follows the cutout's alpha channel.
         AsyncImage(
-            model = remember(image.driveId, image.version) {
-                ImageRequest.Builder(ctx)
-                    .data(image.localPath)
-                    .memoryCacheKey("${image.driveId}_${image.version}")
-                    .build()
-            },
+            model = model,
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxSize()
+                .offset(x = 3.dp, y = 6.dp)
+                .blur(radius = 8.dp)
+                .graphicsLayer { alpha = 0.45f },
+            contentScale = ContentScale.Fit,
+            colorFilter = ColorFilter.tint(Color.Black, BlendMode.SrcIn),
+        )
+        AsyncImage(
+            model = model,
             contentDescription = image.name,
             modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop,
+            contentScale = ContentScale.Fit,
         )
         if (locationName != null) {
             Box(
