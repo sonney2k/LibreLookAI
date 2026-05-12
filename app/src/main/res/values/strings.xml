@@ -642,6 +642,8 @@
     <string name="composer_section_weather">Weather</string>
     <string name="composer_section_vibe">Style vibe</string>
     <string name="composer_section_targets">Composition</string>
+    <string name="composer_targets_hint">Set how many of each layer to include. Leave at 0 to let the AI decide.</string>
+    <string name="composer_tags_optional">Tags (optional)</string>
     <string name="composer_section_name">Name &amp; description</string>
     <string name="composer_section_ai">Enhance with AI</string>
     <string name="composer_weather_auto">Current</string>

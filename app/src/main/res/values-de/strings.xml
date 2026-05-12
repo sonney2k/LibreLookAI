@@ -618,6 +618,8 @@
     <string name="composer_section_weather">Wetter</string>
     <string name="composer_section_vibe">Stil-Vibe</string>
     <string name="composer_section_targets">Zusammenstellung</string>
+    <string name="composer_targets_hint">Lege fest, wie viele Teile pro Ebene enthalten sein sollen. Lass 0 stehen, damit die KI entscheidet.</string>
+    <string name="composer_tags_optional">Tags (optional)</string>
     <string name="composer_section_name">Name &amp; Beschreibung</string>
     <string name="composer_section_ai">Mit KI verbessern</string>
     <string name="composer_weather_auto">Aktuell</string>

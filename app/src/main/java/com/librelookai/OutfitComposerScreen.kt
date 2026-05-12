@@ -196,32 +196,13 @@ fun OutfitComposerScreen(
                             enabled = !s.isComposerEnhancing,
                             leadingIcon = { Icon(Icons.Default.AutoAwesome, contentDescription = null) },
                         )
-                        val quickPicks = listOf(
-                            stringResource(R.string.composer_chip_work),
-                            stringResource(R.string.composer_chip_dinner),
-                            stringResource(R.string.composer_chip_casual),
-                            stringResource(R.string.composer_chip_workout),
-                            stringResource(R.string.composer_chip_travel),
-                            stringResource(R.string.composer_chip_date),
+                        // Style vibe chips: the single tag-style picker — replaces the
+                        // older "Work/Dinner/Casual" quick-picks so vibe selection has one
+                        // home instead of two overlapping rows.
+                        VibeSection(
+                            selected = s.composerVibes,
+                            onToggle = { stylesViewModel.toggleComposerVibe(it) },
                         )
-                        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                            quickPicks.forEach { chip ->
-                                SuggestionChip(
-                                    onClick = {
-                                        if (!s.isComposerEnhancing) {
-                                            Analytics.action("OutfitComposer", "goal_chip", mapOf("chip" to chip))
-                                            val cur = s.composerFeedback.trim()
-                                            val next = if (cur.isEmpty()) chip
-                                            else if (cur.contains(chip, ignoreCase = true)) cur
-                                            else "$cur, $chip"
-                                            stylesViewModel.updateComposerFeedback(next)
-                                        }
-                                    },
-                                    label = { Text(chip, style = MaterialTheme.typography.labelSmall) },
-                                    enabled = !s.isComposerEnhancing,
-                                )
-                            }
-                        }
                         // Compact "factors in use" — surfaces what's feeding the AI so users
                         // understand why a suggestion came out the way it did.
                         val selectedClosetNames = remember(sourceFolders, locationState.locations) {
@@ -281,12 +262,6 @@ fun OutfitComposerScreen(
                                 onPrecip = { stylesViewModel.setComposerManualPrecip(it) },
                             )
 
-                            SectionHeader(stringResource(R.string.composer_section_vibe))
-                            VibeSection(
-                                selected = s.composerVibes,
-                                onToggle = { stylesViewModel.toggleComposerVibe(it) },
-                            )
-
                             // Source closets live here so the main screen stays compact;
                             // the FactorsRow already lists which closets are in use.
                             if (locationState.locations.size >= 2) {
@@ -304,12 +279,17 @@ fun OutfitComposerScreen(
                             }
 
                             SectionHeader(stringResource(R.string.composer_section_targets))
+                            Text(
+                                stringResource(R.string.composer_targets_hint),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
                             TargetsSection(
                                 targets = s.composerTargets,
                                 onChange = { stylesViewModel.setComposerTargets(it) },
                             )
 
-                            SectionHeader(stringResource(R.string.outfits_tags_label))
+                            SectionHeader(stringResource(R.string.composer_tags_optional))
                             OutfitTagsEditor(
                                 tags = s.composerTags,
                                 onAdd = stylesViewModel::addComposerTag,
