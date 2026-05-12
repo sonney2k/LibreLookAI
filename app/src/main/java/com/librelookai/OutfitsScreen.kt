@@ -855,28 +855,37 @@ private fun StyleSortButton(
     modifier: Modifier = Modifier,
 ) {
     var expanded by remember { mutableStateOf(false) }
+    // DropdownMenu renders in its own popup window; re-provide LocalContext/LocalConfiguration
+    // so stringResource() honors the in-app language toggle.
+    val parentContext = LocalContext.current
+    val parentConfiguration = LocalConfiguration.current
     Box(modifier = modifier) {
         IconButton(onClick = { expanded = true }) {
             Icon(Icons.AutoMirrored.Filled.Sort, contentDescription = stringResource(R.string.action_sort))
         }
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            OutfitSortOption.entries.forEach { option ->
-                DropdownMenuItem(
-                    text = {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
-                            if (option == sortBy) Icon(Icons.Default.Check, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
-                            else Spacer(Modifier.size(18.dp))
-                            Text(option.displayLabel())
-                        }
-                    },
-                    onClick = {
-                        Analytics.action("Outfits", "sort_changed", mapOf("option" to option.name))
-                        onSortChanged(option); expanded = false
-                    },
-                )
+            CompositionLocalProvider(
+                LocalContext provides parentContext,
+                LocalConfiguration provides parentConfiguration,
+            ) {
+                OutfitSortOption.entries.forEach { option ->
+                    DropdownMenuItem(
+                        text = {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            ) {
+                                if (option == sortBy) Icon(Icons.Default.Check, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
+                                else Spacer(Modifier.size(18.dp))
+                                Text(option.displayLabel())
+                            }
+                        },
+                        onClick = {
+                            Analytics.action("Outfits", "sort_changed", mapOf("option" to option.name))
+                            onSortChanged(option); expanded = false
+                        },
+                    )
+                }
             }
         }
     }
