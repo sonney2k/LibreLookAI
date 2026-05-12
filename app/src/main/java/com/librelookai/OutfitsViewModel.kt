@@ -27,8 +27,8 @@ enum class ComposerWeatherMode { AUTO, MANUAL }
 data class ComposerTargets(
     val top: Int = 1,
     val bottom: Int = 1,
-    val footwear: Int = 1,
-    val outerwear: Int = 1,
+    val footwear: Int = 0,
+    val outerwear: Int = 0,
     val accessory: Int = 0,
 ) {
     fun total(): Int = top + bottom + footwear + outerwear + accessory
@@ -775,11 +775,13 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 else                                                    -> top++
             }
         }
+        // Defaults: Top and Bottom are required (always at least 1); Footwear, Outerwear, and
+        // Accessory are optional and start at 0 unless the seed already includes one.
         return ComposerTargets(
             top       = maxOf(top, 1),
             bottom    = maxOf(bottom, 1),
-            footwear  = maxOf(foot, 1),
-            outerwear = maxOf(outer, 1),
+            footwear  = foot,
+            outerwear = outer,
             accessory = acc,
         )
     }

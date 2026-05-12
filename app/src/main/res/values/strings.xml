@@ -630,8 +630,6 @@
     <string name="composer_title">Build your look</string>
     <string name="composer_header_subtitle">%1$d of 5 layers · tap to swap</string>
     <string name="composer_fill_missing">Fill missing</string>
-    <string name="composer_layer_empty_badge">EMPTY</string>
-    <string name="composer_layer_optional_badge">OPTIONAL</string>
     <string name="composer_see_all_count">All %1$d</string>
     <string name="composer_advanced_pill">Advanced — tags, description</string>
     <string name="composer_closets_all">All closets</string>

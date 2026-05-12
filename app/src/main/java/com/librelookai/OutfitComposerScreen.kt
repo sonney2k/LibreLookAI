@@ -70,6 +70,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
@@ -111,6 +112,22 @@ private fun DriveImage.displayLabel(): String =
     tags?.label?.ifEmpty { null }
         ?: tags?.type?.ifEmpty { null }
         ?: name
+
+private fun ComposerTargets.countFor(layer: Layer): Int = when (layer) {
+    Layer.Outerwear -> outerwear
+    Layer.Top -> top
+    Layer.Bottom -> bottom
+    Layer.Footwear -> footwear
+    Layer.Accessory -> accessory
+}
+
+private fun ComposerTargets.withLayer(layer: Layer, value: Int): ComposerTargets = when (layer) {
+    Layer.Outerwear -> copy(outerwear = value)
+    Layer.Top -> copy(top = value)
+    Layer.Bottom -> copy(bottom = value)
+    Layer.Footwear -> copy(footwear = value)
+    Layer.Accessory -> copy(accessory = value)
+}
 
 /** Map a wardrobe item to a layer slot using its category (best-effort). */
 private fun layerFor(image: DriveImage): Layer? {
@@ -270,11 +287,41 @@ fun OutfitComposerScreen(
 
                             // ── Layer rows ──────────────────────────────────
                             Layer.values().forEach { layer ->
+                                val layerItems = currentByLayer[layer].orEmpty()
+                                val enabled = layerItems.isNotEmpty() ||
+                                    s.composerTargets.countFor(layer) > 0
                                 LayerCard(
                                     layer = layer,
-                                    current = currentByLayer[layer].orEmpty(),
+                                    enabled = enabled,
+                                    current = layerItems,
                                     alternatives = alternativesByLayer[layer].orEmpty(),
+                                    onSetEnabled = { newEnabled ->
+                                        if (newEnabled) {
+                                            if (s.composerTargets.countFor(layer) == 0) {
+                                                stylesViewModel.setComposerTargets(
+                                                    s.composerTargets.withLayer(layer, 1),
+                                                )
+                                            }
+                                        } else {
+                                            layerItems.forEach {
+                                                stylesViewModel.removeComposerItem(it.driveId)
+                                            }
+                                            stylesViewModel.setComposerTargets(
+                                                s.composerTargets.withLayer(layer, 0),
+                                            )
+                                        }
+                                        Analytics.action(
+                                            "OutfitComposer",
+                                            "layer_enabled",
+                                            mapOf("layer" to layer.name, "on" to newEnabled.toString()),
+                                        )
+                                    },
                                     onAdd = { id ->
+                                        if (s.composerTargets.countFor(layer) == 0) {
+                                            stylesViewModel.setComposerTargets(
+                                                s.composerTargets.withLayer(layer, 1),
+                                            )
+                                        }
                                         stylesViewModel.addComposerItems(listOf(id))
                                         Analytics.action("OutfitComposer", "layer_add", mapOf("layer" to layer.name))
                                     },
@@ -363,6 +410,11 @@ fun OutfitComposerScreen(
                 allItems = composerImages.filter { layerFor(it) == layer },
                 alreadyChosen = s.composerItemIds.toSet(),
                 onConfirm = { newIds ->
+                    if (newIds.isNotEmpty() && s.composerTargets.countFor(layer) == 0) {
+                        stylesViewModel.setComposerTargets(
+                            s.composerTargets.withLayer(layer, 1),
+                        )
+                    }
                     stylesViewModel.addComposerItems(newIds)
                     showAddItemSheet = null
                 },
@@ -624,13 +676,40 @@ private fun ContextChip(
     }
 }
 
+@Composable
+private fun RoundCheckbox(checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
+    val shape = RoundedCornerShape(8.dp)
+    val primary = MaterialTheme.colorScheme.primary
+    val outline = MaterialTheme.colorScheme.outline
+    Box(
+        modifier = Modifier
+            .size(24.dp)
+            .clip(shape)
+            .background(if (checked) primary else Color.Transparent)
+            .border(width = if (checked) 0.dp else 1.5.dp, color = if (checked) primary else outline, shape = shape)
+            .clickable { onCheckedChange(!checked) },
+        contentAlignment = Alignment.Center,
+    ) {
+        if (checked) {
+            Icon(
+                Icons.Default.Check,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier.size(16.dp),
+            )
+        }
+    }
+}
+
 // ─── Layer card ─────────────────────────────────────────────────────────────
 
 @Composable
 private fun LayerCard(
     layer: Layer,
+    enabled: Boolean,
     current: List<DriveImage>,
     alternatives: List<DriveImage>,
+    onSetEnabled: (Boolean) -> Unit,
     onAdd: (String) -> Unit,
     onClear: (String) -> Unit,
     onSeeAll: () -> Unit,
@@ -640,7 +719,9 @@ private fun LayerCard(
         shape = RoundedCornerShape(16.dp),
         color = MaterialTheme.colorScheme.surface,
         border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .alpha(if (enabled) 1f else 0.5f),
     ) {
         Column(
             modifier = Modifier.padding(10.dp),
@@ -667,36 +748,25 @@ private fun LayerCard(
                     )
                 }
                 Spacer(Modifier.width(8.dp))
-                Text(
-                    stringResource(layer.labelRes),
-                    style = MaterialTheme.typography.labelLarge.copy(fontSize = 12.sp, fontWeight = FontWeight.Bold),
-                    modifier = Modifier.weight(1f),
-                )
-                if (filled) {
-                    val label = if (current.size == 1) current.first().displayLabel()
-                        else stringResource(R.string.composer_layer_picked_count, current.size)
+                Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        label,
-                        style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.sp),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.weight(2f, fill = false),
+                        stringResource(layer.labelRes),
+                        style = MaterialTheme.typography.labelLarge.copy(fontSize = 12.sp, fontWeight = FontWeight.Bold),
                     )
-                } else {
-                    Text(
-                        stringResource(
-                            if (layer.optional) R.string.composer_layer_optional_badge
-                            else R.string.composer_layer_empty_badge
-                        ),
-                        style = MaterialTheme.typography.labelSmall.copy(
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            letterSpacing = 0.3.sp,
-                        ),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                    if (filled) {
+                        val label = if (current.size == 1) current.first().displayLabel()
+                            else stringResource(R.string.composer_layer_picked_count, current.size)
+                        Text(
+                            label,
+                            style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.sp),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
                 }
+                Spacer(Modifier.width(8.dp))
+                RoundCheckbox(checked = enabled, onCheckedChange = onSetEnabled)
             }
 
             // Filmstrip — current picks (with × to remove) then alternatives (tap to add).

@@ -606,8 +606,6 @@
     <string name="composer_title">Look bauen</string>
     <string name="composer_header_subtitle">%1$d von 5 Schichten · zum Tauschen tippen</string>
     <string name="composer_fill_missing">Lücken füllen</string>
-    <string name="composer_layer_empty_badge">LEER</string>
-    <string name="composer_layer_optional_badge">OPTIONAL</string>
     <string name="composer_see_all_count">Alle %1$d</string>
     <string name="composer_advanced_pill">Erweitert — Tags, Beschreibung</string>
     <string name="composer_closets_all">Alle Kleiderschränke</string>
