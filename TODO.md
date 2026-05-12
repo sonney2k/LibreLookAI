@@ -13,9 +13,12 @@ consistency: the cross to cancel taking a picture in wardrobe is in the lower ri
 
 security/function relevant parts of a prompts should not be appear in settings. e.g. "Place the clothing item on a pure, solid neon green background (Hex #00FF00).
 
+should travel planner be a tab under outfits?
 
 TODO
 ====
+
+when suggesting an outfit from existing outfits - show the resulting outfit exactly like when you click on an outfit in the outfit detail view not in the outfit create view. enable sliding left right through options.
 
 create human readable release notes between now and v1.6.0 and release version 1.6.1, git tag commit and upload to testers in firebase
 
@@ -37,13 +40,6 @@ add a feedback tab under settings move debug setting under this tab
 
 IN PROGRESS
 ===========
-in outfit detail view FAB add option that uses gemini to determine tags from title and selected item tags etc 
-
-Outfits:
-- [bug] on outfit detail screen make everything fit the screen, show individual wardrobe items not only one below the other but sensible aranged such that they fill the full area, ensure that buttons are within the screen though and tags and items are not overlapping
-- add option to create tag with AI under FAB (similar like in wardrobe)
-- Rework outfit screen - we need a more intuitive UI: The goal of a user is to create an outfit for a use case that the user currently wants. So the user needs to be able to set the topic and all relevant parameters, a user likely wants to prompt the input or quicker just click through stuff. Hide the general preferences show only the current preferences/topic that are most relevant for what the user wants. Make a suggestion how an improved UI / UX would look like.
-
 
 
 Repair & Sync:
@@ -57,21 +53,33 @@ Try-on:
 - [bug] When a try-on is displayed fix the name: Instead of Save to google drive, give it a non-technical save name
 
 
+
+
+
+
+
+DONE
+=====
+clicking on an outfit currently shows the wardrobe items of an outfit in a grid. I want a more natural look. the items should not be aligned with a grid, have transparent background. they should be partially overlapping with a slight shadow cast for each item and big enough to fill as much of the drawable screen content together as possible. this probably means removing the grid and drawing them on a canvas
+
+Outfits:
+- [bug] on outfit detail screen make everything fit the screen, show individual wardrobe items not only one below the other but sensible aranged such that they fill the full area, ensure that buttons are within the screen though and tags and items are not overlapping
+- add option to create tag with AI under FAB (similar like in wardrobe)
+- Rework outfit screen - we need a more intuitive UI: The goal of a user is to create an outfit for a use case that the user currently wants. So the user needs to be able to set the topic and all relevant parameters, a user likely wants to prompt the input or quicker just click through stuff. Hide the general preferences show only the current preferences/topic that are most relevant for what the user wants. Make a suggestion how an improved UI / UX would look like.
+
+
 Outfits:
 - Enable tag specific to outfits, i.e. birthday outfit, travel outfit, ...
 - Clicking on an outfit shows it full screen like like on wardrobe with all items nicely arange.
 - Once an outfit is shown full-screen allow for left/right sliding through outfits (similar to wardrobe)
-
 
 Localization:
 - [bug] Go through all text that is displayed on the screen and check if it is proper localized. This includes all buttons, all info messages, FAB,... Ensure that when switching languages localization remains sensible.  This does not hold for Wardrobe item names, nor outfit and shopping title names that are generated with AI already in the user specified language already. Examples that are not localized: 
 	- On repair & sync Preview screen text is not localized. 
 	- Try-on details, clicking on item shows the item in big:  screen not localized
 
+in outfit detail view FAB add option that uses gemini to determine tags from title and selected item tags etc 
 
-
-DONE
-=====
 Camera:
 - when taking pictures, the make it possible to change the position of the cross hair by just tapping on a different part of the screen
 - enable pinch zooming when taking picture
