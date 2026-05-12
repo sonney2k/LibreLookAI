@@ -1860,6 +1860,14 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /** Synchronous variant exposed to the wardrobe grid so a text query can act as an
+     *  inline filter (alongside tag chips) instead of opening the find-by-photo sheet. */
+    fun fuzzyFilterByText(query: String, items: List<DriveImage>): List<DriveImage> {
+        val q = query.trim()
+        if (q.isEmpty()) return items
+        return fuzzyMatchByTags(q, items).map { it.image }
+    }
+
     private fun fuzzyMatchByTags(query: String, items: List<DriveImage>): List<FindByPhotoMatch> {
         val tokens = normalizeForSearch(query).split(FUZZY_TOKEN_SPLIT).filter { it.isNotEmpty() }
         if (tokens.isEmpty()) return emptyList()

@@ -262,6 +262,7 @@ fun WardrobeScreen(
                 }
             },
             onSearchByText = viewModel::searchByText,
+            onTextFilter = viewModel::fuzzyFilterByText,
             onDismissFindByPhoto = viewModel::dismissFindByPhoto,
             onConsumePendingScroll = viewModel::consumePendingScroll,
             onAddMatchToShoppingList = shoppingClosetViewModel::importQuery,
@@ -654,6 +655,7 @@ private fun GridContent(
     onSettingsClick: () -> Unit = {},
     onOpenFindByPhoto: () -> Unit = {},
     onSearchByText: (String) -> Unit = {},
+    onTextFilter: (String, List<DriveImage>) -> List<DriveImage> = { _, items -> items },
     onDismissFindByPhoto: () -> Unit = {},
     onConsumePendingScroll: () -> Unit = {},
     onAddMatchToShoppingList: (String) -> Unit = {},
@@ -668,8 +670,8 @@ private fun GridContent(
     var selectedTags by remember { mutableStateOf(emptyMap<String, Set<String>>()) }
     var sortBy by remember { mutableStateOf(SortOption.DATE_DESC) }
     var filterSheetOpen by remember { mutableStateOf(false) }
-    var searchChooserOpen by remember { mutableStateOf(false) }
-    val appliedFilterCount = selectedTags.values.sumOf { it.size }
+    var textQuery by remember { mutableStateOf("") }
+    val appliedFilterCount = selectedTags.values.sumOf { it.size } + (if (textQuery.isNotBlank()) 1 else 0)
 
     val tagCategories = remember(state.images) { state.images.tagCategories() }
 
@@ -677,14 +679,15 @@ private fun GridContent(
     LaunchedEffect(dismissViewerTrigger) { if (dismissViewerTrigger > 0) selectedIndex = null }
 
     // OR within each category, AND across categories
-    val filteredImages = remember(state.images, selectedTags) {
+    val filteredImages = remember(state.images, selectedTags, textQuery) {
         val activeFilters = selectedTags.filter { (_, tags) -> tags.isNotEmpty() }
-        if (activeFilters.isEmpty()) state.images
+        val byTags = if (activeFilters.isEmpty()) state.images
         else state.images.filter { img ->
             activeFilters.all { (categoryLabel, catTags) ->
                 catTags.any { it in img.tagStringsForCategory(categoryLabel) }
             }
         }
+        if (textQuery.isBlank()) byTags else onTextFilter(textQuery, byTags)
     }
 
     val displayedImages = remember(filteredImages, sortBy, popularityMap) {
@@ -698,7 +701,7 @@ private fun GridContent(
     }
 
     // Clear viewer when filter/sort changes to avoid stale index
-    LaunchedEffect(selectedTags, sortBy) { selectedIndex = null }
+    LaunchedEffect(selectedTags, sortBy, textQuery) { selectedIndex = null }
 
     // After find-by-photo (or "Show in wardrobe" from Similarity Finder): scroll the grid to
     // the matched item and pulse a highlight ring on it. The local var seeds either from a
@@ -737,38 +740,49 @@ private fun GridContent(
                         activeLocationId = activeLocationId,
                         onSetActiveLocation = onSetActiveLocation,
                     )
-                    IconButton(onClick = {
-                        Analytics.action("Wardrobe", "open_search_chooser")
-                        searchChooserOpen = true
-                    }) {
-                        Icon(
-                            Icons.Default.ImageSearch,
-                            contentDescription = stringResource(R.string.wardrobe_search),
-                        )
-                    }
-                    SortButton(
-                        sortBy = sortBy,
-                        onSortChanged = {
-                            Analytics.action("Wardrobe", "sort_changed", mapOf("option" to it.name))
-                            sortBy = it
-                        },
-                        modifier = Modifier.padding(end = 4.dp),
-                    )
                 },
                 onSettingsClick = onSettingsClick,
             )
-            // ---- Quick category chip row ----
-            QuickCategoryRow(
-                totalCount = state.images.size,
-                filteredCount = filteredImages.size,
-                appliedFilterCount = appliedFilterCount,
-                filtersEnabled = tagCategories.isNotEmpty(),
-                onClearFilters = { selectedTags = emptyMap() },
-                onOpenFilters = {
-                    Analytics.action("Wardrobe", "open_filter_sheet", mapOf("active" to appliedFilterCount.toString()))
-                    filterSheetOpen = true
-                },
-            )
+            // ---- Filter + search + sort row ----
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(com.librelookai.ui.theme.LocalWardrobePalette.current.surface),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                QuickCategoryRow(
+                    totalCount = state.images.size,
+                    filteredCount = filteredImages.size,
+                    appliedFilterCount = appliedFilterCount,
+                    filtersEnabled = tagCategories.isNotEmpty(),
+                    onClearFilters = {
+                        selectedTags = emptyMap()
+                        textQuery = ""
+                    },
+                    onOpenFilters = {
+                        Analytics.action("Wardrobe", "open_filter_sheet", mapOf("active" to appliedFilterCount.toString()))
+                        filterSheetOpen = true
+                    },
+                    modifier = Modifier.weight(1f),
+                )
+                IconButton(onClick = {
+                    Analytics.action("Wardrobe", "open_find_by_photo")
+                    onOpenFindByPhoto()
+                }) {
+                    Icon(
+                        Icons.Default.ImageSearch,
+                        contentDescription = stringResource(R.string.wardrobe_search),
+                    )
+                }
+                SortButton(
+                    sortBy = sortBy,
+                    onSortChanged = {
+                        Analytics.action("Wardrobe", "sort_changed", mapOf("option" to it.name))
+                        sortBy = it
+                    },
+                    modifier = Modifier.padding(end = 4.dp),
+                )
+            }
 
             // ---- Selection bar (shown when at least one item is selected) ----
             if (isSelectionMode) {
@@ -866,7 +880,7 @@ private fun GridContent(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center,
                         ) {
-                            if (selectedTags.values.any { it.isNotEmpty() }) {
+                            if (selectedTags.values.any { it.isNotEmpty() } || textQuery.isNotBlank()) {
                                 Text(stringResource(R.string.wardrobe_empty_filter), style = MaterialTheme.typography.bodyLarge)
                             } else {
                                 Text(stringResource(R.string.wardrobe_empty), style = MaterialTheme.typography.bodyLarge)
@@ -1027,6 +1041,8 @@ private fun GridContent(
                 selectedTags = selectedTags,
                 appliedCount = displayedImages.size,
                 onTagsChanged = { selectedTags = it },
+                textQuery = textQuery,
+                onTextQueryChanged = { textQuery = it },
                 onDismiss = { filterSheetOpen = false },
             )
         }
@@ -1165,22 +1181,6 @@ private fun GridContent(
                     Text(stringResource(R.string.action_cancel))
                 }
             },
-        )
-    }
-
-    if (searchChooserOpen) {
-        WardrobeSearchChooserDialog(
-            onSearchText = { q ->
-                searchChooserOpen = false
-                Analytics.action("Wardrobe", "search_by_text")
-                onSearchByText(q)
-            },
-            onSearchPhoto = {
-                searchChooserOpen = false
-                Analytics.action("Wardrobe", "open_find_by_photo")
-                onOpenFindByPhoto()
-            },
-            onDismiss = { searchChooserOpen = false },
         )
     }
 
@@ -2415,73 +2415,6 @@ private fun FindByPhotoResultsSheet(
             )
         }
     }
-}
-
-/** Chooser shown from the wardrobe header's search icon: type a query for on-device semantic
- *  text search, or fall back to the legacy image-based "find by photo" capture. */
-@Composable
-private fun WardrobeSearchChooserDialog(
-    onSearchText: (String) -> Unit,
-    onSearchPhoto: () -> Unit,
-    onDismiss: () -> Unit,
-) {
-    var query by remember { mutableStateOf("") }
-    val parentContext = LocalContext.current
-    val parentConfiguration = LocalConfiguration.current
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = {
-            CompositionLocalProvider(
-                LocalContext provides parentContext,
-                LocalConfiguration provides parentConfiguration,
-            ) { Text(stringResource(R.string.wardrobe_search_title)) }
-        },
-        text = {
-            CompositionLocalProvider(
-                LocalContext provides parentContext,
-                LocalConfiguration provides parentConfiguration,
-            ) {
-                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Text(
-                        stringResource(R.string.wardrobe_search_hint),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                    OutlinedTextField(
-                        value = query,
-                        onValueChange = { query = it },
-                        singleLine = true,
-                        placeholder = { Text(stringResource(R.string.wardrobe_search_placeholder)) },
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                    TextButton(onClick = { onSearchPhoto() }) {
-                        Icon(Icons.Default.ImageSearch, contentDescription = null, modifier = Modifier.size(18.dp))
-                        Spacer(Modifier.width(8.dp))
-                        Text(stringResource(R.string.wardrobe_search_use_photo))
-                    }
-                }
-            }
-        },
-        confirmButton = {
-            CompositionLocalProvider(
-                LocalContext provides parentContext,
-                LocalConfiguration provides parentConfiguration,
-            ) {
-                TextButton(
-                    enabled = query.isNotBlank(),
-                    onClick = { onSearchText(query.trim()) },
-                ) { Text(stringResource(R.string.action_search)) }
-            }
-        },
-        dismissButton = {
-            CompositionLocalProvider(
-                LocalContext provides parentContext,
-                LocalConfiguration provides parentConfiguration,
-            ) {
-                TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
-            }
-        },
-    )
 }
 
 @Composable

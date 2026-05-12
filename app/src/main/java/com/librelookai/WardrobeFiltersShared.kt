@@ -24,7 +24,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FilterAlt
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -132,6 +134,7 @@ internal fun QuickCategoryRow(
     filtersEnabled: Boolean,
     onClearFilters: () -> Unit,
     onOpenFilters: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
     val isCaveat = com.librelookai.ui.theme.LocalAppFont.current == AppFont.CAVEAT
@@ -139,7 +142,7 @@ internal fun QuickCategoryRow(
     val countSize = if (isCaveat) 14.sp else 10.sp
     val hasFilter = appliedFilterCount > 0
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(palette.surface)
             .padding(horizontal = 12.dp, vertical = 6.dp),
@@ -223,9 +226,11 @@ internal fun WardrobeFilterSheet(
     selectedTags: Map<String, Set<String>>,
     appliedCount: Int,
     onTagsChanged: (Map<String, Set<String>>) -> Unit,
+    textQuery: String = "",
+    onTextQueryChanged: ((String) -> Unit)? = null,
     onDismiss: () -> Unit,
 ) {
-    if (tagCategories.isEmpty()) return
+    if (tagCategories.isEmpty() && onTextQueryChanged == null) return
     val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
     // Capture parent locale-aware context/configuration: ModalBottomSheet renders in its own
     // window, so without this re-provide stringResource() would fall back to the system locale
@@ -239,7 +244,8 @@ internal fun WardrobeFilterSheet(
             selectedTags.forEach { (k, v) -> put(k, v.toSet()) }
         }
     }
-    val pendingCount = pending.values.sumOf { it.size }
+    var pendingText by remember(textQuery) { mutableStateOf(textQuery) }
+    val pendingCount = pending.values.sumOf { it.size } + (if (pendingText.isNotBlank()) 1 else 0)
     var openSection by remember { mutableStateOf<String?>(tagCategories.firstOrNull()?.label) }
 
     fun toggle(category: String, value: String) {
@@ -277,7 +283,7 @@ internal fun WardrobeFilterSheet(
                 color = palette.textMuted,
                 modifier = Modifier
                     .clip(RoundedCornerShape(20.dp))
-                    .clickable { pending.clear() }
+                    .clickable { pending.clear(); pendingText = "" }
                     .padding(horizontal = 10.dp, vertical = 8.dp),
             )
             Spacer(Modifier.size(4.dp))
@@ -291,6 +297,7 @@ internal fun WardrobeFilterSheet(
                                 .mapValues { it.value.toSet() }
                                 .filterValues { it.isNotEmpty() },
                         )
+                        onTextQueryChanged?.invoke(pendingText.trim())
                         onDismiss()
                     }
                     .padding(horizontal = 18.dp, vertical = 8.dp),
@@ -312,6 +319,32 @@ internal fun WardrobeFilterSheet(
                 .heightIn(max = 560.dp)
                 .verticalScroll(rememberScrollState()),
         ) {
+            if (onTextQueryChanged != null) {
+                androidx.compose.material3.OutlinedTextField(
+                    value = pendingText,
+                    onValueChange = { pendingText = it },
+                    singleLine = true,
+                    placeholder = { Text(stringResource(R.string.wardrobe_search_placeholder)) },
+                    leadingIcon = {
+                        Icon(
+                            Icons.Default.Search,
+                            contentDescription = null,
+                        )
+                    },
+                    trailingIcon = if (pendingText.isNotEmpty()) {
+                        { androidx.compose.material3.IconButton(onClick = { pendingText = "" }) {
+                            Icon(
+                                Icons.Default.Close,
+                                contentDescription = null,
+                            )
+                        } }
+                    } else null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                )
+                HorizontalDivider(color = palette.divider)
+            }
             tagCategories.forEach { category ->
                 val isOpen = openSection == category.label
                 val activeInCat = (pending[category.label]?.size ?: 0)

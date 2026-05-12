@@ -510,13 +510,6 @@ private fun OutfitListScreen(
                         activeLocationId = activeLocationId,
                         onSetActiveLocation = onSetActiveLocation ?: {},
                     )
-                    if (!onTryOnsTab && styles.isNotEmpty() && !isSelectionMode) {
-                        StyleSortButton(
-                            sortBy = sortBy,
-                            onSortChanged = { sortBy = it },
-                            modifier = Modifier.padding(end = 4.dp),
-                        )
-                    }
                 },
                 onSettingsClick = onSettingsClick,
             )
@@ -609,16 +602,31 @@ private fun OutfitListScreen(
                 HorizontalDivider()
             }
 
-            // ---- Quick category chip row ----
+            // ---- Quick category chip row + sort ----
             if (!onTryOnsTab && styles.isNotEmpty()) {
-                QuickCategoryRow(
-                    totalCount = styles.size,
-                    filteredCount = filteredStyles.size,
-                    appliedFilterCount = appliedFilterCount,
-                    filtersEnabled = tagCategories.isNotEmpty(),
-                    onClearFilters = { selectedTags = emptyMap() },
-                    onOpenFilters = { filterSheetOpen = true },
-                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(com.librelookai.ui.theme.LocalWardrobePalette.current.surface),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    QuickCategoryRow(
+                        totalCount = styles.size,
+                        filteredCount = filteredStyles.size,
+                        appliedFilterCount = appliedFilterCount,
+                        filtersEnabled = tagCategories.isNotEmpty(),
+                        onClearFilters = { selectedTags = emptyMap() },
+                        onOpenFilters = { filterSheetOpen = true },
+                        modifier = Modifier.weight(1f),
+                    )
+                    if (!isSelectionMode) {
+                        StyleSortButton(
+                            sortBy = sortBy,
+                            onSortChanged = { sortBy = it },
+                            modifier = Modifier.padding(end = 4.dp),
+                        )
+                    }
+                }
             }
 
             when {
