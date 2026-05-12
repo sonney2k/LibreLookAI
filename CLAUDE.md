@@ -1,50 +1,55 @@
 # CLAUDE.md
 
-Core guidance for working in this repo. Detailed/historical notes live in `CLAUDE_ARCHIVE.md`.
+Compact day-to-day guidance. **Deep architecture, pipelines, rationale, and Dialog/Sheet quirks live in `CLAUDE_ARCHIVE.md`** — consult it before designing changes that touch data flow, pipelines, or window-based UI.
 
-## Model Usage Guidelines
-- Default to **Sonnet** for routine tasks: writing functions, small refactors, reviewing files, and general development work.
-- Use **Haiku** for simple queries: quick lookups, generating boilerplate, or formatting tasks.
-- Switch to **Opus** only for highly complex architectural changes or deep debugging.
+## Model & effort
+- Default to **Sonnet** for routine work (functions, small refactors, reviews).
+- **Haiku** for trivial lookups / boilerplate / formatting.
+- **Opus** only for hard architectural or debugging work.
+- Use low effort for straightforward tasks to save tokens.
 
-## Operational Best Practices
-- Keep tasks small and focused.
-- Read files and follow existing patterns before modifying code.
-- Use low effort settings for straightforward tasks to save tokens.
+## Working agreement
+- **Ask before `git commit`**; never commit without explicit approval.
+- **Update CLAUDE.md / CLAUDE_ARCHIVE.md** when changing architecture, data flow, or conventions — both before executing a plan and after it lands.
+- **Multi-language is mandatory**: every user-facing string goes through `stringResource(...)` and `res/values/strings.xml`. Add to default `strings.xml` and mirror in every `values-*/strings.xml` in the same change. Never hardcode display text.
+- **Release notes** ship with every Firebase / Play release; bump `versionCode` and refresh notes together.
+- Keep tasks small and focused; read files and follow existing patterns before editing.
 
-## Working Agreement
-* **Update this file before executing plans** that change architecture, data flow, or conventions.
-* **Update this file once done** to capture new components/behaviors and remove stale info.
-* **Ask for confirmation before git commits**; never commit without explicit approval.
-* **Always create release notes when distributing via Firebase** (App Distribution releases must ship with updated release notes; bump version + refresh notes together).
-* **Always implement with multi-language support**: every user-facing string must go through `stringResource(...)` / `res/values/strings.xml` (and localized `values-*/strings.xml` variants). Never hardcode display text in Kotlin/Compose. New strings must be added to the default `strings.xml` and mirrored in all existing locale variants at the same time.
+## Build
+- `./gradlew assembleDebug` — debug APK
+- `./gradlew test` — unit tests
+- Full release / function deploy commands: see `CLAUDE_ARCHIVE.md` → Release process.
 
-## Build Commands
-* Assemble debug APK: `./gradlew assembleDebug`
-* Run unit tests: `./gradlew test`
+## Core conventions
+- **Identity is `folderId`**: closets map to Drive subfolders; `Location.id` is an ephemeral UUID and must never be used for identity comparisons.
+- **File naming triplet**: `{cutoutDriveId}_cutout.png`, `{cutoutDriveId}_original.jpg`, `{cutoutDriveId}.json` — sidecar shares the cutout's Drive ID.
+- **Shopping closet** lives in `LibreLookAI/_shopping/`; excluded from `Location` lists, included in cross-closet similarity snapshot.
+- **Offline gating**: read `LocalIsOffline.current` and either hide write-path UI or set `enabled = !isOffline`. Every Gemini / Drive-write surface must be gated.
+- **Navigation**: single `selectedTab: Int` in `MainActivity`; no Jetpack Navigation. Sub-tab reset via `navResetTick`.
+- **Shared UI**: `WardrobeGridShared.kt` (`WardrobeTile`, `WardrobeItemGrid`, `TagFilterBar`), `FullScreenViewer` (WardrobeScreen.kt, used by Wardrobe / Outfit-item / Shopping / Try-On), `MatchPreviewDialog` (ShoppingHelperScreen.kt, used by Find-by-photo / Similarity / dedupe).
+- **Gemini calls return `null` on failure** — every caller must degrade gracefully. All calls get logged via `TokenUsageRepository.recordUsage(...)` with a `UsageCategory`.
 
-## Architecture Overview
-* **Data Flow**: Compose UI `StateFlow` -> `AndroidViewModel` -> Repositories (Drive, Gemini, Weather, Billing, Credit).
-* **Storage**: Images and metadata sidecars (`{cutoutDriveId}.json`) live in app-private Google Drive (`LibreLookAI/`). Local cache at `context.filesDir/wardrobe/` via `wardrobe_cache_{folderId}.json`.
-* **File Naming**: `{cutoutDriveId}_cutout.png`, `{cutoutDriveId}_original.jpg`, `{cutoutDriveId}.json` share the cutout's Drive ID.
-* **Closets (Locations)**: Map to Drive subfolders. Logic relies strictly on `folderId`, never ephemeral `Location.id` UUIDs.
-* **Shopping Closet**: Dedicated `_shopping/` folder, excluded from standard location lists. Selection-mode actions write to Drive, so all FABs are gated on `!isOffline`. Tiles open the shared `FullScreenViewer` with `writeMode = false`. `OutfitComposerScreen` / `TryOnComposerScreen` merge `wardrobe.images + shoppingClosetState.items` so seed IDs from either screen resolve.
-* **Shared Grid**: `WardrobeGridShared.kt` (`WardrobeTile`, `WardrobeItemGrid`) used by both Wardrobe and Shopping List with Coil `memoryCacheKey = "{driveId}_{version}"`. `FullScreenViewer` is `internal`, reused by Shopping with `writeMode = false`. `TagFilterBar` is shared.
-* **Gemini Routing**: Direct API (BYOK) or Firebase Cloud Function proxy (managed). Images resized to `max(width, height) ≤ 1280` before sending.
-* **Offline Mode**: `LocalIsOffline` `CompositionLocal` hides write-path UI. Backed by `NetworkMonitor` (`NetworkUtils.kt`) tracking `INTERNET+VALIDATED` networks; `MainActivity` calls `recheck()` on `ON_RESUME` as a backstop.
-* **Navigation**: Single `selectedTab: Int` in `MainActivity`; no Jetpack Navigation.
-* **Background Removal**: `SegmentationRepository.foregroundThreshold` mirrors `UserPreferences.bgRemovalThreshold` (Settings → AI). Local on-device path via `segmentForegroundTransparent(src, seedX, seedY)` + `LocalBgRemovalScreen` review dialog (gated by `preferLocalBgRemoval`; URL imports always review). On Apply, cutout is tight-cropped to alpha bbox and `PendingJob.prebuiltCutoutPath` skips `gemini.removeBackground`.
-* **Cutout BG Fix**: Settings → Data → "Fix cutout backgrounds" scans existing cutouts, flags black-background / green-halo / interior-hole issues (`detectCutoutIssues` in `GeminiRepository.kt`), and reapplies `blackBackgroundToAlphaInPlace`/`despillGreenInPlace`/`fillInteriorAlphaHolesInPlace`/`featherAlphaEdgesInPlace`/`cropAndCap` via `fixCutoutBackground(input, output, CutoutFixActions(...))`, re-uploading with `drive.updateImage` (preserves Drive ID). Each pass is independently gated by a global toggle in the dialog; defaults follow detection (any flagged → ON) for the three repair passes, feather + tight-crop default ON. Pre-selects flagged items; toggle "show all" to include clean cutouts. The wardrobe single-item "fix" action forces all five passes ON.
-* **Background Jobs**: Heavy ops protected by `JobForegroundService` + `PARTIAL_WAKE_LOCK`; OEM battery exemptions requested.
-* **Fuzzy Text Search**: `WardrobeViewModel.searchByText` matches the query against each item's flattened tag list (label, type, category, uses, colors, seasonality, aesthetic, fit, material, pattern). Tokens are split on non-alphanumerics; each token must hit some tag via substring match (score 0.9, whole-tag exact = 1.0) or Levenshtein ≤ tol (tol = 0 for ≤3 chars, 1 for ≤5, 2 otherwise; score 0.75 − 0.1·d). All tokens must match; final score is the mean per-token best, sorted desc. Entry point: wardrobe header's `ImageSearch` icon opens `WardrobeSearchChooserDialog` — text routes through `WardrobeViewModel.searchByText`, "Search by photo" falls back to the legacy capture flow. Results render in the existing `FindByPhotoResultsSheet`.
+## Window quirks (Dialog / Sheet / Popup / AlertDialog)
+**Every composable that opens its own window** (`Dialog`, `ModalBottomSheet`, `Popup`, `AlertDialog`, `BasicAlertDialog`, and anything nested inside one) severs the locale-overridden `LocalContext` / `LocalConfiguration` chain and reports `WindowInsets.systemBars` as 0.
 
-## Key UI & Workflows
-* **Outfits**: `OutfitEditingView` (AI editor) or `OutfitListScreen` (list/try-on tabs). Single `+` FAB opens `OutfitComposerScreen` — manual create, "Suggest existing", "Compose new with AI" all live inside.
-* **Try-On**: `TryOnComposerScreen` is the single entry point; past try-ons live under Outfits → Try-Ons (calls `tryOnViewModel.openHistoryDetail`). Try-on PNGs cached locally and in Drive `_tryons/`.
-* **Similarity Preview**: `MatchPreviewDialog` (`ShoppingHelperScreen.kt`) is shared for Find-by-photo, Similarity Finder, and duplicate-import review (`DuplicateCheckSheet` in `WardrobeScreen.kt`). Debug breakdown gated by `UserPreferences.debugSimilarityPreview`. Cross-screen scroll plumbed via `WardrobeViewModel.requestScrollToImage` / `consumePendingScroll`.
-* **Suggest Replacements**: `ReplacementsResultDialog` (hosted in `MainActivity`) calls `WardrobeGapViewModel.suggestReplacements`; prompt frames remaining = all − selected.
-* **Compose Dialog Quirks (Insets + Locale)**: Fullscreen `Dialog`s (`usePlatformDefaultWidth = false`, `decorFitsSystemWindows = false`) need (a) padding from `LocalSystemBarsPadding` (provided in `MainActivity` from `NetworkUtils.kt`) because `WindowInsets.systemBars` reports 0 inside the dialog window — so `Modifier.statusBarsPadding()` / `.navigationBarsPadding()` / `WindowInsets.systemBars.asPaddingValues()` are **all no-ops here**. Never use them inside a fullscreen `Dialog`. (b) `LocalContext` / `LocalConfiguration` re-provided from values captured **outside** the `Dialog { ... }` lambda so `stringResource` honors the in-app language toggle. **This applies to every composable that opens its own window** — not just `Dialog`, but also `ModalBottomSheet`, `Popup`, `AlertDialog`, `BasicAlertDialog`, and any nested sheets/dialogs launched from inside one of those. Each new window severs the locale-overridden `LocalContext`/`LocalConfiguration` chain, so wrap the content with `CompositionLocalProvider(LocalContext provides parentContext, LocalConfiguration provides parentConfiguration)` using values captured at the parent screen's top level. Symptom when missed: strings inside the sheet/dialog render in the device locale instead of the in-app language.
+Rule of thumb:
+1. Capture `parentContext` / `parentConfiguration` **outside** the window-opening call.
+2. Re-provide them via `CompositionLocalProvider` **inside** the content lambda (for `AlertDialog`, inside **each slot lambda** — the outer wrap doesn't reach the slots).
+3. Use `LocalSystemBarsPadding` (provided by `MainActivity`) instead of `statusBarsPadding()` / `navigationBarsPadding()` inside Dialogs.
+4. Sticky bottom rows in fullscreen Dialogs use `effectiveBottom = max(LocalSystemBarsPadding bottom, view.rootWindowInsets systemBars bottom, 48.dp)`.
+5. Fullscreen `Dialog` (vs. inline composable) is the way to make a detail view overlay the bottom nav bar.
 
-**Critical for slot-based dialogs (`AlertDialog`, `BasicAlertDialog`):** wrapping the *outer* `AlertDialog(...)` call with `CompositionLocalProvider` does **not** work — the slot lambdas (`title`, `text`, `confirmButton`, `dismissButton`) are composed *inside* the dialog's own window, which re-derives `LocalContext`/`LocalConfiguration` from the dialog's host view. You must put the provider **inside each slot lambda**. Pattern: define a local helper `val locale: @Composable (@Composable () -> Unit) -> Unit = { c -> CompositionLocalProvider(LocalContext provides parentContext, LocalConfiguration provides parentConfiguration) { c() } }` and wrap every slot's body with `locale { ... }`. Reference: `OutfitComposerScreen.kt` discard / add-tag dialogs. Symptom when missed: dialog buttons + title render in device locale even though the surrounding screen is correctly localized. **Bottom action bars / sticky buttons inside fullscreen dialogs** must use the canonical `effectiveBottom = max(LocalSystemBarsPadding.bottom, view.rootWindowInsets bottom via WindowInsetsCompat, 48.dp)` pattern — `LocalSystemBarsPadding` alone has been observed to report 0 on some devices, and the 48dp floor guarantees the row clears 3-button nav bars. Reference implementations: `OutfitComposerScreen.kt`, `ShoppingHelperScreen.kt` (`MatchPreviewDialog` action row), `LocalBgRemovalScreen`. Apply this pattern to every new fullscreen dialog with header or footer chrome.
-* **Token Usage (BYOK)**: `TokenUsageRepository` (`TokenUsage.kt`) records one `UsageEvent` per Gemini call from `usageMetadata`. `GeminiRepository.recordUsage(...)` on success; text methods take a `UsageCategory`. Local JSONL at `filesDir/usage/usage.jsonl`, Drive copy at `LibreLookAI/_token_usage.jsonl` (merge-on-pull, write-on-pause from `MainActivity`). Pricing in `GeminiPricing`. UI: `UsageSection` rendered in **Insights → Costs** (not Settings).
-* **Analytics**: `Analytics.kt` wraps Firebase Analytics; init in `MainActivity.onCreate`. Use `Analytics.screen(name)` / `action(screen, action, extra)` / `event(name, params)`. Tab switches auto-log `screen_view`. Add `Analytics.action(...)` at new call sites.
+**Full rationale, code patterns, and reference implementations** (`OutfitComposerScreen` slot-dialog helper, `WeatherPickerSheet` / `ClosetPickerSheet` ModalBottomSheet pattern, `FullScreenViewer` Dialog wrap, `MatchPreviewDialog` action row) are in `CLAUDE_ARCHIVE.md` → "Compose Dialog quirks". Read it before adding any new window-based UI.
+
+## Where to find things (pointers into archive)
+- Upload / ingestion / URL import / SAF folder import → archive § "Photo upload & ingestion pipelines"
+- Repair & Sync, duplicate detection, audit → archive § "Repair & Sync"
+- Visual similarity (embedder, segmenter, scoring, white balance) → archive § "Visual wardrobe search"
+- Outfits / composer / Travel / Try-On → archive § "Outfits, Travel, Try-On"
+- Shopping closet → archive § "Shopping closet"
+- Insights / Calendar / Stats / Costs → archive § "Insights tab"
+- Offline mode internals → archive § "Offline mode (deep notes)"
+- Token usage / pricing → archive § "Token usage tracking"
+- Analytics → archive § "Analytics"
+- Release / signing / keystore / Play / Firebase → archive § "Release process"
+- ML model assets (embedder / segmenter) → archive § "ML model assets"

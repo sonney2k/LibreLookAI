@@ -342,6 +342,37 @@ Fix (used by `LocalBgRemovalScreen`, `MatchPreviewDialog`):
 
 Apply this pattern to every new fullscreen Dialog whose action bar must clear the gesture/nav bar or whose content must respect the in-app language toggle.
 
+**Applies to every window-opening composable, not just Dialog**: `ModalBottomSheet`, `Popup`, `AlertDialog`, `BasicAlertDialog`, and any nested sheets/dialogs launched from inside one of those. Each new window severs the locale-overridden `LocalContext`/`LocalConfiguration` chain. Capture `parentContext` / `parentConfiguration` at the parent screen's top level (outside the `Dialog { ... }` / `ModalBottomSheet { ... }` lambda) and re-provide them inside the content. Symptom when missed: strings inside the sheet/dialog render in the device locale instead of the in-app language.
+
+**Slot-based dialogs (`AlertDialog`, `BasicAlertDialog`)** need extra care: wrapping the *outer* `AlertDialog(...)` call with `CompositionLocalProvider` does **not** work — the slot lambdas (`title`, `text`, `confirmButton`, `dismissButton`) are composed *inside* the dialog's own window, which re-derives `LocalContext`/`LocalConfiguration` from the dialog's host view. The provider must live **inside each slot lambda**. Pattern: define a local helper
+
+```kotlin
+val locale: @Composable (@Composable () -> Unit) -> Unit = { c ->
+    CompositionLocalProvider(
+        LocalContext provides parentContext,
+        LocalConfiguration provides parentConfiguration,
+    ) { c() }
+}
+```
+
+and wrap every slot's body with `locale { ... }`. Reference: `OutfitComposerScreen.kt` discard / add-tag dialogs.
+
+**`ModalBottomSheet` content lambda** also opens its own window — wrapping the call site doesn't reach inside. Capture context/config inside the sheet composable (before the `ModalBottomSheet { ... }` call) and re-provide them as the first thing inside the content. Reference: `WeatherPickerSheet`, `ClosetPickerSheet` in `OutfitComposerScreen.kt`.
+
+**Bottom action bars / sticky buttons inside fullscreen dialogs** must use the canonical pattern
+
+```kotlin
+val effectiveBottom = max(
+    LocalSystemBarsPadding.current.calculateBottomPadding(),
+    view.rootWindowInsets via WindowInsetsCompat → systemBars().bottom (dp),
+    48.dp,
+)
+```
+
+— `LocalSystemBarsPadding` alone has been observed to report 0 on some devices, and the 48dp floor guarantees the row clears 3-button nav bars. Reference implementations: `OutfitComposerScreen.kt`, `ShoppingHelperScreen.kt` (`MatchPreviewDialog` action row), `LocalBgRemovalScreen`. Apply to every new fullscreen dialog with header or footer chrome.
+
+**Fullscreen `Dialog` overlays the bottom nav bar** — the Scaffold's `bottomBar` is part of the activity window, the Dialog is a separate window. Use this pattern (vs. inline composable) for any "detail viewer" that should consume the full screen. `FullScreenViewer` in `WardrobeScreen.kt` is wrapped in such a Dialog so wardrobe/outfit-item/shopping/try-on item views all overlay the nav bar consistently.
+
 `MatchPreviewDialog`-specific note: the inner Column / `MatchActionBar` use `LocalSystemBarsPadding`, but the outer Box is unpadded so the black background still extends edge-to-edge. `ZoomableMatchImage` only consumes single-finger drags after the user pinches in — at scale 1, horizontal swipes pass through to the parent `HorizontalPager`.
 
 `LocalBgRemovalScreen`-specific note: the dialog is hosted in `MainActivity`; `WardrobeViewModel.localBgReviewQueue` drives it (FIFO; head item shown). On Apply, the cutout is **tight-cropped to its alpha bounding box** (matching the framing Gemini's `removeBackground` returns), then `PendingJob.prebuiltCutoutPath` is set and `processQueuedImage` uses the local cutout instead of calling `gemini.removeBackground`. Crosshair starts at the image center, draggable/tap-to-place; segmentation re-runs ~150 ms after the user stops dragging.

@@ -1316,36 +1316,43 @@ private fun WeatherPickerSheet(
     onPrecip: (String) -> Unit,
     onDismiss: () -> Unit,
 ) {
+    val parentContext = LocalContext.current
+    val parentConfiguration = LocalConfiguration.current
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .navigationBarsPadding()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+        CompositionLocalProvider(
+            LocalContext provides parentContext,
+            LocalConfiguration provides parentConfiguration,
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    stringResource(R.string.composer_weather_title),
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.weight(1f),
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .navigationBarsPadding()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        stringResource(R.string.composer_weather_title),
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.weight(1f),
+                    )
+                    TextButton(onClick = onDismiss) { Text(stringResource(R.string.composer_sheet_done)) }
+                }
+                WeatherSection(
+                    mode = mode,
+                    onModeChange = onModeChange,
+                    autoWeather = autoWeather,
+                    season = season,
+                    onSeason = onSeason,
+                    tempC = tempC,
+                    onTempC = onTempC,
+                    precip = precip,
+                    onPrecip = onPrecip,
                 )
-                TextButton(onClick = onDismiss) { Text(stringResource(R.string.composer_sheet_done)) }
             }
-            WeatherSection(
-                mode = mode,
-                onModeChange = onModeChange,
-                autoWeather = autoWeather,
-                season = season,
-                onSeason = onSeason,
-                tempC = tempC,
-                onTempC = onTempC,
-                precip = precip,
-                onPrecip = onPrecip,
-            )
         }
     }
 }
@@ -1358,44 +1365,49 @@ private fun ClosetPickerSheet(
     onToggle: (String) -> Unit,
     onDismiss: () -> Unit,
 ) {
+    val parentContext = LocalContext.current
+    val parentConfiguration = LocalConfiguration.current
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .navigationBarsPadding()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+        CompositionLocalProvider(
+            LocalContext provides parentContext,
+            LocalConfiguration provides parentConfiguration,
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    stringResource(R.string.composer_closets_title),
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.weight(1f),
-                )
-                TextButton(onClick = onDismiss) { Text(stringResource(R.string.composer_sheet_done)) }
-            }
-            FlowRow(
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                verticalArrangement = Arrangement.spacedBy(6.dp),
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .navigationBarsPadding()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
-                // "All" chip: selected when nothing is explicitly picked (= all closets in scope).
-                // Tapping it clears the selection back to "all".
-                FilterChip(
-                    selected = selected.isEmpty(),
-                    onClick = {
-                        if (selected.isNotEmpty()) selected.forEach { onToggle(it) }
-                    },
-                    label = { Text(stringResource(R.string.composer_closets_all)) },
-                )
-                locations.forEach { loc ->
-                    FilterChip(
-                        selected = loc.folderId in selected,
-                        onClick = { onToggle(loc.folderId) },
-                        label = { Text(loc.name) },
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        stringResource(R.string.composer_closets_title),
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.weight(1f),
                     )
+                    TextButton(onClick = onDismiss) { Text(stringResource(R.string.composer_sheet_done)) }
+                }
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp),
+                ) {
+                    FilterChip(
+                        selected = selected.isEmpty(),
+                        onClick = {
+                            if (selected.isNotEmpty()) selected.forEach { onToggle(it) }
+                        },
+                        label = { Text(stringResource(R.string.composer_closets_all)) },
+                    )
+                    locations.forEach { loc ->
+                        FilterChip(
+                            selected = loc.folderId in selected,
+                            onClick = { onToggle(loc.folderId) },
+                            label = { Text(loc.name) },
+                        )
+                    }
                 }
             }
         }
