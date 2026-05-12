@@ -438,6 +438,9 @@
     <string name="outfits_items_label">Outfit items</string>
     <string name="outfits_add_item">Add item</string>
     <string name="outfits_tags_label">Tags</string>
+    <string name="outfits_prediction_prev">Previous suggestion</string>
+    <string name="outfits_prediction_next">Next suggestion</string>
+    <string name="outfits_prediction_indicator">%1$d / %2$d</string>
     <string name="outfits_tag_add">Add tag</string>
     <string name="outfits_tag_add_placeholder">e.g. birthday, travel</string>
     <string name="outfits_suggest_tags">Suggest tags with AI</string>

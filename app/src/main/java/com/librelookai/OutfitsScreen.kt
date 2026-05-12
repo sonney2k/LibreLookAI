@@ -48,6 +48,8 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.AutoFixHigh
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.AlertDialog
@@ -94,6 +96,7 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -245,6 +248,14 @@ fun OutfitsScreen(
                     } else null,
                     isRefining = outfitsState.isPredicting || outfitsState.isComposing,
                     locations = locationState.locations,
+                    predictionCount = outfitsState.predictionSuggestions.size,
+                    predictionIndex = outfitsState.predictionIndex,
+                    onPrevPrediction = if (outfitsState.predictionSuggestions.size > 1) {
+                        { outfitsViewModel.showPredictionAt(outfitsState.predictionIndex - 1) }
+                    } else null,
+                    onNextPrediction = if (outfitsState.predictionSuggestions.size > 1) {
+                        { outfitsViewModel.showPredictionAt(outfitsState.predictionIndex + 1) }
+                    } else null,
                 )
             }
             outfitsState.isCreating -> {
@@ -1454,6 +1465,10 @@ private fun OutfitEditingView(
     onPresetComposition: ((String) -> Unit)?,
     isRefining: Boolean = false,
     locations: List<Location> = emptyList(),
+    predictionCount: Int = 1,
+    predictionIndex: Int = 0,
+    onPrevPrediction: (() -> Unit)? = null,
+    onNextPrediction: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
     val isOffline = LocalIsOffline.current
@@ -1558,10 +1573,25 @@ private fun OutfitEditingView(
         }
         HorizontalDivider()
 
-        // Scrollable content
+        // Scrollable content. When several predictions are queued, a horizontal drag
+        // pages through them — the gesture detector waits for the touch slop, so it
+        // does not steal vertical scrolling. Edits made on the current pick are
+        // discarded when you swipe, which is acceptable for a browse flow.
+        val swipeThresholdPx = with(androidx.compose.ui.platform.LocalDensity.current) { 64.dp.toPx() }
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .pointerInput(predictionCount) {
+                    if (predictionCount <= 1) return@pointerInput
+                    var totalDx = 0f
+                    detectHorizontalDragGestures(
+                        onDragStart = { totalDx = 0f },
+                        onDragEnd = {
+                            if (totalDx <= -swipeThresholdPx) onNextPrediction?.invoke()
+                            else if (totalDx >= swipeThresholdPx) onPrevPrediction?.invoke()
+                        },
+                    ) { _, dx -> totalDx += dx }
+                }
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp)
                 .navigationBarsPadding()
@@ -1603,6 +1633,39 @@ private fun OutfitEditingView(
                 onAdd = onAddTag,
                 onRemove = onRemoveTag,
             )
+
+            // Prediction pager controls — only when Gemini returned several picks.
+            if (predictionCount > 1) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                ) {
+                    IconButton(
+                        onClick = { onPrevPrediction?.invoke() },
+                        enabled = predictionIndex > 0,
+                    ) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                            contentDescription = stringResource(R.string.outfits_prediction_prev),
+                        )
+                    }
+                    Text(
+                        stringResource(R.string.outfits_prediction_indicator, predictionIndex + 1, predictionCount),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    IconButton(
+                        onClick = { onNextPrediction?.invoke() },
+                        enabled = predictionIndex < predictionCount - 1,
+                    ) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                            contentDescription = stringResource(R.string.outfits_prediction_next),
+                        )
+                    }
+                }
+            }
 
             // AI reason (shown when opened from a Gemini suggestion)
             val reason = prediction?.reason ?: newSuggestion?.reason

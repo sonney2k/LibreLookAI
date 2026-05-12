@@ -62,6 +62,9 @@ data class OutfitsUiState(
     val isPredicting: Boolean = false,
     val prediction: OutfitPrediction? = null,
     val predictionError: String? = null,
+    /** When Gemini returns several outfit picks the user can slide through, the full list lives here. */
+    val predictionSuggestions: List<OutfitPrediction> = emptyList(),
+    val predictionIndex: Int = 0,
     // Compose brand-new style
     val isComposing: Boolean = false,
     val newSuggestion: NewOutfitSuggestion? = null,
@@ -327,6 +330,8 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             draftOutfitTags = emptyList(),
             editingOutfit = null,
             prediction = null,
+            predictionSuggestions = emptyList(),
+            predictionIndex = 0,
             newSuggestion = null,
             alternativeIds = emptyList(),
             feedbackHistory = emptyList(),
@@ -874,7 +879,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             return
         }
         viewModelScope.launch {
-            _state.update { it.copy(isPredicting = true, prediction = null, predictionError = null) }
+            _state.update { it.copy(isPredicting = true, prediction = null, predictionSuggestions = emptyList(), predictionIndex = 0, predictionError = null) }
 
             val countryCode = deviceCountryCode()
             val region = listOfNotNull(weather?.cityName?.takeIf { it.isNotEmpty() }, countryCode).joinToString(", ")
@@ -905,32 +910,83 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             val json = raw.trim()
                 .removePrefix("```json").removePrefix("```").removeSuffix("```").trim()
 
-            val result = runCatching {
-                data class PredResp(val outfitId: String? = "", val reason: String? = "")
-                gson.fromJson(json, PredResp::class.java)
-            }.getOrNull()
+            data class PredItem(val outfitId: String? = "", val reason: String? = "")
+            data class PredResp(
+                val suggestions: List<PredItem>? = null,
+                // Backward-compat: older prompt variants returned a single object.
+                val outfitId: String? = null,
+                val reason: String? = null,
+            )
+            val result = runCatching { gson.fromJson(json, PredResp::class.java) }.getOrNull()
 
-            if (result == null || result.outfitId.isNullOrBlank()) {
+            val rawItems: List<PredItem> = when {
+                result == null -> emptyList()
+                !result.suggestions.isNullOrEmpty() -> result.suggestions
+                !result.outfitId.isNullOrBlank() -> listOf(PredItem(result.outfitId, result.reason.orEmpty()))
+                else -> emptyList()
+            }
+
+            // Filter to suggestions that actually exist in the wardrobe; cap at 3.
+            val styleIds = styles.map { it.id }.toSet()
+            val matched: List<OutfitPrediction> = rawItems
+                .mapNotNull { p ->
+                    val id = p.outfitId?.takeIf { it.isNotBlank() && it in styleIds } ?: return@mapNotNull null
+                    OutfitPrediction(id, p.reason.orEmpty())
+                }
+                .distinctBy { it.outfitId }
+                .take(3)
+
+            if (matched.isEmpty()) {
                 Log.w("StylesVM", "Failed to parse prediction response: $json")
                 _state.update { it.copy(isPredicting = false, predictionError = "Could not parse Gemini response.") }
                 return@launch
             }
 
-            val matched = styles.find { it.id == result.outfitId!! }
-            if (matched == null) {
-                Log.w("StylesVM", "Gemini returned unknown styleId=${result.outfitId}")
-                _state.update { it.copy(isPredicting = false, predictionError = "Suggested style not found in wardrobe.") }
-                return@launch
-            }
-
             _state.update {
-                it.copy(isPredicting = false, prediction = OutfitPrediction(result.outfitId.orEmpty(), result.reason.orEmpty()))
+                it.copy(
+                    isPredicting = false,
+                    prediction = matched.first(),
+                    predictionSuggestions = matched,
+                    predictionIndex = 0,
+                )
             }
         }
     }
 
     fun clearPrediction() = _state.update {
-        it.copy(prediction = null, predictionError = null, feedbackHistory = emptyList(), refinementInput = "")
+        it.copy(
+            prediction = null,
+            predictionError = null,
+            predictionSuggestions = emptyList(),
+            predictionIndex = 0,
+            feedbackHistory = emptyList(),
+            refinementInput = "",
+        )
+    }
+
+    /**
+     * Switches the currently-shown prediction within the existing suggestion list.
+     * Swiping/arrowing through suggestions re-opens the editing view for that pick
+     * and discards any in-progress edits (acceptable since this is a browse flow).
+     */
+    fun showPredictionAt(index: Int) {
+        val list = _state.value.predictionSuggestions
+        if (index !in list.indices) return
+        val pred = list[index]
+        val style = _state.value.outfits.find { it.id == pred.outfitId } ?: return
+        _state.update {
+            it.copy(
+                predictionIndex = index,
+                prediction = pred,
+                isEditingOutfitView = true,
+                draftItemIds = style.itemIds.toSet(),
+                draftOutfitName = style.name,
+                draftOutfitDescription = style.description,
+                draftOutfitTags = style.tags,
+                editingOutfit = style,
+                alternativeIds = emptyList(),
+            )
+        }
     }
 
     fun updateRefinementInput(text: String) = _state.update { it.copy(refinementInput = text) }
@@ -1309,8 +1365,10 @@ private fun buildPredictionPrompt(
             feedbackHistory.forEachIndexed { i, fb -> appendLine("${i + 1}. $fb") }
             appendLine()
         }
+        appendLine("Pick the THREE best outfits for today, ranked from best to worst fit.")
+        appendLine("All three outfit IDs must come from the existing outfits list above and must be distinct.")
         appendLine("Respond with ONLY a valid JSON object — no markdown, no extra text:")
-        append("""{"outfitId":"<id from the outfits list>","reason":"<1-2 sentence explanation>"}""")
+        append("""{"suggestions":[{"outfitId":"<id from the outfits list>","reason":"<1-2 sentence explanation>"},{"outfitId":"<second pick>","reason":"<why>"},{"outfitId":"<third pick>","reason":"<why>"}]}""")
         appendLine()
         appendLine()
         appendLine("IMPORTANT: Write all user-facing text fields (reason) in ${AppLanguage.toGeminiName(prefs?.language ?: AppLanguage.ENGLISH)}.")
