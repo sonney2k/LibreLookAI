@@ -1,34 +1,12 @@
-### LibreLookAI v1.7.0 Release Notes
+### LibreLookAI v1.7.1 Release Notes
 
 #### Outfits
-- "Create outfit" rebuilt as a layered look board: one row per layer (outerwear / top / bottom / footwear / accessory), tap an item in the rail to swap it in, per-layer include checkbox so you can lock pieces or let the AI fill the rest.
-- AI suggestions now offer 3 alternatives from your existing outfits — swipe through them in the standard detail viewer, no separate edit screen.
-- Tags pulled inline (chip picker over every tag you've ever used) + an "Add tag" affordance. Description sits directly below; no more "Advanced" drawer.
-- X / back now asks for confirmation when you have unsaved selections.
-- Outfit detail viewer redesigned: items render as overlapping cutouts on a transparent canvas instead of a grid; tag chips and edit FAB on each item.
-- New text search and sort buttons on the Outfits and Try-Ons tabs.
+- Find-with-AI now opens a setup sheet first (goal text, weather, closet, vibe chips) so you can steer the suggestion before Gemini runs. Your input is threaded into the prompt and survives refinement rounds.
 
-#### Wardrobe
-- Bilingual fuzzy tag search (on-device, no network): the wardrobe header's photo icon now opens a chooser — search by text against every tag (label, type, color, season, aesthetic, fit, material…), or fall back to search-by-photo.
-- Filter row redesigned: search + sort merged into the closet/filter row.
-- Tap-to-focus crosshair and pinch-to-zoom in the camera capture flow.
+#### UI polish
+- Fullscreen viewers (Wardrobe, Outfit item, Shopping, Try-On) drop the redundant top/bottom panels — the image fills more of the screen.
+- Wardrobe item viewer no longer leaves blank space at the top; the navigation row overlays the image.
+- Dangerous actions (delete buttons, destructive confirmations) now use a single solid-red style across every screen.
 
-#### Travel
-- Header now shows a flight icon to match the rest of the app.
-
-#### Navigation
-- Outfits is now the start tab when you open the app.
-- Outfits, Wardrobe, and Travel screens get matching leading icons (alongside Insights and Shopping).
-
-#### Cutout repair
-- "Fix cutout backgrounds" pass split into independently toggleable steps (black-to-alpha, despill green halo, fill interior holes, feather edges, tight-crop). Defaults follow detection — flagged items only — but you can apply any subset to any item.
-- Single-item "fix" forces all five passes on.
-- Edge-only feather + conservative defaults so clean cutouts stay clean.
-
-#### Fixes & polish
-- In-app language now honored inside every dialog and bottom sheet (composer, Try-on result, Repair preview, sort menu, add-tag dialog…). Recurring "device locale leaked into a dialog" bugs traced to AlertDialog slot composition and fixed.
-- Try-on result action row no longer clips behind the system bars; slimmed to Save + Edit.
-- Transient scrollbar added to Wardrobe / Outfits / Shopping; scrubbable in the wardrobe item viewer.
-- Stricter duplicate threshold (0.97 floor) in Repair & Sync.
-- Wardrobe item viewer shows imported time, sorts stably, and keeps the bottom action row above the navigation bar.
-- Moving an item to another closet now updates the destination immediately and preserves your scroll position.
+#### Translations
+- Composer bottom sheets (weather, closet, vibes) now follow the in-app language inside their own windows instead of falling back to the device locale.
