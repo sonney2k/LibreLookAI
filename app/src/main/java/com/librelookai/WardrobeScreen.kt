@@ -259,6 +259,7 @@ fun WardrobeScreen(
                     permissionLauncher.launch(Manifest.permission.CAMERA)
                 }
             },
+            onSearchByText = viewModel::searchByText,
             onDismissFindByPhoto = viewModel::dismissFindByPhoto,
             onConsumePendingScroll = viewModel::consumePendingScroll,
             onAddMatchToShoppingList = shoppingClosetViewModel::importQuery,
@@ -653,6 +654,7 @@ private fun GridContent(
     dismissViewerTrigger: Int = 0,
     onSettingsClick: () -> Unit = {},
     onOpenFindByPhoto: () -> Unit = {},
+    onSearchByText: (String) -> Unit = {},
     onDismissFindByPhoto: () -> Unit = {},
     onConsumePendingScroll: () -> Unit = {},
     onAddMatchToShoppingList: (String) -> Unit = {},
@@ -667,6 +669,7 @@ private fun GridContent(
     var selectedTags by remember { mutableStateOf(emptyMap<String, Set<String>>()) }
     var sortBy by remember { mutableStateOf(SortOption.DATE_DESC) }
     var filterSheetOpen by remember { mutableStateOf(false) }
+    var searchChooserOpen by remember { mutableStateOf(false) }
     val appliedFilterCount = selectedTags.values.sumOf { it.size }
 
     val tagCategories = remember(state.images) { state.images.tagCategories() }
@@ -736,12 +739,12 @@ private fun GridContent(
                         onSetActiveLocation = onSetActiveLocation,
                     )
                     IconButton(onClick = {
-                        Analytics.action("Wardrobe", "open_find_by_photo")
-                        onOpenFindByPhoto()
+                        Analytics.action("Wardrobe", "open_search_chooser")
+                        searchChooserOpen = true
                     }) {
                         Icon(
                             Icons.Default.ImageSearch,
-                            contentDescription = stringResource(R.string.wardrobe_find_by_photo),
+                            contentDescription = stringResource(R.string.wardrobe_search),
                         )
                     }
                     SortButton(
@@ -1166,6 +1169,22 @@ private fun GridContent(
         )
     }
 
+    if (searchChooserOpen) {
+        WardrobeSearchChooserDialog(
+            onSearchText = { q ->
+                searchChooserOpen = false
+                Analytics.action("Wardrobe", "search_by_text")
+                onSearchByText(q)
+            },
+            onSearchPhoto = {
+                searchChooserOpen = false
+                Analytics.action("Wardrobe", "open_find_by_photo")
+                onOpenFindByPhoto()
+            },
+            onDismiss = { searchChooserOpen = false },
+        )
+    }
+
     state.findByPhoto?.let { fbp ->
         FindByPhotoResultsSheet(
             findByPhoto = fbp,
@@ -1186,7 +1205,7 @@ private fun GridContent(
                 onDismissFindByPhoto()
             },
             onAddToShoppingList = { queryPath ->
-                onAddMatchToShoppingList(queryPath)
+                queryPath?.let { onAddMatchToShoppingList(it) }
                 onDismissFindByPhoto()
             },
             onDismiss = onDismissFindByPhoto,
@@ -2238,9 +2257,10 @@ private fun FindByPhotoResultsSheet(
     findByPhoto: FindByPhoto,
     debugSimilarityPreview: Boolean,
     onPickMatch: (DriveImage) -> Unit,
-    onAddToShoppingList: (queryPath: String) -> Unit,
+    onAddToShoppingList: (queryPath: String?) -> Unit,
     onDismiss: () -> Unit,
 ) {
+    val isTextQuery = findByPhoto.textQuery != null
     val context = LocalContext.current
     val shopMatches = remember(findByPhoto.matches) {
         findByPhoto.matches.map { ShopMatch(image = it.image, score = it.score) }
@@ -2259,26 +2279,44 @@ private fun FindByPhotoResultsSheet(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
-                stringResource(R.string.wardrobe_find_by_photo),
+                stringResource(
+                    if (isTextQuery) R.string.wardrobe_search_text_results
+                    else R.string.wardrobe_find_by_photo
+                ),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
             )
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(160.dp)
-                    .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.small),
-            ) {
-                AsyncImage(
-                    model = ImageRequest.Builder(context)
-                        .data(java.io.File(findByPhoto.queryPath))
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = stringResource(R.string.shop_your_photo),
-                    contentScale = androidx.compose.ui.layout.ContentScale.Fit,
-                    modifier = Modifier.fillMaxSize(),
+            if (isTextQuery) {
+                Text(
+                    text = "“${findByPhoto.textQuery}”",
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.small)
+                        .padding(horizontal = 12.dp, vertical = 12.dp),
                 )
+            } else {
+                val qPath = findByPhoto.queryPath
+                if (qPath != null) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(160.dp)
+                            .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.small),
+                    ) {
+                        AsyncImage(
+                            model = ImageRequest.Builder(context)
+                                .data(java.io.File(qPath))
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = stringResource(R.string.shop_your_photo),
+                            contentScale = androidx.compose.ui.layout.ContentScale.Fit,
+                            modifier = Modifier.fillMaxSize(),
+                        )
+                    }
+                }
             }
 
             when {
@@ -2298,13 +2336,15 @@ private fun FindByPhotoResultsSheet(
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
-                    Button(
-                        onClick = { onAddToShoppingList(findByPhoto.queryPath) },
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Icon(Icons.Default.ShoppingBag, contentDescription = null, modifier = Modifier.size(18.dp))
-                        Spacer(Modifier.width(8.dp))
-                        Text(stringResource(R.string.shop_add_to_shopping_list))
+                    if (!isTextQuery && findByPhoto.queryPath != null) {
+                        Button(
+                            onClick = { onAddToShoppingList(findByPhoto.queryPath) },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Icon(Icons.Default.ShoppingBag, contentDescription = null, modifier = Modifier.size(18.dp))
+                            Spacer(Modifier.width(8.dp))
+                            Text(stringResource(R.string.shop_add_to_shopping_list))
+                        }
                     }
                 }
                 else -> Column(
@@ -2340,6 +2380,73 @@ private fun FindByPhotoResultsSheet(
             )
         }
     }
+}
+
+/** Chooser shown from the wardrobe header's search icon: type a query for on-device semantic
+ *  text search, or fall back to the legacy image-based "find by photo" capture. */
+@Composable
+private fun WardrobeSearchChooserDialog(
+    onSearchText: (String) -> Unit,
+    onSearchPhoto: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    var query by remember { mutableStateOf("") }
+    val parentContext = LocalContext.current
+    val parentConfiguration = LocalConfiguration.current
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            CompositionLocalProvider(
+                LocalContext provides parentContext,
+                LocalConfiguration provides parentConfiguration,
+            ) { Text(stringResource(R.string.wardrobe_search_title)) }
+        },
+        text = {
+            CompositionLocalProvider(
+                LocalContext provides parentContext,
+                LocalConfiguration provides parentConfiguration,
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text(
+                        stringResource(R.string.wardrobe_search_hint),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    OutlinedTextField(
+                        value = query,
+                        onValueChange = { query = it },
+                        singleLine = true,
+                        placeholder = { Text(stringResource(R.string.wardrobe_search_placeholder)) },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    TextButton(onClick = { onSearchPhoto() }) {
+                        Icon(Icons.Default.ImageSearch, contentDescription = null, modifier = Modifier.size(18.dp))
+                        Spacer(Modifier.width(8.dp))
+                        Text(stringResource(R.string.wardrobe_search_use_photo))
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            CompositionLocalProvider(
+                LocalContext provides parentContext,
+                LocalConfiguration provides parentConfiguration,
+            ) {
+                TextButton(
+                    enabled = query.isNotBlank(),
+                    onClick = { onSearchText(query.trim()) },
+                ) { Text(stringResource(R.string.action_search)) }
+            }
+        },
+        dismissButton = {
+            CompositionLocalProvider(
+                LocalContext provides parentContext,
+                LocalConfiguration provides parentConfiguration,
+            ) {
+                TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
+            }
+        },
+    )
 }
 
 @Composable

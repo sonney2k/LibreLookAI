@@ -784,6 +784,15 @@
     <string name="wardrobe_find_by_photo_empty">No similar items found.</string>
     <string name="wardrobe_find_by_photo_searching">Looking for matches…</string>
 
+    <!-- Wardrobe search (text or photo) -->
+    <string name="wardrobe_search">Search wardrobe</string>
+    <string name="wardrobe_search_title">Search wardrobe</string>
+    <string name="wardrobe_search_hint">Type what you\'re looking for, or search by photo.</string>
+    <string name="wardrobe_search_placeholder">e.g. red cotton shirt</string>
+    <string name="wardrobe_search_use_photo">Search by photo instead</string>
+    <string name="wardrobe_search_text_results">Search results</string>
+    <string name="action_search">Search</string>
+
     <!-- Repair &amp; Sync — possible duplicates section -->
     <string name="repair_section_duplicates">Possible duplicates</string>
     <string name="repair_duplicates_hint">Tick items to delete from Drive. Tap to see what they look like.</string>

@@ -12,6 +12,7 @@ local.properties
 # On-device ML model — download manually, see CLAUDE.md
 app/src/main/assets/embedder/*.tflite
 app/src/main/assets/segmenter/*.tflite
+app/src/main/assets/*.tflite
 
 # Local scratch / editor artifacts
 .*.swp

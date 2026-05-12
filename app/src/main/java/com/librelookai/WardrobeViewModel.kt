@@ -35,9 +35,12 @@ enum class WardrobeView { GRID, CAPTURE, FIND_BY_PHOTO_CAPTURE }
 /** A wardrobe item ranked against a "find item by photo" query, with cosine score. */
 data class FindByPhotoMatch(val image: DriveImage, val score: Float)
 
-/** State for the "find item by photo" overlay rendered on top of the wardrobe grid. */
+/** State for the "find item" overlay rendered on top of the wardrobe grid. Used by both
+ *  the legacy "find by photo" flow (image-based similarity) and the on-device semantic
+ *  text search — exactly one of [queryPath] / [textQuery] is populated. */
 data class FindByPhoto(
-    val queryPath: String,
+    val queryPath: String? = null,
+    val textQuery: String? = null,
     val matches: List<FindByPhotoMatch>,
     val isSearching: Boolean = false,
     /** Debug artifacts from the same similarity helper used by Shopping's Similarity Finder.
@@ -457,7 +460,16 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch { processQueue() }
     }
 
-    fun setLanguage(geminiName: String) { geminiLanguage = geminiName }
+    fun setLanguage(geminiName: String) {
+        geminiLanguage = geminiName
+        // Semantic search needs the BCP-47 code for ML Kit Translate; geminiName is the
+        // human label ("English" / "German"). Round-trip through AppLanguage when possible.
+        val bcp47 = when (geminiName) {
+            "German" -> "de"
+            else -> "en"
+        }
+        semanticSearch.setSourceLanguage(bcp47)
+    }
 
     /** Push UserPreferences-derived similarity settings into the VM. Called from MainActivity. */
     fun setDedupeSettings(enabled: Boolean, threshold: Float) {
@@ -1787,7 +1799,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             _state.update { it.copy(
                 view = WardrobeView.GRID,
-                findByPhoto = FindByPhoto(rawFile.absolutePath, emptyList(), isSearching = true),
+                findByPhoto = FindByPhoto(queryPath = rawFile.absolutePath, matches = emptyList(), isSearching = true),
             ) }
             // Always search across every configured closet so matches are not artificially
             // limited by the active location filter.
@@ -1822,10 +1834,37 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     /** Dismiss the find-by-photo results sheet and discard the query thumbnail. */
     fun dismissFindByPhoto() {
         _state.value.findByPhoto?.let { fbp ->
-            runCatching { File(fbp.queryPath).delete() }
+            fbp.queryPath?.let { runCatching { File(it).delete() } }
             fbp.processedPath?.let { runCatching { File(it).delete() } }
         }
         _state.update { it.copy(findByPhoto = null) }
+    }
+
+    // ---------- Semantic text search ----------
+
+    private val semanticSearch by lazy { LocalSemanticSearchHelper(getApplication()) }
+
+    /** Run on-device semantic search across all configured closets and surface results
+     *  through the shared find-by-photo bottom sheet. */
+    fun searchByText(query: String) {
+        val q = query.trim()
+        if (q.isEmpty()) return
+        viewModelScope.launch {
+            _state.update { it.copy(
+                view = WardrobeView.GRID,
+                findByPhoto = FindByPhoto(textQuery = q, matches = emptyList(), isSearching = true),
+            ) }
+            refreshAllLocationImagesState()
+            val pool = _state.value.allLocationImages
+            val ranked = semanticSearch.searchWardrobe(q, pool)
+            _state.update {
+                it.copy(findByPhoto = FindByPhoto(
+                    textQuery = q,
+                    matches = ranked.map { r -> FindByPhotoMatch(r.item, r.score) },
+                    isSearching = false,
+                ))
+            }
+        }
     }
 
     /** Request that the wardrobe grid scroll to and pulse the given item once it's loaded. */

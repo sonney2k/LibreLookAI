@@ -18,4 +18,10 @@ object AppLanguage {
         GERMAN -> "German"
         else   -> "English"
     }
+
+    /** ISO 639-1 code accepted by ML Kit's `TranslateLanguage` constants. */
+    fun toBcp47(language: String): String = when (language) {
+        GERMAN -> "de"
+        else   -> "en"
+    }
 }

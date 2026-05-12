@@ -760,6 +760,15 @@
     <string name="wardrobe_find_by_photo_empty">Keine ähnlichen Teile gefunden.</string>
     <string name="wardrobe_find_by_photo_searching">Suche Treffer…</string>
 
+    <!-- Garderobe durchsuchen (Text oder Foto) -->
+    <string name="wardrobe_search">Garderobe durchsuchen</string>
+    <string name="wardrobe_search_title">Garderobe durchsuchen</string>
+    <string name="wardrobe_search_hint">Beschreibe, wonach du suchst, oder suche per Foto.</string>
+    <string name="wardrobe_search_placeholder">z. B. rotes Baumwollhemd</string>
+    <string name="wardrobe_search_use_photo">Stattdessen per Foto suchen</string>
+    <string name="wardrobe_search_text_results">Suchergebnisse</string>
+    <string name="action_search">Suchen</string>
+
     <!-- Reparatur &amp; Sync — mögliche Duplikate -->
     <string name="repair_section_duplicates">Mögliche Duplikate</string>
     <string name="repair_duplicates_hint">Aktiviere Teile, um sie in Drive zu löschen. Tippen zeigt den Vergleich.</string>

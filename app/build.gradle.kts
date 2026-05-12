@@ -149,6 +149,8 @@ dependencies {
     implementation(libs.billing.ktx)
     implementation(libs.kotlinx.coroutines.play.services)
     implementation(libs.mediapipe.tasks.vision)
+    implementation(libs.mediapipe.tasks.text)
+    implementation(libs.mlkit.translate)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

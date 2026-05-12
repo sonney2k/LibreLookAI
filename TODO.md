@@ -1,72 +1,96 @@
-CLAUDE progressing hint
-=======================
-Read CLAUDE.md and only the files listed in the 'Active Task' section.
-in settings add AI tab where all gemini prompts that are currently being used are being displayed and can be edited/overriden. add a reset to defaults on this page. add a setting as in what to consider by default when suggesting a style.
+INVESTIGATION
+=============
 
-For context you were working on this:
-This is what you have already suggested and done:
+similarity search needs improvement
 
-Before executing the implementation udpate CLAUDE.md with decisions/active tasks
+size filter? default sizes in wardrobe? size tag?
+
+Implement new feature: We are working on the refinancing/monetization aspect of the app: I want people to be able to buy coins that I then use to pay gemini cloud costs. would that work with RevenueCat (handles the money/receipts) + Firebase (database and secure Gemini API routing)? In addition, I still want to support the bring your own key option though.
+
+fix usability issue on wardrobe screen: moving item to different closet and then switching to that closet - it won't immediately appear on wardrobe after moving to different closet. it took almost a minute to appear. Can this be sped up?
+
+consistency: the cross to cancel taking a picture in wardrobe is in the lower right. change the cross in similarity search to use the same button and move it from top left also to lower right ??? rotate button color??
+
+security/function relevant parts of a prompts should not be appear in settings. e.g. "Place the clothing item on a pure, solid neon green background (Hex #00FF00).
+
 
 TODO
 ====
 
-
-Features:
----------
-
-size filter? default sizes in wardrobe? size tag?
-
-
 create human readable release notes between now and v1.6.0 and release version 1.6.1, git tag commit and upload to testers in firebase
 
-Implement new feature: We are working on the refinancing/monetization aspect of the app: I want people to be able to buy coins that I then use to pay gemini cloud costs. would that work with RevenueCat (handles the money/receipts) + Firebase (database and secure Gemini API routing)? In addition, I still want to support the bring your own key option though.
+[bug] on outfits and wardrobe item view make fab "delete" red, aswell as data/repair & sync + cutout
 
-show imported time below name of item in wardrobe item view. scale item such that it (initially is not overlapping with tags.
+travel screen create tabs: create travel outfits and another one with travels that shows the travel outfits. tag outfits with travel.
 
-moving an item from one closet to another did change
+Storage:
+- I noticed .jpgs from camera are just 124kB but .pngs are 450kB. Since this is on users drive folders we have to be cautious about size. Let's target 1GB - to allow for 2000-4000 wardrobe items.
 
-when scrolling through wardrobe, outfits, shopping list the scroll bar that is shown make it wider and add way that clicking and dragging the scrollbar moves
+Wardrobe:
+- on wardrobe item screen make delete button red
+- Add item search / filtering by text for all, once with some local AI based text search and once with Gemini. This is for all outfits, wardrobe.
 
-remove the long press on wardrobe item functionality - add the the missing function create outfit to FAB
+Feedback:
+add way to send feedback via firebase under settings -> feedback
+add a feedback tab under settings move debug setting under this tab
+
+
+IN PROGRESS
+===========
+in outfit detail view FAB add option that uses gemini to determine tags from title and selected item tags etc 
+
+Outfits:
+- [bug] on outfit detail screen make everything fit the screen, show individual wardrobe items not only one below the other but sensible aranged such that they fill the full area, ensure that buttons are within the screen though and tags and items are not overlapping
+- add option to create tag with AI under FAB (similar like in wardrobe)
+- Rework outfit screen - we need a more intuitive UI: The goal of a user is to create an outfit for a use case that the user currently wants. So the user needs to be able to set the topic and all relevant parameters, a user likely wants to prompt the input or quicker just click through stuff. Hide the general preferences show only the current preferences/topic that are most relevant for what the user wants. Make a suggestion how an improved UI / UX would look like.
+
+
+
+Repair & Sync:
+- [bug] On repair & sync Preview screen buttons are outside of bottom of screen. Fix like you did in in several other cases for e.g. duplicate search.
+- On repair & sync - it displays me 195 items marked as similar. These are exactly the items I already have imported. Why is that?
+
+Try-on:
+- Try-on details, clicking on item shows the item in big & shows button to go to this item in wardrobe.
+- Add same filtering options like on outfits screen.
+- Add a + FAB like on outfits but this time to create new try-on that shows the create try-on page.
+- [bug] When a try-on is displayed fix the name: Instead of Save to google drive, give it a non-technical save name
+
+
+Outfits:
+- Enable tag specific to outfits, i.e. birthday outfit, travel outfit, ...
+- Clicking on an outfit shows it full screen like like on wardrobe with all items nicely arange.
+- Once an outfit is shown full-screen allow for left/right sliding through outfits (similar to wardrobe)
+
+
+Localization:
+- [bug] Go through all text that is displayed on the screen and check if it is proper localized. This includes all buttons, all info messages, FAB,... Ensure that when switching languages localization remains sensible.  This does not hold for Wardrobe item names, nor outfit and shopping title names that are generated with AI already in the user specified language already. Examples that are not localized: 
+	- On repair & sync Preview screen text is not localized. 
+	- Try-on details, clicking on item shows the item in big:  screen not localized
+
+
+
+DONE
+=====
+Camera:
+- when taking pictures, the make it possible to change the position of the cross hair by just tapping on a different part of the screen
+- enable pinch zooming when taking picture
 
 add repair background in wardrobe item and a batch way in settings/data to fill the black background surrounding cutout images also cropping the image
 
 green border in cut out, how to get rid of it and make the other black stuff fully transparent
 
-similarity search needs improvement
-
-
 overlay closet in wardrobe on top right of each item in grid use the same style color as on Outfits also on when viewing an item on wardrobe in detail use those colors for tags and make those tags not be contained in a transparent box but show each one separately
 
+remove the long press on wardrobe item functionality - add the the missing function create outfit to FAB
 
-Bugs:
------
+when scrolling through wardrobe, outfits, shopping list the scroll bar that is shown make it wider and add way that clicking and dragging the scrollbar moves
 
-consistency: the cross to cancel taking a picture in wardrobe is in the lower right. change the cross in similarity search to use the same button and move it from top left also to lower right ??? rotate button color??
+moving an item from one closet to another did change order / time
 
+show imported time below name of item in wardrobe item view. scale item such that it (initially is not overlapping with tags.
 
-
-security/function relevant parts of a prompts should not be appear in settings. e.g. "Place the clothing item on a pure, solid neon green background (Hex #00FF00).
-
-
-fix usability issue on wardrobe screen: moving item to different closet and then switching to that closet - it won't immediately appear on wardrobe after moving to different closet. it took almost a minute to appear. Can this be sped up?
-
-
-
-
-
-
-IN PROGRESS
-===========
-Fix those bugs
-1. similarity search buttons when displaying full matching image, button at bottom is does not fit on screen it is only half visible (happens in both shopping -> similarity search and in wardrobe when adding item by picture)
-2. when refining cutout the buttons Skip (use Gemini) and Use this cutout are only partially visible at the bottom of the screen. Ensure they are fully visibile.
-3. fix crash when importing item from camera. Crash happend when image was rotated.
-4. similarity search not localized: "Possible duplicate" "We found X item(s) in your wardrobe that look very similar to this photo.", "Similarity", Buttons: "Cancel" "Import Anyway"
-
-
-Similarity search on shopping screen, similarity search when importing and similarity search when finding an item on wardrobe seem to not work in the exact same way. The one on the shopping screen seems to work while the others don't.
+offline check is not reliable offline/online status - listen to android. if previously online but it now goes offline also go offline in the app and ensure that the red offline bar is shown. also in wardrobe some the buttons for importing from gallery or picture do still exist.
 
 Fix those issues in wardrobe view:
 2. in shopping view similarity search is also not localized and looking at match full screen buttons at the bottom are outside of the screen
@@ -78,36 +102,32 @@ Fix the following bugs in shopping helper:
 1. when in offline mode don't allow delete
 2. similarity search not localized and looking at match full screen buttons at the bottom are outside of the screen
 
-
 Fix the following bugs in Outfits view:
 1. when creating try-on on "Try on me" remove the top right button that shows previous try-ons we now have a dedicated tab for that
 2. only have single + button and integrate the functionality to create manual outfit, suggest existing outfit and create new outfit with AI in the create outfit view that wardrobe is already using
 
-offline check is not reliable offline/online status - listen to android. if previously online but it now goes offline also go offline in the app and ensure that the red offline bar is shown. also in wardrobe some the buttons for importing from gallery or picture do still exist.
-
-
 when importing images/photo/url add option to do background removal via cheap local tflite model. let the model mark the background display the starting point as cross hair that the user can change
-
-add way to send feedback via firebase under settings -> feedback
 
 1. shopping -> similarity search when taking picture it displays the closet hide that. once picture is taken it jumps to shopping list but should stay on similarity search tab
 2. shopping -> similarity search when looking at matching picture the show in wardrobe and add to shopping list buttons are to far at the bottom (half outside the screen)
 3. fix bug in similarity search not all closets are being indexed initally I noticed only the default one is 
 4. find via photo in wardrobe -> result screen should not show button add to shopping list (only for shopping -> similarity search)
+
 shopping "wardrobe" is slow to load and does not have the same functionality as wardrobe, make shopping "wardrobe" have the same features as wardrobe and make it use the same function
-
-add a feedback tab under settings move debug setting under this tab
-
 on repair & sync make preview all images that will be imported in a grid similar to how they are show in wardrobe view with them all selected. only the selected ones will be modified. support manual (un)selection with the common features of (un)select all, showing counts..
-
 
 how can we unify tags? I see tags like "Long-sleeve T-shirt", "Long-sleeved t-shirt", "Long-sleeve shirt" that likely mean the same. Or "grey", "Gray"
 
+Similarity search on shopping screen, similarity search when importing and similarity search when finding an item on wardrobe seem to not work in the exact same way. The one on the shopping screen seems to work while the others don't.
 
+Fix those bugs
+1. similarity search buttons when displaying full matching image, button at bottom is does not fit on screen it is only half visible (happens in both shopping -> similarity search and in wardrobe when adding item by picture)
+2. when refining cutout the buttons Skip (use Gemini) and Use this cutout are only partially visible at the bottom of the screen. Ensure they are fully visibile.
+3. fix crash when importing item from camera. Crash happend when image was rotated.
+4. similarity search not localized: "Possible duplicate" "We found X item(s) in your wardrobe that look very similar to this photo.", "Similarity", Buttons: "Cancel" "Import Anyway"
 
+ONLY on wardrobe cutout background FAB add an option to clear alpha. this is off by default. when selected it runs before applying any of the other steps and clears alpha (opaque). Alos fix localization on this options screen. It is currently not localized do it for all the options.
 
-FIXED
-=====
 when scrolling through wardrobe, outfits, shopping list add a scrollbar when scrolling
 
 when viewing an item in wardrobe add option to move to different closet under FAB
