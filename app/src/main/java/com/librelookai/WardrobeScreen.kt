@@ -99,6 +99,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.DialogWindowProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -1309,6 +1312,28 @@ internal fun FullScreenViewer(
     processingImageId: String?,
     writeMode: Boolean = true,
 ) {
+    val parentContext = LocalContext.current
+    val parentConfiguration = LocalConfiguration.current
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false,
+            decorFitsSystemWindows = false,
+        ),
+    ) {
+        val dialogView = androidx.compose.ui.platform.LocalView.current
+        androidx.compose.runtime.SideEffect {
+            val window = (dialogView.parent as? DialogWindowProvider)?.window ?: return@SideEffect
+            window.setLayout(
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+            )
+            androidx.core.view.WindowCompat.setDecorFitsSystemWindows(window, false)
+        }
+        CompositionLocalProvider(
+            LocalContext provides parentContext,
+            LocalConfiguration provides parentConfiguration,
+        ) {
     BackHandler(onBack = onDismiss)
 
     val isOffline = LocalIsOffline.current
@@ -1340,37 +1365,15 @@ internal fun FullScreenViewer(
         } else null
     }
 
-    val viewerBarInsets = LocalSystemBarsPadding.current
-    val viewerView = androidx.compose.ui.platform.LocalView.current
-    val viewerDensity = androidx.compose.ui.platform.LocalDensity.current
-    val viewerRootInsetBottomDp = remember(viewerView) {
-        val raw = viewerView.rootWindowInsets
-        val bottomPx = if (raw != null) {
-            androidx.core.view.WindowInsetsCompat
-                .toWindowInsetsCompat(raw, viewerView)
-                .getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
-                .bottom
-        } else 0
-        with(viewerDensity) { bottomPx.toDp() }
-    }
-    val viewerEffectiveBottom = maxOf(
-        viewerBarInsets.calculateBottomPadding(),
-        viewerRootInsetBottomDp,
-        48.dp,
-    )
-
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            // Header — name, imported date, pagination, tags. Sized to its content so the
-            // pager (and image) below never overlaps it, regardless of how many tags wrap.
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .statusBarsPadding()
                     .padding(top = 8.dp, start = 56.dp, end = 56.dp, bottom = 8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -1423,8 +1426,7 @@ internal fun FullScreenViewer(
                 userScrollEnabled = pageScale <= 1.01f,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
-                    .padding(bottom = viewerEffectiveBottom),
+                    .weight(1f),
             ) { page ->
                 val img = images[page]
                 val origPath = originalPaths[img.driveId]
@@ -1445,7 +1447,7 @@ internal fun FullScreenViewer(
         // Close button.
         IconButton(
             onClick = onDismiss,
-            modifier = Modifier.align(Alignment.TopStart).statusBarsPadding().padding(8.dp),
+            modifier = Modifier.align(Alignment.TopStart).padding(8.dp),
         ) {
             Icon(Icons.Default.Close, contentDescription = "Close", tint = MaterialTheme.colorScheme.onBackground)
         }
@@ -1466,7 +1468,7 @@ internal fun FullScreenViewer(
                     Analytics.action("ItemViewer", if (showOriginal) "hide_original" else "show_original")
                     showOriginal = !showOriginal
                 },
-                modifier = Modifier.align(Alignment.TopEnd).statusBarsPadding().padding(8.dp),
+                modifier = Modifier.align(Alignment.TopEnd).padding(8.dp),
             ) {
                 Icon(
                     imageVector = if (showOriginal) Icons.Default.ImageSearch else Icons.Default.Photo,
@@ -1692,6 +1694,8 @@ internal fun FullScreenViewer(
                 }
             },
         )
+    }
+        }
     }
 }
 

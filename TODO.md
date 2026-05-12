@@ -18,9 +18,8 @@ should travel planner be a tab under outfits?
 TODO
 ====
 
-when suggesting an outfit from existing outfits - show the resulting outfit exactly like when you click on an outfit in the outfit detail view not in the outfit create view. enable sliding left right through options.
 
-create human readable release notes between now and v1.6.0 and release version 1.6.1, git tag commit and upload to testers in firebase
+create human readable release notes between now and v1.6.1 and release version 1.7.0, git tag commit and upload to testers in firebase
 
 [bug] on outfits and wardrobe item view make fab "delete" red, aswell as data/repair & sync + cutout
 
@@ -60,6 +59,8 @@ Try-on:
 
 DONE
 =====
+when suggesting an outfit from existing outfits - show the resulting outfit exactly like when you click on an outfit in the outfit detail view not in the outfit create view. enable sliding left right through options.
+
 clicking on an outfit currently shows the wardrobe items of an outfit in a grid. I want a more natural look. the items should not be aligned with a grid, have transparent background. they should be partially overlapping with a slight shadow cast for each item and big enough to fill as much of the drawable screen content together as possible. this probably means removing the grid and drawing them on a canvas
 
 Outfits:
