@@ -188,13 +188,6 @@ fun OutfitsScreen(
         outfitEventsState.events.groupingBy { it.outfitId }.eachCount()
     }
 
-    // When Gemini returns a prediction, auto-open the style editing view with that style.
-    LaunchedEffect(outfitsState.prediction) {
-        val pred = outfitsState.prediction ?: return@LaunchedEffect
-        val style = outfitsState.outfits.find { it.id == pred.outfitId } ?: return@LaunchedEffect
-        outfitsViewModel.openPredictionInEditView(style)
-    }
-
     // When Gemini composes a new outfit, auto-open the style editing view with it.
     LaunchedEffect(outfitsState.newSuggestion) {
         val suggestion = outfitsState.newSuggestion ?: return@LaunchedEffect
@@ -357,6 +350,43 @@ fun OutfitsScreen(
                 onDismiss = outfitsViewModel::dismissTagSuggestions,
                 onApply = { selected -> outfitsViewModel.applyTagSuggestions(sugg.outfitId, selected) },
             )
+        }
+
+        // Existing-outfit suggestion: show the picks in the standard detail viewer,
+        // swipe to flip between Gemini's ranked picks.
+        if (outfitsState.predictionSuggestions.isNotEmpty() && !outfitsState.isEditingOutfitView) {
+            val predictedOutfits = remember(outfitsState.predictionSuggestions, outfitsState.outfits) {
+                outfitsState.predictionSuggestions.mapNotNull { p ->
+                    outfitsState.outfits.find { it.id == p.outfitId }
+                }
+            }
+            if (predictedOutfits.isNotEmpty()) {
+                val itemsById = remember(wardrobeState.images) {
+                    wardrobeState.images.associateBy { it.driveId }
+                }
+                OutfitFullScreenViewer(
+                    outfits = predictedOutfits,
+                    initialIndex = outfitsState.predictionIndex.coerceIn(0, predictedOutfits.lastIndex),
+                    itemsById = itemsById,
+                    locations = locationState.locations,
+                    activeLocationId = locationState.activeLocationId,
+                    onDismiss = outfitsViewModel::clearPrediction,
+                    onEdit = { o ->
+                        outfitsViewModel.clearPrediction()
+                        outfitsViewModel.startEditing(o, wardrobeState.images, profileState.preferences)
+                    },
+                    onWear = { o -> outfitEventsViewModel.recordOutfit(o.id) },
+                    onDelete = { o ->
+                        outfitsViewModel.deleteOutfit(o.id)
+                        if (predictedOutfits.size <= 1) outfitsViewModel.clearPrediction()
+                    },
+                    onSuggestTags = { o ->
+                        outfitsViewModel.suggestTagsForOutfit(o, wardrobeState.images, profileState.preferences)
+                    },
+                    onEditTags = { o -> outfitsViewModel.openOutfitTagsEditor(o.id) },
+                    wardrobeViewModel = wardrobeViewModel,
+                )
+            }
         }
 
         // After saving a style, offer to wear it immediately
