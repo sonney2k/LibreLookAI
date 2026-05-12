@@ -1551,8 +1551,8 @@ internal fun FullScreenViewer(
                             onRemoveBackground(currentImage.driveId)
                             showEditMenu = false
                         },
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError,
                         icon = { Icon(Icons.Default.ImageSearch, contentDescription = null) },
                         text = {
                             Text(stringResource(
@@ -1567,8 +1567,8 @@ internal fun FullScreenViewer(
                             showFixCutoutBgDialog = true
                             showEditMenu = false
                         },
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError,
                         icon = { Icon(Icons.Default.AutoFixHigh, contentDescription = null) },
                         text = { Text(stringResource(R.string.wardrobe_fix_cutout_bg)) },
                     )
@@ -1591,8 +1591,8 @@ internal fun FullScreenViewer(
                             showEditMenu = false
                             showDeleteDialog = true
                         },
-                        containerColor = MaterialTheme.colorScheme.errorContainer,
-                        contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError,
                         icon = { Icon(Icons.Default.Delete, contentDescription = null) },
                         text = { Text(stringResource(R.string.action_delete)) },
                     )

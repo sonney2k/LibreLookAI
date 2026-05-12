@@ -15,22 +15,16 @@ security/function relevant parts of a prompts should not be appear in settings. 
 
 should travel planner be a tab under outfits?
 
+travel screen create tabs: create travel outfits and another one with travels that shows the travel outfits. tag outfits with travel.
+
 TODO
 ====
 
-
 create human readable release notes between now and v1.6.1 and release version 1.7.0, git tag commit and upload to testers in firebase
-
-[bug] on outfits and wardrobe item view make fab "delete" red, aswell as data/repair & sync + cutout
-
-travel screen create tabs: create travel outfits and another one with travels that shows the travel outfits. tag outfits with travel.
 
 Storage:
 - I noticed .jpgs from camera are just 124kB but .pngs are 450kB. Since this is on users drive folders we have to be cautious about size. Let's target 1GB - to allow for 2000-4000 wardrobe items.
 
-Wardrobe:
-- on wardrobe item screen make delete button red
-- Add item search / filtering by text for all, once with some local AI based text search and once with Gemini. This is for all outfits, wardrobe.
 
 Feedback:
 add way to send feedback via firebase under settings -> feedback
@@ -39,26 +33,26 @@ add a feedback tab under settings move debug setting under this tab
 
 IN PROGRESS
 ===========
-
+[bug]
+make all dangerous operations red that is
+- deleting items
+- destructive operations on images
+- example on outfits and wardrobe item view make fab "delete" red, aswell as data/repair & sync + cutout
+- on wardrobe item screen make delete button red
 
 Repair & Sync:
 - [bug] On repair & sync Preview screen buttons are outside of bottom of screen. Fix like you did in in several other cases for e.g. duplicate search.
 - On repair & sync - it displays me 195 items marked as similar. These are exactly the items I already have imported. Why is that?
 
+DONE
+=====
 Try-on:
 - Try-on details, clicking on item shows the item in big & shows button to go to this item in wardrobe.
 - Add same filtering options like on outfits screen.
 - Add a + FAB like on outfits but this time to create new try-on that shows the create try-on page.
 - [bug] When a try-on is displayed fix the name: Instead of Save to google drive, give it a non-technical save name
+- Add item search / filtering by text for all, once with some local AI based text search and once with Gemini. This is for all outfits, wardrobe.
 
-
-
-
-
-
-
-DONE
-=====
 when suggesting an outfit from existing outfits - show the resulting outfit exactly like when you click on an outfit in the outfit detail view not in the outfit create view. enable sliding left right through options.
 
 clicking on an outfit currently shows the wardrobe items of an outfit in a grid. I want a more natural look. the items should not be aligned with a grid, have transparent background. they should be partially overlapping with a slight shadow cast for each item and big enough to fill as much of the drawable screen content together as possible. this probably means removing the grid and drawing them on a canvas

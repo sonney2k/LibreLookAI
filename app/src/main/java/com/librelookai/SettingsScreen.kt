@@ -900,15 +900,17 @@ private fun DataTab(
                     )
                 }
             } else {
-                OutlinedButton(
+                Button(
                     onClick = {
                         Analytics.action("Settings/Data", "open_retag_dialog")
                         showRetagDialog = true
                     },
                     modifier = Modifier.fillMaxWidth(),
                     enabled = !isOffline,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.error),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError,
+                    ),
                 ) {
                     Icon(Icons.Default.Refresh, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.padding(start = 8.dp))
@@ -944,15 +946,17 @@ private fun DataTab(
                     )
                 }
             } else {
-                OutlinedButton(
+                Button(
                     onClick = {
                         Analytics.action("Settings/Data", "open_remove_bg_dialog")
                         showRemoveBgDialog = true
                     },
                     modifier = Modifier.fillMaxWidth(),
                     enabled = !isOffline,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.error),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError,
+                    ),
                 ) {
                     Icon(Icons.Default.AutoFixHigh, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.padding(start = 8.dp))
@@ -1021,13 +1025,17 @@ private fun DataTab(
                         }
                     }
                 }
-                else -> OutlinedButton(
+                else -> Button(
                     onClick = {
                         Analytics.action("Settings/Data", "start_cutout_bg_fix")
                         onStartCutoutBgFix()
                     },
                     modifier = Modifier.fillMaxWidth(),
                     enabled = !isOffline && cutoutBgFix == null,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError,
+                    ),
                 ) {
                     Icon(Icons.Default.AutoFixHigh, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.padding(start = 8.dp))
@@ -1082,15 +1090,17 @@ private fun DataTab(
                         TextButton(onClick = onDismissAudit) { Text(stringResource(R.string.action_ok)) }
                     }
                 }
-                else -> OutlinedButton(
+                else -> Button(
                     onClick = {
                         Analytics.action("Settings/Data", "start_repair_and_refresh")
                         onStartRepairAndRefresh()
                     },
                     modifier = Modifier.fillMaxWidth(),
                     enabled = !wardrobeState.isLoading && audit == null && !isOffline,
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.error),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError,
+                    ),
                 ) {
                     Icon(Icons.Default.DeleteSweep, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.padding(start = 8.dp))

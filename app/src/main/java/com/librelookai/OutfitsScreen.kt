@@ -1854,7 +1854,8 @@ private fun OutfitEditItemSlot(
             SmallFloatingActionButton(
                 onClick = onRemove,
                 modifier = Modifier.size(20.dp),
-                containerColor = MaterialTheme.colorScheme.errorContainer,
+                containerColor = MaterialTheme.colorScheme.error,
+                contentColor = MaterialTheme.colorScheme.onError,
                 elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 0.dp),
             ) {
                 Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_remove), modifier = Modifier.size(12.dp))
@@ -2737,8 +2738,8 @@ private fun OutfitFullScreenViewer(
                                     showEditMenu = false
                                     showDeleteDialog = true
                                 },
-                                containerColor = MaterialTheme.colorScheme.errorContainer,
-                                contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                                containerColor = MaterialTheme.colorScheme.error,
+                                contentColor = MaterialTheme.colorScheme.onError,
                                 icon = { Icon(Icons.Default.Delete, contentDescription = null) },
                                 text = { Text(stringResource(R.string.action_delete)) },
                             )
