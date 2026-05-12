@@ -30,6 +30,8 @@ import kotlinx.coroutines.sync.withLock
 import java.io.File
 import java.util.concurrent.atomic.AtomicInteger
 
+private val FUZZY_TOKEN_SPLIT = Regex("[^\\p{L}\\p{Nd}]+")
+
 enum class WardrobeView { GRID, CAPTURE, FIND_BY_PHOTO_CAPTURE }
 
 /** A wardrobe item ranked against a "find item by photo" query, with cosine score. */
@@ -462,13 +464,6 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
     fun setLanguage(geminiName: String) {
         geminiLanguage = geminiName
-        // Semantic search needs the BCP-47 code for ML Kit Translate; geminiName is the
-        // human label ("English" / "German"). Round-trip through AppLanguage when possible.
-        val bcp47 = when (geminiName) {
-            "German" -> "de"
-            else -> "en"
-        }
-        semanticSearch.setSourceLanguage(bcp47)
     }
 
     /** Push UserPreferences-derived similarity settings into the VM. Called from MainActivity. */
@@ -1840,12 +1835,10 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         _state.update { it.copy(findByPhoto = null) }
     }
 
-    // ---------- Semantic text search ----------
+    // ---------- Fuzzy text search ----------
 
-    private val semanticSearch by lazy { LocalSemanticSearchHelper(getApplication()) }
-
-    /** Run on-device semantic search across all configured closets and surface results
-     *  through the shared find-by-photo bottom sheet. */
+    /** Search wardrobe tags by literal substring match with a small Levenshtein tolerance
+     *  for typos. Surfaces results through the shared find-by-photo bottom sheet. */
     fun searchByText(query: String) {
         val q = query.trim()
         if (q.isEmpty()) return
@@ -1856,15 +1849,110 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             ) }
             refreshAllLocationImagesState()
             val pool = _state.value.allLocationImages
-            val ranked = semanticSearch.searchWardrobe(q, pool)
+            val matches = withContext(Dispatchers.Default) { fuzzyMatchByTags(q, pool) }
             _state.update {
                 it.copy(findByPhoto = FindByPhoto(
                     textQuery = q,
-                    matches = ranked.map { r -> FindByPhotoMatch(r.item, r.score) },
+                    matches = matches,
                     isSearching = false,
                 ))
             }
         }
+    }
+
+    private fun fuzzyMatchByTags(query: String, items: List<DriveImage>): List<FindByPhotoMatch> {
+        val tokens = normalizeForSearch(query).split(FUZZY_TOKEN_SPLIT).filter { it.isNotEmpty() }
+        if (tokens.isEmpty()) return emptyList()
+        val localeCtx = localizedResourceContext()
+        return items.mapNotNull { item ->
+            val canonical = item.tags?.let { tagsToStrings(it) } ?: return@mapNotNull null
+            // Stored tags are canonical English (e.g. "red", "white"); the UI displays them
+            // through `tagValueResId` → localized string ("Rot", "Weiß"). Match against both
+            // forms so users can search in either language.
+            val tagStrings = canonical.flatMap { v ->
+                val resId = tagValueResId(v)
+                if (resId != null) listOf(v, localeCtx.getString(resId)) else listOf(v)
+            }
+            if (tagStrings.isEmpty()) return@mapNotNull null
+            var totalScore = 0f
+            var allMatched = true
+            for (tok in tokens) {
+                val best = bestTokenScore(tok, tagStrings)
+                if (best <= 0f) { allMatched = false; break }
+                totalScore += best
+            }
+            if (!allMatched) null else FindByPhotoMatch(item, totalScore / tokens.size)
+        }.sortedByDescending { it.score }
+    }
+
+    private fun bestTokenScore(token: String, tagStrings: List<String>): Float {
+        var best = 0f
+        for (raw in tagStrings) {
+            val tag = normalizeForSearch(raw)
+            if (tag.isEmpty()) continue
+            if (tag.contains(token)) {
+                // Whole-word/exact matches outrank substring matches.
+                val score = if (tag == token) 1.0f else 0.9f
+                if (score > best) best = score
+                continue
+            }
+            val tol = when {
+                token.length <= 3 -> 0
+                token.length <= 5 -> 1
+                else -> 2
+            }
+            if (tol == 0) continue
+            // Compare token against each whitespace-separated word in the tag.
+            for (word in tag.split(FUZZY_TOKEN_SPLIT)) {
+                if (word.isEmpty()) continue
+                if (kotlin.math.abs(word.length - token.length) > tol) continue
+                val d = levenshtein(token, word)
+                if (d <= tol) {
+                    val score = 0.75f - 0.1f * d
+                    if (score > best) best = score
+                }
+            }
+        }
+        return best
+    }
+
+    /** Lowercase + collapse German umlauts/ß into ASCII so "weiss" and "weiß" compare equal. */
+    private fun normalizeForSearch(s: String): String = s.lowercase()
+        .replace('ä', 'a').replace('ö', 'o').replace('ü', 'u').replace("ß", "ss")
+
+    /** Resource-loading context whose locale follows the active app language, so
+     *  `getString` returns the same localized tag values the UI shows. */
+    private fun localizedResourceContext(): Context {
+        val locale = if (geminiLanguage == "German") java.util.Locale("de") else java.util.Locale.ENGLISH
+        val app = getApplication<Application>()
+        val cfg = android.content.res.Configuration(app.resources.configuration)
+        cfg.setLocale(locale)
+        return app.createConfigurationContext(cfg)
+    }
+
+    private fun tagsToStrings(t: ClothingTags): List<String> = buildList {
+        if (t.label.isNotBlank()) add(t.label)
+        if (t.type.isNotBlank()) add(t.type)
+        if (t.category.isNotBlank()) add(t.category)
+        addAll(t.uses); addAll(t.colors); addAll(t.seasonality)
+        addAll(t.aesthetic); addAll(t.fit); addAll(t.material); addAll(t.pattern)
+    }.filter { it.isNotBlank() }
+
+    private fun levenshtein(a: String, b: String): Int {
+        val costs = IntArray(b.length + 1) { it }
+        for (i in 1..a.length) {
+            var nw = i - 1
+            costs[0] = i
+            for (j in 1..b.length) {
+                val cj = minOf(
+                    1 + minOf(costs[j], costs[j - 1]),
+                    if (a[i - 1] == b[j - 1]) nw else nw + 1,
+                )
+                nw = costs[j]
+                costs[j] = cj
+            }
+        }
+        return costs[b.length]
     }
 
     /** Request that the wardrobe grid scroll to and pulse the given item once it's loaded. */
