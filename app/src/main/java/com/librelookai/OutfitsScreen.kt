@@ -129,6 +129,17 @@ private fun OutfitSortOption.displayLabel(): String = when (this) {
     OutfitSortOption.ITEM_COUNT -> stringResource(R.string.outfits_sort_most_items)
 }
 
+private enum class TryOnSortOption {
+    DATE_DESC, DATE_ASC, ITEM_COUNT
+}
+
+@Composable
+private fun TryOnSortOption.displayLabel(): String = when (this) {
+    TryOnSortOption.DATE_DESC  -> stringResource(R.string.outfits_sort_newest)
+    TryOnSortOption.DATE_ASC   -> stringResource(R.string.outfits_sort_oldest)
+    TryOnSortOption.ITEM_COUNT -> stringResource(R.string.outfits_sort_most_items)
+}
+
 private fun List<Outfit>.outfitTagCategories(itemsById: Map<String, DriveImage>): List<TagCategory> {
     val allImages = flatMap { style -> style.itemIds.mapNotNull { itemsById[it] } }
     return allImages.tagCategories()
@@ -416,9 +427,13 @@ private fun OutfitListScreen(
     var selectedTags by remember { mutableStateOf(emptyMap<String, Set<String>>()) }
     var sortBy by remember { mutableStateOf(OutfitSortOption.DATE_DESC) }
     var filterSheetOpen by remember { mutableStateOf(false) }
+    var textQuery by remember { mutableStateOf("") }
     var tryOnSelectedTags by remember { mutableStateOf(emptyMap<String, Set<String>>()) }
     var tryOnFilterSheetOpen by remember { mutableStateOf(false) }
-    val appliedFilterCount = selectedTags.values.sumOf { it.size }
+    var tryOnTextQuery by remember { mutableStateOf("") }
+    var tryOnSortBy by remember { mutableStateOf(TryOnSortOption.DATE_DESC) }
+    val appliedFilterCount = selectedTags.values.sumOf { it.size } + (if (textQuery.isNotBlank()) 1 else 0)
+    val tryOnAppliedFilterCount = tryOnSelectedTags.values.sumOf { it.size } + (if (tryOnTextQuery.isNotBlank()) 1 else 0)
 
     val tagCategories = remember(styles, itemsById) { styles.outfitTagCategories(itemsById) }
     // Items referenced by any try-on (resolved by filename, same as TryOnDetailContent).
@@ -435,8 +450,13 @@ private fun OutfitListScreen(
 
     // A style is shown only when ALL its items are loaded for the current location filter.
     // imagesByName already reflects the active location so this check enforces the filter naturally.
-    val filteredStyles = remember(styles, selectedTags, imagesByName) {
+    val filteredStyles = remember(styles, selectedTags, imagesByName, textQuery) {
         val activeFilters = selectedTags.filter { (_, tags) -> tags.isNotEmpty() }
+        val q = textQuery.trim()
+        val qLower = q.lowercase()
+        val itemsMatchingText: Set<String>? = if (q.isBlank()) null else {
+            wardrobeViewModel.fuzzyFilterByText(q, items).map { it.driveId }.toSet()
+        }
         styles.filter { style ->
             val allLoaded = if (style.itemNames.isNotEmpty()) {
                 style.itemNames.all { it in imagesByName }
@@ -444,13 +464,18 @@ private fun OutfitListScreen(
                 style.itemIds.isNotEmpty() && style.itemIds.all { id -> id in itemsById }
             }
             if (!allLoaded) return@filter false
-            if (activeFilters.isEmpty()) return@filter true
-            activeFilters.all { (categoryLabel, catTags) ->
+            val tagsOk = activeFilters.isEmpty() || activeFilters.all { (categoryLabel, catTags) ->
                 style.itemIds.any { id ->
                     val img = itemsById[id] ?: return@any false
                     catTags.any { it in img.tagStringsForCategory(categoryLabel) }
                 }
             }
+            if (!tagsOk) return@filter false
+            if (itemsMatchingText == null) return@filter true
+            style.name.lowercase().contains(qLower) ||
+                style.description.lowercase().contains(qLower) ||
+                style.tags.any { it.lowercase().contains(qLower) } ||
+                style.itemIds.any { it in itemsMatchingText }
         }
     }
 
@@ -532,30 +557,55 @@ private fun OutfitListScreen(
             }
 
             if (onTryOnsTab) {
-                val filteredTryOns = remember(tryOnHistory, tryOnSelectedTags, tryOnItemsByTryOn) {
+                val filteredTryOns = remember(tryOnHistory, tryOnSelectedTags, tryOnItemsByTryOn, tryOnTextQuery) {
                     val active = tryOnSelectedTags.filter { (_, tags) -> tags.isNotEmpty() }
-                    if (active.isEmpty()) tryOnHistory
-                    else tryOnHistory.filter { t ->
+                    val q = tryOnTextQuery.trim()
+                    val itemsMatchingText: Set<String>? = if (q.isBlank()) null else {
+                        wardrobeViewModel.fuzzyFilterByText(q, items).map { it.driveId }.toSet()
+                    }
+                    tryOnHistory.filter { t ->
                         val tItems = tryOnItemsByTryOn[t].orEmpty()
-                        active.all { (categoryLabel, catTags) ->
+                        val tagsOk = active.isEmpty() || active.all { (categoryLabel, catTags) ->
                             tItems.any { img ->
                                 catTags.any { it in img.tagStringsForCategory(categoryLabel) }
                             }
                         }
+                        if (!tagsOk) return@filter false
+                        itemsMatchingText == null || tItems.any { it.driveId in itemsMatchingText }
+                    }
+                }
+                val displayedTryOns = remember(filteredTryOns, tryOnSortBy) {
+                    when (tryOnSortBy) {
+                        TryOnSortOption.DATE_DESC  -> filteredTryOns.sortedByDescending { it.createdAt }
+                        TryOnSortOption.DATE_ASC   -> filteredTryOns.sortedBy { it.createdAt }
+                        TryOnSortOption.ITEM_COUNT -> filteredTryOns.sortedByDescending { it.itemNames.size }
                     }
                 }
                 if (tryOnHistory.isNotEmpty()) {
-                    QuickCategoryRow(
-                        totalCount = tryOnHistory.size,
-                        filteredCount = filteredTryOns.size,
-                        appliedFilterCount = tryOnSelectedTags.values.sumOf { it.size },
-                        filtersEnabled = tryOnTagCategories.isNotEmpty(),
-                        onClearFilters = { tryOnSelectedTags = emptyMap() },
-                        onOpenFilters = { tryOnFilterSheetOpen = true },
-                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(com.librelookai.ui.theme.LocalWardrobePalette.current.surface),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        QuickCategoryRow(
+                            totalCount = tryOnHistory.size,
+                            filteredCount = filteredTryOns.size,
+                            appliedFilterCount = tryOnAppliedFilterCount,
+                            filtersEnabled = tryOnTagCategories.isNotEmpty() || tryOnHistory.isNotEmpty(),
+                            onClearFilters = { tryOnSelectedTags = emptyMap(); tryOnTextQuery = "" },
+                            onOpenFilters = { tryOnFilterSheetOpen = true },
+                            modifier = Modifier.weight(1f),
+                        )
+                        TryOnSortButton(
+                            sortBy = tryOnSortBy,
+                            onSortChanged = { tryOnSortBy = it },
+                            modifier = Modifier.padding(end = 4.dp),
+                        )
+                    }
                 }
                 TryOnHistoryGrid(
-                    history = filteredTryOns,
+                    history = displayedTryOns,
                     onOpen  = onOpenTryOnHistoryItem,
                 )
                 return@Column
@@ -614,8 +664,8 @@ private fun OutfitListScreen(
                         totalCount = styles.size,
                         filteredCount = filteredStyles.size,
                         appliedFilterCount = appliedFilterCount,
-                        filtersEnabled = tagCategories.isNotEmpty(),
-                        onClearFilters = { selectedTags = emptyMap() },
+                        filtersEnabled = tagCategories.isNotEmpty() || styles.isNotEmpty(),
+                        onClearFilters = { selectedTags = emptyMap(); textQuery = "" },
                         onOpenFilters = { filterSheetOpen = true },
                         modifier = Modifier.weight(1f),
                     )
@@ -771,6 +821,8 @@ private fun OutfitListScreen(
                 selectedTags = selectedTags,
                 appliedCount = displayedStyles.size,
                 onTagsChanged = { selectedTags = it },
+                textQuery = textQuery,
+                onTextQueryChanged = { textQuery = it },
                 onDismiss = { filterSheetOpen = false },
             )
         }
@@ -793,6 +845,8 @@ private fun OutfitListScreen(
                 selectedTags = tryOnSelectedTags,
                 appliedCount = previewCount,
                 onTagsChanged = { tryOnSelectedTags = it },
+                textQuery = tryOnTextQuery,
+                onTextQueryChanged = { tryOnTextQuery = it },
                 onDismiss = { tryOnFilterSheetOpen = false },
             )
         }
@@ -882,6 +936,47 @@ private fun StyleSortButton(
                         },
                         onClick = {
                             Analytics.action("Outfits", "sort_changed", mapOf("option" to option.name))
+                            onSortChanged(option); expanded = false
+                        },
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun TryOnSortButton(
+    sortBy: TryOnSortOption,
+    onSortChanged: (TryOnSortOption) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var expanded by remember { mutableStateOf(false) }
+    val parentContext = LocalContext.current
+    val parentConfiguration = LocalConfiguration.current
+    Box(modifier = modifier) {
+        IconButton(onClick = { expanded = true }) {
+            Icon(Icons.AutoMirrored.Filled.Sort, contentDescription = stringResource(R.string.action_sort))
+        }
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            CompositionLocalProvider(
+                LocalContext provides parentContext,
+                LocalConfiguration provides parentConfiguration,
+            ) {
+                TryOnSortOption.entries.forEach { option ->
+                    DropdownMenuItem(
+                        text = {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            ) {
+                                if (option == sortBy) Icon(Icons.Default.Check, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
+                                else Spacer(Modifier.size(18.dp))
+                                Text(option.displayLabel())
+                            }
+                        },
+                        onClick = {
+                            Analytics.action("TryOns", "sort_changed", mapOf("option" to option.name))
                             onSortChanged(option); expanded = false
                         },
                     )
