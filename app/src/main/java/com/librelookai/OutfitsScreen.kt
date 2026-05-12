@@ -291,11 +291,7 @@ fun OutfitsScreen(
                         )
                     },
                     onSuggestExisting = {
-                        outfitsViewModel.triggerPrediction(
-                            prefs   = profileState.preferences,
-                            weather = weatherState.data,
-                            images  = wardrobeState.images,
-                        )
+                        outfitsViewModel.openPredictionSetup(defaultSourceFolderId = null)
                     },
                     onEditOutfit = { style ->
                         outfitsViewModel.startEditing(style, wardrobeState.images, profileState.preferences)
@@ -413,6 +409,14 @@ fun OutfitsScreen(
                 Text(stringResource(R.string.outfits_saved_wear_today))
             }
         }
+
+        PredictionSetupDialog(
+            outfitsViewModel = outfitsViewModel,
+            profileViewModel = profileViewModel,
+            weatherViewModel = weatherViewModel,
+            locationViewModel = locationViewModel,
+            wardrobeViewModel = wardrobeViewModel,
+        )
     }
 }
 

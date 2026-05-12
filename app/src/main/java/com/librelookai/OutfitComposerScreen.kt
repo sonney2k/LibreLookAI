@@ -677,7 +677,7 @@ private fun GoalPill(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ContextStrip(
+internal fun ContextStrip(
     weatherMode: ComposerWeatherMode,
     autoWeather: WeatherData?,
     manualTempC: Int?,
@@ -1304,7 +1304,7 @@ internal fun OutfitTagsEditor(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun WeatherPickerSheet(
+internal fun WeatherPickerSheet(
     mode: ComposerWeatherMode,
     onModeChange: (ComposerWeatherMode) -> Unit,
     autoWeather: WeatherData?,
@@ -1359,7 +1359,7 @@ private fun WeatherPickerSheet(
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-private fun ClosetPickerSheet(
+internal fun ClosetPickerSheet(
     locations: List<Location>,
     selected: Set<String>,
     onToggle: (String) -> Unit,

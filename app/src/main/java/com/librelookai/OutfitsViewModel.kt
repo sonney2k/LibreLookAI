@@ -105,6 +105,8 @@ data class OutfitsUiState(
     val composerSourceFolderIds: Set<String> = emptySet(),
     val isComposerEnhancing: Boolean = false,
     val composerError: String? = null,
+    /** True while the "Find with AI" setup dialog is showing on the Outfits tab. */
+    val isPredictionSetupOpen: Boolean = false,
     val error: String? = null,
     /** AI tag-suggestion flow launched from the outfit detail viewer. */
     val tagSuggestion: TagSuggestionState? = null,
@@ -851,9 +853,47 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
      * @param weather current weather reading (may be null if location not yet available)
      * @param images  full wardrobe list with tags
      */
-    fun triggerPrediction(prefs: UserPreferences?, weather: WeatherData?, images: List<DriveImage>) {
-        _state.update { it.copy(feedbackHistory = emptyList(), refinementInput = "") }
-        doTriggerPrediction(prefs, weather, images, emptyList())
+
+    /**
+     * Opens the "Find with AI" setup dialog. The dialog collects a free-text goal, weather
+     * override, closet filter, and vibe chips (reusing composer state). Submitting it triggers
+     * the prediction via [submitPredictionSetup].
+     */
+    fun openPredictionSetup(defaultSourceFolderId: String?) {
+        val sourceFolders = defaultSourceFolderId?.let { setOf(it) } ?: emptySet()
+        _state.update {
+            it.copy(
+                isPredictionSetupOpen   = true,
+                composerFeedback        = "",
+                composerVibes           = emptySet(),
+                composerWeatherMode     = ComposerWeatherMode.AUTO,
+                composerManualSeason    = "",
+                composerManualTempC     = null,
+                composerManualPrecip    = "",
+                composerSourceFolderIds = sourceFolders,
+            )
+        }
+    }
+
+    fun closePredictionSetup() = _state.update { it.copy(isPredictionSetupOpen = false) }
+
+    /**
+     * Called from the prediction-setup dialog's "Find" CTA. Snapshots the user's goal text as
+     * the first refinement entry so the rest of the prediction/refinement loop uses one path.
+     */
+    fun submitPredictionSetup(prefs: UserPreferences?, weather: WeatherData?, images: List<DriveImage>) {
+        val s = _state.value
+        val goal = s.composerFeedback.trim()
+        val history = if (goal.isNotEmpty()) listOf(goal) else emptyList()
+        _state.update {
+            it.copy(
+                isPredictionSetupOpen = false,
+                composerFeedback      = "",
+                feedbackHistory       = history,
+                refinementInput       = "",
+            )
+        }
+        doTriggerPrediction(prefs, weather, images, history)
     }
 
     fun refinePrediction(prefs: UserPreferences?, weather: WeatherData?, images: List<DriveImage>) {
@@ -880,6 +920,9 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             _state.update { it.copy(predictionError = "No styles to choose from yet.") }
             return
         }
+        val setup = _state.value
+        val filteredImages = if (setup.composerSourceFolderIds.isEmpty()) images
+            else images.filter { it.folderId in setup.composerSourceFolderIds }
         viewModelScope.launch {
             _state.update { it.copy(isPredicting = true, prediction = null, predictionSuggestions = emptyList(), predictionIndex = 0, predictionError = null) }
 
@@ -894,9 +937,14 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 cityName        = weather?.cityName,
                 countryCode     = countryCode,
                 fashionTrends   = fashionTrends,
-                images          = images,
+                images          = filteredImages,
                 styles          = styles,
                 feedbackHistory = feedbackHistory,
+                weatherMode     = setup.composerWeatherMode,
+                manualSeason    = setup.composerManualSeason,
+                manualTempC     = setup.composerManualTempC,
+                manualPrecip    = setup.composerManualPrecip,
+                vibes           = setup.composerVibes,
             )
             Log.d("StylesVM", "Prediction prompt length: ${prompt.length} chars")
             prompt.chunked(3000).forEachIndexed { i, chunk ->
@@ -1288,6 +1336,11 @@ private fun buildPredictionPrompt(
     images: List<DriveImage>,
     styles: List<Outfit>,
     feedbackHistory: List<String> = emptyList(),
+    weatherMode: ComposerWeatherMode = ComposerWeatherMode.AUTO,
+    manualSeason: String = "",
+    manualTempC: Int? = null,
+    manualPrecip: String = "",
+    vibes: Set<String> = emptySet(),
 ): String {
     val c = prefs?.aiConsiderations ?: AiConsiderations()
     val age = prefs?.yearOfBirth?.let { LocalDate.now().year - it }
@@ -1340,7 +1393,24 @@ private fun buildPredictionPrompt(
         }
         if (c.weather) {
             appendLine("## Today's Weather ($locationStr)")
-            appendLine(weatherStr)
+            if (weatherMode == ComposerWeatherMode.MANUAL) {
+                val parts = buildList {
+                    manualSeason.takeIf { it.isNotEmpty() }?.let { add("Season: $it") }
+                    manualTempC?.let { add("Temperature: ${it}°C") }
+                    manualPrecip.takeIf { it.isNotEmpty() }?.let { add("Precipitation: $it") }
+                }
+                appendLine(
+                    if (parts.isEmpty()) "manual override (no details specified)"
+                    else parts.joinToString(", ") + " (manual override)"
+                )
+            } else {
+                appendLine(weatherStr)
+            }
+            appendLine()
+        }
+        if (vibes.isNotEmpty()) {
+            appendLine("## Preferred Vibes")
+            appendLine("The user wants outfits matching these vibes: ${vibes.joinToString(", ")}.")
             appendLine()
         }
         if (c.trends) {

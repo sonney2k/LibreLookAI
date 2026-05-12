@@ -403,6 +403,8 @@
     <string name="outfits_sort_most_items">Meiste Teile</string>
     <string name="outfits_create_manual">Outfit manuell erstellen</string>
     <string name="outfits_suggest">Bestehendes Outfit vorschlagen</string>
+    <string name="prediction_setup_title">Mit KI finden</string>
+    <string name="prediction_setup_find">Finden</string>
     <string name="outfits_compose">Neues Outfit zusammenstellen</string>
     <string name="outfits_thinking">Denkt nach…</string>
     <string name="outfits_suggesting">Outfit wird vorgeschlagen…</string>

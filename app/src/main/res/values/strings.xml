@@ -409,6 +409,8 @@
     <string name="outfits_sort_most_items">Most items</string>
     <string name="outfits_create_manual">Create outfit manually</string>
     <string name="outfits_suggest">Suggest existing outfit</string>
+    <string name="prediction_setup_title">Find with AI</string>
+    <string name="prediction_setup_find">Find</string>
     <string name="outfits_compose">Compose new outfit</string>
     <string name="outfits_thinking">Thinking…</string>
     <string name="outfits_suggesting">Suggesting outfit…</string>
