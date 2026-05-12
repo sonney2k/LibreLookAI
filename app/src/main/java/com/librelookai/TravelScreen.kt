@@ -105,6 +105,7 @@ fun TravelScreen(
     Column(modifier = modifier.fillMaxSize()) {
         AppScreenHeader(
             title = stringResource(R.string.travel_title),
+            leadingIcon = Icons.Default.FlightTakeoff,
             trailingContent = {
                 LocationButton(
                     locations = locationState.locations,

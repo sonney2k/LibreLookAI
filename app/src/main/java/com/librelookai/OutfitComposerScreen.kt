@@ -55,6 +55,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -180,7 +181,19 @@ fun OutfitComposerScreen(
     var showAddItemSheet by remember { mutableStateOf<Layer?>(null) }
     var showWeatherSheet by remember { mutableStateOf(false) }
     var showClosetSheet by remember { mutableStateOf(false) }
-    var advancedOpen by remember { mutableStateOf(false) }
+    var showAddTagDialog by remember { mutableStateOf(false) }
+    var showDiscardDialog by remember { mutableStateOf(false) }
+    val hasComposerContent = s.composerItemIds.isNotEmpty() ||
+        s.composerTags.isNotEmpty() ||
+        s.composerVibes.isNotEmpty() ||
+        s.composerDescription.isNotBlank()
+    val requestClose: () -> Unit = {
+        if (hasComposerContent) showDiscardDialog = true
+        else {
+            Analytics.action("OutfitComposer", "close")
+            stylesViewModel.closeComposer()
+        }
+    }
 
     // Fullscreen Dialog: read insets via LocalSystemBarsPadding with a 48dp nav-bar floor.
     // (See CLAUDE.md – Compose Dialog Quirks.)
@@ -222,7 +235,7 @@ fun OutfitComposerScreen(
     val filledLayers = currentByLayer.count { it.value.isNotEmpty() }
 
     Dialog(
-        onDismissRequest = { stylesViewModel.closeComposer() },
+        onDismissRequest = requestClose,
         properties = DialogProperties(usePlatformDefaultWidth = false, dismissOnBackPress = true, dismissOnClickOutside = false),
     ) {
         CompositionLocalProvider(
@@ -239,10 +252,7 @@ fun OutfitComposerScreen(
                         Header(
                             filledLayers = filledLayers,
                             topPadding = effectiveTop,
-                            onClose = {
-                                Analytics.action("OutfitComposer", "close")
-                                stylesViewModel.closeComposer()
-                            },
+                            onClose = requestClose,
                         )
 
                         Column(
@@ -250,7 +260,7 @@ fun OutfitComposerScreen(
                                 .weight(1f)
                                 .verticalScroll(rememberScrollState())
                                 .padding(horizontal = 16.dp)
-                                .padding(top = 4.dp, bottom = 8.dp),
+                                .padding(top = 0.dp, bottom = 8.dp),
                             verticalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
                             // ── Goal pill ───────────────────────────────────
@@ -330,33 +340,50 @@ fun OutfitComposerScreen(
                                 )
                             }
 
-                            // ── Advanced row ────────────────────────────────
-                            AdvancedPill(
-                                expanded = advancedOpen,
-                                onToggle = {
-                                    advancedOpen = !advancedOpen
-                                    Analytics.action("OutfitComposer", "advanced_toggle", mapOf("open" to advancedOpen.toString()))
-                                },
-                            )
-                            AnimatedVisibility(visible = advancedOpen) {
-                                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                                    SectionHeader(stringResource(R.string.composer_tags_optional))
-                                    OutfitTagsEditor(
-                                        tags = s.composerTags,
-                                        onAdd = stylesViewModel::addComposerTag,
-                                        onRemove = stylesViewModel::removeComposerTag,
-                                    )
-
-                                    OutlinedTextField(
-                                        value = s.composerDescription,
-                                        onValueChange = { stylesViewModel.updateComposerDescription(it) },
-                                        modifier = Modifier.fillMaxWidth(),
-                                        placeholder = { Text(stringResource(R.string.composer_desc_placeholder)) },
-                                        minLines = 2,
-                                        maxLines = 4,
+                            // ── Tags (chip picker over all known outfit tags) ──
+                            SectionHeader(stringResource(R.string.composer_tags_optional))
+                            val knownTags = remember(s.outfits, s.composerTags) {
+                                (s.outfits.flatMap { it.tags } + s.composerTags)
+                                    .map { it.trim() }
+                                    .filter { it.isNotEmpty() }
+                                    .distinctBy { it.lowercase() }
+                                    .sortedBy { it.lowercase() }
+                            }
+                            val composerTagsSet = s.composerTags.map { it.lowercase() }.toSet()
+                            FlowRow(
+                                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                verticalArrangement = Arrangement.spacedBy(6.dp),
+                            ) {
+                                knownTags.forEach { tag ->
+                                    val active = tag.lowercase() in composerTagsSet
+                                    ContextChip(
+                                        label = tag,
+                                        icon = null,
+                                        active = active,
+                                        onClick = {
+                                            if (active) stylesViewModel.removeComposerTag(tag)
+                                            else stylesViewModel.addComposerTag(tag)
+                                        },
                                     )
                                 }
+                                ContextChip(
+                                    label = stringResource(R.string.outfits_tag_add),
+                                    icon = Icons.Default.Add,
+                                    active = false,
+                                    onClick = { showAddTagDialog = true },
+                                )
                             }
+
+                            // ── Description (inline, no longer behind Advanced) ──
+                            OutlinedTextField(
+                                value = s.composerDescription,
+                                onValueChange = { stylesViewModel.updateComposerDescription(it) },
+                                modifier = Modifier.fillMaxWidth(),
+                                placeholder = { Text(stringResource(R.string.composer_desc_placeholder)) },
+                                singleLine = false,
+                                minLines = 1,
+                                maxLines = 3,
+                            )
 
                             // AI reason / error after enhancement.
                             if (s.composerReason.isNotBlank()) {
@@ -443,6 +470,78 @@ fun OutfitComposerScreen(
         }
     }
 
+    // Locale providers must wrap each slot lambda individually — AlertDialog
+    // opens its own window which re-derives LocalContext/LocalConfiguration.
+    // Wrapping the AlertDialog() call from outside does NOT propagate into slots.
+    val locale: @Composable (@Composable () -> Unit) -> Unit = { content ->
+        CompositionLocalProvider(
+            LocalContext provides parentContext,
+            LocalConfiguration provides parentConfiguration,
+        ) { content() }
+    }
+
+    if (showDiscardDialog) {
+        AlertDialog(
+            onDismissRequest = { showDiscardDialog = false },
+            title = { locale { Text(stringResource(R.string.composer_discard_title)) } },
+            text = { locale { Text(stringResource(R.string.composer_discard_message)) } },
+            confirmButton = {
+                locale {
+                    TextButton(onClick = {
+                        showDiscardDialog = false
+                        Analytics.action("OutfitComposer", "close")
+                        stylesViewModel.closeComposer()
+                    }) { Text(stringResource(R.string.composer_discard_confirm)) }
+                }
+            },
+            dismissButton = {
+                locale {
+                    TextButton(onClick = { showDiscardDialog = false }) {
+                        Text(stringResource(R.string.action_cancel))
+                    }
+                }
+            },
+        )
+    }
+
+    if (showAddTagDialog) {
+        var newTag by remember { mutableStateOf("") }
+        AlertDialog(
+            onDismissRequest = { showAddTagDialog = false },
+            title = { locale { Text(stringResource(R.string.outfits_tag_add)) } },
+            text = {
+                locale {
+                    OutlinedTextField(
+                        value = newTag,
+                        onValueChange = { newTag = it },
+                        placeholder = { Text(stringResource(R.string.outfits_tag_add_placeholder)) },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+            },
+            confirmButton = {
+                locale {
+                    TextButton(
+                        onClick = {
+                            val t = newTag.trim()
+                            if (t.isNotEmpty()) stylesViewModel.addComposerTag(t)
+                            showAddTagDialog = false
+                        },
+                        enabled = newTag.trim().isNotEmpty(),
+                    ) { Text(stringResource(R.string.outfits_tag_add)) }
+                }
+            },
+            dismissButton = {
+                locale {
+                    TextButton(onClick = { showAddTagDialog = false }) {
+                        Text(stringResource(R.string.action_cancel))
+                    }
+                }
+            },
+        )
+    }
+
     if (showClosetSheet) {
         CompositionLocalProvider(
             LocalContext provides parentContext,
@@ -466,7 +565,7 @@ private fun Header(filledLayers: Int, topPadding: Dp, onClose: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = topPadding)
-            .padding(start = 8.dp, end = 8.dp, top = 6.dp, bottom = 10.dp),
+            .padding(start = 8.dp, end = 8.dp, top = 0.dp, bottom = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         IconButton(onClick = onClose, modifier = Modifier.size(40.dp)) {
@@ -476,8 +575,8 @@ private fun Header(filledLayers: Int, topPadding: Dp, onClose: () -> Unit) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 stringResource(R.string.composer_title),
-                style = MaterialTheme.typography.titleLarge.copy(
-                    fontSize = 18.sp,
+                style = MaterialTheme.typography.headlineSmall.copy(
+                    fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                 ),
             )
@@ -865,43 +964,6 @@ private fun SeeAllTile(count: Int, onClick: () -> Unit) {
             stringResource(R.string.composer_see_all_count, count),
             style = MaterialTheme.typography.labelSmall.copy(fontSize = 9.sp, fontWeight = FontWeight.Bold),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-    }
-}
-
-// ─── Advanced pill ──────────────────────────────────────────────────────────
-
-@Composable
-private fun AdvancedPill(expanded: Boolean, onToggle: () -> Unit) {
-    val color = MaterialTheme.colorScheme.outline
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
-            .dashedBorder(color = color, width = 1.dp, radius = 14.dp)
-            .clickable(onClick = onToggle)
-            .padding(horizontal = 12.dp, vertical = 10.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center,
-    ) {
-        Icon(
-            Icons.Default.Tune,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.size(14.dp),
-        )
-        Spacer(Modifier.width(8.dp))
-        Text(
-            stringResource(R.string.composer_advanced_pill),
-            style = MaterialTheme.typography.labelMedium.copy(fontSize = 12.sp, fontWeight = FontWeight.SemiBold),
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        Spacer(Modifier.width(8.dp))
-        Icon(
-            if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.size(14.dp),
         )
     }
 }

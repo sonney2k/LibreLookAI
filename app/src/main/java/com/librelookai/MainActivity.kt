@@ -158,7 +158,7 @@ class MainActivity : ComponentActivity() {
                     val isOnline by networkMonitor.isOnline.collectAsState()
                     val isOffline = !isOnline
 
-                    var selectedTab by rememberSaveable { mutableIntStateOf(1) }
+                    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
                     LaunchedEffect(selectedTab) {
                         val name = when (selectedTab) {
                             0 -> "Outfits"; 1 -> "Wardrobe"; 2 -> "Shopping"

@@ -53,6 +53,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.Checkroom
 import androidx.compose.material.icons.filled.AutoFixHigh
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Check
@@ -734,6 +735,7 @@ private fun GridContent(
             // ---- Screen header with sort button ----
             AppScreenHeader(
                 title = stringResource(R.string.nav_wardrobe),
+                leadingIcon = Icons.Default.Checkroom,
                 trailingContent = {
                     LocationButton(
                         locations = locations,

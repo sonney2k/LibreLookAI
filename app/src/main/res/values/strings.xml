@@ -627,11 +627,13 @@
     <string name="about_credits_desc">For users who prefer not to create their own API key, the app offers a coin-based credit system. Credits can be purchased in the Credits tab and are consumed per AI action at the rates listed above. This mode routes requests through a server-side proxy.</string>
 
     <!-- Unified Outfit Composer -->
-    <string name="composer_title">Build your look</string>
+    <string name="composer_title">Create outfit</string>
+    <string name="composer_discard_title">Discard outfit?</string>
+    <string name="composer_discard_message">Your selections will be lost.</string>
+    <string name="composer_discard_confirm">Discard</string>
     <string name="composer_header_subtitle">%1$d of 5 layers · tap to swap</string>
     <string name="composer_fill_missing">Fill missing</string>
     <string name="composer_see_all_count">All %1$d</string>
-    <string name="composer_advanced_pill">Advanced — tags, description</string>
     <string name="composer_closets_all">All closets</string>
     <string name="composer_layer_picked_count">%1$d picked</string>
     <string name="composer_weather_title">Weather</string>

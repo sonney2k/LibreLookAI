@@ -42,6 +42,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.Style
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.Close
@@ -582,6 +583,7 @@ private fun OutfitListScreen(
             // ---- Screen header with sort button (Outfits tab only) ----
             AppScreenHeader(
                 title = stringResource(R.string.nav_styles),
+                leadingIcon = Icons.Default.Style,
                 trailingContent = {
                     LocationButton(
                         locations = locations,

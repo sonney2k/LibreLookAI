@@ -603,11 +603,13 @@
     <string name="about_credits_desc">Für Nutzer, die keinen eigenen API-Schlüssel erstellen möchten, bietet die App ein münzbasiertes Credit-System. Credits können im Credits-Tab gekauft und pro KI-Aktion zu den oben genannten Preisen verbraucht werden. In diesem Modus werden Anfragen über einen serverseitigen Proxy geleitet.</string>
 
     <!-- Unified Style Composer -->
-    <string name="composer_title">Look bauen</string>
+    <string name="composer_title">Outfit erstellen</string>
+    <string name="composer_discard_title">Outfit verwerfen?</string>
+    <string name="composer_discard_message">Deine Auswahl geht verloren.</string>
+    <string name="composer_discard_confirm">Verwerfen</string>
     <string name="composer_header_subtitle">%1$d von 5 Schichten · zum Tauschen tippen</string>
     <string name="composer_fill_missing">Lücken füllen</string>
     <string name="composer_see_all_count">Alle %1$d</string>
-    <string name="composer_advanced_pill">Erweitert — Tags, Beschreibung</string>
     <string name="composer_closets_all">Alle Kleiderschränke</string>
     <string name="composer_layer_picked_count">%1$d ausgewählt</string>
     <string name="composer_weather_title">Wetter</string>
