@@ -411,9 +411,15 @@ fun OutfitComposerScreen(
                         }
 
                         if (isEditMode) {
+                            // AI can only act on slots that are not (locked AND filled).
+                            // If every slot is locked + has an item, there's nothing for AI to do.
+                            val aiCanGenerate = s.composerSlots.any {
+                                !(it.isLocked && it.selectedItemId != null)
+                            }
                             ComposerEditBottomBar(
                                 saveEnabled = s.composerSlots.isNotEmpty() &&
                                     s.composerSlots.all { it.selectedItemId != null },
+                                aiEnabled = aiCanGenerate,
                                 isOffline = isOffline,
                                 onGenerateWithAi = {
                                     Analytics.action("OutfitComposer", "generate_with_ai")
@@ -814,6 +820,7 @@ private fun ContextChip(
 @Composable
 private fun ComposerEditBottomBar(
     saveEnabled: Boolean,
+    aiEnabled: Boolean,
     isOffline: Boolean,
     onGenerateWithAi: () -> Unit,
     onSave: () -> Unit,
@@ -832,6 +839,7 @@ private fun ComposerEditBottomBar(
         if (!isOffline) {
             OutlinedButton(
                 onClick = onGenerateWithAi,
+                enabled = aiEnabled,
                 modifier = Modifier.weight(1f).height(48.dp),
                 shape = RoundedCornerShape(24.dp),
             ) {
@@ -1051,6 +1059,20 @@ private fun ComposerStackedTile(
                         )
                     }
                 }
+            }
+            // AI sparkle on filled + unlocked tiles: signals AI may replace this item on the
+            // next "Generate with AI" run. Empty slots already show the badge via the
+            // silhouette block above.
+            if (image != null && !slot.isLocked) {
+                Icon(
+                    Icons.Default.AutoAwesome,
+                    contentDescription = stringResource(R.string.composer_empty_slot_ai_hint),
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(4.dp)
+                        .size(size * 0.18f),
+                )
             }
         }
     }
