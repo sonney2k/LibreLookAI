@@ -1,12 +1,30 @@
-### LibreLookAI v1.7.1 Release Notes
+### LibreLookAI v1.7.2 Release Notes
 
-#### Outfits
-- Find-with-AI now opens a setup sheet first (goal text, weather, closet, vibe chips) so you can steer the suggestion before Gemini runs. Your input is threaded into the prompt and survives refinement rounds.
+#### Outfit composer (major rebuild)
+- Tapping an outfit's Edit FAB drops you straight into edit mode — new or existing. A "Fullscreen" action gives you a chrome-free preview when you want it.
+- Slots are now laid out top-to-bottom, left-to-right (no overlapping tiles), so the lock and remove controls on every slot stay tappable. The closet badge on tiles was retired.
+- Scratch outfits no longer start with an accessory slot — add one yourself via "+ Add item" only when you need it.
+- The slot label changed from "Add slot" to "Add item".
 
-#### UI polish
-- Fullscreen viewers (Wardrobe, Outfit item, Shopping, Try-On) drop the redundant top/bottom panels — the image fills more of the screen.
-- Wardrobe item viewer no longer leaves blank space at the top; the navigation row overlays the image.
-- Dangerous actions (delete buttons, destructive confirmations) now use a single solid-red style across every screen.
+#### AI generation
+- "Create with AI" can now return multiple outfit alternatives — pick the count with the new slider (1–10).
+- When more than one suggestion arrives, a fullscreen preview opens automatically: swipe between alternatives and tap **Use this outfit** to commit the one you want. The alternatives disappear once you've chosen.
+- An AI sparkle badge appears on every slot that AI will fill or replace on the next run — both empty slots and unlocked items. Lock a tile to pin it.
+- **Generate with AI** greys out when every slot is locked + filled (there's nothing left for AI to do).
+- The "Create with AI" setup popup now appears regardless of which tab you launched the composer from.
 
-#### Translations
-- Composer bottom sheets (weather, closet, vibes) now follow the in-app language inside their own windows instead of falling back to the device locale.
+#### Picking items from the wardrobe
+- The slot picker now matches the wardrobe screen exactly: same filter pill, image-search button, sort menu, and a text-search field in the filter sheet.
+- Image-search inside the picker stays inside the composer — snap a photo and the slot list ranks itself by visual similarity.
+- The filter row now shares a single colored panel so filter/image-search/sort read as one unit.
+
+#### Viewing items and outfits
+- Item, outfit, shopping, and try-on fullscreen viewers shed the redundant top/bottom panels — the image fills more of the screen and the navigation row overlays it.
+- A new **Hide tags** chip sits inline below the tag row in both wardrobe-item and outfit viewers (the old icon-only eye was too easy to miss).
+- The outfit detail FAB gains a **Try-On** shortcut.
+
+#### Polish
+- Saving a new outfit jumps the outfit list straight to your new entry.
+- Notification snackbars (across Outfits / Wardrobe / Shopping / Travel) moved off the bottom edge so they no longer collide with the weather badge or the + button.
+- The composer's "discard changes?" prompt only fires when you actually changed something.
+- The "Suggest existing outfit" pick uses the standard outfit viewer with swipe between Gemini's ranked picks.
