@@ -93,6 +93,35 @@ class WeatherRepository(private val context: Context) {
         }
     }
 
+    /**
+     * Fetches a multi-day forecast for the device's coarse location. Returns null when location
+     * permission is missing or the network call fails. The returned list is in ascending date
+     * order, with [DayForecast.date] in ISO format (YYYY-MM-DD).
+     */
+    suspend fun fetchLocalForecast(days: Int = 7): List<DayForecast>? = withContext(Dispatchers.IO) {
+        val location = getCoarseLocation() ?: return@withContext null
+        val coercedDays = days.coerceIn(1, 16)
+        val url = "$FORECAST_API?latitude=${location.first}&longitude=${location.second}" +
+            "&daily=temperature_2m_max,temperature_2m_min,weathercode" +
+            "&forecast_days=$coercedDays&timezone=auto"
+        return@withContext try {
+            val body = http.newCall(Request.Builder().url(url).build()).await().body?.string()
+                ?: return@withContext null
+            val daily = gson.fromJson(body, ForecastResponse::class.java).daily
+                ?: return@withContext null
+            daily.time.indices.map { i ->
+                DayForecast(
+                    date        = daily.time.getOrElse(i) { "" },
+                    minTempC    = daily.minTemps.getOrElse(i) { 0f },
+                    maxTempC    = daily.maxTemps.getOrElse(i) { 0f },
+                    weatherCode = daily.weatherCodes.getOrElse(i) { 0 },
+                )
+            }.filter { it.date.isNotEmpty() }
+        } catch (_: Exception) {
+            null
+        }
+    }
+
     private fun cache(data: WeatherData) {
         prefs.edit()
             .putFloat(KEY_TEMP, data.temperatureCelsius)

@@ -1416,61 +1416,78 @@ private fun OutfitFullScreenViewer(
                     .background(MaterialTheme.colorScheme.background),
             ) {
                 Column(modifier = Modifier.fillMaxSize()) {
-                    // Header
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp, start = 56.dp, end = 56.dp, bottom = 8.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(4.dp),
-                    ) {
-                        Text(
-                            text = current.name.ifBlank { stringResource(R.string.outfits_unnamed) },
-                            color = MaterialTheme.colorScheme.onBackground,
-                            style = MaterialTheme.typography.titleMedium,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis,
-                        )
+                    // Header — collapsed to a minimal page indicator when this outfit has no
+                    // name AND no tags (e.g. a fresh AI suggestion). Composer fullscreen view
+                    // mirrors this minimalist treatment.
+                    val hasAnyMetadata = outfits.any { it.name.isNotBlank() || it.tags.isNotEmpty() }
+                    if (hasAnyMetadata) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp, start = 56.dp, end = 56.dp, bottom = 8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                        ) {
+                            Text(
+                                text = current.name.ifBlank { stringResource(R.string.outfits_unnamed) },
+                                color = MaterialTheme.colorScheme.onBackground,
+                                style = MaterialTheme.typography.titleMedium,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                            Text(
+                                text = "${pagerState.currentPage + 1} / ${outfits.size}",
+                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                                style = MaterialTheme.typography.labelMedium,
+                            )
+                            if (current.description.isNotBlank()) {
+                                Text(
+                                    text = current.description,
+                                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.85f),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    maxLines = 3,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+                            }
+                            val maxWidth = LocalConfiguration.current.screenWidthDp.dp * 0.85f
+                            val tagsClickable = Modifier
+                                .widthIn(max = maxWidth)
+                                .then(if (!isOffline) Modifier.clickable {
+                                    Analytics.action("OutfitViewer", "edit_tags")
+                                    onEditTags(current)
+                                } else Modifier)
+                            if (current.tags.isNotEmpty()) {
+                                FlowRow(
+                                    modifier = tagsClickable,
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
+                                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                                ) {
+                                    current.tags.forEach { OutfitTagChip(it) }
+                                }
+                            } else if (!isOffline) {
+                                Text(
+                                    text = stringResource(R.string.outfits_tag_add),
+                                    modifier = Modifier.clickable {
+                                        Analytics.action("OutfitViewer", "edit_tags_empty")
+                                        onEditTags(current)
+                                    },
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.primary,
+                                )
+                            }
+                        }
+                    } else if (outfits.size > 1) {
+                        // Pager indicator only — keep the close-X room (start padding) so the
+                        // page count doesn't overlap the close button at top-left.
                         Text(
                             text = "${pagerState.currentPage + 1} / ${outfits.size}",
                             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
                             style = MaterialTheme.typography.labelMedium,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 16.dp, bottom = 4.dp),
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                         )
-                        if (current.description.isNotBlank()) {
-                            Text(
-                                text = current.description,
-                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.85f),
-                                style = MaterialTheme.typography.bodySmall,
-                                maxLines = 3,
-                                overflow = TextOverflow.Ellipsis,
-                            )
-                        }
-                        val maxWidth = LocalConfiguration.current.screenWidthDp.dp * 0.85f
-                        val tagsClickable = Modifier
-                            .widthIn(max = maxWidth)
-                            .then(if (!isOffline) Modifier.clickable {
-                                Analytics.action("OutfitViewer", "edit_tags")
-                                onEditTags(current)
-                            } else Modifier)
-                        if (current.tags.isNotEmpty()) {
-                            FlowRow(
-                                modifier = tagsClickable,
-                                horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
-                                verticalArrangement = Arrangement.spacedBy(4.dp),
-                            ) {
-                                current.tags.forEach { OutfitTagChip(it) }
-                            }
-                        } else if (!isOffline) {
-                            Text(
-                                text = stringResource(R.string.outfits_tag_add),
-                                modifier = Modifier.clickable {
-                                    Analytics.action("OutfitViewer", "edit_tags_empty")
-                                    onEditTags(current)
-                                },
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.primary,
-                            )
-                        }
                     }
 
                     HorizontalPager(

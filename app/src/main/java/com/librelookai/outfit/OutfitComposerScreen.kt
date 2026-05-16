@@ -112,6 +112,8 @@ import com.librelookai.util.Analytics
 import com.librelookai.util.LocalIsOffline
 import com.librelookai.util.LocalSystemBarsPadding
 import com.librelookai.wardrobe.DriveImage
+import com.librelookai.wardrobe.tagCategories
+import com.librelookai.wardrobe.tagStringsForCategory
 import com.librelookai.wardrobe.LocationViewModel
 import com.librelookai.wardrobe.WardrobeViewModel
 import com.librelookai.weather.WeatherData
@@ -209,18 +211,17 @@ fun OutfitComposerScreen(
             ) {
                 Box(modifier = Modifier.fillMaxSize()) {
                     Column(modifier = Modifier.fillMaxSize().imePadding()) {
-                        ComposerHeader(
-                            filledSlots = filledSlots,
-                            totalSlots = s.composerSlots.size,
-                            isEditMode = isEditMode,
-                            topPadding = effectiveTop,
-                            onClose = requestClose,
-                            onToggleMode = {
-                                stylesViewModel.setComposerMode(
-                                    if (isEditMode) ComposerMode.VIEW else ComposerMode.EDIT
-                                )
-                            },
-                        )
+                        if (isEditMode) {
+                            ComposerHeader(
+                                filledSlots = filledSlots,
+                                totalSlots = s.composerSlots.size,
+                                topPadding = effectiveTop,
+                                onClose = requestClose,
+                                onOpenFullscreen = {
+                                    stylesViewModel.setComposerMode(ComposerMode.VIEW)
+                                },
+                            )
+                        }
 
                         ComposerStackedView(
                             slots = s.composerSlots,
@@ -233,7 +234,10 @@ fun OutfitComposerScreen(
                             modifier = Modifier
                                 .weight(1f)
                                 .fillMaxWidth()
-                                .padding(horizontal = 12.dp, vertical = 8.dp),
+                                .padding(
+                                    horizontal = 12.dp,
+                                    vertical = if (isEditMode) 8.dp else effectiveTop,
+                                ),
                         )
 
                         if (isEditMode || s.composerReason.isNotBlank() || s.composerError != null) {
@@ -276,7 +280,8 @@ fun OutfitComposerScreen(
 
                         if (isEditMode) {
                             ComposerEditBottomBar(
-                                saveEnabled = s.composerSlots.any { it.selectedItemId != null },
+                                saveEnabled = s.composerSlots.isNotEmpty() &&
+                                    s.composerSlots.all { it.selectedItemId != null },
                                 isOffline = isOffline,
                                 onGenerateWithAi = {
                                     Analytics.action("OutfitComposer", "generate_with_ai")
@@ -290,6 +295,23 @@ fun OutfitComposerScreen(
                                     stylesViewModel.prepareSave()
                                 },
                                 bottomPadding = effectiveBottom,
+                            )
+                        }
+                    }
+
+                    if (!isEditMode) {
+                        // Fullscreen view: minimal close X (top-left) to return to edit mode.
+                        IconButton(
+                            onClick = { stylesViewModel.setComposerMode(ComposerMode.EDIT) },
+                            modifier = Modifier
+                                .align(Alignment.TopStart)
+                                .padding(top = effectiveTop)
+                                .padding(8.dp),
+                        ) {
+                            Icon(
+                                Icons.Default.Close,
+                                contentDescription = stringResource(R.string.action_dismiss),
+                                tint = MaterialTheme.colorScheme.onBackground,
                             )
                         }
                     }
@@ -319,6 +341,21 @@ fun OutfitComposerScreen(
 
     if (s.isSaveDialogOpen) {
         val existingOutfit = s.composerEditingOutfitId?.let { id -> s.outfits.find { it.id == id } }
+        // Build a frequency-ranked list of tags already used on other outfits so the user can
+        // re-apply familiar tags with a single tap instead of typing them again.
+        val tagSuggestions = remember(s.outfits, existingOutfit?.id) {
+            s.outfits
+                .filter { it.id != existingOutfit?.id }
+                .flatMap { it.tags }
+                .map { it.trim() }
+                .filter { it.isNotEmpty() }
+                .groupingBy { it.lowercase(java.util.Locale.ROOT) }
+                .eachCount()
+                .entries
+                .sortedByDescending { it.value }
+                .map { it.key }
+                .take(20)
+        }
         SaveOutfitDialog(
             initialName = s.composerName.ifBlank {
                 existingOutfit?.name ?: s.composerAiSuggestedName
@@ -329,6 +366,7 @@ fun OutfitComposerScreen(
             initialTags = s.composerTags.ifEmpty {
                 existingOutfit?.tags ?: s.composerAiSuggestedTags
             },
+            tagSuggestions = tagSuggestions,
             parentContext = parentContext,
             parentConfiguration = parentConfiguration,
             onConfirm = { name, description, tags ->
@@ -354,6 +392,7 @@ fun OutfitComposerScreen(
                 AddItemSheet(
                     allItems = layerItems,
                     alreadyChosen = alreadyChosen,
+                    locations = locationState.locations,
                     onConfirm = { picked ->
                         picked.firstOrNull()?.let { stylesViewModel.setSlotItem(slotId, it) }
                         exchangeSlotId = null
@@ -420,10 +459,9 @@ fun OutfitComposerScreen(
 private fun ComposerHeader(
     filledSlots: Int,
     totalSlots: Int,
-    isEditMode: Boolean,
     topPadding: Dp,
     onClose: () -> Unit,
-    onToggleMode: () -> Unit,
+    onOpenFullscreen: () -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -449,10 +487,9 @@ private fun ComposerHeader(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
-        TextButton(onClick = onToggleMode) {
+        TextButton(onClick = onOpenFullscreen) {
             Text(
-                if (isEditMode) stringResource(R.string.outfit_mode_view)
-                else stringResource(R.string.outfit_mode_edit),
+                stringResource(R.string.composer_mode_fullscreen),
                 style = MaterialTheme.typography.labelMedium,
             )
         }
@@ -475,13 +512,25 @@ internal fun ContextStrip(
     onToggleVibe: (String) -> Unit,
     onClickWeather: () -> Unit,
     onClickCloset: () -> Unit,
+    forecastDate: String? = null,
+    forecastDayPreview: com.librelookai.data.model.DayForecast? = null,
 ) {
-    val weatherLabel: String = when (weatherMode) {
-        ComposerWeatherMode.AUTO -> autoWeather?.let { "${it.temperatureCelsius.toInt()}°" }
+    val weatherLabel: String = when {
+        forecastDayPreview != null -> {
+            val date = runCatching { java.time.LocalDate.parse(forecastDayPreview.date) }.getOrNull()
+            val label = date?.format(java.time.format.DateTimeFormatter.ofPattern("MMM d")) ?: ""
+            "$label · ${forecastDayPreview.maxTempC.toInt()}°"
+        }
+        forecastDate != null -> {
+            // Forecast picked but preview data not yet loaded
+            val date = runCatching { java.time.LocalDate.parse(forecastDate) }.getOrNull()
+            date?.format(java.time.format.DateTimeFormatter.ofPattern("MMM d")) ?: forecastDate
+        }
+        weatherMode == ComposerWeatherMode.AUTO -> autoWeather?.let { "${it.temperatureCelsius.toInt()}°" }
             ?: stringResource(R.string.composer_factor_weather_auto)
         // Manual mode always identifies itself as "Manual" so users can tell their override is in
         // effect; if a temp is set we append it ("Manual · 22°").
-        ComposerWeatherMode.MANUAL -> {
+        else -> {
             val base = stringResource(R.string.composer_weather_manual)
             manualTempC?.let { "$base · ${it}°" } ?: base
         }
@@ -599,7 +648,7 @@ private fun ComposerEditBottomBar(
                 )
             }
         }
-        Button(
+        androidx.compose.material3.FilledTonalButton(
             onClick = onSave,
             enabled = saveEnabled,
             shape = RoundedCornerShape(24.dp),
@@ -618,6 +667,7 @@ private fun ComposerEditBottomBar(
 
 // ─── Stacked composer view (overlapping tiles with drop shadows) ────────────
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun ComposerStackedView(
     slots: List<OutfitSlot>,
@@ -647,41 +697,37 @@ private fun ComposerStackedView(
             )
             return@BoxWithConstraints
         }
-        val rowOverlap = 0.28f
-        val itemOverlap = 0.18f
+        // Top-to-bottom, left-to-right layout — no overlap, so every tile's lock/remove
+        // buttons stay tappable. Tile size is chosen to fit the widest row and all rows
+        // within the available area.
         val n = rows.size
         val m = (rows.maxOfOrNull { it.size } ?: 1).coerceAtLeast(1)
-        val availW = maxWidth
-        val availH = maxHeight
-        val byH = availH / (1f + (1f - rowOverlap) * (n - 1))
-        val byW = availW / (1f + (1f - itemOverlap) * (m - 1))
-        val tileSize = minOf(byH, byW).coerceIn(96.dp, 320.dp)
-        val rowStride = tileSize * (1f - rowOverlap)
-        val itemStride = tileSize * (1f - itemOverlap)
-        val totalContentH = tileSize + rowStride * (n - 1)
-        val topOffset = ((availH - totalContentH) / 2).coerceAtLeast(0.dp)
+        val rowGap = 8.dp
+        val itemGap = 8.dp
+        val byW = (maxWidth - itemGap * (m - 1)) / m
+        val byH = (maxHeight - rowGap * (n - 1)) / n
+        val tileSize = minOf(byW, byH).coerceIn(88.dp, 240.dp)
 
-        rows.forEachIndexed { rowIdx, rowSlots ->
-            val rowWidth = tileSize + itemStride * (rowSlots.size - 1)
-            val rowLeft = ((availW - rowWidth) / 2).coerceAtLeast(0.dp)
-            val rowTop = topOffset + rowStride * rowIdx
-            rowSlots.forEachIndexed { itemIdx, slot ->
-                val left = rowLeft + itemStride * itemIdx
-                val image = slot.selectedItemId?.let { byId[it] }
-                val locName = image?.let {
-                    if (locations.size > 1) locations.find { l -> l.folderId == it.folderId }?.name else null
+        Column(
+            modifier = Modifier.align(Alignment.Center),
+            verticalArrangement = Arrangement.spacedBy(rowGap),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            rows.forEach { rowSlots ->
+                Row(horizontalArrangement = Arrangement.spacedBy(itemGap)) {
+                    rowSlots.forEach { slot ->
+                        val image = slot.selectedItemId?.let { byId[it] }
+                        ComposerStackedTile(
+                            slot = slot,
+                            image = image,
+                            isEditMode = isEditMode,
+                            size = tileSize,
+                            onTap = { onPickItem(slot.id) },
+                            onToggleLock = { onToggleLock(slot.id) },
+                            onRemove = { onRemove(slot.id) },
+                        )
+                    }
                 }
-                ComposerStackedTile(
-                    slot = slot,
-                    image = image,
-                    locationName = locName,
-                    isEditMode = isEditMode,
-                    size = tileSize,
-                    onTap = { onPickItem(slot.id) },
-                    onToggleLock = { onToggleLock(slot.id) },
-                    onRemove = { onRemove(slot.id) },
-                    modifier = Modifier.offset(x = left, y = rowTop),
-                )
             }
         }
     }
@@ -691,7 +737,6 @@ private fun ComposerStackedView(
 private fun ComposerStackedTile(
     slot: OutfitSlot,
     image: DriveImage?,
-    locationName: String?,
     isEditMode: Boolean,
     size: Dp,
     onTap: () -> Unit,
@@ -729,28 +774,6 @@ private fun ComposerStackedTile(
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Fit,
             )
-            if (locationName != null) {
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(4.dp)
-                        .background(
-                            color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.85f),
-                            shape = MaterialTheme.shapes.extraSmall,
-                        )
-                        .padding(horizontal = 4.dp, vertical = 1.dp),
-                ) {
-                    Text(
-                        text = locationName,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-                        fontSize = 8.sp,
-                        lineHeight = 10.sp,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
-            }
         } else {
             // Empty slot silhouette (edit mode only — view mode hides empty slots).
             Box(
@@ -767,12 +790,24 @@ private fun ComposerStackedTile(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(6.dp),
                 ) {
-                    Icon(
-                        painter = androidx.compose.ui.res.painterResource(slot.category.iconRes),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.45f),
-                        modifier = Modifier.size(size * 0.32f),
-                    )
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            painter = androidx.compose.ui.res.painterResource(slot.category.iconRes),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.45f),
+                            modifier = Modifier.size(size * 0.32f),
+                        )
+                        // AI sparkle badge — communicates that "Generate with AI" will fill this slot.
+                        Icon(
+                            Icons.Default.AutoAwesome,
+                            contentDescription = stringResource(R.string.composer_empty_slot_ai_hint),
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier
+                                .align(Alignment.BottomEnd)
+                                .offset(x = size * 0.10f, y = size * 0.05f)
+                                .size(size * 0.18f),
+                        )
+                    }
                     Text(
                         stringResource(slot.category.labelRes),
                         style = MaterialTheme.typography.labelSmall,
@@ -785,44 +820,41 @@ private fun ComposerStackedTile(
         }
 
         if (isEditMode) {
-            // Top-left: remove. Top-right: lock toggle (filled only).
-            IconButton(
-                onClick = onRemove,
+            // All controls stacked on the right edge — no filled circle background. Top button
+            // is delete; lock toggle (when an item is present) sits just below it.
+            Column(
                 modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .size(28.dp)
-                    .background(
-                        MaterialTheme.colorScheme.background.copy(alpha = 0.85f),
-                        RoundedCornerShape(50),
-                    ),
+                    .align(Alignment.TopEnd)
+                    .padding(2.dp),
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.spacedBy(0.dp),
             ) {
-                Icon(
-                    Icons.Default.Close,
-                    contentDescription = stringResource(R.string.outfit_slot_remove),
-                    modifier = Modifier.size(16.dp),
-                    tint = MaterialTheme.colorScheme.error,
-                )
-            }
-            if (image != null) {
                 IconButton(
-                    onClick = onToggleLock,
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .size(28.dp)
-                        .background(
-                            MaterialTheme.colorScheme.background.copy(alpha = 0.85f),
-                            RoundedCornerShape(50),
-                        ),
+                    onClick = onRemove,
+                    modifier = Modifier.size(24.dp),
                 ) {
                     Icon(
-                        if (slot.isLocked) Icons.Default.Lock else Icons.Default.LockOpen,
-                        contentDescription = stringResource(
-                            if (slot.isLocked) R.string.outfit_slot_unlock else R.string.outfit_slot_lock
-                        ),
-                        modifier = Modifier.size(16.dp),
-                        tint = if (slot.isLocked) MaterialTheme.colorScheme.primary
-                               else MaterialTheme.colorScheme.onSurfaceVariant,
+                        Icons.Default.Close,
+                        contentDescription = stringResource(R.string.outfit_slot_remove),
+                        modifier = Modifier.size(18.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
+                }
+                if (image != null) {
+                    IconButton(
+                        onClick = onToggleLock,
+                        modifier = Modifier.size(24.dp),
+                    ) {
+                        Icon(
+                            if (slot.isLocked) Icons.Default.Lock else Icons.Default.LockOpen,
+                            contentDescription = stringResource(
+                                if (slot.isLocked) R.string.outfit_slot_unlock else R.string.outfit_slot_lock
+                            ),
+                            modifier = Modifier.size(18.dp),
+                            tint = if (slot.isLocked) MaterialTheme.colorScheme.primary
+                                   else MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
                 }
             }
         }
@@ -883,12 +915,13 @@ private fun CategoryPickerSheet(
 
 // ─── Save outfit dialog ──────────────────────────────────────────────────────
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 internal fun SaveOutfitDialog(
     initialName: String,
     initialDescription: String,
     initialTags: List<String>,
+    tagSuggestions: List<String> = emptyList(),
     parentContext: android.content.Context,
     parentConfiguration: android.content.res.Configuration,
     onConfirm: (name: String, description: String, tags: List<String>) -> Unit,
@@ -938,6 +971,35 @@ internal fun SaveOutfitDialog(
                         onAdd = { t -> if (t.isNotBlank()) tags = (tags + t).distinctBy { it.lowercase() } },
                         onRemove = { t -> tags = tags - t },
                     )
+                    val unusedSuggestions = remember(tagSuggestions, tags) {
+                        val have = tags.map { it.lowercase(java.util.Locale.ROOT) }.toSet()
+                        tagSuggestions.filter { it.lowercase(java.util.Locale.ROOT) !in have }
+                    }
+                    if (unusedSuggestions.isNotEmpty()) {
+                        Text(
+                            stringResource(R.string.outfit_save_dialog_tag_suggestions),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        FlowRow(
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                        ) {
+                            unusedSuggestions.forEach { suggestion ->
+                                InputChip(
+                                    selected = false,
+                                    onClick = {
+                                        tags = (tags + suggestion).distinctBy { it.lowercase(java.util.Locale.ROOT) }
+                                    },
+                                    label = { Text(suggestion, style = MaterialTheme.typography.labelSmall) },
+                                    leadingIcon = {
+                                        Icon(Icons.Default.Add, contentDescription = null,
+                                             modifier = Modifier.size(14.dp))
+                                    },
+                                )
+                            }
+                        }
+                    }
                 }
             }
         },
@@ -1091,99 +1153,91 @@ private fun WeatherSection(
 }
 
 
+/**
+ * Wardrobe-style slot picker. Opens as a fullscreen Dialog (above the composer) so the user
+ * can browse the entire layer-relevant subset of their wardrobe with the same affordances the
+ * Wardrobe screen offers: pinch-to-zoom, tag filtering, location tag, ellipsis menu, etc.
+ *
+ * Picks are single-select: tapping an item confirms immediately and dismisses the picker.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AddItemSheet(
     allItems: List<DriveImage>,
     alreadyChosen: Set<String>,
+    locations: List<com.librelookai.data.model.Location>,
     onConfirm: (Set<String>) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    val ctx = LocalContext.current
-    var picked by remember { mutableStateOf(emptySet<String>()) }
+    val parentContext = LocalContext.current
+    val parentConfiguration = LocalConfiguration.current
 
     val candidates = remember(allItems, alreadyChosen) {
         allItems.filter { it.driveId !in alreadyChosen }
     }
 
-    ModalBottomSheet(
+    var selectedTags by remember { mutableStateOf(emptyMap<String, Set<String>>()) }
+    val tagCategories = remember(candidates) { candidates.tagCategories() }
+    val filtered = remember(candidates, selectedTags) {
+        if (selectedTags.values.all { it.isEmpty() }) candidates
+        else candidates.filter { image ->
+            selectedTags.all { (cat, picked) ->
+                picked.isEmpty() || image.tagStringsForCategory(cat).any { it in picked }
+            }
+        }
+    }
+    val locationLookup: (DriveImage) -> String? = { img ->
+        if (locations.size > 1) locations.find { it.folderId == img.folderId }?.name else null
+    }
+
+    Dialog(
         onDismissRequest = onDismiss,
-        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+        properties = DialogProperties(usePlatformDefaultWidth = false, dismissOnBackPress = true),
     ) {
-        Column(modifier = Modifier.fillMaxWidth().navigationBarsPadding()) {
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
-                verticalAlignment = Alignment.CenterVertically,
+        CompositionLocalProvider(
+            LocalContext provides parentContext,
+            LocalConfiguration provides parentConfiguration,
+        ) {
+            val barInsets = LocalSystemBarsPadding.current
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = MaterialTheme.colorScheme.background,
             ) {
-                Text(
-                    stringResource(R.string.composer_add_items),
-                    style = MaterialTheme.typography.titleSmall,
-                    modifier = Modifier.weight(1f),
-                )
-                Text(
-                    stringResource(R.string.composer_picked_count, picked.size),
-                    style = MaterialTheme.typography.labelSmall,
-                )
-            }
-
-            LazyVerticalGrid(
-                columns = GridCells.Adaptive(96.dp),
-                modifier = Modifier.fillMaxWidth().height(360.dp),
-                contentPadding = PaddingValues(4.dp),
-            ) {
-                itemsIndexed(candidates, key = { _, img -> img.driveId }) { _, image ->
-                    val isSelected = image.driveId in picked
-                    Box(
+                Column(modifier = Modifier.fillMaxSize()) {
+                    Row(
                         modifier = Modifier
-                            .aspectRatio(1f)
-                            .padding(2.dp)
-                            .clip(MaterialTheme.shapes.extraSmall)
-                            .clickable {
-                                picked = if (isSelected) picked - image.driveId else picked + image.driveId
-                            },
+                            .fillMaxWidth()
+                            .padding(top = barInsets.calculateTopPadding())
+                            .padding(start = 4.dp, end = 16.dp, top = 4.dp, bottom = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        AsyncImage(
-                            model = remember(image.driveId, image.version) {
-                                ImageRequest.Builder(ctx)
-                                    .data(image.localPath)
-                                    .memoryCacheKey("${image.driveId}_${image.version}")
-                                    .build()
-                            },
-                            contentDescription = image.name,
-                            modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.Crop,
-                        )
-                        if (isSelected) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.35f)),
-                                contentAlignment = Alignment.TopEnd,
-                            ) {
-                                Icon(
-                                    Icons.Default.CheckCircle,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier.padding(4.dp).size(18.dp),
-                                )
-                            }
+                        IconButton(onClick = onDismiss) {
+                            Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_cancel))
                         }
+                        Text(
+                            stringResource(R.string.composer_add_items),
+                            style = MaterialTheme.typography.titleMedium,
+                            modifier = Modifier.weight(1f),
+                        )
                     }
-                }
-            }
-
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
-            ) {
-                TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
-                Button(
-                    onClick = { onConfirm(picked) },
-                    enabled = picked.isNotEmpty(),
-                ) {
-                    Icon(Icons.Default.Check, contentDescription = null, modifier = Modifier.size(18.dp))
-                    Spacer(Modifier.width(6.dp))
-                    Text(stringResource(R.string.composer_add_selected))
+                    com.librelookai.wardrobe.TagFilterBar(
+                        tagCategories = tagCategories,
+                        selectedTags = selectedTags,
+                        onTagsChanged = { selectedTags = it },
+                    )
+                    com.librelookai.wardrobe.WardrobeZoomableItemGrid(
+                        images = filtered,
+                        selectedIds = emptySet(),
+                        onClick = { _, image ->
+                            onConfirm(setOf(image.driveId))
+                        },
+                        onLongClick = { },
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth()
+                            .padding(bottom = barInsets.calculateBottomPadding()),
+                        locationLookup = locationLookup,
+                    )
                 }
             }
         }

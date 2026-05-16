@@ -93,6 +93,13 @@ data class OutfitsUiState(
     val predictionSetupSource: PredictionSetupSource = PredictionSetupSource.OUTFITS_LIST,
     /** True while the "Find with AI" setup dialog is showing on the Outfits tab. */
     val isPredictionSetupOpen: Boolean = false,
+    /**
+     * ISO date ("YYYY-MM-DD") of the future forecast day the user picked for the Find/Create
+     * with AI setup. null means use today's live weather (default).
+     */
+    val composerForecastDate: String? = null,
+    /** Number of suggestions Gemini is asked for (1..10). Default 3. */
+    val composerSuggestionCount: Int = 3,
     val error: String? = null,
     /** AI tag-suggestion flow launched from the outfit detail viewer. */
     val tagSuggestion: TagSuggestionState? = null,
@@ -343,7 +350,9 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 OutfitSlot(UUID.randomUUID().toString(), layer, id, true)
             }
         }
-        val mode = if (editingStyleId != null) ComposerMode.VIEW else ComposerMode.EDIT
+        // Composer always opens in EDIT mode — both for new and existing outfits.
+        // The "Fullscreen" action in the header opens a read-only viewer separately.
+        val mode = ComposerMode.EDIT
         _state.update {
             it.copy(
                 isComposerOpen              = true,
@@ -426,6 +435,10 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
     fun setComposerManualSeason(season: String) = _state.update { it.copy(composerManualSeason = season) }
     fun setComposerManualTempC(tempC: Int?) = _state.update { it.copy(composerManualTempC = tempC) }
     fun setComposerManualPrecip(p: String) = _state.update { it.copy(composerManualPrecip = p) }
+    fun setComposerForecastDate(date: String?) = _state.update { it.copy(composerForecastDate = date) }
+    fun setComposerSuggestionCount(n: Int) = _state.update {
+        it.copy(composerSuggestionCount = n.coerceIn(1, 10))
+    }
     fun updateComposerName(s: String) = _state.update { it.copy(composerName = s) }
     fun updateComposerDescription(s: String) = _state.update { it.copy(composerDescription = s) }
     fun addComposerTag(tag: String) {
@@ -783,6 +796,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             val region = listOfNotNull(weather?.cityName?.takeIf { it.isNotEmpty() }, countryCode).joinToString(", ")
             val fashionTrends = gemini.searchFashionTrends(region, UsageCategory.OUTFIT_PREDICT)
 
+            val suggestionCount = setup.composerSuggestionCount.coerceIn(1, 10)
             val prompt = buildPredictionPrompt(
                 preamble        = PromptStore.get(getApplication(), PromptKey.PREDICTION),
                 prefs           = prefs,
@@ -798,6 +812,8 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 manualTempC     = setup.composerManualTempC,
                 manualPrecip    = setup.composerManualPrecip,
                 vibes           = setup.composerVibes,
+                forecastDate    = setup.composerForecastDate,
+                suggestionCount = suggestionCount,
             )
             Log.d("StylesVM", "Prediction prompt length: ${prompt.length} chars")
             prompt.chunked(3000).forEachIndexed { i, chunk ->
@@ -829,7 +845,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 else -> emptyList()
             }
 
-            // Filter to suggestions that actually exist in the wardrobe; cap at 3.
+            // Filter to suggestions that actually exist in the wardrobe; cap at the user-chosen count.
             val styleIds = styles.map { it.id }.toSet()
             val matched: List<OutfitPrediction> = rawItems
                 .mapNotNull { p ->
@@ -837,7 +853,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                     OutfitPrediction(id, p.reason.orEmpty())
                 }
                 .distinctBy { it.outfitId }
-                .take(3)
+                .take(suggestionCount)
 
             if (matched.isEmpty()) {
                 Log.w("StylesVM", "Failed to parse prediction response: $json")
@@ -1060,6 +1076,8 @@ private fun buildPredictionPrompt(
     manualTempC: Int? = null,
     manualPrecip: String = "",
     vibes: Set<String> = emptySet(),
+    forecastDate: String? = null,
+    suggestionCount: Int = 3,
 ): String {
     val c = prefs?.aiConsiderations ?: AiConsiderations()
     val age = prefs?.yearOfBirth?.let { LocalDate.now().year - it }
@@ -1111,8 +1129,13 @@ private fun buildPredictionPrompt(
             appendLine()
         }
         if (c.weather) {
-            appendLine("## Today's Weather ($locationStr)")
-            if (weatherMode == ComposerWeatherMode.MANUAL) {
+            val dateLabel = forecastDate?.let { "Weather on $it ($locationStr)" } ?: "Today's Weather ($locationStr)"
+            appendLine("## $dateLabel")
+            if (forecastDate != null) {
+                // The forecast detail itself is omitted server-side; the model is told the date
+                // so it can reason about expected conditions when no current reading applies.
+                appendLine("(planning ahead — dress for the forecast on $forecastDate)")
+            } else if (weatherMode == ComposerWeatherMode.MANUAL) {
                 val parts = buildList {
                     manualSeason.takeIf { it.isNotEmpty() }?.let { add("Season: $it") }
                     manualTempC?.let { add("Temperature: ${it}°C") }
@@ -1156,10 +1179,17 @@ private fun buildPredictionPrompt(
             feedbackHistory.forEachIndexed { i, fb -> appendLine("${i + 1}. $fb") }
             appendLine()
         }
-        appendLine("Pick the THREE best outfits for today, ranked from best to worst fit.")
-        appendLine("All three outfit IDs must come from the existing outfits list above and must be distinct.")
+        val countWord = when (suggestionCount) {
+            1 -> "the SINGLE best outfit"
+            2 -> "the TWO best outfits"
+            3 -> "the THREE best outfits"
+            else -> "the $suggestionCount best outfits"
+        }
+        appendLine("Pick $countWord for today, ranked from best to worst fit.")
+        appendLine("All outfit IDs must come from the existing outfits list above and must be distinct.")
+        appendLine("Return exactly $suggestionCount entries in the suggestions array (or fewer if not enough distinct outfits exist).")
         appendLine("Respond with ONLY a valid JSON object — no markdown, no extra text:")
-        append("""{"suggestions":[{"outfitId":"<id from the outfits list>","reason":"<1-2 sentence explanation>"},{"outfitId":"<second pick>","reason":"<why>"},{"outfitId":"<third pick>","reason":"<why>"}]}""")
+        append("""{"suggestions":[{"outfitId":"<id from the outfits list>","reason":"<1-2 sentence explanation>"}]}""")
         appendLine()
         appendLine()
         appendLine("IMPORTANT: Write all user-facing text fields (reason) in ${AppLanguage.toGeminiName(prefs?.language ?: AppLanguage.ENGLISH)}.")

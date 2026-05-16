@@ -11,6 +11,9 @@ import kotlinx.coroutines.launch
 data class WeatherUiState(
     val data: WeatherData? = null,
     val isLoading: Boolean = false,
+    /** 7-day local forecast (today inclusive) — fetched lazily on demand. */
+    val localForecast: List<com.librelookai.data.model.DayForecast> = emptyList(),
+    val isLocalForecastLoading: Boolean = false,
 )
 
 class WeatherViewModel(app: Application) : AndroidViewModel(app) {
@@ -34,6 +37,21 @@ class WeatherViewModel(app: Application) : AndroidViewModel(app) {
             _state.update { it.copy(isLoading = true) }
             val fresh = repo.fetchFresh()
             _state.update { it.copy(data = fresh ?: it.data, isLoading = false) }
+        }
+    }
+
+    /**
+     * Fetches a 7-day forecast for the device's current location. Cached in-memory for the
+     * lifetime of the ViewModel; subsequent calls are no-ops while the previous load is in
+     * flight or already succeeded.
+     */
+    fun refreshLocalForecast() {
+        val cur = _state.value
+        if (cur.isLocalForecastLoading || cur.localForecast.isNotEmpty()) return
+        viewModelScope.launch {
+            _state.update { it.copy(isLocalForecastLoading = true) }
+            val forecast = repo.fetchLocalForecast(days = 7)
+            _state.update { it.copy(localForecast = forecast.orEmpty(), isLocalForecastLoading = false) }
         }
     }
 }

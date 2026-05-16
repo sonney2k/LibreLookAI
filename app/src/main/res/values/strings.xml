@@ -411,6 +411,15 @@
     <string name="outfits_suggest">Suggest existing outfit</string>
     <string name="prediction_setup_title">Find with AI</string>
     <string name="prediction_setup_find">Find</string>
+    <string name="prediction_setup_title_compose">Create with AI</string>
+    <string name="prediction_setup_create">Create</string>
+    <string name="prediction_setup_suggestions">Suggestions</string>
+    <string name="prediction_setup_weather_pick_day">Pick a day</string>
+    <string name="prediction_setup_weather_today">Today</string>
+    <string name="prediction_setup_weather_tomorrow">Tomorrow</string>
+    <string name="composer_mode_fullscreen">Fullscreen</string>
+    <string name="composer_empty_slot_ai_hint">AI will fill empty slots</string>
+    <string name="outfit_save_dialog_tag_suggestions">Existing tags</string>
     <string name="outfits_compose">Compose new outfit</string>
     <string name="outfits_thinking">Thinking…</string>
     <string name="outfits_suggesting">Suggesting outfit…</string>

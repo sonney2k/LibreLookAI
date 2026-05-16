@@ -405,6 +405,15 @@
     <string name="outfits_suggest">Bestehendes Outfit vorschlagen</string>
     <string name="prediction_setup_title">Mit KI finden</string>
     <string name="prediction_setup_find">Finden</string>
+    <string name="prediction_setup_title_compose">Mit KI erstellen</string>
+    <string name="prediction_setup_create">Erstellen</string>
+    <string name="prediction_setup_suggestions">Vorschläge</string>
+    <string name="prediction_setup_weather_pick_day">Tag wählen</string>
+    <string name="prediction_setup_weather_today">Heute</string>
+    <string name="prediction_setup_weather_tomorrow">Morgen</string>
+    <string name="composer_mode_fullscreen">Vollbild</string>
+    <string name="composer_empty_slot_ai_hint">KI füllt leere Plätze</string>
+    <string name="outfit_save_dialog_tag_suggestions">Bestehende Tags</string>
     <string name="outfits_compose">Neues Outfit zusammenstellen</string>
     <string name="outfits_thinking">Denkt nach…</string>
     <string name="outfits_suggesting">Outfit wird vorgeschlagen…</string>
