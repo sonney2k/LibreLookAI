@@ -322,6 +322,11 @@ fun OutfitsScreen(
                         outfitsViewModel.suggestTagsForOutfit(o, wardrobeState.images, profileState.preferences)
                     },
                     onEditTags = { o -> outfitsViewModel.openOutfitTagsEditor(o.id) },
+                    onTryOn = { o ->
+                        outfitsViewModel.clearPrediction()
+                        onTryOnStyle(o)
+                    },
+                    canTryOn = canTryOn,
                     wardrobeViewModel = wardrobeViewModel,
                 )
             }
@@ -889,6 +894,11 @@ private fun OutfitListScreen(
                     },
                     onSuggestTags = onSuggestOutfitTags,
                     onEditTags = onEditOutfitTags,
+                    onTryOn = { o ->
+                        fullscreenStyleId = null
+                        onTryOnStyle(o)
+                    },
+                    canTryOn = canTryOn,
                     wardrobeViewModel = wardrobeViewModel,
                 )
             } else {
@@ -1334,6 +1344,8 @@ private fun OutfitFullScreenViewer(
     onDelete: (Outfit) -> Unit,
     onSuggestTags: (Outfit) -> Unit = {},
     onEditTags: (Outfit) -> Unit = {},
+    onTryOn: (Outfit) -> Unit = {},
+    canTryOn: Boolean = false,
     wardrobeViewModel: WardrobeViewModel,
 ) {
     val wardrobeState by wardrobeViewModel.state.collectAsState()
@@ -1539,6 +1551,19 @@ private fun OutfitFullScreenViewer(
                                 icon = { Icon(Icons.Default.CalendarMonth, contentDescription = null) },
                                 text = { Text(stringResource(R.string.outfits_wear_today)) },
                             )
+                            if (canTryOn) {
+                                ExtendedFloatingActionButton(
+                                    onClick = {
+                                        Analytics.action("OutfitViewer", "try_on")
+                                        showEditMenu = false
+                                        onTryOn(current)
+                                    },
+                                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    icon = { Icon(Icons.Default.AutoAwesome, contentDescription = null) },
+                                    text = { Text(stringResource(R.string.tryon_fab)) },
+                                )
+                            }
                             ExtendedFloatingActionButton(
                                 onClick = {
                                     Analytics.action("OutfitViewer", "edit")
