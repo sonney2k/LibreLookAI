@@ -104,7 +104,9 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import androidx.compose.foundation.layout.widthIn
 import com.librelookai.data.model.Location
+import com.librelookai.data.model.Outfit
 import com.librelookai.settings.ProfileViewModel
 import com.librelookai.shopping.ShoppingClosetViewModel
 import com.librelookai.util.AiProcessingOverlay
@@ -168,11 +170,12 @@ fun OutfitComposerScreen(
     var showWeatherSheet by remember { mutableStateOf(false) }
     var showClosetSheet by remember { mutableStateOf(false) }
     var showDiscardDialog by remember { mutableStateOf(false) }
+    var viewerImage by remember { mutableStateOf<DriveImage?>(null) }
 
-    val hasContent = s.composerSlots.any { it.selectedItemId != null } ||
-        s.composerTags.isNotEmpty() || s.composerVibes.isNotEmpty()
+    val hasChanges = s.composerSlots.map { it.selectedItemId } != s.composerInitialItemIds ||
+        s.composerVibes.isNotEmpty()
     val requestClose: () -> Unit = {
-        if (isEditMode && hasContent) showDiscardDialog = true
+        if (isEditMode && hasChanges) showDiscardDialog = true
         else {
             Analytics.action("OutfitComposer", "close")
             stylesViewModel.closeComposer()
@@ -223,22 +226,95 @@ fun OutfitComposerScreen(
                             )
                         }
 
-                        ComposerStackedView(
-                            slots = s.composerSlots,
-                            byId = byId,
-                            locations = locationState.locations,
-                            isEditMode = isEditMode,
-                            onPickItem = { slotId -> exchangeSlotId = slotId },
-                            onToggleLock = { slotId -> stylesViewModel.toggleSlotLock(slotId) },
-                            onRemove = { slotId -> stylesViewModel.removeSlot(slotId) },
-                            modifier = Modifier
-                                .weight(1f)
-                                .fillMaxWidth()
-                                .padding(
-                                    horizontal = 12.dp,
-                                    vertical = if (isEditMode) 8.dp else effectiveTop,
-                                ),
-                        )
+                        if (isEditMode) {
+                            ComposerStackedView(
+                                slots = s.composerSlots,
+                                byId = byId,
+                                locations = locationState.locations,
+                                isEditMode = true,
+                                onPickItem = { slotId -> exchangeSlotId = slotId },
+                                onToggleLock = { slotId -> stylesViewModel.toggleSlotLock(slotId) },
+                                onRemove = { slotId -> stylesViewModel.removeSlot(slotId) },
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                            )
+                        } else {
+                            // VIEW mode: mirror OutfitFullScreenViewer — show name / description /
+                            // tags above an OutfitPageBody so the composer's fullscreen preview matches
+                            // the saved-outfit viewer.
+                            val draftOutfit = remember(
+                                s.composerName, s.composerAiSuggestedName,
+                                s.composerDescription, s.composerAiSuggestedDescription,
+                                s.composerTags, s.composerAiSuggestedTags,
+                                s.composerSlots,
+                            ) {
+                                Outfit(
+                                    id = "draft",
+                                    name = s.composerName.ifBlank { s.composerAiSuggestedName },
+                                    description = s.composerDescription.ifBlank { s.composerAiSuggestedDescription },
+                                    tags = s.composerTags.ifEmpty { s.composerAiSuggestedTags },
+                                    itemIds = s.composerSlots.mapNotNull { it.selectedItemId },
+                                )
+                            }
+                            val hasMeta = draftOutfit.name.isNotBlank() ||
+                                draftOutfit.description.isNotBlank() ||
+                                draftOutfit.tags.isNotEmpty()
+                            if (hasMeta) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(
+                                            top = effectiveTop + 8.dp,
+                                            start = 56.dp, end = 56.dp, bottom = 8.dp,
+                                        ),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                                ) {
+                                    if (draftOutfit.name.isNotBlank()) {
+                                        Text(
+                                            text = draftOutfit.name,
+                                            color = MaterialTheme.colorScheme.onBackground,
+                                            style = MaterialTheme.typography.titleMedium,
+                                            maxLines = 2,
+                                            overflow = TextOverflow.Ellipsis,
+                                        )
+                                    }
+                                    if (draftOutfit.description.isNotBlank()) {
+                                        Text(
+                                            text = draftOutfit.description,
+                                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.85f),
+                                            style = MaterialTheme.typography.bodySmall,
+                                            maxLines = 3,
+                                            overflow = TextOverflow.Ellipsis,
+                                        )
+                                    }
+                                    if (draftOutfit.tags.isNotEmpty()) {
+                                        val maxWidth = LocalConfiguration.current.screenWidthDp.dp * 0.85f
+                                        FlowRow(
+                                            modifier = Modifier.widthIn(max = maxWidth),
+                                            horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
+                                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                                        ) {
+                                            draftOutfit.tags.forEach { OutfitTagChip(it) }
+                                        }
+                                    }
+                                }
+                            } else {
+                                // No metadata: leave room at the top for the close-X overlay.
+                                Spacer(Modifier.height(effectiveTop + 48.dp))
+                            }
+                            Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                                OutfitPageBody(
+                                    outfit = draftOutfit,
+                                    itemsById = byId,
+                                    locations = locationState.locations,
+                                    onItemClick = { viewerImage = it },
+                                    bottomPadding = effectiveBottom,
+                                )
+                            }
+                        }
 
                         if (isEditMode || s.composerReason.isNotBlank() || s.composerError != null) {
                             Column(
@@ -375,6 +451,43 @@ fun OutfitComposerScreen(
             },
             onDismiss = { stylesViewModel.dismissSaveDialog() },
         )
+    }
+
+    viewerImage?.let { img ->
+        val draftItems = remember(s.composerSlots, byId) {
+            s.composerSlots.mapNotNull { it.selectedItemId?.let(byId::get) }
+        }
+        if (draftItems.isEmpty()) {
+            viewerImage = null
+        } else {
+            val startIdx = draftItems.indexOfFirst { it.driveId == img.driveId }
+                .coerceAtLeast(0)
+            val allTagCategories = remember(byId) { byId.values.toList().tagCategories() }
+            CompositionLocalProvider(
+                LocalContext provides parentContext,
+                LocalConfiguration provides parentConfiguration,
+            ) {
+                com.librelookai.wardrobe.FullScreenViewer(
+                    images = draftItems,
+                    initialIndex = startIdx,
+                    allTagCategories = allTagCategories,
+                    onDismiss = { viewerImage = null },
+                    onTagImage = wardrobeViewModel::tagImage,
+                    onRemoveBackground = wardrobeViewModel::reprocessBackground,
+                    onRotateImage = wardrobeViewModel::rotateImage,
+                    onUpdateTags = wardrobeViewModel::updateTags,
+                    onDeleteItem = { driveId -> wardrobeViewModel.deleteItems(setOf(driveId)) },
+                    onMoveToLocation = wardrobeViewModel::moveItemsToLocation,
+                    onCreateOutfitFromSelection = {},
+                    onFixCutoutBg = wardrobeViewModel::fixCutoutBgForItem,
+                    onLoadOriginal = wardrobeViewModel::ensureOriginalCached,
+                    locations = locationState.locations,
+                    activeLocationId = locationState.activeLocationId,
+                    processingImageId = wardrobe.processingImageId,
+                    writeMode = true,
+                )
+            }
+        }
     }
 
     exchangeSlotId?.let { slotId ->
@@ -1177,6 +1290,7 @@ private fun AddItemSheet(
     }
 
     var selectedTags by remember { mutableStateOf(emptyMap<String, Set<String>>()) }
+    var filterSheetOpen by remember { mutableStateOf(false) }
     val tagCategories = remember(candidates) { candidates.tagCategories() }
     val filtered = remember(candidates, selectedTags) {
         if (selectedTags.values.all { it.isEmpty() }) candidates
@@ -1186,6 +1300,7 @@ private fun AddItemSheet(
             }
         }
     }
+    val appliedFilterCount = selectedTags.values.sumOf { it.size }
     val locationLookup: (DriveImage) -> String? = { img ->
         if (locations.size > 1) locations.find { it.folderId == img.folderId }?.name else null
     }
@@ -1220,10 +1335,13 @@ private fun AddItemSheet(
                             modifier = Modifier.weight(1f),
                         )
                     }
-                    com.librelookai.wardrobe.TagFilterBar(
-                        tagCategories = tagCategories,
-                        selectedTags = selectedTags,
-                        onTagsChanged = { selectedTags = it },
+                    com.librelookai.wardrobe.QuickCategoryRow(
+                        totalCount = candidates.size,
+                        filteredCount = filtered.size,
+                        appliedFilterCount = appliedFilterCount,
+                        filtersEnabled = tagCategories.isNotEmpty(),
+                        onClearFilters = { selectedTags = emptyMap() },
+                        onOpenFilters = { filterSheetOpen = true },
                     )
                     com.librelookai.wardrobe.WardrobeZoomableItemGrid(
                         images = filtered,
@@ -1240,6 +1358,21 @@ private fun AddItemSheet(
                     )
                 }
             }
+        }
+    }
+
+    if (filterSheetOpen) {
+        CompositionLocalProvider(
+            LocalContext provides parentContext,
+            LocalConfiguration provides parentConfiguration,
+        ) {
+            com.librelookai.wardrobe.WardrobeFilterSheet(
+                tagCategories = tagCategories,
+                selectedTags = selectedTags,
+                appliedCount = filtered.size,
+                onTagsChanged = { selectedTags = it },
+                onDismiss = { filterSheetOpen = false },
+            )
         }
     }
 }

@@ -474,7 +474,7 @@
     <string name="outfit_slot_lock">Sperren</string>
     <string name="outfit_slot_unlock">Entsperren</string>
     <string name="outfit_slot_remove">Entfernen</string>
-    <string name="outfit_slot_add">Slot hinzufügen</string>
+    <string name="outfit_slot_add">Teil hinzufügen</string>
     <string name="outfit_generate_with_ai">Mit KI erstellen</string>
     <string name="outfit_discard_changes_title">Änderungen verwerfen?</string>
     <string name="outfit_discard_changes_body">Nicht gespeicherte Änderungen gehen verloren.</string>

@@ -480,7 +480,7 @@
     <string name="outfit_slot_lock">Lock</string>
     <string name="outfit_slot_unlock">Unlock</string>
     <string name="outfit_slot_remove">Remove</string>
-    <string name="outfit_slot_add">Add slot</string>
+    <string name="outfit_slot_add">Add item</string>
     <string name="outfit_generate_with_ai">Generate with AI</string>
     <string name="outfit_discard_changes_title">Discard changes?</string>
     <string name="outfit_discard_changes_body">Your unsaved changes will be lost.</string>

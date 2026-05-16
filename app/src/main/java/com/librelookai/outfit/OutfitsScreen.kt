@@ -1313,7 +1313,7 @@ internal fun RefinementSection(
 }
 
 @Composable
-private fun OutfitTagChip(label: String) {
+internal fun OutfitTagChip(label: String) {
     Surface(
         shape = MaterialTheme.shapes.extraSmall,
         color = MaterialTheme.colorScheme.secondaryContainer,
@@ -1664,7 +1664,7 @@ private fun OutfitFullScreenViewer(
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun OutfitPageBody(
+internal fun OutfitPageBody(
     outfit: Outfit,
     itemsById: Map<String, DriveImage>,
     locations: List<Location>,
