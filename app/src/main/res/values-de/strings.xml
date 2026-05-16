@@ -712,6 +712,8 @@
     <string name="wardrobe_imported_on">Importiert am %1$s</string>
     <string name="wardrobe_view_original">Original anzeigen</string>
     <string name="wardrobe_view_cutout">Freisteller anzeigen</string>
+    <string name="viewer_hide_tags">Tags ausblenden</string>
+    <string name="viewer_show_tags">Tags anzeigen</string>
 
     <!-- AI tab -->
     <string name="settings_tab_ai">KI</string>

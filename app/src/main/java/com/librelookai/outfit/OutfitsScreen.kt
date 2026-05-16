@@ -114,6 +114,8 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -1399,6 +1401,7 @@ private fun OutfitFullScreenViewer(
             var showEditMenu by remember { mutableStateOf(false) }
             var showDeleteDialog by remember { mutableStateOf(false) }
             var viewerImage by remember { mutableStateOf<DriveImage?>(null) }
+            var hideTags by rememberSaveable { mutableStateOf(false) }
 
             val current = outfits[pagerState.currentPage]
 
@@ -1461,31 +1464,33 @@ private fun OutfitFullScreenViewer(
                                     overflow = TextOverflow.Ellipsis,
                                 )
                             }
-                            val maxWidth = LocalConfiguration.current.screenWidthDp.dp * 0.85f
-                            val tagsClickable = Modifier
-                                .widthIn(max = maxWidth)
-                                .then(if (!isOffline) Modifier.clickable {
-                                    Analytics.action("OutfitViewer", "edit_tags")
-                                    onEditTags(current)
-                                } else Modifier)
-                            if (current.tags.isNotEmpty()) {
-                                FlowRow(
-                                    modifier = tagsClickable,
-                                    horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
-                                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                                ) {
-                                    current.tags.forEach { OutfitTagChip(it) }
-                                }
-                            } else if (!isOffline) {
-                                Text(
-                                    text = stringResource(R.string.outfits_tag_add),
-                                    modifier = Modifier.clickable {
-                                        Analytics.action("OutfitViewer", "edit_tags_empty")
+                            if (!hideTags) {
+                                val maxWidth = LocalConfiguration.current.screenWidthDp.dp * 0.85f
+                                val tagsClickable = Modifier
+                                    .widthIn(max = maxWidth)
+                                    .then(if (!isOffline) Modifier.clickable {
+                                        Analytics.action("OutfitViewer", "edit_tags")
                                         onEditTags(current)
-                                    },
-                                    style = MaterialTheme.typography.labelMedium,
-                                    color = MaterialTheme.colorScheme.primary,
-                                )
+                                    } else Modifier)
+                                if (current.tags.isNotEmpty()) {
+                                    FlowRow(
+                                        modifier = tagsClickable,
+                                        horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
+                                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                                    ) {
+                                        current.tags.forEach { OutfitTagChip(it) }
+                                    }
+                                } else if (!isOffline) {
+                                    Text(
+                                        text = stringResource(R.string.outfits_tag_add),
+                                        modifier = Modifier.clickable {
+                                            Analytics.action("OutfitViewer", "edit_tags_empty")
+                                            onEditTags(current)
+                                        },
+                                        style = MaterialTheme.typography.labelMedium,
+                                        color = MaterialTheme.colorScheme.primary,
+                                    )
+                                }
                             }
                         }
                     } else if (outfits.size > 1) {
@@ -1519,15 +1524,29 @@ private fun OutfitFullScreenViewer(
                     }
                 }
 
-                // Close button
-                IconButton(
-                    onClick = onDismiss,
+                // Close button + hide-tags toggle
+                Row(
                     modifier = Modifier
                         .align(Alignment.TopStart)
                         .padding(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_dismiss),
-                        tint = MaterialTheme.colorScheme.onBackground)
+                    IconButton(onClick = onDismiss) {
+                        Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_dismiss),
+                            tint = MaterialTheme.colorScheme.onBackground)
+                    }
+                    IconButton(onClick = {
+                        Analytics.action("OutfitViewer", if (hideTags) "show_tags" else "hide_tags")
+                        hideTags = !hideTags
+                    }) {
+                        Icon(
+                            imageVector = if (hideTags) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                            contentDescription = stringResource(
+                                if (hideTags) R.string.viewer_show_tags else R.string.viewer_hide_tags
+                            ),
+                            tint = MaterialTheme.colorScheme.onBackground,
+                        )
+                    }
                 }
 
                 // Speed-dial FAB (wear / edit / delete) — hidden offline (writes only).

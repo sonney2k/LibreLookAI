@@ -70,6 +70,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material.icons.filled.SwapHoriz
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.automirrored.filled.RotateRight
 import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material3.AlertDialog
@@ -1373,6 +1375,7 @@ internal fun FullScreenViewer(
     var showEditMenu by remember { mutableStateOf(false) }
     var showFixCutoutBgDialog by remember { mutableStateOf(false) }
     var showOriginal by remember { mutableStateOf(false) }
+    var hideTags by rememberSaveable { mutableStateOf(false) }
     // driveId → resolved original local path. Cached across page swipes so revisiting the
     // same item doesn't redownload.
     val originalPaths = remember { mutableStateMapOf<String, String>() }
@@ -1420,7 +1423,7 @@ internal fun FullScreenViewer(
                     color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.labelMedium,
                 )
-                currentImage.tags?.let { tags ->
+                if (!hideTags) currentImage.tags?.let { tags ->
                     val maxWidth = LocalConfiguration.current.screenWidthDp.dp * 0.7f
                     FlowRow(
                         modifier = Modifier
@@ -1467,12 +1470,26 @@ internal fun FullScreenViewer(
             AiProcessingOverlay(modifier = Modifier.fillMaxSize())
         }
 
-        // Close button.
-        IconButton(
-            onClick = onDismiss,
+        // Close button + hide-tags toggle.
+        Row(
             modifier = Modifier.align(Alignment.TopStart).padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Icon(Icons.Default.Close, contentDescription = "Close", tint = MaterialTheme.colorScheme.onBackground)
+            IconButton(onClick = onDismiss) {
+                Icon(Icons.Default.Close, contentDescription = "Close", tint = MaterialTheme.colorScheme.onBackground)
+            }
+            IconButton(onClick = {
+                Analytics.action("ItemViewer", if (hideTags) "show_tags" else "hide_tags")
+                hideTags = !hideTags
+            }) {
+                Icon(
+                    imageVector = if (hideTags) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                    contentDescription = stringResource(
+                        if (hideTags) R.string.viewer_show_tags else R.string.viewer_hide_tags
+                    ),
+                    tint = MaterialTheme.colorScheme.onBackground,
+                )
+            }
         }
 
         // View-original toggle (top-end). Shown only when the item has an original on Drive

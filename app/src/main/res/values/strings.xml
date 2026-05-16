@@ -736,6 +736,8 @@
     <string name="wardrobe_imported_on">Imported %1$s</string>
     <string name="wardrobe_view_original">View original</string>
     <string name="wardrobe_view_cutout">View cutout</string>
+    <string name="viewer_hide_tags">Hide tags</string>
+    <string name="viewer_show_tags">Show tags</string>
 
     <!-- AI tab -->
     <string name="settings_tab_ai">AI</string>
