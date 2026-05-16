@@ -35,46 +35,18 @@ import com.librelookai.weather.WeatherData
 import com.librelookai.data.model.Location
 import com.librelookai.MainActivity
 import com.librelookai.weather.wmoEmoji
+import java.util.UUID
 
 data class OutfitPrediction(val outfitId: String, val reason: String)
 
 enum class ComposerWeatherMode { AUTO, MANUAL }
 
-/** Per-layer target item counts for the unified style composer. */
-data class ComposerTargets(
-    val top: Int = 1,
-    val bottom: Int = 1,
-    val footwear: Int = 0,
-    val outerwear: Int = 0,
-    val accessory: Int = 0,
-) {
-    fun total(): Int = top + bottom + footwear + outerwear + accessory
-}
-
-/** Gemini-composed outfit that doesn't yet exist as a saved style. */
-data class NewOutfitSuggestion(
-    val name: String,
-    val description: String,
-    val itemIds: List<String>,
-    val reason: String,
-    val tags: List<String> = emptyList(),
-)
 
 data class OutfitsUiState(
     val outfits: List<Outfit> = emptyList(),
     /** All wardrobe images across all locations, for resolving style item icons. */
     val wardrobeImages: List<DriveImage> = emptyList(),
     val isLoading: Boolean = false,
-    val isCreating: Boolean = false,
-    /** True when the new style-editing view (not the old item-picker) is open. */
-    val isEditingOutfitView: Boolean = false,
-    val draftItemIds: Set<String> = emptySet(),
-    val draftOutfitName: String = "",
-    val draftOutfitDescription: String = "",
-    val draftOutfitTags: List<String> = emptyList(),
-    /** Non-null when editing an existing style; null when creating a new one. */
-    val editingOutfit: Outfit? = null,
-    val showNameDialog: Boolean = false,
     // Predict existing style
     val isPredicting: Boolean = false,
     val prediction: OutfitPrediction? = null,
@@ -82,22 +54,13 @@ data class OutfitsUiState(
     /** When Gemini returns several outfit picks the user can slide through, the full list lives here. */
     val predictionSuggestions: List<OutfitPrediction> = emptyList(),
     val predictionIndex: Int = 0,
-    // Compose brand-new style
-    val isComposing: Boolean = false,
-    val newSuggestion: NewOutfitSuggestion? = null,
-    val compositionError: String? = null,
-    // Refinement feedback (shared by prediction + composition loops)
-    val refinementInput: String = "",
+    // Refinement feedback (prediction loop)
     val feedbackHistory: List<String> = emptyList(),
-    val lastCompositionRequiredIds: Set<String> = emptySet(),
     // After saving a style, offer to wear it immediately
     val pendingWearOutfitId: String? = null,
     // Multi-select for bulk actions
     val selectedOutfitIds: Set<String> = emptySet(),
-    // Item-swap alternatives suggested by Gemini
-    val isLoadingAlternatives: Boolean = false,
-    val alternativeIds: List<String> = emptyList(),
-    // Unified style composer (phase 1: Wardrobe-selection entry point)
+    // Unified style composer
     val isComposerOpen: Boolean = false,
     /** Non-null when the composer is editing an existing saved style (update-in-place). */
     val composerEditingOutfitId: String? = null,
@@ -107,7 +70,6 @@ data class OutfitsUiState(
     val composerManualTempC: Int? = null,          // null = unspecified
     val composerManualPrecip: String = "",         // "" / None / Light / Heavy
     val composerVibes: Set<String> = emptySet(),   // Casual / Sporty / Formal / …
-    val composerTargets: ComposerTargets = ComposerTargets(),
     val composerName: String = "",
     val composerDescription: String = "",
     val composerTags: List<String> = emptyList(),
@@ -122,6 +84,13 @@ data class OutfitsUiState(
     val composerSourceFolderIds: Set<String> = emptySet(),
     val isComposerEnhancing: Boolean = false,
     val composerError: String? = null,
+    val composerSlots: List<OutfitSlot> = emptyList(),
+    val composerMode: ComposerMode = ComposerMode.EDIT,
+    val composerAiSuggestedName: String = "",
+    val composerAiSuggestedDescription: String = "",
+    val composerAiSuggestedTags: List<String> = emptyList(),
+    val isSaveDialogOpen: Boolean = false,
+    val predictionSetupSource: PredictionSetupSource = PredictionSetupSource.OUTFITS_LIST,
     /** True while the "Find with AI" setup dialog is showing on the Outfits tab. */
     val isPredictionSetupOpen: Boolean = false,
     val error: String? = null,
@@ -296,14 +265,6 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
 
     // ---------- Create flow ----------
 
-    fun startCreating() = _state.update {
-        it.copy(isCreating = true, draftItemIds = emptySet(), draftOutfitName = "", draftOutfitDescription = "", draftOutfitTags = emptyList(), editingOutfit = null)
-    }
-
-    fun startCreatingFromItems(itemIds: Set<String>, name: String = "", description: String = "") = _state.update {
-        it.copy(isCreating = true, draftItemIds = itemIds, draftOutfitName = name, draftOutfitDescription = description, draftOutfitTags = emptyList(), editingOutfit = null)
-    }
-
     /** Opens the unified composer for an existing saved style (update-in-place on save). */
     fun startEditing(style: Outfit, images: List<DriveImage>, prefs: UserPreferences?) {
         openComposer(
@@ -316,190 +277,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
         )
     }
 
-    /** Called when Gemini predicts an existing style — opens edit view pre-populated with it. */
-    fun openPredictionInEditView(style: Outfit) = _state.update {
-        it.copy(
-            isEditingOutfitView = true,
-            draftItemIds = style.itemIds.toSet(),
-            draftOutfitName = style.name,
-            draftOutfitDescription = style.description,
-            draftOutfitTags = style.tags,
-            editingOutfit = style,
-        )
-    }
-
-    /** Called when Gemini composes a new outfit — opens edit view pre-populated with it. */
-    fun openSuggestionInEditView(suggestion: NewOutfitSuggestion) = _state.update {
-        it.copy(
-            isEditingOutfitView = true,
-            draftItemIds = suggestion.itemIds.toSet(),
-            draftOutfitName = suggestion.name,
-            draftOutfitDescription = suggestion.description,
-            draftOutfitTags = suggestion.tags,
-            editingOutfit = null,
-        )
-    }
-
-    fun cancelOutfitEditingView() = _state.update {
-        it.copy(
-            isEditingOutfitView = false,
-            draftItemIds = emptySet(),
-            draftOutfitName = "",
-            draftOutfitDescription = "",
-            draftOutfitTags = emptyList(),
-            editingOutfit = null,
-            prediction = null,
-            predictionSuggestions = emptyList(),
-            predictionIndex = 0,
-            newSuggestion = null,
-            alternativeIds = emptyList(),
-            feedbackHistory = emptyList(),
-            refinementInput = "",
-        )
-    }
-
-    fun updateDraftName(name: String) = _state.update { it.copy(draftOutfitName = name) }
-    fun updateDraftDescription(description: String) = _state.update { it.copy(draftOutfitDescription = description) }
-
-    fun cancelCreating() = _state.update {
-        it.copy(isCreating = false, isEditingOutfitView = false, draftItemIds = emptySet(), draftOutfitName = "", draftOutfitDescription = "", draftOutfitTags = emptyList(), editingOutfit = null, showNameDialog = false)
-    }
-
-    fun updateDraftTags(tags: List<String>) = _state.update { it.copy(draftOutfitTags = tags.distinct()) }
-    fun addDraftTag(tag: String) {
-        val t = tag.trim()
-        if (t.isEmpty()) return
-        _state.update { s ->
-            if (s.draftOutfitTags.any { it.equals(t, ignoreCase = true) }) s
-            else s.copy(draftOutfitTags = s.draftOutfitTags + t)
-        }
-    }
-    fun removeDraftTag(tag: String) = _state.update { s -> s.copy(draftOutfitTags = s.draftOutfitTags - tag) }
-
-    fun toggleDraftItem(driveId: String) = _state.update { s ->
-        val next = s.draftItemIds.toMutableSet()
-        if (!next.add(driveId)) next.remove(driveId)
-        s.copy(draftItemIds = next)
-    }
-
-    fun selectAllDraftItems(ids: List<String>) = _state.update { it.copy(draftItemIds = it.draftItemIds + ids) }
-
-    fun deselectAllDraftItems(ids: List<String>) = _state.update { it.copy(draftItemIds = it.draftItemIds - ids.toSet()) }
-
-    /** Replace one item in the style draft with another. */
-    fun swapDraftItem(oldId: String, newId: String) = _state.update { s ->
-        val next = s.draftItemIds.toMutableSet().apply { remove(oldId); add(newId) }
-        s.copy(draftItemIds = next)
-    }
-
-    fun addDraftItem(id: String) = _state.update { s -> s.copy(draftItemIds = s.draftItemIds + id) }
-
-    fun removeDraftItem(id: String) = _state.update { s -> s.copy(draftItemIds = s.draftItemIds - id) }
-
-    /**
-     * Asks Gemini to suggest up to 10 alternative items that could replace [itemId] in the
-     * current style draft, keeping the overall look coherent.
-     */
-    fun suggestAlternatives(itemId: String, images: List<DriveImage>, prefs: UserPreferences?) {
-        viewModelScope.launch {
-            _state.update { it.copy(isLoadingAlternatives = true, alternativeIds = emptyList()) }
-            val item = images.find { it.driveId == itemId } ?: run {
-                _state.update { it.copy(isLoadingAlternatives = false) }
-                return@launch
-            }
-            val otherIds = _state.value.draftItemIds - setOf(itemId)
-            val otherItems = images.filter { it.driveId in otherIds }
-            val prompt = buildAlternativesPrompt(
-                preamble = PromptStore.get(getApplication(), PromptKey.ALTERNATIVES),
-                item = item,
-                otherStyleItems = otherItems,
-                allImages = images,
-                prefs = prefs,
-            )
-            val raw = gemini.generateText(prompt, UsageCategory.OUTFIT_PREDICT)
-            val ids: List<String> = if (raw != null) {
-                val json = raw.trim()
-                    .removePrefix("```json").removePrefix("```").removeSuffix("```").trim()
-                data class AltResp(val alternativeIds: List<String> = emptyList())
-                val knownIds = images.map { it.driveId }.toSet()
-                runCatching {
-                    val resp = gson.fromJson(json, AltResp::class.java)
-                    resp.alternativeIds.filter { it in knownIds && it != itemId }.take(10)
-                }.getOrDefault(emptyList())
-            } else emptyList()
-            _state.update { it.copy(isLoadingAlternatives = false, alternativeIds = ids) }
-        }
-    }
-
-    fun clearAlternatives() = _state.update { it.copy(alternativeIds = emptyList()) }
-
     fun clearPendingWear() = _state.update { it.copy(pendingWearOutfitId = null) }
-
-    fun confirmDraft() {
-        val s = _state.value
-        if (s.draftItemIds.isEmpty()) return
-        // Name and description are always set inline in the picker — save directly, no popup.
-        val resolvedName = s.draftOutfitName.ifEmpty {
-            s.editingOutfit?.name ?: "Outfit ${s.outfits.size + 1}"
-        }
-        saveOutfit(resolvedName)
-    }
-
-    fun saveOutfit(name: String) {
-        val s = _state.value
-        val draftIds = s.draftItemIds
-        if (draftIds.isEmpty()) return
-        viewModelScope.launch {
-            val resolvedName = name.trim().ifEmpty {
-                s.editingOutfit?.name ?: "Outfit ${s.outfits.size + 1}"
-            }
-            val description = s.draftOutfitDescription.trim()
-            val id = saveFolderId ?: folderId ?: return@launch
-
-            // Fetch fresh file listing to populate stable itemNames (portable across account copies)
-            val idToName = drive.listFiles(id).associate { it.id to it.name }
-            val itemNames = draftIds.mapNotNull { idToName[it] }
-
-            val tags = s.draftOutfitTags
-            val updated = if (s.editingOutfit != null) {
-                val edited = s.editingOutfit.copy(
-                    name = resolvedName, description = description,
-                    itemIds = draftIds.toList(), itemNames = itemNames,
-                    tags = tags,
-                )
-                s.outfits.map { if (it.id == edited.id) edited else it }
-            } else {
-                s.outfits + Outfit(
-                    name = resolvedName, description = description,
-                    itemIds = draftIds.toList(), itemNames = itemNames,
-                    tags = tags,
-                )
-            }
-            val savedStyleId = if (s.editingOutfit != null) s.editingOutfit.id else updated.last().id
-            runCatching {
-                drive.saveOutfitsJson(id, gson.toJson(updated))
-            }.onSuccess {
-                _state.update {
-                    it.copy(
-                        outfits = updated,
-                        isCreating = false,
-                        isEditingOutfitView = false,
-                        draftItemIds = emptySet(),
-                        draftOutfitTags = emptyList(),
-                        editingOutfit = null,
-                        showNameDialog = false,
-                        prediction = null,
-                        newSuggestion = null,
-                        feedbackHistory = emptyList(),
-                        refinementInput = "",
-                        pendingWearOutfitId = savedStyleId,
-                    )
-                }
-            }.onFailure { e ->
-                _state.update { it.copy(showNameDialog = false, error = e.message) }
-            }
-        }
-    }
 
     /**
      * Saves a style directly without going through the draft editing flow.
@@ -539,9 +317,8 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
     // ---------- Unified style composer ----------
 
     /**
-     * Opens the composer prefilled with [seedItemIds] and target counts derived from
-     * their current tag categories.  The user supplies a preference string prefilled
-     * from [prefs]; weather mode defaults to AUTO.
+     * Opens the composer prefilled with [seedItemIds]. The user supplies a preference string
+     * prefilled from [prefs]; weather mode defaults to AUTO.
      */
     fun openComposer(
         seedItemIds: Set<String>,
@@ -553,32 +330,47 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
         defaultSourceFolderId: String? = null,
     ) {
         val ids = seedItemIds.toList()
-        val targets = targetsFromSeed(ids, images)
-        // Default the source-closet filter to the user's default closet so suggestions/composition
-        // start from a single curated wardrobe; user can broaden it via chips in the composer.
         val sourceFolders = defaultSourceFolderId?.let { setOf(it) } ?: emptySet()
+        val byId = images.associateBy { it.driveId }
+        val slots: List<OutfitSlot> = if (ids.isEmpty()) {
+            Layer.values().map { layer ->
+                OutfitSlot(UUID.randomUUID().toString(), layer, null, false)
+            }
+        } else {
+            ids.map { id ->
+                val img = byId[id]
+                val layer = img?.let { layerFor(it) } ?: Layer.Top
+                OutfitSlot(UUID.randomUUID().toString(), layer, id, true)
+            }
+        }
+        val mode = if (editingStyleId != null) ComposerMode.VIEW else ComposerMode.EDIT
         _state.update {
             it.copy(
-                isComposerOpen          = true,
-                composerEditingOutfitId  = editingStyleId,
-                composerItemIds         = ids,
-                composerWeatherMode     = ComposerWeatherMode.AUTO,
-                composerManualSeason    = "",
-                composerManualTempC     = null,
-                composerManualPrecip    = "",
-                composerVibes           = emptySet(),
-                composerTargets         = targets,
-                composerName            = initialName,
-                composerDescription     = initialDescription,
-                composerTags            = editingStyleId?.let { id ->
+                isComposerOpen              = true,
+                composerEditingOutfitId      = editingStyleId,
+                composerItemIds             = ids,
+                composerSlots               = slots,
+                composerMode                = mode,
+                composerWeatherMode         = ComposerWeatherMode.AUTO,
+                composerManualSeason        = "",
+                composerManualTempC         = null,
+                composerManualPrecip        = "",
+                composerVibes               = emptySet(),
+                composerName                = initialName,
+                composerDescription         = initialDescription,
+                composerTags                = editingStyleId?.let { id ->
                     it.outfits.find { o -> o.id == id }?.tags ?: emptyList()
                 } ?: emptyList(),
-                composerFeedback        = "",
-                composerFeedbackHistory = emptyList(),
-                composerReason          = "",
-                composerSourceFolderIds = sourceFolders,
-                isComposerEnhancing     = false,
-                composerError           = null,
+                composerFeedback            = "",
+                composerFeedbackHistory     = emptyList(),
+                composerReason              = "",
+                composerSourceFolderIds     = sourceFolders,
+                isComposerEnhancing         = false,
+                composerError               = null,
+                composerAiSuggestedName     = "",
+                composerAiSuggestedDescription = "",
+                composerAiSuggestedTags     = emptyList(),
+                isSaveDialogOpen            = false,
             )
         }
     }
@@ -610,22 +402,21 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
 
     fun closeComposer() = _state.update {
         it.copy(
-            isComposerOpen          = false,
-            composerEditingOutfitId  = null,
-            composerItemIds         = emptyList(),
-            composerFeedback        = "",
-            composerFeedbackHistory = emptyList(),
-            composerReason          = "",
-            composerError           = null,
+            isComposerOpen              = false,
+            composerEditingOutfitId      = null,
+            composerItemIds             = emptyList(),
+            composerSlots               = emptyList(),
+            composerFeedback            = "",
+            composerFeedbackHistory     = emptyList(),
+            composerReason              = "",
+            composerError               = null,
+            isSaveDialogOpen            = false,
+            composerAiSuggestedName     = "",
+            composerAiSuggestedDescription = "",
+            composerAiSuggestedTags     = emptyList(),
         )
     }
 
-    fun addComposerItems(ids: Collection<String>) = _state.update { s ->
-        s.copy(composerItemIds = (s.composerItemIds + ids).distinct())
-    }
-    fun removeComposerItem(id: String) = _state.update { s ->
-        s.copy(composerItemIds = s.composerItemIds - id)
-    }
     fun toggleComposerVibe(vibe: String) = _state.update { s ->
         val next = s.composerVibes.toMutableSet()
         if (!next.add(vibe)) next.remove(vibe)
@@ -635,7 +426,6 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
     fun setComposerManualSeason(season: String) = _state.update { it.copy(composerManualSeason = season) }
     fun setComposerManualTempC(tempC: Int?) = _state.update { it.copy(composerManualTempC = tempC) }
     fun setComposerManualPrecip(p: String) = _state.update { it.copy(composerManualPrecip = p) }
-    fun setComposerTargets(targets: ComposerTargets) = _state.update { it.copy(composerTargets = targets) }
     fun updateComposerName(s: String) = _state.update { it.copy(composerName = s) }
     fun updateComposerDescription(s: String) = _state.update { it.copy(composerDescription = s) }
     fun addComposerTag(tag: String) {
@@ -675,6 +465,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             val region = listOfNotNull(weather?.cityName?.takeIf { it.isNotEmpty() }, countryCode).joinToString(", ")
             val fashionTrends = gemini.searchFashionTrends(region, UsageCategory.OUTFIT_COMPOSE)
             val prefString = prefs?.preferences.orEmpty()
+            val slots = s.composerSlots
             val prompt = buildComposerPrompt(
                 preamble         = PromptStore.get(getApplication(), PromptKey.COMPOSER),
                 prefs            = prefs,
@@ -684,8 +475,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                     s.composerManualSeason, s.composerManualTempC, s.composerManualPrecip
                 ) else null,
                 vibes            = s.composerVibes,
-                targets          = s.composerTargets,
-                requiredItemIds  = s.composerItemIds.toSet(),
+                slots            = slots,
                 images           = images,
                 countryCode      = countryCode,
                 cityName         = weather?.cityName,
@@ -701,48 +491,122 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             }
             val json = raw.trim()
                 .removePrefix("```json").removePrefix("```").removeSuffix("```").trim()
+            data class SlotAssignment(val slotId: String = "", val itemId: String = "")
             data class CompResp(
+                val slots: List<SlotAssignment> = emptyList(),
                 val name: String = "",
                 val description: String = "",
-                val itemIds: List<String> = emptyList(),
                 val reason: String = "",
                 val tags: List<String> = emptyList(),
+                // Legacy fallback: older prompt shape returned flat itemIds.
+                val itemIds: List<String> = emptyList(),
             )
             val result = runCatching { gson.fromJson(json, CompResp::class.java) }.getOrNull()
-            if (result == null || result.itemIds.isEmpty()) {
+            if (result == null || (result.slots.isEmpty() && result.itemIds.isEmpty())) {
                 Log.w("StylesVM", "Failed to parse composer response: $json")
                 _state.update { it.copy(isComposerEnhancing = false, composerError = "Could not parse Gemini response.") }
                 return@launch
             }
             val knownIds = images.map { it.driveId }.toSet()
-            val required = s.composerItemIds
-            val merged = (required + result.itemIds).filter { it in knownIds }.distinct()
             val cleanTags = result.tags.map { it.trim() }.filter { it.isNotEmpty() }.distinct()
+
+            // Apply slot assignments: only update slots that are empty or unlocked.
+            val assignmentBySlotId = result.slots.associate { it.slotId to it.itemId }
+            val currentSlots = s.composerSlots
+            val updatedSlots = if (assignmentBySlotId.isNotEmpty()) {
+                currentSlots.map { slot ->
+                    val lockedFilled = slot.isLocked && slot.selectedItemId != null
+                    if (lockedFilled) slot
+                    else {
+                        val newItemId = assignmentBySlotId[slot.id]?.takeIf { it in knownIds }
+                        if (newItemId != null) slot.copy(selectedItemId = newItemId, isLocked = false)
+                        else slot
+                    }
+                }
+            } else {
+                // Legacy: distribute itemIds across empty/unlocked slots by category.
+                val byId = images.associateBy { it.driveId }
+                val unlockedSlotIds = currentSlots.filter { !(it.isLocked && it.selectedItemId != null) }.map { it.id }.toSet()
+                val candidateIds = result.itemIds.filter { it in knownIds }
+                val mutableSlots = currentSlots.toMutableList()
+                for (candidateId in candidateIds) {
+                    val img = byId[candidateId] ?: continue
+                    val cat = layerFor(img) ?: Layer.Top
+                    val idx = mutableSlots.indexOfFirst { it.id in unlockedSlotIds && it.category == cat && it.selectedItemId == null }
+                    if (idx >= 0) mutableSlots[idx] = mutableSlots[idx].copy(selectedItemId = candidateId, isLocked = false)
+                }
+                mutableSlots
+            }
+            val mergedIds = updatedSlots.mapNotNull { it.selectedItemId }.distinct()
             _state.update {
                 it.copy(
-                    isComposerEnhancing = false,
-                    composerItemIds     = merged,
-                    composerName        = if (it.composerName.isBlank()) result.name else it.composerName,
-                    composerDescription = if (it.composerDescription.isBlank()) result.description else it.composerDescription,
-                    composerTags        = if (it.composerTags.isEmpty()) cleanTags else it.composerTags,
-                    composerReason      = result.reason,
+                    isComposerEnhancing         = false,
+                    composerSlots               = updatedSlots,
+                    composerItemIds             = mergedIds,
+                    composerAiSuggestedName     = result.name,
+                    composerAiSuggestedDescription = result.description,
+                    composerAiSuggestedTags     = cleanTags,
+                    composerReason              = result.reason,
                 )
             }
         }
     }
 
-    /** Persists the composer draft. Updates in-place when editing an existing style, else appends. */
-    fun saveComposer(onDone: (Boolean) -> Unit = {}) {
+    fun clearComposerError() = _state.update { it.copy(composerError = null) }
+
+    fun setComposerMode(mode: ComposerMode) = _state.update { it.copy(composerMode = mode) }
+
+    fun addSlot(category: Layer) = _state.update { s ->
+        s.copy(composerSlots = s.composerSlots + OutfitSlot(UUID.randomUUID().toString(), category, null, false))
+    }
+
+    fun removeSlot(slotId: String) = _state.update { s ->
+        val slot = s.composerSlots.find { it.id == slotId }
+        val newSlots = s.composerSlots.filter { it.id != slotId }
+        val newIds = slot?.selectedItemId?.let { id -> s.composerItemIds - id } ?: s.composerItemIds
+        s.copy(composerSlots = newSlots, composerItemIds = newIds)
+    }
+
+    fun setSlotItem(slotId: String, itemId: String?) = _state.update { s ->
+        val newSlots = s.composerSlots.map { slot ->
+            if (slot.id == slotId) slot.copy(selectedItemId = itemId, isLocked = itemId != null)
+            else slot
+        }
+        val slotItemIds = newSlots.mapNotNull { it.selectedItemId }.distinct()
+        s.copy(composerSlots = newSlots, composerItemIds = slotItemIds)
+    }
+
+    fun toggleSlotLock(slotId: String) = _state.update { s ->
+        s.copy(composerSlots = s.composerSlots.map { slot ->
+            if (slot.id == slotId && slot.selectedItemId != null) slot.copy(isLocked = !slot.isLocked)
+            else slot
+        })
+    }
+
+    fun prepareSave() = _state.update { s ->
+        val existingOutfit = s.composerEditingOutfitId?.let { id -> s.outfits.find { it.id == id } }
+        s.copy(
+            isSaveDialogOpen = true,
+            composerName = s.composerName.ifBlank { existingOutfit?.name ?: s.composerAiSuggestedName },
+            composerDescription = s.composerDescription.ifBlank { existingOutfit?.description ?: s.composerAiSuggestedDescription },
+            composerTags = s.composerTags.ifEmpty { existingOutfit?.tags ?: s.composerAiSuggestedTags },
+        )
+    }
+
+    fun dismissSaveDialog() = _state.update { it.copy(isSaveDialogOpen = false) }
+
+    fun commitOutfit(name: String, description: String, tags: List<String>, onDone: (Boolean) -> Unit = {}) {
         val s = _state.value
-        if (s.composerItemIds.isEmpty()) { onDone(false); return }
+        val itemIds = s.composerSlots.mapNotNull { it.selectedItemId }.distinct()
+            .ifEmpty { s.composerItemIds }
+        if (itemIds.isEmpty()) { onDone(false); return }
         val editingId = s.composerEditingOutfitId
         if (editingId == null) {
-            val name = s.composerName.ifBlank { "Outfit ${s.outfits.size + 1}" }
             saveOutfitDirectly(
-                name        = name,
-                description = s.composerDescription,
-                itemIds     = s.composerItemIds,
-                tags        = s.composerTags,
+                name        = name.ifBlank { "Outfit ${s.outfits.size + 1}" },
+                description = description,
+                itemIds     = itemIds,
+                tags        = tags,
             ) { ok ->
                 if (ok) closeComposer()
                 onDone(ok)
@@ -750,17 +614,17 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             return
         }
         val existing = s.outfits.find { it.id == editingId } ?: run { onDone(false); return }
-        val name = s.composerName.ifBlank { existing.name }
+        val resolvedName = name.ifBlank { existing.name }
         viewModelScope.launch {
             val saveId = existing.folderId.ifEmpty { saveFolderId ?: folderId ?: run { onDone(false); return@launch } }
             val idToName = drive.listFiles(saveId).associate { it.id to it.name }
-            val itemNames = s.composerItemIds.mapNotNull { idToName[it] }
+            val itemNames = itemIds.mapNotNull { idToName[it] }
             val edited = existing.copy(
-                name = name,
-                description = s.composerDescription,
-                itemIds = s.composerItemIds,
+                name = resolvedName,
+                description = description,
+                itemIds = itemIds,
                 itemNames = itemNames,
-                tags = s.composerTags,
+                tags = tags,
             )
             val updated = s.outfits.map { if (it.id == edited.id) edited else it }
             runCatching {
@@ -775,34 +639,6 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 onDone(false)
             }
         }
-    }
-
-    fun clearComposerError() = _state.update { it.copy(composerError = null) }
-
-    /** Derives per-layer target counts from the tag categories of the seed items. */
-    private fun targetsFromSeed(ids: List<String>, images: List<DriveImage>): ComposerTargets {
-        val byId = images.associateBy { it.driveId }
-        var top = 0; var bottom = 0; var foot = 0; var outer = 0; var acc = 0
-        ids.forEach { id ->
-            val cat = byId[id]?.tags?.category?.lowercase().orEmpty()
-            when {
-                cat.contains("outer")                                   -> outer++
-                cat.contains("foot") || cat.contains("shoe")            -> foot++
-                cat.contains("bottom") || cat == "pants" || cat == "skirt" -> bottom++
-                cat.contains("accessor")                                -> acc++
-                cat.contains("top") || cat.contains("shirt") || cat == "dress" || cat == "suit" -> top++
-                else                                                    -> top++
-            }
-        }
-        // Defaults: Top and Bottom are required (always at least 1); Footwear, Outerwear, and
-        // Accessory are optional and start at 0 unless the seed already includes one.
-        return ComposerTargets(
-            top       = maxOf(top, 1),
-            bottom    = maxOf(bottom, 1),
-            footwear  = foot,
-            outerwear = outer,
-            accessory = acc,
-        )
     }
 
     // ---------- Delete ----------
@@ -876,11 +712,15 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
      * override, closet filter, and vibe chips (reusing composer state). Submitting it triggers
      * the prediction via [submitPredictionSetup].
      */
-    fun openPredictionSetup(defaultSourceFolderId: String?) {
+    fun openPredictionSetup(
+        defaultSourceFolderId: String?,
+        source: PredictionSetupSource = PredictionSetupSource.OUTFITS_LIST,
+    ) {
         val sourceFolders = defaultSourceFolderId?.let { setOf(it) } ?: emptySet()
         _state.update {
             it.copy(
                 isPredictionSetupOpen   = true,
+                predictionSetupSource   = source,
                 composerFeedback        = "",
                 composerVibes           = emptySet(),
                 composerWeatherMode     = ComposerWeatherMode.AUTO,
@@ -907,22 +747,18 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 isPredictionSetupOpen = false,
                 composerFeedback      = "",
                 feedbackHistory       = history,
-                refinementInput       = "",
             )
         }
-        doTriggerPrediction(prefs, weather, images, history)
-    }
-
-    fun refinePrediction(prefs: UserPreferences?, weather: WeatherData?, images: List<DriveImage>) {
-        val feedback = _state.value.refinementInput.trim().ifEmpty { return }
-        val history = _state.value.feedbackHistory + feedback
-        _state.update { it.copy(feedbackHistory = history, refinementInput = "") }
-        doTriggerPrediction(prefs, weather, images, history)
+        if (s.predictionSetupSource == PredictionSetupSource.COMPOSER) {
+            enhanceComposerWithAi(prefs, weather, images)
+        } else {
+            doTriggerPrediction(prefs, weather, images, history)
+        }
     }
 
     fun submitPresetPrediction(preset: String, prefs: UserPreferences?, weather: WeatherData?, images: List<DriveImage>) {
         val history = _state.value.feedbackHistory + preset
-        _state.update { it.copy(feedbackHistory = history, refinementInput = "") }
+        _state.update { it.copy(feedbackHistory = history) }
         doTriggerPrediction(prefs, weather, images, history)
     }
 
@@ -1027,7 +863,6 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             predictionSuggestions = emptyList(),
             predictionIndex = 0,
             feedbackHistory = emptyList(),
-            refinementInput = "",
         )
     }
 
@@ -1040,140 +875,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
         val list = _state.value.predictionSuggestions
         if (index !in list.indices) return
         val pred = list[index]
-        val style = _state.value.outfits.find { it.id == pred.outfitId } ?: return
-        _state.update {
-            it.copy(
-                predictionIndex = index,
-                prediction = pred,
-                isEditingOutfitView = true,
-                draftItemIds = style.itemIds.toSet(),
-                draftOutfitName = style.name,
-                draftOutfitDescription = style.description,
-                draftOutfitTags = style.tags,
-                editingOutfit = style,
-                alternativeIds = emptyList(),
-            )
-        }
-    }
-
-    fun updateRefinementInput(text: String) = _state.update { it.copy(refinementInput = text) }
-
-    // ---------- New style composition ----------
-
-    fun triggerComposition(prefs: UserPreferences?, weather: WeatherData?, images: List<DriveImage>) {
-        _state.update { it.copy(feedbackHistory = emptyList(), refinementInput = "", lastCompositionRequiredIds = emptySet()) }
-        doTriggerComposition(prefs, weather, images, emptyList(), emptySet())
-    }
-
-    fun triggerCompositionFromItems(
-        requiredItemIds: Set<String>,
-        prefs: UserPreferences?,
-        weather: WeatherData?,
-        images: List<DriveImage>,
-    ) {
-        _state.update { it.copy(feedbackHistory = emptyList(), refinementInput = "", lastCompositionRequiredIds = requiredItemIds) }
-        doTriggerComposition(prefs, weather, images, emptyList(), requiredItemIds)
-    }
-
-    fun refineComposition(prefs: UserPreferences?, weather: WeatherData?, images: List<DriveImage>) {
-        val feedback = _state.value.refinementInput.trim().ifEmpty { return }
-        val history = _state.value.feedbackHistory + feedback
-        val required = _state.value.lastCompositionRequiredIds
-        _state.update { it.copy(feedbackHistory = history, refinementInput = "") }
-        doTriggerComposition(prefs, weather, images, history, required)
-    }
-
-    fun submitPresetComposition(preset: String, prefs: UserPreferences?, weather: WeatherData?, images: List<DriveImage>) {
-        val history = _state.value.feedbackHistory + preset
-        val required = _state.value.lastCompositionRequiredIds
-        _state.update { it.copy(feedbackHistory = history, refinementInput = "") }
-        doTriggerComposition(prefs, weather, images, history, required)
-    }
-
-    private fun doTriggerComposition(
-        prefs: UserPreferences?,
-        weather: WeatherData?,
-        images: List<DriveImage>,
-        feedbackHistory: List<String>,
-        requiredItemIds: Set<String>,
-    ) {
-        if (images.isEmpty()) {
-            _state.update { it.copy(compositionError = "No wardrobe items to compose from.") }
-            return
-        }
-        viewModelScope.launch {
-            _state.update { it.copy(isComposing = true, newSuggestion = null, compositionError = null) }
-
-            val countryCode = deviceCountryCode()
-            val region = listOfNotNull(weather?.cityName?.takeIf { it.isNotEmpty() }, countryCode).joinToString(", ")
-            val fashionTrends = gemini.searchFashionTrends(region, UsageCategory.OUTFIT_COMPOSE)
-
-            val prompt = buildCompositionPrompt(
-                preamble        = PromptStore.get(getApplication(), PromptKey.COMPOSITION),
-                prefs           = prefs,
-                weather         = weather,
-                cityName        = weather?.cityName,
-                countryCode     = countryCode,
-                fashionTrends   = fashionTrends,
-                images          = images,
-                requiredItemIds = requiredItemIds,
-                feedbackHistory = feedbackHistory,
-            )
-            Log.d("StylesVM", "=== COMPOSITION PROMPT (${prompt.length} chars, history=${feedbackHistory.size}) ===")
-            prompt.chunked(3000).forEachIndexed { i, chunk ->
-                Log.d("StylesVM", "CompositionPrompt[$i]: $chunk")
-            }
-
-            val raw = gemini.generateText(prompt, UsageCategory.OUTFIT_COMPOSE)
-            if (raw == null) {
-                _state.update { it.copy(isComposing = false, compositionError = "Gemini did not respond.") }
-                return@launch
-            }
-            Log.d("StylesVM", "Composition raw response: $raw")
-
-            val json = raw.trim()
-                .removePrefix("```json").removePrefix("```").removeSuffix("```").trim()
-
-            data class CompResp(
-                val name: String = "",
-                val description: String = "",
-                val itemIds: List<String> = emptyList(),
-                val reason: String = "",
-                val tags: List<String> = emptyList(),
-            )
-            val result = runCatching { gson.fromJson(json, CompResp::class.java) }.getOrNull()
-
-            if (result == null || result.itemIds.isEmpty()) {
-                Log.w("StylesVM", "Failed to parse composition response: $json")
-                _state.update { it.copy(isComposing = false, compositionError = "Could not parse Gemini response.") }
-                return@launch
-            }
-
-            val knownIds = images.map { it.driveId }.toSet()
-            val merged = (requiredItemIds + result.itemIds).filter { it in knownIds }.distinct()
-            if (merged.isEmpty()) {
-                Log.w("StylesVM", "Gemini returned no valid item IDs: ${result.itemIds}")
-                _state.update { it.copy(isComposing = false, compositionError = "Suggested items not found in wardrobe.") }
-                return@launch
-            }
-
-            _state.update {
-                it.copy(
-                    isComposing = false,
-                    newSuggestion = NewOutfitSuggestion(
-                        name        = result.name.ifBlank { "AI Outfit" },
-                        description = result.description,
-                        itemIds     = merged,
-                        reason      = result.reason,
-                        tags        = result.tags.map { it.trim() }.filter { it.isNotEmpty() }.distinct(),
-                    ),
-                )
-            }
-        }
-    }
-
-    fun clearNewSuggestion() = _state.update {
-        it.copy(newSuggestion = null, compositionError = null, feedbackHistory = emptyList(), refinementInput = "")
+        _state.update { it.copy(predictionIndex = index, prediction = pred) }
     }
 
     fun clearError() = _state.update { it.copy(error = null) }
@@ -1464,141 +1166,6 @@ private fun buildPredictionPrompt(
     }
 }
 
-private fun buildAlternativesPrompt(
-    preamble: String,
-    item: DriveImage,
-    otherStyleItems: List<DriveImage>,
-    allImages: List<DriveImage>,
-    prefs: UserPreferences?,
-): String {
-    fun driveImageToJson(img: DriveImage): String {
-        val t = img.tags ?: return """{"id":"${img.driveId}","tags":null}"""
-        val uses   = t.uses.joinToString(",", "[", "]") { "\"$it\"" }
-        val colors = t.colors.joinToString(",", "[", "]") { "\"$it\"" }
-        return """{"id":"${img.driveId}","tags":{"label":"${t.label}","type":"${t.type}","category":"${t.category}","uses":$uses,"colors":$colors}}"""
-    }
-
-    val otherStyleIds = otherStyleItems.map { it.driveId }.toSet()
-    val candidatesJson = allImages
-        .filter { it.driveId != item.driveId && it.driveId !in otherStyleIds }
-        .joinToString(",", "[", "]") { driveImageToJson(it) }
-
-    return buildString {
-        appendLine(preamble.trim())
-        appendLine()
-        appendLine("## Item to replace")
-        appendLine(driveImageToJson(item))
-        appendLine()
-        appendLine("## Other items already in the outfit (context — do NOT suggest these)")
-        appendLine(otherStyleItems.joinToString(",", "[", "]") { driveImageToJson(it) })
-        appendLine()
-        appendLine("## Available wardrobe items to choose from")
-        appendLine(candidatesJson)
-        appendLine()
-        appendLine("Respond with ONLY a valid JSON object — no markdown, no extra text:")
-        append("""{"alternativeIds":["<id1>","<id2>","<id3>"]}""")
-        appendLine()
-        appendLine()
-        appendLine("IMPORTANT: Return item IDs exactly as provided in the available wardrobe list.")
-    }
-}
-
-private fun buildCompositionPrompt(
-    preamble: String,
-    prefs: UserPreferences?,
-    weather: WeatherData?,
-    cityName: String?,
-    countryCode: String,
-    fashionTrends: FashionTrends?,
-    images: List<DriveImage>,
-    requiredItemIds: Set<String> = emptySet(),
-    feedbackHistory: List<String> = emptyList(),
-): String {
-    val c = prefs?.aiConsiderations ?: AiConsiderations()
-    val age = prefs?.yearOfBirth?.let { LocalDate.now().year - it }
-
-    // Include all tagged items; untagged items are listed with null tags
-    val wardrobeJson = images.joinToString(",", "[", "]") { img ->
-        val t = img.tags
-        if (t == null) {
-            """{"id":"${img.driveId}","name":"${img.name}","tags":null}"""
-        } else {
-            val uses   = t.uses.joinToString(",", "[", "]") { "\"$it\"" }
-            val colors = t.colors.joinToString(",", "[", "]") { "\"$it\"" }
-            """{"id":"${img.driveId}","name":"${img.name}","tags":{"type":"${t.type}","category":"${t.category}","uses":$uses,"colors":$colors}}"""
-        }
-    }
-
-    val locationStr = listOfNotNull(cityName?.takeIf { it.isNotEmpty() }, countryCode)
-        .joinToString(", ")
-    val weatherStr = if (weather != null)
-        "${weather.temperatureCelsius.toInt()}°C, ${wmoEmoji(weather.weatherCode)} (WMO ${weather.weatherCode})"
-    else "unknown"
-
-    return buildString {
-        appendLine(preamble.trim())
-        appendLine()
-        val profileLines = buildList {
-            if (c.gender) add("- Gender: ${prefs?.gender?.takeIf { it.isNotEmpty() } ?: "not specified"}")
-            if (c.age) add("- Age: ${age?.toString() ?: "not specified"}")
-            if (c.preferences) add("- Outfit preferences: ${prefs?.preferences?.takeIf { it.isNotEmpty() } ?: "none provided"}")
-        }
-        if (profileLines.isNotEmpty()) {
-            appendLine("## User Profile")
-            profileLines.forEach { appendLine(it) }
-            appendLine()
-        }
-        if (c.location) {
-            appendLine("## Location")
-            appendLine("- City: ${cityName?.takeIf { it.isNotEmpty() } ?: "unknown"}")
-            appendLine("- Country: $countryCode")
-            appendLine("- Urban/rural: infer from city name (consider local style norms and practicality)")
-            appendLine()
-        }
-        if (c.weather) {
-            appendLine("## Today's Weather ($locationStr)")
-            appendLine(weatherStr)
-            appendLine()
-        }
-        if (c.trends) {
-            appendLine("## Current Fashion Trends in $locationStr")
-            if (fashionTrends != null) {
-                appendLine("- Trending colors: ${fashionTrends.trendingColors.joinToString(", ").ifEmpty { "n/a" }}")
-                appendLine("- Trending aesthetics: ${fashionTrends.trendingAesthetics.joinToString(", ").ifEmpty { "n/a" }}")
-                appendLine("- Must-have items right now: ${fashionTrends.mustHaveItems.joinToString(", ").ifEmpty { "n/a" }}")
-                appendLine("- Outdated / avoid: ${fashionTrends.outdatedItems.joinToString(", ").ifEmpty { "n/a" }}")
-            } else {
-                appendLine("not available")
-            }
-            appendLine()
-        }
-        appendLine("## Available Wardrobe Items (id + name + tags)")
-        appendLine(wardrobeJson)
-        appendLine()
-        if (requiredItemIds.isNotEmpty()) {
-            appendLine("## Required Items (MUST be included)")
-            appendLine("The following item IDs MUST appear in your itemIds list — they are pre-selected by the user:")
-            appendLine(requiredItemIds.joinToString(", ") { "\"$it\"" })
-            appendLine("You may add 1–3 complementary items from the wardrobe to complete the outfit.")
-            appendLine()
-        }
-        if (feedbackHistory.isNotEmpty()) {
-            appendLine("## User Refinement Requests")
-            appendLine("The user reviewed a previous suggestion and wants these adjustments (apply all of them):")
-            feedbackHistory.forEachIndexed { i, fb -> appendLine("${i + 1}. $fb") }
-            appendLine()
-        }
-        appendLine("Respond with ONLY a valid JSON object — no markdown, no extra text:")
-        append("""{"name":"<outfit name>","description":"<style caption>","itemIds":["<id1>","<id2>",...],"reason":"<1-2 sentence explanation>","tags":["<short occasion/vibe tag>", "..."]}""")
-        appendLine()
-        appendLine()
-        appendLine("Include 1-4 short, lowercase free-form tags describing the occasion, season, or vibe of the outfit (e.g. \"birthday\", \"travel\", \"work\", \"summer\", \"date night\"). Keep each tag to 1-2 words.")
-        appendLine()
-        appendLine()
-        appendLine("IMPORTANT: Write all user-facing text fields (name, description, reason) in ${AppLanguage.toGeminiName(prefs?.language ?: AppLanguage.ENGLISH)}.")
-    }
-}
-
 private fun buildComposerPrompt(
     preamble: String,
     prefs: UserPreferences?,
@@ -1606,8 +1173,7 @@ private fun buildComposerPrompt(
     weatherAuto: WeatherData?,
     weatherManual: Triple<String, Int?, String>?,
     vibes: Set<String>,
-    targets: ComposerTargets,
-    requiredItemIds: Set<String>,
+    slots: List<OutfitSlot>,
     images: List<DriveImage>,
     countryCode: String,
     cityName: String?,
@@ -1668,13 +1234,14 @@ private fun buildComposerPrompt(
             appendLine(vibes.joinToString(", "))
             appendLine()
         }
-        appendLine("## Target composition (per-layer counts)")
-        appendLine("- Base tops: ${targets.top}")
-        appendLine("- Bottoms: ${targets.bottom}")
-        appendLine("- Footwear: ${targets.footwear}")
-        appendLine("- Outerwear: ${targets.outerwear}")
-        appendLine("- Accessories: ${targets.accessory}")
-        appendLine("Total items: ${targets.total()}")
+        appendLine("## Target slots")
+        appendLine("Each slot has an id, category, and optionally a required itemId (locked by user).")
+        appendLine("For slots WITHOUT a requiredItemId, pick an appropriate item from the wardrobe.")
+        appendLine("For slots WITH a requiredItemId, include that exact item unchanged.")
+        slots.forEach { slot ->
+            val req = if (slot.isLocked && slot.selectedItemId != null) """ "requiredItemId":"${slot.selectedItemId}"""" else ""
+            appendLine("""{"slotId":"${slot.id}","category":"${slot.category.name}"$req}""")
+        }
         appendLine()
         if (c.location) {
             appendLine("## Location")
@@ -1688,13 +1255,6 @@ private fun buildComposerPrompt(
             appendLine("- Must-have items: ${fashionTrends.mustHaveItems.joinToString(", ").ifEmpty { "n/a" }}")
             appendLine()
         }
-        appendLine("## Required items (MUST appear in itemIds verbatim)")
-        if (requiredItemIds.isNotEmpty()) {
-            appendLine(requiredItemIds.joinToString(", ") { "\"$it\"" })
-        } else {
-            appendLine("(none — compose freely)")
-        }
-        appendLine()
         appendLine("## Available wardrobe (id + name + tags)")
         appendLine(wardrobeJson)
         appendLine()
@@ -1704,7 +1264,7 @@ private fun buildComposerPrompt(
             appendLine()
         }
         appendLine("Respond with ONLY a valid JSON object — no markdown, no extra text:")
-        append("""{"name":"<outfit name>","description":"<1-2 sentence caption>","itemIds":["<id1>","<id2>",...],"reason":"<1-2 sentence explanation>","tags":["<short occasion/vibe tag>", "..."]}""")
+        append("""{"slots":[{"slotId":"<id>","itemId":"<wardrobeItemId>"}],"name":"<outfit name>","description":"<1-2 sentence caption>","reason":"<1-2 sentence explanation>","tags":["<short occasion/vibe tag>"]}""")
         appendLine()
         appendLine()
         appendLine("Include 1-4 short, lowercase free-form tags describing the occasion, season, or vibe of the outfit (e.g. \"birthday\", \"travel\", \"work\", \"summer\", \"date night\"). Keep each tag to 1-2 words.")

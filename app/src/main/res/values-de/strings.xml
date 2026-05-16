@@ -462,6 +462,22 @@
     <string name="outfits_delete_selected_title">Outfits löschen?</string>
     <string name="outfits_delete_selected_text">%d Outfits werden dauerhaft entfernt.</string>
     <string name="outfits_combine">Mit KI kombinieren</string>
+    <string name="outfit_slot_lock">Sperren</string>
+    <string name="outfit_slot_unlock">Entsperren</string>
+    <string name="outfit_slot_remove">Entfernen</string>
+    <string name="outfit_slot_add">Slot hinzufügen</string>
+    <string name="outfit_generate_with_ai">Mit KI erstellen</string>
+    <string name="outfit_discard_changes_title">Änderungen verwerfen?</string>
+    <string name="outfit_discard_changes_body">Nicht gespeicherte Änderungen gehen verloren.</string>
+    <string name="outfit_discard_changes_confirm">Verwerfen</string>
+    <string name="outfit_save_dialog_title">Outfit speichern</string>
+    <string name="outfit_save_dialog_name">Name</string>
+    <string name="outfit_save_dialog_description">Beschreibung</string>
+    <string name="outfit_save_dialog_tags">Tags</string>
+    <string name="outfit_save_dialog_confirm">Speichern</string>
+    <string name="outfit_mode_view">Ansicht</string>
+    <string name="outfit_mode_edit">Bearbeiten</string>
+    <string name="outfit_pick_category">Kategorie wählen</string>
 
     <string name="travel_title">Reisepackliste</string>
     <string name="travel_destination">Reiseziel</string>

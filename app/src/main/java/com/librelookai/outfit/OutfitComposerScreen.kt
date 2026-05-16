@@ -38,12 +38,16 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.LockOpen
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
@@ -71,8 +75,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.offset
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
@@ -104,63 +114,20 @@ import com.librelookai.util.LocalSystemBarsPadding
 import com.librelookai.wardrobe.DriveImage
 import com.librelookai.wardrobe.LocationViewModel
 import com.librelookai.wardrobe.WardrobeViewModel
-import com.librelookai.wardrobe.displayLabel
 import com.librelookai.weather.WeatherData
 import com.librelookai.weather.WeatherViewModel
 import com.librelookai.R
 import com.librelookai.weather.wmoEmoji
-
-/** Garment layers, in display order top→bottom in the look board. */
-private enum class Layer(
-    val labelRes: Int,
-    val optional: Boolean,
-    val iconRes: Int,
-) {
-    Outerwear(R.string.outfit_layer_outerwear,   optional = true,  iconRes = R.drawable.ic_layer_jacket),
-    Top(R.string.outfit_layer_tops,              optional = false, iconRes = R.drawable.ic_layer_shirt),
-    Bottom(R.string.outfit_layer_bottoms,        optional = false, iconRes = R.drawable.ic_layer_pants),
-    Footwear(R.string.outfit_layer_footwear,     optional = false, iconRes = R.drawable.ic_layer_shoe),
-    Accessory(R.string.outfit_layer_accessories, optional = true,  iconRes = R.drawable.ic_layer_bag),
-}
 
 private fun DriveImage.displayLabel(): String =
     tags?.label?.ifEmpty { null }
         ?: tags?.type?.ifEmpty { null }
         ?: name
 
-private fun ComposerTargets.countFor(layer: Layer): Int = when (layer) {
-    Layer.Outerwear -> outerwear
-    Layer.Top -> top
-    Layer.Bottom -> bottom
-    Layer.Footwear -> footwear
-    Layer.Accessory -> accessory
-}
-
-private fun ComposerTargets.withLayer(layer: Layer, value: Int): ComposerTargets = when (layer) {
-    Layer.Outerwear -> copy(outerwear = value)
-    Layer.Top -> copy(top = value)
-    Layer.Bottom -> copy(bottom = value)
-    Layer.Footwear -> copy(footwear = value)
-    Layer.Accessory -> copy(accessory = value)
-}
-
-/** Map a wardrobe item to a layer slot using its category (best-effort). */
-private fun layerFor(image: DriveImage): Layer? {
-    val cat = image.tags?.category?.lowercase().orEmpty()
-    return when {
-        cat.contains("outer") -> Layer.Outerwear
-        cat.contains("foot") || cat.contains("shoe") -> Layer.Footwear
-        cat.contains("bottom") || cat == "pants" || cat == "skirt" -> Layer.Bottom
-        cat.contains("accessor") -> Layer.Accessory
-        cat.contains("top") || cat.contains("shirt") || cat == "dress" || cat == "suit" -> Layer.Top
-        else -> null
-    }
-}
-
 /**
- * Unified full-screen composer for creating a new outfit — "layered look board" layout.
- * One row per garment layer with a filmstrip of alternatives. AI fills missing slots from
- * the goal/occasion strip at the top.
+ * Unified full-screen composer for creating/viewing an outfit.
+ * In VIEW mode: read-only slot cards with images or silhouettes.
+ * In EDIT mode: lock toggles, exchange buttons, "+ Add slot", Generate-with-AI, Save.
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -184,6 +151,7 @@ fun OutfitComposerScreen(
 
     if (!s.isComposerOpen) return
 
+    val isEditMode = s.composerMode == ComposerMode.EDIT
     val sourceFolders = s.composerSourceFolderIds
     val crossClosetImages = wardrobe.allLocationImages.ifEmpty { wardrobe.images }
     val composerImages = remember(crossClosetImages, shoppingState.items, sourceFolders) {
@@ -191,26 +159,24 @@ fun OutfitComposerScreen(
         else crossClosetImages.filter { it.folderId in sourceFolders }
         filteredWardrobe + shoppingState.items
     }
+    val byId = remember(composerImages) { composerImages.associateBy { it.driveId } }
 
-    var showAddItemSheet by remember { mutableStateOf<Layer?>(null) }
+    var showAddSlotSheet by remember { mutableStateOf(false) }
+    var exchangeSlotId by remember { mutableStateOf<String?>(null) }
     var showWeatherSheet by remember { mutableStateOf(false) }
     var showClosetSheet by remember { mutableStateOf(false) }
-    var showAddTagDialog by remember { mutableStateOf(false) }
     var showDiscardDialog by remember { mutableStateOf(false) }
-    val hasComposerContent = s.composerItemIds.isNotEmpty() ||
-        s.composerTags.isNotEmpty() ||
-        s.composerVibes.isNotEmpty() ||
-        s.composerDescription.isNotBlank()
+
+    val hasContent = s.composerSlots.any { it.selectedItemId != null } ||
+        s.composerTags.isNotEmpty() || s.composerVibes.isNotEmpty()
     val requestClose: () -> Unit = {
-        if (hasComposerContent) showDiscardDialog = true
+        if (isEditMode && hasContent) showDiscardDialog = true
         else {
             Analytics.action("OutfitComposer", "close")
             stylesViewModel.closeComposer()
         }
     }
 
-    // Fullscreen Dialog: read insets via LocalSystemBarsPadding with a 48dp nav-bar floor.
-    // (See CLAUDE.md – Compose Dialog Quirks.)
     val barInsets = LocalSystemBarsPadding.current
     val view = androidx.compose.ui.platform.LocalView.current
     val density = LocalDensity.current
@@ -227,26 +193,7 @@ fun OutfitComposerScreen(
     val effectiveBottom = maxOf(barInsets.calculateBottomPadding(), rootInsetBottomDp, 48.dp)
     val effectiveTop = maxOf(barInsets.calculateTopPadding(), 0.dp)
 
-    // Group composer items by layer. Multiple items per layer are allowed — order matches
-    // their order in composerItemIds so user-added picks stay where the user put them.
-    val byId = remember(composerImages) { composerImages.associateBy { it.driveId } }
-    val currentByLayer: Map<Layer, List<DriveImage>> = remember(s.composerItemIds, byId) {
-        val out = Layer.values().associateWith { mutableListOf<DriveImage>() }
-        s.composerItemIds.forEach { id ->
-            val img = byId[id] ?: return@forEach
-            val layer = layerFor(img) ?: return@forEach
-            out[layer]?.add(img)
-        }
-        out
-    }
-    // Alternatives per layer = wardrobe items of that layer not yet picked.
-    val alternativesByLayer: Map<Layer, List<DriveImage>> = remember(composerImages, currentByLayer) {
-        Layer.values().associateWith { layer ->
-            val pickedIds = currentByLayer[layer].orEmpty().map { it.driveId }.toSet()
-            composerImages.filter { layerFor(it) == layer && it.driveId !in pickedIds }
-        }
-    }
-    val filledLayers = currentByLayer.count { it.value.isNotEmpty() }
+    val filledSlots = s.composerSlots.count { it.selectedItemId != null }
 
     Dialog(
         onDismissRequest = requestClose,
@@ -262,175 +209,91 @@ fun OutfitComposerScreen(
             ) {
                 Box(modifier = Modifier.fillMaxSize()) {
                     Column(modifier = Modifier.fillMaxSize().imePadding()) {
-                        // ── App header ───────────────────────────────────────
-                        Header(
-                            filledLayers = filledLayers,
+                        ComposerHeader(
+                            filledSlots = filledSlots,
+                            totalSlots = s.composerSlots.size,
+                            isEditMode = isEditMode,
                             topPadding = effectiveTop,
                             onClose = requestClose,
+                            onToggleMode = {
+                                stylesViewModel.setComposerMode(
+                                    if (isEditMode) ComposerMode.VIEW else ComposerMode.EDIT
+                                )
+                            },
                         )
 
-                        Column(
+                        ComposerStackedView(
+                            slots = s.composerSlots,
+                            byId = byId,
+                            locations = locationState.locations,
+                            isEditMode = isEditMode,
+                            onPickItem = { slotId -> exchangeSlotId = slotId },
+                            onToggleLock = { slotId -> stylesViewModel.toggleSlotLock(slotId) },
+                            onRemove = { slotId -> stylesViewModel.removeSlot(slotId) },
                             modifier = Modifier
                                 .weight(1f)
-                                .verticalScroll(rememberScrollState())
-                                .padding(horizontal = 16.dp)
-                                .padding(top = 0.dp, bottom = 8.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
-                            // ── Goal pill ───────────────────────────────────
-                            if (!isOffline) {
-                                GoalPill(
-                                    goal = s.composerFeedback,
-                                    onGoalChange = { stylesViewModel.updateComposerFeedback(it) },
-                                    enhancing = s.isComposerEnhancing,
-                                    onFillMissing = {
-                                        Analytics.action("OutfitComposer", "fill_missing")
-                                        stylesViewModel.enhanceComposerWithAi(
-                                            prefs   = profile.preferences,
-                                            weather = weather.data,
-                                            images  = composerImages,
-                                        )
-                                    },
-                                )
+                                .fillMaxWidth()
+                                .padding(horizontal = 12.dp, vertical = 8.dp),
+                        )
 
-                                // ── Context strip ───────────────────────────
-                                ContextStrip(
-                                    weatherMode = s.composerWeatherMode,
-                                    autoWeather = weather.data,
-                                    manualTempC = s.composerManualTempC,
-                                    closetNames = remember(sourceFolders, locationState.locations) {
-                                        locationState.locations.filter { it.folderId in sourceFolders }.map { it.name }
-                                    },
-                                    closetPickerAvailable = locationState.locations.size >= 2,
-                                    selectedVibes = s.composerVibes,
-                                    onToggleVibe = { stylesViewModel.toggleComposerVibe(it) },
-                                    onClickWeather = { showWeatherSheet = true },
-                                    onClickCloset = { showClosetSheet = true },
-                                )
-                            }
-
-                            // ── Layer rows ──────────────────────────────────
-                            Layer.values().forEach { layer ->
-                                val layerItems = currentByLayer[layer].orEmpty()
-                                val enabled = layerItems.isNotEmpty() ||
-                                    s.composerTargets.countFor(layer) > 0
-                                LayerCard(
-                                    layer = layer,
-                                    enabled = enabled,
-                                    current = layerItems,
-                                    alternatives = alternativesByLayer[layer].orEmpty(),
-                                    onSetEnabled = { newEnabled ->
-                                        if (newEnabled) {
-                                            if (s.composerTargets.countFor(layer) == 0) {
-                                                stylesViewModel.setComposerTargets(
-                                                    s.composerTargets.withLayer(layer, 1),
-                                                )
-                                            }
-                                        } else {
-                                            layerItems.forEach {
-                                                stylesViewModel.removeComposerItem(it.driveId)
-                                            }
-                                            stylesViewModel.setComposerTargets(
-                                                s.composerTargets.withLayer(layer, 0),
-                                            )
-                                        }
-                                        Analytics.action(
-                                            "OutfitComposer",
-                                            "layer_enabled",
-                                            mapOf("layer" to layer.name, "on" to newEnabled.toString()),
-                                        )
-                                    },
-                                    onAdd = { id ->
-                                        if (s.composerTargets.countFor(layer) == 0) {
-                                            stylesViewModel.setComposerTargets(
-                                                s.composerTargets.withLayer(layer, 1),
-                                            )
-                                        }
-                                        stylesViewModel.addComposerItems(listOf(id))
-                                        Analytics.action("OutfitComposer", "layer_add", mapOf("layer" to layer.name))
-                                    },
-                                    onClear = { id -> stylesViewModel.removeComposerItem(id) },
-                                    onSeeAll = { showAddItemSheet = layer },
-                                )
-                            }
-
-                            // ── Tags (chip picker over all known outfit tags) ──
-                            SectionHeader(stringResource(R.string.composer_tags_optional))
-                            val knownTags = remember(s.outfits, s.composerTags) {
-                                (s.outfits.flatMap { it.tags } + s.composerTags)
-                                    .map { it.trim() }
-                                    .filter { it.isNotEmpty() }
-                                    .distinctBy { it.lowercase() }
-                                    .sortedBy { it.lowercase() }
-                            }
-                            val composerTagsSet = s.composerTags.map { it.lowercase() }.toSet()
-                            FlowRow(
-                                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                                verticalArrangement = Arrangement.spacedBy(6.dp),
+                        if (isEditMode || s.composerReason.isNotBlank() || s.composerError != null) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp)
+                                    .padding(bottom = 8.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp),
                             ) {
-                                knownTags.forEach { tag ->
-                                    val active = tag.lowercase() in composerTagsSet
-                                    ContextChip(
-                                        label = tag,
-                                        icon = null,
-                                        active = active,
-                                        onClick = {
-                                            if (active) stylesViewModel.removeComposerTag(tag)
-                                            else stylesViewModel.addComposerTag(tag)
-                                        },
-                                    )
+                                if (isEditMode) {
+                                    TextButton(
+                                        onClick = { showAddSlotSheet = true },
+                                        modifier = Modifier.fillMaxWidth(),
+                                    ) {
+                                        Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(16.dp))
+                                        Spacer(Modifier.width(4.dp))
+                                        Text(stringResource(R.string.outfit_slot_add))
+                                    }
                                 }
-                                ContextChip(
-                                    label = stringResource(R.string.outfits_tag_add),
-                                    icon = Icons.Default.Add,
-                                    active = false,
-                                    onClick = { showAddTagDialog = true },
-                                )
-                            }
-
-                            // ── Description (inline, no longer behind Advanced) ──
-                            OutlinedTextField(
-                                value = s.composerDescription,
-                                onValueChange = { stylesViewModel.updateComposerDescription(it) },
-                                modifier = Modifier.fillMaxWidth(),
-                                placeholder = { Text(stringResource(R.string.composer_desc_placeholder)) },
-                                singleLine = false,
-                                minLines = 1,
-                                maxLines = 3,
-                            )
-
-                            // AI reason / error after enhancement.
-                            if (s.composerReason.isNotBlank()) {
-                                Surface(
-                                    shape = RoundedCornerShape(12.dp),
-                                    color = MaterialTheme.colorScheme.surface,
-                                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-                                    modifier = Modifier.fillMaxWidth(),
-                                ) {
-                                    Text(
-                                        s.composerReason,
-                                        style = MaterialTheme.typography.bodySmall,
-                                        modifier = Modifier.padding(12.dp),
-                                    )
+                                if (s.composerReason.isNotBlank()) {
+                                    Surface(
+                                        shape = RoundedCornerShape(12.dp),
+                                        color = MaterialTheme.colorScheme.surface,
+                                        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                                        modifier = Modifier.fillMaxWidth(),
+                                    ) {
+                                        Text(
+                                            s.composerReason,
+                                            style = MaterialTheme.typography.bodySmall,
+                                            modifier = Modifier.padding(12.dp),
+                                        )
+                                    }
                                 }
-                            }
-                            s.composerError?.let {
-                                Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+                                s.composerError?.let {
+                                    Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+                                }
                             }
                         }
 
-                        // ── Bottom bar ────────────────────────────────────
-                        BottomBar(
-                            name = s.composerName,
-                            onNameChange = { stylesViewModel.updateComposerName(it) },
-                            saveEnabled = s.composerItemIds.isNotEmpty(),
-                            onSave = {
-                                Analytics.action("OutfitComposer", "save", mapOf("count" to s.composerItemIds.size.toString()))
-                                stylesViewModel.saveComposer()
-                            },
-                            bottomPadding = effectiveBottom,
-                        )
+                        if (isEditMode) {
+                            ComposerEditBottomBar(
+                                saveEnabled = s.composerSlots.any { it.selectedItemId != null },
+                                isOffline = isOffline,
+                                onGenerateWithAi = {
+                                    Analytics.action("OutfitComposer", "generate_with_ai")
+                                    stylesViewModel.openPredictionSetup(
+                                        defaultSourceFolderId = null,
+                                        source = PredictionSetupSource.COMPOSER,
+                                    )
+                                },
+                                onSave = {
+                                    Analytics.action("OutfitComposer", "save")
+                                    stylesViewModel.prepareSave()
+                                },
+                                bottomPadding = effectiveBottom,
+                            )
+                        }
                     }
+
                     if (s.isComposerEnhancing) {
                         AiProcessingOverlay(
                             label = stringResource(R.string.composer_enhancing),
@@ -442,24 +305,76 @@ fun OutfitComposerScreen(
         }
     }
 
-    showAddItemSheet?.let { layer ->
+    if (showDiscardDialog) {
+        DiscardChangesDialog(
+            parentContext = parentContext,
+            parentConfiguration = parentConfiguration,
+            onConfirm = {
+                Analytics.action("OutfitComposer", "close")
+                stylesViewModel.closeComposer()
+            },
+            onDismiss = { showDiscardDialog = false },
+        )
+    }
+
+    if (s.isSaveDialogOpen) {
+        val existingOutfit = s.composerEditingOutfitId?.let { id -> s.outfits.find { it.id == id } }
+        SaveOutfitDialog(
+            initialName = s.composerName.ifBlank {
+                existingOutfit?.name ?: s.composerAiSuggestedName
+            },
+            initialDescription = s.composerDescription.ifBlank {
+                existingOutfit?.description ?: s.composerAiSuggestedDescription
+            },
+            initialTags = s.composerTags.ifEmpty {
+                existingOutfit?.tags ?: s.composerAiSuggestedTags
+            },
+            parentContext = parentContext,
+            parentConfiguration = parentConfiguration,
+            onConfirm = { name, description, tags ->
+                stylesViewModel.dismissSaveDialog()
+                stylesViewModel.commitOutfit(name, description, tags)
+            },
+            onDismiss = { stylesViewModel.dismissSaveDialog() },
+        )
+    }
+
+    exchangeSlotId?.let { slotId ->
+        val slot = s.composerSlots.find { it.id == slotId }
+        if (slot != null) {
+            CompositionLocalProvider(
+                LocalContext provides parentContext,
+                LocalConfiguration provides parentConfiguration,
+            ) {
+                val layerItems = composerImages.filter { layerFor(it) == slot.category }
+                val alreadyChosen = s.composerSlots
+                    .filter { it.id != slotId }
+                    .mapNotNull { it.selectedItemId }
+                    .toSet()
+                AddItemSheet(
+                    allItems = layerItems,
+                    alreadyChosen = alreadyChosen,
+                    onConfirm = { picked ->
+                        picked.firstOrNull()?.let { stylesViewModel.setSlotItem(slotId, it) }
+                        exchangeSlotId = null
+                    },
+                    onDismiss = { exchangeSlotId = null },
+                )
+            }
+        }
+    }
+
+    if (showAddSlotSheet) {
         CompositionLocalProvider(
             LocalContext provides parentContext,
             LocalConfiguration provides parentConfiguration,
         ) {
-            AddItemSheet(
-                allItems = composerImages.filter { layerFor(it) == layer },
-                alreadyChosen = s.composerItemIds.toSet(),
-                onConfirm = { newIds ->
-                    if (newIds.isNotEmpty() && s.composerTargets.countFor(layer) == 0) {
-                        stylesViewModel.setComposerTargets(
-                            s.composerTargets.withLayer(layer, 1),
-                        )
-                    }
-                    stylesViewModel.addComposerItems(newIds)
-                    showAddItemSheet = null
+            CategoryPickerSheet(
+                onSelect = { layer ->
+                    stylesViewModel.addSlot(layer)
+                    showAddSlotSheet = false
                 },
-                onDismiss = { showAddItemSheet = null },
+                onDismiss = { showAddSlotSheet = false },
             )
         }
     }
@@ -484,78 +399,6 @@ fun OutfitComposerScreen(
         }
     }
 
-    // Locale providers must wrap each slot lambda individually — AlertDialog
-    // opens its own window which re-derives LocalContext/LocalConfiguration.
-    // Wrapping the AlertDialog() call from outside does NOT propagate into slots.
-    val locale: @Composable (@Composable () -> Unit) -> Unit = { content ->
-        CompositionLocalProvider(
-            LocalContext provides parentContext,
-            LocalConfiguration provides parentConfiguration,
-        ) { content() }
-    }
-
-    if (showDiscardDialog) {
-        AlertDialog(
-            onDismissRequest = { showDiscardDialog = false },
-            title = { locale { Text(stringResource(R.string.composer_discard_title)) } },
-            text = { locale { Text(stringResource(R.string.composer_discard_message)) } },
-            confirmButton = {
-                locale {
-                    TextButton(onClick = {
-                        showDiscardDialog = false
-                        Analytics.action("OutfitComposer", "close")
-                        stylesViewModel.closeComposer()
-                    }) { Text(stringResource(R.string.composer_discard_confirm)) }
-                }
-            },
-            dismissButton = {
-                locale {
-                    TextButton(onClick = { showDiscardDialog = false }) {
-                        Text(stringResource(R.string.action_cancel))
-                    }
-                }
-            },
-        )
-    }
-
-    if (showAddTagDialog) {
-        var newTag by remember { mutableStateOf("") }
-        AlertDialog(
-            onDismissRequest = { showAddTagDialog = false },
-            title = { locale { Text(stringResource(R.string.outfits_tag_add)) } },
-            text = {
-                locale {
-                    OutlinedTextField(
-                        value = newTag,
-                        onValueChange = { newTag = it },
-                        placeholder = { Text(stringResource(R.string.outfits_tag_add_placeholder)) },
-                        singleLine = true,
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                }
-            },
-            confirmButton = {
-                locale {
-                    TextButton(
-                        onClick = {
-                            val t = newTag.trim()
-                            if (t.isNotEmpty()) stylesViewModel.addComposerTag(t)
-                            showAddTagDialog = false
-                        },
-                        enabled = newTag.trim().isNotEmpty(),
-                    ) { Text(stringResource(R.string.outfits_tag_add)) }
-                }
-            },
-            dismissButton = {
-                locale {
-                    TextButton(onClick = { showAddTagDialog = false }) {
-                        Text(stringResource(R.string.action_cancel))
-                    }
-                }
-            },
-        )
-    }
-
     if (showClosetSheet) {
         CompositionLocalProvider(
             LocalContext provides parentContext,
@@ -574,11 +417,18 @@ fun OutfitComposerScreen(
 // ─── Header ─────────────────────────────────────────────────────────────────
 
 @Composable
-private fun Header(filledLayers: Int, topPadding: Dp, onClose: () -> Unit) {
+private fun ComposerHeader(
+    filledSlots: Int,
+    totalSlots: Int,
+    isEditMode: Boolean,
+    topPadding: Dp,
+    onClose: () -> Unit,
+    onToggleMode: () -> Unit,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 8.dp, end = 8.dp, top = 0.dp, bottom = 4.dp),
+            .padding(start = 8.dp, end = 8.dp, top = topPadding, bottom = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         IconButton(onClick = onClose, modifier = Modifier.size(40.dp)) {
@@ -594,98 +444,22 @@ private fun Header(filledLayers: Int, topPadding: Dp, onClose: () -> Unit) {
                 ),
             )
             Text(
-                stringResource(R.string.composer_header_subtitle, filledLayers),
+                stringResource(R.string.composer_header_subtitle, filledSlots),
                 style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.sp),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        TextButton(onClick = onToggleMode) {
+            Text(
+                if (isEditMode) stringResource(R.string.outfit_mode_view)
+                else stringResource(R.string.outfit_mode_edit),
+                style = MaterialTheme.typography.labelMedium,
             )
         }
     }
     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 }
 
-// ─── Goal pill ──────────────────────────────────────────────────────────────
-
-@Composable
-private fun GoalPill(
-    goal: String,
-    onGoalChange: (String) -> Unit,
-    enhancing: Boolean,
-    onFillMissing: () -> Unit,
-) {
-    val primary = MaterialTheme.colorScheme.primary
-    val gradient = Brush.linearGradient(
-        colors = listOf(
-            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.55f),
-            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.85f),
-        ),
-    )
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
-            .background(gradient)
-            .border(1.dp, primary.copy(alpha = 0.33f), RoundedCornerShape(16.dp))
-            .padding(horizontal = 12.dp, vertical = 6.dp),
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                Icons.Default.AutoAwesome,
-                contentDescription = null,
-                tint = primary,
-                modifier = Modifier.size(16.dp),
-            )
-            Spacer(Modifier.width(8.dp))
-            OutlinedTextField(
-                value = goal,
-                onValueChange = onGoalChange,
-                placeholder = {
-                    Text(
-                        stringResource(R.string.composer_goal_placeholder),
-                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
-                    )
-                },
-                singleLine = true,
-                enabled = !enhancing,
-                textStyle = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp, fontWeight = FontWeight.SemiBold),
-                modifier = Modifier.weight(1f),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-                    disabledContainerColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                ),
-            )
-            Spacer(Modifier.width(6.dp))
-            Button(
-                onClick = onFillMissing,
-                enabled = !enhancing,
-                shape = RoundedCornerShape(14.dp),
-                contentPadding = PaddingValues(horizontal = 10.dp, vertical = 6.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary,
-                ),
-            ) {
-                if (enhancing) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(12.dp),
-                        strokeWidth = 2.dp,
-                        color = MaterialTheme.colorScheme.onPrimary,
-                    )
-                } else {
-                    Icon(Icons.Default.AutoAwesome, contentDescription = null, modifier = Modifier.size(12.dp))
-                }
-                Spacer(Modifier.width(4.dp))
-                Text(
-                    stringResource(R.string.composer_fill_missing),
-                    style = MaterialTheme.typography.labelMedium.copy(fontSize = 11.sp, fontWeight = FontWeight.Bold),
-                )
-            }
-        }
-    }
-}
 
 // ─── Context strip ──────────────────────────────────────────────────────────
 
@@ -788,206 +562,16 @@ private fun ContextChip(
     }
 }
 
-@Composable
-private fun RoundCheckbox(checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
-    val shape = RoundedCornerShape(8.dp)
-    val primary = MaterialTheme.colorScheme.primary
-    val outline = MaterialTheme.colorScheme.outline
-    Box(
-        modifier = Modifier
-            .size(24.dp)
-            .clip(shape)
-            .background(if (checked) primary else Color.Transparent)
-            .border(width = if (checked) 0.dp else 1.5.dp, color = if (checked) primary else outline, shape = shape)
-            .clickable { onCheckedChange(!checked) },
-        contentAlignment = Alignment.Center,
-    ) {
-        if (checked) {
-            Icon(
-                Icons.Default.Check,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier.size(16.dp),
-            )
-        }
-    }
-}
 
-// ─── Layer card ─────────────────────────────────────────────────────────────
+
+
+// ─── Bottom bar (edit mode) ──────────────────────────────────────────────────
 
 @Composable
-private fun LayerCard(
-    layer: Layer,
-    enabled: Boolean,
-    current: List<DriveImage>,
-    alternatives: List<DriveImage>,
-    onSetEnabled: (Boolean) -> Unit,
-    onAdd: (String) -> Unit,
-    onClear: (String) -> Unit,
-    onSeeAll: () -> Unit,
-) {
-    val filled = current.isNotEmpty()
-    Surface(
-        shape = RoundedCornerShape(16.dp),
-        color = MaterialTheme.colorScheme.surface,
-        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-        modifier = Modifier
-            .fillMaxWidth()
-            .alpha(if (enabled) 1f else 0.5f),
-    ) {
-        Column(
-            modifier = Modifier.padding(10.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            // Header row
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    modifier = Modifier
-                        .size(24.dp)
-                        .clip(RoundedCornerShape(6.dp))
-                        .background(
-                            if (filled) MaterialTheme.colorScheme.primaryContainer
-                            else MaterialTheme.colorScheme.background
-                        ),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Icon(
-                        painter = androidx.compose.ui.res.painterResource(layer.iconRes),
-                        contentDescription = null,
-                        tint = if (filled) MaterialTheme.colorScheme.primary
-                            else MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(14.dp),
-                    )
-                }
-                Spacer(Modifier.width(8.dp))
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        stringResource(layer.labelRes),
-                        style = MaterialTheme.typography.labelLarge.copy(fontSize = 12.sp, fontWeight = FontWeight.Bold),
-                    )
-                    if (filled) {
-                        val label = if (current.size == 1) current.first().displayLabel()
-                            else stringResource(R.string.composer_layer_picked_count, current.size)
-                        Text(
-                            label,
-                            style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.sp),
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    }
-                }
-                Spacer(Modifier.width(8.dp))
-                RoundCheckbox(checked = enabled, onCheckedChange = onSetEnabled)
-            }
-
-            // Filmstrip — current picks (with × to remove) then alternatives (tap to add).
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
-            ) {
-                current.forEach { img ->
-                    FilmstripTile(
-                        image = img,
-                        selected = true,
-                        onClick = { onClear(img.driveId) },
-                    )
-                }
-                alternatives.take(8).forEach { alt ->
-                    FilmstripTile(image = alt, selected = false, onClick = { onAdd(alt.driveId) })
-                }
-                SeeAllTile(count = alternatives.size + current.size, onClick = onSeeAll)
-            }
-        }
-    }
-}
-
-@Composable
-private fun FilmstripTile(image: DriveImage, selected: Boolean, onClick: () -> Unit) {
-    val ctx = LocalContext.current
-    val shape = RoundedCornerShape(10.dp)
-    Box(
-        modifier = Modifier
-            .size(72.dp)
-            .clip(shape)
-            .background(MaterialTheme.colorScheme.background)
-            .then(
-                if (selected) Modifier.border(2.dp, MaterialTheme.colorScheme.primary, shape)
-                else Modifier.border(1.dp, MaterialTheme.colorScheme.outlineVariant, shape)
-            )
-            .clickable(onClick = onClick),
-    ) {
-        AsyncImage(
-            model = remember(image.driveId, image.version) {
-                ImageRequest.Builder(ctx)
-                    .data(image.localPath)
-                    .memoryCacheKey("${image.driveId}_${image.version}")
-                    .build()
-            },
-            contentDescription = image.name,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop,
-        )
-        if (selected) {
-            // Tap the tile to remove — overlay shows × so the affordance is obvious.
-            Box(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(3.dp)
-                    .size(18.dp)
-                    .clip(RoundedCornerShape(999.dp))
-                    .background(MaterialTheme.colorScheme.primary),
-                contentAlignment = Alignment.Center,
-            ) {
-                Icon(
-                    Icons.Default.Close,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.size(12.dp),
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun SeeAllTile(count: Int, onClick: () -> Unit) {
-    val shape = RoundedCornerShape(10.dp)
-    val color = MaterialTheme.colorScheme.outline
-    Column(
-        modifier = Modifier
-            .size(72.dp)
-            .clip(shape)
-            .background(MaterialTheme.colorScheme.background)
-            .dashedBorder(color = color, width = 1.dp, radius = 10.dp)
-            .clickable(onClick = onClick),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-    ) {
-        Icon(
-            Icons.Default.MoreHoriz,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.size(16.dp),
-        )
-        Spacer(Modifier.height(2.dp))
-        Text(
-            stringResource(R.string.composer_see_all_count, count),
-            style = MaterialTheme.typography.labelSmall.copy(fontSize = 9.sp, fontWeight = FontWeight.Bold),
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-    }
-}
-
-// ─── Bottom bar ─────────────────────────────────────────────────────────────
-
-@Composable
-private fun BottomBar(
-    name: String,
-    onNameChange: (String) -> Unit,
+private fun ComposerEditBottomBar(
     saveEnabled: Boolean,
+    isOffline: Boolean,
+    onGenerateWithAi: () -> Unit,
     onSave: () -> Unit,
     bottomPadding: Dp,
 ) {
@@ -1001,15 +585,20 @@ private fun BottomBar(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        OutlinedTextField(
-            value = name,
-            onValueChange = onNameChange,
-            placeholder = { Text(stringResource(R.string.composer_name_placeholder)) },
-            singleLine = true,
-            shape = RoundedCornerShape(14.dp),
-            leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null, modifier = Modifier.size(14.dp)) },
-            modifier = Modifier.weight(1f).defaultMinSize(minHeight = 48.dp),
-        )
+        if (!isOffline) {
+            OutlinedButton(
+                onClick = onGenerateWithAi,
+                modifier = Modifier.weight(1f).height(48.dp),
+                shape = RoundedCornerShape(24.dp),
+            ) {
+                Icon(Icons.Default.AutoAwesome, contentDescription = null, modifier = Modifier.size(16.dp))
+                Spacer(Modifier.width(6.dp))
+                Text(
+                    stringResource(R.string.outfit_generate_with_ai),
+                    style = MaterialTheme.typography.labelLarge.copy(fontSize = 13.sp, fontWeight = FontWeight.Bold),
+                )
+            }
+        }
         Button(
             onClick = onSave,
             enabled = saveEnabled,
@@ -1025,6 +614,384 @@ private fun BottomBar(
             )
         }
     }
+}
+
+// ─── Stacked composer view (overlapping tiles with drop shadows) ────────────
+
+@Composable
+private fun ComposerStackedView(
+    slots: List<OutfitSlot>,
+    byId: Map<String, DriveImage>,
+    locations: List<Location>,
+    isEditMode: Boolean,
+    onPickItem: (slotId: String) -> Unit,
+    onToggleLock: (slotId: String) -> Unit,
+    onRemove: (slotId: String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    // In view mode, hide empty silhouettes — match OutfitFullScreenViewer rendering.
+    val visibleSlots = remember(slots, isEditMode) {
+        if (isEditMode) slots else slots.filter { it.selectedItemId != null }
+    }
+    val rows: List<List<OutfitSlot>> = remember(visibleSlots) {
+        val grouped = visibleSlots.groupBy { it.category }
+        Layer.values().mapNotNull { layer -> grouped[layer]?.takeIf { it.isNotEmpty() } }
+    }
+    BoxWithConstraints(modifier = modifier) {
+        if (rows.isEmpty()) {
+            Text(
+                stringResource(R.string.outfits_missing_items),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.outline,
+                modifier = Modifier.align(Alignment.Center),
+            )
+            return@BoxWithConstraints
+        }
+        val rowOverlap = 0.28f
+        val itemOverlap = 0.18f
+        val n = rows.size
+        val m = (rows.maxOfOrNull { it.size } ?: 1).coerceAtLeast(1)
+        val availW = maxWidth
+        val availH = maxHeight
+        val byH = availH / (1f + (1f - rowOverlap) * (n - 1))
+        val byW = availW / (1f + (1f - itemOverlap) * (m - 1))
+        val tileSize = minOf(byH, byW).coerceIn(96.dp, 320.dp)
+        val rowStride = tileSize * (1f - rowOverlap)
+        val itemStride = tileSize * (1f - itemOverlap)
+        val totalContentH = tileSize + rowStride * (n - 1)
+        val topOffset = ((availH - totalContentH) / 2).coerceAtLeast(0.dp)
+
+        rows.forEachIndexed { rowIdx, rowSlots ->
+            val rowWidth = tileSize + itemStride * (rowSlots.size - 1)
+            val rowLeft = ((availW - rowWidth) / 2).coerceAtLeast(0.dp)
+            val rowTop = topOffset + rowStride * rowIdx
+            rowSlots.forEachIndexed { itemIdx, slot ->
+                val left = rowLeft + itemStride * itemIdx
+                val image = slot.selectedItemId?.let { byId[it] }
+                val locName = image?.let {
+                    if (locations.size > 1) locations.find { l -> l.folderId == it.folderId }?.name else null
+                }
+                ComposerStackedTile(
+                    slot = slot,
+                    image = image,
+                    locationName = locName,
+                    isEditMode = isEditMode,
+                    size = tileSize,
+                    onTap = { onPickItem(slot.id) },
+                    onToggleLock = { onToggleLock(slot.id) },
+                    onRemove = { onRemove(slot.id) },
+                    modifier = Modifier.offset(x = left, y = rowTop),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ComposerStackedTile(
+    slot: OutfitSlot,
+    image: DriveImage?,
+    locationName: String?,
+    isEditMode: Boolean,
+    size: Dp,
+    onTap: () -> Unit,
+    onToggleLock: () -> Unit,
+    onRemove: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val ctx = LocalContext.current
+    Box(
+        modifier = modifier
+            .size(size)
+            .then(if (isEditMode) Modifier.clickable(onClick = onTap) else Modifier),
+    ) {
+        if (image != null) {
+            val model = remember(image.driveId, image.version) {
+                ImageRequest.Builder(ctx)
+                    .data(image.localPath)
+                    .memoryCacheKey("${image.driveId}_${image.version}")
+                    .build()
+            }
+            AsyncImage(
+                model = model,
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .offset(x = 3.dp, y = 6.dp)
+                    .blur(radius = 8.dp)
+                    .graphicsLayer { alpha = 0.45f },
+                contentScale = ContentScale.Fit,
+                colorFilter = ColorFilter.tint(Color.Black, BlendMode.SrcIn),
+            )
+            AsyncImage(
+                model = model,
+                contentDescription = image.name,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Fit,
+            )
+            if (locationName != null) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(4.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.85f),
+                            shape = MaterialTheme.shapes.extraSmall,
+                        )
+                        .padding(horizontal = 4.dp, vertical = 1.dp),
+                ) {
+                    Text(
+                        text = locationName,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        fontSize = 8.sp,
+                        lineHeight = 10.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+            }
+        } else {
+            // Empty slot silhouette (edit mode only — view mode hides empty slots).
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .dashedBorder(
+                        color = MaterialTheme.colorScheme.outline.copy(alpha = 0.55f),
+                        width = 1.5.dp,
+                        radius = 16.dp,
+                    ),
+                contentAlignment = Alignment.Center,
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(6.dp),
+                ) {
+                    Icon(
+                        painter = androidx.compose.ui.res.painterResource(slot.category.iconRes),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.45f),
+                        modifier = Modifier.size(size * 0.32f),
+                    )
+                    Text(
+                        stringResource(slot.category.labelRes),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+            }
+        }
+
+        if (isEditMode) {
+            // Top-left: remove. Top-right: lock toggle (filled only).
+            IconButton(
+                onClick = onRemove,
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .size(28.dp)
+                    .background(
+                        MaterialTheme.colorScheme.background.copy(alpha = 0.85f),
+                        RoundedCornerShape(50),
+                    ),
+            ) {
+                Icon(
+                    Icons.Default.Close,
+                    contentDescription = stringResource(R.string.outfit_slot_remove),
+                    modifier = Modifier.size(16.dp),
+                    tint = MaterialTheme.colorScheme.error,
+                )
+            }
+            if (image != null) {
+                IconButton(
+                    onClick = onToggleLock,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .size(28.dp)
+                        .background(
+                            MaterialTheme.colorScheme.background.copy(alpha = 0.85f),
+                            RoundedCornerShape(50),
+                        ),
+                ) {
+                    Icon(
+                        if (slot.isLocked) Icons.Default.Lock else Icons.Default.LockOpen,
+                        contentDescription = stringResource(
+                            if (slot.isLocked) R.string.outfit_slot_unlock else R.string.outfit_slot_lock
+                        ),
+                        modifier = Modifier.size(16.dp),
+                        tint = if (slot.isLocked) MaterialTheme.colorScheme.primary
+                               else MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+        }
+    }
+}
+
+// ─── Category picker sheet ──────────────────────────────────────────────────
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun CategoryPickerSheet(
+    onSelect: (Layer) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val parentContext = LocalContext.current
+    val parentConfiguration = LocalConfiguration.current
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+    ) {
+        CompositionLocalProvider(
+            LocalContext provides parentContext,
+            LocalConfiguration provides parentConfiguration,
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .navigationBarsPadding()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                Text(
+                    stringResource(R.string.outfit_pick_category),
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(bottom = 8.dp),
+                )
+                Layer.values().forEach { layer ->
+                    TextButton(
+                        onClick = { onSelect(layer) },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Icon(
+                            painter = androidx.compose.ui.res.painterResource(layer.iconRes),
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp),
+                        )
+                        Spacer(Modifier.width(12.dp))
+                        Text(
+                            stringResource(layer.labelRes),
+                            modifier = Modifier.weight(1f),
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ─── Save outfit dialog ──────────────────────────────────────────────────────
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+internal fun SaveOutfitDialog(
+    initialName: String,
+    initialDescription: String,
+    initialTags: List<String>,
+    parentContext: android.content.Context,
+    parentConfiguration: android.content.res.Configuration,
+    onConfirm: (name: String, description: String, tags: List<String>) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    var name by remember(initialName) { mutableStateOf(initialName) }
+    var description by remember(initialDescription) { mutableStateOf(initialDescription) }
+    var tags by remember(initialTags) { mutableStateOf(initialTags) }
+    var newTagInput by remember { mutableStateOf("") }
+
+    val locale: @Composable (@Composable () -> Unit) -> Unit = { content ->
+        CompositionLocalProvider(
+            LocalContext provides parentContext,
+            LocalConfiguration provides parentConfiguration,
+        ) { content() }
+    }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { locale { Text(stringResource(R.string.outfit_save_dialog_title)) } },
+        text = {
+            locale {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedTextField(
+                        value = name,
+                        onValueChange = { name = it },
+                        label = { Text(stringResource(R.string.outfit_save_dialog_name)) },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    OutlinedTextField(
+                        value = description,
+                        onValueChange = { description = it },
+                        label = { Text(stringResource(R.string.outfit_save_dialog_description)) },
+                        singleLine = false,
+                        minLines = 2,
+                        maxLines = 4,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    Text(
+                        stringResource(R.string.outfit_save_dialog_tags),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                    OutfitTagsEditor(
+                        tags = tags,
+                        onAdd = { t -> if (t.isNotBlank()) tags = (tags + t).distinctBy { it.lowercase() } },
+                        onRemove = { t -> tags = tags - t },
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            locale {
+                TextButton(onClick = { onConfirm(name.trim(), description.trim(), tags) }) {
+                    Text(stringResource(R.string.outfit_save_dialog_confirm))
+                }
+            }
+        },
+        dismissButton = {
+            locale {
+                TextButton(onClick = onDismiss) {
+                    Text(stringResource(R.string.action_cancel))
+                }
+            }
+        },
+    )
+}
+
+// ─── Discard changes dialog ──────────────────────────────────────────────────
+
+@Composable
+internal fun DiscardChangesDialog(
+    parentContext: android.content.Context,
+    parentConfiguration: android.content.res.Configuration,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val locale: @Composable (@Composable () -> Unit) -> Unit = { content ->
+        CompositionLocalProvider(
+            LocalContext provides parentContext,
+            LocalConfiguration provides parentConfiguration,
+        ) { content() }
+    }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { locale { Text(stringResource(R.string.outfit_discard_changes_title)) } },
+        text = { locale { Text(stringResource(R.string.outfit_discard_changes_body)) } },
+        confirmButton = {
+            locale {
+                TextButton(onClick = onConfirm) {
+                    Text(stringResource(R.string.outfit_discard_changes_confirm))
+                }
+            }
+        },
+        dismissButton = {
+            locale {
+                TextButton(onClick = onDismiss) {
+                    Text(stringResource(R.string.action_cancel))
+                }
+            }
+        },
+    )
 }
 
 // ─── Dashed border helper ───────────────────────────────────────────────────
@@ -1045,16 +1012,6 @@ private fun Modifier.dashedBorder(color: Color, width: Dp, radius: Dp): Modifier
         }
     )
 
-// ─── Section header (used inside advanced block) ───────────────────────────
-
-@Composable
-private fun SectionHeader(text: String) {
-    Text(
-        text,
-        style = MaterialTheme.typography.titleSmall,
-        color = MaterialTheme.colorScheme.primary,
-    )
-}
 
 // ─── Existing helpers (unchanged) ──────────────────────────────────────────
 
@@ -1133,31 +1090,6 @@ private fun WeatherSection(
     }
 }
 
-@Composable
-private fun TargetsSection(
-    targets: ComposerTargets,
-    onChange: (ComposerTargets) -> Unit,
-) {
-    @Composable
-    fun Stepper(label: String, value: Int, onValue: (Int) -> Unit) {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(label, modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
-            IconButton(onClick = { if (value > 0) onValue(value - 1) }) { Text(stringResource(R.string.composer_stepper_decrement)) }
-            Text("$value", modifier = Modifier.width(24.dp), style = MaterialTheme.typography.bodyMedium)
-            IconButton(onClick = { if (value < 5) onValue(value + 1) }) { Text(stringResource(R.string.composer_stepper_increment)) }
-        }
-    }
-    Column {
-        Stepper(stringResource(R.string.composer_layer_top),       targets.top)       { onChange(targets.copy(top = it)) }
-        Stepper(stringResource(R.string.composer_layer_bottom),    targets.bottom)    { onChange(targets.copy(bottom = it)) }
-        Stepper(stringResource(R.string.composer_layer_footwear),  targets.footwear)  { onChange(targets.copy(footwear = it)) }
-        Stepper(stringResource(R.string.composer_layer_outerwear), targets.outerwear) { onChange(targets.copy(outerwear = it)) }
-        Stepper(stringResource(R.string.composer_layer_accessory), targets.accessory) { onChange(targets.copy(accessory = it)) }
-    }
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

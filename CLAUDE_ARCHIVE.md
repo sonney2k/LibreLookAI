@@ -191,39 +191,36 @@ Tapping a match clears active tag filters and — if the match lives in a differ
 
 ### Outfits screen
 
-`OutfitsScreen` branches in priority order:
-1. `outfitsState.isEditingOutfitView` → `OutfitEditingView` (full-screen).
-2. `outfitsState.isCreating` → `OutfitItemPicker` (full-screen grid, manual creation from scratch).
-3. otherwise → `OutfitListScreen` with two sub-tabs: **Outfits** (list with `OutfitCard`, sort, tag filters, selection mode, FABs) and **Try-Ons** (grid of saved try-ons sourced from `tryOnViewModel.state.history`; tap → `tryOnViewModel.openHistoryDetail(t)` opens the unified composer in detail view). Sort/tag filters/selection bar/FAB only render on Outfits.
-
-`OutfitEditingView` is the unified editor for: editing a saved outfit (`startEditing` routes through `openComposer`), reviewing an AI-predicted outfit (auto-opened by `LaunchedEffect` on `prediction`), reviewing an AI-composed outfit (auto-opened on `newSuggestion`).
-
-It shows: editable name + description, items as 100 dp tiles in a `FlowRow`, an "Add item" `+`, and — when from a Gemini result — the AI reason text + `RefinementSection`. Tapping a tile opens `ItemSwapSheet` (modal bottom sheet) filtered by category for single-replace; "Suggest 10 alternatives" calls `OutfitsViewModel.suggestAlternatives()` and surfaces results as starred tiles. After save, `pendingWearOutfitId` triggers a Snackbar "Wear today" (`OutfitEventsViewModel.recordOutfit(id)`).
+`OutfitsScreen` renders `OutfitListScreen` directly (sub-tabs: **Outfits** with `OutfitCard`, sort, tag filters, selection mode, FABs; **Try-Ons** grid from `tryOnViewModel.state.history`). All outfit view/edit/create is funneled through the unified composer (see below). Tap an outfit → `startEditing` → composer in `VIEW` mode. FAB → `onOpenCreateComposer` → `openComposer(seedItemIds=empty)` → composer in `EDIT` mode with 5 empty default slots.
 
 `OutfitListScreen` supports multi-select: long-press → `selectedOutfitIds.isNotEmpty()`. Selection bar (count / select-all / deselect) replaces sort; card Edit+Wear hide; the speed-dial FAB is replaced by:
-- **Delete** — confirmation → `deleteSelectedOutfits()`. Groups by `Outfit.folderId` and saves each `_outfits.json` independently (works in single + All Locations mode).
-- **Combine with AI** (≥ 2 selected) — `openComposerFromSelectedOutfits()` opens the unified composer seeded with the union, prefilled with a "NameA + NameB" name.
+- **Delete** — confirmation → `deleteSelectedOutfits()`. Groups by `Outfit.folderId` and saves each `_outfits.json` independently.
+- **Combine with AI** (≥ 2 selected) — `openComposerFromSelectedOutfits()` opens the composer in `EDIT` mode seeded with the union, prefilled with a "NameA + NameB" name.
+
+The "Find with AI" prediction flow (`openPredictionSetup(source = OUTFITS_LIST)`) shows its 1–3 ranked picks in `OutfitFullScreenViewer` overlaid on the list; tapping Edit there clears the prediction and opens the composer in VIEW mode for that outfit.
 
 ### Unified outfit composer
 
-`OutfitComposerScreen` (full-screen Dialog hosted at `MainActivity`) replaced the Wardrobe-selection split, Outfits-multi-select "Combine with AI", and Travel "Save as outfit". Renders unconditionally on top of tab content; returns early unless `state.isComposerOpen`.
+`OutfitComposerScreen` (full-screen Dialog hosted at `MainActivity`) is the single surface for viewing, editing, and creating outfits. Renders unconditionally; returns early unless `state.isComposerOpen`. Dual-mode via `composerMode: ComposerMode { VIEW, EDIT }`.
 
-**Entry points**:
-- `OutfitsViewModel.openComposer(seedItemIds, images, prefs, initialName?, initialDescription?, editingOutfitId?)` — `editingOutfitId` non-null → `saveComposer()` updates in place.
-- `openComposerFromSelectedOutfits(images, prefs)` — seeds with the union of `selectedOutfitIds`, prefills "NameA + NameB", clears the selection.
-- `startEditing(outfit, images, prefs)` — seeds with the outfit's items/name/description, sets `composerEditingOutfitId`.
+**Slot model** (UI-only, never persisted):
+- `OutfitSlot { id: UUID, category: Layer, selectedItemId: String?, isLocked: Boolean, aiReason: String? }` in `outfit/OutfitSlot.kt`.
+- `Layer` enum (Outerwear / Top / Bottom / Footwear / Accessory) lives in the same file; `layerFor(DriveImage)` classifies items by tag category regex.
+- `openComposer` seeds slots: empty seed → 5 default slots (one per Layer, empty, unlocked); non-empty seed → one slot per item, `isLocked = true` (manual picks auto-lock).
+- Editing an existing outfit (`editingStyleId != null`) → opens in `VIEW`; everything else → `EDIT`.
+- On save, slots flatten to `Outfit.itemIds = slots.mapNotNull { it.selectedItemId }`. `Outfit` model unchanged.
 
-**Sections** (all in one `LazyColumn`):
-1. Items (96 dp tiles, tap to remove, `+` opens an item-picker bottom sheet with category chips + multi-add).
-2. Weather toggle: Auto (`WeatherViewModel.state.data`, temp + WMO emoji) or Manual (season + temp range + precip chips).
-3. Vibe multi-select chips: Casual, Sporty, Formal, Business, Streetwear, Minimalist, Classic, Elegant.
-4. Composition targets — per-layer count steppers (Top / Bottom / Footwear / Outerwear / Accessory). Defaults derived from seed item tags.
-5. Preference prompt — `OutlinedTextField` prefilled from `UserPreferences.preferences`, editable for this composition only (not saved back).
-6. Name + description.
-7. AI enhance — history chips of prior feedback + preset quick-picks (More casual / formal / Different colors / Warmer / Lighter / More trendy / Simpler / More bold) + freetext + progress row + "Enhance with AI". Preset taps trigger enhance immediately. Accumulates `composerFeedbackHistory`, calls `buildComposerPrompt`, merges Gemini's items / name / description / reason into the draft.
-8. Save → `saveComposer()` → `saveOutfitDirectly`.
+**View mode**: read-only `SlotCard` list (silhouette `Layer.iconRes` for empty, image otherwise). Header has Edit toggle.
 
-**ViewModel state** (`OutfitsUiState`): `isComposerOpen`, `composerEditingOutfitId`, `composerItemIds`, `composerWeatherMode` (AUTO/MANUAL), `composerManualSeason`, `composerManualTempC`, `composerManualPrecip`, `composerVibes`, `composerTargets` (`ComposerTargets`), `composerPrefOverride`, `composerName`, `composerDescription`, `composerFeedback`, `composerFeedbackHistory`, `composerReason`, `isComposerEnhancing`, `composerError`.
+**Edit mode** (per `SlotCard`): lock toggle on filled slots, exchange button (opens `AddItemSheet` filtered by `slot.category`), remove button. "+ Add slot" at bottom opens `CategoryPickerSheet`. Sticky bottom bar: **Generate with AI** (opens `PredictionSetupDialog` with `source = COMPOSER`) + **Save** (calls `prepareSave()`).
+
+**AI generation**: `enhanceComposerWithAi` passes a per-slot constraint list to Gemini. Locked-and-filled slots are passed as fixed (`requiredItemId`); empty or unlocked slots are open. Gemini returns `{slots: [{slotId, itemId}], name, description, tags, reason}`. The viewmodel applies returned `itemId` only to slots that are empty OR unlocked; locked-filled slots are untouched. Suggested name/description/tags are stashed in `composerAiSuggestedName/Description/Tags` for the Save dialog pre-fill.
+
+**Deferred save**: `prepareSave()` opens `SaveOutfitDialog` (AlertDialog with name / description / tags chip editor). Pre-fills: editing → existing values; AI-generated → AI suggestions; manual → empty. Confirm → `commitOutfit(name, desc, tags)` writes to Drive and closes the composer. Cancel returns to edit mode with state intact. Dirty back tap shows `DiscardChangesDialog`.
+
+**Reused composables** (kept in `OutfitComposerScreen.kt`, internal so other screens can import): `ContextStrip`, `WeatherPickerSheet`, `ClosetPickerSheet`, `AddItemSheet`, `OutfitTagsEditor`. `PredictionSetupDialog` (`PredictionSetupScreen.kt`) imports these and is reused both for "Find with AI" on the Outfits list and "Generate with AI" inside the composer — the `predictionSetupSource` state field routes the submit.
+
+**ViewModel state** (`OutfitsUiState`, new + relevant fields): `isComposerOpen`, `composerMode`, `composerEditingOutfitId`, `composerSlots`, `composerItemIds` (legacy mirror of slot itemIds; some external call sites still read it), `composerWeatherMode`, `composerManualSeason/TempC/Precip`, `composerVibes`, `composerName/Description/Tags`, `composerAiSuggestedName/Description/Tags`, `composerFeedback/History`, `composerReason`, `composerSourceFolderIds`, `isComposerEnhancing`, `composerError`, `isSaveDialogOpen`, `isPredictionSetupOpen`, `predictionSetupSource: PredictionSetupSource { OUTFITS_LIST, COMPOSER }`.
 
 **Prompt builders** (private top-level in `OutfitsViewModel.kt`):
 - `buildPredictionPrompt` — pick best existing outfit for today.

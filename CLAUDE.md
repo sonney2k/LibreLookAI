@@ -21,7 +21,14 @@ Compact day-to-day guidance. **Deep architecture, pipelines, rationale, and Dial
 - Full release / function deploy commands: see `CLAUDE_ARCHIVE.md` → Release process.
 
 ## Package layout (under `com.librelookai`)
-`MainActivity` at root. Feature packages: `auth/`, `wardrobe/` (incl. `LocationViewModel`, `CaptureScreen`, `UrlImportPicker`, `WebProductFetcher`, `WardrobeGap*`), `outfit/` (incl. `PredictionSetupScreen`), `travel/`, `tryon/`, `shopping/`, `billing/`, `insights/` (incl. `UsageScreen`), `settings/` (incl. `ProfileViewModel`, `UserPreferences`, `AppLanguage`, `AppFont`). Cross-cutting: `data/model/` (pure data classes), `data/drive/` (`DriveRepository`), `gemini/` (`GeminiRepository`, `PromptStore`, `ApiKeyStore`, `TokenUsage*`, `TagNormalizer`), `ml/` (`EmbeddingService`/`Repository`/`Index`, `SegmentationRepository`, `PHash`, `ColorHistogram`), `weather/`, `service/` (`JobForegroundService`), `util/` (`Analytics`, `NetworkUtils`, `Scrollbar`, `AiProcessingOverlay`), `ui/theme/`. Group new files in the matching feature package; keep `data/model/` for pure data classes referenced by ≥ 2 features.
+`MainActivity` at root. Feature packages: `auth/`, `wardrobe/` (incl. `LocationViewModel`, `CaptureScreen`, `UrlImportPicker`, `WebProductFetcher`, `WardrobeGap*`), `outfit/` (incl. `PredictionSetupScreen`), `travel/`, `tryon/`, `shopping/`, `billing/`, `insights/` (incl. `UsageScreen`), `settings/` (incl. `ProfileViewModel`, `UserPreferences`, `AppLanguage`, `AppFont`). Cross-cutting: `data/model/` (pure data classes), `data/drive/` (`DriveRepository`), `gemini/` (`GeminiRepository`, `PromptStore`, `ApiKeyStore`, `TokenUsage*`, `TagNormalizer`), `ml/` (`EmbeddingService`/`Repository`/`Index`, `SegmentationRepository`, `PHash`, `ColorHistogram`), `weather/`, `service/` (`JobForegroundService`), `util/` (`Analytics`, `NetworkUtils`, `Scrollbar`, `AiProcessingOverlay`), `ui/theme/`.
+
+**Placement rule (cohesion over locality):** put each new or moved file in the package where it has the **most in-package callers and the fewest cross-package callers**. Concretely, before adding/moving a file:
+1. List which existing symbols it calls and which existing files call it.
+2. Pick the package that maximises same-package edges and minimises `import com.librelookai.<other>.…` lines.
+3. If a symbol is used by ≥ 2 feature packages and has no clear owner, lift it to `data/model/` (pure data), `util/` (no-dep helper), or the relevant cross-cutting package (`gemini/`, `ml/`, `data/drive/`). Don't dump it in `util/` just to avoid choosing.
+4. Avoid creating a new top-level package for a single file — extend an existing one unless ≥ 3 related files justify the split.
+Symptom that placement is wrong: the new file's `import com.librelookai.…` block is longer than its own body, or it adds reverse-direction imports (e.g., `data/model/` importing from a feature package). Move it.
 
 ## Core conventions
 - **Identity is `folderId`**: closets map to Drive subfolders; `Location.id` is an ephemeral UUID and must never be used for identity comparisons.

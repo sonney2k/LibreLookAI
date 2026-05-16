@@ -20,7 +20,26 @@ travel screen create tabs: create travel outfits and another one with travels th
 TODO
 ====
 
-create human readable release notes between now and v1.6.1 and release version 1.7.0, git tag commit and upload to testers in firebase
+
+
+
+Fix:
+Create Outfit:
+1. When clicking edit outfit from outfit screen or inside outview view FAB immediately go into edit mode.
+2. Create with AI: The dialog should not say find with AI but Create with AI / Create
+3. Items are overlapping in edit view such that one can occassionally not see the lock, delete button. Perhaps render top to bottom and from left to right (or right to left) to avoid and put all buttons on one side perhaps without a filled circle background and remove the closet tag.
+4. If there are Empty items with placeholder symbol one cannot save
+5. Empty items with placeholder symbol - add an AI symbol to those and all that will be replaced if generate with AI button is tapped
+6. Instead of view / edit in edit outfit call it fullscreen view and don't show the create outfit panel there on the top but yes a small cross on top left to go back to edit - as view use the same one to view a single outfit if no name / tags are known 
+7. When clicking find with AI or create with AI add option to give number of suggestions limited to max 10.
+8. When clicking find with AI or create with AI change the way Weather editing works: clicking on weather pillow shows weather of the next 7 days
+9. When selecting item from  wardrobe - use the wardrobe screen to select items (with filtering zooming etc) not this simplified dialog
+10. When saving an outfit show previews tags to make this faster.
+
+Screens with Tags
+1. All screens that show Tags, e.g. in WardrobeViewModel, OutfitVieModel, ShoppingViewModel - make it possible to hide tags such that more room is available for the item.
+
+create human readable release notes between now and v1.7.0 and release version 1.7.1, git tag commit and upload to testers in firebase
 
 Storage:
 - I noticed .jpgs from camera are just 124kB but .pngs are 450kB. Since this is on users drive folders we have to be cautious about size. Let's target 1GB - to allow for 2000-4000 wardrobe items.
@@ -46,6 +65,8 @@ Repair & Sync:
 
 DONE
 =====
+I noticed that creating an outfit is currently not intuitive for users. We have to rewrite the UX of that feature. We will use the OutfitViewModel (that shows all items of an outfit) as the base for editing and creating. General idea is to show resulting outfits in this screen and to edit outfits a user can change each of the items with some exchange button or so. These buttons should only become visible in edit mode. When we are creating an outfit from scratch empty silouettes of categories are shown that can be changed. When suggesting outfits with AI or modifying outfits with AI the user needs to first select which categories shall be filled with AI (e.g. empty silhouettes replaces by with AI silhouettes) then a separate button to suggest with AI will open a dialog asking for weather etc. Outfits are not immediately saved only with a save button. That button will open another dialog to add a description, outfit name, outfit tags that are pre-filled if existing or if suggested with AI.What follows is a bit of the assessment of Gemini that you CAN consider.
+
 Try-on:
 - Try-on details, clicking on item shows the item in big & shows button to go to this item in wardrobe.
 - Add same filtering options like on outfits screen.

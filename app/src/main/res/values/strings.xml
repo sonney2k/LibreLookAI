@@ -468,6 +468,22 @@
     <string name="outfits_delete_selected_title">Delete outfits?</string>
     <string name="outfits_delete_selected_text">%d outfits will be permanently removed.</string>
     <string name="outfits_combine">Combine with AI</string>
+    <string name="outfit_slot_lock">Lock</string>
+    <string name="outfit_slot_unlock">Unlock</string>
+    <string name="outfit_slot_remove">Remove</string>
+    <string name="outfit_slot_add">Add slot</string>
+    <string name="outfit_generate_with_ai">Generate with AI</string>
+    <string name="outfit_discard_changes_title">Discard changes?</string>
+    <string name="outfit_discard_changes_body">Your unsaved changes will be lost.</string>
+    <string name="outfit_discard_changes_confirm">Discard</string>
+    <string name="outfit_save_dialog_title">Save outfit</string>
+    <string name="outfit_save_dialog_name">Name</string>
+    <string name="outfit_save_dialog_description">Description</string>
+    <string name="outfit_save_dialog_tags">Tags</string>
+    <string name="outfit_save_dialog_confirm">Save</string>
+    <string name="outfit_mode_view">View</string>
+    <string name="outfit_mode_edit">Edit</string>
+    <string name="outfit_pick_category">Pick a category</string>
 
     <!-- Travel -->
     <string name="travel_title">Travel Packing List</string>
