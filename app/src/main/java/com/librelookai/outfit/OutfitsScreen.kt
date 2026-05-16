@@ -338,8 +338,9 @@ fun OutfitsScreen(
         outfitsState.pendingWearOutfitId?.let { styleId ->
             Snackbar(
                 modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(start = 8.dp, end = 8.dp, bottom = 16.dp),
+                    .align(Alignment.TopCenter)
+                    .statusBarsPadding()
+                    .padding(start = 8.dp, end = 8.dp, top = 64.dp),
                 action = {
                     TextButton(onClick = {
                         outfitEventsViewModel.recordOutfit(styleId)
@@ -358,13 +359,8 @@ fun OutfitsScreen(
             }
         }
 
-        PredictionSetupDialog(
-            outfitsViewModel = outfitsViewModel,
-            profileViewModel = profileViewModel,
-            weatherViewModel = weatherViewModel,
-            locationViewModel = locationViewModel,
-            wardrobeViewModel = wardrobeViewModel,
-        )
+        // PredictionSetupDialog is hosted in MainActivity so it appears regardless of which
+        // tab is active when openPredictionSetup() fires (composer can launch it from Wardrobe).
     }
 }
 
@@ -912,8 +908,9 @@ private fun OutfitListScreen(
         predictionError?.let { msg ->
             Snackbar(
                 modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(start = 8.dp, end = 8.dp, bottom = 80.dp),
+                    .align(Alignment.TopCenter)
+                    .statusBarsPadding()
+                    .padding(start = 8.dp, end = 8.dp, top = 64.dp),
                 action = { TextButton(onClick = onClearPredictionError) { Text(stringResource(R.string.action_ok)) } },
             ) { Text(msg) }
         }
@@ -1524,29 +1521,25 @@ private fun OutfitFullScreenViewer(
                     }
                 }
 
-                // Close button + hide-tags toggle
+                // Close button + labeled hide-tags toggle (icon-only was too subtle).
                 Row(
                     modifier = Modifier
                         .align(Alignment.TopStart)
                         .padding(8.dp),
                     verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     IconButton(onClick = onDismiss) {
                         Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_dismiss),
                             tint = MaterialTheme.colorScheme.onBackground)
                     }
-                    IconButton(onClick = {
-                        Analytics.action("OutfitViewer", if (hideTags) "show_tags" else "hide_tags")
-                        hideTags = !hideTags
-                    }) {
-                        Icon(
-                            imageVector = if (hideTags) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                            contentDescription = stringResource(
-                                if (hideTags) R.string.viewer_show_tags else R.string.viewer_hide_tags
-                            ),
-                            tint = MaterialTheme.colorScheme.onBackground,
-                        )
-                    }
+                    com.librelookai.wardrobe.HideTagsChip(
+                        hideTags = hideTags,
+                        onToggle = {
+                            Analytics.action("OutfitViewer", if (hideTags) "show_tags" else "hide_tags")
+                            hideTags = !hideTags
+                        },
+                    )
                 }
 
                 // Speed-dial FAB (wear / edit / delete) — hidden offline (writes only).

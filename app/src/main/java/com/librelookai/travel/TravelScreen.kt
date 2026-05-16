@@ -2,6 +2,7 @@ package com.librelookai.travel
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
@@ -413,8 +414,9 @@ fun TravelScreen(
         state.error?.let { msg ->
             Snackbar(
                 modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(16.dp),
+                    .align(Alignment.TopCenter)
+                    .statusBarsPadding()
+                    .padding(start = 8.dp, end = 8.dp, top = 64.dp),
                 action = { TextButton(onClick = travelViewModel::clearError) { Text(stringResource(R.string.action_ok)) } },
             ) { Text(msg) }
         }
@@ -422,8 +424,9 @@ fun TravelScreen(
         moveMessage?.let { msg ->
             Snackbar(
                 modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(16.dp),
+                    .align(Alignment.TopCenter)
+                    .statusBarsPadding()
+                    .padding(start = 8.dp, end = 8.dp, top = 64.dp),
                 action = { TextButton(onClick = { moveMessage = null }) { Text(stringResource(R.string.action_ok)) } },
             ) { Text(msg) }
         }

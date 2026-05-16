@@ -1850,6 +1850,26 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         _state.update { it.copy(findByPhoto = null) }
     }
 
+    /**
+     * Embed [rawFile] and score it against the index restricted to [candidates], returning the
+     * top matches sorted by descending similarity. Does not mutate VM state — used by the
+     * composer's slot picker for an in-flow "find by photo" filter that mirrors the wardrobe
+     * search affordance without dropping the user out of the composer.
+     */
+    suspend fun findSimilarInCandidates(
+        rawFile: File,
+        candidates: List<DriveImage>,
+        topK: Int = 50,
+    ): List<EmbeddingService.Match> {
+        if (!EmbeddingService.isModelAvailable() || candidates.isEmpty()) return emptyList()
+        EmbeddingService.syncIndex(candidates, drive.cacheDir)
+        val candidateIds = candidates.map { it.driveId }.toSet()
+        return EmbeddingService
+            .findSimilar(rawFile, threshold = -1f, topK = candidateIds.size.coerceAtLeast(1))
+            .filter { it.driveId in candidateIds }
+            .take(topK)
+    }
+
     // ---------- Fuzzy text search ----------
 
     /** Search wardrobe tags by literal substring match with a small Levenshtein tolerance

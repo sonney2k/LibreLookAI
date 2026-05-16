@@ -19,26 +19,6 @@ travel screen create tabs: create travel outfits and another one with travels th
 
 TODO
 ====
-
-
-
-
-Fix:
-Create Outfit:
-1. When clicking edit outfit from outfit screen or inside outview view FAB immediately go into edit mode.
-2. Create with AI: The dialog should not say find with AI but Create with AI / Create
-3. Items are overlapping in edit view such that one can occassionally not see the lock, delete button. Perhaps render top to bottom and from left to right (or right to left) to avoid and put all buttons on one side perhaps without a filled circle background and remove the closet tag.
-4. If there are Empty items with placeholder symbol one cannot save
-5. Empty items with placeholder symbol - add an AI symbol to those and all that will be replaced if generate with AI button is tapped
-6. Instead of view / edit in edit outfit call it fullscreen view and don't show the create outfit panel there on the top but yes a small cross on top left to go back to edit - as view use the same one to view a single outfit if no name / tags are known 
-7. When clicking find with AI or create with AI add option to give number of suggestions limited to max 10.
-8. When clicking find with AI or create with AI change the way Weather editing works: clicking on weather pillow shows weather of the next 7 days
-9. When selecting item from  wardrobe - use the wardrobe screen to select items (with filtering zooming etc) not this simplified dialog
-10. When saving an outfit show previews tags to make this faster.
-
-Screens with Tags
-1. All screens that show Tags, e.g. in WardrobeViewModel, OutfitVieModel, ShoppingViewModel - make it possible to hide tags such that more room is available for the item.
-
 create human readable release notes between now and v1.7.0 and release version 1.7.1, git tag commit and upload to testers in firebase
 
 Storage:
@@ -50,14 +30,17 @@ add way to send feedback via firebase under settings -> feedback
 add a feedback tab under settings move debug setting under this tab
 
 
+Bug fixes:
+1. hide tags is overlapping with the title. perhaps put it into a row directly under the last tags
+2. when creating outfit and outfits are suggested by AI and I press the apply button of an outfit then the next screen should show this outfit but no longer any forward / backward button and outfit alternatives. idea behind this that one selects out of all the outfits the one to keep
+3. when creating outfit and adding items from wardrobe the panel with the filter should be in the same color for sorting and image search
+4. when a new outfit is created and one goes back to the outfit list immediately jump to that newly created outfit
+
+
+
+
 IN PROGRESS
 ===========
-[bug]
-make all dangerous operations red that is
-- deleting items
-- destructive operations on images
-- example on outfits and wardrobe item view make fab "delete" red, aswell as data/repair & sync + cutout
-- on wardrobe item screen make delete button red
 
 Repair & Sync:
 - [bug] On repair & sync Preview screen buttons are outside of bottom of screen. Fix like you did in in several other cases for e.g. duplicate search.
@@ -65,6 +48,37 @@ Repair & Sync:
 
 DONE
 =====
+Fix:
+Create Outfit:
+1. When clicking edit outfit from outfit screen or inside outview view FAB immediately go into edit mode.
+2. Create with AI: The dialog should not say find with AI but Create with AI / Create
+3. Items are overlapping in edit view such that one can occassionally not see the lock, delete button. Perhaps render top to bottom and from left to right (or right to left) to avoid and put all buttons on one side perhaps without a filled circle background and remove the closet tag.
+4. If there are Empty items with placeholder symbol one cannot save disable the button. Also why is it red
+5. Empty items with placeholder symbol - add an AI symbol to those and all that will be replaced if generate with AI button is tapped
+6. Instead of view / edit in edit outfit call it fullscreen view and don't show the create outfit panel there on the top but yes a small cross on top left to go back to edit - as view use the same one to view a single outfit if no name / tags are known 
+7. When clicking find with AI or create with AI add option to give number of suggestions limited to max 10.
+8. When clicking find with AI or create with AI change the way Weather editing works: clicking on weather pillow shows weather of the next 7 days
+9. When selecting item from  wardrobe - use the wardrobe screen to select items (with filtering zooming etc) not this simplified dialog
+10. When saving an outfit show previews tags to make this faster.
+
+
+
+Screens with Tags
+1. All screens that show Tags, e.g. in WardrobeViewModel, OutfitVieModel, ShoppingViewModel - make it possible to hide tags such that more room is available for the item.
+
+on outfit create when there are no changes don't ask for confirmation "verwerfen"; on outfit create don't call it Add slot but Add item; on outfit create when       
+selecting an item from wardrobe. Use the same wardrobe filter like on wardrobe grid view screen; on create when viewing fullscreen use the outfit fullscreen view    
+that normally displays tags                                                                                                                                          
+
+[bug]
+make all dangerous operations red that is
+- deleting items
+- destructive operations on images
+- example on outfits and wardrobe item view make fab "delete" red, aswell as data/repair & sync + cutout
+- on wardrobe item screen make delete button red
+
+when creating outfit make it possible that AI suggest multiple outfits and allow swiping through them                                                                
+
 I noticed that creating an outfit is currently not intuitive for users. We have to rewrite the UX of that feature. We will use the OutfitViewModel (that shows all items of an outfit) as the base for editing and creating. General idea is to show resulting outfits in this screen and to edit outfits a user can change each of the items with some exchange button or so. These buttons should only become visible in edit mode. When we are creating an outfit from scratch empty silouettes of categories are shown that can be changed. When suggesting outfits with AI or modifying outfits with AI the user needs to first select which categories shall be filled with AI (e.g. empty silhouettes replaces by with AI silhouettes) then a separate button to suggest with AI will open a dialog asking for weather etc. Outfits are not immediately saved only with a save button. That button will open another dialog to add a description, outfit name, outfit tags that are pre-filled if existing or if suggested with AI.What follows is a bit of the assessment of Gemini that you CAN consider.
 
 Try-on:

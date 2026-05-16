@@ -452,6 +452,7 @@
     <string name="outfits_prediction_prev">Previous suggestion</string>
     <string name="outfits_prediction_next">Next suggestion</string>
     <string name="outfits_prediction_indicator">%1$d / %2$d</string>
+    <string name="composer_select_suggestion">Use this outfit</string>
     <string name="outfits_tag_add">Add tag</string>
     <string name="outfits_tag_add_placeholder">e.g. birthday, travel</string>
     <string name="outfits_suggest_tags">Suggest tags with AI</string>

@@ -631,6 +631,18 @@ class MainActivity : ComponentActivity() {
                                     locationViewModel = locationViewModel,
                                 )
 
+                                // Prediction-setup dialog — globally hosted so it appears
+                                // regardless of which tab is on top (the composer can be opened
+                                // from Wardrobe and ask for AI suggestions before the user has
+                                // ever visited the Outfits tab).
+                                com.librelookai.outfit.PredictionSetupDialog(
+                                    outfitsViewModel  = stylesViewModel,
+                                    profileViewModel  = profileViewModel,
+                                    weatherViewModel  = weatherViewModel,
+                                    locationViewModel = locationViewModel,
+                                    wardrobeViewModel = wardrobeViewModel,
+                                )
+
                                 // Replacements result dialog — opened from Wardrobe selection FAB.
                                 ReplacementsResultDialog(gapViewModel = gapViewModel)
 

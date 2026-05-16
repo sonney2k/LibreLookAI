@@ -14,6 +14,7 @@ import androidx.compose.foundation.gestures.calculateZoom
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -545,7 +546,10 @@ private fun ShoppingListTab(
 
         state.error?.let { msg ->
             Snackbar(
-                modifier = Modifier.align(Alignment.BottomStart).padding(start = 8.dp, end = 96.dp, bottom = 8.dp),
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .statusBarsPadding()
+                    .padding(start = 8.dp, end = 8.dp, top = 64.dp),
                 action = { TextButton(onClick = shoppingClosetViewModel::clearError) { Text(stringResource(R.string.action_dismiss)) } },
             ) { Text(msg) }
         }
@@ -1734,8 +1738,9 @@ private fun IdentifyGapsTab(
         state.error?.let { msg ->
             Snackbar(
                 modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(16.dp),
+                    .align(Alignment.TopCenter)
+                    .statusBarsPadding()
+                    .padding(start = 8.dp, end = 8.dp, top = 64.dp),
                 action = { TextButton(onClick = gapViewModel::clearError) { Text(stringResource(R.string.action_ok)) } },
             ) { Text(msg) }
         }

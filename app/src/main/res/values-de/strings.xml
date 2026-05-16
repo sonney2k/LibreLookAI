@@ -446,6 +446,7 @@
     <string name="outfits_prediction_prev">Vorherige Empfehlung</string>
     <string name="outfits_prediction_next">Nächste Empfehlung</string>
     <string name="outfits_prediction_indicator">%1$d / %2$d</string>
+    <string name="composer_select_suggestion">Dieses Outfit übernehmen</string>
     <string name="outfits_tag_add">Tag hinzufügen</string>
     <string name="outfits_tag_add_placeholder">z. B. Geburtstag, Reise</string>
     <string name="outfits_suggest_tags">Tags mit KI vorschlagen</string>

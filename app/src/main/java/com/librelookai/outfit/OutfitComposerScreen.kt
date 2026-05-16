@@ -25,9 +25,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.activity.compose.BackHandler
+import androidx.compose.material.icons.filled.ImageSearch
+import kotlinx.coroutines.launch
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoAwesome
@@ -52,6 +57,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -104,6 +110,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.DialogWindowProvider
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import androidx.compose.foundation.layout.widthIn
@@ -144,6 +151,7 @@ fun OutfitComposerScreen(
     weatherViewModel: WeatherViewModel,
     shoppingClosetViewModel: ShoppingClosetViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
     locationViewModel: LocationViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    outfitEventsViewModel: OutfitEventsViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
 ) {
     val s by stylesViewModel.state.collectAsState()
     val wardrobe by wardrobeViewModel.state.collectAsState()
@@ -151,6 +159,18 @@ fun OutfitComposerScreen(
     val weather by weatherViewModel.state.collectAsState()
     val shoppingState by shoppingClosetViewModel.state.collectAsState()
     val locationState by locationViewModel.state.collectAsState()
+    val outfitEventsState by outfitEventsViewModel.state.collectAsState()
+
+    // driveId → number of calendar wear events that include this item (for AddItemSheet sort)
+    val popularityMap = remember(outfitEventsState.events, s.outfits) {
+        val outfitWearCount = outfitEventsState.events.groupingBy { it.outfitId }.eachCount()
+        val itemCount = mutableMapOf<String, Int>()
+        s.outfits.forEach { style ->
+            val count = outfitWearCount[style.id] ?: 0
+            if (count > 0) style.itemIds.forEach { id -> itemCount[id] = (itemCount[id] ?: 0) + count }
+        }
+        itemCount as Map<String, Int>
+    }
     val parentContext = LocalContext.current
     val parentConfiguration = LocalConfiguration.current
     val isOffline = LocalIsOffline.current
@@ -198,14 +218,27 @@ fun OutfitComposerScreen(
         with(density) { bottomPx.toDp() }
     }
     val effectiveBottom = maxOf(barInsets.calculateBottomPadding(), rootInsetBottomDp, 48.dp)
-    val effectiveTop = maxOf(barInsets.calculateTopPadding(), 0.dp)
 
     val filledSlots = s.composerSlots.count { it.selectedItemId != null }
 
     Dialog(
         onDismissRequest = requestClose,
-        properties = DialogProperties(usePlatformDefaultWidth = false, dismissOnBackPress = true, dismissOnClickOutside = false),
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false,
+            dismissOnBackPress = true,
+            dismissOnClickOutside = false,
+            decorFitsSystemWindows = false,
+        ),
     ) {
+        val dialogView = androidx.compose.ui.platform.LocalView.current
+        androidx.compose.runtime.SideEffect {
+            val window = (dialogView.parent as? DialogWindowProvider)?.window ?: return@SideEffect
+            window.setLayout(
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+            )
+            androidx.core.view.WindowCompat.setDecorFitsSystemWindows(window, false)
+        }
         CompositionLocalProvider(
             LocalContext provides parentContext,
             LocalConfiguration provides parentConfiguration,
@@ -220,7 +253,6 @@ fun OutfitComposerScreen(
                             ComposerHeader(
                                 filledSlots = filledSlots,
                                 totalSlots = s.composerSlots.size,
-                                topPadding = effectiveTop,
                                 onClose = requestClose,
                                 onOpenFullscreen = {
                                     stylesViewModel.setComposerMode(ComposerMode.VIEW)
@@ -268,7 +300,7 @@ fun OutfitComposerScreen(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(
-                                            top = effectiveTop + 8.dp,
+                                            top = 8.dp,
                                             start = 56.dp, end = 56.dp, bottom = 8.dp,
                                         ),
                                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -305,7 +337,7 @@ fun OutfitComposerScreen(
                                 }
                             } else {
                                 // No metadata: leave room at the top for the close-X overlay.
-                                Spacer(Modifier.height(effectiveTop + 48.dp))
+                                Spacer(Modifier.height(48.dp))
                             }
                             Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
                                 OutfitPageBody(
@@ -341,6 +373,10 @@ fun OutfitComposerScreen(
                                             val target = (s.composerSuggestionIndex + 1) % n
                                             Analytics.action("OutfitComposer", "suggestion_next")
                                             stylesViewModel.showComposerSuggestionAt(target)
+                                        },
+                                        onOpenFullscreen = {
+                                            Analytics.action("OutfitComposer", "suggestions_viewer_reopen")
+                                            stylesViewModel.openComposerSuggestionsViewer()
                                         },
                                     )
                                 }
@@ -401,7 +437,6 @@ fun OutfitComposerScreen(
                             onClick = { stylesViewModel.setComposerMode(ComposerMode.EDIT) },
                             modifier = Modifier
                                 .align(Alignment.TopStart)
-                                .padding(top = effectiveTop)
                                 .padding(8.dp),
                         ) {
                             Icon(
@@ -473,6 +508,27 @@ fun OutfitComposerScreen(
         )
     }
 
+    if (s.composerSuggestionsViewerOpen && s.composerSuggestions.size > 1) {
+        CompositionLocalProvider(
+            LocalContext provides parentContext,
+            LocalConfiguration provides parentConfiguration,
+        ) {
+            ComposerSuggestionsViewer(
+                suggestions = s.composerSuggestions,
+                initialIndex = s.composerSuggestionIndex,
+                slots = s.composerSlots,
+                itemsById = byId,
+                locations = locationState.locations,
+                onSelect = { index ->
+                    Analytics.action("OutfitComposer", "suggestion_select_from_viewer")
+                    stylesViewModel.showComposerSuggestionAt(index)
+                    stylesViewModel.closeComposerSuggestionsViewer()
+                },
+                onDismiss = { stylesViewModel.closeComposerSuggestionsViewer() },
+            )
+        }
+    }
+
     viewerImage?.let { img ->
         val draftItems = remember(s.composerSlots, byId) {
             s.composerSlots.mapNotNull { it.selectedItemId?.let(byId::get) }
@@ -526,6 +582,12 @@ fun OutfitComposerScreen(
                     allItems = layerItems,
                     alreadyChosen = alreadyChosen,
                     locations = locationState.locations,
+                    popularityMap = popularityMap,
+                    onTextFilter = wardrobeViewModel::fuzzyFilterByText,
+                    findSimilarByPhoto = { file, candidates ->
+                        wardrobeViewModel.findSimilarInCandidates(file, candidates)
+                            .associate { it.driveId to it.score }
+                    },
                     onConfirm = { picked ->
                         picked.firstOrNull()?.let { stylesViewModel.setSlotItem(slotId, it) }
                         exchangeSlotId = null
@@ -592,14 +654,13 @@ fun OutfitComposerScreen(
 private fun ComposerHeader(
     filledSlots: Int,
     totalSlots: Int,
-    topPadding: Dp,
     onClose: () -> Unit,
     onOpenFullscreen: () -> Unit,
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 8.dp, end = 8.dp, top = topPadding, bottom = 4.dp),
+            .padding(start = 8.dp, end = 8.dp, top = 4.dp, bottom = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         IconButton(onClick = onClose, modifier = Modifier.size(40.dp)) {
@@ -1299,6 +1360,9 @@ private fun AddItemSheet(
     allItems: List<DriveImage>,
     alreadyChosen: Set<String>,
     locations: List<com.librelookai.data.model.Location>,
+    popularityMap: Map<String, Int> = emptyMap(),
+    onTextFilter: (String, List<DriveImage>) -> List<DriveImage> = { _, items -> items },
+    findSimilarByPhoto: (suspend (java.io.File, List<DriveImage>) -> Map<String, Float>)? = null,
     onConfirm: (Set<String>) -> Unit,
     onDismiss: () -> Unit,
 ) {
@@ -1310,25 +1374,65 @@ private fun AddItemSheet(
     }
 
     var selectedTags by remember { mutableStateOf(emptyMap<String, Set<String>>()) }
+    var textQuery by remember { mutableStateOf("") }
+    var sortBy by remember { mutableStateOf(com.librelookai.wardrobe.SortOption.DATE_DESC) }
     var filterSheetOpen by remember { mutableStateOf(false) }
+    // Photo-search overlay state. capturing == true → CaptureScreen replaces the picker;
+    // photoScores != null → list is filtered + sorted by similarity to the captured photo.
+    var capturing by remember { mutableStateOf(false) }
+    var photoScores by remember { mutableStateOf<Map<String, Float>?>(null) }
+    var photoSearching by remember { mutableStateOf(false) }
+    val photoScope = androidx.compose.runtime.rememberCoroutineScope()
     val tagCategories = remember(candidates) { candidates.tagCategories() }
-    val filtered = remember(candidates, selectedTags) {
-        if (selectedTags.values.all { it.isEmpty() }) candidates
+    val filtered = remember(candidates, selectedTags, textQuery, photoScores) {
+        val byTags = if (selectedTags.values.all { it.isEmpty() }) candidates
         else candidates.filter { image ->
             selectedTags.all { (cat, picked) ->
                 picked.isEmpty() || image.tagStringsForCategory(cat).any { it in picked }
             }
         }
+        val byText = if (textQuery.isBlank()) byTags else onTextFilter(textQuery, byTags)
+        val scores = photoScores
+        if (scores == null) byText
+        else byText.filter { it.driveId in scores.keys }
     }
-    val appliedFilterCount = selectedTags.values.sumOf { it.size }
+    val displayed = remember(filtered, sortBy, popularityMap, photoScores) {
+        val scores = photoScores
+        if (scores != null) {
+            // Photo-search active: order by similarity score (highest first) regardless of sortBy.
+            filtered.sortedByDescending { scores[it.driveId] ?: 0f }
+        } else when (sortBy) {
+            com.librelookai.wardrobe.SortOption.DATE_DESC  -> filtered.sortedByDescending { it.createdTimeMs }
+            com.librelookai.wardrobe.SortOption.DATE_ASC   -> filtered.sortedBy { it.createdTimeMs }
+            com.librelookai.wardrobe.SortOption.POPULARITY -> filtered.sortedByDescending { popularityMap[it.driveId] ?: 0 }
+            com.librelookai.wardrobe.SortOption.TYPE       -> filtered.sortedBy { it.tags?.type?.lowercase() ?: "" }
+            com.librelookai.wardrobe.SortOption.CATEGORY   -> filtered.sortedBy { it.tags?.category?.lowercase() ?: "" }
+        }
+    }
+    val appliedFilterCount = selectedTags.values.sumOf { it.size } +
+        (if (textQuery.isNotBlank()) 1 else 0) +
+        (if (photoScores != null) 1 else 0)
     val locationLookup: (DriveImage) -> String? = { img ->
         if (locations.size > 1) locations.find { it.folderId == img.folderId }?.name else null
     }
 
     Dialog(
         onDismissRequest = onDismiss,
-        properties = DialogProperties(usePlatformDefaultWidth = false, dismissOnBackPress = true),
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false,
+            dismissOnBackPress = true,
+            decorFitsSystemWindows = false,
+        ),
     ) {
+        val dialogView = androidx.compose.ui.platform.LocalView.current
+        androidx.compose.runtime.SideEffect {
+            val window = (dialogView.parent as? DialogWindowProvider)?.window ?: return@SideEffect
+            window.setLayout(
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+            )
+            androidx.core.view.WindowCompat.setDecorFitsSystemWindows(window, false)
+        }
         CompositionLocalProvider(
             LocalContext provides parentContext,
             LocalConfiguration provides parentConfiguration,
@@ -1338,44 +1442,93 @@ private fun AddItemSheet(
                 modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colorScheme.background,
             ) {
-                Column(modifier = Modifier.fillMaxSize()) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = barInsets.calculateTopPadding())
-                            .padding(start = 4.dp, end = 16.dp, top = 4.dp, bottom = 4.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        IconButton(onClick = onDismiss) {
-                            Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_cancel))
-                        }
-                        Text(
-                            stringResource(R.string.composer_add_items),
-                            style = MaterialTheme.typography.titleMedium,
-                            modifier = Modifier.weight(1f),
-                        )
-                    }
-                    com.librelookai.wardrobe.QuickCategoryRow(
-                        totalCount = candidates.size,
-                        filteredCount = filtered.size,
-                        appliedFilterCount = appliedFilterCount,
-                        filtersEnabled = tagCategories.isNotEmpty(),
-                        onClearFilters = { selectedTags = emptyMap() },
-                        onOpenFilters = { filterSheetOpen = true },
-                    )
-                    com.librelookai.wardrobe.WardrobeZoomableItemGrid(
-                        images = filtered,
-                        selectedIds = emptySet(),
-                        onClick = { _, image ->
-                            onConfirm(setOf(image.driveId))
+                if (capturing) {
+                    // Inline camera capture for "find by photo". Keeps the user in the slot-pick
+                    // flow instead of dropping them out to the wardrobe tab.
+                    com.librelookai.wardrobe.CaptureScreen(
+                        onPhotoTaken = { file ->
+                            capturing = false
+                            photoSearching = true
+                            photoScope.launch {
+                                val scores = runCatching { findSimilarByPhoto!!.invoke(file, candidates) }
+                                    .getOrNull()
+                                    ?: emptyMap()
+                                photoScores = scores
+                                photoSearching = false
+                            }
                         },
-                        onLongClick = { },
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxWidth()
-                            .padding(bottom = barInsets.calculateBottomPadding()),
-                        locationLookup = locationLookup,
+                        onCancel = { capturing = false },
+                        showCenterCrosshair = true,
+                        modifier = Modifier.fillMaxSize(),
                     )
+                } else {
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 4.dp, end = 16.dp, top = 4.dp, bottom = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            IconButton(onClick = onDismiss) {
+                                Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_cancel))
+                            }
+                            Text(
+                                stringResource(R.string.composer_add_items),
+                                style = MaterialTheme.typography.titleMedium,
+                                modifier = Modifier.weight(1f),
+                            )
+                        }
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            com.librelookai.wardrobe.QuickCategoryRow(
+                                totalCount = candidates.size,
+                                filteredCount = filtered.size,
+                                appliedFilterCount = appliedFilterCount,
+                                filtersEnabled = tagCategories.isNotEmpty() || candidates.isNotEmpty(),
+                                onClearFilters = {
+                                    selectedTags = emptyMap()
+                                    textQuery = ""
+                                    photoScores = null
+                                },
+                                onOpenFilters = { filterSheetOpen = true },
+                                modifier = Modifier.weight(1f),
+                            )
+                            if (findSimilarByPhoto != null) {
+                                IconButton(onClick = {
+                                    Analytics.action("ComposerSlotPicker", "open_find_by_photo")
+                                    capturing = true
+                                }) {
+                                    Icon(
+                                        Icons.Default.ImageSearch,
+                                        contentDescription = stringResource(R.string.wardrobe_search),
+                                    )
+                                }
+                            }
+                            com.librelookai.wardrobe.SortButton(
+                                sortBy = sortBy,
+                                onSortChanged = { sortBy = it },
+                            )
+                        }
+                        Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                            com.librelookai.wardrobe.WardrobeZoomableItemGrid(
+                                images = displayed,
+                                selectedIds = emptySet(),
+                                onClick = { _, image ->
+                                    onConfirm(setOf(image.driveId))
+                                },
+                                onLongClick = { },
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(bottom = barInsets.calculateBottomPadding()),
+                                locationLookup = locationLookup,
+                            )
+                            if (photoSearching) {
+                                AiProcessingOverlay(modifier = Modifier.fillMaxSize())
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -1391,6 +1544,8 @@ private fun AddItemSheet(
                 selectedTags = selectedTags,
                 appliedCount = filtered.size,
                 onTagsChanged = { selectedTags = it },
+                textQuery = textQuery,
+                onTextQueryChanged = { textQuery = it },
                 onDismiss = { filterSheetOpen = false },
             )
         }
@@ -1573,6 +1728,7 @@ private fun ComposerSuggestionSwiper(
     count: Int,
     onPrev: () -> Unit,
     onNext: () -> Unit,
+    onOpenFullscreen: (() -> Unit)? = null,
 ) {
     Surface(
         shape = RoundedCornerShape(20.dp),
@@ -1591,10 +1747,18 @@ private fun ComposerSuggestionSwiper(
                     contentDescription = stringResource(R.string.outfits_prediction_prev),
                 )
             }
+            val indicatorMod = if (onOpenFullscreen != null) {
+                Modifier
+                    .weight(1f)
+                    .clickable(onClick = onOpenFullscreen)
+                    .padding(vertical = 8.dp)
+            } else {
+                Modifier.weight(1f)
+            }
             Text(
                 text = stringResource(R.string.outfits_prediction_indicator, index + 1, count),
                 style = MaterialTheme.typography.labelLarge,
-                modifier = Modifier.weight(1f),
+                modifier = indicatorMod,
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center,
             )
             IconButton(onClick = onNext) {
@@ -1602,6 +1766,179 @@ private fun ComposerSuggestionSwiper(
                     Icons.AutoMirrored.Filled.KeyboardArrowRight,
                     contentDescription = stringResource(R.string.outfits_prediction_next),
                 )
+            }
+        }
+    }
+}
+
+/**
+ * Fullscreen pager preview of the AI-generated outfit suggestions. Mirrors
+ * [OutfitFullScreenViewer]'s layout (header + HorizontalPager + close-X) but with a single
+ * "Use this outfit" FAB instead of the wear/edit/delete dial. Returns the picked index to
+ * the caller which then applies it via [OutfitsViewModel.showComposerSuggestionAt].
+ */
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@Composable
+private fun ComposerSuggestionsViewer(
+    suggestions: List<ComposerSuggestion>,
+    initialIndex: Int,
+    slots: List<OutfitSlot>,
+    itemsById: Map<String, DriveImage>,
+    locations: List<com.librelookai.data.model.Location>,
+    onSelect: (Int) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    if (suggestions.isEmpty()) return
+    val parentContext = LocalContext.current
+    val parentConfiguration = LocalConfiguration.current
+    val barInsets = LocalSystemBarsPadding.current
+    val view = androidx.compose.ui.platform.LocalView.current
+    val density = LocalDensity.current
+    val rootInsetBottomDp = remember(view) {
+        val raw = view.rootWindowInsets
+        val bottomPx = if (raw != null) {
+            androidx.core.view.WindowInsetsCompat
+                .toWindowInsetsCompat(raw, view)
+                .getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
+                .bottom
+        } else 0
+        with(density) { bottomPx.toDp() }
+    }
+    val effectiveBottom = maxOf(barInsets.calculateBottomPadding(), rootInsetBottomDp, 48.dp)
+
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false,
+            dismissOnBackPress = true,
+            decorFitsSystemWindows = false,
+        ),
+    ) {
+        val dialogView = androidx.compose.ui.platform.LocalView.current
+        androidx.compose.runtime.SideEffect {
+            val window = (dialogView.parent as? DialogWindowProvider)?.window ?: return@SideEffect
+            window.setLayout(
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+            )
+            androidx.core.view.WindowCompat.setDecorFitsSystemWindows(window, false)
+        }
+        CompositionLocalProvider(
+            LocalContext provides parentContext,
+            LocalConfiguration provides parentConfiguration,
+        ) {
+            BackHandler(onBack = onDismiss)
+            val pagerState = rememberPagerState(
+                initialPage = initialIndex.coerceIn(0, suggestions.lastIndex),
+                pageCount = { suggestions.size },
+            )
+
+            // Build a draft Outfit per suggestion using the same locked-slot + assignment
+            // resolution used by applyComposerSuggestionToSlots.
+            val outfits = remember(suggestions, slots) {
+                suggestions.map { sug ->
+                    val itemIds = slots.mapNotNull { slot ->
+                        if (slot.isLocked && slot.selectedItemId != null) slot.selectedItemId
+                        else sug.slotAssignments[slot.id]
+                    }
+                    Outfit(
+                        id = "draft-${slots.hashCode()}-${sug.hashCode()}",
+                        name = sug.name,
+                        description = sug.description,
+                        tags = sug.tags,
+                        itemIds = itemIds,
+                    )
+                }
+            }
+            val current = outfits[pagerState.currentPage]
+
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = MaterialTheme.colorScheme.background,
+            ) {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp, start = 56.dp, end = 56.dp, bottom = 8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                        ) {
+                            if (current.name.isNotBlank()) {
+                                Text(
+                                    text = current.name,
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+                            }
+                            Text(
+                                text = "${pagerState.currentPage + 1} / ${outfits.size}",
+                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                                style = MaterialTheme.typography.labelMedium,
+                            )
+                            if (current.description.isNotBlank()) {
+                                Text(
+                                    text = current.description,
+                                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.85f),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    maxLines = 3,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+                            }
+                            if (current.tags.isNotEmpty()) {
+                                val maxWidth = LocalConfiguration.current.screenWidthDp.dp * 0.85f
+                                FlowRow(
+                                    modifier = Modifier.widthIn(max = maxWidth),
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
+                                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                                ) {
+                                    current.tags.forEach { OutfitTagChip(it) }
+                                }
+                            }
+                        }
+                        HorizontalPager(
+                            state = pagerState,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f),
+                        ) { page ->
+                            OutfitPageBody(
+                                outfit = outfits[page],
+                                itemsById = itemsById,
+                                locations = locations,
+                                onItemClick = {},
+                                // Reserve room for the FAB at the bottom-right.
+                                bottomPadding = effectiveBottom + 72.dp,
+                            )
+                        }
+                    }
+
+                    IconButton(
+                        onClick = onDismiss,
+                        modifier = Modifier.align(Alignment.TopStart).padding(8.dp),
+                    ) {
+                        Icon(
+                            Icons.Default.Close,
+                            contentDescription = stringResource(R.string.action_dismiss),
+                            tint = MaterialTheme.colorScheme.onBackground,
+                        )
+                    }
+
+                    ExtendedFloatingActionButton(
+                        onClick = { onSelect(pagerState.currentPage) },
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(bottom = effectiveBottom)
+                            .padding(16.dp),
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                        icon = { Icon(Icons.Default.Check, contentDescription = null) },
+                        text = { Text(stringResource(R.string.composer_select_suggestion)) },
+                    )
+                }
             }
         }
     }

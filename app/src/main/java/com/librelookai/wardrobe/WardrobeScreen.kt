@@ -1059,8 +1059,9 @@ private fun GridContent(
         state.error?.let { msg ->
             Snackbar(
                 modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(start = 8.dp, end = 96.dp, bottom = 8.dp),
+                    .align(Alignment.TopCenter)
+                    .statusBarsPadding()
+                    .padding(start = 8.dp, end = 8.dp, top = 64.dp),
                 action = { TextButton(onClick = onDismissError) { Text(stringResource(R.string.action_dismiss)) } },
             ) { Text(msg) }
         }
@@ -1470,26 +1471,22 @@ internal fun FullScreenViewer(
             AiProcessingOverlay(modifier = Modifier.fillMaxSize())
         }
 
-        // Close button + hide-tags toggle.
+        // Close button + labeled hide-tags toggle (icon-only was too subtle).
         Row(
             modifier = Modifier.align(Alignment.TopStart).padding(8.dp),
             verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             IconButton(onClick = onDismiss) {
                 Icon(Icons.Default.Close, contentDescription = "Close", tint = MaterialTheme.colorScheme.onBackground)
             }
-            IconButton(onClick = {
-                Analytics.action("ItemViewer", if (hideTags) "show_tags" else "hide_tags")
-                hideTags = !hideTags
-            }) {
-                Icon(
-                    imageVector = if (hideTags) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                    contentDescription = stringResource(
-                        if (hideTags) R.string.viewer_show_tags else R.string.viewer_hide_tags
-                    ),
-                    tint = MaterialTheme.colorScheme.onBackground,
-                )
-            }
+            HideTagsChip(
+                hideTags = hideTags,
+                onToggle = {
+                    Analytics.action("ItemViewer", if (hideTags) "show_tags" else "hide_tags")
+                    hideTags = !hideTags
+                },
+            )
         }
 
         // View-original toggle (top-end). Shown only when the item has an original on Drive
@@ -2151,6 +2148,38 @@ private fun TagChip(label: String) {
             style = MaterialTheme.typography.labelSmall,
             color = Color.White,
         )
+    }
+}
+
+// ---------- Hide-tags chip (shared by item + outfit fullscreen viewers) ----------
+
+@Composable
+internal fun HideTagsChip(
+    hideTags: Boolean,
+    onToggle: () -> Unit,
+) {
+    androidx.compose.material3.Surface(
+        onClick = onToggle,
+        shape = RoundedCornerShape(20.dp),
+        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f),
+        contentColor = MaterialTheme.colorScheme.onBackground,
+        tonalElevation = 2.dp,
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            Icon(
+                imageVector = if (hideTags) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                contentDescription = null,
+                modifier = Modifier.size(16.dp),
+            )
+            Text(
+                stringResource(if (hideTags) R.string.viewer_show_tags else R.string.viewer_hide_tags),
+                style = MaterialTheme.typography.labelMedium,
+            )
+        }
     }
 }
 

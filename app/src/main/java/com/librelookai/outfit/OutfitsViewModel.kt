@@ -111,6 +111,8 @@ data class OutfitsUiState(
      */
     val composerSuggestions: List<ComposerSuggestion> = emptyList(),
     val composerSuggestionIndex: Int = 0,
+    /** True while the fullscreen swipe-through preview of AI suggestions is shown. */
+    val composerSuggestionsViewerOpen: Boolean = false,
     val isSaveDialogOpen: Boolean = false,
     val predictionSetupSource: PredictionSetupSource = PredictionSetupSource.OUTFITS_LIST,
     /** True while the "Find with AI" setup dialog is showing on the Outfits tab. */
@@ -362,9 +364,12 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
         val sourceFolders = defaultSourceFolderId?.let { setOf(it) } ?: emptySet()
         val byId = images.associateBy { it.driveId }
         val slots: List<OutfitSlot> = if (ids.isEmpty()) {
-            Layer.values().map { layer ->
-                OutfitSlot(UUID.randomUUID().toString(), layer, null, false)
-            }
+            // Accessories are off by default for scratch outfits; user adds them via "+ Add slot".
+            Layer.values()
+                .filter { it != Layer.Accessory }
+                .map { layer ->
+                    OutfitSlot(UUID.randomUUID().toString(), layer, null, false)
+                }
         } else {
             ids.map { id ->
                 val img = byId[id]
@@ -449,6 +454,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             composerAiSuggestedTags     = emptyList(),
             composerSuggestions         = emptyList(),
             composerSuggestionIndex     = 0,
+            composerSuggestionsViewerOpen = false,
         )
     }
 
@@ -622,9 +628,16 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                     composerReason                 = first.reason,
                     composerSuggestions            = composerSuggestions,
                     composerSuggestionIndex        = 0,
+                    // Auto-open the fullscreen suggestion swiper when there's more than one option.
+                    composerSuggestionsViewerOpen  = composerSuggestions.size > 1,
                 )
             }
         }
+    }
+
+    fun closeComposerSuggestionsViewer() = _state.update { it.copy(composerSuggestionsViewerOpen = false) }
+    fun openComposerSuggestionsViewer() = _state.update {
+        if (it.composerSuggestions.size > 1) it.copy(composerSuggestionsViewerOpen = true) else it
     }
 
     /**
