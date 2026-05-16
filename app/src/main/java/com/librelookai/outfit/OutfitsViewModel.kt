@@ -39,6 +39,20 @@ import java.util.UUID
 
 data class OutfitPrediction(val outfitId: String, val reason: String)
 
+/**
+ * One AI-generated outfit variant produced by the composer's "Generate with AI" flow.
+ * Multiple are returned when the user asks Gemini for more than one suggestion so the
+ * composer can let the user swipe between alternatives.
+ */
+data class ComposerSuggestion(
+    /** slotId -> wardrobe item id that the AI picked for that slot. */
+    val slotAssignments: Map<String, String>,
+    val name: String,
+    val description: String,
+    val reason: String,
+    val tags: List<String>,
+)
+
 enum class ComposerWeatherMode { AUTO, MANUAL }
 
 
@@ -91,6 +105,12 @@ data class OutfitsUiState(
     val composerAiSuggestedName: String = "",
     val composerAiSuggestedDescription: String = "",
     val composerAiSuggestedTags: List<String> = emptyList(),
+    /**
+     * AI-generated outfit variants the user can swipe through. Empty until the composer's
+     * "Generate with AI" flow returns; cleared on close/discard or when re-running the AI.
+     */
+    val composerSuggestions: List<ComposerSuggestion> = emptyList(),
+    val composerSuggestionIndex: Int = 0,
     val isSaveDialogOpen: Boolean = false,
     val predictionSetupSource: PredictionSetupSource = PredictionSetupSource.OUTFITS_LIST,
     /** True while the "Find with AI" setup dialog is showing on the Outfits tab. */
@@ -427,6 +447,8 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             composerAiSuggestedName     = "",
             composerAiSuggestedDescription = "",
             composerAiSuggestedTags     = emptyList(),
+            composerSuggestions         = emptyList(),
+            composerSuggestionIndex     = 0,
         )
     }
 
@@ -469,12 +491,15 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
         }
         val feedbackAdd = s.composerFeedback.trim()
         val history = if (feedbackAdd.isNotEmpty()) s.composerFeedbackHistory + feedbackAdd else s.composerFeedbackHistory
+        val suggestionCount = s.composerSuggestionCount.coerceIn(1, 10)
         _state.update {
             it.copy(
                 isComposerEnhancing     = true,
                 composerError           = null,
                 composerFeedback        = "",
                 composerFeedbackHistory = history,
+                composerSuggestions     = emptyList(),
+                composerSuggestionIndex = 0,
             )
         }
         viewModelScope.launch {
@@ -499,6 +524,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 fashionTrends    = fashionTrends,
                 feedbackHistory  = history,
                 language         = prefs?.language ?: AppLanguage.ENGLISH,
+                suggestionCount  = suggestionCount,
             )
             Log.d("StylesVM", "Composer prompt length: ${prompt.length} chars")
             val raw = gemini.generateText(prompt, UsageCategory.OUTFIT_COMPOSE)
@@ -518,54 +544,123 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 // Legacy fallback: older prompt shape returned flat itemIds.
                 val itemIds: List<String> = emptyList(),
             )
-            val result = runCatching { gson.fromJson(json, CompResp::class.java) }.getOrNull()
-            if (result == null || (result.slots.isEmpty() && result.itemIds.isEmpty())) {
+            data class MultiResp(
+                val suggestions: List<CompResp>? = null,
+                // Back-compat: the single-suggestion schema is a top-level CompResp.
+                val slots: List<SlotAssignment> = emptyList(),
+                val name: String = "",
+                val description: String = "",
+                val reason: String = "",
+                val tags: List<String> = emptyList(),
+                val itemIds: List<String> = emptyList(),
+            )
+            val parsed = runCatching { gson.fromJson(json, MultiResp::class.java) }.getOrNull()
+            val variants: List<CompResp> = when {
+                parsed == null -> emptyList()
+                !parsed.suggestions.isNullOrEmpty() -> parsed.suggestions
+                else -> listOf(CompResp(
+                    slots = parsed.slots,
+                    name = parsed.name,
+                    description = parsed.description,
+                    reason = parsed.reason,
+                    tags = parsed.tags,
+                    itemIds = parsed.itemIds,
+                ))
+            }.filter { it.slots.isNotEmpty() || it.itemIds.isNotEmpty() }
+
+            if (variants.isEmpty()) {
                 Log.w("StylesVM", "Failed to parse composer response: $json")
                 _state.update { it.copy(isComposerEnhancing = false, composerError = "Could not parse Gemini response.") }
                 return@launch
             }
             val knownIds = images.map { it.driveId }.toSet()
-            val cleanTags = result.tags.map { it.trim() }.filter { it.isNotEmpty() }.distinct()
-
-            // Apply slot assignments: only update slots that are empty or unlocked.
-            val assignmentBySlotId = result.slots.associate { it.slotId to it.itemId }
+            val byImageId = images.associateBy { it.driveId }
             val currentSlots = s.composerSlots
-            val updatedSlots = if (assignmentBySlotId.isNotEmpty()) {
-                currentSlots.map { slot ->
-                    val lockedFilled = slot.isLocked && slot.selectedItemId != null
-                    if (lockedFilled) slot
-                    else {
-                        val newItemId = assignmentBySlotId[slot.id]?.takeIf { it in knownIds }
-                        if (newItemId != null) slot.copy(selectedItemId = newItemId, isLocked = false)
-                        else slot
-                    }
-                }
-            } else {
+
+            fun resolveAssignments(v: CompResp): Map<String, String> {
+                val direct = v.slots
+                    .filter { it.slotId.isNotEmpty() && it.itemId in knownIds }
+                    .associate { it.slotId to it.itemId }
+                if (direct.isNotEmpty()) return direct
                 // Legacy: distribute itemIds across empty/unlocked slots by category.
-                val byId = images.associateBy { it.driveId }
                 val unlockedSlotIds = currentSlots.filter { !(it.isLocked && it.selectedItemId != null) }.map { it.id }.toSet()
-                val candidateIds = result.itemIds.filter { it in knownIds }
                 val mutableSlots = currentSlots.toMutableList()
-                for (candidateId in candidateIds) {
-                    val img = byId[candidateId] ?: continue
+                val mapping = mutableMapOf<String, String>()
+                for (candidateId in v.itemIds.filter { it in knownIds }) {
+                    val img = byImageId[candidateId] ?: continue
                     val cat = layerFor(img) ?: Layer.Top
-                    val idx = mutableSlots.indexOfFirst { it.id in unlockedSlotIds && it.category == cat && it.selectedItemId == null }
-                    if (idx >= 0) mutableSlots[idx] = mutableSlots[idx].copy(selectedItemId = candidateId, isLocked = false)
+                    val idx = mutableSlots.indexOfFirst {
+                        it.id in unlockedSlotIds && it.category == cat &&
+                            it.selectedItemId == null && it.id !in mapping
+                    }
+                    if (idx >= 0) mapping[mutableSlots[idx].id] = candidateId
                 }
-                mutableSlots
+                return mapping
             }
+
+            val composerSuggestions = variants.map { v ->
+                ComposerSuggestion(
+                    slotAssignments = resolveAssignments(v),
+                    name = v.name,
+                    description = v.description,
+                    reason = v.reason,
+                    tags = v.tags.map { it.trim() }.filter { it.isNotEmpty() }.distinct(),
+                )
+            }
+
+            val first = composerSuggestions.first()
+            val updatedSlots = applyComposerSuggestionToSlots(currentSlots, first.slotAssignments)
             val mergedIds = updatedSlots.mapNotNull { it.selectedItemId }.distinct()
             _state.update {
                 it.copy(
-                    isComposerEnhancing         = false,
-                    composerSlots               = updatedSlots,
-                    composerItemIds             = mergedIds,
-                    composerAiSuggestedName     = result.name,
-                    composerAiSuggestedDescription = result.description,
-                    composerAiSuggestedTags     = cleanTags,
-                    composerReason              = result.reason,
+                    isComposerEnhancing            = false,
+                    composerSlots                  = updatedSlots,
+                    composerItemIds                = mergedIds,
+                    composerAiSuggestedName        = first.name,
+                    composerAiSuggestedDescription = first.description,
+                    composerAiSuggestedTags        = first.tags,
+                    composerReason                 = first.reason,
+                    composerSuggestions            = composerSuggestions,
+                    composerSuggestionIndex        = 0,
                 )
             }
+        }
+    }
+
+    /**
+     * Switches the composer to a different AI-generated variant. Locked slots are preserved
+     * (so the user can lock a piece they like, then keep browsing). Empty slots in the chosen
+     * variant remain empty.
+     */
+    fun showComposerSuggestionAt(index: Int) {
+        val s = _state.value
+        if (index !in s.composerSuggestions.indices) return
+        val pick = s.composerSuggestions[index]
+        val updatedSlots = applyComposerSuggestionToSlots(s.composerSlots, pick.slotAssignments)
+        val mergedIds = updatedSlots.mapNotNull { it.selectedItemId }.distinct()
+        _state.update {
+            it.copy(
+                composerSuggestionIndex        = index,
+                composerSlots                  = updatedSlots,
+                composerItemIds                = mergedIds,
+                composerAiSuggestedName        = pick.name,
+                composerAiSuggestedDescription = pick.description,
+                composerAiSuggestedTags        = pick.tags,
+                composerReason                 = pick.reason,
+            )
+        }
+    }
+
+    private fun applyComposerSuggestionToSlots(
+        slots: List<OutfitSlot>,
+        assignments: Map<String, String>,
+    ): List<OutfitSlot> = slots.map { slot ->
+        val lockedFilled = slot.isLocked && slot.selectedItemId != null
+        if (lockedFilled) slot
+        else {
+            val newItemId = assignments[slot.id]
+            if (newItemId != null) slot.copy(selectedItemId = newItemId, isLocked = false)
+            else slot
         }
     }
 
@@ -1214,6 +1309,7 @@ private fun buildComposerPrompt(
     fashionTrends: FashionTrends?,
     feedbackHistory: List<String>,
     language: String,
+    suggestionCount: Int = 1,
 ): String {
     val c = prefs?.aiConsiderations ?: AiConsiderations()
     val age = prefs?.yearOfBirth?.let { LocalDate.now().year - it }
@@ -1297,8 +1393,23 @@ private fun buildComposerPrompt(
             feedbackHistory.forEachIndexed { i, fb -> appendLine("${i + 1}. $fb") }
             appendLine()
         }
-        appendLine("Respond with ONLY a valid JSON object — no markdown, no extra text:")
-        append("""{"slots":[{"slotId":"<id>","itemId":"<wardrobeItemId>"}],"name":"<outfit name>","description":"<1-2 sentence caption>","reason":"<1-2 sentence explanation>","tags":["<short occasion/vibe tag>"]}""")
+        val count = suggestionCount.coerceAtLeast(1)
+        if (count > 1) {
+            val countWord = when (count) {
+                2 -> "TWO distinct outfit variants"
+                3 -> "THREE distinct outfit variants"
+                else -> "$count distinct outfit variants"
+            }
+            appendLine("Compose $countWord that fit the constraints above, ranked from best to worst.")
+            appendLine("Each variant must fill EVERY non-locked slot and must respect every locked slot's requiredItemId.")
+            appendLine("Variants should differ meaningfully from each other (swap key items, change colour palette, change vibe) — do not just shuffle one outfit.")
+            appendLine("Return exactly $count entries in the suggestions array (or fewer if the wardrobe cannot yield that many distinct outfits).")
+            appendLine("Respond with ONLY a valid JSON object — no markdown, no extra text:")
+            append("""{"suggestions":[{"slots":[{"slotId":"<id>","itemId":"<wardrobeItemId>"}],"name":"<outfit name>","description":"<1-2 sentence caption>","reason":"<1-2 sentence explanation>","tags":["<short occasion/vibe tag>"]}]}""")
+        } else {
+            appendLine("Respond with ONLY a valid JSON object — no markdown, no extra text:")
+            append("""{"slots":[{"slotId":"<id>","itemId":"<wardrobeItemId>"}],"name":"<outfit name>","description":"<1-2 sentence caption>","reason":"<1-2 sentence explanation>","tags":["<short occasion/vibe tag>"]}""")
+        }
         appendLine()
         appendLine()
         appendLine("Include 1-4 short, lowercase free-form tags describing the occasion, season, or vibe of the outfit (e.g. \"birthday\", \"travel\", \"work\", \"summer\", \"date night\"). Keep each tag to 1-2 words.")

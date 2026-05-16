@@ -43,6 +43,8 @@ import androidx.compose.material.icons.filled.LockOpen
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.SwapHoriz
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.Button
@@ -324,6 +326,24 @@ fun OutfitComposerScreen(
                                     .padding(bottom = 8.dp),
                                 verticalArrangement = Arrangement.spacedBy(8.dp),
                             ) {
+                                if (isEditMode && s.composerSuggestions.size > 1) {
+                                    ComposerSuggestionSwiper(
+                                        index = s.composerSuggestionIndex,
+                                        count = s.composerSuggestions.size,
+                                        onPrev = {
+                                            val n = s.composerSuggestions.size
+                                            val target = ((s.composerSuggestionIndex - 1) % n + n) % n
+                                            Analytics.action("OutfitComposer", "suggestion_prev")
+                                            stylesViewModel.showComposerSuggestionAt(target)
+                                        },
+                                        onNext = {
+                                            val n = s.composerSuggestions.size
+                                            val target = (s.composerSuggestionIndex + 1) % n
+                                            Analytics.action("OutfitComposer", "suggestion_next")
+                                            stylesViewModel.showComposerSuggestionAt(target)
+                                        },
+                                    )
+                                }
                                 if (isEditMode) {
                                     TextButton(
                                         onClick = { showAddSlotSheet = true },
@@ -1542,6 +1562,46 @@ internal fun ClosetPickerSheet(
                         )
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ComposerSuggestionSwiper(
+    index: Int,
+    count: Int,
+    onPrev: () -> Unit,
+    onNext: () -> Unit,
+) {
+    Surface(
+        shape = RoundedCornerShape(20.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 4.dp, vertical = 2.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            IconButton(onClick = onPrev) {
+                Icon(
+                    Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                    contentDescription = stringResource(R.string.outfits_prediction_prev),
+                )
+            }
+            Text(
+                text = stringResource(R.string.outfits_prediction_indicator, index + 1, count),
+                style = MaterialTheme.typography.labelLarge,
+                modifier = Modifier.weight(1f),
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+            )
+            IconButton(onClick = onNext) {
+                Icon(
+                    Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    contentDescription = stringResource(R.string.outfits_prediction_next),
+                )
             }
         }
     }
