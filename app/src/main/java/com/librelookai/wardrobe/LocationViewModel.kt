@@ -1,0 +1,256 @@
+package com.librelookai.wardrobe
+import android.app.Application
+import android.content.Context
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import com.librelookai.auth.GoogleAuthManager
+import com.librelookai.data.drive.DriveRepository
+import com.librelookai.data.model.Location
+
+data class LocationUiState(
+    val locations: List<Location> = emptyList(),
+    /**
+     * Currently selected closet filter. Always starts at [LocationViewModel.ALL_LOCATIONS_ID]
+     * on app launch — it is intentionally NOT persisted across sessions. The persisted
+     * "default closet" is [defaultClosetFolderId], which only governs the import target.
+     */
+    val activeLocationId: String = LocationViewModel.ALL_LOCATIONS_ID,
+    /**
+     * Folder ID of the default closet — used as the import target and as the default
+     * source when generating outfits. Persisted; independent of [activeLocationId].
+     * Null while still loading on first launch (falls back to first location).
+     */
+    val defaultClosetFolderId: String? = null,
+    val isLoading: Boolean = true,
+    val error: String? = null,
+)
+
+class LocationViewModel(app: Application) : AndroidViewModel(app) {
+
+    private val drive = DriveRepository(app, GoogleAuthManager(app))
+    private val gson = Gson()
+    private val prefs = app.getSharedPreferences("librelookai_prefs", Context.MODE_PRIVATE)
+    private var rootFolderId: String? = null
+
+    private val _state = MutableStateFlow(LocationUiState())
+    val state: StateFlow<LocationUiState> = _state.asStateFlow()
+
+    /** The folderId for the currently active location, or null while loading. */
+    val activeFolderId: String?
+        get() {
+            val id = _state.value.activeLocationId
+            if (id == ALL_LOCATIONS_ID || id.isEmpty()) return null
+            return if (_state.value.locations.any { it.folderId == id }) id else null
+        }
+
+    /** The folderId of the default closet, or the first location as a fallback. */
+    val effectiveDefaultClosetFolderId: String?
+        get() {
+            val s = _state.value
+            val pref = s.defaultClosetFolderId
+            if (pref != null && s.locations.any { it.folderId == pref }) return pref
+            return s.locations.firstOrNull()?.folderId
+        }
+
+    init {
+        // Phase 1: restore last-known locations from SharedPreferences — instant, no network.
+        restoreFromCache()
+        // Phase 2: refresh from Drive in the background.
+        loadLocations()
+    }
+
+    /**
+     * Synchronously restores the last-known locations from SharedPreferences so the wardrobe
+     * screen can start loading its disk cache immediately, without waiting for any Drive call.
+     */
+    private fun restoreFromCache() {
+        val cachedJson = prefs.getString(PREF_LOCATIONS_JSON, null) ?: return
+        val type = object : TypeToken<List<Location>>() {}.type
+        val locations: List<Location> = runCatching {
+            gson.fromJson<List<Location>>(cachedJson, type) ?: emptyList()
+        }.getOrNull() ?: return
+        if (locations.isEmpty()) return
+        val savedDefault = prefs.getString(PREF_DEFAULT_CLOSET_ID, null)
+            ?.takeIf { id -> locations.any { it.folderId == id } }
+        // activeLocationId always starts at "All" — not persisted. isLoading stays true so
+        // the UI knows a Drive refresh is still in flight.
+        _state.value = LocationUiState(
+            locations = locations,
+            activeLocationId = ALL_LOCATIONS_ID,
+            defaultClosetFolderId = savedDefault,
+            isLoading = true,
+        )
+    }
+
+    fun loadLocations() {
+        viewModelScope.launch {
+            // Don't reset existing cached locations to empty while refreshing.
+            _state.update { it.copy(isLoading = true, error = null) }
+            runCatching {
+                val rootId = drive.getOrCreateFolder().also {
+                    rootFolderId = it
+                    prefs.edit().putString(PREF_ROOT_FOLDER_ID, it).apply()
+                }
+
+                val json = drive.loadLocationsJson(rootId)
+                val locations: List<Location> = if (json != null) {
+                    val type = object : TypeToken<List<Location>>() {}.type
+                    gson.fromJson(json, type) ?: emptyList()
+                } else emptyList()
+
+                if (locations.isEmpty()) {
+                    // First run: default "Home" location pointing at the root folder.
+                    val defaultLocation = Location(name = "Home", folderId = rootId)
+                    val newList = listOf(defaultLocation)
+                    drive.saveLocationsJson(rootId, gson.toJson(newList))
+                    prefs.edit().putString(PREF_DEFAULT_CLOSET_ID, defaultLocation.folderId).apply()
+                    Pair(newList, defaultLocation.folderId)
+                } else {
+                    val savedDefault = prefs.getString(PREF_DEFAULT_CLOSET_ID, null)
+                        ?.takeIf { id -> locations.any { it.folderId == id } }
+                    val effectiveDefault = savedDefault ?: locations[0].folderId.also {
+                        prefs.edit().putString(PREF_DEFAULT_CLOSET_ID, it).apply()
+                    }
+                    Pair(locations, effectiveDefault)
+                }
+            }.onSuccess { (locations, defaultId) ->
+                prefs.edit().putString(PREF_LOCATIONS_JSON, gson.toJson(locations)).apply()
+                _state.update {
+                    it.copy(
+                        locations = locations,
+                        defaultClosetFolderId = defaultId,
+                        isLoading = false,
+                    )
+                }
+            }.onFailure { e ->
+                // If we already have cached locations, just stop the loading spinner; don't
+                // replace working content with an error banner.
+                _state.update { s ->
+                    s.copy(isLoading = false, error = if (s.locations.isEmpty()) e.message else null)
+                }
+            }
+        }
+    }
+
+    /** Selects the closet filter. Intentionally NOT persisted — always resets to "All" on app launch. */
+    fun setActiveLocation(locationId: String) {
+        _state.update { it.copy(activeLocationId = locationId) }
+    }
+
+    /** Sets the persistent default closet (used as import target and outfit-source default). */
+    fun setDefaultClosetFolderId(folderId: String) {
+        prefs.edit().putString(PREF_DEFAULT_CLOSET_ID, folderId).apply()
+        _state.update { it.copy(defaultClosetFolderId = folderId) }
+    }
+
+    fun addLocation(name: String, geoLocation: String = "") {
+        if (name.isBlank()) return
+        viewModelScope.launch {
+            runCatching {
+                val rootId = rootFolderId ?: drive.getOrCreateFolder().also { rootFolderId = it }
+                val newFolderId = drive.createSubfolder(rootId, name.trim())
+                val newLocation = Location(name = name.trim(), folderId = newFolderId, geoLocation = geoLocation.trim())
+                val updated = _state.value.locations + newLocation
+                drive.saveLocationsJson(rootId, gson.toJson(updated))
+                updated
+            }.onSuccess { updated ->
+                prefs.edit().putString(PREF_LOCATIONS_JSON, gson.toJson(updated)).apply()
+                _state.update { it.copy(locations = updated) }
+            }.onFailure { e ->
+                _state.update { it.copy(error = e.message) }
+            }
+        }
+    }
+
+    fun renameLocation(locationFolderId: String, newName: String, geoLocation: String? = null) {
+        if (newName.isBlank()) return
+        viewModelScope.launch {
+            val updated = _state.value.locations.map {
+                if (it.folderId == locationFolderId) it.copy(name = newName.trim(), geoLocation = geoLocation?.trim() ?: it.geoLocation) else it
+            }
+            runCatching {
+                val rootId = rootFolderId ?: drive.getOrCreateFolder().also { rootFolderId = it }
+                drive.saveLocationsJson(rootId, gson.toJson(updated))
+            }.onSuccess {
+                prefs.edit().putString(PREF_LOCATIONS_JSON, gson.toJson(updated)).apply()
+                _state.update { it.copy(locations = updated) }
+            }.onFailure { e ->
+                _state.update { it.copy(error = e.message) }
+            }
+        }
+    }
+
+    fun deleteLocation(locationFolderId: String) {
+        val current = _state.value
+        if (current.locations.size <= 1) return
+        viewModelScope.launch {
+            val updated = current.locations.filter { it.folderId != locationFolderId }
+            runCatching {
+                val rootId = rootFolderId ?: drive.getOrCreateFolder().also { rootFolderId = it }
+                drive.saveLocationsJson(rootId, gson.toJson(updated))
+            }.onSuccess {
+                val newActiveId = if (current.activeLocationId == locationFolderId) {
+                    ALL_LOCATIONS_ID
+                } else current.activeLocationId
+                // If the deleted closet was the persisted default, fall back to the first remaining one.
+                val newDefault = if (current.defaultClosetFolderId == locationFolderId) {
+                    updated[0].folderId.also { prefs.edit().putString(PREF_DEFAULT_CLOSET_ID, it).apply() }
+                } else current.defaultClosetFolderId
+                prefs.edit().putString(PREF_LOCATIONS_JSON, gson.toJson(updated)).apply()
+                _state.update {
+                    it.copy(
+                        locations = updated,
+                        activeLocationId = newActiveId,
+                        defaultClosetFolderId = newDefault,
+                    )
+                }
+            }.onFailure { e ->
+                _state.update { it.copy(error = e.message) }
+            }
+        }
+    }
+
+    /**
+     * Returns the folderId for a location with [name] (case-insensitive), creating it if absent.
+     * [onResult] is called on the main thread with the folderId, or null on failure.
+     */
+    fun getOrCreateLocation(name: String, onResult: (String?) -> Unit) {
+        viewModelScope.launch {
+            runCatching {
+                val existing = _state.value.locations.find { it.name.equals(name, ignoreCase = true) }
+                if (existing != null) {
+                    existing.folderId
+                } else {
+                    val rootId = rootFolderId ?: drive.getOrCreateFolder().also { rootFolderId = it }
+                    val newFolderId = drive.createSubfolder(rootId, name)
+                    val newLocation = Location(name = name, folderId = newFolderId)
+                    val updated = _state.value.locations + newLocation
+                    drive.saveLocationsJson(rootId, gson.toJson(updated))
+                    prefs.edit().putString(PREF_LOCATIONS_JSON, gson.toJson(updated)).apply()
+                    _state.update { it.copy(locations = updated) }
+                    newFolderId
+                }
+            }.onSuccess { onResult(it) }
+             .onFailure { e ->
+                _state.update { it.copy(error = e.message) }
+                onResult(null)
+            }
+        }
+    }
+
+    fun clearError() = _state.update { it.copy(error = null) }
+
+    companion object {
+        private const val PREF_DEFAULT_CLOSET_ID = "default_closet_folder_id"
+        private const val PREF_ROOT_FOLDER_ID = "root_folder_id"
+        private const val PREF_LOCATIONS_JSON = "locations_json"
+        const val ALL_LOCATIONS_ID = "all_locations"
+    }
+}

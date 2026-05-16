@@ -20,6 +20,9 @@ Compact day-to-day guidance. **Deep architecture, pipelines, rationale, and Dial
 - `./gradlew test` — unit tests
 - Full release / function deploy commands: see `CLAUDE_ARCHIVE.md` → Release process.
 
+## Package layout (under `com.librelookai`)
+`MainActivity` at root. Feature packages: `auth/`, `wardrobe/` (incl. `LocationViewModel`, `CaptureScreen`, `UrlImportPicker`, `WebProductFetcher`, `WardrobeGap*`), `outfit/` (incl. `PredictionSetupScreen`), `travel/`, `tryon/`, `shopping/`, `billing/`, `insights/` (incl. `UsageScreen`), `settings/` (incl. `ProfileViewModel`, `UserPreferences`, `AppLanguage`, `AppFont`). Cross-cutting: `data/model/` (pure data classes), `data/drive/` (`DriveRepository`), `gemini/` (`GeminiRepository`, `PromptStore`, `ApiKeyStore`, `TokenUsage*`, `TagNormalizer`), `ml/` (`EmbeddingService`/`Repository`/`Index`, `SegmentationRepository`, `PHash`, `ColorHistogram`), `weather/`, `service/` (`JobForegroundService`), `util/` (`Analytics`, `NetworkUtils`, `Scrollbar`, `AiProcessingOverlay`), `ui/theme/`. Group new files in the matching feature package; keep `data/model/` for pure data classes referenced by ≥ 2 features.
+
 ## Core conventions
 - **Identity is `folderId`**: closets map to Drive subfolders; `Location.id` is an ephemeral UUID and must never be used for identity comparisons.
 - **File naming triplet**: `{cutoutDriveId}_cutout.png`, `{cutoutDriveId}_original.jpg`, `{cutoutDriveId}.json` — sidecar shares the cutout's Drive ID.

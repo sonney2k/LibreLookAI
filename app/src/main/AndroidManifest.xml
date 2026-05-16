@@ -37,7 +37,7 @@
         </activity>
 
         <service
-            android:name=".JobForegroundService"
+            android:name=".service.JobForegroundService"
             android:foregroundServiceType="dataSync"
             android:stopWithTask="false"
             android:exported="false" />

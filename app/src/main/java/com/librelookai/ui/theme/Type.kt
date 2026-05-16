@@ -9,8 +9,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.sp
-import com.librelookai.AppFont
 import com.librelookai.R
+import com.librelookai.settings.AppFont
 
 val CaveatFontFamily = FontFamily(
     Font(R.font.caveat_regular, FontWeight.Normal),

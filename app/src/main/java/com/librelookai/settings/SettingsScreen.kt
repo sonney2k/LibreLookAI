@@ -1,0 +1,3205 @@
+package com.librelookai.settings
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.material3.RadioButton
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.AutoFixHigh
+import androidx.compose.material.icons.filled.Folder
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.FolderOpen
+import androidx.compose.material.icons.filled.DeleteSweep
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Badge
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.Text
+import androidx.compose.material3.Slider
+import androidx.compose.material3.Switch
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.window.DialogWindowProvider
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
+import java.io.File
+import com.librelookai.AppScreenHeader
+import com.librelookai.billing.BuyCreditsScreen
+import com.librelookai.billing.CreditPacks
+import com.librelookai.billing.CreditsViewModel
+import com.librelookai.data.drive.DriveFileDto
+import com.librelookai.data.model.Location
+import com.librelookai.gemini.ApiKeyStore
+import com.librelookai.gemini.PromptKey
+import com.librelookai.gemini.PromptStore
+import com.librelookai.util.Analytics
+import com.librelookai.util.LocalIsOffline
+import com.librelookai.util.LocalSystemBarsPadding
+import com.librelookai.wardrobe.AuditFileEntry
+import com.librelookai.wardrobe.AuditKind
+import com.librelookai.wardrobe.AuditProgress
+import com.librelookai.wardrobe.CutoutBgFixProgress
+import com.librelookai.wardrobe.CutoutFixEntry
+import com.librelookai.wardrobe.ImportPreview
+import com.librelookai.wardrobe.ImportPreviewEntry
+import com.librelookai.wardrobe.LocationUiState
+import com.librelookai.wardrobe.LocationViewModel
+import com.librelookai.wardrobe.WardrobeUiState
+import com.librelookai.wardrobe.WardrobeViewModel
+import com.librelookai.R
+import com.librelookai.MainActivity
+import com.librelookai.data.model.Outfit
+import com.librelookai.BuildConfig
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SettingsScreen(
+    profileViewModel: ProfileViewModel = viewModel(),
+    wardrobeViewModel: WardrobeViewModel = viewModel(),
+    locationViewModel: LocationViewModel = viewModel(),
+    creditsViewModel: CreditsViewModel = viewModel(),
+    onBack: () -> Unit = {},
+    navResetTick: Int = 0,
+    modifier: Modifier = Modifier,
+) {
+    val profileState  by profileViewModel.state.collectAsState()
+    val wardrobeState by wardrobeViewModel.state.collectAsState()
+    val locationState by locationViewModel.state.collectAsState()
+    val creditsState  by creditsViewModel.state.collectAsState()
+
+    val context = LocalContext.current
+    var currentApiKey by remember { mutableStateOf(ApiKeyStore.get(context)) }
+
+    // Options chosen in the import dialog are captured here so the launcher callback can read them
+    var pendingImportRemoveBg    by rememberSaveable { mutableStateOf(false) }
+    var pendingImportAutoTag     by rememberSaveable { mutableStateOf(false) }
+    var pendingImportReplace     by rememberSaveable { mutableStateOf(false) }
+    var pendingImportOverwrite   by rememberSaveable { mutableStateOf(false) }
+    var showDriveFolderPicker    by rememberSaveable { mutableStateOf(false) }
+    val importLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocumentTree(),
+    ) { uri ->
+        uri?.let {
+            wardrobeViewModel.importFromFolder(
+                treeUri = it,
+                removeBackground = pendingImportRemoveBg,
+                autoTag = pendingImportAutoTag,
+                replaceExisting = pendingImportReplace,
+                overwriteDuplicates = pendingImportOverwrite,
+            )
+        }
+    }
+
+    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+    LaunchedEffect(navResetTick) { selectedTab = 0 }
+
+    Column(modifier = modifier.fillMaxSize()) {
+        AppScreenHeader(
+            title = stringResource(R.string.nav_settings),
+            trailingContent = {
+                androidx.compose.material3.IconButton(onClick = {
+                    Analytics.action("Settings", "back")
+                    onBack()
+                }) {
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                }
+            },
+        )
+        LaunchedEffect(selectedTab) {
+            val n = when (selectedTab) {
+                0 -> "Settings/Profile"; 1 -> "Settings/Display"; 2 -> "Settings/Data"; 3 -> "Settings/Credits"
+                4 -> "Settings/AI"; 5 -> "Settings/Feedback"; 6 -> "Settings/About"
+                else -> "Settings/Tab$selectedTab"
+            }
+            Analytics.screen(n)
+        }
+        androidx.compose.material3.ScrollableTabRow(selectedTabIndex = selectedTab, edgePadding = 0.dp) {
+            Tab(selected = selectedTab == 0, onClick = {
+                Analytics.action("Settings", "subtab_profile"); selectedTab = 0
+            }, text = { Text(stringResource(R.string.settings_tab_profile)) })
+            Tab(selected = selectedTab == 1, onClick = {
+                Analytics.action("Settings", "subtab_display"); selectedTab = 1
+            }, text = { Text(stringResource(R.string.settings_tab_display)) })
+            Tab(selected = selectedTab == 2, onClick = {
+                Analytics.action("Settings", "subtab_data"); selectedTab = 2
+            }, text = { Text(stringResource(R.string.settings_tab_data)) })
+            Tab(
+                selected = selectedTab == 3,
+                onClick = {
+                    Analytics.action("Settings", "subtab_credits"); selectedTab = 3
+                },
+                text = {
+                    Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                        Text(stringResource(R.string.settings_tab_credits))
+                        if (creditsState.isManagedMode && creditsState.balance > 0) {
+                            Spacer(Modifier.padding(start = 4.dp))
+                            androidx.compose.material3.Badge { Text("${creditsState.balance}") }
+                        }
+                    }
+                },
+            )
+            Tab(selected = selectedTab == 4, onClick = {
+                Analytics.action("Settings", "subtab_ai"); selectedTab = 4
+            }, text = { Text(stringResource(R.string.settings_tab_ai)) })
+            Tab(selected = selectedTab == 5, onClick = {
+                Analytics.action("Settings", "subtab_feedback"); selectedTab = 5
+            }, text = { Text(stringResource(R.string.settings_tab_feedback)) })
+            Tab(selected = selectedTab == 6, onClick = {
+                Analytics.action("Settings", "subtab_about"); selectedTab = 6
+            }, text = { Text(stringResource(R.string.settings_tab_about)) })
+        }
+
+        when (selectedTab) {
+            0 -> ProfileTab(
+                state = profileState,
+                onSave = profileViewModel::savePreferences,
+                onClearSavedFlag = profileViewModel::clearSavedFlag,
+                onClearError = profileViewModel::clearError,
+                onUploadTryOnPhoto = profileViewModel::uploadTryOnPhoto,
+                onRemoveTryOnPhoto = profileViewModel::deleteTryOnPhoto,
+            )
+            1 -> DisplayTab(
+                preferences = profileState.preferences,
+                onSaveTheme = { id ->
+                    profileViewModel.savePreferences(profileState.preferences.copy(wardrobeTheme = id))
+                },
+                onSaveFont = { id ->
+                    profileViewModel.savePreferences(profileState.preferences.copy(appFont = id))
+                },
+            )
+            2 -> DataTab(
+                wardrobeState = wardrobeState,
+                onRetagAll = wardrobeViewModel::retagAll,
+                onRemoveAllBackgrounds = wardrobeViewModel::removeAllBackgrounds,
+                onStartRepairAndRefresh = {
+                    wardrobeViewModel.startRepairAndRefresh(locationState.locations.map { it.folderId })
+                },
+                onContinueRepair = wardrobeViewModel::continueRepairProcessing,
+                onDismissAudit = wardrobeViewModel::dismissAuditResult,
+                onToggleAuditSelection = wardrobeViewModel::toggleAuditSelection,
+                onSetAuditSelection = wardrobeViewModel::setAuditSelection,
+                fetchAuditThumbnail = wardrobeViewModel::fetchAuditThumbnail,
+                onStartCutoutBgFix = {
+                    wardrobeViewModel.startCutoutBgFixScan(locationState.locations.map { it.folderId })
+                },
+                onContinueCutoutBgFix = wardrobeViewModel::continueCutoutBgFix,
+                onToggleCutoutFixSelection = wardrobeViewModel::toggleCutoutFixSelection,
+                onSetCutoutFixSelection = wardrobeViewModel::setCutoutFixSelection,
+                onSetCutoutFixShowAll = wardrobeViewModel::setCutoutFixShowAll,
+                onDismissCutoutBgFix = wardrobeViewModel::dismissCutoutBgFix,
+                fetchCutoutFixThumbnail = wardrobeViewModel::fetchCutoutFixThumbnail,
+                onImportFromFolder = { removeBg, autoTag, replace, overwrite, useDrive ->
+                    pendingImportRemoveBg  = removeBg
+                    pendingImportAutoTag   = autoTag
+                    pendingImportReplace   = replace
+                    pendingImportOverwrite = overwrite
+                    if (useDrive) {
+                        showDriveFolderPicker = true
+                    } else {
+                        importLauncher.launch(null)
+                    }
+                },
+                onToggleImportPreviewSelection = wardrobeViewModel::toggleImportPreviewSelection,
+                onSetImportPreviewSelection = wardrobeViewModel::setImportPreviewSelection,
+                onConfirmImportPreview = wardrobeViewModel::confirmImportPreview,
+                onCancelImportPreview = wardrobeViewModel::cancelImportPreview,
+                locationState = locationState,
+                onSetDefaultCloset = locationViewModel::setDefaultClosetFolderId,
+                onAddLocation = locationViewModel::addLocation,
+                onRenameLocation = locationViewModel::renameLocation,
+                onDeleteLocation = locationViewModel::deleteLocation,
+            )
+            3 -> BuyCreditsScreen(
+                creditsViewModel = creditsViewModel,
+                currentApiKey = currentApiKey,
+                onSaveApiKey = { key ->
+                    ApiKeyStore.set(context, key)
+                    currentApiKey = key
+                },
+                modifier = Modifier.fillMaxSize(),
+            )
+            4 -> AiTab(
+                preferences = profileState.preferences,
+                onSaveConsiderations = { c ->
+                    profileViewModel.savePreferences(profileState.preferences.copy(aiConsiderations = c))
+                },
+                onSaveDedupe = { enabled, threshold ->
+                    profileViewModel.savePreferences(
+                        profileState.preferences.copy(
+                            dedupeOnImport = enabled,
+                            dedupeThreshold = threshold,
+                        )
+                    )
+                },
+                onSaveBgRemovalThreshold = { value ->
+                    profileViewModel.savePreferences(
+                        profileState.preferences.copy(bgRemovalThreshold = value)
+                    )
+                },
+                onSavePreferLocalBg = { enabled ->
+                    profileViewModel.savePreferences(
+                        profileState.preferences.copy(preferLocalBgRemoval = enabled)
+                    )
+                },
+            )
+            5 -> FeedbackTab(
+                preferences = profileState.preferences,
+                onSaveDebugSimilarityPreview = { enabled ->
+                    profileViewModel.savePreferences(
+                        profileState.preferences.copy(debugSimilarityPreview = enabled)
+                    )
+                },
+            )
+            6 -> AboutTab()
+        }
+    }
+
+    if (showDriveFolderPicker) {
+        DriveFolderPickerDialog(
+            wardrobeViewModel = wardrobeViewModel,
+            onFolderSelected = { folderId ->
+                showDriveFolderPicker = false
+                wardrobeViewModel.importFromDriveFolder(
+                    sourceFolderId = folderId,
+                    removeBackground = pendingImportRemoveBg,
+                    autoTag = pendingImportAutoTag,
+                    replaceExisting = pendingImportReplace,
+                    overwriteDuplicates = pendingImportOverwrite,
+                )
+            },
+            onDismiss = { showDriveFolderPicker = false },
+        )
+    }
+}
+
+// ---------- Display tab ----------
+
+@Composable
+private fun DisplayTab(
+    preferences: UserPreferences,
+    onSaveTheme: (String) -> Unit,
+    onSaveFont: (String) -> Unit,
+) {
+    val palettes = com.librelookai.ui.theme.WardrobePalettes
+    val labels = mapOf(
+        "green-light" to R.string.theme_green_light,
+        "green-dark" to R.string.theme_green_dark,
+        "sand-light" to R.string.theme_sand_light,
+        "indigo-dark" to R.string.theme_indigo_dark,
+        "pastel-mint" to R.string.theme_pastel_mint,
+        "pastel-blush" to R.string.theme_pastel_blush,
+        "pastel-lavender" to R.string.theme_pastel_lavender,
+    )
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 20.dp, vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Text(
+            stringResource(R.string.settings_display_theme),
+            style = MaterialTheme.typography.titleMedium,
+        )
+        Text(
+            stringResource(R.string.settings_display_theme_desc),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        palettes.forEach { palette ->
+            val selected = palette.id == preferences.wardrobeTheme
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .clickable {
+                        Analytics.action("Settings/Display", "change_theme", mapOf("value" to palette.id))
+                        onSaveTheme(palette.id)
+                    }
+                    .background(if (selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface)
+                    .padding(horizontal = 12.dp, vertical = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                RadioButton(selected = selected, onClick = {
+                    Analytics.action("Settings/Display", "change_theme", mapOf("value" to palette.id))
+                    onSaveTheme(palette.id)
+                })
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    listOf(palette.bg, palette.surface, palette.primary, palette.primaryDim).forEach { c ->
+                        Box(
+                            Modifier
+                                .size(20.dp)
+                                .clip(CircleShape)
+                                .background(c)
+                                .border(BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant), CircleShape),
+                        )
+                    }
+                }
+                Text(
+                    text = stringResource(labels[palette.id] ?: R.string.theme_green_light),
+                    modifier = Modifier.weight(1f),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
+        }
+
+        Spacer(Modifier.height(8.dp))
+        Text(
+            stringResource(R.string.settings_display_font),
+            style = MaterialTheme.typography.titleMedium,
+        )
+        Text(
+            stringResource(R.string.settings_display_font_desc),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        val fontLabels = listOf(
+            AppFont.DEFAULT to R.string.font_default,
+            AppFont.CAVEAT to R.string.font_caveat,
+        )
+        fontLabels.forEach { (id, labelRes) ->
+            val selected = id == preferences.appFont
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .clickable {
+                        Analytics.action("Settings/Display", "change_font", mapOf("value" to id))
+                        onSaveFont(id)
+                    }
+                    .background(if (selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface)
+                    .padding(horizontal = 12.dp, vertical = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                RadioButton(selected = selected, onClick = {
+                    Analytics.action("Settings/Display", "change_font", mapOf("value" to id))
+                    onSaveFont(id)
+                })
+                Text(
+                    text = stringResource(labelRes),
+                    modifier = Modifier.weight(1f),
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontFamily = if (id == AppFont.CAVEAT) com.librelookai.ui.theme.CaveatFontFamily
+                                 else androidx.compose.ui.text.font.FontFamily.Default,
+                    fontSize = if (id == AppFont.CAVEAT) 22.sp else 16.sp,
+                )
+            }
+        }
+    }
+}
+
+// ---------- Profile tab ----------
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ProfileTab(
+    state: ProfileUiState,
+    onSave: (UserPreferences) -> Unit,
+    onClearSavedFlag: () -> Unit,
+    onClearError: () -> Unit,
+    onUploadTryOnPhoto: (TryOnSlot, android.net.Uri) -> Unit,
+    onRemoveTryOnPhoto: (TryOnSlot) -> Unit,
+) {
+    val genderOptions = listOf(
+        stringResource(R.string.settings_gender_prefer_not),
+        stringResource(R.string.settings_gender_female),
+        stringResource(R.string.settings_gender_male),
+        stringResource(R.string.settings_gender_nonbinary),
+        stringResource(R.string.settings_gender_other),
+    )
+
+    var gender      by remember(state.preferences) { mutableStateOf(state.preferences.gender) }
+    var yearOfBirth by remember(state.preferences) { mutableStateOf(state.preferences.yearOfBirth?.toString() ?: "") }
+    var preferences by remember(state.preferences) { mutableStateOf(state.preferences.preferences) }
+    var language    by remember(state.preferences) { mutableStateOf(state.preferences.language) }
+
+    var pendingTryOnSlot by remember { mutableStateOf<TryOnSlot?>(null) }
+    val tryOnPickLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.PickVisualMedia(),
+    ) { uri ->
+        val slot = pendingTryOnSlot
+        pendingTryOnSlot = null
+        if (uri != null && slot != null) onUploadTryOnPhoto(slot, uri)
+    }
+
+    LaunchedEffect(state.isLoading) {
+        if (!state.isLoading) {
+            gender      = state.preferences.gender
+            yearOfBirth = state.preferences.yearOfBirth?.toString() ?: ""
+            preferences = state.preferences.preferences
+            language    = state.preferences.language
+        }
+    }
+    Box(modifier = Modifier.fillMaxSize()) {
+        when {
+            state.isLoading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            else -> Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .imePadding()
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 20.dp, vertical = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp),
+            ) {
+                // --- Language ---
+                var languageExpanded by remember { mutableStateOf(false) }
+                ExposedDropdownMenuBox(
+                    expanded = languageExpanded,
+                    onExpandedChange = { languageExpanded = it },
+                ) {
+                    OutlinedTextField(
+                        value = language.ifEmpty { stringResource(R.string.settings_gender_select) },
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text(stringResource(R.string.settings_language)) },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = languageExpanded) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .menuAnchor(MenuAnchorType.PrimaryNotEditable),
+                    )
+                    ExposedDropdownMenu(
+                        expanded = languageExpanded,
+                        onDismissRequest = { languageExpanded = false },
+                    ) {
+                        AppLanguage.options.forEach { option ->
+                            DropdownMenuItem(
+                                text = { Text(option) },
+                                onClick = {
+                                    Analytics.action("Settings/Profile", "change_language", mapOf("value" to option))
+                                    language = option; languageExpanded = false
+                                },
+                            )
+                        }
+                    }
+                }
+
+                // --- Gender ---
+                var genderExpanded by remember { mutableStateOf(false) }
+                ExposedDropdownMenuBox(
+                    expanded = genderExpanded,
+                    onExpandedChange = { genderExpanded = it },
+                ) {
+                    OutlinedTextField(
+                        value = gender.ifEmpty { stringResource(R.string.settings_gender_select) },
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text(stringResource(R.string.settings_gender)) },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = genderExpanded) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .menuAnchor(MenuAnchorType.PrimaryNotEditable),
+                    )
+                    ExposedDropdownMenu(
+                        expanded = genderExpanded,
+                        onDismissRequest = { genderExpanded = false },
+                    ) {
+                        genderOptions.forEach { option ->
+                            DropdownMenuItem(
+                                text = { Text(option) },
+                                onClick = {
+                                    Analytics.action("Settings/Profile", "change_gender", mapOf("value" to option))
+                                    gender = option; genderExpanded = false
+                                },
+                            )
+                        }
+                    }
+                }
+
+                // --- Year of birth ---
+                OutlinedTextField(
+                    value = yearOfBirth,
+                    onValueChange = { v ->
+                        if (v.length <= 4 && v.all { it.isDigit() }) yearOfBirth = v
+                    },
+                    label = { Text(stringResource(R.string.settings_year_of_birth)) },
+                    placeholder = { Text(stringResource(R.string.settings_year_placeholder)) },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+
+                // --- Outfit preferences ---
+                OutlinedTextField(
+                    value = preferences,
+                    onValueChange = { preferences = it },
+                    label = { Text(stringResource(R.string.settings_style_prefs)) },
+                    placeholder = { Text(stringResource(R.string.settings_style_placeholder)) },
+                    minLines = 6,
+                    maxLines = 12,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+
+                // --- Try-on photos ---
+                HorizontalDivider()
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        stringResource(R.string.tryon_section_title),
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                    Text(
+                        stringResource(R.string.tryon_section_desc),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        TryOnSlot.entries.forEach { slot ->
+                            val label = when (slot) {
+                                TryOnSlot.FRONT -> stringResource(R.string.tryon_slot_front)
+                                TryOnSlot.SIDE  -> stringResource(R.string.tryon_slot_side)
+                                TryOnSlot.BACK  -> stringResource(R.string.tryon_slot_back)
+                            }
+                            TryOnPhotoSlot(
+                                label = label,
+                                localPath = state.tryOnLocalPaths[slot],
+                                isUploading = slot in state.tryOnUploading,
+                                onPick = {
+                                    pendingTryOnSlot = slot
+                                    tryOnPickLauncher.launch(
+                                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                                    )
+                                },
+                                onRemove = { onRemoveTryOnPhoto(slot) },
+                                modifier = Modifier.weight(1f),
+                            )
+                        }
+                    }
+                }
+
+                // --- Save ---
+                Button(
+                    onClick = {
+                        Analytics.action("Settings/Profile", "save_preferences")
+                        onSave(
+                            state.preferences.copy(
+                                gender      = gender,
+                                yearOfBirth = yearOfBirth.toIntOrNull(),
+                                preferences = preferences,
+                                language    = language,
+                            )
+                        )
+                    },
+                    enabled = !state.isSaving,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    if (state.isSaving) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.padding(end = 8.dp).align(Alignment.CenterVertically),
+                            strokeWidth = 2.dp,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                        )
+                    }
+                    Text(if (state.isSaving) stringResource(R.string.action_saving) else stringResource(R.string.action_save))
+                }
+            }
+        }
+
+        if (state.savedSuccessfully) {
+            Snackbar(
+                modifier = Modifier.align(Alignment.BottomCenter).padding(16.dp),
+                action = { TextButton(onClick = onClearSavedFlag) { Text(stringResource(R.string.action_ok)) } },
+            ) { Text(stringResource(R.string.settings_saved)) }
+        }
+
+        state.error?.let { msg ->
+            Snackbar(
+                modifier = Modifier.align(Alignment.BottomCenter).padding(16.dp),
+                action = { TextButton(onClick = onClearError) { Text(stringResource(R.string.action_dismiss)) } },
+            ) { Text(msg) }
+        }
+    }
+}
+
+@Composable
+private fun TryOnPhotoSlot(
+    label: String,
+    localPath: String?,
+    isUploading: Boolean,
+    onPick: () -> Unit,
+    onRemove: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        Surface(
+            shape = RoundedCornerShape(8.dp),
+            tonalElevation = 1.dp,
+            color = MaterialTheme.colorScheme.surfaceVariant,
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(0.75f)
+                .clickable(enabled = !isUploading) { onPick() },
+        ) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                when {
+                    isUploading -> CircularProgressIndicator(strokeWidth = 2.dp, modifier = Modifier.size(28.dp))
+                    localPath != null -> {
+                        AsyncImage(
+                            model = File(localPath),
+                            contentDescription = label,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(8.dp)),
+                        )
+                        IconButton(
+                            onClick = onRemove,
+                            modifier = Modifier
+                                .align(Alignment.TopEnd)
+                                .size(32.dp),
+                        ) {
+                            Icon(
+                                Icons.Default.Close,
+                                contentDescription = stringResource(R.string.tryon_remove_photo, label),
+                                tint = Color.White,
+                                modifier = Modifier
+                                    .size(22.dp)
+                                    .clip(CircleShape)
+                                    .background(Color.Black.copy(alpha = 0.55f))
+                                    .padding(3.dp),
+                            )
+                        }
+                    }
+                    else -> Icon(
+                        Icons.Default.Add,
+                        contentDescription = stringResource(R.string.tryon_add_photo, label),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+        }
+        Text(
+            label,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        if (isUploading) {
+            Text(
+                stringResource(R.string.tryon_uploading),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+// ---------- Data tab ----------
+
+@Composable
+private fun DataTab(
+    wardrobeState: WardrobeUiState,
+    onRetagAll: () -> Unit,
+    onRemoveAllBackgrounds: () -> Unit,
+    onStartRepairAndRefresh: () -> Unit,
+    onContinueRepair: (Boolean, Boolean) -> Unit,
+    onDismissAudit: () -> Unit,
+    onToggleAuditSelection: (String) -> Unit,
+    onSetAuditSelection: (Set<String>) -> Unit,
+    fetchAuditThumbnail: suspend (AuditFileEntry) -> File?,
+    onStartCutoutBgFix: () -> Unit,
+    onContinueCutoutBgFix: (Boolean) -> Unit,
+    onToggleCutoutFixSelection: (String) -> Unit,
+    onSetCutoutFixSelection: (Set<String>) -> Unit,
+    onSetCutoutFixShowAll: (Boolean) -> Unit,
+    onDismissCutoutBgFix: () -> Unit,
+    fetchCutoutFixThumbnail: suspend (CutoutFixEntry) -> File?,
+    onImportFromFolder: (removeBackground: Boolean, autoTag: Boolean, replaceExisting: Boolean, overwriteDuplicates: Boolean, useDrivePicker: Boolean) -> Unit,
+    onToggleImportPreviewSelection: (String) -> Unit,
+    onSetImportPreviewSelection: (Set<String>) -> Unit,
+    onConfirmImportPreview: () -> Unit,
+    onCancelImportPreview: () -> Unit,
+    locationState: LocationUiState,
+    onSetDefaultCloset: (String) -> Unit,
+    onAddLocation: (String, String) -> Unit,
+    onRenameLocation: (String, String, String?) -> Unit,
+    onDeleteLocation: (String) -> Unit,
+) {
+    val isOffline = LocalIsOffline.current
+    val audit = wardrobeState.auditProgress
+    val cutoutBgFix = wardrobeState.cutoutBgFix
+    var showRetagDialog by remember { mutableStateOf(false) }
+    var showRemoveBgDialog by remember { mutableStateOf(false) }
+    var showImportOptionsDialog by remember { mutableStateOf(false) }
+    var showAddLocationDialog by remember { mutableStateOf(false) }
+    var renameTarget by remember { mutableStateOf<Location?>(null) }
+    var deleteTarget by remember { mutableStateOf<Location?>(null) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .imePadding()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 20.dp, vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp),
+    ) {
+        // ---------- Locations ----------
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(stringResource(R.string.settings_locations_title), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+            Text(
+                stringResource(R.string.settings_locations_desc),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+
+            locationState.locations.forEach { location ->
+                val isDefault = location.folderId == locationState.defaultClosetFolderId
+                Surface(
+                    shape = MaterialTheme.shapes.small,
+                    tonalElevation = if (isDefault) 2.dp else 0.dp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(enabled = !isDefault) { onSetDefaultCloset(location.folderId) },
+                ) {
+                    Row(
+                        modifier = Modifier.padding(start = 12.dp, top = 4.dp, bottom = 4.dp, end = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        if (isDefault) {
+                            Icon(
+                                Icons.Default.Check,
+                                contentDescription = stringResource(R.string.settings_location_active),
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(18.dp),
+                            )
+                            Spacer(Modifier.size(8.dp))
+                        } else {
+                            Spacer(Modifier.size(26.dp))
+                        }
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                location.name,
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = if (isDefault) FontWeight.SemiBold else FontWeight.Normal,
+                            )
+                            if (location.geoLocation.isNotBlank()) {
+                                Text(
+                                    location.geoLocation,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                        }
+                        IconButton(onClick = { renameTarget = location }) {
+                            Icon(Icons.Default.Edit, contentDescription = stringResource(R.string.settings_location_rename_title), modifier = Modifier.size(18.dp))
+                        }
+                        IconButton(
+                            onClick = { deleteTarget = location },
+                            enabled = locationState.locations.size > 1,
+                        ) {
+                            Icon(
+                                Icons.Default.Delete,
+                                contentDescription = stringResource(R.string.settings_location_delete_title),
+                                modifier = Modifier.size(18.dp),
+                                tint = if (locationState.locations.size > 1) MaterialTheme.colorScheme.error
+                                       else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+                            )
+                        }
+                    }
+                }
+            }
+
+            OutlinedButton(
+                onClick = { showAddLocationDialog = true },
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(18.dp))
+                Spacer(Modifier.padding(start = 8.dp))
+                Text(stringResource(R.string.settings_location_add))
+            }
+        }
+
+        HorizontalDivider()
+
+        // ---------- Tags ----------
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(stringResource(R.string.settings_data_tags_title), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+            Text(
+                stringResource(R.string.settings_data_tags_desc),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+
+            if (wardrobeState.isRetagging) {
+                val progress = if (wardrobeState.retagTotal > 0)
+                    wardrobeState.retagDone.toFloat() / wardrobeState.retagTotal
+                else 0f
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    LinearProgressIndicator(
+                        progress = { progress },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    Text(
+                        stringResource(R.string.settings_rescanning, wardrobeState.retagDone + 1, wardrobeState.retagTotal),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            } else {
+                Button(
+                    onClick = {
+                        Analytics.action("Settings/Data", "open_retag_dialog")
+                        showRetagDialog = true
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = !isOffline,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError,
+                    ),
+                ) {
+                    Icon(Icons.Default.Refresh, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(Modifier.padding(start = 8.dp))
+                    Text(stringResource(R.string.settings_rescan_button))
+                }
+            }
+        }
+
+        HorizontalDivider()
+
+        // ---------- Background Removal ----------
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(stringResource(R.string.settings_rebg_title), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+            Text(
+                stringResource(R.string.settings_rebg_desc),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+
+            if (wardrobeState.isRemovingAllBg) {
+                val progress = if (wardrobeState.removeBgTotal > 0)
+                    wardrobeState.removeBgDone.toFloat() / wardrobeState.removeBgTotal
+                else 0f
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    LinearProgressIndicator(
+                        progress = { progress },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    Text(
+                        stringResource(R.string.settings_rebging, wardrobeState.removeBgDone + 1, wardrobeState.removeBgTotal),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            } else {
+                Button(
+                    onClick = {
+                        Analytics.action("Settings/Data", "open_remove_bg_dialog")
+                        showRemoveBgDialog = true
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = !isOffline,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError,
+                    ),
+                ) {
+                    Icon(Icons.Default.AutoFixHigh, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(Modifier.padding(start = 8.dp))
+                    Text(stringResource(R.string.settings_rebg_button))
+                }
+            }
+        }
+
+        HorizontalDivider()
+
+        // ---------- Fix cutout backgrounds ----------
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(
+                stringResource(R.string.settings_cutoutfix_title),
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                stringResource(R.string.settings_cutoutfix_desc),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            when {
+                cutoutBgFix?.isScanning == true -> {
+                    val progress = if (cutoutBgFix.totalCutouts > 0)
+                        cutoutBgFix.scannedCutouts.toFloat() / cutoutBgFix.totalCutouts else 0f
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        LinearProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxWidth())
+                        Text(
+                            stringResource(
+                                R.string.settings_cutoutfix_scanning,
+                                (cutoutBgFix.scannedCutouts + 1).coerceAtMost(cutoutBgFix.totalCutouts.coerceAtLeast(1)),
+                                cutoutBgFix.totalCutouts.coerceAtLeast(1),
+                            ),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+                cutoutBgFix?.isProcessing == true -> {
+                    val progress = if (cutoutBgFix.processTotal > 0)
+                        cutoutBgFix.processDone.toFloat() / cutoutBgFix.processTotal else 0f
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        LinearProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxWidth())
+                        Text(
+                            stringResource(
+                                R.string.settings_cutoutfix_processing,
+                                cutoutBgFix.processDone + 1,
+                                cutoutBgFix.processTotal,
+                            ),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+                cutoutBgFix?.isDone == true -> {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            stringResource(R.string.settings_cutoutfix_done, cutoutBgFix.processTotal),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.weight(1f),
+                        )
+                        TextButton(onClick = onDismissCutoutBgFix) {
+                            Text(stringResource(R.string.action_ok))
+                        }
+                    }
+                }
+                else -> Button(
+                    onClick = {
+                        Analytics.action("Settings/Data", "start_cutout_bg_fix")
+                        onStartCutoutBgFix()
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = !isOffline && cutoutBgFix == null,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError,
+                    ),
+                ) {
+                    Icon(Icons.Default.AutoFixHigh, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(Modifier.padding(start = 8.dp))
+                    Text(stringResource(R.string.settings_cutoutfix_button))
+                }
+            }
+        }
+
+        HorizontalDivider()
+
+        // ---------- Repair & Sync ----------
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(stringResource(R.string.settings_clear_cache_title), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+            Text(
+                stringResource(R.string.settings_clear_cache_desc),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            when {
+                audit?.isScanning == true -> {
+                    val progress = if (audit.totalFolders > 0)
+                        audit.scannedFolders.toFloat() / audit.totalFolders else 0f
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        LinearProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxWidth())
+                        Text(
+                            stringResource(R.string.settings_repair_scanning, audit.scannedFolders + 1, audit.totalFolders),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+                audit?.isProcessing == true -> {
+                    val progress = if (audit.processTotal > 0)
+                        audit.processDone.toFloat() / audit.processTotal else 0f
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        LinearProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxWidth())
+                        Text(
+                            stringResource(R.string.settings_repair_processing, audit.processDone + 1, audit.processTotal),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+                audit?.isDone == true -> {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            stringResource(R.string.settings_repair_done),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.weight(1f),
+                        )
+                        TextButton(onClick = onDismissAudit) { Text(stringResource(R.string.action_ok)) }
+                    }
+                }
+                else -> Button(
+                    onClick = {
+                        Analytics.action("Settings/Data", "start_repair_and_refresh")
+                        onStartRepairAndRefresh()
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = !wardrobeState.isLoading && audit == null && !isOffline,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError,
+                    ),
+                ) {
+                    Icon(Icons.Default.DeleteSweep, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(Modifier.padding(start = 8.dp))
+                    Text(stringResource(R.string.settings_clear_cache_button))
+                }
+            }
+        }
+
+        HorizontalDivider()
+
+        // ---------- Import ----------
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(stringResource(R.string.settings_import_title), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+            Text(
+                stringResource(R.string.settings_import_desc),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+
+            if (wardrobeState.isImporting) {
+                val progress = if (wardrobeState.importTotal > 0)
+                    wardrobeState.importDone.toFloat() / wardrobeState.importTotal
+                else 0f
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    LinearProgressIndicator(
+                        progress = { progress },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    Text(
+                        stringResource(R.string.settings_importing, wardrobeState.importDone + 1, wardrobeState.importTotal),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            } else {
+                OutlinedButton(
+                    onClick = {
+                        Analytics.action("Settings/Data", "open_import_dialog")
+                        showImportOptionsDialog = true
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = !isOffline,
+                ) {
+                    Icon(Icons.Default.FolderOpen, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(Modifier.padding(start = 8.dp))
+                    Text(stringResource(R.string.settings_import_button))
+                }
+                Text(
+                    stringResource(R.string.settings_import_later_hint),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+
+        HorizontalDivider()
+    }
+
+    // ---------- Dialogs ----------
+
+    if (showRetagDialog) {
+        val count = wardrobeState.images.size
+        val cost  = count * CreditPacks.COST_CLASSIFY
+        AlertDialog(
+            onDismissRequest = { showRetagDialog = false },
+            title = { Text(stringResource(R.string.settings_rescan_dialog_title)) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(stringResource(R.string.settings_rescan_dialog_text))
+                    Text(
+                        stringResource(R.string.settings_bulk_cost_line, count, CreditPacks.COST_CLASSIFY, cost),
+                        style = MaterialTheme.typography.bodySmall,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    Analytics.action("Settings/Data", "confirm_retag_all", mapOf("count" to wardrobeState.images.size.toString()))
+                    onRetagAll(); showRetagDialog = false
+                }) {
+                    Text(stringResource(R.string.settings_rescan_confirm))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showRetagDialog = false }) {
+                    Text(stringResource(R.string.action_cancel))
+                }
+            },
+        )
+    }
+
+    if (showRemoveBgDialog) {
+        val count = wardrobeState.images.size
+        val cost  = count * CreditPacks.COST_BG_REMOVAL
+        AlertDialog(
+            onDismissRequest = { showRemoveBgDialog = false },
+            title = { Text(stringResource(R.string.settings_rebg_dialog_title)) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(stringResource(R.string.settings_rebg_dialog_text))
+                    Text(
+                        stringResource(R.string.settings_bulk_cost_line, count, CreditPacks.COST_BG_REMOVAL, cost),
+                        style = MaterialTheme.typography.bodySmall,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    Analytics.action("Settings/Data", "confirm_remove_all_backgrounds", mapOf("count" to wardrobeState.images.size.toString()))
+                    onRemoveAllBackgrounds(); showRemoveBgDialog = false
+                }) {
+                    Text(stringResource(R.string.settings_rebg_confirm), color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showRemoveBgDialog = false }) {
+                    Text(stringResource(R.string.action_cancel))
+                }
+            },
+        )
+    }
+
+    wardrobeState.importPreview?.let { preview ->
+        ImportPreviewDialog(
+            preview = preview,
+            onToggle = onToggleImportPreviewSelection,
+            onSetSelection = onSetImportPreviewSelection,
+            onConfirm = onConfirmImportPreview,
+            onCancel = onCancelImportPreview,
+        )
+    }
+
+    if (audit?.awaitingConfirmation == true) {
+        val hasFindings = audit.orphanedOriginals > 0 || audit.rawImages > 0 || audit.sidecarNeeded > 0
+        if (hasFindings) {
+            RepairPreviewDialog(
+                audit = audit,
+                onToggleSelection = onToggleAuditSelection,
+                onSetSelection = onSetAuditSelection,
+                fetchThumbnail = fetchAuditThumbnail,
+                onProcess = { clearCache -> onContinueRepair(true, clearCache) },
+                onCancel = { clearCache -> onContinueRepair(false, clearCache) },
+            )
+        } else {
+            // Nothing to process — keep the simple "all clean / renamed only" dialog so the
+            // user gets confirmation and a refresh path without a heavyweight preview screen.
+            var clearCache by remember { mutableStateOf(false) }
+            AlertDialog(
+                onDismissRequest = { onContinueRepair(false, clearCache) },
+                title = { Text(stringResource(R.string.settings_repair_confirm_title)) },
+                text = {
+                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        if (audit.renamedCount > 0) {
+                            Text(stringResource(R.string.settings_repair_confirm_renamed, audit.renamedCount),
+                                style = MaterialTheme.typography.bodySmall)
+                        }
+                        Text(stringResource(R.string.settings_repair_confirm_all_ok))
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Checkbox(checked = clearCache, onCheckedChange = { clearCache = it })
+                            Text(
+                                stringResource(R.string.settings_repair_clear_cache),
+                                style = MaterialTheme.typography.bodySmall,
+                            )
+                        }
+                    }
+                },
+                confirmButton = {},
+                dismissButton = {
+                    TextButton(onClick = { onContinueRepair(false, clearCache) }) {
+                        Text(stringResource(R.string.settings_repair_skip))
+                    }
+                },
+            )
+        }
+    }
+
+    // Confirmation dialog for "Fix cutout backgrounds" is hosted globally in
+    // MainActivity so it remains visible regardless of which tab triggered the scan
+    // (Wardrobe header or Settings → Data).
+
+if (showImportOptionsDialog) {
+        ImportOptionsDialog(
+            existingItemCount = wardrobeState.images.size,
+            onConfirm = { removeBg, autoTag, replace, overwrite, useDrive ->
+                showImportOptionsDialog = false
+                onImportFromFolder(removeBg, autoTag, replace, overwrite, useDrive)
+            },
+            onDismiss = { showImportOptionsDialog = false },
+        )
+    }
+
+    if (showAddLocationDialog) {
+        var nameInput by remember { mutableStateOf("") }
+        var geoInput by remember { mutableStateOf("") }
+        AlertDialog(
+            onDismissRequest = { showAddLocationDialog = false; nameInput = ""; geoInput = "" },
+            title = { Text(stringResource(R.string.settings_location_add_title)) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedTextField(
+                        value = nameInput,
+                        onValueChange = { nameInput = it },
+                        placeholder = { Text(stringResource(R.string.settings_location_name_hint)) },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    OutlinedTextField(
+                        value = geoInput,
+                        onValueChange = { geoInput = it },
+                        placeholder = { Text(stringResource(R.string.settings_location_geo_hint)) },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(onDone = {
+                            if (nameInput.isNotBlank()) { onAddLocation(nameInput, geoInput); showAddLocationDialog = false; nameInput = ""; geoInput = "" }
+                        }),
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = { onAddLocation(nameInput, geoInput); showAddLocationDialog = false; nameInput = ""; geoInput = "" },
+                    enabled = nameInput.isNotBlank(),
+                ) { Text(stringResource(R.string.action_save)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showAddLocationDialog = false; nameInput = ""; geoInput = "" }) {
+                    Text(stringResource(R.string.action_cancel))
+                }
+            },
+        )
+    }
+
+    renameTarget?.let { target ->
+        var nameInput by remember(target.id) { mutableStateOf(target.name) }
+        var geoInput by remember(target.id) { mutableStateOf(target.geoLocation) }
+        AlertDialog(
+            onDismissRequest = { renameTarget = null },
+            title = { Text(stringResource(R.string.settings_location_rename_title)) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedTextField(
+                        value = nameInput,
+                        onValueChange = { nameInput = it },
+                        placeholder = { Text(stringResource(R.string.settings_location_name_hint)) },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    OutlinedTextField(
+                        value = geoInput,
+                        onValueChange = { geoInput = it },
+                        placeholder = { Text(stringResource(R.string.settings_location_geo_hint)) },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(onDone = {
+                            if (nameInput.isNotBlank()) { onRenameLocation(target.folderId, nameInput, geoInput); renameTarget = null }
+                        }),
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = { onRenameLocation(target.folderId, nameInput, geoInput); renameTarget = null },
+                    enabled = nameInput.isNotBlank(),
+                ) { Text(stringResource(R.string.action_save)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { renameTarget = null }) {
+                    Text(stringResource(R.string.action_cancel))
+                }
+            },
+        )
+    }
+
+    deleteTarget?.let { target ->
+        AlertDialog(
+            onDismissRequest = { deleteTarget = null },
+            title = { Text(stringResource(R.string.settings_location_delete_title)) },
+            text = { Text(stringResource(R.string.settings_location_delete_text, target.name)) },
+            confirmButton = {
+                TextButton(onClick = { onDeleteLocation(target.folderId); deleteTarget = null }) {
+                    Text(stringResource(R.string.action_delete))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { deleteTarget = null }) {
+                    Text(stringResource(R.string.action_cancel))
+                }
+            },
+        )
+    }
+}
+
+// ---------- Import options dialog ----------
+
+@Composable
+private fun ImportOptionsDialog(
+    existingItemCount: Int,
+    onConfirm: (removeBackground: Boolean, autoTag: Boolean, replaceExisting: Boolean, overwriteDuplicates: Boolean, useDrivePicker: Boolean) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    var removeBackground  by remember { mutableStateOf(false) }
+    var autoTag           by remember { mutableStateOf(false) }
+    var replaceExisting   by remember { mutableStateOf(false) }
+    var overwriteDuplicates by remember { mutableStateOf(false) }
+    var useDrivePicker    by remember { mutableStateOf(false) }
+
+    val aiCostPerItem = (if (removeBackground) CreditPacks.COST_BG_REMOVAL else 0) +
+                        (if (autoTag) CreditPacks.COST_CLASSIFY else 0)
+    val showCostWarning = aiCostPerItem > 0
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.settings_import_options_title)) },
+        text = {
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                Text(
+                    stringResource(R.string.settings_import_options_desc),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+
+                HorizontalDivider()
+
+                // ---- Source ----
+                Text(stringResource(R.string.settings_import_source_title), style = MaterialTheme.typography.labelMedium)
+
+                OptionRow(
+                    label = stringResource(R.string.settings_import_source_local),
+                    sublabel = stringResource(R.string.settings_import_source_local_desc),
+                    checked = !useDrivePicker,
+                    onCheckedChange = { useDrivePicker = false },
+                )
+                OptionRow(
+                    label = stringResource(R.string.settings_import_source_drive),
+                    sublabel = stringResource(R.string.settings_import_source_drive_desc),
+                    checked = useDrivePicker,
+                    onCheckedChange = { useDrivePicker = true },
+                )
+
+                HorizontalDivider()
+
+                // ---- Destination mode ----
+                Text(stringResource(R.string.settings_import_mode_title), style = MaterialTheme.typography.labelMedium)
+
+                OptionRow(
+                    label = stringResource(R.string.settings_import_mode_add),
+                    sublabel = stringResource(R.string.settings_import_mode_add_desc),
+                    checked = !replaceExisting,
+                    onCheckedChange = { replaceExisting = false },
+                )
+
+                OptionRow(
+                    label = stringResource(R.string.settings_import_mode_replace),
+                    sublabel = if (existingItemCount > 0)
+                        stringResource(R.string.settings_import_mode_replace_desc, existingItemCount)
+                    else
+                        stringResource(R.string.settings_import_mode_replace_desc_empty),
+                    checked = replaceExisting,
+                    onCheckedChange = { replaceExisting = true },
+                    dangerColor = existingItemCount > 0,
+                )
+
+                // ---- Duplicate handling (only relevant when adding) ----
+                if (!replaceExisting) {
+                    HorizontalDivider()
+                    Text(stringResource(R.string.settings_import_duplicates_title), style = MaterialTheme.typography.labelMedium)
+
+                    OptionRow(
+                        label = stringResource(R.string.settings_import_duplicates_skip),
+                        sublabel = stringResource(R.string.settings_import_duplicates_skip_desc),
+                        checked = !overwriteDuplicates,
+                        onCheckedChange = { overwriteDuplicates = false },
+                    )
+                    OptionRow(
+                        label = stringResource(R.string.settings_import_duplicates_overwrite),
+                        sublabel = stringResource(R.string.settings_import_duplicates_overwrite_desc),
+                        checked = overwriteDuplicates,
+                        onCheckedChange = { overwriteDuplicates = true },
+                    )
+                }
+
+                HorizontalDivider()
+
+                // ---- AI processing (optional) ----
+                Text(stringResource(R.string.settings_import_ai_title), style = MaterialTheme.typography.labelMedium)
+
+                SwitchRow(
+                    label = stringResource(R.string.settings_import_options_remove_bg),
+                    sublabel = stringResource(R.string.settings_import_options_remove_bg_cost),
+                    checked = removeBackground,
+                    onCheckedChange = { removeBackground = it },
+                )
+                SwitchRow(
+                    label = stringResource(R.string.settings_import_options_auto_tag),
+                    sublabel = stringResource(R.string.settings_import_options_auto_tag_cost),
+                    checked = autoTag,
+                    onCheckedChange = { autoTag = it },
+                )
+
+                if (showCostWarning) {
+                    Surface(
+                        shape = MaterialTheme.shapes.small,
+                        color = MaterialTheme.colorScheme.errorContainer,
+                    ) {
+                        Text(
+                            stringResource(R.string.settings_import_options_cost_warning,
+                                aiCostPerItem),
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onErrorContainer,
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = { onConfirm(removeBackground, autoTag, replaceExisting, overwriteDuplicates, useDrivePicker) }) {
+                Text(stringResource(R.string.settings_import_options_start))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.action_cancel))
+            }
+        },
+    )
+}
+
+@Composable
+private fun OptionRow(
+    label: String,
+    sublabel: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    dangerColor: Boolean = false,
+) {
+    Surface(
+        shape = MaterialTheme.shapes.small,
+        tonalElevation = if (checked) 3.dp else 0.dp,
+        color = when {
+            checked && dangerColor -> MaterialTheme.colorScheme.errorContainer
+            checked -> MaterialTheme.colorScheme.secondaryContainer
+            else -> MaterialTheme.colorScheme.surface
+        },
+        modifier = Modifier.fillMaxWidth().clickable { onCheckedChange(true) },
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    label,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = if (checked) FontWeight.SemiBold else FontWeight.Normal,
+                    color = if (checked && dangerColor) MaterialTheme.colorScheme.onErrorContainer
+                            else MaterialTheme.colorScheme.onSurface,
+                )
+                Text(
+                    sublabel,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = if (checked && dangerColor) MaterialTheme.colorScheme.onErrorContainer
+                            else MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            if (checked) Icon(
+                Icons.Default.Check,
+                contentDescription = null,
+                tint = if (dangerColor) MaterialTheme.colorScheme.onErrorContainer
+                       else MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(18.dp),
+            )
+        }
+    }
+}
+
+@Composable
+private fun SwitchRow(
+    label: String,
+    sublabel: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(label, style = MaterialTheme.typography.bodyMedium)
+            Text(sublabel, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        Switch(checked = checked, onCheckedChange = onCheckedChange)
+    }
+}
+
+// ---------- Drive folder picker dialog ----------
+
+private data class FolderEntry(val id: String, val name: String)
+
+@Composable
+private fun DriveFolderPickerDialog(
+    wardrobeViewModel: WardrobeViewModel,
+    onFolderSelected: (folderId: String) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val rootLabel = stringResource(R.string.settings_import_drive_root)
+    var breadcrumb by remember { mutableStateOf(listOf(FolderEntry("root", rootLabel))) }
+    var subfolders by remember { mutableStateOf<List<DriveFileDto>>(emptyList()) }
+    var imageCount by remember { mutableStateOf(-1) }
+    var isLoading  by remember { mutableStateOf(true) }
+
+    val currentFolder = breadcrumb.last()
+
+    LaunchedEffect(currentFolder.id) {
+        isLoading = true
+        subfolders = emptyList()
+        imageCount = -1
+        runCatching {
+            subfolders = wardrobeViewModel.listDriveSubfolders(currentFolder.id)
+            imageCount = wardrobeViewModel.countDriveImages(currentFolder.id)
+        }
+        isLoading = false
+    }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                if (breadcrumb.size > 1) {
+                    IconButton(
+                        onClick = { breadcrumb = breadcrumb.dropLast(1) },
+                        modifier = Modifier.size(32.dp),
+                    ) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.action_back),
+                            modifier = Modifier.size(20.dp),
+                        )
+                    }
+                    Spacer(Modifier.size(4.dp))
+                }
+                Text(currentFolder.name, style = MaterialTheme.typography.titleMedium)
+            }
+        },
+        text = {
+            if (isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(100.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    CircularProgressIndicator()
+                }
+            } else {
+                Column(
+                    modifier = Modifier.verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                ) {
+                    if (imageCount >= 0) {
+                        Text(
+                            stringResource(R.string.settings_import_drive_image_count, imageCount),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        if (subfolders.isNotEmpty()) Spacer(Modifier.height(4.dp))
+                    }
+
+                    if (subfolders.isEmpty() && imageCount == 0) {
+                        Text(
+                            stringResource(R.string.settings_import_drive_empty),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+
+                    subfolders.forEach { folder ->
+                        Surface(
+                            shape = MaterialTheme.shapes.small,
+                            tonalElevation = 1.dp,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    breadcrumb = breadcrumb + FolderEntry(folder.id, folder.name)
+                                },
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 12.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Icon(
+                                    Icons.Default.Folder,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(20.dp),
+                                    tint = MaterialTheme.colorScheme.primary,
+                                )
+                                Spacer(Modifier.size(10.dp))
+                                Text(
+                                    folder.name,
+                                    modifier = Modifier.weight(1f),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                )
+                                Icon(
+                                    Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp),
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = { onFolderSelected(currentFolder.id) },
+                enabled = !isLoading && imageCount > 0,
+            ) {
+                Text(
+                    if (imageCount > 0)
+                        stringResource(R.string.settings_import_drive_select, imageCount)
+                    else
+                        stringResource(R.string.settings_import_drive_no_images),
+                )
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.action_cancel))
+            }
+        },
+    )
+}
+
+// ---------- AI tab ----------
+
+@Composable
+private fun AiTab(
+    preferences: UserPreferences,
+    onSaveConsiderations: (AiConsiderations) -> Unit,
+    onSaveDedupe: (Boolean, Float) -> Unit,
+    onSaveBgRemovalThreshold: (Float) -> Unit,
+    onSavePreferLocalBg: (Boolean) -> Unit,
+) {
+    val context = LocalContext.current
+    var considerations by remember(preferences.aiConsiderations) { mutableStateOf(preferences.aiConsiderations) }
+    var dedupeOnImport by remember(preferences) { mutableStateOf(preferences.dedupeOnImport) }
+    var dedupeThreshold by remember(preferences) { mutableFloatStateOf(preferences.dedupeThreshold) }
+    var bgRemovalThreshold by remember(preferences) { mutableFloatStateOf(preferences.bgRemovalThreshold) }
+    var preferLocalBg by remember(preferences) { mutableStateOf(preferences.preferLocalBgRemoval) }
+    var showResetAllDialog by remember { mutableStateOf(false) }
+    // bump to force re-reads from PromptStore after edits or resets
+    var promptRefresh by remember { mutableIntStateOf(0) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .imePadding()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 20.dp, vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp),
+    ) {
+        // ---- Similarity check ----
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(
+                stringResource(R.string.settings_dedupe_title),
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                stringResource(R.string.settings_dedupe_desc),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            SwitchRow(
+                label = stringResource(R.string.settings_dedupe_toggle),
+                sublabel = stringResource(R.string.settings_dedupe_toggle_desc),
+                checked = dedupeOnImport,
+                onCheckedChange = {
+                    Analytics.action("Settings/AI", "toggle_dedupe", mapOf("value" to it.toString()))
+                    dedupeOnImport = it
+                    onSaveDedupe(dedupeOnImport, dedupeThreshold)
+                },
+            )
+            Column {
+                Text(
+                    stringResource(R.string.settings_dedupe_threshold, (dedupeThreshold * 100).toInt()),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Slider(
+                    value = dedupeThreshold,
+                    onValueChange = { dedupeThreshold = it },
+                    onValueChangeFinished = {
+                        Analytics.action("Settings/AI", "set_dedupe_threshold", mapOf("value" to ((dedupeThreshold * 100).toInt()).toString()))
+                        onSaveDedupe(dedupeOnImport, dedupeThreshold)
+                    },
+                    valueRange = 0.3f..0.95f,
+                    steps = 64,
+                )
+            }
+        }
+
+        HorizontalDivider()
+
+        // ---- Background-removal threshold ----
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(
+                stringResource(R.string.settings_bg_removal_title),
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                stringResource(R.string.settings_bg_removal_desc),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            SwitchRow(
+                label = stringResource(R.string.settings_local_bg_toggle),
+                sublabel = stringResource(R.string.settings_local_bg_desc),
+                checked = preferLocalBg,
+                onCheckedChange = {
+                    Analytics.action("Settings/AI", "toggle_prefer_local_bg", mapOf("value" to it.toString()))
+                    preferLocalBg = it
+                    onSavePreferLocalBg(it)
+                },
+            )
+            Text(
+                stringResource(R.string.settings_bg_removal_threshold, (bgRemovalThreshold * 100).toInt()),
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            Slider(
+                value = bgRemovalThreshold,
+                onValueChange = { bgRemovalThreshold = it },
+                onValueChangeFinished = {
+                    Analytics.action("Settings/AI", "set_bg_threshold", mapOf("value" to ((bgRemovalThreshold * 100).toInt()).toString()))
+                    onSaveBgRemovalThreshold(bgRemovalThreshold)
+                },
+                valueRange = 0.05f..0.95f,
+                steps = 89,
+            )
+        }
+
+        HorizontalDivider()
+
+        // ---- Considerations ----
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(
+                stringResource(R.string.ai_considerations_title),
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                stringResource(R.string.ai_considerations_desc),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            SwitchRow(
+                label = stringResource(R.string.ai_consider_weather),
+                sublabel = stringResource(R.string.ai_consider_weather_desc),
+                checked = considerations.weather,
+                onCheckedChange = {
+                    considerations = considerations.copy(weather = it)
+                    onSaveConsiderations(considerations)
+                },
+            )
+            SwitchRow(
+                label = stringResource(R.string.ai_consider_location),
+                sublabel = stringResource(R.string.ai_consider_location_desc),
+                checked = considerations.location,
+                onCheckedChange = {
+                    considerations = considerations.copy(location = it)
+                    onSaveConsiderations(considerations)
+                },
+            )
+            SwitchRow(
+                label = stringResource(R.string.ai_consider_trends),
+                sublabel = stringResource(R.string.ai_consider_trends_desc),
+                checked = considerations.trends,
+                onCheckedChange = {
+                    considerations = considerations.copy(trends = it)
+                    onSaveConsiderations(considerations)
+                },
+            )
+            SwitchRow(
+                label = stringResource(R.string.ai_consider_gender),
+                sublabel = stringResource(R.string.ai_consider_gender_desc),
+                checked = considerations.gender,
+                onCheckedChange = {
+                    considerations = considerations.copy(gender = it)
+                    onSaveConsiderations(considerations)
+                },
+            )
+            SwitchRow(
+                label = stringResource(R.string.ai_consider_age),
+                sublabel = stringResource(R.string.ai_consider_age_desc),
+                checked = considerations.age,
+                onCheckedChange = {
+                    considerations = considerations.copy(age = it)
+                    onSaveConsiderations(considerations)
+                },
+            )
+            SwitchRow(
+                label = stringResource(R.string.ai_consider_preferences),
+                sublabel = stringResource(R.string.ai_consider_preferences_desc),
+                checked = considerations.preferences,
+                onCheckedChange = {
+                    considerations = considerations.copy(preferences = it)
+                    onSaveConsiderations(considerations)
+                },
+            )
+        }
+
+        HorizontalDivider()
+
+        // ---- Prompts ----
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    stringResource(R.string.ai_prompts_title),
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.weight(1f),
+                )
+                TextButton(onClick = { showResetAllDialog = true }) {
+                    Text(stringResource(R.string.ai_prompts_reset_all))
+                }
+            }
+            Text(
+                stringResource(R.string.ai_prompts_desc),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+
+        PromptKey.entries.forEach { key ->
+            key(key, promptRefresh) {
+                PromptEditorCard(
+                    key = key,
+                    initialText = PromptStore.get(context, key),
+                    isOverridden = PromptStore.isOverridden(context, key),
+                    onSave = { text ->
+                        PromptStore.set(context, key, text)
+                        promptRefresh++
+                    },
+                    onReset = {
+                        PromptStore.reset(context, key)
+                        promptRefresh++
+                    },
+                )
+            }
+        }
+    }
+
+    if (showResetAllDialog) {
+        AlertDialog(
+            onDismissRequest = { showResetAllDialog = false },
+            title = { Text(stringResource(R.string.ai_prompts_reset_all_title)) },
+            text = { Text(stringResource(R.string.ai_prompts_reset_all_text)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    PromptStore.resetAll(context)
+                    promptRefresh++
+                    showResetAllDialog = false
+                }) { Text(stringResource(R.string.ai_prompts_reset_all_confirm)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showResetAllDialog = false }) {
+                    Text(stringResource(R.string.action_cancel))
+                }
+            },
+        )
+    }
+}
+
+@Composable
+private fun PromptEditorCard(
+    key: PromptKey,
+    initialText: String,
+    isOverridden: Boolean,
+    onSave: (String) -> Unit,
+    onReset: () -> Unit,
+) {
+    var expanded by remember { mutableStateOf(false) }
+    var text by remember(initialText) { mutableStateOf(initialText) }
+    val dirty = text.trim() != initialText.trim()
+
+    Surface(
+        shape = MaterialTheme.shapes.small,
+        tonalElevation = 1.dp,
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth().clickable { expanded = !expanded },
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            stringResource(key.titleRes),
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                        if (isOverridden) {
+                            Spacer(Modifier.size(6.dp))
+                            Badge { Text(stringResource(R.string.ai_prompt_overridden_badge)) }
+                        }
+                    }
+                    Text(
+                        stringResource(key.descRes),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                Icon(
+                    if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                    contentDescription = null,
+                )
+            }
+            if (expanded) {
+                OutlinedTextField(
+                    value = text,
+                    onValueChange = { text = it },
+                    minLines = 6,
+                    maxLines = 20,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedButton(
+                        onClick = {
+                            onReset()
+                            text = key.default
+                        },
+                        enabled = isOverridden || dirty,
+                    ) { Text(stringResource(R.string.ai_prompt_reset)) }
+                    Spacer(Modifier.weight(1f))
+                    Button(
+                        onClick = { onSave(text) },
+                        enabled = dirty,
+                    ) { Text(stringResource(R.string.action_save)) }
+                }
+            }
+        }
+    }
+}
+
+// ---------- Feedback tab ----------
+
+@Composable
+private fun FeedbackTab(
+    preferences: UserPreferences,
+    onSaveDebugSimilarityPreview: (Boolean) -> Unit,
+) {
+    val context = LocalContext.current
+    var debugSimilarityPreview by remember(preferences) { mutableStateOf(preferences.debugSimilarityPreview) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 20.dp, vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp),
+    ) {
+        Text(
+            stringResource(R.string.settings_feedback_title),
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.SemiBold,
+        )
+        Text(
+            stringResource(R.string.settings_feedback_desc),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedButton(onClick = {
+                val intent = android.content.Intent(
+                    android.content.Intent.ACTION_VIEW,
+                    android.net.Uri.parse("https://github.com/sonney2k/LibreLookAI/issues"),
+                )
+                runCatching { context.startActivity(intent) }
+            }) { Text(stringResource(R.string.settings_feedback_github)) }
+            OutlinedButton(onClick = {
+                val intent = android.content.Intent(android.content.Intent.ACTION_SENDTO).apply {
+                    data = android.net.Uri.parse("mailto:soeren.sonnenburg@gmail.com")
+                    putExtra(
+                        android.content.Intent.EXTRA_SUBJECT,
+                        "LibreLookAI feedback (${BuildConfig.VERSION_NAME}/${BuildConfig.GIT_HASH})",
+                    )
+                }
+                runCatching { context.startActivity(intent) }
+            }) { Text(stringResource(R.string.settings_feedback_email)) }
+        }
+
+        HorizontalDivider()
+
+        Text(
+            stringResource(R.string.settings_feedback_debug_section),
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.SemiBold,
+        )
+        SwitchRow(
+            label = stringResource(R.string.settings_debug_similarity_toggle),
+            sublabel = stringResource(R.string.settings_debug_similarity_desc),
+            checked = debugSimilarityPreview,
+            onCheckedChange = {
+                debugSimilarityPreview = it
+                onSaveDebugSimilarityPreview(it)
+            },
+        )
+    }
+}
+
+// ---------- About tab ----------
+
+@Composable
+private fun AboutTab() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        // Version
+        Text(
+            stringResource(R.string.about_version, BuildConfig.VERSION_NAME, BuildConfig.GIT_HASH),
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
+        )
+
+        // App description
+        Text(
+            stringResource(R.string.about_description),
+            style = MaterialTheme.typography.bodyMedium,
+        )
+        Text(
+            stringResource(R.string.about_open_source),
+            style = MaterialTheme.typography.bodyMedium,
+        )
+
+        HorizontalDivider()
+
+        // AI usage
+        Text(
+            stringResource(R.string.about_ai_title),
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.SemiBold,
+        )
+        Text(
+            stringResource(R.string.about_ai_desc),
+            style = MaterialTheme.typography.bodyMedium,
+        )
+
+        // Cost table
+        Text(
+            stringResource(R.string.about_cost_title),
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.SemiBold,
+        )
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Text(stringResource(R.string.about_cost_bg_removal), style = MaterialTheme.typography.bodySmall)
+            Text(stringResource(R.string.about_cost_classify), style = MaterialTheme.typography.bodySmall)
+            Text(stringResource(R.string.about_cost_text), style = MaterialTheme.typography.bodySmall)
+            Text(stringResource(R.string.about_cost_travel), style = MaterialTheme.typography.bodySmall)
+            Text(stringResource(R.string.about_cost_tryon), style = MaterialTheme.typography.bodySmall)
+        }
+
+        HorizontalDivider()
+
+        // BYOK
+        Text(
+            stringResource(R.string.about_byok_title),
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.SemiBold,
+        )
+        Text(
+            stringResource(R.string.about_byok_desc),
+            style = MaterialTheme.typography.bodyMedium,
+        )
+
+        HorizontalDivider()
+
+        // Credits / managed mode
+        Text(
+            stringResource(R.string.about_credits_title),
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.SemiBold,
+        )
+        Text(
+            stringResource(R.string.about_credits_desc),
+            style = MaterialTheme.typography.bodyMedium,
+        )
+    }
+}
+
+// ---------- Repair & Sync preview dialog ----------
+
+/**
+ * Full-screen confirmation step for Repair & Sync. Shows a wardrobe-style grid of every
+ * affected file (orphaned originals, raw images, cutouts missing tags) grouped by section.
+ * All items start selected; tapping a tile toggles whether it will be processed.
+ */
+@Composable
+private fun RepairPreviewDialog(
+    audit: AuditProgress,
+    onToggleSelection: (String) -> Unit,
+    onSetSelection: (Set<String>) -> Unit,
+    fetchThumbnail: suspend (AuditFileEntry) -> File?,
+    onProcess: (Boolean) -> Unit,
+    onCancel: (Boolean) -> Unit,
+) {
+    var clearCache by remember { mutableStateOf(false) }
+    val parentContext = LocalContext.current
+    val parentConfiguration = LocalConfiguration.current
+    val barInsets = LocalSystemBarsPadding.current
+    val view = LocalView.current
+    val density = androidx.compose.ui.platform.LocalDensity.current
+    val rootInsetBottomDp = remember(view) {
+        val raw = view.rootWindowInsets
+        val bottomPx = if (raw != null) {
+            androidx.core.view.WindowInsetsCompat
+                .toWindowInsetsCompat(raw, view)
+                .getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
+                .bottom
+        } else 0
+        with(density) { bottomPx.toDp() }
+    }
+    val effectiveBottom = maxOf(
+        barInsets.calculateBottomPadding(),
+        rootInsetBottomDp,
+        48.dp,
+    )
+    Dialog(
+        onDismissRequest = { onCancel(clearCache) },
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false,
+            dismissOnBackPress = true,
+            dismissOnClickOutside = false,
+            decorFitsSystemWindows = false,
+        ),
+    ) {
+        val dialogView = LocalView.current
+        SideEffect {
+            val window = (dialogView.parent as? DialogWindowProvider)?.window ?: return@SideEffect
+            window.setLayout(
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+            )
+            androidx.core.view.WindowCompat.setDecorFitsSystemWindows(window, false)
+        }
+      CompositionLocalProvider(
+          LocalContext provides parentContext,
+          LocalConfiguration provides parentConfiguration,
+      ) {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background,
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = barInsets.calculateTopPadding()),
+            ) {
+                // Header
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp, vertical = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    IconButton(onClick = { onCancel(clearCache) }) {
+                        Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_cancel))
+                    }
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            stringResource(R.string.settings_repair_preview_title),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                        Text(
+                            stringResource(R.string.settings_repair_preview_subtitle),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+                HorizontalDivider()
+
+                // Selection bar
+                val totalCount = audit.items.size
+                val selectedCount = audit.selectedAuditIds.size
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        stringResource(R.string.settings_repair_preview_selected, selectedCount, totalCount),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.weight(1f),
+                    )
+                    if (selectedCount < totalCount) {
+                        TextButton(
+                            onClick = { onSetSelection(audit.items.map { it.driveId }.toSet()) },
+                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                        ) {
+                            Text(stringResource(R.string.settings_repair_preview_select_all))
+                        }
+                    }
+                    if (selectedCount > 0) {
+                        TextButton(
+                            onClick = { onSetSelection(emptySet()) },
+                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                        ) {
+                            Text(stringResource(R.string.settings_repair_preview_deselect_all))
+                        }
+                    }
+                }
+                if (audit.renamedCount > 0) {
+                    Text(
+                        stringResource(R.string.settings_repair_confirm_renamed, audit.renamedCount),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 2.dp),
+                    )
+                }
+
+                // Grid: items split by section, headers occupy a full row
+                LazyVerticalGrid(
+                    columns = GridCells.Adaptive(96.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .padding(horizontal = 6.dp),
+                ) {
+                    val orphaned = audit.items.filter { it.kind == AuditKind.ORPHANED_ORIGINAL }
+                    val raws     = audit.items.filter { it.kind == AuditKind.RAW }
+                    val sidecars = audit.items.filter { it.kind == AuditKind.NEEDS_SIDECAR }
+                    val duplicates = audit.items.filter { it.kind == AuditKind.DUPLICATE }
+
+                    if (orphaned.isNotEmpty()) {
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+                            RepairSectionHeader(
+                                title = stringResource(R.string.settings_repair_preview_section_orphaned),
+                                items = orphaned,
+                                selected = audit.selectedAuditIds,
+                                costPerItem = CreditPacks.COST_BG_REMOVAL + CreditPacks.COST_CLASSIFY,
+                                onSetSelection = onSetSelection,
+                                allSelectedIds = audit.selectedAuditIds,
+                            )
+                        }
+                        items(orphaned, key = { it.driveId }) { entry ->
+                            RepairPreviewTile(
+                                entry = entry,
+                                isSelected = entry.driveId in audit.selectedAuditIds,
+                                onToggle = { onToggleSelection(entry.driveId) },
+                                fetchThumbnail = fetchThumbnail,
+                            )
+                        }
+                    }
+                    if (raws.isNotEmpty()) {
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+                            RepairSectionHeader(
+                                title = stringResource(R.string.settings_repair_preview_section_raw),
+                                items = raws,
+                                selected = audit.selectedAuditIds,
+                                costPerItem = CreditPacks.COST_BG_REMOVAL + CreditPacks.COST_CLASSIFY,
+                                onSetSelection = onSetSelection,
+                                allSelectedIds = audit.selectedAuditIds,
+                            )
+                        }
+                        items(raws, key = { it.driveId }) { entry ->
+                            RepairPreviewTile(
+                                entry = entry,
+                                isSelected = entry.driveId in audit.selectedAuditIds,
+                                onToggle = { onToggleSelection(entry.driveId) },
+                                fetchThumbnail = fetchThumbnail,
+                            )
+                        }
+                    }
+                    if (sidecars.isNotEmpty()) {
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+                            RepairSectionHeader(
+                                title = stringResource(R.string.settings_repair_preview_section_sidecar),
+                                items = sidecars,
+                                selected = audit.selectedAuditIds,
+                                costPerItem = CreditPacks.COST_CLASSIFY,
+                                onSetSelection = onSetSelection,
+                                allSelectedIds = audit.selectedAuditIds,
+                            )
+                        }
+                        items(sidecars, key = { it.driveId }) { entry ->
+                            RepairPreviewTile(
+                                entry = entry,
+                                isSelected = entry.driveId in audit.selectedAuditIds,
+                                onToggle = { onToggleSelection(entry.driveId) },
+                                fetchThumbnail = fetchThumbnail,
+                            )
+                        }
+                    }
+                    if (duplicates.isNotEmpty()) {
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+                            RepairSectionHeader(
+                                title = stringResource(R.string.repair_section_duplicates),
+                                items = duplicates,
+                                selected = audit.selectedAuditIds,
+                                costPerItem = 0,
+                                onSetSelection = onSetSelection,
+                                allSelectedIds = audit.selectedAuditIds,
+                                helpText = stringResource(R.string.repair_duplicates_hint),
+                            )
+                        }
+                        items(duplicates, key = { it.driveId }) { entry ->
+                            RepairPreviewTile(
+                                entry = entry,
+                                isSelected = entry.driveId in audit.selectedAuditIds,
+                                onToggle = { onToggleSelection(entry.driveId) },
+                                fetchThumbnail = fetchThumbnail,
+                                badgeText = stringResource(R.string.import_preview_similar_badge),
+                            )
+                        }
+                    }
+                }
+
+                HorizontalDivider()
+
+                // Bottom action bar with total cost + buttons
+                val billable = audit.items.filter {
+                    it.driveId in audit.selectedAuditIds && it.kind != AuditKind.DUPLICATE
+                }
+                val totalCost = billable.count { it.kind != AuditKind.NEEDS_SIDECAR } *
+                        (CreditPacks.COST_BG_REMOVAL + CreditPacks.COST_CLASSIFY) +
+                    billable.count { it.kind == AuditKind.NEEDS_SIDECAR } *
+                        CreditPacks.COST_CLASSIFY
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Checkbox(checked = clearCache, onCheckedChange = { clearCache = it })
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            stringResource(R.string.settings_repair_clear_cache),
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                        Text(
+                            stringResource(R.string.settings_repair_clear_cache_desc),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = effectiveBottom)
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        stringResource(R.string.settings_repair_preview_cost_total, totalCost),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.weight(1f),
+                    )
+                    TextButton(onClick = { onCancel(clearCache) }) {
+                        Text(stringResource(R.string.settings_repair_skip))
+                    }
+                    Spacer(Modifier.size(4.dp))
+                    Button(
+                        onClick = { onProcess(clearCache) },
+                        enabled = selectedCount > 0,
+                    ) {
+                        Text(stringResource(R.string.settings_repair_preview_process_n, selectedCount))
+                    }
+                }
+            }
+        }
+      }
+    }
+}
+
+@Composable
+private fun RepairSectionHeader(
+    title: String,
+    items: List<AuditFileEntry>,
+    selected: Set<String>,
+    costPerItem: Int,
+    onSetSelection: (Set<String>) -> Unit,
+    allSelectedIds: Set<String>,
+    helpText: String? = null,
+) {
+    val sectionIds = remember(items) { items.map { it.driveId }.toSet() }
+    val sectionSelected = remember(items, selected) { items.count { it.driveId in selected } }
+    val cost = sectionSelected * costPerItem
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 6.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                title,
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                stringResource(R.string.settings_repair_preview_section_count, sectionSelected, items.size),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            if (sectionSelected > 0 && costPerItem > 0) {
+                Text(
+                    stringResource(R.string.settings_bulk_cost_line, sectionSelected, costPerItem, cost),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            helpText?.let {
+                Text(
+                    it,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+        val allInSection = items.all { it.driveId in selected }
+        TextButton(
+            onClick = {
+                val next = if (allInSection) {
+                    allSelectedIds - sectionIds
+                } else {
+                    allSelectedIds + sectionIds
+                }
+                onSetSelection(next)
+            },
+            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+        ) {
+            Text(
+                if (allInSection) stringResource(R.string.settings_repair_preview_deselect_all)
+                else stringResource(R.string.settings_repair_preview_select_all)
+            )
+        }
+    }
+}
+
+/**
+ * One thumbnail tile in the repair preview grid. Lazily fetches the file from Drive (or the
+ * existing wardrobe cache) on first composition; shows a placeholder while loading or on
+ * failure. Tap toggles the selection state.
+ */
+@Composable
+private fun RepairPreviewTile(
+    entry: AuditFileEntry,
+    isSelected: Boolean,
+    onToggle: () -> Unit,
+    fetchThumbnail: suspend (AuditFileEntry) -> File?,
+    badgeText: String? = null,
+) {
+    val thumbFile by produceState<File?>(initialValue = null, entry.driveId) {
+        value = fetchThumbnail(entry)
+    }
+    Box(
+        modifier = Modifier
+            .padding(2.dp)
+            .aspectRatio(1f)
+            .clip(MaterialTheme.shapes.small)
+            .clickable(onClick = onToggle),
+    ) {
+        if (thumbFile != null) {
+            AsyncImage(
+                model = thumbFile,
+                contentDescription = entry.name,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop,
+            )
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
+                contentAlignment = Alignment.Center,
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(20.dp),
+                    strokeWidth = 2.dp,
+                )
+            }
+        }
+        if (isSelected) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White.copy(alpha = 0.3f)),
+                contentAlignment = Alignment.TopEnd,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.CheckCircle,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(4.dp),
+                )
+            }
+        } else {
+            // Dim deselected tiles + show a subtle skip indicator so it's obvious they won't be processed.
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.45f)),
+                contentAlignment = Alignment.TopEnd,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.padding(4.dp).size(18.dp),
+                )
+            }
+        }
+        if (badgeText != null) {
+            Surface(
+                color = MaterialTheme.colorScheme.errorContainer,
+                contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                shape = MaterialTheme.shapes.small,
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(4.dp),
+            ) {
+                Text(
+                    badgeText,
+                    style = MaterialTheme.typography.labelSmall,
+                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                )
+            }
+        }
+    }
+}
+
+// ---------- Fix cutout backgrounds dialog ----------
+
+@Composable
+internal fun FixCutoutBgDialog(
+    state: CutoutBgFixProgress,
+    onToggleSelection: (String) -> Unit,
+    onSetSelection: (Set<String>) -> Unit,
+    onSetShowAll: (Boolean) -> Unit,
+    onSetAction: (Boolean?, Boolean?, Boolean?, Boolean?) -> Unit,
+    fetchThumbnail: suspend (CutoutFixEntry) -> File?,
+    onFix: () -> Unit,
+    onCancel: () -> Unit,
+) {
+    val visible = remember(state.items, state.showAll, state.flaggedIds) {
+        if (state.showAll) state.items else state.items.filter { it.driveId in state.flaggedIds }
+    }
+    val visibleIds = remember(visible) { visible.map { it.driveId }.toSet() }
+    val selectedVisible = state.selectedIds.intersect(visibleIds)
+
+    val barInsets = LocalSystemBarsPadding.current
+    val parentContext = LocalContext.current
+    val parentConfiguration = LocalConfiguration.current
+    val view = LocalView.current
+    val density = androidx.compose.ui.platform.LocalDensity.current
+    val rootInsetBottomDp = remember(view) {
+        val raw = view.rootWindowInsets
+        val bottomPx = if (raw != null) {
+            androidx.core.view.WindowInsetsCompat
+                .toWindowInsetsCompat(raw, view)
+                .getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
+                .bottom
+        } else 0
+        with(density) { bottomPx.toDp() }
+    }
+    val effectiveBottom = maxOf(
+        barInsets.calculateBottomPadding(),
+        rootInsetBottomDp,
+        48.dp,
+    )
+
+    Dialog(
+        onDismissRequest = onCancel,
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false,
+            dismissOnBackPress = true,
+            dismissOnClickOutside = false,
+            decorFitsSystemWindows = false,
+        ),
+    ) {
+        val dialogView = LocalView.current
+        SideEffect {
+            val window = (dialogView.parent as? DialogWindowProvider)?.window ?: return@SideEffect
+            window.setLayout(
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+            )
+            androidx.core.view.WindowCompat.setDecorFitsSystemWindows(window, false)
+        }
+        CompositionLocalProvider(
+            LocalContext provides parentContext,
+            LocalConfiguration provides parentConfiguration,
+        ) {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background,
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = barInsets.calculateTopPadding()),
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp, vertical = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    IconButton(onClick = onCancel) {
+                        Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_cancel))
+                    }
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            stringResource(R.string.settings_cutoutfix_dialog_title),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                        Text(
+                            stringResource(R.string.settings_cutoutfix_dialog_subtitle),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+                HorizontalDivider()
+
+                @Composable
+                fun ActionToggleRow(labelRes: Int, checked: Boolean, onChange: (Boolean) -> Unit) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 12.dp, vertical = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            stringResource(labelRes),
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.weight(1f),
+                        )
+                        Switch(checked = checked, onCheckedChange = onChange)
+                    }
+                }
+                ActionToggleRow(R.string.settings_cutoutfix_action_blackbg, state.applyBlackToAlpha) {
+                    onSetAction(it, null, null, null)
+                }
+                ActionToggleRow(R.string.settings_cutoutfix_action_greenhalo, state.applyDespillGreen) {
+                    onSetAction(null, it, null, null)
+                }
+                ActionToggleRow(R.string.settings_cutoutfix_action_feather, state.applyFeather) {
+                    onSetAction(null, null, it, null)
+                }
+                ActionToggleRow(R.string.settings_cutoutfix_action_tightcrop, state.applyTightCrop) {
+                    onSetAction(null, null, null, it)
+                }
+                HorizontalDivider()
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        stringResource(R.string.settings_cutoutfix_show_all),
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.weight(1f),
+                    )
+                    Switch(
+                        checked = state.showAll,
+                        onCheckedChange = onSetShowAll,
+                    )
+                }
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        stringResource(
+                            R.string.settings_cutoutfix_selected,
+                            selectedVisible.size,
+                            visible.size,
+                        ),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.weight(1f),
+                    )
+                    if (selectedVisible.size < visible.size) {
+                        TextButton(
+                            onClick = { onSetSelection(state.selectedIds + visibleIds) },
+                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                        ) {
+                            Text(stringResource(R.string.settings_repair_preview_select_all))
+                        }
+                    }
+                    if (selectedVisible.isNotEmpty()) {
+                        TextButton(
+                            onClick = { onSetSelection(state.selectedIds - visibleIds) },
+                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                        ) {
+                            Text(stringResource(R.string.settings_repair_preview_deselect_all))
+                        }
+                    }
+                }
+
+                LazyVerticalGrid(
+                    columns = GridCells.Adaptive(96.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .padding(horizontal = 6.dp),
+                ) {
+                    items(visible, key = { it.driveId }) { entry ->
+                        FixCutoutBgTile(
+                            entry = entry,
+                            isSelected = entry.driveId in state.selectedIds,
+                            onToggle = { onToggleSelection(entry.driveId) },
+                            fetchThumbnail = fetchThumbnail,
+                        )
+                    }
+                }
+
+                HorizontalDivider()
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = effectiveBottom)
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Spacer(Modifier.weight(1f))
+                    TextButton(onClick = onCancel) {
+                        Text(stringResource(R.string.action_cancel))
+                    }
+                    Spacer(Modifier.size(4.dp))
+                    val anyAction = state.applyBlackToAlpha || state.applyDespillGreen ||
+                        state.applyFeather || state.applyTightCrop
+                    Button(
+                        onClick = onFix,
+                        enabled = state.selectedIds.isNotEmpty() && anyAction,
+                    ) {
+                        Text(stringResource(R.string.settings_cutoutfix_fix_n, state.selectedIds.size))
+                    }
+                }
+            }
+        }
+        }
+    }
+}
+
+@Composable
+private fun FixCutoutBgTile(
+    entry: CutoutFixEntry,
+    isSelected: Boolean,
+    onToggle: () -> Unit,
+    fetchThumbnail: suspend (CutoutFixEntry) -> File?,
+) {
+    val thumbFile by produceState<File?>(initialValue = null, entry.driveId) {
+        value = fetchThumbnail(entry)
+    }
+    Box(
+        modifier = Modifier
+            .padding(2.dp)
+            .aspectRatio(1f)
+            .clip(MaterialTheme.shapes.small)
+            .clickable(onClick = onToggle),
+    ) {
+        if (thumbFile != null) {
+            AsyncImage(
+                model = thumbFile,
+                contentDescription = entry.name,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop,
+            )
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
+                contentAlignment = Alignment.Center,
+            ) {
+                CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
+            }
+        }
+        if (isSelected) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White.copy(alpha = 0.3f)),
+                contentAlignment = Alignment.TopEnd,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.CheckCircle,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(4.dp),
+                )
+            }
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.45f)),
+                contentAlignment = Alignment.TopEnd,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.padding(4.dp).size(18.dp),
+                )
+            }
+        }
+        // Issue badges in bottom-start corner.
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(4.dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            if (entry.hasBlackBackground) {
+                Surface(
+                    color = MaterialTheme.colorScheme.errorContainer,
+                    contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                    shape = MaterialTheme.shapes.small,
+                ) {
+                    Text(
+                        stringResource(R.string.settings_cutoutfix_badge_blackbg),
+                        style = MaterialTheme.typography.labelSmall,
+                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                    )
+                }
+            }
+            if (entry.hasGreenHalo) {
+                Surface(
+                    color = MaterialTheme.colorScheme.errorContainer,
+                    contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                    shape = MaterialTheme.shapes.small,
+                ) {
+                    Text(
+                        stringResource(R.string.settings_cutoutfix_badge_greenhalo),
+                        style = MaterialTheme.typography.labelSmall,
+                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ImportPreviewDialog(
+    preview: ImportPreview,
+    onToggle: (String) -> Unit,
+    onSetSelection: (Set<String>) -> Unit,
+    onConfirm: () -> Unit,
+    onCancel: () -> Unit,
+) {
+    Dialog(
+        onDismissRequest = onCancel,
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false,
+            dismissOnBackPress = true,
+            dismissOnClickOutside = false,
+        ),
+    ) {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background,
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                // Header
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp, vertical = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    IconButton(onClick = onCancel) {
+                        Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_cancel))
+                    }
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            stringResource(R.string.import_preview_title, preview.entries.size),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                        Text(
+                            stringResource(R.string.import_preview_desc),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+                HorizontalDivider()
+
+                // Selection bar / scan progress
+                if (preview.isScanning) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 12.dp, vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        CircularProgressIndicator(modifier = Modifier.size(16.dp), strokeWidth = 2.dp)
+                        Text(
+                            stringResource(R.string.import_preview_scanning, preview.scanDone, preview.scanTotal),
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                    }
+                } else {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 12.dp, vertical = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            stringResource(R.string.settings_repair_preview_selected, preview.selectedKeys.size, preview.entries.size),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.weight(1f),
+                        )
+                        TextButton(
+                            onClick = { onSetSelection(preview.entries.map { it.key }.toSet()) },
+                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                        ) {
+                            Text(stringResource(R.string.import_preview_select_all))
+                        }
+                        TextButton(
+                            onClick = { onSetSelection(emptySet()) },
+                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                        ) {
+                            Text(stringResource(R.string.import_preview_deselect_all))
+                        }
+                    }
+                }
+
+                // Grid of candidates
+                LazyVerticalGrid(
+                    columns = GridCells.Adaptive(96.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .padding(horizontal = 6.dp),
+                ) {
+                    items(preview.entries, key = { it.key }) { entry ->
+                        ImportPreviewTile(
+                            entry = entry,
+                            isSelected = entry.key in preview.selectedKeys,
+                            onToggle = { onToggle(entry.key) },
+                        )
+                    }
+                }
+
+                HorizontalDivider()
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Spacer(Modifier.weight(1f))
+                    TextButton(onClick = onCancel) {
+                        Text(stringResource(R.string.action_cancel))
+                    }
+                    Spacer(Modifier.size(4.dp))
+                    Button(
+                        onClick = onConfirm,
+                        enabled = !preview.isScanning && preview.selectedKeys.isNotEmpty(),
+                    ) {
+                        Text(stringResource(R.string.import_preview_import, preview.selectedKeys.size))
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ImportPreviewTile(
+    entry: ImportPreviewEntry,
+    isSelected: Boolean,
+    onToggle: () -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .padding(2.dp)
+            .aspectRatio(1f)
+            .clip(MaterialTheme.shapes.small)
+            .clickable(onClick = onToggle),
+    ) {
+        AsyncImage(
+            model = File(entry.cachedFilePath),
+            contentDescription = entry.displayName,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop,
+        )
+        if (isSelected) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White.copy(alpha = 0.3f)),
+                contentAlignment = Alignment.TopEnd,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.CheckCircle,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(4.dp),
+                )
+            }
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.45f)),
+                contentAlignment = Alignment.TopEnd,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.padding(4.dp).size(18.dp),
+                )
+            }
+        }
+        if (entry.similar.isNotEmpty()) {
+            Surface(
+                color = MaterialTheme.colorScheme.errorContainer,
+                contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                shape = MaterialTheme.shapes.small,
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(4.dp),
+            ) {
+                Text(
+                    stringResource(R.string.import_preview_similar_badge),
+                    style = MaterialTheme.typography.labelSmall,
+                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                )
+            }
+        }
+    }
+}
+

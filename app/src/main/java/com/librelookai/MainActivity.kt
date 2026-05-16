@@ -1,5 +1,4 @@
 package com.librelookai
-
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -87,7 +86,45 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.librelookai.ui.theme.LibreLookAITheme
-import com.librelookai.AppFont
+import com.librelookai.auth.AuthViewModel
+import com.librelookai.auth.GoogleAuthManager
+import com.librelookai.auth.SignInScreen
+import com.librelookai.billing.CreditsViewModel
+import com.librelookai.data.drive.DriveRepository
+import com.librelookai.data.model.Location
+import com.librelookai.gemini.TokenUsageRepository
+import com.librelookai.insights.InsightsScreen
+import com.librelookai.ml.EmbeddingService
+import com.librelookai.outfit.OutfitComposerScreen
+import com.librelookai.outfit.OutfitEventsViewModel
+import com.librelookai.outfit.OutfitsScreen
+import com.librelookai.outfit.OutfitsViewModel
+import com.librelookai.settings.AppFont
+import com.librelookai.settings.AppLanguage
+import com.librelookai.settings.FixCutoutBgDialog
+import com.librelookai.settings.ProfileViewModel
+import com.librelookai.settings.SettingsScreen
+import com.librelookai.shopping.ShoppingClosetViewModel
+import com.librelookai.shopping.ShoppingHelperScreen
+import com.librelookai.shopping.ShoppingHelperViewModel
+import com.librelookai.travel.TravelScreen
+import com.librelookai.travel.TravelViewModel
+import com.librelookai.tryon.TryOnComposerScreen
+import com.librelookai.tryon.TryOnViewModel
+import com.librelookai.util.Analytics
+import com.librelookai.util.LocalIsOffline
+import com.librelookai.util.LocalSystemBarsPadding
+import com.librelookai.util.NetworkMonitor
+import com.librelookai.wardrobe.LocalBgRemovalScreen
+import com.librelookai.wardrobe.LocationViewModel
+import com.librelookai.wardrobe.ReplacementsResultDialog
+import com.librelookai.wardrobe.WardrobeGapViewModel
+import com.librelookai.wardrobe.WardrobeScreen
+import com.librelookai.wardrobe.WardrobeViewModel
+import com.librelookai.weather.WeatherBadge
+import com.librelookai.weather.WeatherViewModel
+import com.librelookai.data.model.TryOn
+import com.librelookai.wardrobe.SortButton
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

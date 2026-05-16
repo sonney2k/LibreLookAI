@@ -5,11 +5,12 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import com.librelookai.settings.AppFont
 
 @Composable
 fun LibreLookAITheme(
     paletteId: String? = null,
-    fontId: String = com.librelookai.AppFont.CAVEAT,
+    fontId: String = AppFont.CAVEAT,
     content: @Composable () -> Unit,
 ) {
     val palette = wardrobePaletteById(paletteId)
