@@ -1447,6 +1447,17 @@ internal fun FullScreenViewer(
                         tags.pattern.forEach { DetailTagChip(it.localizedTagValue()) }
                     }
                 }
+                // Hide-tags chip sits inline below the tags (or alone when hidden) so it
+                // doesn't crowd the close-X at top-left and is unambiguously linked to tags.
+                if (currentImage.tags != null) {
+                    HideTagsChip(
+                        hideTags = hideTags,
+                        onToggle = {
+                            Analytics.action("ItemViewer", if (hideTags) "show_tags" else "hide_tags")
+                            hideTags = !hideTags
+                        },
+                    )
+                }
             }
             HorizontalPager(
                 state = pagerState,
@@ -1471,22 +1482,12 @@ internal fun FullScreenViewer(
             AiProcessingOverlay(modifier = Modifier.fillMaxSize())
         }
 
-        // Close button + labeled hide-tags toggle (icon-only was too subtle).
-        Row(
+        // Close button — hide-tags chip lives inline under the tag row instead.
+        IconButton(
+            onClick = onDismiss,
             modifier = Modifier.align(Alignment.TopStart).padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
         ) {
-            IconButton(onClick = onDismiss) {
-                Icon(Icons.Default.Close, contentDescription = "Close", tint = MaterialTheme.colorScheme.onBackground)
-            }
-            HideTagsChip(
-                hideTags = hideTags,
-                onToggle = {
-                    Analytics.action("ItemViewer", if (hideTags) "show_tags" else "hide_tags")
-                    hideTags = !hideTags
-                },
-            )
+            Icon(Icons.Default.Close, contentDescription = "Close", tint = MaterialTheme.colorScheme.onBackground)
         }
 
         // View-original toggle (top-end). Shown only when the item has an original on Drive

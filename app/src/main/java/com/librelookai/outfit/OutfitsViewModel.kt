@@ -72,6 +72,8 @@ data class OutfitsUiState(
     val feedbackHistory: List<String> = emptyList(),
     // After saving a style, offer to wear it immediately
     val pendingWearOutfitId: String? = null,
+    /** Outfit id the list screen should scroll into view (and briefly highlight) when set. */
+    val pendingScrollOutfitId: String? = null,
     // Multi-select for bulk actions
     val selectedOutfitIds: Set<String> = emptySet(),
     // Unified style composer
@@ -310,6 +312,9 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
 
     fun clearPendingWear() = _state.update { it.copy(pendingWearOutfitId = null) }
 
+    /** Called by [OutfitListScreen] after it has scrolled to the requested outfit. */
+    fun consumePendingScrollOutfit() = _state.update { it.copy(pendingScrollOutfitId = null) }
+
     /**
      * Saves a style directly without going through the draft editing flow.
      * Used by Travel screen to persist packing outfits as styles.
@@ -326,17 +331,18 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             val id = saveFolderId ?: folderId ?: run { onDone(false); return@launch }
             val idToName = drive.listFiles(id).associate { it.id to it.name }
             val itemNames = itemIds.mapNotNull { idToName[it] }
-            val updated = _state.value.outfits + Outfit(
+            val newOutfit = Outfit(
                 name = name.ifBlank { "Travel style" },
                 description = description,
                 itemIds = itemIds,
                 itemNames = itemNames,
                 tags = tags,
             )
+            val updated = _state.value.outfits + newOutfit
             runCatching {
                 drive.saveOutfitsJson(id, gson.toJson(updated))
             }.onSuccess {
-                _state.update { it.copy(outfits = updated) }
+                _state.update { it.copy(outfits = updated, pendingScrollOutfitId = newOutfit.id) }
                 onDone(true)
             }.onFailure { e ->
                 _state.update { it.copy(error = e.message) }
@@ -638,6 +644,33 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
     fun closeComposerSuggestionsViewer() = _state.update { it.copy(composerSuggestionsViewerOpen = false) }
     fun openComposerSuggestionsViewer() = _state.update {
         if (it.composerSuggestions.size > 1) it.copy(composerSuggestionsViewerOpen = true) else it
+    }
+
+    /**
+     * "Use this outfit" path from the fullscreen suggestion viewer. Applies the picked
+     * suggestion to the composer like [showComposerSuggestionAt] AND drops the other
+     * alternatives so the inline swiper / re-open affordance disappear. The user has chosen
+     * the one to keep — the rest are noise from here on.
+     */
+    fun commitComposerSuggestion(index: Int) {
+        val s = _state.value
+        if (index !in s.composerSuggestions.indices) return
+        val pick = s.composerSuggestions[index]
+        val updatedSlots = applyComposerSuggestionToSlots(s.composerSlots, pick.slotAssignments)
+        val mergedIds = updatedSlots.mapNotNull { it.selectedItemId }.distinct()
+        _state.update {
+            it.copy(
+                composerSlots                  = updatedSlots,
+                composerItemIds                = mergedIds,
+                composerAiSuggestedName        = pick.name,
+                composerAiSuggestedDescription = pick.description,
+                composerAiSuggestedTags        = pick.tags,
+                composerReason                 = pick.reason,
+                composerSuggestions            = listOf(pick),
+                composerSuggestionIndex        = 0,
+                composerSuggestionsViewerOpen  = false,
+            )
+        }
     }
 
     /**

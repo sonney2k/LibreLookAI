@@ -259,6 +259,8 @@ fun OutfitsScreen(
                         )
                     },
                     onClearPredictionError = outfitsViewModel::clearPrediction,
+                    pendingScrollOutfitId = outfitsState.pendingScrollOutfitId,
+                    onConsumePendingScrollOutfit = outfitsViewModel::consumePendingScrollOutfit,
                     onTryOnStyle = onTryOnStyle,
                     canTryOn = canTryOn,
                     onSettingsClick = onSettingsClick,
@@ -392,6 +394,8 @@ private fun OutfitListScreen(
     onDeleteSelectedStyles: () -> Unit = {},
     onCombineSelectedStyles: () -> Unit = {},
     onClearPredictionError: () -> Unit,
+    pendingScrollOutfitId: String? = null,
+    onConsumePendingScrollOutfit: () -> Unit = {},
     onTryOnStyle: (Outfit) -> Unit = {},
     canTryOn: Boolean = false,
     onSettingsClick: () -> Unit = {},
@@ -723,6 +727,17 @@ private fun OutfitListScreen(
                 }
                 else -> {
                     val outfitsListState = rememberLazyListState()
+                    // Scroll the new outfit into view (and briefly open it) after the user
+                    // saves it from the composer. List keys are outfit ids so animateScroll is
+                    // safe even though the list is built from a derived state.
+                    LaunchedEffect(pendingScrollOutfitId, displayedStyles) {
+                        val target = pendingScrollOutfitId ?: return@LaunchedEffect
+                        val idx = displayedStyles.indexOfFirst { it.id == target }
+                        if (idx >= 0) {
+                            runCatching { outfitsListState.animateScrollToItem(idx) }
+                            onConsumePendingScrollOutfit()
+                        }
+                    }
                     LazyColumn(
                         state = outfitsListState,
                         modifier = Modifier.weight(1f).fillMaxWidth().scrollbar(outfitsListState),
@@ -1489,6 +1504,15 @@ private fun OutfitFullScreenViewer(
                                     )
                                 }
                             }
+                            // Hide-tags chip sits inline below the tag row so it doesn't crowd
+                            // the close-X at top-left and reads as a clear "toggle tags" affordance.
+                            com.librelookai.wardrobe.HideTagsChip(
+                                hideTags = hideTags,
+                                onToggle = {
+                                    Analytics.action("OutfitViewer", if (hideTags) "show_tags" else "hide_tags")
+                                    hideTags = !hideTags
+                                },
+                            )
                         }
                     } else if (outfits.size > 1) {
                         // Pager indicator only — keep the close-X room (start padding) so the
@@ -1521,25 +1545,13 @@ private fun OutfitFullScreenViewer(
                     }
                 }
 
-                // Close button + labeled hide-tags toggle (icon-only was too subtle).
-                Row(
-                    modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .padding(8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                // Close button — hide-tags chip lives inline under the tag row instead.
+                IconButton(
+                    onClick = onDismiss,
+                    modifier = Modifier.align(Alignment.TopStart).padding(8.dp),
                 ) {
-                    IconButton(onClick = onDismiss) {
-                        Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_dismiss),
-                            tint = MaterialTheme.colorScheme.onBackground)
-                    }
-                    com.librelookai.wardrobe.HideTagsChip(
-                        hideTags = hideTags,
-                        onToggle = {
-                            Analytics.action("OutfitViewer", if (hideTags) "show_tags" else "hide_tags")
-                            hideTags = !hideTags
-                        },
-                    )
+                    Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_dismiss),
+                        tint = MaterialTheme.colorScheme.onBackground)
                 }
 
                 // Speed-dial FAB (wear / edit / delete) — hidden offline (writes only).

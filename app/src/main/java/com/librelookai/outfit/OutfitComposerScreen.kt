@@ -521,8 +521,9 @@ fun OutfitComposerScreen(
                 locations = locationState.locations,
                 onSelect = { index ->
                     Analytics.action("OutfitComposer", "suggestion_select_from_viewer")
-                    stylesViewModel.showComposerSuggestionAt(index)
-                    stylesViewModel.closeComposerSuggestionsViewer()
+                    // Commits the pick and drops the other suggestions — once the user has
+                    // chosen, alternatives just clutter the composer.
+                    stylesViewModel.commitComposerSuggestion(index)
                 },
                 onDismiss = { stylesViewModel.closeComposerSuggestionsViewer() },
             )
@@ -1479,7 +1480,9 @@ private fun AddItemSheet(
                             )
                         }
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(com.librelookai.ui.theme.LocalWardrobePalette.current.surface),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             com.librelookai.wardrobe.QuickCategoryRow(
