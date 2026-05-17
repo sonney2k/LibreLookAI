@@ -628,6 +628,11 @@
     <string name="tryon_history_items_missing">Items no longer available in your wardrobe.</string>
     <string name="tryon_delete_confirm_title">Delete try-on?</string>
     <string name="tryon_delete_confirm_text">This removes the saved try-on image from Drive. The wardrobe items are kept.</string>
+    <string name="tryon_use_outfit">Use an outfit</string>
+    <string name="tryon_outfit_picker_title">Pick an outfit</string>
+    <string name="tryon_outfit_picker_empty">No saved outfits yet. Create one in the Outfits tab to use it here.</string>
+    <string name="tryon_from_outfit">From outfit: %1$s</string>
+    <string name="tryon_view_source_outfit">View outfit</string>
 
     <!-- About -->
     <string name="settings_tab_about">About</string>

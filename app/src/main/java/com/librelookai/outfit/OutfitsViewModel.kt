@@ -316,6 +316,13 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
     fun consumePendingScrollOutfit() = _state.update { it.copy(pendingScrollOutfitId = null) }
 
     /**
+     * Ask the Outfits list to scroll the given outfit into view next time it composes.
+     * Used by the Try-On detail view's "View outfit" jump-back action.
+     */
+    fun requestScrollToOutfit(outfitId: String) =
+        _state.update { it.copy(pendingScrollOutfitId = outfitId) }
+
+    /**
      * Saves a style directly without going through the draft editing flow.
      * Used by Travel screen to persist packing outfits as styles.
      */

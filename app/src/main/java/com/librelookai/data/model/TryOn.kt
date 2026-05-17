@@ -18,6 +18,12 @@ data class TryOn(
     /** Stable cutout filenames of the items included in this try-on. */
     val itemNames: List<String> = emptyList(),
     val createdAt: Long = System.currentTimeMillis(),
+    /**
+     * Id of the saved [Outfit] this try-on was generated from (when the user picked an
+     * existing outfit in the composer). Null for try-ons assembled item-by-item. Lets the
+     * detail view jump back to the source outfit if it still exists.
+     */
+    val sourceOutfitId: String? = null,
     /** Runtime-resolved Drive IDs of the items — not persisted. */
     @Transient val itemIds: List<String> = emptyList(),
     /** Runtime local path of the cached PNG — not persisted. */

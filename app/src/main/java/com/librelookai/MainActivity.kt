@@ -455,9 +455,9 @@ class MainActivity : ComponentActivity() {
                                         selectedTab = 5
                                         navResetTick++
                                     }
-                                    val runTryOn: (Set<String>) -> Unit = { itemIds ->
+                                    val runTryOn: (Set<String>, String?) -> Unit = { itemIds, sourceOutfitId ->
                                         Analytics.action("TryOn", "open_composer", mapOf("count" to itemIds.size.toString()))
-                                        tryOnViewModel.openComposer(itemIds)
+                                        tryOnViewModel.openComposer(itemIds, sourceOutfitId)
                                     }
                                     when (selectedTab) {
                                         0 -> OutfitsScreen(
@@ -470,7 +470,9 @@ class MainActivity : ComponentActivity() {
                                             tryOnViewModel = tryOnViewModel,
                                             onTryOnStyle = { style ->
                                                 stylesViewModel.clearOutfitSelection()
-                                                runTryOn(style.itemIds.toSet())
+                                                // Preserve the outfit link so the saved try-on
+                                                // can jump back here from the detail view.
+                                                runTryOn(style.itemIds.toSet(), style.id)
                                             },
                                             canTryOn = canTryOn,
                                             onSettingsClick = onSettingsClick,
@@ -494,7 +496,7 @@ class MainActivity : ComponentActivity() {
                                                 wardrobeViewModel.clearSelection()
                                             },
                                             onTryOnSelection = { itemIds ->
-                                                runTryOn(itemIds)
+                                                runTryOn(itemIds, null)
                                                 wardrobeViewModel.clearSelection()
                                             },
                                             onSuggestReplacements = { itemIds ->
@@ -545,7 +547,7 @@ class MainActivity : ComponentActivity() {
                                                 shoppingClosetViewModel.clearSelection()
                                             },
                                             onTryOnSelection = { itemIds ->
-                                                runTryOn(itemIds)
+                                                runTryOn(itemIds, null)
                                                 shoppingClosetViewModel.clearSelection()
                                             },
                                             canTryOn = canTryOn,
@@ -602,6 +604,7 @@ class MainActivity : ComponentActivity() {
                                     LocalBgRemovalScreen(viewModel = wardrobeViewModel)
                                 }
 
+                                val stylesState by stylesViewModel.state.collectAsState()
                                 TryOnComposerScreen(
                                     tryOnViewModel   = tryOnViewModel,
                                     wardrobeViewModel = wardrobeViewModel,
@@ -617,6 +620,16 @@ class MainActivity : ComponentActivity() {
                                         }
                                         wardrobeViewModel.requestScrollToImage(image.driveId)
                                         selectedTab = 1
+                                        navResetTick++
+                                    },
+                                    outfits = stylesState.outfits,
+                                    locations = locationState.locations,
+                                    onOpenSourceOutfit = { outfit ->
+                                        // Close the Try-On dialog, jump to Outfits, and ask the
+                                        // list to scroll the picked outfit into view + highlight.
+                                        tryOnViewModel.close()
+                                        stylesViewModel.requestScrollToOutfit(outfit.id)
+                                        selectedTab = 0
                                         navResetTick++
                                     },
                                 )

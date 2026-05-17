@@ -1376,10 +1376,11 @@ private fun WeatherSection(
  * Wardrobe screen offers: pinch-to-zoom, tag filtering, location tag, ellipsis menu, etc.
  *
  * Picks are single-select: tapping an item confirms immediately and dismisses the picker.
+ * `internal` so the Try-On composer can reuse the same picker UI as the Outfit composer.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun AddItemSheet(
+internal fun AddItemSheet(
     allItems: List<DriveImage>,
     alreadyChosen: Set<String>,
     locations: List<com.librelookai.data.model.Location>,

@@ -612,6 +612,11 @@
     <string name="tryon_history_items_missing">Teile sind nicht mehr in deiner Garderobe verfügbar.</string>
     <string name="tryon_delete_confirm_title">Anprobe löschen?</string>
     <string name="tryon_delete_confirm_text">Dies entfernt das gespeicherte Anprobe-Bild aus Drive. Die Kleidungsstücke bleiben erhalten.</string>
+    <string name="tryon_use_outfit">Outfit verwenden</string>
+    <string name="tryon_outfit_picker_title">Outfit auswählen</string>
+    <string name="tryon_outfit_picker_empty">Noch keine gespeicherten Outfits. Erstelle eines im Outfits-Tab, um es hier zu verwenden.</string>
+    <string name="tryon_from_outfit">Aus Outfit: %1$s</string>
+    <string name="tryon_view_source_outfit">Outfit ansehen</string>
 
     <!-- About -->
     <string name="settings_tab_about">Info</string>

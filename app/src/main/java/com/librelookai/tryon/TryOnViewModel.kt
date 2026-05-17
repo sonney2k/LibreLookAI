@@ -24,6 +24,12 @@ data class TryOnUiState(
     val isComposerOpen: Boolean = false,
     /** Drive IDs of the wardrobe items currently included in the composition. */
     val itemIds: Set<String> = emptySet(),
+    /**
+     * Id of the saved [com.librelookai.data.model.Outfit] backing the current composition
+     * (set when the user picks an outfit via the composer's "Use an outfit" button). Cleared
+     * the moment the user manually edits the item list so we don't persist a stale link.
+     */
+    val sourceOutfitId: String? = null,
 
     val isGenerating: Boolean = false,
     /** Local absolute path of the most recent generated image (unsaved or saved). */
@@ -75,13 +81,16 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
      */
     private var lastGeneratedItemFiles: List<File> = emptyList()
     private var lastGeneratedItemIds: List<String> = emptyList()
+    /** Outfit-id snapshot from when [generate] ran — written into the saved entry by [saveCurrent]. */
+    private var lastGeneratedSourceOutfitId: String? = null
 
     /** Open the composer with an initial set of wardrobe items. Loads history lazily. */
-    fun openComposer(seedItemIds: Set<String>) {
+    fun openComposer(seedItemIds: Set<String>, sourceOutfitId: String? = null) {
         _state.update {
             it.copy(
                 isComposerOpen = true,
                 itemIds = seedItemIds,
+                sourceOutfitId = sourceOutfitId,
                 resultPath = null,
                 isResultSaved = false,
                 isHistoryOpen = false,
@@ -90,6 +99,19 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
             )
         }
         loadHistory()
+    }
+
+    /**
+     * Replace the current composition with the items from [outfit] and remember the link so
+     * the saved try-on can jump back to it later. Any earlier item-by-item picks are dropped.
+     */
+    fun selectOutfit(outfit: com.librelookai.data.model.Outfit) {
+        _state.update {
+            it.copy(
+                itemIds = outfit.itemIds.toSet(),
+                sourceOutfitId = outfit.id,
+            )
+        }
     }
 
     /**
@@ -117,9 +139,17 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
         _state.value = TryOnUiState(history = _state.value.history)
     }
 
-    fun addItem(driveId: String) = _state.update { it.copy(itemIds = it.itemIds + driveId) }
-    fun removeItem(driveId: String) = _state.update { it.copy(itemIds = it.itemIds - driveId) }
-    fun setItems(ids: Set<String>) = _state.update { it.copy(itemIds = ids) }
+    // Manual edits clear sourceOutfitId — once the user diverges from the picked outfit,
+    // the link no longer represents what's about to be tried on.
+    fun addItem(driveId: String) = _state.update {
+        it.copy(itemIds = it.itemIds + driveId, sourceOutfitId = null)
+    }
+    fun removeItem(driveId: String) = _state.update {
+        it.copy(itemIds = it.itemIds - driveId, sourceOutfitId = null)
+    }
+    fun setItems(ids: Set<String>) = _state.update {
+        it.copy(itemIds = ids, sourceOutfitId = null)
+    }
 
     fun openHistory() = _state.update { it.copy(isHistoryOpen = true, viewingTryOn = null, historyDetailIsRoot = false) }
     fun closeHistory() = _state.update { it.copy(isHistoryOpen = false, viewingTryOn = null, historyDetailIsRoot = false) }
@@ -148,12 +178,14 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
             val outDir = File(drive.cacheDir, "tryon_results").apply { mkdirs() }
             val files = itemFiles.map { it.second }
             val ids = itemFiles.map { it.first }
+            val snapshotSourceOutfitId = _state.value.sourceOutfitId
             val result = gemini.tryOnOutfit(personFiles, files, outDir, preferences)
             if (result == null) {
                 _state.update { it.copy(isGenerating = false, error = "Generation failed") }
             } else {
                 lastGeneratedItemFiles = files
                 lastGeneratedItemIds = ids
+                lastGeneratedSourceOutfitId = snapshotSourceOutfitId
                 _state.update {
                     it.copy(isGenerating = false, resultPath = result.absolutePath, isResultSaved = false)
                 }
@@ -179,12 +211,13 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
                 runCatching { file.copyTo(cached, overwrite = true) }
 
                 val entry = TryOn(
-                    imageDriveId = driveId,
-                    imageName    = driveName,
-                    itemNames    = names,
-                    createdAt    = System.currentTimeMillis(),
-                    itemIds      = ids,
-                    localPath    = cached.absolutePath,
+                    imageDriveId   = driveId,
+                    imageName      = driveName,
+                    itemNames      = names,
+                    createdAt      = System.currentTimeMillis(),
+                    sourceOutfitId = lastGeneratedSourceOutfitId,
+                    itemIds        = ids,
+                    localPath      = cached.absolutePath,
                 )
                 val existing = loadTryOnsEntries(root)
                 val updated = listOf(entry) + existing
