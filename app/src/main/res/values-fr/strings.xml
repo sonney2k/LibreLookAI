@@ -351,6 +351,7 @@
     <string name="tag_val_accessories">Accessoires</string>
     <string name="tag_val_dress">Robe</string>
     <string name="tag_val_suit">Costume</string>
+    <string name="tag_val_jumpsuit">Combinaison</string>
     <!-- Couleurs -->
     <string name="tag_val_black">Noir</string>
     <string name="tag_val_white">Blanc</string>
@@ -465,6 +466,7 @@
     <string name="outfits_unnamed">Tenue sans titre</string>
     <string name="outfit_layer_outerwear">Vestes</string>
     <string name="outfit_layer_tops">Hauts</string>
+    <string name="outfit_layer_onepiece">Pièce unique</string>
     <string name="outfit_layer_bottoms">Bas</string>
     <string name="outfit_layer_footwear">Chaussures</string>
     <string name="outfit_layer_accessories">Accessoires</string>

@@ -205,8 +205,8 @@ The "Find with AI" prediction flow (`openPredictionSetup(source = OUTFITS_LIST)`
 
 **Slot model** (UI-only, never persisted):
 - `OutfitSlot { id: UUID, category: Layer, selectedItemId: String?, isLocked: Boolean, aiReason: String? }` in `outfit/OutfitSlot.kt`.
-- `Layer` enum (Outerwear / Top / Bottom / Footwear / Accessory) lives in the same file; `layerFor(DriveImage)` classifies items by tag category regex.
-- `openComposer` seeds slots: empty seed → 5 default slots (one per Layer, empty, unlocked); non-empty seed → one slot per item, `isLocked = true` (manual picks auto-lock).
+- `Layer` enum (Outerwear / Top / OnePiece / Bottom / Footwear / Accessory) lives in the same file; `layerFor(DriveImage)` classifies items by tag category regex. `OnePiece` covers `dress`, `suit`, `jumpsuit`, `gown`, `romper` — anything that occupies both top and bottom slots. Composer doesn't enforce Top/Bottom vs. OnePiece exclusion; user picks the slot list that matches the outfit.
+- `openComposer` seeds slots: empty seed → 4 default slots (Outerwear / Top / Bottom / Footwear; OnePiece and Accessory excluded, user adds via "+ Add slot"); non-empty seed → one slot per item, `isLocked = true` (manual picks auto-lock).
 - Editing an existing outfit (`editingStyleId != null`) → opens in `VIEW`; everything else → `EDIT`.
 - On save, slots flatten to `Outfit.itemIds = slots.mapNotNull { it.selectedItemId }`. `Outfit` model unchanged.
 

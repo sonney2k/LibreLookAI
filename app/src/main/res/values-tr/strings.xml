@@ -351,6 +351,7 @@
     <string name="tag_val_accessories">Aksesuar</string>
     <string name="tag_val_dress">Elbise</string>
     <string name="tag_val_suit">Takım Elbise</string>
+    <string name="tag_val_jumpsuit">Tulum</string>
     <!-- Colors -->
     <string name="tag_val_black">Siyah</string>
     <string name="tag_val_white">Beyaz</string>
@@ -465,6 +466,7 @@
     <string name="outfits_unnamed">Adsız kombin</string>
     <string name="outfit_layer_outerwear">Dış Giyim</string>
     <string name="outfit_layer_tops">Üst Giyim</string>
+    <string name="outfit_layer_onepiece">Tek parça</string>
     <string name="outfit_layer_bottoms">Alt Giyim</string>
     <string name="outfit_layer_footwear">Ayakkabı</string>
     <string name="outfit_layer_accessories">Aksesuar</string>

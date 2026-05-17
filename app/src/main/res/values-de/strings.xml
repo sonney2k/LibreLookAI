@@ -346,6 +346,7 @@
     <string name="tag_val_accessories">Accessoires</string>
     <string name="tag_val_dress">Kleid</string>
     <string name="tag_val_suit">Anzug</string>
+    <string name="tag_val_jumpsuit">Jumpsuit</string>
     <!-- Colors -->
     <string name="tag_val_black">Schwarz</string>
     <string name="tag_val_white">Weiß</string>
@@ -459,6 +460,7 @@
     <string name="outfits_unnamed">Unbenanntes Outfit</string>
     <string name="outfit_layer_outerwear">Oberbekleidung</string>
     <string name="outfit_layer_tops">Oberteile</string>
+    <string name="outfit_layer_onepiece">Einteiler</string>
     <string name="outfit_layer_bottoms">Unterteile</string>
     <string name="outfit_layer_footwear">Schuhe</string>
     <string name="outfit_layer_accessories">Accessoires</string>

@@ -462,6 +462,7 @@ internal fun tagValueResId(canonical: String): Int? = when (canonical.lowercase(
     "accessories" -> R.string.tag_val_accessories
     "dress" -> R.string.tag_val_dress
     "suit" -> R.string.tag_val_suit
+    "jumpsuit" -> R.string.tag_val_jumpsuit
     "black" -> R.string.tag_val_black
     "white" -> R.string.tag_val_white
     "grey" -> R.string.tag_val_grey

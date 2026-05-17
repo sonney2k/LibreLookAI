@@ -351,6 +351,7 @@
     <string name="tag_val_accessories">Accessoarer</string>
     <string name="tag_val_dress">Klänning</string>
     <string name="tag_val_suit">Kostym</string>
+    <string name="tag_val_jumpsuit">Jumpsuit</string>
     <!-- Färger -->
     <string name="tag_val_black">Svart</string>
     <string name="tag_val_white">Vit</string>
@@ -465,6 +466,7 @@
     <string name="outfits_unnamed">Namnlös outfit</string>
     <string name="outfit_layer_outerwear">Ytterkläder</string>
     <string name="outfit_layer_tops">Överdelar</string>
+    <string name="outfit_layer_onepiece">Heldelat</string>
     <string name="outfit_layer_bottoms">Underdelar</string>
     <string name="outfit_layer_footwear">Skor</string>
     <string name="outfit_layer_accessories">Accessoarer</string>

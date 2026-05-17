@@ -10,6 +10,7 @@ enum class Layer(
 ) {
     Outerwear(R.string.outfit_layer_outerwear, R.drawable.ic_layer_jacket),
     Top(R.string.outfit_layer_tops,            R.drawable.ic_layer_shirt),
+    OnePiece(R.string.outfit_layer_onepiece,   R.drawable.ic_layer_dress),
     Bottom(R.string.outfit_layer_bottoms,      R.drawable.ic_layer_pants),
     Footwear(R.string.outfit_layer_footwear,   R.drawable.ic_layer_shoe),
     Accessory(R.string.outfit_layer_accessories, R.drawable.ic_layer_bag),
@@ -23,7 +24,8 @@ fun layerFor(image: DriveImage): Layer? {
         cat.contains("foot") || cat.contains("shoe") -> Layer.Footwear
         cat.contains("bottom") || cat == "pants" || cat == "skirt" -> Layer.Bottom
         cat.contains("accessor") -> Layer.Accessory
-        cat.contains("top") || cat.contains("shirt") || cat == "dress" || cat == "suit" -> Layer.Top
+        cat == "dress" || cat == "suit" || cat == "jumpsuit" || cat == "gown" || cat == "romper" -> Layer.OnePiece
+        cat.contains("top") || cat.contains("shirt") -> Layer.Top
         else -> null
     }
 }

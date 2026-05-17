@@ -351,6 +351,7 @@
     <string name="tag_val_accessories">Acessórios</string>
     <string name="tag_val_dress">Vestido</string>
     <string name="tag_val_suit">Terno</string>
+    <string name="tag_val_jumpsuit">Macacão</string>
     <!-- Cores -->
     <string name="tag_val_black">Preto</string>
     <string name="tag_val_white">Branco</string>
@@ -465,6 +466,7 @@
     <string name="outfits_unnamed">Look sem título</string>
     <string name="outfit_layer_outerwear">Casacos</string>
     <string name="outfit_layer_tops">Parte de cima</string>
+    <string name="outfit_layer_onepiece">Peça única</string>
     <string name="outfit_layer_bottoms">Parte de baixo</string>
     <string name="outfit_layer_footwear">Calçados</string>
     <string name="outfit_layer_accessories">Acessórios</string>

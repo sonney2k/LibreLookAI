@@ -351,6 +351,7 @@
     <string name="tag_val_accessories">Doplňky</string>
     <string name="tag_val_dress">Šaty</string>
     <string name="tag_val_suit">Oblek</string>
+    <string name="tag_val_jumpsuit">Overal</string>
     <!-- Colors -->
     <string name="tag_val_black">Černá</string>
     <string name="tag_val_white">Bílá</string>
@@ -465,6 +466,7 @@
     <string name="outfits_unnamed">Outfit bez názvu</string>
     <string name="outfit_layer_outerwear">Svrchní oblečení</string>
     <string name="outfit_layer_tops">Vršky</string>
+    <string name="outfit_layer_onepiece">Jednodílné</string>
     <string name="outfit_layer_bottoms">Spodky</string>
     <string name="outfit_layer_footwear">Obuv</string>
     <string name="outfit_layer_accessories">Doplňky</string>

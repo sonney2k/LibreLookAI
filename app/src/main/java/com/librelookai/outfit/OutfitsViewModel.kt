@@ -377,9 +377,10 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
         val sourceFolders = defaultSourceFolderId?.let { setOf(it) } ?: emptySet()
         val byId = images.associateBy { it.driveId }
         val slots: List<OutfitSlot> = if (ids.isEmpty()) {
-            // Accessories are off by default for scratch outfits; user adds them via "+ Add slot".
+            // Accessories and one-piece are off by default for scratch outfits;
+            // user adds them via "+ Add slot".
             Layer.values()
-                .filter { it != Layer.Accessory }
+                .filter { it != Layer.Accessory && it != Layer.OnePiece }
                 .map { layer ->
                     OutfitSlot(UUID.randomUUID().toString(), layer, null, false)
                 }

@@ -351,6 +351,7 @@
     <string name="tag_val_accessories">Asusteet</string>
     <string name="tag_val_dress">Mekko</string>
     <string name="tag_val_suit">Puku</string>
+    <string name="tag_val_jumpsuit">Haalari</string>
     <!-- Värit -->
     <string name="tag_val_black">Musta</string>
     <string name="tag_val_white">Valkoinen</string>
@@ -465,6 +466,7 @@
     <string name="outfits_unnamed">Nimetön asu</string>
     <string name="outfit_layer_outerwear">Päällysvaatteet</string>
     <string name="outfit_layer_tops">Yläosat</string>
+    <string name="outfit_layer_onepiece">Yksiosaiset</string>
     <string name="outfit_layer_bottoms">Alaosat</string>
     <string name="outfit_layer_footwear">Jalkineet</string>
     <string name="outfit_layer_accessories">Asusteet</string>

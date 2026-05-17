@@ -351,6 +351,7 @@
     <string name="tag_val_accessories">Accessori</string>
     <string name="tag_val_dress">Abito</string>
     <string name="tag_val_suit">Completo</string>
+    <string name="tag_val_jumpsuit">Tuta</string>
     <!-- Colori -->
     <string name="tag_val_black">Nero</string>
     <string name="tag_val_white">Bianco</string>
@@ -465,6 +466,7 @@
     <string name="outfits_unnamed">Outfit senza titolo</string>
     <string name="outfit_layer_outerwear">Capispalla</string>
     <string name="outfit_layer_tops">Tops</string>
+    <string name="outfit_layer_onepiece">Capo intero</string>
     <string name="outfit_layer_bottoms">Bottoms</string>
     <string name="outfit_layer_footwear">Scarpe</string>
     <string name="outfit_layer_accessories">Accessori</string>

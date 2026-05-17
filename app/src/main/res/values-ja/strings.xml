@@ -351,6 +351,7 @@
     <string name="tag_val_accessories">アクセサリー</string>
     <string name="tag_val_dress">ドレス</string>
     <string name="tag_val_suit">スーツ</string>
+    <string name="tag_val_jumpsuit">ジャンプスーツ</string>
     <!-- 色 -->
     <string name="tag_val_black">ブラック</string>
     <string name="tag_val_white">ホワイト</string>
@@ -465,6 +466,7 @@
     <string name="outfits_unnamed">無題のコーデ</string>
     <string name="outfit_layer_outerwear">アウター</string>
     <string name="outfit_layer_tops">トップス</string>
+    <string name="outfit_layer_onepiece">ワンピース</string>
     <string name="outfit_layer_bottoms">ボトムス</string>
     <string name="outfit_layer_footwear">シューズ</string>
     <string name="outfit_layer_accessories">アクセサリー</string>

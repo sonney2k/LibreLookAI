@@ -351,6 +351,7 @@
     <string name="tag_val_accessories">Akcesoria</string>
     <string name="tag_val_dress">Sukienka</string>
     <string name="tag_val_suit">Garnitur</string>
+    <string name="tag_val_jumpsuit">Kombinezon</string>
     <!-- Colors -->
     <string name="tag_val_black">Czarny</string>
     <string name="tag_val_white">Biały</string>
@@ -465,6 +466,7 @@
     <string name="outfits_unnamed">Stylizacja bez nazwy</string>
     <string name="outfit_layer_outerwear">Okrycia wierzchnie</string>
     <string name="outfit_layer_tops">Góra</string>
+    <string name="outfit_layer_onepiece">Jednoczęściowe</string>
     <string name="outfit_layer_bottoms">Dół</string>
     <string name="outfit_layer_footwear">Obuwie</string>
     <string name="outfit_layer_accessories">Akcesoria</string>

@@ -351,6 +351,7 @@
     <string name="tag_val_accessories">액세서리</string>
     <string name="tag_val_dress">드레스</string>
     <string name="tag_val_suit">슈트</string>
+    <string name="tag_val_jumpsuit">점프수트</string>
     <!-- 색상 -->
     <string name="tag_val_black">블랙</string>
     <string name="tag_val_white">화이트</string>
@@ -465,6 +466,7 @@
     <string name="outfits_unnamed">제목 없는 코디</string>
     <string name="outfit_layer_outerwear">아우터</string>
     <string name="outfit_layer_tops">상의</string>
+    <string name="outfit_layer_onepiece">원피스</string>
     <string name="outfit_layer_bottoms">하의</string>
     <string name="outfit_layer_footwear">신발</string>
     <string name="outfit_layer_accessories">액세서리</string>

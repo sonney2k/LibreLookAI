@@ -1802,6 +1802,7 @@ private fun OutfitViewerItemTile(
 private enum class OutfitItemBucket(val resId: Int) {
     Outerwear(R.string.outfit_layer_outerwear),
     Top(R.string.outfit_layer_tops),
+    OnePiece(R.string.outfit_layer_onepiece),
     Bottom(R.string.outfit_layer_bottoms),
     Footwear(R.string.outfit_layer_footwear),
     Accessory(R.string.outfit_layer_accessories),
@@ -1815,7 +1816,8 @@ private fun bucketFor(image: DriveImage): OutfitItemBucket {
         cat.contains("foot") || cat.contains("shoe") -> OutfitItemBucket.Footwear
         cat.contains("bottom") || cat == "pants" || cat == "skirt" -> OutfitItemBucket.Bottom
         cat.contains("accessor") -> OutfitItemBucket.Accessory
-        cat.contains("top") || cat.contains("shirt") || cat == "dress" || cat == "suit" -> OutfitItemBucket.Top
+        cat == "dress" || cat == "suit" || cat == "jumpsuit" || cat == "gown" || cat == "romper" -> OutfitItemBucket.OnePiece
+        cat.contains("top") || cat.contains("shirt") -> OutfitItemBucket.Top
         cat.isEmpty() -> OutfitItemBucket.Other
         else -> OutfitItemBucket.Other
     }

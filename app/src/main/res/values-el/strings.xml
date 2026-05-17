@@ -351,6 +351,7 @@
     <string name="tag_val_accessories">Αξεσουάρ</string>
     <string name="tag_val_dress">Φόρεμα</string>
     <string name="tag_val_suit">Κοστούμι</string>
+    <string name="tag_val_jumpsuit">Ολόσωμη φόρμα</string>
     <!-- Colors -->
     <string name="tag_val_black">Μαύρο</string>
     <string name="tag_val_white">Λευκό</string>
@@ -465,6 +466,7 @@
     <string name="outfits_unnamed">Σύνολο χωρίς όνομα</string>
     <string name="outfit_layer_outerwear">Πανωφόρια</string>
     <string name="outfit_layer_tops">Μπλούζες</string>
+    <string name="outfit_layer_onepiece">Ολόσωμα</string>
     <string name="outfit_layer_bottoms">Παντελόνια</string>
     <string name="outfit_layer_footwear">Παπούτσια</string>
     <string name="outfit_layer_accessories">Αξεσουάρ</string>

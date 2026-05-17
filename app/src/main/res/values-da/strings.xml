@@ -351,6 +351,7 @@
     <string name="tag_val_accessories">Accessories</string>
     <string name="tag_val_dress">Kjole</string>
     <string name="tag_val_suit">Jakkesæt</string>
+    <string name="tag_val_jumpsuit">Buksedragt</string>
     <!-- Farver -->
     <string name="tag_val_black">Sort</string>
     <string name="tag_val_white">Hvid</string>
@@ -465,6 +466,7 @@
     <string name="outfits_unnamed">Unavngivet outfit</string>
     <string name="outfit_layer_outerwear">Overtøj</string>
     <string name="outfit_layer_tops">Overdele</string>
+    <string name="outfit_layer_onepiece">Heldragter</string>
     <string name="outfit_layer_bottoms">Underdele</string>
     <string name="outfit_layer_footwear">Sko</string>
     <string name="outfit_layer_accessories">Accessories</string>

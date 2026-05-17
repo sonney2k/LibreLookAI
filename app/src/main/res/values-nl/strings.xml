@@ -351,6 +351,7 @@
     <string name="tag_val_accessories">Accessoires</string>
     <string name="tag_val_dress">Jurk</string>
     <string name="tag_val_suit">Pak</string>
+    <string name="tag_val_jumpsuit">Jumpsuit</string>
     <!-- Kleuren -->
     <string name="tag_val_black">Zwart</string>
     <string name="tag_val_white">Wit</string>
@@ -465,6 +466,7 @@
     <string name="outfits_unnamed">Naamloze outfit</string>
     <string name="outfit_layer_outerwear">Bovenkleding</string>
     <string name="outfit_layer_tops">Tops</string>
+    <string name="outfit_layer_onepiece">Eendelig</string>
     <string name="outfit_layer_bottoms">Broeken</string>
     <string name="outfit_layer_footwear">Schoenen</string>
     <string name="outfit_layer_accessories">Accessoires</string>

@@ -351,6 +351,7 @@
     <string name="tag_val_accessories">إكسسوارات</string>
     <string name="tag_val_dress">فساتين</string>
     <string name="tag_val_suit">بدل</string>
+    <string name="tag_val_jumpsuit">بدلة قطعة واحدة</string>
     <!-- Colors -->
     <string name="tag_val_black">أسود</string>
     <string name="tag_val_white">أبيض</string>
@@ -465,6 +466,7 @@
     <string name="outfits_unnamed">طقم بدون عنوان</string>
     <string name="outfit_layer_outerwear">ملابس خارجية</string>
     <string name="outfit_layer_tops">بلايز</string>
+    <string name="outfit_layer_onepiece">قطعة واحدة</string>
     <string name="outfit_layer_bottoms">بناطيل</string>
     <string name="outfit_layer_footwear">أحذية</string>
     <string name="outfit_layer_accessories">إكسسوارات</string>

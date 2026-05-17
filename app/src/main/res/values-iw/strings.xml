@@ -347,6 +347,7 @@
     <string name="tag_val_accessories">אביזרים</string>
     <string name="tag_val_dress">שמלה</string>
     <string name="tag_val_suit">חליפה</string>
+    <string name="tag_val_jumpsuit">אוברול</string>
     <!-- Colors -->
     <string name="tag_val_black">שחור</string>
     <string name="tag_val_white">לבן</string>
@@ -461,6 +462,7 @@
     <string name="outfits_unnamed">אאוטפיט ללא שם</string>
     <string name="outfit_layer_outerwear">בגד עליון</string>
     <string name="outfit_layer_tops">חלק עליון</string>
+    <string name="outfit_layer_onepiece">חלק אחד</string>
     <string name="outfit_layer_bottoms">חלק תחתון</string>
     <string name="outfit_layer_footwear">נעליים</string>
     <string name="outfit_layer_accessories">אביזרים</string>
