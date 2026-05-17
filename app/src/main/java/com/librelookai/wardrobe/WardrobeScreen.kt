@@ -1016,7 +1016,14 @@ private fun GridContent(
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
                         contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         icon = { Icon(Icons.Default.SwapHoriz, contentDescription = null) },
-                        text = { Text(stringResource(R.string.wardrobe_suggest_replacements)) },
+                        text = {
+                            androidx.compose.foundation.layout.Row(
+                                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                            ) {
+                                com.librelookai.billing.CostBadge(com.librelookai.gemini.GeminiActionId.GENERATE_TEXT)
+                                Text(stringResource(R.string.wardrobe_suggest_replacements))
+                            }
+                        },
                     )
                 }
                 if (locations.size > 1 && !isOffline) {
@@ -1581,7 +1588,14 @@ internal fun FullScreenViewer(
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
                         contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         icon = { Icon(Icons.Default.AutoFixHigh, contentDescription = null) },
-                        text = { Text(stringResource(R.string.wardrobe_tag_detect)) },
+                        text = {
+                            androidx.compose.foundation.layout.Row(
+                                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                            ) {
+                                com.librelookai.billing.CostBadge(com.librelookai.gemini.GeminiActionId.CLASSIFY_CLOTHING)
+                                Text(stringResource(R.string.wardrobe_tag_detect))
+                            }
+                        },
                     )
                     ExtendedFloatingActionButton(
                         onClick = {
@@ -1593,10 +1607,15 @@ internal fun FullScreenViewer(
                         contentColor = MaterialTheme.colorScheme.onError,
                         icon = { Icon(Icons.Default.ImageSearch, contentDescription = null) },
                         text = {
-                            Text(stringResource(
-                                if (currentImage.originalDriveId != null) R.string.wardrobe_tag_re_remove_bg
-                                else R.string.wardrobe_tag_remove_bg
-                            ))
+                            androidx.compose.foundation.layout.Row(
+                                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                            ) {
+                                com.librelookai.billing.CostBadge(com.librelookai.gemini.GeminiActionId.REMOVE_BACKGROUND)
+                                Text(stringResource(
+                                    if (currentImage.originalDriveId != null) R.string.wardrobe_tag_re_remove_bg
+                                    else R.string.wardrobe_tag_remove_bg
+                                ))
+                            }
                         },
                     )
                     ExtendedFloatingActionButton(
@@ -1608,7 +1627,14 @@ internal fun FullScreenViewer(
                         containerColor = MaterialTheme.colorScheme.error,
                         contentColor = MaterialTheme.colorScheme.onError,
                         icon = { Icon(Icons.Default.AutoFixHigh, contentDescription = null) },
-                        text = { Text(stringResource(R.string.wardrobe_fix_cutout_bg)) },
+                        text = {
+                            androidx.compose.foundation.layout.Row(
+                                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                            ) {
+                                com.librelookai.billing.CostBadge(com.librelookai.gemini.GeminiActionId.REMOVE_BACKGROUND)
+                                Text(stringResource(R.string.wardrobe_fix_cutout_bg))
+                            }
+                        },
                     )
                     if (locations.any { it.folderId != activeLocationId }) {
                         ExtendedFloatingActionButton(

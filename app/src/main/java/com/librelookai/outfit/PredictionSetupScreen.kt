@@ -179,6 +179,11 @@ fun PredictionSetupDialog(
                                 contentColor = MaterialTheme.colorScheme.onPrimary,
                             ),
                         ) {
+                            // GENERATE_TEXT scales with the number of outfits requested.
+                            com.librelookai.billing.CostBadge(
+                                action = com.librelookai.gemini.GeminiActionId.GENERATE_TEXT,
+                                bulkCount = s.composerSuggestionCount,
+                            )
                             Icon(Icons.Default.AutoAwesome, contentDescription = null, modifier = Modifier.size(16.dp))
                             Spacer(Modifier.width(6.dp))
                             Text(stringResource(ctaRes))

@@ -14,7 +14,9 @@ Concrete plan for paid-coin monetization alongside BYOK. Grounded in the existin
 - Client: `PricingClient` (Firestore listener + SharedPrefs cache + fallback). Started in `MainActivity.onCreate`.
 - Client: `InsufficientCreditsException` + `throwIf402` at all 5 Gemini call sites in `GeminiRepository`.
 - Client: `CostBadge` composable + `ConfirmSpendDialog` + `InsufficientCreditsDialog` + `requiresSpendConfirm()` predicate.
-- Client: wired into TryOn (full 402 flow: badge + dialog + clear), Outfit Composer AI suggest button, Settings → Import dialog (now reads live coin prices).
+- Client: badges wired into TryOn (full 402 flow: badge + dialog + clear), Outfit Composer AI suggest, Settings → Import dialog (live prices), PredictionSetup (scales with outfit count), WardrobeScreen per-item FABs (tag, remove BG, fix cutout BG), WardrobeScreen multi-select "Suggest replacements", ShoppingHelper gap analyze.
+- CaptureScreen / UrlImportPicker do not get direct badges — they're pre-processing steps; cost is incurred downstream by the import-options dialog (already wired).
+- Find-by-photo (`findSimilarInCandidates`) uses on-device EmbeddingService — no Gemini, no badge needed.
 - Strings: 11 new keys added to default `values/strings.xml` and all 31 active `values-*/strings.xml` locale mirrors (English placeholders).
 
 **Simplifications vs. original plan:**
@@ -22,9 +24,8 @@ Concrete plan for paid-coin monetization alongside BYOK. Grounded in the existin
 - Skipped RevenueCat. Keeping the existing direct Google Play Billing path; webhook can be swapped in later without client changes if iOS/web lands.
 
 **Remaining for full coverage** (not blocking — current slice is functional):
-- Wire `CostBadge` into the rest of the AI-trigger screens (CaptureScreen, UrlImportPicker, WardrobeScreen per-item actions, PredictionSetupScreen, ShoppingHelperScreen find-by-photo).
-- Wire 402 → `InsufficientCreditsException` handling into those screens' ViewModels (same pattern as `TryOnViewModel.needsTopUp`).
-- Plumb a `onShowBuyCredits: () -> Unit` callback through to `InsufficientCreditsDialog` so "Buy" navigates to Settings tab; today it just dismisses.
+- Wire 402 → `InsufficientCreditsException` handling into the ViewModels that aren't yet doing it (only `TryOnViewModel` catches `InsufficientCreditsException` today; `WardrobeViewModel`, `OutfitsViewModel`, `WardrobeGapViewModel` still let it propagate uncaught). Pattern: add `needsTopUp: InsufficientCreditsException?` to state, surface `InsufficientCreditsDialog` from the screen.
+- Plumb a `onShowBuyCredits: () -> Unit` callback through to `InsufficientCreditsDialog` so "Buy" navigates to Settings → Credits tab; today it just dismisses.
 - Re-translate the 11 new strings in 30 locales via the localization pipeline (currently English placeholders).
 - Free starter credits on signup — recommended but not implemented. Add via `auth.user().onCreate` Cloud Function granting 20 coins.
 

@@ -1658,6 +1658,7 @@ private fun IdentifyGapsTab(
                         enabled = !state.isAnalyzing && wardrobeState.images.isNotEmpty() && !isOffline,
                         modifier = Modifier.fillMaxWidth(),
                     ) {
+                        com.librelookai.billing.CostBadge(com.librelookai.gemini.GeminiActionId.GENERATE_TEXT)
                         Icon(Icons.Default.AutoAwesome, contentDescription = null, modifier = Modifier.size(18.dp))
                         Spacer(Modifier.width(8.dp))
                         Text(if (state.analysis != null) stringResource(R.string.gap_reanalyze) else stringResource(R.string.gap_analyze))
