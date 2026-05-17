@@ -867,14 +867,14 @@
 
     <!-- Monetization / cost badges -->
     <string name="cost_badge_coins">🪙 %1$d</string>
-    <string name="cost_badge_tokens_estimate">~%1$s tokens</string>
-    <string name="confirm_spend_title">Use AI credits?</string>
-    <string name="confirm_spend_body">This will use %1$d credits.</string>
-    <string name="confirm_spend_body_bulk">This will use %1$d credits across %2$d items.</string>
-    <string name="confirm_spend_continue">Continue</string>
-    <string name="insufficient_credits_title">Not enough credits</string>
-    <string name="insufficient_credits_body">You need %1$d credits but have %2$d. Top up to continue.</string>
-    <string name="insufficient_credits_buy">Buy credits</string>
-    <string name="coins_balance_label">Balance: %1$d 🪙</string>
-    <string name="coins_byok_no_spend_note">Using your own Gemini key — no credits are spent.</string>
+    <string name="cost_badge_tokens_estimate">~%1$s jetons</string>
+    <string name="confirm_spend_title">Utiliser les crédits IA ?</string>
+    <string name="confirm_spend_body">Cela utilisera %1$d crédits.</string>
+    <string name="confirm_spend_body_bulk">Cela utilisera %1$d crédits pour %2$d éléments.</string>
+    <string name="confirm_spend_continue">Continuer</string>
+    <string name="insufficient_credits_title">Crédits insuffisants</string>
+    <string name="insufficient_credits_body">Il vous faut %1$d crédits mais vous avez %2$d. Rechargez pour continuer.</string>
+    <string name="insufficient_credits_buy">Acheter des crédits</string>
+    <string name="coins_balance_label">Solde : %1$d 🪙</string>
+    <string name="coins_byok_no_spend_note">Utilisation de votre propre clé Gemini — aucun crédit n\'est dépensé.</string>
 </resources>

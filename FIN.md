@@ -17,7 +17,7 @@ Concrete plan for paid-coin monetization alongside BYOK. Grounded in the existin
 - Client: badges wired into TryOn (full 402 flow: badge + dialog + clear), Outfit Composer AI suggest, Settings → Import dialog (live prices), PredictionSetup (scales with outfit count), WardrobeScreen per-item FABs (tag, remove BG, fix cutout BG), WardrobeScreen multi-select "Suggest replacements", ShoppingHelper gap analyze.
 - CaptureScreen / UrlImportPicker do not get direct badges — they're pre-processing steps; cost is incurred downstream by the import-options dialog (already wired).
 - Find-by-photo (`findSimilarInCandidates`) uses on-device EmbeddingService — no Gemini, no badge needed.
-- Strings: 11 new keys added to default `values/strings.xml` and all 31 active `values-*/strings.xml` locale mirrors (English placeholders).
+- Strings: 11 new keys added to default `values/strings.xml` and translated into all 31 active locale mirrors (ar, b+es+419, cs, da, de, el, en-rGB, es, fi, fil, fr, hi, hu, in, it, iw, ja, ko, ms, nl, no, pl, pt-rBR, ro, sv, th, tr, uk, ur, vi, zh-rTW). Placeholders preserved; ja reorders `%1$d`/`%2$d` for natural reading.
 
 **Simplifications vs. original plan:**
 - Dropped reservation/commit complexity (§3.1). Given the **conservative fixed** pricing decision, the existing deduct-then-refund-on-error pattern is correct and simpler. Removed `users/{uid}/reservations`, `X-Request-Id` header, and `releaseStaleReservations` scheduled job from the plan.
@@ -25,8 +25,7 @@ Concrete plan for paid-coin monetization alongside BYOK. Grounded in the existin
 
 **402 propagation (landed)** — instead of per-VM `needsTopUp` state, `throwIf402` emits on a global `billing/CreditsEvents.topUp` SharedFlow *before* throwing. `MainActivity` hosts a single `InsufficientCreditsDialog` observer that fires for any caller. "Buy" jumps to the Settings tab. Per-VM catches only reset loading flags (`isGenerating` / `isAnalyzing` / `isProcessing`) and short-circuit bulk loops via a local `creditsExhausted` flag (so a depleted balance doesn't trigger N pointless proxy calls).
 
-**Remaining for full coverage** (not blocking — current slice is functional):
-- Re-translate the 11 new strings in 30 locales via the localization pipeline (currently English placeholders).
+**Remaining** (not blocking):
 - Free starter credits on signup — recommended but not implemented. Add via `auth.user().onCreate` Cloud Function granting 20 coins.
 
 ---

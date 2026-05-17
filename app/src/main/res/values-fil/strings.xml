@@ -867,14 +867,14 @@
 
     <!-- Monetization / cost badges -->
     <string name="cost_badge_coins">🪙 %1$d</string>
-    <string name="cost_badge_tokens_estimate">~%1$s tokens</string>
-    <string name="confirm_spend_title">Use AI credits?</string>
-    <string name="confirm_spend_body">This will use %1$d credits.</string>
-    <string name="confirm_spend_body_bulk">This will use %1$d credits across %2$d items.</string>
-    <string name="confirm_spend_continue">Continue</string>
-    <string name="insufficient_credits_title">Not enough credits</string>
-    <string name="insufficient_credits_body">You need %1$d credits but have %2$d. Top up to continue.</string>
-    <string name="insufficient_credits_buy">Buy credits</string>
-    <string name="coins_balance_label">Balance: %1$d 🪙</string>
-    <string name="coins_byok_no_spend_note">Using your own Gemini key — no credits are spent.</string>
+    <string name="cost_badge_tokens_estimate">~%1$s token</string>
+    <string name="confirm_spend_title">Gumamit ng mga AI credit?</string>
+    <string name="confirm_spend_body">Gagamit ito ng %1$d na credit.</string>
+    <string name="confirm_spend_body_bulk">Gagamit ito ng %1$d na credit para sa %2$d na item.</string>
+    <string name="confirm_spend_continue">Magpatuloy</string>
+    <string name="insufficient_credits_title">Hindi sapat ang mga credit</string>
+    <string name="insufficient_credits_body">Kailangan mo ng %1$d na credit ngunit mayroon kang %2$d. Mag-top up para magpatuloy.</string>
+    <string name="insufficient_credits_buy">Bumili ng mga credit</string>
+    <string name="coins_balance_label">Balanse: %1$d 🪙</string>
+    <string name="coins_byok_no_spend_note">Ginagamit ang sarili mong Gemini key — walang ginagastos na credit.</string>
 </resources>
