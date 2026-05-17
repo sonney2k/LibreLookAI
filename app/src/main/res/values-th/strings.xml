@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LibreLookAI</string>
+
+    <!-- Navigation -->
+    <string name="nav_styles">ชุดแต่งกาย</string>
+    <string name="nav_wardrobe">ตู้เสื้อผ้า</string>
+    <string name="nav_shopping">ช้อปปิ้ง</string>
+    <string name="nav_travel">ท่องเที่ยว</string>
+    <string name="nav_insights">ข้อมูลเชิงลึก</string>
+    <string name="nav_settings">ตั้งค่า</string>
+
+    <!-- Insights tab -->
+    <string name="insights_title">ข้อมูลเชิงลึก</string>
+    <string name="insights_tab_calendar">ปฏิทิน</string>
+    <string name="insights_tab_wardrobe_stats">สถิติตู้เสื้อผ้า</string>
+    <string name="insights_tab_calendar_stats">สถิติปฏิทิน</string>
+    <string name="insights_tab_costs">ค่าใช้จ่าย</string>
+    <string name="costs_count_items">รายการ</string>
+    <string name="costs_count_outfits">ชุด</string>
+    <string name="costs_count_tryons">การลองชุด</string>
+    <string name="costs_count_wears">การสวมใส่</string>
+    <string name="costs_count_imports">การนำเข้า</string>
+    <string name="costs_activity_14d">กิจกรรม (14 วันล่าสุด)</string>
+
+    <!-- Shopping Helper tab -->
+    <string name="shopping_title">ผู้ช่วยช้อปปิ้ง</string>
+    <string name="shopping_tab_list">รายการช้อปปิ้ง</string>
+    <string name="shopping_tab_similarity">ค้นหาสิ่งที่คล้ายกัน</string>
+    <string name="shopping_tab_gaps">ค้นหาส่วนที่ขาดหาย</string>
+
+    <!-- Shopping list sub-tab -->
+    <string name="shop_list_empty_title">รายการที่คุณอยากได้ยังว่างเปล่า</string>
+    <string name="shop_list_empty_hint">เพิ่มรายการที่คุณกำลังพิจารณาจะซื้อด้วยกล้อง แกลเลอรี หรือ URL ของร้านค้า</string>
+    <string name="shop_list_add_camera">เพิ่มจากกล้อง</string>
+    <string name="shop_list_add_gallery">เพิ่มจากแกลเลอรี</string>
+    <string name="shop_list_add_url">เพิ่มจาก URL</string>
+    <string name="shop_list_url_title">เพิ่มจาก URL</string>
+    <string name="shop_list_url_hint">วาง URL ของหน้าช้อปปิ้ง เราจะดึงรูปภาพสินค้าให้โดยอัตโนมัติ</string>
+    <string name="shop_list_uploading">กำลังอัปโหลด…</string>
+    <string name="shop_list_moving">กำลังย้าย…</string>
+    <string name="shop_list_loading">กำลังโหลด…</string>
+    <string name="shop_list_processing">กำลังประมวลผล %1$d รายการ…</string>
+    <string name="shop_list_move_to_closet">ย้ายไปที่ตู้เสื้อผ้า</string>
+    <string name="shop_list_move_title">ย้ายไปที่ตู้เสื้อผ้า</string>
+    <string name="shop_list_delete_title">ลบออกจากรายการที่อยากได้?</string>
+    <string name="shop_list_delete_text">ลบ %1$d รายการออกจากรายการที่อยากได้ของคุณอย่างถาวรหรือไม่?</string>
+
+    <!-- URL import (Wardrobe + Shopping List) -->
+    <string name="wardrobe_add_url">เพิ่มจาก URL</string>
+    <string name="wardrobe_url_import_title">นำเข้าจาก URL ของร้านค้า</string>
+    <string name="wardrobe_url_import_hint">วาง URL ของหน้าช้อปปิ้ง เราจะดึงรูปภาพสินค้าให้โดยอัตโนมัติ</string>
+    <string name="url_import_failed">ไม่พบรูปภาพสินค้าที่ URL นี้</string>
+    <string name="url_import_pick_title">เลือกรูปภาพสินค้า</string>
+    <string name="url_import_pick_hint">แตะรูปภาพที่คุณต้องการนำเข้า หากไม่มีรูปใดถูกต้อง ให้เปิดหน้าเว็บในเบราว์เซอร์</string>
+    <string name="url_import_browser_title">เปิดหน้าเว็บ</string>
+    <string name="url_import_browser_hint">แตะรูปภาพใดก็ได้บนหน้าเพื่อนำเข้า</string>
+    <string name="url_import_open_browser">เปิดหน้าเว็บ</string>
+    <string name="url_import_show_candidates">ตัวเลือก</string>
+    <string name="url_import_no_candidates">ไม่พบรูปภาพ เปิดในเบราว์เซอร์เพื่อเลือก</string>
+
+    <!-- Outfits sub-tabs -->
+    <string name="outfits_tab_outfits">ชุดแต่งกาย</string>
+    <string name="outfits_tab_tryons">การลองชุด</string>
+
+    <!-- Common actions -->
+    <string name="action_ok">ตกลง</string>
+    <string name="action_cancel">ยกเลิก</string>
+    <string name="action_dismiss">ปิด</string>
+    <string name="action_delete">ลบ</string>
+    <string name="action_save">บันทึก</string>
+    <string name="action_edit">แก้ไข</string>
+    <string name="action_saving">กำลังบันทึก…</string>
+    <string name="action_clear">ล้าง</string>
+    <string name="action_sort">จัดเรียง</string>
+    <string name="action_remove">นำออก</string>
+    <string name="cd_ai_suggestion">คำแนะนำจาก AI</string>
+    <string name="cd_refine">ปรับแต่ง</string>
+    <string name="filter_location">สถานที่</string>
+    <string name="filter_all_locations">ทั้งหมด</string>
+    <string name="wardrobe_processing_photos">กำลังประมวลผล %1$d รูป…</string>
+    <string name="wardrobe_progress_uploading">กำลังอัปโหลดรูปภาพ…</string>
+    <string name="wardrobe_progress_uploading_batch">กำลังอัปโหลดรูปภาพ %1$d จาก %2$d…</string>
+    <string name="wardrobe_progress_removing_bg">กำลังลบพื้นหลัง…</string>
+    <string name="wardrobe_progress_removing_bg_batch">กำลังลบพื้นหลัง %1$d จาก %2$d…</string>
+    <string name="wardrobe_progress_moving">กำลังย้ายไปที่สถานที่ใหม่…</string>
+    <string name="action_select_all">เลือกทั้งหมด</string>
+    <string name="action_deselect_all">ยกเลิกการเลือกทั้งหมด</string>
+
+    <!-- Sign In -->
+    <string name="sign_in_prompt">ลงชื่อเข้าใช้เพื่อจัดการตู้เสื้อผ้าของคุณ</string>
+    <string name="sign_in_button">ลงชื่อเข้าใช้ด้วย Google</string>
+    <string name="sign_in_error_not_registered">การลงชื่อเข้าใช้ล้มเหลว: แอปเวอร์ชันนี้ไม่ได้รับอนุญาตจาก Google</string>
+    <string name="sign_in_error_network">การลงชื่อเข้าใช้ล้มเหลว: ไม่มีการเชื่อมต่อเครือข่าย โปรดตรวจสอบอินเทอร์เน็ตของคุณ</string>
+    <string name="sign_in_error_generic">การลงชื่อเข้าใช้ล้มเหลว (รหัส %1$d) โปรดลองอีกครั้ง</string>
+
+    <!-- Settings -->
+    <string name="settings_tab_profile">โปรไฟล์</string>
+    <string name="settings_tab_display">การแสดงผล</string>
+    <string name="settings_display_theme">ธีม</string>
+    <string name="settings_display_theme_desc">เลือกชุดสี มีผลทั่วทั้งแอป</string>
+    <string name="theme_green_light">เขียว (สว่าง)</string>
+    <string name="theme_green_dark">เขียว (เข้ม)</string>
+    <string name="theme_sand_light">ทราย (สว่าง)</string>
+    <string name="theme_indigo_dark">อินดิโก้ (เข้ม)</string>
+    <string name="theme_pastel_mint">พาสเทล มิ้นต์</string>
+    <string name="theme_pastel_blush">พาสเทล บลัช</string>
+    <string name="theme_pastel_lavender">พาสเทล ลาเวนเดอร์</string>
+    <string name="settings_display_font">แบบอักษร</string>
+    <string name="settings_display_font_desc">เลือกแบบอักษรที่ใช้ทั่วทั้งแอป</string>
+    <string name="font_default">ค่าเริ่มต้นของระบบ</string>
+    <string name="font_caveat">Caveat (ลายมือ)</string>
+    <string name="wardrobe_filters">ตัวกรอง</string>
+    <string name="wardrobe_filters_apply">ใช้ (%1$d)</string>
+    <string name="wardrobe_filters_reset">รีเซ็ต</string>
+    <string name="settings_tab_data">ข้อมูล</string>
+    <string name="settings_tab_credits">เครดิต</string>
+    <string name="settings_language">ภาษา</string>
+    <string name="settings_gender">เพศ</string>
+    <string name="settings_gender_select">เลือก…</string>
+    <string name="settings_gender_prefer_not">ไม่ระบุ</string>
+    <string name="settings_gender_female">หญิง</string>
+    <string name="settings_gender_male">ชาย</string>
+    <string name="settings_gender_nonbinary">นอนไบนารี</string>
+    <string name="settings_gender_other">อื่นๆ</string>
+    <string name="settings_year_of_birth">ปีเกิด</string>
+    <string name="settings_year_placeholder">เช่น 1990</string>
+    <string name="settings_style_prefs">ความชอบส่วนตัว</string>
+    <string name="settings_style_placeholder">อธิบายสิ่งที่คุณชอบใส่, โอกาสที่แต่งตัว, สีที่ชอบ, แบรนด์ หรือสิ่งอื่นๆ ที่ช่วยให้เราแนะนำชุดได้ดีขึ้น…</string>
+    <string name="settings_saved">บันทึกความชอบส่วนตัวแล้ว</string>
+    <string name="settings_api_key_title">Gemini API Key</string>
+    <string name="settings_api_key_desc">ฟีเจอร์ AI ทั้งหมดต้องการ Gemini API key รับรหัสฟรีได้ที่ aistudio.google.com รหัสของคุณจะถูกเก็บไว้ในเครื่องนี้เท่านั้น</string>
+    <string name="settings_api_key_label">API Key</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="settings_data_tags_title">แท็กตู้เสื้อผ้า</string>
+    <string name="settings_data_tags_desc">จัดหมวดหมู่เสื้อผ้าทุกชิ้นใหม่ด้วย Gemini ซึ่งจะทับการแก้ไขแท็กด้วยตนเอง</string>
+    <string name="settings_rescan_button">สแกนแท็กใหม่ทั้งหมด</string>
+    <string name="settings_rescanning">กำลังสแกนใหม่ %1$d จาก %2$d…</string>
+    <string name="settings_rescan_dialog_title">สแกนแท็กใหม่ทั้งหมด?</string>
+    <string name="settings_rescan_dialog_text">Gemini จะจัดหมวดหมู่เสื้อผ้าทุกชิ้นใหม่ ซึ่งอาจใช้เวลาสักครู่</string>
+    <string name="settings_rescan_confirm">สแกนใหม่</string>
+    <string name="settings_bulk_cost_line">%1$d รายการ × %2$d เครดิต = ทั้งหมด %3$d เครดิต</string>
+    <string name="settings_rebg_title">การลบพื้นหลัง</string>
+    <string name="settings_rebg_desc">รันการลบพื้นหลัง AI ใหม่ในเสื้อผ้าทุกชิ้น แต่ละรายการใช้ 5 เครดิต</string>
+    <string name="settings_rebg_button">ลบพื้นหลังรายการทั้งหมด…</string>
+    <string name="settings_rebg_dialog_title">ลบพื้นหลังรายการทั้งหมด?</string>
+    <string name="settings_rebg_confirm">ลบพื้นหลังทั้งหมด</string>
+    <string name="settings_rebging">กำลังลบพื้นหลัง %1$d จาก %2$d…</string>
+    <string name="settings_clear_cache_title">ซ่อมแซมและซิงค์</string>
+    <string name="settings_clear_cache_desc">สแกนโฟลเดอร์ Drive ทั้งหมด: แก้ไขการตั้งชื่อไฟล์, ตรวจหาไฟล์ที่ขาดหาย และโหลดใหม่</string>
+    <string name="settings_clear_cache_button">ซ่อมแซมและซิงค์…</string>
+    <string name="settings_clear_cache_dialog_title">ล้างแคช</string>
+    <string name="settings_clear_cache_dialog_text">รูปภาพที่เก็บไว้ในเครื่องทั้งหมดจะถูกลบและดาวน์โหลดใหม่จาก Google Drive</string>
+    <string name="settings_clear_cache_confirm">ล้างและรีเฟรช</string>
+    <string name="settings_repair_scanning">กำลังสแกนโฟลเดอร์ %1$d จาก %2$d…</string>
+    <string name="settings_repair_confirm_title">ผลการซ่อมแซม</string>
+    <string name="settings_repair_confirm_renamed">เปลี่ยนชื่อไฟล์ %1$d ไฟล์</string>
+    <string name="settings_repair_confirm_unprocessed">%1$d รายการต้องลบพื้นหลัง + ใส่แท็ก</string>
+    <string name="settings_repair_confirm_raw">%1$d รูปภาพไม่รู้จักต้องลบพื้นหลัง + ใส่แท็ก</string>
+    <string name="settings_repair_confirm_sidecar">%1$d รายการต้องใส่แท็กเท่านั้น</string>
+    <string name="settings_repair_confirm_all_ok">ไฟล์ทั้งหมดถูกต้อง แตะด้านล่างเพื่อโหลดใหม่จาก Drive</string>
+    <string name="settings_repair_process">ประมวลผลและรีเฟรช</string>
+    <string name="settings_repair_skip">ข้ามและรีเฟรช</string>
+    <string name="settings_repair_processing">กำลังประมวลผลรายการ %1$d จาก %2$d…</string>
+    <string name="settings_repair_done">ซ่อมแซมเสร็จสิ้น รีเฟรชตู้เสื้อผ้าแล้ว</string>
+
+    <!-- Wardrobe -->
+    <string name="wardrobe_sync_progress">กำลังกู้คืนตู้เสื้อผ้า: %1$d / %2$d</string>
+    <string name="wardrobe_empty_filter">ไม่พบรายการที่ตรงตามตัวกรอง</string>
+    <string name="wardrobe_item_count">%1$d รายการ</string>
+    <string name="wardrobe_filtered_count">แสดง %1$d จาก %2$d รายการ</string>
+    <string name="wardrobe_stats_total">ทั้งหมด %1$d รายการ</string>
+    <string name="wardrobe_stats_untagged">ยังไม่ได้ติดแท็ก</string>
+    <string name="wardrobe_empty">ยังไม่มีรายการ</string>
+    <string name="wardrobe_empty_hint">ถ่ายรูปหรือเลือกจากแกลเลอรี</string>
+    <string name="wardrobe_create_outfit">สร้างชุดด้วยตนเอง</string>
+    <string name="wardrobe_compose_ai">สร้างด้วย AI</string>
+    <string name="wardrobe_selected_count">เลือกแล้ว %1$d รายการ</string>
+    <string name="wardrobe_select_all_count">เลือกทั้งหมด (%1$d)</string>
+    <string name="wardrobe_delete_title">ลบรายการ?</string>
+    <string name="wardrobe_delete_text">คุณแน่ใจหรือไม่ว่าต้องการลบ %d รายการที่เลือก? การดำเนินการนี้ไม่สามารถย้อนกลับได้</string>
+    <string name="wardrobe_move_to">ย้ายไปที่…</string>
+    <string name="wardrobe_move_to_title">ย้าย %d รายการไปที่</string>
+    <string name="wardrobe_sort">จัดเรียง</string>
+    <string name="wardrobe_sort_newest">ใหม่ที่สุดก่อน</string>
+    <string name="wardrobe_sort_oldest">เก่าที่สุดก่อน</string>
+    <string name="wardrobe_sort_most_worn">สวมใส่บ่อยที่สุด</string>
+    <string name="wardrobe_sort_type">ประเภท</string>
+    <string name="wardrobe_sort_category">หมวดหมู่</string>
+    <string name="wardrobe_tag_detect">ตรวจหาแท็ก</string>
+    <string name="wardrobe_tag_remove_bg">ลบพื้นหลัง</string>
+    <string name="wardrobe_tag_re_remove_bg">ลบพื้นหลังใหม่อีกครั้ง</string>
+    <string name="wardrobe_tag_rotate">หมุน</string>
+    <string name="wardrobe_tag_edit">แก้ไขแท็ก</string>
+    <string name="wardrobe_tag_sheet_title">แก้ไขแท็ก</string>
+    <string name="wardrobe_add_gallery">แกลเลอรี</string>
+    <string name="wardrobe_add_camera">กล้อง</string>
+    <string name="wardrobe_add_to_closet">เพิ่มใน %1$s</string>
+    <string name="wardrobe_add_to_closet_title">เพิ่มในตู้เสื้อผ้า</string>
+    <string name="action_continue">ดำเนินการต่อ</string>
+    <string name="tag_label">ชื่อ</string>
+    <string name="tag_label_placeholder">เช่น กางเกงชิโนสีกรมท่า, เสื้อเชิ้ตอ็อกซ์ฟอร์ดสีขาว</string>
+    <string name="tag_type">ประเภท</string>
+    <string name="tag_category">หมวดหมู่</string>
+    <string name="tag_uses">การใช้งาน</string>
+    <string name="tag_colors">สี</string>
+    <string name="tag_seasonality">ฤดูกาล</string>
+    <string name="tag_aesthetic">สไตล์</string>
+    <string name="tag_fit">ทรง</string>
+    <string name="tag_material">วัสดุ</string>
+    <string name="tag_pattern">ลวดลาย</string>
+    <string name="tag_add_custom">เพิ่มแบบกำหนดเอง…</string>
+
+    <!-- Tag values -->
+    <string name="tag_val_casual">ลำลอง</string>
+    <string name="tag_val_formal">ทางการ</string>
+    <string name="tag_val_business">ธุรกิจ</string>
+    <string name="tag_val_sport">กีฬา</string>
+    <string name="tag_val_spring">ฤดูใบไม้ผลิ</string>
+    <string name="tag_val_summer">ฤดูร้อน</string>
+    <string name="tag_val_fall">ฤดูใบไม้ร่วง</string>
+    <string name="tag_val_winter">ฤดูหนาว</string>
+    <string name="tag_val_tops">เสื้อท่อนบน</string>
+    <string name="tag_val_bottoms">ท่อนล่าง</string>
+    <string name="tag_val_outerwear">เสื้อตัวนอก</string>
+    <string name="tag_val_footwear">รองเท้า</string>
+    <string name="tag_val_accessories">เครื่องประดับ</string>
+
+    <!-- Outfits -->
+    <string name="outfits_empty">ยังไม่มีชุดแต่งกาย</string>
+    <string name="outfits_empty_hint">แตะ + เพื่อสร้างชุดจากตู้เสื้อผ้าของคุณ</string>
+    <string name="outfits_no_match">ไม่พบชุดที่ตรงตามตัวกรอง</string>
+    <string name="outfits_sort_newest">ใหม่ที่สุดก่อน</string>
+    <string name="outfits_sort_oldest">เก่าที่สุดก่อน</string>
+    <string name="outfits_sort_most_worn">สวมใส่บ่อยที่สุด</string>
+    <string name="outfits_sort_name_az">ชื่อ ก–ฮ</string>
+    <string name="outfits_sort_name_za">ชื่อ ฮ–ก</string>
+    <string name="outfits_create_manual">สร้างชุดด้วยตนเอง</string>
+    <string name="outfits_suggest">แนะนำชุดที่มีอยู่</string>
+    <string name="prediction_setup_title">ค้นหาด้วย AI</string>
+    <string name="prediction_setup_find">ค้นหา</string>
+    <string name="prediction_setup_title_compose">สร้างด้วย AI</string>
+    <string name="prediction_setup_create">สร้าง</string>
+    <string name="prediction_setup_suggestions">คำแนะนำ</string>
+    <string name="prediction_setup_weather_today">วันนี้</string>
+    <string name="prediction_setup_weather_tomorrow">พรุ่งนี้</string>
+    <string name="outfits_compose">สร้างชุดใหม่</string>
+    <string name="outfits_thinking">กำลังคิด…</string>
+    <string name="outfits_suggesting">กำลังแนะนำชุด…</string>
+    <string name="outfits_composing">กำลังสร้างชุด…</string>
+    <string name="outfits_delete_title">ลบชุดแต่งกาย?</string>
+    <string name="outfits_delete_text">\"%s\" จะถูกลบออกอย่างถาวร</string>
+    <string name="outfits_wear_today">ใส่ชุดนี้วันนี้</string>
+    <string name="outfits_worn_today">ใส่แล้ววันนี้!</string>
+    <string name="outfits_suggested_title">แนะนำสำหรับวันนี้</string>
+    <string name="outfits_composed_title">สร้างขึ้นเพื่อคุณ</string>
+    <string name="outfits_name_dialog_title">ตั้งชื่อชุดนี้</string>
+    <string name="outfits_name_placeholder">ชื่อชุด</string>
+    <string name="outfits_create_this">สร้างชุดนี้</string>
+    <string name="outfits_refine_label">ปรับแต่งด้วย AI</string>
+    <string name="outfits_add_item">เพิ่มรายการ</string>
+    <string name="outfits_tags_label">แท็ก</string>
+    <string name="composer_select_suggestion">ใช้ชุดนี้</string>
+    <string name="outfits_tag_add">เพิ่มแท็ก</string>
+    <string name="outfits_saved_wear_today">บันทึกชุดแล้ว! จะใส่ชุดนี้วันนี้ไหม?</string>
+    <string name="outfits_combine">รวมชุดด้วย AI</string>
+    <string name="outfit_generate_with_ai">สร้างด้วย AI</string>
+    <string name="outfit_save_dialog_title">บันทึกชุด</string>
+    <string name="outfit_save_dialog_confirm">บันทึก</string>
+
+    <!-- Travel -->
+    <string name="travel_title">รายการจัดกระเป๋า</string>
+    <string name="travel_destination">จุดหมายปลายทาง</string>
+    <string name="travel_duration">ระยะเวลา</string>
+    <string name="travel_start_date">วันที่เริ่ม</string>
+    <string name="travel_generate">สร้างรายการจัดกระเป๋า</string>
+    <string name="travel_packing_list">รายการจัดกระเป๋า</string>
+    <string name="travel_clear">ล้าง</string>
+    <string name="travel_empty">ใส่จุดหมายเพื่อเริ่ม</string>
+    <string name="travel_day">วันที่ %d</string>
+    <string name="travel_save_as_style">บันทึกเป็นชุด</string>
+    <string name="travel_saved_as_style">บันทึกแล้ว</string>
+
+    <!-- Calendar -->
+    <string name="calendar_day_mo">จ.</string>
+    <string name="calendar_day_tu">อ.</string>
+    <string name="calendar_day_we">พ.</string>
+    <string name="calendar_day_th">พฤ.</string>
+    <string name="calendar_day_fr">ศ.</string>
+    <string name="calendar_day_sa">ส.</string>
+    <string name="calendar_day_su">อา.</string>
+    <string name="calendar_stats_styles">ชุดที่ใส่บ่อยที่สุด</string>
+    <string name="calendar_stats_items">รายการที่ใส่บ่อยที่สุด</string>
+    <string name="calendar_empty">ยังไม่มีประวัติชุดที่ใส่</string>
+    <string name="calendar_wear_again">ใส่ซ้ำอีกวันนี้</string>
+
+    <!-- Gap Analyzer -->
+    <string name="gap_analyze">วิเคราะห์ตู้เสื้อผ้าของฉัน</string>
+    <string name="gap_reanalyze">วิเคราะห์ใหม่</string>
+
+    <!-- AI overlay -->
+    <string name="ai_working">AI กำลังทำงาน…</string>
+    <string name="ai_fetching_weather">กำลังดึงข้อมูลสภาพอากาศ…</string>
+    <string name="ai_generating_packing">กำลังสร้างรายการจัดกระเป๋า…</string>
+    <string name="ai_analyzing_wardrobe">กำลังวิเคราะห์ตู้เสื้อผ้าของคุณ…</string>
+    <string name="ai_suggesting_style">กำลังแนะนำชุด…</string>
+    <string name="ai_composing_outfit">กำลังสร้างชุด…</string>
+
+    <!-- Offline mode -->
+    <string name="offline_banner">คุณออฟไลน์อยู่ — โหมดดูอย่างเดียว</string>
+
+    <!-- Try on me -->
+    <string name="tryon_title">ลองใส่ชุด</string>
+    <string name="tryon_fab">ลองใส่ชุด</string>
+    <string name="tryon_uploading">กำลังอัปโหลด…</string>
+    <string name="tryon_generating">กำลังสร้างภาพจำลองลองชุด…</string>
+    <string name="tryon_error">การสร้างภาพล้มเหลว</string>
+    <string name="tryon_save_to_gallery">บันทึกในแกลเลอรี</string>
+    <string name="tryon_saved">บันทึกใน Pictures/LibreLookAI แล้ว</string>
+    <string name="tryon_camera">กล้อง</string>
+    <string name="tryon_gallery">แกลเลอรี</string>
+
+    <!-- About -->
+    <string name="settings_tab_about">เกี่ยวกับ</string>
+    <string name="about_version">เวอร์ชัน %1$s (%2$s)</string>
+    <string name="about_open_source">แอปนี้เป็นโอเพนซอร์สและใช้งานฟรี</string>
+
+    <!-- Unified Outfit Composer -->
+    <string name="composer_title">สร้างชุด</string>
+    <string name="composer_save">บันทึก</string>
+    <string name="composer_goal_generate">สร้าง</string>
+    <string name="composer_advanced">ตัวเลือกขั้นสูง</string>
+    <string name="composer_chip_work">งาน</string>
+    <string name="composer_chip_dinner">อาหารค่ำ</string>
+    <string name="composer_chip_casual">ลำลอง</string>
+    <string name="composer_chip_workout">กีฬา</string>
+    <string name="composer_chip_travel">ท่องเที่ยว</string>
+    <string name="composer_chip_date">ออกเดท</string>
+    <string name="composer_weather_auto">ปัจจุบัน</string>
+    <string name="composer_weather_manual">กำหนดเอง</string>
+    <string name="composer_season_spring">ฤดูใบไม้ผลิ</string>
+    <string name="composer_season_summer">ฤดูร้อน</string>
+    <string name="composer_season_fall">ฤดูใบไม้ร่วง</string>
+    <string name="composer_season_winter">ฤดูหนาว</string>
+    <string name="composer_temp_value">%1$d°C</string>
+    <string name="composer_enhance">ปรับปรุงด้วย AI</string>
+    <string name="composer_enhancing">กำลังถาม Gemini…</string>
+</resources>

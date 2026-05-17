@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LibreLookAI</string>
+
+    <!-- Navigation -->
+    <string name="nav_styles">Образи</string>
+    <string name="nav_wardrobe">Гардероб</string>
+    <string name="nav_shopping">Шопінг</string>
+    <string name="nav_travel">Подорожі</string>
+    <string name="nav_insights">Аналітика</string>
+    <string name="nav_settings">Налаштування</string>
+
+    <!-- Insights tab -->
+    <string name="insights_title">Аналітика</string>
+    <string name="insights_tab_calendar">Календар</string>
+    <string name="insights_tab_wardrobe_stats">Статистика гардероба</string>
+    <string name="insights_tab_calendar_stats">Статистика календаря</string>
+    <string name="insights_tab_costs">Витрати</string>
+    <string name="costs_count_items">Речі</string>
+    <string name="costs_count_outfits">Образи</string>
+    <string name="costs_count_tryons">Примірки</string>
+    <string name="costs_count_wears">Виходи</string>
+    <string name="costs_count_imports">Імпорт</string>
+    <string name="costs_activity_14d">Активність (за 14 днів)</string>
+
+    <!-- Shopping Helper tab -->
+    <string name="shopping_title">Помічник шопінгу</string>
+    <string name="shopping_tab_list">Список покупок</string>
+    <string name="shopping_tab_similarity">Пошук схожих</string>
+    <string name="shopping_tab_gaps">Знайти прогалини</string>
+
+    <!-- Shopping list sub-tab -->
+    <string name="shop_list_empty_title">Список побажань порожній</string>
+    <string name="shop_list_empty_hint">Додавайте речі за допомогою камери, галереї або посилання на товар.</string>
+    <string name="shop_list_add_camera">Додати з камери</string>
+    <string name="shop_list_add_gallery">Додати з галереї</string>
+    <string name="shop_list_add_url">Додати за посиланням</string>
+    <string name="shop_list_url_title">Додати за посиланням</string>
+    <string name="shop_list_url_hint">Вставте посилання на товар. Ми автоматично отримаємо зображення.</string>
+    <string name="shop_list_uploading">Завантаження…</string>
+    <string name="shop_list_moving">Переміщення…</string>
+    <string name="shop_list_loading">Завантаження…</string>
+    <string name="shop_list_processing">Обробка %1$d речей…</string>
+    <string name="shop_list_move_to_closet">Перемістити в гардероб</string>
+    <string name="shop_list_move_title">Перемістити в гардероб</string>
+    <string name="shop_list_delete_title">Видалити зі списку побажань?</string>
+    <string name="shop_list_delete_text">Видалити %1$d речей назавжди?</string>
+
+    <!-- URL import (Wardrobe + Shopping List) -->
+    <string name="wardrobe_add_url">Додати за посиланням</string>
+    <string name="wardrobe_url_import_title">Імпорт за посиланням</string>
+    <string name="wardrobe_url_import_hint">Вставте посилання на товар. Ми отримаємо фото автоматично.</string>
+    <string name="url_import_failed">Не вдалося знайти зображення за цим посиланням.</string>
+    <string name="url_import_pick_title">Оберіть зображення товару</string>
+    <string name="url_import_pick_hint">Натисніть на фото, яке хочете додати.</string>
+    <string name="url_import_browser_title">Відкрити сторінку</string>
+    <string name="url_import_browser_hint">Натисніть на будь-яке фото на сторінці для імпорту.</string>
+    <string name="url_import_open_browser">Відкрити в браузері</string>
+    <string name="url_import_show_candidates">Варіанти</string>
+    <string name="url_import_no_candidates">Зображень не знайдено.</string>
+
+    <!-- Outfits sub-tabs -->
+    <string name="outfits_tab_outfits">Образи</string>
+    <string name="outfits_tab_tryons">Примірки</string>
+
+    <!-- Common actions -->
+    <string name="action_ok">OK</string>
+    <string name="action_cancel">Скасувати</string>
+    <string name="action_dismiss">Закрити</string>
+    <string name="action_delete">Видалити</string>
+    <string name="action_save">Зберегти</string>
+    <string name="action_edit">Редагувати</string>
+    <string name="action_saving">Збереження…</string>
+    <string name="action_clear">Очистити</string>
+    <string name="action_sort">Сортувати</string>
+    <string name="action_remove">Прибрати</string>
+    <string name="cd_ai_suggestion">Пропозиція ШІ</string>
+    <string name="cd_refine">Уточнити</string>
+    <string name="filter_location">Місце</string>
+    <string name="filter_all_locations">Всі</string>
+    <string name="wardrobe_processing_photos">Обробка %1$d фото…</string>
+    <string name="wardrobe_progress_uploading">Завантаження фото…</string>
+    <string name="wardrobe_progress_uploading_batch">Завантаження фото %1$d з %2$d…</string>
+    <string name="wardrobe_progress_removing_bg">Видалення фону…</string>
+    <string name="wardrobe_progress_removing_bg_batch">Видалення фону %1$d з %2$d…</string>
+    <string name="wardrobe_progress_moving">Переміщення…</string>
+    <string name="action_select_all">Вибрати все</string>
+    <string name="action_deselect_all">Зняти вибір</string>
+
+    <!-- Sign In -->
+    <string name="sign_in_prompt">Увійдіть, щоб керувати гардеробом</string>
+    <string name="sign_in_button">Увійти через Google</string>
+    <string name="sign_in_error_not_registered">Помилка входу: цей додаток не авторизовано Google.</string>
+    <string name="sign_in_error_network">Помилка входу: немає зв’язку з мережею.</string>
+    <string name="sign_in_error_generic">Помилка входу (код %1$d). Спробуйте ще раз.</string>
+
+    <!-- Settings -->
+    <string name="settings_tab_profile">Профіль</string>
+    <string name="settings_tab_display">Екран</string>
+    <string name="settings_display_theme">Тема</string>
+    <string name="settings_display_theme_desc">Оберіть колірну палітру додатка.</string>
+    <string name="theme_green_light">Зелена (світла)</string>
+    <string name="theme_green_dark">Зелена (темна)</string>
+    <string name="theme_sand_light">Пісочна (світла)</string>
+    <string name="theme_indigo_dark">Індиго (темна)</string>
+    <string name="theme_pastel_mint">Пастельна м’ята</string>
+    <string name="theme_pastel_blush">Пастельна пудра</string>
+    <string name="theme_pastel_lavender">Пастельна лаванда</string>
+    <string name="settings_display_font">Шрифт</string>
+    <string name="settings_display_font_desc">Оберіть шрифт для додатка.</string>
+    <string name="font_default">Системний</string>
+    <string name="font_caveat">Caveat (рукописний)</string>
+    <string name="wardrobe_filters">Фільтри</string>
+    <string name="wardrobe_filters_apply">Застосувати (%1$d)</string>
+    <string name="wardrobe_filters_reset">Скинути</string>
+    <string name="settings_tab_data">Дані</string>
+    <string name="settings_tab_credits">Кредити</string>
+    <string name="settings_language">Мова</string>
+    <string name="settings_gender">Стать</string>
+    <string name="settings_gender_select">Обрати…</string>
+    <string name="settings_gender_prefer_not">Не вказувати</string>
+    <string name="settings_gender_female">Жіноча</string>
+    <string name="settings_gender_male">Чоловіча</string>
+    <string name="settings_gender_nonbinary">Небінарна</string>
+    <string name="settings_gender_other">Інша</string>
+    <string name="settings_year_of_birth">Рік народження</string>
+    <string name="settings_year_placeholder">напр. 1990</string>
+    <string name="settings_style_prefs">Стильові вподобання</string>
+    <string name="settings_style_placeholder">Опишіть, що ви любите носити, для яких подій одягаєтесь, улюблені кольори та бренди…</string>
+    <string name="settings_saved">Вподобання збережено</string>
+    <string name="settings_api_key_title">Ключ Gemini API</string>
+    <string name="settings_api_key_desc">Для функцій ШІ потрібен ключ Gemini API. Отримайте безкоштовно на aistudio.google.com.</string>
+    <string name="settings_api_key_label">Ключ API</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="settings_data_tags_title">Теги гардероба</string>
+    <string name="settings_data_tags_desc">Перекласифікувати всі речі за допомогою ШІ. Це перезапише ручні правки.</string>
+    <string name="settings_rescan_button">Пересканувати всі теги</string>
+    <string name="settings_rescanning">Сканування %1$d з %2$d…</string>
+    <string name="settings_rescan_dialog_title">Пересканувати всі теги?</string>
+    <string name="settings_rescan_dialog_text">Gemini перекласифікує всі речі у вашому гардеробі. Це може зайняти час.</string>
+    <string name="settings_rescan_confirm">Пересканувати</string>
+    <string name="settings_bulk_cost_line">%1$d речей × %2$d кред. = разом %3$d кредитів</string>
+    <string name="settings_rebg_title">Видалення фону</string>
+    <string name="settings_rebg_desc">Повторно видалити фон для всіх речей. Кожна річ коштує 5 кредитів ШІ.</string>
+    <string name="settings_rebg_button">Видалити фон для всіх речей…</string>
+    <string name="settings_rebg_dialog_title">Видалити фон для всіх речей?</string>
+    <string name="settings_rebg_confirm">Видалити весь фон</string>
+    <string name="settings_rebging">Видалення фону %1$d з %2$d…</string>
+    <string name="settings_clear_cache_title">Ремонт і синхронізація</string>
+    <string name="settings_clear_cache_desc">Сканувати папки Drive: виправити імена, виявити відсутні фото та оновити все.</string>
+    <string name="settings_clear_cache_button">Ремонт і синхронізація…</string>
+    <string name="settings_clear_cache_dialog_title">Очистити кеш</string>
+    <string name="settings_clear_cache_dialog_text">Всі локальні зображення будуть видалені та завантажені знову з Google Drive.</string>
+    <string name="settings_clear_cache_confirm">Очистити й оновити</string>
+    <string name="settings_repair_scanning">Сканування папки %1$d з %2$d…</string>
+    <string name="settings_repair_confirm_title">Результати ремонту</string>
+    <string name="settings_repair_confirm_renamed">%1$d файлів перейменовано</string>
+    <string name="settings_repair_confirm_unprocessed">%1$d речей потребують видалення фону + теги</string>
+    <string name="settings_repair_confirm_raw">%1$d невідомих зображень потребують видалення фону + теги</string>
+    <string name="settings_repair_confirm_sidecar">%1$d речей потребують тільки теги</string>
+    <string name="settings_repair_confirm_all_ok">Всі файли в порядку. Натисніть нижче для оновлення.</string>
+    <string name="settings_repair_process">Обробити й оновити</string>
+    <string name="settings_repair_skip">Пропустити й оновити</string>
+    <string name="settings_repair_processing">Обробка речі %1$d з %2$d…</string>
+    <string name="settings_repair_done">Ремонт завершено. Гардероб оновлено.</string>
+
+    <!-- Wardrobe -->
+    <string name="wardrobe_sync_progress">Відновлення гардероба: %1$d / %2$d</string>
+    <string name="wardrobe_empty_filter">Нічого не знайдено за фільтром</string>
+    <string name="wardrobe_item_count">%1$d речей</string>
+    <string name="wardrobe_filtered_count">Показано %1$d з %2$d речей</string>
+    <string name="wardrobe_stats_total">Всього %1$d речей</string>
+    <string name="wardrobe_stats_untagged">Без тегів</string>
+    <string name="wardrobe_empty">Речей ще немає</string>
+    <string name="wardrobe_empty_hint">Зробіть фото або оберіть із галереї</string>
+    <string name="wardrobe_create_outfit">Створити образ вручну</string>
+    <string name="wardrobe_compose_ai">Створити за допомогою ШІ</string>
+    <string name="wardrobe_selected_count">%1$d вибрано</string>
+    <string name="wardrobe_select_all_count">Вибрати всі (%1$d)</string>
+    <string name="wardrobe_delete_title">Видалити речі?</string>
+    <string name="wardrobe_delete_text">Ви впевнені, що хочете видалити %d вибраних речей? Це неможливо скасувати.</string>
+    <string name="wardrobe_move_to">Перемістити до…</string>
+    <string name="wardrobe_move_to_title">Перемістити %d речей до</string>
+    <string name="wardrobe_sort">Сортувати</string>
+    <string name="wardrobe_sort_newest">Спочатку нові</string>
+    <string name="wardrobe_sort_oldest">Спочатку старі</string>
+    <string name="wardrobe_sort_most_worn">Найчастіше ношені</string>
+    <string name="wardrobe_sort_type">За типом</string>
+    <string name="wardrobe_sort_category">За категорією</string>
+    <string name="wardrobe_tag_detect">Розпізнати теги</string>
+    <string name="wardrobe_tag_remove_bg">Прибрати фон</string>
+    <string name="wardrobe_tag_re_remove_bg">Переприбрати фон</string>
+    <string name="wardrobe_tag_rotate">Повернути</string>
+    <string name="wardrobe_tag_edit">Редагувати теги</string>
+    <string name="wardrobe_tag_sheet_title">Редагування тегів</string>
+    <string name="wardrobe_add_gallery">Галерея</string>
+    <string name="wardrobe_add_camera">Камера</string>
+    <string name="wardrobe_add_to_closet">Додати в %1$s</string>
+    <string name="wardrobe_add_to_closet_title">Додати в гардероб</string>
+    <string name="action_continue">Продовжити</string>
+    <string name="tag_label">Назва</string>
+    <string name="tag_label_placeholder">напр. Сині чіноси, Біла сорочка</string>
+    <string name="tag_type">Тип</string>
+    <string name="tag_category">Категорія</string>
+    <string name="tag_uses">Призначення</string>
+    <string name="tag_colors">Кольори</string>
+    <string name="tag_seasonality">Сезонність</string>
+    <string name="tag_aesthetic">Стиль</string>
+    <string name="tag_fit">Крій</string>
+    <string name="tag_material">Матеріал</string>
+    <string name="tag_pattern">Принт</string>
+    <string name="tag_add_custom">Додати свій тег…</string>
+
+    <!-- Tag values -->
+    <string name="tag_val_casual">Повсякденний</string>
+    <string name="tag_val_formal">Офіційний</string>
+    <string name="tag_val_business">Діловий</string>
+    <string name="tag_val_sport">Спортивний</string>
+    <string name="tag_val_spring">Весна</string>
+    <string name="tag_val_summer">Літо</string>
+    <string name="tag_val_fall">Осінь</string>
+    <string name="tag_val_winter">Зима</string>
+    <string name="tag_val_tops">Верх</string>
+    <string name="tag_val_bottoms">Низ</string>
+    <string name="tag_val_outerwear">Верхній одяг</string>
+    <string name="tag_val_footwear">Взуття</string>
+    <string name="tag_val_accessories">Аксесуари</string>
+
+    <!-- Outfits -->
+    <string name="outfits_empty">Образів ще немає</string>
+    <string name="outfits_empty_hint">Натисніть +, щоб скласти образ із речей гардероба</string>
+    <string name="outfits_no_match">Образів не знайдено</string>
+    <string name="outfits_sort_newest">Спочатку нові</string>
+    <string name="outfits_sort_oldest">Спочатку старі</string>
+    <string name="outfits_sort_most_worn">Найчастіше ношені</string>
+    <string name="outfits_sort_name_az">Назва А–Я</string>
+    <string name="outfits_sort_name_za">Назва Я–А</string>
+    <string name="outfits_create_manual">Створити образ вручну</string>
+    <string name="outfits_suggest">Запропонувати образ із наявних</string>
+    <string name="prediction_setup_title">Знайти через ШІ</string>
+    <string name="prediction_setup_find">Знайти</string>
+    <string name="prediction_setup_title_compose">Створити через ШІ</string>
+    <string name="prediction_setup_create">Створити</string>
+    <string name="prediction_setup_suggestions">Пропозиції</string>
+    <string name="prediction_setup_weather_today">Сьогодні</string>
+    <string name="prediction_setup_weather_tomorrow">Завтра</string>
+    <string name="outfits_compose">Скласти новий образ</string>
+    <string name="outfits_thinking">Думаю…</string>
+    <string name="outfits_suggesting">Підбираю образ…</string>
+    <string name="outfits_composing">Складаю образ…</string>
+    <string name="outfits_delete_title">Видалити образ?</string>
+    <string name="outfits_delete_text">\"%s\" буде видалено назавжди.</string>
+    <string name="outfits_wear_today">Одягнути сьогодні</string>
+    <string name="outfits_worn_today">Одягнено сьогодні!</string>
+    <string name="outfits_suggested_title">Радимо на сьогодні</string>
+    <string name="outfits_composed_title">Складено для вас</string>
+    <string name="outfits_name_dialog_title">Назвіть цей образ</string>
+    <string name="outfits_name_placeholder">Назва образу</string>
+    <string name="outfits_create_this">Створити цей образ</string>
+    <string name="outfits_refine_label">Уточнити через ШІ</string>
+    <string name="outfits_add_item">Додати річ</string>
+    <string name="outfits_tags_label">Теги</string>
+    <string name="composer_select_suggestion">Використати цей образ</string>
+    <string name="outfits_tag_add">Додати тег</string>
+    <string name="outfits_saved_wear_today">Образ збережено! Одягнете сьогодні?</string>
+    <string name="outfits_combine">Об’єднати за допомогою ШІ</string>
+    <string name="outfit_generate_with_ai">Згенерувати через ШІ</string>
+    <string name="outfit_save_dialog_title">Зберегти образ</string>
+    <string name="outfit_save_dialog_confirm">Зберегти</string>
+
+    <!-- Travel -->
+    <string name="travel_title">Список речей у дорогу</string>
+    <string name="travel_destination">Куди їдете</string>
+    <string name="travel_duration">Тривалість</string>
+    <string name="travel_start_date">Дата початку</string>
+    <string name="travel_generate">Згенерувати список</string>
+    <string name="travel_packing_list">Список речей</string>
+    <string name="travel_clear">Очистити</string>
+    <string name="travel_empty">Введіть напрямок, щоб почати</string>
+    <string name="travel_day">День %d</string>
+    <string name="travel_save_as_style">Зберегти як образ</string>
+    <string name="travel_saved_as_style">Збережено</string>
+
+    <!-- Calendar -->
+    <string name="calendar_day_mo">Пн</string>
+    <string name="calendar_day_tu">Вт</string>
+    <string name="calendar_day_we">Ср</string>
+    <string name="calendar_day_th">Чт</string>
+    <string name="calendar_day_fr">Пт</string>
+    <string name="calendar_day_sa">Сб</string>
+    <string name="calendar_day_su">Нд</string>
+    <string name="calendar_stats_styles">Найпопулярніші образи</string>
+    <string name="calendar_stats_items">Найпопулярніші речі</string>
+    <string name="calendar_empty">Історія ще порожня</string>
+    <string name="calendar_wear_again">Одягнути знову сьогодні</string>
+
+    <!-- Gap Analyzer -->
+    <string name="gap_analyze">Аналіз мого гардероба</string>
+    <string name="gap_reanalyze">Повторний аналіз</string>
+
+    <!-- AI overlay -->
+    <string name="ai_working">ШІ працює…</string>
+    <string name="ai_fetching_weather">Отримання погоди…</string>
+    <string name="ai_generating_packing">Створення списку речей…</string>
+    <string name="ai_analyzing_wardrobe">Аналіз вашого гардероба…</string>
+    <string name="ai_suggesting_style">Підбір образу…</string>
+    <string name="ai_composing_outfit">Складання образу…</string>
+
+    <!-- Offline mode -->
+    <string name="offline_banner">Ви офлайн — режим перегляду</string>
+
+    <!-- Try on me -->
+    <string name="tryon_title">Приміряти на мені</string>
+    <string name="tryon_fab">Приміряти на мені</string>
+    <string name="tryon_uploading">Завантаження…</string>
+    <string name="tryon_generating">Генерація вашої примірки…</string>
+    <string name="tryon_error">Помилка генерації примірки</string>
+    <string name="tryon_save_to_gallery">Зберегти в галерею</string>
+    <string name="tryon_saved">Збережено в Pictures/LibreLookAI</string>
+    <string name="tryon_camera">Камера</string>
+    <string name="tryon_gallery">Галерея</string>
+
+    <!-- About -->
+    <string name="settings_tab_about">Про додаток</string>
+    <string name="about_version">Версія %1$s (%2$s)</string>
+    <string name="about_open_source">Це безкоштовний додаток із відкритим кодом.</string>
+
+    <!-- Unified Outfit Composer -->
+    <string name="composer_title">Створити образ</string>
+    <string name="composer_save">Зберегти</string>
+    <string name="composer_goal_generate">Згенерувати</string>
+    <string name="composer_advanced">Додатково</string>
+    <string name="composer_chip_work">Робота</string>
+    <string name="composer_chip_dinner">Вечеря</string>
+    <string name="composer_chip_casual">Кежуал</string>
+    <string name="composer_chip_workout">Спорт</string>
+    <string name="composer_chip_travel">Подорож</string>
+    <string name="composer_chip_date">Побачення</string>
+    <string name="composer_weather_auto">Поточна</string>
+    <string name="composer_weather_manual">Вручну</string>
+    <string name="composer_season_spring">Весна</string>
+    <string name="composer_season_summer">Літо</string>
+    <string name="composer_season_fall">Осінь</string>
+    <string name="composer_season_winter">Зима</string>
+    <string name="composer_temp_value">%1$d°C</string>
+    <string name="composer_enhance">Уточнити через ШІ</string>
+    <string name="composer_enhancing">Запитую Gemini…</string>
+</resources>

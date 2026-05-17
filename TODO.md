@@ -5,7 +5,15 @@ similarity search needs improvement
 
 size filter? default sizes in wardrobe? size tag?
 
-Implement new feature: We are working on the refinancing/monetization aspect of the app: I want people to be able to buy coins that I then use to pay gemini cloud costs. would that work with RevenueCat (handles the money/receipts) + Firebase (database and secure Gemini API routing)? In addition, I still want to support the bring your own key option though.
+Implement new feature: We are working on the refinancing/monetization aspect of the app: I want people to be able to buy coins that I then use to pay gemini cloud costs. would that work with RevenueCat (handles the money/receipts) + Firebase (database and secure Gemini API routing)? In addition, I still want to support the bring your own key option though. What is important is that the user always knows how many coins a certain operation takes (if it involves coins or BYOK tokens). So we need to somehow visually communicate the coin or cost. To be sustainable we need to add 100% to the actual cost. We need to store and use this multiplier securely.
+
+Go through all screens again and check that they are really localized. I just found that the Insights screen is not localized
+
+Localize into es, de, it, fr, pt, en, pl, ja, ko, tr, id, th, vi, nl, hi, ar, uk, ro, cs, sv, ms, tl, el, hu, zh, he, ur, da, fi, no
+
+es-419, es-ES, de-DE, it-IT, fr-FR, pt-BR, en-US, en-GB, pl-PL, ja-JP, ko-KR, tr-TR, id-ID, th-TH, vi-VN, nl-NL, hi-IN, ar-SA, uk-UA, ro-RO, cs-CZ, sv-SE, ms-MY, tl-PH, el-GR, hu-HU, zh-TW, he-IL, ur-PK, da-DK, fi-FI, no-NO
+
+Add unit tests to get to 50% test converage
 
 fix usability issue on wardrobe screen: moving item to different closet and then switching to that closet - it won't immediately appear on wardrobe after moving to different closet. it took almost a minute to appear. Can this be sped up?
 
@@ -19,7 +27,12 @@ travel screen create tabs: create travel outfits and another one with travels th
 
 TODO
 ====
-create human readable release notes between now and v1.7.0 and release version 1.7.1, git tag commit and upload to testers in firebase
+create human readable release notes between now and v1.7.1 and release version 1.7.2, git tag commit and upload to testers in firebase
+
+Fix those bugs:
+try-ons: the buttons at the bottom are outside of the screen
+try-ons: when pressing + on try-on FAB and then a) adding wardrobe items should use the wardrobe selector that the outfit editor is using b) allow selecting an outfit to try on not just single wardrobe items
+try-ons: when try-on is based on an outfit, store a link back to the outfit (if it exists)and on try-on detail view enable seeing the outfit
 
 Storage:
 - I noticed .jpgs from camera are just 124kB but .pngs are 450kB. Since this is on users drive folders we have to be cautious about size. Let's target 1GB - to allow for 2000-4000 wardrobe items.

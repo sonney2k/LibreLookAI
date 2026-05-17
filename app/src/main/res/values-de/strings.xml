@@ -536,6 +536,11 @@
     <string name="gap_empty_title">Finde, was fehlt</string>
     <string name="gap_empty_hint">Tippe auf \"Analysieren\", damit KI die grundlegenden Teile identifiziert, die die meisten Outfits aus deiner Garderobe vervollständigen.</string>
 
+    <!-- Suggest replacements (Wardrobe selection mode) -->
+    <string name="wardrobe_suggest_replacements">Alternativen vorschlagen</string>
+    <string name="replacements_title">Ersatz für %d Teile</string>
+    <string name="replacements_analyzing">Ersatz wird vorgeschlagen…</string>
+
     <string name="credits_balance_label">Verbleibende KI-Credits</string>
     <string name="credits_cost_title">Credits pro Aktion</string>
     <string name="credits_action_bg_removal">Hintergrund entfernen</string>
@@ -620,6 +625,14 @@
 
     <!-- About -->
     <string name="settings_tab_about">Info</string>
+
+    <!-- Feedback -->
+    <string name="settings_tab_feedback">Feedback</string>
+    <string name="settings_feedback_title">Feedback senden</string>
+    <string name="settings_feedback_desc">Einen Fehler gefunden oder einen Vorschlag? Öffne ein Issue auf GitHub oder schreib uns eine E-Mail. Wenn du unten die Debug-Vorschau aktivierst, lassen sich Fehlerberichte leichter einordnen.</string>
+    <string name="settings_feedback_github">GitHub-Issues öffnen</string>
+    <string name="settings_feedback_email">Feedback per E-Mail</string>
+    <string name="settings_feedback_debug_section">Debugging</string>
     <string name="about_version">Version %1$s (%2$s)</string>
     <string name="about_description">LibreLookAI ist ein kostenloser, quelloffener, KI-gestützter Kleiderschrank-Manager. Er hilft dir, deine Kleidung zu organisieren, Outfit-Vorschläge zu erhalten, Reise-Packlisten zu planen und Garderobenlücken zu entdecken — alles mit KI.</string>
     <string name="about_open_source">Diese App ist quelloffen und kostenlos nutzbar. Der Quellcode ist auf GitHub verfügbar.</string>

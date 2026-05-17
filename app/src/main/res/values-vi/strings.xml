@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LibreLookAI</string>
+
+    <!-- Navigation -->
+    <string name="nav_styles">Trang phục</string>
+    <string name="nav_wardrobe">Tủ đồ</string>
+    <string name="nav_shopping">Mua sắm</string>
+    <string name="nav_travel">Du lịch</string>
+    <string name="nav_insights">Phân tích</string>
+    <string name="nav_settings">Cài đặt</string>
+
+    <!-- Insights tab -->
+    <string name="insights_title">Phân tích</string>
+    <string name="insights_tab_calendar">Lịch</string>
+    <string name="insights_tab_wardrobe_stats">Thống kê tủ đồ</string>
+    <string name="insights_tab_calendar_stats">Thống kê lịch</string>
+    <string name="insights_tab_costs">Chi phí</string>
+    <string name="costs_count_items">Món đồ</string>
+    <string name="costs_count_outfits">Bộ đồ</string>
+    <string name="costs_count_tryons">Lần thử</string>
+    <string name="costs_count_wears">Lần mặc</string>
+    <string name="costs_count_imports">Nhập vào</string>
+    <string name="costs_activity_14d">Hoạt động (14 ngày qua)</string>
+
+    <!-- Shopping Helper tab -->
+    <string name="shopping_title">Hỗ trợ mua sắm</string>
+    <string name="shopping_tab_list">Danh sách mua sắm</string>
+    <string name="shopping_tab_similarity">Tìm đồ tương tự</string>
+    <string name="shopping_tab_gaps">Tìm món đồ thiếu</string>
+
+    <!-- Shopping list sub-tab -->
+    <string name="shop_list_empty_title">Danh sách mong muốn trống</string>
+    <string name="shop_list_empty_hint">Thêm các món đồ bạn muốn mua bằng camera, thư viện hoặc URL sản phẩm.</string>
+    <string name="shop_list_add_camera">Thêm từ camera</string>
+    <string name="shop_list_add_gallery">Thêm từ thư viện</string>
+    <string name="shop_list_add_url">Thêm từ URL</string>
+    <string name="shop_list_url_title">Thêm từ URL</string>
+    <string name="shop_list_url_hint">Dán URL của trang mua sắm. Chúng tôi sẽ tự động lấy ảnh sản phẩm.</string>
+    <string name="shop_list_uploading">Đang tải lên…</string>
+    <string name="shop_list_moving">Đang di chuyển…</string>
+    <string name="shop_list_loading">Đang tải…</string>
+    <string name="shop_list_processing">Đang xử lý %1$d món đồ…</string>
+    <string name="shop_list_move_to_closet">Chuyển vào tủ đồ</string>
+    <string name="shop_list_move_title">Chuyển vào tủ đồ</string>
+    <string name="shop_list_delete_title">Xóa khỏi danh sách?</string>
+    <string name="shop_list_delete_text">Xóa vĩnh viễn %1$d món đồ khỏi danh sách mong muốn?</string>
+
+    <!-- URL import (Wardrobe + Shopping List) -->
+    <string name="wardrobe_add_url">Thêm từ URL</string>
+    <string name="wardrobe_url_import_title">Nhập từ URL mua sắm</string>
+    <string name="wardrobe_url_import_hint">Dán URL trang mua sắm vào đây.</string>
+    <string name="url_import_failed">Không tìm thấy ảnh sản phẩm tại URL này.</string>
+    <string name="url_import_pick_title">Chọn ảnh sản phẩm</string>
+    <string name="url_import_pick_hint">Chạm vào ảnh bạn muốn nhập vào.</string>
+    <string name="url_import_browser_title">Mở trang web</string>
+    <string name="url_import_browser_hint">Chạm vào bất kỳ ảnh nào trên trang để nhập.</string>
+    <string name="url_import_open_browser">Mở trang web</string>
+    <string name="url_import_show_candidates">Ứng cử viên</string>
+    <string name="url_import_no_candidates">Không tìm thấy ảnh.</string>
+
+    <!-- Outfits sub-tabs -->
+    <string name="outfits_tab_outfits">Trang phục</string>
+    <string name="outfits_tab_tryons">Lần thử</string>
+
+    <!-- Common actions -->
+    <string name="action_ok">OK</string>
+    <string name="action_cancel">Hủy</string>
+    <string name="action_dismiss">Đóng</string>
+    <string name="action_delete">Xóa</string>
+    <string name="action_save">Lưu</string>
+    <string name="action_edit">Sửa</string>
+    <string name="action_saving">Đang lưu…</string>
+    <string name="action_clear">Xóa sạch</string>
+    <string name="action_sort">Sắp xếp</string>
+    <string name="action_remove">Gỡ bỏ</string>
+    <string name="cd_ai_suggestion">Gợi ý từ AI</string>
+    <string name="cd_refine">Tinh chỉnh</string>
+    <string name="filter_location">Vị trí</string>
+    <string name="filter_all_locations">Tất cả</string>
+    <string name="wardrobe_processing_photos">Đang xử lý %1$d ảnh…</string>
+    <string name="wardrobe_progress_uploading">Đang tải ảnh lên…</string>
+    <string name="wardrobe_progress_uploading_batch">Tải ảnh %1$d / %2$d…</string>
+    <string name="wardrobe_progress_removing_bg">Đang xóa nền…</string>
+    <string name="wardrobe_progress_removing_bg_batch">Xóa nền %1$d / %2$d…</string>
+    <string name="wardrobe_progress_moving">Đang chuyển đến vị trí mới…</string>
+    <string name="action_select_all">Chọn tất cả</string>
+    <string name="action_deselect_all">Bỏ chọn tất cả</string>
+
+    <!-- Sign In -->
+    <string name="sign_in_prompt">Đăng nhập để quản lý tủ đồ của bạn</string>
+    <string name="sign_in_button">Đăng nhập bằng Google</string>
+    <string name="sign_in_error_not_registered">Đăng nhập thất bại: bản dựng ứng dụng này chưa được ủy quyền.</string>
+    <string name="sign_in_error_network">Đăng nhập thất bại: không có kết nối mạng.</string>
+    <string name="sign_in_error_generic">Đăng nhập thất bại (mã %1$d). Vui lòng thử lại.</string>
+
+    <!-- Settings -->
+    <string name="settings_tab_profile">Hồ sơ</string>
+    <string name="settings_tab_display">Hiển thị</string>
+    <string name="settings_display_theme">Giao diện</string>
+    <string name="settings_display_theme_desc">Chọn bảng màu cho toàn ứng dụng.</string>
+    <string name="theme_green_light">Xanh lá (sáng)</string>
+    <string name="theme_green_dark">Xanh lá (tối)</string>
+    <string name="theme_sand_light">Cát (sáng)</string>
+    <string name="theme_indigo_dark">Chàm (tối)</string>
+    <string name="theme_pastel_mint">Bạc hà Pastel</string>
+    <string name="theme_pastel_blush">Hồng Pastel</string>
+    <string name="theme_pastel_lavender">Oải hương Pastel</string>
+    <string name="settings_display_font">Phông chữ</string>
+    <string name="settings_display_font_desc">Chọn kiểu chữ cho ứng dụng.</string>
+    <string name="font_default">Mặc định hệ thống</string>
+    <string name="font_caveat">Caveat (viết tay)</string>
+    <string name="wardrobe_filters">Bộ lọc</string>
+    <string name="wardrobe_filters_apply">Áp dụng (%1$d)</string>
+    <string name="wardrobe_filters_reset">Đặt lại</string>
+    <string name="settings_tab_data">Dữ liệu</string>
+    <string name="settings_tab_credits">Tín dụng</string>
+    <string name="settings_language">Ngôn ngữ</string>
+    <string name="settings_gender">Giới tính</string>
+    <string name="settings_gender_select">Chọn…</string>
+    <string name="settings_gender_prefer_not">Không muốn tiết lộ</string>
+    <string name="settings_gender_female">Nữ</string>
+    <string name="settings_gender_male">Nam</string>
+    <string name="settings_gender_nonbinary">Phi nhị nguyên giới</string>
+    <string name="settings_gender_other">Khác</string>
+    <string name="settings_year_of_birth">Năm sinh</string>
+    <string name="settings_year_placeholder">vd: 1990</string>
+    <string name="settings_style_prefs">Sở thích phong cách</string>
+    <string name="settings_style_placeholder">Mô tả những gì bạn thích mặc, màu sắc yêu thích, thương hiệu…</string>
+    <string name="settings_saved">Đã lưu sở thích</string>
+    <string name="settings_api_key_title">Gemini API Key</string>
+    <string name="settings_api_key_desc">Các tính năng AI yêu cầu Gemini API key. Lấy khóa miễn phí tại aistudio.google.com.</string>
+    <string name="settings_api_key_label">API Key</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="settings_data_tags_title">Thẻ tủ đồ</string>
+    <string name="settings_data_tags_desc">Phân loại lại mọi món đồ bằng Gemini. Việc này sẽ ghi đè các chỉnh sửa thủ công.</string>
+    <string name="settings_rescan_button">Quét lại toàn bộ thẻ</string>
+    <string name="settings_rescanning">Đang quét lại %1$d / %2$d…</string>
+    <string name="settings_rescan_dialog_title">Quét lại tất cả các thẻ?</string>
+    <string name="settings_rescan_dialog_text">Gemini sẽ phân loại lại mọi món đồ trong tủ đồ của bạn.</string>
+    <string name="settings_rescan_confirm">Quét lại</string>
+    <string name="settings_bulk_cost_line">%1$d món đồ × %2$d tín dụng = tổng %3$d tín dụng</string>
+    <string name="settings_rebg_title">Xóa nền</string>
+    <string name="settings_rebg_desc">Chạy lại tính năng xóa nền AI cho mọi món đồ. Mỗi món đồ tốn 5 tín dụng AI.</string>
+    <string name="settings_rebg_button">Xóa nền cho mọi món đồ…</string>
+    <string name="settings_rebg_dialog_title">Xóa nền của toàn bộ các món đồ?</string>
+    <string name="settings_rebg_confirm">Xóa tất cả nền</string>
+    <string name="settings_rebging">Đang xóa nền %1$d / %2$d…</string>
+    <string name="settings_clear_cache_title">Sửa lỗi &amp; Đồng bộ</string>
+    <string name="settings_clear_cache_desc">Quét các thư mục Drive, sửa lỗi đặt tên file và tải lại dữ liệu.</string>
+    <string name="settings_clear_cache_button">Sửa lỗi &amp; Đồng bộ…</string>
+    <string name="settings_clear_cache_dialog_title">Xóa bộ nhớ đệm</string>
+    <string name="settings_clear_cache_dialog_text">Mọi ảnh lưu cục bộ sẽ bị xóa và tải lại từ Google Drive.</string>
+    <string name="settings_clear_cache_confirm">Xóa &amp; Làm mới</string>
+    <string name="settings_repair_scanning">Đang quét thư mục %1$d / %2$d…</string>
+    <string name="settings_repair_confirm_title">Kết quả sửa lỗi</string>
+    <string name="settings_repair_confirm_renamed">%1$d file đã được đổi tên</string>
+    <string name="settings_repair_confirm_unprocessed">%1$d món đồ cần xóa nền + thẻ</string>
+    <string name="settings_repair_confirm_raw">%1$d ảnh không xác định cần xóa nền + thẻ</string>
+    <string name="settings_repair_confirm_sidecar">%1$d món đồ chỉ cần thẻ</string>
+    <string name="settings_repair_confirm_all_ok">Mọi file đều ổn định. Chạm bên dưới để tải lại từ Drive.</string>
+    <string name="settings_repair_process">Xử lý &amp; Làm mới</string>
+    <string name="settings_repair_skip">Bỏ qua &amp; Làm mới</string>
+    <string name="settings_repair_processing">Đang xử lý món đồ %1$d / %2$d…</string>
+    <string name="settings_repair_done">Đã sửa xong. Tủ đồ đã làm mới.</string>
+
+    <!-- Wardrobe -->
+    <string name="wardrobe_sync_progress">Đang khôi phục tủ đồ: %1$d / %2$d</string>
+    <string name="wardrobe_empty_filter">Không có món đồ nào khớp với bộ lọc</string>
+    <string name="wardrobe_item_count">%1$d món đồ</string>
+    <string name="wardrobe_filtered_count">Đang hiện %1$d / %2$d món đồ</string>
+    <string name="wardrobe_stats_total">Tổng cộng %1$d món đồ</string>
+    <string name="wardrobe_stats_untagged">Chưa gắn thẻ</string>
+    <string name="wardrobe_empty">Chưa có món đồ nào</string>
+    <string name="wardrobe_empty_hint">Chụp ảnh hoặc chọn từ thư viện của bạn</string>
+    <string name="wardrobe_create_outfit">Tạo bộ đồ thủ công</string>
+    <string name="wardrobe_compose_ai">Phối đồ bằng AI</string>
+    <string name="wardrobe_selected_count">Đã chọn %1$d</string>
+    <string name="wardrobe_select_all_count">Chọn tất cả (%1$d)</string>
+    <string name="wardrobe_delete_title">Xóa món đồ?</string>
+    <string name="wardrobe_delete_text">Bạn có chắc muốn xóa %d món đồ đã chọn? Thao tác này không thể hoàn tác.</string>
+    <string name="wardrobe_move_to">Chuyển đến…</string>
+    <string name="wardrobe_move_to_title">Chuyển %d món đồ đến</string>
+    <string name="wardrobe_sort">Sắp xếp</string>
+    <string name="wardrobe_sort_newest">Mới nhất</string>
+    <string name="wardrobe_sort_oldest">Cũ nhất</string>
+    <string name="wardrobe_sort_most_worn">Mặc nhiều nhất</string>
+    <string name="wardrobe_sort_type">Loại</string>
+    <string name="wardrobe_sort_category">Danh mục</string>
+    <string name="wardrobe_tag_detect">Nhận diện thẻ</string>
+    <string name="wardrobe_tag_remove_bg">Xóa nền</string>
+    <string name="wardrobe_tag_re_remove_bg">Xóa lại nền</string>
+    <string name="wardrobe_tag_rotate">Xoay</string>
+    <string name="wardrobe_tag_edit">Sửa thẻ</string>
+    <string name="wardrobe_tag_sheet_title">Sửa thẻ</string>
+    <string name="wardrobe_add_gallery">Thư viện</string>
+    <string name="wardrobe_add_camera">Camera</string>
+    <string name="wardrobe_add_to_closet">Thêm vào %1$s</string>
+    <string name="wardrobe_add_to_closet_title">Thêm vào tủ đồ</string>
+    <string name="action_continue">Tiếp tục</string>
+    <string name="tag_label">Tên</string>
+    <string name="tag_label_placeholder">vd: Quần Chino xanh navy, Áo sơ mi Oxford trắng</string>
+    <string name="tag_type">Kiểu dáng</string>
+    <string name="tag_category">Danh mục</string>
+    <string name="tag_uses">Công dụng</string>
+    <string name="tag_colors">Màu sắc</string>
+    <string name="tag_seasonality">Mùa</string>
+    <string name="tag_aesthetic">Thẩm mỹ</string>
+    <string name="tag_fit">Phom dáng</string>
+    <string name="tag_material">Chất liệu</string>
+    <string name="tag_pattern">Họa tiết</string>
+    <string name="tag_add_custom">Thêm thẻ tùy chỉnh…</string>
+
+    <!-- Tag values -->
+    <string name="tag_val_casual">Thường ngày</string>
+    <string name="tag_val_formal">Trang trọng</string>
+    <string name="tag_val_business">Công sở</string>
+    <string name="tag_val_sport">Thể thao</string>
+    <string name="tag_val_spring">Mùa xuân</string>
+    <string name="tag_val_summer">Mùa hè</string>
+    <string name="tag_val_fall">Mùa thu</string>
+    <string name="tag_val_winter">Mùa đông</string>
+    <string name="tag_val_tops">Áo</string>
+    <string name="tag_val_bottoms">Quần/Váy</string>
+    <string name="tag_val_outerwear">Áo khoác</string>
+    <string name="tag_val_footwear">Giày dép</string>
+    <string name="tag_val_accessories">Phụ kiện</string>
+
+    <!-- Outfits -->
+    <string name="outfits_empty">Chưa có bộ đồ nào</string>
+    <string name="outfits_empty_hint">Chạm + để phối bộ đồ từ tủ đồ của bạn</string>
+    <string name="outfits_no_match">Không tìm thấy bộ đồ khớp với bộ lọc</string>
+    <string name="outfits_sort_newest">Mới nhất</string>
+    <string name="outfits_sort_oldest">Cũ nhất</string>
+    <string name="outfits_sort_most_worn">Mặc nhiều nhất</string>
+    <string name="outfits_sort_name_az">Tên A–Z</string>
+    <string name="outfits_sort_name_za">Tên Z–A</string>
+    <string name="outfits_create_manual">Tạo bộ đồ thủ công</string>
+    <string name="outfits_suggest">Gợi ý bộ đồ có sẵn</string>
+    <string name="prediction_setup_title">Tìm bằng AI</string>
+    <string name="prediction_setup_find">Tìm</string>
+    <string name="prediction_setup_title_compose">Tạo bằng AI</string>
+    <string name="prediction_setup_create">Tạo</string>
+    <string name="prediction_setup_suggestions">Gợi ý</string>
+    <string name="prediction_setup_weather_today">Hôm nay</string>
+    <string name="prediction_setup_weather_tomorrow">Ngày mai</string>
+    <string name="outfits_compose">Phối bộ đồ mới</string>
+    <string name="outfits_thinking">Đang suy nghĩ…</string>
+    <string name="outfits_suggesting">Đang gợi ý bộ đồ…</string>
+    <string name="outfits_composing">Đang phối bộ đồ…</string>
+    <string name="outfits_delete_title">Xóa bộ đồ?</string>
+    <string name="outfits_delete_text">\"%s\" sẽ bị xóa vĩnh viễn.</string>
+    <string name="outfits_wear_today">Mặc hôm nay</string>
+    <string name="outfits_worn_today">Đã mặc hôm nay!</string>
+    <string name="outfits_suggested_title">Gợi ý cho hôm nay</string>
+    <string name="outfits_composed_title">Phối cho riêng bạn</string>
+    <string name="outfits_name_dialog_title">Đặt tên cho bộ đồ</string>
+    <string name="outfits_name_placeholder">Tên bộ đồ</string>
+    <string name="outfits_create_this">Tạo bộ đồ này</string>
+    <string name="outfits_refine_label">Tinh chỉnh bằng AI</string>
+    <string name="outfits_add_item">Thêm món đồ</string>
+    <string name="outfits_tags_label">Thẻ</string>
+    <string name="composer_select_suggestion">Sử dụng bộ đồ này</string>
+    <string name="outfits_tag_add">Thêm thẻ</string>
+    <string name="outfits_saved_wear_today">Đã lưu bộ đồ! Mặc ngay hôm nay?</string>
+    <string name="outfits_combine">Kết hợp bằng AI</string>
+    <string name="outfit_generate_with_ai">Tạo bằng AI</string>
+    <string name="outfit_save_dialog_title">Lưu bộ đồ</string>
+    <string name="outfit_save_dialog_confirm">Lưu</string>
+
+    <!-- Travel -->
+    <string name="travel_title">Danh sách đồ mang đi</string>
+    <string name="travel_destination">Điểm đến</string>
+    <string name="travel_duration">Thời gian</string>
+    <string name="travel_start_date">Ngày bắt đầu</string>
+    <string name="travel_generate">Tạo danh sách</string>
+    <string name="travel_packing_list">Danh sách mang đồ</string>
+    <string name="travel_clear">Xóa sạch</string>
+    <string name="travel_empty">Nhập điểm đến để bắt đầu</string>
+    <string name="travel_day">Ngày %d</string>
+    <string name="travel_save_as_style">Lưu thành bộ đồ</string>
+    <string name="travel_saved_as_style">Đã lưu</string>
+
+    <!-- Calendar -->
+    <string name="calendar_day_mo">Th2</string>
+    <string name="calendar_day_tu">Th3</string>
+    <string name="calendar_day_we">Th4</string>
+    <string name="calendar_day_th">Th5</string>
+    <string name="calendar_day_fr">Th6</string>
+    <string name="calendar_day_sa">Th7</string>
+    <string name="calendar_day_su">CN</string>
+    <string name="calendar_stats_styles">Bộ đồ mặc nhiều nhất</string>
+    <string name="calendar_stats_items">Món đồ mặc nhiều nhất</string>
+    <string name="calendar_empty">Chưa có lịch sử mặc đồ</string>
+    <string name="calendar_wear_again">Mặc lại hôm nay</string>
+
+    <!-- Gap Analyzer -->
+    <string name="gap_analyze">Phân tích tủ đồ</string>
+    <string name="gap_reanalyze">Phân tích lại</string>
+
+    <!-- AI overlay -->
+    <string name="ai_working">AI đang làm việc…</string>
+    <string name="ai_fetching_weather">Đang lấy thời tiết…</string>
+    <string name="ai_generating_packing">Đang tạo danh sách đồ…</string>
+    <string name="ai_analyzing_wardrobe">Đang phân tích tủ đồ của bạn…</string>
+    <string name="ai_suggesting_style">Đang gợi ý bộ đồ…</string>
+    <string name="ai_composing_outfit">Đang phối bộ đồ…</string>
+
+    <!-- Offline mode -->
+    <string name="offline_banner">Bạn đang ngoại tuyến — chế độ chỉ đọc</string>
+
+    <!-- Try on me -->
+    <string name="tryon_title">Thử đồ trên tôi</string>
+    <string name="tryon_fab">Thử đồ trên tôi</string>
+    <string name="tryon_uploading">Đang tải lên…</string>
+    <string name="tryon_generating">Đang tạo ảnh thử đồ của bạn…</string>
+    <string name="tryon_error">Tạo ảnh thử đồ thất bại</string>
+    <string name="tryon_save_to_gallery">Lưu vào thư viện</string>
+    <string name="tryon_saved">Đã lưu vào Pictures/LibreLookAI</string>
+    <string name="tryon_camera">Camera</string>
+    <string name="tryon_gallery">Thư viện</string>
+
+    <!-- About -->
+    <string name="settings_tab_about">Giới thiệu</string>
+    <string name="about_version">Phiên bản %1$s (%2$s)</string>
+    <string name="about_open_source">Ứng dụng này là mã nguồn mở và miễn phí.</string>
+
+    <!-- Unified Outfit Composer -->
+    <string name="composer_title">Tạo bộ đồ</string>
+    <string name="composer_save">Lưu</string>
+    <string name="composer_goal_generate">Tạo</string>
+    <string name="composer_advanced">Tùy chọn nâng cao</string>
+    <string name="composer_chip_work">Làm việc</string>
+    <string name="composer_chip_dinner">Ăn tối</string>
+    <string name="composer_chip_casual">Thường ngày</string>
+    <string name="composer_chip_workout">Thể thao</string>
+    <string name="composer_chip_travel">Du lịch</string>
+    <string name="composer_chip_date">Hẹn hò</string>
+    <string name="composer_weather_auto">Hiện tại</string>
+    <string name="composer_weather_manual">Thủ công</string>
+    <string name="composer_season_spring">Mùa xuân</string>
+    <string name="composer_season_summer">Mùa hè</string>
+    <string name="composer_season_fall">Mùa thu</string>
+    <string name="composer_season_winter">Mùa đông</string>
+    <string name="composer_temp_value">%1$d°C</string>
+    <string name="composer_enhance">Tinh chỉnh bằng AI</string>
+    <string name="composer_enhancing">Đang hỏi Gemini…</string>
+</resources>

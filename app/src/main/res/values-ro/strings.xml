@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LibreLookAI</string>
+
+    <!-- Navigation -->
+    <string name="nav_styles">Ținute</string>
+    <string name="nav_wardrobe">Garderobă</string>
+    <string name="nav_shopping">Cumpărături</string>
+    <string name="nav_travel">Călătorie</string>
+    <string name="nav_insights">Statistici</string>
+    <string name="nav_settings">Setări</string>
+
+    <!-- Insights tab -->
+    <string name="insights_title">Statistici</string>
+    <string name="insights_tab_calendar">Calendar</string>
+    <string name="insights_tab_wardrobe_stats">Statistici Garderobă</string>
+    <string name="insights_tab_calendar_stats">Statistici Calendar</string>
+    <string name="insights_tab_costs">Costuri</string>
+    <string name="costs_count_items">Articole</string>
+    <string name="costs_count_outfits">Ținute</string>
+    <string name="costs_count_tryons">Probe</string>
+    <string name="costs_count_wears">Purtări</string>
+    <string name="costs_count_imports">Importuri</string>
+    <string name="costs_activity_14d">Activitate (ultimele 14 zile)</string>
+
+    <!-- Shopping Helper tab -->
+    <string name="shopping_title">Asistent Cumpărături</string>
+    <string name="shopping_tab_list">Listă Cumpărături</string>
+    <string name="shopping_tab_similarity">Căutare Similare</string>
+    <string name="shopping_tab_gaps">Identificare Lipsuri</string>
+
+    <!-- Shopping list sub-tab -->
+    <string name="shop_list_empty_title">Lista ta este goală</string>
+    <string name="shop_list_empty_hint">Adaugă articole pe care vrei să le cumperi folosind camera, galeria sau un URL de produs.</string>
+    <string name="shop_list_add_camera">Adaugă din cameră</string>
+    <string name="shop_list_add_gallery">Adaugă din galerie</string>
+    <string name="shop_list_add_url">Adaugă din URL</string>
+    <string name="shop_list_url_title">Adaugă din URL</string>
+    <string name="shop_list_url_hint">Lipește URL-ul unei pagini de produs. Vom prelua automat imaginea.</string>
+    <string name="shop_list_uploading">Se încarcă…</string>
+    <string name="shop_list_moving">Se mută…</string>
+    <string name="shop_list_loading">Se încarcă…</string>
+    <string name="shop_list_processing">Se procesează %1$d articole…</string>
+    <string name="shop_list_move_to_closet">Mută în garderobă</string>
+    <string name="shop_list_move_title">Mută în garderobă</string>
+    <string name="shop_list_delete_title">Ștergi din listă?</string>
+    <string name="shop_list_delete_text">Elimini definitiv %1$d articole din lista ta?</string>
+
+    <!-- URL import (Wardrobe + Shopping List) -->
+    <string name="wardrobe_add_url">Adaugă din URL</string>
+    <string name="wardrobe_url_import_title">Importă din URL produs</string>
+    <string name="wardrobe_url_import_hint">Lipește URL-ul unei pagini de produs. Vom prelua imaginea automat.</string>
+    <string name="url_import_failed">Nu s-a găsit nicio imagine la acest URL.</string>
+    <string name="url_import_pick_title">Alege imaginea produsului</string>
+    <string name="url_import_pick_hint">Apasă pe imaginea pe care vrei să o imporți.</string>
+    <string name="url_import_browser_title">Deschide pagina</string>
+    <string name="url_import_browser_hint">Apasă pe orice imagine din pagină pentru a o importa.</string>
+    <string name="url_import_open_browser">Deschide pagina</string>
+    <string name="url_import_show_candidates">Candidate</string>
+    <string name="url_import_no_candidates">Nu s-au găsit imagini. Deschide pagina în browser.</string>
+
+    <!-- Outfits sub-tabs -->
+    <string name="outfits_tab_outfits">Ținute</string>
+    <string name="outfits_tab_tryons">Probe</string>
+
+    <!-- Common actions -->
+    <string name="action_ok">OK</string>
+    <string name="action_cancel">Anulează</string>
+    <string name="action_dismiss">Închide</string>
+    <string name="action_delete">Șterge</string>
+    <string name="action_save">Salvează</string>
+    <string name="action_edit">Editează</string>
+    <string name="action_saving">Se salvează…</string>
+    <string name="action_clear">Șterge</string>
+    <string name="action_sort">Sortează</string>
+    <string name="action_remove">Elimină</string>
+    <string name="cd_ai_suggestion">Sugestie AI</string>
+    <string name="cd_refine">Rafinează</string>
+    <string name="filter_location">Locație</string>
+    <string name="filter_all_locations">Toate</string>
+    <string name="wardrobe_processing_photos">Se procesează %1$d poze…</string>
+    <string name="wardrobe_progress_uploading">Se încarcă poza…</string>
+    <string name="wardrobe_progress_uploading_batch">Încărcare poza %1$d din %2$d…</string>
+    <string name="wardrobe_progress_removing_bg">Se elimină fundalul…</string>
+    <string name="wardrobe_progress_removing_bg_batch">Eliminare fundal %1$d din %2$d…</string>
+    <string name="wardrobe_progress_moving">Se mută în locație nouă…</string>
+    <string name="action_select_all">Selectează tot</string>
+    <string name="action_deselect_all">Deselectează tot</string>
+
+    <!-- Sign In -->
+    <string name="sign_in_prompt">Autentifică-te pentru a-ți gestiona garderoba</string>
+    <string name="sign_in_button">Conectare cu Google</string>
+    <string name="sign_in_error_not_registered">Conectare eșuată: aplicația nu este autorizată de Google.</string>
+    <string name="sign_in_error_network">Conectare eșuată: nu există conexiune la internet.</string>
+    <string name="sign_in_error_generic">Conectare eșuată (cod %1$d). Încearcă din nou.</string>
+
+    <!-- Settings -->
+    <string name="settings_tab_profile">Profil</string>
+    <string name="settings_tab_display">Afișaj</string>
+    <string name="settings_display_theme">Temă</string>
+    <string name="settings_display_theme_desc">Alege o paletă de culori. Se aplică în toată aplicația.</string>
+    <string name="theme_green_light">Verde (luminos)</string>
+    <string name="theme_green_dark">Verde (întunecat)</string>
+    <string name="theme_sand_light">Nisip (luminos)</string>
+    <string name="theme_indigo_dark">Indigo (întunecat)</string>
+    <string name="theme_pastel_mint">Mentă Pastel</string>
+    <string name="theme_pastel_blush">Roz Pastel</string>
+    <string name="theme_pastel_lavender">Levănțică Pastel</string>
+    <string name="settings_display_font">Font</string>
+    <string name="settings_display_font_desc">Alege fontul utilizat în aplicație.</string>
+    <string name="font_default">Implicit sistem</string>
+    <string name="font_caveat">Caveat (scris de mână)</string>
+    <string name="wardrobe_filters">Filtre</string>
+    <string name="wardrobe_filters_apply">Aplică (%1$d)</string>
+    <string name="wardrobe_filters_reset">Resetează</string>
+    <string name="settings_tab_data">Date</string>
+    <string name="settings_tab_credits">Credite</string>
+    <string name="settings_language">Limbă</string>
+    <string name="settings_gender">Gen</string>
+    <string name="settings_gender_select">Selectează…</string>
+    <string name="settings_gender_prefer_not">Prefer să nu spun</string>
+    <string name="settings_gender_female">Feminin</string>
+    <string name="settings_gender_male">Masculin</string>
+    <string name="settings_gender_nonbinary">Non-binar</string>
+    <string name="settings_gender_other">Altul</string>
+    <string name="settings_year_of_birth">Anul nașterii</string>
+    <string name="settings_year_placeholder">ex. 1990</string>
+    <string name="settings_style_prefs">Preferințe Stil</string>
+    <string name="settings_style_placeholder">Descrie ce îți place să porți, ocazii, culori preferate, branduri, etc…</string>
+    <string name="settings_saved">Preferințe salvate</string>
+    <string name="settings_api_key_title">Cheie API Gemini</string>
+    <string name="settings_api_key_desc">Toate funcțiile AI necesită o cheie Gemini API. Obține una gratuită la aistudio.google.com.</string>
+    <string name="settings_api_key_label">Cheie API</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="settings_data_tags_title">Etichete Garderobă</string>
+    <string name="settings_data_tags_desc">Reclasifică fiecare articol cu Gemini. Aceasta va suprascrie editările manuale.</string>
+    <string name="settings_rescan_button">Rescanează Etichete</string>
+    <string name="settings_rescanning">Rescanare %1$d din %2$d…</string>
+    <string name="settings_rescan_dialog_title">Rescanezi toate etichetele?</string>
+    <string name="settings_rescan_dialog_text">Gemini va reclasifica fiecare articol. Procesul poate dura ceva timp.</string>
+    <string name="settings_rescan_confirm">Rescanează</string>
+    <string name="settings_bulk_cost_line">%1$d articole × %2$d credite = %3$d credite total</string>
+    <string name="settings_rebg_title">Eliminare Fundal</string>
+    <string name="settings_rebg_desc">Repornește eliminarea fundalului cu AI pentru toate articolele. Fiecare articol costă 5 credite AI.</string>
+    <string name="settings_rebg_button">Elimină fundalul la toate…</string>
+    <string name="settings_rebg_confirm">Elimină tot fundalul</string>
+    <string name="settings_rebging">Eliminare fundal %1$d din %2$d…</string>
+    <string name="settings_clear_cache_title">Reparare și Sincronizare</string>
+    <string name="settings_clear_cache_desc">Scanează folderele Drive: repară numele, detectează lipsurile și reîncarcă totul.</string>
+    <string name="settings_clear_cache_button">Reparare și Sincronizare…</string>
+    <string name="settings_clear_cache_dialog_title">Șterge Cache</string>
+    <string name="settings_clear_cache_dialog_text">Toate imaginile stocate local vor fi șterse și redescărcate de pe Drive.</string>
+    <string name="settings_clear_cache_confirm">Șterge și Reîmprospătează</string>
+    <string name="settings_repair_scanning">Scanare folder %1$d din %2$d…</string>
+    <string name="settings_repair_confirm_title">Rezultate Reparare</string>
+    <string name="settings_repair_confirm_renamed">%1$d fișiere redenumite</string>
+    <string name="settings_repair_confirm_unprocessed">%1$d articole necesită eliminare fundal + etichete</string>
+    <string name="settings_repair_confirm_raw">%1$d imagini necunoscute necesită eliminare fundal + etichete</string>
+    <string name="settings_repair_confirm_sidecar">%1$d articole necesită doar etichete</string>
+    <string name="settings_repair_confirm_all_ok">Toate fișierele sunt în regulă. Apasă jos pentru a reîncărca de pe Drive.</string>
+    <string name="settings_repair_process">Procesează și Reîmprospătează</string>
+    <string name="settings_repair_skip">Omite și Reîmprospătează</string>
+    <string name="settings_repair_processing">Se procesează articolul %1$d din %2$d…</string>
+    <string name="settings_repair_done">Reparare finalizată. Garderobă reîmprospătată.</string>
+
+    <!-- Wardrobe -->
+    <string name="wardrobe_sync_progress">Restaurare garderobă: %1$d / %2$d</string>
+    <string name="wardrobe_empty_filter">Niciun articol conform filtrului</string>
+    <string name="wardrobe_item_count">%1$d articole</string>
+    <string name="wardrobe_filtered_count">Se afișează %1$d din %2$d articole</string>
+    <string name="wardrobe_stats_total">Total %1$d articole</string>
+    <string name="wardrobe_stats_untagged">Fără etichete</string>
+    <string name="wardrobe_empty">Niciun articol încă</string>
+    <string name="wardrobe_empty_hint">Fă o poză sau alege din galerie</string>
+    <string name="wardrobe_create_outfit">Creează ținută manual</string>
+    <string name="wardrobe_compose_ai">Compune cu AI</string>
+    <string name="wardrobe_selected_count">%1$d selectate</string>
+    <string name="wardrobe_select_all_count">Selectează tot (%1$d)</string>
+    <string name="wardrobe_delete_title">Ștergi articolele?</string>
+    <string name="wardrobe_delete_text">Ești sigur că vrei să ștergi cele %d articole selectate? Acțiunea este ireversibilă.</string>
+    <string name="wardrobe_move_to">Mută în…</string>
+    <string name="wardrobe_move_to_title">Mută %d articole în</string>
+    <string name="wardrobe_sort">Sortează</string>
+    <string name="wardrobe_sort_newest">Cele mai noi</string>
+    <string name="wardrobe_sort_oldest">Cele mai vechi</string>
+    <string name="wardrobe_sort_most_worn">Cele mai purtate</string>
+    <string name="wardrobe_sort_type">Tip</string>
+    <string name="wardrobe_sort_category">Categorie</string>
+    <string name="wardrobe_tag_detect">Detectează etichete</string>
+    <string name="wardrobe_tag_remove_bg">Elimină fundal</string>
+    <string name="wardrobe_tag_re_remove_bg">Re-elimină fundal</string>
+    <string name="wardrobe_tag_rotate">Rotește</string>
+    <string name="wardrobe_tag_edit">Editează etichete</string>
+    <string name="wardrobe_tag_sheet_title">Editare Etichete</string>
+    <string name="wardrobe_add_gallery">Galerie</string>
+    <string name="wardrobe_add_camera">Cameră</string>
+    <string name="wardrobe_add_to_closet">Adaugă în %1$s</string>
+    <string name="wardrobe_add_to_closet_title">Adaugă în garderobă</string>
+    <string name="action_continue">Continuă</string>
+    <string name="tag_label">Nume</string>
+    <string name="tag_label_placeholder">ex. Chinos bleumarin, Cămașă Oxford albă</string>
+    <string name="tag_type">Tip</string>
+    <string name="tag_category">Categorie</string>
+    <string name="tag_uses">Utilizări</string>
+    <string name="tag_colors">Culori</string>
+    <string name="tag_seasonality">Sezon</string>
+    <string name="tag_aesthetic">Estetică</string>
+    <string name="tag_fit">Croială</string>
+    <string name="tag_material">Material</string>
+    <string name="tag_pattern">Imprimeu</string>
+    <string name="tag_add_custom">Adaugă personalizat…</string>
+
+    <!-- Tag values -->
+    <string name="tag_val_casual">Casual</string>
+    <string name="tag_val_formal">Formal</string>
+    <string name="tag_val_business">Business</string>
+    <string name="tag_val_sport">Sport</string>
+    <string name="tag_val_spring">Primăvară</string>
+    <string name="tag_val_summer">Vară</string>
+    <string name="tag_val_fall">Toamnă</string>
+    <string name="tag_val_winter">Iarnă</string>
+    <string name="tag_val_tops">Topuri</string>
+    <string name="tag_val_bottoms">Pantaloni</string>
+    <string name="tag_val_outerwear">Outerwear</string>
+    <string name="tag_val_footwear">Încălțăminte</string>
+    <string name="tag_val_accessories">Accesorii</string>
+
+    <!-- Outfits -->
+    <string name="outfits_empty">Nicio ținută încă</string>
+    <string name="outfits_empty_hint">Apasă + pentru a crea o ținută din garderobă</string>
+    <string name="outfits_no_match">Nicio ținută conform filtrului</string>
+    <string name="outfits_sort_newest">Cele mai noi</string>
+    <string name="outfits_sort_oldest">Cele mai vechi</string>
+    <string name="outfits_sort_most_worn">Cele mai purtate</string>
+    <string name="outfits_sort_name_az">Nume A–Z</string>
+    <string name="outfits_sort_name_za">Nume Z–A</string>
+    <string name="outfits_create_manual">Creează ținută manual</string>
+    <string name="outfits_suggest">Sugerează ținută existentă</string>
+    <string name="prediction_setup_title">Caută cu AI</string>
+    <string name="prediction_setup_find">Caută</string>
+    <string name="prediction_setup_title_compose">Creează cu AI</string>
+    <string name="prediction_setup_create">Creează</string>
+    <string name="prediction_setup_suggestions">Sugestii</string>
+    <string name="prediction_setup_weather_today">Azi</string>
+    <string name="prediction_setup_weather_tomorrow">Mâine</string>
+    <string name="outfits_compose">Compune ținută nouă</string>
+    <string name="outfits_thinking">Se gândește…</string>
+    <string name="outfits_suggesting">Se sugerează o ținută…</string>
+    <string name="outfits_composing">Se compune ținuta…</string>
+    <string name="outfits_delete_title">Ștergi ținuta?</string>
+    <string name="outfits_delete_text">\"%s\" va fi eliminată definitiv.</string>
+    <string name="outfits_wear_today">Poartă azi</string>
+    <string name="outfits_worn_today">Purtată azi!</string>
+    <string name="outfits_suggested_title">Sugestie pentru azi</string>
+    <string name="outfits_composed_title">Compusă pentru tine</string>
+    <string name="outfits_name_dialog_title">Numește această ținută</string>
+    <string name="outfits_name_placeholder">Nume ținută</string>
+    <string name="outfits_create_this">Creează această ținută</string>
+    <string name="outfits_refine_label">Rafinează cu AI</string>
+    <string name="outfits_add_item">Adaugă articol</string>
+    <string name="outfits_tags_label">Etichete</string>
+    <string name="composer_select_suggestion">Folosește această ținută</string>
+    <string name="outfits_tag_add">Adaugă etichetă</string>
+    <string name="outfits_saved_wear_today">Ținută salvată! O porți azi?</string>
+    <string name="outfits_combine">Combină cu AI</string>
+    <string name="outfit_generate_with_ai">Generează cu AI</string>
+    <string name="outfit_save_dialog_title">Salvează ținuta</string>
+    <string name="outfit_save_dialog_confirm">Salvează</string>
+
+    <!-- Travel -->
+    <string name="travel_title">Listă Bagaj Călătorie</string>
+    <string name="travel_destination">Destinație</string>
+    <string name="travel_duration">Durată</string>
+    <string name="travel_start_date">Data de început</string>
+    <string name="travel_generate">Generează Listă Bagaj</string>
+    <string name="travel_packing_list">Listă Bagaj</string>
+    <string name="travel_clear">Șterge</string>
+    <string name="travel_empty">Introdu o destinație pentru a începe</string>
+    <string name="travel_day">Ziua %d</string>
+    <string name="travel_save_as_style">Salvează ca ținută</string>
+    <string name="travel_saved_as_style">Salvată</string>
+
+    <!-- Calendar -->
+    <string name="calendar_day_mo">Lu</string>
+    <string name="calendar_day_tu">Ma</string>
+    <string name="calendar_day_we">Mi</string>
+    <string name="calendar_day_th">Jo</string>
+    <string name="calendar_day_fr">Vi</string>
+    <string name="calendar_day_sa">Sâ</string>
+    <string name="calendar_day_su">Du</string>
+    <string name="calendar_stats_styles">Cele mai purtate ținute</string>
+    <string name="calendar_stats_items">Cele mai purtate articole</string>
+    <string name="calendar_empty">Niciun istoric încă</string>
+    <string name="calendar_wear_again">Poartă din nou azi</string>
+
+    <!-- Gap Analyzer -->
+    <string name="gap_analyze">Analizează garderoba mea</string>
+    <string name="gap_reanalyze">Re-analizează</string>
+
+    <!-- AI overlay -->
+    <string name="ai_working">AI lucrează…</string>
+    <string name="ai_fetching_weather">Se preia vremea…</string>
+    <string name="ai_generating_packing">Se generează lista…</string>
+    <string name="ai_analyzing_wardrobe">Se analizează garderoba ta…</string>
+    <string name="ai_suggesting_style">Se sugerează o ținută…</string>
+    <string name="ai_composing_outfit">Se compune ținuta…</string>
+
+    <!-- Offline mode -->
+    <string name="offline_banner">Ești offline — mod doar citire</string>
+
+    <!-- Try on me -->
+    <string name="tryon_title">Probă pe mine</string>
+    <string name="tryon_fab">Probă pe mine</string>
+    <string name="tryon_uploading">Se încarcă…</string>
+    <string name="tryon_generating">Se generează proba ta…</string>
+    <string name="tryon_error">Generarea probei a eșuat</string>
+    <string name="tryon_save_to_gallery">Salvează în galerie</string>
+    <string name="tryon_saved">Salvat în Pictures/LibreLookAI</string>
+    <string name="tryon_camera">Cameră</string>
+    <string name="tryon_gallery">Galerie</string>
+
+    <!-- About -->
+    <string name="settings_tab_about">Despre</string>
+    <string name="about_version">Versiune %1$s (%2$s)</string>
+    <string name="about_open_source">Această aplicație este open source și gratuită.</string>
+
+    <!-- Unified Outfit Composer -->
+    <string name="composer_title">Creează ținută</string>
+    <string name="composer_save">Salvează</string>
+    <string name="composer_goal_generate">Generează</string>
+    <string name="composer_advanced">Opțiuni avansate</string>
+    <string name="composer_chip_work">Muncă</string>
+    <string name="composer_chip_dinner">Cină</string>
+    <string name="composer_chip_casual">Casual</string>
+    <string name="composer_chip_workout">Sport</string>
+    <string name="composer_chip_travel">Călătorie</string>
+    <string name="composer_chip_date">Întâlnire</string>
+    <string name="composer_weather_auto">Curentă</string>
+    <string name="composer_weather_manual">Manuală</string>
+    <string name="composer_season_spring">Primăvară</string>
+    <string name="composer_season_summer">Vară</string>
+    <string name="composer_season_fall">Toamnă</string>
+    <string name="composer_season_winter">Iarnă</string>
+    <string name="composer_temp_value">%1$d°C</string>
+    <string name="composer_enhance">Rafinează cu AI</string>
+    <string name="composer_enhancing">Se întreabă Gemini…</string>
+</resources>

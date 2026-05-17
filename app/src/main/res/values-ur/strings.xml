@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LibreLookAI</string>
+
+    <!-- Navigation -->
+    <string name="nav_styles">ملبوسات</string>
+    <string name="nav_wardrobe">وارڈروب</string>
+    <string name="nav_shopping">شاپنگ</string>
+    <string name="nav_travel">سفر</string>
+    <string name="nav_insights">بصیرت</string>
+    <string name="nav_settings">ترتیبات</string>
+
+    <!-- Insights tab -->
+    <string name="insights_title">بصیرت</string>
+    <string name="insights_tab_calendar">کیلنڈر</string>
+    <string name="insights_tab_wardrobe_stats">وارڈروب اعداد و شمار</string>
+    <string name="insights_tab_calendar_stats">کیلنڈر اعداد و شمار</string>
+    <string name="insights_tab_costs">اخراجات</string>
+    <string name="costs_count_items">اشیاء</string>
+    <string name="costs_count_outfits">ملبوسات</string>
+    <string name="costs_count_tryons">آزمائشیں</string>
+    <string name="costs_count_wears">پہناؤ</string>
+    <string name="costs_count_imports">درآمدات</string>
+    <string name="costs_activity_14d">سرگرمی (آخری 14 دن)</string>
+
+    <!-- Shopping Helper tab -->
+    <string name="shopping_title">شاپنگ مددگار</string>
+    <string name="shopping_tab_list">شاپنگ لسٹ</string>
+    <string name="shopping_tab_similarity">مماثلت تلاش کنندہ</string>
+    <string name="shopping_tab_gaps">کمیوں کی نشاندہی</string>
+
+    <!-- Shopping list sub-tab -->
+    <string name="shop_list_empty_title">آپ کی وش لسٹ خالی ہے</string>
+    <string name="shop_list_empty_hint">کیمرہ، گیلری یا شاپنگ یو آر ایل کے ذریعے وہ اشیاء شامل کریں جنہیں آپ خریدنے کا سوچ رہے ہیں۔</string>
+    <string name="shop_list_add_camera">کیمرے سے شامل کریں</string>
+    <string name="shop_list_add_gallery">گیلری سے شامل کریں</string>
+    <string name="shop_list_add_url">یو آر ایل سے شامل کریں</string>
+    <string name="shop_list_url_title">یو آر ایل سے شامل کریں</string>
+    <string name="shop_list_url_hint">شاپنگ پیج کا لنک یہاں پیسٹ کریں۔ ہم خود بخود تصویر حاصل کر لیں گے۔</string>
+    <string name="shop_list_uploading">اپ لوڈ ہو رہا ہے…</string>
+    <string name="shop_list_moving">منتقل ہو رہا ہے…</string>
+    <string name="shop_list_loading">لوڈ ہو رہا ہے…</string>
+    <string name="shop_list_processing">%1$d اشیاء پر کام ہو رہا ہے…</string>
+    <string name="shop_list_move_to_closet">الماری میں بھیجیں</string>
+    <string name="shop_list_move_title">الماری میں بھیجیں</string>
+    <string name="shop_list_delete_title">وش لسٹ سے حذف کریں؟</string>
+    <string name="shop_list_delete_text">کیا آپ اپنی وش لسٹ سے %1$d اشیاء مستقل طور پر حذف کرنا چاہتے ہیں؟</string>
+
+    <!-- URL import (Wardrobe + Shopping List) -->
+    <string name="wardrobe_add_url">لنک سے شامل کریں</string>
+    <string name="wardrobe_url_import_title">شاپنگ لنک سے درآمد کریں</string>
+    <string name="wardrobe_url_import_hint">شاپنگ پیج کا لنک پیسٹ کریں۔</string>
+    <string name="url_import_failed">اس لنک پر کوئی تصویر نہیں ملی۔</string>
+    <string name="url_import_pick_title">پراڈکٹ کی تصویر منتخب کریں</string>
+    <string name="url_import_pick_hint">جس تصویر کو آپ شامل کرنا چاہتے ہیں اس پر ٹیپ کریں۔</string>
+    <string name="url_import_browser_title">صفحہ کھولیں</string>
+    <string name="url_import_browser_hint">شامل کرنے کے لیے کسی بھی تصویر پر ٹیپ کریں۔</string>
+    <string name="url_import_open_browser">براؤزر میں کھولیں</string>
+    <string name="url_import_show_candidates">امیدوار</string>
+    <string name="url_import_no_candidates">کوئی تصویر نہیں ملی۔</string>
+
+    <!-- Outfits sub-tabs -->
+    <string name="outfits_tab_outfits">ملبوسات</string>
+    <string name="outfits_tab_tryons">آزمائشیں</string>
+
+    <!-- Common actions -->
+    <string name="action_ok">ٹھیک ہے</string>
+    <string name="action_cancel">منسوخ کریں</string>
+    <string name="action_dismiss">خارج کریں</string>
+    <string name="action_delete">حذف کریں</string>
+    <string name="action_save">محفوظ کریں</string>
+    <string name="action_edit">ترمیم کریں</string>
+    <string name="action_saving">محفوظ ہو رہا ہے…</string>
+    <string name="action_clear">صاف کریں</string>
+    <string name="action_sort">ترتیب دیں</string>
+    <string name="action_remove">نکال دیں</string>
+    <string name="cd_ai_suggestion">AI مشورہ</string>
+    <string name="cd_refine">بہتر بنائیں</string>
+    <string name="filter_location">مقام</string>
+    <string name="filter_all_locations">تمام</string>
+    <string name="wardrobe_processing_photos">%1$d تصاویر پر کام ہو رہا ہے…</string>
+    <string name="wardrobe_progress_uploading">تصویر اپ لوڈ ہو رہی ہے…</string>
+    <string name="wardrobe_progress_uploading_batch">%2$d میں سے %1$d تصویر اپ لوڈ ہو رہی ہے…</string>
+    <string name="wardrobe_progress_removing_bg">پس منظر ہٹایا جا رہا ہے…</string>
+    <string name="wardrobe_progress_removing_bg_batch">%2$d میں سے %1$d کا پس منظر ہٹایا جا رہا ہے…</string>
+    <string name="wardrobe_progress_moving">نئے مقام پر منتقل ہو رہا ہے…</string>
+    <string name="action_select_all">تمام منتخب کریں</string>
+    <string name="action_deselect_all">انتخاب ختم کریں</string>
+
+    <!-- Sign In -->
+    <string name="sign_in_prompt">وارڈروب مینیج کرنے کے لیے سائن ان کریں</string>
+    <string name="sign_in_button">Google کے ساتھ سائن ان کریں</string>
+    <string name="sign_in_error_not_registered">سائن ان ناکام: یہ ایپ گوگل سے منظور شدہ نہیں ہے۔</string>
+    <string name="sign_in_error_network">سائن ان ناکام: انٹرنیٹ کنکشن نہیں ہے۔</string>
+    <string name="sign_in_error_generic">سائن ان ناکام (کوڈ %1$d)۔ دوبارہ کوشش کریں۔</string>
+
+    <!-- Settings -->
+    <string name="settings_tab_profile">پروفائل</string>
+    <string name="settings_tab_display">ڈسپلے</string>
+    <string name="settings_display_theme">تھیم</string>
+    <string name="settings_display_theme_desc">رنگوں کا انتخاب کریں۔</string>
+    <string name="theme_green_light">سبز (ہلکا)</string>
+    <string name="theme_green_dark">سبز (گہرا)</string>
+    <string name="theme_sand_light">ریتلا (ہلکا)</string>
+    <string name="theme_indigo_dark">نیلا (گہرا)</string>
+    <string name="theme_pastel_mint">پیسٹل منٹ</string>
+    <string name="theme_pastel_blush">پیسٹل بلش</string>
+    <string name="theme_pastel_lavender">پیسٹل لیونڈر</string>
+    <string name="settings_display_font">فونٹ</string>
+    <string name="settings_display_font_desc">ایپ کا فونٹ منتخب کریں۔</string>
+    <string name="font_default">سسٹم ڈیفالٹ</string>
+    <string name="font_caveat">Caveat (ہاتھ کی تحریر)</string>
+    <string name="wardrobe_filters">فلٹرز</string>
+    <string name="wardrobe_filters_apply">نافذ کریں (%1$d)</string>
+    <string name="wardrobe_filters_reset">ری سیٹ</string>
+    <string name="settings_tab_data">ڈیٹا</string>
+    <string name="settings_tab_credits">کریڈٹ</string>
+    <string name="settings_language">زبان</string>
+    <string name="settings_gender">جنس</string>
+    <string name="settings_gender_select">منتخب کریں…</string>
+    <string name="settings_gender_prefer_not">بتانا نہیں چاہتا</string>
+    <string name="settings_gender_female">خاتون</string>
+    <string name="settings_gender_male">مرد</string>
+    <string name="settings_gender_nonbinary">نان بائنری</string>
+    <string name="settings_gender_other">دیگر</string>
+    <string name="settings_year_of_birth">سال پیدائش</string>
+    <string name="settings_year_placeholder">مثلاً 1990</string>
+    <string name="settings_style_prefs">ملبوسات کی ترجیحات</string>
+    <string name="settings_style_placeholder">بتائیں کہ آپ کو کیا پہننا پسند ہے، رنگ، برانڈز وغیرہ…</string>
+    <string name="settings_saved">ترجیحات محفوظ ہو گئیں</string>
+    <string name="settings_api_key_title">Gemini API کلید</string>
+    <string name="settings_api_key_desc">تمام AI خصوصیات کے لیے کلید درکار ہے۔ aistudio.google.com سے حاصل کریں۔</string>
+    <string name="settings_api_key_label">API کلید</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="settings_data_tags_title">وارڈروب ٹیگز</string>
+    <string name="settings_data_tags_desc">Gemini کے ذریعے دوبارہ درجہ بندی کریں۔</string>
+    <string name="settings_rescan_button">تمام ٹیگز دوبارہ اسکین کریں</string>
+    <string name="settings_rescanning">%2$d میں سے %1$d اسکین ہو رہا ہے…</string>
+    <string name="settings_rescan_dialog_title">ٹیگز دوبارہ اسکین کریں؟</string>
+    <string name="settings_rescan_dialog_text">Gemini آپ کے وارڈروب کی ہر شے کی دوبارہ درجہ بندی کرے گا۔</string>
+    <string name="settings_rescan_confirm">دوبارہ اسکین کریں</string>
+    <string name="settings_bulk_cost_line">%1$d اشیاء × %2$d کریڈٹ = کل %3$d کریڈٹ</string>
+    <string name="settings_rebg_title">پس منظر ہٹانا</string>
+    <string name="settings_rebg_desc">AI کے ذریعے پس منظر ہٹانے کا عمل دوبارہ چلائیں۔ ہر شے پر 5 کریڈٹ خرچ ہوں گے۔</string>
+    <string name="settings_rebg_button">تمام اشیاء کا پس منظر ہٹائیں…</string>
+    <string name="settings_rebg_dialog_title">تمام اشیاء کا پس منظر ہٹائیں؟</string>
+    <string name="settings_rebg_confirm">تمام BG ہٹائیں</string>
+    <string name="settings_rebging">%2$d میں سے %1$d کا پس منظر ہٹایا جا رہا ہے…</string>
+    <string name="settings_clear_cache_title">مرمت اور مطابقت پذیری</string>
+    <string name="settings_clear_cache_desc">ڈرائیو فولڈرز کو اسکین کریں اور مرمت کریں۔</string>
+    <string name="settings_clear_cache_button">مرمت اور مطابقت پذیری…</string>
+    <string name="settings_clear_cache_dialog_title">کیشے صاف کریں</string>
+    <string name="settings_clear_cache_dialog_text">تمام مقامی تصاویر حذف کر دی جائیں گی اور گوگل ڈرائیو سے دوبارہ ڈاؤن لوڈ ہوں گی۔</string>
+    <string name="settings_clear_cache_confirm">صاف اور تازہ کریں</string>
+    <string name="settings_repair_scanning">%2$d میں سے فولڈر %1$d اسکین ہو رہا ہے…</string>
+    <string name="settings_repair_confirm_title">مرمت کے نتائج</string>
+    <string name="settings_repair_confirm_renamed">%1$d فائلوں کے نام درست کیے گئے</string>
+    <string name="settings_repair_confirm_unprocessed">%1$d اشیاء کو BG ہٹانے اور ٹیگ کی ضرورت ہے</string>
+    <string name="settings_repair_confirm_raw">%1$d نامعلوم تصاویر کو BG ہٹانے اور ٹیگ کی ضرورت ہے</string>
+    <string name="settings_repair_confirm_sidecar">%1$d اشیاء کو صرف ٹیگ کی ضرورت ہے</string>
+    <string name="settings_repair_confirm_all_ok">تمام فائلیں درست ہیں۔ ڈرائیو سے ری لوڈ کرنے کے لیے نیچے ٹیپ کریں۔</string>
+    <string name="settings_repair_process">عمل کریں اور تازہ کریں</string>
+    <string name="settings_repair_skip">چھوڑ دیں اور تازہ کریں</string>
+    <string name="settings_repair_processing">%2$d میں سے شے %1$d پر عمل ہو رہا ہے…</string>
+    <string name="settings_repair_done">مرمت مکمل۔ وارڈروب تازہ ہو گیا۔</string>
+
+    <!-- Wardrobe -->
+    <string name="wardrobe_sync_progress">وارڈروب بحال ہو رہا ہے: %1$d / %2$d</string>
+    <string name="wardrobe_empty_filter">فلٹر سے مطابقت رکھنے والی کوئی شے نہیں ملی</string>
+    <string name="wardrobe_item_count">%1$d اشیاء</string>
+    <string name="wardrobe_filtered_count">%2$d میں سے %1$d اشیاء دکھائی جا رہی ہیں</string>
+    <string name="wardrobe_stats_total">کل %1$d اشیاء</string>
+    <string name="wardrobe_stats_untagged">بغیر ٹیگ کے</string>
+    <string name="wardrobe_empty">ابھی تک کوئی شے نہیں</string>
+    <string name="wardrobe_empty_hint">تصویر لیں یا گیلری سے منتخب کریں</string>
+    <string name="wardrobe_create_outfit">خود سے لباس تیار کریں</string>
+    <string name="wardrobe_compose_ai">AI کے ساتھ تیار کریں</string>
+    <string name="wardrobe_selected_count">%1$d منتخب</string>
+    <string name="wardrobe_select_all_count">تمام منتخب کریں (%1$d)</string>
+    <string name="wardrobe_delete_title">اشیاء حذف کریں؟</string>
+    <string name="wardrobe_delete_text">کیا آپ واقعی %d منتخب اشیاء حذف کرنا چاہتے ہیں؟ یہ عمل واپس نہیں لیا جا سکتا۔</string>
+    <string name="wardrobe_move_to">یہاں بھیجیں…</string>
+    <string name="wardrobe_move_to_title">%d اشیاء یہاں بھیجیں</string>
+    <string name="wardrobe_sort">ترتیب دیں</string>
+    <string name="wardrobe_sort_newest">نئی پہلے</string>
+    <string name="wardrobe_sort_oldest">پرانی پہلے</string>
+    <string name="wardrobe_sort_most_worn">زیادہ پہنی جانے والی</string>
+    <string name="wardrobe_sort_type">قسم</string>
+    <string name="wardrobe_sort_category">زمرہ</string>
+    <string name="wardrobe_tag_detect">ٹیگز پہچانیں</string>
+    <string name="wardrobe_tag_remove_bg">BG ہٹائیں</string>
+    <string name="wardrobe_tag_re_remove_bg">BG دوبارہ ہٹائیں</string>
+    <string name="wardrobe_tag_rotate">گھمائیں</string>
+    <string name="wardrobe_tag_edit">ٹیگز میں ترمیم کریں</string>
+    <string name="wardrobe_tag_sheet_title">ٹیگز کی ترمیم</string>
+    <string name="wardrobe_add_gallery">گیلری</string>
+    <string name="wardrobe_add_camera">کیمرہ</string>
+    <string name="wardrobe_add_to_closet">%1$s میں شامل کریں</string>
+    <string name="wardrobe_add_to_closet_title">الماری میں شامل کریں</string>
+    <string name="action_continue">جاری رکھیں</string>
+    <string name="tag_label">نام</string>
+    <string name="tag_label_placeholder">مثلاً نیوی چینو، سفید آکسفورڈ شرٹ</string>
+    <string name="tag_type">قسم</string>
+    <string name="tag_category">زمرہ</string>
+    <string name="tag_uses">استعمال</string>
+    <string name="tag_colors">رنگ</string>
+    <string name="tag_seasonality">موسم</string>
+    <string name="tag_aesthetic">جمالیاتی</string>
+    <string name="tag_fit">فٹنگ</string>
+    <string name="tag_material">مواد</string>
+    <string name="tag_pattern">ڈیزائن</string>
+    <string name="tag_add_custom">اپنی مرضی کا ٹیگ شامل کریں…</string>
+
+    <!-- Tag values -->
+    <string name="tag_val_casual">روزمرہ</string>
+    <string name="tag_val_formal">رسمی</string>
+    <string name="tag_val_business">کاروباری</string>
+    <string name="tag_val_sport">کھیل</string>
+    <string name="tag_val_spring">بہار</string>
+    <string name="tag_val_summer">گرمی</string>
+    <string name="tag_val_fall">خزاں</string>
+    <string name="tag_val_winter">سردی</string>
+    <string name="tag_val_tops">اوپر والے کپڑے</string>
+    <string name="tag_val_bottoms">نیچے والے کپڑے</string>
+    <string name="tag_val_outerwear">بیرونی لباس</string>
+    <string name="tag_val_footwear">جوتے</string>
+    <string name="tag_val_accessories">لوازمات</string>
+
+    <!-- Outfits -->
+    <string name="outfits_empty">ابھی تک کوئی لباس نہیں</string>
+    <string name="outfits_empty_hint">اپنے وارڈروب سے لباس تیار کرنے کے لیے + پر ٹیپ کریں</string>
+    <string name="outfits_no_match">فلٹر سے مطابقت رکھنے والا کوئی لباس نہیں ہے</string>
+    <string name="outfits_sort_newest">نیا پہلے</string>
+    <string name="outfits_sort_oldest">پرانا پہلے</string>
+    <string name="outfits_sort_most_worn">زیادہ پہنا جانے والا</string>
+    <string name="outfits_sort_name_az">نام الف–ی</string>
+    <string name="outfits_sort_name_za">نام ی–الف</string>
+    <string name="outfits_create_manual">خود سے لباس تیار کریں</string>
+    <string name="outfits_suggest">موجودہ لباس کا مشورہ دیں</string>
+    <string name="prediction_setup_title">AI کے ساتھ تلاش کریں</string>
+    <string name="prediction_setup_find">تلاش کریں</string>
+    <string name="prediction_setup_title_compose">AI کے ساتھ تیار کریں</string>
+    <string name="prediction_setup_create">تیار کریں</string>
+    <string name="prediction_setup_suggestions">مشورے</string>
+    <string name="prediction_setup_weather_today">آج</string>
+    <string name="prediction_setup_weather_tomorrow">کل</string>
+    <string name="outfits_compose">نیا لباس تیار کریں</string>
+    <string name="outfits_thinking">سوچ رہا ہوں…</string>
+    <string name="outfits_suggesting">لباس کا مشورہ دیا جا رہا ہے…</string>
+    <string name="outfits_composing">لباس تیار ہو رہا ہے…</string>
+    <string name="outfits_delete_title">لباس حذف کریں؟</string>
+    <string name="outfits_delete_text">\"%s\" مستقل طور پر حذف کر دیا جائے گا۔</string>
+    <string name="outfits_wear_today">آج پہنیں</string>
+    <string name="outfits_worn_today">آج پہنا گیا!</string>
+    <string name="outfits_suggested_title">آج کے لیے مشورہ</string>
+    <string name="outfits_composed_title">آپ کے لیے تیار کردہ</string>
+    <string name="outfits_name_dialog_title">اس لباس کا نام رکھیں</string>
+    <string name="outfits_name_placeholder">لباس کا نام</string>
+    <string name="outfits_create_this">یہ لباس تیار کریں</string>
+    <string name="outfits_refine_label">AI کے ساتھ بہتر بنائیں</string>
+    <string name="outfits_add_item">شے شامل کریں</string>
+    <string name="outfits_tags_label">ٹیگز</string>
+    <string name="composer_select_suggestion">یہ لباس استعمال کریں</string>
+    <string name="outfits_tag_add">ٹیگ شامل کریں</string>
+    <string name="outfits_saved_wear_today">لباس محفوظ ہو گیا! آج پہنیں؟</string>
+    <string name="outfits_combine">AI کے ساتھ ملائیں</string>
+    <string name="outfit_generate_with_ai">AI کے ساتھ بنائیں</string>
+    <string name="outfit_save_dialog_title">لباس محفوظ کریں</string>
+    <string name="outfit_save_dialog_confirm">محفوظ کریں</string>
+
+    <!-- Travel -->
+    <string name="travel_title">سفر کے سامان کی فہرست</string>
+    <string name="travel_destination">منزل</string>
+    <string name="travel_duration">دورانیہ</string>
+    <string name="travel_start_date">آغاز کی تاریخ</string>
+    <string name="travel_generate">سامان کی فہرست بنائیں</string>
+    <string name="travel_packing_list">سامان کی فہرست</string>
+    <string name="travel_clear">صاف کریں</string>
+    <string name="travel_empty">شروع کرنے کے لیے منزل لکھیں</string>
+    <string name="travel_day">دن %d</string>
+    <string name="travel_save_as_style">بطور لباس محفوظ کریں</string>
+    <string name="travel_saved_as_style">محفوظ ہو گیا</string>
+
+    <!-- Calendar -->
+    <string name="calendar_day_mo">پیر</string>
+    <string name="calendar_day_tu">منگل</string>
+    <string name="calendar_day_we">بدھ</string>
+    <string name="calendar_day_th">جمعرات</string>
+    <string name="calendar_day_fr">جمعہ</string>
+    <string name="calendar_day_sa">ہفتہ</string>
+    <string name="calendar_day_su">اتوار</string>
+    <string name="calendar_stats_styles">زیادہ پہنے گئے ملبوسات</string>
+    <string name="calendar_stats_items">زیادہ پہنی گئی اشیاء</string>
+    <string name="calendar_empty">ابھی تک کوئی ریکارڈ نہیں ہے</string>
+    <string name="calendar_wear_again">آج دوبارہ پہنیں</string>
+
+    <!-- Gap Analyzer -->
+    <string name="gap_analyze">میرے وارڈروب کا تجزیہ کریں</string>
+    <string name="gap_reanalyze">دوبارہ تجزیہ کریں</string>
+
+    <!-- AI overlay -->
+    <string name="ai_working">AI کام کر رہا ہے…</string>
+    <string name="ai_fetching_weather">موسم کی معلومات لی جا رہی ہے…</string>
+    <string name="ai_generating_packing">سامان کی فہرست بن رہی ہے…</string>
+    <string name="ai_analyzing_wardrobe">آپ کے وارڈروب کا تجزیہ ہو رہا ہے…</string>
+    <string name="ai_suggesting_style">لباس کا مشورہ دیا جا رہا ہے…</string>
+    <string name="ai_composing_outfit">لباس تیار ہو رہا ہے…</string>
+
+    <!-- Offline mode -->
+    <string name="offline_banner">آپ آف لائن ہیں — صرف دیکھنے کی سہولت</string>
+
+    <!-- Try on me -->
+    <string name="tryon_title">مجھ پر آزمائیں</string>
+    <string name="tryon_fab">مجھ پر آزمائیں</string>
+    <string name="tryon_uploading">اپ لوڈ ہو رہا ہے…</string>
+    <string name="tryon_generating">آزمائشی تصویر تیار ہو رہی ہے…</string>
+    <string name="tryon_error">تصویر کی تیاری ناکام رہی</string>
+    <string name="tryon_save_to_gallery">گیلری میں محفوظ کریں</string>
+    <string name="tryon_saved">محفوظ ہو گیا</string>
+    <string name="tryon_camera">کیمرہ</string>
+    <string name="tryon_gallery">گیلری</string>
+
+    <!-- About -->
+    <string name="settings_tab_about">بارے میں</string>
+    <string name="about_version">ورژن %1$s (%2$s)</string>
+    <string name="about_open_source">یہ ایپ اوپن سورس اور مفت ہے۔</string>
+
+    <!-- Unified Outfit Composer -->
+    <string name="composer_title">لباس تیار کریں</string>
+    <string name="composer_save">محفوظ کریں</string>
+    <string name="composer_goal_generate">تیار کریں</string>
+    <string name="composer_advanced">اعلیٰ اختیارات</string>
+    <string name="composer_chip_work">کام</string>
+    <string name="composer_chip_dinner">کھانا</string>
+    <string name="composer_chip_casual">روزمرہ</string>
+    <string name="composer_chip_workout">کھیل</string>
+    <string name="composer_chip_travel">سفر</string>
+    <string name="composer_chip_date">ڈیٹ</string>
+    <string name="composer_weather_auto">موجودہ</string>
+    <string name="composer_weather_manual">دستی</string>
+    <string name="composer_season_spring">بہار</string>
+    <string name="composer_season_summer">گرمی</string>
+    <string name="composer_season_fall">خزاں</string>
+    <string name="composer_season_winter">سردی</string>
+    <string name="composer_temp_value">%1$d°C</string>
+    <string name="composer_enhance">AI کے ساتھ بہتر بنائیں</string>
+    <string name="composer_enhancing">Gemini سے پوچھا جا رہا ہے…</string>
+</resources>

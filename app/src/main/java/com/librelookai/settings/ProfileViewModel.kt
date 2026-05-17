@@ -67,9 +67,7 @@ class ProfileViewModel(app: Application) : AndroidViewModel(app) {
      */
     private fun cachedLanguage(): String {
         langPrefs.getString(KEY_LANGUAGE, null)?.let { return it }
-        val systemLang = java.util.Locale.getDefault().language
-        return if (systemLang.equals("de", ignoreCase = true)) AppLanguage.GERMAN
-        else AppLanguage.ENGLISH
+        return AppLanguage.fromSystemLocale(java.util.Locale.getDefault())
     }
 
     private fun cacheLanguage(language: String) {

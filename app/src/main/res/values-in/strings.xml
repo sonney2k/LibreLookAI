@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LibreLookAI</string>
+
+    <!-- Navigation -->
+    <string name="nav_styles">Setelan</string>
+    <string name="nav_wardrobe">Lemari</string>
+    <string name="nav_shopping">Belanja</string>
+    <string name="nav_travel">Wisata</string>
+    <string name="nav_insights">Wawasan</string>
+    <string name="nav_settings">Pengaturan</string>
+
+    <!-- Insights tab -->
+    <string name="insights_title">Wawasan</string>
+    <string name="insights_tab_calendar">Kalender</string>
+    <string name="insights_tab_wardrobe_stats">Statistik Lemari</string>
+    <string name="insights_tab_calendar_stats">Statistik Kalender</string>
+    <string name="insights_tab_costs">Biaya</string>
+    <string name="costs_count_items">Item</string>
+    <string name="costs_count_outfits">Setelan</string>
+    <string name="costs_count_tryons">Percobaan</string>
+    <string name="costs_count_wears">Dipakai</string>
+    <string name="costs_count_imports">Impor</string>
+    <string name="costs_activity_14d">Aktivitas (14 hari terakhir)</string>
+
+    <!-- Shopping Helper tab -->
+    <string name="shopping_title">Pembantu Belanja</string>
+    <string name="shopping_tab_list">Daftar Belanja</string>
+    <string name="shopping_tab_similarity">Pencari Kemiripan</string>
+    <string name="shopping_tab_gaps">Identifikasi Celah</string>
+
+    <!-- Shopping list sub-tab -->
+    <string name="shop_list_empty_title">Daftar keinginan kosong</string>
+    <string name="shop_list_empty_hint">Tambah item yang ingin dibeli via kamera, galeri, atau URL belanja.</string>
+    <string name="shop_list_add_camera">Tambah dari kamera</string>
+    <string name="shop_list_add_gallery">Tambah dari galeri</string>
+    <string name="shop_list_add_url">Tambah dari URL</string>
+    <string name="shop_list_url_title">Tambah dari URL</string>
+    <string name="shop_list_url_hint">Tempel URL halaman belanja. Kami akan mengambil gambar produk secara otomatis.</string>
+    <string name="shop_list_uploading">Mengunggah…</string>
+    <string name="shop_list_moving">Memindahkan…</string>
+    <string name="shop_list_loading">Memuat…</string>
+    <string name="shop_list_processing">Memproses %1$d item…</string>
+    <string name="shop_list_move_to_closet">Pindah ke lemari</string>
+    <string name="shop_list_move_title">Pindah ke lemari</string>
+    <string name="shop_list_delete_title">Hapus dari daftar keinginan?</string>
+    <string name="shop_list_delete_text">Hapus %1$d item secara permanen dari daftar keinginan?</string>
+
+    <!-- URL import (Wardrobe + Shopping List) -->
+    <string name="wardrobe_add_url">Tambah dari URL</string>
+    <string name="wardrobe_url_import_title">Impor dari URL belanja</string>
+    <string name="wardrobe_url_import_hint">Tempel URL halaman belanja. Kami akan mengambil gambar produk secara otomatis.</string>
+    <string name="url_import_failed">Tidak menemukan gambar produk di URL ini.</string>
+    <string name="url_import_pick_title">Pilih gambar produk</string>
+    <string name="url_import_pick_hint">Ketuk gambar yang ingin diimpor. Jika tidak ada yang cocok, buka halaman di browser.</string>
+    <string name="url_import_browser_title">Buka halaman</string>
+    <string name="url_import_browser_hint">Ketuk gambar apa pun di halaman untuk mengimpornya.</string>
+    <string name="url_import_open_browser">Buka halaman</string>
+    <string name="url_import_show_candidates">Kandidat</string>
+    <string name="url_import_no_candidates">Tidak ada gambar ditemukan. Buka browser untuk memilih.</string>
+
+    <!-- Outfits sub-tabs -->
+    <string name="outfits_tab_outfits">Setelan</string>
+    <string name="outfits_tab_tryons">Percobaan</string>
+
+    <!-- Common actions -->
+    <string name="action_ok">OK</string>
+    <string name="action_cancel">Batal</string>
+    <string name="action_dismiss">Tutup</string>
+    <string name="action_delete">Hapus</string>
+    <string name="action_save">Simpan</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_saving">Menyimpan…</string>
+    <string name="action_clear">Bersihkan</string>
+    <string name="action_sort">Urutkan</string>
+    <string name="action_remove">Hapus</string>
+    <string name="cd_ai_suggestion">Saran AI</string>
+    <string name="cd_refine">Pertajam</string>
+    <string name="filter_location">Lokasi</string>
+    <string name="filter_all_locations">Semua</string>
+    <string name="wardrobe_processing_photos">Memproses %1$d foto…</string>
+    <string name="wardrobe_progress_uploading">Mengunggah foto…</string>
+    <string name="wardrobe_progress_uploading_batch">Mengunggah foto %1$d dari %2$d…</string>
+    <string name="wardrobe_progress_removing_bg">Menghapus latar belakang…</string>
+    <string name="wardrobe_progress_removing_bg_batch">Menghapus latar belakang %1$d dari %2$d…</string>
+    <string name="wardrobe_progress_moving">Pindah ke lokasi baru…</string>
+    <string name="action_select_all">Pilih semua</string>
+    <string name="action_deselect_all">Batalkan semua</string>
+
+    <!-- Sign In -->
+    <string name="sign_in_prompt">Masuk untuk mengelola lemari Anda</string>
+    <string name="sign_in_button">Masuk dengan Google</string>
+    <string name="sign_in_error_not_registered">Masuk gagal: versi aplikasi ini tidak terdaftar di Google.</string>
+    <string name="sign_in_error_network">Masuk gagal: tidak ada koneksi internet. Silakan coba lagi.</string>
+    <string name="sign_in_error_generic">Masuk gagal (kode %1$d). Silakan coba lagi.</string>
+
+    <!-- Settings -->
+    <string name="settings_tab_profile">Profil</string>
+    <string name="settings_tab_display">Tampilan</string>
+    <string name="settings_display_theme">Tema</string>
+    <string name="settings_display_theme_desc">Pilih palet warna untuk seluruh aplikasi.</string>
+    <string name="theme_green_light">Hijau (terang)</string>
+    <string name="theme_green_dark">Hijau (gelap)</string>
+    <string name="theme_sand_light">Pasir (terang)</string>
+    <string name="theme_indigo_dark">Nila (gelap)</string>
+    <string name="theme_pastel_mint">Mint Pastel</string>
+    <string name="theme_pastel_blush">Blush Pastel</string>
+    <string name="theme_pastel_lavender">Lavender Pastel</string>
+    <string name="settings_display_font">Font</string>
+    <string name="settings_display_font_desc">Pilih jenis huruf yang digunakan di seluruh aplikasi.</string>
+    <string name="font_default">Default sistem</string>
+    <string name="font_caveat">Caveat (tulis tangan)</string>
+    <string name="wardrobe_filters">Filter</string>
+    <string name="wardrobe_filters_apply">Terapkan (%1$d)</string>
+    <string name="wardrobe_filters_reset">Reset</string>
+    <string name="settings_tab_data">Data</string>
+    <string name="settings_tab_credits">Kredit</string>
+    <string name="settings_language">Bahasa</string>
+    <string name="settings_gender">Jenis Kelamin</string>
+    <string name="settings_gender_select">Pilih…</string>
+    <string name="settings_gender_prefer_not">Tidak ingin menyebutkan</string>
+    <string name="settings_gender_female">Wanita</string>
+    <string name="settings_gender_male">Pria</string>
+    <string name="settings_gender_nonbinary">Non-biner</string>
+    <string name="settings_gender_other">Lainnya</string>
+    <string name="settings_year_of_birth">Tahun Lahir</string>
+    <string name="settings_year_placeholder">contoh: 1990</string>
+    <string name="settings_style_prefs">Preferensi Gaya</string>
+    <string name="settings_style_placeholder">Deskripsikan pakaian yang Anda sukai, acara yang dihadiri, warna favorit, merk, dll…</string>
+    <string name="settings_saved">Preferensi disimpan</string>
+    <string name="settings_api_key_title">Gemini API Key</string>
+    <string name="settings_api_key_desc">Semua fitur AI membutuhkan Gemini API key. Dapatkan kunci gratis di aistudio.google.com.</string>
+    <string name="settings_api_key_label">API Key</string>
+    <string name="settings_api_key_placeholder">AIza…</string>
+    <string name="settings_data_tags_title">Tag Lemari</string>
+    <string name="settings_data_tags_desc">Klasifikasi ulang setiap item di lemari dengan Gemini. Ini menimpa edit manual.</string>
+    <string name="settings_rescan_button">Pindai Ulang Semua Tag</string>
+    <string name="settings_rescanning">Memindai ulang %1$d dari %2$d…</string>
+    <string name="settings_rescan_dialog_title">Pindai ulang semua tag?</string>
+    <string name="settings_rescan_dialog_text">Gemini akan mengklasifikasi ulang setiap item. Ini akan menimpa edit manual.</string>
+    <string name="settings_rescan_confirm">Pindai Ulang</string>
+    <string name="settings_bulk_cost_line">%1$d item × %2$d kredit = total %3$d kredit</string>
+    <string name="settings_rebg_title">Hapus Latar Belakang</string>
+    <string name="settings_rebg_desc">Jalankan ulang penghapusan latar belakang AI untuk semua item. Setiap item memakan 5 kredit.</string>
+    <string name="settings_rebg_button">Hapus BG Semua Item…</string>
+    <string name="settings_rebg_dialog_title">Hapus semua latar belakang?</string>
+    <string name="settings_rebg_confirm">Hapus Semua BG</string>
+    <string name="settings_rebging">Menghapus latar belakang %1$d dari %2$d…</string>
+    <string name="settings_clear_cache_title">Perbaiki &amp; Sinkron</string>
+    <string name="settings_clear_cache_desc">Scan folder Drive: perbaiki nama file, deteksi potongan yang hilang, lalu muat ulang.</string>
+    <string name="settings_clear_cache_button">Perbaiki &amp; Sinkron…</string>
+    <string name="settings_clear_cache_dialog_title">Bersihkan Cache</string>
+    <string name="settings_clear_cache_dialog_text">Semua gambar lokal akan dihapus dan diunduh ulang dari Drive.</string>
+    <string name="settings_clear_cache_confirm">Bersihkan &amp; Segarkan</string>
+    <string name="settings_repair_scanning">Memindai folder %1$d dari %2$d…</string>
+    <string name="settings_repair_confirm_title">Hasil Perbaikan</string>
+    <string name="settings_repair_confirm_renamed">%1$d file diganti namanya</string>
+    <string name="settings_repair_confirm_unprocessed">%1$d item butuh hapus BG + tag</string>
+    <string name="settings_repair_confirm_raw">%1$d gambar tidak dikenal butuh hapus BG + tag</string>
+    <string name="settings_repair_confirm_sidecar">%1$d item butuh tag saja</string>
+    <string name="settings_repair_confirm_all_ok">Semua file konsisten. Ketuk di bawah untuk muat ulang.</string>
+    <string name="settings_repair_process">Proses &amp; Segarkan</string>
+    <string name="settings_repair_skip">Lewati &amp; Segarkan</string>
+    <string name="settings_repair_processing">Memproses item %1$d dari %2$d…</string>
+    <string name="settings_repair_done">Perbaikan selesai. Lemari disegarkan.</string>
+
+    <!-- Wardrobe -->
+    <string name="wardrobe_sync_progress">Memulihkan lemari: %1$d / %2$d</string>
+    <string name="wardrobe_empty_filter">Tidak ada item cocok dengan filter</string>
+    <string name="wardrobe_item_count">%1$d item</string>
+    <string name="wardrobe_filtered_count">Menampilkan %1$d dari %2$d item</string>
+    <string name="wardrobe_stats_total">Total %1$d item</string>
+    <string name="wardrobe_stats_untagged">Tanpa tag</string>
+    <string name="wardrobe_empty">Belum ada item</string>
+    <string name="wardrobe_empty_hint">Ambil foto atau pilih dari galeri</string>
+    <string name="wardrobe_create_outfit">Buat setelan manual</string>
+    <string name="wardrobe_compose_ai">Susun dengan AI</string>
+    <string name="wardrobe_selected_count">%1$d dipilih</string>
+    <string name="wardrobe_select_all_count">Pilih semua (%1$d)</string>
+    <string name="wardrobe_delete_title">Hapus item?</string>
+    <string name="wardrobe_delete_text">Anda yakin ingin menghapus %d item terpilih? Ini tidak bisa dibatalkan.</string>
+    <string name="wardrobe_move_to">Pindah ke…</string>
+    <string name="wardrobe_move_to_title">Pindah %d item ke</string>
+    <string name="wardrobe_sort">Urutkan</string>
+    <string name="wardrobe_sort_newest">Terbaru</string>
+    <string name="wardrobe_sort_oldest">Terlama</string>
+    <string name="wardrobe_sort_most_worn">Paling sering dipakai</string>
+    <string name="wardrobe_sort_type">Tipe</string>
+    <string name="wardrobe_sort_category">Kategori</string>
+    <string name="wardrobe_tag_detect">Deteksi tag</string>
+    <string name="wardrobe_tag_remove_bg">Hapus BG</string>
+    <string name="wardrobe_tag_re_remove_bg">Hapus ulang BG</string>
+    <string name="wardrobe_tag_rotate">Putar</string>
+    <string name="wardrobe_tag_edit">Edit tag</string>
+    <string name="wardrobe_tag_sheet_title">Edit Tag</string>
+    <string name="wardrobe_add_gallery">Galeri</string>
+    <string name="wardrobe_add_camera">Kamera</string>
+    <string name="wardrobe_add_to_closet">Tambah ke %1$s</string>
+    <string name="wardrobe_add_to_closet_title">Tambah ke lemari</string>
+    <string name="action_continue">Lanjut</string>
+    <string name="tag_label">Nama</string>
+    <string name="tag_label_placeholder">mis: Chino Navy, Kemeja Oxford Putih</string>
+    <string name="tag_type">Tipe</string>
+    <string name="tag_category">Kategori</string>
+    <string name="tag_uses">Kegunaan</string>
+    <string name="tag_colors">Warna</string>
+    <string name="tag_seasonality">Musim</string>
+    <string name="tag_aesthetic">Estetika</string>
+    <string name="tag_fit">Ukuran</string>
+    <string name="tag_material">Bahan</string>
+    <string name="tag_pattern">Motif</string>
+    <string name="tag_add_custom">Tambah kustom…</string>
+
+    <!-- Tag values -->
+    <string name="tag_val_casual">Kasual</string>
+    <string name="tag_val_formal">Formal</string>
+    <string name="tag_val_business">Bisnis</string>
+    <string name="tag_val_sport">Olahraga</string>
+    <string name="tag_val_spring">Semi</string>
+    <string name="tag_val_summer">Panas</string>
+    <string name="tag_val_fall">Gugur</string>
+    <string name="tag_val_winter">Dingin</string>
+    <string name="tag_val_tops">Atasan</string>
+    <string name="tag_val_bottoms">Bawahan</string>
+    <string name="tag_val_outerwear">Pakaian Luar</string>
+    <string name="tag_val_footwear">Alas Kaki</string>
+    <string name="tag_val_accessories">Aksesori</string>
+
+    <!-- Outfits -->
+    <string name="outfits_empty">Belum ada setelan</string>
+    <string name="outfits_empty_hint">Ketuk + untuk membangun setelan dari lemari Anda</string>
+    <string name="outfits_no_match">Tidak ada setelan cocok dengan filter</string>
+    <string name="outfits_sort_newest">Terbaru</string>
+    <string name="outfits_sort_oldest">Terlama</string>
+    <string name="outfits_sort_most_worn">Paling sering dipakai</string>
+    <string name="outfits_sort_name_az">Nama A–Z</string>
+    <string name="outfits_sort_name_za">Nama Z–A</string>
+    <string name="outfits_create_manual">Buat setelan manual</string>
+    <string name="outfits_suggest">Sarankan setelan yang ada</string>
+    <string name="prediction_setup_title">Cari dengan AI</string>
+    <string name="prediction_setup_find">Cari</string>
+    <string name="prediction_setup_title_compose">Buat dengan AI</string>
+    <string name="prediction_setup_create">Buat</string>
+    <string name="prediction_setup_suggestions">Saran</string>
+    <string name="prediction_setup_weather_today">Hari ini</string>
+    <string name="prediction_setup_weather_tomorrow">Besok</string>
+    <string name="outfits_compose">Susun setelan baru</string>
+    <string name="outfits_thinking">Berpikir…</string>
+    <string name="outfits_suggesting">Menyarankan setelan…</string>
+    <string name="outfits_composing">Menyusun setelan…</string>
+    <string name="outfits_delete_title">Hapus setelan?</string>
+    <string name="outfits_delete_text">\"%s\" akan dihapus permanen.</string>
+    <string name="outfits_wear_today">Pakai hari ini</string>
+    <string name="outfits_worn_today">Dipakai hari ini!</string>
+    <string name="outfits_suggested_title">Disarankan untuk hari ini</string>
+    <string name="outfits_composed_title">Disusun untuk Anda</string>
+    <string name="outfits_name_dialog_title">Namai setelan ini</string>
+    <string name="outfits_name_placeholder">Nama setelan</string>
+    <string name="outfits_create_this">Buat setelan ini</string>
+    <string name="outfits_refine_label">Pertajam dengan AI</string>
+    <string name="outfits_add_item">Tambah item</string>
+    <string name="outfits_tags_label">Tag</string>
+    <string name="composer_select_suggestion">Gunakan setelan ini</string>
+    <string name="outfits_tag_add">Tambah tag</string>
+    <string name="outfits_saved_wear_today">Setelan disimpan! Pakai hari ini?</string>
+    <string name="outfits_combine">Gabungkan dengan AI</string>
+    <string name="outfit_generate_with_ai">Hasilkan dengan AI</string>
+    <string name="outfit_save_dialog_title">Simpan setelan</string>
+    <string name="outfit_save_dialog_confirm">Simpan</string>
+
+    <!-- Travel -->
+    <string name="travel_title">Daftar Kemasan Wisata</string>
+    <string name="travel_destination">Tujuan</string>
+    <string name="travel_duration">Durasi</string>
+    <string name="travel_start_date">Tanggal mulai</string>
+    <string name="travel_generate">Buat Daftar Kemasan</string>
+    <string name="travel_packing_list">Daftar Kemasan</string>
+    <string name="travel_clear">Bersihkan</string>
+    <string name="travel_empty">Masukkan tujuan untuk memulai</string>
+    <string name="travel_day">Hari %d</string>
+    <string name="travel_save_as_style">Simpan sebagai setelan</string>
+    <string name="travel_saved_as_style">Disimpan</string>
+
+    <!-- Calendar -->
+    <string name="calendar_day_mo">Se</string>
+    <string name="calendar_day_tu">Se</string>
+    <string name="calendar_day_we">Ra</string>
+    <string name="calendar_day_th">Ka</string>
+    <string name="calendar_day_fr">Ju</string>
+    <string name="calendar_day_sa">Sa</string>
+    <string name="calendar_day_su">Mi</string>
+    <string name="calendar_stats_styles">Setelan Paling Sering Dipakai</string>
+    <string name="calendar_stats_items">Item Paling Sering Dipakai</string>
+    <string name="calendar_empty">Belum ada riwayat setelan</string>
+    <string name="calendar_wear_again">Pakai lagi hari ini</string>
+
+    <!-- Gap Analyzer -->
+    <string name="gap_analyze">Analisis Lemari Saya</string>
+    <string name="gap_reanalyze">Analisis Ulang</string>
+
+    <!-- AI overlay -->
+    <string name="ai_working">AI sedang bekerja…</string>
+    <string name="ai_fetching_weather">Mengambil cuaca…</string>
+    <string name="ai_generating_packing">Membuat daftar kemasan…</string>
+    <string name="ai_analyzing_wardrobe">Menganalisis lemari Anda…</string>
+    <string name="ai_suggesting_style">Menyarankan setelan…</string>
+    <string name="ai_composing_outfit">Menyusun setelan…</string>
+
+    <!-- Offline mode -->
+    <string name="offline_banner">Anda sedang luring — mode baca-saja</string>
+
+    <!-- Try on me -->
+    <string name="tryon_title">Coba di saya</string>
+    <string name="tryon_fab">Coba di saya</string>
+    <string name="tryon_uploading">Mengunggah…</string>
+    <string name="tryon_generating">Menghasilkan percobaan Anda…</string>
+    <string name="tryon_error">Gagal menghasilkan percobaan</string>
+    <string name="tryon_save_to_gallery">Simpan ke galeri</string>
+    <string name="tryon_saved">Disimpan ke Pictures/LibreLookAI</string>
+    <string name="tryon_camera">Kamera</string>
+    <string name="tryon_gallery">Galeri</string>
+
+    <!-- About -->
+    <string name="settings_tab_about">Tentang</string>
+    <string name="about_version">Versi %1$s (%2$s)</string>
+    <string name="about_description">LibreLookAI adalah pengelola lemari bertenaga AI yang gratis dan sumber terbuka.</string>
+    <string name="about_open_source">Aplikasi ini sumber terbuka dan gratis digunakan.</string>
+
+    <!-- Unified Outfit Composer -->
+    <string name="composer_title">Buat setelan</string>
+    <string name="composer_save">Simpan</string>
+    <string name="composer_goal_generate">Hasilkan</string>
+    <string name="composer_advanced">Opsi lanjutan</string>
+    <string name="composer_chip_work">Kerja</string>
+    <string name="composer_chip_dinner">Makan Malam</string>
+    <string name="composer_chip_casual">Kasual</string>
+    <string name="composer_chip_workout">Olahraga</string>
+    <string name="composer_chip_travel">Wisata</string>
+    <string name="composer_chip_date">Kencan</string>
+    <string name="composer_weather_auto">Saat ini</string>
+    <string name="composer_weather_manual">Manual</string>
+    <string name="composer_season_spring">Semi</string>
+    <string name="composer_season_summer">Panas</string>
+    <string name="composer_season_fall">Gugur</string>
+    <string name="composer_season_winter">Dingin</string>
+    <string name="composer_temp_value">%1$d°C</string>
+    <string name="composer_enhance">Pertajam dengan AI</string>
+    <string name="composer_enhancing">Bertanya ke Gemini…</string>
+</resources>
