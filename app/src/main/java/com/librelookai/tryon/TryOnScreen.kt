@@ -296,6 +296,19 @@ fun TryOnComposerScreen(
                         },
                     )
                 }
+
+                // Insufficient-credits dialog — surfaced when the proxy returned 402.
+                // The "Buy" hand-off currently just dismisses; the user can navigate
+                // to Settings → Credits. Wire navigation in a follow-up once we have
+                // a tab-switch callback through this screen.
+                state.needsTopUp?.let { ex ->
+                    com.librelookai.billing.InsufficientCreditsDialog(
+                        needed = ex.needed,
+                        have = ex.have,
+                        onBuy = tryOnViewModel::clearNeedsTopUp,
+                        onDismiss = tryOnViewModel::clearNeedsTopUp,
+                    )
+                }
             }
         }
         }
@@ -430,6 +443,7 @@ private fun TryOnComposerContent(
             enabled = chosenImages.isNotEmpty() && !state.isGenerating,
             modifier = Modifier.fillMaxWidth(),
         ) {
+            com.librelookai.billing.CostBadge(com.librelookai.gemini.GeminiActionId.TRY_ON_OUTFIT)
             Icon(Icons.Default.AutoAwesome, null, modifier = Modifier.size(18.dp))
             Spacer(Modifier.width(8.dp))
             Text(stringResource(R.string.tryon_generate))

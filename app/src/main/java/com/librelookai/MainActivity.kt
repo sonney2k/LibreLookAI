@@ -132,6 +132,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         Analytics.init(applicationContext)
         EmbeddingService.init(this)
+        com.librelookai.gemini.PricingClient.start(applicationContext)
         setContent {
             LibreLookAITheme(
                 paletteId = ProfileViewModel.cachedTheme(this),

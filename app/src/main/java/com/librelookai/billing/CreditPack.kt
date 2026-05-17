@@ -15,12 +15,16 @@ object CreditPacks {
         else      -> 0
     }
 
-    // Credit cost per AI action (informational — enforcement is server-side)
-    const val COST_BG_REMOVAL = 5
-    const val COST_CLASSIFY   = 2
-    const val COST_TEXT       = 2
-    const val COST_TRENDS     = 2
-    const val COST_TRY_ON     = 8
+    // Last-resort defaults shown when PricingClient has no live config and no
+    // persisted snapshot. Authoritative prices live in Firestore
+    // (config/publicPricing); see PricingClient. Keep these in sync with
+    // firebase/functions/src/pricing.ts (DEFAULT_PRICING × multiplier).
+    const val COST_BG_REMOVAL        = 6
+    const val COST_CLASSIFY          = 2
+    const val COST_TEXT              = 2
+    const val COST_TRENDS            = 2
+    const val COST_TRY_ON            = 8
+    const val COST_OUTFIT_SUGGESTION = 4
 
     /** Total credits for running BG removal + optional tagging on [count] items. */
     fun bulkCost(count: Int, removeBg: Boolean, autoTag: Boolean): Int =

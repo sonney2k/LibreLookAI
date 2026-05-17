@@ -1441,8 +1441,15 @@ private fun ImportOptionsDialog(
     var overwriteDuplicates by remember { mutableStateOf(false) }
     var useDrivePicker    by remember { mutableStateOf(false) }
 
-    val aiCostPerItem = (if (removeBackground) CreditPacks.COST_BG_REMOVAL else 0) +
-                        (if (autoTag) CreditPacks.COST_CLASSIFY else 0)
+    // Live coin prices from Firestore (config/publicPricing) with hard-coded
+    // fallbacks if the listener hasn't resolved yet.
+    val pricing by com.librelookai.gemini.PricingClient.costsState.collectAsState()
+    val bgCost = pricing[com.librelookai.gemini.GeminiActionId.REMOVE_BACKGROUND.key]
+        ?: CreditPacks.COST_BG_REMOVAL
+    val tagCost = pricing[com.librelookai.gemini.GeminiActionId.CLASSIFY_CLOTHING.key]
+        ?: CreditPacks.COST_CLASSIFY
+    val aiCostPerItem = (if (removeBackground) bgCost else 0) +
+                        (if (autoTag) tagCost else 0)
     val showCostWarning = aiCostPerItem > 0
 
     AlertDialog(

@@ -843,6 +843,7 @@ private fun ComposerEditBottomBar(
                 modifier = Modifier.weight(1f).height(48.dp),
                 shape = RoundedCornerShape(24.dp),
             ) {
+                com.librelookai.billing.CostBadge(com.librelookai.gemini.GeminiActionId.OUTFIT_SUGGESTION)
                 Icon(Icons.Default.AutoAwesome, contentDescription = null, modifier = Modifier.size(16.dp))
                 Spacer(Modifier.width(6.dp))
                 Text(

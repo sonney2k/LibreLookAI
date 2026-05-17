@@ -43,6 +43,19 @@ class GeminiRepository(private val app: Application) {
     private val gson = Gson()
     private val usage = TokenUsageRepository.get(app)
 
+    /**
+     * If the proxy returned HTTP 402, parse `{ needed, have }` and raise
+     * [com.librelookai.billing.InsufficientCreditsException] so the caller
+     * can route the user to the buy-credits screen. No-op for any other code.
+     */
+    private fun throwIf402(code: Int, body: String) {
+        if (code != 402) return
+        val obj = try { gson.fromJson(body, Map::class.java) as? Map<*, *> } catch (_: Exception) { null }
+        val needed = (obj?.get("needed") as? Number)?.toInt() ?: 0
+        val have = (obj?.get("have") as? Number)?.toInt() ?: 0
+        throw com.librelookai.billing.InsufficientCreditsException(needed, have)
+    }
+
     /** Pulls usageMetadata out of a parsed Gemini response and records one event. */
     private fun recordUsage(parsed: GeminiResponse, model: String, category: UsageCategory) {
         val meta = parsed.usageMetadata ?: return
@@ -190,6 +203,7 @@ class GeminiRepository(private val app: Application) {
                 Log.d(TAG, "HTTP ${response.code}")
                 // Log full body (may be large; truncate for readability)
                 Log.d(TAG, "Response: ${responseBody.take(2000)}")
+                throwIf402(response.code, responseBody)
 
                 if (!response.isSuccessful) {
                     Log.e(TAG, "Non-2xx response — falling back to original")
@@ -220,6 +234,8 @@ class GeminiRepository(private val app: Application) {
                 rawFile.delete()
                 Log.d(TAG, "Background removed — saved ${outFile.length() / 1024}KB PNG")
                 outFile
+            } catch (e: com.librelookai.billing.InsufficientCreditsException) {
+                throw e
             } catch (e: Exception) {
                 Log.e(TAG, "Exception during Gemini call: ${e.message}", e)
                 null
@@ -307,6 +323,7 @@ class GeminiRepository(private val app: Application) {
             val response = http.newCall(request).await()
             val responseBody = response.body!!.string()
             Log.d(TAG, "Try-on HTTP ${response.code}: ${responseBody.take(500)}")
+            throwIf402(response.code, responseBody)
             if (!response.isSuccessful) return@withContext null
 
             val parsed = gson.fromJson(responseBody, GeminiResponse::class.java)
@@ -328,6 +345,8 @@ class GeminiRepository(private val app: Application) {
             outFile.writeBytes(Base64.decode(imagePart.inlineData!!.data!!, Base64.NO_WRAP))
             Log.d(TAG, "Try-on image saved (${outFile.length() / 1024}KB)")
             outFile
+        } catch (e: com.librelookai.billing.InsufficientCreditsException) {
+            throw e
         } catch (e: Exception) {
             Log.e(TAG, "tryOnOutfit failed: ${e.message}", e)
             null
@@ -375,6 +394,7 @@ class GeminiRepository(private val app: Application) {
                 val response = http.newCall(request).await()
                 val responseBody = response.body!!.string()
                 Log.d(TAG, "Classify HTTP ${response.code}: ${responseBody.take(500)}")
+                throwIf402(response.code, responseBody)
                 if (!response.isSuccessful) return@withContext null
 
                 val parsed = gson.fromJson(responseBody, GeminiResponse::class.java)
@@ -389,6 +409,8 @@ class GeminiRepository(private val app: Application) {
                 gson.fromJson(json, ClothingTags::class.java)
                     .normalize()
                     .also { Log.d(TAG, "Tags: $it") }
+            } catch (e: com.librelookai.billing.InsufficientCreditsException) {
+                throw e
             } catch (e: Exception) {
                 Log.e(TAG, "Classification failed: ${e.message}", e)
                 null
@@ -427,6 +449,7 @@ class GeminiRepository(private val app: Application) {
             ).await()
             val responseBody = response.body!!.string()
             Log.d(TAG, "searchFashionTrends HTTP ${response.code}: ${responseBody.take(500)}")
+            throwIf402(response.code, responseBody)
             if (!response.isSuccessful) return@withContext null
 
             val parsed = gson.fromJson(responseBody, GeminiResponse::class.java)
@@ -440,6 +463,8 @@ class GeminiRepository(private val app: Application) {
                 .removePrefix("```json").removePrefix("```").removeSuffix("```").trim()
             gson.fromJson(json, FashionTrends::class.java)
                 .also { Log.d(TAG, "FashionTrends for $region: $it") }
+        } catch (e: com.librelookai.billing.InsufficientCreditsException) {
+            throw e
         } catch (e: Exception) {
             Log.w(TAG, "searchFashionTrends failed (non-fatal): ${e.message}")
             null
@@ -471,6 +496,7 @@ class GeminiRepository(private val app: Application) {
             ).await()
             val responseBody = response.body!!.string()
             Log.d(TAG, "generateText HTTP ${response.code}: ${responseBody.take(500)}")
+            throwIf402(response.code, responseBody)
             if (!response.isSuccessful) return@withContext null
 
             val parsed = gson.fromJson(responseBody, GeminiResponse::class.java)
@@ -478,6 +504,8 @@ class GeminiRepository(private val app: Application) {
             parsed.candidates
                 ?.firstOrNull()?.content?.parts
                 ?.firstOrNull { it.text != null }?.text
+        } catch (e: com.librelookai.billing.InsufficientCreditsException) {
+            throw e
         } catch (e: Exception) {
             Log.e(TAG, "generateText failed: ${e.message}", e)
             null

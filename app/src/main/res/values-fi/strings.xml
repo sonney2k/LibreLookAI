@@ -864,4 +864,17 @@
     <string name="import_preview_deselect_all">Poista valinnat</string>
     <string name="import_preview_import">Tuo %1$d</string>
     <string name="import_preview_scanning">Skannataan %1$d / %2$d…</string>
+
+    <!-- Monetization / cost badges -->
+    <string name="cost_badge_coins">🪙 %1$d</string>
+    <string name="cost_badge_tokens_estimate">~%1$s tokens</string>
+    <string name="confirm_spend_title">Use AI credits?</string>
+    <string name="confirm_spend_body">This will use %1$d credits.</string>
+    <string name="confirm_spend_body_bulk">This will use %1$d credits across %2$d items.</string>
+    <string name="confirm_spend_continue">Continue</string>
+    <string name="insufficient_credits_title">Not enough credits</string>
+    <string name="insufficient_credits_body">You need %1$d credits but have %2$d. Top up to continue.</string>
+    <string name="insufficient_credits_buy">Buy credits</string>
+    <string name="coins_balance_label">Balance: %1$d 🪙</string>
+    <string name="coins_byok_no_spend_note">Using your own Gemini key — no credits are spent.</string>
 </resources>
