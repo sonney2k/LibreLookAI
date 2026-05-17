@@ -855,5 +855,33 @@
     <string name="insufficient_credits_buy">קנה קרדיטים</string>
     <string name="coins_balance_label">יתרה: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">משתמש במפתח Gemini משלך — לא מנוצלים קרדיטים.</string>
+
+    <!-- Composer (filled in 2026-05-17) -->
+    <string name="composer_weather_unknown">אין נתוני מזג אוויר</string>
+    <string name="composer_weather_season">עונה</string>
+    <string name="composer_weather_temp">טמפרטורה</string>
+    <string name="composer_weather_precip">משקעים</string>
+    <string name="composer_precip_none">אין</string>
+    <string name="composer_precip_light">קל</string>
+    <string name="composer_precip_heavy">חזק</string>
+    <string name="composer_vibe_casual">יומיומי</string>
+    <string name="composer_vibe_sporty">ספורטיבי</string>
+    <string name="composer_vibe_formal">רשמי</string>
+    <string name="composer_vibe_business">עסקים</string>
+    <string name="composer_vibe_streetwear">סטריט-וור</string>
+    <string name="composer_vibe_minimalist">מינימליסטי</string>
+    <string name="composer_vibe_classic">קלאסי</string>
+    <string name="composer_vibe_elegant">אלגנטי</string>
+    <string name="composer_stepper_decrement">−</string>
+    <string name="composer_stepper_increment">+</string>
+    <string name="composer_layer_top">חלק עליון</string>
+    <string name="composer_layer_bottom">חלק תחתון</string>
+    <string name="composer_layer_footwear">נעליים</string>
+    <string name="composer_layer_outerwear">בגד עליון</string>
+    <string name="composer_layer_accessory">אביזר</string>
+    <string name="composer_name_placeholder">שם תלבושת (לא חובה)</string>
+    <string name="composer_desc_placeholder">תיאור קצר (לא חובה)</string>
+    <string name="composer_feedback_placeholder">ספר ל-AI מה לשנות או למה לכוון…</string>
+    <string name="composer_feedback_history">%1$d בקשות קודמות נשמרות בהקשר</string>
 </resources>
 
