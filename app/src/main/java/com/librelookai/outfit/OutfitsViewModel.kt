@@ -524,7 +524,12 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             val countryCode = deviceCountryCode()
             val region = listOfNotNull(weather?.cityName?.takeIf { it.isNotEmpty() }, countryCode).joinToString(", ")
-            val fashionTrends = gemini.searchFashionTrends(region, UsageCategory.OUTFIT_COMPOSE)
+            val fashionTrends = try {
+                gemini.searchFashionTrends(region, UsageCategory.OUTFIT_COMPOSE)
+            } catch (e: com.librelookai.billing.InsufficientCreditsException) {
+                _state.update { it.copy(isComposerEnhancing = false) }
+                return@launch
+            }
             val prefString = prefs?.preferences.orEmpty()
             val slots = s.composerSlots
             val prompt = buildComposerPrompt(
@@ -546,7 +551,12 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 suggestionCount  = suggestionCount,
             )
             Log.d("StylesVM", "Composer prompt length: ${prompt.length} chars")
-            val raw = gemini.generateText(prompt, UsageCategory.OUTFIT_COMPOSE)
+            val raw = try {
+                gemini.generateText(prompt, UsageCategory.OUTFIT_COMPOSE)
+            } catch (e: com.librelookai.billing.InsufficientCreditsException) {
+                _state.update { it.copy(isComposerEnhancing = false) }
+                return@launch
+            }
             if (raw == null) {
                 _state.update { it.copy(isComposerEnhancing = false, composerError = "Gemini did not respond.") }
                 return@launch
@@ -946,7 +956,12 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
 
             val countryCode = deviceCountryCode()
             val region = listOfNotNull(weather?.cityName?.takeIf { it.isNotEmpty() }, countryCode).joinToString(", ")
-            val fashionTrends = gemini.searchFashionTrends(region, UsageCategory.OUTFIT_PREDICT)
+            val fashionTrends = try {
+                gemini.searchFashionTrends(region, UsageCategory.OUTFIT_PREDICT)
+            } catch (e: com.librelookai.billing.InsufficientCreditsException) {
+                _state.update { it.copy(isPredicting = false) }
+                return@launch
+            }
 
             val suggestionCount = setup.composerSuggestionCount.coerceIn(1, 10)
             val prompt = buildPredictionPrompt(
@@ -972,7 +987,12 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 Log.d("StylesVM", "Prompt[$i]: $chunk")
             }
 
-            val raw = gemini.generateText(prompt, UsageCategory.OUTFIT_PREDICT)
+            val raw = try {
+                gemini.generateText(prompt, UsageCategory.OUTFIT_PREDICT)
+            } catch (e: com.librelookai.billing.InsufficientCreditsException) {
+                _state.update { it.copy(isPredicting = false) }
+                return@launch
+            }
             if (raw == null) {
                 _state.update { it.copy(isPredicting = false, predictionError = "Gemini did not respond.") }
                 return@launch
@@ -1086,7 +1106,14 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 itemDescriptors.forEach { appendLine(it) }
             }
             Log.d("StylesVM", "Suggest tags prompt:\n$prompt")
-            val raw = gemini.generateText(prompt, UsageCategory.OTHER)
+            val raw = try {
+                gemini.generateText(prompt, UsageCategory.OTHER)
+            } catch (e: com.librelookai.billing.InsufficientCreditsException) {
+                _state.update {
+                    it.copy(tagSuggestion = it.tagSuggestion?.copy(isLoading = false))
+                }
+                return@launch
+            }
             if (raw == null) {
                 _state.update {
                     it.copy(tagSuggestion = it.tagSuggestion?.copy(isLoading = false, error = "Gemini did not respond."))

@@ -660,6 +660,27 @@ class MainActivity : ComponentActivity() {
                                 // Replacements result dialog — opened from Wardrobe selection FAB.
                                 ReplacementsResultDialog(gapViewModel = gapViewModel)
 
+                                // Global insufficient-credits handler — listens for 402s emitted
+                                // by GeminiRepository.throwIf402 and shows the dialog regardless
+                                // of which ViewModel triggered the call. "Buy" jumps to Settings.
+                                var topUpEvent by remember {
+                                    mutableStateOf<com.librelookai.billing.InsufficientCreditsException?>(null)
+                                }
+                                LaunchedEffect(Unit) {
+                                    com.librelookai.billing.CreditsEvents.topUp.collect { topUpEvent = it }
+                                }
+                                topUpEvent?.let { ex ->
+                                    com.librelookai.billing.InsufficientCreditsDialog(
+                                        needed = ex.needed,
+                                        have = ex.have,
+                                        onBuy = {
+                                            topUpEvent = null
+                                            selectedTab = 5 // Settings → Credits tab
+                                        },
+                                        onDismiss = { topUpEvent = null },
+                                    )
+                                }
+
                                 // Cutout-background fix confirmation — globally hosted so it
                                 // appears whether the scan was started from Wardrobe header or
                                 // Settings → Data.

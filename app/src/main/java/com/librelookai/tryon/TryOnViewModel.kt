@@ -51,9 +51,6 @@ data class TryOnUiState(
     val historyDetailIsRoot: Boolean = false,
 
     val error: String? = null,
-
-    /** Set when the proxy returned 402 — UI shows the InsufficientCreditsDialog. */
-    val needsTopUp: com.librelookai.billing.InsufficientCreditsException? = null,
 )
 
 /**
@@ -161,8 +158,6 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
 
     fun clearError() = _state.update { it.copy(error = null) }
 
-    fun clearNeedsTopUp() = _state.update { it.copy(needsTopUp = null) }
-
     /**
      * Generate a try-on using the currently selected items and the user's reference photos.
      * The result is only cached locally; it is persisted to Drive via [saveCurrent].
@@ -187,7 +182,9 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
             val result = try {
                 gemini.tryOnOutfit(personFiles, files, outDir, preferences)
             } catch (e: com.librelookai.billing.InsufficientCreditsException) {
-                _state.update { it.copy(isGenerating = false, needsTopUp = e) }
+                // The global InsufficientCreditsDialog (installed in MainActivity)
+                // surfaces the buy prompt; here we just reset the loading state.
+                _state.update { it.copy(isGenerating = false) }
                 return@launch
             }
             if (result == null) {

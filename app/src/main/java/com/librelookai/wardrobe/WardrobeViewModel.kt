@@ -826,9 +826,14 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 var done = 0
+                // Short-circuit the audit if any item runs out of credits, so we
+                // don't make N pointless proxy calls. Global dialog still appears
+                // via CreditsEvents emitted from throwIf402.
+                var creditsExhausted = false
 
                 // --- Orphaned originals: bg removal + cutout upload + tag + sidecar ---
                 filteredOrphaned.forEach { item ->
+                    if (creditsExhausted) return@forEach
                     Log.d(TAG, "Processing orphaned original: ${item.name} (${item.driveId})")
                     runCatching {
                         val localOriginal = drive.downloadToCache(item.driveId, item.name)
@@ -866,6 +871,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                         )
                         Log.d(TAG, "Sidecar written for ${cutoutDrive.id}")
                     }.onFailure { e ->
+                        if (e is com.librelookai.billing.InsufficientCreditsException) creditsExhausted = true
                         Log.e(TAG, "Failed processing orphaned original ${item.driveId}: ${e.message}", e)
                     }
                     done++
@@ -874,6 +880,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
                 // --- Raw/unknown images: full AI processing (same as orphaned originals) ---
                 filteredRaw.forEach { item ->
+                    if (creditsExhausted) return@forEach
                     Log.d(TAG, "Processing raw image: ${item.name} (${item.driveId})")
                     runCatching {
                         val localOriginal = drive.downloadToCache(item.driveId, item.name)
@@ -911,6 +918,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                         )
                         Log.d(TAG, "Sidecar written for ${cutoutDrive.id}")
                     }.onFailure { e ->
+                        if (e is com.librelookai.billing.InsufficientCreditsException) creditsExhausted = true
                         Log.e(TAG, "Failed processing raw image ${item.driveId}: ${e.message}", e)
                     }
                     done++
@@ -919,6 +927,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
                 // --- Cutouts missing sidecars or with empty tags: tag from cutout + write sidecar ---
                 filteredSidecar.forEach { item ->
+                    if (creditsExhausted) return@forEach
                     Log.d(TAG, "Tagging cutout: ${item.cutoutName} (${item.cutoutDriveId})")
                     runCatching {
                         val localCutout = drive.cachedFile(item.cutoutDriveId)
@@ -934,6 +943,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                         )
                         Log.d(TAG, "Sidecar written for ${item.cutoutDriveId}")
                     }.onFailure { e ->
+                        if (e is com.librelookai.billing.InsufficientCreditsException) creditsExhausted = true
                         Log.e(TAG, "Failed tagging cutout ${item.cutoutDriveId}: ${e.message}", e)
                     }
                     done++
@@ -2325,8 +2335,12 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     _state.update { it.copy(isProcessing = false, error = "Original not available") }
                     return@launch
                 }
-            val processedFile = gemini.removeBackground(source, drive.cacheDir)
-                ?: run { _state.update { it.copy(isProcessing = false, processingImageId = null) }; return@launch }
+            val processedFile = try {
+                gemini.removeBackground(source, drive.cacheDir)
+            } catch (e: com.librelookai.billing.InsufficientCreditsException) {
+                _state.update { it.copy(isProcessing = false, processingImageId = null) }
+                return@launch
+            } ?: run { _state.update { it.copy(isProcessing = false, processingImageId = null) }; return@launch }
 
             _state.update { it.copy(isProcessing = false, isUploading = true) }
             runCatching {
@@ -2380,6 +2394,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             acquireJobWakeLock()
             try {
                 _state.update { it.copy(isRemovingAllBg = true, removeBgDone = 0, removeBgTotal = images.size) }
+                try {
                 images.forEachIndexed { index, image ->
                     _state.update { it.copy(removeBgDone = index) }
                     val source = resolveOriginalFile(image.driveId) ?: return@forEachIndexed
@@ -2406,8 +2421,11 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                         }
                     }
                 }
-                _state.update { it.copy(isRemovingAllBg = false, removeBgDone = 0, removeBgTotal = 0) }
                 images.forEach { img -> saveSidecar(img.driveId) }
+                } catch (e: com.librelookai.billing.InsufficientCreditsException) {
+                    // Global dialog appears via CreditsEvents; just abort the bulk.
+                }
+                _state.update { it.copy(isRemovingAllBg = false, removeBgDone = 0, removeBgTotal = 0) }
             } finally {
                 releaseJobWakeLock()
             }
@@ -2419,8 +2437,12 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             _state.update { it.copy(processingImageId = driveId) }
             val cachedFile = drive.cachedFile(driveId)
                 ?: run { _state.update { it.copy(processingImageId = null) }; return@launch }
-            val tags = gemini.classifyClothing(cachedFile, geminiLanguage)
-                ?: run { _state.update { it.copy(processingImageId = null) }; return@launch }
+            val tags = try {
+                gemini.classifyClothing(cachedFile, geminiLanguage)
+            } catch (e: com.librelookai.billing.InsufficientCreditsException) {
+                _state.update { it.copy(processingImageId = null) }
+                return@launch
+            } ?: run { _state.update { it.copy(processingImageId = null) }; return@launch }
             _state.update { s ->
                 s.copy(
                     processingImageId = null,
@@ -2445,16 +2467,20 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             acquireJobWakeLock()
             try {
             _state.update { it.copy(isRetagging = true, retagDone = 0, retagTotal = images.size) }
-            images.forEachIndexed { index, image ->
-                _state.update { it.copy(retagDone = index) }
-                val cachedFile = drive.cachedFile(image.driveId) ?: return@forEachIndexed
-                val tags = gemini.classifyClothing(cachedFile, geminiLanguage) ?: return@forEachIndexed
-                _state.update { s ->
-                    s.copy(images = s.images.map { if (it.driveId == image.driveId) it.copy(tags = tags) else it })
+            try {
+                images.forEachIndexed { index, image ->
+                    _state.update { it.copy(retagDone = index) }
+                    val cachedFile = drive.cachedFile(image.driveId) ?: return@forEachIndexed
+                    val tags = gemini.classifyClothing(cachedFile, geminiLanguage) ?: return@forEachIndexed
+                    _state.update { s ->
+                        s.copy(images = s.images.map { if (it.driveId == image.driveId) it.copy(tags = tags) else it })
+                    }
                 }
+                images.forEach { img -> saveSidecar(img.driveId) }
+            } catch (e: com.librelookai.billing.InsufficientCreditsException) {
+                // Global dialog appears via CreditsEvents; abort the bulk.
             }
             _state.update { it.copy(isRetagging = false, retagDone = 0, retagTotal = 0) }
-            images.forEach { img -> saveSidecar(img.driveId) }
             } finally {
                 releaseJobWakeLock()
             }
@@ -2808,7 +2834,12 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             _state.update { it.copy(isImporting = true, importDone = 0, importTotal = entries.size, error = null) }
         }
         val existingByName: Map<String, DriveImage> = _state.value.images.associateBy { it.name }
+        // Set when any item in the loop hits a 402 — short-circuits the rest so we
+        // don't make N pointless proxy calls. Global dialog still appears via
+        // CreditsEvents emitted from throwIf402.
+        var creditsExhausted = false
         entries.forEachIndexed { index, entry ->
+            if (creditsExhausted) return@forEachIndexed
             _state.update { it.copy(importDone = index) }
             val tempFile = File(entry.cachedFilePath)
             val duplicate = existingByName[entry.displayName]
@@ -2896,13 +2927,25 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     }
                 }
             }.onFailure { e ->
-                _state.update { s ->
-                    s.copy(
-                        error = "Import failed for ${entry.displayName}: ${e.message}",
-                        images = if (placeholderId != null)
+                if (e is com.librelookai.billing.InsufficientCreditsException) {
+                    // Abort the rest of the bulk; the import that failed already
+                    // had its placeholder rolled back below. No `error` text — the
+                    // global dialog tells the user what happened.
+                    creditsExhausted = true
+                    _state.update { s ->
+                        s.copy(images = if (placeholderId != null)
                             s.images.filterNot { it.driveId == placeholderId }
-                        else s.images,
-                    )
+                        else s.images)
+                    }
+                } else {
+                    _state.update { s ->
+                        s.copy(
+                            error = "Import failed for ${entry.displayName}: ${e.message}",
+                            images = if (placeholderId != null)
+                                s.images.filterNot { it.driveId == placeholderId }
+                            else s.images,
+                        )
+                    }
                 }
             }
             _state.update { it.copy(processingImageId = null) }

@@ -297,18 +297,10 @@ fun TryOnComposerScreen(
                     )
                 }
 
-                // Insufficient-credits dialog — surfaced when the proxy returned 402.
-                // The "Buy" hand-off currently just dismisses; the user can navigate
-                // to Settings → Credits. Wire navigation in a follow-up once we have
-                // a tab-switch callback through this screen.
-                state.needsTopUp?.let { ex ->
-                    com.librelookai.billing.InsufficientCreditsDialog(
-                        needed = ex.needed,
-                        have = ex.have,
-                        onBuy = tryOnViewModel::clearNeedsTopUp,
-                        onDismiss = tryOnViewModel::clearNeedsTopUp,
-                    )
-                }
+                // The InsufficientCreditsDialog for 402s is installed globally
+                // in MainActivity — it listens on CreditsEvents.topUp and routes
+                // "Buy" to the Settings tab. We only need to reset isGenerating
+                // here, which TryOnViewModel.generate() handles.
             }
         }
         }

@@ -23,9 +23,9 @@ Concrete plan for paid-coin monetization alongside BYOK. Grounded in the existin
 - Dropped reservation/commit complexity (§3.1). Given the **conservative fixed** pricing decision, the existing deduct-then-refund-on-error pattern is correct and simpler. Removed `users/{uid}/reservations`, `X-Request-Id` header, and `releaseStaleReservations` scheduled job from the plan.
 - Skipped RevenueCat. Keeping the existing direct Google Play Billing path; webhook can be swapped in later without client changes if iOS/web lands.
 
+**402 propagation (landed)** — instead of per-VM `needsTopUp` state, `throwIf402` emits on a global `billing/CreditsEvents.topUp` SharedFlow *before* throwing. `MainActivity` hosts a single `InsufficientCreditsDialog` observer that fires for any caller. "Buy" jumps to the Settings tab. Per-VM catches only reset loading flags (`isGenerating` / `isAnalyzing` / `isProcessing`) and short-circuit bulk loops via a local `creditsExhausted` flag (so a depleted balance doesn't trigger N pointless proxy calls).
+
 **Remaining for full coverage** (not blocking — current slice is functional):
-- Wire 402 → `InsufficientCreditsException` handling into the ViewModels that aren't yet doing it (only `TryOnViewModel` catches `InsufficientCreditsException` today; `WardrobeViewModel`, `OutfitsViewModel`, `WardrobeGapViewModel` still let it propagate uncaught). Pattern: add `needsTopUp: InsufficientCreditsException?` to state, surface `InsufficientCreditsDialog` from the screen.
-- Plumb a `onShowBuyCredits: () -> Unit` callback through to `InsufficientCreditsDialog` so "Buy" navigates to Settings → Credits tab; today it just dismisses.
 - Re-translate the 11 new strings in 30 locales via the localization pipeline (currently English placeholders).
 - Free starter credits on signup — recommended but not implemented. Add via `auth.user().onCreate` Cloud Function granting 20 coins.
 

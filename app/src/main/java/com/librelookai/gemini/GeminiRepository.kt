@@ -53,7 +53,12 @@ class GeminiRepository(private val app: Application) {
         val obj = try { gson.fromJson(body, Map::class.java) as? Map<*, *> } catch (_: Exception) { null }
         val needed = (obj?.get("needed") as? Number)?.toInt() ?: 0
         val have = (obj?.get("have") as? Number)?.toInt() ?: 0
-        throw com.librelookai.billing.InsufficientCreditsException(needed, have)
+        val ex = com.librelookai.billing.InsufficientCreditsException(needed, have)
+        // Emit on the global bus first so the top-level observer renders the
+        // InsufficientCreditsDialog even when the caller's generic
+        // `catch (Exception)` block swallows the throw.
+        com.librelookai.billing.CreditsEvents.emitTopUp(ex)
+        throw ex
     }
 
     /** Pulls usageMetadata out of a parsed Gemini response and records one event. */
