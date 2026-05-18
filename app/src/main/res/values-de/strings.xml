@@ -525,6 +525,16 @@
     <string name="travel_move_to_travel">Alle in „Reise"-Standort verschieben</string>
     <string name="travel_move_done">Kleidungsstücke in Reise-Standort verschoben</string>
     <string name="travel_move_error">Kleidungsstücke konnten nicht verschoben werden</string>
+    <string name="travel_plan_eyebrow">Reise planen</string>
+    <string name="travel_plan_title">Neue Reise</string>
+    <string name="travel_label_destination">Reiseziel</string>
+    <string name="travel_label_dates">Daten</string>
+    <string name="travel_label_days">Tage</string>
+    <string name="travel_label_outfits">Outfits planen</string>
+    <string name="travel_label_vibe">Stil</string>
+    <string name="travel_label_ai_considers">KI berücksichtigt</string>
+    <string name="travel_label_about">Worum geht es auf der Reise?</string>
+    <string name="travel_outfit_count_summary">%1$d Looks · ~%2$s Tage je Look</string>
 
     <string name="calendar_day_mo">Mo</string>
     <string name="calendar_day_tu">Di</string>

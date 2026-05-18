@@ -58,6 +58,8 @@ data class TravelUiState(
     val considerationsOverride: AiConsiderations? = null,
     /** Live geocoding suggestions for the destination field. */
     val destinationSuggestions: List<DestinationSuggestion> = emptyList(),
+    /** Style vibes selected for this trip (e.g. "Casual", "Business"). */
+    val vibes: Set<String> = emptySet(),
 )
 
 class TravelViewModel(app: Application) : AndroidViewModel(app) {
@@ -120,7 +122,14 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
             fetchedKey = null, isHistoricalForecast = false, historicalReferenceYear = null,
             feedbackHistory = emptyList(), refinementInput = "", error = null,
             goal = "", outfitCount = null, considerationsOverride = null,
+            vibes = emptySet(),
         )
+    }
+
+    fun toggleVibe(value: String) = _state.update {
+        val next = it.vibes.toMutableSet()
+        if (!next.remove(value)) next.add(value)
+        it.copy(vibes = next)
     }
 
     fun generate(prefs: UserPreferences?, images: List<DriveImage>, styles: List<Outfit>) {
@@ -206,6 +215,7 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
                 days            = days,
                 outfitCount     = effectiveOutfitCount,
                 goal            = s.goal,
+                vibes           = s.vibes,
                 considerationsOverride = s.considerationsOverride,
                 forecast        = forecast,
                 isHistorical    = isHistorical,
@@ -255,6 +265,7 @@ private fun buildPackingPrompt(
     days: Int,
     outfitCount: Int,
     goal: String,
+    vibes: Set<String>,
     considerationsOverride: AiConsiderations?,
     forecast: List<DayForecast>,
     isHistorical: Boolean,
@@ -331,6 +342,11 @@ private fun buildPackingPrompt(
         if (goal.isNotBlank()) {
             appendLine("## Trip goal / focus (user input)")
             appendLine(goal.trim())
+            appendLine()
+        }
+        if (vibes.isNotEmpty()) {
+            appendLine("## Style vibes")
+            appendLine(vibes.joinToString(" / "))
             appendLine()
         }
         appendLine("## Outfit Plan")

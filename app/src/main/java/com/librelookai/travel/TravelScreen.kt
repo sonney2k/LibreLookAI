@@ -1,4 +1,7 @@
 package com.librelookai.travel
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,24 +11,39 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.Cake
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FlightTakeoff
 import androidx.compose.material.icons.filled.MoveToInbox
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.filled.TrendingUp
+import androidx.compose.material.icons.filled.WbSunny
+import androidx.compose.material.icons.outlined.Checkroom
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -56,6 +74,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -64,6 +85,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
@@ -138,188 +160,40 @@ fun TravelScreen(
             contentPadding = PaddingValues(bottom = 24.dp),
             verticalArrangement = Arrangement.spacedBy(0.dp),
         ) {
-            // ---- Input section ----
+            // ---- Plan-a-trip input section ----
             item {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    var suggestionsExpanded by remember { mutableStateOf(false) }
-                    val showSuggestions = suggestionsExpanded && state.destinationSuggestions.isNotEmpty()
-                    val geoLanguage = com.librelookai.settings.AppLanguage.toBcp47(profileState.preferences.language)
-                    ExposedDropdownMenuBox(
-                        expanded = showSuggestions,
-                        onExpandedChange = { suggestionsExpanded = it },
-                    ) {
-                        OutlinedTextField(
-                            value = state.destination,
-                            onValueChange = {
-                                travelViewModel.updateDestination(it, geoLanguage)
-                                suggestionsExpanded = true
-                            },
-                            label = { Text(stringResource(R.string.travel_destination)) },
-                            placeholder = { Text(stringResource(R.string.travel_destination_placeholder)) },
-                            leadingIcon = { Icon(Icons.Default.FlightTakeoff, contentDescription = null) },
-                            trailingIcon = if (state.destination.isNotEmpty()) {
-                                { IconButton(onClick = {
-                                    travelViewModel.updateDestination("")
-                                    suggestionsExpanded = false
-                                }) {
-                                    Icon(Icons.Default.Close, contentDescription = "Clear")
-                                } }
-                            } else null,
-                            singleLine = true,
-                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .menuAnchor(),
+                val geoLanguage = com.librelookai.settings.AppLanguage.toBcp47(profileState.preferences.language)
+                val prefsConsiderations = profileState.preferences.aiConsiderations
+                val effectiveConsiderations = state.considerationsOverride ?: prefsConsiderations
+                PlanTripSection(
+                    state = state,
+                    considerations = effectiveConsiderations,
+                    geoLanguage = geoLanguage,
+                    isWorking = isWorking,
+                    isOffline = isOffline,
+                    onUpdateDestination = travelViewModel::updateDestination,
+                    onPickSuggestion = {
+                        travelViewModel.pickDestination(it)
+                        keyboardController?.hide()
+                    },
+                    onClearDestinationSuggestions = travelViewModel::clearDestinationSuggestions,
+                    onUpdateDays = travelViewModel::updateDays,
+                    onUpdateStartDate = travelViewModel::updateStartDate,
+                    onUpdateOutfitCount = travelViewModel::updateOutfitCount,
+                    onUpdateGoal = travelViewModel::updateGoal,
+                    onToggleVibe = travelViewModel::toggleVibe,
+                    onToggleConsideration = { transform ->
+                        travelViewModel.setConsideration(prefsConsiderations, transform)
+                    },
+                    onGenerate = {
+                        keyboardController?.hide()
+                        travelViewModel.generate(
+                            prefs  = profileState.preferences,
+                            images = wardrobeState.images,
+                            styles = outfitsState.outfits,
                         )
-                        ExposedDropdownMenu(
-                            expanded = showSuggestions,
-                            onDismissRequest = { suggestionsExpanded = false },
-                        ) {
-                            state.destinationSuggestions.forEach { sug ->
-                                DropdownMenuItem(
-                                    text = {
-                                        Column {
-                                            Text(sug.name, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium)
-                                            val sub = listOf(sug.admin1, sug.country).filter { it.isNotBlank() }.joinToString(", ")
-                                            if (sub.isNotEmpty()) {
-                                                Text(sub, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                                            }
-                                        }
-                                    },
-                                    onClick = {
-                                        travelViewModel.pickDestination(sug)
-                                        suggestionsExpanded = false
-                                        keyboardController?.hide()
-                                    },
-                                )
-                            }
-                        }
-                    }
-
-                    // Duration + Start date
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    ) {
-                        // Duration stepper (left)
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(stringResource(R.string.travel_duration), style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant)
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                            ) {
-                                IconButton(
-                                    onClick = { travelViewModel.updateDays(state.days - 1) },
-                                    enabled = state.days > 1,
-                                ) {
-                                    Icon(Icons.Default.Remove, contentDescription = "Fewer days")
-                                }
-                                Text(
-                                    "${state.days}d",
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    fontWeight = FontWeight.Medium,
-                                    textAlign = TextAlign.Center,
-                                )
-                                IconButton(
-                                    onClick = { travelViewModel.updateDays(state.days + 1) },
-                                    enabled = state.days < 21,
-                                ) {
-                                    Icon(Icons.Default.Add, contentDescription = "More days")
-                                }
-                            }
-                        }
-                        // Start date picker (right)
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(stringResource(R.string.travel_start_date), style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant)
-                            Spacer(Modifier.height(4.dp))
-                            StartDatePicker(
-                                selectedDate = state.startDate,
-                                onDateSelected = travelViewModel::updateStartDate,
-                            )
-                        }
-                    }
-
-                    // Outfit-count stepper. Default tracks `days` (one outfit per day) until the
-                    // user explicitly sets a value; from then on it's independent of duration so
-                    // changing days doesn't silently overwrite a custom count.
-                    val effectiveOutfitCount = state.outfitCount ?: state.days
-                    Column {
-                        Text(stringResource(R.string.travel_outfit_count), style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp),
-                        ) {
-                            IconButton(
-                                onClick = { travelViewModel.updateOutfitCount(effectiveOutfitCount - 1) },
-                                enabled = effectiveOutfitCount > 1,
-                            ) {
-                                Icon(Icons.Default.Remove, contentDescription = null)
-                            }
-                            Text(
-                                effectiveOutfitCount.toString(),
-                                style = MaterialTheme.typography.bodyLarge,
-                                fontWeight = FontWeight.Medium,
-                                textAlign = TextAlign.Center,
-                            )
-                            IconButton(
-                                onClick = { travelViewModel.updateOutfitCount(effectiveOutfitCount + 1) },
-                                enabled = effectiveOutfitCount < 21,
-                            ) {
-                                Icon(Icons.Default.Add, contentDescription = null)
-                            }
-                            if (state.outfitCount != null && state.outfitCount != state.days) {
-                                TextButton(onClick = { travelViewModel.updateOutfitCount(null) }) {
-                                    Text(stringResource(R.string.travel_outfit_count_reset))
-                                }
-                            }
-                        }
-                    }
-
-                    // Free-text AI prompt — extra context like "business meetings + evening dinners".
-                    OutlinedTextField(
-                        value = state.goal,
-                        onValueChange = travelViewModel::updateGoal,
-                        label = { Text(stringResource(R.string.travel_goal)) },
-                        placeholder = { Text(stringResource(R.string.travel_goal_placeholder)) },
-                        minLines = 1,
-                        maxLines = 3,
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-
-                    // Per-trip override of the AI considerations (location, trends, gender, age,
-                    // preferences). Same widget as Find/Create-with-AI.
-                    val prefsConsiderations = profileState.preferences.aiConsiderations
-                    val effectiveConsiderations = state.considerationsOverride ?: prefsConsiderations
-                    AiConsiderationsStrip(
-                        considerations = effectiveConsiderations,
-                        onToggle = { transform ->
-                            travelViewModel.setConsideration(prefsConsiderations, transform)
-                        },
-                    )
-
-                    Button(
-                        onClick = {
-                            keyboardController?.hide()
-                            travelViewModel.generate(
-                                prefs  = profileState.preferences,
-                                images = wardrobeState.images,
-                                styles = outfitsState.outfits,
-                            )
-                        },
-                        enabled = state.destination.isNotEmpty() && !isWorking && !isOffline,
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Text(if (state.packingList != null) stringResource(R.string.travel_regenerate) else stringResource(R.string.travel_generate))
-                    }
-                }
+                    },
+                )
             }
 
             // ---- Forecast strip ----
@@ -679,36 +553,345 @@ private fun ExtraItemsCard(
     }
 }
 
-// ---------- Start date picker ----------
+// ---------- Refinement section (shared composable reuse) ----------
+// RefinementSection is defined in OutfitsScreen.kt and is internal to the package.
+
+// ---------- Plan-trip section ----------
+
+private val TRAVEL_VIBES: List<Pair<String, Int>> = listOf(
+    "Casual" to R.string.composer_vibe_casual,
+    "Sporty" to R.string.composer_vibe_sporty,
+    "Formal" to R.string.composer_vibe_formal,
+    "Business" to R.string.composer_vibe_business,
+    "Streetwear" to R.string.composer_vibe_streetwear,
+    "Minimalist" to R.string.composer_vibe_minimalist,
+    "Classic" to R.string.composer_vibe_classic,
+    "Elegant" to R.string.composer_vibe_elegant,
+)
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@Composable
+private fun PlanTripSection(
+    state: TravelUiState,
+    considerations: com.librelookai.settings.AiConsiderations,
+    geoLanguage: String,
+    isWorking: Boolean,
+    isOffline: Boolean,
+    onUpdateDestination: (String, String) -> Unit,
+    onPickSuggestion: (com.librelookai.weather.DestinationSuggestion) -> Unit,
+    onClearDestinationSuggestions: () -> Unit,
+    onUpdateDays: (Int) -> Unit,
+    onUpdateStartDate: (LocalDate) -> Unit,
+    onUpdateOutfitCount: (Int?) -> Unit,
+    onUpdateGoal: (String) -> Unit,
+    onToggleVibe: (String) -> Unit,
+    onToggleConsideration: ((com.librelookai.settings.AiConsiderations) -> com.librelookai.settings.AiConsiderations) -> Unit,
+    onGenerate: () -> Unit,
+) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        SkyHero(
+            destination = state.destination,
+            suggestions = state.destinationSuggestions,
+            geoLanguage = geoLanguage,
+            onUpdateDestination = onUpdateDestination,
+            onPickSuggestion = onPickSuggestion,
+            onClearSuggestions = onClearDestinationSuggestions,
+        )
+        Column(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            DatesAndDaysCard(
+                startDate = state.startDate,
+                days = state.days,
+                onUpdateDays = onUpdateDays,
+                onUpdateStartDate = onUpdateStartDate,
+            )
+            OutfitCountCard(
+                days = state.days,
+                outfitCount = state.outfitCount,
+                onUpdateOutfitCount = onUpdateOutfitCount,
+            )
+            GoalAiCard(
+                goal = state.goal,
+                onUpdateGoal = onUpdateGoal,
+            )
+            VibeChips(
+                selected = state.vibes,
+                onToggle = onToggleVibe,
+            )
+            AiConsidersChips(
+                considerations = considerations,
+                onToggle = onToggleConsideration,
+            )
+            GenerateButton(
+                hasResult = state.packingList != null,
+                enabled = state.destination.isNotBlank() && !isWorking && !isOffline,
+                onClick = onGenerate,
+            )
+        }
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun StartDatePicker(
-    selectedDate: LocalDate,
-    onDateSelected: (LocalDate) -> Unit,
+private fun SkyHero(
+    destination: String,
+    suggestions: List<com.librelookai.weather.DestinationSuggestion>,
+    geoLanguage: String,
+    onUpdateDestination: (String, String) -> Unit,
+    onPickSuggestion: (com.librelookai.weather.DestinationSuggestion) -> Unit,
+    onClearSuggestions: () -> Unit,
 ) {
-    var showDialog by remember { mutableStateOf(false) }
-    val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = selectedDate.toEpochDay() * 86_400_000L,
-    )
-
-    OutlinedButton(
-        onClick = { showDialog = true },
-        modifier = Modifier.fillMaxWidth(),
-        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+    val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
+    val skyTop = palette.primaryDim
+    val keyboardController = LocalSoftwareKeyboardController.current
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Brush.verticalGradient(listOf(skyTop, palette.bg))),
     ) {
-        Icon(Icons.Default.CalendarMonth, contentDescription = null, modifier = Modifier.size(16.dp))
-        Spacer(Modifier.width(6.dp))
-        Text(selectedDate.format(DateTimeFormatter.ofPattern("MMM d, yyyy")))
-    }
+        // Sun decoration
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(top = 14.dp, end = 24.dp)
+                .size(64.dp)
+                .clip(CircleShape)
+                .background(
+                    Brush.radialGradient(
+                        listOf(
+                            palette.primary.copy(alpha = 0.30f),
+                            palette.primary.copy(alpha = 0.18f),
+                            Color.Transparent,
+                        ),
+                    ),
+                ),
+        )
+        // Cloud decoration
+        Box(
+            modifier = Modifier
+                .padding(start = 0.dp, top = 50.dp)
+                .size(width = 130.dp, height = 46.dp)
+                .clip(RoundedCornerShape(50))
+                .background(palette.divider.copy(alpha = 0.5f)),
+        )
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 18.dp, vertical = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
+        ) {
+            Column {
+                Text(
+                    stringResource(R.string.travel_plan_eyebrow).uppercase(),
+                    fontSize = 9.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = palette.textMuted,
+                )
+                Text(
+                    stringResource(R.string.travel_plan_title),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = palette.text,
+                )
+            }
 
+            var suggestionsExpanded by remember { mutableStateOf(false) }
+            val showSuggestions = suggestionsExpanded && suggestions.isNotEmpty()
+            var editing by remember { mutableStateOf(destination.isBlank()) }
+
+            // Glass destination card
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(palette.surface.copy(alpha = 0.87f))
+                    .border(1.dp, palette.divider.copy(alpha = 0.5f), RoundedCornerShape(16.dp))
+                    .padding(horizontal = 12.dp, vertical = 10.dp),
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        Icons.Default.Place,
+                        contentDescription = null,
+                        tint = palette.textMuted,
+                        modifier = Modifier.size(12.dp),
+                    )
+                    Spacer(Modifier.width(4.dp))
+                    Text(
+                        stringResource(R.string.travel_label_destination).uppercase(),
+                        fontSize = 9.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = palette.textMuted,
+                    )
+                }
+                Spacer(Modifier.height(4.dp))
+                if (editing || destination.isBlank()) {
+                    ExposedDropdownMenuBox(
+                        expanded = showSuggestions,
+                        onExpandedChange = { suggestionsExpanded = it },
+                    ) {
+                        OutlinedTextField(
+                            value = destination,
+                            onValueChange = {
+                                onUpdateDestination(it, geoLanguage)
+                                suggestionsExpanded = true
+                            },
+                            placeholder = { Text(stringResource(R.string.travel_destination_placeholder)) },
+                            trailingIcon = if (destination.isNotEmpty()) {
+                                { IconButton(onClick = {
+                                    onUpdateDestination("", geoLanguage)
+                                    suggestionsExpanded = false
+                                }) { Icon(Icons.Default.Close, contentDescription = "Clear") } }
+                            } else null,
+                            singleLine = true,
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .menuAnchor(),
+                        )
+                        ExposedDropdownMenu(
+                            expanded = showSuggestions,
+                            onDismissRequest = { suggestionsExpanded = false },
+                        ) {
+                            suggestions.forEach { sug ->
+                                DropdownMenuItem(
+                                    text = {
+                                        Column {
+                                            Text(sug.name, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium)
+                                            val sub = listOf(sug.admin1, sug.country).filter { it.isNotBlank() }.joinToString(", ")
+                                            if (sub.isNotEmpty()) {
+                                                Text(sub, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                            }
+                                        }
+                                    },
+                                    onClick = {
+                                        onPickSuggestion(sug)
+                                        suggestionsExpanded = false
+                                        editing = false
+                                        keyboardController?.hide()
+                                    },
+                                )
+                            }
+                        }
+                    }
+                } else {
+                    Text(
+                        destination,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = palette.text,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                editing = true
+                                onClearSuggestions()
+                            }
+                            .padding(vertical = 6.dp),
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SectionCard(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
+) {
+    val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(14.dp))
+            .background(palette.surface)
+            .border(1.dp, palette.divider, RoundedCornerShape(14.dp))
+            .padding(horizontal = 14.dp, vertical = 12.dp),
+    ) { content() }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun DatesAndDaysCard(
+    startDate: LocalDate,
+    days: Int,
+    onUpdateDays: (Int) -> Unit,
+    onUpdateStartDate: (LocalDate) -> Unit,
+) {
+    val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
+    var showDialog by remember { mutableStateOf(false) }
+    val endDate = startDate.plusDays((days - 1).toLong())
+    val rangeFmt = DateTimeFormatter.ofPattern("MMM d")
+    SectionCard {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable { showDialog = true },
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        Icons.Default.CalendarMonth,
+                        contentDescription = null,
+                        tint = palette.textMuted,
+                        modifier = Modifier.size(11.dp),
+                    )
+                    Spacer(Modifier.width(4.dp))
+                    Text(
+                        stringResource(R.string.travel_label_dates).uppercase(),
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = palette.textMuted,
+                    )
+                }
+                Spacer(Modifier.height(2.dp))
+                Text(
+                    "${startDate.format(rangeFmt)} → ${endDate.format(rangeFmt)}",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = palette.text,
+                )
+            }
+            Spacer(Modifier.width(12.dp))
+            Box(
+                modifier = Modifier
+                    .width(1.dp)
+                    .height(32.dp)
+                    .background(palette.divider),
+            )
+            Spacer(Modifier.width(12.dp))
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    stringResource(R.string.travel_label_days).uppercase(),
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = palette.textMuted,
+                )
+                Spacer(Modifier.height(4.dp))
+                StepperRow(
+                    value = days,
+                    onDec = { onUpdateDays(days - 1) },
+                    onInc = { onUpdateDays(days + 1) },
+                    canDec = days > 1,
+                    canInc = days < 21,
+                    buttonSize = 24.dp,
+                )
+            }
+        }
+    }
     if (showDialog) {
+        val datePickerState = rememberDatePickerState(
+            initialSelectedDateMillis = startDate.toEpochDay() * 86_400_000L,
+        )
         DatePickerDialog(
             onDismissRequest = { showDialog = false },
             confirmButton = {
                 TextButton(onClick = {
                     datePickerState.selectedDateMillis?.let {
-                        onDateSelected(LocalDate.ofEpochDay(it / 86_400_000L))
+                        onUpdateStartDate(LocalDate.ofEpochDay(it / 86_400_000L))
                     }
                     showDialog = false
                 }) { Text(stringResource(R.string.action_ok)) }
@@ -722,5 +905,316 @@ private fun StartDatePicker(
     }
 }
 
-// ---------- Refinement section (shared composable reuse) ----------
-// RefinementSection is defined in OutfitsScreen.kt and is internal to the package.
+@Composable
+private fun OutfitCountCard(
+    days: Int,
+    outfitCount: Int?,
+    onUpdateOutfitCount: (Int?) -> Unit,
+) {
+    val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
+    val effective = outfitCount ?: days
+    val daysPerOutfit = if (effective > 0) {
+        val perOutfit = days.toFloat() / effective.toFloat()
+        if (perOutfit >= 1f) String.format("%.1f", perOutfit).trimEnd('0').trimEnd('.')
+        else String.format("%.1f", perOutfit)
+    } else "1"
+    SectionCard {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Box(
+                modifier = Modifier
+                    .size(32.dp)
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(palette.primaryDim),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    Icons.Outlined.Checkroom,
+                    contentDescription = null,
+                    tint = palette.primary,
+                    modifier = Modifier.size(16.dp),
+                )
+            }
+            Spacer(Modifier.width(10.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    stringResource(R.string.travel_label_outfits).uppercase(),
+                    fontSize = 9.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = palette.textMuted,
+                )
+                Text(
+                    stringResource(R.string.travel_outfit_count_summary, effective, daysPerOutfit),
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = palette.text,
+                )
+            }
+            StepperRow(
+                value = effective,
+                onDec = { onUpdateOutfitCount(effective - 1) },
+                onInc = { onUpdateOutfitCount(effective + 1) },
+                canDec = effective > 1,
+                canInc = effective < 21,
+                buttonSize = 28.dp,
+            )
+        }
+    }
+}
+
+@Composable
+private fun StepperRow(
+    value: Int,
+    onDec: () -> Unit,
+    onInc: () -> Unit,
+    canDec: Boolean,
+    canInc: Boolean,
+    buttonSize: androidx.compose.ui.unit.Dp,
+) {
+    val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        StepperButton(symbol = "−", enabled = canDec, onClick = onDec, size = buttonSize)
+        Text(
+            value.toString(),
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Bold,
+            color = palette.text,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.widthIn(min = 20.dp),
+        )
+        StepperButton(symbol = "+", enabled = canInc, onClick = onInc, size = buttonSize)
+    }
+}
+
+@Composable
+private fun StepperButton(
+    symbol: String,
+    enabled: Boolean,
+    onClick: () -> Unit,
+    size: androidx.compose.ui.unit.Dp,
+) {
+    val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
+    val alpha = if (enabled) 1f else 0.4f
+    Box(
+        modifier = Modifier
+            .size(size)
+            .clip(CircleShape)
+            .background(palette.surface2.copy(alpha = alpha))
+            .border(1.dp, palette.border.copy(alpha = alpha), CircleShape)
+            .clickable(enabled = enabled, onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            symbol,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Bold,
+            color = palette.textMid.copy(alpha = alpha),
+        )
+    }
+}
+
+@Composable
+private fun GoalAiCard(
+    goal: String,
+    onUpdateGoal: (String) -> Unit,
+) {
+    val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(
+                Brush.linearGradient(listOf(palette.primaryDim, palette.chipBg)),
+            )
+            .border(1.dp, palette.primary.copy(alpha = 0.33f), RoundedCornerShape(16.dp))
+            .padding(14.dp),
+    ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    Icons.Default.AutoAwesome,
+                    contentDescription = null,
+                    tint = palette.primary,
+                    modifier = Modifier.size(12.dp),
+                )
+                Spacer(Modifier.width(4.dp))
+                Text(
+                    stringResource(R.string.travel_label_about).uppercase(),
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = palette.primary,
+                )
+            }
+            Spacer(Modifier.height(8.dp))
+            OutlinedTextField(
+                value = goal,
+                onValueChange = onUpdateGoal,
+                placeholder = { Text(stringResource(R.string.travel_goal_placeholder)) },
+                trailingIcon = {
+                    Icon(
+                        Icons.Default.Edit,
+                        contentDescription = null,
+                        tint = palette.textMuted,
+                        modifier = Modifier.size(13.dp),
+                    )
+                },
+                minLines = 1,
+                maxLines = 3,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 54.dp),
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun VibeChips(
+    selected: Set<String>,
+    onToggle: (String) -> Unit,
+) {
+    val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Text(
+            "${stringResource(R.string.travel_label_vibe).uppercase()} (${selected.size})",
+            fontSize = 10.sp,
+            fontWeight = FontWeight.Bold,
+            color = palette.textMuted,
+        )
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(5.dp),
+            verticalArrangement = Arrangement.spacedBy(5.dp),
+        ) {
+            TRAVEL_VIBES.forEach { (value, labelRes) ->
+                SmallPillChip(
+                    label = stringResource(labelRes),
+                    icon = null,
+                    active = value in selected,
+                    onClick = { onToggle(value) },
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun AiConsidersChips(
+    considerations: com.librelookai.settings.AiConsiderations,
+    onToggle: ((com.librelookai.settings.AiConsiderations) -> com.librelookai.settings.AiConsiderations) -> Unit,
+) {
+    val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Text(
+            stringResource(R.string.travel_label_ai_considers).uppercase(),
+            fontSize = 10.sp,
+            fontWeight = FontWeight.Bold,
+            color = palette.textMuted,
+        )
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(5.dp),
+            verticalArrangement = Arrangement.spacedBy(5.dp),
+        ) {
+            SmallPillChip(
+                label = stringResource(R.string.ai_consider_weather),
+                icon = Icons.Default.WbSunny,
+                active = considerations.weather,
+            ) { onToggle { it.copy(weather = !it.weather) } }
+            SmallPillChip(
+                label = stringResource(R.string.ai_consider_location),
+                icon = Icons.Default.Place,
+                active = considerations.location,
+            ) { onToggle { it.copy(location = !it.location) } }
+            SmallPillChip(
+                label = stringResource(R.string.ai_consider_trends),
+                icon = Icons.Default.TrendingUp,
+                active = considerations.trends,
+            ) { onToggle { it.copy(trends = !it.trends) } }
+            SmallPillChip(
+                label = stringResource(R.string.ai_consider_gender),
+                icon = Icons.Default.Person,
+                active = considerations.gender,
+            ) { onToggle { it.copy(gender = !it.gender) } }
+            SmallPillChip(
+                label = stringResource(R.string.ai_consider_age),
+                icon = Icons.Default.Cake,
+                active = considerations.age,
+            ) { onToggle { it.copy(age = !it.age) } }
+            SmallPillChip(
+                label = stringResource(R.string.ai_consider_preferences),
+                icon = Icons.Default.Favorite,
+                active = considerations.preferences,
+            ) { onToggle { it.copy(preferences = !it.preferences) } }
+        }
+    }
+}
+
+@Composable
+private fun SmallPillChip(
+    label: String,
+    icon: ImageVector?,
+    active: Boolean,
+    onClick: () -> Unit,
+) {
+    val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
+    val bg = if (active) palette.primary else palette.chipBg
+    val fg = if (active) palette.onPrimary else palette.chipFg
+    val borderColor = if (active) palette.primary else palette.border
+    val borderWidth = if (active) 1.5.dp else 1.dp
+    Row(
+        modifier = Modifier
+            .clip(RoundedCornerShape(999.dp))
+            .background(bg)
+            .border(borderWidth, borderColor, RoundedCornerShape(999.dp))
+            .clickable(onClick = onClick)
+            .padding(horizontal = 10.dp, vertical = 5.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        if (icon != null) {
+            Icon(icon, contentDescription = null, tint = fg, modifier = Modifier.size(12.dp))
+        }
+        Text(label, fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = fg)
+    }
+}
+
+@Composable
+private fun GenerateButton(
+    hasResult: Boolean,
+    enabled: Boolean,
+    onClick: () -> Unit,
+) {
+    val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
+    val alpha = if (enabled) 1f else 0.4f
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(52.dp)
+            .clip(RoundedCornerShape(26.dp))
+            .background(
+                Brush.linearGradient(
+                    listOf(
+                        palette.primary.copy(alpha = alpha),
+                        palette.primary.copy(alpha = alpha * 0.85f),
+                    ),
+                ),
+            )
+            .clickable(enabled = enabled, onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Icon(
+                Icons.Default.AutoAwesome,
+                contentDescription = null,
+                tint = palette.onPrimary,
+                modifier = Modifier.size(18.dp),
+            )
+            Text(
+                if (hasResult) stringResource(R.string.travel_regenerate) else stringResource(R.string.travel_generate),
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold,
+                color = palette.onPrimary,
+            )
+        }
+    }
+}

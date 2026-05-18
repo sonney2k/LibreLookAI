@@ -532,6 +532,16 @@
     <string name="travel_move_to_travel">Move all to Travel location</string>
     <string name="travel_move_done">Items moved to Travel location</string>
     <string name="travel_move_error">Could not move items</string>
+    <string name="travel_plan_eyebrow">Plan a trip</string>
+    <string name="travel_plan_title">New journey</string>
+    <string name="travel_label_destination">Destination</string>
+    <string name="travel_label_dates">Dates</string>
+    <string name="travel_label_days">Days</string>
+    <string name="travel_label_outfits">Outfits to plan</string>
+    <string name="travel_label_vibe">Vibe</string>
+    <string name="travel_label_ai_considers">AI considers</string>
+    <string name="travel_label_about">What\'s the trip about?</string>
+    <string name="travel_outfit_count_summary">%1$d looks · ~%2$s days each</string>
 
     <!-- Calendar -->
     <string name="calendar_day_mo">Mo</string>
