@@ -672,30 +672,37 @@ class DriveRepository(
                 "'$folderId' in parents and name='$escapedName' and trashed=false",
                 "UTF-8",
             )
-            val existingId = gson.fromJson(
-                http.newCall(Request.Builder()
-                    .url("$API/files?q=$q&fields=files(id)")
-                    .header("Authorization", "Bearer $tok")
-                    .build()).await().body!!.string(),
-                FilesListDto::class.java,
-            ).files.firstOrNull()?.id
+            val queryResp = http.newCall(Request.Builder()
+                .url("$API/files?q=$q&fields=files(id)")
+                .header("Authorization", "Bearer $tok")
+                .build()).await()
+            val queryBody = queryResp.body?.string().orEmpty()
+            if (!queryResp.isSuccessful) error("upsertSidecar query failed ${queryResp.code}: $queryBody")
+            val existingId = gson.fromJson(queryBody, FilesListDto::class.java).files.firstOrNull()?.id
 
             val fileId = existingId ?: run {
                 val meta = """{"name":${gson.toJson(name)},"parents":["$folderId"],"mimeType":"application/json"}"""
-                gson.fromJson(
-                    http.newCall(Request.Builder()
-                        .url("$API/files?fields=id")
-                        .header("Authorization", "Bearer $tok")
-                        .post(meta.toRequestBody("application/json".toMediaType()))
-                        .build()).await().body!!.string(),
-                    DriveFileDto::class.java,
-                ).id
+                val createResp = http.newCall(Request.Builder()
+                    .url("$API/files?fields=id")
+                    .header("Authorization", "Bearer $tok")
+                    .post(meta.toRequestBody("application/json".toMediaType()))
+                    .build()).await()
+                val createBody = createResp.body?.string().orEmpty()
+                if (!createResp.isSuccessful) error("upsertSidecar create failed ${createResp.code}: $createBody")
+                gson.fromJson(createBody, DriveFileDto::class.java).id
+                    .ifEmpty { error("upsertSidecar create returned empty id: $createBody") }
             }
-            http.newCall(Request.Builder()
+            val patchResp = http.newCall(Request.Builder()
                 .url("$UPLOAD_API/files/$fileId?uploadType=media")
                 .header("Authorization", "Bearer $tok")
                 .method("PATCH", json.toRequestBody("application/json".toMediaType()))
                 .build()).await()
+            if (!patchResp.isSuccessful) {
+                val body = patchResp.body?.string().orEmpty()
+                patchResp.close()
+                error("upsertSidecar PATCH failed ${patchResp.code}: $body")
+            }
+            patchResp.close()
             fileId
         }
 

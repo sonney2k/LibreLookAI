@@ -1640,15 +1640,23 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
      * Each item has its own file ("${driveId}.json") — no mutex needed; writes are independent.
      */
     private fun saveSidecar(driveId: String) {
+        val img = _state.value.images.find { it.driveId == driveId } ?: return
+        // Resolve the owning folder from the image itself — `folderId` is null when the
+        // user is browsing "All locations", but each DriveImage already knows its closet.
+        val id = img.folderId.ifEmpty { folderId.orEmpty() }.ifEmpty { return }
+        // Write local cache eagerly so the edit survives restart even if the Drive PATCH
+        // is still in flight or fails. Drive write happens after, and updates the cache
+        // again with the sidecarDriveId once it returns.
+        saveLocalCache(id, _state.value.images.filter { it.folderId == id })
         viewModelScope.launch(Dispatchers.IO) {
-            val img = _state.value.images.find { it.driveId == driveId } ?: return@launch
-            // Resolve the owning folder from the image itself — `folderId` is null when the
-            // user is browsing "All locations", but each DriveImage already knows its closet.
-            val id = img.folderId.ifEmpty { folderId.orEmpty() }.ifEmpty { return@launch }
             val sidecarJson = gson.toJson(ItemSidecar(img.tags, img.originalDriveId))
-            val sidecarFileId = runCatching {
+            val sidecarFileId = try {
                 drive.upsertSidecar(id, "$driveId${DriveRepository.SIDECAR_SUFFIX}", sidecarJson)
-            }.getOrNull() ?: return@launch
+            } catch (e: Exception) {
+                Log.e("WardrobeVM", "saveSidecar failed for $driveId", e)
+                _state.update { it.copy(error = "Tag save to Drive failed: ${e.message}") }
+                return@launch
+            }
             metaMutex.withLock {
                 _state.update { s ->
                     s.copy(images = s.images.map { i ->
