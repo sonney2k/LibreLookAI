@@ -889,6 +889,8 @@
     <string name="cost_badge_coins">🪙 %1$d</string>
     <string name="cost_badge_tokens_estimate">~%1$s Tokens</string>
     <string name="cost_badge_usd_estimate">~$%1$s</string>
+    <string name="cost_legend_title">Kostenstufen</string>
+    <string name="cost_legend_hint">Lange auf eine $-Marke tippen für den genauen Preis.</string>
     <string name="confirm_spend_title">KI-Guthaben verwenden?</string>
     <string name="confirm_spend_body">Dies verbraucht %1$d Guthaben.</string>
     <string name="confirm_spend_body_bulk">Dies verbraucht %1$d Guthaben für %2$d Artikel.</string>

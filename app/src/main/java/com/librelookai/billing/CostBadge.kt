@@ -4,18 +4,28 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.librelookai.R
 import com.librelookai.gemini.ApiKeyStore
@@ -24,20 +34,18 @@ import com.librelookai.gemini.ModelPricingClient
 import com.librelookai.gemini.PricingClient
 
 /**
- * Small leading-icon cost indicator meant to be placed **inside** an existing
- * button's label row, e.g.:
+ * Cost tier badge for AI actions. Placed **inside** an existing button's
+ * label row, e.g.:
  *
  *     Button(onClick = ...) {
  *         CostBadge(GeminiActionId.CLASSIFY_CLOTHING)
  *         Text("Auto-tag")
  *     }
  *
- * Renders:
- *   - "🪙 N"         — managed mode, where N is the live coin cost from
- *                      [PricingClient]. [bulkCount] multiplies it for batches.
- *   - "~Nk tokens"   — BYOK mode (user-supplied Gemini key). Shown as a rough
- *                      estimate so the user can reason about their own quota.
- *   - nothing        — when no key and no proxy are configured.
+ * Renders the action's tier (1–4) as four `$` glyphs with the active count
+ * painted in the primary colour. Long-press → tooltip with the exact value
+ * (coin count in managed mode, USD amount in BYOK). Hidden when no API key
+ * and no proxy are configured.
  */
 @Composable
 fun CostBadge(
@@ -46,43 +54,151 @@ fun CostBadge(
     modifier: Modifier = Modifier,
 ) {
     val ctx = LocalContext.current
-    // Re-collecting on every recomposition is cheap: StateFlow is a snapshot.
     val costs by PricingClient.costsState.collectAsState()
+    val perItemCosts by PricingClient.perItemCostsState.collectAsState()
+    val rates by ModelPricingClient.snapshotState.collectAsState()
     val byok = ApiKeyStore.get(ctx).isNotBlank()
     val managedAvailable = com.librelookai.BuildConfig.PROXY_BASE_URL.isNotBlank()
 
-    // perItem may be 0 (most actions), in which case total == base for any N.
     val items = bulkCount.coerceAtLeast(1)
-    val perItemCosts by PricingClient.perItemCostsState.collectAsState()
-    val rates by ModelPricingClient.snapshotState.collectAsState()
-    val text: String? = when {
+    val tier: Int
+    val tooltip: String
+    when {
         byok -> {
             val (inT, outT) = estimateTokensFor(action, items)
             val usd = rates.ratesFor(action.model).usdFor(inT, outT)
-            stringResource(R.string.cost_badge_usd_estimate, formatUsdBadge(usd))
+            tier = tierForUsd(usd)
+            tooltip = "~$${formatUsdBadge(usd)}"
         }
         managedAvailable -> {
             val perCall = costs[action.key] ?: action.fallbackCost
             val perItem = perItemCosts[action.key] ?: action.fallbackPerItemCost
             val total = perCall + perItem * (items - 1)
-            stringResource(R.string.cost_badge_coins, total)
+            tier = tierForCoins(total)
+            tooltip = "🪙 $total"
         }
-        else -> null
+        else -> return
     }
-    if (text == null) return
 
+    TierBadgeWithTooltip(tier = tier, tooltip = tooltip, modifier = modifier)
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+internal fun TierBadgeWithTooltip(
+    tier: Int,
+    tooltip: String,
+    modifier: Modifier = Modifier,
+) {
+    val tooltipState = rememberTooltipState(isPersistent = false)
+    TooltipBox(
+        positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
+        tooltip = { PlainTooltip { Text(tooltip) } },
+        state = tooltipState,
+    ) {
+        TierBadge(tier = tier, modifier = modifier)
+    }
+}
+
+@Composable
+private fun TierBadge(tier: Int, modifier: Modifier = Modifier) {
+    val active = MaterialTheme.colorScheme.onSecondaryContainer
+    val inactive = active.copy(alpha = 0.30f)
+    val label = buildAnnotatedString {
+        repeat(4) { i ->
+            withStyle(SpanStyle(color = if (i < tier) active else inactive)) {
+                append("$")
+            }
+        }
+    }
     Surface(
         modifier = modifier.padding(end = 6.dp),
         shape = RoundedCornerShape(8.dp),
         color = MaterialTheme.colorScheme.secondaryContainer,
-        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
     ) {
         Text(
-            text = text,
-            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.SemiBold),
+            text = label,
+            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
             modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
         )
     }
+}
+
+/**
+ * Legend explaining the four cost tiers. Designed for the Insights screen header so users
+ * can map the small "$$$$" badges they see throughout the app back to a concrete spend.
+ * Adapts to managed vs BYOK mode: shows coin thresholds for managed, USD for BYOK.
+ */
+@Composable
+fun CostTierLegend(modifier: Modifier = Modifier) {
+    val ctx = LocalContext.current
+    val byok = ApiKeyStore.get(ctx).isNotBlank()
+    val rows = if (byok) {
+        listOf(
+            1 to "≤ $0.005 per call",
+            2 to "≤ $0.05",
+            3 to "≤ $0.50",
+            4 to "> $0.50",
+        )
+    } else {
+        listOf(
+            1 to "≤ 2 coins per call",
+            2 to "≤ 15 coins",
+            3 to "≤ 100 coins",
+            4 to "> 100 coins",
+        )
+    }
+    Surface(
+        modifier = modifier,
+        shape = RoundedCornerShape(12.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant,
+    ) {
+        androidx.compose.foundation.layout.Column(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+        ) {
+            Text(
+                stringResource(R.string.cost_legend_title),
+                style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.SemiBold),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(bottom = 6.dp),
+            )
+            rows.forEach { (tier, label) ->
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(vertical = 2.dp),
+                ) {
+                    TierBadge(tier = tier)
+                    Text(
+                        label,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+            Text(
+                stringResource(R.string.cost_legend_hint),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                modifier = Modifier.padding(top = 6.dp),
+            )
+        }
+    }
+}
+
+/** Public tier mapping so the Insights legend renders the same scale. */
+fun tierForUsd(usd: Double): Int = when {
+    usd <= 0.005 -> 1
+    usd <= 0.05 -> 2
+    usd <= 0.50 -> 3
+    else -> 4
+}
+
+/** Coin-based tier — managed mode uses post-multiplier coins, not USD. */
+fun tierForCoins(coins: Int): Int = when {
+    coins <= 2 -> 1
+    coins <= 15 -> 2
+    coins <= 100 -> 3
+    else -> 4
 }
 
 /**

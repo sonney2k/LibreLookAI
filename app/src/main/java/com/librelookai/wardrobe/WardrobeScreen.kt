@@ -1635,14 +1635,7 @@ internal fun FullScreenViewer(
                         containerColor = MaterialTheme.colorScheme.error,
                         contentColor = MaterialTheme.colorScheme.onError,
                         icon = { Icon(Icons.Default.AutoFixHigh, contentDescription = null) },
-                        text = {
-                            androidx.compose.foundation.layout.Row(
-                                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
-                            ) {
-                                com.librelookai.billing.CostBadge(com.librelookai.gemini.GeminiActionId.REMOVE_BACKGROUND)
-                                Text(stringResource(R.string.wardrobe_fix_cutout_bg))
-                            }
-                        },
+                        text = { Text(stringResource(R.string.wardrobe_fix_cutout_bg)) },
                     )
                     if (locations.any { it.folderId != activeLocationId }) {
                         ExtendedFloatingActionButton(

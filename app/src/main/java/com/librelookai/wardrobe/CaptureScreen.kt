@@ -16,7 +16,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -466,40 +469,49 @@ private fun PhotoReviewScreen(
             )
         }
 
-        // Confirm button (bottom-right)
-        IconButton(
-            onClick = {
-                if (!isProcessing && bm != null) {
-                    Analytics.action("Capture/Review", "confirm")
-                    isProcessing = true
-                    val rotation = userRotation
-                    scope.launch(Dispatchers.IO) {
-                        val outFile = bakeRotation(bm, rotation, file)
-                        withContext(Dispatchers.Main) {
-                            isProcessing = false
-                            onConfirm(outFile, rotation)
-                        }
-                    }
-                }
-            },
-            enabled = !isProcessing && bm != null,
+        // Confirm button (bottom-right) with the imminent pipeline cost badge above it.
+        // After confirm, the camera flow runs Gemini BG removal + classify automatically; the
+        // badge surfaces that cost up-front so the user isn't surprised in Insights later.
+        Column(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .navigationBarsPadding()
-                .padding(end = 24.dp, bottom = 32.dp)
-                .size(56.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.primary),
+                .padding(end = 24.dp, bottom = 32.dp),
+            horizontalAlignment = Alignment.End,
         ) {
-            if (isProcessing) {
-                CircularProgressIndicator(modifier = Modifier.size(24.dp), color = Color.White)
-            } else {
-                Icon(
-                    Icons.Default.Check,
-                    contentDescription = "Use photo",
-                    tint = Color.White,
-                    modifier = Modifier.size(28.dp),
-                )
+            com.librelookai.billing.CostBadge(com.librelookai.gemini.GeminiActionId.REMOVE_BACKGROUND)
+            Spacer(Modifier.height(6.dp))
+            IconButton(
+                onClick = {
+                    if (!isProcessing && bm != null) {
+                        Analytics.action("Capture/Review", "confirm")
+                        isProcessing = true
+                        val rotation = userRotation
+                        scope.launch(Dispatchers.IO) {
+                            val outFile = bakeRotation(bm, rotation, file)
+                            withContext(Dispatchers.Main) {
+                                isProcessing = false
+                                onConfirm(outFile, rotation)
+                            }
+                        }
+                    }
+                },
+                enabled = !isProcessing && bm != null,
+                modifier = Modifier
+                    .size(56.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primary),
+            ) {
+                if (isProcessing) {
+                    CircularProgressIndicator(modifier = Modifier.size(24.dp), color = Color.White)
+                } else {
+                    Icon(
+                        Icons.Default.Check,
+                        contentDescription = "Use photo",
+                        tint = Color.White,
+                        modifier = Modifier.size(28.dp),
+                    )
+                }
             }
         }
     }

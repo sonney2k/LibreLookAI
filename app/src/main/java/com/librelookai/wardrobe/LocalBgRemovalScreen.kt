@@ -311,7 +311,12 @@ private fun LocalBgRemovalDialog(
                     OutlinedButton(
                         onClick = onSkip,
                         modifier = Modifier.weight(1f),
-                    ) { Text(stringResource(R.string.local_bg_skip)) }
+                    ) {
+                        com.librelookai.billing.CostBadge(
+                            action = com.librelookai.gemini.GeminiActionId.REMOVE_BACKGROUND,
+                        )
+                        Text(stringResource(R.string.local_bg_skip))
+                    }
                 }
                 Button(
                     onClick = {

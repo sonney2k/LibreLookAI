@@ -74,6 +74,10 @@ fun UsageSection(modifier: Modifier = Modifier) {
             modifier = Modifier.padding(horizontal = 20.dp),
         )
 
+        com.librelookai.billing.CostTierLegend(
+            modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
+        )
+
         if (events.isEmpty()) {
             Text(
                 "No usage recorded yet.",
