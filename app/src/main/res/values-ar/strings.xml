@@ -420,6 +420,7 @@
     <string name="prediction_setup_title_compose">إنشاء بالذكاء الاصطناعي</string>
     <string name="prediction_setup_create">إنشاء</string>
     <string name="prediction_setup_suggestions">اقتراحات</string>
+    <string name="prediction_setup_considerations">اعتبر في هذه الجلسة</string>
     <string name="prediction_setup_weather_pick_day">اختر يومًا</string>
     <string name="prediction_setup_weather_today">اليوم</string>
     <string name="prediction_setup_weather_tomorrow">غدًا</string>
@@ -508,6 +509,10 @@
     <string name="travel_destination_placeholder">مثلاً: باريس، طوكيو، نيويورك</string>
     <string name="travel_duration">المدة</string>
     <string name="travel_start_date">تاريخ البدء</string>
+    <string name="travel_outfit_count">عدد الأطقم</string>
+    <string name="travel_outfit_count_reset">مطابقة الأيام</string>
+    <string name="travel_goal">تركيز الرحلة</string>
+    <string name="travel_goal_placeholder">مثلاً: اجتماعات عمل + عشاء مسائي</string>
     <string name="travel_generate">توليد قائمة التوضيب</string>
     <string name="travel_regenerate">إعادة توليد</string>
     <string name="travel_packing_list">قائمة التوضيب</string>

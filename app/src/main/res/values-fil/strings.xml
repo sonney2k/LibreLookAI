@@ -420,6 +420,7 @@
     <string name="prediction_setup_title_compose">Gumawa gamit ang AI</string>
     <string name="prediction_setup_create">Gumawa</string>
     <string name="prediction_setup_suggestions">Mga mungkahi</string>
+    <string name="prediction_setup_considerations">Isaalang-alang sa run na ito</string>
     <string name="prediction_setup_weather_pick_day">Pumili ng araw</string>
     <string name="prediction_setup_weather_today">Ngayon</string>
     <string name="prediction_setup_weather_tomorrow">Bukas</string>
@@ -508,6 +509,10 @@
     <string name="travel_destination_placeholder">hal. Paris, Tokyo, New York</string>
     <string name="travel_duration">Tagal</string>
     <string name="travel_start_date">Petsa ng simula</string>
+    <string name="travel_outfit_count">Mga outfit</string>
+    <string name="travel_outfit_count_reset">Itugma sa araw</string>
+    <string name="travel_goal">Pokus ng biyahe</string>
+    <string name="travel_goal_placeholder">hal. business meetings + dinner</string>
     <string name="travel_generate">Bumuo ng Packing List</string>
     <string name="travel_regenerate">Bumuo muli</string>
     <string name="travel_packing_list">Packing List</string>

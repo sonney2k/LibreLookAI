@@ -247,6 +247,7 @@
     <string name="prediction_setup_title_compose">Створити через ШІ</string>
     <string name="prediction_setup_create">Створити</string>
     <string name="prediction_setup_suggestions">Пропозиції</string>
+    <string name="prediction_setup_considerations">Урахувати цього разу</string>
     <string name="prediction_setup_weather_today">Сьогодні</string>
     <string name="prediction_setup_weather_tomorrow">Завтра</string>
     <string name="outfits_compose">Скласти новий образ</string>
@@ -278,6 +279,10 @@
     <string name="travel_destination">Куди їдете</string>
     <string name="travel_duration">Тривалість</string>
     <string name="travel_start_date">Дата початку</string>
+    <string name="travel_outfit_count">Образи</string>
+    <string name="travel_outfit_count_reset">За кількістю днів</string>
+    <string name="travel_goal">Фокус поїздки</string>
+    <string name="travel_goal_placeholder">напр. ділові зустрічі + вечері</string>
     <string name="travel_generate">Згенерувати список</string>
     <string name="travel_packing_list">Список речей</string>
     <string name="travel_clear">Очистити</string>

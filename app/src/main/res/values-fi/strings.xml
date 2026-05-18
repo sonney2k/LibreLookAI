@@ -420,6 +420,7 @@
     <string name="prediction_setup_title_compose">Luo tekoälyllä</string>
     <string name="prediction_setup_create">Luo</string>
     <string name="prediction_setup_suggestions">Ehdotukset</string>
+    <string name="prediction_setup_considerations">Huomioi tällä kerralla</string>
     <string name="prediction_setup_weather_pick_day">Valitse päivä</string>
     <string name="prediction_setup_weather_today">Tänään</string>
     <string name="prediction_setup_weather_tomorrow">Huomenna</string>
@@ -508,6 +509,10 @@
     <string name="travel_destination_placeholder">esim. Pariisi, Tokio, New York</string>
     <string name="travel_duration">Kesto</string>
     <string name="travel_start_date">Aloituspäivä</string>
+    <string name="travel_outfit_count">Asukokonaisuudet</string>
+    <string name="travel_outfit_count_reset">Päivien mukaan</string>
+    <string name="travel_goal">Matkan fokus</string>
+    <string name="travel_goal_placeholder">esim. kokoukset + illalliset</string>
     <string name="travel_generate">Luo pakkauslista</string>
     <string name="travel_regenerate">Luo uudelleen</string>
     <string name="travel_packing_list">Pakkauslista</string>

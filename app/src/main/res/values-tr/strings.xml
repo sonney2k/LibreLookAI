@@ -420,6 +420,7 @@
     <string name="prediction_setup_title_compose">Yapay zeka ile oluştur</string>
     <string name="prediction_setup_create">Oluştur</string>
     <string name="prediction_setup_suggestions">Öneriler</string>
+    <string name="prediction_setup_considerations">Bu çalıştırma için dikkate al</string>
     <string name="prediction_setup_weather_pick_day">Bir gün seçin</string>
     <string name="prediction_setup_weather_today">Bugün</string>
     <string name="prediction_setup_weather_tomorrow">Yarın</string>
@@ -508,6 +509,10 @@
     <string name="travel_destination_placeholder">örn. Paris, Tokyo, New York</string>
     <string name="travel_duration">Süre</string>
     <string name="travel_start_date">Başlangıç tarihi</string>
+    <string name="travel_outfit_count">Kombinler</string>
+    <string name="travel_outfit_count_reset">Gün sayısıyla eşle</string>
+    <string name="travel_goal">Seyahat odağı</string>
+    <string name="travel_goal_placeholder">ör. iş toplantıları + akşam yemekleri</string>
     <string name="travel_generate">Hazırlık Listesi Oluştur</string>
     <string name="travel_regenerate">Yeniden oluştur</string>
     <string name="travel_packing_list">Hazırlık Listesi</string>

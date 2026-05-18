@@ -247,6 +247,7 @@
     <string name="prediction_setup_title_compose">AI के साथ बनाएं</string>
     <string name="prediction_setup_create">बनाएं</string>
     <string name="prediction_setup_suggestions">सुझाव</string>
+    <string name="prediction_setup_considerations">इस बार ध्यान में रखें</string>
     <string name="prediction_setup_weather_today">आज</string>
     <string name="prediction_setup_weather_tomorrow">कल</string>
     <string name="outfits_compose">नया आउटफ़िट बनाएं</string>
@@ -278,6 +279,10 @@
     <string name="travel_destination">गंतव्य</string>
     <string name="travel_duration">अवधि</string>
     <string name="travel_start_date">प्रारंभ तिथि</string>
+    <string name="travel_outfit_count">आउटफ़िट</string>
+    <string name="travel_outfit_count_reset">दिनों के अनुसार</string>
+    <string name="travel_goal">यात्रा का फ़ोकस</string>
+    <string name="travel_goal_placeholder">जैसे बिज़नेस मीटिंग + डिनर</string>
     <string name="travel_generate">पैकिंग लिस्ट बनाएं</string>
     <string name="travel_packing_list">पैकिंग लिस्ट</string>
     <string name="travel_clear">साफ़ करें</string>

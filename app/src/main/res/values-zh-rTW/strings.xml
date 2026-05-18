@@ -247,6 +247,7 @@
     <string name="prediction_setup_title_compose">使用 AI 建立</string>
     <string name="prediction_setup_create">建立</string>
     <string name="prediction_setup_suggestions">建議</string>
+    <string name="prediction_setup_considerations">本次納入考量</string>
     <string name="prediction_setup_weather_today">今天</string>
     <string name="prediction_setup_weather_tomorrow">明天</string>
     <string name="outfits_compose">組合新穿搭</string>
@@ -278,6 +279,10 @@
     <string name="travel_destination">目的地</string>
     <string name="travel_duration">天數</string>
     <string name="travel_start_date">開始日期</string>
+    <string name="travel_outfit_count">套裝數量</string>
+    <string name="travel_outfit_count_reset">與天數一致</string>
+    <string name="travel_goal">行程重點</string>
+    <string name="travel_goal_placeholder">例如商務會議 + 晚餐</string>
     <string name="travel_generate">生成打包清單</string>
     <string name="travel_packing_list">打包清單</string>
     <string name="travel_clear">清除</string>

@@ -74,6 +74,7 @@ import com.librelookai.data.model.DayForecast
 import com.librelookai.data.model.PackingOutfit
 import com.librelookai.outfit.OutfitsViewModel
 import com.librelookai.outfit.RefinementSection
+import com.librelookai.settings.AiConsiderationsStrip
 import com.librelookai.settings.ProfileViewModel
 import com.librelookai.util.AiProcessingOverlay
 import com.librelookai.util.LocalIsOffline
@@ -203,6 +204,65 @@ fun TravelScreen(
                             )
                         }
                     }
+
+                    // Outfit-count stepper. Default tracks `days` (one outfit per day) until the
+                    // user explicitly sets a value; from then on it's independent of duration so
+                    // changing days doesn't silently overwrite a custom count.
+                    val effectiveOutfitCount = state.outfitCount ?: state.days
+                    Column {
+                        Text(stringResource(R.string.travel_outfit_count), style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        ) {
+                            IconButton(
+                                onClick = { travelViewModel.updateOutfitCount(effectiveOutfitCount - 1) },
+                                enabled = effectiveOutfitCount > 1,
+                            ) {
+                                Icon(Icons.Default.Remove, contentDescription = null)
+                            }
+                            Text(
+                                effectiveOutfitCount.toString(),
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontWeight = FontWeight.Medium,
+                                textAlign = TextAlign.Center,
+                            )
+                            IconButton(
+                                onClick = { travelViewModel.updateOutfitCount(effectiveOutfitCount + 1) },
+                                enabled = effectiveOutfitCount < 21,
+                            ) {
+                                Icon(Icons.Default.Add, contentDescription = null)
+                            }
+                            if (state.outfitCount != null && state.outfitCount != state.days) {
+                                TextButton(onClick = { travelViewModel.updateOutfitCount(null) }) {
+                                    Text(stringResource(R.string.travel_outfit_count_reset))
+                                }
+                            }
+                        }
+                    }
+
+                    // Free-text AI prompt — extra context like "business meetings + evening dinners".
+                    OutlinedTextField(
+                        value = state.goal,
+                        onValueChange = travelViewModel::updateGoal,
+                        label = { Text(stringResource(R.string.travel_goal)) },
+                        placeholder = { Text(stringResource(R.string.travel_goal_placeholder)) },
+                        minLines = 1,
+                        maxLines = 3,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+
+                    // Per-trip override of the AI considerations (location, trends, gender, age,
+                    // preferences). Same widget as Find/Create-with-AI.
+                    val prefsConsiderations = profileState.preferences.aiConsiderations
+                    val effectiveConsiderations = state.considerationsOverride ?: prefsConsiderations
+                    AiConsiderationsStrip(
+                        considerations = effectiveConsiderations,
+                        onToggle = { transform ->
+                            travelViewModel.setConsideration(prefsConsiderations, transform)
+                        },
+                    )
 
                     Button(
                         onClick = {

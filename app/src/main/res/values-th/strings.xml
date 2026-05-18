@@ -247,6 +247,7 @@
     <string name="prediction_setup_title_compose">สร้างด้วย AI</string>
     <string name="prediction_setup_create">สร้าง</string>
     <string name="prediction_setup_suggestions">คำแนะนำ</string>
+    <string name="prediction_setup_considerations">พิจารณาในรอบนี้</string>
     <string name="prediction_setup_weather_today">วันนี้</string>
     <string name="prediction_setup_weather_tomorrow">พรุ่งนี้</string>
     <string name="outfits_compose">สร้างชุดใหม่</string>
@@ -278,6 +279,10 @@
     <string name="travel_destination">จุดหมายปลายทาง</string>
     <string name="travel_duration">ระยะเวลา</string>
     <string name="travel_start_date">วันที่เริ่ม</string>
+    <string name="travel_outfit_count">จำนวนชุด</string>
+    <string name="travel_outfit_count_reset">ตามจำนวนวัน</string>
+    <string name="travel_goal">จุดเน้นของทริป</string>
+    <string name="travel_goal_placeholder">เช่น ประชุมธุรกิจ + ดินเนอร์</string>
     <string name="travel_generate">สร้างรายการจัดกระเป๋า</string>
     <string name="travel_packing_list">รายการจัดกระเป๋า</string>
     <string name="travel_clear">ล้าง</string>

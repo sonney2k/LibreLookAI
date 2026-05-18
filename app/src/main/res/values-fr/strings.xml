@@ -420,6 +420,7 @@
     <string name="prediction_setup_title_compose">Créer avec l\'IA</string>
     <string name="prediction_setup_create">Créer</string>
     <string name="prediction_setup_suggestions">Suggestions</string>
+    <string name="prediction_setup_considerations">Prendre en compte cette fois</string>
     <string name="prediction_setup_weather_pick_day">Choisis un jour</string>
     <string name="prediction_setup_weather_today">Aujourd\'hui</string>
     <string name="prediction_setup_weather_tomorrow">Demain</string>
@@ -508,6 +509,10 @@
     <string name="travel_destination_placeholder">ex. Paris, Tokyo, New York</string>
     <string name="travel_duration">Durée</string>
     <string name="travel_start_date">Date de début</string>
+    <string name="travel_outfit_count">Tenues</string>
+    <string name="travel_outfit_count_reset">Comme les jours</string>
+    <string name="travel_goal">Focus du voyage</string>
+    <string name="travel_goal_placeholder">ex. réunions + dîners en soirée</string>
     <string name="travel_generate">Générer la liste de bagages</string>
     <string name="travel_regenerate">Régénérer</string>
     <string name="travel_packing_list">Liste de bagages</string>

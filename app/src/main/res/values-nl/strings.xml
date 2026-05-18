@@ -420,6 +420,7 @@
     <string name="prediction_setup_title_compose">Maken met AI</string>
     <string name="prediction_setup_create">Maken</string>
     <string name="prediction_setup_suggestions">Suggesties</string>
+    <string name="prediction_setup_considerations">Meenemen voor deze run</string>
     <string name="prediction_setup_weather_pick_day">Kies een dag</string>
     <string name="prediction_setup_weather_today">Vandaag</string>
     <string name="prediction_setup_weather_tomorrow">Morgen</string>
@@ -508,6 +509,10 @@
     <string name="travel_destination_placeholder">bv. Parijs, Tokio, New York</string>
     <string name="travel_duration">Duur</string>
     <string name="travel_start_date">Startdatum</string>
+    <string name="travel_outfit_count">Outfits</string>
+    <string name="travel_outfit_count_reset">Aan dagen koppelen</string>
+    <string name="travel_goal">Reisfocus</string>
+    <string name="travel_goal_placeholder">bv. zakelijke meetings + diners</string>
     <string name="travel_generate">Paklijst genereren</string>
     <string name="travel_regenerate">Opnieuw genereren</string>
     <string name="travel_packing_list">Paklijst</string>

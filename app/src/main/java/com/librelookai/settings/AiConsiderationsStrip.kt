@@ -1,0 +1,71 @@
+package com.librelookai.settings
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import com.librelookai.R
+
+/**
+ * FlowRow of FilterChips for the five Settings → AI "standard criteria" toggles. Used by any
+ * screen that wants to expose per-invocation overrides of the user's saved considerations
+ * (Find/Create with AI, Travel planner). Weather is intentionally excluded — every callsite so
+ * far has a dedicated weather picker.
+ */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun AiConsiderationsStrip(
+    considerations: AiConsiderations,
+    onToggle: ((AiConsiderations) -> AiConsiderations) -> Unit,
+    titleRes: Int = R.string.prediction_setup_considerations,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Text(
+            stringResource(titleRes),
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            ConsiderationChip(R.string.ai_consider_location, considerations.location) {
+                onToggle { it.copy(location = !it.location) }
+            }
+            ConsiderationChip(R.string.ai_consider_trends, considerations.trends) {
+                onToggle { it.copy(trends = !it.trends) }
+            }
+            ConsiderationChip(R.string.ai_consider_gender, considerations.gender) {
+                onToggle { it.copy(gender = !it.gender) }
+            }
+            ConsiderationChip(R.string.ai_consider_age, considerations.age) {
+                onToggle { it.copy(age = !it.age) }
+            }
+            ConsiderationChip(R.string.ai_consider_preferences, considerations.preferences) {
+                onToggle { it.copy(preferences = !it.preferences) }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ConsiderationChip(labelRes: Int, selected: Boolean, onClick: () -> Unit) {
+    FilterChip(
+        selected = selected,
+        onClick = onClick,
+        label = { Text(stringResource(labelRes)) },
+        leadingIcon = if (selected) {
+            { Icon(Icons.Default.Check, contentDescription = null, modifier = Modifier.size(14.dp)) }
+        } else null,
+    )
+}

@@ -416,6 +416,7 @@
     <string name="prediction_setup_title_compose">צור עם בינה מלאכותית</string>
     <string name="prediction_setup_create">צור</string>
     <string name="prediction_setup_suggestions">הצעות</string>
+    <string name="prediction_setup_considerations">קח בחשבון בריצה הזו</string>
     <string name="prediction_setup_weather_pick_day">בחר יום</string>
     <string name="prediction_setup_weather_today">היום</string>
     <string name="prediction_setup_weather_tomorrow">מחר</string>
@@ -504,6 +505,10 @@
     <string name="travel_destination_placeholder">למשל פריז, טוקיו, ניו יורק</string>
     <string name="travel_duration">משך זמן</string>
     <string name="travel_start_date">תאריך התחלה</string>
+    <string name="travel_outfit_count">תלבושות</string>
+    <string name="travel_outfit_count_reset">כמספר הימים</string>
+    <string name="travel_goal">מיקוד הטיול</string>
+    <string name="travel_goal_placeholder">למשל פגישות + ארוחות ערב</string>
     <string name="travel_generate">צור רשימת אריזה</string>
     <string name="travel_regenerate">צור מחדש</string>
     <string name="travel_packing_list">רשימת אריזה</string>

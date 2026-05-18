@@ -414,6 +414,7 @@
     <string name="prediction_setup_title_compose">Mit KI erstellen</string>
     <string name="prediction_setup_create">Erstellen</string>
     <string name="prediction_setup_suggestions">Vorschläge</string>
+    <string name="prediction_setup_considerations">Für diesen Lauf berücksichtigen</string>
     <string name="prediction_setup_weather_pick_day">Tag wählen</string>
     <string name="prediction_setup_weather_today">Heute</string>
     <string name="prediction_setup_weather_tomorrow">Morgen</string>
@@ -501,6 +502,10 @@
     <string name="travel_destination_placeholder">z.B. Paris, Tokio, New York</string>
     <string name="travel_duration">Dauer</string>
     <string name="travel_start_date">Startdatum</string>
+    <string name="travel_outfit_count">Outfits</string>
+    <string name="travel_outfit_count_reset">An Tage anpassen</string>
+    <string name="travel_goal">Reisefokus</string>
+    <string name="travel_goal_placeholder">z. B. Geschäftstermine + Abendessen</string>
     <string name="travel_generate">Packliste erstellen</string>
     <string name="travel_regenerate">Neu erstellen</string>
     <string name="travel_packing_list">Packliste</string>

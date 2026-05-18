@@ -420,6 +420,7 @@
     <string name="prediction_setup_title_compose">Skapa med AI</string>
     <string name="prediction_setup_create">Skapa</string>
     <string name="prediction_setup_suggestions">Förslag</string>
+    <string name="prediction_setup_considerations">Ta hänsyn till denna gång</string>
     <string name="prediction_setup_weather_pick_day">Välj en dag</string>
     <string name="prediction_setup_weather_today">Idag</string>
     <string name="prediction_setup_weather_tomorrow">Imorgon</string>
@@ -508,6 +509,10 @@
     <string name="travel_destination_placeholder">t.ex. Paris, Tokyo, New York</string>
     <string name="travel_duration">Varaktighet</string>
     <string name="travel_start_date">Startdatum</string>
+    <string name="travel_outfit_count">Outfits</string>
+    <string name="travel_outfit_count_reset">Som antal dagar</string>
+    <string name="travel_goal">Resans fokus</string>
+    <string name="travel_goal_placeholder">t.ex. möten + middagar</string>
     <string name="travel_generate">Generera packlista</string>
     <string name="travel_regenerate">Generera om</string>
     <string name="travel_packing_list">Packlista</string>

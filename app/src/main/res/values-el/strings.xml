@@ -420,6 +420,7 @@
     <string name="prediction_setup_title_compose">Δημιουργία με AI</string>
     <string name="prediction_setup_create">Δημιουργία</string>
     <string name="prediction_setup_suggestions">Προτάσεις</string>
+    <string name="prediction_setup_considerations">Λάβε υπόψη σε αυτή την εκτέλεση</string>
     <string name="prediction_setup_weather_pick_day">Επιλέξτε ημέρα</string>
     <string name="prediction_setup_weather_today">Σήμερα</string>
     <string name="prediction_setup_weather_tomorrow">Αύριο</string>
@@ -508,6 +509,10 @@
     <string name="travel_destination_placeholder">π.χ. Παρίσι, Τόκιο, Νέα Υόρκη</string>
     <string name="travel_duration">Διάρκεια</string>
     <string name="travel_start_date">Ημερομηνία έναρξης</string>
+    <string name="travel_outfit_count">Σύνολα</string>
+    <string name="travel_outfit_count_reset">Όσες οι ημέρες</string>
+    <string name="travel_goal">Εστίαση ταξιδιού</string>
+    <string name="travel_goal_placeholder">π.χ. συναντήσεις + δείπνα</string>
     <string name="travel_generate">Δημιουργία Λίστας</string>
     <string name="travel_regenerate">Επαναδημιουργία</string>
     <string name="travel_packing_list">Λίστα Πακεταρίσματος</string>

@@ -247,6 +247,7 @@
     <string name="prediction_setup_title_compose">Buat dengan AI</string>
     <string name="prediction_setup_create">Buat</string>
     <string name="prediction_setup_suggestions">Saran</string>
+    <string name="prediction_setup_considerations">Pertimbangkan untuk kali ini</string>
     <string name="prediction_setup_weather_today">Hari ini</string>
     <string name="prediction_setup_weather_tomorrow">Besok</string>
     <string name="outfits_compose">Susun setelan baru</string>
@@ -278,6 +279,10 @@
     <string name="travel_destination">Tujuan</string>
     <string name="travel_duration">Durasi</string>
     <string name="travel_start_date">Tanggal mulai</string>
+    <string name="travel_outfit_count">Setelan</string>
+    <string name="travel_outfit_count_reset">Sesuaikan hari</string>
+    <string name="travel_goal">Fokus perjalanan</string>
+    <string name="travel_goal_placeholder">mis. rapat bisnis + makan malam</string>
     <string name="travel_generate">Buat Daftar Kemasan</string>
     <string name="travel_packing_list">Daftar Kemasan</string>
     <string name="travel_clear">Bersihkan</string>

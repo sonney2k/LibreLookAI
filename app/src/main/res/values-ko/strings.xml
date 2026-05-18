@@ -420,6 +420,7 @@
     <string name="prediction_setup_title_compose">AI로 만들기</string>
     <string name="prediction_setup_create">만들기</string>
     <string name="prediction_setup_suggestions">제안</string>
+    <string name="prediction_setup_considerations">이번 실행에 반영</string>
     <string name="prediction_setup_weather_pick_day">날짜 선택</string>
     <string name="prediction_setup_weather_today">오늘</string>
     <string name="prediction_setup_weather_tomorrow">내일</string>
@@ -508,6 +509,10 @@
     <string name="travel_destination_placeholder">예: 파리, 도쿄, 뉴욕</string>
     <string name="travel_duration">기간</string>
     <string name="travel_start_date">시작일</string>
+    <string name="travel_outfit_count">코디 수</string>
+    <string name="travel_outfit_count_reset">일수에 맞춤</string>
+    <string name="travel_goal">여행 포커스</string>
+    <string name="travel_goal_placeholder">예: 비즈니스 미팅 + 저녁 식사</string>
     <string name="travel_generate">패킹 리스트 생성</string>
     <string name="travel_regenerate">다시 생성</string>
     <string name="travel_packing_list">패킹 리스트</string>

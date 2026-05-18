@@ -48,6 +48,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.librelookai.settings.AiConsiderations
+import com.librelookai.settings.AiConsiderationsStrip
 import com.librelookai.settings.ProfileViewModel
 import com.librelookai.wardrobe.LocationViewModel
 import com.librelookai.wardrobe.WardrobeViewModel
@@ -151,6 +153,15 @@ fun PredictionSetupDialog(
                         onToggleVibe = outfitsViewModel::toggleComposerVibe,
                         onClickWeather = { showWeatherSheet = true },
                         onClickCloset = { showClosetSheet = true },
+                    )
+
+                    val prefsConsiderations = profile.preferences.aiConsiderations
+                    val effectiveConsiderations = s.composerConsiderationsOverride ?: prefsConsiderations
+                    AiConsiderationsStrip(
+                        considerations = effectiveConsiderations,
+                        onToggle = { transform ->
+                            outfitsViewModel.setComposerConsideration(prefsConsiderations, transform)
+                        },
                     )
 
                     SuggestionCountSelector(

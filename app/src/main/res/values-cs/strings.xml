@@ -420,6 +420,7 @@
     <string name="prediction_setup_title_compose">Vytvořit pomocí AI</string>
     <string name="prediction_setup_create">Vytvořit</string>
     <string name="prediction_setup_suggestions">Návrhy</string>
+    <string name="prediction_setup_considerations">Zvážit pro tento běh</string>
     <string name="prediction_setup_weather_pick_day">Vyberte den</string>
     <string name="prediction_setup_weather_today">Dnes</string>
     <string name="prediction_setup_weather_tomorrow">Zítra</string>
@@ -508,6 +509,10 @@
     <string name="travel_destination_placeholder">např. Paříž, Tokio, New York</string>
     <string name="travel_duration">Doba trvání</string>
     <string name="travel_start_date">Datum zahájení</string>
+    <string name="travel_outfit_count">Outfity</string>
+    <string name="travel_outfit_count_reset">Podle dní</string>
+    <string name="travel_goal">Zaměření cesty</string>
+    <string name="travel_goal_placeholder">např. obchodní schůzky + večeře</string>
     <string name="travel_generate">Generovat seznam</string>
     <string name="travel_regenerate">Znovu generovat</string>
     <string name="travel_packing_list">Seznam věcí</string>

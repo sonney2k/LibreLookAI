@@ -246,6 +246,7 @@
     <string name="prediction_setup_title_compose">Creează cu AI</string>
     <string name="prediction_setup_create">Creează</string>
     <string name="prediction_setup_suggestions">Sugestii</string>
+    <string name="prediction_setup_considerations">Ia în calcul de această dată</string>
     <string name="prediction_setup_weather_today">Azi</string>
     <string name="prediction_setup_weather_tomorrow">Mâine</string>
     <string name="outfits_compose">Compune ținută nouă</string>
@@ -277,6 +278,10 @@
     <string name="travel_destination">Destinație</string>
     <string name="travel_duration">Durată</string>
     <string name="travel_start_date">Data de început</string>
+    <string name="travel_outfit_count">Ținute</string>
+    <string name="travel_outfit_count_reset">Câte zile</string>
+    <string name="travel_goal">Focus călătorie</string>
+    <string name="travel_goal_placeholder">ex. ședințe + cine seara</string>
     <string name="travel_generate">Generează Listă Bagaj</string>
     <string name="travel_packing_list">Listă Bagaj</string>
     <string name="travel_clear">Șterge</string>

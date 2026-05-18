@@ -247,6 +247,7 @@
     <string name="prediction_setup_title_compose">Létrehozás AI-val</string>
     <string name="prediction_setup_create">Létrehozás</string>
     <string name="prediction_setup_suggestions">Javaslatok</string>
+    <string name="prediction_setup_considerations">Vedd figyelembe ennél</string>
     <string name="prediction_setup_weather_today">Ma</string>
     <string name="prediction_setup_weather_tomorrow">Holnap</string>
     <string name="outfits_compose">Új szett összeállítása</string>
@@ -278,6 +279,10 @@
     <string name="travel_destination">Célállomás</string>
     <string name="travel_duration">Időtartam</string>
     <string name="travel_start_date">Indulás dátuma</string>
+    <string name="travel_outfit_count">Szettek</string>
+    <string name="travel_outfit_count_reset">Napokhoz igazítás</string>
+    <string name="travel_goal">Utazás fókusza</string>
+    <string name="travel_goal_placeholder">pl. üzleti megbeszélések + vacsorák</string>
     <string name="travel_generate">Pakolólista generálása</string>
     <string name="travel_packing_list">Pakolólista</string>
     <string name="travel_clear">Törlés</string>

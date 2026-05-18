@@ -420,6 +420,7 @@
     <string name="prediction_setup_title_compose">Opprett med AI</string>
     <string name="prediction_setup_create">Opprett</string>
     <string name="prediction_setup_suggestions">Forslag</string>
+    <string name="prediction_setup_considerations">Ta med i denne kjøringen</string>
     <string name="prediction_setup_weather_pick_day">Velg en dag</string>
     <string name="prediction_setup_weather_today">I dag</string>
     <string name="prediction_setup_weather_tomorrow">I morgen</string>
@@ -508,6 +509,10 @@
     <string name="travel_destination_placeholder">f.eks. Paris, Tokyo, New York</string>
     <string name="travel_duration">Varighet</string>
     <string name="travel_start_date">Startdato</string>
+    <string name="travel_outfit_count">Antrekk</string>
+    <string name="travel_outfit_count_reset">Som antall dager</string>
+    <string name="travel_goal">Reisens fokus</string>
+    <string name="travel_goal_placeholder">f.eks. møter + middager</string>
     <string name="travel_generate">Generer pakkeliste</string>
     <string name="travel_regenerate">Generer på nytt</string>
     <string name="travel_packing_list">Pakkeliste</string>

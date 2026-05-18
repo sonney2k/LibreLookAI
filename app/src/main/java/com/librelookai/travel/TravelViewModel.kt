@@ -41,6 +41,19 @@ data class TravelUiState(
     val refinementInput: String = "",
     val feedbackHistory: List<String> = emptyList(),
     val error: String? = null,
+    /** Free-text goal/notes added to the prompt (e.g. "business meetings + evening dinners"). */
+    val goal: String = "",
+    /**
+     * Number of distinct outfits to generate. null means "follow [days] (one per day)"; the user
+     * can override with an explicit number. Independent of [days] once set so changing the
+     * duration doesn't silently wipe a custom count.
+     */
+    val outfitCount: Int? = null,
+    /**
+     * Per-trip override of the AI considerations toggles. Null means "use the user's saved
+     * settings as-is". Cleared on [clearResult] and reset when the user clears the screen.
+     */
+    val considerationsOverride: AiConsiderations? = null,
 )
 
 class TravelViewModel(app: Application) : AndroidViewModel(app) {
@@ -56,12 +69,25 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
     fun updateDays(n: Int)           = _state.update { it.copy(days = n.coerceIn(1, 21)) }
     fun updateStartDate(d: LocalDate) = _state.update { it.copy(startDate = d) }
     fun updateRefinementInput(s: String) = _state.update { it.copy(refinementInput = s) }
+    fun updateGoal(s: String) = _state.update { it.copy(goal = s) }
+    fun updateOutfitCount(n: Int?) = _state.update {
+        it.copy(outfitCount = n?.coerceIn(1, 21))
+    }
+
+    /** Toggle one consideration for this trip, seeding from user defaults on first interaction. */
+    fun setConsideration(prefsDefault: AiConsiderations, transform: (AiConsiderations) -> AiConsiderations) {
+        _state.update {
+            val base = it.considerationsOverride ?: prefsDefault
+            it.copy(considerationsOverride = transform(base))
+        }
+    }
     fun clearError()  = _state.update { it.copy(error = null) }
     fun clearResult() = _state.update {
         it.copy(
             packingList = null, forecast = emptyList(), resolvedDestination = "",
             fetchedKey = null, isHistoricalForecast = false, historicalReferenceYear = null,
             feedbackHistory = emptyList(), refinementInput = "", error = null,
+            goal = "", outfitCount = null, considerationsOverride = null,
         )
     }
 
@@ -138,12 +164,17 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
             // Phase 2 — generate packing list
             _state.update { it.copy(isGenerating = true, packingList = null, error = null) }
 
+            val s = _state.value
+            val effectiveOutfitCount = (s.outfitCount ?: days).coerceIn(1, 21)
             val prompt = buildPackingPrompt(
                 preamble        = PromptStore.get(getApplication(), PromptKey.PACKING),
                 prefs           = prefs,
                 destination     = resolvedDest,
                 startDate       = startDate,
                 days            = days,
+                outfitCount     = effectiveOutfitCount,
+                goal            = s.goal,
+                considerationsOverride = s.considerationsOverride,
                 forecast        = forecast,
                 isHistorical    = isHistorical,
                 referenceYear   = refYear,
@@ -190,6 +221,9 @@ private fun buildPackingPrompt(
     destination: String,
     startDate: LocalDate,
     days: Int,
+    outfitCount: Int,
+    goal: String,
+    considerationsOverride: AiConsiderations?,
     forecast: List<DayForecast>,
     isHistorical: Boolean,
     referenceYear: Int?,
@@ -221,7 +255,7 @@ private fun buildPackingPrompt(
         """{"id":"${s.id}","name":"${s.name}","items":$items}"""
     }
 
-    val c = prefs?.aiConsiderations ?: AiConsiderations()
+    val c = considerationsOverride ?: prefs?.aiConsiderations ?: AiConsiderations()
     return buildString {
         appendLine(preamble.trim())
         appendLine()
@@ -251,6 +285,28 @@ private fun buildPackingPrompt(
             profileLines.forEach { appendLine(it) }
             appendLine()
         }
+        if (c.location) {
+            appendLine("## Location context")
+            appendLine("- Destination: $destination")
+            appendLine("- Consider local style norms, dress codes, and urban/rural practicality at the destination.")
+            appendLine()
+        }
+        if (c.trends) {
+            appendLine("## Current fashion trends")
+            appendLine("Reflect on what is currently fashionable at the destination based on your training data; favour timeless travel-friendly pieces over short-lived fads.")
+            appendLine()
+        }
+        if (goal.isNotBlank()) {
+            appendLine("## Trip goal / focus (user input)")
+            appendLine(goal.trim())
+            appendLine()
+        }
+        appendLine("## Outfit Plan")
+        appendLine("- Compose exactly $outfitCount distinct outfit recommendations for this trip, ranked from most useful to least.")
+        appendLine("- Reuse versatile items (jeans, trousers, jackets, shoes, accessories) across multiple outfits — they don't need to be changed daily.")
+        appendLine("- Rotate items worn directly against the skin (t-shirts, blouses, shirts, socks, underwear) so the traveler has a fresh one per wear-day.")
+        appendLine("- Make sure the overall pack covers all $days days of the trip even though outfits repeat.")
+        appendLine()
         appendLine("## Available Wardrobe Items (id + name + tags)")
         appendLine(wardrobeJson)
         appendLine()

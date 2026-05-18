@@ -126,6 +126,13 @@ data class OutfitsUiState(
     val composerForecastDate: String? = null,
     /** Number of suggestions Gemini is asked for (1..10). Default 3. */
     val composerSuggestionCount: Int = 3,
+    /**
+     * Per-invocation override of the AI considerations toggles (Settings → AI → standard
+     * criteria). Null means "use the user's saved settings as-is"; set as soon as the user
+     * touches one of the chips in the Find/Create-with-AI dialog so subsequent toggles
+     * mutate the override instead of reverting to settings on every render.
+     */
+    val composerConsiderationsOverride: AiConsiderations? = null,
     val error: String? = null,
     /** AI tag-suggestion flow launched from the outfit detail viewer. */
     val tagSuggestion: TagSuggestionState? = null,
@@ -550,6 +557,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 feedbackHistory  = history,
                 language         = prefs?.language ?: AppLanguage.ENGLISH,
                 suggestionCount  = suggestionCount,
+                considerationsOverride = s.composerConsiderationsOverride,
             )
             Log.d("StylesVM", "Composer prompt length: ${prompt.length} chars")
             val raw = try {
@@ -895,16 +903,29 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
         val sourceFolders = defaultSourceFolderId?.let { setOf(it) } ?: emptySet()
         _state.update {
             it.copy(
-                isPredictionSetupOpen   = true,
-                predictionSetupSource   = source,
-                composerFeedback        = "",
-                composerVibes           = emptySet(),
-                composerWeatherMode     = ComposerWeatherMode.AUTO,
-                composerManualSeason    = "",
-                composerManualTempC     = null,
-                composerManualPrecip    = "",
-                composerSourceFolderIds = sourceFolders,
+                isPredictionSetupOpen          = true,
+                predictionSetupSource          = source,
+                composerFeedback               = "",
+                composerVibes                  = emptySet(),
+                composerWeatherMode            = ComposerWeatherMode.AUTO,
+                composerManualSeason           = "",
+                composerManualTempC            = null,
+                composerManualPrecip           = "",
+                composerSourceFolderIds        = sourceFolders,
+                composerConsiderationsOverride = null,
             )
+        }
+    }
+
+    /**
+     * Toggle one of the per-invocation AI considerations from the Find/Create-with-AI dialog.
+     * Seeds the override from [prefsDefault] on first interaction so unchanged fields keep
+     * matching the user's saved settings.
+     */
+    fun setComposerConsideration(prefsDefault: AiConsiderations, transform: (AiConsiderations) -> AiConsiderations) {
+        _state.update {
+            val base = it.composerConsiderationsOverride ?: prefsDefault
+            it.copy(composerConsiderationsOverride = transform(base))
         }
     }
 
@@ -982,6 +1003,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 vibes           = setup.composerVibes,
                 forecastDate    = setup.composerForecastDate,
                 suggestionCount = suggestionCount,
+                considerationsOverride = setup.composerConsiderationsOverride,
             )
             Log.d("StylesVM", "Prediction prompt length: ${prompt.length} chars")
             prompt.chunked(3000).forEachIndexed { i, chunk ->
@@ -1258,8 +1280,9 @@ private fun buildPredictionPrompt(
     vibes: Set<String> = emptySet(),
     forecastDate: String? = null,
     suggestionCount: Int = 3,
+    considerationsOverride: AiConsiderations? = null,
 ): String {
-    val c = prefs?.aiConsiderations ?: AiConsiderations()
+    val c = considerationsOverride ?: prefs?.aiConsiderations ?: AiConsiderations()
     val age = prefs?.yearOfBirth?.let { LocalDate.now().year - it }
 
     // Compact wardrobe encoding: only include items that belong to at least one style
@@ -1391,8 +1414,9 @@ private fun buildComposerPrompt(
     feedbackHistory: List<String>,
     language: String,
     suggestionCount: Int = 1,
+    considerationsOverride: AiConsiderations? = null,
 ): String {
-    val c = prefs?.aiConsiderations ?: AiConsiderations()
+    val c = considerationsOverride ?: prefs?.aiConsiderations ?: AiConsiderations()
     val age = prefs?.yearOfBirth?.let { LocalDate.now().year - it }
 
     val wardrobeJson = images.joinToString(",", "[", "]") { img ->

@@ -420,6 +420,7 @@
     <string name="prediction_setup_title_compose">AIで作る</string>
     <string name="prediction_setup_create">作る</string>
     <string name="prediction_setup_suggestions">提案</string>
+    <string name="prediction_setup_considerations">今回の生成で考慮</string>
     <string name="prediction_setup_weather_pick_day">日を選択</string>
     <string name="prediction_setup_weather_today">今日</string>
     <string name="prediction_setup_weather_tomorrow">明日</string>
@@ -508,6 +509,10 @@
     <string name="travel_destination_placeholder">例: パリ、東京、ニューヨーク</string>
     <string name="travel_duration">期間</string>
     <string name="travel_start_date">開始日</string>
+    <string name="travel_outfit_count">コーデ数</string>
+    <string name="travel_outfit_count_reset">日数に合わせる</string>
+    <string name="travel_goal">旅行の目的</string>
+    <string name="travel_goal_placeholder">例: 会議 + ディナー</string>
     <string name="travel_generate">パッキングリストを生成</string>
     <string name="travel_regenerate">再生成</string>
     <string name="travel_packing_list">パッキングリスト</string>
