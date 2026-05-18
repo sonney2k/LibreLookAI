@@ -726,6 +726,15 @@
     <string name="composer_vibe_minimalist">Minimalistisch</string>
     <string name="composer_vibe_classic">Klassisch</string>
     <string name="composer_vibe_elegant">Elegant</string>
+    <string name="composer_ai_title">KI-Outfit feinabstimmen</string>
+    <string name="composer_ai_subtitle">Was soll Gemini berücksichtigen?</string>
+    <string name="composer_section_occasion">Anlass</string>
+    <string name="composer_section_considerations">Was soll die KI berücksichtigen?</string>
+    <string name="composer_occasion_hint">Ein Satz hilft Gemini, den richtigen Ton zu treffen.</string>
+    <string name="composer_considerations_hint">Signale, die zusätzlich zu deiner Garderobe das Ergebnis personalisieren.</string>
+    <string name="composer_vibe_count">%1$d ausgewählt</string>
+    <string name="composer_generate_outfit">Outfit erstellen</string>
+    <string name="action_reset">Zurücksetzen</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_layer_top">Oberteil</string>

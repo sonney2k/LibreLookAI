@@ -931,6 +931,20 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
 
     fun closePredictionSetup() = _state.update { it.copy(isPredictionSetupOpen = false) }
 
+    /** Reset every field steered by the Tune-AI dialog back to its default. */
+    fun resetComposerAi() = _state.update {
+        it.copy(
+            composerFeedback              = "",
+            composerVibes                 = emptySet(),
+            composerWeatherMode           = ComposerWeatherMode.AUTO,
+            composerManualSeason          = "",
+            composerManualTempC           = null,
+            composerManualPrecip          = "",
+            composerForecastDate          = null,
+            composerConsiderationsOverride = null,
+        )
+    }
+
     /**
      * Called from the prediction-setup dialog's "Find" CTA. Snapshots the user's goal text as
      * the first refinement entry so the rest of the prediction/refinement loop uses one path.

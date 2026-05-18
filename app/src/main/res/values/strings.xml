@@ -737,6 +737,15 @@
     <string name="composer_vibe_minimalist">Minimalist</string>
     <string name="composer_vibe_classic">Classic</string>
     <string name="composer_vibe_elegant">Elegant</string>
+    <string name="composer_ai_title">Tune your outfit AI</string>
+    <string name="composer_ai_subtitle">What should Gemini consider?</string>
+    <string name="composer_section_occasion">Occasion</string>
+    <string name="composer_section_considerations">What should AI consider?</string>
+    <string name="composer_occasion_hint">A sentence helps Gemini hit the right tone.</string>
+    <string name="composer_considerations_hint">Signals layered on top of your wardrobe to personalize the result.</string>
+    <string name="composer_vibe_count">%1$d selected</string>
+    <string name="composer_generate_outfit">Generate outfit</string>
+    <string name="action_reset">Reset</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_layer_top">Base top</string>

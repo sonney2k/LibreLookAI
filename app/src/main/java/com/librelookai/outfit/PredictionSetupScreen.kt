@@ -1,26 +1,44 @@
 package com.librelookai.outfit
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.Cake
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.TrendingUp
+import androidx.compose.material.icons.filled.Tune
+import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -38,8 +56,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -49,7 +69,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.librelookai.settings.AiConsiderations
-import com.librelookai.settings.AiConsiderationsStrip
 import com.librelookai.settings.ProfileViewModel
 import com.librelookai.wardrobe.LocationViewModel
 import com.librelookai.wardrobe.WardrobeViewModel
@@ -100,6 +119,9 @@ fun PredictionSetupDialog(
     }
     val crossClosetImages = wardrobe.allLocationImages.ifEmpty { wardrobe.images }
 
+    val prefsConsiderations = profile.preferences.aiConsiderations
+    val effectiveConsiderations = s.composerConsiderationsOverride ?: prefsConsiderations
+
     Dialog(
         onDismissRequest = { outfitsViewModel.closePredictionSetup() },
         properties = DialogProperties(usePlatformDefaultWidth = false, dismissOnBackPress = true, dismissOnClickOutside = true),
@@ -109,97 +131,75 @@ fun PredictionSetupDialog(
             LocalConfiguration provides parentConfiguration,
         ) {
             Surface(
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 16.dp),
                 shape = RoundedCornerShape(20.dp),
                 color = MaterialTheme.colorScheme.background,
             ) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            Icons.Default.AutoAwesome,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
-                        )
-                        Spacer(Modifier.width(8.dp))
-                        Text(
-                            stringResource(titleRes),
-                            style = MaterialTheme.typography.titleMedium,
-                            modifier = Modifier.weight(1f),
-                        )
-                        IconButton(onClick = { outfitsViewModel.closePredictionSetup() }) {
-                            Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_cancel))
-                        }
-                    }
-
-                    GoalInput(
-                        goal = s.composerFeedback,
-                        onGoalChange = outfitsViewModel::updateComposerFeedback,
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    TuneAiHeader(
+                        title = stringResource(titleRes),
+                        subtitle = stringResource(R.string.composer_ai_subtitle),
+                        onClose = { outfitsViewModel.closePredictionSetup() },
+                        onReset = { outfitsViewModel.resetComposerAi() },
                     )
-
-                    ContextStrip(
-                        weatherMode = s.composerWeatherMode,
-                        autoWeather = weather.data,
-                        manualTempC = s.composerManualTempC,
-                        forecastDate = s.composerForecastDate,
-                        forecastDayPreview = s.composerForecastDate?.let { d ->
-                            weather.localForecast.find { it.date == d }
-                        },
-                        closetNames = closetNames,
-                        closetPickerAvailable = locationState.locations.size >= 2,
-                        selectedVibes = s.composerVibes,
-                        onToggleVibe = outfitsViewModel::toggleComposerVibe,
-                        onClickWeather = { showWeatherSheet = true },
-                        onClickCloset = { showClosetSheet = true },
-                    )
-
-                    val prefsConsiderations = profile.preferences.aiConsiderations
-                    val effectiveConsiderations = s.composerConsiderationsOverride ?: prefsConsiderations
-                    AiConsiderationsStrip(
-                        considerations = effectiveConsiderations,
-                        onToggle = { transform ->
-                            outfitsViewModel.setComposerConsideration(prefsConsiderations, transform)
-                        },
-                    )
-
-                    SuggestionCountSelector(
-                        count = s.composerSuggestionCount,
-                        onCountChange = outfitsViewModel::setComposerSuggestionCount,
-                    )
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End,
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(max = 560.dp)
+                            .verticalScroll(rememberScrollState())
+                            .padding(horizontal = 14.dp, vertical = 12.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
                     ) {
-                        TextButton(onClick = { outfitsViewModel.closePredictionSetup() }) {
-                            Text(stringResource(R.string.action_cancel))
-                        }
-                        Spacer(Modifier.width(8.dp))
-                        Button(
-                            onClick = {
-                                outfitsViewModel.submitPredictionSetup(
-                                    prefs = profile.preferences,
-                                    weather = weather.data,
-                                    images = crossClosetImages,
-                                )
+                        OccasionCard(
+                            goal = s.composerFeedback,
+                            onGoalChange = outfitsViewModel::updateComposerFeedback,
+                        )
+                        WeatherCard(
+                            weatherMode = s.composerWeatherMode,
+                            autoWeather = weather.data,
+                            manualTempC = s.composerManualTempC,
+                            manualPrecip = s.composerManualPrecip,
+                            onModeChange = outfitsViewModel::setComposerWeatherMode,
+                            onTempChange = outfitsViewModel::setComposerManualTempC,
+                            onPrecipChange = outfitsViewModel::setComposerManualPrecip,
+                            onOpenForecastPicker = { showWeatherSheet = true },
+                        )
+                        StyleVibeCard(
+                            selected = s.composerVibes,
+                            onToggle = outfitsViewModel::toggleComposerVibe,
+                        )
+                        ConsidersCard(
+                            considerations = effectiveConsiderations,
+                            onToggle = { transform ->
+                                outfitsViewModel.setComposerConsideration(prefsConsiderations, transform)
                             },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.primary,
-                                contentColor = MaterialTheme.colorScheme.onPrimary,
-                            ),
-                        ) {
-                            // GENERATE_TEXT scales with the number of outfits requested.
-                            com.librelookai.billing.CostBadge(
-                                action = com.librelookai.gemini.GeminiActionId.GENERATE_TEXT,
-                                bulkCount = s.composerSuggestionCount,
+                        )
+                        if (locationState.locations.size >= 2) {
+                            ClosetChipRow(
+                                closetNames = closetNames,
+                                onClick = { showClosetSheet = true },
                             )
-                            Icon(Icons.Default.AutoAwesome, contentDescription = null, modifier = Modifier.size(16.dp))
-                            Spacer(Modifier.width(6.dp))
-                            Text(stringResource(ctaRes))
                         }
+                        SuggestionCountSelector(
+                            count = s.composerSuggestionCount,
+                            onCountChange = outfitsViewModel::setComposerSuggestionCount,
+                        )
                     }
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                    TuneAiBottomBar(
+                        ctaLabel = stringResource(ctaRes),
+                        bulkCount = s.composerSuggestionCount,
+                        onCancel = { outfitsViewModel.closePredictionSetup() },
+                        onGenerate = {
+                            outfitsViewModel.submitPredictionSetup(
+                                prefs = profile.preferences,
+                                weather = weather.data,
+                                images = crossClosetImages,
+                            )
+                        },
+                    )
                 }
             }
         }
@@ -243,42 +243,520 @@ fun PredictionSetupDialog(
     }
 }
 
+// ─── Tune-AI header / bottom bar ─────────────────────────────────────────────
+
 @Composable
-private fun GoalInput(goal: String, onGoalChange: (String) -> Unit) {
-    val primary = MaterialTheme.colorScheme.primary
-    val gradient = Brush.linearGradient(
-        colors = listOf(
-            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.55f),
-            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.85f),
-        ),
-    )
-    Box(
+private fun TuneAiHeader(
+    title: String,
+    subtitle: String,
+    onClose: () -> Unit,
+    onReset: () -> Unit,
+) {
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(gradient, RoundedCornerShape(16.dp))
-            .border(1.dp, primary.copy(alpha = 0.33f), RoundedCornerShape(16.dp))
-            .padding(horizontal = 12.dp, vertical = 6.dp),
+            .padding(start = 4.dp, end = 4.dp, top = 4.dp, bottom = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        OutlinedTextField(
-            value = goal,
-            onValueChange = onGoalChange,
-            placeholder = {
-                Text(
-                    stringResource(R.string.composer_goal_placeholder),
-                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
-                )
-            },
-            singleLine = true,
-            textStyle = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp, fontWeight = FontWeight.SemiBold),
-            modifier = Modifier.fillMaxWidth(),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-                disabledContainerColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent,
+        IconButton(onClick = onClose, modifier = Modifier.size(40.dp)) {
+            Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_cancel))
+        }
+        Spacer(Modifier.width(4.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                title,
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            Text(
+                subtitle,
+                fontSize = 11.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(top = 1.dp),
+            )
+        }
+        TextButton(
+            onClick = onReset,
+            contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 10.dp, vertical = 6.dp),
+        ) {
+            Text(
+                stringResource(R.string.action_reset),
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+}
+
+@Composable
+private fun TuneAiBottomBar(
+    ctaLabel: String,
+    bulkCount: Int,
+    onCancel: () -> Unit,
+    onGenerate: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(start = 14.dp, end = 14.dp, top = 10.dp, bottom = 18.dp)
+            .navigationBarsPadding(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(
+            modifier = Modifier
+                .height(48.dp)
+                .clip(RoundedCornerShape(24.dp))
+                .border(1.5.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(24.dp))
+                .clickable(onClick = onCancel)
+                .padding(horizontal = 18.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                stringResource(R.string.action_cancel),
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Button(
+            onClick = onGenerate,
+            modifier = Modifier
+                .weight(1f)
+                .height(48.dp),
+            shape = RoundedCornerShape(24.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
             ),
+        ) {
+            com.librelookai.billing.CostBadge(
+                action = com.librelookai.gemini.GeminiActionId.GENERATE_TEXT,
+                bulkCount = bulkCount,
+            )
+            Icon(Icons.Default.AutoAwesome, contentDescription = null, modifier = Modifier.size(16.dp))
+            Spacer(Modifier.width(6.dp))
+            Text(ctaLabel, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+        }
+    }
+}
+
+// ─── Section card scaffold ───────────────────────────────────────────────────
+
+@Composable
+private fun SectionCard(
+    icon: ImageVector,
+    title: String,
+    hint: String? = null,
+    content: @Composable () -> Unit,
+) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        color = MaterialTheme.colorScheme.surface,
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+    ) {
+        Column(
+            modifier = Modifier
+                .animateContentSize()
+                .padding(14.dp),
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(MaterialTheme.colorScheme.primaryContainer),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        icon,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(14.dp),
+                    )
+                }
+                Spacer(Modifier.width(8.dp))
+                Text(
+                    title,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+            }
+            if (hint != null) {
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    hint,
+                    fontSize = 11.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            Spacer(Modifier.height(10.dp))
+            content()
+        }
+    }
+}
+
+// ─── 1) Occasion ─────────────────────────────────────────────────────────────
+
+@Composable
+private fun OccasionCard(goal: String, onGoalChange: (String) -> Unit) {
+    SectionCard(
+        icon = Icons.Default.AutoAwesome,
+        title = stringResource(R.string.composer_section_occasion),
+        hint = stringResource(R.string.composer_occasion_hint),
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = 48.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(12.dp))
+                .padding(horizontal = 12.dp, vertical = 4.dp),
+        ) {
+            OutlinedTextField(
+                value = goal,
+                onValueChange = onGoalChange,
+                placeholder = {
+                    Text(
+                        stringResource(R.string.composer_goal_placeholder),
+                        fontSize = 14.sp,
+                    )
+                },
+                trailingIcon = {
+                    Icon(
+                        Icons.Default.Edit,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(14.dp),
+                    )
+                },
+                minLines = 1,
+                maxLines = 3,
+                textStyle = MaterialTheme.typography.bodyMedium.copy(
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium,
+                ),
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                ),
+            )
+        }
+    }
+}
+
+// ─── 2) Weather ──────────────────────────────────────────────────────────────
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun WeatherCard(
+    weatherMode: ComposerWeatherMode,
+    autoWeather: com.librelookai.weather.WeatherData?,
+    manualTempC: Int?,
+    manualPrecip: String,
+    onModeChange: (ComposerWeatherMode) -> Unit,
+    onTempChange: (Int?) -> Unit,
+    onPrecipChange: (String) -> Unit,
+    onOpenForecastPicker: () -> Unit,
+) {
+    SectionCard(
+        icon = Icons.Default.WbSunny,
+        title = stringResource(R.string.composer_section_weather),
+    ) {
+        val autoLabel = remember(autoWeather) {
+            buildString {
+                append("Auto")
+                autoWeather?.cityName?.takeIf { it.isNotEmpty() }?.let { append(" · ").append(it) }
+                autoWeather?.temperatureCelsius?.let { append(" ").append(it.toInt()).append("°") }
+            }
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
+            SmallPillChip(
+                label = autoLabel,
+                icon = Icons.Default.Refresh,
+                active = weatherMode == ComposerWeatherMode.AUTO,
+                onClick = {
+                    onModeChange(ComposerWeatherMode.AUTO)
+                    onTempChange(null)
+                    onPrecipChange("")
+                },
+            )
+            SmallPillChip(
+                label = stringResource(R.string.composer_weather_manual),
+                icon = Icons.Default.Tune,
+                active = weatherMode == ComposerWeatherMode.MANUAL,
+                onClick = { onModeChange(ComposerWeatherMode.MANUAL) },
+            )
+            Spacer(Modifier.weight(1f))
+            TextButton(
+                onClick = onOpenForecastPicker,
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+            ) {
+                Text(
+                    stringResource(R.string.prediction_setup_weather_pick_day),
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.SemiBold,
+                )
+            }
+        }
+        if (weatherMode == ComposerWeatherMode.MANUAL) {
+            Spacer(Modifier.height(10.dp))
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text(
+                        stringResource(R.string.composer_weather_temp).uppercase(),
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(5.dp), verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                        listOf(-5, 5, 12, 18, 22, 28).forEach { t ->
+                            SmallPillChip(
+                                label = "${t}°",
+                                icon = null,
+                                active = manualTempC == t,
+                                onClick = { onTempChange(if (manualTempC == t) null else t) },
+                            )
+                        }
+                    }
+                }
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text(
+                        stringResource(R.string.composer_weather_precip).uppercase(),
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(5.dp), verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                        val precips = listOf(
+                            "None" to R.string.composer_precip_none,
+                            "Light" to R.string.composer_precip_light,
+                            "Heavy" to R.string.composer_precip_heavy,
+                        )
+                        precips.forEach { (value, labelRes) ->
+                            SmallPillChip(
+                                label = stringResource(labelRes),
+                                icon = null,
+                                active = manualPrecip == value,
+                                onClick = { onPrecipChange(if (manualPrecip == value) "" else value) },
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ─── 3) Style vibe ───────────────────────────────────────────────────────────
+
+private val TUNE_VIBES: List<Pair<String, Int>> = listOf(
+    "Casual" to R.string.composer_vibe_casual,
+    "Sporty" to R.string.composer_vibe_sporty,
+    "Formal" to R.string.composer_vibe_formal,
+    "Business" to R.string.composer_vibe_business,
+    "Streetwear" to R.string.composer_vibe_streetwear,
+    "Minimalist" to R.string.composer_vibe_minimalist,
+    "Classic" to R.string.composer_vibe_classic,
+    "Elegant" to R.string.composer_vibe_elegant,
+)
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun StyleVibeCard(selected: Set<String>, onToggle: (String) -> Unit) {
+    SectionCard(
+        icon = Icons.Default.AutoAwesome,
+        title = stringResource(R.string.composer_section_vibe),
+        hint = stringResource(R.string.composer_vibe_count, selected.size),
+    ) {
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(5.dp),
+            verticalArrangement = Arrangement.spacedBy(5.dp),
+        ) {
+            TUNE_VIBES.forEach { (value, labelRes) ->
+                SmallPillChip(
+                    label = stringResource(labelRes),
+                    icon = null,
+                    active = value in selected,
+                    onClick = { onToggle(value) },
+                )
+            }
+        }
+    }
+}
+
+// ─── 4) AI considers ─────────────────────────────────────────────────────────
+
+@Composable
+private fun ConsidersCard(
+    considerations: AiConsiderations,
+    onToggle: ((AiConsiderations) -> AiConsiderations) -> Unit,
+) {
+    val rows = listOf(
+        ConsiderationRow(R.string.ai_consider_weather, Icons.Default.WbSunny, considerations.weather) { onToggle { it.copy(weather = !it.weather) } },
+        ConsiderationRow(R.string.ai_consider_location, Icons.Default.Place, considerations.location) { onToggle { it.copy(location = !it.location) } },
+        ConsiderationRow(R.string.ai_consider_trends, Icons.Default.TrendingUp, considerations.trends) { onToggle { it.copy(trends = !it.trends) } },
+        ConsiderationRow(R.string.ai_consider_gender, Icons.Default.Person, considerations.gender) { onToggle { it.copy(gender = !it.gender) } },
+        ConsiderationRow(R.string.ai_consider_age, Icons.Default.Cake, considerations.age) { onToggle { it.copy(age = !it.age) } },
+        ConsiderationRow(R.string.ai_consider_preferences, Icons.Default.Favorite, considerations.preferences) { onToggle { it.copy(preferences = !it.preferences) } },
+    )
+    SectionCard(
+        icon = Icons.Default.TrendingUp,
+        title = stringResource(R.string.composer_section_considerations),
+        hint = stringResource(R.string.composer_considerations_hint),
+    ) {
+        Column {
+            rows.forEachIndexed { index, row ->
+                ConsiderationToggleRow(row)
+                if (index != rows.lastIndex) {
+                    HorizontalDivider(
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                        thickness = 1.dp,
+                    )
+                }
+            }
+        }
+    }
+}
+
+private data class ConsiderationRow(
+    val labelRes: Int,
+    val icon: ImageVector,
+    val active: Boolean,
+    val onToggle: () -> Unit,
+)
+
+@Composable
+private fun ConsiderationToggleRow(row: ConsiderationRow) {
+    val iconBg = if (row.active) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant
+    val iconFg = if (row.active) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+    val labelColor = if (row.active) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = row.onToggle)
+            .padding(horizontal = 4.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(
+            modifier = Modifier
+                .size(28.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(iconBg),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(row.icon, contentDescription = null, tint = iconFg, modifier = Modifier.size(14.dp))
+        }
+        Spacer(Modifier.width(10.dp))
+        Text(
+            stringResource(row.labelRes),
+            fontSize = 13.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = labelColor,
+            modifier = Modifier.weight(1f),
+        )
+        MiniSwitch(active = row.active, onToggle = row.onToggle)
+    }
+}
+
+@Composable
+private fun MiniSwitch(active: Boolean, onToggle: () -> Unit) {
+    val trackBg = if (active) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant
+    val thumbColor = if (active) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
+    Box(
+        modifier = Modifier
+            .width(34.dp)
+            .height(20.dp)
+            .clip(RoundedCornerShape(10.dp))
+            .background(trackBg)
+            .border(
+                if (active) 0.dp else 1.dp,
+                if (active) Color.Transparent else MaterialTheme.colorScheme.outline,
+                RoundedCornerShape(10.dp),
+            )
+            .clickable(onClick = onToggle)
+            .padding(2.dp),
+        contentAlignment = if (active) Alignment.CenterEnd else Alignment.CenterStart,
+    ) {
+        Box(
+            modifier = Modifier
+                .size(14.dp)
+                .clip(CircleShape)
+                .background(thumbColor),
+        )
+    }
+}
+
+// ─── Shared small chip ───────────────────────────────────────────────────────
+
+@Composable
+private fun SmallPillChip(
+    label: String,
+    icon: ImageVector?,
+    active: Boolean,
+    onClick: () -> Unit,
+) {
+    val bg = if (active) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
+    val fg = if (active) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+    val borderColor = if (active) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
+    val borderWidth = if (active) 1.5.dp else 1.dp
+    Row(
+        modifier = Modifier
+            .clip(RoundedCornerShape(999.dp))
+            .background(bg)
+            .border(borderWidth, borderColor, RoundedCornerShape(999.dp))
+            .clickable(onClick = onClick)
+            .padding(horizontal = 10.dp, vertical = 5.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        if (icon != null) {
+            Icon(icon, contentDescription = null, tint = fg, modifier = Modifier.size(12.dp))
+        }
+        Text(label, fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = fg)
+    }
+}
+
+// ─── Closet chip row ─────────────────────────────────────────────────────────
+
+@Composable
+private fun ClosetChipRow(
+    closetNames: List<String>,
+    onClick: () -> Unit,
+) {
+    val label = closetNames.takeIf { it.isNotEmpty() }?.joinToString(" · ")
+        ?: stringResource(R.string.composer_closets_all)
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Text(
+            stringResource(R.string.composer_section_sources),
+            fontSize = 11.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.weight(1f),
+        )
+        SmallPillChip(
+            label = label,
+            icon = Icons.Default.Place,
+            active = closetNames.isNotEmpty(),
+            onClick = onClick,
         )
     }
 }
