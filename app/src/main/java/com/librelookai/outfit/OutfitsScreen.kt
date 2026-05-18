@@ -817,7 +817,7 @@ private fun OutfitListScreen(
                     )
                 }
             }
-        } else if (!onTryOnsTab) {
+        } else if (!onTryOnsTab && !isOffline) {
             FloatingActionButton(
                 onClick = {
                     Analytics.action("Outfits", "open_create_composer")
