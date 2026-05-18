@@ -29,9 +29,13 @@ object PricingClient {
     private const val TAG = "PricingClient"
     private const val PREFS = "librelookai_pricing"
     private const val KEY_COSTS_JSON = "public_costs_json"
+    private const val KEY_PER_ITEM_COSTS_JSON = "public_per_item_costs_json"
 
     private val _costsState = MutableStateFlow<Map<String, Int>>(emptyMap())
     val costsState: StateFlow<Map<String, Int>> = _costsState.asStateFlow()
+
+    private val _perItemCostsState = MutableStateFlow<Map<String, Int>>(emptyMap())
+    val perItemCostsState: StateFlow<Map<String, Int>> = _perItemCostsState.asStateFlow()
 
     private var listenerRegistration: com.google.firebase.firestore.ListenerRegistration? = null
 
@@ -39,7 +43,10 @@ object PricingClient {
     fun start(context: Context) {
         // Load any persisted snapshot first so callers get a non-empty map immediately.
         if (_costsState.value.isEmpty()) {
-            _costsState.value = loadPersisted(context)
+            _costsState.value = loadPersisted(context, KEY_COSTS_JSON)
+        }
+        if (_perItemCostsState.value.isEmpty()) {
+            _perItemCostsState.value = loadPersisted(context, KEY_PER_ITEM_COSTS_JSON)
         }
         if (listenerRegistration != null) return
         if (FirebaseApp.getApps(context).isEmpty()) {
@@ -53,16 +60,29 @@ object PricingClient {
                     Log.w(TAG, "publicPricing listener error", err)
                     return@addSnapshotListener
                 }
+                snap ?: return@addSnapshotListener
                 @Suppress("UNCHECKED_CAST")
-                val raw = snap?.get("costs") as? Map<String, Any?> ?: return@addSnapshotListener
-                val parsed = raw.mapNotNull { (k, v) ->
+                val costsRaw = snap.get("costs") as? Map<String, Any?>
+                if (costsRaw != null) {
+                    val parsed = costsRaw.mapNotNull { (k, v) ->
+                        val n = (v as? Number)?.toInt() ?: return@mapNotNull null
+                        k to n
+                    }.toMap()
+                    if (parsed.isNotEmpty()) {
+                        _costsState.value = parsed
+                        persist(context, KEY_COSTS_JSON, parsed)
+                    }
+                }
+                @Suppress("UNCHECKED_CAST")
+                val perItemRaw = snap.get("perItemCosts") as? Map<String, Any?>
+                // Always overwrite (including with empty) so removing a per-item entry
+                // server-side propagates — but persist only non-empty maps.
+                val parsedPerItem = (perItemRaw ?: emptyMap()).mapNotNull { (k, v) ->
                     val n = (v as? Number)?.toInt() ?: return@mapNotNull null
                     k to n
                 }.toMap()
-                if (parsed.isNotEmpty()) {
-                    _costsState.value = parsed
-                    persist(context, parsed)
-                }
+                _perItemCostsState.value = parsedPerItem
+                if (parsedPerItem.isNotEmpty()) persist(context, KEY_PER_ITEM_COSTS_JSON, parsedPerItem)
             }
     }
 
@@ -82,28 +102,45 @@ object PricingClient {
         return action.fallbackCost
     }
 
+    /** Per-extra-item coin cost (0 = action doesn't scale with batch size). */
+    fun perItemCost(action: GeminiActionId): Int {
+        val live = _perItemCostsState.value[action.key]
+        if (live != null) return live
+        return action.fallbackPerItemCost
+    }
+
+    /**
+     * Total coin cost for an action that returns [items] items in one call.
+     * Mirrors the server formula: `base + perItem * (items - 1)`. Single-item
+     * calls match [coinCost] exactly.
+     */
+    fun coinCostForItems(action: GeminiActionId, items: Int): Int {
+        val n = items.coerceAtLeast(1)
+        return coinCost(action) + perItemCost(action) * (n - 1)
+    }
+
     /** Sum of [coinCost] for the given actions. */
     fun bulkCost(actions: List<GeminiActionId>): Int = actions.sumOf { coinCost(it) }
 
-    private fun loadPersisted(context: Context): Map<String, Int> {
+    private fun loadPersisted(context: Context, key: String): Map<String, Int> {
         val json = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-            .getString(KEY_COSTS_JSON, null) ?: return emptyMap()
+            .getString(key, null) ?: return emptyMap()
         return try {
             val obj = JSONObject(json)
             buildMap {
                 obj.keys().forEach { k -> put(k, obj.getInt(k)) }
             }
         } catch (e: Exception) {
-            Log.w(TAG, "Failed to parse persisted costs", e)
+            Log.w(TAG, "Failed to parse persisted costs ($key)", e)
             emptyMap()
         }
     }
 
-    private fun persist(context: Context, costs: Map<String, Int>) {
+    private fun persist(context: Context, key: String, costs: Map<String, Int>) {
         val obj = JSONObject()
         costs.forEach { (k, v) -> obj.put(k, v) }
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-            .edit().putString(KEY_COSTS_JSON, obj.toString()).apply()
+            .edit().putString(key, obj.toString()).apply()
     }
 }
 
@@ -116,7 +153,11 @@ object PricingClient {
  * SharedPreferences has a value — kept in sync with the server defaults in
  * `firebase/functions/src/pricing.ts` (DEFAULT_PRICING × multiplier).
  */
-enum class GeminiActionId(val key: String, val fallbackCost: Int) {
+enum class GeminiActionId(
+    val key: String,
+    val fallbackCost: Int,
+    val fallbackPerItemCost: Int = 0,
+) {
     REMOVE_BACKGROUND("removeBackground", CreditPacks.COST_BG_REMOVAL),
     CLASSIFY_CLOTHING("classifyClothing", CreditPacks.COST_CLASSIFY),
     GENERATE_TEXT("generateText", CreditPacks.COST_TEXT),

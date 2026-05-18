@@ -27,8 +27,15 @@ export type Action =
 
 export interface PricingConfig {
   multiplier: number;
-  /** Raw cost per action, BEFORE multiplier. */
+  /** Raw cost per action, BEFORE multiplier. Charged once per request. */
   costs: Record<string, number>;
+  /**
+   * Optional per-extra-item cost, BEFORE multiplier. Total raw cost for a call
+   * that asks for N items is `costs[action] + perItemCosts[action] * (N - 1)`,
+   * so N=1 always matches the legacy single-call price. Defaults to 0 for any
+   * action not listed (i.e. that action does not scale with batch size).
+   */
+  perItemCosts?: Record<string, number>;
 }
 
 /**
@@ -45,16 +52,34 @@ export const DEFAULT_PRICING: PricingConfig = {
     tryOnOutfit: 4,
     outfitSuggestion: 2,
   },
+  // Per-extra-item costs default to zero so a multi-suggestion generateText
+  // call charges the same as a single one. Tune via Firestore admin if the
+  // output portion becomes material.
+  perItemCosts: {
+    removeBackground: 0,
+    classifyClothing: 0,
+    generateText: 0,
+    searchFashionTrends: 0,
+    tryOnOutfit: 0,
+    outfitSuggestion: 0,
+  },
 };
 
-/** Final per-action coin cost (post-multiplier, rounded up). */
+/** Final per-action coin cost (post-multiplier, rounded up) for a single item. */
 export function publicCostFor(cfg: PricingConfig, action: string): number {
-  const raw = cfg.costs[action];
-  if (raw == null) {
-    // Unknown action — use generateText as the conservative default so we
-    // never undercharge a new action that someone forgot to register.
-    return Math.ceil((cfg.costs.generateText ?? 1) * cfg.multiplier);
-  }
+  return publicCostForItems(cfg, action, 1);
+}
+
+/**
+ * Final coin cost for a call that asks for `items` items. Formula:
+ *   ceil((base + perItem * (items - 1)) * multiplier)
+ * `items` is clamped to >= 1 so the legacy single-call path is unchanged.
+ */
+export function publicCostForItems(cfg: PricingConfig, action: string, items: number): number {
+  const n = Math.max(1, Math.floor(items));
+  const base = cfg.costs[action] ?? cfg.costs.generateText ?? 1;
+  const perItem = cfg.perItemCosts?.[action] ?? 0;
+  const raw = base + perItem * (n - 1);
   return Math.ceil(raw * cfg.multiplier);
 }
 
@@ -62,6 +87,18 @@ export function computePublicCosts(cfg: PricingConfig): Record<string, number> {
   const out: Record<string, number> = {};
   for (const [action, raw] of Object.entries(cfg.costs)) {
     out[action] = Math.ceil(raw * cfg.multiplier);
+  }
+  return out;
+}
+
+/**
+ * Per-extra-item costs (post-multiplier). Only actions whose raw value is > 0
+ * are emitted so the client map stays compact.
+ */
+export function computePublicPerItemCosts(cfg: PricingConfig): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const [action, raw] of Object.entries(cfg.perItemCosts ?? {})) {
+    if (raw > 0) out[action] = Math.ceil(raw * cfg.multiplier);
   }
   return out;
 }
@@ -90,6 +127,10 @@ export async function loadPricing(db: admin.firestore.Firestore): Promise<Pricin
       costs: {
         ...DEFAULT_PRICING.costs,
         ...(data.costs ?? {}),
+      },
+      perItemCosts: {
+        ...(DEFAULT_PRICING.perItemCosts ?? {}),
+        ...(data.perItemCosts ?? {}),
       },
     };
     cached = { cfg, expiresAt: now + CACHE_TTL_MS };

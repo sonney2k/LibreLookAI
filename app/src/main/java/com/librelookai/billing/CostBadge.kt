@@ -50,14 +50,19 @@ fun CostBadge(
     val byok = ApiKeyStore.get(ctx).isNotBlank()
     val managedAvailable = com.librelookai.BuildConfig.PROXY_BASE_URL.isNotBlank()
 
+    // perItem may be 0 (most actions), in which case total == base for any N.
+    val items = bulkCount.coerceAtLeast(1)
+    val perItemCosts by PricingClient.perItemCostsState.collectAsState()
     val text: String? = when {
         byok -> {
-            val tokens = estimateTokens(action) * bulkCount
+            val tokens = estimateTokensFor(action, items)
             stringResource(R.string.cost_badge_tokens_estimate, formatTokens(tokens))
         }
         managedAvailable -> {
             val perCall = costs[action.key] ?: action.fallbackCost
-            stringResource(R.string.cost_badge_coins, perCall * bulkCount)
+            val perItem = perItemCosts[action.key] ?: action.fallbackPerItemCost
+            val total = perCall + perItem * (items - 1)
+            stringResource(R.string.cost_badge_coins, total)
         }
         else -> null
     }
@@ -97,8 +102,7 @@ fun requiresSpendConfirm(
 ): Boolean {
     val byok = ApiKeyStore.get(context).isNotBlank()
     if (byok) return false
-    val perCall = PricingClient.costsState.value[action.key] ?: action.fallbackCost
-    val total = perCall * bulkCount
+    val total = PricingClient.coinCostForItems(action, bulkCount)
     return bulkCount >= bulkThreshold || total >= coinThreshold
 }
 
@@ -115,8 +119,11 @@ fun ConfirmSpendDialog(
     onDismiss: () -> Unit,
 ) {
     val costs by PricingClient.costsState.collectAsState()
+    val perItemCosts by PricingClient.perItemCostsState.collectAsState()
+    val items = bulkCount.coerceAtLeast(1)
     val perCall = costs[action.key] ?: action.fallbackCost
-    val total = perCall * bulkCount
+    val perItem = perItemCosts[action.key] ?: action.fallbackPerItemCost
+    val total = perCall + perItem * (items - 1)
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -187,15 +194,24 @@ fun InsufficientCreditsDialog(
 
 /**
  * Coarse token-count estimate per action, used only for BYOK badge labels.
- * Picked to be conservative (rounded up) so users aren't surprised.
+ * Picked to be conservative (rounded up) so users aren't surprised. Returns
+ * `(fixedInput, outputPerItem)` — input is paid once per call, output scales
+ * with the number of items requested in the response.
  */
-private fun estimateTokens(action: GeminiActionId): Int = when (action) {
-    GeminiActionId.REMOVE_BACKGROUND -> 4_000
-    GeminiActionId.CLASSIFY_CLOTHING -> 2_000
-    GeminiActionId.GENERATE_TEXT -> 1_000
-    GeminiActionId.SEARCH_TRENDS -> 2_500
-    GeminiActionId.TRY_ON_OUTFIT -> 6_000
-    GeminiActionId.OUTFIT_SUGGESTION -> 2_500
+private fun estimateTokens(action: GeminiActionId): Pair<Int, Int> = when (action) {
+    GeminiActionId.REMOVE_BACKGROUND -> 4_000 to 0
+    GeminiActionId.CLASSIFY_CLOTHING -> 2_000 to 0
+    // GENERATE_TEXT carries a large wardrobe-JSON prompt up front; each extra
+    // suggestion adds only a handful of slot ids + a short caption.
+    GeminiActionId.GENERATE_TEXT -> 800 to 200
+    GeminiActionId.SEARCH_TRENDS -> 2_500 to 0
+    GeminiActionId.TRY_ON_OUTFIT -> 6_000 to 0
+    GeminiActionId.OUTFIT_SUGGESTION -> 2_500 to 0
+}
+
+private fun estimateTokensFor(action: GeminiActionId, items: Int): Int {
+    val (input, perItem) = estimateTokens(action)
+    return input + perItem * items.coerceAtLeast(1)
 }
 
 private fun formatTokens(n: Int): String =

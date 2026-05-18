@@ -4,7 +4,7 @@ import { defineSecret } from "firebase-functions/params";
 import { logger } from "firebase-functions/v2";
 import fetch, { RequestInit } from "node-fetch";
 
-import { loadPricing, publicCostFor } from "./pricing";
+import { loadPricing, publicCostForItems } from "./pricing";
 import { appendLedger, appendLedgerInTx } from "./ledger";
 import { acknowledgePlayPurchase, validatePlayPurchase } from "./play";
 
@@ -79,8 +79,13 @@ export const geminiProxy = onRequest(
       return;
     }
 
+    // Bulk-aware pricing: callers that ask one Gemini call to return multiple
+    // items pass the count via X-Bulk-Items. Total cost = base + perItem*(N-1).
+    // Cap at 50 so a buggy or malicious client can't run up huge charges.
+    const bulkItemsRaw = parseInt((req.headers["x-bulk-items"] as string) ?? "1", 10);
+    const bulkItems = Number.isFinite(bulkItemsRaw) ? Math.min(50, Math.max(1, bulkItemsRaw)) : 1;
     const pricing = await loadPricing(db);
-    const cost = publicCostFor(pricing, action);
+    const cost = publicCostForItems(pricing, action, bulkItems);
     const userRef = db.collection("users").doc(uid);
 
     // Deduct credits atomically — fail fast if insufficient. We also write
@@ -106,6 +111,7 @@ export const geminiProxy = onRequest(
           balanceAfter: balanceAfterCharge,
           action,
           model,
+          bulkItems: bulkItems > 1 ? bulkItems : undefined,
         });
       });
     } catch (e: any) {

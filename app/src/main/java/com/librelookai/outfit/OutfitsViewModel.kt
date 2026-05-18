@@ -561,7 +561,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             )
             Log.d("StylesVM", "Composer prompt length: ${prompt.length} chars")
             val raw = try {
-                gemini.generateText(prompt, UsageCategory.OUTFIT_COMPOSE)
+                gemini.generateText(prompt, UsageCategory.OUTFIT_COMPOSE, bulkItems = suggestionCount)
             } catch (e: com.librelookai.billing.InsufficientCreditsException) {
                 _state.update { it.copy(isComposerEnhancing = false) }
                 return@launch
@@ -1025,7 +1025,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             }
 
             val raw = try {
-                gemini.generateText(prompt, UsageCategory.OUTFIT_PREDICT)
+                gemini.generateText(prompt, UsageCategory.OUTFIT_PREDICT, bulkItems = suggestionCount)
             } catch (e: com.librelookai.billing.InsufficientCreditsException) {
                 _state.update { it.copy(isPredicting = false) }
                 return@launch

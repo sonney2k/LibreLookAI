@@ -1,7 +1,13 @@
 import * as admin from "firebase-admin";
 import { onDocumentWritten } from "firebase-functions/v2/firestore";
 import { logger } from "firebase-functions/v2";
-import { computePublicCosts, DEFAULT_PRICING, invalidatePricingCache, PricingConfig } from "./pricing";
+import {
+  computePublicCosts,
+  computePublicPerItemCosts,
+  DEFAULT_PRICING,
+  invalidatePricingCache,
+  PricingConfig,
+} from "./pricing";
 
 /**
  * Triggered whenever an admin edits config/pricing in the Firebase console.
@@ -19,11 +25,14 @@ export const recomputePublicPricing = onDocumentWritten(
     const cfg: PricingConfig = {
       multiplier: typeof after?.multiplier === "number" ? after!.multiplier : DEFAULT_PRICING.multiplier,
       costs: { ...DEFAULT_PRICING.costs, ...(after?.costs ?? {}) },
+      perItemCosts: { ...(DEFAULT_PRICING.perItemCosts ?? {}), ...(after?.perItemCosts ?? {}) },
     };
 
     const publicCosts = computePublicCosts(cfg);
+    const publicPerItemCosts = computePublicPerItemCosts(cfg);
     await db.collection("config").doc("publicPricing").set({
       costs: publicCosts,
+      perItemCosts: publicPerItemCosts,
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 

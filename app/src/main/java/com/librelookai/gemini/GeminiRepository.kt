@@ -112,6 +112,7 @@ class GeminiRepository(private val app: Application) {
         model: String,
         body: String,
         action: GeminiAction,
+        bulkItems: Int = 1,
     ): Request {
         val localKey = resolveApiKey()
         if (localKey.isNotBlank()) {
@@ -123,13 +124,14 @@ class GeminiRepository(private val app: Application) {
         val proxyBase = BuildConfig.PROXY_BASE_URL
         if (proxyBase.isBlank()) error("No API key or proxy URL configured")
         val token = getFirebaseIdToken() ?: error("Firebase not signed in — cannot use managed mode")
-        return Request.Builder()
+        val builder = Request.Builder()
             .url("$proxyBase/geminiProxy")
             .post(body.toRequestBody("application/json".toMediaType()))
             .addHeader("Authorization", "Bearer $token")
             .addHeader("X-AI-Action", action.header)
             .addHeader("X-Gemini-Model", model)
-            .build()
+        if (bulkItems > 1) builder.addHeader("X-Bulk-Items", bulkItems.toString())
+        return builder.build()
     }
 
     /** Returns false when neither BYOK key nor proxy is configured. */
@@ -482,6 +484,7 @@ class GeminiRepository(private val app: Application) {
     suspend fun generateText(
         prompt: String,
         category: UsageCategory = UsageCategory.OTHER,
+        bulkItems: Int = 1,
     ): String? = withContext(Dispatchers.IO) {
         if (!isConfigured()) return@withContext null
 
@@ -497,7 +500,7 @@ class GeminiRepository(private val app: Application) {
         )
         return@withContext try {
             val response = http.newCall(
-                buildRequest(PREDICT_URL, CLASSIFY_MODEL, body, GeminiAction.GENERATE_TEXT),
+                buildRequest(PREDICT_URL, CLASSIFY_MODEL, body, GeminiAction.GENERATE_TEXT, bulkItems = bulkItems),
             ).await()
             val responseBody = response.body!!.string()
             Log.d(TAG, "generateText HTTP ${response.code}: ${responseBody.take(500)}")

@@ -10,6 +10,8 @@ export interface LedgerEntry {
   model?: string;
   inputTokens?: number;
   outputTokens?: number;
+  /** Number of items requested in one call (e.g. multi-suggestion generateText). */
+  bulkItems?: number;
   productId?: string;       // for purchase
   purchaseToken?: string;
   reason?: string;          // optional human-readable note (e.g. "gemini_failed")

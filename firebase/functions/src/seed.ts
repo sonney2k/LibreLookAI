@@ -26,6 +26,7 @@ async function main() {
   await db.collection("config").doc("pricing").set({
     multiplier: DEFAULT_PRICING.multiplier,
     costs: DEFAULT_PRICING.costs,
+    perItemCosts: DEFAULT_PRICING.perItemCosts ?? {},
     updatedAt: admin.firestore.FieldValue.serverTimestamp(),
   });
   // The onDocumentWritten trigger will fire and populate publicPricing.
