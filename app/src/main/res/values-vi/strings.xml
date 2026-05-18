@@ -193,6 +193,11 @@
     <string name="wardrobe_tag_rotate">Xoay</string>
     <string name="wardrobe_tag_edit">Sửa thẻ</string>
     <string name="wardrobe_tag_sheet_title">Sửa thẻ</string>
+    <string name="wardrobe_tag_saved">Đã lưu</string>
+    <string name="wardrobe_tag_saving">Đang lưu…</string>
+    <string name="wardrobe_tag_unsaved">Chưa lưu</string>
+    <string name="wardrobe_tag_redetect_ai">Phát hiện lại thẻ bằng AI</string>
+    <string name="wardrobe_tag_not_set">Chưa đặt</string>
     <string name="wardrobe_add_gallery">Thư viện</string>
     <string name="wardrobe_add_camera">Camera</string>
     <string name="wardrobe_add_to_closet">Thêm vào %1$s</string>

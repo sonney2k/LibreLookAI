@@ -280,6 +280,11 @@
     <string name="wardrobe_tag_rotate">تدوير</string>
     <string name="wardrobe_tag_edit">تعديل الوسوم</string>
     <string name="wardrobe_tag_sheet_title">تعديل الوسوم</string>
+    <string name="wardrobe_tag_saved">تم الحفظ</string>
+    <string name="wardrobe_tag_saving">جاري الحفظ…</string>
+    <string name="wardrobe_tag_unsaved">غير محفوظ</string>
+    <string name="wardrobe_tag_redetect_ai">إعادة اكتشاف الوسوم بالذكاء</string>
+    <string name="wardrobe_tag_not_set">غير محدد</string>
     <string name="wardrobe_add_gallery">المعرض</string>
     <string name="wardrobe_add_camera">الكاميرا</string>
     <string name="wardrobe_add_to_closet">إضافة إلى %1$s</string>

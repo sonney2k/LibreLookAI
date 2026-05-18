@@ -193,6 +193,11 @@
     <string name="wardrobe_tag_rotate">หมุน</string>
     <string name="wardrobe_tag_edit">แก้ไขแท็ก</string>
     <string name="wardrobe_tag_sheet_title">แก้ไขแท็ก</string>
+    <string name="wardrobe_tag_saved">บันทึกแล้ว</string>
+    <string name="wardrobe_tag_saving">กำลังบันทึก…</string>
+    <string name="wardrobe_tag_unsaved">ยังไม่ได้บันทึก</string>
+    <string name="wardrobe_tag_redetect_ai">ตรวจหาแท็กใหม่ด้วย AI</string>
+    <string name="wardrobe_tag_not_set">ไม่ได้กำหนด</string>
     <string name="wardrobe_add_gallery">แกลเลอรี</string>
     <string name="wardrobe_add_camera">กล้อง</string>
     <string name="wardrobe_add_to_closet">เพิ่มใน %1$s</string>

@@ -280,6 +280,11 @@
     <string name="wardrobe_tag_rotate">Rotér</string>
     <string name="wardrobe_tag_edit">Redigér tags</string>
     <string name="wardrobe_tag_sheet_title">Redigér tags</string>
+    <string name="wardrobe_tag_saved">Gemt</string>
+    <string name="wardrobe_tag_saving">Gemmer…</string>
+    <string name="wardrobe_tag_unsaved">Ikke gemt</string>
+    <string name="wardrobe_tag_redetect_ai">Find tags igen med AI</string>
+    <string name="wardrobe_tag_not_set">Ikke angivet</string>
     <string name="wardrobe_add_gallery">Galleri</string>
     <string name="wardrobe_add_camera">Kamera</string>
     <string name="wardrobe_add_to_closet">Tilføj til %1$s</string>

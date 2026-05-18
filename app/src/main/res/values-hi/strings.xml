@@ -193,6 +193,11 @@
     <string name="wardrobe_tag_rotate">घुमाएं</string>
     <string name="wardrobe_tag_edit">टैग संपादित करें</string>
     <string name="wardrobe_tag_sheet_title">टैग संपादित करें</string>
+    <string name="wardrobe_tag_saved">सहेजा गया</string>
+    <string name="wardrobe_tag_saving">सहेजा जा रहा है…</string>
+    <string name="wardrobe_tag_unsaved">सहेजा नहीं गया</string>
+    <string name="wardrobe_tag_redetect_ai">AI से टैग फिर से पहचानें</string>
+    <string name="wardrobe_tag_not_set">निर्धारित नहीं</string>
     <string name="wardrobe_add_gallery">गैलरी</string>
     <string name="wardrobe_add_camera">कैमरा</string>
     <string name="wardrobe_add_to_closet">%1$s में जोड़ें</string>

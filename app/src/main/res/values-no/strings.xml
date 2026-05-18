@@ -280,6 +280,11 @@
     <string name="wardrobe_tag_rotate">Roter</string>
     <string name="wardrobe_tag_edit">Rediger tagger</string>
     <string name="wardrobe_tag_sheet_title">Rediger tagger</string>
+    <string name="wardrobe_tag_saved">Lagret</string>
+    <string name="wardrobe_tag_saving">Lagrer…</string>
+    <string name="wardrobe_tag_unsaved">Ikke lagret</string>
+    <string name="wardrobe_tag_redetect_ai">Oppdag tagger på nytt med AI</string>
+    <string name="wardrobe_tag_not_set">Ikke angitt</string>
     <string name="wardrobe_add_gallery">Galleri</string>
     <string name="wardrobe_add_camera">Kamera</string>
     <string name="wardrobe_add_to_closet">Legg til i %1$s</string>

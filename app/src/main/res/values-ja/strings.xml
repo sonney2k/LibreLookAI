@@ -280,6 +280,11 @@
     <string name="wardrobe_tag_rotate">回転</string>
     <string name="wardrobe_tag_edit">タグを編集</string>
     <string name="wardrobe_tag_sheet_title">タグを編集</string>
+    <string name="wardrobe_tag_saved">保存しました</string>
+    <string name="wardrobe_tag_saving">保存中…</string>
+    <string name="wardrobe_tag_unsaved">未保存</string>
+    <string name="wardrobe_tag_redetect_ai">AIでタグを再検出</string>
+    <string name="wardrobe_tag_not_set">未設定</string>
     <string name="wardrobe_add_gallery">ギャラリー</string>
     <string name="wardrobe_add_camera">カメラ</string>
     <string name="wardrobe_add_to_closet">%1$s に追加</string>

@@ -280,6 +280,11 @@
     <string name="wardrobe_tag_rotate">Iikot</string>
     <string name="wardrobe_tag_edit">I-edit ang mga tag</string>
     <string name="wardrobe_tag_sheet_title">I-edit ang Mga Tag</string>
+    <string name="wardrobe_tag_saved">Naka-save</string>
+    <string name="wardrobe_tag_saving">Sini-save…</string>
+    <string name="wardrobe_tag_unsaved">Hindi naka-save</string>
+    <string name="wardrobe_tag_redetect_ai">I-detect muli ang tags gamit ang AI</string>
+    <string name="wardrobe_tag_not_set">Walang itinakda</string>
     <string name="wardrobe_add_gallery">Gallery</string>
     <string name="wardrobe_add_camera">Camera</string>
     <string name="wardrobe_add_to_closet">Idagdag sa %1$s</string>

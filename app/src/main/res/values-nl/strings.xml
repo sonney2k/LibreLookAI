@@ -280,6 +280,11 @@
     <string name="wardrobe_tag_rotate">Draaien</string>
     <string name="wardrobe_tag_edit">Tags bewerken</string>
     <string name="wardrobe_tag_sheet_title">Tags bewerken</string>
+    <string name="wardrobe_tag_saved">Opgeslagen</string>
+    <string name="wardrobe_tag_saving">Opslaan…</string>
+    <string name="wardrobe_tag_unsaved">Niet opgeslagen</string>
+    <string name="wardrobe_tag_redetect_ai">Tags opnieuw detecteren met AI</string>
+    <string name="wardrobe_tag_not_set">Niet ingesteld</string>
     <string name="wardrobe_add_gallery">Galerij</string>
     <string name="wardrobe_add_camera">Camera</string>
     <string name="wardrobe_add_to_closet">Toevoegen aan %1$s</string>

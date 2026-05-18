@@ -280,6 +280,11 @@
     <string name="wardrobe_tag_rotate">Otočit</string>
     <string name="wardrobe_tag_edit">Upravit štítky</string>
     <string name="wardrobe_tag_sheet_title">Upravit štítky</string>
+    <string name="wardrobe_tag_saved">Uloženo</string>
+    <string name="wardrobe_tag_saving">Ukládání…</string>
+    <string name="wardrobe_tag_unsaved">Neuloženo</string>
+    <string name="wardrobe_tag_redetect_ai">Znovu detekovat štítky pomocí AI</string>
+    <string name="wardrobe_tag_not_set">Nenastaveno</string>
     <string name="wardrobe_add_gallery">Galerie</string>
     <string name="wardrobe_add_camera">Fotoaparát</string>
     <string name="wardrobe_add_to_closet">Přidat do %1$s</string>

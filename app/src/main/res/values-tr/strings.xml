@@ -280,6 +280,11 @@
     <string name="wardrobe_tag_rotate">Döndür</string>
     <string name="wardrobe_tag_edit">Etiketleri düzenle</string>
     <string name="wardrobe_tag_sheet_title">Etiketleri Düzenle</string>
+    <string name="wardrobe_tag_saved">Kaydedildi</string>
+    <string name="wardrobe_tag_saving">Kaydediliyor…</string>
+    <string name="wardrobe_tag_unsaved">Kaydedilmedi</string>
+    <string name="wardrobe_tag_redetect_ai">Yapay zekâ ile etiketleri yeniden algıla</string>
+    <string name="wardrobe_tag_not_set">Ayarlanmadı</string>
     <string name="wardrobe_add_gallery">Galeri</string>
     <string name="wardrobe_add_camera">Kamera</string>
     <string name="wardrobe_add_to_closet">%1$s\'ye ekle</string>

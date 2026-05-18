@@ -193,6 +193,11 @@
     <string name="wardrobe_tag_rotate">Forgatás</string>
     <string name="wardrobe_tag_edit">Címkék szerkesztése</string>
     <string name="wardrobe_tag_sheet_title">Címkék szerkesztése</string>
+    <string name="wardrobe_tag_saved">Mentve</string>
+    <string name="wardrobe_tag_saving">Mentés…</string>
+    <string name="wardrobe_tag_unsaved">Mentetlen</string>
+    <string name="wardrobe_tag_redetect_ai">Címkék újrafelismerése MI-vel</string>
+    <string name="wardrobe_tag_not_set">Nincs beállítva</string>
     <string name="wardrobe_add_gallery">Galéria</string>
     <string name="wardrobe_add_camera">Kamera</string>
     <string name="wardrobe_add_to_closet">Hozzáadás ide: %1$s</string>

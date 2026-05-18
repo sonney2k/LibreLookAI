@@ -280,6 +280,11 @@
     <string name="wardrobe_tag_rotate">Περιστροφή</string>
     <string name="wardrobe_tag_edit">Επεξεργασία ετικετών</string>
     <string name="wardrobe_tag_sheet_title">Επεξεργασία Ετικετών</string>
+    <string name="wardrobe_tag_saved">Αποθηκεύτηκε</string>
+    <string name="wardrobe_tag_saving">Αποθήκευση…</string>
+    <string name="wardrobe_tag_unsaved">Μη αποθηκευμένο</string>
+    <string name="wardrobe_tag_redetect_ai">Εντοπισμός ετικετών με AI</string>
+    <string name="wardrobe_tag_not_set">Δεν ορίστηκε</string>
     <string name="wardrobe_add_gallery">Συλλογή</string>
     <string name="wardrobe_add_camera">Κάμερα</string>
     <string name="wardrobe_add_to_closet">Προσθήκη στη %1$s</string>

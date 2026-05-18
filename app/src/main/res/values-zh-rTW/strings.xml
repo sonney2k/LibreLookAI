@@ -193,6 +193,11 @@
     <string name="wardrobe_tag_rotate">旋轉</string>
     <string name="wardrobe_tag_edit">編輯標籤</string>
     <string name="wardrobe_tag_sheet_title">編輯標籤</string>
+    <string name="wardrobe_tag_saved">已儲存</string>
+    <string name="wardrobe_tag_saving">儲存中…</string>
+    <string name="wardrobe_tag_unsaved">未儲存</string>
+    <string name="wardrobe_tag_redetect_ai">使用 AI 重新偵測標籤</string>
+    <string name="wardrobe_tag_not_set">未設定</string>
     <string name="wardrobe_add_gallery">相簿</string>
     <string name="wardrobe_add_camera">相機</string>
     <string name="wardrobe_add_to_closet">添加到 %1$s</string>

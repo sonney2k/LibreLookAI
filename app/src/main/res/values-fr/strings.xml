@@ -280,6 +280,11 @@
     <string name="wardrobe_tag_rotate">Rotation</string>
     <string name="wardrobe_tag_edit">Modifier les étiquettes</string>
     <string name="wardrobe_tag_sheet_title">Modifier les étiquettes</string>
+    <string name="wardrobe_tag_saved">Enregistré</string>
+    <string name="wardrobe_tag_saving">Enregistrement…</string>
+    <string name="wardrobe_tag_unsaved">Non enregistré</string>
+    <string name="wardrobe_tag_redetect_ai">Redétecter les tags avec l’IA</string>
+    <string name="wardrobe_tag_not_set">Non défini</string>
     <string name="wardrobe_add_gallery">Galerie</string>
     <string name="wardrobe_add_camera">Appareil photo</string>
     <string name="wardrobe_add_to_closet">Ajouter à %1$s</string>

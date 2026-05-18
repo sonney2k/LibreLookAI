@@ -193,6 +193,11 @@
     <string name="wardrobe_tag_rotate">Putar</string>
     <string name="wardrobe_tag_edit">Edit tag</string>
     <string name="wardrobe_tag_sheet_title">Edit Tag</string>
+    <string name="wardrobe_tag_saved">Disimpan</string>
+    <string name="wardrobe_tag_saving">Menyimpan…</string>
+    <string name="wardrobe_tag_unsaved">Belum disimpan</string>
+    <string name="wardrobe_tag_redetect_ai">Kesan semula tag dengan AI</string>
+    <string name="wardrobe_tag_not_set">Tidak ditetapkan</string>
     <string name="wardrobe_add_gallery">Galeri</string>
     <string name="wardrobe_add_camera">Kamera</string>
     <string name="wardrobe_add_to_closet">Tambah ke %1$s</string>

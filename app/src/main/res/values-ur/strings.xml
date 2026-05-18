@@ -193,6 +193,11 @@
     <string name="wardrobe_tag_rotate">گھمائیں</string>
     <string name="wardrobe_tag_edit">ٹیگز میں ترمیم کریں</string>
     <string name="wardrobe_tag_sheet_title">ٹیگز کی ترمیم</string>
+    <string name="wardrobe_tag_saved">محفوظ ہو گیا</string>
+    <string name="wardrobe_tag_saving">محفوظ کیا جا رہا ہے…</string>
+    <string name="wardrobe_tag_unsaved">غیر محفوظ</string>
+    <string name="wardrobe_tag_redetect_ai">AI سے ٹیگز دوبارہ پہچانیں</string>
+    <string name="wardrobe_tag_not_set">مقرر نہیں</string>
     <string name="wardrobe_add_gallery">گیلری</string>
     <string name="wardrobe_add_camera">کیمرہ</string>
     <string name="wardrobe_add_to_closet">%1$s میں شامل کریں</string>

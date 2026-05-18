@@ -8,6 +8,7 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -21,6 +22,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.font.FontWeight
@@ -61,6 +63,11 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ImageSearch
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Photo
 import androidx.compose.material.icons.filled.FilterAlt
@@ -1674,13 +1681,12 @@ internal fun FullScreenViewer(
 
     if (showTagEdit) {
         val currentImage = images[pagerState.currentPage]
-        TagEditSheet(
+        TagEditScreen(
             image = currentImage,
             allTagCategories = allTagCategories,
-            onSave = { tags ->
-                onUpdateTags(currentImage.driveId, tags)
-                showTagEdit = false
-            },
+            onUpdate = { tags -> onUpdateTags(currentImage.driveId, tags) },
+            onClassify = { onTagImage(currentImage.driveId) },
+            isProcessing = currentImage.driveId == processingImageId,
             onDismiss = { showTagEdit = false },
         )
     }
@@ -1917,235 +1923,748 @@ private val PRESET_FIT         = listOf("slim", "regular", "relaxed", "oversized
 private val PRESET_MATERIAL    = listOf("cotton", "denim", "wool", "leather", "polyester", "linen", "silk", "knit")
 private val PRESET_PATTERN     = listOf("solid", "stripes", "plaid", "floral", "geometric", "animal-print", "graphic", "camo", "abstract")
 
+// Color swatch map: tag value → swatch color. Falls back to chipBg for unknown values.
+// "multicolor" renders a rainbow gradient (handled at draw time).
+private val COLOR_HEX: Map<String, Color> = mapOf(
+    "black" to 0xFF1A1A1A, "white" to 0xFFF5F5F0, "gray" to 0xFF9A9A95, "charcoal" to 0xFF3A3A3A,
+    "beige" to 0xFFE8DCCB, "cream" to 0xFFF4E8D0, "brown" to 0xFF7A5030, "tan" to 0xFFC8A878,
+    "navy" to 0xFF1E2E4A, "blue" to 0xFF3050A0, "sky" to 0xFF9CBDD8, "denim blue" to 0xFF4860A0,
+    "green" to 0xFF4A7040, "olive" to 0xFF5A6030, "forest" to 0xFF2C4E2A, "sage" to 0xFF9AB58F,
+    "red" to 0xFFB83030, "burgundy" to 0xFF5E1820, "pink" to 0xFFD48090, "coral" to 0xFFE78060,
+    "orange" to 0xFFD07030, "yellow" to 0xFFC8B030, "mustard" to 0xFFA08818,
+    "purple" to 0xFF7060A0, "lavender" to 0xFFB5A0CC,
+).mapValues { Color(it.value) }
+
+private enum class SaveState { Saved, Saving, Edited }
+
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-private fun TagEditSheet(
+private fun TagEditScreen(
     image: DriveImage,
     allTagCategories: List<TagCategory>,
-    onSave: (ClothingTags) -> Unit,
+    onUpdate: (ClothingTags) -> Unit,
+    onClassify: () -> Unit,
+    isProcessing: Boolean,
     onDismiss: () -> Unit,
 ) {
-    var label       by remember { mutableStateOf(image.tags?.label       ?: "") }
-    var type        by remember { mutableStateOf(image.tags?.type        ?: "") }
-    var category    by remember { mutableStateOf(image.tags?.category    ?: "") }
-    var uses        by remember { mutableStateOf(image.tags?.uses        ?: emptyList()) }
-    var colors      by remember { mutableStateOf(image.tags?.colors      ?: emptyList()) }
-    var seasonality by remember { mutableStateOf(image.tags?.seasonality ?: emptyList()) }
-    var aesthetic   by remember { mutableStateOf(image.tags?.aesthetic   ?: emptyList()) }
-    var fit         by remember { mutableStateOf(image.tags?.fit         ?: emptyList()) }
-    var material    by remember { mutableStateOf(image.tags?.material    ?: emptyList()) }
-    var pattern     by remember { mutableStateOf(image.tags?.pattern     ?: emptyList()) }
-
-    // Merge presets with anything already in the wardrobe for richer suggestions
-    fun suggestions(label: String, presets: List<String>): List<String> {
-        val fromWardrobe = allTagCategories.find { it.label == label }?.tags.orEmpty()
-        return (presets + fromWardrobe).distinct().sorted()
-    }
-
-    ModalBottomSheet(
+    val parentContext = LocalContext.current
+    val parentConfiguration = LocalConfiguration.current
+    Dialog(
         onDismissRequest = onDismiss,
-        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false,
+            decorFitsSystemWindows = false,
+        ),
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .navigationBarsPadding()
-                .imePadding()
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp)
-                .padding(bottom = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+        val dialogView = androidx.compose.ui.platform.LocalView.current
+        androidx.compose.runtime.SideEffect {
+            val window = (dialogView.parent as? DialogWindowProvider)?.window ?: return@SideEffect
+            window.setLayout(
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+            )
+            androidx.core.view.WindowCompat.setDecorFitsSystemWindows(window, false)
+        }
+        CompositionLocalProvider(
+            LocalContext provides parentContext,
+            LocalConfiguration provides parentConfiguration,
         ) {
-            // Header
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(stringResource(R.string.wardrobe_tag_sheet_title), style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
-                TextButton(onClick = {
-                    onSave(ClothingTags(
-                        label       = label.trim(),
-                        type        = type.trim(),
-                        category    = category.trim(),
-                        uses        = uses.map { it.trim() }.filter { it.isNotEmpty() },
-                        colors      = colors.map { it.trim() }.filter { it.isNotEmpty() },
-                        seasonality = seasonality.map { it.trim() }.filter { it.isNotEmpty() },
-                        aesthetic   = aesthetic.map { it.trim() }.filter { it.isNotEmpty() },
-                        fit         = fit.map { it.trim() }.filter { it.isNotEmpty() },
-                        material    = material.map { it.trim() }.filter { it.isNotEmpty() },
-                        pattern     = pattern.map { it.trim() }.filter { it.isNotEmpty() },
-                    ))
-                }) { Text(stringResource(R.string.action_save)) }
-            }
-
-            HorizontalDivider()
-
-            OutlinedTextField(
-                value = label,
-                onValueChange = { label = it },
-                label = { Text(stringResource(R.string.tag_label)) },
-                placeholder = { Text(stringResource(R.string.tag_label_placeholder)) },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth(),
-            )
-
-            OutlinedTextField(
-                value = type,
-                onValueChange = { type = it },
-                label = { Text(stringResource(R.string.tag_type)) },
-                placeholder = { Text(stringResource(R.string.tag_type_placeholder)) },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth(),
-            )
-
-            OutlinedTextField(
-                value = category,
-                onValueChange = { category = it },
-                label = { Text(stringResource(R.string.tag_category)) },
-                placeholder = { Text(stringResource(R.string.tag_category_placeholder)) },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth(),
-            )
-
-            ChipListEditor(
-                label = stringResource(R.string.tag_uses),
-                values = uses,
-                suggestions = suggestions("Uses", PRESET_USES).filter { it !in uses },
-                onAdd    = { uses = uses + it },
-                onRemove = { uses = uses - it },
-            )
-
-            ChipListEditor(
-                label = stringResource(R.string.tag_colors),
-                values = colors,
-                suggestions = suggestions("Colors", emptyList()).filter { it !in colors },
-                onAdd    = { colors = colors + it },
-                onRemove = { colors = colors - it },
-            )
-
-            ChipListEditor(
-                label = stringResource(R.string.tag_seasonality),
-                values = seasonality,
-                suggestions = suggestions("Seasonality", PRESET_SEASONALITY).filter { it !in seasonality },
-                onAdd    = { seasonality = seasonality + it },
-                onRemove = { seasonality = seasonality - it },
-            )
-
-            ChipListEditor(
-                label = stringResource(R.string.tag_aesthetic),
-                values = aesthetic,
-                suggestions = suggestions("Aesthetic", PRESET_AESTHETIC).filter { it !in aesthetic },
-                onAdd    = { aesthetic = aesthetic + it },
-                onRemove = { aesthetic = aesthetic - it },
-            )
-
-            ChipListEditor(
-                label = stringResource(R.string.tag_fit),
-                values = fit,
-                suggestions = suggestions("Fit", PRESET_FIT).filter { it !in fit },
-                onAdd    = { fit = fit + it },
-                onRemove = { fit = fit - it },
-            )
-
-            ChipListEditor(
-                label = stringResource(R.string.tag_material),
-                values = material,
-                suggestions = suggestions("Material", PRESET_MATERIAL).filter { it !in material },
-                onAdd    = { material = material + it },
-                onRemove = { material = material - it },
-            )
-
-            ChipListEditor(
-                label = stringResource(R.string.tag_pattern),
-                values = pattern,
-                suggestions = suggestions("Pattern", PRESET_PATTERN).filter { it !in pattern },
-                onAdd    = { pattern = pattern + it },
-                onRemove = { pattern = pattern - it },
+            TagEditScreenContent(
+                image = image,
+                allTagCategories = allTagCategories,
+                onUpdate = onUpdate,
+                onClassify = onClassify,
+                isProcessing = isProcessing,
+                onDismiss = onDismiss,
             )
         }
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun ChipListEditor(
-    label: String,
-    values: List<String>,
-    suggestions: List<String>,
-    onAdd: (String) -> Unit,
-    onRemove: (String) -> Unit,
+private fun TagEditScreenContent(
+    image: DriveImage,
+    allTagCategories: List<TagCategory>,
+    onUpdate: (ClothingTags) -> Unit,
+    onClassify: () -> Unit,
+    isProcessing: Boolean,
+    onDismiss: () -> Unit,
 ) {
-    var inputText by remember { mutableStateOf("") }
-    var showSuggestions by remember { mutableStateOf(false) }
+    BackHandler(onBack = onDismiss)
+    val isOffline = LocalIsOffline.current
+    val barInsets = LocalSystemBarsPadding.current
 
-    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text(label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    var tags by remember(image.driveId) {
+        mutableStateOf(image.tags ?: ClothingTags())
+    }
+    var saveState by remember { mutableStateOf(SaveState.Saved) }
+    var openRow by remember { mutableStateOf<String?>("colors") }
+    var pendingChange by remember { mutableStateOf(0) }
+    // 0 = immediate (chip toggle), 1 = debounced text (free-text edit)
+    var pendingMode by remember { mutableStateOf(0) }
 
-        // Current values as removable chips
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            values.forEach { value ->
-                InputChip(
-                    selected = false,
-                    onClick = {},
-                    label = { Text(value.localizedTagValue()) },
-                    trailingIcon = {
-                        Icon(
-                            Icons.Default.Close,
-                            contentDescription = "Remove $value",
-                            modifier = Modifier.size(14.dp).clickable { onRemove(value) },
-                        )
-                    },
+    fun mutate(mode: Int, transform: (ClothingTags) -> ClothingTags) {
+        tags = transform(tags)
+        saveState = SaveState.Saving
+        pendingMode = mode
+        pendingChange += 1
+    }
+
+    LaunchedEffect(pendingChange) {
+        if (pendingChange == 0) return@LaunchedEffect
+        kotlinx.coroutines.delay(if (pendingMode == 1) 600L else 300L)
+        runCatching { onUpdate(tags) }
+            .onSuccess {
+                kotlinx.coroutines.delay(400L) // min display so the pill doesn't flicker
+                saveState = SaveState.Saved
+            }
+            .onFailure { saveState = SaveState.Edited }
+    }
+
+    fun suggestions(label: String, presets: List<String>): List<String> {
+        val fromWardrobe = allTagCategories.find { it.label == label }?.tags.orEmpty()
+        return (presets + fromWardrobe).distinct().sorted()
+    }
+
+    val scheme = MaterialTheme.colorScheme
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(scheme.background),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = barInsets.calculateTopPadding())
+                .padding(bottom = barInsets.calculateBottomPadding())
+                .imePadding(),
+        ) {
+            // App header
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 4.dp, end = 12.dp, top = 4.dp, bottom = 6.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                IconButton(onClick = onDismiss, modifier = Modifier.size(40.dp)) {
+                    Icon(
+                        androidx.compose.material.icons.Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.action_cancel),
+                        tint = scheme.onSurface,
+                    )
+                }
+                Text(
+                    stringResource(R.string.wardrobe_tag_sheet_title),
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = scheme.onSurface,
+                    modifier = Modifier.weight(1f),
                 )
+                SaveIndicator(state = saveState)
+            }
+
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 14.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                IdentityCard(
+                    image = image,
+                    tags = tags,
+                    isOffline = isOffline,
+                    isProcessing = isProcessing,
+                    onUpdateText = { newTags -> mutate(1) { newTags } },
+                    onClassify = onClassify,
+                )
+
+                TagsTableCard(
+                    tags = tags,
+                    openRow = openRow,
+                    onToggleRow = { key -> openRow = if (openRow == key) null else key },
+                    onToggleValue = { setter ->
+                        mutate(0) { setter(it) }
+                    },
+                    suggest = ::suggestions,
+                )
+
+                Spacer(Modifier.height(8.dp))
             }
         }
 
-        // Add field
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        if (isProcessing) {
+            AiProcessingOverlay(modifier = Modifier.fillMaxSize())
+        }
+    }
+}
+
+@Composable
+private fun SaveIndicator(state: SaveState) {
+    val scheme = MaterialTheme.colorScheme
+    val icon = when (state) {
+        SaveState.Saved  -> androidx.compose.material.icons.Icons.Default.CheckCircle
+        SaveState.Saving -> androidx.compose.material.icons.Icons.Default.Refresh
+        SaveState.Edited -> androidx.compose.material.icons.Icons.Default.Info
+    }
+    val labelRes = when (state) {
+        SaveState.Saved  -> R.string.wardrobe_tag_saved
+        SaveState.Saving -> R.string.wardrobe_tag_saving
+        SaveState.Edited -> R.string.wardrobe_tag_unsaved
+    }
+    val fg = if (state == SaveState.Saved) scheme.primary else scheme.onSurfaceVariant
+    val bg = if (state == SaveState.Saved) scheme.primary.copy(alpha = 0.12f) else scheme.surfaceVariant
+    Surface(shape = RoundedCornerShape(999.dp), color = bg) {
+        Row(
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(5.dp),
+        ) {
+            Icon(icon, contentDescription = null, tint = fg, modifier = Modifier.size(12.dp))
+            Text(stringResource(labelRes), fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = fg)
+        }
+    }
+}
+
+@Composable
+private fun IdentityCard(
+    image: DriveImage,
+    tags: ClothingTags,
+    isOffline: Boolean,
+    isProcessing: Boolean,
+    onUpdateText: (ClothingTags) -> Unit,
+    onClassify: () -> Unit,
+) {
+    val scheme = MaterialTheme.colorScheme
+    var editingName by remember { mutableStateOf(false) }
+    var editingType by remember { mutableStateOf(false) }
+    var editingCategory by remember { mutableStateOf(false) }
+    Surface(
+        shape = RoundedCornerShape(18.dp),
+        color = scheme.surface,
+        border = BorderStroke(1.dp, scheme.outlineVariant),
+    ) {
+        Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(image.localPath)
+                        .memoryCacheKey("${image.driveId}_${image.version}")
+                        .build(),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(96.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(scheme.surfaceVariant)
+                        .border(1.dp, scheme.outlineVariant, RoundedCornerShape(14.dp)),
+                )
+                Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.Center) {
+                    EyebrowLabel(stringResource(R.string.tag_label))
+                    if (editingName) {
+                        OutlinedTextField(
+                            value = tags.label,
+                            onValueChange = { onUpdateText(tags.copy(label = it)) },
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth(),
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                            keyboardActions = KeyboardActions(onDone = { editingName = false }),
+                        )
+                    } else {
+                        Text(
+                            text = tags.label.ifBlank { stringResource(R.string.wardrobe_tag_not_set) },
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = if (tags.label.isBlank()) scheme.onSurfaceVariant else scheme.onSurface,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { editingName = true },
+                        )
+                    }
+                    Spacer(Modifier.height(8.dp))
+                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        SubField(
+                            modifier = Modifier.weight(1f),
+                            label = stringResource(R.string.tag_type),
+                            value = tags.type,
+                            editing = editingType,
+                            onStartEdit = { editingType = true },
+                            onChange = { onUpdateText(tags.copy(type = it)) },
+                            onDone = { editingType = false },
+                        )
+                        SubField(
+                            modifier = Modifier.weight(1f),
+                            label = stringResource(R.string.tag_category),
+                            value = tags.category.replaceFirstChar { it.uppercase() },
+                            editing = editingCategory,
+                            onStartEdit = { editingCategory = true },
+                            onChange = { onUpdateText(tags.copy(category = it)) },
+                            onDone = { editingCategory = false },
+                        )
+                    }
+                }
+            }
+
+            // AI re-tag CTA
+            val ctaEnabled = !isOffline && !isProcessing
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(scheme.primary.copy(alpha = if (ctaEnabled) 0.10f else 0.05f))
+                    .border(1.dp, scheme.primary.copy(alpha = 0.33f), RoundedCornerShape(12.dp))
+                    .clickable(enabled = ctaEnabled) {
+                        Analytics.action("TagEdit", "redetect_ai")
+                        onClassify()
+                    }
+                    .padding(horizontal = 12.dp, vertical = 8.dp)
+                    .graphicsLayer { alpha = if (ctaEnabled) 1f else 0.5f },
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                com.librelookai.billing.CostBadge(com.librelookai.gemini.GeminiActionId.CLASSIFY_CLOTHING)
+                Icon(
+                    androidx.compose.material.icons.Icons.Default.AutoAwesome,
+                    contentDescription = null,
+                    tint = scheme.primary,
+                    modifier = Modifier.size(13.dp),
+                )
+                Text(
+                    stringResource(R.string.wardrobe_tag_redetect_ai),
+                    color = scheme.primary,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun SubField(
+    modifier: Modifier,
+    label: String,
+    value: String,
+    editing: Boolean,
+    onStartEdit: () -> Unit,
+    onChange: (String) -> Unit,
+    onDone: () -> Unit,
+) {
+    val scheme = MaterialTheme.colorScheme
+    Column(modifier = modifier) {
+        EyebrowLabel(label, small = true)
+        if (editing) {
             OutlinedTextField(
-                value = inputText,
-                onValueChange = { inputText = it; showSuggestions = it.isNotEmpty() },
-                placeholder = { Text(stringResource(R.string.tag_add_custom)) },
+                value = value,
+                onValueChange = onChange,
                 singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                keyboardActions = KeyboardActions(onDone = {
-                    if (inputText.isNotBlank()) {
-                        onAdd(inputText.trim())
-                        inputText = ""
-                        showSuggestions = false
-                    }
-                }),
-                trailingIcon = if (inputText.isNotBlank()) {
-                    {
-                        IconButton(onClick = {
-                            onAdd(inputText.trim())
-                            inputText = ""
-                            showSuggestions = false
-                        }) {
-                            Icon(Icons.Default.Add, contentDescription = "Add")
-                        }
-                    }
-                } else null,
-                modifier = Modifier.weight(1f),
+                keyboardActions = KeyboardActions(onDone = { onDone() }),
+            )
+        } else {
+            Text(
+                text = value.ifBlank { stringResource(R.string.wardrobe_tag_not_set) },
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = if (value.isBlank()) scheme.onSurfaceVariant else scheme.onSurface,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 1.dp)
+                    .clickable { onStartEdit() },
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
             )
         }
+    }
+}
 
-        // Existing suggestions (filtered by input if any); match on both English key and localized label
-        val filtered = if (inputText.isBlank()) suggestions
-                       else suggestions.filter {
-                           it.contains(inputText, ignoreCase = true) ||
-                           it.localizedTagValue().contains(inputText, ignoreCase = true)
-                       }
-        if (filtered.isNotEmpty()) {
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                filtered.forEach { suggestion ->
-                    FilterChip(
-                        selected = false,
-                        onClick = { onAdd(suggestion); inputText = "" },
-                        label = { Text(suggestion.localizedTagValue()) },
+@Composable
+private fun EyebrowLabel(text: String, small: Boolean = false) {
+    Text(
+        text = text.uppercase(),
+        fontSize = if (small) 9.sp else 10.sp,
+        fontWeight = FontWeight.Bold,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        letterSpacing = (if (small) 0.3 else 0.4).sp,
+    )
+}
+
+private data class TagRowSpec(
+    val key: String,
+    val labelRes: Int,
+    val sectionLabel: String,
+    val presets: List<String>,
+    val isColor: Boolean = false,
+)
+
+private val TAG_ROWS = listOf(
+    TagRowSpec("colors",      R.string.tag_colors,      "Colors",      emptyList(),         isColor = true),
+    TagRowSpec("uses",        R.string.tag_uses,        "Uses",        PRESET_USES),
+    TagRowSpec("seasonality", R.string.tag_seasonality, "Seasonality", PRESET_SEASONALITY),
+    TagRowSpec("aesthetic",   R.string.tag_aesthetic,   "Aesthetic",   PRESET_AESTHETIC),
+    TagRowSpec("fit",         R.string.tag_fit,         "Fit",         PRESET_FIT),
+    TagRowSpec("material",    R.string.tag_material,    "Material",    PRESET_MATERIAL),
+    TagRowSpec("pattern",     R.string.tag_pattern,     "Pattern",     PRESET_PATTERN),
+)
+
+private fun ClothingTags.valuesFor(key: String): List<String> = when (key) {
+    "colors"      -> colors
+    "uses"        -> uses
+    "seasonality" -> seasonality
+    "aesthetic"   -> aesthetic
+    "fit"         -> fit
+    "material"    -> material
+    "pattern"     -> pattern
+    else          -> emptyList()
+}
+
+private fun ClothingTags.toggleValue(key: String, value: String): ClothingTags {
+    val current = valuesFor(key)
+    val next = if (value in current) current - value else current + value
+    return when (key) {
+        "colors"      -> copy(colors = next)
+        "uses"        -> copy(uses = next)
+        "seasonality" -> copy(seasonality = next)
+        "aesthetic"   -> copy(aesthetic = next)
+        "fit"         -> copy(fit = next)
+        "material"    -> copy(material = next)
+        "pattern"     -> copy(pattern = next)
+        else          -> this
+    }
+}
+
+private fun ClothingTags.addCustom(key: String, value: String): ClothingTags {
+    val trimmed = value.trim()
+    if (trimmed.isEmpty()) return this
+    val current = valuesFor(key)
+    if (trimmed in current) return this
+    val next = current + trimmed
+    return when (key) {
+        "colors"      -> copy(colors = next)
+        "uses"        -> copy(uses = next)
+        "seasonality" -> copy(seasonality = next)
+        "aesthetic"   -> copy(aesthetic = next)
+        "fit"         -> copy(fit = next)
+        "material"    -> copy(material = next)
+        "pattern"     -> copy(pattern = next)
+        else          -> this
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun TagsTableCard(
+    tags: ClothingTags,
+    openRow: String?,
+    onToggleRow: (String) -> Unit,
+    onToggleValue: ((ClothingTags) -> ClothingTags) -> Unit,
+    suggest: (String, List<String>) -> List<String>,
+) {
+    val scheme = MaterialTheme.colorScheme
+    Surface(
+        shape = RoundedCornerShape(18.dp),
+        color = scheme.surface,
+        border = BorderStroke(1.dp, scheme.outlineVariant),
+        modifier = Modifier.clip(RoundedCornerShape(18.dp)),
+    ) {
+        Column {
+            TAG_ROWS.forEachIndexed { idx, spec ->
+                val isOpen = openRow == spec.key
+                val values = tags.valuesFor(spec.key)
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(if (isOpen) scheme.surfaceVariant else Color.Transparent)
+                        .then(Modifier.animateContentSize(
+                            animationSpec = androidx.compose.animation.core.tween(220),
+                        )),
+                ) {
+                    TagRowCollapsed(
+                        labelRes = spec.labelRes,
+                        values = values,
+                        isColor = spec.isColor,
+                        isOpen = isOpen,
+                        onClick = { onToggleRow(spec.key) },
+                    )
+                    if (isOpen) {
+                        val merged = suggest(spec.sectionLabel, spec.presets)
+                        if (spec.isColor) {
+                            ColorDrawer(
+                                active = values,
+                                options = merged.ifEmpty { COLOR_HEX.keys.toList() },
+                                onToggle = { v -> onToggleValue { it.toggleValue(spec.key, v) } },
+                                onAddCustom = { v -> onToggleValue { it.addCustom(spec.key, v) } },
+                            )
+                        } else {
+                            ChipDrawer(
+                                active = values,
+                                options = merged,
+                                onToggle = { v -> onToggleValue { it.toggleValue(spec.key, v) } },
+                                onAddCustom = { v -> onToggleValue { it.addCustom(spec.key, v) } },
+                            )
+                        }
+                    }
+                }
+                if (idx != TAG_ROWS.lastIndex) {
+                    HorizontalDivider(color = scheme.outlineVariant, thickness = 1.dp)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun TagRowCollapsed(
+    labelRes: Int,
+    values: List<String>,
+    isColor: Boolean,
+    isOpen: Boolean,
+    onClick: () -> Unit,
+) {
+    val scheme = MaterialTheme.colorScheme
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(horizontal = 14.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        Text(
+            stringResource(labelRes),
+            modifier = Modifier.width(88.dp),
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Bold,
+            color = scheme.onSurface,
+        )
+        Box(modifier = Modifier.weight(1f)) {
+            when {
+                values.isEmpty() -> Text(
+                    stringResource(R.string.wardrobe_tag_not_set),
+                    fontSize = 12.sp,
+                    color = scheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.bodySmall.copy(fontStyle = androidx.compose.ui.text.font.FontStyle.Italic),
+                )
+                isColor -> ColorSummary(values)
+                else -> {
+                    val localized = values.take(3).map { it.localizedTagValue() }
+                    val shown = localized.joinToString(", ")
+                    val rest = values.size - 3
+                    val text = if (rest > 0) "$shown +$rest" else shown
+                    Text(
+                        text,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = scheme.onSurface,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                     )
                 }
             }
         }
+        Icon(
+            if (isOpen) androidx.compose.material.icons.Icons.Default.KeyboardArrowUp
+            else androidx.compose.material.icons.Icons.Default.KeyboardArrowDown,
+            contentDescription = null,
+            tint = scheme.onSurfaceVariant,
+            modifier = Modifier.size(16.dp),
+        )
+    }
+}
+
+@Composable
+private fun ColorSummary(values: List<String>) {
+    val scheme = MaterialTheme.colorScheme
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        Row {
+            values.take(5).forEachIndexed { i, v ->
+                Box(
+                    modifier = Modifier
+                        .offset(x = ((-6) * i).dp)
+                        .size(18.dp)
+                        .clip(RoundedCornerShape(999.dp))
+                        .background(colorFor(v) ?: scheme.surfaceVariant)
+                        .border(2.dp, scheme.surface, RoundedCornerShape(999.dp)),
+                )
+            }
+        }
+        val localized = values.take(2).map { it.localizedTagValue() }
+        val named = localized.joinToString(", ")
+        val rest = values.size - 2
+        val text = if (rest > 0) "$named +$rest" else named
+        Text(
+            text,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = scheme.onSurface,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+    }
+}
+
+private fun colorFor(name: String): Color? = COLOR_HEX[name.normalizeColor()] ?: COLOR_HEX[name.lowercase().trim()]
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun ColorDrawer(
+    active: List<String>,
+    options: List<String>,
+    onToggle: (String) -> Unit,
+    onAddCustom: (String) -> Unit,
+) {
+    val scheme = MaterialTheme.colorScheme
+    val all = (COLOR_HEX.keys + options).distinct()
+    Column(modifier = Modifier.padding(start = 14.dp, end = 14.dp, top = 4.dp, bottom = 14.dp)) {
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            maxItemsInEachRow = 7,
+        ) {
+            all.forEach { value ->
+                val isActive = value in active
+                val swatch = colorFor(value) ?: scheme.surfaceVariant
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(3.dp),
+                    modifier = Modifier.width(36.dp),
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clip(RoundedCornerShape(999.dp))
+                            .background(swatch)
+                            .border(
+                                width = if (isActive) 2.5.dp else 1.dp,
+                                color = if (isActive) scheme.primary else scheme.outlineVariant,
+                                shape = RoundedCornerShape(999.dp),
+                            )
+                            .clickable { onToggle(value) },
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        if (isActive) {
+                            val onSwatch = if (value == "white" || value == "cream") Color(0xFF222222) else Color.White
+                            Icon(
+                                androidx.compose.material.icons.Icons.Default.Check,
+                                contentDescription = null,
+                                tint = onSwatch,
+                                modifier = Modifier.size(14.dp),
+                            )
+                        }
+                    }
+                    Text(
+                        text = value.localizedTagValue(),
+                        fontSize = 9.sp,
+                        fontWeight = if (isActive) FontWeight.Bold else FontWeight.Medium,
+                        color = if (isActive) scheme.primary else scheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+            }
+        }
+        AddCustomField(onAdd = onAddCustom)
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun ChipDrawer(
+    active: List<String>,
+    options: List<String>,
+    onToggle: (String) -> Unit,
+    onAddCustom: (String) -> Unit,
+) {
+    val scheme = MaterialTheme.colorScheme
+    val all = (active + options).distinct()
+    Column(modifier = Modifier.padding(start = 14.dp, end = 14.dp, top = 4.dp, bottom = 14.dp)) {
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(5.dp),
+            verticalArrangement = Arrangement.spacedBy(5.dp),
+        ) {
+            all.forEach { value ->
+                val isActive = value in active
+                Surface(
+                    shape = RoundedCornerShape(999.dp),
+                    color = if (isActive) scheme.primary else scheme.surface,
+                    border = BorderStroke(
+                        width = if (isActive) 1.5.dp else 1.dp,
+                        color = if (isActive) scheme.primary else scheme.outlineVariant,
+                    ),
+                    onClick = { onToggle(value) },
+                ) {
+                    Text(
+                        text = value.localizedTagValue(),
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = if (isActive) scheme.onPrimary else scheme.onSurface,
+                    )
+                }
+            }
+        }
+        AddCustomField(onAdd = onAddCustom)
+    }
+}
+
+@Composable
+private fun AddCustomField(onAdd: (String) -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+    var text by remember { mutableStateOf("") }
+    val scheme = MaterialTheme.colorScheme
+    Spacer(Modifier.height(8.dp))
+    if (!expanded) {
+        Surface(
+            shape = RoundedCornerShape(999.dp),
+            color = Color.Transparent,
+            border = BorderStroke(1.dp, scheme.outlineVariant),
+            onClick = { expanded = true },
+        ) {
+            Row(
+                modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                Icon(
+                    androidx.compose.material.icons.Icons.Default.Add,
+                    contentDescription = null,
+                    tint = scheme.onSurfaceVariant,
+                    modifier = Modifier.size(12.dp),
+                )
+                Text(
+                    stringResource(R.string.tag_add_custom),
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = scheme.onSurfaceVariant,
+                )
+            }
+        }
+    } else {
+        OutlinedTextField(
+            value = text,
+            onValueChange = { text = it },
+            placeholder = { Text(stringResource(R.string.tag_add_custom)) },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(onDone = {
+                if (text.isNotBlank()) onAdd(text.trim())
+                text = ""
+                expanded = false
+            }),
+            trailingIcon = {
+                IconButton(onClick = {
+                    if (text.isNotBlank()) onAdd(text.trim())
+                    text = ""
+                    expanded = false
+                }) { Icon(androidx.compose.material.icons.Icons.Default.Check, contentDescription = null) }
+            },
+        )
     }
 }
 

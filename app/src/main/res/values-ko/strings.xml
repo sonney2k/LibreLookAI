@@ -280,6 +280,11 @@
     <string name="wardrobe_tag_rotate">회전</string>
     <string name="wardrobe_tag_edit">태그 편집</string>
     <string name="wardrobe_tag_sheet_title">태그 편집</string>
+    <string name="wardrobe_tag_saved">저장됨</string>
+    <string name="wardrobe_tag_saving">저장 중…</string>
+    <string name="wardrobe_tag_unsaved">저장 안 됨</string>
+    <string name="wardrobe_tag_redetect_ai">AI로 태그 다시 감지</string>
+    <string name="wardrobe_tag_not_set">설정되지 않음</string>
     <string name="wardrobe_add_gallery">갤러리</string>
     <string name="wardrobe_add_camera">카메라</string>
     <string name="wardrobe_add_to_closet">%1$s에 추가</string>

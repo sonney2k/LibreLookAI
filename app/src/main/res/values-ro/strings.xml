@@ -192,6 +192,11 @@
     <string name="wardrobe_tag_rotate">Rotește</string>
     <string name="wardrobe_tag_edit">Editează etichete</string>
     <string name="wardrobe_tag_sheet_title">Editare Etichete</string>
+    <string name="wardrobe_tag_saved">Salvat</string>
+    <string name="wardrobe_tag_saving">Se salvează…</string>
+    <string name="wardrobe_tag_unsaved">Nesalvat</string>
+    <string name="wardrobe_tag_redetect_ai">Redetectează etichetele cu AI</string>
+    <string name="wardrobe_tag_not_set">Nesetat</string>
     <string name="wardrobe_add_gallery">Galerie</string>
     <string name="wardrobe_add_camera">Cameră</string>
     <string name="wardrobe_add_to_closet">Adaugă în %1$s</string>
