@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.librelookai.R
 import com.librelookai.gemini.ApiKeyStore
 import com.librelookai.gemini.GeminiActionId
+import com.librelookai.gemini.ModelPricingClient
 import com.librelookai.gemini.PricingClient
 
 /**
@@ -53,10 +54,12 @@ fun CostBadge(
     // perItem may be 0 (most actions), in which case total == base for any N.
     val items = bulkCount.coerceAtLeast(1)
     val perItemCosts by PricingClient.perItemCostsState.collectAsState()
+    val rates by ModelPricingClient.snapshotState.collectAsState()
     val text: String? = when {
         byok -> {
-            val tokens = estimateTokensFor(action, items)
-            stringResource(R.string.cost_badge_tokens_estimate, formatTokens(tokens))
+            val (inT, outT) = estimateTokensFor(action, items)
+            val usd = rates.ratesFor(action.model).usdFor(inT, outT)
+            stringResource(R.string.cost_badge_usd_estimate, formatUsdBadge(usd))
         }
         managedAvailable -> {
             val perCall = costs[action.key] ?: action.fallbackCost
@@ -193,26 +196,47 @@ fun InsufficientCreditsDialog(
 // ---------- helpers ----------
 
 /**
- * Coarse token-count estimate per action, used only for BYOK badge labels.
- * Picked to be conservative (rounded up) so users aren't surprised. Returns
- * `(fixedInput, outputPerItem)` — input is paid once per call, output scales
- * with the number of items requested in the response.
+ * Coarse token estimate per action — used only for the BYOK $ badge.
+ * Returned as four numbers: `(fixedInput, inputPerItem, fixedOutput, outputPerItem)`.
+ *
+ * Image-out actions report their image-token count under `fixedOutput` (e.g. ~1290 per image
+ * for Gemini's image models), so when multiplied by the output USD rate the badge reflects
+ * actual spend rather than text-equivalent tokens. Picked to be conservative (rounded up).
  */
-private fun estimateTokens(action: GeminiActionId): Pair<Int, Int> = when (action) {
-    GeminiActionId.REMOVE_BACKGROUND -> 4_000 to 0
-    GeminiActionId.CLASSIFY_CLOTHING -> 2_000 to 0
-    // GENERATE_TEXT carries a large wardrobe-JSON prompt up front; each extra
-    // suggestion adds only a handful of slot ids + a short caption.
-    GeminiActionId.GENERATE_TEXT -> 800 to 200
-    GeminiActionId.SEARCH_TRENDS -> 2_500 to 0
-    GeminiActionId.TRY_ON_OUTFIT -> 6_000 to 0
-    GeminiActionId.OUTFIT_SUGGESTION -> 2_500 to 0
+private data class TokenEstimate(
+    val fixedInput: Int,
+    val inputPerItem: Int,
+    val fixedOutput: Int,
+    val outputPerItem: Int,
+)
+
+private fun estimateTokens(action: GeminiActionId): TokenEstimate = when (action) {
+    // BG removal: short text prompt + one tiled image input (~500 tokens), one image out (1290).
+    GeminiActionId.REMOVE_BACKGROUND -> TokenEstimate(fixedInput = 700, inputPerItem = 0, fixedOutput = 1290, outputPerItem = 0)
+    // Try-on: prompt + ~2 image inputs + one image out.
+    GeminiActionId.TRY_ON_OUTFIT -> TokenEstimate(fixedInput = 1200, inputPerItem = 0, fixedOutput = 1290, outputPerItem = 0)
+    // Classify: prompt + one image input + small JSON out.
+    GeminiActionId.CLASSIFY_CLOTHING -> TokenEstimate(fixedInput = 1000, inputPerItem = 0, fixedOutput = 400, outputPerItem = 0)
+    // Multi-suggestion text: large wardrobe-JSON prompt up front; each extra suggestion adds
+    // a handful of slot ids + a short caption.
+    GeminiActionId.GENERATE_TEXT -> TokenEstimate(fixedInput = 800, inputPerItem = 0, fixedOutput = 150, outputPerItem = 200)
+    GeminiActionId.SEARCH_TRENDS -> TokenEstimate(fixedInput = 200, inputPerItem = 0, fixedOutput = 600, outputPerItem = 0)
+    GeminiActionId.OUTFIT_SUGGESTION -> TokenEstimate(fixedInput = 800, inputPerItem = 0, fixedOutput = 400, outputPerItem = 0)
 }
 
-private fun estimateTokensFor(action: GeminiActionId, items: Int): Int {
-    val (input, perItem) = estimateTokens(action)
-    return input + perItem * items.coerceAtLeast(1)
+private fun estimateTokensFor(action: GeminiActionId, items: Int): Pair<Int, Int> {
+    val n = items.coerceAtLeast(1)
+    val e = estimateTokens(action)
+    val input = e.fixedInput + e.inputPerItem * n
+    val output = e.fixedOutput + e.outputPerItem * n
+    return input to output
 }
 
-private fun formatTokens(n: Int): String =
-    if (n >= 1_000) "${n / 1_000}k" else n.toString()
+/** Format a USD amount for the badge. Mirrors UsageScreen.formatUsd. */
+private fun formatUsdBadge(usd: Double): String = when {
+    usd < 0.01 -> "<0.01"
+    usd < 1.0 -> String.format("%.2f", usd)
+    usd < 100.0 -> String.format("%.2f", usd)
+    else -> String.format("%.0f", usd)
+}
+

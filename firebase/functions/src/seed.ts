@@ -32,6 +32,24 @@ async function main() {
   // The onDocumentWritten trigger will fire and populate publicPricing.
   // eslint-disable-next-line no-console
   console.log("Seeded config/pricing:", DEFAULT_PRICING);
+
+  // Per-model Gemini USD rates — published list prices, edited manually when
+  // Google updates them. Clients fetch this doc to estimate spend ($ badge)
+  // and to snapshot $ at the time of each UsageEvent.
+  const modelPricing = {
+    fxUsdToEur: 0.92,
+    fallback: { inUsdPerM: 0.30, outUsdPerM: 2.50 },
+    models: {
+      "gemini-3-flash-preview": { inUsdPerM: 0.30, outUsdPerM: 2.50 },
+      "gemini-3.1-flash-image-preview": { inUsdPerM: 0.30, outUsdPerM: 30.00 },
+    },
+  };
+  await db.collection("config").doc("modelPricing").set({
+    ...modelPricing,
+    updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+  });
+  // eslint-disable-next-line no-console
+  console.log("Seeded config/modelPricing:", modelPricing);
 }
 
 main().catch((e) => {

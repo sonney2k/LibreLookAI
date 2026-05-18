@@ -153,15 +153,23 @@ object PricingClient {
  * SharedPreferences has a value — kept in sync with the server defaults in
  * `firebase/functions/src/pricing.ts` (DEFAULT_PRICING × multiplier).
  */
+/**
+ * Mirror of the server-side action keys.
+ *
+ * [model] is the Gemini model the action runs against. The BYOK $ badge uses
+ * it to pick per-token rates from [ModelPricingClient]. Keep in sync with the
+ * constants in [GeminiRepository].
+ */
 enum class GeminiActionId(
     val key: String,
     val fallbackCost: Int,
     val fallbackPerItemCost: Int = 0,
+    val model: String,
 ) {
-    REMOVE_BACKGROUND("removeBackground", CreditPacks.COST_BG_REMOVAL),
-    CLASSIFY_CLOTHING("classifyClothing", CreditPacks.COST_CLASSIFY),
-    GENERATE_TEXT("generateText", CreditPacks.COST_TEXT),
-    SEARCH_TRENDS("searchFashionTrends", CreditPacks.COST_TRENDS),
-    TRY_ON_OUTFIT("tryOnOutfit", CreditPacks.COST_TRY_ON),
-    OUTFIT_SUGGESTION("outfitSuggestion", CreditPacks.COST_OUTFIT_SUGGESTION),
+    REMOVE_BACKGROUND("removeBackground", CreditPacks.COST_BG_REMOVAL, model = "gemini-3.1-flash-image-preview"),
+    CLASSIFY_CLOTHING("classifyClothing", CreditPacks.COST_CLASSIFY, model = "gemini-3-flash-preview"),
+    GENERATE_TEXT("generateText", CreditPacks.COST_TEXT, model = "gemini-3-flash-preview"),
+    SEARCH_TRENDS("searchFashionTrends", CreditPacks.COST_TRENDS, model = "gemini-3-flash-preview"),
+    TRY_ON_OUTFIT("tryOnOutfit", CreditPacks.COST_TRY_ON, model = "gemini-3.1-flash-image-preview"),
+    OUTFIT_SUGGESTION("outfitSuggestion", CreditPacks.COST_OUTFIT_SUGGESTION, model = "gemini-3-flash-preview"),
 }

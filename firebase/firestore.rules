@@ -32,5 +32,11 @@ service cloud.firestore {
       allow read: if request.auth != null;
       allow write: if false;
     }
+    // Per-model Gemini USD rates the client uses to estimate spend (BYOK badge)
+    // and to snapshot $ alongside each UsageEvent. Server-only writes.
+    match /config/modelPricing {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
   }
 }

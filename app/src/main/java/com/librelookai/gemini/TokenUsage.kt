@@ -44,6 +44,11 @@ enum class UsageCategory(val storageKey: String) {
 /**
  * One Gemini call. `inputTokens` + `outputTokens` come from the response's `usageMetadata`;
  * either may be 0 if Gemini omits the count.
+ *
+ * [usdAtRecord] is the USD cost computed using the rates valid at record time. Snapshotting
+ * the value means that aggregations stay correct after Google changes their pricing — old
+ * events keep their historical price. Nullable for backwards compatibility with JSONL written
+ * before this field existed; those events fall back to the current rates in [usdFor].
  */
 data class UsageEvent(
     @SerializedName("ts") val timestampMs: Long,
@@ -51,40 +56,28 @@ data class UsageEvent(
     @SerializedName("model") val model: String,
     @SerializedName("in") val inputTokens: Int,
     @SerializedName("out") val outputTokens: Int,
+    @SerializedName("usd") val usdAtRecord: Double? = null,
 ) {
     val totalTokens: Int get() = inputTokens + outputTokens
     val category: UsageCategory get() = UsageCategory.fromKey(categoryKey)
 }
 
 /**
- * USD price (per token) for each Gemini model used by the app. These are public list prices;
- * if Google updates them, edit this table. EUR display is derived in the UI via [USD_TO_EUR].
- *
- * Sources (Jan 2026 list pricing):
- *   - gemini-3-flash-preview (text I/O):   $0.30/1M input, $2.50/1M output
- *   - gemini-3.1-flash-image-preview:      $0.30/1M input, $30.00/1M output (image-out tokens)
+ * USD price helper. Rates come from [ModelPricingClient] (live Firestore snapshot, persisted
+ * to SharedPreferences, with hard-coded fallbacks in [DefaultModelPricing]). The static
+ * [USD_TO_EUR] constant is preserved for back-compat — it now reads through to the live FX
+ * value from the same snapshot.
  */
 object GeminiPricing {
-    /** USD→EUR conversion used purely for display. Kept simple — no live FX. */
-    const val USD_TO_EUR: Double = 0.92
+    /** USD→EUR conversion used purely for display. Sourced from [ModelPricingClient]. */
+    val USD_TO_EUR: Double get() = ModelPricingClient.usdToEur()
 
-    private data class Rates(val inputPerToken: Double, val outputPerToken: Double)
+    fun usdFor(model: String, inputTokens: Int, outputTokens: Int): Double =
+        ModelPricingClient.ratesFor(model).usdFor(inputTokens, outputTokens)
 
-    private val table: Map<String, Rates> = mapOf(
-        "gemini-3-flash-preview" to Rates(0.30 / 1_000_000.0, 2.50 / 1_000_000.0),
-        "gemini-3.1-flash-image-preview" to Rates(0.30 / 1_000_000.0, 30.00 / 1_000_000.0),
-    )
-
-    /** Fallback rate for unknown models — uses the cheap text rate. */
-    private val FALLBACK = Rates(0.30 / 1_000_000.0, 2.50 / 1_000_000.0)
-
-    fun usdFor(model: String, inputTokens: Int, outputTokens: Int): Double {
-        val r = table[model] ?: FALLBACK
-        return inputTokens * r.inputPerToken + outputTokens * r.outputPerToken
-    }
-
+    /** Prefer the per-event snapshot; fall back to current rates when missing. */
     fun usdFor(event: UsageEvent): Double =
-        usdFor(event.model, event.inputTokens, event.outputTokens)
+        event.usdAtRecord ?: usdFor(event.model, event.inputTokens, event.outputTokens)
 
     fun eurFor(event: UsageEvent): Double = usdFor(event) * USD_TO_EUR
 }
@@ -139,12 +132,17 @@ class TokenUsageRepository private constructor(private val app: Application) {
 
     /** Records one event, persists locally, schedules a debounced Drive flush. */
     fun record(category: UsageCategory, model: String, inputTokens: Int, outputTokens: Int) {
+        val inT = inputTokens.coerceAtLeast(0)
+        val outT = outputTokens.coerceAtLeast(0)
         val ev = UsageEvent(
             timestampMs = System.currentTimeMillis(),
             categoryKey = category.storageKey,
             model = model,
-            inputTokens = inputTokens.coerceAtLeast(0),
-            outputTokens = outputTokens.coerceAtLeast(0),
+            inputTokens = inT,
+            outputTokens = outT,
+            // Snapshot $ at record time so historical aggregation isn't disrupted by
+            // later price changes. Aggregator prefers this value when present.
+            usdAtRecord = ModelPricingClient.ratesFor(model).usdFor(inT, outT),
         )
         scope.launch {
             ioMutex.withLock {
