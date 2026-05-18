@@ -47,9 +47,26 @@ private data class GeoResponse(val results: List<GeoResult>? = null)
 private data class GeoResult(
     val name: String = "",
     val country: String = "",
+    val admin1: String = "",
     val latitude: Double = 0.0,
     val longitude: Double = 0.0,
 )
+
+/** A city/place suggestion from the Open-Meteo geocoding API, used by the destination autocomplete. */
+data class DestinationSuggestion(
+    val name: String,
+    val admin1: String,
+    val country: String,
+    val latitude: Double,
+    val longitude: Double,
+) {
+    /** Human-readable label: "City, Region, Country" (parts collapsed when empty/duplicate). */
+    val display: String
+        get() = listOf(name, admin1, country)
+            .filter { it.isNotBlank() }
+            .distinct()
+            .joinToString(", ")
+}
 private data class ForecastResponse(val daily: DailyBlock? = null)
 private data class DailyBlock(
     val time: List<String> = emptyList(),
@@ -240,6 +257,42 @@ class WeatherRepository(private val context: Context) {
             null
         }
     }
+
+    /**
+     * Returns up to [limit] place suggestions matching [query] via Open-Meteo's geocoding API.
+     * Empty list on short queries (< 2 chars) or any error.
+     */
+    suspend fun searchDestinations(
+        query: String,
+        limit: Int = 8,
+        language: String = "en",
+    ): List<DestinationSuggestion> =
+        withContext(Dispatchers.IO) {
+            val trimmed = query.trim()
+            if (trimmed.length < 2) return@withContext emptyList()
+            val encoded = java.net.URLEncoder.encode(trimmed, "UTF-8")
+            val count = limit.coerceIn(1, 20)
+            // Open-Meteo supports en, de, fr, it, es, pt, ru, tr, hi, ja, ko, zh, vi, ... and silently
+            // falls back to English for unknown codes — safe to pass anything BCP-47.
+            val lang = language.lowercase().ifBlank { "en" }
+            return@withContext try {
+                val body = http.newCall(
+                    Request.Builder().url("$GEO_API?name=$encoded&count=$count&language=$lang&format=json").build(),
+                ).await().body?.string() ?: return@withContext emptyList()
+                val resp = gson.fromJson(body, GeoResponse::class.java)
+                resp.results.orEmpty().map {
+                    DestinationSuggestion(
+                        name = it.name,
+                        admin1 = it.admin1,
+                        country = it.country,
+                        latitude = it.latitude,
+                        longitude = it.longitude,
+                    )
+                }
+            } catch (_: Exception) {
+                emptyList()
+            }
+        }
 
     /** Reverse-geocodes [lat]/[lon] to a city name using the system Geocoder. */
     private fun getCityName(lat: Double, lon: Double): String = try {

@@ -31,7 +31,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -144,21 +146,60 @@ fun TravelScreen(
                         .padding(horizontal = 16.dp, vertical = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    OutlinedTextField(
-                        value = state.destination,
-                        onValueChange = travelViewModel::updateDestination,
-                        label = { Text(stringResource(R.string.travel_destination)) },
-                        placeholder = { Text(stringResource(R.string.travel_destination_placeholder)) },
-                        leadingIcon = { Icon(Icons.Default.FlightTakeoff, contentDescription = null) },
-                        trailingIcon = if (state.destination.isNotEmpty()) {
-                            { IconButton(onClick = { travelViewModel.updateDestination("") }) {
-                                Icon(Icons.Default.Close, contentDescription = "Clear")
-                            } }
-                        } else null,
-                        singleLine = true,
-                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                        modifier = Modifier.fillMaxWidth(),
-                    )
+                    var suggestionsExpanded by remember { mutableStateOf(false) }
+                    val showSuggestions = suggestionsExpanded && state.destinationSuggestions.isNotEmpty()
+                    val geoLanguage = com.librelookai.settings.AppLanguage.toBcp47(profileState.preferences.language)
+                    ExposedDropdownMenuBox(
+                        expanded = showSuggestions,
+                        onExpandedChange = { suggestionsExpanded = it },
+                    ) {
+                        OutlinedTextField(
+                            value = state.destination,
+                            onValueChange = {
+                                travelViewModel.updateDestination(it, geoLanguage)
+                                suggestionsExpanded = true
+                            },
+                            label = { Text(stringResource(R.string.travel_destination)) },
+                            placeholder = { Text(stringResource(R.string.travel_destination_placeholder)) },
+                            leadingIcon = { Icon(Icons.Default.FlightTakeoff, contentDescription = null) },
+                            trailingIcon = if (state.destination.isNotEmpty()) {
+                                { IconButton(onClick = {
+                                    travelViewModel.updateDestination("")
+                                    suggestionsExpanded = false
+                                }) {
+                                    Icon(Icons.Default.Close, contentDescription = "Clear")
+                                } }
+                            } else null,
+                            singleLine = true,
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .menuAnchor(),
+                        )
+                        ExposedDropdownMenu(
+                            expanded = showSuggestions,
+                            onDismissRequest = { suggestionsExpanded = false },
+                        ) {
+                            state.destinationSuggestions.forEach { sug ->
+                                DropdownMenuItem(
+                                    text = {
+                                        Column {
+                                            Text(sug.name, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium)
+                                            val sub = listOf(sug.admin1, sug.country).filter { it.isNotBlank() }.joinToString(", ")
+                                            if (sub.isNotEmpty()) {
+                                                Text(sub, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                            }
+                                        }
+                                    },
+                                    onClick = {
+                                        travelViewModel.pickDestination(sug)
+                                        suggestionsExpanded = false
+                                        keyboardController?.hide()
+                                    },
+                                )
+                            }
+                        }
+                    }
 
                     // Duration + Start date
                     Row(

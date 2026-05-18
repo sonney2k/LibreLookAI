@@ -1925,15 +1925,6 @@ private val PRESET_PATTERN     = listOf("solid", "stripes", "plaid", "floral", "
 
 // Color swatch map: tag value → swatch color. Falls back to chipBg for unknown values.
 // "multicolor" renders a rainbow gradient (handled at draw time).
-private val COLOR_HEX: Map<String, Color> = mapOf(
-    "black" to 0xFF1A1A1A, "white" to 0xFFF5F5F0, "gray" to 0xFF9A9A95, "charcoal" to 0xFF3A3A3A,
-    "beige" to 0xFFE8DCCB, "cream" to 0xFFF4E8D0, "brown" to 0xFF7A5030, "tan" to 0xFFC8A878,
-    "navy" to 0xFF1E2E4A, "blue" to 0xFF3050A0, "sky" to 0xFF9CBDD8, "denim blue" to 0xFF4860A0,
-    "green" to 0xFF4A7040, "olive" to 0xFF5A6030, "forest" to 0xFF2C4E2A, "sage" to 0xFF9AB58F,
-    "red" to 0xFFB83030, "burgundy" to 0xFF5E1820, "pink" to 0xFFD48090, "coral" to 0xFFE78060,
-    "orange" to 0xFFD07030, "yellow" to 0xFFC8B030, "mustard" to 0xFFA08818,
-    "purple" to 0xFF7060A0, "lavender" to 0xFFB5A0CC,
-).mapValues { Color(it.value) }
 
 private enum class SaveState { Saved, Saving, Edited }
 
@@ -2396,7 +2387,7 @@ private fun TagsTableCard(
                         if (spec.isColor) {
                             ColorDrawer(
                                 active = values,
-                                options = merged.ifEmpty { COLOR_HEX.keys.toList() },
+                                options = merged.ifEmpty { FilterColorKeys },
                                 onToggle = { v -> onToggleValue { it.toggleValue(spec.key, v) } },
                                 onAddCustom = { v -> onToggleValue { it.addCustom(spec.key, v) } },
                             )
@@ -2508,7 +2499,7 @@ private fun ColorSummary(values: List<String>) {
     }
 }
 
-private fun colorFor(name: String): Color? = COLOR_HEX[name.normalizeColor()] ?: COLOR_HEX[name.lowercase().trim()]
+private fun colorFor(name: String): Color? = colorSwatchOrNull(name.normalizeColor()) ?: colorSwatchOrNull(name)
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -2519,7 +2510,7 @@ private fun ColorDrawer(
     onAddCustom: (String) -> Unit,
 ) {
     val scheme = MaterialTheme.colorScheme
-    val all = (COLOR_HEX.keys + options).distinct()
+    val all = (FilterColorKeys + options).distinct()
     Column(modifier = Modifier.padding(start = 14.dp, end = 14.dp, top = 4.dp, bottom = 14.dp)) {
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),

@@ -21,9 +21,11 @@ import com.librelookai.gemini.UsageCategory
 import com.librelookai.settings.AiConsiderations
 import com.librelookai.settings.UserPreferences
 import com.librelookai.wardrobe.DriveImage
+import com.librelookai.weather.DestinationSuggestion
 import com.librelookai.weather.WeatherRepository
 import com.librelookai.settings.AppLanguage
 import com.librelookai.weather.wmoEmoji
+import kotlinx.coroutines.Job
 
 data class TravelUiState(
     val destination: String = "",
@@ -54,6 +56,8 @@ data class TravelUiState(
      * settings as-is". Cleared on [clearResult] and reset when the user clears the screen.
      */
     val considerationsOverride: AiConsiderations? = null,
+    /** Live geocoding suggestions for the destination field. */
+    val destinationSuggestions: List<DestinationSuggestion> = emptyList(),
 )
 
 class TravelViewModel(app: Application) : AndroidViewModel(app) {
@@ -65,7 +69,35 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
     private val _state = MutableStateFlow(TravelUiState())
     val state: StateFlow<TravelUiState> = _state.asStateFlow()
 
-    fun updateDestination(s: String) = _state.update { it.copy(destination = s) }
+    private var suggestionJob: Job? = null
+
+    fun updateDestination(s: String, language: String = "en") {
+        _state.update { it.copy(destination = s) }
+        suggestionJob?.cancel()
+        val query = s.trim()
+        if (query.length < 2) {
+            _state.update { it.copy(destinationSuggestions = emptyList()) }
+            return
+        }
+        suggestionJob = viewModelScope.launch {
+            kotlinx.coroutines.delay(250L) // debounce
+            val results = weather.searchDestinations(query, language = language)
+            // Only apply if user hasn't moved on / cleared
+            if (_state.value.destination.trim() == query) {
+                _state.update { it.copy(destinationSuggestions = results) }
+            }
+        }
+    }
+
+    fun pickDestination(s: DestinationSuggestion) {
+        suggestionJob?.cancel()
+        _state.update { it.copy(destination = s.display, destinationSuggestions = emptyList()) }
+    }
+
+    fun clearDestinationSuggestions() {
+        _state.update { it.copy(destinationSuggestions = emptyList()) }
+    }
+
     fun updateDays(n: Int)           = _state.update { it.copy(days = n.coerceIn(1, 21)) }
     fun updateStartDate(d: LocalDate) = _state.update { it.copy(startDate = d) }
     fun updateRefinementInput(s: String) = _state.update { it.copy(refinementInput = s) }

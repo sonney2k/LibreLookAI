@@ -492,7 +492,30 @@ internal fun WardrobeFilterSheet(
  * Approximate display swatch for a normalized color tag (see [normalizeColor]).
  * Mirrors the palette used in the design handoff (Wardrobe Grid Interactive v2).
  */
-private fun colorSwatchHex(name: String): Color = when (name.lowercase().trim()) {
+/**
+ * Canonical list of color swatch keys displayed by the wardrobe filter and Edit Tags color picker.
+ * Order matches the row grouping in [colorSwatchHex].
+ */
+internal val FilterColorKeys: List<String> = listOf(
+    "black", "charcoal", "gray", "silver", "white", "cream",
+    "beige", "tan", "camel", "khaki", "brown", "rust",
+    "orange", "peach", "coral", "red", "burgundy", "pink", "magenta",
+    "purple", "lavender", "lilac",
+    "blue", "navy", "sky", "denim blue", "teal",
+    "mint", "green", "olive", "forest",
+    "yellow", "mustard", "gold",
+    "multicolor",
+)
+
+private val FilterColorKeySet: Set<String> = FilterColorKeys.toSet()
+
+/** Returns the wardrobe-filter swatch for [name], or null if the name is not a known color. */
+internal fun colorSwatchOrNull(name: String): Color? {
+    val n = name.lowercase().trim()
+    return if (n in FilterColorKeySet) colorSwatchHex(n) else null
+}
+
+internal fun colorSwatchHex(name: String): Color = when (name.lowercase().trim()) {
     // Neutrals
     "black"      -> Color(0xFF1A1A1A)
     "charcoal"   -> Color(0xFF3A3A3A)
