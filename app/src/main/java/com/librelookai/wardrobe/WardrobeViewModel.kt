@@ -1640,9 +1640,11 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
      * Each item has its own file ("${driveId}.json") — no mutex needed; writes are independent.
      */
     private fun saveSidecar(driveId: String) {
-        val id = folderId ?: return
         viewModelScope.launch(Dispatchers.IO) {
             val img = _state.value.images.find { it.driveId == driveId } ?: return@launch
+            // Resolve the owning folder from the image itself — `folderId` is null when the
+            // user is browsing "All locations", but each DriveImage already knows its closet.
+            val id = img.folderId.ifEmpty { folderId.orEmpty() }.ifEmpty { return@launch }
             val sidecarJson = gson.toJson(ItemSidecar(img.tags, img.originalDriveId))
             val sidecarFileId = runCatching {
                 drive.upsertSidecar(id, "$driveId${DriveRepository.SIDECAR_SUFFIX}", sidecarJson)
@@ -1653,7 +1655,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                         if (i.driveId == driveId) i.copy(sidecarDriveId = sidecarFileId) else i
                     })
                 }
-                saveLocalCache(id, _state.value.images)
+                saveLocalCache(id, _state.value.images.filter { it.folderId == id })
             }
         }
     }
