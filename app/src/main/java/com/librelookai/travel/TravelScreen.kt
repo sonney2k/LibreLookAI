@@ -128,6 +128,43 @@ fun TravelScreen(
     stylesViewModel: OutfitsViewModel = viewModel(),
     locationViewModel: LocationViewModel = viewModel(),
     onSettingsClick: () -> Unit = {},
+    plannerMode: Boolean = false,
+    onPlannerModeChange: (Boolean) -> Unit = {},
+    modifier: Modifier = Modifier,
+) {
+    if (!plannerMode) {
+        TravelOutfitsView(
+            wardrobeViewModel = wardrobeViewModel,
+            profileViewModel = profileViewModel,
+            stylesViewModel = stylesViewModel,
+            locationViewModel = locationViewModel,
+            onOpenPlanner = { onPlannerModeChange(true) },
+            onSettingsClick = onSettingsClick,
+            modifier = modifier,
+        )
+        return
+    }
+    androidx.activity.compose.BackHandler { onPlannerModeChange(false) }
+    TravelPlannerContent(
+        travelViewModel = travelViewModel,
+        wardrobeViewModel = wardrobeViewModel,
+        profileViewModel = profileViewModel,
+        stylesViewModel = stylesViewModel,
+        locationViewModel = locationViewModel,
+        onBack = { onPlannerModeChange(false) },
+        modifier = modifier,
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@Composable
+private fun TravelPlannerContent(
+    travelViewModel: TravelViewModel,
+    wardrobeViewModel: WardrobeViewModel,
+    profileViewModel: ProfileViewModel,
+    stylesViewModel: OutfitsViewModel,
+    locationViewModel: LocationViewModel,
+    onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val isOffline = LocalIsOffline.current
@@ -142,19 +179,7 @@ fun TravelScreen(
     var isMoveInProgress by remember { mutableStateOf(false) }
     var moveMessage by remember { mutableStateOf<String?>(null) }
 
-    Column(modifier = modifier.fillMaxSize()) {
-        AppScreenHeader(
-            title = stringResource(R.string.travel_title),
-            leadingIcon = Icons.Default.FlightTakeoff,
-            trailingContent = {
-                LocationButton(
-                    locations = locationState.locations,
-                    activeLocationId = locationState.activeLocationId,
-                    onSetActiveLocation = locationViewModel::setActiveLocation,
-                )
-            },
-            onSettingsClick = onSettingsClick,
-        )
+    Column(modifier = modifier.fillMaxSize().statusBarsPadding()) {
         Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
             contentPadding = PaddingValues(bottom = 24.dp),
@@ -306,6 +331,7 @@ fun TravelScreen(
                                     prefs              = profileState.preferences,
                                     initialName        = outfit.occasion,
                                     initialDescription = outfit.description,
+                                    initialTags        = listOf("travel"),
                                 )
                             }
                         } else null,
@@ -405,8 +431,183 @@ fun TravelScreen(
                 action = { TextButton(onClick = { moveMessage = null }) { Text(stringResource(R.string.action_ok)) } },
             ) { Text(msg) }
         }
+
+        // Floating close — only chrome on the planner screen (top + bottom panels are hidden).
+        IconButton(
+            onClick = onBack,
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(8.dp),
+        ) {
+            Icon(
+                Icons.Default.Close,
+                contentDescription = stringResource(R.string.action_back),
+                tint = MaterialTheme.colorScheme.onSurface,
+            )
+        }
         } // Box
     } // Column
+}
+
+// ---------- Travel-outfits list view ----------
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TravelOutfitsView(
+    wardrobeViewModel: WardrobeViewModel,
+    profileViewModel: ProfileViewModel,
+    stylesViewModel: OutfitsViewModel,
+    locationViewModel: LocationViewModel,
+    onOpenPlanner: () -> Unit,
+    onSettingsClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val isOffline = LocalIsOffline.current
+    val outfitsState   by stylesViewModel.state.collectAsState()
+    val wardrobeState  by wardrobeViewModel.state.collectAsState()
+    val profileState   by profileViewModel.state.collectAsState()
+    val locationState  by locationViewModel.state.collectAsState()
+
+    val travelOutfits = remember(outfitsState.outfits) {
+        outfitsState.outfits.filter { it.tags.any { tag -> tag.equals("travel", ignoreCase = true) } }
+    }
+    val imagesById = remember(wardrobeState.images) { wardrobeState.images.associateBy { it.driveId } }
+
+    Column(modifier = modifier.fillMaxSize()) {
+        AppScreenHeader(
+            title = stringResource(R.string.travel_outfits_section),
+            leadingIcon = Icons.Default.FlightTakeoff,
+            trailingContent = {
+                LocationButton(
+                    locations = locationState.locations,
+                    activeLocationId = locationState.activeLocationId,
+                    onSetActiveLocation = locationViewModel::setActiveLocation,
+                )
+            },
+            onSettingsClick = onSettingsClick,
+        )
+        Box(modifier = Modifier.fillMaxSize()) {
+            if (travelOutfits.isEmpty()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = 64.dp, start = 32.dp, end = 32.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    Icon(
+                        Icons.Default.FlightTakeoff,
+                        contentDescription = null,
+                        modifier = Modifier.size(48.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Text(
+                        stringResource(R.string.outfits_empty),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                    )
+                    Text(
+                        stringResource(R.string.travel_outfits_empty_hint),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                    )
+                }
+            } else {
+                LazyColumn(
+                    contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    modifier = Modifier.fillMaxSize(),
+                ) {
+                    items(travelOutfits, key = { it.id }) { outfit ->
+                        TravelOutfitListCard(
+                            outfit = outfit,
+                            imagesById = imagesById,
+                            onClick = {
+                                stylesViewModel.startEditing(
+                                    outfit,
+                                    wardrobeState.images,
+                                    profileState.preferences,
+                                )
+                            },
+                        )
+                    }
+                }
+            }
+
+            if (!isOffline) {
+                androidx.compose.material3.FloatingActionButton(
+                    onClick = onOpenPlanner,
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(16.dp),
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = stringResource(R.string.travel_plan_trip))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun TravelOutfitListCard(
+    outfit: com.librelookai.data.model.Outfit,
+    imagesById: Map<String, DriveImage>,
+    onClick: () -> Unit,
+) {
+    val ctx = LocalContext.current
+    val items = outfit.itemIds.mapNotNull { imagesById[it] }
+    OutlinedCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+    ) {
+        Column(
+            modifier = Modifier.padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            if (outfit.name.isNotBlank()) {
+                Text(
+                    outfit.name,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                )
+            }
+            if (outfit.description.isNotBlank()) {
+                Text(
+                    outfit.description,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            if (items.isNotEmpty()) {
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    items(items, key = { it.driveId }) { image ->
+                        AsyncImage(
+                            model = remember(image.driveId, image.version) {
+                                ImageRequest.Builder(ctx)
+                                    .data(image.localPath)
+                                    .memoryCacheKey("${image.driveId}_${image.version}")
+                                    .build()
+                            },
+                            contentDescription = image.name,
+                            modifier = Modifier
+                                .size(64.dp)
+                                .clip(MaterialTheme.shapes.small),
+                            contentScale = ContentScale.Crop,
+                        )
+                    }
+                }
+            } else {
+                Text(
+                    stringResource(R.string.outfits_missing_items),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.outline,
+                )
+            }
+        }
+    }
 }
 
 // ---------- Forecast day chip ----------
@@ -644,38 +845,10 @@ private fun SkyHero(
     onClearSuggestions: () -> Unit,
 ) {
     val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
-    val skyTop = palette.primaryDim
     val keyboardController = LocalSoftwareKeyboardController.current
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Brush.verticalGradient(listOf(skyTop, palette.bg))),
+        modifier = Modifier.fillMaxWidth(),
     ) {
-        // Sun decoration
-        Box(
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(top = 14.dp, end = 24.dp)
-                .size(64.dp)
-                .clip(CircleShape)
-                .background(
-                    Brush.radialGradient(
-                        listOf(
-                            palette.primary.copy(alpha = 0.30f),
-                            palette.primary.copy(alpha = 0.18f),
-                            Color.Transparent,
-                        ),
-                    ),
-                ),
-        )
-        // Cloud decoration
-        Box(
-            modifier = Modifier
-                .padding(start = 0.dp, top = 50.dp)
-                .size(width = 130.dp, height = 46.dp)
-                .clip(RoundedCornerShape(50))
-                .background(palette.divider.copy(alpha = 0.5f)),
-        )
         Column(
             modifier = Modifier
                 .fillMaxWidth()

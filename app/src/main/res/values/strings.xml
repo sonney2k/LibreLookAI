@@ -542,6 +542,9 @@
     <string name="travel_label_ai_considers">AI considers</string>
     <string name="travel_label_about">What\'s the trip about?</string>
     <string name="travel_outfit_count_summary">%1$d looks · ~%2$s days each</string>
+    <string name="travel_outfits_section">Travel outfits</string>
+    <string name="travel_outfits_empty_hint">Tap + to plan a trip and save outfits tagged "travel".</string>
+    <string name="travel_plan_trip">Plan a trip</string>
 
     <!-- Calendar -->
     <string name="calendar_day_mo">Mo</string>

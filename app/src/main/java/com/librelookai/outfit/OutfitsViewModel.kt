@@ -377,6 +377,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
         prefs: UserPreferences?,
         initialName: String = "",
         initialDescription: String = "",
+        initialTags: List<String> = emptyList(),
         editingStyleId: String? = null,
         defaultSourceFolderId: String? = null,
     ) {
@@ -417,8 +418,8 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 composerName                = initialName,
                 composerDescription         = initialDescription,
                 composerTags                = editingStyleId?.let { id ->
-                    it.outfits.find { o -> o.id == id }?.tags ?: emptyList()
-                } ?: emptyList(),
+                    it.outfits.find { o -> o.id == id }?.tags ?: initialTags
+                } ?: initialTags,
                 composerFeedback            = "",
                 composerFeedbackHistory     = emptyList(),
                 composerReason              = "",

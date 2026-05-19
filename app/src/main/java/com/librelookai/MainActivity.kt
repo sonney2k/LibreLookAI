@@ -406,23 +406,27 @@ class MainActivity : ComponentActivity() {
                         }
 
                         var dismissWardrobeViewerTrigger by remember { mutableIntStateOf(0) }
+                        var travelPlannerMode by rememberSaveable { mutableStateOf(false) }
+                        val hideChrome = selectedTab == 3 && travelPlannerMode
 
                         Scaffold(
                             modifier = Modifier.fillMaxSize(),
                             bottomBar = {
-                                AppNavBar(
-                                    selectedTab = selectedTab,
-                                    onTabSelected = {
-                                        Analytics.action("NavBar", "tab_select", mapOf("index" to it.toString()))
-                                        selectedTab = it
-                                        navResetTick++
-                                    },
-                                    onTabReselected = { tab ->
-                                        Analytics.action("NavBar", "tab_reselect", mapOf("index" to tab.toString()))
-                                        if (tab == 1) dismissWardrobeViewerTrigger++
-                                        navResetTick++
-                                    },
-                                )
+                                if (!hideChrome) {
+                                    AppNavBar(
+                                        selectedTab = selectedTab,
+                                        onTabSelected = {
+                                            Analytics.action("NavBar", "tab_select", mapOf("index" to it.toString()))
+                                            selectedTab = it
+                                            navResetTick++
+                                        },
+                                        onTabReselected = { tab ->
+                                            Analytics.action("NavBar", "tab_reselect", mapOf("index" to tab.toString()))
+                                            if (tab == 1) dismissWardrobeViewerTrigger++
+                                            navResetTick++
+                                        },
+                                    )
+                                }
                             },
                         ) { innerPadding ->
                             Column(Modifier.fillMaxSize().padding(innerPadding)) {
@@ -562,6 +566,8 @@ class MainActivity : ComponentActivity() {
                                             stylesViewModel = stylesViewModel,
                                             locationViewModel = locationViewModel,
                                             onSettingsClick = onSettingsClick,
+                                            plannerMode = travelPlannerMode,
+                                            onPlannerModeChange = { travelPlannerMode = it },
                                         )
                                         4 -> InsightsScreen(
                                             wardrobeViewModel = wardrobeViewModel,
