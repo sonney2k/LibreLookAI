@@ -234,12 +234,19 @@ internal fun WardrobeItemGrid(
     highlightedDriveId: String? = null,
     processingDriveId: String? = null,
 ) {
+    // Defensive distinctBy: a transient sync race can produce duplicate driveIds in state.images
+    // (e.g. local placeholder + Drive-confirmed copy briefly coexisting). LazyVerticalGrid crashes
+    // hard on duplicate keys, so dedupe here once instead of patching every caller.
+    val uniqueImages = remember(images) {
+        if (images.size == images.distinctBy { it.driveId }.size) images
+        else images.distinctBy { it.driveId }
+    }
     LazyVerticalGrid(
         state = gridState,
         columns = GridCells.Adaptive(cellSizeDp),
         modifier = modifier.scrollbar(gridState),
     ) {
-        itemsIndexed(images, key = { _, img -> img.driveId }) { index, image ->
+        itemsIndexed(uniqueImages, key = { _, img -> img.driveId }) { index, image ->
             WardrobeTile(
                 image = image,
                 isSelected = image.driveId in selectedIds,

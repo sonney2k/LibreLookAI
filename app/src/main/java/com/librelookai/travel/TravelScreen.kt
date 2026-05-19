@@ -42,7 +42,6 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.automirrored.filled.TrendingUp
-import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material.icons.outlined.Checkroom
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
@@ -179,10 +178,11 @@ private fun TravelPlannerContent(
     var isMoveInProgress by remember { mutableStateOf(false) }
     var moveMessage by remember { mutableStateOf<String?>(null) }
 
-    Column(modifier = modifier.fillMaxSize().statusBarsPadding()) {
-        Box(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = modifier.fillMaxSize()) {
+        PlannerHeader(onClose = onBack)
+        Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
         LazyColumn(
-            contentPadding = PaddingValues(bottom = 24.dp),
+            contentPadding = PaddingValues(bottom = 12.dp),
             verticalArrangement = Arrangement.spacedBy(0.dp),
         ) {
             // ---- Plan-a-trip input section ----
@@ -194,8 +194,6 @@ private fun TravelPlannerContent(
                     state = state,
                     considerations = effectiveConsiderations,
                     geoLanguage = geoLanguage,
-                    isWorking = isWorking,
-                    isOffline = isOffline,
                     onUpdateDestination = travelViewModel::updateDestination,
                     onPickSuggestion = {
                         travelViewModel.pickDestination(it)
@@ -209,14 +207,6 @@ private fun TravelPlannerContent(
                     onToggleVibe = travelViewModel::toggleVibe,
                     onToggleConsideration = { transform ->
                         travelViewModel.setConsideration(prefsConsiderations, transform)
-                    },
-                    onGenerate = {
-                        keyboardController?.hide()
-                        travelViewModel.generate(
-                            prefs  = profileState.preferences,
-                            images = wardrobeState.images,
-                            styles = outfitsState.outfits,
-                        )
                     },
                 )
             }
@@ -370,34 +360,6 @@ private fun TravelPlannerContent(
                 }
             }
 
-            // ---- Empty state ----
-            if (!isWorking && state.packingList == null && state.error == null) {
-                item {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 48.dp),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
-                            Icon(
-                                Icons.Default.FlightTakeoff,
-                                contentDescription = null,
-                                modifier = Modifier.size(48.dp),
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                            Text(
-                                stringResource(R.string.travel_empty),
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        }
-                    }
-                }
-            }
         }
 
         // AI processing overlay
@@ -432,20 +394,22 @@ private fun TravelPlannerContent(
             ) { Text(msg) }
         }
 
-        // Floating close — only chrome on the planner screen (top + bottom panels are hidden).
-        IconButton(
-            onClick = onBack,
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(8.dp),
-        ) {
-            Icon(
-                Icons.Default.Close,
-                contentDescription = stringResource(R.string.action_back),
-                tint = MaterialTheme.colorScheme.onSurface,
+        } // Box
+        // Sticky generate button — pinned at the bottom of the planner.
+        Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
+            GenerateButton(
+                hasResult = state.packingList != null,
+                enabled = state.destination.isNotBlank() && !isWorking && !isOffline,
+                onClick = {
+                    keyboardController?.hide()
+                    travelViewModel.generate(
+                        prefs  = profileState.preferences,
+                        images = wardrobeState.images,
+                        styles = outfitsState.outfits,
+                    )
+                },
             )
         }
-        } // Box
     } // Column
 }
 
@@ -776,8 +740,6 @@ private fun PlanTripSection(
     state: TravelUiState,
     considerations: com.librelookai.settings.AiConsiderations,
     geoLanguage: String,
-    isWorking: Boolean,
-    isOffline: Boolean,
     onUpdateDestination: (String, String) -> Unit,
     onPickSuggestion: (com.librelookai.weather.DestinationSuggestion) -> Unit,
     onClearDestinationSuggestions: () -> Unit,
@@ -787,7 +749,6 @@ private fun PlanTripSection(
     onUpdateGoal: (String) -> Unit,
     onToggleVibe: (String) -> Unit,
     onToggleConsideration: ((com.librelookai.settings.AiConsiderations) -> com.librelookai.settings.AiConsiderations) -> Unit,
-    onGenerate: () -> Unit,
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         SkyHero(
@@ -799,8 +760,8 @@ private fun PlanTripSection(
             onClearSuggestions = onClearDestinationSuggestions,
         )
         Column(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             DatesAndDaysCard(
                 startDate = state.startDate,
@@ -825,13 +786,39 @@ private fun PlanTripSection(
                 considerations = considerations,
                 onToggle = onToggleConsideration,
             )
-            GenerateButton(
-                hasResult = state.packingList != null,
-                enabled = state.destination.isNotBlank() && !isWorking && !isOffline,
-                onClick = onGenerate,
+        }
+    }
+}
+
+// Mirrors the OutfitComposer header style: close button + headlineSmall title + subtitle.
+@Composable
+private fun PlannerHeader(onClose: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 8.dp, end = 8.dp, top = 4.dp, bottom = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        IconButton(onClick = onClose, modifier = Modifier.size(40.dp)) {
+            Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_cancel))
+        }
+        Spacer(Modifier.width(4.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                stringResource(R.string.travel_plan_title),
+                style = MaterialTheme.typography.headlineSmall.copy(
+                    fontSize = 36.sp,
+                    fontWeight = FontWeight.Bold,
+                ),
+            )
+            Text(
+                stringResource(R.string.travel_plan_eyebrow),
+                style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.sp),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }
+    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -852,24 +839,9 @@ private fun SkyHero(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 18.dp, vertical = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp),
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Column {
-                Text(
-                    stringResource(R.string.travel_plan_eyebrow).uppercase(),
-                    fontSize = 9.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = palette.textMuted,
-                )
-                Text(
-                    stringResource(R.string.travel_plan_title),
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = palette.text,
-                )
-            }
-
             var suggestionsExpanded by remember { mutableStateOf(false) }
             val showSuggestions = suggestionsExpanded && suggestions.isNotEmpty()
             var editing by remember { mutableStateOf(destination.isBlank()) }
@@ -1231,16 +1203,13 @@ private fun GoalAiCard(
                     )
                 },
                 minLines = 1,
-                maxLines = 3,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 54.dp),
+                maxLines = 2,
+                modifier = Modifier.fillMaxWidth(),
             )
         }
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun VibeChips(
     selected: Set<String>,
@@ -1254,11 +1223,8 @@ private fun VibeChips(
             fontWeight = FontWeight.Bold,
             color = palette.textMuted,
         )
-        FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(5.dp),
-            verticalArrangement = Arrangement.spacedBy(5.dp),
-        ) {
-            TRAVEL_VIBES.forEach { (value, labelRes) ->
+        LazyRow(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
+            items(TRAVEL_VIBES, key = { it.first }) { (value, labelRes) ->
                 SmallPillChip(
                     label = stringResource(labelRes),
                     icon = null,
@@ -1270,7 +1236,6 @@ private fun VibeChips(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun AiConsidersChips(
     considerations: com.librelookai.settings.AiConsiderations,
@@ -1284,40 +1249,42 @@ private fun AiConsidersChips(
             fontWeight = FontWeight.Bold,
             color = palette.textMuted,
         )
-        FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(5.dp),
-            verticalArrangement = Arrangement.spacedBy(5.dp),
-        ) {
-            SmallPillChip(
-                label = stringResource(R.string.ai_consider_weather),
-                icon = Icons.Default.WbSunny,
-                active = considerations.weather,
-            ) { onToggle { it.copy(weather = !it.weather) } }
-            SmallPillChip(
-                label = stringResource(R.string.ai_consider_location),
-                icon = Icons.Default.Place,
-                active = considerations.location,
-            ) { onToggle { it.copy(location = !it.location) } }
-            SmallPillChip(
-                label = stringResource(R.string.ai_consider_trends),
-                icon = Icons.AutoMirrored.Filled.TrendingUp,
-                active = considerations.trends,
-            ) { onToggle { it.copy(trends = !it.trends) } }
-            SmallPillChip(
-                label = stringResource(R.string.ai_consider_gender),
-                icon = Icons.Default.Person,
-                active = considerations.gender,
-            ) { onToggle { it.copy(gender = !it.gender) } }
-            SmallPillChip(
-                label = stringResource(R.string.ai_consider_age),
-                icon = Icons.Default.Cake,
-                active = considerations.age,
-            ) { onToggle { it.copy(age = !it.age) } }
-            SmallPillChip(
-                label = stringResource(R.string.ai_consider_preferences),
-                icon = Icons.Default.Favorite,
-                active = considerations.preferences,
-            ) { onToggle { it.copy(preferences = !it.preferences) } }
+        LazyRow(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
+            item {
+                SmallPillChip(
+                    label = stringResource(R.string.ai_consider_location),
+                    icon = Icons.Default.Place,
+                    active = considerations.location,
+                ) { onToggle { it.copy(location = !it.location) } }
+            }
+            item {
+                SmallPillChip(
+                    label = stringResource(R.string.ai_consider_trends),
+                    icon = Icons.AutoMirrored.Filled.TrendingUp,
+                    active = considerations.trends,
+                ) { onToggle { it.copy(trends = !it.trends) } }
+            }
+            item {
+                SmallPillChip(
+                    label = stringResource(R.string.ai_consider_gender),
+                    icon = Icons.Default.Person,
+                    active = considerations.gender,
+                ) { onToggle { it.copy(gender = !it.gender) } }
+            }
+            item {
+                SmallPillChip(
+                    label = stringResource(R.string.ai_consider_age),
+                    icon = Icons.Default.Cake,
+                    active = considerations.age,
+                ) { onToggle { it.copy(age = !it.age) } }
+            }
+            item {
+                SmallPillChip(
+                    label = stringResource(R.string.ai_consider_preferences),
+                    icon = Icons.Default.Favorite,
+                    active = considerations.preferences,
+                ) { onToggle { it.copy(preferences = !it.preferences) } }
+            }
         }
     }
 }
