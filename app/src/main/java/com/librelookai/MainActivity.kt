@@ -216,6 +216,7 @@ class MainActivity : ComponentActivity() {
                     val profileViewModel: ProfileViewModel = viewModel()
                     val weatherViewModel: WeatherViewModel = viewModel()
                     val travelViewModel: TravelViewModel = viewModel()
+                    val tripsViewModel: com.librelookai.travel.TripsViewModel = viewModel()
                     val gapViewModel: WardrobeGapViewModel = viewModel()
                     val creditsViewModel: CreditsViewModel = viewModel()
                     val tryOnViewModel: TryOnViewModel = viewModel()
@@ -278,6 +279,7 @@ class MainActivity : ComponentActivity() {
                     LaunchedEffect(Unit) {
                         shoppingClosetViewModel.loadItems()
                         tryOnViewModel.loadHistory()
+                        tripsViewModel.loadTrips()
                     }
 
                     // Mirror similarity-check preferences into the wardrobe VM
@@ -407,7 +409,8 @@ class MainActivity : ComponentActivity() {
 
                         var dismissWardrobeViewerTrigger by remember { mutableIntStateOf(0) }
                         var travelPlannerMode by rememberSaveable { mutableStateOf(false) }
-                        val hideChrome = selectedTab == 3 && travelPlannerMode
+                        var tripViewerTripId: String? by rememberSaveable { mutableStateOf(null) }
+                        val hideChrome = selectedTab == 3 && (travelPlannerMode || tripViewerTripId != null)
 
                         Scaffold(
                             modifier = Modifier.fillMaxSize(),
@@ -561,6 +564,7 @@ class MainActivity : ComponentActivity() {
                                         )
                                         3 -> TravelScreen(
                                             travelViewModel = travelViewModel,
+                                            tripsViewModel = tripsViewModel,
                                             wardrobeViewModel = wardrobeViewModel,
                                             profileViewModel = profileViewModel,
                                             stylesViewModel = stylesViewModel,
@@ -568,6 +572,9 @@ class MainActivity : ComponentActivity() {
                                             onSettingsClick = onSettingsClick,
                                             plannerMode = travelPlannerMode,
                                             onPlannerModeChange = { travelPlannerMode = it },
+                                            tripViewerTripId = tripViewerTripId,
+                                            onOpenTrip = { tripViewerTripId = it },
+                                            onCloseTripViewer = { tripViewerTripId = null },
                                         )
                                         4 -> InsightsScreen(
                                             wardrobeViewModel = wardrobeViewModel,

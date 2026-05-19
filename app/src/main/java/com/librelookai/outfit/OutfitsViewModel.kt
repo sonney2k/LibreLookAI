@@ -19,6 +19,7 @@ import java.time.LocalDate
 import java.util.Locale
 import com.librelookai.auth.GoogleAuthManager
 import com.librelookai.data.drive.DriveRepository
+import com.librelookai.data.model.DayForecast
 import com.librelookai.data.model.Outfit
 import com.librelookai.gemini.FashionTrends
 import com.librelookai.gemini.GeminiRepository
@@ -54,6 +55,23 @@ data class ComposerSuggestion(
 )
 
 enum class ComposerWeatherMode { AUTO, MANUAL }
+
+/**
+ * Context passed to the composer when editing/creating an outfit that belongs to a [Trip].
+ * Drives weather pre-seeding, the composer header ("Day N of {tripName}"), and AI prompt
+ * augmentation so refinement / alternatives are aware of the trip's vibes, goal,
+ * considerations, and per-day forecast.
+ */
+data class TripContext(
+    val tripId: String,
+    val tripName: String,
+    val dayIndex: Int,
+    val dayForecast: DayForecast? = null,
+    val tripStartDate: String = "",
+    val considerations: AiConsiderations = AiConsiderations(),
+    val vibes: Set<String> = emptySet(),
+    val goal: String = "",
+)
 
 
 data class OutfitsUiState(
@@ -138,6 +156,11 @@ data class OutfitsUiState(
     val tagSuggestion: TagSuggestionState? = null,
     /** Outfit currently being tag-edited from the detail viewer (chips clicked). */
     val tagEditingOutfitId: String? = null,
+    /**
+     * Set when the composer is invoked from a trip-day card. Drives header rendering,
+     * weather pre-seed, and AI prompt augmentation. Cleared on [closeComposer].
+     */
+    val composerTripContext: TripContext? = null,
 )
 
 /** Transient state for the "Suggest tags" action in the outfit detail viewer. */
@@ -306,7 +329,12 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
     // ---------- Create flow ----------
 
     /** Opens the unified composer for an existing saved style (update-in-place on save). */
-    fun startEditing(style: Outfit, images: List<DriveImage>, prefs: UserPreferences?) {
+    fun startEditing(
+        style: Outfit,
+        images: List<DriveImage>,
+        prefs: UserPreferences?,
+        tripContext: TripContext? = null,
+    ) {
         openComposer(
             seedItemIds        = style.itemIds.toSet(),
             images             = images,
@@ -314,6 +342,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             initialName        = style.name,
             initialDescription = style.description,
             editingStyleId     = style.id,
+            tripContext        = tripContext,
         )
     }
 
@@ -365,6 +394,101 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /**
+     * Bulk-write [newOutfits] to the active save folder in a single JSON write. Resolves each
+     * outfit's `itemNames` from the folder's current file listing. Used by the trip creation
+     * flow (Travel planner generate → N outfits + 1 Trip).
+     */
+    fun addOutfits(newOutfits: List<Outfit>, onDone: (Boolean) -> Unit = {}) {
+        if (newOutfits.isEmpty()) { onDone(true); return }
+        viewModelScope.launch {
+            val id = saveFolderId ?: folderId ?: run { onDone(false); return@launch }
+            val idToName = drive.listFiles(id).associate { it.id to it.name }
+            val resolved = newOutfits.map { o ->
+                o.copy(itemNames = o.itemNames.ifEmpty { o.itemIds.mapNotNull { idToName[it] } })
+            }
+            val updated = _state.value.outfits + resolved
+            runCatching {
+                drive.saveOutfitsJson(id, gson.toJson(updated))
+            }.onSuccess {
+                _state.update { it.copy(outfits = updated) }
+                onDone(true)
+            }.onFailure { e ->
+                _state.update { it.copy(error = e.message) }
+                onDone(false)
+            }
+        }
+    }
+
+    /**
+     * Bulk-updates the `itemIds` of multiple outfits in one Drive write. [updates] maps outfit id
+     * to the new item id list. Used by the trip bulk-refine flow ("brighter", "pack lighter").
+     */
+    fun updateOutfitItems(updates: Map<String, List<String>>, onDone: (Boolean) -> Unit = {}) {
+        if (updates.isEmpty()) { onDone(true); return }
+        val all = _state.value.outfits
+        val touched = all.filter { it.id in updates }
+        if (touched.isEmpty()) { onDone(true); return }
+        viewModelScope.launch {
+            val affectedFolderIds = touched.map { it.folderId }.filter { it.isNotEmpty() }.toSet()
+                .ifEmpty { listOfNotNull(folderId).toSet() }
+            if (affectedFolderIds.isEmpty()) { onDone(false); return@launch }
+            // Resolve itemNames per folder via that folder's file listing.
+            val updated = all.toMutableList()
+            for (fid in affectedFolderIds) {
+                val idToName = drive.listFiles(fid).associate { it.id to it.name }
+                for ((idx, o) in updated.withIndex()) {
+                    val newIds = updates[o.id] ?: continue
+                    if (o.folderId.isNotEmpty() && o.folderId != fid) continue
+                    updated[idx] = o.copy(
+                        itemIds = newIds,
+                        itemNames = newIds.mapNotNull { idToName[it] },
+                    )
+                }
+            }
+            runCatching {
+                for (fid in affectedFolderIds) {
+                    val folderStyles = updated.filter { it.folderId == fid || it.folderId.isEmpty() }
+                    drive.saveOutfitsJson(fid, gson.toJson(folderStyles))
+                }
+            }.onSuccess {
+                _state.update { it.copy(outfits = updated) }
+                onDone(true)
+            }.onFailure { e ->
+                _state.update { it.copy(error = e.message) }
+                onDone(false)
+            }
+        }
+    }
+
+    /**
+     * Deletes all outfits whose id is in [ids] (used to cascade a trip delete). Writes once per
+     * affected folder.
+     */
+    fun deleteOutfitsByIds(ids: Collection<String>, onDone: (Boolean) -> Unit = {}) {
+        if (ids.isEmpty()) { onDone(true); return }
+        val all = _state.value.outfits
+        val updated = all.filterNot { it.id in ids }
+        val deleted = all.filter { it.id in ids }
+        val affectedFolderIds = if (folderId != null) setOf(folderId!!) else
+            deleted.map { it.folderId }.filter { it.isNotEmpty() }.toSet()
+        if (affectedFolderIds.isEmpty()) { onDone(true); return }
+        viewModelScope.launch {
+            runCatching {
+                for (fid in affectedFolderIds) {
+                    val folderStyles = updated.filter { it.folderId == fid || it.folderId.isEmpty() }
+                    drive.saveOutfitsJson(fid, gson.toJson(folderStyles))
+                }
+            }.onSuccess {
+                _state.update { it.copy(outfits = updated) }
+                onDone(true)
+            }.onFailure { e ->
+                _state.update { it.copy(error = e.message) }
+                onDone(false)
+            }
+        }
+    }
+
     // ---------- Unified style composer ----------
 
     /**
@@ -380,6 +504,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
         initialTags: List<String> = emptyList(),
         editingStyleId: String? = null,
         defaultSourceFolderId: String? = null,
+        tripContext: TripContext? = null,
     ) {
         val ids = seedItemIds.toList()
         val sourceFolders = defaultSourceFolderId?.let { setOf(it) } ?: emptySet()
@@ -402,6 +527,13 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
         // Composer always opens in EDIT mode — both for new and existing outfits.
         // The "Fullscreen" action in the header opens a read-only viewer separately.
         val mode = ComposerMode.EDIT
+        // Trip-day flows seed manual weather from the forecast so the AI knows the conditions
+        // when generating alternatives, and pre-select the trip's vibes.
+        val seedWeatherMode = if (tripContext?.dayForecast != null) ComposerWeatherMode.MANUAL else ComposerWeatherMode.AUTO
+        val seedSeason  = tripContext?.let { deriveSeasonFromIsoDate(it.tripStartDate, it.dayIndex) } ?: ""
+        val seedTempC   = tripContext?.dayForecast?.let { ((it.minTempC + it.maxTempC) / 2f).toInt() }
+        val seedPrecip  = tripContext?.dayForecast?.weatherCode?.let { precipForWmoCode(it) } ?: ""
+        val seedVibes   = tripContext?.vibes ?: emptySet()
         _state.update {
             it.copy(
                 isComposerOpen              = true,
@@ -410,11 +542,12 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 composerSlots               = slots,
                 composerInitialItemIds      = slots.map { it.selectedItemId },
                 composerMode                = mode,
-                composerWeatherMode         = ComposerWeatherMode.AUTO,
-                composerManualSeason        = "",
-                composerManualTempC         = null,
-                composerManualPrecip        = "",
-                composerVibes               = emptySet(),
+                composerWeatherMode         = seedWeatherMode,
+                composerManualSeason        = seedSeason,
+                composerManualTempC         = seedTempC,
+                composerManualPrecip        = seedPrecip,
+                composerVibes               = seedVibes,
+                composerTripContext         = tripContext,
                 composerName                = initialName,
                 composerDescription         = initialDescription,
                 composerTags                = editingStyleId?.let { id ->
@@ -477,6 +610,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             composerSuggestions         = emptyList(),
             composerSuggestionIndex     = 0,
             composerSuggestionsViewerOpen = false,
+            composerTripContext         = null,
         )
     }
 
@@ -559,6 +693,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 language         = prefs?.language ?: AppLanguage.ENGLISH,
                 suggestionCount  = suggestionCount,
                 considerationsOverride = s.composerConsiderationsOverride,
+                tripContext      = s.composerTripContext,
             )
             Log.d("StylesVM", "Composer prompt length: ${prompt.length} chars")
             val raw = try {
@@ -1430,6 +1565,7 @@ private fun buildComposerPrompt(
     language: String,
     suggestionCount: Int = 1,
     considerationsOverride: AiConsiderations? = null,
+    tripContext: TripContext? = null,
 ): String {
     val c = considerationsOverride ?: prefs?.aiConsiderations ?: AiConsiderations()
     val age = prefs?.yearOfBirth?.let { LocalDate.now().year - it }
@@ -1464,6 +1600,17 @@ private fun buildComposerPrompt(
     return buildString {
         appendLine(preamble.trim())
         appendLine()
+        if (tripContext != null) {
+            appendLine("## Trip context")
+            appendLine("- This outfit is day ${tripContext.dayIndex + 1} of a multi-day trip named \"${tripContext.tripName}\".")
+            if (tripContext.goal.isNotBlank()) appendLine("- Trip goal/notes: ${tripContext.goal}")
+            if (tripContext.vibes.isNotEmpty()) appendLine("- Trip vibes: ${tripContext.vibes.joinToString(", ")}")
+            tripContext.dayForecast?.let { f ->
+                appendLine("- Forecast for this day: ${f.minTempC.toInt()}–${f.maxTempC.toInt()}°C, WMO ${f.weatherCode} ${wmoEmoji(f.weatherCode)}")
+            }
+            appendLine("- Coordinate with the rest of the trip: avoid duplicating items the user wears on other days when alternatives exist.")
+            appendLine()
+        }
         val profileLines = buildList {
             if (c.gender) add("- Gender: ${prefs?.gender?.takeIf { it.isNotEmpty() } ?: "not specified"}")
             if (c.age) add("- Age: ${age?.toString() ?: "not specified"}")
@@ -1536,5 +1683,38 @@ private fun buildComposerPrompt(
         appendLine()
         appendLine()
         appendLine("IMPORTANT: Write all user-facing text fields (name, description, reason) in ${AppLanguage.toGeminiName(language)}.")
+    }
+}
+
+// ---------- TripContext helpers ----------
+
+/**
+ * Maps a WMO weather code (used by Open-Meteo / our [DayForecast]) to one of the composer's
+ * three precipitation buckets: "None", "Light", or "Heavy".
+ *
+ * Why: Codes 0–48 are clear/cloudy/fog, 51–67 are drizzle/rain, 71–77 snow showers,
+ * 80–82 rain showers, 95–99 thunderstorms. The "Heavy" tier captures the high-end variants
+ * Gemini should plan layers/rain gear for.
+ */
+internal fun precipForWmoCode(code: Int): String = when (code) {
+    in 0..48 -> "None"
+    63, 65, 67, 75, 77, 82, 95, 96, 99 -> "Heavy"
+    else -> "Light"
+}
+
+/**
+ * Derives the composer's `season` value ("Spring" / "Summer" / "Fall" / "Winter") from the
+ * trip's ISO start date plus [dayIndex] offset. Northern-hemisphere bias — for the southern
+ * hemisphere the user can still adjust manually in the composer.
+ */
+internal fun deriveSeasonFromIsoDate(isoDate: String, dayIndex: Int): String {
+    val date = runCatching {
+        LocalDate.parse(isoDate).plusDays(dayIndex.toLong())
+    }.getOrNull() ?: return ""
+    return when (date.monthValue) {
+        12, 1, 2  -> "Winter"
+        3, 4, 5   -> "Spring"
+        6, 7, 8   -> "Summer"
+        else      -> "Fall"
     }
 }

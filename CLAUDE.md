@@ -21,7 +21,7 @@ Compact day-to-day guidance. **Deep architecture, pipelines, rationale, and Dial
 - Full release / function deploy commands: see `CLAUDE_ARCHIVE.md` → Release process.
 
 ## Package layout (under `com.librelookai`)
-`MainActivity` at root. Feature packages: `auth/`, `wardrobe/` (incl. `LocationViewModel`, `CaptureScreen`, `UrlImportPicker`, `WebProductFetcher`, `WardrobeGap*`), `outfit/` (incl. `PredictionSetupScreen`), `travel/`, `tryon/`, `shopping/`, `billing/`, `insights/` (incl. `UsageScreen`), `settings/` (incl. `ProfileViewModel`, `UserPreferences`, `AppLanguage`, `AppFont`). Cross-cutting: `data/model/` (pure data classes), `data/drive/` (`DriveRepository`), `gemini/` (`GeminiRepository`, `PromptStore`, `ApiKeyStore`, `TokenUsage*`, `TagNormalizer`), `ml/` (`EmbeddingService`/`Repository`/`Index`, `SegmentationRepository`, `PHash`, `ColorHistogram`), `weather/`, `service/` (`JobForegroundService`), `util/` (`Analytics`, `NetworkUtils`, `Scrollbar`, `AiProcessingOverlay`), `ui/theme/`.
+`MainActivity` at root. Feature packages: `auth/`, `wardrobe/` (incl. `LocationViewModel`, `CaptureScreen`, `UrlImportPicker`, `WebProductFetcher`, `WardrobeGap*`), `outfit/` (incl. `PredictionSetupScreen`), `travel/` (incl. `TripsViewModel`, `TripViewerScreen`), `tryon/`, `shopping/`, `billing/`, `insights/` (incl. `UsageScreen`), `settings/` (incl. `ProfileViewModel`, `UserPreferences`, `AppLanguage`, `AppFont`). Cross-cutting: `data/model/` (pure data classes), `data/drive/` (`DriveRepository`), `gemini/` (`GeminiRepository`, `PromptStore`, `ApiKeyStore`, `TokenUsage*`, `TagNormalizer`), `ml/` (`EmbeddingService`/`Repository`/`Index`, `SegmentationRepository`, `PHash`, `ColorHistogram`), `weather/`, `service/` (`JobForegroundService`), `util/` (`Analytics`, `NetworkUtils`, `Scrollbar`, `AiProcessingOverlay`), `ui/theme/`.
 
 **Placement rule (cohesion over locality):** put each new or moved file in the package where it has the **most in-package callers and the fewest cross-package callers**. Concretely, before adding/moving a file:
 1. List which existing symbols it calls and which existing files call it.
@@ -62,6 +62,7 @@ Rule of thumb:
 - **Deep rationale & decisions** (markup security, why we dropped reservation/commit complexity, RevenueCat tradeoffs, remaining screen wiring) → `FIN.md`.
 
 ## Where to find things (pointers into archive)
+- Trips (aggregate of N day-outfits) → archive § "Trips"
 - Upload / ingestion / URL import / SAF folder import → archive § "Photo upload & ingestion pipelines"
 - Repair & Sync, duplicate detection, audit → archive § "Repair & Sync"
 - Visual similarity (embedder, segmenter, scoring, white balance) → archive § "Visual wardrobe search"

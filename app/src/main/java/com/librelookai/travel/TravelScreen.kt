@@ -66,10 +66,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -95,9 +97,11 @@ import java.time.format.DateTimeFormatter
 import com.librelookai.AppScreenHeader
 import com.librelookai.LocationButton
 import com.librelookai.data.model.DayForecast
+import com.librelookai.data.model.Outfit
+import com.librelookai.data.model.PackingList
 import com.librelookai.data.model.PackingOutfit
+import com.librelookai.data.model.Trip
 import com.librelookai.outfit.OutfitsViewModel
-import com.librelookai.outfit.RefinementSection
 import com.librelookai.settings.AiConsiderationsStrip
 import com.librelookai.settings.ProfileViewModel
 import com.librelookai.util.AiProcessingOverlay
@@ -109,20 +113,12 @@ import com.librelookai.weather.wmoEmoji
 import com.librelookai.R
 import com.librelookai.outfit.OutfitsScreen
 
-@Composable
-private fun travelPresets() = listOf(
-    stringResource(R.string.travel_refine_lighter),
-    stringResource(R.string.travel_refine_formal),
-    stringResource(R.string.travel_refine_casual),
-    stringResource(R.string.travel_refine_rain),
-    stringResource(R.string.travel_refine_evening),
-    stringResource(R.string.travel_refine_reuse),
-)
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun TravelScreen(
     travelViewModel: TravelViewModel = viewModel(),
+    tripsViewModel: TripsViewModel = viewModel(),
     wardrobeViewModel: WardrobeViewModel = viewModel(),
     profileViewModel: ProfileViewModel = viewModel(),
     stylesViewModel: OutfitsViewModel = viewModel(),
@@ -130,15 +126,63 @@ fun TravelScreen(
     onSettingsClick: () -> Unit = {},
     plannerMode: Boolean = false,
     onPlannerModeChange: (Boolean) -> Unit = {},
+    tripViewerTripId: String? = null,
+    onOpenTrip: (String) -> Unit = {},
+    onCloseTripViewer: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
+    // ---- Auto-create Trip + navigate when planner returns a packing list. ----
+    val onOpenTripState = rememberUpdatedState(onOpenTrip)
+    val onPlannerModeChangeState = rememberUpdatedState(onPlannerModeChange)
+    val travelState by travelViewModel.state.collectAsState()
+    val wardrobeState by wardrobeViewModel.state.collectAsState()
+    val profileState by profileViewModel.state.collectAsState()
+    LaunchedEffect(travelState.packingList) {
+        val packing = travelState.packingList ?: return@LaunchedEffect
+        val snapshot = travelState
+        val trip = buildTripFromPlan(packing, snapshot)
+        val outfits = buildOutfitsForTrip(packing, trip.id)
+        // Persist outfits to the active closet first, then the trip JSON.
+        stylesViewModel.addOutfits(outfits) { ok ->
+            if (!ok) return@addOutfits
+            tripsViewModel.createAndOpenTrip(
+                trip.copy(outfitIds = outfits.map { it.id }),
+            )
+        }
+        travelViewModel.consumePackingList()
+    }
+
+    // Open the viewer when TripsViewModel emits a navigate event.
+    LaunchedEffect(Unit) {
+        tripsViewModel.navigateToTrip.collect { tripId ->
+            onPlannerModeChangeState.value(false)
+            onOpenTripState.value(tripId)
+        }
+    }
+
+    if (tripViewerTripId != null) {
+        androidx.activity.compose.BackHandler { onCloseTripViewer() }
+        TripViewerScreen(
+            tripId = tripViewerTripId,
+            tripsViewModel = tripsViewModel,
+            outfitsViewModel = stylesViewModel,
+            wardrobeViewModel = wardrobeViewModel,
+            profileViewModel = profileViewModel,
+            onClose = onCloseTripViewer,
+            modifier = modifier,
+        )
+        return
+    }
+
     if (!plannerMode) {
         TravelOutfitsView(
             wardrobeViewModel = wardrobeViewModel,
             profileViewModel = profileViewModel,
             stylesViewModel = stylesViewModel,
+            tripsViewModel = tripsViewModel,
             locationViewModel = locationViewModel,
             onOpenPlanner = { onPlannerModeChange(true) },
+            onOpenTrip = onOpenTrip,
             onSettingsClick = onSettingsClick,
             modifier = modifier,
         )
@@ -155,6 +199,39 @@ fun TravelScreen(
         modifier = modifier,
     )
 }
+
+/** Default name for an auto-created trip — destination + start date. */
+private fun buildTripFromPlan(packing: PackingList, snapshot: TravelUiState): Trip {
+    val nameParts = listOf(
+        snapshot.resolvedDestination.ifBlank { snapshot.destination }.takeIf { it.isNotBlank() } ?: "Trip",
+        snapshot.startDate.toString(),
+    )
+    return Trip(
+        name = nameParts.joinToString(" • "),
+        destination = snapshot.resolvedDestination.ifBlank { snapshot.destination },
+        startDate = snapshot.startDate.toString(),
+        days = snapshot.days,
+        forecast = snapshot.forecast,
+        isHistoricalForecast = snapshot.isHistoricalForecast,
+        historicalReferenceYear = snapshot.historicalReferenceYear,
+        considerations = snapshot.considerationsOverride ?: com.librelookai.settings.AiConsiderations(),
+        vibes = snapshot.vibes,
+        goal = snapshot.goal,
+        extraItems = packing.extraItems,
+        reason = packing.reason,
+    )
+}
+
+private fun buildOutfitsForTrip(packing: PackingList, tripId: String): List<Outfit> =
+    packing.outfits.map { p ->
+        Outfit(
+            name = p.occasion,
+            description = p.description,
+            itemIds = p.itemIds,
+            tags = listOf("travel"),
+            tripId = tripId,
+        )
+    }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -176,8 +253,6 @@ private fun TravelPlannerContent(
 
     val isWorking = state.isLoadingForecast || state.isGenerating
     val keyboardController = LocalSoftwareKeyboardController.current
-    var isMoveInProgress by remember { mutableStateOf(false) }
-    var moveMessage by remember { mutableStateOf<String?>(null) }
 
     Column(modifier = modifier.fillMaxSize()) {
         PlannerHeader(onClose = onBack)
@@ -247,120 +322,8 @@ private fun TravelPlannerContent(
                 }
             }
 
-            // ---- Packing list ----
-            state.packingList?.let { packing ->
-                item {
-                    HorizontalDivider()
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 12.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                stringResource(R.string.travel_packing_list),
-                                style = MaterialTheme.typography.titleSmall,
-                                fontWeight = FontWeight.SemiBold,
-                            )
-                            if (packing.reason.isNotEmpty()) {
-                                Text(
-                                    packing.reason,
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                )
-                            }
-                        }
-                        TextButton(onClick = travelViewModel::clearResult) { Text(stringResource(R.string.travel_clear)) }
-                    }
-                    val allPackedIds = packing.outfits.flatMap { it.itemIds }.distinct()
-                    if (allPackedIds.isNotEmpty()) {
-                        val moveDoneLabel = stringResource(R.string.travel_move_done)
-                        val moveErrorLabel = stringResource(R.string.travel_move_error)
-                        OutlinedButton(
-                            onClick = {
-                                isMoveInProgress = true
-                                locationViewModel.getOrCreateLocation("Travel") { toFolderId ->
-                                    if (toFolderId == null) {
-                                        isMoveInProgress = false
-                                        moveMessage = moveErrorLabel
-                                        return@getOrCreateLocation
-                                    }
-                                    wardrobeViewModel.moveItemsToFolder(allPackedIds, toFolderId) { success ->
-                                        isMoveInProgress = false
-                                        moveMessage = if (success) moveDoneLabel else moveErrorLabel
-                                    }
-                                }
-                            },
-                            enabled = !isMoveInProgress && !isOffline,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
-                                .padding(bottom = 8.dp),
-                        ) {
-                            if (isMoveInProgress) {
-                                CircularProgressIndicator(modifier = Modifier.size(16.dp), strokeWidth = 2.dp)
-                                Spacer(Modifier.width(8.dp))
-                            } else {
-                                Icon(Icons.Default.MoveToInbox, contentDescription = null, modifier = Modifier.size(16.dp))
-                                Spacer(Modifier.width(8.dp))
-                            }
-                            Text(stringResource(R.string.travel_move_to_travel))
-                        }
-                    }
-                }
-
-                itemsIndexed(packing.outfits) { index, outfit ->
-                    PackingOutfitCard(
-                        outfit = outfit,
-                        imagesById = wardrobeState.images.associateBy { it.driveId },
-                        onSaveAsStyle = if (outfit.itemIds.isNotEmpty()) {
-                            {
-                                stylesViewModel.openComposer(
-                                    seedItemIds        = outfit.itemIds.toSet(),
-                                    images             = wardrobeState.images,
-                                    prefs              = profileState.preferences,
-                                    initialName        = outfit.occasion,
-                                    initialDescription = outfit.description,
-                                    initialTags        = listOf("travel"),
-                                )
-                            }
-                        } else null,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
-                    )
-                }
-
-                if (packing.extraItems.isNotEmpty()) {
-                    item {
-                        ExtraItemsCard(
-                            items = packing.extraItems,
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
-                        )
-                    }
-                }
-
-                // ---- Refinement section (hidden when offline) ----
-                if (!isOffline) {
-                    item {
-                        Spacer(Modifier.height(8.dp))
-                        HorizontalDivider()
-                        RefinementSection(
-                            input = state.refinementInput,
-                            feedbackHistory = state.feedbackHistory,
-                            presets = travelPresets(),
-                            onInputChange = travelViewModel::updateRefinementInput,
-                            onSubmitFreetext = {
-                                travelViewModel.refine(profileState.preferences, wardrobeState.images, outfitsState.outfits)
-                            },
-                            onSubmitPreset = { preset ->
-                                travelViewModel.submitPreset(preset, profileState.preferences, wardrobeState.images, outfitsState.outfits)
-                            },
-                            modifier = Modifier.padding(16.dp),
-                        )
-                    }
-                }
-            }
-
+            // Note: The generated packing list is no longer rendered inline. Generate now
+            // auto-creates a Trip + outfits and navigates to the Trip viewer (see TravelScreen).
         }
 
         // AI processing overlay
@@ -384,17 +347,6 @@ private fun TravelPlannerContent(
                 action = { TextButton(onClick = travelViewModel::clearError) { Text(stringResource(R.string.action_ok)) } },
             ) { Text(msg) }
         }
-        // Move-to-travel result snackbar
-        moveMessage?.let { msg ->
-            Snackbar(
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .statusBarsPadding()
-                    .padding(start = 8.dp, end = 8.dp, top = 64.dp),
-                action = { TextButton(onClick = { moveMessage = null }) { Text(stringResource(R.string.action_ok)) } },
-            ) { Text(msg) }
-        }
-
         } // Box
         // Sticky generate button — pinned at the bottom of the planner.
         Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
@@ -422,8 +374,10 @@ private fun TravelOutfitsView(
     wardrobeViewModel: WardrobeViewModel,
     profileViewModel: ProfileViewModel,
     stylesViewModel: OutfitsViewModel,
+    tripsViewModel: TripsViewModel,
     locationViewModel: LocationViewModel,
     onOpenPlanner: () -> Unit,
+    onOpenTrip: (String) -> Unit,
     onSettingsClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -432,9 +386,15 @@ private fun TravelOutfitsView(
     val wardrobeState  by wardrobeViewModel.state.collectAsState()
     val profileState   by profileViewModel.state.collectAsState()
     val locationState  by locationViewModel.state.collectAsState()
+    val tripsState     by tripsViewModel.state.collectAsState()
 
-    val travelOutfits = remember(outfitsState.outfits) {
-        outfitsState.outfits.filter { it.tags.any { tag -> tag.equals("travel", ignoreCase = true) } }
+    val outfitsById = remember(outfitsState.outfits) { outfitsState.outfits.associateBy { it.id } }
+    val tripOutfitIds = remember(tripsState.trips) { tripsState.trips.flatMap { it.outfitIds }.toSet() }
+    // "Other travel outfits": travel-tagged outfits NOT in any trip (legacy data).
+    val orphanTravelOutfits = remember(outfitsState.outfits, tripOutfitIds) {
+        outfitsState.outfits.filter { o ->
+            o.id !in tripOutfitIds && o.tags.any { it.equals("travel", ignoreCase = true) }
+        }
     }
     val imagesById = remember(wardrobeState.images) { wardrobeState.images.associateBy { it.driveId } }
 
@@ -452,7 +412,7 @@ private fun TravelOutfitsView(
             onSettingsClick = onSettingsClick,
         )
         Box(modifier = Modifier.fillMaxSize()) {
-            if (travelOutfits.isEmpty()) {
+            if (tripsState.trips.isEmpty() && orphanTravelOutfits.isEmpty()) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -485,18 +445,38 @@ private fun TravelOutfitsView(
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                     modifier = Modifier.fillMaxSize(),
                 ) {
-                    items(travelOutfits, key = { it.id }) { outfit ->
-                        TravelOutfitListCard(
-                            outfit = outfit,
-                            imagesById = imagesById,
-                            onClick = {
-                                stylesViewModel.startEditing(
-                                    outfit,
-                                    wardrobeState.images,
-                                    profileState.preferences,
-                                )
-                            },
-                        )
+                    if (tripsState.trips.isNotEmpty()) {
+                        items(tripsState.trips, key = { it.id }) { trip ->
+                            TripCard(
+                                trip = trip,
+                                outfitsById = outfitsById,
+                                imagesById = imagesById,
+                                onClick = { onOpenTrip(trip.id) },
+                            )
+                        }
+                    }
+                    if (orphanTravelOutfits.isNotEmpty()) {
+                        item {
+                            Text(
+                                stringResource(R.string.trip_section_other_outfits),
+                                style = MaterialTheme.typography.titleSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.padding(top = 8.dp),
+                            )
+                        }
+                        items(orphanTravelOutfits, key = { it.id }) { outfit ->
+                            TravelOutfitListCard(
+                                outfit = outfit,
+                                imagesById = imagesById,
+                                onClick = {
+                                    stylesViewModel.startEditing(
+                                        outfit,
+                                        wardrobeState.images,
+                                        profileState.preferences,
+                                    )
+                                },
+                            )
+                        }
                     }
                 }
             }
@@ -509,6 +489,76 @@ private fun TravelOutfitsView(
                         .padding(16.dp),
                 ) {
                     Icon(Icons.Default.Add, contentDescription = stringResource(R.string.travel_plan_trip))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun TripCard(
+    trip: com.librelookai.data.model.Trip,
+    outfitsById: Map<String, com.librelookai.data.model.Outfit>,
+    imagesById: Map<String, DriveImage>,
+    onClick: () -> Unit,
+) {
+    val ctx = LocalContext.current
+    val previewImages = remember(trip.outfitIds, outfitsById, imagesById) {
+        trip.outfitIds.asSequence()
+            .mapNotNull { outfitsById[it] }
+            .flatMap { it.itemIds.asSequence() }
+            .mapNotNull { imagesById[it] }
+            .distinct()
+            .take(6)
+            .toList()
+    }
+    OutlinedCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+    ) {
+        Column(
+            modifier = Modifier.padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    Icons.Default.FlightTakeoff,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(16.dp),
+                )
+                Spacer(Modifier.width(6.dp))
+                Text(
+                    trip.name.ifBlank { trip.destination.ifBlank { stringResource(R.string.trip_viewer_title) } },
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+            Text(
+                stringResource(R.string.trip_meta_dates, trip.startDate.ifBlank { "?" }, trip.days),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            if (previewImages.isNotEmpty()) {
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    items(previewImages, key = { it.driveId }) { image ->
+                        AsyncImage(
+                            model = remember(image.driveId, image.version) {
+                                ImageRequest.Builder(ctx)
+                                    .data(image.localPath)
+                                    .memoryCacheKey("${image.driveId}_${image.version}")
+                                    .build()
+                            },
+                            contentDescription = image.name,
+                            modifier = Modifier
+                                .size(56.dp)
+                                .clip(MaterialTheme.shapes.small),
+                            contentScale = ContentScale.Crop,
+                        )
+                    }
                 }
             }
         }
@@ -598,129 +648,6 @@ private fun ForecastDayChip(dayIndex: Int, forecast: DayForecast) {
         }
     }
 }
-
-// ---------- Packing outfit card ----------
-
-@Composable
-private fun PackingOutfitCard(
-    outfit: PackingOutfit,
-    imagesById: Map<String, DriveImage>,
-    onSaveAsStyle: (() -> Unit)?,
-    modifier: Modifier = Modifier,
-) {
-    val ctx = LocalContext.current
-    val images = outfit.itemIds.mapNotNull { imagesById[it] }
-
-    OutlinedCard(modifier = modifier.fillMaxWidth()) {
-        Column(
-            modifier = Modifier.padding(12.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    outfit.occasion,
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.weight(1f),
-                )
-                if (onSaveAsStyle != null) {
-                    InputChip(
-                        selected = false,
-                        onClick = { onSaveAsStyle() },
-                        label = {
-                            Text(
-                                stringResource(R.string.travel_save_as_style),
-                                style = MaterialTheme.typography.labelSmall,
-                            )
-                        },
-                    )
-                }
-            }
-
-            if (images.isNotEmpty()) {
-                LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    items(images, key = { it.driveId }) { image ->
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(2.dp),
-                        ) {
-                            AsyncImage(
-                                model = remember(image.driveId, image.version) {
-                                    ImageRequest.Builder(ctx)
-                                        .data(image.localPath)
-                                        .memoryCacheKey("${image.driveId}_${image.version}")
-                                        .build()
-                                },
-                                contentDescription = image.name,
-                                modifier = Modifier
-                                    .size(64.dp)
-                                    .clip(MaterialTheme.shapes.small),
-                                contentScale = ContentScale.Crop,
-                            )
-                            Text(
-                                image.tags?.type?.ifEmpty { image.name } ?: image.name,
-                                style = MaterialTheme.typography.labelSmall,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.width(64.dp),
-                            )
-                        }
-                    }
-                }
-            } else {
-                Text(
-                    stringResource(R.string.outfits_missing_items),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.outline,
-                )
-            }
-
-            if (outfit.description.isNotEmpty()) {
-                Text(
-                    outfit.description,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        }
-    }
-}
-
-// ---------- Extra items card ----------
-
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-private fun ExtraItemsCard(
-    items: List<String>,
-    modifier: Modifier = Modifier,
-) {
-    OutlinedCard(modifier = modifier.fillMaxWidth()) {
-        Column(
-            modifier = Modifier.padding(12.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Text(
-                stringResource(R.string.travel_extra_items),
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.SemiBold,
-            )
-            FlowRow(
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-            ) {
-                items.forEach { item ->
-                    AssistChip(onClick = {}, label = { Text(item) })
-                }
-            }
-        }
-    }
-}
-
-// ---------- Refinement section (shared composable reuse) ----------
-// RefinementSection is defined in OutfitsScreen.kt and is internal to the package.
 
 // ---------- Plan-trip section ----------
 

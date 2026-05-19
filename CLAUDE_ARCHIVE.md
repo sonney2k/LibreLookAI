@@ -273,6 +273,44 @@ Three modes (`TryOnComposerScreen` checks in order):
 
 ---
 
+## Trips
+
+A `Trip` is a first-class aggregate of N day-outfits + extras + per-day forecast + the planner inputs (vibes, goal, AI considerations) that generated it. The Travel Planner no longer stops at a transient `PackingList` — it auto-creates a Trip + N real `Outfit`s and navigates to the **Trip viewer**.
+
+### Persistence
+- Trip JSON lives in `LibreLookAI/_trips/{tripId}.json` (one file per trip — easier per-trip CRUD than a monolithic index). `_trips/` is in `DriveRepository.NON_CLOSET_SUBFOLDER_NAMES` so it never appears as a Location.
+- `TripsViewModel.loadTrips()` is called at app start (next to `shoppingClosetViewModel.loadItems()`); resolves the folder, lists JSON files, parses each in parallel.
+- `upsertTrip`/`createAndOpenTrip` write `{tripId}.json` and replace state in place; `deleteTrip` removes the file (the Drive file ID is cached in `driveIdsByTripId`).
+- Trip outfits keep their normal closet storage. `Outfit.tripId: String?` is a serialized back-reference. The active closet at trip-creation time is the destination for the new outfits.
+
+### Generate flow
+`TravelScreen` watches `travelViewModel.state.packingList`. When it goes non-null:
+1. Build a draft `Trip` from the planner snapshot (`buildTripFromPlan`) and a `List<Outfit>` from `PackingOutfit`s (`buildOutfitsForTrip`) — each new `Outfit` is tagged `"travel"` and has `tripId` set.
+2. `stylesViewModel.addOutfits(outfits)` bulk-writes them to the active closet's `_outfits.json` in one Drive PATCH.
+3. `tripsViewModel.createAndOpenTrip(trip.copy(outfitIds = outfits.map { it.id }))` persists the Trip and emits `navigateToTrip(tripId)` on a `SharedFlow`.
+4. `travelViewModel.consumePackingList()` clears the result so the inline planner UI never renders it. The screen's second `LaunchedEffect` collects `navigateToTrip` and flips `tripViewerTripId` / `plannerMode` accordingly.
+
+### Trip viewer
+`TripViewerScreen` is rendered when `tripViewerTripId != null` (MainActivity owns the state, rememberSaveable, hides bottom chrome like the planner does). Layout: header (editable name + delete) → meta (destination, dates) → forecast strip → per-day outfit cards → extras card → bulk-refine bar.
+
+Each day card calls `outfitsViewModel.startEditing(outfit, images, prefs, tripContext = TripContext(...))`. The new `TripContext` carries `tripId, tripName, dayIndex, dayForecast, tripStartDate, considerations, vibes, goal`. When non-null, the composer:
+- Pre-seeds `composerWeatherMode = MANUAL` and derives season/tempC/precip from the forecast (`deriveSeasonFromIsoDate`, `precipForWmoCode` in `OutfitsViewModel`).
+- Pre-seeds `composerVibes` from the trip.
+- Injects a `## Trip context` block into the Gemini composer prompt so refine / alternatives are aware of day index, forecast, trip name, goal, and vibes.
+
+In-place edits preserve the existing `Outfit.id` and `tripId` — `trip.outfitIds[dayIndex]` doesn't need to be touched. `TripsViewModel.replaceOutfitAtDay(...)` exists for future flows that swap the outfit at a day, but the v1 edit path does not call it.
+
+### Bulk refine
+The viewer's bulk-refine bar runs `TripsViewModel.refineAllOutfits(...)` — one Gemini call (`UsageCategory.TRAVEL`, `bulkItems = outfits.size`) with a prompt that includes trip context + the current outfit list + the instruction. Response is `{"outfits":[{"id":"<existingOutfitId>","itemIds":["<wardrobeItemId>"]}]}`; the result is applied via `OutfitsViewModel.updateOutfitItems(updates)` which writes once per affected folder. Trip-level transient `bulkRefining: StateFlow<Set<String>>` drives the AI overlay.
+
+### Delete
+Confirmation dialog with two affirmative options: "Delete trip + outfits" (calls `tripsViewModel.deleteTrip(id) { ids -> outfitsViewModel.deleteOutfitsByIds(ids) }`) or "Keep outfits" (the trip JSON is deleted but its outfit refs remain — they show up under "Other travel outfits").
+
+### Legacy compatibility
+Travel-tagged outfits without a `tripId` (created before this feature) render under an "Other travel outfits" section on the Travel tab below the Trip cards. No automatic migration.
+
+---
+
 ## Shopping closet (wishlist storage)
 
 `ShoppingClosetViewModel` is the wishlist counterpart of `WardrobeViewModel`. Owns the `LibreLookAI/_shopping/` folder, persists `wardrobe_cache_{shoppingFolderId}.json` in the same format, and pushes the shopping `folderId` into `WardrobeViewModel.setAllConfiguredLocations(...)` (alongside configured closets) from `MainActivity` so similarity search and the cross-closet snapshot pick up wishlist items.

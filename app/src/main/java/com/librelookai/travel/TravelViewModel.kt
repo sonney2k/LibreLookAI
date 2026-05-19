@@ -116,6 +116,14 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
     fun clearError()  = _state.update { it.copy(error = null) }
+
+    /**
+     * Clear the just-generated [packingList] without losing the planner inputs. Called by the
+     * screen after it has persisted the result as a [com.librelookai.data.model.Trip] so the
+     * preview never renders inline.
+     */
+    fun consumePackingList() = _state.update { it.copy(packingList = null) }
+
     fun clearResult() = _state.update {
         it.copy(
             packingList = null, forecast = emptyList(), resolvedDestination = "",

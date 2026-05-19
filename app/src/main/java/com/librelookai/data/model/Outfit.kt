@@ -18,6 +18,8 @@ data class Outfit(
      * when an outfit is composed/predicted, editable by the user.
      */
     val tags: List<String> = emptyList(),
+    /** Optional back-reference to a [Trip]. Persisted. Null for non-trip outfits. */
+    val tripId: String? = null,
     val createdAt: Long = System.currentTimeMillis(),
     /** Runtime Drive folder ID this style was loaded from. Not persisted to JSON. */
     @Transient val folderId: String = "",

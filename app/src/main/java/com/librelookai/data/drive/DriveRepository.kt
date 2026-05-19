@@ -88,11 +88,19 @@ class DriveRepository(
          */
         const val SHOPPING_FOLDER_NAME = "_shopping"
 
+        /**
+         * Subfolder of the root Drive folder used to hold the user's saved travel trips.
+         * Each trip is persisted as `{tripId}.json`. Not a closet — never appears in
+         * `_locations.json` or the closet picker.
+         */
+        const val TRIPS_FOLDER_NAME = "_trips"
+
         /** Names of root-level subfolders that are NOT user closets (filter from listSubfolders). */
         val NON_CLOSET_SUBFOLDER_NAMES = setOf(
             PROFILE_FOLDER_NAME,
             TRYONS_FOLDER_NAME,
             SHOPPING_FOLDER_NAME,
+            TRIPS_FOLDER_NAME,
         )
 
         /** Index JSON listing all saved try-ons; lives at the root Drive folder. */
@@ -841,6 +849,70 @@ class DriveRepository(
      */
     suspend fun getOrCreateShoppingFolder(rootFolderId: String): String =
         createSubfolder(rootFolderId, SHOPPING_FOLDER_NAME)
+
+    /**
+     * Returns the Drive folder ID of the [TRIPS_FOLDER_NAME] subfolder inside [rootFolderId],
+     * creating it if needed. Each trip is `{tripId}.json` inside this folder.
+     */
+    suspend fun getOrCreateTripsFolder(rootFolderId: String): String =
+        createSubfolder(rootFolderId, TRIPS_FOLDER_NAME)
+
+    /** Lists trip JSON files directly inside [tripsFolderId]. Returns (driveFileId, name). */
+    suspend fun listTripFiles(tripsFolderId: String): List<DriveFileDto> = withContext(Dispatchers.IO) {
+        val tok = token()
+        val q = URLEncoder.encode(
+            "'$tripsFolderId' in parents and mimeType='application/json' and trashed=false",
+            "UTF-8",
+        )
+        gson.fromJson(
+            http.newCall(
+                Request.Builder()
+                    .url("$API/files?q=$q&fields=files(id,name)&pageSize=1000")
+                    .header("Authorization", "Bearer $tok")
+                    .build(),
+            ).await().body!!.string(),
+            FilesListDto::class.java,
+        ).files
+    }
+
+    /** Downloads a single trip's JSON by Drive file ID. */
+    suspend fun loadTripJson(fileId: String): String? = withContext(Dispatchers.IO) {
+        downloadFileText(fileId, token())
+    }
+
+    /**
+     * Creates or overwrites `{tripId}.json` inside [tripsFolderId]. Returns the Drive file ID.
+     */
+    suspend fun saveTripJson(tripsFolderId: String, tripId: String, json: String): String =
+        withContext(Dispatchers.IO) {
+            val tok = token()
+            val name = "$tripId.json"
+            val existingId = findFileIdByName(tripsFolderId, name, tok)
+            val fileId = existingId ?: run {
+                val meta = """{"name":"$name","parents":["$tripsFolderId"],"mimeType":"application/json"}"""
+                gson.fromJson(
+                    http.newCall(
+                        Request.Builder()
+                            .url("$API/files?fields=id")
+                            .header("Authorization", "Bearer $tok")
+                            .post(meta.toRequestBody("application/json".toMediaType()))
+                            .build(),
+                    ).await().body!!.string(),
+                    DriveFileDto::class.java,
+                ).id
+            }
+            http.newCall(
+                Request.Builder()
+                    .url("$UPLOAD_API/files/$fileId?uploadType=media")
+                    .header("Authorization", "Bearer $tok")
+                    .method("PATCH", json.toRequestBody("application/json".toMediaType()))
+                    .build(),
+            ).await()
+            fileId
+        }
+
+    /** Deletes a trip JSON by Drive file ID. */
+    suspend fun deleteTripJson(fileId: String) = deleteFile(fileId)
 
     /**
      * Uploads [imageFile] (PNG) into the try-ons subfolder with [name]. Returns the new Drive ID.
