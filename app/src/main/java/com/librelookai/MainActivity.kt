@@ -596,14 +596,18 @@ class MainActivity : ComponentActivity() {
                                         )
                                     }
 
-                                    // Weather badge — bottom-left, floating above the nav bar
-                                    weatherState.data?.let { weather ->
-                                        WeatherBadge(
-                                            data = weather,
-                                            modifier = Modifier
-                                                .align(Alignment.BottomStart)
-                                                .padding(start = 12.dp, bottom = 8.dp),
-                                        )
+                                    // Weather badge — bottom-left, floating above the nav bar.
+                                    // Hidden in the travel-planner mode because that screen pins its
+                                    // own Generate button to the bottom and the badge would overlap.
+                                    if (!hideChrome) {
+                                        weatherState.data?.let { weather ->
+                                            WeatherBadge(
+                                                data = weather,
+                                                modifier = Modifier
+                                                    .align(Alignment.BottomStart)
+                                                    .padding(start = 12.dp, bottom = 8.dp),
+                                            )
+                                        }
                                     }
 
                                     // Local background-removal review — fullscreen overlay shown

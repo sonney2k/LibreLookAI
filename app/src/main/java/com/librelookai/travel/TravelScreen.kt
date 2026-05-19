@@ -42,6 +42,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.automirrored.filled.TrendingUp
+import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material.icons.outlined.Checkroom
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
@@ -1252,6 +1253,13 @@ private fun AiConsidersChips(
         LazyRow(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
             item {
                 SmallPillChip(
+                    label = stringResource(R.string.ai_consider_weather),
+                    icon = Icons.Default.WbSunny,
+                    active = considerations.weather,
+                ) { onToggle { it.copy(weather = !it.weather) } }
+            }
+            item {
+                SmallPillChip(
                     label = stringResource(R.string.ai_consider_location),
                     icon = Icons.Default.Place,
                     active = considerations.location,
@@ -1343,6 +1351,10 @@ private fun GenerateButton(
         contentAlignment = Alignment.Center,
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            // Single-call generation: the packing list returns every outfit in one Gemini
+            // round-trip, so the cost barely scales with `outfitCount`. Match the
+            // OutfitComposer's "Generate with AI" badge and pass bulkCount = 1.
+            com.librelookai.billing.CostBadge(com.librelookai.gemini.GeminiActionId.GENERATE_TEXT)
             Icon(
                 Icons.Default.AutoAwesome,
                 contentDescription = null,
