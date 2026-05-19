@@ -121,7 +121,7 @@ class NetworkMonitor(context: Context) {
                     val c = cm.getNetworkCapabilities(n)
                     if (c == null || !c.hasValidatedInternet()) it.remove()
                 }
-            } else if (active != null) {
+            } else {
                 validated.add(active)
             }
             _isOnline.value = validated.isNotEmpty()

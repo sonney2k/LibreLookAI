@@ -32,7 +32,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.TrendingUp
+import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.Button
@@ -607,13 +607,13 @@ private fun ConsidersCard(
     val rows = listOf(
         ConsiderationRow(R.string.ai_consider_weather, Icons.Default.WbSunny, considerations.weather) { onToggle { it.copy(weather = !it.weather) } },
         ConsiderationRow(R.string.ai_consider_location, Icons.Default.Place, considerations.location) { onToggle { it.copy(location = !it.location) } },
-        ConsiderationRow(R.string.ai_consider_trends, Icons.Default.TrendingUp, considerations.trends) { onToggle { it.copy(trends = !it.trends) } },
+        ConsiderationRow(R.string.ai_consider_trends, Icons.AutoMirrored.Filled.TrendingUp, considerations.trends) { onToggle { it.copy(trends = !it.trends) } },
         ConsiderationRow(R.string.ai_consider_gender, Icons.Default.Person, considerations.gender) { onToggle { it.copy(gender = !it.gender) } },
         ConsiderationRow(R.string.ai_consider_age, Icons.Default.Cake, considerations.age) { onToggle { it.copy(age = !it.age) } },
         ConsiderationRow(R.string.ai_consider_preferences, Icons.Default.Favorite, considerations.preferences) { onToggle { it.copy(preferences = !it.preferences) } },
     )
     SectionCard(
-        icon = Icons.Default.TrendingUp,
+        icon = Icons.AutoMirrored.Filled.TrendingUp,
         title = stringResource(R.string.composer_section_considerations),
         hint = stringResource(R.string.composer_considerations_hint),
     ) {

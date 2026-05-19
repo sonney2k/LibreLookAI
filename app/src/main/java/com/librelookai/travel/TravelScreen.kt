@@ -41,7 +41,7 @@ import androidx.compose.material.icons.filled.MoveToInbox
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Remove
-import androidx.compose.material.icons.filled.TrendingUp
+import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material.icons.outlined.Checkroom
 import androidx.compose.material3.AssistChip
@@ -921,7 +921,7 @@ private fun SkyHero(
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .menuAnchor(),
+                                .menuAnchor(androidx.compose.material3.MenuAnchorType.PrimaryEditable, enabled = true),
                         )
                         ExposedDropdownMenu(
                             expanded = showSuggestions,
@@ -1300,7 +1300,7 @@ private fun AiConsidersChips(
             ) { onToggle { it.copy(location = !it.location) } }
             SmallPillChip(
                 label = stringResource(R.string.ai_consider_trends),
-                icon = Icons.Default.TrendingUp,
+                icon = Icons.AutoMirrored.Filled.TrendingUp,
                 active = considerations.trends,
             ) { onToggle { it.copy(trends = !it.trends) } }
             SmallPillChip(
