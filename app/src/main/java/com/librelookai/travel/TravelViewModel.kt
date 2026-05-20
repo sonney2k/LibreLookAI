@@ -58,6 +58,13 @@ data class TravelUiState(
     val considerationsOverride: AiConsiderations? = null,
     /** Live geocoding suggestions for the destination field. */
     val destinationSuggestions: List<DestinationSuggestion> = emptyList(),
+    /**
+     * Coordinates of the picked autocomplete suggestion. Set on [pickDestination], cleared when the
+     * user edits the destination text by hand. When present, the forecast fetch uses them directly
+     * instead of re-geocoding the (possibly localized) display string, which the geocoder can't match.
+     */
+    val destinationLatitude: Double? = null,
+    val destinationLongitude: Double? = null,
     /** Style vibes selected for this trip (e.g. "Casual", "Business"). */
     val vibes: Set<String> = emptySet(),
 )
@@ -74,7 +81,7 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
     private var suggestionJob: Job? = null
 
     fun updateDestination(s: String, language: String = "en") {
-        _state.update { it.copy(destination = s) }
+        _state.update { it.copy(destination = s, destinationLatitude = null, destinationLongitude = null) }
         suggestionJob?.cancel()
         val query = s.trim()
         if (query.length < 2) {
@@ -93,7 +100,14 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
 
     fun pickDestination(s: DestinationSuggestion) {
         suggestionJob?.cancel()
-        _state.update { it.copy(destination = s.display, destinationSuggestions = emptyList()) }
+        _state.update {
+            it.copy(
+                destination = s.display,
+                destinationLatitude = s.latitude,
+                destinationLongitude = s.longitude,
+                destinationSuggestions = emptyList(),
+            )
+        }
     }
 
     fun clearDestinationSuggestions() {
@@ -131,6 +145,7 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
             feedbackHistory = emptyList(), refinementInput = "", error = null,
             goal = "", outfitCount = null, considerationsOverride = null,
             vibes = emptySet(),
+            destinationLatitude = null, destinationLongitude = null,
         )
     }
 
@@ -189,7 +204,11 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
 
             if (needsForecast) {
                 _state.update { it.copy(isLoadingForecast = true, error = null) }
-                val result = weather.fetchDestinationForecast(dest, days, startDate)
+                val result = weather.fetchDestinationForecast(
+                    dest, days, startDate,
+                    latitude = _state.value.destinationLatitude,
+                    longitude = _state.value.destinationLongitude,
+                )
                 if (result == null) {
                     _state.update { it.copy(isLoadingForecast = false, error = "Could not fetch weather for \"$dest\". Check the destination name.") }
                     return@launch

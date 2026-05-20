@@ -163,17 +163,32 @@ class WeatherRepository(private val context: Context) {
         destination: String,
         days: Int,
         startDate: LocalDate,
+        latitude: Double? = null,
+        longitude: Double? = null,
     ): ForecastResult? = withContext(Dispatchers.IO) {
         try {
-            // Step 1 — Geocode
-            val encoded = java.net.URLEncoder.encode(destination, "UTF-8")
-            val geoBody = http.newCall(
-                Request.Builder().url("$GEO_API?name=$encoded&count=1&language=en&format=json").build(),
-            ).await().body?.string() ?: return@withContext null
+            // Step 1 — Resolve coordinates. Prefer the caller-supplied lat/lon (e.g. from a picked
+            // autocomplete suggestion) since the displayed name may be localized and comma-joined,
+            // which the geocoder cannot match back to a place. Only geocode when no coords given.
+            val lat: Double
+            val lon: Double
+            val resolvedName: String
+            if (latitude != null && longitude != null) {
+                lat = latitude
+                lon = longitude
+                resolvedName = destination
+            } else {
+                val encoded = java.net.URLEncoder.encode(destination, "UTF-8")
+                val geoBody = http.newCall(
+                    Request.Builder().url("$GEO_API?name=$encoded&count=1&language=en&format=json").build(),
+                ).await().body?.string() ?: return@withContext null
 
-            val geoResp = gson.fromJson(geoBody, GeoResponse::class.java)
-            val geo = geoResp.results?.firstOrNull() ?: return@withContext null
-            val resolvedName = if (geo.country.isNotEmpty()) "${geo.name}, ${geo.country}" else geo.name
+                val geoResp = gson.fromJson(geoBody, GeoResponse::class.java)
+                val geo = geoResp.results?.firstOrNull() ?: return@withContext null
+                lat = geo.latitude
+                lon = geo.longitude
+                resolvedName = if (geo.country.isNotEmpty()) "${geo.name}, ${geo.country}" else geo.name
+            }
 
             val today   = LocalDate.now()
             val endDate = startDate.plusDays((days - 1).toLong())
@@ -191,7 +206,7 @@ class WeatherRepository(private val context: Context) {
                     .coerceIn(1, 16).toInt()
                 val body = http.newCall(
                     Request.Builder().url(
-                        "$FORECAST_API?latitude=${geo.latitude}&longitude=${geo.longitude}" +
+                        "$FORECAST_API?latitude=$lat&longitude=$lon" +
                             "&daily=temperature_2m_max,temperature_2m_min,weathercode" +
                             "&forecast_days=$daysFromToday&timezone=auto",
                     ).build(),
@@ -216,7 +231,7 @@ class WeatherRepository(private val context: Context) {
                 }
                 val body = http.newCall(
                     Request.Builder().url(
-                        "$ARCHIVE_API?latitude=${geo.latitude}&longitude=${geo.longitude}" +
+                        "$ARCHIVE_API?latitude=$lat&longitude=$lon" +
                             "&start_date=$refStart&end_date=$refEnd" +
                             "&daily=temperature_2m_max,temperature_2m_min,weathercode" +
                             "&timezone=auto",
