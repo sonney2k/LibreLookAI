@@ -168,6 +168,7 @@ fun TravelScreen(
             outfitsViewModel = stylesViewModel,
             wardrobeViewModel = wardrobeViewModel,
             profileViewModel = profileViewModel,
+            locationViewModel = locationViewModel,
             onClose = onCloseTripViewer,
             modifier = modifier,
         )

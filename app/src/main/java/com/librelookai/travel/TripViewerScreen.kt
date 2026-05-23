@@ -83,6 +83,8 @@ fun TripViewerScreen(
     outfitsViewModel: OutfitsViewModel,
     wardrobeViewModel: WardrobeViewModel,
     profileViewModel: ProfileViewModel,
+    locationViewModel: com.librelookai.wardrobe.LocationViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    outfitEventsViewModel: com.librelookai.outfit.OutfitEventsViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
     onClose: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -91,6 +93,7 @@ fun TripViewerScreen(
     val outfitsState by outfitsViewModel.state.collectAsState()
     val wardrobeState by wardrobeViewModel.state.collectAsState()
     val profileState by profileViewModel.state.collectAsState()
+    val locationState by locationViewModel.state.collectAsState()
     val bulkRefining by tripsViewModel.bulkRefining.collectAsState()
 
     val trip = remember(tripId, tripsState.trips) { tripsState.trips.find { it.id == tripId } }
@@ -119,6 +122,7 @@ fun TripViewerScreen(
     }
 
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var viewerOutfitId by remember { mutableStateOf<String?>(null) }
     val isBulkRefining = tripId in bulkRefining
 
     Column(modifier = modifier.fillMaxSize()) {
@@ -162,26 +166,8 @@ fun TripViewerScreen(
                         outfit = outfit,
                         forecast = trip.forecast.getOrNull(dayIdx),
                         imagesById = imagesById,
-                        enabled = !isOffline,
-                        onClick = {
-                            if (outfit != null) {
-                                outfitsViewModel.startEditing(
-                                    style       = outfit,
-                                    images      = wardrobeState.images,
-                                    prefs       = profileState.preferences,
-                                    tripContext = TripContext(
-                                        tripId         = trip.id,
-                                        tripName       = trip.name,
-                                        dayIndex       = dayIdx,
-                                        dayForecast    = trip.forecast.getOrNull(dayIdx),
-                                        tripStartDate  = trip.startDate,
-                                        considerations = trip.considerations,
-                                        vibes          = trip.vibes,
-                                        goal           = trip.goal,
-                                    ),
-                                )
-                            }
-                        },
+                        enabled = outfit != null,
+                        onClick = { if (outfit != null) viewerOutfitId = outfit.id },
                     )
                 }
 
@@ -219,6 +205,74 @@ fun TripViewerScreen(
                 )
             }
         }
+    }
+
+    // Fullscreen outfit viewer — swipe across this trip's outfits. Mirrors the Outfits screen
+    // viewer; editing routes back into the composer with this trip's context preserved.
+    viewerOutfitId?.let { vid ->
+        val startIndex = tripOutfits.indexOfFirst { it.id == vid }
+        if (startIndex >= 0) {
+            com.librelookai.outfit.OutfitFullScreenViewer(
+                outfits = tripOutfits,
+                initialIndex = startIndex,
+                itemsById = imagesById,
+                locations = locationState.locations,
+                activeLocationId = locationState.activeLocationId,
+                onDismiss = { viewerOutfitId = null },
+                onEdit = { o ->
+                    viewerOutfitId = null
+                    val dayIdx = trip.outfitIds.indexOf(o.id).coerceAtLeast(0)
+                    outfitsViewModel.startEditing(
+                        style       = o,
+                        images      = wardrobeState.images,
+                        prefs       = profileState.preferences,
+                        tripContext = TripContext(
+                            tripId         = trip.id,
+                            tripName       = trip.name,
+                            dayIndex       = dayIdx,
+                            dayForecast    = trip.forecast.getOrNull(dayIdx),
+                            tripStartDate  = trip.startDate,
+                            considerations = trip.considerations,
+                            vibes          = trip.vibes,
+                            goal           = trip.goal,
+                        ),
+                    )
+                },
+                onWear = { o -> outfitEventsViewModel.recordOutfit(o.id) },
+                onDelete = { o ->
+                    outfitsViewModel.deleteOutfit(o.id)
+                    if (tripOutfits.size <= 1) viewerOutfitId = null
+                },
+                onSuggestTags = { o ->
+                    outfitsViewModel.suggestTagsForOutfit(o, wardrobeState.images, profileState.preferences)
+                },
+                onEditTags = { o -> outfitsViewModel.openOutfitTagsEditor(o.id) },
+                canTryOn = false,
+                wardrobeViewModel = wardrobeViewModel,
+            )
+        } else {
+            androidx.compose.runtime.LaunchedEffect(vid) { viewerOutfitId = null }
+        }
+    }
+
+    // Tag-edit dialog launched by tapping the tags row in the outfit viewer.
+    outfitsState.tagEditingOutfitId?.let { editId ->
+        outfitsState.outfits.find { it.id == editId }?.let { target ->
+            com.librelookai.outfit.EditOutfitTagsDialog(
+                initialTags = target.tags,
+                onDismiss = outfitsViewModel::closeOutfitTagsEditor,
+                onSave = { newTags -> outfitsViewModel.setOutfitTags(editId, newTags) },
+            )
+        }
+    }
+
+    // AI tag-suggestion dialog launched from the outfit viewer.
+    outfitsState.tagSuggestion?.let { sugg ->
+        com.librelookai.outfit.SuggestTagsDialog(
+            state = sugg,
+            onDismiss = outfitsViewModel::dismissTagSuggestions,
+            onApply = { selected -> outfitsViewModel.applyTagSuggestions(sugg.outfitId, selected) },
+        )
     }
 
     if (showDeleteDialog) {
@@ -374,6 +428,7 @@ private fun TripDayCard(
     onClick: () -> Unit,
 ) {
     val ctx = LocalContext.current
+    val isOffline = LocalIsOffline.current
     val items = outfit?.itemIds?.mapNotNull { imagesById[it] } ?: emptyList()
     OutlinedCard(
         modifier = Modifier
@@ -404,7 +459,7 @@ private fun TripDayCard(
                     )
                 }
                 Spacer(Modifier.weight(1f))
-                if (outfit != null && enabled) {
+                if (outfit != null && !isOffline) {
                     Icon(
                         Icons.Default.Edit,
                         contentDescription = stringResource(R.string.trip_modify_outfit),

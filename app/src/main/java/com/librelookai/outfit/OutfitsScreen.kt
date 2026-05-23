@@ -1346,7 +1346,7 @@ internal fun OutfitTagChip(label: String) {
  */
 @OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 @Composable
-private fun OutfitFullScreenViewer(
+internal fun OutfitFullScreenViewer(
     outfits: List<Outfit>,
     initialIndex: Int,
     itemsById: Map<String, DriveImage>,
@@ -1825,7 +1825,7 @@ private fun bucketFor(image: DriveImage): OutfitItemBucket {
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun SuggestTagsDialog(
+internal fun SuggestTagsDialog(
     state: TagSuggestionState,
     onDismiss: () -> Unit,
     onApply: (List<String>) -> Unit,
@@ -1937,7 +1937,7 @@ private fun SuggestTagsDialog(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun EditOutfitTagsDialog(
+internal fun EditOutfitTagsDialog(
     initialTags: List<String>,
     onDismiss: () -> Unit,
     onSave: (List<String>) -> Unit,
