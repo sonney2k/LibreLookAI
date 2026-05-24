@@ -891,9 +891,9 @@
     <string name="coins_byok_no_spend_note">Bruger din egen Gemini-nøgle — der bruges ingen kreditter.</string>
     <!-- Trips -->
     <string name="trip_viewer_title">Trip</string>
-    <string name="trip_planned_title">Planned Trip</string>
-    <string name="trip_saved_label">Saved</string>
-    <string name="trip_saved_confirmation">Trip &amp; outfits saved</string>
+    <string name="trip_planned_title">Planlagt rejse</string>
+    <string name="trip_saved_label">Gemt</string>
+    <string name="trip_saved_confirmation">Rejse og outfits gemt</string>
     <string name="trip_not_found">Trip not found.</string>
     <string name="trip_day_header">Day %1$d</string>
     <string name="trip_no_destination">Untitled trip</string>

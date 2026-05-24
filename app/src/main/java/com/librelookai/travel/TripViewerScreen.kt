@@ -131,6 +131,15 @@ fun TripViewerScreen(
     var editing by remember(tripId) { mutableStateOf(false) }
     val isBulkRefining = tripId in bulkRefining
 
+    // Local draft for the trip goal, persisted (debounced) so typing doesn't spam Drive writes.
+    var goalDraft by remember(tripId) { mutableStateOf(trip.goal) }
+    androidx.compose.runtime.LaunchedEffect(goalDraft) {
+        if (goalDraft != trip.goal) {
+            kotlinx.coroutines.delay(600)
+            tripsViewModel.setTripGoal(tripId, goalDraft)
+        }
+    }
+
     // Pending (un-persisted) bulk-refine result for this trip, if any.
     val refinePreview = if (tripsState.refinePreviewTripId == tripId) tripsState.refinePreview else emptyMap()
     val previewing = refinePreview.isNotEmpty()
@@ -221,6 +230,34 @@ fun TripViewerScreen(
                         }
                     }
 
+                    if (editing) {
+                        // Planner options — same controls used when creating a trip. Days &
+                        // weather are intentionally kept; only these inputs drive re-styling.
+                        item {
+                            Spacer(Modifier.height(8.dp))
+                            HorizontalDivider()
+                            Column(
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                            ) {
+                                com.librelookai.travel.GoalAiCard(
+                                    goal = goalDraft,
+                                    onUpdateGoal = { goalDraft = it },
+                                )
+                                com.librelookai.travel.VibeChips(
+                                    selected = trip.vibes,
+                                    onToggle = { tripsViewModel.toggleTripVibe(trip.id, it) },
+                                )
+                                com.librelookai.travel.AiConsidersChips(
+                                    considerations = trip.considerations,
+                                    onToggle = { transform ->
+                                        tripsViewModel.setTripConsiderations(trip.id, transform(trip.considerations))
+                                    },
+                                )
+                            }
+                        }
+                    }
+
                     if (editing && !isOffline) {
                         item {
                             Spacer(Modifier.height(8.dp))
@@ -228,11 +265,14 @@ fun TripViewerScreen(
                             BulkRefineSection(
                                 isRefining = isBulkRefining,
                                 onSubmit = { instruction ->
+                                    // Flush the goal draft first so the refine prompt sees it.
+                                    tripsViewModel.setTripGoal(trip.id, goalDraft)
                                     tripsViewModel.refineAllOutfits(
                                         tripId          = trip.id,
                                         instruction     = instruction,
                                         images          = wardrobeState.images,
                                         currentOutfits  = outfitsState.outfits,
+                                        prefs           = profileState.preferences,
                                     )
                                 },
                             )
@@ -779,13 +819,11 @@ private fun BulkRefineSection(
             Spacer(Modifier.width(8.dp))
             TripGradientButton(
                 label = stringResource(R.string.trip_bulk_refine_run),
-                enabled = !isRefining && text.isNotBlank(),
+                // Instruction is optional — Apply can also just re-style using the edited options.
+                enabled = !isRefining,
                 onClick = {
-                    val v = text.trim()
-                    if (v.isNotEmpty()) {
-                        onSubmit(v)
-                        text = ""
-                    }
+                    onSubmit(text.trim())
+                    text = ""
                 },
             )
         }

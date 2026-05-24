@@ -652,7 +652,7 @@ private fun ForecastDayChip(dayIndex: Int, forecast: DayForecast) {
 
 // ---------- Plan-trip section ----------
 
-private val TRAVEL_VIBES: List<Pair<String, Int>> = listOf(
+internal val TRAVEL_VIBES: List<Pair<String, Int>> = listOf(
     "Casual" to R.string.composer_vibe_casual,
     "Sporty" to R.string.composer_vibe_sporty,
     "Formal" to R.string.composer_vibe_formal,
@@ -1087,7 +1087,7 @@ private fun StepperButton(
 }
 
 @Composable
-private fun GoalAiCard(
+internal fun GoalAiCard(
     goal: String,
     onUpdateGoal: (String) -> Unit,
 ) {
@@ -1140,7 +1140,7 @@ private fun GoalAiCard(
 }
 
 @Composable
-private fun VibeChips(
+internal fun VibeChips(
     selected: Set<String>,
     onToggle: (String) -> Unit,
 ) {
@@ -1166,7 +1166,7 @@ private fun VibeChips(
 }
 
 @Composable
-private fun AiConsidersChips(
+internal fun AiConsidersChips(
     considerations: com.librelookai.settings.AiConsiderations,
     onToggle: ((com.librelookai.settings.AiConsiderations) -> com.librelookai.settings.AiConsiderations) -> Unit,
 ) {
@@ -1226,7 +1226,7 @@ private fun AiConsidersChips(
 }
 
 @Composable
-private fun SmallPillChip(
+internal fun SmallPillChip(
     label: String,
     icon: ImageVector?,
     active: Boolean,

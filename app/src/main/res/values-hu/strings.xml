@@ -871,9 +871,9 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
 
     <!-- Trips -->
     <string name="trip_viewer_title">Trip</string>
-    <string name="trip_planned_title">Planned Trip</string>
-    <string name="trip_saved_label">Saved</string>
-    <string name="trip_saved_confirmation">Trip &amp; outfits saved</string>
+    <string name="trip_planned_title">Tervezett utazás</string>
+    <string name="trip_saved_label">Mentve</string>
+    <string name="trip_saved_confirmation">Utazás és szettek mentve</string>
     <string name="trip_not_found">Trip not found.</string>
     <string name="trip_day_header">Day %1$d</string>
     <string name="trip_no_destination">Untitled trip</string>

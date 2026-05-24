@@ -891,9 +891,9 @@
     <string name="coins_byok_no_spend_note">본인의 Gemini 키 사용 중 — 크레딧이 소모되지 않습니다.</string>
     <!-- Trips -->
     <string name="trip_viewer_title">Trip</string>
-    <string name="trip_planned_title">Planned Trip</string>
-    <string name="trip_saved_label">Saved</string>
-    <string name="trip_saved_confirmation">Trip &amp; outfits saved</string>
+    <string name="trip_planned_title">예정된 여행</string>
+    <string name="trip_saved_label">저장됨</string>
+    <string name="trip_saved_confirmation">여행과 옷차림이 저장되었습니다</string>
     <string name="trip_not_found">Trip not found.</string>
     <string name="trip_day_header">Day %1$d</string>
     <string name="trip_no_destination">Untitled trip</string>

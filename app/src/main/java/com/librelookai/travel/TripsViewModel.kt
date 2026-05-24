@@ -162,6 +162,36 @@ class TripsViewModel(app: Application) : AndroidViewModel(app) {
         upsertTrip(current.copy(name = newName))
     }
 
+    /**
+     * Applies [transform] to [tripId], updates state immediately (no reordering) and persists to
+     * Drive in the background. Used for in-place planner-option edits in the trip editor.
+     */
+    private fun mutateTrip(tripId: String, transform: (Trip) -> Trip) {
+        val current = _state.value.trips.find { it.id == tripId } ?: return
+        val updated = transform(current)
+        if (updated == current) return
+        _state.update { s -> s.copy(trips = s.trips.map { if (it.id == tripId) updated else it }) }
+        viewModelScope.launch {
+            val folderId = _state.value.folderId ?: return@launch
+            runCatching {
+                val fileId = drive.saveTripJson(folderId, updated.id, gson.toJson(updated))
+                driveIdsByTripId[updated.id] = fileId
+            }.onFailure { Log.w(TAG, "mutateTrip save failed", it) }
+        }
+    }
+
+    fun setTripGoal(tripId: String, goal: String) =
+        mutateTrip(tripId) { it.copy(goal = goal) }
+
+    fun toggleTripVibe(tripId: String, vibe: String) = mutateTrip(tripId) { trip ->
+        val next = trip.vibes.toMutableSet()
+        if (!next.remove(vibe)) next.add(vibe)
+        trip.copy(vibes = next)
+    }
+
+    fun setTripConsiderations(tripId: String, considerations: com.librelookai.settings.AiConsiderations) =
+        mutateTrip(tripId) { it.copy(considerations = considerations) }
+
     /** Replaces `outfitIds[dayIndex]` with [newOutfitId] (used after editing a day's outfit). */
     fun replaceOutfitAtDay(tripId: String, dayIndex: Int, newOutfitId: String) {
         val current = _state.value.trips.find { it.id == tripId } ?: return
@@ -212,16 +242,16 @@ class TripsViewModel(app: Application) : AndroidViewModel(app) {
         instruction: String,
         images: List<DriveImage>,
         currentOutfits: List<Outfit>,
+        prefs: com.librelookai.settings.UserPreferences? = null,
         onDone: (Boolean) -> Unit = {},
     ) {
         val instr = instruction.trim()
-        if (instr.isEmpty()) { onDone(false); return }
         val trip = _state.value.trips.find { it.id == tripId } ?: run { onDone(false); return }
         val tripOutfits = currentOutfits.filter { it.id in trip.outfitIds }
         if (tripOutfits.isEmpty()) { onDone(false); return }
         viewModelScope.launch {
             _bulkRefining.update { it + tripId }
-            val prompt = buildBulkRefinePrompt(trip, tripOutfits, instr, images)
+            val prompt = buildBulkRefinePrompt(trip, tripOutfits, instr, images, prefs)
             Log.d(TAG, "Bulk-refine prompt length: ${prompt.length} chars")
             val raw = try {
                 gemini.generateText(prompt, UsageCategory.TRAVEL, bulkItems = tripOutfits.size)
@@ -282,24 +312,39 @@ private fun buildBulkRefinePrompt(
     outfits: List<Outfit>,
     instruction: String,
     images: List<DriveImage>,
+    prefs: com.librelookai.settings.UserPreferences? = null,
 ): String = buildString {
+    val c = trip.considerations
     appendLine("You are helping the user refine ALL outfits in a multi-day trip in one shot.")
+    appendLine("Keep the same number of days and the same weather — only re-style the outfits. The")
+    appendLine("current outfits below are your starting point; adjust them to honour the settings.")
     appendLine()
     appendLine("## Trip")
     appendLine("- Name: ${trip.name}")
-    appendLine("- Destination: ${trip.destination}")
+    if (c.location) appendLine("- Destination: ${trip.destination}")
     appendLine("- Days: ${trip.days}")
     if (trip.goal.isNotBlank()) appendLine("- Goal/notes: ${trip.goal}")
     if (trip.vibes.isNotEmpty()) appendLine("- Vibes: ${trip.vibes.joinToString(", ")}")
-    if (trip.forecast.isNotEmpty()) {
+    if (c.weather && trip.forecast.isNotEmpty()) {
         appendLine("- Forecast:")
         trip.forecast.forEachIndexed { i, f ->
             appendLine("  - Day ${i + 1}: ${f.minTempC.toInt()}–${f.maxTempC.toInt()}°C, WMO ${f.weatherCode} ${wmoEmoji(f.weatherCode)}")
         }
     }
+    val age = prefs?.yearOfBirth?.let { java.time.LocalDate.now().year - it }
+    val profileLines = buildList {
+        if (c.gender) add("- Gender: ${prefs?.gender?.takeIf { it.isNotEmpty() } ?: "not specified"}")
+        if (c.age) add("- Age: ${age?.toString() ?: "not specified"}")
+        if (c.preferences) add("- Outfit preferences: ${prefs?.preferences?.takeIf { it.isNotEmpty() } ?: "none provided"}")
+    }
+    if (profileLines.isNotEmpty()) {
+        appendLine("## User profile")
+        profileLines.forEach { appendLine(it) }
+    }
+    if (c.trends) appendLine("- Favour currently fashionable, travel-friendly pieces over short-lived fads.")
     appendLine()
     appendLine("## User instruction (apply to ALL outfits)")
-    appendLine(instruction)
+    appendLine(instruction.ifBlank { "Refresh the outfits to best reflect the trip settings above." })
     appendLine()
     appendLine("## Current outfits (id, day, current items)")
     outfits.forEachIndexed { i, o ->
