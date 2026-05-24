@@ -57,6 +57,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
@@ -868,22 +870,46 @@ private fun DeleteTripDialog(
     onCascade: () -> Unit,
     onKeep: () -> Unit,
 ) {
+    // AlertDialog opens its own window, which severs the locale-overridden context; re-provide
+    // the parent's context/configuration in each slot so stringResource honours the app language.
+    val parentContext = LocalContext.current
+    val parentConfiguration = LocalConfiguration.current
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.trip_delete_confirm_title)) },
-        text = { Text(stringResource(R.string.trip_delete_confirm_body)) },
+        title = {
+            CompositionLocalProvider(
+                LocalContext provides parentContext,
+                LocalConfiguration provides parentConfiguration,
+            ) { Text(stringResource(R.string.trip_delete_confirm_title)) }
+        },
+        text = {
+            CompositionLocalProvider(
+                LocalContext provides parentContext,
+                LocalConfiguration provides parentConfiguration,
+            ) { Text(stringResource(R.string.trip_delete_confirm_body)) }
+        },
         confirmButton = {
-            TextButton(onClick = onCascade) {
-                Text(stringResource(R.string.trip_delete_with_outfits))
+            CompositionLocalProvider(
+                LocalContext provides parentContext,
+                LocalConfiguration provides parentConfiguration,
+            ) {
+                TextButton(onClick = onCascade) {
+                    Text(stringResource(R.string.trip_delete_with_outfits))
+                }
             }
         },
         dismissButton = {
-            Row {
-                TextButton(onClick = onKeep) {
-                    Text(stringResource(R.string.trip_delete_keep_outfits))
-                }
-                TextButton(onClick = onDismiss) {
-                    Text(stringResource(R.string.action_cancel))
+            CompositionLocalProvider(
+                LocalContext provides parentContext,
+                LocalConfiguration provides parentConfiguration,
+            ) {
+                Row {
+                    TextButton(onClick = onKeep) {
+                        Text(stringResource(R.string.trip_delete_keep_outfits))
+                    }
+                    TextButton(onClick = onDismiss) {
+                        Text(stringResource(R.string.action_cancel))
+                    }
                 }
             }
         },
