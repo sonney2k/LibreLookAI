@@ -40,6 +40,12 @@ data class TripsUiState(
      * confirmation. Cleared via [TripsViewModel.consumeJustSaved] once shown.
      */
     val justSavedTripId: String? = null,
+    /**
+     * Pending (un-persisted) bulk-refine result for [refinePreviewTripId]: outfitId → proposed
+     * itemIds. The viewer renders this as a preview until the user replaces or discards it.
+     */
+    val refinePreviewTripId: String? = null,
+    val refinePreview: Map<String, List<String>> = emptyMap(),
 )
 
 /**
@@ -198,15 +204,14 @@ class TripsViewModel(app: Application) : AndroidViewModel(app) {
 
     /**
      * One Gemini call that re-assigns items for every outfit in [tripId] subject to [instruction]
-     * (e.g. "brighter clothes", "pack lighter — fewer distinct items"). Updates each outfit's
-     * itemIds in place via [outfitsViewModel.updateOutfitItems].
+     * (e.g. "brighter clothes", "pack lighter — fewer distinct items"). The result is stored as an
+     * un-persisted preview ([refinePreview]); nothing is saved until [applyRefinePreview].
      */
     fun refineAllOutfits(
         tripId: String,
         instruction: String,
         images: List<DriveImage>,
         currentOutfits: List<Outfit>,
-        outfitsViewModel: OutfitsViewModel,
         onDone: (Boolean) -> Unit = {},
     ) {
         val instr = instruction.trim()
@@ -240,16 +245,36 @@ class TripsViewModel(app: Application) : AndroidViewModel(app) {
                 onDone(false); return@launch
             }
             val knownItemIds = images.map { it.driveId }.toSet()
+            val tripOutfitIds = trip.outfitIds.toSet()
             val updates = parsed.outfits.mapNotNull { up ->
+                if (up.id !in tripOutfitIds) return@mapNotNull null
                 val cleaned = up.itemIds.filter { it in knownItemIds }
                 if (cleaned.isEmpty()) null else up.id to cleaned
             }.toMap()
-            outfitsViewModel.updateOutfitItems(updates) { ok ->
-                _bulkRefining.update { it - tripId }
-                onDone(ok)
+            _bulkRefining.update { it - tripId }
+            if (updates.isEmpty()) {
+                _state.update { it.copy(error = "No usable refinement returned.") }
+                onDone(false); return@launch
             }
+            // Store as a preview — the user reviews it and explicitly replaces or discards.
+            _state.update { it.copy(refinePreviewTripId = tripId, refinePreview = updates) }
+            onDone(true)
         }
     }
+
+    /** Persists the pending [refinePreview] (overwriting each outfit's items) and clears it. */
+    fun applyRefinePreview(outfitsViewModel: OutfitsViewModel, onDone: (Boolean) -> Unit = {}) {
+        val updates = _state.value.refinePreview
+        if (updates.isEmpty()) { onDone(false); return }
+        outfitsViewModel.updateOutfitItems(updates) { ok ->
+            if (ok) _state.update { it.copy(refinePreviewTripId = null, refinePreview = emptyMap()) }
+            onDone(ok)
+        }
+    }
+
+    /** Drops the pending [refinePreview] without persisting. */
+    fun discardRefinePreview() =
+        _state.update { it.copy(refinePreviewTripId = null, refinePreview = emptyMap()) }
 }
 
 private fun buildBulkRefinePrompt(

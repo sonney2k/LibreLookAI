@@ -131,9 +131,19 @@ fun TripViewerScreen(
     var editing by remember(tripId) { mutableStateOf(false) }
     val isBulkRefining = tripId in bulkRefining
 
+    // Pending (un-persisted) bulk-refine result for this trip, if any.
+    val refinePreview = if (tripsState.refinePreviewTripId == tripId) tripsState.refinePreview else emptyMap()
+    val previewing = refinePreview.isNotEmpty()
+
+    // Leaving edit mode also drops any unsaved refine preview.
+    val exitEdit = {
+        editing = false
+        tripsViewModel.discardRefinePreview()
+    }
+
     // System back exits edit mode first; the parent handles closing the viewer otherwise.
     if (editing) {
-        androidx.activity.compose.BackHandler { editing = false }
+        androidx.activity.compose.BackHandler { exitEdit() }
     }
 
     // One-time "saved" confirmation shown when a freshly generated trip opens.
@@ -149,31 +159,22 @@ fun TripViewerScreen(
     Box(modifier = modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
             if (editing) {
+                // Edit mode: generic title, no delete here (delete lives on the view-mode FAB).
                 TripHeader(
                     name = stringResource(R.string.trip_planned_title),
-                    onClose = { editing = false },
-                    onDelete = { showDeleteDialog = true },
-                    deleteEnabled = true,
+                    onClose = exitEdit,
+                    onDelete = {},
+                    deleteEnabled = false,
                 )
             } else {
-                // Minimal view-only top bar: just a close affordance (trip info lives below).
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(start = 4.dp, top = 4.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    IconButton(onClick = onClose, modifier = Modifier.size(40.dp)) {
-                        Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_cancel))
-                    }
-                }
+                // View mode: trip title on the left, "saved" reassurance on the right.
+                TripViewHeader(title = trip.name, onClose = onClose)
             }
             Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
                 LazyColumn(
                     contentPadding = PaddingValues(bottom = if (editing) 16.dp else 96.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    if (!editing) {
-                        item { SavedBadge() }
-                    }
                     item {
                         TripMetaSection(
                             trip = trip,
@@ -204,7 +205,11 @@ fun TripViewerScreen(
                             outfit = outfit,
                             forecast = trip.forecast.getOrNull(dayIdx),
                             imagesById = imagesById,
-                            enabled = outfit != null,
+                            overrideItemIds = refinePreview[outfitId],
+                            showEditIcon = editing && !previewing,
+                            // While previewing, cards show proposed items; opening the full
+                            // viewer (which reads saved items) is disabled to avoid confusion.
+                            enabled = outfit != null && !previewing,
                             onClick = { if (outfit != null) viewerOutfitId = outfit.id },
                         )
                     }
@@ -228,7 +233,6 @@ fun TripViewerScreen(
                                         instruction     = instruction,
                                         images          = wardrobeState.images,
                                         currentOutfits  = outfitsState.outfits,
-                                        outfitsViewModel = outfitsViewModel,
                                     )
                                 },
                             )
@@ -242,6 +246,13 @@ fun TripViewerScreen(
                         modifier = Modifier.fillMaxSize(),
                     )
                 }
+            }
+            // Sticky review bar for an unsaved refine preview.
+            if (previewing) {
+                RefinePreviewBar(
+                    onDiscard = { tripsViewModel.discardRefinePreview() },
+                    onReplace = { tripsViewModel.applyRefinePreview(outfitsViewModel) },
+                )
             }
         }
 
@@ -384,25 +395,86 @@ private fun TripHeader(
     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 }
 
-/** Persistent reassurance that the trip + its outfits are saved (shown in view mode). */
+/** View-mode top panel: close + trip title, with a "saved" reassurance pinned to the right. */
 @Composable
-private fun SavedBadge() {
+private fun TripViewHeader(
+    title: String,
+    onClose: () -> Unit,
+) {
     Row(
-        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 8.dp, end = 12.dp, top = 4.dp, bottom = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        Icon(
-            Icons.Default.CloudDone,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(14.dp),
-        )
+        IconButton(onClick = onClose, modifier = Modifier.size(40.dp)) {
+            Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_cancel))
+        }
+        Spacer(Modifier.width(4.dp))
         Text(
-            stringResource(R.string.trip_saved_label),
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.primary,
+            if (title.isBlank()) stringResource(R.string.trip_viewer_title) else title,
+            style = MaterialTheme.typography.headlineSmall.copy(
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+            ),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.weight(1f),
         )
+        Spacer(Modifier.width(8.dp))
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Icon(
+                Icons.Default.CloudDone,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(14.dp),
+            )
+            Text(
+                stringResource(R.string.trip_saved_label),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.primary,
+            )
+        }
+    }
+    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+}
+
+/** Sticky review bar for an unsaved bulk-refine preview. */
+@Composable
+private fun RefinePreviewBar(
+    onDiscard: () -> Unit,
+    onReplace: () -> Unit,
+) {
+    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+    Surface(tonalElevation = 3.dp) {
+        Column(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 10.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Text(
+                stringResource(R.string.trip_refine_preview_note),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                TextButton(onClick = onDiscard) {
+                    Text(stringResource(R.string.trip_refine_discard))
+                }
+                Spacer(Modifier.width(8.dp))
+                TripGradientButton(
+                    label = stringResource(R.string.trip_refine_replace),
+                    enabled = true,
+                    onClick = onReplace,
+                )
+            }
+        }
     }
 }
 
@@ -543,11 +615,13 @@ private fun TripDayCard(
     forecast: DayForecast?,
     imagesById: Map<String, DriveImage>,
     enabled: Boolean,
+    showEditIcon: Boolean,
     onClick: () -> Unit,
+    overrideItemIds: List<String>? = null,
 ) {
     val ctx = LocalContext.current
-    val isOffline = LocalIsOffline.current
-    val items = outfit?.itemIds?.mapNotNull { imagesById[it] } ?: emptyList()
+    val effectiveItemIds = overrideItemIds ?: outfit?.itemIds ?: emptyList()
+    val items = effectiveItemIds.mapNotNull { imagesById[it] }
     OutlinedCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -577,7 +651,7 @@ private fun TripDayCard(
                     )
                 }
                 Spacer(Modifier.weight(1f))
-                if (outfit != null && !isOffline) {
+                if (outfit != null && showEditIcon) {
                     Icon(
                         Icons.Default.Edit,
                         contentDescription = stringResource(R.string.trip_modify_outfit),
@@ -674,13 +748,14 @@ private fun BulkRefineSection(
             style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.SemiBold,
         )
+        // Presets only fill the instruction field — no action is taken until "Apply with AI".
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(6.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             presets.forEach { preset ->
                 AssistChip(
-                    onClick = { if (!isRefining) onSubmit(preset) },
+                    onClick = { text = if (text.isBlank()) preset else "$text, $preset" },
                     label = { Text(preset, style = MaterialTheme.typography.labelSmall) },
                 )
             }

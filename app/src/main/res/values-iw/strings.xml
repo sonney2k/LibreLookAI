@@ -905,18 +905,21 @@
     <string name="trip_rename">Rename</string>
     <string name="trip_modify_outfit">Modify outfit</string>
     <string name="trip_section_other_outfits">Other travel outfits</string>
-    <string name="trip_delete">Delete trip</string>
-    <string name="trip_delete_confirm_title">Delete this trip?</string>
-    <string name="trip_delete_confirm_body">Choose whether to also delete the outfits created for this trip.</string>
-    <string name="trip_delete_with_outfits">Delete trip + outfits</string>
-    <string name="trip_delete_keep_outfits">Keep outfits</string>
-    <string name="trip_bulk_refining">Refining all outfits…</string>
-    <string name="trip_bulk_refine_action">Refine all outfits</string>
-    <string name="trip_bulk_refine_hint">e.g. brighter colors, fewer items, smarter for evenings…</string>
-    <string name="trip_bulk_refine_run">Apply with AI</string>
-    <string name="trip_bulk_refine_brighter">Brighter colors</string>
-    <string name="trip_bulk_refine_lighter">Pack lighter</string>
-    <string name="trip_bulk_refine_formal">More formal evenings</string>
-    <string name="trip_bulk_refine_skip_jacket">Skip jacket</string>
+    <string name="trip_delete">מחיקת הטיול</string>
+    <string name="trip_delete_confirm_title">למחוק את הטיול הזה?</string>
+    <string name="trip_delete_confirm_body">בחר אם למחוק גם את התלבושות שנוצרו עבור הטיול הזה.</string>
+    <string name="trip_delete_with_outfits">מחיקת הטיול והתלבושות</string>
+    <string name="trip_delete_keep_outfits">שמירת התלבושות</string>
+    <string name="trip_bulk_refining">משפר את כל התלבושות…</string>
+    <string name="trip_bulk_refine_action">שיפור כל התלבושות</string>
+    <string name="trip_bulk_refine_hint">למשל צבעים בהירים יותר, פחות פריטים, מתאים יותר לערב…</string>
+    <string name="trip_bulk_refine_run">החל עם AI</string>
+    <string name="trip_bulk_refine_brighter">צבעים בהירים יותר</string>
+    <string name="trip_bulk_refine_lighter">לארוז קל יותר</string>
+    <string name="trip_bulk_refine_formal">ערבים רשמיים יותר</string>
+    <string name="trip_bulk_refine_skip_jacket">בלי מעיל</string>
+    <string name="trip_refine_preview_note">תצוגה מקדימה — לא נשמר</string>
+    <string name="trip_refine_discard">השלך</string>
+    <string name="trip_refine_replace">החלף את תלבושות הטיול</string>
 </resources>
 

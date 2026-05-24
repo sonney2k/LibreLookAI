@@ -939,4 +939,7 @@
     <string name="trip_bulk_refine_lighter">Pack lighter</string>
     <string name="trip_bulk_refine_formal">More formal evenings</string>
     <string name="trip_bulk_refine_skip_jacket">Skip jacket</string>
+    <string name="trip_refine_preview_note">Preview — not saved</string>
+    <string name="trip_refine_discard">Discard</string>
+    <string name="trip_refine_replace">Replace trip outfits</string>
 </resources>
