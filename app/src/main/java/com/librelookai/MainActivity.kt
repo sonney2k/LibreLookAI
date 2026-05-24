@@ -25,6 +25,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.padding
@@ -33,8 +35,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Checkroom
 import androidx.compose.material.icons.filled.FlightTakeoff
+import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.DoorSliding
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -47,6 +51,7 @@ import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -54,6 +59,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -125,6 +131,12 @@ import com.librelookai.weather.WeatherBadge
 import com.librelookai.weather.WeatherViewModel
 import com.librelookai.data.model.TryOn
 import com.librelookai.wardrobe.SortButton
+
+/**
+ * Navigates to the Insights destination from a screen header (the chart icon that replaced
+ * the old Insights nav tab). Null when no host has wired it; [AppScreenHeader] hides the icon.
+ */
+val LocalOpenInsights = androidx.compose.runtime.compositionLocalOf<(() -> Unit)?> { null }
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -327,6 +339,7 @@ class MainActivity : ComponentActivity() {
                         LocalOnBackPressedDispatcherOwner provides this@MainActivity,
                         LocalIsOffline provides isOffline,
                         LocalSystemBarsPadding provides systemBarsPadding,
+                        LocalOpenInsights provides { selectedTab = 4; navResetTick++ },
                     ) { LibreLookAITheme(
                         paletteId = profileState.preferences.wardrobeTheme,
                         fontId = profileState.preferences.appFont,
@@ -408,6 +421,8 @@ class MainActivity : ComponentActivity() {
                         }
 
                         var dismissWardrobeViewerTrigger by remember { mutableIntStateOf(0) }
+                        var showQuickTryOnSheet by remember { mutableStateOf(false) }
+                        var showTripTryOnPicker by remember { mutableStateOf(false) }
                         var travelPlannerMode by rememberSaveable { mutableStateOf(false) }
                         var tripViewerTripId: String? by rememberSaveable { mutableStateOf(null) }
                         val hideChrome = selectedTab == 3 && (travelPlannerMode || tripViewerTripId != null)
@@ -427,6 +442,10 @@ class MainActivity : ComponentActivity() {
                                             Analytics.action("NavBar", "tab_reselect", mapOf("index" to tab.toString()))
                                             if (tab == 1) dismissWardrobeViewerTrigger++
                                             navResetTick++
+                                        },
+                                        onCenterClick = {
+                                            Analytics.action("TryOn", "nav_button_tap", mapOf("from" to selectedTab.toString()))
+                                            showQuickTryOnSheet = true
                                         },
                                     )
                                 }
@@ -476,7 +495,6 @@ class MainActivity : ComponentActivity() {
                                             profileViewModel = profileViewModel,
                                             weatherViewModel = weatherViewModel,
                                             locationViewModel = locationViewModel,
-                                            tryOnViewModel = tryOnViewModel,
                                             onTryOnStyle = { style ->
                                                 stylesViewModel.clearOutfitSelection()
                                                 // Preserve the outfit link so the saved try-on
@@ -624,6 +642,22 @@ class MainActivity : ComponentActivity() {
                                 }
 
                                 val stylesState by stylesViewModel.state.collectAsState()
+                                val tripsUiState by tripsViewModel.state.collectAsState()
+                                val wardrobeImagesForTryOn = wardrobeViewModel.state.collectAsState().value.images
+                                // Travel try-on is offered only when a trip has at least one day
+                                // whose outfit still resolves to loaded wardrobe items.
+                                val travelTryOnAvailable = remember(tripsUiState.trips, stylesState.outfits, wardrobeImagesForTryOn) {
+                                    val outfitsById = stylesState.outfits.associateBy { it.id }
+                                    val knownItemIds = wardrobeImagesForTryOn.mapTo(HashSet()) { it.driveId }
+                                    tripsUiState.trips.any { trip ->
+                                        trip.outfitIds.any { oid ->
+                                            outfitsById[oid]?.let { o ->
+                                                o.itemIds.isNotEmpty() && o.itemIds.all { it in knownItemIds }
+                                            } == true
+                                        }
+                                    }
+                                }
+                                val tryOnContext = LocalContext.current
                                 TryOnComposerScreen(
                                     tryOnViewModel   = tryOnViewModel,
                                     wardrobeViewModel = wardrobeViewModel,
@@ -651,7 +685,86 @@ class MainActivity : ComponentActivity() {
                                         selectedTab = 0
                                         navResetTick++
                                     },
+                                    onStartTryOn = { showQuickTryOnSheet = true },
+                                    onOpenProfileSettings = {
+                                        tryOnViewModel.close()
+                                        selectedTab = 5
+                                        navResetTick++
+                                    },
                                 )
+
+                                // Quick Try-On entry sheet — opened from the center nav button,
+                                // the history FAB, and the empty-state CTA. Hosted here so it
+                                // floats above whatever destination / dialog is on top.
+                                if (showQuickTryOnSheet) {
+                                    LaunchedEffect(Unit) { Analytics.action("TryOn/QuickSheet", "shown") }
+                                    com.librelookai.tryon.QuickTryOnSheet(
+                                        onPickOutfit = {
+                                            Analytics.action("TryOn/QuickSheet", "pick_source", mapOf("source" to "outfit"))
+                                            showQuickTryOnSheet = false
+                                            tryOnViewModel.openComposer(
+                                                emptySet(), null,
+                                                com.librelookai.tryon.TryOnSourceKind.OUTFIT,
+                                                autoPick = true,
+                                            )
+                                        },
+                                        onPickWardrobe = {
+                                            Analytics.action("TryOn/QuickSheet", "pick_source", mapOf("source" to "wardrobe"))
+                                            showQuickTryOnSheet = false
+                                            tryOnViewModel.openComposer(
+                                                emptySet(), null,
+                                                com.librelookai.tryon.TryOnSourceKind.WARDROBE,
+                                                autoPick = true,
+                                            )
+                                        },
+                                        onPickShopping = {
+                                            Analytics.action("TryOn/QuickSheet", "pick_source", mapOf("source" to "shopping"))
+                                            showQuickTryOnSheet = false
+                                            tryOnViewModel.openComposer(
+                                                emptySet(), null,
+                                                com.librelookai.tryon.TryOnSourceKind.SHOPPING,
+                                                autoPick = true,
+                                            )
+                                        },
+                                        onPickTravel = {
+                                            Analytics.action("TryOn/QuickSheet", "pick_source", mapOf("source" to "travel"))
+                                            showQuickTryOnSheet = false
+                                            showTripTryOnPicker = true
+                                        },
+                                        onSeeHistory = {
+                                            Analytics.action("TryOn/QuickSheet", "pick_source", mapOf("source" to "history"))
+                                            showQuickTryOnSheet = false
+                                            tryOnViewModel.openHistoryRoot()
+                                        },
+                                        onDismiss = {
+                                            Analytics.action("TryOn/QuickSheet", "dismiss")
+                                            showQuickTryOnSheet = false
+                                        },
+                                        showTravel = travelTryOnAvailable,
+                                    )
+                                }
+
+                                // Trip-outfit picker — opened from the Quick sheet's travel row.
+                                // Picking a day feeds that day's outfit into the composer tagged
+                                // with the TRAVEL source so provenance reads "{trip} · Day {n}".
+                                if (showTripTryOnPicker) {
+                                    com.librelookai.tryon.TripOutfitPickerDialog(
+                                        trips = tripsUiState.trips,
+                                        outfits = stylesState.outfits,
+                                        wardrobeImages = wardrobeImagesForTryOn,
+                                        onPick = { tripName, day, outfit ->
+                                            Analytics.action("TryOn/TripPicker", "pick_day", mapOf("day" to day.toString()))
+                                            showTripTryOnPicker = false
+                                            tryOnViewModel.openComposer(
+                                                outfit.itemIds.toSet(),
+                                                outfit.id,
+                                                com.librelookai.tryon.TryOnSourceKind.TRAVEL,
+                                                tryOnContext.getString(R.string.tryon_trip_context, tripName, day),
+                                            )
+                                        },
+                                        onDismiss = { showTripTryOnPicker = false },
+                                    )
+                                }
 
                                 // Unified style composer — opened from any screen that seeds items.
                                 OutfitComposerScreen(
@@ -775,6 +888,18 @@ fun AppScreenHeader(
             modifier = Modifier.weight(1f),
         )
         trailingContent?.invoke()
+        // Insights moved out of the bottom nav into a header chart icon (README IA change).
+        val openInsights = LocalOpenInsights.current
+        if (openInsights != null) {
+            androidx.compose.material3.IconButton(onClick = openInsights) {
+                Icon(
+                    Icons.Default.TrendingUp,
+                    contentDescription = stringResource(R.string.nav_insights_header_icon),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(18.dp),
+                )
+            }
+        }
         if (onSettingsClick != null) {
             androidx.compose.material3.IconButton(onClick = onSettingsClick) {
                 Icon(
@@ -886,42 +1011,141 @@ fun LocationButton(
     }
 }
 
+/**
+ * Bottom navigation with a raised center "AI" button (Try-On entry point). Stock M3
+ * [NavigationBar] can't host a floating center slot, so this is a custom [Row] of four
+ * tab slots (Outfits / Wardrobe / Shopping / Travel) split around a fixed-width gap that
+ * the center button floats over. Insights moved out of the nav into the screen headers.
+ *
+ * Tab indices are unchanged from the old nav (Outfits 0, Wardrobe 1, Shopping 2, Travel 3),
+ * so [onTabSelected] / [selectedTab] continue to map straight onto MainActivity's tabs.
+ */
 @Composable
 private fun AppNavBar(
     selectedTab: Int,
     onTabSelected: (Int) -> Unit,
     onTabReselected: (Int) -> Unit = {},
+    onCenterClick: () -> Unit = {},
 ) {
-    data class NavItem(val labelRes: Int, val icon: androidx.compose.ui.graphics.vector.ImageVector)
-    val items = listOf(
-        NavItem(R.string.nav_styles,   Icons.Default.Style),
-        NavItem(R.string.nav_wardrobe, Icons.Default.Checkroom),
-        NavItem(R.string.nav_shopping, Icons.Default.ShoppingBag),
-        NavItem(R.string.nav_travel,   Icons.Default.FlightTakeoff),
-        NavItem(R.string.nav_insights, Icons.Default.Insights),
+    val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
+    data class NavItem(val tab: Int, val labelRes: Int, val icon: ImageVector)
+    val leftItems = listOf(
+        NavItem(0, R.string.nav_styles,   Icons.Default.Style),
+        NavItem(1, R.string.nav_wardrobe, Icons.Default.Checkroom),
     )
-    NavigationBar {
-        items.forEachIndexed { index, item ->
-            val label = stringResource(item.labelRes)
-            NavigationBarItem(
-                selected = selectedTab == index,
-                onClick = {
-                    if (index == selectedTab) onTabReselected(index) else onTabSelected(index)
-                },
-                icon = { Icon(item.icon, contentDescription = label) },
-                label = {
-                    val isCaveat = com.librelookai.ui.theme.LocalAppFont.current == AppFont.CAVEAT
-                    if (isCaveat) {
-                        Text(
-                            label,
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.SemiBold,
-                        )
-                    } else {
-                        Text(label)
+    val rightItems = listOf(
+        NavItem(2, R.string.nav_shopping, Icons.Default.ShoppingBag),
+        NavItem(3, R.string.nav_travel,   Icons.Default.FlightTakeoff),
+    )
+    val navBarBottom = androidx.compose.foundation.layout.WindowInsets.navigationBars
+        .asPaddingValues().calculateBottomPadding()
+
+    Box(modifier = Modifier.fillMaxWidth()) {
+        Surface(
+            color = palette.navBg,
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter),
+        ) {
+            Column {
+                HorizontalDivider(color = palette.divider)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        // Symmetric top/bottom (the system-nav inset stays below) so the tab
+                        // icon+label stacks sit vertically centered within the bar.
+                        .padding(start = 6.dp, end = 6.dp, top = 4.dp, bottom = 4.dp + navBarBottom),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    leftItems.forEach { item ->
+                        NavSlot(item.tab, item.labelRes, item.icon, selectedTab, onTabSelected, onTabReselected, Modifier.weight(1f))
                     }
-                },
+                    Spacer(Modifier.width(60.dp))
+                    rightItems.forEach { item ->
+                        NavSlot(item.tab, item.labelRes, item.icon, selectedTab, onTabSelected, onTabReselected, Modifier.weight(1f))
+                    }
+                }
+            }
+        }
+        // Raised AI button — a FAB that overhangs the panel's top edge by ~20% of its height
+        // (52.dp → ~11.dp pokes above the bar). The panel (taller child) sizes the Box, so
+        // TopCenter sits on the panel's top border; both the FAB and its title anchor there,
+        // keeping the overhang consistent regardless of system-nav inset.
+        FloatingActionButton(
+            onClick = onCenterClick,
+            containerColor = palette.fabBg,
+            contentColor = palette.fabFg,
+            shape = androidx.compose.foundation.shape.CircleShape,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .offset(y = (-16).dp)
+                .size(52.dp),
+        ) {
+            Icon(
+                Icons.Default.AutoAwesome,
+                contentDescription = stringResource(R.string.tryon_nav_label),
+                modifier = Modifier.size(24.dp),
             )
         }
+        // "Try on" title, just below the FAB, aligned with the other tab labels.
+        Text(
+            stringResource(R.string.tryon_nav_label),
+            color = palette.primary,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Bold,
+            maxLines = 1,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .offset(y = 38.dp),
+        )
+    }
+}
+
+@Composable
+private fun NavSlot(
+    tab: Int,
+    labelRes: Int,
+    icon: ImageVector,
+    selectedTab: Int,
+    onTabSelected: (Int) -> Unit,
+    onTabReselected: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
+    val active = selectedTab == tab
+    val label = stringResource(labelRes)
+    Column(
+        modifier = modifier
+            .clip(RoundedCornerShape(12.dp))
+            .clickable(
+                indication = null,
+                interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() },
+            ) { if (active) onTabReselected(tab) else onTabSelected(tab) }
+            .padding(horizontal = 2.dp, vertical = 1.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Box(
+            modifier = Modifier
+                .width(40.dp)
+                .clip(RoundedCornerShape(14.dp))
+                .background(if (active) palette.navIndicator else androidx.compose.ui.graphics.Color.Transparent)
+                .padding(vertical = 2.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                icon,
+                contentDescription = label,
+                tint = if (active) palette.primary else palette.textMuted,
+                modifier = Modifier.size(26.dp),
+            )
+        }
+        Spacer(Modifier.size(2.dp))
+        Text(
+            label,
+            color = if (active) palette.primary else palette.textMuted,
+            fontSize = 12.sp,
+            fontWeight = if (active) FontWeight.Bold else FontWeight.SemiBold,
+            maxLines = 1,
+        )
     }
 }

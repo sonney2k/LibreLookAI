@@ -659,6 +659,62 @@
     <string name="tryon_from_outfit">From outfit: %1$s</string>
     <string name="tryon_view_source_outfit">View outfit</string>
 
+    <!-- Try-On redesign: entry, quick sheet, history, states -->
+    <string name="tryon_nav_label">Try on</string>
+    <string name="tryon_quick_sheet_title">Quick try-on</string>
+    <string name="tryon_quick_sheet_subtitle">What should we put on you?</string>
+    <string name="tryon_quick_source_outfit">A saved outfit</string>
+    <string name="tryon_quick_source_outfit_sub">Pick from your library</string>
+    <string name="tryon_quick_source_wardrobe">Pick items</string>
+    <string name="tryon_quick_source_wardrobe_sub">Mix &amp; match from your wardrobe</string>
+    <string name="tryon_quick_source_shopping">Something to buy</string>
+    <string name="tryon_quick_source_shopping_sub">From your shopping list</string>
+    <string name="tryon_quick_source_travel">Outfit from a trip</string>
+    <string name="tryon_quick_source_travel_sub">From %1$s · Day %2$d</string>
+    <string name="tryon_quick_source_travel_avail">From your planned trips</string>
+    <string name="tryon_trip_picker_title">Try on a trip outfit</string>
+    <string name="tryon_trip_picker_empty">No trip outfits to try on yet. Plan a trip in the Travel tab first.</string>
+    <string name="tryon_trip_context">%1$s · Day %2$d</string>
+    <string name="tryon_quick_see_history">See past try-ons</string>
+    <string name="tryon_history_subtitle">Latest at top</string>
+    <string name="tryon_history_earlier">Earlier</string>
+    <string name="tryon_history_more_count">%1$d more</string>
+    <string name="tryon_history_new">New try-on</string>
+    <string name="tryon_source_label_outfit">From outfit</string>
+    <string name="tryon_source_label_wardrobe">From wardrobe</string>
+    <string name="tryon_source_label_shopping">From shopping</string>
+    <string name="tryon_source_label_travel">From travel</string>
+    <string name="tryon_source_context_items">%1$d items</string>
+    <string name="tryon_source_swap">Swap</string>
+    <string name="tryon_empty_title">No try-ons yet</string>
+    <string name="tryon_empty_body">Generate a try-on from an outfit, your wardrobe, or a shopping item — we\'ll save it here so you can revisit anytime.</string>
+    <string name="tryon_empty_cta">Start a try-on</string>
+    <string name="tryon_empty_chip_outfit">From an outfit</string>
+    <string name="tryon_empty_chip_wardrobe">From wardrobe</string>
+    <string name="tryon_empty_chip_shopping">From shopping</string>
+    <string name="tryon_generating_title">Generating your try-on</string>
+    <string name="tryon_generating_body">Composing %1$d items onto your reference photos. Usually 20–40 seconds.</string>
+    <string name="tryon_result_title">Your try-on</string>
+    <string name="tryon_result_zoom_hint">Pinch to zoom</string>
+    <string name="tryon_result_items_worn">Items worn</string>
+    <string name="tryon_reference_photos_title">Your reference photos</string>
+    <string name="tryon_reference_photos_edit">Edit</string>
+    <string name="tryon_detail_view_source_trip">View trip</string>
+    <string name="tryon_detail_view_source_wardrobe">View in wardrobe</string>
+    <string name="tryon_detail_view_source_shopping">View shopping list</string>
+    <string name="tryon_detail_regenerate">Regenerate</string>
+    <string name="tryon_detail_item_tap_hint">Tap to view in wardrobe</string>
+    <string name="tryon_detail_generated">Generated</string>
+    <string name="tryon_detail_source">Source</string>
+    <string name="tryon_photos_eyebrow">Reference photos needed</string>
+    <string name="tryon_photos_title">Add a few photos of yourself so Gemini can place outfits onto your body.</string>
+    <string name="tryon_photos_body">Front, side, and back — full-body, plain background works best. Photos stay in your own Drive.</string>
+    <string name="tryon_photos_section_label">Upload 3 reference shots</string>
+    <string name="tryon_photos_optional">Optional</string>
+    <string name="tryon_photos_tip">Wear simple, fitted clothing in your reference photos. Patterns and bulky layers reduce accuracy.</string>
+    <string name="tryon_photos_open_settings">Open Settings → Profile</string>
+    <string name="nav_insights_header_icon">Insights</string>
+
     <!-- About -->
     <string name="settings_tab_about">About</string>
 

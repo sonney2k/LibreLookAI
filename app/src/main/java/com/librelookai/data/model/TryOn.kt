@@ -24,6 +24,14 @@ data class TryOn(
      * detail view jump back to the source outfit if it still exists.
      */
     val sourceOutfitId: String? = null,
+    /**
+     * Where this try-on was started from, serialized as a String for forward-compat:
+     * one of "outfit" / "wardrobe" / "shopping" / "travel". Old entries with no value
+     * are migrated on load (outfit if [sourceOutfitId] is present, else wardrobe).
+     */
+    val sourceKind: String = "outfit",
+    /** Human-readable provenance label shown on history cards (e.g. "Sunday Brunch", "3 items"). */
+    val sourceContext: String = "",
     /** Runtime-resolved Drive IDs of the items — not persisted. */
     @Transient val itemIds: List<String> = emptyList(),
     /** Runtime local path of the cached PNG — not persisted. */

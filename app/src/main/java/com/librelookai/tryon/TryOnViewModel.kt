@@ -19,11 +19,39 @@ import com.librelookai.data.model.TryOn
 import com.librelookai.gemini.GeminiRepository
 import com.librelookai.wardrobe.DriveImage
 
+/** Where a try-on composition was started from. Drives the source banner + history provenance. */
+enum class TryOnSourceKind { NONE, OUTFIT, WARDROBE, SHOPPING, TRAVEL }
+
+/** Stable lowercase token persisted in `_tryons.json`. NONE collapses to "outfit" for compat. */
+fun TryOnSourceKind.serialized(): String = when (this) {
+    TryOnSourceKind.WARDROBE -> "wardrobe"
+    TryOnSourceKind.SHOPPING -> "shopping"
+    TryOnSourceKind.TRAVEL   -> "travel"
+    else                     -> "outfit"
+}
+
+fun tryOnSourceKindOf(token: String?): TryOnSourceKind = when (token) {
+    "wardrobe" -> TryOnSourceKind.WARDROBE
+    "shopping" -> TryOnSourceKind.SHOPPING
+    "travel"   -> TryOnSourceKind.TRAVEL
+    else       -> TryOnSourceKind.OUTFIT
+}
+
 data class TryOnUiState(
     /** Unified composer: open when the user is assembling / generating / previewing a try-on. */
     val isComposerOpen: Boolean = false,
     /** Drive IDs of the wardrobe items currently included in the composition. */
     val itemIds: Set<String> = emptySet(),
+    /** Where the current composition originated — renders the composer's source banner. */
+    val sourceKind: TryOnSourceKind = TryOnSourceKind.NONE,
+    /** Display label backing the source banner (outfit name / "{n} items" / shopping item). */
+    val sourceContext: String? = null,
+    /**
+     * When true, the composer auto-opens the picker matching [sourceKind] on first
+     * composition (outfit picker for OUTFIT, item picker for WARDROBE / SHOPPING). Cleared
+     * once consumed so a recomposition doesn't reopen it.
+     */
+    val autoPick: Boolean = false,
     /**
      * Id of the saved [com.librelookai.data.model.Outfit] backing the current composition
      * (set when the user picks an outfit via the composer's "Use an outfit" button). Cleared
@@ -41,6 +69,12 @@ data class TryOnUiState(
     /** Past try-ons loaded from Drive, newest-first. */
     val history: List<TryOn> = emptyList(),
     val isHistoryOpen: Boolean = false,
+    /**
+     * True when the history feed itself is the dialog root (opened from the Quick sheet's
+     * "See past try-ons" shortcut or the history FAB). Back from the feed then closes the
+     * whole dialog instead of falling through to an empty composer.
+     */
+    val historyIsRoot: Boolean = false,
     /** Non-null when the user is viewing a past try-on from history. */
     val viewingTryOn: TryOn? = null,
     /**
@@ -83,14 +117,26 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
     private var lastGeneratedItemIds: List<String> = emptyList()
     /** Outfit-id snapshot from when [generate] ran — written into the saved entry by [saveCurrent]. */
     private var lastGeneratedSourceOutfitId: String? = null
+    /** Source kind/context snapshot from [generate], written into the saved entry by [saveCurrent]. */
+    private var lastGeneratedSourceKind: TryOnSourceKind = TryOnSourceKind.NONE
+    private var lastGeneratedSourceContext: String = ""
 
     /** Open the composer with an initial set of wardrobe items. Loads history lazily. */
-    fun openComposer(seedItemIds: Set<String>, sourceOutfitId: String? = null) {
+    fun openComposer(
+        seedItemIds: Set<String>,
+        sourceOutfitId: String? = null,
+        sourceKind: TryOnSourceKind = if (sourceOutfitId != null) TryOnSourceKind.OUTFIT else TryOnSourceKind.NONE,
+        sourceContext: String? = null,
+        autoPick: Boolean = false,
+    ) {
         _state.update {
             it.copy(
                 isComposerOpen = true,
                 itemIds = seedItemIds,
                 sourceOutfitId = sourceOutfitId,
+                sourceKind = sourceKind,
+                sourceContext = sourceContext,
+                autoPick = autoPick,
                 resultPath = null,
                 isResultSaved = false,
                 isHistoryOpen = false,
@@ -99,6 +145,14 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
             )
         }
         loadHistory()
+    }
+
+    /** Consume the one-shot [TryOnUiState.autoPick] flag once the composer has opened its picker. */
+    fun consumeAutoPick() = _state.update { it.copy(autoPick = false) }
+
+    /** Reopen the Quick sheet flow from the composer's Swap button by clearing the composer. */
+    fun requestSwapSource() = _state.update {
+        it.copy(isComposerOpen = false, autoPick = false)
     }
 
     /**
@@ -110,6 +164,8 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
             it.copy(
                 itemIds = outfit.itemIds.toSet(),
                 sourceOutfitId = outfit.id,
+                sourceKind = TryOnSourceKind.OUTFIT,
+                sourceContext = outfit.name,
             )
         }
     }
@@ -141,18 +197,42 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
 
     // Manual edits clear sourceOutfitId — once the user diverges from the picked outfit,
     // the link no longer represents what's about to be tried on.
+    // Diverging from a picked outfit drops the outfit link and demotes the banner to a generic
+    // wardrobe source (unless we started from shopping, which we keep so provenance survives).
+    private fun demoteSourceOnEdit(kind: TryOnSourceKind): TryOnSourceKind =
+        if (kind == TryOnSourceKind.OUTFIT || kind == TryOnSourceKind.NONE) TryOnSourceKind.WARDROBE else kind
+
     fun addItem(driveId: String) = _state.update {
-        it.copy(itemIds = it.itemIds + driveId, sourceOutfitId = null)
+        it.copy(itemIds = it.itemIds + driveId, sourceOutfitId = null, sourceKind = demoteSourceOnEdit(it.sourceKind))
     }
     fun removeItem(driveId: String) = _state.update {
-        it.copy(itemIds = it.itemIds - driveId, sourceOutfitId = null)
+        it.copy(itemIds = it.itemIds - driveId, sourceOutfitId = null, sourceKind = demoteSourceOnEdit(it.sourceKind))
     }
     fun setItems(ids: Set<String>) = _state.update {
-        it.copy(itemIds = ids, sourceOutfitId = null)
+        it.copy(itemIds = ids, sourceOutfitId = null, sourceKind = demoteSourceOnEdit(it.sourceKind))
     }
 
     fun openHistory() = _state.update { it.copy(isHistoryOpen = true, viewingTryOn = null, historyDetailIsRoot = false) }
-    fun closeHistory() = _state.update { it.copy(isHistoryOpen = false, viewingTryOn = null, historyDetailIsRoot = false) }
+
+    /** Open the dialog straight into the history hero feed (Quick sheet shortcut / FAB). */
+    fun openHistoryRoot() {
+        _state.update {
+            it.copy(
+                isComposerOpen = true,
+                isHistoryOpen = true,
+                historyIsRoot = true,
+                historyDetailIsRoot = false,
+                viewingTryOn = null,
+                resultPath = null,
+                isResultSaved = false,
+                autoPick = false,
+                error = null,
+            )
+        }
+        loadHistory()
+    }
+
+    fun closeHistory() = _state.update { it.copy(isHistoryOpen = false, historyIsRoot = false, viewingTryOn = null, historyDetailIsRoot = false) }
     fun viewTryOn(t: TryOn) = _state.update { it.copy(viewingTryOn = t, historyDetailIsRoot = false) }
     fun dismissViewingTryOn() = _state.update { it.copy(viewingTryOn = null, historyDetailIsRoot = false) }
 
@@ -179,6 +259,8 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
             val files = itemFiles.map { it.second }
             val ids = itemFiles.map { it.first }
             val snapshotSourceOutfitId = _state.value.sourceOutfitId
+            val snapshotSourceKind = _state.value.sourceKind
+            val snapshotSourceContext = _state.value.sourceContext ?: ""
             val result = try {
                 gemini.tryOnOutfit(personFiles, files, outDir, preferences)
             } catch (e: com.librelookai.billing.InsufficientCreditsException) {
@@ -193,6 +275,8 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
                 lastGeneratedItemFiles = files
                 lastGeneratedItemIds = ids
                 lastGeneratedSourceOutfitId = snapshotSourceOutfitId
+                lastGeneratedSourceKind = snapshotSourceKind
+                lastGeneratedSourceContext = snapshotSourceContext
                 _state.update {
                     it.copy(isGenerating = false, resultPath = result.absolutePath, isResultSaved = false)
                 }
@@ -223,6 +307,8 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
                     itemNames      = names,
                     createdAt      = System.currentTimeMillis(),
                     sourceOutfitId = lastGeneratedSourceOutfitId,
+                    sourceKind     = lastGeneratedSourceKind.serialized(),
+                    sourceContext  = lastGeneratedSourceContext,
                     itemIds        = ids,
                     localPath      = cached.absolutePath,
                 )
@@ -316,6 +402,13 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
         val json = drive.loadTryOnsJson(rootFolderId) ?: return emptyList()
         return runCatching {
             gson.fromJson<List<TryOn>>(json, object : TypeToken<List<TryOn>>() {}.type) ?: emptyList()
-        }.getOrElse { emptyList() }
+        }.getOrElse { emptyList() }.map(::migrateSource)
     }
+
+    // Old entries predate sourceKind: Gson fills the default "outfit", but an item-by-item
+    // try-on (no sourceOutfitId) was really a wardrobe source. Infer it so provenance reads right.
+    private fun migrateSource(t: TryOn): TryOn =
+        if (t.sourceOutfitId == null && t.sourceKind == "outfit")
+            t.copy(sourceKind = "wardrobe")
+        else t
 }

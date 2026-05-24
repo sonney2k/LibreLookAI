@@ -648,6 +648,62 @@
     <string name="tryon_from_outfit">Aus Outfit: %1$s</string>
     <string name="tryon_view_source_outfit">Outfit ansehen</string>
 
+    <!-- Try-On redesign: entry, quick sheet, history, states -->
+    <string name="tryon_nav_label">Anprobe</string>
+    <string name="tryon_quick_sheet_title">Schnelle Anprobe</string>
+    <string name="tryon_quick_sheet_subtitle">Was sollen wir dir anziehen?</string>
+    <string name="tryon_quick_source_outfit">Ein gespeichertes Outfit</string>
+    <string name="tryon_quick_source_outfit_sub">Aus deiner Sammlung wählen</string>
+    <string name="tryon_quick_source_wardrobe">Teile auswählen</string>
+    <string name="tryon_quick_source_wardrobe_sub">Aus deinem Kleiderschrank kombinieren</string>
+    <string name="tryon_quick_source_shopping">Etwas zum Kaufen</string>
+    <string name="tryon_quick_source_shopping_sub">Aus deiner Einkaufsliste</string>
+    <string name="tryon_quick_source_travel">Outfit aus einer Reise</string>
+    <string name="tryon_quick_source_travel_sub">Aus %1$s · Tag %2$d</string>
+    <string name="tryon_quick_source_travel_avail">Aus deinen geplanten Reisen</string>
+    <string name="tryon_trip_picker_title">Reise-Outfit anprobieren</string>
+    <string name="tryon_trip_picker_empty">Noch keine Reise-Outfits zum Anprobieren. Plane zuerst eine Reise im Reise-Tab.</string>
+    <string name="tryon_trip_context">%1$s · Tag %2$d</string>
+    <string name="tryon_quick_see_history">Frühere Anproben ansehen</string>
+    <string name="tryon_history_subtitle">Neueste oben</string>
+    <string name="tryon_history_earlier">Früher</string>
+    <string name="tryon_history_more_count">%1$d weitere</string>
+    <string name="tryon_history_new">Neue Anprobe</string>
+    <string name="tryon_source_label_outfit">Aus Outfit</string>
+    <string name="tryon_source_label_wardrobe">Aus Kleiderschrank</string>
+    <string name="tryon_source_label_shopping">Aus Einkauf</string>
+    <string name="tryon_source_label_travel">Aus Reise</string>
+    <string name="tryon_source_context_items">%1$d Teile</string>
+    <string name="tryon_source_swap">Wechseln</string>
+    <string name="tryon_empty_title">Noch keine Anproben</string>
+    <string name="tryon_empty_body">Erstelle eine Anprobe aus einem Outfit, deinem Kleiderschrank oder einem Einkaufsartikel — wir speichern sie hier, damit du sie jederzeit wieder ansehen kannst.</string>
+    <string name="tryon_empty_cta">Anprobe starten</string>
+    <string name="tryon_empty_chip_outfit">Aus einem Outfit</string>
+    <string name="tryon_empty_chip_wardrobe">Aus Kleiderschrank</string>
+    <string name="tryon_empty_chip_shopping">Aus Einkauf</string>
+    <string name="tryon_generating_title">Deine Anprobe wird erstellt</string>
+    <string name="tryon_generating_body">%1$d Teile werden auf deine Referenzfotos gesetzt. Dauert meist 20–40 Sekunden.</string>
+    <string name="tryon_result_title">Deine Anprobe</string>
+    <string name="tryon_result_zoom_hint">Zum Zoomen ziehen</string>
+    <string name="tryon_result_items_worn">Getragene Teile</string>
+    <string name="tryon_reference_photos_title">Deine Referenzfotos</string>
+    <string name="tryon_reference_photos_edit">Bearbeiten</string>
+    <string name="tryon_detail_view_source_trip">Reise ansehen</string>
+    <string name="tryon_detail_view_source_wardrobe">Im Kleiderschrank ansehen</string>
+    <string name="tryon_detail_view_source_shopping">Einkaufsliste ansehen</string>
+    <string name="tryon_detail_regenerate">Neu erstellen</string>
+    <string name="tryon_detail_item_tap_hint">Zum Ansehen im Kleiderschrank tippen</string>
+    <string name="tryon_detail_generated">Erstellt</string>
+    <string name="tryon_detail_source">Quelle</string>
+    <string name="tryon_photos_eyebrow">Referenzfotos benötigt</string>
+    <string name="tryon_photos_title">Füge ein paar Fotos von dir hinzu, damit Gemini Outfits auf deinen Körper setzen kann.</string>
+    <string name="tryon_photos_body">Vorne, seitlich und hinten — ganzkörper, schlichter Hintergrund funktioniert am besten. Fotos bleiben in deinem eigenen Drive.</string>
+    <string name="tryon_photos_section_label">3 Referenzfotos hochladen</string>
+    <string name="tryon_photos_optional">Optional</string>
+    <string name="tryon_photos_tip">Trage schlichte, eng anliegende Kleidung auf deinen Referenzfotos. Muster und dicke Schichten verringern die Genauigkeit.</string>
+    <string name="tryon_photos_open_settings">Einstellungen → Profil öffnen</string>
+    <string name="nav_insights_header_icon">Einblicke</string>
+
     <!-- About -->
     <string name="settings_tab_about">Info</string>
 

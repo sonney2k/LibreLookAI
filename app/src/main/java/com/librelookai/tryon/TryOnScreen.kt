@@ -15,9 +15,11 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -25,19 +27,20 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Save
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Style
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -50,6 +53,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -70,6 +74,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.DialogWindowProvider
@@ -84,7 +89,6 @@ import com.librelookai.data.model.TryOn
 import com.librelookai.outfit.AddItemSheet
 import com.librelookai.settings.ProfileViewModel
 import com.librelookai.shopping.ShoppingClosetViewModel
-import com.librelookai.util.AiProcessingOverlay
 import com.librelookai.util.Analytics
 import com.librelookai.util.LocalSystemBarsPadding
 import com.librelookai.wardrobe.DriveImage
@@ -115,6 +119,10 @@ fun TryOnComposerScreen(
     locations: List<Location> = emptyList(),
     /** Open the saved outfit linked from a try-on detail view. Hidden when null. */
     onOpenSourceOutfit: ((Outfit) -> Unit)? = null,
+    /** Open the Quick Try-On sheet (history FAB + empty-state CTA). */
+    onStartTryOn: () -> Unit = {},
+    /** Close the dialog and route the user to Settings → Profile (no-reference-photos state). */
+    onOpenProfileSettings: () -> Unit = {},
 ) {
     val state by tryOnViewModel.state.collectAsState()
     if (!state.isComposerOpen) return
@@ -185,13 +193,18 @@ fun TryOnComposerScreen(
             )
             return@CompositionLocalProvider
         }
-        // We wrap Scaffold with `.padding(barInsets)` (status + nav bar insets captured by
-        // MainActivity). Both Scaffold (contentWindowInsets) and TopAppBar (windowInsets)
-        // default to consuming WindowInsets.systemBars themselves — applied again inside the
-        // dialog window, that double-adds the bottom inset and clips the bottom action row
-        // (and double-adds the top, pushing buttons further off-screen). Disable both.
+        // Fill the whole dialog window with the theme background so the screen reads as truly
+        // full-screen — the underlying app never shows through the status/nav-bar strips. Only
+        // the Scaffold *content* is inset to the safe area via padding(barInsets); the Scaffold
+        // container itself is transparent so the full-bleed background behind it shows edge-to-edge.
+        //
+        // Both Scaffold (contentWindowInsets) and TopAppBar (windowInsets) default to consuming
+        // WindowInsets.systemBars themselves — applied again inside the dialog window that
+        // double-adds insets and clips the bottom action row. Disable both.
+        Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         Scaffold(
             modifier = Modifier.fillMaxSize().padding(barInsets),
+            containerColor = Color.Transparent,
             contentWindowInsets = WindowInsets(0),
             topBar = {
                 TopAppBar(
@@ -211,6 +224,7 @@ fun TryOnComposerScreen(
                             when {
                                 viewing != null && state.historyDetailIsRoot -> tryOnViewModel.close()
                                 viewing != null     -> tryOnViewModel.dismissViewingTryOn()
+                                state.isHistoryOpen && state.historyIsRoot -> tryOnViewModel.close()
                                 state.isHistoryOpen -> tryOnViewModel.closeHistory()
                                 else                -> tryOnViewModel.close()
                             }
@@ -235,12 +249,36 @@ fun TryOnComposerScreen(
                             },
                             onDelete = { tryOnViewModel.deleteTryOn(viewing) },
                             onItemTap = { img -> detailViewerImage = img },
+                            onRegenerate = {
+                                Analytics.action("TryOn/Detail", "regenerate")
+                                val ids = viewing.itemNames
+                                    .mapNotNull { n -> combinedImages.firstOrNull { it.name == n } }
+                                    .map { it.driveId }.toSet()
+                                tryOnViewModel.openComposer(
+                                    ids, viewing.sourceOutfitId,
+                                    tryOnSourceKindOf(viewing.sourceKind),
+                                    viewing.sourceContext.takeIf { it.isNotBlank() },
+                                )
+                            },
                         )
                     }
 
-                    state.isHistoryOpen -> TryOnHistoryGrid(
+                    state.isHistoryOpen -> TryOnHistoryFeed(
                         history = state.history,
-                        onOpen  = { tryOnViewModel.viewTryOn(it) },
+                        wardrobeImages = combinedImages,
+                        onOpen = { tryOnViewModel.viewTryOn(it) },
+                        onStartTryOn = onStartTryOn,
+                        showFab = true,
+                        onEditHero = { t ->
+                            val ids = t.itemNames
+                                .mapNotNull { n -> combinedImages.firstOrNull { it.name == n } }
+                                .map { it.driveId }.toSet()
+                            tryOnViewModel.openComposer(
+                                ids, t.sourceOutfitId,
+                                tryOnSourceKindOf(t.sourceKind),
+                                t.sourceContext.takeIf { it.isNotBlank() },
+                            )
+                        },
                     )
 
                     state.resultPath != null -> TryOnResultContent(
@@ -249,10 +287,23 @@ fun TryOnComposerScreen(
                             Analytics.action("TryOn/Result", "save")
                             tryOnViewModel.saveCurrent(combinedImages)
                         },
+                        onTryAgain = {
+                            Analytics.action("TryOn/Result", "try_again")
+                            tryOnViewModel.generate(
+                                personFiles     = profileViewModel.tryOnFiles(),
+                                wardrobeImages  = combinedImages,
+                                preferences     = profileState.preferences.preferences,
+                            )
+                        },
                         onChangeItems = {
                             Analytics.action("TryOn/Result", "change_items")
-                            tryOnViewModel.openComposer(state.itemIds, state.sourceOutfitId)
+                            tryOnViewModel.openComposer(state.itemIds, state.sourceOutfitId, state.sourceKind, state.sourceContext)
                         },
+                        wardrobeImages = combinedImages,
+                    )
+
+                    profileState.tryOnLocalPaths.isEmpty() -> TryOnNoPhotos(
+                        onOpenSettings = onOpenProfileSettings,
                     )
 
                     else -> TryOnComposerContent(
@@ -260,10 +311,21 @@ fun TryOnComposerScreen(
                         wardrobeImages = combinedImages,
                         outfits = outfits,
                         locations = locations,
+                        referencePhotoPaths = profileState.tryOnLocalPaths.values.toList(),
                         wardrobeViewModel = wardrobeViewModel,
                         onRemoveItem = tryOnViewModel::removeItem,
                         onAddItems = { ids -> ids.forEach(tryOnViewModel::addItem) },
                         onPickOutfit = tryOnViewModel::selectOutfit,
+                        onConsumeAutoPick = tryOnViewModel::consumeAutoPick,
+                        onSwapSource = {
+                            Analytics.action("TryOn/Composer", "source_swap")
+                            onStartTryOn()
+                        },
+                        onEditReferencePhotos = onOpenProfileSettings,
+                        onCancelEmpty = {
+                            Analytics.action("TryOn/Composer", "cancel_empty")
+                            tryOnViewModel.close()
+                        },
                         onGenerate = {
                             Analytics.action("TryOn/Composer", "generate", mapOf("count" to state.itemIds.size.toString()))
                             tryOnViewModel.generate(
@@ -277,8 +339,8 @@ fun TryOnComposerScreen(
 
                 // Generating overlay — covers everything.
                 if (state.isGenerating) {
-                    AiProcessingOverlay(
-                        label = stringResource(R.string.tryon_generating),
+                    TryOnGeneratingOverlay(
+                        itemCount = state.itemIds.size,
                         modifier = Modifier.fillMaxSize(),
                     )
                 }
@@ -304,6 +366,7 @@ fun TryOnComposerScreen(
             }
         }
         }
+        }
     }
 }
 
@@ -314,18 +377,41 @@ private fun TryOnComposerContent(
     wardrobeImages: List<DriveImage>,
     outfits: List<Outfit>,
     locations: List<Location>,
+    referencePhotoPaths: List<String>,
     wardrobeViewModel: WardrobeViewModel,
     onRemoveItem: (String) -> Unit,
     onAddItems: (Set<String>) -> Unit,
     onPickOutfit: (Outfit) -> Unit,
+    onConsumeAutoPick: () -> Unit,
+    onSwapSource: () -> Unit,
+    onEditReferencePhotos: () -> Unit,
+    onCancelEmpty: () -> Unit,
     onGenerate: () -> Unit,
 ) {
     var showItemPicker by remember { mutableStateOf(false) }
     var showOutfitPicker by remember { mutableStateOf(false) }
+    // True while the auto-opened (Quick-sheet) picker is showing on an as-yet-empty composer.
+    // If the user cancels that picker without choosing anything, we back out instead of
+    // dropping them on an empty composer.
+    var awaitingAutoPick by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val sourceOutfit = remember(state.sourceOutfitId, outfits) {
         state.sourceOutfitId?.let { id -> outfits.firstOrNull { it.id == id } }
     }
+
+    // When the Quick sheet routed here with autoPick, open the matching picker once.
+    LaunchedEffect(state.autoPick, state.sourceKind) {
+        if (state.autoPick) {
+            when (state.sourceKind) {
+                TryOnSourceKind.OUTFIT -> { showOutfitPicker = true; awaitingAutoPick = true }
+                TryOnSourceKind.WARDROBE, TryOnSourceKind.SHOPPING -> { showItemPicker = true; awaitingAutoPick = true }
+                else -> {}
+            }
+            onConsumeAutoPick()
+        }
+    }
+
+    val chosenImages = state.itemIds.mapNotNull { id -> wardrobeImages.firstOrNull { it.driveId == id } }
 
     Column(
         modifier = Modifier
@@ -334,6 +420,22 @@ private fun TryOnComposerContent(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
+        // Source banner — present whenever the composer was opened from a source surface.
+        if (state.sourceKind != TryOnSourceKind.NONE) {
+            val bannerTitle = when (state.sourceKind) {
+                TryOnSourceKind.OUTFIT -> sourceOutfit?.name?.ifBlank { null }
+                    ?: state.sourceContext
+                    ?: stringResource(R.string.tryon_source_context_items, chosenImages.size)
+                else -> state.sourceContext?.takeIf { it.isNotBlank() }
+                    ?: stringResource(R.string.tryon_source_context_items, chosenImages.size)
+            }
+            SourceBanner(
+                kind = state.sourceKind,
+                title = bannerTitle,
+                onSwap = onSwapSource,
+            )
+        }
+
         Surface(
             color = MaterialTheme.colorScheme.secondaryContainer,
             shape = RoundedCornerShape(12.dp),
@@ -346,29 +448,11 @@ private fun TryOnComposerContent(
             )
         }
 
-        val chosenImages = state.itemIds.mapNotNull { id -> wardrobeImages.firstOrNull { it.driveId == id } }
         Text(
             stringResource(R.string.tryon_composer_items_title, chosenImages.size),
             style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.SemiBold,
         )
-
-        // Show which outfit (if any) the composition originated from. The badge is cleared
-        // the moment the user toggles a single item via the X-overlay or the picker (the VM
-        // resets sourceOutfitId on any addItem/removeItem).
-        sourceOutfit?.let { o ->
-            Surface(
-                color = MaterialTheme.colorScheme.tertiaryContainer,
-                shape = RoundedCornerShape(10.dp),
-            ) {
-                Text(
-                    stringResource(R.string.tryon_from_outfit, o.name.ifBlank { "—" }),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onTertiaryContainer,
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                )
-            }
-        }
 
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -430,6 +514,13 @@ private fun TryOnComposerContent(
             }
         }
 
+        if (referencePhotoPaths.isNotEmpty()) {
+            ReferencePhotosPreview(
+                photoPaths = referencePhotoPaths,
+                onEdit = onEditReferencePhotos,
+            )
+        }
+
         Button(
             onClick = onGenerate,
             enabled = chosenImages.isNotEmpty() && !state.isGenerating,
@@ -457,8 +548,18 @@ private fun TryOnComposerContent(
             onConfirm = { ids ->
                 onAddItems(ids)
                 showItemPicker = false
+                // Confirming with nothing chosen from a Quick-sheet auto-pick is the same as
+                // cancelling — don't strand the user on an empty composer.
+                if (awaitingAutoPick && ids.isEmpty() && state.itemIds.isEmpty()) onCancelEmpty()
+                awaitingAutoPick = false
             },
-            onDismiss = { showItemPicker = false },
+            onDismiss = {
+                showItemPicker = false
+                if (awaitingAutoPick) {
+                    awaitingAutoPick = false
+                    if (state.itemIds.isEmpty()) onCancelEmpty()
+                }
+            },
         )
     }
 
@@ -470,8 +571,17 @@ private fun TryOnComposerContent(
                 Analytics.action("TryOn/Composer", "pick_outfit", mapOf("items" to outfit.itemIds.size.toString()))
                 onPickOutfit(outfit)
                 showOutfitPicker = false
+                awaitingAutoPick = false
             },
-            onDismiss = { showOutfitPicker = false },
+            onDismiss = {
+                showOutfitPicker = false
+                // Backed out of the auto-opened outfit picker without choosing — don't advance
+                // to an empty composer.
+                if (awaitingAutoPick) {
+                    awaitingAutoPick = false
+                    if (state.itemIds.isEmpty() && state.sourceOutfitId == null) onCancelEmpty()
+                }
+            },
         )
     }
 }
@@ -520,10 +630,10 @@ private fun OutfitPickerDialog(
         ) {
             val barInsets = LocalSystemBarsPadding.current
             Surface(
-                modifier = Modifier.fillMaxSize().padding(barInsets),
+                modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colorScheme.background,
             ) {
-                Column(modifier = Modifier.fillMaxSize()) {
+                Column(modifier = Modifier.fillMaxSize().padding(barInsets)) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -636,43 +746,124 @@ private fun OutfitPickerRow(
 private fun TryOnResultContent(
     state: TryOnUiState,
     onSave: () -> Unit,
+    onTryAgain: () -> Unit,
     onChangeItems: () -> Unit,
+    wardrobeImages: List<DriveImage>,
 ) {
+    val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
+    val context = LocalContext.current
+    val items = remember(state.itemIds, wardrobeImages) {
+        state.itemIds.mapNotNull { id -> wardrobeImages.firstOrNull { it.driveId == id } }
+    }
     Column(Modifier.fillMaxSize()) {
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-                .background(Color.Black),
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 14.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            ZoomableImage(file = File(state.resultPath!!))
-        }
-        HorizontalDivider()
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(12.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Button(
-                onClick = onSave,
-                enabled = !state.isSaving && !state.isResultSaved,
-                modifier = Modifier.weight(1f),
+            Spacer(Modifier.size(4.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(4f / 5f)
+                    .clip(RoundedCornerShape(22.dp))
+                    .border(1.dp, palette.divider, RoundedCornerShape(22.dp))
+                    .background(Color.Black),
             ) {
-                if (state.isSaving) {
-                    CircularProgressIndicator(Modifier.size(16.dp), strokeWidth = 2.dp, color = Color.White)
-                    Spacer(Modifier.width(8.dp))
-                    Text(stringResource(R.string.tryon_saving))
-                } else if (state.isResultSaved) {
-                    Icon(Icons.Default.Check, null, modifier = Modifier.size(18.dp))
-                    Spacer(Modifier.width(8.dp))
-                    Text(stringResource(R.string.tryon_saved_to_drive))
-                } else {
-                    Icon(Icons.Default.Save, null, modifier = Modifier.size(18.dp))
-                    Spacer(Modifier.width(8.dp))
-                    Text(stringResource(R.string.tryon_save_to_drive))
+                ZoomableImage(file = File(state.resultPath!!))
+                if (state.sourceKind != TryOnSourceKind.NONE) {
+                    SourcePill(
+                        kind = state.sourceKind,
+                        label = state.sourceContext?.takeIf { it.isNotBlank() }
+                            ?: stringResource(sourceMeta(state.sourceKind).labelRes),
+                        solid = true,
+                        modifier = Modifier.align(Alignment.TopStart).padding(12.dp),
+                    )
+                }
+                Text(
+                    stringResource(R.string.tryon_result_zoom_hint),
+                    color = palette.textMid,
+                    style = MaterialTheme.typography.labelSmall,
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(12.dp)
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(Color.White.copy(alpha = 0.85f))
+                        .padding(horizontal = 9.dp, vertical = 5.dp),
+                )
+            }
+            if (items.isNotEmpty()) {
+                Text(
+                    stringResource(R.string.tryon_result_items_worn).uppercase(),
+                    color = palette.textMid,
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 0.4.sp,
+                )
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    items.take(5).forEach { img ->
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .aspectRatio(1f)
+                                .clip(RoundedCornerShape(11.dp))
+                                .border(1.dp, palette.divider, RoundedCornerShape(11.dp)),
+                        ) {
+                            AsyncImage(
+                                model = ImageRequest.Builder(context).data(File(img.localPath)).build(),
+                                contentDescription = img.name,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.fillMaxSize(),
+                            )
+                        }
+                    }
+                    repeat((5 - items.size).coerceAtLeast(0)) { Spacer(Modifier.weight(1f)) }
                 }
             }
-            OutlinedButton(onClick = onChangeItems, modifier = Modifier.weight(1f)) {
-                Icon(Icons.Default.Edit, null, modifier = Modifier.size(18.dp))
+            Spacer(Modifier.size(4.dp))
+        }
+        HorizontalDivider()
+        Column(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 10.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Button(
+                    onClick = onSave,
+                    enabled = !state.isSaving && !state.isResultSaved,
+                    shape = RoundedCornerShape(23.dp),
+                    modifier = Modifier.weight(1f),
+                ) {
+                    if (state.isSaving) {
+                        CircularProgressIndicator(Modifier.size(16.dp), strokeWidth = 2.dp, color = Color.White)
+                        Spacer(Modifier.width(8.dp))
+                        Text(stringResource(R.string.tryon_saving))
+                    } else if (state.isResultSaved) {
+                        Icon(Icons.Default.Check, null, modifier = Modifier.size(18.dp))
+                        Spacer(Modifier.width(8.dp))
+                        Text(stringResource(R.string.tryon_saved_to_drive))
+                    } else {
+                        Icon(Icons.Default.Check, null, modifier = Modifier.size(18.dp))
+                        Spacer(Modifier.width(8.dp))
+                        Text(stringResource(R.string.tryon_save_to_drive))
+                    }
+                }
+                OutlinedButton(
+                    onClick = onTryAgain,
+                    enabled = !state.isGenerating,
+                    shape = RoundedCornerShape(23.dp),
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Icon(Icons.Default.Refresh, null, modifier = Modifier.size(18.dp))
+                    Spacer(Modifier.width(6.dp))
+                    Text(stringResource(R.string.tryon_try_again))
+                }
+            }
+            TextButton(onClick = onChangeItems, modifier = Modifier.fillMaxWidth()) {
+                Icon(Icons.Default.Edit, null, modifier = Modifier.size(14.dp))
                 Spacer(Modifier.width(6.dp))
                 Text(stringResource(R.string.tryon_change_items))
             }
@@ -680,60 +871,265 @@ private fun TryOnResultContent(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
+/** Composer source banner — eyebrow + title + a Swap pill that reopens the Quick sheet. */
 @Composable
-internal fun TryOnHistoryGrid(
-    history: List<TryOn>,
-    onOpen: (TryOn) -> Unit,
+private fun SourceBanner(
+    kind: TryOnSourceKind,
+    title: String,
+    onSwap: () -> Unit,
 ) {
-    val context = LocalContext.current
-    if (history.isEmpty()) {
-        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text(
-                stringResource(R.string.tryon_history_empty),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-        return
-    }
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(120.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier.fillMaxSize().padding(12.dp),
+    val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
+    val meta = sourceMeta(kind)
+    Surface(
+        shape = RoundedCornerShape(14.dp),
+        color = palette.surface,
+        border = androidx.compose.foundation.BorderStroke(1.dp, palette.divider),
     ) {
-        items(history, key = { it.imageDriveId.ifEmpty { it.id } }) { t ->
+        Row(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
             Box(
                 modifier = Modifier
-                    .aspectRatio(0.75f)
+                    .size(34.dp)
                     .clip(RoundedCornerShape(10.dp))
-                    .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(10.dp))
-                    .clickable { onOpen(t) },
+                    .background(meta.tint.copy(alpha = 0.13f)),
+                contentAlignment = Alignment.Center,
             ) {
-                if (t.localPath.isNotEmpty()) {
-                    AsyncImage(
-                        model = remember(t.imageDriveId, t.localPath) {
-                            ImageRequest.Builder(context)
-                                .data(File(t.localPath))
-                                .memoryCacheKey("tryon_${t.imageDriveId}")
-                                .build()
-                        },
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize(),
-                    )
-                } else {
-                    Box(Modifier.fillMaxSize().background(Color.LightGray))
-                }
+                Icon(meta.icon, null, tint = meta.tint, modifier = Modifier.size(16.dp))
+            }
+            Column(Modifier.weight(1f)) {
                 Text(
-                    DateFormat.getDateInstance(DateFormat.SHORT).format(Date(t.createdAt)),
-                    color = Color.White,
-                    style = MaterialTheme.typography.labelSmall,
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .background(Color.Black.copy(alpha = 0.55f))
-                        .padding(horizontal = 6.dp, vertical = 2.dp),
+                    stringResource(meta.labelRes).uppercase(),
+                    color = palette.textMuted,
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    letterSpacing = 0.4.sp,
+                )
+                Text(
+                    title,
+                    color = palette.text,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                )
+            }
+            OutlinedButton(
+                onClick = onSwap,
+                shape = RoundedCornerShape(999.dp),
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 10.dp, vertical = 0.dp),
+                modifier = Modifier.height(28.dp),
+            ) {
+                Text(stringResource(R.string.tryon_source_swap), fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
+            }
+        }
+    }
+}
+
+/** Inline preview of the user's reference photos so they know what Gemini will work from. */
+@Composable
+private fun ReferencePhotosPreview(
+    photoPaths: List<String>,
+    onEdit: () -> Unit,
+) {
+    val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
+    val context = LocalContext.current
+    Surface(
+        shape = RoundedCornerShape(14.dp),
+        color = palette.surface,
+        border = androidx.compose.foundation.BorderStroke(1.dp, palette.divider),
+    ) {
+        Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Default.Person, null, tint = palette.textMid, modifier = Modifier.size(16.dp))
+                Spacer(Modifier.width(6.dp))
+                Text(
+                    stringResource(R.string.tryon_reference_photos_title),
+                    color = palette.text,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f),
+                )
+                Text(
+                    stringResource(R.string.tryon_reference_photos_edit),
+                    color = palette.primary,
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.clickable(onClick = onEdit),
+                )
+            }
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                photoPaths.take(3).forEach { path ->
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .aspectRatio(3f / 4f)
+                            .clip(RoundedCornerShape(10.dp))
+                            .border(1.dp, palette.divider, RoundedCornerShape(10.dp)),
+                    ) {
+                        AsyncImage(
+                            model = ImageRequest.Builder(context).data(File(path)).build(),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize(),
+                        )
+                    }
+                }
+                repeat((3 - photoPaths.size).coerceAtLeast(0)) { Spacer(Modifier.weight(1f)) }
+            }
+        }
+    }
+}
+
+/** State 5b — no reference photos uploaded. Presents the upload requirement inline. */
+@Composable
+private fun TryOnNoPhotos(onOpenSettings: () -> Unit) {
+    val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
+    Column(Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Surface(
+                shape = RoundedCornerShape(18.dp),
+                color = palette.primaryDim,
+                border = androidx.compose.foundation.BorderStroke(1.dp, palette.border),
+            ) {
+                Column(
+                    Modifier.padding(horizontal = 16.dp, vertical = 18.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.Person, null, tint = palette.primary, modifier = Modifier.size(16.dp))
+                        Spacer(Modifier.width(6.dp))
+                        Text(
+                            stringResource(R.string.tryon_photos_eyebrow).uppercase(),
+                            color = palette.primary,
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold,
+                            letterSpacing = 0.5.sp,
+                        )
+                    }
+                    Text(
+                        stringResource(R.string.tryon_photos_title),
+                        color = palette.text,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Text(
+                        stringResource(R.string.tryon_photos_body),
+                        color = palette.textMid,
+                        fontSize = 12.sp,
+                    )
+                }
+            }
+            Text(
+                stringResource(R.string.tryon_photos_section_label).uppercase(),
+                color = palette.textMid,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 0.4.sp,
+            )
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                listOf(
+                    stringResource(R.string.tryon_slot_front),
+                    stringResource(R.string.tryon_slot_side),
+                    stringResource(R.string.tryon_slot_back),
+                ).forEachIndexed { i, slotLabel ->
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .aspectRatio(3f / 4f)
+                            .clip(RoundedCornerShape(14.dp))
+                            .border(1.5.dp, palette.border, RoundedCornerShape(14.dp))
+                            .background(palette.surface)
+                            .clickable(onClick = onOpenSettings),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        Icon(Icons.Default.Add, null, tint = palette.textMid, modifier = Modifier.size(22.dp))
+                        Spacer(Modifier.size(4.dp))
+                        Text(slotLabel, color = palette.text, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                        if (i == 2) {
+                            Text(stringResource(R.string.tryon_photos_optional), color = palette.textMuted, fontSize = 9.sp)
+                        }
+                    }
+                }
+            }
+            Surface(
+                shape = RoundedCornerShape(14.dp),
+                color = palette.surface,
+                border = androidx.compose.foundation.BorderStroke(1.dp, palette.divider),
+            ) {
+                Row(Modifier.padding(12.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Icon(Icons.Default.AutoAwesome, null, tint = palette.primary, modifier = Modifier.size(18.dp))
+                    Text(
+                        stringResource(R.string.tryon_photos_tip),
+                        color = palette.textMid,
+                        fontSize = 11.sp,
+                    )
+                }
+            }
+        }
+        HorizontalDivider()
+        Box(Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 12.dp)) {
+            OutlinedButton(
+                onClick = onOpenSettings,
+                shape = RoundedCornerShape(25.dp),
+                modifier = Modifier.fillMaxWidth().height(50.dp),
+            ) {
+                Text(stringResource(R.string.tryon_photos_open_settings), fontWeight = FontWeight.SemiBold)
+            }
+        }
+    }
+}
+
+/** State 5c — generating overlay card (try-on specific; leaves the shared AiProcessingOverlay untouched). */
+@Composable
+private fun TryOnGeneratingOverlay(itemCount: Int, modifier: Modifier = Modifier) {
+    val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
+    Box(
+        modifier = modifier.background(Color.Black.copy(alpha = 0.55f)),
+        contentAlignment = Alignment.Center,
+    ) {
+        Surface(
+            shape = RoundedCornerShape(22.dp),
+            color = palette.surface,
+            border = androidx.compose.foundation.BorderStroke(1.dp, palette.divider),
+            modifier = Modifier.widthIn(max = 300.dp).padding(horizontal = 24.dp),
+        ) {
+            Column(
+                modifier = Modifier.padding(horizontal = 22.dp, vertical = 22.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(64.dp),
+                        strokeWidth = 3.dp,
+                        color = palette.primary,
+                        trackColor = palette.primaryDim,
+                    )
+                    Icon(Icons.Default.AutoAwesome, null, tint = palette.primary, modifier = Modifier.size(24.dp))
+                }
+                Spacer(Modifier.size(14.dp))
+                Text(
+                    stringResource(R.string.tryon_generating_title),
+                    color = palette.text,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+                Spacer(Modifier.size(4.dp))
+                Text(
+                    stringResource(R.string.tryon_generating_body, itemCount),
+                    color = palette.textMuted,
+                    fontSize = 12.sp,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                 )
             }
         }
@@ -749,13 +1145,32 @@ private fun TryOnDetailContent(
     onOpenSourceOutfit: (() -> Unit)?,
     onDelete: () -> Unit,
     onItemTap: (DriveImage) -> Unit,
+    onRegenerate: () -> Unit,
 ) {
+    val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
     val context = LocalContext.current
     var confirmDelete by remember { mutableStateOf(false) }
+    val kind = tryOnSourceKindOf(tryOn.sourceKind)
+    val items = remember(tryOn.itemNames, wardrobeImages) {
+        tryOn.itemNames.mapNotNull { n -> wardrobeImages.firstOrNull { it.name == n } }
+    }
 
-    Column(Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 14.dp),
+        verticalArrangement = Arrangement.spacedBy(14.dp),
+    ) {
+        Spacer(Modifier.size(0.dp))
+        // Image card.
         Box(
-            modifier = Modifier.fillMaxWidth().weight(1f).background(Color.Black),
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(4f / 5f)
+                .clip(RoundedCornerShape(22.dp))
+                .border(1.dp, palette.divider, RoundedCornerShape(22.dp))
+                .background(Color.Black),
         ) {
             if (tryOn.localPath.isNotEmpty()) {
                 ZoomableImage(file = File(tryOn.localPath))
@@ -764,46 +1179,91 @@ private fun TryOnDetailContent(
                     CircularProgressIndicator(color = Color.White)
                 }
             }
-        }
-        HorizontalDivider()
-        // Items list scrolls when long; capped at its weight share so the image and the
-        // pinned action buttons below always remain on screen.
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .weight(1f, fill = false)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 12.dp, vertical = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Text(
-                stringResource(R.string.tryon_history_items_title),
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.SemiBold,
+            SourcePill(
+                kind = kind,
+                label = tryOn.sourceContext.takeIf { it.isNotBlank() }
+                    ?: stringResource(sourceMeta(kind).labelRes),
+                solid = true,
+                modifier = Modifier.align(Alignment.TopStart).padding(12.dp),
             )
-            // Resolve items by filename so linking survives across folder copies.
-            val items = tryOn.itemNames.mapNotNull { n -> wardrobeImages.firstOrNull { it.name == n } }
-            if (items.isEmpty()) {
-                Text(
-                    stringResource(R.string.tryon_history_items_missing),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            } else {
-                FlowRow(
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                    verticalArrangement = Arrangement.spacedBy(6.dp),
-                ) {
-                    items.forEach { img ->
+        }
+        // Metadata card.
+        Surface(
+            shape = RoundedCornerShape(14.dp),
+            color = palette.surface,
+            border = androidx.compose.foundation.BorderStroke(1.dp, palette.divider),
+        ) {
+            Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Row {
+                    Text(
+                        stringResource(R.string.tryon_detail_generated).uppercase(),
+                        color = palette.textMuted, fontSize = 10.sp, fontWeight = FontWeight.SemiBold,
+                        letterSpacing = 0.4.sp, modifier = Modifier.weight(1f),
+                    )
+                    Text(
+                        stringResource(R.string.tryon_detail_source).uppercase(),
+                        color = palette.textMuted, fontSize = 10.sp, fontWeight = FontWeight.SemiBold,
+                        letterSpacing = 0.4.sp,
+                    )
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(Date(tryOn.createdAt)),
+                        color = palette.text, fontSize = 13.sp, fontWeight = FontWeight.Bold,
+                        modifier = Modifier.weight(1f),
+                    )
+                    if (sourceOutfit != null && onOpenSourceOutfit != null) {
+                        Text(
+                            stringResource(R.string.tryon_view_source_outfit),
+                            color = palette.primary, fontSize = 12.sp, fontWeight = FontWeight.Bold,
+                            modifier = Modifier.clickable {
+                                Analytics.action("TryOn/Detail", "open_source_outfit")
+                                onOpenSourceOutfit()
+                            },
+                        )
+                    } else {
+                        Text(
+                            tryOn.sourceContext.takeIf { it.isNotBlank() }
+                                ?: stringResource(sourceMeta(kind).labelRes),
+                            color = palette.textMid, fontSize = 12.sp, fontWeight = FontWeight.SemiBold,
+                        )
+                    }
+                }
+            }
+        }
+        // Items worn.
+        Text(
+            stringResource(R.string.tryon_history_items_title),
+            color = palette.text, fontSize = 13.sp, fontWeight = FontWeight.Bold,
+        )
+        if (items.isEmpty()) {
+            Text(
+                stringResource(R.string.tryon_history_items_missing),
+                style = MaterialTheme.typography.bodySmall,
+                color = palette.textMuted,
+            )
+        } else {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                items.forEach { img ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(palette.surface)
+                            .border(1.dp, palette.divider, RoundedCornerShape(12.dp))
+                            .clickable {
+                                Analytics.action("TryOn/Detail", "view_item")
+                                onItemTap(img)
+                            }
+                            .padding(8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    ) {
                         Box(
                             modifier = Modifier
-                                .size(72.dp)
-                                .clip(RoundedCornerShape(8.dp))
-                                .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(8.dp))
-                                .clickable {
-                                    Analytics.action("TryOn/Detail", "view_item")
-                                    onItemTap(img)
-                                },
+                                .size(44.dp)
+                                .clip(RoundedCornerShape(9.dp))
+                                .border(1.dp, palette.divider, RoundedCornerShape(9.dp)),
                         ) {
                             AsyncImage(
                                 model = ImageRequest.Builder(context).data(File(img.localPath)).build(),
@@ -812,41 +1272,45 @@ private fun TryOnDetailContent(
                                 modifier = Modifier.fillMaxSize(),
                             )
                         }
+                        Column(Modifier.weight(1f)) {
+                            Text(img.name, color = palette.text, fontSize = 13.sp, fontWeight = FontWeight.Bold,
+                                maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                            Text(stringResource(R.string.tryon_detail_item_tap_hint), color = palette.textMuted, fontSize = 10.sp)
+                        }
+                        Icon(
+                            Icons.AutoMirrored.Filled.KeyboardArrowRight, null,
+                            tint = palette.textMuted, modifier = Modifier.size(14.dp),
+                        )
                     }
                 }
             }
         }
-        // Bottom action row: "View outfit" (only when the source outfit still exists) +
-        // Delete. Kept outside the weighted item-scroll above so they stay pinned.
+        // Action row: Regenerate + Delete.
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 12.dp),
+            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            if (sourceOutfit != null && onOpenSourceOutfit != null) {
-                OutlinedButton(
-                    onClick = {
-                        Analytics.action("TryOn/Detail", "open_source_outfit")
-                        onOpenSourceOutfit()
-                    },
-                    modifier = Modifier.weight(1f),
-                ) {
-                    Icon(Icons.Default.Style, null, modifier = Modifier.size(18.dp))
-                    Spacer(Modifier.width(6.dp))
-                    Text(stringResource(R.string.tryon_view_source_outfit))
-                }
+            OutlinedButton(
+                onClick = onRegenerate,
+                shape = RoundedCornerShape(22.dp),
+                modifier = Modifier.weight(1f).height(44.dp),
+            ) {
+                Icon(Icons.Default.Refresh, null, modifier = Modifier.size(16.dp))
+                Spacer(Modifier.width(6.dp))
+                Text(stringResource(R.string.tryon_detail_regenerate), fontSize = 12.sp, fontWeight = FontWeight.Bold)
             }
-            FilledTonalButton(
+            OutlinedButton(
                 onClick = {
                     Analytics.action("TryOn/Detail", "open_delete_dialog")
                     confirmDelete = true
                 },
-                modifier = Modifier.weight(1f),
+                shape = RoundedCornerShape(22.dp),
+                colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(contentColor = palette.error),
+                modifier = Modifier.weight(1f).height(44.dp),
             ) {
-                Icon(Icons.Default.Delete, null, modifier = Modifier.size(18.dp))
+                Icon(Icons.Default.Delete, null, modifier = Modifier.size(16.dp))
                 Spacer(Modifier.width(6.dp))
-                Text(stringResource(R.string.action_delete))
+                Text(stringResource(R.string.action_delete), fontSize = 12.sp, fontWeight = FontWeight.Bold)
             }
         }
     }

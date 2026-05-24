@@ -127,10 +127,7 @@ import com.librelookai.AppScreenHeader
 import com.librelookai.LocationButton
 import com.librelookai.data.model.Location
 import com.librelookai.data.model.Outfit
-import com.librelookai.data.model.TryOn
 import com.librelookai.settings.ProfileViewModel
-import com.librelookai.tryon.TryOnHistoryGrid
-import com.librelookai.tryon.TryOnViewModel
 import com.librelookai.util.AiProcessingOverlay
 import com.librelookai.util.Analytics
 import com.librelookai.util.LocalIsOffline
@@ -164,16 +161,6 @@ private fun OutfitSortOption.displayLabel(): String = when (this) {
     OutfitSortOption.ITEM_COUNT -> stringResource(R.string.outfits_sort_most_items)
 }
 
-private enum class TryOnSortOption {
-    DATE_DESC, DATE_ASC, ITEM_COUNT
-}
-
-@Composable
-private fun TryOnSortOption.displayLabel(): String = when (this) {
-    TryOnSortOption.DATE_DESC  -> stringResource(R.string.outfits_sort_newest)
-    TryOnSortOption.DATE_ASC   -> stringResource(R.string.outfits_sort_oldest)
-    TryOnSortOption.ITEM_COUNT -> stringResource(R.string.outfits_sort_most_items)
-}
 
 private fun List<Outfit>.outfitTagCategories(itemsById: Map<String, DriveImage>): List<TagCategory> {
     val allImages = flatMap { style -> style.itemIds.mapNotNull { itemsById[it] } }
@@ -189,7 +176,6 @@ fun OutfitsScreen(
     profileViewModel: ProfileViewModel = viewModel(),
     weatherViewModel: WeatherViewModel = viewModel(),
     locationViewModel: LocationViewModel = viewModel(),
-    tryOnViewModel: TryOnViewModel = viewModel(),
     onTryOnStyle: (Outfit) -> Unit = {},
     canTryOn: Boolean = false,
     onSettingsClick: () -> Unit = {},
@@ -202,7 +188,6 @@ fun OutfitsScreen(
     val weatherState by weatherViewModel.state.collectAsState()
     val outfitEventsState by outfitEventsViewModel.state.collectAsState()
     val locationState by locationViewModel.state.collectAsState()
-    val tryOnState by tryOnViewModel.state.collectAsState()
 
     // Refresh wardrobe image cache for styles once wardrobe Drive sync completes.
     LaunchedEffect(wardrobeState.isSyncing, outfitsState.isLoading) {
@@ -264,12 +249,6 @@ fun OutfitsScreen(
                     onTryOnStyle = onTryOnStyle,
                     canTryOn = canTryOn,
                     onSettingsClick = onSettingsClick,
-                    tryOnHistory = tryOnState.history,
-                    onLoadTryOnHistory = tryOnViewModel::loadHistory,
-                    onOpenTryOnHistoryItem = tryOnViewModel::openHistoryDetail,
-                    onOpenTryOnComposer = { tryOnViewModel.openComposer(emptySet()) },
-                    canTryOnComposer = canTryOn,
-                    navResetTick = navResetTick,
                     wardrobeViewModel = wardrobeViewModel,
                 )
 
@@ -399,12 +378,6 @@ private fun OutfitListScreen(
     onTryOnStyle: (Outfit) -> Unit = {},
     canTryOn: Boolean = false,
     onSettingsClick: () -> Unit = {},
-    tryOnHistory: List<TryOn> = emptyList(),
-    onLoadTryOnHistory: () -> Unit = {},
-    onOpenTryOnHistoryItem: (TryOn) -> Unit = {},
-    onOpenTryOnComposer: () -> Unit = {},
-    canTryOnComposer: Boolean = false,
-    navResetTick: Int = 0,
     modifier: Modifier = Modifier,
     wardrobeViewModel: WardrobeViewModel,
 ) {
@@ -431,21 +404,9 @@ private fun OutfitListScreen(
     var sortBy by remember { mutableStateOf(OutfitSortOption.DATE_DESC) }
     var filterSheetOpen by remember { mutableStateOf(false) }
     var textQuery by remember { mutableStateOf("") }
-    var tryOnSelectedTags by remember { mutableStateOf(emptyMap<String, Set<String>>()) }
-    var tryOnFilterSheetOpen by remember { mutableStateOf(false) }
-    var tryOnTextQuery by remember { mutableStateOf("") }
-    var tryOnSortBy by remember { mutableStateOf(TryOnSortOption.DATE_DESC) }
     val appliedFilterCount = selectedTags.values.sumOf { it.size } + (if (textQuery.isNotBlank()) 1 else 0)
-    val tryOnAppliedFilterCount = tryOnSelectedTags.values.sumOf { it.size } + (if (tryOnTextQuery.isNotBlank()) 1 else 0)
 
     val tagCategories = remember(styles, itemsById) { styles.outfitTagCategories(itemsById) }
-    // Items referenced by any try-on (resolved by filename, same as TryOnDetailContent).
-    val tryOnItemsByTryOn = remember(tryOnHistory, imagesByName) {
-        tryOnHistory.associateWith { t -> t.itemNames.mapNotNull { n -> imagesByName[n] } }
-    }
-    val tryOnTagCategories = remember(tryOnItemsByTryOn) {
-        tryOnItemsByTryOn.values.flatten().distinctBy { it.driveId }.tagCategories()
-    }
     // Flattened wardrobe items referenced by any outfit — drives QuickCategoryRow counts.
     val outfitItemImages = remember(styles, itemsById) {
         styles.flatMap { it.itemIds.mapNotNull { id -> itemsById[id] } }
@@ -518,18 +479,9 @@ private fun OutfitListScreen(
         )
     }
 
-    var selectedSubTab by rememberSaveable { mutableIntStateOf(0) }
-    LaunchedEffect(navResetTick) { selectedSubTab = 0 }
-    val onTryOnsTab = selectedSubTab == 1
-
-    // Lazily refresh history when entering the Try-Ons sub-tab.
-    LaunchedEffect(onTryOnsTab) {
-        if (onTryOnsTab) onLoadTryOnHistory()
-    }
-
     Box(modifier = modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
-            // ---- Screen header with sort button (Outfits tab only) ----
+            // ---- Screen header with sort button ----
             AppScreenHeader(
                 title = stringResource(R.string.nav_styles),
                 leadingIcon = Icons.Default.Style,
@@ -542,78 +494,6 @@ private fun OutfitListScreen(
                 },
                 onSettingsClick = onSettingsClick,
             )
-
-            // ---- Sub-tab row ----
-            androidx.compose.material3.TabRow(selectedTabIndex = selectedSubTab) {
-                LaunchedEffect(selectedSubTab) {
-                    Analytics.screen(if (selectedSubTab == 0) "Outfits/List" else "Outfits/TryOns")
-                }
-                androidx.compose.material3.Tab(
-                    selected = selectedSubTab == 0,
-                    onClick = { selectedSubTab = 0 },
-                    text = { Text(stringResource(R.string.outfits_tab_outfits)) },
-                )
-                androidx.compose.material3.Tab(
-                    selected = selectedSubTab == 1,
-                    onClick = { selectedSubTab = 1 },
-                    text = { Text(stringResource(R.string.outfits_tab_tryons)) },
-                )
-            }
-
-            if (onTryOnsTab) {
-                val filteredTryOns = remember(tryOnHistory, tryOnSelectedTags, tryOnItemsByTryOn, tryOnTextQuery) {
-                    val active = tryOnSelectedTags.filter { (_, tags) -> tags.isNotEmpty() }
-                    val q = tryOnTextQuery.trim()
-                    val itemsMatchingText: Set<String>? = if (q.isBlank()) null else {
-                        wardrobeViewModel.fuzzyFilterByText(q, items).map { it.driveId }.toSet()
-                    }
-                    tryOnHistory.filter { t ->
-                        val tItems = tryOnItemsByTryOn[t].orEmpty()
-                        val tagsOk = active.isEmpty() || active.all { (categoryLabel, catTags) ->
-                            tItems.any { img ->
-                                catTags.any { it in img.tagStringsForCategory(categoryLabel) }
-                            }
-                        }
-                        if (!tagsOk) return@filter false
-                        itemsMatchingText == null || tItems.any { it.driveId in itemsMatchingText }
-                    }
-                }
-                val displayedTryOns = remember(filteredTryOns, tryOnSortBy) {
-                    when (tryOnSortBy) {
-                        TryOnSortOption.DATE_DESC  -> filteredTryOns.sortedByDescending { it.createdAt }
-                        TryOnSortOption.DATE_ASC   -> filteredTryOns.sortedBy { it.createdAt }
-                        TryOnSortOption.ITEM_COUNT -> filteredTryOns.sortedByDescending { it.itemNames.size }
-                    }
-                }
-                if (tryOnHistory.isNotEmpty()) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(com.librelookai.ui.theme.LocalWardrobePalette.current.surface),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        QuickCategoryRow(
-                            totalCount = tryOnHistory.size,
-                            filteredCount = filteredTryOns.size,
-                            appliedFilterCount = tryOnAppliedFilterCount,
-                            filtersEnabled = tryOnTagCategories.isNotEmpty() || tryOnHistory.isNotEmpty(),
-                            onClearFilters = { tryOnSelectedTags = emptyMap(); tryOnTextQuery = "" },
-                            onOpenFilters = { tryOnFilterSheetOpen = true },
-                            modifier = Modifier.weight(1f),
-                        )
-                        TryOnSortButton(
-                            sortBy = tryOnSortBy,
-                            onSortChanged = { tryOnSortBy = it },
-                            modifier = Modifier.padding(end = 4.dp),
-                        )
-                    }
-                }
-                TryOnHistoryGrid(
-                    history = displayedTryOns,
-                    onOpen  = onOpenTryOnHistoryItem,
-                )
-                return@Column
-            }
 
             // ---- Selection bar ----
             if (isSelectionMode) {
@@ -657,7 +537,7 @@ private fun OutfitListScreen(
             }
 
             // ---- Quick category chip row + sort ----
-            if (!onTryOnsTab && styles.isNotEmpty()) {
+            if (styles.isNotEmpty()) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -769,7 +649,7 @@ private fun OutfitListScreen(
         }
 
         // Selection mode FAB bar
-        if (!onTryOnsTab && isSelectionMode) {
+        if (isSelectionMode) {
             Column(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
@@ -817,7 +697,7 @@ private fun OutfitListScreen(
                     )
                 }
             }
-        } else if (!onTryOnsTab && !isOffline) {
+        } else if (!isOffline) {
             FloatingActionButton(
                 onClick = {
                     Analytics.action("Outfits", "open_create_composer")
@@ -828,18 +708,6 @@ private fun OutfitListScreen(
                     .padding(end = 16.dp, bottom = 16.dp),
             ) {
                 Icon(Icons.Default.Add, contentDescription = stringResource(R.string.wardrobe_create_style))
-            }
-        } else if (canTryOnComposer && !isOffline) {
-            FloatingActionButton(
-                onClick = {
-                    Analytics.action("Outfits/TryOns", "open_composer")
-                    onOpenTryOnComposer()
-                },
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(end = 16.dp, bottom = 16.dp),
-            ) {
-                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.tryon_title))
             }
         }
 
@@ -852,30 +720,6 @@ private fun OutfitListScreen(
                 textQuery = textQuery,
                 onTextQueryChanged = { textQuery = it },
                 onDismiss = { filterSheetOpen = false },
-            )
-        }
-
-        if (tryOnFilterSheetOpen) {
-            val previewCount = run {
-                val active = tryOnSelectedTags.filter { (_, tags) -> tags.isNotEmpty() }
-                if (active.isEmpty()) tryOnHistory.size
-                else tryOnHistory.count { t ->
-                    val tItems = tryOnItemsByTryOn[t].orEmpty()
-                    active.all { (categoryLabel, catTags) ->
-                        tItems.any { img ->
-                            catTags.any { it in img.tagStringsForCategory(categoryLabel) }
-                        }
-                    }
-                }
-            }
-            WardrobeFilterSheet(
-                tagCategories = tryOnTagCategories,
-                selectedTags = tryOnSelectedTags,
-                appliedCount = previewCount,
-                onTagsChanged = { tryOnSelectedTags = it },
-                textQuery = tryOnTextQuery,
-                onTextQueryChanged = { tryOnTextQuery = it },
-                onDismiss = { tryOnFilterSheetOpen = false },
             )
         }
 
@@ -968,47 +812,6 @@ private fun StyleSortButton(
                         },
                         onClick = {
                             Analytics.action("Outfits", "sort_changed", mapOf("option" to option.name))
-                            onSortChanged(option); expanded = false
-                        },
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun TryOnSortButton(
-    sortBy: TryOnSortOption,
-    onSortChanged: (TryOnSortOption) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    var expanded by remember { mutableStateOf(false) }
-    val parentContext = LocalContext.current
-    val parentConfiguration = LocalConfiguration.current
-    Box(modifier = modifier) {
-        IconButton(onClick = { expanded = true }) {
-            Icon(Icons.AutoMirrored.Filled.Sort, contentDescription = stringResource(R.string.action_sort))
-        }
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            CompositionLocalProvider(
-                LocalContext provides parentContext,
-                LocalConfiguration provides parentConfiguration,
-            ) {
-                TryOnSortOption.entries.forEach { option ->
-                    DropdownMenuItem(
-                        text = {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            ) {
-                                if (option == sortBy) Icon(Icons.Default.Check, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
-                                else Spacer(Modifier.size(18.dp))
-                                Text(option.displayLabel())
-                            }
-                        },
-                        onClick = {
-                            Analytics.action("TryOns", "sort_changed", mapOf("option" to option.name))
                             onSortChanged(option); expanded = false
                         },
                     )
