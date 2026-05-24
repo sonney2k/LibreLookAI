@@ -180,9 +180,6 @@ class TripsViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    fun setTripGoal(tripId: String, goal: String) =
-        mutateTrip(tripId) { it.copy(goal = goal) }
-
     fun toggleTripVibe(tripId: String, vibe: String) = mutateTrip(tripId) { trip ->
         val next = trip.vibes.toMutableSet()
         if (!next.remove(vibe)) next.add(vibe)

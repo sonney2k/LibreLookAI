@@ -133,15 +133,6 @@ fun TripViewerScreen(
     var editing by remember(tripId) { mutableStateOf(false) }
     val isBulkRefining = tripId in bulkRefining
 
-    // Local draft for the trip goal, persisted (debounced) so typing doesn't spam Drive writes.
-    var goalDraft by remember(tripId) { mutableStateOf(trip.goal) }
-    androidx.compose.runtime.LaunchedEffect(goalDraft) {
-        if (goalDraft != trip.goal) {
-            kotlinx.coroutines.delay(600)
-            tripsViewModel.setTripGoal(tripId, goalDraft)
-        }
-    }
-
     // Pending (un-persisted) bulk-refine result for this trip, if any.
     val refinePreview = if (tripsState.refinePreviewTripId == tripId) tripsState.refinePreview else emptyMap()
     val previewing = refinePreview.isNotEmpty()
@@ -232,43 +223,19 @@ fun TripViewerScreen(
                         }
                     }
 
-                    if (editing) {
-                        // Planner options — same controls used when creating a trip. Days &
-                        // weather are intentionally kept; only these inputs drive re-styling.
-                        item {
-                            Spacer(Modifier.height(8.dp))
-                            HorizontalDivider()
-                            Column(
-                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                                verticalArrangement = Arrangement.spacedBy(8.dp),
-                            ) {
-                                com.librelookai.travel.GoalAiCard(
-                                    goal = goalDraft,
-                                    onUpdateGoal = { goalDraft = it },
-                                )
-                                com.librelookai.travel.VibeChips(
-                                    selected = trip.vibes,
-                                    onToggle = { tripsViewModel.toggleTripVibe(trip.id, it) },
-                                )
-                                com.librelookai.travel.AiConsidersChips(
-                                    considerations = trip.considerations,
-                                    onToggle = { transform ->
-                                        tripsViewModel.setTripConsiderations(trip.id, transform(trip.considerations))
-                                    },
-                                )
-                            }
-                        }
-                    }
-
                     if (editing && !isOffline) {
                         item {
                             Spacer(Modifier.height(8.dp))
                             HorizontalDivider()
                             BulkRefineSection(
+                                vibes = trip.vibes,
+                                onToggleVibe = { tripsViewModel.toggleTripVibe(trip.id, it) },
+                                considerations = trip.considerations,
+                                onToggleConsideration = { transform ->
+                                    tripsViewModel.setTripConsiderations(trip.id, transform(trip.considerations))
+                                },
                                 isRefining = isBulkRefining,
                                 onSubmit = { instruction ->
-                                    // Flush the goal draft first so the refine prompt sees it.
-                                    tripsViewModel.setTripGoal(trip.id, goalDraft)
                                     tripsViewModel.refineAllOutfits(
                                         tripId          = trip.id,
                                         instruction     = instruction,
@@ -771,9 +738,14 @@ private fun ExtrasCard(items: List<String>) {
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 private fun BulkRefineSection(
+    vibes: Set<String>,
+    onToggleVibe: (String) -> Unit,
+    considerations: com.librelookai.settings.AiConsiderations,
+    onToggleConsideration: ((com.librelookai.settings.AiConsiderations) -> com.librelookai.settings.AiConsiderations) -> Unit,
     isRefining: Boolean,
     onSubmit: (String) -> Unit,
 ) {
+    val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
     var text by remember { mutableStateOf("") }
     val presets = listOf(
         stringResource(R.string.trip_bulk_refine_brighter),
@@ -783,12 +755,18 @@ private fun BulkRefineSection(
     )
     Column(
         modifier = Modifier.padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         Text(
             stringResource(R.string.trip_bulk_refine_action),
             style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.SemiBold,
+        )
+        // Style refinement + what-AI-considers now live in the outfit-refinement section.
+        com.librelookai.travel.VibeChips(selected = vibes, onToggle = onToggleVibe)
+        com.librelookai.travel.AiConsidersChips(
+            considerations = considerations,
+            onToggle = onToggleConsideration,
         )
         // Presets only fill the instruction field — no action is taken until "Apply with AI".
         FlowRow(
@@ -802,16 +780,52 @@ private fun BulkRefineSection(
                 )
             }
         }
-        OutlinedTextField(
-            value = text,
-            onValueChange = { text = it },
-            placeholder = { Text(stringResource(R.string.trip_bulk_refine_hint)) },
-            singleLine = false,
-            maxLines = 3,
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-            enabled = !isRefining,
-        )
+        // Instruction input — styled like the trip-purpose field, with the AI icon.
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(16.dp))
+                .background(Brush.linearGradient(listOf(palette.primaryDim, palette.chipBg)))
+                .border(1.dp, palette.primary.copy(alpha = 0.33f), RoundedCornerShape(16.dp))
+                .padding(14.dp),
+        ) {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        Icons.Default.AutoAwesome,
+                        contentDescription = null,
+                        tint = palette.primary,
+                        modifier = Modifier.size(12.dp),
+                    )
+                    Spacer(Modifier.width(4.dp))
+                    Text(
+                        stringResource(R.string.trip_bulk_refine_action).uppercase(),
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = palette.primary,
+                    )
+                }
+                Spacer(Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = text,
+                    onValueChange = { text = it },
+                    placeholder = { Text(stringResource(R.string.trip_bulk_refine_hint)) },
+                    trailingIcon = {
+                        Icon(
+                            Icons.Default.AutoAwesome,
+                            contentDescription = null,
+                            tint = palette.textMuted,
+                            modifier = Modifier.size(13.dp),
+                        )
+                    },
+                    singleLine = false,
+                    maxLines = 3,
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    enabled = !isRefining,
+                )
+            }
+        }
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End,
