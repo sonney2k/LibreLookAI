@@ -891,6 +891,9 @@
     <string name="coins_byok_no_spend_note">Using your own Gemini key — no credits are spent.</string>
     <!-- Trips -->
     <string name="trip_viewer_title">Trip</string>
+    <string name="trip_planned_title">Planned Trip</string>
+    <string name="trip_saved_label">Saved</string>
+    <string name="trip_saved_confirmation">Trip &amp; outfits saved</string>
     <string name="trip_not_found">Trip not found.</string>
     <string name="trip_day_header">Day %1$d</string>
     <string name="trip_no_destination">Untitled trip</string>

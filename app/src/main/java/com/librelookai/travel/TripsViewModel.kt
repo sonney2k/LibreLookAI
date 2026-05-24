@@ -35,6 +35,11 @@ data class TripsUiState(
     val error: String? = null,
     /** Drive folder ID of `_trips/` once resolved. */
     val folderId: String? = null,
+    /**
+     * ID of a trip that was just created+saved, so the viewer can show a one-time "saved"
+     * confirmation. Cleared via [TripsViewModel.consumeJustSaved] once shown.
+     */
+    val justSavedTripId: String? = null,
 )
 
 /**
@@ -136,9 +141,15 @@ class TripsViewModel(app: Application) : AndroidViewModel(app) {
      */
     fun createAndOpenTrip(trip: Trip) {
         upsertTrip(trip) { ok ->
-            if (ok) viewModelScope.launch { _navigateToTrip.emit(trip.id) }
+            if (ok) {
+                _state.update { it.copy(justSavedTripId = trip.id) }
+                viewModelScope.launch { _navigateToTrip.emit(trip.id) }
+            }
         }
     }
+
+    /** Clears the one-time "just saved" flag after the viewer has shown its confirmation. */
+    fun consumeJustSaved() = _state.update { it.copy(justSavedTripId = null) }
 
     fun renameTrip(tripId: String, newName: String) {
         val current = _state.value.trips.find { it.id == tripId } ?: return

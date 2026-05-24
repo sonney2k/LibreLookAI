@@ -25,6 +25,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CloudDone
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -32,12 +33,16 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -123,88 +128,136 @@ fun TripViewerScreen(
 
     var showDeleteDialog by remember { mutableStateOf(false) }
     var viewerOutfitId by remember { mutableStateOf<String?>(null) }
+    var editing by remember(tripId) { mutableStateOf(false) }
     val isBulkRefining = tripId in bulkRefining
 
-    Column(modifier = modifier.fillMaxSize()) {
-        TripHeader(
-            name = trip.name,
-            onClose = onClose,
-            onDelete = { showDeleteDialog = true },
-            deleteEnabled = true,
-        )
-        Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
-            LazyColumn(
-                contentPadding = PaddingValues(bottom = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                item {
-                    TripMetaSection(
-                        trip = trip,
-                        onRename = { newName -> tripsViewModel.renameTrip(trip.id, newName) },
-                    )
-                }
-                if (trip.forecast.isNotEmpty()) {
-                    item { ForecastStrip(forecast = trip.forecast) }
-                }
-                if (trip.reason.isNotBlank()) {
-                    item {
-                        Text(
-                            trip.reason,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(horizontal = 16.dp),
-                        )
-                    }
-                }
+    // System back exits edit mode first; the parent handles closing the viewer otherwise.
+    if (editing) {
+        androidx.activity.compose.BackHandler { editing = false }
+    }
 
-                item { HorizontalDivider() }
+    // One-time "saved" confirmation shown when a freshly generated trip opens.
+    val snackbarHostState = remember { SnackbarHostState() }
+    val savedMessage = stringResource(R.string.trip_saved_confirmation)
+    androidx.compose.runtime.LaunchedEffect(tripsState.justSavedTripId) {
+        if (tripsState.justSavedTripId == tripId) {
+            snackbarHostState.showSnackbar(savedMessage)
+            tripsViewModel.consumeJustSaved()
+        }
+    }
 
-                itemsIndexed(trip.outfitIds, key = { _, id -> id }) { dayIdx, outfitId ->
-                    val outfit = outfitsById[outfitId]
-                    TripDayCard(
-                        dayIndex = dayIdx,
-                        outfit = outfit,
-                        forecast = trip.forecast.getOrNull(dayIdx),
-                        imagesById = imagesById,
-                        enabled = outfit != null,
-                        onClick = { if (outfit != null) viewerOutfitId = outfit.id },
-                    )
-                }
-
-                if (trip.extraItems.isNotEmpty()) {
-                    item {
-                        Spacer(Modifier.height(8.dp))
-                        ExtrasCard(items = trip.extraItems)
-                    }
-                }
-
-                if (!isOffline) {
-                    item {
-                        Spacer(Modifier.height(8.dp))
-                        HorizontalDivider()
-                        BulkRefineSection(
-                            isRefining = isBulkRefining,
-                            onSubmit = { instruction ->
-                                tripsViewModel.refineAllOutfits(
-                                    tripId          = trip.id,
-                                    instruction     = instruction,
-                                    images          = wardrobeState.images,
-                                    currentOutfits  = outfitsState.outfits,
-                                    outfitsViewModel = outfitsViewModel,
-                                )
-                            },
-                        )
+    Box(modifier = modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            if (editing) {
+                TripHeader(
+                    name = stringResource(R.string.trip_planned_title),
+                    onClose = { editing = false },
+                    onDelete = { showDeleteDialog = true },
+                    deleteEnabled = true,
+                )
+            } else {
+                // Minimal view-only top bar: just a close affordance (trip info lives below).
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(start = 4.dp, top = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    IconButton(onClick = onClose, modifier = Modifier.size(40.dp)) {
+                        Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_cancel))
                     }
                 }
             }
+            Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                LazyColumn(
+                    contentPadding = PaddingValues(bottom = if (editing) 16.dp else 96.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    if (!editing) {
+                        item { SavedBadge() }
+                    }
+                    item {
+                        TripMetaSection(
+                            trip = trip,
+                            editable = editing,
+                            onRename = { newName -> tripsViewModel.renameTrip(trip.id, newName) },
+                        )
+                    }
+                    if (trip.forecast.isNotEmpty()) {
+                        item { ForecastStrip(forecast = trip.forecast) }
+                    }
+                    if (trip.reason.isNotBlank()) {
+                        item {
+                            Text(
+                                trip.reason,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.padding(horizontal = 16.dp),
+                            )
+                        }
+                    }
 
-            if (isBulkRefining) {
-                AiProcessingOverlay(
-                    label = stringResource(R.string.trip_bulk_refining),
-                    modifier = Modifier.fillMaxSize(),
-                )
+                    item { HorizontalDivider() }
+
+                    itemsIndexed(trip.outfitIds, key = { _, id -> id }) { dayIdx, outfitId ->
+                        val outfit = outfitsById[outfitId]
+                        TripDayCard(
+                            dayIndex = dayIdx,
+                            outfit = outfit,
+                            forecast = trip.forecast.getOrNull(dayIdx),
+                            imagesById = imagesById,
+                            enabled = outfit != null,
+                            onClick = { if (outfit != null) viewerOutfitId = outfit.id },
+                        )
+                    }
+
+                    if (trip.extraItems.isNotEmpty()) {
+                        item {
+                            Spacer(Modifier.height(8.dp))
+                            ExtrasCard(items = trip.extraItems)
+                        }
+                    }
+
+                    if (editing && !isOffline) {
+                        item {
+                            Spacer(Modifier.height(8.dp))
+                            HorizontalDivider()
+                            BulkRefineSection(
+                                isRefining = isBulkRefining,
+                                onSubmit = { instruction ->
+                                    tripsViewModel.refineAllOutfits(
+                                        tripId          = trip.id,
+                                        instruction     = instruction,
+                                        images          = wardrobeState.images,
+                                        currentOutfits  = outfitsState.outfits,
+                                        outfitsViewModel = outfitsViewModel,
+                                    )
+                                },
+                            )
+                        }
+                    }
+                }
+
+                if (isBulkRefining) {
+                    AiProcessingOverlay(
+                        label = stringResource(R.string.trip_bulk_refining),
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
             }
         }
+
+        // View-only edit FAB (speed dial: Edit / Delete) — hidden offline (write paths only).
+        if (!editing && !isOffline) {
+            TripActionsFab(
+                onEdit = { editing = true },
+                onDelete = { showDeleteDialog = true },
+                modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
+            )
+        }
+
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier.align(Alignment.BottomCenter).padding(16.dp),
+        )
     }
 
     // Fullscreen outfit viewer — swipe across this trip's outfits. Mirrors the Outfits screen
@@ -331,13 +384,76 @@ private fun TripHeader(
     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 }
 
+/** Persistent reassurance that the trip + its outfits are saved (shown in view mode). */
+@Composable
+private fun SavedBadge() {
+    Row(
+        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        Icon(
+            Icons.Default.CloudDone,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.size(14.dp),
+        )
+        Text(
+            stringResource(R.string.trip_saved_label),
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.primary,
+        )
+    }
+}
+
+/** Speed-dial FAB for the view-only trip: expands to Edit / Delete actions. */
+@Composable
+private fun TripActionsFab(
+    onEdit: () -> Unit,
+    onDelete: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var expanded by remember { mutableStateOf(false) }
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.End,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        if (expanded) {
+            ExtendedFloatingActionButton(
+                onClick = { expanded = false; onEdit() },
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                icon = { Icon(Icons.Default.Edit, contentDescription = null) },
+                text = { Text(stringResource(R.string.action_edit)) },
+            )
+            ExtendedFloatingActionButton(
+                onClick = { expanded = false; onDelete() },
+                containerColor = MaterialTheme.colorScheme.error,
+                contentColor = MaterialTheme.colorScheme.onError,
+                icon = { Icon(Icons.Default.Delete, contentDescription = null) },
+                text = { Text(stringResource(R.string.trip_delete)) },
+            )
+        }
+        FloatingActionButton(onClick = { expanded = !expanded }) {
+            Icon(
+                if (expanded) Icons.Default.Close else Icons.Default.Edit,
+                contentDescription = stringResource(R.string.action_edit),
+            )
+        }
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TripMetaSection(
     trip: Trip,
+    editable: Boolean,
     onRename: (String) -> Unit,
 ) {
-    var editing by remember(trip.id) { mutableStateOf(false) }
+    // `editable` gates the rename affordance; key the rename toggle on it so leaving edit
+    // mode collapses any in-progress rename field.
+    var renaming by remember(trip.id, editable) { mutableStateOf(false) }
     var draftName by remember(trip.id) { mutableStateOf(trip.name) }
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -346,7 +462,7 @@ private fun TripMetaSection(
         verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            if (editing) {
+            if (editable && renaming) {
                 OutlinedTextField(
                     value = draftName,
                     onValueChange = { draftName = it },
@@ -358,7 +474,7 @@ private fun TripMetaSection(
                 IconButton(onClick = {
                     val v = draftName.trim()
                     if (v.isNotBlank() && v != trip.name) onRename(v)
-                    editing = false
+                    renaming = false
                     keyboardController?.hide()
                 }) {
                     Icon(Icons.Default.Check, contentDescription = stringResource(R.string.action_ok))
@@ -369,8 +485,10 @@ private fun TripMetaSection(
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.weight(1f),
                 )
-                IconButton(onClick = { editing = true; draftName = trip.name }) {
-                    Icon(Icons.Default.Edit, contentDescription = stringResource(R.string.trip_rename))
+                if (editable) {
+                    IconButton(onClick = { renaming = true; draftName = trip.name }) {
+                        Icon(Icons.Default.Edit, contentDescription = stringResource(R.string.trip_rename))
+                    }
                 }
             }
         }
