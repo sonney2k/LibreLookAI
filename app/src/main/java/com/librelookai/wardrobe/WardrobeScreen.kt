@@ -82,6 +82,7 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.automirrored.filled.RotateRight
 import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -153,9 +154,12 @@ import com.librelookai.gemini.normalizeEnumTag
 import com.librelookai.gemini.normalizeMaterial
 import com.librelookai.gemini.normalizePattern
 import com.librelookai.gemini.normalizeType
+import com.librelookai.data.model.Outfit
+import com.librelookai.data.model.TryOn
 import com.librelookai.outfit.OutfitEventsViewModel
 import com.librelookai.outfit.OutfitsViewModel
 import com.librelookai.settings.ProfileViewModel
+import com.librelookai.tryon.TryOnViewModel
 import com.librelookai.shopping.MatchPreviewDialog
 import com.librelookai.shopping.MatchRow
 import com.librelookai.shopping.ShopMatch
@@ -174,6 +178,7 @@ fun WardrobeScreen(
     locationViewModel: LocationViewModel = viewModel(),
     shoppingClosetViewModel: ShoppingClosetViewModel = viewModel(),
     profileViewModel: ProfileViewModel = viewModel(),
+    tryOnViewModel: TryOnViewModel = viewModel(),
     onCreateOutfitFromSelection: (Set<String>) -> Unit = {},
     onTryOnSelection: (Set<String>) -> Unit = {},
     onSuggestReplacements: (Set<String>) -> Unit = {},
@@ -185,6 +190,7 @@ fun WardrobeScreen(
     val state         by viewModel.state.collectAsState()
     val outfitEventsState  by outfitEventsViewModel.state.collectAsState()
     val outfitsState   by stylesViewModel.state.collectAsState()
+    val tryOnState    by tryOnViewModel.state.collectAsState()
     val locationState by locationViewModel.state.collectAsState()
     val profileState  by profileViewModel.state.collectAsState()
     val context = LocalContext.current
@@ -275,8 +281,11 @@ fun WardrobeScreen(
             onToggleSelection = viewModel::toggleSelection,
             onSelectAll = viewModel::selectAll,
             onClearSelection = viewModel::clearSelection,
-            onDeleteSelected = viewModel::deleteSelected,
-            onDeleteItem = { driveId -> viewModel.deleteItems(setOf(driveId)) },
+            onDeleteItems = viewModel::deleteItems,
+            outfits = outfitsState.outfits,
+            tryOns = tryOnState.history,
+            onDeleteOutfits = { ids -> stylesViewModel.deleteOutfitsByIds(ids) },
+            onDeleteTryOns = { tryOns -> tryOnViewModel.deleteTryOns(tryOns) },
             onMoveToLocation = viewModel::moveItemsToLocation,
             onSetActiveLocation = locationViewModel::setActiveLocation,
             onCreateOutfitFromSelection = onCreateOutfitFromSelection,
@@ -677,8 +686,11 @@ private fun GridContent(
     onToggleSelection: (String) -> Unit,
     onSelectAll: (List<String>) -> Unit,
     onClearSelection: () -> Unit,
-    onDeleteSelected: () -> Unit,
-    onDeleteItem: (String) -> Unit,
+    onDeleteItems: (Set<String>) -> Unit,
+    outfits: List<Outfit> = emptyList(),
+    tryOns: List<TryOn> = emptyList(),
+    onDeleteOutfits: (List<String>) -> Unit = {},
+    onDeleteTryOns: (List<TryOn>) -> Unit = {},
     onMoveToLocation: (Set<String>, String) -> Unit,
     onSetActiveLocation: (String) -> Unit,
     onCreateOutfitFromSelection: (Set<String>) -> Unit,
@@ -701,7 +713,9 @@ private fun GridContent(
 ) {
     val isOffline = LocalIsOffline.current
     var selectedIndex by remember { mutableStateOf<Int?>(null) }
-    var showDeleteDialog by remember { mutableStateOf(false) }
+    // Non-null while the delete-confirm dialog is open; holds the item driveIds about to be deleted
+    // (the multi-select set, or a single item from the full-screen viewer).
+    var pendingDeleteIds by remember { mutableStateOf<Set<String>?>(null) }
     var showMoveDialog by remember { mutableStateOf(false) }
     // Filter + sort state
     var selectedTags by remember { mutableStateOf(emptyMap<String, Set<String>>()) }
@@ -1050,7 +1064,7 @@ private fun GridContent(
                     ExtendedFloatingActionButton(
                         onClick = {
                             Analytics.action("Wardrobe", "open_delete_dialog", mapOf("count" to state.selectedIds.size.toString()))
-                            showDeleteDialog = true
+                            pendingDeleteIds = state.selectedIds
                         },
                         containerColor = MaterialTheme.colorScheme.error,
                         contentColor = MaterialTheme.colorScheme.onError,
@@ -1107,8 +1121,9 @@ private fun GridContent(
                 onRotateImage = onRotateImage,
                 onUpdateTags = onUpdateTags,
                 onDeleteItem = { driveId ->
-                    onDeleteItem(driveId)
-                    if (displayedImages.size <= 1) selectedIndex = null
+                    // Route single deletes through the same cascade-aware confirm dialog.
+                    pendingDeleteIds = setOf(driveId)
+                    selectedIndex = null
                 },
                 onMoveToLocation = { ids, folderId ->
                     onMoveToLocation(ids, folderId)
@@ -1124,24 +1139,73 @@ private fun GridContent(
         }
     }
 
-    if (showDeleteDialog) {
+    pendingDeleteIds?.let { ids ->
+        // Items being deleted, by Drive ID and by stable cutout filename — outfits/try-ons
+        // reference items by both, so match on either.
+        val deletingNames = remember(ids, state.images) {
+            state.images.filter { it.driveId in ids }.map { it.name }.toSet()
+        }
+        val affectedOutfits = remember(ids, deletingNames, outfits) {
+            outfits.filter { o -> o.itemIds.any { it in ids } || o.itemNames.any { it in deletingNames } }
+        }
+        val affectedTryOns = remember(ids, deletingNames, tryOns) {
+            tryOns.filter { t -> t.itemIds.any { it in ids } || t.itemNames.any { it in deletingNames } }
+        }
+        var cascadeOutfits by remember(ids) { mutableStateOf(true) }
+        var cascadeTryOns by remember(ids) { mutableStateOf(true) }
         AlertDialog(
-            onDismissRequest = { showDeleteDialog = false },
+            onDismissRequest = { pendingDeleteIds = null },
             title = { Text(stringResource(R.string.wardrobe_delete_title)) },
-            text = { Text(stringResource(R.string.wardrobe_delete_text, state.selectedIds.size)) },
+            text = {
+                Column {
+                    Text(stringResource(R.string.wardrobe_delete_text, ids.size))
+                    if (affectedOutfits.isNotEmpty()) {
+                        Spacer(Modifier.height(8.dp))
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { cascadeOutfits = !cascadeOutfits },
+                        ) {
+                            Checkbox(checked = cascadeOutfits, onCheckedChange = { cascadeOutfits = it })
+                            Text(stringResource(R.string.wardrobe_delete_cascade_outfits, affectedOutfits.size))
+                        }
+                    }
+                    if (affectedTryOns.isNotEmpty()) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { cascadeTryOns = !cascadeTryOns },
+                        ) {
+                            Checkbox(checked = cascadeTryOns, onCheckedChange = { cascadeTryOns = it })
+                            Text(stringResource(R.string.wardrobe_delete_cascade_tryons, affectedTryOns.size))
+                        }
+                    }
+                }
+            },
             confirmButton = {
                 TextButton(
                     onClick = {
-                        Analytics.action("Wardrobe", "confirm_delete_selected", mapOf("count" to state.selectedIds.size.toString()))
-                        onDeleteSelected()
-                        showDeleteDialog = false
+                        Analytics.action(
+                            "Wardrobe", "confirm_delete_selected",
+                            mapOf(
+                                "count" to ids.size.toString(),
+                                "outfits" to (if (cascadeOutfits) affectedOutfits.size else 0).toString(),
+                                "tryons" to (if (cascadeTryOns) affectedTryOns.size else 0).toString(),
+                            ),
+                        )
+                        onDeleteItems(ids)
+                        if (cascadeOutfits && affectedOutfits.isNotEmpty()) onDeleteOutfits(affectedOutfits.map { it.id })
+                        if (cascadeTryOns && affectedTryOns.isNotEmpty()) onDeleteTryOns(affectedTryOns)
+                        pendingDeleteIds = null
                     }
                 ) {
                     Text(stringResource(R.string.action_delete), color = MaterialTheme.colorScheme.error)
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) {
+                TextButton(onClick = { pendingDeleteIds = null }) {
                     Text(stringResource(R.string.action_cancel))
                 }
             }
@@ -1387,7 +1451,6 @@ internal fun FullScreenViewer(
 
     var showTagEdit by remember { mutableStateOf(false) }
     var showMoveDialog by remember { mutableStateOf(false) }
-    var showDeleteDialog by remember { mutableStateOf(false) }
     var showEditMenu by remember { mutableStateOf(false) }
     var showFixCutoutBgDialog by remember { mutableStateOf(false) }
     var showOriginal by remember { mutableStateOf(false) }
@@ -1654,7 +1717,9 @@ internal fun FullScreenViewer(
                         onClick = {
                             Analytics.action("ItemViewer", "open_delete_dialog")
                             showEditMenu = false
-                            showDeleteDialog = true
+                            // The grid hosts the cascade-aware confirm dialog (it can see the
+                            // affected outfits/try-ons), so delegate rather than confirm here.
+                            onDeleteItem(currentImage.driveId)
                         },
                         containerColor = MaterialTheme.colorScheme.error,
                         contentColor = MaterialTheme.colorScheme.onError,
@@ -1694,29 +1759,6 @@ internal fun FullScreenViewer(
         )
     }
 
-    if (showDeleteDialog) {
-        val currentImage = images[pagerState.currentPage]
-        AlertDialog(
-            onDismissRequest = { showDeleteDialog = false },
-            title = { Text(stringResource(R.string.wardrobe_delete_title)) },
-            text = { Text(stringResource(R.string.wardrobe_delete_text, 1)) },
-            confirmButton = {
-                TextButton(onClick = {
-                    Analytics.action("ItemViewer", "confirm_delete_item")
-                    onDeleteItem(currentImage.driveId)
-                    showDeleteDialog = false
-                    if (images.size <= 1) onDismiss()
-                }) {
-                    Text(stringResource(R.string.action_delete), color = MaterialTheme.colorScheme.error)
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) {
-                    Text(stringResource(R.string.action_cancel))
-                }
-            },
-        )
-    }
 
     if (showMoveDialog) {
         val currentImage = images[pagerState.currentPage]

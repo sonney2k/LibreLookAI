@@ -918,4 +918,10 @@
     <string name="trip_refine_preview_note">미리보기 — 저장되지 않음</string>
     <string name="trip_refine_discard">버리기</string>
     <string name="trip_refine_replace">여행 옷차림 교체</string>
+    <string name="wardrobe_delete_cascade_outfits">이 아이템을 사용하는 %d개의 코디도 삭제</string>
+    <string name="wardrobe_delete_cascade_tryons">이 아이템이 포함된 %d개의 가상 피팅도 삭제</string>
+    <string name="outfits_broken_banner">%d개의 코디가 옷장에 더 이상 없는 아이템을 사용합니다.</string>
+    <string name="outfits_broken_review">검토</string>
+    <string name="outfits_broken_delete_title">불완전한 코디를 삭제할까요?</string>
+    <string name="outfits_broken_delete_text">옷장에 더 이상 없는 아이템을 참조하는 코디 %d개를 삭제할까요? 되돌릴 수 없습니다.</string>
 </resources>

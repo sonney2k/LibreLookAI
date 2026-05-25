@@ -898,4 +898,10 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <string name="trip_refine_preview_note">Pratonton — tidak disimpan</string>
     <string name="trip_refine_discard">Buang</string>
     <string name="trip_refine_replace">Ganti pakaian perjalanan</string>
+    <string name="wardrobe_delete_cascade_outfits">Padam juga %d set pakaian yang guna item ini</string>
+    <string name="wardrobe_delete_cascade_tryons">Padam juga %d cubaan dengan item ini</string>
+    <string name="outfits_broken_banner">%d set pakaian guna item yang tiada lagi dalam almari anda.</string>
+    <string name="outfits_broken_review">Semak</string>
+    <string name="outfits_broken_delete_title">Padam set pakaian tidak lengkap?</string>
+    <string name="outfits_broken_delete_text">Padam %d set pakaian yang merujuk item yang tiada lagi dalam almari anda? Tindakan ini tidak boleh dibatalkan.</string>
 </resources>

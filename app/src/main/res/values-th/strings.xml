@@ -898,4 +898,10 @@
     <string name="trip_refine_preview_note">ตัวอย่าง — ยังไม่บันทึก</string>
     <string name="trip_refine_discard">ละทิ้ง</string>
     <string name="trip_refine_replace">แทนที่ชุดของทริป</string>
+    <string name="wardrobe_delete_cascade_outfits">ลบชุด %d ชุดที่ใช้ไอเท็มเหล่านี้ด้วย</string>
+    <string name="wardrobe_delete_cascade_tryons">ลบการลองสวม %d ครั้งที่มีไอเท็มเหล่านี้ด้วย</string>
+    <string name="outfits_broken_banner">%d ชุดใช้ไอเท็มที่ไม่มีอยู่ในตู้เสื้อผ้าของคุณแล้ว</string>
+    <string name="outfits_broken_review">ตรวจสอบ</string>
+    <string name="outfits_broken_delete_title">ลบชุดที่ไม่สมบูรณ์หรือไม่</string>
+    <string name="outfits_broken_delete_text">ลบ %d ชุดที่อ้างอิงไอเท็มที่ไม่มีอยู่ในตู้เสื้อผ้าแล้วหรือไม่ การทำเช่นนี้ไม่สามารถยกเลิกได้</string>
 </resources>

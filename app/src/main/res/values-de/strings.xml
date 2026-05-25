@@ -988,4 +988,10 @@
     <string name="trip_refine_preview_note">Vorschau – nicht gespeichert</string>
     <string name="trip_refine_discard">Verwerfen</string>
     <string name="trip_refine_replace">Reise-Outfits ersetzen</string>
+    <string name="wardrobe_delete_cascade_outfits">Auch %d Outfit(s) löschen, die diese Teile verwenden</string>
+    <string name="wardrobe_delete_cascade_tryons">Auch %d Anprobe(n) mit diesen Teilen löschen</string>
+    <string name="outfits_broken_banner">%d Outfits verwenden Teile, die nicht mehr in deinem Kleiderschrank sind.</string>
+    <string name="outfits_broken_review">Prüfen</string>
+    <string name="outfits_broken_delete_title">Defekte Outfits löschen?</string>
+    <string name="outfits_broken_delete_text">%d Outfits löschen, die auf nicht mehr vorhandene Teile verweisen? Das kann nicht rückgängig gemacht werden.</string>
 </resources>

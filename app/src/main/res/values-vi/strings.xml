@@ -898,4 +898,10 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="trip_refine_preview_note">Xem trước — chưa lưu</string>
     <string name="trip_refine_discard">Hủy bỏ</string>
     <string name="trip_refine_replace">Thay trang phục chuyến đi</string>
+    <string name="wardrobe_delete_cascade_outfits">Cũng xóa %d trang phục dùng các món này</string>
+    <string name="wardrobe_delete_cascade_tryons">Cũng xóa %d lần thử đồ có các món này</string>
+    <string name="outfits_broken_banner">%d trang phục dùng các món không còn trong tủ đồ của bạn.</string>
+    <string name="outfits_broken_review">Xem lại</string>
+    <string name="outfits_broken_delete_title">Xóa trang phục thiếu món?</string>
+    <string name="outfits_broken_delete_text">Xóa %d trang phục tham chiếu đến các món không còn trong tủ đồ? Không thể hoàn tác.</string>
 </resources>

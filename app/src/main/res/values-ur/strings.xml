@@ -898,4 +898,10 @@
     <string name="trip_refine_preview_note">پیش منظر — محفوظ نہیں</string>
     <string name="trip_refine_discard">رد کریں</string>
     <string name="trip_refine_replace">سفر کے آؤٹ فٹس بدلیں</string>
+    <string name="wardrobe_delete_cascade_outfits">ان آئٹمز کو استعمال کرنے والے %d آؤٹ فٹ بھی حذف کریں</string>
+    <string name="wardrobe_delete_cascade_tryons">ان آئٹمز والی %d ٹرائی آن بھی حذف کریں</string>
+    <string name="outfits_broken_banner">%d آؤٹ فٹ ایسے آئٹمز استعمال کرتے ہیں جو اب آپ کی الماری میں نہیں ہیں۔</string>
+    <string name="outfits_broken_review">جائزہ لیں</string>
+    <string name="outfits_broken_delete_title">نامکمل آؤٹ فٹ حذف کریں؟</string>
+    <string name="outfits_broken_delete_text">کیا %d آؤٹ فٹ حذف کریں جو اب الماری میں موجود نہ رہنے والے آئٹمز کا حوالہ دیتے ہیں؟ اسے واپس نہیں کیا جا سکتا۔</string>
 </resources>

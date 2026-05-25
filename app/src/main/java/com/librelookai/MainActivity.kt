@@ -512,6 +512,7 @@ class MainActivity : ComponentActivity() {
                                             locationViewModel = locationViewModel,
                                             shoppingClosetViewModel = shoppingClosetViewModel,
                                             profileViewModel = profileViewModel,
+                                            tryOnViewModel = tryOnViewModel,
                                             onCreateOutfitFromSelection = { itemIds ->
                                                 Analytics.action("Wardrobe", "create_outfit_from_selection", mapOf("count" to itemIds.size.toString()))
                                                 stylesViewModel.openComposer(

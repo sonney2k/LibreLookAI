@@ -918,4 +918,10 @@
     <string name="trip_refine_preview_note">Önizleme — kaydedilmedi</string>
     <string name="trip_refine_discard">Vazgeç</string>
     <string name="trip_refine_replace">Gezi kombinlerini değiştir</string>
+    <string name="wardrobe_delete_cascade_outfits">Bu parçaları kullanan %d kombini de sil</string>
+    <string name="wardrobe_delete_cascade_tryons">Bu parçaların olduğu %d provayı da sil</string>
+    <string name="outfits_broken_banner">%d kombin, gardırobunda artık bulunmayan parçaları kullanıyor.</string>
+    <string name="outfits_broken_review">İncele</string>
+    <string name="outfits_broken_delete_title">Eksik kombinler silinsin mi?</string>
+    <string name="outfits_broken_delete_text">Gardırobunda artık bulunmayan parçalara atıfta bulunan %d kombin silinsin mi? Bu işlem geri alınamaz.</string>
 </resources>

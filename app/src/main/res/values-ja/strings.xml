@@ -918,4 +918,10 @@
     <string name="trip_refine_preview_note">プレビュー — 未保存</string>
     <string name="trip_refine_discard">破棄</string>
     <string name="trip_refine_replace">旅行のコーデを置き換え</string>
+    <string name="wardrobe_delete_cascade_outfits">これらのアイテムを使う %d 件のコーデも削除</string>
+    <string name="wardrobe_delete_cascade_tryons">これらのアイテムを使った %d 件の試着も削除</string>
+    <string name="outfits_broken_banner">%d 件のコーデが、ワードローブにないアイテムを使っています。</string>
+    <string name="outfits_broken_review">確認</string>
+    <string name="outfits_broken_delete_title">不完全なコーデを削除しますか？</string>
+    <string name="outfits_broken_delete_text">ワードローブにないアイテムを参照する %d 件のコーデを削除しますか？元に戻せません。</string>
 </resources>

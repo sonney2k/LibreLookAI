@@ -918,4 +918,10 @@
     <string name="trip_refine_preview_note">Prévia — não salvo</string>
     <string name="trip_refine_discard">Descartar</string>
     <string name="trip_refine_replace">Substituir looks da viagem</string>
+    <string name="wardrobe_delete_cascade_outfits">Também excluir %d look(s) que usam estas peças</string>
+    <string name="wardrobe_delete_cascade_tryons">Também excluir %d prova(s) com estas peças</string>
+    <string name="outfits_broken_banner">%d looks usam peças que não estão mais no seu guarda-roupa.</string>
+    <string name="outfits_broken_review">Revisar</string>
+    <string name="outfits_broken_delete_title">Excluir looks com itens ausentes?</string>
+    <string name="outfits_broken_delete_text">Excluir %d looks que fazem referência a peças que não estão mais no seu guarda-roupa? Não é possível desfazer.</string>
 </resources>

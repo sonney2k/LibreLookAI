@@ -918,4 +918,10 @@
     <string name="trip_refine_preview_note">Forhåndsvisning – ikke gemt</string>
     <string name="trip_refine_discard">Kassér</string>
     <string name="trip_refine_replace">Erstat rejsens outfits</string>
+    <string name="wardrobe_delete_cascade_outfits">Slet også %d outfit(s), der bruger disse ting</string>
+    <string name="wardrobe_delete_cascade_tryons">Slet også %d prøvning(er) med disse ting</string>
+    <string name="outfits_broken_banner">%d outfits bruger ting, der ikke længere er i din garderobe.</string>
+    <string name="outfits_broken_review">Gennemse</string>
+    <string name="outfits_broken_delete_title">Slet ufuldstændige outfits?</string>
+    <string name="outfits_broken_delete_text">Slet %d outfits, der henviser til ting, der ikke længere er i din garderobe? Dette kan ikke fortrydes.</string>
 </resources>

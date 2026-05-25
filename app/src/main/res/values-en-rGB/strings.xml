@@ -918,4 +918,10 @@
     <string name="trip_refine_preview_note">Preview — not saved</string>
     <string name="trip_refine_discard">Discard</string>
     <string name="trip_refine_replace">Replace trip outfits</string>
+    <string name="wardrobe_delete_cascade_outfits">Also delete %d outfit(s) that use these items</string>
+    <string name="wardrobe_delete_cascade_tryons">Also delete %d try-on(s) with these items</string>
+    <string name="outfits_broken_banner">%d outfits use items that are no longer in your wardrobe.</string>
+    <string name="outfits_broken_review">Review</string>
+    <string name="outfits_broken_delete_title">Delete broken outfits?</string>
+    <string name="outfits_broken_delete_text">Delete %d outfits that reference items no longer in your wardrobe? This cannot be undone.</string>
 </resources>

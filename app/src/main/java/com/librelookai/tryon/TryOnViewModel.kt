@@ -349,6 +349,35 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /**
+     * Batch-deletes [tryOns] in a single Drive JSON write. Used when wardrobe items are deleted
+     * and the user opts to cascade the removal to try-ons that wore those items.
+     */
+    fun deleteTryOns(tryOns: List<TryOn>) {
+        if (tryOns.isEmpty()) return
+        val ids = tryOns.map { it.imageDriveId }.toSet()
+        viewModelScope.launch {
+            try {
+                val root = ensureRootFolder()
+                tryOns.forEach { t ->
+                    runCatching { drive.deleteFile(t.imageDriveId) }
+                    File(drive.cacheDir, "tryon_${t.imageDriveId}.png").delete()
+                }
+                val remaining = loadTryOnsEntries(root).filterNot { it.imageDriveId in ids }
+                drive.saveTryOnsJson(root, gson.toJson(remaining))
+                runCatching { historyCacheFile().writeText(gson.toJson(remaining)) }
+                _state.update {
+                    it.copy(
+                        history = it.history.filterNot { h -> h.imageDriveId in ids },
+                        viewingTryOn = if (it.viewingTryOn?.imageDriveId in ids) null else it.viewingTryOn,
+                    )
+                }
+            } catch (e: Exception) {
+                _state.update { it.copy(error = e.message ?: "Delete failed") }
+            }
+        }
+    }
+
     fun loadHistory() {
         viewModelScope.launch(Dispatchers.IO) {
             // Phase 1 — instant: paint from the local sidecar cache so the history grid

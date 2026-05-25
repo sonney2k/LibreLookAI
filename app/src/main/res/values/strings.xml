@@ -263,6 +263,8 @@
     <string name="wardrobe_select_all_count">Select all (%1$d)</string>
     <string name="wardrobe_delete_title">Delete items?</string>
     <string name="wardrobe_delete_text">Are you sure you want to delete %d selected items? This cannot be undone.</string>
+    <string name="wardrobe_delete_cascade_outfits">Also delete %d outfit(s) that use these items</string>
+    <string name="wardrobe_delete_cascade_tryons">Also delete %d try-on(s) with these items</string>
     <string name="wardrobe_move_to">Move to…</string>
     <string name="wardrobe_move_to_title">Move %d item(s) to</string>
     <string name="wardrobe_sort">Sort</string>
@@ -485,6 +487,10 @@
     <string name="outfits_select_all_count">Select all %d</string>
     <string name="outfits_delete_selected_title">Delete outfits?</string>
     <string name="outfits_delete_selected_text">%d outfits will be permanently removed.</string>
+    <string name="outfits_broken_banner">%d outfits use items that are no longer in your wardrobe.</string>
+    <string name="outfits_broken_review">Review</string>
+    <string name="outfits_broken_delete_title">Delete broken outfits?</string>
+    <string name="outfits_broken_delete_text">Delete %d outfits that reference items no longer in your wardrobe? This cannot be undone.</string>
     <string name="outfits_combine">Combine with AI</string>
     <string name="outfit_slot_lock">Lock</string>
     <string name="outfit_slot_unlock">Unlock</string>

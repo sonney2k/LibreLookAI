@@ -918,4 +918,10 @@
     <string name="trip_refine_preview_note">Förhandsvisning – inte sparad</string>
     <string name="trip_refine_discard">Släng</string>
     <string name="trip_refine_replace">Ersätt resans outfits</string>
+    <string name="wardrobe_delete_cascade_outfits">Ta även bort %d outfit(s) som använder dessa plagg</string>
+    <string name="wardrobe_delete_cascade_tryons">Ta även bort %d provning(ar) med dessa plagg</string>
+    <string name="outfits_broken_banner">%d outfits använder plagg som inte längre finns i din garderob.</string>
+    <string name="outfits_broken_review">Granska</string>
+    <string name="outfits_broken_delete_title">Ta bort ofullständiga outfits?</string>
+    <string name="outfits_broken_delete_text">Ta bort %d outfits som hänvisar till plagg som inte längre finns i din garderob? Det går inte att ångra.</string>
 </resources>

@@ -898,4 +898,10 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="trip_refine_preview_note">Previzualizare — nesalvat</string>
     <string name="trip_refine_discard">Renunță</string>
     <string name="trip_refine_replace">Înlocuiește ținutele călătoriei</string>
+    <string name="wardrobe_delete_cascade_outfits">Șterge și %d ținută/ținute care folosesc aceste articole</string>
+    <string name="wardrobe_delete_cascade_tryons">Șterge și %d probă/probe cu aceste articole</string>
+    <string name="outfits_broken_banner">%d ținute folosesc articole care nu mai sunt în garderoba ta.</string>
+    <string name="outfits_broken_review">Verifică</string>
+    <string name="outfits_broken_delete_title">Ștergi ținutele incomplete?</string>
+    <string name="outfits_broken_delete_text">Ștergi %d ținute care fac referire la articole ce nu mai sunt în garderoba ta? Această acțiune nu poate fi anulată.</string>
 </resources>

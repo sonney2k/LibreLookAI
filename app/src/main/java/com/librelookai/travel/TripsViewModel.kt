@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -22,8 +23,10 @@ import com.librelookai.data.model.Trip
 import com.librelookai.gemini.GeminiRepository
 import com.librelookai.gemini.UsageCategory
 import com.librelookai.outfit.OutfitsViewModel
+import com.librelookai.util.isNetworkAvailable
 import com.librelookai.wardrobe.DriveImage
 import com.librelookai.weather.wmoEmoji
+import java.io.File
 
 /**
  * Backing state for the trips list and the per-trip viewer. Persisted to
@@ -78,15 +81,43 @@ class TripsViewModel(app: Application) : AndroidViewModel(app) {
     private val _navigateToTrip = MutableSharedFlow<String>(extraBufferCapacity = 1)
     val navigateToTrip: SharedFlow<String> = _navigateToTrip.asSharedFlow()
 
+    /** Local JSON snapshot of all trips, so the list paints instantly on cold start. */
+    private fun tripsCacheFile() = File(getApplication<Application>().filesDir, "trips_cache.json")
+
+    private fun readTripsCache(): List<Trip> = runCatching {
+        val f = tripsCacheFile()
+        if (!f.exists()) return emptyList()
+        val type = object : TypeToken<List<Trip>>() {}.type
+        gson.fromJson<List<Trip>>(f.readText(), type) ?: emptyList()
+    }.getOrDefault(emptyList())
+
+    private fun writeTripsCache(trips: List<Trip>) {
+        runCatching { tripsCacheFile().writeText(gson.toJson(trips)) }
+    }
+
     fun loadTrips() {
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true, error = null) }
+            // Phase 1 — instant: paint from the local cache (zero network), mirroring the
+            // wardrobe two-phase load so trips are visible immediately on cold start.
+            val cached = readTripsCache()
+            if (cached.isNotEmpty()) {
+                _state.update { it.copy(trips = cached.sortedByDescending { t -> t.createdAt }, isLoading = false) }
+            } else {
+                _state.update { it.copy(isLoading = true, error = null) }
+            }
+
+            // Phase 2 — Drive sync: skip when offline (the cache stays on screen).
+            if (!getApplication<Application>().isNetworkAvailable()) {
+                _state.update { it.copy(isLoading = false) }
+                return@launch
+            }
+
             val folderId = runCatching {
                 val rootId = rootFolderId ?: drive.getOrCreateFolder().also { rootFolderId = it }
                 _state.value.folderId ?: drive.getOrCreateTripsFolder(rootId)
             }.onFailure {
                 Log.w(TAG, "trips folder resolve failed", it)
-                _state.update { s -> s.copy(isLoading = false, error = it.message) }
+                _state.update { s -> s.copy(isLoading = false, error = if (s.trips.isEmpty()) it.message else null) }
             }.getOrNull() ?: return@launch
             _state.update { it.copy(folderId = folderId) }
 
@@ -105,14 +136,11 @@ class TripsViewModel(app: Application) : AndroidViewModel(app) {
             }.onSuccess { pairs ->
                 driveIdsByTripId.clear()
                 pairs.forEach { (fileId, trip) -> driveIdsByTripId[trip.id] = fileId }
-                _state.update {
-                    it.copy(
-                        trips = pairs.map { (_, t) -> t }.sortedByDescending { t -> t.createdAt },
-                        isLoading = false,
-                    )
-                }
+                val trips = pairs.map { (_, t) -> t }.sortedByDescending { t -> t.createdAt }
+                _state.update { it.copy(trips = trips, isLoading = false) }
+                writeTripsCache(trips)
             }.onFailure { e ->
-                _state.update { it.copy(isLoading = false, error = e.message) }
+                _state.update { s -> s.copy(isLoading = false, error = if (s.trips.isEmpty()) e.message else null) }
             }
         }
     }
@@ -132,6 +160,7 @@ class TripsViewModel(app: Application) : AndroidViewModel(app) {
                     val without = s.trips.filterNot { it.id == trip.id }
                     s.copy(trips = (listOf(trip) + without))
                 }
+                writeTripsCache(_state.value.trips)
                 onDone(true)
             }.onFailure { e ->
                 Log.w(TAG, "saveTripJson failed", e)
@@ -172,6 +201,7 @@ class TripsViewModel(app: Application) : AndroidViewModel(app) {
         val updated = transform(current)
         if (updated == current) return
         _state.update { s -> s.copy(trips = s.trips.map { if (it.id == tripId) updated else it }) }
+        writeTripsCache(_state.value.trips)
         viewModelScope.launch {
             val folderId = _state.value.folderId ?: return@launch
             runCatching {
@@ -235,6 +265,7 @@ class TripsViewModel(app: Application) : AndroidViewModel(app) {
                 driveIdsByTripId.remove(tripId)
             }
             _state.update { s -> s.copy(trips = s.trips.filterNot { it.id == tripId }) }
+            writeTripsCache(_state.value.trips)
             onDeleted(current.outfitIds)
         }
     }

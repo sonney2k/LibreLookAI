@@ -918,4 +918,10 @@
     <string name="trip_refine_preview_note">Voorbeeld — niet opgeslagen</string>
     <string name="trip_refine_discard">Weggooien</string>
     <string name="trip_refine_replace">Reisoutfits vervangen</string>
+    <string name="wardrobe_delete_cascade_outfits">Verwijder ook %d outfit(s) die deze items gebruiken</string>
+    <string name="wardrobe_delete_cascade_tryons">Verwijder ook %d try-on(s) met deze items</string>
+    <string name="outfits_broken_banner">%d outfits gebruiken items die niet meer in je garderobe staan.</string>
+    <string name="outfits_broken_review">Bekijken</string>
+    <string name="outfits_broken_delete_title">Onvolledige outfits verwijderen?</string>
+    <string name="outfits_broken_delete_text">%d outfits verwijderen die verwijzen naar items die niet meer in je garderobe staan? Dit kan niet ongedaan worden gemaakt.</string>
 </resources>

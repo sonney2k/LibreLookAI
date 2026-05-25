@@ -918,4 +918,10 @@
     <string name="trip_refine_preview_note">Προεπισκόπηση — δεν αποθηκεύτηκε</string>
     <string name="trip_refine_discard">Απόρριψη</string>
     <string name="trip_refine_replace">Αντικατάσταση συνόλων ταξιδιού</string>
+    <string name="wardrobe_delete_cascade_outfits">Διαγραφή επίσης %d συνόλου/-ων που χρησιμοποιούν αυτά τα αντικείμενα</string>
+    <string name="wardrobe_delete_cascade_tryons">Διαγραφή επίσης %d δοκιμής/-ών με αυτά τα αντικείμενα</string>
+    <string name="outfits_broken_banner">%d σύνολα χρησιμοποιούν αντικείμενα που δεν υπάρχουν πλέον στην γκαρνταρόμπα σου.</string>
+    <string name="outfits_broken_review">Έλεγχος</string>
+    <string name="outfits_broken_delete_title">Διαγραφή ελλιπών συνόλων;</string>
+    <string name="outfits_broken_delete_text">Να διαγραφούν %d σύνολα που αναφέρονται σε αντικείμενα που δεν υπάρχουν πλέον στην γκαρνταρόμπα σου; Δεν μπορεί να αναιρεθεί.</string>
 </resources>

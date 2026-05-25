@@ -898,4 +898,10 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="trip_refine_preview_note">Előnézet – nincs mentve</string>
     <string name="trip_refine_discard">Elvetés</string>
     <string name="trip_refine_replace">Utazási szettek cseréje</string>
+    <string name="wardrobe_delete_cascade_outfits">Törölj %d szettet is, amelyek ezeket a darabokat használják</string>
+    <string name="wardrobe_delete_cascade_tryons">Törölj %d felpróbálást is ezekkel a darabokkal</string>
+    <string name="outfits_broken_banner">%d szett olyan darabokat használ, amelyek már nincsenek a ruhatáradban.</string>
+    <string name="outfits_broken_review">Áttekintés</string>
+    <string name="outfits_broken_delete_title">Törlöd a hiányos szetteket?</string>
+    <string name="outfits_broken_delete_text">Törlöd azt a(z) %d szettet, amely már nem létező darabokra hivatkozik? Ezt nem lehet visszavonni.</string>
 </resources>

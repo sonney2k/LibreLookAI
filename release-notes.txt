@@ -1,3 +1,14 @@
+### LibreLookAI v1.8.1 Release Notes
+
+#### Trips load instantly
+- The Travel tab now paints your saved trips immediately from a local cache on launch, then refreshes from Drive in the background — just like the Wardrobe. No more waiting on the network to see your trips.
+
+#### Tidy up outdated outfits & try-ons
+- A banner on the Outfits screen now flags outfits that reference wardrobe items you've since deleted, with one tap to review and remove them (they were previously hidden with no way to clean them up).
+- When you delete wardrobe items, LibreLookAI now tells you how many outfits and try-ons used those items and offers to delete them too (on by default) — so you don't end up with broken outfits and stale try-ons.
+
+---
+
 ### LibreLookAI v1.8.0 Release Notes
 
 #### Travel tab — outfit-first redesign

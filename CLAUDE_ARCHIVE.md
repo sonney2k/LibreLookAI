@@ -199,6 +199,10 @@ Tapping a match clears active tag filters and — if the match lives in a differ
 
 The "Find with AI" prediction flow (`openPredictionSetup(source = OUTFITS_LIST)`) shows its 1–3 ranked picks in `OutfitFullScreenViewer` overlaid on the list; tapping Edit there clears the prediction and opens the composer in VIEW mode for that outfit.
 
+**Broken-outfit cleanup**: `OutfitListScreen` already hides outfits whose items aren't all loaded for the current filter, so an outfit referencing a deleted wardrobe item silently vanishes with no way to remove it. `OutfitsScreen` detects these by comparing each outfit's `itemNames` against the **cross-closet** filename set (`wardrobeState.allLocationImages + images`, gated on `!isSyncing` to avoid false positives mid-sync), and shows a dismissible error banner ("N outfits use items no longer in your wardrobe") above the list. Its **Review** action confirms then calls `deleteOutfitsByIds(brokenIds)`. Detection runs cross-closet but the VM's outfit scope matches its load scope, so the per-folder writes in `deleteOutfitsByIds` stay correct in both single-closet and all-locations modes.
+
+**Cascade delete from the wardrobe**: deleting wardrobe items (`WardrobeScreen` → `GridContent`) routes both the multi-select **Delete** FAB and the single-item delete inside `FullScreenViewer` through one cascade-aware confirm dialog (`pendingDeleteIds`). The dialog matches the deleted items (by Drive ID **and** stable cutout filename) against `outfitsState.outfits` and `tryOnViewModel.state.history`, and offers two checkboxes (default on) to also delete the affected outfits (`OutfitsViewModel.deleteOutfitsByIds`) and try-ons (`TryOnViewModel.deleteTryOns`, a single-write batch delete). Match on filename is the reliable path since `TryOn.itemIds` is `@Transient` and not resolved on history load. `FullScreenViewer` no longer self-confirms deletes — it delegates to the grid dialog so counts can be shown.
+
 ### Unified outfit composer
 
 `OutfitComposerScreen` (full-screen Dialog hosted at `MainActivity`) is the single surface for viewing, editing, and creating outfits. Renders unconditionally; returns early unless `state.isComposerOpen`. Dual-mode via `composerMode: ComposerMode { VIEW, EDIT }`.
@@ -279,7 +283,7 @@ A `Trip` is a first-class aggregate of N day-outfits + extras + per-day forecast
 
 ### Persistence
 - Trip JSON lives in `LibreLookAI/_trips/{tripId}.json` (one file per trip — easier per-trip CRUD than a monolithic index). `_trips/` is in `DriveRepository.NON_CLOSET_SUBFOLDER_NAMES` so it never appears as a Location.
-- `TripsViewModel.loadTrips()` is called at app start (next to `shoppingClosetViewModel.loadItems()`); resolves the folder, lists JSON files, parses each in parallel.
+- `TripsViewModel.loadTrips()` is called at app start (next to `shoppingClosetViewModel.loadItems()`). **Two-phase load** mirroring the wardrobe: Phase 1 paints instantly from `filesDir/trips_cache.json` (the full `List<Trip>`, no network); Phase 2 resolves the folder, lists JSON files, parses each in parallel, then rewrites the cache. Phase 2 is skipped when offline so the cache stays on screen. `upsertTrip`/`mutateTrip`/`deleteTrip` rewrite the cache after each state change so it never goes stale.
 - `upsertTrip`/`createAndOpenTrip` write `{tripId}.json` and replace state in place; `deleteTrip` removes the file (the Drive file ID is cached in `driveIdsByTripId`).
 - Trip outfits keep their normal closet storage. `Outfit.tripId: String?` is a serialized back-reference. The active closet at trip-creation time is the destination for the new outfits.
 

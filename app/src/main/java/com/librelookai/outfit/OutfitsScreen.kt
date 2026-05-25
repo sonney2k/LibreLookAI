@@ -46,6 +46,7 @@ import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.AutoFixHigh
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
@@ -201,6 +202,21 @@ fun OutfitsScreen(
         outfitEventsState.events.groupingBy { it.outfitId }.eachCount()
     }
 
+    // Outfits referencing wardrobe items that no longer exist in ANY closet. Detection runs
+    // against the cross-closet snapshot (allLocationImages, includes every closet + shopping)
+    // so a single-closet view doesn't flag items that merely live in another closet. These
+    // outfits are otherwise hidden by the list's "all items loaded" gate, so the banner is the
+    // only way to discover and clean them up. Only trust the result once the wardrobe has synced.
+    val brokenOutfits = remember(outfitsState.outfits, wardrobeState.allLocationImages, wardrobeState.images, wardrobeState.isSyncing) {
+        if (wardrobeState.isSyncing) return@remember emptyList<Outfit>()
+        val knownNames = (wardrobeState.allLocationImages.asSequence() + wardrobeState.images.asSequence())
+            .map { it.name }.toHashSet()
+        if (knownNames.isEmpty()) emptyList()
+        else outfitsState.outfits.filter { o ->
+            o.itemNames.isNotEmpty() && o.itemNames.any { it !in knownNames }
+        }
+    }
+
     Box(modifier = modifier.fillMaxSize()) {
         OutfitListScreen(
                     styles = outfitsState.outfits,
@@ -249,6 +265,10 @@ fun OutfitsScreen(
                     onTryOnStyle = onTryOnStyle,
                     canTryOn = canTryOn,
                     onSettingsClick = onSettingsClick,
+                    brokenOutfitCount = brokenOutfits.size,
+                    onDeleteBrokenOutfits = {
+                        outfitsViewModel.deleteOutfitsByIds(brokenOutfits.map { it.id })
+                    },
                     wardrobeViewModel = wardrobeViewModel,
                 )
 
@@ -378,6 +398,8 @@ private fun OutfitListScreen(
     onTryOnStyle: (Outfit) -> Unit = {},
     canTryOn: Boolean = false,
     onSettingsClick: () -> Unit = {},
+    brokenOutfitCount: Int = 0,
+    onDeleteBrokenOutfits: () -> Unit = {},
     modifier: Modifier = Modifier,
     wardrobeViewModel: WardrobeViewModel,
 ) {
@@ -459,6 +481,28 @@ private fun OutfitListScreen(
 
     var fullscreenStyleId by rememberSaveable { mutableStateOf<String?>(null) }
     var showDeleteDialog by remember { mutableStateOf(false) }
+    // Dismissible "broken outfits" banner state + its confirm dialog.
+    var brokenBannerDismissed by rememberSaveable { mutableStateOf(false) }
+    var showBrokenDeleteDialog by remember { mutableStateOf(false) }
+
+    if (showBrokenDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showBrokenDeleteDialog = false },
+            title = { Text(stringResource(R.string.outfits_broken_delete_title)) },
+            text = { Text(stringResource(R.string.outfits_broken_delete_text, brokenOutfitCount)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    Analytics.action("Outfits", "confirm_delete_broken", mapOf("count" to brokenOutfitCount.toString()))
+                    onDeleteBrokenOutfits(); showBrokenDeleteDialog = false
+                }) {
+                    Text(stringResource(R.string.action_delete), color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showBrokenDeleteDialog = false }) { Text(stringResource(R.string.action_cancel)) }
+            },
+        )
+    }
 
     if (showDeleteDialog) {
         AlertDialog(
@@ -577,6 +621,46 @@ private fun OutfitListScreen(
                             onSortChanged = { sortBy = it },
                             modifier = Modifier.padding(end = 4.dp),
                         )
+                    }
+                }
+            }
+
+            // ---- Broken-outfits banner: outfits referencing items no longer in any closet ----
+            if (brokenOutfitCount > 0 && !brokenBannerDismissed && !isSelectionMode) {
+                Surface(
+                    color = MaterialTheme.colorScheme.errorContainer,
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 6.dp),
+                    shape = MaterialTheme.shapes.medium,
+                ) {
+                    Row(
+                        modifier = Modifier.padding(start = 12.dp, end = 4.dp, top = 4.dp, bottom = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Icon(
+                            Icons.Default.Warning,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onErrorContainer,
+                            modifier = Modifier.size(20.dp),
+                        )
+                        Text(
+                            stringResource(R.string.outfits_broken_banner, brokenOutfitCount),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onErrorContainer,
+                            modifier = Modifier.weight(1f).padding(horizontal = 8.dp),
+                        )
+                        TextButton(onClick = {
+                            Analytics.action("Outfits", "open_delete_broken_dialog", mapOf("count" to brokenOutfitCount.toString()))
+                            showBrokenDeleteDialog = true
+                        }) {
+                            Text(stringResource(R.string.outfits_broken_review), color = MaterialTheme.colorScheme.onErrorContainer)
+                        }
+                        IconButton(onClick = { brokenBannerDismissed = true }) {
+                            Icon(
+                                Icons.Default.Close,
+                                contentDescription = stringResource(R.string.action_cancel),
+                                tint = MaterialTheme.colorScheme.onErrorContainer,
+                            )
+                        }
                     }
                 }
             }

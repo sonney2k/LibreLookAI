@@ -922,5 +922,10 @@
     <string name="trip_refine_preview_note">תצוגה מקדימה — לא נשמר</string>
     <string name="trip_refine_discard">השלך</string>
     <string name="trip_refine_replace">החלף את תלבושות הטיול</string>
+    <string name="wardrobe_delete_cascade_outfits">מחק גם %d לוקים שמשתמשים בפריטים האלה</string>
+    <string name="wardrobe_delete_cascade_tryons">מחק גם %d מדידות עם הפריטים האלה</string>
+    <string name="outfits_broken_banner">%d לוקים משתמשים בפריטים שכבר לא נמצאים בארון שלך.</string>
+    <string name="outfits_broken_review">סקירה</string>
+    <string name="outfits_broken_delete_title">למחוק לוקים לא שלמים?</string>
+    <string name="outfits_broken_delete_text">למחוק %d לוקים שמפנים לפריטים שכבר לא נמצאים בארון שלך? לא ניתן לבטל פעולה זו.</string>
 </resources>
-

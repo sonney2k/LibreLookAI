@@ -918,4 +918,10 @@
     <string name="trip_refine_preview_note">Esikatselu – ei tallennettu</string>
     <string name="trip_refine_discard">Hylkää</string>
     <string name="trip_refine_replace">Korvaa matkan asut</string>
+    <string name="wardrobe_delete_cascade_outfits">Poista myös %d asu(a), jotka käyttävät näitä vaatteita</string>
+    <string name="wardrobe_delete_cascade_tryons">Poista myös %d sovitus(ta), joissa on näitä vaatteita</string>
+    <string name="outfits_broken_banner">%d asua käyttää vaatteita, joita ei ole enää vaatekaapissasi.</string>
+    <string name="outfits_broken_review">Tarkista</string>
+    <string name="outfits_broken_delete_title">Poistetaanko puutteelliset asut?</string>
+    <string name="outfits_broken_delete_text">Poistetaanko %d asua, jotka viittaavat vaatteisiin, joita ei ole enää vaatekaapissasi? Tätä ei voi kumota.</string>
 </resources>

@@ -918,4 +918,10 @@
     <string name="trip_refine_preview_note">Anteprima – non salvata</string>
     <string name="trip_refine_discard">Scarta</string>
     <string name="trip_refine_replace">Sostituisci i look del viaggio</string>
+    <string name="wardrobe_delete_cascade_outfits">Elimina anche %d outfit che usano questi capi</string>
+    <string name="wardrobe_delete_cascade_tryons">Elimina anche %d prova/e con questi capi</string>
+    <string name="outfits_broken_banner">%d outfit usano capi che non sono più nel tuo guardaroba.</string>
+    <string name="outfits_broken_review">Rivedi</string>
+    <string name="outfits_broken_delete_title">Eliminare gli outfit non validi?</string>
+    <string name="outfits_broken_delete_text">Eliminare %d outfit che fanno riferimento a capi non più presenti nel guardaroba? L\'operazione non è reversibile.</string>
 </resources>

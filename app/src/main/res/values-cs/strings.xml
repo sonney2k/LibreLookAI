@@ -918,4 +918,10 @@
     <string name="trip_refine_preview_note">Náhled – neuloženo</string>
     <string name="trip_refine_discard">Zahodit</string>
     <string name="trip_refine_replace">Nahradit outfity výletu</string>
+    <string name="wardrobe_delete_cascade_outfits">Smazat také %d outfit(ů), které používají tyto kousky</string>
+    <string name="wardrobe_delete_cascade_tryons">Smazat také %d zkoušku/zkoušek s těmito kousky</string>
+    <string name="outfits_broken_banner">%d outfitů používá kousky, které už nejsou ve tvém šatníku.</string>
+    <string name="outfits_broken_review">Zkontrolovat</string>
+    <string name="outfits_broken_delete_title">Smazat neúplné outfity?</string>
+    <string name="outfits_broken_delete_text">Smazat %d outfitů, které odkazují na kousky, které už nejsou ve tvém šatníku? Tuto akci nelze vrátit.</string>
 </resources>

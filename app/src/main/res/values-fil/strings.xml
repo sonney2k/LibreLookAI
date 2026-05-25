@@ -918,4 +918,10 @@
     <string name="trip_refine_preview_note">Preview — hindi naka-save</string>
     <string name="trip_refine_discard">Itapon</string>
     <string name="trip_refine_replace">Palitan ang mga outfit ng biyahe</string>
+    <string name="wardrobe_delete_cascade_outfits">Tanggalin din ang %d (na) outfit na gumagamit ng mga item na ito</string>
+    <string name="wardrobe_delete_cascade_tryons">Tanggalin din ang %d (na) try-on na may mga item na ito</string>
+    <string name="outfits_broken_banner">May %d outfit na gumagamit ng mga item na wala na sa iyong wardrobe.</string>
+    <string name="outfits_broken_review">Suriin</string>
+    <string name="outfits_broken_delete_title">Tanggalin ang mga kulang na outfit?</string>
+    <string name="outfits_broken_delete_text">Tanggalin ang %d outfit na tumutukoy sa mga item na wala na sa iyong wardrobe? Hindi ito mababawi.</string>
 </resources>

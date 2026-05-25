@@ -898,4 +898,10 @@
     <string name="trip_refine_preview_note">預覽 — 尚未儲存</string>
     <string name="trip_refine_discard">捨棄</string>
     <string name="trip_refine_replace">替換行程穿搭</string>
+    <string name="wardrobe_delete_cascade_outfits">同時刪除使用這些單品的 %d 套穿搭</string>
+    <string name="wardrobe_delete_cascade_tryons">同時刪除含這些單品的 %d 次試穿</string>
+    <string name="outfits_broken_banner">%d 套穿搭使用了已不在你衣櫥中的單品。</string>
+    <string name="outfits_broken_review">檢視</string>
+    <string name="outfits_broken_delete_title">刪除不完整的穿搭？</string>
+    <string name="outfits_broken_delete_text">要刪除參照已不在衣櫥中單品的 %d 套穿搭嗎？此動作無法復原。</string>
 </resources>

@@ -918,4 +918,10 @@
     <string name="trip_refine_preview_note">معاينة — غير محفوظة</string>
     <string name="trip_refine_discard">تجاهل</string>
     <string name="trip_refine_replace">استبدال إطلالات الرحلة</string>
+    <string name="wardrobe_delete_cascade_outfits">احذف أيضًا %d إطلالة تستخدم هذه العناصر</string>
+    <string name="wardrobe_delete_cascade_tryons">احذف أيضًا %d تجربة تحتوي على هذه العناصر</string>
+    <string name="outfits_broken_banner">%d إطلالة تستخدم عناصر لم تعد موجودة في خزانتك.</string>
+    <string name="outfits_broken_review">مراجعة</string>
+    <string name="outfits_broken_delete_title">حذف الإطلالات غير المكتملة؟</string>
+    <string name="outfits_broken_delete_text">هل تريد حذف %d إطلالة تشير إلى عناصر لم تعد موجودة في خزانتك؟ لا يمكن التراجع عن ذلك.</string>
 </resources>

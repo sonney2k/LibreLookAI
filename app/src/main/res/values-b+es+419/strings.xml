@@ -918,4 +918,10 @@
     <string name="trip_refine_preview_note">Vista previa: sin guardar</string>
     <string name="trip_refine_discard">Descartar</string>
     <string name="trip_refine_replace">Reemplazar conjuntos del viaje</string>
+    <string name="wardrobe_delete_cascade_outfits">Eliminar también %d conjunto(s) que usan estas prendas</string>
+    <string name="wardrobe_delete_cascade_tryons">Eliminar también %d prueba(s) con estas prendas</string>
+    <string name="outfits_broken_banner">%d conjuntos usan prendas que ya no están en tu clóset.</string>
+    <string name="outfits_broken_review">Revisar</string>
+    <string name="outfits_broken_delete_title">¿Eliminar conjuntos incompletos?</string>
+    <string name="outfits_broken_delete_text">¿Eliminar %d conjuntos que hacen referencia a prendas que ya no están en tu clóset? No se puede deshacer.</string>
 </resources>

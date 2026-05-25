@@ -918,4 +918,10 @@
     <string name="trip_refine_preview_note">Podgląd — niezapisane</string>
     <string name="trip_refine_discard">Odrzuć</string>
     <string name="trip_refine_replace">Zamień stylizacje podróży</string>
+    <string name="wardrobe_delete_cascade_outfits">Usuń też %d stylizacji korzystających z tych ubrań</string>
+    <string name="wardrobe_delete_cascade_tryons">Usuń też %d przymiarek z tymi ubraniami</string>
+    <string name="outfits_broken_banner">%d stylizacji korzysta z ubrań, których nie ma już w Twojej szafie.</string>
+    <string name="outfits_broken_review">Przejrzyj</string>
+    <string name="outfits_broken_delete_title">Usunąć niekompletne stylizacje?</string>
+    <string name="outfits_broken_delete_text">Usunąć %d stylizacji odwołujących się do ubrań, których nie ma już w Twojej szafie? Tej operacji nie można cofnąć.</string>
 </resources>

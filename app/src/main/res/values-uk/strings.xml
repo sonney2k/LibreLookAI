@@ -898,4 +898,10 @@
     <string name="trip_refine_preview_note">Попередній перегляд — не збережено</string>
     <string name="trip_refine_discard">Відхилити</string>
     <string name="trip_refine_replace">Замінити образи подорожі</string>
+    <string name="wardrobe_delete_cascade_outfits">Також видалити %d образ(ів), що використовують ці речі</string>
+    <string name="wardrobe_delete_cascade_tryons">Також видалити %d примірку(и) з цими речами</string>
+    <string name="outfits_broken_banner">%d образів використовують речі, яких більше немає у вашому гардеробі.</string>
+    <string name="outfits_broken_review">Переглянути</string>
+    <string name="outfits_broken_delete_title">Видалити неповні образи?</string>
+    <string name="outfits_broken_delete_text">Видалити %d образів, що посилаються на речі, яких більше немає у вашому гардеробі? Цю дію не можна скасувати.</string>
 </resources>
