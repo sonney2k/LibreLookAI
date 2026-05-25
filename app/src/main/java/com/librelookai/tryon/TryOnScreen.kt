@@ -50,7 +50,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -198,27 +197,27 @@ fun TryOnComposerScreen(
         // the Scaffold *content* is inset to the safe area via padding(barInsets); the Scaffold
         // container itself is transparent so the full-bleed background behind it shows edge-to-edge.
         //
-        // Both Scaffold (contentWindowInsets) and TopAppBar (windowInsets) default to consuming
-        // WindowInsets.systemBars themselves — applied again inside the dialog window that
-        // double-adds insets and clips the bottom action row. Disable both.
+        // Scaffold's contentWindowInsets defaults to consuming WindowInsets.systemBars itself —
+        // applied again inside the dialog window that double-adds insets and clips the bottom
+        // action row. Disable it (set WindowInsets(0)).
         Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         Scaffold(
             modifier = Modifier.fillMaxSize().padding(barInsets),
             containerColor = Color.Transparent,
             contentWindowInsets = WindowInsets(0),
             topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            when {
-                                viewing != null         -> stringResource(R.string.tryon_history_detail_title)
-                                state.isHistoryOpen     -> stringResource(R.string.tryon_history_title)
-                                else                    -> stringResource(R.string.tryon_title)
-                            },
-                            fontWeight = FontWeight.SemiBold,
-                        )
-                    },
-                    navigationIcon = {
+                // Compact header matching AppScreenHeader's metrics (8.dp top/bottom + divider)
+                // rather than the taller M3 TopAppBar, so the try-on screens get the same slim
+                // top padding as the Outfits / Wardrobe screens.
+                val isCaveat = com.librelookai.ui.theme.LocalAppFont.current ==
+                    com.librelookai.settings.AppFont.CAVEAT
+                Column {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 4.dp, end = 8.dp, top = 8.dp, bottom = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
                         IconButton(onClick = {
                             Analytics.action("TryOn", "close")
                             when {
@@ -229,9 +228,24 @@ fun TryOnComposerScreen(
                                 else                -> tryOnViewModel.close()
                             }
                         }) { Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_dismiss)) }
-                    },
-                    windowInsets = WindowInsets(0),
-                )
+                        Spacer(Modifier.width(4.dp))
+                        Text(
+                            when {
+                                viewing != null         -> stringResource(R.string.tryon_history_detail_title)
+                                state.isHistoryOpen     -> stringResource(R.string.tryon_history_title)
+                                else                    -> stringResource(R.string.tryon_title)
+                            },
+                            style = if (isCaveat) MaterialTheme.typography.headlineLarge
+                                    else MaterialTheme.typography.titleMedium,
+                            fontWeight = if (isCaveat) FontWeight.Bold else FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            maxLines = 1,
+                            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f),
+                        )
+                    }
+                    HorizontalDivider()
+                }
             },
         ) { innerPadding ->
             Box(Modifier.fillMaxSize().padding(innerPadding)) {
