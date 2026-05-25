@@ -225,12 +225,15 @@ fun TripViewerScreen(
 
                     itemsIndexed(trip.outfitIds, key = { _, id -> id }) { dayIdx, outfitId ->
                         val outfit = outfitsById[outfitId]
+                        val preview = refinePreview[outfitId]
                         TripDayCard(
                             dayIndex = dayIdx,
                             outfit = outfit,
                             forecast = trip.forecast.getOrNull(dayIdx),
                             imagesById = imagesById,
-                            overrideItemIds = refinePreview[outfitId],
+                            overrideItemIds = preview?.itemIds,
+                            overrideName = preview?.name,
+                            overrideDescription = preview?.description,
                             showEditIcon = editing && !previewing,
                             // While previewing, cards show proposed items; opening the full
                             // viewer (which reads saved items) is disabled to avoid confusion.
@@ -642,10 +645,14 @@ private fun TripDayCard(
     onEdit: (() -> Unit)? = null,
     onWear: (() -> Unit)? = null,
     overrideItemIds: List<String>? = null,
+    overrideName: String? = null,
+    overrideDescription: String? = null,
 ) {
     val ctx = LocalContext.current
     val effectiveItemIds = overrideItemIds ?: outfit?.itemIds ?: emptyList()
     val items = effectiveItemIds.mapNotNull { imagesById[it] }
+    val effectiveName = overrideName?.takeIf { it.isNotBlank() } ?: outfit?.name
+    val effectiveDescription = overrideDescription?.takeIf { it.isNotBlank() } ?: outfit?.description
     OutlinedCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -674,7 +681,19 @@ private fun TripDayCard(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
-                Spacer(Modifier.weight(1f))
+                // Outfit title sits next to the Day label, taking the remaining space.
+                if (effectiveName?.isNotBlank() == true) {
+                    Spacer(Modifier.width(8.dp))
+                    Text(
+                        effectiveName,
+                        style = MaterialTheme.typography.titleSmall,
+                        maxLines = 1,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f),
+                    )
+                } else {
+                    Spacer(Modifier.weight(1f))
+                }
                 if (outfit != null && showEditIcon && onEdit != null) {
                     IconButton(onClick = onEdit, modifier = Modifier.size(28.dp)) {
                         Icon(
@@ -710,9 +729,6 @@ private fun TripDayCard(
                     }
                 }
             }
-            if (outfit?.name?.isNotBlank() == true) {
-                Text(outfit.name, style = MaterialTheme.typography.titleSmall)
-            }
             if (items.isNotEmpty()) {
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     items(items, key = { it.driveId }) { image ->
@@ -738,9 +754,9 @@ private fun TripDayCard(
                     color = MaterialTheme.colorScheme.outline,
                 )
             }
-            if (outfit?.description?.isNotBlank() == true) {
+            if (effectiveDescription?.isNotBlank() == true) {
                 Text(
-                    outfit.description,
+                    effectiveDescription,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

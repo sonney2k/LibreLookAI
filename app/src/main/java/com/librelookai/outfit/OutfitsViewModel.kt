@@ -424,6 +424,51 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
      * Bulk-updates the `itemIds` of multiple outfits in one Drive write. [updates] maps outfit id
      * to the new item id list. Used by the trip bulk-refine flow ("brighter", "pack lighter").
      */
+    /**
+     * Like [updateOutfitItems] but also overwrites each outfit's name and description — used by
+     * the trip bulk-refine, which regenerates the whole look (items + naming) per day.
+     */
+    fun updateOutfitsRefined(
+        updates: Map<String, com.librelookai.data.model.OutfitRefinement>,
+        onDone: (Boolean) -> Unit = {},
+    ) {
+        if (updates.isEmpty()) { onDone(true); return }
+        val all = _state.value.outfits
+        val touched = all.filter { it.id in updates }
+        if (touched.isEmpty()) { onDone(true); return }
+        viewModelScope.launch {
+            val affectedFolderIds = touched.map { it.folderId }.filter { it.isNotEmpty() }.toSet()
+                .ifEmpty { listOfNotNull(folderId).toSet() }
+            if (affectedFolderIds.isEmpty()) { onDone(false); return@launch }
+            val updated = all.toMutableList()
+            for (fid in affectedFolderIds) {
+                val idToName = drive.listFiles(fid).associate { it.id to it.name }
+                for ((idx, o) in updated.withIndex()) {
+                    val ref = updates[o.id] ?: continue
+                    if (o.folderId.isNotEmpty() && o.folderId != fid) continue
+                    updated[idx] = o.copy(
+                        itemIds = ref.itemIds,
+                        itemNames = ref.itemIds.mapNotNull { idToName[it] },
+                        name = ref.name.ifBlank { o.name },
+                        description = ref.description.ifBlank { o.description },
+                    )
+                }
+            }
+            runCatching {
+                for (fid in affectedFolderIds) {
+                    val folderStyles = updated.filter { it.folderId == fid || it.folderId.isEmpty() }
+                    drive.saveOutfitsJson(fid, gson.toJson(folderStyles))
+                }
+            }.onSuccess {
+                _state.update { it.copy(outfits = updated) }
+                onDone(true)
+            }.onFailure { e ->
+                _state.update { it.copy(error = e.message) }
+                onDone(false)
+            }
+        }
+    }
+
     fun updateOutfitItems(updates: Map<String, List<String>>, onDone: (Boolean) -> Unit = {}) {
         if (updates.isEmpty()) { onDone(true); return }
         val all = _state.value.outfits

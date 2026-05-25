@@ -875,7 +875,7 @@
     <string name="trip_saved_label">सहेजा गया</string>
     <string name="trip_saved_confirmation">यात्रा और आउटफ़िट सहेजे गए</string>
     <string name="trip_not_found">Trip not found.</string>
-    <string name="trip_day_header">Day %1$d</string>
+    <string name="trip_day_header">दिन %1$d</string>
     <string name="trip_no_destination">Untitled trip</string>
     <string name="trip_meta_dates">Start %1$s • %2$d days</string>
     <string name="trip_rename">Rename</string>

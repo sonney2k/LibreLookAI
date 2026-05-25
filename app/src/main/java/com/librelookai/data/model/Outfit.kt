@@ -24,3 +24,13 @@ data class Outfit(
     /** Runtime Drive folder ID this style was loaded from. Not persisted to JSON. */
     @Transient val folderId: String = "",
 )
+
+/**
+ * Transient bulk-refine proposal for a single outfit (not persisted): the new item set plus a
+ * freshly generated name/description. Used as the trip refine preview before the user applies it.
+ */
+data class OutfitRefinement(
+    val itemIds: List<String> = emptyList(),
+    val name: String = "",
+    val description: String = "",
+)

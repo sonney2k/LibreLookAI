@@ -895,7 +895,7 @@
     <string name="trip_saved_label">저장됨</string>
     <string name="trip_saved_confirmation">여행과 옷차림이 저장되었습니다</string>
     <string name="trip_not_found">Trip not found.</string>
-    <string name="trip_day_header">Day %1$d</string>
+    <string name="trip_day_header">%1$d일 차</string>
     <string name="trip_no_destination">Untitled trip</string>
     <string name="trip_meta_dates">Start %1$s • %2$d days</string>
     <string name="trip_rename">Rename</string>

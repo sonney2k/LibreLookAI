@@ -42,10 +42,11 @@ data class TripsUiState(
     val justSavedTripId: String? = null,
     /**
      * Pending (un-persisted) bulk-refine result for [refinePreviewTripId]: outfitId → proposed
-     * itemIds. The viewer renders this as a preview until the user replaces or discards it.
+     * items + new name/description. The viewer renders this as a preview until the user replaces
+     * or discards it.
      */
     val refinePreviewTripId: String? = null,
-    val refinePreview: Map<String, List<String>> = emptyMap(),
+    val refinePreview: Map<String, com.librelookai.data.model.OutfitRefinement> = emptyMap(),
 )
 
 /**
@@ -262,7 +263,12 @@ class TripsViewModel(app: Application) : AndroidViewModel(app) {
                 onDone(false); return@launch
             }
             val json = raw.trim().removePrefix("```json").removePrefix("```").removeSuffix("```").trim()
-            data class OutfitUpdate(val id: String = "", val itemIds: List<String> = emptyList())
+            data class OutfitUpdate(
+                val id: String = "",
+                val itemIds: List<String> = emptyList(),
+                val name: String = "",
+                val description: String = "",
+            )
             data class BulkResp(val outfits: List<OutfitUpdate> = emptyList())
             val parsed = runCatching { gson.fromJson(json, BulkResp::class.java) }.getOrNull()
             if (parsed == null || parsed.outfits.isEmpty()) {
@@ -273,10 +279,18 @@ class TripsViewModel(app: Application) : AndroidViewModel(app) {
             }
             val knownItemIds = images.map { it.driveId }.toSet()
             val tripOutfitIds = trip.outfitIds.toSet()
+            val existingById = tripOutfits.associateBy { it.id }
             val updates = parsed.outfits.mapNotNull { up ->
                 if (up.id !in tripOutfitIds) return@mapNotNull null
                 val cleaned = up.itemIds.filter { it in knownItemIds }
-                if (cleaned.isEmpty()) null else up.id to cleaned
+                if (cleaned.isEmpty()) return@mapNotNull null
+                val prev = existingById[up.id]
+                up.id to com.librelookai.data.model.OutfitRefinement(
+                    itemIds = cleaned,
+                    // Fall back to the existing name/description if Gemini omitted them.
+                    name = up.name.trim().ifBlank { prev?.name ?: "" },
+                    description = up.description.trim().ifBlank { prev?.description ?: "" },
+                )
             }.toMap()
             _bulkRefining.update { it - tripId }
             if (updates.isEmpty()) {
@@ -289,11 +303,11 @@ class TripsViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    /** Persists the pending [refinePreview] (overwriting each outfit's items) and clears it. */
+    /** Persists the pending [refinePreview] (items + name/description) and clears it. */
     fun applyRefinePreview(outfitsViewModel: OutfitsViewModel, onDone: (Boolean) -> Unit = {}) {
         val updates = _state.value.refinePreview
         if (updates.isEmpty()) { onDone(false); return }
-        outfitsViewModel.updateOutfitItems(updates) { ok ->
+        outfitsViewModel.updateOutfitsRefined(updates) { ok ->
             if (ok) _state.update { it.copy(refinePreviewTripId = null, refinePreview = emptyMap()) }
             onDone(ok)
         }
@@ -357,7 +371,9 @@ private fun buildBulkRefinePrompt(
     }
     appendLine(wardrobeJson)
     appendLine()
-    appendLine("Return ONLY a JSON object — no markdown, no extra text — keeping the same outfit ids:")
-    append("""{"outfits":[{"id":"<existingOutfitId>","itemIds":["<wardrobeItemId>"]}]}""")
+    appendLine("For each outfit also write a fresh, short name (2–4 words) and a one-sentence")
+    appendLine("description reflecting the re-styled look. Return ONLY a JSON object — no markdown,")
+    appendLine("no extra text — keeping the same outfit ids:")
+    append("""{"outfits":[{"id":"<existingOutfitId>","itemIds":["<wardrobeItemId>"],"name":"<short name>","description":"<one sentence>"}]}""")
 }
 
