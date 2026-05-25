@@ -1,6 +1,13 @@
 INVESTIGATION
 =============
 
+  1. cd firebase/functions && npm install && npm run build
+  2. Set up service account in Play Console (View financial data + Manage orders)
+  3. firebase deploy --only functions,firestore:rules
+  4. node lib/seed.js (with GOOGLE_APPLICATION_CREDENTIALS set) — seeds config/pricing; the trigger fires and writes config/publicPricing
+
+
+
 similarity search needs improvement
 
 size filter? default sizes in wardrobe? size tag?
@@ -9,9 +16,19 @@ Implement new feature: We are working on the refinancing/monetization aspect of 
 
 Go through all screens again and check that they are really localized. I just found that the Insights screen is not localized
 
-Localize into es, de, it, fr, pt, en, pl, ja, ko, tr, id, th, vi, nl, hi, ar, uk, ro, cs, sv, ms, tl, el, hu, zh, he, ur, da, fi, no
+Localize into es-419, es-ES, de-DE, it-IT, fr-FR, pt-BR, en-US, en-GB, pl-PL, ja-JP, ko-KR, tr-TR, id-ID, th-TH, vi-VN, nl-NL, hi-IN, ar-SA, uk-UA, ro-RO, cs-CZ, sv-SE, ms-MY, tl-PH, el-GR, hu-HU, zh-TW, he-IL, ur-PK, da-DK, fi-FI, no-NO
 
-es-419, es-ES, de-DE, it-IT, fr-FR, pt-BR, en-US, en-GB, pl-PL, ja-JP, ko-KR, tr-TR, id-ID, th-TH, vi-VN, nl-NL, hi-IN, ar-SA, uk-UA, ro-RO, cs-CZ, sv-SE, ms-MY, tl-PH, el-GR, hu-HU, zh-TW, he-IL, ur-PK, da-DK, fi-FI, no-NO
+  Bug 1 — still there bottom buttons off-screen: The Try-On Dialog had a Scaffold wrapped with .padding(barInsets), but both the Scaffold (default contentWindowInsets =           
+  WindowInsets.systemBars) and the TopAppBar (default windowInsets adding statusBars top padding) were re-applying the system bar insets on top of that wrap — bottom
+  inset was added twice and the action row got clipped. Added decorFitsSystemWindows = false to DialogProperties for defense, and set both Scaffold.contentWindowInsets
+   and TopAppBar.windowInsets to WindowInsets(0) so the outer .padding(barInsets) is the single source of truth. Noted the gotcha in CLAUDE_ARCHIVE.md.                
+
+1. Cache the trip so it is immediately visible similar how you do it with wardrobe
+2. Option to delete outfits where wardrobe items are no longer available
+3. When deleting wardrobe items check if it would affect outfits and try-ons and ask if those should be removed as well (default)
+
+Ensure that no font is smaller than the font in the filter pillow
+Ensure that Einteiler are covering 2 slots: Oberteil + Unterteil
 
 Add unit tests to get to 50% test converage
 
@@ -21,39 +38,59 @@ consistency: the cross to cancel taking a picture in wardrobe is in the lower ri
 
 security/function relevant parts of a prompts should not be appear in settings. e.g. "Place the clothing item on a pure, solid neon green background (Hex #00FF00).
 
-should travel planner be a tab under outfits?
-
-travel screen create tabs: create travel outfits and another one with travels that shows the travel outfits. tag outfits with travel.
-
 TODO
 ====
-create human readable release notes between now and v1.7.1 and release version 1.7.2, git tag commit and upload to testers in firebase
+create human readable release notes between now and v1.7.2 and release version 1.8.0, git tag commit and upload to testers in firebase
 
-Fix those bugs:
-try-ons: the buttons at the bottom are outside of the screen
-try-ons: when pressing + on try-on FAB and then a) adding wardrobe items should use the wardrobe selector that the outfit editor is using b) allow selecting an outfit to try on not just single wardrobe items
-try-ons: when try-on is based on an outfit, store a link back to the outfit (if it exists)and on try-on detail view enable seeing the outfit
+Travel planner:
+- created outfit suggestions in travel planner should be viewable like the suggested outfits in create outfit with sliding left/right through them and modification for each with the create outfit dialog
+
 
 Storage:
 - I noticed .jpgs from camera are just 124kB but .pngs are 450kB. Since this is on users drive folders we have to be cautious about size. Let's target 1GB - to allow for 2000-4000 wardrobe items.
+
+move the wear today on travel screen to top right (same level like Day)
+
+when selecting outfit for try-on show a filter bar with sortinglike on outfit screen
+
+1. on edit trip outfit screen - clicking the pen on an outfit of a day immediately opens the edit view
+2. when viewing a trip add a wear today with calendar iconlike in outfits
+
+
+1. You did this: Now reduce the quick try-on sheet fonts by 50% (halving the doubled values: 36→18, 24→12, 26→13, 22→11, 28→14). I wanted 50% larger so 18->27 etc
+2. On try-on screen remove the use this outfit button
+3. The try-on screen button at the bottom does not fit the screen.
+
+1. planned trip not localized
+2. editing trip all the options when creating trip are missing at the bottom add those
 
 
 Feedback:
 add way to send feedback via firebase under settings -> feedback
 add a feedback tab under settings move debug setting under this tab
 
-
-Bug fixes:
-1. hide tags is overlapping with the title. perhaps put it into a row directly under the last tags
-2. when creating outfit and outfits are suggested by AI and I press the apply button of an outfit then the next screen should show this outfit but no longer any forward / backward button and outfit alternatives. idea behind this that one selects out of all the outfits the one to keep
-3. when creating outfit and adding items from wardrobe the panel with the filter should be in the same color for sorting and image search
-4. when a new outfit is created and one goes back to the outfit list immediately jump to that newly created outfit
+1. the colors when editing tags are not the same that we have in wardrobe filter use only the one from wardrobe filter
 
 
 
 
 IN PROGRESS
 ===========
+try-out screen:
+- add a + FAB to add a new try-out and make it possible to select individual items or entire outfit (like we have already)
+
+offline mode:
+- remove + FAB from outfits
+
+cost:
+- would it be more intuitive to show cost instead of as exact $ value as $ $$ $$$ or some other categories we need then a legend somewhere
+- why does cutout background removal cost any tokens? isn't this entirely local?
+- when taking a picture with bg removal etc following the token costs are not shown
+
+
+Fix those bugs:
+try-ons: the buttons at the bottom are outside of the screen
+try-ons: when pressing + on try-on FAB and then a) adding wardrobe items should use the wardrobe selector that the outfit editor is using b) allow selecting an outfit to try on not just single wardrobe items
 
 Repair & Sync:
 - [bug] On repair & sync Preview screen buttons are outside of bottom of screen. Fix like you did in in several other cases for e.g. duplicate search.
@@ -61,6 +98,28 @@ Repair & Sync:
 
 DONE
 =====
+2. Why is it that when creating an outfit with AI that the  number of required tokens scales with the  number of suggestions N? Can you not just ask Gemini to return N outfits so it should token wise be almost independent of N?                                                                                                         
+3. on Travel screen, create an outfit view that shows travel outfits. put the travel planner (current screen) under a + FAB. Travel outfits are outfits that have been specifically created on travel screen, they can also appear on the general outfits screen
+
+editing tags and the title of a wardrobe item is not working: one can change the tag and title. then it seems it is saved but when restarting the app things are     back to the previous state. fix this    
+
+Implement this:
+1. the colors when editing tags are not the same that we have in wardrobe filter use only the one from wardrobe filter
+2. travel planner location needs auto complete and perhaps a picker based on a map
+
+try-ons: when try-on is based on an outfit, store a link back to the outfit (if it exists)and on try-on detail view enable seeing the outfit
+
+travel planner needs more customization options - an AI prompt to adjust what the user is looking for, selected AI factors from create outfit -> create with AI and also the number of outfits to create (e.g. one per day)
+
+update the design of the edit tags screen following @design_handoff_edit_tags_c/README.md
+add the settings -> AI -> standard criteria options: location, trends, gender, age, style preferences to the outfit create with AI dialog so users can modify this
+
+Bug fixes:
+1. hide tags is overlapping with the title. perhaps put it into a row directly under the last tags
+2. when creating outfit and outfits are suggested by AI and I press the apply button of an outfit then the next screen should show this outfit but no longer any forward / backward button and outfit alternatives. idea behind this that one selects out of all the outfits the one to keep
+3. when creating outfit and adding items from wardrobe the panel with the filter should be in the same color for sorting and image search
+4. when a new outfit is created and one goes back to the outfit list immediately jump to that newly created outfit
+
 Fix:
 Create Outfit:
 1. When clicking edit outfit from outfit screen or inside outview view FAB immediately go into edit mode.
