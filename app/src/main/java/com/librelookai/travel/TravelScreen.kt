@@ -41,6 +41,7 @@ import androidx.compose.material.icons.filled.MoveToInbox
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material.icons.outlined.Checkroom
@@ -49,6 +50,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -66,6 +68,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -80,6 +83,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
@@ -108,6 +112,10 @@ import com.librelookai.util.AiProcessingOverlay
 import com.librelookai.util.LocalIsOffline
 import com.librelookai.wardrobe.DriveImage
 import com.librelookai.wardrobe.LocationViewModel
+import com.librelookai.wardrobe.QuickCategoryRow
+import com.librelookai.wardrobe.WardrobeFilterSheet
+import com.librelookai.wardrobe.tagCategories
+import com.librelookai.wardrobe.tagStringsForCategory
 import com.librelookai.wardrobe.WardrobeViewModel
 import com.librelookai.weather.wmoEmoji
 import com.librelookai.R
@@ -399,6 +407,72 @@ private fun TravelOutfitsView(
     }
     val imagesById = remember(wardrobeState.images) { wardrobeState.images.associateBy { it.driveId } }
 
+    // ---- Filter + sort state (mirrors the Outfits screen sub-panel) ----
+    var selectedTags by remember { mutableStateOf(emptyMap<String, Set<String>>()) }
+    var textQuery by remember { mutableStateOf("") }
+    var filterSheetOpen by remember { mutableStateOf(false) }
+    var sortBy by remember { mutableStateOf(TripSortOption.DATE_DESC) }
+    val appliedFilterCount = selectedTags.values.sumOf { it.size } + (if (textQuery.isNotBlank()) 1 else 0)
+
+    // Tag categories are derived from the wardrobe items referenced by every trip outfit
+    // (plus the legacy orphan travel outfits) — same source the Outfits filter uses.
+    val tagCategories = remember(tripsState.trips, orphanTravelOutfits, outfitsById, imagesById) {
+        val tripImages = tripsState.trips.asSequence()
+            .flatMap { it.outfitIds.asSequence() }
+            .mapNotNull { outfitsById[it] }
+            .flatMap { it.itemIds.asSequence() }
+            .mapNotNull { imagesById[it] }
+        val orphanImages = orphanTravelOutfits.asSequence()
+            .flatMap { it.itemIds.asSequence() }
+            .mapNotNull { imagesById[it] }
+        (tripImages + orphanImages).distinct().toList().tagCategories()
+    }
+
+    val displayedTrips = remember(tripsState.trips, selectedTags, textQuery, sortBy, outfitsById, imagesById) {
+        val activeFilters = selectedTags.filter { it.value.isNotEmpty() }
+        val q = textQuery.trim().lowercase()
+        val filtered = tripsState.trips.filter { trip ->
+            val outfits = trip.outfitIds.mapNotNull { outfitsById[it] }
+            val images = outfits.flatMap { it.itemIds }.mapNotNull { imagesById[it] }
+            val tagsOk = activeFilters.isEmpty() || activeFilters.all { (label, tags) ->
+                images.any { img -> tags.any { it in img.tagStringsForCategory(label) } }
+            }
+            if (!tagsOk) return@filter false
+            if (q.isBlank()) return@filter true
+            trip.name.lowercase().contains(q) ||
+                trip.destination.lowercase().contains(q) ||
+                trip.goal.lowercase().contains(q) ||
+                trip.vibes.any { it.lowercase().contains(q) } ||
+                outfits.any { it.name.lowercase().contains(q) } ||
+                images.any { it.name.lowercase().contains(q) }
+        }
+        when (sortBy) {
+            TripSortOption.DATE_DESC -> filtered.sortedByDescending { it.startDate }
+            TripSortOption.DATE_ASC  -> filtered.sortedBy { it.startDate }
+            TripSortOption.NAME_AZ   -> filtered.sortedBy { it.name.lowercase() }
+            TripSortOption.NAME_ZA   -> filtered.sortedByDescending { it.name.lowercase() }
+        }
+    }
+
+    val displayedOrphans = remember(orphanTravelOutfits, selectedTags, textQuery, imagesById) {
+        val activeFilters = selectedTags.filter { it.value.isNotEmpty() }
+        val q = textQuery.trim().lowercase()
+        orphanTravelOutfits.filter { outfit ->
+            val images = outfit.itemIds.mapNotNull { imagesById[it] }
+            val tagsOk = activeFilters.isEmpty() || activeFilters.all { (label, tags) ->
+                images.any { img -> tags.any { it in img.tagStringsForCategory(label) } }
+            }
+            if (!tagsOk) return@filter false
+            if (q.isBlank()) return@filter true
+            outfit.name.lowercase().contains(q) ||
+                outfit.description.lowercase().contains(q) ||
+                outfit.tags.any { it.lowercase().contains(q) } ||
+                images.any { it.name.lowercase().contains(q) }
+        }
+    }
+
+    val hasAnyContent = tripsState.trips.isNotEmpty() || orphanTravelOutfits.isNotEmpty()
+
     Column(modifier = modifier.fillMaxSize()) {
         AppScreenHeader(
             title = stringResource(R.string.travel_outfits_section),
@@ -412,71 +486,109 @@ private fun TravelOutfitsView(
             },
             onSettingsClick = onSettingsClick,
         )
+
+        // ---- Filter chip row + sort ----
+        if (hasAnyContent) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(com.librelookai.ui.theme.LocalWardrobePalette.current.surface),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                QuickCategoryRow(
+                    totalCount = tripsState.trips.size + orphanTravelOutfits.size,
+                    filteredCount = displayedTrips.size + displayedOrphans.size,
+                    appliedFilterCount = appliedFilterCount,
+                    filtersEnabled = true,
+                    onClearFilters = { selectedTags = emptyMap(); textQuery = "" },
+                    onOpenFilters = { filterSheetOpen = true },
+                    modifier = Modifier.weight(1f),
+                )
+                TripSortButton(
+                    sortBy = sortBy,
+                    onSortChanged = { sortBy = it },
+                    modifier = Modifier.padding(end = 4.dp),
+                )
+            }
+        }
+
         Box(modifier = Modifier.fillMaxSize()) {
-            if (tripsState.trips.isEmpty() && orphanTravelOutfits.isEmpty()) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(top = 64.dp, start = 32.dp, end = 32.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    Icon(
-                        Icons.Default.FlightTakeoff,
-                        contentDescription = null,
-                        modifier = Modifier.size(48.dp),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                    Text(
-                        stringResource(R.string.outfits_empty),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        textAlign = TextAlign.Center,
-                    )
-                    Text(
-                        stringResource(R.string.travel_outfits_empty_hint),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        textAlign = TextAlign.Center,
-                    )
-                }
-            } else {
-                LazyColumn(
-                    contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
-                    modifier = Modifier.fillMaxSize(),
-                ) {
-                    if (tripsState.trips.isNotEmpty()) {
-                        items(tripsState.trips, key = { it.id }) { trip ->
-                            TripCard(
-                                trip = trip,
-                                outfitsById = outfitsById,
-                                imagesById = imagesById,
-                                onClick = { onOpenTrip(trip.id) },
-                            )
-                        }
+            when {
+                !hasAnyContent -> {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(top = 64.dp, start = 32.dp, end = 32.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        Icon(
+                            Icons.Default.FlightTakeoff,
+                            contentDescription = null,
+                            modifier = Modifier.size(48.dp),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Text(
+                            stringResource(R.string.outfits_empty),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            textAlign = TextAlign.Center,
+                        )
+                        Text(
+                            stringResource(R.string.travel_outfits_empty_hint),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            textAlign = TextAlign.Center,
+                        )
                     }
-                    if (orphanTravelOutfits.isNotEmpty()) {
-                        item {
-                            Text(
-                                stringResource(R.string.trip_section_other_outfits),
-                                style = MaterialTheme.typography.titleSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                modifier = Modifier.padding(top = 8.dp),
-                            )
+                }
+                displayedTrips.isEmpty() && displayedOrphans.isEmpty() -> {
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text(
+                            stringResource(R.string.outfits_no_match),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+                else -> {
+                    LazyColumn(
+                        contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
+                        modifier = Modifier.fillMaxSize(),
+                    ) {
+                        if (displayedTrips.isNotEmpty()) {
+                            items(displayedTrips, key = { it.id }) { trip ->
+                                TripCard(
+                                    trip = trip,
+                                    outfitsById = outfitsById,
+                                    imagesById = imagesById,
+                                    onClick = { onOpenTrip(trip.id) },
+                                )
+                            }
                         }
-                        items(orphanTravelOutfits, key = { it.id }) { outfit ->
-                            TravelOutfitListCard(
-                                outfit = outfit,
-                                imagesById = imagesById,
-                                onClick = {
-                                    stylesViewModel.startEditing(
-                                        outfit,
-                                        wardrobeState.images,
-                                        profileState.preferences,
-                                    )
-                                },
-                            )
+                        if (displayedOrphans.isNotEmpty()) {
+                            item {
+                                Text(
+                                    stringResource(R.string.trip_section_other_outfits),
+                                    style = MaterialTheme.typography.titleSmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier.padding(top = 8.dp),
+                                )
+                            }
+                            items(displayedOrphans, key = { it.id }) { outfit ->
+                                TravelOutfitListCard(
+                                    outfit = outfit,
+                                    imagesById = imagesById,
+                                    onClick = {
+                                        stylesViewModel.startEditing(
+                                            outfit,
+                                            wardrobeState.images,
+                                            profileState.preferences,
+                                        )
+                                    },
+                                )
+                            }
                         }
                     }
                 }
@@ -490,6 +602,68 @@ private fun TravelOutfitsView(
                         .padding(16.dp),
                 ) {
                     Icon(Icons.Default.Add, contentDescription = stringResource(R.string.travel_plan_trip))
+                }
+            }
+        }
+    }
+
+    if (filterSheetOpen) {
+        WardrobeFilterSheet(
+            tagCategories = tagCategories,
+            selectedTags = selectedTags,
+            appliedCount = appliedFilterCount,
+            onTagsChanged = { selectedTags = it },
+            textQuery = textQuery,
+            onTextQueryChanged = { textQuery = it },
+            onDismiss = { filterSheetOpen = false },
+        )
+    }
+}
+
+private enum class TripSortOption { DATE_DESC, DATE_ASC, NAME_AZ, NAME_ZA }
+
+@Composable
+private fun TripSortOption.displayLabel(): String = when (this) {
+    TripSortOption.DATE_DESC -> stringResource(R.string.outfits_sort_newest)
+    TripSortOption.DATE_ASC  -> stringResource(R.string.outfits_sort_oldest)
+    TripSortOption.NAME_AZ   -> stringResource(R.string.outfits_sort_name_az)
+    TripSortOption.NAME_ZA   -> stringResource(R.string.outfits_sort_name_za)
+}
+
+@Composable
+private fun TripSortButton(
+    sortBy: TripSortOption,
+    onSortChanged: (TripSortOption) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var expanded by remember { mutableStateOf(false) }
+    // DropdownMenu renders in its own popup window; re-provide LocalContext/LocalConfiguration
+    // so stringResource() honors the in-app language toggle.
+    val parentContext = LocalContext.current
+    val parentConfiguration = LocalConfiguration.current
+    Box(modifier = modifier) {
+        IconButton(onClick = { expanded = true }) {
+            Icon(Icons.AutoMirrored.Filled.Sort, contentDescription = stringResource(R.string.action_sort))
+        }
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            CompositionLocalProvider(
+                LocalContext provides parentContext,
+                LocalConfiguration provides parentConfiguration,
+            ) {
+                TripSortOption.entries.forEach { option ->
+                    DropdownMenuItem(
+                        text = {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            ) {
+                                if (option == sortBy) Icon(Icons.Default.Check, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
+                                else Spacer(Modifier.size(18.dp))
+                                Text(option.displayLabel())
+                            }
+                        },
+                        onClick = { onSortChanged(option); expanded = false },
+                    )
                 }
             }
         }
