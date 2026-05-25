@@ -32,6 +32,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.CircularProgressIndicator
@@ -136,6 +137,13 @@ fun TripViewerScreen(
     var viewerOutfitId by remember { mutableStateOf<String?>(null) }
     var editing by remember(tripId) { mutableStateOf(false) }
     val isBulkRefining = tripId in bulkRefining
+
+    // Closets the bulk-refine may draw items from. Empty = all closets. Resets per trip.
+    var refineSourceFolders by remember(tripId) { mutableStateOf(emptySet<String>()) }
+    var showRefineClosetSheet by remember { mutableStateOf(false) }
+    val refineClosetNames = remember(refineSourceFolders, locationState.locations) {
+        locationState.locations.filter { it.folderId in refineSourceFolders }.map { it.name }
+    }
 
     // Pending (un-persisted) bulk-refine result for this trip, if any.
     val refinePreview = if (tripsState.refinePreviewTripId == tripId) tripsState.refinePreview else emptyMap()
@@ -283,11 +291,15 @@ fun TripViewerScreen(
                                     tripsViewModel.setTripConsiderations(trip.id, transform(trip.considerations))
                                 },
                                 isRefining = isBulkRefining,
+                                closetNames = if (locationState.locations.size >= 2) refineClosetNames else null,
+                                onPickClosets = { showRefineClosetSheet = true },
                                 onSubmit = { instruction ->
+                                    val refineImages = if (refineSourceFolders.isEmpty()) wardrobeState.images
+                                        else wardrobeState.images.filter { it.folderId in refineSourceFolders }
                                     tripsViewModel.refineAllOutfits(
                                         tripId          = trip.id,
                                         instruction     = instruction,
-                                        images          = wardrobeState.images,
+                                        images          = refineImages,
                                         currentOutfits  = outfitsState.outfits,
                                         prefs           = profileState.preferences,
                                     )
@@ -393,6 +405,18 @@ fun TripViewerScreen(
                 tripsViewModel.deleteTrip(trip.id) { /* keep outfits */ }
                 onClose()
             },
+        )
+    }
+
+    if (showRefineClosetSheet) {
+        com.librelookai.outfit.ClosetPickerSheet(
+            locations = locationState.locations,
+            selected = refineSourceFolders,
+            onToggle = { fid ->
+                refineSourceFolders = refineSourceFolders.toMutableSet()
+                    .also { if (!it.add(fid)) it.remove(fid) }
+            },
+            onDismiss = { showRefineClosetSheet = false },
         )
     }
 }
@@ -924,6 +948,9 @@ private fun BulkRefineSection(
     onToggleConsideration: ((com.librelookai.settings.AiConsiderations) -> com.librelookai.settings.AiConsiderations) -> Unit,
     isRefining: Boolean,
     onSubmit: (String) -> Unit,
+    /** Selected source-closet names. null hides the picker (e.g. only one closet exists). */
+    closetNames: List<String>? = null,
+    onPickClosets: () -> Unit = {},
 ) {
     val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
     var text by remember { mutableStateOf("") }
@@ -942,6 +969,33 @@ private fun BulkRefineSection(
             style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.SemiBold,
         )
+        if (closetNames != null) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Text(
+                    stringResource(R.string.composer_section_sources),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.weight(1f),
+                )
+                AssistChip(
+                    onClick = onPickClosets,
+                    label = {
+                        Text(
+                            closetNames.takeIf { it.isNotEmpty() }?.joinToString(" · ")
+                                ?: stringResource(R.string.composer_closets_all),
+                            style = MaterialTheme.typography.labelSmall,
+                        )
+                    },
+                    leadingIcon = {
+                        Icon(Icons.Default.Place, contentDescription = null, modifier = Modifier.size(16.dp))
+                    },
+                )
+            }
+        }
         // Style refinement + what-AI-considers now live in the outfit-refinement section.
         com.librelookai.travel.VibeChips(selected = vibes, onToggle = onToggleVibe)
         com.librelookai.travel.AiConsidersChips(

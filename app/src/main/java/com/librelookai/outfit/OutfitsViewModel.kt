@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.Locale
@@ -362,6 +363,20 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
      * Saves a style directly without going through the draft editing flow.
      * Used by Travel screen to persist packing outfits as styles.
      */
+    /**
+     * Builds a Drive-ID → filename map across **every** loaded closet folder, not just the save
+     * target. Travel/composer outfits can reference items from multiple closets; resolving names
+     * against a single folder drops the rest from `itemNames`, which is the source of truth on
+     * reload (see [loadOutfitsFromFolder]) — so those items silently vanish after an app restart.
+     */
+    private suspend fun idToNameAllFolders(fallbackFolderIds: Collection<String>): Map<String, String> = coroutineScope {
+        (allFolderIds ?: fallbackFolderIds.toList())
+            .distinct()
+            .map { f -> async { drive.listFiles(f).associate { it.id to it.name } } }
+            .awaitAll()
+            .fold(emptyMap<String, String>()) { acc, m -> acc + m }
+    }
+
     fun saveOutfitDirectly(
         name: String,
         description: String,
@@ -372,7 +387,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
         if (itemIds.isEmpty()) return
         viewModelScope.launch {
             val id = saveFolderId ?: folderId ?: run { onDone(false); return@launch }
-            val idToName = drive.listFiles(id).associate { it.id to it.name }
+            val idToName = idToNameAllFolders(listOf(id))
             val itemNames = itemIds.mapNotNull { idToName[it] }
             val newOutfit = Outfit(
                 name = name.ifBlank { "Travel style" },
@@ -403,7 +418,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
         if (newOutfits.isEmpty()) { onDone(true); return }
         viewModelScope.launch {
             val id = saveFolderId ?: folderId ?: run { onDone(false); return@launch }
-            val idToName = drive.listFiles(id).associate { it.id to it.name }
+            val idToName = idToNameAllFolders(listOf(id))
             val resolved = newOutfits.map { o ->
                 o.copy(itemNames = o.itemNames.ifEmpty { o.itemIds.mapNotNull { idToName[it] } })
             }
@@ -440,19 +455,16 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             val affectedFolderIds = touched.map { it.folderId }.filter { it.isNotEmpty() }.toSet()
                 .ifEmpty { listOfNotNull(folderId).toSet() }
             if (affectedFolderIds.isEmpty()) { onDone(false); return@launch }
-            val updated = all.toMutableList()
-            for (fid in affectedFolderIds) {
-                val idToName = drive.listFiles(fid).associate { it.id to it.name }
-                for ((idx, o) in updated.withIndex()) {
-                    val ref = updates[o.id] ?: continue
-                    if (o.folderId.isNotEmpty() && o.folderId != fid) continue
-                    updated[idx] = o.copy(
-                        itemIds = ref.itemIds,
-                        itemNames = ref.itemIds.mapNotNull { idToName[it] },
-                        name = ref.name.ifBlank { o.name },
-                        description = ref.description.ifBlank { o.description },
-                    )
-                }
+            // Resolve itemNames against every closet — a refined outfit may span folders.
+            val idToName = idToNameAllFolders(affectedFolderIds)
+            val updated = all.map { o ->
+                val ref = updates[o.id] ?: return@map o
+                o.copy(
+                    itemIds = ref.itemIds,
+                    itemNames = ref.itemIds.mapNotNull { idToName[it] },
+                    name = ref.name.ifBlank { o.name },
+                    description = ref.description.ifBlank { o.description },
+                )
             }
             runCatching {
                 for (fid in affectedFolderIds) {
@@ -478,18 +490,14 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             val affectedFolderIds = touched.map { it.folderId }.filter { it.isNotEmpty() }.toSet()
                 .ifEmpty { listOfNotNull(folderId).toSet() }
             if (affectedFolderIds.isEmpty()) { onDone(false); return@launch }
-            // Resolve itemNames per folder via that folder's file listing.
-            val updated = all.toMutableList()
-            for (fid in affectedFolderIds) {
-                val idToName = drive.listFiles(fid).associate { it.id to it.name }
-                for ((idx, o) in updated.withIndex()) {
-                    val newIds = updates[o.id] ?: continue
-                    if (o.folderId.isNotEmpty() && o.folderId != fid) continue
-                    updated[idx] = o.copy(
-                        itemIds = newIds,
-                        itemNames = newIds.mapNotNull { idToName[it] },
-                    )
-                }
+            // Resolve itemNames against every closet — an outfit may span folders.
+            val idToName = idToNameAllFolders(affectedFolderIds)
+            val updated = all.map { o ->
+                val newIds = updates[o.id] ?: return@map o
+                o.copy(
+                    itemIds = newIds,
+                    itemNames = newIds.mapNotNull { idToName[it] },
+                )
             }
             runCatching {
                 for (fid in affectedFolderIds) {

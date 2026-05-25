@@ -40,8 +40,6 @@ data class TravelUiState(
     /** Tracks which (destination, startDate, days) the current forecast was fetched for. */
     val fetchedKey: Triple<String, LocalDate, Int>? = null,
     val packingList: PackingList? = null,
-    val refinementInput: String = "",
-    val feedbackHistory: List<String> = emptyList(),
     val error: String? = null,
     /** Free-text goal/notes added to the prompt (e.g. "business meetings + evening dinners"). */
     val goal: String = "",
@@ -67,6 +65,11 @@ data class TravelUiState(
     val destinationLongitude: Double? = null,
     /** Style vibes selected for this trip (e.g. "Casual", "Business"). */
     val vibes: Set<String> = emptySet(),
+    /**
+     * Closets to source wardrobe items from when generating. Empty = every closet (default).
+     * Mirrors the composer's `composerSourceFolderIds`.
+     */
+    val sourceFolderIds: Set<String> = emptySet(),
 )
 
 class TravelViewModel(app: Application) : AndroidViewModel(app) {
@@ -116,7 +119,6 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
 
     fun updateDays(n: Int)           = _state.update { it.copy(days = n.coerceIn(1, 21)) }
     fun updateStartDate(d: LocalDate) = _state.update { it.copy(startDate = d) }
-    fun updateRefinementInput(s: String) = _state.update { it.copy(refinementInput = s) }
     fun updateGoal(s: String) = _state.update { it.copy(goal = s) }
     fun updateOutfitCount(n: Int?) = _state.update {
         it.copy(outfitCount = n?.coerceIn(1, 21))
@@ -142,9 +144,9 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
         it.copy(
             packingList = null, forecast = emptyList(), resolvedDestination = "",
             fetchedKey = null, isHistoricalForecast = false, historicalReferenceYear = null,
-            feedbackHistory = emptyList(), refinementInput = "", error = null,
+            error = null,
             goal = "", outfitCount = null, considerationsOverride = null,
-            vibes = emptySet(),
+            vibes = emptySet(), sourceFolderIds = emptySet(),
             destinationLatitude = null, destinationLongitude = null,
         )
     }
@@ -155,34 +157,21 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
         it.copy(vibes = next)
     }
 
+    /** Toggle whether [folderId] is included in the source-closet filter. Empty set = all closets. */
+    fun toggleSourceFolder(folderId: String) = _state.update {
+        val next = it.sourceFolderIds.toMutableSet()
+        if (!next.add(folderId)) next.remove(folderId)
+        it.copy(sourceFolderIds = next)
+    }
+
     fun generate(prefs: UserPreferences?, images: List<DriveImage>, styles: List<Outfit>) {
-        _state.update { it.copy(feedbackHistory = emptyList(), refinementInput = "") }
-        doGenerate(prefs, images, styles, emptyList())
-    }
-
-    fun refine(prefs: UserPreferences?, images: List<DriveImage>, styles: List<Outfit>) {
-        val feedback = _state.value.refinementInput.trim().ifEmpty { return }
-        val history  = _state.value.feedbackHistory + feedback
-        _state.update { it.copy(feedbackHistory = history, refinementInput = "") }
-        doGenerate(prefs, images, styles, history)
-    }
-
-    fun submitPreset(
-        preset: String,
-        prefs: UserPreferences?,
-        images: List<DriveImage>,
-        styles: List<Outfit>,
-    ) {
-        val history = _state.value.feedbackHistory + preset
-        _state.update { it.copy(feedbackHistory = history, refinementInput = "") }
-        doGenerate(prefs, images, styles, history)
+        doGenerate(prefs, images, styles)
     }
 
     private fun doGenerate(
         prefs: UserPreferences?,
         images: List<DriveImage>,
         styles: List<Outfit>,
-        feedbackHistory: List<String>,
     ) {
         val dest      = _state.value.destination.trim()
         val startDate = _state.value.startDate
@@ -249,7 +238,6 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
                 referenceYear   = refYear,
                 images          = images,
                 styles          = styles,
-                feedbackHistory = feedbackHistory,
             )
             Log.d("TravelVM", "Packing prompt length: ${prompt.length} chars")
 
@@ -299,7 +287,6 @@ private fun buildPackingPrompt(
     referenceYear: Int?,
     images: List<DriveImage>,
     styles: List<Outfit>,
-    feedbackHistory: List<String>,
 ): String {
     val age    = prefs?.yearOfBirth?.let { LocalDate.now().year - it }
     val endDate = startDate.plusDays((days - 1).toLong())
@@ -381,6 +368,7 @@ private fun buildPackingPrompt(
         appendLine("- Reuse versatile items (jeans, trousers, jackets, shoes, accessories) across multiple outfits — they don't need to be changed daily.")
         appendLine("- Rotate items worn directly against the skin (t-shirts, blouses, shirts, socks, underwear) so the traveler has a fresh one per wear-day.")
         appendLine("- Make sure the overall pack covers all $days days of the trip even though outfits repeat.")
+        appendLine("- Name each outfit by its purpose or occasion (e.g. \"City sightseeing\", \"Dinner out\"). Do NOT prefix the occasion with day numbers such as \"Day 1\" or \"Day 1 & 2\".")
         appendLine()
         appendLine("## Available Wardrobe Items (id + name + tags)")
         appendLine(wardrobeJson)
@@ -390,13 +378,8 @@ private fun buildPackingPrompt(
             appendLine(stylesJson)
             appendLine()
         }
-        if (feedbackHistory.isNotEmpty()) {
-            appendLine("## User Adjustments (apply all of these)")
-            feedbackHistory.forEachIndexed { i, fb -> appendLine("${i + 1}. $fb") }
-            appendLine()
-        }
         appendLine("Respond with ONLY a valid JSON object — no markdown, no extra text:")
-        append("""{"outfits":[{"occasion":"<group label>","itemIds":["<id1>","<id2>",...],"description":"<1-sentence style note>"},...],"extraItems":["<item1>","<item2>",...],"reason":"<1-2 sentence summary>"}""")
+        append("""{"outfits":[{"occasion":"<short occasion label, no day numbers>","itemIds":["<id1>","<id2>",...],"description":"<1-sentence style note>"},...],"extraItems":["<item1>","<item2>",...],"reason":"<1-2 sentence summary>"}""")
         appendLine()
         appendLine()
         appendLine("IMPORTANT: Write all user-facing text fields (occasion, description, reason, extraItems) in ${AppLanguage.toGeminiName(prefs?.language ?: AppLanguage.ENGLISH)}.")

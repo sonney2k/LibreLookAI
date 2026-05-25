@@ -231,16 +231,53 @@ private fun buildTripFromPlan(packing: PackingList, snapshot: TravelUiState): Tr
     )
 }
 
+/**
+ * Strips a leading "Day N" / "Day 1 & 2" / "Days 1-3" prefix (with an optional ":"/"-"/"–"
+ * separator) that Gemini sometimes prepends to a trip outfit's occasion despite the prompt.
+ * Conservative and English-only — the day label belongs in the viewer's UI, not the name.
+ */
+private val DAY_PREFIX = Regex("""^days?\s*\d+(\s*[&,\-–]\s*\d+)*\s*[:\-–]?\s*""", RegexOption.IGNORE_CASE)
+
 private fun buildOutfitsForTrip(packing: PackingList, tripId: String): List<Outfit> =
     packing.outfits.map { p ->
         Outfit(
-            name = p.occasion,
+            name = p.occasion.replace(DAY_PREFIX, "").trim().ifBlank { p.occasion },
             description = p.description,
             itemIds = p.itemIds,
             tags = listOf("travel"),
             tripId = tripId,
         )
     }
+
+/** Labelled chip showing which closets items are sourced from; tap opens the [ClosetPickerSheet]. */
+@Composable
+private fun SourceClosetRow(
+    closetNames: List<String>,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val label = closetNames.takeIf { it.isNotEmpty() }?.joinToString(" · ")
+        ?: stringResource(R.string.composer_closets_all)
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Text(
+            stringResource(R.string.composer_section_sources),
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.weight(1f),
+        )
+        AssistChip(
+            onClick = onClick,
+            label = { Text(label, style = MaterialTheme.typography.labelSmall) },
+            leadingIcon = {
+                Icon(Icons.Default.Place, contentDescription = null, modifier = Modifier.size(16.dp))
+            },
+        )
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -262,6 +299,20 @@ private fun TravelPlannerContent(
 
     val isWorking = state.isLoadingForecast || state.isGenerating
     val keyboardController = LocalSoftwareKeyboardController.current
+    var showClosetSheet by remember { mutableStateOf(false) }
+
+    // Restrict the item pool (and inspiration styles) to the chosen closets. Empty = all.
+    val sourceImages = remember(wardrobeState.images, state.sourceFolderIds) {
+        if (state.sourceFolderIds.isEmpty()) wardrobeState.images
+        else wardrobeState.images.filter { it.folderId in state.sourceFolderIds }
+    }
+    val sourceStyles = remember(outfitsState.outfits, state.sourceFolderIds) {
+        if (state.sourceFolderIds.isEmpty()) outfitsState.outfits
+        else outfitsState.outfits.filter { it.folderId in state.sourceFolderIds }
+    }
+    val selectedClosetNames = remember(state.sourceFolderIds, locationState.locations) {
+        locationState.locations.filter { it.folderId in state.sourceFolderIds }.map { it.name }
+    }
 
     Column(modifier = modifier.fillMaxSize()) {
         PlannerHeader(onClose = onBack)
@@ -294,6 +345,17 @@ private fun TravelPlannerContent(
                         travelViewModel.setConsideration(prefsConsiderations, transform)
                     },
                 )
+            }
+
+            // ---- Source-closet selector (only when there's more than one closet) ----
+            if (locationState.locations.size >= 2) {
+                item {
+                    SourceClosetRow(
+                        closetNames = selectedClosetNames,
+                        onClick = { showClosetSheet = true },
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+                    )
+                }
             }
 
             // ---- Forecast strip ----
@@ -366,13 +428,22 @@ private fun TravelPlannerContent(
                     keyboardController?.hide()
                     travelViewModel.generate(
                         prefs  = profileState.preferences,
-                        images = wardrobeState.images,
-                        styles = outfitsState.outfits,
+                        images = sourceImages,
+                        styles = sourceStyles,
                     )
                 },
             )
         }
     } // Column
+
+    if (showClosetSheet) {
+        com.librelookai.outfit.ClosetPickerSheet(
+            locations = locationState.locations,
+            selected = state.sourceFolderIds,
+            onToggle = travelViewModel::toggleSourceFolder,
+            onDismiss = { showClosetSheet = false },
+        )
+    }
 }
 
 // ---------- Travel-outfits list view ----------
