@@ -5,8 +5,14 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowInsetsCompat
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,6 +29,33 @@ val LocalIsOffline = compositionLocalOf { false }
  * provides them here; dialog content applies the padding manually.
  */
 val LocalSystemBarsPadding = compositionLocalOf { PaddingValues(0.dp) }
+
+/**
+ * Bottom inset (dp) to pad a fullscreen `androidx.compose.ui.window.Dialog`'s content / sticky
+ * bottom row by, so action buttons (e.g. "Generate") never hide under the gesture/nav bar.
+ *
+ * **Call this OUTSIDE the `Dialog { }` block.** It reads [LocalView] expecting the activity's
+ * decor view; inside a Dialog `LocalView.current` is the dialog's own decor view whose
+ * `rootWindowInsets` can report 0. We take the max of three sources because each is unreliable
+ * alone: [LocalSystemBarsPadding] (0 on some devices), the activity view's real `rootWindowInsets`
+ * system-bars bottom, and a 48.dp floor as a last-resort guarantee.
+ */
+@Composable
+fun rememberDialogBottomInset(): Dp {
+    val barInsets = LocalSystemBarsPadding.current
+    val view = LocalView.current
+    val density = LocalDensity.current
+    val rootInsetBottomDp = remember(view) {
+        val raw = view.rootWindowInsets
+        val bottomPx = if (raw != null) {
+            WindowInsetsCompat.toWindowInsetsCompat(raw, view)
+                .getInsets(WindowInsetsCompat.Type.systemBars())
+                .bottom
+        } else 0
+        with(density) { bottomPx.toDp() }
+    }
+    return maxOf(barInsets.calculateBottomPadding(), rootInsetBottomDp, 48.dp)
+}
 
 private fun NetworkCapabilities.hasValidatedInternet(): Boolean =
     hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&

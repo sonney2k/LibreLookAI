@@ -98,7 +98,7 @@ import com.librelookai.outfit.bucketFor
 import com.librelookai.settings.ProfileViewModel
 import com.librelookai.shopping.ShoppingClosetViewModel
 import com.librelookai.util.Analytics
-import com.librelookai.util.LocalSystemBarsPadding
+import com.librelookai.util.rememberDialogBottomInset
 import com.librelookai.wardrobe.DriveImage
 import com.librelookai.wardrobe.FullScreenViewer
 import com.librelookai.wardrobe.WardrobeViewModel
@@ -149,7 +149,9 @@ fun TryOnComposerScreen(
 
     val parentContext = LocalContext.current
     val parentConfiguration = LocalConfiguration.current
-    val barInsets = LocalSystemBarsPadding.current
+    // Captured OUTSIDE the Dialog — see rememberDialogBottomInset. The raw LocalSystemBarsPadding
+    // bottom can be 0 inside the dialog window, which clipped the "Generate" button under the nav bar.
+    val effectiveBottom = rememberDialogBottomInset()
     Dialog(
         onDismissRequest = tryOnViewModel::close,
         properties = DialogProperties(
@@ -206,7 +208,7 @@ fun TryOnComposerScreen(
         }
         // Fill the whole dialog window with the theme background so the screen reads as truly
         // full-screen — the underlying app never shows through the status/nav-bar strips. Only
-        // the Scaffold *content* is inset to the safe area via padding(barInsets); the Scaffold
+        // the Scaffold *content* is inset to the safe area via padding(effectiveBottom); the Scaffold
         // container itself is transparent so the full-bleed background behind it shows edge-to-edge.
         //
         // Scaffold's contentWindowInsets defaults to consuming WindowInsets.systemBars itself —
@@ -215,8 +217,8 @@ fun TryOnComposerScreen(
         Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         Scaffold(
             // The dialog window already insets the top status bar; only the bottom nav bar needs
-            // manual padding. Matches AddItemSheet — padding(barInsets) here double-pads the top.
-            modifier = Modifier.fillMaxSize().padding(bottom = barInsets.calculateBottomPadding()),
+            // manual padding. Padding the top here would double-pad it.
+            modifier = Modifier.fillMaxSize().padding(bottom = effectiveBottom),
             containerColor = Color.Transparent,
             contentWindowInsets = WindowInsets(0),
             topBar = {
@@ -698,6 +700,8 @@ private fun OutfitPickerDialog(
 ) {
     val parentContext = LocalContext.current
     val parentConfiguration = LocalConfiguration.current
+    // Captured OUTSIDE the Dialog so the nav-bar inset is real (see rememberDialogBottomInset).
+    val effectiveBottom = rememberDialogBottomInset()
     val itemsById = remember(wardrobeImages) { wardrobeImages.associateBy { it.driveId } }
     // Hide outfits whose items aren't all loaded — try-on needs the cutouts on disk.
     val pickable = remember(outfits, itemsById) {
@@ -760,12 +764,11 @@ private fun OutfitPickerDialog(
             LocalContext provides parentContext,
             LocalConfiguration provides parentConfiguration,
         ) {
-            val barInsets = LocalSystemBarsPadding.current
             Surface(
                 modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colorScheme.background,
             ) {
-                Column(modifier = Modifier.fillMaxSize().padding(bottom = barInsets.calculateBottomPadding())) {
+                Column(modifier = Modifier.fillMaxSize().padding(bottom = effectiveBottom)) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()

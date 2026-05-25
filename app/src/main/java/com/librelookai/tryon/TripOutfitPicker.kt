@@ -47,7 +47,7 @@ import com.librelookai.R
 import com.librelookai.data.model.Outfit
 import com.librelookai.data.model.Trip
 import com.librelookai.ui.theme.LocalWardrobePalette
-import com.librelookai.util.LocalSystemBarsPadding
+import com.librelookai.util.rememberDialogBottomInset
 import com.librelookai.wardrobe.DriveImage
 import java.io.File
 
@@ -70,6 +70,8 @@ fun TripOutfitPickerDialog(
 ) {
     val parentContext = LocalContext.current
     val parentConfiguration = LocalConfiguration.current
+    // Captured OUTSIDE the Dialog so the nav-bar inset is real (see rememberDialogBottomInset).
+    val effectiveBottom = rememberDialogBottomInset()
     val outfitsById = remember(outfits) { outfits.associateBy { it.id } }
     val itemsById = remember(wardrobeImages) { wardrobeImages.associateBy { it.driveId } }
     // Keep only trips with at least one day whose outfit is fully loaded — try-on needs the cutouts.
@@ -104,12 +106,11 @@ fun TripOutfitPickerDialog(
             LocalContext provides parentContext,
             LocalConfiguration provides parentConfiguration,
         ) {
-            val barInsets = LocalSystemBarsPadding.current
             Surface(
                 modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colorScheme.background,
             ) {
-                Column(Modifier.fillMaxSize().padding(bottom = barInsets.calculateBottomPadding())) {
+                Column(Modifier.fillMaxSize().padding(bottom = effectiveBottom)) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
