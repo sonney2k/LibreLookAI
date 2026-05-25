@@ -685,6 +685,30 @@ private fun TripDayCard(
                         )
                     }
                 }
+                // "Wear today" — top-right, at the same level as the Day label.
+                if (outfit != null && onWear != null) {
+                    var wornToday by remember(outfit.id) { mutableStateOf(false) }
+                    TextButton(
+                        onClick = { onWear(); wornToday = true },
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                    ) {
+                        Icon(
+                            Icons.Default.CalendarMonth,
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp),
+                            tint = if (wornToday) MaterialTheme.colorScheme.primary
+                                   else MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Spacer(Modifier.width(4.dp))
+                        Text(
+                            if (wornToday) stringResource(R.string.outfits_worn_today)
+                            else stringResource(R.string.outfits_wear_today),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = if (wornToday) MaterialTheme.colorScheme.primary
+                                    else MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
             }
             if (outfit?.name?.isNotBlank() == true) {
                 Text(outfit.name, style = MaterialTheme.typography.titleSmall)
@@ -720,32 +744,6 @@ private fun TripDayCard(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-            }
-            // "Wear today" — logs a calendar wear for this day's outfit, mirroring the Outfits card.
-            if (onWear != null) {
-                var wornToday by remember(outfit?.id) { mutableStateOf(false) }
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                    TextButton(
-                        onClick = { onWear(); wornToday = true },
-                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
-                    ) {
-                        Icon(
-                            Icons.Default.CalendarMonth,
-                            contentDescription = null,
-                            modifier = Modifier.size(16.dp),
-                            tint = if (wornToday) MaterialTheme.colorScheme.primary
-                                   else MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                        Spacer(Modifier.width(4.dp))
-                        Text(
-                            if (wornToday) stringResource(R.string.outfits_worn_today)
-                            else stringResource(R.string.outfits_wear_today),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = if (wornToday) MaterialTheme.colorScheme.primary
-                                    else MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                }
             }
         }
     }
