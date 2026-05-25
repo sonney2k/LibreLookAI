@@ -1088,10 +1088,11 @@ private fun AppNavBar(
             )
         }
         // "Try on" title, just below the FAB, aligned with the other tab labels.
+        val isCaveat = com.librelookai.ui.theme.LocalAppFont.current == AppFont.CAVEAT
         Text(
             stringResource(R.string.tryon_nav_label),
             color = palette.primary,
-            fontSize = 12.sp,
+            fontSize = if (isCaveat) 16.sp else 12.sp,
             fontWeight = FontWeight.Bold,
             maxLines = 1,
             modifier = Modifier
@@ -1140,10 +1141,11 @@ private fun NavSlot(
             )
         }
         Spacer(Modifier.size(2.dp))
+        val isCaveat = com.librelookai.ui.theme.LocalAppFont.current == AppFont.CAVEAT
         Text(
             label,
             color = if (active) palette.primary else palette.textMuted,
-            fontSize = 12.sp,
+            fontSize = if (isCaveat) 16.sp else 12.sp,
             fontWeight = if (active) FontWeight.Bold else FontWeight.SemiBold,
             maxLines = 1,
         )
