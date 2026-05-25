@@ -109,7 +109,7 @@ fun TripOutfitPickerDialog(
                 modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colorScheme.background,
             ) {
-                Column(Modifier.fillMaxSize().padding(barInsets)) {
+                Column(Modifier.fillMaxSize().padding(bottom = barInsets.calculateBottomPadding())) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()

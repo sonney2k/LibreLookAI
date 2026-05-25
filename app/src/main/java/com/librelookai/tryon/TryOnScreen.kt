@@ -202,7 +202,9 @@ fun TryOnComposerScreen(
         // action row. Disable it (set WindowInsets(0)).
         Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         Scaffold(
-            modifier = Modifier.fillMaxSize().padding(barInsets),
+            // The dialog window already insets the top status bar; only the bottom nav bar needs
+            // manual padding. Matches AddItemSheet — padding(barInsets) here double-pads the top.
+            modifier = Modifier.fillMaxSize().padding(bottom = barInsets.calculateBottomPadding()),
             containerColor = Color.Transparent,
             contentWindowInsets = WindowInsets(0),
             topBar = {
@@ -638,7 +640,7 @@ private fun OutfitPickerDialog(
                 modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colorScheme.background,
             ) {
-                Column(modifier = Modifier.fillMaxSize().padding(barInsets)) {
+                Column(modifier = Modifier.fillMaxSize().padding(bottom = barInsets.calculateBottomPadding())) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
