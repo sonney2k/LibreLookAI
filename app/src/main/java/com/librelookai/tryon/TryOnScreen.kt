@@ -29,6 +29,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Check
@@ -40,6 +41,8 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -100,6 +103,9 @@ import com.librelookai.wardrobe.DriveImage
 import com.librelookai.wardrobe.FullScreenViewer
 import com.librelookai.wardrobe.WardrobeViewModel
 import com.librelookai.wardrobe.tagCategories
+import com.librelookai.wardrobe.tagStringsForCategory
+import com.librelookai.wardrobe.QuickCategoryRow
+import com.librelookai.wardrobe.WardrobeFilterSheet
 import com.librelookai.R
 import com.librelookai.shopping.ShoppingHelperScreen
 import com.librelookai.shopping.MatchPreviewDialog
@@ -698,6 +704,41 @@ private fun OutfitPickerDialog(
         outfits.filter { o -> o.itemIds.isNotEmpty() && o.itemIds.all { it in itemsById } }
     }
 
+    // Filter + sort, mirroring the Outfits screen sub-panel.
+    var selectedTags by remember { mutableStateOf(emptyMap<String, Set<String>>()) }
+    var textQuery by remember { mutableStateOf("") }
+    var filterSheetOpen by remember { mutableStateOf(false) }
+    var sortBy by remember { mutableStateOf(OutfitPickerSortOption.DATE_DESC) }
+    val appliedFilterCount = selectedTags.values.sumOf { it.size } + (if (textQuery.isNotBlank()) 1 else 0)
+
+    val tagCategories = remember(pickable, itemsById) {
+        pickable.flatMap { o -> o.itemIds.mapNotNull { itemsById[it] } }.tagCategories()
+    }
+
+    val displayed = remember(pickable, selectedTags, textQuery, sortBy, itemsById) {
+        val activeFilters = selectedTags.filter { it.value.isNotEmpty() }
+        val q = textQuery.trim().lowercase()
+        val filtered = pickable.filter { o ->
+            val images = o.itemIds.mapNotNull { itemsById[it] }
+            val tagsOk = activeFilters.isEmpty() || activeFilters.all { (label, tags) ->
+                images.any { img -> tags.any { it in img.tagStringsForCategory(label) } }
+            }
+            if (!tagsOk) return@filter false
+            if (q.isBlank()) return@filter true
+            o.name.lowercase().contains(q) ||
+                o.description.lowercase().contains(q) ||
+                o.tags.any { it.lowercase().contains(q) } ||
+                images.any { it.name.lowercase().contains(q) }
+        }
+        when (sortBy) {
+            OutfitPickerSortOption.DATE_DESC  -> filtered
+            OutfitPickerSortOption.DATE_ASC   -> filtered.reversed()
+            OutfitPickerSortOption.NAME_AZ    -> filtered.sortedBy { it.name.lowercase() }
+            OutfitPickerSortOption.NAME_ZA    -> filtered.sortedByDescending { it.name.lowercase() }
+            OutfitPickerSortOption.ITEM_COUNT -> filtered.sortedByDescending { it.itemIds.size }
+        }
+    }
+
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(
@@ -750,22 +791,117 @@ private fun OutfitPickerDialog(
                             )
                         }
                     } else {
-                        LazyVerticalGrid(
-                            columns = GridCells.Fixed(1),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                        // Filter chip row + sort, mirroring the Outfits screen.
+                        Row(
                             modifier = Modifier
-                                .fillMaxSize()
-                                .padding(horizontal = 12.dp, vertical = 8.dp),
+                                .fillMaxWidth()
+                                .background(com.librelookai.ui.theme.LocalWardrobePalette.current.surface),
+                            verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            items(pickable, key = { it.id }) { outfit ->
-                                OutfitPickerRow(
-                                    outfit = outfit,
-                                    itemsById = itemsById,
-                                    onClick = { onPick(outfit) },
+                            QuickCategoryRow(
+                                totalCount = pickable.size,
+                                filteredCount = displayed.size,
+                                appliedFilterCount = appliedFilterCount,
+                                filtersEnabled = true,
+                                onClearFilters = { selectedTags = emptyMap(); textQuery = "" },
+                                onOpenFilters = { filterSheetOpen = true },
+                                modifier = Modifier.weight(1f),
+                            )
+                            OutfitPickerSortButton(
+                                sortBy = sortBy,
+                                onSortChanged = { sortBy = it },
+                                modifier = Modifier.padding(end = 4.dp),
+                            )
+                        }
+                        if (displayed.isEmpty()) {
+                            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                Text(
+                                    stringResource(R.string.outfits_no_match),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 )
+                            }
+                        } else {
+                            LazyVerticalGrid(
+                                columns = GridCells.Fixed(1),
+                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                            ) {
+                                items(displayed, key = { it.id }) { outfit ->
+                                    OutfitPickerRow(
+                                        outfit = outfit,
+                                        itemsById = itemsById,
+                                        onClick = { onPick(outfit) },
+                                    )
+                                }
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+
+    if (filterSheetOpen) {
+        WardrobeFilterSheet(
+            tagCategories = tagCategories,
+            selectedTags = selectedTags,
+            appliedCount = appliedFilterCount,
+            onTagsChanged = { selectedTags = it },
+            textQuery = textQuery,
+            onTextQueryChanged = { textQuery = it },
+            onDismiss = { filterSheetOpen = false },
+        )
+    }
+}
+
+private enum class OutfitPickerSortOption { DATE_DESC, DATE_ASC, NAME_AZ, NAME_ZA, ITEM_COUNT }
+
+@Composable
+private fun OutfitPickerSortOption.displayLabel(): String = when (this) {
+    OutfitPickerSortOption.DATE_DESC  -> stringResource(R.string.outfits_sort_newest)
+    OutfitPickerSortOption.DATE_ASC   -> stringResource(R.string.outfits_sort_oldest)
+    OutfitPickerSortOption.NAME_AZ    -> stringResource(R.string.outfits_sort_name_az)
+    OutfitPickerSortOption.NAME_ZA    -> stringResource(R.string.outfits_sort_name_za)
+    OutfitPickerSortOption.ITEM_COUNT -> stringResource(R.string.outfits_sort_most_items)
+}
+
+@Composable
+private fun OutfitPickerSortButton(
+    sortBy: OutfitPickerSortOption,
+    onSortChanged: (OutfitPickerSortOption) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var expanded by remember { mutableStateOf(false) }
+    // DropdownMenu renders in its own popup window; re-provide LocalContext/LocalConfiguration
+    // so stringResource() honors the in-app language toggle.
+    val parentContext = LocalContext.current
+    val parentConfiguration = LocalConfiguration.current
+    Box(modifier = modifier) {
+        IconButton(onClick = { expanded = true }) {
+            Icon(Icons.AutoMirrored.Filled.Sort, contentDescription = stringResource(R.string.action_sort))
+        }
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            CompositionLocalProvider(
+                LocalContext provides parentContext,
+                LocalConfiguration provides parentConfiguration,
+            ) {
+                OutfitPickerSortOption.entries.forEach { option ->
+                    DropdownMenuItem(
+                        text = {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            ) {
+                                if (option == sortBy) Icon(Icons.Default.Check, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
+                                else Spacer(Modifier.size(18.dp))
+                                Text(option.displayLabel())
+                            }
+                        },
+                        onClick = { onSortChanged(option); expanded = false },
+                    )
                 }
             }
         }
