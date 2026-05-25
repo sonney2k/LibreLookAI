@@ -28,6 +28,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CloudDone
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AssistChip
@@ -148,6 +149,28 @@ fun TripViewerScreen(
         androidx.activity.compose.BackHandler { exitEdit() }
     }
 
+    // Open the composer to edit a specific day's outfit, carrying this trip's context. Shared by
+    // the fullscreen viewer's edit action and the per-day edit pen.
+    val startEditingOutfit: (Outfit) -> Unit = { o ->
+        viewerOutfitId = null
+        val dayIdx = trip.outfitIds.indexOf(o.id).coerceAtLeast(0)
+        outfitsViewModel.startEditing(
+            style       = o,
+            images      = wardrobeState.images,
+            prefs       = profileState.preferences,
+            tripContext = TripContext(
+                tripId         = trip.id,
+                tripName       = trip.name,
+                dayIndex       = dayIdx,
+                dayForecast    = trip.forecast.getOrNull(dayIdx),
+                tripStartDate  = trip.startDate,
+                considerations = trip.considerations,
+                vibes          = trip.vibes,
+                goal           = trip.goal,
+            ),
+        )
+    }
+
     // One-time "saved" confirmation shown when a freshly generated trip opens.
     val snackbarHostState = remember { SnackbarHostState() }
     val savedMessage = stringResource(R.string.trip_saved_confirmation)
@@ -213,6 +236,14 @@ fun TripViewerScreen(
                             // viewer (which reads saved items) is disabled to avoid confusion.
                             enabled = outfit != null && !previewing,
                             onClick = { if (outfit != null) viewerOutfitId = outfit.id },
+                            // Edit pen jumps straight into the composer for this day's outfit.
+                            onEdit = if (outfit != null && editing && !previewing) {
+                                { startEditingOutfit(outfit) }
+                            } else null,
+                            // View mode: log a calendar wear for this day's outfit (write path).
+                            onWear = if (outfit != null && !editing && !previewing && !isOffline) {
+                                { outfitEventsViewModel.recordOutfit(outfit.id) }
+                            } else null,
                         )
                     }
 
@@ -292,25 +323,7 @@ fun TripViewerScreen(
                 locations = locationState.locations,
                 activeLocationId = locationState.activeLocationId,
                 onDismiss = { viewerOutfitId = null },
-                onEdit = { o ->
-                    viewerOutfitId = null
-                    val dayIdx = trip.outfitIds.indexOf(o.id).coerceAtLeast(0)
-                    outfitsViewModel.startEditing(
-                        style       = o,
-                        images      = wardrobeState.images,
-                        prefs       = profileState.preferences,
-                        tripContext = TripContext(
-                            tripId         = trip.id,
-                            tripName       = trip.name,
-                            dayIndex       = dayIdx,
-                            dayForecast    = trip.forecast.getOrNull(dayIdx),
-                            tripStartDate  = trip.startDate,
-                            considerations = trip.considerations,
-                            vibes          = trip.vibes,
-                            goal           = trip.goal,
-                        ),
-                    )
-                },
+                onEdit = startEditingOutfit,
                 onWear = { o -> outfitEventsViewModel.recordOutfit(o.id) },
                 onDelete = { o ->
                     outfitsViewModel.deleteOutfit(o.id)
@@ -626,6 +639,8 @@ private fun TripDayCard(
     enabled: Boolean,
     showEditIcon: Boolean,
     onClick: () -> Unit,
+    onEdit: (() -> Unit)? = null,
+    onWear: (() -> Unit)? = null,
     overrideItemIds: List<String>? = null,
 ) {
     val ctx = LocalContext.current
@@ -660,13 +675,15 @@ private fun TripDayCard(
                     )
                 }
                 Spacer(Modifier.weight(1f))
-                if (outfit != null && showEditIcon) {
-                    Icon(
-                        Icons.Default.Edit,
-                        contentDescription = stringResource(R.string.trip_modify_outfit),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(16.dp),
-                    )
+                if (outfit != null && showEditIcon && onEdit != null) {
+                    IconButton(onClick = onEdit, modifier = Modifier.size(28.dp)) {
+                        Icon(
+                            Icons.Default.Edit,
+                            contentDescription = stringResource(R.string.trip_modify_outfit),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.size(16.dp),
+                        )
+                    }
                 }
             }
             if (outfit?.name?.isNotBlank() == true) {
@@ -703,6 +720,32 @@ private fun TripDayCard(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
+            }
+            // "Wear today" — logs a calendar wear for this day's outfit, mirroring the Outfits card.
+            if (onWear != null) {
+                var wornToday by remember(outfit?.id) { mutableStateOf(false) }
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                    TextButton(
+                        onClick = { onWear(); wornToday = true },
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+                    ) {
+                        Icon(
+                            Icons.Default.CalendarMonth,
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp),
+                            tint = if (wornToday) MaterialTheme.colorScheme.primary
+                                   else MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Spacer(Modifier.width(4.dp))
+                        Text(
+                            if (wornToday) stringResource(R.string.outfits_worn_today)
+                            else stringResource(R.string.outfits_wear_today),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = if (wornToday) MaterialTheme.colorScheme.primary
+                                    else MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
             }
         }
     }
