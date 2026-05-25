@@ -1602,7 +1602,7 @@ private fun OutfitViewerItemTile(
     }
 }
 
-private enum class OutfitItemBucket(val resId: Int) {
+internal enum class OutfitItemBucket(val resId: Int) {
     Outerwear(R.string.outfit_layer_outerwear),
     Top(R.string.outfit_layer_tops),
     OnePiece(R.string.outfit_layer_onepiece),
@@ -1612,7 +1612,7 @@ private enum class OutfitItemBucket(val resId: Int) {
     Other(R.string.outfit_layer_other),
 }
 
-private fun bucketFor(image: DriveImage): OutfitItemBucket {
+internal fun bucketFor(image: DriveImage): OutfitItemBucket {
     val cat = image.tags?.category?.lowercase().orEmpty()
     return when {
         cat.contains("outer") -> OutfitItemBucket.Outerwear

@@ -74,14 +74,14 @@ fun QuickTryOnSheet(
             ) {
                 Text(
                     stringResource(R.string.tryon_quick_sheet_title),
-                    fontSize = 18.sp,
+                    fontSize = 27.sp,
                     fontWeight = FontWeight.ExtraBold,
                     color = palette.text,
                 )
                 Spacer(Modifier.height(2.dp))
                 Text(
                     stringResource(R.string.tryon_quick_sheet_subtitle),
-                    fontSize = 12.sp,
+                    fontSize = 18.sp,
                     color = palette.textMuted,
                 )
                 Spacer(Modifier.height(14.dp))
@@ -124,7 +124,7 @@ fun QuickTryOnSheet(
                 ) {
                     Icon(Icons.Default.History, null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.width(8.dp))
-                    Text(stringResource(R.string.tryon_quick_see_history), fontSize = 14.sp)
+                    Text(stringResource(R.string.tryon_quick_see_history), fontSize = 21.sp)
                 }
             }
         }
@@ -162,9 +162,9 @@ private fun SourceOptionRow(
             Icon(meta.icon, null, tint = tint, modifier = Modifier.size(18.dp))
         }
         Column(Modifier.weight(1f)) {
-            Text(label, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = palette.text)
+            Text(label, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = palette.text)
             Spacer(Modifier.height(1.dp))
-            Text(sub, fontSize = 11.sp, color = palette.textMuted)
+            Text(sub, fontSize = 17.sp, color = palette.textMuted)
         }
         Icon(
             Icons.AutoMirrored.Filled.KeyboardArrowRight,
