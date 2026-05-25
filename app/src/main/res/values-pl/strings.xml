@@ -923,5 +923,7 @@
     <string name="outfits_broken_banner">%d stylizacji korzysta z ubrań, których nie ma już w Twojej szafie.</string>
     <string name="outfits_broken_review">Przejrzyj</string>
     <string name="outfits_broken_delete_title">Usunąć niekompletne stylizacje?</string>
-    <string name="outfits_broken_delete_text">Usunąć %d stylizacji odwołujących się do ubrań, których nie ma już w Twojej szafie? Tej operacji nie można cofnąć.</string>
+    <string name="outfits_broken_delete_text">Te %d stylizacji odwołują się do ubrań, których nie ma już w Twojej szafie, i zostaną trwale usunięte:</string>
+    <string name="outfits_broken_more">+%d więcej</string>
+    <string name="insights_items_removed">Ubrań nie ma już w szafie</string>
 </resources>

@@ -923,5 +923,7 @@
     <string name="outfits_broken_banner">%d looks usam peças que não estão mais no seu guarda-roupa.</string>
     <string name="outfits_broken_review">Revisar</string>
     <string name="outfits_broken_delete_title">Excluir looks com itens ausentes?</string>
-    <string name="outfits_broken_delete_text">Excluir %d looks que fazem referência a peças que não estão mais no seu guarda-roupa? Não é possível desfazer.</string>
+    <string name="outfits_broken_delete_text">Estes %d looks fazem referência a peças que não estão mais no seu guarda-roupa e serão excluídos permanentemente:</string>
+    <string name="outfits_broken_more">+%d mais</string>
+    <string name="insights_items_removed">Peças que não estão mais no guarda-roupa</string>
 </resources>

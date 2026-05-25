@@ -903,5 +903,7 @@
     <string name="outfits_broken_banner">%d образів використовують речі, яких більше немає у вашому гардеробі.</string>
     <string name="outfits_broken_review">Переглянути</string>
     <string name="outfits_broken_delete_title">Видалити неповні образи?</string>
-    <string name="outfits_broken_delete_text">Видалити %d образів, що посилаються на речі, яких більше немає у вашому гардеробі? Цю дію не можна скасувати.</string>
+    <string name="outfits_broken_delete_text">Ці %d образів посилаються на речі, яких більше немає у вашому гардеробі, і будуть видалені назавжди:</string>
+    <string name="outfits_broken_more">+%d ще</string>
+    <string name="insights_items_removed">Речей більше немає в гардеробі</string>
 </resources>

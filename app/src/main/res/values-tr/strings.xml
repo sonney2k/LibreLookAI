@@ -923,5 +923,7 @@
     <string name="outfits_broken_banner">%d kombin, gardırobunda artık bulunmayan parçaları kullanıyor.</string>
     <string name="outfits_broken_review">İncele</string>
     <string name="outfits_broken_delete_title">Eksik kombinler silinsin mi?</string>
-    <string name="outfits_broken_delete_text">Gardırobunda artık bulunmayan parçalara atıfta bulunan %d kombin silinsin mi? Bu işlem geri alınamaz.</string>
+    <string name="outfits_broken_delete_text">Bu %d kombin, gardırobunda artık bulunmayan parçalara atıfta bulunuyor ve kalıcı olarak silinecek:</string>
+    <string name="outfits_broken_more">+%d daha</string>
+    <string name="insights_items_removed">Parçalar artık gardıropta yok</string>
 </resources>

@@ -923,5 +923,7 @@
     <string name="outfits_broken_banner">%d σύνολα χρησιμοποιούν αντικείμενα που δεν υπάρχουν πλέον στην γκαρνταρόμπα σου.</string>
     <string name="outfits_broken_review">Έλεγχος</string>
     <string name="outfits_broken_delete_title">Διαγραφή ελλιπών συνόλων;</string>
-    <string name="outfits_broken_delete_text">Να διαγραφούν %d σύνολα που αναφέρονται σε αντικείμενα που δεν υπάρχουν πλέον στην γκαρνταρόμπα σου; Δεν μπορεί να αναιρεθεί.</string>
+    <string name="outfits_broken_delete_text">Αυτά τα %d σύνολα αναφέρονται σε αντικείμενα που δεν υπάρχουν πλέον στην γκαρνταρόμπα σου και θα διαγραφούν οριστικά:</string>
+    <string name="outfits_broken_more">+%d ακόμη</string>
+    <string name="insights_items_removed">Αντικείμενα που δεν υπάρχουν πλέον στην γκαρνταρόμπα</string>
 </resources>

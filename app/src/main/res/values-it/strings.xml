@@ -923,5 +923,7 @@
     <string name="outfits_broken_banner">%d outfit usano capi che non sono più nel tuo guardaroba.</string>
     <string name="outfits_broken_review">Rivedi</string>
     <string name="outfits_broken_delete_title">Eliminare gli outfit non validi?</string>
-    <string name="outfits_broken_delete_text">Eliminare %d outfit che fanno riferimento a capi non più presenti nel guardaroba? L\'operazione non è reversibile.</string>
+    <string name="outfits_broken_delete_text">Questi %d outfit fanno riferimento a capi non più presenti nel guardaroba e verranno eliminati definitivamente:</string>
+    <string name="outfits_broken_more">+%d altri</string>
+    <string name="insights_items_removed">Capi non più nel guardaroba</string>
 </resources>

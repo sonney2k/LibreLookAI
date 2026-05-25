@@ -903,5 +903,7 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="outfits_broken_banner">%d trang phục dùng các món không còn trong tủ đồ của bạn.</string>
     <string name="outfits_broken_review">Xem lại</string>
     <string name="outfits_broken_delete_title">Xóa trang phục thiếu món?</string>
-    <string name="outfits_broken_delete_text">Xóa %d trang phục tham chiếu đến các món không còn trong tủ đồ? Không thể hoàn tác.</string>
+    <string name="outfits_broken_delete_text">%d trang phục này tham chiếu đến các món không còn trong tủ đồ và sẽ bị xóa vĩnh viễn:</string>
+    <string name="outfits_broken_more">+%d nữa</string>
+    <string name="insights_items_removed">Các món không còn trong tủ đồ</string>
 </resources>

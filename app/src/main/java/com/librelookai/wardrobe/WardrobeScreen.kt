@@ -1153,60 +1153,84 @@ private fun GridContent(
         }
         var cascadeOutfits by remember(ids) { mutableStateOf(true) }
         var cascadeTryOns by remember(ids) { mutableStateOf(true) }
+        // Re-provide parent context/config so the dialog window honours the in-app language
+        // toggle (an AlertDialog opens its own window; see CLAUDE.md → Dialog quirks).
+        val parentContext = LocalContext.current
+        val parentConfiguration = LocalConfiguration.current
         AlertDialog(
             onDismissRequest = { pendingDeleteIds = null },
-            title = { Text(stringResource(R.string.wardrobe_delete_title)) },
+            title = {
+                CompositionLocalProvider(
+                    LocalContext provides parentContext,
+                    LocalConfiguration provides parentConfiguration,
+                ) { Text(stringResource(R.string.wardrobe_delete_title)) }
+            },
             text = {
-                Column {
-                    Text(stringResource(R.string.wardrobe_delete_text, ids.size))
-                    if (affectedOutfits.isNotEmpty()) {
-                        Spacer(Modifier.height(8.dp))
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable { cascadeOutfits = !cascadeOutfits },
-                        ) {
-                            Checkbox(checked = cascadeOutfits, onCheckedChange = { cascadeOutfits = it })
-                            Text(stringResource(R.string.wardrobe_delete_cascade_outfits, affectedOutfits.size))
+                CompositionLocalProvider(
+                    LocalContext provides parentContext,
+                    LocalConfiguration provides parentConfiguration,
+                ) {
+                    Column {
+                        Text(stringResource(R.string.wardrobe_delete_text, ids.size))
+                        if (affectedOutfits.isNotEmpty()) {
+                            Spacer(Modifier.height(8.dp))
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable { cascadeOutfits = !cascadeOutfits },
+                            ) {
+                                Checkbox(checked = cascadeOutfits, onCheckedChange = { cascadeOutfits = it })
+                                Text(stringResource(R.string.wardrobe_delete_cascade_outfits, affectedOutfits.size))
+                            }
                         }
-                    }
-                    if (affectedTryOns.isNotEmpty()) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable { cascadeTryOns = !cascadeTryOns },
-                        ) {
-                            Checkbox(checked = cascadeTryOns, onCheckedChange = { cascadeTryOns = it })
-                            Text(stringResource(R.string.wardrobe_delete_cascade_tryons, affectedTryOns.size))
+                        if (affectedTryOns.isNotEmpty()) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable { cascadeTryOns = !cascadeTryOns },
+                            ) {
+                                Checkbox(checked = cascadeTryOns, onCheckedChange = { cascadeTryOns = it })
+                                Text(stringResource(R.string.wardrobe_delete_cascade_tryons, affectedTryOns.size))
+                            }
                         }
                     }
                 }
             },
             confirmButton = {
-                TextButton(
-                    onClick = {
-                        Analytics.action(
-                            "Wardrobe", "confirm_delete_selected",
-                            mapOf(
-                                "count" to ids.size.toString(),
-                                "outfits" to (if (cascadeOutfits) affectedOutfits.size else 0).toString(),
-                                "tryons" to (if (cascadeTryOns) affectedTryOns.size else 0).toString(),
-                            ),
-                        )
-                        onDeleteItems(ids)
-                        if (cascadeOutfits && affectedOutfits.isNotEmpty()) onDeleteOutfits(affectedOutfits.map { it.id })
-                        if (cascadeTryOns && affectedTryOns.isNotEmpty()) onDeleteTryOns(affectedTryOns)
-                        pendingDeleteIds = null
-                    }
+                CompositionLocalProvider(
+                    LocalContext provides parentContext,
+                    LocalConfiguration provides parentConfiguration,
                 ) {
-                    Text(stringResource(R.string.action_delete), color = MaterialTheme.colorScheme.error)
+                    TextButton(
+                        onClick = {
+                            Analytics.action(
+                                "Wardrobe", "confirm_delete_selected",
+                                mapOf(
+                                    "count" to ids.size.toString(),
+                                    "outfits" to (if (cascadeOutfits) affectedOutfits.size else 0).toString(),
+                                    "tryons" to (if (cascadeTryOns) affectedTryOns.size else 0).toString(),
+                                ),
+                            )
+                            onDeleteItems(ids)
+                            if (cascadeOutfits && affectedOutfits.isNotEmpty()) onDeleteOutfits(affectedOutfits.map { it.id })
+                            if (cascadeTryOns && affectedTryOns.isNotEmpty()) onDeleteTryOns(affectedTryOns)
+                            pendingDeleteIds = null
+                        }
+                    ) {
+                        Text(stringResource(R.string.action_delete), color = MaterialTheme.colorScheme.error)
+                    }
                 }
             },
             dismissButton = {
-                TextButton(onClick = { pendingDeleteIds = null }) {
-                    Text(stringResource(R.string.action_cancel))
+                CompositionLocalProvider(
+                    LocalContext provides parentContext,
+                    LocalConfiguration provides parentConfiguration,
+                ) {
+                    TextButton(onClick = { pendingDeleteIds = null }) {
+                        Text(stringResource(R.string.action_cancel))
+                    }
                 }
             }
         )

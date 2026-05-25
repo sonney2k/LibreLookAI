@@ -903,5 +903,7 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="outfits_broken_banner">%d szett olyan darabokat használ, amelyek már nincsenek a ruhatáradban.</string>
     <string name="outfits_broken_review">Áttekintés</string>
     <string name="outfits_broken_delete_title">Törlöd a hiányos szetteket?</string>
-    <string name="outfits_broken_delete_text">Törlöd azt a(z) %d szettet, amely már nem létező darabokra hivatkozik? Ezt nem lehet visszavonni.</string>
+    <string name="outfits_broken_delete_text">Ez a(z) %d szett már nem létező darabokra hivatkozik, és véglegesen törlődik:</string>
+    <string name="outfits_broken_more">+%d további</string>
+    <string name="insights_items_removed">A darabok már nincsenek a ruhatárban</string>
 </resources>

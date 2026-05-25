@@ -923,5 +923,7 @@
     <string name="outfits_broken_banner">%d outfits använder plagg som inte längre finns i din garderob.</string>
     <string name="outfits_broken_review">Granska</string>
     <string name="outfits_broken_delete_title">Ta bort ofullständiga outfits?</string>
-    <string name="outfits_broken_delete_text">Ta bort %d outfits som hänvisar till plagg som inte längre finns i din garderob? Det går inte att ångra.</string>
+    <string name="outfits_broken_delete_text">Dessa %d outfits hänvisar till plagg som inte längre finns i din garderob och tas bort permanent:</string>
+    <string name="outfits_broken_more">+%d till</string>
+    <string name="insights_items_removed">Plagg finns inte längre i garderoben</string>
 </resources>

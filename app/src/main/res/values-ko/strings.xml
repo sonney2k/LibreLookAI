@@ -923,5 +923,7 @@
     <string name="outfits_broken_banner">%d개의 코디가 옷장에 더 이상 없는 아이템을 사용합니다.</string>
     <string name="outfits_broken_review">검토</string>
     <string name="outfits_broken_delete_title">불완전한 코디를 삭제할까요?</string>
-    <string name="outfits_broken_delete_text">옷장에 더 이상 없는 아이템을 참조하는 코디 %d개를 삭제할까요? 되돌릴 수 없습니다.</string>
+    <string name="outfits_broken_delete_text">이 %d개의 코디는 옷장에 더 이상 없는 아이템을 참조하며 영구적으로 삭제됩니다:</string>
+    <string name="outfits_broken_more">외 %d개</string>
+    <string name="insights_items_removed">옷장에 없는 아이템</string>
 </resources>

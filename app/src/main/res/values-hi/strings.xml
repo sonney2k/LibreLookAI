@@ -903,5 +903,7 @@
     <string name="outfits_broken_banner">%d आउटफ़िट ऐसे आइटम का उपयोग करते हैं जो अब आपके वॉर्डरोब में नहीं हैं।</string>
     <string name="outfits_broken_review">समीक्षा करें</string>
     <string name="outfits_broken_delete_title">अधूरे आउटफ़िट हटाएं?</string>
-    <string name="outfits_broken_delete_text">%d आउटफ़िट हटाएं जो अब वॉर्डरोब में मौजूद नहीं रहे आइटम का संदर्भ देते हैं? इसे पूर्ववत नहीं किया जा सकता।</string>
+    <string name="outfits_broken_delete_text">ये %d आउटफ़िट ऐसे आइटम का संदर्भ देते हैं जो अब आपके वॉर्डरोब में नहीं हैं और स्थायी रूप से हटा दिए जाएंगे:</string>
+    <string name="outfits_broken_more">+%d और</string>
+    <string name="insights_items_removed">आइटम अब वॉर्डरोब में नहीं हैं</string>
 </resources>

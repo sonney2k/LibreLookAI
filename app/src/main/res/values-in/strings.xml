@@ -903,5 +903,7 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="outfits_broken_banner">%d outfit memakai item yang tidak ada lagi di lemari kamu.</string>
     <string name="outfits_broken_review">Tinjau</string>
     <string name="outfits_broken_delete_title">Hapus outfit yang tidak lengkap?</string>
-    <string name="outfits_broken_delete_text">Hapus %d outfit yang merujuk ke item yang tidak ada lagi di lemari kamu? Ini tidak bisa dibatalkan.</string>
+    <string name="outfits_broken_delete_text">%d outfit ini merujuk ke item yang tidak ada lagi di lemari kamu dan akan dihapus permanen:</string>
+    <string name="outfits_broken_more">+%d lainnya</string>
+    <string name="insights_items_removed">Item tidak ada lagi di lemari</string>
 </resources>

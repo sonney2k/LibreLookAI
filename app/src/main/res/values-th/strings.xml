@@ -903,5 +903,7 @@
     <string name="outfits_broken_banner">%d ชุดใช้ไอเท็มที่ไม่มีอยู่ในตู้เสื้อผ้าของคุณแล้ว</string>
     <string name="outfits_broken_review">ตรวจสอบ</string>
     <string name="outfits_broken_delete_title">ลบชุดที่ไม่สมบูรณ์หรือไม่</string>
-    <string name="outfits_broken_delete_text">ลบ %d ชุดที่อ้างอิงไอเท็มที่ไม่มีอยู่ในตู้เสื้อผ้าแล้วหรือไม่ การทำเช่นนี้ไม่สามารถยกเลิกได้</string>
+    <string name="outfits_broken_delete_text">ชุด %d ชุดเหล่านี้อ้างอิงไอเท็มที่ไม่มีอยู่ในตู้เสื้อผ้าแล้ว และจะถูกลบอย่างถาวร:</string>
+    <string name="outfits_broken_more">อีก %d รายการ</string>
+    <string name="insights_items_removed">ไอเท็มไม่อยู่ในตู้เสื้อผ้าแล้ว</string>
 </resources>

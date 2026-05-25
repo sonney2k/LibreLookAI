@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -265,7 +266,7 @@ fun OutfitsScreen(
                     onTryOnStyle = onTryOnStyle,
                     canTryOn = canTryOn,
                     onSettingsClick = onSettingsClick,
-                    brokenOutfitCount = brokenOutfits.size,
+                    brokenOutfits = brokenOutfits,
                     onDeleteBrokenOutfits = {
                         outfitsViewModel.deleteOutfitsByIds(brokenOutfits.map { it.id })
                     },
@@ -398,7 +399,7 @@ private fun OutfitListScreen(
     onTryOnStyle: (Outfit) -> Unit = {},
     canTryOn: Boolean = false,
     onSettingsClick: () -> Unit = {},
-    brokenOutfitCount: Int = 0,
+    brokenOutfits: List<Outfit> = emptyList(),
     onDeleteBrokenOutfits: () -> Unit = {},
     modifier: Modifier = Modifier,
     wardrobeViewModel: WardrobeViewModel,
@@ -486,39 +487,110 @@ private fun OutfitListScreen(
     var showBrokenDeleteDialog by remember { mutableStateOf(false) }
 
     if (showBrokenDeleteDialog) {
+        // Capture parent context/config OUTSIDE the dialog so stringResource honours the
+        // in-app language toggle inside the dialog window. (See CLAUDE.md → Dialog quirks.)
+        val parentContext = LocalContext.current
+        val parentConfiguration = LocalConfiguration.current
+        val unnamed = stringResource(R.string.outfits_unnamed)
+        val shown = remember(brokenOutfits) { brokenOutfits.take(8) }
         AlertDialog(
             onDismissRequest = { showBrokenDeleteDialog = false },
-            title = { Text(stringResource(R.string.outfits_broken_delete_title)) },
-            text = { Text(stringResource(R.string.outfits_broken_delete_text, brokenOutfitCount)) },
+            title = {
+                CompositionLocalProvider(
+                    LocalContext provides parentContext,
+                    LocalConfiguration provides parentConfiguration,
+                ) { Text(stringResource(R.string.outfits_broken_delete_title)) }
+            },
+            text = {
+                CompositionLocalProvider(
+                    LocalContext provides parentContext,
+                    LocalConfiguration provides parentConfiguration,
+                ) {
+                    Column(
+                        modifier = Modifier.heightIn(max = 320.dp).verticalScroll(rememberScrollState()),
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                    ) {
+                        Text(stringResource(R.string.outfits_broken_delete_text, brokenOutfits.size))
+                        Spacer(Modifier.height(4.dp))
+                        shown.forEach { o ->
+                            Text(
+                                "•  " + o.name.ifBlank { unnamed },
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                        }
+                        if (brokenOutfits.size > shown.size) {
+                            Text(
+                                stringResource(R.string.outfits_broken_more, brokenOutfits.size - shown.size),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                    }
+                }
+            },
             confirmButton = {
-                TextButton(onClick = {
-                    Analytics.action("Outfits", "confirm_delete_broken", mapOf("count" to brokenOutfitCount.toString()))
-                    onDeleteBrokenOutfits(); showBrokenDeleteDialog = false
-                }) {
-                    Text(stringResource(R.string.action_delete), color = MaterialTheme.colorScheme.error)
+                CompositionLocalProvider(
+                    LocalContext provides parentContext,
+                    LocalConfiguration provides parentConfiguration,
+                ) {
+                    TextButton(onClick = {
+                        Analytics.action("Outfits", "confirm_delete_broken", mapOf("count" to brokenOutfits.size.toString()))
+                        onDeleteBrokenOutfits(); showBrokenDeleteDialog = false
+                    }) {
+                        Text(stringResource(R.string.action_delete), color = MaterialTheme.colorScheme.error)
+                    }
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showBrokenDeleteDialog = false }) { Text(stringResource(R.string.action_cancel)) }
+                CompositionLocalProvider(
+                    LocalContext provides parentContext,
+                    LocalConfiguration provides parentConfiguration,
+                ) {
+                    TextButton(onClick = { showBrokenDeleteDialog = false }) { Text(stringResource(R.string.action_cancel)) }
+                }
             },
         )
     }
 
     if (showDeleteDialog) {
+        // Re-provide parent context/config so the dialog window honours the in-app language
+        // toggle (an AlertDialog opens its own window; see CLAUDE.md → Dialog quirks).
+        val parentContext = LocalContext.current
+        val parentConfiguration = LocalConfiguration.current
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text(stringResource(R.string.outfits_delete_selected_title)) },
-            text = { Text(stringResource(R.string.outfits_delete_selected_text, selectedOutfitIds.size)) },
+            title = {
+                CompositionLocalProvider(
+                    LocalContext provides parentContext,
+                    LocalConfiguration provides parentConfiguration,
+                ) { Text(stringResource(R.string.outfits_delete_selected_title)) }
+            },
+            text = {
+                CompositionLocalProvider(
+                    LocalContext provides parentContext,
+                    LocalConfiguration provides parentConfiguration,
+                ) { Text(stringResource(R.string.outfits_delete_selected_text, selectedOutfitIds.size)) }
+            },
             confirmButton = {
-                TextButton(onClick = {
-                    Analytics.action("Outfits", "confirm_delete_selected")
-                    onDeleteSelectedStyles(); showDeleteDialog = false
-                }) {
-                    Text(stringResource(R.string.action_delete), color = MaterialTheme.colorScheme.error)
+                CompositionLocalProvider(
+                    LocalContext provides parentContext,
+                    LocalConfiguration provides parentConfiguration,
+                ) {
+                    TextButton(onClick = {
+                        Analytics.action("Outfits", "confirm_delete_selected")
+                        onDeleteSelectedStyles(); showDeleteDialog = false
+                    }) {
+                        Text(stringResource(R.string.action_delete), color = MaterialTheme.colorScheme.error)
+                    }
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) { Text(stringResource(R.string.action_cancel)) }
+                CompositionLocalProvider(
+                    LocalContext provides parentContext,
+                    LocalConfiguration provides parentConfiguration,
+                ) {
+                    TextButton(onClick = { showDeleteDialog = false }) { Text(stringResource(R.string.action_cancel)) }
+                }
             },
         )
     }
@@ -626,7 +698,7 @@ private fun OutfitListScreen(
             }
 
             // ---- Broken-outfits banner: outfits referencing items no longer in any closet ----
-            if (brokenOutfitCount > 0 && !brokenBannerDismissed && !isSelectionMode) {
+            if (brokenOutfits.isNotEmpty() && !brokenBannerDismissed && !isSelectionMode) {
                 Surface(
                     color = MaterialTheme.colorScheme.errorContainer,
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 6.dp),
@@ -643,13 +715,13 @@ private fun OutfitListScreen(
                             modifier = Modifier.size(20.dp),
                         )
                         Text(
-                            stringResource(R.string.outfits_broken_banner, brokenOutfitCount),
+                            stringResource(R.string.outfits_broken_banner, brokenOutfits.size),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onErrorContainer,
                             modifier = Modifier.weight(1f).padding(horizontal = 8.dp),
                         )
                         TextButton(onClick = {
-                            Analytics.action("Outfits", "open_delete_broken_dialog", mapOf("count" to brokenOutfitCount.toString()))
+                            Analytics.action("Outfits", "open_delete_broken_dialog", mapOf("count" to brokenOutfits.size.toString()))
                             showBrokenDeleteDialog = true
                         }) {
                             Text(stringResource(R.string.outfits_broken_review), color = MaterialTheme.colorScheme.onErrorContainer)

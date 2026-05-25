@@ -903,5 +903,7 @@
     <string name="outfits_broken_banner">%d 套穿搭使用了已不在你衣櫥中的單品。</string>
     <string name="outfits_broken_review">檢視</string>
     <string name="outfits_broken_delete_title">刪除不完整的穿搭？</string>
-    <string name="outfits_broken_delete_text">要刪除參照已不在衣櫥中單品的 %d 套穿搭嗎？此動作無法復原。</string>
+    <string name="outfits_broken_delete_text">這 %d 套穿搭參照了已不在衣櫥中的單品，將被永久刪除：</string>
+    <string name="outfits_broken_more">其他 %d 個</string>
+    <string name="insights_items_removed">已不在衣櫥中的單品</string>
 </resources>

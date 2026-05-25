@@ -527,7 +527,7 @@ private fun OutfitSheetRow(
         }
         if (styleItems.isEmpty()) {
             Text(
-                "Items no longer in wardrobe",
+                stringResource(R.string.insights_items_removed),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.outline,
             )
@@ -865,7 +865,7 @@ private fun StyleStatRow(
                 }
             } else {
                 Text(
-                    "Items no longer in wardrobe",
+                    stringResource(R.string.insights_items_removed),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.outline,
                 )

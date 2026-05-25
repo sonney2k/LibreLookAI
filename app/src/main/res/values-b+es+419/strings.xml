@@ -923,5 +923,7 @@
     <string name="outfits_broken_banner">%d conjuntos usan prendas que ya no están en tu clóset.</string>
     <string name="outfits_broken_review">Revisar</string>
     <string name="outfits_broken_delete_title">¿Eliminar conjuntos incompletos?</string>
-    <string name="outfits_broken_delete_text">¿Eliminar %d conjuntos que hacen referencia a prendas que ya no están en tu clóset? No se puede deshacer.</string>
+    <string name="outfits_broken_delete_text">Estos %d conjuntos hacen referencia a prendas que ya no están en tu clóset y se eliminarán de forma permanente:</string>
+    <string name="outfits_broken_more">+%d más</string>
+    <string name="insights_items_removed">Prendas que ya no están en el clóset</string>
 </resources>

@@ -923,5 +923,7 @@
     <string name="outfits_broken_banner">%d outfits gebruiken items die niet meer in je garderobe staan.</string>
     <string name="outfits_broken_review">Bekijken</string>
     <string name="outfits_broken_delete_title">Onvolledige outfits verwijderen?</string>
-    <string name="outfits_broken_delete_text">%d outfits verwijderen die verwijzen naar items die niet meer in je garderobe staan? Dit kan niet ongedaan worden gemaakt.</string>
+    <string name="outfits_broken_delete_text">Deze %d outfits verwijzen naar items die niet meer in je garderobe staan en worden permanent verwijderd:</string>
+    <string name="outfits_broken_more">+%d meer</string>
+    <string name="insights_items_removed">Items niet meer in garderobe</string>
 </resources>

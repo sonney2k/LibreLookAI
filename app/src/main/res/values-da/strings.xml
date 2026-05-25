@@ -923,5 +923,7 @@
     <string name="outfits_broken_banner">%d outfits bruger ting, der ikke længere er i din garderobe.</string>
     <string name="outfits_broken_review">Gennemse</string>
     <string name="outfits_broken_delete_title">Slet ufuldstændige outfits?</string>
-    <string name="outfits_broken_delete_text">Slet %d outfits, der henviser til ting, der ikke længere er i din garderobe? Dette kan ikke fortrydes.</string>
+    <string name="outfits_broken_delete_text">Disse %d outfits henviser til ting, der ikke længere er i din garderobe, og slettes permanent:</string>
+    <string name="outfits_broken_more">+%d mere</string>
+    <string name="insights_items_removed">Ting ikke længere i garderoben</string>
 </resources>

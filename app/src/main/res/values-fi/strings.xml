@@ -923,5 +923,7 @@
     <string name="outfits_broken_banner">%d asua käyttää vaatteita, joita ei ole enää vaatekaapissasi.</string>
     <string name="outfits_broken_review">Tarkista</string>
     <string name="outfits_broken_delete_title">Poistetaanko puutteelliset asut?</string>
-    <string name="outfits_broken_delete_text">Poistetaanko %d asua, jotka viittaavat vaatteisiin, joita ei ole enää vaatekaapissasi? Tätä ei voi kumota.</string>
+    <string name="outfits_broken_delete_text">Nämä %d asua viittaavat vaatteisiin, joita ei ole enää vaatekaapissasi, ja ne poistetaan pysyvästi:</string>
+    <string name="outfits_broken_more">+%d lisää</string>
+    <string name="insights_items_removed">Vaatteita ei ole enää vaatekaapissa</string>
 </resources>

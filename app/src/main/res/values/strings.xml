@@ -12,6 +12,7 @@
 
     <!-- Insights tab -->
     <string name="insights_title">Insights</string>
+    <string name="insights_items_removed">Items no longer in wardrobe</string>
     <string name="insights_tab_calendar">Calendar</string>
     <string name="insights_tab_wardrobe_stats">Wardrobe Stats</string>
     <string name="insights_tab_calendar_stats">Calendar Stats</string>
@@ -490,7 +491,8 @@
     <string name="outfits_broken_banner">%d outfits use items that are no longer in your wardrobe.</string>
     <string name="outfits_broken_review">Review</string>
     <string name="outfits_broken_delete_title">Delete broken outfits?</string>
-    <string name="outfits_broken_delete_text">Delete %d outfits that reference items no longer in your wardrobe? This cannot be undone.</string>
+    <string name="outfits_broken_delete_text">These %d outfits reference items no longer in your wardrobe and will be permanently deleted:</string>
+    <string name="outfits_broken_more">+%d more</string>
     <string name="outfits_combine">Combine with AI</string>
     <string name="outfit_slot_lock">Lock</string>
     <string name="outfit_slot_unlock">Unlock</string>

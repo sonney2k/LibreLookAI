@@ -903,5 +903,7 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <string name="outfits_broken_banner">%d set pakaian guna item yang tiada lagi dalam almari anda.</string>
     <string name="outfits_broken_review">Semak</string>
     <string name="outfits_broken_delete_title">Padam set pakaian tidak lengkap?</string>
-    <string name="outfits_broken_delete_text">Padam %d set pakaian yang merujuk item yang tiada lagi dalam almari anda? Tindakan ini tidak boleh dibatalkan.</string>
+    <string name="outfits_broken_delete_text">%d set pakaian ini merujuk item yang tiada lagi dalam almari anda dan akan dipadam secara kekal:</string>
+    <string name="outfits_broken_more">+%d lagi</string>
+    <string name="insights_items_removed">Item tiada lagi dalam almari</string>
 </resources>

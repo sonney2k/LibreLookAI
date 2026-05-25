@@ -923,5 +923,7 @@
     <string name="outfits_broken_banner">May %d outfit na gumagamit ng mga item na wala na sa iyong wardrobe.</string>
     <string name="outfits_broken_review">Suriin</string>
     <string name="outfits_broken_delete_title">Tanggalin ang mga kulang na outfit?</string>
-    <string name="outfits_broken_delete_text">Tanggalin ang %d outfit na tumutukoy sa mga item na wala na sa iyong wardrobe? Hindi ito mababawi.</string>
+    <string name="outfits_broken_delete_text">Ang %d outfit na ito ay tumutukoy sa mga item na wala na sa iyong wardrobe at permanenteng buburahin:</string>
+    <string name="outfits_broken_more">+%d pa</string>
+    <string name="insights_items_removed">Wala na sa wardrobe ang mga item</string>
 </resources>

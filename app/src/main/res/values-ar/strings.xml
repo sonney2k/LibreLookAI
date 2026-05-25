@@ -923,5 +923,7 @@
     <string name="outfits_broken_banner">%d إطلالة تستخدم عناصر لم تعد موجودة في خزانتك.</string>
     <string name="outfits_broken_review">مراجعة</string>
     <string name="outfits_broken_delete_title">حذف الإطلالات غير المكتملة؟</string>
-    <string name="outfits_broken_delete_text">هل تريد حذف %d إطلالة تشير إلى عناصر لم تعد موجودة في خزانتك؟ لا يمكن التراجع عن ذلك.</string>
+    <string name="outfits_broken_delete_text">تشير هذه الإطلالات الـ %d إلى عناصر لم تعد موجودة في خزانتك وسيتم حذفها نهائيًا:</string>
+    <string name="outfits_broken_more">+%d أخرى</string>
+    <string name="insights_items_removed">عناصر لم تعد في الخزانة</string>
 </resources>

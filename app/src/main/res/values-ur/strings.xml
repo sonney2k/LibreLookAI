@@ -903,5 +903,7 @@
     <string name="outfits_broken_banner">%d آؤٹ فٹ ایسے آئٹمز استعمال کرتے ہیں جو اب آپ کی الماری میں نہیں ہیں۔</string>
     <string name="outfits_broken_review">جائزہ لیں</string>
     <string name="outfits_broken_delete_title">نامکمل آؤٹ فٹ حذف کریں؟</string>
-    <string name="outfits_broken_delete_text">کیا %d آؤٹ فٹ حذف کریں جو اب الماری میں موجود نہ رہنے والے آئٹمز کا حوالہ دیتے ہیں؟ اسے واپس نہیں کیا جا سکتا۔</string>
+    <string name="outfits_broken_delete_text">یہ %d آؤٹ فٹ ایسے آئٹمز کا حوالہ دیتے ہیں جو اب آپ کی الماری میں نہیں ہیں اور مستقل طور پر حذف کر دیے جائیں گے:</string>
+    <string name="outfits_broken_more">+%d مزید</string>
+    <string name="insights_items_removed">آئٹمز اب الماری میں نہیں ہیں</string>
 </resources>

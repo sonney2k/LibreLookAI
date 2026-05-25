@@ -923,5 +923,7 @@
     <string name="outfits_broken_banner">%d tenues utilisent des articles qui ne sont plus dans ta garde-robe.</string>
     <string name="outfits_broken_review">Vérifier</string>
     <string name="outfits_broken_delete_title">Supprimer les tenues incomplètes ?</string>
-    <string name="outfits_broken_delete_text">Supprimer %d tenues qui font référence à des articles qui ne sont plus dans ta garde-robe ? Action irréversible.</string>
+    <string name="outfits_broken_delete_text">Ces %d tenues font référence à des articles qui ne sont plus dans ta garde-robe et seront définitivement supprimées :</string>
+    <string name="outfits_broken_more">+%d de plus</string>
+    <string name="insights_items_removed">Articles absents de la garde-robe</string>
 </resources>

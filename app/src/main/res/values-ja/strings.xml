@@ -923,5 +923,7 @@
     <string name="outfits_broken_banner">%d 件のコーデが、ワードローブにないアイテムを使っています。</string>
     <string name="outfits_broken_review">確認</string>
     <string name="outfits_broken_delete_title">不完全なコーデを削除しますか？</string>
-    <string name="outfits_broken_delete_text">ワードローブにないアイテムを参照する %d 件のコーデを削除しますか？元に戻せません。</string>
+    <string name="outfits_broken_delete_text">これらの %d 件のコーデは、ワードローブにないアイテムを参照しており、完全に削除されます:</string>
+    <string name="outfits_broken_more">他 %d 件</string>
+    <string name="insights_items_removed">ワードローブにないアイテム</string>
 </resources>
