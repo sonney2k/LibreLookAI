@@ -372,8 +372,12 @@ private fun buildBulkRefinePrompt(
     appendLine(wardrobeJson)
     appendLine()
     appendLine("For each outfit also write a fresh, short name (2–4 words) and a one-sentence")
-    appendLine("description reflecting the re-styled look. Return ONLY a JSON object — no markdown,")
-    appendLine("no extra text — keeping the same outfit ids:")
+    appendLine("description reflecting the re-styled look.")
+    appendLine(
+        "IMPORTANT: Write the name and description in " +
+            "${com.librelookai.settings.AppLanguage.toGeminiName(prefs?.language ?: com.librelookai.settings.AppLanguage.ENGLISH)}.",
+    )
+    appendLine("Return ONLY a JSON object — no markdown, no extra text — keeping the same outfit ids:")
     append("""{"outfits":[{"id":"<existingOutfitId>","itemIds":["<wardrobeItemId>"],"name":"<short name>","description":"<one sentence>"}]}""")
 }
 
