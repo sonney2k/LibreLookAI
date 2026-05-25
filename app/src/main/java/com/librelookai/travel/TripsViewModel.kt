@@ -190,6 +190,26 @@ class TripsViewModel(app: Application) : AndroidViewModel(app) {
     fun setTripConsiderations(tripId: String, considerations: com.librelookai.settings.AiConsiderations) =
         mutateTrip(tripId) { it.copy(considerations = considerations) }
 
+    /** Toggle a wardrobe item's packed state in the trip's packing checklist. */
+    fun toggleTripPackedItem(tripId: String, driveId: String) = mutateTrip(tripId) { trip ->
+        val next = trip.packedItemIds.toMutableSet()
+        if (!next.remove(driveId)) next.add(driveId)
+        trip.copy(packedItemIds = next)
+    }
+
+    /** Toggle an extra item's packed state in the trip's packing checklist. */
+    fun toggleTripPackedExtra(tripId: String, extra: String) = mutateTrip(tripId) { trip ->
+        val next = trip.packedExtras.toMutableSet()
+        if (!next.remove(extra)) next.add(extra)
+        trip.copy(packedExtras = next)
+    }
+
+    /** Replace the trip's additional/extra packing items (also drops stale packed entries). */
+    fun updateTripExtras(tripId: String, extras: List<String>) = mutateTrip(tripId) { trip ->
+        val cleaned = extras.map { it.trim() }.filter { it.isNotEmpty() }.distinct()
+        trip.copy(extraItems = cleaned, packedExtras = trip.packedExtras intersect cleaned.toSet())
+    }
+
     /** Replaces `outfitIds[dayIndex]` with [newOutfitId] (used after editing a day's outfit). */
     fun replaceOutfitAtDay(tripId: String, dayIndex: Int, newOutfitId: String) {
         val current = _state.value.trips.find { it.id == tripId } ?: return

@@ -20,10 +20,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CloudDone
 import androidx.compose.material.icons.filled.Close
@@ -55,6 +57,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
@@ -247,13 +250,24 @@ fun TripViewerScreen(
                             onWear = if (outfit != null && !editing && !previewing && !isOffline) {
                                 { outfitEventsViewModel.recordOutfit(outfit.id) }
                             } else null,
+                            // View mode: tick items off as packed.
+                            packedItemIds = trip.packedItemIds,
+                            onTogglePacked = if (!editing && !previewing) {
+                                { id -> tripsViewModel.toggleTripPackedItem(trip.id, id) }
+                            } else null,
                         )
                     }
 
-                    if (trip.extraItems.isNotEmpty()) {
+                    if (trip.extraItems.isNotEmpty() || (editing && !previewing)) {
                         item {
                             Spacer(Modifier.height(8.dp))
-                            ExtrasCard(items = trip.extraItems)
+                            ExtrasCard(
+                                items = trip.extraItems,
+                                editable = editing && !previewing,
+                                packedExtras = trip.packedExtras,
+                                onTogglePacked = { extra -> tripsViewModel.toggleTripPackedExtra(trip.id, extra) },
+                                onUpdate = { next -> tripsViewModel.updateTripExtras(trip.id, next) },
+                            )
                         }
                     }
 
@@ -649,6 +663,8 @@ private fun TripDayCard(
     overrideItemIds: List<String>? = null,
     overrideName: String? = null,
     overrideDescription: String? = null,
+    packedItemIds: Set<String> = emptySet(),
+    onTogglePacked: ((String) -> Unit)? = null,
 ) {
     val ctx = LocalContext.current
     val effectiveItemIds = overrideItemIds ?: outfit?.itemIds ?: emptyList()
@@ -734,19 +750,34 @@ private fun TripDayCard(
             if (items.isNotEmpty()) {
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     items(items, key = { it.driveId }) { image ->
-                        AsyncImage(
-                            model = remember(image.driveId, image.version) {
-                                ImageRequest.Builder(ctx)
-                                    .data(image.localPath)
-                                    .memoryCacheKey("${image.driveId}_${image.version}")
-                                    .build()
-                            },
-                            contentDescription = image.name,
+                        val packed = image.driveId in packedItemIds
+                        Box(
                             modifier = Modifier
                                 .size(64.dp)
                                 .clip(MaterialTheme.shapes.small),
-                            contentScale = ContentScale.Crop,
-                        )
+                        ) {
+                            AsyncImage(
+                                model = remember(image.driveId, image.version) {
+                                    ImageRequest.Builder(ctx)
+                                        .data(image.localPath)
+                                        .memoryCacheKey("${image.driveId}_${image.version}")
+                                        .build()
+                                },
+                                contentDescription = image.name,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .then(if (packed) Modifier.alpha(0.45f) else Modifier),
+                                contentScale = ContentScale.Crop,
+                            )
+                            // View-mode packing tick — toggles "packed" independently of the card tap.
+                            if (onTogglePacked != null) {
+                                PackedCheck(
+                                    packed = packed,
+                                    onToggle = { onTogglePacked(image.driveId) },
+                                    modifier = Modifier.align(Alignment.TopEnd).padding(3.dp),
+                                )
+                            }
+                        }
                     }
                 }
             } else {
@@ -767,9 +798,50 @@ private fun TripDayCard(
     }
 }
 
+/** Small circular packing tick: filled when packed, hollow outline otherwise. */
+@Composable
+private fun PackedCheck(
+    packed: Boolean,
+    onToggle: () -> Unit,
+    modifier: Modifier = Modifier,
+    size: androidx.compose.ui.unit.Dp = 20.dp,
+) {
+    Box(
+        modifier = modifier
+            .size(size)
+            .clip(CircleShape)
+            .background(
+                if (packed) MaterialTheme.colorScheme.primary
+                else MaterialTheme.colorScheme.surface.copy(alpha = 0.85f),
+            )
+            .border(
+                1.dp,
+                if (packed) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
+                CircleShape,
+            )
+            .clickable(onClick = onToggle),
+        contentAlignment = Alignment.Center,
+    ) {
+        if (packed) {
+            Icon(
+                Icons.Default.Check,
+                contentDescription = stringResource(R.string.trip_packed),
+                tint = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier.size(size * 0.7f),
+            )
+        }
+    }
+}
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun ExtrasCard(items: List<String>) {
+private fun ExtrasCard(
+    items: List<String>,
+    editable: Boolean,
+    packedExtras: Set<String>,
+    onTogglePacked: (String) -> Unit,
+    onUpdate: (List<String>) -> Unit,
+) {
     OutlinedCard(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
     ) {
@@ -782,12 +854,61 @@ private fun ExtrasCard(items: List<String>) {
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.SemiBold,
             )
-            FlowRow(
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-            ) {
+            if (editable) {
+                // Editable list: each row is a removable item; a field at the bottom adds more.
                 items.forEach { item ->
-                    AssistChip(onClick = {}, label = { Text(item) })
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(item, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
+                        IconButton(onClick = { onUpdate(items - item) }) {
+                            Icon(
+                                Icons.Default.Close,
+                                contentDescription = stringResource(R.string.action_remove),
+                                modifier = Modifier.size(18.dp),
+                            )
+                        }
+                    }
+                }
+                var draft by remember { mutableStateOf("") }
+                val keyboardController = LocalSoftwareKeyboardController.current
+                val addDraft = {
+                    val v = draft.trim()
+                    if (v.isNotBlank() && v !in items) onUpdate(items + v)
+                    draft = ""
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    OutlinedTextField(
+                        value = draft,
+                        onValueChange = { draft = it },
+                        singleLine = true,
+                        placeholder = { Text(stringResource(R.string.tryon_add_item)) },
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                        modifier = Modifier.weight(1f),
+                    )
+                    Spacer(Modifier.width(4.dp))
+                    IconButton(onClick = { addDraft(); keyboardController?.hide() }, enabled = draft.isNotBlank()) {
+                        Icon(Icons.Default.Add, contentDescription = stringResource(R.string.action_add))
+                    }
+                }
+            } else {
+                // View mode: each item is a packing checkbox row.
+                items.forEach { item ->
+                    val packed = item in packedExtras
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { onTogglePacked(item) },
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        PackedCheck(packed = packed, onToggle = { onTogglePacked(item) })
+                        Text(
+                            item,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = if (packed) MaterialTheme.colorScheme.onSurfaceVariant
+                                    else MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.weight(1f).then(if (packed) Modifier.alpha(0.6f) else Modifier),
+                        )
+                    }
                 }
             }
         }

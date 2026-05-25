@@ -876,6 +876,7 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="trip_saved_confirmation">Utazás és szettek mentve</string>
     <string name="trip_not_found">Trip not found.</string>
     <string name="trip_day_header">%1$d. nap</string>
+    <string name="trip_packed">Becsomagolva</string>
     <string name="trip_no_destination">Untitled trip</string>
     <string name="trip_meta_dates">Start %1$s • %2$d days</string>
     <string name="trip_rename">Rename</string>

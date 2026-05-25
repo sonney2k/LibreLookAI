@@ -27,5 +27,9 @@ data class Trip(
     val outfitIds: List<String> = emptyList(),
     val extraItems: List<String> = emptyList(),
     val reason: String = "",
+    /** Packing checklist: wardrobe item Drive IDs the user has marked as packed. */
+    val packedItemIds: Set<String> = emptySet(),
+    /** Packing checklist: [extraItems] entries the user has marked as packed. */
+    val packedExtras: Set<String> = emptySet(),
     val createdAt: Long = System.currentTimeMillis(),
 )

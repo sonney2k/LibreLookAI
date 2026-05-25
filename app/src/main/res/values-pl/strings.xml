@@ -896,6 +896,7 @@
     <string name="trip_saved_confirmation">Zapisano podróż i stylizacje</string>
     <string name="trip_not_found">Trip not found.</string>
     <string name="trip_day_header">Dzień %1$d</string>
+    <string name="trip_packed">Spakowane</string>
     <string name="trip_no_destination">Untitled trip</string>
     <string name="trip_meta_dates">Start %1$s • %2$d days</string>
     <string name="trip_rename">Rename</string>

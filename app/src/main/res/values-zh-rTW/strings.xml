@@ -876,6 +876,7 @@
     <string name="trip_saved_confirmation">行程與穿搭已儲存</string>
     <string name="trip_not_found">Trip not found.</string>
     <string name="trip_day_header">第 %1$d 天</string>
+    <string name="trip_packed">已打包</string>
     <string name="trip_no_destination">Untitled trip</string>
     <string name="trip_meta_dates">Start %1$s • %2$d days</string>
     <string name="trip_rename">Rename</string>
