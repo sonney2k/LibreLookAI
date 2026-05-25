@@ -206,45 +206,36 @@ fun TryOnComposerScreen(
             containerColor = Color.Transparent,
             contentWindowInsets = WindowInsets(0),
             topBar = {
-                // Compact header matching AppScreenHeader's metrics (8.dp top/bottom + divider)
-                // rather than the taller M3 TopAppBar, so the try-on screens get the same slim
-                // top padding as the Outfits / Wardrobe screens.
-                val isCaveat = com.librelookai.ui.theme.LocalAppFont.current ==
-                    com.librelookai.settings.AppFont.CAVEAT
-                Column {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 4.dp, end = 8.dp, top = 8.dp, bottom = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        IconButton(onClick = {
-                            Analytics.action("TryOn", "close")
-                            when {
-                                viewing != null && state.historyDetailIsRoot -> tryOnViewModel.close()
-                                viewing != null     -> tryOnViewModel.dismissViewingTryOn()
-                                state.isHistoryOpen && state.historyIsRoot -> tryOnViewModel.close()
-                                state.isHistoryOpen -> tryOnViewModel.closeHistory()
-                                else                -> tryOnViewModel.close()
-                            }
-                        }) { Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_dismiss)) }
-                        Spacer(Modifier.width(4.dp))
-                        Text(
-                            when {
-                                viewing != null         -> stringResource(R.string.tryon_history_detail_title)
-                                state.isHistoryOpen     -> stringResource(R.string.tryon_history_title)
-                                else                    -> stringResource(R.string.tryon_title)
-                            },
-                            style = if (isCaveat) MaterialTheme.typography.headlineLarge
-                                    else MaterialTheme.typography.titleMedium,
-                            fontWeight = if (isCaveat) FontWeight.Bold else FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            maxLines = 1,
-                            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
-                            modifier = Modifier.weight(1f),
-                        )
-                    }
-                    HorizontalDivider()
+                // Mirror the sibling picker dialogs (AddItemSheet / OutfitPickerDialog /
+                // TripOutfitPickerDialog) exactly — 4.dp top/bottom, no divider — so the slim top
+                // header is consistent across every try-on surface regardless of entry source.
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 4.dp, end = 16.dp, top = 4.dp, bottom = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    IconButton(onClick = {
+                        Analytics.action("TryOn", "close")
+                        when {
+                            viewing != null && state.historyDetailIsRoot -> tryOnViewModel.close()
+                            viewing != null     -> tryOnViewModel.dismissViewingTryOn()
+                            state.isHistoryOpen && state.historyIsRoot -> tryOnViewModel.close()
+                            state.isHistoryOpen -> tryOnViewModel.closeHistory()
+                            else                -> tryOnViewModel.close()
+                        }
+                    }) { Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_dismiss)) }
+                    Text(
+                        when {
+                            viewing != null         -> stringResource(R.string.tryon_history_detail_title)
+                            state.isHistoryOpen     -> stringResource(R.string.tryon_history_title)
+                            else                    -> stringResource(R.string.tryon_title)
+                        },
+                        style = MaterialTheme.typography.titleMedium,
+                        maxLines = 1,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f),
+                    )
                 }
             },
         ) { innerPadding ->
