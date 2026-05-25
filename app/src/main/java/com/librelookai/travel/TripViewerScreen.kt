@@ -558,31 +558,33 @@ private fun TripMetaSection(
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            if (editable && renaming) {
-                OutlinedTextField(
-                    value = draftName,
-                    onValueChange = { draftName = it },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    modifier = Modifier.weight(1f),
-                )
-                Spacer(Modifier.width(4.dp))
-                IconButton(onClick = {
-                    val v = draftName.trim()
-                    if (v.isNotBlank() && v != trip.name) onRename(v)
-                    renaming = false
-                    keyboardController?.hide()
-                }) {
-                    Icon(Icons.Default.Check, contentDescription = stringResource(R.string.action_ok))
-                }
-            } else {
-                Text(
-                    trip.destination.ifBlank { stringResource(R.string.trip_no_destination) },
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.weight(1f),
-                )
-                if (editable) {
+        // The view-mode header already shows the trip name, so only render the name/destination
+        // row when editing (where it's needed to rename the trip).
+        if (editable) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                if (renaming) {
+                    OutlinedTextField(
+                        value = draftName,
+                        onValueChange = { draftName = it },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                        modifier = Modifier.weight(1f),
+                    )
+                    Spacer(Modifier.width(4.dp))
+                    IconButton(onClick = {
+                        val v = draftName.trim()
+                        if (v.isNotBlank() && v != trip.name) onRename(v)
+                        renaming = false
+                        keyboardController?.hide()
+                    }) {
+                        Icon(Icons.Default.Check, contentDescription = stringResource(R.string.action_ok))
+                    }
+                } else {
+                    Text(
+                        trip.destination.ifBlank { stringResource(R.string.trip_no_destination) },
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.weight(1f),
+                    )
                     IconButton(onClick = { renaming = true; draftName = trip.name }) {
                         Icon(Icons.Default.Edit, contentDescription = stringResource(R.string.trip_rename))
                     }
