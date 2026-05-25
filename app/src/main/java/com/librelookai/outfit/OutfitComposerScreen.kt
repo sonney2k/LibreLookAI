@@ -219,7 +219,10 @@ fun OutfitComposerScreen(
     }
     val effectiveBottom = maxOf(barInsets.calculateBottomPadding(), rootInsetBottomDp, 48.dp)
 
-    val filledSlots = s.composerSlots.count { it.selectedItemId != null }
+    // Effective slots drop the empty Top/Bottom (or empty OnePiece) collapsed away by a
+    // one-piece, so counts and completeness treat a dress outfit as fully filled.
+    val effectiveSlots = collapseOnePieceSlots(s.composerSlots)
+    val filledSlots = effectiveSlots.count { it.selectedItemId != null }
 
     Dialog(
         onDismissRequest = requestClose,
@@ -252,7 +255,7 @@ fun OutfitComposerScreen(
                         if (isEditMode) {
                             ComposerHeader(
                                 filledSlots = filledSlots,
-                                totalSlots = s.composerSlots.size,
+                                totalSlots = effectiveSlots.size,
                                 onClose = requestClose,
                                 onOpenFullscreen = {
                                     stylesViewModel.setComposerMode(ComposerMode.VIEW)
@@ -413,12 +416,13 @@ fun OutfitComposerScreen(
                         if (isEditMode) {
                             // AI can only act on slots that are not (locked AND filled).
                             // If every slot is locked + has an item, there's nothing for AI to do.
-                            val aiCanGenerate = s.composerSlots.any {
+                            // Collapsed-away empties don't count — a dress outfit can still be complete.
+                            val aiCanGenerate = effectiveSlots.any {
                                 !(it.isLocked && it.selectedItemId != null)
                             }
                             ComposerEditBottomBar(
-                                saveEnabled = s.composerSlots.isNotEmpty() &&
-                                    s.composerSlots.all { it.selectedItemId != null },
+                                saveEnabled = effectiveSlots.isNotEmpty() &&
+                                    effectiveSlots.all { it.selectedItemId != null },
                                 aiEnabled = aiCanGenerate,
                                 isOffline = isOffline,
                                 onGenerateWithAi = {
@@ -883,9 +887,11 @@ private fun ComposerStackedView(
     onRemove: (slotId: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    // In view mode, hide empty silhouettes — match OutfitFullScreenViewer rendering.
+    // A filled one-piece collapses the empty Top/Bottom slots it covers (and vice versa).
+    // In view mode, also hide remaining empty silhouettes — match OutfitFullScreenViewer.
     val visibleSlots = remember(slots, isEditMode) {
-        if (isEditMode) slots else slots.filter { it.selectedItemId != null }
+        val collapsed = collapseOnePieceSlots(slots)
+        if (isEditMode) collapsed else collapsed.filter { it.selectedItemId != null }
     }
     val rows: List<List<OutfitSlot>> = remember(visibleSlots) {
         val grouped = visibleSlots.groupBy { it.category }

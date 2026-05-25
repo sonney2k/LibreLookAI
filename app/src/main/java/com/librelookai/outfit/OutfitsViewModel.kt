@@ -923,7 +923,9 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             if (newItemId != null) slot.copy(selectedItemId = newItemId, isLocked = false)
             else slot
         }
-    }
+        // Safety net for the one-piece rule: a well-behaved model won't fill both, but if it does,
+        // a filled one-piece (or a locked side) wins and the redundant top/bottom is dropped.
+    }.let(::normalizeOnePieceExclusion)
 
     fun clearComposerError() = _state.update { it.copy(composerError = null) }
 
@@ -941,9 +943,16 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun setSlotItem(slotId: String, itemId: String?) = _state.update { s ->
+        val target = s.composerSlots.find { it.id == slotId }
         val newSlots = s.composerSlots.map { slot ->
-            if (slot.id == slotId) slot.copy(selectedItemId = itemId, isLocked = itemId != null)
-            else slot
+            when {
+                slot.id == slotId -> slot.copy(selectedItemId = itemId, isLocked = itemId != null)
+                // A one-piece covers top + bottom: picking one clears the opposing slots (and vice
+                // versa). The just-touched slot always wins.
+                itemId != null && target != null && onePieceConflict(target.category, slot.category) ->
+                    slot.copy(selectedItemId = null, isLocked = false)
+                else -> slot
+            }
         }
         val slotItemIds = newSlots.mapNotNull { it.selectedItemId }.distinct()
         s.copy(composerSlots = newSlots, composerItemIds = slotItemIds)
@@ -1688,6 +1697,10 @@ private fun buildComposerPrompt(
         appendLine("Each slot has an id, category, and optionally a required itemId (locked by user).")
         appendLine("For slots WITHOUT a requiredItemId, pick an appropriate item from the wardrobe.")
         appendLine("For slots WITH a requiredItemId, include that exact item unchanged.")
+        appendLine("A OnePiece (dress, gown, jumpsuit, romper, suit) covers BOTH the Top and the Bottom — it is mutually exclusive with the Top and Bottom slots:")
+        appendLine("- If you fill a OnePiece slot, leave any Top and Bottom slots empty.")
+        appendLine("- If you fill a Top or Bottom slot, leave any OnePiece slot empty.")
+        appendLine("- Never combine a one-piece with a separate top or bottom in the same outfit.")
         slots.forEach { slot ->
             val req = if (slot.isLocked && slot.selectedItemId != null) """ "requiredItemId":"${slot.selectedItemId}"""" else ""
             appendLine("""{"slotId":"${slot.id}","category":"${slot.category.name}"$req}""")
@@ -1721,7 +1734,7 @@ private fun buildComposerPrompt(
                 else -> "$count distinct outfit variants"
             }
             appendLine("Compose $countWord that fit the constraints above, ranked from best to worst.")
-            appendLine("Each variant must fill EVERY non-locked slot and must respect every locked slot's requiredItemId.")
+            appendLine("Each variant must fill EVERY non-locked slot (except slots left empty by the one-piece rule above) and must respect every locked slot's requiredItemId.")
             appendLine("Variants should differ meaningfully from each other (swap key items, change colour palette, change vibe) — do not just shuffle one outfit.")
             appendLine("Return exactly $count entries in the suggestions array (or fewer if the wardrobe cannot yield that many distinct outfits).")
             appendLine("Respond with ONLY a valid JSON object — no markdown, no extra text:")
