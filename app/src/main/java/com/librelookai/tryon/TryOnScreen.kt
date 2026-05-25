@@ -531,6 +531,7 @@ private fun TryOnComposerContent(
                 wardrobeViewModel.findSimilarInCandidates(file, candidates)
                     .associate { it.driveId to it.score }
             },
+            allowMultiSelect = true,
             onConfirm = { ids ->
                 onAddItems(ids)
                 showItemPicker = false

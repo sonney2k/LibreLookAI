@@ -1388,6 +1388,9 @@ internal fun AddItemSheet(
     popularityMap: Map<String, Int> = emptyMap(),
     onTextFilter: (String, List<DriveImage>) -> List<DriveImage> = { _, items -> items },
     findSimilarByPhoto: (suspend (java.io.File, List<DriveImage>) -> Map<String, Float>)? = null,
+    // When true, a long-press starts multi-select: tap toggles items and a FAB confirms the
+    // batch. When false (default, e.g. single-slot exchange) a tap confirms one item immediately.
+    allowMultiSelect: Boolean = false,
     onConfirm: (Set<String>) -> Unit,
     onDismiss: () -> Unit,
 ) {
@@ -1407,6 +1410,9 @@ internal fun AddItemSheet(
     var capturing by remember { mutableStateOf(false) }
     var photoScores by remember { mutableStateOf<Map<String, Float>?>(null) }
     var photoSearching by remember { mutableStateOf(false) }
+    // Multi-select picks (only used when allowMultiSelect); long-press starts the mode.
+    var pickedIds by remember { mutableStateOf(emptySet<String>()) }
+    val selectionMode = allowMultiSelect && pickedIds.isNotEmpty()
     val photoScope = androidx.compose.runtime.rememberCoroutineScope()
     val tagCategories = remember(candidates) { candidates.tagCategories() }
     val filtered = remember(candidates, selectedTags, textQuery, photoScores) {
@@ -1463,6 +1469,8 @@ internal fun AddItemSheet(
             LocalConfiguration provides parentConfiguration,
         ) {
             val barInsets = LocalSystemBarsPadding.current
+            // Back exits multi-select before dismissing the picker.
+            if (selectionMode) BackHandler { pickedIds = emptySet() }
             Surface(
                 modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colorScheme.background,
@@ -1541,11 +1549,21 @@ internal fun AddItemSheet(
                         Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
                             com.librelookai.wardrobe.WardrobeZoomableItemGrid(
                                 images = displayed,
-                                selectedIds = emptySet(),
+                                selectedIds = if (allowMultiSelect) pickedIds else emptySet(),
                                 onClick = { _, image ->
-                                    onConfirm(setOf(image.driveId))
+                                    if (selectionMode) {
+                                        pickedIds = if (image.driveId in pickedIds) pickedIds - image.driveId
+                                                    else pickedIds + image.driveId
+                                    } else {
+                                        onConfirm(setOf(image.driveId))
+                                    }
                                 },
-                                onLongClick = { },
+                                onLongClick = { image ->
+                                    if (allowMultiSelect) {
+                                        pickedIds = if (image.driveId in pickedIds) pickedIds - image.driveId
+                                                    else pickedIds + image.driveId
+                                    }
+                                },
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .padding(bottom = barInsets.calculateBottomPadding()),
@@ -1553,6 +1571,18 @@ internal fun AddItemSheet(
                             )
                             if (photoSearching) {
                                 AiProcessingOverlay(modifier = Modifier.fillMaxSize())
+                            }
+                            // Confirm the multi-select batch.
+                            if (selectionMode) {
+                                ExtendedFloatingActionButton(
+                                    onClick = { onConfirm(pickedIds) },
+                                    icon = { Icon(Icons.Default.Check, contentDescription = null) },
+                                    text = { Text("${stringResource(R.string.action_add)} (${pickedIds.size})") },
+                                    modifier = Modifier
+                                        .align(Alignment.BottomEnd)
+                                        .padding(16.dp)
+                                        .padding(bottom = barInsets.calculateBottomPadding()),
+                                )
                             }
                         }
                     }
