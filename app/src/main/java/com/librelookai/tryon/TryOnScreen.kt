@@ -23,11 +23,12 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Check
@@ -249,30 +250,40 @@ fun TryOnComposerScreen(
             Box(Modifier.fillMaxSize().padding(innerPadding)) {
                 when {
                     viewing != null -> {
-                        val sourceOutfit = remember(viewing.sourceOutfitId, outfits) {
-                            viewing.sourceOutfitId?.let { id -> outfits.firstOrNull { it.id == id } }
-                        }
-                        TryOnDetailContent(
-                            tryOn = viewing,
-                            wardrobeImages = combinedImages,
-                            sourceOutfit = sourceOutfit,
-                            onOpenSourceOutfit = onOpenSourceOutfit?.let { open ->
-                                { sourceOutfit?.let(open) }
-                            },
-                            onDelete = { tryOnViewModel.deleteTryOn(viewing) },
-                            onItemTap = { img -> detailViewerImage = img },
-                            onRegenerate = {
-                                Analytics.action("TryOn/Detail", "regenerate")
-                                val ids = viewing.itemNames
-                                    .mapNotNull { n -> combinedImages.firstOrNull { it.name == n } }
-                                    .map { it.driveId }.toSet()
-                                tryOnViewModel.openComposer(
-                                    ids, viewing.sourceOutfitId,
-                                    tryOnSourceKindOf(viewing.sourceKind),
-                                    viewing.sourceContext.takeIf { it.isNotBlank() },
+                        // Swipe left/right between past try-ons. The pager spans the full history;
+                        // settling on a page syncs viewingTryOn so delete/regenerate act on it.
+                        val history = state.history
+                        val startIndex = history
+                            .indexOfFirst { it.imageDriveId == viewing.imageDriveId }
+                            .coerceAtLeast(0)
+                        if (history.isEmpty()) {
+                            TryOnDetailPage(
+                                tryOn = viewing,
+                                combinedImages = combinedImages,
+                                outfits = outfits,
+                                onOpenSourceOutfit = onOpenSourceOutfit,
+                                onItemTap = { img -> detailViewerImage = img },
+                                tryOnViewModel = tryOnViewModel,
+                            )
+                        } else {
+                            val pagerState = rememberPagerState(
+                                initialPage = startIndex.coerceIn(0, history.lastIndex),
+                                pageCount = { history.size },
+                            )
+                            LaunchedEffect(pagerState.currentPage, history) {
+                                history.getOrNull(pagerState.currentPage)?.let { tryOnViewModel.viewTryOn(it) }
+                            }
+                            HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
+                                TryOnDetailPage(
+                                    tryOn = history[page],
+                                    combinedImages = combinedImages,
+                                    outfits = outfits,
+                                    onOpenSourceOutfit = onOpenSourceOutfit,
+                                    onItemTap = { img -> detailViewerImage = img },
+                                    tryOnViewModel = tryOnViewModel,
                                 )
-                            },
-                        )
+                            }
+                        }
                     }
 
                     state.isHistoryOpen -> TryOnHistoryFeed(
@@ -471,8 +482,8 @@ private fun TryOnComposerContent(
             if (chosenImages.isNotEmpty()) {
                 TryOnItemStack(
                     images = chosenImages,
-                    onRemove = onRemoveItem,
                     modifier = Modifier.fillMaxWidth(),
+                    onRemove = onRemoveItem,
                 )
             }
 
@@ -569,8 +580,9 @@ private fun TryOnComposerContent(
 @Composable
 private fun TryOnItemStack(
     images: List<DriveImage>,
-    onRemove: (String) -> Unit,
     modifier: Modifier = Modifier,
+    onItemClick: ((DriveImage) -> Unit)? = null,
+    onRemove: ((String) -> Unit)? = null,
 ) {
     val rows: List<List<DriveImage>> = remember(images) {
         val grouped = images.groupBy { bucketFor(it) }
@@ -600,7 +612,8 @@ private fun TryOnItemStack(
                 TryOnStackTile(
                     image = image,
                     size = tileSize,
-                    onRemove = { onRemove(image.driveId) },
+                    onClick = onItemClick?.let { { it(image) } },
+                    onRemove = onRemove?.let { { it(image.driveId) } },
                     modifier = Modifier.offset(x = left, y = rowTop),
                 )
             }
@@ -612,7 +625,8 @@ private fun TryOnItemStack(
 private fun TryOnStackTile(
     image: DriveImage,
     size: Dp,
-    onRemove: () -> Unit,
+    onClick: (() -> Unit)?,
+    onRemove: (() -> Unit)?,
     modifier: Modifier = Modifier,
 ) {
     val ctx = LocalContext.current
@@ -622,7 +636,11 @@ private fun TryOnStackTile(
             .memoryCacheKey("${image.driveId}_${image.version}")
             .build()
     }
-    Box(modifier = modifier.size(size)) {
+    Box(
+        modifier = modifier
+            .size(size)
+            .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier),
+    ) {
         // Drop-shadow silhouette — follows the cutout's alpha channel.
         AsyncImage(
             model = model,
@@ -641,17 +659,19 @@ private fun TryOnStackTile(
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Fit,
         )
-        Box(
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(4.dp)
-                .size(22.dp)
-                .clip(RoundedCornerShape(50))
-                .background(Color.Black.copy(alpha = 0.55f))
-                .clickable(onClick = onRemove),
-            contentAlignment = Alignment.Center,
-        ) {
-            Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_remove), tint = Color.White, modifier = Modifier.size(14.dp))
+        if (onRemove != null) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(4.dp)
+                    .size(22.dp)
+                    .clip(RoundedCornerShape(50))
+                    .background(Color.Black.copy(alpha = 0.55f))
+                    .clickable(onClick = onRemove),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_remove), tint = Color.White, modifier = Modifier.size(14.dp))
+            }
         }
     }
 }
@@ -1206,6 +1226,41 @@ private fun TryOnGeneratingOverlay(itemCount: Int, modifier: Modifier = Modifier
     }
 }
 
+/** One page of the swipeable history detail pager — resolves the source outfit and wires the
+ *  per-try-on actions onto [TryOnDetailContent]. */
+@Composable
+private fun TryOnDetailPage(
+    tryOn: TryOn,
+    combinedImages: List<DriveImage>,
+    outfits: List<Outfit>,
+    onOpenSourceOutfit: ((Outfit) -> Unit)?,
+    onItemTap: (DriveImage) -> Unit,
+    tryOnViewModel: TryOnViewModel,
+) {
+    val sourceOutfit = remember(tryOn.sourceOutfitId, outfits) {
+        tryOn.sourceOutfitId?.let { id -> outfits.firstOrNull { it.id == id } }
+    }
+    TryOnDetailContent(
+        tryOn = tryOn,
+        wardrobeImages = combinedImages,
+        sourceOutfit = sourceOutfit,
+        onOpenSourceOutfit = onOpenSourceOutfit?.let { open -> { sourceOutfit?.let(open) } },
+        onDelete = { tryOnViewModel.deleteTryOn(tryOn) },
+        onItemTap = onItemTap,
+        onRegenerate = {
+            Analytics.action("TryOn/Detail", "regenerate")
+            val ids = tryOn.itemNames
+                .mapNotNull { n -> combinedImages.firstOrNull { it.name == n } }
+                .map { it.driveId }.toSet()
+            tryOnViewModel.openComposer(
+                ids, tryOn.sourceOutfitId,
+                tryOnSourceKindOf(tryOn.sourceKind),
+                tryOn.sourceContext.takeIf { it.isNotBlank() },
+            )
+        },
+    )
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun TryOnDetailContent(
@@ -1218,146 +1273,117 @@ private fun TryOnDetailContent(
     onRegenerate: () -> Unit,
 ) {
     val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
-    val context = LocalContext.current
     var confirmDelete by remember { mutableStateOf(false) }
     val kind = tryOnSourceKindOf(tryOn.sourceKind)
     val items = remember(tryOn.itemNames, wardrobeImages) {
         tryOn.itemNames.mapNotNull { n -> wardrobeImages.firstOrNull { it.name == n } }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 14.dp),
-        verticalArrangement = Arrangement.spacedBy(14.dp),
-    ) {
-        Spacer(Modifier.size(0.dp))
-        // Image card.
-        Box(
+    Column(modifier = Modifier.fillMaxSize()) {
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(4f / 5f)
-                .clip(RoundedCornerShape(22.dp))
-                .border(1.dp, palette.divider, RoundedCornerShape(22.dp))
-                .background(Color.Black),
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 14.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
-            if (tryOn.localPath.isNotEmpty()) {
-                ZoomableImage(file = File(tryOn.localPath))
-            } else {
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = Color.White)
-                }
-            }
-            SourcePill(
-                kind = kind,
-                label = tryOn.sourceContext.takeIf { it.isNotBlank() }
-                    ?: stringResource(sourceMeta(kind).labelRes),
-                solid = true,
-                modifier = Modifier.align(Alignment.TopStart).padding(12.dp),
-            )
-        }
-        // Metadata card.
-        Surface(
-            shape = RoundedCornerShape(14.dp),
-            color = palette.surface,
-            border = androidx.compose.foundation.BorderStroke(1.dp, palette.divider),
-        ) {
-            Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Row {
-                    Text(
-                        stringResource(R.string.tryon_detail_generated).uppercase(),
-                        color = palette.textMuted, fontSize = 10.sp, fontWeight = FontWeight.SemiBold,
-                        letterSpacing = 0.4.sp, modifier = Modifier.weight(1f),
-                    )
-                    Text(
-                        stringResource(R.string.tryon_detail_source).uppercase(),
-                        color = palette.textMuted, fontSize = 10.sp, fontWeight = FontWeight.SemiBold,
-                        letterSpacing = 0.4.sp,
-                    )
-                }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(Date(tryOn.createdAt)),
-                        color = palette.text, fontSize = 13.sp, fontWeight = FontWeight.Bold,
-                        modifier = Modifier.weight(1f),
-                    )
-                    if (sourceOutfit != null && onOpenSourceOutfit != null) {
-                        Text(
-                            stringResource(R.string.tryon_view_source_outfit),
-                            color = palette.primary, fontSize = 12.sp, fontWeight = FontWeight.Bold,
-                            modifier = Modifier.clickable {
-                                Analytics.action("TryOn/Detail", "open_source_outfit")
-                                onOpenSourceOutfit()
-                            },
-                        )
-                    } else {
-                        Text(
-                            tryOn.sourceContext.takeIf { it.isNotBlank() }
-                                ?: stringResource(sourceMeta(kind).labelRes),
-                            color = palette.textMid, fontSize = 12.sp, fontWeight = FontWeight.SemiBold,
-                        )
+            Spacer(Modifier.size(0.dp))
+            // Image card.
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(4f / 5f)
+                    .clip(RoundedCornerShape(22.dp))
+                    .border(1.dp, palette.divider, RoundedCornerShape(22.dp))
+                    .background(Color.Black),
+            ) {
+                if (tryOn.localPath.isNotEmpty()) {
+                    ZoomableImage(file = File(tryOn.localPath))
+                } else {
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(color = Color.White)
                     }
                 }
+                SourcePill(
+                    kind = kind,
+                    label = tryOn.sourceContext.takeIf { it.isNotBlank() }
+                        ?: stringResource(sourceMeta(kind).labelRes),
+                    solid = true,
+                    modifier = Modifier.align(Alignment.TopStart).padding(12.dp),
+                )
             }
-        }
-        // Items worn.
-        Text(
-            stringResource(R.string.tryon_history_items_title),
-            color = palette.text, fontSize = 13.sp, fontWeight = FontWeight.Bold,
-        )
-        if (items.isEmpty()) {
-            Text(
-                stringResource(R.string.tryon_history_items_missing),
-                style = MaterialTheme.typography.bodySmall,
-                color = palette.textMuted,
-            )
-        } else {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                items.forEach { img ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(palette.surface)
-                            .border(1.dp, palette.divider, RoundedCornerShape(12.dp))
-                            .clickable {
-                                Analytics.action("TryOn/Detail", "view_item")
-                                onItemTap(img)
-                            }
-                            .padding(8.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .size(44.dp)
-                                .clip(RoundedCornerShape(9.dp))
-                                .border(1.dp, palette.divider, RoundedCornerShape(9.dp)),
-                        ) {
-                            AsyncImage(
-                                model = ImageRequest.Builder(context).data(File(img.localPath)).build(),
-                                contentDescription = img.name,
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier.fillMaxSize(),
+            // Metadata card.
+            Surface(
+                shape = RoundedCornerShape(14.dp),
+                color = palette.surface,
+                border = androidx.compose.foundation.BorderStroke(1.dp, palette.divider),
+            ) {
+                Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Row {
+                        Text(
+                            stringResource(R.string.tryon_detail_generated).uppercase(),
+                            color = palette.textMuted, fontSize = 10.sp, fontWeight = FontWeight.SemiBold,
+                            letterSpacing = 0.4.sp, modifier = Modifier.weight(1f),
+                        )
+                        Text(
+                            stringResource(R.string.tryon_detail_source).uppercase(),
+                            color = palette.textMuted, fontSize = 10.sp, fontWeight = FontWeight.SemiBold,
+                            letterSpacing = 0.4.sp,
+                        )
+                    }
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(Date(tryOn.createdAt)),
+                            color = palette.text, fontSize = 13.sp, fontWeight = FontWeight.Bold,
+                            modifier = Modifier.weight(1f),
+                        )
+                        if (sourceOutfit != null && onOpenSourceOutfit != null) {
+                            Text(
+                                stringResource(R.string.tryon_view_source_outfit),
+                                color = palette.primary, fontSize = 12.sp, fontWeight = FontWeight.Bold,
+                                modifier = Modifier.clickable {
+                                    Analytics.action("TryOn/Detail", "open_source_outfit")
+                                    onOpenSourceOutfit()
+                                },
+                            )
+                        } else {
+                            Text(
+                                tryOn.sourceContext.takeIf { it.isNotBlank() }
+                                    ?: stringResource(sourceMeta(kind).labelRes),
+                                color = palette.textMid, fontSize = 12.sp, fontWeight = FontWeight.SemiBold,
                             )
                         }
-                        Column(Modifier.weight(1f)) {
-                            Text(img.name, color = palette.text, fontSize = 13.sp, fontWeight = FontWeight.Bold,
-                                maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
-                            Text(stringResource(R.string.tryon_detail_item_tap_hint), color = palette.textMuted, fontSize = 10.sp)
-                        }
-                        Icon(
-                            Icons.AutoMirrored.Filled.KeyboardArrowRight, null,
-                            tint = palette.textMuted, modifier = Modifier.size(14.dp),
-                        )
                     }
                 }
             }
+            // Items worn — stacked overlapping cutouts, matching the composer. Tap to open.
+            Text(
+                stringResource(R.string.tryon_history_items_title),
+                color = palette.text, fontSize = 13.sp, fontWeight = FontWeight.Bold,
+            )
+            if (items.isEmpty()) {
+                Text(
+                    stringResource(R.string.tryon_history_items_missing),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = palette.textMuted,
+                )
+            } else {
+                TryOnItemStack(
+                    images = items,
+                    modifier = Modifier.fillMaxWidth(),
+                    onItemClick = { img ->
+                        Analytics.action("TryOn/Detail", "view_item")
+                        onItemTap(img)
+                    },
+                )
+            }
+            Spacer(Modifier.size(0.dp))
         }
-        // Action row: Regenerate + Delete.
+        // Sticky action row — pinned so Regenerate / Delete are always on screen.
+        HorizontalDivider()
         Row(
-            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 10.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             OutlinedButton(
