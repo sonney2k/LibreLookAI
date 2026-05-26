@@ -137,6 +137,8 @@ fun TravelScreen(
     tripViewerTripId: String? = null,
     onOpenTrip: (String) -> Unit = {},
     onCloseTripViewer: () -> Unit = {},
+    canTryOn: Boolean = false,
+    onTryOnTripOutfit: (Trip, Outfit) -> Unit = { _, _ -> },
     modifier: Modifier = Modifier,
 ) {
     // ---- Auto-create Trip + navigate when planner returns a packing list. ----
@@ -184,6 +186,8 @@ fun TravelScreen(
             profileViewModel = profileViewModel,
             locationViewModel = locationViewModel,
             onClose = onCloseTripViewer,
+            canTryOn = canTryOn,
+            onTryOnOutfit = onTryOnTripOutfit,
             modifier = modifier,
         )
         return

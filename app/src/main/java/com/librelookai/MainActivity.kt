@@ -487,6 +487,19 @@ class MainActivity : ComponentActivity() {
                                         Analytics.action("TryOn", "open_composer", mapOf("count" to itemIds.size.toString()))
                                         tryOnViewModel.openComposer(itemIds, sourceOutfitId)
                                     }
+                                    // Try-on a trip's outfit from the trip viewer — tagged TRAVEL so
+                                    // provenance reads "{trip} · Day {n}", matching the Quick-sheet path.
+                                    val tripTryOnCtx = LocalContext.current
+                                    val runTripOutfitTryOn: (com.librelookai.data.model.Trip, com.librelookai.data.model.Outfit) -> Unit = { trip, outfit ->
+                                        Analytics.action("TryOn", "open_composer", mapOf("source" to "travel_trip"))
+                                        val day = trip.outfitIds.indexOf(outfit.id) + 1
+                                        tryOnViewModel.openComposer(
+                                            outfit.itemIds.toSet(),
+                                            outfit.id,
+                                            com.librelookai.tryon.TryOnSourceKind.TRAVEL,
+                                            tripTryOnCtx.getString(R.string.tryon_trip_context, trip.name, day),
+                                        )
+                                    }
                                     when (selectedTab) {
                                         0 -> OutfitsScreen(
                                             outfitsViewModel = stylesViewModel,
@@ -596,6 +609,8 @@ class MainActivity : ComponentActivity() {
                                             tripViewerTripId = tripViewerTripId,
                                             onOpenTrip = { tripViewerTripId = it },
                                             onCloseTripViewer = { tripViewerTripId = null },
+                                            canTryOn = canTryOn,
+                                            onTryOnTripOutfit = runTripOutfitTryOn,
                                         )
                                         4 -> InsightsScreen(
                                             wardrobeViewModel = wardrobeViewModel,

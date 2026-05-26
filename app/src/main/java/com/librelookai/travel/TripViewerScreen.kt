@@ -101,6 +101,8 @@ fun TripViewerScreen(
     locationViewModel: com.librelookai.wardrobe.LocationViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
     outfitEventsViewModel: com.librelookai.outfit.OutfitEventsViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
     onClose: () -> Unit,
+    canTryOn: Boolean = false,
+    onTryOnOutfit: (Trip, Outfit) -> Unit = { _, _ -> },
     modifier: Modifier = Modifier,
 ) {
     val isOffline = LocalIsOffline.current
@@ -374,7 +376,9 @@ fun TripViewerScreen(
                     outfitsViewModel.suggestTagsForOutfit(o, wardrobeState.images, profileState.preferences)
                 },
                 onEditTags = { o -> outfitsViewModel.openOutfitTagsEditor(o.id) },
-                canTryOn = false,
+                // Try-on the viewed trip outfit — gated by a saved model photo and online state.
+                onTryOn = { o -> onTryOnOutfit(trip, o) },
+                canTryOn = canTryOn && !isOffline,
                 wardrobeViewModel = wardrobeViewModel,
             )
         } else {
