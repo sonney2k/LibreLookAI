@@ -38,7 +38,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Checkroom
 import androidx.compose.material.icons.filled.FlightTakeoff
-import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.DoorSliding
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -46,7 +45,6 @@ import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material.icons.filled.Style
-import androidx.compose.material.icons.filled.Insights
 import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
@@ -99,7 +97,6 @@ import com.librelookai.billing.CreditsViewModel
 import com.librelookai.data.drive.DriveRepository
 import com.librelookai.data.model.Location
 import com.librelookai.gemini.TokenUsageRepository
-import com.librelookai.insights.InsightsScreen
 import com.librelookai.ml.EmbeddingService
 import com.librelookai.outfit.OutfitComposerScreen
 import com.librelookai.outfit.OutfitEventsViewModel
@@ -133,15 +130,8 @@ import com.librelookai.data.model.TryOn
 import com.librelookai.wardrobe.SortButton
 
 /**
- * Navigates to the Insights destination from a screen header (the chart icon that replaced
- * the old Insights nav tab). Null when no host has wired it; [AppScreenHeader] hides the icon.
- */
-val LocalOpenInsights = androidx.compose.runtime.compositionLocalOf<(() -> Unit)?> { null }
-
-/**
- * Navigates to Settings from a header surface (the gear icon). Null when no host wired it.
- * Mirrors [LocalOpenInsights] so fullscreen Dialog viewers can reach Settings without threading
- * the callback through every call site.
+ * Navigates to Settings from a header surface (the gear icon). Null when no host wired it, so
+ * fullscreen Dialog viewers can reach Settings without threading the callback through every call site.
  */
 val LocalOpenSettings = androidx.compose.runtime.compositionLocalOf<(() -> Unit)?> { null }
 
@@ -231,7 +221,7 @@ class MainActivity : ComponentActivity() {
                     LaunchedEffect(selectedTab) {
                         val name = when (selectedTab) {
                             0 -> "Outfits"; 1 -> "Wardrobe"; 2 -> "Shopping"
-                            3 -> "Travel"; 4 -> "Insights"; 5 -> "Settings"
+                            3 -> "Travel"; 5 -> "Settings"
                             else -> "Tab$selectedTab"
                         }
                         Analytics.screen(name)
@@ -357,13 +347,9 @@ class MainActivity : ComponentActivity() {
                         LocalOnBackPressedDispatcherOwner provides this@MainActivity,
                         LocalIsOffline provides isOffline,
                         LocalSystemBarsPadding provides systemBarsPadding,
-                        // Insights / Settings openers also close the try-on + outfit composers
-                        // (both hosted outside `when(selectedTab)`, so a tab switch alone wouldn't
-                        // dismiss them or their picker dialogs).
-                        LocalOpenInsights provides {
-                            tryOnViewModel.close(); stylesViewModel.closeComposer()
-                            selectedTab = 4; navResetTick++
-                        },
+                        // The Settings opener also closes the try-on + outfit composers (both hosted
+                        // outside `when(selectedTab)`, so a tab switch alone wouldn't dismiss them or
+                        // their picker dialogs).
                         LocalOpenSettings provides {
                             Analytics.action("Toolbar", "open_settings")
                             tryOnViewModel.close(); stylesViewModel.closeComposer()
@@ -646,23 +632,6 @@ class MainActivity : ComponentActivity() {
                                             canTryOn = canTryOn,
                                             onTryOnTripOutfit = runTripOutfitTryOn,
                                         )
-                                        4 -> InsightsScreen(
-                                            wardrobeViewModel = wardrobeViewModel,
-                                            outfitEventsViewModel = outfitEventsViewModel,
-                                            stylesViewModel = stylesViewModel,
-                                            tryOnViewModel = tryOnViewModel,
-                                            locationViewModel = locationViewModel,
-                                            onEditOutfit = { style ->
-                                                stylesViewModel.startEditing(
-                                                    style  = style,
-                                                    images = wardrobeViewModel.state.value.images,
-                                                    prefs  = profileViewModel.state.value.preferences,
-                                                )
-                                                selectedTab = 0
-                                            },
-                                            onSettingsClick = onSettingsClick,
-                                            navResetTick = navResetTick,
-                                        )
                                         5 -> SettingsScreen(
                                             profileViewModel = profileViewModel,
                                             wardrobeViewModel = wardrobeViewModel,
@@ -940,23 +909,6 @@ fun AppScreenHeader(
             modifier = Modifier.weight(1f),
         )
         trailingContent?.invoke()
-        // Insights moved out of the bottom nav into a header chart icon (README IA change).
-        // Insights + Settings share one icon size and a tightened 32.dp button footprint so the
-        // trend icon has equal spacing on both sides (see [ViewerHeaderActions], kept in sync).
-        val openInsights = LocalOpenInsights.current
-        if (openInsights != null) {
-            androidx.compose.material3.IconButton(
-                onClick = openInsights,
-                modifier = Modifier.size(32.dp),
-            ) {
-                Icon(
-                    Icons.Default.TrendingUp,
-                    contentDescription = stringResource(R.string.nav_insights_header_icon),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(20.dp),
-                )
-            }
-        }
         if (onSettingsClick != null) {
             androidx.compose.material3.IconButton(
                 onClick = onSettingsClick,
@@ -994,22 +946,7 @@ fun ViewerHeaderActions(
                 onSetActiveLocation = selector.onSetActiveLocation,
             )
         }
-        // Insights + Settings: equal icon size and a tightened 32.dp button footprint so the gap
-        // between them is small and the trend icon is symmetric (kept in sync with AppScreenHeader).
-        val openInsights = LocalOpenInsights.current
-        if (openInsights != null) {
-            androidx.compose.material3.IconButton(
-                onClick = { onBeforeNavigate(); openInsights() },
-                modifier = Modifier.size(32.dp),
-            ) {
-                Icon(
-                    Icons.Default.TrendingUp,
-                    contentDescription = stringResource(R.string.nav_insights_header_icon),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(20.dp),
-                )
-            }
-        }
+        // Settings: 32.dp button footprint, kept in sync with AppScreenHeader.
         val openSettings = LocalOpenSettings.current
         if (openSettings != null) {
             androidx.compose.material3.IconButton(

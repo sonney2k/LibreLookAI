@@ -20,7 +20,6 @@ import java.io.File
 import java.util.concurrent.TimeUnit
 import com.librelookai.data.drive.DriveRepository
 import com.librelookai.MainActivity
-import com.librelookai.insights.UsageViewModel
 
 /** Coarse buckets for "where did the tokens go" — surfaced in the Settings → Credits chart. */
 enum class UsageCategory(val storageKey: String) {

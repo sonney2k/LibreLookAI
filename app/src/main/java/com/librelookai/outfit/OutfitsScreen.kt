@@ -76,6 +76,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -218,8 +220,44 @@ fun OutfitsScreen(
         }
     }
 
+    // Sub-tabs: outfit list, wear calendar, and most-worn stats. Calendar + Stats were the former
+    // Insights "Calendar" / "Calendar Stats" tabs — they're outfit/wear-centric, so they live here.
+    var outfitsTab by rememberSaveable { mutableIntStateOf(0) }
+    LaunchedEffect(navResetTick) { outfitsTab = 0 }
+
     Box(modifier = modifier.fillMaxSize()) {
-        OutfitListScreen(
+        Column(Modifier.fillMaxSize()) {
+            AppScreenHeader(
+                title = stringResource(R.string.nav_styles),
+                leadingIcon = Icons.Default.Style,
+                trailingContent = {
+                    LocationButton(
+                        locations = locationState.locations,
+                        activeLocationId = locationState.activeLocationId,
+                        onSetActiveLocation = locationViewModel::setActiveLocation,
+                    )
+                },
+                onSettingsClick = onSettingsClick,
+            )
+            TabRow(selectedTabIndex = outfitsTab) {
+                Tab(
+                    selected = outfitsTab == 0,
+                    onClick = { outfitsTab = 0 },
+                    text = { Text(stringResource(R.string.nav_styles)) },
+                )
+                Tab(
+                    selected = outfitsTab == 1,
+                    onClick = { outfitsTab = 1 },
+                    text = { Text(stringResource(R.string.insights_tab_calendar)) },
+                )
+                Tab(
+                    selected = outfitsTab == 2,
+                    onClick = { outfitsTab = 2 },
+                    text = { Text(stringResource(R.string.insights_tab_calendar_stats)) },
+                )
+            }
+            when (outfitsTab) {
+                0 -> OutfitListScreen(
                     styles = outfitsState.outfits,
                     items = outfitsState.wardrobeImages,
                     wearCounts = wearCounts,
@@ -275,6 +313,21 @@ fun OutfitsScreen(
                     },
                     wardrobeViewModel = wardrobeViewModel,
                 )
+                1 -> OutfitCalendarTab(
+                    outfitEventsViewModel = outfitEventsViewModel,
+                    stylesViewModel = outfitsViewModel,
+                    wardrobeViewModel = wardrobeViewModel,
+                    onEditOutfit = { style ->
+                        outfitsViewModel.startEditing(style, wardrobeState.images, profileState.preferences)
+                    },
+                )
+                2 -> OutfitWearStatsTab(
+                    outfitEventsViewModel = outfitEventsViewModel,
+                    stylesViewModel = outfitsViewModel,
+                    wardrobeViewModel = wardrobeViewModel,
+                )
+            }
+        }
 
         // Tag-edit dialog launched by tapping the tags row in the outfit detail viewer.
         outfitsState.tagEditingOutfitId?.let { editId ->
@@ -600,20 +653,7 @@ private fun OutfitListScreen(
 
     Box(modifier = modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
-            // ---- Screen header with sort button ----
-            AppScreenHeader(
-                title = stringResource(R.string.nav_styles),
-                leadingIcon = Icons.Default.Style,
-                trailingContent = {
-                    LocationButton(
-                        locations = locations,
-                        activeLocationId = activeLocationId,
-                        onSetActiveLocation = onSetActiveLocation ?: {},
-                    )
-                },
-                onSettingsClick = onSettingsClick,
-            )
-
+            // Header + sub-tabs are owned by OutfitsScreen; this content starts at the selection bar.
             // ---- Selection bar ----
             if (isSelectionMode) {
                 Row(

@@ -1,4 +1,5 @@
-package com.librelookai.insights
+package com.librelookai.outfit
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -21,33 +22,24 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Insights
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedCard
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -64,35 +56,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.compose.foundation.Canvas
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.graphics.Color
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.librelookai.R
+import com.librelookai.data.model.Outfit
+import com.librelookai.data.model.WornItem
+import com.librelookai.util.LocalIsOffline
+import com.librelookai.wardrobe.DriveImage
+import com.librelookai.wardrobe.WardrobeViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.YearMonth
-import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.util.concurrent.TimeUnit
-import com.librelookai.AppScreenHeader
-import com.librelookai.LocationButton
-import com.librelookai.data.model.Outfit
-import com.librelookai.data.model.WornItem
-import com.librelookai.gemini.UsageCategory
-import com.librelookai.outfit.OutfitEventsViewModel
-import com.librelookai.outfit.OutfitsViewModel
-import com.librelookai.tryon.TryOnViewModel
-import com.librelookai.util.LocalIsOffline
-import com.librelookai.wardrobe.DriveImage
-import com.librelookai.wardrobe.LocationViewModel
-import com.librelookai.wardrobe.WardrobeViewModel
-import com.librelookai.wardrobe.localizedTagValue
-import com.librelookai.wardrobe.tagCategoryCounts
-import com.librelookai.wardrobe.tagCategoryDisplayLabel
-import com.librelookai.R
 
 private const val TOP_N = 10
 private val MONTH_FORMATTER = DateTimeFormatter.ofPattern("MMMM yyyy")
@@ -100,270 +75,16 @@ private val SHEET_DATE_FORMATTER = DateTimeFormatter.ofPattern("EEEE, MMMM d")
 private const val MAX_THUMBNAILS = 4
 private val THUMBNAIL_SIZE = 14.dp
 
-@Composable
-fun InsightsScreen(
-    wardrobeViewModel: WardrobeViewModel = viewModel(),
-    outfitEventsViewModel: OutfitEventsViewModel = viewModel(),
-    stylesViewModel: OutfitsViewModel = viewModel(),
-    tryOnViewModel: TryOnViewModel = viewModel(),
-    locationViewModel: LocationViewModel = viewModel(),
-    onEditOutfit: (Outfit) -> Unit = {},
-    onSettingsClick: () -> Unit = {},
-    navResetTick: Int = 0,
-    modifier: Modifier = Modifier,
-) {
-    val locationState by locationViewModel.state.collectAsState()
-    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
-    LaunchedEffect(navResetTick) { selectedTab = 0 }
-
-    Column(modifier = modifier.fillMaxSize()) {
-        AppScreenHeader(
-            title = stringResource(R.string.insights_title),
-            leadingIcon = Icons.Default.Insights,
-            trailingContent = {
-                LocationButton(
-                    locations = locationState.locations,
-                    activeLocationId = locationState.activeLocationId,
-                    onSetActiveLocation = locationViewModel::setActiveLocation,
-                )
-            },
-            onSettingsClick = onSettingsClick,
-        )
-
-        TabRow(selectedTabIndex = selectedTab) {
-            Tab(
-                selected = selectedTab == 0,
-                onClick = { selectedTab = 0 },
-                text = { Text(stringResource(R.string.insights_tab_calendar)) },
-            )
-            Tab(
-                selected = selectedTab == 1,
-                onClick = { selectedTab = 1 },
-                text = { Text(stringResource(R.string.insights_tab_calendar_stats)) },
-            )
-            Tab(
-                selected = selectedTab == 2,
-                onClick = { selectedTab = 2 },
-                text = { Text(stringResource(R.string.insights_tab_wardrobe_stats)) },
-            )
-            Tab(
-                selected = selectedTab == 3,
-                onClick = { selectedTab = 3 },
-                text = { Text(stringResource(R.string.insights_tab_costs)) },
-            )
-        }
-
-        when (selectedTab) {
-            0 -> CalendarTab(
-                outfitEventsViewModel = outfitEventsViewModel,
-                stylesViewModel = stylesViewModel,
-                wardrobeViewModel = wardrobeViewModel,
-                onEditOutfit = onEditOutfit,
-            )
-            1 -> CalendarStatsTab(
-                outfitEventsViewModel = outfitEventsViewModel,
-                stylesViewModel = stylesViewModel,
-                wardrobeViewModel = wardrobeViewModel,
-            )
-            2 -> WardrobeStatsTab(wardrobeViewModel = wardrobeViewModel)
-            3 -> CostsTab(
-                wardrobeViewModel = wardrobeViewModel,
-                stylesViewModel = stylesViewModel,
-                outfitEventsViewModel = outfitEventsViewModel,
-                tryOnViewModel = tryOnViewModel,
-            )
-        }
-    }
-}
-
 // ============================================================================
-//  Tab 4: Costs (token usage + activity counts)
-// ============================================================================
-
-@Composable
-private fun CostsTab(
-    wardrobeViewModel: WardrobeViewModel,
-    stylesViewModel: OutfitsViewModel,
-    outfitEventsViewModel: OutfitEventsViewModel,
-    tryOnViewModel: TryOnViewModel,
-) {
-    val ctx = LocalContext.current
-    val usageVm: UsageViewModel = viewModel()
-    val wardrobe by wardrobeViewModel.state.collectAsState()
-    val outfits by stylesViewModel.state.collectAsState()
-    val outfitEvents by outfitEventsViewModel.state.collectAsState()
-    val tryOnState by tryOnViewModel.state.collectAsState()
-    val usageEvents by usageVm.events.collectAsState()
-
-    val days = 14
-    val outfitsDaily = remember(outfits.outfits, days) {
-        dailyCounts(outfits.outfits.map { it.createdAt }, days)
-    }
-    val tryOnsDaily = remember(tryOnState.history, days) {
-        dailyCounts(tryOnState.history.map { it.createdAt }, days)
-    }
-    val wearsDaily = remember(outfitEvents.events, days) {
-        dailyCounts(
-            outfitEvents.events.mapNotNull { e ->
-                runCatching {
-                    LocalDate.parse(e.date)
-                        .atStartOfDay(ZoneId.systemDefault())
-                        .toInstant().toEpochMilli()
-                }.getOrNull()
-            },
-            days,
-        )
-    }
-    val importsDaily = remember(usageEvents, days) {
-        dailyCounts(
-            usageEvents.filter { it.category == UsageCategory.BG_REMOVAL }.map { it.timestampMs },
-            days,
-        )
-    }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .navigationBarsPadding()
-            .padding(bottom = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 10.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            CostsCountCard(stringResource(R.string.costs_count_items), wardrobe.images.size, Modifier.weight(1f))
-            CostsCountCard(stringResource(R.string.costs_count_outfits), outfits.outfits.size, Modifier.weight(1f))
-            CostsCountCard(stringResource(R.string.costs_count_tryons), tryOnState.history.size, Modifier.weight(1f))
-            CostsCountCard(stringResource(R.string.costs_count_wears), outfitEvents.events.size, Modifier.weight(1f))
-        }
-
-        Text(
-            stringResource(R.string.costs_activity_14d),
-            style = MaterialTheme.typography.labelMedium,
-            fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.padding(horizontal = 20.dp),
-        )
-        ActivityRow(stringResource(R.string.costs_count_imports), importsDaily, MaterialTheme.colorScheme.primary)
-        ActivityRow(stringResource(R.string.costs_count_outfits), outfitsDaily, MaterialTheme.colorScheme.tertiary)
-        ActivityRow(stringResource(R.string.costs_count_tryons), tryOnsDaily, MaterialTheme.colorScheme.secondary)
-        ActivityRow(stringResource(R.string.costs_count_wears), wearsDaily, MaterialTheme.colorScheme.primary)
-
-        UsageSection(modifier = Modifier.padding(top = 8.dp))
-    }
-}
-
-@Composable
-private fun CostsCountCard(label: String, count: Int, modifier: Modifier = Modifier) {
-    OutlinedCard(modifier = modifier) {
-        Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp)) {
-            Text(
-                label,
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            Spacer(Modifier.height(2.dp))
-            Text(
-                count.toString(),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-            )
-        }
-    }
-}
-
-@Composable
-private fun ActivityRow(label: String, daily: List<Pair<Long, Int>>, color: Color) {
-    val total = daily.sumOf { it.second }
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 4.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        Text(
-            label,
-            style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.width(80.dp),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-        )
-        MiniBarChart(
-            daily = daily,
-            color = color,
-            modifier = Modifier
-                .weight(1f)
-                .height(36.dp),
-        )
-        Text(
-            total.toString(),
-            style = MaterialTheme.typography.labelSmall,
-            modifier = Modifier.width(36.dp),
-            textAlign = TextAlign.End,
-        )
-    }
-}
-
-@Composable
-private fun MiniBarChart(daily: List<Pair<Long, Int>>, color: Color, modifier: Modifier = Modifier) {
-    val gridColor = MaterialTheme.colorScheme.outlineVariant
-    val maxVal = (daily.maxOfOrNull { it.second } ?: 0).coerceAtLeast(1)
-    Canvas(modifier = modifier) {
-        val bars = daily.size
-        if (bars == 0) return@Canvas
-        val gap = 2.dp.toPx()
-        val barW = (size.width - gap * (bars - 1)) / bars
-        drawRect(
-            color = gridColor,
-            topLeft = Offset(0f, size.height - 1f),
-            size = Size(size.width, 1f),
-        )
-        daily.forEachIndexed { i, (_, v) ->
-            val h = (v.toFloat() / maxVal) * (size.height - 2f)
-            val x = i * (barW + gap)
-            val y = size.height - h
-            drawRoundRect(
-                color = color,
-                topLeft = Offset(x, y),
-                size = Size(barW, h.coerceAtLeast(0.5f)),
-                cornerRadius = CornerRadius(2f, 2f),
-            )
-        }
-    }
-}
-
-private fun dailyCounts(timestampsMs: List<Long>, days: Int): List<Pair<Long, Int>> {
-    val cal = java.util.Calendar.getInstance()
-    cal.set(java.util.Calendar.HOUR_OF_DAY, 0)
-    cal.set(java.util.Calendar.MINUTE, 0)
-    cal.set(java.util.Calendar.SECOND, 0)
-    cal.set(java.util.Calendar.MILLISECOND, 0)
-    val todayStart = cal.timeInMillis
-    val dayMs = TimeUnit.DAYS.toMillis(1)
-    val windowStart = todayStart - (days - 1) * dayMs
-    val buckets = IntArray(days)
-    for (ts in timestampsMs) {
-        if (ts < windowStart) continue
-        val idx = ((ts - windowStart) / dayMs).toInt()
-        if (idx in 0 until days) buckets[idx] += 1
-    }
-    return (0 until days).map { i -> (windowStart + i * dayMs) to buckets[i] }
-}
-
-// ============================================================================
-//  Tab 1: Calendar (former standalone CalendarScreen body)
+//  Calendar — monthly grid of worn outfits (former Insights "Calendar" tab).
 // ============================================================================
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun CalendarTab(
-    outfitEventsViewModel: OutfitEventsViewModel,
-    stylesViewModel: OutfitsViewModel,
-    wardrobeViewModel: WardrobeViewModel,
+fun OutfitCalendarTab(
+    outfitEventsViewModel: OutfitEventsViewModel = viewModel(),
+    stylesViewModel: OutfitsViewModel = viewModel(),
+    wardrobeViewModel: WardrobeViewModel = viewModel(),
     onEditOutfit: (Outfit) -> Unit,
 ) {
     val outfitEventsState by outfitEventsViewModel.state.collectAsState()
@@ -714,14 +435,14 @@ private fun buildCalendarWeeks(yearMonth: YearMonth): List<List<LocalDate?>> {
 }
 
 // ============================================================================
-//  Tab 2: Calendar Stats
+//  Wear stats — most-worn outfits and items (former Insights "Calendar Stats").
 // ============================================================================
 
 @Composable
-private fun CalendarStatsTab(
-    outfitEventsViewModel: OutfitEventsViewModel,
-    stylesViewModel: OutfitsViewModel,
-    wardrobeViewModel: WardrobeViewModel,
+fun OutfitWearStatsTab(
+    outfitEventsViewModel: OutfitEventsViewModel = viewModel(),
+    stylesViewModel: OutfitsViewModel = viewModel(),
+    wardrobeViewModel: WardrobeViewModel = viewModel(),
 ) {
     val outfitEventsState by outfitEventsViewModel.state.collectAsState()
     val outfitsState by stylesViewModel.state.collectAsState()
@@ -946,103 +667,5 @@ private fun ItemStatRow(
                 }
             }
         }
-    }
-}
-
-// ============================================================================
-//  Tab 3: Wardrobe Stats
-// ============================================================================
-
-@Composable
-private fun WardrobeStatsTab(
-    wardrobeViewModel: WardrobeViewModel,
-) {
-    val wardrobeState by wardrobeViewModel.state.collectAsState()
-    val images = wardrobeState.images
-    val counts = remember(images) { images.tagCategoryCounts() }
-    val untagged = remember(images) {
-        images.count { img ->
-            val t = img.tags
-            t == null || (t.type.isBlank() && t.category.isBlank())
-        }
-    }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .navigationBarsPadding()
-            .padding(horizontal = 20.dp)
-            .padding(top = 12.dp, bottom = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
-        Text(
-            stringResource(R.string.wardrobe_stats_total, images.size),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        if (images.isNotEmpty() && counts.isEmpty()) {
-            Text(
-                stringResource(R.string.wardrobe_empty),
-                style = MaterialTheme.typography.bodyMedium,
-            )
-        }
-        counts.forEach { categoryCounts ->
-            val maxCount = categoryCounts.counts.maxOf { it.count }
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text(
-                    tagCategoryDisplayLabel(categoryCounts.label),
-                    style = MaterialTheme.typography.titleSmall,
-                )
-                categoryCounts.counts.forEach { tc ->
-                    StatsBarRow(
-                        label = tc.value.localizedTagValue(),
-                        count = tc.count,
-                        fraction = tc.count.toFloat() / maxCount.toFloat(),
-                    )
-                }
-            }
-        }
-        if (untagged > 0) {
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text(
-                    stringResource(R.string.wardrobe_stats_untagged),
-                    style = MaterialTheme.typography.titleSmall,
-                )
-                StatsBarRow(
-                    label = stringResource(R.string.wardrobe_stats_untagged),
-                    count = untagged,
-                    fraction = untagged.toFloat() / images.size.toFloat(),
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun StatsBarRow(label: String, count: Int, fraction: Float) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        Text(
-            label,
-            style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.width(110.dp),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-        )
-        LinearProgressIndicator(
-            progress = { fraction.coerceIn(0f, 1f) },
-            modifier = Modifier
-                .weight(1f)
-                .height(6.dp),
-        )
-        Text(
-            count.toString(),
-            style = MaterialTheme.typography.labelSmall,
-            modifier = Modifier.width(28.dp),
-        )
     }
 }

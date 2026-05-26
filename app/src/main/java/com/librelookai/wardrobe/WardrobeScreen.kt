@@ -62,6 +62,7 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.ImageSearch
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -721,6 +722,7 @@ private fun GridContent(
     var selectedTags by remember { mutableStateOf(emptyMap<String, Set<String>>()) }
     var sortBy by remember { mutableStateOf(SortOption.DATE_DESC) }
     var filterSheetOpen by remember { mutableStateOf(false) }
+    var statsSheetOpen by remember { mutableStateOf(false) }
     var textQuery by remember { mutableStateOf("") }
     val appliedFilterCount = selectedTags.values.sumOf { it.size } + (if (textQuery.isNotBlank()) 1 else 0)
 
@@ -824,6 +826,15 @@ private fun GridContent(
                     Icon(
                         Icons.Default.ImageSearch,
                         contentDescription = stringResource(R.string.wardrobe_search),
+                    )
+                }
+                IconButton(onClick = {
+                    Analytics.action("Wardrobe", "open_stats")
+                    statsSheetOpen = true
+                }) {
+                    Icon(
+                        Icons.Default.BarChart,
+                        contentDescription = stringResource(R.string.insights_tab_wardrobe_stats),
                     )
                 }
                 SortButton(
@@ -1104,6 +1115,13 @@ private fun GridContent(
                 textQuery = textQuery,
                 onTextQueryChanged = { textQuery = it },
                 onDismiss = { filterSheetOpen = false },
+            )
+        }
+
+        if (statsSheetOpen) {
+            WardrobeStatsSheet(
+                images = state.images,
+                onDismiss = { statsSheetOpen = false },
             )
         }
 

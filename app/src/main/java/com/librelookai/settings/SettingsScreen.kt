@@ -191,7 +191,7 @@ fun SettingsScreen(
         LaunchedEffect(selectedTab) {
             val n = when (selectedTab) {
                 0 -> "Settings/Profile"; 1 -> "Settings/Display"; 2 -> "Settings/Data"; 3 -> "Settings/Credits"
-                4 -> "Settings/AI"; 5 -> "Settings/Feedback"; 6 -> "Settings/About"
+                4 -> "Settings/Usage"; 5 -> "Settings/AI"; 6 -> "Settings/Feedback"; 7 -> "Settings/About"
                 else -> "Settings/Tab$selectedTab"
             }
             Analytics.screen(n)
@@ -222,13 +222,16 @@ fun SettingsScreen(
                 },
             )
             Tab(selected = selectedTab == 4, onClick = {
-                Analytics.action("Settings", "subtab_ai"); selectedTab = 4
-            }, text = { Text(stringResource(R.string.settings_tab_ai)) })
+                Analytics.action("Settings", "subtab_usage"); selectedTab = 4
+            }, text = { Text(stringResource(R.string.insights_tab_costs)) })
             Tab(selected = selectedTab == 5, onClick = {
-                Analytics.action("Settings", "subtab_feedback"); selectedTab = 5
-            }, text = { Text(stringResource(R.string.settings_tab_feedback)) })
+                Analytics.action("Settings", "subtab_ai"); selectedTab = 5
+            }, text = { Text(stringResource(R.string.settings_tab_ai)) })
             Tab(selected = selectedTab == 6, onClick = {
-                Analytics.action("Settings", "subtab_about"); selectedTab = 6
+                Analytics.action("Settings", "subtab_feedback"); selectedTab = 6
+            }, text = { Text(stringResource(R.string.settings_tab_feedback)) })
+            Tab(selected = selectedTab == 7, onClick = {
+                Analytics.action("Settings", "subtab_about"); selectedTab = 7
             }, text = { Text(stringResource(R.string.settings_tab_about)) })
         }
 
@@ -301,7 +304,8 @@ fun SettingsScreen(
                 },
                 modifier = Modifier.fillMaxSize(),
             )
-            4 -> AiTab(
+            4 -> UsageCostsTab()
+            5 -> AiTab(
                 preferences = profileState.preferences,
                 onSaveConsiderations = { c ->
                     profileViewModel.savePreferences(profileState.preferences.copy(aiConsiderations = c))
@@ -325,7 +329,7 @@ fun SettingsScreen(
                     )
                 },
             )
-            5 -> FeedbackTab(
+            6 -> FeedbackTab(
                 preferences = profileState.preferences,
                 onSaveDebugSimilarityPreview = { enabled ->
                     profileViewModel.savePreferences(
@@ -333,7 +337,7 @@ fun SettingsScreen(
                     )
                 },
             )
-            6 -> AboutTab()
+            7 -> AboutTab()
         }
     }
 
