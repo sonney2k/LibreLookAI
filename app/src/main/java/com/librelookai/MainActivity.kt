@@ -138,6 +138,24 @@ import com.librelookai.wardrobe.SortButton
  */
 val LocalOpenInsights = androidx.compose.runtime.compositionLocalOf<(() -> Unit)?> { null }
 
+/**
+ * Navigates to Settings from a header surface (the gear icon). Null when no host wired it.
+ * Mirrors [LocalOpenInsights] so fullscreen Dialog viewers can reach Settings without threading
+ * the callback through every call site.
+ */
+val LocalOpenSettings = androidx.compose.runtime.compositionLocalOf<(() -> Unit)?> { null }
+
+/**
+ * Active-closet selector state surfaced to fullscreen Dialog viewers / the try-on composer so they
+ * can render the same interactive closet dropdown as [AppScreenHeader]. Null hides the dropdown.
+ */
+data class ClosetSelectorContext(
+    val locations: List<Location>,
+    val activeLocationId: String,
+    val onSetActiveLocation: (String) -> Unit,
+)
+val LocalClosetSelector = androidx.compose.runtime.compositionLocalOf<ClosetSelectorContext?> { null }
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -339,7 +357,18 @@ class MainActivity : ComponentActivity() {
                         LocalOnBackPressedDispatcherOwner provides this@MainActivity,
                         LocalIsOffline provides isOffline,
                         LocalSystemBarsPadding provides systemBarsPadding,
-                        LocalOpenInsights provides { selectedTab = 4; navResetTick++ },
+                        // Insights / Settings openers also close the try-on composer (hosted
+                        // outside `when(selectedTab)`, so a tab switch alone wouldn't dismiss it).
+                        LocalOpenInsights provides { tryOnViewModel.close(); selectedTab = 4; navResetTick++ },
+                        LocalOpenSettings provides {
+                            Analytics.action("Toolbar", "open_settings")
+                            tryOnViewModel.close(); selectedTab = 5; navResetTick++
+                        },
+                        LocalClosetSelector provides ClosetSelectorContext(
+                            locations = locationList,
+                            activeLocationId = activeLocationId,
+                            onSetActiveLocation = locationViewModel::setActiveLocation,
+                        ),
                     ) { LibreLookAITheme(
                         paletteId = profileState.preferences.wardrobeTheme,
                         fontId = profileState.preferences.appFont,
@@ -929,6 +958,51 @@ fun AppScreenHeader(
         }
     }
     HorizontalDivider()
+}
+
+/**
+ * Right-aligned header cluster — interactive closet selector + Insights + Settings — reused inside
+ * fullscreen Dialog viewers and the try-on composer so these stay reachable while an item / outfit /
+ * try-on is open (parity with [AppScreenHeader]). The closet dropdown switches the active closet in
+ * place; [onBeforeNavigate] runs before Insights/Settings navigation so the host Dialog dismisses
+ * first ("dismiss then navigate"). Each child is hidden when its CompositionLocal is unprovided
+ * (and the closet dropdown additionally hides itself when there are fewer than two closets).
+ */
+@Composable
+fun ViewerHeaderActions(
+    onBeforeNavigate: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
+        LocalClosetSelector.current?.let { selector ->
+            LocationButton(
+                locations = selector.locations,
+                activeLocationId = selector.activeLocationId,
+                onSetActiveLocation = selector.onSetActiveLocation,
+            )
+        }
+        val openInsights = LocalOpenInsights.current
+        if (openInsights != null) {
+            androidx.compose.material3.IconButton(onClick = { onBeforeNavigate(); openInsights() }) {
+                Icon(
+                    Icons.Default.TrendingUp,
+                    contentDescription = stringResource(R.string.nav_insights_header_icon),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(18.dp),
+                )
+            }
+        }
+        val openSettings = LocalOpenSettings.current
+        if (openSettings != null) {
+            androidx.compose.material3.IconButton(onClick = { onBeforeNavigate(); openSettings() }) {
+                Icon(
+                    Icons.Default.Settings,
+                    contentDescription = "Settings",
+                    modifier = Modifier.size(22.dp),
+                )
+            }
+        }
+    }
 }
 
 /**
