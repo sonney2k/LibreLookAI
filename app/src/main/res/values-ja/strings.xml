@@ -7,11 +7,9 @@
     <string name="nav_wardrobe">クローゼット</string>
     <string name="nav_shopping">ショッピング</string>
     <string name="nav_travel">旅行</string>
-    <string name="nav_insights">インサイト</string>
     <string name="nav_settings">設定</string>
 
     <!-- インサイトタブ -->
-    <string name="insights_title">インサイト</string>
     <string name="insights_tab_calendar">カレンダー</string>
     <string name="insights_tab_wardrobe_stats">クローゼット統計</string>
     <string name="insights_tab_calendar_stats">カレンダー統計</string>

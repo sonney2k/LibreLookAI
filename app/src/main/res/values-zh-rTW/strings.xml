@@ -7,11 +7,9 @@
     <string name="nav_wardrobe">衣櫥</string>
     <string name="nav_shopping">購物</string>
     <string name="nav_travel">旅行</string>
-    <string name="nav_insights">洞察</string>
     <string name="nav_settings">設定</string>
 
     <!-- Insights tab -->
-    <string name="insights_title">洞察</string>
     <string name="insights_tab_calendar">日曆</string>
     <string name="insights_tab_wardrobe_stats">衣櫥統計</string>
     <string name="insights_tab_calendar_stats">日曆統計</string>

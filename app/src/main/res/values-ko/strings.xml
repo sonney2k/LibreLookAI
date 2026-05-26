@@ -7,11 +7,9 @@
     <string name="nav_wardrobe">옷장</string>
     <string name="nav_shopping">쇼핑</string>
     <string name="nav_travel">여행</string>
-    <string name="nav_insights">인사이트</string>
     <string name="nav_settings">설정</string>
 
     <!-- 인사이트 탭 -->
-    <string name="insights_title">인사이트</string>
     <string name="insights_tab_calendar">캘린더</string>
     <string name="insights_tab_wardrobe_stats">옷장 통계</string>
     <string name="insights_tab_calendar_stats">캘린더 통계</string>

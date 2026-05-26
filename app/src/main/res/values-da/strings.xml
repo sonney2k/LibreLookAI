@@ -7,11 +7,9 @@
     <string name="nav_wardrobe">Garderobe</string>
     <string name="nav_shopping">Shopping</string>
     <string name="nav_travel">Rejse</string>
-    <string name="nav_insights">Indsigter</string>
     <string name="nav_settings">Indstillinger</string>
 
     <!-- Indsigter-fane -->
-    <string name="insights_title">Indsigter</string>
     <string name="insights_tab_calendar">Kalender</string>
     <string name="insights_tab_wardrobe_stats">Garderobestatistik</string>
     <string name="insights_tab_calendar_stats">Kalenderstatistik</string>

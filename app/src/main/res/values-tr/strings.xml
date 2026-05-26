@@ -7,11 +7,9 @@
     <string name="nav_wardrobe">Gardırop</string>
     <string name="nav_shopping">Alışveriş</string>
     <string name="nav_travel">Seyahat</string>
-    <string name="nav_insights">İçgörüler</string>
     <string name="nav_settings">Ayarlar</string>
 
     <!-- Insights tab -->
-    <string name="insights_title">İçgörüler</string>
     <string name="insights_tab_calendar">Takvim</string>
     <string name="insights_tab_wardrobe_stats">Gardırop İstatistikleri</string>
     <string name="insights_tab_calendar_stats">Takvim İstatistikleri</string>

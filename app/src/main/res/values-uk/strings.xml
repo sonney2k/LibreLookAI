@@ -7,11 +7,9 @@
     <string name="nav_wardrobe">Гардероб</string>
     <string name="nav_shopping">Шопінг</string>
     <string name="nav_travel">Подорожі</string>
-    <string name="nav_insights">Аналітика</string>
     <string name="nav_settings">Налаштування</string>
 
     <!-- Insights tab -->
-    <string name="insights_title">Аналітика</string>
     <string name="insights_tab_calendar">Календар</string>
     <string name="insights_tab_wardrobe_stats">Статистика гардероба</string>
     <string name="insights_tab_calendar_stats">Статистика календаря</string>

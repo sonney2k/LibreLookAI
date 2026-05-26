@@ -7,11 +7,9 @@
     <string name="nav_wardrobe">Armario</string>
     <string name="nav_shopping">Compras</string>
     <string name="nav_travel">Viaje</string>
-    <string name="nav_insights">Estadísticas</string>
     <string name="nav_settings">Ajustes</string>
 
     <!-- Pestaña Estadísticas -->
-    <string name="insights_title">Estadísticas</string>
     <string name="insights_tab_calendar">Calendario</string>
     <string name="insights_tab_wardrobe_stats">Estadísticas del armario</string>
     <string name="insights_tab_calendar_stats">Estadísticas del calendario</string>

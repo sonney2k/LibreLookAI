@@ -7,11 +7,9 @@
     <string name="nav_wardrobe">Garde-robe</string>
     <string name="nav_shopping">Shopping</string>
     <string name="nav_travel">Voyage</string>
-    <string name="nav_insights">Statistiques</string>
     <string name="nav_settings">Paramètres</string>
 
     <!-- Onglet Statistiques -->
-    <string name="insights_title">Statistiques</string>
     <string name="insights_tab_calendar">Calendrier</string>
     <string name="insights_tab_wardrobe_stats">Statistiques garde-robe</string>
     <string name="insights_tab_calendar_stats">Statistiques calendrier</string>

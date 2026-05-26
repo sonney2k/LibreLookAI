@@ -7,11 +7,9 @@
     <string name="nav_wardrobe">वॉर्डरोब</string>
     <string name="nav_shopping">शॉपिंग</string>
     <string name="nav_travel">यात्रा</string>
-    <string name="nav_insights">इनसाइट्स</string>
     <string name="nav_settings">सेटिंग्स</string>
 
     <!-- Insights tab -->
-    <string name="insights_title">इनसाइट्स</string>
     <string name="insights_tab_calendar">कैलेंडर</string>
     <string name="insights_tab_wardrobe_stats">वॉर्डरोब आंकड़े</string>
     <string name="insights_tab_calendar_stats">कैलेंडर आंकड़े</string>

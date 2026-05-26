@@ -7,11 +7,9 @@
     <string name="nav_wardrobe">Guarda-roupa</string>
     <string name="nav_shopping">Compras</string>
     <string name="nav_travel">Viagem</string>
-    <string name="nav_insights">Insights</string>
     <string name="nav_settings">Configurações</string>
 
     <!-- Aba Insights -->
-    <string name="insights_title">Insights</string>
     <string name="insights_tab_calendar">Calendário</string>
     <string name="insights_tab_wardrobe_stats">Estatísticas do guarda-roupa</string>
     <string name="insights_tab_calendar_stats">Estatísticas do calendário</string>

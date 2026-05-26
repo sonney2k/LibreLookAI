@@ -7,11 +7,9 @@
     <string name="nav_wardrobe">Tủ đồ</string>
     <string name="nav_shopping">Mua sắm</string>
     <string name="nav_travel">Du lịch</string>
-    <string name="nav_insights">Phân tích</string>
     <string name="nav_settings">Cài đặt</string>
 
     <!-- Insights tab -->
-    <string name="insights_title">Phân tích</string>
     <string name="insights_tab_calendar">Lịch</string>
     <string name="insights_tab_wardrobe_stats">Thống kê tủ đồ</string>
     <string name="insights_tab_calendar_stats">Thống kê lịch</string>

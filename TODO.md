@@ -12,23 +12,10 @@ similarity search needs improvement
 
 size filter? default sizes in wardrobe? size tag?
 
-Implement new feature: We are working on the refinancing/monetization aspect of the app: I want people to be able to buy coins that I then use to pay gemini cloud costs. would that work with RevenueCat (handles the money/receipts) + Firebase (database and secure Gemini API routing)? In addition, I still want to support the bring your own key option though. What is important is that the user always knows how many coins a certain operation takes (if it involves coins or BYOK tokens). So we need to somehow visually communicate the coin or cost. To be sustainable we need to add 100% to the actual cost. We need to store and use this multiplier securely.
-
 Go through all screens again and check that they are really localized. I just found that the Insights screen is not localized
 
-Localize into es-419, es-ES, de-DE, it-IT, fr-FR, pt-BR, en-US, en-GB, pl-PL, ja-JP, ko-KR, tr-TR, id-ID, th-TH, vi-VN, nl-NL, hi-IN, ar-SA, uk-UA, ro-RO, cs-CZ, sv-SE, ms-MY, tl-PH, el-GR, hu-HU, zh-TW, he-IL, ur-PK, da-DK, fi-FI, no-NO
-
-  Bug 1 — still there bottom buttons off-screen: The Try-On Dialog had a Scaffold wrapped with .padding(barInsets), but both the Scaffold (default contentWindowInsets =           
-  WindowInsets.systemBars) and the TopAppBar (default windowInsets adding statusBars top padding) were re-applying the system bar insets on top of that wrap — bottom
-  inset was added twice and the action row got clipped. Added decorFitsSystemWindows = false to DialogProperties for defense, and set both Scaffold.contentWindowInsets
-   and TopAppBar.windowInsets to WindowInsets(0) so the outer .padding(barInsets) is the single source of truth. Noted the gotcha in CLAUDE_ARCHIVE.md.                
-
-1. Cache the trip so it is immediately visible similar how you do it with wardrobe
-2. Option to delete outfits where wardrobe items are no longer available
-3. When deleting wardrobe items check if it would affect outfits and try-ons and ask if those should be removed as well (default)
 
 Ensure that no font is smaller than the font in the filter pillow
-Ensure that Einteiler are covering 2 slots: Oberteil + Unterteil
 
 Add unit tests to get to 50% test converage
 
@@ -40,29 +27,28 @@ security/function relevant parts of a prompts should not be appear in settings. 
 
 TODO
 ====
-create human readable release notes between now and v1.7.2 and release version 1.8.0, git tag commit and upload to testers in firebase
+create accompanying website
 
-Travel planner:
-- created outfit suggestions in travel planner should be viewable like the suggested outfits in create outfit with sliding left/right through them and modification for each with the create outfit dialog
+design of setting screen
+
+move wardrobe statistics to shopping page
+
+
+all buttons that open another page (e.g. create with AI) should have three dots after the title... or any visual marker.check all flows and make it consistent
+
+
+
+create human readable release notes between now and v1.8.0 and release version 1.9.0, git tag commit and upload to testers in firebase
 
 
 Storage:
 - I noticed .jpgs from camera are just 124kB but .pngs are 450kB. Since this is on users drive folders we have to be cautious about size. Let's target 1GB - to allow for 2000-4000 wardrobe items.
 
-move the wear today on travel screen to top right (same level like Day)
-
-when selecting outfit for try-on show a filter bar with sortinglike on outfit screen
 
 1. on edit trip outfit screen - clicking the pen on an outfit of a day immediately opens the edit view
 2. when viewing a trip add a wear today with calendar iconlike in outfits
 
 
-1. You did this: Now reduce the quick try-on sheet fonts by 50% (halving the doubled values: 36→18, 24→12, 26→13, 22→11, 28→14). I wanted 50% larger so 18->27 etc
-2. On try-on screen remove the use this outfit button
-3. The try-on screen button at the bottom does not fit the screen.
-
-1. planned trip not localized
-2. editing trip all the options when creating trip are missing at the bottom add those
 
 
 Feedback:
@@ -76,6 +62,40 @@ add a feedback tab under settings move debug setting under this tab
 
 IN PROGRESS
 ===========
+Implement new feature: We are working on the refinancing/monetization aspect of the app: I want people to be able to buy coins that I then use to pay gemini cloud costs. would that work with RevenueCat (handles the money/receipts) + Firebase (database and secure Gemini API routing)? In addition, I still want to support the bring your own key option though. What is important is that the user always knows how many coins a certain operation takes (if it involves coins or BYOK tokens). So we need to somehow visually communicate the coin or cost. To be sustainable we need to add 100% to the actual cost. We need to store and use this multiplier securely.
+
+Repair & Sync:
+- [bug] On repair & sync Preview screen buttons are outside of bottom of screen. Fix like you did in in several other cases for e.g. duplicate search.
+- On repair & sync - it displays me 195 items marked as similar. These are exactly the items I already have imported. Why is that?
+
+DONE
+=====
+I want to get rid of the insights icon at the top. So I am looking for suitable and sometimes prominent places where to move the tab pages. I was thinking 
+- move costs over to settings page
+- move wardrobe statistics to shopping page
+but I have no idea where to put the calendar this is also a very useful / prominent feature (and its statistcs aswell)
+how would you do it?
+
+Localize into es-419, es-ES, de-DE, it-IT, fr-FR, pt-BR, en-US, en-GB, pl-PL, ja-JP, ko-KR, tr-TR, id-ID, th-TH, vi-VN, nl-NL, hi-IN, ar-SA, uk-UA, ro-RO, cs-CZ, sv-SE, ms-MY, tl-PH, el-GR, hu-HU, zh-TW, he-IL, ur-PK, da-DK, fi-FI, no-NO
+
+  Bug 1 — still there bottom buttons off-screen: The Try-On Dialog had a Scaffold wrapped with .padding(barInsets), but both the Scaffold (default contentWindowInsets =           
+  WindowInsets.systemBars) and the TopAppBar (default windowInsets adding statusBars top padding) were re-applying the system bar insets on top of that wrap — bottom
+  inset was added twice and the action row got clipped. Added decorFitsSystemWindows = false to DialogProperties for defense, and set both Scaffold.contentWindowInsets
+   and TopAppBar.windowInsets to WindowInsets(0) so the outer .padding(barInsets) is the single source of truth. Noted the gotcha in CLAUDE_ARCHIVE.md.                
+
+Travel planner:
+- created outfit suggestions in travel planner should be viewable like the suggested outfits in create outfit with sliding left/right through them and modification for each with the create outfit dialog
+
+move the wear today on travel screen to top right (same level like Day)
+
+when selecting outfit for try-on show a filter bar with sorting like on outfit screen
+
+1. You did this: Now reduce the quick try-on sheet fonts by 50% (halving the doubled values: 36→18, 24→12, 26→13, 22→11, 28→14). I wanted 50% larger so 18->27 etc
+2. On try-on screen remove the use this outfit button
+3. The try-on screen button at the bottom does not fit the screen.
+
+1. planned trip not localized
+2. editing trip all the options when creating trip are missing at the bottom add those
 try-out screen:
 - add a + FAB to add a new try-out and make it possible to select individual items or entire outfit (like we have already)
 
@@ -87,17 +107,15 @@ cost:
 - why does cutout background removal cost any tokens? isn't this entirely local?
 - when taking a picture with bg removal etc following the token costs are not shown
 
-
 Fix those bugs:
 try-ons: the buttons at the bottom are outside of the screen
 try-ons: when pressing + on try-on FAB and then a) adding wardrobe items should use the wardrobe selector that the outfit editor is using b) allow selecting an outfit to try on not just single wardrobe items
 
-Repair & Sync:
-- [bug] On repair & sync Preview screen buttons are outside of bottom of screen. Fix like you did in in several other cases for e.g. duplicate search.
-- On repair & sync - it displays me 195 items marked as similar. These are exactly the items I already have imported. Why is that?
+On create outfit screen, Einteiler are between Oberteil and Unterteil. Instead it should be one large rectangle covering Oberteil & Unterteil
+1. Cache the trip so it is immediately visible similar how you do it with wardrobe
+2. Option to delete outfits where wardrobe items are no longer available
+3. When deleting wardrobe items check if it would affect outfits and try-ons and ask if those should be removed as well (default)
 
-DONE
-=====
 2. Why is it that when creating an outfit with AI that the  number of required tokens scales with the  number of suggestions N? Can you not just ask Gemini to return N outfits so it should token wise be almost independent of N?                                                                                                         
 3. on Travel screen, create an outfit view that shows travel outfits. put the travel planner (current screen) under a + FAB. Travel outfits are outfits that have been specifically created on travel screen, they can also appear on the general outfits screen
 

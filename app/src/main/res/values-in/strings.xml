@@ -7,11 +7,9 @@
     <string name="nav_wardrobe">Lemari</string>
     <string name="nav_shopping">Belanja</string>
     <string name="nav_travel">Wisata</string>
-    <string name="nav_insights">Wawasan</string>
     <string name="nav_settings">Pengaturan</string>
 
     <!-- Insights tab -->
-    <string name="insights_title">Wawasan</string>
     <string name="insights_tab_calendar">Kalender</string>
     <string name="insights_tab_wardrobe_stats">Statistik Lemari</string>
     <string name="insights_tab_calendar_stats">Statistik Kalender</string>

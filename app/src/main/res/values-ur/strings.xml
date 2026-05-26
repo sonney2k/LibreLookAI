@@ -7,11 +7,9 @@
     <string name="nav_wardrobe">وارڈروب</string>
     <string name="nav_shopping">شاپنگ</string>
     <string name="nav_travel">سفر</string>
-    <string name="nav_insights">بصیرت</string>
     <string name="nav_settings">ترتیبات</string>
 
     <!-- Insights tab -->
-    <string name="insights_title">بصیرت</string>
     <string name="insights_tab_calendar">کیلنڈر</string>
     <string name="insights_tab_wardrobe_stats">وارڈروب اعداد و شمار</string>
     <string name="insights_tab_calendar_stats">کیلنڈر اعداد و شمار</string>

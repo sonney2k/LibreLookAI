@@ -7,11 +7,9 @@
     <string name="nav_wardrobe">Wardrobe</string>
     <string name="nav_shopping">Shopping</string>
     <string name="nav_travel">Biyahe</string>
-    <string name="nav_insights">Insights</string>
     <string name="nav_settings">Settings</string>
 
     <!-- Insights tab -->
-    <string name="insights_title">Insights</string>
     <string name="insights_tab_calendar">Kalendaryo</string>
     <string name="insights_tab_wardrobe_stats">Stats ng Wardrobe</string>
     <string name="insights_tab_calendar_stats">Stats ng Kalendaryo</string>

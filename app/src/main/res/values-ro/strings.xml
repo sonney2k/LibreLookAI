@@ -7,11 +7,9 @@
     <string name="nav_wardrobe">Garderobă</string>
     <string name="nav_shopping">Cumpărături</string>
     <string name="nav_travel">Călătorie</string>
-    <string name="nav_insights">Statistici</string>
     <string name="nav_settings">Setări</string>
 
     <!-- Insights tab -->
-    <string name="insights_title">Statistici</string>
     <string name="insights_tab_calendar">Calendar</string>
     <string name="insights_tab_wardrobe_stats">Statistici Garderobă</string>
     <string name="insights_tab_calendar_stats">Statistici Calendar</string>

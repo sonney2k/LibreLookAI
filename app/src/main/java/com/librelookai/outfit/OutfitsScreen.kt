@@ -265,7 +265,6 @@ fun OutfitsScreen(
                     isPredicting = outfitsState.isPredicting,
                     locations = locationState.locations,
                     activeLocationId = locationState.activeLocationId,
-                    onSetActiveLocation = locationViewModel::setActiveLocation,
                     predictionError = outfitsState.predictionError,
                     selectedOutfitIds = outfitsState.selectedOutfitIds,
                     onOpenCreateComposer = {
@@ -306,7 +305,6 @@ fun OutfitsScreen(
                     onConsumePendingScrollOutfit = outfitsViewModel::consumePendingScrollOutfit,
                     onTryOnStyle = onTryOnStyle,
                     canTryOn = canTryOn,
-                    onSettingsClick = onSettingsClick,
                     brokenOutfits = brokenOutfits,
                     onDeleteBrokenOutfits = {
                         outfitsViewModel.deleteOutfitsByIds(brokenOutfits.map { it.id })
@@ -436,7 +434,6 @@ private fun OutfitListScreen(
     selectedOutfitIds: Set<String> = emptySet(),
     locations: List<Location> = emptyList(),
     activeLocationId: String = "",
-    onSetActiveLocation: ((String) -> Unit)? = null,
     onOpenCreateComposer: () -> Unit,
     onSuggestExisting: () -> Unit = {},
     onEditOutfit: (Outfit) -> Unit,
@@ -454,7 +451,6 @@ private fun OutfitListScreen(
     onConsumePendingScrollOutfit: () -> Unit = {},
     onTryOnStyle: (Outfit) -> Unit = {},
     canTryOn: Boolean = false,
-    onSettingsClick: () -> Unit = {},
     brokenOutfits: List<Outfit> = emptyList(),
     onDeleteBrokenOutfits: () -> Unit = {},
     modifier: Modifier = Modifier,

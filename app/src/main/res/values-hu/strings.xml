@@ -7,11 +7,9 @@
     <string name="nav_wardrobe">Gardrób</string>
     <string name="nav_shopping">Vásárlás</string>
     <string name="nav_travel">Utazás</string>
-    <string name="nav_insights">Elemzések</string>
     <string name="nav_settings">Beállítások</string>
 
     <!-- Insights tab -->
-    <string name="insights_title">Elemzések</string>
     <string name="insights_tab_calendar">Naptár</string>
     <string name="insights_tab_wardrobe_stats">Gardrób statisztikák</string>
     <string name="insights_tab_calendar_stats">Naptár statisztikák</string>
