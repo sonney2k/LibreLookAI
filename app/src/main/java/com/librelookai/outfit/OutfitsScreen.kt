@@ -1405,25 +1405,6 @@ internal fun OutfitFullScreenViewer(
                     .background(MaterialTheme.colorScheme.background),
             ) {
                 Column(modifier = Modifier.fillMaxSize()) {
-                    // Top bar: Close on the left, the standard right-side cluster (closet selector +
-                    // Insights + Settings) on the right — parity with AppScreenHeader so these stay
-                    // reachable while viewing an outfit.
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 4.dp, end = 4.dp, top = 4.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        IconButton(onClick = onDismiss) {
-                            Icon(
-                                Icons.Default.Close,
-                                contentDescription = stringResource(R.string.action_dismiss),
-                                tint = MaterialTheme.colorScheme.onBackground,
-                            )
-                        }
-                        Spacer(Modifier.weight(1f))
-                        com.librelookai.ViewerHeaderActions(onBeforeNavigate = onDismiss)
-                    }
                     // Header — collapsed to a minimal page indicator when this outfit has no
                     // name AND no tags (e.g. a fresh AI suggestion). Composer fullscreen view
                     // mirrors this minimalist treatment.
@@ -1432,7 +1413,7 @@ internal fun OutfitFullScreenViewer(
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = 4.dp, start = 16.dp, end = 16.dp, bottom = 8.dp),
+                                .padding(top = 8.dp, start = 56.dp, end = 56.dp, bottom = 8.dp),
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.spacedBy(4.dp),
                         ) {
@@ -1524,6 +1505,15 @@ internal fun OutfitFullScreenViewer(
                             bottomPadding = effectiveBottom,
                         )
                     }
+                }
+
+                // Close button — hide-tags chip lives inline under the tag row instead.
+                IconButton(
+                    onClick = onDismiss,
+                    modifier = Modifier.align(Alignment.TopStart).padding(8.dp),
+                ) {
+                    Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_dismiss),
+                        tint = MaterialTheme.colorScheme.onBackground)
                 }
 
                 // Speed-dial FAB (wear / edit / delete) — hidden offline (writes only).

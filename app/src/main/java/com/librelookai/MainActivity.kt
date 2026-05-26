@@ -357,12 +357,17 @@ class MainActivity : ComponentActivity() {
                         LocalOnBackPressedDispatcherOwner provides this@MainActivity,
                         LocalIsOffline provides isOffline,
                         LocalSystemBarsPadding provides systemBarsPadding,
-                        // Insights / Settings openers also close the try-on composer (hosted
-                        // outside `when(selectedTab)`, so a tab switch alone wouldn't dismiss it).
-                        LocalOpenInsights provides { tryOnViewModel.close(); selectedTab = 4; navResetTick++ },
+                        // Insights / Settings openers also close the try-on + outfit composers
+                        // (both hosted outside `when(selectedTab)`, so a tab switch alone wouldn't
+                        // dismiss them or their picker dialogs).
+                        LocalOpenInsights provides {
+                            tryOnViewModel.close(); stylesViewModel.closeComposer()
+                            selectedTab = 4; navResetTick++
+                        },
                         LocalOpenSettings provides {
                             Analytics.action("Toolbar", "open_settings")
-                            tryOnViewModel.close(); selectedTab = 5; navResetTick++
+                            tryOnViewModel.close(); stylesViewModel.closeComposer()
+                            selectedTab = 5; navResetTick++
                         },
                         LocalClosetSelector provides ClosetSelectorContext(
                             locations = locationList,
@@ -936,23 +941,31 @@ fun AppScreenHeader(
         )
         trailingContent?.invoke()
         // Insights moved out of the bottom nav into a header chart icon (README IA change).
+        // Insights + Settings share one icon size and a tightened 32.dp button footprint so the
+        // trend icon has equal spacing on both sides (see [ViewerHeaderActions], kept in sync).
         val openInsights = LocalOpenInsights.current
         if (openInsights != null) {
-            androidx.compose.material3.IconButton(onClick = openInsights) {
+            androidx.compose.material3.IconButton(
+                onClick = openInsights,
+                modifier = Modifier.size(32.dp),
+            ) {
                 Icon(
                     Icons.Default.TrendingUp,
                     contentDescription = stringResource(R.string.nav_insights_header_icon),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(18.dp),
+                    modifier = Modifier.size(20.dp),
                 )
             }
         }
         if (onSettingsClick != null) {
-            androidx.compose.material3.IconButton(onClick = onSettingsClick) {
+            androidx.compose.material3.IconButton(
+                onClick = onSettingsClick,
+                modifier = Modifier.size(32.dp),
+            ) {
                 Icon(
                     Icons.Default.Settings,
                     contentDescription = "Settings",
-                    modifier = Modifier.size(22.dp),
+                    modifier = Modifier.size(20.dp),
                 )
             }
         }
@@ -981,24 +994,32 @@ fun ViewerHeaderActions(
                 onSetActiveLocation = selector.onSetActiveLocation,
             )
         }
+        // Insights + Settings: equal icon size and a tightened 32.dp button footprint so the gap
+        // between them is small and the trend icon is symmetric (kept in sync with AppScreenHeader).
         val openInsights = LocalOpenInsights.current
         if (openInsights != null) {
-            androidx.compose.material3.IconButton(onClick = { onBeforeNavigate(); openInsights() }) {
+            androidx.compose.material3.IconButton(
+                onClick = { onBeforeNavigate(); openInsights() },
+                modifier = Modifier.size(32.dp),
+            ) {
                 Icon(
                     Icons.Default.TrendingUp,
                     contentDescription = stringResource(R.string.nav_insights_header_icon),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(18.dp),
+                    modifier = Modifier.size(20.dp),
                 )
             }
         }
         val openSettings = LocalOpenSettings.current
         if (openSettings != null) {
-            androidx.compose.material3.IconButton(onClick = { onBeforeNavigate(); openSettings() }) {
+            androidx.compose.material3.IconButton(
+                onClick = { onBeforeNavigate(); openSettings() },
+                modifier = Modifier.size(32.dp),
+            ) {
                 Icon(
                     Icons.Default.Settings,
                     contentDescription = "Settings",
-                    modifier = Modifier.size(22.dp),
+                    modifier = Modifier.size(20.dp),
                 )
             }
         }

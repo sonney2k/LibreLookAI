@@ -1500,44 +1500,10 @@ internal fun FullScreenViewer(
             .background(MaterialTheme.colorScheme.background),
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            // Top bar: Close on the left, the standard right-side cluster (closet selector +
-            // Insights + Settings) on the right — parity with AppScreenHeader so these stay
-            // reachable while viewing an item. The view-original toggle (when available) sits
-            // just left of the cluster.
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 4.dp, end = 4.dp, top = 4.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                IconButton(onClick = onDismiss) {
-                    Icon(
-                        Icons.Default.Close,
-                        contentDescription = "Close",
-                        tint = MaterialTheme.colorScheme.onBackground,
-                    )
-                }
-                Spacer(Modifier.weight(1f))
-                if (onLoadOriginal != null && currentImage.originalDriveId != null) {
-                    IconButton(onClick = {
-                        Analytics.action("ItemViewer", if (showOriginal) "hide_original" else "show_original")
-                        showOriginal = !showOriginal
-                    }) {
-                        Icon(
-                            imageVector = if (showOriginal) Icons.Default.ImageSearch else Icons.Default.Photo,
-                            contentDescription = stringResource(
-                                if (showOriginal) R.string.wardrobe_view_cutout else R.string.wardrobe_view_original
-                            ),
-                            tint = MaterialTheme.colorScheme.onBackground,
-                        )
-                    }
-                }
-                com.librelookai.ViewerHeaderActions(onBeforeNavigate = onDismiss)
-            }
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 4.dp, start = 16.dp, end = 16.dp, bottom = 8.dp),
+                    .padding(top = 8.dp, start = 56.dp, end = 56.dp, bottom = 8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
@@ -1618,8 +1584,16 @@ internal fun FullScreenViewer(
             AiProcessingOverlay(modifier = Modifier.fillMaxSize())
         }
 
-        // Lazily fetch the original when the top-bar toggle is switched on. The toggle button
-        // itself now lives in the top header row; this only owns the fetch + loading spinner.
+        // Close button — hide-tags chip lives inline under the tag row instead.
+        IconButton(
+            onClick = onDismiss,
+            modifier = Modifier.align(Alignment.TopStart).padding(8.dp),
+        ) {
+            Icon(Icons.Default.Close, contentDescription = "Close", tint = MaterialTheme.colorScheme.onBackground)
+        }
+
+        // View-original toggle (top-end). Shown only when the item has an original on Drive
+        // and the host wired up a loader.
         if (onLoadOriginal != null && currentImage.originalDriveId != null) {
             LaunchedEffect(showOriginal, currentImage.driveId) {
                 if (showOriginal && originalPaths[currentImage.driveId] == null) {
@@ -1628,6 +1602,21 @@ internal fun FullScreenViewer(
                     if (path != null) originalPaths[currentImage.driveId] = path
                     loadingOriginal = false
                 }
+            }
+            IconButton(
+                onClick = {
+                    Analytics.action("ItemViewer", if (showOriginal) "hide_original" else "show_original")
+                    showOriginal = !showOriginal
+                },
+                modifier = Modifier.align(Alignment.TopEnd).padding(8.dp),
+            ) {
+                Icon(
+                    imageVector = if (showOriginal) Icons.Default.ImageSearch else Icons.Default.Photo,
+                    contentDescription = stringResource(
+                        if (showOriginal) R.string.wardrobe_view_cutout else R.string.wardrobe_view_original
+                    ),
+                    tint = MaterialTheme.colorScheme.onBackground,
+                )
             }
             if (showOriginal && loadingOriginal) {
                 CircularProgressIndicator(

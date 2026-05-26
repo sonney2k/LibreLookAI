@@ -1684,8 +1684,11 @@ internal fun AddItemSheet(
                             Text(
                                 stringResource(R.string.composer_add_items),
                                 style = MaterialTheme.typography.titleMedium,
+                                maxLines = 1,
+                                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
                                 modifier = Modifier.weight(1f),
                             )
+                            com.librelookai.ViewerHeaderActions(onBeforeNavigate = onDismiss)
                         }
                         Row(
                             modifier = Modifier

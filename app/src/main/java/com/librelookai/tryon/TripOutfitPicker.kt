@@ -123,8 +123,11 @@ fun TripOutfitPickerDialog(
                         Text(
                             stringResource(R.string.tryon_trip_picker_title),
                             style = MaterialTheme.typography.titleMedium,
+                            maxLines = 1,
+                            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
                             modifier = Modifier.weight(1f),
                         )
+                        com.librelookai.ViewerHeaderActions(onBeforeNavigate = onDismiss)
                     }
                     HorizontalDivider()
                     if (pickable.isEmpty()) {
