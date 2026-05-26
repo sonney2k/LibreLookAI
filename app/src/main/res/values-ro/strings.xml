@@ -878,7 +878,8 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="trip_day_header">Ziua %1$d</string>
     <string name="trip_packed">Împachetat</string>
     <string name="trip_no_destination">Untitled trip</string>
-    <string name="trip_meta_dates">Start %1$s • %2$d days</string>
+    <string name="trip_meta_dates">Start %1$s • %2$d zile</string>
+    <string name="trip_checklist">Listă</string>
     <string name="trip_rename">Rename</string>
     <string name="trip_modify_outfit">Modify outfit</string>
     <string name="trip_section_other_outfits">Other travel outfits</string>

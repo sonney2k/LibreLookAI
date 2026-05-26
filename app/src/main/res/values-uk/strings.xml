@@ -878,7 +878,8 @@
     <string name="trip_day_header">День %1$d</string>
     <string name="trip_packed">Спаковано</string>
     <string name="trip_no_destination">Untitled trip</string>
-    <string name="trip_meta_dates">Start %1$s • %2$d days</string>
+    <string name="trip_meta_dates">Початок %1$s • %2$d дн.</string>
+    <string name="trip_checklist">Список</string>
     <string name="trip_rename">Rename</string>
     <string name="trip_modify_outfit">Modify outfit</string>
     <string name="trip_section_other_outfits">Other travel outfits</string>

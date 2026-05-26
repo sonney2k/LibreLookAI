@@ -31,6 +31,7 @@ import androidx.compose.material.icons.filled.CloudDone
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.AlertDialog
@@ -38,6 +39,8 @@ import androidx.compose.material3.AssistChip
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -136,6 +139,9 @@ fun TripViewerScreen(
     var showDeleteDialog by remember { mutableStateOf(false) }
     var viewerOutfitId by remember { mutableStateOf<String?>(null) }
     var editing by remember(tripId) { mutableStateOf(false) }
+    // View-mode packing checklist: off by default, toggled from the meta row. When on, day-card
+    // and extras items show interactive packing ticks.
+    var checklistMode by remember(tripId) { mutableStateOf(false) }
     val isBulkRefining = tripId in bulkRefining
 
     // Closets the bulk-refine may draw items from. Empty = all closets. Resets per trip.
@@ -216,6 +222,11 @@ fun TripViewerScreen(
                             trip = trip,
                             editable = editing,
                             onRename = { newName -> tripsViewModel.renameTrip(trip.id, newName) },
+                            // Checklist toggle only in view mode (not while editing/previewing).
+                            checklistActive = checklistMode,
+                            onToggleChecklist = if (!editing && !previewing) {
+                                { checklistMode = !checklistMode }
+                            } else null,
                         )
                     }
                     if (trip.forecast.isNotEmpty()) {
@@ -258,9 +269,9 @@ fun TripViewerScreen(
                             onWear = if (outfit != null && !editing && !previewing && !isOffline) {
                                 { outfitEventsViewModel.recordOutfit(outfit.id) }
                             } else null,
-                            // View mode: tick items off as packed.
-                            packedItemIds = trip.packedItemIds,
-                            onTogglePacked = if (!editing && !previewing) {
+                            // Checklist mode: tick items off as packed (and dim the packed ones).
+                            packedItemIds = if (checklistMode) trip.packedItemIds else emptySet(),
+                            onTogglePacked = if (checklistMode && !editing && !previewing) {
                                 { id -> tripsViewModel.toggleTripPackedItem(trip.id, id) }
                             } else null,
                         )
@@ -272,6 +283,7 @@ fun TripViewerScreen(
                             ExtrasCard(
                                 items = trip.extraItems,
                                 editable = editing && !previewing,
+                                checklist = checklistMode,
                                 packedExtras = trip.packedExtras,
                                 onTogglePacked = { extra -> tripsViewModel.toggleTripPackedExtra(trip.id, extra) },
                                 onUpdate = { next -> tripsViewModel.updateTripExtras(trip.id, next) },
@@ -585,6 +597,9 @@ private fun TripMetaSection(
     trip: Trip,
     editable: Boolean,
     onRename: (String) -> Unit,
+    checklistActive: Boolean = false,
+    /** Non-null in view mode: renders a checklist toggle pinned to the right of the dates row. */
+    onToggleChecklist: (() -> Unit)? = null,
 ) {
     // `editable` gates the rename affordance; key the rename toggle on it so leaving edit
     // mode collapses any in-progress rename field.
@@ -629,15 +644,33 @@ private fun TripMetaSection(
                 }
             }
         }
-        Text(
-            stringResource(
-                R.string.trip_meta_dates,
-                trip.startDate.ifBlank { "?" },
-                trip.days,
-            ),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                stringResource(
+                    R.string.trip_meta_dates,
+                    trip.startDate.ifBlank { "?" },
+                    trip.days,
+                ),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.weight(1f),
+            )
+            // Checklist toggle — turns the per-item packing ticks on/off (view mode only).
+            if (onToggleChecklist != null) {
+                FilterChip(
+                    selected = checklistActive,
+                    onClick = onToggleChecklist,
+                    label = { Text(stringResource(R.string.trip_checklist)) },
+                    leadingIcon = {
+                        Icon(
+                            Icons.Default.Checklist,
+                            contentDescription = null,
+                            modifier = Modifier.size(FilterChipDefaults.IconSize),
+                        )
+                    },
+                )
+            }
+        }
     }
 }
 
@@ -862,6 +895,7 @@ private fun PackedCheck(
 private fun ExtrasCard(
     items: List<String>,
     editable: Boolean,
+    checklist: Boolean,
     packedExtras: Set<String>,
     onTogglePacked: (String) -> Unit,
     onUpdate: (List<String>) -> Unit,
@@ -913,8 +947,8 @@ private fun ExtrasCard(
                         Icon(Icons.Default.Add, contentDescription = stringResource(R.string.action_add))
                     }
                 }
-            } else {
-                // View mode: each item is a packing checkbox row.
+            } else if (checklist) {
+                // Checklist mode: each item is a packing checkbox row.
                 items.forEach { item ->
                     val packed = item in packedExtras
                     Row(
@@ -933,6 +967,15 @@ private fun ExtrasCard(
                             modifier = Modifier.weight(1f).then(if (packed) Modifier.alpha(0.6f) else Modifier),
                         )
                     }
+                }
+            } else {
+                // View mode, checklist off: plain item list.
+                items.forEach { item ->
+                    Text(
+                        item,
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
                 }
             }
         }

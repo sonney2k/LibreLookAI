@@ -878,7 +878,8 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <string name="trip_day_header">Hari %1$d</string>
     <string name="trip_packed">Sudah dikemas</string>
     <string name="trip_no_destination">Untitled trip</string>
-    <string name="trip_meta_dates">Start %1$s • %2$d days</string>
+    <string name="trip_meta_dates">Mula %1$s • %2$d hari</string>
+    <string name="trip_checklist">Senarai</string>
     <string name="trip_rename">Rename</string>
     <string name="trip_modify_outfit">Modify outfit</string>
     <string name="trip_section_other_outfits">Other travel outfits</string>
