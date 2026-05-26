@@ -861,7 +861,17 @@ private fun OutfitListScreen(
                         containerColor = MaterialTheme.colorScheme.tertiaryContainer,
                         contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
                         icon = { Icon(Icons.Default.AutoFixHigh, contentDescription = null) },
-                        text = { Text(stringResource(R.string.outfits_combine)) },
+                        text = {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(stringResource(R.string.outfits_combine))
+                                Spacer(Modifier.width(4.dp))
+                                Icon(
+                                    Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp),
+                                )
+                            }
+                        },
                     )
                 }
                 if (selectedOutfitIds.size == 1 && canTryOn && !isOffline) {
@@ -875,7 +885,17 @@ private fun OutfitListScreen(
                             containerColor = MaterialTheme.colorScheme.primaryContainer,
                             contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                             icon = { Icon(Icons.Default.AutoAwesome, contentDescription = null) },
-                            text = { Text(stringResource(R.string.tryon_fab)) },
+                            text = {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text(stringResource(R.string.tryon_fab))
+                                    Spacer(Modifier.width(4.dp))
+                                    Icon(
+                                        Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(18.dp),
+                                    )
+                                }
+                            },
                         )
                     }
                 }
@@ -1583,7 +1603,17 @@ internal fun OutfitFullScreenViewer(
                                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                                     contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                                     icon = { Icon(Icons.Default.AutoAwesome, contentDescription = null) },
-                                    text = { Text(stringResource(R.string.tryon_fab)) },
+                                    text = {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text(stringResource(R.string.tryon_fab))
+                                    Spacer(Modifier.width(4.dp))
+                                    Icon(
+                                        Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(18.dp),
+                                    )
+                                }
+                            },
                                 )
                             }
                             ExtendedFloatingActionButton(
@@ -1606,7 +1636,17 @@ internal fun OutfitFullScreenViewer(
                                 containerColor = MaterialTheme.colorScheme.primaryContainer,
                                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                                 icon = { Icon(Icons.Default.AutoAwesome, contentDescription = null) },
-                                text = { Text(stringResource(R.string.outfits_suggest_tags)) },
+                                text = {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Text(stringResource(R.string.outfits_suggest_tags))
+                                        Spacer(Modifier.width(4.dp))
+                                        Icon(
+                                            Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                            contentDescription = null,
+                                            modifier = Modifier.size(18.dp),
+                                        )
+                                    }
+                                },
                             )
                             ExtendedFloatingActionButton(
                                 onClick = {

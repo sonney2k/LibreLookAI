@@ -39,7 +39,7 @@
     <string name="shop_list_moving">Переміщення…</string>
     <string name="shop_list_loading">Завантаження…</string>
     <string name="shop_list_processing">Обробка %1$d речей…</string>
-    <string name="shop_list_move_to_closet">Перемістити в гардероб…</string>
+    <string name="shop_list_move_to_closet">Перемістити в гардероб</string>
     <string name="shop_list_move_title">Перемістити в гардероб</string>
     <string name="shop_list_delete_title">Видалити зі списку побажань?</string>
     <string name="shop_list_delete_text">Видалити %1$d речей назавжди?</string>
@@ -132,7 +132,7 @@
     <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">Теги гардероба</string>
     <string name="settings_data_tags_desc">Перекласифікувати всі речі за допомогою ШІ. Це перезапише ручні правки.</string>
-    <string name="settings_rescan_button">Пересканувати всі теги…</string>
+    <string name="settings_rescan_button">Пересканувати всі теги</string>
     <string name="settings_rescanning">Сканування %1$d з %2$d…</string>
     <string name="settings_rescan_dialog_title">Пересканувати всі теги?</string>
     <string name="settings_rescan_dialog_text">Gemini перекласифікує всі речі у вашому гардеробі. Це може зайняти час.</string>
@@ -140,13 +140,13 @@
     <string name="settings_bulk_cost_line">%1$d речей × %2$d кред. = разом %3$d кредитів</string>
     <string name="settings_rebg_title">Видалення фону</string>
     <string name="settings_rebg_desc">Повторно видалити фон для всіх речей. Кожна річ коштує 5 кредитів ШІ.</string>
-    <string name="settings_rebg_button">Видалити фон для всіх речей…</string>
+    <string name="settings_rebg_button">Видалити фон для всіх речей</string>
     <string name="settings_rebg_dialog_title">Видалити фон для всіх речей?</string>
     <string name="settings_rebg_confirm">Видалити весь фон</string>
     <string name="settings_rebging">Видалення фону %1$d з %2$d…</string>
     <string name="settings_clear_cache_title">Ремонт і синхронізація</string>
     <string name="settings_clear_cache_desc">Сканувати папки Drive: виправити імена, виявити відсутні фото та оновити все.</string>
-    <string name="settings_clear_cache_button">Ремонт і синхронізація…</string>
+    <string name="settings_clear_cache_button">Ремонт і синхронізація</string>
     <string name="settings_clear_cache_dialog_title">Очистити кеш</string>
     <string name="settings_clear_cache_dialog_text">Всі локальні зображення будуть видалені та завантажені знову з Google Drive.</string>
     <string name="settings_clear_cache_confirm">Очистити й оновити</string>
@@ -177,7 +177,7 @@
     <string name="wardrobe_select_all_count">Вибрати всі (%1$d)</string>
     <string name="wardrobe_delete_title">Видалити речі?</string>
     <string name="wardrobe_delete_text">Ви впевнені, що хочете видалити %d вибраних речей? Це неможливо скасувати.</string>
-    <string name="wardrobe_move_to">Перемістити до…</string>
+    <string name="wardrobe_move_to">Перемістити до</string>
     <string name="wardrobe_move_to_title">Перемістити %d речей до</string>
     <string name="wardrobe_sort">Сортувати</string>
     <string name="wardrobe_sort_newest">Спочатку нові</string>
@@ -267,8 +267,8 @@
     <string name="composer_select_suggestion">Використати цей образ</string>
     <string name="outfits_tag_add">Додати тег</string>
     <string name="outfits_saved_wear_today">Образ збережено! Одягнете сьогодні?</string>
-    <string name="outfits_combine">Об’єднати за допомогою ШІ…</string>
-    <string name="outfit_generate_with_ai">Згенерувати через ШІ…</string>
+    <string name="outfits_combine">Об’єднати за допомогою ШІ</string>
+    <string name="outfit_generate_with_ai">Згенерувати через ШІ</string>
     <string name="outfit_save_dialog_title">Зберегти образ</string>
     <string name="outfit_save_dialog_confirm">Зберегти</string>
 
@@ -319,7 +319,7 @@
 
     <!-- Try on me -->
     <string name="tryon_title">Приміряти на мені</string>
-    <string name="tryon_fab">Приміряти на мені…</string>
+    <string name="tryon_fab">Приміряти на мені</string>
     <string name="tryon_uploading">Завантаження…</string>
     <string name="tryon_generating">Генерація вашої примірки…</string>
     <string name="tryon_error">Помилка генерації примірки</string>
@@ -554,7 +554,7 @@
     <string name="outfit_save_dialog_name">Назва</string>
     <string name="outfit_save_dialog_tag_suggestions">Наявні теги</string>
     <string name="outfit_save_dialog_tags">Теги</string>
-    <string name="outfit_slot_add">Додати річ…</string>
+    <string name="outfit_slot_add">Додати річ</string>
     <string name="outfit_slot_lock">Зафіксувати</string>
     <string name="outfit_slot_remove">Прибрати</string>
     <string name="outfit_slot_unlock">Розблокувати</string>
@@ -581,7 +581,7 @@
     <string name="outfits_selected_count">%d вибрано</string>
     <string name="outfits_sort_most_items">Найбільше речей</string>
     <string name="outfits_suggest_alternatives">Запропонувати 10 альтернатив</string>
-    <string name="outfits_suggest_tags">Запропонувати теги через ШІ…</string>
+    <string name="outfits_suggest_tags">Запропонувати теги через ШІ</string>
     <string name="outfits_suggest_tags_apply">Додати вибрані</string>
     <string name="outfits_suggest_tags_empty">Нових тегів не запропоновано.</string>
     <string name="outfits_suggest_tags_hint">Натискайте теги, щоб перемкнути. Вибрані теги додаються до цього образу.</string>
@@ -607,7 +607,7 @@
     <string name="settings_cutoutfix_action_tightcrop">Щільне обрізання &amp; обмеження розміру</string>
     <string name="settings_cutoutfix_badge_blackbg">чорний фон</string>
     <string name="settings_cutoutfix_badge_greenhalo">зелений ореол</string>
-    <string name="settings_cutoutfix_button">Сканувати вирізання…</string>
+    <string name="settings_cutoutfix_button">Сканувати вирізання</string>
     <string name="settings_cutoutfix_desc">Сканує наявні вирізання на наявність залишків чорного фону чи зелених ореолів і локально перенакладає матте. Без викликів ШІ — виправлені вирізання перезавантажуються зі збереженням ID Drive.</string>
     <string name="settings_cutoutfix_dialog_subtitle">Вибрані вирізання будуть оброблені локально й перезавантажені. Натисніть, щоб перемкнути.</string>
     <string name="settings_cutoutfix_dialog_title">Виправлення фонів вирізань — Перегляд</string>
@@ -632,7 +632,7 @@
     <string name="settings_feedback_github">Відкрити issues на GitHub</string>
     <string name="settings_feedback_title">Надіслати відгук</string>
     <string name="settings_import_ai_title">Обробка ШІ (опціонально)</string>
-    <string name="settings_import_button">Імпорт із папки…</string>
+    <string name="settings_import_button">Імпорт із папки</string>
     <string name="settings_import_desc">Копіює всі зображення з папки до вашого поточного гардероба. Працює з будь-якою папкою — не потрібен файл метаданих. Зображення завжди додаються одразу; обробка ШІ — опціональна.</string>
     <string name="settings_import_drive_empty">Зображень або підпапок не знайдено</string>
     <string name="settings_import_drive_image_count">%1$d зображень у цій папці</string>
@@ -669,7 +669,7 @@
     <string name="settings_local_bg_desc">Якщо ввімкнено, імпорт із камери та галереї запускає локальний сегментатор Magic Touch і дозволяє підтвердити чи уточнити передній план перед збереженням — без виклику Gemini, без кредитів. Імпорт URL завжди використовує цю перевірку.</string>
     <string name="settings_local_bg_toggle">Видаляти фон на пристрої</string>
     <string name="settings_location_active">Активний</string>
-    <string name="settings_location_add">Додати гардероб…</string>
+    <string name="settings_location_add">Додати гардероб</string>
     <string name="settings_location_add_title">Додати гардероб</string>
     <string name="settings_location_default">Стандартний</string>
     <string name="settings_location_delete_text">Дані гардероба для «%1$s» залишаться в Drive, але більше не будуть доступні звідси.</string>
@@ -712,7 +712,7 @@
     <string name="shop_matching">Порівняння з гардеробом…</string>
     <string name="shop_model_missing">Модель на пристрої відсутня. Розмістіть efficientnet_lite0.tflite у app/src/main/assets/embedder/ та magic_touch.tflite у app/src/main/assets/segmenter/.</string>
     <string name="shop_no_matches">Збігів поки немає. Спробуйте ближче, краще освітлене фото.</string>
-    <string name="shop_show_in_wardrobe">Показати в гардеробі…</string>
+    <string name="shop_show_in_wardrobe">Показати в гардеробі</string>
     <string name="shop_take_another">Зробити ще одне фото</string>
     <string name="shop_take_photo">Зробити фото</string>
     <string name="shop_your_photo">Ваше фото</string>
@@ -813,10 +813,10 @@
     <string name="travel_refine_rain">Краще для дощу</string>
     <string name="travel_refine_reuse">Максимум повторного використання образів</string>
     <string name="travel_regenerate">Перегенерувати</string>
-    <string name="tryon_add_item">Додати річ…</string>
+    <string name="tryon_add_item">Додати річ</string>
     <string name="tryon_add_items_title">Додати речі з гардероба</string>
     <string name="tryon_add_photo">Додати фото %1$s</string>
-    <string name="tryon_change_items">Змінити речі…</string>
+    <string name="tryon_change_items">Змінити речі</string>
     <string name="tryon_composer_explain">Усі речі нижче будуть одягнені разом у згенерованому приміряному образі. Натисніть на річ, щоб прибрати; натисніть «+», щоб додати ще.</string>
     <string name="tryon_composer_items_title">Речі в цьому приміряні (%1$d)</string>
     <string name="tryon_cost_line">Коштує %1$d кредитів за приміряння</string>
@@ -849,11 +849,11 @@
     <string name="tryon_view_source_outfit">Переглянути образ</string>
     <string name="viewer_hide_tags">Сховати теги</string>
     <string name="viewer_show_tags">Показати теги</string>
-    <string name="wardrobe_create_style">Створити образ…</string>
+    <string name="wardrobe_create_style">Створити образ</string>
     <string name="wardrobe_find_by_photo">Знайти річ за фото</string>
     <string name="wardrobe_find_by_photo_empty">Схожих речей не знайдено.</string>
     <string name="wardrobe_find_by_photo_searching">Пошук збігів…</string>
-    <string name="wardrobe_fix_cutout_bg">Виправити фон вирізання…</string>
+    <string name="wardrobe_fix_cutout_bg">Виправити фон вирізання</string>
     <string name="wardrobe_fix_cutout_bg_clean">Залишків фону не виявлено — нічого виправляти.</string>
     <string name="wardrobe_fix_cutout_bg_done">Фон вирізання виправлено.</string>
     <string name="wardrobe_imported_on">Імпортовано %1$s</string>
@@ -863,7 +863,7 @@
     <string name="wardrobe_search_text_results">Результати пошуку</string>
     <string name="wardrobe_search_title">Шукати в гардеробі</string>
     <string name="wardrobe_search_use_photo">Шукати за фото</string>
-    <string name="wardrobe_suggest_replacements">Запропонувати альтернативи…</string>
+    <string name="wardrobe_suggest_replacements">Запропонувати альтернативи</string>
     <string name="wardrobe_view_cutout">Дивитися вирізання</string>
     <string name="wardrobe_view_original">Дивитися оригінал</string>
 

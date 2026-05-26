@@ -39,7 +39,7 @@
     <string name="shop_list_moving">Inililipat…</string>
     <string name="shop_list_loading">Naglo-load…</string>
     <string name="shop_list_processing">Pinoproseso ang %1$d item…</string>
-    <string name="shop_list_move_to_closet">Ilipat sa closet…</string>
+    <string name="shop_list_move_to_closet">Ilipat sa closet</string>
     <string name="shop_list_move_title">Ilipat sa closet</string>
     <string name="shop_list_delete_title">Tanggalin sa wishlist?</string>
     <string name="shop_list_delete_text">Permanenteng tanggalin ang %1$d item sa iyong wishlist?</string>
@@ -132,7 +132,7 @@
     <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">Mga Tag ng Wardrobe</string>
     <string name="settings_data_tags_desc">I-classify muli ang bawat item sa iyong wardrobe gamit ang Gemini. Mababago nito ang anumang manu-manong tag edits.</string>
-    <string name="settings_rescan_button">I-rescan ang Lahat ng Tag…</string>
+    <string name="settings_rescan_button">I-rescan ang Lahat ng Tag</string>
     <string name="settings_rescanning">Nire-rescan ang %1$d ng %2$d…</string>
     <string name="settings_rescan_dialog_title">I-rescan ang lahat ng tag?</string>
     <string name="settings_rescan_dialog_text">I-cla-classify muli ng Gemini ang bawat item sa iyong wardrobe. Ito ay magbabago sa anumang manu-manong tag edits at maaaring tumagal.</string>
@@ -140,14 +140,14 @@
     <string name="settings_bulk_cost_line">%1$d item × %2$d credits = %3$d credits kabuuan</string>
     <string name="settings_rebg_title">Pag-aalis ng Background</string>
     <string name="settings_rebg_desc">Patakbuhin muli ang AI background removal sa bawat item sa iyong wardrobe. Ligtas na nakaimbak ang mga orihinal sa Drive kaya maaari mong patakbuhin muli ito anumang oras. Bawat item ay nagkakahalaga ng 5 AI credits (o Gemini API quota).</string>
-    <string name="settings_rebg_button">Alisin ang BG mula sa Lahat…</string>
+    <string name="settings_rebg_button">Alisin ang BG mula sa Lahat</string>
     <string name="settings_rebg_dialog_title">Alisin ang background sa lahat ng item?</string>
     <string name="settings_rebg_dialog_text">Pinoproseso nito ang bawat item sa iyong kasalukuyang wardrobe gamit ang Gemini. Maaaring tumagal at gumamit ng maraming AI credits / API quota. Ang mga item na may orihinal na nakaimbak sa Drive ay gagamit niyon; ang iba ay gagamit ng kasalukuyang larawan.</string>
     <string name="settings_rebg_confirm">Alisin Lahat ng BG</string>
     <string name="settings_rebging">Inaalis ang background %1$d ng %2$d…</string>
     <string name="settings_clear_cache_title">Repair &amp; Sync</string>
     <string name="settings_clear_cache_desc">I-scan ang lahat ng Drive folder: ayusin ang pag-name ng file, hanapin ang mga nawawalang cutout at tag sidecar, pagkatapos ay imungkahi na iproseso. Tatapusin sa pag-reload ng lahat mula sa Drive.</string>
-    <string name="settings_clear_cache_button">Repair &amp; Sync…</string>
+    <string name="settings_clear_cache_button">Repair &amp; Sync</string>
     <string name="settings_clear_cache_dialog_title">I-clear ang Cache</string>
     <string name="settings_clear_cache_dialog_text">Lahat ng locally cached image ay tatanggalin at muling ida-download mula sa Google Drive. Hindi maaapektuhan ang iyong data sa Drive.</string>
     <string name="settings_clear_cache_confirm">I-clear at I-refresh</string>
@@ -174,7 +174,7 @@
     <string name="settings_repair_preview_process_n">Iproseso ang %1$d</string>
     <string name="settings_cutoutfix_title">Ayusin ang cutout backgrounds</string>
     <string name="settings_cutoutfix_desc">I-scan ang mga umiiral na cutout para sa natitirang itim na background o berdeng halo at i-apply muli ang matte lokal. Walang AI calls — ang mga naayos na cutout ay ina-upload muli na pinapanatili ang Drive ID.</string>
-    <string name="settings_cutoutfix_button">I-scan ang mga cutout…</string>
+    <string name="settings_cutoutfix_button">I-scan ang mga cutout</string>
     <string name="settings_cutoutfix_scanning">Sini-scan ang cutout %1$d ng %2$d…</string>
     <string name="settings_cutoutfix_processing">Inaayos ang cutout %1$d ng %2$d…</string>
     <string name="settings_cutoutfix_done">%1$d cutout ang naayos.</string>
@@ -200,7 +200,7 @@
     <string name="settings_migrating">Nire-rename ang file %1$d ng %2$d…</string>
     <string name="settings_import_title">I-import mula sa Folder</string>
     <string name="settings_import_desc">Kopyahin ang lahat ng larawan mula sa isang folder papunta sa iyong kasalukuyang wardrobe. Gumagana sa anumang folder — walang kinakailangang metadata file. Ang mga larawan ay palaging idinaragdag agad; opsyonal ang AI processing.</string>
-    <string name="settings_import_button">I-import mula sa folder…</string>
+    <string name="settings_import_button">I-import mula sa folder</string>
     <string name="settings_importing">Ini-import ang %1$d ng %2$d…</string>
     <string name="settings_import_later_hint">Tip: Maaari mong alisin ang mga background at auto-tag ang lahat ng item anumang oras mula sa mga seksyon sa itaas.</string>
     <string name="settings_import_options_title">Mga Opsyon sa Import</string>
@@ -237,7 +237,7 @@
     <string name="settings_locations_title">Mga Closet</string>
     <string name="settings_locations_desc">Pamahalaan ang maraming wardrobe para sa iba\'t ibang lugar. I-tap ang closet para gawing default — ang mga bagong item ay iim-import doon, at magsisimula doon ang paggawa ng outfit. Independent ang closet filter sa itaas ng bawat screen at palaging nagsisimula sa \"Lahat\". Opsyonal magtakda ng lungsod para sa weather info.</string>
     <string name="settings_location_default">Default</string>
-    <string name="settings_location_add">Magdagdag ng closet…</string>
+    <string name="settings_location_add">Magdagdag ng closet</string>
     <string name="settings_location_name_hint">Pangalan ng closet</string>
     <string name="settings_location_geo_hint">Lungsod para sa weather (opsyonal)</string>
     <string name="settings_location_add_title">Magdagdag ng closet</string>
@@ -261,7 +261,7 @@
     <string name="wardrobe_select_all_count">Piliin lahat (%1$d)</string>
     <string name="wardrobe_delete_title">Tanggalin ang mga item?</string>
     <string name="wardrobe_delete_text">Sigurado ka bang gusto mong tanggalin ang %d napiling item? Hindi ito mababawi.</string>
-    <string name="wardrobe_move_to">Ilipat sa…</string>
+    <string name="wardrobe_move_to">Ilipat sa</string>
     <string name="wardrobe_move_to_title">Ilipat ang %d item sa</string>
     <string name="wardrobe_sort">Pag-uri-uriin</string>
     <string name="wardrobe_sort_newest">Pinakabago muna</string>
@@ -272,7 +272,7 @@
     <string name="wardrobe_tag_detect">Tuklasin ang mga tag</string>
     <string name="wardrobe_tag_remove_bg">Alisin ang BG</string>
     <string name="wardrobe_tag_re_remove_bg">Alisin muli ang BG</string>
-    <string name="wardrobe_fix_cutout_bg">Ayusin ang cutout BG…</string>
+    <string name="wardrobe_fix_cutout_bg">Ayusin ang cutout BG</string>
     <string name="wardrobe_fix_cutout_bg_done">Naayos ang cutout background.</string>
     <string name="wardrobe_fix_cutout_bg_clean">Walang nakitang natitirang background — walang aayusin.</string>
     <string name="wardrobe_tag_rotate">Iikot</string>
@@ -460,7 +460,7 @@
     <string name="composer_select_suggestion">Gamitin ang outfit na ito</string>
     <string name="outfits_tag_add">Magdagdag ng tag</string>
     <string name="outfits_tag_add_placeholder">hal. kaarawan, biyahe</string>
-    <string name="outfits_suggest_tags">Magmungkahi ng mga tag gamit ang AI…</string>
+    <string name="outfits_suggest_tags">Magmungkahi ng mga tag gamit ang AI</string>
     <string name="outfits_suggest_tags_title">Mga iminumungkahing tag</string>
     <string name="outfits_suggest_tags_loading">Nagmumungkahi ng mga tag…</string>
     <string name="outfits_suggest_tags_empty">Walang bagong tag na iminumungkahi.</string>
@@ -483,12 +483,12 @@
     <string name="outfits_select_all_count">Piliin lahat %d</string>
     <string name="outfits_delete_selected_title">Tanggalin ang mga outfit?</string>
     <string name="outfits_delete_selected_text">%d outfit ang permanenteng aalisin.</string>
-    <string name="outfits_combine">Pagsamahin gamit ang AI…</string>
+    <string name="outfits_combine">Pagsamahin gamit ang AI</string>
     <string name="outfit_slot_lock">I-lock</string>
     <string name="outfit_slot_unlock">I-unlock</string>
     <string name="outfit_slot_remove">Alisin</string>
-    <string name="outfit_slot_add">Magdagdag ng item…</string>
-    <string name="outfit_generate_with_ai">Bumuo gamit ang AI…</string>
+    <string name="outfit_slot_add">Magdagdag ng item</string>
+    <string name="outfit_generate_with_ai">Bumuo gamit ang AI</string>
     <string name="outfit_discard_changes_title">Itapon ang mga pagbabago?</string>
     <string name="outfit_discard_changes_body">Mawawala ang iyong hindi na-save na mga pagbabago.</string>
     <string name="outfit_discard_changes_confirm">Itapon</string>
@@ -556,7 +556,7 @@
     <string name="gap_empty_hint">I-tap ang \"Suriin\" para hayaan ang AI na matukoy ang mga pundasyong piraso na kakumpleto sa pinakamaraming outfit mula sa iyong wardrobe.</string>
 
     <!-- Suggest replacements (Wardrobe selection mode) -->
-    <string name="wardrobe_suggest_replacements">Magmungkahi ng alternatibo…</string>
+    <string name="wardrobe_suggest_replacements">Magmungkahi ng alternatibo</string>
     <string name="replacements_title">Mga kapalit para sa %d item</string>
     <string name="replacements_analyzing">Nagmumungkahi ng mga kapalit…</string>
 
@@ -597,7 +597,7 @@
 
     <!-- Try on me -->
     <string name="tryon_title">Subukan sa akin</string>
-    <string name="tryon_fab">Subukan sa akin…</string>
+    <string name="tryon_fab">Subukan sa akin</string>
     <string name="tryon_section_title">Mga try-on photo</string>
     <string name="tryon_section_desc">Mag-upload ng full-body photos mula sa harap, gilid, at likod. Gagamitin ng app ang mga ito bilang reference kapag bumubuo ng Try-on preview ng outfit o wardrobe item sa iyo. Mananatili ang mga larawan sa iyong sariling Drive.</string>
     <string name="tryon_slot_front">Harap</string>
@@ -622,11 +622,11 @@
     <string name="action_add">Idagdag</string>
     <string name="tryon_composer_explain">Lahat ng item na ipinakita sa ibaba ay isusuot nang magkasama sa nabuong try-on. I-tap ang item para alisin; i-tap ang \"+\" para magdagdag pa.</string>
     <string name="tryon_composer_items_title">Mga item sa try-on na ito (%1$d)</string>
-    <string name="tryon_add_item">Magdagdag ng item…</string>
+    <string name="tryon_add_item">Magdagdag ng item</string>
     <string name="tryon_add_items_title">Magdagdag ng wardrobe items</string>
     <string name="tryon_generate">Bumuo ng try-on</string>
     <string name="tryon_try_again">Subukan muli</string>
-    <string name="tryon_change_items">Palitan ang mga item…</string>
+    <string name="tryon_change_items">Palitan ang mga item</string>
     <string name="tryon_save_to_drive">I-save</string>
     <string name="tryon_saved_to_drive">Na-save na</string>
     <string name="tryon_saving">Sina-save…</string>
@@ -748,7 +748,7 @@
     <string name="composer_factor_items">%1$d item</string>
     <string name="composer_factor_closets">%1$d closet</string>
     <string name="composer_factor_composition">Custom na komposisyon</string>
-    <string name="wardrobe_create_style">Gumawa ng outfit…</string>
+    <string name="wardrobe_create_style">Gumawa ng outfit</string>
     <string name="wardrobe_imported_on">Na-import noong %1$s</string>
     <string name="wardrobe_view_original">Tingnan ang orihinal</string>
     <string name="wardrobe_view_cutout">Tingnan ang cutout</string>
@@ -838,7 +838,7 @@
     <string name="settings_debug_similarity_desc">Kapag binubuksan ang Similarity Finder match, ipakita ang per-channel breakdown (segmented thumbnails, embedding/histogram cosine, hue histograms) sa halip ng default na zoomable image.</string>
 
     <!-- Match preview dialog -->
-    <string name="shop_show_in_wardrobe">Ipakita sa wardrobe…</string>
+    <string name="shop_show_in_wardrobe">Ipakita sa wardrobe</string>
     <string name="shop_add_to_shopping_list">Idagdag sa shopping list</string>
     <string name="dedupe_dialog_title">Posibleng duplicate</string>
     <string name="dedupe_dialog_desc">Nakakita kami ng %1$d item sa iyong wardrobe na mukhang katulad ng larawang ito.</string>

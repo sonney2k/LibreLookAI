@@ -39,7 +39,7 @@
     <string name="shop_list_moving">Moving…</string>
     <string name="shop_list_loading">Loading…</string>
     <string name="shop_list_processing">Processing %1$d item(s)…</string>
-    <string name="shop_list_move_to_closet">Move to wardrobe…</string>
+    <string name="shop_list_move_to_closet">Move to wardrobe</string>
     <string name="shop_list_move_title">Move to wardrobe</string>
     <string name="shop_list_delete_title">Delete from wishlist?</string>
     <string name="shop_list_delete_text">Permanently remove %1$d item(s) from your wishlist?</string>
@@ -132,7 +132,7 @@
     <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">Wardrobe Tags</string>
     <string name="settings_data_tags_desc">Re-classify every item in your wardrobe with Gemini. This overwrites any manual tag edits.</string>
-    <string name="settings_rescan_button">Re-scan All Tags…</string>
+    <string name="settings_rescan_button">Re-scan All Tags</string>
     <string name="settings_rescanning">Re-scanning %1$d of %2$d…</string>
     <string name="settings_rescan_dialog_title">Re-scan all tags?</string>
     <string name="settings_rescan_dialog_text">Gemini will re-classify every item in your wardrobe. This will overwrite any manual tag edits and may take a while.</string>
@@ -140,14 +140,14 @@
     <string name="settings_bulk_cost_line">%1$d items × %2$d credits = %3$d credits total</string>
     <string name="settings_rebg_title">Background Removal</string>
     <string name="settings_rebg_desc">Re-run AI background removal on every item in your wardrobe. Originals are safely stored on Drive so you can re-run this any time. Each item costs 5 AI credits (or Gemini API quota).</string>
-    <string name="settings_rebg_button">Remove BG from All Items…</string>
+    <string name="settings_rebg_button">Remove BG from All Items</string>
     <string name="settings_rebg_dialog_title">Remove backgrounds from all items?</string>
     <string name="settings_rebg_dialog_text">This will process every item in your current wardrobe with Gemini. It may take a while and uses significant AI credits / API quota. Items that already have their original saved on Drive will use that; others will use the current image.</string>
     <string name="settings_rebg_confirm">Remove All BG</string>
     <string name="settings_rebging">Removing background %1$d of %2$d…</string>
     <string name="settings_clear_cache_title">Repair &amp; Sync</string>
     <string name="settings_clear_cache_desc">Scan all Drive folders: fix file naming, detect missing cutouts and tag sidecars, then offer to process them. Finishes by reloading everything from Drive.</string>
-    <string name="settings_clear_cache_button">Repair &amp; Sync…</string>
+    <string name="settings_clear_cache_button">Repair &amp; Sync</string>
     <string name="settings_clear_cache_dialog_title">Clear Cache</string>
     <string name="settings_clear_cache_dialog_text">All locally cached images will be deleted and re-downloaded from Google Drive. Your data on Drive is not affected.</string>
     <string name="settings_clear_cache_confirm">Clear &amp; Refresh</string>
@@ -174,7 +174,7 @@
     <string name="settings_repair_preview_process_n">Process %1$d</string>
     <string name="settings_cutoutfix_title">Fix cutout backgrounds</string>
     <string name="settings_cutoutfix_desc">Scan existing cutouts for leftover black backgrounds or green halos and re-apply the matte locally. No AI calls — fixed cutouts are re-uploaded preserving their Drive ID.</string>
-    <string name="settings_cutoutfix_button">Scan cutouts…</string>
+    <string name="settings_cutoutfix_button">Scan cutouts</string>
     <string name="settings_cutoutfix_scanning">Scanning cutout %1$d of %2$d…</string>
     <string name="settings_cutoutfix_processing">Fixing cutout %1$d of %2$d…</string>
     <string name="settings_cutoutfix_done">%1$d cutout(s) fixed.</string>
@@ -200,7 +200,7 @@
     <string name="settings_migrating">Renaming file %1$d of %2$d…</string>
     <string name="settings_import_title">Import from Folder</string>
     <string name="settings_import_desc">Copy all images from a folder into your current wardrobe. Works with any folder — no metadata file required. Images are always added immediately; AI processing is optional.</string>
-    <string name="settings_import_button">Import from folder…</string>
+    <string name="settings_import_button">Import from folder</string>
     <string name="settings_importing">Importing %1$d of %2$d…</string>
     <string name="settings_import_later_hint">Tip: You can remove backgrounds and auto-tag all items at any time from the sections above.</string>
     <string name="settings_import_options_title">Import Options</string>
@@ -237,7 +237,7 @@
     <string name="settings_locations_title">Wardrobes</string>
     <string name="settings_locations_desc">Manage multiple wardrobes for different places. Tap a wardrobe to make it the default — new items are imported there, and outfit creation starts from it. The wardrobe filter on top of each screen is independent and always starts at \"All\". Optionally set a city for weather info.</string>
     <string name="settings_location_default">Default</string>
-    <string name="settings_location_add">Add wardrobe…</string>
+    <string name="settings_location_add">Add wardrobe</string>
     <string name="settings_location_name_hint">Wardrobe name</string>
     <string name="settings_location_geo_hint">City for weather (optional)</string>
     <string name="settings_location_add_title">Add wardrobe</string>
@@ -261,7 +261,7 @@
     <string name="wardrobe_select_all_count">Select all (%1$d)</string>
     <string name="wardrobe_delete_title">Delete items?</string>
     <string name="wardrobe_delete_text">Are you sure you want to delete %d selected items? This cannot be undone.</string>
-    <string name="wardrobe_move_to">Move to…</string>
+    <string name="wardrobe_move_to">Move to</string>
     <string name="wardrobe_move_to_title">Move %d item(s) to</string>
     <string name="wardrobe_sort">Sort</string>
     <string name="wardrobe_sort_newest">Newest first</string>
@@ -272,7 +272,7 @@
     <string name="wardrobe_tag_detect">Detect tags</string>
     <string name="wardrobe_tag_remove_bg">Remove BG</string>
     <string name="wardrobe_tag_re_remove_bg">Re-remove BG</string>
-    <string name="wardrobe_fix_cutout_bg">Fix cutout BG…</string>
+    <string name="wardrobe_fix_cutout_bg">Fix cutout BG</string>
     <string name="wardrobe_fix_cutout_bg_done">Cutout background fixed.</string>
     <string name="wardrobe_fix_cutout_bg_clean">No leftover background detected — nothing to fix.</string>
     <string name="wardrobe_tag_rotate">Rotate</string>
@@ -460,7 +460,7 @@
     <string name="composer_select_suggestion">Use this outfit</string>
     <string name="outfits_tag_add">Add tag</string>
     <string name="outfits_tag_add_placeholder">e.g. birthday, travel</string>
-    <string name="outfits_suggest_tags">Suggest tags with AI…</string>
+    <string name="outfits_suggest_tags">Suggest tags with AI</string>
     <string name="outfits_suggest_tags_title">Suggested tags</string>
     <string name="outfits_suggest_tags_loading">Suggesting tags…</string>
     <string name="outfits_suggest_tags_empty">No new tags suggested.</string>
@@ -483,12 +483,12 @@
     <string name="outfits_select_all_count">Select all %d</string>
     <string name="outfits_delete_selected_title">Delete outfits?</string>
     <string name="outfits_delete_selected_text">%d outfits will be permanently removed.</string>
-    <string name="outfits_combine">Combine with AI…</string>
+    <string name="outfits_combine">Combine with AI</string>
     <string name="outfit_slot_lock">Lock</string>
     <string name="outfit_slot_unlock">Unlock</string>
     <string name="outfit_slot_remove">Remove</string>
-    <string name="outfit_slot_add">Add item…</string>
-    <string name="outfit_generate_with_ai">Generate with AI…</string>
+    <string name="outfit_slot_add">Add item</string>
+    <string name="outfit_generate_with_ai">Generate with AI</string>
     <string name="outfit_discard_changes_title">Discard changes?</string>
     <string name="outfit_discard_changes_body">Your unsaved changes will be lost.</string>
     <string name="outfit_discard_changes_confirm">Discard</string>
@@ -556,7 +556,7 @@
     <string name="gap_empty_hint">Tap \"Analyse\" to let AI identify the foundational pieces that would complete the most outfits from your wardrobe.</string>
 
     <!-- Suggest replacements (Wardrobe selection mode) -->
-    <string name="wardrobe_suggest_replacements">Suggest alternatives…</string>
+    <string name="wardrobe_suggest_replacements">Suggest alternatives</string>
     <string name="replacements_title">Replacements for %d items</string>
     <string name="replacements_analyzing">Suggesting replacements…</string>
 
@@ -597,7 +597,7 @@
 
     <!-- Try on me -->
     <string name="tryon_title">Try on me</string>
-    <string name="tryon_fab">Try on me…</string>
+    <string name="tryon_fab">Try on me</string>
     <string name="tryon_section_title">Try-on photos</string>
     <string name="tryon_section_desc">Upload full-body photos from the front, side, and back. The app uses these as a reference when generating a Try-on preview of an outfit or wardrobe item on you. Photos stay in your own Drive.</string>
     <string name="tryon_slot_front">Front</string>
@@ -622,11 +622,11 @@
     <string name="action_add">Add</string>
     <string name="tryon_composer_explain">All items shown below will be worn together in the generated try-on. Tap an item to remove it; tap \"+\" to add more.</string>
     <string name="tryon_composer_items_title">Items in this try-on (%1$d)</string>
-    <string name="tryon_add_item">Add item…</string>
+    <string name="tryon_add_item">Add item</string>
     <string name="tryon_add_items_title">Add wardrobe items</string>
     <string name="tryon_generate">Generate try-on</string>
     <string name="tryon_try_again">Try again</string>
-    <string name="tryon_change_items">Change items…</string>
+    <string name="tryon_change_items">Change items</string>
     <string name="tryon_save_to_drive">Save</string>
     <string name="tryon_saved_to_drive">Saved</string>
     <string name="tryon_saving">Saving…</string>
@@ -748,7 +748,7 @@
     <string name="composer_factor_items">%1$d items</string>
     <string name="composer_factor_closets">%1$d wardrobes</string>
     <string name="composer_factor_composition">Custom composition</string>
-    <string name="wardrobe_create_style">Create outfit…</string>
+    <string name="wardrobe_create_style">Create outfit</string>
     <string name="wardrobe_imported_on">Imported %1$s</string>
     <string name="wardrobe_view_original">View original</string>
     <string name="wardrobe_view_cutout">View cutout</string>
@@ -838,7 +838,7 @@
     <string name="settings_debug_similarity_desc">When opening a Similarity Finder match, show the per-channel breakdown (segmented thumbnails, embedding/histogram cosine, hue histograms) instead of the default zoomable image.</string>
 
     <!-- Match preview dialog -->
-    <string name="shop_show_in_wardrobe">Show in wardrobe…</string>
+    <string name="shop_show_in_wardrobe">Show in wardrobe</string>
     <string name="shop_add_to_shopping_list">Add to shopping list</string>
     <string name="dedupe_dialog_title">Possible duplicate</string>
     <string name="dedupe_dialog_desc">We found %1$d item(s) in your wardrobe that look very similar to this photo.</string>

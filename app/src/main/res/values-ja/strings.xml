@@ -39,7 +39,7 @@
     <string name="shop_list_moving">移動中…</string>
     <string name="shop_list_loading">読み込み中…</string>
     <string name="shop_list_processing">%1$d 件のアイテムを処理中…</string>
-    <string name="shop_list_move_to_closet">クローゼットに移動…</string>
+    <string name="shop_list_move_to_closet">クローゼットに移動</string>
     <string name="shop_list_move_title">クローゼットに移動</string>
     <string name="shop_list_delete_title">ウィッシュリストから削除しますか?</string>
     <string name="shop_list_delete_text">%1$d 件のアイテムをウィッシュリストから完全に削除しますか?</string>
@@ -132,7 +132,7 @@
     <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">クローゼットのタグ</string>
     <string name="settings_data_tags_desc">Gemini でクローゼットのすべてのアイテムを再分類します。手動で編集したタグは上書きされます。</string>
-    <string name="settings_rescan_button">すべてのタグを再スキャン…</string>
+    <string name="settings_rescan_button">すべてのタグを再スキャン</string>
     <string name="settings_rescanning">再スキャン中 %1$d / %2$d…</string>
     <string name="settings_rescan_dialog_title">すべてのタグを再スキャンしますか?</string>
     <string name="settings_rescan_dialog_text">Gemini がクローゼットのすべてのアイテムを再分類します。手動で編集したタグは上書きされ、時間がかかる場合があります。</string>
@@ -140,14 +140,14 @@
     <string name="settings_bulk_cost_line">%1$d アイテム × %2$d クレジット = 合計 %3$d クレジット</string>
     <string name="settings_rebg_title">背景削除</string>
     <string name="settings_rebg_desc">クローゼットのすべてのアイテムにAI背景削除を再実行します。オリジナルは Drive に安全に保存されているので、いつでも再実行可能です。アイテムごとに5クレジット(または Gemini API クォータ)を消費します。</string>
-    <string name="settings_rebg_button">すべてのアイテムの背景を削除…</string>
+    <string name="settings_rebg_button">すべてのアイテムの背景を削除</string>
     <string name="settings_rebg_dialog_title">すべてのアイテムの背景を削除しますか?</string>
     <string name="settings_rebg_dialog_text">現在のクローゼットのすべてのアイテムを Gemini で処理します。時間がかかり、AIクレジット/APIクォータを大きく消費します。Drive にオリジナルが保存されているアイテムはそれを使用し、ない場合は現在の画像を使用します。</string>
     <string name="settings_rebg_confirm">すべての背景を削除</string>
     <string name="settings_rebging">背景を削除中 %1$d / %2$d…</string>
     <string name="settings_clear_cache_title">修復と同期</string>
     <string name="settings_clear_cache_desc">すべての Drive フォルダーをスキャンします: ファイル名を修正し、欠けている切り抜きやタグサイドカーを検出して処理を提案します。完了後、Drive からすべて再読み込みします。</string>
-    <string name="settings_clear_cache_button">修復と同期…</string>
+    <string name="settings_clear_cache_button">修復と同期</string>
     <string name="settings_clear_cache_dialog_title">キャッシュをクリア</string>
     <string name="settings_clear_cache_dialog_text">ローカルにキャッシュされたすべての画像が削除され、Google Drive から再ダウンロードされます。Drive 上のデータには影響しません。</string>
     <string name="settings_clear_cache_confirm">クリアして更新</string>
@@ -174,7 +174,7 @@
     <string name="settings_repair_preview_process_n">%1$d 件を処理</string>
     <string name="settings_cutoutfix_title">切り抜き背景の修正</string>
     <string name="settings_cutoutfix_desc">既存の切り抜きをスキャンして残った黒背景や緑のハローを検出し、ローカルでマット処理を再適用します。AI呼び出しなし — 修正された切り抜きは Drive ID を維持したまま再アップロードされます。</string>
-    <string name="settings_cutoutfix_button">切り抜きをスキャン…</string>
+    <string name="settings_cutoutfix_button">切り抜きをスキャン</string>
     <string name="settings_cutoutfix_scanning">切り抜きをスキャン中 %1$d / %2$d…</string>
     <string name="settings_cutoutfix_processing">切り抜きを修正中 %1$d / %2$d…</string>
     <string name="settings_cutoutfix_done">%1$d 件の切り抜きを修正しました。</string>
@@ -200,7 +200,7 @@
     <string name="settings_migrating">ファイル名を変更中 %1$d / %2$d…</string>
     <string name="settings_import_title">フォルダーからインポート</string>
     <string name="settings_import_desc">フォルダー内のすべての画像を現在のクローゼットにコピーします。任意のフォルダーで動作 — メタデータファイルは不要です。画像は常に即座に追加されます。AI処理はオプションです。</string>
-    <string name="settings_import_button">フォルダーからインポート…</string>
+    <string name="settings_import_button">フォルダーからインポート</string>
     <string name="settings_importing">インポート中 %1$d / %2$d…</string>
     <string name="settings_import_later_hint">ヒント: 上記のセクションからいつでも背景削除や自動タグ付けを実行できます。</string>
     <string name="settings_import_options_title">インポートオプション</string>
@@ -237,7 +237,7 @@
     <string name="settings_locations_title">クローゼット</string>
     <string name="settings_locations_desc">場所ごとに複数のクローゼットを管理できます。クローゼットをタップしてデフォルトに設定 — 新しいアイテムはそこにインポートされ、コーデ作成もそこから始まります。各画面上部のクローゼットフィルターは独立していて常に「すべて」から始まります。天気情報用に都市を設定可能(任意)。</string>
     <string name="settings_location_default">デフォルト</string>
-    <string name="settings_location_add">クローゼットを追加…</string>
+    <string name="settings_location_add">クローゼットを追加</string>
     <string name="settings_location_name_hint">クローゼット名</string>
     <string name="settings_location_geo_hint">天気用の都市(任意)</string>
     <string name="settings_location_add_title">クローゼットを追加</string>
@@ -261,7 +261,7 @@
     <string name="wardrobe_select_all_count">すべて選択 (%1$d)</string>
     <string name="wardrobe_delete_title">アイテムを削除しますか?</string>
     <string name="wardrobe_delete_text">選択した %d 件のアイテムを削除しますか? この操作は取り消せません。</string>
-    <string name="wardrobe_move_to">移動先…</string>
+    <string name="wardrobe_move_to">移動先</string>
     <string name="wardrobe_move_to_title">%d 件のアイテムを移動</string>
     <string name="wardrobe_sort">並び替え</string>
     <string name="wardrobe_sort_newest">新しい順</string>
@@ -272,7 +272,7 @@
     <string name="wardrobe_tag_detect">タグを検出</string>
     <string name="wardrobe_tag_remove_bg">背景を削除</string>
     <string name="wardrobe_tag_re_remove_bg">背景を再削除</string>
-    <string name="wardrobe_fix_cutout_bg">切り抜きの背景を修正…</string>
+    <string name="wardrobe_fix_cutout_bg">切り抜きの背景を修正</string>
     <string name="wardrobe_fix_cutout_bg_done">切り抜きの背景を修正しました。</string>
     <string name="wardrobe_fix_cutout_bg_clean">残留背景は検出されませんでした — 修正は不要です。</string>
     <string name="wardrobe_tag_rotate">回転</string>
@@ -460,7 +460,7 @@
     <string name="composer_select_suggestion">このコーデを使用</string>
     <string name="outfits_tag_add">タグを追加</string>
     <string name="outfits_tag_add_placeholder">例: 誕生日、旅行</string>
-    <string name="outfits_suggest_tags">AIでタグを提案…</string>
+    <string name="outfits_suggest_tags">AIでタグを提案</string>
     <string name="outfits_suggest_tags_title">提案されたタグ</string>
     <string name="outfits_suggest_tags_loading">タグを提案中…</string>
     <string name="outfits_suggest_tags_empty">新しいタグの提案はありません。</string>
@@ -483,12 +483,12 @@
     <string name="outfits_select_all_count">%d 件すべて選択</string>
     <string name="outfits_delete_selected_title">コーデを削除しますか?</string>
     <string name="outfits_delete_selected_text">%d 件のコーデが完全に削除されます。</string>
-    <string name="outfits_combine">AIで組み合わせる…</string>
+    <string name="outfits_combine">AIで組み合わせる</string>
     <string name="outfit_slot_lock">ロック</string>
     <string name="outfit_slot_unlock">ロック解除</string>
     <string name="outfit_slot_remove">削除</string>
-    <string name="outfit_slot_add">アイテムを追加…</string>
-    <string name="outfit_generate_with_ai">AIで生成…</string>
+    <string name="outfit_slot_add">アイテムを追加</string>
+    <string name="outfit_generate_with_ai">AIで生成</string>
     <string name="outfit_discard_changes_title">変更を破棄しますか?</string>
     <string name="outfit_discard_changes_body">保存されていない変更は失われます。</string>
     <string name="outfit_discard_changes_confirm">破棄</string>
@@ -556,7 +556,7 @@
     <string name="gap_empty_hint">「分析」をタップして、クローゼットから最も多くのコーデを完成させる基礎アイテムをAIに特定してもらいましょう。</string>
 
     <!-- 代替案の提案(クローゼットの選択モード) -->
-    <string name="wardrobe_suggest_replacements">代替案を提案…</string>
+    <string name="wardrobe_suggest_replacements">代替案を提案</string>
     <string name="replacements_title">%d 件のアイテムの代替案</string>
     <string name="replacements_analyzing">代替案を提案中…</string>
 
@@ -597,7 +597,7 @@
 
     <!-- 試着 -->
     <string name="tryon_title">私に試着</string>
-    <string name="tryon_fab">私に試着…</string>
+    <string name="tryon_fab">私に試着</string>
     <string name="tryon_section_title">試着用写真</string>
     <string name="tryon_section_desc">正面、横、背面の全身写真をアップロードしてください。アプリはこれらをコーデやアイテムを試着した際のプレビュー生成に参照します。写真はあなた自身の Drive に保存されます。</string>
     <string name="tryon_slot_front">正面</string>
@@ -622,11 +622,11 @@
     <string name="action_add">追加</string>
     <string name="tryon_composer_explain">以下に表示されたアイテムはすべて生成される試着で一緒に着用されます。アイテムをタップで削除、「+」で追加できます。</string>
     <string name="tryon_composer_items_title">この試着のアイテム (%1$d)</string>
-    <string name="tryon_add_item">アイテムを追加…</string>
+    <string name="tryon_add_item">アイテムを追加</string>
     <string name="tryon_add_items_title">クローゼットからアイテムを追加</string>
     <string name="tryon_generate">試着を生成</string>
     <string name="tryon_try_again">もう一度</string>
-    <string name="tryon_change_items">アイテムを変更…</string>
+    <string name="tryon_change_items">アイテムを変更</string>
     <string name="tryon_save_to_drive">保存</string>
     <string name="tryon_saved_to_drive">保存しました</string>
     <string name="tryon_saving">保存中…</string>
@@ -748,7 +748,7 @@
     <string name="composer_factor_items">%1$d アイテム</string>
     <string name="composer_factor_closets">%1$d クローゼット</string>
     <string name="composer_factor_composition">カスタム構成</string>
-    <string name="wardrobe_create_style">コーデを作成…</string>
+    <string name="wardrobe_create_style">コーデを作成</string>
     <string name="wardrobe_imported_on">%1$s にインポート</string>
     <string name="wardrobe_view_original">オリジナルを表示</string>
     <string name="wardrobe_view_cutout">切り抜きを表示</string>
@@ -838,7 +838,7 @@
     <string name="settings_debug_similarity_desc">類似性検索の結果を開くときに、デフォルトのズーム画像の代わりにチャンネルごとの内訳(セグメンテーションサムネイル、埋め込み/ヒストグラムのコサイン、色相ヒストグラム)を表示します。</string>
 
     <!-- マッチプレビューダイアログ -->
-    <string name="shop_show_in_wardrobe">クローゼットで表示…</string>
+    <string name="shop_show_in_wardrobe">クローゼットで表示</string>
     <string name="shop_add_to_shopping_list">ショッピングリストに追加</string>
     <string name="dedupe_dialog_title">重複の可能性</string>
     <string name="dedupe_dialog_desc">この写真と非常によく似たアイテムがクローゼットに %1$d 件見つかりました。</string>

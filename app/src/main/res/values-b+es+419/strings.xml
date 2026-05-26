@@ -39,7 +39,7 @@
     <string name="shop_list_moving">Moviendo…</string>
     <string name="shop_list_loading">Cargando…</string>
     <string name="shop_list_processing">Procesando %1$d prenda(s)…</string>
-    <string name="shop_list_move_to_closet">Mover al closet…</string>
+    <string name="shop_list_move_to_closet">Mover al closet</string>
     <string name="shop_list_move_title">Mover al closet</string>
     <string name="shop_list_delete_title">¿Eliminar de la lista de deseos?</string>
     <string name="shop_list_delete_text">¿Eliminar permanentemente %1$d prenda(s) de tu lista de deseos?</string>
@@ -132,7 +132,7 @@
     <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">Etiquetas del closet</string>
     <string name="settings_data_tags_desc">Vuelve a clasificar cada prenda de tu closet con Gemini. Esto sobrescribirá cualquier edición manual de etiquetas.</string>
-    <string name="settings_rescan_button">Vuelve a escanear todas las etiquetas…</string>
+    <string name="settings_rescan_button">Vuelve a escanear todas las etiquetas</string>
     <string name="settings_rescanning">Escaneando %1$d de %2$d…</string>
     <string name="settings_rescan_dialog_title">¿Escanear todas las etiquetas?</string>
     <string name="settings_rescan_dialog_text">Gemini volverá a clasificar cada prenda de tu closet. Esto sobrescribirá cualquier edición manual de etiquetas y puede tardar un poco.</string>
@@ -140,14 +140,14 @@
     <string name="settings_bulk_cost_line">%1$d prendas × %2$d créditos = %3$d créditos en total</string>
     <string name="settings_rebg_title">Eliminación de fondo</string>
     <string name="settings_rebg_desc">Vuelve a ejecutar la eliminación de fondo por IA en cada prenda de tu closet. Los originales se guardan de forma segura en Drive para que puedas volver a ejecutar esto en cualquier momento. Cada prenda cuesta 5 créditos de IA (o cuota de API de Gemini).</string>
-    <string name="settings_rebg_button">Quitar fondo a todas las prendas…</string>
+    <string name="settings_rebg_button">Quitar fondo a todas las prendas</string>
     <string name="settings_rebg_dialog_title">¿Quitar el fondo a todas las prendas?</string>
     <string name="settings_rebg_dialog_text">Esto procesará cada prenda de tu closet actual con Gemini. Puede tardar un poco y consume créditos de IA / cuota de API significativos. Las prendas que ya tienen su original guardado en Drive lo usarán; otras usarán la imagen actual.</string>
     <string name="settings_rebg_confirm">Quitar todos los fondos</string>
     <string name="settings_rebging">Quitando fondo %1$d de %2$d…</string>
     <string name="settings_clear_cache_title">Reparar y sincronizar</string>
     <string name="settings_clear_cache_desc">Escanea todas las carpetas de Drive: corrige nombres de archivos, detecta recortes faltantes y etiquetas adicionales, luego ofrece procesarlos. Termina recargando todo desde Drive.</string>
-    <string name="settings_clear_cache_button">Reparar y sincronizar…</string>
+    <string name="settings_clear_cache_button">Reparar y sincronizar</string>
     <string name="settings_clear_cache_dialog_title">Limpiar caché</string>
     <string name="settings_clear_cache_dialog_text">Todas las imágenes guardadas localmente se eliminarán y se volverán a descargar desde Google Drive. Tus datos en Drive no se verán afectados.</string>
     <string name="settings_clear_cache_confirm">Limpiar y actualizar</string>
@@ -174,7 +174,7 @@
     <string name="settings_repair_preview_process_n">Procesar %1$d</string>
     <string name="settings_cutoutfix_title">Corregir fondos de recortes</string>
     <string name="settings_cutoutfix_desc">Escanea recortes existentes en busca de fondos negros sobrantes o halos verdes y vuelve a aplicar la máscara localmente. Sin llamadas de IA — los recortes corregidos se vuelven a subir conservando su ID de Drive.</string>
-    <string name="settings_cutoutfix_button">Escanear recortes…</string>
+    <string name="settings_cutoutfix_button">Escanear recortes</string>
     <string name="settings_cutoutfix_scanning">Escaneando recorte %1$d de %2$d…</string>
     <string name="settings_cutoutfix_processing">Corrigiendo recorte %1$d de %2$d…</string>
     <string name="settings_cutoutfix_done">%1$d recorte(s) corregido(s).</string>
@@ -200,7 +200,7 @@
     <string name="settings_migrating">Renombrando archivo %1$d de %2$d…</string>
     <string name="settings_import_title">Importar desde carpeta</string>
     <string name="settings_import_desc">Copia todas las imágenes de una carpeta a tu closet actual. Funciona con cualquier carpeta; no se requiere archivo de metadatos. Las imágenes siempre se agregan inmediatamente; el procesamiento de IA es opcional.</string>
-    <string name="settings_import_button">Importar desde carpeta…</string>
+    <string name="settings_import_button">Importar desde carpeta</string>
     <string name="settings_importing">Importando %1$d de %2$d…</string>
     <string name="settings_import_later_hint">Tip: Puedes quitar fondos y auto-etiquetar todas las prendas en cualquier momento desde las secciones anteriores.</string>
     <string name="settings_import_options_title">Opciones de importación</string>
@@ -237,7 +237,7 @@
     <string name="settings_locations_title">Closets</string>
     <string name="settings_locations_desc">Gestiona múltiples closets para diferentes lugares. Toca un closet para hacerlo el predeterminado: las nuevas prendas se importarán allí y la creación de outfits comenzará desde ahí. El filtro de closet en la parte superior de cada pantalla es independiente y siempre comienza en \"Todas\". Opcionalmente, establece una ciudad para la información del clima.</string>
     <string name="settings_location_default">Predeterminado</string>
-    <string name="settings_location_add">Agregar closet…</string>
+    <string name="settings_location_add">Agregar closet</string>
     <string name="settings_location_name_hint">Nombre del closet</string>
     <string name="settings_location_geo_hint">Ciudad para el clima (opcional)</string>
     <string name="settings_location_add_title">Agregar closet</string>
@@ -261,7 +261,7 @@
     <string name="wardrobe_select_all_count">Seleccionar todo (%1$d)</string>
     <string name="wardrobe_delete_title">¿Eliminar prendas?</string>
     <string name="wardrobe_delete_text">¿Estás seguro de que quieres eliminar las %d prendas seleccionadas? Esto no se puede deshacer.</string>
-    <string name="wardrobe_move_to">Mover a…</string>
+    <string name="wardrobe_move_to">Mover a</string>
     <string name="wardrobe_move_to_title">Mover %d prenda(s) a</string>
     <string name="wardrobe_sort">Ordenar</string>
     <string name="wardrobe_sort_newest">Más nuevas primero</string>
@@ -272,7 +272,7 @@
     <string name="wardrobe_tag_detect">Detectar etiquetas</string>
     <string name="wardrobe_tag_remove_bg">Quitar fondo</string>
     <string name="wardrobe_tag_re_remove_bg">Volver a quitar fondo</string>
-    <string name="wardrobe_fix_cutout_bg">Corregir fondo de recorte…</string>
+    <string name="wardrobe_fix_cutout_bg">Corregir fondo de recorte</string>
     <string name="wardrobe_fix_cutout_bg_done">Fondo de recorte corregido.</string>
     <string name="wardrobe_fix_cutout_bg_clean">No se detectó fondo sobrante; nada que corregir.</string>
     <string name="wardrobe_tag_rotate">Rotar</string>
@@ -460,7 +460,7 @@
     <string name="composer_select_suggestion">Usar este outfit</string>
     <string name="outfits_tag_add">Agregar etiqueta</string>
     <string name="outfits_tag_add_placeholder">ej. cumpleaños, viaje</string>
-    <string name="outfits_suggest_tags">Sugerir etiquetas con IA…</string>
+    <string name="outfits_suggest_tags">Sugerir etiquetas con IA</string>
     <string name="outfits_suggest_tags_title">Etiquetas sugeridas</string>
     <string name="outfits_suggest_tags_loading">Sugiriendo etiquetas…</string>
     <string name="outfits_suggest_tags_empty">No se sugirieron nuevas etiquetas.</string>
@@ -483,12 +483,12 @@
     <string name="outfits_select_all_count">Seleccionar los %d</string>
     <string name="outfits_delete_selected_title">¿Eliminar outfits?</string>
     <string name="outfits_delete_selected_text">Se eliminarán permanentemente %d outfits.</string>
-    <string name="outfits_combine">Combinar con IA…</string>
+    <string name="outfits_combine">Combinar con IA</string>
     <string name="outfit_slot_lock">Bloquear</string>
     <string name="outfit_slot_unlock">Desbloquear</string>
     <string name="outfit_slot_remove">Quitar</string>
-    <string name="outfit_slot_add">Agregar prenda…</string>
-    <string name="outfit_generate_with_ai">Generar con IA…</string>
+    <string name="outfit_slot_add">Agregar prenda</string>
+    <string name="outfit_generate_with_ai">Generar con IA</string>
     <string name="outfit_discard_changes_title">¿Descartar cambios?</string>
     <string name="outfit_discard_changes_body">Tus cambios no guardados se perderán.</string>
     <string name="outfit_discard_changes_confirm">Descartar</string>
@@ -556,7 +556,7 @@
     <string name="gap_empty_hint">Toca \"Analizar\" para que la IA identifique las piezas fundamentales que completarían la mayor cantidad de outfits en tu closet.</string>
 
     <!-- Suggest replacements (Wardrobe selection mode) -->
-    <string name="wardrobe_suggest_replacements">Sugerir alternativas…</string>
+    <string name="wardrobe_suggest_replacements">Sugerir alternativas</string>
     <string name="replacements_title">Alternativas para %d prendas</string>
     <string name="replacements_analyzing">Sugiriendo alternativas…</string>
 
@@ -597,7 +597,7 @@
 
     <!-- Try on me -->
     <string name="tryon_title">Pruébame</string>
-    <string name="tryon_fab">Pruébame…</string>
+    <string name="tryon_fab">Pruébame</string>
     <string name="tryon_section_title">Fotos de prueba</string>
     <string name="tryon_section_desc">Sube fotos de cuerpo completo de frente, de lado y de espalda. La app las usa como referencia al generar una vista previa de cómo te queda un outfit o prenda. Las fotos se quedan en tu Drive.</string>
     <string name="tryon_slot_front">Frente</string>
@@ -622,11 +622,11 @@
     <string name="action_add">Agregar</string>
     <string name="tryon_composer_explain">Todas las prendas mostradas abajo se usarán juntas en la prueba generada. Toca una prenda para quitarla; toca \"+\" para agregar más.</string>
     <string name="tryon_composer_items_title">Prendas en esta prueba (%1$d)</string>
-    <string name="tryon_add_item">Agregar prenda…</string>
+    <string name="tryon_add_item">Agregar prenda</string>
     <string name="tryon_add_items_title">Agregar prendas del closet</string>
     <string name="tryon_generate">Generar prueba</string>
     <string name="tryon_try_again">Intentar de nuevo</string>
-    <string name="tryon_change_items">Cambiar prendas…</string>
+    <string name="tryon_change_items">Cambiar prendas</string>
     <string name="tryon_save_to_drive">Guardar</string>
     <string name="tryon_saved_to_drive">Guardado</string>
     <string name="tryon_saving">Guardando…</string>
@@ -748,7 +748,7 @@
     <string name="composer_factor_items">%1$d prendas</string>
     <string name="composer_factor_closets">%1$d closets</string>
     <string name="composer_factor_composition">Composición personalizada</string>
-    <string name="wardrobe_create_style">Crear outfit…</string>
+    <string name="wardrobe_create_style">Crear outfit</string>
     <string name="wardrobe_imported_on">Importado el %1$s</string>
     <string name="wardrobe_view_original">Ver original</string>
     <string name="wardrobe_view_cutout">Ver recorte</string>
@@ -838,7 +838,7 @@
     <string name="settings_debug_similarity_desc">Al abrir una coincidencia del Buscador de similares, muestra el desglose por canal (miniaturas segmentadas, coseno de histograma, etc.) en lugar de la imagen ampliable.</string>
 
     <!-- Match preview dialog -->
-    <string name="shop_show_in_wardrobe">Mostrar en el closet…</string>
+    <string name="shop_show_in_wardrobe">Mostrar en el closet</string>
     <string name="shop_add_to_shopping_list">Agregar a la lista de compras</string>
     <string name="dedupe_dialog_title">Posible duplicado</string>
     <string name="dedupe_dialog_desc">Encontramos %1$d prenda(s) en tu closet que se parecen mucho a esta foto.</string>

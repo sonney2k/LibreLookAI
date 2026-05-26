@@ -39,7 +39,7 @@
     <string name="shop_list_moving">Flyttar…</string>
     <string name="shop_list_loading">Laddar…</string>
     <string name="shop_list_processing">Bearbetar %1$d plagg…</string>
-    <string name="shop_list_move_to_closet">Flytta till garderob…</string>
+    <string name="shop_list_move_to_closet">Flytta till garderob</string>
     <string name="shop_list_move_title">Flytta till garderob</string>
     <string name="shop_list_delete_title">Ta bort från önskelistan?</string>
     <string name="shop_list_delete_text">Ta permanent bort %1$d plagg från din önskelista?</string>
@@ -132,7 +132,7 @@
     <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">Garderobstaggar</string>
     <string name="settings_data_tags_desc">Klassificera om alla plagg i din garderob med Gemini. Detta skriver över alla manuella taggändringar.</string>
-    <string name="settings_rescan_button">Sök om alla taggar…</string>
+    <string name="settings_rescan_button">Sök om alla taggar</string>
     <string name="settings_rescanning">Söker om %1$d av %2$d…</string>
     <string name="settings_rescan_dialog_title">Sök om alla taggar?</string>
     <string name="settings_rescan_dialog_text">Gemini klassificerar om varje plagg i din garderob. Detta skriver över manuella taggändringar och kan ta en stund.</string>
@@ -140,14 +140,14 @@
     <string name="settings_bulk_cost_line">%1$d plagg × %2$d krediter = %3$d krediter totalt</string>
     <string name="settings_rebg_title">Bakgrundsborttagning</string>
     <string name="settings_rebg_desc">Kör AI-bakgrundsborttagning igen på varje plagg i din garderob. Originalen sparas tryggt på Drive så du kan köra detta när som helst. Varje plagg kostar 5 AI-krediter (eller Gemini API-kvot).</string>
-    <string name="settings_rebg_button">Ta bort bakgrund från alla plagg…</string>
+    <string name="settings_rebg_button">Ta bort bakgrund från alla plagg</string>
     <string name="settings_rebg_dialog_title">Ta bort bakgrund från alla plagg?</string>
     <string name="settings_rebg_dialog_text">Detta bearbetar varje plagg i din nuvarande garderob med Gemini. Det kan ta en stund och förbrukar mycket AI-krediter / API-kvot. Plagg som redan har sitt original sparat på Drive använder det; övriga använder nuvarande bild.</string>
     <string name="settings_rebg_confirm">Ta bort alla bakgrunder</string>
     <string name="settings_rebging">Tar bort bakgrund %1$d av %2$d…</string>
     <string name="settings_clear_cache_title">Reparera &amp; synka</string>
     <string name="settings_clear_cache_desc">Sök igenom alla Drive-mappar: åtgärda filnamn, hitta saknade urklipp och taggsidofiler och erbjud bearbetning. Avslutar med att läsa in allt på nytt från Drive.</string>
-    <string name="settings_clear_cache_button">Reparera &amp; synka…</string>
+    <string name="settings_clear_cache_button">Reparera &amp; synka</string>
     <string name="settings_clear_cache_dialog_title">Rensa cache</string>
     <string name="settings_clear_cache_dialog_text">Alla lokalt cachade bilder tas bort och laddas ner igen från Google Drive. Din data på Drive påverkas inte.</string>
     <string name="settings_clear_cache_confirm">Rensa &amp; uppdatera</string>
@@ -174,7 +174,7 @@
     <string name="settings_repair_preview_process_n">Bearbeta %1$d</string>
     <string name="settings_cutoutfix_title">Åtgärda urklippsbakgrunder</string>
     <string name="settings_cutoutfix_desc">Sök igenom befintliga urklipp efter kvarvarande svart bakgrund eller grön halo och tillämpa masken lokalt på nytt. Inga AI-anrop — åtgärdade urklipp laddas upp igen med behållen Drive-ID.</string>
-    <string name="settings_cutoutfix_button">Sök igenom urklipp…</string>
+    <string name="settings_cutoutfix_button">Sök igenom urklipp</string>
     <string name="settings_cutoutfix_scanning">Söker igenom urklipp %1$d av %2$d…</string>
     <string name="settings_cutoutfix_processing">Åtgärdar urklipp %1$d av %2$d…</string>
     <string name="settings_cutoutfix_done">%1$d urklipp åtgärdade.</string>
@@ -200,7 +200,7 @@
     <string name="settings_migrating">Döper om fil %1$d av %2$d…</string>
     <string name="settings_import_title">Importera från mapp</string>
     <string name="settings_import_desc">Kopiera alla bilder från en mapp till din nuvarande garderob. Fungerar med valfri mapp — ingen metadatafil krävs. Bilder läggs alltid till direkt; AI-bearbetning är valfri.</string>
-    <string name="settings_import_button">Importera från mapp…</string>
+    <string name="settings_import_button">Importera från mapp</string>
     <string name="settings_importing">Importerar %1$d av %2$d…</string>
     <string name="settings_import_later_hint">Tips: Du kan ta bort bakgrunder och autotagga alla plagg när som helst från avsnitten ovan.</string>
     <string name="settings_import_options_title">Importalternativ</string>
@@ -237,7 +237,7 @@
     <string name="settings_locations_title">Garderober</string>
     <string name="settings_locations_desc">Hantera flera garderober för olika platser. Tryck på en garderob för att göra den till standard — nya plagg importeras dit och outfitskapande börjar därifrån. Garderobsfiltret längst upp på varje skärm är fristående och börjar alltid på \"Alla\". Ange valfritt en stad för väderinfo.</string>
     <string name="settings_location_default">Standard</string>
-    <string name="settings_location_add">Lägg till garderob…</string>
+    <string name="settings_location_add">Lägg till garderob</string>
     <string name="settings_location_name_hint">Garderobsnamn</string>
     <string name="settings_location_geo_hint">Stad för väder (valfritt)</string>
     <string name="settings_location_add_title">Lägg till garderob</string>
@@ -261,7 +261,7 @@
     <string name="wardrobe_select_all_count">Markera alla (%1$d)</string>
     <string name="wardrobe_delete_title">Ta bort plagg?</string>
     <string name="wardrobe_delete_text">Är du säker på att du vill ta bort %d valda plagg? Detta kan inte ångras.</string>
-    <string name="wardrobe_move_to">Flytta till…</string>
+    <string name="wardrobe_move_to">Flytta till</string>
     <string name="wardrobe_move_to_title">Flytta %d plagg till</string>
     <string name="wardrobe_sort">Sortera</string>
     <string name="wardrobe_sort_newest">Nyaste först</string>
@@ -272,7 +272,7 @@
     <string name="wardrobe_tag_detect">Identifiera taggar</string>
     <string name="wardrobe_tag_remove_bg">Ta bort bg</string>
     <string name="wardrobe_tag_re_remove_bg">Ta bort bg igen</string>
-    <string name="wardrobe_fix_cutout_bg">Åtgärda urklippsbg…</string>
+    <string name="wardrobe_fix_cutout_bg">Åtgärda urklippsbg</string>
     <string name="wardrobe_fix_cutout_bg_done">Urklippsbakgrund åtgärdad.</string>
     <string name="wardrobe_fix_cutout_bg_clean">Ingen kvarvarande bakgrund upptäckt — inget att åtgärda.</string>
     <string name="wardrobe_tag_rotate">Rotera</string>
@@ -460,7 +460,7 @@
     <string name="composer_select_suggestion">Använd denna outfit</string>
     <string name="outfits_tag_add">Lägg till tagg</string>
     <string name="outfits_tag_add_placeholder">t.ex. födelsedag, resa</string>
-    <string name="outfits_suggest_tags">Föreslå taggar med AI…</string>
+    <string name="outfits_suggest_tags">Föreslå taggar med AI</string>
     <string name="outfits_suggest_tags_title">Föreslagna taggar</string>
     <string name="outfits_suggest_tags_loading">Föreslår taggar…</string>
     <string name="outfits_suggest_tags_empty">Inga nya taggar föreslagna.</string>
@@ -483,12 +483,12 @@
     <string name="outfits_select_all_count">Markera alla %d</string>
     <string name="outfits_delete_selected_title">Ta bort outfits?</string>
     <string name="outfits_delete_selected_text">%d outfits tas bort permanent.</string>
-    <string name="outfits_combine">Kombinera med AI…</string>
+    <string name="outfits_combine">Kombinera med AI</string>
     <string name="outfit_slot_lock">Lås</string>
     <string name="outfit_slot_unlock">Lås upp</string>
     <string name="outfit_slot_remove">Ta bort</string>
-    <string name="outfit_slot_add">Lägg till plagg…</string>
-    <string name="outfit_generate_with_ai">Generera med AI…</string>
+    <string name="outfit_slot_add">Lägg till plagg</string>
+    <string name="outfit_generate_with_ai">Generera med AI</string>
     <string name="outfit_discard_changes_title">Kasta ändringar?</string>
     <string name="outfit_discard_changes_body">Dina osparade ändringar går förlorade.</string>
     <string name="outfit_discard_changes_confirm">Kasta</string>
@@ -556,7 +556,7 @@
     <string name="gap_empty_hint">Tryck på \"Analysera\" så att AI identifierar de grundläggande plagg som skulle komplettera flest outfits från din garderob.</string>
 
     <!-- Föreslå ersättningar (Garderobs-urvalsläge) -->
-    <string name="wardrobe_suggest_replacements">Föreslå alternativ…</string>
+    <string name="wardrobe_suggest_replacements">Föreslå alternativ</string>
     <string name="replacements_title">Ersättningar för %d plagg</string>
     <string name="replacements_analyzing">Föreslår ersättningar…</string>
 
@@ -597,7 +597,7 @@
 
     <!-- Prova på mig -->
     <string name="tryon_title">Prova på mig</string>
-    <string name="tryon_fab">Prova på mig…</string>
+    <string name="tryon_fab">Prova på mig</string>
     <string name="tryon_section_title">Provningsfoton</string>
     <string name="tryon_section_desc">Ladda upp helkroppsfoton framifrån, från sidan och bakifrån. Appen använder dem som referens när en provningsförhandsvisning av en outfit eller ett garderobsplagg genereras på dig. Foton stannar på din egen Drive.</string>
     <string name="tryon_slot_front">Framifrån</string>
@@ -622,11 +622,11 @@
     <string name="action_add">Lägg till</string>
     <string name="tryon_composer_explain">Alla plagg nedan kommer bäras tillsammans i den genererade provningen. Tryck på ett plagg för att ta bort det; tryck på \"+\" för att lägga till fler.</string>
     <string name="tryon_composer_items_title">Plagg i denna provning (%1$d)</string>
-    <string name="tryon_add_item">Lägg till plagg…</string>
+    <string name="tryon_add_item">Lägg till plagg</string>
     <string name="tryon_add_items_title">Lägg till garderobsplagg</string>
     <string name="tryon_generate">Generera provning</string>
     <string name="tryon_try_again">Försök igen</string>
-    <string name="tryon_change_items">Ändra plagg…</string>
+    <string name="tryon_change_items">Ändra plagg</string>
     <string name="tryon_save_to_drive">Spara</string>
     <string name="tryon_saved_to_drive">Sparad</string>
     <string name="tryon_saving">Sparar…</string>
@@ -748,7 +748,7 @@
     <string name="composer_factor_items">%1$d plagg</string>
     <string name="composer_factor_closets">%1$d garderober</string>
     <string name="composer_factor_composition">Anpassad komposition</string>
-    <string name="wardrobe_create_style">Skapa outfit…</string>
+    <string name="wardrobe_create_style">Skapa outfit</string>
     <string name="wardrobe_imported_on">Importerad %1$s</string>
     <string name="wardrobe_view_original">Visa original</string>
     <string name="wardrobe_view_cutout">Visa urklipp</string>
@@ -838,7 +838,7 @@
     <string name="settings_debug_similarity_desc">När en Likhetssöknings-träff öppnas, visa per-kanal-uppdelning (segmenterade miniatyrer, embedding/histogram-cosinus, färgton-histogram) istället för standard zoombar bild.</string>
 
     <!-- Matchförhandsvisningsdialog -->
-    <string name="shop_show_in_wardrobe">Visa i garderob…</string>
+    <string name="shop_show_in_wardrobe">Visa i garderob</string>
     <string name="shop_add_to_shopping_list">Lägg till i inköpslista</string>
     <string name="dedupe_dialog_title">Möjlig dubblett</string>
     <string name="dedupe_dialog_desc">Vi hittade %1$d plagg i din garderob som ser väldigt lika ut det här fotot.</string>

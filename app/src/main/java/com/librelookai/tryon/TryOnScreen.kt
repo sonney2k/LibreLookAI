@@ -29,6 +29,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoAwesome
@@ -502,6 +503,12 @@ private fun TryOnComposerContent(
                 Icon(Icons.Default.Add, null, modifier = Modifier.size(18.dp))
                 Spacer(Modifier.width(8.dp))
                 Text(stringResource(R.string.tryon_add_item))
+                Spacer(Modifier.width(4.dp))
+                Icon(
+                    Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    null,
+                    modifier = Modifier.size(18.dp),
+                )
             }
 
             if (referencePhotoPaths.isNotEmpty()) {
@@ -1099,6 +1106,12 @@ private fun TryOnResultContent(
                 Icon(Icons.Default.Edit, null, modifier = Modifier.size(14.dp))
                 Spacer(Modifier.width(6.dp))
                 Text(stringResource(R.string.tryon_change_items))
+                Spacer(Modifier.width(4.dp))
+                Icon(
+                    Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    null,
+                    modifier = Modifier.size(14.dp),
+                )
             }
         }
     }

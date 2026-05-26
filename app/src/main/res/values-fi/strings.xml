@@ -39,7 +39,7 @@
     <string name="shop_list_moving">Siirretään…</string>
     <string name="shop_list_loading">Ladataan…</string>
     <string name="shop_list_processing">Käsitellään %1$d vaate(tta)…</string>
-    <string name="shop_list_move_to_closet">Siirrä vaatekaappiin…</string>
+    <string name="shop_list_move_to_closet">Siirrä vaatekaappiin</string>
     <string name="shop_list_move_title">Siirrä vaatekaappiin</string>
     <string name="shop_list_delete_title">Poistetaanko toivelistalta?</string>
     <string name="shop_list_delete_text">Poistetaanko %1$d vaate(tta) pysyvästi toivelistaltasi?</string>
@@ -132,7 +132,7 @@
     <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">Vaatekaappitunnisteet</string>
     <string name="settings_data_tags_desc">Luokittele jokainen vaatekaappisi vaate uudelleen Geminillä. Tämä korvaa kaikki manuaaliset tunnistemuokkaukset.</string>
-    <string name="settings_rescan_button">Skannaa kaikki tunnisteet uudelleen…</string>
+    <string name="settings_rescan_button">Skannaa kaikki tunnisteet uudelleen</string>
     <string name="settings_rescanning">Skannataan %1$d / %2$d…</string>
     <string name="settings_rescan_dialog_title">Skannataanko kaikki tunnisteet uudelleen?</string>
     <string name="settings_rescan_dialog_text">Gemini luokittelee uudelleen jokaisen vaatekaappisi vaatteen. Tämä korvaa manuaaliset tunnistemuokkaukset ja voi viedä hetken.</string>
@@ -140,14 +140,14 @@
     <string name="settings_bulk_cost_line">%1$d vaatetta × %2$d krediittiä = %3$d krediittiä yhteensä</string>
     <string name="settings_rebg_title">Taustanpoisto</string>
     <string name="settings_rebg_desc">Aja tekoäly-taustanpoisto uudelleen jokaiselle vaatekaappisi vaatteelle. Alkuperäiset on tallennettu turvallisesti Driveen, joten voit ajaa tämän milloin tahansa. Jokainen vaate maksaa 5 tekoälykrediittiä (tai Gemini API-kiintiötä).</string>
-    <string name="settings_rebg_button">Poista tausta kaikista vaatteista…</string>
+    <string name="settings_rebg_button">Poista tausta kaikista vaatteista</string>
     <string name="settings_rebg_dialog_title">Poistetaanko tausta kaikista vaatteista?</string>
     <string name="settings_rebg_dialog_text">Tämä käsittelee jokaisen nykyisen vaatekaappisi vaatteen Geminillä. Se voi viedä hetken ja kuluttaa merkittävästi tekoälykrediittejä / API-kiintiötä. Vaatteet, joiden alkuperäinen on jo tallennettu Driveen, käyttävät sitä; muut käyttävät nykyistä kuvaa.</string>
     <string name="settings_rebg_confirm">Poista kaikki taustat</string>
     <string name="settings_rebging">Poistetaan taustaa %1$d / %2$d…</string>
     <string name="settings_clear_cache_title">Korjaa &amp; synkronoi</string>
     <string name="settings_clear_cache_desc">Skannaa kaikki Drive-kansiot: korjaa tiedostonimet, havaitse puuttuvat leikkaukset ja tunniste-sivutiedostot ja tarjoa käsittelyä. Päättyy lataamalla kaikki uudelleen Drivesta.</string>
-    <string name="settings_clear_cache_button">Korjaa &amp; synkronoi…</string>
+    <string name="settings_clear_cache_button">Korjaa &amp; synkronoi</string>
     <string name="settings_clear_cache_dialog_title">Tyhjennä välimuisti</string>
     <string name="settings_clear_cache_dialog_text">Kaikki paikallisesti välimuistissa olevat kuvat poistetaan ja ladataan uudelleen Google Drivesta. Drive-tietoihisi ei vaikuteta.</string>
     <string name="settings_clear_cache_confirm">Tyhjennä &amp; päivitä</string>
@@ -174,7 +174,7 @@
     <string name="settings_repair_preview_process_n">Käsittele %1$d</string>
     <string name="settings_cutoutfix_title">Korjaa leikkaustaustat</string>
     <string name="settings_cutoutfix_desc">Skannaa olemassa olevat leikkaukset jäljellä olevien mustien taustojen tai vihreiden halojen varalta ja lisää matta paikallisesti uudelleen. Ei tekoälykutsuja — korjatut leikkaukset ladataan uudelleen säilyttäen Drive-tunnuksensa.</string>
-    <string name="settings_cutoutfix_button">Skannaa leikkaukset…</string>
+    <string name="settings_cutoutfix_button">Skannaa leikkaukset</string>
     <string name="settings_cutoutfix_scanning">Skannataan leikkausta %1$d / %2$d…</string>
     <string name="settings_cutoutfix_processing">Korjataan leikkausta %1$d / %2$d…</string>
     <string name="settings_cutoutfix_done">%1$d leikkaus(ta) korjattu.</string>
@@ -200,7 +200,7 @@
     <string name="settings_migrating">Nimetään uudelleen tiedostoa %1$d / %2$d…</string>
     <string name="settings_import_title">Tuo kansiosta</string>
     <string name="settings_import_desc">Kopioi kaikki kuvat kansiosta nykyiseen vaatekaappiin. Toimii minkä tahansa kansion kanssa — metatiedostoa ei vaadita. Kuvat lisätään aina heti; tekoälykäsittely on valinnainen.</string>
-    <string name="settings_import_button">Tuo kansiosta…</string>
+    <string name="settings_import_button">Tuo kansiosta</string>
     <string name="settings_importing">Tuodaan %1$d / %2$d…</string>
     <string name="settings_import_later_hint">Vinkki: Voit poistaa taustat ja merkitä automaattisesti kaikki vaatteet milloin tahansa yllä olevista osioista.</string>
     <string name="settings_import_options_title">Tuontiasetukset</string>
@@ -237,7 +237,7 @@
     <string name="settings_locations_title">Vaatekaapit</string>
     <string name="settings_locations_desc">Hallinnoi useita vaatekaappeja eri paikoille. Napauta vaatekaappia tehdäksesi siitä oletuksen — uudet vaatteet tuodaan sinne, ja asujen luominen alkaa siitä. Vaatekaappisuodatin jokaisen näytön yläosassa on itsenäinen ja alkaa aina kohdasta \"Kaikki\". Aseta valinnaisesti kaupunki säätietoja varten.</string>
     <string name="settings_location_default">Oletus</string>
-    <string name="settings_location_add">Lisää vaatekaappi…</string>
+    <string name="settings_location_add">Lisää vaatekaappi</string>
     <string name="settings_location_name_hint">Vaatekaapin nimi</string>
     <string name="settings_location_geo_hint">Kaupunki säätä varten (valinnainen)</string>
     <string name="settings_location_add_title">Lisää vaatekaappi</string>
@@ -261,7 +261,7 @@
     <string name="wardrobe_select_all_count">Valitse kaikki (%1$d)</string>
     <string name="wardrobe_delete_title">Poistetaanko vaatteet?</string>
     <string name="wardrobe_delete_text">Haluatko varmasti poistaa %d valittua vaatetta? Tätä ei voi peruuttaa.</string>
-    <string name="wardrobe_move_to">Siirrä…</string>
+    <string name="wardrobe_move_to">Siirrä</string>
     <string name="wardrobe_move_to_title">Siirrä %d vaate(tta)</string>
     <string name="wardrobe_sort">Lajittele</string>
     <string name="wardrobe_sort_newest">Uusin ensin</string>
@@ -272,7 +272,7 @@
     <string name="wardrobe_tag_detect">Tunnista tunnisteet</string>
     <string name="wardrobe_tag_remove_bg">Poista tausta</string>
     <string name="wardrobe_tag_re_remove_bg">Poista tausta uudelleen</string>
-    <string name="wardrobe_fix_cutout_bg">Korjaa leikkaustausta…</string>
+    <string name="wardrobe_fix_cutout_bg">Korjaa leikkaustausta</string>
     <string name="wardrobe_fix_cutout_bg_done">Leikkaustausta korjattu.</string>
     <string name="wardrobe_fix_cutout_bg_clean">Jäljellä olevaa taustaa ei havaittu — ei korjattavaa.</string>
     <string name="wardrobe_tag_rotate">Kierrä</string>
@@ -460,7 +460,7 @@
     <string name="composer_select_suggestion">Käytä tätä asua</string>
     <string name="outfits_tag_add">Lisää tunniste</string>
     <string name="outfits_tag_add_placeholder">esim. syntymäpäivä, matka</string>
-    <string name="outfits_suggest_tags">Ehdota tunnisteita tekoälyllä…</string>
+    <string name="outfits_suggest_tags">Ehdota tunnisteita tekoälyllä</string>
     <string name="outfits_suggest_tags_title">Ehdotetut tunnisteet</string>
     <string name="outfits_suggest_tags_loading">Ehdotetaan tunnisteita…</string>
     <string name="outfits_suggest_tags_empty">Uusia tunnisteita ei ehdoteta.</string>
@@ -483,12 +483,12 @@
     <string name="outfits_select_all_count">Valitse kaikki %d</string>
     <string name="outfits_delete_selected_title">Poistetaanko asut?</string>
     <string name="outfits_delete_selected_text">%d asua poistetaan pysyvästi.</string>
-    <string name="outfits_combine">Yhdistä tekoälyllä…</string>
+    <string name="outfits_combine">Yhdistä tekoälyllä</string>
     <string name="outfit_slot_lock">Lukitse</string>
     <string name="outfit_slot_unlock">Avaa lukitus</string>
     <string name="outfit_slot_remove">Poista</string>
-    <string name="outfit_slot_add">Lisää vaate…</string>
-    <string name="outfit_generate_with_ai">Luo tekoälyllä…</string>
+    <string name="outfit_slot_add">Lisää vaate</string>
+    <string name="outfit_generate_with_ai">Luo tekoälyllä</string>
     <string name="outfit_discard_changes_title">Hylätäänkö muutokset?</string>
     <string name="outfit_discard_changes_body">Tallentamattomat muutoksesi menetetään.</string>
     <string name="outfit_discard_changes_confirm">Hylkää</string>
@@ -556,7 +556,7 @@
     <string name="gap_empty_hint">Napauta \"Analysoi\" antaaksesi tekoälyn tunnistaa perusvaatteet, jotka täydentäisivät eniten asuja vaatekaapistasi.</string>
 
     <!-- Ehdota korvauksia (Vaatekaappi-valintatila) -->
-    <string name="wardrobe_suggest_replacements">Ehdota vaihtoehtoja…</string>
+    <string name="wardrobe_suggest_replacements">Ehdota vaihtoehtoja</string>
     <string name="replacements_title">Korvauksia %d vaatteelle</string>
     <string name="replacements_analyzing">Ehdotetaan korvauksia…</string>
 
@@ -597,7 +597,7 @@
 
     <!-- Sovita minulle -->
     <string name="tryon_title">Sovita minulle</string>
-    <string name="tryon_fab">Sovita minulle…</string>
+    <string name="tryon_fab">Sovita minulle</string>
     <string name="tryon_section_title">Sovituskuvat</string>
     <string name="tryon_section_desc">Lataa kokovartalokuvat edestä, sivulta ja takaa. Sovellus käyttää näitä viitteenä luodessaan sovitusesikatselun asusta tai vaatekaapin vaatteesta sinulle. Kuvat pysyvät omassa Drivessasi.</string>
     <string name="tryon_slot_front">Edestä</string>
@@ -622,11 +622,11 @@
     <string name="action_add">Lisää</string>
     <string name="tryon_composer_explain">Kaikki alla näytetyt vaatteet käytetään yhdessä luodussa sovituksessa. Napauta vaatetta poistaaksesi sen; napauta \"+\" lisätäksesi lisää.</string>
     <string name="tryon_composer_items_title">Vaatteet tässä sovituksessa (%1$d)</string>
-    <string name="tryon_add_item">Lisää vaate…</string>
+    <string name="tryon_add_item">Lisää vaate</string>
     <string name="tryon_add_items_title">Lisää vaatekaapin vaatteita</string>
     <string name="tryon_generate">Luo sovitus</string>
     <string name="tryon_try_again">Yritä uudelleen</string>
-    <string name="tryon_change_items">Vaihda vaatteet…</string>
+    <string name="tryon_change_items">Vaihda vaatteet</string>
     <string name="tryon_save_to_drive">Tallenna</string>
     <string name="tryon_saved_to_drive">Tallennettu</string>
     <string name="tryon_saving">Tallennetaan…</string>
@@ -748,7 +748,7 @@
     <string name="composer_factor_items">%1$d vaatetta</string>
     <string name="composer_factor_closets">%1$d vaatekaappia</string>
     <string name="composer_factor_composition">Mukautettu koostumus</string>
-    <string name="wardrobe_create_style">Luo asu…</string>
+    <string name="wardrobe_create_style">Luo asu</string>
     <string name="wardrobe_imported_on">Tuotu %1$s</string>
     <string name="wardrobe_view_original">Näytä alkuperäinen</string>
     <string name="wardrobe_view_cutout">Näytä leikkaus</string>
@@ -838,7 +838,7 @@
     <string name="settings_debug_similarity_desc">Kun Samankaltaisuushaun osuma avataan, näytä kanavakohtainen erittely (segmentoidut pikkukuvat, embedding/histogrammi-kosini, sävyhistogrammit) oletusarvoisen zoomattavan kuvan sijaan.</string>
 
     <!-- Osuman esikatseluvalintaikkuna -->
-    <string name="shop_show_in_wardrobe">Näytä vaatekaapissa…</string>
+    <string name="shop_show_in_wardrobe">Näytä vaatekaapissa</string>
     <string name="shop_add_to_shopping_list">Lisää ostoslistaan</string>
     <string name="dedupe_dialog_title">Mahdollinen kaksoiskappale</string>
     <string name="dedupe_dialog_desc">Löysimme %1$d vaate(tta) vaatekaapistasi, jotka näyttävät hyvin samankaltaisilta tämän kuvan kanssa.</string>

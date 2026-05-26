@@ -39,7 +39,7 @@
     <string name="shop_list_moving">מעביר…</string>
     <string name="shop_list_loading">טוען…</string>
     <string name="shop_list_processing">מעבד %1$d פריטים…</string>
-    <string name="shop_list_move_to_closet">העבר לארון…</string>
+    <string name="shop_list_move_to_closet">העבר לארון</string>
     <string name="shop_list_move_title">העבר לארון</string>
     <string name="shop_list_delete_title">למחוק מרשימת המשאלות?</string>
     <string name="shop_list_delete_text">להסיר לצמיתות %1$d פריטים מרשימת המשאלות שלך?</string>
@@ -132,7 +132,7 @@
     <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">תגי מלתחה</string>
     <string name="settings_data_tags_desc">סווג מחדש כל פריט במלתחה שלך עם Gemini. פעולה זו תדרוס כל עריכת תג ידנית.</string>
-    <string name="settings_rescan_button">סרוק מחדש את כל התגים…</string>
+    <string name="settings_rescan_button">סרוק מחדש את כל התגים</string>
     <string name="settings_rescanning">סורק מחדש %1$d מתוך %2$d…</string>
     <string name="settings_rescan_dialog_title">לסרוק מחדש את כל התגים?</string>
     <string name="settings_rescan_dialog_text">Gemini יסווג מחדש כל פריט במלתחה שלך. זה עלול לקחת זמן.</string>
@@ -140,13 +140,13 @@
     <string name="settings_bulk_cost_line">%1$d פריטים × %2$d קרדיטים = %3$d קרדיטים סה\"כ</string>
     <string name="settings_rebg_title">הסרת רקע</string>
     <string name="settings_rebg_desc">הפעל מחדש הסרת רקע מבוססת בינה מלאכותית על כל פריט במלתחה שלך. המקורות מאוחסנים בבטחה ב-Drive. כל פריט עולה 5 קרדיטים.</string>
-    <string name="settings_rebg_button">הסר רקע מכל הפריטים…</string>
+    <string name="settings_rebg_button">הסר רקע מכל הפריטים</string>
     <string name="settings_rebg_dialog_title">להסיר רקעים מכל הפריטים?</string>
     <string name="settings_rebg_confirm">הסר את כל הרקעים</string>
     <string name="settings_rebging">מסיר רקע %1$d מתוך %2$d…</string>
     <string name="settings_clear_cache_title">תיקון וסנכרון</string>
     <string name="settings_clear_cache_desc">סרוק את כל תיקיות ה-Drive: תקן שמות קבצים, זהה גזירות חסרות, ואז טען הכל מחדש.</string>
-    <string name="settings_clear_cache_button">תיקון וסנכרון…</string>
+    <string name="settings_clear_cache_button">תיקון וסנכרון</string>
     <string name="settings_clear_cache_dialog_title">נקה מטמון</string>
     <string name="settings_clear_cache_dialog_text">כל התמונות המאוחסנות מקומית יימחקו ויורדו מחדש מ-Google Drive.</string>
     <string name="settings_clear_cache_confirm">נקה ורענן</string>
@@ -173,7 +173,7 @@
     <string name="settings_repair_preview_process_n">עבד %1$d</string>
     <string name="settings_cutoutfix_title">תקן רקע קט-אאוט</string>
     <string name="settings_cutoutfix_desc">סרוק קט-אאוטים קיימים ותקן אותם מקומית. ללא שימוש ב-AI.</string>
-    <string name="settings_cutoutfix_button">סרוק קט-אאוטים…</string>
+    <string name="settings_cutoutfix_button">סרוק קט-אאוטים</string>
     <string name="settings_cutoutfix_scanning">סורק קט-אאוט %1$d מתוך %2$d…</string>
     <string name="settings_cutoutfix_processing">מתקן קט-אאוט %1$d מתוך %2$d…</string>
     <string name="settings_cutoutfix_done">תוקנו %1$d קט-אאוטים.</string>
@@ -199,7 +199,7 @@
     <string name="settings_migrating">משנה שם קובץ %1$d מתוך %2$d…</string>
     <string name="settings_import_title">ייבוא מתיקייה</string>
     <string name="settings_import_desc">העתק את כל התמונות מתיקייה לארון הבגדים הנוכחי שלך.</string>
-    <string name="settings_import_button">ייבוא מתיקייה…</string>
+    <string name="settings_import_button">ייבוא מתיקייה</string>
     <string name="settings_importing">מייבא %1$d מתוך %2$d…</string>
     <string name="settings_import_later_hint">טיפ: תוכל להסיר רקע ולתייג אוטומטית בכל עת מאוחר יותר.</string>
     <string name="settings_import_options_title">אפשרויות ייבוא</string>
@@ -236,7 +236,7 @@
     <string name="settings_locations_title">ארונות</string>
     <string name="settings_locations_desc">נהל מספר ארונות עבור מיקומים שונים. לחץ כדי להפוך לברירת מחדל.</string>
     <string name="settings_location_default">ברירת מחדל</string>
-    <string name="settings_location_add">הוסף ארון…</string>
+    <string name="settings_location_add">הוסף ארון</string>
     <string name="settings_location_name_hint">שם הארון</string>
     <string name="settings_location_geo_hint">עיר עבור מזג האוויר (אופציונלי)</string>
     <string name="settings_location_add_title">הוסף ארון</string>
@@ -260,7 +260,7 @@
     <string name="wardrobe_select_all_count">בחר הכל (%1$d)</string>
     <string name="wardrobe_delete_title">למחוק פריטים?</string>
     <string name="wardrobe_delete_text">האם אתה בטוח שברצונך למחוק את %d הפריטים שנבחרו? לא ניתן לבטל פעולה זו.</string>
-    <string name="wardrobe_move_to">העבר ל…</string>
+    <string name="wardrobe_move_to">העבר ל</string>
     <string name="wardrobe_move_to_title">העבר %d פריטים ל</string>
     <string name="wardrobe_sort">מיין</string>
     <string name="wardrobe_sort_newest">החדש ביותר קודם</string>
@@ -456,7 +456,7 @@
     <string name="composer_select_suggestion">השתמש באאוטפיט זה</string>
     <string name="outfits_tag_add">הוסף תגית</string>
     <string name="outfits_tag_add_placeholder">למשל יום הולדת, נסיעה</string>
-    <string name="outfits_suggest_tags">הצע תגיות עם בינה מלאכותית…</string>
+    <string name="outfits_suggest_tags">הצע תגיות עם בינה מלאכותית</string>
     <string name="outfits_suggest_tags_title">תגיות מוצעות</string>
     <string name="outfits_suggest_tags_loading">מציע תגיות…</string>
     <string name="outfits_suggest_tags_empty">אין תגיות חדשות.</string>
@@ -479,12 +479,12 @@
     <string name="outfits_select_all_count">בחר את כל ה-%d</string>
     <string name="outfits_delete_selected_title">למחוק אאוטפיטים?</string>
     <string name="outfits_delete_selected_text">%d אאוטפיטים יימחקו לצמיתות.</string>
-    <string name="outfits_combine">שלב עם בינה מלאכותית…</string>
+    <string name="outfits_combine">שלב עם בינה מלאכותית</string>
     <string name="outfit_slot_lock">נעל</string>
     <string name="outfit_slot_unlock">פתח</string>
     <string name="outfit_slot_remove">הסר</string>
-    <string name="outfit_slot_add">הוסף פריט…</string>
-    <string name="outfit_generate_with_ai">צור עם בינה מלאכותית…</string>
+    <string name="outfit_slot_add">הוסף פריט</string>
+    <string name="outfit_generate_with_ai">צור עם בינה מלאכותית</string>
     <string name="outfit_discard_changes_title">לבטל שינויים?</string>
     <string name="outfit_discard_changes_body">השינויים יאבדו.</string>
     <string name="outfit_discard_changes_confirm">בטל</string>
@@ -552,7 +552,7 @@
     <string name="gap_empty_hint">לחץ על \"נתח\" כדי שהבינה המלאכותית תזהה פריטים להשלמה.</string>
 
     <!-- Suggest replacements (Wardrobe selection mode) -->
-    <string name="wardrobe_suggest_replacements">הצע חלופות…</string>
+    <string name="wardrobe_suggest_replacements">הצע חלופות</string>
     <string name="replacements_title">חלופות ל-%d פריטים</string>
     <string name="replacements_analyzing">מציע חלופות…</string>
 
@@ -593,7 +593,7 @@
 
     <!-- Try on me -->
     <string name="tryon_title">מדידה וירטואלית</string>
-    <string name="tryon_fab">מדידה וירטואלית…</string>
+    <string name="tryon_fab">מדידה וירטואלית</string>
     <string name="tryon_section_title">תמונות למדידה</string>
     <string name="tryon_section_desc">העלה תמונות גוף מלא מלפנים, מהצד ומאחור.</string>
     <string name="tryon_slot_front">חזית</string>
@@ -618,11 +618,11 @@
     <string name="action_add">הוסף</string>
     <string name="tryon_composer_explain">כל הפריטים שנבחרו יולבשו יחד בתמונה.</string>
     <string name="tryon_composer_items_title">פריטים (%1$d)</string>
-    <string name="tryon_add_item">הוסף פריט…</string>
+    <string name="tryon_add_item">הוסף פריט</string>
     <string name="tryon_add_items_title">הוסף פריטים מהמלתחה</string>
     <string name="tryon_generate">צור מדידה</string>
     <string name="tryon_try_again">נסה שוב</string>
-    <string name="tryon_change_items">שנה פריטים…</string>
+    <string name="tryon_change_items">שנה פריטים</string>
     <string name="tryon_save_to_drive">שמור</string>
     <string name="tryon_saved_to_drive">נשמר</string>
     <string name="tryon_saving">שומר…</string>
@@ -709,7 +709,7 @@
     <string name="composer_factor_items">%1$d פריטים</string>
     <string name="composer_factor_closets">%1$d ארונות</string>
     <string name="composer_factor_composition">הרכב מותאם אישית</string>
-    <string name="wardrobe_create_style">צור אאוטפיט…</string>
+    <string name="wardrobe_create_style">צור אאוטפיט</string>
     <string name="wardrobe_imported_on">יובא ב-%1$s</string>
     <string name="wardrobe_view_original">צפה במקור</string>
     <string name="wardrobe_view_cutout">צפה בקט-אאוט</string>
@@ -799,7 +799,7 @@
     <string name="settings_debug_similarity_desc">בעת פתיחת התאמה בחיפוש דומים, הצג פירוט לפי ערוץ (תמונות ממוזערות מסוגמנטות, קוסינוס הטבעה/היסטוגרמה, היסטוגרמות גוון) במקום התמונה הרגילה הניתנת להגדלה.</string>
 
     <!-- Match preview dialog -->
-    <string name="shop_show_in_wardrobe">הצג במלתחה…</string>
+    <string name="shop_show_in_wardrobe">הצג במלתחה</string>
     <string name="shop_add_to_shopping_list">הוסף לרשימת קניות</string>
     <string name="dedupe_dialog_title">כפילות אפשרית</string>
     <string name="dedupe_dialog_desc">מצאנו %1$d פריטים במלתחה שלך שנראים דומים מאוד לתמונה זו.</string>
@@ -836,7 +836,7 @@
     <string name="import_preview_import">ייבא %1$d</string>
     <string name="import_preview_scanning">סורק %1$d / %2$d…</string>
     <string name="settings_rebg_dialog_text">זה יעבד כל פריט במלתחה הנוכחית שלך באמצעות Gemini. זה עשוי לקחת זמן מה ומשתמש בנקודות זכות משמעותיות של AI / מכסת API. פריטים שכבר יש להם את המקור שמור ב-Drive ישתמשו בו; אחרים ישתמשו בתמונה הנוכחית.</string>
-    <string name="wardrobe_fix_cutout_bg">תקן רקע של חיתוך…</string>
+    <string name="wardrobe_fix_cutout_bg">תקן רקע של חיתוך</string>
     <string name="wardrobe_fix_cutout_bg_done">רקע החיתוך תוקן.</string>
     <string name="wardrobe_fix_cutout_bg_clean">לא זוהו שאריות רקע — אין מה לתקן.</string>
     <string name="composer_discard_title">לבטל את התלבושת?</string>

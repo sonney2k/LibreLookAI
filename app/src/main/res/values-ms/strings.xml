@@ -39,7 +39,7 @@
     <string name="shop_list_moving">Memindahkan…</string>
     <string name="shop_list_loading">Memuatkan…</string>
     <string name="shop_list_processing">Memproses %1$d barangan…</string>
-    <string name="shop_list_move_to_closet">Pindah ke almari…</string>
+    <string name="shop_list_move_to_closet">Pindah ke almari</string>
     <string name="shop_list_move_title">Pindah ke almari</string>
     <string name="shop_list_delete_title">Padam dari senarai hajat?</string>
     <string name="shop_list_delete_text">Padamkan %1$d barangan secara kekal dari senarai hajat anda?</string>
@@ -132,7 +132,7 @@
     <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">Tag Almari</string>
     <string name="settings_data_tags_desc">Klasifikasikan semula setiap barangan dalam almari anda dengan Gemini. Ini akan menggantikan edit manual.</string>
-    <string name="settings_rescan_button">Imbas Semula Semua Tag…</string>
+    <string name="settings_rescan_button">Imbas Semula Semua Tag</string>
     <string name="settings_rescanning">Mengimbas semula %1$d daripada %2$d…</string>
     <string name="settings_rescan_dialog_title">Imbas semula semua tag?</string>
     <string name="settings_rescan_dialog_text">Gemini akan mengklasifikasikan semula setiap barangan. Ini mungkin mengambil sedikit masa.</string>
@@ -140,13 +140,13 @@
     <string name="settings_bulk_cost_line">%1$d barangan × %2$d kredit = jumlah %3$d kredit</string>
     <string name="settings_rebg_title">Pembuangan Latar Belakang</string>
     <string name="settings_rebg_desc">Jalankan semula pembuangan latar belakang AI pada setiap barangan. Setiap barangan memakan 5 kredit.</string>
-    <string name="settings_rebg_button">Buang Latar Belakang Semua Barangan…</string>
+    <string name="settings_rebg_button">Buang Latar Belakang Semua Barangan</string>
     <string name="settings_rebg_dialog_title">Buang latar belakang semua barangan?</string>
     <string name="settings_rebg_confirm">Buang Semua BG</string>
     <string name="settings_rebging">Membuang latar belakang %1$d daripada %2$d…</string>
     <string name="settings_clear_cache_title">Baiki &amp; Sinkron</string>
     <string name="settings_clear_cache_desc">Imbas folder Drive: baiki nama fail, kesan potongan yang hilang, dan muat semula.</string>
-    <string name="settings_clear_cache_button">Baiki &amp; Sinkron…</string>
+    <string name="settings_clear_cache_button">Baiki &amp; Sinkron</string>
     <string name="settings_clear_cache_dialog_title">Padam Cache</string>
     <string name="settings_clear_cache_dialog_text">Semua imej yang disimpan secara lokal akan dipadam dan dimuat turun semula dari Drive.</string>
     <string name="settings_clear_cache_confirm">Padam &amp; Segarkan</string>
@@ -177,7 +177,7 @@
     <string name="wardrobe_select_all_count">Pilih semua (%1$d)</string>
     <string name="wardrobe_delete_title">Padam barangan?</string>
     <string name="wardrobe_delete_text">Adakah anda pasti mahu memadam %d barangan terpilih? Ini tidak boleh dibatalkan.</string>
-    <string name="wardrobe_move_to">Pindah ke…</string>
+    <string name="wardrobe_move_to">Pindah ke</string>
     <string name="wardrobe_move_to_title">Pindah %d barangan ke</string>
     <string name="wardrobe_sort">Susun</string>
     <string name="wardrobe_sort_newest">Terbaru</string>
@@ -267,8 +267,8 @@
     <string name="composer_select_suggestion">Guna pakaian ini</string>
     <string name="outfits_tag_add">Tambah tag</string>
     <string name="outfits_saved_wear_today">Pakaian disimpan! Pakai hari ini?</string>
-    <string name="outfits_combine">Gabungkan dengan AI…</string>
-    <string name="outfit_generate_with_ai">Hasilkan dengan AI…</string>
+    <string name="outfits_combine">Gabungkan dengan AI</string>
+    <string name="outfit_generate_with_ai">Hasilkan dengan AI</string>
     <string name="outfit_save_dialog_title">Simpan pakaian</string>
     <string name="outfit_save_dialog_confirm">Simpan</string>
 
@@ -319,7 +319,7 @@
 
     <!-- Try on me -->
     <string name="tryon_title">Cuba pada saya</string>
-    <string name="tryon_fab">Cuba pada saya…</string>
+    <string name="tryon_fab">Cuba pada saya</string>
     <string name="tryon_uploading">Memuat naik…</string>
     <string name="tryon_generating">Menghasilkan percubaan anda…</string>
     <string name="tryon_error">Gagal menghasilkan percubaan</string>
@@ -554,7 +554,7 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <string name="outfit_save_dialog_name">Nama</string>
     <string name="outfit_save_dialog_tag_suggestions">Tag sedia ada</string>
     <string name="outfit_save_dialog_tags">Tag</string>
-    <string name="outfit_slot_add">Tambah item…</string>
+    <string name="outfit_slot_add">Tambah item</string>
     <string name="outfit_slot_lock">Kunci</string>
     <string name="outfit_slot_remove">Padam</string>
     <string name="outfit_slot_unlock">Buka kunci</string>
@@ -581,7 +581,7 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <string name="outfits_selected_count">%d dipilih</string>
     <string name="outfits_sort_most_items">Paling banyak item</string>
     <string name="outfits_suggest_alternatives">Cadangkan 10 alternatif</string>
-    <string name="outfits_suggest_tags">Cadangkan tag dengan AI…</string>
+    <string name="outfits_suggest_tags">Cadangkan tag dengan AI</string>
     <string name="outfits_suggest_tags_apply">Tambah yang dipilih</string>
     <string name="outfits_suggest_tags_empty">Tiada tag baharu dicadangkan.</string>
     <string name="outfits_suggest_tags_hint">Ketik tag untuk menukar. Tag terpilih ditambah ke pakaian ini.</string>
@@ -607,7 +607,7 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <string name="settings_cutoutfix_action_tightcrop">Cantas ketat &amp; had saiz</string>
     <string name="settings_cutoutfix_badge_blackbg">latar hitam</string>
     <string name="settings_cutoutfix_badge_greenhalo">halo hijau</string>
-    <string name="settings_cutoutfix_button">Imbas potongan…</string>
+    <string name="settings_cutoutfix_button">Imbas potongan</string>
     <string name="settings_cutoutfix_desc">Imbas potongan sedia ada untuk latar hitam atau halo hijau yang tertinggal dan terapkan semula topeng secara tempatan. Tiada panggilan AI — potongan yang diperbetulkan dimuat naik semula dengan ID Drive dikekalkan.</string>
     <string name="settings_cutoutfix_dialog_subtitle">Potongan yang dipilih akan diproses semula secara tempatan dan dimuat naik semula. Ketik untuk menukar.</string>
     <string name="settings_cutoutfix_dialog_title">Perbaiki latar potongan — Pratonton</string>
@@ -632,7 +632,7 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <string name="settings_feedback_github">Buka isu GitHub</string>
     <string name="settings_feedback_title">Hantar maklum balas</string>
     <string name="settings_import_ai_title">Pemprosesan AI (pilihan)</string>
-    <string name="settings_import_button">Import dari folder…</string>
+    <string name="settings_import_button">Import dari folder</string>
     <string name="settings_import_desc">Salin semua imej dari folder ke almari semasa anda. Berfungsi dengan mana-mana folder — tiada fail metadata diperlukan. Imej sentiasa ditambah segera; pemprosesan AI adalah pilihan.</string>
     <string name="settings_import_drive_empty">Tiada imej atau subfolder ditemui</string>
     <string name="settings_import_drive_image_count">%1$d imej dalam folder ini</string>
@@ -669,7 +669,7 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <string name="settings_local_bg_desc">Apabila didayakan, import kamera dan galeri menjalankan pemisah Magic Touch tempatan dan membenarkan anda mengesahkan atau memperhalusi benih foreground sebelum menyimpan — tanpa panggilan Gemini, tanpa kredit. Import URL sentiasa menggunakan semakan ini.</string>
     <string name="settings_local_bg_toggle">Guna pembuangan latar pada peranti</string>
     <string name="settings_location_active">Aktif</string>
-    <string name="settings_location_add">Tambah almari…</string>
+    <string name="settings_location_add">Tambah almari</string>
     <string name="settings_location_add_title">Tambah almari</string>
     <string name="settings_location_default">Lalai</string>
     <string name="settings_location_delete_text">Data almari untuk „%1$s” akan kekal di Drive tetapi tidak boleh diakses dari sini lagi.</string>
@@ -712,7 +712,7 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <string name="shop_matching">Memadankan dengan almari anda…</string>
     <string name="shop_model_missing">Model pada peranti hilang. Letakkan efficientnet_lite0.tflite di app/src/main/assets/embedder/ dan magic_touch.tflite di app/src/main/assets/segmenter/.</string>
     <string name="shop_no_matches">Belum ada padanan. Cuba foto lebih dekat dan pencahayaan lebih baik.</string>
-    <string name="shop_show_in_wardrobe">Tunjuk dalam almari…</string>
+    <string name="shop_show_in_wardrobe">Tunjuk dalam almari</string>
     <string name="shop_take_another">Ambil gambar lain</string>
     <string name="shop_take_photo">Ambil gambar</string>
     <string name="shop_your_photo">Gambar anda</string>
@@ -813,10 +813,10 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <string name="travel_refine_rain">Lebih sesuai untuk hujan</string>
     <string name="travel_refine_reuse">Maksimumkan guna semula pakaian</string>
     <string name="travel_regenerate">Jana semula</string>
-    <string name="tryon_add_item">Tambah item…</string>
+    <string name="tryon_add_item">Tambah item</string>
     <string name="tryon_add_items_title">Tambah item dari almari</string>
     <string name="tryon_add_photo">Tambah gambar %1$s</string>
-    <string name="tryon_change_items">Tukar item…</string>
+    <string name="tryon_change_items">Tukar item</string>
     <string name="tryon_composer_explain">Semua item di bawah akan dipakai bersama dalam cuba pakai yang dijana. Ketik item untuk membuang; ketik „+” untuk menambah.</string>
     <string name="tryon_composer_items_title">Item dalam cuba pakai ini (%1$d)</string>
     <string name="tryon_cost_line">Kos %1$d kredit setiap cuba pakai</string>
@@ -849,11 +849,11 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <string name="tryon_view_source_outfit">Lihat pakaian</string>
     <string name="viewer_hide_tags">Sembunyikan tag</string>
     <string name="viewer_show_tags">Tunjuk tag</string>
-    <string name="wardrobe_create_style">Cipta pakaian…</string>
+    <string name="wardrobe_create_style">Cipta pakaian</string>
     <string name="wardrobe_find_by_photo">Cari item melalui gambar</string>
     <string name="wardrobe_find_by_photo_empty">Tiada item serupa ditemui.</string>
     <string name="wardrobe_find_by_photo_searching">Mencari padanan…</string>
-    <string name="wardrobe_fix_cutout_bg">Perbaiki latar potongan…</string>
+    <string name="wardrobe_fix_cutout_bg">Perbaiki latar potongan</string>
     <string name="wardrobe_fix_cutout_bg_clean">Tiada baki latar dikesan — tiada apa untuk dibaiki.</string>
     <string name="wardrobe_fix_cutout_bg_done">Latar potongan telah dibaiki.</string>
     <string name="wardrobe_imported_on">Diimport %1$s</string>
@@ -863,7 +863,7 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <string name="wardrobe_search_text_results">Hasil carian</string>
     <string name="wardrobe_search_title">Cari dalam almari</string>
     <string name="wardrobe_search_use_photo">Cari melalui gambar</string>
-    <string name="wardrobe_suggest_replacements">Cadangkan alternatif…</string>
+    <string name="wardrobe_suggest_replacements">Cadangkan alternatif</string>
     <string name="wardrobe_view_cutout">Lihat potongan</string>
     <string name="wardrobe_view_original">Lihat asal</string>
 

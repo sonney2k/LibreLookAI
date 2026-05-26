@@ -19,6 +19,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Icon
@@ -187,6 +188,12 @@ fun TryOnHistoryFeed(
                 Icon(Icons.Default.AutoAwesome, null, modifier = Modifier.size(16.dp))
                 Spacer(Modifier.width(8.dp))
                 Text(stringResource(R.string.tryon_history_new), fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                Spacer(Modifier.width(4.dp))
+                Icon(
+                    Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    null,
+                    modifier = Modifier.size(16.dp),
+                )
             }
         }
     }
@@ -440,6 +447,12 @@ fun TryOnEmpty(onStartTryOn: () -> Unit, modifier: Modifier = Modifier) {
             Icon(Icons.Default.AutoAwesome, null, modifier = Modifier.size(14.dp))
             Spacer(Modifier.width(8.dp))
             Text(stringResource(R.string.tryon_empty_cta), fontSize = 13.sp, fontWeight = FontWeight.Bold)
+            Spacer(Modifier.width(4.dp))
+            Icon(
+                Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                null,
+                modifier = Modifier.size(14.dp),
+            )
         }
         Spacer(Modifier.height(14.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {

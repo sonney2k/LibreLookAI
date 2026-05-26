@@ -391,6 +391,12 @@ fun OutfitComposerScreen(
                                         Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(16.dp))
                                         Spacer(Modifier.width(4.dp))
                                         Text(stringResource(R.string.outfit_slot_add))
+                                        Spacer(Modifier.width(4.dp))
+                                        Icon(
+                                            Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                            contentDescription = null,
+                                            modifier = Modifier.size(16.dp),
+                                        )
                                     }
                                 }
                                 if (s.composerReason.isNotBlank()) {
@@ -853,6 +859,12 @@ private fun ComposerEditBottomBar(
                 Text(
                     stringResource(R.string.outfit_generate_with_ai),
                     style = MaterialTheme.typography.labelLarge.copy(fontSize = 13.sp, fontWeight = FontWeight.Bold),
+                )
+                Spacer(Modifier.width(4.dp))
+                Icon(
+                    Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    contentDescription = null,
+                    modifier = Modifier.size(16.dp),
                 )
             }
         }

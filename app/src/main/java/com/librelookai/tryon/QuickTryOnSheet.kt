@@ -125,6 +125,12 @@ fun QuickTryOnSheet(
                     Icon(Icons.Default.History, null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.width(8.dp))
                     Text(stringResource(R.string.tryon_quick_see_history), fontSize = 21.sp)
+                    Spacer(Modifier.width(4.dp))
+                    Icon(
+                        Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        null,
+                        modifier = Modifier.size(20.dp),
+                    )
                 }
             }
         }

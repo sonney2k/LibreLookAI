@@ -39,7 +39,7 @@
     <string name="shop_list_moving">กำลังย้าย…</string>
     <string name="shop_list_loading">กำลังโหลด…</string>
     <string name="shop_list_processing">กำลังประมวลผล %1$d รายการ…</string>
-    <string name="shop_list_move_to_closet">ย้ายไปที่ตู้เสื้อผ้า…</string>
+    <string name="shop_list_move_to_closet">ย้ายไปที่ตู้เสื้อผ้า</string>
     <string name="shop_list_move_title">ย้ายไปที่ตู้เสื้อผ้า</string>
     <string name="shop_list_delete_title">ลบออกจากรายการที่อยากได้?</string>
     <string name="shop_list_delete_text">ลบ %1$d รายการออกจากรายการที่อยากได้ของคุณอย่างถาวรหรือไม่?</string>
@@ -132,7 +132,7 @@
     <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">แท็กตู้เสื้อผ้า</string>
     <string name="settings_data_tags_desc">จัดหมวดหมู่เสื้อผ้าทุกชิ้นใหม่ด้วย Gemini ซึ่งจะทับการแก้ไขแท็กด้วยตนเอง</string>
-    <string name="settings_rescan_button">สแกนแท็กใหม่ทั้งหมด…</string>
+    <string name="settings_rescan_button">สแกนแท็กใหม่ทั้งหมด</string>
     <string name="settings_rescanning">กำลังสแกนใหม่ %1$d จาก %2$d…</string>
     <string name="settings_rescan_dialog_title">สแกนแท็กใหม่ทั้งหมด?</string>
     <string name="settings_rescan_dialog_text">Gemini จะจัดหมวดหมู่เสื้อผ้าทุกชิ้นใหม่ ซึ่งอาจใช้เวลาสักครู่</string>
@@ -140,13 +140,13 @@
     <string name="settings_bulk_cost_line">%1$d รายการ × %2$d เครดิต = ทั้งหมด %3$d เครดิต</string>
     <string name="settings_rebg_title">การลบพื้นหลัง</string>
     <string name="settings_rebg_desc">รันการลบพื้นหลัง AI ใหม่ในเสื้อผ้าทุกชิ้น แต่ละรายการใช้ 5 เครดิต</string>
-    <string name="settings_rebg_button">ลบพื้นหลังรายการทั้งหมด…</string>
+    <string name="settings_rebg_button">ลบพื้นหลังรายการทั้งหมด</string>
     <string name="settings_rebg_dialog_title">ลบพื้นหลังรายการทั้งหมด?</string>
     <string name="settings_rebg_confirm">ลบพื้นหลังทั้งหมด</string>
     <string name="settings_rebging">กำลังลบพื้นหลัง %1$d จาก %2$d…</string>
     <string name="settings_clear_cache_title">ซ่อมแซมและซิงค์</string>
     <string name="settings_clear_cache_desc">สแกนโฟลเดอร์ Drive ทั้งหมด: แก้ไขการตั้งชื่อไฟล์, ตรวจหาไฟล์ที่ขาดหาย และโหลดใหม่</string>
-    <string name="settings_clear_cache_button">ซ่อมแซมและซิงค์…</string>
+    <string name="settings_clear_cache_button">ซ่อมแซมและซิงค์</string>
     <string name="settings_clear_cache_dialog_title">ล้างแคช</string>
     <string name="settings_clear_cache_dialog_text">รูปภาพที่เก็บไว้ในเครื่องทั้งหมดจะถูกลบและดาวน์โหลดใหม่จาก Google Drive</string>
     <string name="settings_clear_cache_confirm">ล้างและรีเฟรช</string>
@@ -177,7 +177,7 @@
     <string name="wardrobe_select_all_count">เลือกทั้งหมด (%1$d)</string>
     <string name="wardrobe_delete_title">ลบรายการ?</string>
     <string name="wardrobe_delete_text">คุณแน่ใจหรือไม่ว่าต้องการลบ %d รายการที่เลือก? การดำเนินการนี้ไม่สามารถย้อนกลับได้</string>
-    <string name="wardrobe_move_to">ย้ายไปที่…</string>
+    <string name="wardrobe_move_to">ย้ายไปที่</string>
     <string name="wardrobe_move_to_title">ย้าย %d รายการไปที่</string>
     <string name="wardrobe_sort">จัดเรียง</string>
     <string name="wardrobe_sort_newest">ใหม่ที่สุดก่อน</string>
@@ -267,8 +267,8 @@
     <string name="composer_select_suggestion">ใช้ชุดนี้</string>
     <string name="outfits_tag_add">เพิ่มแท็ก</string>
     <string name="outfits_saved_wear_today">บันทึกชุดแล้ว! จะใส่ชุดนี้วันนี้ไหม?</string>
-    <string name="outfits_combine">รวมชุดด้วย AI…</string>
-    <string name="outfit_generate_with_ai">สร้างด้วย AI…</string>
+    <string name="outfits_combine">รวมชุดด้วย AI</string>
+    <string name="outfit_generate_with_ai">สร้างด้วย AI</string>
     <string name="outfit_save_dialog_title">บันทึกชุด</string>
     <string name="outfit_save_dialog_confirm">บันทึก</string>
 
@@ -319,7 +319,7 @@
 
     <!-- Try on me -->
     <string name="tryon_title">ลองใส่ชุด</string>
-    <string name="tryon_fab">ลองใส่ชุด…</string>
+    <string name="tryon_fab">ลองใส่ชุด</string>
     <string name="tryon_uploading">กำลังอัปโหลด…</string>
     <string name="tryon_generating">กำลังสร้างภาพจำลองลองชุด…</string>
     <string name="tryon_error">การสร้างภาพล้มเหลว</string>
@@ -554,7 +554,7 @@
     <string name="outfit_save_dialog_name">ชื่อ</string>
     <string name="outfit_save_dialog_tag_suggestions">แท็กที่มีอยู่</string>
     <string name="outfit_save_dialog_tags">แท็ก</string>
-    <string name="outfit_slot_add">เพิ่มรายการ…</string>
+    <string name="outfit_slot_add">เพิ่มรายการ</string>
     <string name="outfit_slot_lock">ล็อก</string>
     <string name="outfit_slot_remove">ลบ</string>
     <string name="outfit_slot_unlock">ปลดล็อก</string>
@@ -581,7 +581,7 @@
     <string name="outfits_selected_count">เลือก %d รายการ</string>
     <string name="outfits_sort_most_items">รายการมากที่สุด</string>
     <string name="outfits_suggest_alternatives">แนะนำ 10 ทางเลือก</string>
-    <string name="outfits_suggest_tags">แนะนำแท็กด้วย AI…</string>
+    <string name="outfits_suggest_tags">แนะนำแท็กด้วย AI</string>
     <string name="outfits_suggest_tags_apply">เพิ่มที่เลือก</string>
     <string name="outfits_suggest_tags_empty">ไม่มีแท็กใหม่ที่แนะนำ</string>
     <string name="outfits_suggest_tags_hint">แตะแท็กเพื่อสลับ แท็กที่เลือกจะถูกเพิ่มในชุดนี้</string>
@@ -607,7 +607,7 @@
     <string name="settings_cutoutfix_action_tightcrop">ครอบแน่น &amp; จำกัดขนาด</string>
     <string name="settings_cutoutfix_badge_blackbg">พื้นหลังดำ</string>
     <string name="settings_cutoutfix_badge_greenhalo">รัศมีเขียว</string>
-    <string name="settings_cutoutfix_button">สแกนการตัด…</string>
+    <string name="settings_cutoutfix_button">สแกนการตัด</string>
     <string name="settings_cutoutfix_desc">สแกนการตัดที่มีอยู่หาพื้นหลังดำหรือรัศมีเขียวที่เหลือ และทาแมตท์ใหม่ในเครื่อง ไม่มีการเรียก AI — การตัดที่แก้แล้วถูกอัปโหลดใหม่โดยคง Drive ID</string>
     <string name="settings_cutoutfix_dialog_subtitle">การตัดที่เลือกจะถูกประมวลผลใหม่ในเครื่องและอัปโหลดใหม่ แตะเพื่อสลับ</string>
     <string name="settings_cutoutfix_dialog_title">แก้พื้นหลังการตัด — ดูตัวอย่าง</string>
@@ -632,7 +632,7 @@
     <string name="settings_feedback_github">เปิด GitHub issues</string>
     <string name="settings_feedback_title">ส่งฟีดแบ็ค</string>
     <string name="settings_import_ai_title">การประมวลผล AI (ไม่บังคับ)</string>
-    <string name="settings_import_button">นำเข้าจากโฟลเดอร์…</string>
+    <string name="settings_import_button">นำเข้าจากโฟลเดอร์</string>
     <string name="settings_import_desc">คัดลอกภาพทั้งหมดจากโฟลเดอร์ไปยังตู้เสื้อผ้าปัจจุบัน ใช้ได้กับโฟลเดอร์ใดก็ได้ — ไม่ต้องการไฟล์เมตาดาต้า ภาพถูกเพิ่มทันทีเสมอ; การประมวลผล AI ไม่บังคับ</string>
     <string name="settings_import_drive_empty">ไม่พบภาพหรือโฟลเดอร์ย่อย</string>
     <string name="settings_import_drive_image_count">%1$d ภาพในโฟลเดอร์นี้</string>
@@ -669,7 +669,7 @@
     <string name="settings_local_bg_desc">เมื่อเปิดใช้ การนำเข้ากล้องและคลังภาพจะรันตัวแบ่งภาพ Magic Touch ในเครื่องและให้คุณยืนยันหรือปรับพื้นหน้าก่อนบันทึก — ไม่มีการเรียก Gemini ไม่ใช้เครดิต การนำเข้า URL ใช้การตรวจสอบนี้เสมอ</string>
     <string name="settings_local_bg_toggle">ใช้การลบพื้นหลังบนอุปกรณ์</string>
     <string name="settings_location_active">ใช้งานอยู่</string>
-    <string name="settings_location_add">เพิ่มตู้…</string>
+    <string name="settings_location_add">เพิ่มตู้</string>
     <string name="settings_location_add_title">เพิ่มตู้</string>
     <string name="settings_location_default">เริ่มต้น</string>
     <string name="settings_location_delete_text">ข้อมูลตู้ของ „%1$s” จะยังคงอยู่ใน Drive แต่จะไม่สามารถเข้าถึงจากที่นี่ได้</string>
@@ -712,7 +712,7 @@
     <string name="shop_matching">กำลังเปรียบเทียบกับตู้…</string>
     <string name="shop_model_missing">โมเดลในเครื่องหายไป วาง efficientnet_lite0.tflite ใน app/src/main/assets/embedder/ และ magic_touch.tflite ใน app/src/main/assets/segmenter/</string>
     <string name="shop_no_matches">ยังไม่มีผลตรงกัน ลองภาพที่ใกล้และมีแสงดีกว่า</string>
-    <string name="shop_show_in_wardrobe">แสดงในตู้…</string>
+    <string name="shop_show_in_wardrobe">แสดงในตู้</string>
     <string name="shop_take_another">ถ่ายภาพอื่น</string>
     <string name="shop_take_photo">ถ่ายภาพ</string>
     <string name="shop_your_photo">ภาพของคุณ</string>
@@ -813,10 +813,10 @@
     <string name="travel_refine_rain">เหมาะกับฝนมากขึ้น</string>
     <string name="travel_refine_reuse">ใช้ชุดซ้ำให้คุ้มที่สุด</string>
     <string name="travel_regenerate">สร้างใหม่</string>
-    <string name="tryon_add_item">เพิ่มรายการ…</string>
+    <string name="tryon_add_item">เพิ่มรายการ</string>
     <string name="tryon_add_items_title">เพิ่มรายการจากตู้</string>
     <string name="tryon_add_photo">เพิ่มภาพ %1$s</string>
-    <string name="tryon_change_items">เปลี่ยนรายการ…</string>
+    <string name="tryon_change_items">เปลี่ยนรายการ</string>
     <string name="tryon_composer_explain">รายการทั้งหมดด้านล่างจะถูกสวมใส่ร่วมกันในภาพลองที่สร้าง แตะรายการเพื่อลบ; แตะ „+” เพื่อเพิ่ม</string>
     <string name="tryon_composer_items_title">รายการในการลองนี้ (%1$d)</string>
     <string name="tryon_cost_line">%1$d เครดิตต่อการลอง</string>
@@ -849,11 +849,11 @@
     <string name="tryon_view_source_outfit">ดูชุด</string>
     <string name="viewer_hide_tags">ซ่อนแท็ก</string>
     <string name="viewer_show_tags">แสดงแท็ก</string>
-    <string name="wardrobe_create_style">สร้างชุด…</string>
+    <string name="wardrobe_create_style">สร้างชุด</string>
     <string name="wardrobe_find_by_photo">ค้นหารายการด้วยภาพ</string>
     <string name="wardrobe_find_by_photo_empty">ไม่พบรายการที่คล้าย</string>
     <string name="wardrobe_find_by_photo_searching">กำลังค้นหารายการที่ตรง…</string>
-    <string name="wardrobe_fix_cutout_bg">แก้พื้นหลังการตัด…</string>
+    <string name="wardrobe_fix_cutout_bg">แก้พื้นหลังการตัด</string>
     <string name="wardrobe_fix_cutout_bg_clean">ไม่พบพื้นหลังเหลือ — ไม่มีอะไรต้องแก้</string>
     <string name="wardrobe_fix_cutout_bg_done">แก้พื้นหลังการตัดแล้ว</string>
     <string name="wardrobe_imported_on">นำเข้า %1$s</string>
@@ -863,7 +863,7 @@
     <string name="wardrobe_search_text_results">ผลการค้นหา</string>
     <string name="wardrobe_search_title">ค้นหาในตู้</string>
     <string name="wardrobe_search_use_photo">ค้นหาด้วยภาพแทน</string>
-    <string name="wardrobe_suggest_replacements">แนะนำทางเลือก…</string>
+    <string name="wardrobe_suggest_replacements">แนะนำทางเลือก</string>
     <string name="wardrobe_view_cutout">ดูการตัด</string>
     <string name="wardrobe_view_original">ดูต้นฉบับ</string>
 

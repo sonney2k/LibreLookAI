@@ -39,7 +39,7 @@
     <string name="shop_list_moving">正在移動…</string>
     <string name="shop_list_loading">正在載入…</string>
     <string name="shop_list_processing">正在處理 %1$d 個項目…</string>
-    <string name="shop_list_move_to_closet">移至衣櫥…</string>
+    <string name="shop_list_move_to_closet">移至衣櫥</string>
     <string name="shop_list_move_title">移至衣櫥</string>
     <string name="shop_list_delete_title">從願望清單刪除？</string>
     <string name="shop_list_delete_text">要永久從願望清單中移除 %1$d 個項目嗎？</string>
@@ -132,7 +132,7 @@
     <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">衣櫥標籤</string>
     <string name="settings_data_tags_desc">使用 Gemini 重新分類衣櫥中的每一件單品。這將覆蓋任何手動編輯的標籤。</string>
-    <string name="settings_rescan_button">重新掃描所有標籤…</string>
+    <string name="settings_rescan_button">重新掃描所有標籤</string>
     <string name="settings_rescanning">正在重新掃描第 %1$d / %2$d 個…</string>
     <string name="settings_rescan_dialog_title">重新掃描所有標籤？</string>
     <string name="settings_rescan_dialog_text">Gemini 將重新分類衣櫥中的每一件單品。這可能需要一些時間。</string>
@@ -140,13 +140,13 @@
     <string name="settings_bulk_cost_line">%1$d 件單品 × %2$d 點數 = 總計 %3$d 點數</string>
     <string name="settings_rebg_title">移除背景</string>
     <string name="settings_rebg_desc">對衣櫥中的每一件單品重新執行 AI 背景移除。每件單品費用為 5 AI 點數。</string>
-    <string name="settings_rebg_button">移除所有單品背景…</string>
+    <string name="settings_rebg_button">移除所有單品背景</string>
     <string name="settings_rebg_dialog_title">移除所有單品背景？</string>
     <string name="settings_rebg_confirm">移除所有背景</string>
     <string name="settings_rebging">正在移除背景 %1$d / %2$d…</string>
     <string name="settings_clear_cache_title">修復與同步</string>
     <string name="settings_clear_cache_desc">掃描所有 Drive 資料夾：修復檔案命名，檢測缺失的去背圖，並重新載入。</string>
-    <string name="settings_clear_cache_button">修復與同步…</string>
+    <string name="settings_clear_cache_button">修復與同步</string>
     <string name="settings_clear_cache_dialog_title">清除快取</string>
     <string name="settings_clear_cache_dialog_text">所有本機快取的圖片都將被刪除，並從 Google Drive 重新下載。</string>
     <string name="settings_clear_cache_confirm">清除並重新整理</string>
@@ -177,7 +177,7 @@
     <string name="wardrobe_select_all_count">全選 (%1$d)</string>
     <string name="wardrobe_delete_title">刪除單品？</string>
     <string name="wardrobe_delete_text">您確定要刪除 %d 件選擇的單品嗎？此操作無法撤銷。</string>
-    <string name="wardrobe_move_to">移至…</string>
+    <string name="wardrobe_move_to">移至</string>
     <string name="wardrobe_move_to_title">將 %d 件單品移至</string>
     <string name="wardrobe_sort">排序</string>
     <string name="wardrobe_sort_newest">最新優先</string>
@@ -267,8 +267,8 @@
     <string name="composer_select_suggestion">使用此穿搭</string>
     <string name="outfits_tag_add">添加標籤</string>
     <string name="outfits_saved_wear_today">穿搭已儲存！今天穿這套嗎？</string>
-    <string name="outfits_combine">使用 AI 結合…</string>
-    <string name="outfit_generate_with_ai">使用 AI 生成…</string>
+    <string name="outfits_combine">使用 AI 結合</string>
+    <string name="outfit_generate_with_ai">使用 AI 生成</string>
     <string name="outfit_save_dialog_title">儲存穿搭</string>
     <string name="outfit_save_dialog_confirm">儲存</string>
 
@@ -319,7 +319,7 @@
 
     <!-- Try on me -->
     <string name="tryon_title">試穿在我身上</string>
-    <string name="tryon_fab">試穿在我身上…</string>
+    <string name="tryon_fab">試穿在我身上</string>
     <string name="tryon_uploading">正在上傳…</string>
     <string name="tryon_generating">正在生成您的試穿效果…</string>
     <string name="tryon_error">試穿生成失敗</string>
@@ -554,7 +554,7 @@
     <string name="outfit_save_dialog_name">名稱</string>
     <string name="outfit_save_dialog_tag_suggestions">現有標籤</string>
     <string name="outfit_save_dialog_tags">標籤</string>
-    <string name="outfit_slot_add">新增單品…</string>
+    <string name="outfit_slot_add">新增單品</string>
     <string name="outfit_slot_lock">鎖定</string>
     <string name="outfit_slot_remove">移除</string>
     <string name="outfit_slot_unlock">解鎖</string>
@@ -581,7 +581,7 @@
     <string name="outfits_selected_count">已選 %d 套</string>
     <string name="outfits_sort_most_items">單品最多</string>
     <string name="outfits_suggest_alternatives">建議 10 種替代方案</string>
-    <string name="outfits_suggest_tags">用 AI 建議標籤…</string>
+    <string name="outfits_suggest_tags">用 AI 建議標籤</string>
     <string name="outfits_suggest_tags_apply">新增已選</string>
     <string name="outfits_suggest_tags_empty">沒有新的建議標籤。</string>
     <string name="outfits_suggest_tags_hint">點擊標籤以切換。已選的標籤會加入此穿搭。</string>
@@ -607,7 +607,7 @@
     <string name="settings_cutoutfix_action_tightcrop">緊湊裁切 &amp; 限制大小</string>
     <string name="settings_cutoutfix_badge_blackbg">黑色背景</string>
     <string name="settings_cutoutfix_badge_greenhalo">綠色光暈</string>
-    <string name="settings_cutoutfix_button">掃描剪裁…</string>
+    <string name="settings_cutoutfix_button">掃描剪裁</string>
     <string name="settings_cutoutfix_desc">掃描現有剪裁是否有殘留的黑色背景或綠色光暈，並於本機重新套用遮罩。不會呼叫 AI——修復後的剪裁會保留 Drive ID 重新上傳。</string>
     <string name="settings_cutoutfix_dialog_subtitle">選取的剪裁將於本機重新處理並重新上傳。點擊以切換。</string>
     <string name="settings_cutoutfix_dialog_title">修復剪裁背景——預覽</string>
@@ -632,7 +632,7 @@
     <string name="settings_feedback_github">開啟 GitHub issues</string>
     <string name="settings_feedback_title">寄送回饋</string>
     <string name="settings_import_ai_title">AI 處理（選用）</string>
-    <string name="settings_import_button">從資料夾匯入…</string>
+    <string name="settings_import_button">從資料夾匯入</string>
     <string name="settings_import_desc">將資料夾中的所有圖片複製到目前的衣櫥。可用於任何資料夾——不需要中繼檔。圖片總是立即加入；AI 處理為選用。</string>
     <string name="settings_import_drive_empty">找不到圖片或子資料夾</string>
     <string name="settings_import_drive_image_count">此資料夾共 %1$d 張圖片</string>
@@ -669,7 +669,7 @@
     <string name="settings_local_bg_desc">啟用時，相機與圖庫匯入會執行本機 Magic Touch 分割器，並讓你在儲存前確認或調整前景種子——不會呼叫 Gemini、不消耗點數。URL 匯入一律使用此檢視。</string>
     <string name="settings_local_bg_toggle">使用裝置端去背</string>
     <string name="settings_location_active">使用中</string>
-    <string name="settings_location_add">新增衣櫥…</string>
+    <string name="settings_location_add">新增衣櫥</string>
     <string name="settings_location_add_title">新增衣櫥</string>
     <string name="settings_location_default">預設</string>
     <string name="settings_location_delete_text">「%1$s」的衣櫥資料會保留在 Drive 上，但無法再從這裡存取。</string>
@@ -712,7 +712,7 @@
     <string name="shop_matching">與衣櫥比對中…</string>
     <string name="shop_model_missing">裝置上的模型遺失。請將 efficientnet_lite0.tflite 放到 app/src/main/assets/embedder/，magic_touch.tflite 放到 app/src/main/assets/segmenter/。</string>
     <string name="shop_no_matches">目前沒有相符項。試試更近、光線更好的照片。</string>
-    <string name="shop_show_in_wardrobe">在衣櫥中顯示…</string>
+    <string name="shop_show_in_wardrobe">在衣櫥中顯示</string>
     <string name="shop_take_another">再拍一張</string>
     <string name="shop_take_photo">拍照</string>
     <string name="shop_your_photo">你的相片</string>
@@ -813,10 +813,10 @@
     <string name="travel_refine_rain">更適合雨天</string>
     <string name="travel_refine_reuse">最大化穿搭重複使用</string>
     <string name="travel_regenerate">重新生成</string>
-    <string name="tryon_add_item">新增單品…</string>
+    <string name="tryon_add_item">新增單品</string>
     <string name="tryon_add_items_title">新增衣櫥單品</string>
     <string name="tryon_add_photo">新增 %1$s 相片</string>
-    <string name="tryon_change_items">更換單品…</string>
+    <string name="tryon_change_items">更換單品</string>
     <string name="tryon_composer_explain">下方所有單品將會一起穿在生成的試穿中。點擊單品以移除；點擊「+」以加入更多。</string>
     <string name="tryon_composer_items_title">此次試穿的單品（%1$d）</string>
     <string name="tryon_cost_line">每次試穿 %1$d 點</string>
@@ -849,11 +849,11 @@
     <string name="tryon_view_source_outfit">檢視穿搭</string>
     <string name="viewer_hide_tags">隱藏標籤</string>
     <string name="viewer_show_tags">顯示標籤</string>
-    <string name="wardrobe_create_style">建立穿搭…</string>
+    <string name="wardrobe_create_style">建立穿搭</string>
     <string name="wardrobe_find_by_photo">以相片尋找單品</string>
     <string name="wardrobe_find_by_photo_empty">找不到相似的單品。</string>
     <string name="wardrobe_find_by_photo_searching">尋找相符項目中…</string>
-    <string name="wardrobe_fix_cutout_bg">修復剪裁背景…</string>
+    <string name="wardrobe_fix_cutout_bg">修復剪裁背景</string>
     <string name="wardrobe_fix_cutout_bg_clean">未偵測到殘留背景——無需修復。</string>
     <string name="wardrobe_fix_cutout_bg_done">剪裁背景已修復。</string>
     <string name="wardrobe_imported_on">匯入時間 %1$s</string>
@@ -863,7 +863,7 @@
     <string name="wardrobe_search_text_results">搜尋結果</string>
     <string name="wardrobe_search_title">搜尋衣櫥</string>
     <string name="wardrobe_search_use_photo">改以相片搜尋</string>
-    <string name="wardrobe_suggest_replacements">建議替代方案…</string>
+    <string name="wardrobe_suggest_replacements">建議替代方案</string>
     <string name="wardrobe_view_cutout">檢視剪裁</string>
     <string name="wardrobe_view_original">檢視原圖</string>
 

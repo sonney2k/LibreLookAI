@@ -39,7 +39,7 @@
     <string name="shop_list_moving">جاري النقل…</string>
     <string name="shop_list_loading">جاري التحميل…</string>
     <string name="shop_list_processing">جاري معالجة %1$d صنف…</string>
-    <string name="shop_list_move_to_closet">نقل إلى الخزانة…</string>
+    <string name="shop_list_move_to_closet">نقل إلى الخزانة</string>
     <string name="shop_list_move_title">نقل إلى الخزانة</string>
     <string name="shop_list_delete_title">حذف من قائمة الأمنيات؟</string>
     <string name="shop_list_delete_text">هل تريد حذف %1$d صنف نهائيًا من قائمة أمنياتك؟</string>
@@ -132,7 +132,7 @@
     <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">وسوم الخزانة</string>
     <string name="settings_data_tags_desc">أعد تصنيف كل صنف في خزانة ملابسك باستخدام Gemini. سيؤدي هذا إلى الكتابة فوق أي تعديلات يدوية للوسوم.</string>
-    <string name="settings_rescan_button">إعادة مسح جميع الوسوم…</string>
+    <string name="settings_rescan_button">إعادة مسح جميع الوسوم</string>
     <string name="settings_rescanning">جاري إعادة المسح %1$d من %2$d…</string>
     <string name="settings_rescan_dialog_title">إعادة مسح جميع الوسوم؟</string>
     <string name="settings_rescan_dialog_text">سيقوم Gemini بإعادة تصنيف كل صنف في خزانة ملابسك. سيؤدي هذا إلى الكتابة فوق أي تعديلات يدوية للوسوم وقد يستغرق بعض الوقت.</string>
@@ -140,14 +140,14 @@
     <string name="settings_bulk_cost_line">%1$d أصناف × %2$d رصيد = %3$d رصيد إجمالي</string>
     <string name="settings_rebg_title">إزالة الخلفية</string>
     <string name="settings_rebg_desc">أعد تشغيل إزالة الخلفية بالذكاء الاصطناعي لكل صنف في خزانة ملابسك. يتم تخزين النسخ الأصلية بأمان على Drive حتى تتمكن من إعادة تشغيل هذا في أي وقت. يكلف كل صنف 5 أرصدة ذكاء اصطناعي (أو كوتا Gemini API).</string>
-    <string name="settings_rebg_button">إزالة الخلفية من جميع الأصناف…</string>
+    <string name="settings_rebg_button">إزالة الخلفية من جميع الأصناف</string>
     <string name="settings_rebg_dialog_title">إزالة الخلفيات من جميع الأصناف؟</string>
     <string name="settings_rebg_dialog_text">سيقوم هذا بمعالجة كل صنف في خزانة ملابسك الحالية باستخدام Gemini. قد يستغرق الأمر بعض الوقت ويستهلك رصيدًا كبيرًا من الذكاء الاصطناعي / كوتا API. الأصناف التي لديها نسخ أصلية محفوظة على Drive ستستخدمها؛ أما الأصناف الأخرى فستستخدم الصورة الحالية.</string>
     <string name="settings_rebg_confirm">إزالة جميع الخلفيات</string>
     <string name="settings_rebging">جاري إزالة الخلفية %1$d من %2$d…</string>
     <string name="settings_clear_cache_title">إصلاح ومزامنة</string>
     <string name="settings_clear_cache_desc">مسح جميع مجلدات Drive: إصلاح تسمية الملفات، واكتشاف القصات المفقودة والوسوم الجانبية، ثم عرض معالجتها. ينتهي بإعادة تحميل كل شيء من Drive.</string>
-    <string name="settings_clear_cache_button">إصلاح ومزامنة…</string>
+    <string name="settings_clear_cache_button">إصلاح ومزامنة</string>
     <string name="settings_clear_cache_dialog_title">مسح ذاكرة التخزين المؤقت</string>
     <string name="settings_clear_cache_dialog_text">سيتم حذف جميع الصور المخزنة مؤقتًا محليًا وإعادة تحميلها من Google Drive. لن تتأثر بياناتك على Drive.</string>
     <string name="settings_clear_cache_confirm">مسح وتحديث</string>
@@ -174,7 +174,7 @@
     <string name="settings_repair_preview_process_n">معالجة %1$d</string>
     <string name="settings_cutoutfix_title">إصلاح خلفيات القصات</string>
     <string name="settings_cutoutfix_desc">مسح القصات الحالية بحثًا عن خلفيات سوداء متبقية أو هالات خضراء وإعادة تطبيق القناع محليًا. لا توجد مكالمات ذكاء اصطناعي — يتم إعادة رفع القصات المصححة مع الحفاظ على معرف Drive الخاص بها.</string>
-    <string name="settings_cutoutfix_button">مسح القصات…</string>
+    <string name="settings_cutoutfix_button">مسح القصات</string>
     <string name="settings_cutoutfix_scanning">جاري مسح القصة %1$d من %2$d…</string>
     <string name="settings_cutoutfix_processing">جاري إصلاح القصة %1$d من %2$d…</string>
     <string name="settings_cutoutfix_done">تم إصلاح %1$d قصة(قصات).</string>
@@ -200,7 +200,7 @@
     <string name="settings_migrating">جاري إعادة تسمية الملف %1$d من %2$d…</string>
     <string name="settings_import_title">استيراد من مجلد</string>
     <string name="settings_import_desc">انسخ جميع الصور من مجلد إلى خزانة ملابسك الحالية. يعمل مع أي مجلد — لا يتطلب ملف بيانات وصفية. يتم إضافة الصور دائمًا على الفور؛ معالجة الذكاء الاصطناعي اختيارية.</string>
-    <string name="settings_import_button">استيراد من مجلد…</string>
+    <string name="settings_import_button">استيراد من مجلد</string>
     <string name="settings_importing">جاري استيراد %1$d من %2$d…</string>
     <string name="settings_import_later_hint">نصيحة: يمكنك إزالة الخلفيات ووسم جميع الأصناف تلقائيًا في أي وقت من الأقسام المذكورة أعلاه.</string>
     <string name="settings_import_options_title">خيارات الاستيراد</string>
@@ -237,7 +237,7 @@
     <string name="settings_locations_title">الخزائن</string>
     <string name="settings_locations_desc">إدارة خزائن ملابس متعددة لأماكن مختلفة. اضغط على خزانة لجعلها الافتراضية — سيتم استيراد الأصناف الجديدة هناك، وسيبدأ إنشاء الأطقم منها. فلتر الخزانة في الجزء العلوي من كل شاشة مستقل ويبدأ دائمًا بـ \"الكل\". اختياريًا حدد مدينة لمعلومات الطقس.</string>
     <string name="settings_location_default">افتراضي</string>
-    <string name="settings_location_add">إضافة خزانة…</string>
+    <string name="settings_location_add">إضافة خزانة</string>
     <string name="settings_location_name_hint">اسم الخزانة</string>
     <string name="settings_location_geo_hint">المدينة للطقس (اختياري)</string>
     <string name="settings_location_add_title">إضافة خزانة</string>
@@ -261,7 +261,7 @@
     <string name="wardrobe_select_all_count">تحديد الكل (%1$d)</string>
     <string name="wardrobe_delete_title">حذف الأصناف؟</string>
     <string name="wardrobe_delete_text">هل أنت متأكد من رغبتك في حذف %d صنف مختار؟ لا يمكن التراجع عن هذا الإجراء.</string>
-    <string name="wardrobe_move_to">نقل إلى…</string>
+    <string name="wardrobe_move_to">نقل إلى</string>
     <string name="wardrobe_move_to_title">نقل %d صنف إلى</string>
     <string name="wardrobe_sort">فرز</string>
     <string name="wardrobe_sort_newest">الأحدث أولاً</string>
@@ -272,7 +272,7 @@
     <string name="wardrobe_tag_detect">اكتشاف الوسوم</string>
     <string name="wardrobe_tag_remove_bg">إزالة الخلفية</string>
     <string name="wardrobe_tag_re_remove_bg">إعادة إزالة الخلفية</string>
-    <string name="wardrobe_fix_cutout_bg">إصلاح خلفية القصة…</string>
+    <string name="wardrobe_fix_cutout_bg">إصلاح خلفية القصة</string>
     <string name="wardrobe_fix_cutout_bg_done">تم إصلاح خلفية القصة.</string>
     <string name="wardrobe_fix_cutout_bg_clean">لم يتم اكتشاف خلفية متبقية — لا يوجد شيء لإصلاحه.</string>
     <string name="wardrobe_tag_rotate">تدوير</string>
@@ -460,7 +460,7 @@
     <string name="composer_select_suggestion">استخدام هذا الطقم</string>
     <string name="outfits_tag_add">إضافة وسم</string>
     <string name="outfits_tag_add_placeholder">مثلاً: عيد ميلاد، سفر</string>
-    <string name="outfits_suggest_tags">اقتراح وسوم بالذكاء الاصطناعي…</string>
+    <string name="outfits_suggest_tags">اقتراح وسوم بالذكاء الاصطناعي</string>
     <string name="outfits_suggest_tags_title">وسوم مقترحة</string>
     <string name="outfits_suggest_tags_loading">جاري اقتراح الوسوم…</string>
     <string name="outfits_suggest_tags_empty">لا توجد وسوم جديدة مقترحة.</string>
@@ -483,12 +483,12 @@
     <string name="outfits_select_all_count">تحديد الكل %d</string>
     <string name="outfits_delete_selected_title">حذف الأطقم؟</string>
     <string name="outfits_delete_selected_text">سيتم حذف %d طقم نهائيًا.</string>
-    <string name="outfits_combine">دمج بالذكاء الاصطناعي…</string>
+    <string name="outfits_combine">دمج بالذكاء الاصطناعي</string>
     <string name="outfit_slot_lock">قفل</string>
     <string name="outfit_slot_unlock">إلغاء القفل</string>
     <string name="outfit_slot_remove">إزالة</string>
-    <string name="outfit_slot_add">إضافة صنف…</string>
-    <string name="outfit_generate_with_ai">توليد بالذكاء الاصطناعي…</string>
+    <string name="outfit_slot_add">إضافة صنف</string>
+    <string name="outfit_generate_with_ai">توليد بالذكاء الاصطناعي</string>
     <string name="outfit_discard_changes_title">تجاهل التغييرات؟</string>
     <string name="outfit_discard_changes_body">ستفقد تغييراتك غير المحفوظة.</string>
     <string name="outfit_discard_changes_confirm">تجاهل</string>
@@ -556,7 +556,7 @@
     <string name="gap_empty_hint">اضغط على \"تحليل\" ليقوم الذكاء الاصطناعي بتحديد القطع الأساسية التي ستكمل أكبر عدد من الأطقم من خزانة ملابسك.</string>
 
     <!-- Suggest replacements (Wardrobe selection mode) -->
-    <string name="wardrobe_suggest_replacements">اقتراح بدائل…</string>
+    <string name="wardrobe_suggest_replacements">اقتراح بدائل</string>
     <string name="replacements_title">بدائل لـ %d صنف</string>
     <string name="replacements_analyzing">جاري اقتراح بدائل…</string>
 
@@ -597,7 +597,7 @@
 
     <!-- Try on me -->
     <string name="tryon_title">تجربة عليّ</string>
-    <string name="tryon_fab">تجربة عليّ…</string>
+    <string name="tryon_fab">تجربة عليّ</string>
     <string name="tryon_section_title">صور التجربة</string>
     <string name="tryon_section_desc">ارفع صورًا لكامل الجسم من الأمام والجانب والخلف. يستخدم التطبيق هذه الصور كمرجع عند توليد معاينة تجربة لطقم أو صنف من الخزانة عليك. تبقى الصور في Drive الخاص بك.</string>
     <string name="tryon_slot_front">أمام</string>
@@ -622,11 +622,11 @@
     <string name="action_add">إضافة</string>
     <string name="tryon_composer_explain">سيتم ارتداء جميع الأصناف الموضحة أدناه معًا في التجربة المولدة. اضغط على صنف لإزالته؛ اضغط على \"+\" لإضافة المزيد.</string>
     <string name="tryon_composer_items_title">الأصناف في هذه التجربة (%1$d)</string>
-    <string name="tryon_add_item">إضافة صنف…</string>
+    <string name="tryon_add_item">إضافة صنف</string>
     <string name="tryon_add_items_title">إضافة أصناف الخزانة</string>
     <string name="tryon_generate">توليد تجربة</string>
     <string name="tryon_try_again">المحاولة مرة أخرى</string>
-    <string name="tryon_change_items">تغيير الأصناف…</string>
+    <string name="tryon_change_items">تغيير الأصناف</string>
     <string name="tryon_save_to_drive">حفظ</string>
     <string name="tryon_saved_to_drive">تم الحفظ</string>
     <string name="tryon_saving">جاري الحفظ…</string>
@@ -748,7 +748,7 @@
     <string name="composer_factor_items">%1$d أصناف</string>
     <string name="composer_factor_closets">%1$d خزائن</string>
     <string name="composer_factor_composition">تكوين مخصص</string>
-    <string name="wardrobe_create_style">إنشاء طقم…</string>
+    <string name="wardrobe_create_style">إنشاء طقم</string>
     <string name="wardrobe_imported_on">تم الاستيراد في %1$s</string>
     <string name="wardrobe_view_original">عرض الأصل</string>
     <string name="wardrobe_view_cutout">عرض القصة</string>
@@ -838,7 +838,7 @@
     <string name="settings_debug_similarity_desc">عند فتح مطابقة في البحث عن شبيه، اظهر التفصيل لكل قناة (مصغرات مقصوصة، جيب تمام التضمين/المدرج التكراري، مدرجات تكرار درجة اللون) بدلاً من الصورة الافتراضية القابلة للتكبير.</string>
 
     <!-- Match preview dialog -->
-    <string name="shop_show_in_wardrobe">إظهار في الخزانة…</string>
+    <string name="shop_show_in_wardrobe">إظهار في الخزانة</string>
     <string name="shop_add_to_shopping_list">إضافة إلى قائمة التسوق</string>
     <string name="dedupe_dialog_title">مكرر محتمل</string>
     <string name="dedupe_dialog_desc">وجدنا %1$d صنف(أصناف) في خزانة ملابسك تبدو مشابهة جدًا لهذه الصورة.</string>

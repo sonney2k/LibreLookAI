@@ -900,6 +900,12 @@ private fun DataTab(
                 Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(18.dp))
                 Spacer(Modifier.padding(start = 8.dp))
                 Text(stringResource(R.string.settings_location_add))
+                Spacer(Modifier.padding(start = 4.dp))
+                Icon(
+                    Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp),
+                )
             }
         }
 
@@ -945,6 +951,12 @@ private fun DataTab(
                     Icon(Icons.Default.Refresh, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.padding(start = 8.dp))
                     Text(stringResource(R.string.settings_rescan_button))
+                    Spacer(Modifier.padding(start = 4.dp))
+                    Icon(
+                        Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp),
+                    )
                 }
             }
         }
@@ -991,6 +1003,12 @@ private fun DataTab(
                     Icon(Icons.Default.AutoFixHigh, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.padding(start = 8.dp))
                     Text(stringResource(R.string.settings_rebg_button))
+                    Spacer(Modifier.padding(start = 4.dp))
+                    Icon(
+                        Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp),
+                    )
                 }
             }
         }
@@ -1070,6 +1088,12 @@ private fun DataTab(
                     Icon(Icons.Default.AutoFixHigh, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.padding(start = 8.dp))
                     Text(stringResource(R.string.settings_cutoutfix_button))
+                    Spacer(Modifier.padding(start = 4.dp))
+                    Icon(
+                        Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp),
+                    )
                 }
             }
         }
@@ -1135,6 +1159,12 @@ private fun DataTab(
                     Icon(Icons.Default.DeleteSweep, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.padding(start = 8.dp))
                     Text(stringResource(R.string.settings_clear_cache_button))
+                    Spacer(Modifier.padding(start = 4.dp))
+                    Icon(
+                        Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp),
+                    )
                 }
             }
         }
@@ -1177,6 +1207,12 @@ private fun DataTab(
                     Icon(Icons.Default.FolderOpen, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.padding(start = 8.dp))
                     Text(stringResource(R.string.settings_import_button))
+                    Spacer(Modifier.padding(start = 4.dp))
+                    Icon(
+                        Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp),
+                    )
                 }
                 Text(
                     stringResource(R.string.settings_import_later_hint),
