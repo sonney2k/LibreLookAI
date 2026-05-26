@@ -160,6 +160,12 @@ fun TravelScreen(
         travelViewModel.consumePackingList()
     }
 
+    // Entering the planner defaults its source closets to whatever closet the user is viewing
+    // (null = All → all closets). The user can still change this in the closet picker.
+    LaunchedEffect(plannerMode) {
+        if (plannerMode) travelViewModel.seedSourceFolders(locationViewModel.activeFolderId)
+    }
+
     // Open the viewer when TripsViewModel emits a navigate event.
     LaunchedEffect(Unit) {
         tripsViewModel.navigateToTrip.collect { tripId ->

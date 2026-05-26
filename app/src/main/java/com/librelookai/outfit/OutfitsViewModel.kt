@@ -1098,8 +1098,11 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
         defaultSourceFolderId: String?,
         source: PredictionSetupSource = PredictionSetupSource.OUTFITS_LIST,
     ) {
-        val sourceFolders = defaultSourceFolderId?.let { setOf(it) } ?: emptySet()
         _state.update {
+            // From the composer, keep the source closets already chosen there; otherwise seed
+            // from the provided default (the active closet, or all closets when null).
+            val sourceFolders = if (source == PredictionSetupSource.COMPOSER) it.composerSourceFolderIds
+                else defaultSourceFolderId?.let { id -> setOf(id) } ?: emptySet()
             it.copy(
                 isPredictionSetupOpen          = true,
                 predictionSetupSource          = source,

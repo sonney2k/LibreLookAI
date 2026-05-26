@@ -235,11 +235,14 @@ fun OutfitsScreen(
                             seedItemIds = emptySet(),
                             images      = wardrobeState.images,
                             prefs       = profileState.preferences,
-                            defaultSourceFolderId = locationViewModel.effectiveDefaultClosetFolderId,
+                            // Default to the closet the user is currently viewing (null = All).
+                            defaultSourceFolderId = locationViewModel.activeFolderId,
                         )
                     },
                     onSuggestExisting = {
-                        outfitsViewModel.openPredictionSetup(defaultSourceFolderId = null)
+                        outfitsViewModel.openPredictionSetup(
+                            defaultSourceFolderId = locationViewModel.activeFolderId,
+                        )
                     },
                     onEditOutfit = { style ->
                         outfitsViewModel.startEditing(style, wardrobeState.images, profileState.preferences)

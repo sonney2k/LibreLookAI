@@ -519,7 +519,8 @@ class MainActivity : ComponentActivity() {
                                                     seedItemIds = itemIds,
                                                     images      = wardrobeViewModel.state.value.images,
                                                     prefs       = profileViewModel.state.value.preferences,
-                                                    defaultSourceFolderId = locationViewModel.effectiveDefaultClosetFolderId,
+                                                    // Default to the currently selected closet (null = All).
+                                                    defaultSourceFolderId = locationViewModel.activeFolderId,
                                                 )
                                                 wardrobeViewModel.clearSelection()
                                             },
@@ -570,7 +571,8 @@ class MainActivity : ComponentActivity() {
                                                     images      = wardrobeViewModel.state.value.images +
                                                         shoppingClosetState.items,
                                                     prefs       = profileViewModel.state.value.preferences,
-                                                    defaultSourceFolderId = locationViewModel.effectiveDefaultClosetFolderId,
+                                                    // Default to the currently selected closet (null = All).
+                                                    defaultSourceFolderId = locationViewModel.activeFolderId,
                                                 )
                                                 shoppingClosetViewModel.clearSelection()
                                             },

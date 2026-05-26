@@ -157,6 +157,14 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
         it.copy(vibes = next)
     }
 
+    /**
+     * Seed the source-closet filter to the currently selected closet ([folderId]); null = all
+     * closets. Called when the planner opens so it defaults to whatever closet the user is viewing.
+     */
+    fun seedSourceFolders(folderId: String?) = _state.update {
+        it.copy(sourceFolderIds = folderId?.let { id -> setOf(id) } ?: emptySet())
+    }
+
     /** Toggle whether [folderId] is included in the source-closet filter. Empty set = all closets. */
     fun toggleSourceFolder(folderId: String) = _state.update {
         val next = it.sourceFolderIds.toMutableSet()
