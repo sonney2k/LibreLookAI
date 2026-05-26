@@ -484,6 +484,11 @@ private fun TravelOutfitsView(
     }
     val imagesById = remember(wardrobeState.images) { wardrobeState.images.associateBy { it.driveId } }
 
+    // Currently selected closet (null = All). Outfits are always loaded from every closet and
+    // carry their `folderId`, so when a specific closet is selected we show only trips whose
+    // every outfit lives in it.
+    val closetFilter = locationViewModel.activeFolderId
+
     // ---- Filter + sort state (mirrors the Outfits screen sub-panel) ----
     var selectedTags by remember { mutableStateOf(emptyMap<String, Set<String>>()) }
     var textQuery by remember { mutableStateOf("") }
@@ -505,10 +510,24 @@ private fun TravelOutfitsView(
         (tripImages + orphanImages).distinct().toList().tagCategories()
     }
 
-    val displayedTrips = remember(tripsState.trips, selectedTags, textQuery, sortBy, outfitsById, imagesById) {
+    // Closet-scoped universe (before tag/text filters). A specific closet keeps only trips whose
+    // every outfit resolves and lives in that closet; "All" (null) keeps everything.
+    val closetTrips = remember(tripsState.trips, outfitsById, closetFilter) {
+        if (closetFilter == null) tripsState.trips
+        else tripsState.trips.filter { trip ->
+            val outfits = trip.outfitIds.mapNotNull { outfitsById[it] }
+            outfits.size == trip.outfitIds.size && outfits.all { it.folderId == closetFilter }
+        }
+    }
+    val closetOrphans = remember(orphanTravelOutfits, closetFilter) {
+        if (closetFilter == null) orphanTravelOutfits
+        else orphanTravelOutfits.filter { it.folderId == closetFilter }
+    }
+
+    val displayedTrips = remember(closetTrips, selectedTags, textQuery, sortBy, outfitsById, imagesById) {
         val activeFilters = selectedTags.filter { it.value.isNotEmpty() }
         val q = textQuery.trim().lowercase()
-        val filtered = tripsState.trips.filter { trip ->
+        val filtered = closetTrips.filter { trip ->
             val outfits = trip.outfitIds.mapNotNull { outfitsById[it] }
             val images = outfits.flatMap { it.itemIds }.mapNotNull { imagesById[it] }
             val tagsOk = activeFilters.isEmpty() || activeFilters.all { (label, tags) ->
@@ -531,10 +550,10 @@ private fun TravelOutfitsView(
         }
     }
 
-    val displayedOrphans = remember(orphanTravelOutfits, selectedTags, textQuery, imagesById) {
+    val displayedOrphans = remember(closetOrphans, selectedTags, textQuery, imagesById) {
         val activeFilters = selectedTags.filter { it.value.isNotEmpty() }
         val q = textQuery.trim().lowercase()
-        orphanTravelOutfits.filter { outfit ->
+        closetOrphans.filter { outfit ->
             val images = outfit.itemIds.mapNotNull { imagesById[it] }
             val tagsOk = activeFilters.isEmpty() || activeFilters.all { (label, tags) ->
                 images.any { img -> tags.any { it in img.tagStringsForCategory(label) } }
@@ -548,7 +567,7 @@ private fun TravelOutfitsView(
         }
     }
 
-    val hasAnyContent = tripsState.trips.isNotEmpty() || orphanTravelOutfits.isNotEmpty()
+    val hasAnyContent = closetTrips.isNotEmpty() || closetOrphans.isNotEmpty()
 
     Column(modifier = modifier.fillMaxSize()) {
         AppScreenHeader(
@@ -573,7 +592,7 @@ private fun TravelOutfitsView(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 QuickCategoryRow(
-                    totalCount = tripsState.trips.size + orphanTravelOutfits.size,
+                    totalCount = closetTrips.size + closetOrphans.size,
                     filteredCount = displayedTrips.size + displayedOrphans.size,
                     appliedFilterCount = appliedFilterCount,
                     filtersEnabled = true,
