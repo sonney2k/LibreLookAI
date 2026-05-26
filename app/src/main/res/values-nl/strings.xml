@@ -39,7 +39,7 @@
     <string name="shop_list_moving">Verplaatsen…</string>
     <string name="shop_list_loading">Laden…</string>
     <string name="shop_list_processing">%1$d item(s) verwerken…</string>
-    <string name="shop_list_move_to_closet">Verplaats naar kast</string>
+    <string name="shop_list_move_to_closet">Verplaats naar kast…</string>
     <string name="shop_list_move_title">Verplaats naar kast</string>
     <string name="shop_list_delete_title">Van verlanglijst verwijderen?</string>
     <string name="shop_list_delete_text">%1$d item(s) definitief van je verlanglijst verwijderen?</string>
@@ -132,7 +132,7 @@
     <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">Garderobetags</string>
     <string name="settings_data_tags_desc">Alle items in je garderobe opnieuw classificeren met Gemini. Hiermee worden handmatige tagbewerkingen overschreven.</string>
-    <string name="settings_rescan_button">Alle tags opnieuw scannen</string>
+    <string name="settings_rescan_button">Alle tags opnieuw scannen…</string>
     <string name="settings_rescanning">Scannen %1$d van %2$d…</string>
     <string name="settings_rescan_dialog_title">Alle tags opnieuw scannen?</string>
     <string name="settings_rescan_dialog_text">Gemini classificeert elk item in je garderobe opnieuw. Handmatige tagbewerkingen worden overschreven en het kan even duren.</string>
@@ -237,7 +237,7 @@
     <string name="settings_locations_title">Kasten</string>
     <string name="settings_locations_desc">Beheer meerdere garderobes voor verschillende locaties. Tik op een kast om die als standaard in te stellen — nieuwe items worden daar geïmporteerd en het samenstellen van outfits begint daar. Het kastfilter bovenaan elk scherm staat hier los van en begint altijd bij \"Alles\". Optioneel een stad instellen voor weerinfo.</string>
     <string name="settings_location_default">Standaard</string>
-    <string name="settings_location_add">Kast toevoegen</string>
+    <string name="settings_location_add">Kast toevoegen…</string>
     <string name="settings_location_name_hint">Naam van kast</string>
     <string name="settings_location_geo_hint">Stad voor weer (optioneel)</string>
     <string name="settings_location_add_title">Kast toevoegen</string>
@@ -272,7 +272,7 @@
     <string name="wardrobe_tag_detect">Tags detecteren</string>
     <string name="wardrobe_tag_remove_bg">Achtergrond verwijderen</string>
     <string name="wardrobe_tag_re_remove_bg">Achtergrond opnieuw verwijderen</string>
-    <string name="wardrobe_fix_cutout_bg">Uitsnede-achtergrond repareren</string>
+    <string name="wardrobe_fix_cutout_bg">Uitsnede-achtergrond repareren…</string>
     <string name="wardrobe_fix_cutout_bg_done">Uitsnede-achtergrond gerepareerd.</string>
     <string name="wardrobe_fix_cutout_bg_clean">Geen restachtergrond gedetecteerd — niets te repareren.</string>
     <string name="wardrobe_tag_rotate">Draaien</string>
@@ -460,7 +460,7 @@
     <string name="composer_select_suggestion">Deze outfit gebruiken</string>
     <string name="outfits_tag_add">Tag toevoegen</string>
     <string name="outfits_tag_add_placeholder">bv. verjaardag, reis</string>
-    <string name="outfits_suggest_tags">Tags voorstellen met AI</string>
+    <string name="outfits_suggest_tags">Tags voorstellen met AI…</string>
     <string name="outfits_suggest_tags_title">Voorgestelde tags</string>
     <string name="outfits_suggest_tags_loading">Tags voorstellen…</string>
     <string name="outfits_suggest_tags_empty">Geen nieuwe tags voorgesteld.</string>
@@ -483,12 +483,12 @@
     <string name="outfits_select_all_count">Alle %d selecteren</string>
     <string name="outfits_delete_selected_title">Outfits verwijderen?</string>
     <string name="outfits_delete_selected_text">%d outfits worden definitief verwijderd.</string>
-    <string name="outfits_combine">Combineren met AI</string>
+    <string name="outfits_combine">Combineren met AI…</string>
     <string name="outfit_slot_lock">Vergrendelen</string>
     <string name="outfit_slot_unlock">Ontgrendelen</string>
     <string name="outfit_slot_remove">Verwijderen</string>
-    <string name="outfit_slot_add">Item toevoegen</string>
-    <string name="outfit_generate_with_ai">Genereren met AI</string>
+    <string name="outfit_slot_add">Item toevoegen…</string>
+    <string name="outfit_generate_with_ai">Genereren met AI…</string>
     <string name="outfit_discard_changes_title">Wijzigingen verwerpen?</string>
     <string name="outfit_discard_changes_body">Niet-opgeslagen wijzigingen gaan verloren.</string>
     <string name="outfit_discard_changes_confirm">Verwerpen</string>
@@ -556,7 +556,7 @@
     <string name="gap_empty_hint">Tik op \"Analyseren\" zodat AI de basisstukken kan aanwijzen die het meeste aantal outfits uit je garderobe vervolledigen.</string>
 
     <!-- Alternatieven voorstellen (garderobe-selectiemodus) -->
-    <string name="wardrobe_suggest_replacements">Alternatieven voorstellen</string>
+    <string name="wardrobe_suggest_replacements">Alternatieven voorstellen…</string>
     <string name="replacements_title">Vervangers voor %d items</string>
     <string name="replacements_analyzing">Vervangers voorstellen…</string>
 
@@ -597,7 +597,7 @@
 
     <!-- Probeer aan me -->
     <string name="tryon_title">Pas op mij</string>
-    <string name="tryon_fab">Pas op mij</string>
+    <string name="tryon_fab">Pas op mij…</string>
     <string name="tryon_section_title">Pasfoto\'s</string>
     <string name="tryon_section_desc">Upload volledige lichaamsfoto\'s van voren, opzij en achter. De app gebruikt deze als referentie bij het genereren van een pasvoorbeeld van een outfit of garderobe-item op jou. Foto\'s blijven op je eigen Drive.</string>
     <string name="tryon_slot_front">Voorkant</string>
@@ -622,11 +622,11 @@
     <string name="action_add">Toevoegen</string>
     <string name="tryon_composer_explain">Alle items hieronder worden samen gedragen in de gegenereerde pasbeurt. Tik op een item om het te verwijderen; tik op \"+\" om meer toe te voegen.</string>
     <string name="tryon_composer_items_title">Items in deze pasbeurt (%1$d)</string>
-    <string name="tryon_add_item">Item toevoegen</string>
+    <string name="tryon_add_item">Item toevoegen…</string>
     <string name="tryon_add_items_title">Garderobe-items toevoegen</string>
     <string name="tryon_generate">Pasbeurt genereren</string>
     <string name="tryon_try_again">Opnieuw proberen</string>
-    <string name="tryon_change_items">Items wijzigen</string>
+    <string name="tryon_change_items">Items wijzigen…</string>
     <string name="tryon_save_to_drive">Opslaan</string>
     <string name="tryon_saved_to_drive">Opgeslagen</string>
     <string name="tryon_saving">Opslaan…</string>
@@ -748,7 +748,7 @@
     <string name="composer_factor_items">%1$d items</string>
     <string name="composer_factor_closets">%1$d kasten</string>
     <string name="composer_factor_composition">Aangepaste compositie</string>
-    <string name="wardrobe_create_style">Outfit maken</string>
+    <string name="wardrobe_create_style">Outfit maken…</string>
     <string name="wardrobe_imported_on">Geïmporteerd op %1$s</string>
     <string name="wardrobe_view_original">Origineel bekijken</string>
     <string name="wardrobe_view_cutout">Uitsnede bekijken</string>
@@ -838,7 +838,7 @@
     <string name="settings_debug_similarity_desc">Bij het openen van een Gelijkenis-zoeker-match de per-kanaal-uitsplitsing tonen (gesegmenteerde miniaturen, embedding/histogram-cosinus, hue-histogrammen) in plaats van de standaard zoombare afbeelding.</string>
 
     <!-- Matchvoorbeeld-dialoog -->
-    <string name="shop_show_in_wardrobe">Tonen in garderobe</string>
+    <string name="shop_show_in_wardrobe">Tonen in garderobe…</string>
     <string name="shop_add_to_shopping_list">Toevoegen aan winkellijst</string>
     <string name="dedupe_dialog_title">Mogelijk duplicaat</string>
     <string name="dedupe_dialog_desc">We vonden %1$d item(s) in je garderobe die erg op deze foto lijken.</string>

@@ -39,7 +39,7 @@
     <string name="shop_list_moving">منتقل ہو رہا ہے…</string>
     <string name="shop_list_loading">لوڈ ہو رہا ہے…</string>
     <string name="shop_list_processing">%1$d اشیاء پر کام ہو رہا ہے…</string>
-    <string name="shop_list_move_to_closet">الماری میں بھیجیں</string>
+    <string name="shop_list_move_to_closet">الماری میں بھیجیں…</string>
     <string name="shop_list_move_title">الماری میں بھیجیں</string>
     <string name="shop_list_delete_title">وش لسٹ سے حذف کریں؟</string>
     <string name="shop_list_delete_text">کیا آپ اپنی وش لسٹ سے %1$d اشیاء مستقل طور پر حذف کرنا چاہتے ہیں؟</string>
@@ -132,7 +132,7 @@
     <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">وارڈروب ٹیگز</string>
     <string name="settings_data_tags_desc">Gemini کے ذریعے دوبارہ درجہ بندی کریں۔</string>
-    <string name="settings_rescan_button">تمام ٹیگز دوبارہ اسکین کریں</string>
+    <string name="settings_rescan_button">تمام ٹیگز دوبارہ اسکین کریں…</string>
     <string name="settings_rescanning">%2$d میں سے %1$d اسکین ہو رہا ہے…</string>
     <string name="settings_rescan_dialog_title">ٹیگز دوبارہ اسکین کریں؟</string>
     <string name="settings_rescan_dialog_text">Gemini آپ کے وارڈروب کی ہر شے کی دوبارہ درجہ بندی کرے گا۔</string>
@@ -267,8 +267,8 @@
     <string name="composer_select_suggestion">یہ لباس استعمال کریں</string>
     <string name="outfits_tag_add">ٹیگ شامل کریں</string>
     <string name="outfits_saved_wear_today">لباس محفوظ ہو گیا! آج پہنیں؟</string>
-    <string name="outfits_combine">AI کے ساتھ ملائیں</string>
-    <string name="outfit_generate_with_ai">AI کے ساتھ بنائیں</string>
+    <string name="outfits_combine">AI کے ساتھ ملائیں…</string>
+    <string name="outfit_generate_with_ai">AI کے ساتھ بنائیں…</string>
     <string name="outfit_save_dialog_title">لباس محفوظ کریں</string>
     <string name="outfit_save_dialog_confirm">محفوظ کریں</string>
 
@@ -319,7 +319,7 @@
 
     <!-- Try on me -->
     <string name="tryon_title">مجھ پر آزمائیں</string>
-    <string name="tryon_fab">مجھ پر آزمائیں</string>
+    <string name="tryon_fab">مجھ پر آزمائیں…</string>
     <string name="tryon_uploading">اپ لوڈ ہو رہا ہے…</string>
     <string name="tryon_generating">آزمائشی تصویر تیار ہو رہی ہے…</string>
     <string name="tryon_error">تصویر کی تیاری ناکام رہی</string>
@@ -554,7 +554,7 @@
     <string name="outfit_save_dialog_name">نام</string>
     <string name="outfit_save_dialog_tag_suggestions">موجودہ ٹیگز</string>
     <string name="outfit_save_dialog_tags">ٹیگز</string>
-    <string name="outfit_slot_add">آئٹم شامل کریں</string>
+    <string name="outfit_slot_add">آئٹم شامل کریں…</string>
     <string name="outfit_slot_lock">لاک</string>
     <string name="outfit_slot_remove">ہٹائیں</string>
     <string name="outfit_slot_unlock">ان لاک</string>
@@ -581,7 +581,7 @@
     <string name="outfits_selected_count">%d منتخب</string>
     <string name="outfits_sort_most_items">سب سے زیادہ آئٹمز</string>
     <string name="outfits_suggest_alternatives">10 متبادل تجویز کریں</string>
-    <string name="outfits_suggest_tags">AI سے ٹیگ تجویز</string>
+    <string name="outfits_suggest_tags">AI سے ٹیگ تجویز…</string>
     <string name="outfits_suggest_tags_apply">منتخب شدہ شامل کریں</string>
     <string name="outfits_suggest_tags_empty">کوئی نئی ٹیگ تجویز نہیں۔</string>
     <string name="outfits_suggest_tags_hint">ٹیگز پر ٹیپ کر کے ٹوگل کریں۔ منتخب ٹیگز اس ملبوسات میں شامل ہوں گے۔</string>
@@ -669,7 +669,7 @@
     <string name="settings_local_bg_desc">فعال ہونے پر، کیمرہ اور گیلری درآمد مقامی Magic Touch سیگمنٹر چلاتے ہیں اور آپ کو محفوظ کرنے سے پہلے پیش منظر کی تصدیق یا اصلاح کی اجازت دیتے ہیں — کوئی Gemini کال نہیں، کوئی کریڈٹ نہیں۔ URL درآمد ہمیشہ یہ جائزہ استعمال کرتا ہے۔</string>
     <string name="settings_local_bg_toggle">آن ڈیوائس پس منظر ہٹانا</string>
     <string name="settings_location_active">فعال</string>
-    <string name="settings_location_add">الماری شامل کریں</string>
+    <string name="settings_location_add">الماری شامل کریں…</string>
     <string name="settings_location_add_title">الماری شامل کریں</string>
     <string name="settings_location_default">ڈیفالٹ</string>
     <string name="settings_location_delete_text">„%1$s” کا وارڈروب ڈیٹا Drive میں رہے گا لیکن یہاں سے قابل رسائی نہیں ہوگا۔</string>
@@ -712,7 +712,7 @@
     <string name="shop_matching">آپ کے وارڈروب سے ملان…</string>
     <string name="shop_model_missing">آن ڈیوائس ماڈل غائب ہے۔ efficientnet_lite0.tflite کو app/src/main/assets/embedder/ میں اور magic_touch.tflite کو app/src/main/assets/segmenter/ میں رکھیں۔</string>
     <string name="shop_no_matches">ابھی کوئی مماثلت نہیں۔ قریب اور بہتر روشنی والی تصویر آزمائیں۔</string>
-    <string name="shop_show_in_wardrobe">وارڈروب میں دکھائیں</string>
+    <string name="shop_show_in_wardrobe">وارڈروب میں دکھائیں…</string>
     <string name="shop_take_another">مزید تصویر لیں</string>
     <string name="shop_take_photo">تصویر لیں</string>
     <string name="shop_your_photo">آپ کی تصویر</string>
@@ -813,10 +813,10 @@
     <string name="travel_refine_rain">بارش کے لیے بہتر</string>
     <string name="travel_refine_reuse">ملبوسات کے دوبارہ استعمال کو زیادہ سے زیادہ کریں</string>
     <string name="travel_regenerate">دوبارہ بنائیں</string>
-    <string name="tryon_add_item">آئٹم شامل کریں</string>
+    <string name="tryon_add_item">آئٹم شامل کریں…</string>
     <string name="tryon_add_items_title">وارڈروب سے آئٹمز شامل کریں</string>
     <string name="tryon_add_photo">%1$s تصویر شامل کریں</string>
-    <string name="tryon_change_items">آئٹمز بدلیں</string>
+    <string name="tryon_change_items">آئٹمز بدلیں…</string>
     <string name="tryon_composer_explain">ذیل میں دکھائے گئے تمام آئٹمز پیدا کیے گئے ٹرائی آن میں ایک ساتھ پہنے جائیں گے۔ ہٹانے کے لیے آئٹم پر ٹیپ کریں؛ مزید شامل کرنے کے لیے „+” ٹیپ کریں۔</string>
     <string name="tryon_composer_items_title">اس ٹرائی آن میں آئٹمز (%1$d)</string>
     <string name="tryon_cost_line">فی ٹرائی آن %1$d کریڈٹس</string>
@@ -849,11 +849,11 @@
     <string name="tryon_view_source_outfit">ملبوسات دیکھیں</string>
     <string name="viewer_hide_tags">ٹیگ چھپائیں</string>
     <string name="viewer_show_tags">ٹیگ دکھائیں</string>
-    <string name="wardrobe_create_style">ملبوسات بنائیں</string>
+    <string name="wardrobe_create_style">ملبوسات بنائیں…</string>
     <string name="wardrobe_find_by_photo">تصویر سے آئٹم تلاش کریں</string>
     <string name="wardrobe_find_by_photo_empty">کوئی ملتا جلتا آئٹم نہیں ملا۔</string>
     <string name="wardrobe_find_by_photo_searching">مماثل تلاش ہو رہی ہے…</string>
-    <string name="wardrobe_fix_cutout_bg">کٹ آؤٹ پس منظر درست کریں</string>
+    <string name="wardrobe_fix_cutout_bg">کٹ آؤٹ پس منظر درست کریں…</string>
     <string name="wardrobe_fix_cutout_bg_clean">بقیہ پس منظر نہیں ملا — کچھ درست کرنے کو نہیں۔</string>
     <string name="wardrobe_fix_cutout_bg_done">کٹ آؤٹ پس منظر درست ہو گیا۔</string>
     <string name="wardrobe_imported_on">درآمد %1$s</string>
@@ -863,7 +863,7 @@
     <string name="wardrobe_search_text_results">تلاش کے نتائج</string>
     <string name="wardrobe_search_title">وارڈروب میں تلاش</string>
     <string name="wardrobe_search_use_photo">تصویر سے تلاش کریں</string>
-    <string name="wardrobe_suggest_replacements">متبادل تجویز کریں</string>
+    <string name="wardrobe_suggest_replacements">متبادل تجویز کریں…</string>
     <string name="wardrobe_view_cutout">کٹ آؤٹ دیکھیں</string>
     <string name="wardrobe_view_original">اصل دیکھیں</string>
 

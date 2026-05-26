@@ -39,7 +39,7 @@
     <string name="shop_list_moving">Taşınıyor…</string>
     <string name="shop_list_loading">Yükleniyor…</string>
     <string name="shop_list_processing">%1$d öğe işleniyor…</string>
-    <string name="shop_list_move_to_closet">Gardıroba taşı</string>
+    <string name="shop_list_move_to_closet">Gardıroba taşı…</string>
     <string name="shop_list_move_title">Gardıroba taşı</string>
     <string name="shop_list_delete_title">İstek listesinden silinsin mi?</string>
     <string name="shop_list_delete_text">%1$d öğe istek listenizden kalıcı olarak kaldırılsın mı?</string>
@@ -132,7 +132,7 @@
     <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">Gardırop Etiketleri</string>
     <string name="settings_data_tags_desc">Gardırobunuzdaki her öğeyi Gemini ile yeniden sınıflandırın. Bu, manuel etiket düzenlemelerinin üzerine yazar.</string>
-    <string name="settings_rescan_button">Tüm Etiketleri Yeniden Tara</string>
+    <string name="settings_rescan_button">Tüm Etiketleri Yeniden Tara…</string>
     <string name="settings_rescanning">Yeniden taranıyor: %1$d / %2$d…</string>
     <string name="settings_rescan_dialog_title">Tüm etiketler yeniden taransın mı?</string>
     <string name="settings_rescan_dialog_text">Gemini, gardırobunuzdaki her öğeyi yeniden sınıflandıracaktır. Bu, manuel etiket düzenlemelerinin üzerine yazacak ve biraz zaman alabilir.</string>
@@ -237,7 +237,7 @@
     <string name="settings_locations_title">Gardıroplar</string>
     <string name="settings_locations_desc">Farklı yerler için birden fazla gardırop yönetin. Bir gardırobu varsayılan yapmak için üzerine dokunun — yeni ögeler oraya aktarılır ve kombin oluşturma oradan başlar. Her ekranın üstündeki gardırop filtresi bağımsızdır ve her zaman \"Tümü\" ile başlar. İsteğe bağlı olarak hava durumu bilgisi için bir şehir ayarlayın.</string>
     <string name="settings_location_default">Varsayılan</string>
-    <string name="settings_location_add">Gardırop ekle</string>
+    <string name="settings_location_add">Gardırop ekle…</string>
     <string name="settings_location_name_hint">Gardırop adı</string>
     <string name="settings_location_geo_hint">Hava durumu için şehir (isteğe bağlı)</string>
     <string name="settings_location_add_title">Gardırop ekle</string>
@@ -272,7 +272,7 @@
     <string name="wardrobe_tag_detect">Etiketleri algıla</string>
     <string name="wardrobe_tag_remove_bg">Arka planı kaldır</string>
     <string name="wardrobe_tag_re_remove_bg">Arka planı yeniden kaldır</string>
-    <string name="wardrobe_fix_cutout_bg">Kesit arka planını düzelt</string>
+    <string name="wardrobe_fix_cutout_bg">Kesit arka planını düzelt…</string>
     <string name="wardrobe_fix_cutout_bg_done">Kesit arka planı düzeltildi.</string>
     <string name="wardrobe_fix_cutout_bg_clean">Kalan arka plan algılanmadı — düzeltilecek bir şey yok.</string>
     <string name="wardrobe_tag_rotate">Döndür</string>
@@ -460,7 +460,7 @@
     <string name="composer_select_suggestion">Bu kombini kullan</string>
     <string name="outfits_tag_add">Etiket ekle</string>
     <string name="outfits_tag_add_placeholder">örn. doğum günü, seyahat</string>
-    <string name="outfits_suggest_tags">Yapay zeka ile etiket öner</string>
+    <string name="outfits_suggest_tags">Yapay zeka ile etiket öner…</string>
     <string name="outfits_suggest_tags_title">Önerilen etiketler</string>
     <string name="outfits_suggest_tags_loading">Etiketler öneriliyor…</string>
     <string name="outfits_suggest_tags_empty">Yeni etiket önerilmedi.</string>
@@ -483,12 +483,12 @@
     <string name="outfits_select_all_count">Tüm %d tanesini seç</string>
     <string name="outfits_delete_selected_title">Kombinler silinsin mi?</string>
     <string name="outfits_delete_selected_text">%d kombin kalıcı olarak kaldırılacaktır.</string>
-    <string name="outfits_combine">Yapay zeka ile birleştir</string>
+    <string name="outfits_combine">Yapay zeka ile birleştir…</string>
     <string name="outfit_slot_lock">Kilitle</string>
     <string name="outfit_slot_unlock">Kilidi aç</string>
     <string name="outfit_slot_remove">Kaldır</string>
-    <string name="outfit_slot_add">Öge ekle</string>
-    <string name="outfit_generate_with_ai">Yapay zeka ile oluştur</string>
+    <string name="outfit_slot_add">Öge ekle…</string>
+    <string name="outfit_generate_with_ai">Yapay zeka ile oluştur…</string>
     <string name="outfit_discard_changes_title">Değişiklikler atılsın mı?</string>
     <string name="outfit_discard_changes_body">Kaydedilmemiş değişiklikleriniz kaybolacaktır.</string>
     <string name="outfit_discard_changes_confirm">At</string>
@@ -556,7 +556,7 @@
     <string name="gap_empty_hint">Yapay zekanın gardırobunuzdaki en fazla kombini tamamlayacak temel parçaları belirlemesi için \"Analiz Et\"e dokunun.</string>
 
     <!-- Suggest replacements (Wardrobe selection mode) -->
-    <string name="wardrobe_suggest_replacements">Alternatif öner</string>
+    <string name="wardrobe_suggest_replacements">Alternatif öner…</string>
     <string name="replacements_title">%d öge için alternatifler</string>
     <string name="replacements_analyzing">Alternatifler öneriliyor…</string>
 
@@ -597,7 +597,7 @@
 
     <!-- Try on me -->
     <string name="tryon_title">Üzerimde dene</string>
-    <string name="tryon_fab">Üzerimde dene</string>
+    <string name="tryon_fab">Üzerimde dene…</string>
     <string name="tryon_section_title">Deneme fotoğrafları</string>
     <string name="tryon_section_desc">Önden, yandan ve arkadan tam vücut fotoğrafları yükleyin. Uygulama, bir kombinin veya gardırop ögesinin üzerinizdeki deneme önizlemesini oluştururken bunları referans olarak kullanır. Fotoğraflar kendi Drive\'ınızda kalır.</string>
     <string name="tryon_slot_front">Ön</string>
@@ -622,11 +622,11 @@
     <string name="action_add">Ekle</string>
     <string name="tryon_composer_explain">Aşağıda gösterilen tüm ögeler, oluşturulan denemede birlikte giyilecektir. Bir ögeyi kaldırmak için üzerine dokunun; daha fazlasını eklemek için \"+\"\'ya dokunun.</string>
     <string name="tryon_composer_items_title">Bu denemedeki ögeler (%1$d)</string>
-    <string name="tryon_add_item">Öge ekle</string>
+    <string name="tryon_add_item">Öge ekle…</string>
     <string name="tryon_add_items_title">Gardırop ögeleri ekle</string>
     <string name="tryon_generate">Deneme oluştur</string>
     <string name="tryon_try_again">Tekrar dene</string>
-    <string name="tryon_change_items">Ögeleri değiştir</string>
+    <string name="tryon_change_items">Ögeleri değiştir…</string>
     <string name="tryon_save_to_drive">Kaydet</string>
     <string name="tryon_saved_to_drive">Kaydedildi</string>
     <string name="tryon_saving">Kaydediliyor…</string>
@@ -748,7 +748,7 @@
     <string name="composer_factor_items">%1$d öge</string>
     <string name="composer_factor_closets">%1$d gardırop</string>
     <string name="composer_factor_composition">Özel kompozisyon</string>
-    <string name="wardrobe_create_style">Kombin oluştur</string>
+    <string name="wardrobe_create_style">Kombin oluştur…</string>
     <string name="wardrobe_imported_on">%1$s tarihinde içe aktarıldı</string>
     <string name="wardrobe_view_original">Orijinali görüntüle</string>
     <string name="wardrobe_view_cutout">Kesiti görüntüle</string>
@@ -838,7 +838,7 @@
     <string name="settings_debug_similarity_desc">Bir Benzerlik Bulucu eşleşmesini açarken, varsayılan yakınlaştırılabilir resim yerine kanal başına dökümü (kesitli küçük resimler, yerleştirme/histogram kosinüsü, ton histogramları) gösterin.</string>
 
     <!-- Match preview dialog -->
-    <string name="shop_show_in_wardrobe">Gardıropta göster</string>
+    <string name="shop_show_in_wardrobe">Gardıropta göster…</string>
     <string name="shop_add_to_shopping_list">Alışveriş listesine ekle</string>
     <string name="dedupe_dialog_title">Olası kopya</string>
     <string name="dedupe_dialog_desc">Gardırobunuzda bu fotoğrafa çok benzeyen %1$d öge bulduk.</string>

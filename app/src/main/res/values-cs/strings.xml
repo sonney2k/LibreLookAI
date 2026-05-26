@@ -39,7 +39,7 @@
     <string name="shop_list_moving">Přesouvání…</string>
     <string name="shop_list_loading">Načítání…</string>
     <string name="shop_list_processing">Zpracování %1$d položek…</string>
-    <string name="shop_list_move_to_closet">Přesunout do šatníku</string>
+    <string name="shop_list_move_to_closet">Přesunout do šatníku…</string>
     <string name="shop_list_move_title">Přesunout do šatníku</string>
     <string name="shop_list_delete_title">Smazat ze seznamu přání?</string>
     <string name="shop_list_delete_text">Trvale odstranit %1$d položek ze seznamu přání?</string>
@@ -132,7 +132,7 @@
     <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">Štítky šatníku</string>
     <string name="settings_data_tags_desc">Znovu klasifikujte každou položku ve svém šatníku pomocí Gemini. Tím se přepíší všechny ruční úpravy štítků.</string>
-    <string name="settings_rescan_button">Znovu naskenovat všechny štítky</string>
+    <string name="settings_rescan_button">Znovu naskenovat všechny štítky…</string>
     <string name="settings_rescanning">Znovunaskenování %1$d z %2$d…</string>
     <string name="settings_rescan_dialog_title">Znovu naskenovat všechny štítky?</string>
     <string name="settings_rescan_dialog_text">Gemini znovu klasifikuje každou položku ve vašem šatníku. Tím se přepíší všechny ruční úpravy štítků a může to chvíli trvat.</string>
@@ -237,7 +237,7 @@
     <string name="settings_locations_title">Šatníky</string>
     <string name="settings_locations_desc">Spravujte více šatníků pro různá místa. Klepnutím na šatník jej nastavíte jako výchozí — nové položky se budou importovat tam a odtud se bude začínat s tvorbou outfitů. Filtr šatníku v horní části každé obrazovky je nezávislý a vždy začíná na \"Vše\". Volitelně nastavte město pro informace o počasí.</string>
     <string name="settings_location_default">Výchozí</string>
-    <string name="settings_location_add">Přidat šatník</string>
+    <string name="settings_location_add">Přidat šatník…</string>
     <string name="settings_location_name_hint">Název šatníku</string>
     <string name="settings_location_geo_hint">Město pro počasí (volitelné)</string>
     <string name="settings_location_add_title">Přidat šatník</string>
@@ -272,7 +272,7 @@
     <string name="wardrobe_tag_detect">Detekovat štítky</string>
     <string name="wardrobe_tag_remove_bg">Odstranit pozadí</string>
     <string name="wardrobe_tag_re_remove_bg">Znovu odstranit pozadí</string>
-    <string name="wardrobe_fix_cutout_bg">Opravit pozadí výřezu</string>
+    <string name="wardrobe_fix_cutout_bg">Opravit pozadí výřezu…</string>
     <string name="wardrobe_fix_cutout_bg_done">Pozadí výřezu opraveno.</string>
     <string name="wardrobe_fix_cutout_bg_clean">Nebylo detekováno žádné zbývající pozadí — není co opravovat.</string>
     <string name="wardrobe_tag_rotate">Otočit</string>
@@ -460,7 +460,7 @@
     <string name="composer_select_suggestion">Použít tento outfit</string>
     <string name="outfits_tag_add">Přidat štítek</string>
     <string name="outfits_tag_add_placeholder">např. narozeniny, cestování</string>
-    <string name="outfits_suggest_tags">Navrhnout štítky pomocí AI</string>
+    <string name="outfits_suggest_tags">Navrhnout štítky pomocí AI…</string>
     <string name="outfits_suggest_tags_title">Navržené štítky</string>
     <string name="outfits_suggest_tags_loading">Navrhování štítků…</string>
     <string name="outfits_suggest_tags_empty">Nebyly navrženy žádné nové štítky.</string>
@@ -483,12 +483,12 @@
     <string name="outfits_select_all_count">Vybrat všech %d</string>
     <string name="outfits_delete_selected_title">Smazat outfity?</string>
     <string name="outfits_delete_selected_text">%d outfitů bude trvale odstraněno.</string>
-    <string name="outfits_combine">Kombinovat pomocí AI</string>
+    <string name="outfits_combine">Kombinovat pomocí AI…</string>
     <string name="outfit_slot_lock">Zamknout</string>
     <string name="outfit_slot_unlock">Odemknout</string>
     <string name="outfit_slot_remove">Odstranit</string>
-    <string name="outfit_slot_add">Přidat položku</string>
-    <string name="outfit_generate_with_ai">Generovat pomocí AI</string>
+    <string name="outfit_slot_add">Přidat položku…</string>
+    <string name="outfit_generate_with_ai">Generovat pomocí AI…</string>
     <string name="outfit_discard_changes_title">Zahodit změny?</string>
     <string name="outfit_discard_changes_body">Vaše neuložené změny budou ztraceny.</string>
     <string name="outfit_discard_changes_confirm">Zahodit</string>
@@ -556,7 +556,7 @@
     <string name="gap_empty_hint">Klepněte na \"Analyzovat\" a nechte AI identifikovat základní kousky, které by doplnily nejvíce outfitů z vašeho šatníku.</string>
 
     <!-- Suggest replacements (Wardrobe selection mode) -->
-    <string name="wardrobe_suggest_replacements">Navrhnout alternativy</string>
+    <string name="wardrobe_suggest_replacements">Navrhnout alternativy…</string>
     <string name="replacements_title">Alternativy pro %d položek</string>
     <string name="replacements_analyzing">Navrhování alternativ…</string>
 
@@ -597,7 +597,7 @@
 
     <!-- Try on me -->
     <string name="tryon_title">Vyzkoušet na mně</string>
-    <string name="tryon_fab">Vyzkoušet na mně</string>
+    <string name="tryon_fab">Vyzkoušet na mně…</string>
     <string name="tryon_section_title">Fotografie pro vyzkoušení</string>
     <string name="tryon_section_desc">Nahrajte fotografie celé postavy zepředu, zboku a zezadu. Aplikace je používá jako referenci při generování náhledu outfitu nebo položky šatníku na vás. Fotografie zůstávají na vašem Drive.</string>
     <string name="tryon_slot_front">Zepředu</string>
@@ -622,11 +622,11 @@
     <string name="action_add">Přidat</string>
     <string name="tryon_composer_explain">Všechny níže zobrazené položky budou v generovaném vyzkoušení nošeny společně. Klepnutím na položku ji odstraníte; klepnutím na \"+\" přidáte další.</string>
     <string name="tryon_composer_items_title">Položky v tomto vyzkoušení (%1$d)</string>
-    <string name="tryon_add_item">Přidat položku</string>
+    <string name="tryon_add_item">Přidat položku…</string>
     <string name="tryon_add_items_title">Přidat položky ze šatníku</string>
     <string name="tryon_generate">Generovat vyzkoušení</string>
     <string name="tryon_try_again">Zkusit znovu</string>
-    <string name="tryon_change_items">Změnit položky</string>
+    <string name="tryon_change_items">Změnit položky…</string>
     <string name="tryon_save_to_drive">Uložit</string>
     <string name="tryon_saved_to_drive">Uloženo</string>
     <string name="tryon_saving">Ukládání…</string>
@@ -748,7 +748,7 @@
     <string name="composer_factor_items">%1$d položek</string>
     <string name="composer_factor_closets">%1$d šatníků</string>
     <string name="composer_factor_composition">Vlastní složení</string>
-    <string name="wardrobe_create_style">Vytvořit outfit</string>
+    <string name="wardrobe_create_style">Vytvořit outfit…</string>
     <string name="wardrobe_imported_on">Importováno %1$s</string>
     <string name="wardrobe_view_original">Zobrazit originál</string>
     <string name="wardrobe_view_cutout">Zobrazit výřez</string>
@@ -838,7 +838,7 @@
     <string name="settings_debug_similarity_desc">Při otevření shody v Hledání podobných se místo výchozího zoomovatelného obrázku zobrazí rozpis podle kanálů (segmentované miniatury, histogramy atd.).</string>
 
     <!-- Match preview dialog -->
-    <string name="shop_show_in_wardrobe">Zobrazit v šatníku</string>
+    <string name="shop_show_in_wardrobe">Zobrazit v šatníku…</string>
     <string name="shop_add_to_shopping_list">Přidat do nákupního seznamu</string>
     <string name="dedupe_dialog_title">Možný duplikát</string>
     <string name="dedupe_dialog_desc">V šatníku jsme našli %1$d položek, které vypadají velmi podobně jako tato fotografie.</string>

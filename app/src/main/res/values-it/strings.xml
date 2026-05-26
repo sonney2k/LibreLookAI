@@ -39,7 +39,7 @@
     <string name="shop_list_moving">Spostamento…</string>
     <string name="shop_list_loading">Caricamento…</string>
     <string name="shop_list_processing">Elaborazione di %1$d capo/i…</string>
-    <string name="shop_list_move_to_closet">Sposta nel guardaroba</string>
+    <string name="shop_list_move_to_closet">Sposta nel guardaroba…</string>
     <string name="shop_list_move_title">Sposta nel guardaroba</string>
     <string name="shop_list_delete_title">Eliminare dalla wishlist?</string>
     <string name="shop_list_delete_text">Rimuovere definitivamente %1$d capo/i dalla wishlist?</string>
@@ -132,7 +132,7 @@
     <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">Etichette guardaroba</string>
     <string name="settings_data_tags_desc">Riclassifica ogni capo del tuo guardaroba con Gemini. Sovrascrive ogni modifica manuale alle etichette.</string>
-    <string name="settings_rescan_button">Ri-scansiona tutte le etichette</string>
+    <string name="settings_rescan_button">Ri-scansiona tutte le etichette…</string>
     <string name="settings_rescanning">Ri-scansione %1$d di %2$d…</string>
     <string name="settings_rescan_dialog_title">Ri-scansionare tutte le etichette?</string>
     <string name="settings_rescan_dialog_text">Gemini riclassificherà ogni capo del tuo guardaroba. Questo sovrascriverà le modifiche manuali alle etichette e potrebbe richiedere tempo.</string>
@@ -237,7 +237,7 @@
     <string name="settings_locations_title">Guardaroba</string>
     <string name="settings_locations_desc">Gestisci più guardaroba per posti diversi. Tocca un guardaroba per renderlo predefinito — i nuovi capi vengono importati lì e la creazione di outfit parte da lì. Il filtro guardaroba in cima a ogni schermata è indipendente e parte sempre da \"Tutti\". Imposta facoltativamente una città per il meteo.</string>
     <string name="settings_location_default">Predefinito</string>
-    <string name="settings_location_add">Aggiungi guardaroba</string>
+    <string name="settings_location_add">Aggiungi guardaroba…</string>
     <string name="settings_location_name_hint">Nome guardaroba</string>
     <string name="settings_location_geo_hint">Città per meteo (opzionale)</string>
     <string name="settings_location_add_title">Aggiungi guardaroba</string>
@@ -272,7 +272,7 @@
     <string name="wardrobe_tag_detect">Rileva etichette</string>
     <string name="wardrobe_tag_remove_bg">Rimuovi sfondo</string>
     <string name="wardrobe_tag_re_remove_bg">Rimuovi di nuovo sfondo</string>
-    <string name="wardrobe_fix_cutout_bg">Correggi sfondo ritaglio</string>
+    <string name="wardrobe_fix_cutout_bg">Correggi sfondo ritaglio…</string>
     <string name="wardrobe_fix_cutout_bg_done">Sfondo del ritaglio corretto.</string>
     <string name="wardrobe_fix_cutout_bg_clean">Nessuno sfondo residuo rilevato — niente da correggere.</string>
     <string name="wardrobe_tag_rotate">Ruota</string>
@@ -460,7 +460,7 @@
     <string name="composer_select_suggestion">Usa questo outfit</string>
     <string name="outfits_tag_add">Aggiungi etichetta</string>
     <string name="outfits_tag_add_placeholder">es. compleanno, viaggio</string>
-    <string name="outfits_suggest_tags">Suggerisci etichette con IA</string>
+    <string name="outfits_suggest_tags">Suggerisci etichette con IA…</string>
     <string name="outfits_suggest_tags_title">Etichette suggerite</string>
     <string name="outfits_suggest_tags_loading">Suggerimento etichette…</string>
     <string name="outfits_suggest_tags_empty">Nessuna nuova etichetta suggerita.</string>
@@ -483,12 +483,12 @@
     <string name="outfits_select_all_count">Seleziona tutti %d</string>
     <string name="outfits_delete_selected_title">Eliminare gli outfit?</string>
     <string name="outfits_delete_selected_text">%d outfit verranno rimossi definitivamente.</string>
-    <string name="outfits_combine">Combina con IA</string>
+    <string name="outfits_combine">Combina con IA…</string>
     <string name="outfit_slot_lock">Blocca</string>
     <string name="outfit_slot_unlock">Sblocca</string>
     <string name="outfit_slot_remove">Rimuovi</string>
-    <string name="outfit_slot_add">Aggiungi capo</string>
-    <string name="outfit_generate_with_ai">Genera con IA</string>
+    <string name="outfit_slot_add">Aggiungi capo…</string>
+    <string name="outfit_generate_with_ai">Genera con IA…</string>
     <string name="outfit_discard_changes_title">Annullare le modifiche?</string>
     <string name="outfit_discard_changes_body">Le tue modifiche non salvate andranno perse.</string>
     <string name="outfit_discard_changes_confirm">Annulla</string>
@@ -556,7 +556,7 @@
     <string name="gap_empty_hint">Tocca \"Analizza\" per lasciare che l\'IA identifichi i pezzi fondamentali che completerebbero il maggior numero di outfit dal tuo guardaroba.</string>
 
     <!-- Suggerisci sostituzioni (modalità selezione Guardaroba) -->
-    <string name="wardrobe_suggest_replacements">Suggerisci alternative</string>
+    <string name="wardrobe_suggest_replacements">Suggerisci alternative…</string>
     <string name="replacements_title">Sostituzioni per %d capi</string>
     <string name="replacements_analyzing">Suggerimento sostituzioni…</string>
 
@@ -597,7 +597,7 @@
 
     <!-- Prova su di me -->
     <string name="tryon_title">Prova su di me</string>
-    <string name="tryon_fab">Prova su di me</string>
+    <string name="tryon_fab">Prova su di me…</string>
     <string name="tryon_section_title">Foto per prove</string>
     <string name="tryon_section_desc">Carica foto a figura intera da davanti, di lato e da dietro. L\'app le usa come riferimento per generare un\'anteprima di un outfit o di un capo del guardaroba indossato. Le foto rimangono nel tuo Drive.</string>
     <string name="tryon_slot_front">Davanti</string>
@@ -622,11 +622,11 @@
     <string name="action_add">Aggiungi</string>
     <string name="tryon_composer_explain">Tutti i capi mostrati sotto verranno indossati insieme nella prova generata. Tocca un capo per rimuoverlo; tocca \"+\" per aggiungerne altri.</string>
     <string name="tryon_composer_items_title">Capi in questa prova (%1$d)</string>
-    <string name="tryon_add_item">Aggiungi capo</string>
+    <string name="tryon_add_item">Aggiungi capo…</string>
     <string name="tryon_add_items_title">Aggiungi capi dal guardaroba</string>
     <string name="tryon_generate">Genera prova</string>
     <string name="tryon_try_again">Riprova</string>
-    <string name="tryon_change_items">Cambia capi</string>
+    <string name="tryon_change_items">Cambia capi…</string>
     <string name="tryon_save_to_drive">Salva</string>
     <string name="tryon_saved_to_drive">Salvato</string>
     <string name="tryon_saving">Salvataggio…</string>
@@ -748,7 +748,7 @@
     <string name="composer_factor_items">%1$d capi</string>
     <string name="composer_factor_closets">%1$d guardaroba</string>
     <string name="composer_factor_composition">Composizione personalizzata</string>
-    <string name="wardrobe_create_style">Crea outfit</string>
+    <string name="wardrobe_create_style">Crea outfit…</string>
     <string name="wardrobe_imported_on">Importato %1$s</string>
     <string name="wardrobe_view_original">Vedi originale</string>
     <string name="wardrobe_view_cutout">Vedi ritaglio</string>
@@ -838,7 +838,7 @@
     <string name="settings_debug_similarity_desc">Quando apri un risultato della ricerca per similarità, mostra la suddivisione per canale (miniature segmentate, coseno embedding/istogramma, istogrammi tonalità) invece dell\'immagine zoomabile predefinita.</string>
 
     <!-- Dialogo anteprima corrispondenza -->
-    <string name="shop_show_in_wardrobe">Mostra nel guardaroba</string>
+    <string name="shop_show_in_wardrobe">Mostra nel guardaroba…</string>
     <string name="shop_add_to_shopping_list">Aggiungi alla lista shopping</string>
     <string name="dedupe_dialog_title">Possibile duplicato</string>
     <string name="dedupe_dialog_desc">Abbiamo trovato %1$d capo/i nel tuo guardaroba che sembrano molto simili a questa foto.</string>

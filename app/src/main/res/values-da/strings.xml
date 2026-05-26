@@ -39,7 +39,7 @@
     <string name="shop_list_moving">Flytter…</string>
     <string name="shop_list_loading">Indlæser…</string>
     <string name="shop_list_processing">Behandler %1$d stykke(r)…</string>
-    <string name="shop_list_move_to_closet">Flyt til garderobe</string>
+    <string name="shop_list_move_to_closet">Flyt til garderobe…</string>
     <string name="shop_list_move_title">Flyt til garderobe</string>
     <string name="shop_list_delete_title">Fjern fra ønskeseddel?</string>
     <string name="shop_list_delete_text">Fjern %1$d stykke(r) permanent fra din ønskeseddel?</string>
@@ -132,7 +132,7 @@
     <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">Garderobetags</string>
     <string name="settings_data_tags_desc">Klassificér hvert stykke i din garderobe på ny med Gemini. Dette overskriver alle manuelle tag-ændringer.</string>
-    <string name="settings_rescan_button">Skan alle tags på ny</string>
+    <string name="settings_rescan_button">Skan alle tags på ny…</string>
     <string name="settings_rescanning">Skanner %1$d af %2$d…</string>
     <string name="settings_rescan_dialog_title">Skan alle tags på ny?</string>
     <string name="settings_rescan_dialog_text">Gemini klassificerer alle stykker i din garderobe på ny. Dette overskriver manuelle tag-ændringer og kan tage lidt tid.</string>
@@ -237,7 +237,7 @@
     <string name="settings_locations_title">Garderober</string>
     <string name="settings_locations_desc">Administrér flere garderober til forskellige steder. Tryk på en garderobe for at gøre den til standard — nye stykker importeres derhen, og oprettelse af outfits starter derfra. Garderobefiltret øverst på hver skærm er uafhængigt og starter altid på \"Alle\". Indstil eventuelt en by for vejrinfo.</string>
     <string name="settings_location_default">Standard</string>
-    <string name="settings_location_add">Tilføj garderobe</string>
+    <string name="settings_location_add">Tilføj garderobe…</string>
     <string name="settings_location_name_hint">Navn på garderobe</string>
     <string name="settings_location_geo_hint">By til vejr (valgfri)</string>
     <string name="settings_location_add_title">Tilføj garderobe</string>
@@ -272,7 +272,7 @@
     <string name="wardrobe_tag_detect">Detektér tags</string>
     <string name="wardrobe_tag_remove_bg">Fjern bg</string>
     <string name="wardrobe_tag_re_remove_bg">Fjern bg igen</string>
-    <string name="wardrobe_fix_cutout_bg">Reparér udklipsbg</string>
+    <string name="wardrobe_fix_cutout_bg">Reparér udklipsbg…</string>
     <string name="wardrobe_fix_cutout_bg_done">Udklipsbaggrund repareret.</string>
     <string name="wardrobe_fix_cutout_bg_clean">Ingen tilbageværende baggrund opdaget — intet at reparere.</string>
     <string name="wardrobe_tag_rotate">Rotér</string>
@@ -460,7 +460,7 @@
     <string name="composer_select_suggestion">Brug dette outfit</string>
     <string name="outfits_tag_add">Tilføj tag</string>
     <string name="outfits_tag_add_placeholder">f.eks. fødselsdag, rejse</string>
-    <string name="outfits_suggest_tags">Foreslå tags med AI</string>
+    <string name="outfits_suggest_tags">Foreslå tags med AI…</string>
     <string name="outfits_suggest_tags_title">Foreslåede tags</string>
     <string name="outfits_suggest_tags_loading">Foreslår tags…</string>
     <string name="outfits_suggest_tags_empty">Ingen nye tags foreslået.</string>
@@ -483,12 +483,12 @@
     <string name="outfits_select_all_count">Markér alle %d</string>
     <string name="outfits_delete_selected_title">Slet outfits?</string>
     <string name="outfits_delete_selected_text">%d outfits fjernes permanent.</string>
-    <string name="outfits_combine">Kombinér med AI</string>
+    <string name="outfits_combine">Kombinér med AI…</string>
     <string name="outfit_slot_lock">Lås</string>
     <string name="outfit_slot_unlock">Lås op</string>
     <string name="outfit_slot_remove">Fjern</string>
-    <string name="outfit_slot_add">Tilføj stykke</string>
-    <string name="outfit_generate_with_ai">Generér med AI</string>
+    <string name="outfit_slot_add">Tilføj stykke…</string>
+    <string name="outfit_generate_with_ai">Generér med AI…</string>
     <string name="outfit_discard_changes_title">Kassér ændringer?</string>
     <string name="outfit_discard_changes_body">Dine ugemte ændringer går tabt.</string>
     <string name="outfit_discard_changes_confirm">Kassér</string>
@@ -556,7 +556,7 @@
     <string name="gap_empty_hint">Tryk på \"Analysér\" for at lade AI identificere de grundlæggende stykker, der ville fuldende flest outfits fra din garderobe.</string>
 
     <!-- Foreslå erstatninger (Garderobe-udvælgelsestilstand) -->
-    <string name="wardrobe_suggest_replacements">Foreslå alternativer</string>
+    <string name="wardrobe_suggest_replacements">Foreslå alternativer…</string>
     <string name="replacements_title">Erstatninger for %d stykker</string>
     <string name="replacements_analyzing">Foreslår erstatninger…</string>
 
@@ -597,7 +597,7 @@
 
     <!-- Prøv på mig -->
     <string name="tryon_title">Prøv på mig</string>
-    <string name="tryon_fab">Prøv på mig</string>
+    <string name="tryon_fab">Prøv på mig…</string>
     <string name="tryon_section_title">Prøvningsfotos</string>
     <string name="tryon_section_desc">Upload helkropsfotos forfra, fra siden og bagfra. Appen bruger dem som reference, når den genererer en prøvningsforhåndsvisning af et outfit eller garderobestykke på dig. Fotos forbliver på din egen Drive.</string>
     <string name="tryon_slot_front">Forfra</string>
@@ -622,11 +622,11 @@
     <string name="action_add">Tilføj</string>
     <string name="tryon_composer_explain">Alle stykker vist nedenfor bæres sammen i den genererede prøvning. Tryk på et stykke for at fjerne det; tryk på \"+\" for at tilføje flere.</string>
     <string name="tryon_composer_items_title">Stykker i denne prøvning (%1$d)</string>
-    <string name="tryon_add_item">Tilføj stykke</string>
+    <string name="tryon_add_item">Tilføj stykke…</string>
     <string name="tryon_add_items_title">Tilføj garderobestykker</string>
     <string name="tryon_generate">Generér prøvning</string>
     <string name="tryon_try_again">Prøv igen</string>
-    <string name="tryon_change_items">Skift stykker</string>
+    <string name="tryon_change_items">Skift stykker…</string>
     <string name="tryon_save_to_drive">Gem</string>
     <string name="tryon_saved_to_drive">Gemt</string>
     <string name="tryon_saving">Gemmer…</string>
@@ -748,7 +748,7 @@
     <string name="composer_factor_items">%1$d stykker</string>
     <string name="composer_factor_closets">%1$d garderober</string>
     <string name="composer_factor_composition">Brugerdefineret komposition</string>
-    <string name="wardrobe_create_style">Opret outfit</string>
+    <string name="wardrobe_create_style">Opret outfit…</string>
     <string name="wardrobe_imported_on">Importeret %1$s</string>
     <string name="wardrobe_view_original">Vis original</string>
     <string name="wardrobe_view_cutout">Vis udklip</string>
@@ -838,7 +838,7 @@
     <string name="settings_debug_similarity_desc">Når et Lighedssøgnings-match åbnes, vis per-kanal opdeling (segmenterede miniaturer, embedding/histogram cosinus, farvetone-histogrammer) i stedet for det standard zoombare billede.</string>
 
     <!-- Match-forhåndsvisningsdialog -->
-    <string name="shop_show_in_wardrobe">Vis i garderobe</string>
+    <string name="shop_show_in_wardrobe">Vis i garderobe…</string>
     <string name="shop_add_to_shopping_list">Tilføj til indkøbsliste</string>
     <string name="dedupe_dialog_title">Mulig dublet</string>
     <string name="dedupe_dialog_desc">Vi fandt %1$d stykke(r) i din garderobe, der ligner dette foto meget.</string>

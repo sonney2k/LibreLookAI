@@ -39,7 +39,7 @@
     <string name="shop_list_moving">स्थानांतरित हो रहा है…</string>
     <string name="shop_list_loading">लोड हो रहा है…</string>
     <string name="shop_list_processing">%1$d आइटम प्रोसेस किए जा रहे हैं…</string>
-    <string name="shop_list_move_to_closet">क्लोसेट में भेजें</string>
+    <string name="shop_list_move_to_closet">क्लोसेट में भेजें…</string>
     <string name="shop_list_move_title">क्लोसेट में भेजें</string>
     <string name="shop_list_delete_title">विशलिस्ट से हटाएं?</string>
     <string name="shop_list_delete_text">क्या आप अपनी विशलिस्ट से %1$d आइटम स्थायी रूप से हटाना चाहते हैं?</string>
@@ -132,7 +132,7 @@
     <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">वॉर्डरोब टैग</string>
     <string name="settings_data_tags_desc">Gemini के साथ अपने वॉर्डरोब के हर आइटम को फिर से वर्गीकृत करें। यह किसी भी मैन्युअल टैग संपादन को अधिलेखित कर देगा।</string>
-    <string name="settings_rescan_button">सभी टैग फिर से स्कैन करें</string>
+    <string name="settings_rescan_button">सभी टैग फिर से स्कैन करें…</string>
     <string name="settings_rescanning">%2$d में से %1$d स्कैन किया जा रहा है…</string>
     <string name="settings_rescan_dialog_title">सभी टैग फिर से स्कैन करें?</string>
     <string name="settings_rescan_dialog_text">Gemini आपके वॉर्डरोब के हर आइटम को फिर से वर्गीकृत करेगा। इसमें समय लग सकता है।</string>
@@ -267,8 +267,8 @@
     <string name="composer_select_suggestion">यह आउटफ़िट उपयोग करें</string>
     <string name="outfits_tag_add">टैग जोड़ें</string>
     <string name="outfits_saved_wear_today">आउटफ़िट सहेजा गया! आज पहनें?</string>
-    <string name="outfits_combine">AI के साथ मिलाएं</string>
-    <string name="outfit_generate_with_ai">AI के साथ जनरेट करें</string>
+    <string name="outfits_combine">AI के साथ मिलाएं…</string>
+    <string name="outfit_generate_with_ai">AI के साथ जनरेट करें…</string>
     <string name="outfit_save_dialog_title">आउटफ़िट सहेजें</string>
     <string name="outfit_save_dialog_confirm">सहेजें</string>
 
@@ -319,7 +319,7 @@
 
     <!-- Try on me -->
     <string name="tryon_title">मुझ पर आज़माएं</string>
-    <string name="tryon_fab">मुझ पर आज़माएं</string>
+    <string name="tryon_fab">मुझ पर आज़माएं…</string>
     <string name="tryon_uploading">अपलोड हो रहा है…</string>
     <string name="tryon_generating">आपका ट्राय-ऑन जनरेट किया जा रहा है…</string>
     <string name="tryon_error">ट्राय-ऑन जनरेशन विफल रहा</string>
@@ -554,7 +554,7 @@
     <string name="outfit_save_dialog_name">नाम</string>
     <string name="outfit_save_dialog_tag_suggestions">मौजूदा टैग्स</string>
     <string name="outfit_save_dialog_tags">टैग्स</string>
-    <string name="outfit_slot_add">आइटम जोड़ें</string>
+    <string name="outfit_slot_add">आइटम जोड़ें…</string>
     <string name="outfit_slot_lock">लॉक</string>
     <string name="outfit_slot_remove">हटाएं</string>
     <string name="outfit_slot_unlock">अनलॉक</string>
@@ -581,7 +581,7 @@
     <string name="outfits_selected_count">%d चयनित</string>
     <string name="outfits_sort_most_items">सबसे अधिक आइटम</string>
     <string name="outfits_suggest_alternatives">10 विकल्प सुझाएं</string>
-    <string name="outfits_suggest_tags">AI से टैग सुझाएं</string>
+    <string name="outfits_suggest_tags">AI से टैग सुझाएं…</string>
     <string name="outfits_suggest_tags_apply">चयनित जोड़ें</string>
     <string name="outfits_suggest_tags_empty">कोई नया टैग सुझाव नहीं।</string>
     <string name="outfits_suggest_tags_hint">टॉगल के लिए टैग्स पर टैप करें। चयनित टैग्स इस आउटफ़िट में जोड़े जाते हैं।</string>
@@ -669,7 +669,7 @@
     <string name="settings_local_bg_desc">सक्षम होने पर, कैमरा और गैलरी आयात लोकल Magic Touch सेगमेंटर चलाते हैं और सहेजने से पहले फ़ोरग्राउंड की पुष्टि या परिष्करण की अनुमति देते हैं — कोई Gemini कॉल नहीं, कोई क्रेडिट नहीं। URL आयात हमेशा इस समीक्षा का उपयोग करते हैं।</string>
     <string name="settings_local_bg_toggle">ऑन-डिवाइस बैकग्राउंड हटाना उपयोग करें</string>
     <string name="settings_location_active">सक्रिय</string>
-    <string name="settings_location_add">क्लोज़ेट जोड़ें</string>
+    <string name="settings_location_add">क्लोज़ेट जोड़ें…</string>
     <string name="settings_location_add_title">क्लोज़ेट जोड़ें</string>
     <string name="settings_location_default">डिफ़ॉल्ट</string>
     <string name="settings_location_delete_text">„%1$s” का वॉर्डरोब डेटा Drive में रहेगा लेकिन यहाँ से उपलब्ध नहीं होगा।</string>
@@ -712,7 +712,7 @@
     <string name="shop_matching">आपके वॉर्डरोब से मिलान…</string>
     <string name="shop_model_missing">ऑन-डिवाइस मॉडल गायब है। efficientnet_lite0.tflite को app/src/main/assets/embedder/ में और magic_touch.tflite को app/src/main/assets/segmenter/ में रखें।</string>
     <string name="shop_no_matches">अभी कोई मिलान नहीं। पास से और बेहतर रोशनी वाली फ़ोटो आज़माएँ।</string>
-    <string name="shop_show_in_wardrobe">वॉर्डरोब में दिखाएं</string>
+    <string name="shop_show_in_wardrobe">वॉर्डरोब में दिखाएं…</string>
     <string name="shop_take_another">और फ़ोटो लें</string>
     <string name="shop_take_photo">फ़ोटो लें</string>
     <string name="shop_your_photo">आपकी फ़ोटो</string>
@@ -813,10 +813,10 @@
     <string name="travel_refine_rain">बारिश के लिए बेहतर</string>
     <string name="travel_refine_reuse">आउटफ़िट पुन: उपयोग अधिकतम करें</string>
     <string name="travel_regenerate">पुनः बनाएं</string>
-    <string name="tryon_add_item">आइटम जोड़ें</string>
+    <string name="tryon_add_item">आइटम जोड़ें…</string>
     <string name="tryon_add_items_title">वॉर्डरोब से आइटम जोड़ें</string>
     <string name="tryon_add_photo">%1$s फ़ोटो जोड़ें</string>
-    <string name="tryon_change_items">आइटम बदलें</string>
+    <string name="tryon_change_items">आइटम बदलें…</string>
     <string name="tryon_composer_explain">नीचे दिखाए सभी आइटम जेनरेट किए ट्राय-ऑन में एक साथ पहने जाएंगे। हटाने के लिए आइटम पर टैप करें; अधिक जोड़ने के लिए „+” टैप करें।</string>
     <string name="tryon_composer_items_title">इस ट्राय-ऑन के आइटम (%1$d)</string>
     <string name="tryon_cost_line">प्रति ट्राय-ऑन %1$d क्रेडिट</string>
@@ -849,11 +849,11 @@
     <string name="tryon_view_source_outfit">आउटफ़िट देखें</string>
     <string name="viewer_hide_tags">टैग्स छिपाएं</string>
     <string name="viewer_show_tags">टैग्स दिखाएं</string>
-    <string name="wardrobe_create_style">आउटफ़िट बनाएं</string>
+    <string name="wardrobe_create_style">आउटफ़िट बनाएं…</string>
     <string name="wardrobe_find_by_photo">फ़ोटो से आइटम खोजें</string>
     <string name="wardrobe_find_by_photo_empty">कोई समान आइटम नहीं मिला।</string>
     <string name="wardrobe_find_by_photo_searching">मिलान खोजे जा रहे हैं…</string>
-    <string name="wardrobe_fix_cutout_bg">कटआउट बैकग्राउंड ठीक करें</string>
+    <string name="wardrobe_fix_cutout_bg">कटआउट बैकग्राउंड ठीक करें…</string>
     <string name="wardrobe_fix_cutout_bg_clean">कोई बचा बैकग्राउंड नहीं — कुछ ठीक करने को नहीं।</string>
     <string name="wardrobe_fix_cutout_bg_done">कटआउट बैकग्राउंड ठीक किया गया।</string>
     <string name="wardrobe_imported_on">आयात %1$s</string>
@@ -863,7 +863,7 @@
     <string name="wardrobe_search_text_results">खोज परिणाम</string>
     <string name="wardrobe_search_title">वॉर्डरोब में खोजें</string>
     <string name="wardrobe_search_use_photo">फ़ोटो से खोजें</string>
-    <string name="wardrobe_suggest_replacements">विकल्प सुझाएं</string>
+    <string name="wardrobe_suggest_replacements">विकल्प सुझाएं…</string>
     <string name="wardrobe_view_cutout">कटआउट देखें</string>
     <string name="wardrobe_view_original">मूल देखें</string>
 

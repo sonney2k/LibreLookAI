@@ -39,7 +39,7 @@
     <string name="shop_list_moving">Memindahkan…</string>
     <string name="shop_list_loading">Memuat…</string>
     <string name="shop_list_processing">Memproses %1$d item…</string>
-    <string name="shop_list_move_to_closet">Pindah ke lemari</string>
+    <string name="shop_list_move_to_closet">Pindah ke lemari…</string>
     <string name="shop_list_move_title">Pindah ke lemari</string>
     <string name="shop_list_delete_title">Hapus dari daftar keinginan?</string>
     <string name="shop_list_delete_text">Hapus %1$d item secara permanen dari daftar keinginan?</string>
@@ -132,7 +132,7 @@
     <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">Tag Lemari</string>
     <string name="settings_data_tags_desc">Klasifikasi ulang setiap item di lemari dengan Gemini. Ini menimpa edit manual.</string>
-    <string name="settings_rescan_button">Pindai Ulang Semua Tag</string>
+    <string name="settings_rescan_button">Pindai Ulang Semua Tag…</string>
     <string name="settings_rescanning">Memindai ulang %1$d dari %2$d…</string>
     <string name="settings_rescan_dialog_title">Pindai ulang semua tag?</string>
     <string name="settings_rescan_dialog_text">Gemini akan mengklasifikasi ulang setiap item. Ini akan menimpa edit manual.</string>
@@ -267,8 +267,8 @@
     <string name="composer_select_suggestion">Gunakan setelan ini</string>
     <string name="outfits_tag_add">Tambah tag</string>
     <string name="outfits_saved_wear_today">Setelan disimpan! Pakai hari ini?</string>
-    <string name="outfits_combine">Gabungkan dengan AI</string>
-    <string name="outfit_generate_with_ai">Hasilkan dengan AI</string>
+    <string name="outfits_combine">Gabungkan dengan AI…</string>
+    <string name="outfit_generate_with_ai">Hasilkan dengan AI…</string>
     <string name="outfit_save_dialog_title">Simpan setelan</string>
     <string name="outfit_save_dialog_confirm">Simpan</string>
 
@@ -319,7 +319,7 @@
 
     <!-- Try on me -->
     <string name="tryon_title">Coba di saya</string>
-    <string name="tryon_fab">Coba di saya</string>
+    <string name="tryon_fab">Coba di saya…</string>
     <string name="tryon_uploading">Mengunggah…</string>
     <string name="tryon_generating">Menghasilkan percobaan Anda…</string>
     <string name="tryon_error">Gagal menghasilkan percobaan</string>
@@ -554,7 +554,7 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="outfit_save_dialog_name">Nama</string>
     <string name="outfit_save_dialog_tag_suggestions">Tag yang ada</string>
     <string name="outfit_save_dialog_tags">Tag</string>
-    <string name="outfit_slot_add">Tambah item</string>
+    <string name="outfit_slot_add">Tambah item…</string>
     <string name="outfit_slot_lock">Kunci</string>
     <string name="outfit_slot_remove">Hapus</string>
     <string name="outfit_slot_unlock">Buka kunci</string>
@@ -581,7 +581,7 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="outfits_selected_count">%d dipilih</string>
     <string name="outfits_sort_most_items">Paling banyak item</string>
     <string name="outfits_suggest_alternatives">Sarankan 10 alternatif</string>
-    <string name="outfits_suggest_tags">Sarankan tag dengan AI</string>
+    <string name="outfits_suggest_tags">Sarankan tag dengan AI…</string>
     <string name="outfits_suggest_tags_apply">Tambah yang dipilih</string>
     <string name="outfits_suggest_tags_empty">Tidak ada tag baru yang disarankan.</string>
     <string name="outfits_suggest_tags_hint">Ketuk tag untuk memilih. Tag terpilih akan ditambahkan ke setelan ini.</string>
@@ -669,7 +669,7 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="settings_local_bg_desc">Jika diaktifkan, impor kamera dan galeri menjalankan segmenter Magic Touch lokal dan kamu bisa konfirmasi atau perbaiki foreground sebelum disimpan — tanpa panggilan Gemini, tanpa kredit. Impor URL selalu memakai tinjauan ini.</string>
     <string name="settings_local_bg_toggle">Pakai penghapusan latar di perangkat</string>
     <string name="settings_location_active">Aktif</string>
-    <string name="settings_location_add">Tambah lemari</string>
+    <string name="settings_location_add">Tambah lemari…</string>
     <string name="settings_location_add_title">Tambah lemari</string>
     <string name="settings_location_default">Default</string>
     <string name="settings_location_delete_text">Data lemari untuk „%1$s” tetap ada di Drive tapi tidak bisa diakses dari sini.</string>
@@ -712,7 +712,7 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="shop_matching">Mencocokkan dengan lemarimu…</string>
     <string name="shop_model_missing">Model di perangkat tidak ada. Letakkan efficientnet_lite0.tflite di app/src/main/assets/embedder/ dan magic_touch.tflite di app/src/main/assets/segmenter/.</string>
     <string name="shop_no_matches">Belum ada yang cocok. Coba foto lebih dekat dan pencahayaan lebih baik.</string>
-    <string name="shop_show_in_wardrobe">Tampilkan di lemari</string>
+    <string name="shop_show_in_wardrobe">Tampilkan di lemari…</string>
     <string name="shop_take_another">Ambil foto lain</string>
     <string name="shop_take_photo">Ambil foto</string>
     <string name="shop_your_photo">Fotomu</string>
@@ -813,10 +813,10 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="travel_refine_rain">Lebih cocok untuk hujan</string>
     <string name="travel_refine_reuse">Maksimalkan penggunaan ulang setelan</string>
     <string name="travel_regenerate">Buat ulang</string>
-    <string name="tryon_add_item">Tambah item</string>
+    <string name="tryon_add_item">Tambah item…</string>
     <string name="tryon_add_items_title">Tambah item dari lemari</string>
     <string name="tryon_add_photo">Tambah foto %1$s</string>
-    <string name="tryon_change_items">Ganti item</string>
+    <string name="tryon_change_items">Ganti item…</string>
     <string name="tryon_composer_explain">Semua item di bawah akan dipakai bersama di coba-pakai yang dihasilkan. Ketuk item untuk menghapus; ketuk „+” untuk menambah.</string>
     <string name="tryon_composer_items_title">Item di coba-pakai ini (%1$d)</string>
     <string name="tryon_cost_line">Biaya %1$d kredit per coba-pakai</string>
@@ -849,11 +849,11 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="tryon_view_source_outfit">Lihat setelan</string>
     <string name="viewer_hide_tags">Sembunyikan tag</string>
     <string name="viewer_show_tags">Tampilkan tag</string>
-    <string name="wardrobe_create_style">Buat setelan</string>
+    <string name="wardrobe_create_style">Buat setelan…</string>
     <string name="wardrobe_find_by_photo">Cari item lewat foto</string>
     <string name="wardrobe_find_by_photo_empty">Tidak ada item mirip yang ditemukan.</string>
     <string name="wardrobe_find_by_photo_searching">Mencari yang cocok…</string>
-    <string name="wardrobe_fix_cutout_bg">Perbaiki latar potongan</string>
+    <string name="wardrobe_fix_cutout_bg">Perbaiki latar potongan…</string>
     <string name="wardrobe_fix_cutout_bg_clean">Tidak terdeteksi sisa latar — tidak ada yang perlu diperbaiki.</string>
     <string name="wardrobe_fix_cutout_bg_done">Latar potongan diperbaiki.</string>
     <string name="wardrobe_imported_on">Diimpor %1$s</string>
@@ -863,7 +863,7 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="wardrobe_search_text_results">Hasil pencarian</string>
     <string name="wardrobe_search_title">Cari di lemari</string>
     <string name="wardrobe_search_use_photo">Cari lewat foto</string>
-    <string name="wardrobe_suggest_replacements">Sarankan alternatif</string>
+    <string name="wardrobe_suggest_replacements">Sarankan alternatif…</string>
     <string name="wardrobe_view_cutout">Lihat potongan</string>
     <string name="wardrobe_view_original">Lihat asli</string>
 

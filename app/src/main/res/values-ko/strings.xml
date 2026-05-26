@@ -39,7 +39,7 @@
     <string name="shop_list_moving">이동 중…</string>
     <string name="shop_list_loading">불러오는 중…</string>
     <string name="shop_list_processing">%1$d개 아이템 처리 중…</string>
-    <string name="shop_list_move_to_closet">옷장으로 이동</string>
+    <string name="shop_list_move_to_closet">옷장으로 이동…</string>
     <string name="shop_list_move_title">옷장으로 이동</string>
     <string name="shop_list_delete_title">위시리스트에서 삭제하시겠습니까?</string>
     <string name="shop_list_delete_text">위시리스트에서 %1$d개 아이템을 영구적으로 삭제하시겠습니까?</string>
@@ -132,7 +132,7 @@
     <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">옷장 태그</string>
     <string name="settings_data_tags_desc">Gemini로 옷장의 모든 아이템을 다시 분류합니다. 수동으로 편집한 태그는 덮어쓰여집니다.</string>
-    <string name="settings_rescan_button">모든 태그 다시 스캔</string>
+    <string name="settings_rescan_button">모든 태그 다시 스캔…</string>
     <string name="settings_rescanning">다시 스캔 중 %1$d / %2$d…</string>
     <string name="settings_rescan_dialog_title">모든 태그를 다시 스캔하시겠습니까?</string>
     <string name="settings_rescan_dialog_text">Gemini가 옷장의 모든 아이템을 다시 분류합니다. 수동으로 편집한 태그가 덮어쓰여지며 시간이 걸릴 수 있습니다.</string>
@@ -237,7 +237,7 @@
     <string name="settings_locations_title">옷장</string>
     <string name="settings_locations_desc">다양한 장소를 위한 여러 옷장을 관리하세요. 옷장을 탭하여 기본으로 설정 — 새 아이템이 거기에 가져와지고 코디 생성도 거기서 시작됩니다. 각 화면 상단의 옷장 필터는 독립적이며 항상 \"전체\"에서 시작합니다. 날씨 정보를 위해 도시를 설정할 수 있습니다 (선택 사항).</string>
     <string name="settings_location_default">기본</string>
-    <string name="settings_location_add">옷장 추가</string>
+    <string name="settings_location_add">옷장 추가…</string>
     <string name="settings_location_name_hint">옷장 이름</string>
     <string name="settings_location_geo_hint">날씨용 도시 (선택)</string>
     <string name="settings_location_add_title">옷장 추가</string>
@@ -272,7 +272,7 @@
     <string name="wardrobe_tag_detect">태그 감지</string>
     <string name="wardrobe_tag_remove_bg">배경 제거</string>
     <string name="wardrobe_tag_re_remove_bg">배경 재제거</string>
-    <string name="wardrobe_fix_cutout_bg">컷아웃 배경 수정</string>
+    <string name="wardrobe_fix_cutout_bg">컷아웃 배경 수정…</string>
     <string name="wardrobe_fix_cutout_bg_done">컷아웃 배경이 수정되었습니다.</string>
     <string name="wardrobe_fix_cutout_bg_clean">잔여 배경이 감지되지 않음 — 수정할 것이 없습니다.</string>
     <string name="wardrobe_tag_rotate">회전</string>
@@ -460,7 +460,7 @@
     <string name="composer_select_suggestion">이 코디 사용</string>
     <string name="outfits_tag_add">태그 추가</string>
     <string name="outfits_tag_add_placeholder">예: 생일, 여행</string>
-    <string name="outfits_suggest_tags">AI로 태그 제안</string>
+    <string name="outfits_suggest_tags">AI로 태그 제안…</string>
     <string name="outfits_suggest_tags_title">제안된 태그</string>
     <string name="outfits_suggest_tags_loading">태그 제안 중…</string>
     <string name="outfits_suggest_tags_empty">새로 제안된 태그가 없습니다.</string>
@@ -483,12 +483,12 @@
     <string name="outfits_select_all_count">%d개 모두 선택</string>
     <string name="outfits_delete_selected_title">코디를 삭제하시겠습니까?</string>
     <string name="outfits_delete_selected_text">%d개 코디가 영구적으로 삭제됩니다.</string>
-    <string name="outfits_combine">AI로 조합</string>
+    <string name="outfits_combine">AI로 조합…</string>
     <string name="outfit_slot_lock">잠금</string>
     <string name="outfit_slot_unlock">잠금 해제</string>
     <string name="outfit_slot_remove">제거</string>
-    <string name="outfit_slot_add">아이템 추가</string>
-    <string name="outfit_generate_with_ai">AI로 생성</string>
+    <string name="outfit_slot_add">아이템 추가…</string>
+    <string name="outfit_generate_with_ai">AI로 생성…</string>
     <string name="outfit_discard_changes_title">변경 사항을 취소하시겠습니까?</string>
     <string name="outfit_discard_changes_body">저장하지 않은 변경 사항이 손실됩니다.</string>
     <string name="outfit_discard_changes_confirm">취소</string>
@@ -556,7 +556,7 @@
     <string name="gap_empty_hint">\"분석\"을 탭하여 AI가 옷장에서 가장 많은 코디를 완성시킬 기본 아이템을 찾도록 하세요.</string>
 
     <!-- 대체안 제안 (옷장 선택 모드) -->
-    <string name="wardrobe_suggest_replacements">대안 제안</string>
+    <string name="wardrobe_suggest_replacements">대안 제안…</string>
     <string name="replacements_title">%d개 아이템의 대안</string>
     <string name="replacements_analyzing">대안 제안 중…</string>
 
@@ -597,7 +597,7 @@
 
     <!-- 나에게 입혀보기 -->
     <string name="tryon_title">나에게 입혀보기</string>
-    <string name="tryon_fab">나에게 입혀보기</string>
+    <string name="tryon_fab">나에게 입혀보기…</string>
     <string name="tryon_section_title">착용 시뮬레이션 사진</string>
     <string name="tryon_section_desc">정면, 측면, 후면의 전신 사진을 업로드하세요. 앱은 코디나 옷장 아이템을 입은 미리보기를 생성할 때 이 사진을 참고로 사용합니다. 사진은 본인의 Drive에 저장됩니다.</string>
     <string name="tryon_slot_front">정면</string>
@@ -622,11 +622,11 @@
     <string name="action_add">추가</string>
     <string name="tryon_composer_explain">아래에 표시된 모든 아이템은 생성된 착용 시뮬레이션에서 함께 착용됩니다. 아이템을 탭하여 제거하거나 \"+\"를 탭하여 더 추가하세요.</string>
     <string name="tryon_composer_items_title">이 시뮬레이션의 아이템 (%1$d)</string>
-    <string name="tryon_add_item">아이템 추가</string>
+    <string name="tryon_add_item">아이템 추가…</string>
     <string name="tryon_add_items_title">옷장에서 아이템 추가</string>
     <string name="tryon_generate">착용 시뮬레이션 생성</string>
     <string name="tryon_try_again">다시 시도</string>
-    <string name="tryon_change_items">아이템 변경</string>
+    <string name="tryon_change_items">아이템 변경…</string>
     <string name="tryon_save_to_drive">저장</string>
     <string name="tryon_saved_to_drive">저장됨</string>
     <string name="tryon_saving">저장 중…</string>
@@ -748,7 +748,7 @@
     <string name="composer_factor_items">%1$d개 아이템</string>
     <string name="composer_factor_closets">%1$d개 옷장</string>
     <string name="composer_factor_composition">사용자 정의 구성</string>
-    <string name="wardrobe_create_style">코디 만들기</string>
+    <string name="wardrobe_create_style">코디 만들기…</string>
     <string name="wardrobe_imported_on">%1$s에 가져옴</string>
     <string name="wardrobe_view_original">원본 보기</string>
     <string name="wardrobe_view_cutout">컷아웃 보기</string>
@@ -838,7 +838,7 @@
     <string name="settings_debug_similarity_desc">유사도 검색 결과를 열 때 기본 줌 이미지 대신 채널별 분석(세그먼트된 썸네일, 임베딩/히스토그램 코사인, 색조 히스토그램)을 표시합니다.</string>
 
     <!-- 매치 미리보기 대화상자 -->
-    <string name="shop_show_in_wardrobe">옷장에서 보기</string>
+    <string name="shop_show_in_wardrobe">옷장에서 보기…</string>
     <string name="shop_add_to_shopping_list">쇼핑 목록에 추가</string>
     <string name="dedupe_dialog_title">중복 가능</string>
     <string name="dedupe_dialog_desc">이 사진과 매우 유사한 아이템을 옷장에서 %1$d개 찾았습니다.</string>

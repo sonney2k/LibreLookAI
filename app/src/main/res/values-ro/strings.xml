@@ -39,7 +39,7 @@
     <string name="shop_list_moving">Se mută…</string>
     <string name="shop_list_loading">Se încarcă…</string>
     <string name="shop_list_processing">Se procesează %1$d articole…</string>
-    <string name="shop_list_move_to_closet">Mută în garderobă</string>
+    <string name="shop_list_move_to_closet">Mută în garderobă…</string>
     <string name="shop_list_move_title">Mută în garderobă</string>
     <string name="shop_list_delete_title">Ștergi din listă?</string>
     <string name="shop_list_delete_text">Elimini definitiv %1$d articole din lista ta?</string>
@@ -132,7 +132,7 @@
     <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">Etichete Garderobă</string>
     <string name="settings_data_tags_desc">Reclasifică fiecare articol cu Gemini. Aceasta va suprascrie editările manuale.</string>
-    <string name="settings_rescan_button">Rescanează Etichete</string>
+    <string name="settings_rescan_button">Rescanează Etichete…</string>
     <string name="settings_rescanning">Rescanare %1$d din %2$d…</string>
     <string name="settings_rescan_dialog_title">Rescanezi toate etichetele?</string>
     <string name="settings_rescan_dialog_text">Gemini va reclasifica fiecare articol. Procesul poate dura ceva timp.</string>
@@ -266,8 +266,8 @@
     <string name="composer_select_suggestion">Folosește această ținută</string>
     <string name="outfits_tag_add">Adaugă etichetă</string>
     <string name="outfits_saved_wear_today">Ținută salvată! O porți azi?</string>
-    <string name="outfits_combine">Combină cu AI</string>
-    <string name="outfit_generate_with_ai">Generează cu AI</string>
+    <string name="outfits_combine">Combină cu AI…</string>
+    <string name="outfit_generate_with_ai">Generează cu AI…</string>
     <string name="outfit_save_dialog_title">Salvează ținuta</string>
     <string name="outfit_save_dialog_confirm">Salvează</string>
 
@@ -318,7 +318,7 @@
 
     <!-- Try on me -->
     <string name="tryon_title">Probă pe mine</string>
-    <string name="tryon_fab">Probă pe mine</string>
+    <string name="tryon_fab">Probă pe mine…</string>
     <string name="tryon_uploading">Se încarcă…</string>
     <string name="tryon_generating">Se generează proba ta…</string>
     <string name="tryon_error">Generarea probei a eșuat</string>
@@ -553,7 +553,7 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="outfit_save_dialog_name">Nume</string>
     <string name="outfit_save_dialog_tag_suggestions">Etichete existente</string>
     <string name="outfit_save_dialog_tags">Etichete</string>
-    <string name="outfit_slot_add">Adaugă articol</string>
+    <string name="outfit_slot_add">Adaugă articol…</string>
     <string name="outfit_slot_lock">Blochează</string>
     <string name="outfit_slot_remove">Elimină</string>
     <string name="outfit_slot_unlock">Deblochează</string>
@@ -580,7 +580,7 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="outfits_selected_count">%d selectate</string>
     <string name="outfits_sort_most_items">Cele mai multe articole</string>
     <string name="outfits_suggest_alternatives">Sugerează 10 alternative</string>
-    <string name="outfits_suggest_tags">Sugerează etichete cu AI</string>
+    <string name="outfits_suggest_tags">Sugerează etichete cu AI…</string>
     <string name="outfits_suggest_tags_apply">Adaugă cele selectate</string>
     <string name="outfits_suggest_tags_empty">Nu există etichete noi sugerate.</string>
     <string name="outfits_suggest_tags_hint">Atinge etichetele pentru a le comuta. Cele selectate vor fi adăugate la această ținută.</string>
@@ -668,7 +668,7 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="settings_local_bg_desc">Când e activat, importurile din cameră și galerie rulează segmentatorul local Magic Touch și îți permit să confirmi sau să rafinezi prim-planul înainte de salvare — fără apel Gemini, fără credite. Importurile URL folosesc întotdeauna această verificare.</string>
     <string name="settings_local_bg_toggle">Folosește eliminarea fundalului pe dispozitiv</string>
     <string name="settings_location_active">Activ</string>
-    <string name="settings_location_add">Adaugă dulap</string>
+    <string name="settings_location_add">Adaugă dulap…</string>
     <string name="settings_location_add_title">Adaugă dulap</string>
     <string name="settings_location_default">Implicit</string>
     <string name="settings_location_delete_text">Datele garderobei pentru „%1$s” vor rămâne în Drive, dar nu vor mai fi accesibile de aici.</string>
@@ -712,7 +712,7 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="shop_matching">Se compară cu garderoba ta…</string>
     <string name="shop_model_missing">Modelul de pe dispozitiv lipsește. Plasează efficientnet_lite0.tflite în app/src/main/assets/embedder/ și magic_touch.tflite în app/src/main/assets/segmenter/.</string>
     <string name="shop_no_matches">Nicio potrivire încă. Încearcă o fotografie mai apropiată și mai bine iluminată.</string>
-    <string name="shop_show_in_wardrobe">Arată în garderobă</string>
+    <string name="shop_show_in_wardrobe">Arată în garderobă…</string>
     <string name="shop_take_another">Fă altă fotografie</string>
     <string name="shop_take_photo">Fă o fotografie</string>
     <string name="shop_your_photo">Fotografia ta</string>
@@ -813,10 +813,10 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="travel_refine_rain">Mai potrivit pentru ploaie</string>
     <string name="travel_refine_reuse">Maximizează refolosirea ținutelor</string>
     <string name="travel_regenerate">Re-generează</string>
-    <string name="tryon_add_item">Adaugă articol</string>
+    <string name="tryon_add_item">Adaugă articol…</string>
     <string name="tryon_add_items_title">Adaugă articole din garderobă</string>
     <string name="tryon_add_photo">Adaugă fotografie %1$s</string>
-    <string name="tryon_change_items">Schimbă articolele</string>
+    <string name="tryon_change_items">Schimbă articolele…</string>
     <string name="tryon_composer_explain">Toate articolele afișate mai jos vor fi purtate împreună în proba generată. Atinge un articol pentru a-l elimina; atinge „+” pentru a adăuga mai multe.</string>
     <string name="tryon_composer_items_title">Articole în această probă (%1$d)</string>
     <string name="tryon_cost_line">Costă %1$d credite per probă</string>
@@ -849,11 +849,11 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="tryon_view_source_outfit">Vezi ținuta</string>
     <string name="viewer_hide_tags">Ascunde etichetele</string>
     <string name="viewer_show_tags">Arată etichetele</string>
-    <string name="wardrobe_create_style">Creează ținută</string>
+    <string name="wardrobe_create_style">Creează ținută…</string>
     <string name="wardrobe_find_by_photo">Găsește articol după fotografie</string>
     <string name="wardrobe_find_by_photo_empty">Nu s-au găsit articole similare.</string>
     <string name="wardrobe_find_by_photo_searching">Se caută potriviri…</string>
-    <string name="wardrobe_fix_cutout_bg">Repară fundalul decupajului</string>
+    <string name="wardrobe_fix_cutout_bg">Repară fundalul decupajului…</string>
     <string name="wardrobe_fix_cutout_bg_clean">Niciun fundal rămas detectat — nimic de reparat.</string>
     <string name="wardrobe_fix_cutout_bg_done">Fundalul decupajului a fost reparat.</string>
     <string name="wardrobe_imported_on">Importat %1$s</string>
@@ -863,7 +863,7 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="wardrobe_search_text_results">Rezultate căutare</string>
     <string name="wardrobe_search_title">Caută în garderobă</string>
     <string name="wardrobe_search_use_photo">Caută după fotografie</string>
-    <string name="wardrobe_suggest_replacements">Sugerează alternative</string>
+    <string name="wardrobe_suggest_replacements">Sugerează alternative…</string>
     <string name="wardrobe_view_cutout">Vezi decupajul</string>
     <string name="wardrobe_view_original">Vezi originalul</string>
 

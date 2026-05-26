@@ -39,7 +39,7 @@
     <string name="shop_list_moving">Moviendo…</string>
     <string name="shop_list_loading">Cargando…</string>
     <string name="shop_list_processing">Procesando %1$d artículo(s)…</string>
-    <string name="shop_list_move_to_closet">Mover al armario</string>
+    <string name="shop_list_move_to_closet">Mover al armario…</string>
     <string name="shop_list_move_title">Mover al armario</string>
     <string name="shop_list_delete_title">¿Eliminar de la lista de deseos?</string>
     <string name="shop_list_delete_text">¿Eliminar permanentemente %1$d artículo(s) de tu lista de deseos?</string>
@@ -132,7 +132,7 @@
     <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">Etiquetas del armario</string>
     <string name="settings_data_tags_desc">Re-clasifica cada prenda de tu armario con Gemini. Esto sobrescribe cualquier edición manual de etiquetas.</string>
-    <string name="settings_rescan_button">Volver a analizar todas las etiquetas</string>
+    <string name="settings_rescan_button">Volver a analizar todas las etiquetas…</string>
     <string name="settings_rescanning">Analizando %1$d de %2$d…</string>
     <string name="settings_rescan_dialog_title">¿Volver a analizar todas las etiquetas?</string>
     <string name="settings_rescan_dialog_text">Gemini volverá a clasificar cada prenda de tu armario. Esto sobrescribirá cualquier edición manual de etiquetas y puede tardar un rato.</string>
@@ -237,7 +237,7 @@
     <string name="settings_locations_title">Armarios</string>
     <string name="settings_locations_desc">Gestiona varios armarios para distintos lugares. Toca un armario para hacerlo el predeterminado — las nuevas prendas se importan ahí, y la creación de outfits empieza desde él. El filtro de armario en la parte superior de cada pantalla es independiente y siempre empieza en \"Todos\". Opcionalmente, indica una ciudad para la información meteorológica.</string>
     <string name="settings_location_default">Predeterminado</string>
-    <string name="settings_location_add">Añadir armario</string>
+    <string name="settings_location_add">Añadir armario…</string>
     <string name="settings_location_name_hint">Nombre del armario</string>
     <string name="settings_location_geo_hint">Ciudad para el tiempo (opcional)</string>
     <string name="settings_location_add_title">Añadir armario</string>
@@ -272,7 +272,7 @@
     <string name="wardrobe_tag_detect">Detectar etiquetas</string>
     <string name="wardrobe_tag_remove_bg">Quitar fondo</string>
     <string name="wardrobe_tag_re_remove_bg">Volver a quitar fondo</string>
-    <string name="wardrobe_fix_cutout_bg">Reparar fondo del cutout</string>
+    <string name="wardrobe_fix_cutout_bg">Reparar fondo del cutout…</string>
     <string name="wardrobe_fix_cutout_bg_done">Fondo del cutout reparado.</string>
     <string name="wardrobe_fix_cutout_bg_clean">No se detectaron restos de fondo — nada que reparar.</string>
     <string name="wardrobe_tag_rotate">Rotar</string>
@@ -460,7 +460,7 @@
     <string name="composer_select_suggestion">Usar este outfit</string>
     <string name="outfits_tag_add">Añadir etiqueta</string>
     <string name="outfits_tag_add_placeholder">p. ej. cumpleaños, viaje</string>
-    <string name="outfits_suggest_tags">Sugerir etiquetas con IA</string>
+    <string name="outfits_suggest_tags">Sugerir etiquetas con IA…</string>
     <string name="outfits_suggest_tags_title">Etiquetas sugeridas</string>
     <string name="outfits_suggest_tags_loading">Sugiriendo etiquetas…</string>
     <string name="outfits_suggest_tags_empty">No se han sugerido etiquetas nuevas.</string>
@@ -483,12 +483,12 @@
     <string name="outfits_select_all_count">Seleccionar todo %d</string>
     <string name="outfits_delete_selected_title">¿Eliminar outfits?</string>
     <string name="outfits_delete_selected_text">%d outfits se eliminarán permanentemente.</string>
-    <string name="outfits_combine">Combinar con IA</string>
+    <string name="outfits_combine">Combinar con IA…</string>
     <string name="outfit_slot_lock">Bloquear</string>
     <string name="outfit_slot_unlock">Desbloquear</string>
     <string name="outfit_slot_remove">Quitar</string>
-    <string name="outfit_slot_add">Añadir prenda</string>
-    <string name="outfit_generate_with_ai">Generar con IA</string>
+    <string name="outfit_slot_add">Añadir prenda…</string>
+    <string name="outfit_generate_with_ai">Generar con IA…</string>
     <string name="outfit_discard_changes_title">¿Descartar cambios?</string>
     <string name="outfit_discard_changes_body">Se perderán los cambios sin guardar.</string>
     <string name="outfit_discard_changes_confirm">Descartar</string>
@@ -556,7 +556,7 @@
     <string name="gap_empty_hint">Toca \"Analizar\" para que la IA identifique las piezas básicas que completarían más outfits de tu armario.</string>
 
     <!-- Sugerir reemplazos (modo selección del armario) -->
-    <string name="wardrobe_suggest_replacements">Sugerir alternativas</string>
+    <string name="wardrobe_suggest_replacements">Sugerir alternativas…</string>
     <string name="replacements_title">Reemplazos para %d prendas</string>
     <string name="replacements_analyzing">Sugiriendo reemplazos…</string>
 
@@ -597,7 +597,7 @@
 
     <!-- Probar en mí -->
     <string name="tryon_title">Probar en mí</string>
-    <string name="tryon_fab">Probar en mí</string>
+    <string name="tryon_fab">Probar en mí…</string>
     <string name="tryon_section_title">Fotos para Try-on</string>
     <string name="tryon_section_desc">Sube fotos de cuerpo entero de frente, lateral y de espaldas. La app las usa como referencia al generar una vista previa de Try-on de un outfit o prenda en ti. Las fotos se quedan en tu propio Drive.</string>
     <string name="tryon_slot_front">Frente</string>
@@ -622,11 +622,11 @@
     <string name="action_add">Añadir</string>
     <string name="tryon_composer_explain">Todas las prendas mostradas a continuación se llevarán juntas en el Try-on generado. Toca una prenda para quitarla; toca \"+\" para añadir más.</string>
     <string name="tryon_composer_items_title">Prendas en este Try-on (%1$d)</string>
-    <string name="tryon_add_item">Añadir prenda</string>
+    <string name="tryon_add_item">Añadir prenda…</string>
     <string name="tryon_add_items_title">Añadir prendas del armario</string>
     <string name="tryon_generate">Generar Try-on</string>
     <string name="tryon_try_again">Reintentar</string>
-    <string name="tryon_change_items">Cambiar prendas</string>
+    <string name="tryon_change_items">Cambiar prendas…</string>
     <string name="tryon_save_to_drive">Guardar</string>
     <string name="tryon_saved_to_drive">Guardado</string>
     <string name="tryon_saving">Guardando…</string>
@@ -748,7 +748,7 @@
     <string name="composer_factor_items">%1$d prendas</string>
     <string name="composer_factor_closets">%1$d armarios</string>
     <string name="composer_factor_composition">Composición personalizada</string>
-    <string name="wardrobe_create_style">Crear outfit</string>
+    <string name="wardrobe_create_style">Crear outfit…</string>
     <string name="wardrobe_imported_on">Importado el %1$s</string>
     <string name="wardrobe_view_original">Ver original</string>
     <string name="wardrobe_view_cutout">Ver cutout</string>
@@ -838,7 +838,7 @@
     <string name="settings_debug_similarity_desc">Al abrir una coincidencia de la búsqueda por similitud, muestra el desglose por canales (miniaturas segmentadas, coseno de embedding/histograma, histogramas de tono) en vez de la imagen ampliable por defecto.</string>
 
     <!-- Diálogo de vista previa de coincidencia -->
-    <string name="shop_show_in_wardrobe">Mostrar en el armario</string>
+    <string name="shop_show_in_wardrobe">Mostrar en el armario…</string>
     <string name="shop_add_to_shopping_list">Añadir a la lista de compras</string>
     <string name="dedupe_dialog_title">Posible duplicado</string>
     <string name="dedupe_dialog_desc">Hemos encontrado %1$d prenda(s) en tu armario que se parecen mucho a esta foto.</string>

@@ -39,7 +39,7 @@
     <string name="shop_list_moving">Μετακίνηση…</string>
     <string name="shop_list_loading">Φόρτωση…</string>
     <string name="shop_list_processing">Επεξεργασία %1$d ειδών…</string>
-    <string name="shop_list_move_to_closet">Μετακίνηση στη ντουλάπα</string>
+    <string name="shop_list_move_to_closet">Μετακίνηση στη ντουλάπα…</string>
     <string name="shop_list_move_title">Μετακίνηση στη ντουλάπα</string>
     <string name="shop_list_delete_title">Διαγραφή από τη λίστα επιθυμιών;</string>
     <string name="shop_list_delete_text">Μόνιμη αφαίρεση %1$d ειδών από τη λίστα επιθυμιών σας;</string>
@@ -132,7 +132,7 @@
     <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">Ετικέτες Ντουλάπας</string>
     <string name="settings_data_tags_desc">Επαναταξινόμηση κάθε είδους στη ντουλάπα σας με το Gemini. Αυτό θα αντικαταστήσει τυχόν χειροκίνητες αλλαγές ετικετών.</string>
-    <string name="settings_rescan_button">Επανασάρωση Όλων των Ετικετών</string>
+    <string name="settings_rescan_button">Επανασάρωση Όλων των Ετικετών…</string>
     <string name="settings_rescanning">Επανασάρωση %1$d από %2$d…</string>
     <string name="settings_rescan_dialog_title">Επανασάρωση όλων των ετικετών;</string>
     <string name="settings_rescan_dialog_text">Το Gemini θα επαναταξινομήσει κάθε είδος στη ντουλάπα σας. Αυτό θα αντικαταστήσει τις χειροκίνητες αλλαγές και μπορεί να πάρει χρόνο.</string>
@@ -237,7 +237,7 @@
     <string name="settings_locations_title">Ντουλάπες</string>
     <string name="settings_locations_desc">Διαχειριστείτε πολλαπλές ντουλάπες για διαφορετικά μέρη. Πατήστε σε μια ντουλάπα για να την ορίσετε ως προεπιλεγμένη. Προαιρετικά ορίστε μια πόλη για πληροφορίες καιρού.</string>
     <string name="settings_location_default">Προεπιλογή</string>
-    <string name="settings_location_add">Προσθήκη ντουλάπας</string>
+    <string name="settings_location_add">Προσθήκη ντουλάπας…</string>
     <string name="settings_location_name_hint">Όνομα ντουλάπας</string>
     <string name="settings_location_geo_hint">Πόλη για τον καιρό (προαιρετικά)</string>
     <string name="settings_location_add_title">Προσθήκη ντουλάπας</string>
@@ -272,7 +272,7 @@
     <string name="wardrobe_tag_detect">Εντοπισμός ετικετών</string>
     <string name="wardrobe_tag_remove_bg">Αφαίρεση φόντου</string>
     <string name="wardrobe_tag_re_remove_bg">Επαναφορά αφαίρεσης φόντου</string>
-    <string name="wardrobe_fix_cutout_bg">Διόρθωση φόντου αποκόμματος</string>
+    <string name="wardrobe_fix_cutout_bg">Διόρθωση φόντου αποκόμματος…</string>
     <string name="wardrobe_fix_cutout_bg_done">Το φόντο του αποκόμματος διορθώθηκε.</string>
     <string name="wardrobe_fix_cutout_bg_clean">Δεν εντοπίστηκε υπόλειμμα φόντου.</string>
     <string name="wardrobe_tag_rotate">Περιστροφή</string>
@@ -460,7 +460,7 @@
     <string name="composer_select_suggestion">Χρήση αυτού του συνόλου</string>
     <string name="outfits_tag_add">Προσθήκη ετικέτας</string>
     <string name="outfits_tag_add_placeholder">π.χ. γενέθλια, ταξίδι</string>
-    <string name="outfits_suggest_tags">Πρόταση ετικετών με AI</string>
+    <string name="outfits_suggest_tags">Πρόταση ετικετών με AI…</string>
     <string name="outfits_suggest_tags_title">Προτεινόμενες ετικέτες</string>
     <string name="outfits_suggest_tags_loading">Πρόταση ετικετών…</string>
     <string name="outfits_suggest_tags_empty">Δεν προτάθηκαν νέες ετικέτες.</string>
@@ -483,12 +483,12 @@
     <string name="outfits_select_all_count">Επιλογή όλων %d</string>
     <string name="outfits_delete_selected_title">Διαγραφή συνόλων;</string>
     <string name="outfits_delete_selected_text">%d σύνολα θα αφαιρεθούν οριστικά.</string>
-    <string name="outfits_combine">Συνδυασμός με AI</string>
+    <string name="outfits_combine">Συνδυασμός με AI…</string>
     <string name="outfit_slot_lock">Κλείδωμα</string>
     <string name="outfit_slot_unlock">Ξεκλείδωμα</string>
     <string name="outfit_slot_remove">Αφαίρεση</string>
-    <string name="outfit_slot_add">Προσθήκη είδους</string>
-    <string name="outfit_generate_with_ai">Δημιουργία με AI</string>
+    <string name="outfit_slot_add">Προσθήκη είδους…</string>
+    <string name="outfit_generate_with_ai">Δημιουργία με AI…</string>
     <string name="outfit_discard_changes_title">Απόρριψη αλλαγών;</string>
     <string name="outfit_discard_changes_body">Οι μη αποθηκευμένες αλλαγές θα χαθούν.</string>
     <string name="outfit_discard_changes_confirm">Απόρριψη</string>
@@ -556,7 +556,7 @@
     <string name="gap_empty_hint">Πατήστε \"Ανάλυση\" για να εντοπίσει η AI τα βασικά κομμάτια που θα συμπλήρωναν τα περισσότερα σύνολα.</string>
 
     <!-- Suggest replacements (Wardrobe selection mode) -->
-    <string name="wardrobe_suggest_replacements">Πρόταση εναλλακτικών</string>
+    <string name="wardrobe_suggest_replacements">Πρόταση εναλλακτικών…</string>
     <string name="replacements_title">Εναλλακτικές για %d είδη</string>
     <string name="replacements_analyzing">Πρόταση εναλλακτικών…</string>
 
@@ -597,7 +597,7 @@
 
     <!-- Try on me -->
     <string name="tryon_title">Δοκιμή πάνω μου</string>
-    <string name="tryon_fab">Δοκιμή πάνω μου</string>
+    <string name="tryon_fab">Δοκιμή πάνω μου…</string>
     <string name="tryon_section_title">Φωτογραφίες δοκιμής</string>
     <string name="tryon_section_desc">Ανεβάστε φωτογραφίες ολόκληρου σώματος (εμπρός, πλάι, πίσω). Η εφαρμογή τις χρησιμοποιεί ως αναφορά για τη δημιουργία προεπισκόπησης δοκιμής.</string>
     <string name="tryon_slot_front">Εμπρός</string>
@@ -622,11 +622,11 @@
     <string name="action_add">Προσθήκη</string>
     <string name="tryon_composer_explain">Όλα τα είδη παρακάτω θα φορεθούν μαζί στη δοκιμή. Πατήστε για αφαίρεση, + για προσθήκη.</string>
     <string name="tryon_composer_items_title">Είδη στη δοκιμή (%1$d)</string>
-    <string name="tryon_add_item">Προσθήκη είδους</string>
+    <string name="tryon_add_item">Προσθήκη είδους…</string>
     <string name="tryon_add_items_title">Προσθήκη ειδών ντουλάπας</string>
     <string name="tryon_generate">Δημιουργία δοκιμής</string>
     <string name="tryon_try_again">Δοκιμάστε ξανά</string>
-    <string name="tryon_change_items">Αλλαγή ειδών</string>
+    <string name="tryon_change_items">Αλλαγή ειδών…</string>
     <string name="tryon_save_to_drive">Αποθήκευση</string>
     <string name="tryon_saved_to_drive">Αποθηκεύτηκε</string>
     <string name="tryon_saving">Αποθήκευση…</string>
@@ -748,7 +748,7 @@
     <string name="composer_factor_items">%1$d είδη</string>
     <string name="composer_factor_closets">%1$d ντουλάπες</string>
     <string name="composer_factor_composition">Προσαρμοσμένη σύνθεση</string>
-    <string name="wardrobe_create_style">Δημιουργία συνόλου</string>
+    <string name="wardrobe_create_style">Δημιουργία συνόλου…</string>
     <string name="wardrobe_imported_on">Εισήχθη στις %1$s</string>
     <string name="wardrobe_view_original">Προβολή πρωτοτύπου</string>
     <string name="wardrobe_view_cutout">Προβολή αποκόμματος</string>
@@ -838,7 +838,7 @@
     <string name="settings_debug_similarity_desc">Εμφάνιση τεχνικών λεπτομερειών στην ομοιότητα.</string>
 
     <!-- Match preview dialog -->
-    <string name="shop_show_in_wardrobe">Προβολή στη ντουλάπα</string>
+    <string name="shop_show_in_wardrobe">Προβολή στη ντουλάπα…</string>
     <string name="shop_add_to_shopping_list">Προσθήκη στη λίστα αγορών</string>
     <string name="dedupe_dialog_title">Πιθανό διπλότυπο</string>
     <string name="dedupe_dialog_desc">Βρέθηκαν %1$d είδη που μοιάζουν πολύ.</string>

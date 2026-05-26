@@ -38,7 +38,7 @@
     <string name="shop_list_moving">Wird verschoben…</string>
     <string name="shop_list_loading">Wird geladen…</string>
     <string name="shop_list_processing">%1$d Artikel werden verarbeitet…</string>
-    <string name="shop_list_move_to_closet">In Kleiderschrank verschieben</string>
+    <string name="shop_list_move_to_closet">In Kleiderschrank verschieben…</string>
     <string name="shop_list_move_title">In Kleiderschrank verschieben</string>
     <string name="shop_list_delete_title">Von Wunschliste löschen?</string>
     <string name="shop_list_delete_text">%1$d Artikel dauerhaft von der Wunschliste entfernen?</string>
@@ -128,7 +128,7 @@
     <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">Kleidungs-Tags</string>
     <string name="settings_data_tags_desc">Alle Artikel in Ihrer Garderobe mit Gemini neu klassifizieren. Dadurch werden manuelle Tag-Bearbeitungen überschrieben.</string>
-    <string name="settings_rescan_button">Alle Tags neu scannen</string>
+    <string name="settings_rescan_button">Alle Tags neu scannen…</string>
     <string name="settings_rescanning">Scanne %1$d von %2$d…</string>
     <string name="settings_rescan_dialog_title">Alle Tags neu scannen?</string>
     <string name="settings_rescan_dialog_text">Gemini klassifiziert alle Artikel in Ihrer Garderobe neu. Dies überschreibt manuelle Tag-Bearbeitungen und kann eine Weile dauern.</string>
@@ -233,7 +233,7 @@
     <string name="settings_locations_title">Kleiderschränke</string>
     <string name="settings_locations_desc">Verwalte mehrere Garderoben für verschiedene Orte. Tippe auf einen Schrank, um ihn zum Standard zu machen — neue Artikel werden dort importiert, und die Outfit-Erstellung beginnt damit. Der Schrank-Filter oben in jedem Bildschirm ist davon unabhängig und startet immer bei \"Alle\". Optional mit Stadt für Wetterinfos.</string>
     <string name="settings_location_default">Standard</string>
-    <string name="settings_location_add">Schrank hinzufügen</string>
+    <string name="settings_location_add">Schrank hinzufügen…</string>
     <string name="settings_location_name_hint">Name des Schranks</string>
     <string name="settings_location_geo_hint">Stadt für Wetter (optional)</string>
     <string name="settings_location_add_title">Schrank hinzufügen</string>
@@ -267,7 +267,7 @@
     <string name="wardrobe_tag_detect">Tags erkennen</string>
     <string name="wardrobe_tag_remove_bg">Hintergrund entfernen</string>
     <string name="wardrobe_tag_re_remove_bg">Hintergrund erneut entfernen</string>
-    <string name="wardrobe_fix_cutout_bg">Cutout-Hintergrund reparieren</string>
+    <string name="wardrobe_fix_cutout_bg">Cutout-Hintergrund reparieren…</string>
     <string name="wardrobe_fix_cutout_bg_done">Cutout-Hintergrund repariert.</string>
     <string name="wardrobe_fix_cutout_bg_clean">Kein Hintergrund-Rest erkannt — nichts zu reparieren.</string>
     <string name="wardrobe_tag_rotate">Drehen</string>
@@ -454,7 +454,7 @@
     <string name="composer_select_suggestion">Dieses Outfit übernehmen</string>
     <string name="outfits_tag_add">Tag hinzufügen</string>
     <string name="outfits_tag_add_placeholder">z. B. Geburtstag, Reise</string>
-    <string name="outfits_suggest_tags">Tags mit KI vorschlagen</string>
+    <string name="outfits_suggest_tags">Tags mit KI vorschlagen…</string>
     <string name="outfits_suggest_tags_title">Vorgeschlagene Tags</string>
     <string name="outfits_suggest_tags_loading">Tags werden vorgeschlagen…</string>
     <string name="outfits_suggest_tags_empty">Keine neuen Tags vorgeschlagen.</string>
@@ -477,12 +477,12 @@
     <string name="outfits_select_all_count">Alle %d auswählen</string>
     <string name="outfits_delete_selected_title">Outfits löschen?</string>
     <string name="outfits_delete_selected_text">%d Outfits werden dauerhaft entfernt.</string>
-    <string name="outfits_combine">Mit KI kombinieren</string>
+    <string name="outfits_combine">Mit KI kombinieren…</string>
     <string name="outfit_slot_lock">Sperren</string>
     <string name="outfit_slot_unlock">Entsperren</string>
     <string name="outfit_slot_remove">Entfernen</string>
-    <string name="outfit_slot_add">Teil hinzufügen</string>
-    <string name="outfit_generate_with_ai">Mit KI erstellen</string>
+    <string name="outfit_slot_add">Teil hinzufügen…</string>
+    <string name="outfit_generate_with_ai">Mit KI erstellen…</string>
     <string name="outfit_discard_changes_title">Änderungen verwerfen?</string>
     <string name="outfit_discard_changes_body">Nicht gespeicherte Änderungen gehen verloren.</string>
     <string name="outfit_discard_changes_confirm">Verwerfen</string>
@@ -560,7 +560,7 @@
     <string name="gap_empty_hint">Tippe auf \"Analysieren\", damit KI die grundlegenden Teile identifiziert, die die meisten Outfits aus deiner Garderobe vervollständigen.</string>
 
     <!-- Suggest replacements (Wardrobe selection mode) -->
-    <string name="wardrobe_suggest_replacements">Alternativen vorschlagen</string>
+    <string name="wardrobe_suggest_replacements">Alternativen vorschlagen…</string>
     <string name="replacements_title">Ersatz für %d Teile</string>
     <string name="replacements_analyzing">Ersatz wird vorgeschlagen…</string>
 
@@ -599,7 +599,7 @@
 
     <!-- Try on me -->
     <string name="tryon_title">Auf mir anprobieren</string>
-    <string name="tryon_fab">Auf mir anprobieren</string>
+    <string name="tryon_fab">Auf mir anprobieren…</string>
     <string name="tryon_section_title">Anprobe-Fotos</string>
     <string name="tryon_section_desc">Lade Ganzkörperfotos von vorn, von der Seite und von hinten hoch. Die App nutzt sie als Referenz, um eine virtuelle Anprobe eines Outfits oder Kleidungsstücks an dir zu erzeugen. Die Fotos bleiben in deinem eigenen Drive.</string>
     <string name="tryon_slot_front">Vorne</string>
@@ -624,11 +624,11 @@
     <string name="action_add">Hinzufügen</string>
     <string name="tryon_composer_explain">Alle unten gezeigten Teile werden in der Anprobe gemeinsam getragen. Tippe auf ein Teil, um es zu entfernen; tippe auf \"+\", um weitere hinzuzufügen.</string>
     <string name="tryon_composer_items_title">Teile in dieser Anprobe (%1$d)</string>
-    <string name="tryon_add_item">Teil hinzufügen</string>
+    <string name="tryon_add_item">Teil hinzufügen…</string>
     <string name="tryon_add_items_title">Kleidungsstücke hinzufügen</string>
     <string name="tryon_generate">Anprobe erzeugen</string>
     <string name="tryon_try_again">Erneut versuchen</string>
-    <string name="tryon_change_items">Teile ändern</string>
+    <string name="tryon_change_items">Teile ändern…</string>
     <string name="tryon_save_to_drive">Speichern</string>
     <string name="tryon_saved_to_drive">Gespeichert</string>
     <string name="tryon_saving">Speichert…</string>
@@ -662,11 +662,11 @@
     <string name="tryon_trip_picker_title">Reise-Outfit anprobieren</string>
     <string name="tryon_trip_picker_empty">Noch keine Reise-Outfits zum Anprobieren. Plane zuerst eine Reise im Reise-Tab.</string>
     <string name="tryon_trip_context">%1$s · Tag %2$d</string>
-    <string name="tryon_quick_see_history">Frühere Anproben ansehen</string>
+    <string name="tryon_quick_see_history">Frühere Anproben ansehen…</string>
     <string name="tryon_history_subtitle">Neueste oben</string>
     <string name="tryon_history_earlier">Früher</string>
     <string name="tryon_history_more_count">%1$d weitere</string>
-    <string name="tryon_history_new">Neue Anprobe</string>
+    <string name="tryon_history_new">Neue Anprobe…</string>
     <string name="tryon_source_label_outfit">Aus Outfit</string>
     <string name="tryon_source_label_wardrobe">Aus Kleiderschrank</string>
     <string name="tryon_source_label_shopping">Aus Einkauf</string>
@@ -675,7 +675,7 @@
     <string name="tryon_source_swap">Wechseln</string>
     <string name="tryon_empty_title">Noch keine Anproben</string>
     <string name="tryon_empty_body">Erstelle eine Anprobe aus einem Outfit, deinem Kleiderschrank oder einem Einkaufsartikel — wir speichern sie hier, damit du sie jederzeit wieder ansehen kannst.</string>
-    <string name="tryon_empty_cta">Anprobe starten</string>
+    <string name="tryon_empty_cta">Anprobe starten…</string>
     <string name="tryon_empty_chip_outfit">Aus einem Outfit</string>
     <string name="tryon_empty_chip_wardrobe">Aus Kleiderschrank</string>
     <string name="tryon_empty_chip_shopping">Aus Einkauf</string>
@@ -814,7 +814,7 @@
     <string name="composer_factor_items">%1$d Teile</string>
     <string name="composer_factor_closets">%1$d Schränke</string>
     <string name="composer_factor_composition">Eigene Komposition</string>
-    <string name="wardrobe_create_style">Outfit erstellen</string>
+    <string name="wardrobe_create_style">Outfit erstellen…</string>
     <string name="wardrobe_imported_on">Importiert am %1$s</string>
     <string name="wardrobe_view_original">Original anzeigen</string>
     <string name="wardrobe_view_cutout">Freisteller anzeigen</string>
@@ -904,7 +904,7 @@
     <string name="local_bg_failed">Konnte keinen Freisteller berechnen — verschiebe das Fadenkreuz.</string>
 
     <!-- Treffer-Vorschau-Dialog -->
-    <string name="shop_show_in_wardrobe">In Garderobe anzeigen</string>
+    <string name="shop_show_in_wardrobe">In Garderobe anzeigen…</string>
     <string name="shop_add_to_shopping_list">Zur Einkaufsliste hinzufügen</string>
     <string name="dedupe_dialog_title">Mögliches Duplikat</string>
     <string name="dedupe_dialog_desc">%1$d Teil(e) in deiner Garderobe sehen diesem Foto sehr ähnlich.</string>

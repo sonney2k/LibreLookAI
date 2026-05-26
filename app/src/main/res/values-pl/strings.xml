@@ -39,7 +39,7 @@
     <string name="shop_list_moving">Przenoszenie…</string>
     <string name="shop_list_loading">Ładowanie…</string>
     <string name="shop_list_processing">Przetwarzanie %1$d elementów…</string>
-    <string name="shop_list_move_to_closet">Przenieś do szafy</string>
+    <string name="shop_list_move_to_closet">Przenieś do szafy…</string>
     <string name="shop_list_move_title">Przenieś do szafy</string>
     <string name="shop_list_delete_title">Usunąć z listy życzeń?</string>
     <string name="shop_list_delete_text">Trwale usunąć %1$d elementów z listy życzeń?</string>
@@ -132,7 +132,7 @@
     <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">Tagi garderoby</string>
     <string name="settings_data_tags_desc">Sklasyfikuj ponownie każdy element w garderobie za pomocą Gemini. Nadpisze to ręczne edycje tagów.</string>
-    <string name="settings_rescan_button">Skanuj ponownie wszystkie tagi</string>
+    <string name="settings_rescan_button">Skanuj ponownie wszystkie tagi…</string>
     <string name="settings_rescanning">Skanowanie %1$d z %2$d…</string>
     <string name="settings_rescan_dialog_title">Skanować wszystkie tagi ponownie?</string>
     <string name="settings_rescan_dialog_text">Gemini sklasyfikuje ponownie każdy element w garderobie. Nadpisze to ręczne edycje tagów i może chwilę potrwać.</string>
@@ -237,7 +237,7 @@
     <string name="settings_locations_title">Szafy</string>
     <string name="settings_locations_desc">Zarządzaj wieloma garderobami dla różnych miejsc. Dotknij szafy, aby ustawić ją jako domyślną — nowe elementy są tam importowane, a tworzenie stylizacji się stamtąd zaczyna. Filtr szafy u góry każdego ekranu jest niezależny i zawsze startuje od „Wszystkie". Opcjonalnie ustaw miasto dla informacji pogodowych.</string>
     <string name="settings_location_default">Domyślna</string>
-    <string name="settings_location_add">Dodaj szafę</string>
+    <string name="settings_location_add">Dodaj szafę…</string>
     <string name="settings_location_name_hint">Nazwa szafy</string>
     <string name="settings_location_geo_hint">Miasto dla pogody (opcjonalne)</string>
     <string name="settings_location_add_title">Dodaj szafę</string>
@@ -272,7 +272,7 @@
     <string name="wardrobe_tag_detect">Wykryj tagi</string>
     <string name="wardrobe_tag_remove_bg">Usuń tło</string>
     <string name="wardrobe_tag_re_remove_bg">Usuń tło ponownie</string>
-    <string name="wardrobe_fix_cutout_bg">Napraw tło wycinka</string>
+    <string name="wardrobe_fix_cutout_bg">Napraw tło wycinka…</string>
     <string name="wardrobe_fix_cutout_bg_done">Tło wycinka naprawione.</string>
     <string name="wardrobe_fix_cutout_bg_clean">Nie wykryto pozostałości tła — nic do naprawy.</string>
     <string name="wardrobe_tag_rotate">Obróć</string>
@@ -460,7 +460,7 @@
     <string name="composer_select_suggestion">Użyj tej stylizacji</string>
     <string name="outfits_tag_add">Dodaj tag</string>
     <string name="outfits_tag_add_placeholder">np. urodziny, podróż</string>
-    <string name="outfits_suggest_tags">Zaproponuj tagi z AI</string>
+    <string name="outfits_suggest_tags">Zaproponuj tagi z AI…</string>
     <string name="outfits_suggest_tags_title">Proponowane tagi</string>
     <string name="outfits_suggest_tags_loading">Proponowanie tagów…</string>
     <string name="outfits_suggest_tags_empty">Nie zaproponowano nowych tagów.</string>
@@ -483,12 +483,12 @@
     <string name="outfits_select_all_count">Zaznacz wszystkie %d</string>
     <string name="outfits_delete_selected_title">Usunąć stylizacje?</string>
     <string name="outfits_delete_selected_text">%d stylizacji zostanie trwale usuniętych.</string>
-    <string name="outfits_combine">Połącz z AI</string>
+    <string name="outfits_combine">Połącz z AI…</string>
     <string name="outfit_slot_lock">Zablokuj</string>
     <string name="outfit_slot_unlock">Odblokuj</string>
     <string name="outfit_slot_remove">Usuń</string>
-    <string name="outfit_slot_add">Dodaj element</string>
-    <string name="outfit_generate_with_ai">Generuj z AI</string>
+    <string name="outfit_slot_add">Dodaj element…</string>
+    <string name="outfit_generate_with_ai">Generuj z AI…</string>
     <string name="outfit_discard_changes_title">Odrzucić zmiany?</string>
     <string name="outfit_discard_changes_body">Twoje niezapisane zmiany zostaną utracone.</string>
     <string name="outfit_discard_changes_confirm">Odrzuć</string>
@@ -556,7 +556,7 @@
     <string name="gap_empty_hint">Dotknij „Analizuj", aby AI zidentyfikowało podstawowe elementy, które uzupełnią najwięcej stylizacji z Twojej garderoby.</string>
 
     <!-- Suggest replacements (Wardrobe selection mode) -->
-    <string name="wardrobe_suggest_replacements">Zaproponuj alternatywy</string>
+    <string name="wardrobe_suggest_replacements">Zaproponuj alternatywy…</string>
     <string name="replacements_title">Zamienniki dla %d elementów</string>
     <string name="replacements_analyzing">Proponowanie zamienników…</string>
 
@@ -597,7 +597,7 @@
 
     <!-- Try on me -->
     <string name="tryon_title">Przymierz na mnie</string>
-    <string name="tryon_fab">Przymierz na mnie</string>
+    <string name="tryon_fab">Przymierz na mnie…</string>
     <string name="tryon_section_title">Zdjęcia do przymiarki</string>
     <string name="tryon_section_desc">Prześlij zdjęcia całej sylwetki z przodu, z boku i z tyłu. Aplikacja używa ich jako odniesienia podczas generowania podglądu przymiarki stylizacji lub elementu garderoby na Tobie. Zdjęcia pozostają na Twoim Drive.</string>
     <string name="tryon_slot_front">Przód</string>
@@ -622,11 +622,11 @@
     <string name="action_add">Dodaj</string>
     <string name="tryon_composer_explain">Wszystkie poniższe elementy będą noszone razem w wygenerowanej przymiarce. Dotknij element, aby go usunąć; dotknij „+", aby dodać więcej.</string>
     <string name="tryon_composer_items_title">Elementy w tej przymiarce (%1$d)</string>
-    <string name="tryon_add_item">Dodaj element</string>
+    <string name="tryon_add_item">Dodaj element…</string>
     <string name="tryon_add_items_title">Dodaj elementy garderoby</string>
     <string name="tryon_generate">Generuj przymiarkę</string>
     <string name="tryon_try_again">Spróbuj ponownie</string>
-    <string name="tryon_change_items">Zmień elementy</string>
+    <string name="tryon_change_items">Zmień elementy…</string>
     <string name="tryon_save_to_drive">Zapisz</string>
     <string name="tryon_saved_to_drive">Zapisano</string>
     <string name="tryon_saving">Zapisywanie…</string>
@@ -748,7 +748,7 @@
     <string name="composer_factor_items">%1$d elementów</string>
     <string name="composer_factor_closets">%1$d szaf</string>
     <string name="composer_factor_composition">Własna kompozycja</string>
-    <string name="wardrobe_create_style">Utwórz stylizację</string>
+    <string name="wardrobe_create_style">Utwórz stylizację…</string>
     <string name="wardrobe_imported_on">Zaimportowano %1$s</string>
     <string name="wardrobe_view_original">Pokaż oryginał</string>
     <string name="wardrobe_view_cutout">Pokaż wycinek</string>
@@ -838,7 +838,7 @@
     <string name="settings_debug_similarity_desc">Po otwarciu trafienia w wyszukiwarce podobieństw pokaż rozbicie na kanały (segmentowane miniatury, embedding/cosinus histogramu, histogramy hue) zamiast domyślnego obrazu z zoomem.</string>
 
     <!-- Match preview dialog -->
-    <string name="shop_show_in_wardrobe">Pokaż w garderobie</string>
+    <string name="shop_show_in_wardrobe">Pokaż w garderobie…</string>
     <string name="shop_add_to_shopping_list">Dodaj do listy zakupów</string>
     <string name="dedupe_dialog_title">Możliwy duplikat</string>
     <string name="dedupe_dialog_desc">Znaleziono %1$d element(ów) w garderobie, które wyglądają bardzo podobnie do tego zdjęcia.</string>

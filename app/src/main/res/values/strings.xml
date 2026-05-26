@@ -40,7 +40,7 @@
     <string name="shop_list_moving">Moving…</string>
     <string name="shop_list_loading">Loading…</string>
     <string name="shop_list_processing">Processing %1$d item(s)…</string>
-    <string name="shop_list_move_to_closet">Move to closet</string>
+    <string name="shop_list_move_to_closet">Move to closet…</string>
     <string name="shop_list_move_title">Move to closet</string>
     <string name="shop_list_delete_title">Delete from wishlist?</string>
     <string name="shop_list_delete_text">Permanently remove %1$d item(s) from your wishlist?</string>
@@ -133,7 +133,7 @@
     <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">Wardrobe Tags</string>
     <string name="settings_data_tags_desc">Re-classify every item in your wardrobe with Gemini. This overwrites any manual tag edits.</string>
-    <string name="settings_rescan_button">Re-scan All Tags</string>
+    <string name="settings_rescan_button">Re-scan All Tags…</string>
     <string name="settings_rescanning">Re-scanning %1$d of %2$d…</string>
     <string name="settings_rescan_dialog_title">Re-scan all tags?</string>
     <string name="settings_rescan_dialog_text">Gemini will re-classify every item in your wardrobe. This will overwrite any manual tag edits and may take a while.</string>
@@ -238,7 +238,7 @@
     <string name="settings_locations_title">Closets</string>
     <string name="settings_locations_desc">Manage multiple wardrobes for different places. Tap a closet to make it the default — new items are imported there, and outfit creation starts from it. The closet filter on top of each screen is independent and always starts at \"All\". Optionally set a city for weather info.</string>
     <string name="settings_location_default">Default</string>
-    <string name="settings_location_add">Add closet</string>
+    <string name="settings_location_add">Add closet…</string>
     <string name="settings_location_name_hint">Closet name</string>
     <string name="settings_location_geo_hint">City for weather (optional)</string>
     <string name="settings_location_add_title">Add closet</string>
@@ -275,7 +275,7 @@
     <string name="wardrobe_tag_detect">Detect tags</string>
     <string name="wardrobe_tag_remove_bg">Remove BG</string>
     <string name="wardrobe_tag_re_remove_bg">Re-remove BG</string>
-    <string name="wardrobe_fix_cutout_bg">Fix cutout BG</string>
+    <string name="wardrobe_fix_cutout_bg">Fix cutout BG…</string>
     <string name="wardrobe_fix_cutout_bg_done">Cutout background fixed.</string>
     <string name="wardrobe_fix_cutout_bg_clean">No leftover background detected — nothing to fix.</string>
     <string name="wardrobe_tag_rotate">Rotate</string>
@@ -463,7 +463,7 @@
     <string name="composer_select_suggestion">Use this outfit</string>
     <string name="outfits_tag_add">Add tag</string>
     <string name="outfits_tag_add_placeholder">e.g. birthday, travel</string>
-    <string name="outfits_suggest_tags">Suggest tags with AI</string>
+    <string name="outfits_suggest_tags">Suggest tags with AI…</string>
     <string name="outfits_suggest_tags_title">Suggested tags</string>
     <string name="outfits_suggest_tags_loading">Suggesting tags…</string>
     <string name="outfits_suggest_tags_empty">No new tags suggested.</string>
@@ -491,12 +491,12 @@
     <string name="outfits_broken_delete_title">Delete broken outfits?</string>
     <string name="outfits_broken_delete_text">These %d outfits reference items no longer in your wardrobe and will be permanently deleted:</string>
     <string name="outfits_broken_more">+%d more</string>
-    <string name="outfits_combine">Combine with AI</string>
+    <string name="outfits_combine">Combine with AI…</string>
     <string name="outfit_slot_lock">Lock</string>
     <string name="outfit_slot_unlock">Unlock</string>
     <string name="outfit_slot_remove">Remove</string>
-    <string name="outfit_slot_add">Add item</string>
-    <string name="outfit_generate_with_ai">Generate with AI</string>
+    <string name="outfit_slot_add">Add item…</string>
+    <string name="outfit_generate_with_ai">Generate with AI…</string>
     <string name="outfit_discard_changes_title">Discard changes?</string>
     <string name="outfit_discard_changes_body">Your unsaved changes will be lost.</string>
     <string name="outfit_discard_changes_confirm">Discard</string>
@@ -577,7 +577,7 @@
     <string name="gap_empty_hint">Tap \"Analyze\" to let AI identify the foundational pieces that would complete the most outfits from your wardrobe.</string>
 
     <!-- Suggest replacements (Wardrobe selection mode) -->
-    <string name="wardrobe_suggest_replacements">Suggest alternatives</string>
+    <string name="wardrobe_suggest_replacements">Suggest alternatives…</string>
     <string name="replacements_title">Replacements for %d items</string>
     <string name="replacements_analyzing">Suggesting replacements…</string>
 
@@ -618,7 +618,7 @@
 
     <!-- Try on me -->
     <string name="tryon_title">Try on me</string>
-    <string name="tryon_fab">Try on me</string>
+    <string name="tryon_fab">Try on me…</string>
     <string name="tryon_section_title">Try-on photos</string>
     <string name="tryon_section_desc">Upload full-body photos from the front, side, and back. The app uses these as a reference when generating a Try-on preview of an outfit or wardrobe item on you. Photos stay in your own Drive.</string>
     <string name="tryon_slot_front">Front</string>
@@ -643,11 +643,11 @@
     <string name="action_add">Add</string>
     <string name="tryon_composer_explain">All items shown below will be worn together in the generated try-on. Tap an item to remove it; tap \"+\" to add more.</string>
     <string name="tryon_composer_items_title">Items in this try-on (%1$d)</string>
-    <string name="tryon_add_item">Add item</string>
+    <string name="tryon_add_item">Add item…</string>
     <string name="tryon_add_items_title">Add wardrobe items</string>
     <string name="tryon_generate">Generate try-on</string>
     <string name="tryon_try_again">Try again</string>
-    <string name="tryon_change_items">Change items</string>
+    <string name="tryon_change_items">Change items…</string>
     <string name="tryon_save_to_drive">Save</string>
     <string name="tryon_saved_to_drive">Saved</string>
     <string name="tryon_saving">Saving…</string>
@@ -681,11 +681,11 @@
     <string name="tryon_trip_picker_title">Try on a trip outfit</string>
     <string name="tryon_trip_picker_empty">No trip outfits to try on yet. Plan a trip in the Travel tab first.</string>
     <string name="tryon_trip_context">%1$s · Day %2$d</string>
-    <string name="tryon_quick_see_history">See past try-ons</string>
+    <string name="tryon_quick_see_history">See past try-ons…</string>
     <string name="tryon_history_subtitle">Latest at top</string>
     <string name="tryon_history_earlier">Earlier</string>
     <string name="tryon_history_more_count">%1$d more</string>
-    <string name="tryon_history_new">New try-on</string>
+    <string name="tryon_history_new">New try-on…</string>
     <string name="tryon_source_label_outfit">From outfit</string>
     <string name="tryon_source_label_wardrobe">From wardrobe</string>
     <string name="tryon_source_label_shopping">From shopping</string>
@@ -694,7 +694,7 @@
     <string name="tryon_source_swap">Swap</string>
     <string name="tryon_empty_title">No try-ons yet</string>
     <string name="tryon_empty_body">Generate a try-on from an outfit, your wardrobe, or a shopping item — we\'ll save it here so you can revisit anytime.</string>
-    <string name="tryon_empty_cta">Start a try-on</string>
+    <string name="tryon_empty_cta">Start a try-on…</string>
     <string name="tryon_empty_chip_outfit">From an outfit</string>
     <string name="tryon_empty_chip_wardrobe">From wardrobe</string>
     <string name="tryon_empty_chip_shopping">From shopping</string>
@@ -833,7 +833,7 @@
     <string name="composer_factor_items">%1$d items</string>
     <string name="composer_factor_closets">%1$d closets</string>
     <string name="composer_factor_composition">Custom composition</string>
-    <string name="wardrobe_create_style">Create outfit</string>
+    <string name="wardrobe_create_style">Create outfit…</string>
     <string name="wardrobe_imported_on">Imported %1$s</string>
     <string name="wardrobe_view_original">View original</string>
     <string name="wardrobe_view_cutout">View cutout</string>
@@ -923,7 +923,7 @@
     <string name="settings_debug_similarity_desc">When opening a Similarity Finder match, show the per-channel breakdown (segmented thumbnails, embedding/histogram cosine, hue histograms) instead of the default zoomable image.</string>
 
     <!-- Match preview dialog -->
-    <string name="shop_show_in_wardrobe">Show in wardrobe</string>
+    <string name="shop_show_in_wardrobe">Show in wardrobe…</string>
     <string name="shop_add_to_shopping_list">Add to shopping list</string>
     <string name="dedupe_dialog_title">Possible duplicate</string>
     <string name="dedupe_dialog_desc">We found %1$d item(s) in your wardrobe that look very similar to this photo.</string>

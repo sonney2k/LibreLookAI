@@ -39,7 +39,7 @@
     <string name="shop_list_moving">Déplacement…</string>
     <string name="shop_list_loading">Chargement…</string>
     <string name="shop_list_processing">Traitement de %1$d article(s)…</string>
-    <string name="shop_list_move_to_closet">Déplacer vers la garde-robe</string>
+    <string name="shop_list_move_to_closet">Déplacer vers la garde-robe…</string>
     <string name="shop_list_move_title">Déplacer vers la garde-robe</string>
     <string name="shop_list_delete_title">Supprimer de la liste de souhaits ?</string>
     <string name="shop_list_delete_text">Supprimer définitivement %1$d article(s) de ta liste de souhaits ?</string>
@@ -132,7 +132,7 @@
     <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">Étiquettes de garde-robe</string>
     <string name="settings_data_tags_desc">Reclasse chaque article de ta garde-robe avec Gemini. Cela écrase toutes les modifications manuelles d\'étiquettes.</string>
-    <string name="settings_rescan_button">Re-scanner toutes les étiquettes</string>
+    <string name="settings_rescan_button">Re-scanner toutes les étiquettes…</string>
     <string name="settings_rescanning">Re-scan %1$d sur %2$d…</string>
     <string name="settings_rescan_dialog_title">Re-scanner toutes les étiquettes ?</string>
     <string name="settings_rescan_dialog_text">Gemini reclassera chaque article de ta garde-robe. Cela écrasera toutes les modifications manuelles et peut prendre du temps.</string>
@@ -237,7 +237,7 @@
     <string name="settings_locations_title">Garde-robes</string>
     <string name="settings_locations_desc">Gère plusieurs garde-robes pour différents lieux. Touche une garde-robe pour en faire celle par défaut — les nouveaux articles y sont importés et la création de tenue commence là. Le filtre de garde-robe en haut de chaque écran est indépendant et commence toujours sur « Toutes ». Définis une ville pour la météo (optionnel).</string>
     <string name="settings_location_default">Par défaut</string>
-    <string name="settings_location_add">Ajouter une garde-robe</string>
+    <string name="settings_location_add">Ajouter une garde-robe…</string>
     <string name="settings_location_name_hint">Nom de la garde-robe</string>
     <string name="settings_location_geo_hint">Ville pour la météo (optionnel)</string>
     <string name="settings_location_add_title">Ajouter une garde-robe</string>
@@ -272,7 +272,7 @@
     <string name="wardrobe_tag_detect">Détecter les étiquettes</string>
     <string name="wardrobe_tag_remove_bg">Supprimer le fond</string>
     <string name="wardrobe_tag_re_remove_bg">Re-supprimer le fond</string>
-    <string name="wardrobe_fix_cutout_bg">Corriger le fond du détourage</string>
+    <string name="wardrobe_fix_cutout_bg">Corriger le fond du détourage…</string>
     <string name="wardrobe_fix_cutout_bg_done">Fond du détourage corrigé.</string>
     <string name="wardrobe_fix_cutout_bg_clean">Aucun fond résiduel détecté — rien à corriger.</string>
     <string name="wardrobe_tag_rotate">Rotation</string>
@@ -460,7 +460,7 @@
     <string name="composer_select_suggestion">Utiliser cette tenue</string>
     <string name="outfits_tag_add">Ajouter une étiquette</string>
     <string name="outfits_tag_add_placeholder">ex. anniversaire, voyage</string>
-    <string name="outfits_suggest_tags">Suggérer des étiquettes avec l\'IA</string>
+    <string name="outfits_suggest_tags">Suggérer des étiquettes avec l\'IA…</string>
     <string name="outfits_suggest_tags_title">Étiquettes suggérées</string>
     <string name="outfits_suggest_tags_loading">Suggestion d\'étiquettes…</string>
     <string name="outfits_suggest_tags_empty">Aucune nouvelle étiquette suggérée.</string>
@@ -483,12 +483,12 @@
     <string name="outfits_select_all_count">Tout sélectionner %d</string>
     <string name="outfits_delete_selected_title">Supprimer les tenues ?</string>
     <string name="outfits_delete_selected_text">%d tenues seront définitivement supprimées.</string>
-    <string name="outfits_combine">Combiner avec l\'IA</string>
+    <string name="outfits_combine">Combiner avec l\'IA…</string>
     <string name="outfit_slot_lock">Verrouiller</string>
     <string name="outfit_slot_unlock">Déverrouiller</string>
     <string name="outfit_slot_remove">Retirer</string>
-    <string name="outfit_slot_add">Ajouter un article</string>
-    <string name="outfit_generate_with_ai">Générer avec l\'IA</string>
+    <string name="outfit_slot_add">Ajouter un article…</string>
+    <string name="outfit_generate_with_ai">Générer avec l\'IA…</string>
     <string name="outfit_discard_changes_title">Abandonner les modifications ?</string>
     <string name="outfit_discard_changes_body">Tes modifications non enregistrées seront perdues.</string>
     <string name="outfit_discard_changes_confirm">Abandonner</string>
@@ -556,7 +556,7 @@
     <string name="gap_empty_hint">Touche « Analyser » pour laisser l\'IA identifier les pièces fondamentales qui compléteraient le plus de tenues depuis ta garde-robe.</string>
 
     <!-- Suggérer des remplacements (mode sélection Garde-robe) -->
-    <string name="wardrobe_suggest_replacements">Suggérer des alternatives</string>
+    <string name="wardrobe_suggest_replacements">Suggérer des alternatives…</string>
     <string name="replacements_title">Remplacements pour %d articles</string>
     <string name="replacements_analyzing">Suggestion de remplacements…</string>
 
@@ -597,7 +597,7 @@
 
     <!-- Essayage -->
     <string name="tryon_title">Essayage sur moi</string>
-    <string name="tryon_fab">Essayage sur moi</string>
+    <string name="tryon_fab">Essayage sur moi…</string>
     <string name="tryon_section_title">Photos d\'essayage</string>
     <string name="tryon_section_desc">Téléverse des photos en pied de face, de côté et de dos. L\'app les utilise comme référence pour générer un aperçu d\'essayage d\'une tenue ou d\'un article de garde-robe sur toi. Les photos restent dans ton propre Drive.</string>
     <string name="tryon_slot_front">Face</string>
@@ -622,11 +622,11 @@
     <string name="action_add">Ajouter</string>
     <string name="tryon_composer_explain">Tous les articles affichés ci-dessous seront portés ensemble dans l\'essayage généré. Touche un article pour le retirer ; touche « + » pour en ajouter d\'autres.</string>
     <string name="tryon_composer_items_title">Articles dans cet essayage (%1$d)</string>
-    <string name="tryon_add_item">Ajouter un article</string>
+    <string name="tryon_add_item">Ajouter un article…</string>
     <string name="tryon_add_items_title">Ajouter des articles de garde-robe</string>
     <string name="tryon_generate">Générer l\'essayage</string>
     <string name="tryon_try_again">Réessayer</string>
-    <string name="tryon_change_items">Changer les articles</string>
+    <string name="tryon_change_items">Changer les articles…</string>
     <string name="tryon_save_to_drive">Enregistrer</string>
     <string name="tryon_saved_to_drive">Enregistré</string>
     <string name="tryon_saving">Enregistrement…</string>
@@ -748,7 +748,7 @@
     <string name="composer_factor_items">%1$d articles</string>
     <string name="composer_factor_closets">%1$d garde-robes</string>
     <string name="composer_factor_composition">Composition personnalisée</string>
-    <string name="wardrobe_create_style">Créer une tenue</string>
+    <string name="wardrobe_create_style">Créer une tenue…</string>
     <string name="wardrobe_imported_on">Importé %1$s</string>
     <string name="wardrobe_view_original">Voir l\'original</string>
     <string name="wardrobe_view_cutout">Voir le détourage</string>
@@ -838,7 +838,7 @@
     <string name="settings_debug_similarity_desc">Lors de l\'ouverture d\'un résultat de recherche par similarité, affiche la ventilation par canal (miniatures segmentées, cosinus embedding/histogramme, histogrammes de teinte) au lieu de l\'image zoomable par défaut.</string>
 
     <!-- Dialogue d\'aperçu de correspondance -->
-    <string name="shop_show_in_wardrobe">Afficher dans la garde-robe</string>
+    <string name="shop_show_in_wardrobe">Afficher dans la garde-robe…</string>
     <string name="shop_add_to_shopping_list">Ajouter à la liste d\'achats</string>
     <string name="dedupe_dialog_title">Doublon possible</string>
     <string name="dedupe_dialog_desc">Nous avons trouvé %1$d article(s) dans ta garde-robe qui ressemblent beaucoup à cette photo.</string>
