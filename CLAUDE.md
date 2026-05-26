@@ -17,8 +17,14 @@ Compact day-to-day guidance. **Deep architecture, pipelines, rationale, and Dial
 
 ## Build
 - `./gradlew assembleDebug` — debug APK
-- `./gradlew test` — unit tests
+- `./gradlew testDebugUnitTest` — JVM unit tests (note: bare `./gradlew test` rejects `--tests`; use the variant task to filter)
 - Full release / function deploy commands: see `CLAUDE_ARCHIVE.md` → Release process.
+
+## Testing
+- **Pure-logic JVM tests** (plain JUnit): e.g. `TagNormalizerTest`, `PHashTest` (bit-math only). No Android runtime.
+- **Compose UI flow tests run on the JVM via Robolectric** (`createComposeRule()` + `@RunWith(RobolectricTestRunner)` + `@GraphicsMode(NATIVE)`) — see `wardrobe/TagFilterBarTest`. Test the **`internal`/stateless `*Content` composables** (e.g. `TagFilterBar`, `TagEditScreenContent`) with **hoisted state**, not whole screens — screens default their ViewModels to `viewModel()` and do real Drive/Gemini/ML I/O. Resolve display text via `getString(R.string.…)` (locale-independent), not hardcoded strings.
+- **JDK gotcha**: Robolectric can't instrument under the machine-default **JDK 25**. Unit tests are pinned to a **Java 21 toolchain** (`tasks.withType<Test>` in `app/build.gradle.kts`), with the path declared in `gradle.properties` (`org.gradle.java.installations.paths` → Homebrew `openjdk@21`) because foojay auto-download is incompatible with Gradle 9. `testOptions.unitTests.isIncludeAndroidResources = true` lets `stringResource` resolve.
+- **Instrumented tests** (`androidTest/`, needs device/emulator): `./gradlew connectedDebugAndroidTest`. Prefer Robolectric for flow tests; reserve instrumented for true device-dependent paths. Cross-tab nav can only be tested by launching `MainActivity` (single `selectedTab`, no NavHost).
 
 ## Package layout (under `com.librelookai`)
 `MainActivity` at root. Feature packages: `auth/`, `wardrobe/` (incl. `LocationViewModel`, `CaptureScreen`, `UrlImportPicker`, `WebProductFetcher`, `WardrobeGap*`), `outfit/` (incl. `PredictionSetupScreen`), `travel/` (incl. `TripsViewModel`, `TripViewerScreen`), `tryon/`, `shopping/`, `billing/`, `insights/` (incl. `UsageScreen`), `settings/` (incl. `ProfileViewModel`, `UserPreferences`, `AppLanguage`, `AppFont`). Cross-cutting: `data/model/` (pure data classes), `data/drive/` (`DriveRepository`), `gemini/` (`GeminiRepository`, `PromptStore`, `ApiKeyStore`, `TokenUsage*`, `TagNormalizer`), `ml/` (`EmbeddingService`/`Repository`/`Index`, `SegmentationRepository`, `PHash`, `ColorHistogram`), `weather/`, `service/` (`JobForegroundService`), `util/` (`Analytics`, `NetworkUtils`, `Scrollbar`, `AiProcessingOverlay`), `ui/theme/`.

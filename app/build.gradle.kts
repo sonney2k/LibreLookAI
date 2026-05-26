@@ -116,6 +116,24 @@ android {
         // Keep .tflite uncompressed so MediaPipe can mmap it directly from the APK
         noCompress += listOf("tflite")
     }
+
+    testOptions {
+        // Robolectric needs the merged manifest + resources so stringResource(...) and
+        // theming resolve when Compose UI tests run on the JVM.
+        unitTests.isIncludeAndroidResources = true
+    }
+}
+
+// Robolectric's bytecode instrumentation can't run under a very new JDK (its bundled ASM
+// caps out below JDK 25, the machine default here). Pin unit tests to a Java 21 toolchain so
+// they run deterministically regardless of the JDK launching Gradle. Auto-provisioned via the
+// foojay resolver in settings.gradle.kts.
+tasks.withType<Test>().configureEach {
+    javaLauncher.set(
+        javaToolchains.launcherFor {
+            languageVersion.set(JavaLanguageVersion.of(21))
+        },
+    )
 }
 
 dependencies {
@@ -151,6 +169,12 @@ dependencies {
     implementation(libs.mediapipe.tasks.vision)
 
     testImplementation(libs.junit)
+    // JVM-side Compose UI tests via Robolectric (./gradlew testDebugUnitTest — no device needed)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.junit)
+    testImplementation(platform(libs.androidx.compose.bom))
+    testImplementation(libs.androidx.ui.test.junit4)
+    testImplementation(libs.androidx.ui.test.manifest)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
