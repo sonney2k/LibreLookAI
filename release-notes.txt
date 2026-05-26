@@ -1,11 +1,35 @@
-### LibreLookAI v1.8.1 Release Notes
+### LibreLookAI v1.9.0 Release Notes
 
-#### Trips load instantly
-- The Travel tab now paints your saved trips immediately from a local cache on launch, then refreshes from Drive in the background — just like the Wardrobe. No more waiting on the network to see your trips.
+#### Plan and revisit whole trips
+- Travel now understands a trip as a single thing: plan a trip and LibreLookAI groups all of its day-outfits together so you can open, browse, and edit the whole trip in one place.
+- Tap a trip to flip through its outfits in the swipeable full-screen viewer, day by day, with the day title shown inline.
+- Each trip carries a packing checklist you can tick off, plus an editable "additional items" list for anything the AI didn't suggest.
+- "Wear today" lives in the top-right of each trip day, and a try-on action is now built into the trip outfit viewer so you can see yourself in a day's look without leaving the trip.
+- Trips list gained a filter + sort sub-panel, and trips load instantly from a local cache on launch, then refresh from Drive in the background — no more waiting on the network.
 
-#### Tidy up outdated outfits & try-ons
-- A banner on the Outfits screen now flags outfits that reference wardrobe items you've since deleted, with one tap to review and remove them (they were previously hidden with no way to clean them up).
-- When you delete wardrobe items, LibreLookAI now tells you how many outfits and try-ons used those items and offers to delete them too (on by default) — so you don't end up with broken outfits and stale try-ons.
+#### Try-On, redesigned around one button
+- A new raised center "Try-On AI" button anchors the bottom bar. Tap it to open a quick sheet that launches a try-on from an outfit, a wardrobe item, shopping, or a trip.
+- Past try-ons now live on their own full-screen page (reached from the AI button ▸ "See past try-ons"), with swipeable history detail and a feed that shows where each try-on came from.
+- Picking items is faster: the outfit picker has a filter/sort bar, and the wardrobe picker supports long-press multi-select.
+- The composer lays items out in a clean stack with the Generate button pinned in place, so it's always reachable.
+
+#### Smarter about your closets
+- AI features (outfits, travel) now default to whichever closet you currently have selected, instead of searching everything.
+- Trips are scoped to their closet, items are resolved across closets when needed, and empty trips are hidden.
+- The closet selector, Insights, and Settings stay reachable from the full-screen viewers and the try-on / outfit-building flow.
+
+#### Better outfit building
+- One-piece garments (dresses, jumpsuits, suits) now correctly stand in for both Top and Bottom — selecting one clears the other — and render as a tall piece flanked by the rest of the look.
+
+#### Clean up after deletions
+- A banner on the Outfits screen flags outfits that reference wardrobe items you've since deleted, with one tap to review and remove them.
+- Deleting wardrobe items now tells you how many outfits and try-ons used them and offers to delete those too (on by default), so you're not left with broken outfits and stale try-ons.
+
+#### Polish & fixes
+- Fixed Generate and action buttons getting clipped under the navigation bar in the trip and try-on flows.
+- Larger, more legible bottom-nav labels and quick-sheet text.
+- Fixed forecast lookup for picked destination suggestions when planning a trip.
+- Wide-reaching translation fixes across travel, try-on, and the delete dialogs so the whole flow is localized.
 
 ---
 
