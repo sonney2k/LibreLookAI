@@ -128,8 +128,11 @@ fun TripViewerScreen(
         return
     }
 
-    val imagesById = remember(wardrobeState.images) {
-        wardrobeState.images.associateBy { it.driveId }
+    // Render trip items from the cross-closet snapshot (every closet), not the active-closet-scoped
+    // `images` — otherwise opening a trip while a specific closet is selected shows empty day cards
+    // for any item that lives in another closet.
+    val imagesById = remember(wardrobeState.allLocationImages) {
+        wardrobeState.allLocationImages.associateBy { it.driveId }
     }
     val outfitsById = remember(outfitsState.outfits) {
         outfitsState.outfits.associateBy { it.id }

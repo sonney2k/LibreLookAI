@@ -486,11 +486,18 @@ private fun TravelOutfitsView(
             o.id !in tripOutfitIds && o.tags.any { it.equals("travel", ignoreCase = true) }
         }
     }
-    val imagesById = remember(wardrobeState.images) { wardrobeState.images.associateBy { it.driveId } }
+    // Resolve trip/outfit items from the cross-closet snapshot (every configured closet), NOT the
+    // active-closet-scoped `images`. MainActivity calls `setLocation(folderId)` when a specific
+    // closet is selected, which trims `images` to that closet — so resolving against it makes a
+    // trip's items vanish (empty card) the moment any closet filter is applied.
+    val imagesById = remember(wardrobeState.allLocationImages) {
+        wardrobeState.allLocationImages.associateBy { it.driveId }
+    }
 
-    // Currently selected closet (null = All). Outfits are always loaded from every closet and
-    // carry their `folderId`, so when a specific closet is selected we show only trips whose
-    // every outfit lives in it.
+    // Currently selected closet (null = All). A trip/outfit belongs to a closet based on where its
+    // *items* live (each item's `folderId`), not where the outfit JSON happens to be stored — those
+    // can differ (outfits save to the closet that was active at creation), which previously made a
+    // trip whose items are all in one closet either vanish or render empty under that closet.
     val closetFilter = locationViewModel.activeFolderId
 
     // ---- Filter + sort state (mirrors the Outfits screen sub-panel) ----
@@ -514,18 +521,32 @@ private fun TravelOutfitsView(
         (tripImages + orphanImages).distinct().toList().tagCategories()
     }
 
-    // Closet-scoped universe (before tag/text filters). A specific closet keeps only trips whose
-    // every outfit resolves and lives in that closet; "All" (null) keeps everything.
-    val closetTrips = remember(tripsState.trips, outfitsById, closetFilter) {
-        if (closetFilter == null) tripsState.trips
-        else tripsState.trips.filter { trip ->
-            val outfits = trip.outfitIds.mapNotNull { outfitsById[it] }
-            outfits.size == trip.outfitIds.size && outfits.all { it.folderId == closetFilter }
+    // Closet-scoped universe (before tag/text filters), keyed on item `folderId` so it matches what
+    // the cards actually render. A trip with no resolvable items is dropped entirely (covers genuine
+    // empties and avoids showing a trip with nothing in it). The snapshot is loaded lazily, so while
+    // it's still empty we keep showing trips rather than blanking the whole list mid-load.
+    val snapshotReady = imagesById.isNotEmpty()
+    val closetTrips = remember(tripsState.trips, outfitsById, imagesById, closetFilter, snapshotReady) {
+        tripsState.trips.filter { trip ->
+            val items = trip.outfitIds.mapNotNull { outfitsById[it] }
+                .flatMap { it.itemIds }
+                .mapNotNull { imagesById[it] }
+            when {
+                closetFilter != null -> items.isNotEmpty() && items.all { it.folderId == closetFilter }
+                !snapshotReady       -> true
+                else                 -> items.isNotEmpty()
+            }
         }
     }
-    val closetOrphans = remember(orphanTravelOutfits, closetFilter) {
-        if (closetFilter == null) orphanTravelOutfits
-        else orphanTravelOutfits.filter { it.folderId == closetFilter }
+    val closetOrphans = remember(orphanTravelOutfits, imagesById, closetFilter, snapshotReady) {
+        orphanTravelOutfits.filter { outfit ->
+            val items = outfit.itemIds.mapNotNull { imagesById[it] }
+            when {
+                closetFilter != null -> items.isNotEmpty() && items.all { it.folderId == closetFilter }
+                !snapshotReady       -> true
+                else                 -> items.isNotEmpty()
+            }
+        }
     }
 
     val displayedTrips = remember(closetTrips, selectedTags, textQuery, sortBy, outfitsById, imagesById) {
