@@ -252,9 +252,6 @@ fun TryOnComposerScreen(
                         overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
                         modifier = Modifier.weight(1f),
                     )
-                    // Keep the closet selector + Insights + Settings reachable while building a
-                    // try-on. Navigating closes the whole composer first ("dismiss then navigate").
-                    com.librelookai.ViewerHeaderActions(onBeforeNavigate = tryOnViewModel::close)
                 }
             },
         ) { innerPadding ->
