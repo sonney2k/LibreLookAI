@@ -42,6 +42,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.FlightTakeoff
 import androidx.compose.material.icons.filled.Style
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.automirrored.filled.Sort
@@ -146,6 +147,7 @@ import com.librelookai.wardrobe.TagFilterBar
 import com.librelookai.wardrobe.WardrobeFilterSheet
 import com.librelookai.wardrobe.WardrobeViewModel
 import com.librelookai.wardrobe.displayLabel
+import com.librelookai.travel.TripsViewModel
 import com.librelookai.wardrobe.tagCategories
 import com.librelookai.wardrobe.tagStringsForCategory
 import com.librelookai.weather.WeatherViewModel
@@ -180,6 +182,7 @@ fun OutfitsScreen(
     profileViewModel: ProfileViewModel = viewModel(),
     weatherViewModel: WeatherViewModel = viewModel(),
     locationViewModel: LocationViewModel = viewModel(),
+    tripsViewModel: TripsViewModel = viewModel(),
     onTryOnStyle: (Outfit) -> Unit = {},
     canTryOn: Boolean = false,
     onSettingsClick: () -> Unit = {},
@@ -192,6 +195,12 @@ fun OutfitsScreen(
     val weatherState by weatherViewModel.state.collectAsState()
     val outfitEventsState by outfitEventsViewModel.state.collectAsState()
     val locationState by locationViewModel.state.collectAsState()
+    val tripsState by tripsViewModel.state.collectAsState()
+
+    // tripId → trip name, used to label travel outfits with their originating trip.
+    val tripNamesById = remember(tripsState.trips) {
+        tripsState.trips.associate { it.id to it.name }
+    }
 
     // Refresh wardrobe image cache for styles once wardrobe Drive sync completes.
     LaunchedEffect(wardrobeState.isSyncing, outfitsState.isLoading) {
@@ -265,6 +274,7 @@ fun OutfitsScreen(
                     isPredicting = outfitsState.isPredicting,
                     locations = locationState.locations,
                     activeLocationId = locationState.activeLocationId,
+                    tripNamesById = tripNamesById,
                     predictionError = outfitsState.predictionError,
                     selectedOutfitIds = outfitsState.selectedOutfitIds,
                     onOpenCreateComposer = {
@@ -434,6 +444,7 @@ private fun OutfitListScreen(
     selectedOutfitIds: Set<String> = emptySet(),
     locations: List<Location> = emptyList(),
     activeLocationId: String = "",
+    tripNamesById: Map<String, String> = emptyMap(),
     onOpenCreateComposer: () -> Unit,
     onSuggestExisting: () -> Unit = {},
     onEditOutfit: (Outfit) -> Unit,
@@ -829,6 +840,7 @@ private fun OutfitListScreen(
                                 style = style,
                                 itemsById = itemsById,
                                 locations = locations,
+                                tripName = style.tripId?.let { tripNamesById[it]?.takeIf { n -> n.isNotBlank() } },
                                 isSelected = style.id in selectedOutfitIds,
                                 isSelectionMode = isSelectionMode,
                                 onEdit = { onEditOutfit(style) },
@@ -1044,6 +1056,7 @@ private fun OutfitCard(
     style: Outfit,
     itemsById: Map<String, DriveImage>,
     locations: List<Location> = emptyList(),
+    tripName: String? = null,
     isSelected: Boolean = false,
     isSelectionMode: Boolean = false,
     onEdit: () -> Unit,
@@ -1149,11 +1162,12 @@ private fun OutfitCard(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            if (style.tags.isNotEmpty()) {
+            if (style.tags.isNotEmpty() || tripName != null) {
                 FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
+                    tripName?.let { OutfitTripChip(it) }
                     style.tags.forEach { OutfitTagChip(it) }
                 }
             }
@@ -1338,6 +1352,33 @@ internal fun RefinementSection(
             ) {
                 Icon(Icons.AutoMirrored.Filled.Send, contentDescription = stringResource(R.string.cd_refine))
             }
+        }
+    }
+}
+
+/** Trip-name chip shown on travel outfits, distinguished from free-form tags by a flight icon. */
+@Composable
+internal fun OutfitTripChip(name: String) {
+    Surface(
+        shape = MaterialTheme.shapes.extraSmall,
+        color = MaterialTheme.colorScheme.tertiaryContainer,
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(3.dp),
+        ) {
+            Icon(
+                Icons.Default.FlightTakeoff,
+                contentDescription = null,
+                modifier = Modifier.size(12.dp),
+                tint = MaterialTheme.colorScheme.onTertiaryContainer,
+            )
+            Text(
+                text = name,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onTertiaryContainer,
+            )
         }
     }
 }
