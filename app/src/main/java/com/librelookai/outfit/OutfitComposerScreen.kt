@@ -893,12 +893,11 @@ private fun ComposerStackedView(
         val collapsed = collapseOnePieceSlots(slots)
         if (isEditMode) collapsed else collapsed.filter { it.selectedItemId != null }
     }
-    val rows: List<List<OutfitSlot>> = remember(visibleSlots) {
-        val grouped = visibleSlots.groupBy { it.category }
-        Layer.values().mapNotNull { layer -> grouped[layer]?.takeIf { it.isNotEmpty() } }
+    val grouped: Map<Layer, List<OutfitSlot>> = remember(visibleSlots) {
+        visibleSlots.groupBy { it.category }
     }
     BoxWithConstraints(modifier = modifier) {
-        if (rows.isEmpty()) {
+        if (visibleSlots.isEmpty()) {
             Text(
                 stringResource(R.string.outfits_missing_items),
                 style = MaterialTheme.typography.bodyMedium,
@@ -907,36 +906,202 @@ private fun ComposerStackedView(
             )
             return@BoxWithConstraints
         }
-        // Top-to-bottom, left-to-right layout — no overlap, so every tile's lock/remove
-        // buttons stay tappable. Tile size is chosen to fit the widest row and all rows
-        // within the available area.
-        val n = rows.size
-        val m = (rows.maxOfOrNull { it.size } ?: 1).coerceAtLeast(1)
+        val onePiece = grouped[Layer.OnePiece].orEmpty()
+        val tops = grouped[Layer.Top].orEmpty()
+        val bottoms = grouped[Layer.Bottom].orEmpty()
+        // A one-piece (Einteiler) covers BOTH the top and bottom. When it coexists with the Top/
+        // Bottom slots it covers, lay them side by side as one "core band": the suit is a single
+        // full-height rectangle (2 vertical units), the Top tile shares its TOP edge and the Bottom
+        // tile shares its BOTTOM edge — instead of being stacked above/below the suit.
+        val coreFlank = onePiece.isNotEmpty() && (tops.isNotEmpty() || bottoms.isNotEmpty())
+
+        // Split the Top/Bottom tiles across a left and a right flank of the suit (left-biased: a
+        // single top/bottom stays on the left, the next one appears on the right).
+        val leftTops = tops.take((tops.size + 1) / 2)
+        val rightTops = tops.drop((tops.size + 1) / 2)
+        val leftBottoms = bottoms.take((bottoms.size + 1) / 2)
+        val rightBottoms = bottoms.drop((bottoms.size + 1) / 2)
+        val leftFlankUnits = maxOf(leftTops.size, leftBottoms.size)
+        val rightFlankUnits = maxOf(rightTops.size, rightBottoms.size)
+
+        // Top-to-bottom, left-to-right layout — no overlap, so every tile's lock/remove buttons
+        // stay tappable. A square "unit" is chosen to fit the widest row and all rows within the
+        // available area; the suit is 2 units tall, and in the core band it can be flanked by a
+        // Top/Bottom column on each side.
         val rowGap = 8.dp
         val itemGap = 8.dp
-        val byW = (maxWidth - itemGap * (m - 1)) / m
-        val byH = (maxHeight - rowGap * (n - 1)) / n
-        val tileSize = minOf(byW, byH).coerceIn(88.dp, 240.dp)
+        var vUnits = 0
+        var hUnits = 1
+        Layer.values().forEach { layer ->
+            val s = grouped[layer]?.takeIf { it.isNotEmpty() } ?: return@forEach
+            when {
+                coreFlank && (layer == Layer.Top || layer == Layer.Bottom) -> Unit // folded into band
+                coreFlank && layer == Layer.OnePiece -> {
+                    vUnits += 2
+                    hUnits = maxOf(hUnits, leftFlankUnits + onePiece.size + rightFlankUnits)
+                }
+                layer == Layer.OnePiece -> { vUnits += 2; hUnits = maxOf(hUnits, s.size) }
+                else -> { vUnits += 1; hUnits = maxOf(hUnits, s.size) }
+            }
+        }
+        vUnits = vUnits.coerceAtLeast(1)
+        val byW = (maxWidth - itemGap * (hUnits - 1)) / hUnits
+        val byH = (maxHeight - rowGap * (vUnits - 1)) / vUnits
+        val unit = minOf(byW, byH).coerceIn(88.dp, 240.dp)
 
         Column(
             modifier = Modifier.align(Alignment.Center),
             verticalArrangement = Arrangement.spacedBy(rowGap),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            rows.forEach { rowSlots ->
-                Row(horizontalArrangement = Arrangement.spacedBy(itemGap)) {
-                    rowSlots.forEach { slot ->
-                        val image = slot.selectedItemId?.let { byId[it] }
-                        ComposerStackedTile(
-                            slot = slot,
-                            image = image,
-                            isEditMode = isEditMode,
-                            size = tileSize,
-                            onTap = { onPickItem(slot.id) },
-                            onToggleLock = { onToggleLock(slot.id) },
-                            onRemove = { onRemove(slot.id) },
-                        )
+            Layer.values().forEach { layer ->
+                val s = grouped[layer]?.takeIf { it.isNotEmpty() } ?: return@forEach
+                when {
+                    coreFlank && (layer == Layer.Top || layer == Layer.Bottom) -> Unit // in the band
+                    coreFlank && layer == Layer.OnePiece -> ComposerCoreBand(
+                        leftTops = leftTops,
+                        leftBottoms = leftBottoms,
+                        onePiece = onePiece,
+                        rightTops = rightTops,
+                        rightBottoms = rightBottoms,
+                        byId = byId,
+                        isEditMode = isEditMode,
+                        unit = unit,
+                        rowGap = rowGap,
+                        itemGap = itemGap,
+                        onPickItem = onPickItem,
+                        onToggleLock = onToggleLock,
+                        onRemove = onRemove,
+                    )
+                    else -> {
+                        // The tall one-piece tile spans 2 units plus the gap between them.
+                        val tileHeight = if (layer == Layer.OnePiece) unit * 2 + rowGap else unit
+                        Row(horizontalArrangement = Arrangement.spacedBy(itemGap)) {
+                            s.forEach { slot ->
+                                ComposerStackedTile(
+                                    slot = slot,
+                                    image = slot.selectedItemId?.let { byId[it] },
+                                    isEditMode = isEditMode,
+                                    width = unit,
+                                    height = tileHeight,
+                                    onTap = { onPickItem(slot.id) },
+                                    onToggleLock = { onToggleLock(slot.id) },
+                                    onRemove = { onRemove(slot.id) },
+                                )
+                            }
+                        }
                     }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * The Top / OnePiece / Bottom "core band": the one-piece renders as a single full-height rectangle
+ * that can be flanked by a Top/Bottom column on each side. In every flank column the Top tile is
+ * pinned to the band's top edge and the Bottom tile to its bottom edge, so each shares an edge line
+ * with the suit rather than stacking above/below it.
+ */
+@Composable
+private fun ComposerCoreBand(
+    leftTops: List<OutfitSlot>,
+    leftBottoms: List<OutfitSlot>,
+    onePiece: List<OutfitSlot>,
+    rightTops: List<OutfitSlot>,
+    rightBottoms: List<OutfitSlot>,
+    byId: Map<String, DriveImage>,
+    isEditMode: Boolean,
+    unit: Dp,
+    rowGap: Dp,
+    itemGap: Dp,
+    onPickItem: (slotId: String) -> Unit,
+    onToggleLock: (slotId: String) -> Unit,
+    onRemove: (slotId: String) -> Unit,
+) {
+    val bandHeight = unit * 2 + rowGap
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(itemGap),
+        verticalAlignment = Alignment.Top,
+    ) {
+        if (leftTops.isNotEmpty() || leftBottoms.isNotEmpty()) {
+            ComposerFlankColumn(
+                tops = leftTops, bottoms = leftBottoms, bandHeight = bandHeight, byId = byId,
+                isEditMode = isEditMode, unit = unit, itemGap = itemGap,
+                onPickItem = onPickItem, onToggleLock = onToggleLock, onRemove = onRemove,
+            )
+        }
+        // The full suit — one tall rectangle spanning both the top and bottom edges.
+        onePiece.forEach { slot ->
+            ComposerStackedTile(
+                slot = slot,
+                image = slot.selectedItemId?.let { byId[it] },
+                isEditMode = isEditMode,
+                width = unit,
+                height = bandHeight,
+                onTap = { onPickItem(slot.id) },
+                onToggleLock = { onToggleLock(slot.id) },
+                onRemove = { onRemove(slot.id) },
+            )
+        }
+        if (rightTops.isNotEmpty() || rightBottoms.isNotEmpty()) {
+            ComposerFlankColumn(
+                tops = rightTops, bottoms = rightBottoms, bandHeight = bandHeight, byId = byId,
+                isEditMode = isEditMode, unit = unit, itemGap = itemGap,
+                onPickItem = onPickItem, onToggleLock = onToggleLock, onRemove = onRemove,
+            )
+        }
+    }
+}
+
+/**
+ * One side of the core band: a column exactly as tall as the suit, with [tops] flush to the top
+ * edge and [bottoms] flush to the bottom edge (a weight spacer pushes them apart).
+ */
+@Composable
+private fun ComposerFlankColumn(
+    tops: List<OutfitSlot>,
+    bottoms: List<OutfitSlot>,
+    bandHeight: Dp,
+    byId: Map<String, DriveImage>,
+    isEditMode: Boolean,
+    unit: Dp,
+    itemGap: Dp,
+    onPickItem: (slotId: String) -> Unit,
+    onToggleLock: (slotId: String) -> Unit,
+    onRemove: (slotId: String) -> Unit,
+) {
+    Column(modifier = Modifier.height(bandHeight)) {
+        if (tops.isNotEmpty()) {
+            Row(horizontalArrangement = Arrangement.spacedBy(itemGap)) {
+                tops.forEach { slot ->
+                    ComposerStackedTile(
+                        slot = slot,
+                        image = slot.selectedItemId?.let { byId[it] },
+                        isEditMode = isEditMode,
+                        width = unit,
+                        height = unit,
+                        onTap = { onPickItem(slot.id) },
+                        onToggleLock = { onToggleLock(slot.id) },
+                        onRemove = { onRemove(slot.id) },
+                    )
+                }
+            }
+        }
+        Spacer(Modifier.weight(1f))
+        if (bottoms.isNotEmpty()) {
+            Row(horizontalArrangement = Arrangement.spacedBy(itemGap)) {
+                bottoms.forEach { slot ->
+                    ComposerStackedTile(
+                        slot = slot,
+                        image = slot.selectedItemId?.let { byId[it] },
+                        isEditMode = isEditMode,
+                        width = unit,
+                        height = unit,
+                        onTap = { onPickItem(slot.id) },
+                        onToggleLock = { onToggleLock(slot.id) },
+                        onRemove = { onRemove(slot.id) },
+                    )
                 }
             }
         }
@@ -948,16 +1113,21 @@ private fun ComposerStackedTile(
     slot: OutfitSlot,
     image: DriveImage?,
     isEditMode: Boolean,
-    size: Dp,
+    width: Dp,
+    height: Dp,
     onTap: () -> Unit,
     onToggleLock: () -> Unit,
     onRemove: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val ctx = LocalContext.current
+    // Icons/badges scale off the (uniform) width so they look consistent whether the tile is a
+    // normal square or the taller one-piece rectangle.
+    val unit = width
     Box(
         modifier = modifier
-            .size(size)
+            .width(width)
+            .height(height)
             .then(if (isEditMode) Modifier.clickable(onClick = onTap) else Modifier),
     ) {
         if (image != null) {
@@ -1005,7 +1175,7 @@ private fun ComposerStackedTile(
                             painter = androidx.compose.ui.res.painterResource(slot.category.iconRes),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.45f),
-                            modifier = Modifier.size(size * 0.32f),
+                            modifier = Modifier.size(unit * 0.32f),
                         )
                         // AI sparkle badge — communicates that "Generate with AI" will fill this slot.
                         Icon(
@@ -1014,8 +1184,8 @@ private fun ComposerStackedTile(
                             tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier
                                 .align(Alignment.BottomEnd)
-                                .offset(x = size * 0.10f, y = size * 0.05f)
-                                .size(size * 0.18f),
+                                .offset(x = unit * 0.10f, y = unit * 0.05f)
+                                .size(unit * 0.18f),
                         )
                     }
                     Text(
@@ -1078,7 +1248,7 @@ private fun ComposerStackedTile(
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
                         .padding(4.dp)
-                        .size(size * 0.18f),
+                        .size(unit * 0.18f),
                 )
             }
         }
