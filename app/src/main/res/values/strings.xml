@@ -1005,4 +1005,104 @@
     <string name="trip_refine_preview_note">Preview — not saved</string>
     <string name="trip_refine_discard">Discard</string>
     <string name="trip_refine_replace">Replace trip outfits</string>
+
+    <!-- ===== Settings redesign (V1) — design_handoff_settings_v1 ===== -->
+    <!-- Mirrored into all 31 translated locales (every values-* with a strings.xml). -->
+    <string name="settings_hero_default_name">You</string>
+    <string name="settings_hero_edit">Edit</string>
+    <string name="settings_footer">Made with love · Free &amp; open source</string>
+
+    <!-- Section labels -->
+    <string name="settings_section_your_style">Your style</string>
+    <string name="settings_section_your_closets">Your closets</string>
+    <string name="settings_section_how_it_looks">How it looks</string>
+    <string name="settings_section_ai_credits">AI credits</string>
+    <string name="settings_section_more">More</string>
+
+    <!-- Your style card -->
+    <string name="settings_tryon_photos_title">Try-on photos</string>
+    <string name="settings_tryon_photos_hint">Three quick body shots so AI can dress you up. Only you see them.</string>
+    <string name="settings_tryon_front">Front</string>
+    <string name="settings_tryon_side">Side</string>
+    <string name="settings_tryon_back">Back</string>
+    <string name="settings_tryon_replace">Replace</string>
+    <string name="settings_tryon_remove">Remove</string>
+    <string name="settings_style_prefs_hint">A few words about your vibe — e.g. casual, minimalist, soft tones.</string>
+
+    <!-- Your closets card -->
+    <string name="settings_closets_hint">Tap one to make default</string>
+    <string name="settings_closets_default_badge">DEFAULT</string>
+    <string name="settings_closet_item_count">%1$d items</string>
+    <string name="settings_edit_closet">Edit closet</string>
+    <string name="settings_add_closet">Add a closet</string>
+    <string name="settings_closet_name_label">Name</string>
+    <string name="settings_closet_city_label">City</string>
+    <string name="settings_closet_delete">Delete</string>
+
+    <!-- How it looks card -->
+    <string name="settings_theme_hint">Pick a vibe. You can change anytime.</string>
+
+    <!-- AI credits card -->
+    <string name="settings_credits_left">credits left</string>
+    <string name="settings_credits_friendly_format">Enough for ~%1$d try-ons or %2$d outfit ideas.</string>
+    <string name="settings_credits_get_more">Get more</string>
+
+    <!-- More card -->
+    <string name="settings_more_advanced">Advanced</string>
+    <string name="settings_more_advanced_subtitle">Re-scan tags · Re-remove backgrounds · API key · Diagnostics</string>
+    <string name="settings_more_help">Help &amp; FAQ</string>
+    <string name="settings_more_about">About LibreLookAI</string>
+
+    <!-- Profile edit -->
+    <string name="settings_profile_edit_title">Edit profile</string>
+    <string name="settings_profile_gender">Gender / pronouns</string>
+    <string name="settings_profile_year">Year of birth</string>
+    <string name="settings_profile_ai_considerations">What AI should consider</string>
+
+    <!-- Advanced screen -->
+    <string name="settings_advanced_title">Advanced</string>
+    <string name="settings_advanced_rarely_needed_pill">Rarely needed</string>
+    <string name="settings_advanced_intro">These tools fix problems with AI-tagged data or change how AI behaves. Most people never need to touch them.</string>
+    <string name="settings_section_advanced_fix">Fix AI mistakes</string>
+    <string name="settings_section_advanced_byok">Skip the credits</string>
+    <string name="settings_section_advanced_power">Power options</string>
+    <string name="settings_section_advanced_feedback">Help us improve</string>
+    <string name="settings_retag_row">Re-tag all my clothes</string>
+    <string name="settings_retag_row_sub">Ask AI to re-name and re-categorize everything. Costs ~2 credits per item.</string>
+    <string name="settings_rebg_row">Re-remove backgrounds</string>
+    <string name="settings_rebg_row_sub">Re-cut every item from its photo. Costs ~6 credits per item.</string>
+    <string name="settings_cutout_row">Fix leftover background pixels</string>
+    <string name="settings_cutout_row_sub">Scan for items where the cutout missed a corner.</string>
+    <string name="settings_advanced_byok_title">Use your own free AI key</string>
+    <string name="settings_advanced_byok_body">Google gives away a generous free quota. Get a key at aistudio.google.com and paste it below. We store it only on this phone.</string>
+    <string name="settings_advanced_byok_saved_badge">SAVED</string>
+    <string name="settings_advanced_byok_change">Change</string>
+    <string name="settings_advanced_byok_clear">Clear</string>
+    <string name="settings_usage_charts_row">See AI usage &amp; cost charts</string>
+    <string name="settings_usage_charts_sub">14-day trends for credits spent.</string>
+    <string name="settings_dedupe_row">Skip duplicate items on import</string>
+    <string name="settings_dedupe_sub">Catch near-duplicates with image AI.</string>
+    <string name="settings_local_bg_row">Prefer on-device background removal</string>
+    <string name="settings_local_bg_sub">Faster + free, slightly lower quality.</string>
+    <string name="settings_similarity_preview_row">Show AI similarity preview</string>
+    <string name="settings_similarity_preview_sub">Diagnostics for the find-by-photo feature.</string>
+    <string name="settings_send_feedback">Send feedback</string>
+    <string name="settings_export_diagnostics">Export diagnostics</string>
+
+    <!-- Destructive confirm dialog -->
+    <string name="settings_retag_title">Re-tag all %1$d clothes?</string>
+    <string name="settings_retag_body">AI will look at every item again and may change its name, color, or category. Anything you renamed by hand will be replaced.</string>
+    <string name="settings_retag_confirm">Re-tag all clothes</string>
+    <string name="settings_rebg_confirm_title">Re-remove backgrounds for %1$d items?</string>
+    <string name="settings_rebg_body">AI will re-cut every item from its original photo. Cutouts you fixed by hand will be replaced.</string>
+    <string name="settings_rebg_dialog_confirm">Re-remove backgrounds</string>
+    <string name="settings_cutout_title">Fix backgrounds on %1$d items?</string>
+    <string name="settings_cutout_body">We\'ll scan your items for cutouts that missed a corner and re-cut the ones that need it.</string>
+    <string name="settings_cutout_confirm">Scan &amp; fix</string>
+    <string name="settings_confirm_takes_about">Takes about</string>
+    <string name="settings_confirm_minutes">~%1$d minutes</string>
+    <string name="settings_confirm_credits_used">Credits used</string>
+    <string name="settings_confirm_credits_value">%1$d / %2$d left</string>
+    <string name="settings_confirm_short_format">You\'re %1$d credits short. Top up first.</string>
+    <string name="settings_confirm_buy_and_continue">Buy credits &amp; continue</string>
 </resources>

@@ -1,12 +1,9 @@
 INVESTIGATION
 =============
-
   1. cd firebase/functions && npm install && npm run build
   2. Set up service account in Play Console (View financial data + Manage orders)
   3. firebase deploy --only functions,firestore:rules
   4. node lib/seed.js (with GOOGLE_APPLICATION_CREDENTIALS set) — seeds config/pricing; the trigger fires and writes config/publicPricing
-
-
 
 similarity search needs improvement
 
@@ -14,10 +11,7 @@ size filter? default sizes in wardrobe? size tag?
 
 Go through all screens again and check that they are really localized. I just found that the Insights screen is not localized
 
-
 Ensure that no font is smaller than the font in the filter pillow
-
-Add unit tests to get to 50% test converage
 
 fix usability issue on wardrobe screen: moving item to different closet and then switching to that closet - it won't immediately appear on wardrobe after moving to different closet. it took almost a minute to appear. Can this be sped up?
 
@@ -25,31 +19,18 @@ consistency: the cross to cancel taking a picture in wardrobe is in the lower ri
 
 security/function relevant parts of a prompts should not be appear in settings. e.g. "Place the clothing item on a pure, solid neon green background (Hex #00FF00).
 
+
 TODO
 ====
 create accompanying website
 
-design of setting screen
-
-move wardrobe statistics to shopping page
-
-
-all buttons that open another page (e.g. create with AI) should have three dots after the title... or any visual marker.check all flows and make it consistent
-
-
-
 create human readable release notes between now and v1.8.0 and release version 1.9.0, git tag commit and upload to testers in firebase
-
 
 Storage:
 - I noticed .jpgs from camera are just 124kB but .pngs are 450kB. Since this is on users drive folders we have to be cautious about size. Let's target 1GB - to allow for 2000-4000 wardrobe items.
 
-
 1. on edit trip outfit screen - clicking the pen on an outfit of a day immediately opens the edit view
 2. when viewing a trip add a wear today with calendar iconlike in outfits
-
-
-
 
 Feedback:
 add way to send feedback via firebase under settings -> feedback
@@ -57,11 +38,17 @@ add a feedback tab under settings move debug setting under this tab
 
 1. the colors when editing tags are not the same that we have in wardrobe filter use only the one from wardrobe filter
 
+refactor code such that each file has no more than 300-500 lines, split into logical units and update CLAUDE.md with that requirement
 
+localize settings screen
 
 
 IN PROGRESS
 ===========
+design of setting screen
+
+Add unit tests to get to 50% test converage
+
 Implement new feature: We are working on the refinancing/monetization aspect of the app: I want people to be able to buy coins that I then use to pay gemini cloud costs. would that work with RevenueCat (handles the money/receipts) + Firebase (database and secure Gemini API routing)? In addition, I still want to support the bring your own key option though. What is important is that the user always knows how many coins a certain operation takes (if it involves coins or BYOK tokens). So we need to somehow visually communicate the coin or cost. To be sustainable we need to add 100% to the actual cost. We need to store and use this multiplier securely.
 
 Repair & Sync:
@@ -70,6 +57,10 @@ Repair & Sync:
 
 DONE
 =====
+move wardrobe statistics to shopping page
+
+all buttons that open another page (e.g. create with AI) should have three dots after the title... or any visual marker.check all flows and make it consistent
+
 I want to get rid of the insights icon at the top. So I am looking for suitable and sometimes prominent places where to move the tab pages. I was thinking 
 - move costs over to settings page
 - move wardrobe statistics to shopping page

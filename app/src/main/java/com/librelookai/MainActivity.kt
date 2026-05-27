@@ -106,7 +106,7 @@ import com.librelookai.settings.AppFont
 import com.librelookai.settings.AppLanguage
 import com.librelookai.settings.FixCutoutBgDialog
 import com.librelookai.settings.ProfileViewModel
-import com.librelookai.settings.SettingsScreen
+import com.librelookai.settings.v2.SettingsScreen
 import com.librelookai.shopping.ShoppingClosetViewModel
 import com.librelookai.shopping.ShoppingHelperScreen
 import com.librelookai.shopping.ShoppingHelperViewModel
