@@ -3,6 +3,18 @@
 **Goal:** no `.kt` file over 500 lines (target band 300–500); each file one cohesive
 responsibility, clean names, no dead code. Follows the **Placement rule** in `CLAUDE.md`.
 
+**Soft-limit decision (agreed):** split by logical unit, but a file may exceed 500 when a
+*single cohesive composable/function* dominates it and can't be split without artificially
+fragmenting it. Don't decompose a working composable just to chase the number. Clusters of
+many functions over 500 still get split.
+
+## Progress
+- ✅ **Phase 0** — legacy `SettingsScreen.kt` deleted (commit 46e0a81).
+- ✅ **Phase 1 · WardrobeScreen.kt** (3273 → 9 files; compiles + tests green). All ≤500
+  except `WardrobeGrid.kt` (816, single `GridContent` composable) and `FullScreenViewer.kt`
+  (509, single composable) — both permitted under the soft limit. Candidate for later
+  composable decomposition: `GridContent` (740 LOC).
+
 **Hard constraints (do not break):**
 - **Same-package extraction** for UI — keep `internal` visibility working without widening it.
 - **Tested signatures stay put**: the stateless `*Content` composables, `TagFilterBar`,
