@@ -25,6 +25,22 @@ many functions over 500 still get split.
   tests green). All ≤500.
 - ✅ **Phase 1 · TryOnScreen.kt** (1619 → 5 files: TryOnScreen/TryOnComposer/OutfitPicker/
   TryOnResult/TryOnDetail; compiles + tests green). All ≤500.
+- ✅ **Phase 1 · TravelScreen.kt** (1595 → 6 files: TravelScreen/TravelPlannerContent/
+  TravelOutfitsView/TripCards/TravelPlannerForm/TravelGoalCards). All ≤500.
+- ✅ **Phase 1 · TripViewerScreen.kt** (1215 → 4 files: TripViewerScreen/TripViewerChrome/
+  TripDayCards/TripRefine). All ≤500.
+- ✅ **Phase 1 · PredictionSetupScreen.kt** (1000 → 3 files: PredictionSetupScreen/
+  PredictionSetupCards/PredictionWeatherSheet). All ≤500.
+- ✅ **Phase 1 · CaptureScreen.kt** (715 → 2 files: CaptureScreen/PhotoReviewScreen). ≤500.
+- ✅ **Phase 1 · OutfitCalendar.kt** (671 → 2 files: OutfitCalendar/OutfitWearStats). ≤500.
+- ✅ **Phase 1 · WardrobeFiltersShared.kt** (563 → 2 files: WardrobeFiltersShared/
+  WardrobeColorSwatches). ≤500.
+- ✅ **Phase 1 · UsageScreen.kt** (508 → 2 files: UsageScreen/UsageSection). ≤500.
+
+**Phase 1 COMPLETE** (all 12 screen files). Remaining >500 files are Phase 2/3 (ViewModels,
+MainActivity, repositories) plus four soft-limit-accepted single-dominant-composable files:
+`WardrobeGrid.kt` (816), `OutfitList.kt` (699), `OutfitComposerScreen.kt` (598),
+`FullScreenViewer.kt` (509).
 
 **Hard constraints (do not break):**
 - **Same-package extraction** for UI — keep `internal` visibility working without widening it.
