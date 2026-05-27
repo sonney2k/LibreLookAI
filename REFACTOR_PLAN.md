@@ -17,6 +17,9 @@ many functions over 500 still get split.
 - ✅ **Phase 1 · OutfitComposerScreen.kt** (2193 → 7 files: Screen/Chrome/Stack/Sheets/
   Dialogs/AddItem/Suggestions; compiles + tests green). Only `OutfitComposerScreen.kt` (598)
   over the limit — single dominant `OutfitComposerScreen` composable (soft-limit ok).
+- ✅ **Phase 1 · OutfitsScreen.kt** (2071 → 6 files: OutfitsScreen/OutfitList/OutfitCard/
+  OutfitFullScreenViewer/OutfitViewerParts/OutfitTagDialogs; compiles + tests green). Only
+  `OutfitList.kt` (699) over — single dominant `OutfitListScreen` composable (soft-limit ok).
 
 **Hard constraints (do not break):**
 - **Same-package extraction** for UI — keep `internal` visibility working without widening it.
