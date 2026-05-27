@@ -71,6 +71,8 @@ import com.librelookai.outfit.OutfitComposerScreen
 import com.librelookai.outfit.OutfitEventsViewModel
 import com.librelookai.outfit.OutfitsScreen
 import com.librelookai.outfit.OutfitsViewModel
+import com.librelookai.outfit.closeComposer
+import com.librelookai.outfit.openComposer
 import com.librelookai.settings.AppLanguage
 import com.librelookai.settings.FixCutoutBgDialog
 import com.librelookai.settings.ProfileViewModel

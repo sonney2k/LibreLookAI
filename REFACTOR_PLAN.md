@@ -138,6 +138,18 @@ engine (shared by every workflow) + setters + tag/move/CRUD. Left intact — the
 are heavily cross-package-called and several callers have identically-named methods, so
 extracting them risks collision/import churn for modest gain. Acceptable as the VM core.
 
+### ✅ OutfitsViewModel.kt — DONE (1789 → 554; compiles + tests green)
+Same extension-function approach. Extracted:
+- `OutfitsModels.kt` (143) — data/UI-state classes
+- `OutfitsPrompts.kt` (325) — Gemini prompt builders (plain top-level funcs)
+- `OutfitsComposer.kt` (433) — composer state + AI-enhance + suggestions + slots
+- `OutfitsPrediction.kt` (224) — prediction setup + trigger
+- `OutfitsTags.kt` (172) — outfit tag suggestion/editor
+Members bumped to internal: `_state`, `drive`, `gemini`, `gson`, `folderId`,
+`saveFolderId`, `deviceCountryCode`. Cross-package imports added in `AppContent.kt`
+(openComposer/closeComposer) and `travel/TripViewerScreen.kt` (tag methods).
+`OutfitsViewModel.kt` (554) keeps load/save/CRUD/selection/save-dialog core.
+
 ### Remaining Phase 3 (original plan)
 - **`wardrobe/WardrobeViewModel.kt` (3075)** — heaviest:
   - `WardrobeModels.kt` — move UI-state/data classes (`DriveImage`, `FindByPhoto`,

@@ -38,6 +38,12 @@ import com.librelookai.data.model.Outfit
 import com.librelookai.data.model.Trip
 import com.librelookai.outfit.OutfitsViewModel
 import com.librelookai.outfit.TripContext
+import com.librelookai.outfit.applyTagSuggestions
+import com.librelookai.outfit.closeOutfitTagsEditor
+import com.librelookai.outfit.dismissTagSuggestions
+import com.librelookai.outfit.openOutfitTagsEditor
+import com.librelookai.outfit.setOutfitTags
+import com.librelookai.outfit.suggestTagsForOutfit
 import com.librelookai.settings.ProfileViewModel
 import com.librelookai.util.AiProcessingOverlay
 import com.librelookai.util.LocalIsOffline
