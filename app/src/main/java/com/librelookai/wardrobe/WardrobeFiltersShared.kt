@@ -1,4 +1,5 @@
 package com.librelookai.wardrobe
+
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
@@ -17,7 +18,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,12 +25,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FilterAlt
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -41,29 +40,20 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.toMutableStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.librelookai.settings.AppFont
 import com.librelookai.R
 import com.librelookai.gemini.normalizeColor
-
-/**
- * Shared filter UI used by Wardrobe, Outfits and Shopping screens:
- *  - [FiltersPill]:        compact header pill that opens the filter sheet
- *  - [QuickCategoryRow]:   horizontal clothing-category chips with live counts
- *  - [WardrobeFilterSheet]: bottom-sheet with collapsible sections (per design)
- */
+import com.librelookai.settings.AppFont
 
 @Composable
 internal fun FiltersPill(
@@ -496,68 +486,3 @@ internal fun WardrobeFilterSheet(
  * Canonical list of color swatch keys displayed by the wardrobe filter and Edit Tags color picker.
  * Order matches the row grouping in [colorSwatchHex].
  */
-internal val FilterColorKeys: List<String> = listOf(
-    "black", "charcoal", "gray", "silver", "white", "cream",
-    "beige", "tan", "camel", "khaki", "brown", "rust",
-    "orange", "peach", "coral", "red", "burgundy", "pink", "magenta",
-    "purple", "lavender", "lilac",
-    "blue", "navy", "sky", "denim blue", "teal",
-    "mint", "green", "olive", "forest",
-    "yellow", "mustard", "gold",
-    "multicolor",
-)
-
-private val FilterColorKeySet: Set<String> = FilterColorKeys.toSet()
-
-/** Returns the wardrobe-filter swatch for [name], or null if the name is not a known color. */
-internal fun colorSwatchOrNull(name: String): Color? {
-    val n = name.lowercase().trim()
-    return if (n in FilterColorKeySet) colorSwatchHex(n) else null
-}
-
-internal fun colorSwatchHex(name: String): Color = when (name.lowercase().trim()) {
-    // Neutrals
-    "black"      -> Color(0xFF1A1A1A)
-    "charcoal"   -> Color(0xFF3A3A3A)
-    "gray"       -> Color(0xFF808080)
-    "silver"     -> Color(0xFFC0C0C0)
-    "white"      -> Color(0xFFF5F5F0)
-    "cream"      -> Color(0xFFF1E9D6)
-    // Browns / earth
-    "beige"      -> Color(0xFFE8DCCB)
-    "tan"        -> Color(0xFFB89968)
-    "camel"      -> Color(0xFFB87E45)
-    "khaki"      -> Color(0xFFA89968)
-    "brown"      -> Color(0xFF7A5030)
-    "rust"       -> Color(0xFFA34A28)
-    // Warm
-    "orange"     -> Color(0xFFD07030)
-    "peach"      -> Color(0xFFF5B891)
-    "coral"      -> Color(0xFFE5806A)
-    "red"        -> Color(0xFFB83030)
-    "burgundy"   -> Color(0xFF6A1B2A)
-    "pink"       -> Color(0xFFD48090)
-    "magenta"    -> Color(0xFFB02A7A)
-    // Purples
-    "purple"     -> Color(0xFF7060A0)
-    "lavender"   -> Color(0xFFB7A8D6)
-    "lilac"      -> Color(0xFFC8A8D8)
-    // Blues
-    "blue"       -> Color(0xFF3050A0)
-    "navy"       -> Color(0xFF1E2E4A)
-    "sky"        -> Color(0xFF8FB8E0)
-    "denim blue" -> Color(0xFF4A6B8A)
-    "teal"       -> Color(0xFF2E8A8A)
-    // Greens
-    "mint"       -> Color(0xFFA8D8C0)
-    "green"      -> Color(0xFF4A7040)
-    "olive"      -> Color(0xFF5A6030)
-    "forest"     -> Color(0xFF2E4A2E)
-    // Yellows / metallics
-    "yellow"     -> Color(0xFFC8B030)
-    "mustard"    -> Color(0xFFC59A2E)
-    "gold"       -> Color(0xFFC9A227)
-    // Special
-    "multicolor" -> Color(0xFFB0B0B0)
-    else         -> Color(0xFFB0B0B0)
-}
