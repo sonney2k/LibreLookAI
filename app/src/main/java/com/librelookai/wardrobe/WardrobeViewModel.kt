@@ -50,7 +50,7 @@ private val FUZZY_TOKEN_SPLIT = Regex("[^\\p{L}\\p{Nd}]+")
 class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
     companion object {
-        private const val TAG = "RepairAndSync"
+        internal const val TAG = "RepairAndSync"
         /** Stricter floor for the Repair & Sync duplicate scan. */
         private const val REPAIR_DUPE_THRESHOLD = 0.97f
         /** Sidecars at or below this size are {} or {"tags":null} — definitely no tags. */
@@ -61,14 +61,14 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         private const val QUERY_DEBUG_DIR = "wardrobe_query_debug"
     }
 
-    private val drive = DriveRepository(app, GoogleAuthManager(app))
+    internal val drive = DriveRepository(app, GoogleAuthManager(app))
     private val gemini = GeminiRepository(app)
     private val gson = Gson()
 
     private var jobWakeLock: PowerManager.WakeLock? = null
     private val activeJobCount = AtomicInteger(0)
 
-    private fun acquireJobWakeLock() {
+    internal fun acquireJobWakeLock() {
         if (activeJobCount.getAndIncrement() == 0) {
             // Foreground service keeps the process alive while any job is running
             JobForegroundService.acquire(getApplication())
@@ -93,7 +93,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         _state.update { it.copy(needsBatteryExemption = false) }
     }
 
-    private fun releaseJobWakeLock() {
+    internal fun releaseJobWakeLock() {
         if (activeJobCount.decrementAndGet() == 0) {
             jobWakeLock?.let { if (it.isHeld) it.release() }
             JobForegroundService.release(getApplication())
@@ -101,7 +101,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    private val _state = MutableStateFlow(WardrobeUiState())
+    internal val _state = MutableStateFlow(WardrobeUiState())
     val state: StateFlow<WardrobeUiState> = _state.asStateFlow()
 
     private var folderId: String? = null
@@ -750,245 +750,6 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     /** Scans every cutout in [folderIds] for black-background / green-halo issues and pauses
      *  with awaitingConfirmation=true. The user reviews the preview grid (flagged-only by
      *  default; toggle to show all) and selects which to fix. */
-    fun startCutoutBgFixScan(folderIds: List<String>) {
-        if (folderIds.isEmpty()) return
-        acquireJobWakeLock()
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                _state.update {
-                    it.copy(cutoutBgFix = CutoutBgFixProgress(
-                        isScanning = true,
-                        totalFolders = folderIds.size,
-                    ))
-                }
-                val items = mutableListOf<CutoutFixEntry>()
-                val flagged = mutableSetOf<String>()
-
-                folderIds.forEachIndexed { idx, fid ->
-                    val cutouts = runCatching {
-                        drive.listAllImageFiles(fid)
-                            .filter { it.name.endsWith(DriveRepository.CUTOUT_SUFFIX) }
-                    }.getOrDefault(emptyList())
-                    _state.update { s ->
-                        s.copy(cutoutBgFix = s.cutoutBgFix?.copy(
-                            totalCutouts = s.cutoutBgFix.totalCutouts + cutouts.size,
-                        ))
-                    }
-                    cutouts.forEach { cf ->
-                        val local = drive.cachedFile(cf.id)
-                            ?: runCatching { drive.downloadToCache(cf.id, cf.name) }.getOrNull()
-                        if (local != null) {
-                            val issues = runCatching { detectCutoutIssues(local) }
-                                .getOrDefault(CutoutIssues(false, false))
-                            val entry = CutoutFixEntry(
-                                driveId = cf.id,
-                                name = cf.name,
-                                folderId = fid,
-                                hasBlackBackground = issues.hasBlackBackground,
-                                hasGreenHalo = issues.hasGreenHalo,
-                            )
-                            items.add(entry)
-                            if (issues.any) flagged.add(cf.id)
-                        }
-                        _state.update { s ->
-                            s.copy(cutoutBgFix = s.cutoutBgFix?.copy(
-                                scannedCutouts = s.cutoutBgFix.scannedCutouts + 1,
-                            ))
-                        }
-                    }
-                    _state.update { s ->
-                        s.copy(cutoutBgFix = s.cutoutBgFix?.copy(scannedFolders = idx + 1))
-                    }
-                }
-
-                val anyBlack = items.any { it.hasBlackBackground }
-                val anyGreen = items.any { it.hasGreenHalo }
-                _state.update {
-                    it.copy(cutoutBgFix = CutoutBgFixProgress(
-                        awaitingConfirmation = true,
-                        items = items.toList(),
-                        flaggedIds = flagged.toSet(),
-                        selectedIds = flagged.toSet(),
-                        // When nothing is flagged, default to "show all" so the dialog stays
-                        // useful — the user can still hand-pick clean cutouts to re-process.
-                        showAll = flagged.isEmpty(),
-                        applyBlackToAlpha = anyBlack,
-                        applyDespillGreen = anyGreen,
-                        totalCutouts = items.size,
-                        scannedCutouts = items.size,
-                    ))
-                }
-            } finally {
-                releaseJobWakeLock()
-            }
-        }
-    }
-
-    /** Apply fixes for the currently selected entries, or just clear state if [process] is false. */
-    fun continueCutoutBgFix(process: Boolean) {
-        val cur = _state.value.cutoutBgFix
-        if (cur == null || !cur.awaitingConfirmation) return
-        if (!process || cur.selectedIds.isEmpty()) {
-            _state.update { it.copy(cutoutBgFix = null) }
-            return
-        }
-        val byId = cur.items.associateBy { it.driveId }
-        val toFix = cur.selectedIds.mapNotNull { byId[it] }
-        val actions = CutoutFixActions(
-            blackToAlpha = cur.applyBlackToAlpha,
-            despillGreen = cur.applyDespillGreen,
-            feather = cur.applyFeather,
-            tightCrop = cur.applyTightCrop,
-        )
-        if (toFix.isEmpty() || !actions.any) {
-            _state.update { it.copy(cutoutBgFix = null) }
-            return
-        }
-        acquireJobWakeLock()
-        _state.update {
-            it.copy(cutoutBgFix = CutoutBgFixProgress(
-                isProcessing = true,
-                processTotal = toFix.size,
-            ))
-        }
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                var done = 0
-                toFix.forEach { entry ->
-                    runCatching {
-                        val local = drive.cachedFile(entry.driveId)
-                            ?: drive.downloadToCache(entry.driveId, entry.name)
-                            ?: return@runCatching
-                        val tmp = File(drive.cacheDir, "${entry.driveId}_fix.png")
-                        fixCutoutBackground(local, tmp, actions)
-                        drive.updateImage(entry.driveId, tmp)
-                        val cached = File(drive.cacheDir, "${entry.driveId}.png")
-                        tmp.copyTo(cached, overwrite = true)
-                        tmp.delete()
-                    }.onFailure { e ->
-                        Log.w(TAG, "Cutout bg-fix failed for ${entry.driveId}: ${e.message}")
-                    }
-                    done++
-                    _state.update { s ->
-                        s.copy(cutoutBgFix = s.cutoutBgFix?.copy(processDone = done))
-                    }
-                }
-                // Bump version on every fixed item so Coil reloads from the updated local cache.
-                val fixedIds = toFix.map { it.driveId }.toSet()
-                _state.update { s ->
-                    s.copy(images = s.images.map {
-                        if (it.driveId in fixedIds) it.copy(version = it.version + 1) else it
-                    })
-                }
-                _state.update { s ->
-                    s.copy(cutoutBgFix = s.cutoutBgFix?.copy(
-                        isProcessing = false,
-                        isDone = true,
-                    ))
-                }
-            } finally {
-                releaseJobWakeLock()
-            }
-        }
-    }
-
-    fun toggleCutoutFixSelection(driveId: String) {
-        _state.update { s ->
-            val c = s.cutoutBgFix ?: return@update s
-            if (!c.awaitingConfirmation) return@update s
-            val next = c.selectedIds.toMutableSet()
-            if (!next.add(driveId)) next.remove(driveId)
-            s.copy(cutoutBgFix = c.copy(selectedIds = next))
-        }
-    }
-
-    fun setCutoutFixSelection(ids: Set<String>) {
-        _state.update { s ->
-            val c = s.cutoutBgFix ?: return@update s
-            if (!c.awaitingConfirmation) return@update s
-            s.copy(cutoutBgFix = c.copy(selectedIds = ids))
-        }
-    }
-
-    fun setCutoutFixAction(
-        blackToAlpha: Boolean? = null,
-        despillGreen: Boolean? = null,
-        feather: Boolean? = null,
-        tightCrop: Boolean? = null,
-    ) {
-        _state.update { s ->
-            val c = s.cutoutBgFix ?: return@update s
-            if (!c.awaitingConfirmation) return@update s
-            s.copy(cutoutBgFix = c.copy(
-                applyBlackToAlpha = blackToAlpha ?: c.applyBlackToAlpha,
-                applyDespillGreen = despillGreen ?: c.applyDespillGreen,
-                applyFeather = feather ?: c.applyFeather,
-                applyTightCrop = tightCrop ?: c.applyTightCrop,
-            ))
-        }
-    }
-
-    fun setCutoutFixShowAll(v: Boolean) {
-        _state.update { s ->
-            val c = s.cutoutBgFix ?: return@update s
-            s.copy(cutoutBgFix = c.copy(showAll = v))
-        }
-    }
-
-    fun dismissCutoutBgFix() {
-        _state.update { it.copy(cutoutBgFix = null) }
-    }
-
-    /** Detect + repair black-bg / green-halo / interior-hole issues on a single cutout, then
-     *  re-upload preserving the Drive ID. Surfaces a status message via [_state.error]; UI
-     *  treats it as a transient banner. */
-    fun fixCutoutBgForItem(
-        driveId: String,
-        actions: CutoutFixActions = CutoutFixActions(
-            blackToAlpha = true,
-            despillGreen = true,
-            feather = true,
-            tightCrop = true,
-        ),
-    ) {
-        if (!actions.any) return
-        val image = _state.value.images.firstOrNull { it.driveId == driveId } ?: return
-        acquireJobWakeLock()
-        _state.update { it.copy(processingImageId = driveId) }
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val local = drive.cachedFile(driveId)
-                    ?: drive.downloadToCache(driveId, image.name)
-                    ?: return@launch
-                val tmp = File(drive.cacheDir, "${driveId}_fix.png")
-                fixCutoutBackground(local, tmp, actions)
-                drive.updateImage(driveId, tmp)
-                val cached = File(drive.cacheDir, "${driveId}.png")
-                tmp.copyTo(cached, overwrite = true)
-                tmp.delete()
-                _state.update { s ->
-                    s.copy(images = s.images.map {
-                        if (it.driveId == driveId) it.copy(version = it.version + 1) else it
-                    })
-                }
-            } catch (e: Exception) {
-                Log.w(TAG, "Single-item cutout bg-fix failed for $driveId: ${e.message}", e)
-                _state.update { it.copy(error = e.message) }
-            } finally {
-                _state.update { it.copy(processingImageId = null) }
-                releaseJobWakeLock()
-            }
-        }
-    }
-
-    suspend fun fetchCutoutFixThumbnail(entry: CutoutFixEntry): File? = withContext(Dispatchers.IO) {
-        drive.cachedFile(entry.driveId)?.let { return@withContext it }
-        runCatching { drive.downloadToCache(entry.driveId, entry.name) }.getOrNull()
-    }
-
-    /** Ensures the pre-cutout original for [cutoutDriveId] is cached at the canonical
-     *  `${cutoutDriveId}_original.jpg` path and returns its absolute path, or null if no
-     *  original exists or the download failed. */
     suspend fun ensureOriginalCached(cutoutDriveId: String): String? = withContext(Dispatchers.IO) {
         val image = _state.value.images.firstOrNull { it.driveId == cutoutDriveId } ?: return@withContext null
         val origId = image.originalDriveId ?: return@withContext null

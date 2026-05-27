@@ -57,6 +57,7 @@ import com.librelookai.wardrobe.DriveImage
 import com.librelookai.wardrobe.FullScreenViewer
 import com.librelookai.wardrobe.WardrobeViewModel
 import com.librelookai.wardrobe.tagCategories
+import com.librelookai.wardrobe.fixCutoutBgForItem
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable

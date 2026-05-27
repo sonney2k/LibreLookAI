@@ -39,6 +39,7 @@ import com.librelookai.settings.UsageCostsTab
 import com.librelookai.util.Analytics
 import com.librelookai.wardrobe.LocationViewModel
 import com.librelookai.wardrobe.WardrobeViewModel
+import com.librelookai.wardrobe.startCutoutBgFixScan
 
 /** Internal destinations within the Settings surface (no Jetpack Navigation). */
 private enum class SettingsRoute { MAIN, PROFILE_EDIT, ADVANCED, ABOUT, USAGE, BUY_CREDITS }

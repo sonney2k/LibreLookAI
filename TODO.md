@@ -38,7 +38,7 @@ add a feedback tab under settings move debug setting under this tab
 
 1. the colors when editing tags are not the same that we have in wardrobe filter use only the one from wardrobe filter
 
-refactor code such that each file has no more than 300-500 lines, split into logical units and update CLAUDE.md with that requirement
+refactor code such that each file has no more than 300-500 lines, split into logical units in general follow clean-code principles and update CLAUDE.md with that requirement
 
 localize settings screen
 

@@ -59,6 +59,7 @@ import com.librelookai.wardrobe.DriveImage
 import com.librelookai.wardrobe.LocationViewModel
 import com.librelookai.wardrobe.WardrobeViewModel
 import com.librelookai.wardrobe.tagCategories
+import com.librelookai.wardrobe.fixCutoutBgForItem
 import com.librelookai.weather.WeatherViewModel
 
 private fun DriveImage.displayLabel(): String =

@@ -93,6 +93,12 @@ import com.librelookai.wardrobe.ReplacementsResultDialog
 import com.librelookai.wardrobe.WardrobeGapViewModel
 import com.librelookai.wardrobe.WardrobeScreen
 import com.librelookai.wardrobe.WardrobeViewModel
+import com.librelookai.wardrobe.continueCutoutBgFix
+import com.librelookai.wardrobe.fetchCutoutFixThumbnail
+import com.librelookai.wardrobe.setCutoutFixAction
+import com.librelookai.wardrobe.setCutoutFixSelection
+import com.librelookai.wardrobe.setCutoutFixShowAll
+import com.librelookai.wardrobe.toggleCutoutFixSelection
 import com.librelookai.weather.WeatherBadge
 import com.librelookai.weather.WeatherViewModel
 import kotlinx.coroutines.launch
