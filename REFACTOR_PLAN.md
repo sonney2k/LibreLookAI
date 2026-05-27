@@ -121,6 +121,24 @@ cohesive composable clusters into new siblings in the **same package**.
   bumped private→internal. No behavior change.
 
 ## Phase 3 — ViewModels & repositories (extract collaborators; can't slice a class)
+
+### ✅ WardrobeViewModel.kt — DONE (3075 → 1194; compiles + tests green)
+Approach (agreed): **extension-function files** in the same package. Workflows moved out as
+`internal fun WardrobeViewModel.x()`; shared private members they touch bumped to `internal`;
+member→extension changes required `import com.librelookai.wardrobe.<fn>` at cross-package call
+sites (compiler-flagged). Extracted, one commit each:
+- `WardrobeModels.kt` (321) — all data/UI-state classes
+- `WardrobeViewModelBgFix.kt` (254) — cutout-bg-fix workflow
+- `WardrobeViewModelAudit.kt` (451) — repair/audit workflow
+- `WardrobeViewModelUpload.kt` (321) — camera/url/gallery upload + dedupe + local-bg review
+- `WardrobeViewModelImport.kt` (386) — folder/SAF/drive bulk import + preview
+- `WardrobeViewModelSearch.kt` (221) — capture/find-by-photo + text/fuzzy search
+Remaining `WardrobeViewModel.kt` (1194) is the cohesive core: load/cache/queue/sidecar/upload
+engine (shared by every workflow) + setters + tag/move/CRUD. Left intact — the edit/CRUD ops
+are heavily cross-package-called and several callers have identically-named methods, so
+extracting them risks collision/import churn for modest gain. Acceptable as the VM core.
+
+### Remaining Phase 3 (original plan)
 - **`wardrobe/WardrobeViewModel.kt` (3075)** — heaviest:
   - `WardrobeModels.kt` — move UI-state/data classes (`DriveImage`, `FindByPhoto`,
     `DuplicateCheck`, `WardrobeUiState`, `AuditProgress`, `CutoutBgFixProgress`, …, 50–365).
