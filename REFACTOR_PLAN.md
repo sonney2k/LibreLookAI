@@ -106,12 +106,19 @@ cohesive composable clusters into new siblings in the **same package**.
 - **`wardrobe/WardrobeFiltersShared.kt` (563, 3)** → group by filter concern.
 - **`settings/UsageScreen.kt` (508, borderline)** → `UsageCostsTab` vs `UsageSection`.
 
-## Phase 2 — MainActivity
-- **`MainActivity.kt` (1203)** → keep `MainActivity` + `onCreate` + `selectedTab` host; extract:
-  - `MainBottomBar.kt` — custom nav `Row` + raised Try-On button
-  - `MainGlobalDialogs.kt` — `InsufficientCreditsDialog` / `FixCutoutBg` observers + hosts
-  - `MainCompositionLocals.kt` — `LocalSystemBarsPadding`, `LocalClosetSelector`,
-    `LocalOpenSettings` + providers, `ViewerHeaderActions`
+## Phase 2 — MainActivity ✅ DONE
+- ✅ **`MainActivity.kt` (1203 → 5 files; compiles + tests green).** Lifted the entire
+  `setContent` composition into a top-level `AppContent(activity)` composable, leaving
+  `MainActivity` a 20-line thin Activity. Extracted siblings:
+  - `AppContent.kt` (802) — root composition (single dominant composable; soft-limit ok)
+  - `MainCompositionLocals.kt` (68) — `LocalOpenSettings`/`LocalClosetSelector` +
+    `ClosetSelectorContext` + `ViewerHeaderActions`
+  - `AppScreenHeader.kt` (210) — `AppScreenHeader` + `LocationButton`
+  - `MainNavBar.kt` (184) — `AppNavBar` + `NavSlot` (custom bottom bar)
+  - `MainActivity.kt` (20) — thin Activity
+  Lift substitutions: `this@MainActivity`→`activity` (×12), the `application` arg,
+  `POWER_SERVICE`→`Context.POWER_SERVICE`, and one bare `this`-as-Context. `AppNavBar`
+  bumped private→internal. No behavior change.
 
 ## Phase 3 — ViewModels & repositories (extract collaborators; can't slice a class)
 - **`wardrobe/WardrobeViewModel.kt` (3075)** — heaviest:
