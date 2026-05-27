@@ -11,6 +11,8 @@ import com.google.gson.reflect.TypeToken
 import com.librelookai.MainActivity
 import com.librelookai.auth.GoogleAuthManager
 import com.librelookai.data.drive.DriveRepository
+import com.librelookai.data.drive.loadOutfitsJson
+import com.librelookai.data.drive.saveOutfitsJson
 import com.librelookai.data.model.Outfit
 import com.librelookai.gemini.GeminiRepository
 import com.librelookai.gemini.PromptKey

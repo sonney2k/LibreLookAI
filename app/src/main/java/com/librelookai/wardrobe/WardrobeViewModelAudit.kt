@@ -5,6 +5,10 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.librelookai.data.drive.DriveFileDto
 import com.librelookai.data.drive.DriveRepository
+import com.librelookai.data.drive.listAllImageFiles
+import com.librelookai.data.drive.listSidecarFiles
+import com.librelookai.data.drive.loadFileContent
+import com.librelookai.data.drive.upsertSidecar
 import com.librelookai.gemini.ClothingTags
 import com.librelookai.ml.EmbeddingService
 import java.io.File

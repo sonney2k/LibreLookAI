@@ -31,6 +31,10 @@ import com.librelookai.wardrobe.WebProductFetcher
 import com.librelookai.wardrobe.rotateBitmapFileBy90
 import com.librelookai.R
 import com.librelookai.data.drive.await
+import com.librelookai.data.drive.getOrCreateShoppingFolder
+import com.librelookai.data.drive.listSidecarFiles
+import com.librelookai.data.drive.loadFileContent
+import com.librelookai.data.drive.upsertSidecar
 import com.librelookai.data.model.Location
 import com.librelookai.MainActivity
 import com.librelookai.wardrobe.WardrobeViewModel

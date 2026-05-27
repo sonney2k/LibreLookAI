@@ -15,6 +15,9 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import com.librelookai.auth.GoogleAuthManager
 import com.librelookai.data.drive.DriveRepository
+import com.librelookai.data.drive.loadTryOnsJson
+import com.librelookai.data.drive.saveTryOnsJson
+import com.librelookai.data.drive.uploadTryOnImage
 import com.librelookai.data.model.TryOn
 import com.librelookai.gemini.GeminiRepository
 import com.librelookai.wardrobe.DriveImage

@@ -40,7 +40,7 @@ data class DriveFileDto(
     } ?: 0L
 }
 
-private data class FilesListDto(
+internal data class FilesListDto(
     val files: List<DriveFileDto> = emptyList(),
     val nextPageToken: String? = null,
 )
@@ -52,18 +52,18 @@ class DriveRepository(
     private val auth: GoogleAuthManager,
 ) {
     companion object {
-        private const val API = "https://www.googleapis.com/drive/v3"
-        private const val UPLOAD_API = "https://www.googleapis.com/upload/drive/v3"
-        private const val FOLDER_NAME = "LibreLookAI"
-        private const val OUTFITS_FILE_NAME = "_outfits.json"
-        private const val OUTFIT_EVENTS_FILE_NAME = "_outfit_events.json"
+        internal const val API = "https://www.googleapis.com/drive/v3"
+        internal const val UPLOAD_API = "https://www.googleapis.com/upload/drive/v3"
+        internal const val FOLDER_NAME = "LibreLookAI"
+        internal const val OUTFITS_FILE_NAME = "_outfits.json"
+        internal const val OUTFIT_EVENTS_FILE_NAME = "_outfit_events.json"
         /** Legacy filename from before the Style→Outfit rename. Read-only fallback. */
-        private const val LEGACY_STYLES_FILE_NAME = "_styles_metadata.json"
+        internal const val LEGACY_STYLES_FILE_NAME = "_styles_metadata.json"
         /** Legacy filename from before the outfit-events rename. Read-only fallback. */
-        private const val LEGACY_OUTFIT_EVENTS_FILE_NAME = "_outfits_metadata.json"
-        private const val PREFERENCES_FILE_NAME = "_user_preferences.json"
-        private const val WARDROBE_METADATA_FILE_NAME = "_wardrobe_metadata.json"
-        private const val LOCATIONS_FILE_NAME = "_locations.json"
+        internal const val LEGACY_OUTFIT_EVENTS_FILE_NAME = "_outfits_metadata.json"
+        internal const val PREFERENCES_FILE_NAME = "_user_preferences.json"
+        internal const val WARDROBE_METADATA_FILE_NAME = "_wardrobe_metadata.json"
+        internal const val LOCATIONS_FILE_NAME = "_locations.json"
 
         /**
          * Subfolder of the root Drive folder used to hold the user's try-on photos
@@ -132,19 +132,19 @@ class DriveRepository(
         )
     }
 
-    private val http = OkHttpClient()
-    private val gson = Gson()
+    internal val http = OkHttpClient()
+    internal val gson = Gson()
 
     /** App-private persistent cache for wardrobe images. */
     val cacheDir: File = File(context.filesDir, "wardrobe").also { it.mkdirs() }
 
-    private suspend fun token() = auth.getAccessToken()
+    internal suspend fun token() = auth.getAccessToken()
 
     /**
      * Fetches all pages from a Drive files.list [baseUrl] (must include all params except
      * pageToken) and returns the concatenated file list.
      */
-    private suspend fun fetchAllPages(baseUrl: String, tok: String): List<DriveFileDto> {
+    internal suspend fun fetchAllPages(baseUrl: String, tok: String): List<DriveFileDto> {
         val result = mutableListOf<DriveFileDto>()
         var pageToken: String? = null
         do {
@@ -331,7 +331,7 @@ class DriveRepository(
     }
 
     /** Finds a file by exact [name] within [folderId]; null if missing. */
-    private suspend fun findFileIdByName(folderId: String, name: String, tok: String): String? {
+    internal suspend fun findFileIdByName(folderId: String, name: String, tok: String): String? {
         val q = URLEncoder.encode("'$folderId' in parents and name='$name' and trashed=false", "UTF-8")
         return gson.fromJson(
             http.newCall(Request.Builder()
@@ -343,7 +343,7 @@ class DriveRepository(
     }
 
     /** Downloads the raw content of [fileId] as a string, or null on HTTP failure. */
-    private suspend fun downloadFileText(fileId: String, tok: String): String? {
+    internal suspend fun downloadFileText(fileId: String, tok: String): String? {
         val resp = http.newCall(Request.Builder()
             .url("$API/files/$fileId?alt=media")
             .header("Authorization", "Bearer $tok")
@@ -356,365 +356,6 @@ class DriveRepository(
      * falls back to the pre-rename [LEGACY_STYLES_FILE_NAME] so users who haven't re-saved yet
      * still see their outfits. Returns null if neither file exists.
      */
-    suspend fun loadOutfitsJson(folderId: String): String? = withContext(Dispatchers.IO) {
-        val tok = token()
-        val id = findFileIdByName(folderId, OUTFITS_FILE_NAME, tok)
-            ?: findFileIdByName(folderId, LEGACY_STYLES_FILE_NAME, tok)
-            ?: return@withContext null
-        downloadFileText(id, tok)
-    }
-
-    /** Creates or overwrites the saved-outfits JSON file in Drive (always writes [OUTFITS_FILE_NAME]). */
-    suspend fun saveOutfitsJson(folderId: String, json: String) = withContext(Dispatchers.IO) {
-        val tok = token()
-        val existingId = findFileIdByName(folderId, OUTFITS_FILE_NAME, tok)
-        val fileId = existingId ?: run {
-            val meta = """{"name":"$OUTFITS_FILE_NAME","parents":["$folderId"],"mimeType":"application/json"}"""
-            gson.fromJson(
-                http.newCall(Request.Builder()
-                    .url("$API/files?fields=id")
-                    .header("Authorization", "Bearer $tok")
-                    .post(meta.toRequestBody("application/json".toMediaType()))
-                    .build()).await().body!!.string(),
-                DriveFileDto::class.java,
-            ).id
-        }
-        http.newCall(Request.Builder()
-            .url("$UPLOAD_API/files/$fileId?uploadType=media")
-            .header("Authorization", "Bearer $tok")
-            .method("PATCH", json.toRequestBody("application/json".toMediaType()))
-            .build()).await()
-    }
-
-    /**
-     * Loads the outfit-events (calendar wear history) JSON from Drive. Falls back to
-     * [LEGACY_OUTFIT_EVENTS_FILE_NAME] if the current filename isn't present yet.
-     */
-    suspend fun loadOutfitEventsJson(folderId: String): String? = withContext(Dispatchers.IO) {
-        val tok = token()
-        val id = findFileIdByName(folderId, OUTFIT_EVENTS_FILE_NAME, tok)
-            ?: findFileIdByName(folderId, LEGACY_OUTFIT_EVENTS_FILE_NAME, tok)
-            ?: return@withContext null
-        downloadFileText(id, tok)
-    }
-
-    /** Creates or overwrites the outfit-events JSON in Drive (always writes [OUTFIT_EVENTS_FILE_NAME]). */
-    suspend fun saveOutfitEventsJson(folderId: String, json: String) = withContext(Dispatchers.IO) {
-        val tok = token()
-        val existingId = findFileIdByName(folderId, OUTFIT_EVENTS_FILE_NAME, tok)
-        val fileId = existingId ?: run {
-            val meta = """{"name":"$OUTFIT_EVENTS_FILE_NAME","parents":["$folderId"],"mimeType":"application/json"}"""
-            gson.fromJson(
-                http.newCall(Request.Builder()
-                    .url("$API/files?fields=id")
-                    .header("Authorization", "Bearer $tok")
-                    .post(meta.toRequestBody("application/json".toMediaType()))
-                    .build()).await().body!!.string(),
-                DriveFileDto::class.java,
-            ).id
-        }
-        http.newCall(Request.Builder()
-            .url("$UPLOAD_API/files/$fileId?uploadType=media")
-            .header("Authorization", "Bearer $tok")
-            .method("PATCH", json.toRequestBody("application/json".toMediaType()))
-            .build()).await()
-    }
-
-    /** Loads the user preferences JSON from Drive, or null if not yet saved. */
-    suspend fun loadPreferencesJson(folderId: String): String? = withContext(Dispatchers.IO) {
-        val tok = token()
-        val q = URLEncoder.encode(
-            "'$folderId' in parents and name='$PREFERENCES_FILE_NAME' and trashed=false", "UTF-8",
-        )
-        val fileId = gson.fromJson(
-            http.newCall(Request.Builder()
-                .url("$API/files?q=$q&fields=files(id)")
-                .header("Authorization", "Bearer $tok")
-                .build()).await().body!!.string(),
-            FilesListDto::class.java,
-        ).files.firstOrNull()?.id ?: return@withContext null
-
-        val resp = http.newCall(Request.Builder()
-            .url("$API/files/$fileId?alt=media")
-            .header("Authorization", "Bearer $tok")
-            .build()).await()
-        if (resp.isSuccessful) resp.body?.string() else null
-    }
-
-    /** Creates or overwrites the user preferences JSON file in Drive. */
-    suspend fun savePreferencesJson(folderId: String, json: String) = withContext(Dispatchers.IO) {
-        val tok = token()
-        val q = URLEncoder.encode(
-            "'$folderId' in parents and name='$PREFERENCES_FILE_NAME' and trashed=false", "UTF-8",
-        )
-        val existingId = gson.fromJson(
-            http.newCall(Request.Builder()
-                .url("$API/files?q=$q&fields=files(id)")
-                .header("Authorization", "Bearer $tok")
-                .build()).await().body!!.string(),
-            FilesListDto::class.java,
-        ).files.firstOrNull()?.id
-
-        val fileId = existingId ?: run {
-            val meta = """{"name":"$PREFERENCES_FILE_NAME","parents":["$folderId"],"mimeType":"application/json"}"""
-            gson.fromJson(
-                http.newCall(Request.Builder()
-                    .url("$API/files?fields=id")
-                    .header("Authorization", "Bearer $tok")
-                    .post(meta.toRequestBody("application/json".toMediaType()))
-                    .build()).await().body!!.string(),
-                DriveFileDto::class.java,
-            ).id
-        }
-        http.newCall(Request.Builder()
-            .url("$UPLOAD_API/files/$fileId?uploadType=media")
-            .header("Authorization", "Bearer $tok")
-            .method("PATCH", json.toRequestBody("application/json".toMediaType()))
-            .build()).await()
-    }
-
-    /** Loads the token-usage JSONL log from Drive (returns null if no file exists yet). */
-    suspend fun loadTokenUsageJsonl(folderId: String): String? = withContext(Dispatchers.IO) {
-        val tok = token()
-        val q = URLEncoder.encode(
-            "'$folderId' in parents and name='${TokenUsageRepository.DRIVE_FILE_NAME}' and trashed=false", "UTF-8",
-        )
-        val fileId = gson.fromJson(
-            http.newCall(Request.Builder()
-                .url("$API/files?q=$q&fields=files(id)")
-                .header("Authorization", "Bearer $tok")
-                .build()).await().body!!.string(),
-            FilesListDto::class.java,
-        ).files.firstOrNull()?.id ?: return@withContext null
-
-        val resp = http.newCall(Request.Builder()
-            .url("$API/files/$fileId?alt=media")
-            .header("Authorization", "Bearer $tok")
-            .build()).await()
-        if (resp.isSuccessful) resp.body?.string() else null
-    }
-
-    /** Creates or overwrites the token-usage JSONL file in Drive. */
-    suspend fun saveTokenUsageJsonl(folderId: String, content: String) = withContext(Dispatchers.IO) {
-        val tok = token()
-        val name = TokenUsageRepository.DRIVE_FILE_NAME
-        val q = URLEncoder.encode(
-            "'$folderId' in parents and name='$name' and trashed=false", "UTF-8",
-        )
-        val existingId = gson.fromJson(
-            http.newCall(Request.Builder()
-                .url("$API/files?q=$q&fields=files(id)")
-                .header("Authorization", "Bearer $tok")
-                .build()).await().body!!.string(),
-            FilesListDto::class.java,
-        ).files.firstOrNull()?.id
-
-        val fileId = existingId ?: run {
-            val meta = """{"name":"$name","parents":["$folderId"],"mimeType":"application/x-ndjson"}"""
-            gson.fromJson(
-                http.newCall(Request.Builder()
-                    .url("$API/files?fields=id")
-                    .header("Authorization", "Bearer $tok")
-                    .post(meta.toRequestBody("application/json".toMediaType()))
-                    .build()).await().body!!.string(),
-                DriveFileDto::class.java,
-            ).id
-        }
-        http.newCall(Request.Builder()
-            .url("$UPLOAD_API/files/$fileId?uploadType=media")
-            .header("Authorization", "Bearer $tok")
-            .method("PATCH", content.toRequestBody("application/x-ndjson".toMediaType()))
-            .build()).await()
-    }
-
-    /** Loads the wardrobe metadata JSON string from Drive, or null if not yet created. */
-    suspend fun loadWardrobeMetadataJson(folderId: String): String? = withContext(Dispatchers.IO) {
-        val tok = token()
-        val q = URLEncoder.encode(
-            "'$folderId' in parents and name='$WARDROBE_METADATA_FILE_NAME' and trashed=false", "UTF-8",
-        )
-        val fileId = gson.fromJson(
-            http.newCall(Request.Builder()
-                .url("$API/files?q=$q&fields=files(id)")
-                .header("Authorization", "Bearer $tok")
-                .build()).await().body!!.string(),
-            FilesListDto::class.java,
-        ).files.firstOrNull()?.id ?: return@withContext null
-
-        val resp = http.newCall(Request.Builder()
-            .url("$API/files/$fileId?alt=media")
-            .header("Authorization", "Bearer $tok")
-            .build()).await()
-        if (resp.isSuccessful) resp.body?.string() else null
-    }
-
-    /** Creates or overwrites the wardrobe metadata JSON file in Drive. */
-    suspend fun saveWardrobeMetadataJson(folderId: String, json: String) = withContext(Dispatchers.IO) {
-        val tok = token()
-        val q = URLEncoder.encode(
-            "'$folderId' in parents and name='$WARDROBE_METADATA_FILE_NAME' and trashed=false", "UTF-8",
-        )
-        val existingId = gson.fromJson(
-            http.newCall(Request.Builder()
-                .url("$API/files?q=$q&fields=files(id)")
-                .header("Authorization", "Bearer $tok")
-                .build()).await().body!!.string(),
-            FilesListDto::class.java,
-        ).files.firstOrNull()?.id
-
-        val fileId = existingId ?: run {
-            val meta = """{"name":"$WARDROBE_METADATA_FILE_NAME","parents":["$folderId"],"mimeType":"application/json"}"""
-            gson.fromJson(
-                http.newCall(Request.Builder()
-                    .url("$API/files?fields=id")
-                    .header("Authorization", "Bearer $tok")
-                    .post(meta.toRequestBody("application/json".toMediaType()))
-                    .build()).await().body!!.string(),
-                DriveFileDto::class.java,
-            ).id
-        }
-        http.newCall(Request.Builder()
-            .url("$UPLOAD_API/files/$fileId?uploadType=media")
-            .header("Authorization", "Bearer $tok")
-            .method("PATCH", json.toRequestBody("application/json".toMediaType()))
-            .build()).await()
-    }
-
-    /** Loads the locations JSON string from the root Drive folder, or null if not yet created. */
-    suspend fun loadLocationsJson(rootFolderId: String): String? = withContext(Dispatchers.IO) {
-        val tok = token()
-        val q = URLEncoder.encode(
-            "'$rootFolderId' in parents and name='$LOCATIONS_FILE_NAME' and trashed=false", "UTF-8",
-        )
-        val fileId = gson.fromJson(
-            http.newCall(Request.Builder()
-                .url("$API/files?q=$q&fields=files(id)")
-                .header("Authorization", "Bearer $tok")
-                .build()).await().body!!.string(),
-            FilesListDto::class.java,
-        ).files.firstOrNull()?.id ?: return@withContext null
-
-        val resp = http.newCall(Request.Builder()
-            .url("$API/files/$fileId?alt=media")
-            .header("Authorization", "Bearer $tok")
-            .build()).await()
-        if (resp.isSuccessful) resp.body?.string() else null
-    }
-
-    /** Creates or overwrites the locations JSON file in the root Drive folder. */
-    suspend fun saveLocationsJson(rootFolderId: String, json: String) = withContext(Dispatchers.IO) {
-        val tok = token()
-        val q = URLEncoder.encode(
-            "'$rootFolderId' in parents and name='$LOCATIONS_FILE_NAME' and trashed=false", "UTF-8",
-        )
-        val existingId = gson.fromJson(
-            http.newCall(Request.Builder()
-                .url("$API/files?q=$q&fields=files(id)")
-                .header("Authorization", "Bearer $tok")
-                .build()).await().body!!.string(),
-            FilesListDto::class.java,
-        ).files.firstOrNull()?.id
-
-        val fileId = existingId ?: run {
-            val meta = """{"name":"$LOCATIONS_FILE_NAME","parents":["$rootFolderId"],"mimeType":"application/json"}"""
-            gson.fromJson(
-                http.newCall(Request.Builder()
-                    .url("$API/files?fields=id")
-                    .header("Authorization", "Bearer $tok")
-                    .post(meta.toRequestBody("application/json".toMediaType()))
-                    .build()).await().body!!.string(),
-                DriveFileDto::class.java,
-            ).id
-        }
-        http.newCall(Request.Builder()
-            .url("$UPLOAD_API/files/$fileId?uploadType=media")
-            .header("Authorization", "Bearer $tok")
-            .method("PATCH", json.toRequestBody("application/json".toMediaType()))
-            .build()).await()
-    }
-
-    /**
-     * Lists ALL image files in [folderId] (originals, cutouts, and raw uploads).
-     * Used by the repair-and-sync audit to examine every image regardless of suffix.
-     */
-    suspend fun listAllImageFiles(folderId: String): List<DriveFileDto> = withContext(Dispatchers.IO) {
-        val tok = token()
-        val q = URLEncoder.encode(
-            "'$folderId' in parents and mimeType contains 'image/' and trashed=false", "UTF-8",
-        )
-        fetchAllPages("$API/files?q=$q&fields=files(id,name),nextPageToken&pageSize=1000", tok)
-    }
-
-    /** Lists per-item sidecar JSON files in [folderId], excluding system metadata files. */
-    suspend fun listSidecarFiles(folderId: String): List<DriveFileDto> = withContext(Dispatchers.IO) {
-        val tok = token()
-        val q = URLEncoder.encode(
-            "'$folderId' in parents and mimeType='application/json' and trashed=false",
-            "UTF-8",
-        )
-        fetchAllPages("$API/files?q=$q&fields=files(id,name,size),nextPageToken&pageSize=1000", tok)
-            .filter { it.name !in SYSTEM_JSON_NAMES }
-    }
-
-    /** Downloads and returns the text content of Drive file [fileId], or null on failure. */
-    suspend fun loadFileContent(fileId: String): String? = withContext(Dispatchers.IO) {
-        val tok = token()
-        val resp = http.newCall(
-            Request.Builder()
-                .url("$API/files/$fileId?alt=media")
-                .header("Authorization", "Bearer $tok")
-                .build()
-        ).await()
-        if (resp.isSuccessful) resp.body?.string() else null
-    }
-
-    /**
-     * Creates or updates a JSON sidecar file named [name] in [folderId] with content [json].
-     * Returns the Drive file ID of the sidecar.
-     */
-    suspend fun upsertSidecar(folderId: String, name: String, json: String): String =
-        withContext(Dispatchers.IO) {
-            val tok = token()
-            val escapedName = name.replace("\\", "\\\\").replace("'", "\\'")
-            val q = URLEncoder.encode(
-                "'$folderId' in parents and name='$escapedName' and trashed=false",
-                "UTF-8",
-            )
-            val queryResp = http.newCall(Request.Builder()
-                .url("$API/files?q=$q&fields=files(id)")
-                .header("Authorization", "Bearer $tok")
-                .build()).await()
-            val queryBody = queryResp.body?.string().orEmpty()
-            if (!queryResp.isSuccessful) error("upsertSidecar query failed ${queryResp.code}: $queryBody")
-            val existingId = gson.fromJson(queryBody, FilesListDto::class.java).files.firstOrNull()?.id
-
-            val fileId = existingId ?: run {
-                val meta = """{"name":${gson.toJson(name)},"parents":["$folderId"],"mimeType":"application/json"}"""
-                val createResp = http.newCall(Request.Builder()
-                    .url("$API/files?fields=id")
-                    .header("Authorization", "Bearer $tok")
-                    .post(meta.toRequestBody("application/json".toMediaType()))
-                    .build()).await()
-                val createBody = createResp.body?.string().orEmpty()
-                if (!createResp.isSuccessful) error("upsertSidecar create failed ${createResp.code}: $createBody")
-                gson.fromJson(createBody, DriveFileDto::class.java).id
-                    .ifEmpty { error("upsertSidecar create returned empty id: $createBody") }
-            }
-            val patchResp = http.newCall(Request.Builder()
-                .url("$UPLOAD_API/files/$fileId?uploadType=media")
-                .header("Authorization", "Bearer $tok")
-                .method("PATCH", json.toRequestBody("application/json".toMediaType()))
-                .build()).await()
-            if (!patchResp.isSuccessful) {
-                val body = patchResp.body?.string().orEmpty()
-                patchResp.close()
-                error("upsertSidecar PATCH failed ${patchResp.code}: $body")
-            }
-            patchResp.close()
-            fileId
-        }
-
-    /** Lists direct subfolders of [parentFolderId]. Pass "root" for My Drive root. */
     suspend fun listSubfolders(parentFolderId: String): List<DriveFileDto> = withContext(Dispatchers.IO) {
         val tok = token()
         val q = URLEncoder.encode(
@@ -803,171 +444,6 @@ class DriveRepository(
      * Returns the Drive folder ID of the [PROFILE_FOLDER_NAME] subfolder inside [rootFolderId],
      * creating it if it does not yet exist.
      */
-    suspend fun getOrCreateProfileFolder(rootFolderId: String): String =
-        createSubfolder(rootFolderId, PROFILE_FOLDER_NAME)
-
-    /**
-     * Uploads [imageFile] as a JPEG into the profile subfolder of [rootFolderId] with name [name].
-     * If a file with the same [name] already exists it is replaced in-place (Drive ID preserved).
-     * Returns the final Drive file ID.
-     */
-    suspend fun uploadProfilePhoto(rootFolderId: String, name: String, imageFile: File): String =
-        withContext(Dispatchers.IO) {
-            val profileFolderId = getOrCreateProfileFolder(rootFolderId)
-            val tok = token()
-            val escapedName = name.replace("\\", "\\\\").replace("'", "\\'")
-            val q = URLEncoder.encode(
-                "'$profileFolderId' in parents and name='$escapedName' and trashed=false", "UTF-8",
-            )
-            val existingId = gson.fromJson(
-                http.newCall(Request.Builder()
-                    .url("$API/files?q=$q&fields=files(id)")
-                    .header("Authorization", "Bearer $tok")
-                    .build()).await().body!!.string(),
-                FilesListDto::class.java,
-            ).files.firstOrNull()?.id
-
-            if (existingId != null) {
-                updateImage(existingId, imageFile)
-                existingId
-            } else {
-                uploadImageWithName(profileFolderId, imageFile, name).id
-            }
-        }
-
-    /**
-     * Returns the Drive folder ID of the [TRYONS_FOLDER_NAME] subfolder inside [rootFolderId],
-     * creating it if needed.
-     */
-    suspend fun getOrCreateTryOnsFolder(rootFolderId: String): String =
-        createSubfolder(rootFolderId, TRYONS_FOLDER_NAME)
-
-    /**
-     * Returns the Drive folder ID of the [SHOPPING_FOLDER_NAME] subfolder inside [rootFolderId],
-     * creating it if needed. Items in this folder share the regular closet layout (cutout +
-     * original + sidecar) so they can be moved to a real closet by file-move only.
-     */
-    suspend fun getOrCreateShoppingFolder(rootFolderId: String): String =
-        createSubfolder(rootFolderId, SHOPPING_FOLDER_NAME)
-
-    /**
-     * Returns the Drive folder ID of the [TRIPS_FOLDER_NAME] subfolder inside [rootFolderId],
-     * creating it if needed. Each trip is `{tripId}.json` inside this folder.
-     */
-    suspend fun getOrCreateTripsFolder(rootFolderId: String): String =
-        createSubfolder(rootFolderId, TRIPS_FOLDER_NAME)
-
-    /** Lists trip JSON files directly inside [tripsFolderId]. Returns (driveFileId, name). */
-    suspend fun listTripFiles(tripsFolderId: String): List<DriveFileDto> = withContext(Dispatchers.IO) {
-        val tok = token()
-        val q = URLEncoder.encode(
-            "'$tripsFolderId' in parents and mimeType='application/json' and trashed=false",
-            "UTF-8",
-        )
-        gson.fromJson(
-            http.newCall(
-                Request.Builder()
-                    .url("$API/files?q=$q&fields=files(id,name)&pageSize=1000")
-                    .header("Authorization", "Bearer $tok")
-                    .build(),
-            ).await().body!!.string(),
-            FilesListDto::class.java,
-        ).files
-    }
-
-    /** Downloads a single trip's JSON by Drive file ID. */
-    suspend fun loadTripJson(fileId: String): String? = withContext(Dispatchers.IO) {
-        downloadFileText(fileId, token())
-    }
-
-    /**
-     * Creates or overwrites `{tripId}.json` inside [tripsFolderId]. Returns the Drive file ID.
-     */
-    suspend fun saveTripJson(tripsFolderId: String, tripId: String, json: String): String =
-        withContext(Dispatchers.IO) {
-            val tok = token()
-            val name = "$tripId.json"
-            val existingId = findFileIdByName(tripsFolderId, name, tok)
-            val fileId = existingId ?: run {
-                val meta = """{"name":"$name","parents":["$tripsFolderId"],"mimeType":"application/json"}"""
-                gson.fromJson(
-                    http.newCall(
-                        Request.Builder()
-                            .url("$API/files?fields=id")
-                            .header("Authorization", "Bearer $tok")
-                            .post(meta.toRequestBody("application/json".toMediaType()))
-                            .build(),
-                    ).await().body!!.string(),
-                    DriveFileDto::class.java,
-                ).id
-            }
-            http.newCall(
-                Request.Builder()
-                    .url("$UPLOAD_API/files/$fileId?uploadType=media")
-                    .header("Authorization", "Bearer $tok")
-                    .method("PATCH", json.toRequestBody("application/json".toMediaType()))
-                    .build(),
-            ).await()
-            fileId
-        }
-
-    /** Deletes a trip JSON by Drive file ID. */
-    suspend fun deleteTripJson(fileId: String) = deleteFile(fileId)
-
-    /**
-     * Uploads [imageFile] (PNG) into the try-ons subfolder with [name]. Returns the new Drive ID.
-     */
-    suspend fun uploadTryOnImage(rootFolderId: String, name: String, imageFile: File): String =
-        withContext(Dispatchers.IO) {
-            val folderId = getOrCreateTryOnsFolder(rootFolderId)
-            val tok = token()
-            val boundary = "llai_${System.currentTimeMillis()}"
-            val meta = """{"name":"$name","parents":["$folderId"],"mimeType":"image/png"}"""
-            val out = ByteArrayOutputStream()
-            out.write(
-                "--$boundary\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n" +
-                    "$meta\r\n--$boundary\r\nContent-Type: image/png\r\n\r\n",
-            )
-            imageFile.inputStream().use { it.copyTo(out) }
-            out.write("\r\n--$boundary--")
-            val req = Request.Builder()
-                .url("$UPLOAD_API/files?uploadType=multipart&fields=id,name")
-                .header("Authorization", "Bearer $tok")
-                .post(out.toByteArray().toRequestBody("multipart/related; boundary=$boundary".toMediaType()))
-                .build()
-            gson.fromJson(http.newCall(req).await().body!!.string(), DriveFileDto::class.java).id
-        }
-
-    /** Loads the try-ons index JSON from the root Drive folder, or null if not yet created. */
-    suspend fun loadTryOnsJson(rootFolderId: String): String? = withContext(Dispatchers.IO) {
-        val tok = token()
-        val id = findFileIdByName(rootFolderId, TRYONS_FILE_NAME, tok) ?: return@withContext null
-        downloadFileText(id, tok)
-    }
-
-    /** Creates or overwrites the try-ons index JSON in the root Drive folder. */
-    suspend fun saveTryOnsJson(rootFolderId: String, json: String) = withContext(Dispatchers.IO) {
-        val tok = token()
-        val existingId = findFileIdByName(rootFolderId, TRYONS_FILE_NAME, tok)
-        val fileId = existingId ?: run {
-            val meta = """{"name":"$TRYONS_FILE_NAME","parents":["$rootFolderId"],"mimeType":"application/json"}"""
-            gson.fromJson(
-                http.newCall(Request.Builder()
-                    .url("$API/files?fields=id")
-                    .header("Authorization", "Bearer $tok")
-                    .post(meta.toRequestBody("application/json".toMediaType()))
-                    .build()).await().body!!.string(),
-                DriveFileDto::class.java,
-            ).id
-        }
-        http.newCall(Request.Builder()
-            .url("$UPLOAD_API/files/$fileId?uploadType=media")
-            .header("Authorization", "Bearer $tok")
-            .method("PATCH", json.toRequestBody("application/json".toMediaType()))
-            .build()).await()
-    }
-
-    /** Returns the locally cached file for a Drive ID, or null if not yet downloaded. */
     fun cachedFile(driveId: String): File? =
         sequenceOf("$driveId.png", "$driveId.jpg")
             .map { File(cacheDir, it) }
@@ -990,7 +466,7 @@ class DriveRepository(
         return out.toByteArray()
     }
 
-    private fun ByteArrayOutputStream.write(s: String) = write(s.toByteArray(Charsets.UTF_8))
+    internal fun ByteArrayOutputStream.write(s: String) = write(s.toByteArray(Charsets.UTF_8))
 }
 
 // ---------- OkHttp coroutine bridge ----------

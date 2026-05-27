@@ -18,6 +18,10 @@ import com.librelookai.auth.GoogleAuthManager
 import com.librelookai.data.drive.DriveFileDto
 import com.librelookai.data.drive.DriveRepository
 import com.librelookai.data.drive.await
+import com.librelookai.data.drive.loadWardrobeMetadataJson
+import com.librelookai.data.drive.listSidecarFiles
+import com.librelookai.data.drive.loadFileContent
+import com.librelookai.data.drive.upsertSidecar
 import com.librelookai.gemini.ClothingTags
 import com.librelookai.gemini.CutoutFixActions
 import com.librelookai.gemini.CutoutIssues

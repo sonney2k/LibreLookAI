@@ -3,6 +3,7 @@ package com.librelookai.wardrobe
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.librelookai.data.drive.DriveRepository
+import com.librelookai.data.drive.listAllImageFiles
 import com.librelookai.gemini.CutoutFixActions
 import com.librelookai.gemini.CutoutIssues
 import com.librelookai.gemini.detectCutoutIssues

@@ -20,6 +20,9 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import com.librelookai.auth.GoogleAuthManager
 import com.librelookai.data.drive.DriveRepository
+import com.librelookai.data.drive.loadPreferencesJson
+import com.librelookai.data.drive.savePreferencesJson
+import com.librelookai.data.drive.uploadProfilePhoto
 
 /** The three angles of the user's try-on reference photo. */
 enum class TryOnSlot(val fileName: String) {

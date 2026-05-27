@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import com.librelookai.auth.GoogleAuthManager
 import com.librelookai.data.drive.DriveRepository
+import com.librelookai.data.drive.loadLocationsJson
+import com.librelookai.data.drive.saveLocationsJson
 import com.librelookai.data.model.Location
 
 data class LocationUiState(

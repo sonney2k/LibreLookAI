@@ -150,6 +150,19 @@ Members bumped to internal: `_state`, `drive`, `gemini`, `gson`, `folderId`,
 (openComposer/closeComposer) and `travel/TripViewerScreen.kt` (tag methods).
 `OutfitsViewModel.kt` (554) keeps load/save/CRUD/selection/save-dialog core.
 
+### ✅ DriveRepository.kt — DONE (1004 → 480; compiles + tests green)
+Extension-function split by domain (all ≤500):
+- `DriveRepositoryDocs.kt` (291) — typed JSON doc load/save (outfits, events, prefs,
+  token-usage, wardrobe-metadata, locations)
+- `DriveRepositoryTripsTryOn.kt` (176) — profile/tryon/shopping/trips folders + trip/tryon json
+- `DriveRepositoryWardrobe.kt` (87) — image/sidecar listing + upsertSidecar
+- `DriveRepository.kt` (480) — generic Drive primitives (auth, file CRUD, folders, multipart, cache)
+Bumped to internal: `token`, `fetchAllPages`, `findFileIdByName`, `downloadFileText`,
+`http`, `gson`, `FilesListDto`, `ByteArrayOutputStream.write`, the private file-name/API
+consts. Companion consts referenced from extension files are qualified `DriveRepository.X`.
+~33 cross-package caller imports added (DriveRepository is used everywhere) — all
+compiler-guided. No behavior change.
+
 ### Remaining Phase 3 (original plan)
 - **`wardrobe/WardrobeViewModel.kt` (3075)** — heaviest:
   - `WardrobeModels.kt` — move UI-state/data classes (`DriveImage`, `FindByPhoto`,

@@ -18,6 +18,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import com.librelookai.auth.GoogleAuthManager
 import com.librelookai.data.drive.DriveRepository
+import com.librelookai.data.drive.deleteTripJson
+import com.librelookai.data.drive.getOrCreateTripsFolder
+import com.librelookai.data.drive.listTripFiles
+import com.librelookai.data.drive.loadTripJson
+import com.librelookai.data.drive.saveTripJson
 import com.librelookai.data.model.Outfit
 import com.librelookai.data.model.Trip
 import com.librelookai.gemini.GeminiRepository
