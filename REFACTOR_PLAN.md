@@ -23,6 +23,8 @@ many functions over 500 still get split.
 - ✅ **Phase 1 · ShoppingHelperScreen.kt** (1790 → 6 files: ShoppingHelperScreen/
   ShoppingListTab/SimilarityFinderTab/MatchPreview/MatchDebug/IdentifyGapsTab; compiles +
   tests green). All ≤500.
+- ✅ **Phase 1 · TryOnScreen.kt** (1619 → 5 files: TryOnScreen/TryOnComposer/OutfitPicker/
+  TryOnResult/TryOnDetail; compiles + tests green). All ≤500.
 
 **Hard constraints (do not break):**
 - **Same-package extraction** for UI — keep `internal` visibility working without widening it.
