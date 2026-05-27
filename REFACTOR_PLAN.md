@@ -14,6 +14,9 @@ many functions over 500 still get split.
   except `WardrobeGrid.kt` (816, single `GridContent` composable) and `FullScreenViewer.kt`
   (509, single composable) — both permitted under the soft limit. Candidate for later
   composable decomposition: `GridContent` (740 LOC).
+- ✅ **Phase 1 · OutfitComposerScreen.kt** (2193 → 7 files: Screen/Chrome/Stack/Sheets/
+  Dialogs/AddItem/Suggestions; compiles + tests green). Only `OutfitComposerScreen.kt` (598)
+  over the limit — single dominant `OutfitComposerScreen` composable (soft-limit ok).
 
 **Hard constraints (do not break):**
 - **Same-package extraction** for UI — keep `internal` visibility working without widening it.
