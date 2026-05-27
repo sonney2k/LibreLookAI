@@ -64,6 +64,8 @@ import com.librelookai.outfit.bucketFor
 import com.librelookai.util.Analytics
 import com.librelookai.wardrobe.DriveImage
 import com.librelookai.wardrobe.WardrobeViewModel
+import com.librelookai.wardrobe.findSimilarInCandidates
+import com.librelookai.wardrobe.fuzzyFilterByText
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
