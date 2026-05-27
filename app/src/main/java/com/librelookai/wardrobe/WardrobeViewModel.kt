@@ -58,7 +58,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         /** Sidecars at or above this size always contain a ClothingTags object. */
         internal const val SIDECAR_FULL_MIN  = 100L
         /** Cache subdir for the processed-query bitmaps fed to the similarity debug preview. */
-        private const val QUERY_DEBUG_DIR = "wardrobe_query_debug"
+        internal const val QUERY_DEBUG_DIR = "wardrobe_query_debug"
     }
 
     internal val drive = DriveRepository(app, GoogleAuthManager(app))
@@ -104,7 +104,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     internal val _state = MutableStateFlow(WardrobeUiState())
     val state: StateFlow<WardrobeUiState> = _state.asStateFlow()
 
-    private var folderId: String? = null
+    internal var folderId: String? = null
     private var allFolderIds: List<String>? = null
     /**
      * Every closet folderId the user has configured, regardless of which one is currently
@@ -115,17 +115,17 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     /** Gemini-facing language name (e.g. "English", "German") for label generation. */
     internal var geminiLanguage: String = "English"
     /** When non-null, all new photo imports target this folder instead of the active view folder. */
-    private var defaultImportFolderId: String? = null
+    internal var defaultImportFolderId: String? = null
     /** Mirrors UserPreferences.dedupeOnImport — flips capture/import similarity gate on/off. */
-    private var dedupeOnImport: Boolean = false
+    internal var dedupeOnImport: Boolean = false
     /** Mirrors UserPreferences.dedupeThreshold — cosine cutoff for "this is probably already in your wardrobe". */
     internal var dedupeThreshold: Float = 0.88f
     /** Mirrors UserPreferences.preferLocalBgRemoval — when true, camera/gallery imports route through
      *  the on-device segmenter review screen. URL imports always do. */
-    private var preferLocalBgRemoval: Boolean = false
+    internal var preferLocalBgRemoval: Boolean = false
     /** Mirrors UserPreferences.debugSimilarityPreview — when on, similarity searches return up to
      *  50 matches so the debug breakdown has more candidates to scroll through. */
-    private var debugSimilarityPreview: Boolean = false
+    internal var debugSimilarityPreview: Boolean = false
 
     /** Serializes all Drive metadata writes to prevent concurrent saves overwriting each other. */
     private val metaMutex = Mutex()
@@ -155,7 +155,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
      * Background processing queue. Each item represents one uploaded photo that needs
      * bg removal + classification. Processed serially so metadata writes are consistent.
      */
-    private val workQueue = Channel<PendingJob>(Channel.UNLIMITED)
+    internal val workQueue = Channel<PendingJob>(Channel.UNLIMITED)
 
     init {
         viewModelScope.launch { processQueue() }
@@ -329,7 +329,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     internal fun localCacheFile(id: String) =
         File(getApplication<Application>().filesDir, "wardrobe_cache_$id.json")
 
-    private fun saveLocalCache(id: String, images: List<DriveImage>) {
+    internal fun saveLocalCache(id: String, images: List<DriveImage>) {
         runCatching {
             val cache = LocalCache(images.map {
                 LocalCacheEntry(it.driveId, it.name, it.tags, it.originalDriveId, it.sidecarDriveId, it.createdTimeMs)
@@ -650,7 +650,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
      * Saves a per-item sidecar JSON for [driveId] to Drive, and updates local disk cache.
      * Each item has its own file ("${driveId}.json") — no mutex needed; writes are independent.
      */
-    private fun saveSidecar(driveId: String) {
+    internal fun saveSidecar(driveId: String) {
         val img = _state.value.images.find { it.driveId == driveId } ?: return
         // Resolve the owning folder from the image itself — `folderId` is null when the
         // user is browsing "All locations", but each DriveImage already knows its closet.
@@ -697,7 +697,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
      * Uploads [imageFile] to [folderId] with filename "{cutoutDriveId}_original.jpg".
      * Returns the new Drive file ID.
      */
-    private suspend fun uploadAsOriginal(folderId: String, imageFile: File, cutoutDriveId: String): String =
+    internal suspend fun uploadAsOriginal(folderId: String, imageFile: File, cutoutDriveId: String): String =
         drive.uploadImageWithName(folderId, imageFile, "$cutoutDriveId${DriveRepository.ORIGINAL_SUFFIX}").id
 
     /**
@@ -1038,316 +1038,6 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
     // ---------- Upload from camera ----------
 
-    fun uploadPhoto(rawFile: File) {
-        val id = (defaultImportFolderId ?: folderId) ?: run {
-            _state.update { it.copy(view = WardrobeView.GRID) }
-            return
-        }
-        uploadPhotoInternal(rawFile, id, skippableLocalReview = true)
-    }
-
-    /**
-     * Shared body for camera + gallery + URL imports. Runs the dedupe gate, then either opens the
-     * local-bg review queue (when wired) or proceeds straight to upload.
-     *
-     * @param skippableLocalReview true for camera/gallery (user can decline local cutout and fall
-     *   back to Gemini); false for URL imports, where the review is mandatory.
-     * @param forceLocalReview true to always enqueue the review even when [preferLocalBgRemoval]
-     *   is off — set by URL imports.
-     */
-    private fun uploadPhotoInternal(
-        rawFile: File,
-        id: String,
-        skippableLocalReview: Boolean,
-        forceLocalReview: Boolean = false,
-    ) {
-        if (dedupeOnImport && EmbeddingService.isModelAvailable()) {
-            viewModelScope.launch {
-                _state.update { it.copy(view = WardrobeView.GRID, isUploading = true, error = null) }
-                refreshAllLocationImagesState()
-                val crossClosetImages = _state.value.allLocationImages
-                EmbeddingService.syncIndex(crossClosetImages, drive.cacheDir)
-                val sim = EmbeddingService.findSimilarWithDebug(
-                    file = rawFile,
-                    threshold = dedupeThreshold,
-                    topK = if (debugSimilarityPreview) 50 else 8,
-                    processedOutputDir = File(getApplication<Application>().cacheDir, QUERY_DEBUG_DIR),
-                )
-                val byId = crossClosetImages.associateBy { it.driveId }
-                val resolved = sim?.matches.orEmpty().mapNotNull { m ->
-                    byId[m.driveId]?.let { DuplicateMatch(it, m.score) }
-                }
-                if (resolved.isEmpty()) {
-                    sim?.processedPath?.let { runCatching { File(it).delete() } }
-                    routeImportAfterDedupe(rawFile, id, skippableLocalReview, forceLocalReview)
-                } else {
-                    _state.update { it.copy(
-                        isUploading = false,
-                        duplicateCheck = DuplicateCheck(
-                            rawFilePath = rawFile.absolutePath,
-                            targetFolderId = id,
-                            matches = resolved,
-                            processedPath = sim?.processedPath,
-                            segmented = sim?.segmented ?: false,
-                            hist = sim?.hist,
-                            vec = sim?.vec,
-                            pHash = sim?.pHash,
-                        ),
-                    ) }
-                    // Stash routing for confirmDuplicateImport to resume.
-                    pendingDedupeRouting = DedupeRouting(skippableLocalReview, forceLocalReview)
-                }
-            }
-            return
-        }
-        routeImportAfterDedupe(rawFile, id, skippableLocalReview, forceLocalReview)
-    }
-
-    private data class DedupeRouting(val skippable: Boolean, val force: Boolean)
-    private var pendingDedupeRouting: DedupeRouting? = null
-
-    /** Either enqueue the local-bg review or proceed straight to upload. */
-    private fun routeImportAfterDedupe(
-        rawFile: File,
-        id: String,
-        skippable: Boolean,
-        force: Boolean,
-    ) {
-        val shouldReview = (force || preferLocalBgRemoval) &&
-            EmbeddingService.segmenter.isAvailable()
-        if (shouldReview) {
-            _state.update { it.copy(
-                isUploading = false,
-                localBgReviewQueue = it.localBgReviewQueue + LocalBgReviewItem(
-                    rawFilePath = rawFile.absolutePath,
-                    targetFolderId = id,
-                    skippable = skippable,
-                ),
-            ) }
-        } else {
-            proceedWithCameraUpload(rawFile, id)
-        }
-    }
-
-    /** User confirmed they want to import despite a similarity match. */
-    fun confirmDuplicateImport() {
-        val dc = _state.value.duplicateCheck ?: return
-        dc.processedPath?.let { runCatching { File(it).delete() } }
-        _state.update { it.copy(duplicateCheck = null) }
-        val routing = pendingDedupeRouting ?: DedupeRouting(skippable = true, force = false)
-        pendingDedupeRouting = null
-        routeImportAfterDedupe(File(dc.rawFilePath), dc.targetFolderId, routing.skippable, routing.force)
-    }
-
-    /** User cancelled the import — discard the raw file and clear the check. */
-    fun cancelDuplicateImport() {
-        val dc = _state.value.duplicateCheck ?: return
-        runCatching { File(dc.rawFilePath).delete() }
-        dc.processedPath?.let { runCatching { File(it).delete() } }
-        pendingDedupeRouting = null
-        _state.update { it.copy(duplicateCheck = null) }
-    }
-
-    /**
-     * The original [uploadPhoto] body, extracted so the dedupe gate can call it once cleared.
-     * When [prebuiltCutout] is non-null, it is treated as a pre-rendered cutout PNG produced by
-     * the on-device segmenter; the worker will use it instead of running Gemini.
-     */
-    private fun proceedWithCameraUpload(rawFile: File, id: String, prebuiltCutout: File? = null) {
-        viewModelScope.launch {
-            _state.update { it.copy(view = WardrobeView.GRID, isUploading = true, error = null) }
-            runCatching {
-                val uploaded = drive.uploadImage(id, rawFile)
-                val ext = if (rawFile.extension == "png") "png" else "jpg"
-                val displayCache = File(drive.cacheDir, "${uploaded.id}.$ext")
-                if (rawFile.absolutePath != displayCache.absolutePath) {
-                    rawFile.copyTo(displayCache, overwrite = true)
-                }
-                rawFile.copyTo(File(drive.cacheDir, "${uploaded.id}_original.jpg"), overwrite = true)
-                Triple(uploaded.id, uploaded.name, displayCache)
-            }.onSuccess { (uploadedId, uploadedName, displayCache) ->
-                // Stash the local cutout under a stable per-job filename so processQueuedImage can
-                // find it after the raw upload completes — the final destination filename uses the
-                // *cutout's* drive ID, which we don't know yet.
-                val cutoutForJob = prebuiltCutout?.let { src ->
-                    val dest = File(drive.cacheDir, "${uploadedId}_local_cutout.png")
-                    runCatching { src.copyTo(dest, overwrite = true) }.getOrNull()
-                    runCatching { src.delete() }
-                    dest.takeIf { it.exists() }
-                }
-                val newImage = DriveImage(uploadedId, displayCache.absolutePath, uploadedName, tags = null, folderId = id, createdTimeMs = System.currentTimeMillis())
-                _state.update { it.copy(
-                    isUploading = false,
-                    images = listOf(newImage) + it.images,
-                    pendingJobs = it.pendingJobs + 1,
-                ) }
-                // No sidecar yet — the item is raw; sidecar is written by processQueuedImage
-                saveLocalCache(id, _state.value.images)
-                workQueue.send(PendingJob(newImage.driveId, id, cutoutForJob?.absolutePath))
-            }.onFailure { e ->
-                _state.update { it.copy(isUploading = false, error = e.message) }
-            }
-        }
-    }
-
-    // ---------- Local background-removal review ----------
-
-    /**
-     * User accepted the on-device cutout for the head item of the review queue. The cutout file
-     * has already been written to [cutoutFile] by the review screen; we hand both raw + cutout off
-     * to the regular upload pipeline, then advance the queue.
-     */
-    fun applyLocalBgCutout(cutoutFile: File) {
-        val head = _state.value.localBgReviewQueue.firstOrNull() ?: return
-        val raw = File(head.rawFilePath)
-        _state.update { it.copy(localBgReviewQueue = it.localBgReviewQueue.drop(1)) }
-        proceedWithCameraUpload(raw, head.targetFolderId, prebuiltCutout = cutoutFile)
-    }
-
-    /** User declined the on-device cutout — fall back to the regular Gemini path. Only valid
-     *  for entries with `skippable = true` (camera + gallery; not URL). */
-    fun skipLocalBgReview() {
-        val head = _state.value.localBgReviewQueue.firstOrNull() ?: return
-        if (!head.skippable) return
-        val raw = File(head.rawFilePath)
-        _state.update { it.copy(localBgReviewQueue = it.localBgReviewQueue.drop(1)) }
-        proceedWithCameraUpload(raw, head.targetFolderId)
-    }
-
-    /** User cancelled this import entirely — discard the raw file and advance the queue. */
-    fun cancelLocalBgReview() {
-        val head = _state.value.localBgReviewQueue.firstOrNull() ?: return
-        runCatching { File(head.rawFilePath).delete() }
-        _state.update { it.copy(localBgReviewQueue = it.localBgReviewQueue.drop(1)) }
-    }
-
-    // ---------- Upload from gallery ----------
-
-    /**
-     * Fetches the hero product image from a shopping URL and runs it through the standard
-     * camera-import pipeline so the resulting wardrobe item gets bg removal + tagging + sidecar
-     * exactly like a captured photo. See [WebProductFetcher] for the parser strategy. Surfaces
-     * a clear error in [WardrobeUiState.error] when no image can be found.
-     */
-    fun importFromUrl(url: String) {
-        if (url.isBlank()) return
-        val targetId = (defaultImportFolderId ?: folderId) ?: return
-        viewModelScope.launch {
-            _state.update { it.copy(isUploading = true, error = null) }
-            val result = WebProductFetcher.fetchImageCandidates(url)
-            if (result == null) {
-                _state.update {
-                    it.copy(
-                        isUploading = false,
-                        error = getApplication<Application>().getString(R.string.url_import_failed),
-                    )
-                }
-                return@launch
-            }
-            // Always present the picker (even on empty candidates the WebView fallback opens).
-            _state.update {
-                it.copy(
-                    isUploading = false,
-                    urlImportPicker = UrlImportPickerState(
-                        pageUrl = result.pageUrl,
-                        candidates = result.candidates,
-                        targetFolderId = targetId,
-                    ),
-                )
-            }
-        }
-    }
-
-    /** Picker callback: download [absoluteImageUrl] and run the standard URL-import pipeline. */
-    fun confirmUrlImportPick(absoluteImageUrl: String) {
-        val picker = _state.value.urlImportPicker ?: return
-        val targetId = picker.targetFolderId ?: return
-        viewModelScope.launch {
-            _state.update { it.copy(urlImportPicker = picker.copy(isDownloading = true)) }
-            val image = WebProductFetcher.downloadImage(absoluteImageUrl, picker.pageUrl, drive.cacheDir)
-            if (image == null) {
-                _state.update {
-                    it.copy(
-                        urlImportPicker = picker.copy(isDownloading = false),
-                        error = getApplication<Application>().getString(R.string.url_import_failed),
-                    )
-                }
-                return@launch
-            }
-            _state.update { it.copy(urlImportPicker = null) }
-            // URL imports always go through on-device review so the user can refine the seed.
-            uploadPhotoInternal(
-                rawFile = image,
-                id = targetId,
-                skippableLocalReview = false,
-                forceLocalReview = true,
-            )
-        }
-    }
-
-    fun cancelUrlImport() {
-        _state.update { it.copy(urlImportPicker = null) }
-    }
-
-    fun uploadGalleryPhotos(uris: List<Uri>) {
-        if (uris.isEmpty()) return
-        val id = (defaultImportFolderId ?: folderId) ?: return
-        // When local-bg review is enabled, route each gallery item through the same uploadPhoto
-        // pipeline so it is enqueued for the review screen one at a time. Otherwise stick with
-        // the original direct-upload path (faster, no per-item user interaction).
-        if (preferLocalBgRemoval && EmbeddingService.segmenter.isAvailable()) {
-            viewModelScope.launch {
-                _state.update { it.copy(batchTotal = uris.size, batchDone = 0, isUploading = true, error = null) }
-                val cr = getApplication<Application>().contentResolver
-                uris.forEachIndexed { index, uri ->
-                    _state.update { it.copy(batchDone = index) }
-                    val tempFile = File(drive.cacheDir, "gallery_${System.currentTimeMillis()}_$index.jpg")
-                    runCatching {
-                        cr.openInputStream(uri)?.use { it.copyTo(tempFile.outputStream()) }
-                        tempFile
-                    }.onSuccess { f ->
-                        // Enqueue for review; uploadPhotoInternal handles dedupe + queue routing.
-                        uploadPhotoInternal(f, id, skippableLocalReview = true)
-                    }.onFailure { e ->
-                        _state.update { it.copy(error = "Upload failed: ${e.message}") }
-                        runCatching { tempFile.delete() }
-                    }
-                }
-                _state.update { it.copy(batchTotal = 0, batchDone = 0, isUploading = false) }
-            }
-            return
-        }
-
-        viewModelScope.launch {
-            _state.update { it.copy(batchTotal = uris.size, batchDone = 0, isUploading = true, error = null) }
-            val cr = getApplication<Application>().contentResolver
-            uris.forEachIndexed { index, uri ->
-                _state.update { it.copy(batchDone = index) }
-                val tempFile = File(drive.cacheDir, "gallery_${System.currentTimeMillis()}.jpg")
-                runCatching {
-                    cr.openInputStream(uri)?.use { it.copyTo(tempFile.outputStream()) }
-                    val uploaded = drive.uploadImage(id, tempFile)
-                    val displayCache = File(drive.cacheDir, "${uploaded.id}.jpg")
-                    tempFile.copyTo(displayCache, overwrite = true)
-                    tempFile.copyTo(File(drive.cacheDir, "${uploaded.id}_original.jpg"), overwrite = true)
-                    DriveImage(uploaded.id, displayCache.absolutePath, uploaded.name, tags = null, folderId = id, createdTimeMs = System.currentTimeMillis())
-                }.onSuccess { newImage ->
-                    _state.update { it.copy(
-                        images = listOf(newImage) + it.images,
-                        pendingJobs = it.pendingJobs + 1,
-                    ) }
-                    workQueue.send(PendingJob(newImage.driveId, id))
-                }.onFailure { e ->
-                    _state.update { it.copy(error = "Upload failed: ${e.message}") }
-                }
-                tempFile.delete()
-            }
-            _state.update { it.copy(batchTotal = 0, batchDone = 0, isUploading = false) }
-            // Sidecars are written per item by processQueuedImage; just save local cache
-            saveLocalCache(id, _state.value.images)
-        }
-    }
-
     fun reprocessBackground(driveId: String) {
         viewModelScope.launch {
             _state.update { it.copy(isProcessing = true, processingImageId = driveId, error = null) }
@@ -1602,380 +1292,6 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
      *                        skipped; when true the existing Drive file is replaced in-place.
      *                        Ignored when [replaceExisting] is true.
      */
-    fun importFromFolder(
-        treeUri: Uri,
-        removeBackground: Boolean = false,
-        autoTag: Boolean = false,
-        replaceExisting: Boolean = false,
-        overwriteDuplicates: Boolean = false,
-    ) {
-        val id = (defaultImportFolderId ?: folderId) ?: return
-        val options = ImportOptions(removeBackground, autoTag, replaceExisting, overwriteDuplicates)
-        viewModelScope.launch {
-            acquireJobWakeLock()
-            try {
-                val entries = enumerateSafSources(treeUri) ?: return@launch
-                if (entries.isEmpty()) return@launch
-                kickoffImport(id, options, entries)
-            } finally {
-                // For the preview path the lock is released in confirm/cancel; for the fast path
-                // runImportEntries() runs synchronously here so we release after it returns.
-                if (_state.value.importPreview == null) releaseJobWakeLock()
-            }
-        }
-    }
-
-    // ---------- Drive folder browser helpers (called from composable via LaunchedEffect) ----------
-
-    suspend fun listDriveSubfolders(folderId: String): List<DriveFileDto> =
-        drive.listSubfolders(folderId)
-
-    suspend fun countDriveImages(folderId: String): Int =
-        drive.countImages(folderId)
-
-    // ---------- Drive Import ----------
-
-    /**
-     * Imports all images from a Google Drive folder ([sourceFolderId]) into the current wardrobe.
-     * Mirror of [importFromFolder] but uses the Drive REST API instead of SAF.
-     */
-    fun importFromDriveFolder(
-        sourceFolderId: String,
-        removeBackground: Boolean = false,
-        autoTag: Boolean = false,
-        replaceExisting: Boolean = false,
-        overwriteDuplicates: Boolean = false,
-    ) {
-        val id = (defaultImportFolderId ?: folderId) ?: return
-        val options = ImportOptions(removeBackground, autoTag, replaceExisting, overwriteDuplicates)
-        viewModelScope.launch {
-            acquireJobWakeLock()
-            try {
-                val entries = enumerateDriveSources(sourceFolderId)
-                if (entries.isEmpty()) return@launch
-                kickoffImport(id, options, entries)
-            } finally {
-                if (_state.value.importPreview == null) releaseJobWakeLock()
-            }
-        }
-    }
-
-    // ---------- Shared import implementation (SAF + Drive sources go through these) ----------
-
-    /**
-     * Phase A.1 — enumerate every image in [treeUri], copy each into a stable per-entry cache
-     * file, and return the resulting [ImportPreviewEntry] list (ready for similarity scanning or
-     * direct upload). Returns null on enumeration failure.
-     */
-    private suspend fun enumerateSafSources(treeUri: Uri): List<ImportPreviewEntry>? {
-        val cr = getApplication<Application>().contentResolver
-        val treeDocId = DocumentsContract.getTreeDocumentId(treeUri)
-        val childrenUri = DocumentsContract.buildChildDocumentsUriUsingTree(treeUri, treeDocId)
-        data class Src(val docId: String, val displayName: String, val mimeType: String)
-        val srcFiles = mutableListOf<Src>()
-        var metaDocId: String? = null
-        cr.query(
-            childrenUri,
-            arrayOf(
-                DocumentsContract.Document.COLUMN_DOCUMENT_ID,
-                DocumentsContract.Document.COLUMN_DISPLAY_NAME,
-                DocumentsContract.Document.COLUMN_MIME_TYPE,
-            ),
-            null, null, null,
-        )?.use { cursor ->
-            while (cursor.moveToNext()) {
-                val docId = cursor.getString(0)
-                val name  = cursor.getString(1) ?: continue
-                val mime  = cursor.getString(2) ?: ""
-                when {
-                    name == "_wardrobe_metadata.json" -> metaDocId = docId
-                    mime.startsWith("image/")         -> srcFiles.add(Src(docId, name, mime))
-                }
-            }
-        }
-        val srcMetaByName: Map<String, WardrobeItemMeta> = metaDocId?.let { docId ->
-            runCatching {
-                val metaUri = DocumentsContract.buildDocumentUriUsingTree(treeUri, docId)
-                val json = cr.openInputStream(metaUri)?.use { it.readBytes().toString(Charsets.UTF_8) }
-                if (json != null) gson.fromJson(json, WardrobeMetadata::class.java).items.associateBy { it.name }
-                else emptyMap()
-            }.getOrDefault(emptyMap())
-        } ?: emptyMap()
-        val ts = System.currentTimeMillis()
-        return srcFiles.mapIndexedNotNull { idx, src ->
-            val ext = if (src.mimeType == "image/png") "png" else "jpg"
-            val cached = File(drive.cacheDir, "import_${ts}_$idx.$ext")
-            val ok = runCatching {
-                val srcUri = DocumentsContract.buildDocumentUriUsingTree(treeUri, src.docId)
-                cr.openInputStream(srcUri)?.use { it.copyTo(cached.outputStream()) } != null
-            }.getOrDefault(false)
-            if (!ok) return@mapIndexedNotNull null
-            val meta = srcMetaByName[src.displayName]
-            ImportPreviewEntry(
-                key = "saf_$idx",
-                displayName = src.displayName,
-                cachedFilePath = cached.absolutePath,
-                srcMetaTags = meta?.tags,
-                srcMetaOriginalDriveId = meta?.originalDriveId,
-            )
-        }
-    }
-
-    /** Phase A.1 for a Drive source — list files, download each into a per-entry cache file. */
-    private suspend fun enumerateDriveSources(sourceFolderId: String): List<ImportPreviewEntry> {
-        val srcFiles = runCatching { drive.listFiles(sourceFolderId) }.getOrDefault(emptyList())
-        if (srcFiles.isEmpty()) return emptyList()
-        val ts = System.currentTimeMillis()
-        return srcFiles.mapIndexedNotNull { idx, src ->
-            val ext = if (src.name.endsWith(".png", ignoreCase = true)) "png" else "jpg"
-            val cached = File(drive.cacheDir, "import_drive_${ts}_$idx.$ext")
-            if (drive.downloadFileTo(src.id, cached) == null) return@mapIndexedNotNull null
-            ImportPreviewEntry(
-                key = "drive_$idx",
-                displayName = src.name,
-                cachedFilePath = cached.absolutePath,
-            )
-        }
-    }
-
-    /**
-     * Phase A.2 — branch on whether the user has dedupe-on-import enabled. With it on, embed each
-     * candidate, find above-threshold matches, and pause with [ImportPreview] state for the UI to
-     * render a review grid. Without it, run the import directly on every entry.
-     */
-    private suspend fun kickoffImport(
-        targetFolderId: String,
-        options: ImportOptions,
-        entries: List<ImportPreviewEntry>,
-    ) {
-        if (dedupeOnImport && EmbeddingService.isModelAvailable()) {
-            // Show empty preview with a scanning indicator
-            _state.update { it.copy(importPreview = ImportPreview(
-                entries = emptyList(),
-                selectedKeys = emptySet(),
-                isScanning = true,
-                scanDone = 0,
-                scanTotal = entries.size,
-                targetFolderId = targetFolderId,
-                options = options,
-            )) }
-            refreshAllLocationImagesState()
-            val crossClosetImages = _state.value.allLocationImages
-            EmbeddingService.syncIndex(crossClosetImages, drive.cacheDir)
-            val byId = crossClosetImages.associateBy { it.driveId }
-            val scanned = mutableListOf<ImportPreviewEntry>()
-            entries.forEachIndexed { idx, entry ->
-                val matches = EmbeddingService.findSimilar(
-                    file = File(entry.cachedFilePath),
-                    threshold = dedupeThreshold,
-                    topK = if (debugSimilarityPreview) 50 else 4,
-                    segment = true,
-                )
-                val resolved = matches.mapNotNull { m ->
-                    byId[m.driveId]?.let { DuplicateMatch(it, m.score) }
-                }
-                scanned.add(entry.copy(similar = resolved))
-                _state.update { it.copy(importPreview = it.importPreview?.copy(
-                    entries = scanned.toList(),
-                    scanDone = idx + 1,
-                    isScanning = idx < entries.lastIndex,
-                )) }
-            }
-            // Default selection: only candidates without a similarity hit. The user can opt back in.
-            val defaultSel = scanned.filter { it.similar.isEmpty() }.map { it.key }.toSet()
-            _state.update { it.copy(importPreview = it.importPreview?.copy(
-                entries = scanned.toList(),
-                selectedKeys = defaultSel,
-                isScanning = false,
-            )) }
-            return
-        }
-        // Fast path — import every entry without a preview.
-        runImportEntries(targetFolderId, options, entries)
-    }
-
-    /** Toggle a single entry's selection inside the import preview. */
-    fun toggleImportPreviewSelection(key: String) {
-        _state.update { s ->
-            val p = s.importPreview ?: return@update s
-            val next = p.selectedKeys.toMutableSet()
-            if (!next.add(key)) next.remove(key)
-            s.copy(importPreview = p.copy(selectedKeys = next))
-        }
-    }
-
-    /** Replace the import-preview selection (used by Select all / Deselect all). */
-    fun setImportPreviewSelection(keys: Set<String>) {
-        _state.update { s ->
-            val p = s.importPreview ?: return@update s
-            s.copy(importPreview = p.copy(selectedKeys = keys))
-        }
-    }
-
-    /** Run the import on every selected entry; discard cache files for the deselected ones. */
-    fun confirmImportPreview() {
-        val preview = _state.value.importPreview ?: return
-        _state.update { it.copy(importPreview = null) }
-        val (selected, dropped) = preview.entries.partition { it.key in preview.selectedKeys }
-        viewModelScope.launch {
-            try {
-                if (selected.isNotEmpty()) {
-                    runImportEntries(preview.targetFolderId, preview.options, selected)
-                }
-                dropped.forEach { runCatching { File(it.cachedFilePath).delete() } }
-            } finally {
-                releaseJobWakeLock()
-            }
-        }
-    }
-
-    /** Cancel the import without uploading anything; discard every cached candidate file. */
-    fun cancelImportPreview() {
-        val preview = _state.value.importPreview ?: return
-        _state.update { it.copy(importPreview = null) }
-        preview.entries.forEach { runCatching { File(it.cachedFilePath).delete() } }
-        releaseJobWakeLock()
-    }
-
-    /**
-     * Phase B — the actual upload + AI loop. Operates on entries that already have a
-     * pre-cached file on disk (regardless of source). Mirrors the original per-entry logic from
-     * `importFromFolder` so behavior is unchanged when the preview gate is disabled.
-     */
-    private suspend fun runImportEntries(
-        id: String,
-        options: ImportOptions,
-        entries: List<ImportPreviewEntry>,
-    ) {
-        if (options.replaceExisting) {
-            val toDelete = _state.value.images.map { it.driveId }
-            _state.update { it.copy(isImporting = true, importDone = 0, importTotal = entries.size, images = emptyList(), error = null) }
-            toDelete.forEach { driveId -> runCatching { drive.deleteFile(driveId) } }
-        } else {
-            _state.update { it.copy(isImporting = true, importDone = 0, importTotal = entries.size, error = null) }
-        }
-        val existingByName: Map<String, DriveImage> = _state.value.images.associateBy { it.name }
-        // Set when any item in the loop hits a 402 — short-circuits the rest so we
-        // don't make N pointless proxy calls. Global dialog still appears via
-        // CreditsEvents emitted from throwIf402.
-        var creditsExhausted = false
-        entries.forEachIndexed { index, entry ->
-            if (creditsExhausted) return@forEachIndexed
-            _state.update { it.copy(importDone = index) }
-            val tempFile = File(entry.cachedFilePath)
-            val duplicate = existingByName[entry.displayName]
-            if (duplicate != null && !options.overwriteDuplicates) {
-                runCatching { tempFile.delete() }
-                return@forEachIndexed
-            }
-            val placeholderId: String? = if (duplicate == null)
-                "__importing_${index}_${System.nanoTime()}" else null
-            if (placeholderId != null) {
-                _state.update { s ->
-                    s.copy(
-                        images = s.images + DriveImage(
-                            driveId = placeholderId,
-                            localPath = entry.cachedFilePath,
-                            name = entry.displayName,
-                            folderId = id,
-                            createdTimeMs = System.currentTimeMillis(),
-                        ),
-                        processingImageId = placeholderId,
-                    )
-                }
-            } else {
-                _state.update { it.copy(processingImageId = duplicate!!.driveId) }
-            }
-            runCatching {
-                if (!tempFile.exists()) error("Cached file missing for ${entry.displayName}")
-                var imageToUpload = tempFile
-                var rawOriginalFile: File? = null
-                var originalDriveId: String? = entry.srcMetaOriginalDriveId ?: duplicate?.originalDriveId
-                if (options.removeBackground && entry.srcMetaTags == null) {
-                    val processed = gemini.removeBackground(tempFile, drive.cacheDir)
-                    if (processed != null) {
-                        rawOriginalFile = tempFile
-                        imageToUpload = processed
-                    }
-                }
-                val tags = when {
-                    entry.srcMetaTags != null -> entry.srcMetaTags
-                    duplicate != null         -> duplicate.tags
-                    options.autoTag           -> gemini.classifyClothing(imageToUpload, geminiLanguage)
-                    else                      -> null
-                }
-                if (duplicate != null) {
-                    drive.updateImage(duplicate.driveId, imageToUpload)
-                    val displayCache = File(drive.cacheDir, "${duplicate.driveId}.png")
-                    imageToUpload.copyTo(displayCache, overwrite = true)
-                    val finalOriginalId = rawOriginalFile?.let { orig ->
-                        val oid = runCatching { uploadAsOriginal(id, orig, duplicate.driveId) }.getOrNull()
-                        orig.copyTo(File(drive.cacheDir, "${duplicate.driveId}_original.jpg"), overwrite = true)
-                        oid
-                    } ?: originalDriveId ?: duplicate.originalDriveId
-                    _state.update { s ->
-                        s.copy(images = s.images.map { img ->
-                            if (img.driveId == duplicate.driveId) img.copy(
-                                localPath = displayCache.absolutePath,
-                                tags = tags,
-                                version = System.currentTimeMillis(),
-                                originalDriveId = finalOriginalId,
-                            ) else img
-                        })
-                    }
-                } else {
-                    val cutoutUploaded = uploadAsCutout(id, imageToUpload)
-                    val displayCache = File(drive.cacheDir, "${cutoutUploaded.id}.png")
-                    imageToUpload.copyTo(displayCache, overwrite = true)
-                    val finalOriginalId = rawOriginalFile?.let { orig ->
-                        val oid = runCatching { uploadAsOriginal(id, orig, cutoutUploaded.id) }.getOrNull()
-                        orig.copyTo(File(drive.cacheDir, "${cutoutUploaded.id}_original.jpg"), overwrite = true)
-                        oid
-                    } ?: originalDriveId
-                    val newImage = DriveImage(
-                        driveId = cutoutUploaded.id,
-                        localPath = displayCache.absolutePath,
-                        name = cutoutUploaded.name,
-                        tags = tags,
-                        originalDriveId = finalOriginalId,
-                        folderId = id,
-                        createdTimeMs = System.currentTimeMillis(),
-                    )
-                    _state.update { s ->
-                        s.copy(images = if (placeholderId != null)
-                            s.images.map { if (it.driveId == placeholderId) newImage else it }
-                        else s.images + newImage)
-                    }
-                }
-            }.onFailure { e ->
-                if (e is com.librelookai.billing.InsufficientCreditsException) {
-                    // Abort the rest of the bulk; the import that failed already
-                    // had its placeholder rolled back below. No `error` text — the
-                    // global dialog tells the user what happened.
-                    creditsExhausted = true
-                    _state.update { s ->
-                        s.copy(images = if (placeholderId != null)
-                            s.images.filterNot { it.driveId == placeholderId }
-                        else s.images)
-                    }
-                } else {
-                    _state.update { s ->
-                        s.copy(
-                            error = "Import failed for ${entry.displayName}: ${e.message}",
-                            images = if (placeholderId != null)
-                                s.images.filterNot { it.driveId == placeholderId }
-                            else s.images,
-                        )
-                    }
-                }
-            }
-            _state.update { it.copy(processingImageId = null) }
-            runCatching { tempFile.delete() }
-        }
-        _state.update { it.copy(isImporting = false, importDone = 0, importTotal = 0) }
-        _state.value.images.forEach { img -> if (img.sidecarDriveId == null) saveSidecar(img.driveId) }
-    }
-
     fun clearError() = _state.update { it.copy(error = null) }
 
     // ---------- Selection & Delete ----------
