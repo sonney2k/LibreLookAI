@@ -21,10 +21,10 @@ internal suspend fun DriveRepository.saveOutfitsJson(folderId: String, json: Str
         val tok = token()
         val existingId = findFileIdByName(folderId, DriveRepository.OUTFITS_FILE_NAME, tok)
         val fileId = existingId ?: run {
-            val meta = """{"name":"$DriveRepository.OUTFITS_FILE_NAME","parents":["$folderId"],"mimeType":"application/json"}"""
+            val meta = """{"name":"${DriveRepository.OUTFITS_FILE_NAME}","parents":["$folderId"],"mimeType":"application/json"}"""
             gson.fromJson(
                 http.newCall(Request.Builder()
-                    .url("$DriveRepository.API/files?fields=id")
+                    .url("${DriveRepository.API}/files?fields=id")
                     .header("Authorization", "Bearer $tok")
                     .post(meta.toRequestBody("application/json".toMediaType()))
                     .build()).await().body!!.string(),
@@ -32,7 +32,7 @@ internal suspend fun DriveRepository.saveOutfitsJson(folderId: String, json: Str
             ).id
         }
         http.newCall(Request.Builder()
-            .url("$DriveRepository.UPLOAD_API/files/$fileId?uploadType=media")
+            .url("${DriveRepository.UPLOAD_API}/files/$fileId?uploadType=media")
             .header("Authorization", "Bearer $tok")
             .method("PATCH", json.toRequestBody("application/json".toMediaType()))
             .build()).await()
@@ -55,10 +55,10 @@ internal suspend fun DriveRepository.saveOutfitEventsJson(folderId: String, json
         val tok = token()
         val existingId = findFileIdByName(folderId, DriveRepository.OUTFIT_EVENTS_FILE_NAME, tok)
         val fileId = existingId ?: run {
-            val meta = """{"name":"$DriveRepository.OUTFIT_EVENTS_FILE_NAME","parents":["$folderId"],"mimeType":"application/json"}"""
+            val meta = """{"name":"${DriveRepository.OUTFIT_EVENTS_FILE_NAME}","parents":["$folderId"],"mimeType":"application/json"}"""
             gson.fromJson(
                 http.newCall(Request.Builder()
-                    .url("$DriveRepository.API/files?fields=id")
+                    .url("${DriveRepository.API}/files?fields=id")
                     .header("Authorization", "Bearer $tok")
                     .post(meta.toRequestBody("application/json".toMediaType()))
                     .build()).await().body!!.string(),
@@ -66,7 +66,7 @@ internal suspend fun DriveRepository.saveOutfitEventsJson(folderId: String, json
             ).id
         }
         http.newCall(Request.Builder()
-            .url("$DriveRepository.UPLOAD_API/files/$fileId?uploadType=media")
+            .url("${DriveRepository.UPLOAD_API}/files/$fileId?uploadType=media")
             .header("Authorization", "Bearer $tok")
             .method("PATCH", json.toRequestBody("application/json".toMediaType()))
             .build()).await()
@@ -76,18 +76,18 @@ internal suspend fun DriveRepository.saveOutfitEventsJson(folderId: String, json
 internal suspend fun DriveRepository.loadPreferencesJson(folderId: String): String? = withContext(Dispatchers.IO) {
         val tok = token()
         val q = URLEncoder.encode(
-            "'$folderId' in parents and name='$DriveRepository.PREFERENCES_FILE_NAME' and trashed=false", "UTF-8",
+            "'$folderId' in parents and name='${DriveRepository.PREFERENCES_FILE_NAME}' and trashed=false", "UTF-8",
         )
         val fileId = gson.fromJson(
             http.newCall(Request.Builder()
-                .url("$DriveRepository.API/files?q=$q&fields=files(id)")
+                .url("${DriveRepository.API}/files?q=$q&fields=files(id)")
                 .header("Authorization", "Bearer $tok")
                 .build()).await().body!!.string(),
             FilesListDto::class.java,
         ).files.firstOrNull()?.id ?: return@withContext null
 
         val resp = http.newCall(Request.Builder()
-            .url("$DriveRepository.API/files/$fileId?alt=media")
+            .url("${DriveRepository.API}/files/$fileId?alt=media")
             .header("Authorization", "Bearer $tok")
             .build()).await()
         if (resp.isSuccessful) resp.body?.string() else null
@@ -97,21 +97,21 @@ internal suspend fun DriveRepository.loadPreferencesJson(folderId: String): Stri
 internal suspend fun DriveRepository.savePreferencesJson(folderId: String, json: String) = withContext(Dispatchers.IO) {
         val tok = token()
         val q = URLEncoder.encode(
-            "'$folderId' in parents and name='$DriveRepository.PREFERENCES_FILE_NAME' and trashed=false", "UTF-8",
+            "'$folderId' in parents and name='${DriveRepository.PREFERENCES_FILE_NAME}' and trashed=false", "UTF-8",
         )
         val existingId = gson.fromJson(
             http.newCall(Request.Builder()
-                .url("$DriveRepository.API/files?q=$q&fields=files(id)")
+                .url("${DriveRepository.API}/files?q=$q&fields=files(id)")
                 .header("Authorization", "Bearer $tok")
                 .build()).await().body!!.string(),
             FilesListDto::class.java,
         ).files.firstOrNull()?.id
 
         val fileId = existingId ?: run {
-            val meta = """{"name":"$DriveRepository.PREFERENCES_FILE_NAME","parents":["$folderId"],"mimeType":"application/json"}"""
+            val meta = """{"name":"${DriveRepository.PREFERENCES_FILE_NAME}","parents":["$folderId"],"mimeType":"application/json"}"""
             gson.fromJson(
                 http.newCall(Request.Builder()
-                    .url("$DriveRepository.API/files?fields=id")
+                    .url("${DriveRepository.API}/files?fields=id")
                     .header("Authorization", "Bearer $tok")
                     .post(meta.toRequestBody("application/json".toMediaType()))
                     .build()).await().body!!.string(),
@@ -119,7 +119,7 @@ internal suspend fun DriveRepository.savePreferencesJson(folderId: String, json:
             ).id
         }
         http.newCall(Request.Builder()
-            .url("$DriveRepository.UPLOAD_API/files/$fileId?uploadType=media")
+            .url("${DriveRepository.UPLOAD_API}/files/$fileId?uploadType=media")
             .header("Authorization", "Bearer $tok")
             .method("PATCH", json.toRequestBody("application/json".toMediaType()))
             .build()).await()
@@ -133,14 +133,14 @@ internal suspend fun DriveRepository.loadTokenUsageJsonl(folderId: String): Stri
         )
         val fileId = gson.fromJson(
             http.newCall(Request.Builder()
-                .url("$DriveRepository.API/files?q=$q&fields=files(id)")
+                .url("${DriveRepository.API}/files?q=$q&fields=files(id)")
                 .header("Authorization", "Bearer $tok")
                 .build()).await().body!!.string(),
             FilesListDto::class.java,
         ).files.firstOrNull()?.id ?: return@withContext null
 
         val resp = http.newCall(Request.Builder()
-            .url("$DriveRepository.API/files/$fileId?alt=media")
+            .url("${DriveRepository.API}/files/$fileId?alt=media")
             .header("Authorization", "Bearer $tok")
             .build()).await()
         if (resp.isSuccessful) resp.body?.string() else null
@@ -155,7 +155,7 @@ internal suspend fun DriveRepository.saveTokenUsageJsonl(folderId: String, conte
         )
         val existingId = gson.fromJson(
             http.newCall(Request.Builder()
-                .url("$DriveRepository.API/files?q=$q&fields=files(id)")
+                .url("${DriveRepository.API}/files?q=$q&fields=files(id)")
                 .header("Authorization", "Bearer $tok")
                 .build()).await().body!!.string(),
             FilesListDto::class.java,
@@ -165,7 +165,7 @@ internal suspend fun DriveRepository.saveTokenUsageJsonl(folderId: String, conte
             val meta = """{"name":"$name","parents":["$folderId"],"mimeType":"application/x-ndjson"}"""
             gson.fromJson(
                 http.newCall(Request.Builder()
-                    .url("$DriveRepository.API/files?fields=id")
+                    .url("${DriveRepository.API}/files?fields=id")
                     .header("Authorization", "Bearer $tok")
                     .post(meta.toRequestBody("application/json".toMediaType()))
                     .build()).await().body!!.string(),
@@ -173,7 +173,7 @@ internal suspend fun DriveRepository.saveTokenUsageJsonl(folderId: String, conte
             ).id
         }
         http.newCall(Request.Builder()
-            .url("$DriveRepository.UPLOAD_API/files/$fileId?uploadType=media")
+            .url("${DriveRepository.UPLOAD_API}/files/$fileId?uploadType=media")
             .header("Authorization", "Bearer $tok")
             .method("PATCH", content.toRequestBody("application/x-ndjson".toMediaType()))
             .build()).await()
@@ -183,18 +183,18 @@ internal suspend fun DriveRepository.saveTokenUsageJsonl(folderId: String, conte
 internal suspend fun DriveRepository.loadWardrobeMetadataJson(folderId: String): String? = withContext(Dispatchers.IO) {
         val tok = token()
         val q = URLEncoder.encode(
-            "'$folderId' in parents and name='$DriveRepository.WARDROBE_METADATA_FILE_NAME' and trashed=false", "UTF-8",
+            "'$folderId' in parents and name='${DriveRepository.WARDROBE_METADATA_FILE_NAME}' and trashed=false", "UTF-8",
         )
         val fileId = gson.fromJson(
             http.newCall(Request.Builder()
-                .url("$DriveRepository.API/files?q=$q&fields=files(id)")
+                .url("${DriveRepository.API}/files?q=$q&fields=files(id)")
                 .header("Authorization", "Bearer $tok")
                 .build()).await().body!!.string(),
             FilesListDto::class.java,
         ).files.firstOrNull()?.id ?: return@withContext null
 
         val resp = http.newCall(Request.Builder()
-            .url("$DriveRepository.API/files/$fileId?alt=media")
+            .url("${DriveRepository.API}/files/$fileId?alt=media")
             .header("Authorization", "Bearer $tok")
             .build()).await()
         if (resp.isSuccessful) resp.body?.string() else null
@@ -204,21 +204,21 @@ internal suspend fun DriveRepository.loadWardrobeMetadataJson(folderId: String):
 internal suspend fun DriveRepository.saveWardrobeMetadataJson(folderId: String, json: String) = withContext(Dispatchers.IO) {
         val tok = token()
         val q = URLEncoder.encode(
-            "'$folderId' in parents and name='$DriveRepository.WARDROBE_METADATA_FILE_NAME' and trashed=false", "UTF-8",
+            "'$folderId' in parents and name='${DriveRepository.WARDROBE_METADATA_FILE_NAME}' and trashed=false", "UTF-8",
         )
         val existingId = gson.fromJson(
             http.newCall(Request.Builder()
-                .url("$DriveRepository.API/files?q=$q&fields=files(id)")
+                .url("${DriveRepository.API}/files?q=$q&fields=files(id)")
                 .header("Authorization", "Bearer $tok")
                 .build()).await().body!!.string(),
             FilesListDto::class.java,
         ).files.firstOrNull()?.id
 
         val fileId = existingId ?: run {
-            val meta = """{"name":"$DriveRepository.WARDROBE_METADATA_FILE_NAME","parents":["$folderId"],"mimeType":"application/json"}"""
+            val meta = """{"name":"${DriveRepository.WARDROBE_METADATA_FILE_NAME}","parents":["$folderId"],"mimeType":"application/json"}"""
             gson.fromJson(
                 http.newCall(Request.Builder()
-                    .url("$DriveRepository.API/files?fields=id")
+                    .url("${DriveRepository.API}/files?fields=id")
                     .header("Authorization", "Bearer $tok")
                     .post(meta.toRequestBody("application/json".toMediaType()))
                     .build()).await().body!!.string(),
@@ -226,7 +226,7 @@ internal suspend fun DriveRepository.saveWardrobeMetadataJson(folderId: String, 
             ).id
         }
         http.newCall(Request.Builder()
-            .url("$DriveRepository.UPLOAD_API/files/$fileId?uploadType=media")
+            .url("${DriveRepository.UPLOAD_API}/files/$fileId?uploadType=media")
             .header("Authorization", "Bearer $tok")
             .method("PATCH", json.toRequestBody("application/json".toMediaType()))
             .build()).await()
@@ -236,18 +236,18 @@ internal suspend fun DriveRepository.saveWardrobeMetadataJson(folderId: String, 
 internal suspend fun DriveRepository.loadLocationsJson(rootFolderId: String): String? = withContext(Dispatchers.IO) {
         val tok = token()
         val q = URLEncoder.encode(
-            "'$rootFolderId' in parents and name='$DriveRepository.LOCATIONS_FILE_NAME' and trashed=false", "UTF-8",
+            "'$rootFolderId' in parents and name='${DriveRepository.LOCATIONS_FILE_NAME}' and trashed=false", "UTF-8",
         )
         val fileId = gson.fromJson(
             http.newCall(Request.Builder()
-                .url("$DriveRepository.API/files?q=$q&fields=files(id)")
+                .url("${DriveRepository.API}/files?q=$q&fields=files(id)")
                 .header("Authorization", "Bearer $tok")
                 .build()).await().body!!.string(),
             FilesListDto::class.java,
         ).files.firstOrNull()?.id ?: return@withContext null
 
         val resp = http.newCall(Request.Builder()
-            .url("$DriveRepository.API/files/$fileId?alt=media")
+            .url("${DriveRepository.API}/files/$fileId?alt=media")
             .header("Authorization", "Bearer $tok")
             .build()).await()
         if (resp.isSuccessful) resp.body?.string() else null
@@ -257,21 +257,21 @@ internal suspend fun DriveRepository.loadLocationsJson(rootFolderId: String): St
 internal suspend fun DriveRepository.saveLocationsJson(rootFolderId: String, json: String) = withContext(Dispatchers.IO) {
         val tok = token()
         val q = URLEncoder.encode(
-            "'$rootFolderId' in parents and name='$DriveRepository.LOCATIONS_FILE_NAME' and trashed=false", "UTF-8",
+            "'$rootFolderId' in parents and name='${DriveRepository.LOCATIONS_FILE_NAME}' and trashed=false", "UTF-8",
         )
         val existingId = gson.fromJson(
             http.newCall(Request.Builder()
-                .url("$DriveRepository.API/files?q=$q&fields=files(id)")
+                .url("${DriveRepository.API}/files?q=$q&fields=files(id)")
                 .header("Authorization", "Bearer $tok")
                 .build()).await().body!!.string(),
             FilesListDto::class.java,
         ).files.firstOrNull()?.id
 
         val fileId = existingId ?: run {
-            val meta = """{"name":"$DriveRepository.LOCATIONS_FILE_NAME","parents":["$rootFolderId"],"mimeType":"application/json"}"""
+            val meta = """{"name":"${DriveRepository.LOCATIONS_FILE_NAME}","parents":["$rootFolderId"],"mimeType":"application/json"}"""
             gson.fromJson(
                 http.newCall(Request.Builder()
-                    .url("$DriveRepository.API/files?fields=id")
+                    .url("${DriveRepository.API}/files?fields=id")
                     .header("Authorization", "Bearer $tok")
                     .post(meta.toRequestBody("application/json".toMediaType()))
                     .build()).await().body!!.string(),
@@ -279,7 +279,7 @@ internal suspend fun DriveRepository.saveLocationsJson(rootFolderId: String, jso
             ).id
         }
         http.newCall(Request.Builder()
-            .url("$DriveRepository.UPLOAD_API/files/$fileId?uploadType=media")
+            .url("${DriveRepository.UPLOAD_API}/files/$fileId?uploadType=media")
             .header("Authorization", "Bearer $tok")
             .method("PATCH", json.toRequestBody("application/json".toMediaType()))
             .build()).await()

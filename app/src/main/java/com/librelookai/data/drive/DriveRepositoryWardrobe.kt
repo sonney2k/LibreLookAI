@@ -12,7 +12,7 @@ internal suspend fun DriveRepository.listAllImageFiles(folderId: String): List<D
         val q = URLEncoder.encode(
             "'$folderId' in parents and mimeType contains 'image/' and trashed=false", "UTF-8",
         )
-        fetchAllPages("$DriveRepository.API/files?q=$q&fields=files(id,name),nextPageToken&pageSize=1000", tok)
+        fetchAllPages("${DriveRepository.API}/files?q=$q&fields=files(id,name),nextPageToken&pageSize=1000", tok)
     }
 
     /** Lists per-item sidecar JSON files in [folderId], excluding system metadata files. */
@@ -22,7 +22,7 @@ internal suspend fun DriveRepository.listSidecarFiles(folderId: String): List<Dr
             "'$folderId' in parents and mimeType='application/json' and trashed=false",
             "UTF-8",
         )
-        fetchAllPages("$DriveRepository.API/files?q=$q&fields=files(id,name,size),nextPageToken&pageSize=1000", tok)
+        fetchAllPages("${DriveRepository.API}/files?q=$q&fields=files(id,name,size),nextPageToken&pageSize=1000", tok)
             .filter { it.name !in DriveRepository.SYSTEM_JSON_NAMES }
     }
 
@@ -31,7 +31,7 @@ internal suspend fun DriveRepository.loadFileContent(fileId: String): String? = 
         val tok = token()
         val resp = http.newCall(
             Request.Builder()
-                .url("$DriveRepository.API/files/$fileId?alt=media")
+                .url("${DriveRepository.API}/files/$fileId?alt=media")
                 .header("Authorization", "Bearer $tok")
                 .build()
         ).await()
@@ -51,7 +51,7 @@ internal suspend fun DriveRepository.upsertSidecar(folderId: String, name: Strin
                 "UTF-8",
             )
             val queryResp = http.newCall(Request.Builder()
-                .url("$DriveRepository.API/files?q=$q&fields=files(id)")
+                .url("${DriveRepository.API}/files?q=$q&fields=files(id)")
                 .header("Authorization", "Bearer $tok")
                 .build()).await()
             val queryBody = queryResp.body?.string().orEmpty()
@@ -61,7 +61,7 @@ internal suspend fun DriveRepository.upsertSidecar(folderId: String, name: Strin
             val fileId = existingId ?: run {
                 val meta = """{"name":${gson.toJson(name)},"parents":["$folderId"],"mimeType":"application/json"}"""
                 val createResp = http.newCall(Request.Builder()
-                    .url("$DriveRepository.API/files?fields=id")
+                    .url("${DriveRepository.API}/files?fields=id")
                     .header("Authorization", "Bearer $tok")
                     .post(meta.toRequestBody("application/json".toMediaType()))
                     .build()).await()
@@ -71,7 +71,7 @@ internal suspend fun DriveRepository.upsertSidecar(folderId: String, name: Strin
                     .ifEmpty { error("upsertSidecar create returned empty id: $createBody") }
             }
             val patchResp = http.newCall(Request.Builder()
-                .url("$DriveRepository.UPLOAD_API/files/$fileId?uploadType=media")
+                .url("${DriveRepository.UPLOAD_API}/files/$fileId?uploadType=media")
                 .header("Authorization", "Bearer $tok")
                 .method("PATCH", json.toRequestBody("application/json".toMediaType()))
                 .build()).await()

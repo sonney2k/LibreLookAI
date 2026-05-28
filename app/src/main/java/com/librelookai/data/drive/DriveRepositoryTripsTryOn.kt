@@ -27,7 +27,7 @@ internal suspend fun DriveRepository.uploadProfilePhoto(rootFolderId: String, na
             )
             val existingId = gson.fromJson(
                 http.newCall(Request.Builder()
-                    .url("$DriveRepository.API/files?q=$q&fields=files(id)")
+                    .url("${DriveRepository.API}/files?q=$q&fields=files(id)")
                     .header("Authorization", "Bearer $tok")
                     .build()).await().body!!.string(),
                 FilesListDto::class.java,
@@ -73,7 +73,7 @@ internal suspend fun DriveRepository.listTripFiles(tripsFolderId: String): List<
         gson.fromJson(
             http.newCall(
                 Request.Builder()
-                    .url("$DriveRepository.API/files?q=$q&fields=files(id,name)&pageSize=1000")
+                    .url("${DriveRepository.API}/files?q=$q&fields=files(id,name)&pageSize=1000")
                     .header("Authorization", "Bearer $tok")
                     .build(),
             ).await().body!!.string(),
@@ -99,7 +99,7 @@ internal suspend fun DriveRepository.saveTripJson(tripsFolderId: String, tripId:
                 gson.fromJson(
                     http.newCall(
                         Request.Builder()
-                            .url("$DriveRepository.API/files?fields=id")
+                            .url("${DriveRepository.API}/files?fields=id")
                             .header("Authorization", "Bearer $tok")
                             .post(meta.toRequestBody("application/json".toMediaType()))
                             .build(),
@@ -109,7 +109,7 @@ internal suspend fun DriveRepository.saveTripJson(tripsFolderId: String, tripId:
             }
             http.newCall(
                 Request.Builder()
-                    .url("$DriveRepository.UPLOAD_API/files/$fileId?uploadType=media")
+                    .url("${DriveRepository.UPLOAD_API}/files/$fileId?uploadType=media")
                     .header("Authorization", "Bearer $tok")
                     .method("PATCH", json.toRequestBody("application/json".toMediaType()))
                     .build(),
@@ -137,7 +137,7 @@ internal suspend fun DriveRepository.uploadTryOnImage(rootFolderId: String, name
             imageFile.inputStream().use { it.copyTo(out) }
             out.write("\r\n--$boundary--")
             val req = Request.Builder()
-                .url("$DriveRepository.UPLOAD_API/files?uploadType=multipart&fields=id,name")
+                .url("${DriveRepository.UPLOAD_API}/files?uploadType=multipart&fields=id,name")
                 .header("Authorization", "Bearer $tok")
                 .post(out.toByteArray().toRequestBody("multipart/related; boundary=$boundary".toMediaType()))
                 .build()
@@ -156,10 +156,10 @@ internal suspend fun DriveRepository.saveTryOnsJson(rootFolderId: String, json: 
         val tok = token()
         val existingId = findFileIdByName(rootFolderId, DriveRepository.TRYONS_FILE_NAME, tok)
         val fileId = existingId ?: run {
-            val meta = """{"name":"$DriveRepository.TRYONS_FILE_NAME","parents":["$rootFolderId"],"mimeType":"application/json"}"""
+            val meta = """{"name":"${DriveRepository.TRYONS_FILE_NAME}","parents":["$rootFolderId"],"mimeType":"application/json"}"""
             gson.fromJson(
                 http.newCall(Request.Builder()
-                    .url("$DriveRepository.API/files?fields=id")
+                    .url("${DriveRepository.API}/files?fields=id")
                     .header("Authorization", "Bearer $tok")
                     .post(meta.toRequestBody("application/json".toMediaType()))
                     .build()).await().body!!.string(),
@@ -167,7 +167,7 @@ internal suspend fun DriveRepository.saveTryOnsJson(rootFolderId: String, json: 
             ).id
         }
         http.newCall(Request.Builder()
-            .url("$DriveRepository.UPLOAD_API/files/$fileId?uploadType=media")
+            .url("${DriveRepository.UPLOAD_API}/files/$fileId?uploadType=media")
             .header("Authorization", "Bearer $tok")
             .method("PATCH", json.toRequestBody("application/json".toMediaType()))
             .build()).await()
