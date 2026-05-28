@@ -195,6 +195,19 @@ extracted the wrong range on the first attempt; reverted and redone).
   and `TokenUsageRepository.recordUsage` logging at each call site.
 - **`shopping/ShoppingClosetViewModel.kt` (642)** → extract its largest workflow.
 
+### ✅ ShoppingClosetViewModel.kt — DONE (647 → 424; compiles + tests green)
+- `ShoppingClosetImport.kt` (244) — add-from-camera/gallery/url + query import + upload queue
+  (extension functions). Bumped to internal: `_state`, `drive`, `gemini`, `gson`, `workQueue`,
+  `geminiLanguage`, `shoppingFolderId`, `ShoppingPendingJob`, `ensureFolder`, `saveLocalCache`,
+  `TAG`. One cross-package import (`importQuery` in `WardrobeScreen.kt`).
+
+## 🎉 ALL PHASES COMPLETE
+Every file in the plan is split. The 7 files still > 500 are all agreed soft-limit cases —
+single dominant composables (`WardrobeGrid` 816, `AppContent` 810, `OutfitList` 700,
+`OutfitComposerScreen` 601, `FullScreenViewer` 509) or cohesive ViewModel cores
+(`WardrobeViewModel` 1199, `OutfitsViewModel` 556). Every commit kept `assembleDebug` +
+`testDebugUnitTest` green.
+
 ## Validation & sequencing
 1. Phase 0 (delete) → build → commit.
 2. Phases 1–2 one file at a time: extract → `assembleDebug` → spot-check → commit per file.

@@ -35,6 +35,7 @@ import com.librelookai.outfit.OutfitEventsViewModel
 import com.librelookai.outfit.OutfitsViewModel
 import com.librelookai.settings.ProfileViewModel
 import com.librelookai.shopping.ShoppingClosetViewModel
+import com.librelookai.shopping.importQuery
 import com.librelookai.tryon.TryOnViewModel
 import com.librelookai.util.Analytics
 

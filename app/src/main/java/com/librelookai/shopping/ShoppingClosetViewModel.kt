@@ -61,29 +61,29 @@ data class ShoppingClosetUiState(
     val urlImportPicker: UrlImportPickerState? = null,
 )
 
-private data class ShoppingPendingJob(val driveId: String)
+internal data class ShoppingPendingJob(val driveId: String)
 
 /** Shopping wishlist counterpart to [WardrobeViewModel]. */
 class ShoppingClosetViewModel(app: Application) : AndroidViewModel(app) {
 
-    companion object { private const val TAG = "ShoppingClosetVM" }
+    companion object { internal const val TAG = "ShoppingClosetVM" }
 
-    private val drive = DriveRepository(app, GoogleAuthManager(app))
-    private val gemini = GeminiRepository(app)
-    private val gson = Gson()
+    internal val drive = DriveRepository(app, GoogleAuthManager(app))
+    internal val gemini = GeminiRepository(app)
+    internal val gson = Gson()
 
-    private val _state = MutableStateFlow(ShoppingClosetUiState())
+    internal val _state = MutableStateFlow(ShoppingClosetUiState())
     val state: StateFlow<ShoppingClosetUiState> = _state.asStateFlow()
 
     /** Gemini-facing language name for classifyClothing. Pushed in by MainActivity. */
-    private var geminiLanguage: String = "English"
+    internal var geminiLanguage: String = "English"
 
     /** Resolved once on first load. */
     private var rootFolderId: String? = null
-    private var shoppingFolderId: String? = null
+    internal var shoppingFolderId: String? = null
 
     /** Background queue for bg-removal + tagging on newly uploaded items. */
-    private val workQueue = Channel<ShoppingPendingJob>(Channel.UNLIMITED)
+    internal val workQueue = Channel<ShoppingPendingJob>(Channel.UNLIMITED)
 
     init {
         viewModelScope.launch { processQueue() }
@@ -201,229 +201,6 @@ class ShoppingClosetViewModel(app: Application) : AndroidViewModel(app) {
 
     // ---------- Add ----------
 
-    fun addFromCamera(rawFile: File) {
-        viewModelScope.launch {
-            val folderId = ensureFolder() ?: run {
-                runCatching { rawFile.delete() }
-                return@launch
-            }
-            uploadRaw(rawFile, folderId)
-        }
-    }
-
-    /**
-     * Adopt a Similarity Finder query photo (lives under `cacheDir/shop_queries/` and is owned by
-     * [ShoppingHelperViewModel]) into the shopping wishlist. Copies the file out of the query
-     * cache before handing it to [uploadRaw] so the caller can keep using the original to display
-     * the active query.
-     */
-    fun importQuery(queryRawPath: String) {
-        viewModelScope.launch {
-            val source = File(queryRawPath)
-            if (!source.exists()) {
-                _state.update { it.copy(error = "Query photo no longer exists") }
-                return@launch
-            }
-            val folderId = ensureFolder() ?: return@launch
-            val staged = withContext(Dispatchers.IO) {
-                val tempFile = File(drive.cacheDir, "shop_query_${System.currentTimeMillis()}.jpg")
-                runCatching { source.copyTo(tempFile, overwrite = true) }.getOrNull()
-            } ?: run {
-                _state.update { it.copy(error = "Failed to import query photo") }
-                return@launch
-            }
-            uploadRaw(staged, folderId)
-        }
-    }
-
-    fun addFromGallery(uris: List<Uri>) {
-        if (uris.isEmpty()) return
-        viewModelScope.launch {
-            val folderId = ensureFolder() ?: return@launch
-            val cr = getApplication<Application>().contentResolver
-            uris.forEach { uri ->
-                val tempFile = File(drive.cacheDir, "shop_gallery_${System.currentTimeMillis()}.jpg")
-                runCatching {
-                    cr.openInputStream(uri)?.use { it.copyTo(tempFile.outputStream()) }
-                    uploadRaw(tempFile, folderId)
-                }.onFailure { e ->
-                    Log.w(TAG, "gallery import failed", e)
-                    _state.update { it.copy(error = "Upload failed: ${e.message}") }
-                    runCatching { tempFile.delete() }
-                }
-            }
-        }
-    }
-
-    fun addFromUrl(url: String) {
-        if (url.isBlank()) return
-        viewModelScope.launch {
-            val folderId = ensureFolder() ?: return@launch
-            _state.update { it.copy(isUploading = true, error = null) }
-            val result = WebProductFetcher.fetchImageCandidates(url)
-            if (result == null) {
-                _state.update {
-                    it.copy(
-                        isUploading = false,
-                        error = getApplication<Application>().getString(R.string.url_import_failed),
-                    )
-                }
-                return@launch
-            }
-            _state.update {
-                it.copy(
-                    isUploading = false,
-                    urlImportPicker = UrlImportPickerState(
-                        pageUrl = result.pageUrl,
-                        candidates = result.candidates,
-                        targetFolderId = folderId,
-                    ),
-                )
-            }
-        }
-    }
-
-    fun confirmUrlImportPick(absoluteImageUrl: String) {
-        val picker = _state.value.urlImportPicker ?: return
-        val folderId = picker.targetFolderId ?: return
-        viewModelScope.launch {
-            _state.update { it.copy(urlImportPicker = picker.copy(isDownloading = true)) }
-            val image = WebProductFetcher.downloadImage(absoluteImageUrl, picker.pageUrl, drive.cacheDir)
-            if (image == null) {
-                _state.update {
-                    it.copy(
-                        urlImportPicker = picker.copy(isDownloading = false),
-                        error = getApplication<Application>().getString(R.string.url_import_failed),
-                    )
-                }
-                return@launch
-            }
-            _state.update { it.copy(urlImportPicker = null) }
-            uploadRaw(image, folderId)
-        }
-    }
-
-    fun cancelUrlImport() {
-        _state.update { it.copy(urlImportPicker = null) }
-    }
-
-    /** Common path: upload [rawFile] to Drive, queue for bg removal + tagging. */
-    private suspend fun uploadRaw(rawFile: File, folderId: String) {
-        _state.update { it.copy(isUploading = true, error = null) }
-        runCatching {
-            val uploaded = drive.uploadImage(folderId, rawFile)
-            val ext = if (rawFile.extension == "png") "png" else "jpg"
-            val displayCache = File(drive.cacheDir, "${uploaded.id}.$ext")
-            if (rawFile.absolutePath != displayCache.absolutePath) {
-                rawFile.copyTo(displayCache, overwrite = true)
-            }
-            rawFile.copyTo(File(drive.cacheDir, "${uploaded.id}_original.jpg"), overwrite = true)
-            DriveImage(uploaded.id, displayCache.absolutePath, uploaded.name, tags = null, folderId = folderId, createdTimeMs = System.currentTimeMillis())
-        }.onSuccess { newImage ->
-            _state.update { it.copy(
-                isUploading = false,
-                items = listOf(newImage) + it.items,
-                pendingJobs = it.pendingJobs + 1,
-            ) }
-            saveLocalCache(folderId, _state.value.items)
-            workQueue.send(ShoppingPendingJob(newImage.driveId))
-        }.onFailure { e ->
-            Log.w(TAG, "shopping upload failed", e)
-            _state.update { it.copy(isUploading = false, error = e.message) }
-            runCatching { rawFile.delete() }
-        }
-    }
-
-    // ---------- Background processing ----------
-
-    private suspend fun processQueue() {
-        for (job in workQueue) {
-            runCatching { processQueuedItem(job) }
-                .onFailure { e -> _state.update { it.copy(error = e.message) } }
-            _state.update { it.copy(pendingJobs = maxOf(0, it.pendingJobs - 1)) }
-            shoppingFolderId?.let { fid -> saveLocalCache(fid, _state.value.items) }
-        }
-    }
-
-    private suspend fun processQueuedItem(job: ShoppingPendingJob) {
-        val folderId = shoppingFolderId ?: return
-        val rawFile = File(drive.cacheDir, "${job.driveId}_original.jpg")
-        if (!rawFile.exists()) return
-
-        // Step 1 — bg removal (fall back to raw on failure).
-        val processedFile = gemini.removeBackground(rawFile, drive.cacheDir) ?: rawFile
-
-        // Step 2 — upload cutout, rename to "{cutoutId}_cutout.png".
-        val cutoutDrive = runCatching {
-            val uploaded = drive.uploadImage(folderId, processedFile)
-            drive.renameFile(uploaded.id, "${uploaded.id}${DriveRepository.CUTOUT_SUFFIX}")
-            uploaded.copy(name = "${uploaded.id}${DriveRepository.CUTOUT_SUFFIX}")
-        }.getOrNull() ?: return
-
-        // Step 3 — upload original as "{cutoutId}_original.jpg" (best effort).
-        val originalDriveId = runCatching {
-            drive.uploadImageWithName(
-                folderId, rawFile, "${cutoutDrive.id}${DriveRepository.ORIGINAL_SUFFIX}",
-            ).id
-        }.getOrNull()
-
-        // Step 4 — local caches: cutout + original (must precede deleteFile, which clears the local _original.jpg).
-        val localCutout = File(drive.cacheDir, "${cutoutDrive.id}.png")
-        if (processedFile.absolutePath != localCutout.absolutePath) {
-            processedFile.copyTo(localCutout, overwrite = true)
-        }
-        rawFile.copyTo(File(drive.cacheDir, "${cutoutDrive.id}_original.jpg"), overwrite = true)
-
-        // Step 5 — delete the temporary raw upload.
-        runCatching { drive.deleteFile(job.driveId) }
-
-        // Step 6 — replace the in-memory entry (match raw or cutout id, like wardrobe does).
-        _state.update { s ->
-            s.copy(items = s.items.map { img ->
-                if (img.driveId == job.driveId || img.driveId == cutoutDrive.id) img.copy(
-                    driveId = cutoutDrive.id,
-                    name = cutoutDrive.name,
-                    localPath = localCutout.absolutePath,
-                    version = System.currentTimeMillis(),
-                    originalDriveId = originalDriveId,
-                ) else img
-            })
-        }
-
-        // Step 7 — classify tags.
-        val tags = gemini.classifyClothing(localCutout, geminiLanguage)
-        if (tags != null) {
-            _state.update { s ->
-                s.copy(items = s.items.map { img ->
-                    if (img.driveId == cutoutDrive.id) img.copy(tags = tags) else img
-                })
-            }
-        }
-
-        // Step 8 — sidecar.
-        val sidecarJson = gson.toJson(ItemSidecar(tags, originalDriveId))
-        runCatching {
-            drive.upsertSidecar(
-                folderId, "${cutoutDrive.id}${DriveRepository.SIDECAR_SUFFIX}", sidecarJson,
-            )
-        }.onSuccess { sidecarId ->
-            _state.update { s ->
-                s.copy(items = s.items.map { img ->
-                    if (img.driveId == cutoutDrive.id) img.copy(sidecarDriveId = sidecarId) else img
-                })
-            }
-        }
-    }
-
-    // ---------- Move + delete ----------
-
-    /**
-     * Moves [driveIds] from `_shopping/` to [targetFolderId] (a regular closet). Tags + cutout +
-     * original + sidecar are preserved verbatim — Drive only changes parents, no re-upload, no
-     * re-tagging. [onMoved] fires once Drive moves complete (called even for partial success); the
-     * caller is responsible for telling [WardrobeViewModel] to reload the destination closet so
-     * the items appear there.
-     */
     fun moveToCloset(driveIds: Set<String>, targetFolderId: String, onMoved: (List<DriveImage>) -> Unit) {
         if (driveIds.isEmpty()) { onMoved(emptyList()); return }
         val sourceFolderId = shoppingFolderId ?: run { onMoved(emptyList()); return }
@@ -620,7 +397,7 @@ class ShoppingClosetViewModel(app: Application) : AndroidViewModel(app) {
 
     // ---------- Helpers ----------
 
-    private suspend fun ensureFolder(): String? = withContext(Dispatchers.IO) {
+    internal suspend fun ensureFolder(): String? = withContext(Dispatchers.IO) {
         runCatching {
             val rootId = rootFolderId ?: drive.getOrCreateFolder().also { rootFolderId = it }
             val resolved = shoppingFolderId ?: drive.getOrCreateShoppingFolder(rootId)
@@ -636,7 +413,7 @@ class ShoppingClosetViewModel(app: Application) : AndroidViewModel(app) {
     private fun localCacheFile(id: String) =
         File(getApplication<Application>().filesDir, "wardrobe_cache_$id.json")
 
-    private fun saveLocalCache(id: String, items: List<DriveImage>) {
+    internal fun saveLocalCache(id: String, items: List<DriveImage>) {
         runCatching {
             val cache = LocalCache(items.map {
                 LocalCacheEntry(it.driveId, it.name, it.tags, it.originalDriveId, it.sidecarDriveId, it.createdTimeMs)
