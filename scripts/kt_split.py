@@ -54,7 +54,9 @@ Gotchas baked in from the LibreLookAI refactor (Phases 1-3):
     they touch to `internal` (compiler lists them as "Cannot access 'X': private").
   * Companion-object members referenced from an extension file need
     `Receiver.NAME` qualification (use `qualify`, below) or move them to a
-    top-level `internal const`.
+    top-level `internal const`. Inside a string template, `$NAME` must become
+    `${Receiver.NAME}` (braced) — `$Receiver.NAME` compiles but is `${Receiver}` +
+    ".NAME" at runtime (this caused a Drive-URL crash). `qualify()` handles this.
   * member → extension changes call sites: same-package callers are unaffected,
     but OTHER packages need `import <pkg>.<fn>`. The compiler flags these as
     "Unresolved reference '<fn>'"; cascade noise (`it`, `id`, `size`…) resolves
@@ -157,10 +159,20 @@ def add_imports(adds):
 
 def qualify(path, receiver, names):
     """Prefix bare references to companion members with `receiver.` in one file
-    (e.g. TAG -> Receiver.TAG). Skips already-qualified occurrences."""
+    (e.g. TAG -> Receiver.TAG). Skips already-qualified occurrences.
+
+    CRITICAL: inside a Kotlin string template, a bare `$NAME` must become
+    `${Receiver.NAME}`, NOT `$Receiver.NAME` — the latter compiles but parses as
+    `${Receiver}` (the companion's toString → "com.pkg.Class...") followed by a
+    literal ".NAME", producing garbage at runtime (this caused a Drive-URL crash).
+    Template uses (`$NAME`) are wrapped in braces; non-template uses get a plain
+    `Receiver.` prefix."""
     text = open(path).read()
     for n in names:
-        text = re.sub(r"(?<![\w.])" + re.escape(n) + r"\b", f"{receiver}.{n}", text)
+        # template interpolation: $NAME (unbraced) -> ${Receiver.NAME}
+        text = re.sub(r"\$" + re.escape(n) + r"\b", f"${{{receiver}.{n}}}", text)
+        # plain reference: NAME -> Receiver.NAME  (not already qualified, not after $)
+        text = re.sub(r"(?<![\w.$])" + re.escape(n) + r"\b", f"{receiver}.{n}", text)
     open(path, "w").write(text)
     print(f"{path}: qualified {', '.join(names)} with {receiver}.")
 
