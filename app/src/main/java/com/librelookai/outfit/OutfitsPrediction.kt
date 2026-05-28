@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.librelookai.gemini.PromptKey
 import com.librelookai.gemini.PromptStore
 import com.librelookai.gemini.UsageCategory
+import com.librelookai.gemini.generateText
+import com.librelookai.gemini.searchFashionTrends
 import com.librelookai.settings.AiConsiderations
 import com.librelookai.settings.UserPreferences
 import com.librelookai.wardrobe.DriveImage

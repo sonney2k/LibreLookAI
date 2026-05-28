@@ -21,6 +21,7 @@ import com.librelookai.auth.GoogleAuthManager
 import com.librelookai.data.drive.DriveRepository
 import com.librelookai.gemini.ClothingTags
 import com.librelookai.gemini.GeminiRepository
+import com.librelookai.gemini.classifyClothing
 import com.librelookai.util.isNetworkAvailable
 import com.librelookai.wardrobe.DriveImage
 import com.librelookai.wardrobe.ItemSidecar

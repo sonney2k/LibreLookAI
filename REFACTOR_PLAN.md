@@ -163,6 +163,19 @@ consts. Companion consts referenced from extension files are qualified `DriveRep
 ~33 cross-package caller imports added (DriveRepository is used everywhere) — all
 compiler-guided. No behavior change.
 
+### ✅ GeminiRepository.kt — DONE (880 → 288; compiles + tests green)
+- `GeminiApiCalls.kt` (275) — tryOnOutfit / classifyClothing / searchFashionTrends /
+  generateText (extension functions; null-on-failure + recordUsage logging preserved)
+- `GeminiImaging.kt` (266) — pixel/cutout processing (blackBg/despill/feather/bbox/crop,
+  detectCutoutIssues, fixCutoutBackground) + Cutout* data classes (plain top-level move)
+- `GeminiModels.kt` (70) — FashionTrends, ClothingTags, Gemini response DTOs (plain move)
+- `GeminiRepository.kt` (288) — auth/proxy/networking core + removeBackground + removeGreenScreen
+Bumped to internal: GeminiAction, app, http, gson, throwIf402, recordUsage, buildRequest,
+isConfigured, readAndResizeBase64, response DTOs, the model/URL/TAG consts. 13 cross-package
+caller imports added for the 4 API methods. **Note**: the plain-move pass rewrites the file
+(shifting line numbers) — re-derive boundaries before the extension pass (a stale-line bug
+extracted the wrong range on the first attempt; reverted and redone).
+
 ### Remaining Phase 3 (original plan)
 - **`wardrobe/WardrobeViewModel.kt` (3075)** — heaviest:
   - `WardrobeModels.kt` — move UI-state/data classes (`DriveImage`, `FindByPhoto`,

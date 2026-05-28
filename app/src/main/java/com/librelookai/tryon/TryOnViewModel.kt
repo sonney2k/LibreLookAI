@@ -20,6 +20,7 @@ import com.librelookai.data.drive.saveTryOnsJson
 import com.librelookai.data.drive.uploadTryOnImage
 import com.librelookai.data.model.TryOn
 import com.librelookai.gemini.GeminiRepository
+import com.librelookai.gemini.tryOnOutfit
 import com.librelookai.wardrobe.DriveImage
 
 /** Where a try-on composition was started from. Drives the source banner + history provenance. */

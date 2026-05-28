@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.gson.reflect.TypeToken
 import com.librelookai.data.model.Outfit
 import com.librelookai.gemini.UsageCategory
+import com.librelookai.gemini.generateText
 import com.librelookai.settings.AppLanguage
 import com.librelookai.settings.UserPreferences
 import com.librelookai.wardrobe.DriveImage

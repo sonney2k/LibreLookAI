@@ -28,6 +28,7 @@ import com.librelookai.gemini.CutoutIssues
 import com.librelookai.gemini.GeminiRepository
 import com.librelookai.gemini.detectCutoutIssues
 import com.librelookai.gemini.fixCutoutBackground
+import com.librelookai.gemini.classifyClothing
 import com.librelookai.ml.EmbeddingService
 import com.librelookai.service.JobForegroundService
 import com.librelookai.settings.UserPreferences

@@ -27,6 +27,7 @@ import com.librelookai.data.model.Outfit
 import com.librelookai.data.model.Trip
 import com.librelookai.gemini.GeminiRepository
 import com.librelookai.gemini.UsageCategory
+import com.librelookai.gemini.generateText
 import com.librelookai.outfit.OutfitsViewModel
 import com.librelookai.util.isNetworkAvailable
 import com.librelookai.wardrobe.DriveImage
