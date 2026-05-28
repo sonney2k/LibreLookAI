@@ -24,3 +24,7 @@ design_handoff_*/
 # Firebase Functions build + deps
 firebase/functions/lib/
 firebase/functions/node_modules/
+
+# Python (scripts/)
+__pycache__/
+*.pyc
