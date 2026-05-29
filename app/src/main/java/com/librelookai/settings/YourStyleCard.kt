@@ -1,4 +1,4 @@
-package com.librelookai.settings.v2
+package com.librelookai.settings
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest

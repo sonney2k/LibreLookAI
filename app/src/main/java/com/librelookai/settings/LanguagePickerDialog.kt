@@ -1,4 +1,4 @@
-package com.librelookai.settings.v2
+package com.librelookai.settings
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement

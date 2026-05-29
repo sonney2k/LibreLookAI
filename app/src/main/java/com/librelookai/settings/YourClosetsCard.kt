@@ -1,4 +1,4 @@
-package com.librelookai.settings.v2
+package com.librelookai.settings
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background

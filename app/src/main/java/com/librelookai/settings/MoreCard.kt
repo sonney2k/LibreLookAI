@@ -1,4 +1,4 @@
-package com.librelookai.settings.v2
+package com.librelookai.settings
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.HelpOutline

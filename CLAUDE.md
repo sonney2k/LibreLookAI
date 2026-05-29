@@ -1,87 +1,127 @@
 # CLAUDE.md
 
-Compact day-to-day guidance. **Deep architecture, pipelines, rationale, and Dialog/Sheet quirks live in `plan/CLAUDE_ARCHIVE.md`** — consult it before designing changes that touch data flow, pipelines, or window-based UI.
+Compact day-to-day guidance. **Deep architecture, pipelines, rationale, and Dialog/Sheet quirks live in `plan/CLAUDE_ARCHIVE.md`** — consult before changes that touch data flow, pipelines, or window-based UI.
+
+## Repo layout
+- `app/` — Android app (Kotlin/Compose), package `com.librelookai`.
+- `firebase/` — Cloud Functions (`geminiProxy`, `verifyPurchase`, pricing trigger) + Firestore rules.
+- `scripts/` — Python/shell helpers (`add_translations.py`, `translation_status.sh`, `kt_split.py`).
+- `plan/` — long-form docs: `CLAUDE_ARCHIVE.md`, `FIN.md`, `TODO.md`, `REFACTOR_PLAN.md`, `TRANSLATION.md`, `Trips.md`.
+- `designs/` — design-handoff bundles (HTML mockups, JSX prototypes, per-surface `README.md`).
+- `website/` — static marketing site (vanilla HTML/CSS + `i18n.js`/`translations.js` in 12 languages; real-device screenshots in `screenshots/`).
+- `README.md` (root) — Firebase / signing / partner-program setup.
 
 ## Model & effort
-- Default to **Sonnet** for routine work (functions, small refactors, reviews).
-- **Haiku** for trivial lookups / boilerplate / formatting.
-- **Opus** only for hard architectural or debugging work.
+- **Sonnet** for routine work · **Haiku** for trivial lookups, boilerplate, formatting · **Opus** for hard architecture or debugging.
 - Use low effort for straightforward tasks to save tokens.
 
 ## Working agreement
 - **Ask before `git commit`**; never commit without explicit approval.
-- **Update CLAUDE.md / plan/CLAUDE_ARCHIVE.md** when changing architecture, data flow, or conventions — both before executing a plan and after it lands.
-- **Multi-language is mandatory**: every user-facing string goes through `stringResource(...)` and `res/values/strings.xml`. Add to default `strings.xml` and mirror in every `values-*/strings.xml` in the same change. Never hardcode display text. **Tooling**: `scripts/add_translations.py <batch.json>` bulk-inserts a `{locale: {key: rawValue}}` JSON into each `values-*/strings.xml` (auto XML-escaping, idempotent, skips dirs without a `strings.xml`); `scripts/translation_status.sh` audits coverage. After either, run `./gradlew :app:assembleDebug` — `mergeDebugResources` validates XML + format specifiers across all locales.
+- **Update CLAUDE.md / `plan/CLAUDE_ARCHIVE.md`** when architecture, data flow, or conventions change — both before executing a plan and after it lands.
+- **Multi-language is mandatory.** Every user-facing string goes through `stringResource(...)` + `res/values/strings.xml`, mirrored into every `values-*/strings.xml` in the same change. Never hardcode display text.
+  - Bulk insert: `scripts/add_translations.py <batch.json>` writes `{locale: {key: rawValue}}` into each `values-*/strings.xml` (auto XML-escape, idempotent). Audit coverage: `scripts/translation_status.sh`.
+  - After either, run `./gradlew :app:assembleDebug` — `mergeDebugResources` validates XML + format specifiers across all 31 locales.
 - **Release notes** ship with every Firebase / Play release; bump `versionCode` and refresh notes together.
-- Keep tasks small and focused; read files and follow existing patterns before editing.
-- **File size: aim for ≤ 500 lines per `.kt` file (target 300–500).** Split anything larger into logical units, following clean-code principles (one cohesive responsibility per file, descriptive names, no dead code). **Soft limit**: a file may exceed 500 when a *single cohesive composable/function* legitimately dominates it (e.g. `WardrobeGrid.kt`'s `GridContent`) and can't be split without artificially fragmenting it — don't decompose a working composable just to chase the number. A file holding a *cluster* of many functions over 500 should still be split. Apply the **Placement rule** below when deciding where extracted symbols land. How to split: **Screens** → keep the entry-point `*Screen` composable in the original file; extract cohesive composable groups into siblings (`<Feature>Cards.kt`, `<Feature>Dialogs.kt`, `<Feature>Sheets.kt`, `<Feature>Viewer.kt`) in the **same package** so `internal` visibility and Robolectric tests keep working. **ViewModels** can't be sliced arbitrarily — move pure data/UI-state classes out to `data/model/` or a `<Feature>Models.kt`, and extract self-contained workflows (audit, import, fix-scans, dedupe) into collaborator classes or same-package extension functions the VM delegates to. Don't break tested public/`internal` signatures (`*Content` composables, `TagFilterBar`, etc.). Verify each extraction with `./gradlew :app:assembleDebug`. **Tooling**: `scripts/kt_split.py` (`split`/`add_imports`/`qualify`) mechanizes same-package extraction — computes per-file imports, rewrites class methods into `internal fun Receiver.x()` extensions, and bakes in the boundary/`const`/`getValue`/visibility gotchas; its docstring is the how-to. Compiler is the source of truth: extract → `compileDebugKotlin` → bump flagged privates to `internal` / add flagged cross-package imports → repeat.
+- Keep tasks small; read files and follow existing patterns before editing.
 
-## Build
-- `./gradlew assembleDebug` — debug APK
-- `./gradlew testDebugUnitTest` — JVM unit tests (note: bare `./gradlew test` rejects `--tests`; use the variant task to filter)
-- Full release / function deploy commands: see `plan/CLAUDE_ARCHIVE.md` → Release process.
+## File size & splitting
+**Aim ≤ 500 lines per `.kt` file (target 300–500).** Soft limit: a *single cohesive* composable that legitimately dominates a file (e.g. `WardrobeGrid.kt`'s `GridContent`) may exceed; a *cluster* of many functions over 500 still gets split. Apply the **Placement rule** to decide where the extracted symbols land.
+- **Screens** — keep the entry-point `*Screen` composable in the original file; extract groups into siblings (`<Feature>Cards.kt`, `…Dialogs.kt`, `…Sheets.kt`, `…Viewer.kt`) in the **same package** so `internal` visibility and Robolectric tests keep working.
+- **ViewModels** can't be sliced arbitrarily. Move pure data / UI-state to `data/model/` or `<Feature>Models.kt`; extract self-contained workflows (audit, import, fix-scans, dedupe) into same-package `internal fun ViewModel.x()` extensions the VM delegates to. Don't break tested public/`internal` signatures (`*Content` composables, `TagFilterBar`, etc.). Verify each extraction with `./gradlew :app:assembleDebug`.
+- Tooling: `scripts/kt_split.py` (`split` / `add_imports` / `qualify`) mechanizes same-package extraction — its docstring is the how-to. Compiler is the source of truth: extract → `compileDebugKotlin` → bump flagged privates to `internal` / add flagged cross-package imports → repeat.
 
-## Testing
-- **Pure-logic JVM tests** (plain JUnit): e.g. `TagNormalizerTest`, `PHashTest` (bit-math only). No Android runtime.
-- **Compose UI flow tests run on the JVM via Robolectric** (`createComposeRule()` + `@RunWith(RobolectricTestRunner)` + `@GraphicsMode(NATIVE)`) — see `wardrobe/TagFilterBarTest`. Test the **`internal`/stateless `*Content` composables** (e.g. `TagFilterBar`, `TagEditScreenContent`) with **hoisted state**, not whole screens — screens default their ViewModels to `viewModel()` and do real Drive/Gemini/ML I/O. Resolve display text via `getString(R.string.…)` (locale-independent), not hardcoded strings.
-- **JDK gotcha**: Robolectric can't instrument under the machine-default **JDK 25**. Unit tests are pinned to a **Java 21 toolchain** (`tasks.withType<Test>` in `app/build.gradle.kts`), with the path declared in `gradle.properties` (`org.gradle.java.installations.paths` → Homebrew `openjdk@21`) because foojay auto-download is incompatible with Gradle 9. `testOptions.unitTests.isIncludeAndroidResources = true` lets `stringResource` resolve.
-- **Instrumented tests** (`androidTest/`, needs device/emulator): `./gradlew connectedDebugAndroidTest`. Prefer Robolectric for flow tests; reserve instrumented for true device-dependent paths. Cross-tab nav can only be tested by launching `MainActivity` (single `selectedTab`, no NavHost).
+## Build & test
+- `./gradlew assembleDebug` — debug APK.
+- `./gradlew testDebugUnitTest` — JVM unit tests. Bare `./gradlew test` rejects `--tests`; use the variant task to filter.
+- Full release / function deploy → `plan/CLAUDE_ARCHIVE.md` § Release process.
+- **JVM tests**: plain JUnit for pure logic (`TagNormalizerTest`, `PHashTest`). **Compose flow tests** run on JVM via Robolectric (`createComposeRule()` + `@RunWith(RobolectricTestRunner)` + `@GraphicsMode(NATIVE)`) — see `wardrobe/TagFilterBarTest`. Test the **`internal`/stateless `*Content` composables** (`TagFilterBar`, `TagEditScreenContent`, …) with **hoisted state**, not whole screens (screens default their ViewModels to `viewModel()` and do real Drive/Gemini/ML I/O). Resolve display text via `getString(R.string.…)`, not literals.
+- **JDK gotcha**: Robolectric can't instrument under JDK 25. Tests are pinned to a **Java 21 toolchain** (`tasks.withType<Test>` in `app/build.gradle.kts`; path in `gradle.properties` → `org.gradle.java.installations.paths` → Homebrew `openjdk@21`) — foojay auto-download is incompatible with Gradle 9. `testOptions.unitTests.isIncludeAndroidResources = true` lets `stringResource` resolve.
+- **Instrumented tests** (`androidTest/`, needs device/emulator): `./gradlew connectedDebugAndroidTest`. Prefer Robolectric; reserve instrumented for true device-dependent paths. Cross-tab nav can only be exercised by launching `MainActivity` (single `selectedTab`, no NavHost).
 
 ## Package layout (under `com.librelookai`)
-`MainActivity` at root. Feature packages: `auth/`, `wardrobe/` (incl. `LocationViewModel`, `CaptureScreen`, `UrlImportPicker`, `WebProductFetcher`, `WardrobeGap*`), `outfit/` (incl. `PredictionSetupScreen`, `OutfitCalendar` → the Calendar + wear-Stats sub-tabs), `travel/` (incl. `TripsViewModel`, `TripViewerScreen`), `tryon/`, `shopping/`, `billing/`, `settings/` (incl. `ProfileViewModel`, `UserPreferences`, `AppLanguage`, `AppFont`, `UsageScreen` → `UsageCostsTab` + `UsageSection`; **the live Settings UI is the redesigned `settings/v2/` package** — see Navigation; the only survivor of the deleted legacy `SettingsScreen.kt` is `settings/FixCutoutBgDialog.kt`, the cutout-fix review dialog still hosted by `MainActivity`). (The former `insights/` package was dissolved — see Navigation.) Cross-cutting: `data/model/` (pure data classes), `data/drive/` (`DriveRepository`), `gemini/` (`GeminiRepository`, `PromptStore`, `ApiKeyStore`, `TokenUsage*`, `TagNormalizer`), `ml/` (`EmbeddingService`/`Repository`/`Index`, `SegmentationRepository`, `PHash`, `ColorHistogram`), `weather/`, `service/` (`JobForegroundService`), `util/` (`Analytics`, `NetworkUtils`, `Scrollbar`, `AiProcessingOverlay`), `ui/theme/`.
+`MainActivity` at root. Feature packages: `auth/`, `wardrobe/` (incl. `LocationViewModel`, `CaptureScreen`, `UrlImportPicker`, `WebProductFetcher`, `WardrobeGap*`), `outfit/` (incl. `PredictionSetupScreen`, `OutfitCalendar`), `travel/` (`TripsViewModel`, `TripViewerScreen`), `tryon/`, `shopping/`, `billing/`, `settings/` (single flat package; live UI is `SettingsScreen` + the `*Card.kt` / `*Dialog.kt` / `*Screen.kt` siblings; `ProfileViewModel`, `UserPreferences`, `AppLanguage`, `AppFont`, `UsageScreen`/`UsageCostsTab` also live here. `FixCutoutBgDialog.kt` is still hosted by `MainActivity`). The former `insights/` package was dissolved — see Navigation. Cross-cutting: `data/model/` (pure data), `data/drive/` (`DriveRepository`), `gemini/` (`GeminiRepository`, `PromptStore`, `ApiKeyStore`, `TokenUsage*`, `TagNormalizer`), `ml/` (`EmbeddingService`/`…Repository`/`…Index`, `SegmentationRepository`, `PHash`, `ColorHistogram`), `weather/`, `service/` (`JobForegroundService`), `util/` (`Analytics`, `NetworkUtils`, `Scrollbar`, `AiProcessingOverlay`), `ui/theme/`.
 
-**Placement rule (cohesion over locality):** put each new or moved file in the package where it has the **most in-package callers and the fewest cross-package callers**. Concretely, before adding/moving a file:
+**Placement rule (cohesion over locality).** Put each new or moved file in the package with the **most in-package callers and fewest cross-package callers**.
 1. List which existing symbols it calls and which existing files call it.
 2. Pick the package that maximises same-package edges and minimises `import com.librelookai.<other>.…` lines.
-3. If a symbol is used by ≥ 2 feature packages and has no clear owner, lift it to `data/model/` (pure data), `util/` (no-dep helper), or the relevant cross-cutting package (`gemini/`, `ml/`, `data/drive/`). Don't dump it in `util/` just to avoid choosing.
-4. Avoid creating a new top-level package for a single file — extend an existing one unless ≥ 3 related files justify the split.
-Symptom that placement is wrong: the new file's `import com.librelookai.…` block is longer than its own body, or it adds reverse-direction imports (e.g., `data/model/` importing from a feature package). Move it.
+3. If used by ≥ 2 feature packages with no clear owner, lift to `data/model/` (pure data), `util/` (no-dep helper), or the relevant cross-cutting package. Don't dump in `util/` just to avoid choosing.
+4. Avoid creating a new top-level package for a single file — extend an existing one unless ≥ 3 related files justify it.
+- Wrong-placement symptom: the new file's `import com.librelookai.…` block is longer than its body, or it adds reverse-direction imports (e.g. `data/model/` importing from a feature package). Move it.
 
 ## Core conventions
-- **Identity is `folderId`**: closets map to Drive subfolders; `Location.id` is an ephemeral UUID and must never be used for identity comparisons.
+- **Identity is `folderId`** — closets map to Drive subfolders. `Location.id` is an ephemeral UUID and must never be used for identity comparisons.
 - **File naming triplet**: `{cutoutDriveId}_cutout.png`, `{cutoutDriveId}_original.jpg`, `{cutoutDriveId}.json` — sidecar shares the cutout's Drive ID.
 - **Shopping closet** lives in `LibreLookAI/_shopping/`; excluded from `Location` lists, included in cross-closet similarity snapshot.
 - **Offline gating**: read `LocalIsOffline.current` and either hide write-path UI or set `enabled = !isOffline`. Every Gemini / Drive-write surface must be gated.
-- **Navigation**: `MainActivity` is a thin `ComponentActivity` whose `onCreate` just calls the `AppContent(activity)` root composable (`AppContent.kt`); the whole app composition (auth gate, all VMs, `when(selectedTab)` dispatch, global dialog hosts) lives there. Single `selectedTab: Int` in `AppContent`; no Jetpack Navigation. Sub-tab reset via `navResetTick`. The bottom bar is a **custom `Row`** (`AppNavBar`/`NavSlot` in `MainNavBar.kt`, not M3 `NavigationBar`) with a raised center **Try-On AI button** that opens `QuickTryOnSheet`; visible slots are Outfits(0)/Wardrobe(1)/[AI]/Shopping(2)/Travel(3); Settings is 5 (index 4 is now dead/unused). **The old Insights tab was dissolved**: its pages were redistributed to their natural homes — **Calendar + most-worn Stats are Outfits sub-tabs** (`TabRow` in `OutfitsScreen`: Outfits/Calendar/Stats → `OutfitCalendarTab`/`OutfitWearStatsTab`); **Wardrobe tag-breakdown stats** is a `BarChart` header icon in `WardrobeScreen` opening `WardrobeStatsSheet`; **Costs/token usage** (`UsageCostsTab`) is reached from Settings ▸ Advanced ▸ "See AI usage & cost charts". There is no longer a `LocalOpenInsights` CompositionLocal or `TrendingUp` header icon.
-- **Settings is a single scroll page** (`settings/v2/SettingsScreen`), no tabs. Top-to-bottom cards: "You" hero (→ `ProfileEditScreen`), Your style (try-on photos + style prefs + language picker), Your closets (tap a row to make default, instant/no-confirm), How it looks (live theme swatches over `WardrobePalettes`), AI credits (→ `BuyCreditsScreen`), More (Advanced / Help / About). Sub-screens are reached via a **local route back-stack inside the Settings composable** (`SettingsRoute` enum) — still no Jetpack Navigation. It reuses the four existing VMs (`Profile`/`Wardrobe`/`Location`/`Credits`); there is no separate `SettingsViewModel`. **All power-user/destructive options live in `SettingsAdvancedScreen`**: the three "Fix AI mistakes" rows (re-tag → `retagAll`, re-remove-bg → `removeAllBackgrounds`, cutout fix → `startCutoutBgFixScan`) each open `DestructiveConfirmDialog` (computed item count + time + credit cost, flips to "Buy credits & continue" when short); BYOK key (`ApiKeyStore`); and the dedupe / prefer-on-device-bg / similarity-preview toggles. Destructive-op progress and the cutout-fix review (`FixCutoutBgDialog`) are still globally hosted in `MainActivity`/`WardrobeScreen`, so Advanced only triggers the entry points. New user-facing strings are in default `values/strings.xml` and mirrored into all 31 translated locales (every `values-*` that has a `strings.xml`; the empty `values-ru` dir is vestigial — Russian is not an `AppLanguage` option).
-- **Header cluster in the try-on / outfit-building flow**: the closet selector + Settings cluster is reused via `ViewerHeaderActions(onBeforeNavigate)` (`MainCompositionLocals.kt`) — but **only on the create/compose surfaces**, not the detail viewers. It lives **only on the picker dialogs the Quick sheet routes into** (`OutfitPickerDialog`, `TripOutfitPickerDialog` in `tryon/`, and the shared `AddItemSheet` in `OutfitComposerAddItem.kt`) — the Quick-sheet links open the composer with `autoPick`, which immediately layers one of those pickers on top, so the picker is what the user lands on first. It is deliberately **absent** from the try-on composer header (`TryOnComposerScreen`) and from the read-only detail viewers (`FullScreenViewer`, `OutfitFullScreenViewer` — wardrobe item / outfit / travel-outfit views), which keep their minimal overlay close button. It reads two CompositionLocals (declared in `MainCompositionLocals.kt`) provided high in the `AppContent` composition: `LocalClosetSelector` (`ClosetSelectorContext` — interactive closet dropdown, switches the active closet in place) and `LocalOpenSettings`. Settings nav runs `onBeforeNavigate` first (dismiss the host Dialog); the opener also calls `tryOnViewModel.close()` + `stylesViewModel.closeComposer()` since those composers are hosted outside `when(selectedTab)`. Each child self-hides when its local is unprovided (closet dropdown also hides below 2 closets).
-- **Try-On provenance**: every try-on carries a `TryOnSourceKind` (outfit/wardrobe/shopping/travel) + `sourceContext` label, persisted on `TryOn` and surfaced via `SourcePill`/`SourceColors`/`sourceMeta` (`tryon/TryOnDesign.kt`). The hero history feed lives in `TryOnHistoryFeed` (`TryOnHistoryScreen.kt`). Past try-ons are a **dedicated full-screen page** (`TryOnViewModel.openHistoryRoot()` → the composer Dialog rendering the feed), reached from the center AI button → Quick sheet ▸ "See past try-ons" — there is **no** Try-Ons sub-tab under Outfits anymore.
-- **Shared UI**: `WardrobeGridShared.kt` (`WardrobeTile`, `WardrobeItemGrid`), `TagFilterBar`/`SortButton`/`HideTagsChip` (`WardrobeTagFilterBar.kt`), `FullScreenViewer` (`FullScreenViewer.kt`, used by Wardrobe / Outfit-item / Shopping / Try-On), `MatchPreviewDialog`/`MatchRow` (`shopping/MatchPreview.kt`, debug visualization in `MatchDebug.kt`; used by Find-by-photo / Similarity / dedupe). **Wardrobe screen split** (one-screen-per-file): `WardrobeScreen.kt` (entry) · `WardrobeGrid.kt` (`GridContent`) · `WardrobeTagTaxonomy.kt` (tag enums/labels/category helpers) · `WardrobeSheets.kt` (URL-import / duplicate-check / find-by-photo / cutout-fix dialogs) · `TagEditScreen.kt` + `TagEditTagTable.kt` (tag editor) · `FullScreenViewerParts.kt` (`ZoomableImage`/`TagsOverlay`). **WardrobeViewModel split**: data/UI-state classes are in `WardrobeModels.kt`; the VM's big workflows live in same-package **extension-function** files (`internal fun WardrobeViewModel.x()`) — `WardrobeViewModelBgFix.kt` (cutout-bg-fix), `…Audit.kt` (repair/audit), `…Upload.kt` (camera/url/gallery), `…Import.kt` (folder/SAF/drive bulk import), `…Search.kt` (find-by-photo + fuzzy). `WardrobeViewModel.kt` itself keeps the load/cache/queue/sidecar/upload core + setters + tag/move/CRUD. Members shared with the extension files are `internal`, not `private`.
-- **Gemini calls return `null` on failure** — every caller must degrade gracefully. All calls get logged via `TokenUsageRepository.recordUsage(...)` with a `UsageCategory`.
+- **Gemini calls return `null` on failure** — every caller must degrade gracefully. All calls log via `TokenUsageRepository.recordUsage(...)` with a `UsageCategory`.
+
+## Navigation
+- `MainActivity` is a thin `ComponentActivity` whose `onCreate` just calls `AppContent(activity)` (`AppContent.kt`). The whole composition (auth gate, all VMs, `when(selectedTab)` dispatch, global dialog hosts) lives there. Single `selectedTab: Int`, **no Jetpack Navigation**; sub-tab reset via `navResetTick`.
+- **Bottom bar** is a custom `Row` (`AppNavBar`/`NavSlot` in `MainNavBar.kt`, not M3 `NavigationBar`) with a raised center **Try-On AI button** opening `QuickTryOnSheet`. Visible slots: Outfits(0)/Wardrobe(1)/[AI]/Shopping(2)/Travel(3); Settings is 5 (index 4 is dead/unused).
+- **Old Insights tab is gone** — pages redistributed:
+  - Calendar + most-worn Stats → Outfits sub-tabs (`TabRow` in `OutfitsScreen` → `OutfitCalendarTab` / `OutfitWearStatsTab`).
+  - Wardrobe tag-breakdown stats → `BarChart` header icon in `WardrobeScreen` → `WardrobeStatsSheet`.
+  - Costs / token usage (`UsageCostsTab`) → Settings ▸ Advanced ▸ "See AI usage & cost charts".
+  - There is no `LocalOpenInsights` CompositionLocal or `TrendingUp` header icon any more.
+
+## Settings (`settings/`)
+Single scroll page, no tabs. Top-to-bottom cards: "You" hero (→ `ProfileEditScreen`), Your style (try-on photos + style prefs + language picker), Your closets (tap a row to make default — instant, no confirm), How it looks (live theme swatches over `WardrobePalettes`), AI credits (→ `BuyCreditsScreen`), More (Advanced / Help / About). Sub-screens use a **local route back-stack** (`SettingsRoute` enum) inside the Settings composable — still no Jetpack Navigation. Reuses the four existing VMs (`Profile`/`Wardrobe`/`Location`/`Credits`); there is no `SettingsViewModel`.
+
+**`SettingsAdvancedScreen`** hosts every power-user / destructive option:
+- Three "Fix AI mistakes" rows — re-tag → `retagAll`, re-remove-bg → `removeAllBackgrounds`, cutout fix → `startCutoutBgFixScan`. Each opens `DestructiveConfirmDialog` (computed item count + time + credit cost; flips to "Buy credits & continue" when short).
+- BYOK key (`ApiKeyStore`); dedupe / prefer-on-device-bg / similarity-preview toggles.
+- Destructive-op progress and the cutout-fix review (`FixCutoutBgDialog`) are still globally hosted in `MainActivity`/`WardrobeScreen`; Advanced only triggers the entry points.
+
+Design source: `designs/settings_v1/README.md`.
+
+## Header cluster (try-on / outfit-building flow)
+Reused via `ViewerHeaderActions(onBeforeNavigate)` (`MainCompositionLocals.kt`) — **only on create/compose surfaces**, not detail viewers.
+- Present on: the picker dialogs the Quick sheet routes into (`OutfitPickerDialog`, `TripOutfitPickerDialog` in `tryon/`, shared `AddItemSheet` in `OutfitComposerAddItem.kt`). The Quick-sheet links open the composer with `autoPick`, which immediately layers one of those pickers on top, so the picker is what the user lands on first.
+- Deliberately **absent** on: `TryOnComposerScreen` header and the read-only detail viewers (`FullScreenViewer`, `OutfitFullScreenViewer`) — they keep the minimal overlay close button.
+- Reads two CompositionLocals (`MainCompositionLocals.kt`) provided high in `AppContent`: `LocalClosetSelector` (`ClosetSelectorContext` — interactive closet dropdown, switches active closet in place) and `LocalOpenSettings`. Settings nav runs `onBeforeNavigate` first (dismiss host Dialog); the opener also calls `tryOnViewModel.close()` + `stylesViewModel.closeComposer()` since those composers are hosted outside `when(selectedTab)`. Each child self-hides when its local is unprovided (closet dropdown also hides below 2 closets).
+
+## Try-On provenance
+Every try-on carries a `TryOnSourceKind` (outfit/wardrobe/shopping/travel) + `sourceContext` label, persisted on `TryOn` and surfaced via `SourcePill` / `SourceColors` / `sourceMeta` (`tryon/TryOnDesign.kt`). The hero history feed lives in `TryOnHistoryFeed` (`TryOnHistoryScreen.kt`). Past try-ons are a **dedicated full-screen page** (`TryOnViewModel.openHistoryRoot()` → composer Dialog rendering the feed), reached from the center AI button → Quick sheet ▸ "See past try-ons" — there is **no** Try-Ons sub-tab.
+
+## Shared UI & Wardrobe split
+- Shared: `WardrobeGridShared.kt` (`WardrobeTile`, `WardrobeItemGrid`); `TagFilterBar`/`SortButton`/`HideTagsChip` (`WardrobeTagFilterBar.kt`); `FullScreenViewer` (used by Wardrobe / Outfit-item / Shopping / Try-On); `MatchPreviewDialog`/`MatchRow` (`shopping/MatchPreview.kt`, debug viz in `MatchDebug.kt`; Find-by-photo / Similarity / dedupe).
+- **Wardrobe screen** (one-screen-per-file): `WardrobeScreen.kt` (entry) · `WardrobeGrid.kt` (`GridContent`) · `WardrobeTagTaxonomy.kt` (tag enums/labels/helpers) · `WardrobeSheets.kt` (URL-import / duplicate-check / find-by-photo / cutout-fix dialogs) · `TagEditScreen.kt` + `TagEditTagTable.kt` · `FullScreenViewerParts.kt` (`ZoomableImage` / `TagsOverlay`).
+- **WardrobeViewModel split**: data/UI-state in `WardrobeModels.kt`; big workflows in same-package `internal fun WardrobeViewModel.x()` files — `WardrobeViewModelBgFix.kt`, `…Audit.kt`, `…Upload.kt`, `…Import.kt`, `…Search.kt`. The VM keeps load/cache/queue/sidecar/upload core + setters + tag/move/CRUD. Members shared with extensions are `internal`, not `private`.
 
 ## Window quirks (Dialog / Sheet / Popup / AlertDialog)
 **Every composable that opens its own window** (`Dialog`, `ModalBottomSheet`, `Popup`, `AlertDialog`, `BasicAlertDialog`, and anything nested inside one) severs the locale-overridden `LocalContext` / `LocalConfiguration` chain and reports `WindowInsets.systemBars` as 0.
 
 Rule of thumb:
 1. Capture `parentContext` / `parentConfiguration` **outside** the window-opening call.
-2. Re-provide them via `CompositionLocalProvider` **inside** the content lambda (for `AlertDialog`, inside **each slot lambda** — the outer wrap doesn't reach the slots).
-3. Use `LocalSystemBarsPadding` (provided high in the `AppContent` composition) instead of `statusBarsPadding()` / `navigationBarsPadding()` inside Dialogs.
-4. Sticky bottom rows in fullscreen Dialogs use `effectiveBottom = max(LocalSystemBarsPadding bottom, view.rootWindowInsets systemBars bottom, 48.dp)`.
-5. Fullscreen `Dialog` (vs. inline composable) is the way to make a detail view overlay the bottom nav bar.
+2. Re-provide via `CompositionLocalProvider` **inside** the content lambda (for `AlertDialog`, inside **each slot lambda** — the outer wrap doesn't reach slots).
+3. Use `LocalSystemBarsPadding` (provided high in `AppContent`) instead of `statusBarsPadding()` / `navigationBarsPadding()` inside Dialogs.
+4. Sticky bottom rows in fullscreen Dialogs: `effectiveBottom = max(LocalSystemBarsPadding bottom, view.rootWindowInsets systemBars bottom, 48.dp)`.
+5. Fullscreen `Dialog` (not inline composable) is how a detail view overlays the bottom nav bar.
 
-**Full rationale, code patterns, and reference implementations** (`OutfitComposerScreen` slot-dialog helper, `WeatherPickerSheet` / `ClosetPickerSheet` ModalBottomSheet pattern, `FullScreenViewer` Dialog wrap, `MatchPreviewDialog` action row) are in `plan/CLAUDE_ARCHIVE.md` → "Compose Dialog quirks". Read it before adding any new window-based UI.
+Full rationale + reference implementations (`OutfitComposerScreen` slot-dialog helper, `WeatherPickerSheet`/`ClosetPickerSheet` ModalBottomSheet pattern, `FullScreenViewer` Dialog wrap, `MatchPreviewDialog` action row) → `plan/CLAUDE_ARCHIVE.md` § "Compose Dialog quirks". Read it before adding any new window-based UI.
 
 ## Monetization (coins + BYOK)
 - **Pricing is server-authoritative.** Firestore holds `config/pricing` (private: `multiplier` + raw `costs`) and `config/publicPricing` (auth-readable: post-multiplier coin prices). The `recomputePublicPricing` trigger is the only writer to `publicPricing`. The multiplier never reaches the client.
 - **Client reads `config/publicPricing`** via `gemini/PricingClient` (Firestore listener + SharedPrefs cache + fallback to `CreditPack.COST_*`). Started once in `MainActivity.onCreate`.
-- **Cost UI**: `billing/CostBadge` is a small leading icon (`🪙 N` in managed mode, `~Nk tokens` in BYOK, hidden otherwise) — place it as the first child of any AI-trigger button. `ConfirmSpendDialog` + `requiresSpendConfirm()` gate spends ≥ 20 coins or bulks ≥ 5 items (BYOK is never gated).
-- **402 → typed exception + global event**: `GeminiRepository.throwIf402` parses `{needed, have}`, emits on the `billing/CreditsEvents.topUp` SharedFlow, then raises `billing/InsufficientCreditsException`. A single `InsufficientCreditsDialog` observer in `MainActivity` listens to the flow and routes "Buy" → Settings tab — so individual VMs don't need to manage dialog state. Per-VM catches only reset loading flags and short-circuit bulk loops via a local `creditsExhausted` flag (prevents N pointless proxy calls on a depleted balance).
+- **Cost UI**: `billing/CostBadge` is a small leading icon (`🪙 N` managed, `~Nk tokens` BYOK, hidden otherwise) — place it as the first child of any AI-trigger button. `ConfirmSpendDialog` + `requiresSpendConfirm()` gate spends ≥ 20 coins or bulks ≥ 5 items (BYOK never gated).
+- **402 → typed exception + global event**: `GeminiRepository.throwIf402` parses `{needed, have}`, emits on `billing/CreditsEvents.topUp`, then raises `billing/InsufficientCreditsException`. A single `InsufficientCreditsDialog` observer in `MainActivity` listens and routes "Buy" → Settings — so individual VMs don't manage dialog state. Per-VM catches only reset loading flags and short-circuit bulk loops via a local `creditsExhausted` flag.
 - **Ledger**: every charge/refund/purchase appends to `users/{uid}/ledger/{autoId}` (server-only write, user can read).
-- **`verifyPurchase`** validates against the Google Play Developer API before crediting; service account must be granted "View financial data" + "Manage orders" in Play Console.
-- **Seeding**: `cd firebase/functions && npm run build && node lib/seed.js` writes initial `config/pricing` (defaults in `firebase/functions/src/pricing.ts → DEFAULT_PRICING`). The trigger mirrors to `publicPricing`.
-- **Deep rationale & decisions** (markup security, why we dropped reservation/commit complexity, RevenueCat tradeoffs, remaining screen wiring) → `plan/FIN.md`.
+- **`verifyPurchase`** validates against the Google Play Developer API before crediting; the service account needs "View financial data" + "Manage orders" in Play Console.
+- **Seeding**: `cd firebase/functions && npm run build && node lib/seed.js` writes initial `config/pricing` (defaults in `firebase/functions/src/pricing.ts → DEFAULT_PRICING`); the trigger mirrors to `publicPricing`.
+- Deep rationale & decisions (markup security, dropped reservation/commit complexity, RevenueCat tradeoffs, remaining screen wiring) → `plan/FIN.md`.
 
-## Where to find things (pointers into archive)
+## Where to find things
 - Trips (aggregate of N day-outfits) → archive § "Trips"
 - Upload / ingestion / URL import / SAF folder import → archive § "Photo upload & ingestion pipelines"
 - Repair & Sync, duplicate detection, audit → archive § "Repair & Sync"
 - Visual similarity (embedder, segmenter, scoring, white balance) → archive § "Visual wardrobe search"
 - Outfits / composer / Travel / Try-On → archive § "Outfits, Travel, Try-On"
 - Shopping closet → archive § "Shopping closet"
-- Calendar / wear-Stats (Outfits sub-tabs), Wardrobe stats sheet, Usage/Costs (Settings ▸ Advanced) → archive § "Insights tab" (pages redistributed; Insights tab removed)
-- Settings redesign (single scroll page, `settings/v2/`, Advanced sub-screen, destructive confirm) → `designs/settings_v1/README.md`
+- Calendar / wear-Stats, Wardrobe stats sheet, Usage/Costs → archive § "Insights tab" (tab removed; pages redistributed)
 - Offline mode internals → archive § "Offline mode (deep notes)"
 - Token usage / pricing → archive § "Token usage tracking"
 - Analytics → archive § "Analytics"
 - Release / signing / keystore / Play / Firebase → archive § "Release process"
 - ML model assets (embedder / segmenter) → archive § "ML model assets"
+- Design handoffs (HTML mockups, JSX prototypes) → `designs/<surface>/README.md`
+- Marketing website (i18n setup, translations, screenshots) → `website/`
