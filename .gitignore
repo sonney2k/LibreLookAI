@@ -19,7 +19,6 @@ app/src/main/assets/*.tflite
 *_bak
 *.tflite_*
 .claude/
-design_handoff_*/
 
 # Firebase Functions build + deps
 firebase/functions/lib/

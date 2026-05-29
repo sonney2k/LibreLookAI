@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-i18n="meta.title">LibreLookAI — your closet, styled by AI</title>
+  <meta name="description" data-i18n-attr="content" data-i18n="meta.desc" content="LibreLookAI turns photos of your clothes into a smart digital closet. Snap your clothes, let AI tag and sort them, build outfits in seconds, try looks on yourself, and pack perfectly for any trip — all kept private in your own Google Drive." />
+  <link rel="icon" href="assets/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- NAV -->
+  <header class="nav">
+    <a class="brand" href="#top">
+      <img src="assets/logo.png" alt="LibreLookAI logo" />
+      <span>LibreLook<em>AI</em></span>
+    </a>
+    <nav class="nav-links">
+      <a href="#how" data-i18n="nav.how">How it works</a>
+      <a href="#features" data-i18n="nav.features">Features</a>
+      <a href="#compare" data-i18n="nav.compare">Why it's different</a>
+      <a href="#privacy" data-i18n="nav.privacy">Privacy</a>
+      <a class="nav-cta" href="#get" data-i18n="nav.cta">Get the app</a>
+      <div class="lang-pick">
+        <span class="globe" aria-hidden="true">🌐</span>
+        <select id="langSelect" aria-label="Choose language">
+          <option value="en">English</option>
+          <option value="de">Deutsch</option>
+          <option value="fr">Français</option>
+          <option value="it">Italiano</option>
+          <option value="es">Español</option>
+          <option value="pt">Português</option>
+          <option value="nl">Nederlands</option>
+          <option value="tr">Türkçe</option>
+          <option value="ru">Русский</option>
+          <option value="ja">日本語</option>
+          <option value="ko">한국어</option>
+          <option value="zh">简体中文</option>
+        </select>
+      </div>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero" id="top">
+    <div class="hero-text">
+      <p class="eyebrow" data-i18n="hero.eyebrow">Your personal AI stylist</p>
+      <h1 data-i18n="hero.h1">Every outfit you own,<br><span class="script">in your pocket.</span></h1>
+      <p class="lede" data-i18n="hero.lede">
+        Snap photos of your clothes and LibreLookAI does the rest — it cuts out the
+        background, sorts everything by colour, season and style, and helps you put
+        together looks you'll actually wear. Like having a stylist and a tidy closet
+        that lives on your phone.
+      </p>
+      <div class="hero-buttons">
+        <a class="btn btn-primary" href="#get" data-i18n="hero.btnGet">Get the app</a>
+        <a class="btn btn-ghost" href="#how" data-i18n="hero.btnHow">See how it works</a>
+      </div>
+      <p class="hero-note" data-i18n="hero.note">✦ Your photos stay private — in your own Google Drive, not ours.</p>
+    </div>
+    <div class="hero-phones">
+      <div class="phone phone-back">
+        <img src="screenshots/outfits.png" alt="Outfit feed in LibreLookAI" />
+      </div>
+      <div class="phone phone-front">
+        <img src="screenshots/wardrobe.png" alt="Digital wardrobe grid in LibreLookAI" />
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST STRIP -->
+  <section class="strip">
+    <div><strong data-i18n="strip.snap.t">📸 Snap</strong><span data-i18n="strip.snap.s">AI tags it for you</span></div>
+    <div><strong data-i18n="strip.style.t">👗 Style</strong><span data-i18n="strip.style.s">outfits in seconds</span></div>
+    <div><strong data-i18n="strip.try.t">🪞 Try on</strong><span data-i18n="strip.try.s">see it on you</span></div>
+    <div><strong data-i18n="strip.pack.t">✈️ Pack</strong><span data-i18n="strip.pack.s">trip looks, sorted</span></div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how" id="how">
+    <h2 data-i18n="how.title">How it works <span class="script">— in three taps</span></h2>
+    <div class="steps">
+      <div class="step">
+        <span class="step-num">1</span>
+        <h3 data-i18n="how.s1.h">Snap your clothes</h3>
+        <p data-i18n="how.s1.p">Take a quick photo of any piece. The AI removes the background and gives you a clean, catalogue-style cut-out — no light box, no fuss.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">2</span>
+        <h3 data-i18n="how.s2.h">It sorts itself</h3>
+        <p data-i18n="how.s2.p">LibreLookAI reads each item and tags it — top or dress, colour, season, vibe, fabric. Your whole closet becomes searchable in seconds.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">3</span>
+        <h3 data-i18n="how.s3.h">Get dressed</h3>
+        <p data-i18n="how.s3.p">Ask the AI to build an outfit, try it on yourself, save your favourites, and plan exactly what to pack for your next trip.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features" id="features">
+
+    <div class="feature">
+      <div class="feature-text">
+        <p class="tag" data-i18n="f1.tag">Smart tagging</p>
+        <h2 data-i18n="f1.h">Snap it, and it tidies itself</h2>
+        <p data-i18n="f1.p">No more typing in colours and categories. The AI looks at each photo and adds the tags for you — <em>red, t-shirt, casual, summer, cotton</em> — so you can filter your closet like an online shop.</p>
+        <ul class="ticks">
+          <li data-i18n="f1.t1">Automatic background removal</li>
+          <li data-i18n="f1.t2">Colour, season &amp; style tags, done for you</li>
+          <li data-i18n="f1.t3">Search and filter your whole wardrobe instantly</li>
+        </ul>
+      </div>
+      <div class="feature-phone"><div class="phone"><img src="screenshots/wardrobe_item.png" alt="AI tags on a clothing item" /></div></div>
+    </div>
+
+    <div class="feature reverse">
+      <div class="feature-text">
+        <p class="tag" data-i18n="f2.tag">Your whole closet</p>
+        <h2 data-i18n="f2.h">See everything you own, at a glance</h2>
+        <p data-i18n="f2.p">All your pieces in one clean grid — neatly cut out and laid out like a lookbook. Finally, a way to actually <em>see</em> what's hiding in the back of your wardrobe (and stop buying the same thing twice).</p>
+        <ul class="ticks">
+          <li data-i18n="f2.t1">Beautiful, shoppable grid view</li>
+          <li data-i18n="f2.t2">Group into closets — home, holiday, work</li>
+          <li data-i18n="f2.t3">Spot duplicates and gaps in your wardrobe</li>
+        </ul>
+      </div>
+      <div class="feature-phone"><div class="phone"><img src="screenshots/wardrobe.png" alt="Wardrobe grid" /></div></div>
+    </div>
+
+    <div class="feature">
+      <div class="feature-text">
+        <p class="tag" data-i18n="f3.tag">AI outfits</p>
+        <h2 data-i18n="f3.h">"What should I wear?" — solved</h2>
+        <p data-i18n="f3.p">Pick a couple of pieces, or let the AI start from scratch. It layers a complete look — top, bottom, shoes, jacket — that works for the weather and your style. Save the ones you love.</p>
+        <ul class="ticks">
+          <li data-i18n="f3.t1">One tap: <strong>Generate with AI</strong></li>
+          <li data-i18n="f3.t2">Weather-aware suggestions</li>
+          <li data-i18n="f3.t3">Mix &amp; match, then save your favourites</li>
+        </ul>
+      </div>
+      <div class="feature-phone"><div class="phone"><img src="screenshots/outfit_composer.png" alt="Outfit composer with Generate with AI" /></div></div>
+    </div>
+
+    <div class="feature reverse">
+      <div class="feature-text">
+        <p class="tag" data-i18n="f4.tag">Virtual try-on</p>
+        <h2 data-i18n="f4.h">See it on <em>you</em> before you decide</h2>
+        <p data-i18n="f4.p">Curious how a look actually suits you? Try it on yourself from a saved outfit, a single item, something on your shopping list, or a planned trip — all from one button. No changing-room queue required.</p>
+        <ul class="ticks">
+          <li data-i18n="f4.t1">Try on outfits, wardrobe pieces or shopping finds</li>
+          <li data-i18n="f4.t2">Keep a history of every look you've tried</li>
+          <li data-i18n="f4.t3">Only you ever see your try-on photos</li>
+        </ul>
+      </div>
+      <div class="feature-phone"><div class="phone"><img src="screenshots/tryon_sheet.png" alt="Quick try-on options" /></div></div>
+    </div>
+
+    <div class="feature">
+      <div class="feature-text">
+        <p class="tag" data-i18n="f5.tag">Travel</p>
+        <h2 data-i18n="f5.h">Pack for any trip in minutes</h2>
+        <p data-i18n="f5.p">Tell it where you're going and for how long. The AI checks the weather, your vibe and your real wardrobe, then plans a look for every day plus a packing checklist — so you never overpack (or forget the one thing you needed).</p>
+        <ul class="ticks">
+          <li data-i18n="f5.t1">Day-by-day outfits from clothes you already own</li>
+          <li data-i18n="f5.t2">Weather &amp; trip-vibe aware</li>
+          <li data-i18n="f5.t3">Tick-off packing list, all in one place</li>
+        </ul>
+      </div>
+      <div class="feature-phone"><div class="phone"><img src="screenshots/travel_planner.png" alt="AI trip planner" /></div></div>
+    </div>
+
+    <div class="feature reverse">
+      <div class="feature-text">
+        <p class="tag" data-i18n="f6.tag">Calendar &amp; insights</p>
+        <h2 data-i18n="f6.h">Know what you actually wear</h2>
+        <p data-i18n="f6.p">Log your outfits on a calendar and watch the patterns appear: your most-worn looks, the pieces that earn their keep, and the ones gathering dust. Shop smarter and wear more of what you own.</p>
+        <ul class="ticks">
+          <li data-i18n="f6.t1">Outfit calendar — see your month at a glance</li>
+          <li data-i18n="f6.t2">Most-worn outfits &amp; items</li>
+          <li data-i18n="f6.t3">Find your forgotten favourites</li>
+        </ul>
+      </div>
+      <div class="feature-phone phone-pair">
+        <div class="phone"><img src="screenshots/outfits_calendar.png" alt="Outfit calendar" /></div>
+        <div class="phone"><img src="screenshots/outfits_stats.png" alt="Most-worn stats" /></div>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="feature-text">
+        <p class="tag" data-i18n="f7.tag">Shopping</p>
+        <h2 data-i18n="f7.h">Shop on purpose, not on impulse</h2>
+        <p data-i18n="f7.p">Found something you love online? Add it and the AI tells you whether you already own something similar — and what's genuinely missing from your wardrobe. Fewer "oops" buys, more pieces that actually work together.</p>
+        <ul class="ticks">
+          <li data-i18n="f7.t1">Find lookalikes you already own</li>
+          <li data-i18n="f7.t2">Spot the real gaps in your closet</li>
+          <li data-i18n="f7.t3">Save shopping finds and try them on</li>
+        </ul>
+      </div>
+      <div class="feature-phone"><div class="phone"><img src="screenshots/shopping.png" alt="Shopping and similarity finder" /></div></div>
+    </div>
+
+  </section>
+
+  <!-- COMPARISON -->
+  <section class="compare" id="compare">
+    <h2 data-i18n="compare.title">How LibreLookAI is <span class="script">different</span></h2>
+    <p class="compare-lede" data-i18n="compare.lede">There are lots of closet apps. Here's what makes this one special — in plain English.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th class="us">LibreLookAI</th>
+            <th data-i18n="compare.them">Typical closet apps</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-i18n="compare.r1.l">Tags your clothes for you</td>
+            <td class="us" data-i18n="compare.r1.us">✓ AI does it automatically</td>
+            <td data-i18n="compare.r1.them">Often type it all in by hand</td>
+          </tr>
+          <tr>
+            <td data-i18n="compare.r2.l">Cuts out backgrounds</td>
+            <td class="us" data-i18n="compare.r2.us">✓ Built in, on every photo</td>
+            <td data-i18n="compare.r2.them">Manual or paid extra</td>
+          </tr>
+          <tr>
+            <td data-i18n="compare.r3.l">Builds outfits with AI</td>
+            <td class="us" data-i18n="compare.r3.us">✓ Full looks in one tap</td>
+            <td data-i18n="compare.r3.them">Usually drag-and-drop only</td>
+          </tr>
+          <tr>
+            <td data-i18n="compare.r4.l">Try looks on yourself</td>
+            <td class="us" data-i18n="compare.r4.us">✓ Virtual try-on</td>
+            <td data-i18n="compare.r4.them">Rarely offered</td>
+          </tr>
+          <tr>
+            <td data-i18n="compare.r5.l">AI travel packing</td>
+            <td class="us" data-i18n="compare.r5.us">✓ Day-by-day + checklist</td>
+            <td data-i18n="compare.r5.them">Manual lists, if any</td>
+          </tr>
+          <tr>
+            <td data-i18n="compare.r6.l">Where your photos live</td>
+            <td class="us" data-i18n="compare.r6.us">✓ Your own Google Drive</td>
+            <td data-i18n="compare.r6.them">On the company's servers</td>
+          </tr>
+          <tr>
+            <td data-i18n="compare.r7.l">Pricing</td>
+            <td class="us" data-i18n="compare.r7.us">✓ Pay only for AI you use<br><small>or bring your own AI key</small></td>
+            <td data-i18n="compare.r7.them">Monthly subscription</td>
+          </tr>
+          <tr>
+            <td data-i18n="compare.r8.l">Languages</td>
+            <td class="us" data-i18n="compare.r8.us">✓ 30+ languages</td>
+            <td data-i18n="compare.r8.them">Often English-only</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="compare-note" data-i18n="compare.note">Features of other apps vary and change over time — this is a general comparison to help you choose.</p>
+  </section>
+
+  <!-- PRIVACY -->
+  <section class="privacy" id="privacy">
+    <div class="privacy-inner">
+      <h2 data-i18n="privacy.title">Your wardrobe is <span class="script">yours</span></h2>
+      <p data-i18n="privacy.p">
+        The name says it: <strong>Libre</strong> means free and open. Your clothing photos and
+        try-on pictures are saved straight to <strong>your own Google Drive</strong> — not locked
+        away on someone else's servers. You stay in control, you can take your data with you any
+        time, and your try-on photos are seen by no one but you.
+      </p>
+      <div class="privacy-points">
+        <div><span>🔒</span><p data-i18n="privacy.p1">Stored in <strong>your</strong> Google Drive</p></div>
+        <div><span>🙈</span><p data-i18n="privacy.p2">Try-on photos are <strong>private to you</strong></p></div>
+        <div><span>🪙</span><p data-i18n="privacy.p3"><strong>No subscription trap</strong> — pay as you go</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta" id="get">
+    <h2 data-i18n="cta.title">Ready to fall back in love with your wardrobe?</h2>
+    <p data-i18n="cta.p">Turn the chaos in your closet into outfits you'll actually wear.</p>
+    <a class="btn btn-primary btn-lg" href="#" data-i18n="cta.btn">Get LibreLookAI</a>
+    <p class="cta-sub" data-i18n="cta.sub">Available for Android.</p>
+  </section>
+
+  <footer class="footer">
+    <div class="brand">
+      <img src="assets/logo.png" alt="LibreLookAI logo" />
+      <span>LibreLook<em>AI</em></span>
+    </div>
+    <p data-i18n="footer.tagline">Your closet, styled by AI — and kept private.</p>
+    <p class="copy" data-i18n="footer.copy">© 2026 LibreLookAI</p>
+  </footer>
+
+  <script src="translations.js"></script>
+  <script src="i18n.js"></script>
+</body>
+</html>

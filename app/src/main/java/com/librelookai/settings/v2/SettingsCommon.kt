@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.sp
 /**
  * Shared building blocks for the redesigned (V1) Settings surface — the Compose
  * equivalent of `settings-shared.jsx`. iOS-Settings idiom: small all-caps section
- * labels above grouped cards of tap rows. See `design_handoff_settings_v1/README.md`.
+ * labels above grouped cards of tap rows. See `designs/settings_v1/README.md`.
  */
 
 // ---------- Derived design tokens ----------

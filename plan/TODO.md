@@ -120,7 +120,7 @@ try-ons: when try-on is based on an outfit, store a link back to the outfit (if 
 
 travel planner needs more customization options - an AI prompt to adjust what the user is looking for, selected AI factors from create outfit -> create with AI and also the number of outfits to create (e.g. one per day)
 
-update the design of the edit tags screen following @design_handoff_edit_tags_c/README.md
+update the design of the edit tags screen following @designs/edit_tags_c/README.md
 add the settings -> AI -> standard criteria options: location, trends, gender, age, style preferences to the outfit create with AI dialog so users can modify this
 
 Bug fixes:

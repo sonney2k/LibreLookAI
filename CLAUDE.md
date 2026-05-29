@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Compact day-to-day guidance. **Deep architecture, pipelines, rationale, and Dialog/Sheet quirks live in `CLAUDE_ARCHIVE.md`** — consult it before designing changes that touch data flow, pipelines, or window-based UI.
+Compact day-to-day guidance. **Deep architecture, pipelines, rationale, and Dialog/Sheet quirks live in `plan/CLAUDE_ARCHIVE.md`** — consult it before designing changes that touch data flow, pipelines, or window-based UI.
 
 ## Model & effort
 - Default to **Sonnet** for routine work (functions, small refactors, reviews).
@@ -10,7 +10,7 @@ Compact day-to-day guidance. **Deep architecture, pipelines, rationale, and Dial
 
 ## Working agreement
 - **Ask before `git commit`**; never commit without explicit approval.
-- **Update CLAUDE.md / CLAUDE_ARCHIVE.md** when changing architecture, data flow, or conventions — both before executing a plan and after it lands.
+- **Update CLAUDE.md / plan/CLAUDE_ARCHIVE.md** when changing architecture, data flow, or conventions — both before executing a plan and after it lands.
 - **Multi-language is mandatory**: every user-facing string goes through `stringResource(...)` and `res/values/strings.xml`. Add to default `strings.xml` and mirror in every `values-*/strings.xml` in the same change. Never hardcode display text. **Tooling**: `scripts/add_translations.py <batch.json>` bulk-inserts a `{locale: {key: rawValue}}` JSON into each `values-*/strings.xml` (auto XML-escaping, idempotent, skips dirs without a `strings.xml`); `scripts/translation_status.sh` audits coverage. After either, run `./gradlew :app:assembleDebug` — `mergeDebugResources` validates XML + format specifiers across all locales.
 - **Release notes** ship with every Firebase / Play release; bump `versionCode` and refresh notes together.
 - Keep tasks small and focused; read files and follow existing patterns before editing.
@@ -19,7 +19,7 @@ Compact day-to-day guidance. **Deep architecture, pipelines, rationale, and Dial
 ## Build
 - `./gradlew assembleDebug` — debug APK
 - `./gradlew testDebugUnitTest` — JVM unit tests (note: bare `./gradlew test` rejects `--tests`; use the variant task to filter)
-- Full release / function deploy commands: see `CLAUDE_ARCHIVE.md` → Release process.
+- Full release / function deploy commands: see `plan/CLAUDE_ARCHIVE.md` → Release process.
 
 ## Testing
 - **Pure-logic JVM tests** (plain JUnit): e.g. `TagNormalizerTest`, `PHashTest` (bit-math only). No Android runtime.
@@ -59,7 +59,7 @@ Rule of thumb:
 4. Sticky bottom rows in fullscreen Dialogs use `effectiveBottom = max(LocalSystemBarsPadding bottom, view.rootWindowInsets systemBars bottom, 48.dp)`.
 5. Fullscreen `Dialog` (vs. inline composable) is the way to make a detail view overlay the bottom nav bar.
 
-**Full rationale, code patterns, and reference implementations** (`OutfitComposerScreen` slot-dialog helper, `WeatherPickerSheet` / `ClosetPickerSheet` ModalBottomSheet pattern, `FullScreenViewer` Dialog wrap, `MatchPreviewDialog` action row) are in `CLAUDE_ARCHIVE.md` → "Compose Dialog quirks". Read it before adding any new window-based UI.
+**Full rationale, code patterns, and reference implementations** (`OutfitComposerScreen` slot-dialog helper, `WeatherPickerSheet` / `ClosetPickerSheet` ModalBottomSheet pattern, `FullScreenViewer` Dialog wrap, `MatchPreviewDialog` action row) are in `plan/CLAUDE_ARCHIVE.md` → "Compose Dialog quirks". Read it before adding any new window-based UI.
 
 ## Monetization (coins + BYOK)
 - **Pricing is server-authoritative.** Firestore holds `config/pricing` (private: `multiplier` + raw `costs`) and `config/publicPricing` (auth-readable: post-multiplier coin prices). The `recomputePublicPricing` trigger is the only writer to `publicPricing`. The multiplier never reaches the client.
@@ -69,7 +69,7 @@ Rule of thumb:
 - **Ledger**: every charge/refund/purchase appends to `users/{uid}/ledger/{autoId}` (server-only write, user can read).
 - **`verifyPurchase`** validates against the Google Play Developer API before crediting; service account must be granted "View financial data" + "Manage orders" in Play Console.
 - **Seeding**: `cd firebase/functions && npm run build && node lib/seed.js` writes initial `config/pricing` (defaults in `firebase/functions/src/pricing.ts → DEFAULT_PRICING`). The trigger mirrors to `publicPricing`.
-- **Deep rationale & decisions** (markup security, why we dropped reservation/commit complexity, RevenueCat tradeoffs, remaining screen wiring) → `FIN.md`.
+- **Deep rationale & decisions** (markup security, why we dropped reservation/commit complexity, RevenueCat tradeoffs, remaining screen wiring) → `plan/FIN.md`.
 
 ## Where to find things (pointers into archive)
 - Trips (aggregate of N day-outfits) → archive § "Trips"
@@ -79,7 +79,7 @@ Rule of thumb:
 - Outfits / composer / Travel / Try-On → archive § "Outfits, Travel, Try-On"
 - Shopping closet → archive § "Shopping closet"
 - Calendar / wear-Stats (Outfits sub-tabs), Wardrobe stats sheet, Usage/Costs (Settings ▸ Advanced) → archive § "Insights tab" (pages redistributed; Insights tab removed)
-- Settings redesign (single scroll page, `settings/v2/`, Advanced sub-screen, destructive confirm) → `design_handoff_settings_v1/README.md`
+- Settings redesign (single scroll page, `settings/v2/`, Advanced sub-screen, destructive confirm) → `designs/settings_v1/README.md`
 - Offline mode internals → archive § "Offline mode (deep notes)"
 - Token usage / pricing → archive § "Token usage tracking"
 - Analytics → archive § "Analytics"

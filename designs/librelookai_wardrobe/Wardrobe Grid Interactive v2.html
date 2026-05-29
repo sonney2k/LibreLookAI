@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LibreLookAI · Wardrobe Grid v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+body { background: #131713; font-family: 'Plus Jakarta Sans', sans-serif;
+  display: flex; align-items: center; justify-content: center; }
+::-webkit-scrollbar { display: none; }
+@keyframes sheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes popIn   { from { transform: scale(0.92); opacity:0; } to { transform: scale(1); opacity:1; } }
+@keyframes pulse   { 0%,100% { opacity:1; } 50% { opacity:.4; } }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+
+// ── Token sets ──────────────────────────────────────────────────────────────
+const THEMES = {
+  "green-light": {
+    bg:"#F3F6EF", surface:"#EBF1E5", surface2:"#E0EAD8",
+    primary:"#4E7844", primaryDim:"#D0E4C8",
+    text:"#1A2618", textMid:"#3D5438", textMuted:"#6A8060",
+    border:"#BDD0B2", divider:"#D4E0CC",
+    navBg:"#EBF1E5", navIndicator:"#D0E4C8",
+    chipABg:"#4E7844", chipAFg:"#FFFFFF", chipBg:"#DFE9D8", chipFg:"#2E4A28",
+    fabBg:"#4E7844", fabFg:"#FFFFFF",
+    fabMini:"#EBF1E5", fabMiniFg:"#4E7844", fabMiniBd:"#4E7844",
+    selBorder:"#4E7844", selOverlay:"rgba(78,120,68,0.18)", selCheck:"#4E7844",
+    progressFg:"#4E7844", progressBg:"#C4D8BC",
+    toastBg:"#1A2618", toastFg:"#EBF1E5",
+    sheetBg:"#EBF1E5", error:"#C0392B",
+  },
+  "green-dark": {
+    bg:"#171F15", surface:"#1F2A1C", surface2:"#273323",
+    primary:"#7BBD6C", primaryDim:"#243D1F",
+    text:"#DEE9D8", textMid:"#A8C09C", textMuted:"#728060",
+    border:"#304028", divider:"#283820",
+    navBg:"#1A2318", navIndicator:"#243D1F",
+    chipABg:"#7BBD6C", chipAFg:"#0F1E0C", chipBg:"#253020", chipFg:"#9ABF8A",
+    fabBg:"#7BBD6C", fabFg:"#0F1E0C",
+    fabMini:"#253020", fabMiniFg:"#7BBD6C", fabMiniBd:"#7BBD6C",
+    selBorder:"#7BBD6C", selOverlay:"rgba(123,189,108,0.2)", selCheck:"#7BBD6C",
+    progressFg:"#7BBD6C", progressBg:"#304028",
+    toastBg:"#DEE9D8", toastFg:"#1A2618",
+    sheetBg:"#1F2A1C", error:"#E57373",
+  },
+  "sand-light": {
+    bg:"#F7F3ED", surface:"#EFE9E0", surface2:"#E6DDD2",
+    primary:"#8A6340", primaryDim:"#E8D8C4",
+    text:"#261A0E", textMid:"#5A3E24", textMuted:"#8A7060",
+    border:"#D4C0A8", divider:"#E0CEB8",
+    navBg:"#EFE9E0", navIndicator:"#E8D8C4",
+    chipABg:"#8A6340", chipAFg:"#FFFFFF", chipBg:"#E6DDD2", chipFg:"#4A2E10",
+    fabBg:"#8A6340", fabFg:"#FFFFFF",
+    fabMini:"#EFE9E0", fabMiniFg:"#8A6340", fabMiniBd:"#8A6340",
+    selBorder:"#8A6340", selOverlay:"rgba(138,99,64,0.18)", selCheck:"#8A6340",
+    progressFg:"#8A6340", progressBg:"#D4C0A8",
+    toastBg:"#261A0E", toastFg:"#EFE9E0",
+    sheetBg:"#EFE9E0", error:"#C0392B",
+  },
+  "indigo-dark": {
+    bg:"#12121E", surface:"#1A1A2E", surface2:"#22223C",
+    primary:"#8B8FE8", primaryDim:"#20204A",
+    text:"#E4E4F4", textMid:"#A0A0CC", textMuted:"#606080",
+    border:"#2C2C50", divider:"#202040",
+    navBg:"#161628", navIndicator:"#20204A",
+    chipABg:"#8B8FE8", chipAFg:"#080820", chipBg:"#1E1E3C", chipFg:"#A0A0DD",
+    fabBg:"#8B8FE8", fabFg:"#080820",
+    fabMini:"#1E1E3C", fabMiniFg:"#8B8FE8", fabMiniBd:"#8B8FE8",
+    selBorder:"#8B8FE8", selOverlay:"rgba(139,143,232,0.2)", selCheck:"#8B8FE8",
+    progressFg:"#8B8FE8", progressBg:"#2C2C50",
+    toastBg:"#E4E4F4", toastFg:"#12121E",
+    sheetBg:"#1A1A2E", error:"#CF6679",
+  },
+  // ── Pastel themes ───────────────────────────────────────────────────────
+  "pastel-mint": {
+    bg:"#F2FBF5", surface:"#E6F5EC", surface2:"#D6EDDF",
+    primary:"#6FB58C", primaryDim:"#D6EDDF",
+    text:"#1F3328", textMid:"#3F5C49", textMuted:"#7A9A88",
+    border:"#C8E0D0", divider:"#DCEAE0",
+    navBg:"#E6F5EC", navIndicator:"#D6EDDF",
+    chipABg:"#6FB58C", chipAFg:"#FFFFFF", chipBg:"#DCEAE0", chipFg:"#3F5C49",
+    fabBg:"#6FB58C", fabFg:"#FFFFFF",
+    fabMini:"#E6F5EC", fabMiniFg:"#6FB58C", fabMiniBd:"#6FB58C",
+    selBorder:"#6FB58C", selOverlay:"rgba(111,181,140,0.2)", selCheck:"#6FB58C",
+    progressFg:"#6FB58C", progressBg:"#C8E0D0",
+    toastBg:"#1F3328", toastFg:"#E6F5EC",
+    sheetBg:"#E6F5EC", error:"#C0392B",
+  },
+  "pastel-blush": {
+    bg:"#FBF3F4", surface:"#F6E6E8", surface2:"#EFD6DA",
+    primary:"#D48A95", primaryDim:"#F0D8DC",
+    text:"#3A1F25", textMid:"#5A3540", textMuted:"#A07880",
+    border:"#E5C8CD", divider:"#EBD8DC",
+    navBg:"#F6E6E8", navIndicator:"#F0D8DC",
+    chipABg:"#D48A95", chipAFg:"#FFFFFF", chipBg:"#EBD8DC", chipFg:"#5A3540",
+    fabBg:"#D48A95", fabFg:"#FFFFFF",
+    fabMini:"#F6E6E8", fabMiniFg:"#D48A95", fabMiniBd:"#D48A95",
+    selBorder:"#D48A95", selOverlay:"rgba(212,138,149,0.2)", selCheck:"#D48A95",
+    progressFg:"#D48A95", progressBg:"#E5C8CD",
+    toastBg:"#3A1F25", toastFg:"#F6E6E8",
+    sheetBg:"#F6E6E8", error:"#C0392B",
+  },
+  "pastel-lavender": {
+    bg:"#F6F3FB", surface:"#ECE6F5", surface2:"#DED6EE",
+    primary:"#9B8FD0", primaryDim:"#E0D8EE",
+    text:"#26203A", textMid:"#453E60", textMuted:"#8480A8",
+    border:"#D2C8E2", divider:"#DCD4E8",
+    navBg:"#ECE6F5", navIndicator:"#E0D8EE",
+    chipABg:"#9B8FD0", chipAFg:"#FFFFFF", chipBg:"#DCD4E8", chipFg:"#453E60",
+    fabBg:"#9B8FD0", fabFg:"#FFFFFF",
+    fabMini:"#ECE6F5", fabMiniFg:"#9B8FD0", fabMiniBd:"#9B8FD0",
+    selBorder:"#9B8FD0", selOverlay:"rgba(155,143,208,0.2)", selCheck:"#9B8FD0",
+    progressFg:"#9B8FD0", progressBg:"#D2C8E2",
+    toastBg:"#26203A", toastFg:"#ECE6F5",
+    sheetBg:"#ECE6F5", error:"#C0392B",
+  },
+  "pastel-butter": {
+    bg:"#FBF8EE", surface:"#F4EFD9", surface2:"#ECE3C2",
+    primary:"#C9A65A", primaryDim:"#EFE2B4",
+    text:"#332A12", textMid:"#5C4D26", textMuted:"#9A8856",
+    border:"#E0D0A0", divider:"#E8DCB6",
+    navBg:"#F4EFD9", navIndicator:"#EFE2B4",
+    chipABg:"#C9A65A", chipAFg:"#FFFFFF", chipBg:"#E8DCB6", chipFg:"#5C4D26",
+    fabBg:"#C9A65A", fabFg:"#FFFFFF",
+    fabMini:"#F4EFD9", fabMiniFg:"#C9A65A", fabMiniBd:"#C9A65A",
+    selBorder:"#C9A65A", selOverlay:"rgba(201,166,90,0.22)", selCheck:"#C9A65A",
+    progressFg:"#C9A65A", progressBg:"#E0D0A0",
+    toastBg:"#332A12", toastFg:"#F4EFD9",
+    sheetBg:"#F4EFD9", error:"#C0392B",
+  },
+  "pastel-sky": {
+    bg:"#F0F6FB", surface:"#E2EDF5", surface2:"#CEDEEC",
+    primary:"#7AA8CC", primaryDim:"#D5E4F0",
+    text:"#162636", textMid:"#34506A", textMuted:"#7A95AE",
+    border:"#C8DAE8", divider:"#D8E4EC",
+    navBg:"#E2EDF5", navIndicator:"#D5E4F0",
+    chipABg:"#7AA8CC", chipAFg:"#FFFFFF", chipBg:"#D8E4EC", chipFg:"#34506A",
+    fabBg:"#7AA8CC", fabFg:"#FFFFFF",
+    fabMini:"#E2EDF5", fabMiniFg:"#7AA8CC", fabMiniBd:"#7AA8CC",
+    selBorder:"#7AA8CC", selOverlay:"rgba(122,168,204,0.2)", selCheck:"#7AA8CC",
+    progressFg:"#7AA8CC", progressBg:"#C8DAE8",
+    toastBg:"#162636", toastFg:"#E2EDF5",
+    sheetBg:"#E2EDF5", error:"#C0392B",
+  },
+};
+
+// ── Swatch palettes ─────────────────────────────────────────────────────────
+const SWATCHES = {
+  light: ["#C8DEC0","#D8EAD0","#B8D0B0","#E8D4C0","#F0DDD0","#C0CCD8","#D8C8E0","#D8E8C0","#F8E8D0","#B8C8D0","#E0D0C8","#D0E0B8"],
+  dark:  ["#2A4226","#324C2E","#223A1E","#3E2C1E","#462E1E","#1E2C38","#301E3C","#2C3E1A","#3C3020","#1E2C34","#302820","#283C18"],
+};
+
+// ── Filter dimensions (matches TagNormalizer + tagCategories()) ─────────────
+const DIMS = [
+  { key:"Category",   values:["tops","bottoms","outerwear","footwear","accessories","dress","suit"] },
+  { key:"Uses",       values:["casual","formal","business","sport","outdoor","beach","evening"] },
+  { key:"Colors",     values:["black","white","beige","brown","navy","olive","red","pink","gray","green","blue","yellow","orange","purple"],
+    colors:["#1A1A1A","#F5F5F0","#E8DCCB","#7A5030","#1E2E4A","#5A6030","#B83030","#D48090","#808080","#4A7040","#3050A0","#C8B030","#D07030","#7060A0"] },
+  { key:"Seasonality",values:["spring","summer","fall","winter"] },
+  { key:"Aesthetic",  values:["minimalist","classic","streetwear","bohemian","sporty","preppy","romantic","edgy","business-casual","luxury"] },
+  { key:"Fit",        values:["slim","regular","relaxed","oversized","tailored"] },
+  { key:"Material",   values:["cotton","denim","wool","linen","silk","leather","knit","polyester"] },
+  { key:"Pattern",    values:["solid","stripes","plaid","floral","geometric","graphic","animal-print","camo","abstract"] },
+];
+
+const SORT_OPTIONS = [
+  { key:"DATE_DESC",  label:"Newest" },
+  { key:"DATE_ASC",   label:"Oldest" },
+  { key:"POPULARITY", label:"Most worn" },
+  { key:"TYPE",       label:"Type" },
+  { key:"CATEGORY",   label:"Category" },
+];
+
+// ── Sample wardrobe items (with ClothingTags shape) ─────────────────────────
+const ALL_ITEMS = [
+  { id:"a1", label:"Linen Shirt",    type:"Shirt",   category:"tops",      uses:["casual"],   seasonality:["summer"],         colors:["beige"],  swIdx:0,  pending:false, location:null },
+  { id:"a2", label:"Slim Chinos",    type:"Trousers",category:"bottoms",   uses:["business"], seasonality:["spring","fall"],   colors:["beige"],  swIdx:3,  pending:false, location:null },
+  { id:"a3", label:"White Tee",      type:"T-Shirt", category:"tops",      uses:["casual"],   seasonality:["summer"],         colors:["white"],  swIdx:2,  pending:false, location:"Main" },
+  { id:"a4", label:"Wool Sweater",   type:"Sweater", category:"tops",      uses:["casual"],   seasonality:["winter"],         colors:["navy"],   swIdx:6,  pending:false, location:null },
+  { id:"a5", label:"Running Shoes",  type:"Sneakers",category:"footwear",  uses:["sport"],    seasonality:["spring","summer"],colors:["gray"],   swIdx:9,  pending:false, location:null },
+  { id:"a6", label:"Denim Jacket",   type:"Jacket",  category:"outerwear", uses:["casual"],   seasonality:["fall"],           colors:["navy"],   swIdx:1,  pending:true,  location:null },
+  { id:"a7", label:"Silk Blouse",    type:"Blouse",  category:"tops",      uses:["formal"],   seasonality:["spring"],         colors:["white"],  swIdx:8,  pending:false, location:null },
+  { id:"a8", label:"Loafers",        type:"Loafers", category:"footwear",  uses:["business"], seasonality:["spring"],         colors:["brown"],  swIdx:10, pending:false, location:"Main" },
+  { id:"a9", label:"Midi Skirt",     type:"Skirt",   category:"bottoms",   uses:["formal"],   seasonality:["summer"],         colors:["olive"],  swIdx:7,  pending:false, location:null },
+  { id:"a10",label:"Trench Coat",    type:"Coat",    category:"outerwear", uses:["casual"],   seasonality:["fall"],           colors:["beige"],  swIdx:4,  pending:false, location:null },
+  { id:"a11",label:"Sneakers",       type:"Sneakers",category:"footwear",  uses:["casual"],   seasonality:["summer"],         colors:["white"],  swIdx:5,  pending:false, location:null },
+  { id:"a12",label:"Cardigan",       type:"Cardigan",category:"tops",      uses:["casual"],   seasonality:["fall"],           colors:["brown"],  swIdx:11, pending:false, location:null },
+];
+
+// ── Material Icons paths ─────────────────────────────────────────────────────
+const P = {
+  sort:       "M3 18h6v-2H3v2zm0-5h12v-2H3v2zm0-7v2h18V6H3z",
+  imgSrch:    "M18 13l-1.5 1.5 1.75 1.75L16.5 18H21v-4.5l-1.75 1.75L18 13zM19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H5V5h14v8h2V5c0-1.1-.9-2-2-2zM7 8h10v2H7V8zm0 4h4v2H7v-2z",
+  add:        "M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z",
+  camera:     "M12 15.2A3.2 3.2 0 018.8 12 3.2 3.2 0 0112 8.8a3.2 3.2 0 013.2 3.2 3.2 3.2 0 01-3.2 3.2M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9z",
+  check:      "M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z",
+  checkCircle:"M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z",
+  close:      "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z",
+  down:       "M7 10l5 5 5-5z",
+  style:      "M2.53 19.65l1.34.56v-9.03l-2.43 5.86c-.41 1.02.08 2.19 1.09 2.61zm19.5-3.7L17.07 3.98c-.31-.75-1.04-1.21-1.81-1.22-.26 0-.53.04-.79.15L7.1 5.95c-.75.31-1.21 1.03-1.22 1.8-.01.27.04.54.15.8l4.96 11.97c.31.76 1.05 1.22 1.83 1.22.26 0 .52-.05.77-.15l7.36-3.05c1.02-.42 1.51-1.59 1.08-2.59z",
+  wardrobe:   "M21 6.5c0-1.38-1.12-2.5-2.5-2.5h-1C16.12 4 15 5.12 15 6.5V7H9v-.5C9 5.12 7.88 4 6.5 4h-1C4.12 4 3 5.12 3 6.5V7H1v4h2v8c0 .55.45 1 1 1h16c.55 0 1-.45 1-1v-8h2V7h-2v-.5z",
+  shopping:   "M19 6h-2c0-2.76-2.24-5-5-5S7 3.24 7 6H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-7-3c1.66 0 3 1.34 3 3H9c0-1.66 1.34-3 3-3zm0 10c-1.66 0-3-1.34-3-3h2c0 .55.45 1 1 1s1-.45 1-1h2c0 1.66-1.34 3-3 3z",
+  flight:     "M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z",
+  insights:   "M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z",
+  settings:   "M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z",
+  cloudOff:   "M19.35 10.04A7.49 7.49 0 0012 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 000 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95A5.469 5.469 0 0112 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11A2.98 2.98 0 0122 15c0 1.65-1.35 3-3 3zm-9-3.82l-2.09-2.09L6.5 13.5 10 17l6.01-6.01-1.41-1.41z",
+  gallery:    "M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z",
+  link:       "M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z",
+  place:      "M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z",
+  autofix:    "M7.5 5.6L10 7 8.6 4.5 10 2 7.5 3.4 5 2l1.4 2.5L5 7zm12 9.8L17 14l1.4 2.5L17 19l2.5-1.4L22 19l-1.4-2.5L22 14zM22 2l-2.5 1.4L17 2l1.4 2.5L17 7l2.5-1.4L22 7l-1.4-2.5zm-7.63 5.29a.9959.9959 0 00-1.41 0L1.29 18.96c-.39.39-.39 1.02 0 1.41l2.34 2.34c.39.39 1.02.39 1.41 0L16.7 11.05c.39-.39.39-1.02 0-1.41l-2.33-2.35zm-1.03 5.49l-2.12-2.12 2.44-2.44 2.12 2.12-2.44 2.44z",
+  swapHoriz:  "M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z",
+  filter:     "M4 6h16l-6 7v5l-4-2v-3L4 6z",
+  delete:     "M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z",
+};
+const Ico = ({ name, size=20, color }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill={color||"currentColor"}>
+    <path d={P[name]||""}/>
+  </svg>
+);
+
+// ── Garment tile placeholder (real app uses AsyncImage w/ Coil) ─────────────
+const GarmentTile = ({ color, pending, isDark }) => {
+  // Striped placeholder simulating a transparent PNG cutout on a tinted bg
+  const stripe = isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.04)";
+  return (
+    <div style={{ position:"absolute", inset:0,
+      background:`repeating-linear-gradient(45deg,${color}22 0,${color}22 6px,${stripe} 6px,${stripe} 12px)`,
+      display:"flex", alignItems:"center", justifyContent:"center" }}>
+      <div style={{ width:"54%", height:"68%", borderRadius:8,
+        background:color, opacity:.55 }}/>
+      {pending && (
+        <div style={{ position:"absolute", inset:0,
+          background: isDark ? "rgba(0,0,0,0.65)" : "rgba(255,255,255,0.7)",
+          display:"flex", flexDirection:"column",
+          alignItems:"center", justifyContent:"center", gap:5 }}>
+          <div style={{ width:"55%", height:4, borderRadius:2,
+            background: isDark ? "#304028" : "#C4D8BC", overflow:"hidden" }}>
+            <div style={{ width:"45%", height:"100%", borderRadius:2,
+              background: color, animation:"pulse 1.5s ease infinite" }}/>
+          </div>
+          <span style={{ fontSize:9, fontWeight:500, opacity:.6 }}>Processing…</span>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ── Toast ────────────────────────────────────────────────────────────────────
+const Toast = ({ t, msg, onDone }) => {
+  React.useEffect(() => { const id = setTimeout(onDone, 1800); return () => clearTimeout(id); }, []);
+  return (
+    <div style={{ position:"absolute", bottom:90, left:"50%", transform:"translateX(-50%)",
+      background:t.toastBg, color:t.toastFg, borderRadius:24, padding:"10px 20px",
+      fontSize:13, fontWeight:600, whiteSpace:"nowrap", zIndex:50,
+      animation:"popIn .2s ease", boxShadow:"0 4px 20px rgba(0,0,0,0.3)" }}>
+      {msg}
+    </div>
+  );
+};
+
+// ── Tag filter bar (legacy — replaced by FilterSheet, kept stub) ────────────
+const TagFilterBar_UNUSED = ({ t, dims, selectedTags, onChange }) => {
+  const [openDim, setOpenDim] = React.useState(null);
+  const hasAny = Object.values(selectedTags).some(s => s.size > 0);
+
+  return (
+    <div style={{ padding:"6px 8px 4px", background:t.bg, borderBottom:`1px solid ${t.divider}`,
+      display:"flex", gap:7, overflowX:"auto", scrollbarWidth:"none", alignItems:"center",
+      flexShrink:0 }}>
+      {dims.map(dim => {
+        const sel = selectedTags[dim.key] || new Set();
+        const count = sel.size;
+        const isOpen = openDim === dim.key;
+        return (
+          <div key={dim.key} style={{ position:"relative", flexShrink:0 }}>
+            {/* FilterChip */}
+            <div onClick={() => setOpenDim(isOpen ? null : dim.key)}
+              style={{ display:"inline-flex", alignItems:"center", gap:3,
+                padding:"5px 10px 5px 11px", borderRadius:20, cursor:"pointer",
+                background: count > 0 ? t.primaryDim : t.chipBg,
+                border: count > 0 ? `1.5px solid ${t.primary}` : `1px solid ${t.border}`,
+                transition:"all .12s" }}>
+              <span style={{ fontSize:12, fontWeight:600,
+                color: count > 0 ? t.primary : t.chipFg, whiteSpace:"nowrap" }}>
+                {count > 0 ? `${dim.key} (${count})` : dim.key}
+              </span>
+              <svg width={14} height={14} viewBox="0 0 24 24" fill={count>0?t.primary:t.textMuted}
+                style={{ transform:isOpen?"rotate(180deg)":"none", transition:"transform .2s", flexShrink:0 }}>
+                <path d={P.down}/>
+              </svg>
+            </div>
+            {/* DropdownMenu */}
+            {isOpen && (
+              <div style={{ position:"absolute", top:34, left:0, background:t.surface,
+                border:`1px solid ${t.border}`, borderRadius:12, zIndex:40, minWidth:160,
+                boxShadow:"0 4px 20px rgba(0,0,0,.18)", animation:"popIn .12s ease",
+                overflow:"hidden" }}>
+                {dim.colors ? (
+                  <div style={{ padding:"10px 12px", display:"flex", flexWrap:"wrap", gap:8 }}>
+                    {dim.values.map((val,i) => {
+                      const checked = sel.has(val);
+                      return (
+                        <div key={val} onClick={() => {
+                          const next = new Set(sel);
+                          checked ? next.delete(val) : next.add(val);
+                          onChange(dim.key, next);
+                        }} style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:3, cursor:"pointer" }}>
+                          <div style={{ width:26, height:26, borderRadius:13,
+                            background:dim.colors[i],
+                            border:`2px solid ${checked?t.primary:t.border}`,
+                            boxShadow:checked?`0 0 0 2px ${t.primaryDim}`:"none" }}/>
+                          <span style={{ fontSize:9, color:t.textMuted }}>{val}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  dim.values.map(val => {
+                    const checked = sel.has(val);
+                    return (
+                      <div key={val} onClick={() => {
+                        const next = new Set(sel);
+                        checked ? next.delete(val) : next.add(val);
+                        onChange(dim.key, next);
+                        setOpenDim(null);
+                      }} style={{ padding:"10px 16px", fontSize:13, cursor:"pointer",
+                        background: checked ? t.primaryDim : "transparent",
+                        color: checked ? t.primary : t.text,
+                        display:"flex", alignItems:"center", gap:8,
+                        borderBottom:`1px solid ${t.divider}30` }}>
+                        {checked
+                          ? <Ico name="check" size={14} color={t.primary}/>
+                          : <span style={{ width:14, display:"inline-block" }}/>}
+                        <span style={{ fontWeight: checked ? 600 : 400 }}>{val}</span>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            )}
+          </div>
+        );
+      })}
+      {/* Clear all button */}
+      {hasAny && (
+        <div onClick={() => onChange(null, null)}
+          style={{ flexShrink:0, padding:"5px 10px", borderRadius:20, cursor:"pointer",
+            fontSize:12, fontWeight:600, color:t.primary, background:t.primaryDim }}>
+          Clear
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ── Main app ─────────────────────────────────────────────────────────────────
+const WardrobeApp = ({ theme, isOffline, multiCloset }) => {
+  const t = THEMES[theme];
+  const isDark = theme.includes("dark");
+  const swatches = SWATCHES[isDark ? "dark" : "light"];
+
+  // Grid zoom
+  const [cellSize, setCellSize] = React.useState(120);
+  const gridRef = React.useRef(null);
+  const pinchRef = React.useRef(null);
+
+  React.useEffect(() => {
+    const el = gridRef.current;
+    if (!el) return;
+    const onTouchStart = (e) => {
+      if (e.touches.length === 2) {
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        pinchRef.current = { dist: Math.hypot(dx, dy), size: cellSize };
+      }
+    };
+    const onTouchMove = (e) => {
+      if (e.touches.length === 2 && pinchRef.current) {
+        e.preventDefault();
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        const dist = Math.hypot(dx, dy);
+        pinchRef.current.size *= (dist / pinchRef.current.dist);
+        pinchRef.current.dist = dist;
+        setCellSize(Math.max(56, Math.min(320, pinchRef.current.size)));
+      }
+    };
+    const onTouchEnd = () => { pinchRef.current = null; };
+    const onWheel = (e) => {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        setCellSize(s => Math.max(56, Math.min(320, s * (e.deltaY > 0 ? 0.93 : 1.08))));
+      }
+    };
+    el.addEventListener('touchstart', onTouchStart, { passive: true });
+    el.addEventListener('touchmove', onTouchMove, { passive: false });
+    el.addEventListener('touchend', onTouchEnd);
+    el.addEventListener('wheel', onWheel, { passive: false });
+    return () => {
+      el.removeEventListener('touchstart', onTouchStart);
+      el.removeEventListener('touchmove', onTouchMove);
+      el.removeEventListener('touchend', onTouchEnd);
+      el.removeEventListener('wheel', onWheel);
+    };
+  }, [cellSize]);
+
+  const getCols = () => Math.max(1, Math.min(6, Math.floor(370 / cellSize)));
+
+  // Filters — v1 pattern: pending edits in sheet, apply commits to applied
+  const [filterOpen, setFilterOpen]       = React.useState(false);
+  const [pendingFilters, setPendingFilters] = React.useState({});  // dim → Set
+  const [appliedFilters, setAppliedFilters] = React.useState({});
+  const [openDim, setOpenDim]             = React.useState("Category");
+
+  const togglePending = (dim, val) => {
+    setPendingFilters(prev => {
+      const next = { ...prev };
+      const s = new Set(next[dim] || []);
+      s.has(val) ? s.delete(val) : s.add(val);
+      next[dim] = s;
+      return next;
+    });
+  };
+  const openSheet = () => {
+    setPendingFilters(Object.fromEntries(
+      Object.entries(appliedFilters).map(([k,v])=>[k, new Set(v)])
+    ));
+    setFilterOpen(true);
+  };
+  const applyFilters = () => {
+    setAppliedFilters(Object.fromEntries(
+      Object.entries(pendingFilters).map(([k,v])=>[k, new Set(v)])
+    ));
+    setFilterOpen(false);
+  };
+  const clearFilters = () => {
+    setAppliedFilters({});
+    setPendingFilters({});
+    setFilterOpen(false);
+  };
+  const removeApplied = (dim, val) => {
+    setAppliedFilters(prev => {
+      const next = { ...prev };
+      const s = new Set(next[dim] || []);
+      s.delete(val);
+      if (s.size === 0) delete next[dim]; else next[dim] = s;
+      return next;
+    });
+  };
+
+  // Sort
+  const [sortBy, setSortBy] = React.useState("DATE_DESC");
+  const [sortOpen, setSortOpen] = React.useState(false);
+
+  // Selection
+  const [selected, setSelected] = React.useState(new Set());
+  const selectionMode = selected.size > 0;
+
+  // Simulate sync progress
+  const [syncProgress, setSyncProgress] = React.useState(null); // {done, total}
+
+  // Toast
+  const [toast, setToast] = React.useState(null);
+  const showToast = msg => setToast(msg);
+
+  // FAB speed-dial open (selection mode)
+  const [fabOpen, setFabOpen] = React.useState(false);
+
+  // Location picker dropdown
+  const [locationOpen, setLocationOpen] = React.useState(false);
+  const [activeLocation, setActiveLocation] = React.useState("Main");
+  const LOCATIONS = multiCloset ? ["Main", "Office", "Storage"] : ["Main"];
+
+  // Derived: filtered + sorted items
+  const activeFilters = Object.entries(appliedFilters).filter(([,v]) => v.size > 0);
+  const filteredImages = React.useMemo(() => {
+    if (activeFilters.length === 0) return ALL_ITEMS;
+    return ALL_ITEMS.filter(img =>
+      activeFilters.every(([dim, vals]) => {
+        if (dim === "Category")    return vals.has(img.category);
+        if (dim === "Uses")        return img.uses.some(u => vals.has(u));
+        if (dim === "Seasonality") return img.seasonality.some(s => vals.has(s));
+        if (dim === "Colors")      return img.colors.some(c => vals.has(c));
+        return true;
+      })
+    );
+  }, [appliedFilters]);
+
+  const displayedImages = React.useMemo(() => {
+    switch (sortBy) {
+      case "DATE_ASC":   return [...filteredImages].reverse();
+      case "POPULARITY": return [...filteredImages].sort((a,b) => (b.wornCount||0)-(a.wornCount||0));
+      case "TYPE":       return [...filteredImages].sort((a,b) => a.type.localeCompare(b.type));
+      case "CATEGORY":   return [...filteredImages].sort((a,b) => a.category.localeCompare(b.category));
+      default:           return filteredImages;
+    }
+  }, [filteredImages, sortBy]);
+
+  const appliedCount = activeFilters.reduce((n,[,s])=>n+s.size,0);
+  const hasFilter = appliedCount > 0;
+
+  const toggleItem = id => {
+    setSelected(prev => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
+
+  const cols = getCols();
+
+  return (
+    <div onClick={() => { sortOpen && setSortOpen(false); locationOpen && setLocationOpen(false); fabOpen && setFabOpen(false); }}
+      style={{ width:390, height:"100vh", maxHeight:844, background:t.bg,
+        fontFamily:"'Plus Jakarta Sans',sans-serif", color:t.text,
+        display:"flex", flexDirection:"column", position:"relative", overflow:"hidden",
+        borderRadius:36,
+        boxShadow: isDark
+          ? "0 0 0 1px #304028, 0 20px 60px rgba(0,0,0,0.6)"
+          : "0 0 0 1px #C4D4BA, 0 16px 60px rgba(78,120,68,0.18)" }}>
+
+      {/* ── Status bar ── */}
+      <div style={{ height:44, background:t.surface, flexShrink:0,
+        display:"flex", alignItems:"center", justifyContent:"space-between",
+        padding:"0 24px", borderBottom:`1px solid ${t.divider}` }}>
+        <span style={{ fontSize:13, fontWeight:600 }}>9:41</span>
+        <div style={{ display:"flex", gap:8, alignItems:"center" }}>
+          {isOffline && (
+            <div style={{ display:"flex", alignItems:"center", gap:3,
+              background:t.error+"22", borderRadius:10, padding:"2px 7px" }}>
+              <Ico name="cloudOff" size={12} color={t.error}/>
+              <span style={{ fontSize:10, fontWeight:600, color:t.error }}>Offline</span>
+            </div>
+          )}
+          <svg width={18} height={10} viewBox="0 0 18 10">
+            {[0,1,2,3].map(i=><rect key={i} x={i*5} y={10-(i+1)*2.5} width={3.5} height={(i+1)*2.5} rx={1} fill={t.text} opacity={.3+i*.2}/>)}
+          </svg>
+          <svg width={22} height={12} viewBox="0 0 24 12">
+            <rect x={0} y={1} width={21} height={10} rx={2.5} stroke={t.text} strokeWidth={1.2} fill="none" opacity={.5}/>
+            <rect x={21.5} y={3.5} width={2} height={5} rx={1} fill={t.text} opacity={.4}/>
+            <rect x={1.5} y={2.5} width={16} height={7} rx={1.5} fill={t.text} opacity={.75}/>
+          </svg>
+        </div>
+      </div>
+
+      {/* ── AppScreenHeader ── */}
+      <div style={{ background:t.surface, padding:"8px 4px 8px 16px", flexShrink:0,
+        display:"flex", alignItems:"center", gap:4,
+        borderBottom:`1px solid ${t.divider}` }}>
+        {/* Title */}
+        <span style={{ fontSize:20, fontWeight:700, flex:1 }}>Wardrobe</span>
+
+        {/* Location button (closet picker) */}
+        <div style={{ position:"relative" }}>
+          <div onClick={e => { e.stopPropagation(); setLocationOpen(o=>!o); }}
+            style={{ display:"flex", alignItems:"center", gap:3,
+              padding:"6px 10px", borderRadius:20, cursor:"pointer",
+              background: t.chipBg, border:`1px solid ${t.border}` }}>
+            <Ico name="place" size={14} color={t.textMid}/>
+            <span style={{ fontSize:12, fontWeight:500, color:t.textMid }}>{activeLocation}</span>
+            <svg width={14} height={14} viewBox="0 0 24 24" fill={t.textMuted}
+              style={{ transform:locationOpen?"rotate(180deg)":"none", transition:"transform .2s" }}>
+              <path d={P.down}/>
+            </svg>
+          </div>
+          {locationOpen && (
+            <div onClick={e=>e.stopPropagation()}
+              style={{ position:"absolute", top:36, left:0, background:t.surface,
+                border:`1px solid ${t.border}`, borderRadius:12, zIndex:40, minWidth:140,
+                boxShadow:"0 4px 20px rgba(0,0,0,.18)", animation:"popIn .12s ease",
+                overflow:"hidden" }}>
+              {LOCATIONS.map(loc => (
+                <div key={loc} onClick={() => { setActiveLocation(loc); setLocationOpen(false); }}
+                  style={{ padding:"11px 16px", fontSize:13, cursor:"pointer",
+                    background: loc===activeLocation ? t.primaryDim : "transparent",
+                    color: loc===activeLocation ? t.primary : t.text,
+                    display:"flex", alignItems:"center", gap:8,
+                    borderBottom:`1px solid ${t.divider}30` }}>
+                  {loc===activeLocation && <Ico name="check" size={14} color={t.primary}/>}
+                  {loc!==activeLocation && <span style={{width:14}}/>}
+                  <span style={{ fontWeight: loc===activeLocation ? 600 : 400 }}>{loc}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Filters button (opens bottom sheet) — placed right of Main location */}
+        <div onClick={openSheet}
+          style={{ display:"flex", alignItems:"center", gap:4,
+            padding:"6px 11px", borderRadius:20, cursor:"pointer", flexShrink:0,
+            background: appliedCount>0 ? t.primaryDim : t.chipBg,
+            border: appliedCount>0 ? `1.5px solid ${t.primary}` : `1px dashed ${t.border}` }}>
+          <Ico name="filter" size={13} color={appliedCount>0?t.primary:t.textMuted}/>
+          <span style={{ fontSize:12, fontWeight:600, color:appliedCount>0?t.primary:t.chipFg }}>Filters</span>
+          {appliedCount>0 && (
+            <span style={{ background:t.primary, color:t.fabFg,
+              borderRadius:10, fontSize:10, fontWeight:700, padding:"1px 6px" }}>
+              {appliedCount}
+            </span>
+          )}
+        </div>
+
+        {/* Find by Photo */}
+        <button onClick={() => showToast("Find by photo")}
+          style={{ width:40, height:40, borderRadius:20, background:"none",
+            border:"none", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}>
+          <Ico name="imgSrch" size={22} color={t.textMuted}/>
+        </button>
+
+        {/* Sort button */}
+        <div style={{ position:"relative" }}>
+          <button onClick={e=>{e.stopPropagation();setSortOpen(o=>!o);}}
+            style={{ width:40, height:40, borderRadius:20, background:"none",
+              border:"none", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}>
+            <Ico name="sort" size={22} color={sortOpen ? t.primary : t.textMuted}/>
+          </button>
+          {sortOpen && (
+            <div onClick={e=>e.stopPropagation()}
+              style={{ position:"absolute", top:44, right:0, background:t.surface,
+                borderRadius:12, border:`1px solid ${t.border}`, overflow:"hidden",
+                zIndex:30, minWidth:164,
+                boxShadow: isDark ? "0 4px 20px rgba(0,0,0,.5)" : "0 4px 20px rgba(0,0,0,.12)",
+                animation:"popIn .15s ease" }}>
+              {SORT_OPTIONS.map(opt => (
+                <div key={opt.key} onClick={() => { setSortBy(opt.key); setSortOpen(false); }}
+                  style={{ padding:"11px 16px", fontSize:13, fontWeight:600,
+                    background: sortBy===opt.key ? t.primaryDim : "transparent",
+                    color: sortBy===opt.key ? t.primary : t.text,
+                    cursor:"pointer", display:"flex", alignItems:"center", gap:8,
+                    borderBottom:`1px solid ${t.divider}30` }}>
+                  {sortBy===opt.key
+                    ? <Ico name="check" size={14} color={t.primary}/>
+                    : <span style={{width:14}}/>}
+                  {opt.label}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Settings icon */}
+        <button onClick={() => showToast("Settings")}
+          style={{ width:40, height:40, borderRadius:20, background:"none",
+            border:"none", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}>
+          <Ico name="settings" size={22} color={t.textMuted}/>
+        </button>
+      </div>
+
+      {/* ── Quick category chip row (Outfits-style) ── */}
+      {(() => {
+        const QUICK_CATS = [
+          { key: null,           label: "All" },
+          { key: "tops",         label: "Tops" },
+          { key: "bottoms",      label: "Bottoms" },
+          { key: "outerwear",    label: "Outerwear" },
+          { key: "footwear",     label: "Footwear" },
+          { key: "accessories",  label: "Accessories" },
+          { key: "dress",        label: "Dresses" },
+        ];
+        const activeCatSet = appliedFilters.Category || new Set();
+        // "All" is active when no category is selected.
+        const allActive = activeCatSet.size === 0;
+        const setQuickCat = (key) => {
+          setAppliedFilters(prev => {
+            const next = { ...prev };
+            if (key === null) { delete next.Category; return next; }
+            // Toggle: if it's the only one set already, clear; else replace selection with this one.
+            const cur = next.Category || new Set();
+            if (cur.size === 1 && cur.has(key)) { delete next.Category; }
+            else { next.Category = new Set([key]); }
+            return next;
+          });
+        };
+        const counts = React.useMemo(() => {
+          const m = {};
+          for (const it of ALL_ITEMS) m[it.category] = (m[it.category]||0) + 1;
+          return m;
+        }, []);
+        return (
+          <div style={{ padding:"6px 12px 6px", background:t.surface, flexShrink:0,
+            display:"flex", gap:6, overflowX:"auto", scrollbarWidth:"none",
+            borderBottom:`1px solid ${t.divider}40`, alignItems:"center" }}>
+            {QUICK_CATS.map(c => {
+              const active = c.key === null ? allActive : activeCatSet.has(c.key);
+              const n = c.key === null ? ALL_ITEMS.length : (counts[c.key] || 0);
+              return (
+                <div key={c.label} onClick={() => setQuickCat(c.key)}
+                  style={{ display:"flex", alignItems:"center", gap:5, flexShrink:0,
+                    padding:"5px 11px", borderRadius:18, cursor:"pointer",
+                    background: active ? t.primary : t.chipBg,
+                    border: active ? `1.5px solid ${t.primary}` : `1px solid ${t.border}`,
+                    color: active ? t.fabFg : t.chipFg,
+                    fontSize:12, fontWeight:600, transition:"all .15s ease" }}>
+                  <span>{c.label}</span>
+                  <span style={{ fontSize:10, fontWeight:700, opacity: active ? 0.85 : 0.6 }}>
+                    {n}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        );
+      })()}
+
+      {/* ── Active filter pills strip ── */}
+      {appliedCount > 0 && (
+        <div style={{ padding:"6px 14px 5px", background:t.primaryDim, flexShrink:0,
+          display:"flex", gap:6, overflowX:"auto", scrollbarWidth:"none",
+          borderBottom:`1px solid ${t.primary}30`, alignItems:"center" }}>
+          <span style={{ fontSize:11, fontWeight:600, color:t.primary, flexShrink:0 }}>Active:</span>
+          {Object.entries(appliedFilters).flatMap(([dim,vals])=>
+            [...vals].map(val=>(
+              <div key={dim+val} onClick={()=>removeApplied(dim,val)}
+                style={{ display:"flex", alignItems:"center", gap:4, flexShrink:0,
+                  background:t.bg, border:`1px solid ${t.primary}`,
+                  borderRadius:16, padding:"3px 6px 3px 10px", cursor:"pointer" }}>
+                <span style={{ fontSize:12, fontWeight:600, color:t.primary }}>{val}</span>
+                <Ico name="close" size={12} color={t.primary}/>
+              </div>
+            ))
+          )}
+        </div>
+      )}
+
+      {/* ── Item count / Selection bar ── */}
+      <div style={{ padding:"3px 12px 2px", background:t.bg, flexShrink:0,
+        display:"flex", alignItems:"center", minHeight:28 }}>
+        {selectionMode ? (
+          <>
+            <span style={{ fontSize:12, color:t.textMuted, flex:1, fontWeight:500 }}>
+              {selected.size} selected
+            </span>
+            {displayedImages.some(i => !selected.has(i.id)) && (
+              <button onClick={() => setSelected(new Set(displayedImages.map(i=>i.id)))}
+                style={{ background:"none", border:"none", fontSize:12, fontWeight:600,
+                  color:t.primary, cursor:"pointer", padding:"2px 8px" }}>
+                Select all ({displayedImages.length})
+              </button>
+            )}
+            <button onClick={() => setSelected(new Set())}
+              style={{ background:"none", border:"none", fontSize:12, fontWeight:600,
+                color:t.textMuted, cursor:"pointer", padding:"2px 8px" }}>
+              Deselect all
+            </button>
+          </>
+        ) : (
+          <span style={{ fontSize:11, color:t.textMuted, fontWeight:500 }}>
+            {hasFilter
+              ? `${displayedImages.length} of ${ALL_ITEMS.length} items`
+              : `${ALL_ITEMS.length} items`}
+          </span>
+        )}
+      </div>
+
+      {/* ── Sync progress bar ── */}
+      {syncProgress && (
+        <div style={{ flexShrink:0, background:t.bg }}>
+          <div style={{ height:3, background:t.progressBg, overflow:"hidden" }}>
+            <div style={{ height:"100%", background:t.progressFg, borderRadius:2,
+              width:`${(syncProgress.done/syncProgress.total)*100}%`, transition:"width .3s" }}/>
+          </div>
+          <span style={{ fontSize:10, color:t.textMuted, padding:"1px 12px", display:"block" }}>
+            Syncing {syncProgress.done} / {syncProgress.total}
+          </span>
+        </div>
+      )}
+
+      {/* ── Grid ── */}
+      <div ref={gridRef}
+        style={{ flex:1, overflowY:"auto", padding:"2px 2px 90px",
+          display:"grid",
+          gridTemplateColumns:`repeat(${cols},1fr)`,
+          gap:1, alignContent:"start", scrollbarWidth:"none" }}>
+
+        {displayedImages.length === 0 ? (
+          <div style={{ gridColumn:"1/-1", display:"flex", flexDirection:"column",
+            alignItems:"center", justifyContent:"center", gap:8, padding:"60px 20px",
+            color:t.textMuted }}>
+            <Ico name="wardrobe" size={40} color={t.border}/>
+            <span style={{ fontSize:15, fontWeight:600 }}>
+              {hasFilter ? "No items match filters" : "Your wardrobe is empty"}
+            </span>
+            {hasFilter && (
+              <button onClick={clearFilters}
+                style={{ background:t.primaryDim, border:"none", borderRadius:20,
+                  padding:"8px 18px", fontSize:13, fontWeight:600, color:t.primary, cursor:"pointer" }}>
+                Clear filters
+              </button>
+            )}
+          </div>
+        ) : displayedImages.map(item => {
+          const color = swatches[item.swIdx % swatches.length];
+          const isSel = selected.has(item.id);
+          const hasLabel = !!item.label;
+          const showLocBadge = multiCloset && item.location;
+
+          return (
+            <div key={item.id}
+              onClick={() => toggleItem(item.id)}
+              style={{ position:"relative", cursor:"pointer",
+                background: isSel ? t.surface2 : t.surface,
+                outline: isSel ? `2px solid ${t.selBorder}` : "none",
+                outlineOffset:-1 }}>
+              {/* Square image area */}
+              <div style={{ position:"relative", width:"100%", paddingBottom:"100%" }}>
+                <div style={{ position:"absolute", inset:0 }}>
+                  <GarmentTile color={color} pending={item.pending} isDark={isDark}/>
+                  {/* Selection overlay */}
+                  {isSel && (
+                    <div style={{ position:"absolute", inset:0,
+                      background:t.selOverlay,
+                      display:"flex", alignItems:"flex-start", justifyContent:"flex-end",
+                      padding:4 }}>
+                      <div style={{ color:t.selCheck }}>
+                        <Ico name="checkCircle" size={18} color={t.selCheck}/>
+                      </div>
+                    </div>
+                  )}
+                  {/* Location badge (top-right, only when multi-closet) */}
+                  {showLocBadge && !isSel && (
+                    <div style={{ position:"absolute", top:3, right:3,
+                      background:"rgba(0,0,0,0.45)", borderRadius:4,
+                      padding:"1px 4px" }}>
+                      <span style={{ fontSize:8, color:"#fff", fontWeight:500,
+                        maxWidth:50, overflow:"hidden", textOverflow:"ellipsis",
+                        whiteSpace:"nowrap", display:"block" }}>
+                        {item.location}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+              {/* Label (shown when item has a tags.label) */}
+              {hasLabel && (
+                <div style={{ padding:"2px 4px 3px", background:t.surface }}>
+                  <div style={{ fontSize:10, fontWeight:600, color:t.text,
+                    whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>
+                    {item.label}
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* ── FABs: Selection mode — speed-dial column ── */}
+      {selectionMode && !isOffline && (
+        <div style={{ position:"absolute", bottom:84, right:16,
+          display:"flex", flexDirection:"column", gap:8, alignItems:"flex-end", zIndex:10 }}>
+          <div onClick={()=>{ showToast("Create style"); setSelected(new Set()); }}
+            style={{ display:"flex", alignItems:"center", gap:8,
+              background:t.primaryDim, border:`1px solid ${t.primary}`, borderRadius:28,
+              padding:"11px 16px", cursor:"pointer",
+              boxShadow: isDark?"0 4px 16px rgba(0,0,0,.5)":"0 4px 16px rgba(78,120,68,.2)" }}>
+            <Ico name="autofix" size={17} color={t.primary}/>
+            <span style={{ fontSize:13, fontWeight:700, color:t.primary }}>Create style</span>
+          </div>
+          <div onClick={()=>{ showToast("Suggest replacements"); setSelected(new Set()); }}
+            style={{ display:"flex", alignItems:"center", gap:8,
+              background:t.primaryDim, border:`1px solid ${t.primary}`, borderRadius:28,
+              padding:"11px 16px", cursor:"pointer",
+              boxShadow: isDark?"0 4px 16px rgba(0,0,0,.5)":"0 4px 16px rgba(78,120,68,.2)" }}>
+            <Ico name="swapHoriz" size={17} color={t.primary}/>
+            <span style={{ fontSize:13, fontWeight:700, color:t.primary }}>Suggest replacements</span>
+          </div>
+          {multiCloset && (
+            <div onClick={()=>{ showToast("Move to closet"); setSelected(new Set()); }}
+              style={{ display:"flex", alignItems:"center", gap:8,
+                background:t.chipBg, border:`1px solid ${t.border}`, borderRadius:28,
+                padding:"11px 16px", cursor:"pointer" }}>
+              <Ico name="place" size={17} color={t.textMid}/>
+              <span style={{ fontSize:13, fontWeight:700, color:t.textMid }}>Move to</span>
+            </div>
+          )}
+          <div onClick={()=>{ showToast("Delete selected"); setSelected(new Set()); }}
+            style={{ display:"flex", alignItems:"center", gap:8,
+              background:t.error+"22", border:`1px solid ${t.error}`, borderRadius:28,
+              padding:"11px 16px", cursor:"pointer" }}>
+            <Ico name="delete" size={17} color={t.error}/>
+            <span style={{ fontSize:13, fontWeight:700, color:t.error }}>Delete</span>
+          </div>
+        </div>
+      )}
+
+      {/* ── FABs: Default mode — + FAB (opens camera) with speed-dial ── */}
+      {/* Single circular + FAB — matches FloatingActionButton + Icons.Default.Add */}
+      {!selectionMode && !isOffline && (
+        <button
+          onClick={e => { e.stopPropagation(); showToast("Open camera"); }}
+          style={{ position:"absolute", bottom:84, right:16,
+            width:56, height:56, borderRadius:16,
+            background:t.fabBg, border:"none",
+            display:"flex", alignItems:"center", justifyContent:"center",
+            boxShadow: isDark?"0 6px 20px rgba(0,0,0,.5)":"0 6px 20px rgba(0,0,0,.15)",
+            cursor:"pointer", zIndex:10 }}>
+          <Ico name="add" size={26} color={t.fabFg}/>
+        </button>
+      )}
+
+      {/* ── Bottom nav ── */}
+      <div style={{ height:72, background:t.navBg, flexShrink:0,
+        borderTop:`1px solid ${t.divider}`,
+        display:"flex", alignItems:"center", paddingBottom:6, zIndex:5 }}>
+        {[
+          { i:"style",    l:"Outfits"  },
+          { i:"wardrobe", l:"Wardrobe" },
+          { i:"shopping", l:"Shopping" },
+          { i:"flight",   l:"Travel"   },
+          { i:"insights", l:"Insights" },
+        ].map((tab, idx) => {
+          const active = idx === 1;
+          return (
+            <div key={idx} style={{ flex:1, display:"flex", flexDirection:"column",
+              alignItems:"center", gap:3, paddingTop:8, cursor:"pointer" }}
+              onClick={() => showToast(tab.l)}>
+              {active
+                ? <div style={{ background:t.navIndicator, borderRadius:16,
+                    padding:"4px 20px", marginBottom:2 }}>
+                    <Ico name={tab.i} size={22} color={t.primary}/>
+                  </div>
+                : <Ico name={tab.i} size={22} color={t.textMuted}/>}
+              <span style={{ fontSize:10, fontWeight:active?700:500,
+                color:active?t.primary:t.textMuted }}>{tab.l}</span>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* ── Toast ── */}
+      {toast && <Toast t={t} msg={toast} onDone={() => setToast(null)}/>}
+
+      {/* ── Filter sheet backdrop ── */}
+      {filterOpen && (
+        <div onClick={()=>setFilterOpen(false)}
+          style={{ position:"absolute", inset:0, background:"rgba(0,0,0,.35)", zIndex:20,
+            animation:"fadeIn .2s ease" }}/>
+      )}
+
+      {/* ── Filter sheet ── */}
+      {filterOpen && (
+        <div style={{ position:"absolute", bottom:0, left:0, right:0,
+          background:t.sheetBg, borderRadius:"24px 24px 0 0", zIndex:25,
+          maxHeight:"78%", display:"flex", flexDirection:"column",
+          animation:"sheetUp .28s cubic-bezier(.32,0,.67,0)",
+          boxShadow:"0 -8px 32px rgba(0,0,0,.2)" }}>
+          {/* handle */}
+          <div style={{ display:"flex", justifyContent:"center", padding:"12px 0 4px" }}>
+            <div style={{ width:36, height:4, borderRadius:2, background:t.border }}/>
+          </div>
+          {/* sheet header */}
+          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between",
+            padding:"4px 20px 12px", borderBottom:`1px solid ${t.divider}`, flexShrink:0 }}>
+            <span style={{ fontSize:18, fontWeight:700 }}>Filter wardrobe</span>
+            <div style={{ display:"flex", gap:12, alignItems:"center" }}>
+              <button onClick={clearFilters}
+                style={{ background:"none", border:"none", fontSize:13, fontWeight:600,
+                  color:t.textMuted, cursor:"pointer" }}>Clear all</button>
+              <button onClick={applyFilters}
+                style={{ background:t.fabBg, color:t.fabFg, border:"none",
+                  borderRadius:20, padding:"8px 18px", fontSize:13, fontWeight:700, cursor:"pointer" }}>
+                Apply
+              </button>
+            </div>
+          </div>
+          {/* scrollable dimension list */}
+          <div style={{ overflowY:"auto", scrollbarWidth:"none" }}>
+            {DIMS.map(dim => {
+              const pending = pendingFilters[dim.key] || new Set();
+              const isOpen = openDim === dim.key;
+              const activeCount = pending.size;
+              return (
+                <div key={dim.key} style={{ borderBottom:`1px solid ${t.divider}` }}>
+                  <div onClick={()=>setOpenDim(isOpen ? null : dim.key)}
+                    style={{ display:"flex", justifyContent:"space-between",
+                      alignItems:"center", padding:"13px 20px", cursor:"pointer" }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+                      <span style={{ fontSize:14, fontWeight:700 }}>{dim.key}</span>
+                      {activeCount > 0 && (
+                        <span style={{ background:t.primary, color:t.fabFg,
+                          borderRadius:10, fontSize:10, fontWeight:700, padding:"1px 7px" }}>
+                          {activeCount}
+                        </span>
+                      )}
+                    </div>
+                    <svg width={18} height={18} viewBox="0 0 24 24" fill={t.textMuted}
+                      style={{ transform:isOpen?"rotate(180deg)":"none", transition:"transform .2s" }}>
+                      <path d={P.down}/>
+                    </svg>
+                  </div>
+                  {isOpen && (
+                    <div style={{ padding:"0 16px 14px", display:"flex",
+                      gap:7, flexWrap:"wrap", animation:"fadeIn .15s ease" }}>
+                      {dim.colors ? (
+                        dim.values.map((val,i)=>{
+                          const active = pending.has(val);
+                          return (
+                            <div key={val} onClick={()=>togglePending(dim.key, val)}
+                              style={{ display:"flex", flexDirection:"column",
+                                alignItems:"center", gap:5, cursor:"pointer" }}>
+                              <div style={{ width:34, height:34, borderRadius:17,
+                                background:dim.colors[i],
+                                border:`2.5px solid ${active?t.primary:t.border}`,
+                                boxShadow:active?`0 0 0 3px ${t.primaryDim}`:"none",
+                                transition:"border-color .15s, box-shadow .15s" }}/>
+                              <span style={{ fontSize:10, color:t.textMuted }}>{val}</span>
+                            </div>
+                          );
+                        })
+                      ) : (
+                        dim.values.map(val=>{
+                          const active = pending.has(val);
+                          return (
+                            <div key={val} onClick={()=>togglePending(dim.key, val)}
+                              style={{ display:"inline-flex", alignItems:"center",
+                                padding:"6px 13px", borderRadius:20, cursor:"pointer",
+                                background: active ? t.chipABg : t.chipBg,
+                                border: active ? "none" : `1px dashed ${t.border}`,
+                                transition:"background .12s" }}>
+                              <span style={{ fontSize:13, fontWeight:600,
+                                color:active?t.chipAFg:t.chipFg }}>{val}</span>
+                            </div>
+                          );
+                        })
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+            <div style={{ height:16 }}/>
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+};
+
+// ── Root with tweaks ──────────────────────────────────────────────────────────
+const App = () => {
+  const [tweaks, setTweak] = useTweaks(/*EDITMODE-BEGIN*/{
+    "theme": "green-light",
+    "offline": false,
+    "multiCloset": false
+  }/*EDITMODE-END*/);
+
+  return (
+    <>
+      <WardrobeApp
+        theme={tweaks.theme}
+        isOffline={tweaks.offline}
+        multiCloset={tweaks.multiCloset}
+      />
+      <TweaksPanel>
+        <TweakSection title="Theme">
+          <TweakSelect id="theme" label="Color theme"
+            options={["green-light","green-dark","sand-light","indigo-dark","pastel-mint","pastel-blush","pastel-lavender","pastel-butter","pastel-sky"]}
+            value={tweaks.theme} onChange={v => setTweak("theme", v)}/>
+        </TweakSection>
+        <TweakSection title="State">
+          <TweakToggle id="offline" label="Offline mode"
+            value={tweaks.offline} onChange={v => setTweak("offline", v)}/>
+          <TweakToggle id="multiCloset" label="Multi-closet"
+            value={tweaks.multiCloset} onChange={v => setTweak("multiCloset", v)}/>
+        </TweakSection>
+      </TweaksPanel>
+    </>
+  );
+};
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>

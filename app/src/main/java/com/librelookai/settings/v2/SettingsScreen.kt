@@ -48,7 +48,7 @@ private enum class SettingsRoute { MAIN, PROFILE_EDIT, ADVANCED, ABOUT, USAGE, B
  * Redesigned (V1) Settings — a single calmly-grouped scroll page in the iOS-Settings
  * idiom, with an "Advanced" door at the bottom for power-user/destructive options.
  * Reuses the four existing ViewModels; navigation between sub-screens is a local
- * back-stack since the app has no NavHost. See `design_handoff_settings_v1/README.md`.
+ * back-stack since the app has no NavHost. See `designs/settings_v1/README.md`.
  */
 @Composable
 fun SettingsScreen(

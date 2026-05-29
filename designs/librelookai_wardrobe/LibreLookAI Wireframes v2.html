@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LibreLookAI — Wireframes v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="design-canvas.jsx"></script>
+<style>
+  body { margin: 0; background: #1a1a18; font-family: 'Caveat', cursive; }
+</style>
+</head>
+<body>
+<script type="text/babel">
+
+// ─── Theme definitions ────────────────────────────────────────────────────────
+const THEMES = {
+  pastel: {
+    label: "A · Pastel Garden",
+    bg:        "#FDF8F4",
+    surface:   "#FFF5F0",
+    primary:   "#D4889A",
+    secondary: "#8DC4B0",
+    accent:    "#B5A8D0",
+    navBg:     "#FFF5F0",
+    chipBg:    "#EDD5DC",
+    chipText:  "#A05A6A",
+    text:      "#3A2E2E",
+    textMuted: "#8E7070",
+    border:    "#E8D0CC",
+    fab:       "#D4889A",
+    fabText:   "#FFF",
+    tag1: "#EDD5DC", tag2: "#D4EDE7", tag3: "#E0DAF0",
+  },
+  olive: {
+    label: "B · Olive & Clay",
+    bg:        "#F5F2E8",
+    surface:   "#EFEBDF",
+    primary:   "#6A7840",
+    secondary: "#9BAA72",
+    accent:    "#C4956A",
+    navBg:     "#EFEBDF",
+    chipBg:    "#DDE3C8",
+    chipText:  "#4A5830",
+    text:      "#2E2E1E",
+    textMuted: "#706850",
+    border:    "#D8D0BC",
+    fab:       "#6A7840",
+    fabText:   "#FFF",
+    tag1: "#DDE3C8", tag2: "#EDE0D0", tag3: "#D8E0CC",
+  },
+  sage: {
+    label: "C · Sage Mist",
+    bg:        "#F3F6EF",
+    surface:   "#EBF1E6",
+    primary:   "#7A9E6E",
+    secondary: "#F0C4A0",
+    accent:    "#A8C8B8",
+    navBg:     "#EBF1E6",
+    chipBg:    "#D4E6CC",
+    chipText:  "#3E6030",
+    text:      "#263020",
+    textMuted: "#687060",
+    border:    "#C8D8C0",
+    fab:       "#7A9E6E",
+    fabText:   "#FFF",
+    tag1: "#D4E6CC", tag2: "#F8DECE", tag3: "#C8DDD4",
+  },
+};
+
+// ─── Tiny SVG icons ───────────────────────────────────────────────────────────
+const Icon = ({ name, size = 18, color = "currentColor" }) => {
+  const paths = {
+    shirt:      "M3 8l3-5h3s1 3 3 3 3-3 3-3h3l3 5-3 1v10H6V9L3 8z",
+    style:      "M3 5h18v2H3zm4 4h10v2H7zm-3 4h16v2H4zm2 4h12v2H6z",
+    calendar:   "M7 4V2H5v2H3a1 1 0 00-1 1v14a1 1 0 001 1h18a1 1 0 001-1V5a1 1 0 00-1-1h-2V2h-2v2H7zm13 6H4V6h16v4z",
+    travel:     "M21 16v-2l-8-5V3.5a1.5 1.5 0 10-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z",
+    insights:   "M3 3h4v18H3zm7 8h4v10h-4zm7-5h4v15h-4z",
+    shopping:   "M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0",
+    add:        "M12 4v16M4 12h16",
+    ai:         "M12 2l2 4 4 2-4 2-2 4-2-4-4-2 4-2 2-4zM5 14l1 2 2 1-2 1-1 2-1-2-2-1 2-1 1-2z",
+    chevron:    "M9 18l6-6-6-6",
+    filter:     "M4 6h16M7 12h10M10 18h4",
+    camera:     "M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2zM12 17a4 4 0 100-8 4 4 0 000 8z",
+    check:      "M5 13l4 4L19 7",
+    sort:       "M3 18h6M3 12h12M3 6h18",
+    search:     "M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z",
+    link:       "M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71",
+    gallery:    "M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zM8.5 10a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM21 15l-5-5L5 21",
+    tryon:      "M12 2a5 5 0 015 5v1h2a1 1 0 011 1v10a1 1 0 01-1 1H4a1 1 0 01-1-1V9a1 1 0 011-1h2V7a5 5 0 015-5zM9 7v1h6V7a3 3 0 00-6 0z",
+    settings:   "M12 15a3 3 0 100-6 3 3 0 000 6zM19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z",
+    delete:     "M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6",
+    move:       "M5 9l4-4 4 4M9 5v8M15 15l4 4-4 4M19 19h-8",
+    replace:    "M7 16V4m0 0L4 7m3-3l3 3M17 8v12m0 0l3-3m-3 3l-3-3",
+    costs:      "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.88 15.76V19h-1.75v-1.29c-1.4-.29-2.63-1.15-2.63-2.76h1.68c0 .85.64 1.43 1.94 1.43 1.37 0 1.88-.67 1.88-1.33 0-.67-.42-1.28-1.94-1.62-1.7-.37-3.15-1.12-3.15-2.78 0-1.28 1.02-2.36 2.84-2.64V6.5h1.76v1.55c1.49.34 2.37 1.37 2.37 2.7h-1.68c0-.84-.54-1.42-1.72-1.42-1.2 0-1.94.55-1.94 1.3 0 .68.55 1.17 1.88 1.49 1.33.32 3.21.93 3.21 2.89 0 1.21-.84 2.38-2.75 2.75z",
+    gap:        "M9.5 2A2.5 2.5 0 017 4.5v15A2.5 2.5 0 009.5 22h5a2.5 2.5 0 002.5-2.5v-15A2.5 2.5 0 0014.5 2h-5zM3 9h3M18 9h3M3 15h3M18 15h3",
+    offline:    "M1 1l22 22M16.72 11.06A10.94 10.94 0 0119 12.55M5 12.55a10.94 10.94 0 015.17-2.39M10.71 5.05A16 16 0 0122.56 9M1.42 9a15.91 15.91 0 014.7-2.88M8.53 16.11a6 6 0 016.95 0M12 20h.01",
+  };
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+      stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d={paths[name] || ""} />
+    </svg>
+  );
+};
+
+// ─── Shared phone shell ───────────────────────────────────────────────────────
+const W = 375, H = 812;
+
+const PhoneShell = ({ theme, children }) => (
+  <div style={{
+    width: W, height: H,
+    background: theme.bg,
+    borderRadius: 28,
+    border: `2px solid ${theme.border}`,
+    overflow: "hidden",
+    position: "relative",
+    fontFamily: "'Caveat', cursive",
+    color: theme.text,
+    display: "flex", flexDirection: "column",
+    boxShadow: "0 4px 24px rgba(0,0,0,0.13)",
+  }}>
+    {/* status bar */}
+    <div style={{ height: 28, background: theme.surface, display: "flex",
+      alignItems: "center", justifyContent: "space-between",
+      padding: "0 18px", fontSize: 11, color: theme.textMuted,
+      borderBottom: `1px dashed ${theme.border}`, flexShrink: 0 }}>
+      <span>9:41</span>
+      <span>●●● ▲▲▲ ▮▮▮</span>
+    </div>
+    {children}
+  </div>
+);
+
+// ─── App header (matches AppScreenHeader in code) ─────────────────────────────
+const AppHeader = ({ theme, title, icon = null, trailing = null }) => (
+  <div style={{ background: theme.surface, padding: "8px 4px 8px 16px",
+    borderBottom: `1.5px dashed ${theme.border}`,
+    display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+    {icon && <Icon name={icon} size={20} color={theme.primary} />}
+    <span style={{ fontSize: 18, fontWeight: 700, flex: 1 }}>{title}</span>
+    <div style={{ display: "flex", gap: 2, alignItems: "center" }}>
+      {trailing}
+      {/* settings gear always present */}
+      <div style={{ width: 36, height: 36, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <Icon name="settings" size={18} color={theme.textMuted} />
+      </div>
+    </div>
+  </div>
+);
+
+// ─── Sub-tab bar ──────────────────────────────────────────────────────────────
+const SubTabs = ({ theme, tabs, active }) => (
+  <div style={{ display: "flex", borderBottom: `1.5px solid ${theme.border}`,
+    background: theme.surface, flexShrink: 0 }}>
+    {tabs.map((t, i) => (
+      <div key={i} style={{ flex: 1, textAlign: "center", padding: "8px 4px",
+        fontSize: 13, fontWeight: i === active ? 700 : 400,
+        color: i === active ? theme.primary : theme.textMuted,
+        borderBottom: i === active ? `2.5px solid ${theme.primary}` : "2.5px solid transparent",
+      }}>{t}</div>
+    ))}
+  </div>
+);
+
+// ─── Bottom nav (5 tabs matching code) ───────────────────────────────────────
+const NavBar = ({ theme, active = 1 }) => {
+  const tabs = [
+    { icon: "style",    label: "Outfits" },
+    { icon: "shirt",    label: "Wardrobe" },
+    { icon: "shopping", label: "Shopping" },
+    { icon: "travel",   label: "Travel" },
+    { icon: "insights", label: "Insights" },
+  ];
+  return (
+    <div style={{ height: 68, background: theme.navBg,
+      borderTop: `1.5px dashed ${theme.border}`,
+      display: "flex", alignItems: "center",
+      marginTop: "auto", flexShrink: 0 }}>
+      {tabs.map((t, i) => (
+        <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column",
+          alignItems: "center", gap: 2,
+          color: i === active ? theme.primary : theme.textMuted,
+          opacity: i === active ? 1 : 0.5 }}>
+          <Icon name={t.icon} size={20} color={i === active ? theme.primary : theme.textMuted} />
+          <span style={{ fontSize: 9 }}>{t.label}</span>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const Chip = ({ theme, label, active }) => (
+  <span style={{
+    display: "inline-flex", alignItems: "center",
+    padding: "3px 10px", borderRadius: 20,
+    background: active ? theme.primary : theme.chipBg,
+    color: active ? theme.fabText : theme.chipText,
+    fontSize: 12, marginRight: 5, marginBottom: 4,
+    border: active ? "none" : `1px dashed ${theme.border}`,
+  }}>{label}</span>
+);
+
+const Tag = ({ theme, label, color }) => (
+  <span style={{ fontSize: 11, padding: "2px 8px", borderRadius: 12,
+    background: color || theme.tag1, color: theme.chipText,
+    marginRight: 4 }}>{label}</span>
+);
+
+const FAB = ({ theme, label, icon = "add", bottom = 80, right = 16 }) => (
+  <div style={{
+    position: "absolute", bottom, right,
+    background: theme.fab, color: theme.fabText,
+    borderRadius: 28, padding: "10px 16px",
+    display: "flex", alignItems: "center", gap: 6,
+    fontSize: 14, fontWeight: 700,
+    boxShadow: "0 3px 12px rgba(0,0,0,0.18)",
+  }}>
+    <Icon name={icon} size={16} color={theme.fabText} />
+    {label}
+  </div>
+);
+
+const OfflineBanner = ({ theme }) => (
+  <div style={{ background: "#FFEDED", padding: "5px 14px",
+    display: "flex", alignItems: "center", gap: 6,
+    borderBottom: `1px dashed #E0BCBC`, flexShrink: 0 }}>
+    <Icon name="offline" size={14} color="#C44" />
+    <span style={{ fontSize: 11, color: "#A33" }}>You are offline — view-only mode</span>
+  </div>
+);
+
+// ─── WardrobeScreen ───────────────────────────────────────────────────────────
+const WardrobeScreen = ({ theme, showOffline = false }) => {
+  const items = Array(12).fill(null);
+  return (
+    <PhoneShell theme={theme}>
+      <AppHeader theme={theme} title="Wardrobe" icon="shirt"
+        trailing={[
+          <div key="loc" style={{ width: 36, height: 36, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <Icon name="filter" size={18} color={theme.textMuted} /></div>,
+          <div key="sort" style={{ width: 36, height: 36, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <Icon name="sort" size={18} color={theme.textMuted} /></div>,
+        ]}
+      />
+      {showOffline && <OfflineBanner theme={theme} />}
+      {/* Tag filter row */}
+      <div style={{ padding: "8px 10px 4px", background: theme.surface,
+        borderBottom: `1px dashed ${theme.border}`, flexShrink: 0 }}>
+        <Chip theme={theme} label="All" active />
+        <Chip theme={theme} label="Tops" />
+        <Chip theme={theme} label="Bottoms" />
+        <Chip theme={theme} label="Shoes" />
+        <Chip theme={theme} label="Outerwear" />
+      </div>
+      {/* item count */}
+      <div style={{ padding: "4px 12px", background: theme.bg,
+        borderBottom: `1px dashed ${theme.border}`, flexShrink: 0 }}>
+        <span style={{ fontSize: 11, color: theme.textMuted }}>24 items</span>
+      </div>
+      {/* grid */}
+      <div style={{ flex: 1, overflow: "hidden", padding: 8,
+        display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 7,
+        alignContent: "start" }}>
+        {items.map((_, i) => (
+          <div key={i} style={{ borderRadius: 12, aspectRatio: "1",
+            background: theme.surface, border: `1.5px dashed ${theme.border}`,
+            display: "flex", flexDirection: "column",
+            alignItems: "center", justifyContent: "center", gap: 3,
+            position: "relative", overflow: "hidden" }}>
+            {/* location label */}
+            <span style={{ position: "absolute", top: 4, left: 4,
+              fontSize: 8, color: theme.textMuted, background: theme.bg + "CC",
+              padding: "1px 4px", borderRadius: 4 }}>Home</span>
+            <div style={{ width: "48%", height: "52%",
+              background: [theme.tag1, theme.tag2, theme.tag3][i%3],
+              borderRadius: 6, opacity: 0.85 }} />
+            <span style={{ fontSize: 9, color: theme.textMuted }}>item {i+1}</span>
+          </div>
+        ))}
+      </div>
+      {/* Import FAB — + opens camera by default; Gallery & URL appear as speed-dial above */}
+      <div style={{ position: "absolute", bottom: 78, right: 12,
+        display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-end" }}>
+        {/* secondary: Gallery */}
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <span style={{ fontSize: 11, color: theme.text, background: theme.surface,
+            padding: "3px 10px", borderRadius: 10, border: `1px dashed ${theme.border}`,
+            boxShadow: "0 1px 6px rgba(0,0,0,0.10)" }}>Gallery</span>
+          <div style={{ width: 40, height: 40, borderRadius: 20,
+            background: theme.surface, border: `2px solid ${theme.primary}`,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.12)" }}>
+            <Icon name="gallery" size={17} color={theme.primary} />
+          </div>
+        </div>
+        {/* secondary: URL */}
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <span style={{ fontSize: 11, color: theme.text, background: theme.surface,
+            padding: "3px 10px", borderRadius: 10, border: `1px dashed ${theme.border}`,
+            boxShadow: "0 1px 6px rgba(0,0,0,0.10)" }}>Import from URL</span>
+          <div style={{ width: 40, height: 40, borderRadius: 20,
+            background: theme.surface, border: `2px solid ${theme.primary}`,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.12)" }}>
+            <Icon name="link" size={17} color={theme.primary} />
+          </div>
+        </div>
+        {/* primary + FAB → opens camera */}
+        <div style={{ background: theme.fab, color: theme.fabText,
+          borderRadius: 28, width: 52, height: 52,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          boxShadow: "0 3px 12px rgba(0,0,0,0.22)", flexShrink: 0 }}>
+          <Icon name="add" size={26} color={theme.fabText} />
+        </div>
+      </div>
+      <NavBar theme={theme} active={1} />
+    </PhoneShell>
+  );
+};
+
+// ─── OutfitsScreen — Outfits tab ──────────────────────────────────────────────
+const OutfitsListScreen = ({ theme }) => {
+  const outfits = [
+    { name: "Casual Friday", items: 4, tags: ["Casual","Everyday"], worn: 5 },
+    { name: "Office Look",   items: 3, tags: ["Smart","Work"],      worn: 8 },
+    { name: "Weekend Run",   items: 5, tags: ["Relaxed"],           worn: 2 },
+  ];
+  return (
+    <PhoneShell theme={theme}>
+      <AppHeader theme={theme} title="Outfits" icon="style"
+        trailing={[
+          <div key="loc" style={{ width: 36, height: 36, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <Icon name="filter" size={18} color={theme.textMuted} /></div>,
+          <div key="sort" style={{ width: 36, height: 36, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <Icon name="sort" size={18} color={theme.textMuted} /></div>,
+        ]}
+      />
+      <SubTabs theme={theme} tabs={["Outfits", "Try-Ons"]} active={0} />
+      <div style={{ flex: 1, overflow: "hidden", padding: "10px 12px",
+        display: "flex", flexDirection: "column", gap: 8 }}>
+        {outfits.map((o, i) => (
+          <div key={i} style={{ background: theme.surface, borderRadius: 14,
+            border: `1.5px dashed ${theme.border}`, padding: "10px 12px",
+            display: "flex", gap: 10, alignItems: "center" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr",
+              gap: 3, width: 62, height: 62, flexShrink: 0 }}>
+              {Array(4).fill(null).map((_, j) => (
+                <div key={j} style={{ borderRadius: 5,
+                  background: [theme.tag1,theme.tag2,theme.tag3,theme.chipBg][j], opacity: 0.85 }} />
+              ))}
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 15, fontWeight: 700 }}>{o.name}</div>
+              <div style={{ fontSize: 11, color: theme.textMuted, marginBottom: 4 }}>
+                {o.items} items · worn {o.worn}×
+              </div>
+              <div>{o.tags.map(t => <Tag key={t} theme={theme} label={t} color={[theme.tag1,theme.tag2][i%2]} />)}</div>
+            </div>
+            <Icon name="chevron" size={16} color={theme.textMuted} />
+          </div>
+        ))}
+        {/* AI suggestion */}
+        <div style={{ background: theme.primary + "18", border: `1.5px dashed ${theme.primary}`,
+          borderRadius: 14, padding: "10px 14px", display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{ width: 34, height: 34, borderRadius: 17,
+            background: theme.primary, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <Icon name="ai" size={15} color="#FFF" />
+          </div>
+          <div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: theme.primary }}>Today's suggestion</div>
+            <div style={{ fontSize: 11, color: theme.textMuted }}>AI pick based on weather · 18°C</div>
+          </div>
+        </div>
+      </div>
+      {/* Single + FAB → opens unified composer */}
+      <FAB theme={theme} label="New outfit" icon="add" bottom={78} right={12} />
+      <NavBar theme={theme} active={0} />
+    </PhoneShell>
+  );
+};
+
+// ─── OutfitsScreen — Try-Ons tab ──────────────────────────────────────────────
+const TryOnsScreen = ({ theme }) => (
+  <PhoneShell theme={theme}>
+    <AppHeader theme={theme} title="Outfits" icon="style"
+      trailing={[
+        <div key="loc" style={{ width: 36, height: 36, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <Icon name="filter" size={18} color={theme.textMuted} /></div>,
+      ]}
+    />
+    <SubTabs theme={theme} tabs={["Outfits", "Try-Ons"]} active={1} />
+    <div style={{ flex: 1, overflow: "hidden", padding: "10px 12px" }}>
+      <div style={{ fontSize: 12, color: theme.textMuted, marginBottom: 8 }}>Saved try-ons</div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+        {Array(4).fill(null).map((_, i) => (
+          <div key={i} style={{ borderRadius: 14, aspectRatio: "0.75",
+            background: theme.surface, border: `1.5px dashed ${theme.border}`,
+            display: "flex", flexDirection: "column", overflow: "hidden" }}>
+            <div style={{ flex: 1, background: [theme.tag1,theme.tag2,theme.tag3,theme.chipBg][i], opacity: 0.6 }} />
+            <div style={{ padding: "6px 8px" }}>
+              <div style={{ fontSize: 11, fontWeight: 700 }}>Try-on {i+1}</div>
+              <div style={{ fontSize: 10, color: theme.textMuted }}>3 items · Apr {28-i}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+    <NavBar theme={theme} active={0} />
+  </PhoneShell>
+);
+
+// ─── Outfit Composer (unified, full-screen) ───────────────────────────────────
+const OutfitComposerScreen = ({ theme }) => (
+  <PhoneShell theme={theme}>
+    <div style={{ background: theme.primary, padding: "10px 16px",
+      display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
+      <Icon name="chevron" size={20} color={theme.fabText} />
+      <span style={{ fontSize: 17, fontWeight: 700, color: theme.fabText }}>Create outfit</span>
+      <span style={{ fontSize: 13, color: theme.fabText + "CC" }}>Save</span>
+    </div>
+    <div style={{ flex: 1, overflowY: "hidden", display: "flex", flexDirection: "column", gap: 0 }}>
+      {/* Quick start section */}
+      <SectionRow theme={theme} label="Quick start" open>
+        <div style={{ display: "flex", gap: 8, padding: "0 0 4px" }}>
+          {["Manual","Suggest existing","Compose with AI"].map((l,i) => (
+            <div key={i} style={{ flex: 1, padding: "8px 0", textAlign: "center",
+              borderRadius: 10, fontSize: 11, fontWeight: i===2 ? 700 : 400,
+              background: i===2 ? theme.primary : theme.chipBg,
+              color: i===2 ? theme.fabText : theme.chipText,
+              border: `1px dashed ${i===2 ? "transparent" : theme.border}` }}>{l}</div>
+          ))}
+        </div>
+      </SectionRow>
+      {/* Items */}
+      <SectionRow theme={theme} label="Items (3 picked)" open>
+        <div style={{ display: "flex", gap: 6 }}>
+          {["Top","Pants","Shoes"].map((label,i) => (
+            <div key={i} style={{ width: 56, height: 62, borderRadius: 10,
+              background: theme.surface, border: `1.5px dashed ${theme.border}`,
+              display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3 }}>
+              <div style={{ width: 28, height: 32, borderRadius: 5,
+                background: [theme.tag1,theme.tag2,theme.tag3][i], opacity: 0.85 }} />
+              <span style={{ fontSize: 9, color: theme.textMuted }}>{label}</span>
+            </div>
+          ))}
+          <div style={{ width: 56, height: 62, borderRadius: 10,
+            border: `2px dashed ${theme.primary}`,
+            display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <Icon name="add" size={18} color={theme.primary} />
+          </div>
+        </div>
+      </SectionRow>
+      {/* Weather */}
+      <SectionRow theme={theme} label="Weather · Current" />
+      {/* Style vibe */}
+      <SectionRow theme={theme} label="Style vibe">
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+          {["Casual","Smart-casual","Formal","Sporty"].map((v,i) => (
+            <Chip key={v} theme={theme} label={v} active={i===0} />
+          ))}
+        </div>
+      </SectionRow>
+      {/* Composition */}
+      <SectionRow theme={theme} label="Composition" />
+      {/* Preference prompt */}
+      <SectionRow theme={theme} label="Preference prompt" />
+      {/* AI enhance */}
+      <div style={{ margin: "10px 12px 0",
+        background: theme.primary, color: theme.fabText,
+        borderRadius: 24, padding: "10px 0", textAlign: "center",
+        fontSize: 14, fontWeight: 700, flexShrink: 0 }}>
+        Enhance with AI
+      </div>
+    </div>
+  </PhoneShell>
+);
+
+const SectionRow = ({ theme, label, children, open = false }) => (
+  <div style={{ borderBottom: `1px dashed ${theme.border}`, padding: "8px 14px" }}>
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center",
+      marginBottom: children && open ? 6 : 0 }}>
+      <span style={{ fontSize: 13, fontWeight: 700, color: theme.text }}>{label}</span>
+      <Icon name="chevron" size={14} color={theme.textMuted} />
+    </div>
+    {children && open && children}
+  </div>
+);
+
+// ─── ShoppingHelperScreen — Shopping List ─────────────────────────────────────
+const ShoppingListScreen = ({ theme }) => {
+  const items = [
+    { name: "White linen shirt", store: "from URL · amazon.com" },
+    { name: "Cargo trousers",    store: "from Camera" },
+    { name: "Suede loafers",     store: "from Gallery" },
+  ];
+  return (
+    <PhoneShell theme={theme}>
+      <AppHeader theme={theme} title="Shopping" icon="shopping" />
+      <SubTabs theme={theme} tabs={["Shopping List","Similarity","Identify Gaps"]} active={0} />
+      <div style={{ flex: 1, overflow: "hidden", padding: "10px 12px",
+        display: "flex", flexDirection: "column", gap: 8 }}>
+        {items.map((item, i) => (
+          <div key={i} style={{ background: theme.surface, borderRadius: 14,
+            border: `1.5px dashed ${theme.border}`, padding: "10px 12px",
+            display: "flex", gap: 10, alignItems: "center" }}>
+            <div style={{ width: 54, height: 60, borderRadius: 10, flexShrink: 0,
+              background: [theme.tag1,theme.tag2,theme.tag3][i], opacity: 0.75 }} />
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 14, fontWeight: 700 }}>{item.name}</div>
+              <div style={{ fontSize: 11, color: theme.textMuted }}>{item.store}</div>
+              <div style={{ marginTop: 5, display: "flex", gap: 6 }}>
+                <div style={{ fontSize: 11, padding: "2px 8px", borderRadius: 10,
+                  border: `1px dashed ${theme.border}`, color: theme.chipText,
+                  background: theme.chipBg }}>Move to closet</div>
+                <div style={{ fontSize: 11, padding: "2px 8px", borderRadius: 10,
+                  border: `1px dashed #E0B0B0`, color: "#C44",
+                  background: "#FFF0F0" }}>Delete</div>
+              </div>
+            </div>
+            <Icon name="chevron" size={16} color={theme.textMuted} />
+          </div>
+        ))}
+        {/* add options */}
+        <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
+          {[{icon:"camera",label:"Camera"},{icon:"gallery",label:"Gallery"},{icon:"link",label:"URL"}].map((a) => (
+            <div key={a.label} style={{ flex: 1, padding: "8px 0",
+              background: theme.chipBg, borderRadius: 12, textAlign: "center",
+              border: `1px dashed ${theme.border}`,
+              display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+              <Icon name={a.icon} size={16} color={theme.primary} />
+              <span style={{ fontSize: 11, color: theme.chipText }}>{a.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <NavBar theme={theme} active={2} />
+    </PhoneShell>
+  );
+};
+
+// ─── ShoppingHelperScreen — Similarity Finder ────────────────────────────────
+const SimilarityFinderScreen = ({ theme }) => (
+  <PhoneShell theme={theme}>
+    <AppHeader theme={theme} title="Shopping" icon="shopping"
+      trailing={[
+        <div key="loc" style={{ width: 36, height: 36, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <Icon name="filter" size={18} color={theme.textMuted} /></div>,
+      ]}
+    />
+    <SubTabs theme={theme} tabs={["Shopping List","Similarity","Identify Gaps"]} active={1} />
+    <div style={{ flex: 1, overflow: "hidden", padding: "10px 12px",
+      display: "flex", flexDirection: "column", gap: 10 }}>
+      {/* hint */}
+      <div style={{ fontSize: 12, color: theme.textMuted, lineHeight: 1.4 }}>
+        Snap a photo of a piece you're considering and we'll show the most visually similar items already in your wardrobe — fully on-device.
+      </div>
+      {/* photo taken */}
+      <div style={{ display: "flex", gap: 10 }}>
+        <div style={{ width: 80, height: 88, borderRadius: 12,
+          background: theme.tag2, opacity: 0.8, flexShrink: 0,
+          border: `1.5px dashed ${theme.border}`,
+          display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <span style={{ fontSize: 10, color: theme.textMuted }}>your photo</span>
+        </div>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 4 }}>Top matches (3)</div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6 }}>
+            {[92, 87, 81].map((score, i) => (
+              <div key={i} style={{ borderRadius: 10, aspectRatio: "1",
+                background: [theme.tag1,theme.tag2,theme.tag3][i],
+                opacity: 0.8, position: "relative", border: `1px dashed ${theme.border}` }}>
+                <span style={{ position: "absolute", bottom: 3, left: 0, right: 0,
+                  textAlign: "center", fontSize: 9, color: theme.text, fontWeight: 700 }}>{score}%</span>
+              </div>
+            ))}
+          </div>
+          <div style={{ marginTop: 6, display: "flex", gap: 6 }}>
+            <div style={{ flex: 1, fontSize: 11, padding: "4px 0", textAlign: "center",
+              borderRadius: 10, background: theme.chipBg, color: theme.chipText,
+              border: `1px dashed ${theme.border}` }}>Show in wardrobe</div>
+            <div style={{ flex: 1, fontSize: 11, padding: "4px 0", textAlign: "center",
+              borderRadius: 10, background: theme.primary + "22", color: theme.primary,
+              border: `1px dashed ${theme.primary}` }}>+ Shopping list</div>
+          </div>
+        </div>
+      </div>
+      {/* 180 items indexed */}
+      <div style={{ fontSize: 11, color: theme.textMuted, textAlign: "center" }}>180 items indexed across all closets</div>
+      {/* take photo button */}
+      <div style={{ background: theme.fab, color: theme.fabText,
+        borderRadius: 24, padding: "10px 0", textAlign: "center",
+        fontSize: 14, fontWeight: 700,
+        display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+        <Icon name="camera" size={16} color={theme.fabText} />
+        Take another photo
+      </div>
+    </div>
+    <NavBar theme={theme} active={2} />
+  </PhoneShell>
+);
+
+// ─── ShoppingHelperScreen — Identify Gaps ────────────────────────────────────
+const IdentifyGapsScreen = ({ theme }) => (
+  <PhoneShell theme={theme}>
+    <AppHeader theme={theme} title="Shopping" icon="shopping" />
+    <SubTabs theme={theme} tabs={["Shopping List","Similarity","Identify Gaps"]} active={2} />
+    <div style={{ flex: 1, overflow: "hidden", padding: "10px 12px",
+      display: "flex", flexDirection: "column", gap: 10 }}>
+      <div style={{ fontSize: 12, color: theme.textMuted, lineHeight: 1.4 }}>
+        Discover the 3 missing pieces that would unlock the most new outfit combinations from your existing wardrobe.
+      </div>
+      {[
+        { name: "White Oxford Shirt", outfits: "+12 outfits", reason: "Pairs with 8 of your bottoms" },
+        { name: "Slim White Sneakers", outfits: "+9 outfits",  reason: "Versatile with casual & smart" },
+        { name: "Navy Chinos",        outfits: "+7 outfits",  reason: "Missing neutral bottom" },
+      ].map((gap, i) => (
+        <div key={i} style={{ background: theme.surface, borderRadius: 14,
+          border: `1.5px dashed ${theme.border}`, padding: "10px 12px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+            <div style={{ fontSize: 14, fontWeight: 700 }}>{gap.name}</div>
+            <span style={{ fontSize: 11, background: theme.primary + "22",
+              color: theme.primary, padding: "2px 8px", borderRadius: 12 }}>{gap.outfits}</span>
+          </div>
+          <div style={{ fontSize: 11, color: theme.textMuted, marginBottom: 8, marginTop: 2 }}>{gap.reason}</div>
+          <div style={{ display: "flex", gap: 6 }}>
+            <div style={{ flex: 1, padding: "4px 0", textAlign: "center", fontSize: 11,
+              borderRadius: 10, background: theme.chipBg, color: theme.chipText,
+              border: `1px dashed ${theme.border}` }}>Amazon</div>
+            <div style={{ flex: 1, padding: "4px 0", textAlign: "center", fontSize: 11,
+              borderRadius: 10, background: theme.chipBg, color: theme.chipText,
+              border: `1px dashed ${theme.border}` }}>ShopStyle</div>
+          </div>
+        </div>
+      ))}
+      <div style={{ background: theme.fab, color: theme.fabText,
+        borderRadius: 24, padding: "10px 0", textAlign: "center",
+        fontSize: 14, fontWeight: 700,
+        display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+        <Icon name="ai" size={16} color={theme.fabText} />
+        Analyze My Wardrobe
+      </div>
+    </div>
+    <NavBar theme={theme} active={2} />
+  </PhoneShell>
+);
+
+// ─── InsightsScreen — Calendar tab ───────────────────────────────────────────
+const InsightsCalendarScreen = ({ theme }) => {
+  const days = ["Mo","Tu","We","Th","Fr","Sa","Su"];
+  const calRows = [[1,2,3,4,5,6,7],[8,9,10,11,12,13,14],[15,16,17,18,19,20,21],[22,23,24,25,26,27,28],[29,30,1,2,3,4,5]];
+  const worn = new Set([3,7,10,14,17,21,24]);
+  return (
+    <PhoneShell theme={theme}>
+      <AppHeader theme={theme} title="Insights" icon="insights"
+        trailing={[<div key="loc" style={{ width: 36, height: 36, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <Icon name="filter" size={18} color={theme.textMuted} /></div>]}
+      />
+      <SubTabs theme={theme} tabs={["Calendar","Cal. Stats","Wardrobe","Costs"]} active={0} />
+      <div style={{ flex: 1, overflow: "hidden", padding: "10px 12px" }}>
+        {/* month nav */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+          <span style={{ fontSize: 13, color: theme.textMuted }}>‹</span>
+          <span style={{ fontSize: 15, fontWeight: 700 }}>May 2026</span>
+          <span style={{ fontSize: 13, color: theme.textMuted }}>›</span>
+        </div>
+        {/* day headers */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 2, marginBottom: 4 }}>
+          {days.map(d => <div key={d} style={{ textAlign: "center", fontSize: 10, color: theme.textMuted }}>{d}</div>)}
+        </div>
+        {/* calendar grid */}
+        {calRows.map((row, ri) => (
+          <div key={ri} style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 2, marginBottom: 2 }}>
+            {row.map((d, ci) => (
+              <div key={ci} style={{ aspectRatio: "1", borderRadius: 6,
+                background: worn.has(d) ? theme.primary + "33" : "transparent",
+                border: d === 3 ? `2px solid ${theme.primary}` : "1px dashed transparent",
+                display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <span style={{ fontSize: 11, color: worn.has(d) ? theme.primary : theme.textMuted }}>{d}</span>
+              </div>
+            ))}
+          </div>
+        ))}
+        {/* day detail */}
+        <div style={{ marginTop: 10, background: theme.surface, borderRadius: 14,
+          border: `1.5px dashed ${theme.border}`, padding: "8px 12px" }}>
+          <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 4 }}>Saturday, May 3</div>
+          <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+            <div style={{ width: 44, height: 44, borderRadius: 10,
+              background: theme.tag1, border: `1px dashed ${theme.border}` }} />
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 600 }}>Casual Friday</div>
+              <div style={{ fontSize: 11, color: theme.textMuted }}>4 items</div>
+            </div>
+            <div style={{ marginLeft: "auto", display: "flex", gap: 8 }}>
+              <span style={{ fontSize: 11, color: theme.primary }}>Wear again</span>
+              <span style={{ fontSize: 11, color: theme.textMuted }}>Edit</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <NavBar theme={theme} active={4} />
+    </PhoneShell>
+  );
+};
+
+// ─── InsightsScreen — Costs tab ───────────────────────────────────────────────
+const InsightsCostsScreen = ({ theme }) => {
+  const bars = [3,1,5,2,4,2,6,1,3,4,2,5,3,1];
+  const maxBar = Math.max(...bars);
+  return (
+    <PhoneShell theme={theme}>
+      <AppHeader theme={theme} title="Insights" icon="insights" />
+      <SubTabs theme={theme} tabs={["Calendar","Cal. Stats","Wardrobe","Costs"]} active={3} />
+      <div style={{ flex: 1, overflow: "hidden", padding: "10px 12px",
+        display: "flex", flexDirection: "column", gap: 10 }}>
+        {/* count cards */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 6 }}>
+          {[
+            { label: "Items", val: "24" },
+            { label: "Outfits", val: "12" },
+            { label: "Try-ons", val: "5" },
+            { label: "Wears", val: "38" },
+          ].map(c => (
+            <div key={c.label} style={{ background: theme.surface, borderRadius: 12,
+              border: `1.5px dashed ${theme.border}`, padding: "8px 0",
+              display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
+              <span style={{ fontSize: 18, fontWeight: 700, color: theme.primary }}>{c.val}</span>
+              <span style={{ fontSize: 10, color: theme.textMuted }}>{c.label}</span>
+            </div>
+          ))}
+        </div>
+        {/* activity chart */}
+        <div style={{ background: theme.surface, borderRadius: 14,
+          border: `1.5px dashed ${theme.border}`, padding: "10px 12px" }}>
+          <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>Activity (last 14 days)</div>
+          <div style={{ display: "flex", gap: 3, alignItems: "flex-end", height: 48 }}>
+            {bars.map((b, i) => (
+              <div key={i} style={{ flex: 1, borderRadius: "3px 3px 0 0",
+                background: theme.primary, opacity: 0.3 + 0.7 * (b/maxBar),
+                height: `${(b/maxBar)*100}%` }} />
+            ))}
+          </div>
+        </div>
+        {/* token usage */}
+        <div style={{ background: theme.surface, borderRadius: 14,
+          border: `1.5px dashed ${theme.border}`, padding: "10px 12px" }}>
+          <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>Token Usage</div>
+          {[
+            { label: "Background removal", tokens: "4,200", cost: "€0.02" },
+            { label: "Auto-tagging",        tokens: "1,800", cost: "€0.01" },
+            { label: "Outfit suggestions",  tokens: "2,400", cost: "€0.01" },
+          ].map((row) => (
+            <div key={row.label} style={{ display: "flex", justifyContent: "space-between",
+              paddingBottom: 6, marginBottom: 6, borderBottom: `1px dashed ${theme.border}` }}>
+              <span style={{ fontSize: 12 }}>{row.label}</span>
+              <div style={{ display: "flex", gap: 8 }}>
+                <span style={{ fontSize: 12, color: theme.textMuted }}>{row.tokens} tok</span>
+                <span style={{ fontSize: 12, fontWeight: 700, color: theme.primary }}>{row.cost}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+        {/* imports count */}
+        <div style={{ fontSize: 11, color: theme.textMuted, textAlign: "center" }}>
+          8 items imported this week
+        </div>
+      </div>
+      <NavBar theme={theme} active={4} />
+    </PhoneShell>
+  );
+};
+
+// ─── Settings — AI tab ────────────────────────────────────────────────────────
+const SettingsAIScreen = ({ theme }) => (
+  <PhoneShell theme={theme}>
+    <AppHeader theme={theme} title="Settings" icon="settings" />
+    <SubTabs theme={theme} tabs={["Profile","Data","Credits","AI","Feedback","About"]} active={3} />
+    <div style={{ flex: 1, overflow: "hidden", padding: "10px 12px",
+      display: "flex", flexDirection: "column", gap: 8 }}>
+      {/* considerations */}
+      <div style={{ background: theme.surface, borderRadius: 14,
+        border: `1.5px dashed ${theme.border}`, padding: "10px 12px" }}>
+        <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 4 }}>Default considerations</div>
+        <div style={{ fontSize: 11, color: theme.textMuted, marginBottom: 8 }}>
+          What the AI takes into account for suggestions, composition, packing &amp; gap analysis.
+        </div>
+        {[
+          { label: "Weather", on: true },
+          { label: "Location", on: true },
+          { label: "Fashion trends", on: false },
+          { label: "Gender", on: true },
+          { label: "Age", on: false },
+          { label: "Style preferences", on: true },
+        ].map(item => (
+          <div key={item.label} style={{ display: "flex", justifyContent: "space-between",
+            alignItems: "center", padding: "5px 0",
+            borderBottom: `1px dashed ${theme.border}` }}>
+            <span style={{ fontSize: 13 }}>{item.label}</span>
+            <div style={{ width: 32, height: 18, borderRadius: 9,
+              background: item.on ? theme.primary : theme.chipBg,
+              border: `1.5px solid ${item.on ? theme.primary : theme.border}`,
+              display: "flex", alignItems: "center",
+              justifyContent: item.on ? "flex-end" : "flex-start",
+              padding: "0 2px" }}>
+              <div style={{ width: 13, height: 13, borderRadius: 7,
+                background: item.on ? "#FFF" : theme.textMuted }} />
+            </div>
+          </div>
+        ))}
+      </div>
+      {/* Prompts */}
+      <div style={{ background: theme.surface, borderRadius: 14,
+        border: `1.5px dashed ${theme.border}`, padding: "10px 12px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+          <div style={{ fontSize: 13, fontWeight: 700 }}>Prompts</div>
+          <span style={{ fontSize: 11, color: theme.primary }}>Reset all</span>
+        </div>
+        <div style={{ fontSize: 11, color: theme.textMuted, marginBottom: 8 }}>
+          Tap a prompt to expand and edit. Overrides stored locally.
+        </div>
+        {["Background removal","Auto-tag clothing","Suggest existing outfit","Compose new outfit","Travel packing","Wardrobe gap analysis"].map((p, i) => (
+          <div key={p} style={{ display: "flex", justifyContent: "space-between",
+            alignItems: "center", padding: "6px 0",
+            borderBottom: `1px dashed ${theme.border}` }}>
+            <span style={{ fontSize: 12 }}>{p}</span>
+            <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+              {i === 1 && <span style={{ fontSize: 9, padding: "1px 5px", borderRadius: 8,
+                background: theme.primary + "33", color: theme.primary }}>edited</span>}
+              <Icon name="chevron" size={14} color={theme.textMuted} />
+            </div>
+          </div>
+        ))}
+      </div>
+      {/* similarity threshold */}
+      <div style={{ background: theme.surface, borderRadius: 14,
+        border: `1.5px dashed ${theme.border}`, padding: "10px 12px" }}>
+        <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 4 }}>Similarity threshold: 72%</div>
+        <div style={{ height: 6, borderRadius: 3, background: theme.chipBg, position: "relative" }}>
+          <div style={{ width: "72%", height: "100%", borderRadius: 3, background: theme.primary }} />
+        </div>
+      </div>
+    </div>
+  </PhoneShell>
+);
+
+// ─── Wardrobe Item view with similarity dedupe ────────────────────────────────
+const WardrobeDupeCheckScreen = ({ theme }) => (
+  <PhoneShell theme={theme}>
+    <AppHeader theme={theme} title="Wardrobe" icon="shirt" />
+    {/* dedupe dialog overlay */}
+    <div style={{ flex: 1, overflow: "hidden", position: "relative" }}>
+      {/* background grid (blurred) */}
+      <div style={{ padding: 8, display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 7 }}>
+        {Array(9).fill(null).map((_,i) => (
+          <div key={i} style={{ borderRadius: 12, aspectRatio: "1",
+            background: theme.surface, border: `1.5px dashed ${theme.border}`, opacity: 0.4 }} />
+        ))}
+      </div>
+      {/* dialog */}
+      <div style={{ position: "absolute", inset: 0,
+        background: "rgba(0,0,0,0.35)",
+        display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
+        <div style={{ background: theme.bg, borderRadius: 20, padding: "18px 16px", width: "100%" }}>
+          <div style={{ fontSize: 17, fontWeight: 700, marginBottom: 6 }}>Possible duplicate</div>
+          <div style={{ fontSize: 12, color: theme.textMuted, marginBottom: 12 }}>
+            We found 2 item(s) in your wardrobe that look very similar to this photo.
+          </div>
+          {/* matches */}
+          <div style={{ display: "flex", gap: 10, marginBottom: 14 }}>
+            {[85,78].map((score, i) => (
+              <div key={i} style={{ flex: 1, borderRadius: 12, overflow: "hidden",
+                border: `1.5px dashed ${theme.border}`,
+                background: theme.surface }}>
+                <div style={{ height: 72, background: [theme.tag1,theme.tag2][i], opacity: 0.75 }} />
+                <div style={{ padding: "4px 6px", fontSize: 11, color: theme.textMuted, textAlign: "center" }}>
+                  {score}% match
+                </div>
+              </div>
+            ))}
+          </div>
+          {/* actions */}
+          <div style={{ display: "flex", gap: 8 }}>
+            <div style={{ flex: 1, padding: "9px 0", textAlign: "center", borderRadius: 24,
+              border: `1.5px dashed ${theme.border}`, fontSize: 13, color: theme.textMuted }}>Cancel</div>
+            <div style={{ flex: 1, padding: "9px 0", textAlign: "center", borderRadius: 24,
+              background: theme.primary, color: theme.fabText, fontSize: 13, fontWeight: 700 }}>Import anyway</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <NavBar theme={theme} active={1} />
+  </PhoneShell>
+);
+
+// ─── Palette card ─────────────────────────────────────────────────────────────
+const PaletteCard = ({ theme }) => (
+  <div style={{ width: W, background: theme.bg, borderRadius: 28,
+    border: `2px solid ${theme.border}`, padding: 28,
+    fontFamily: "'Caveat', cursive", color: theme.text,
+    boxShadow: "0 4px 24px rgba(0,0,0,0.13)" }}>
+    <div style={{ fontSize: 22, fontWeight: 700, marginBottom: 20 }}>{theme.label}</div>
+    <div style={{ display: "flex", gap: 10, marginBottom: 20, flexWrap: "wrap" }}>
+      {[
+        { label: "Background", color: theme.bg },
+        { label: "Surface",    color: theme.surface },
+        { label: "Primary",    color: theme.primary },
+        { label: "Secondary",  color: theme.secondary },
+        { label: "Accent",     color: theme.accent },
+        { label: "Chip",       color: theme.chipBg },
+      ].map(s => (
+        <div key={s.label} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+          <div style={{ width: 48, height: 48, borderRadius: 12,
+            background: s.color, border: `1.5px solid ${theme.border}` }} />
+          <span style={{ fontSize: 10, color: theme.textMuted, textAlign: "center" }}>{s.label}</span>
+        </div>
+      ))}
+    </div>
+    {/* nav bar preview — 5 tabs */}
+    <div style={{ background: theme.navBg, borderRadius: 16,
+      border: `1.5px dashed ${theme.border}`, padding: "10px 8px",
+      display: "flex", justifyContent: "space-around", marginBottom: 14 }}>
+      {[
+        { icon: "style", label: "Outfits" },
+        { icon: "shirt", label: "Wardrobe" },
+        { icon: "shopping", label: "Shopping" },
+        { icon: "travel", label: "Travel" },
+        { icon: "insights", label: "Insights" },
+      ].map((t, i) => (
+        <div key={i} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 3,
+          color: i === 1 ? theme.primary : theme.textMuted, opacity: i === 1 ? 1 : 0.5 }}>
+          <Icon name={t.icon} size={20} color={i === 1 ? theme.primary : theme.textMuted} />
+          <span style={{ fontSize: 9 }}>{t.label}</span>
+        </div>
+      ))}
+    </div>
+    {/* sub-tab preview */}
+    <div style={{ display: "flex", borderBottom: `1.5px solid ${theme.border}`,
+      background: theme.surface, borderRadius: "8px 8px 0 0", marginBottom: 0 }}>
+      {["Outfits","Try-Ons"].map((t,i) => (
+        <div key={i} style={{ flex: 1, textAlign: "center", padding: "6px 4px",
+          fontSize: 12, fontWeight: i===0 ? 700 : 400,
+          color: i===0 ? theme.primary : theme.textMuted,
+          borderBottom: i===0 ? `2.5px solid ${theme.primary}` : "2.5px solid transparent" }}>{t}</div>
+      ))}
+    </div>
+    <div style={{ borderTop: "none", background: theme.surface, borderRadius: "0 0 8px 8px",
+      padding: "6px 10px", border: `1px dashed ${theme.border}`, marginBottom: 14 }}>
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+        <Chip theme={theme} label="Active chip" active />
+        <Chip theme={theme} label="Idle chip" />
+        <Tag theme={theme} label="Tag" color={theme.tag1} />
+        <Tag theme={theme} label="Tag 2" color={theme.tag2} />
+      </div>
+    </div>
+    {/* FAB preview */}
+    <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+      <div style={{ background: theme.fab, color: theme.fabText, borderRadius: 28,
+        padding: "10px 20px", display: "flex", alignItems: "center", gap: 8,
+        fontSize: 14, fontWeight: 700 }}>
+        <Icon name="add" size={16} color={theme.fabText} />
+        New outfit
+      </div>
+    </div>
+  </div>
+);
+
+// ─── Main app ─────────────────────────────────────────────────────────────────
+const App = () => (
+  <DesignCanvas>
+
+    {/* ── Section 0: Colour palettes ── */}
+    <DCSection id="palettes" title="Colour Palettes + Component Tone">
+      {Object.values(THEMES).map(theme => (
+        <DCArtboard key={theme.label} id={theme.label} label={theme.label} width={W} height={600}>
+          <PaletteCard theme={theme} />
+        </DCArtboard>
+      ))}
+    </DCSection>
+
+    {/* ── Section 1: Wardrobe ── */}
+    <DCSection id="wardrobe" title="Wardrobe — Grid (+ FAB opens camera; speed-dial reveals Gallery &amp; URL; location label on tiles)">
+      {Object.values(THEMES).map(theme => (
+        <DCArtboard key={theme.label+"-w"} id={theme.label+"-w"} label={theme.label} width={W} height={H}>
+          <WardrobeScreen theme={theme} />
+        </DCArtboard>
+      ))}
+    </DCSection>
+
+    {/* ── Section 2: Wardrobe duplicate check ── */}
+    <DCSection id="dedupe" title="Wardrobe — Import: Similarity Dedupe Dialog">
+      {Object.values(THEMES).map(theme => (
+        <DCArtboard key={theme.label+"-d"} id={theme.label+"-d"} label={theme.label} width={W} height={H}>
+          <WardrobeDupeCheckScreen theme={theme} />
+        </DCArtboard>
+      ))}
+    </DCSection>
+
+    {/* ── Section 3: Outfits list ── */}
+    <DCSection id="outfits-list" title="Outfits — List (sub-tab: Outfits)">
+      {Object.values(THEMES).map(theme => (
+        <DCArtboard key={theme.label+"-ol"} id={theme.label+"-ol"} label={theme.label} width={W} height={H}>
+          <OutfitsListScreen theme={theme} />
+        </DCArtboard>
+      ))}
+    </DCSection>
+
+    {/* ── Section 4: Try-Ons tab ── */}
+    <DCSection id="tryons" title="Outfits — Try-Ons sub-tab">
+      {Object.values(THEMES).map(theme => (
+        <DCArtboard key={theme.label+"-t"} id={theme.label+"-t"} label={theme.label} width={W} height={H}>
+          <TryOnsScreen theme={theme} />
+        </DCArtboard>
+      ))}
+    </DCSection>
+
+    {/* ── Section 5: Outfit Composer ── */}
+    <DCSection id="composer" title="Unified Outfit Composer (all entry points)">
+      {Object.values(THEMES).map(theme => (
+        <DCArtboard key={theme.label+"-c"} id={theme.label+"-c"} label={theme.label} width={W} height={H}>
+          <OutfitComposerScreen theme={theme} />
+        </DCArtboard>
+      ))}
+    </DCSection>
+
+    {/* ── Section 6: Shopping — Shopping List ── */}
+    <DCSection id="shopping-list" title="Shopping — Shopping List sub-tab">
+      {Object.values(THEMES).map(theme => (
+        <DCArtboard key={theme.label+"-sl"} id={theme.label+"-sl"} label={theme.label} width={W} height={H}>
+          <ShoppingListScreen theme={theme} />
+        </DCArtboard>
+      ))}
+    </DCSection>
+
+    {/* ── Section 7: Shopping — Similarity Finder ── */}
+    <DCSection id="shopping-sim" title="Shopping — Similarity Finder sub-tab">
+      {Object.values(THEMES).map(theme => (
+        <DCArtboard key={theme.label+"-ss"} id={theme.label+"-ss"} label={theme.label} width={W} height={H}>
+          <SimilarityFinderScreen theme={theme} />
+        </DCArtboard>
+      ))}
+    </DCSection>
+
+    {/* ── Section 8: Shopping — Identify Gaps ── */}
+    <DCSection id="shopping-gaps" title="Shopping — Identify Gaps sub-tab">
+      {Object.values(THEMES).map(theme => (
+        <DCArtboard key={theme.label+"-sg"} id={theme.label+"-sg"} label={theme.label} width={W} height={H}>
+          <IdentifyGapsScreen theme={theme} />
+        </DCArtboard>
+      ))}
+    </DCSection>
+
+    {/* ── Section 9: Insights — Calendar ── */}
+    <DCSection id="insights-cal" title="Insights — Calendar sub-tab (outfit history)">
+      {Object.values(THEMES).map(theme => (
+        <DCArtboard key={theme.label+"-ic"} id={theme.label+"-ic"} label={theme.label} width={W} height={H}>
+          <InsightsCalendarScreen theme={theme} />
+        </DCArtboard>
+      ))}
+    </DCSection>
+
+    {/* ── Section 10: Insights — Costs ── */}
+    <DCSection id="insights-costs" title="Insights — Costs sub-tab (token usage + activity counts)">
+      {Object.values(THEMES).map(theme => (
+        <DCArtboard key={theme.label+"-cost"} id={theme.label+"-cost"} label={theme.label} width={W} height={H}>
+          <InsightsCostsScreen theme={theme} />
+        </DCArtboard>
+      ))}
+    </DCSection>
+
+    {/* ── Section 11: Settings — AI tab ── */}
+    <DCSection id="settings-ai" title="Settings — AI tab (considerations toggles + editable prompts)">
+      {Object.values(THEMES).map(theme => (
+        <DCArtboard key={theme.label+"-ai"} id={theme.label+"-ai"} label={theme.label} width={W} height={H}>
+          <SettingsAIScreen theme={theme} />
+        </DCArtboard>
+      ))}
+    </DCSection>
+
+  </DesignCanvas>
+);
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
+</script>
+<div id="root"></div>
+</body>
+</html>

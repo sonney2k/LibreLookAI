@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LibreLookAI · Try-On — Handoff Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="ai-shared.jsx"></script>
+<script type="text/babel" src="tryon-shared.jsx"></script>
+<script type="text/babel" src="tryon-nav.jsx"></script>
+<script type="text/babel" src="tryon-history-v2.jsx"></script>
+<script type="text/babel" src="tryon-states.jsx"></script>
+<script type="text/babel" src="tryon-create-v1.jsx"></script>
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;height:100%;background:#0E120D;font-family:'Plus Jakarta Sans',sans-serif}
+  ::-webkit-scrollbar{display:none}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const TryOnHandoffApp = () => {
+  const theme = "green-light";
+  return (
+    <DesignCanvas
+      title="Try-On — Handoff bundle"
+      subtitle="Entry point (Option A · Center AI button), Past Try-Ons (Option B · Hero feed), and all 5 screen states."
+      defaultBg="#0E120D">
+
+      <DCSection id="entry" title="Entry point · Center AI button"
+        subtitle="The center slot of the bottom nav is a raised AI button. Persists across every main tab. Tap → Quick Try-On sheet asks where to start, then routes to the composer with source pre-filled. Insights moves to a chart icon in each tab's header (top-right).">
+        <DCArtboard id="A-out" label="① Outfits tab" width={390} height={844}
+          note="The raised AI button breaks the nav row to demand attention. Insights icon top-right of header.">
+          <NavOptionCenter theme={theme} tab="outfits"/>
+        </DCArtboard>
+        <DCArtboard id="A-ward" label="① Wardrobe tab" width={390} height={844}
+          note="Same nav across tabs — users learn the button position once.">
+          <NavOptionCenter theme={theme} tab="wardrobe"/>
+        </DCArtboard>
+        <DCArtboard id="A-shop" label="① Shopping tab" width={390} height={844}
+          note="Try-On especially relevant here — preview a purchase on yourself.">
+          <NavOptionCenter theme={theme} tab="shopping"/>
+        </DCArtboard>
+        <DCArtboard id="A-trav" label="① Travel tab" width={390} height={844}
+          note="Future-proof for travel-outfit try-ons.">
+          <NavOptionCenter theme={theme} tab="travel"/>
+        </DCArtboard>
+        <DCArtboard id="A-sheet" label="② Quick Try-On sheet" width={390} height={844}
+          note="Modal sheet from center button. Picks source (outfit/wardrobe/shopping/travel) and routes to composer with that surface pre-seeded. Also shortcuts to 'See past try-ons'.">
+          <QuickTryOnSheet theme={theme}/>
+        </DCArtboard>
+        <DCArtboard id="A-composer" label="③ Composer (source pre-filled)" width={390} height={844}
+          note="After 'A saved outfit' tap in the sheet. Source banner is populated. Same composer pattern serves all four routes — banner content varies by source.">
+          <TryOnCreateV1 theme={theme}/>
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection id="history" title="Past try-ons · Hero feed"
+        subtitle="Reached via the 'See past try-ons' shortcut in the Quick sheet, or the Outfits ▸ Try-Ons sub-tab. Latest try-on as a big hero with item-stack overlay; earlier results fall into a mixed 2-col + 3-col grid.">
+        <DCArtboard id="H-feed" label="History · hero feed" width={390} height={844}
+          note="Hero card shows source pill, date/time, source label, and overlapping item thumbnails. Earlier shows 2 mid cards then 3 small dot-coded cards (color dot = source). New-try-on pill button bottom-right.">
+          <TryOnHistoryV2 theme={theme}/>
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection id="states" title="Screen states"
+        subtitle="Every secondary state the screens need to handle.">
+        <DCArtboard id="S1" label="Empty · no try-ons yet" width={390} height={844}
+          note="First-run on history. Hints at 3 entry surfaces via chips below the CTA.">
+          <TryOnEmpty theme={theme}/>
+        </DCArtboard>
+        <DCArtboard id="S2" label="No reference photos" width={390} height={844}
+          note="Blocks the composer until the user has uploaded body shots in Settings → Profile. Provides three upload slots inline (Front, Side, Back).">
+          <TryOnNoPhotos theme={theme}/>
+        </DCArtboard>
+        <DCArtboard id="S3" label="Generating" width={390} height={844}
+          note="Overlay on composer while Gemini runs. Progress steps + Cancel.">
+          <TryOnGenerating theme={theme}/>
+        </DCArtboard>
+        <DCArtboard id="S4" label="Result / Preview" width={390} height={844}
+          note="Generated image. Save / Try again / Change items. Pinch-to-zoom hint.">
+          <TryOnResult theme={theme}/>
+        </DCArtboard>
+        <DCArtboard id="S5" label="Detail · past try-on" width={390} height={844}
+          note="From history. Shows source link ('View trip'), full item list with tap-to-wardrobe, regenerate + save-to-gallery.">
+          <TryOnDetail theme={theme}/>
+        </DCArtboard>
+      </DCSection>
+    </DesignCanvas>
+  );
+};
+
+ReactDOM.createRoot(document.getElementById('root')).render(<TryOnHandoffApp/>);
+</script>
+</body>
+</html>

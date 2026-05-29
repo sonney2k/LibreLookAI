@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LibreLookAI · Settings Redesign — Handoff Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="ai-shared.jsx"></script>
+<script type="text/babel" src="settings-shared.jsx"></script>
+<script type="text/babel" src="settings-current.jsx"></script>
+<script type="text/babel" src="settings-v1.jsx"></script>
+<script type="text/babel" src="settings-v2.jsx"></script>
+<script type="text/babel" src="settings-advanced.jsx"></script>
+<script type="text/babel" src="settings-confirm.jsx"></script>
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;height:100%;background:#0E120D;font-family:'Plus Jakarta Sans',sans-serif}
+  ::-webkit-scrollbar{display:none}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const SettingsHandoffApp = () => {
+  const theme = "green-light";
+  return (
+    <DesignCanvas
+      title="Settings · Simplify for fashion users"
+      subtitle="The current screen has 8 horizontally-scrolling tabs (Profile · Display · Data · Credits · Costs · AI · Feedback · About) — too many, and half of them speak developer. Below: today's state, two redesign directions, and a look at what 'Advanced' contains once the everyday surface is calmed down."
+      defaultBg="#0E120D">
+
+      <DCSection id="now" title="Where we are today"
+        subtitle="Eight tabs, side-scrolling. Inside the Data tab (the worst offender), three destructive AI actions sit side-by-side with closet management and one in particular ('Fix Cutout Backgrounds') has no business being in a consumer app.">
+        <DCArtboard id="N1" label="① Current settings · Data tab" width={390} height={844}
+          note="The visible state of the app as it ships. Note the right-edge fade — tabs 5–8 (Costs, AI, Feedback, About) are hidden until you swipe. Three destructive red buttons stack up in a single tab.">
+          <SettingsCurrent theme="green-light"/>
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection id="v1" title="V1 · Single scroll (recommended)"
+        subtitle="Tab bar removed entirely. iOS-Settings style: one calmly-grouped scroll page. Sections in plain English (Your style · Your closets · How it looks · AI credits · More). Everything technical or destructive goes through one quiet 'Advanced' door at the bottom. Theme picker becomes visual swatches — no font picker on the main page (fonts are advanced).">
+        <DCArtboard id="V1-full" label="① Full page (no clip)" width={390} height={1500}
+          note="The entire V1 settings page rendered at its natural height so you can review every section without scrolling. On a real phone the user sees roughly the top third at rest and scrolls down — see artboard ② for the in-device view.">
+          <SettingsV1Tall theme="green-light"/>
+        </DCArtboard>
+        <DCArtboard id="V1-main" label="② In-device view" width={390} height={844}
+          note="The 'You' hero card at the top reflects current preferences in one line of plain English ('Casual · Minimalist · she/her · English') so the user can confirm at a glance. Try-on photos are inline — no separate destination. Theme picker is visual, not a list of names. Credits get a friendly translation ('Enough for ~30 try-ons').">
+          <SettingsV1 theme="green-light"/>
+        </DCArtboard>
+        <DCArtboard id="V1-adv" label="③ Behind 'Advanced'" width={390} height={844}
+          note="Everything the current AI / Feedback / Costs / parts of Data tabs contained, now under one door. Header pill warns 'Rarely needed'. Re-tag and re-remove-BG explain credit cost on the row itself. The API key field is framed as 'Use your own free AI key' — same feature, no acronym.">
+          <SettingsAdvanced theme="green-light"/>
+        </DCArtboard>
+        <DCArtboard id="V1-confirm" label="④ Destructive confirm" width={390} height={844}
+          note="What 'Re-tag all my clothes' looks like when tapped. Today's dialog is one sentence; the new one shows time-to-finish, credit cost, current balance, and blocks (rather than silently fails) if the user can't afford it.">
+          <ConfirmRetag theme="green-light"/>
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection id="v2" title="V2 · Three plain-English tabs"
+        subtitle="Less radical: keep a tab metaphor but shrink to three fully-visible tabs — You · My style · App. Each tab is short enough to read end-to-end without scrolling. A '⋯' in the header surfaces things rarely opened (Advanced, Help, About). Use this if the team is uncomfortable removing the tab pattern entirely.">
+        <DCArtboard id="V2-you" label="① You tab" width={390} height={844}
+          note="Identity-related rows only: name, language, gender, year of birth, body photos. The horizontal segmented control replaces the scrollable tab row — all 3 options visible at once.">
+          <SettingsV2 theme="green-light" tab="you"/>
+        </DCArtboard>
+        <DCArtboard id="V2-style" label="② My style tab" width={390} height={844}
+          note="Style preferences become tappable chips (today they're a free-text field, which most users won't fill in). Closets live here because choosing where to shop / dress from is part of styling.">
+          <SettingsV2 theme="green-light" tab="style"/>
+        </DCArtboard>
+        <DCArtboard id="V2-app" label="③ App tab" width={390} height={844}
+          note="Theme, credits, and the 'More' door (Advanced / Help / About). All non-identity, non-style options collapse here.">
+          <SettingsV2 theme="green-light" tab="app"/>
+        </DCArtboard>
+      </DCSection>
+
+    </DesignCanvas>
+  );
+};
+
+ReactDOM.createRoot(document.getElementById('root')).render(<SettingsHandoffApp/>);
+</script>
+</body>
+</html>
