@@ -6,7 +6,7 @@ Compact day-to-day guidance. **Deep architecture, pipelines, rationale, and Dial
 - `app/` — Android app (Kotlin/Compose), package `com.librelookai`.
 - `firebase/` — Cloud Functions (`geminiProxy`, `verifyPurchase`, pricing trigger) + Firestore rules.
 - `scripts/` — Python/shell helpers (`add_translations.py`, `translation_status.sh`, `kt_split.py`).
-- `plan/` — long-form docs: `CLAUDE_ARCHIVE.md`, `FIN.md`, `TODO.md`, `REFACTOR_PLAN.md`, `TRANSLATION.md`, `Trips.md`.
+- `plan/` — long-form docs: `CLAUDE_ARCHIVE.md`, `FIN.md`, `TODO.md`, `TRANSLATION.md`.
 - `designs/` — design-handoff bundles (HTML mockups, JSX prototypes, per-surface `README.md`).
 - `website/` — static marketing site (vanilla HTML/CSS + `i18n.js`/`translations.js` in 12 languages; real-device screenshots in `screenshots/`).
 - `README.md` (root) — Firebase / signing / partner-program setup.
