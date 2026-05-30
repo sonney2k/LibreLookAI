@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.asSharedFlow
  * resolving the text itself. Every Gemini method's generic `catch (Exception)` turns it into a
  * graceful `null`, so it never crashes the caller.
  */
-class AiUnavailableException(@StringRes val messageRes: Int) : Exception("AI unavailable")
+class AiUnavailableException(@param:StringRes val messageRes: Int) : Exception("AI unavailable")
 
 /**
  * Process-wide event bus for "AI couldn't run" signals, mirroring
