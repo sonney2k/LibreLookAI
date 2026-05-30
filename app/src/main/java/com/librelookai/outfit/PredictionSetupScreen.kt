@@ -155,6 +155,12 @@ fun PredictionSetupDialog(
                                 outfitsViewModel.setComposerConsideration(prefsConsiderations, transform)
                             },
                         )
+                        ExpertTagsCard(
+                            considerations = effectiveConsiderations,
+                            onToggleTag = { dim ->
+                                outfitsViewModel.setComposerConsideration(prefsConsiderations) { it.toggleItemTag(dim) }
+                            },
+                        )
                         if (locationState.locations.size >= 2) {
                             ClosetChipRow(
                                 closetNames = closetNames,

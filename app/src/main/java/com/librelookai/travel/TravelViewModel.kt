@@ -22,6 +22,7 @@ import com.librelookai.gemini.generateText
 import com.librelookai.settings.AiConsiderations
 import com.librelookai.settings.UserPreferences
 import com.librelookai.wardrobe.DriveImage
+import com.librelookai.wardrobe.toPromptJson
 import com.librelookai.weather.DestinationSuggestion
 import com.librelookai.weather.WeatherRepository
 import com.librelookai.settings.AppLanguage
@@ -300,28 +301,14 @@ private fun buildPackingPrompt(
     val age    = prefs?.yearOfBirth?.let { LocalDate.now().year - it }
     val endDate = startDate.plusDays((days - 1).toLong())
 
-    val wardrobeJson = images.joinToString(",", "[", "]") { img ->
-        val t = img.tags
-        if (t == null) {
-            """{"id":"${img.driveId}","name":"${img.name}","tags":null}"""
-        } else {
-            val uses        = t.uses.joinToString(",", "[", "]") { "\"$it\"" }
-            val colors      = t.colors.joinToString(",", "[", "]") { "\"$it\"" }
-            val seasonality = t.seasonality.joinToString(",", "[", "]") { "\"$it\"" }
-            val aesthetic   = t.aesthetic.joinToString(",", "[", "]") { "\"$it\"" }
-            val fit         = t.fit.joinToString(",", "[", "]") { "\"$it\"" }
-            val material    = t.material.joinToString(",", "[", "]") { "\"$it\"" }
-            val pattern     = t.pattern.joinToString(",", "[", "]") { "\"$it\"" }
-            """{"id":"${img.driveId}","name":"${img.name}","tags":{"type":"${t.type}","category":"${t.category}","uses":$uses,"colors":$colors,"seasonality":$seasonality,"aesthetic":$aesthetic,"fit":$fit,"material":$material,"pattern":$pattern}}"""
-        }
-    }
+    val c = considerationsOverride ?: prefs?.aiConsiderations ?: AiConsiderations()
+    val wardrobeJson = images.joinToString(",", "[", "]") { it.toPromptJson(c) }
 
     val stylesJson = styles.joinToString(",", "[", "]") { s ->
         val items = s.itemIds.joinToString(",", "[", "]") { "\"$it\"" }
         """{"id":"${s.id}","name":"${s.name}","items":$items}"""
     }
 
-    val c = considerationsOverride ?: prefs?.aiConsiderations ?: AiConsiderations()
     return buildString {
         appendLine(preamble.trim())
         appendLine()

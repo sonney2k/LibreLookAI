@@ -58,6 +58,52 @@ fun AiConsiderationsStrip(
     }
 }
 
+/**
+ * Expert option: a FlowRow of FilterChips choosing which item tag dimensions
+ * ([AiConsiderations.TOGGLEABLE_TAGS]) get fed into outfit-creation and gap-analysis prompts.
+ * `type`/`category`/`name` are always sent and not shown here. Reuses the existing per-dimension
+ * tag labels (`tag_uses`, `tag_colors`, …) so no new translations are needed for the chips.
+ */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun ExpertTagsStrip(
+    considerations: AiConsiderations,
+    onToggleTag: (String) -> Unit,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Text(
+            stringResource(R.string.composer_section_tags),
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Text(
+            stringResource(R.string.composer_tags_hint),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            AiConsiderations.TOGGLEABLE_TAGS.forEach { dim ->
+                val labelRes = tagDimLabelRes(dim) ?: return@forEach
+                ConsiderationChip(labelRes, considerations.includesItemTag(dim)) { onToggleTag(dim) }
+            }
+        }
+    }
+}
+
+private fun tagDimLabelRes(dim: String): Int? = when (dim) {
+    "uses" -> R.string.tag_uses
+    "colors" -> R.string.tag_colors
+    "seasonality" -> R.string.tag_seasonality
+    "aesthetic" -> R.string.tag_aesthetic
+    "fit" -> R.string.tag_fit
+    "material" -> R.string.tag_material
+    "pattern" -> R.string.tag_pattern
+    else -> null
+}
+
 @Composable
 private fun ConsiderationChip(labelRes: Int, selected: Boolean, onClick: () -> Unit) {
     FilterChip(

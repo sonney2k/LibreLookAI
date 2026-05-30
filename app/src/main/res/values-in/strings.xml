@@ -986,4 +986,8 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="settings_confirm_credits_value">%1$d / %2$d tersisa</string>
     <string name="settings_confirm_short_format">Anda kurang %1$d kredit. Isi ulang dulu.</string>
     <string name="settings_confirm_buy_and_continue">Beli kredit &amp; lanjutkan</string>
+
+    <!-- Expert: item tag dimensions for outfit AI -->
+    <string name="composer_section_tags">Detail item yang dipertimbangkan</string>
+    <string name="composer_tags_hint">Pilih atribut pakaian yang dipertimbangkan AI. Lebih sedikit detail = saran lebih cepat, murah, dan terfokus.</string>
 </resources>

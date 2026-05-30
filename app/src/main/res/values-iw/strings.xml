@@ -1010,4 +1010,8 @@
     <string name="settings_confirm_credits_value">%1$d / %2$d נותרו</string>
     <string name="settings_confirm_short_format">חסרים לך %1$d קרדיטים. טען קודם.</string>
     <string name="settings_confirm_buy_and_continue">קנה קרדיטים &amp; המשך</string>
+
+    <!-- Expert: item tag dimensions for outfit AI -->
+    <string name="composer_section_tags">פרטי הפריט שיש לשקלל</string>
+    <string name="composer_tags_hint">בחר אילו מאפייני לבוש ה-AI שוקל. פחות פרטים = הצעות מהירות, זולות וממוקדות יותר.</string>
 </resources>

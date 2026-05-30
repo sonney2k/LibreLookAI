@@ -986,4 +986,8 @@
     <string name="settings_confirm_credits_value">%1$d / 剩 %2$d</string>
     <string name="settings_confirm_short_format">你還差 %1$d 點數。請先儲值。</string>
     <string name="settings_confirm_buy_and_continue">購買點數 &amp; 繼續</string>
+
+    <!-- Expert: item tag dimensions for outfit AI -->
+    <string name="composer_section_tags">要納入考量的單品細節</string>
+    <string name="composer_tags_hint">選擇 AI 要考量哪些服裝屬性。細節越少 = 建議越快、越省、越精準。</string>
 </resources>

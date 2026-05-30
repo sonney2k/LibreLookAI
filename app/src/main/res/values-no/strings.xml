@@ -1006,4 +1006,8 @@
     <string name="settings_confirm_credits_value">%1$d / %2$d igjen</string>
     <string name="settings_confirm_short_format">Du mangler %1$d kreditter. Fyll på først.</string>
     <string name="settings_confirm_buy_and_continue">Kjøp kreditter &amp; fortsett</string>
+
+    <!-- Expert: item tag dimensions for outfit AI -->
+    <string name="composer_section_tags">Plaggdetaljer å vektlegge</string>
+    <string name="composer_tags_hint">Velg hvilke klesegenskaper AI-en vektlegger. Færre detaljer = raskere, billigere og mer treffsikre forslag.</string>
 </resources>

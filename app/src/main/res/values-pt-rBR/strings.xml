@@ -1006,4 +1006,8 @@
     <string name="settings_confirm_credits_value">%1$d / %2$d restantes</string>
     <string name="settings_confirm_short_format">Faltam %1$d créditos. Recarregue primeiro.</string>
     <string name="settings_confirm_buy_and_continue">Comprar créditos &amp; continuar</string>
+
+    <!-- Expert: item tag dimensions for outfit AI -->
+    <string name="composer_section_tags">Detalhes das peças a considerar</string>
+    <string name="composer_tags_hint">Escolha quais atributos das roupas a IA considera. Menos detalhes = sugestões mais rápidas, baratas e precisas.</string>
 </resources>

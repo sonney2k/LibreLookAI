@@ -279,6 +279,47 @@ internal fun ConsidersCard(
     }
 }
 
+// ─── 4b) Expert: which item details to weigh ─────────────────────────────────
+
+/** Maps each [AiConsiderations.TOGGLEABLE_TAGS] dimension to its (already-translated) chip label. */
+private val TAG_DIM_LABELS = mapOf(
+    "uses" to R.string.tag_uses,
+    "colors" to R.string.tag_colors,
+    "seasonality" to R.string.tag_seasonality,
+    "aesthetic" to R.string.tag_aesthetic,
+    "fit" to R.string.tag_fit,
+    "material" to R.string.tag_material,
+    "pattern" to R.string.tag_pattern,
+)
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+internal fun ExpertTagsCard(
+    considerations: AiConsiderations,
+    onToggleTag: (String) -> Unit,
+) {
+    SectionCard(
+        icon = Icons.Default.Tune,
+        title = stringResource(R.string.composer_section_tags),
+        hint = stringResource(R.string.composer_tags_hint),
+    ) {
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            AiConsiderations.TOGGLEABLE_TAGS.forEach { dim ->
+                val labelRes = TAG_DIM_LABELS[dim] ?: return@forEach
+                SmallPillChip(
+                    label = stringResource(labelRes),
+                    icon = null,
+                    active = considerations.includesItemTag(dim),
+                    onClick = { onToggleTag(dim) },
+                )
+            }
+        }
+    }
+}
+
 private data class ConsiderationRow(
     val labelRes: Int,
     val icon: ImageVector,

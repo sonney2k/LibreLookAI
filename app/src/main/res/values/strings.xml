@@ -807,6 +807,8 @@
     <string name="composer_section_considerations">What should AI consider?</string>
     <string name="composer_occasion_hint">A sentence helps Gemini hit the right tone.</string>
     <string name="composer_considerations_hint">Signals layered on top of your wardrobe to personalize the result.</string>
+    <string name="composer_section_tags">Item details to weigh</string>
+    <string name="composer_tags_hint">Pick which clothing attributes the AI weighs. Fewer details = faster, cheaper, more focused suggestions.</string>
     <string name="composer_vibe_count">%1$d selected</string>
     <string name="composer_generate_outfit">Generate outfit</string>
     <string name="action_reset">Reset</string>

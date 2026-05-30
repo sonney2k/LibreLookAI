@@ -159,27 +159,11 @@ class WardrobeGapViewModel(app: Application) : AndroidViewModel(app) {
 
 // ---------- Prompt builders ----------
 
-private fun itemJson(img: DriveImage): String {
-    val t = img.tags
-    return if (t == null) {
-        """{"id":"${img.driveId}","name":"${img.name}","tags":null}"""
-    } else {
-        val uses        = t.uses.joinToString(",", "[", "]") { "\"$it\"" }
-        val colors      = t.colors.joinToString(",", "[", "]") { "\"$it\"" }
-        val seasonality = t.seasonality.joinToString(",", "[", "]") { "\"$it\"" }
-        val aesthetic   = t.aesthetic.joinToString(",", "[", "]") { "\"$it\"" }
-        val fit         = t.fit.joinToString(",", "[", "]") { "\"$it\"" }
-        val material    = t.material.joinToString(",", "[", "]") { "\"$it\"" }
-        val pattern     = t.pattern.joinToString(",", "[", "]") { "\"$it\"" }
-        """{"id":"${img.driveId}","name":"${img.name}","tags":{"type":"${t.type}","category":"${t.category}","uses":$uses,"colors":$colors,"seasonality":$seasonality,"aesthetic":$aesthetic,"fit":$fit,"material":$material,"pattern":$pattern}}"""
-    }
-}
-
 private fun buildGapPrompt(preamble: String, images: List<DriveImage>, prefs: UserPreferences?): String {
     val c = prefs?.aiConsiderations ?: AiConsiderations()
     val age = prefs?.yearOfBirth?.let { java.time.LocalDate.now().year - it }
 
-    val wardrobeJson = images.joinToString(",", "[", "]", transform = ::itemJson)
+    val wardrobeJson = images.joinToString(",", "[", "]") { it.toPromptJson(c) }
 
     return buildString {
         appendLine(preamble.trim())
@@ -213,8 +197,8 @@ private fun buildReplacementsPrompt(
     val c = prefs?.aiConsiderations ?: AiConsiderations()
     val age = prefs?.yearOfBirth?.let { java.time.LocalDate.now().year - it }
 
-    val retiringJson  = retiring.joinToString(",", "[", "]", transform = ::itemJson)
-    val remainingJson = remaining.joinToString(",", "[", "]", transform = ::itemJson)
+    val retiringJson  = retiring.joinToString(",", "[", "]") { it.toPromptJson(c) }
+    val remainingJson = remaining.joinToString(",", "[", "]") { it.toPromptJson(c) }
 
     val preamble = """
         You are a personal stylist and wardrobe analyst.

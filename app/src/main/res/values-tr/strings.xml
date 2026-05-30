@@ -1006,4 +1006,8 @@
     <string name="settings_confirm_credits_value">%1$d / %2$d kaldı</string>
     <string name="settings_confirm_short_format">%1$d kredin eksik. Önce yükle.</string>
     <string name="settings_confirm_buy_and_continue">Kredi al &amp; devam et</string>
+
+    <!-- Expert: item tag dimensions for outfit AI -->
+    <string name="composer_section_tags">Değerlendirilecek ürün detayları</string>
+    <string name="composer_tags_hint">Yapay zekânın hangi giysi özelliklerini dikkate alacağını seç. Daha az detay = daha hızlı, daha ucuz ve daha odaklı öneriler.</string>
 </resources>

@@ -986,4 +986,8 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="settings_confirm_credits_value">%1$d / còn %2$d</string>
     <string name="settings_confirm_short_format">Bạn thiếu %1$d tín dụng. Hãy nạp thêm trước.</string>
     <string name="settings_confirm_buy_and_continue">Mua tín dụng &amp; tiếp tục</string>
+
+    <!-- Expert: item tag dimensions for outfit AI -->
+    <string name="composer_section_tags">Chi tiết trang phục cần cân nhắc</string>
+    <string name="composer_tags_hint">Chọn những thuộc tính trang phục mà AI cân nhắc. Ít chi tiết hơn = gợi ý nhanh hơn, rẻ hơn và tập trung hơn.</string>
 </resources>

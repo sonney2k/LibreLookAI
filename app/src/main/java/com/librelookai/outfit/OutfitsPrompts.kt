@@ -8,6 +8,7 @@ import com.librelookai.settings.AiConsiderations
 import com.librelookai.settings.AppLanguage
 import com.librelookai.settings.UserPreferences
 import com.librelookai.wardrobe.DriveImage
+import com.librelookai.wardrobe.toPromptJson
 import com.librelookai.weather.WeatherData
 import com.librelookai.weather.wmoEmoji
 import java.time.LocalDate
@@ -40,16 +41,7 @@ internal fun buildPredictionPrompt(
     val usedItemIds = styles.flatMap { it.itemIds }.toSet()
     val wardrobeJson = images
         .filter { it.driveId in usedItemIds }
-        .joinToString(",", "[", "]") { img ->
-            val t = img.tags
-            if (t == null) {
-                """{"id":"${img.driveId}","tags":null}"""
-            } else {
-                val uses   = t.uses.joinToString(",", "[", "]") { "\"$it\"" }
-                val colors = t.colors.joinToString(",", "[", "]") { "\"$it\"" }
-                """{"id":"${img.driveId}","tags":{"type":"${t.type}","category":"${t.category}","uses":$uses,"colors":$colors}}"""
-            }
-        }
+        .joinToString(",", "[", "]") { it.toPromptJson(c) }
 
     val stylesJson = styles.joinToString(",", "[", "]") { s ->
         val items = s.itemIds.joinToString(",", "[", "]") { "\"$it\"" }
@@ -121,7 +113,7 @@ internal fun buildPredictionPrompt(
             }
             appendLine()
         }
-        appendLine("## Wardrobe Items (id + tags)")
+        appendLine("## Wardrobe Items (id + name + tags)")
         appendLine(wardrobeJson)
         appendLine()
         appendLine("## Existing Styles to Choose From")
@@ -171,21 +163,7 @@ internal fun buildComposerPrompt(
     val c = considerationsOverride ?: prefs?.aiConsiderations ?: AiConsiderations()
     val age = prefs?.yearOfBirth?.let { LocalDate.now().year - it }
 
-    val wardrobeJson = images.joinToString(",", "[", "]") { img ->
-        val t = img.tags
-        if (t == null) {
-            """{"id":"${img.driveId}","name":"${img.name}","tags":null}"""
-        } else {
-            val uses        = t.uses.joinToString(",", "[", "]") { "\"$it\"" }
-            val colors      = t.colors.joinToString(",", "[", "]") { "\"$it\"" }
-            val seasonality = t.seasonality.joinToString(",", "[", "]") { "\"$it\"" }
-            val aesthetic   = t.aesthetic.joinToString(",", "[", "]") { "\"$it\"" }
-            val fit         = t.fit.joinToString(",", "[", "]") { "\"$it\"" }
-            val material    = t.material.joinToString(",", "[", "]") { "\"$it\"" }
-            val pattern     = t.pattern.joinToString(",", "[", "]") { "\"$it\"" }
-            """{"id":"${img.driveId}","name":"${img.name}","tags":{"type":"${t.type}","category":"${t.category}","uses":$uses,"colors":$colors,"seasonality":$seasonality,"aesthetic":$aesthetic,"fit":$fit,"material":$material,"pattern":$pattern}}"""
-        }
-    }
+    val wardrobeJson = images.joinToString(",", "[", "]") { it.toPromptJson(c) }
 
     val weatherStr = when {
         weatherAuto != null ->

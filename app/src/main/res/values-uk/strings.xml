@@ -986,4 +986,8 @@
     <string name="settings_confirm_credits_value">%1$d / %2$d лишилось</string>
     <string name="settings_confirm_short_format">Бракує %1$d кредитів. Спершу поповніть.</string>
     <string name="settings_confirm_buy_and_continue">Купити кредити &amp; продовжити</string>
+
+    <!-- Expert: item tag dimensions for outfit AI -->
+    <string name="composer_section_tags">Деталі речей для врахування</string>
+    <string name="composer_tags_hint">Обери, які характеристики одягу враховує ШІ. Менше деталей = швидші, дешевші й точніші пропозиції.</string>
 </resources>

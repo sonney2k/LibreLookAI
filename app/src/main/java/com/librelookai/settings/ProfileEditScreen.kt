@@ -111,6 +111,10 @@ fun ProfileEditScreen(
                 onToggle = { transform -> considerations = transform(considerations) },
                 titleRes = R.string.settings_profile_ai_considerations,
             )
+            ExpertTagsStrip(
+                considerations = considerations,
+                onToggleTag = { dim -> considerations = considerations.toggleItemTag(dim) },
+            )
             Button(onClick = ::commitAndBack, modifier = Modifier.fillMaxWidth()) {
                 Text(stringResource(R.string.action_save))
             }

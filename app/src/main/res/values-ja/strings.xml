@@ -1006,4 +1006,8 @@
     <string name="settings_confirm_credits_value">%1$d / 残り%2$d</string>
     <string name="settings_confirm_short_format">%1$dクレジット不足です。まずチャージしてください。</string>
     <string name="settings_confirm_buy_and_continue">クレジットを購入 &amp; 続行</string>
+
+    <!-- Expert: item tag dimensions for outfit AI -->
+    <string name="composer_section_tags">考慮するアイテムの詳細</string>
+    <string name="composer_tags_hint">AIが考慮する服の属性を選びます。詳細が少ないほど、速く、安く、的を絞った提案になります。</string>
 </resources>

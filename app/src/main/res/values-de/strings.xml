@@ -1075,4 +1075,8 @@
     <string name="settings_confirm_credits_value">%1$d / %2$d übrig</string>
     <string name="settings_confirm_short_format">Dir fehlen %1$d Credits. Bitte zuerst aufladen.</string>
     <string name="settings_confirm_buy_and_continue">Credits kaufen &amp; fortfahren</string>
+
+    <!-- Expert: item tag dimensions for outfit AI -->
+    <string name="composer_section_tags">Welche Artikel-Details zählen</string>
+    <string name="composer_tags_hint">Wähle, welche Kleidungsmerkmale die KI berücksichtigt. Weniger Details = schnellere, günstigere und gezieltere Vorschläge.</string>
 </resources>

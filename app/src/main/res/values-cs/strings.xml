@@ -1006,4 +1006,8 @@
     <string name="settings_confirm_credits_value">%1$d / %2$d zbývá</string>
     <string name="settings_confirm_short_format">Chybí ti %1$d kreditů. Nejdřív dobij.</string>
     <string name="settings_confirm_buy_and_continue">Koupit kredity &amp; pokračovat</string>
+
+    <!-- Expert: item tag dimensions for outfit AI -->
+    <string name="composer_section_tags">Detaily položek k zohlednění</string>
+    <string name="composer_tags_hint">Vyber, které vlastnosti oblečení AI zohlední. Méně detailů = rychlejší, levnější a cílenější návrhy.</string>
 </resources>

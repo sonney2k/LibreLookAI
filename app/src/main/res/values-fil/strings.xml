@@ -1006,4 +1006,8 @@
     <string name="settings_confirm_credits_value">%1$d / %2$d ang natitira</string>
     <string name="settings_confirm_short_format">Kulang ka ng %1$d credit. Mag-top up muna.</string>
     <string name="settings_confirm_buy_and_continue">Bumili ng credit &amp; magpatuloy</string>
+
+    <!-- Expert: item tag dimensions for outfit AI -->
+    <string name="composer_section_tags">Mga detalye ng item na isasaalang-alang</string>
+    <string name="composer_tags_hint">Piliin kung aling mga katangian ng damit ang isinasaalang-alang ng AI. Mas kaunting detalye = mas mabilis, mas mura, at mas tutok na mga mungkahi.</string>
 </resources>

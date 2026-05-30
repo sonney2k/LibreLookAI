@@ -1006,4 +1006,8 @@
     <string name="settings_confirm_credits_value">%1$d / %2$d απομένουν</string>
     <string name="settings_confirm_short_format">Σου λείπουν %1$d πιστώσεις. Γέμισε πρώτα.</string>
     <string name="settings_confirm_buy_and_continue">Αγορά πιστώσεων &amp; συνέχεια</string>
+
+    <!-- Expert: item tag dimensions for outfit AI -->
+    <string name="composer_section_tags">Λεπτομέρειες ρούχων προς αξιολόγηση</string>
+    <string name="composer_tags_hint">Επίλεξε ποια χαρακτηριστικά των ρούχων λαμβάνει υπόψη η AI. Λιγότερες λεπτομέρειες = ταχύτερες, φθηνότερες και πιο στοχευμένες προτάσεις.</string>
 </resources>

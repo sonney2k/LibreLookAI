@@ -986,4 +986,8 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="settings_confirm_credits_value">%1$d / %2$d rămase</string>
     <string name="settings_confirm_short_format">Îți lipsesc %1$d credite. Reîncarcă mai întâi.</string>
     <string name="settings_confirm_buy_and_continue">Cumpără credite &amp; continuă</string>
+
+    <!-- Expert: item tag dimensions for outfit AI -->
+    <string name="composer_section_tags">Detalii articole de luat în calcul</string>
+    <string name="composer_tags_hint">Alege ce atribute ale hainelor ia în calcul AI-ul. Mai puține detalii = sugestii mai rapide, ieftine și precise.</string>
 </resources>

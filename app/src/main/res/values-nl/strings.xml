@@ -1006,4 +1006,8 @@
     <string name="settings_confirm_credits_value">%1$d / %2$d over</string>
     <string name="settings_confirm_short_format">Je komt %1$d credits tekort. Eerst opwaarderen.</string>
     <string name="settings_confirm_buy_and_continue">Credits kopen &amp; doorgaan</string>
+
+    <!-- Expert: item tag dimensions for outfit AI -->
+    <string name="composer_section_tags">Itemdetails om mee te wegen</string>
+    <string name="composer_tags_hint">Kies welke kledingkenmerken de AI meeweegt. Minder details = snellere, goedkopere en gerichtere suggesties.</string>
 </resources>

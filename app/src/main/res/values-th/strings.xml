@@ -986,4 +986,8 @@
     <string name="settings_confirm_credits_value">%1$d / เหลือ %2$d</string>
     <string name="settings_confirm_short_format">คุณขาดอีก %1$d เครดิต เติมก่อน</string>
     <string name="settings_confirm_buy_and_continue">ซื้อเครดิต &amp; ดำเนินการต่อ</string>
+
+    <!-- Expert: item tag dimensions for outfit AI -->
+    <string name="composer_section_tags">รายละเอียดไอเท็มที่จะพิจารณา</string>
+    <string name="composer_tags_hint">เลือกว่าจะให้ AI พิจารณาคุณสมบัติใดของเสื้อผ้า รายละเอียดน้อยลง = คำแนะนำที่เร็วขึ้น ถูกลง และตรงจุดมากขึ้น</string>
 </resources>

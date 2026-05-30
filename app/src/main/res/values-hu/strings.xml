@@ -986,4 +986,8 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="settings_confirm_credits_value">%1$d / %2$d maradt</string>
     <string name="settings_confirm_short_format">%1$d kredit hiányzik. Tölts fel előbb.</string>
     <string name="settings_confirm_buy_and_continue">Kreditek vásárlása &amp; folytatás</string>
+
+    <!-- Expert: item tag dimensions for outfit AI -->
+    <string name="composer_section_tags">Figyelembe veendő ruhajellemzők</string>
+    <string name="composer_tags_hint">Válaszd ki, mely ruhajellemzőket veszi figyelembe az MI. Kevesebb részlet = gyorsabb, olcsóbb és célzottabb javaslatok.</string>
 </resources>

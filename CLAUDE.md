@@ -54,6 +54,7 @@ Compact day-to-day guidance. **Deep architecture, pipelines, rationale, and Dial
 - **Shopping closet** lives in `LibreLookAI/_shopping/`; excluded from `Location` lists, included in cross-closet similarity snapshot.
 - **Offline gating**: read `LocalIsOffline.current` and either hide write-path UI or set `enabled = !isOffline`. Every Gemini / Drive-write surface must be gated.
 - **Gemini calls return `null` on failure** — every caller must degrade gracefully. All calls log via `TokenUsageRepository.recordUsage(...)` with a `UsageCategory`.
+- **Prompt wardrobe encoding** is centralised in `DriveImage.toPromptJson(c, includeName)` (`wardrobe/PromptItemJson.kt`); every prompt builder (prediction, composer, gap, replacements, travel packing) routes items through it — don't hand-roll the JSON. Which tag dimensions are emitted is the user's `AiConsiderations.itemTags` "expert" choice (`null` = all, back-compat default; `type`/`category`/`name` always sent). Surfaced as `ExpertTagsCard` in the shared Tune-AI sheet (per-invocation override) and `ExpertTagsStrip` in `ProfileEditScreen` (saved default); gap analysis reads the saved default.
 
 ## Navigation
 - `MainActivity` is a thin `ComponentActivity` whose `onCreate` just calls `AppContent(activity)` (`AppContent.kt`). The whole composition (auth gate, all VMs, `when(selectedTab)` dispatch, global dialog hosts) lives there. Single `selectedTab: Int`, **no Jetpack Navigation**; sub-tab reset via `navResetTick`.

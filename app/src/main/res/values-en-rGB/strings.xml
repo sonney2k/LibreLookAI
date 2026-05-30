@@ -1006,4 +1006,8 @@
     <string name="settings_confirm_credits_value">%1$d / %2$d left</string>
     <string name="settings_confirm_short_format">You\'re %1$d credits short. Top up first.</string>
     <string name="settings_confirm_buy_and_continue">Buy credits &amp; continue</string>
+
+    <!-- Expert: item tag dimensions for outfit AI -->
+    <string name="composer_section_tags">Item details to weigh</string>
+    <string name="composer_tags_hint">Pick which clothing attributes the AI weighs. Fewer details = faster, cheaper, more focused suggestions.</string>
 </resources>

@@ -986,4 +986,8 @@
     <string name="settings_confirm_credits_value">%1$d / %2$d باقی</string>
     <string name="settings_confirm_short_format">آپ کے پاس %1$d کریڈٹس کم ہیں۔ پہلے ٹاپ اپ کریں۔</string>
     <string name="settings_confirm_buy_and_continue">کریڈٹس خریدیں &amp; جاری رکھیں</string>
+
+    <!-- Expert: item tag dimensions for outfit AI -->
+    <string name="composer_section_tags">غور کرنے کے لیے آئٹم کی تفصیلات</string>
+    <string name="composer_tags_hint">منتخب کریں کہ AI لباس کی کن خصوصیات کو مدنظر رکھے۔ کم تفصیلات = تیز، سستی اور زیادہ مرتکز تجاویز۔</string>
 </resources>

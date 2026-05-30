@@ -1006,4 +1006,8 @@
     <string name="settings_confirm_credits_value">%1$d / %2$d متبقٍ</string>
     <string name="settings_confirm_short_format">ينقصك %1$d رصيد. اشحن أولاً.</string>
     <string name="settings_confirm_buy_and_continue">شراء رصيد &amp; متابعة</string>
+
+    <!-- Expert: item tag dimensions for outfit AI -->
+    <string name="composer_section_tags">تفاصيل العناصر التي تؤخذ في الاعتبار</string>
+    <string name="composer_tags_hint">اختر سمات الملابس التي يراعيها الذكاء الاصطناعي. تفاصيل أقل = اقتراحات أسرع وأرخص وأكثر تركيزًا.</string>
 </resources>

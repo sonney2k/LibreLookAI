@@ -986,4 +986,8 @@
     <string name="settings_confirm_credits_value">%1$d / %2$d बचे</string>
     <string name="settings_confirm_short_format">आपके पास %1$d क्रेडिट कम हैं। पहले टॉप अप करें।</string>
     <string name="settings_confirm_buy_and_continue">क्रेडिट खरीदें &amp; जारी रखें</string>
+
+    <!-- Expert: item tag dimensions for outfit AI -->
+    <string name="composer_section_tags">विचार करने योग्य आइटम विवरण</string>
+    <string name="composer_tags_hint">चुनें कि AI कपड़ों की किन विशेषताओं को ध्यान में रखे। कम विवरण = तेज़, सस्ते और अधिक केंद्रित सुझाव।</string>
 </resources>
