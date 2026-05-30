@@ -1023,4 +1023,7 @@
 
     <!-- AI-unavailable message -->
     <string name="ai_unavailable">AI 功能目前無法使用。請確認您已登入並再試一次。</string>
+
+    <!-- Needs-tagging badge -->
+    <string name="wardrobe_needs_tagging">需要標記</string>
 </resources>

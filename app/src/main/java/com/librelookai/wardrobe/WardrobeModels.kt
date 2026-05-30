@@ -42,6 +42,15 @@ data class DriveImage(
     val createdTimeMs: Long = 0L,
 )
 
+/**
+ * True when the item has no AI classification yet — tagging failed (e.g. an AI/credits outage at
+ * import time) or never ran. Such an item has no `tags.category`, so [com.librelookai.outfit.layerFor]
+ * can't assign it to any outfit slot and it silently can't be used in outfits. The grid surfaces
+ * these with a "needs tagging" badge so the user knows to re-tag them.
+ */
+internal val DriveImage.needsTagging: Boolean
+    get() = tags?.category?.isNotBlank() != true
+
 /** One wardrobe item ranked above the dedupe threshold against an incoming import. */
 data class DuplicateMatch(val image: DriveImage, val score: Float)
 

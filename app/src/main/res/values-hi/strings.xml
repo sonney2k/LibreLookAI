@@ -1023,4 +1023,7 @@
 
     <!-- AI-unavailable message -->
     <string name="ai_unavailable">AI सुविधाएँ अभी उपलब्ध नहीं हैं. कृपया सुनिश्चित करें कि आप साइन इन हैं और फिर से प्रयास करें.</string>
+
+    <!-- Needs-tagging badge -->
+    <string name="wardrobe_needs_tagging">टैगिंग आवश्यक</string>
 </resources>

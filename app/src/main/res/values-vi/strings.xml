@@ -1023,4 +1023,7 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
 
     <!-- AI-unavailable message -->
     <string name="ai_unavailable">Các tính năng AI hiện không khả dụng. Vui lòng đảm bảo bạn đã đăng nhập và thử lại.</string>
+
+    <!-- Needs-tagging badge -->
+    <string name="wardrobe_needs_tagging">Cần gắn thẻ</string>
 </resources>

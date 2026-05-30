@@ -1043,4 +1043,7 @@
 
     <!-- AI-unavailable message -->
     <string name="ai_unavailable">Yapay zeka özellikleri şu anda kullanılamıyor. Lütfen oturum açtığınızdan emin olun ve tekrar deneyin.</string>
+
+    <!-- Needs-tagging badge -->
+    <string name="wardrobe_needs_tagging">Etiket gerekli</string>
 </resources>

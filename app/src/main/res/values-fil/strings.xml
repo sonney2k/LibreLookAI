@@ -1043,4 +1043,7 @@
 
     <!-- AI-unavailable message -->
     <string name="ai_unavailable">Hindi available ang mga AI feature sa ngayon. Tiyaking naka-sign in ka at subukan muli.</string>
+
+    <!-- Needs-tagging badge -->
+    <string name="wardrobe_needs_tagging">Kailangang i-tag</string>
 </resources>

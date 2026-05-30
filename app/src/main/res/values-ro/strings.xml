@@ -1023,4 +1023,7 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
 
     <!-- AI-unavailable message -->
     <string name="ai_unavailable">Funcțiile AI sunt momentan indisponibile. Asigură-te că ești autentificat și încearcă din nou.</string>
+
+    <!-- Needs-tagging badge -->
+    <string name="wardrobe_needs_tagging">Necesită etichete</string>
 </resources>

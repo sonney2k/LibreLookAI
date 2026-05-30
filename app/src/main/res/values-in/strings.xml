@@ -1023,4 +1023,7 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
 
     <!-- AI-unavailable message -->
     <string name="ai_unavailable">Fitur AI saat ini tidak tersedia. Pastikan Anda sudah masuk dan coba lagi.</string>
+
+    <!-- Needs-tagging badge -->
+    <string name="wardrobe_needs_tagging">Perlu tag</string>
 </resources>

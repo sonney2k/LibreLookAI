@@ -1043,4 +1043,7 @@
 
     <!-- AI-unavailable message -->
     <string name="ai_unavailable">Os recursos de IA estão indisponíveis no momento. Verifique se você está conectado e tente novamente.</string>
+
+    <!-- Needs-tagging badge -->
+    <string name="wardrobe_needs_tagging">Precisa de etiquetas</string>
 </resources>

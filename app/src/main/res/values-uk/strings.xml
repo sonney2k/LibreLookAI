@@ -1023,4 +1023,7 @@
 
     <!-- AI-unavailable message -->
     <string name="ai_unavailable">Функції ШІ наразі недоступні. Переконайтеся, що ви ввійшли, і повторіть спробу.</string>
+
+    <!-- Needs-tagging badge -->
+    <string name="wardrobe_needs_tagging">Потрібні теги</string>
 </resources>

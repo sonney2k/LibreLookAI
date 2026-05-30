@@ -1112,4 +1112,7 @@
 
     <!-- AI-unavailable message -->
     <string name="ai_unavailable">KI-Funktionen sind derzeit nicht verfügbar. Bitte stelle sicher, dass du angemeldet bist, und versuche es erneut.</string>
+
+    <!-- Needs-tagging badge -->
+    <string name="wardrobe_needs_tagging">Tags fehlen</string>
 </resources>

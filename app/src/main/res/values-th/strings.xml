@@ -1023,4 +1023,7 @@
 
     <!-- AI-unavailable message -->
     <string name="ai_unavailable">ฟีเจอร์ AI ไม่พร้อมใช้งานในขณะนี้ โปรดตรวจสอบว่าคุณลงชื่อเข้าใช้แล้วและลองอีกครั้ง</string>
+
+    <!-- Needs-tagging badge -->
+    <string name="wardrobe_needs_tagging">ต้องติดแท็ก</string>
 </resources>

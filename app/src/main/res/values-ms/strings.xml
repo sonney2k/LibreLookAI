@@ -1023,4 +1023,7 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
 
     <!-- AI-unavailable message -->
     <string name="ai_unavailable">Ciri AI tidak tersedia buat masa ini. Pastikan anda telah log masuk dan cuba lagi.</string>
+
+    <!-- Needs-tagging badge -->
+    <string name="wardrobe_needs_tagging">Perlu tag</string>
 </resources>

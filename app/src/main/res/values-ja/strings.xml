@@ -1043,4 +1043,7 @@
 
     <!-- AI-unavailable message -->
     <string name="ai_unavailable">AI機能は現在利用できません。サインインしているか確認して、もう一度お試しください。</string>
+
+    <!-- Needs-tagging badge -->
+    <string name="wardrobe_needs_tagging">タグ付けが必要</string>
 </resources>

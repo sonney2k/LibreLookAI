@@ -1023,4 +1023,7 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
 
     <!-- AI-unavailable message -->
     <string name="ai_unavailable">Az AI-funkciók jelenleg nem érhetők el. Győződj meg róla, hogy be vagy jelentkezve, és próbáld újra.</string>
+
+    <!-- Needs-tagging badge -->
+    <string name="wardrobe_needs_tagging">Címkézés szükséges</string>
 </resources>

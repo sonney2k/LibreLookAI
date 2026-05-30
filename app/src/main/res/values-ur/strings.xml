@@ -1023,4 +1023,7 @@
 
     <!-- AI-unavailable message -->
     <string name="ai_unavailable">AI خصوصیات اس وقت دستیاب نہیں ہیں۔ براہ کرم یقینی بنائیں کہ آپ سائن ان ہیں اور دوبارہ کوشش کریں۔</string>
+
+    <!-- Needs-tagging badge -->
+    <string name="wardrobe_needs_tagging">ٹیگنگ درکار</string>
 </resources>

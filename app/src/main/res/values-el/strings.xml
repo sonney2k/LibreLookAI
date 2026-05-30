@@ -1043,4 +1043,7 @@
 
     <!-- AI-unavailable message -->
     <string name="ai_unavailable">Οι λειτουργίες AI δεν είναι διαθέσιμες αυτή τη στιγμή. Βεβαιωθείτε ότι έχετε συνδεθεί και δοκιμάστε ξανά.</string>
+
+    <!-- Needs-tagging badge -->
+    <string name="wardrobe_needs_tagging">Χρειάζεται ετικέτες</string>
 </resources>

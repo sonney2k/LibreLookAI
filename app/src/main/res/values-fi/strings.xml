@@ -1043,4 +1043,7 @@
 
     <!-- AI-unavailable message -->
     <string name="ai_unavailable">Tekoälyominaisuudet eivät ole tällä hetkellä käytettävissä. Varmista, että olet kirjautunut sisään, ja yritä uudelleen.</string>
+
+    <!-- Needs-tagging badge -->
+    <string name="wardrobe_needs_tagging">Tarvitsee tunnisteet</string>
 </resources>

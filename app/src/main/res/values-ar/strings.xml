@@ -1043,4 +1043,7 @@
 
     <!-- AI-unavailable message -->
     <string name="ai_unavailable">ميزات الذكاء الاصطناعي غير متوفرة حاليًا. يرجى التأكد من تسجيل الدخول والمحاولة مرة أخرى.</string>
+
+    <!-- Needs-tagging badge -->
+    <string name="wardrobe_needs_tagging">بحاجة إلى تصنيف</string>
 </resources>

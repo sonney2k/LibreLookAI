@@ -1047,4 +1047,7 @@
 
     <!-- AI-unavailable message -->
     <string name="ai_unavailable">תכונות הבינה המלאכותית אינן זמינות כעת. ודא שאתה מחובר ונסה שוב.</string>
+
+    <!-- Needs-tagging badge -->
+    <string name="wardrobe_needs_tagging">דרוש תיוג</string>
 </resources>

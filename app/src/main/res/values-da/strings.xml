@@ -1043,4 +1043,7 @@
 
     <!-- AI-unavailable message -->
     <string name="ai_unavailable">AI-funktioner er ikke tilgængelige i øjeblikket. Sørg for, at du er logget ind, og prøv igen.</string>
+
+    <!-- Needs-tagging badge -->
+    <string name="wardrobe_needs_tagging">Mangler tags</string>
 </resources>
