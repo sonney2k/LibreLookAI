@@ -24,6 +24,10 @@ app/src/main/assets/*.tflite
 firebase/functions/lib/
 firebase/functions/node_modules/
 
+# Firebase CLI debug logs (per-session artifacts)
+**/firebase-debug.log
+**/firebase-debug.*.log
+
 # Python (scripts/)
 __pycache__/
 *.pyc
