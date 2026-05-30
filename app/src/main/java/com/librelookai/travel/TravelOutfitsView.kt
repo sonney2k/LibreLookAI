@@ -106,31 +106,25 @@ internal fun TravelOutfitsView(
         (tripImages + orphanImages).distinct().toList().tagCategories()
     }
 
-    // Closet-scoped universe (before tag/text filters), keyed on item `folderId` so it matches what
-    // the cards actually render. A trip with no resolvable items is dropped entirely (covers genuine
-    // empties and avoids showing a trip with nothing in it). The snapshot is loaded lazily, so while
-    // it's still empty we keep showing trips rather than blanking the whole list mid-load.
-    val snapshotReady = imagesById.isNotEmpty()
-    val closetTrips = remember(tripsState.trips, outfitsById, imagesById, closetFilter, snapshotReady) {
+    // Closet filter only. A trip/orphan is shown unless we can positively resolve its item closets
+    // AND none of them belong to the active closet. We never hide solely because item images aren't
+    // downloaded yet: after a reinstall the cross-closet snapshot is empty/partial until every closet
+    // syncs, and the old "drop trips with no resolvable items" rule blanked the whole list in the
+    // meantime. TripCard degrades gracefully (placeholder previews) until thumbnails load.
+    val closetTrips = remember(tripsState.trips, outfitsById, imagesById, closetFilter) {
         tripsState.trips.filter { trip ->
-            val items = trip.outfitIds.mapNotNull { outfitsById[it] }
+            if (closetFilter == null) return@filter true
+            val folders = trip.outfitIds.mapNotNull { outfitsById[it] }
                 .flatMap { it.itemIds }
-                .mapNotNull { imagesById[it] }
-            when {
-                closetFilter != null -> items.isNotEmpty() && items.all { it.folderId == closetFilter }
-                !snapshotReady       -> true
-                else                 -> items.isNotEmpty()
-            }
+                .mapNotNull { imagesById[it]?.folderId }
+            folders.isEmpty() || folders.any { it == closetFilter }
         }
     }
-    val closetOrphans = remember(orphanTravelOutfits, imagesById, closetFilter, snapshotReady) {
+    val closetOrphans = remember(orphanTravelOutfits, imagesById, closetFilter) {
         orphanTravelOutfits.filter { outfit ->
-            val items = outfit.itemIds.mapNotNull { imagesById[it] }
-            when {
-                closetFilter != null -> items.isNotEmpty() && items.all { it.folderId == closetFilter }
-                !snapshotReady       -> true
-                else                 -> items.isNotEmpty()
-            }
+            if (closetFilter == null) return@filter true
+            val folders = outfit.itemIds.mapNotNull { imagesById[it]?.folderId }
+            folders.isEmpty() || folders.any { it == closetFilter }
         }
     }
 

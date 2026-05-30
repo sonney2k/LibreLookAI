@@ -222,6 +222,19 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     private var prefetchJob: Job? = null
 
     /**
+     * Re-attempt the cross-closet prefetch when any configured closet still lacks a local cache.
+     * Safe to call repeatedly (app foreground, connectivity returning) — it no-ops when everything
+     * is already cached, when offline, or when a prefetch is in flight. Without this retry an
+     * initial prefetch that bailed on a momentary network blip would never run again until the
+     * closet list changed, leaving the cross-closet snapshot (and thus outfits/trips) empty.
+     */
+    fun retryPrefetchIfNeeded() {
+        if (allConfiguredFolderIds.any { fid -> !localCacheFile(fid).exists() }) {
+            prefetchUncachedClosets()
+        }
+    }
+
+    /**
      * For every configured closet that doesn't have a local cache yet, fetch its files +
      * sidecars from Drive in the background and write the per-folder cache. This ensures
      * similarity search covers all closets on first run, not just the one the user has visited.
@@ -232,13 +245,15 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         val app = getApplication<Application>()
         if (!app.isNetworkAvailable()) return
         val targets = allConfiguredFolderIds.filter { fid -> !localCacheFile(fid).exists() }
+        Log.d(TAG, "prefetch: configured=${allConfiguredFolderIds.size} uncached=${targets.size}")
         if (targets.isEmpty()) return
         prefetchJob = viewModelScope.launch(Dispatchers.IO) {
             targets.forEach { fid ->
                 runCatching {
                     val images = loadFolderImages(fid)
                     saveLocalCache(fid, images)
-                }
+                    Log.d(TAG, "prefetch: folder=$fid downloaded=${images.size}")
+                }.onFailure { Log.w(TAG, "prefetch: folder=$fid FAILED", it) }
             }
             refreshAllLocationImagesState()
         }
@@ -246,7 +261,11 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Re-read every configured folder's cache and publish the merged snapshot. */
     internal fun refreshAllLocationImagesState() {
-        val merged = allConfiguredFolderIds.flatMap { readCacheAsImages(it) }
+        val perFolder = allConfiguredFolderIds.map { fid -> fid to readCacheAsImages(fid) }
+        val merged = perFolder.flatMap { it.second }
+        Log.d(TAG, "snapshot: " + perFolder.joinToString { (fid, imgs) ->
+            "$fid=${imgs.size}/${if (localCacheFile(fid).exists()) "cached" else "no-cache"}"
+        } + " -> total=${merged.size}")
         _state.update { it.copy(allLocationImages = merged) }
     }
 

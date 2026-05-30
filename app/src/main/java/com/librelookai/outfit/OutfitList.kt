@@ -119,19 +119,15 @@ internal fun OutfitListScreen(
     // itemsById: ALL locations — used to resolve item IDs to images for card display and tag filters.
     val itemsById = remember(items) { items.associateBy { it.driveId } }
 
-    // imagesByName: filtered to the selected location (or all locations when ALL_LOCATIONS_ID).
-    // Used for the "all items loaded" gate — styles with items at other locations are hidden when
-    // a specific location is selected.
+    // The active closet's folder id (null = All locations). Used for closet-scoped filtering.
     val locationFolderId = remember(activeLocationId, locations) {
         if (activeLocationId != LocationViewModel.ALL_LOCATIONS_ID && activeLocationId.isNotEmpty())
             locations.find { it.folderId == activeLocationId }?.folderId else null
     }
-    val imagesByName = remember(items, locationFolderId, activeLocationId) {
-        val filtered = if (activeLocationId == LocationViewModel.ALL_LOCATIONS_ID || locationFolderId == null)
-            items
-        else
-            items.filter { it.folderId == locationFolderId }
-        filtered.associateBy { it.name }
+    // Resolve an item's closet by name (legacy outfits store itemNames, not itemIds). Spans every
+    // loaded closet so we can tell which closet an outfit's items belong to.
+    val folderByName = remember(items) {
+        items.associate { it.name to it.folderId }
     }
 
     var selectedTags by remember { mutableStateOf(emptyMap<String, Set<String>>()) }
@@ -146,9 +142,13 @@ internal fun OutfitListScreen(
         styles.flatMap { it.itemIds.mapNotNull { id -> itemsById[id] } }
     }
 
-    // A style is shown only when ALL its items are loaded for the current location filter.
-    // imagesByName already reflects the active location so this check enforces the filter naturally.
-    val filteredStyles = remember(styles, selectedTags, imagesByName, textQuery) {
+    // Closet filter only — an outfit is shown unless we can positively resolve its items AND none
+    // of them live in the active closet. We deliberately do NOT hide outfits whose item images
+    // simply aren't downloaded yet: after a reinstall the cross-closet image cache is empty/partial
+    // until every closet finishes syncing, and the old "all items loaded" gate made every outfit
+    // disappear in the meantime. OutfitCard already degrades gracefully (placeholders / "missing
+    // items"), so showing an outfit before its thumbnails load is safe.
+    val filteredStyles = remember(styles, selectedTags, itemsById, folderByName, locationFolderId, textQuery) {
         val activeFilters = selectedTags.filter { (_, tags) -> tags.isNotEmpty() }
         val q = textQuery.trim()
         val qLower = q.lowercase()
@@ -156,12 +156,15 @@ internal fun OutfitListScreen(
             wardrobeViewModel.fuzzyFilterByText(q, items).map { it.driveId }.toSet()
         }
         styles.filter { style ->
-            val allLoaded = if (style.itemNames.isNotEmpty()) {
-                style.itemNames.all { it in imagesByName }
-            } else {
-                style.itemIds.isNotEmpty() && style.itemIds.all { id -> id in itemsById }
+            if (locationFolderId != null) {
+                val resolvedFolders = if (style.itemNames.isNotEmpty())
+                    style.itemNames.mapNotNull { folderByName[it] }
+                else
+                    style.itemIds.mapNotNull { id -> itemsById[id]?.folderId }
+                // Hide only when items resolve and all of them belong to other closets.
+                val inActiveCloset = resolvedFolders.isEmpty() || resolvedFolders.any { it == locationFolderId }
+                if (!inActiveCloset) return@filter false
             }
-            if (!allLoaded) return@filter false
             val tagsOk = activeFilters.isEmpty() || activeFilters.all { (categoryLabel, catTags) ->
                 style.itemIds.any { id ->
                     val img = itemsById[id] ?: return@any false

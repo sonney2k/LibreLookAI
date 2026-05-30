@@ -112,12 +112,21 @@ fun OutfitComposerScreen(
     val isEditMode = s.composerMode == ComposerMode.EDIT
     val sourceFolders = s.composerSourceFolderIds
     val crossClosetImages = wardrobe.allLocationImages.ifEmpty { wardrobe.images }
+    // Items the source-closet filter exposes for *adding/swapping* into slots.
     val composerImages = remember(crossClosetImages, shoppingState.items, sourceFolders) {
         val filteredWardrobe = if (sourceFolders.isEmpty()) crossClosetImages
         else crossClosetImages.filter { it.folderId in sourceFolders }
         filteredWardrobe + shoppingState.items
     }
-    val byId = remember(composerImages) { composerImages.associateBy { it.driveId } }
+    // Resolve slot images from EVERY known source — unfiltered, and including the active
+    // closet's `images`, which holds just-uploaded items not yet present in the cross-closet
+    // `allLocationImages` snapshot (only refreshed on closet-config changes / prefetch).
+    // Without this, a seeded or locked slot whose item lies outside the source-closet filter
+    // (or is brand-new) renders as a blank silhouette and looks "not preselected". Active-closet
+    // and shopping entries are listed last so their fresher copies win on duplicate driveIds.
+    val byId = remember(crossClosetImages, wardrobe.images, shoppingState.items) {
+        (crossClosetImages + wardrobe.images + shoppingState.items).associateBy { it.driveId }
+    }
 
     var showAddSlotSheet by remember { mutableStateOf(false) }
     var exchangeSlotId by remember { mutableStateOf<String?>(null) }

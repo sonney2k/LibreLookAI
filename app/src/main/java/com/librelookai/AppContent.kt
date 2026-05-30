@@ -244,6 +244,13 @@ internal fun AppContent(activity: ComponentActivity) {
                         wardrobeViewModel.setDefaultImportFolderId(defaultClosetId)
                     }
 
+                    // Retry the cross-closet prefetch whenever connectivity returns. The initial
+                    // prefetch bails when offline; without this an early network blip would leave
+                    // some closets permanently uncached (empty snapshot → outfits/trips hidden).
+                    LaunchedEffect(isOnline) {
+                        if (isOnline) wardrobeViewModel.retryPrefetchIfNeeded()
+                    }
+
                     // Keep wardrobe tagging language in sync with the profile language
                     val geminiLanguage = AppLanguage.toGeminiName(profileState.preferences.language)
                     LaunchedEffect(geminiLanguage) {
