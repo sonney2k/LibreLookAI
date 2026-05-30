@@ -391,9 +391,9 @@ internal fun OutfitsViewModel.applyComposerSuggestionToSlots(
             if (newItemId != null) slot.copy(selectedItemId = newItemId, isLocked = false)
             else slot
         }
-        // Safety net for the one-piece rule: a well-behaved model won't fill both, but if it does,
-        // a filled one-piece (or a locked side) wins and the redundant top/bottom is dropped.
-    }.let(::normalizeOnePieceExclusion)
+        // A one-piece and a separate top/bottom may coexist (layering), so we keep whatever the
+        // model assigned without dropping either side.
+    }
 
 internal fun OutfitsViewModel.clearComposerError() = _state.update { it.copy(composerError = null) }
 
@@ -411,16 +411,11 @@ internal fun OutfitsViewModel.removeSlot(slotId: String) = _state.update { s ->
     }
 
 internal fun OutfitsViewModel.setSlotItem(slotId: String, itemId: String?) = _state.update { s ->
-        val target = s.composerSlots.find { it.id == slotId }
+        // A one-piece (dress) and a separate top/bottom may coexist — layering is allowed — so
+        // filling a slot no longer clears any other slot.
         val newSlots = s.composerSlots.map { slot ->
-            when {
-                slot.id == slotId -> slot.copy(selectedItemId = itemId, isLocked = itemId != null)
-                // A one-piece covers top + bottom: picking one clears the opposing slots (and vice
-                // versa). The just-touched slot always wins.
-                itemId != null && target != null && onePieceConflict(target.category, slot.category) ->
-                    slot.copy(selectedItemId = null, isLocked = false)
-                else -> slot
-            }
+            if (slot.id == slotId) slot.copy(selectedItemId = itemId, isLocked = itemId != null)
+            else slot
         }
         val slotItemIds = newSlots.mapNotNull { it.selectedItemId }.distinct()
         s.copy(composerSlots = newSlots, composerItemIds = slotItemIds)

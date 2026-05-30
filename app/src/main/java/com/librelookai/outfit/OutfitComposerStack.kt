@@ -60,11 +60,10 @@ internal fun ComposerStackedView(
     onRemove: (slotId: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    // A filled one-piece collapses the empty Top/Bottom slots it covers (and vice versa).
-    // In view mode, also hide remaining empty silhouettes — match OutfitFullScreenViewer.
+    // Edit mode shows every slot (incl. empty ones, so a top/bottom can be layered onto a dress);
+    // view mode hides empty silhouettes — match OutfitFullScreenViewer.
     val visibleSlots = remember(slots, isEditMode) {
-        val collapsed = collapseOnePieceSlots(slots)
-        if (isEditMode) collapsed else collapsed.filter { it.selectedItemId != null }
+        if (isEditMode) slots else slots.filter { it.selectedItemId != null }
     }
     val grouped: Map<Layer, List<OutfitSlot>> = remember(visibleSlots) {
         visibleSlots.groupBy { it.category }

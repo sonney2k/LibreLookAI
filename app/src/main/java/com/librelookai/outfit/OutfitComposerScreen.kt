@@ -160,9 +160,9 @@ fun OutfitComposerScreen(
     }
     val effectiveBottom = maxOf(barInsets.calculateBottomPadding(), rootInsetBottomDp, 48.dp)
 
-    // Effective slots drop the empty Top/Bottom (or empty OnePiece) collapsed away by a
-    // one-piece, so counts and completeness treat a dress outfit as fully filled.
-    val effectiveSlots = collapseOnePieceSlots(s.composerSlots)
+    // A one-piece no longer collapses Top/Bottom (layering is allowed), so every slot counts toward
+    // completeness — an empty slot the user added must be filled or removed.
+    val effectiveSlots = s.composerSlots
     val filledSlots = effectiveSlots.count { it.selectedItemId != null }
 
     Dialog(
