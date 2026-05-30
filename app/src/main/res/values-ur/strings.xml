@@ -1020,4 +1020,7 @@
     <string name="onboarding_closet_explore">ایپ دریافت کریں</string>
     <string name="onboarding_tour_replay">ٹور لیں</string>
     <string name="onboarding_tour_replay_sub">ویلکم واک تھرو دوبارہ چلائیں</string>
+
+    <!-- AI-unavailable message -->
+    <string name="ai_unavailable">AI خصوصیات اس وقت دستیاب نہیں ہیں۔ براہ کرم یقینی بنائیں کہ آپ سائن ان ہیں اور دوبارہ کوشش کریں۔</string>
 </resources>

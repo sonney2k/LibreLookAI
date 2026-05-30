@@ -9,6 +9,7 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import com.librelookai.BuildConfig
+import com.librelookai.R
 import com.librelookai.data.drive.await
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -120,8 +121,14 @@ class GeminiRepository(internal val app: Application) {
                 .build()
         }
         val proxyBase = BuildConfig.PROXY_BASE_URL
-        if (proxyBase.isBlank()) error("No API key or proxy URL configured")
-        val token = getFirebaseIdToken() ?: error("Firebase not signed in — cannot use managed mode")
+        if (proxyBase.isBlank()) {
+            AiEvents.emitUnavailable(R.string.ai_unavailable)
+            throw AiUnavailableException(R.string.ai_unavailable)
+        }
+        val token = getFirebaseIdToken() ?: run {
+            AiEvents.emitUnavailable(R.string.ai_unavailable)
+            throw AiUnavailableException(R.string.ai_unavailable)
+        }
         val builder = Request.Builder()
             .url("$proxyBase/geminiProxy")
             .post(body.toRequestBody("application/json".toMediaType()))
@@ -199,9 +206,8 @@ class GeminiRepository(internal val app: Application) {
                 ),
             )
 
-            val request = buildRequest(BG_URL, BG_MODEL, body, GeminiAction.REMOVE_BACKGROUND)
-
             return@withContext try {
+                val request = buildRequest(BG_URL, BG_MODEL, body, GeminiAction.REMOVE_BACKGROUND)
                 val response = http.newCall(request).await()
                 val responseBody = response.body!!.string()
 

@@ -1040,4 +1040,7 @@
     <string name="onboarding_closet_explore">Tutustu sovellukseen</string>
     <string name="onboarding_tour_replay">Aloita esittely</string>
     <string name="onboarding_tour_replay_sub">Toista tervetuloesittely</string>
+
+    <!-- AI-unavailable message -->
+    <string name="ai_unavailable">Tekoälyominaisuudet eivät ole tällä hetkellä käytettävissä. Varmista, että olet kirjautunut sisään, ja yritä uudelleen.</string>
 </resources>

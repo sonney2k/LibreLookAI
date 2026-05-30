@@ -1109,4 +1109,7 @@
     <string name="onboarding_closet_explore">App erkunden</string>
     <string name="onboarding_tour_replay">Tour starten</string>
     <string name="onboarding_tour_replay_sub">Willkommens-Rundgang erneut ansehen</string>
+
+    <!-- AI-unavailable message -->
+    <string name="ai_unavailable">KI-Funktionen sind derzeit nicht verfügbar. Bitte stelle sicher, dass du angemeldet bist, und versuche es erneut.</string>
 </resources>

@@ -1020,4 +1020,7 @@
     <string name="onboarding_closet_explore">探索應用程式</string>
     <string name="onboarding_tour_replay">開始導覽</string>
     <string name="onboarding_tour_replay_sub">重新播放歡迎導覽</string>
+
+    <!-- AI-unavailable message -->
+    <string name="ai_unavailable">AI 功能目前無法使用。請確認您已登入並再試一次。</string>
 </resources>

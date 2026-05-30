@@ -1040,4 +1040,7 @@
     <string name="onboarding_closet_explore">Uygulamayı keşfet</string>
     <string name="onboarding_tour_replay">Turu başlat</string>
     <string name="onboarding_tour_replay_sub">Karşılama turunu yeniden oynat</string>
+
+    <!-- AI-unavailable message -->
+    <string name="ai_unavailable">Yapay zeka özellikleri şu anda kullanılamıyor. Lütfen oturum açtığınızdan emin olun ve tekrar deneyin.</string>
 </resources>

@@ -1040,4 +1040,7 @@
     <string name="onboarding_closet_explore">Explore the app</string>
     <string name="onboarding_tour_replay">Take the tour</string>
     <string name="onboarding_tour_replay_sub">Replay the welcome walkthrough</string>
+
+    <!-- AI-unavailable message -->
+    <string name="ai_unavailable">AI features are currently unavailable. Please make sure you\'re signed in and try again.</string>
 </resources>

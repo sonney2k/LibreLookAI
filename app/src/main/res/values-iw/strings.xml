@@ -1044,4 +1044,7 @@
     <string name="onboarding_closet_explore">חקור את האפליקציה</string>
     <string name="onboarding_tour_replay">התחל את הסיור</string>
     <string name="onboarding_tour_replay_sub">הפעל מחדש את סיור הפתיחה</string>
+
+    <!-- AI-unavailable message -->
+    <string name="ai_unavailable">תכונות הבינה המלאכותית אינן זמינות כעת. ודא שאתה מחובר ונסה שוב.</string>
 </resources>

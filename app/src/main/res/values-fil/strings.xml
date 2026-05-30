@@ -1040,4 +1040,7 @@
     <string name="onboarding_closet_explore">Tuklasin ang app</string>
     <string name="onboarding_tour_replay">Subukan ang tour</string>
     <string name="onboarding_tour_replay_sub">I-replay ang welcome walkthrough</string>
+
+    <!-- AI-unavailable message -->
+    <string name="ai_unavailable">Hindi available ang mga AI feature sa ngayon. Tiyaking naka-sign in ka at subukan muli.</string>
 </resources>

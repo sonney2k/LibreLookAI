@@ -1020,4 +1020,7 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="onboarding_closet_explore">Explorează aplicația</string>
     <string name="onboarding_tour_replay">Pornește turul</string>
     <string name="onboarding_tour_replay_sub">Reia turul de bun venit</string>
+
+    <!-- AI-unavailable message -->
+    <string name="ai_unavailable">Funcțiile AI sunt momentan indisponibile. Asigură-te că ești autentificat și încearcă din nou.</string>
 </resources>

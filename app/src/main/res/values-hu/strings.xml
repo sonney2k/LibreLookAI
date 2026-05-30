@@ -1020,4 +1020,7 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="onboarding_closet_explore">Az alkalmazás felfedezése</string>
     <string name="onboarding_tour_replay">Bemutató indítása</string>
     <string name="onboarding_tour_replay_sub">Az üdvözlő bemutató újrajátszása</string>
+
+    <!-- AI-unavailable message -->
+    <string name="ai_unavailable">Az AI-funkciók jelenleg nem érhetők el. Győződj meg róla, hogy be vagy jelentkezve, és próbáld újra.</string>
 </resources>

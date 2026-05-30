@@ -221,7 +221,7 @@ internal fun AppContent(activity: ComponentActivity) {
                         val folderIds = closetFolderIds
                         val snapshotFolderIds = shoppingClosetState.folderId
                             ?.let { closetFolderIds + it } ?: closetFolderIds
-                        wardrobeViewModel.setAllConfiguredLocations(snapshotFolderIds)
+                        wardrobeViewModel.setAllConfiguredLocations(snapshotFolderIds, shoppingClosetState.folderId)
                         // Styles always loads from ALL locations — never filtered by the settings default.
                         stylesViewModel.setAllLocations(folderIds)
                         // Track which folder new styles should be saved to.
@@ -801,6 +801,19 @@ internal fun AppContent(activity: ComponentActivity) {
                                         },
                                         onDismiss = { topUpEvent = null },
                                     )
+                                }
+
+                                // Global AI-unavailable handler — listens for the signal emitted by
+                                // GeminiRepository.buildRequest when managed mode has no Firebase
+                                // session (or nothing is configured). Surfaces the localized reason
+                                // instead of letting the call crash the triggering coroutine.
+                                val toastCtx = LocalContext.current
+                                LaunchedEffect(Unit) {
+                                    com.librelookai.gemini.AiEvents.unavailable.collect { resId ->
+                                        android.widget.Toast.makeText(
+                                            toastCtx, toastCtx.getString(resId), android.widget.Toast.LENGTH_LONG,
+                                        ).show()
+                                    }
                                 }
 
                                 // Cutout-background fix confirmation — globally hosted so it

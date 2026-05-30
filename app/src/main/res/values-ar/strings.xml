@@ -1040,4 +1040,7 @@
     <string name="onboarding_closet_explore">استكشف التطبيق</string>
     <string name="onboarding_tour_replay">ابدأ الجولة</string>
     <string name="onboarding_tour_replay_sub">إعادة تشغيل جولة الترحيب</string>
+
+    <!-- AI-unavailable message -->
+    <string name="ai_unavailable">ميزات الذكاء الاصطناعي غير متوفرة حاليًا. يرجى التأكد من تسجيل الدخول والمحاولة مرة أخرى.</string>
 </resources>

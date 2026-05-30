@@ -75,9 +75,8 @@ internal suspend fun GeminiRepository.tryOnOutfit(
             ),
         )
 
-        val request = buildRequest(GeminiRepository.BG_URL, GeminiRepository.BG_MODEL, body, GeminiAction.TRY_ON_OUTFIT)
-
         return@withContext try {
+            val request = buildRequest(GeminiRepository.BG_URL, GeminiRepository.BG_MODEL, body, GeminiAction.TRY_ON_OUTFIT)
             val response = http.newCall(request).await()
             val responseBody = response.body!!.string()
             Log.d(GeminiRepository.TAG, "Try-on HTTP ${response.code}: ${responseBody.take(500)}")
@@ -146,9 +145,8 @@ internal suspend fun GeminiRepository.classifyClothing(imageFile: File, language
                 ),
             )
 
-            val request = buildRequest(GeminiRepository.CLASSIFY_URL, GeminiRepository.CLASSIFY_MODEL, body, GeminiAction.CLASSIFY_CLOTHING)
-
             return@withContext try {
+                val request = buildRequest(GeminiRepository.CLASSIFY_URL, GeminiRepository.CLASSIFY_MODEL, body, GeminiAction.CLASSIFY_CLOTHING)
                 val response = http.newCall(request).await()
                 val responseBody = response.body!!.string()
                 Log.d(GeminiRepository.TAG, "Classify HTTP ${response.code}: ${responseBody.take(500)}")

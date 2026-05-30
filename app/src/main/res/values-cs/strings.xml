@@ -1040,4 +1040,7 @@
     <string name="onboarding_closet_explore">Prozkoumat aplikaci</string>
     <string name="onboarding_tour_replay">Spustit prohlídku</string>
     <string name="onboarding_tour_replay_sub">Přehrát úvodní prohlídku</string>
+
+    <!-- AI-unavailable message -->
+    <string name="ai_unavailable">Funkce AI jsou momentálně nedostupné. Ujistěte se, že jste přihlášeni, a zkuste to znovu.</string>
 </resources>

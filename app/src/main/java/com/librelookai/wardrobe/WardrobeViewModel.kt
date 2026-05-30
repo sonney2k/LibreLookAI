@@ -117,6 +117,8 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
      * cross-closet [WardrobeUiState.allLocationImages] snapshot for similarity search.
      */
     private var allConfiguredFolderIds: List<String> = emptyList()
+    /** The `_shopping` folder id within [allConfiguredFolderIds], if any — for diagnostic labelling only. */
+    private var shoppingFolderId: String? = null
     /** Gemini-facing language name (e.g. "English", "German") for label generation. */
     internal var geminiLanguage: String = "English"
     /** When non-null, all new photo imports target this folder instead of the active view folder. */
@@ -212,9 +214,10 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
      * read from each per-folder cache file (no Drive calls); folders not yet downloaded simply
      * contribute zero items until the user visits them.
      */
-    fun setAllConfiguredLocations(folderIds: List<String>) {
-        if (allConfiguredFolderIds.toSet() == folderIds.toSet()) return
+    fun setAllConfiguredLocations(folderIds: List<String>, shoppingFolderId: String? = null) {
+        if (allConfiguredFolderIds.toSet() == folderIds.toSet() && this.shoppingFolderId == shoppingFolderId) return
         allConfiguredFolderIds = folderIds.toList()
+        this.shoppingFolderId = shoppingFolderId
         refreshAllLocationImagesState()
         prefetchUncachedClosets()
     }
@@ -264,7 +267,9 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         val perFolder = allConfiguredFolderIds.map { fid -> fid to readCacheAsImages(fid) }
         val merged = perFolder.flatMap { it.second }
         Log.d(TAG, "snapshot: " + perFolder.joinToString { (fid, imgs) ->
-            "$fid=${imgs.size}/${if (localCacheFile(fid).exists()) "cached" else "no-cache"}"
+            val state = if (localCacheFile(fid).exists()) "cached" else "no-cache"
+            val kind = if (fid == shoppingFolderId) "(shopping)" else ""
+            "$fid=${imgs.size}/$state$kind"
         } + " -> total=${merged.size}")
         _state.update { it.copy(allLocationImages = merged) }
     }

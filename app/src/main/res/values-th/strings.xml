@@ -1020,4 +1020,7 @@
     <string name="onboarding_closet_explore">สำรวจแอป</string>
     <string name="onboarding_tour_replay">เริ่มทัวร์</string>
     <string name="onboarding_tour_replay_sub">เล่นทัวร์ต้อนรับอีกครั้ง</string>
+
+    <!-- AI-unavailable message -->
+    <string name="ai_unavailable">ฟีเจอร์ AI ไม่พร้อมใช้งานในขณะนี้ โปรดตรวจสอบว่าคุณลงชื่อเข้าใช้แล้วและลองอีกครั้ง</string>
 </resources>

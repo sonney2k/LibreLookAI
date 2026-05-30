@@ -1040,4 +1040,7 @@
     <string name="onboarding_closet_explore">Explorar o app</string>
     <string name="onboarding_tour_replay">Fazer o tour</string>
     <string name="onboarding_tour_replay_sub">Repetir a apresentação de boas-vindas</string>
+
+    <!-- AI-unavailable message -->
+    <string name="ai_unavailable">Os recursos de IA estão indisponíveis no momento. Verifique se você está conectado e tente novamente.</string>
 </resources>

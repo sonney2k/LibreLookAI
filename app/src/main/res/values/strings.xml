@@ -73,6 +73,7 @@
     <string name="action_clear">Clear</string>
     <string name="action_sort">Sort</string>
     <string name="action_remove">Remove</string>
+    <string name="ai_unavailable">AI features are currently unavailable. Please make sure you\'re signed in and try again.</string>
     <string name="cd_ai_suggestion">AI suggestion</string>
     <string name="cd_refine">Refine</string>
     <string name="filter_location">Location</string>

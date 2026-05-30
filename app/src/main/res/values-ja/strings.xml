@@ -1040,4 +1040,7 @@
     <string name="onboarding_closet_explore">アプリを見てみる</string>
     <string name="onboarding_tour_replay">ツアーを見る</string>
     <string name="onboarding_tour_replay_sub">ようこそツアーをもう一度再生</string>
+
+    <!-- AI-unavailable message -->
+    <string name="ai_unavailable">AI機能は現在利用できません。サインインしているか確認して、もう一度お試しください。</string>
 </resources>

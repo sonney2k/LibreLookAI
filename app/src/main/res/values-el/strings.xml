@@ -1040,4 +1040,7 @@
     <string name="onboarding_closet_explore">Εξερεύνηση της εφαρμογής</string>
     <string name="onboarding_tour_replay">Ξεκινήστε την ξενάγηση</string>
     <string name="onboarding_tour_replay_sub">Αναπαραγωγή της ξενάγησης καλωσορίσματος</string>
+
+    <!-- AI-unavailable message -->
+    <string name="ai_unavailable">Οι λειτουργίες AI δεν είναι διαθέσιμες αυτή τη στιγμή. Βεβαιωθείτε ότι έχετε συνδεθεί και δοκιμάστε ξανά.</string>
 </resources>

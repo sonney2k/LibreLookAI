@@ -1020,4 +1020,7 @@
     <string name="onboarding_closet_explore">ऐप एक्सप्लोर करें</string>
     <string name="onboarding_tour_replay">टूर लें</string>
     <string name="onboarding_tour_replay_sub">वेलकम वॉकथ्रू फिर से चलाएँ</string>
+
+    <!-- AI-unavailable message -->
+    <string name="ai_unavailable">AI सुविधाएँ अभी उपलब्ध नहीं हैं. कृपया सुनिश्चित करें कि आप साइन इन हैं और फिर से प्रयास करें.</string>
 </resources>

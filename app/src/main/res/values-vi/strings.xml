@@ -1020,4 +1020,7 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="onboarding_closet_explore">Khám phá ứng dụng</string>
     <string name="onboarding_tour_replay">Xem hướng dẫn</string>
     <string name="onboarding_tour_replay_sub">Phát lại phần giới thiệu chào mừng</string>
+
+    <!-- AI-unavailable message -->
+    <string name="ai_unavailable">Các tính năng AI hiện không khả dụng. Vui lòng đảm bảo bạn đã đăng nhập và thử lại.</string>
 </resources>

@@ -1020,4 +1020,7 @@
     <string name="onboarding_closet_explore">Дослідити застосунок</string>
     <string name="onboarding_tour_replay">Пройти огляд</string>
     <string name="onboarding_tour_replay_sub">Повторити вітальний огляд</string>
+
+    <!-- AI-unavailable message -->
+    <string name="ai_unavailable">Функції ШІ наразі недоступні. Переконайтеся, що ви ввійшли, і повторіть спробу.</string>
 </resources>

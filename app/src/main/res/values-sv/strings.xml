@@ -1040,4 +1040,7 @@
     <string name="onboarding_closet_explore">Utforska appen</string>
     <string name="onboarding_tour_replay">Ta rundturen</string>
     <string name="onboarding_tour_replay_sub">Spela upp välkomstrundturen igen</string>
+
+    <!-- AI-unavailable message -->
+    <string name="ai_unavailable">AI-funktioner är för närvarande inte tillgängliga. Se till att du är inloggad och försök igen.</string>
 </resources>

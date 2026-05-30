@@ -1040,4 +1040,7 @@
     <string name="onboarding_closet_explore">App verkennen</string>
     <string name="onboarding_tour_replay">Volg de rondleiding</string>
     <string name="onboarding_tour_replay_sub">Bekijk de welkomstrondleiding opnieuw</string>
+
+    <!-- AI-unavailable message -->
+    <string name="ai_unavailable">AI-functies zijn momenteel niet beschikbaar. Zorg ervoor dat je bent ingelogd en probeer het opnieuw.</string>
 </resources>

@@ -1020,4 +1020,7 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="onboarding_closet_explore">Jelajahi aplikasi</string>
     <string name="onboarding_tour_replay">Ikuti tur</string>
     <string name="onboarding_tour_replay_sub">Putar ulang tur selamat datang</string>
+
+    <!-- AI-unavailable message -->
+    <string name="ai_unavailable">Fitur AI saat ini tidak tersedia. Pastikan Anda sudah masuk dan coba lagi.</string>
 </resources>
