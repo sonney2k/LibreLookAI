@@ -221,10 +221,9 @@ internal fun buildComposerPrompt(
         appendLine("Each slot has an id, category, and optionally a required itemId (locked by user).")
         appendLine("For slots WITHOUT a requiredItemId, pick an appropriate item from the wardrobe.")
         appendLine("For slots WITH a requiredItemId, include that exact item unchanged.")
-        appendLine("A OnePiece (dress, gown, jumpsuit, romper, suit) covers BOTH the Top and the Bottom — it is mutually exclusive with the Top and Bottom slots:")
-        appendLine("- If you fill a OnePiece slot, leave any Top and Bottom slots empty.")
-        appendLine("- If you fill a Top or Bottom slot, leave any OnePiece slot empty.")
-        appendLine("- Never combine a one-piece with a separate top or bottom in the same outfit.")
+        appendLine("A OnePiece (dress, gown, jumpsuit, romper, suit) can stand alone as the whole outfit, OR be layered with a top and/or bottom (e.g. leggings or a tee under a dress).")
+        appendLine("- Fill exactly the slots provided: do not add a top or bottom that has no slot, and do not leave a provided slot empty.")
+        appendLine("- If a OnePiece slot AND a Top/Bottom slot are both present, the user wants to layer them — fill all of them so the pieces work together (e.g. a fitted top or leggings under the dress).")
         slots.forEach { slot ->
             val req = if (slot.isLocked && slot.selectedItemId != null) """ "requiredItemId":"${slot.selectedItemId}"""" else ""
             appendLine("""{"slotId":"${slot.id}","category":"${slot.category.name}"$req}""")
@@ -258,7 +257,7 @@ internal fun buildComposerPrompt(
                 else -> "$count distinct outfit variants"
             }
             appendLine("Compose $countWord that fit the constraints above, ranked from best to worst.")
-            appendLine("Each variant must fill EVERY non-locked slot (except slots left empty by the one-piece rule above) and must respect every locked slot's requiredItemId.")
+            appendLine("Each variant must fill EVERY non-locked slot and must respect every locked slot's requiredItemId.")
             appendLine("Variants should differ meaningfully from each other (swap key items, change colour palette, change vibe) — do not just shuffle one outfit.")
             appendLine("Return exactly $count entries in the suggestions array (or fewer if the wardrobe cannot yield that many distinct outfits).")
             appendLine("Respond with ONLY a valid JSON object — no markdown, no extra text:")
