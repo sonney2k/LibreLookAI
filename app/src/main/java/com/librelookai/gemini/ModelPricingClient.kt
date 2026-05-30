@@ -17,7 +17,7 @@ import org.json.JSONObject
  * Rates are **EUR-native**: Google bills the EU billing account directly in
  * EUR, so there is no USD ground truth and no FX layer. The schema carries a
  * per-token-type split (text/image/cached input, text/image output) matching
- * the bill — see `plan/OPTIONS.md` "Option B". Today text-in and image-in are
+ * the bill — see `plan/FIN.md` § "Gemini pricing model & unit economics". Today text-in and image-in are
  * the same rate, so input is billed at the text-in rate; output is billed at
  * the image-out rate for image-generation models ([isImageOutputModel]) and at
  * the text-out rate otherwise.

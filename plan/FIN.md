@@ -14,7 +14,7 @@ ops: standing up the live project, seeding data, wiring Play, smoke-testing.
 - ✅ `local.properties` `firebase.proxy.url` points at the EU endpoint.
 - ✅ `GEMINI_API_KEY` Functions secret provisioned.
 - ✅ Interactive `scripts/seed_pricing.sh` (read-show-prompt-write workflow) + rewritten `firebase/functions/src/seed.ts` (commit `fe14761`).
-- ✅ Validated `LOCAL_MODEL_PRICING` against the EU billing list — see `plan/OPTIONS.md` for the four structural mismatches and the two-option fix.
+- ✅ Validated `LOCAL_MODEL_PRICING` against the EU billing list, fixed (EUR-native split rates), and **re-derived the whole credit-price table** for a 100% after-tax profit — see § 12 "Gemini pricing model & unit economics".
 
 **Pending — required to go live**
 - [x] ~~Apply Option A~~ → **superseded by Option B (landed)**: `config/modelPricing`, `ModelPricingClient`, `TokenUsage`, and the cost UI (`UsageSection`, `CostBadge`) are now **EUR-native** with per-token-type split rates (`text/image/cached in`, `text/image out`). Fixes the 10× `gemini-3.1-flash-image-preview` text-out overcharge and the −46% image-out undercharge; drops the `fxUsdToEur` round-trip. Caching is **not** implemented (`cachedTextInPerM` is recorded but unused). **Action:** re-run `scripts/seed_pricing.sh` to replace the old `inUsdPerM`/`outUsdPerM`/`fxUsdToEur` doc with the new `config/modelPricing` shape.
@@ -33,7 +33,7 @@ ops: standing up the live project, seeding data, wiring Play, smoke-testing.
 
 **Pending — nice to have, non-blocking**
 - [ ] Free starter credits on signup — `auth.user().onCreate` Cloud Function granting 20 coins (recommended, called out below).
-- [x] ~~**Option B** pricing refactor~~ — **landed** (EUR-native split rates, see above). Caching (Option B+) intentionally **not** built. `plan/OPTIONS.md` is retained as the rationale/decision record (per-token-type split + the deferred wardrobe-cache analysis).
+- [x] ~~**Option B** pricing refactor~~ — **landed** (EUR-native split rates) and credit prices re-derived for 100% after-tax profit. Caching intentionally **not** built. Full rationale + cost tables consolidated into § 12 below (`plan/OPTIONS.md` deleted).
 - [ ] Bind `.firebaserc` (`cd firebase && firebase use librelookai-firebase`) — cosmetic; everything else passes `--project=librelookai-firebase`, so deploys work without it.
 
 ---
@@ -264,6 +264,8 @@ Every new user-facing string into `res/values/strings.xml` and all 30 `values-*/
 
 ## 5. Pricing table — initial values
 
+> **SUPERSEDED (2026-05-30) by § 12.** This original "1 coin ≈ $0.001" table predates the real EUR cost model — it badly under-prices image-generation actions (output is €51.303/M, ~50× text). The live prices are now derived in § 12 for a 100% after-tax profit. Table kept for history only.
+
 Per the "conservative fixed, 2x markup" decision. Base costs are the *real* Gemini cost in coins where 1 coin ≈ $0.001 (chosen so `credits_100 ≈ $1` after markup). Tune in Firestore without a release.
 
 | Action                 | Raw cost (coins) | Public price (×2) |
@@ -369,3 +371,125 @@ Server-side: log to Cloud Logging with `uid` + `action` for cost reconciliation 
 - `app/src/main/java/com/librelookai/util/Analytics.kt`
 - `CLAUDE.md` / `CLAUDE_ARCHIVE.md` — new "Monetization" section pointing here, then archived once stable.
 - `versionCode` + release notes.
+
+---
+
+## 12. Gemini pricing model & unit economics
+
+Consolidates the former `plan/OPTIONS.md` (pricing validation, the EUR-native
+split refactor, and the context-caching analysis) plus the full unit-economics
+that drive the credit prices. **This is the source of truth for pricing.**
+
+### 12.1 EUR-native model pricing (landed)
+
+Validated the local model pricing against the EUR list prices on the GCP
+billing account (`plan/Pricing for Fuer Soeren - LibreLookAi.csv`). The old
+USD model was wrong in four structural ways, the worst a **10× overcharge** on
+`gemini-3.1-flash-image-preview` text output. Fixed by going **EUR-native**
+(Google bills the EU account directly in EUR — no USD ground truth, no FX) with
+a **per-token-type split** so figures match the bill:
+
+| | text in | image in | cached text in | text out | image out |
+|---|---:|---:|---:|---:|---:|
+| `gemini-3-flash-preview` | 0.4275 | 0.4275 | 0.0428 | 2.5651 | 2.5651 |
+| `gemini-3.1-flash-image-preview` | 0.4275 | 0.4275 | — | 2.5651 | **51.303** |
+
+(€ per 1M tokens.) The four structural fixes: (1) split text-out vs image-out —
+they're 20× apart on the image model; (2) split text-in vs image-in (equal
+today, future-proofed); (3) added the cached-input tier (−90%); (4) dropped
+`fxUsdToEur`. Lives in `config/modelPricing` (`seed.ts`) → `ModelPricingClient`
+→ `GeminiPricing.eurFor` → `TokenUsage`/`UsageSection`/`CostBadge`, all EUR.
+`isImageOutputModel` (name contains "image") selects the image-out rate.
+
+### 12.2 Per-item & per-action token assumptions
+
+A wardrobe item is serialized as JSON (`OutfitsPrompts.kt:50`), ~141 chars,
+dominated by a ~33-char random Drive ID that tokenizes poorly ⇒ **≈ 50 tokens
+per item**. A 1000-item wardrobe ≈ **50,000 input tokens** (+ ~800 base prompt).
+Only **style prediction (`generateText`)** and **outfit suggestion/compose
+(`outfitSuggestion`)** embed the full wardrobe; bg-removal/classify/try-on send
+only the relevant item image(s); trends sends none. Per-action token estimates
+are in `CostBadge.kt → estimateTokens`.
+
+### 12.3 Real Gemini cost per action (1000-item wardrobe)
+
+Rates: input €0.4275/M, text-out €2.5651/M, image-out €51.303/M.
+
+| Action | Model | Input tok | Output tok | **Gemini cost €** |
+|---|---|---:|---:|---:|
+| Remove background | image | 700 | 1,290 (img) | **0.0665** |
+| Try-on outfit | image | 1,200 | 1,290 (img) | **0.0667** |
+| Style prediction | text | 50,800 | 350 (txt) | **0.0226** |
+| Outfit suggestion | text | 50,800 | 400 (txt) | **0.0227** |
+| Classify / auto-tag | text | 1,000 | 400 (txt) | **0.0015** |
+| Trend lookup | text | 200 | 600 (txt) | **0.0016** |
+
+Image output (~1,290 tokens ≈ €0.066/image) dominates everything — ~45× a full
+text classification. Processing a whole 1000-item wardrobe: bg-removal ×1000 =
+€66.48, classify ×1000 = €1.45.
+
+### 12.4 The revenue stack — what the developer actually keeps
+
+Every €0.01 credit (assumes 100-pack ≈ €1) passes through three layers, all at
+their German/maximum values:
+
+| Slice | € | Cumulative |
+|---|---:|---:|
+| User pays (gross, incl. VAT) | 0.010000 | 100% |
+| − German VAT (19% → 19/119) | −0.001597 | 84.0% |
+| − Google Play fee (30% of ex-VAT) | −0.002521 | 58.8% |
+| **= Developer net revenue** | **0.005882** | **58.8%** |
+| − Income tax (47.475% of *profit*) | (on margin) | — |
+| **Take-home on a zero-cost credit** | **0.003089** | **30.9%** |
+
+Notes: VAT and the Play fee come off **revenue**; income tax (top German rate
+45% + 5.5% soli = **47.475%**) hits **profit** only — so it halves winners and
+does nothing for loss-making actions (a loss only yields a ~47% shield against
+other profit). Play fee = 30% (max tier); the first-$1M/yr **15%** tier nets
+€0.007143/credit (71.4%) instead.
+
+### 12.5 Repricing for 100% after-tax profit (landed)
+
+Target: **after-tax profit = 100% of Gemini cost** (you double the cost after
+all three taxes). Solving `(N · €0.005882 − C) · 0.52525 = C` for credits `N`:
+
+  **N (public credits) ≈ 493.7 × C(€)**
+
+With `multiplier = 2`, `raw = N/2`. New `DEFAULT_PRICING.costs` / `CreditPacks`:
+
+| Action | Gemini C € | raw | **public credits** | (was) | after-tax margin |
+|---|---:|---:|---:|---:|---:|
+| removeBackground | 0.0665 | 17 | **34** | 6 | ~105% |
+| tryOnOutfit | 0.0667 | 17 | **34** | 8 | ~105% |
+| generateText (style/text) | 0.0226 | 6 | **12** | 2 | ~111% |
+| outfitSuggestion | 0.0227 | 6 | **12** | 4 | ~110% |
+| classifyClothing | 0.0015 | 1 | **2** | 2 | ≫100% (floored) |
+| searchFashionTrends | 0.0016 | 1 | **2** | 2 | ≫100% (floored) |
+
+classify/trends can't go below 1 raw / 2 public, so they overshoot. The
+wardrobe-context actions are priced for a 1000-item wardrobe — smaller closets
+yield higher margin (fixed per-action pricing can't track wardrobe size).
+Source: `firebase/functions/src/pricing.ts` + `billing/CreditPack.kt`; push with
+`scripts/seed_pricing.sh`.
+
+> **Caveat:** image actions jumped 5–6× (try-on 8→34, bg-removal 6→34). That may
+> be too steep for UX even though it's the break-even reality — consider steering
+> image-heavy paths to **BYOK**, or accepting a lower target margin. The
+> derivation here makes the trade-off explicit and easy to re-tune in Firestore.
+
+### 12.6 Context caching — analyzed, NOT built
+
+Could the wardrobe + profile live in a Gemini context cache to cheapen repeat
+queries? Decided **no** for now:
+- **Explicit cache** bills cached input at €0.0428/M (−90%) **but** adds storage
+  at ~$1.00/M-tokens/hour for the cache's whole TTL, and is **immutable except
+  TTL** — any wardrobe edit means delete + recreate the whole cache (no per-item
+  add/remove). One call references one cache, which must be the prefix.
+- **Implicit cache** (auto, no storage cost) gives Gemini-3 hits but, per current
+  docs, **no cost discount yet** (2.5-only).
+- **Blocker:** `gemini-3.1-flash-image-preview` (try-on, bg-removal — the
+  expensive paths) **can't cache at all** (media-gen exclusion). Caching only
+  helps text-model calls, most of which are per-item today.
+- **Break-even** (≈42k-token closet): storage ≈ €0.039/hr vs ≈€0.016 saved per
+  whole-closet query ⇒ need ≥3 such queries within the cache hour. `cachedTextInPerM`
+  is recorded in the schema for the day this changes; nothing creates a cache.

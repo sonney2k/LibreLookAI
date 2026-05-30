@@ -29,8 +29,9 @@ import { DEFAULT_PRICING } from "./pricing";
 // new Gemini list prices. EUR-native (Google bills the EU account directly in
 // EUR) — there is no USD ground truth and no FX layer. Per-token-type split
 // (text/image/cached in, text/image out) so the figures match the bill; see
-// plan/OPTIONS.md "Option B". `cachedTextInPerM` is recorded for completeness —
-// media-generation models can't cache, so it's omitted on the image model.
+// plan/FIN.md § "Gemini pricing model & unit economics". `cachedTextInPerM` is
+// recorded for completeness — media-generation models can't cache, so it's
+// omitted on the image model.
 const LOCAL_MODEL_PRICING = {
   currency: "EUR",
   fallback: {

@@ -19,12 +19,14 @@ object CreditPacks {
     // persisted snapshot. Authoritative prices live in Firestore
     // (config/publicPricing); see PricingClient. Keep these in sync with
     // firebase/functions/src/pricing.ts (DEFAULT_PRICING × multiplier).
-    const val COST_BG_REMOVAL        = 6
+    // Sized for a 100% after-tax profit under VAT 19% + Play 30% + income tax
+    // 47.475% — see plan/FIN.md § "Gemini pricing model & unit economics".
+    const val COST_BG_REMOVAL        = 34
     const val COST_CLASSIFY          = 2
-    const val COST_TEXT              = 2
+    const val COST_TEXT              = 12
     const val COST_TRENDS            = 2
-    const val COST_TRY_ON            = 8
-    const val COST_OUTFIT_SUGGESTION = 4
+    const val COST_TRY_ON            = 34
+    const val COST_OUTFIT_SUGGESTION = 12
 
     /** Total credits for running BG removal + optional tagging on [count] items. */
     fun bulkCost(count: Int, removeBg: Boolean, autoTag: Boolean): Int =

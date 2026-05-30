@@ -39,18 +39,25 @@ export interface PricingConfig {
 }
 
 /**
- * Raw (pre-multiplier) defaults. Halve of the final public prices that
- * existed in v1 of the credit system, so multiplier=2 reproduces them.
+ * Raw (pre-multiplier) defaults. Public price = raw × multiplier (2).
+ *
+ * Derived from the real EUR Gemini cost per action, grossed up so each action
+ * clears a **100% after-tax profit** under the worst-case German stack
+ * (VAT 19% + Google Play 30% + income tax 47.475%): you keep €0.005882 of each
+ * €0.01 credit, so a 100% after-tax margin needs public credits ≈ 493.7 × cost.
+ * Image-generation actions (€51.303/M output) dominate; classify/trends floor
+ * at raw 1 (public 2) and so exceed 100%. Full derivation + the cost tables →
+ * `plan/FIN.md` § "Gemini pricing model & unit economics".
  */
 export const DEFAULT_PRICING: PricingConfig = {
   multiplier: 2,
   costs: {
-    removeBackground: 3,
+    removeBackground: 17,
     classifyClothing: 1,
-    generateText: 1,
+    generateText: 6,
     searchFashionTrends: 1,
-    tryOnOutfit: 4,
-    outfitSuggestion: 2,
+    tryOnOutfit: 17,
+    outfitSuggestion: 6,
   },
   // Per-extra-item costs default to zero so a multi-suggestion generateText
   // call charges the same as a single one. Tune via Firestore admin if the
