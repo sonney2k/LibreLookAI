@@ -26,7 +26,7 @@ object CreditPacks {
     const val COST_TEXT              = 14
     const val COST_TRENDS            = 2
     const val COST_TRY_ON            = 18
-    const val COST_OUTFIT_SUGGESTION = 8
+    const val COST_OUTFIT_SUGGESTION = 14
 
     /** Total credits for running BG removal + optional tagging on [count] items. */
     fun bulkCost(count: Int, removeBg: Boolean, autoTag: Boolean): Int =

@@ -410,15 +410,18 @@ prompts include different tag detail:
 | Prompt | Per-item JSON | ~tok/item |
 |---|---|---:|
 | Style prediction (`buildPredictionPrompt`, `OutfitsPrompts.kt:50`) | id + 4 tag fields | ~50 |
-| Outfit composer (`buildComposerPrompt`) | id + name + 4 tag fields | ~60 |
-| **Gap analysis** (`WardrobeGapViewModel.itemJson`) | id + name + **9 tag fields** | **~120** |
+| Outfit composer (`buildComposerPrompt`) | id + name + **9 tag fields** | **~120** |
+| Gap analysis (`WardrobeGapViewModel.itemJson`) | id + name + **9 tag fields** | **~120** |
 
-All three embed the **full wardrobe**; bg-removal/classify/try-on send only the
-relevant item image(s); trends sends none. A 1000-item wardrobe is therefore
-~50k–120k input tokens depending on the feature (+ ~800 base prompt). Because
-gap analysis and style prediction share one action id (`generateText`), that
-action is priced for its **heaviest** consumer — gap analysis (~120 tok/item).
-Per-action badge estimates are in `CostBadge.kt → estimateTokens`.
+The composer was upgraded from 4 → all 9 tag fields (added `seasonality`,
+`aesthetic`, `fit`, `material`, `pattern`) so outfit creation can reason about
+silhouette/material/pattern, not just type/colour — so it now matches gap
+analysis at ~120 tok/item. All embed the **full wardrobe**; bg-removal/classify/
+try-on send only the relevant item image(s); trends sends none. A 1000-item
+wardrobe is therefore ~50k (style prediction) – 120k (composer / gap) input
+tokens (+ ~800 base prompt). `generateText` is priced for its heaviest consumer
+(gap analysis, ~120 tok/item). Per-action badge estimates are in
+`CostBadge.kt → estimateTokens`.
 
 ### 12.3 Real Gemini cost per action (1000-item wardrobe)
 
@@ -429,15 +432,15 @@ Rates: input €0.4275/M, text-out €2.5651/M, image-out €51.303/M.
 | Remove background | image | 700 | 1,290 (img) | **0.0665** |
 | Try-on outfit | image | 1,200 | 1,290 (img) | **0.0667** |
 | Gap analysis (`generateText`) | text | 120,800 | 400 (txt) | **0.0527** |
-| Outfit suggestion | text | 60,800 | 400 (txt) | **0.0270** |
+| Outfit suggestion | text | 120,800 | 400 (txt) | **0.0527** |
 | Classify / auto-tag | text | 1,000 | 400 (txt) | **0.0015** |
 | Trend lookup | text | 200 | 600 (txt) | **0.0016** |
 
 Image output (~1,290 tokens ≈ €0.066/image) dominates the image actions — ~45× a
-full text classification. Among the wardrobe-context text actions, **gap analysis
-is the costliest** (its ~120-tok/item payload is ~2× the composer's), so
-`generateText` is priced above `outfitSuggestion`. Processing a whole 1000-item
-wardrobe: bg-removal ×1000 = €66.48, classify ×1000 = €1.45.
+full text classification. Gap analysis and outfit suggestion now carry the same
+full 9-tag-field wardrobe payload, so they cost the same (~€0.0527/call) and
+price identically. Processing a whole 1000-item wardrobe: bg-removal ×1000 =
+€66.48, classify ×1000 = €1.45.
 
 ### 12.4 The revenue stack — what the developer actually keeps
 
@@ -476,19 +479,19 @@ With `multiplier = 2`, `raw = round(N/2)` (so public = 2 × raw). New
 | removeBackground | Cut one garment out of its photo background | 0.0665 | **18** | 0.18 | **0.0207** | ~31% |
 | tryOnOutfit | Generate a photoreal "you wearing this outfit" image | 0.0667 | **18** | 0.18 | **0.0206** | ~31% |
 | generateText (gap analysis) | Scan the whole wardrobe, list the missing items worth buying | 0.0527 | **14** | 0.14 | **0.0156** | ~30% |
-| outfitSuggestion | Build complete outfit ideas from items already owned | 0.0270 | **8** | 0.08 | **0.0105** | ~39%¹ |
-| classifyClothing | Auto-tag one garment photo (type/colour/material/use) | 0.0015 | **2** | 0.02 | **0.0054** | ≫30%² |
-| searchFashionTrends | Fetch current fashion trends for the region | 0.0016 | **2** | 0.02 | **0.0053** | ≫30%² |
+| outfitSuggestion | Build complete outfit ideas from items already owned | 0.0527 | **14** | 0.14 | **0.0156** | ~30% |
+| classifyClothing | Auto-tag one garment photo (type/colour/material/use) | 0.0015 | **2** | 0.02 | **0.0054** | ≫30%¹ |
+| searchFashionTrends | Fetch current fashion trends for the region | 0.0016 | **2** | 0.02 | **0.0053** | ≫30%¹ |
 
-`raw` = Credits/2: 9, 9, 7, 4, 1, 1. (was, v1 public: 6/8/2/4/2/2.)
+`raw` = Credits/2: 9, 9, 7, 7, 1, 1. (was, v1 public: 6/8/2/4/2/2.)
 
-¹ even-public rounding (raw 3 → 16%, raw 4 → 39%; picked 4 to stay ≥30%).
-² floored at 1 raw / 2 public, so they overshoot 30%. The wardrobe-context
+¹ floored at 1 raw / 2 public, so they overshoot 30%. The wardrobe-context
 actions are priced for a 1000-item wardrobe — smaller closets yield higher
 margin (fixed per-action pricing can't track wardrobe size). `generateText`
-(14) now sits above `outfitSuggestion` (8) because gap analysis's per-item JSON
-is ~2× richer (§ 12.2). Source: `firebase/functions/src/pricing.ts` +
-`billing/CreditPack.kt`; push with `scripts/seed_pricing.sh`.
+(gap) and `outfitSuggestion` (composer) now carry identical 9-field wardrobe
+payloads (§ 12.2), so both price at 14. Source:
+`firebase/functions/src/pricing.ts` + `billing/CreditPack.kt`; push with
+`scripts/seed_pricing.sh`.
 
 > **Caveat:** image actions are still ~2–3× their v1 price (try-on 8→18,
 > bg-removal 6→18) — the €51.303/M image-output rate makes them structurally

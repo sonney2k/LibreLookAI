@@ -176,9 +176,14 @@ internal fun buildComposerPrompt(
         if (t == null) {
             """{"id":"${img.driveId}","name":"${img.name}","tags":null}"""
         } else {
-            val uses   = t.uses.joinToString(",", "[", "]") { "\"$it\"" }
-            val colors = t.colors.joinToString(",", "[", "]") { "\"$it\"" }
-            """{"id":"${img.driveId}","name":"${img.name}","tags":{"type":"${t.type}","category":"${t.category}","uses":$uses,"colors":$colors}}"""
+            val uses        = t.uses.joinToString(",", "[", "]") { "\"$it\"" }
+            val colors      = t.colors.joinToString(",", "[", "]") { "\"$it\"" }
+            val seasonality = t.seasonality.joinToString(",", "[", "]") { "\"$it\"" }
+            val aesthetic   = t.aesthetic.joinToString(",", "[", "]") { "\"$it\"" }
+            val fit         = t.fit.joinToString(",", "[", "]") { "\"$it\"" }
+            val material    = t.material.joinToString(",", "[", "]") { "\"$it\"" }
+            val pattern     = t.pattern.joinToString(",", "[", "]") { "\"$it\"" }
+            """{"id":"${img.driveId}","name":"${img.name}","tags":{"type":"${t.type}","category":"${t.category}","uses":$uses,"colors":$colors,"seasonality":$seasonality,"aesthetic":$aesthetic,"fit":$fit,"material":$material,"pattern":$pattern}}"""
         }
     }
 
