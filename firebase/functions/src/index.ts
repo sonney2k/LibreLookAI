@@ -1,12 +1,16 @@
 import * as admin from "firebase-admin";
 import { onRequest } from "firebase-functions/v2/https";
 import { defineSecret } from "firebase-functions/params";
-import { logger } from "firebase-functions/v2";
+import { logger, setGlobalOptions } from "firebase-functions/v2";
 import fetch, { RequestInit } from "node-fetch";
 
 import { loadPricing, publicCostForItems } from "./pricing";
 import { appendLedger, appendLedgerInTx } from "./ledger";
 import { acknowledgePlayPurchase, validatePlayPurchase } from "./play";
+
+// Pin every function (HTTP + Firestore triggers) to Belgium — co-located
+// with the eur3 Firestore multi-region, lowest function↔DB latency.
+setGlobalOptions({ region: "europe-west1" });
 
 admin.initializeApp();
 const db = admin.firestore();
