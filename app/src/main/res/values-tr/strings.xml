@@ -1010,4 +1010,34 @@
     <!-- Expert: item tag dimensions for outfit AI -->
     <string name="composer_section_tags">Değerlendirilecek ürün detayları</string>
     <string name="composer_tags_hint">Yapay zekânın hangi giysi özelliklerini dikkate alacağını seç. Daha az detay = daha hızlı, daha ucuz ve daha odaklı öneriler.</string>
+
+    <!-- Onboarding tour -->
+    <string name="onboarding_skip">Atla</string>
+    <string name="onboarding_next">İleri</string>
+    <string name="onboarding_back">Geri</string>
+    <string name="onboarding_welcome_title">LibreLookAI\'ye hoş geldiniz</string>
+    <string name="onboarding_welcome_body">Zaten sahip olduğunuz gardırop için yapay zekâ stilistiniz. Kıyafetlerinizi çekin, kombin fikirleri alın, deneyin ve seyahatler için bavul hazırlayın — hepsi kendi Google Drive\'ınızda gizli.</string>
+    <string name="onboarding_wardrobe_title">Dijital gardırobunuz</string>
+    <string name="onboarding_wardrobe_body">Her parçayı bir kez fotoğraflayın. Yapay zekâ arka planı kaldırır ve türü, rengi, kumaşı ve daha fazlasını etiketler, böylece her şey aranabilir kalır.</string>
+    <string name="onboarding_outfits_title">Yapay zekâ kombin fikirleri</string>
+    <string name="onboarding_outfits_body">Havaya, ortama ve zevkinize göre uyarlanmış kombin önerileri alın — yalnızca gerçekten sahip olduğunuz kıyafetlerden oluşturulur.</string>
+    <string name="onboarding_tryon_title">Kombinleri üzerinizde deneyin</string>
+    <string name="onboarding_tryon_body">Kendi fotoğrafınızı ekleyin ve giymeden önce herhangi bir kombini üzerinizde görün. Denemeyi başlatmak için istediğiniz zaman orta düğmeye dokunun.</string>
+    <string name="onboarding_travel_title">Her yolculuk için bavul hazırlayın</string>
+    <string name="onboarding_travel_body">Seyahat planlayıcısına nereye ve ne kadar süreyle gittiğinizi söyleyin. Dolabınızdan gün gün bir kapsül gardırop oluşturur.</string>
+    <string name="onboarding_shopping_title">Daha akıllı alışveriş</string>
+    <string name="onboarding_shopping_body">Düşündüğünüz parçaları kaydedin ve alışveriş yardımcısı, sahip olduklarınızla uyumlu olup olmadıklarını — ve gerçek boşlukları doldurup doldurmadıklarını kontrol etsin.</string>
+    <string name="onboarding_profile_title">Bize tarzınızı anlatın</string>
+    <string name="onboarding_profile_body">Bu, yapay zekânın her öneriyi size göre uyarlamasına yardımcı olur. İstediğiniz zaman Ayarlar\'dan değiştirebilirsiniz.</string>
+    <string name="onboarding_photo_title">Bir deneme fotoğrafı ekleyin</string>
+    <string name="onboarding_photo_body">Önden çekilmiş tam boy bir fotoğraf, kombinleri üzerinizde denemenizi sağlar. İsteğe bağlı — daha sonra ekleyebilirsiniz.</string>
+    <string name="onboarding_photo_add">Fotoğraf ekle</string>
+    <string name="onboarding_photo_added">Fotoğraf eklendi</string>
+    <string name="onboarding_photo_offline">Fotoğrafınızı eklemek için internete bağlanın.</string>
+    <string name="onboarding_closet_title">Dolabınızı oluşturun</string>
+    <string name="onboarding_closet_body">İlk dolabınız hazır. İlk kombin fikirlerinizi almak için birkaç kıyafet ekleyin — ya da önce keşfedin ve istediğiniz zaman ekleyin.</string>
+    <string name="onboarding_closet_add_items">Şimdi kıyafet ekle</string>
+    <string name="onboarding_closet_explore">Uygulamayı keşfet</string>
+    <string name="onboarding_tour_replay">Turu başlat</string>
+    <string name="onboarding_tour_replay_sub">Karşılama turunu yeniden oynat</string>
 </resources>

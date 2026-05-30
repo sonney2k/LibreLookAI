@@ -1010,4 +1010,34 @@
     <!-- Expert: item tag dimensions for outfit AI -->
     <string name="composer_section_tags">Mga detalye ng item na isasaalang-alang</string>
     <string name="composer_tags_hint">Piliin kung aling mga katangian ng damit ang isinasaalang-alang ng AI. Mas kaunting detalye = mas mabilis, mas mura, at mas tutok na mga mungkahi.</string>
+
+    <!-- Onboarding tour -->
+    <string name="onboarding_skip">Laktawan</string>
+    <string name="onboarding_next">Susunod</string>
+    <string name="onboarding_back">Bumalik</string>
+    <string name="onboarding_welcome_title">Maligayang pagdating sa LibreLookAI</string>
+    <string name="onboarding_welcome_body">Ang iyong AI stylist para sa wardrobe na meron ka na. Kunan ng litrato ang iyong mga damit, kumuha ng mga ideya sa outfit, isukat ang mga ito, at mag-impake para sa mga biyahe — lahat ay pribado sa sarili mong Google Drive.</string>
+    <string name="onboarding_wardrobe_title">Ang iyong digital na wardrobe</string>
+    <string name="onboarding_wardrobe_body">Kunan ng litrato ang bawat item nang isang beses. Inaalis ng AI ang background at tina-tag ang uri, kulay, materyal at iba pa, kaya nananatiling masesearch ang lahat.</string>
+    <string name="onboarding_outfits_title">Mga ideya sa outfit mula sa AI</string>
+    <string name="onboarding_outfits_body">Kumuha ng mga mungkahing outfit na akma sa panahon, okasyon at panlasa mo — gawa lamang mula sa mga damit na talagang meron ka.</string>
+    <string name="onboarding_tryon_title">Isukat ang mga outfit sa sarili</string>
+    <string name="onboarding_tryon_body">Magdagdag ng litrato mo at tingnan ang kahit anong outfit sa iyo bago isuot. I-tap ang gitnang button anumang oras para magsimulang magsukat.</string>
+    <string name="onboarding_travel_title">Mag-impake para sa kahit anong biyahe</string>
+    <string name="onboarding_travel_body">Sabihin sa travel planner kung saan at gaano katagal ka pupunta. Bubuo ito ng capsule wardrobe araw-araw mula sa iyong aparador.</string>
+    <string name="onboarding_shopping_title">Mas matalinong pamimili</string>
+    <string name="onboarding_shopping_body">I-save ang mga item na pinag-iisipan mo at hayaang tingnan ng shopping helper kung bagay ang mga ito sa meron ka na — at pinupunan ang totoong kakulangan.</string>
+    <string name="onboarding_profile_title">Sabihin sa amin ang istilo mo</string>
+    <string name="onboarding_profile_body">Tumutulong ito sa AI na i-angkop ang bawat mungkahi sa iyo. Mababago mo ito anumang oras sa Mga Setting.</string>
+    <string name="onboarding_photo_title">Magdagdag ng litrato pansukat</string>
+    <string name="onboarding_photo_body">Ang buong-katawan na litrato mula sa harap ay nagbibigay-daan na isukat ang mga outfit sa sarili. Opsyonal — maaari mong idagdag mamaya.</string>
+    <string name="onboarding_photo_add">Magdagdag ng litrato</string>
+    <string name="onboarding_photo_added">Naidagdag ang litrato</string>
+    <string name="onboarding_photo_offline">Kumonekta sa internet para idagdag ang iyong litrato.</string>
+    <string name="onboarding_closet_title">Buuin ang iyong aparador</string>
+    <string name="onboarding_closet_body">Handa na ang iyong unang aparador. Magdagdag ng ilang damit para makakuha ng mga unang ideya sa outfit — o mag-explore muna at idagdag ang mga ito kahit kailan.</string>
+    <string name="onboarding_closet_add_items">Magdagdag ng damit ngayon</string>
+    <string name="onboarding_closet_explore">Tuklasin ang app</string>
+    <string name="onboarding_tour_replay">Subukan ang tour</string>
+    <string name="onboarding_tour_replay_sub">I-replay ang welcome walkthrough</string>
 </resources>

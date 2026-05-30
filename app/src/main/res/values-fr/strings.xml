@@ -1010,4 +1010,34 @@
     <!-- Expert: item tag dimensions for outfit AI -->
     <string name="composer_section_tags">Détails des articles à prendre en compte</string>
     <string name="composer_tags_hint">Choisissez les attributs vestimentaires que l\'IA prend en compte. Moins de détails = des suggestions plus rapides, moins chères et plus ciblées.</string>
+
+    <!-- Onboarding tour -->
+    <string name="onboarding_skip">Passer</string>
+    <string name="onboarding_next">Suivant</string>
+    <string name="onboarding_back">Retour</string>
+    <string name="onboarding_welcome_title">Bienvenue dans LibreLookAI</string>
+    <string name="onboarding_welcome_body">Votre styliste IA pour la garde-robe que vous possédez déjà. Photographiez vos vêtements, recevez des idées de tenues, essayez-les et préparez vos valises — le tout privé dans votre propre Google Drive.</string>
+    <string name="onboarding_wardrobe_title">Votre garde-robe numérique</string>
+    <string name="onboarding_wardrobe_body">Photographiez chaque pièce une fois. L\'IA supprime l\'arrière-plan et étiquette le type, la couleur, la matière et plus encore, pour que tout reste consultable.</string>
+    <string name="onboarding_outfits_title">Idées de tenues par IA</string>
+    <string name="onboarding_outfits_body">Recevez des suggestions de tenues adaptées à la météo, à l\'occasion et à vos goûts — créées uniquement à partir des vêtements que vous possédez.</string>
+    <string name="onboarding_tryon_title">Essayez les tenues sur vous</string>
+    <string name="onboarding_tryon_body">Ajoutez une photo de vous et visualisez n\'importe quelle tenue sur vous avant de la porter. Touchez le bouton central à tout moment pour lancer un essayage.</string>
+    <string name="onboarding_travel_title">Faites vos valises pour tout voyage</string>
+    <string name="onboarding_travel_body">Indiquez au planificateur de voyage votre destination et la durée. Il compose une garde-robe capsule jour par jour à partir de votre dressing.</string>
+    <string name="onboarding_shopping_title">Des achats plus malins</string>
+    <string name="onboarding_shopping_body">Enregistrez les articles qui vous intéressent et laissez l\'assistant d\'achat vérifier s\'ils s\'accordent à ce que vous possédez — et comblent de vrais manques.</string>
+    <string name="onboarding_profile_title">Parlez-nous de votre style</string>
+    <string name="onboarding_profile_body">Cela aide l\'IA à personnaliser chaque suggestion. Vous pouvez le modifier à tout moment dans les Réglages.</string>
+    <string name="onboarding_photo_title">Ajouter une photo d\'essayage</string>
+    <string name="onboarding_photo_body">Une photo de face en pied vous permet d\'essayer les tenues sur vous. Facultatif — vous pouvez l\'ajouter plus tard.</string>
+    <string name="onboarding_photo_add">Ajouter une photo</string>
+    <string name="onboarding_photo_added">Photo ajoutée</string>
+    <string name="onboarding_photo_offline">Connectez-vous à Internet pour ajouter votre photo.</string>
+    <string name="onboarding_closet_title">Composez votre dressing</string>
+    <string name="onboarding_closet_body">Votre premier dressing est prêt. Ajoutez quelques vêtements pour obtenir vos premières idées de tenues — ou explorez d\'abord et ajoutez-les quand vous voulez.</string>
+    <string name="onboarding_closet_add_items">Ajouter des vêtements</string>
+    <string name="onboarding_closet_explore">Explorer l\'application</string>
+    <string name="onboarding_tour_replay">Suivre la visite</string>
+    <string name="onboarding_tour_replay_sub">Revoir la présentation de bienvenue</string>
 </resources>

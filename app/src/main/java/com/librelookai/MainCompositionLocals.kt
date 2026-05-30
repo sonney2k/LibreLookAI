@@ -19,6 +19,13 @@ import com.librelookai.data.model.Location
 val LocalOpenSettings = androidx.compose.runtime.compositionLocalOf<(() -> Unit)?> { null }
 
 /**
+ * Re-launches the first-run onboarding tour as a fullscreen overlay. Provided by
+ * [AppContent]; null when no host wired it (e.g. previews). Lets Settings offer a "take the tour"
+ * row without the tour's visibility state having to live in Settings.
+ */
+val LocalStartTour = androidx.compose.runtime.compositionLocalOf<(() -> Unit)?> { null }
+
+/**
  * Active-closet selector state surfaced to fullscreen Dialog viewers / the try-on composer so they
  * can render the same interactive closet dropdown as [AppScreenHeader]. Null hides the dropdown.
  */

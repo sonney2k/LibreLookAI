@@ -1014,4 +1014,34 @@
     <!-- Expert: item tag dimensions for outfit AI -->
     <string name="composer_section_tags">פרטי הפריט שיש לשקלל</string>
     <string name="composer_tags_hint">בחר אילו מאפייני לבוש ה-AI שוקל. פחות פרטים = הצעות מהירות, זולות וממוקדות יותר.</string>
+
+    <!-- Onboarding tour -->
+    <string name="onboarding_skip">דילוג</string>
+    <string name="onboarding_next">הבא</string>
+    <string name="onboarding_back">חזרה</string>
+    <string name="onboarding_welcome_title">ברוכים הבאים ל-LibreLookAI</string>
+    <string name="onboarding_welcome_body">הסטייליסט החכם שלך לארון שכבר יש לך. צלם את הבגדים, קבל רעיונות ללוקים, מדוד אותם וארוז לטיולים — הכול פרטי ב-Google Drive שלך.</string>
+    <string name="onboarding_wardrobe_title">הארון הדיגיטלי שלך</string>
+    <string name="onboarding_wardrobe_body">צלם כל פריט פעם אחת. הבינה המלאכותית מסירה את הרקע ומתייגת סוג, צבע, בד ועוד, כך שהכול יישאר ניתן לחיפוש.</string>
+    <string name="onboarding_outfits_title">רעיונות ללוקים מבינה מלאכותית</string>
+    <string name="onboarding_outfits_body">קבל הצעות ללוקים שמותאמות למזג האוויר, לאירוע ולטעם שלך — נבנות רק מבגדים שבאמת יש לך.</string>
+    <string name="onboarding_tryon_title">מדוד לוקים על עצמך</string>
+    <string name="onboarding_tryon_body">הוסף תמונה של עצמך וראה כל לוק עליך לפני שתלבש אותו. הקש על הכפתור המרכזי בכל עת כדי להתחיל מדידה.</string>
+    <string name="onboarding_travel_title">ארוז לכל טיול</string>
+    <string name="onboarding_travel_body">ספר למתכנן הנסיעות לאן ולכמה זמן אתה נוסע. הוא יבנה ארון קפסולה יום אחר יום מהארון שלך.</string>
+    <string name="onboarding_shopping_title">קניות חכמות יותר</string>
+    <string name="onboarding_shopping_body">שמור פריטים שאתה שוקל ותן לעוזר הקניות לבדוק אם הם מתאימים למה שכבר יש לך — וממלאים פערים אמיתיים.</string>
+    <string name="onboarding_profile_title">ספר לנו על הסגנון שלך</string>
+    <string name="onboarding_profile_body">זה עוזר לבינה המלאכותית להתאים לך כל הצעה. אפשר לשנות זאת בכל עת בהגדרות.</string>
+    <string name="onboarding_photo_title">הוסף תמונת מדידה</string>
+    <string name="onboarding_photo_body">תמונת גוף מלא מהחזית מאפשרת לך למדוד לוקים על עצמך. אופציונלי — אפשר להוסיף מאוחר יותר.</string>
+    <string name="onboarding_photo_add">הוסף תמונה</string>
+    <string name="onboarding_photo_added">התמונה נוספה</string>
+    <string name="onboarding_photo_offline">התחבר לאינטרנט כדי להוסיף את התמונה.</string>
+    <string name="onboarding_closet_title">בנה את הארון שלך</string>
+    <string name="onboarding_closet_body">הארון הראשון שלך מוכן. הוסף כמה בגדים כדי לקבל את רעיונות הלוקים הראשונים — או חקור קודם והוסף אותם מתי שתרצה.</string>
+    <string name="onboarding_closet_add_items">הוסף בגדים עכשיו</string>
+    <string name="onboarding_closet_explore">חקור את האפליקציה</string>
+    <string name="onboarding_tour_replay">התחל את הסיור</string>
+    <string name="onboarding_tour_replay_sub">הפעל מחדש את סיור הפתיחה</string>
 </resources>

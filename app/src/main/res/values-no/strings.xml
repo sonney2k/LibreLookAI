@@ -1010,4 +1010,34 @@
     <!-- Expert: item tag dimensions for outfit AI -->
     <string name="composer_section_tags">Plaggdetaljer å vektlegge</string>
     <string name="composer_tags_hint">Velg hvilke klesegenskaper AI-en vektlegger. Færre detaljer = raskere, billigere og mer treffsikre forslag.</string>
+
+    <!-- Onboarding tour -->
+    <string name="onboarding_skip">Hopp over</string>
+    <string name="onboarding_next">Neste</string>
+    <string name="onboarding_back">Tilbake</string>
+    <string name="onboarding_welcome_title">Velkommen til LibreLookAI</string>
+    <string name="onboarding_welcome_body">Din AI-stylist for garderoben du allerede har. Ta bilder av klærne dine, få antrekksforslag, prøv dem og pakk til reiser — alt privat i din egen Google Disk.</string>
+    <string name="onboarding_wardrobe_title">Din digitale garderobe</string>
+    <string name="onboarding_wardrobe_body">Fotografer hvert plagg én gang. AI fjerner bakgrunnen og merker type, farge, materiale og mer, slik at alt forblir søkbart.</string>
+    <string name="onboarding_outfits_title">AI-antrekksforslag</string>
+    <string name="onboarding_outfits_body">Få antrekksforslag tilpasset været, anledningen og din smak — laget kun av klær du faktisk har.</string>
+    <string name="onboarding_tryon_title">Prøv antrekk på deg selv</string>
+    <string name="onboarding_tryon_body">Legg til et bilde av deg selv og se ethvert antrekk på deg før du tar det på. Trykk på midtknappen når som helst for å starte en prøving.</string>
+    <string name="onboarding_travel_title">Pakk til enhver reise</string>
+    <string name="onboarding_travel_body">Fortell reiseplanleggeren hvor du skal og hvor lenge. Den setter sammen en kapselgarderobe dag for dag fra skapet ditt.</string>
+    <string name="onboarding_shopping_title">Smartere shopping</string>
+    <string name="onboarding_shopping_body">Lagre plagg du vurderer, og la handlehjelperen sjekke om de passer til det du allerede har — og fyller reelle hull.</string>
+    <string name="onboarding_profile_title">Fortell oss om stilen din</string>
+    <string name="onboarding_profile_body">Det hjelper AI-en med å tilpasse hvert forslag til deg. Du kan endre det når som helst i Innstillinger.</string>
+    <string name="onboarding_photo_title">Legg til et prøvebilde</string>
+    <string name="onboarding_photo_body">Et helkroppsbilde forfra lar deg prøve antrekk på deg selv. Valgfritt — du kan legge det til senere.</string>
+    <string name="onboarding_photo_add">Legg til bilde</string>
+    <string name="onboarding_photo_added">Bilde lagt til</string>
+    <string name="onboarding_photo_offline">Koble til internett for å legge til bildet ditt.</string>
+    <string name="onboarding_closet_title">Bygg skapet ditt</string>
+    <string name="onboarding_closet_body">Det første skapet ditt er klart. Legg til noen plagg for å få dine første antrekksforslag — eller utforsk først og legg dem til når du vil.</string>
+    <string name="onboarding_closet_add_items">Legg til klær nå</string>
+    <string name="onboarding_closet_explore">Utforsk appen</string>
+    <string name="onboarding_tour_replay">Ta omvisningen</string>
+    <string name="onboarding_tour_replay_sub">Spill av velkomstomvisningen igjen</string>
 </resources>

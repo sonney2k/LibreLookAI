@@ -990,4 +990,34 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <!-- Expert: item tag dimensions for outfit AI -->
     <string name="composer_section_tags">Figyelembe veendő ruhajellemzők</string>
     <string name="composer_tags_hint">Válaszd ki, mely ruhajellemzőket veszi figyelembe az MI. Kevesebb részlet = gyorsabb, olcsóbb és célzottabb javaslatok.</string>
+
+    <!-- Onboarding tour -->
+    <string name="onboarding_skip">Kihagyás</string>
+    <string name="onboarding_next">Tovább</string>
+    <string name="onboarding_back">Vissza</string>
+    <string name="onboarding_welcome_title">Üdvözlünk a LibreLookAI-ban</string>
+    <string name="onboarding_welcome_body">A te MI-stylistod a már meglévő ruhatáradhoz. Fotózd le a ruháidat, kapj outfit-ötleteket, próbáld fel őket, és csomagolj az utazásokhoz — mindez privát módon a saját Google Drive-odon.</string>
+    <string name="onboarding_wardrobe_title">A digitális ruhatárad</string>
+    <string name="onboarding_wardrobe_body">Fotózz le minden darabot egyszer. Az MI eltávolítja a hátteret, és címkézi a típust, színt, anyagot és továbbiakat, így minden kereshető marad.</string>
+    <string name="onboarding_outfits_title">MI-outfit-ötletek</string>
+    <string name="onboarding_outfits_body">Kapj outfit-javaslatokat az időjáráshoz, az alkalomhoz és az ízlésedhez igazítva — kizárólag a valóban meglévő ruháidból.</string>
+    <string name="onboarding_tryon_title">Próbáld fel az outfiteket magadon</string>
+    <string name="onboarding_tryon_body">Adj hozzá egy fotót magadról, és lásd bármelyik outfitet magadon, mielőtt felvennéd. Bármikor érintsd meg a középső gombot a felpróbálás indításához.</string>
+    <string name="onboarding_travel_title">Csomagolj bármilyen útra</string>
+    <string name="onboarding_travel_body">Mondd meg az utazástervezőnek, hová és mennyi időre utazol. Napról napra kapszularuhatárt állít össze a szekrényedből.</string>
+    <string name="onboarding_shopping_title">Okosabb vásárlás</string>
+    <string name="onboarding_shopping_body">Mentsd el a fontolgatott darabokat, és a vásárlási segéd ellenőrzi, illenek-e a meglévőkhöz — és betöltenek-e valódi hiányokat.</string>
+    <string name="onboarding_profile_title">Meséld el a stílusod</string>
+    <string name="onboarding_profile_body">Ez segít az MI-nek minden javaslatot rád szabni. Bármikor módosíthatod a Beállításokban.</string>
+    <string name="onboarding_photo_title">Adj hozzá egy felpróbáláshoz való fotót</string>
+    <string name="onboarding_photo_body">Egy szemből készült egész alakos fotóval magadon próbálhatod fel az outfiteket. Opcionális — később is hozzáadhatod.</string>
+    <string name="onboarding_photo_add">Fotó hozzáadása</string>
+    <string name="onboarding_photo_added">Fotó hozzáadva</string>
+    <string name="onboarding_photo_offline">Csatlakozz az internethez a fotó hozzáadásához.</string>
+    <string name="onboarding_closet_title">Építsd fel a szekrényed</string>
+    <string name="onboarding_closet_body">Az első szekrényed kész. Adj hozzá néhány ruhát az első outfit-ötletekhez — vagy előbb nézz körül, és add hozzá őket, amikor szeretnéd.</string>
+    <string name="onboarding_closet_add_items">Ruhák hozzáadása most</string>
+    <string name="onboarding_closet_explore">Az alkalmazás felfedezése</string>
+    <string name="onboarding_tour_replay">Bemutató indítása</string>
+    <string name="onboarding_tour_replay_sub">Az üdvözlő bemutató újrajátszása</string>
 </resources>

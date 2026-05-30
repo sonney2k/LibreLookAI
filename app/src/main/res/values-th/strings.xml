@@ -990,4 +990,34 @@
     <!-- Expert: item tag dimensions for outfit AI -->
     <string name="composer_section_tags">รายละเอียดไอเท็มที่จะพิจารณา</string>
     <string name="composer_tags_hint">เลือกว่าจะให้ AI พิจารณาคุณสมบัติใดของเสื้อผ้า รายละเอียดน้อยลง = คำแนะนำที่เร็วขึ้น ถูกลง และตรงจุดมากขึ้น</string>
+
+    <!-- Onboarding tour -->
+    <string name="onboarding_skip">ข้าม</string>
+    <string name="onboarding_next">ถัดไป</string>
+    <string name="onboarding_back">ย้อนกลับ</string>
+    <string name="onboarding_welcome_title">ยินดีต้อนรับสู่ LibreLookAI</string>
+    <string name="onboarding_welcome_body">สไตลิสต์ AI สำหรับตู้เสื้อผ้าที่คุณมีอยู่แล้ว ถ่ายรูปเสื้อผ้า รับไอเดียการแต่งตัว ลองสวม และจัดกระเป๋าสำหรับการเดินทาง — ทั้งหมดเป็นส่วนตัวใน Google Drive ของคุณเอง</string>
+    <string name="onboarding_wardrobe_title">ตู้เสื้อผ้าดิจิทัลของคุณ</string>
+    <string name="onboarding_wardrobe_body">ถ่ายรูปแต่ละชิ้นครั้งเดียว AI จะลบพื้นหลังและติดแท็กประเภท สี วัสดุ และอื่น ๆ เพื่อให้ค้นหาได้ทุกอย่าง</string>
+    <string name="onboarding_outfits_title">ไอเดียการแต่งตัวด้วย AI</string>
+    <string name="onboarding_outfits_body">รับคำแนะนำการแต่งตัวที่เหมาะกับสภาพอากาศ โอกาส และรสนิยมของคุณ — สร้างจากเสื้อผ้าที่คุณมีจริงเท่านั้น</string>
+    <string name="onboarding_tryon_title">ลองชุดบนตัวคุณ</string>
+    <string name="onboarding_tryon_body">เพิ่มรูปของคุณแล้วดูชุดใด ๆ บนตัวคุณก่อนสวมจริง แตะปุ่มตรงกลางเมื่อใดก็ได้เพื่อเริ่มลองชุด</string>
+    <string name="onboarding_travel_title">จัดกระเป๋าสำหรับทุกการเดินทาง</string>
+    <string name="onboarding_travel_body">บอกตัววางแผนการเดินทางว่าคุณจะไปที่ไหนและนานเท่าใด ระบบจะจัดตู้เสื้อผ้าแคปซูลแบบวันต่อวันจากตู้ของคุณ</string>
+    <string name="onboarding_shopping_title">ช้อปอย่างชาญฉลาด</string>
+    <string name="onboarding_shopping_body">บันทึกชิ้นที่คุณกำลังพิจารณา แล้วให้ตัวช่วยช้อปตรวจว่าเข้ากับสิ่งที่คุณมีอยู่หรือไม่ — และเติมเต็มช่องว่างที่แท้จริง</string>
+    <string name="onboarding_profile_title">บอกสไตล์ของคุณ</string>
+    <string name="onboarding_profile_body">สิ่งนี้ช่วยให้ AI ปรับแต่งทุกคำแนะนำให้เหมาะกับคุณ คุณเปลี่ยนได้ทุกเมื่อในการตั้งค่า</string>
+    <string name="onboarding_photo_title">เพิ่มรูปสำหรับลองชุด</string>
+    <string name="onboarding_photo_body">รูปเต็มตัวด้านหน้าช่วยให้คุณลองชุดบนตัวเองได้ ไม่บังคับ — เพิ่มภายหลังได้</string>
+    <string name="onboarding_photo_add">เพิ่มรูป</string>
+    <string name="onboarding_photo_added">เพิ่มรูปแล้ว</string>
+    <string name="onboarding_photo_offline">เชื่อมต่ออินเทอร์เน็ตเพื่อเพิ่มรูปของคุณ</string>
+    <string name="onboarding_closet_title">สร้างตู้เสื้อผ้าของคุณ</string>
+    <string name="onboarding_closet_body">ตู้แรกของคุณพร้อมแล้ว เพิ่มเสื้อผ้าสองสามชิ้นเพื่อรับไอเดียการแต่งตัวครั้งแรก — หรือสำรวจก่อนแล้วค่อยเพิ่มเมื่อใดก็ได้</string>
+    <string name="onboarding_closet_add_items">เพิ่มเสื้อผ้าตอนนี้</string>
+    <string name="onboarding_closet_explore">สำรวจแอป</string>
+    <string name="onboarding_tour_replay">เริ่มทัวร์</string>
+    <string name="onboarding_tour_replay_sub">เล่นทัวร์ต้อนรับอีกครั้ง</string>
 </resources>

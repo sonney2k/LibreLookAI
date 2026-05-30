@@ -1010,4 +1010,34 @@
     <!-- Expert: item tag dimensions for outfit AI -->
     <string name="composer_section_tags">تفاصيل العناصر التي تؤخذ في الاعتبار</string>
     <string name="composer_tags_hint">اختر سمات الملابس التي يراعيها الذكاء الاصطناعي. تفاصيل أقل = اقتراحات أسرع وأرخص وأكثر تركيزًا.</string>
+
+    <!-- Onboarding tour -->
+    <string name="onboarding_skip">تخطٍّ</string>
+    <string name="onboarding_next">التالي</string>
+    <string name="onboarding_back">رجوع</string>
+    <string name="onboarding_welcome_title">مرحبًا بك في LibreLookAI</string>
+    <string name="onboarding_welcome_body">مصمم أزيائك بالذكاء الاصطناعي للخزانة التي تملكها بالفعل. صوّر ملابسك، واحصل على أفكار إطلالات، وجرّبها، وجهّز حقيبتك للسفر — كل ذلك بخصوصية في Google Drive الخاص بك.</string>
+    <string name="onboarding_wardrobe_title">خزانتك الرقمية</string>
+    <string name="onboarding_wardrobe_body">صوّر كل قطعة مرة واحدة. يزيل الذكاء الاصطناعي الخلفية ويصنّف النوع واللون والخامة والمزيد، ليبقى كل شيء قابلاً للبحث.</string>
+    <string name="onboarding_outfits_title">أفكار إطلالات بالذكاء الاصطناعي</string>
+    <string name="onboarding_outfits_body">احصل على اقتراحات إطلالات مصممة حسب الطقس والمناسبة وذوقك — مبنية فقط من الملابس التي تملكها فعلاً.</string>
+    <string name="onboarding_tryon_title">جرّب الإطلالات على نفسك</string>
+    <string name="onboarding_tryon_body">أضف صورة لنفسك وشاهد أي إطلالة عليك قبل ارتدائها. اضغط على الزر الأوسط في أي وقت لبدء التجربة.</string>
+    <string name="onboarding_travel_title">جهّز حقيبتك لأي رحلة</string>
+    <string name="onboarding_travel_body">أخبر مخطط الرحلات إلى أين تذهب ولكم من الوقت. سيُنشئ خزانة كبسولة يومًا بيوم من خزانتك.</string>
+    <string name="onboarding_shopping_title">تسوق أذكى</string>
+    <string name="onboarding_shopping_body">احفظ القطع التي تفكر فيها ودع مساعد التسوق يتحقق مما إذا كانت تتناسب مع ما تملكه — وتسد فجوات حقيقية.</string>
+    <string name="onboarding_profile_title">أخبرنا عن أسلوبك</string>
+    <string name="onboarding_profile_body">يساعد ذلك الذكاء الاصطناعي على تخصيص كل اقتراح لك. يمكنك تغييره في أي وقت من الإعدادات.</string>
+    <string name="onboarding_photo_title">أضف صورة للتجربة</string>
+    <string name="onboarding_photo_body">صورة كاملة للجسم من الأمام تتيح لك تجربة الإطلالات على نفسك. اختياري — يمكنك إضافتها لاحقًا.</string>
+    <string name="onboarding_photo_add">إضافة صورة</string>
+    <string name="onboarding_photo_added">تمت إضافة الصورة</string>
+    <string name="onboarding_photo_offline">اتصل بالإنترنت لإضافة صورتك.</string>
+    <string name="onboarding_closet_title">أنشئ خزانتك</string>
+    <string name="onboarding_closet_body">خزانتك الأولى جاهزة. أضف بعض الملابس للحصول على أول أفكار الإطلالات — أو استكشف أولاً وأضفها متى شئت.</string>
+    <string name="onboarding_closet_add_items">أضف ملابس الآن</string>
+    <string name="onboarding_closet_explore">استكشف التطبيق</string>
+    <string name="onboarding_tour_replay">ابدأ الجولة</string>
+    <string name="onboarding_tour_replay_sub">إعادة تشغيل جولة الترحيب</string>
 </resources>

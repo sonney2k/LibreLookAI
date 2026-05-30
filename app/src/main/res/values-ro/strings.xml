@@ -990,4 +990,34 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <!-- Expert: item tag dimensions for outfit AI -->
     <string name="composer_section_tags">Detalii articole de luat în calcul</string>
     <string name="composer_tags_hint">Alege ce atribute ale hainelor ia în calcul AI-ul. Mai puține detalii = sugestii mai rapide, ieftine și precise.</string>
+
+    <!-- Onboarding tour -->
+    <string name="onboarding_skip">Omite</string>
+    <string name="onboarding_next">Înainte</string>
+    <string name="onboarding_back">Înapoi</string>
+    <string name="onboarding_welcome_title">Bun venit în LibreLookAI</string>
+    <string name="onboarding_welcome_body">Stilistul tău cu IA pentru garderoba pe care o ai deja. Fotografiază-ți hainele, primește idei de ținute, probează-le și fă-ți bagajul pentru călătorii — totul privat, în propriul tău Google Drive.</string>
+    <string name="onboarding_wardrobe_title">Garderoba ta digitală</string>
+    <string name="onboarding_wardrobe_body">Fotografiază fiecare articol o dată. IA elimină fundalul și etichetează tipul, culoarea, materialul și altele, ca totul să rămână ușor de căutat.</string>
+    <string name="onboarding_outfits_title">Idei de ținute cu IA</string>
+    <string name="onboarding_outfits_body">Primește sugestii de ținute adaptate la vreme, ocazie și gustul tău — create doar din hainele pe care chiar le ai.</string>
+    <string name="onboarding_tryon_title">Probează ținutele pe tine</string>
+    <string name="onboarding_tryon_body">Adaugă o fotografie cu tine și vezi orice ținută pe tine înainte să o porți. Atinge butonul central oricând pentru a începe o probă.</string>
+    <string name="onboarding_travel_title">Fă-ți bagajul pentru orice călătorie</string>
+    <string name="onboarding_travel_body">Spune planificatorului de călătorii unde mergi și pentru cât timp. Îți creează o garderobă capsulă zi cu zi din dulapul tău.</string>
+    <string name="onboarding_shopping_title">Cumpărături mai inteligente</string>
+    <string name="onboarding_shopping_body">Salvează articolele la care te gândești și lasă asistentul de cumpărături să verifice dacă se potrivesc cu ce ai deja — și acoperă goluri reale.</string>
+    <string name="onboarding_profile_title">Spune-ne stilul tău</string>
+    <string name="onboarding_profile_body">Asta ajută IA să personalizeze fiecare sugestie pentru tine. Poți modifica oricând în Setări.</string>
+    <string name="onboarding_photo_title">Adaugă o fotografie de probă</string>
+    <string name="onboarding_photo_body">O fotografie din față, din cap până-n picioare, îți permite să probezi ținutele pe tine. Opțional — o poți adăuga mai târziu.</string>
+    <string name="onboarding_photo_add">Adaugă fotografie</string>
+    <string name="onboarding_photo_added">Fotografie adăugată</string>
+    <string name="onboarding_photo_offline">Conectează-te la internet pentru a adăuga fotografia.</string>
+    <string name="onboarding_closet_title">Construiește-ți dulapul</string>
+    <string name="onboarding_closet_body">Primul tău dulap este gata. Adaugă câteva haine pentru primele idei de ținute — sau explorează mai întâi și adaugă-le când vrei.</string>
+    <string name="onboarding_closet_add_items">Adaugă haine acum</string>
+    <string name="onboarding_closet_explore">Explorează aplicația</string>
+    <string name="onboarding_tour_replay">Pornește turul</string>
+    <string name="onboarding_tour_replay_sub">Reia turul de bun venit</string>
 </resources>

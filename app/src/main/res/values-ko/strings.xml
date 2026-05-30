@@ -1010,4 +1010,34 @@
     <!-- Expert: item tag dimensions for outfit AI -->
     <string name="composer_section_tags">고려할 항목 세부 정보</string>
     <string name="composer_tags_hint">AI가 고려할 의류 속성을 선택하세요. 세부 정보가 적을수록 더 빠르고 저렴하며 집중된 제안이 됩니다.</string>
+
+    <!-- Onboarding tour -->
+    <string name="onboarding_skip">건너뛰기</string>
+    <string name="onboarding_next">다음</string>
+    <string name="onboarding_back">뒤로</string>
+    <string name="onboarding_welcome_title">LibreLookAI에 오신 것을 환영합니다</string>
+    <string name="onboarding_welcome_body">이미 가진 옷장을 위한 AI 스타일리스트. 옷을 촬영하고, 코디 아이디어를 받고, 입어 보고, 여행 짐을 꾸리세요 — 모두 내 Google 드라이브에서 비공개로.</string>
+    <string name="onboarding_wardrobe_title">나의 디지털 옷장</string>
+    <string name="onboarding_wardrobe_body">각 아이템을 한 번만 촬영하세요. AI가 배경을 제거하고 종류, 색상, 소재 등을 태그해 모든 것을 검색할 수 있게 합니다.</string>
+    <string name="onboarding_outfits_title">AI 코디 아이디어</string>
+    <string name="onboarding_outfits_body">날씨, 상황, 취향에 맞춘 코디 제안을 받으세요 — 실제로 가진 옷으로만 구성됩니다.</string>
+    <string name="onboarding_tryon_title">내 몸에 코디 입어 보기</string>
+    <string name="onboarding_tryon_body">내 사진을 추가하면 입기 전에 어떤 코디든 나에게 입혀 볼 수 있습니다. 가운데 버튼을 언제든 탭하여 가상 피팅을 시작하세요.</string>
+    <string name="onboarding_travel_title">어떤 여행이든 짐 싸기</string>
+    <string name="onboarding_travel_body">여행 플래너에 목적지와 기간을 알려 주세요. 옷장에서 하루하루의 캡슐 옷장을 구성해 줍니다.</string>
+    <string name="onboarding_shopping_title">더 똑똑한 쇼핑</string>
+    <string name="onboarding_shopping_body">고민 중인 아이템을 저장하면 쇼핑 도우미가 이미 가진 옷과 어울리는지 — 실제 빈틈을 채우는지 확인합니다.</string>
+    <string name="onboarding_profile_title">스타일을 알려 주세요</string>
+    <string name="onboarding_profile_body">이를 통해 AI가 모든 제안을 나에게 맞춥니다. 설정에서 언제든지 변경할 수 있습니다.</string>
+    <string name="onboarding_photo_title">피팅용 사진 추가</string>
+    <string name="onboarding_photo_body">정면 전신 사진이 있으면 코디를 내 몸에 입혀 볼 수 있습니다. 선택 사항 — 나중에 추가할 수 있습니다.</string>
+    <string name="onboarding_photo_add">사진 추가</string>
+    <string name="onboarding_photo_added">사진 추가됨</string>
+    <string name="onboarding_photo_offline">사진을 추가하려면 인터넷에 연결하세요.</string>
+    <string name="onboarding_closet_title">옷장 만들기</string>
+    <string name="onboarding_closet_body">첫 옷장이 준비되었습니다. 옷을 몇 가지 추가해 첫 코디 아이디어를 받아 보세요 — 또는 먼저 둘러보고 원할 때 추가하세요.</string>
+    <string name="onboarding_closet_add_items">지금 옷 추가</string>
+    <string name="onboarding_closet_explore">앱 둘러보기</string>
+    <string name="onboarding_tour_replay">둘러보기 시작</string>
+    <string name="onboarding_tour_replay_sub">환영 둘러보기 다시 보기</string>
 </resources>

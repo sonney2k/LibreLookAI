@@ -67,6 +67,8 @@ import com.librelookai.data.model.Location
 import com.librelookai.data.model.TryOn
 import com.librelookai.gemini.TokenUsageRepository
 import com.librelookai.ml.EmbeddingService
+import com.librelookai.onboarding.OnboardingScreen
+import com.librelookai.onboarding.OnboardingState
 import com.librelookai.outfit.OutfitComposerScreen
 import com.librelookai.outfit.OutfitEventsViewModel
 import com.librelookai.outfit.OutfitsScreen
@@ -181,6 +183,11 @@ internal fun AppContent(activity: ComponentActivity) {
                     // Increments on every nav button tap (incl. re-tap and gear icon)
                     // so screens with sub-tabs can reset to their default tab.
                     var navResetTick by remember { mutableIntStateOf(0) }
+                    // First-run onboarding tour. Shown until the user completes/skips it; can be
+                    // re-launched from Settings via LocalStartTour (which just flips this back on).
+                    var showOnboarding by rememberSaveable {
+                        mutableStateOf(!OnboardingState.isComplete(activity))
+                    }
                     val locationViewModel: LocationViewModel = viewModel()
                     val stylesViewModel: OutfitsViewModel = viewModel()
                     val wardrobeViewModel: WardrobeViewModel = viewModel()
@@ -312,6 +319,7 @@ internal fun AppContent(activity: ComponentActivity) {
                             activeLocationId = activeLocationId,
                             onSetActiveLocation = locationViewModel::setActiveLocation,
                         ),
+                        LocalStartTour provides { showOnboarding = true },
                     ) { LibreLookAITheme(
                         paletteId = profileState.preferences.wardrobeTheme,
                         fontId = profileState.preferences.appFont,
@@ -371,6 +379,9 @@ internal fun AppContent(activity: ComponentActivity) {
                                 },
                             )
                         } else {
+                        // Box so the onboarding tour can draw as an opaque overlay above the whole
+                        // app (incl. the bottom nav bar) without restructuring the Scaffold below.
+                        Box(Modifier.fillMaxSize()) {
 
                         // Location permission — request once; refresh weather when granted
                         var hasLocationPermission by remember {
@@ -803,6 +814,20 @@ internal fun AppContent(activity: ComponentActivity) {
                                 }
                             }
                         }
+
+                        // First-run onboarding tour — opaque fullscreen overlay above the app.
+                        if (showOnboarding) {
+                            OnboardingScreen(
+                                profileViewModel = profileViewModel,
+                                isOffline = isOffline,
+                                onFinish = { goToWardrobe ->
+                                    OnboardingState.setComplete(activity, true)
+                                    showOnboarding = false
+                                    if (goToWardrobe) { selectedTab = 1; navResetTick++ }
+                                },
+                            )
+                        }
+                        } // Box
                         }
                     } }
                 }

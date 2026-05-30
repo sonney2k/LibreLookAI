@@ -1010,4 +1010,34 @@
     <!-- Expert: item tag dimensions for outfit AI -->
     <string name="composer_section_tags">Detaily položek k zohlednění</string>
     <string name="composer_tags_hint">Vyber, které vlastnosti oblečení AI zohlední. Méně detailů = rychlejší, levnější a cílenější návrhy.</string>
+
+    <!-- Onboarding tour -->
+    <string name="onboarding_skip">Přeskočit</string>
+    <string name="onboarding_next">Další</string>
+    <string name="onboarding_back">Zpět</string>
+    <string name="onboarding_welcome_title">Vítejte v LibreLookAI</string>
+    <string name="onboarding_welcome_body">Váš AI stylista pro šatník, který už máte. Vyfoťte své oblečení, získejte nápady na outfity, vyzkoušejte si je a sbalte se na cesty — vše soukromě na vašem Google Disku.</string>
+    <string name="onboarding_wardrobe_title">Váš digitální šatník</string>
+    <string name="onboarding_wardrobe_body">Každý kus vyfoťte jednou. AI odstraní pozadí a označí typ, barvu, materiál a další, takže vše zůstane vyhledatelné.</string>
+    <string name="onboarding_outfits_title">Nápady na outfity od AI</string>
+    <string name="onboarding_outfits_body">Získejte návrhy outfitů podle počasí, příležitosti a vašeho vkusu — sestavené jen z oblečení, které opravdu máte.</string>
+    <string name="onboarding_tryon_title">Vyzkoušejte si outfity na sobě</string>
+    <string name="onboarding_tryon_body">Přidejte svou fotku a uvidíte jakýkoli outfit na sobě, než si ho obléknete. Kdykoli klepněte na prostřední tlačítko a spusťte zkoušku.</string>
+    <string name="onboarding_travel_title">Sbalte se na jakoukoli cestu</string>
+    <string name="onboarding_travel_body">Řekněte plánovači cest, kam a na jak dlouho jedete. Sestaví den po dni kapslový šatník z vaší skříně.</string>
+    <string name="onboarding_shopping_title">Chytřejší nakupování</string>
+    <string name="onboarding_shopping_body">Ukládejte kousky, které zvažujete, a nechte nákupního pomocníka zkontrolovat, zda se hodí k tomu, co už máte — a zaplní skutečné mezery.</string>
+    <string name="onboarding_profile_title">Řekněte nám o svém stylu</string>
+    <string name="onboarding_profile_body">Pomáhá to AI přizpůsobit každý návrh právě vám. Kdykoli to můžete změnit v Nastavení.</string>
+    <string name="onboarding_photo_title">Přidejte fotku pro zkoušení</string>
+    <string name="onboarding_photo_body">Celotělová fotka zepředu vám umožní zkoušet outfity na sobě. Volitelné — můžete ji přidat později.</string>
+    <string name="onboarding_photo_add">Přidat fotku</string>
+    <string name="onboarding_photo_added">Fotka přidána</string>
+    <string name="onboarding_photo_offline">Připojte se k internetu a přidejte svou fotku.</string>
+    <string name="onboarding_closet_title">Sestavte si šatník</string>
+    <string name="onboarding_closet_body">Vaše první skříň je připravena. Přidejte pár kousků a získejte první nápady na outfity — nebo se nejdřív rozhlédněte a přidejte je, kdy budete chtít.</string>
+    <string name="onboarding_closet_add_items">Přidat oblečení</string>
+    <string name="onboarding_closet_explore">Prozkoumat aplikaci</string>
+    <string name="onboarding_tour_replay">Spustit prohlídku</string>
+    <string name="onboarding_tour_replay_sub">Přehrát úvodní prohlídku</string>
 </resources>

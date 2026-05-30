@@ -990,4 +990,34 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <!-- Expert: item tag dimensions for outfit AI -->
     <string name="composer_section_tags">Chi tiết trang phục cần cân nhắc</string>
     <string name="composer_tags_hint">Chọn những thuộc tính trang phục mà AI cân nhắc. Ít chi tiết hơn = gợi ý nhanh hơn, rẻ hơn và tập trung hơn.</string>
+
+    <!-- Onboarding tour -->
+    <string name="onboarding_skip">Bỏ qua</string>
+    <string name="onboarding_next">Tiếp</string>
+    <string name="onboarding_back">Quay lại</string>
+    <string name="onboarding_welcome_title">Chào mừng đến với LibreLookAI</string>
+    <string name="onboarding_welcome_body">Nhà tạo mẫu AI cho tủ đồ bạn đã có. Chụp ảnh quần áo, nhận gợi ý trang phục, thử chúng và sắp xếp hành lý cho chuyến đi — tất cả riêng tư trong Google Drive của bạn.</string>
+    <string name="onboarding_wardrobe_title">Tủ đồ kỹ thuật số của bạn</string>
+    <string name="onboarding_wardrobe_body">Chụp ảnh mỗi món một lần. AI xóa nền và gắn thẻ loại, màu sắc, chất liệu và hơn thế, để mọi thứ luôn có thể tìm kiếm.</string>
+    <string name="onboarding_outfits_title">Gợi ý trang phục bằng AI</string>
+    <string name="onboarding_outfits_body">Nhận gợi ý trang phục phù hợp với thời tiết, dịp và gu của bạn — chỉ dựng từ quần áo bạn thực sự có.</string>
+    <string name="onboarding_tryon_title">Thử trang phục lên chính bạn</string>
+    <string name="onboarding_tryon_body">Thêm ảnh của bạn và xem bất kỳ trang phục nào trên người trước khi mặc. Chạm nút giữa bất cứ lúc nào để bắt đầu thử đồ.</string>
+    <string name="onboarding_travel_title">Sắp đồ cho mọi chuyến đi</string>
+    <string name="onboarding_travel_body">Cho trình lập kế hoạch du lịch biết bạn đi đâu và trong bao lâu. Nó dựng tủ đồ capsule theo từng ngày từ tủ của bạn.</string>
+    <string name="onboarding_shopping_title">Mua sắm thông minh hơn</string>
+    <string name="onboarding_shopping_body">Lưu những món bạn đang cân nhắc và để trợ lý mua sắm kiểm tra xem chúng có hợp với đồ bạn đã có — và lấp đầy những khoảng trống thực sự.</string>
+    <string name="onboarding_profile_title">Cho chúng tôi biết phong cách của bạn</string>
+    <string name="onboarding_profile_body">Điều này giúp AI điều chỉnh mọi gợi ý cho bạn. Bạn có thể thay đổi bất cứ lúc nào trong Cài đặt.</string>
+    <string name="onboarding_photo_title">Thêm ảnh thử đồ</string>
+    <string name="onboarding_photo_body">Ảnh toàn thân, chụp chính diện, cho phép bạn thử trang phục lên người. Tùy chọn — bạn có thể thêm sau.</string>
+    <string name="onboarding_photo_add">Thêm ảnh</string>
+    <string name="onboarding_photo_added">Đã thêm ảnh</string>
+    <string name="onboarding_photo_offline">Kết nối internet để thêm ảnh của bạn.</string>
+    <string name="onboarding_closet_title">Dựng tủ đồ của bạn</string>
+    <string name="onboarding_closet_body">Tủ đầu tiên của bạn đã sẵn sàng. Thêm vài món để nhận gợi ý trang phục đầu tiên — hoặc khám phá trước rồi thêm bất cứ khi nào bạn muốn.</string>
+    <string name="onboarding_closet_add_items">Thêm quần áo ngay</string>
+    <string name="onboarding_closet_explore">Khám phá ứng dụng</string>
+    <string name="onboarding_tour_replay">Xem hướng dẫn</string>
+    <string name="onboarding_tour_replay_sub">Phát lại phần giới thiệu chào mừng</string>
 </resources>

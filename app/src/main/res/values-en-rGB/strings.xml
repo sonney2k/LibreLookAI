@@ -1010,4 +1010,34 @@
     <!-- Expert: item tag dimensions for outfit AI -->
     <string name="composer_section_tags">Item details to weigh</string>
     <string name="composer_tags_hint">Pick which clothing attributes the AI weighs. Fewer details = faster, cheaper, more focused suggestions.</string>
+
+    <!-- Onboarding tour -->
+    <string name="onboarding_skip">Skip</string>
+    <string name="onboarding_next">Next</string>
+    <string name="onboarding_back">Back</string>
+    <string name="onboarding_welcome_title">Welcome to LibreLookAI</string>
+    <string name="onboarding_welcome_body">Your AI stylist for the wardrobe you already own. Snap your clothes, get outfit ideas, try them on, and pack for trips — all kept private in your own Google Drive.</string>
+    <string name="onboarding_wardrobe_title">Your digital wardrobe</string>
+    <string name="onboarding_wardrobe_body">Photograph each item once. AI removes the background and tags the type, colour, material and more, so everything stays searchable.</string>
+    <string name="onboarding_outfits_title">AI outfit ideas</string>
+    <string name="onboarding_outfits_body">Get outfit suggestions tailored to the weather, the occasion and your taste — built only from clothes you actually own.</string>
+    <string name="onboarding_tryon_title">Try outfits on yourself</string>
+    <string name="onboarding_tryon_body">Add a photo of yourself and see any outfit rendered on you before you wear it. Tap the centre button any time to start a try-on.</string>
+    <string name="onboarding_travel_title">Pack for any trip</string>
+    <string name="onboarding_travel_body">Tell the travel planner where you\'re going and for how long. It builds a day-by-day capsule wardrobe from your closet.</string>
+    <string name="onboarding_shopping_title">Smarter shopping</string>
+    <string name="onboarding_shopping_body">Save items you\'re considering and let the shopping helper check whether they match what you already own — and fill real gaps.</string>
+    <string name="onboarding_profile_title">Tell us your style</string>
+    <string name="onboarding_profile_body">This helps the AI tailor every suggestion to you. You can change it any time in Settings.</string>
+    <string name="onboarding_photo_title">Add a try-on photo</string>
+    <string name="onboarding_photo_body">A full-body, front-facing photo lets you try outfits on yourself. Optional — you can add it later.</string>
+    <string name="onboarding_photo_add">Add photo</string>
+    <string name="onboarding_photo_added">Photo added</string>
+    <string name="onboarding_photo_offline">Connect to the internet to add your photo.</string>
+    <string name="onboarding_closet_title">Build your closet</string>
+    <string name="onboarding_closet_body">Your first closet is ready. Add a few clothes to get your first outfit ideas — or explore first and add them whenever you like.</string>
+    <string name="onboarding_closet_add_items">Add clothes now</string>
+    <string name="onboarding_closet_explore">Explore the app</string>
+    <string name="onboarding_tour_replay">Take the tour</string>
+    <string name="onboarding_tour_replay_sub">Replay the welcome walkthrough</string>
 </resources>

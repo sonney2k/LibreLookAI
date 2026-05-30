@@ -1010,4 +1010,34 @@
     <!-- Expert: item tag dimensions for outfit AI -->
     <string name="composer_section_tags">Huomioitavat vaatetiedot</string>
     <string name="composer_tags_hint">Valitse, mitä vaatteiden ominaisuuksia tekoäly painottaa. Vähemmän yksityiskohtia = nopeampia, edullisempia ja tarkempia ehdotuksia.</string>
+
+    <!-- Onboarding tour -->
+    <string name="onboarding_skip">Ohita</string>
+    <string name="onboarding_next">Seuraava</string>
+    <string name="onboarding_back">Takaisin</string>
+    <string name="onboarding_welcome_title">Tervetuloa LibreLookAI:hin</string>
+    <string name="onboarding_welcome_body">Tekoälystylistisi vaatekaapille, joka sinulla jo on. Kuvaa vaatteesi, saa asukokonaisuusideoita, sovita niitä ja pakkaa matkoja varten — kaikki yksityisesti omassa Google Drivessasi.</string>
+    <string name="onboarding_wardrobe_title">Digitaalinen vaatekaappisi</string>
+    <string name="onboarding_wardrobe_body">Kuvaa jokainen vaate kerran. Tekoäly poistaa taustan ja merkitsee tyypin, värin, materiaalin ja muuta, joten kaikki pysyy haettavissa.</string>
+    <string name="onboarding_outfits_title">Tekoälyn asuideat</string>
+    <string name="onboarding_outfits_body">Saa asuehdotuksia, jotka on räätälöity sään, tilaisuuden ja makusi mukaan — koottu vain vaatteista, jotka todella omistat.</string>
+    <string name="onboarding_tryon_title">Sovita asuja itsellesi</string>
+    <string name="onboarding_tryon_body">Lisää kuva itsestäsi ja näe mikä tahansa asu päälläsi ennen kuin puet sen. Aloita sovitus milloin tahansa keskimmäisestä painikkeesta.</string>
+    <string name="onboarding_travel_title">Pakkaa mille tahansa matkalle</string>
+    <string name="onboarding_travel_body">Kerro matkasuunnittelijalle, minne ja kuinka pitkäksi aikaa matkustat. Se kokoaa kaapistasi kapselivaatekaapin päivä kerrallaan.</string>
+    <string name="onboarding_shopping_title">Fiksumpaa ostamista</string>
+    <string name="onboarding_shopping_body">Tallenna harkitsemasi tuotteet, ja anna ostosavustajan tarkistaa, sopivatko ne jo omistamiisi — ja täyttävätkö todellisia aukkoja.</string>
+    <string name="onboarding_profile_title">Kerro tyylistäsi</string>
+    <string name="onboarding_profile_body">Tämä auttaa tekoälyä räätälöimään jokaisen ehdotuksen sinulle. Voit muuttaa sitä milloin tahansa Asetuksissa.</string>
+    <string name="onboarding_photo_title">Lisää sovituskuva</string>
+    <string name="onboarding_photo_body">Koko vartalon etukuva antaa sinun sovittaa asuja itsellesi. Valinnainen — voit lisätä sen myöhemmin.</string>
+    <string name="onboarding_photo_add">Lisää kuva</string>
+    <string name="onboarding_photo_added">Kuva lisätty</string>
+    <string name="onboarding_photo_offline">Muodosta internetyhteys lisätäksesi kuvan.</string>
+    <string name="onboarding_closet_title">Rakenna vaatekaappisi</string>
+    <string name="onboarding_closet_body">Ensimmäinen kaappisi on valmis. Lisää muutama vaate saadaksesi ensimmäiset asuideat — tai tutustu ensin ja lisää ne milloin haluat.</string>
+    <string name="onboarding_closet_add_items">Lisää vaatteita nyt</string>
+    <string name="onboarding_closet_explore">Tutustu sovellukseen</string>
+    <string name="onboarding_tour_replay">Aloita esittely</string>
+    <string name="onboarding_tour_replay_sub">Toista tervetuloesittely</string>
 </resources>

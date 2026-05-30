@@ -1010,4 +1010,34 @@
     <!-- Expert: item tag dimensions for outfit AI -->
     <string name="composer_section_tags">Szczegóły ubrań do uwzględnienia</string>
     <string name="composer_tags_hint">Wybierz, które cechy ubrań uwzględnia AI. Mniej szczegółów = szybsze, tańsze i trafniejsze propozycje.</string>
+
+    <!-- Onboarding tour -->
+    <string name="onboarding_skip">Pomiń</string>
+    <string name="onboarding_next">Dalej</string>
+    <string name="onboarding_back">Wstecz</string>
+    <string name="onboarding_welcome_title">Witamy w LibreLookAI</string>
+    <string name="onboarding_welcome_body">Twój stylista AI dla garderoby, którą już masz. Sfotografuj ubrania, otrzymuj pomysły na stylizacje, przymierzaj je i pakuj się na wyjazdy — wszystko prywatnie na Twoim Google Drive.</string>
+    <string name="onboarding_wardrobe_title">Twoja cyfrowa garderoba</string>
+    <string name="onboarding_wardrobe_body">Sfotografuj każdą rzecz raz. AI usuwa tło i oznacza typ, kolor, materiał i więcej, dzięki czemu wszystko można wyszukać.</string>
+    <string name="onboarding_outfits_title">Pomysły na stylizacje od AI</string>
+    <string name="onboarding_outfits_body">Otrzymuj propozycje stylizacji dopasowane do pogody, okazji i Twojego gustu — tworzone tylko z ubrań, które naprawdę masz.</string>
+    <string name="onboarding_tryon_title">Przymierz stylizacje na sobie</string>
+    <string name="onboarding_tryon_body">Dodaj swoje zdjęcie i zobacz dowolną stylizację na sobie, zanim ją założysz. Dotknij środkowego przycisku w dowolnej chwili, aby rozpocząć przymiarkę.</string>
+    <string name="onboarding_travel_title">Spakuj się na każdą podróż</string>
+    <string name="onboarding_travel_body">Powiedz planerowi podróży, dokąd jedziesz i na jak długo. Ułoży dzień po dniu kapsułową garderobę z Twojej szafy.</string>
+    <string name="onboarding_shopping_title">Mądrzejsze zakupy</string>
+    <string name="onboarding_shopping_body">Zapisuj rzeczy, które rozważasz, a asystent zakupów sprawdzi, czy pasują do tego, co już masz — i wypełniają realne braki.</string>
+    <string name="onboarding_profile_title">Opowiedz nam o swoim stylu</string>
+    <string name="onboarding_profile_body">Pomaga to AI dopasować każdą propozycję do Ciebie. Możesz to zmienić w każdej chwili w Ustawieniach.</string>
+    <string name="onboarding_photo_title">Dodaj zdjęcie do przymiarek</string>
+    <string name="onboarding_photo_body">Zdjęcie całej sylwetki z przodu pozwala przymierzać stylizacje na sobie. Opcjonalne — możesz dodać je później.</string>
+    <string name="onboarding_photo_add">Dodaj zdjęcie</string>
+    <string name="onboarding_photo_added">Zdjęcie dodane</string>
+    <string name="onboarding_photo_offline">Połącz się z internetem, aby dodać zdjęcie.</string>
+    <string name="onboarding_closet_title">Zbuduj swoją szafę</string>
+    <string name="onboarding_closet_body">Twoja pierwsza szafa jest gotowa. Dodaj kilka ubrań, aby otrzymać pierwsze pomysły na stylizacje — albo najpierw rozejrzyj się i dodaj je, kiedy zechcesz.</string>
+    <string name="onboarding_closet_add_items">Dodaj ubrania teraz</string>
+    <string name="onboarding_closet_explore">Przeglądaj aplikację</string>
+    <string name="onboarding_tour_replay">Zobacz przewodnik</string>
+    <string name="onboarding_tour_replay_sub">Odtwórz powitalny przewodnik</string>
 </resources>

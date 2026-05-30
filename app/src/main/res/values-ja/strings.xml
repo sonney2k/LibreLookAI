@@ -1010,4 +1010,34 @@
     <!-- Expert: item tag dimensions for outfit AI -->
     <string name="composer_section_tags">考慮するアイテムの詳細</string>
     <string name="composer_tags_hint">AIが考慮する服の属性を選びます。詳細が少ないほど、速く、安く、的を絞った提案になります。</string>
+
+    <!-- Onboarding tour -->
+    <string name="onboarding_skip">スキップ</string>
+    <string name="onboarding_next">次へ</string>
+    <string name="onboarding_back">戻る</string>
+    <string name="onboarding_welcome_title">LibreLookAI へようこそ</string>
+    <string name="onboarding_welcome_body">すでにお持ちのワードローブのための AI スタイリスト。服を撮影し、コーデのアイデアを受け取り、試着し、旅行の荷造りまで——すべてご自身の Google ドライブ内でプライベートに。</string>
+    <string name="onboarding_wardrobe_title">あなたのデジタルワードローブ</string>
+    <string name="onboarding_wardrobe_body">各アイテムを一度撮影するだけ。AI が背景を除去し、種類・色・素材などをタグ付けするので、すべて検索できます。</string>
+    <string name="onboarding_outfits_title">AI コーデのアイデア</string>
+    <string name="onboarding_outfits_body">天気・シーン・好みに合わせたコーデ提案を受け取れます。実際に持っている服だけで構成されます。</string>
+    <string name="onboarding_tryon_title">自分にコーデを試着</string>
+    <string name="onboarding_tryon_body">自分の写真を追加すれば、着る前にどんなコーデも自分に重ねて確認できます。中央のボタンをタップするといつでも試着を開始できます。</string>
+    <string name="onboarding_travel_title">どんな旅行の荷造りも</string>
+    <string name="onboarding_travel_body">旅行プランナーに行き先と期間を伝えるだけ。クローゼットから日ごとのカプセルワードローブを作成します。</string>
+    <string name="onboarding_shopping_title">より賢い買い物</string>
+    <string name="onboarding_shopping_body">検討中のアイテムを保存すると、ショッピングヘルパーが手持ちの服と合うか、本当の不足を埋めるかを確認します。</string>
+    <string name="onboarding_profile_title">あなたのスタイルを教えてください</string>
+    <string name="onboarding_profile_body">これにより AI が提案をあなた向けに調整します。設定でいつでも変更できます。</string>
+    <string name="onboarding_photo_title">試着用の写真を追加</string>
+    <string name="onboarding_photo_body">正面からの全身写真があれば、自分にコーデを試着できます。任意——後から追加できます。</string>
+    <string name="onboarding_photo_add">写真を追加</string>
+    <string name="onboarding_photo_added">写真を追加しました</string>
+    <string name="onboarding_photo_offline">写真を追加するにはインターネットに接続してください。</string>
+    <string name="onboarding_closet_title">クローゼットを作成</string>
+    <string name="onboarding_closet_body">最初のクローゼットの準備ができました。服をいくつか追加して最初のコーデ案を受け取りましょう——または先に見て回り、いつでも追加できます。</string>
+    <string name="onboarding_closet_add_items">今すぐ服を追加</string>
+    <string name="onboarding_closet_explore">アプリを見てみる</string>
+    <string name="onboarding_tour_replay">ツアーを見る</string>
+    <string name="onboarding_tour_replay_sub">ようこそツアーをもう一度再生</string>
 </resources>

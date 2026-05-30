@@ -990,4 +990,34 @@
     <!-- Expert: item tag dimensions for outfit AI -->
     <string name="composer_section_tags">غور کرنے کے لیے آئٹم کی تفصیلات</string>
     <string name="composer_tags_hint">منتخب کریں کہ AI لباس کی کن خصوصیات کو مدنظر رکھے۔ کم تفصیلات = تیز، سستی اور زیادہ مرتکز تجاویز۔</string>
+
+    <!-- Onboarding tour -->
+    <string name="onboarding_skip">چھوڑیں</string>
+    <string name="onboarding_next">آگے</string>
+    <string name="onboarding_back">واپس</string>
+    <string name="onboarding_welcome_title">LibreLookAI میں خوش آمدید</string>
+    <string name="onboarding_welcome_body">آپ کے پہلے سے موجود وارڈروب کے لیے آپ کا AI اسٹائلسٹ۔ اپنے کپڑوں کی تصویر لیں، آؤٹ فٹ کے خیالات پائیں، انہیں آزمائیں اور سفر کے لیے پیک کریں — سب کچھ آپ کے اپنے Google Drive میں نجی۔</string>
+    <string name="onboarding_wardrobe_title">آپ کا ڈیجیٹل وارڈروب</string>
+    <string name="onboarding_wardrobe_body">ہر شے کی ایک بار تصویر لیں۔ AI پس منظر ہٹاتا ہے اور قسم، رنگ، میٹیریل وغیرہ ٹیگ کرتا ہے، تاکہ سب کچھ تلاش کے قابل رہے۔</string>
+    <string name="onboarding_outfits_title">AI آؤٹ فٹ خیالات</string>
+    <string name="onboarding_outfits_body">موسم، موقع اور آپ کے ذوق کے مطابق آؤٹ فٹ تجاویز پائیں — صرف انہی کپڑوں سے بنائی گئیں جو واقعی آپ کے پاس ہیں۔</string>
+    <string name="onboarding_tryon_title">آؤٹ فٹ خود پر آزمائیں</string>
+    <string name="onboarding_tryon_body">اپنی ایک تصویر شامل کریں اور پہننے سے پہلے کوئی بھی آؤٹ فٹ خود پر دیکھیں۔ آزمائش شروع کرنے کے لیے کسی بھی وقت درمیانی بٹن پر ٹیپ کریں۔</string>
+    <string name="onboarding_travel_title">کسی بھی سفر کے لیے پیک کریں</string>
+    <string name="onboarding_travel_body">ٹریول پلانر کو بتائیں کہ آپ کہاں اور کتنے عرصے کے لیے جا رہے ہیں۔ یہ آپ کی الماری سے روزانہ کا کیپسول وارڈروب بناتا ہے۔</string>
+    <string name="onboarding_shopping_title">ہوشیار خریداری</string>
+    <string name="onboarding_shopping_body">جن اشیاء پر آپ غور کر رہے ہیں انہیں محفوظ کریں اور شاپنگ ہیلپر کو جانچنے دیں کہ آیا وہ آپ کے موجودہ سامان سے میل کھاتی ہیں — اور حقیقی کمی پوری کرتی ہیں۔</string>
+    <string name="onboarding_profile_title">ہمیں اپنا انداز بتائیں</string>
+    <string name="onboarding_profile_body">اس سے AI کو ہر تجویز آپ کے مطابق بنانے میں مدد ملتی ہے۔ آپ اسے کسی بھی وقت ترتیبات میں تبدیل کر سکتے ہیں۔</string>
+    <string name="onboarding_photo_title">آزمائش کی تصویر شامل کریں</string>
+    <string name="onboarding_photo_body">سامنے سے پورے جسم کی تصویر آپ کو آؤٹ فٹ خود پر آزمانے دیتی ہے۔ اختیاری — آپ اسے بعد میں شامل کر سکتے ہیں۔</string>
+    <string name="onboarding_photo_add">تصویر شامل کریں</string>
+    <string name="onboarding_photo_added">تصویر شامل ہو گئی</string>
+    <string name="onboarding_photo_offline">اپنی تصویر شامل کرنے کے لیے انٹرنیٹ سے منسلک ہوں۔</string>
+    <string name="onboarding_closet_title">اپنی الماری بنائیں</string>
+    <string name="onboarding_closet_body">آپ کی پہلی الماری تیار ہے۔ پہلے آؤٹ فٹ خیالات کے لیے چند کپڑے شامل کریں — یا پہلے دیکھیں اور جب چاہیں شامل کریں۔</string>
+    <string name="onboarding_closet_add_items">ابھی کپڑے شامل کریں</string>
+    <string name="onboarding_closet_explore">ایپ دریافت کریں</string>
+    <string name="onboarding_tour_replay">ٹور لیں</string>
+    <string name="onboarding_tour_replay_sub">ویلکم واک تھرو دوبارہ چلائیں</string>
 </resources>

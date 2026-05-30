@@ -1079,4 +1079,34 @@
     <!-- Expert: item tag dimensions for outfit AI -->
     <string name="composer_section_tags">Welche Artikel-Details zählen</string>
     <string name="composer_tags_hint">Wähle, welche Kleidungsmerkmale die KI berücksichtigt. Weniger Details = schnellere, günstigere und gezieltere Vorschläge.</string>
+
+    <!-- Onboarding tour -->
+    <string name="onboarding_skip">Überspringen</string>
+    <string name="onboarding_next">Weiter</string>
+    <string name="onboarding_back">Zurück</string>
+    <string name="onboarding_welcome_title">Willkommen bei LibreLookAI</string>
+    <string name="onboarding_welcome_body">Dein KI-Stylist für die Garderobe, die du schon besitzt. Fotografiere deine Kleidung, erhalte Outfit-Ideen, probiere sie an und packe für Reisen – alles privat in deinem eigenen Google Drive.</string>
+    <string name="onboarding_wardrobe_title">Deine digitale Garderobe</string>
+    <string name="onboarding_wardrobe_body">Fotografiere jedes Teil einmal. Die KI entfernt den Hintergrund und verschlagwortet Typ, Farbe, Material und mehr, damit alles durchsuchbar bleibt.</string>
+    <string name="onboarding_outfits_title">KI-Outfit-Ideen</string>
+    <string name="onboarding_outfits_body">Erhalte Outfit-Vorschläge passend zu Wetter, Anlass und deinem Geschmack – nur aus Kleidung, die du wirklich besitzt.</string>
+    <string name="onboarding_tryon_title">Outfits an dir anprobieren</string>
+    <string name="onboarding_tryon_body">Füge ein Foto von dir hinzu und sieh jedes Outfit an dir, bevor du es trägst. Tippe jederzeit auf die mittlere Schaltfläche, um eine Anprobe zu starten.</string>
+    <string name="onboarding_travel_title">Für jede Reise packen</string>
+    <string name="onboarding_travel_body">Sag dem Reiseplaner, wohin und wie lange du reist. Er stellt aus deinem Kleiderschrank eine Capsule-Garderobe Tag für Tag zusammen.</string>
+    <string name="onboarding_shopping_title">Cleverer einkaufen</string>
+    <string name="onboarding_shopping_body">Speichere Teile, die dich interessieren, und lass den Einkaufshelfer prüfen, ob sie zu deinem Bestand passen – und echte Lücken füllen.</string>
+    <string name="onboarding_profile_title">Erzähl uns deinen Stil</string>
+    <string name="onboarding_profile_body">Das hilft der KI, jeden Vorschlag auf dich abzustimmen. Du kannst es jederzeit in den Einstellungen ändern.</string>
+    <string name="onboarding_photo_title">Anprobe-Foto hinzufügen</string>
+    <string name="onboarding_photo_body">Ein Ganzkörperfoto von vorne lässt dich Outfits an dir anprobieren. Optional – du kannst es später hinzufügen.</string>
+    <string name="onboarding_photo_add">Foto hinzufügen</string>
+    <string name="onboarding_photo_added">Foto hinzugefügt</string>
+    <string name="onboarding_photo_offline">Stelle eine Internetverbindung her, um dein Foto hinzuzufügen.</string>
+    <string name="onboarding_closet_title">Richte deinen Schrank ein</string>
+    <string name="onboarding_closet_body">Dein erster Schrank ist bereit. Füge ein paar Kleidungsstücke hinzu, um erste Outfit-Ideen zu erhalten – oder schau dich erst um und füge sie hinzu, wann du möchtest.</string>
+    <string name="onboarding_closet_add_items">Jetzt Kleidung hinzufügen</string>
+    <string name="onboarding_closet_explore">App erkunden</string>
+    <string name="onboarding_tour_replay">Tour starten</string>
+    <string name="onboarding_tour_replay_sub">Willkommens-Rundgang erneut ansehen</string>
 </resources>

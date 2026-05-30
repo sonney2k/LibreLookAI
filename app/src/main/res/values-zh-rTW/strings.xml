@@ -990,4 +990,34 @@
     <!-- Expert: item tag dimensions for outfit AI -->
     <string name="composer_section_tags">要納入考量的單品細節</string>
     <string name="composer_tags_hint">選擇 AI 要考量哪些服裝屬性。細節越少 = 建議越快、越省、越精準。</string>
+
+    <!-- Onboarding tour -->
+    <string name="onboarding_skip">略過</string>
+    <string name="onboarding_next">下一步</string>
+    <string name="onboarding_back">返回</string>
+    <string name="onboarding_welcome_title">歡迎使用 LibreLookAI</string>
+    <string name="onboarding_welcome_body">為你既有衣櫥打造的 AI 造型師。拍下你的衣物、取得穿搭靈感、試穿，並為旅行打包——全部私密地保存在你自己的 Google 雲端硬碟。</string>
+    <string name="onboarding_wardrobe_title">你的數位衣櫥</string>
+    <string name="onboarding_wardrobe_body">每件單品只需拍攝一次。AI 會移除背景並標記類型、顏色、材質等，讓一切都能搜尋。</string>
+    <string name="onboarding_outfits_title">AI 穿搭靈感</string>
+    <string name="onboarding_outfits_body">取得依天氣、場合與你品味量身打造的穿搭建議——僅以你實際擁有的衣物組成。</string>
+    <string name="onboarding_tryon_title">在自己身上試穿</string>
+    <string name="onboarding_tryon_body">加入你的照片，穿上之前就能在自己身上看到任何穿搭。隨時點按中央按鈕即可開始試穿。</string>
+    <string name="onboarding_travel_title">為任何旅程打包</string>
+    <string name="onboarding_travel_body">告訴旅行規劃工具你要去哪裡、去多久。它會從你的衣櫃逐日打造膠囊衣櫥。</string>
+    <string name="onboarding_shopping_title">更聰明的購物</string>
+    <string name="onboarding_shopping_body">儲存你正在考慮的單品，讓購物小幫手檢查它們是否與你既有的衣物相搭——並填補真正的缺口。</string>
+    <string name="onboarding_profile_title">告訴我們你的風格</string>
+    <string name="onboarding_profile_body">這能幫助 AI 為你量身調整每項建議。你可以隨時在設定中變更。</string>
+    <string name="onboarding_photo_title">加入試穿照片</string>
+    <string name="onboarding_photo_body">正面全身照能讓你在自己身上試穿。可選——之後也能再加入。</string>
+    <string name="onboarding_photo_add">加入照片</string>
+    <string name="onboarding_photo_added">已加入照片</string>
+    <string name="onboarding_photo_offline">請連上網路以加入你的照片。</string>
+    <string name="onboarding_closet_title">建立你的衣櫃</string>
+    <string name="onboarding_closet_body">你的第一個衣櫃已就緒。加入幾件衣物即可取得第一批穿搭靈感——或先逛逛，想加入時再加入。</string>
+    <string name="onboarding_closet_add_items">立即加入衣物</string>
+    <string name="onboarding_closet_explore">探索應用程式</string>
+    <string name="onboarding_tour_replay">開始導覽</string>
+    <string name="onboarding_tour_replay_sub">重新播放歡迎導覽</string>
 </resources>

@@ -1010,4 +1010,34 @@
     <!-- Expert: item tag dimensions for outfit AI -->
     <string name="composer_section_tags">Itemdetails om mee te wegen</string>
     <string name="composer_tags_hint">Kies welke kledingkenmerken de AI meeweegt. Minder details = snellere, goedkopere en gerichtere suggesties.</string>
+
+    <!-- Onboarding tour -->
+    <string name="onboarding_skip">Overslaan</string>
+    <string name="onboarding_next">Volgende</string>
+    <string name="onboarding_back">Terug</string>
+    <string name="onboarding_welcome_title">Welkom bij LibreLookAI</string>
+    <string name="onboarding_welcome_body">Je AI-stylist voor de garderobe die je al hebt. Fotografeer je kleding, krijg outfit-ideeën, pas ze en pak je koffer voor reizen — allemaal privé in je eigen Google Drive.</string>
+    <string name="onboarding_wardrobe_title">Je digitale garderobe</string>
+    <string name="onboarding_wardrobe_body">Fotografeer elk item één keer. AI verwijdert de achtergrond en labelt type, kleur, materiaal en meer, zodat alles doorzoekbaar blijft.</string>
+    <string name="onboarding_outfits_title">AI-outfitideeën</string>
+    <string name="onboarding_outfits_body">Krijg outfitsuggesties afgestemd op het weer, de gelegenheid en je smaak — alleen samengesteld uit kleding die je echt hebt.</string>
+    <string name="onboarding_tryon_title">Pas outfits op jezelf</string>
+    <string name="onboarding_tryon_body">Voeg een foto van jezelf toe en zie elke outfit op jou voordat je hem draagt. Tik op elk moment op de middelste knop om een pasbeurt te starten.</string>
+    <string name="onboarding_travel_title">Pak in voor elke reis</string>
+    <string name="onboarding_travel_body">Vertel de reisplanner waar je heen gaat en hoe lang. Hij stelt dag voor dag een capsulegarderobe samen uit je kast.</string>
+    <string name="onboarding_shopping_title">Slimmer shoppen</string>
+    <string name="onboarding_shopping_body">Bewaar items die je overweegt en laat de shophulp controleren of ze passen bij wat je al hebt — en echte gaten vullen.</string>
+    <string name="onboarding_profile_title">Vertel ons je stijl</string>
+    <string name="onboarding_profile_body">Dit helpt de AI elke suggestie op jou af te stemmen. Je kunt het altijd wijzigen in Instellingen.</string>
+    <string name="onboarding_photo_title">Voeg een pasfoto toe</string>
+    <string name="onboarding_photo_body">Met een volledige foto van de voorkant kun je outfits op jezelf passen. Optioneel — je kunt hem later toevoegen.</string>
+    <string name="onboarding_photo_add">Foto toevoegen</string>
+    <string name="onboarding_photo_added">Foto toegevoegd</string>
+    <string name="onboarding_photo_offline">Maak verbinding met internet om je foto toe te voegen.</string>
+    <string name="onboarding_closet_title">Bouw je kast op</string>
+    <string name="onboarding_closet_body">Je eerste kast is klaar. Voeg een paar kledingstukken toe voor je eerste outfitideeën — of verken eerst en voeg ze toe wanneer je wilt.</string>
+    <string name="onboarding_closet_add_items">Nu kleding toevoegen</string>
+    <string name="onboarding_closet_explore">App verkennen</string>
+    <string name="onboarding_tour_replay">Volg de rondleiding</string>
+    <string name="onboarding_tour_replay_sub">Bekijk de welkomstrondleiding opnieuw</string>
 </resources>

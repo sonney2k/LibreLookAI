@@ -1010,4 +1010,34 @@
     <!-- Expert: item tag dimensions for outfit AI -->
     <string name="composer_section_tags">Λεπτομέρειες ρούχων προς αξιολόγηση</string>
     <string name="composer_tags_hint">Επίλεξε ποια χαρακτηριστικά των ρούχων λαμβάνει υπόψη η AI. Λιγότερες λεπτομέρειες = ταχύτερες, φθηνότερες και πιο στοχευμένες προτάσεις.</string>
+
+    <!-- Onboarding tour -->
+    <string name="onboarding_skip">Παράλειψη</string>
+    <string name="onboarding_next">Επόμενο</string>
+    <string name="onboarding_back">Πίσω</string>
+    <string name="onboarding_welcome_title">Καλώς ήρθατε στο LibreLookAI</string>
+    <string name="onboarding_welcome_body">Ο στιλίστας AI για την γκαρνταρόμπα που ήδη έχετε. Φωτογραφίστε τα ρούχα σας, λάβετε ιδέες για σύνολα, δοκιμάστε τα και ετοιμάστε βαλίτσα για ταξίδια — όλα ιδιωτικά στο δικό σας Google Drive.</string>
+    <string name="onboarding_wardrobe_title">Η ψηφιακή σας γκαρνταρόμπα</string>
+    <string name="onboarding_wardrobe_body">Φωτογραφίστε κάθε κομμάτι μία φορά. Το AI αφαιρεί το φόντο και επισημαίνει τύπο, χρώμα, υλικό και άλλα, ώστε όλα να παραμένουν αναζητήσιμα.</string>
+    <string name="onboarding_outfits_title">Ιδέες συνόλων με AI</string>
+    <string name="onboarding_outfits_body">Λάβετε προτάσεις συνόλων προσαρμοσμένες στον καιρό, την περίσταση και το γούστο σας — φτιαγμένες μόνο από ρούχα που πραγματικά έχετε.</string>
+    <string name="onboarding_tryon_title">Δοκιμάστε σύνολα πάνω σας</string>
+    <string name="onboarding_tryon_body">Προσθέστε μια φωτογραφία σας και δείτε οποιοδήποτε σύνολο πάνω σας πριν το φορέσετε. Πατήστε το κεντρικό κουμπί οποτεδήποτε για να ξεκινήσετε δοκιμή.</string>
+    <string name="onboarding_travel_title">Ετοιμάστε βαλίτσα για κάθε ταξίδι</string>
+    <string name="onboarding_travel_body">Πείτε στον σχεδιαστή ταξιδιών πού πάτε και για πόσο. Δημιουργεί μια κάψουλα γκαρνταρόμπας μέρα με τη μέρα από την ντουλάπα σας.</string>
+    <string name="onboarding_shopping_title">Πιο έξυπνες αγορές</string>
+    <string name="onboarding_shopping_body">Αποθηκεύστε όσα κομμάτια σκέφτεστε και αφήστε τον βοηθό αγορών να ελέγξει αν ταιριάζουν με όσα έχετε ήδη — και καλύπτουν πραγματικά κενά.</string>
+    <string name="onboarding_profile_title">Πείτε μας το στιλ σας</string>
+    <string name="onboarding_profile_body">Αυτό βοηθά το AI να προσαρμόζει κάθε πρόταση σε εσάς. Μπορείτε να το αλλάξετε οποτεδήποτε στις Ρυθμίσεις.</string>
+    <string name="onboarding_photo_title">Προσθέστε φωτογραφία δοκιμής</string>
+    <string name="onboarding_photo_body">Μια φωτογραφία ολόσωμη, από μπροστά, σας επιτρέπει να δοκιμάζετε σύνολα πάνω σας. Προαιρετικό — μπορείτε να την προσθέσετε αργότερα.</string>
+    <string name="onboarding_photo_add">Προσθήκη φωτογραφίας</string>
+    <string name="onboarding_photo_added">Η φωτογραφία προστέθηκε</string>
+    <string name="onboarding_photo_offline">Συνδεθείτε στο διαδίκτυο για να προσθέσετε τη φωτογραφία σας.</string>
+    <string name="onboarding_closet_title">Δημιουργήστε την ντουλάπα σας</string>
+    <string name="onboarding_closet_body">Η πρώτη σας ντουλάπα είναι έτοιμη. Προσθέστε μερικά ρούχα για τις πρώτες ιδέες συνόλων — ή εξερευνήστε πρώτα και προσθέστε τα όποτε θέλετε.</string>
+    <string name="onboarding_closet_add_items">Προσθήκη ρούχων τώρα</string>
+    <string name="onboarding_closet_explore">Εξερεύνηση της εφαρμογής</string>
+    <string name="onboarding_tour_replay">Ξεκινήστε την ξενάγηση</string>
+    <string name="onboarding_tour_replay_sub">Αναπαραγωγή της ξενάγησης καλωσορίσματος</string>
 </resources>

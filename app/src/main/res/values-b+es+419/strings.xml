@@ -1010,4 +1010,34 @@
     <!-- Expert: item tag dimensions for outfit AI -->
     <string name="composer_section_tags">Detalles de prendas a considerar</string>
     <string name="composer_tags_hint">Elige qué atributos de la ropa considera la IA. Menos detalles = sugerencias más rápidas, económicas y precisas.</string>
+
+    <!-- Onboarding tour -->
+    <string name="onboarding_skip">Omitir</string>
+    <string name="onboarding_next">Siguiente</string>
+    <string name="onboarding_back">Atrás</string>
+    <string name="onboarding_welcome_title">Te damos la bienvenida a LibreLookAI</string>
+    <string name="onboarding_welcome_body">Tu estilista con IA para el clóset que ya tienes. Toma fotos de tu ropa, recibe ideas de outfits, pruébatelos y arma tu maleta para los viajes, todo privado en tu propio Google Drive.</string>
+    <string name="onboarding_wardrobe_title">Tu clóset digital</string>
+    <string name="onboarding_wardrobe_body">Toma una foto de cada prenda una vez. La IA quita el fondo y etiqueta el tipo, color, material y más, para que todo sea fácil de buscar.</string>
+    <string name="onboarding_outfits_title">Ideas de outfits con IA</string>
+    <string name="onboarding_outfits_body">Recibe sugerencias de outfits según el clima, la ocasión y tu gusto, creadas solo con la ropa que realmente tienes.</string>
+    <string name="onboarding_tryon_title">Pruébate los outfits</string>
+    <string name="onboarding_tryon_body">Agrega una foto tuya y mira cualquier outfit en ti antes de usarlo. Toca el botón central cuando quieras para iniciar una prueba.</string>
+    <string name="onboarding_travel_title">Arma tu maleta para cualquier viaje</string>
+    <string name="onboarding_travel_body">Dile al planificador de viajes a dónde vas y por cuánto tiempo. Arma un clóset cápsula día por día a partir de tu clóset.</string>
+    <string name="onboarding_shopping_title">Compras más inteligentes</string>
+    <string name="onboarding_shopping_body">Guarda las prendas que estás considerando y deja que el asistente de compras revise si combinan con lo que ya tienes y cubren huecos reales.</string>
+    <string name="onboarding_profile_title">Cuéntanos tu estilo</string>
+    <string name="onboarding_profile_body">Esto ayuda a la IA a personalizar cada sugerencia. Puedes cambiarlo cuando quieras en Configuración.</string>
+    <string name="onboarding_photo_title">Agrega una foto para probar outfits</string>
+    <string name="onboarding_photo_body">Una foto de cuerpo entero y de frente te permite probarte los outfits. Opcional: puedes agregarla más tarde.</string>
+    <string name="onboarding_photo_add">Agregar foto</string>
+    <string name="onboarding_photo_added">Foto agregada</string>
+    <string name="onboarding_photo_offline">Conéctate a internet para agregar tu foto.</string>
+    <string name="onboarding_closet_title">Arma tu clóset</string>
+    <string name="onboarding_closet_body">Tu primer clóset está listo. Agrega algunas prendas para recibir tus primeras ideas de outfits, o explora primero y agrégalas cuando quieras.</string>
+    <string name="onboarding_closet_add_items">Agregar ropa ahora</string>
+    <string name="onboarding_closet_explore">Explorar la app</string>
+    <string name="onboarding_tour_replay">Ver el recorrido</string>
+    <string name="onboarding_tour_replay_sub">Repetir la presentación de bienvenida</string>
 </resources>

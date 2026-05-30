@@ -990,4 +990,34 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <!-- Expert: item tag dimensions for outfit AI -->
     <string name="composer_section_tags">Butiran item untuk ditimbang</string>
     <string name="composer_tags_hint">Pilih ciri pakaian yang dipertimbangkan AI. Kurang butiran = cadangan lebih pantas, murah dan fokus.</string>
+
+    <!-- Onboarding tour -->
+    <string name="onboarding_skip">Langkau</string>
+    <string name="onboarding_next">Seterusnya</string>
+    <string name="onboarding_back">Kembali</string>
+    <string name="onboarding_welcome_title">Selamat datang ke LibreLookAI</string>
+    <string name="onboarding_welcome_body">Penggaya AI anda untuk almari pakaian yang anda sedia ada. Ambil foto pakaian anda, dapatkan idea set pakaian, cuba pakai dan kemas untuk perjalanan — semuanya peribadi dalam Google Drive anda sendiri.</string>
+    <string name="onboarding_wardrobe_title">Almari pakaian digital anda</string>
+    <string name="onboarding_wardrobe_body">Foto setiap item sekali. AI membuang latar belakang dan menanda jenis, warna, bahan dan banyak lagi, supaya semuanya kekal boleh dicari.</string>
+    <string name="onboarding_outfits_title">Idea set pakaian AI</string>
+    <string name="onboarding_outfits_body">Dapatkan cadangan set pakaian yang disesuaikan dengan cuaca, majlis dan citarasa anda — dibina hanya daripada pakaian yang benar-benar anda miliki.</string>
+    <string name="onboarding_tryon_title">Cuba set pakaian pada diri anda</string>
+    <string name="onboarding_tryon_body">Tambah foto diri anda dan lihat mana-mana set pakaian pada anda sebelum memakainya. Ketik butang tengah bila-bila masa untuk mula mencuba.</string>
+    <string name="onboarding_travel_title">Kemas untuk sebarang perjalanan</string>
+    <string name="onboarding_travel_body">Beritahu perancang perjalanan ke mana dan berapa lama anda pergi. Ia menyusun almari kapsul hari demi hari daripada almari anda.</string>
+    <string name="onboarding_shopping_title">Membeli-belah lebih bijak</string>
+    <string name="onboarding_shopping_body">Simpan item yang anda pertimbangkan dan biar pembantu membeli-belah menyemak sama ada ia padan dengan yang sedia ada — dan mengisi jurang sebenar.</string>
+    <string name="onboarding_profile_title">Beritahu kami gaya anda</string>
+    <string name="onboarding_profile_body">Ini membantu AI menyesuaikan setiap cadangan untuk anda. Anda boleh mengubahnya bila-bila masa dalam Tetapan.</string>
+    <string name="onboarding_photo_title">Tambah foto untuk mencuba</string>
+    <string name="onboarding_photo_body">Foto seluruh badan dari hadapan membolehkan anda mencuba set pakaian pada diri sendiri. Pilihan — anda boleh tambah kemudian.</string>
+    <string name="onboarding_photo_add">Tambah foto</string>
+    <string name="onboarding_photo_added">Foto ditambah</string>
+    <string name="onboarding_photo_offline">Sambung ke internet untuk menambah foto anda.</string>
+    <string name="onboarding_closet_title">Bina almari anda</string>
+    <string name="onboarding_closet_body">Almari pertama anda sudah sedia. Tambah beberapa pakaian untuk mendapatkan idea set pakaian pertama anda — atau terokai dahulu dan tambah bila-bila anda mahu.</string>
+    <string name="onboarding_closet_add_items">Tambah pakaian sekarang</string>
+    <string name="onboarding_closet_explore">Terokai apl</string>
+    <string name="onboarding_tour_replay">Ikuti lawatan</string>
+    <string name="onboarding_tour_replay_sub">Main semula lawatan selamat datang</string>
 </resources>

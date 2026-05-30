@@ -990,4 +990,34 @@
     <!-- Expert: item tag dimensions for outfit AI -->
     <string name="composer_section_tags">विचार करने योग्य आइटम विवरण</string>
     <string name="composer_tags_hint">चुनें कि AI कपड़ों की किन विशेषताओं को ध्यान में रखे। कम विवरण = तेज़, सस्ते और अधिक केंद्रित सुझाव।</string>
+
+    <!-- Onboarding tour -->
+    <string name="onboarding_skip">छोड़ें</string>
+    <string name="onboarding_next">आगे</string>
+    <string name="onboarding_back">पीछे</string>
+    <string name="onboarding_welcome_title">LibreLookAI में आपका स्वागत है</string>
+    <string name="onboarding_welcome_body">आपके पास पहले से मौजूद वॉर्डरोब के लिए आपका AI स्टाइलिस्ट। अपने कपड़ों की फ़ोटो लें, आउटफिट के सुझाव पाएँ, उन्हें ट्राई करें और यात्राओं के लिए पैक करें — सब कुछ आपके अपने Google Drive में निजी रहता है।</string>
+    <string name="onboarding_wardrobe_title">आपका डिजिटल वॉर्डरोब</string>
+    <string name="onboarding_wardrobe_body">हर आइटम की एक बार फ़ोटो लें। AI बैकग्राउंड हटाता है और प्रकार, रंग, सामग्री आदि टैग करता है, ताकि सब कुछ खोजा जा सके।</string>
+    <string name="onboarding_outfits_title">AI आउटफिट सुझाव</string>
+    <string name="onboarding_outfits_body">मौसम, अवसर और आपकी पसंद के अनुसार आउटफिट सुझाव पाएँ — केवल उन्हीं कपड़ों से बनाए जो वास्तव में आपके पास हैं।</string>
+    <string name="onboarding_tryon_title">आउटफिट खुद पर ट्राई करें</string>
+    <string name="onboarding_tryon_body">अपनी एक फ़ोटो जोड़ें और पहनने से पहले कोई भी आउटफिट खुद पर देखें। ट्राई-ऑन शुरू करने के लिए कभी भी बीच वाले बटन पर टैप करें।</string>
+    <string name="onboarding_travel_title">किसी भी यात्रा के लिए पैक करें</string>
+    <string name="onboarding_travel_body">ट्रैवल प्लानर को बताएँ कि आप कहाँ और कितने समय के लिए जा रहे हैं। यह आपकी अलमारी से दिन-प्रतिदिन का कैप्सूल वॉर्डरोब बनाता है।</string>
+    <string name="onboarding_shopping_title">स्मार्ट शॉपिंग</string>
+    <string name="onboarding_shopping_body">जिन आइटम पर आप विचार कर रहे हैं उन्हें सहेजें और शॉपिंग हेल्पर को जाँचने दें कि वे आपके पास मौजूद चीज़ों से मेल खाते हैं या नहीं — और असली कमी पूरी करते हैं या नहीं।</string>
+    <string name="onboarding_profile_title">हमें अपनी स्टाइल बताएँ</string>
+    <string name="onboarding_profile_body">इससे AI को हर सुझाव आपके अनुसार ढालने में मदद मिलती है। आप इसे सेटिंग्स में कभी भी बदल सकते हैं।</string>
+    <string name="onboarding_photo_title">एक ट्राई-ऑन फ़ोटो जोड़ें</string>
+    <string name="onboarding_photo_body">सामने से ली गई पूरे शरीर की फ़ोटो आपको आउटफिट खुद पर ट्राई करने देती है। वैकल्पिक — आप इसे बाद में जोड़ सकते हैं।</string>
+    <string name="onboarding_photo_add">फ़ोटो जोड़ें</string>
+    <string name="onboarding_photo_added">फ़ोटो जोड़ी गई</string>
+    <string name="onboarding_photo_offline">अपनी फ़ोटो जोड़ने के लिए इंटरनेट से कनेक्ट करें।</string>
+    <string name="onboarding_closet_title">अपनी अलमारी बनाएँ</string>
+    <string name="onboarding_closet_body">आपकी पहली अलमारी तैयार है। पहले आउटफिट सुझाव पाने के लिए कुछ कपड़े जोड़ें — या पहले एक्सप्लोर करें और जब चाहें जोड़ें।</string>
+    <string name="onboarding_closet_add_items">अभी कपड़े जोड़ें</string>
+    <string name="onboarding_closet_explore">ऐप एक्सप्लोर करें</string>
+    <string name="onboarding_tour_replay">टूर लें</string>
+    <string name="onboarding_tour_replay_sub">वेलकम वॉकथ्रू फिर से चलाएँ</string>
 </resources>

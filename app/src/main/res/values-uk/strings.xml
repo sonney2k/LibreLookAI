@@ -990,4 +990,34 @@
     <!-- Expert: item tag dimensions for outfit AI -->
     <string name="composer_section_tags">Деталі речей для врахування</string>
     <string name="composer_tags_hint">Обери, які характеристики одягу враховує ШІ. Менше деталей = швидші, дешевші й точніші пропозиції.</string>
+
+    <!-- Onboarding tour -->
+    <string name="onboarding_skip">Пропустити</string>
+    <string name="onboarding_next">Далі</string>
+    <string name="onboarding_back">Назад</string>
+    <string name="onboarding_welcome_title">Ласкаво просимо до LibreLookAI</string>
+    <string name="onboarding_welcome_body">Ваш ШІ-стиліст для гардероба, який у вас уже є. Фотографуйте одяг, отримуйте ідеї образів, приміряйте їх і збирайтеся в подорожі — усе приватно у вашому Google Drive.</string>
+    <string name="onboarding_wardrobe_title">Ваш цифровий гардероб</string>
+    <string name="onboarding_wardrobe_body">Сфотографуйте кожну річ один раз. ШІ прибирає фон і додає теги: тип, колір, матеріал тощо, щоб усе легко знаходилося.</string>
+    <string name="onboarding_outfits_title">Ідеї образів від ШІ</string>
+    <string name="onboarding_outfits_body">Отримуйте пропозиції образів з урахуванням погоди, нагоди й вашого смаку — лише з одягу, який у вас є.</string>
+    <string name="onboarding_tryon_title">Приміряйте образи на собі</string>
+    <string name="onboarding_tryon_body">Додайте своє фото й дивіться будь-який образ на собі, перш ніж його вдягнути. Будь-коли натисніть центральну кнопку, щоб почати примірку.</string>
+    <string name="onboarding_travel_title">Збирайтеся в будь-яку подорож</string>
+    <string name="onboarding_travel_body">Скажіть планувальнику подорожей, куди й на скільки ви їдете. Він складе капсульний гардероб по днях із вашої шафи.</string>
+    <string name="onboarding_shopping_title">Розумніші покупки</string>
+    <string name="onboarding_shopping_body">Зберігайте речі, які розглядаєте, і помічник із покупок перевірить, чи поєднуються вони з тим, що у вас уже є, і чи заповнюють реальні прогалини.</string>
+    <string name="onboarding_profile_title">Розкажіть про свій стиль</string>
+    <string name="onboarding_profile_body">Це допомагає ШІ підлаштовувати кожну пропозицію під вас. Ви можете змінити це будь-коли в Налаштуваннях.</string>
+    <string name="onboarding_photo_title">Додайте фото для примірки</string>
+    <string name="onboarding_photo_body">Фото на повний зріст спереду дає змогу приміряти образи на собі. Необов\'язково — можна додати пізніше.</string>
+    <string name="onboarding_photo_add">Додати фото</string>
+    <string name="onboarding_photo_added">Фото додано</string>
+    <string name="onboarding_photo_offline">Підключіться до інтернету, щоб додати фото.</string>
+    <string name="onboarding_closet_title">Сформуйте свою шафу</string>
+    <string name="onboarding_closet_body">Ваша перша шафа готова. Додайте кілька речей, щоб отримати перші ідеї образів, або спершу огляньтеся й додайте їх коли захочете.</string>
+    <string name="onboarding_closet_add_items">Додати одяг зараз</string>
+    <string name="onboarding_closet_explore">Дослідити застосунок</string>
+    <string name="onboarding_tour_replay">Пройти огляд</string>
+    <string name="onboarding_tour_replay_sub">Повторити вітальний огляд</string>
 </resources>
