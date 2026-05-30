@@ -1,3 +1,35 @@
+### LibreLookAI v2.0.0 Release Notes
+
+#### A guided welcome
+- First launch now offers a quick, swipeable tour through the essentials — and helps you set up your style profile and a try-on photo. Every step is skippable, and you can replay it anytime from Settings ▸ More ▸ "Take the tour".
+
+#### Settings, redesigned
+- Settings is now one clean, scrollable page: your profile, style preferences, closets, theme, AI credits, and all the advanced/power-user options in a single flow.
+
+#### Simpler navigation
+- The separate Insights tab is gone — its pages moved to where you'd look for them: the wear calendar and most-worn stats are now sub-tabs of Outfits, wardrobe tag stats sit behind a chart icon in the Wardrobe header, and AI usage & cost charts moved into Settings ▸ Advanced.
+- Buttons that open a page or dialog now show a small "›" so it's clear what they do.
+
+#### Layer a dress your way
+- You can now wear a top and/or leggings under a dress. One-piece garments (dresses, jumpsuits, suits) are no longer locked to "instead of" a top and bottom — add the slots you want and they stay put.
+- "Generate with AI" respects this: with just a dress it keeps the dress alone, but if you've added a top/bottom slot it fills and works around them — it never forces layering on you.
+
+#### Better outfit building
+- Selecting wardrobe items and tapping "Create outfit" now reliably opens the composer with those items already placed — including items you just added.
+- The composer only offers wardrobe items that actually fit each slot, and you get finer, per-dimension control over which tags the AI considers.
+- Travel outfits are labelled with the trip they came from.
+
+#### More reliable
+- Outfits and trips no longer disappear after reinstalling the app — they appear right away and their thumbnails fill in as your closets finish syncing.
+- Closets now reliably finish syncing in the background, even after a brief drop in connectivity.
+- Items that couldn't be auto-tagged (for example if AI was briefly unavailable) are flagged with a badge so you can re-tag them — previously they were silently unusable in outfits.
+- AI features now show a clear, translated message when they're temporarily unavailable instead of failing silently or crashing.
+
+#### Credits
+- Credit pricing has been updated to reflect current AI model costs.
+
+---
+
 ### LibreLookAI v1.9.0 Release Notes
 
 #### Plan and revisit whole trips
