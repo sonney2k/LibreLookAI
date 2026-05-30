@@ -92,6 +92,31 @@ fun collapseOnePieceSlots(slots: List<OutfitSlot>): List<OutfitSlot> {
     }
 }
 
+/**
+ * Narrows a wardrobe to just the items that could plausibly fill one of [slots], so the composer
+ * prompt doesn't ship every item for a handful of slots (big token saving on large wardrobes
+ * without changing model behaviour — the model still picks per slot from what it receives).
+ *
+ * The relevant-[Layer] set is the slots' own categories, expanded across the one-piece mutual
+ * exclusion both ways: a [Layer.OnePiece] slot may be satisfied by a separate Top+Bottom, and a
+ * Top/Bottom slot may be satisfied by a one-piece (dress/suit) — so candidates for the other side
+ * are kept too. Items we can't classify ([layerFor] == null) and any item already locked into a
+ * slot are always kept, so the filter can never drop something usable. Empty [slots] ⇒ no filter.
+ */
+fun wardrobeForSlots(images: List<DriveImage>, slots: List<OutfitSlot>): List<DriveImage> {
+    if (slots.isEmpty()) return images
+    val slotLayers = slots.map { it.category }.toSet()
+    val relevantLayers = buildSet {
+        addAll(slotLayers)
+        if (Layer.OnePiece in slotLayers) addAll(ONE_PIECE_COVERS)
+        if (slotLayers.any { it in ONE_PIECE_COVERS }) add(Layer.OnePiece)
+    }
+    val lockedIds = slots.mapNotNull { it.selectedItemId }.toSet()
+    return images.filter { img ->
+        img.driveId in lockedIds || layerFor(img).let { it == null || it in relevantLayers }
+    }
+}
+
 /** Whether the composer is in read-only view or editing mode. */
 enum class ComposerMode { VIEW, EDIT }
 

@@ -163,7 +163,9 @@ internal fun buildComposerPrompt(
     val c = considerationsOverride ?: prefs?.aiConsiderations ?: AiConsiderations()
     val age = prefs?.yearOfBirth?.let { LocalDate.now().year - it }
 
-    val wardrobeJson = images.joinToString(",", "[", "]") { it.toPromptJson(c) }
+    // Slot-category prefilter: only send items that could fill one of the requested slots, so a
+    // 3-slot outfit doesn't ship the entire wardrobe (see [wardrobeForSlots]).
+    val wardrobeJson = wardrobeForSlots(images, slots).joinToString(",", "[", "]") { it.toPromptJson(c) }
 
     val weatherStr = when {
         weatherAuto != null ->
