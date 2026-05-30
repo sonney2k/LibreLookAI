@@ -42,22 +42,25 @@ export interface PricingConfig {
  * Raw (pre-multiplier) defaults. Public price = raw × multiplier (2).
  *
  * Derived from the real EUR Gemini cost per action, grossed up so each action
- * clears a **100% after-tax profit** under the worst-case German stack
+ * clears a **30% after-tax profit** under the worst-case German stack
  * (VAT 19% + Google Play 30% + income tax 47.475%): you keep €0.005882 of each
- * €0.01 credit, so a 100% after-tax margin needs public credits ≈ 493.7 × cost.
- * Image-generation actions (€51.303/M output) dominate; classify/trends floor
- * at raw 1 (public 2) and so exceed 100%. Full derivation + the cost tables →
- * `plan/FIN.md` § "Gemini pricing model & unit economics".
+ * €0.01 credit, so a 30% after-tax margin needs public credits ≈ 267.1 × cost.
+ * `generateText` is priced for its heaviest consumer — gap analysis, whose
+ * per-item JSON carries 9 tag fields (~120 tok/item) vs the composer's 4
+ * (~60 tok/item) — so it lands above `outfitSuggestion`. Image-generation
+ * actions (€51.303/M output) dominate; classify/trends floor at raw 1 (public
+ * 2) and so exceed 30%. Full derivation + cost tables → `plan/FIN.md`
+ * § "Gemini pricing model & unit economics".
  */
 export const DEFAULT_PRICING: PricingConfig = {
   multiplier: 2,
   costs: {
-    removeBackground: 17,
+    removeBackground: 9,
     classifyClothing: 1,
-    generateText: 6,
+    generateText: 7,
     searchFashionTrends: 1,
-    tryOnOutfit: 17,
-    outfitSuggestion: 6,
+    tryOnOutfit: 9,
+    outfitSuggestion: 4,
   },
   // Per-extra-item costs default to zero so a multi-suggestion generateText
   // call charges the same as a single one. Tune via Firestore admin if the

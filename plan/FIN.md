@@ -14,7 +14,7 @@ ops: standing up the live project, seeding data, wiring Play, smoke-testing.
 - ✅ `local.properties` `firebase.proxy.url` points at the EU endpoint.
 - ✅ `GEMINI_API_KEY` Functions secret provisioned.
 - ✅ Interactive `scripts/seed_pricing.sh` (read-show-prompt-write workflow) + rewritten `firebase/functions/src/seed.ts` (commit `fe14761`).
-- ✅ Validated `LOCAL_MODEL_PRICING` against the EU billing list, fixed (EUR-native split rates), and **re-derived the whole credit-price table** for a 100% after-tax profit — see § 12 "Gemini pricing model & unit economics".
+- ✅ Validated `LOCAL_MODEL_PRICING` against the EU billing list, fixed (EUR-native split rates), and **re-derived the whole credit-price table** for a 30% after-tax profit — see § 12 "Gemini pricing model & unit economics".
 
 **Pending — required to go live**
 - [x] ~~Apply Option A~~ → **superseded by Option B (landed)**: `config/modelPricing`, `ModelPricingClient`, `TokenUsage`, and the cost UI (`UsageSection`, `CostBadge`) are now **EUR-native** with per-token-type split rates (`text/image/cached in`, `text/image out`). Fixes the 10× `gemini-3.1-flash-image-preview` text-out overcharge and the −46% image-out undercharge; drops the `fxUsdToEur` round-trip. Caching is **not** implemented (`cachedTextInPerM` is recorded but unused). **Action:** re-run `scripts/seed_pricing.sh` to replace the old `inUsdPerM`/`outUsdPerM`/`fxUsdToEur` doc with the new `config/modelPricing` shape.
@@ -33,7 +33,7 @@ ops: standing up the live project, seeding data, wiring Play, smoke-testing.
 
 **Pending — nice to have, non-blocking**
 - [ ] Free starter credits on signup — `auth.user().onCreate` Cloud Function granting 20 coins (recommended, called out below).
-- [x] ~~**Option B** pricing refactor~~ — **landed** (EUR-native split rates) and credit prices re-derived for 100% after-tax profit. Caching intentionally **not** built. Full rationale + cost tables consolidated into § 12 below (`plan/OPTIONS.md` deleted).
+- [x] ~~**Option B** pricing refactor~~ — **landed** (EUR-native split rates) and credit prices re-derived for 30% after-tax profit. Caching intentionally **not** built. Full rationale + cost tables consolidated into § 12 below (`plan/OPTIONS.md` deleted).
 - [ ] Bind `.firebaserc` (`cd firebase && firebase use librelookai-firebase`) — cosmetic; everything else passes `--project=librelookai-firebase`, so deploys work without it.
 
 ---
@@ -264,7 +264,7 @@ Every new user-facing string into `res/values/strings.xml` and all 30 `values-*/
 
 ## 5. Pricing table — initial values
 
-> **SUPERSEDED (2026-05-30) by § 12.** This original "1 coin ≈ $0.001" table predates the real EUR cost model — it badly under-prices image-generation actions (output is €51.303/M, ~50× text). The live prices are now derived in § 12 for a 100% after-tax profit. Table kept for history only.
+> **SUPERSEDED (2026-05-30) by § 12.** This original "1 coin ≈ $0.001" table predates the real EUR cost model — it badly under-prices image-generation actions (output is €51.303/M, ~50× text). The live prices are now derived in § 12 for a 30% after-tax profit. Table kept for history only.
 
 Per the "conservative fixed, 2x markup" decision. Base costs are the *real* Gemini cost in coins where 1 coin ≈ $0.001 (chosen so `credits_100 ≈ $1` after markup). Tune in Firestore without a release.
 
@@ -403,13 +403,22 @@ today, future-proofed); (3) added the cached-input tier (−90%); (4) dropped
 
 ### 12.2 Per-item & per-action token assumptions
 
-A wardrobe item is serialized as JSON (`OutfitsPrompts.kt:50`), ~141 chars,
-dominated by a ~33-char random Drive ID that tokenizes poorly ⇒ **≈ 50 tokens
-per item**. A 1000-item wardrobe ≈ **50,000 input tokens** (+ ~800 base prompt).
-Only **style prediction (`generateText`)** and **outfit suggestion/compose
-(`outfitSuggestion`)** embed the full wardrobe; bg-removal/classify/try-on send
-only the relevant item image(s); trends sends none. Per-action token estimates
-are in `CostBadge.kt → estimateTokens`.
+A wardrobe item is serialized as JSON, dominated by a ~33-char random Drive ID
+that tokenizes poorly. **The per-item size differs by feature** because the
+prompts include different tag detail:
+
+| Prompt | Per-item JSON | ~tok/item |
+|---|---|---:|
+| Style prediction (`buildPredictionPrompt`, `OutfitsPrompts.kt:50`) | id + 4 tag fields | ~50 |
+| Outfit composer (`buildComposerPrompt`) | id + name + 4 tag fields | ~60 |
+| **Gap analysis** (`WardrobeGapViewModel.itemJson`) | id + name + **9 tag fields** | **~120** |
+
+All three embed the **full wardrobe**; bg-removal/classify/try-on send only the
+relevant item image(s); trends sends none. A 1000-item wardrobe is therefore
+~50k–120k input tokens depending on the feature (+ ~800 base prompt). Because
+gap analysis and style prediction share one action id (`generateText`), that
+action is priced for its **heaviest** consumer — gap analysis (~120 tok/item).
+Per-action badge estimates are in `CostBadge.kt → estimateTokens`.
 
 ### 12.3 Real Gemini cost per action (1000-item wardrobe)
 
@@ -419,14 +428,16 @@ Rates: input €0.4275/M, text-out €2.5651/M, image-out €51.303/M.
 |---|---|---:|---:|---:|
 | Remove background | image | 700 | 1,290 (img) | **0.0665** |
 | Try-on outfit | image | 1,200 | 1,290 (img) | **0.0667** |
-| Style prediction | text | 50,800 | 350 (txt) | **0.0226** |
-| Outfit suggestion | text | 50,800 | 400 (txt) | **0.0227** |
+| Gap analysis (`generateText`) | text | 120,800 | 400 (txt) | **0.0527** |
+| Outfit suggestion | text | 60,800 | 400 (txt) | **0.0270** |
 | Classify / auto-tag | text | 1,000 | 400 (txt) | **0.0015** |
 | Trend lookup | text | 200 | 600 (txt) | **0.0016** |
 
-Image output (~1,290 tokens ≈ €0.066/image) dominates everything — ~45× a full
-text classification. Processing a whole 1000-item wardrobe: bg-removal ×1000 =
-€66.48, classify ×1000 = €1.45.
+Image output (~1,290 tokens ≈ €0.066/image) dominates the image actions — ~45× a
+full text classification. Among the wardrobe-context text actions, **gap analysis
+is the costliest** (its ~120-tok/item payload is ~2× the composer's), so
+`generateText` is priced above `outfitSuggestion`. Processing a whole 1000-item
+wardrobe: bg-removal ×1000 = €66.48, classify ×1000 = €1.45.
 
 ### 12.4 The revenue stack — what the developer actually keeps
 
@@ -448,34 +459,41 @@ does nothing for loss-making actions (a loss only yields a ~47% shield against
 other profit). Play fee = 30% (max tier); the first-$1M/yr **15%** tier nets
 €0.007143/credit (71.4%) instead.
 
-### 12.5 Repricing for 100% after-tax profit (landed)
+### 12.5 Repricing for 30% after-tax profit (landed)
 
-Target: **after-tax profit = 100% of Gemini cost** (you double the cost after
-all three taxes). Solving `(N · €0.005882 − C) · 0.52525 = C` for credits `N`:
+Target: **after-tax profit = 30% of Gemini cost**. Solving
+`(N · €0.005882 − C) · 0.52525 = 0.30 · C` for credits `N`:
 
-  **N (public credits) ≈ 493.7 × C(€)**
+  **N (public credits) ≈ 267.1 × C(€)**
 
-With `multiplier = 2`, `raw = N/2`. New `DEFAULT_PRICING.costs` / `CreditPacks`:
+With `multiplier = 2`, `raw = round(N/2)` (so public = 2 × raw). New
+`DEFAULT_PRICING.costs` / `CreditPacks` (input tokens / costs per § 12.3;
+**user pays = credits × €0.01**; **after-tax € = (credits × €0.005882 − C) ×
+0.52525**):
 
-| Action | Gemini C € | raw | **public credits** | (was) | after-tax margin |
-|---|---:|---:|---:|---:|---:|
-| removeBackground | 0.0665 | 17 | **34** | 6 | ~105% |
-| tryOnOutfit | 0.0667 | 17 | **34** | 8 | ~105% |
-| generateText (style/text) | 0.0226 | 6 | **12** | 2 | ~111% |
-| outfitSuggestion | 0.0227 | 6 | **12** | 4 | ~110% |
-| classifyClothing | 0.0015 | 1 | **2** | 2 | ≫100% (floored) |
-| searchFashionTrends | 0.0016 | 1 | **2** | 2 | ≫100% (floored) |
+| Action | What it does (per call) | Gemini C € | Credits | User pays € | After-tax profit € | Margin |
+|---|---|---:|---:|---:|---:|---:|
+| removeBackground | Cut one garment out of its photo background | 0.0665 | **18** | 0.18 | **0.0207** | ~31% |
+| tryOnOutfit | Generate a photoreal "you wearing this outfit" image | 0.0667 | **18** | 0.18 | **0.0206** | ~31% |
+| generateText (gap analysis) | Scan the whole wardrobe, list the missing items worth buying | 0.0527 | **14** | 0.14 | **0.0156** | ~30% |
+| outfitSuggestion | Build complete outfit ideas from items already owned | 0.0270 | **8** | 0.08 | **0.0105** | ~39%¹ |
+| classifyClothing | Auto-tag one garment photo (type/colour/material/use) | 0.0015 | **2** | 0.02 | **0.0054** | ≫30%² |
+| searchFashionTrends | Fetch current fashion trends for the region | 0.0016 | **2** | 0.02 | **0.0053** | ≫30%² |
 
-classify/trends can't go below 1 raw / 2 public, so they overshoot. The
-wardrobe-context actions are priced for a 1000-item wardrobe — smaller closets
-yield higher margin (fixed per-action pricing can't track wardrobe size).
-Source: `firebase/functions/src/pricing.ts` + `billing/CreditPack.kt`; push with
-`scripts/seed_pricing.sh`.
+`raw` = Credits/2: 9, 9, 7, 4, 1, 1. (was, v1 public: 6/8/2/4/2/2.)
 
-> **Caveat:** image actions jumped 5–6× (try-on 8→34, bg-removal 6→34). That may
-> be too steep for UX even though it's the break-even reality — consider steering
-> image-heavy paths to **BYOK**, or accepting a lower target margin. The
-> derivation here makes the trade-off explicit and easy to re-tune in Firestore.
+¹ even-public rounding (raw 3 → 16%, raw 4 → 39%; picked 4 to stay ≥30%).
+² floored at 1 raw / 2 public, so they overshoot 30%. The wardrobe-context
+actions are priced for a 1000-item wardrobe — smaller closets yield higher
+margin (fixed per-action pricing can't track wardrobe size). `generateText`
+(14) now sits above `outfitSuggestion` (8) because gap analysis's per-item JSON
+is ~2× richer (§ 12.2). Source: `firebase/functions/src/pricing.ts` +
+`billing/CreditPack.kt`; push with `scripts/seed_pricing.sh`.
+
+> **Caveat:** image actions are still ~2–3× their v1 price (try-on 8→18,
+> bg-removal 6→18) — the €51.303/M image-output rate makes them structurally
+> expensive. Steering image-heavy paths to **BYOK** remains the lever if 18
+> credits is too steep.
 
 ### 12.6 Context caching — analyzed, NOT built
 
