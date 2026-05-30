@@ -26,13 +26,26 @@ import * as readline from "readline";
 import { DEFAULT_PRICING } from "./pricing";
 
 // Local source-of-truth for config/modelPricing. Edited when Google publishes
-// new Gemini list prices.
+// new Gemini list prices. EUR-native (Google bills the EU account directly in
+// EUR) — there is no USD ground truth and no FX layer. Per-token-type split
+// (text/image/cached in, text/image out) so the figures match the bill; see
+// plan/OPTIONS.md "Option B". `cachedTextInPerM` is recorded for completeness —
+// media-generation models can't cache, so it's omitted on the image model.
 const LOCAL_MODEL_PRICING = {
-  fxUsdToEur: 0.92,
-  fallback: { inUsdPerM: 0.30, outUsdPerM: 2.50 },
+  currency: "EUR",
+  fallback: {
+    textInPerM: 0.4275, imageInPerM: 0.4275, cachedTextInPerM: 0.0428,
+    textOutPerM: 2.5651, imageOutPerM: 2.5651,
+  },
   models: {
-    "gemini-3-flash-preview": { inUsdPerM: 0.30, outUsdPerM: 2.50 },
-    "gemini-3.1-flash-image-preview": { inUsdPerM: 0.30, outUsdPerM: 30.00 },
+    "gemini-3-flash-preview": {
+      textInPerM: 0.4275, imageInPerM: 0.4275, cachedTextInPerM: 0.0428,
+      textOutPerM: 2.5651, imageOutPerM: 2.5651,
+    },
+    "gemini-3.1-flash-image-preview": {
+      textInPerM: 0.4275, imageInPerM: 0.4275,
+      textOutPerM: 2.5651, imageOutPerM: 51.303,
+    },
   },
 };
 

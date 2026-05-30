@@ -3,6 +3,41 @@
 Concrete plan for paid-coin monetization alongside BYOK. Grounded in the existing
 `billing/` + `gemini/` packages and the already-wired `geminiProxy` Cloud Function.
 
+## Deployment progress (2026-05-30)
+
+The code is shipped (see § "Status (2026-05-17)" below). The remaining work is
+ops: standing up the live project, seeding data, wiring Play, smoke-testing.
+
+**Done**
+- ✅ Firestore database `(default)` in `eur3` (Belgium + Netherlands multi-region).
+- ✅ Cloud Functions pinned to `europe-west1` via `setGlobalOptions` (commit `4535764`); deployed: `geminiProxy`, `verifyPurchase`, `recomputePublicPricing`.
+- ✅ `local.properties` `firebase.proxy.url` points at the EU endpoint.
+- ✅ `GEMINI_API_KEY` Functions secret provisioned.
+- ✅ Interactive `scripts/seed_pricing.sh` (read-show-prompt-write workflow) + rewritten `firebase/functions/src/seed.ts` (commit `fe14761`).
+- ✅ Validated `LOCAL_MODEL_PRICING` against the EU billing list — see `plan/OPTIONS.md` for the four structural mismatches and the two-option fix.
+
+**Pending — required to go live**
+- [x] ~~Apply Option A~~ → **superseded by Option B (landed)**: `config/modelPricing`, `ModelPricingClient`, `TokenUsage`, and the cost UI (`UsageSection`, `CostBadge`) are now **EUR-native** with per-token-type split rates (`text/image/cached in`, `text/image out`). Fixes the 10× `gemini-3.1-flash-image-preview` text-out overcharge and the −46% image-out undercharge; drops the `fxUsdToEur` round-trip. Caching is **not** implemented (`cachedTextInPerM` is recorded but unused). **Action:** re-run `scripts/seed_pricing.sh` to replace the old `inUsdPerM`/`outUsdPerM`/`fxUsdToEur` doc with the new `config/modelPricing` shape.
+- [ ] One-time **ADC login** so `seed_pricing.sh` can write to Firestore:
+      `gcloud auth application-default login &&
+       gcloud auth application-default set-quota-project librelookai-firebase`.
+- [ ] **Run `scripts/seed_pricing.sh`** → review diff → confirm. Populates `config/pricing` and `config/modelPricing`; the `recomputePublicPricing` trigger mirrors to `config/publicPricing`.
+- [ ] **Firestore rules** deployed: `firebase deploy --only firestore:rules --project=librelookai-firebase`.
+- [ ] **Play Console** (see § 5 of the deploy guide):
+  - [ ] Three managed in-app products created (`credits_100`, `credits_500`, `credits_2000`, prices per § 5 below).
+  - [ ] Play Console → Setup → API access linked to GCP project `librelookai-firebase`.
+  - [ ] Cloud Functions runtime SA `923211051414-compute@developer.gserviceaccount.com` invited to Play Console with "View financial data, orders, and cancellation survey responses" + "Manage orders and subscriptions" permissions.
+  - [ ] Signed `.aab` uploaded to **Internal testing** track (Billing v7 won't resolve products otherwise). Bump `versionCode` first.
+  - [ ] License testers added (Setup → License testing); internal-testing track opt-in URL clicked on the test device.
+- [ ] **Smoke test** end-to-end on the test device: buy a pack → Firestore `users/{uid}.credits` increments and `users/{uid}/ledger` gets a `purchase` row; trigger AI action → credits decrement and a `spend` row appears; drain balance → 402 dialog routes to Settings.
+
+**Pending — nice to have, non-blocking**
+- [ ] Free starter credits on signup — `auth.user().onCreate` Cloud Function granting 20 coins (recommended, called out below).
+- [x] ~~**Option B** pricing refactor~~ — **landed** (EUR-native split rates, see above). Caching (Option B+) intentionally **not** built. `plan/OPTIONS.md` is retained as the rationale/decision record (per-token-type split + the deferred wardrobe-cache analysis).
+- [ ] Bind `.firebaserc` (`cd firebase && firebase use librelookai-firebase`) — cosmetic; everything else passes `--project=librelookai-firebase`, so deploys work without it.
+
+---
+
 ## Status (2026-05-17)
 
 **Landed:**

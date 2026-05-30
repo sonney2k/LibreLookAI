@@ -10,9 +10,17 @@ import kotlinx.coroutines.flow.asStateFlow
 import org.json.JSONObject
 
 /**
- * Reads `config/modelPricing` so the client can render BYOK $ badges and
- * snapshot per-event USD on each Gemini call without hard-coding Google's
+ * Reads `config/modelPricing` so the client can render BYOK € badges and
+ * snapshot per-event EUR on each Gemini call without hard-coding Google's
  * list prices in the APK.
+ *
+ * Rates are **EUR-native**: Google bills the EU billing account directly in
+ * EUR, so there is no USD ground truth and no FX layer. The schema carries a
+ * per-token-type split (text/image/cached input, text/image output) matching
+ * the bill — see `plan/OPTIONS.md` "Option B". Today text-in and image-in are
+ * the same rate, so input is billed at the text-in rate; output is billed at
+ * the image-out rate for image-generation models ([isImageOutputModel]) and at
+ * the text-out rate otherwise.
  *
  * Fallback order (same pattern as [PricingClient]):
  *  1. Latest Firestore snapshot held in [snapshotState].
@@ -61,32 +69,45 @@ object ModelPricingClient {
         listenerRegistration = null
     }
 
-    /** Per-token USD rates for [model] (Firestore values, or fallback). */
-    fun ratesFor(model: String): TokenRates = _snapshotState.value.ratesFor(model)
+    /** Per-token EUR rates for [model] (Firestore values, or fallback). */
+    fun ratesFor(model: String): ModelTokenRates = _snapshotState.value.ratesFor(model)
 
-    /** USD→EUR conversion factor used purely for display. */
-    fun usdToEur(): Double = _snapshotState.value.fxUsdToEur
+    /**
+     * True when a model emits image tokens as its primary output (Gemini's
+     * "*-image-*" generation models), so output should bill at the image-out
+     * rate. Cheap name heuristic — the only divergence between text-out and
+     * image-out rates is on these models.
+     */
+    fun isImageOutputModel(model: String): Boolean = model.contains("image", ignoreCase = true)
 
     private fun parseSnapshot(snap: com.google.firebase.firestore.DocumentSnapshot): ModelPricingSnapshot? {
         @Suppress("UNCHECKED_CAST")
         val modelsRaw = snap.get("models") as? Map<String, Any?> ?: return null
         @Suppress("UNCHECKED_CAST")
         val fallbackRaw = snap.get("fallback") as? Map<String, Any?>
-        val fx = (snap.get("fxUsdToEur") as? Number)?.toDouble() ?: DefaultModelPricing.snapshot.fxUsdToEur
         val models = modelsRaw.mapNotNull { (k, v) ->
             val m = v as? Map<*, *> ?: return@mapNotNull null
-            val inP = (m["inUsdPerM"] as? Number)?.toDouble() ?: return@mapNotNull null
-            val outP = (m["outUsdPerM"] as? Number)?.toDouble() ?: return@mapNotNull null
-            k to TokenRates(inP / 1_000_000.0, outP / 1_000_000.0)
+            (ratesFromPerM(m) ?: return@mapNotNull null).let { k to it }
         }.toMap()
-        val fallback = fallbackRaw?.let { m ->
-            val inP = (m["inUsdPerM"] as? Number)?.toDouble()
-            val outP = (m["outUsdPerM"] as? Number)?.toDouble()
-            if (inP != null && outP != null) TokenRates(inP / 1_000_000.0, outP / 1_000_000.0)
-            else null
-        } ?: DefaultModelPricing.snapshot.fallback
+        val fallback = fallbackRaw?.let { ratesFromPerM(it) } ?: DefaultModelPricing.snapshot.fallback
         if (models.isEmpty()) return null
-        return ModelPricingSnapshot(models, fallback, fx)
+        return ModelPricingSnapshot(models, fallback)
+    }
+
+    /** Build per-token rates from a `*PerM` (per-million) Firestore/JSON map. */
+    private fun ratesFromPerM(m: Map<*, *>): ModelTokenRates? {
+        val textIn = (m["textInPerM"] as? Number)?.toDouble() ?: return null
+        val textOut = (m["textOutPerM"] as? Number)?.toDouble() ?: return null
+        val imageIn = (m["imageInPerM"] as? Number)?.toDouble() ?: textIn
+        val cachedTextIn = (m["cachedTextInPerM"] as? Number)?.toDouble() ?: 0.0
+        val imageOut = (m["imageOutPerM"] as? Number)?.toDouble() ?: textOut
+        return ModelTokenRates(
+            textInPerToken = textIn / 1_000_000.0,
+            imageInPerToken = imageIn / 1_000_000.0,
+            cachedTextInPerToken = cachedTextIn / 1_000_000.0,
+            textOutPerToken = textOut / 1_000_000.0,
+            imageOutPerToken = imageOut / 1_000_000.0,
+        )
     }
 
     private fun loadPersisted(context: Context): ModelPricingSnapshot? {
@@ -94,71 +115,96 @@ object ModelPricingClient {
             .getString(KEY_JSON, null) ?: return null
         return try {
             val obj = JSONObject(json)
-            val fx = obj.optDouble("fxUsdToEur", DefaultModelPricing.snapshot.fxUsdToEur)
-            val fallbackObj = obj.optJSONObject("fallback")
-            val fallback = if (fallbackObj != null) TokenRates(
-                inputPerToken = fallbackObj.getDouble("inputPerToken"),
-                outputPerToken = fallbackObj.getDouble("outputPerToken"),
-            ) else DefaultModelPricing.snapshot.fallback
+            val fallback = obj.optJSONObject("fallback")?.let { ratesFromJson(it) }
+                ?: DefaultModelPricing.snapshot.fallback
             val modelsObj = obj.getJSONObject("models")
             val models = buildMap {
-                modelsObj.keys().forEach { k ->
-                    val m = modelsObj.getJSONObject(k)
-                    put(k, TokenRates(m.getDouble("inputPerToken"), m.getDouble("outputPerToken")))
-                }
+                modelsObj.keys().forEach { k -> put(k, ratesFromJson(modelsObj.getJSONObject(k))) }
             }
-            ModelPricingSnapshot(models, fallback, fx)
+            ModelPricingSnapshot(models, fallback)
         } catch (e: Exception) {
             Log.w(TAG, "Failed to parse persisted model pricing", e)
             null
         }
     }
 
+    /** Read per-token rates from our own persisted JSON shape. */
+    private fun ratesFromJson(o: JSONObject): ModelTokenRates = ModelTokenRates(
+        textInPerToken = o.getDouble("textInPerToken"),
+        imageInPerToken = o.optDouble("imageInPerToken", o.getDouble("textInPerToken")),
+        cachedTextInPerToken = o.optDouble("cachedTextInPerToken", 0.0),
+        textOutPerToken = o.getDouble("textOutPerToken"),
+        imageOutPerToken = o.optDouble("imageOutPerToken", o.getDouble("textOutPerToken")),
+    )
+
     private fun persist(context: Context, snapshot: ModelPricingSnapshot) {
         val obj = JSONObject()
-        obj.put("fxUsdToEur", snapshot.fxUsdToEur)
-        obj.put("fallback", JSONObject().apply {
-            put("inputPerToken", snapshot.fallback.inputPerToken)
-            put("outputPerToken", snapshot.fallback.outputPerToken)
-        })
+        obj.put("fallback", snapshot.fallback.toJson())
         val models = JSONObject()
-        snapshot.models.forEach { (k, v) ->
-            models.put(k, JSONObject().apply {
-                put("inputPerToken", v.inputPerToken)
-                put("outputPerToken", v.outputPerToken)
-            })
-        }
+        snapshot.models.forEach { (k, v) -> models.put(k, v.toJson()) }
         obj.put("models", models)
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
             .edit().putString(KEY_JSON, obj.toString()).apply()
     }
+
+    private fun ModelTokenRates.toJson(): JSONObject = JSONObject().apply {
+        put("textInPerToken", textInPerToken)
+        put("imageInPerToken", imageInPerToken)
+        put("cachedTextInPerToken", cachedTextInPerToken)
+        put("textOutPerToken", textOutPerToken)
+        put("imageOutPerToken", imageOutPerToken)
+    }
 }
 
-/** Per-token USD rates (already divided by 1M). */
-data class TokenRates(val inputPerToken: Double, val outputPerToken: Double) {
-    fun usdFor(inputTokens: Int, outputTokens: Int): Double =
-        inputTokens * inputPerToken + outputTokens * outputPerToken
+/**
+ * Per-token EUR rates for one model (already divided by 1M). Input and output
+ * are split by token type to match Google's bill; [eurFor] applies the rate
+ * that fits a given call.
+ */
+data class ModelTokenRates(
+    val textInPerToken: Double,
+    val imageInPerToken: Double,
+    val cachedTextInPerToken: Double,
+    val textOutPerToken: Double,
+    val imageOutPerToken: Double,
+) {
+    /**
+     * EUR cost of one call. Input bills at the text-in rate (text-in and
+     * image-in are the same today); output bills at the image-out rate when
+     * [outputIsImage], else the text-out rate.
+     */
+    fun eurFor(inputTokens: Int, outputTokens: Int, outputIsImage: Boolean): Double =
+        inputTokens * textInPerToken +
+            outputTokens * (if (outputIsImage) imageOutPerToken else textOutPerToken)
 }
 
 data class ModelPricingSnapshot(
-    val models: Map<String, TokenRates>,
-    val fallback: TokenRates,
-    val fxUsdToEur: Double,
+    val models: Map<String, ModelTokenRates>,
+    val fallback: ModelTokenRates,
 ) {
-    fun ratesFor(model: String): TokenRates = models[model] ?: fallback
+    fun ratesFor(model: String): ModelTokenRates = models[model] ?: fallback
 }
 
 /**
  * Hard-coded fallback used when Firestore is unreachable and no persisted
- * snapshot is available. Kept in sync with `seed.ts` on the server.
+ * snapshot is available. EUR-native; kept in sync with `seed.ts` on the server.
  */
 object DefaultModelPricing {
+    private fun perM(
+        textIn: Double, textOut: Double, imageOut: Double = textOut,
+    ) = ModelTokenRates(
+        textInPerToken = textIn / 1_000_000.0,
+        imageInPerToken = textIn / 1_000_000.0,
+        cachedTextInPerToken = 0.0428 / 1_000_000.0,
+        textOutPerToken = textOut / 1_000_000.0,
+        imageOutPerToken = imageOut / 1_000_000.0,
+    )
+
     val snapshot = ModelPricingSnapshot(
         models = mapOf(
-            "gemini-3-flash-preview" to TokenRates(0.30 / 1_000_000.0, 2.50 / 1_000_000.0),
-            "gemini-3.1-flash-image-preview" to TokenRates(0.30 / 1_000_000.0, 30.00 / 1_000_000.0),
+            "gemini-3-flash-preview" to perM(textIn = 0.4275, textOut = 2.5651),
+            "gemini-3.1-flash-image-preview" to perM(textIn = 0.4275, textOut = 2.5651, imageOut = 51.303),
         ),
-        fallback = TokenRates(0.30 / 1_000_000.0, 2.50 / 1_000_000.0),
-        fxUsdToEur = 0.92,
+        fallback = perM(textIn = 0.4275, textOut = 2.5651),
     )
 }

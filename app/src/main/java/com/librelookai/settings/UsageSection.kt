@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.librelookai.data.model.Outfit
-import com.librelookai.gemini.GeminiPricing
 import com.librelookai.gemini.UsageAggregator
 import com.librelookai.gemini.UsageCategory
 import com.librelookai.gemini.UsageWindowTotals
@@ -89,9 +88,9 @@ fun UsageSection(modifier: Modifier = Modifier) {
                 .padding(horizontal = 16.dp, vertical = 10.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            HeadlineCard("Today", todayTotals.tokens, todayTotals.usd, modifier = Modifier.weight(1f))
-            HeadlineCard("7 days", weekTotals.tokens, weekTotals.usd, modifier = Modifier.weight(1f))
-            HeadlineCard("Total", total.tokens, total.usd, modifier = Modifier.weight(1f))
+            HeadlineCard("Today", todayTotals.tokens, todayTotals.eur, modifier = Modifier.weight(1f))
+            HeadlineCard("7 days", weekTotals.tokens, weekTotals.eur, modifier = Modifier.weight(1f))
+            HeadlineCard("Total", total.tokens, total.eur, modifier = Modifier.weight(1f))
         }
 
         // 14-day daily bar chart
@@ -121,7 +120,7 @@ fun UsageSection(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun HeadlineCard(label: String, tokens: Int, usd: Double, modifier: Modifier = Modifier) {
+private fun HeadlineCard(label: String, tokens: Int, eur: Double, modifier: Modifier = Modifier) {
     OutlinedCard(modifier = modifier) {
         Column(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
@@ -139,7 +138,7 @@ private fun HeadlineCard(label: String, tokens: Int, usd: Double, modifier: Modi
                 fontWeight = FontWeight.Bold,
             )
             Text(
-                "${formatUsd(usd)} • ${formatEur(usd * GeminiPricing.USD_TO_EUR)}",
+                formatEur(eur),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -232,7 +231,7 @@ private fun CategoryTable(window: UsageWindowTotals) {
                 Text(formatTokens(totals.outputTokens),
                     modifier = Modifier.weight(1.1f), textAlign = TextAlign.End,
                     style = MaterialTheme.typography.bodySmall)
-                Text(formatUsd(totals.usd),
+                Text(formatEur(totals.eur),
                     modifier = Modifier.weight(1.3f), textAlign = TextAlign.End,
                     style = MaterialTheme.typography.bodySmall)
             }
@@ -252,7 +251,7 @@ private fun CategoryTable(window: UsageWindowTotals) {
             Text(formatTokens(window.outputTokens),
                 modifier = Modifier.weight(1.1f), textAlign = TextAlign.End,
                 fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.bodySmall)
-            Text(formatUsd(window.usd),
+            Text(formatEur(window.eur),
                 modifier = Modifier.weight(1.3f), textAlign = TextAlign.End,
                 fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.bodySmall)
         }
@@ -290,9 +289,6 @@ private fun formatTokens(n: Int): String = when {
     n >= 1_000     -> String.format(Locale.US, "%.1fk", n / 1_000.0)
     else           -> "$n"
 }
-
-private fun formatUsd(usd: Double): String =
-    if (usd < 0.01 && usd > 0) "<\$0.01" else String.format(Locale.US, "\$%.2f", usd)
 
 private fun formatEur(eur: Double): String =
     if (eur < 0.01 && eur > 0) "<€0.01" else String.format(Locale.US, "€%.2f", eur)

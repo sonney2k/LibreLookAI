@@ -46,10 +46,11 @@ enum class UsageCategory(val storageKey: String) {
  * One Gemini call. `inputTokens` + `outputTokens` come from the response's `usageMetadata`;
  * either may be 0 if Gemini omits the count.
  *
- * [usdAtRecord] is the USD cost computed using the rates valid at record time. Snapshotting
+ * [eurAtRecord] is the EUR cost computed using the rates valid at record time. Snapshotting
  * the value means that aggregations stay correct after Google changes their pricing — old
- * events keep their historical price. Nullable for backwards compatibility with JSONL written
- * before this field existed; those events fall back to the current rates in [usdFor].
+ * events keep their historical price. Nullable for backwards compatibility: events written
+ * before the EUR switch carry a legacy `"usd"` key (not read here), so they fall back to the
+ * current EUR rates in [GeminiPricing.eurFor].
  */
 data class UsageEvent(
     @SerializedName("ts") val timestampMs: Long,
@@ -57,30 +58,25 @@ data class UsageEvent(
     @SerializedName("model") val model: String,
     @SerializedName("in") val inputTokens: Int,
     @SerializedName("out") val outputTokens: Int,
-    @SerializedName("usd") val usdAtRecord: Double? = null,
+    @SerializedName("eur") val eurAtRecord: Double? = null,
 ) {
     val totalTokens: Int get() = inputTokens + outputTokens
     val category: UsageCategory get() = UsageCategory.fromKey(categoryKey)
 }
 
 /**
- * USD price helper. Rates come from [ModelPricingClient] (live Firestore snapshot, persisted
- * to SharedPreferences, with hard-coded fallbacks in [DefaultModelPricing]). The static
- * [USD_TO_EUR] constant is preserved for back-compat — it now reads through to the live FX
- * value from the same snapshot.
+ * EUR price helper. Rates come from [ModelPricingClient] (live Firestore snapshot, persisted
+ * to SharedPreferences, with hard-coded fallbacks in [DefaultModelPricing]). All figures are
+ * EUR-native — Google bills the EU account directly in EUR, so there is no FX conversion.
  */
 object GeminiPricing {
-    /** USD→EUR conversion used purely for display. Sourced from [ModelPricingClient]. */
-    val USD_TO_EUR: Double get() = ModelPricingClient.usdToEur()
-
-    fun usdFor(model: String, inputTokens: Int, outputTokens: Int): Double =
-        ModelPricingClient.ratesFor(model).usdFor(inputTokens, outputTokens)
+    fun eurFor(model: String, inputTokens: Int, outputTokens: Int): Double =
+        ModelPricingClient.ratesFor(model)
+            .eurFor(inputTokens, outputTokens, ModelPricingClient.isImageOutputModel(model))
 
     /** Prefer the per-event snapshot; fall back to current rates when missing. */
-    fun usdFor(event: UsageEvent): Double =
-        event.usdAtRecord ?: usdFor(event.model, event.inputTokens, event.outputTokens)
-
-    fun eurFor(event: UsageEvent): Double = usdFor(event) * USD_TO_EUR
+    fun eurFor(event: UsageEvent): Double =
+        event.eurAtRecord ?: eurFor(event.model, event.inputTokens, event.outputTokens)
 }
 
 /**
@@ -141,9 +137,9 @@ class TokenUsageRepository private constructor(private val app: Application) {
             model = model,
             inputTokens = inT,
             outputTokens = outT,
-            // Snapshot $ at record time so historical aggregation isn't disrupted by
+            // Snapshot € at record time so historical aggregation isn't disrupted by
             // later price changes. Aggregator prefers this value when present.
-            usdAtRecord = ModelPricingClient.ratesFor(model).usdFor(inT, outT),
+            eurAtRecord = GeminiPricing.eurFor(model, inT, outT),
         )
         scope.launch {
             ioMutex.withLock {
@@ -238,7 +234,7 @@ class TokenUsageRepository private constructor(private val app: Application) {
 data class UsageWindowTotals(
     val inputTokens: Int,
     val outputTokens: Int,
-    val usd: Double,
+    val eur: Double,
     val perCategory: Map<UsageCategory, CategoryTotals>,
 ) {
     val tokens: Int get() = inputTokens + outputTokens
@@ -247,7 +243,7 @@ data class UsageWindowTotals(
 data class CategoryTotals(
     val inputTokens: Int,
     val outputTokens: Int,
-    val usd: Double,
+    val eur: Double,
     val calls: Int,
 ) {
     val tokens: Int get() = inputTokens + outputTokens
@@ -258,23 +254,23 @@ object UsageAggregator {
         val window = if (sinceMs == null) events else events.filter { it.timestampMs >= sinceMs }
         var inTokens = 0
         var outTokens = 0
-        var usd = 0.0
+        var eur = 0.0
         val per = HashMap<UsageCategory, MutableList<UsageEvent>>()
         for (e in window) {
             inTokens += e.inputTokens
             outTokens += e.outputTokens
-            usd += GeminiPricing.usdFor(e)
+            eur += GeminiPricing.eurFor(e)
             per.getOrPut(e.category) { mutableListOf() } += e
         }
         val perCat = per.mapValues { (_, list) ->
             CategoryTotals(
                 inputTokens = list.sumOf { it.inputTokens },
                 outputTokens = list.sumOf { it.outputTokens },
-                usd = list.sumOf { GeminiPricing.usdFor(it) },
+                eur = list.sumOf { GeminiPricing.eurFor(it) },
                 calls = list.size,
             )
         }
-        return UsageWindowTotals(inTokens, outTokens, usd, perCat)
+        return UsageWindowTotals(inTokens, outTokens, eur, perCat)
     }
 
     /**

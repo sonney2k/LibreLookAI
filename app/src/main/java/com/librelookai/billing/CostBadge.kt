@@ -42,9 +42,9 @@ import com.librelookai.gemini.PricingClient
  *         Text("Auto-tag")
  *     }
  *
- * Renders the action's tier (1–4) as four `$` glyphs with the active count
+ * Renders the action's tier (1–4) as four `€` glyphs with the active count
  * painted in the primary colour. Long-press → tooltip with the exact value
- * (coin count in managed mode, USD amount in BYOK). Hidden when no API key
+ * (coin count in managed mode, EUR amount in BYOK). Hidden when no API key
  * and no proxy are configured.
  */
 @Composable
@@ -66,9 +66,10 @@ fun CostBadge(
     when {
         byok -> {
             val (inT, outT) = estimateTokensFor(action, items)
-            val usd = rates.ratesFor(action.model).usdFor(inT, outT)
-            tier = tierForUsd(usd)
-            tooltip = "~$${formatUsdBadge(usd)}"
+            val eur = rates.ratesFor(action.model)
+                .eurFor(inT, outT, ModelPricingClient.isImageOutputModel(action.model))
+            tier = tierForEur(eur)
+            tooltip = "~€${formatEurBadge(eur)}"
         }
         managedAvailable -> {
             val perCall = costs[action.key] ?: action.fallbackCost
@@ -107,7 +108,7 @@ private fun TierBadge(tier: Int, modifier: Modifier = Modifier) {
     val label = buildAnnotatedString {
         repeat(4) { i ->
             withStyle(SpanStyle(color = if (i < tier) active else inactive)) {
-                append("$")
+                append("€")
             }
         }
     }
@@ -126,8 +127,8 @@ private fun TierBadge(tier: Int, modifier: Modifier = Modifier) {
 
 /**
  * Legend explaining the four cost tiers. Designed for the Insights screen header so users
- * can map the small "$$$$" badges they see throughout the app back to a concrete spend.
- * Adapts to managed vs BYOK mode: shows coin thresholds for managed, USD for BYOK.
+ * can map the small "€€€€" badges they see throughout the app back to a concrete spend.
+ * Adapts to managed vs BYOK mode: shows coin thresholds for managed, EUR for BYOK.
  */
 @Composable
 fun CostTierLegend(modifier: Modifier = Modifier) {
@@ -135,10 +136,10 @@ fun CostTierLegend(modifier: Modifier = Modifier) {
     val byok = ApiKeyStore.get(ctx).isNotBlank()
     val rows = if (byok) {
         listOf(
-            1 to "≤ $0.005 per call",
-            2 to "≤ $0.05",
-            3 to "≤ $0.50",
-            4 to "> $0.50",
+            1 to "≤ €0.005 per call",
+            2 to "≤ €0.05",
+            3 to "≤ €0.50",
+            4 to "> €0.50",
         )
     } else {
         listOf(
@@ -186,14 +187,14 @@ fun CostTierLegend(modifier: Modifier = Modifier) {
 }
 
 /** Public tier mapping so the Insights legend renders the same scale. */
-fun tierForUsd(usd: Double): Int = when {
-    usd <= 0.005 -> 1
-    usd <= 0.05 -> 2
-    usd <= 0.50 -> 3
+fun tierForEur(eur: Double): Int = when {
+    eur <= 0.005 -> 1
+    eur <= 0.05 -> 2
+    eur <= 0.50 -> 3
     else -> 4
 }
 
-/** Coin-based tier — managed mode uses post-multiplier coins, not USD. */
+/** Coin-based tier — managed mode uses post-multiplier coins, not EUR. */
 fun tierForCoins(coins: Int): Int = when {
     coins <= 2 -> 1
     coins <= 15 -> 2
@@ -312,11 +313,11 @@ fun InsufficientCreditsDialog(
 // ---------- helpers ----------
 
 /**
- * Coarse token estimate per action — used only for the BYOK $ badge.
+ * Coarse token estimate per action — used only for the BYOK € badge.
  * Returned as four numbers: `(fixedInput, inputPerItem, fixedOutput, outputPerItem)`.
  *
  * Image-out actions report their image-token count under `fixedOutput` (e.g. ~1290 per image
- * for Gemini's image models), so when multiplied by the output USD rate the badge reflects
+ * for Gemini's image models), so when multiplied by the output EUR rate the badge reflects
  * actual spend rather than text-equivalent tokens. Picked to be conservative (rounded up).
  */
 private data class TokenEstimate(
@@ -348,11 +349,11 @@ private fun estimateTokensFor(action: GeminiActionId, items: Int): Pair<Int, Int
     return input to output
 }
 
-/** Format a USD amount for the badge. Mirrors UsageScreen.formatUsd. */
-private fun formatUsdBadge(usd: Double): String = when {
-    usd < 0.01 -> "<0.01"
-    usd < 1.0 -> String.format("%.2f", usd)
-    usd < 100.0 -> String.format("%.2f", usd)
-    else -> String.format("%.0f", usd)
+/** Format a EUR amount for the badge. Mirrors UsageScreen.formatEur. */
+private fun formatEurBadge(eur: Double): String = when {
+    eur < 0.01 -> "<0.01"
+    eur < 1.0 -> String.format("%.2f", eur)
+    eur < 100.0 -> String.format("%.2f", eur)
+    else -> String.format("%.0f", eur)
 }
 
