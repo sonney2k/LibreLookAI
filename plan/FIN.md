@@ -514,3 +514,31 @@ queries? Decided **no** for now:
 - **Break-even** (≈42k-token closet): storage ≈ €0.039/hr vs ≈€0.016 saved per
   whole-closet query ⇒ need ≥3 such queries within the cache hour. `cachedTextInPerM`
   is recorded in the schema for the day this changes; nothing creates a cache.
+
+### 12.7 What it costs per user journey (×100)
+
+User-facing operations map to 1–2 server charges (server bills per
+`X-AI-Action` header — note there is **no** `outfitSuggestion` header: composing
+an outfit charges `searchFashionTrends` + `generateText`). Wardrobe-context
+calls (`generateText`) assume a 1000-item closet; import/try-on/tag/trends/bg
+don't depend on wardrobe size. User pays = credits × €0.01.
+
+| Journey (×100) | Server calls each | Credits | User pays € | Gemini cost € | After-tax profit € |
+|---|---|---:|---:|---:|---:|
+| 100 item imports (bg + auto-tag) | removeBackground + classifyClothing | 2,000 | 20.00 | 6.80 | 2.61 |
+| 100 background removals only | removeBackground | 1,800 | 18.00 | 6.65 | 2.07 |
+| 100 auto-tags only | classifyClothing | 200 | 2.00 | 0.15 | 0.54 |
+| 100 try-ons | tryOnOutfit | 1,800 | 18.00 | 6.67 | 2.06 |
+| 100 outfits generated (composer) | searchFashionTrends + generateText | 1,600 | 16.00 | 5.43 | 2.09 |
+| 100 daily style predictions | searchFashionTrends + generateText | 1,600 | 16.00 | 5.43 | 2.09 |
+| 100 gap analyses ("what to buy") | generateText | 1,400 | 14.00 | 5.27 | 1.56 |
+| 100 replacement suggestions | generateText | 1,400 | 14.00 | 5.27 | 1.56 |
+| 100 trips (7-day, 1 outfit/day) | generateText ×1 (all days in one call) | 1,400 | 14.00 | 5.88 | 1.24 |
+| 100 trend lookups (standalone) | searchFashionTrends | 200 | 2.00 | 0.16 | 0.53 |
+
+Notes: a **trip is one `generateText` call regardless of days** (the prompt asks
+for N outfits at once), so a 7-day trip costs the same 14 credits as a single
+gap analysis — but its ~7× output tokens make the real Gemini cost higher and
+the margin thinner (~€0.012/trip vs €0.0156). Composer/prediction pay an extra
+2 credits per run for a fresh `searchFashionTrends` lookup — a candidate for
+caching (trends change daily, not per-compose).

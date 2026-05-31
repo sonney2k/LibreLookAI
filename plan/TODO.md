@@ -24,7 +24,28 @@ TODO
 ====
 create accompanying website
 
-create human readable release notes between now and v1.8.0 and release version 1.9.0, git tag commit and upload to testers in firebase
+One thing I did not touch: buildPredictionPrompt (style prediction) still uses the lean 4-field payload and omits name. Want me to upgrade that one too, or leave it
+lean since it's the high-frequency "daily outfit" path? And shall I commit this to main? -> use all fields then add expert options to create outfit enabling addng what tags to consider when creating outfit - add those to preferences as well. that should be used for both identifying gaps and creatign outfits
+
+we want all options to work without Gemini so things are cost neutral. create a plan for that.
+
+experiment to verify cost assumptions
+
+like outfits travel planner should also have an option to say what the AI should use (pattern, ...)
+
+what can we do to reduce cost?
+is outfit generation sending the entire wardrobe or only the items that match a certain category (e.g. full body suit) that are supposed to be suggested by AI?
+
+
+create onboarding flow
+
+❯ feature toggle the entire non BYOK refinancing part. Plan is to release as-is to play store and only later add the easy option for non-technical people. we will
+  add to onboarding how to get a gemini token later perhaps with screen shots. 
+
+
+you did create some table with actions & prices. Make this exhaustive for all AI actions but instead of listing individual actions make them user centric - e.g. price of 100 item imports, 100 outfits generated, 100 7 day trips generated with one outfit each, 100 try-ons etc 
+
+create human readable release notes between now and v1.9.0 and release version 2.0.0, git tag commit and upload to testers in firebase
 
 Storage:
 - I noticed .jpgs from camera are just 124kB but .pngs are 450kB. Since this is on users drive folders we have to be cautious about size. Let's target 1GB - to allow for 2000-4000 wardrobe items.
