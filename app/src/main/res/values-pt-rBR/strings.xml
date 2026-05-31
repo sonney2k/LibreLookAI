@@ -665,7 +665,7 @@
     <string name="about_cost_text">Sugestão de look: 2 créditos</string>
     <string name="about_cost_travel">Lista de mala de viagem / análise de lacunas: 2 créditos</string>
     <string name="about_byok_title">Use sua própria chave (BYOK)</string>
-    <string name="about_byok_desc">Você pode usar sua própria chave API Gemini grátis para evitar totalmente o custo em créditos:\n\n1. Acesse aistudio.google.com\n2. Clique em \"Get API key\" → \"Create API key\"\n3. Copie a chave (começa com AIza…)\n4. Cole em Configurações → Perfil → Chave API Gemini\n\nSua chave fica armazenada apenas neste dispositivo e é usada diretamente com o Google — nenhum dado passa pelos nossos servidores.</string>
+    <string name="about_byok_desc">O LibreLookAI funciona com sua própria chave de API do Gemini:\n\n1. Acesse aistudio.google.com\n2. Toque em Get API key → Create API key\n3. Copie a chave (começa com AIza…)\n4. Cole em Configurações → Avançado → Chave de API do Gemini\n\nUma chave gratuita cobre marcação e sugestões de looks. A prova virtual e a remoção de fundo geram imagens e exigem uma chave paga com faturamento ativado — o Google ainda cobra apenas pelo que você usar. Sua chave fica armazenada apenas neste dispositivo e é usada diretamente com o Google — nenhum dado passa pelos nossos servidores.</string>
     <string name="about_credits_title">Créditos (Modo gerenciado)</string>
     <string name="about_credits_desc">Para usuários que preferem não criar a própria chave API, o app oferece um sistema de créditos por moedas. Os créditos podem ser comprados na aba Créditos e são consumidos por ação IA nas taxas listadas acima. Esse modo encaminha as requisições por um proxy no servidor.</string>
 
@@ -976,8 +976,8 @@
     <string name="settings_rebg_row_sub">Recorta cada peça da foto novamente. Custa ~6 créditos por peça.</string>
     <string name="settings_cutout_row">Corrigir pixels de fundo restantes</string>
     <string name="settings_cutout_row_sub">Procura peças cujo recorte deixou um canto.</string>
-    <string name="settings_advanced_byok_title">Use sua própria chave de IA gratuita</string>
-    <string name="settings_advanced_byok_body">O Google oferece uma cota gratuita generosa. Obtenha uma chave em aistudio.google.com e cole abaixo. Guardamos apenas neste telefone.</string>
+    <string name="settings_advanced_byok_title">Sua chave de API do Gemini</string>
+    <string name="settings_advanced_byok_body">Toda a IA funciona com sua própria chave do Gemini. Uma chave gratuita cobre marcação e sugestões de looks; a prova virtual e a remoção de fundo exigem uma chave paga com faturamento ativado. Obtenha uma em aistudio.google.com e cole abaixo — armazenamos apenas neste telefone.</string>
     <string name="settings_advanced_byok_saved_badge">SALVA</string>
     <string name="settings_advanced_byok_change">Alterar</string>
     <string name="settings_advanced_byok_clear">Limpar</string>
@@ -1046,4 +1046,13 @@
 
     <!-- Needs-tagging badge -->
     <string name="wardrobe_needs_tagging">Precisa de etiquetas</string>
+
+    <!-- BYOK API-key onboarding step -->
+    <string name="onboarding_apikey_title">Adicione sua chave de API do Gemini</string>
+    <string name="onboarding_apikey_body">O LibreLookAI funciona com o Google Gemini usando sua própria chave de API. Ela fica armazenada apenas neste dispositivo e é usada diretamente com o Google — nada passa pelos nossos servidores.</string>
+    <string name="onboarding_apikey_tiers">Uma chave gratuita já cobre marcação e sugestões de looks. A prova virtual e a remoção de fundo geram imagens e exigem uma chave paga com faturamento ativado — o Google ainda cobra apenas pelo que você realmente usar.</string>
+    <string name="onboarding_apikey_get">Obter uma chave de API</string>
+    <string name="onboarding_apikey_billing">Ativar faturamento (para a prova)</string>
+    <string name="onboarding_apikey_saved">Chave salva neste dispositivo ✓</string>
+    <string name="onboarding_apikey_offline">Conecte-se à internet para abrir o Google AI Studio. Você ainda pode colar uma chave que já tenha.</string>
 </resources>

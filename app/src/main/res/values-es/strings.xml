@@ -665,7 +665,7 @@
     <string name="about_cost_text">Sugerencia de outfit: 2 créditos</string>
     <string name="about_cost_travel">Lista de equipaje / análisis de carencias: 2 créditos</string>
     <string name="about_byok_title">Usa tu propia clave (BYOK)</string>
-    <string name="about_byok_desc">Puedes usar tu propia clave gratuita de la API de Gemini para evitar el coste de los créditos:\n\n1. Ve a aistudio.google.com\n2. Haz clic en \"Get API key\" → \"Create API key\"\n3. Copia la clave (empieza por AIza…)\n4. Pégala en Ajustes → Perfil → Clave de API de Gemini\n\nTu clave se almacena solo en este dispositivo y se usa directamente con Google — ningún dato pasa por nuestros servidores.</string>
+    <string name="about_byok_desc">LibreLookAI funciona con tu propia clave de API de Gemini:\n\n1. Entra en aistudio.google.com\n2. Toca Get API key → Create API key\n3. Copia la clave (empieza con AIza…)\n4. Pégala en Ajustes → Avanzado → Clave de API de Gemini\n\nUna clave gratuita cubre el etiquetado y las sugerencias de looks. La prueba virtual y la eliminación de fondo generan imágenes y requieren una clave de pago con la facturación activada; Google solo te cobra por lo que uses. Tu clave se guarda solo en este dispositivo y se usa directamente con Google: ningún dato pasa por nuestros servidores.</string>
     <string name="about_credits_title">Créditos (modo gestionado)</string>
     <string name="about_credits_desc">Para los usuarios que prefieren no crear su propia clave de API, la app ofrece un sistema de créditos en forma de fichas. Los créditos se pueden comprar en la pestaña Créditos y se consumen por acción de IA según las tarifas indicadas arriba. Este modo enruta las peticiones a través de un proxy en el servidor.</string>
 
@@ -976,8 +976,8 @@
     <string name="settings_rebg_row_sub">Recorta cada prenda de su foto otra vez. Cuesta ~6 créditos por prenda.</string>
     <string name="settings_cutout_row">Corregir píxeles de fondo sobrantes</string>
     <string name="settings_cutout_row_sub">Busca prendas cuyo recorte se dejó una esquina.</string>
-    <string name="settings_advanced_byok_title">Usa tu propia clave de IA gratuita</string>
-    <string name="settings_advanced_byok_body">Google ofrece una cuota gratuita generosa. Consigue una clave en aistudio.google.com y pégala abajo. Solo la guardamos en este teléfono.</string>
+    <string name="settings_advanced_byok_title">Tu clave de API de Gemini</string>
+    <string name="settings_advanced_byok_body">Toda la IA usa tu propia clave de Gemini. Una clave gratuita cubre el etiquetado y las sugerencias de looks; la prueba virtual y la eliminación de fondo requieren una clave de pago con la facturación activada. Consigue una en aistudio.google.com y pégala abajo: solo la guardamos en este teléfono.</string>
     <string name="settings_advanced_byok_saved_badge">GUARDADA</string>
     <string name="settings_advanced_byok_change">Cambiar</string>
     <string name="settings_advanced_byok_clear">Borrar</string>
@@ -1046,4 +1046,13 @@
 
     <!-- Needs-tagging badge -->
     <string name="wardrobe_needs_tagging">Necesita etiquetas</string>
+
+    <!-- BYOK API-key onboarding step -->
+    <string name="onboarding_apikey_title">Añade tu clave de API de Gemini</string>
+    <string name="onboarding_apikey_body">LibreLookAI funciona con Google Gemini usando tu propia clave de API. Se guarda solo en este dispositivo y se usa directamente con Google: nada pasa por nuestros servidores.</string>
+    <string name="onboarding_apikey_tiers">Una clave gratuita ya cubre el etiquetado y las sugerencias de looks. La prueba virtual y la eliminación de fondo generan imágenes y requieren una clave de pago con la facturación activada; Google solo te cobra por lo que realmente uses.</string>
+    <string name="onboarding_apikey_get">Obtener una clave de API</string>
+    <string name="onboarding_apikey_billing">Activar facturación (para la prueba)</string>
+    <string name="onboarding_apikey_saved">Clave guardada en este dispositivo ✓</string>
+    <string name="onboarding_apikey_offline">Conéctate a internet para abrir Google AI Studio. Aun así puedes pegar una clave que ya tengas.</string>
 </resources>

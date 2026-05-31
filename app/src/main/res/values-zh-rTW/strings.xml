@@ -369,14 +369,7 @@
     <!-- Bulk translation 2026-05-18 -->
     <string name="about_ai_desc">LibreLookAI 高度仰賴 Google Gemini 進行視覺與文字 AI 處理。每項 AI 操作（去背、自動標籤、穿搭建議等）都需要呼叫 Gemini API，會產生少量費用。</string>
     <string name="about_ai_title">AI 使用 &amp; 費用</string>
-    <string name="about_byok_desc">你可以使用自己的免費 Gemini API 金鑰，完全避免點數費用：
-
-1. 前往 aistudio.google.com
-2. 點擊「Get API key」→「Create API key」
-3. 複製金鑰（以 AIza… 開頭）
-4. 貼到 設定 → 個人資料 → Gemini API 金鑰
-
-你的金鑰僅儲存在此裝置上，並直接與 Google 通訊——沒有任何資料經過我們的伺服器。</string>
+    <string name="about_byok_desc">LibreLookAI 使用你自己的 Gemini API 金鑰運作:\n\n1. 前往 aistudio.google.com\n2. 點按 Get API key → Create API key\n3. 複製金鑰（以 AIza… 開頭）\n4. 貼到設定 → 進階 → Gemini API 金鑰\n\n免費金鑰涵蓋標記與穿搭建議。虛擬試穿與背景移除會生成影像，因此需要已啟用帳單的付費金鑰 — Google 仍只會依你的用量收費。你的金鑰只會儲存在此裝置，並直接與 Google 使用 — 不會有任何資料經過我們的伺服器。</string>
     <string name="about_byok_title">使用自己的金鑰（BYOK）</string>
     <string name="about_cost_bg_removal">去背：5 點</string>
     <string name="about_cost_classify">自動標籤：2 點</string>
@@ -956,8 +949,8 @@
     <string name="settings_rebg_row_sub">重新從照片裁切每件項目。每件約 6 點數。</string>
     <string name="settings_cutout_row">修正殘留的背景像素</string>
     <string name="settings_cutout_row_sub">尋找裁切時漏掉角落的項目。</string>
-    <string name="settings_advanced_byok_title">使用你自己的免費 AI 金鑰</string>
-    <string name="settings_advanced_byok_body">Google 提供慷慨的免費額度。到 aistudio.google.com 取得金鑰並貼到下方。我們只儲存在這支手機上。</string>
+    <string name="settings_advanced_byok_title">你的 Gemini API 金鑰</string>
+    <string name="settings_advanced_byok_body">所有 AI 都使用你自己的 Gemini 金鑰。免費金鑰涵蓋標記與穿搭建議；虛擬試穿與背景移除需要已啟用帳單的付費金鑰。請到 aistudio.google.com 取得並貼到下方 — 我們只會儲存在這支手機上。</string>
     <string name="settings_advanced_byok_saved_badge">已儲存</string>
     <string name="settings_advanced_byok_change">變更</string>
     <string name="settings_advanced_byok_clear">清除</string>
@@ -1026,4 +1019,13 @@
 
     <!-- Needs-tagging badge -->
     <string name="wardrobe_needs_tagging">需要標記</string>
+
+    <!-- BYOK API-key onboarding step -->
+    <string name="onboarding_apikey_title">新增你的 Gemini API 金鑰</string>
+    <string name="onboarding_apikey_body">LibreLookAI 使用你自己的 API 金鑰在 Google Gemini 上運作。金鑰僅儲存在此裝置，並直接與 Google 使用，不會經過我們的伺服器。</string>
+    <string name="onboarding_apikey_tiers">免費金鑰已足以用於標記和穿搭建議。虛擬試穿與背景移除會生成影像，因此需要已啟用帳單的付費金鑰；Google 仍只會依你的實際用量收費。</string>
+    <string name="onboarding_apikey_get">取得 API 金鑰</string>
+    <string name="onboarding_apikey_billing">啟用帳單（供試穿使用）</string>
+    <string name="onboarding_apikey_saved">金鑰已儲存在此裝置 ✓</string>
+    <string name="onboarding_apikey_offline">請連上網際網路以開啟 Google AI Studio。你仍可貼上已擁有的金鑰。</string>
 </resources>

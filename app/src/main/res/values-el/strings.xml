@@ -665,7 +665,7 @@
     <string name="about_cost_text">Πρόταση συνόλου: 2 μονάδες</string>
     <string name="about_cost_travel">Λίστα ταξιδιού / ανάλυση ελλείψεων: 2 μονάδες</string>
     <string name="about_byok_title">Χρήση Δικού σας Κλειδιού (BYOK)</string>
-    <string name="about_byok_desc">Μπορείτε να χρησιμοποιήσετε το δικό σας δωρεάν κλειδί Gemini API για να αποφύγετε το κόστος μονάδων.</string>
+    <string name="about_byok_desc">Το LibreLookAI λειτουργεί με το δικό σας κλειδί Gemini API:\n\n1. Μεταβείτε στο aistudio.google.com\n2. Πατήστε Get API key → Create API key\n3. Αντιγράψτε το κλειδί (ξεκινά με AIza…)\n4. Επικολλήστε το στις Ρυθμίσεις → Για προχωρημένους → Κλειδί Gemini API\n\nΈνα δωρεάν κλειδί καλύπτει τις ετικέτες και τις προτάσεις συνόλων. Η εικονική δοκιμή και η αφαίρεση φόντου δημιουργούν εικόνες και απαιτούν πληρωμένο κλειδί με ενεργοποιημένη χρέωση — η Google χρεώνει και πάλι μόνο ό,τι χρησιμοποιείτε. Το κλειδί σας αποθηκεύεται μόνο σε αυτή τη συσκευή και χρησιμοποιείται απευθείας με την Google — κανένα δεδομένο δεν περνά από τους διακομιστές μας.</string>
     <string name="about_credits_title">Μονάδες (Managed Mode)</string>
     <string name="about_credits_desc">Για χρήστες χωρίς δικό τους κλειδί, η εφαρμογή προσφέρει σύστημα μονάδων.</string>
 
@@ -976,8 +976,8 @@
     <string name="settings_rebg_row_sub">Επανακόβει κάθε είδος από τη φωτογραφία του. Κοστίζει ~6 πιστώσεις ανά είδος.</string>
     <string name="settings_cutout_row">Διόρθωση υπολειπόμενων pixel φόντου</string>
     <string name="settings_cutout_row_sub">Ψάχνει για είδη όπου η αποκοπή έχασε μια γωνία.</string>
-    <string name="settings_advanced_byok_title">Χρησιμοποίησε το δικό σου δωρεάν κλειδί AI</string>
-    <string name="settings_advanced_byok_body">Η Google δίνει ένα γενναιόδωρο δωρεάν όριο. Πάρε κλειδί από το aistudio.google.com και επικόλλησέ το παρακάτω. Το αποθηκεύουμε μόνο σε αυτό το τηλέφωνο.</string>
+    <string name="settings_advanced_byok_title">Το κλειδί σας Gemini API</string>
+    <string name="settings_advanced_byok_body">Όλη η τεχνητή νοημοσύνη λειτουργεί με το δικό σας κλειδί Gemini. Ένα δωρεάν κλειδί καλύπτει τις ετικέτες και τις προτάσεις συνόλων· η εικονική δοκιμή και η αφαίρεση φόντου απαιτούν πληρωμένο κλειδί με ενεργοποιημένη χρέωση. Αποκτήστε ένα στο aistudio.google.com και επικολλήστε το παρακάτω — το αποθηκεύουμε μόνο σε αυτό το τηλέφωνο.</string>
     <string name="settings_advanced_byok_saved_badge">ΑΠΟΘΗΚΕΥΤΗΚΕ</string>
     <string name="settings_advanced_byok_change">Αλλαγή</string>
     <string name="settings_advanced_byok_clear">Εκκαθάριση</string>
@@ -1046,4 +1046,13 @@
 
     <!-- Needs-tagging badge -->
     <string name="wardrobe_needs_tagging">Χρειάζεται ετικέτες</string>
+
+    <!-- BYOK API-key onboarding step -->
+    <string name="onboarding_apikey_title">Προσθέστε το κλειδί Gemini API</string>
+    <string name="onboarding_apikey_body">Το LibreLookAI λειτουργεί με το Google Gemini χρησιμοποιώντας το δικό σας κλειδί API. Αποθηκεύεται μόνο σε αυτή τη συσκευή και χρησιμοποιείται απευθείας με την Google — τίποτα δεν περνά από τους διακομιστές μας.</string>
+    <string name="onboarding_apikey_tiers">Ένα δωρεάν κλειδί καλύπτει ήδη τις ετικέτες και τις προτάσεις συνόλων. Η εικονική δοκιμή και η αφαίρεση φόντου δημιουργούν εικόνες και απαιτούν πληρωμένο κλειδί με ενεργοποιημένη χρέωση — η Google χρεώνει και πάλι μόνο ό,τι πραγματικά χρησιμοποιείτε.</string>
+    <string name="onboarding_apikey_get">Λήψη κλειδιού API</string>
+    <string name="onboarding_apikey_billing">Ενεργοποίηση χρέωσης (για τη δοκιμή)</string>
+    <string name="onboarding_apikey_saved">Το κλειδί αποθηκεύτηκε σε αυτή τη συσκευή ✓</string>
+    <string name="onboarding_apikey_offline">Συνδεθείτε στο διαδίκτυο για να ανοίξετε το Google AI Studio. Μπορείτε ακόμη να επικολλήσετε ένα κλειδί που ήδη έχετε.</string>
 </resources>

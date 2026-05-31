@@ -665,7 +665,7 @@
     <string name="about_cost_text">Mungkahi ng outfit: 2 credits</string>
     <string name="about_cost_travel">Travel packing list / wardrobe gap analysis: 2 credits</string>
     <string name="about_byok_title">Bring Your Own Key (BYOK)</string>
-    <string name="about_byok_desc">Maaari mong gamitin ang sarili mong libreng Gemini API key para iwasan ang credit costs nang buo:\n\n1. Pumunta sa aistudio.google.com\n2. I-click ang \"Get API key\" → \"Create API key\"\n3. Kopyahin ang key (nagsisimula sa AIza…)\n4. I-paste sa Settings → Profile → Gemini API Key\n\nAng iyong key ay nakaimbak lamang sa device na ito at direktang ginagamit sa Google — walang data na dumadaan sa aming mga server.</string>
+    <string name="about_byok_desc">Gumagana ang LibreLookAI sa sarili mong Gemini API key:\n\n1. Pumunta sa aistudio.google.com\n2. I-tap ang Get API key → Create API key\n3. Kopyahin ang key (nagsisimula sa AIza…)\n4. I-paste ito sa Mga Setting → Advanced → Gemini API Key\n\nSapat ang libreng key para sa pag-tag at mga suhestiyon sa outfit. Ang virtual try-on at pag-alis ng background ay gumagawa ng mga larawan at nangangailangan ng bayad na key na may naka-enable na billing — sisingilin ka pa rin ng Google ayon sa nagagamit mo. Ang iyong key ay naka-imbak lang sa device na ito at direktang ginagamit sa Google — walang datos na dumadaan sa aming mga server.</string>
     <string name="about_credits_title">Credits (Managed Mode)</string>
     <string name="about_credits_desc">Para sa mga user na mas gustong huwag gumawa ng sarili nilang API key, nag-aalok ang app ng coin-based credit system. Maaaring bilhin ang credits sa Credits tab at gagamitin bawat AI action sa rate na nakalista sa itaas. Ang mode na ito ay nagri-route ng request sa pamamagitan ng server-side proxy.</string>
 
@@ -976,8 +976,8 @@
     <string name="settings_rebg_row_sub">Gupitin muli ang bawat item mula sa larawan nito. ~6 credit kada item.</string>
     <string name="settings_cutout_row">Ayusin ang natirang background pixels</string>
     <string name="settings_cutout_row_sub">Naghahanap ng item na may sulok na nakaligtaan ng cutout.</string>
-    <string name="settings_advanced_byok_title">Gamitin ang sarili mong libreng AI key</string>
-    <string name="settings_advanced_byok_body">Nagbibigay ang Google ng masaganang libreng quota. Kumuha ng key sa aistudio.google.com at i-paste sa ibaba. Iniimbak lang namin ito sa teleponong ito.</string>
+    <string name="settings_advanced_byok_title">Ang iyong Gemini API key</string>
+    <string name="settings_advanced_byok_body">Lahat ng AI ay gumagana sa sarili mong Gemini key. Sapat ang libreng key para sa pag-tag at mga suhestiyon sa outfit; ang virtual try-on at pag-alis ng background ay nangangailangan ng bayad na key na may naka-enable na billing. Kumuha ng isa sa aistudio.google.com at i-paste sa ibaba — sa telepono lang ito naka-imbak.</string>
     <string name="settings_advanced_byok_saved_badge">NAKA-SAVE</string>
     <string name="settings_advanced_byok_change">Palitan</string>
     <string name="settings_advanced_byok_clear">Burahin</string>
@@ -1046,4 +1046,13 @@
 
     <!-- Needs-tagging badge -->
     <string name="wardrobe_needs_tagging">Kailangang i-tag</string>
+
+    <!-- BYOK API-key onboarding step -->
+    <string name="onboarding_apikey_title">Idagdag ang iyong Gemini API key</string>
+    <string name="onboarding_apikey_body">Gumagana ang LibreLookAI sa Google Gemini gamit ang sarili mong API key. Naka-imbak lang ito sa device na ito at direktang ginagamit sa Google — walang dumadaan sa aming mga server.</string>
+    <string name="onboarding_apikey_tiers">Sapat na ang libreng key para sa pag-tag at mga suhestiyon sa outfit. Ang virtual try-on at pag-alis ng background ay gumagawa ng mga larawan at nangangailangan ng bayad na key na may naka-enable na billing — sisingilin ka pa rin ng Google ayon lang sa aktwal mong nagagamit.</string>
+    <string name="onboarding_apikey_get">Kumuha ng API key</string>
+    <string name="onboarding_apikey_billing">I-enable ang billing (para sa try-on)</string>
+    <string name="onboarding_apikey_saved">Na-save ang key sa device na ito ✓</string>
+    <string name="onboarding_apikey_offline">Kumonekta sa internet para buksan ang Google AI Studio. Puwede mo pa ring i-paste ang key na mayroon ka na.</string>
 </resources>

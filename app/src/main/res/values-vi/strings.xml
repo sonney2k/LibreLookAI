@@ -369,14 +369,7 @@
     <!-- Bulk translation 2026-05-18 -->
     <string name="about_ai_desc">LibreLookAI phụ thuộc nhiều vào Google Gemini cho AI thị giác và văn bản. Mỗi hành động AI (xóa nền, gắn thẻ, gợi ý trang phục, v.v.) cần một lệnh gọi API Gemini, có chi phí nhỏ.</string>
     <string name="about_ai_title">Sử dụng AI &amp; chi phí</string>
-    <string name="about_byok_desc">Bạn có thể dùng khóa API Gemini miễn phí của riêng mình để tránh hoàn toàn chi phí điểm:
-
-1. Truy cập aistudio.google.com
-2. Bấm „Get API key” → „Create API key”
-3. Sao chép khóa (bắt đầu bằng AIza…)
-4. Dán vào Cài đặt → Hồ sơ → Khóa API Gemini
-
-Khóa của bạn chỉ lưu trên thiết bị này và được dùng trực tiếp với Google — không có dữ liệu nào đi qua máy chủ của chúng tôi.</string>
+    <string name="about_byok_desc">LibreLookAI chạy bằng khóa API Gemini của riêng bạn:\n\n1. Truy cập aistudio.google.com\n2. Nhấn Get API key → Create API key\n3. Sao chép khóa (bắt đầu bằng AIza…)\n4. Dán vào Cài đặt → Nâng cao → Khóa API Gemini\n\nKhóa miễn phí bao gồm gắn thẻ và gợi ý trang phục. Thử đồ ảo và xóa nền tạo ra hình ảnh nên cần khóa trả phí có bật thanh toán — Google vẫn chỉ tính phí theo mức bạn dùng. Khóa của bạn chỉ được lưu trên thiết bị này và dùng trực tiếp với Google — không có dữ liệu nào đi qua máy chủ của chúng tôi.</string>
     <string name="about_byok_title">Dùng khóa riêng (BYOK)</string>
     <string name="about_cost_bg_removal">Xóa nền: 5 điểm</string>
     <string name="about_cost_classify">Tự động gắn thẻ: 2 điểm</string>
@@ -956,8 +949,8 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="settings_rebg_row_sub">Cắt lại từng món khỏi ảnh của nó. Tốn ~6 tín dụng mỗi món.</string>
     <string name="settings_cutout_row">Sửa pixel nền còn sót</string>
     <string name="settings_cutout_row_sub">Quét các món mà phần cắt bỏ sót một góc.</string>
-    <string name="settings_advanced_byok_title">Dùng khóa AI miễn phí của riêng bạn</string>
-    <string name="settings_advanced_byok_body">Google cấp hạn mức miễn phí hào phóng. Lấy khóa tại aistudio.google.com và dán bên dưới. Chúng tôi chỉ lưu trên điện thoại này.</string>
+    <string name="settings_advanced_byok_title">Khóa API Gemini của bạn</string>
+    <string name="settings_advanced_byok_body">Toàn bộ AI chạy bằng khóa Gemini của riêng bạn. Khóa miễn phí bao gồm gắn thẻ và gợi ý trang phục; thử đồ ảo và xóa nền cần khóa trả phí có bật thanh toán. Lấy một khóa tại aistudio.google.com và dán bên dưới — chúng tôi chỉ lưu trên điện thoại này.</string>
     <string name="settings_advanced_byok_saved_badge">ĐÃ LƯU</string>
     <string name="settings_advanced_byok_change">Đổi</string>
     <string name="settings_advanced_byok_clear">Xóa</string>
@@ -1026,4 +1019,13 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
 
     <!-- Needs-tagging badge -->
     <string name="wardrobe_needs_tagging">Cần gắn thẻ</string>
+
+    <!-- BYOK API-key onboarding step -->
+    <string name="onboarding_apikey_title">Thêm khóa API Gemini của bạn</string>
+    <string name="onboarding_apikey_body">LibreLookAI chạy trên Google Gemini bằng khóa API của riêng bạn. Khóa chỉ được lưu trên thiết bị này và dùng trực tiếp với Google — không có gì đi qua máy chủ của chúng tôi.</string>
+    <string name="onboarding_apikey_tiers">Khóa miễn phí đã đủ cho việc gắn thẻ và gợi ý trang phục. Thử đồ ảo và xóa nền tạo ra hình ảnh nên cần khóa trả phí có bật thanh toán — Google vẫn chỉ tính phí theo mức bạn thực sự dùng.</string>
+    <string name="onboarding_apikey_get">Lấy khóa API</string>
+    <string name="onboarding_apikey_billing">Bật thanh toán (cho thử đồ)</string>
+    <string name="onboarding_apikey_saved">Đã lưu khóa trên thiết bị này ✓</string>
+    <string name="onboarding_apikey_offline">Kết nối internet để mở Google AI Studio. Bạn vẫn có thể dán khóa mình đã có.</string>
 </resources>

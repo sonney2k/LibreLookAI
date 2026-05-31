@@ -665,7 +665,7 @@
     <string name="about_cost_text">Návrh outfitu: 2 kredity</string>
     <string name="about_cost_travel">Cestovní seznam / analýza mezer v šatníku: 2 kredity</string>
     <string name="about_byok_title">Vlastní klíč (BYOK)</string>
-    <string name="about_byok_desc">Můžete použít svůj vlastní bezplatný Gemini API klíč a zcela se tak vyhnout nákladům na kredity:\n\n1. Přejděte na aistudio.google.com\n2. Klikněte na \"Get API key\" → \"Create API key\"\n3. Zkopírujte klíč (začíná na AIza…)\n4. Vložte jej v Nastavení → Profil → Gemini API klíč\n\nVáš klíč je uložen pouze v tomto zařízení a používá se přímo s Googlem — přes naše servery neprocházejí žádná data.</string>
+    <string name="about_byok_desc">LibreLookAI běží na vašem vlastním klíči Gemini API:\n\n1. Přejděte na aistudio.google.com\n2. Klepněte na Get API key → Create API key\n3. Zkopírujte klíč (začíná na AIza…)\n4. Vložte jej v Nastavení → Pokročilé → Klíč Gemini API\n\nBezplatný klíč pokryje označování a návrhy outfitů. Virtuální zkoušení a odstranění pozadí generují obrázky a vyžadují placený klíč s aktivovanou fakturací — Google vám i tak účtuje jen to, co využijete. Váš klíč se ukládá jen do tohoto zařízení a používá se přímo s Googlem — žádná data neprocházejí přes naše servery.</string>
     <string name="about_credits_title">Kredity (Spravovaný režim)</string>
     <string name="about_credits_desc">Pro uživatele, kteří si raději nechtějí vytvářet vlastní API klíč, aplikace nabízí kreditní systém. Kredity lze zakoupit na kartě Kredity a spotřebovávají se za každou AI akci podle výše uvedených sazeb. Tento režim směruje požadavky přes proxy server.</string>
 
@@ -976,8 +976,8 @@
     <string name="settings_rebg_row_sub">Znovu vyřízne každý kus z jeho fotky. Stojí ~6 kreditů za kus.</string>
     <string name="settings_cutout_row">Opravit zbylé pixely pozadí</string>
     <string name="settings_cutout_row_sub">Hledá kusy, u kterých výřez vynechal roh.</string>
-    <string name="settings_advanced_byok_title">Použij vlastní bezplatný klíč AI</string>
-    <string name="settings_advanced_byok_body">Google nabízí štědrý bezplatný limit. Získej klíč na aistudio.google.com a vlož ho níže. Ukládáme ho jen v tomto telefonu.</string>
+    <string name="settings_advanced_byok_title">Váš klíč Gemini API</string>
+    <string name="settings_advanced_byok_body">Veškerá AI běží na vašem vlastním klíči Gemini. Bezplatný klíč pokryje označování a návrhy outfitů; virtuální zkoušení a odstranění pozadí vyžadují placený klíč s aktivovanou fakturací. Získejte jej na aistudio.google.com a vložte níže — ukládáme jej jen v tomto telefonu.</string>
     <string name="settings_advanced_byok_saved_badge">ULOŽENO</string>
     <string name="settings_advanced_byok_change">Změnit</string>
     <string name="settings_advanced_byok_clear">Vymazat</string>
@@ -1046,4 +1046,13 @@
 
     <!-- Needs-tagging badge -->
     <string name="wardrobe_needs_tagging">Vyžaduje označení</string>
+
+    <!-- BYOK API-key onboarding step -->
+    <string name="onboarding_apikey_title">Přidejte svůj klíč Gemini API</string>
+    <string name="onboarding_apikey_body">LibreLookAI běží na Google Gemini s vaším vlastním klíčem API. Ukládá se jen do tohoto zařízení a používá se přímo s Googlem — nic neprochází přes naše servery.</string>
+    <string name="onboarding_apikey_tiers">Bezplatný klíč pokryje označování a návrhy outfitů. Virtuální zkoušení a odstranění pozadí generují obrázky a vyžadují placený klíč s aktivovanou fakturací — Google vám i tak účtuje jen to, co skutečně využijete.</string>
+    <string name="onboarding_apikey_get">Získat klíč API</string>
+    <string name="onboarding_apikey_billing">Aktivovat fakturaci (pro zkoušení)</string>
+    <string name="onboarding_apikey_saved">Klíč uložen v tomto zařízení ✓</string>
+    <string name="onboarding_apikey_offline">Připojte se k internetu a otevřete Google AI Studio. Klíč, který už máte, můžete vložit i tak.</string>
 </resources>

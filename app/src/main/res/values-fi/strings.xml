@@ -665,7 +665,7 @@
     <string name="about_cost_text">Asuehdotus: 2 krediittiä</string>
     <string name="about_cost_travel">Matkan pakkauslista / vaatekaapin aukkoanalyysi: 2 krediittiä</string>
     <string name="about_byok_title">Tuo oma avain (BYOK)</string>
-    <string name="about_byok_desc">Voit käyttää omaa ilmaista Gemini API-avaintasi välttääksesi krediittikustannukset kokonaan:\n\n1. Mene osoitteeseen aistudio.google.com\n2. Napsauta \"Get API key\" → \"Create API key\"\n3. Kopioi avain (alkaa AIza…)\n4. Liitä se kohtaan Asetukset → Profiili → Gemini API-avain\n\nAvaimesi tallennetaan vain tälle laitteelle ja käytetään suoraan Googlen kanssa — tietoja ei kulje palvelimiemme kautta.</string>
+    <string name="about_byok_desc">LibreLookAI toimii omalla Gemini API -avaimellasi:\n\n1. Siirry osoitteeseen aistudio.google.com\n2. Napauta Get API key → Create API key\n3. Kopioi avain (alkaa AIza…)\n4. Liitä se kohtaan Asetukset → Lisäasetukset → Gemini API -avain\n\nIlmainen avain kattaa merkinnät ja asukokonaisuusehdotukset. Virtuaalinen sovitus ja taustanpoisto luovat kuvia ja vaativat maksullisen avaimen, jossa laskutus on käytössä — Google veloittaa silti vain käytöstäsi. Avaimesi tallennetaan vain tähän laitteeseen ja sitä käytetään suoraan Googlen kanssa — mitkään tiedot eivät kulje palvelimiemme kautta.</string>
     <string name="about_credits_title">Krediitit (hallittu tila)</string>
     <string name="about_credits_desc">Käyttäjille, jotka eivät halua luoda omaa API-avainta, sovellus tarjoaa kolikkopohjaisen krediittijärjestelmän. Krediittejä voi ostaa Krediitit-välilehdellä ja ne kulutetaan per tekoälytoiminto yllä lueteltujen tariffien mukaan. Tämä tila reitittää pyynnöt palvelinpuolen välityspalvelimen kautta.</string>
 
@@ -976,8 +976,8 @@
     <string name="settings_rebg_row_sub">Leikkaa jokainen vaate kuvastaan uudelleen. Maksaa ~6 krediittiä per vaate.</string>
     <string name="settings_cutout_row">Korjaa jäljelle jääneet taustapikselit</string>
     <string name="settings_cutout_row_sub">Etsii vaatteita, joiden leikkauksesta jäi kulma.</string>
-    <string name="settings_advanced_byok_title">Käytä omaa ilmaista tekoälyavaintasi</string>
-    <string name="settings_advanced_byok_body">Google antaa anteliaan ilmaiskiintiön. Hanki avain osoitteesta aistudio.google.com ja liitä se alle. Säilytämme sen vain tässä puhelimessa.</string>
+    <string name="settings_advanced_byok_title">Gemini API -avaimesi</string>
+    <string name="settings_advanced_byok_body">Kaikki tekoäly toimii omalla Gemini-avaimellasi. Ilmainen avain kattaa merkinnät ja asukokonaisuusehdotukset; virtuaalinen sovitus ja taustanpoisto vaativat maksullisen avaimen, jossa laskutus on käytössä. Hanki sellainen osoitteesta aistudio.google.com ja liitä se alle — tallennamme sen vain tähän puhelimeen.</string>
     <string name="settings_advanced_byok_saved_badge">TALLENNETTU</string>
     <string name="settings_advanced_byok_change">Vaihda</string>
     <string name="settings_advanced_byok_clear">Tyhjennä</string>
@@ -1046,4 +1046,13 @@
 
     <!-- Needs-tagging badge -->
     <string name="wardrobe_needs_tagging">Tarvitsee tunnisteet</string>
+
+    <!-- BYOK API-key onboarding step -->
+    <string name="onboarding_apikey_title">Lisää Gemini API -avaimesi</string>
+    <string name="onboarding_apikey_body">LibreLookAI toimii Google Geminillä omalla API-avaimellasi. Se tallennetaan vain tähän laitteeseen ja sitä käytetään suoraan Googlen kanssa — mikään ei kulje palvelimiemme kautta.</string>
+    <string name="onboarding_apikey_tiers">Ilmainen avain kattaa jo merkinnät ja asukokonaisuusehdotukset. Virtuaalinen sovitus ja taustanpoisto luovat kuvia ja vaativat maksullisen avaimen, jossa laskutus on käytössä — Google veloittaa silti vain todellisesta käytöstä.</string>
+    <string name="onboarding_apikey_get">Hanki API-avain</string>
+    <string name="onboarding_apikey_billing">Ota laskutus käyttöön (sovitusta varten)</string>
+    <string name="onboarding_apikey_saved">Avain tallennettu tähän laitteeseen ✓</string>
+    <string name="onboarding_apikey_offline">Muodosta internetyhteys avataksesi Google AI Studion. Voit silti liittää avaimen, joka sinulla jo on.</string>
 </resources>

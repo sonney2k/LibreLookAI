@@ -369,14 +369,7 @@
     <!-- Bulk translation 2026-05-17 -->
     <string name="about_ai_desc">LibreLookAI значною мірою покладається на Google Gemini для візуального і текстового ШІ. Кожна дія ШІ (видалення фону, теги, поради щодо образів тощо) потребує виклику API Gemini, що має невелику вартість.</string>
     <string name="about_ai_title">Використання ШІ &amp; витрати</string>
-    <string name="about_byok_desc">Ви можете використовувати власний безкоштовний ключ API Gemini, щоб повністю уникнути витрат на кредити:
-
-1. Перейдіть на aistudio.google.com
-2. Натисніть «Get API key» → «Create API key»
-3. Скопіюйте ключ (починається з AIza…)
-4. Вставте його в Налаштування → Профіль → Ключ API Gemini
-
-Ваш ключ зберігається лише на цьому пристрої та використовується безпосередньо з Google — жодні дані не проходять через наші сервери.</string>
+    <string name="about_byok_desc">LibreLookAI працює на вашому власному ключі API Gemini:\n\n1. Перейдіть на aistudio.google.com\n2. Торкніться Get API key → Create API key\n3. Скопіюйте ключ (починається з AIza…)\n4. Вставте його в Налаштування → Додатково → Ключ API Gemini\n\nБезкоштовний ключ охоплює тегування й пропозиції образів. Віртуальна примірка та видалення фону створюють зображення й потребують платного ключа з увімкненим білінгом — Google усе одно стягує плату лише за використання. Ваш ключ зберігається лише на цьому пристрої та використовується безпосередньо з Google — жодні дані не проходять через наші сервери.</string>
     <string name="about_byok_title">Власний ключ (BYOK)</string>
     <string name="about_cost_bg_removal">Видалення фону: 5 кредитів</string>
     <string name="about_cost_classify">Авто-тегування: 2 кредити</string>
@@ -956,8 +949,8 @@
     <string name="settings_rebg_row_sub">Заново вирізати кожну річ з її фото. Коштує ~6 кредитів за річ.</string>
     <string name="settings_cutout_row">Виправити залишкові пікселі фону</string>
     <string name="settings_cutout_row_sub">Шукає речі, де вирізання пропустило кут.</string>
-    <string name="settings_advanced_byok_title">Використовуйте власний безкоштовний ключ ШІ</string>
-    <string name="settings_advanced_byok_body">Google дає щедру безкоштовну квоту. Отримайте ключ на aistudio.google.com і вставте його нижче. Ми зберігаємо його лише на цьому телефоні.</string>
+    <string name="settings_advanced_byok_title">Ваш ключ API Gemini</string>
+    <string name="settings_advanced_byok_body">Увесь ШІ працює на вашому власному ключі Gemini. Безкоштовний ключ охоплює тегування й пропозиції образів; віртуальна примірка та видалення фону потребують платного ключа з увімкненим білінгом. Отримайте його на aistudio.google.com і вставте нижче — ми зберігаємо його лише на цьому телефоні.</string>
     <string name="settings_advanced_byok_saved_badge">ЗБЕРЕЖЕНО</string>
     <string name="settings_advanced_byok_change">Змінити</string>
     <string name="settings_advanced_byok_clear">Очистити</string>
@@ -1026,4 +1019,13 @@
 
     <!-- Needs-tagging badge -->
     <string name="wardrobe_needs_tagging">Потрібні теги</string>
+
+    <!-- BYOK API-key onboarding step -->
+    <string name="onboarding_apikey_title">Додайте свій ключ API Gemini</string>
+    <string name="onboarding_apikey_body">LibreLookAI працює на Google Gemini з вашим власним ключем API. Він зберігається лише на цьому пристрої та використовується безпосередньо з Google — нічого не проходить через наші сервери.</string>
+    <string name="onboarding_apikey_tiers">Безкоштовного ключа вже достатньо для тегування й пропозицій образів. Віртуальна примірка та видалення фону створюють зображення й потребують платного ключа з увімкненим білінгом — Google усе одно стягує плату лише за фактичне використання.</string>
+    <string name="onboarding_apikey_get">Отримати ключ API</string>
+    <string name="onboarding_apikey_billing">Увімкнути білінг (для примірки)</string>
+    <string name="onboarding_apikey_saved">Ключ збережено на цьому пристрої ✓</string>
+    <string name="onboarding_apikey_offline">Підключіться до інтернету, щоб відкрити Google AI Studio. Наявний ключ ви все одно можете вставити.</string>
 </resources>

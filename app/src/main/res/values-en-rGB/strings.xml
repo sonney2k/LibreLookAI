@@ -665,7 +665,7 @@
     <string name="about_cost_text">Outfit suggestion: 2 credits</string>
     <string name="about_cost_travel">Travel packing list / wardrobe gap analysis: 2 credits</string>
     <string name="about_byok_title">Bring Your Own Key (BYOK)</string>
-    <string name="about_byok_desc">You can use your own free Gemini API key to avoid credit costs entirely:\n\n1. Go to aistudio.google.com\n2. Click \"Get API key\" → \"Create API key\"\n3. Copy the key (starts with AIza…)\n4. Paste it in Settings → Profile → Gemini API Key\n\nYour key is stored only on this device and used directly with Google — no data passes through our servers.</string>
+    <string name="about_byok_desc">LibreLookAI runs on your own Gemini API key:\n\n1. Go to aistudio.google.com\n2. Tap Get API key → Create API key\n3. Copy the key (starts with AIza…)\n4. Paste it in Settings → Advanced → Gemini API Key\n\nA free key covers tagging and outfit suggestions. Virtual try-on and background removal generate images, which needs a billing-enabled (paid) key — Google still only charges for what you use. Your key is stored only on this device and used directly with Google — no data passes through our servers.</string>
     <string name="about_credits_title">Credits (Managed Mode)</string>
     <string name="about_credits_desc">For users who prefer not to create their own API key, the app offers a coin-based credit system. Credits can be purchased in the Credits tab and are consumed per AI action at the rates listed above. This mode routes requests through a server-side proxy.</string>
 
@@ -976,8 +976,8 @@
     <string name="settings_rebg_row_sub">Re-cut every item from its photo. Costs ~6 credits per item.</string>
     <string name="settings_cutout_row">Fix leftover background pixels</string>
     <string name="settings_cutout_row_sub">Scan for items where the cutout missed a corner.</string>
-    <string name="settings_advanced_byok_title">Use your own free AI key</string>
-    <string name="settings_advanced_byok_body">Google gives away a generous free quota. Get a key at aistudio.google.com and paste it below. We store it only on this phone.</string>
+    <string name="settings_advanced_byok_title">Your Gemini API key</string>
+    <string name="settings_advanced_byok_body">All AI runs on your own Gemini key. A free key covers tagging and outfit suggestions; virtual try-on and background removal need a billing-enabled (paid) key. Get one at aistudio.google.com and paste it below — we store it only on this phone.</string>
     <string name="settings_advanced_byok_saved_badge">SAVED</string>
     <string name="settings_advanced_byok_change">Change</string>
     <string name="settings_advanced_byok_clear">Clear</string>
@@ -1046,4 +1046,13 @@
 
     <!-- Needs-tagging badge -->
     <string name="wardrobe_needs_tagging">Needs tagging</string>
+
+    <!-- BYOK API-key onboarding step -->
+    <string name="onboarding_apikey_title">Add your Gemini API key</string>
+    <string name="onboarding_apikey_body">LibreLookAI runs on Google Gemini using your own API key. It is stored only on this device and used directly with Google — nothing passes through our servers.</string>
+    <string name="onboarding_apikey_tiers">A free key already covers tagging and outfit suggestions. Virtual try-on and background removal generate images, which needs a billing-enabled (paid) key — Google still only charges for what you actually use.</string>
+    <string name="onboarding_apikey_get">Get an API key</string>
+    <string name="onboarding_apikey_billing">Enable billing (for try-on)</string>
+    <string name="onboarding_apikey_saved">Key saved on this device ✓</string>
+    <string name="onboarding_apikey_offline">Connect to the internet to open Google AI Studio. You can still paste a key you already have.</string>
 </resources>

@@ -722,7 +722,7 @@
     <string name="about_cost_text">Outfit-Vorschlag: 2 Credits</string>
     <string name="about_cost_travel">Reise-Packliste / Garderobe-Lücken-Analyse: 2 Credits</string>
     <string name="about_byok_title">Eigenen Schlüssel verwenden (BYOK)</string>
-    <string name="about_byok_desc">Du kannst deinen eigenen kostenlosen Gemini-API-Schlüssel verwenden, um Credits komplett zu vermeiden:\n\n1. Gehe zu aistudio.google.com\n2. Klicke auf \"Get API key\" → \"Create API key\"\n3. Kopiere den Schlüssel (beginnt mit AIza…)\n4. Füge ihn unter Einstellungen → Profil → Gemini API-Schlüssel ein\n\nDein Schlüssel wird nur auf diesem Gerät gespeichert und direkt mit Google verwendet — keine Daten gehen über unsere Server.</string>
+    <string name="about_byok_desc">LibreLookAI nutzt deinen eigenen Gemini-API-Schlüssel:\n\n1. Gehe zu aistudio.google.com\n2. Tippe auf Get API key → Create API key\n3. Kopiere den Schlüssel (beginnt mit AIza…)\n4. Füge ihn unter Einstellungen → Erweitert → Gemini-API-Schlüssel ein\n\nEin kostenloser Schlüssel deckt Tags und Outfit-Vorschläge ab. Virtuelle Anprobe und Hintergrundentfernung erzeugen Bilder und benötigen einen kostenpflichtigen Schlüssel mit aktivierter Abrechnung — Google berechnet weiterhin nur die tatsächliche Nutzung. Dein Schlüssel wird nur auf diesem Gerät gespeichert und direkt mit Google verwendet — keine Daten laufen über unsere Server.</string>
     <string name="about_credits_title">Credits (Verwalteter Modus)</string>
     <string name="about_credits_desc">Für Nutzer, die keinen eigenen API-Schlüssel erstellen möchten, bietet die App ein münzbasiertes Credit-System. Credits können im Credits-Tab gekauft und pro KI-Aktion zu den oben genannten Preisen verbraucht werden. In diesem Modus werden Anfragen über einen serverseitigen Proxy geleitet.</string>
 
@@ -1045,8 +1045,8 @@
     <string name="settings_rebg_row_sub">Schneidet jeden Artikel neu aus seinem Foto frei. Kostet ~6 Credits pro Artikel.</string>
     <string name="settings_cutout_row">Übrige Hintergrundpixel korrigieren</string>
     <string name="settings_cutout_row_sub">Sucht nach Artikeln, bei denen der Freisteller eine Ecke verpasst hat.</string>
-    <string name="settings_advanced_byok_title">Eigenen kostenlosen KI-Schlüssel verwenden</string>
-    <string name="settings_advanced_byok_body">Google bietet ein großzügiges Gratiskontingent. Hol dir einen Schlüssel auf aistudio.google.com und füge ihn unten ein. Wir speichern ihn nur auf diesem Telefon.</string>
+    <string name="settings_advanced_byok_title">Dein Gemini-API-Schlüssel</string>
+    <string name="settings_advanced_byok_body">Die gesamte KI nutzt deinen eigenen Gemini-Schlüssel. Ein kostenloser Schlüssel deckt Tags und Outfit-Vorschläge ab; virtuelle Anprobe und Hintergrundentfernung benötigen einen kostenpflichtigen Schlüssel mit aktivierter Abrechnung. Hol dir einen auf aistudio.google.com und füge ihn unten ein — wir speichern ihn nur auf diesem Telefon.</string>
     <string name="settings_advanced_byok_saved_badge">GESPEICHERT</string>
     <string name="settings_advanced_byok_change">Ändern</string>
     <string name="settings_advanced_byok_clear">Löschen</string>
@@ -1115,4 +1115,13 @@
 
     <!-- Needs-tagging badge -->
     <string name="wardrobe_needs_tagging">Tags fehlen</string>
+
+    <!-- BYOK API-key onboarding step -->
+    <string name="onboarding_apikey_title">Gemini-API-Schlüssel hinzufügen</string>
+    <string name="onboarding_apikey_body">LibreLookAI nutzt Google Gemini mit deinem eigenen API-Schlüssel. Er wird nur auf diesem Gerät gespeichert und direkt mit Google verwendet — nichts läuft über unsere Server.</string>
+    <string name="onboarding_apikey_tiers">Ein kostenloser Schlüssel deckt bereits Tags und Outfit-Vorschläge ab. Virtuelle Anprobe und Hintergrundentfernung erzeugen Bilder und benötigen einen kostenpflichtigen Schlüssel mit aktivierter Abrechnung — Google berechnet weiterhin nur die tatsächliche Nutzung.</string>
+    <string name="onboarding_apikey_get">API-Schlüssel holen</string>
+    <string name="onboarding_apikey_billing">Abrechnung aktivieren (für Anprobe)</string>
+    <string name="onboarding_apikey_saved">Schlüssel auf diesem Gerät gespeichert ✓</string>
+    <string name="onboarding_apikey_offline">Stelle eine Internetverbindung her, um Google AI Studio zu öffnen. Einen vorhandenen Schlüssel kannst du trotzdem einfügen.</string>
 </resources>

@@ -665,7 +665,7 @@
     <string name="about_cost_text">코디 제안: 2 크레딧</string>
     <string name="about_cost_travel">여행 패킹 리스트 / 옷장 갭 분석: 2 크레딧</string>
     <string name="about_byok_title">내 키 사용 (BYOK)</string>
-    <string name="about_byok_desc">자신의 무료 Gemini API 키를 사용하면 크레딧 비용을 완전히 피할 수 있습니다:\n\n1. aistudio.google.com에 접속\n2. \"Get API key\" → \"Create API key\" 클릭\n3. 키 복사 (AIza…로 시작)\n4. 설정 → 프로필 → Gemini API 키에 붙여넣기\n\n키는 이 기기에만 저장되며 Google과 직접 사용됩니다 — 데이터가 당사 서버를 거치지 않습니다.</string>
+    <string name="about_byok_desc">LibreLookAI는 사용자의 Gemini API 키로 작동합니다:\n\n1. aistudio.google.com으로 이동\n2. Get API key → Create API key 탭\n3. 키 복사(AIza…로 시작)\n4. 설정 → 고급 → Gemini API 키에 붙여넣기\n\n무료 키는 태깅과 코디 추천을 지원합니다. 가상 피팅과 배경 제거는 이미지를 생성하므로 결제가 활성화된 유료 키가 필요합니다 — Google은 사용한 만큼만 청구합니다. 키는 이 기기에만 저장되며 Google과 직접 사용됩니다 — 어떤 데이터도 당사 서버를 거치지 않습니다.</string>
     <string name="about_credits_title">크레딧 (관리 모드)</string>
     <string name="about_credits_desc">자신의 API 키를 만들고 싶지 않은 사용자를 위해 앱은 코인 기반 크레딧 시스템을 제공합니다. 크레딧은 크레딧 탭에서 구매할 수 있으며 위의 요금에 따라 AI 액션마다 소비됩니다. 이 모드는 서버 측 프록시를 통해 요청을 라우팅합니다.</string>
 
@@ -976,8 +976,8 @@
     <string name="settings_rebg_row_sub">각 항목을 사진에서 다시 잘라냅니다. 항목당 ~6크레딧.</string>
     <string name="settings_cutout_row">남은 배경 픽셀 고치기</string>
     <string name="settings_cutout_row_sub">잘라내기가 모서리를 놓친 항목을 찾습니다.</string>
-    <string name="settings_advanced_byok_title">내 무료 AI 키 사용하기</string>
-    <string name="settings_advanced_byok_body">Google은 넉넉한 무료 할당량을 제공합니다. aistudio.google.com에서 키를 받아 아래에 붙여넣으세요. 이 휴대폰에만 저장합니다.</string>
+    <string name="settings_advanced_byok_title">내 Gemini API 키</string>
+    <string name="settings_advanced_byok_body">모든 AI는 사용자의 Gemini 키로 작동합니다. 무료 키는 태깅과 코디 추천을 지원하며, 가상 피팅과 배경 제거에는 결제가 활성화된 유료 키가 필요합니다. aistudio.google.com에서 받아 아래에 붙여넣으세요 — 이 기기에만 저장됩니다.</string>
     <string name="settings_advanced_byok_saved_badge">저장됨</string>
     <string name="settings_advanced_byok_change">변경</string>
     <string name="settings_advanced_byok_clear">지우기</string>
@@ -1046,4 +1046,13 @@
 
     <!-- Needs-tagging badge -->
     <string name="wardrobe_needs_tagging">태그 필요</string>
+
+    <!-- BYOK API-key onboarding step -->
+    <string name="onboarding_apikey_title">Gemini API 키 추가</string>
+    <string name="onboarding_apikey_body">LibreLookAI는 사용자의 API 키로 Google Gemini에서 작동합니다. 키는 이 기기에만 저장되며 Google과 직접 사용됩니다. 당사 서버를 거치지 않습니다.</string>
+    <string name="onboarding_apikey_tiers">무료 키로도 태깅과 코디 추천은 이용할 수 있습니다. 가상 피팅과 배경 제거는 이미지를 생성하므로 결제가 활성화된 유료 키가 필요합니다. Google은 실제 사용한 만큼만 청구합니다.</string>
+    <string name="onboarding_apikey_get">API 키 받기</string>
+    <string name="onboarding_apikey_billing">결제 사용 설정(피팅용)</string>
+    <string name="onboarding_apikey_saved">이 기기에 키가 저장됨 ✓</string>
+    <string name="onboarding_apikey_offline">Google AI Studio를 열려면 인터넷에 연결하세요. 이미 가지고 있는 키는 붙여넣을 수 있습니다.</string>
 </resources>

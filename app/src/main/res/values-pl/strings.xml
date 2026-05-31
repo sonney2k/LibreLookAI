@@ -665,7 +665,7 @@
     <string name="about_cost_text">Sugestia stylizacji: 2 kredyty</string>
     <string name="about_cost_travel">Lista pakowania / analiza braków w garderobie: 2 kredyty</string>
     <string name="about_byok_title">Bring Your Own Key (BYOK)</string>
-    <string name="about_byok_desc">Możesz użyć własnego darmowego klucza API Gemini, aby całkowicie uniknąć kosztów kredytów:\n\n1. Przejdź na aistudio.google.com\n2. Kliknij „Get API key" → „Create API key"\n3. Skopiuj klucz (zaczyna się od AIza…)\n4. Wklej w Ustawienia → Profil → Klucz API Gemini\n\nTwój klucz jest przechowywany tylko na tym urządzeniu i używany bezpośrednio z Google — żadne dane nie przechodzą przez nasze serwery.</string>
+    <string name="about_byok_desc">LibreLookAI działa na Twoim własnym kluczu API Gemini:\n\n1. Wejdź na aistudio.google.com\n2. Dotknij Get API key → Create API key\n3. Skopiuj klucz (zaczyna się od AIza…)\n4. Wklej go w Ustawienia → Zaawansowane → Klucz API Gemini\n\nBezpłatny klucz obejmuje tagowanie i propozycje stylizacji. Wirtualna przymierzalnia i usuwanie tła generują obrazy i wymagają płatnego klucza z włączonymi rozliczeniami — Google nadal nalicza opłaty tylko za użycie. Twój klucz jest przechowywany tylko na tym urządzeniu i używany bezpośrednio z Google — żadne dane nie przechodzą przez nasze serwery.</string>
     <string name="about_credits_title">Kredyty (tryb zarządzany)</string>
     <string name="about_credits_desc">Dla użytkowników, którzy wolą nie tworzyć własnego klucza API, aplikacja oferuje system kredytów oparty na monetach. Kredyty można kupić w zakładce Kredyty i są zużywane na akcję AI według stawek powyżej. Ten tryb kieruje żądania przez serwerowy proxy.</string>
 
@@ -976,8 +976,8 @@
     <string name="settings_rebg_row_sub">Ponownie wytnij każdą rzecz ze zdjęcia. Kosztuje ~6 kredytów za rzecz.</string>
     <string name="settings_cutout_row">Popraw pozostałe piksele tła</string>
     <string name="settings_cutout_row_sub">Szuka rzeczy, w których wycięcie pominęło narożnik.</string>
-    <string name="settings_advanced_byok_title">Użyj własnego darmowego klucza AI</string>
-    <string name="settings_advanced_byok_body">Google daje hojny darmowy limit. Zdobądź klucz na aistudio.google.com i wklej go poniżej. Przechowujemy go tylko na tym telefonie.</string>
+    <string name="settings_advanced_byok_title">Twój klucz API Gemini</string>
+    <string name="settings_advanced_byok_body">Cała AI działa na Twoim własnym kluczu Gemini. Bezpłatny klucz obejmuje tagowanie i propozycje stylizacji; wirtualna przymierzalnia i usuwanie tła wymagają płatnego klucza z włączonymi rozliczeniami. Zdobądź go na aistudio.google.com i wklej poniżej — przechowujemy go tylko na tym telefonie.</string>
     <string name="settings_advanced_byok_saved_badge">ZAPISANY</string>
     <string name="settings_advanced_byok_change">Zmień</string>
     <string name="settings_advanced_byok_clear">Wyczyść</string>
@@ -1046,4 +1046,13 @@
 
     <!-- Needs-tagging badge -->
     <string name="wardrobe_needs_tagging">Wymaga oznaczenia</string>
+
+    <!-- BYOK API-key onboarding step -->
+    <string name="onboarding_apikey_title">Dodaj swój klucz API Gemini</string>
+    <string name="onboarding_apikey_body">LibreLookAI działa na Google Gemini z Twoim własnym kluczem API. Jest przechowywany tylko na tym urządzeniu i używany bezpośrednio z Google — nic nie przechodzi przez nasze serwery.</string>
+    <string name="onboarding_apikey_tiers">Bezpłatny klucz wystarcza do tagowania i propozycji stylizacji. Wirtualna przymierzalnia i usuwanie tła generują obrazy i wymagają płatnego klucza z włączonymi rozliczeniami — Google nadal nalicza opłaty tylko za faktyczne użycie.</string>
+    <string name="onboarding_apikey_get">Uzyskaj klucz API</string>
+    <string name="onboarding_apikey_billing">Włącz rozliczenia (do przymierzania)</string>
+    <string name="onboarding_apikey_saved">Klucz zapisany na tym urządzeniu ✓</string>
+    <string name="onboarding_apikey_offline">Połącz się z internetem, aby otworzyć Google AI Studio. Klucz, który już masz, i tak możesz wkleić.</string>
 </resources>

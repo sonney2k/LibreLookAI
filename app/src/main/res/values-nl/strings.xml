@@ -665,7 +665,7 @@
     <string name="about_cost_text">Outfitsuggestie: 2 credits</string>
     <string name="about_cost_travel">Reispaklijst / garderobe-gat-analyse: 2 credits</string>
     <string name="about_byok_title">Eigen sleutel gebruiken (BYOK)</string>
-    <string name="about_byok_desc">Je kunt je eigen gratis Gemini-API-sleutel gebruiken om creditkosten volledig te vermijden:\n\n1. Ga naar aistudio.google.com\n2. Klik op \"Get API key\" → \"Create API key\"\n3. Kopieer de sleutel (begint met AIza…)\n4. Plak deze in Instellingen → Profiel → Gemini API-sleutel\n\nJe sleutel wordt alleen op dit toestel opgeslagen en direct met Google gebruikt — er gaan geen gegevens via onze servers.</string>
+    <string name="about_byok_desc">LibreLookAI draait op je eigen Gemini API-sleutel:\n\n1. Ga naar aistudio.google.com\n2. Tik op Get API key → Create API key\n3. Kopieer de sleutel (begint met AIza…)\n4. Plak hem in Instellingen → Geavanceerd → Gemini API-sleutel\n\nEen gratis sleutel dekt taggen en outfitsuggesties. Virtueel passen en achtergrond verwijderen genereren afbeeldingen en vereisen een betaalde sleutel met facturering ingeschakeld — Google rekent nog steeds alleen je gebruik. Je sleutel wordt alleen op dit apparaat bewaard en rechtstreeks met Google gebruikt — er gaan geen gegevens via onze servers.</string>
     <string name="about_credits_title">Credits (Beheerde modus)</string>
     <string name="about_credits_desc">Voor gebruikers die liever geen eigen API-sleutel aanmaken, biedt de app een muntgebaseerd creditsysteem. Credits kunnen worden gekocht in de Credits-tab en worden per AI-actie verbruikt tegen de hierboven vermelde tarieven. Deze modus stuurt verzoeken via een serverzijde-proxy.</string>
 
@@ -976,8 +976,8 @@
     <string name="settings_rebg_row_sub">Knipt elk item opnieuw uit de foto. Kost ~6 credits per item.</string>
     <string name="settings_cutout_row">Resterende achtergrondpixels corrigeren</string>
     <string name="settings_cutout_row_sub">Zoekt naar items waarbij de uitsnede een hoek heeft gemist.</string>
-    <string name="settings_advanced_byok_title">Gebruik je eigen gratis AI-sleutel</string>
-    <string name="settings_advanced_byok_body">Google geeft een royaal gratis quotum weg. Haal een sleutel op aistudio.google.com en plak hem hieronder. We bewaren hem alleen op deze telefoon.</string>
+    <string name="settings_advanced_byok_title">Jouw Gemini API-sleutel</string>
+    <string name="settings_advanced_byok_body">Alle AI draait op je eigen Gemini-sleutel. Een gratis sleutel dekt taggen en outfitsuggesties; virtueel passen en achtergrond verwijderen vereisen een betaalde sleutel met facturering ingeschakeld. Haal er een op via aistudio.google.com en plak hem hieronder — we bewaren hem alleen op deze telefoon.</string>
     <string name="settings_advanced_byok_saved_badge">OPGESLAGEN</string>
     <string name="settings_advanced_byok_change">Wijzigen</string>
     <string name="settings_advanced_byok_clear">Wissen</string>
@@ -1046,4 +1046,13 @@
 
     <!-- Needs-tagging badge -->
     <string name="wardrobe_needs_tagging">Labels nodig</string>
+
+    <!-- BYOK API-key onboarding step -->
+    <string name="onboarding_apikey_title">Voeg je Gemini API-sleutel toe</string>
+    <string name="onboarding_apikey_body">LibreLookAI draait op Google Gemini met je eigen API-sleutel. Die wordt alleen op dit apparaat opgeslagen en rechtstreeks met Google gebruikt — er gaat niets via onze servers.</string>
+    <string name="onboarding_apikey_tiers">Een gratis sleutel dekt al taggen en outfitsuggesties. Virtueel passen en achtergrond verwijderen genereren afbeeldingen en vereisen een betaalde sleutel met facturering ingeschakeld — Google rekent nog steeds alleen je werkelijke gebruik.</string>
+    <string name="onboarding_apikey_get">Een API-sleutel ophalen</string>
+    <string name="onboarding_apikey_billing">Facturering inschakelen (voor passen)</string>
+    <string name="onboarding_apikey_saved">Sleutel opgeslagen op dit apparaat ✓</string>
+    <string name="onboarding_apikey_offline">Maak verbinding met internet om Google AI Studio te openen. Je kunt een sleutel die je al hebt nog steeds plakken.</string>
 </resources>

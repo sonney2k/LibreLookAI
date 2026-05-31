@@ -665,7 +665,7 @@
     <string name="about_cost_text">Kombin önerisi: 2 kredi</string>
     <string name="about_cost_travel">Seyahat hazırlık listesi / gardırop eksik analizi: 2 kredi</string>
     <string name="about_byok_title">Kendi Anahtarını Getir (BYOK)</string>
-    <string name="about_byok_desc">Kredi maliyetlerinden tamamen kaçınmak için kendi ücretsiz Gemini API anahtarınızı kullanabilirsiniz:\n\n1. aistudio.google.com adresine gidin\n2. \"Get API key\" → \"Create API key\" seçeneğine tıklayın\n3. Anahtarı kopyalayın (AIza… ile başlar)\n4. Ayarlar → Profil → Gemini API Anahtarı bölümüne yapıştırın\n\nAnahtarınız yalnızca bu cihazda saklanır ve doğrudan Google ile kullanılır — sunucularımızdan hiçbir veri geçmez.</string>
+    <string name="about_byok_desc">LibreLookAI kendi Gemini API anahtarınızla çalışır:\n\n1. aistudio.google.com adresine gidin\n2. Get API key → Create API key öğesine dokunun\n3. Anahtarı kopyalayın (AIza… ile başlar)\n4. Ayarlar → Gelişmiş → Gemini API anahtarı bölümüne yapıştırın\n\nÜcretsiz anahtar etiketleme ve kıyafet önerilerini kapsar. Sanal deneme ve arka plan kaldırma görsel oluşturur ve faturalandırması etkin ücretli bir anahtar gerektirir — Google yine yalnızca kullandığınız kadar ücret alır. Anahtarınız yalnızca bu cihazda saklanır ve doğrudan Google ile kullanılır — hiçbir veri sunucularımızdan geçmez.</string>
     <string name="about_credits_title">Krediler (Yönetilen Mod)</string>
     <string name="about_credits_desc">Kendi API anahtarını oluşturmayı tercih etmeyen kullanıcılar için uygulama, jeton tabanlı bir kredi sistemi sunar. Krediler, Krediler sekmesinden satın alınabilir ve yukarıda listelenen oranlarda yapay zeka eylemi başına tüketilir. Bu mod, istekleri bir sunucu tarafı ara sunucusu üzerinden yönlendirir.</string>
 
@@ -976,8 +976,8 @@
     <string name="settings_rebg_row_sub">Her parçayı fotoğrafından yeniden kes. Parça başına ~6 krediye mal olur.</string>
     <string name="settings_cutout_row">Kalan arka plan piksellerini düzelt</string>
     <string name="settings_cutout_row_sub">Kesimin bir köşeyi kaçırdığı parçaları arar.</string>
-    <string name="settings_advanced_byok_title">Kendi ücretsiz AI anahtarını kullan</string>
-    <string name="settings_advanced_byok_body">Google cömert bir ücretsiz kota veriyor. aistudio.google.com adresinden bir anahtar al ve aşağıya yapıştır. Yalnızca bu telefonda saklarız.</string>
+    <string name="settings_advanced_byok_title">Gemini API anahtarınız</string>
+    <string name="settings_advanced_byok_body">Tüm yapay zekâ kendi Gemini anahtarınızla çalışır. Ücretsiz anahtar etiketleme ve kıyafet önerilerini kapsar; sanal deneme ve arka plan kaldırma, faturalandırması etkin ücretli bir anahtar gerektirir. aistudio.google.com adresinden bir tane alıp aşağıya yapıştırın — yalnızca bu telefonda saklarız.</string>
     <string name="settings_advanced_byok_saved_badge">KAYDEDİLDİ</string>
     <string name="settings_advanced_byok_change">Değiştir</string>
     <string name="settings_advanced_byok_clear">Temizle</string>
@@ -1046,4 +1046,13 @@
 
     <!-- Needs-tagging badge -->
     <string name="wardrobe_needs_tagging">Etiket gerekli</string>
+
+    <!-- BYOK API-key onboarding step -->
+    <string name="onboarding_apikey_title">Gemini API anahtarınızı ekleyin</string>
+    <string name="onboarding_apikey_body">LibreLookAI, kendi API anahtarınızla Google Gemini üzerinde çalışır. Anahtar yalnızca bu cihazda saklanır ve doğrudan Google ile kullanılır — hiçbir şey sunucularımızdan geçmez.</string>
+    <string name="onboarding_apikey_tiers">Ücretsiz anahtar etiketleme ve kıyafet önerilerini zaten karşılar. Sanal deneme ve arka plan kaldırma görsel oluşturur ve faturalandırması etkin, ücretli bir anahtar gerektirir — Google yine yalnızca gerçek kullanımınız kadar ücret alır.</string>
+    <string name="onboarding_apikey_get">API anahtarı al</string>
+    <string name="onboarding_apikey_billing">Faturalandırmayı etkinleştir (deneme için)</string>
+    <string name="onboarding_apikey_saved">Anahtar bu cihaza kaydedildi ✓</string>
+    <string name="onboarding_apikey_offline">Google AI Studio\'yu açmak için internete bağlanın. Zaten sahip olduğunuz bir anahtarı yine de yapıştırabilirsiniz.</string>
 </resources>

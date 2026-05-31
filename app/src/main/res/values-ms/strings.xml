@@ -370,14 +370,7 @@
     <!-- Bulk translation 2026-05-18 -->
     <string name="about_ai_desc">LibreLookAI banyak bergantung pada Google Gemini untuk AI visual dan teks. Setiap tindakan AI (pembuangan latar, pelabelan, cadangan pakaian, dll.) memerlukan panggilan API Gemini yang berkos kecil.</string>
     <string name="about_ai_title">Penggunaan AI &amp; kos</string>
-    <string name="about_byok_desc">Anda boleh menggunakan kunci API Gemini percuma anda sendiri untuk mengelak kos kredit sepenuhnya:
-
-1. Lawati aistudio.google.com
-2. Klik „Get API key” → „Create API key”
-3. Salin kunci (bermula dengan AIza…)
-4. Tampal di Tetapan → Profil → Kunci API Gemini
-
-Kunci anda hanya disimpan pada peranti ini dan digunakan terus dengan Google — tiada data melalui pelayan kami.</string>
+    <string name="about_byok_desc">LibreLookAI berjalan dengan kunci API Gemini anda sendiri:\n\n1. Pergi ke aistudio.google.com\n2. Ketik Get API key → Create API key\n3. Salin kunci (bermula dengan AIza…)\n4. Tampal di Tetapan → Lanjutan → Kunci API Gemini\n\nKunci percuma meliputi penandaan dan cadangan pakaian. Cuba pakai maya dan pembuangan latar menjana imej dan memerlukan kunci berbayar dengan pengebilan didayakan — Google tetap mengecaj mengikut penggunaan anda. Kunci anda disimpan pada peranti ini sahaja dan digunakan terus dengan Google — tiada data melalui pelayan kami.</string>
     <string name="about_byok_title">Kunci sendiri (BYOK)</string>
     <string name="about_cost_bg_removal">Pembuangan latar: 5 kredit</string>
     <string name="about_cost_classify">Auto-tag item: 2 kredit</string>
@@ -956,8 +949,8 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <string name="settings_rebg_row_sub">Potong semula setiap item daripada fotonya. Kos ~6 kredit setiap item.</string>
     <string name="settings_cutout_row">Betulkan piksel latar yang tertinggal</string>
     <string name="settings_cutout_row_sub">Mengimbas item yang potongannya terlepas satu sudut.</string>
-    <string name="settings_advanced_byok_title">Guna kunci AI percuma anda sendiri</string>
-    <string name="settings_advanced_byok_body">Google memberi kuota percuma yang murah hati. Dapatkan kunci di aistudio.google.com dan tampal di bawah. Kami simpan hanya pada telefon ini.</string>
+    <string name="settings_advanced_byok_title">Kunci API Gemini anda</string>
+    <string name="settings_advanced_byok_body">Semua AI berjalan dengan kunci Gemini anda sendiri. Kunci percuma meliputi penandaan dan cadangan pakaian; cuba pakai maya dan pembuangan latar memerlukan kunci berbayar dengan pengebilan didayakan. Dapatkan satu di aistudio.google.com dan tampal di bawah — kami simpan pada telefon ini sahaja.</string>
     <string name="settings_advanced_byok_saved_badge">DISIMPAN</string>
     <string name="settings_advanced_byok_change">Tukar</string>
     <string name="settings_advanced_byok_clear">Kosongkan</string>
@@ -1026,4 +1019,13 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
 
     <!-- Needs-tagging badge -->
     <string name="wardrobe_needs_tagging">Perlu tag</string>
+
+    <!-- BYOK API-key onboarding step -->
+    <string name="onboarding_apikey_title">Tambah kunci API Gemini anda</string>
+    <string name="onboarding_apikey_body">LibreLookAI berjalan pada Google Gemini menggunakan kunci API anda sendiri. Ia disimpan hanya pada peranti ini dan digunakan terus dengan Google — tiada apa-apa melalui pelayan kami.</string>
+    <string name="onboarding_apikey_tiers">Kunci percuma sudah meliputi penandaan dan cadangan pakaian. Cuba pakai maya dan pembuangan latar menjana imej dan memerlukan kunci berbayar dengan pengebilan didayakan — Google tetap mengecaj mengikut penggunaan sebenar anda sahaja.</string>
+    <string name="onboarding_apikey_get">Dapatkan kunci API</string>
+    <string name="onboarding_apikey_billing">Dayakan pengebilan (untuk cuba pakai)</string>
+    <string name="onboarding_apikey_saved">Kunci disimpan pada peranti ini ✓</string>
+    <string name="onboarding_apikey_offline">Sambung ke internet untuk membuka Google AI Studio. Anda masih boleh menampal kunci yang sedia ada.</string>
 </resources>

@@ -370,14 +370,7 @@
     <!-- Bulk translation 2026-05-18 -->
     <string name="about_ai_desc">LibreLookAI sangat mengandalkan Google Gemini untuk AI visual dan teks. Setiap aksi AI (penghapusan latar, pelabelan, saran setelan, dll.) memerlukan panggilan API Gemini yang berbiaya kecil.</string>
     <string name="about_ai_title">Penggunaan AI &amp; biaya</string>
-    <string name="about_byok_desc">Kamu bisa pakai kunci API Gemini gratis milikmu sendiri agar tidak perlu kredit:
-
-1. Buka aistudio.google.com
-2. Klik „Get API key” → „Create API key”
-3. Salin kuncinya (diawali AIza…)
-4. Tempel di Pengaturan → Profil → Kunci API Gemini
-
-Kunci kamu hanya tersimpan di perangkat ini dan dipakai langsung dengan Google — tidak ada data yang melewati server kami.</string>
+    <string name="about_byok_desc">LibreLookAI berjalan dengan kunci API Gemini Anda sendiri:\n\n1. Buka aistudio.google.com\n2. Ketuk Get API key → Create API key\n3. Salin kunci (diawali AIza…)\n4. Tempel di Setelan → Lanjutan → Kunci API Gemini\n\nKunci gratis mencakup penandaan dan saran outfit. Coba-pakai virtual dan penghapusan latar menghasilkan gambar dan memerlukan kunci berbayar dengan penagihan aktif — Google tetap hanya menagih sesuai pemakaian. Kunci Anda disimpan hanya di perangkat ini dan digunakan langsung dengan Google — tidak ada data yang melewati server kami.</string>
     <string name="about_byok_title">Kunci sendiri (BYOK)</string>
     <string name="about_cost_bg_removal">Penghapusan latar: 5 kredit</string>
     <string name="about_cost_classify">Auto-tag item: 2 kredit</string>
@@ -956,8 +949,8 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="settings_rebg_row_sub">Potong ulang setiap item dari fotonya. Biaya ~6 kredit per item.</string>
     <string name="settings_cutout_row">Perbaiki piksel latar yang tersisa</string>
     <string name="settings_cutout_row_sub">Memindai item yang potongannya melewatkan sudut.</string>
-    <string name="settings_advanced_byok_title">Gunakan kunci AI gratis Anda sendiri</string>
-    <string name="settings_advanced_byok_body">Google memberi kuota gratis yang besar. Dapatkan kunci di aistudio.google.com dan tempel di bawah. Kami menyimpannya hanya di ponsel ini.</string>
+    <string name="settings_advanced_byok_title">Kunci API Gemini Anda</string>
+    <string name="settings_advanced_byok_body">Semua AI berjalan dengan kunci Gemini Anda sendiri. Kunci gratis mencakup penandaan dan saran outfit; coba-pakai virtual dan penghapusan latar memerlukan kunci berbayar dengan penagihan aktif. Dapatkan satu di aistudio.google.com lalu tempel di bawah — kami menyimpannya hanya di ponsel ini.</string>
     <string name="settings_advanced_byok_saved_badge">TERSIMPAN</string>
     <string name="settings_advanced_byok_change">Ubah</string>
     <string name="settings_advanced_byok_clear">Hapus</string>
@@ -1026,4 +1019,13 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
 
     <!-- Needs-tagging badge -->
     <string name="wardrobe_needs_tagging">Perlu tag</string>
+
+    <!-- BYOK API-key onboarding step -->
+    <string name="onboarding_apikey_title">Tambahkan kunci API Gemini Anda</string>
+    <string name="onboarding_apikey_body">LibreLookAI berjalan di Google Gemini menggunakan kunci API Anda sendiri. Kunci disimpan hanya di perangkat ini dan digunakan langsung dengan Google — tidak ada yang melewati server kami.</string>
+    <string name="onboarding_apikey_tiers">Kunci gratis sudah mencakup penandaan dan saran outfit. Coba-pakai virtual dan penghapusan latar menghasilkan gambar dan memerlukan kunci berbayar dengan penagihan aktif — Google tetap hanya menagih sesuai pemakaian Anda.</string>
+    <string name="onboarding_apikey_get">Dapatkan kunci API</string>
+    <string name="onboarding_apikey_billing">Aktifkan penagihan (untuk coba-pakai)</string>
+    <string name="onboarding_apikey_saved">Kunci disimpan di perangkat ini ✓</string>
+    <string name="onboarding_apikey_offline">Hubungkan ke internet untuk membuka Google AI Studio. Anda tetap bisa menempelkan kunci yang sudah dimiliki.</string>
 </resources>

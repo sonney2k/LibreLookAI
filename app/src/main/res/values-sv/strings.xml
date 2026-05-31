@@ -665,7 +665,7 @@
     <string name="about_cost_text">Outfitförslag: 2 krediter</string>
     <string name="about_cost_travel">Packlista för resa / garderobsluckanalys: 2 krediter</string>
     <string name="about_byok_title">Använd egen nyckel (BYOK)</string>
-    <string name="about_byok_desc">Du kan använda din egen kostnadsfria Gemini API-nyckel för att helt undvika kreditkostnader:\n\n1. Gå till aistudio.google.com\n2. Klicka på \"Get API key\" → \"Create API key\"\n3. Kopiera nyckeln (börjar med AIza…)\n4. Klistra in den under Inställningar → Profil → Gemini API-nyckel\n\nDin nyckel sparas endast på denna enhet och används direkt med Google — ingen data passerar våra servrar.</string>
+    <string name="about_byok_desc">LibreLookAI körs på din egen Gemini API-nyckel:\n\n1. Gå till aistudio.google.com\n2. Tryck på Get API key → Create API key\n3. Kopiera nyckeln (börjar med AIza…)\n4. Klistra in den i Inställningar → Avancerat → Gemini API-nyckel\n\nEn gratis nyckel täcker taggning och outfitförslag. Virtuell provning och bakgrundsborttagning genererar bilder och kräver en betald nyckel med fakturering aktiverad — Google debiterar fortfarande bara för det du använder. Din nyckel lagras bara på den här enheten och används direkt med Google — inga data går via våra servrar.</string>
     <string name="about_credits_title">Krediter (hanterat läge)</string>
     <string name="about_credits_desc">För användare som föredrar att inte skapa en egen API-nyckel erbjuder appen ett myntbaserat kreditsystem. Krediter kan köpas i Krediter-fliken och förbrukas per AI-åtgärd enligt taxorna ovan. Detta läge dirigerar förfrågningar genom en serverproxy.</string>
 
@@ -976,8 +976,8 @@
     <string name="settings_rebg_row_sub">Klipp ut varje plagg från sitt foto igen. Kostar ~6 krediter per plagg.</string>
     <string name="settings_cutout_row">Åtgärda kvarvarande bakgrundspixlar</string>
     <string name="settings_cutout_row_sub">Söker efter plagg där urklippet missade ett hörn.</string>
-    <string name="settings_advanced_byok_title">Använd din egen gratis AI-nyckel</string>
-    <string name="settings_advanced_byok_body">Google ger bort en generös gratiskvot. Skaffa en nyckel på aistudio.google.com och klistra in den nedan. Vi lagrar den bara på den här telefonen.</string>
+    <string name="settings_advanced_byok_title">Din Gemini API-nyckel</string>
+    <string name="settings_advanced_byok_body">All AI körs på din egen Gemini-nyckel. En gratis nyckel täcker taggning och outfitförslag; virtuell provning och bakgrundsborttagning kräver en betald nyckel med fakturering aktiverad. Skaffa en på aistudio.google.com och klistra in den nedan — vi lagrar den bara på den här telefonen.</string>
     <string name="settings_advanced_byok_saved_badge">SPARAD</string>
     <string name="settings_advanced_byok_change">Ändra</string>
     <string name="settings_advanced_byok_clear">Rensa</string>
@@ -1046,4 +1046,13 @@
 
     <!-- Needs-tagging badge -->
     <string name="wardrobe_needs_tagging">Behöver taggar</string>
+
+    <!-- BYOK API-key onboarding step -->
+    <string name="onboarding_apikey_title">Lägg till din Gemini API-nyckel</string>
+    <string name="onboarding_apikey_body">LibreLookAI körs på Google Gemini med din egen API-nyckel. Den lagras bara på den här enheten och används direkt med Google — inget går via våra servrar.</string>
+    <string name="onboarding_apikey_tiers">En gratis nyckel täcker redan taggning och outfitförslag. Virtuell provning och bakgrundsborttagning genererar bilder och kräver en betald nyckel med fakturering aktiverad — Google debiterar fortfarande bara för det du faktiskt använder.</string>
+    <string name="onboarding_apikey_get">Hämta en API-nyckel</string>
+    <string name="onboarding_apikey_billing">Aktivera fakturering (för provning)</string>
+    <string name="onboarding_apikey_saved">Nyckel sparad på den här enheten ✓</string>
+    <string name="onboarding_apikey_offline">Anslut till internet för att öppna Google AI Studio. Du kan ändå klistra in en nyckel du redan har.</string>
 </resources>

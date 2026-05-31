@@ -665,7 +665,7 @@
     <string name="about_cost_text">Outfit-forslag: 2 kreditter</string>
     <string name="about_cost_travel">Pakkeliste til rejse / garderobehul-analyse: 2 kreditter</string>
     <string name="about_byok_title">Brug din egen nøgle (BYOK)</string>
-    <string name="about_byok_desc">Du kan bruge din egen gratis Gemini API-nøgle for helt at undgå kreditomkostninger:\n\n1. Gå til aistudio.google.com\n2. Klik på \"Get API key\" → \"Create API key\"\n3. Kopier nøglen (starter med AIza…)\n4. Indsæt den under Indstillinger → Profil → Gemini API-nøgle\n\nDin nøgle gemmes kun på denne enhed og bruges direkte med Google — ingen data går gennem vores servere.</string>
+    <string name="about_byok_desc">LibreLookAI kører på din egen Gemini API-nøgle:\n\n1. Gå til aistudio.google.com\n2. Tryk på Get API key → Create API key\n3. Kopiér nøglen (starter med AIza…)\n4. Indsæt den i Indstillinger → Avanceret → Gemini API-nøgle\n\nEn gratis nøgle dækker tagging og outfit-forslag. Virtuel prøvning og baggrundsfjernelse genererer billeder og kræver en betalt nøgle med fakturering aktiveret — Google opkræver stadig kun for det, du bruger. Din nøgle gemmes kun på denne enhed og bruges direkte med Google — ingen data går via vores servere.</string>
     <string name="about_credits_title">Kreditter (administreret tilstand)</string>
     <string name="about_credits_desc">For brugere, der foretrækker ikke at oprette deres egen API-nøgle, tilbyder appen et møntbaseret kreditsystem. Kreditter kan købes i Kreditter-fanen og forbruges pr. AI-handling til de ovenfor anførte takster. Denne tilstand router forespørgsler gennem en server-side proxy.</string>
 
@@ -976,8 +976,8 @@
     <string name="settings_rebg_row_sub">Klip hver ting ud af sit foto igen. Koster ~6 kreditter pr. ting.</string>
     <string name="settings_cutout_row">Ret resterende baggrundspixels</string>
     <string name="settings_cutout_row_sub">Søger efter ting, hvor udklippet missede et hjørne.</string>
-    <string name="settings_advanced_byok_title">Brug din egen gratis AI-nøgle</string>
-    <string name="settings_advanced_byok_body">Google giver en generøs gratis kvote. Hent en nøgle på aistudio.google.com og indsæt den nedenfor. Vi gemmer den kun på denne telefon.</string>
+    <string name="settings_advanced_byok_title">Din Gemini API-nøgle</string>
+    <string name="settings_advanced_byok_body">Al AI kører på din egen Gemini-nøgle. En gratis nøgle dækker tagging og outfit-forslag; virtuel prøvning og baggrundsfjernelse kræver en betalt nøgle med fakturering aktiveret. Hent en på aistudio.google.com og indsæt den nedenfor — vi gemmer den kun på denne telefon.</string>
     <string name="settings_advanced_byok_saved_badge">GEMT</string>
     <string name="settings_advanced_byok_change">Skift</string>
     <string name="settings_advanced_byok_clear">Ryd</string>
@@ -1046,4 +1046,13 @@
 
     <!-- Needs-tagging badge -->
     <string name="wardrobe_needs_tagging">Mangler tags</string>
+
+    <!-- BYOK API-key onboarding step -->
+    <string name="onboarding_apikey_title">Tilføj din Gemini API-nøgle</string>
+    <string name="onboarding_apikey_body">LibreLookAI kører på Google Gemini med din egen API-nøgle. Den gemmes kun på denne enhed og bruges direkte med Google — intet går via vores servere.</string>
+    <string name="onboarding_apikey_tiers">En gratis nøgle dækker allerede tagging og outfit-forslag. Virtuel prøvning og baggrundsfjernelse genererer billeder og kræver en betalt nøgle med fakturering aktiveret — Google opkræver stadig kun for det, du faktisk bruger.</string>
+    <string name="onboarding_apikey_get">Hent en API-nøgle</string>
+    <string name="onboarding_apikey_billing">Aktivér fakturering (til prøvning)</string>
+    <string name="onboarding_apikey_saved">Nøgle gemt på denne enhed ✓</string>
+    <string name="onboarding_apikey_offline">Opret forbindelse til internettet for at åbne Google AI Studio. Du kan stadig indsætte en nøgle, du allerede har.</string>
 </resources>

@@ -1,5 +1,7 @@
 package com.librelookai.onboarding
 
+import android.content.Intent
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -26,13 +28,16 @@ import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Checkroom
 import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.filled.Luggage
+import androidx.compose.material.icons.filled.OpenInNew
 import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material.icons.filled.Style
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -47,12 +52,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.librelookai.R
+import com.librelookai.gemini.ApiKeyStore
 import com.librelookai.settings.ProfileViewModel
 import com.librelookai.settings.TryOnSlot
 import com.librelookai.util.LocalSystemBarsPadding
@@ -62,8 +69,10 @@ private data class InfoPage(val icon: ImageVector, val titleRes: Int, val bodyRe
 
 /**
  * First-run (and re-runnable) walkthrough. A swipeable [HorizontalPager] of value-prop / feature
- * pages followed by three light setup steps (style profile, try-on photo, finish). Every step is
- * skippable: "Skip" is always available until the final page, whose CTAs end the tour.
+ * pages followed by light setup steps (Gemini API key, style profile, try-on photo, finish). The
+ * API-key step soft-blocks: its Next button is disabled until a key is pasted, since the app does no
+ * AI without one. Every step is otherwise skippable — "Skip" is available until the final page,
+ * whose CTAs end the tour.
  *
  * Rendered as an opaque fullscreen overlay above the whole app by [com.librelookai.AppContent].
  * It does no navigation of its own — [onFinish] reports whether the user asked to jump straight to
@@ -84,13 +93,21 @@ fun OnboardingScreen(
         InfoPage(Icons.Filled.Luggage, R.string.onboarding_travel_title, R.string.onboarding_travel_body),
         InfoPage(Icons.Filled.ShoppingBag, R.string.onboarding_shopping_title, R.string.onboarding_shopping_body),
     )
-    val profilePage = infoPages.size
-    val photoPage = infoPages.size + 1
-    val finishPage = infoPages.size + 2
-    val totalPages = infoPages.size + 3
+    val apiKeyPage = infoPages.size
+    val profilePage = infoPages.size + 1
+    val photoPage = infoPages.size + 2
+    val finishPage = infoPages.size + 3
+    val totalPages = infoPages.size + 4
 
+    val context = LocalContext.current
     val state by profileViewModel.state.collectAsState()
     val prefs = state.preferences
+
+    // BYOK key — onboarding's only hard requirement (the app does no AI without it). Persisted to
+    // device-local storage as the user types; the Next button on [apiKeyPage] soft-blocks until the
+    // pasted value looks like an AI Studio key. Top-right "Skip" remains an escape hatch.
+    var apiKey by remember { mutableStateOf(ApiKeyStore.get(context)) }
+    val apiKeyLooksValid = remember(apiKey) { apiKey.trim().startsWith("AIza") && apiKey.trim().length >= 30 }
 
     // Seeded from the loaded preferences (re-seeds once when the Drive load lands).
     var gender by remember(prefs) { mutableStateOf(prefs.gender) }
@@ -139,6 +156,12 @@ fun OnboardingScreen(
                 modifier = Modifier.weight(1f).fillMaxWidth(),
             ) { page ->
                 when (page) {
+                    apiKeyPage -> ApiKeyPage(
+                        apiKey = apiKey,
+                        onKey = { apiKey = it; ApiKeyStore.set(context, it) },
+                        looksValid = apiKeyLooksValid,
+                        isOffline = isOffline,
+                    )
                     profilePage -> ProfilePage(
                         gender = gender, onGender = { gender = it },
                         yearText = yearText, onYear = { yearText = it },
@@ -191,9 +214,14 @@ fun OnboardingScreen(
                 }
                 Spacer(Modifier.weight(1f))
                 if (pagerState.currentPage < finishPage) {
-                    Button(onClick = {
-                        scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) }
-                    }) { Text(stringResource(R.string.onboarding_next)) }
+                    // Soft-block: on the API-key page, Next stays disabled until a key is pasted.
+                    val nextEnabled = pagerState.currentPage != apiKeyPage || apiKeyLooksValid
+                    Button(
+                        enabled = nextEnabled,
+                        onClick = {
+                            scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) }
+                        },
+                    ) { Text(stringResource(R.string.onboarding_next)) }
                 }
             }
         }
@@ -328,6 +356,93 @@ private fun PhotoPage(
                 textAlign = TextAlign.Center,
             )
         }
+    }
+}
+
+@Composable
+private fun ApiKeyPage(
+    apiKey: String,
+    onKey: (String) -> Unit,
+    looksValid: Boolean,
+    isOffline: Boolean,
+) {
+    val context = LocalContext.current
+    fun open(url: String) {
+        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+    }
+    Column(
+        Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .imePadding()
+            .padding(horizontal = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(14.dp),
+    ) {
+        Spacer(Modifier.height(8.dp))
+        Icon(
+            if (looksValid) Icons.Filled.CheckCircle else Icons.Filled.Key,
+            null,
+            Modifier.size(72.dp),
+            tint = MaterialTheme.colorScheme.primary,
+        )
+        Text(
+            stringResource(R.string.onboarding_apikey_title),
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold,
+        )
+        Text(
+            stringResource(R.string.onboarding_apikey_body),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Text(
+            stringResource(R.string.onboarding_apikey_tiers),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        // Step 1 — open AI Studio to create a key.
+        Button(
+            onClick = { open("https://aistudio.google.com/app/apikey") },
+            enabled = !isOffline,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Icon(Icons.Filled.OpenInNew, null, Modifier.size(18.dp))
+            Text("  " + stringResource(R.string.onboarding_apikey_get))
+        }
+        // Step 2 — enable billing so try-on & background removal work.
+        OutlinedButton(
+            onClick = { open("https://aistudio.google.com/app/billing") },
+            enabled = !isOffline,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Icon(Icons.Filled.OpenInNew, null, Modifier.size(18.dp))
+            Text("  " + stringResource(R.string.onboarding_apikey_billing))
+        }
+        // Step 3 — paste the key back here.
+        OutlinedTextField(
+            value = apiKey,
+            onValueChange = onKey,
+            label = { Text(stringResource(R.string.settings_api_key_label)) },
+            placeholder = { Text(stringResource(R.string.settings_api_key_placeholder)) },
+            singleLine = true,
+            isError = apiKey.isNotEmpty() && !looksValid,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        if (looksValid) {
+            Text(
+                stringResource(R.string.onboarding_apikey_saved),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.primary,
+            )
+        }
+        if (isOffline) {
+            Text(
+                stringResource(R.string.onboarding_apikey_offline),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Spacer(Modifier.height(8.dp))
     }
 }
 

@@ -665,7 +665,7 @@
     <string name="about_cost_text">اقتراح طقم: رصيدان</string>
     <string name="about_cost_travel">قائمة توضيب سفر / تحليل نواقص الخزانة: رصيدان</string>
     <string name="about_byok_title">أحضر مفتاحك الخاص (BYOK)</string>
-    <string name="about_byok_desc">يمكنك استخدام مفتاح Gemini API المجاني الخاص بك لتجنب تكاليف الرصيد تمامًا:\n\n1. انتقل إلى aistudio.google.com\n2. انقر على \"Get API key\" ← \"Create API key\"\n3. انسخ المفتاح (يبدأ بـ AIza…)\n4. الصقه في الإعدادات ← الملف الشخصي ← مفتاح Gemini API\n\nيتم تخزين مفتاحك على هذا الجهاز فقط ويستخدم مباشرة مع Google — لا تمر أي بيانات عبر خوادمنا.</string>
+    <string name="about_byok_desc">يعمل LibreLookAI بمفتاح Gemini API الخاص بك:\n\n1. انتقل إلى aistudio.google.com\n2. اضغط Get API key ← Create API key\n3. انسخ المفتاح (يبدأ بـ AIza…)\n4. الصقه في الإعدادات ← متقدم ← مفتاح Gemini API\n\nالمفتاح المجاني يغطي الوسم واقتراحات الإطلالات. التجربة الافتراضية وإزالة الخلفية تولّدان صورًا وتتطلبان مفتاحًا مدفوعًا مع تفعيل الفوترة — وتظل Google تحاسبك على ما تستخدمه فقط. يُخزَّن مفتاحك على هذا الجهاز فقط ويُستخدم مباشرة مع Google — لا تمر أي بيانات عبر خوادمنا.</string>
     <string name="about_credits_title">الرصيد (الوضع المدار)</string>
     <string name="about_credits_desc">بالنسبة للمستخدمين الذين يفضلون عدم إنشاء مفتاح API خاص بهم، يقدم التطبيق نظام رصيد قائم على العملات. يمكن شراء الرصيد من تبويب الرصيد ويتم استهلاكه لكل إجراء ذكاء اصطناعي بالمعدلات المذكورة أعلاه. يوجه هذا الوضع الطلبات عبر بروكسي من جانب الخادم.</string>
 
@@ -976,8 +976,8 @@
     <string name="settings_rebg_row_sub">إعادة قص كل عنصر من صورته. يكلّف ~6 رصيد لكل عنصر.</string>
     <string name="settings_cutout_row">إصلاح بكسلات الخلفية المتبقية</string>
     <string name="settings_cutout_row_sub">يبحث عن العناصر التي أغفل القص فيها زاوية.</string>
-    <string name="settings_advanced_byok_title">استخدم مفتاح الذكاء الاصطناعي المجاني الخاص بك</string>
-    <string name="settings_advanced_byok_body">تمنح Google حصة مجانية سخية. احصل على مفتاح من aistudio.google.com والصقه أدناه. نحفظه على هذا الهاتف فقط.</string>
+    <string name="settings_advanced_byok_title">مفتاح Gemini API الخاص بك</string>
+    <string name="settings_advanced_byok_body">يعمل كل الذكاء الاصطناعي بمفتاح Gemini الخاص بك. المفتاح المجاني يغطي الوسم واقتراحات الإطلالات؛ أما التجربة الافتراضية وإزالة الخلفية فتتطلبان مفتاحًا مدفوعًا مع تفعيل الفوترة. احصل على واحد من aistudio.google.com والصقه أدناه — نخزّنه على هذا الهاتف فقط.</string>
     <string name="settings_advanced_byok_saved_badge">محفوظ</string>
     <string name="settings_advanced_byok_change">تغيير</string>
     <string name="settings_advanced_byok_clear">مسح</string>
@@ -1046,4 +1046,13 @@
 
     <!-- Needs-tagging badge -->
     <string name="wardrobe_needs_tagging">بحاجة إلى تصنيف</string>
+
+    <!-- BYOK API-key onboarding step -->
+    <string name="onboarding_apikey_title">أضف مفتاح Gemini API</string>
+    <string name="onboarding_apikey_body">يعمل LibreLookAI على Google Gemini باستخدام مفتاح API الخاص بك. يُخزَّن على هذا الجهاز فقط ويُستخدم مباشرة مع Google — لا يمر أي شيء عبر خوادمنا.</string>
+    <string name="onboarding_apikey_tiers">المفتاح المجاني يكفي للوسم واقتراحات الإطلالات. أما التجربة الافتراضية وإزالة الخلفية فتولّدان صورًا وتتطلبان مفتاحًا مدفوعًا مع تفعيل الفوترة — وتظل Google تحاسبك على ما تستخدمه فعليًا فقط.</string>
+    <string name="onboarding_apikey_get">الحصول على مفتاح API</string>
+    <string name="onboarding_apikey_billing">تفعيل الفوترة (للتجربة الافتراضية)</string>
+    <string name="onboarding_apikey_saved">تم حفظ المفتاح على هذا الجهاز ✓</string>
+    <string name="onboarding_apikey_offline">اتصل بالإنترنت لفتح Google AI Studio. لا يزال بإمكانك لصق مفتاح لديك بالفعل.</string>
 </resources>

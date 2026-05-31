@@ -368,14 +368,7 @@
     <!-- Bulk translation 2026-05-17 -->
     <string name="about_ai_desc">LibreLookAI se bazează în mare măsură pe Google Gemini pentru AI vizual și de text. Fiecare acțiune AI (eliminare fundal, etichetare, sugestii de ținute etc.) necesită un apel API Gemini, care are un cost mic.</string>
     <string name="about_ai_title">Utilizare AI &amp; costuri</string>
-    <string name="about_byok_desc">Poți folosi propria cheie API Gemini gratuită pentru a evita complet costurile cu credite:
-
-1. Mergi la aistudio.google.com
-2. Apasă „Get API key” → „Create API key”
-3. Copiază cheia (începe cu AIza…)
-4. Lipește-o în Setări → Profil → Cheie API Gemini
-
-Cheia ta este stocată doar pe acest dispozitiv și folosită direct cu Google — nicio dată nu trece prin serverele noastre.</string>
+    <string name="about_byok_desc">LibreLookAI funcționează cu propria ta cheie API Gemini:\n\n1. Accesează aistudio.google.com\n2. Atinge Get API key → Create API key\n3. Copiază cheia (începe cu AIza…)\n4. Lipește-o în Setări → Avansat → Cheie API Gemini\n\nO cheie gratuită acoperă etichetarea și sugestiile de ținute. Proba virtuală și eliminarea fundalului generează imagini și necesită o cheie plătită cu facturarea activată — Google îți tarifează în continuare doar ce folosești. Cheia ta este păstrată doar pe acest dispozitiv și folosită direct cu Google — niciun fel de date nu trec prin serverele noastre.</string>
     <string name="about_byok_title">Adu-ți propria cheie (BYOK)</string>
     <string name="about_cost_bg_removal">Eliminare fundal: 5 credite</string>
     <string name="about_cost_classify">Etichetare automată: 2 credite</string>
@@ -956,8 +949,8 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="settings_rebg_row_sub">Decupează din nou fiecare articol din poza sa. Costă ~6 credite per articol.</string>
     <string name="settings_cutout_row">Repară pixelii de fundal rămași</string>
     <string name="settings_cutout_row_sub">Caută articole la care decuparea a ratat un colț.</string>
-    <string name="settings_advanced_byok_title">Folosește propria cheie AI gratuită</string>
-    <string name="settings_advanced_byok_body">Google oferă o cotă gratuită generoasă. Obține o cheie la aistudio.google.com și lipește-o mai jos. O stocăm doar pe acest telefon.</string>
+    <string name="settings_advanced_byok_title">Cheia ta API Gemini</string>
+    <string name="settings_advanced_byok_body">Toată inteligența artificială funcționează cu propria ta cheie Gemini. O cheie gratuită acoperă etichetarea și sugestiile de ținute; proba virtuală și eliminarea fundalului necesită o cheie plătită cu facturarea activată. Obține una de pe aistudio.google.com și lipește-o mai jos — o păstrăm doar pe acest telefon.</string>
     <string name="settings_advanced_byok_saved_badge">SALVATĂ</string>
     <string name="settings_advanced_byok_change">Schimbă</string>
     <string name="settings_advanced_byok_clear">Șterge</string>
@@ -1026,4 +1019,13 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
 
     <!-- Needs-tagging badge -->
     <string name="wardrobe_needs_tagging">Necesită etichete</string>
+
+    <!-- BYOK API-key onboarding step -->
+    <string name="onboarding_apikey_title">Adaugă cheia ta API Gemini</string>
+    <string name="onboarding_apikey_body">LibreLookAI funcționează pe Google Gemini folosind propria ta cheie API. Este stocată doar pe acest dispozitiv și folosită direct cu Google — nimic nu trece prin serverele noastre.</string>
+    <string name="onboarding_apikey_tiers">O cheie gratuită acoperă deja etichetarea și sugestiile de ținute. Proba virtuală și eliminarea fundalului generează imagini și necesită o cheie plătită cu facturarea activată — Google îți tarifează în continuare doar ce folosești efectiv.</string>
+    <string name="onboarding_apikey_get">Obține o cheie API</string>
+    <string name="onboarding_apikey_billing">Activează facturarea (pentru probă)</string>
+    <string name="onboarding_apikey_saved">Cheie salvată pe acest dispozitiv ✓</string>
+    <string name="onboarding_apikey_offline">Conectează-te la internet pentru a deschide Google AI Studio. Poți lipi în continuare o cheie pe care o ai deja.</string>
 </resources>

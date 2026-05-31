@@ -369,14 +369,7 @@
     <!-- Bulk translation 2026-05-18 -->
     <string name="about_ai_desc">LibreLookAI بصری اور متنی AI کے لیے Google Gemini پر بہت زیادہ انحصار کرتا ہے۔ ہر AI عمل (پس منظر ہٹانا، ٹیگنگ، ملبوسات کی تجاویز وغیرہ) کے لیے Gemini API کال درکار ہوتی ہے جس کی معمولی لاگت ہے۔</string>
     <string name="about_ai_title">AI استعمال &amp; اخراجات</string>
-    <string name="about_byok_desc">آپ کریڈٹ کے اخراجات سے مکمل بچنے کے لیے اپنی مفت Gemini API کلید استعمال کر سکتے ہیں:
-
-1. aistudio.google.com پر جائیں
-2. „Get API key” → „Create API key” پر کلک کریں
-3. کلید کاپی کریں (AIza… سے شروع)
-4. ترتیبات → پروفائل → Gemini API کلید میں پیسٹ کریں
-
-آپ کی کلید صرف اس ڈیوائس پر محفوظ ہے اور Google کے ساتھ براہ راست استعمال ہوتی ہے — کوئی ڈیٹا ہمارے سرورز سے نہیں گزرتا۔</string>
+    <string name="about_byok_desc">LibreLookAI آپ کی اپنی Gemini API کلید سے چلتا ہے:\n\n1. aistudio.google.com پر جائیں\n2. Get API key → Create API key پر ٹیپ کریں\n3. کلید کاپی کریں (AIza… سے شروع ہوتی ہے)\n4. اسے ترتیبات → جدید → Gemini API کلید میں پیسٹ کریں\n\nمفت کلید ٹیگنگ اور آؤٹ فٹ تجاویز کا احاطہ کرتی ہے۔ ورچوئل ٹرائی آن اور بیک گراؤنڈ ہٹانا تصاویر بناتے ہیں، جن کے لیے بلنگ فعال شدہ ادا شدہ کلید درکار ہے — Google پھر بھی صرف آپ کے استعمال کا معاوضہ لیتا ہے۔ آپ کی کلید صرف اسی ڈیوائس پر محفوظ ہوتی ہے اور براہِ راست Google کے ساتھ استعمال ہوتی ہے — کوئی ڈیٹا ہمارے سرورز سے نہیں گزرتا۔</string>
     <string name="about_byok_title">اپنی کلید لائیں (BYOK)</string>
     <string name="about_cost_bg_removal">پس منظر ہٹانا: 5 کریڈٹس</string>
     <string name="about_cost_classify">آٹو-ٹیگ آئٹم: 2 کریڈٹس</string>
@@ -956,8 +949,8 @@
     <string name="settings_rebg_row_sub">ہر شے کو اس کی تصویر سے دوبارہ کاٹیں۔ فی شے ~6 کریڈٹس۔</string>
     <string name="settings_cutout_row">بچے ہوئے پس منظر پکسلز ٹھیک کریں</string>
     <string name="settings_cutout_row_sub">ایسی اشیاء تلاش کرتا ہے جہاں کٹاؤ ایک کونا چھوڑ گیا۔</string>
-    <string name="settings_advanced_byok_title">اپنی مفت AI کلید استعمال کریں</string>
-    <string name="settings_advanced_byok_body">Google فراخدلانہ مفت کوٹا دیتا ہے۔ aistudio.google.com سے کلید لیں اور نیچے چسپاں کریں۔ ہم اسے صرف اسی فون پر محفوظ رکھتے ہیں۔</string>
+    <string name="settings_advanced_byok_title">آپ کی Gemini API کلید</string>
+    <string name="settings_advanced_byok_body">تمام AI آپ کی اپنی Gemini کلید سے چلتا ہے۔ مفت کلید ٹیگنگ اور آؤٹ فٹ تجاویز کا احاطہ کرتی ہے؛ ورچوئل ٹرائی آن اور بیک گراؤنڈ ہٹانے کے لیے بلنگ فعال شدہ ادا شدہ کلید درکار ہے۔ aistudio.google.com سے ایک حاصل کریں اور نیچے پیسٹ کریں — ہم اسے صرف اسی فون پر محفوظ رکھتے ہیں۔</string>
     <string name="settings_advanced_byok_saved_badge">محفوظ</string>
     <string name="settings_advanced_byok_change">تبدیل کریں</string>
     <string name="settings_advanced_byok_clear">صاف کریں</string>
@@ -1026,4 +1019,13 @@
 
     <!-- Needs-tagging badge -->
     <string name="wardrobe_needs_tagging">ٹیگنگ درکار</string>
+
+    <!-- BYOK API-key onboarding step -->
+    <string name="onboarding_apikey_title">اپنی Gemini API کلید شامل کریں</string>
+    <string name="onboarding_apikey_body">LibreLookAI آپ کی اپنی API کلید کے ساتھ Google Gemini پر چلتا ہے۔ یہ صرف اسی ڈیوائس پر محفوظ ہوتی ہے اور براہِ راست Google کے ساتھ استعمال ہوتی ہے — کچھ بھی ہمارے سرورز سے نہیں گزرتا۔</string>
+    <string name="onboarding_apikey_tiers">ایک مفت کلید ٹیگنگ اور آؤٹ فٹ تجاویز کے لیے کافی ہے۔ ورچوئل ٹرائی آن اور بیک گراؤنڈ ہٹانا تصاویر بناتے ہیں، جن کے لیے بلنگ فعال شدہ ادا شدہ کلید درکار ہے — Google پھر بھی صرف آپ کے اصل استعمال کا معاوضہ لیتا ہے۔</string>
+    <string name="onboarding_apikey_get">API کلید حاصل کریں</string>
+    <string name="onboarding_apikey_billing">بلنگ فعال کریں (ٹرائی آن کے لیے)</string>
+    <string name="onboarding_apikey_saved">کلید اس ڈیوائس پر محفوظ ہو گئی ✓</string>
+    <string name="onboarding_apikey_offline">Google AI Studio کھولنے کے لیے انٹرنیٹ سے منسلک ہوں۔ آپ کے پاس پہلے سے موجود کلید آپ پھر بھی پیسٹ کر سکتے ہیں۔</string>
 </resources>

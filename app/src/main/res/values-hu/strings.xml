@@ -369,14 +369,7 @@
     <!-- Bulk translation 2026-05-18 -->
     <string name="about_ai_desc">A LibreLookAI nagymértékben támaszkodik a Google Geminire a vizuális és szöveges AI-hoz. Minden AI-művelet (háttéreltávolítás, címkézés, szettjavaslatok stb.) Gemini API-hívást igényel, amelynek kis költsége van.</string>
     <string name="about_ai_title">AI-használat &amp; költségek</string>
-    <string name="about_byok_desc">Saját ingyenes Gemini API-kulcsoddal teljesen elkerülheted a kredit-költségeket:
-
-1. Menj az aistudio.google.com oldalra
-2. Kattints a „Get API key” → „Create API key” gombra
-3. Másold ki a kulcsot (AIza… kezdetű)
-4. Illeszd be a Beállítások → Profil → Gemini API-kulcs mezőbe
-
-A kulcsod csak ezen az eszközön tárolódik, és közvetlenül a Google-lel használjuk — semmilyen adat nem halad át a mi szervereinken.</string>
+    <string name="about_byok_desc">A LibreLookAI a saját Gemini API-kulcsával működik:\n\n1. Nyissa meg az aistudio.google.com oldalt\n2. Koppintson a Get API key → Create API key gombra\n3. Másolja ki a kulcsot (AIza… kezdetű)\n4. Illessze be: Beállítások → Speciális → Gemini API-kulcs\n\nEgy ingyenes kulcs fedezi a címkézést és az outfitjavaslatokat. A virtuális felpróbálás és a háttér eltávolítása képeket generál, ezekhez számlázással engedélyezett, fizetős kulcs kell — a Google továbbra is csak a használatot számlázza. A kulcsa csak ezen az eszközön tárolódik, és közvetlenül a Google-lel használjuk — semmilyen adat nem halad át a szervereinken.</string>
     <string name="about_byok_title">Saját kulcs (BYOK)</string>
     <string name="about_cost_bg_removal">Háttéreltávolítás: 5 kredit</string>
     <string name="about_cost_classify">Automatikus címkézés: 2 kredit</string>
@@ -956,8 +949,8 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="settings_rebg_row_sub">Minden darabot újra kivág a fotójából. Darabonként ~6 kredit.</string>
     <string name="settings_cutout_row">Maradék háttérpixelek javítása</string>
     <string name="settings_cutout_row_sub">Olyan darabokat keres, ahol a kivágás kihagyott egy sarkot.</string>
-    <string name="settings_advanced_byok_title">Használd a saját ingyenes AI-kulcsodat</string>
-    <string name="settings_advanced_byok_body">A Google nagylelkű ingyenes keretet ad. Szerezz kulcsot az aistudio.google.com oldalon, és illeszd be alább. Csak ezen a telefonon tároljuk.</string>
+    <string name="settings_advanced_byok_title">A Gemini API-kulcsa</string>
+    <string name="settings_advanced_byok_body">Minden AI a saját Gemini-kulcsával működik. Egy ingyenes kulcs fedezi a címkézést és az outfitjavaslatokat; a virtuális felpróbáláshoz és a háttér eltávolításához számlázással engedélyezett, fizetős kulcs kell. Szerezzen egyet az aistudio.google.com oldalon, és illessze be alább — csak ezen a telefonon tároljuk.</string>
     <string name="settings_advanced_byok_saved_badge">MENTVE</string>
     <string name="settings_advanced_byok_change">Módosítás</string>
     <string name="settings_advanced_byok_clear">Törlés</string>
@@ -1026,4 +1019,13 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
 
     <!-- Needs-tagging badge -->
     <string name="wardrobe_needs_tagging">Címkézés szükséges</string>
+
+    <!-- BYOK API-key onboarding step -->
+    <string name="onboarding_apikey_title">Adja meg a Gemini API-kulcsát</string>
+    <string name="onboarding_apikey_body">A LibreLookAI a Google Gemini szolgáltatáson fut a saját API-kulcsával. Csak ezen az eszközön tárolódik, és közvetlenül a Google-lel használjuk — semmi sem halad át a szervereinken.</string>
+    <string name="onboarding_apikey_tiers">Egy ingyenes kulcs már fedezi a címkézést és az outfitjavaslatokat. A virtuális felpróbálás és a háttér eltávolítása képeket generál, ezekhez számlázással engedélyezett, fizetős kulcs kell — a Google továbbra is csak a tényleges használatot számlázza.</string>
+    <string name="onboarding_apikey_get">API-kulcs beszerzése</string>
+    <string name="onboarding_apikey_billing">Számlázás engedélyezése (felpróbáláshoz)</string>
+    <string name="onboarding_apikey_saved">Kulcs elmentve ezen az eszközön ✓</string>
+    <string name="onboarding_apikey_offline">Csatlakozzon az internethez a Google AI Studio megnyitásához. Egy már meglévő kulcsot így is beilleszthet.</string>
 </resources>

@@ -369,14 +369,7 @@
     <!-- Bulk translation 2026-05-18 -->
     <string name="about_ai_desc">LibreLookAI विज़ुअल और टेक्स्ट AI के लिए मुख्यतः Google Gemini पर निर्भर है। प्रत्येक AI क्रिया (बैकग्राउंड हटाना, टैगिंग, आउटफ़िट सुझाव, आदि) के लिए Gemini API कॉल की आवश्यकता होती है, जिसकी थोड़ी लागत होती है।</string>
     <string name="about_ai_title">AI उपयोग &amp; लागत</string>
-    <string name="about_byok_desc">क्रेडिट लागत से पूरी तरह बचने के लिए आप अपनी निःशुल्क Gemini API कुंजी का उपयोग कर सकते हैं:
-
-1. aistudio.google.com पर जाएं
-2. „Get API key” → „Create API key” पर क्लिक करें
-3. कुंजी कॉपी करें (AIza… से शुरू होती है)
-4. सेटिंग्स → प्रोफ़ाइल → Gemini API कुंजी में पेस्ट करें
-
-आपकी कुंजी केवल इस डिवाइस पर संग्रहीत होती है और सीधे Google के साथ उपयोग होती है — कोई डेटा हमारे सर्वर से नहीं गुजरता।</string>
+    <string name="about_byok_desc">LibreLookAI आपकी अपनी Gemini API कुंजी से चलता है:\n\n1. aistudio.google.com पर जाएँ\n2. Get API key → Create API key पर टैप करें\n3. कुंजी कॉपी करें (AIza… से शुरू होती है)\n4. इसे सेटिंग → उन्नत → Gemini API कुंजी में चिपकाएँ\n\nमुफ़्त कुंजी टैगिंग और आउटफिट सुझावों को कवर करती है। वर्चुअल ट्राई-ऑन और बैकग्राउंड हटाना छवियाँ बनाते हैं, जिनके लिए बिलिंग सक्षम वाली सशुल्क कुंजी चाहिए — Google फिर भी केवल आपके उपयोग का ही शुल्क लेता है। आपकी कुंजी केवल इसी डिवाइस पर रखी जाती है और सीधे Google के साथ उपयोग होती है — कोई डेटा हमारे सर्वर से नहीं गुज़रता।</string>
     <string name="about_byok_title">अपनी खुद की कुंजी लाएं (BYOK)</string>
     <string name="about_cost_bg_removal">बैकग्राउंड हटाना: 5 क्रेडिट</string>
     <string name="about_cost_classify">ऑटो-टैग आइटम: 2 क्रेडिट</string>
@@ -956,8 +949,8 @@
     <string name="settings_rebg_row_sub">हर आइटम को उसकी फ़ोटो से फिर से काटें। प्रति आइटम ~6 क्रेडिट।</string>
     <string name="settings_cutout_row">बचे हुए बैकग्राउंड पिक्सेल ठीक करें</string>
     <string name="settings_cutout_row_sub">उन आइटम खोजता है जहाँ कटआउट ने कोई कोना छोड़ दिया।</string>
-    <string name="settings_advanced_byok_title">अपनी मुफ़्त AI कुंजी इस्तेमाल करें</string>
-    <string name="settings_advanced_byok_body">Google उदार मुफ़्त कोटा देता है। aistudio.google.com से कुंजी लें और नीचे पेस्ट करें। हम इसे सिर्फ़ इसी फ़ोन पर रखते हैं।</string>
+    <string name="settings_advanced_byok_title">आपकी Gemini API कुंजी</string>
+    <string name="settings_advanced_byok_body">सारा AI आपकी अपनी Gemini कुंजी से चलता है। मुफ़्त कुंजी टैगिंग और आउटफिट सुझावों को कवर करती है; वर्चुअल ट्राई-ऑन और बैकग्राउंड हटाने के लिए बिलिंग सक्षम वाली सशुल्क कुंजी चाहिए। aistudio.google.com से एक प्राप्त करें और नीचे चिपकाएँ — हम इसे केवल इसी फ़ोन पर रखते हैं।</string>
     <string name="settings_advanced_byok_saved_badge">सहेजी गई</string>
     <string name="settings_advanced_byok_change">बदलें</string>
     <string name="settings_advanced_byok_clear">साफ़ करें</string>
@@ -1026,4 +1019,13 @@
 
     <!-- Needs-tagging badge -->
     <string name="wardrobe_needs_tagging">टैगिंग आवश्यक</string>
+
+    <!-- BYOK API-key onboarding step -->
+    <string name="onboarding_apikey_title">अपनी Gemini API कुंजी जोड़ें</string>
+    <string name="onboarding_apikey_body">LibreLookAI आपकी अपनी API कुंजी से Google Gemini पर चलता है। यह केवल इसी डिवाइस पर सहेजी जाती है और सीधे Google के साथ उपयोग होती है — कुछ भी हमारे सर्वर से नहीं गुज़रता।</string>
+    <string name="onboarding_apikey_tiers">एक मुफ़्त कुंजी टैगिंग और आउटफिट सुझावों के लिए पर्याप्त है। वर्चुअल ट्राई-ऑन और बैकग्राउंड हटाना छवियाँ बनाते हैं, जिनके लिए बिलिंग सक्षम वाली सशुल्क कुंजी चाहिए — Google फिर भी केवल आपके वास्तविक उपयोग का ही शुल्क लेता है।</string>
+    <string name="onboarding_apikey_get">API कुंजी प्राप्त करें</string>
+    <string name="onboarding_apikey_billing">बिलिंग सक्षम करें (ट्राई-ऑन के लिए)</string>
+    <string name="onboarding_apikey_saved">कुंजी इस डिवाइस पर सहेजी गई ✓</string>
+    <string name="onboarding_apikey_offline">Google AI Studio खोलने के लिए इंटरनेट से कनेक्ट करें। आपके पास पहले से मौजूद कुंजी आप फिर भी चिपका सकते हैं।</string>
 </resources>

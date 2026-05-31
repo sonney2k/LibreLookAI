@@ -665,7 +665,7 @@
     <string name="about_cost_text">コーデ提案: 2 クレジット</string>
     <string name="about_cost_travel">旅行パッキングリスト / クローゼットのギャップ分析: 2 クレジット</string>
     <string name="about_byok_title">自分のキーを使う (BYOK)</string>
-    <string name="about_byok_desc">独自の無料 Gemini API キーを使用すればクレジットコストを完全に回避できます:\n\n1. aistudio.google.com にアクセス\n2. 「Get API key」→ 「Create API key」をクリック\n3. キー(AIza… で始まる)をコピー\n4. 設定 → プロフィール → Gemini API キー に貼り付け\n\nキーはこの端末のみに保存され、Google と直接通信されます — 当社のサーバーを通るデータはありません。</string>
+    <string name="about_byok_desc">LibreLookAI はあなた自身の Gemini API キーで動作します:\n\n1. aistudio.google.com を開く\n2. Get API key → Create API key をタップ\n3. キーをコピー（AIza… で始まる）\n4. 設定 → 詳細設定 → Gemini API キー に貼り付け\n\n無料キーはタグ付けとコーディネート提案をカバーします。バーチャル試着と背景除去は画像を生成するため、請求を有効にした有料キーが必要です。Google が課金するのは使用した分だけです。キーはこの端末にのみ保存され、Google と直接やり取りします。当社のサーバーを経由するデータはありません。</string>
     <string name="about_credits_title">クレジット(マネージドモード)</string>
     <string name="about_credits_desc">独自の API キーを作成したくないユーザー向けに、コインベースのクレジットシステムを提供しています。クレジットはクレジットタブで購入でき、上記のレートでAIアクションごとに消費されます。このモードはサーバー側のプロキシ経由でリクエストを送ります。</string>
 
@@ -976,8 +976,8 @@
     <string name="settings_rebg_row_sub">各アイテムを写真から切り抜き直します。1点あたり約6クレジット。</string>
     <string name="settings_cutout_row">残った背景ピクセルを修正</string>
     <string name="settings_cutout_row_sub">切り抜きが角を取り逃したアイテムを探します。</string>
-    <string name="settings_advanced_byok_title">自分の無料AIキーを使う</string>
-    <string name="settings_advanced_byok_body">Googleは寛大な無料枠を提供しています。aistudio.google.comでキーを取得し、下に貼り付けてください。この端末にのみ保存します。</string>
+    <string name="settings_advanced_byok_title">あなたの Gemini API キー</string>
+    <string name="settings_advanced_byok_body">すべての AI はあなた自身の Gemini キーで動作します。無料キーはタグ付けとコーディネート提案をカバーします。バーチャル試着と背景除去には、請求を有効にした有料キーが必要です。aistudio.google.com で取得し、下に貼り付けてください。キーはこの端末にのみ保存します。</string>
     <string name="settings_advanced_byok_saved_badge">保存済み</string>
     <string name="settings_advanced_byok_change">変更</string>
     <string name="settings_advanced_byok_clear">消去</string>
@@ -1046,4 +1046,13 @@
 
     <!-- Needs-tagging badge -->
     <string name="wardrobe_needs_tagging">タグ付けが必要</string>
+
+    <!-- BYOK API-key onboarding step -->
+    <string name="onboarding_apikey_title">Gemini API キーを追加</string>
+    <string name="onboarding_apikey_body">LibreLookAI はあなた自身の API キーで Google Gemini 上で動作します。キーはこの端末にのみ保存され、Google と直接やり取りします。当社のサーバーを経由することはありません。</string>
+    <string name="onboarding_apikey_tiers">無料キーでもタグ付けやコーディネート提案は利用できます。バーチャル試着と背景除去は画像を生成するため、請求を有効にした有料キーが必要です。Google が課金するのは実際に使用した分だけです。</string>
+    <string name="onboarding_apikey_get">API キーを取得</string>
+    <string name="onboarding_apikey_billing">請求を有効にする（試着用）</string>
+    <string name="onboarding_apikey_saved">キーをこの端末に保存しました ✓</string>
+    <string name="onboarding_apikey_offline">Google AI Studio を開くにはインターネットに接続してください。すでにお持ちのキーは貼り付けできます。</string>
 </resources>
