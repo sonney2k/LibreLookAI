@@ -87,11 +87,14 @@ fun TripViewerScreen(
         return
     }
 
-    // Render trip items from the cross-closet snapshot (every closet), not the active-closet-scoped
-    // `images` — otherwise opening a trip while a specific closet is selected shows empty day cards
-    // for any item that lives in another closet.
-    val imagesById = remember(wardrobeState.allLocationImages) {
-        wardrobeState.allLocationImages.associateBy { it.driveId }
+    // Render trip items from the cross-closet snapshot (every closet) UNION the active closet's
+    // in-memory `images`. The snapshot is the base — resolving against `images` alone would show
+    // empty day cards for items in another closet while a specific closet is selected (MainActivity
+    // trims `images` via `setLocation`). But `allLocationImages` only refreshes on closet-config
+    // changes / prefetch, so overlay `images` last so just-uploaded items resolve and their fresher
+    // copies win on duplicate driveIds. (Mirrors the OutfitComposer/OutfitsScreen item-pool union.)
+    val imagesById = remember(wardrobeState.allLocationImages, wardrobeState.images) {
+        (wardrobeState.allLocationImages + wardrobeState.images).associateBy { it.driveId }
     }
     val outfitsById = remember(outfitsState.outfits) {
         outfitsState.outfits.associateBy { it.id }

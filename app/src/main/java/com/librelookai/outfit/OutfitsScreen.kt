@@ -63,6 +63,27 @@ internal fun List<Outfit>.outfitTagCategories(itemsById: Map<String, DriveImage>
     return allImages.tagCategories()
 }
 
+/**
+ * Universe of items used to resolve every outfit's thumbnails. Mirrors the composer's slot lookup
+ * (see OutfitComposerScreen `byId`): union EVERY known source rather than a single disk-cache read,
+ * which omits just-uploaded items and any item a given snapshot hasn't recached yet. Resolving a
+ * card against a too-narrow map silently drops thumbnails via `mapNotNull` — the bug a tester hit
+ * where freshly-created (and some existing) outfits showed fewer items than they actually contain.
+ *
+ * [allLocationImages] spans all configured closets + shopping; [wardrobeImages] is the OutfitsVM's
+ * own per-folder cache read; [activeImages] is the active closet's freshest in-memory list. The
+ * active list is applied LAST so its just-uploaded entries and fresher copies win on duplicate
+ * driveIds.
+ */
+internal fun outfitItemPool(
+    allLocationImages: List<DriveImage>,
+    wardrobeImages: List<DriveImage>,
+    activeImages: List<DriveImage>,
+): List<DriveImage> =
+    (allLocationImages + wardrobeImages + activeImages)
+        .associateBy { it.driveId }
+        .values.toList()
+
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun OutfitsScreen(
@@ -102,6 +123,17 @@ fun OutfitsScreen(
     // styleId → number of calendar wear events
     val wearCounts = remember(outfitEventsState.events) {
         outfitEventsState.events.groupingBy { it.outfitId }.eachCount()
+    }
+
+    // Universe of items used to resolve every outfit's thumbnails — see [outfitItemPool].
+    val outfitItems = remember(
+        wardrobeState.allLocationImages, outfitsState.wardrobeImages, wardrobeState.images,
+    ) {
+        outfitItemPool(
+            allLocationImages = wardrobeState.allLocationImages,
+            wardrobeImages = outfitsState.wardrobeImages,
+            activeImages = wardrobeState.images,
+        )
     }
 
     // Outfits referencing wardrobe items that no longer exist in ANY closet. Detection runs
@@ -158,7 +190,7 @@ fun OutfitsScreen(
             when (outfitsTab) {
                 0 -> OutfitListScreen(
                     styles = outfitsState.outfits,
-                    items = outfitsState.wardrobeImages,
+                    items = outfitItems,
                     wearCounts = wearCounts,
                     isLoading = outfitsState.isLoading || wardrobeState.isLoading,
                     isPredicting = outfitsState.isPredicting,

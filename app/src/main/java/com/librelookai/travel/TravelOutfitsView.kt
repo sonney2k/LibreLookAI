@@ -71,12 +71,15 @@ internal fun TravelOutfitsView(
             o.id !in tripOutfitIds && o.tags.any { it.equals("travel", ignoreCase = true) }
         }
     }
-    // Resolve trip/outfit items from the cross-closet snapshot (every configured closet), NOT the
-    // active-closet-scoped `images`. MainActivity calls `setLocation(folderId)` when a specific
-    // closet is selected, which trims `images` to that closet — so resolving against it makes a
-    // trip's items vanish (empty card) the moment any closet filter is applied.
-    val imagesById = remember(wardrobeState.allLocationImages) {
-        wardrobeState.allLocationImages.associateBy { it.driveId }
+    // Resolve trip/outfit items from the cross-closet snapshot (every configured closet) UNION the
+    // active closet's in-memory `images`. The snapshot is the comprehensive base — resolving
+    // against `images` alone would make a trip's items vanish the moment a closet filter is applied
+    // (MainActivity's `setLocation(folderId)` trims `images` to one closet). But `allLocationImages`
+    // only refreshes on closet-config changes / prefetch, so it omits just-uploaded items; overlay
+    // `images` last so its fresher copies win on duplicate driveIds and brand-new items still
+    // resolve. (Mirrors the OutfitComposer/OutfitsScreen item-pool union.)
+    val imagesById = remember(wardrobeState.allLocationImages, wardrobeState.images) {
+        (wardrobeState.allLocationImages + wardrobeState.images).associateBy { it.driveId }
     }
 
     // Currently selected closet (null = All). A trip/outfit belongs to a closet based on where its
