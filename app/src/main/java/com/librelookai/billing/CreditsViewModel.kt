@@ -35,28 +35,31 @@ class CreditsViewModel(app: Application) : AndroidViewModel(app) {
     val state: StateFlow<CreditsUiState> = _state.asStateFlow()
 
     init {
-        // Connect billing and observe balance
-        billing.connect()
+        // BYOK-only builds never touch Play billing or the credit balance.
+        if (ManagedBilling.enabled) {
+            // Connect billing and observe balance
+            billing.connect()
 
-        // Track billing connection state → fetch product details when ready
-        viewModelScope.launch {
-            billing.isConnected.collectLatest { connected ->
-                if (connected && _state.value.products.isEmpty()) loadProducts()
+            // Track billing connection state → fetch product details when ready
+            viewModelScope.launch {
+                billing.isConnected.collectLatest { connected ->
+                    if (connected && _state.value.products.isEmpty()) loadProducts()
+                }
             }
-        }
 
-        // Real-time credit balance
-        viewModelScope.launch {
-            credits.balanceFlow.collect { balance ->
-                _state.update { it.copy(balance = balance) }
+            // Real-time credit balance
+            viewModelScope.launch {
+                credits.balanceFlow.collect { balance ->
+                    _state.update { it.copy(balance = balance) }
+                }
             }
-        }
 
-        // Process any unacknowledged purchases from a previous session
-        viewModelScope.launch {
-            billing.purchaseUpdates.collect { (result, purchases) ->
-                if (result.responseCode == BillingClient.BillingResponseCode.OK) {
-                    purchases.forEach { processPurchase(it) }
+            // Process any unacknowledged purchases from a previous session
+            viewModelScope.launch {
+                billing.purchaseUpdates.collect { (result, purchases) ->
+                    if (result.responseCode == BillingClient.BillingResponseCode.OK) {
+                        purchases.forEach { processPurchase(it) }
+                    }
                 }
             }
         }

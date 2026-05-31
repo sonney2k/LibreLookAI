@@ -62,17 +62,19 @@ fun BuyCreditsScreen(
 ) {
     val state by creditsViewModel.state.collectAsState()
     val context = LocalContext.current
+    val managed = ManagedBilling.enabled
     var apiKey by remember(currentApiKey) { mutableStateOf(currentApiKey) }
     var apiKeyVisible by remember { mutableStateOf(false) }
 
-    // Process any interrupted purchases when the screen opens
-    LaunchedEffect(Unit) { creditsViewModel.processPendingPurchases() }
+    // Process any interrupted purchases when the screen opens (managed builds only)
+    LaunchedEffect(Unit) { if (managed) creditsViewModel.processPendingPurchases() }
 
     Box(modifier = modifier.fillMaxSize()) {
         LazyColumn(
             contentPadding = PaddingValues(bottom = 32.dp),
             verticalArrangement = Arrangement.spacedBy(0.dp),
         ) {
+          if (managed) {
             // ---- Balance header ----
             item {
                 Surface(
@@ -160,6 +162,7 @@ fun BuyCreditsScreen(
                     )
                 }
             }
+          } // end if (managed)
 
             // ---- Gemini API Key (BYOK) ----
             item {

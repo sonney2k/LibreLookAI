@@ -255,8 +255,10 @@ private fun SettingsMain(
             }
             item { SecLabel(stringResource(R.string.settings_section_how_it_looks)) }
             item { HowItLooksCard(selectedThemeId = selectedThemeId, onSelectTheme = onSelectTheme) }
-            item { SecLabel(stringResource(R.string.settings_section_ai_credits)) }
-            item { AiCreditsCard(balance = balance, onGetMore = onGetMore) }
+            if (com.librelookai.billing.ManagedBilling.enabled) {
+                item { SecLabel(stringResource(R.string.settings_section_ai_credits)) }
+                item { AiCreditsCard(balance = balance, onGetMore = onGetMore) }
+            }
             item { SecLabel(stringResource(R.string.settings_section_more)) }
             item { MoreCard(onAdvanced = onAdvanced, onHelp = onHelp, onAbout = onAbout) }
             item {

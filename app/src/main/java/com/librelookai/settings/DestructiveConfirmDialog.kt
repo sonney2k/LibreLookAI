@@ -92,9 +92,11 @@ fun DestructiveConfirmDialog(
 ) {
     val parentContext = LocalContext.current
     val parentConfiguration = LocalConfiguration.current
+    // BYOK-only builds have no coin economy: show time/count, but no coin cost or buy CTA.
+    val managed = com.librelookai.billing.ManagedBilling.enabled
     val creditsNeeded = itemCount * action.perItemCost
     val shortBy = (creditsNeeded - balance).coerceAtLeast(0)
-    val canAfford = shortBy == 0
+    val canAfford = !managed || shortBy == 0
     val minutes = ceil(itemCount * action.secondsPerItem / 60.0).toInt().coerceAtLeast(1)
 
     Dialog(
@@ -160,11 +162,13 @@ fun DestructiveConfirmDialog(
                                 key = stringResource(R.string.settings_confirm_takes_about),
                                 value = stringResource(R.string.settings_confirm_minutes, minutes),
                             )
-                            androidx.compose.foundation.layout.Spacer(Modifier.size(6.dp))
-                            KeyValueRow(
-                                key = stringResource(R.string.settings_confirm_credits_used),
-                                value = stringResource(R.string.settings_confirm_credits_value, creditsNeeded, balance),
-                            )
+                            if (managed) {
+                                androidx.compose.foundation.layout.Spacer(Modifier.size(6.dp))
+                                KeyValueRow(
+                                    key = stringResource(R.string.settings_confirm_credits_used),
+                                    value = stringResource(R.string.settings_confirm_credits_value, creditsNeeded, balance),
+                                )
+                            }
                             if (!canAfford) {
                                 Box(
                                     modifier = Modifier

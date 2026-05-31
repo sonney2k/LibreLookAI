@@ -36,7 +36,8 @@ class CreditRepository(private val app: Application) {
 
     /** True when the app is configured to use the managed proxy (no local API key + proxy URL set). */
     fun isManagedMode(): Boolean =
-        ApiKeyStore.get(app).isBlank() &&
+        ManagedBilling.enabled &&
+            ApiKeyStore.get(app).isBlank() &&
             BuildConfig.PROXY_BASE_URL.isNotBlank() &&
             isFirebaseAvailable()
 

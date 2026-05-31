@@ -58,7 +58,7 @@ fun CostBadge(
     val perItemCosts by PricingClient.perItemCostsState.collectAsState()
     val rates by ModelPricingClient.snapshotState.collectAsState()
     val byok = ApiKeyStore.get(ctx).isNotBlank()
-    val managedAvailable = com.librelookai.BuildConfig.PROXY_BASE_URL.isNotBlank()
+    val managedAvailable = ManagedBilling.enabled && com.librelookai.BuildConfig.PROXY_BASE_URL.isNotBlank()
 
     val items = bulkCount.coerceAtLeast(1)
     val tier: Int

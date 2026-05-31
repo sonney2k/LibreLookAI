@@ -56,6 +56,14 @@ android {
             "PROXY_BASE_URL",
             "\"${localProps.getProperty("firebase.proxy.url", "")}\"",
         )
+        // Master switch for the managed coin economy (purchase/refinancing UI + proxy billing).
+        // Default off → the Play release ships BYOK-only; flip to true (alongside a deployed
+        // proxy + Play products) to light up coin purchases without any code change.
+        buildConfigField(
+            "boolean",
+            "MANAGED_BILLING_ENABLED",
+            localProps.getProperty("managed.billing.enabled", "false").trim().ifEmpty { "false" },
+        )
         // Firebase web client ID for Google Sign-In → Firebase Auth linking
         buildConfigField(
             "String",

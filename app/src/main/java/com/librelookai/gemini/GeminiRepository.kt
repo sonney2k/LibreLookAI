@@ -94,7 +94,8 @@ class GeminiRepository(internal val app: Application) {
     }
 
     private fun isProxyMode(): Boolean =
-        resolveApiKey().isBlank() && BuildConfig.PROXY_BASE_URL.isNotBlank()
+        com.librelookai.billing.ManagedBilling.enabled &&
+            resolveApiKey().isBlank() && BuildConfig.PROXY_BASE_URL.isNotBlank()
 
     private suspend fun getFirebaseIdToken(): String? = try {
         if (FirebaseApp.getApps(app).isEmpty()) null
@@ -121,7 +122,7 @@ class GeminiRepository(internal val app: Application) {
                 .build()
         }
         val proxyBase = BuildConfig.PROXY_BASE_URL
-        if (proxyBase.isBlank()) {
+        if (proxyBase.isBlank() || !com.librelookai.billing.ManagedBilling.enabled) {
             AiEvents.emitUnavailable(R.string.ai_unavailable)
             throw AiUnavailableException(R.string.ai_unavailable)
         }
@@ -139,9 +140,10 @@ class GeminiRepository(internal val app: Application) {
         return builder.build()
     }
 
-    /** Returns false when neither BYOK key nor proxy is configured. */
+    /** Returns false when neither BYOK key nor (managed) proxy is configured. */
     internal fun isConfigured(): Boolean =
-        resolveApiKey().isNotBlank() || BuildConfig.PROXY_BASE_URL.isNotBlank()
+        resolveApiKey().isNotBlank() ||
+            (com.librelookai.billing.ManagedBilling.enabled && BuildConfig.PROXY_BASE_URL.isNotBlank())
 
     /**
      * Read [imageFile], downscale so max(width, height) ≤ 1280 if needed,
