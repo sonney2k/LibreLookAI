@@ -127,7 +127,7 @@
     <string name="settings_style_placeholder">תאר מה אתה אוהב ללבוש, אירועים שאתה מתלבש עבורם, צבעים מועדפים, מותגים או כל דבר אחר שעוזר להתאים אישית את המלצות האאוטפיט שלך…</string>
     <string name="settings_saved">העדפות נשמרו</string>
     <string name="settings_api_key_title">מפתח Gemini API</string>
-    <string name="settings_api_key_desc">כל תכונות הבינה המלאכותית דורשות מפתח Gemini API. קבל מפתח בחינם ב-aistudio.google.com. המפתח שלך מאוחסן רק במכשיר זה.</string>
+    <string name="settings_api_key_desc">כל יכולות ה-AI דורשות מפתח Gemini API (הוסף כאן או בהגדרה הראשונית). מפתח חינמי מכסה תיוג והצעות תלבושות; מדידה וירטואלית והסרת רקע דורשות מפתח בתשלום עם חיוב מופעל. המפתח נשמר במכשיר זה בלבד.</string>
     <string name="settings_api_key_label">מפתח API</string>
     <string name="settings_api_key_placeholder">AIza…</string>
     <string name="settings_data_tags_title">תגי מלתחה</string>
@@ -661,7 +661,7 @@
     <string name="about_cost_text">הצעת אאוטפיט: 2 קרדיטים</string>
     <string name="about_cost_travel">רשימת אריזה / ניתוח: 2 קרדיטים</string>
     <string name="about_byok_title">השתמש במפתח משלך (BYOK)</string>
-    <string name="about_byok_desc">השתמש במפתח Gemini משלך כדי להימנע מעלויות.</string>
+    <string name="about_byok_desc">LibreLookAI פועל עם מפתח Gemini API שלך:\n\n1. עבור אל aistudio.google.com\n2. הקש Get API key → Create API key\n3. העתק את המפתח (מתחיל ב-AIza…)\n4. הדבק אותו בהגדרות → מתקדם → מפתח Gemini API\n\nמפתח חינמי מכסה תיוג והצעות תלבושות. מדידה וירטואלית והסרת רקע יוצרות תמונות ולכן דורשות מפתח בתשלום עם חיוב מופעל — Google עדיין גובה רק על מה שאתה משתמש. המפתח שלך נשמר במכשיר זה בלבד ומשמש ישירות מול Google — שום נתון לא עובר דרך השרתים שלנו.</string>
     <string name="about_credits_title">קרדיטים (מצב מנוהל)</string>
     <string name="about_credits_desc">מערכת קרדיטים.</string>
 
@@ -980,8 +980,8 @@
     <string name="settings_rebg_row_sub">חתוך מחדש כל פריט מהתמונה שלו. עולה ~6 קרדיטים לפריט.</string>
     <string name="settings_cutout_row">תקן פיקסלי רקע שנותרו</string>
     <string name="settings_cutout_row_sub">מחפש פריטים שבהם החיתוך פספס פינה.</string>
-    <string name="settings_advanced_byok_title">השתמש במפתח AI חינמי משלך</string>
-    <string name="settings_advanced_byok_body">Google מעניקה מכסה חינמית נדיבה. השג מפתח ב-aistudio.google.com והדבק אותו למטה. אנו שומרים אותו רק בטלפון הזה.</string>
+    <string name="settings_advanced_byok_title">מפתח Gemini API שלך</string>
+    <string name="settings_advanced_byok_body">כל ה-AI פועל עם מפתח Gemini שלך. מפתח חינמי מכסה תיוג והצעות תלבושות; מדידה וירטואלית והסרת רקע דורשות מפתח בתשלום עם חיוב מופעל. קבל אחד ב-aistudio.google.com והדבק אותו למטה — אנחנו שומרים אותו רק בטלפון הזה.</string>
     <string name="settings_advanced_byok_saved_badge">נשמר</string>
     <string name="settings_advanced_byok_change">שינוי</string>
     <string name="settings_advanced_byok_clear">ניקוי</string>
@@ -1050,4 +1050,13 @@
 
     <!-- Needs-tagging badge -->
     <string name="wardrobe_needs_tagging">דרוש תיוג</string>
+
+    <!-- BYOK API-key onboarding step -->
+    <string name="onboarding_apikey_title">הוסף את מפתח Gemini API שלך</string>
+    <string name="onboarding_apikey_body">LibreLookAI פועל על Google Gemini באמצעות מפתח ה-API שלך. הוא נשמר במכשיר זה בלבד ומשמש ישירות מול Google — שום דבר לא עובר דרך השרתים שלנו.</string>
+    <string name="onboarding_apikey_tiers">מפתח חינמי כבר מכסה תיוג והצעות תלבושות. מדידה וירטואלית והסרת רקע יוצרות תמונות ולכן דורשות מפתח בתשלום עם חיוב מופעל — Google עדיין גובה רק על השימוש בפועל.</string>
+    <string name="onboarding_apikey_get">קבלת מפתח API</string>
+    <string name="onboarding_apikey_billing">הפעלת חיוב (למדידה)</string>
+    <string name="onboarding_apikey_saved">המפתח נשמר במכשיר זה ✓</string>
+    <string name="onboarding_apikey_offline">התחבר לאינטרנט כדי לפתוח את Google AI Studio. עדיין אפשר להדביק מפתח שכבר יש לך.</string>
 </resources>
