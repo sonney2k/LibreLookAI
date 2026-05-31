@@ -1,3 +1,17 @@
+### LibreLookAI v2.0.1 Release Notes
+
+#### Bring your own Gemini key
+- This build runs entirely on your own Google Gemini API key. In-app credit purchases and balances are turned off and hidden — there's nothing to buy and no coin counter to watch. Add your key in Settings ▸ Advanced and every AI feature works directly against your own Gemini account.
+
+#### Outfits & trips show all their items again
+- Fixed outfit cards dropping some of their pieces — a newly created outfit (and a few existing ones) could show fewer items than it actually contained. All of an outfit's items now appear reliably, including ones you just added.
+- The same fix applies to trips: trip day cards and the trip viewer now resolve every item, even right after you add it.
+
+#### Under the hood
+- Minor internal cleanups; no other behaviour changes.
+
+---
+
 ### LibreLookAI v2.0.0 Release Notes
 
 #### A guided welcome
