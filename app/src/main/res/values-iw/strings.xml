@@ -1059,4 +1059,7 @@
     <string name="onboarding_apikey_billing">הפעלת חיוב (למדידה)</string>
     <string name="onboarding_apikey_saved">המפתח נשמר במכשיר זה ✓</string>
     <string name="onboarding_apikey_offline">התחבר לאינטרנט כדי לפתוח את Google AI Studio. עדיין אפשר להדביק מפתח שכבר יש לך.</string>
+
+    <!-- Optimistic move rollback -->
+    <string name="wardrobe_move_failed">לא ניתן היה להעביר חלק מהפריטים. הם שוחזרו.</string>
 </resources>

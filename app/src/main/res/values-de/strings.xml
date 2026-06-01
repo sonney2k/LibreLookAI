@@ -1124,4 +1124,7 @@
     <string name="onboarding_apikey_billing">Abrechnung aktivieren (für Anprobe)</string>
     <string name="onboarding_apikey_saved">Schlüssel auf diesem Gerät gespeichert ✓</string>
     <string name="onboarding_apikey_offline">Stelle eine Internetverbindung her, um Google AI Studio zu öffnen. Einen vorhandenen Schlüssel kannst du trotzdem einfügen.</string>
+
+    <!-- Optimistic move rollback -->
+    <string name="wardrobe_move_failed">Einige Artikel konnten nicht verschoben werden. Sie wurden wiederhergestellt.</string>
 </resources>

@@ -1028,4 +1028,7 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="onboarding_apikey_billing">Számlázás engedélyezése (felpróbáláshoz)</string>
     <string name="onboarding_apikey_saved">Kulcs elmentve ezen az eszközön ✓</string>
     <string name="onboarding_apikey_offline">Csatlakozzon az internethez a Google AI Studio megnyitásához. Egy már meglévő kulcsot így is beilleszthet.</string>
+
+    <!-- Optimistic move rollback -->
+    <string name="wardrobe_move_failed">Néhány elemet nem sikerült áthelyezni. Visszaállítottuk őket.</string>
 </resources>

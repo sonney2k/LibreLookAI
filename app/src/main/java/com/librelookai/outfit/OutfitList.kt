@@ -486,7 +486,11 @@ internal fun OutfitListScreen(
                         ),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
-                        itemsIndexed(displayedStyles, key = { _, s -> s.id }) { _, style ->
+                        itemsIndexed(
+                            displayedStyles,
+                            key = { _, s -> s.id },
+                            contentType = { _, _ -> "outfit_card" },
+                        ) { _, style ->
                             OutfitCard(
                                 style = style,
                                 itemsById = itemsById,

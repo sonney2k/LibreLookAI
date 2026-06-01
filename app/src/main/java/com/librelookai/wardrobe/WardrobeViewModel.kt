@@ -761,8 +761,8 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                             null else s.processingImageId,
                     )
                 }
-                // Sidecar is saved inside processQueuedImage; update local cache here
-                folderId?.let { id -> saveLocalCache(id, _state.value.images) }
+                // The finished item is persisted to its own closet cache inside
+                // processQueuedImage (keyed off job.folderId), so nothing to do here.
             } finally {
                 releaseJobWakeLock()
             }
@@ -847,6 +847,12 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             if (s.processingImageId == cutoutDrive.id || s.processingImageId == job.driveId)
                 s.copy(processingImageId = null) else s
         }
+
+        // Persist the finished item to ITS OWN closet cache (keyed off job.folderId), directly
+        // editing the cache file — correct even if the user switched closets mid-job. Replaces
+        // the stale raw-id entry written at upload time with the final cutout entry.
+        _state.value.images.firstOrNull { it.driveId == cutoutDrive.id }
+            ?.let { persistItemToCache(job.folderId, it, staleDriveId = job.driveId) }
     }
 
     // ---------- Navigation ----------
@@ -1022,17 +1028,33 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     // ---------- Move to another location ----------
 
     fun moveItemsToLocation(driveIds: Set<String>, targetFolderId: String) {
-        val toMove = _state.value.images.filter { it.driveId in driveIds }
-        if (toMove.isEmpty()) return
-        viewModelScope.launch {
-            _state.update { it.copy(isMoving = true, selectedIds = emptySet(), error = null) }
+        // Skip no-op moves (item already in the target closet) but still clear the selection.
+        val toMove = _state.value.images
+            .filter { it.driveId in driveIds }
+            .filter { (it.folderId.ifEmpty { folderId }) != targetFolderId }
+        if (toMove.isEmpty()) { _state.update { it.copy(selectedIds = emptySet()) }; return }
+        val movingIds = toMove.map { it.driveId }.toSet()
+        val sourceFolderIds = toMove.mapNotNull { it.folderId.ifEmpty { folderId } }.toSet()
 
-            // Move all items in parallel; within each item move cutout + original + sidecar in parallel
-            val successfulIds = coroutineScope {
+        // ---- Optimistic local update (synchronous, before any network call) ----
+        // Drop the items from the source view + source caches and register them in the target
+        // closet's cache immediately, so switching to the target shows them instantly from the
+        // Phase 1 cache instead of waiting ~1 min for Drive's eventually-consistent listing.
+        _state.update { s ->
+            s.copy(isMoving = true, selectedIds = emptySet(), error = null,
+                images = s.images.filter { it.driveId !in movingIds })
+        }
+        sourceFolderIds.forEach { fid ->
+            saveLocalCache(fid, _state.value.images.filter { it.folderId == fid })
+        }
+        notifyItemsMovedTo(targetFolderId, toMove.map { it.copy(folderId = targetFolderId) })
+
+        // ---- Sync to Drive in the background; roll back items that fail ----
+        viewModelScope.launch {
+            val failed = coroutineScope {
                 toMove.map { item ->
                     async {
-                        val sourceFolderId = item.folderId.ifEmpty { folderId } ?: return@async null
-                        if (sourceFolderId == targetFolderId) return@async item.driveId
+                        val sourceFolderId = item.folderId.ifEmpty { folderId } ?: return@async item
                         runCatching {
                             val moveOriginal = item.originalDriveId?.let { origId ->
                                 async { runCatching { drive.moveFile(origId, sourceFolderId, targetFolderId) } }
@@ -1043,23 +1065,82 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                             drive.moveFile(item.driveId, sourceFolderId, targetFolderId)
                             moveOriginal?.await()
                             moveSidecar?.await()
-                        }.onFailure { e ->
-                            _state.update { it.copy(error = e.message) }
-                        }.getOrNull()?.let { item.driveId }
+                        }.fold(onSuccess = { null }, onFailure = { it })?.let { item }
                     }
-                }.awaitAll().filterNotNull().toSet()
+                }.awaitAll().filterNotNull()
             }
-
-            if (successfulIds.isNotEmpty()) {
-                val movedItems = toMove.filter { it.driveId in successfulIds }
-                val affectedFolderIds = movedItems.map { it.folderId }.filter { it.isNotEmpty() }.toSet()
-                _state.update { s -> s.copy(images = s.images.filter { it.driveId !in successfulIds }) }
-                affectedFolderIds.forEach { fid ->
-                    saveLocalCache(fid, _state.value.images.filter { it.folderId == fid })
-                }
-                notifyItemsMovedTo(targetFolderId, movedItems.map { it.copy(folderId = targetFolderId) })
-            }
+            if (failed.isNotEmpty()) rollbackMove(failed, targetFolderId)
             _state.update { it.copy(isMoving = false) }
+        }
+    }
+
+    /**
+     * Undoes the optimistic part of [moveItemsToLocation] for the [failed] items: removes them
+     * from the target closet's cache + recently-moved markers, restores them to their source
+     * caches, and (when the active view should show them) splices them back into state. Edits
+     * the cache files directly rather than rebuilding from `state.images`, since the user may
+     * have switched closets while the Drive move was in flight.
+     */
+    private fun rollbackMove(failed: List<DriveImage>, targetFolderId: String) {
+        val ids = failed.map { it.driveId }.toSet()
+        ids.forEach { recentlyMovedItems.remove(it) }
+        removeFromCacheFile(targetFolderId, ids)
+        failed.groupBy { it.folderId }.forEach { (sourceFolderId, items) ->
+            if (sourceFolderId.isNotEmpty()) addToCacheFile(sourceFolderId, items)
+        }
+        // Re-show in the current view when it covers a source folder of a failed item.
+        val showHere = failed.filter { folderId == it.folderId || allFolderIds?.contains(it.folderId) == true }
+        if (showHere.isNotEmpty()) {
+            _state.update { s ->
+                val present = s.images.map { it.driveId }.toSet()
+                s.copy(images = s.images + showHere.filter { it.driveId !in present })
+            }
+        }
+        _state.update { it.copy(error = getApplication<Application>().getString(R.string.wardrobe_move_failed)) }
+        refreshAllLocationImagesState()
+    }
+
+    /** Removes the given driveIds from a per-folder cache file in place (no-op if absent). */
+    private fun removeFromCacheFile(fid: String, ids: Set<String>) {
+        runCatching {
+            val cacheFile = localCacheFile(fid)
+            if (!cacheFile.exists()) return
+            val existing = gson.fromJson(cacheFile.readText(), LocalCache::class.java).items
+            cacheFile.writeText(gson.toJson(LocalCache(existing.filter { it.driveId !in ids })))
+        }
+    }
+
+    /**
+     * Upserts a single finished item into its own closet's cache file [fid], directly editing
+     * the file (not rebuilding from `state.images`) so it is correct even if the user switched
+     * closets while the item was being processed. Drops any stale entry under [staleDriveId]
+     * (the pre-cutout raw id) and the item's own id before re-adding the fresh entry.
+     */
+    internal fun persistItemToCache(fid: String, item: DriveImage, staleDriveId: String? = null) {
+        runCatching {
+            val cacheFile = localCacheFile(fid)
+            val existing: List<LocalCacheEntry> = if (cacheFile.exists())
+                runCatching { gson.fromJson(cacheFile.readText(), LocalCache::class.java).items }.getOrDefault(emptyList())
+            else emptyList()
+            val drop = setOfNotNull(staleDriveId, item.driveId)
+            val entry = LocalCacheEntry(item.driveId, item.name, item.tags, item.originalDriveId, item.sidecarDriveId, item.createdTimeMs)
+            cacheFile.writeText(gson.toJson(LocalCache(existing.filter { it.driveId !in drop } + entry)))
+        }
+        refreshAllLocationImagesState()
+    }
+
+    /** Appends the given items to a per-folder cache file, skipping ids already present. */
+    private fun addToCacheFile(fid: String, items: List<DriveImage>) {
+        runCatching {
+            val cacheFile = localCacheFile(fid)
+            val existing: List<LocalCacheEntry> = if (cacheFile.exists())
+                runCatching { gson.fromJson(cacheFile.readText(), LocalCache::class.java).items }.getOrDefault(emptyList())
+            else emptyList()
+            val have = existing.map { it.driveId }.toSet()
+            val additions = items.filter { it.driveId !in have }.map {
+                LocalCacheEntry(it.driveId, it.name, it.tags, it.originalDriveId, it.sidecarDriveId, it.createdTimeMs)
+            }
+            if (additions.isNotEmpty()) cacheFile.writeText(gson.toJson(LocalCache(existing + additions)))
         }
     }
 
@@ -1096,6 +1177,20 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 _state.update { s -> s.copy(images = s.images + toAdd) }
             }
         }
+        refreshAllLocationImagesState()
+    }
+
+    /**
+     * Reverses an optimistic [notifyItemsMovedTo] for items whose move ultimately failed on Drive
+     * (e.g. a shopping→closet move that errored). Drops the recently-moved markers, removes the
+     * items from the target closet's cache + the visible list, and refreshes the snapshot — so a
+     * failed move never leaves a ghost item in the destination closet. Callable from other VMs.
+     */
+    fun undoItemsMovedTo(targetFolderId: String, ids: Set<String>) {
+        if (ids.isEmpty() || targetFolderId.isEmpty()) return
+        ids.forEach { recentlyMovedItems.remove(it) }
+        removeFromCacheFile(targetFolderId, ids)
+        _state.update { s -> s.copy(images = s.images.filter { it.driveId !in ids }) }
         refreshAllLocationImagesState()
     }
 
@@ -1172,24 +1267,27 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     fun deleteSelected() = deleteItems(_state.value.selectedIds)
 
     fun deleteItems(driveIds: Set<String>) {
-        val toDelete = driveIds
-        if (toDelete.isEmpty()) return
-        val items = _state.value.images.filter { it.driveId in toDelete }
+        if (driveIds.isEmpty()) return
+        val items = _state.value.images.filter { it.driveId in driveIds }
+        if (items.isEmpty()) { _state.update { it.copy(selectedIds = emptySet()) }; return }
+        // Resolve each item's owning closet (folderId is null in All-locations mode, so fall
+        // back to the active folder) — a multi-closet selection can span several caches.
+        val affectedFolderIds = items.mapNotNull { it.folderId.ifEmpty { folderId } }.toSet()
+
+        // ---- Optimistic local update (synchronous): vanish from the view + every affected
+        // closet cache immediately, so the deletion is instant and consistent across closets. ----
+        driveIds.forEach { recentlyMovedItems.remove(it) }
+        _state.update { s -> s.copy(selectedIds = emptySet(), images = s.images.filter { it.driveId !in driveIds }) }
+        affectedFolderIds.forEach { fid -> removeFromCacheFile(fid, driveIds) }
+        refreshAllLocationImagesState()
+
+        // ---- Delete from Drive in the background (best-effort, as before) ----
         viewModelScope.launch {
-            val id = folderId
-            _state.update { it.copy(isUploading = true, selectedIds = emptySet()) }
             items.forEach { img ->
                 runCatching { drive.deleteFile(img.driveId) }
                 img.originalDriveId?.let { origId -> runCatching { drive.deleteFile(origId) } }
                 img.sidecarDriveId?.let { sId -> runCatching { drive.deleteFile(sId) } }
             }
-            _state.update { s ->
-                s.copy(
-                    isUploading = false,
-                    images = s.images.filter { it.driveId !in toDelete }
-                )
-            }
-            if (id != null) saveLocalCache(id, _state.value.images)
         }
     }
 }

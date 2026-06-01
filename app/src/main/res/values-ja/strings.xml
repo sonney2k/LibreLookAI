@@ -1055,4 +1055,7 @@
     <string name="onboarding_apikey_billing">請求を有効にする（試着用）</string>
     <string name="onboarding_apikey_saved">キーをこの端末に保存しました ✓</string>
     <string name="onboarding_apikey_offline">Google AI Studio を開くにはインターネットに接続してください。すでにお持ちのキーは貼り付けできます。</string>
+
+    <!-- Optimistic move rollback -->
+    <string name="wardrobe_move_failed">一部のアイテムを移動できませんでした。元に戻しました。</string>
 </resources>

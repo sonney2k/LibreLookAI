@@ -1055,4 +1055,7 @@
     <string name="onboarding_apikey_billing">결제 사용 설정(피팅용)</string>
     <string name="onboarding_apikey_saved">이 기기에 키가 저장됨 ✓</string>
     <string name="onboarding_apikey_offline">Google AI Studio를 열려면 인터넷에 연결하세요. 이미 가지고 있는 키는 붙여넣을 수 있습니다.</string>
+
+    <!-- Optimistic move rollback -->
+    <string name="wardrobe_move_failed">일부 항목을 이동하지 못했습니다. 복원되었습니다.</string>
 </resources>

@@ -1055,4 +1055,7 @@
     <string name="onboarding_apikey_billing">Ενεργοποίηση χρέωσης (για τη δοκιμή)</string>
     <string name="onboarding_apikey_saved">Το κλειδί αποθηκεύτηκε σε αυτή τη συσκευή ✓</string>
     <string name="onboarding_apikey_offline">Συνδεθείτε στο διαδίκτυο για να ανοίξετε το Google AI Studio. Μπορείτε ακόμη να επικολλήσετε ένα κλειδί που ήδη έχετε.</string>
+
+    <!-- Optimistic move rollback -->
+    <string name="wardrobe_move_failed">Δεν ήταν δυνατή η μετακίνηση ορισμένων στοιχείων. Επαναφέρθηκαν.</string>
 </resources>

@@ -1055,4 +1055,7 @@
     <string name="onboarding_apikey_billing">Aktivovat fakturaci (pro zkoušení)</string>
     <string name="onboarding_apikey_saved">Klíč uložen v tomto zařízení ✓</string>
     <string name="onboarding_apikey_offline">Připojte se k internetu a otevřete Google AI Studio. Klíč, který už máte, můžete vložit i tak.</string>
+
+    <!-- Optimistic move rollback -->
+    <string name="wardrobe_move_failed">Některé položky se nepodařilo přesunout. Byly obnoveny.</string>
 </resources>

@@ -1055,4 +1055,7 @@
     <string name="onboarding_apikey_billing">I-enable ang billing (para sa try-on)</string>
     <string name="onboarding_apikey_saved">Na-save ang key sa device na ito ✓</string>
     <string name="onboarding_apikey_offline">Kumonekta sa internet para buksan ang Google AI Studio. Puwede mo pa ring i-paste ang key na mayroon ka na.</string>
+
+    <!-- Optimistic move rollback -->
+    <string name="wardrobe_move_failed">Hindi nailipat ang ilang item. Naibalik na ang mga ito.</string>
 </resources>

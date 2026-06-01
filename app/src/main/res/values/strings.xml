@@ -268,6 +268,7 @@
     <string name="wardrobe_delete_cascade_tryons">Also delete %d try-on(s) with these items</string>
     <string name="wardrobe_move_to">Move to</string>
     <string name="wardrobe_move_to_title">Move %d item(s) to</string>
+    <string name="wardrobe_move_failed">Couldn\'t move some items. They\'ve been restored.</string>
     <string name="wardrobe_sort">Sort</string>
     <string name="wardrobe_sort_newest">Newest first</string>
     <string name="wardrobe_sort_oldest">Oldest first</string>

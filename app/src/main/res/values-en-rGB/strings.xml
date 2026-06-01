@@ -1055,4 +1055,7 @@
     <string name="onboarding_apikey_billing">Enable billing (for try-on)</string>
     <string name="onboarding_apikey_saved">Key saved on this device ✓</string>
     <string name="onboarding_apikey_offline">Connect to the internet to open Google AI Studio. You can still paste a key you already have.</string>
+
+    <!-- Optimistic move rollback -->
+    <string name="wardrobe_move_failed">Couldn\'t move some items. They\'ve been restored.</string>
 </resources>

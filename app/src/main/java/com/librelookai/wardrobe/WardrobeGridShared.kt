@@ -225,11 +225,20 @@ internal fun WardrobeZoomableItemGrid(
             selectedIds = selectedIds,
             onClick = onClick,
             onLongClick = onLongClick,
-            modifier = Modifier.fillMaxSize().graphicsLayer {
-                clip = false
-                scaleX = pinchVisualScale
-                scaleY = pinchVisualScale
-            },
+            // Only wrap the grid in a graphicsLayer while a pinch is actually in progress. A
+            // persistent render layer over the lazy grid (a SubcomposeLayout) makes it skip
+            // composing items that become visible after a data swap — e.g. the Phase 1→Phase 2
+            // load — until a scroll forces a remeasure, which manifests as "items missing until
+            // you scroll". At rest (scale == 1f) the layer earns nothing, so we drop it.
+            modifier = Modifier
+                .fillMaxSize()
+                .then(
+                    if (pinchVisualScale != 1f) Modifier.graphicsLayer {
+                        clip = false
+                        scaleX = pinchVisualScale
+                        scaleY = pinchVisualScale
+                    } else Modifier,
+                ),
             gridState = gridState,
             cellSizeDp = cellSizeDp.dp,
             locationLookup = locationLookup,
@@ -271,7 +280,13 @@ internal fun WardrobeItemGrid(
         columns = GridCells.Adaptive(cellSizeDp),
         modifier = modifier.scrollbar(gridState),
     ) {
-        itemsIndexed(uniqueImages, key = { _, img -> img.driveId }) { index, image ->
+        itemsIndexed(
+            uniqueImages,
+            key = { _, img -> img.driveId },
+            // All tiles share one slot type so the lazy layout reuses/measures them predictably
+            // across the Phase 1→Phase 2 list swap.
+            contentType = { _, _ -> "wardrobe_tile" },
+        ) { index, image ->
             WardrobeTile(
                 image = image,
                 isSelected = image.driveId in selectedIds,

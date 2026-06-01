@@ -201,7 +201,19 @@ class ShoppingClosetViewModel(app: Application) : AndroidViewModel(app) {
 
     // ---------- Add ----------
 
-    fun moveToCloset(driveIds: Set<String>, targetFolderId: String, onMoved: (List<DriveImage>) -> Unit) {
+    /**
+     * Moves wishlist items into a real closet. Optimistic: removes them from the shopping view +
+     * cache and hands the moved items to [onMoved] (which registers them in the destination
+     * wardrobe cache) *before* any Drive call, so they appear in the target closet instantly.
+     * Drive moves run in the background; on failure the items are restored to shopping and
+     * [onMoveFailed] is invoked with their ids so the caller can undo the wardrobe registration.
+     */
+    fun moveToCloset(
+        driveIds: Set<String>,
+        targetFolderId: String,
+        onMoved: (List<DriveImage>) -> Unit,
+        onMoveFailed: (Set<String>) -> Unit = {},
+    ) {
         if (driveIds.isEmpty()) { onMoved(emptyList()); return }
         val sourceFolderId = shoppingFolderId ?: run { onMoved(emptyList()); return }
         if (sourceFolderId == targetFolderId) {
@@ -211,10 +223,19 @@ class ShoppingClosetViewModel(app: Application) : AndroidViewModel(app) {
 
         val toMove = _state.value.items.filter { it.driveId in driveIds }
         if (toMove.isEmpty()) { onMoved(emptyList()); return }
+        val movingIds = toMove.map { it.driveId }.toSet()
 
+        // ---- Optimistic local update (synchronous, before any network call) ----
+        _state.update { s ->
+            s.copy(isMoving = true, selectedIds = emptySet(), error = null,
+                items = s.items.filter { it.driveId !in movingIds })
+        }
+        saveLocalCache(sourceFolderId, _state.value.items)
+        onMoved(toMove.map { it.copy(folderId = targetFolderId) })
+
+        // ---- Drive moves in the background; restore items that fail ----
         viewModelScope.launch {
-            _state.update { it.copy(isMoving = true, selectedIds = emptySet(), error = null) }
-            val movedIds = coroutineScope {
+            val failed = coroutineScope {
                 toMove.map { item ->
                     async {
                         runCatching {
@@ -227,21 +248,23 @@ class ShoppingClosetViewModel(app: Application) : AndroidViewModel(app) {
                             drive.moveFile(item.driveId, sourceFolderId, targetFolderId)
                             moveOriginal?.await()
                             moveSidecar?.await()
-                        }.onFailure { e ->
-                            Log.w(TAG, "move failed for ${item.driveId}", e)
-                            _state.update { it.copy(error = e.message) }
-                        }.getOrNull()?.let { item.driveId }
+                        }.fold(onSuccess = { null }, onFailure = { e ->
+                            Log.w(TAG, "move failed for ${item.driveId}", e); item
+                        })
                     }
-                }.awaitAll().filterNotNull().toSet()
+                }.awaitAll().filterNotNull()
             }
-            val movedItems = toMove.filter { it.driveId in movedIds }
-                .map { it.copy(folderId = targetFolderId) }
-            if (movedIds.isNotEmpty()) {
-                _state.update { s -> s.copy(items = s.items.filter { it.driveId !in movedIds }) }
+            if (failed.isNotEmpty()) {
+                val failedIds = failed.map { it.driveId }.toSet()
+                _state.update { s ->
+                    val present = s.items.map { it.driveId }.toSet()
+                    s.copy(items = s.items + failed.filter { it.driveId !in present },
+                        error = getApplication<Application>().getString(R.string.wardrobe_move_failed))
+                }
                 saveLocalCache(sourceFolderId, _state.value.items)
+                onMoveFailed(failedIds)
             }
             _state.update { it.copy(isMoving = false) }
-            onMoved(movedItems)
         }
     }
 
@@ -249,9 +272,12 @@ class ShoppingClosetViewModel(app: Application) : AndroidViewModel(app) {
         if (driveIds.isEmpty()) return
         val folderId = shoppingFolderId ?: return
         val toDelete = _state.value.items.filter { it.driveId in driveIds }
-        if (toDelete.isEmpty()) return
+        if (toDelete.isEmpty()) { _state.update { it.copy(selectedIds = emptySet()) }; return }
+        // Optimistic: vanish from the view + cache immediately, then delete from Drive in the
+        // background (best-effort, matching the previous fault tolerance).
+        _state.update { s -> s.copy(selectedIds = emptySet(), error = null, items = s.items.filter { it.driveId !in driveIds }) }
+        saveLocalCache(folderId, _state.value.items)
         viewModelScope.launch {
-            _state.update { it.copy(selectedIds = emptySet(), error = null) }
             toDelete.forEach { item ->
                 runCatching {
                     drive.deleteFile(item.driveId)
@@ -259,8 +285,6 @@ class ShoppingClosetViewModel(app: Application) : AndroidViewModel(app) {
                     item.sidecarDriveId?.let { drive.deleteFile(it) }
                 }.onFailure { Log.w(TAG, "delete failed for ${item.driveId}", it) }
             }
-            _state.update { s -> s.copy(items = s.items.filter { it.driveId !in driveIds }) }
-            saveLocalCache(folderId, _state.value.items)
         }
     }
 

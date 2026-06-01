@@ -1028,4 +1028,7 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="onboarding_apikey_billing">Bật thanh toán (cho thử đồ)</string>
     <string name="onboarding_apikey_saved">Đã lưu khóa trên thiết bị này ✓</string>
     <string name="onboarding_apikey_offline">Kết nối internet để mở Google AI Studio. Bạn vẫn có thể dán khóa mình đã có.</string>
+
+    <!-- Optimistic move rollback -->
+    <string name="wardrobe_move_failed">Không thể di chuyển một số mục. Chúng đã được khôi phục.</string>
 </resources>

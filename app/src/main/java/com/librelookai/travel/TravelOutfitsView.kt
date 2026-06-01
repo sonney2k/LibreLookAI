@@ -261,7 +261,7 @@ internal fun TravelOutfitsView(
                         modifier = Modifier.fillMaxSize(),
                     ) {
                         if (displayedTrips.isNotEmpty()) {
-                            items(displayedTrips, key = { it.id }) { trip ->
+                            items(displayedTrips, key = { it.id }, contentType = { "trip_card" }) { trip ->
                                 TripCard(
                                     trip = trip,
                                     outfitsById = outfitsById,
@@ -279,7 +279,7 @@ internal fun TravelOutfitsView(
                                     modifier = Modifier.padding(top = 8.dp),
                                 )
                             }
-                            items(displayedOrphans, key = { it.id }) { outfit ->
+                            items(displayedOrphans, key = { it.id }, contentType = { "orphan_outfit_card" }) { outfit ->
                                 TravelOutfitListCard(
                                     outfit = outfit,
                                     imagesById = imagesById,

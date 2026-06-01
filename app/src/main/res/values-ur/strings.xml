@@ -1028,4 +1028,7 @@
     <string name="onboarding_apikey_billing">بلنگ فعال کریں (ٹرائی آن کے لیے)</string>
     <string name="onboarding_apikey_saved">کلید اس ڈیوائس پر محفوظ ہو گئی ✓</string>
     <string name="onboarding_apikey_offline">Google AI Studio کھولنے کے لیے انٹرنیٹ سے منسلک ہوں۔ آپ کے پاس پہلے سے موجود کلید آپ پھر بھی پیسٹ کر سکتے ہیں۔</string>
+
+    <!-- Optimistic move rollback -->
+    <string name="wardrobe_move_failed">کچھ آئٹمز منتقل نہیں ہو سکے۔ انہیں بحال کر دیا گیا ہے۔</string>
 </resources>

@@ -1028,4 +1028,7 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="onboarding_apikey_billing">Activează facturarea (pentru probă)</string>
     <string name="onboarding_apikey_saved">Cheie salvată pe acest dispozitiv ✓</string>
     <string name="onboarding_apikey_offline">Conectează-te la internet pentru a deschide Google AI Studio. Poți lipi în continuare o cheie pe care o ai deja.</string>
+
+    <!-- Optimistic move rollback -->
+    <string name="wardrobe_move_failed">Unele articole nu au putut fi mutate. Au fost restaurate.</string>
 </resources>

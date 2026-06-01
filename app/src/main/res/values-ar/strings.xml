@@ -1055,4 +1055,7 @@
     <string name="onboarding_apikey_billing">تفعيل الفوترة (للتجربة الافتراضية)</string>
     <string name="onboarding_apikey_saved">تم حفظ المفتاح على هذا الجهاز ✓</string>
     <string name="onboarding_apikey_offline">اتصل بالإنترنت لفتح Google AI Studio. لا يزال بإمكانك لصق مفتاح لديك بالفعل.</string>
+
+    <!-- Optimistic move rollback -->
+    <string name="wardrobe_move_failed">تعذّر نقل بعض العناصر. تمت استعادتها.</string>
 </resources>

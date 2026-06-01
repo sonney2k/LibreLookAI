@@ -1055,4 +1055,7 @@
     <string name="onboarding_apikey_billing">Aktiver fakturering (for prøving)</string>
     <string name="onboarding_apikey_saved">Nøkkel lagret på denne enheten ✓</string>
     <string name="onboarding_apikey_offline">Koble til internett for å åpne Google AI Studio. Du kan fortsatt lime inn en nøkkel du allerede har.</string>
+
+    <!-- Optimistic move rollback -->
+    <string name="wardrobe_move_failed">Kunne ikke flytte noen elementer. De er gjenopprettet.</string>
 </resources>

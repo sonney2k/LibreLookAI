@@ -132,6 +132,22 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             .getOrDefault(emptyList())
     }
 
+    /**
+     * Mirrors the current outfit list into the per-folder local JSON caches so Phase 1 never
+     * resurrects deleted outfits or loses edits after a relaunch. Call after every successful
+     * mutation (create / edit / delete) — without this, only the Phase 2 loader wrote the cache,
+     * so a kill-after-edit left the cache stale until the next Drive sync. Uses the same
+     * per-folder filter as the Drive writes so the cache matches Drive exactly.
+     */
+    private fun refreshOutfitsLocalCache() {
+        val fids = allFolderIds ?: listOfNotNull(folderId)
+        val styles = _state.value.outfits
+        fids.forEach { fid ->
+            val folderStyles = styles.filter { it.folderId == fid || it.folderId.isEmpty() }
+            runCatching { outfitsLocalCacheFile(fid).writeText(gson.toJson(folderStyles)) }
+        }
+    }
+
     fun loadOutfits() {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, error = null) }
@@ -265,6 +281,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 drive.saveOutfitsJson(id, gson.toJson(updated))
             }.onSuccess {
                 _state.update { it.copy(outfits = updated, pendingScrollOutfitId = newOutfit.id) }
+                refreshOutfitsLocalCache()
                 onDone(true)
             }.onFailure { e ->
                 _state.update { it.copy(error = e.message) }
@@ -291,6 +308,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 drive.saveOutfitsJson(id, gson.toJson(updated))
             }.onSuccess {
                 _state.update { it.copy(outfits = updated) }
+                refreshOutfitsLocalCache()
                 onDone(true)
             }.onFailure { e ->
                 _state.update { it.copy(error = e.message) }
@@ -337,6 +355,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 }
             }.onSuccess {
                 _state.update { it.copy(outfits = updated) }
+                refreshOutfitsLocalCache()
                 onDone(true)
             }.onFailure { e ->
                 _state.update { it.copy(error = e.message) }
@@ -370,6 +389,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 }
             }.onSuccess {
                 _state.update { it.copy(outfits = updated) }
+                refreshOutfitsLocalCache()
                 onDone(true)
             }.onFailure { e ->
                 _state.update { it.copy(error = e.message) }
@@ -398,6 +418,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 }
             }.onSuccess {
                 _state.update { it.copy(outfits = updated) }
+                refreshOutfitsLocalCache()
                 onDone(true)
             }.onFailure { e ->
                 _state.update { it.copy(error = e.message) }
@@ -461,6 +482,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 drive.saveOutfitsJson(saveId, gson.toJson(folderStyles))
             }.onSuccess {
                 _state.update { it.copy(outfits = updated, pendingWearOutfitId = edited.id) }
+                refreshOutfitsLocalCache()
                 closeComposer()
                 onDone(true)
             }.onFailure { e ->
@@ -480,6 +502,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 drive.saveOutfitsJson(id, gson.toJson(updated))
             }.onSuccess {
                 _state.update { it.copy(outfits = updated) }
+                refreshOutfitsLocalCache()
             }.onFailure { e ->
                 _state.update { it.copy(error = e.message) }
             }
@@ -519,6 +542,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 }
             }.onSuccess {
                 _state.update { it.copy(outfits = updated, selectedOutfitIds = emptySet()) }
+                refreshOutfitsLocalCache()
             }.onFailure { e ->
                 _state.update { it.copy(error = e.message) }
             }

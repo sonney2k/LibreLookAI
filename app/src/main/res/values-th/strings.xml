@@ -1028,4 +1028,7 @@
     <string name="onboarding_apikey_billing">เปิดการเรียกเก็บเงิน (สำหรับการลองสวม)</string>
     <string name="onboarding_apikey_saved">บันทึกคีย์บนอุปกรณ์นี้แล้ว ✓</string>
     <string name="onboarding_apikey_offline">เชื่อมต่ออินเทอร์เน็ตเพื่อเปิด Google AI Studio คุณยังวางคีย์ที่มีอยู่แล้วได้</string>
+
+    <!-- Optimistic move rollback -->
+    <string name="wardrobe_move_failed">ย้ายบางรายการไม่สำเร็จ ระบบได้กู้คืนรายการเหล่านั้นแล้ว</string>
 </resources>

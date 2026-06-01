@@ -1028,4 +1028,7 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="onboarding_apikey_billing">Aktifkan penagihan (untuk coba-pakai)</string>
     <string name="onboarding_apikey_saved">Kunci disimpan di perangkat ini ✓</string>
     <string name="onboarding_apikey_offline">Hubungkan ke internet untuk membuka Google AI Studio. Anda tetap bisa menempelkan kunci yang sudah dimiliki.</string>
+
+    <!-- Optimistic move rollback -->
+    <string name="wardrobe_move_failed">Beberapa item tidak dapat dipindahkan. Item telah dipulihkan.</string>
 </resources>

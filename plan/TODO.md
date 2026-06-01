@@ -13,8 +13,6 @@ Go through all screens again and check that they are really localized. I just fo
 
 Ensure that no font is smaller than the font in the filter pillow
 
-fix usability issue on wardrobe screen: moving item to different closet and then switching to that closet - it won't immediately appear on wardrobe after moving to different closet. it took almost a minute to appear. Can this be sped up?
-
 consistency: the cross to cancel taking a picture in wardrobe is in the lower right. change the cross in similarity search to use the same button and move it from top left also to lower right ??? rotate button color??
 
 security/function relevant parts of a prompts should not be appear in settings. e.g. "Place the clothing item on a pure, solid neon green background (Hex #00FF00).
@@ -22,36 +20,27 @@ security/function relevant parts of a prompts should not be appear in settings. 
 
 TODO
 ====
-create accompanying website
+continue with website re onboarding
 
-One thing I did not touch: buildPredictionPrompt (style prediction) still uses the lean 4-field payload and omits name. Want me to upgrade that one too, or leave it
-lean since it's the high-frequency "daily outfit" path? And shall I commit this to main? -> use all fields then add expert options to create outfit enabling addng what tags to consider when creating outfit - add those to preferences as well. that should be used for both identifying gaps and creatign outfits
-
-we want all options to work without Gemini so things are cost neutral. create a plan for that.
+when opening the wardrobe a tester reports that wardrobe items are missing. they however appear when scrolling down. can you fix that and can you make sure the same principle works for shopping, trips and outfits aswell? Is this related to a usability issue on wardrobe screen: moving item to different closet and then switching to that closet - it won't immediately appear on wardrobe after moving to different closet. it took almost a minute to appear. Can this be sped up? In general, what we want for users is fast & consistent interactions when starting/adding/deleting/modifying likely achieved with a local cache. Re-check the entire flow if this is currently the case and what race conditions we have here (background mode...?!?!). It seems fragile to the user if things appear/disappear/are not found. We need to be consistent to the user at all times.
 
 experiment to verify cost assumptions
 
-like outfits travel planner should also have an option to say what the AI should use (pattern, ...)
+create design for onboarding flow
 
 what can we do to reduce cost?
-is outfit generation sending the entire wardrobe or only the items that match a certain category (e.g. full body suit) that are supposed to be suggested by AI?
+
+we want all options to work without Gemini so things are cost neutral. create a plan for that.
 
 
-create onboarding flow
-
-❯ feature toggle the entire non BYOK refinancing part. Plan is to release as-is to play store and only later add the easy option for non-technical people. we will
-  add to onboarding how to get a gemini token later perhaps with screen shots. 
+like outfits travel planner should also have an option to say what the AI should use (pattern, ...)
 
 
-you did create some table with actions & prices. Make this exhaustive for all AI actions but instead of listing individual actions make them user centric - e.g. price of 100 item imports, 100 outfits generated, 100 7 day trips generated with one outfit each, 100 try-ons etc 
-
-create human readable release notes between now and v1.9.0 and release version 2.0.0, git tag commit and upload to testers in firebase
+create human readable release notes between now and v2.0.0 and release version 2.0.1, git tag commit and upload to testers in firebase
 
 Storage:
 - I noticed .jpgs from camera are just 124kB but .pngs are 450kB. Since this is on users drive folders we have to be cautious about size. Let's target 1GB - to allow for 2000-4000 wardrobe items.
 
-1. on edit trip outfit screen - clicking the pen on an outfit of a day immediately opens the edit view
-2. when viewing a trip add a wear today with calendar iconlike in outfits
 
 Feedback:
 add way to send feedback via firebase under settings -> feedback
@@ -59,18 +48,22 @@ add a feedback tab under settings move debug setting under this tab
 
 1. the colors when editing tags are not the same that we have in wardrobe filter use only the one from wardrobe filter
 
-refactor code such that each file has no more than 300-500 lines, split into logical units in general follow clean-code principles and update CLAUDE.md with that requirement
-
-localize settings screen
+Implement new feature: We are working on the refinancing/monetization aspect of the app: I want people to be able to buy coins that I then use to pay gemini cloud costs. would that work with RevenueCat (handles the money/receipts) + Firebase (database and secure Gemini API routing)? In addition, I still want to support the bring your own key option though. What is important is that the user always knows how many coins a certain operation takes (if it involves coins or BYOK tokens). So we need to somehow visually communicate the coin or cost. To be sustainable we need to add 100% to the actual cost. We need to store and use this multiplier securely.
 
 
 IN PROGRESS
 ===========
-design of setting screen
+create accompanying website
 
-Add unit tests to get to 50% test converage
+create onboarding flow
 
-Implement new feature: We are working on the refinancing/monetization aspect of the app: I want people to be able to buy coins that I then use to pay gemini cloud costs. would that work with RevenueCat (handles the money/receipts) + Firebase (database and secure Gemini API routing)? In addition, I still want to support the bring your own key option though. What is important is that the user always knows how many coins a certain operation takes (if it involves coins or BYOK tokens). So we need to somehow visually communicate the coin or cost. To be sustainable we need to add 100% to the actual cost. We need to store and use this multiplier securely.
+feature toggle the entire non BYOK refinancing part. Plan is to release as-is to play store and only later add the easy option for non-technical people. we will
+  add to onboarding how to get a gemini token later perhaps with screen shots. 
+
+localize settings screen
+
+One thing I did not touch: buildPredictionPrompt (style prediction) still uses the lean 4-field payload and omits name. Want me to upgrade that one too, or leave it
+lean since it's the high-frequency "daily outfit" path? And shall I commit this to main? -> use all fields then add expert options to create outfit enabling addng what tags to consider when creating outfit - add those to preferences as well. that should be used for both identifying gaps and creatign outfits
 
 Repair & Sync:
 - [bug] On repair & sync Preview screen buttons are outside of bottom of screen. Fix like you did in in several other cases for e.g. duplicate search.
@@ -78,6 +71,19 @@ Repair & Sync:
 
 DONE
 =====
+is outfit generation sending the entire wardrobe or only the items that match a certain category (e.g. full body suit) that are supposed to be suggested by AI?
+
+Add unit tests to get to 50% test converage
+
+design of setting screen
+
+1. on edit trip outfit screen - clicking the pen on an outfit of a day immediately opens the edit view
+2. when viewing a trip add a wear today with calendar iconlike in outfits
+
+you did create some table with actions & prices. Make this exhaustive for all AI actions but instead of listing individual actions make them user centric - e.g. price of 100 item imports, 100 outfits generated, 100 7 day trips generated with one outfit each, 100 try-ons etc 
+
+refactor code such that each file has no more than 300-500 lines, split into logical units in general follow clean-code principles and update CLAUDE.md with that requirement
+
 move wardrobe statistics to shopping page
 
 all buttons that open another page (e.g. create with AI) should have three dots after the title... or any visual marker.check all flows and make it consistent

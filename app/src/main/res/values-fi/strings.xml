@@ -1055,4 +1055,7 @@
     <string name="onboarding_apikey_billing">Ota laskutus käyttöön (sovitusta varten)</string>
     <string name="onboarding_apikey_saved">Avain tallennettu tähän laitteeseen ✓</string>
     <string name="onboarding_apikey_offline">Muodosta internetyhteys avataksesi Google AI Studion. Voit silti liittää avaimen, joka sinulla jo on.</string>
+
+    <!-- Optimistic move rollback -->
+    <string name="wardrobe_move_failed">Joitakin kohteita ei voitu siirtää. Ne on palautettu.</string>
 </resources>

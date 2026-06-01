@@ -1055,4 +1055,7 @@
     <string name="onboarding_apikey_billing">Włącz rozliczenia (do przymierzania)</string>
     <string name="onboarding_apikey_saved">Klucz zapisany na tym urządzeniu ✓</string>
     <string name="onboarding_apikey_offline">Połącz się z internetem, aby otworzyć Google AI Studio. Klucz, który już masz, i tak możesz wkleić.</string>
+
+    <!-- Optimistic move rollback -->
+    <string name="wardrobe_move_failed">Nie udało się przenieść niektórych elementów. Zostały przywrócone.</string>
 </resources>

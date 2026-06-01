@@ -1055,4 +1055,7 @@
     <string name="onboarding_apikey_billing">Activer la facturation (pour l’essayage)</string>
     <string name="onboarding_apikey_saved">Clé enregistrée sur cet appareil ✓</string>
     <string name="onboarding_apikey_offline">Connectez-vous à Internet pour ouvrir Google AI Studio. Vous pouvez tout de même coller une clé que vous possédez déjà.</string>
+
+    <!-- Optimistic move rollback -->
+    <string name="wardrobe_move_failed">Impossible de déplacer certains articles. Ils ont été restaurés.</string>
 </resources>

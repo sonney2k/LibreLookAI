@@ -192,6 +192,7 @@ fun ShoppingHelperScreen(
                 activeLocationId = locationState.activeLocationId,
                 onCaptureClick = { isClosetCapturing = true },
                 onItemsMovedToCloset = wardrobeViewModel::notifyItemsMovedTo,
+                onItemsMoveFailed = wardrobeViewModel::undoItemsMovedTo,
                 onCreateOutfitFromSelection = onCreateOutfitFromSelection,
                 onTryOnSelection = onTryOnSelection,
                 canTryOn = canTryOn,

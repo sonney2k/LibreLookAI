@@ -1055,4 +1055,7 @@
     <string name="onboarding_apikey_billing">Faturalandırmayı etkinleştir (deneme için)</string>
     <string name="onboarding_apikey_saved">Anahtar bu cihaza kaydedildi ✓</string>
     <string name="onboarding_apikey_offline">Google AI Studio\'yu açmak için internete bağlanın. Zaten sahip olduğunuz bir anahtarı yine de yapıştırabilirsiniz.</string>
+
+    <!-- Optimistic move rollback -->
+    <string name="wardrobe_move_failed">Bazı öğeler taşınamadı. Geri yüklendiler.</string>
 </resources>

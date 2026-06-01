@@ -1028,4 +1028,7 @@
     <string name="onboarding_apikey_billing">啟用帳單（供試穿使用）</string>
     <string name="onboarding_apikey_saved">金鑰已儲存在此裝置 ✓</string>
     <string name="onboarding_apikey_offline">請連上網際網路以開啟 Google AI Studio。你仍可貼上已擁有的金鑰。</string>
+
+    <!-- Optimistic move rollback -->
+    <string name="wardrobe_move_failed">部分項目無法移動，已還原。</string>
 </resources>

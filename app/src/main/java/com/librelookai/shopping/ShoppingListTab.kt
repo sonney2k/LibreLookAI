@@ -67,6 +67,7 @@ internal fun ShoppingListTab(
     activeLocationId: String,
     onCaptureClick: () -> Unit,
     onItemsMovedToCloset: (String, List<DriveImage>) -> Unit,
+    onItemsMoveFailed: (String, Set<String>) -> Unit = { _, _ -> },
     onCreateOutfitFromSelection: (Set<String>) -> Unit,
     onTryOnSelection: (Set<String>) -> Unit,
     canTryOn: Boolean,
@@ -336,9 +337,11 @@ internal fun ShoppingListTab(
                     if (displayedItems.size <= 1) selectedIndex = null
                 },
                 onMoveToLocation = { ids, folderId ->
-                    shoppingClosetViewModel.moveToCloset(ids, folderId) { moved ->
-                        if (moved.isNotEmpty()) onItemsMovedToCloset(folderId, moved)
-                    }
+                    shoppingClosetViewModel.moveToCloset(
+                        ids, folderId,
+                        onMoved = { moved -> if (moved.isNotEmpty()) onItemsMovedToCloset(folderId, moved) },
+                        onMoveFailed = { failedIds -> onItemsMoveFailed(folderId, failedIds) },
+                    )
                     if (displayedItems.size <= 1) selectedIndex = null
                 },
                 onCreateOutfitFromSelection = onCreateOutfitFromSelection,
@@ -376,9 +379,11 @@ internal fun ShoppingListTab(
             locations = locations,
             onConfirm = { folderId ->
                 showMoveDialog = false
-                shoppingClosetViewModel.moveToCloset(state.selectedIds, folderId) { moved ->
-                    if (moved.isNotEmpty()) onItemsMovedToCloset(folderId, moved)
-                }
+                shoppingClosetViewModel.moveToCloset(
+                    state.selectedIds, folderId,
+                    onMoved = { moved -> if (moved.isNotEmpty()) onItemsMovedToCloset(folderId, moved) },
+                    onMoveFailed = { failedIds -> onItemsMoveFailed(folderId, failedIds) },
+                )
             },
             onDismiss = { showMoveDialog = false },
         )

@@ -1028,4 +1028,7 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <string name="onboarding_apikey_billing">Dayakan pengebilan (untuk cuba pakai)</string>
     <string name="onboarding_apikey_saved">Kunci disimpan pada peranti ini ✓</string>
     <string name="onboarding_apikey_offline">Sambung ke internet untuk membuka Google AI Studio. Anda masih boleh menampal kunci yang sedia ada.</string>
+
+    <!-- Optimistic move rollback -->
+    <string name="wardrobe_move_failed">Sesetengah item tidak dapat dialihkan. Item telah dipulihkan.</string>
 </resources>

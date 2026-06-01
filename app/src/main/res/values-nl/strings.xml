@@ -1055,4 +1055,7 @@
     <string name="onboarding_apikey_billing">Facturering inschakelen (voor passen)</string>
     <string name="onboarding_apikey_saved">Sleutel opgeslagen op dit apparaat ✓</string>
     <string name="onboarding_apikey_offline">Maak verbinding met internet om Google AI Studio te openen. Je kunt een sleutel die je al hebt nog steeds plakken.</string>
+
+    <!-- Optimistic move rollback -->
+    <string name="wardrobe_move_failed">Sommige items konden niet worden verplaatst. Ze zijn hersteld.</string>
 </resources>

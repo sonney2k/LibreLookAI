@@ -1028,4 +1028,7 @@
     <string name="onboarding_apikey_billing">बिलिंग सक्षम करें (ट्राई-ऑन के लिए)</string>
     <string name="onboarding_apikey_saved">कुंजी इस डिवाइस पर सहेजी गई ✓</string>
     <string name="onboarding_apikey_offline">Google AI Studio खोलने के लिए इंटरनेट से कनेक्ट करें। आपके पास पहले से मौजूद कुंजी आप फिर भी चिपका सकते हैं।</string>
+
+    <!-- Optimistic move rollback -->
+    <string name="wardrobe_move_failed">कुछ आइटम स्थानांतरित नहीं हो सके. उन्हें पुनर्स्थापित कर दिया गया है.</string>
 </resources>
