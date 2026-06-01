@@ -30,7 +30,7 @@ import androidx.compose.material.icons.filled.Checkroom
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.filled.Luggage
-import androidx.compose.material.icons.filled.OpenInNew
+import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material.icons.filled.Style
 import androidx.compose.material3.Button
@@ -406,7 +406,7 @@ private fun ApiKeyPage(
             enabled = !isOffline,
             modifier = Modifier.fillMaxWidth(),
         ) {
-            Icon(Icons.Filled.OpenInNew, null, Modifier.size(18.dp))
+            Icon(Icons.AutoMirrored.Filled.OpenInNew, null, Modifier.size(18.dp))
             Text("  " + stringResource(R.string.onboarding_apikey_get))
         }
         // Step 2 — enable billing so try-on & background removal work.
@@ -415,7 +415,7 @@ private fun ApiKeyPage(
             enabled = !isOffline,
             modifier = Modifier.fillMaxWidth(),
         ) {
-            Icon(Icons.Filled.OpenInNew, null, Modifier.size(18.dp))
+            Icon(Icons.AutoMirrored.Filled.OpenInNew, null, Modifier.size(18.dp))
             Text("  " + stringResource(R.string.onboarding_apikey_billing))
         }
         // Step 3 — paste the key back here.

@@ -63,6 +63,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.librelookai.R
 import com.librelookai.gemini.ClothingTags
+import com.librelookai.gemini.normalize
 import com.librelookai.util.AiProcessingOverlay
 import com.librelookai.util.Analytics
 import com.librelookai.util.LocalIsOffline
@@ -141,8 +142,10 @@ private fun TagEditScreenContent(
     val isOffline = LocalIsOffline.current
     val barInsets = LocalSystemBarsPadding.current
 
+    // Normalize on load so legacy / off-vocabulary colors (e.g. "cyan", "lime") snap to a canonical
+    // swatch immediately; the heal persists on the next save.
     var tags by remember(image.driveId) {
-        mutableStateOf(image.tags ?: ClothingTags())
+        mutableStateOf((image.tags ?: ClothingTags()).normalize())
     }
     var saveState by remember { mutableStateOf(SaveState.Saved) }
     var openRow by remember { mutableStateOf<String?>("colors") }

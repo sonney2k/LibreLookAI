@@ -1,3 +1,20 @@
+### LibreLookAI v2.0.2 Release Notes
+
+#### Set up your Gemini key during the welcome tour
+- First-run onboarding now includes a step to add your Google Gemini API key, with one-tap links to create a key and to the billing page. A free key already powers tagging and outfit suggestions; virtual try-on and background removal generate images and need a billing-enabled (paid) key — the tour now says so clearly instead of implying a free key avoids all costs.
+- You can still skip the step, and the help text across Settings and About was corrected to match.
+
+#### Moving items between closets — instant and reliable
+- Move and delete now take effect immediately in the grid instead of waiting on Drive to catch up.
+- A moved item no longer briefly flickers back into its old closet while Google Drive finishes syncing.
+- The "Move to closet" dialog only offers closets the item isn't already in, so there are no no-op choices.
+
+#### Tidier, consistent colors
+- Colors now use a fixed, standard palette, so every color shows a matching swatch and the same color always looks the same across the app.
+- The color picker in Edit Tags shows just the standard swatches — no more typing a custom color that wouldn't have a swatch anyway. Other tag types (material, pattern, etc.) still accept custom entries.
+
+---
+
 ### LibreLookAI v2.0.1 Release Notes
 
 #### Bring your own Gemini key

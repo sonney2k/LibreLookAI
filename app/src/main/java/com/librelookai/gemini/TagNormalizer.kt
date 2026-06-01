@@ -22,32 +22,89 @@ fun ClothingTags.normalize(): ClothingTags = copy(
 
 // ─── Color ──────────────────────────────────────────────────────────────────
 
-fun String.normalizeColor(): String = when (val c = lowercase().trim()) {
-    // British ↔ American spelling
-    "grey"                              -> "gray"
-    // Dark grey variants → charcoal
-    "dark gray", "dark grey",
-    "dark-gray", "dark-grey"            -> "charcoal"
-    // Navy variants
-    "navy blue", "dark blue",
-    "midnight blue", "dark navy"        -> "navy"
-    // Sky / light blue
-    "sky blue", "light blue",
-    "baby blue", "powder blue"          -> "sky"
-    // Forest green variants
-    "forest green", "dark green",
-    "hunter green"                      -> "forest"
-    // Off-white / cream variants
-    "off-white", "off white",
-    "eggshell"                          -> "cream"
-    // Multicolor variants
-    "multi-color", "multi color",
-    "multicolour", "multi-colour",
-    "colorful", "colourful",
-    "multicolored", "multicoloured"     -> "multicolor"
-    // Denim blue as its own token
-    "denim blue"                        -> "denim blue"
-    else                                -> c
+/**
+ * The **closed** set of colors the app supports. Every stored color tag is snapped to one of
+ * these by [normalizeColor], so each value always has a real swatch ([colorSwatchHex]) and a
+ * single filter bucket. Order/labels for display live in `wardrobe/WardrobeColorSwatches.kt`
+ * ([com.librelookai.wardrobe.FilterColorKeys]); a test asserts the two stay in sync.
+ */
+val CANONICAL_COLORS: Set<String> = setOf(
+    "black", "charcoal", "gray", "silver", "white", "cream",
+    "beige", "tan", "camel", "khaki", "brown", "rust",
+    "orange", "peach", "coral", "red", "burgundy", "pink", "magenta",
+    "purple", "lavender", "lilac",
+    "blue", "navy", "sky", "denim blue", "teal",
+    "mint", "green", "olive", "forest",
+    "yellow", "mustard", "gold",
+    "multicolor",
+)
+
+/**
+ * Snaps any color string to a [CANONICAL_COLORS] value. Known synonyms map to their canonical
+ * sibling; anything still unrecognized falls back to "multicolor" so no swatch-less color is ever
+ * stored. Applied to Gemini output, manual "add custom" input, and at filter/display time.
+ */
+fun String.normalizeColor(): String {
+    val mapped = when (val c = lowercase().trim()) {
+        // ── Neutrals ──
+        "grey"                                              -> "gray"
+        "light gray", "light grey", "slate", "slate gray",
+        "slate grey", "stone", "ash", "smoke"               -> "gray"
+        "dark gray", "dark grey", "dark-gray", "dark-grey"  -> "charcoal"
+        "jet black", "off-black", "off black"               -> "black"
+        "snow", "pure white", "bright white"                -> "white"
+        "off-white", "off white", "eggshell", "ivory",
+        "bone", "oatmeal"                                   -> "cream"
+        // ── Browns / earth ──
+        "chocolate", "coffee", "espresso", "mocha",
+        "walnut"                                            -> "brown"
+        "taupe", "mushroom"                                 -> "tan"
+        "sand", "nude"                                      -> "beige"
+        "copper", "terracotta", "terra cotta"               -> "rust"
+        "bronze"                                            -> "camel"
+        // ── Warm ──
+        "burnt orange", "amber"                             -> "orange"
+        "apricot"                                           -> "peach"
+        "salmon"                                            -> "coral"
+        "scarlet", "crimson", "cherry"                      -> "red"
+        "maroon", "wine", "oxblood", "merlot", "brick"      -> "burgundy"
+        "hot pink", "fuchsia"                               -> "magenta"
+        "blush", "rose", "pale pink", "baby pink"           -> "pink"
+        // ── Purples ──
+        "violet", "plum", "eggplant", "aubergine", "grape",
+        "indigo"                                            -> "purple"
+        "mauve"                                             -> "lilac"
+        "periwinkle"                                        -> "lavender"
+        // ── Blues ──
+        "navy blue", "dark blue", "midnight blue",
+        "dark navy"                                         -> "navy"
+        "sky blue", "light blue", "baby blue",
+        "powder blue"                                       -> "sky"
+        "cobalt", "royal blue", "azure", "cerulean",
+        "steel blue", "electric blue"                       -> "blue"
+        "cyan", "aqua", "aquamarine", "turquoise",
+        "teal blue"                                         -> "teal"
+        "denim"                                             -> "denim blue"
+        // ── Greens ──
+        "forest green", "dark green", "hunter green",
+        "pine", "bottle green"                              -> "forest"
+        "lime", "lime green", "chartreuse", "neon green",
+        "emerald", "kelly green"                            -> "green"
+        "army green", "military green", "moss",
+        "olive green"                                       -> "olive"
+        "seafoam", "sage", "mint green"                     -> "mint"
+        // ── Yellows / metallics ──
+        "mustard yellow"                                    -> "mustard"
+        "lemon", "canary"                                   -> "yellow"
+        "golden", "metallic gold"                           -> "gold"
+        // ── Multicolor variants ──
+        "multi-color", "multi color", "multicolour",
+        "multi-colour", "colorful", "colourful",
+        "multicolored", "multicoloured", "rainbow",
+        "patterned", "print"                               -> "multicolor"
+        else                                                -> c
+    }
+    return if (mapped in CANONICAL_COLORS) mapped else "multicolor"
 }
 
 // ─── Type ───────────────────────────────────────────────────────────────────

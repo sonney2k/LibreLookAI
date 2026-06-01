@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.sp
 import com.librelookai.R
 import com.librelookai.gemini.ClothingTags
 import com.librelookai.gemini.normalizeColor
+import com.librelookai.ui.theme.LocalWardrobePalette
 
 private fun ClothingTags.valuesFor(key: String): List<String> = when (key) {
     "colors"      -> colors
@@ -79,6 +80,8 @@ private fun ClothingTags.toggleValue(key: String, value: String): ClothingTags {
 }
 
 private fun ClothingTags.addCustom(key: String, value: String): ClothingTags {
+    // Colors are a closed vocabulary with no custom-input affordance; only open
+    // dimensions (material, pattern, …) reach this path.
     val trimmed = value.trim()
     if (trimmed.isEmpty()) return this
     val current = valuesFor(key)
@@ -105,11 +108,11 @@ internal fun TagsTableCard(
     onToggleValue: ((ClothingTags) -> ClothingTags) -> Unit,
     suggest: (String, List<String>) -> List<String>,
 ) {
-    val scheme = MaterialTheme.colorScheme
+    val palette = LocalWardrobePalette.current
     Surface(
         shape = RoundedCornerShape(18.dp),
-        color = scheme.surface,
-        border = BorderStroke(1.dp, scheme.outlineVariant),
+        color = palette.surface,
+        border = BorderStroke(1.dp, palette.border),
         modifier = Modifier.clip(RoundedCornerShape(18.dp)),
     ) {
         Column {
@@ -119,7 +122,7 @@ internal fun TagsTableCard(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(if (isOpen) scheme.surfaceVariant else Color.Transparent)
+                        .background(if (isOpen) palette.surface2 else Color.Transparent)
                         .then(Modifier.animateContentSize(
                             animationSpec = androidx.compose.animation.core.tween(220),
                         )),
@@ -136,9 +139,7 @@ internal fun TagsTableCard(
                         if (spec.isColor) {
                             ColorDrawer(
                                 active = values,
-                                options = merged.ifEmpty { FilterColorKeys },
                                 onToggle = { v -> onToggleValue { it.toggleValue(spec.key, v) } },
-                                onAddCustom = { v -> onToggleValue { it.addCustom(spec.key, v) } },
                             )
                         } else {
                             ChipDrawer(
@@ -151,7 +152,7 @@ internal fun TagsTableCard(
                     }
                 }
                 if (idx != TAG_ROWS.lastIndex) {
-                    HorizontalDivider(color = scheme.outlineVariant, thickness = 1.dp)
+                    HorizontalDivider(color = palette.divider, thickness = 1.dp)
                 }
             }
         }
@@ -166,7 +167,7 @@ private fun TagRowCollapsed(
     isOpen: Boolean,
     onClick: () -> Unit,
 ) {
-    val scheme = MaterialTheme.colorScheme
+    val palette = LocalWardrobePalette.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -180,14 +181,14 @@ private fun TagRowCollapsed(
             modifier = Modifier.width(88.dp),
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold,
-            color = scheme.onSurface,
+            color = palette.text,
         )
         Box(modifier = Modifier.weight(1f)) {
             when {
                 values.isEmpty() -> Text(
                     stringResource(R.string.wardrobe_tag_not_set),
                     fontSize = 12.sp,
-                    color = scheme.onSurfaceVariant,
+                    color = palette.textMuted,
                     style = MaterialTheme.typography.bodySmall.copy(fontStyle = androidx.compose.ui.text.font.FontStyle.Italic),
                 )
                 isColor -> ColorSummary(values)
@@ -200,7 +201,7 @@ private fun TagRowCollapsed(
                         text,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = scheme.onSurface,
+                        color = palette.text,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
@@ -211,7 +212,7 @@ private fun TagRowCollapsed(
             if (isOpen) androidx.compose.material.icons.Icons.Default.KeyboardArrowUp
             else androidx.compose.material.icons.Icons.Default.KeyboardArrowDown,
             contentDescription = null,
-            tint = scheme.onSurfaceVariant,
+            tint = palette.textMuted,
             modifier = Modifier.size(16.dp),
         )
     }
@@ -219,7 +220,7 @@ private fun TagRowCollapsed(
 
 @Composable
 private fun ColorSummary(values: List<String>) {
-    val scheme = MaterialTheme.colorScheme
+    val palette = LocalWardrobePalette.current
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
         Row {
             values.take(5).forEachIndexed { i, v ->
@@ -228,8 +229,8 @@ private fun ColorSummary(values: List<String>) {
                         .offset(x = ((-6) * i).dp)
                         .size(18.dp)
                         .clip(RoundedCornerShape(999.dp))
-                        .background(colorFor(v) ?: scheme.surfaceVariant)
-                        .border(2.dp, scheme.surface, RoundedCornerShape(999.dp)),
+                        .background(colorFor(v) ?: palette.chipBg)
+                        .border(2.dp, palette.surface, RoundedCornerShape(999.dp)),
                 )
             }
         }
@@ -241,7 +242,7 @@ private fun ColorSummary(values: List<String>) {
             text,
             fontSize = 12.sp,
             fontWeight = FontWeight.SemiBold,
-            color = scheme.onSurface,
+            color = palette.text,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
@@ -254,12 +255,12 @@ private fun colorFor(name: String): Color? = colorSwatchOrNull(name.normalizeCol
 @Composable
 private fun ColorDrawer(
     active: List<String>,
-    options: List<String>,
     onToggle: (String) -> Unit,
-    onAddCustom: (String) -> Unit,
 ) {
-    val scheme = MaterialTheme.colorScheme
-    val all = (FilterColorKeys + options).distinct()
+    val palette = LocalWardrobePalette.current
+    // Closed palette: only canonical swatches. `active` is included defensively in case a legacy
+    // item still carries a pre-normalization value, so it remains de-selectable.
+    val all = (FilterColorKeys + active).distinct()
     Column(modifier = Modifier.padding(start = 14.dp, end = 14.dp, top = 4.dp, bottom = 14.dp)) {
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -268,7 +269,7 @@ private fun ColorDrawer(
         ) {
             all.forEach { value ->
                 val isActive = value in active
-                val swatch = colorFor(value) ?: scheme.surfaceVariant
+                val swatch = colorFor(value) ?: palette.chipBg
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(3.dp),
@@ -281,7 +282,7 @@ private fun ColorDrawer(
                             .background(swatch)
                             .border(
                                 width = if (isActive) 2.5.dp else 1.dp,
-                                color = if (isActive) scheme.primary else scheme.outlineVariant,
+                                color = if (isActive) palette.primary else palette.border,
                                 shape = RoundedCornerShape(999.dp),
                             )
                             .clickable { onToggle(value) },
@@ -301,14 +302,13 @@ private fun ColorDrawer(
                         text = value.localizedTagValue(),
                         fontSize = 9.sp,
                         fontWeight = if (isActive) FontWeight.Bold else FontWeight.Medium,
-                        color = if (isActive) scheme.primary else scheme.onSurfaceVariant,
+                        color = if (isActive) palette.primary else palette.textMuted,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
                 }
             }
         }
-        AddCustomField(onAdd = onAddCustom)
     }
 }
 
@@ -320,7 +320,7 @@ private fun ChipDrawer(
     onToggle: (String) -> Unit,
     onAddCustom: (String) -> Unit,
 ) {
-    val scheme = MaterialTheme.colorScheme
+    val palette = LocalWardrobePalette.current
     val all = (active + options).distinct()
     Column(modifier = Modifier.padding(start = 14.dp, end = 14.dp, top = 4.dp, bottom = 14.dp)) {
         FlowRow(
@@ -331,10 +331,10 @@ private fun ChipDrawer(
                 val isActive = value in active
                 Surface(
                     shape = RoundedCornerShape(999.dp),
-                    color = if (isActive) scheme.primary else scheme.surface,
+                    color = if (isActive) palette.primary else palette.chipBg,
                     border = BorderStroke(
                         width = if (isActive) 1.5.dp else 1.dp,
-                        color = if (isActive) scheme.primary else scheme.outlineVariant,
+                        color = if (isActive) palette.primary else palette.border,
                     ),
                     onClick = { onToggle(value) },
                 ) {
@@ -343,7 +343,7 @@ private fun ChipDrawer(
                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
                         fontSize = 12.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = if (isActive) scheme.onPrimary else scheme.onSurface,
+                        color = if (isActive) palette.fabFg else palette.chipFg,
                     )
                 }
             }
@@ -356,13 +356,13 @@ private fun ChipDrawer(
 private fun AddCustomField(onAdd: (String) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
     var text by remember { mutableStateOf("") }
-    val scheme = MaterialTheme.colorScheme
+    val palette = LocalWardrobePalette.current
     Spacer(Modifier.height(8.dp))
     if (!expanded) {
         Surface(
             shape = RoundedCornerShape(999.dp),
             color = Color.Transparent,
-            border = BorderStroke(1.dp, scheme.outlineVariant),
+            border = BorderStroke(1.dp, palette.border),
             onClick = { expanded = true },
         ) {
             Row(
@@ -373,14 +373,14 @@ private fun AddCustomField(onAdd: (String) -> Unit) {
                 Icon(
                     androidx.compose.material.icons.Icons.Default.Add,
                     contentDescription = null,
-                    tint = scheme.onSurfaceVariant,
+                    tint = palette.textMuted,
                     modifier = Modifier.size(12.dp),
                 )
                 Text(
                     stringResource(R.string.tag_add_custom),
                     fontSize = 12.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = scheme.onSurfaceVariant,
+                    color = palette.textMuted,
                 )
             }
         }

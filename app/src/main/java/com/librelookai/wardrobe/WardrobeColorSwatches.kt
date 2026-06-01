@@ -1,7 +1,13 @@
 package com.librelookai.wardrobe
 
 import androidx.compose.ui.graphics.Color
+import com.librelookai.gemini.CANONICAL_COLORS
 
+/**
+ * Display order of the color swatches in the wardrobe filter and the Edit-Tags color picker.
+ * Must contain exactly [CANONICAL_COLORS] (the normalizer's closed set) — `TagNormalizerTest`
+ * asserts they stay in sync.
+ */
 internal val FilterColorKeys: List<String> = listOf(
     "black", "charcoal", "gray", "silver", "white", "cream",
     "beige", "tan", "camel", "khaki", "brown", "rust",
@@ -14,6 +20,13 @@ internal val FilterColorKeys: List<String> = listOf(
 )
 
 private val FilterColorKeySet: Set<String> = FilterColorKeys.toSet()
+
+/**
+ * Orders color keys by their canonical swatch position ([FilterColorKeys]) — the perceptual
+ * neutrals→warm→cool grouping shared by the filter and the Edit-Tags picker. Unknowns sort last.
+ */
+internal fun Iterable<String>.sortedByColorOrder(): List<String> =
+    sortedBy { FilterColorKeys.indexOf(it).let { i -> if (i < 0) Int.MAX_VALUE else i } }
 
 /** Returns the wardrobe-filter swatch for [name], or null if the name is not a known color. */
 internal fun colorSwatchOrNull(name: String): Color? {
