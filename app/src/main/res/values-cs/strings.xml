@@ -1069,4 +1069,17 @@
     <string name="onboarding_background_body">Import fotek, odstraňování pozadí a označování oblečení pomocí AI může chvíli trvat. LibreLookAI potřebuje neomezené zpracování na pozadí, aby Android aplikaci neukončil uprostřed úkolu — což by jinak mohlo zanechat napůl importované položky, chybějící štítky nebo poškozené soubory.\n\nToto pouze umožní aplikaci dokončit práci, kterou jsi spustil; sama o sobě nic nespouští.</string>
     <string name="onboarding_background_allow">Povolit zpracování na pozadí</string>
     <string name="onboarding_background_granted">Zpracování na pozadí povoleno ✓</string>
+
+    <!-- Onboarding location step + finish-page setup summary -->
+    <string name="onboarding_location_title">Povolit polohu pro počasí</string>
+    <string name="onboarding_location_body">LibreLookAI používá vaši přibližnou polohu k zjištění místního počasí, aby mohl navrhovat oblečení vhodné pro daný den. Vaše poloha zůstává ve vašem zařízení a používá se pouze k získání počasí – nikdy se neukládá ani nesdílí. Tento krok můžete přeskočit a povolit jej později.</string>
+    <string name="onboarding_location_allow">Povolit přístup k poloze</string>
+    <string name="onboarding_location_granted">Poloha povolena ✓</string>
+    <string name="onboarding_finish_setup_title">Vaše nastavení</string>
+    <string name="onboarding_finish_drive">Google Drive</string>
+    <string name="onboarding_finish_background">Zpracování na pozadí</string>
+    <string name="onboarding_finish_apikey">Klíč API Gemini</string>
+    <string name="onboarding_finish_location">Poloha pro počasí</string>
+    <string name="onboarding_finish_grant">Nastavit</string>
+    <string name="onboarding_finish_warning">Nastavení není dokončené. Položky označené výše nebudou fungovat, dokud je nedokončíte – můžete je nastavit zde nebo později v Nastavení.</string>
 </resources>

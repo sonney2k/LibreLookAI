@@ -1073,4 +1073,17 @@
     <string name="onboarding_background_body">ייבוא תמונות, הסרת רקעים ותיוג בגדים בעזרת בינה מלאכותית עשויים להימשך זמן מה. ‏LibreLookAI זקוק לעיבוד ברקע ללא הגבלה כדי ש‑Android לא יסגור אותו באמצע משימה — מה שעלול אחרת להשאיר פריטים שיובאו חלקית, תגיות חסרות או קבצים פגומים.\n\nזה רק מאפשר לאפליקציה לסיים עבודה שהתחלת; היא לא מריצה דבר מעצמה.</string>
     <string name="onboarding_background_allow">אפשר עיבוד ברקע</string>
     <string name="onboarding_background_granted">עיבוד ברקע מאופשר ✓</string>
+
+    <!-- Onboarding location step + finish-page setup summary -->
+    <string name="onboarding_location_title">הפעלת מיקום עבור מזג האוויר</string>
+    <string name="onboarding_location_body">LibreLookAI משתמש במיקום המשוער שלך כדי לבדוק את מזג האוויר המקומי, וכך להציע תלבושות שמתאימות לתנאי היום. המיקום שלך נשאר במכשיר ומשמש רק לקבלת מזג האוויר — הוא לעולם לא נשמר ולא משותף. אפשר לדלג על שלב זה ולהפעיל אותו מאוחר יותר.</string>
+    <string name="onboarding_location_allow">אישור גישה למיקום</string>
+    <string name="onboarding_location_granted">המיקום הופעל ✓</string>
+    <string name="onboarding_finish_setup_title">ההגדרה שלך</string>
+    <string name="onboarding_finish_drive">Google Drive</string>
+    <string name="onboarding_finish_background">עיבוד ברקע</string>
+    <string name="onboarding_finish_apikey">מפתח API של Gemini</string>
+    <string name="onboarding_finish_location">מיקום עבור מזג האוויר</string>
+    <string name="onboarding_finish_grant">הגדרה</string>
+    <string name="onboarding_finish_warning">ההגדרה לא הושלמה. הפריטים המסומנים למעלה לא יעבדו עד שתשלים אותם — אפשר להגדיר אותם כאן או מאוחר יותר בהגדרות.</string>
 </resources>

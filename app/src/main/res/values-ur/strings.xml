@@ -1042,4 +1042,17 @@
     <string name="onboarding_background_body">تصاویر درآمد کرنے، پس منظر ہٹانے اور AI سے کپڑوں کو ٹیگ کرنے میں کچھ وقت لگ سکتا ہے۔ LibreLookAI کو لامحدود پس منظر پروسیسنگ کی ضرورت ہے تاکہ Android اسے کسی کام کے دوران بند نہ کرے — ورنہ نامکمل درآمد شدہ آئٹمز، غائب ٹیگز یا خراب فائلیں رہ سکتی ہیں۔\n\nیہ ایپ کو صرف وہ کام مکمل کرنے دیتا ہے جو آپ نے شروع کیا تھا؛ یہ خود سے کچھ نہیں چلاتا۔</string>
     <string name="onboarding_background_allow">پس منظر کی پروسیسنگ کی اجازت دیں</string>
     <string name="onboarding_background_granted">پس منظر کی پروسیسنگ کی اجازت دی گئی ✓</string>
+
+    <!-- Onboarding location step + finish-page setup summary -->
+    <string name="onboarding_location_title">موسم کے لیے مقام فعال کریں</string>
+    <string name="onboarding_location_body">LibreLookAI آپ کے تخمینی مقام کو استعمال کرتے ہوئے مقامی موسم معلوم کرتا ہے، تاکہ دن کے حالات کے مطابق ملبوسات تجویز کر سکے۔ آپ کا مقام آپ کے آلے پر ہی رہتا ہے اور صرف موسم حاصل کرنے کے لیے استعمال ہوتا ہے — اسے کبھی محفوظ یا شیئر نہیں کیا جاتا۔ آپ اسے چھوڑ کر بعد میں فعال کر سکتے ہیں۔</string>
+    <string name="onboarding_location_allow">مقام تک رسائی کی اجازت دیں</string>
+    <string name="onboarding_location_granted">مقام فعال ہے ✓</string>
+    <string name="onboarding_finish_setup_title">آپ کا سیٹ اپ</string>
+    <string name="onboarding_finish_drive">Google Drive</string>
+    <string name="onboarding_finish_background">پس منظر پروسیسنگ</string>
+    <string name="onboarding_finish_apikey">Gemini API کلید</string>
+    <string name="onboarding_finish_location">موسم کے لیے مقام</string>
+    <string name="onboarding_finish_grant">سیٹ اپ کریں</string>
+    <string name="onboarding_finish_warning">سیٹ اپ مکمل نہیں ہوا۔ اوپر نشان زد آئٹمز اس وقت تک کام نہیں کریں گے جب تک آپ انہیں مکمل نہ کریں — آپ انہیں یہاں یا بعد میں ترتیبات میں سیٹ کر سکتے ہیں۔</string>
 </resources>

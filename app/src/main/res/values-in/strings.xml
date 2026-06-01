@@ -1042,4 +1042,17 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="onboarding_background_body">Mengimpor foto, menghapus latar belakang, dan menandai pakaian dengan AI bisa memakan waktu. LibreLookAI memerlukan pemrosesan latar belakang tanpa batas agar Android tidak menghentikannya di tengah tugas — yang jika tidak dapat meninggalkan item yang setengah terimpor, tag yang hilang, atau file yang rusak.\n\nIni hanya mengizinkan aplikasi menyelesaikan pekerjaan yang Anda mulai; aplikasi tidak menjalankan apa pun dengan sendirinya.</string>
     <string name="onboarding_background_allow">Izinkan pemrosesan latar belakang</string>
     <string name="onboarding_background_granted">Pemrosesan latar belakang diizinkan ✓</string>
+
+    <!-- Onboarding location step + finish-page setup summary -->
+    <string name="onboarding_location_title">Aktifkan lokasi untuk cuaca</string>
+    <string name="onboarding_location_body">LibreLookAI menggunakan perkiraan lokasi Anda untuk melihat cuaca setempat, sehingga dapat menyarankan pakaian yang sesuai dengan kondisi hari itu. Lokasi Anda tetap berada di perangkat dan hanya digunakan untuk mengambil cuaca — tidak pernah disimpan atau dibagikan. Anda dapat melewati langkah ini dan mengaktifkannya nanti.</string>
+    <string name="onboarding_location_allow">Izinkan akses lokasi</string>
+    <string name="onboarding_location_granted">Lokasi diaktifkan ✓</string>
+    <string name="onboarding_finish_setup_title">Penyiapan Anda</string>
+    <string name="onboarding_finish_drive">Google Drive</string>
+    <string name="onboarding_finish_background">Pemrosesan latar belakang</string>
+    <string name="onboarding_finish_apikey">Kunci API Gemini</string>
+    <string name="onboarding_finish_location">Lokasi untuk cuaca</string>
+    <string name="onboarding_finish_grant">Siapkan</string>
+    <string name="onboarding_finish_warning">Penyiapan belum selesai. Item yang ditandai di atas tidak akan berfungsi sampai Anda menyelesaikannya — Anda dapat menyiapkannya di sini atau nanti di Setelan.</string>
 </resources>

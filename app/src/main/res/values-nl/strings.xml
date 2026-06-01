@@ -1069,4 +1069,17 @@
     <string name="onboarding_background_body">Foto\'s importeren, achtergronden verwijderen en kleding taggen met AI kan even duren. LibreLookAI heeft onbeperkte achtergrondverwerking nodig zodat Android de app niet halverwege afsluit — wat anders half geïmporteerde items, ontbrekende tags of beschadigde bestanden kan achterlaten.\n\nDit staat de app alleen toe om werk af te maken dat jij hebt gestart; het doet niets uit zichzelf.</string>
     <string name="onboarding_background_allow">Achtergrondverwerking toestaan</string>
     <string name="onboarding_background_granted">Achtergrondverwerking toegestaan ✓</string>
+
+    <!-- Onboarding location step + finish-page setup summary -->
+    <string name="onboarding_location_title">Locatie inschakelen voor weer</string>
+    <string name="onboarding_location_body">LibreLookAI gebruikt je geschatte locatie om het lokale weer op te halen en zo outfits voor te stellen die passen bij het weer van de dag. Je locatie blijft op je apparaat en wordt alleen gebruikt om het weer op te halen — die wordt nooit opgeslagen of gedeeld. Je kunt dit overslaan en later inschakelen.</string>
+    <string name="onboarding_location_allow">Locatietoegang toestaan</string>
+    <string name="onboarding_location_granted">Locatie ingeschakeld ✓</string>
+    <string name="onboarding_finish_setup_title">Jouw instellingen</string>
+    <string name="onboarding_finish_drive">Google Drive</string>
+    <string name="onboarding_finish_background">Verwerking op de achtergrond</string>
+    <string name="onboarding_finish_apikey">Gemini API-sleutel</string>
+    <string name="onboarding_finish_location">Locatie voor weer</string>
+    <string name="onboarding_finish_grant">Instellen</string>
+    <string name="onboarding_finish_warning">De installatie is nog niet compleet. De hierboven gemarkeerde onderdelen werken pas als je ze afrondt — hier of later bij Instellingen.</string>
 </resources>

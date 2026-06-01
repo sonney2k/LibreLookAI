@@ -1069,4 +1069,17 @@
     <string name="onboarding_background_body">Importar fotos, quitar fondos y etiquetar prendas con IA puede tardar un poco. LibreLookAI necesita procesamiento en segundo plano sin restricciones para que Android no lo cierre a mitad de la tarea, lo que podría dejar prendas a medio importar, etiquetas faltantes o archivos dañados.\n\nEsto solo permite que la app termine el trabajo que iniciaste; no ejecuta nada por su cuenta.</string>
     <string name="onboarding_background_allow">Permitir procesamiento en segundo plano</string>
     <string name="onboarding_background_granted">Procesamiento en segundo plano permitido ✓</string>
+
+    <!-- Onboarding location step + finish-page setup summary -->
+    <string name="onboarding_location_title">Activar la ubicación para el clima</string>
+    <string name="onboarding_location_body">LibreLookAI usa tu ubicación aproximada para consultar el clima local y sugerir conjuntos adecuados a las condiciones del día. Tu ubicación permanece en tu dispositivo y solo se usa para obtener el clima: nunca se almacena ni se comparte. Puedes omitir esto y activarlo más tarde.</string>
+    <string name="onboarding_location_allow">Permitir acceso a la ubicación</string>
+    <string name="onboarding_location_granted">Ubicación activada ✓</string>
+    <string name="onboarding_finish_setup_title">Tu configuración</string>
+    <string name="onboarding_finish_drive">Google Drive</string>
+    <string name="onboarding_finish_background">Procesamiento en segundo plano</string>
+    <string name="onboarding_finish_apikey">Clave de API de Gemini</string>
+    <string name="onboarding_finish_location">Ubicación para el clima</string>
+    <string name="onboarding_finish_grant">Configurar</string>
+    <string name="onboarding_finish_warning">La configuración no está completa. Los elementos marcados arriba no funcionarán hasta que los completes: puedes configurarlos aquí o más tarde en Ajustes.</string>
 </resources>

@@ -1042,4 +1042,17 @@
     <string name="onboarding_background_body">तस्वीरें इम्पोर्ट करने, बैकग्राउंड हटाने और AI से कपड़ों को टैग करने में थोड़ा समय लग सकता है। LibreLookAI को असीमित बैकग्राउंड प्रोसेसिंग की ज़रूरत है ताकि Android इसे किसी काम के बीच में बंद न कर दे — वरना अधूरे इम्पोर्ट किए आइटम, गुम टैग या खराब फ़ाइलें रह सकती हैं।\n\nयह ऐप को केवल वही काम पूरा करने देता है जो आपने शुरू किया था; यह अपने आप कुछ नहीं चलाता।</string>
     <string name="onboarding_background_allow">बैकग्राउंड प्रोसेसिंग की अनुमति दें</string>
     <string name="onboarding_background_granted">बैकग्राउंड प्रोसेसिंग की अनुमति दी गई ✓</string>
+
+    <!-- Onboarding location step + finish-page setup summary -->
+    <string name="onboarding_location_title">मौसम के लिए स्थान चालू करें</string>
+    <string name="onboarding_location_body">LibreLookAI आपके अनुमानित स्थान का उपयोग करके स्थानीय मौसम पता करता है, ताकि वह दिन की परिस्थितियों के अनुसार पहनावे सुझा सके। आपका स्थान आपके डिवाइस पर ही रहता है और केवल मौसम लाने के लिए उपयोग होता है — इसे कभी संग्रहीत या साझा नहीं किया जाता। आप इसे छोड़ सकते हैं और बाद में चालू कर सकते हैं।</string>
+    <string name="onboarding_location_allow">स्थान तक पहुँच की अनुमति दें</string>
+    <string name="onboarding_location_granted">स्थान चालू है ✓</string>
+    <string name="onboarding_finish_setup_title">आपका सेटअप</string>
+    <string name="onboarding_finish_drive">Google Drive</string>
+    <string name="onboarding_finish_background">बैकग्राउंड प्रोसेसिंग</string>
+    <string name="onboarding_finish_apikey">Gemini API कुंजी</string>
+    <string name="onboarding_finish_location">मौसम के लिए स्थान</string>
+    <string name="onboarding_finish_grant">सेट अप करें</string>
+    <string name="onboarding_finish_warning">सेटअप अभी पूरा नहीं हुआ है। ऊपर चिह्नित आइटम तब तक काम नहीं करेंगे जब तक आप उन्हें पूरा नहीं करते — आप उन्हें यहाँ या बाद में सेटिंग में सेट कर सकते हैं।</string>
 </resources>

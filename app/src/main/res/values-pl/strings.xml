@@ -1069,4 +1069,17 @@
     <string name="onboarding_background_body">Importowanie zdjęć, usuwanie tła i tagowanie ubrań przez AI może chwilę potrwać. LibreLookAI potrzebuje nieograniczonego przetwarzania w tle, aby Android nie zamknął aplikacji w trakcie zadania — co mogłoby pozostawić częściowo zaimportowane elementy, brakujące tagi lub uszkodzone pliki.\n\nTo pozwala aplikacji jedynie dokończyć pracę, którą rozpocząłeś; nie uruchamia niczego samodzielnie.</string>
     <string name="onboarding_background_allow">Zezwól na przetwarzanie w tle</string>
     <string name="onboarding_background_granted">Przetwarzanie w tle dozwolone ✓</string>
+
+    <!-- Onboarding location step + finish-page setup summary -->
+    <string name="onboarding_location_title">Włącz lokalizację dla pogody</string>
+    <string name="onboarding_location_body">LibreLookAI używa Twojej przybliżonej lokalizacji, aby sprawdzić lokalną pogodę i proponować stylizacje odpowiednie do warunków danego dnia. Twoja lokalizacja pozostaje na urządzeniu i służy tylko do pobrania pogody — nigdy nie jest przechowywana ani udostępniana. Możesz pominąć ten krok i włączyć go później.</string>
+    <string name="onboarding_location_allow">Zezwól na dostęp do lokalizacji</string>
+    <string name="onboarding_location_granted">Lokalizacja włączona ✓</string>
+    <string name="onboarding_finish_setup_title">Twoja konfiguracja</string>
+    <string name="onboarding_finish_drive">Google Drive</string>
+    <string name="onboarding_finish_background">Przetwarzanie w tle</string>
+    <string name="onboarding_finish_apikey">Klucz API Gemini</string>
+    <string name="onboarding_finish_location">Lokalizacja dla pogody</string>
+    <string name="onboarding_finish_grant">Skonfiguruj</string>
+    <string name="onboarding_finish_warning">Konfiguracja nie jest ukończona. Elementy oznaczone powyżej nie będą działać, dopóki ich nie dokończysz — możesz je skonfigurować tutaj lub później w Ustawieniach.</string>
 </resources>

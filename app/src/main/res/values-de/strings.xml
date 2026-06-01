@@ -1138,4 +1138,17 @@
     <string name="onboarding_background_body">Fotos importieren, Hintergründe entfernen und Kleidung mit KI taggen kann etwas dauern. LibreLookAI benötigt uneingeschränkte Hintergrundverarbeitung, damit Android die App nicht mitten in der Aufgabe beendet — was sonst halb importierte Artikel, fehlende Tags oder beschädigte Dateien hinterlassen könnte.\n\nDies erlaubt der App nur, von dir gestartete Arbeit abzuschließen; sie führt nichts von selbst aus.</string>
     <string name="onboarding_background_allow">Hintergrundverarbeitung erlauben</string>
     <string name="onboarding_background_granted">Hintergrundverarbeitung erlaubt ✓</string>
+
+    <!-- Onboarding location step + finish-page setup summary -->
+    <string name="onboarding_location_title">Standort für Wetter aktivieren</string>
+    <string name="onboarding_location_body">LibreLookAI verwendet deinen ungefähren Standort, um das lokale Wetter abzurufen, und kann so Outfits passend zu den Bedingungen des Tages vorschlagen. Dein Standort bleibt auf deinem Gerät und wird nur zum Abrufen des Wetters genutzt – er wird niemals gespeichert oder geteilt. Du kannst dies überspringen und später aktivieren.</string>
+    <string name="onboarding_location_allow">Standortzugriff erlauben</string>
+    <string name="onboarding_location_granted">Standort aktiviert ✓</string>
+    <string name="onboarding_finish_setup_title">Deine Einrichtung</string>
+    <string name="onboarding_finish_drive">Google Drive</string>
+    <string name="onboarding_finish_background">Hintergrundverarbeitung</string>
+    <string name="onboarding_finish_apikey">Gemini-API-Schlüssel</string>
+    <string name="onboarding_finish_location">Standort für Wetter</string>
+    <string name="onboarding_finish_grant">Einrichten</string>
+    <string name="onboarding_finish_warning">Die Einrichtung ist noch nicht abgeschlossen. Die oben markierten Punkte funktionieren erst, wenn du sie abschließt – du kannst sie hier oder später in den Einstellungen einrichten.</string>
 </resources>

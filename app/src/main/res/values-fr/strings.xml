@@ -1069,4 +1069,17 @@
     <string name="onboarding_background_body">Importer des photos, supprimer les fonds et étiqueter les vêtements avec l\'IA peut prendre un moment. LibreLookAI a besoin d\'un traitement en arrière-plan illimité pour qu\'Android ne le coupe pas en pleine tâche — ce qui laisserait sinon des articles à moitié importés, des étiquettes manquantes ou des fichiers corrompus.\n\nCela permet seulement à l\'app de terminer le travail que tu as lancé ; elle ne fait rien d\'elle-même.</string>
     <string name="onboarding_background_allow">Autoriser le traitement en arrière-plan</string>
     <string name="onboarding_background_granted">Traitement en arrière-plan autorisé ✓</string>
+
+    <!-- Onboarding location step + finish-page setup summary -->
+    <string name="onboarding_location_title">Activer la localisation pour la météo</string>
+    <string name="onboarding_location_body">LibreLookAI utilise votre position approximative pour consulter la météo locale, afin de suggérer des tenues adaptées aux conditions du jour. Votre position reste sur votre appareil et sert uniquement à récupérer la météo — elle n\'est jamais stockée ni partagée. Vous pouvez ignorer cette étape et l\'activer plus tard.</string>
+    <string name="onboarding_location_allow">Autoriser l\'accès à la localisation</string>
+    <string name="onboarding_location_granted">Localisation activée ✓</string>
+    <string name="onboarding_finish_setup_title">Votre configuration</string>
+    <string name="onboarding_finish_drive">Google Drive</string>
+    <string name="onboarding_finish_background">Traitement en arrière-plan</string>
+    <string name="onboarding_finish_apikey">Clé API Gemini</string>
+    <string name="onboarding_finish_location">Localisation pour la météo</string>
+    <string name="onboarding_finish_grant">Configurer</string>
+    <string name="onboarding_finish_warning">La configuration n\'est pas terminée. Les éléments signalés ci-dessus ne fonctionneront pas tant que vous ne les aurez pas configurés — ici ou plus tard dans les Paramètres.</string>
 </resources>

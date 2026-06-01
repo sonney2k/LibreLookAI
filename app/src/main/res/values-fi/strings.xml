@@ -1069,4 +1069,17 @@
     <string name="onboarding_background_body">Kuvien tuonti, taustojen poisto ja vaatteiden merkitseminen tekoälyllä voi kestää hetken. LibreLookAI tarvitsee rajoittamattoman taustakäsittelyn, jotta Android ei sulje sovellusta kesken tehtävän — mikä voisi muuten jättää puoliksi tuotuja kohteita, puuttuvia merkintöjä tai vioittuneita tiedostoja.\n\nTämä antaa sovelluksen vain saattaa loppuun aloittamasi työn; se ei suorita mitään itsestään.</string>
     <string name="onboarding_background_allow">Salli taustakäsittely</string>
     <string name="onboarding_background_granted">Taustakäsittely sallittu ✓</string>
+
+    <!-- Onboarding location step + finish-page setup summary -->
+    <string name="onboarding_location_title">Ota sijainti käyttöön säätä varten</string>
+    <string name="onboarding_location_body">LibreLookAI käyttää likimääräistä sijaintiasi paikallisen sään hakemiseen ja voi näin ehdottaa asuja, jotka sopivat päivän olosuhteisiin. Sijaintisi pysyy laitteellasi ja sitä käytetään vain sään hakemiseen – sitä ei koskaan tallenneta eikä jaeta. Voit ohittaa tämän ja ottaa sen käyttöön myöhemmin.</string>
+    <string name="onboarding_location_allow">Salli sijainnin käyttö</string>
+    <string name="onboarding_location_granted">Sijainti käytössä ✓</string>
+    <string name="onboarding_finish_setup_title">Asetuksesi</string>
+    <string name="onboarding_finish_drive">Google Drive</string>
+    <string name="onboarding_finish_background">Taustakäsittely</string>
+    <string name="onboarding_finish_apikey">Gemini-API-avain</string>
+    <string name="onboarding_finish_location">Sijainti säätä varten</string>
+    <string name="onboarding_finish_grant">Määritä</string>
+    <string name="onboarding_finish_warning">Määritykset eivät ole valmiit. Yllä merkityt kohteet eivät toimi ennen kuin viimeistelet ne – voit määrittää ne tässä tai myöhemmin Asetuksissa.</string>
 </resources>

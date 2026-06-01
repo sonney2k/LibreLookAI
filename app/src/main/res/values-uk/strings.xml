@@ -1042,4 +1042,17 @@
     <string name="onboarding_background_body">Імпорт фотографій, видалення фону та позначення одягу за допомогою ШІ може зайняти трохи часу. LibreLookAI потрібна необмежена фонова обробка, щоб Android не закрив застосунок посеред завдання — інакше можуть залишитися частково імпортовані речі, відсутні теги або пошкоджені файли.\n\nЦе лише дозволяє застосунку завершити роботу, яку ви розпочали; самостійно він нічого не запускає.</string>
     <string name="onboarding_background_allow">Дозволити фонову обробку</string>
     <string name="onboarding_background_granted">Фонову обробку дозволено ✓</string>
+
+    <!-- Onboarding location step + finish-page setup summary -->
+    <string name="onboarding_location_title">Увімкнути геолокацію для погоди</string>
+    <string name="onboarding_location_body">LibreLookAI використовує ваше приблизне місцезнаходження, щоб дізнатися місцеву погоду й пропонувати образи, що відповідають умовам дня. Ваше місцезнаходження залишається на пристрої та використовується лише для отримання погоди — воно ніколи не зберігається й не передається. Ви можете пропустити цей крок і ввімкнути його пізніше.</string>
+    <string name="onboarding_location_allow">Дозволити доступ до місцезнаходження</string>
+    <string name="onboarding_location_granted">Геолокацію ввімкнено ✓</string>
+    <string name="onboarding_finish_setup_title">Ваше налаштування</string>
+    <string name="onboarding_finish_drive">Google Диск</string>
+    <string name="onboarding_finish_background">Фонова обробка</string>
+    <string name="onboarding_finish_apikey">Ключ API Gemini</string>
+    <string name="onboarding_finish_location">Місцезнаходження для погоди</string>
+    <string name="onboarding_finish_grant">Налаштувати</string>
+    <string name="onboarding_finish_warning">Налаштування не завершено. Позначені вище пункти не працюватимуть, доки ви їх не завершите — налаштуйте їх тут або пізніше в Налаштуваннях.</string>
 </resources>

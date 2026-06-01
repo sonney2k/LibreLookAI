@@ -1069,4 +1069,17 @@
     <string name="onboarding_background_body">قد يستغرق استيراد الصور وإزالة الخلفيات ووسم الملابس بالذكاء الاصطناعي بعض الوقت. يحتاج LibreLookAI إلى معالجة غير مقيّدة في الخلفية حتى لا يوقفه Android في منتصف المهمة — وهو ما قد يترك عناصر مستوردة جزئيًا أو وسومًا مفقودة أو ملفات تالفة.\n\nهذا يسمح للتطبيق فقط بإكمال العمل الذي بدأته؛ ولا يشغّل أي شيء من تلقاء نفسه.</string>
     <string name="onboarding_background_allow">السماح بالمعالجة في الخلفية</string>
     <string name="onboarding_background_granted">تم السماح بالمعالجة في الخلفية ✓</string>
+
+    <!-- Onboarding location step + finish-page setup summary -->
+    <string name="onboarding_location_title">تفعيل الموقع لمعرفة الطقس</string>
+    <string name="onboarding_location_body">يستخدم LibreLookAI موقعك التقريبي لمعرفة الطقس المحلي، حتى يتمكن من اقتراح ملابس تناسب ظروف اليوم. يبقى موقعك على جهازك ويُستخدم فقط لجلب الطقس — ولا يتم تخزينه أو مشاركته أبدًا. يمكنك تخطّي هذه الخطوة وتفعيلها لاحقًا.</string>
+    <string name="onboarding_location_allow">السماح بالوصول إلى الموقع</string>
+    <string name="onboarding_location_granted">تم تفعيل الموقع ✓</string>
+    <string name="onboarding_finish_setup_title">إعدادك</string>
+    <string name="onboarding_finish_drive">Google Drive</string>
+    <string name="onboarding_finish_background">المعالجة في الخلفية</string>
+    <string name="onboarding_finish_apikey">مفتاح Gemini API</string>
+    <string name="onboarding_finish_location">الموقع لمعرفة الطقس</string>
+    <string name="onboarding_finish_grant">إعداد</string>
+    <string name="onboarding_finish_warning">الإعداد غير مكتمل. العناصر المميَّزة أعلاه لن تعمل حتى تُكملها — يمكنك إعدادها هنا أو لاحقًا في الإعدادات.</string>
 </resources>

@@ -1069,4 +1069,17 @@
     <string name="onboarding_background_body">写真のインポート、背景の削除、AI による衣類のタグ付けには少し時間がかかることがあります。タスクの途中で Android にアプリを終了されないよう、LibreLookAI は無制限のバックグラウンド処理を必要とします。そうでないと、途中までしかインポートされないアイテム、欠落したタグ、破損したファイルが残る可能性があります。\n\nこれは、あなたが開始した作業をアプリが完了できるようにするだけで、勝手に何かを実行することはありません。</string>
     <string name="onboarding_background_allow">バックグラウンド処理を許可</string>
     <string name="onboarding_background_granted">バックグラウンド処理を許可しました ✓</string>
+
+    <!-- Onboarding location step + finish-page setup summary -->
+    <string name="onboarding_location_title">天気のために位置情報を有効にする</string>
+    <string name="onboarding_location_body">LibreLookAI はおおよその位置情報を使って地域の天気を取得し、その日の天候に合ったコーディネートを提案します。位置情報はデバイス内にとどまり、天気の取得のみに使用され、保存も共有もされません。この手順はスキップして後で有効にすることもできます。</string>
+    <string name="onboarding_location_allow">位置情報へのアクセスを許可</string>
+    <string name="onboarding_location_granted">位置情報が有効になりました ✓</string>
+    <string name="onboarding_finish_setup_title">セットアップ</string>
+    <string name="onboarding_finish_drive">Google ドライブ</string>
+    <string name="onboarding_finish_background">バックグラウンド処理</string>
+    <string name="onboarding_finish_apikey">Gemini API キー</string>
+    <string name="onboarding_finish_location">天気のための位置情報</string>
+    <string name="onboarding_finish_grant">設定</string>
+    <string name="onboarding_finish_warning">セットアップが完了していません。上で印が付いた項目は、完了するまで機能しません。ここで設定するか、後で設定画面から設定できます。</string>
 </resources>

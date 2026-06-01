@@ -1042,4 +1042,17 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="onboarding_background_body">A fotók importálása, a hátterek eltávolítása és a ruhák AI-jal való címkézése eltarthat egy ideig. A LibreLookAI-nak korlátlan háttérfeldolgozásra van szüksége, hogy az Android ne állítsa le a feladat közben — különben félig importált tételek, hiányzó címkék vagy sérült fájlok maradhatnak.\n\nEz csak azt teszi lehetővé, hogy az alkalmazás befejezze az általad elindított munkát; magától nem futtat semmit.</string>
     <string name="onboarding_background_allow">Háttérben futás engedélyezése</string>
     <string name="onboarding_background_granted">Háttérben futás engedélyezve ✓</string>
+
+    <!-- Onboarding location step + finish-page setup summary -->
+    <string name="onboarding_location_title">Helymeghatározás engedélyezése az időjáráshoz</string>
+    <string name="onboarding_location_body">A LibreLookAI a hozzávetőleges helyzeted alapján kéri le a helyi időjárást, hogy az adott nap körülményeihez illő szetteket javasolhasson. A helyzeted a készülékeden marad, és csak az időjárás lekéréséhez használjuk – soha nem tároljuk és nem osztjuk meg. Ezt kihagyhatod, és később is engedélyezheted.</string>
+    <string name="onboarding_location_allow">Helyhozzáférés engedélyezése</string>
+    <string name="onboarding_location_granted">Helymeghatározás engedélyezve ✓</string>
+    <string name="onboarding_finish_setup_title">A beállításaid</string>
+    <string name="onboarding_finish_drive">Google Drive</string>
+    <string name="onboarding_finish_background">Háttérben futó feldolgozás</string>
+    <string name="onboarding_finish_apikey">Gemini API-kulcs</string>
+    <string name="onboarding_finish_location">Helymeghatározás az időjáráshoz</string>
+    <string name="onboarding_finish_grant">Beállítás</string>
+    <string name="onboarding_finish_warning">A beállítás nem teljes. A fent jelölt elemek addig nem működnek, amíg be nem fejezed őket – beállíthatod itt vagy később a Beállításokban.</string>
 </resources>

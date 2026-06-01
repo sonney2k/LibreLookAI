@@ -1069,4 +1069,17 @@
     <string name="onboarding_background_body">사진 가져오기, 배경 제거, AI로 옷에 태그 지정에는 시간이 다소 걸릴 수 있습니다. LibreLookAI는 작업 도중 Android가 앱을 종료하지 않도록 제한 없는 백그라운드 처리가 필요합니다. 그렇지 않으면 절반만 가져온 항목, 누락된 태그, 손상된 파일이 남을 수 있습니다.\n\n이는 사용자가 시작한 작업을 앱이 완료하도록 허용할 뿐이며, 스스로 어떤 것도 실행하지 않습니다.</string>
     <string name="onboarding_background_allow">백그라운드 처리 허용</string>
     <string name="onboarding_background_granted">백그라운드 처리 허용됨 ✓</string>
+
+    <!-- Onboarding location step + finish-page setup summary -->
+    <string name="onboarding_location_title">날씨를 위해 위치 사용 설정</string>
+    <string name="onboarding_location_body">LibreLookAI는 대략적인 위치를 사용하여 현지 날씨를 확인하고 그날의 날씨에 어울리는 옷차림을 제안합니다. 위치 정보는 기기에만 저장되며 날씨를 가져오는 데에만 사용되고, 저장되거나 공유되지 않습니다. 이 단계를 건너뛰고 나중에 설정할 수 있습니다.</string>
+    <string name="onboarding_location_allow">위치 액세스 허용</string>
+    <string name="onboarding_location_granted">위치 사용 설정됨 ✓</string>
+    <string name="onboarding_finish_setup_title">설정 요약</string>
+    <string name="onboarding_finish_drive">Google 드라이브</string>
+    <string name="onboarding_finish_background">백그라운드 처리</string>
+    <string name="onboarding_finish_apikey">Gemini API 키</string>
+    <string name="onboarding_finish_location">날씨를 위한 위치</string>
+    <string name="onboarding_finish_grant">설정</string>
+    <string name="onboarding_finish_warning">설정이 완료되지 않았습니다. 위에 표시된 항목은 완료하기 전까지 작동하지 않습니다. 여기에서 설정하거나 나중에 설정에서 설정할 수 있습니다.</string>
 </resources>

@@ -1069,4 +1069,17 @@
     <string name="onboarding_background_body">Import af billeder, fjernelse af baggrunde og tagging af tøj med AI kan tage lidt tid. LibreLookAI har brug for ubegrænset baggrundsbehandling, så Android ikke lukker appen midt i en opgave — hvilket ellers kan efterlade halvt importerede ting, manglende tags eller beskadigede filer.\n\nDette tillader kun appen at færdiggøre arbejde, du har startet; den kører ikke noget af sig selv.</string>
     <string name="onboarding_background_allow">Tillad baggrundsbehandling</string>
     <string name="onboarding_background_granted">Baggrundsbehandling tilladt ✓</string>
+
+    <!-- Onboarding location step + finish-page setup summary -->
+    <string name="onboarding_location_title">Aktivér placering til vejr</string>
+    <string name="onboarding_location_body">LibreLookAI bruger din omtrentlige placering til at hente det lokale vejr, så den kan foreslå outfits, der passer til dagens forhold. Din placering bliver på din enhed og bruges kun til at hente vejret – den gemmes eller deles aldrig. Du kan springe dette over og aktivere det senere.</string>
+    <string name="onboarding_location_allow">Tillad adgang til placering</string>
+    <string name="onboarding_location_granted">Placering aktiveret ✓</string>
+    <string name="onboarding_finish_setup_title">Din opsætning</string>
+    <string name="onboarding_finish_drive">Google Drive</string>
+    <string name="onboarding_finish_background">Baggrundsbehandling</string>
+    <string name="onboarding_finish_apikey">Gemini API-nøgle</string>
+    <string name="onboarding_finish_location">Placering til vejr</string>
+    <string name="onboarding_finish_grant">Konfigurer</string>
+    <string name="onboarding_finish_warning">Opsætningen er ikke færdig. Punkterne markeret ovenfor virker ikke, før du fuldfører dem – du kan konfigurere dem her eller senere i Indstillinger.</string>
 </resources>

@@ -1042,4 +1042,17 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="onboarding_background_body">Importul fotografiilor, eliminarea fundalurilor și etichetarea hainelor cu AI pot dura puțin. LibreLookAI are nevoie de procesare nelimitată în fundal pentru ca Android să nu închidă aplicația în mijlocul unei sarcini — ceea ce altfel ar putea lăsa articole importate pe jumătate, etichete lipsă sau fișiere corupte.\n\nAceasta permite aplicației doar să finalizeze lucrul pe care l-ai început; nu rulează nimic de la sine.</string>
     <string name="onboarding_background_allow">Permite procesarea în fundal</string>
     <string name="onboarding_background_granted">Procesare în fundal permisă ✓</string>
+
+    <!-- Onboarding location step + finish-page setup summary -->
+    <string name="onboarding_location_title">Activează locația pentru vreme</string>
+    <string name="onboarding_location_body">LibreLookAI folosește locația ta aproximativă pentru a afla vremea locală, astfel încât să poată sugera ținute potrivite condițiilor zilei. Locația ta rămâne pe dispozitiv și este folosită doar pentru a obține vremea — nu este niciodată stocată sau partajată. Poți sări peste acest pas și îl poți activa mai târziu.</string>
+    <string name="onboarding_location_allow">Permite accesul la locație</string>
+    <string name="onboarding_location_granted">Locație activată ✓</string>
+    <string name="onboarding_finish_setup_title">Configurarea ta</string>
+    <string name="onboarding_finish_drive">Google Drive</string>
+    <string name="onboarding_finish_background">Procesare în fundal</string>
+    <string name="onboarding_finish_apikey">Cheie API Gemini</string>
+    <string name="onboarding_finish_location">Locație pentru vreme</string>
+    <string name="onboarding_finish_grant">Configurează</string>
+    <string name="onboarding_finish_warning">Configurarea nu este completă. Elementele marcate mai sus nu vor funcționa până nu le finalizezi — le poți configura aici sau mai târziu în Setări.</string>
 </resources>

@@ -1042,4 +1042,17 @@
     <string name="onboarding_background_body">匯入相片、移除背景以及用 AI 為衣物加上標籤可能需要一些時間。LibreLookAI 需要不受限制的背景處理，以免 Android 在任務進行中關閉應用程式——否則可能留下匯入到一半的項目、遺漏的標籤或損毀的檔案。\n\n這僅允許應用程式完成你已開始的工作，它不會自行執行任何東西。</string>
     <string name="onboarding_background_allow">允許背景處理</string>
     <string name="onboarding_background_granted">已允許背景處理 ✓</string>
+
+    <!-- Onboarding location step + finish-page setup summary -->
+    <string name="onboarding_location_title">啟用定位以取得天氣</string>
+    <string name="onboarding_location_body">LibreLookAI 會使用你的概略位置查詢當地天氣，以便推薦適合當天天候的穿搭。你的位置僅保留在裝置上，且只用於取得天氣，絕不會儲存或分享。你可以略過此步驟，稍後再啟用。</string>
+    <string name="onboarding_location_allow">允許存取位置</string>
+    <string name="onboarding_location_granted">已啟用定位 ✓</string>
+    <string name="onboarding_finish_setup_title">你的設定</string>
+    <string name="onboarding_finish_drive">Google 雲端硬碟</string>
+    <string name="onboarding_finish_background">背景處理</string>
+    <string name="onboarding_finish_apikey">Gemini API 金鑰</string>
+    <string name="onboarding_finish_location">天氣定位</string>
+    <string name="onboarding_finish_grant">設定</string>
+    <string name="onboarding_finish_warning">設定尚未完成。上方標示的項目在你完成前無法運作，你可以在此設定，或稍後於「設定」中完成。</string>
 </resources>

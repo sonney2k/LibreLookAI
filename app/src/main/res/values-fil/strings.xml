@@ -1069,4 +1069,17 @@
     <string name="onboarding_background_body">Ang pag-import ng mga litrato, pag-alis ng background at pag-tag ng mga damit gamit ang AI ay maaaring tumagal nang kaunti. Kailangan ng LibreLookAI ng walang-limitasyong pagproseso sa background para hindi ito patayin ng Android sa kalagitnaan ng gawain — na kung hindi ay maaaring mag-iwan ng kalahating na-import na mga item, nawawalang tag o sirang file.\n\nPinapayagan lang nito ang app na tapusin ang gawaing sinimulan mo; wala itong pinapatakbo nang mag-isa.</string>
     <string name="onboarding_background_allow">Payagan ang pagproseso sa background</string>
     <string name="onboarding_background_granted">Pinayagan ang pagproseso sa background ✓</string>
+
+    <!-- Onboarding location step + finish-page setup summary -->
+    <string name="onboarding_location_title">I-enable ang lokasyon para sa panahon</string>
+    <string name="onboarding_location_body">Ginagamit ng LibreLookAI ang iyong tinatayang lokasyon para tingnan ang lokal na panahon, para makapagmungkahi ng mga damit na bagay sa kondisyon ng araw. Nananatili sa iyong device ang iyong lokasyon at ginagamit lang para kunin ang panahon — hindi ito kailanman iniimbak o ibinabahagi. Maaari mong laktawan ito at i-enable mamaya.</string>
+    <string name="onboarding_location_allow">Payagan ang access sa lokasyon</string>
+    <string name="onboarding_location_granted">Naka-enable ang lokasyon ✓</string>
+    <string name="onboarding_finish_setup_title">Ang iyong setup</string>
+    <string name="onboarding_finish_drive">Google Drive</string>
+    <string name="onboarding_finish_background">Pagpoproseso sa background</string>
+    <string name="onboarding_finish_apikey">Gemini API key</string>
+    <string name="onboarding_finish_location">Lokasyon para sa panahon</string>
+    <string name="onboarding_finish_grant">I-set up</string>
+    <string name="onboarding_finish_warning">Hindi pa kumpleto ang setup. Ang mga item na minarkahan sa itaas ay hindi gagana hangga\'t hindi mo tinatapos — maaari mong i-set up ang mga ito dito o mamaya sa Mga Setting.</string>
 </resources>

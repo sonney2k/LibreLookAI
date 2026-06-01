@@ -1069,4 +1069,17 @@
     <string name="onboarding_background_body">Fotoğrafları içe aktarmak, arka planları kaldırmak ve kıyafetleri yapay zekâ ile etiketlemek biraz zaman alabilir. LibreLookAI, Android\'in uygulamayı bir görevin ortasında kapatmaması için sınırsız arka plan işleme iznine ihtiyaç duyar — aksi takdirde yarım içe aktarılmış öğeler, eksik etiketler veya bozuk dosyalar kalabilir.\n\nBu yalnızca uygulamanın başlattığın işi tamamlamasına izin verir; kendi başına hiçbir şey çalıştırmaz.</string>
     <string name="onboarding_background_allow">Arka planda çalışmaya izin ver</string>
     <string name="onboarding_background_granted">Arka planda çalışmaya izin verildi ✓</string>
+
+    <!-- Onboarding location step + finish-page setup summary -->
+    <string name="onboarding_location_title">Hava durumu için konumu etkinleştir</string>
+    <string name="onboarding_location_body">LibreLookAI, günün koşullarına uygun kombinler önerebilmek için yaklaşık konumunuzu kullanarak yerel hava durumunu alır. Konumunuz cihazınızda kalır ve yalnızca hava durumunu almak için kullanılır; asla saklanmaz veya paylaşılmaz. Bunu atlayıp daha sonra etkinleştirebilirsiniz.</string>
+    <string name="onboarding_location_allow">Konum erişimine izin ver</string>
+    <string name="onboarding_location_granted">Konum etkinleştirildi ✓</string>
+    <string name="onboarding_finish_setup_title">Kurulumunuz</string>
+    <string name="onboarding_finish_drive">Google Drive</string>
+    <string name="onboarding_finish_background">Arka planda işleme</string>
+    <string name="onboarding_finish_apikey">Gemini API anahtarı</string>
+    <string name="onboarding_finish_location">Hava durumu için konum</string>
+    <string name="onboarding_finish_grant">Ayarla</string>
+    <string name="onboarding_finish_warning">Kurulum tamamlanmadı. Yukarıda işaretlenen öğeler, siz tamamlayana kadar çalışmaz; bunları burada veya daha sonra Ayarlar\'da yapabilirsiniz.</string>
 </resources>

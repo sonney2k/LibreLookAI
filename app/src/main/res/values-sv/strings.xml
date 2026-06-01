@@ -1069,4 +1069,17 @@
     <string name="onboarding_background_body">Att importera foton, ta bort bakgrunder och tagga kläder med AI kan ta en stund. LibreLookAI behöver obegränsad bakgrundsbearbetning så att Android inte stänger appen mitt i en uppgift — vilket annars kan lämna halvt importerade objekt, saknade taggar eller skadade filer.\n\nDetta låter bara appen slutföra arbete som du har påbörjat; den kör inget på egen hand.</string>
     <string name="onboarding_background_allow">Tillåt bakgrundsbearbetning</string>
     <string name="onboarding_background_granted">Bakgrundsbearbetning tillåten ✓</string>
+
+    <!-- Onboarding location step + finish-page setup summary -->
+    <string name="onboarding_location_title">Aktivera plats för väder</string>
+    <string name="onboarding_location_body">LibreLookAI använder din ungefärliga plats för att hämta lokalt väder och kan på så sätt föreslå outfits som passar dagens förhållanden. Din plats stannar på din enhet och används bara för att hämta vädret – den lagras eller delas aldrig. Du kan hoppa över det här och aktivera det senare.</string>
+    <string name="onboarding_location_allow">Tillåt platsåtkomst</string>
+    <string name="onboarding_location_granted">Plats aktiverad ✓</string>
+    <string name="onboarding_finish_setup_title">Din konfiguration</string>
+    <string name="onboarding_finish_drive">Google Drive</string>
+    <string name="onboarding_finish_background">Bakgrundsbearbetning</string>
+    <string name="onboarding_finish_apikey">Gemini API-nyckel</string>
+    <string name="onboarding_finish_location">Plats för väder</string>
+    <string name="onboarding_finish_grant">Konfigurera</string>
+    <string name="onboarding_finish_warning">Konfigurationen är inte klar. Punkterna markerade ovan fungerar inte förrän du slutför dem – du kan ställa in dem här eller senare i Inställningar.</string>
 </resources>

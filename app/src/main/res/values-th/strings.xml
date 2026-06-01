@@ -1042,4 +1042,17 @@
     <string name="onboarding_background_body">การนำเข้ารูปภาพ การลบพื้นหลัง และการติดแท็กเสื้อผ้าด้วย AI อาจใช้เวลาสักครู่ LibreLookAI ต้องการการประมวลผลเบื้องหลังแบบไม่จำกัด เพื่อไม่ให้ Android ปิดแอประหว่างทำงาน — ซึ่งมิฉะนั้นอาจทิ้งรายการที่นำเข้าไม่ครบ แท็กที่หายไป หรือไฟล์ที่เสียหายไว้\n\nสิ่งนี้อนุญาตให้แอปทำงานที่คุณเริ่มไว้ให้เสร็จเท่านั้น แอปจะไม่รันอะไรเองโดยอัตโนมัติ</string>
     <string name="onboarding_background_allow">อนุญาตการประมวลผลเบื้องหลัง</string>
     <string name="onboarding_background_granted">อนุญาตการประมวลผลเบื้องหลังแล้ว ✓</string>
+
+    <!-- Onboarding location step + finish-page setup summary -->
+    <string name="onboarding_location_title">เปิดใช้ตำแหน่งสำหรับสภาพอากาศ</string>
+    <string name="onboarding_location_body">LibreLookAI ใช้ตำแหน่งโดยประมาณของคุณเพื่อดูสภาพอากาศในพื้นที่ เพื่อแนะนำชุดที่เหมาะกับสภาพอากาศของวันนั้น ตำแหน่งของคุณจะอยู่บนอุปกรณ์ของคุณและใช้เพื่อดึงข้อมูลสภาพอากาศเท่านั้น จะไม่มีการจัดเก็บหรือแชร์ คุณสามารถข้ามขั้นตอนนี้และเปิดใช้ภายหลังได้</string>
+    <string name="onboarding_location_allow">อนุญาตการเข้าถึงตำแหน่ง</string>
+    <string name="onboarding_location_granted">เปิดใช้ตำแหน่งแล้ว ✓</string>
+    <string name="onboarding_finish_setup_title">การตั้งค่าของคุณ</string>
+    <string name="onboarding_finish_drive">Google ไดรฟ์</string>
+    <string name="onboarding_finish_background">การประมวลผลเบื้องหลัง</string>
+    <string name="onboarding_finish_apikey">คีย์ API ของ Gemini</string>
+    <string name="onboarding_finish_location">ตำแหน่งสำหรับสภาพอากาศ</string>
+    <string name="onboarding_finish_grant">ตั้งค่า</string>
+    <string name="onboarding_finish_warning">การตั้งค่ายังไม่เสร็จสมบูรณ์ รายการที่ทำเครื่องหมายไว้ด้านบนจะไม่ทำงานจนกว่าคุณจะตั้งค่าเสร็จ คุณสามารถตั้งค่าที่นี่หรือภายหลังในการตั้งค่า</string>
 </resources>

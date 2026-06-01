@@ -1042,4 +1042,17 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <string name="onboarding_background_body">Mengimport foto, membuang latar belakang dan menanda pakaian dengan AI mungkin mengambil sedikit masa. LibreLookAI memerlukan pemprosesan latar belakang tanpa had supaya Android tidak menamatkannya di tengah tugas — yang jika tidak boleh meninggalkan item separuh diimport, tag yang hilang atau fail yang rosak.\n\nIni hanya membenarkan apl menyelesaikan kerja yang anda mulakan; ia tidak menjalankan apa-apa dengan sendirinya.</string>
     <string name="onboarding_background_allow">Benarkan pemprosesan latar belakang</string>
     <string name="onboarding_background_granted">Pemprosesan latar belakang dibenarkan ✓</string>
+
+    <!-- Onboarding location step + finish-page setup summary -->
+    <string name="onboarding_location_title">Dayakan lokasi untuk cuaca</string>
+    <string name="onboarding_location_body">LibreLookAI menggunakan anggaran lokasi anda untuk menyemak cuaca tempatan, supaya ia boleh mencadangkan pakaian yang sesuai dengan keadaan hari itu. Lokasi anda kekal pada peranti anda dan hanya digunakan untuk mendapatkan cuaca — ia tidak pernah disimpan atau dikongsi. Anda boleh melangkau langkah ini dan mendayakannya kemudian.</string>
+    <string name="onboarding_location_allow">Benarkan akses lokasi</string>
+    <string name="onboarding_location_granted">Lokasi didayakan ✓</string>
+    <string name="onboarding_finish_setup_title">Persediaan anda</string>
+    <string name="onboarding_finish_drive">Google Drive</string>
+    <string name="onboarding_finish_background">Pemprosesan latar belakang</string>
+    <string name="onboarding_finish_apikey">Kunci API Gemini</string>
+    <string name="onboarding_finish_location">Lokasi untuk cuaca</string>
+    <string name="onboarding_finish_grant">Sediakan</string>
+    <string name="onboarding_finish_warning">Persediaan belum lengkap. Item yang ditandakan di atas tidak akan berfungsi sehingga anda menyelesaikannya — anda boleh menyediakannya di sini atau kemudian dalam Tetapan.</string>
 </resources>

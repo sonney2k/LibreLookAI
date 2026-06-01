@@ -1,7 +1,9 @@
 package com.librelookai.onboarding
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.PowerManager
 import android.provider.Settings as AndroidSettings
@@ -34,10 +36,12 @@ import androidx.compose.material.icons.filled.Checkroom
 import androidx.compose.material.icons.filled.CloudDone
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Key
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Luggage
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material.icons.filled.Style
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -56,6 +60,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -67,6 +72,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.core.content.ContextCompat
 import com.librelookai.R
 import com.librelookai.gemini.ApiKeyStore
 import com.librelookai.settings.ProfileViewModel
@@ -112,11 +118,12 @@ fun OnboardingScreen(
     )
     val drivePage = infoPages.size
     val backgroundPage = infoPages.size + 1
-    val apiKeyPage = infoPages.size + 2
-    val profilePage = infoPages.size + 3
-    val photoPage = infoPages.size + 4
-    val finishPage = infoPages.size + 5
-    val totalPages = infoPages.size + 6
+    val locationPage = infoPages.size + 2
+    val apiKeyPage = infoPages.size + 3
+    val profilePage = infoPages.size + 4
+    val photoPage = infoPages.size + 5
+    val finishPage = infoPages.size + 6
+    val totalPages = infoPages.size + 7
 
     val context = LocalContext.current
     val state by profileViewModel.state.collectAsState()
@@ -128,11 +135,24 @@ fun OnboardingScreen(
     var isBatteryExempt by remember {
         mutableStateOf(powerManager.isIgnoringBatteryOptimizations(context.packageName))
     }
+
+    // Location permission (coarse) — optional, powers local weather for outfit suggestions. Like
+    // the battery exemption it's re-checked on resume in case the user granted it from system
+    // settings. The launcher lets the dedicated page (and the finish summary) request it inline.
+    fun hasLocationPermission() = ContextCompat.checkSelfPermission(
+        context, Manifest.permission.ACCESS_COARSE_LOCATION,
+    ) == PackageManager.PERMISSION_GRANTED
+    var locationGranted by remember { mutableStateOf(hasLocationPermission()) }
+    val locationPermLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { granted -> locationGranted = granted }
+
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
                 isBatteryExempt = powerManager.isIgnoringBatteryOptimizations(context.packageName)
+                locationGranted = hasLocationPermission()
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
@@ -204,6 +224,10 @@ fun OnboardingScreen(
                     backgroundPage -> BackgroundPermissionPage(
                         isExempt = isBatteryExempt,
                     )
+                    locationPage -> LocationPermissionPage(
+                        granted = locationGranted,
+                        onAllow = { locationPermLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION) },
+                    )
                     apiKeyPage -> ApiKeyPage(
                         apiKey = apiKey,
                         onKey = { apiKey = it; ApiKeyStore.set(context, it) },
@@ -222,6 +246,14 @@ fun OnboardingScreen(
                         onPick = { uri -> profileViewModel.uploadTryOnPhoto(TryOnSlot.FRONT, uri) },
                     )
                     finishPage -> FinishPage(
+                        driveDone = isSignedIn,
+                        backgroundDone = isBatteryExempt,
+                        apiKeyDone = apiKeyLooksValid,
+                        locationDone = locationGranted,
+                        onFixDrive = { scope.launch { pagerState.animateScrollToPage(drivePage) } },
+                        onFixBackground = { scope.launch { pagerState.animateScrollToPage(backgroundPage) } },
+                        onFixApiKey = { scope.launch { pagerState.animateScrollToPage(apiKeyPage) } },
+                        onFixLocation = { locationPermLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION) },
                         onAddItems = { finish(true) },
                         onExplore = { finish(false) },
                     )
@@ -554,6 +586,51 @@ private fun BackgroundPermissionPage(
 }
 
 @Composable
+private fun LocationPermissionPage(
+    granted: Boolean,
+    onAllow: () -> Unit,
+) {
+    Column(
+        Modifier.fillMaxSize().padding(horizontal = 32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Icon(
+            if (granted) Icons.Filled.CheckCircle else Icons.Filled.LocationOn,
+            null,
+            Modifier.size(96.dp),
+            tint = MaterialTheme.colorScheme.primary,
+        )
+        Spacer(Modifier.height(32.dp))
+        Text(
+            stringResource(R.string.onboarding_location_title),
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+        )
+        Spacer(Modifier.height(16.dp))
+        Text(
+            stringResource(R.string.onboarding_location_body),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+        )
+        Spacer(Modifier.height(24.dp))
+        if (granted) {
+            Text(
+                stringResource(R.string.onboarding_location_granted),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary,
+            )
+        } else {
+            Button(onClick = onAllow) {
+                Text(stringResource(R.string.onboarding_location_allow))
+            }
+        }
+    }
+}
+
+@Composable
 private fun ApiKeyPage(
     apiKey: String,
     onKey: (String) -> Unit,
@@ -642,36 +719,119 @@ private fun ApiKeyPage(
 
 @Composable
 private fun FinishPage(
+    driveDone: Boolean,
+    backgroundDone: Boolean,
+    apiKeyDone: Boolean,
+    locationDone: Boolean,
+    onFixDrive: () -> Unit,
+    onFixBackground: () -> Unit,
+    onFixApiKey: () -> Unit,
+    onFixLocation: () -> Unit,
     onAddItems: () -> Unit,
     onExplore: () -> Unit,
 ) {
+    val anyMissing = !(driveDone && backgroundDone && apiKeyDone && locationDone)
     Column(
-        Modifier.fillMaxSize().padding(horizontal = 32.dp),
+        Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
     ) {
-        Icon(Icons.Filled.Checkroom, null, Modifier.size(96.dp), tint = MaterialTheme.colorScheme.primary)
-        Spacer(Modifier.height(32.dp))
+        Spacer(Modifier.height(16.dp))
+        Icon(Icons.Filled.Checkroom, null, Modifier.size(72.dp), tint = MaterialTheme.colorScheme.primary)
+        Spacer(Modifier.height(20.dp))
         Text(
             stringResource(R.string.onboarding_closet_title),
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
         )
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(12.dp))
         Text(
             stringResource(R.string.onboarding_closet_body),
-            style = MaterialTheme.typography.bodyLarge,
+            style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
         )
-        Spacer(Modifier.height(32.dp))
+
+        // Setup summary — every required step plus optional location, each with a status icon and
+        // an inline fix for anything still outstanding.
+        Spacer(Modifier.height(24.dp))
+        Text(
+            stringResource(R.string.onboarding_finish_setup_title),
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        Spacer(Modifier.height(8.dp))
+        SetupChecklistRow(stringResource(R.string.onboarding_finish_drive), driveDone, onFixDrive)
+        SetupChecklistRow(stringResource(R.string.onboarding_finish_background), backgroundDone, onFixBackground)
+        SetupChecklistRow(stringResource(R.string.onboarding_finish_apikey), apiKeyDone, onFixApiKey)
+        SetupChecklistRow(stringResource(R.string.onboarding_finish_location), locationDone, onFixLocation)
+
+        if (anyMissing) {
+            Spacer(Modifier.height(16.dp))
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(MaterialTheme.colorScheme.errorContainer)
+                    .padding(12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(
+                    Icons.Filled.Warning, null,
+                    Modifier.size(20.dp),
+                    tint = MaterialTheme.colorScheme.onErrorContainer,
+                )
+                Spacer(Modifier.size(10.dp))
+                Text(
+                    stringResource(R.string.onboarding_finish_warning),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onErrorContainer,
+                )
+            }
+        }
+
+        Spacer(Modifier.height(24.dp))
         Button(onClick = onAddItems, modifier = Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.onboarding_closet_add_items))
         }
         Spacer(Modifier.height(8.dp))
         TextButton(onClick = onExplore, modifier = Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.onboarding_closet_explore))
+        }
+        Spacer(Modifier.height(16.dp))
+    }
+}
+
+@Composable
+private fun SetupChecklistRow(
+    label: String,
+    done: Boolean,
+    onFix: () -> Unit,
+) {
+    Row(
+        Modifier.fillMaxWidth().padding(vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            if (done) Icons.Filled.CheckCircle else Icons.Filled.Warning,
+            null,
+            Modifier.size(22.dp),
+            tint = if (done) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
+        )
+        Spacer(Modifier.size(12.dp))
+        Text(
+            label,
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.weight(1f),
+        )
+        if (!done) {
+            TextButton(onClick = onFix) {
+                Text(stringResource(R.string.onboarding_finish_grant))
+            }
         }
     }
 }

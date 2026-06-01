@@ -1042,4 +1042,17 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="onboarding_background_body">Nhập ảnh, xóa nền và gắn thẻ quần áo bằng AI có thể mất một chút thời gian. LibreLookAI cần xử lý nền không giới hạn để Android không tắt ứng dụng giữa chừng — điều này nếu không có thể để lại các mục nhập dở, thẻ bị thiếu hoặc tệp bị hỏng.\n\nĐiều này chỉ cho phép ứng dụng hoàn tất công việc bạn đã bắt đầu; nó không tự chạy bất cứ thứ gì.</string>
     <string name="onboarding_background_allow">Cho phép xử lý nền</string>
     <string name="onboarding_background_granted">Đã cho phép xử lý nền ✓</string>
+
+    <!-- Onboarding location step + finish-page setup summary -->
+    <string name="onboarding_location_title">Bật vị trí để xem thời tiết</string>
+    <string name="onboarding_location_body">LibreLookAI sử dụng vị trí gần đúng của bạn để tra cứu thời tiết địa phương, nhờ đó có thể gợi ý trang phục phù hợp với điều kiện trong ngày. Vị trí của bạn được giữ trên thiết bị và chỉ dùng để lấy thông tin thời tiết — không bao giờ được lưu trữ hay chia sẻ. Bạn có thể bỏ qua bước này và bật sau.</string>
+    <string name="onboarding_location_allow">Cho phép truy cập vị trí</string>
+    <string name="onboarding_location_granted">Đã bật vị trí ✓</string>
+    <string name="onboarding_finish_setup_title">Thiết lập của bạn</string>
+    <string name="onboarding_finish_drive">Google Drive</string>
+    <string name="onboarding_finish_background">Xử lý nền</string>
+    <string name="onboarding_finish_apikey">Khóa API Gemini</string>
+    <string name="onboarding_finish_location">Vị trí cho thời tiết</string>
+    <string name="onboarding_finish_grant">Thiết lập</string>
+    <string name="onboarding_finish_warning">Thiết lập chưa hoàn tất. Các mục được đánh dấu ở trên sẽ không hoạt động cho đến khi bạn hoàn tất — bạn có thể thiết lập tại đây hoặc sau này trong Cài đặt.</string>
 </resources>

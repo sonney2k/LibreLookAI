@@ -1155,4 +1155,15 @@
     <string name="onboarding_background_body">Importing photos, removing backgrounds and tagging clothes with AI can take a little while. LibreLookAI needs unrestricted background processing so Android doesn\'t kill it mid-task — which could otherwise leave half-imported items, missing tags or corrupted files.\n\nThis only allows the app to finish work you started; it does not run anything on its own.</string>
     <string name="onboarding_background_allow">Allow background processing</string>
     <string name="onboarding_background_granted">Background processing allowed ✓</string>
+    <string name="onboarding_location_title">Enable location for weather</string>
+    <string name="onboarding_location_body">LibreLookAI uses your approximate location to look up local weather, so it can suggest outfits that suit the day\'s conditions. Your location stays on your device and is only used to fetch the weather — it is never stored or shared. You can skip this and enable it later.</string>
+    <string name="onboarding_location_allow">Allow location access</string>
+    <string name="onboarding_location_granted">Location enabled ✓</string>
+    <string name="onboarding_finish_setup_title">Your setup</string>
+    <string name="onboarding_finish_drive">Google Drive</string>
+    <string name="onboarding_finish_background">Background processing</string>
+    <string name="onboarding_finish_apikey">Gemini API key</string>
+    <string name="onboarding_finish_location">Location for weather</string>
+    <string name="onboarding_finish_grant">Set up</string>
+    <string name="onboarding_finish_warning">Some setup isn\'t complete. The items marked above won\'t work until you finish them — you can set them up here or later in Settings.</string>
 </resources>
