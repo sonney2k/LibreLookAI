@@ -1082,4 +1082,18 @@
     <string name="onboarding_finish_location">Τοποθεσία για τον καιρό</string>
     <string name="onboarding_finish_grant">Ρύθμιση</string>
     <string name="onboarding_finish_warning">Η ρύθμιση δεν έχει ολοκληρωθεί. Τα στοιχεία που επισημαίνονται παραπάνω δεν θα λειτουργήσουν μέχρι να τα ολοκληρώσεις — μπορείς να τα ρυθμίσεις εδώ ή αργότερα στις Ρυθμίσεις.</string>
+
+    <!-- AI key/error global notices (no-key + failure/retry) -->
+    <string name="ai_no_key_title">Απαιτείται κλειδί API Gemini</string>
+    <string name="ai_no_key_message">Αυτή η λειτουργία χρησιμοποιεί την τεχνητή νοημοσύνη Gemini της Google, που χρειάζεται το δικό σου κλειδί API. Πρόσθεσε ένα δωρεάν κλειδί για να αρχίσεις να προσθέτεις ετικέτες στα ρούχα και να λαμβάνεις ιδέες για σύνολα (η εικονική δοκιμή και η αφαίρεση φόντου χρειάζονται κλειδί με ενεργοποιημένη χρέωση).</string>
+    <string name="ai_set_up_key">Ρύθμιση κλειδιού</string>
+    <string name="ai_error_title">Το αίτημα AI απέτυχε</string>
+    <string name="ai_error_quota">Έφτασες το όριο ή την ποσόστωση του Gemini. Περίμενε λίγο, ή ενεργοποίησε τη χρέωση στο κλειδί API σου, και δοκίμασε ξανά.</string>
+    <string name="ai_error_key_invalid">Το κλειδί API Gemini σου απορρίφθηκε. Έλεγξε το κλειδί στις ρυθμίσεις της εφαρμογής και δοκίμασε ξανά.</string>
+    <string name="ai_error_permission">Το κλειδί API Gemini σου δεν έχει πρόσβαση σε αυτό το μοντέλο. Η εικονική δοκιμή και η αφαίρεση φόντου χρειάζονται επί πληρωμή κλειδί με ενεργοποιημένη χρέωση.</string>
+    <string name="ai_error_server">Το Gemini αντιμετωπίζει πρόβλημα αυτή τη στιγμή. Δοκίμασε ξανά σε λίγο.</string>
+    <string name="ai_error_blocked">Το Gemini δεν μπόρεσε να ολοκληρώσει αυτό το αίτημα — η απάντηση μπορεί να αποκλείστηκε ή ήταν κενή. Δοκίμασε ξανά ή προσάρμοσε τα δεδομένα σου.</string>
+    <string name="ai_error_generic">Το αίτημα AI δεν ολοκληρώθηκε. Έλεγξε τη σύνδεσή σου και δοκίμασε ξανά.</string>
+    <string name="ai_retry">Επανάληψη</string>
+    <string name="ai_dismiss">Κλείσιμο</string>
 </resources>

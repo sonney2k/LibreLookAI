@@ -14,8 +14,9 @@ internal suspend fun GeminiRepository.tryOnOutfit(
         itemFiles: List<File>,
         outputDir: File,
         preferences: String = "",
+        notify: Boolean = false,
     ): File? = withContext(Dispatchers.IO) {
-        if (!isConfigured()) {
+        if (!ensureConfigured(notify)) {
             Log.w(GeminiRepository.TAG, "API key not set — skipping try-on")
             return@withContext null
         }
@@ -81,7 +82,10 @@ internal suspend fun GeminiRepository.tryOnOutfit(
             val responseBody = response.body!!.string()
             Log.d(GeminiRepository.TAG, "Try-on HTTP ${response.code}: ${responseBody.take(500)}")
             throwIf402(response.code, responseBody)
-            if (!response.isSuccessful) return@withContext null
+            if (!response.isSuccessful) {
+                emitFailure(response.code, responseBody, notify)
+                return@withContext null
+            }
 
             val parsed = gson.fromJson(responseBody, GeminiResponse::class.java)
             recordUsage(parsed, GeminiRepository.BG_MODEL, UsageCategory.TRY_ON)
@@ -95,6 +99,7 @@ internal suspend fun GeminiRepository.tryOnOutfit(
                         ?.firstOrNull()?.content?.parts
                         ?.mapNotNull { it.text }?.joinToString(" ")
                     Log.w(GeminiRepository.TAG, "No image part in try-on response. Text: $textParts")
+                    emitFailure(200, responseBody, notify)
                     return@withContext null
                 }
 
@@ -104,8 +109,11 @@ internal suspend fun GeminiRepository.tryOnOutfit(
             outFile
         } catch (e: com.librelookai.billing.InsufficientCreditsException) {
             throw e
+        } catch (e: AiUnavailableException) {
+            null // buildRequest already emitted the notice
         } catch (e: Exception) {
             Log.e(GeminiRepository.TAG, "tryOnOutfit failed: ${e.message}", e)
+            emitFailure(0, "", notify)
             null
         }
     }
@@ -234,8 +242,9 @@ internal suspend fun GeminiRepository.generateText(
         prompt: String,
         category: UsageCategory = UsageCategory.OTHER,
         bulkItems: Int = 1,
+        notify: Boolean = false,
     ): String? = withContext(Dispatchers.IO) {
-        if (!isConfigured()) return@withContext null
+        if (!ensureConfigured(notify)) return@withContext null
 
         val body = gson.toJson(
             mapOf(
@@ -254,17 +263,24 @@ internal suspend fun GeminiRepository.generateText(
             val responseBody = response.body!!.string()
             Log.d(GeminiRepository.TAG, "generateText HTTP ${response.code}: ${responseBody.take(500)}")
             throwIf402(response.code, responseBody)
-            if (!response.isSuccessful) return@withContext null
+            if (!response.isSuccessful) {
+                emitFailure(response.code, responseBody, notify)
+                return@withContext null
+            }
 
             val parsed = gson.fromJson(responseBody, GeminiResponse::class.java)
             recordUsage(parsed, GeminiRepository.CLASSIFY_MODEL, category)
             parsed.candidates
                 ?.firstOrNull()?.content?.parts
                 ?.firstOrNull { it.text != null }?.text
+                ?: run { emitFailure(200, responseBody, notify); null }
         } catch (e: com.librelookai.billing.InsufficientCreditsException) {
             throw e
+        } catch (e: AiUnavailableException) {
+            null // buildRequest already emitted the notice
         } catch (e: Exception) {
             Log.e(GeminiRepository.TAG, "generateText failed: ${e.message}", e)
+            emitFailure(0, "", notify)
             null
         }
     }

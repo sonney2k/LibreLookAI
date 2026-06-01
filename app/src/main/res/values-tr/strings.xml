@@ -1082,4 +1082,18 @@
     <string name="onboarding_finish_location">Hava durumu için konum</string>
     <string name="onboarding_finish_grant">Ayarla</string>
     <string name="onboarding_finish_warning">Kurulum tamamlanmadı. Yukarıda işaretlenen öğeler, siz tamamlayana kadar çalışmaz; bunları burada veya daha sonra Ayarlar\'da yapabilirsiniz.</string>
+
+    <!-- AI key/error global notices (no-key + failure/retry) -->
+    <string name="ai_no_key_title">Gemini API anahtarı gerekli</string>
+    <string name="ai_no_key_message">Bu özellik, kendi API anahtarınızı gerektiren Google\'ın Gemini yapay zekâsını kullanır. Kıyafetleri etiketlemeye ve kombin önerileri almaya başlamak için ücretsiz bir anahtar ekleyin (sanal deneme ve arka plan kaldırma, faturalandırma etkin bir anahtar gerektirir).</string>
+    <string name="ai_set_up_key">Anahtarı ayarla</string>
+    <string name="ai_error_title">Yapay zekâ isteği başarısız oldu</string>
+    <string name="ai_error_quota">Gemini kotanıza veya hız sınırınıza ulaştınız. Bir an bekleyin ya da API anahtarınızda faturalandırmayı etkinleştirip yeniden deneyin.</string>
+    <string name="ai_error_key_invalid">Gemini API anahtarınız reddedildi. Anahtarı uygulama ayarlarından kontrol edip yeniden deneyin.</string>
+    <string name="ai_error_permission">Gemini API anahtarınız bu modele erişemiyor. Sanal deneme ve arka plan kaldırma, faturalandırma etkin (ücretli) bir anahtar gerektirir.</string>
+    <string name="ai_error_server">Gemini şu anda sorun yaşıyor. Lütfen birazdan tekrar deneyin.</string>
+    <string name="ai_error_blocked">Gemini bu isteği tamamlayamadı — yanıt engellenmiş veya boş olabilir. Tekrar deneyin ya da girişinizi değiştirin.</string>
+    <string name="ai_error_generic">Yapay zekâ isteği gerçekleşmedi. Lütfen bağlantınızı kontrol edip yeniden deneyin.</string>
+    <string name="ai_retry">Yeniden dene</string>
+    <string name="ai_dismiss">Kapat</string>
 </resources>

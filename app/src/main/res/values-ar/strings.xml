@@ -1082,4 +1082,18 @@
     <string name="onboarding_finish_location">الموقع لمعرفة الطقس</string>
     <string name="onboarding_finish_grant">إعداد</string>
     <string name="onboarding_finish_warning">الإعداد غير مكتمل. العناصر المميَّزة أعلاه لن تعمل حتى تُكملها — يمكنك إعدادها هنا أو لاحقًا في الإعدادات.</string>
+
+    <!-- AI key/error global notices (no-key + failure/retry) -->
+    <string name="ai_no_key_title">مطلوب مفتاح Gemini API</string>
+    <string name="ai_no_key_message">تستخدم هذه الميزة الذكاء الاصطناعي Gemini من Google، الذي يتطلب مفتاح API خاصًا بك. أضِف مفتاحًا مجانيًا لبدء وسم الملابس والحصول على أفكار للإطلالات (يتطلب التجربة الافتراضية وإزالة الخلفية مفتاحًا مُفعَّلًا للفوترة).</string>
+    <string name="ai_set_up_key">إعداد المفتاح</string>
+    <string name="ai_error_title">فشل طلب الذكاء الاصطناعي</string>
+    <string name="ai_error_quota">لقد بلغت حصتك أو حد المعدل في Gemini. انتظر لحظة، أو فعِّل الفوترة على مفتاح API الخاص بك، ثم حاول مجددًا.</string>
+    <string name="ai_error_key_invalid">تم رفض مفتاح Gemini API الخاص بك. تحقق من المفتاح في إعدادات التطبيق، ثم حاول مجددًا.</string>
+    <string name="ai_error_permission">لا يمكن لمفتاح Gemini API الخاص بك الوصول إلى هذا النموذج. تتطلب التجربة الافتراضية وإزالة الخلفية مفتاحًا مدفوعًا مُفعَّلًا للفوترة.</string>
+    <string name="ai_error_server">يواجه Gemini مشكلة في الوقت الحالي. يُرجى المحاولة مرة أخرى بعد قليل.</string>
+    <string name="ai_error_blocked">تعذّر على Gemini إكمال هذا الطلب — ربما تم حظر الاستجابة أو كانت فارغة. حاول مجددًا أو عدِّل مدخلاتك.</string>
+    <string name="ai_error_generic">لم يتم تنفيذ طلب الذكاء الاصطناعي. يُرجى التحقق من اتصالك والمحاولة مرة أخرى.</string>
+    <string name="ai_retry">إعادة المحاولة</string>
+    <string name="ai_dismiss">إغلاق</string>
 </resources>

@@ -191,6 +191,7 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
             return
         }
 
+        com.librelookai.gemini.AiRetry.action = { doGenerate(prefs, images, styles) }
         viewModelScope.launch {
             // Phase 1 — fetch forecast only when input changed
             val currentKey = Triple(dest, startDate, days)
@@ -251,7 +252,7 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
             )
             Log.d("TravelVM", "Packing prompt length: ${prompt.length} chars")
 
-            val raw = gemini.generateText(prompt, UsageCategory.TRAVEL)
+            val raw = gemini.generateText(prompt, UsageCategory.TRAVEL, notify = true)
             if (raw == null) {
                 _state.update { it.copy(isGenerating = false, error = "Gemini did not respond.") }
                 return@launch

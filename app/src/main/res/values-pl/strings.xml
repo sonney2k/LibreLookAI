@@ -1082,4 +1082,18 @@
     <string name="onboarding_finish_location">Lokalizacja dla pogody</string>
     <string name="onboarding_finish_grant">Skonfiguruj</string>
     <string name="onboarding_finish_warning">Konfiguracja nie jest ukończona. Elementy oznaczone powyżej nie będą działać, dopóki ich nie dokończysz — możesz je skonfigurować tutaj lub później w Ustawieniach.</string>
+
+    <!-- AI key/error global notices (no-key + failure/retry) -->
+    <string name="ai_no_key_title">Wymagany klucz API Gemini</string>
+    <string name="ai_no_key_message">Ta funkcja korzysta z AI Gemini od Google, która wymaga własnego klucza API. Dodaj bezpłatny klucz, aby zacząć tagować ubrania i otrzymywać propozycje stylizacji (wirtualna przymierzalnia i usuwanie tła wymagają klucza z włączonym rozliczaniem).</string>
+    <string name="ai_set_up_key">Skonfiguruj klucz</string>
+    <string name="ai_error_title">Żądanie AI nie powiodło się</string>
+    <string name="ai_error_quota">Osiągnięto limit lub przydział Gemini. Poczekaj chwilę lub włącz rozliczanie dla swojego klucza API, a następnie spróbuj ponownie.</string>
+    <string name="ai_error_key_invalid">Twój klucz API Gemini został odrzucony. Sprawdź klucz w ustawieniach aplikacji i spróbuj ponownie.</string>
+    <string name="ai_error_permission">Twój klucz API Gemini nie ma dostępu do tego modelu. Wirtualna przymierzalnia i usuwanie tła wymagają płatnego klucza z włączonym rozliczaniem.</string>
+    <string name="ai_error_server">Gemini ma teraz problemy. Spróbuj ponownie za chwilę.</string>
+    <string name="ai_error_blocked">Gemini nie mógł zrealizować tego żądania — odpowiedź mogła zostać zablokowana lub była pusta. Spróbuj ponownie lub dostosuj dane wejściowe.</string>
+    <string name="ai_error_generic">Żądanie AI nie zostało zrealizowane. Sprawdź połączenie i spróbuj ponownie.</string>
+    <string name="ai_retry">Ponów</string>
+    <string name="ai_dismiss">Zamknij</string>
 </resources>

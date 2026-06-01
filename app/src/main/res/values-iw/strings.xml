@@ -1086,4 +1086,18 @@
     <string name="onboarding_finish_location">מיקום עבור מזג האוויר</string>
     <string name="onboarding_finish_grant">הגדרה</string>
     <string name="onboarding_finish_warning">ההגדרה לא הושלמה. הפריטים המסומנים למעלה לא יעבדו עד שתשלים אותם — אפשר להגדיר אותם כאן או מאוחר יותר בהגדרות.</string>
+
+    <!-- AI key/error global notices (no-key + failure/retry) -->
+    <string name="ai_no_key_title">נדרש מפתח API של Gemini</string>
+    <string name="ai_no_key_message">התכונה הזו משתמשת ב-Gemini AI של Google, שדורש מפתח API משלך. הוסף מפתח חינמי כדי להתחיל לתייג בגדים ולקבל רעיונות לתלבושות (מדידה וירטואלית והסרת רקע דורשות מפתח עם חיוב מופעל).</string>
+    <string name="ai_set_up_key">הגדרת מפתח</string>
+    <string name="ai_error_title">בקשת ה-AI נכשלה</string>
+    <string name="ai_error_quota">הגעת למכסה או למגבלת הקצב של Gemini. המתן רגע, או הפעל חיוב במפתח ה-API שלך, ואז נסה שוב.</string>
+    <string name="ai_error_key_invalid">מפתח ה-API של Gemini נדחה. בדוק את המפתח בהגדרות האפליקציה ונסה שוב.</string>
+    <string name="ai_error_permission">מפתח ה-API של Gemini שלך אינו יכול לגשת למודל הזה. מדידה וירטואלית והסרת רקע דורשות מפתח בתשלום עם חיוב מופעל.</string>
+    <string name="ai_error_server">ל-Gemini יש בעיה כרגע. נסה שוב בעוד רגע.</string>
+    <string name="ai_error_blocked">‏Gemini לא הצליח להשלים את הבקשה — ייתכן שהתגובה נחסמה או הייתה ריקה. נסה שוב, או התאם את הקלט.</string>
+    <string name="ai_error_generic">בקשת ה-AI לא עברה. בדוק את החיבור ונסה שוב.</string>
+    <string name="ai_retry">נסה שוב</string>
+    <string name="ai_dismiss">סגירה</string>
 </resources>

@@ -1082,4 +1082,18 @@
     <string name="onboarding_finish_location">Sijainti säätä varten</string>
     <string name="onboarding_finish_grant">Määritä</string>
     <string name="onboarding_finish_warning">Määritykset eivät ole valmiit. Yllä merkityt kohteet eivät toimi ennen kuin viimeistelet ne – voit määrittää ne tässä tai myöhemmin Asetuksissa.</string>
+
+    <!-- AI key/error global notices (no-key + failure/retry) -->
+    <string name="ai_no_key_title">Gemini-API-avain vaaditaan</string>
+    <string name="ai_no_key_message">Tämä ominaisuus käyttää Googlen Gemini-tekoälyä, joka tarvitsee oman API-avaimesi. Lisää maksuton avain, niin voit merkitä vaatteita ja saada asukokonaisuusehdotuksia (virtuaalinen sovitus ja taustan poisto vaativat avaimen, jossa laskutus on käytössä).</string>
+    <string name="ai_set_up_key">Määritä avain</string>
+    <string name="ai_error_title">Tekoälypyyntö epäonnistui</string>
+    <string name="ai_error_quota">Olet saavuttanut Gemini-kiintiösi tai nopeusrajasi. Odota hetki tai ota laskutus käyttöön API-avaimellesi ja yritä uudelleen.</string>
+    <string name="ai_error_key_invalid">Gemini-API-avaimesi hylättiin. Tarkista avain sovelluksen asetuksista ja yritä uudelleen.</string>
+    <string name="ai_error_permission">Gemini-API-avaimellasi ei ole pääsyä tähän malliin. Virtuaalinen sovitus ja taustan poisto vaativat maksullisen avaimen, jossa laskutus on käytössä.</string>
+    <string name="ai_error_server">Geminissä on juuri nyt ongelmia. Yritä uudelleen hetken kuluttua.</string>
+    <string name="ai_error_blocked">Gemini ei voinut suorittaa tätä pyyntöä — vastaus on saatettu estää tai se oli tyhjä. Yritä uudelleen tai muokkaa syötettäsi.</string>
+    <string name="ai_error_generic">Tekoälypyyntö ei mennyt läpi. Tarkista yhteytesi ja yritä uudelleen.</string>
+    <string name="ai_retry">Yritä uudelleen</string>
+    <string name="ai_dismiss">Sulje</string>
 </resources>

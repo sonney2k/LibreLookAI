@@ -304,12 +304,14 @@ class TripsViewModel(app: Application) : AndroidViewModel(app) {
         val trip = _state.value.trips.find { it.id == tripId } ?: run { onDone(false); return }
         val tripOutfits = currentOutfits.filter { it.id in trip.outfitIds }
         if (tripOutfits.isEmpty()) { onDone(false); return }
+        com.librelookai.gemini.AiRetry.action =
+            { refineAllOutfits(tripId, instruction, images, currentOutfits, prefs, onDone) }
         viewModelScope.launch {
             _bulkRefining.update { it + tripId }
             val prompt = buildBulkRefinePrompt(trip, tripOutfits, instr, images, prefs)
             Log.d(TAG, "Bulk-refine prompt length: ${prompt.length} chars")
             val raw = try {
-                gemini.generateText(prompt, UsageCategory.TRAVEL, bulkItems = tripOutfits.size)
+                gemini.generateText(prompt, UsageCategory.TRAVEL, bulkItems = tripOutfits.size, notify = true)
             } catch (e: com.librelookai.billing.InsufficientCreditsException) {
                 _bulkRefining.update { it - tripId }
                 onDone(false); return@launch

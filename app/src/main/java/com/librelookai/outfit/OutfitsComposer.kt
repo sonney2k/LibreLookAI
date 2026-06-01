@@ -227,6 +227,8 @@ internal fun OutfitsViewModel.enhanceComposerWithAi(
         val feedbackAdd = s.composerFeedback.trim()
         val history = if (feedbackAdd.isNotEmpty()) s.composerFeedbackHistory + feedbackAdd else s.composerFeedbackHistory
         val suggestionCount = s.composerSuggestionCount.coerceIn(1, 10)
+        // Register a one-tap retry so the global AI-failure dialog can re-run the composition.
+        com.librelookai.gemini.AiRetry.action = { enhanceComposerWithAi(prefs, weather, images) }
         _state.update {
             it.copy(
                 isComposerEnhancing     = true,
@@ -270,7 +272,7 @@ internal fun OutfitsViewModel.enhanceComposerWithAi(
             )
             Log.d("StylesVM", "Composer prompt length: ${prompt.length} chars")
             val raw = try {
-                gemini.generateText(prompt, UsageCategory.OUTFIT_COMPOSE, bulkItems = suggestionCount)
+                gemini.generateText(prompt, UsageCategory.OUTFIT_COMPOSE, bulkItems = suggestionCount, notify = true)
             } catch (e: com.librelookai.billing.InsufficientCreditsException) {
                 _state.update { it.copy(isComposerEnhancing = false) }
                 return@launch

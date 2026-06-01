@@ -1082,4 +1082,18 @@
     <string name="onboarding_finish_location">Posisjon for vær</string>
     <string name="onboarding_finish_grant">Konfigurer</string>
     <string name="onboarding_finish_warning">Oppsettet er ikke fullført. Elementene merket ovenfor fungerer ikke før du fullfører dem – du kan sette dem opp her eller senere i Innstillinger.</string>
+
+    <!-- AI key/error global notices (no-key + failure/retry) -->
+    <string name="ai_no_key_title">Gemini API-nøkkel kreves</string>
+    <string name="ai_no_key_message">Denne funksjonen bruker Googles Gemini-AI, som trenger din egen API-nøkkel. Legg til en gratis nøkkel for å begynne å merke klær og få antrekksforslag (virtuell prøving og bakgrunnsfjerning krever en nøkkel med fakturering aktivert).</string>
+    <string name="ai_set_up_key">Konfigurer nøkkel</string>
+    <string name="ai_error_title">AI-forespørselen mislyktes</string>
+    <string name="ai_error_quota">Du har nådd Gemini-kvoten eller hastighetsgrensen din. Vent et øyeblikk, eller aktiver fakturering på API-nøkkelen din, og prøv igjen.</string>
+    <string name="ai_error_key_invalid">Gemini API-nøkkelen din ble avvist. Sjekk nøkkelen i appinnstillingene, og prøv igjen.</string>
+    <string name="ai_error_permission">Gemini API-nøkkelen din har ikke tilgang til denne modellen. Virtuell prøving og bakgrunnsfjerning krever en betalt nøkkel med fakturering.</string>
+    <string name="ai_error_server">Gemini har problemer akkurat nå. Prøv igjen om et øyeblikk.</string>
+    <string name="ai_error_blocked">Gemini kunne ikke fullføre denne forespørselen — svaret kan ha blitt blokkert eller vært tomt. Prøv igjen, eller juster det du skrev inn.</string>
+    <string name="ai_error_generic">AI-forespørselen gikk ikke gjennom. Sjekk tilkoblingen din og prøv igjen.</string>
+    <string name="ai_retry">Prøv igjen</string>
+    <string name="ai_dismiss">Lukk</string>
 </resources>

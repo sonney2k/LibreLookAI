@@ -1055,4 +1055,18 @@
     <string name="onboarding_finish_location">मौसम के लिए स्थान</string>
     <string name="onboarding_finish_grant">सेट अप करें</string>
     <string name="onboarding_finish_warning">सेटअप अभी पूरा नहीं हुआ है। ऊपर चिह्नित आइटम तब तक काम नहीं करेंगे जब तक आप उन्हें पूरा नहीं करते — आप उन्हें यहाँ या बाद में सेटिंग में सेट कर सकते हैं।</string>
+
+    <!-- AI key/error global notices (no-key + failure/retry) -->
+    <string name="ai_no_key_title">Gemini API कुंजी आवश्यक है</string>
+    <string name="ai_no_key_message">यह सुविधा Google के Gemini AI का उपयोग करती है, जिसके लिए आपकी अपनी API कुंजी ज़रूरी है। कपड़ों पर टैग लगाने और पहनावे के सुझाव पाने के लिए एक मुफ़्त कुंजी जोड़ें (वर्चुअल ट्राई-ऑन और बैकग्राउंड हटाने के लिए बिलिंग-सक्षम कुंजी आवश्यक है)।</string>
+    <string name="ai_set_up_key">कुंजी सेट करें</string>
+    <string name="ai_error_title">AI अनुरोध विफल</string>
+    <string name="ai_error_quota">आप अपने Gemini कोटा या दर सीमा तक पहुँच गए हैं। थोड़ा रुकें, या अपनी API कुंजी पर बिलिंग सक्षम करें, फिर दोबारा प्रयास करें।</string>
+    <string name="ai_error_key_invalid">आपकी Gemini API कुंजी अस्वीकृत हो गई। ऐप सेटिंग में कुंजी जाँचें, फिर दोबारा प्रयास करें।</string>
+    <string name="ai_error_permission">आपकी Gemini API कुंजी इस मॉडल तक पहुँच नहीं सकती। वर्चुअल ट्राई-ऑन और बैकग्राउंड हटाने के लिए बिलिंग-सक्षम (सशुल्क) कुंजी आवश्यक है।</string>
+    <string name="ai_error_server">Gemini अभी समस्या का सामना कर रहा है। कृपया थोड़ी देर में दोबारा प्रयास करें।</string>
+    <string name="ai_error_blocked">Gemini यह अनुरोध पूरा नहीं कर सका — प्रतिक्रिया शायद अवरुद्ध या खाली रही हो। दोबारा प्रयास करें, या अपना इनपुट समायोजित करें।</string>
+    <string name="ai_error_generic">AI अनुरोध पूरा नहीं हुआ। कृपया अपना कनेक्शन जाँचें और दोबारा प्रयास करें।</string>
+    <string name="ai_retry">पुनः प्रयास</string>
+    <string name="ai_dismiss">बंद करें</string>
 </resources>

@@ -1055,4 +1055,18 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="onboarding_finish_location">Helymeghatározás az időjáráshoz</string>
     <string name="onboarding_finish_grant">Beállítás</string>
     <string name="onboarding_finish_warning">A beállítás nem teljes. A fent jelölt elemek addig nem működnek, amíg be nem fejezed őket – beállíthatod itt vagy később a Beállításokban.</string>
+
+    <!-- AI key/error global notices (no-key + failure/retry) -->
+    <string name="ai_no_key_title">Gemini API-kulcs szükséges</string>
+    <string name="ai_no_key_message">Ez a funkció a Google Gemini MI-jét használja, amelyhez saját API-kulcs szükséges. Adj hozzá egy ingyenes kulcsot, hogy elkezdhesd címkézni a ruháidat és szettötleteket kapni (a virtuális próba és a háttér eltávolítása számlázásra engedélyezett kulcsot igényel).</string>
+    <string name="ai_set_up_key">Kulcs beállítása</string>
+    <string name="ai_error_title">Az MI-kérés sikertelen</string>
+    <string name="ai_error_quota">Elérted a Gemini kvótádat vagy sebességkorlátodat. Várj egy kicsit, vagy engedélyezd a számlázást az API-kulcsodhoz, majd próbáld újra.</string>
+    <string name="ai_error_key_invalid">A Gemini API-kulcsodat elutasították. Ellenőrizd a kulcsot az alkalmazás beállításaiban, majd próbáld újra.</string>
+    <string name="ai_error_permission">A Gemini API-kulcsod nem fér hozzá ehhez a modellhez. A virtuális próba és a háttér eltávolítása fizetős, számlázásra engedélyezett kulcsot igényel.</string>
+    <string name="ai_error_server">A Gemininek jelenleg gondjai vannak. Kérjük, próbáld újra egy pillanat múlva.</string>
+    <string name="ai_error_blocked">A Gemini nem tudta teljesíteni ezt a kérést — a válasz blokkolva lehetett vagy üres volt. Próbáld újra, vagy módosítsd a bevitelt.</string>
+    <string name="ai_error_generic">Az MI-kérés nem ment át. Ellenőrizd a kapcsolatot, és próbáld újra.</string>
+    <string name="ai_retry">Újra</string>
+    <string name="ai_dismiss">Bezárás</string>
 </resources>

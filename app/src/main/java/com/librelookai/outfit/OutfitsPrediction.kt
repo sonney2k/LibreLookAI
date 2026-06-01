@@ -108,6 +108,8 @@ internal fun OutfitsViewModel.doTriggerPrediction(
         val setup = _state.value
         val filteredImages = if (setup.composerSourceFolderIds.isEmpty()) images
             else images.filter { it.folderId in setup.composerSourceFolderIds }
+        // Register a one-tap retry so the global AI-failure dialog can re-run this prediction.
+        com.librelookai.gemini.AiRetry.action = { doTriggerPrediction(prefs, weather, images, feedbackHistory) }
         viewModelScope.launch {
             _state.update { it.copy(isPredicting = true, prediction = null, predictionSuggestions = emptyList(), predictionIndex = 0, predictionError = null) }
 
@@ -146,7 +148,7 @@ internal fun OutfitsViewModel.doTriggerPrediction(
             }
 
             val raw = try {
-                gemini.generateText(prompt, UsageCategory.OUTFIT_PREDICT, bulkItems = suggestionCount)
+                gemini.generateText(prompt, UsageCategory.OUTFIT_PREDICT, bulkItems = suggestionCount, notify = true)
             } catch (e: com.librelookai.billing.InsufficientCreditsException) {
                 _state.update { it.copy(isPredicting = false) }
                 return@launch

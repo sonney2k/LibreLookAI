@@ -1082,4 +1082,18 @@
     <string name="onboarding_finish_location">날씨를 위한 위치</string>
     <string name="onboarding_finish_grant">설정</string>
     <string name="onboarding_finish_warning">설정이 완료되지 않았습니다. 위에 표시된 항목은 완료하기 전까지 작동하지 않습니다. 여기에서 설정하거나 나중에 설정에서 설정할 수 있습니다.</string>
+
+    <!-- AI key/error global notices (no-key + failure/retry) -->
+    <string name="ai_no_key_title">Gemini API 키가 필요합니다</string>
+    <string name="ai_no_key_message">이 기능은 Google의 Gemini AI를 사용하며, 본인의 API 키가 필요합니다. 무료 키를 추가하면 옷에 태그를 달고 코디 아이디어를 받을 수 있습니다(가상 피팅과 배경 제거에는 결제가 설정된 키가 필요합니다).</string>
+    <string name="ai_set_up_key">키 설정</string>
+    <string name="ai_error_title">AI 요청 실패</string>
+    <string name="ai_error_quota">Gemini 할당량 또는 사용 한도에 도달했습니다. 잠시 기다리거나 API 키에 결제를 설정한 후 다시 시도하세요.</string>
+    <string name="ai_error_key_invalid">Gemini API 키가 거부되었습니다. 앱 설정에서 키를 확인한 후 다시 시도하세요.</string>
+    <string name="ai_error_permission">사용 중인 Gemini API 키로는 이 모델에 액세스할 수 없습니다. 가상 피팅과 배경 제거에는 결제가 설정된 유료 키가 필요합니다.</string>
+    <string name="ai_error_server">현재 Gemini에 문제가 있습니다. 잠시 후 다시 시도하세요.</string>
+    <string name="ai_error_blocked">Gemini가 이 요청을 완료하지 못했습니다. 응답이 차단되었거나 비어 있을 수 있습니다. 다시 시도하거나 입력을 조정하세요.</string>
+    <string name="ai_error_generic">AI 요청이 처리되지 않았습니다. 연결을 확인한 후 다시 시도하세요.</string>
+    <string name="ai_retry">다시 시도</string>
+    <string name="ai_dismiss">닫기</string>
 </resources>

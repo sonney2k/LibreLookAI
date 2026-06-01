@@ -1055,4 +1055,18 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <string name="onboarding_finish_location">Lokasi untuk cuaca</string>
     <string name="onboarding_finish_grant">Sediakan</string>
     <string name="onboarding_finish_warning">Persediaan belum lengkap. Item yang ditandakan di atas tidak akan berfungsi sehingga anda menyelesaikannya — anda boleh menyediakannya di sini atau kemudian dalam Tetapan.</string>
+
+    <!-- AI key/error global notices (no-key + failure/retry) -->
+    <string name="ai_no_key_title">Kunci API Gemini diperlukan</string>
+    <string name="ai_no_key_message">Ciri ini menggunakan AI Gemini Google, yang memerlukan kunci API anda sendiri. Tambah kunci percuma untuk mula menanda pakaian dan mendapatkan idea pakaian (cuba maya dan pembuangan latar memerlukan kunci dengan pengebilan didayakan).</string>
+    <string name="ai_set_up_key">Sediakan kunci</string>
+    <string name="ai_error_title">Permintaan AI gagal</string>
+    <string name="ai_error_quota">Anda telah mencapai kuota atau had kadar Gemini. Tunggu sebentar, atau dayakan pengebilan pada kunci API anda, kemudian cuba lagi.</string>
+    <string name="ai_error_key_invalid">Kunci API Gemini anda ditolak. Semak kunci dalam tetapan apl, kemudian cuba lagi.</string>
+    <string name="ai_error_permission">Kunci API Gemini anda tidak boleh mengakses model ini. Cuba maya dan pembuangan latar memerlukan kunci berbayar dengan pengebilan didayakan.</string>
+    <string name="ai_error_server">Gemini menghadapi masalah sekarang. Sila cuba lagi sebentar lagi.</string>
+    <string name="ai_error_blocked">Gemini tidak dapat menyelesaikan permintaan ini — responsnya mungkin disekat atau kosong. Cuba lagi, atau laraskan input anda.</string>
+    <string name="ai_error_generic">Permintaan AI tidak berjaya. Sila semak sambungan anda dan cuba lagi.</string>
+    <string name="ai_retry">Cuba lagi</string>
+    <string name="ai_dismiss">Tutup</string>
 </resources>

@@ -1082,4 +1082,18 @@
     <string name="onboarding_finish_location">Poloha pro počasí</string>
     <string name="onboarding_finish_grant">Nastavit</string>
     <string name="onboarding_finish_warning">Nastavení není dokončené. Položky označené výše nebudou fungovat, dokud je nedokončíte – můžete je nastavit zde nebo později v Nastavení.</string>
+
+    <!-- AI key/error global notices (no-key + failure/retry) -->
+    <string name="ai_no_key_title">Je potřeba klíč API Gemini</string>
+    <string name="ai_no_key_message">Tato funkce využívá AI Gemini od Googlu, která vyžaduje váš vlastní klíč API. Přidejte bezplatný klíč a začněte štítkovat oblečení a získávat nápady na outfity (virtuální zkoušení a odstranění pozadí vyžadují klíč se zapnutou fakturací).</string>
+    <string name="ai_set_up_key">Nastavit klíč</string>
+    <string name="ai_error_title">Požadavek na AI selhal</string>
+    <string name="ai_error_quota">Dosáhli jste kvóty nebo limitu Gemini. Chvíli počkejte, nebo zapněte fakturaci u svého klíče API, a zkuste to znovu.</string>
+    <string name="ai_error_key_invalid">Váš klíč API Gemini byl odmítnut. Zkontrolujte klíč v nastavení aplikace a zkuste to znovu.</string>
+    <string name="ai_error_permission">Váš klíč API Gemini nemá přístup k tomuto modelu. Virtuální zkoušení a odstranění pozadí vyžadují placený klíč se zapnutou fakturací.</string>
+    <string name="ai_error_server">Gemini má momentálně potíže. Zkuste to prosím za chvíli znovu.</string>
+    <string name="ai_error_blocked">Gemini nemohl tento požadavek dokončit — odpověď mohla být zablokována nebo prázdná. Zkuste to znovu nebo upravte vstup.</string>
+    <string name="ai_error_generic">Požadavek na AI neprošel. Zkontrolujte připojení a zkuste to znovu.</string>
+    <string name="ai_retry">Zkusit znovu</string>
+    <string name="ai_dismiss">Zavřít</string>
 </resources>

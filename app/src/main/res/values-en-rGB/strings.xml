@@ -1082,4 +1082,18 @@
     <string name="onboarding_finish_location">Location for weather</string>
     <string name="onboarding_finish_grant">Set up</string>
     <string name="onboarding_finish_warning">Some setup isn\'t complete. The items marked above won\'t work until you finish them — you can set them up here or later in Settings.</string>
+
+    <!-- AI key/error global notices (no-key + failure/retry) -->
+    <string name="ai_no_key_title">Gemini API key needed</string>
+    <string name="ai_no_key_message">This feature uses Google\'s Gemini AI, which needs your own API key. Add a free key to start tagging clothes and getting outfit ideas (virtual try-on and background removal need a billing-enabled key).</string>
+    <string name="ai_set_up_key">Set up key</string>
+    <string name="ai_error_title">AI request failed</string>
+    <string name="ai_error_quota">You\'ve reached your Gemini quota or rate limit. Wait a moment, or enable billing on your API key, then try again.</string>
+    <string name="ai_error_key_invalid">Your Gemini API key was rejected. Check the key in your app settings, then try again.</string>
+    <string name="ai_error_permission">Your Gemini API key can\'t access this model. Virtual try-on and background removal need a billing-enabled (paid) key.</string>
+    <string name="ai_error_server">Gemini is having trouble right now. Please try again in a moment.</string>
+    <string name="ai_error_blocked">Gemini couldn\'t complete this request — the response may have been blocked or empty. Try again, or adjust your input.</string>
+    <string name="ai_error_generic">The AI request didn\'t go through. Please check your connection and try again.</string>
+    <string name="ai_retry">Retry</string>
+    <string name="ai_dismiss">Dismiss</string>
 </resources>

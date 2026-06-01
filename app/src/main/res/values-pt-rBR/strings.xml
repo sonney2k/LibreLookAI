@@ -1082,4 +1082,18 @@
     <string name="onboarding_finish_location">Localização para o clima</string>
     <string name="onboarding_finish_grant">Configurar</string>
     <string name="onboarding_finish_warning">A configuração não está completa. Os itens marcados acima não funcionarão até você concluí-los — configure-os aqui ou depois nas Configurações.</string>
+
+    <!-- AI key/error global notices (no-key + failure/retry) -->
+    <string name="ai_no_key_title">É necessária uma chave de API do Gemini</string>
+    <string name="ai_no_key_message">Este recurso usa a IA Gemini do Google, que precisa da sua própria chave de API. Adicione uma chave gratuita para começar a marcar roupas e receber ideias de looks (a prova virtual e a remoção de fundo exigem uma chave com faturamento ativado).</string>
+    <string name="ai_set_up_key">Configurar chave</string>
+    <string name="ai_error_title">Falha na solicitação de IA</string>
+    <string name="ai_error_quota">Você atingiu sua cota ou limite de uso do Gemini. Aguarde um momento, ou ative o faturamento na sua chave de API, e tente novamente.</string>
+    <string name="ai_error_key_invalid">Sua chave de API do Gemini foi recusada. Verifique a chave nas configurações do app e tente novamente.</string>
+    <string name="ai_error_permission">Sua chave de API do Gemini não pode acessar este modelo. A prova virtual e a remoção de fundo exigem uma chave paga com faturamento ativado.</string>
+    <string name="ai_error_server">O Gemini está com problemas no momento. Tente novamente em instantes.</string>
+    <string name="ai_error_blocked">O Gemini não conseguiu concluir esta solicitação — a resposta pode ter sido bloqueada ou estar vazia. Tente novamente ou ajuste sua entrada.</string>
+    <string name="ai_error_generic">A solicitação de IA não foi concluída. Verifique sua conexão e tente novamente.</string>
+    <string name="ai_retry">Tentar de novo</string>
+    <string name="ai_dismiss">Dispensar</string>
 </resources>

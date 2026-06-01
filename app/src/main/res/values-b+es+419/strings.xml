@@ -1082,4 +1082,18 @@
     <string name="onboarding_finish_location">Ubicación para el clima</string>
     <string name="onboarding_finish_grant">Configurar</string>
     <string name="onboarding_finish_warning">La configuración no está completa. Los elementos marcados arriba no funcionarán hasta que los completes: puedes configurarlos aquí o más tarde en Configuración.</string>
+
+    <!-- AI key/error global notices (no-key + failure/retry) -->
+    <string name="ai_no_key_title">Se necesita una clave de API de Gemini</string>
+    <string name="ai_no_key_message">Esta función usa la IA Gemini de Google, que necesita tu propia clave de API. Agrega una clave gratuita para empezar a etiquetar prendas y obtener ideas de atuendos (la prueba virtual y la eliminación de fondo requieren una clave con facturación activada).</string>
+    <string name="ai_set_up_key">Configurar clave</string>
+    <string name="ai_error_title">Error en la solicitud de IA</string>
+    <string name="ai_error_quota">Alcanzaste tu cuota o límite de uso de Gemini. Espera un momento, o activa la facturación en tu clave de API, y vuelve a intentarlo.</string>
+    <string name="ai_error_key_invalid">Tu clave de API de Gemini fue rechazada. Revisa la clave en la configuración de la app y vuelve a intentarlo.</string>
+    <string name="ai_error_permission">Tu clave de API de Gemini no puede acceder a este modelo. La prueba virtual y la eliminación de fondo requieren una clave de pago con facturación activada.</string>
+    <string name="ai_error_server">Gemini está teniendo problemas en este momento. Vuelve a intentarlo en un instante.</string>
+    <string name="ai_error_blocked">Gemini no pudo completar esta solicitud: la respuesta puede haber sido bloqueada o estar vacía. Vuelve a intentarlo o ajusta tu entrada.</string>
+    <string name="ai_error_generic">La solicitud de IA no se completó. Revisa tu conexión y vuelve a intentarlo.</string>
+    <string name="ai_retry">Reintentar</string>
+    <string name="ai_dismiss">Cerrar</string>
 </resources>

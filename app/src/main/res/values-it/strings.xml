@@ -1082,4 +1082,18 @@
     <string name="onboarding_finish_location">Posizione per il meteo</string>
     <string name="onboarding_finish_grant">Configura</string>
     <string name="onboarding_finish_warning">La configurazione non è completa. Gli elementi contrassegnati sopra non funzioneranno finché non li completi: puoi configurarli qui o più tardi nelle Impostazioni.</string>
+
+    <!-- AI key/error global notices (no-key + failure/retry) -->
+    <string name="ai_no_key_title">Serve una chiave API Gemini</string>
+    <string name="ai_no_key_message">Questa funzione usa l\'IA Gemini di Google, che richiede una tua chiave API. Aggiungi una chiave gratuita per iniziare a etichettare i capi e ottenere idee per gli outfit (la prova virtuale e la rimozione dello sfondo richiedono una chiave con fatturazione attiva).</string>
+    <string name="ai_set_up_key">Configura chiave</string>
+    <string name="ai_error_title">Richiesta IA non riuscita</string>
+    <string name="ai_error_quota">Hai raggiunto la quota o il limite di frequenza di Gemini. Attendi un momento, oppure attiva la fatturazione sulla tua chiave API, poi riprova.</string>
+    <string name="ai_error_key_invalid">La tua chiave API Gemini è stata rifiutata. Controlla la chiave nelle impostazioni dell\'app e riprova.</string>
+    <string name="ai_error_permission">La tua chiave API Gemini non può accedere a questo modello. La prova virtuale e la rimozione dello sfondo richiedono una chiave a pagamento con fatturazione attiva.</string>
+    <string name="ai_error_server">Gemini sta avendo problemi in questo momento. Riprova tra un istante.</string>
+    <string name="ai_error_blocked">Gemini non è riuscito a completare questa richiesta: la risposta potrebbe essere stata bloccata o vuota. Riprova o modifica i dati inseriti.</string>
+    <string name="ai_error_generic">La richiesta IA non è andata a buon fine. Controlla la connessione e riprova.</string>
+    <string name="ai_retry">Riprova</string>
+    <string name="ai_dismiss">Chiudi</string>
 </resources>

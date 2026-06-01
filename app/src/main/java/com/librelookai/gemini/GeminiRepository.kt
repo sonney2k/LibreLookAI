@@ -123,11 +123,11 @@ class GeminiRepository(internal val app: Application) {
         }
         val proxyBase = BuildConfig.PROXY_BASE_URL
         if (proxyBase.isBlank() || !com.librelookai.billing.ManagedBilling.enabled) {
-            AiEvents.emitUnavailable(R.string.ai_unavailable)
+            AiEvents.emit(AiNoticeKind.FAILED, R.string.ai_unavailable, canRetry = true)
             throw AiUnavailableException(R.string.ai_unavailable)
         }
         val token = getFirebaseIdToken() ?: run {
-            AiEvents.emitUnavailable(R.string.ai_unavailable)
+            AiEvents.emit(AiNoticeKind.FAILED, R.string.ai_unavailable, canRetry = true)
             throw AiUnavailableException(R.string.ai_unavailable)
         }
         val builder = Request.Builder()
@@ -144,6 +144,38 @@ class GeminiRepository(internal val app: Application) {
     internal fun isConfigured(): Boolean =
         resolveApiKey().isNotBlank() ||
             (com.librelookai.billing.ManagedBilling.enabled && BuildConfig.PROXY_BASE_URL.isNotBlank())
+
+    /**
+     * Pre-flight key/backend check shared by every Gemini call. Returns true when a call may
+     * proceed. When nothing is configured it returns false and — for [notify] (user-initiated)
+     * calls only — emits a [AiNoticeKind.NOT_CONFIGURED] notice so the global handler can offer to
+     * set up a key. Automatic/bulk calls pass `notify = false` and simply degrade to null.
+     */
+    internal fun ensureConfigured(notify: Boolean): Boolean {
+        if (isConfigured()) return true
+        if (notify) AiEvents.emit(AiNoticeKind.NOT_CONFIGURED, R.string.ai_no_key_message)
+        return false
+    }
+
+    /**
+     * Maps a failed Gemini outcome to a user-facing reason and, for [notify] calls, emits a
+     * retryable [AiNoticeKind.FAILED] notice. [code] is the HTTP status (0 for a network/parse
+     * exception); [body] is the (possibly empty) response body used to disambiguate 400s and
+     * detect a blocked/empty 200.
+     */
+    internal fun emitFailure(code: Int, body: String, notify: Boolean) {
+        if (!notify) return
+        val res = when {
+            code == 429 -> R.string.ai_error_quota
+            code == 400 && (body.contains("API_KEY_INVALID") || body.contains("API key not valid")) ->
+                R.string.ai_error_key_invalid
+            code == 403 -> R.string.ai_error_permission
+            code == 200 || code == 0 -> R.string.ai_error_blocked
+            code in 500..599 -> R.string.ai_error_server
+            else -> R.string.ai_error_generic
+        }
+        AiEvents.emit(AiNoticeKind.FAILED, res, canRetry = true)
+    }
 
     /**
      * Read [imageFile], downscale so max(width, height) ≤ 1280 if needed,
@@ -175,9 +207,9 @@ class GeminiRepository(internal val app: Application) {
      * Sends [imageFile] to Gemini and returns a PNG with the background removed.
      * Returns null on any failure — callers should fall back to the original.
      */
-    suspend fun removeBackground(imageFile: File, outputDir: File): File? =
+    suspend fun removeBackground(imageFile: File, outputDir: File, notify: Boolean = false): File? =
         withContext(Dispatchers.IO) {
-            if (!isConfigured()) {
+            if (!ensureConfigured(notify)) {
                 Log.w(TAG, "API key not set — skipping background removal")
                 return@withContext null
             }
@@ -220,6 +252,7 @@ class GeminiRepository(internal val app: Application) {
 
                 if (!response.isSuccessful) {
                     Log.e(TAG, "Non-2xx response — falling back to original")
+                    emitFailure(response.code, responseBody, notify)
                     return@withContext null
                 }
 
@@ -237,6 +270,7 @@ class GeminiRepository(internal val app: Application) {
                         ?.mapNotNull { it.text }?.joinToString(" ")
                     Log.w(TAG, "No image part in response. Text parts: $textParts")
                     Log.w(TAG, "Finish reason: ${parsed.candidates?.firstOrNull()?.finishReason}")
+                    emitFailure(200, responseBody, notify)
                     return@withContext null
                 }
 
@@ -249,8 +283,11 @@ class GeminiRepository(internal val app: Application) {
                 outFile
             } catch (e: com.librelookai.billing.InsufficientCreditsException) {
                 throw e
+            } catch (e: AiUnavailableException) {
+                null // buildRequest already emitted the notice
             } catch (e: Exception) {
                 Log.e(TAG, "Exception during Gemini call: ${e.message}", e)
+                emitFailure(0, "", notify)
                 null
             }
         }

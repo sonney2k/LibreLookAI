@@ -1082,4 +1082,18 @@
     <string name="onboarding_finish_location">Lokasyon para sa panahon</string>
     <string name="onboarding_finish_grant">I-set up</string>
     <string name="onboarding_finish_warning">Hindi pa kumpleto ang setup. Ang mga item na minarkahan sa itaas ay hindi gagana hangga\'t hindi mo tinatapos — maaari mong i-set up ang mga ito dito o mamaya sa Mga Setting.</string>
+
+    <!-- AI key/error global notices (no-key + failure/retry) -->
+    <string name="ai_no_key_title">Kailangan ng Gemini API key</string>
+    <string name="ai_no_key_message">Gumagamit ang feature na ito ng Gemini AI ng Google, na nangangailangan ng sarili mong API key. Magdagdag ng libreng key para makapagsimulang mag-tag ng damit at makakuha ng mga ideya sa outfit (kailangan ng key na may naka-enable na billing para sa virtual try-on at pag-alis ng background).</string>
+    <string name="ai_set_up_key">I-set up ang key</string>
+    <string name="ai_error_title">Nabigo ang kahilingan sa AI</string>
+    <string name="ai_error_quota">Naabot mo na ang iyong quota o rate limit ng Gemini. Maghintay sandali, o i-enable ang billing sa iyong API key, pagkatapos ay subukan muli.</string>
+    <string name="ai_error_key_invalid">Tinanggihan ang iyong Gemini API key. Tingnan ang key sa mga setting ng app, pagkatapos ay subukan muli.</string>
+    <string name="ai_error_permission">Hindi ma-access ng iyong Gemini API key ang modelong ito. Kailangan ng bayad na key na may billing para sa virtual try-on at pag-alis ng background.</string>
+    <string name="ai_error_server">May problema ang Gemini ngayon. Pakisubukan muli mamaya.</string>
+    <string name="ai_error_blocked">Hindi makumpleto ng Gemini ang kahilingang ito — maaaring na-block o walang laman ang tugon. Subukan muli, o ayusin ang iyong input.</string>
+    <string name="ai_error_generic">Hindi natuloy ang kahilingan sa AI. Pakitingnan ang iyong koneksyon at subukan muli.</string>
+    <string name="ai_retry">Subukan muli</string>
+    <string name="ai_dismiss">Isara</string>
 </resources>

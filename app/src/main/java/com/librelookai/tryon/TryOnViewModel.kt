@@ -255,6 +255,8 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
             _state.update { it.copy(error = "Missing photos or items") }
             return
         }
+        // Register a one-tap retry so the global AI-failure dialog can re-run this generation.
+        com.librelookai.gemini.AiRetry.action = { generate(personFiles, wardrobeImages, preferences) }
         viewModelScope.launch {
             _state.update {
                 it.copy(isGenerating = true, error = null, resultPath = null, isResultSaved = false)
@@ -266,7 +268,7 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
             val snapshotSourceKind = _state.value.sourceKind
             val snapshotSourceContext = _state.value.sourceContext ?: ""
             val result = try {
-                gemini.tryOnOutfit(personFiles, files, outDir, preferences)
+                gemini.tryOnOutfit(personFiles, files, outDir, preferences, notify = true)
             } catch (e: com.librelookai.billing.InsufficientCreditsException) {
                 // The global InsufficientCreditsDialog (installed in MainActivity)
                 // surfaces the buy prompt; here we just reset the loading state.

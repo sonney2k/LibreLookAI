@@ -1055,4 +1055,18 @@
     <string name="onboarding_finish_location">موسم کے لیے مقام</string>
     <string name="onboarding_finish_grant">سیٹ اپ کریں</string>
     <string name="onboarding_finish_warning">سیٹ اپ مکمل نہیں ہوا۔ اوپر نشان زد آئٹمز اس وقت تک کام نہیں کریں گے جب تک آپ انہیں مکمل نہ کریں — آپ انہیں یہاں یا بعد میں ترتیبات میں سیٹ کر سکتے ہیں۔</string>
+
+    <!-- AI key/error global notices (no-key + failure/retry) -->
+    <string name="ai_no_key_title">Gemini API کلید درکار ہے</string>
+    <string name="ai_no_key_message">یہ خصوصیت گوگل کے Gemini AI کا استعمال کرتی ہے، جسے آپ کی اپنی API کلید درکار ہے۔ کپڑوں کو ٹیگ کرنے اور ملبوسات کے آئیڈیاز حاصل کرنے کے لیے ایک مفت کلید شامل کریں (ورچوئل ٹرائی آن اور پس منظر ہٹانے کے لیے بلنگ فعال کلید درکار ہے)۔</string>
+    <string name="ai_set_up_key">کلید سیٹ کریں</string>
+    <string name="ai_error_title">AI درخواست ناکام</string>
+    <string name="ai_error_quota">آپ اپنے Gemini کوٹہ یا حد تک پہنچ گئے ہیں۔ تھوڑا انتظار کریں، یا اپنی API کلید پر بلنگ فعال کریں، پھر دوبارہ کوشش کریں۔</string>
+    <string name="ai_error_key_invalid">آپ کی Gemini API کلید مسترد کر دی گئی۔ ایپ کی ترتیبات میں کلید چیک کریں، پھر دوبارہ کوشش کریں۔</string>
+    <string name="ai_error_permission">آپ کی Gemini API کلید اس ماڈل تک رسائی نہیں رکھتی۔ ورچوئل ٹرائی آن اور پس منظر ہٹانے کے لیے بلنگ فعال (ادائیگی شدہ) کلید درکار ہے۔</string>
+    <string name="ai_error_server">Gemini کو اس وقت مسئلہ درپیش ہے۔ براہ کرم تھوڑی دیر میں دوبارہ کوشش کریں۔</string>
+    <string name="ai_error_blocked">Gemini یہ درخواست مکمل نہ کر سکا — جواب شاید مسدود یا خالی رہا ہو۔ دوبارہ کوشش کریں، یا اپنا ان پٹ ایڈجسٹ کریں۔</string>
+    <string name="ai_error_generic">AI درخواست مکمل نہیں ہوئی۔ براہ کرم اپنا کنکشن چیک کریں اور دوبارہ کوشش کریں۔</string>
+    <string name="ai_retry">دوبارہ کوشش</string>
+    <string name="ai_dismiss">بند کریں</string>
 </resources>

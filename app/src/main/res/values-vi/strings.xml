@@ -1055,4 +1055,18 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="onboarding_finish_location">Vị trí cho thời tiết</string>
     <string name="onboarding_finish_grant">Thiết lập</string>
     <string name="onboarding_finish_warning">Thiết lập chưa hoàn tất. Các mục được đánh dấu ở trên sẽ không hoạt động cho đến khi bạn hoàn tất — bạn có thể thiết lập tại đây hoặc sau này trong Cài đặt.</string>
+
+    <!-- AI key/error global notices (no-key + failure/retry) -->
+    <string name="ai_no_key_title">Cần khóa API Gemini</string>
+    <string name="ai_no_key_message">Tính năng này sử dụng AI Gemini của Google, cần khóa API của riêng bạn. Thêm khóa miễn phí để bắt đầu gắn thẻ quần áo và nhận gợi ý trang phục (thử đồ ảo và xóa nền cần khóa đã bật thanh toán).</string>
+    <string name="ai_set_up_key">Thiết lập khóa</string>
+    <string name="ai_error_title">Yêu cầu AI thất bại</string>
+    <string name="ai_error_quota">Bạn đã đạt hạn mức hoặc giới hạn tốc độ của Gemini. Hãy đợi một lát, hoặc bật thanh toán cho khóa API của bạn, rồi thử lại.</string>
+    <string name="ai_error_key_invalid">Khóa API Gemini của bạn đã bị từ chối. Kiểm tra khóa trong cài đặt ứng dụng rồi thử lại.</string>
+    <string name="ai_error_permission">Khóa API Gemini của bạn không thể truy cập mô hình này. Thử đồ ảo và xóa nền cần khóa trả phí đã bật thanh toán.</string>
+    <string name="ai_error_server">Gemini đang gặp sự cố. Vui lòng thử lại sau giây lát.</string>
+    <string name="ai_error_blocked">Gemini không thể hoàn tất yêu cầu này — phản hồi có thể đã bị chặn hoặc trống. Hãy thử lại hoặc điều chỉnh nội dung nhập.</string>
+    <string name="ai_error_generic">Yêu cầu AI không thành công. Vui lòng kiểm tra kết nối và thử lại.</string>
+    <string name="ai_retry">Thử lại</string>
+    <string name="ai_dismiss">Đóng</string>
 </resources>

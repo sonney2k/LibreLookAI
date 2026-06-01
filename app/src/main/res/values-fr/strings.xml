@@ -1082,4 +1082,18 @@
     <string name="onboarding_finish_location">Localisation pour la météo</string>
     <string name="onboarding_finish_grant">Configurer</string>
     <string name="onboarding_finish_warning">La configuration n\'est pas terminée. Les éléments signalés ci-dessus ne fonctionneront pas tant que vous ne les aurez pas configurés — ici ou plus tard dans les Paramètres.</string>
+
+    <!-- AI key/error global notices (no-key + failure/retry) -->
+    <string name="ai_no_key_title">Clé API Gemini requise</string>
+    <string name="ai_no_key_message">Cette fonctionnalité utilise l\'IA Gemini de Google, qui nécessite votre propre clé API. Ajoutez une clé gratuite pour étiqueter vos vêtements et obtenir des idées de tenues (l\'essayage virtuel et la suppression d\'arrière-plan nécessitent une clé avec facturation activée).</string>
+    <string name="ai_set_up_key">Configurer la clé</string>
+    <string name="ai_error_title">Échec de la requête IA</string>
+    <string name="ai_error_quota">Vous avez atteint votre quota ou votre limite de débit Gemini. Patientez un instant, ou activez la facturation sur votre clé API, puis réessayez.</string>
+    <string name="ai_error_key_invalid">Votre clé API Gemini a été refusée. Vérifiez la clé dans les paramètres de l\'application, puis réessayez.</string>
+    <string name="ai_error_permission">Votre clé API Gemini ne peut pas accéder à ce modèle. L\'essayage virtuel et la suppression d\'arrière-plan nécessitent une clé payante avec facturation activée.</string>
+    <string name="ai_error_server">Gemini rencontre des difficultés actuellement. Veuillez réessayer dans un instant.</string>
+    <string name="ai_error_blocked">Gemini n\'a pas pu traiter cette requête — la réponse a peut-être été bloquée ou vide. Réessayez ou ajustez votre saisie.</string>
+    <string name="ai_error_generic">La requête IA n\'a pas abouti. Vérifiez votre connexion et réessayez.</string>
+    <string name="ai_retry">Réessayer</string>
+    <string name="ai_dismiss">Fermer</string>
 </resources>

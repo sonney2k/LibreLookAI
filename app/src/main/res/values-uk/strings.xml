@@ -1055,4 +1055,18 @@
     <string name="onboarding_finish_location">Місцезнаходження для погоди</string>
     <string name="onboarding_finish_grant">Налаштувати</string>
     <string name="onboarding_finish_warning">Налаштування не завершено. Позначені вище пункти не працюватимуть, доки ви їх не завершите — налаштуйте їх тут або пізніше в Налаштуваннях.</string>
+
+    <!-- AI key/error global notices (no-key + failure/retry) -->
+    <string name="ai_no_key_title">Потрібен ключ API Gemini</string>
+    <string name="ai_no_key_message">Ця функція використовує ШІ Gemini від Google, для якого потрібен ваш власний ключ API. Додайте безкоштовний ключ, щоб позначати одяг і отримувати ідеї образів (віртуальна примірка та видалення фону потребують ключа з увімкненою оплатою).</string>
+    <string name="ai_set_up_key">Налаштувати ключ</string>
+    <string name="ai_error_title">Помилка запиту до ШІ</string>
+    <string name="ai_error_quota">Ви досягли квоти або обмеження частоти Gemini. Зачекайте трохи або ввімкніть оплату для свого ключа API, а потім повторіть спробу.</string>
+    <string name="ai_error_key_invalid">Ваш ключ API Gemini відхилено. Перевірте ключ у налаштуваннях застосунку та повторіть спробу.</string>
+    <string name="ai_error_permission">Ваш ключ API Gemini не має доступу до цієї моделі. Віртуальна примірка та видалення фону потребують платного ключа з увімкненою оплатою.</string>
+    <string name="ai_error_server">У Gemini зараз проблеми. Повторіть спробу за мить.</string>
+    <string name="ai_error_blocked">Gemini не зміг виконати цей запит — відповідь могла бути заблокована або порожня. Повторіть спробу або змініть введені дані.</string>
+    <string name="ai_error_generic">Запит до ШІ не пройшов. Перевірте підключення та повторіть спробу.</string>
+    <string name="ai_retry">Повторити</string>
+    <string name="ai_dismiss">Закрити</string>
 </resources>

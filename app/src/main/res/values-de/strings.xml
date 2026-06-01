@@ -1151,4 +1151,18 @@
     <string name="onboarding_finish_location">Standort für Wetter</string>
     <string name="onboarding_finish_grant">Einrichten</string>
     <string name="onboarding_finish_warning">Die Einrichtung ist noch nicht abgeschlossen. Die oben markierten Punkte funktionieren erst, wenn du sie abschließt – du kannst sie hier oder später in den Einstellungen einrichten.</string>
+
+    <!-- AI key/error global notices (no-key + failure/retry) -->
+    <string name="ai_no_key_title">Gemini-API-Schlüssel erforderlich</string>
+    <string name="ai_no_key_message">Diese Funktion nutzt Googles Gemini-KI, die deinen eigenen API-Schlüssel benötigt. Füge einen kostenlosen Schlüssel hinzu, um Kleidung zu taggen und Outfit-Ideen zu erhalten (virtuelle Anprobe und Hintergrundentfernung benötigen einen Schlüssel mit aktivierter Abrechnung).</string>
+    <string name="ai_set_up_key">Schlüssel einrichten</string>
+    <string name="ai_error_title">KI-Anfrage fehlgeschlagen</string>
+    <string name="ai_error_quota">Du hast dein Gemini-Kontingent oder Ratenlimit erreicht. Warte einen Moment oder aktiviere die Abrechnung für deinen API-Schlüssel und versuche es erneut.</string>
+    <string name="ai_error_key_invalid">Dein Gemini-API-Schlüssel wurde abgelehnt. Überprüfe den Schlüssel in den App-Einstellungen und versuche es erneut.</string>
+    <string name="ai_error_permission">Dein Gemini-API-Schlüssel hat keinen Zugriff auf dieses Modell. Virtuelle Anprobe und Hintergrundentfernung benötigen einen kostenpflichtigen Schlüssel mit aktivierter Abrechnung.</string>
+    <string name="ai_error_server">Gemini hat gerade Probleme. Bitte versuche es in einem Moment erneut.</string>
+    <string name="ai_error_blocked">Gemini konnte diese Anfrage nicht abschließen – die Antwort wurde möglicherweise blockiert oder war leer. Versuche es erneut oder passe deine Eingabe an.</string>
+    <string name="ai_error_generic">Die KI-Anfrage ist nicht durchgegangen. Bitte prüfe deine Verbindung und versuche es erneut.</string>
+    <string name="ai_retry">Erneut versuchen</string>
+    <string name="ai_dismiss">Schließen</string>
 </resources>

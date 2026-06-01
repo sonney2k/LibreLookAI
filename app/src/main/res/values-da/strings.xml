@@ -1082,4 +1082,18 @@
     <string name="onboarding_finish_location">Placering til vejr</string>
     <string name="onboarding_finish_grant">Konfigurer</string>
     <string name="onboarding_finish_warning">Opsætningen er ikke færdig. Punkterne markeret ovenfor virker ikke, før du fuldfører dem – du kan konfigurere dem her eller senere i Indstillinger.</string>
+
+    <!-- AI key/error global notices (no-key + failure/retry) -->
+    <string name="ai_no_key_title">Gemini API-nøgle påkrævet</string>
+    <string name="ai_no_key_message">Denne funktion bruger Googles Gemini-AI, som kræver din egen API-nøgle. Tilføj en gratis nøgle for at begynde at tagge tøj og få outfit-idéer (virtuel prøvning og baggrundsfjernelse kræver en nøgle med fakturering aktiveret).</string>
+    <string name="ai_set_up_key">Konfigurer nøgle</string>
+    <string name="ai_error_title">AI-anmodning mislykkedes</string>
+    <string name="ai_error_quota">Du har nået din Gemini-kvote eller hastighedsgrænse. Vent et øjeblik, eller aktivér fakturering på din API-nøgle, og prøv igen.</string>
+    <string name="ai_error_key_invalid">Din Gemini API-nøgle blev afvist. Tjek nøglen i appens indstillinger, og prøv igen.</string>
+    <string name="ai_error_permission">Din Gemini API-nøgle har ikke adgang til denne model. Virtuel prøvning og baggrundsfjernelse kræver en betalt nøgle med fakturering.</string>
+    <string name="ai_error_server">Gemini har problemer lige nu. Prøv igen om et øjeblik.</string>
+    <string name="ai_error_blocked">Gemini kunne ikke fuldføre denne anmodning — svaret kan være blokeret eller tomt. Prøv igen, eller juster dit input.</string>
+    <string name="ai_error_generic">AI-anmodningen gik ikke igennem. Tjek din forbindelse, og prøv igen.</string>
+    <string name="ai_retry">Prøv igen</string>
+    <string name="ai_dismiss">Luk</string>
 </resources>

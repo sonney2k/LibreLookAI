@@ -1082,4 +1082,18 @@
     <string name="onboarding_finish_location">Locatie voor weer</string>
     <string name="onboarding_finish_grant">Instellen</string>
     <string name="onboarding_finish_warning">De installatie is nog niet compleet. De hierboven gemarkeerde onderdelen werken pas als je ze afrondt — hier of later bij Instellingen.</string>
+
+    <!-- AI key/error global notices (no-key + failure/retry) -->
+    <string name="ai_no_key_title">Gemini API-sleutel vereist</string>
+    <string name="ai_no_key_message">Deze functie gebruikt Google\'s Gemini-AI, die je eigen API-sleutel nodig heeft. Voeg een gratis sleutel toe om kleding te taggen en outfitideeën te krijgen (virtueel passen en achtergrond verwijderen vereisen een sleutel met facturering ingeschakeld).</string>
+    <string name="ai_set_up_key">Sleutel instellen</string>
+    <string name="ai_error_title">AI-verzoek mislukt</string>
+    <string name="ai_error_quota">Je hebt je Gemini-quotum of snelheidslimiet bereikt. Wacht even, of schakel facturering in op je API-sleutel, en probeer het opnieuw.</string>
+    <string name="ai_error_key_invalid">Je Gemini API-sleutel is geweigerd. Controleer de sleutel in de app-instellingen en probeer het opnieuw.</string>
+    <string name="ai_error_permission">Je Gemini API-sleutel heeft geen toegang tot dit model. Virtueel passen en achtergrond verwijderen vereisen een betaalde sleutel met facturering.</string>
+    <string name="ai_error_server">Gemini heeft momenteel problemen. Probeer het zo dadelijk opnieuw.</string>
+    <string name="ai_error_blocked">Gemini kon dit verzoek niet voltooien — het antwoord is mogelijk geblokkeerd of leeg. Probeer het opnieuw of pas je invoer aan.</string>
+    <string name="ai_error_generic">Het AI-verzoek is niet gelukt. Controleer je verbinding en probeer het opnieuw.</string>
+    <string name="ai_retry">Opnieuw</string>
+    <string name="ai_dismiss">Sluiten</string>
 </resources>

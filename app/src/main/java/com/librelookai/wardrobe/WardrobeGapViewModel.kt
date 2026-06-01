@@ -60,6 +60,7 @@ class WardrobeGapViewModel(app: Application) : AndroidViewModel(app) {
             return
         }
 
+        com.librelookai.gemini.AiRetry.action = { analyze(images, prefs) }
         viewModelScope.launch {
             _state.update { it.copy(isAnalyzing = true, analysis = null, error = null) }
 
@@ -67,7 +68,7 @@ class WardrobeGapViewModel(app: Application) : AndroidViewModel(app) {
             Log.d("GapVM", "Gap prompt length: ${prompt.length} chars")
 
             val raw = try {
-                gemini.generateText(prompt, UsageCategory.GAP_ANALYSIS)
+                gemini.generateText(prompt, UsageCategory.GAP_ANALYSIS, notify = true)
             } catch (e: com.librelookai.billing.InsufficientCreditsException) {
                 // Global InsufficientCreditsDialog in MainActivity shows the prompt;
                 // here we just reset the analyzing flag.
@@ -100,6 +101,7 @@ class WardrobeGapViewModel(app: Application) : AndroidViewModel(app) {
     ) {
         if (selected.isEmpty()) return
 
+        com.librelookai.gemini.AiRetry.action = { suggestReplacements(selected, allImages, prefs) }
         // Open the dialog immediately so the user sees a loading state.
         _state.update {
             it.copy(
@@ -117,7 +119,7 @@ class WardrobeGapViewModel(app: Application) : AndroidViewModel(app) {
             Log.d("GapVM", "Replacements prompt length: ${prompt.length} chars")
 
             val raw = try {
-                gemini.generateText(prompt, UsageCategory.REPLACEMENTS)
+                gemini.generateText(prompt, UsageCategory.REPLACEMENTS, notify = true)
             } catch (e: com.librelookai.billing.InsufficientCreditsException) {
                 _state.update { it.copy(isSuggestingReplacements = false) }
                 return@launch

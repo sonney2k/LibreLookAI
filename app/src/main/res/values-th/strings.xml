@@ -1055,4 +1055,18 @@
     <string name="onboarding_finish_location">ตำแหน่งสำหรับสภาพอากาศ</string>
     <string name="onboarding_finish_grant">ตั้งค่า</string>
     <string name="onboarding_finish_warning">การตั้งค่ายังไม่เสร็จสมบูรณ์ รายการที่ทำเครื่องหมายไว้ด้านบนจะไม่ทำงานจนกว่าคุณจะตั้งค่าเสร็จ คุณสามารถตั้งค่าที่นี่หรือภายหลังในการตั้งค่า</string>
+
+    <!-- AI key/error global notices (no-key + failure/retry) -->
+    <string name="ai_no_key_title">ต้องใช้คีย์ API ของ Gemini</string>
+    <string name="ai_no_key_message">ฟีเจอร์นี้ใช้ AI Gemini ของ Google ซึ่งต้องใช้คีย์ API ของคุณเอง เพิ่มคีย์ฟรีเพื่อเริ่มติดแท็กเสื้อผ้าและรับไอเดียการแต่งตัว (การลองชุดเสมือนและการลบพื้นหลังต้องใช้คีย์ที่เปิดการเรียกเก็บเงิน)</string>
+    <string name="ai_set_up_key">ตั้งค่าคีย์</string>
+    <string name="ai_error_title">คำขอ AI ล้มเหลว</string>
+    <string name="ai_error_quota">คุณใช้โควตาหรือถึงขีดจำกัดอัตราของ Gemini แล้ว รอสักครู่ หรือเปิดการเรียกเก็บเงินบนคีย์ API ของคุณ แล้วลองอีกครั้ง</string>
+    <string name="ai_error_key_invalid">คีย์ API ของ Gemini ถูกปฏิเสธ ตรวจสอบคีย์ในการตั้งค่าแอป แล้วลองอีกครั้ง</string>
+    <string name="ai_error_permission">คีย์ API ของ Gemini ของคุณไม่สามารถเข้าถึงโมเดลนี้ได้ การลองชุดเสมือนและการลบพื้นหลังต้องใช้คีย์แบบชำระเงินที่เปิดการเรียกเก็บเงิน</string>
+    <string name="ai_error_server">ขณะนี้ Gemini กำลังมีปัญหา โปรดลองอีกครั้งในอีกสักครู่</string>
+    <string name="ai_error_blocked">Gemini ไม่สามารถดำเนินการคำขอนี้ได้ — การตอบกลับอาจถูกบล็อกหรือว่างเปล่า ลองอีกครั้งหรือปรับข้อมูลที่ป้อน</string>
+    <string name="ai_error_generic">คำขอ AI ไม่สำเร็จ โปรดตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง</string>
+    <string name="ai_retry">ลองอีกครั้ง</string>
+    <string name="ai_dismiss">ปิด</string>
 </resources>

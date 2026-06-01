@@ -831,17 +831,62 @@ internal fun AppContent(activity: ComponentActivity) {
                                     )
                                 }
 
-                                // Global AI-unavailable handler — listens for the signal emitted by
-                                // GeminiRepository.buildRequest when managed mode has no Firebase
-                                // session (or nothing is configured). Surfaces the localized reason
-                                // instead of letting the call crash the triggering coroutine.
-                                val toastCtx = LocalContext.current
+                                // Global AI-notice handler — listens for problems emitted by the
+                                // GeminiRepository for user-initiated calls. NOT_CONFIGURED offers to
+                                // set up a Gemini key (→ Settings ▸ Advanced); FAILED shows the reason
+                                // (quota, invalid key, blocked, server…) and, when the originating
+                                // action registered one (AiRetry), a one-tap retry.
+                                var aiNotice by remember {
+                                    mutableStateOf<com.librelookai.gemini.AiNotice?>(null)
+                                }
+                                var aiRetryAction by remember { mutableStateOf<(() -> Unit)?>(null) }
                                 LaunchedEffect(Unit) {
-                                    com.librelookai.gemini.AiEvents.unavailable.collect { resId ->
-                                        android.widget.Toast.makeText(
-                                            toastCtx, toastCtx.getString(resId), android.widget.Toast.LENGTH_LONG,
-                                        ).show()
+                                    com.librelookai.gemini.AiEvents.notices.collect { notice ->
+                                        aiRetryAction =
+                                            if (notice.canRetry) com.librelookai.gemini.AiRetry.action else null
+                                        aiNotice = notice
                                     }
+                                }
+                                aiNotice?.let { notice ->
+                                    val isNotConfigured =
+                                        notice.kind == com.librelookai.gemini.AiNoticeKind.NOT_CONFIGURED
+                                    val retry = aiRetryAction
+                                    AlertDialog(
+                                        onDismissRequest = { aiNotice = null },
+                                        title = {
+                                            Text(stringResource(
+                                                if (isNotConfigured) R.string.ai_no_key_title
+                                                else R.string.ai_error_title,
+                                            ))
+                                        },
+                                        text = { Text(stringResource(notice.messageRes)) },
+                                        confirmButton = {
+                                            when {
+                                                isNotConfigured -> TextButton(onClick = {
+                                                    aiNotice = null
+                                                    // Dismiss the composers hosted outside when(selectedTab)
+                                                    // so Settings is actually visible.
+                                                    tryOnViewModel.close()
+                                                    stylesViewModel.closeComposer()
+                                                    selectedTab = 5 // Settings (BYOK key lives in Advanced)
+                                                }) { Text(stringResource(R.string.ai_set_up_key)) }
+                                                retry != null -> TextButton(onClick = {
+                                                    aiNotice = null
+                                                    retry()
+                                                }) { Text(stringResource(R.string.ai_retry)) }
+                                                else -> TextButton(onClick = { aiNotice = null }) {
+                                                    Text(stringResource(R.string.ai_dismiss))
+                                                }
+                                            }
+                                        },
+                                        dismissButton = if (isNotConfigured || retry != null) {
+                                            {
+                                                TextButton(onClick = { aiNotice = null }) {
+                                                    Text(stringResource(R.string.ai_dismiss))
+                                                }
+                                            }
+                                        } else null,
+                                    )
                                 }
 
                                 // Cutout-background fix confirmation — globally hosted so it

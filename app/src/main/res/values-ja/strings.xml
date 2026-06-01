@@ -1082,4 +1082,18 @@
     <string name="onboarding_finish_location">天気のための位置情報</string>
     <string name="onboarding_finish_grant">設定</string>
     <string name="onboarding_finish_warning">セットアップが完了していません。上で印が付いた項目は、完了するまで機能しません。ここで設定するか、後で設定画面から設定できます。</string>
+
+    <!-- AI key/error global notices (no-key + failure/retry) -->
+    <string name="ai_no_key_title">Gemini API キーが必要です</string>
+    <string name="ai_no_key_message">この機能は Google の Gemini AI を使用しており、ご自身の API キーが必要です。無料キーを追加すると、服のタグ付けやコーディネート提案を利用できます（バーチャル試着と背景除去には課金が有効なキーが必要です）。</string>
+    <string name="ai_set_up_key">キーを設定</string>
+    <string name="ai_error_title">AI リクエストに失敗しました</string>
+    <string name="ai_error_quota">Gemini の割り当てまたはレート制限に達しました。しばらく待つか、API キーで課金を有効にしてから、もう一度お試しください。</string>
+    <string name="ai_error_key_invalid">Gemini API キーが拒否されました。アプリの設定でキーを確認して、もう一度お試しください。</string>
+    <string name="ai_error_permission">お使いの Gemini API キーではこのモデルにアクセスできません。バーチャル試着と背景除去には、課金が有効な（有料）キーが必要です。</string>
+    <string name="ai_error_server">現在 Gemini に問題が発生しています。しばらくしてからもう一度お試しください。</string>
+    <string name="ai_error_blocked">Gemini はこのリクエストを完了できませんでした。応答がブロックされたか空だった可能性があります。もう一度試すか、入力内容を調整してください。</string>
+    <string name="ai_error_generic">AI リクエストを実行できませんでした。接続を確認して、もう一度お試しください。</string>
+    <string name="ai_retry">再試行</string>
+    <string name="ai_dismiss">閉じる</string>
 </resources>

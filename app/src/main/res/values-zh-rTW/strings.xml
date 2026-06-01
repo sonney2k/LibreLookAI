@@ -1055,4 +1055,18 @@
     <string name="onboarding_finish_location">天氣定位</string>
     <string name="onboarding_finish_grant">設定</string>
     <string name="onboarding_finish_warning">設定尚未完成。上方標示的項目在你完成前無法運作，你可以在此設定，或稍後於「設定」中完成。</string>
+
+    <!-- AI key/error global notices (no-key + failure/retry) -->
+    <string name="ai_no_key_title">需要 Gemini API 金鑰</string>
+    <string name="ai_no_key_message">此功能使用 Google 的 Gemini AI，需要你自己的 API 金鑰。新增一組免費金鑰即可開始為衣物加上標籤並取得穿搭靈感（虛擬試穿與去背需要已啟用計費的金鑰）。</string>
+    <string name="ai_set_up_key">設定金鑰</string>
+    <string name="ai_error_title">AI 要求失敗</string>
+    <string name="ai_error_quota">你已達到 Gemini 的配額或速率上限。請稍候片刻，或為你的 API 金鑰啟用計費，然後再試一次。</string>
+    <string name="ai_error_key_invalid">你的 Gemini API 金鑰遭拒。請在應用程式設定中檢查金鑰後再試一次。</string>
+    <string name="ai_error_permission">你的 Gemini API 金鑰無法存取此模型。虛擬試穿與去背需要已啟用計費的付費金鑰。</string>
+    <string name="ai_error_server">Gemini 目前發生問題。請稍後再試。</string>
+    <string name="ai_error_blocked">Gemini 無法完成此要求，回應可能被封鎖或為空。請再試一次或調整你的輸入。</string>
+    <string name="ai_error_generic">AI 要求未能完成。請檢查你的連線後再試一次。</string>
+    <string name="ai_retry">重試</string>
+    <string name="ai_dismiss">關閉</string>
 </resources>
