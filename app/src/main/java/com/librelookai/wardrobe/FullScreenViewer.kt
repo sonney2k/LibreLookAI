@@ -392,7 +392,7 @@ internal fun FullScreenViewer(
                             }
                         },
                     )
-                    if (locations.any { it.folderId != activeLocationId }) {
+                    if (locations.any { it.folderId != currentImage.folderId }) {
                         ExtendedFloatingActionButton(
                             onClick = {
                                 Analytics.action("ItemViewer", "open_move_dialog")
@@ -464,7 +464,9 @@ internal fun FullScreenViewer(
 
     if (showMoveDialog) {
         val currentImage = images[pagerState.currentPage]
-        val otherLocations = locations.filter { it.folderId != activeLocationId }
+        // Offer only closets the item isn't already in (its own folder, not the active filter,
+        // which is "All" when browsing across closets).
+        val otherLocations = locations.filter { it.folderId != currentImage.folderId }
         AlertDialog(
             onDismissRequest = { showMoveDialog = false },
             title = { Text(stringResource(R.string.wardrobe_move_to_title, 1)) },

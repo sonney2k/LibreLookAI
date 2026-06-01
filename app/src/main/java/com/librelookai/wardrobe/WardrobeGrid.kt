@@ -741,7 +741,14 @@ internal fun GridContent(
     }
 
     if (showMoveDialog) {
-        val otherLocations = locations.filter { it.folderId != activeLocationId }
+        // Offer only closets that aren't already a home of every selected item — moving there
+        // would be a no-op. In single-closet view this is the active closet; in "All" it's each
+        // item's own closet. A selection spanning >1 closet keeps every closet as a destination
+        // (moveItemsToLocation skips the per-item no-ops).
+        val selectedItems = state.images.filter { it.driveId in state.selectedIds }
+        val otherLocations = locations.filter { loc ->
+            selectedItems.isEmpty() || selectedItems.any { it.folderId != loc.folderId }
+        }
         AlertDialog(
             onDismissRequest = { showMoveDialog = false },
             title = { Text(stringResource(R.string.wardrobe_move_to_title, state.selectedIds.size)) },
