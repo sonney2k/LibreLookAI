@@ -145,13 +145,18 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
     /**
      * Tracks items recently moved into another closet. Drive's `q='<folder>' in parents` query
-     * is eventually consistent — after a move PATCH the destination folder's listing can lag
-     * by up to a minute. We use this map to (a) re-inject moved items into Phase 2 results
-     * while Drive catches up, so they don't briefly disappear after [setLocation] to the target.
+     * is eventually consistent — after a move PATCH both the destination and the source folder
+     * listings can lag for minutes. We use this map to (a) re-inject moved items into the TARGET
+     * folder's Phase 2 results while Drive catches up, so they don't briefly disappear after
+     * [setLocation] to the target, and (b) suppress them from the SOURCE folder's Phase 2 results,
+     * so the just-moved item doesn't flicker back into the closet it left (or appear in both).
      * Keyed by cutout driveId → (targetFolderId, expiresAtMs).
      */
     private val recentlyMovedItems = java.util.concurrent.ConcurrentHashMap<String, Pair<String, Long>>()
-    private val recentlyMovedTtlMs: Long = 2 * 60 * 1000L
+    // Drive's `'<folder>' in parents` listing can lag well past a minute — testers have seen a
+    // moved item still listed in its old parent for ~5 min. Keep the suppression window generous
+    // so the item never flickers back into the source closet before Drive catches up.
+    private val recentlyMovedTtlMs: Long = 10 * 60 * 1000L
 
     private fun pruneRecentlyMoved() {
         val now = System.currentTimeMillis()
@@ -452,6 +457,12 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                             sf.name.removeSuffix(DriveRepository.SIDECAR_SUFFIX) to sf.id
                         }
                         fd.files.mapNotNull { file ->
+                            // Suppress an item that was just moved to a DIFFERENT folder — Drive's
+                            // per-folder listing is eventually consistent and may still return it
+                            // from its old parent for minutes, which would otherwise resurrect the
+                            // stale copy in the source closet (and duplicate it across closets).
+                            val movedTo = recentlyMovedItems[file.id]?.first
+                            if (movedTo != null && movedTo != fd.id) return@mapNotNull null
                             drive.cachedFile(file.id)?.let { cached ->
                                 val sidecar = sidecarContent[file.id]
                                 DriveImage(
@@ -565,6 +576,10 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 } else emptyMap()
 
                 val freshImages = files.mapNotNull { file ->
+                    // Suppress an item just moved to a different folder (see All-locations note):
+                    // Drive may still list it here until removeParents propagates.
+                    val movedTo = recentlyMovedItems[file.id]?.first
+                    if (movedTo != null && movedTo != id) return@mapNotNull null
                     drive.cachedFile(file.id)?.let { cached ->
                         val sidecar = sidecarContent[file.id]
                         val legacy = legacyMeta[file.name]
@@ -658,6 +673,8 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             .toMap()
 
         files.mapNotNull { file ->
+            val movedTo = recentlyMovedItems[file.id]?.first
+            if (movedTo != null && movedTo != id) return@mapNotNull null
             drive.cachedFile(file.id)?.let { cached ->
                 val sidecar = sidecarContent[file.id]
                 val tags = sidecar?.tags ?: file.appProperties?.toClothingTags()
