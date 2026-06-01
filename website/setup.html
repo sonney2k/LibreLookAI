@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-i18n="meta.setupTitle">Get your Gemini API key — LibreLookAI</title>
+  <meta name="description" data-i18n-attr="content" data-i18n="setup.lede" content="A 5-minute walkthrough to create a Google Gemini API key and use it with LibreLookAI." />
+  <link rel="icon" href="assets/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- NAV -->
+  <header class="nav">
+    <a class="brand" href="index.html">
+      <img src="assets/logo.png" alt="LibreLookAI logo" />
+      <span>LibreLook<em>AI</em></span>
+    </a>
+    <nav class="nav-links">
+      <a href="index.html#how" data-i18n="nav.how">How it works</a>
+      <a href="index.html#features" data-i18n="nav.features">Features</a>
+      <a class="nav-cta" href="index.html#get" data-i18n="nav.cta">Get the app</a>
+      <div class="lang-pick">
+        <span class="globe" aria-hidden="true">🌐</span>
+        <select id="langSelect" aria-label="Choose language">
+          <option value="en">English</option>
+          <option value="de">Deutsch</option>
+          <option value="fr">Français</option>
+          <option value="it">Italiano</option>
+          <option value="es">Español</option>
+          <option value="pt">Português</option>
+          <option value="nl">Nederlands</option>
+          <option value="tr">Türkçe</option>
+          <option value="ru">Русский</option>
+          <option value="ja">日本語</option>
+          <option value="ko">한국어</option>
+          <option value="zh">简体中文</option>
+        </select>
+      </div>
+    </nav>
+  </header>
+
+  <!-- HEADER -->
+  <section class="hero" id="top">
+    <div class="hero-text">
+      <p class="eyebrow" data-i18n="setup.eyebrow">Setup · about 5 minutes</p>
+      <h1 data-i18n="setup.h1">Get your <span class="script">Gemini API key</span></h1>
+      <p class="lede" data-i18n="setup.lede">LibreLookAI runs on your own Google Gemini API key. It is stored only on your phone and used directly with Google — there is no subscription to us.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th data-i18n="setup.tierWhatH">What you want to do</th>
+              <th data-i18n="setup.tierKeyH">Key you need</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-i18n="setup.tierFreeD">Auto-tagging, outfit suggestions, packing lists, trend search</td>
+              <td data-i18n="setup.tierFreeK"><strong>Free key</strong></td>
+            </tr>
+            <tr>
+              <td data-i18n="setup.tierPaidD">Virtual try-on, background removal — anything that creates an image</td>
+              <td data-i18n="setup.tierPaidK"><strong>Billing-enabled (paid) key</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="hero-note" data-i18n="setup.why">✦ Why paid? Try-on and background removal use Gemini's image generation, which Google does not offer on the free tier. You still only pay Google for what you use — usually a few cents per image.</p>
+    </div>
+  </section>
+
+  <!-- STEPS -->
+  <section class="how">
+    <h2 data-i18n="setup.stepsTitle">Three steps</h2>
+    <div class="steps">
+      <div class="step">
+        <span class="step-num">1</span>
+        <h3 data-i18n="setup.s1h">Create the key (free)</h3>
+        <p data-i18n="setup.s1p">In the app, tap <strong>Get an API key</strong> (or open <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener">aistudio.google.com</a>). Sign in, tap <strong>Create API key</strong>, and copy it — it starts with <code>AIza…</code></p>
+      </div>
+      <div class="step">
+        <span class="step-num">2</span>
+        <h3 data-i18n="setup.s2h">Paste it into LibreLookAI</h3>
+        <p data-i18n="setup.s2p">Back in the app, paste the key into the <strong>API Key</strong> box. Tagging and outfit suggestions work right away. You can change it later under <strong>Settings ▸ Advanced ▸ Gemini API key</strong>.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">3</span>
+        <h3 data-i18n="setup.s3h">Enable billing (for try-on)</h3>
+        <p data-i18n="setup.s3p">To unlock virtual try-on and background removal, tap <strong>Enable billing</strong> (or open <a href="https://aistudio.google.com/app/billing" target="_blank" rel="noopener">AI Studio billing</a>), pick the same project, and add a payment method. New accounts usually include free credit.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="privacy">
+    <div class="privacy-inner">
+      <h2 data-i18n="setup.faqTitle">Common questions</h2>
+      <div class="privacy-points">
+        <p><strong data-i18n="setup.q1">Is my key safe?</strong> <span data-i18n="setup.a1">Yes. It is saved only on your device and sent straight to Google's API — never uploaded to us or synced to your Drive.</span></p>
+        <p><strong data-i18n="setup.q2">How much does it cost?</strong> <span data-i18n="setup.a2">Tagging and suggestions on the free tier are free. Image features (try-on, background removal) are billed by Google per image — usually a few cents each, and you can set spending limits.</span></p>
+        <p><strong data-i18n="setup.q3">Try-on says it failed.</strong> <span data-i18n="setup.a3">That key probably doesn't have billing enabled yet. Do step 3 above, then try again.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta" id="get">
+    <h2 data-i18n="cta.title">Ready to fall back in love with your wardrobe?</h2>
+    <a class="btn btn-primary btn-lg" href="index.html#get" data-i18n="setup.back">Back to LibreLookAI</a>
+  </section>
+
+  <footer class="footer">
+    <div class="brand">
+      <img src="assets/logo.png" alt="LibreLookAI logo" />
+      <span>LibreLook<em>AI</em></span>
+    </div>
+    <p data-i18n="footer.tagline">Your closet, styled by AI — and kept private.</p>
+    <p class="copy" data-i18n="footer.copy">© 2026 LibreLookAI</p>
+  </footer>
+
+  <script src="translations.js"></script>
+  <script src="setup.translations.js"></script>
+  <script src="i18n.js"></script>
+</body>
+</html>
