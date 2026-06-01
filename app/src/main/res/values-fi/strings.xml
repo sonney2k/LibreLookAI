@@ -1058,4 +1058,15 @@
 
     <!-- Optimistic move rollback -->
     <string name="wardrobe_move_failed">Joitakin kohteita ei voitu siirtää. Ne on palautettu.</string>
+
+    <!-- Onboarding: Drive sign-in + background permission -->
+    <string name="onboarding_drive_title">Yhdistä Google Drive</string>
+    <string name="onboarding_drive_body">LibreLookAI säilyttää kaiken — vaatteesi, asukokonaisuutesi ja kuvasi — yksityisessä kansiossa omassa Google Drivessasi. Mitään ei tallenneta palvelimillemme, ja vain sinä näet sen. Kirjaudu sisään Googlella luodaksesi vaatekaappisi.</string>
+    <string name="onboarding_drive_connect">Kirjaudu Googlella</string>
+    <string name="onboarding_drive_connected">Google Drive yhdistetty ✓</string>
+    <string name="onboarding_drive_offline">Yhdistä internetiin kirjautuaksesi sisään Googlella.</string>
+    <string name="onboarding_background_title">Salli taustakäsittely</string>
+    <string name="onboarding_background_body">Kuvien tuonti, taustojen poisto ja vaatteiden merkitseminen tekoälyllä voi kestää hetken. LibreLookAI tarvitsee rajoittamattoman taustakäsittelyn, jotta Android ei sulje sovellusta kesken tehtävän — mikä voisi muuten jättää puoliksi tuotuja kohteita, puuttuvia merkintöjä tai vioittuneita tiedostoja.\n\nTämä antaa sovelluksen vain saattaa loppuun aloittamasi työn; se ei suorita mitään itsestään.</string>
+    <string name="onboarding_background_allow">Salli taustakäsittely</string>
+    <string name="onboarding_background_granted">Taustakäsittely sallittu ✓</string>
 </resources>

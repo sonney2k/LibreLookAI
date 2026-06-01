@@ -1058,4 +1058,15 @@
 
     <!-- Optimistic move rollback -->
     <string name="wardrobe_move_failed">Nie udało się przenieść niektórych elementów. Zostały przywrócone.</string>
+
+    <!-- Onboarding: Drive sign-in + background permission -->
+    <string name="onboarding_drive_title">Połącz swój Dysk Google</string>
+    <string name="onboarding_drive_body">LibreLookAI przechowuje wszystko — twoje ubrania, stylizacje i zdjęcia — w prywatnym folderze na twoim własnym Dysku Google. Nic nie jest przechowywane na naszych serwerach i tylko ty masz do tego dostęp. Zaloguj się przez Google, aby utworzyć swoją garderobę.</string>
+    <string name="onboarding_drive_connect">Zaloguj się przez Google</string>
+    <string name="onboarding_drive_connected">Dysk Google połączony ✓</string>
+    <string name="onboarding_drive_offline">Połącz się z internetem, aby zalogować się przez Google.</string>
+    <string name="onboarding_background_title">Zezwól na przetwarzanie w tle</string>
+    <string name="onboarding_background_body">Importowanie zdjęć, usuwanie tła i tagowanie ubrań przez AI może chwilę potrwać. LibreLookAI potrzebuje nieograniczonego przetwarzania w tle, aby Android nie zamknął aplikacji w trakcie zadania — co mogłoby pozostawić częściowo zaimportowane elementy, brakujące tagi lub uszkodzone pliki.\n\nTo pozwala aplikacji jedynie dokończyć pracę, którą rozpocząłeś; nie uruchamia niczego samodzielnie.</string>
+    <string name="onboarding_background_allow">Zezwól na przetwarzanie w tle</string>
+    <string name="onboarding_background_granted">Przetwarzanie w tle dozwolone ✓</string>
 </resources>

@@ -1031,4 +1031,15 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
 
     <!-- Optimistic move rollback -->
     <string name="wardrobe_move_failed">Beberapa item tidak dapat dipindahkan. Item telah dipulihkan.</string>
+
+    <!-- Onboarding: Drive sign-in + background permission -->
+    <string name="onboarding_drive_title">Hubungkan Google Drive Anda</string>
+    <string name="onboarding_drive_body">LibreLookAI menyimpan semuanya — pakaian, outfit, dan foto Anda — dalam folder pribadi di Google Drive Anda sendiri. Tidak ada yang disimpan di server kami, dan hanya Anda yang dapat melihatnya. Masuk dengan Google untuk membuat lemari pakaian Anda.</string>
+    <string name="onboarding_drive_connect">Masuk dengan Google</string>
+    <string name="onboarding_drive_connected">Google Drive terhubung ✓</string>
+    <string name="onboarding_drive_offline">Sambungkan ke internet untuk masuk dengan Google.</string>
+    <string name="onboarding_background_title">Izinkan pemrosesan latar belakang</string>
+    <string name="onboarding_background_body">Mengimpor foto, menghapus latar belakang, dan menandai pakaian dengan AI bisa memakan waktu. LibreLookAI memerlukan pemrosesan latar belakang tanpa batas agar Android tidak menghentikannya di tengah tugas — yang jika tidak dapat meninggalkan item yang setengah terimpor, tag yang hilang, atau file yang rusak.\n\nIni hanya mengizinkan aplikasi menyelesaikan pekerjaan yang Anda mulai; aplikasi tidak menjalankan apa pun dengan sendirinya.</string>
+    <string name="onboarding_background_allow">Izinkan pemrosesan latar belakang</string>
+    <string name="onboarding_background_granted">Pemrosesan latar belakang diizinkan ✓</string>
 </resources>

@@ -1031,4 +1031,15 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
 
     <!-- Optimistic move rollback -->
     <string name="wardrobe_move_failed">Unele articole nu au putut fi mutate. Au fost restaurate.</string>
+
+    <!-- Onboarding: Drive sign-in + background permission -->
+    <string name="onboarding_drive_title">Conectează-ți Google Drive</string>
+    <string name="onboarding_drive_body">LibreLookAI păstrează totul — hainele, ținutele și fotografiile tale — într-un folder privat pe propriul tău Google Drive. Nimic nu este stocat pe serverele noastre și doar tu poți vedea conținutul. Conectează-te cu Google pentru a-ți crea garderoba.</string>
+    <string name="onboarding_drive_connect">Conectare cu Google</string>
+    <string name="onboarding_drive_connected">Google Drive conectat ✓</string>
+    <string name="onboarding_drive_offline">Conectează-te la internet pentru a te autentifica cu Google.</string>
+    <string name="onboarding_background_title">Permite procesarea în fundal</string>
+    <string name="onboarding_background_body">Importul fotografiilor, eliminarea fundalurilor și etichetarea hainelor cu AI pot dura puțin. LibreLookAI are nevoie de procesare nelimitată în fundal pentru ca Android să nu închidă aplicația în mijlocul unei sarcini — ceea ce altfel ar putea lăsa articole importate pe jumătate, etichete lipsă sau fișiere corupte.\n\nAceasta permite aplicației doar să finalizeze lucrul pe care l-ai început; nu rulează nimic de la sine.</string>
+    <string name="onboarding_background_allow">Permite procesarea în fundal</string>
+    <string name="onboarding_background_granted">Procesare în fundal permisă ✓</string>
 </resources>

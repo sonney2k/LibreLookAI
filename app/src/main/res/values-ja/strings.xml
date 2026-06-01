@@ -1058,4 +1058,15 @@
 
     <!-- Optimistic move rollback -->
     <string name="wardrobe_move_failed">一部のアイテムを移動できませんでした。元に戻しました。</string>
+
+    <!-- Onboarding: Drive sign-in + background permission -->
+    <string name="onboarding_drive_title">Google ドライブを接続</string>
+    <string name="onboarding_drive_body">LibreLookAI は、あなたの服・コーデ・写真などすべてを、あなた自身の Google ドライブ内のプライベートフォルダに保存します。当社のサーバーには何も保存されず、見られるのはあなただけです。Google でサインインしてワードローブを作成しましょう。</string>
+    <string name="onboarding_drive_connect">Google でサインイン</string>
+    <string name="onboarding_drive_connected">Google ドライブに接続しました ✓</string>
+    <string name="onboarding_drive_offline">Google でサインインするにはインターネットに接続してください。</string>
+    <string name="onboarding_background_title">バックグラウンド処理を許可</string>
+    <string name="onboarding_background_body">写真のインポート、背景の削除、AI による衣類のタグ付けには少し時間がかかることがあります。タスクの途中で Android にアプリを終了されないよう、LibreLookAI は無制限のバックグラウンド処理を必要とします。そうでないと、途中までしかインポートされないアイテム、欠落したタグ、破損したファイルが残る可能性があります。\n\nこれは、あなたが開始した作業をアプリが完了できるようにするだけで、勝手に何かを実行することはありません。</string>
+    <string name="onboarding_background_allow">バックグラウンド処理を許可</string>
+    <string name="onboarding_background_granted">バックグラウンド処理を許可しました ✓</string>
 </resources>

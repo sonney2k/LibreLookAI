@@ -1031,4 +1031,15 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
 
     <!-- Optimistic move rollback -->
     <string name="wardrobe_move_failed">Không thể di chuyển một số mục. Chúng đã được khôi phục.</string>
+
+    <!-- Onboarding: Drive sign-in + background permission -->
+    <string name="onboarding_drive_title">Kết nối Google Drive của bạn</string>
+    <string name="onboarding_drive_body">LibreLookAI lưu giữ mọi thứ — quần áo, trang phục và ảnh của bạn — trong một thư mục riêng tư trên Google Drive của chính bạn. Không có gì được lưu trên máy chủ của chúng tôi và chỉ bạn mới có thể xem. Đăng nhập bằng Google để tạo tủ đồ của bạn.</string>
+    <string name="onboarding_drive_connect">Đăng nhập bằng Google</string>
+    <string name="onboarding_drive_connected">Đã kết nối Google Drive ✓</string>
+    <string name="onboarding_drive_offline">Kết nối internet để đăng nhập bằng Google.</string>
+    <string name="onboarding_background_title">Cho phép xử lý nền</string>
+    <string name="onboarding_background_body">Nhập ảnh, xóa nền và gắn thẻ quần áo bằng AI có thể mất một chút thời gian. LibreLookAI cần xử lý nền không giới hạn để Android không tắt ứng dụng giữa chừng — điều này nếu không có thể để lại các mục nhập dở, thẻ bị thiếu hoặc tệp bị hỏng.\n\nĐiều này chỉ cho phép ứng dụng hoàn tất công việc bạn đã bắt đầu; nó không tự chạy bất cứ thứ gì.</string>
+    <string name="onboarding_background_allow">Cho phép xử lý nền</string>
+    <string name="onboarding_background_granted">Đã cho phép xử lý nền ✓</string>
 </resources>

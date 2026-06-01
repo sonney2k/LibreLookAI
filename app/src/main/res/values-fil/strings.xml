@@ -1058,4 +1058,15 @@
 
     <!-- Optimistic move rollback -->
     <string name="wardrobe_move_failed">Hindi nailipat ang ilang item. Naibalik na ang mga ito.</string>
+
+    <!-- Onboarding: Drive sign-in + background permission -->
+    <string name="onboarding_drive_title">Ikonekta ang iyong Google Drive</string>
+    <string name="onboarding_drive_body">Iniingatan ng LibreLookAI ang lahat — ang iyong mga damit, outfit at litrato — sa isang pribadong folder sa sarili mong Google Drive. Walang itinatabi sa aming mga server, at ikaw lang ang makakakita nito. Mag-sign in gamit ang Google para gawin ang iyong wardrobe.</string>
+    <string name="onboarding_drive_connect">Mag-sign in gamit ang Google</string>
+    <string name="onboarding_drive_connected">Nakakonekta ang Google Drive ✓</string>
+    <string name="onboarding_drive_offline">Kumonekta sa internet para mag-sign in gamit ang Google.</string>
+    <string name="onboarding_background_title">Payagan ang pagproseso sa background</string>
+    <string name="onboarding_background_body">Ang pag-import ng mga litrato, pag-alis ng background at pag-tag ng mga damit gamit ang AI ay maaaring tumagal nang kaunti. Kailangan ng LibreLookAI ng walang-limitasyong pagproseso sa background para hindi ito patayin ng Android sa kalagitnaan ng gawain — na kung hindi ay maaaring mag-iwan ng kalahating na-import na mga item, nawawalang tag o sirang file.\n\nPinapayagan lang nito ang app na tapusin ang gawaing sinimulan mo; wala itong pinapatakbo nang mag-isa.</string>
+    <string name="onboarding_background_allow">Payagan ang pagproseso sa background</string>
+    <string name="onboarding_background_granted">Pinayagan ang pagproseso sa background ✓</string>
 </resources>

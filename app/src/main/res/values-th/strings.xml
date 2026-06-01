@@ -1031,4 +1031,15 @@
 
     <!-- Optimistic move rollback -->
     <string name="wardrobe_move_failed">ย้ายบางรายการไม่สำเร็จ ระบบได้กู้คืนรายการเหล่านั้นแล้ว</string>
+
+    <!-- Onboarding: Drive sign-in + background permission -->
+    <string name="onboarding_drive_title">เชื่อมต่อ Google Drive ของคุณ</string>
+    <string name="onboarding_drive_body">LibreLookAI เก็บทุกอย่าง — เสื้อผ้า ลุค และรูปภาพของคุณ — ไว้ในโฟลเดอร์ส่วนตัวบน Google Drive ของคุณเอง ไม่มีอะไรถูกเก็บไว้บนเซิร์ฟเวอร์ของเรา และมีเพียงคุณเท่านั้นที่เห็นได้ ลงชื่อเข้าใช้ด้วย Google เพื่อสร้างตู้เสื้อผ้าของคุณ</string>
+    <string name="onboarding_drive_connect">ลงชื่อเข้าใช้ด้วย Google</string>
+    <string name="onboarding_drive_connected">เชื่อมต่อ Google Drive แล้ว ✓</string>
+    <string name="onboarding_drive_offline">เชื่อมต่ออินเทอร์เน็ตเพื่อลงชื่อเข้าใช้ด้วย Google</string>
+    <string name="onboarding_background_title">อนุญาตการประมวลผลเบื้องหลัง</string>
+    <string name="onboarding_background_body">การนำเข้ารูปภาพ การลบพื้นหลัง และการติดแท็กเสื้อผ้าด้วย AI อาจใช้เวลาสักครู่ LibreLookAI ต้องการการประมวลผลเบื้องหลังแบบไม่จำกัด เพื่อไม่ให้ Android ปิดแอประหว่างทำงาน — ซึ่งมิฉะนั้นอาจทิ้งรายการที่นำเข้าไม่ครบ แท็กที่หายไป หรือไฟล์ที่เสียหายไว้\n\nสิ่งนี้อนุญาตให้แอปทำงานที่คุณเริ่มไว้ให้เสร็จเท่านั้น แอปจะไม่รันอะไรเองโดยอัตโนมัติ</string>
+    <string name="onboarding_background_allow">อนุญาตการประมวลผลเบื้องหลัง</string>
+    <string name="onboarding_background_granted">อนุญาตการประมวลผลเบื้องหลังแล้ว ✓</string>
 </resources>

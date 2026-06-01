@@ -1058,4 +1058,15 @@
 
     <!-- Optimistic move rollback -->
     <string name="wardrobe_move_failed">Δεν ήταν δυνατή η μετακίνηση ορισμένων στοιχείων. Επαναφέρθηκαν.</string>
+
+    <!-- Onboarding: Drive sign-in + background permission -->
+    <string name="onboarding_drive_title">Σύνδεσε το Google Drive σου</string>
+    <string name="onboarding_drive_body">Το LibreLookAI κρατά τα πάντα — τα ρούχα, τα σύνολα και τις φωτογραφίες σου — σε έναν ιδιωτικό φάκελο στο δικό σου Google Drive. Τίποτα δεν αποθηκεύεται στους διακομιστές μας και μόνο εσύ μπορείς να το δεις. Συνδέσου με το Google για να δημιουργήσεις την γκαρνταρόμπα σου.</string>
+    <string name="onboarding_drive_connect">Σύνδεση με Google</string>
+    <string name="onboarding_drive_connected">Το Google Drive συνδέθηκε ✓</string>
+    <string name="onboarding_drive_offline">Σύνδεσε στο διαδίκτυο για να συνδεθείς με το Google.</string>
+    <string name="onboarding_background_title">Επίτρεψε την επεξεργασία στο παρασκήνιο</string>
+    <string name="onboarding_background_body">Η εισαγωγή φωτογραφιών, η αφαίρεση φόντου και η προσθήκη ετικετών στα ρούχα με AI μπορεί να πάρει λίγη ώρα. Το LibreLookAI χρειάζεται απεριόριστη επεξεργασία στο παρασκήνιο ώστε το Android να μην τερματίσει την εφαρμογή στη μέση μιας εργασίας — κάτι που διαφορετικά θα μπορούσε να αφήσει μισοεισαγμένα αντικείμενα, ετικέτες που λείπουν ή κατεστραμμένα αρχεία.\n\nΑυτό επιτρέπει μόνο στην εφαρμογή να ολοκληρώσει την εργασία που ξεκίνησες· δεν εκτελεί τίποτα μόνη της.</string>
+    <string name="onboarding_background_allow">Επίτρεψε την επεξεργασία στο παρασκήνιο</string>
+    <string name="onboarding_background_granted">Η επεξεργασία στο παρασκήνιο επιτράπηκε ✓</string>
 </resources>

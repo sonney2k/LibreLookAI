@@ -2,6 +2,7 @@ package com.librelookai.outfit
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
 import com.librelookai.data.model.Outfit
 import com.librelookai.gemini.PromptKey
 import com.librelookai.gemini.PromptStore
@@ -15,6 +16,57 @@ import com.librelookai.weather.WeatherData
 import java.util.UUID
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+
+// AI-composer response shapes. NOTE: Gson constructs these via unsafe allocation — it never
+// calls the Kotlin constructor and never applies default values. Any field missing from (or
+// null in) the JSON stays null regardless of a non-null declared type, which crashes on access.
+// So everything Gemini might omit is declared nullable and coalesced at every read site.
+internal data class ComposerSlotAssignment(val slotId: String? = null, val itemId: String? = null)
+internal data class ComposerVariant(
+    val slots: List<ComposerSlotAssignment>? = null,
+    val name: String? = null,
+    val description: String? = null,
+    val reason: String? = null,
+    val tags: List<String>? = null,
+    // Legacy fallback: older prompt shape returned flat itemIds.
+    val itemIds: List<String>? = null,
+)
+private data class ComposerMultiResp(
+    val suggestions: List<ComposerVariant>? = null,
+    // Back-compat: the single-suggestion schema is a top-level ComposerVariant.
+    val slots: List<ComposerSlotAssignment>? = null,
+    val name: String? = null,
+    val description: String? = null,
+    val reason: String? = null,
+    val tags: List<String>? = null,
+    val itemIds: List<String>? = null,
+)
+
+/**
+ * Parses a raw Gemini composer response (optionally fenced in ```json) into the list of
+ * candidate [ComposerVariant]s, tolerating both the multi-suggestion schema and the legacy
+ * single-suggestion / flat-itemIds shapes. Returns an empty list for any response that is
+ * unparseable or carries no usable assignments — callers surface that as a parse error rather
+ * than crashing. Pure (no VM state) so it can be unit-tested directly.
+ */
+internal fun parseComposerVariants(raw: String, gson: Gson = Gson()): List<ComposerVariant> {
+    val json = raw.trim()
+        .removePrefix("```json").removePrefix("```").removeSuffix("```").trim()
+    val parsed = runCatching { gson.fromJson(json, ComposerMultiResp::class.java) }.getOrNull()
+        ?: return emptyList()
+    val variants: List<ComposerVariant> = when {
+        !parsed.suggestions.isNullOrEmpty() -> parsed.suggestions
+        else -> listOf(ComposerVariant(
+            slots = parsed.slots,
+            name = parsed.name,
+            description = parsed.description,
+            reason = parsed.reason,
+            tags = parsed.tags,
+            itemIds = parsed.itemIds,
+        ))
+    }
+    return variants.filter { !it.slots.isNullOrEmpty() || !it.itemIds.isNullOrEmpty() }
+}
 
 internal fun OutfitsViewModel.openComposer(
         seedItemIds: Set<String>,
@@ -227,44 +279,9 @@ internal fun OutfitsViewModel.enhanceComposerWithAi(
                 _state.update { it.copy(isComposerEnhancing = false, composerError = "Gemini did not respond.") }
                 return@launch
             }
-            val json = raw.trim()
-                .removePrefix("```json").removePrefix("```").removeSuffix("```").trim()
-            data class SlotAssignment(val slotId: String = "", val itemId: String = "")
-            data class CompResp(
-                val slots: List<SlotAssignment> = emptyList(),
-                val name: String = "",
-                val description: String = "",
-                val reason: String = "",
-                val tags: List<String> = emptyList(),
-                // Legacy fallback: older prompt shape returned flat itemIds.
-                val itemIds: List<String> = emptyList(),
-            )
-            data class MultiResp(
-                val suggestions: List<CompResp>? = null,
-                // Back-compat: the single-suggestion schema is a top-level CompResp.
-                val slots: List<SlotAssignment> = emptyList(),
-                val name: String = "",
-                val description: String = "",
-                val reason: String = "",
-                val tags: List<String> = emptyList(),
-                val itemIds: List<String> = emptyList(),
-            )
-            val parsed = runCatching { gson.fromJson(json, MultiResp::class.java) }.getOrNull()
-            val variants: List<CompResp> = when {
-                parsed == null -> emptyList()
-                !parsed.suggestions.isNullOrEmpty() -> parsed.suggestions
-                else -> listOf(CompResp(
-                    slots = parsed.slots,
-                    name = parsed.name,
-                    description = parsed.description,
-                    reason = parsed.reason,
-                    tags = parsed.tags,
-                    itemIds = parsed.itemIds,
-                ))
-            }.filter { it.slots.isNotEmpty() || it.itemIds.isNotEmpty() }
-
+            val variants = parseComposerVariants(raw, gson)
             if (variants.isEmpty()) {
-                Log.w("StylesVM", "Failed to parse composer response: $json")
+                Log.w("StylesVM", "Failed to parse composer response: $raw")
                 _state.update { it.copy(isComposerEnhancing = false, composerError = "Could not parse Gemini response.") }
                 return@launch
             }
@@ -272,16 +289,16 @@ internal fun OutfitsViewModel.enhanceComposerWithAi(
             val byImageId = images.associateBy { it.driveId }
             val currentSlots = s.composerSlots
 
-            fun resolveAssignments(v: CompResp): Map<String, String> {
-                val direct = v.slots
-                    .filter { it.slotId.isNotEmpty() && it.itemId in knownIds }
-                    .associate { it.slotId to it.itemId }
+            fun resolveAssignments(v: ComposerVariant): Map<String, String> {
+                val direct = v.slots.orEmpty()
+                    .filter { !it.slotId.isNullOrEmpty() && it.itemId in knownIds }
+                    .associate { it.slotId!! to it.itemId!! }
                 if (direct.isNotEmpty()) return direct
                 // Legacy: distribute itemIds across empty/unlocked slots by category.
                 val unlockedSlotIds = currentSlots.filter { !(it.isLocked && it.selectedItemId != null) }.map { it.id }.toSet()
                 val mutableSlots = currentSlots.toMutableList()
                 val mapping = mutableMapOf<String, String>()
-                for (candidateId in v.itemIds.filter { it in knownIds }) {
+                for (candidateId in v.itemIds.orEmpty().filter { it in knownIds }) {
                     val img = byImageId[candidateId] ?: continue
                     val cat = layerFor(img) ?: Layer.Top
                     val idx = mutableSlots.indexOfFirst {
@@ -296,10 +313,10 @@ internal fun OutfitsViewModel.enhanceComposerWithAi(
             val composerSuggestions = variants.map { v ->
                 ComposerSuggestion(
                     slotAssignments = resolveAssignments(v),
-                    name = v.name,
-                    description = v.description,
-                    reason = v.reason,
-                    tags = v.tags.map { it.trim() }.filter { it.isNotEmpty() }.distinct(),
+                    name = v.name.orEmpty(),
+                    description = v.description.orEmpty(),
+                    reason = v.reason.orEmpty(),
+                    tags = v.tags.orEmpty().map { it.trim() }.filter { it.isNotEmpty() }.distinct(),
                 )
             }
 

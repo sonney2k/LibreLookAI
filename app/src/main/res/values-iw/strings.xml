@@ -1062,4 +1062,15 @@
 
     <!-- Optimistic move rollback -->
     <string name="wardrobe_move_failed">לא ניתן היה להעביר חלק מהפריטים. הם שוחזרו.</string>
+
+    <!-- Onboarding: Drive sign-in + background permission -->
+    <string name="onboarding_drive_title">חבר את Google Drive שלך</string>
+    <string name="onboarding_drive_body">‏LibreLookAI שומר הכול — הבגדים, התלבושות והתמונות שלך — בתיקייה פרטית ב‑Google Drive שלך. שום דבר לא נשמר בשרתים שלנו, ורק אתה יכול לראות זאת. היכנס עם Google כדי ליצור את הארון שלך.</string>
+    <string name="onboarding_drive_connect">כניסה עם Google</string>
+    <string name="onboarding_drive_connected">‏Google Drive מחובר ✓</string>
+    <string name="onboarding_drive_offline">התחבר לאינטרנט כדי להיכנס עם Google.</string>
+    <string name="onboarding_background_title">אפשר עיבוד ברקע</string>
+    <string name="onboarding_background_body">ייבוא תמונות, הסרת רקעים ותיוג בגדים בעזרת בינה מלאכותית עשויים להימשך זמן מה. ‏LibreLookAI זקוק לעיבוד ברקע ללא הגבלה כדי ש‑Android לא יסגור אותו באמצע משימה — מה שעלול אחרת להשאיר פריטים שיובאו חלקית, תגיות חסרות או קבצים פגומים.\n\nזה רק מאפשר לאפליקציה לסיים עבודה שהתחלת; היא לא מריצה דבר מעצמה.</string>
+    <string name="onboarding_background_allow">אפשר עיבוד ברקע</string>
+    <string name="onboarding_background_granted">עיבוד ברקע מאופשר ✓</string>
 </resources>
