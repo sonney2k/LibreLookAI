@@ -1031,4 +1031,15 @@
 
     <!-- Optimistic move rollback -->
     <string name="wardrobe_move_failed">Не вдалося перемістити деякі елементи. Їх відновлено.</string>
+
+    <!-- Onboarding: Drive sign-in + background permission -->
+    <string name="onboarding_drive_title">Підключіть свій Google Диск</string>
+    <string name="onboarding_drive_body">LibreLookAI зберігає все — ваш одяг, образи та фотографії — у приватній папці на вашому власному Google Диску. Нічого не зберігається на наших серверах, і лише ви можете це бачити. Увійдіть через Google, щоб створити свій гардероб.</string>
+    <string name="onboarding_drive_connect">Увійти через Google</string>
+    <string name="onboarding_drive_connected">Google Диск підключено ✓</string>
+    <string name="onboarding_drive_offline">Підключіться до інтернету, щоб увійти через Google.</string>
+    <string name="onboarding_background_title">Дозволити фонову обробку</string>
+    <string name="onboarding_background_body">Імпорт фотографій, видалення фону та позначення одягу за допомогою ШІ може зайняти трохи часу. LibreLookAI потрібна необмежена фонова обробка, щоб Android не закрив застосунок посеред завдання — інакше можуть залишитися частково імпортовані речі, відсутні теги або пошкоджені файли.\n\nЦе лише дозволяє застосунку завершити роботу, яку ви розпочали; самостійно він нічого не запускає.</string>
+    <string name="onboarding_background_allow">Дозволити фонову обробку</string>
+    <string name="onboarding_background_granted">Фонову обробку дозволено ✓</string>
 </resources>

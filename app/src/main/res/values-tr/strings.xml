@@ -1058,4 +1058,15 @@
 
     <!-- Optimistic move rollback -->
     <string name="wardrobe_move_failed">Bazı öğeler taşınamadı. Geri yüklendiler.</string>
+
+    <!-- Onboarding: Drive sign-in + background permission -->
+    <string name="onboarding_drive_title">Google Drive\'ını bağla</string>
+    <string name="onboarding_drive_body">LibreLookAI her şeyi — kıyafetlerini, kombinlerini ve fotoğraflarını — kendi Google Drive\'ındaki özel bir klasörde saklar. Hiçbir şey sunucularımızda tutulmaz ve yalnızca sen görebilirsin. Gardırobunu oluşturmak için Google ile giriş yap.</string>
+    <string name="onboarding_drive_connect">Google ile giriş yap</string>
+    <string name="onboarding_drive_connected">Google Drive bağlandı ✓</string>
+    <string name="onboarding_drive_offline">Google ile giriş yapmak için internete bağlan.</string>
+    <string name="onboarding_background_title">Arka planda çalışmaya izin ver</string>
+    <string name="onboarding_background_body">Fotoğrafları içe aktarmak, arka planları kaldırmak ve kıyafetleri yapay zekâ ile etiketlemek biraz zaman alabilir. LibreLookAI, Android\'in uygulamayı bir görevin ortasında kapatmaması için sınırsız arka plan işleme iznine ihtiyaç duyar — aksi takdirde yarım içe aktarılmış öğeler, eksik etiketler veya bozuk dosyalar kalabilir.\n\nBu yalnızca uygulamanın başlattığın işi tamamlamasına izin verir; kendi başına hiçbir şey çalıştırmaz.</string>
+    <string name="onboarding_background_allow">Arka planda çalışmaya izin ver</string>
+    <string name="onboarding_background_granted">Arka planda çalışmaya izin verildi ✓</string>
 </resources>

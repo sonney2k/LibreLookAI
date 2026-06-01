@@ -1031,4 +1031,15 @@
 
     <!-- Optimistic move rollback -->
     <string name="wardrobe_move_failed">部分項目無法移動，已還原。</string>
+
+    <!-- Onboarding: Drive sign-in + background permission -->
+    <string name="onboarding_drive_title">連接你的 Google 雲端硬碟</string>
+    <string name="onboarding_drive_body">LibreLookAI 會將一切——你的衣物、穿搭與相片——都保存在你自己 Google 雲端硬碟的私人資料夾中。我們的伺服器不會儲存任何內容，只有你看得到。使用 Google 登入以建立你的衣櫥。</string>
+    <string name="onboarding_drive_connect">使用 Google 登入</string>
+    <string name="onboarding_drive_connected">已連接 Google 雲端硬碟 ✓</string>
+    <string name="onboarding_drive_offline">請連上網際網路以使用 Google 登入。</string>
+    <string name="onboarding_background_title">允許背景處理</string>
+    <string name="onboarding_background_body">匯入相片、移除背景以及用 AI 為衣物加上標籤可能需要一些時間。LibreLookAI 需要不受限制的背景處理，以免 Android 在任務進行中關閉應用程式——否則可能留下匯入到一半的項目、遺漏的標籤或損毀的檔案。\n\n這僅允許應用程式完成你已開始的工作，它不會自行執行任何東西。</string>
+    <string name="onboarding_background_allow">允許背景處理</string>
+    <string name="onboarding_background_granted">已允許背景處理 ✓</string>
 </resources>

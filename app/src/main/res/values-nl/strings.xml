@@ -1058,4 +1058,15 @@
 
     <!-- Optimistic move rollback -->
     <string name="wardrobe_move_failed">Sommige items konden niet worden verplaatst. Ze zijn hersteld.</string>
+
+    <!-- Onboarding: Drive sign-in + background permission -->
+    <string name="onboarding_drive_title">Verbind je Google Drive</string>
+    <string name="onboarding_drive_body">LibreLookAI bewaart alles — je kleding, outfits en foto\'s — in een privémap in je eigen Google Drive. Er wordt niets op onze servers opgeslagen en alleen jij kunt het zien. Log in met Google om je garderobe aan te maken.</string>
+    <string name="onboarding_drive_connect">Inloggen met Google</string>
+    <string name="onboarding_drive_connected">Google Drive verbonden ✓</string>
+    <string name="onboarding_drive_offline">Maak verbinding met internet om in te loggen met Google.</string>
+    <string name="onboarding_background_title">Achtergrondverwerking toestaan</string>
+    <string name="onboarding_background_body">Foto\'s importeren, achtergronden verwijderen en kleding taggen met AI kan even duren. LibreLookAI heeft onbeperkte achtergrondverwerking nodig zodat Android de app niet halverwege afsluit — wat anders half geïmporteerde items, ontbrekende tags of beschadigde bestanden kan achterlaten.\n\nDit staat de app alleen toe om werk af te maken dat jij hebt gestart; het doet niets uit zichzelf.</string>
+    <string name="onboarding_background_allow">Achtergrondverwerking toestaan</string>
+    <string name="onboarding_background_granted">Achtergrondverwerking toegestaan ✓</string>
 </resources>

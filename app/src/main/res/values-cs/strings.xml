@@ -1058,4 +1058,15 @@
 
     <!-- Optimistic move rollback -->
     <string name="wardrobe_move_failed">Některé položky se nepodařilo přesunout. Byly obnoveny.</string>
+
+    <!-- Onboarding: Drive sign-in + background permission -->
+    <string name="onboarding_drive_title">Připoj svůj Google Disk</string>
+    <string name="onboarding_drive_body">LibreLookAI ukládá vše — tvé oblečení, outfity a fotky — do soukromé složky na tvém vlastním Google Disku. Nic se neukládá na našich serverech a vidíš to jen ty. Přihlas se přes Google a vytvoř si svůj šatník.</string>
+    <string name="onboarding_drive_connect">Přihlásit se přes Google</string>
+    <string name="onboarding_drive_connected">Google Disk připojen ✓</string>
+    <string name="onboarding_drive_offline">Připoj se k internetu, aby ses mohl přihlásit přes Google.</string>
+    <string name="onboarding_background_title">Povolit zpracování na pozadí</string>
+    <string name="onboarding_background_body">Import fotek, odstraňování pozadí a označování oblečení pomocí AI může chvíli trvat. LibreLookAI potřebuje neomezené zpracování na pozadí, aby Android aplikaci neukončil uprostřed úkolu — což by jinak mohlo zanechat napůl importované položky, chybějící štítky nebo poškozené soubory.\n\nToto pouze umožní aplikaci dokončit práci, kterou jsi spustil; sama o sobě nic nespouští.</string>
+    <string name="onboarding_background_allow">Povolit zpracování na pozadí</string>
+    <string name="onboarding_background_granted">Zpracování na pozadí povoleno ✓</string>
 </resources>

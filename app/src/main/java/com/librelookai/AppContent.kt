@@ -137,19 +137,60 @@ internal fun AppContent(activity: ComponentActivity) {
                     }
                 }
 
-                if (!isSignedIn) {
-                    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                        SignInScreen(
-                            onSignIn = {
+                // Hoisted above the entry gate so the first-run onboarding tour — which now owns
+                // the Google Drive sign-in and background-permission setup — can render *before*
+                // the sign-in check and still write to Drive / drive navigation once connected.
+                val networkMonitor = remember { NetworkMonitor(activity) }
+                DisposableEffect(networkMonitor) {
+                    onDispose { networkMonitor.unregister() }
+                }
+                val isOnline by networkMonitor.isOnline.collectAsState()
+                val isOffline = !isOnline
+                val profileViewModel: ProfileViewModel = viewModel()
+                var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+                // Increments on every nav button tap (incl. re-tap and gear icon)
+                // so screens with sub-tabs can reset to their default tab.
+                var navResetTick by remember { mutableIntStateOf(0) }
+                // First-run onboarding tour. Shown until the user completes/skips it; can be
+                // re-launched from Settings via LocalStartTour (which just flips this back on).
+                var showOnboarding by rememberSaveable {
+                    mutableStateOf(!OnboardingState.isComplete(activity))
+                }
+
+                when {
+                    // First-run (or replayed) tour: the outermost gate. Carries Drive sign-in +
+                    // background-permission steps, so it renders even when not yet signed in.
+                    showOnboarding -> {
+                        OnboardingScreen(
+                            profileViewModel = profileViewModel,
+                            isSignedIn = isSignedIn,
+                            signInErrorCode = authError,
+                            onStartSignIn = {
                                 Analytics.action("SignIn", "start_sign_in")
                                 authViewModel.startSignIn()
                             },
-                            signInErrorCode = authError,
-                            modifier = Modifier.padding(innerPadding),
+                            isOffline = isOffline,
+                            onFinish = { goToWardrobe ->
+                                OnboardingState.setComplete(activity, true)
+                                showOnboarding = false
+                                if (goToWardrobe) { selectedTab = 1; navResetTick++ }
+                            },
                         )
                     }
-                } else {
-                    val networkMonitor = remember { NetworkMonitor(activity) }
+                    // Returning user who signed out after completing onboarding.
+                    !isSignedIn -> {
+                        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                            SignInScreen(
+                                onSignIn = {
+                                    Analytics.action("SignIn", "start_sign_in")
+                                    authViewModel.startSignIn()
+                                },
+                                signInErrorCode = authError,
+                                modifier = Modifier.padding(innerPadding),
+                            )
+                        }
+                    }
+                    else -> {
                     val usageRepo = remember { TokenUsageRepository.get(activity.application) }
                     val driveRepo = remember { DriveRepository(activity, GoogleAuthManager(activity)) }
                     val usageScope = rememberCoroutineScope()
@@ -165,13 +206,9 @@ internal fun AppContent(activity: ComponentActivity) {
                         activity.lifecycle.addObserver(observer)
                         onDispose {
                             activity.lifecycle.removeObserver(observer)
-                            networkMonitor.unregister()
                         }
                     }
-                    val isOnline by networkMonitor.isOnline.collectAsState()
-                    val isOffline = !isOnline
 
-                    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
                     LaunchedEffect(selectedTab) {
                         val name = when (selectedTab) {
                             0 -> "Outfits"; 1 -> "Wardrobe"; 2 -> "Shopping"
@@ -180,19 +217,10 @@ internal fun AppContent(activity: ComponentActivity) {
                         }
                         Analytics.screen(name)
                     }
-                    // Increments on every nav button tap (incl. re-tap and gear icon)
-                    // so screens with sub-tabs can reset to their default tab.
-                    var navResetTick by remember { mutableIntStateOf(0) }
-                    // First-run onboarding tour. Shown until the user completes/skips it; can be
-                    // re-launched from Settings via LocalStartTour (which just flips this back on).
-                    var showOnboarding by rememberSaveable {
-                        mutableStateOf(!OnboardingState.isComplete(activity))
-                    }
                     val locationViewModel: LocationViewModel = viewModel()
                     val stylesViewModel: OutfitsViewModel = viewModel()
                     val wardrobeViewModel: WardrobeViewModel = viewModel()
                     val outfitEventsViewModel: OutfitEventsViewModel = viewModel()
-                    val profileViewModel: ProfileViewModel = viewModel()
                     val weatherViewModel: WeatherViewModel = viewModel()
                     val travelViewModel: TravelViewModel = viewModel()
                     val tripsViewModel: com.librelookai.travel.TripsViewModel = viewModel()
@@ -835,21 +863,10 @@ internal fun AppContent(activity: ComponentActivity) {
                             }
                         }
 
-                        // First-run onboarding tour — opaque fullscreen overlay above the app.
-                        if (showOnboarding) {
-                            OnboardingScreen(
-                                profileViewModel = profileViewModel,
-                                isOffline = isOffline,
-                                onFinish = { goToWardrobe ->
-                                    OnboardingState.setComplete(activity, true)
-                                    showOnboarding = false
-                                    if (goToWardrobe) { selectedTab = 1; navResetTick++ }
-                                },
-                            )
-                        }
                         } // Box
                         }
                     } }
-                }
+                    } // else -> arm (signed in + onboarding complete)
+                } // when
     }
 }

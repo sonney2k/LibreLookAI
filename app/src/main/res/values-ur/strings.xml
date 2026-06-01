@@ -1031,4 +1031,15 @@
 
     <!-- Optimistic move rollback -->
     <string name="wardrobe_move_failed">کچھ آئٹمز منتقل نہیں ہو سکے۔ انہیں بحال کر دیا گیا ہے۔</string>
+
+    <!-- Onboarding: Drive sign-in + background permission -->
+    <string name="onboarding_drive_title">اپنا Google Drive منسلک کریں</string>
+    <string name="onboarding_drive_body">LibreLookAI سب کچھ — آپ کے کپڑے، آؤٹ فٹس اور تصاویر — آپ کے اپنے Google Drive میں ایک نجی فولڈر میں محفوظ رکھتا ہے۔ کچھ بھی ہمارے سرورز پر محفوظ نہیں ہوتا اور صرف آپ ہی اسے دیکھ سکتے ہیں۔ اپنی الماری بنانے کے لیے Google سے سائن اِن کریں۔</string>
+    <string name="onboarding_drive_connect">Google سے سائن اِن کریں</string>
+    <string name="onboarding_drive_connected">Google Drive منسلک ہو گیا ✓</string>
+    <string name="onboarding_drive_offline">Google سے سائن اِن کرنے کے لیے انٹرنیٹ سے منسلک ہوں۔</string>
+    <string name="onboarding_background_title">پس منظر کی پروسیسنگ کی اجازت دیں</string>
+    <string name="onboarding_background_body">تصاویر درآمد کرنے، پس منظر ہٹانے اور AI سے کپڑوں کو ٹیگ کرنے میں کچھ وقت لگ سکتا ہے۔ LibreLookAI کو لامحدود پس منظر پروسیسنگ کی ضرورت ہے تاکہ Android اسے کسی کام کے دوران بند نہ کرے — ورنہ نامکمل درآمد شدہ آئٹمز، غائب ٹیگز یا خراب فائلیں رہ سکتی ہیں۔\n\nیہ ایپ کو صرف وہ کام مکمل کرنے دیتا ہے جو آپ نے شروع کیا تھا؛ یہ خود سے کچھ نہیں چلاتا۔</string>
+    <string name="onboarding_background_allow">پس منظر کی پروسیسنگ کی اجازت دیں</string>
+    <string name="onboarding_background_granted">پس منظر کی پروسیسنگ کی اجازت دی گئی ✓</string>
 </resources>

@@ -1058,4 +1058,15 @@
 
     <!-- Optimistic move rollback -->
     <string name="wardrobe_move_failed">تعذّر نقل بعض العناصر. تمت استعادتها.</string>
+
+    <!-- Onboarding: Drive sign-in + background permission -->
+    <string name="onboarding_drive_title">اربط حساب Google Drive الخاص بك</string>
+    <string name="onboarding_drive_body">يحفظ LibreLookAI كل شيء — ملابسك وإطلالاتك وصورك — في مجلد خاص داخل حساب Google Drive الخاص بك. لا يُخزَّن أي شيء على خوادمنا، وأنت وحدك من يمكنه رؤيته. سجّل الدخول بحساب Google لإنشاء خزانة ملابسك.</string>
+    <string name="onboarding_drive_connect">تسجيل الدخول بحساب Google</string>
+    <string name="onboarding_drive_connected">تم ربط Google Drive ✓</string>
+    <string name="onboarding_drive_offline">اتصل بالإنترنت لتسجيل الدخول بحساب Google.</string>
+    <string name="onboarding_background_title">السماح بالمعالجة في الخلفية</string>
+    <string name="onboarding_background_body">قد يستغرق استيراد الصور وإزالة الخلفيات ووسم الملابس بالذكاء الاصطناعي بعض الوقت. يحتاج LibreLookAI إلى معالجة غير مقيّدة في الخلفية حتى لا يوقفه Android في منتصف المهمة — وهو ما قد يترك عناصر مستوردة جزئيًا أو وسومًا مفقودة أو ملفات تالفة.\n\nهذا يسمح للتطبيق فقط بإكمال العمل الذي بدأته؛ ولا يشغّل أي شيء من تلقاء نفسه.</string>
+    <string name="onboarding_background_allow">السماح بالمعالجة في الخلفية</string>
+    <string name="onboarding_background_granted">تم السماح بالمعالجة في الخلفية ✓</string>
 </resources>

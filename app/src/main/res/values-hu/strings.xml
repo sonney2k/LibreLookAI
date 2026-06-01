@@ -1031,4 +1031,15 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
 
     <!-- Optimistic move rollback -->
     <string name="wardrobe_move_failed">Néhány elemet nem sikerült áthelyezni. Visszaállítottuk őket.</string>
+
+    <!-- Onboarding: Drive sign-in + background permission -->
+    <string name="onboarding_drive_title">Csatlakoztasd a Google Drive-ot</string>
+    <string name="onboarding_drive_body">A LibreLookAI mindent — a ruháidat, szettjeidet és fotóidat — egy privát mappában tárol a saját Google Drive-odon. Semmi sem kerül a szervereinkre, és csak te láthatod. Jelentkezz be a Google-lal a ruhatárad létrehozásához.</string>
+    <string name="onboarding_drive_connect">Bejelentkezés a Google-lal</string>
+    <string name="onboarding_drive_connected">Google Drive csatlakoztatva ✓</string>
+    <string name="onboarding_drive_offline">Csatlakozz az internethez a Google-lal való bejelentkezéshez.</string>
+    <string name="onboarding_background_title">Háttérben futás engedélyezése</string>
+    <string name="onboarding_background_body">A fotók importálása, a hátterek eltávolítása és a ruhák AI-jal való címkézése eltarthat egy ideig. A LibreLookAI-nak korlátlan háttérfeldolgozásra van szüksége, hogy az Android ne állítsa le a feladat közben — különben félig importált tételek, hiányzó címkék vagy sérült fájlok maradhatnak.\n\nEz csak azt teszi lehetővé, hogy az alkalmazás befejezze az általad elindított munkát; magától nem futtat semmit.</string>
+    <string name="onboarding_background_allow">Háttérben futás engedélyezése</string>
+    <string name="onboarding_background_granted">Háttérben futás engedélyezve ✓</string>
 </resources>

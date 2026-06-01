@@ -1058,4 +1058,15 @@
 
     <!-- Optimistic move rollback -->
     <string name="wardrobe_move_failed">No se pudieron mover algunos artículos. Se han restaurado.</string>
+
+    <!-- Onboarding: Drive sign-in + background permission -->
+    <string name="onboarding_drive_title">Conecta tu Google Drive</string>
+    <string name="onboarding_drive_body">LibreLookAI guarda todo — tu ropa, tus looks y tus fotos — en una carpeta privada de tu propio Google Drive. Nada se almacena en nuestros servidores y solo tú puedes verlo. Inicia sesión con Google para crear tu armario.</string>
+    <string name="onboarding_drive_connect">Iniciar sesión con Google</string>
+    <string name="onboarding_drive_connected">Google Drive conectado ✓</string>
+    <string name="onboarding_drive_offline">Conéctate a internet para iniciar sesión con Google.</string>
+    <string name="onboarding_background_title">Permitir el procesamiento en segundo plano</string>
+    <string name="onboarding_background_body">Importar fotos, quitar fondos y etiquetar prendas con IA puede tardar un poco. LibreLookAI necesita procesamiento en segundo plano sin restricciones para que Android no lo cierre a mitad de la tarea, lo que podría dejar prendas a medio importar, etiquetas faltantes o archivos dañados.\n\nEsto solo permite que la app termine el trabajo que iniciaste; no ejecuta nada por su cuenta.</string>
+    <string name="onboarding_background_allow">Permitir procesamiento en segundo plano</string>
+    <string name="onboarding_background_granted">Procesamiento en segundo plano permitido ✓</string>
 </resources>

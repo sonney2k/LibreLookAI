@@ -1058,4 +1058,15 @@
 
     <!-- Optimistic move rollback -->
     <string name="wardrobe_move_failed">Kunne ikke flytte noen elementer. De er gjenopprettet.</string>
+
+    <!-- Onboarding: Drive sign-in + background permission -->
+    <string name="onboarding_drive_title">Koble til Google Disk</string>
+    <string name="onboarding_drive_body">LibreLookAI lagrer alt — klærne, antrekkene og bildene dine — i en privat mappe på din egen Google Disk. Ingenting lagres på serverne våre, og bare du kan se det. Logg inn med Google for å opprette garderoben din.</string>
+    <string name="onboarding_drive_connect">Logg inn med Google</string>
+    <string name="onboarding_drive_connected">Google Disk tilkoblet ✓</string>
+    <string name="onboarding_drive_offline">Koble til internett for å logge inn med Google.</string>
+    <string name="onboarding_background_title">Tillat bakgrunnsbehandling</string>
+    <string name="onboarding_background_body">Å importere bilder, fjerne bakgrunner og merke klær med AI kan ta litt tid. LibreLookAI trenger ubegrenset bakgrunnsbehandling slik at Android ikke avslutter appen midt i en oppgave — noe som ellers kan etterlate halvveis importerte gjenstander, manglende merker eller ødelagte filer.\n\nDette lar kun appen fullføre arbeid du har startet; den kjører ikke noe på egen hånd.</string>
+    <string name="onboarding_background_allow">Tillat bakgrunnsbehandling</string>
+    <string name="onboarding_background_granted">Bakgrunnsbehandling tillatt ✓</string>
 </resources>
