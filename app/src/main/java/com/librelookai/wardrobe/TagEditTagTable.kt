@@ -80,8 +80,9 @@ private fun ClothingTags.toggleValue(key: String, value: String): ClothingTags {
 }
 
 private fun ClothingTags.addCustom(key: String, value: String): ClothingTags {
-    // Colors are a closed vocabulary — snap free-text input to a canonical swatch.
-    val trimmed = if (key == "colors") value.trim().normalizeColor() else value.trim()
+    // Colors are a closed vocabulary with no custom-input affordance; only open
+    // dimensions (material, pattern, …) reach this path.
+    val trimmed = value.trim()
     if (trimmed.isEmpty()) return this
     val current = valuesFor(key)
     if (trimmed in current) return this
@@ -139,7 +140,6 @@ internal fun TagsTableCard(
                             ColorDrawer(
                                 active = values,
                                 onToggle = { v -> onToggleValue { it.toggleValue(spec.key, v) } },
-                                onAddCustom = { v -> onToggleValue { it.addCustom(spec.key, v) } },
                             )
                         } else {
                             ChipDrawer(
@@ -256,7 +256,6 @@ private fun colorFor(name: String): Color? = colorSwatchOrNull(name.normalizeCol
 private fun ColorDrawer(
     active: List<String>,
     onToggle: (String) -> Unit,
-    onAddCustom: (String) -> Unit,
 ) {
     val palette = LocalWardrobePalette.current
     // Closed palette: only canonical swatches. `active` is included defensively in case a legacy
@@ -310,7 +309,6 @@ private fun ColorDrawer(
                 }
             }
         }
-        AddCustomField(onAdd = onAddCustom)
     }
 }
 
