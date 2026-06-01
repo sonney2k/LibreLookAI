@@ -32,9 +32,31 @@ class TagNormalizerTest {
     }
 
     @Test
-    fun normalizeColor_passesThroughUnknownLowercasedTrimmed() {
+    fun normalizeColor_keepsCanonicalLowercasedTrimmed() {
         assertEquals("teal", "  Teal ".normalizeColor())
         assertEquals("denim blue", "denim blue".normalizeColor())
+    }
+
+    @Test
+    fun normalizeColor_snapsCommonStraysToCanonical() {
+        assertEquals("teal", "cyan".normalizeColor())
+        assertEquals("teal", "Turquoise".normalizeColor())
+        assertEquals("green", "lime".normalizeColor())
+        assertEquals("burgundy", "maroon".normalizeColor())
+        assertEquals("magenta", "fuchsia".normalizeColor())
+    }
+
+    @Test
+    fun normalizeColor_clampsAnyUnknownToMulticolor() {
+        // Nothing swatch-less can ever be stored: unrecognized → "multicolor".
+        assertEquals("multicolor", "ultraviolet glow".normalizeColor())
+        assertEquals("multicolor", "zzz".normalizeColor())
+    }
+
+    @Test
+    fun colorVocabularyStaysInSyncWithDisplayList() {
+        // FilterColorKeys (display order) must hold exactly the normalizer's closed set.
+        assertEquals(CANONICAL_COLORS, com.librelookai.wardrobe.FilterColorKeys.toSet())
     }
 
     // ─── Type ─────────────────────────────────────────────────────────────────

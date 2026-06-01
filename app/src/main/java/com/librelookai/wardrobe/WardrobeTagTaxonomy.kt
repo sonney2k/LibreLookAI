@@ -152,7 +152,7 @@ internal fun List<DriveImage>.tagCategories(): List<TagCategory> {
         TagCategory("Type",        mapNotNull { it.tags?.type?.normalizeType() }.filter { it.isNotEmpty() }.toSortedSet().toList()).takeIf { it.tags.isNotEmpty() },
         TagCategory("Category",    mapNotNull { it.tags?.category?.lowercase()?.trim() }.filter { it.isNotEmpty() }.toSortedSet().toList()).takeIf { it.tags.isNotEmpty() },
         TagCategory("Uses",        collect(flatMap { it.tags?.uses?.map { v -> v.normalizeEnumTag() } ?: emptyList() })).takeIf { it.tags.isNotEmpty() },
-        TagCategory("Colors",      collect(flatMap { it.tags?.colors?.map { v -> v.normalizeColor() } ?: emptyList() })).takeIf { it.tags.isNotEmpty() },
+        TagCategory("Colors",      flatMap { it.tags?.colors?.map { v -> v.normalizeColor() } ?: emptyList() }.distinct().sortedByColorOrder()).takeIf { it.tags.isNotEmpty() },
         TagCategory("Seasonality", collect(flatMap { it.tags?.seasonality?.map { v -> v.normalizeEnumTag() } ?: emptyList() })).takeIf { it.tags.isNotEmpty() },
         TagCategory("Aesthetic",   collect(flatMap { it.tags?.aesthetic?.map { v -> v.normalizeAesthetic() } ?: emptyList() })).takeIf { it.tags.isNotEmpty() },
         TagCategory("Fit",         collect(flatMap { it.tags?.fit?.map { v -> v.normalizeEnumTag() } ?: emptyList() })).takeIf { it.tags.isNotEmpty() },
