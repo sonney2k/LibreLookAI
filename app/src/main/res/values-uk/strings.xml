@@ -1062,4 +1062,28 @@
     <string name="usage_col_delta_tokens">Δ tok</string>
     <string name="usage_col_delta_eur">Δ €</string>
     <string name="usage_row_overall">Загалом</string>
+
+    <!-- AI-usage screen labels -->
+    <string name="usage_section_title">Використання Gemini API</string>
+    <string name="usage_section_subtitle">Токени, витрачені вашим ключем BYOK. Синхронізовано з Drive.</string>
+    <string name="usage_empty">Використання ще не зафіксовано.</string>
+    <string name="usage_window_today">Сьогодні</string>
+    <string name="usage_window_7d">7 днів</string>
+    <string name="usage_total">Усього</string>
+    <string name="usage_daily_tokens_14d">Токени за день (останні 14 днів)</string>
+    <string name="usage_by_use">За призначенням</string>
+    <string name="usage_col_calls">Виклики</string>
+    <string name="usage_col_in">Вхід</string>
+    <string name="usage_col_out">Вихід</string>
+    <string name="usage_col_cost">Вартість</string>
+    <string name="usage_cat_bg_removal">Видалення фону</string>
+    <string name="usage_cat_tagging">Теги</string>
+    <string name="usage_cat_try_on">Примірка</string>
+    <string name="usage_cat_outfit_predict">Прогноз образу</string>
+    <string name="usage_cat_outfit_compose">Складання образу</string>
+    <string name="usage_cat_gap">Аналіз прогалин</string>
+    <string name="usage_cat_replacements">Запропонувати заміни</string>
+    <string name="usage_cat_trends">Модні тренди</string>
+    <string name="usage_cat_travel">Збори в подорож</string>
+    <string name="usage_cat_other">Інше</string>
 </resources>

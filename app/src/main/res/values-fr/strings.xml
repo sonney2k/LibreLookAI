@@ -1089,4 +1089,28 @@
     <string name="usage_col_delta_tokens">Δ jet.</string>
     <string name="usage_col_delta_eur">Δ €</string>
     <string name="usage_row_overall">Global</string>
+
+    <!-- AI-usage screen labels -->
+    <string name="usage_section_title">Utilisation de l\'API Gemini</string>
+    <string name="usage_section_subtitle">Jetons consommés par votre clé BYOK. Synchronisé avec Drive.</string>
+    <string name="usage_empty">Aucune utilisation enregistrée pour le moment.</string>
+    <string name="usage_window_today">Aujourd\'hui</string>
+    <string name="usage_window_7d">7 jours</string>
+    <string name="usage_total">Total</string>
+    <string name="usage_daily_tokens_14d">Jetons par jour (14 derniers jours)</string>
+    <string name="usage_by_use">Par usage</string>
+    <string name="usage_col_calls">Appels</string>
+    <string name="usage_col_in">Entr.</string>
+    <string name="usage_col_out">Sort.</string>
+    <string name="usage_col_cost">Coût</string>
+    <string name="usage_cat_bg_removal">Suppression d\'arrière-plan</string>
+    <string name="usage_cat_tagging">Étiquetage</string>
+    <string name="usage_cat_try_on">Essayage</string>
+    <string name="usage_cat_outfit_predict">Prédiction de tenue</string>
+    <string name="usage_cat_outfit_compose">Composition de tenue</string>
+    <string name="usage_cat_gap">Analyse des manques</string>
+    <string name="usage_cat_replacements">Suggérer des remplacements</string>
+    <string name="usage_cat_trends">Tendances mode</string>
+    <string name="usage_cat_travel">Valise de voyage</string>
+    <string name="usage_cat_other">Autre</string>
 </resources>

@@ -1089,4 +1089,28 @@
     <string name="usage_col_delta_tokens">Δ tok</string>
     <string name="usage_col_delta_eur">Δ €</string>
     <string name="usage_row_overall">Kabuuan</string>
+
+    <!-- AI-usage screen labels -->
+    <string name="usage_section_title">Paggamit ng Gemini API</string>
+    <string name="usage_section_subtitle">Mga token na nagamit ng iyong BYOK key. Naka-sync sa Drive.</string>
+    <string name="usage_empty">Wala pang naitalang paggamit.</string>
+    <string name="usage_window_today">Ngayon</string>
+    <string name="usage_window_7d">7 araw</string>
+    <string name="usage_total">Kabuuan</string>
+    <string name="usage_daily_tokens_14d">Pang-araw-araw na token (huling 14 araw)</string>
+    <string name="usage_by_use">Ayon sa gamit</string>
+    <string name="usage_col_calls">Tawag</string>
+    <string name="usage_col_in">In</string>
+    <string name="usage_col_out">Out</string>
+    <string name="usage_col_cost">Halaga</string>
+    <string name="usage_cat_bg_removal">Pag-alis ng background</string>
+    <string name="usage_cat_tagging">Pag-tag</string>
+    <string name="usage_cat_try_on">Pagsukat</string>
+    <string name="usage_cat_outfit_predict">Hula ng outfit</string>
+    <string name="usage_cat_outfit_compose">Pagbuo ng outfit</string>
+    <string name="usage_cat_gap">Pagsusuri ng kakulangan</string>
+    <string name="usage_cat_replacements">Magmungkahi ng kapalit</string>
+    <string name="usage_cat_trends">Mga uso sa fashion</string>
+    <string name="usage_cat_travel">Pag-impake sa biyahe</string>
+    <string name="usage_cat_other">Iba pa</string>
 </resources>

@@ -1062,4 +1062,28 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="usage_col_delta_tokens">Δ tok</string>
     <string name="usage_col_delta_eur">Δ €</string>
     <string name="usage_row_overall">Összesen</string>
+
+    <!-- AI-usage screen labels -->
+    <string name="usage_section_title">Gemini API-használat</string>
+    <string name="usage_section_subtitle">A BYOK-kulcsod által felhasznált tokenek. Drive-val szinkronizálva.</string>
+    <string name="usage_empty">Még nincs rögzített használat.</string>
+    <string name="usage_window_today">Ma</string>
+    <string name="usage_window_7d">7 nap</string>
+    <string name="usage_total">Összesen</string>
+    <string name="usage_daily_tokens_14d">Napi tokenek (utolsó 14 nap)</string>
+    <string name="usage_by_use">Cél szerint</string>
+    <string name="usage_col_calls">Hívások</string>
+    <string name="usage_col_in">Be</string>
+    <string name="usage_col_out">Ki</string>
+    <string name="usage_col_cost">Költség</string>
+    <string name="usage_cat_bg_removal">Háttér eltávolítása</string>
+    <string name="usage_cat_tagging">Címkézés</string>
+    <string name="usage_cat_try_on">Felpróbálás</string>
+    <string name="usage_cat_outfit_predict">Szettjavaslat</string>
+    <string name="usage_cat_outfit_compose">Szett összeállítása</string>
+    <string name="usage_cat_gap">Hiányelemzés</string>
+    <string name="usage_cat_replacements">Cserék javaslata</string>
+    <string name="usage_cat_trends">Divattrendek</string>
+    <string name="usage_cat_travel">Utazási csomagolás</string>
+    <string name="usage_cat_other">Egyéb</string>
 </resources>

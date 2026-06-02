@@ -1089,4 +1089,28 @@
     <string name="usage_col_delta_tokens">Δ tok</string>
     <string name="usage_col_delta_eur">Δ €</string>
     <string name="usage_row_overall">General</string>
+
+    <!-- AI-usage screen labels -->
+    <string name="usage_section_title">Uso de la API de Gemini</string>
+    <string name="usage_section_subtitle">Tokens consumidos por tu clave BYOK. Sincronizado con Drive.</string>
+    <string name="usage_empty">Todavía no se registró uso.</string>
+    <string name="usage_window_today">Hoy</string>
+    <string name="usage_window_7d">7 días</string>
+    <string name="usage_total">Total</string>
+    <string name="usage_daily_tokens_14d">Tokens diarios (últimos 14 días)</string>
+    <string name="usage_by_use">Por uso</string>
+    <string name="usage_col_calls">Llamadas</string>
+    <string name="usage_col_in">Entr.</string>
+    <string name="usage_col_out">Sal.</string>
+    <string name="usage_col_cost">Coste</string>
+    <string name="usage_cat_bg_removal">Eliminación de fondo</string>
+    <string name="usage_cat_tagging">Etiquetado</string>
+    <string name="usage_cat_try_on">Prueba virtual</string>
+    <string name="usage_cat_outfit_predict">Predicción de conjunto</string>
+    <string name="usage_cat_outfit_compose">Composición de conjunto</string>
+    <string name="usage_cat_gap">Análisis de carencias</string>
+    <string name="usage_cat_replacements">Sugerir reemplazos</string>
+    <string name="usage_cat_trends">Tendencias de moda</string>
+    <string name="usage_cat_travel">Equipaje de viaje</string>
+    <string name="usage_cat_other">Otro</string>
 </resources>

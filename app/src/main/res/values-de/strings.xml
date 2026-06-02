@@ -1158,4 +1158,28 @@
     <string name="usage_col_delta_tokens">Δ Tok</string>
     <string name="usage_col_delta_eur">Δ €</string>
     <string name="usage_row_overall">Gesamt</string>
+
+    <!-- AI-usage screen labels -->
+    <string name="usage_section_title">Gemini-API-Nutzung</string>
+    <string name="usage_section_subtitle">Von deinem BYOK-Schlüssel verbrauchte Tokens. Mit Drive synchronisiert.</string>
+    <string name="usage_empty">Noch keine Nutzung erfasst.</string>
+    <string name="usage_window_today">Heute</string>
+    <string name="usage_window_7d">7 Tage</string>
+    <string name="usage_total">Gesamt</string>
+    <string name="usage_daily_tokens_14d">Tägliche Tokens (letzte 14 Tage)</string>
+    <string name="usage_by_use">Nach Zweck</string>
+    <string name="usage_col_calls">Aufrufe</string>
+    <string name="usage_col_in">Ein</string>
+    <string name="usage_col_out">Aus</string>
+    <string name="usage_col_cost">Kosten</string>
+    <string name="usage_cat_bg_removal">Hintergrund entfernen</string>
+    <string name="usage_cat_tagging">Verschlagwortung</string>
+    <string name="usage_cat_try_on">Anprobe</string>
+    <string name="usage_cat_outfit_predict">Outfit-Vorschlag</string>
+    <string name="usage_cat_outfit_compose">Outfit zusammenstellen</string>
+    <string name="usage_cat_gap">Lückenanalyse</string>
+    <string name="usage_cat_replacements">Ersatz vorschlagen</string>
+    <string name="usage_cat_trends">Modetrends</string>
+    <string name="usage_cat_travel">Reisegepäck</string>
+    <string name="usage_cat_other">Sonstiges</string>
 </resources>

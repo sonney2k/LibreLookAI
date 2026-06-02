@@ -1062,4 +1062,28 @@
     <string name="usage_col_delta_tokens">Δ ٹوکن</string>
     <string name="usage_col_delta_eur">Δ €</string>
     <string name="usage_row_overall">مجموعی</string>
+
+    <!-- AI-usage screen labels -->
+    <string name="usage_section_title">Gemini API کا استعمال</string>
+    <string name="usage_section_subtitle">آپ کی BYOK کلید کے استعمال شدہ ٹوکنز۔ Drive سے مطابقت پذیر۔</string>
+    <string name="usage_empty">ابھی تک کوئی استعمال ریکارڈ نہیں ہوا۔</string>
+    <string name="usage_window_today">آج</string>
+    <string name="usage_window_7d">7 دن</string>
+    <string name="usage_total">کل</string>
+    <string name="usage_daily_tokens_14d">روزانہ ٹوکنز (پچھلے 14 دن)</string>
+    <string name="usage_by_use">استعمال کے لحاظ سے</string>
+    <string name="usage_col_calls">کالز</string>
+    <string name="usage_col_in">اِن</string>
+    <string name="usage_col_out">آؤٹ</string>
+    <string name="usage_col_cost">لاگت</string>
+    <string name="usage_cat_bg_removal">پس منظر ہٹانا</string>
+    <string name="usage_cat_tagging">ٹیگنگ</string>
+    <string name="usage_cat_try_on">آزمائش</string>
+    <string name="usage_cat_outfit_predict">آؤٹ فٹ پیشگوئی</string>
+    <string name="usage_cat_outfit_compose">آؤٹ فٹ ترتیب</string>
+    <string name="usage_cat_gap">کمی کا تجزیہ</string>
+    <string name="usage_cat_replacements">متبادل تجویز کریں</string>
+    <string name="usage_cat_trends">فیشن رجحانات</string>
+    <string name="usage_cat_travel">سفری پیکنگ</string>
+    <string name="usage_cat_other">دیگر</string>
 </resources>

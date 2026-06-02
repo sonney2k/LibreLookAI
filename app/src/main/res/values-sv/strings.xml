@@ -1089,4 +1089,28 @@
     <string name="usage_col_delta_tokens">Δ tok</string>
     <string name="usage_col_delta_eur">Δ €</string>
     <string name="usage_row_overall">Totalt</string>
+
+    <!-- AI-usage screen labels -->
+    <string name="usage_section_title">Användning av Gemini-API</string>
+    <string name="usage_section_subtitle">Tokens som förbrukats av din BYOK-nyckel. Synkroniserat till Drive.</string>
+    <string name="usage_empty">Ingen användning registrerad ännu.</string>
+    <string name="usage_window_today">I dag</string>
+    <string name="usage_window_7d">7 dagar</string>
+    <string name="usage_total">Totalt</string>
+    <string name="usage_daily_tokens_14d">Dagliga tokens (senaste 14 dagarna)</string>
+    <string name="usage_by_use">Efter användning</string>
+    <string name="usage_col_calls">Anrop</string>
+    <string name="usage_col_in">In</string>
+    <string name="usage_col_out">Ut</string>
+    <string name="usage_col_cost">Kostnad</string>
+    <string name="usage_cat_bg_removal">Ta bort bakgrund</string>
+    <string name="usage_cat_tagging">Taggning</string>
+    <string name="usage_cat_try_on">Prova</string>
+    <string name="usage_cat_outfit_predict">Outfitförslag</string>
+    <string name="usage_cat_outfit_compose">Outfitkomposition</string>
+    <string name="usage_cat_gap">Gapanalys</string>
+    <string name="usage_cat_replacements">Föreslå ersättningar</string>
+    <string name="usage_cat_trends">Modetrender</string>
+    <string name="usage_cat_travel">Packa för resa</string>
+    <string name="usage_cat_other">Övrigt</string>
 </resources>

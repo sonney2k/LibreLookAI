@@ -1089,4 +1089,28 @@
     <string name="usage_col_delta_tokens">Δ tok</string>
     <string name="usage_col_delta_eur">Δ €</string>
     <string name="usage_row_overall">Συνολικά</string>
+
+    <!-- AI-usage screen labels -->
+    <string name="usage_section_title">Χρήση του API Gemini</string>
+    <string name="usage_section_subtitle">Tokens που καταναλώθηκαν από το κλειδί BYOK σας. Συγχρονισμένο με το Drive.</string>
+    <string name="usage_empty">Δεν έχει καταγραφεί χρήση ακόμη.</string>
+    <string name="usage_window_today">Σήμερα</string>
+    <string name="usage_window_7d">7 ημέρες</string>
+    <string name="usage_total">Σύνολο</string>
+    <string name="usage_daily_tokens_14d">Ημερήσια tokens (τελευταίες 14 ημέρες)</string>
+    <string name="usage_by_use">Ανά χρήση</string>
+    <string name="usage_col_calls">Κλήσεις</string>
+    <string name="usage_col_in">Είσ.</string>
+    <string name="usage_col_out">Έξ.</string>
+    <string name="usage_col_cost">Κόστος</string>
+    <string name="usage_cat_bg_removal">Αφαίρεση φόντου</string>
+    <string name="usage_cat_tagging">Επισήμανση</string>
+    <string name="usage_cat_try_on">Δοκιμή</string>
+    <string name="usage_cat_outfit_predict">Πρόβλεψη συνόλου</string>
+    <string name="usage_cat_outfit_compose">Σύνθεση συνόλου</string>
+    <string name="usage_cat_gap">Ανάλυση κενών</string>
+    <string name="usage_cat_replacements">Πρόταση αντικαταστάσεων</string>
+    <string name="usage_cat_trends">Τάσεις μόδας</string>
+    <string name="usage_cat_travel">Βαλίτσα ταξιδιού</string>
+    <string name="usage_cat_other">Άλλο</string>
 </resources>

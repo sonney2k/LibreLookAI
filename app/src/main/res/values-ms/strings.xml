@@ -1062,4 +1062,28 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <string name="usage_col_delta_tokens">Δ tok</string>
     <string name="usage_col_delta_eur">Δ €</string>
     <string name="usage_row_overall">Keseluruhan</string>
+
+    <!-- AI-usage screen labels -->
+    <string name="usage_section_title">Penggunaan API Gemini</string>
+    <string name="usage_section_subtitle">Token yang digunakan oleh kunci BYOK anda. Disegerakkan ke Drive.</string>
+    <string name="usage_empty">Belum ada penggunaan direkodkan.</string>
+    <string name="usage_window_today">Hari ini</string>
+    <string name="usage_window_7d">7 hari</string>
+    <string name="usage_total">Jumlah</string>
+    <string name="usage_daily_tokens_14d">Token harian (14 hari lalu)</string>
+    <string name="usage_by_use">Mengikut guna</string>
+    <string name="usage_col_calls">Panggilan</string>
+    <string name="usage_col_in">Masuk</string>
+    <string name="usage_col_out">Keluar</string>
+    <string name="usage_col_cost">Kos</string>
+    <string name="usage_cat_bg_removal">Buang latar</string>
+    <string name="usage_cat_tagging">Penandaan</string>
+    <string name="usage_cat_try_on">Cuba pakai</string>
+    <string name="usage_cat_outfit_predict">Ramalan pakaian</string>
+    <string name="usage_cat_outfit_compose">Susunan pakaian</string>
+    <string name="usage_cat_gap">Analisis jurang</string>
+    <string name="usage_cat_replacements">Cadangkan ganti</string>
+    <string name="usage_cat_trends">Trend fesyen</string>
+    <string name="usage_cat_travel">Pembungkusan perjalanan</string>
+    <string name="usage_cat_other">Lain-lain</string>
 </resources>

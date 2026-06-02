@@ -58,13 +58,13 @@ fun UsageSection(modifier: Modifier = Modifier) {
     Column(modifier = modifier) {
         HorizontalDivider(modifier = Modifier.padding(bottom = 10.dp))
         Text(
-            "Gemini API usage",
+            stringResource(R.string.usage_section_title),
             style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.SemiBold,
             modifier = Modifier.padding(horizontal = 20.dp),
         )
         Text(
-            "Tokens consumed by your BYOK key. Sync'd to Drive.",
+            stringResource(R.string.usage_section_subtitle),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(horizontal = 20.dp),
@@ -76,7 +76,7 @@ fun UsageSection(modifier: Modifier = Modifier) {
 
         if (events.isEmpty()) {
             Text(
-                "No usage recorded yet.",
+                stringResource(R.string.usage_empty),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp),
@@ -91,14 +91,14 @@ fun UsageSection(modifier: Modifier = Modifier) {
                 .padding(horizontal = 16.dp, vertical = 10.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            HeadlineCard("Today", todayTotals.tokens, todayTotals.eur, modifier = Modifier.weight(1f))
-            HeadlineCard("7 days", weekTotals.tokens, weekTotals.eur, modifier = Modifier.weight(1f))
-            HeadlineCard("Total", total.tokens, total.eur, modifier = Modifier.weight(1f))
+            HeadlineCard(stringResource(R.string.usage_window_today), todayTotals.tokens, todayTotals.eur, modifier = Modifier.weight(1f))
+            HeadlineCard(stringResource(R.string.usage_window_7d), weekTotals.tokens, weekTotals.eur, modifier = Modifier.weight(1f))
+            HeadlineCard(stringResource(R.string.usage_total), total.tokens, total.eur, modifier = Modifier.weight(1f))
         }
 
         // 14-day daily bar chart
         Text(
-            "Daily tokens (last 14 days)",
+            stringResource(R.string.usage_daily_tokens_14d),
             style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight.SemiBold,
             modifier = Modifier.padding(horizontal = 20.dp, vertical = 4.dp),
@@ -113,7 +113,7 @@ fun UsageSection(modifier: Modifier = Modifier) {
 
         // Per-category breakdown
         Text(
-            "By use",
+            stringResource(R.string.usage_by_use),
             style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight.SemiBold,
             modifier = Modifier.padding(horizontal = 20.dp, vertical = 6.dp),
@@ -221,11 +221,11 @@ private fun CategoryTable(window: UsageWindowTotals) {
         val labelColor = MaterialTheme.colorScheme.onSurfaceVariant
         // Header
         Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-            Text("Use", modifier = Modifier.weight(2.2f), style = labelStyle, color = labelColor)
-            Text("Calls", modifier = Modifier.weight(0.9f), textAlign = TextAlign.End, style = labelStyle, color = labelColor)
-            Text("In", modifier = Modifier.weight(1.1f), textAlign = TextAlign.End, style = labelStyle, color = labelColor)
-            Text("Out", modifier = Modifier.weight(1.1f), textAlign = TextAlign.End, style = labelStyle, color = labelColor)
-            Text("Cost", modifier = Modifier.weight(1.3f), textAlign = TextAlign.End, style = labelStyle, color = labelColor)
+            Text(stringResource(R.string.usage_col_use), modifier = Modifier.weight(2.2f), style = labelStyle, color = labelColor)
+            Text(stringResource(R.string.usage_col_calls), modifier = Modifier.weight(0.9f), textAlign = TextAlign.End, style = labelStyle, color = labelColor)
+            Text(stringResource(R.string.usage_col_in), modifier = Modifier.weight(1.1f), textAlign = TextAlign.End, style = labelStyle, color = labelColor)
+            Text(stringResource(R.string.usage_col_out), modifier = Modifier.weight(1.1f), textAlign = TextAlign.End, style = labelStyle, color = labelColor)
+            Text(stringResource(R.string.usage_col_cost), modifier = Modifier.weight(1.3f), textAlign = TextAlign.End, style = labelStyle, color = labelColor)
         }
         HorizontalDivider()
         rows.forEach { (cat, totals) ->
@@ -241,7 +241,7 @@ private fun CategoryTable(window: UsageWindowTotals) {
                             .background(colorForCategory(cat)),
                     )
                     Spacer(Modifier.width(6.dp))
-                    Text(prettyName(cat), style = MaterialTheme.typography.bodySmall)
+                    Text(stringResource(categoryNameRes(cat)), style = MaterialTheme.typography.bodySmall)
                 }
                 Text("${totals.calls}",
                     modifier = Modifier.weight(0.9f), textAlign = TextAlign.End,
@@ -261,7 +261,7 @@ private fun CategoryTable(window: UsageWindowTotals) {
         // Row totals
         HorizontalDivider()
         Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-            Text("Total", modifier = Modifier.weight(2.2f),
+            Text(stringResource(R.string.usage_total), modifier = Modifier.weight(2.2f),
                 fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.bodySmall)
             Text("${rows.sumOf { it.value.calls }}",
                 modifier = Modifier.weight(0.9f), textAlign = TextAlign.End,
@@ -309,7 +309,7 @@ private fun DeviationTable(
                             .background(colorForCategory(cat)),
                     )
                     Spacer(Modifier.width(6.dp))
-                    Text(prettyName(cat), style = MaterialTheme.typography.bodySmall)
+                    Text(stringResource(categoryNameRes(cat)), style = MaterialTheme.typography.bodySmall)
                 }
                 Text(formatTokens(d.estTokens),
                     modifier = Modifier.weight(1.1f), textAlign = TextAlign.End,
@@ -374,17 +374,17 @@ private fun colorForCategory(c: UsageCategory): Color = when (c) {
     UsageCategory.OTHER         -> Color(0xFF9E9E9E)
 }
 
-private fun prettyName(c: UsageCategory): String = when (c) {
-    UsageCategory.BG_REMOVAL     -> "Background removal"
-    UsageCategory.TAGGING        -> "Tagging"
-    UsageCategory.TRY_ON         -> "Try-on"
-    UsageCategory.OUTFIT_PREDICT -> "Outfit prediction"
-    UsageCategory.OUTFIT_COMPOSE -> "Outfit composition"
-    UsageCategory.GAP_ANALYSIS   -> "Gap analysis"
-    UsageCategory.REPLACEMENTS   -> "Suggest replacements"
-    UsageCategory.TRENDS         -> "Fashion trends"
-    UsageCategory.TRAVEL         -> "Travel packing"
-    UsageCategory.OTHER          -> "Other"
+private fun categoryNameRes(c: UsageCategory): Int = when (c) {
+    UsageCategory.BG_REMOVAL     -> R.string.usage_cat_bg_removal
+    UsageCategory.TAGGING        -> R.string.usage_cat_tagging
+    UsageCategory.TRY_ON         -> R.string.usage_cat_try_on
+    UsageCategory.OUTFIT_PREDICT -> R.string.usage_cat_outfit_predict
+    UsageCategory.OUTFIT_COMPOSE -> R.string.usage_cat_outfit_compose
+    UsageCategory.GAP_ANALYSIS   -> R.string.usage_cat_gap
+    UsageCategory.REPLACEMENTS   -> R.string.usage_cat_replacements
+    UsageCategory.TRENDS         -> R.string.usage_cat_trends
+    UsageCategory.TRAVEL         -> R.string.usage_cat_travel
+    UsageCategory.OTHER          -> R.string.usage_cat_other
 }
 
 private fun formatTokens(n: Int): String = when {

@@ -1089,4 +1089,28 @@
     <string name="usage_col_delta_tokens">Δ 토큰</string>
     <string name="usage_col_delta_eur">Δ €</string>
     <string name="usage_row_overall">전체</string>
+
+    <!-- AI-usage screen labels -->
+    <string name="usage_section_title">Gemini API 사용량</string>
+    <string name="usage_section_subtitle">BYOK 키로 사용한 토큰. Drive에 동기화됨.</string>
+    <string name="usage_empty">아직 기록된 사용량이 없습니다.</string>
+    <string name="usage_window_today">오늘</string>
+    <string name="usage_window_7d">7일</string>
+    <string name="usage_total">합계</string>
+    <string name="usage_daily_tokens_14d">일일 토큰 (지난 14일)</string>
+    <string name="usage_by_use">용도별</string>
+    <string name="usage_col_calls">호출</string>
+    <string name="usage_col_in">입력</string>
+    <string name="usage_col_out">출력</string>
+    <string name="usage_col_cost">비용</string>
+    <string name="usage_cat_bg_removal">배경 제거</string>
+    <string name="usage_cat_tagging">태깅</string>
+    <string name="usage_cat_try_on">가상 피팅</string>
+    <string name="usage_cat_outfit_predict">옷차림 예측</string>
+    <string name="usage_cat_outfit_compose">옷차림 구성</string>
+    <string name="usage_cat_gap">부족 분석</string>
+    <string name="usage_cat_replacements">대체 제안</string>
+    <string name="usage_cat_trends">패션 트렌드</string>
+    <string name="usage_cat_travel">여행 짐 싸기</string>
+    <string name="usage_cat_other">기타</string>
 </resources>

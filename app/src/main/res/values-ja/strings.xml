@@ -1089,4 +1089,28 @@
     <string name="usage_col_delta_tokens">Δ トークン</string>
     <string name="usage_col_delta_eur">Δ €</string>
     <string name="usage_row_overall">全体</string>
+
+    <!-- AI-usage screen labels -->
+    <string name="usage_section_title">Gemini API の使用量</string>
+    <string name="usage_section_subtitle">BYOK キーで消費されたトークン。Drive に同期されます。</string>
+    <string name="usage_empty">使用量はまだ記録されていません。</string>
+    <string name="usage_window_today">今日</string>
+    <string name="usage_window_7d">7日間</string>
+    <string name="usage_total">合計</string>
+    <string name="usage_daily_tokens_14d">1日あたりのトークン（過去14日間）</string>
+    <string name="usage_by_use">用途別</string>
+    <string name="usage_col_calls">回数</string>
+    <string name="usage_col_in">入力</string>
+    <string name="usage_col_out">出力</string>
+    <string name="usage_col_cost">費用</string>
+    <string name="usage_cat_bg_removal">背景除去</string>
+    <string name="usage_cat_tagging">タグ付け</string>
+    <string name="usage_cat_try_on">試着</string>
+    <string name="usage_cat_outfit_predict">コーデ予測</string>
+    <string name="usage_cat_outfit_compose">コーデ作成</string>
+    <string name="usage_cat_gap">不足分析</string>
+    <string name="usage_cat_replacements">代替候補の提案</string>
+    <string name="usage_cat_trends">ファッショントレンド</string>
+    <string name="usage_cat_travel">旅行パッキング</string>
+    <string name="usage_cat_other">その他</string>
 </resources>

@@ -1089,4 +1089,28 @@
     <string name="usage_col_delta_tokens">Δ tok</string>
     <string name="usage_col_delta_eur">Δ €</string>
     <string name="usage_row_overall">Yhteensä</string>
+
+    <!-- AI-usage screen labels -->
+    <string name="usage_section_title">Gemini-API:n käyttö</string>
+    <string name="usage_section_subtitle">BYOK-avaimesi kuluttamat tokenit. Synkronoitu Driveen.</string>
+    <string name="usage_empty">Käyttöä ei ole vielä kirjattu.</string>
+    <string name="usage_window_today">Tänään</string>
+    <string name="usage_window_7d">7 päivää</string>
+    <string name="usage_total">Yhteensä</string>
+    <string name="usage_daily_tokens_14d">Päivittäiset tokenit (viimeiset 14 päivää)</string>
+    <string name="usage_by_use">Käytön mukaan</string>
+    <string name="usage_col_calls">Kutsut</string>
+    <string name="usage_col_in">Sis.</string>
+    <string name="usage_col_out">Ulos</string>
+    <string name="usage_col_cost">Hinta</string>
+    <string name="usage_cat_bg_removal">Taustan poisto</string>
+    <string name="usage_cat_tagging">Tunnisteet</string>
+    <string name="usage_cat_try_on">Sovitus</string>
+    <string name="usage_cat_outfit_predict">Asuennuste</string>
+    <string name="usage_cat_outfit_compose">Asun kokoaminen</string>
+    <string name="usage_cat_gap">Puuteanalyysi</string>
+    <string name="usage_cat_replacements">Ehdota korvaajia</string>
+    <string name="usage_cat_trends">Muotitrendit</string>
+    <string name="usage_cat_travel">Matkapakkaus</string>
+    <string name="usage_cat_other">Muu</string>
 </resources>

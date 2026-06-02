@@ -1089,4 +1089,28 @@
     <string name="usage_col_delta_tokens">Δ tok</string>
     <string name="usage_col_delta_eur">Δ €</string>
     <string name="usage_row_overall">Celkem</string>
+
+    <!-- AI-usage screen labels -->
+    <string name="usage_section_title">Využití rozhraní Gemini API</string>
+    <string name="usage_section_subtitle">Tokeny spotřebované vaším klíčem BYOK. Synchronizováno s Diskem.</string>
+    <string name="usage_empty">Zatím nezaznamenáno žádné využití.</string>
+    <string name="usage_window_today">Dnes</string>
+    <string name="usage_window_7d">7 dní</string>
+    <string name="usage_total">Celkem</string>
+    <string name="usage_daily_tokens_14d">Denní tokeny (posledních 14 dní)</string>
+    <string name="usage_by_use">Podle použití</string>
+    <string name="usage_col_calls">Volání</string>
+    <string name="usage_col_in">Vstup</string>
+    <string name="usage_col_out">Výstup</string>
+    <string name="usage_col_cost">Cena</string>
+    <string name="usage_cat_bg_removal">Odebrání pozadí</string>
+    <string name="usage_cat_tagging">Označování</string>
+    <string name="usage_cat_try_on">Vyzkoušení</string>
+    <string name="usage_cat_outfit_predict">Předpověď outfitu</string>
+    <string name="usage_cat_outfit_compose">Sestavení outfitu</string>
+    <string name="usage_cat_gap">Analýza mezer</string>
+    <string name="usage_cat_replacements">Návrh náhrad</string>
+    <string name="usage_cat_trends">Módní trendy</string>
+    <string name="usage_cat_travel">Balení na cesty</string>
+    <string name="usage_cat_other">Ostatní</string>
 </resources>

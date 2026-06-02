@@ -1062,4 +1062,28 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="usage_col_delta_tokens">Δ tok</string>
     <string name="usage_col_delta_eur">Δ €</string>
     <string name="usage_row_overall">Keseluruhan</string>
+
+    <!-- AI-usage screen labels -->
+    <string name="usage_section_title">Penggunaan Gemini API</string>
+    <string name="usage_section_subtitle">Token yang digunakan oleh kunci BYOK Anda. Disinkronkan ke Drive.</string>
+    <string name="usage_empty">Belum ada penggunaan yang tercatat.</string>
+    <string name="usage_window_today">Hari ini</string>
+    <string name="usage_window_7d">7 hari</string>
+    <string name="usage_total">Total</string>
+    <string name="usage_daily_tokens_14d">Token harian (14 hari terakhir)</string>
+    <string name="usage_by_use">Menurut penggunaan</string>
+    <string name="usage_col_calls">Panggilan</string>
+    <string name="usage_col_in">Masuk</string>
+    <string name="usage_col_out">Keluar</string>
+    <string name="usage_col_cost">Biaya</string>
+    <string name="usage_cat_bg_removal">Hapus latar</string>
+    <string name="usage_cat_tagging">Penandaan</string>
+    <string name="usage_cat_try_on">Coba pakai</string>
+    <string name="usage_cat_outfit_predict">Prediksi setelan</string>
+    <string name="usage_cat_outfit_compose">Penyusunan setelan</string>
+    <string name="usage_cat_gap">Analisis kesenjangan</string>
+    <string name="usage_cat_replacements">Sarankan pengganti</string>
+    <string name="usage_cat_trends">Tren mode</string>
+    <string name="usage_cat_travel">Kemas perjalanan</string>
+    <string name="usage_cat_other">Lainnya</string>
 </resources>

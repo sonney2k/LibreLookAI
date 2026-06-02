@@ -1062,4 +1062,28 @@
     <string name="usage_col_delta_tokens">Δ โทเคน</string>
     <string name="usage_col_delta_eur">Δ €</string>
     <string name="usage_row_overall">รวม</string>
+
+    <!-- AI-usage screen labels -->
+    <string name="usage_section_title">การใช้งาน Gemini API</string>
+    <string name="usage_section_subtitle">โทเคนที่คีย์ BYOK ของคุณใช้ไป ซิงค์ไปยัง Drive</string>
+    <string name="usage_empty">ยังไม่มีการบันทึกการใช้งาน</string>
+    <string name="usage_window_today">วันนี้</string>
+    <string name="usage_window_7d">7 วัน</string>
+    <string name="usage_total">ทั้งหมด</string>
+    <string name="usage_daily_tokens_14d">โทเคนรายวัน (14 วันล่าสุด)</string>
+    <string name="usage_by_use">ตามการใช้</string>
+    <string name="usage_col_calls">การเรียก</string>
+    <string name="usage_col_in">เข้า</string>
+    <string name="usage_col_out">ออก</string>
+    <string name="usage_col_cost">ค่าใช้จ่าย</string>
+    <string name="usage_cat_bg_removal">ลบพื้นหลัง</string>
+    <string name="usage_cat_tagging">การติดแท็ก</string>
+    <string name="usage_cat_try_on">ลองสวม</string>
+    <string name="usage_cat_outfit_predict">การคาดการณ์ชุด</string>
+    <string name="usage_cat_outfit_compose">การจัดชุด</string>
+    <string name="usage_cat_gap">วิเคราะห์ส่วนที่ขาด</string>
+    <string name="usage_cat_replacements">แนะนำของทดแทน</string>
+    <string name="usage_cat_trends">เทรนด์แฟชั่น</string>
+    <string name="usage_cat_travel">การจัดกระเป๋าเดินทาง</string>
+    <string name="usage_cat_other">อื่น ๆ</string>
 </resources>

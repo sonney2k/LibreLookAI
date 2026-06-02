@@ -1062,4 +1062,28 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="usage_col_delta_tokens">Δ tok</string>
     <string name="usage_col_delta_eur">Δ €</string>
     <string name="usage_row_overall">Tổng thể</string>
+
+    <!-- AI-usage screen labels -->
+    <string name="usage_section_title">Mức dùng Gemini API</string>
+    <string name="usage_section_subtitle">Token mà khóa BYOK của bạn đã dùng. Đã đồng bộ với Drive.</string>
+    <string name="usage_empty">Chưa ghi nhận mức dùng nào.</string>
+    <string name="usage_window_today">Hôm nay</string>
+    <string name="usage_window_7d">7 ngày</string>
+    <string name="usage_total">Tổng</string>
+    <string name="usage_daily_tokens_14d">Token mỗi ngày (14 ngày qua)</string>
+    <string name="usage_by_use">Theo mục đích</string>
+    <string name="usage_col_calls">Lượt gọi</string>
+    <string name="usage_col_in">Vào</string>
+    <string name="usage_col_out">Ra</string>
+    <string name="usage_col_cost">Chi phí</string>
+    <string name="usage_cat_bg_removal">Xóa nền</string>
+    <string name="usage_cat_tagging">Gắn thẻ</string>
+    <string name="usage_cat_try_on">Thử đồ</string>
+    <string name="usage_cat_outfit_predict">Dự đoán trang phục</string>
+    <string name="usage_cat_outfit_compose">Phối trang phục</string>
+    <string name="usage_cat_gap">Phân tích thiếu hụt</string>
+    <string name="usage_cat_replacements">Gợi ý thay thế</string>
+    <string name="usage_cat_trends">Xu hướng thời trang</string>
+    <string name="usage_cat_travel">Đóng gói du lịch</string>
+    <string name="usage_cat_other">Khác</string>
 </resources>

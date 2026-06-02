@@ -1089,4 +1089,28 @@
     <string name="usage_col_delta_tokens">Δ رمز</string>
     <string name="usage_col_delta_eur">Δ €</string>
     <string name="usage_row_overall">الإجمالي</string>
+
+    <!-- AI-usage screen labels -->
+    <string name="usage_section_title">استخدام واجهة Gemini API</string>
+    <string name="usage_section_subtitle">الرموز المستهلكة بواسطة مفتاح BYOK الخاص بك. تتم المزامنة مع Drive.</string>
+    <string name="usage_empty">لم يُسجَّل أي استخدام بعد.</string>
+    <string name="usage_window_today">اليوم</string>
+    <string name="usage_window_7d">7 أيام</string>
+    <string name="usage_total">الإجمالي</string>
+    <string name="usage_daily_tokens_14d">الرموز اليومية (آخر 14 يومًا)</string>
+    <string name="usage_by_use">حسب الاستخدام</string>
+    <string name="usage_col_calls">الطلبات</string>
+    <string name="usage_col_in">دخل</string>
+    <string name="usage_col_out">خرج</string>
+    <string name="usage_col_cost">التكلفة</string>
+    <string name="usage_cat_bg_removal">إزالة الخلفية</string>
+    <string name="usage_cat_tagging">وضع العلامات</string>
+    <string name="usage_cat_try_on">التجربة</string>
+    <string name="usage_cat_outfit_predict">توقع الإطلالة</string>
+    <string name="usage_cat_outfit_compose">تكوين الإطلالة</string>
+    <string name="usage_cat_gap">تحليل النواقص</string>
+    <string name="usage_cat_replacements">اقتراح بدائل</string>
+    <string name="usage_cat_trends">اتجاهات الموضة</string>
+    <string name="usage_cat_travel">حقيبة السفر</string>
+    <string name="usage_cat_other">أخرى</string>
 </resources>

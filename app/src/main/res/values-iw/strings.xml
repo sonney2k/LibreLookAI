@@ -1093,4 +1093,28 @@
     <string name="usage_col_delta_tokens">Δ אסימון</string>
     <string name="usage_col_delta_eur">Δ €</string>
     <string name="usage_row_overall">כולל</string>
+
+    <!-- AI-usage screen labels -->
+    <string name="usage_section_title">שימוש ב-API של Gemini</string>
+    <string name="usage_section_subtitle">טוקנים שנצרכו על ידי מפתח ה-BYOK שלך. מסונכרן ל-Drive.</string>
+    <string name="usage_empty">עדיין לא נרשם שימוש.</string>
+    <string name="usage_window_today">היום</string>
+    <string name="usage_window_7d">7 ימים</string>
+    <string name="usage_total">סך הכול</string>
+    <string name="usage_daily_tokens_14d">טוקנים יומיים (14 הימים האחרונים)</string>
+    <string name="usage_by_use">לפי שימוש</string>
+    <string name="usage_col_calls">קריאות</string>
+    <string name="usage_col_in">כניסה</string>
+    <string name="usage_col_out">יציאה</string>
+    <string name="usage_col_cost">עלות</string>
+    <string name="usage_cat_bg_removal">הסרת רקע</string>
+    <string name="usage_cat_tagging">תיוג</string>
+    <string name="usage_cat_try_on">מדידה</string>
+    <string name="usage_cat_outfit_predict">חיזוי תלבושת</string>
+    <string name="usage_cat_outfit_compose">הרכבת תלבושת</string>
+    <string name="usage_cat_gap">ניתוח פערים</string>
+    <string name="usage_cat_replacements">הצעת חלופות</string>
+    <string name="usage_cat_trends">טרנדים באופנה</string>
+    <string name="usage_cat_travel">אריזה לטיול</string>
+    <string name="usage_cat_other">אחר</string>
 </resources>

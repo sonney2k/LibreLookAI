@@ -1062,4 +1062,28 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="usage_col_delta_tokens">Δ tok</string>
     <string name="usage_col_delta_eur">Δ €</string>
     <string name="usage_row_overall">Total</string>
+
+    <!-- AI-usage screen labels -->
+    <string name="usage_section_title">Utilizarea API-ului Gemini</string>
+    <string name="usage_section_subtitle">Tokenuri consumate de cheia ta BYOK. Sincronizat cu Drive.</string>
+    <string name="usage_empty">Nicio utilizare înregistrată încă.</string>
+    <string name="usage_window_today">Azi</string>
+    <string name="usage_window_7d">7 zile</string>
+    <string name="usage_total">Total</string>
+    <string name="usage_daily_tokens_14d">Tokenuri zilnice (ultimele 14 zile)</string>
+    <string name="usage_by_use">După utilizare</string>
+    <string name="usage_col_calls">Apeluri</string>
+    <string name="usage_col_in">Intr.</string>
+    <string name="usage_col_out">Ieș.</string>
+    <string name="usage_col_cost">Cost</string>
+    <string name="usage_cat_bg_removal">Eliminare fundal</string>
+    <string name="usage_cat_tagging">Etichetare</string>
+    <string name="usage_cat_try_on">Probă</string>
+    <string name="usage_cat_outfit_predict">Predicție ținută</string>
+    <string name="usage_cat_outfit_compose">Compunere ținută</string>
+    <string name="usage_cat_gap">Analiza lipsurilor</string>
+    <string name="usage_cat_replacements">Sugerează înlocuiri</string>
+    <string name="usage_cat_trends">Tendințe modă</string>
+    <string name="usage_cat_travel">Bagaj de călătorie</string>
+    <string name="usage_cat_other">Altele</string>
 </resources>

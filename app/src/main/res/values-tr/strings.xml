@@ -1089,4 +1089,28 @@
     <string name="usage_col_delta_tokens">Δ tok</string>
     <string name="usage_col_delta_eur">Δ €</string>
     <string name="usage_row_overall">Genel</string>
+
+    <!-- AI-usage screen labels -->
+    <string name="usage_section_title">Gemini API kullanımı</string>
+    <string name="usage_section_subtitle">BYOK anahtarınızın tükettiği tokenlar. Drive ile senkronize edildi.</string>
+    <string name="usage_empty">Henüz kullanım kaydedilmedi.</string>
+    <string name="usage_window_today">Bugün</string>
+    <string name="usage_window_7d">7 gün</string>
+    <string name="usage_total">Toplam</string>
+    <string name="usage_daily_tokens_14d">Günlük tokenlar (son 14 gün)</string>
+    <string name="usage_by_use">Kullanıma göre</string>
+    <string name="usage_col_calls">Çağrılar</string>
+    <string name="usage_col_in">Giriş</string>
+    <string name="usage_col_out">Çıkış</string>
+    <string name="usage_col_cost">Maliyet</string>
+    <string name="usage_cat_bg_removal">Arka plan kaldırma</string>
+    <string name="usage_cat_tagging">Etiketleme</string>
+    <string name="usage_cat_try_on">Deneme</string>
+    <string name="usage_cat_outfit_predict">Kıyafet tahmini</string>
+    <string name="usage_cat_outfit_compose">Kıyafet oluşturma</string>
+    <string name="usage_cat_gap">Eksik analizi</string>
+    <string name="usage_cat_replacements">Değişiklik öner</string>
+    <string name="usage_cat_trends">Moda trendleri</string>
+    <string name="usage_cat_travel">Seyahat valizi</string>
+    <string name="usage_cat_other">Diğer</string>
 </resources>
