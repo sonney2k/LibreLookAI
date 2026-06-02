@@ -1079,4 +1079,14 @@
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history">Historia noszenia</string>
     <string name="ai_consider_history_desc">Uczy się z tego, co naprawdę nosisz i pokochałeś.</string>
+
+    <!-- Usage estimate-accuracy table -->
+    <string name="usage_estimate_accuracy_title">Dokładność szacunku</string>
+    <string name="usage_estimate_accuracy_hint">Odchylenie ze znakiem wstępnego szacunku od rzeczywistego użycia. + = szacunek zbyt niski.</string>
+    <string name="usage_col_use">Użycie</string>
+    <string name="usage_col_est_tokens">Szac.</string>
+    <string name="usage_col_act_tokens">Rzecz.</string>
+    <string name="usage_col_delta_tokens">Δ tok</string>
+    <string name="usage_col_delta_eur">Δ €</string>
+    <string name="usage_row_overall">Łącznie</string>
 </resources>

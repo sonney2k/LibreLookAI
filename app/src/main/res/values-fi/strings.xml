@@ -1079,4 +1079,14 @@
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history">Käyttöhistoria</string>
     <string name="ai_consider_history_desc">Oppii siitä, mitä todella käytät ja olet ihastunut.</string>
+
+    <!-- Usage estimate-accuracy table -->
+    <string name="usage_estimate_accuracy_title">Arvion tarkkuus</string>
+    <string name="usage_estimate_accuracy_hint">Ennakkoarvion etumerkillinen poikkeama todellisesta käytöstä. + = arvio liian pieni.</string>
+    <string name="usage_col_use">Käyttö</string>
+    <string name="usage_col_est_tokens">Arvio</string>
+    <string name="usage_col_act_tokens">Todell.</string>
+    <string name="usage_col_delta_tokens">Δ tok</string>
+    <string name="usage_col_delta_eur">Δ €</string>
+    <string name="usage_row_overall">Yhteensä</string>
 </resources>

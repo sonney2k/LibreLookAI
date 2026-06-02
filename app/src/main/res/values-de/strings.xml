@@ -1148,4 +1148,14 @@
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history">Tragehistorie</string>
     <string name="ai_consider_history_desc">Lernt aus dem, was du wirklich trägst und geliebt hast.</string>
+
+    <!-- Usage estimate-accuracy table -->
+    <string name="usage_estimate_accuracy_title">Schätzgenauigkeit</string>
+    <string name="usage_estimate_accuracy_hint">Vorzeichenbehaftete Abweichung der Vorab-Schätzung vom tatsächlichen Verbrauch. + = Schätzung zu niedrig.</string>
+    <string name="usage_col_use">Zweck</string>
+    <string name="usage_col_est_tokens">Gesch.</string>
+    <string name="usage_col_act_tokens">Tatsäch.</string>
+    <string name="usage_col_delta_tokens">Δ Tok</string>
+    <string name="usage_col_delta_eur">Δ €</string>
+    <string name="usage_row_overall">Gesamt</string>
 </resources>

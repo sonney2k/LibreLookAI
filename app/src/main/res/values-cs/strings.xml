@@ -1079,4 +1079,14 @@
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history">Historie nošení</string>
     <string name="ai_consider_history_desc">Učí se z toho, co skutečně nosíš a co se ti líbilo.</string>
+
+    <!-- Usage estimate-accuracy table -->
+    <string name="usage_estimate_accuracy_title">Přesnost odhadu</string>
+    <string name="usage_estimate_accuracy_hint">Znaménková odchylka předběžného odhadu od skutečné spotřeby. + = odhad příliš nízký.</string>
+    <string name="usage_col_use">Použití</string>
+    <string name="usage_col_est_tokens">Odh.</string>
+    <string name="usage_col_act_tokens">Skut.</string>
+    <string name="usage_col_delta_tokens">Δ tok</string>
+    <string name="usage_col_delta_eur">Δ €</string>
+    <string name="usage_row_overall">Celkem</string>
 </resources>

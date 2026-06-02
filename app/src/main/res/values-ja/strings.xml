@@ -1079,4 +1079,14 @@
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history">着用履歴</string>
     <string name="ai_consider_history_desc">実際に着た服やお気に入りから学びます。</string>
+
+    <!-- Usage estimate-accuracy table -->
+    <string name="usage_estimate_accuracy_title">推定精度</string>
+    <string name="usage_estimate_accuracy_hint">事前推定と実使用量との符号付き偏差。+ は推定が低すぎることを示します。</string>
+    <string name="usage_col_use">用途</string>
+    <string name="usage_col_est_tokens">推定</string>
+    <string name="usage_col_act_tokens">実際</string>
+    <string name="usage_col_delta_tokens">Δ トークン</string>
+    <string name="usage_col_delta_eur">Δ €</string>
+    <string name="usage_row_overall">全体</string>
 </resources>

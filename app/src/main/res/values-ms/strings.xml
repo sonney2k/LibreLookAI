@@ -1052,4 +1052,14 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history">Sejarah pemakaian</string>
     <string name="ai_consider_history_desc">Belajar daripada apa yang anda benar-benar pakai dan suka.</string>
+
+    <!-- Usage estimate-accuracy table -->
+    <string name="usage_estimate_accuracy_title">Ketepatan anggaran</string>
+    <string name="usage_estimate_accuracy_hint">Sisihan bertanda anggaran pra-panggilan daripada penggunaan sebenar. + = anggaran terlalu rendah.</string>
+    <string name="usage_col_use">Guna</string>
+    <string name="usage_col_est_tokens">Angg.</string>
+    <string name="usage_col_act_tokens">Sebenar</string>
+    <string name="usage_col_delta_tokens">Δ tok</string>
+    <string name="usage_col_delta_eur">Δ €</string>
+    <string name="usage_row_overall">Keseluruhan</string>
 </resources>

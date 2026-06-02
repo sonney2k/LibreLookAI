@@ -1079,4 +1079,14 @@
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history">착용 기록</string>
     <string name="ai_consider_history_desc">실제로 입고 마음에 들어한 옷에서 학습합니다.</string>
+
+    <!-- Usage estimate-accuracy table -->
+    <string name="usage_estimate_accuracy_title">추정 정확도</string>
+    <string name="usage_estimate_accuracy_hint">사전 추정치와 실제 사용량의 부호 있는 편차. + = 추정치가 너무 낮음.</string>
+    <string name="usage_col_use">용도</string>
+    <string name="usage_col_est_tokens">추정</string>
+    <string name="usage_col_act_tokens">실제</string>
+    <string name="usage_col_delta_tokens">Δ 토큰</string>
+    <string name="usage_col_delta_eur">Δ €</string>
+    <string name="usage_row_overall">전체</string>
 </resources>

@@ -1079,4 +1079,14 @@
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history">Wear history</string>
     <string name="ai_consider_history_desc">Learn from what you actually wear and have loved.</string>
+
+    <!-- Usage estimate-accuracy table -->
+    <string name="usage_estimate_accuracy_title">Estimate accuracy</string>
+    <string name="usage_estimate_accuracy_hint">Signed deviation of the pre-call estimate from actual usage. + = estimate too low.</string>
+    <string name="usage_col_use">Use</string>
+    <string name="usage_col_est_tokens">Est tok</string>
+    <string name="usage_col_act_tokens">Act tok</string>
+    <string name="usage_col_delta_tokens">Δ tok</string>
+    <string name="usage_col_delta_eur">Δ €</string>
+    <string name="usage_row_overall">Overall</string>
 </resources>

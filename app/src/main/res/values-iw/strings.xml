@@ -1083,4 +1083,14 @@
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history">היסטוריית לבישה</string>
     <string name="ai_consider_history_desc">לומד ממה שאתה באמת לובש ואהבת.</string>
+
+    <!-- Usage estimate-accuracy table -->
+    <string name="usage_estimate_accuracy_title">דיוק ההערכה</string>
+    <string name="usage_estimate_accuracy_hint">סטייה עם סימן בין ההערכה המוקדמת לשימוש בפועל. + = ההערכה נמוכה מדי.</string>
+    <string name="usage_col_use">שימוש</string>
+    <string name="usage_col_est_tokens">הערכה</string>
+    <string name="usage_col_act_tokens">בפועל</string>
+    <string name="usage_col_delta_tokens">Δ אסימון</string>
+    <string name="usage_col_delta_eur">Δ €</string>
+    <string name="usage_row_overall">כולל</string>
 </resources>

@@ -1052,4 +1052,14 @@
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history">Історія носіння</string>
     <string name="ai_consider_history_desc">Навчається на тому, що ви справді носите й уподобали.</string>
+
+    <!-- Usage estimate-accuracy table -->
+    <string name="usage_estimate_accuracy_title">Точність оцінки</string>
+    <string name="usage_estimate_accuracy_hint">Знакове відхилення попередньої оцінки від фактичного використання. + = оцінка занизька.</string>
+    <string name="usage_col_use">Призначення</string>
+    <string name="usage_col_est_tokens">Оцін.</string>
+    <string name="usage_col_act_tokens">Факт.</string>
+    <string name="usage_col_delta_tokens">Δ tok</string>
+    <string name="usage_col_delta_eur">Δ €</string>
+    <string name="usage_row_overall">Загалом</string>
 </resources>

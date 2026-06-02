@@ -1052,4 +1052,14 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history">Viselési előzmények</string>
     <string name="ai_consider_history_desc">Tanul abból, amit valóban hordasz és imádtál.</string>
+
+    <!-- Usage estimate-accuracy table -->
+    <string name="usage_estimate_accuracy_title">Becslés pontossága</string>
+    <string name="usage_estimate_accuracy_hint">Az előzetes becslés előjeles eltérése a tényleges használattól. + = a becslés túl alacsony.</string>
+    <string name="usage_col_use">Cél</string>
+    <string name="usage_col_est_tokens">Becs.</string>
+    <string name="usage_col_act_tokens">Tényl.</string>
+    <string name="usage_col_delta_tokens">Δ tok</string>
+    <string name="usage_col_delta_eur">Δ €</string>
+    <string name="usage_row_overall">Összesen</string>
 </resources>

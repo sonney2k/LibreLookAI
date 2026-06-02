@@ -1157,4 +1157,14 @@
     <string name="onboarding_finish_location">Location for weather</string>
     <string name="onboarding_finish_grant">Set up</string>
     <string name="onboarding_finish_warning">Some setup isn\'t complete. The items marked above won\'t work until you finish them — you can set them up here or later in Settings.</string>
+
+    <!-- Usage estimate-accuracy table -->
+    <string name="usage_estimate_accuracy_title">Estimate accuracy</string>
+    <string name="usage_estimate_accuracy_hint">Signed deviation of the pre-call estimate from actual usage. + = estimate too low.</string>
+    <string name="usage_col_use">Use</string>
+    <string name="usage_col_est_tokens">Est tok</string>
+    <string name="usage_col_act_tokens">Act tok</string>
+    <string name="usage_col_delta_tokens">Δ tok</string>
+    <string name="usage_col_delta_eur">Δ €</string>
+    <string name="usage_row_overall">Overall</string>
 </resources>

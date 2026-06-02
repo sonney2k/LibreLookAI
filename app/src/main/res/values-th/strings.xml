@@ -1052,4 +1052,14 @@
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history">ประวัติการสวมใส่</string>
     <string name="ai_consider_history_desc">เรียนรู้จากสิ่งที่คุณสวมใส่จริงและชื่นชอบ</string>
+
+    <!-- Usage estimate-accuracy table -->
+    <string name="usage_estimate_accuracy_title">ความแม่นยำของการประมาณ</string>
+    <string name="usage_estimate_accuracy_hint">ส่วนเบี่ยงเบนแบบมีเครื่องหมายของการประมาณก่อนเรียกเทียบกับการใช้งานจริง + = ประมาณต่ำเกินไป</string>
+    <string name="usage_col_use">การใช้</string>
+    <string name="usage_col_est_tokens">ประมาณ</string>
+    <string name="usage_col_act_tokens">จริง</string>
+    <string name="usage_col_delta_tokens">Δ โทเคน</string>
+    <string name="usage_col_delta_eur">Δ €</string>
+    <string name="usage_row_overall">รวม</string>
 </resources>

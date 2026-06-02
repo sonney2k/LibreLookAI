@@ -1079,4 +1079,14 @@
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history">سجل الارتداء</string>
     <string name="ai_consider_history_desc">تعلّم مما ترتديه فعلاً وما أعجبك.</string>
+
+    <!-- Usage estimate-accuracy table -->
+    <string name="usage_estimate_accuracy_title">دقة التقدير</string>
+    <string name="usage_estimate_accuracy_hint">الانحراف الموقَّع للتقدير المسبق عن الاستخدام الفعلي. + = التقدير منخفض جدًا.</string>
+    <string name="usage_col_use">الاستخدام</string>
+    <string name="usage_col_est_tokens">تقدير</string>
+    <string name="usage_col_act_tokens">فعلي</string>
+    <string name="usage_col_delta_tokens">Δ رمز</string>
+    <string name="usage_col_delta_eur">Δ €</string>
+    <string name="usage_row_overall">الإجمالي</string>
 </resources>

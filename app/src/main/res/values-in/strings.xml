@@ -1052,4 +1052,14 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history">Riwayat pemakaian</string>
     <string name="ai_consider_history_desc">Belajar dari yang benar-benar kamu pakai dan sukai.</string>
+
+    <!-- Usage estimate-accuracy table -->
+    <string name="usage_estimate_accuracy_title">Akurasi estimasi</string>
+    <string name="usage_estimate_accuracy_hint">Deviasi bertanda dari estimasi pra-panggilan terhadap penggunaan aktual. + = estimasi terlalu rendah.</string>
+    <string name="usage_col_use">Penggunaan</string>
+    <string name="usage_col_est_tokens">Est.</string>
+    <string name="usage_col_act_tokens">Aktual</string>
+    <string name="usage_col_delta_tokens">Δ tok</string>
+    <string name="usage_col_delta_eur">Δ €</string>
+    <string name="usage_row_overall">Keseluruhan</string>
 </resources>

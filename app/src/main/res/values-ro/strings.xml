@@ -1052,4 +1052,14 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history">Istoric purtare</string>
     <string name="ai_consider_history_desc">Învață din ce porți cu adevărat și ți-a plăcut.</string>
+
+    <!-- Usage estimate-accuracy table -->
+    <string name="usage_estimate_accuracy_title">Acuratețea estimării</string>
+    <string name="usage_estimate_accuracy_hint">Abaterea cu semn a estimării prealabile față de utilizarea reală. + = estimare prea mică.</string>
+    <string name="usage_col_use">Utilizare</string>
+    <string name="usage_col_est_tokens">Est.</string>
+    <string name="usage_col_act_tokens">Real</string>
+    <string name="usage_col_delta_tokens">Δ tok</string>
+    <string name="usage_col_delta_eur">Δ €</string>
+    <string name="usage_row_overall">Total</string>
 </resources>

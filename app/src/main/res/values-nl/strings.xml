@@ -1079,4 +1079,14 @@
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history">Draaggeschiedenis</string>
     <string name="ai_consider_history_desc">Leert van wat je echt draagt en geweldig vond.</string>
+
+    <!-- Usage estimate-accuracy table -->
+    <string name="usage_estimate_accuracy_title">Nauwkeurigheid schatting</string>
+    <string name="usage_estimate_accuracy_hint">Ondertekende afwijking van de vooraf gemaakte schatting t.o.v. het werkelijke gebruik. + = schatting te laag.</string>
+    <string name="usage_col_use">Gebruik</string>
+    <string name="usage_col_est_tokens">Gesch.</string>
+    <string name="usage_col_act_tokens">Werkel.</string>
+    <string name="usage_col_delta_tokens">Δ tok</string>
+    <string name="usage_col_delta_eur">Δ €</string>
+    <string name="usage_row_overall">Totaal</string>
 </resources>

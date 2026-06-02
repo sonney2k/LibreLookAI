@@ -1079,4 +1079,14 @@
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history">Ιστορικό χρήσης</string>
     <string name="ai_consider_history_desc">Μαθαίνει από αυτά που πραγματικά φοράς και έχεις αγαπήσει.</string>
+
+    <!-- Usage estimate-accuracy table -->
+    <string name="usage_estimate_accuracy_title">Ακρίβεια εκτίμησης</string>
+    <string name="usage_estimate_accuracy_hint">Προσημασμένη απόκλιση της εκ των προτέρων εκτίμησης από την πραγματική χρήση. + = η εκτίμηση είναι πολύ χαμηλή.</string>
+    <string name="usage_col_use">Χρήση</string>
+    <string name="usage_col_est_tokens">Εκτ.</string>
+    <string name="usage_col_act_tokens">Πραγμ.</string>
+    <string name="usage_col_delta_tokens">Δ tok</string>
+    <string name="usage_col_delta_eur">Δ €</string>
+    <string name="usage_row_overall">Συνολικά</string>
 </resources>

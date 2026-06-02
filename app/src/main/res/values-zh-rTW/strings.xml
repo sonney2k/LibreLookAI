@@ -1052,4 +1052,14 @@
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history">穿著紀錄</string>
     <string name="ai_consider_history_desc">從你實際穿過和喜歡的搭配中學習。</string>
+
+    <!-- Usage estimate-accuracy table -->
+    <string name="usage_estimate_accuracy_title">估算準確度</string>
+    <string name="usage_estimate_accuracy_hint">預估值與實際用量的帶符號偏差。+ 代表預估過低。</string>
+    <string name="usage_col_use">用途</string>
+    <string name="usage_col_est_tokens">預估</string>
+    <string name="usage_col_act_tokens">實際</string>
+    <string name="usage_col_delta_tokens">Δ 詞元</string>
+    <string name="usage_col_delta_eur">Δ €</string>
+    <string name="usage_row_overall">整體</string>
 </resources>

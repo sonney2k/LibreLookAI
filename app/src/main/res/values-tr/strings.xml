@@ -1079,4 +1079,14 @@
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history">Giyim geçmişi</string>
     <string name="ai_consider_history_desc">Gerçekten giydiklerinden ve beğendiklerinden öğrenir.</string>
+
+    <!-- Usage estimate-accuracy table -->
+    <string name="usage_estimate_accuracy_title">Tahmin doğruluğu</string>
+    <string name="usage_estimate_accuracy_hint">Çağrı öncesi tahminin gerçek kullanımdan işaretli sapması. + = tahmin çok düşük.</string>
+    <string name="usage_col_use">Kullanım</string>
+    <string name="usage_col_est_tokens">Tah.</string>
+    <string name="usage_col_act_tokens">Gerçek</string>
+    <string name="usage_col_delta_tokens">Δ tok</string>
+    <string name="usage_col_delta_eur">Δ €</string>
+    <string name="usage_row_overall">Genel</string>
 </resources>

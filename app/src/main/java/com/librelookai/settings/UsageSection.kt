@@ -27,11 +27,13 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.librelookai.R
 import com.librelookai.data.model.Outfit
 import com.librelookai.gemini.DeviationStat
 import com.librelookai.gemini.UsageAggregator
@@ -122,13 +124,13 @@ fun UsageSection(modifier: Modifier = Modifier) {
         val deviation = UsageAggregator.deviationByCategory(events)
         if (deviation.isNotEmpty()) {
             Text(
-                "Estimate accuracy",
+                stringResource(R.string.usage_estimate_accuracy_title),
                 style = MaterialTheme.typography.labelMedium,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.padding(horizontal = 20.dp, vertical = 6.dp),
             )
             Text(
-                "Signed deviation of the pre-call estimate from actual usage. + = estimate too low.",
+                stringResource(R.string.usage_estimate_accuracy_hint),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(horizontal = 20.dp),
@@ -287,11 +289,11 @@ private fun DeviationTable(
         val labelStyle = MaterialTheme.typography.labelSmall
         val labelColor = MaterialTheme.colorScheme.onSurfaceVariant
         Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-            Text("Use", modifier = Modifier.weight(2.2f), style = labelStyle, color = labelColor)
-            Text("Est tok", modifier = Modifier.weight(1.1f), textAlign = TextAlign.End, style = labelStyle, color = labelColor)
-            Text("Act tok", modifier = Modifier.weight(1.1f), textAlign = TextAlign.End, style = labelStyle, color = labelColor)
-            Text("Δ tok", modifier = Modifier.weight(1.0f), textAlign = TextAlign.End, style = labelStyle, color = labelColor)
-            Text("Δ €", modifier = Modifier.weight(1.0f), textAlign = TextAlign.End, style = labelStyle, color = labelColor)
+            Text(stringResource(R.string.usage_col_use), modifier = Modifier.weight(2.2f), style = labelStyle, color = labelColor)
+            Text(stringResource(R.string.usage_col_est_tokens), modifier = Modifier.weight(1.1f), textAlign = TextAlign.End, style = labelStyle, color = labelColor)
+            Text(stringResource(R.string.usage_col_act_tokens), modifier = Modifier.weight(1.1f), textAlign = TextAlign.End, style = labelStyle, color = labelColor)
+            Text(stringResource(R.string.usage_col_delta_tokens), modifier = Modifier.weight(1.0f), textAlign = TextAlign.End, style = labelStyle, color = labelColor)
+            Text(stringResource(R.string.usage_col_delta_eur), modifier = Modifier.weight(1.0f), textAlign = TextAlign.End, style = labelStyle, color = labelColor)
         }
         HorizontalDivider()
         rows.forEach { (cat, d) ->
@@ -321,7 +323,7 @@ private fun DeviationTable(
         }
         HorizontalDivider()
         Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
-            Text("Overall", modifier = Modifier.weight(2.2f),
+            Text(stringResource(R.string.usage_row_overall), modifier = Modifier.weight(2.2f),
                 fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.bodySmall)
             Text(formatTokens(total.estTokens),
                 modifier = Modifier.weight(1.1f), textAlign = TextAlign.End,

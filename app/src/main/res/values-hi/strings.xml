@@ -1052,4 +1052,14 @@
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history">पहनने का इतिहास</string>
     <string name="ai_consider_history_desc">आप वास्तव में क्या पहनते हैं और क्या पसंद किया, उससे सीखें।</string>
+
+    <!-- Usage estimate-accuracy table -->
+    <string name="usage_estimate_accuracy_title">अनुमान की सटीकता</string>
+    <string name="usage_estimate_accuracy_hint">वास्तविक उपयोग से पूर्व-अनुमान का चिह्नित विचलन। + = अनुमान बहुत कम।</string>
+    <string name="usage_col_use">उपयोग</string>
+    <string name="usage_col_est_tokens">अनुमा.</string>
+    <string name="usage_col_act_tokens">वास्त.</string>
+    <string name="usage_col_delta_tokens">Δ टोकन</string>
+    <string name="usage_col_delta_eur">Δ €</string>
+    <string name="usage_row_overall">कुल</string>
 </resources>

@@ -1052,4 +1052,14 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history">Lịch sử mặc</string>
     <string name="ai_consider_history_desc">Học từ những gì bạn thực sự mặc và yêu thích.</string>
+
+    <!-- Usage estimate-accuracy table -->
+    <string name="usage_estimate_accuracy_title">Độ chính xác ước tính</string>
+    <string name="usage_estimate_accuracy_hint">Độ lệch có dấu của ước tính trước khi gọi so với mức dùng thực tế. + = ước tính quá thấp.</string>
+    <string name="usage_col_use">Mục đích</string>
+    <string name="usage_col_est_tokens">Ước tính</string>
+    <string name="usage_col_act_tokens">Thực tế</string>
+    <string name="usage_col_delta_tokens">Δ tok</string>
+    <string name="usage_col_delta_eur">Δ €</string>
+    <string name="usage_row_overall">Tổng thể</string>
 </resources>

@@ -1079,4 +1079,14 @@
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history">Brukshistorikk</string>
     <string name="ai_consider_history_desc">Lærer av det du faktisk bruker og har elsket.</string>
+
+    <!-- Usage estimate-accuracy table -->
+    <string name="usage_estimate_accuracy_title">Estimatets nøyaktighet</string>
+    <string name="usage_estimate_accuracy_hint">Fortegnsbestemt avvik mellom forhåndsestimat og faktisk bruk. + = estimatet er for lavt.</string>
+    <string name="usage_col_use">Bruk</string>
+    <string name="usage_col_est_tokens">Est.</string>
+    <string name="usage_col_act_tokens">Fakt.</string>
+    <string name="usage_col_delta_tokens">Δ tok</string>
+    <string name="usage_col_delta_eur">Δ €</string>
+    <string name="usage_row_overall">Totalt</string>
 </resources>

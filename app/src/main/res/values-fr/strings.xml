@@ -1079,4 +1079,14 @@
     <!-- Wear-history AI consideration toggle -->
     <string name="ai_consider_history">Historique de port</string>
     <string name="ai_consider_history_desc">Apprend de ce que vous portez vraiment et avez adoré.</string>
+
+    <!-- Usage estimate-accuracy table -->
+    <string name="usage_estimate_accuracy_title">Précision de l\'estimation</string>
+    <string name="usage_estimate_accuracy_hint">Écart signé entre l\'estimation préalable et l\'usage réel. + = estimation trop basse.</string>
+    <string name="usage_col_use">Usage</string>
+    <string name="usage_col_est_tokens">Est.</string>
+    <string name="usage_col_act_tokens">Réel</string>
+    <string name="usage_col_delta_tokens">Δ jet.</string>
+    <string name="usage_col_delta_eur">Δ €</string>
+    <string name="usage_row_overall">Global</string>
 </resources>
