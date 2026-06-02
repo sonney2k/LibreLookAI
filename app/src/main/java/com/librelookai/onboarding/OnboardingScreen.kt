@@ -52,6 +52,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -159,6 +160,16 @@ fun OnboardingScreen(
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
+    // Mandatory steps (Drive sign-in, then background) come first precisely so we can do this:
+    // the moment Drive sign-in lands, reload the account's saved preferences. On first run the
+    // initial load in ProfileViewModel.init failed (not signed in yet), so an account that already
+    // has LibreLookAI data — reinstall, new device — would otherwise show defaults. Reloading here
+    // pulls in the existing style profile / theme / language / AI options so the later steps prefill
+    // them and finishing the tour merges into them instead of overwriting with onboarding defaults.
+    LaunchedEffect(isSignedIn) {
+        if (isSignedIn) profileViewModel.loadPreferences()
+    }
+
     // BYOK key — onboarding's only hard requirement (the app does no AI without it). Persisted to
     // device-local storage as the user types; the Next button on [apiKeyPage] soft-blocks until the
     // pasted value looks like an AI Studio key. Top-right "Skip" remains an escape hatch.
@@ -171,9 +182,12 @@ fun OnboardingScreen(
     var style by remember(prefs) { mutableStateOf(prefs.preferences) }
 
     fun finish(goToWardrobe: Boolean) {
-        // Persist the style profile only when the user reaches the end deliberately and we're online
-        // (avoids overwriting Drive prefs with defaults if they were still loading / offline).
-        if (!isOffline) {
+        // Persist the style profile only when the user reaches the end deliberately, we're online,
+        // and the existing prefs have finished loading — otherwise the copy below would clobber the
+        // account's saved theme / language / AI settings with defaults. We only override the three
+        // fields the profile step actually edits and carry everything else (incl. anything loaded
+        // after sign-in) through from `prefs`.
+        if (!isOffline && !state.isLoading) {
             profileViewModel.savePreferences(
                 prefs.copy(
                     gender = gender.trim(),

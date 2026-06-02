@@ -147,6 +147,9 @@ internal fun AppContent(activity: ComponentActivity) {
                 val isOnline by networkMonitor.isOnline.collectAsState()
                 val isOffline = !isOnline
                 val profileViewModel: ProfileViewModel = viewModel()
+                // Hoisted above the entry gate so the onboarding branch can react to it too — the
+                // tour reloads prefs after Drive sign-in and re-themes live as they land.
+                val profileState by profileViewModel.state.collectAsState()
                 var selectedTab by rememberSaveable { mutableIntStateOf(0) }
                 // Increments on every nav button tap (incl. re-tap and gear icon)
                 // so screens with sub-tabs can reset to their default tab.
@@ -161,21 +164,29 @@ internal fun AppContent(activity: ComponentActivity) {
                     // First-run (or replayed) tour: the outermost gate. Carries Drive sign-in +
                     // background-permission steps, so it renders even when not yet signed in.
                     showOnboarding -> {
-                        OnboardingScreen(
-                            profileViewModel = profileViewModel,
-                            isSignedIn = isSignedIn,
-                            signInErrorCode = authError,
-                            onStartSignIn = {
-                                Analytics.action("SignIn", "start_sign_in")
-                                authViewModel.startSignIn()
-                            },
-                            isOffline = isOffline,
-                            onFinish = { goToWardrobe ->
-                                OnboardingState.setComplete(activity, true)
-                                showOnboarding = false
-                                if (goToWardrobe) { selectedTab = 1; navResetTick++ }
-                            },
-                        )
+                        // Re-theme live from the loaded prefs (overriding the cached outer theme)
+                        // so an account with a saved palette/font re-skins the tour the moment the
+                        // post-sign-in prefs reload lands — same pattern as the main-app branch.
+                        LibreLookAITheme(
+                            paletteId = profileState.preferences.wardrobeTheme,
+                            fontId = profileState.preferences.appFont,
+                        ) {
+                            OnboardingScreen(
+                                profileViewModel = profileViewModel,
+                                isSignedIn = isSignedIn,
+                                signInErrorCode = authError,
+                                onStartSignIn = {
+                                    Analytics.action("SignIn", "start_sign_in")
+                                    authViewModel.startSignIn()
+                                },
+                                isOffline = isOffline,
+                                onFinish = { goToWardrobe ->
+                                    OnboardingState.setComplete(activity, true)
+                                    showOnboarding = false
+                                    if (goToWardrobe) { selectedTab = 1; navResetTick++ }
+                                },
+                            )
+                        }
                     }
                     // Returning user who signed out after completing onboarding.
                     !isSignedIn -> {
@@ -231,7 +242,6 @@ internal fun AppContent(activity: ComponentActivity) {
                     val shoppingClosetViewModel: ShoppingClosetViewModel = viewModel()
                     val locationState by locationViewModel.state.collectAsState()
                     val weatherState by weatherViewModel.state.collectAsState()
-                    val profileState by profileViewModel.state.collectAsState()
                     val canTryOn = profileState.tryOnLocalPaths.isNotEmpty()
 
                     // Reload wardrobe/styles/outfits whenever the active location changes
