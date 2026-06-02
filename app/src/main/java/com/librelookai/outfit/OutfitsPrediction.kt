@@ -6,7 +6,6 @@ import com.librelookai.gemini.PromptKey
 import com.librelookai.gemini.PromptStore
 import com.librelookai.gemini.UsageCategory
 import com.librelookai.gemini.generateText
-import com.librelookai.gemini.searchFashionTrends
 import com.librelookai.settings.AiConsiderations
 import com.librelookai.settings.UserPreferences
 import com.librelookai.wardrobe.DriveImage
@@ -116,7 +115,7 @@ internal fun OutfitsViewModel.doTriggerPrediction(
             val countryCode = deviceCountryCode()
             val region = listOfNotNull(weather?.cityName?.takeIf { it.isNotEmpty() }, countryCode).joinToString(", ")
             val fashionTrends = try {
-                gemini.searchFashionTrends(region, UsageCategory.OUTFIT_PREDICT)
+                trendsCache.get(region, UsageCategory.OUTFIT_PREDICT)
             } catch (e: com.librelookai.billing.InsufficientCreditsException) {
                 _state.update { it.copy(isPredicting = false) }
                 return@launch

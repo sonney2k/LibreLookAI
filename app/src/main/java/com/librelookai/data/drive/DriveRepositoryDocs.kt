@@ -285,6 +285,59 @@ internal suspend fun DriveRepository.saveLocationsJson(rootFolderId: String, jso
             .build()).await()
     }
 
+    /** Reads the region-keyed fashion-trends cache JSON from the root Drive folder, or null if absent. */
+internal suspend fun DriveRepository.loadTrendsCacheJson(rootFolderId: String): String? = withContext(Dispatchers.IO) {
+        val tok = token()
+        val q = URLEncoder.encode(
+            "'$rootFolderId' in parents and name='${DriveRepository.TRENDS_CACHE_FILE_NAME}' and trashed=false", "UTF-8",
+        )
+        val fileId = gson.fromJson(
+            http.newCall(Request.Builder()
+                .url("${DriveRepository.API}/files?q=$q&fields=files(id)")
+                .header("Authorization", "Bearer $tok")
+                .build()).await().body!!.string(),
+            FilesListDto::class.java,
+        ).files.firstOrNull()?.id ?: return@withContext null
+
+        val resp = http.newCall(Request.Builder()
+            .url("${DriveRepository.API}/files/$fileId?alt=media")
+            .header("Authorization", "Bearer $tok")
+            .build()).await()
+        if (resp.isSuccessful) resp.body?.string() else null
+    }
+
+    /** Creates or overwrites the fashion-trends cache JSON in the root Drive folder. */
+internal suspend fun DriveRepository.saveTrendsCacheJson(rootFolderId: String, json: String) = withContext(Dispatchers.IO) {
+        val tok = token()
+        val q = URLEncoder.encode(
+            "'$rootFolderId' in parents and name='${DriveRepository.TRENDS_CACHE_FILE_NAME}' and trashed=false", "UTF-8",
+        )
+        val existingId = gson.fromJson(
+            http.newCall(Request.Builder()
+                .url("${DriveRepository.API}/files?q=$q&fields=files(id)")
+                .header("Authorization", "Bearer $tok")
+                .build()).await().body!!.string(),
+            FilesListDto::class.java,
+        ).files.firstOrNull()?.id
+
+        val fileId = existingId ?: run {
+            val meta = """{"name":"${DriveRepository.TRENDS_CACHE_FILE_NAME}","parents":["$rootFolderId"],"mimeType":"application/json"}"""
+            gson.fromJson(
+                http.newCall(Request.Builder()
+                    .url("${DriveRepository.API}/files?fields=id")
+                    .header("Authorization", "Bearer $tok")
+                    .post(meta.toRequestBody("application/json".toMediaType()))
+                    .build()).await().body!!.string(),
+                DriveFileDto::class.java,
+            ).id
+        }
+        http.newCall(Request.Builder()
+            .url("${DriveRepository.UPLOAD_API}/files/$fileId?uploadType=media")
+            .header("Authorization", "Bearer $tok")
+            .method("PATCH", json.toRequestBody("application/json".toMediaType()))
+            .build()).await()
+    }
+
     /**
      * Lists ALL image files in [folderId] (originals, cutouts, and raw uploads).
      * Used by the repair-and-sync audit to examine every image regardless of suffix.

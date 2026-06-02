@@ -8,7 +8,6 @@ import com.librelookai.gemini.PromptKey
 import com.librelookai.gemini.PromptStore
 import com.librelookai.gemini.UsageCategory
 import com.librelookai.gemini.generateText
-import com.librelookai.gemini.searchFashionTrends
 import com.librelookai.settings.AppLanguage
 import com.librelookai.settings.UserPreferences
 import com.librelookai.wardrobe.DriveImage
@@ -243,7 +242,7 @@ internal fun OutfitsViewModel.enhanceComposerWithAi(
             val countryCode = deviceCountryCode()
             val region = listOfNotNull(weather?.cityName?.takeIf { it.isNotEmpty() }, countryCode).joinToString(", ")
             val fashionTrends = try {
-                gemini.searchFashionTrends(region, UsageCategory.OUTFIT_COMPOSE)
+                trendsCache.get(region, UsageCategory.OUTFIT_COMPOSE)
             } catch (e: com.librelookai.billing.InsufficientCreditsException) {
                 _state.update { it.copy(isComposerEnhancing = false) }
                 return@launch

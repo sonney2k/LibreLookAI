@@ -41,6 +41,8 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
 
     internal val drive = DriveRepository(app, GoogleAuthManager(app))
     internal val gemini = GeminiRepository(app)
+    /** Weekly, location-specific cache around the expensive Gemini trend lookup. */
+    internal val trendsCache = com.librelookai.gemini.FashionTrendsCache(app, drive, gemini)
     internal val gson = Gson()
     internal var folderId: String? = null
     private var allFolderIds: List<String>? = null

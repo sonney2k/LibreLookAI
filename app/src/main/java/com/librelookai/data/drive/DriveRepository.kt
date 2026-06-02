@@ -66,6 +66,12 @@ class DriveRepository(
         internal const val LOCATIONS_FILE_NAME = "_locations.json"
 
         /**
+         * Region-keyed cache of fetched fashion trends, lives at the root Drive folder.
+         * Shared across devices so the weekly Gemini trend lookup is amortised per account.
+         */
+        internal const val TRENDS_CACHE_FILE_NAME = "_trends_cache.json"
+
+        /**
          * Subfolder of the root Drive folder used to hold the user's try-on photos
          * (front/side/back). Kept separate from all location/closet folders so these
          * images are never listed as wardrobe items or touched by Repair & Sync.
@@ -128,6 +134,7 @@ class DriveRepository(
             LEGACY_OUTFIT_EVENTS_FILE_NAME,
             PREFERENCES_FILE_NAME,
             LOCATIONS_FILE_NAME,
+            TRENDS_CACHE_FILE_NAME,
             TRYONS_FILE_NAME,
         )
     }
