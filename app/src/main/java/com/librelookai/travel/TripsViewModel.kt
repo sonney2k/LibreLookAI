@@ -309,8 +309,8 @@ class TripsViewModel(app: Application) : AndroidViewModel(app) {
         val prompt = buildBulkRefinePrompt(trip, tripOutfits, instruction.trim(), images, prefs)
         return com.librelookai.gemini.CostTokens(
             inputTokens = com.librelookai.gemini.TokenEstimator.textTokens(prompt),
-            // One updated record per outfit: id + item ids + name + short description.
-            outputTokens = 40 + 80 * tripOutfits.size,
+            outputTokens = com.librelookai.gemini.TokenEstimator
+                .expectedOutputTokens(UsageCategory.TRAVEL, tripOutfits.size),
             outputIsImage = false,
         )
     }

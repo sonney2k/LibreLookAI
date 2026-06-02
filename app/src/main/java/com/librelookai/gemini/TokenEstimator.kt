@@ -59,6 +59,28 @@ object TokenEstimator {
 
     /** Sum of input tokens for several image [files]. */
     fun imageInputTokens(files: List<File>): Int = files.sumOf { imageInputTokens(it) }
+
+    /**
+     * Expected **output** token count for a call in [category]. Output can't be measured before the
+     * call, so these are the fixed per-category heuristics behind every estimate — image-generating
+     * categories emit one image ([IMAGE_OUTPUT_TOKENS]); text categories scale with [bulkItems]
+     * (suggestion count / outfit count). Single source of truth shared by the pre-tap badge and the
+     * estimate persisted next to actual usage, so deviation tracking compares like with like.
+     */
+    fun expectedOutputTokens(category: UsageCategory, bulkItems: Int = 1): Int {
+        val n = bulkItems.coerceAtLeast(1)
+        return when (category) {
+            UsageCategory.TRY_ON, UsageCategory.BG_REMOVAL -> IMAGE_OUTPUT_TOKENS
+            UsageCategory.TAGGING        -> 400
+            UsageCategory.OUTFIT_PREDICT -> 40 + 45 * n
+            UsageCategory.OUTFIT_COMPOSE -> 60 + 120 * n
+            UsageCategory.GAP_ANALYSIS   -> 600
+            UsageCategory.REPLACEMENTS   -> 800
+            UsageCategory.TRENDS         -> 600
+            UsageCategory.TRAVEL         -> 200 + 60 * n
+            UsageCategory.OTHER          -> 200
+        }
+    }
 }
 
 /**

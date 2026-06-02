@@ -247,8 +247,8 @@ internal fun OutfitsViewModel.estimateComposerTokens(
         )
         return com.librelookai.gemini.CostTokens(
             inputTokens = com.librelookai.gemini.TokenEstimator.textTokens(prompt),
-            // Each variant is a slot id list + a short name/description.
-            outputTokens = 60 + 120 * suggestionCount,
+            outputTokens = com.librelookai.gemini.TokenEstimator
+                .expectedOutputTokens(UsageCategory.OUTFIT_COMPOSE, suggestionCount),
             outputIsImage = false,
         )
     }

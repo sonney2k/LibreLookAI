@@ -50,6 +50,13 @@ internal suspend fun GeminiRepository.tryOnOutfit(
         if (personFiles.isEmpty() || itemFiles.isEmpty()) return@withContext null
 
         val prompt = buildTryOnPrompt(personFiles.size, itemFiles.size, preferences)
+        val estimate = CostTokens(
+            inputTokens = TokenEstimator.textTokens(prompt) +
+                TokenEstimator.imageInputTokens(personFiles) +
+                TokenEstimator.imageInputTokens(itemFiles),
+            outputTokens = TokenEstimator.expectedOutputTokens(UsageCategory.TRY_ON),
+            outputIsImage = true,
+        )
 
         val parts = mutableListOf<Map<String, Any>>(mapOf("text" to prompt))
         personFiles.forEach { f ->
@@ -94,7 +101,7 @@ internal suspend fun GeminiRepository.tryOnOutfit(
             }
 
             val parsed = gson.fromJson(responseBody, GeminiResponse::class.java)
-            recordUsage(parsed, GeminiRepository.BG_MODEL, UsageCategory.TRY_ON)
+            recordUsage(parsed, GeminiRepository.BG_MODEL, UsageCategory.TRY_ON, estimate)
             val imagePart = parsed.candidates
                 ?.firstOrNull()
                 ?.content
@@ -139,6 +146,11 @@ internal suspend fun GeminiRepository.classifyClothing(imageFile: File, language
             val format = if (imageFile.extension == "png") Bitmap.CompressFormat.PNG else Bitmap.CompressFormat.JPEG
             val imageBase64 = readAndResizeBase64(imageFile, format)
             val prompt = PromptStore.get(app, PromptKey.CLASSIFY).replace("{LANGUAGE}", language)
+            val estimate = CostTokens(
+                inputTokens = TokenEstimator.textTokens(prompt) + TokenEstimator.imageInputTokens(imageFile),
+                outputTokens = TokenEstimator.expectedOutputTokens(UsageCategory.TAGGING),
+                outputIsImage = false,
+            )
 
             val body = gson.toJson(
                 mapOf(
@@ -168,7 +180,7 @@ internal suspend fun GeminiRepository.classifyClothing(imageFile: File, language
                 if (!response.isSuccessful) return@withContext null
 
                 val parsed = gson.fromJson(responseBody, GeminiResponse::class.java)
-                recordUsage(parsed, GeminiRepository.CLASSIFY_MODEL, UsageCategory.TAGGING)
+                recordUsage(parsed, GeminiRepository.CLASSIFY_MODEL, UsageCategory.TAGGING, estimate)
                 val text = parsed.candidates
                     ?.firstOrNull()?.content?.parts
                     ?.firstOrNull { it.text != null }?.text
@@ -204,6 +216,11 @@ internal suspend fun GeminiRepository.searchFashionTrends(
             Synthesize the search results and return ONLY a valid JSON object — no markdown, no explanation:
             {"region":"$region","trending_colors":["color1","color2"],"trending_aesthetics":["aesthetic1","aesthetic2"],"must_have_items":["category: item description","..."],"outdated_items":["category: item description","..."]}
         """.trimIndent()
+        val estimate = CostTokens(
+            inputTokens = TokenEstimator.textTokens(prompt),
+            outputTokens = TokenEstimator.expectedOutputTokens(category),
+            outputIsImage = false,
+        )
 
         val body = gson.toJson(
             mapOf(
@@ -223,7 +240,7 @@ internal suspend fun GeminiRepository.searchFashionTrends(
             if (!response.isSuccessful) return@withContext null
 
             val parsed = gson.fromJson(responseBody, GeminiResponse::class.java)
-            recordUsage(parsed, GeminiRepository.CLASSIFY_MODEL, category)
+            recordUsage(parsed, GeminiRepository.CLASSIFY_MODEL, category, estimate)
             val text = parsed.candidates
                 ?.firstOrNull()?.content?.parts
                 ?.firstOrNull { it.text != null }?.text
@@ -252,6 +269,11 @@ internal suspend fun GeminiRepository.generateText(
     ): String? = withContext(Dispatchers.IO) {
         if (!ensureConfigured(notify)) return@withContext null
 
+        val estimate = CostTokens(
+            inputTokens = TokenEstimator.textTokens(prompt),
+            outputTokens = TokenEstimator.expectedOutputTokens(category, bulkItems),
+            outputIsImage = false,
+        )
         val body = gson.toJson(
             mapOf(
                 "contents" to listOf(
@@ -275,7 +297,7 @@ internal suspend fun GeminiRepository.generateText(
             }
 
             val parsed = gson.fromJson(responseBody, GeminiResponse::class.java)
-            recordUsage(parsed, GeminiRepository.CLASSIFY_MODEL, category)
+            recordUsage(parsed, GeminiRepository.CLASSIFY_MODEL, category, estimate)
             parsed.candidates
                 ?.firstOrNull()?.content?.parts
                 ?.firstOrNull { it.text != null }?.text

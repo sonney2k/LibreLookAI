@@ -59,9 +59,22 @@ data class UsageEvent(
     @SerializedName("in") val inputTokens: Int,
     @SerializedName("out") val outputTokens: Int,
     @SerializedName("eur") val eurAtRecord: Double? = null,
+    /**
+     * Pre-call estimate captured at send time (input from the real prompt + images, output from
+     * [TokenEstimator.expectedOutputTokens]). Null for events written before estimate tracking
+     * existed — those are excluded from the deviation statistics. [estEurAtRecord] mirrors
+     * [eurAtRecord]: the estimate priced at the rates valid when the call was made.
+     */
+    @SerializedName("est_in") val estInputTokens: Int? = null,
+    @SerializedName("est_out") val estOutputTokens: Int? = null,
+    @SerializedName("est_eur") val estEurAtRecord: Double? = null,
 ) {
     val totalTokens: Int get() = inputTokens + outputTokens
     val category: UsageCategory get() = UsageCategory.fromKey(categoryKey)
+
+    /** True when this event carries a pre-call estimate (eligible for deviation stats). */
+    val hasEstimate: Boolean get() = estInputTokens != null && estOutputTokens != null
+    val estTotalTokens: Int? get() = if (hasEstimate) estInputTokens!! + estOutputTokens!! else null
 }
 
 /**
@@ -77,6 +90,12 @@ object GeminiPricing {
     /** Prefer the per-event snapshot; fall back to current rates when missing. */
     fun eurFor(event: UsageEvent): Double =
         event.eurAtRecord ?: eurFor(event.model, event.inputTokens, event.outputTokens)
+
+    /** EUR of the pre-call estimate; null when the event carries no estimate. */
+    fun estEurFor(event: UsageEvent): Double? {
+        if (!event.hasEstimate) return null
+        return event.estEurAtRecord ?: eurFor(event.model, event.estInputTokens!!, event.estOutputTokens!!)
+    }
 }
 
 /**
@@ -128,9 +147,18 @@ class TokenUsageRepository private constructor(private val app: Application) {
     }
 
     /** Records one event, persists locally, schedules a debounced Drive flush. */
-    fun record(category: UsageCategory, model: String, inputTokens: Int, outputTokens: Int) {
+    fun record(
+        category: UsageCategory,
+        model: String,
+        inputTokens: Int,
+        outputTokens: Int,
+        estInputTokens: Int? = null,
+        estOutputTokens: Int? = null,
+    ) {
         val inT = inputTokens.coerceAtLeast(0)
         val outT = outputTokens.coerceAtLeast(0)
+        val estIn = estInputTokens?.coerceAtLeast(0)
+        val estOut = estOutputTokens?.coerceAtLeast(0)
         val ev = UsageEvent(
             timestampMs = System.currentTimeMillis(),
             categoryKey = category.storageKey,
@@ -140,6 +168,11 @@ class TokenUsageRepository private constructor(private val app: Application) {
             // Snapshot € at record time so historical aggregation isn't disrupted by
             // later price changes. Aggregator prefers this value when present.
             eurAtRecord = GeminiPricing.eurFor(model, inT, outT),
+            estInputTokens = estIn,
+            estOutputTokens = estOut,
+            // Price the estimate at the same rates as the actual so the € deviation is rate-neutral.
+            estEurAtRecord = if (estIn != null && estOut != null)
+                GeminiPricing.eurFor(model, estIn, estOut) else null,
         )
         scope.launch {
             ioMutex.withLock {
@@ -249,6 +282,24 @@ data class CategoryTotals(
     val tokens: Int get() = inputTokens + outputTokens
 }
 
+/**
+ * Estimate-vs-actual accuracy for one category (or the roll-up). [tokenDeviationPct] / [eurDeviationPct]
+ * are signed: positive means the estimate was **too low** (actual exceeded it). Null when there is no
+ * estimate baseline to compare against.
+ */
+data class DeviationStat(
+    val calls: Int,
+    val estTokens: Int,
+    val actualTokens: Int,
+    val estEur: Double,
+    val actualEur: Double,
+) {
+    val tokenDeviationPct: Double?
+        get() = if (estTokens > 0) (actualTokens - estTokens) * 100.0 / estTokens else null
+    val eurDeviationPct: Double?
+        get() = if (estEur > 0.0) (actualEur - estEur) * 100.0 / estEur else null
+}
+
 object UsageAggregator {
     fun totals(events: List<UsageEvent>, sinceMs: Long? = null): UsageWindowTotals {
         val window = if (sinceMs == null) events else events.filter { it.timestampMs >= sinceMs }
@@ -271,6 +322,37 @@ object UsageAggregator {
             )
         }
         return UsageWindowTotals(inTokens, outTokens, eur, perCat)
+    }
+
+    /**
+     * Per-category estimate-vs-actual deviation over events that carry a pre-call estimate.
+     * Events written before estimate tracking are skipped. Aggregated (sum-of-actual vs
+     * sum-of-estimate) rather than averaged so larger calls weigh proportionally.
+     */
+    fun deviationByCategory(events: List<UsageEvent>, sinceMs: Long? = null): Map<UsageCategory, DeviationStat> {
+        val window = (if (sinceMs == null) events else events.filter { it.timestampMs >= sinceMs })
+            .filter { it.hasEstimate }
+        return window.groupBy { it.category }.mapValues { (_, list) ->
+            DeviationStat(
+                calls = list.size,
+                estTokens = list.sumOf { it.estTotalTokens ?: 0 },
+                actualTokens = list.sumOf { it.totalTokens },
+                estEur = list.sumOf { GeminiPricing.estEurFor(it) ?: 0.0 },
+                actualEur = list.sumOf { GeminiPricing.eurFor(it) },
+            )
+        }
+    }
+
+    /** Roll-up of [deviationByCategory] across every category. */
+    fun deviationTotal(events: List<UsageEvent>, sinceMs: Long? = null): DeviationStat {
+        val per = deviationByCategory(events, sinceMs).values
+        return DeviationStat(
+            calls = per.sumOf { it.calls },
+            estTokens = per.sumOf { it.estTokens },
+            actualTokens = per.sumOf { it.actualTokens },
+            estEur = per.sumOf { it.estEur },
+            actualEur = per.sumOf { it.actualEur },
+        )
     }
 
     /**

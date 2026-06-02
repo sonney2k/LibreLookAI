@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.librelookai.data.model.Outfit
+import com.librelookai.gemini.DeviationStat
 import com.librelookai.gemini.UsageAggregator
 import com.librelookai.gemini.UsageCategory
 import com.librelookai.gemini.UsageWindowTotals
@@ -116,6 +117,24 @@ fun UsageSection(modifier: Modifier = Modifier) {
             modifier = Modifier.padding(horizontal = 20.dp, vertical = 6.dp),
         )
         CategoryTable(total)
+
+        // Estimate accuracy — how far the pre-call cost estimate landed from the actual usage.
+        val deviation = UsageAggregator.deviationByCategory(events)
+        if (deviation.isNotEmpty()) {
+            Text(
+                "Estimate accuracy",
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 6.dp),
+            )
+            Text(
+                "Signed deviation of the pre-call estimate from actual usage. + = estimate too low.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 20.dp),
+            )
+            DeviationTable(deviation, UsageAggregator.deviationTotal(events))
+        }
     }
 }
 
@@ -256,6 +275,88 @@ private fun CategoryTable(window: UsageWindowTotals) {
                 fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.bodySmall)
         }
     }
+}
+
+@Composable
+private fun DeviationTable(
+    deviation: Map<UsageCategory, DeviationStat>,
+    total: DeviationStat,
+) {
+    val rows = deviation.entries.sortedByDescending { it.value.actualTokens }
+    Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 4.dp)) {
+        val labelStyle = MaterialTheme.typography.labelSmall
+        val labelColor = MaterialTheme.colorScheme.onSurfaceVariant
+        Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+            Text("Use", modifier = Modifier.weight(2.2f), style = labelStyle, color = labelColor)
+            Text("Est tok", modifier = Modifier.weight(1.1f), textAlign = TextAlign.End, style = labelStyle, color = labelColor)
+            Text("Act tok", modifier = Modifier.weight(1.1f), textAlign = TextAlign.End, style = labelStyle, color = labelColor)
+            Text("Δ tok", modifier = Modifier.weight(1.0f), textAlign = TextAlign.End, style = labelStyle, color = labelColor)
+            Text("Δ €", modifier = Modifier.weight(1.0f), textAlign = TextAlign.End, style = labelStyle, color = labelColor)
+        }
+        HorizontalDivider()
+        rows.forEach { (cat, d) ->
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Row(modifier = Modifier.weight(2.2f), verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .size(8.dp)
+                            .clip(RoundedCornerShape(2.dp))
+                            .background(colorForCategory(cat)),
+                    )
+                    Spacer(Modifier.width(6.dp))
+                    Text(prettyName(cat), style = MaterialTheme.typography.bodySmall)
+                }
+                Text(formatTokens(d.estTokens),
+                    modifier = Modifier.weight(1.1f), textAlign = TextAlign.End,
+                    style = MaterialTheme.typography.bodySmall)
+                Text(formatTokens(d.actualTokens),
+                    modifier = Modifier.weight(1.1f), textAlign = TextAlign.End,
+                    style = MaterialTheme.typography.bodySmall)
+                DeviationCell(d.tokenDeviationPct, Modifier.weight(1.0f))
+                DeviationCell(d.eurDeviationPct, Modifier.weight(1.0f))
+            }
+        }
+        HorizontalDivider()
+        Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+            Text("Overall", modifier = Modifier.weight(2.2f),
+                fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.bodySmall)
+            Text(formatTokens(total.estTokens),
+                modifier = Modifier.weight(1.1f), textAlign = TextAlign.End,
+                fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.bodySmall)
+            Text(formatTokens(total.actualTokens),
+                modifier = Modifier.weight(1.1f), textAlign = TextAlign.End,
+                fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.bodySmall)
+            DeviationCell(total.tokenDeviationPct, Modifier.weight(1.0f), bold = true)
+            DeviationCell(total.eurDeviationPct, Modifier.weight(1.0f), bold = true)
+        }
+    }
+}
+
+@Composable
+private fun DeviationCell(pct: Double?, modifier: Modifier = Modifier, bold: Boolean = false) {
+    val color = when {
+        pct == null -> MaterialTheme.colorScheme.onSurfaceVariant
+        pct > 5.0 -> MaterialTheme.colorScheme.error          // under-estimated (cost more)
+        pct < -5.0 -> Color(0xFF2E7D32)                        // over-estimated (cost less)
+        else -> MaterialTheme.colorScheme.onSurfaceVariant     // within ±5%
+    }
+    Text(
+        formatPct(pct),
+        modifier = modifier,
+        textAlign = TextAlign.End,
+        color = color,
+        fontWeight = if (bold) FontWeight.SemiBold else FontWeight.Normal,
+        style = MaterialTheme.typography.bodySmall,
+    )
+}
+
+private fun formatPct(pct: Double?): String = when {
+    pct == null -> "—"
+    pct >= 0 -> "+${pct.toInt()}%"
+    else -> "${pct.toInt()}%"
 }
 
 private fun colorForCategory(c: UsageCategory): Color = when (c) {

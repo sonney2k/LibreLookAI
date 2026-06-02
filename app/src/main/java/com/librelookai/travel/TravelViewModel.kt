@@ -208,8 +208,8 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
         )
         return com.librelookai.gemini.CostTokens(
             inputTokens = com.librelookai.gemini.TokenEstimator.textTokens(prompt),
-            // Packing list: grouped outfits + extra-items list, one call regardless of day count.
-            outputTokens = 200 + 60 * effectiveOutfitCount,
+            outputTokens = com.librelookai.gemini.TokenEstimator
+                .expectedOutputTokens(UsageCategory.TRAVEL, effectiveOutfitCount),
             outputIsImage = false,
         )
     }

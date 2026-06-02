@@ -68,7 +68,8 @@ internal fun IdentifyGapsTab(
             )
             com.librelookai.gemini.CostTokens(
                 inputTokens = com.librelookai.gemini.TokenEstimator.textTokens(prompt),
-                outputTokens = 600, // suggestions + summary JSON — fixed-ish text output
+                outputTokens = com.librelookai.gemini.TokenEstimator
+                    .expectedOutputTokens(com.librelookai.gemini.UsageCategory.GAP_ANALYSIS),
                 outputIsImage = false,
             )
         }

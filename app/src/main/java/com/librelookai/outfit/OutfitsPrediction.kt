@@ -131,8 +131,8 @@ internal fun OutfitsViewModel.estimatePredictionTokens(
         )
         return com.librelookai.gemini.CostTokens(
             inputTokens = com.librelookai.gemini.TokenEstimator.textTokens(prompt),
-            // Response is {"suggestions":[{outfitId,reason}...]} — scales with the chosen count.
-            outputTokens = 40 + 45 * suggestionCount,
+            outputTokens = com.librelookai.gemini.TokenEstimator
+                .expectedOutputTokens(UsageCategory.OUTFIT_PREDICT, suggestionCount),
             outputIsImage = false,
         )
     }

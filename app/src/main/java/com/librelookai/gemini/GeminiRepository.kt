@@ -60,14 +60,26 @@ class GeminiRepository(internal val app: Application) {
         throw ex
     }
 
-    /** Pulls usageMetadata out of a parsed Gemini response and records one event. */
-    internal fun recordUsage(parsed: GeminiResponse, model: String, category: UsageCategory) {
+    /**
+     * Pulls usageMetadata out of a parsed Gemini response and records one event. [estimate] is the
+     * pre-call token estimate (built by the caller from the exact prompt + images it sent); when
+     * present it is stored alongside the actual counts so the Usage screen can chart how far the
+     * estimator drifts per category, in both tokens and EUR.
+     */
+    internal fun recordUsage(
+        parsed: GeminiResponse,
+        model: String,
+        category: UsageCategory,
+        estimate: CostTokens? = null,
+    ) {
         val meta = parsed.usageMetadata ?: return
         usage.record(
             category = category,
             model = model,
             inputTokens = meta.promptTokenCount ?: 0,
             outputTokens = meta.candidatesTokenCount ?: 0,
+            estInputTokens = estimate?.inputTokens,
+            estOutputTokens = estimate?.outputTokens,
         )
     }
 
@@ -217,6 +229,12 @@ class GeminiRepository(internal val app: Application) {
             Log.d(TAG, "Sending ${imageFile.length() / 1024}KB image to Gemini ($BG_MODEL)")
 
             val imageBase64 = readAndResizeBase64(imageFile, Bitmap.CompressFormat.JPEG)
+            val bgPrompt = PromptStore.get(app, PromptKey.BG_REMOVAL)
+            val estimate = CostTokens(
+                inputTokens = TokenEstimator.textTokens(bgPrompt) + TokenEstimator.imageInputTokens(imageFile),
+                outputTokens = TokenEstimator.expectedOutputTokens(UsageCategory.BG_REMOVAL),
+                outputIsImage = true,
+            )
 
             val body = gson.toJson(
                 mapOf(
@@ -224,7 +242,7 @@ class GeminiRepository(internal val app: Application) {
                         mapOf(
                             "role" to "user",
                             "parts" to listOf(
-                                mapOf("text" to PromptStore.get(app, PromptKey.BG_REMOVAL)),
+                                mapOf("text" to bgPrompt),
                                 mapOf(
                                     "inline_data" to mapOf(
                                         "mime_type" to "image/jpeg",
@@ -257,7 +275,7 @@ class GeminiRepository(internal val app: Application) {
                 }
 
                 val parsed = gson.fromJson(responseBody, GeminiResponse::class.java)
-                recordUsage(parsed, BG_MODEL, UsageCategory.BG_REMOVAL)
+                recordUsage(parsed, BG_MODEL, UsageCategory.BG_REMOVAL, estimate)
                 val imagePart = parsed.candidates
                     ?.firstOrNull()
                     ?.content

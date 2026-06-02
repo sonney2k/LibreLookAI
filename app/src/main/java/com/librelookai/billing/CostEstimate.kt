@@ -8,6 +8,7 @@ import com.librelookai.gemini.CostTokens
 import com.librelookai.gemini.PromptKey
 import com.librelookai.gemini.PromptStore
 import com.librelookai.gemini.TokenEstimator
+import com.librelookai.gemini.UsageCategory
 import com.librelookai.gemini.buildTryOnPrompt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -22,9 +23,6 @@ import java.io.File
  * never drifts from the request that is actually sent.
  */
 
-/** Classify returns a compact tag JSON — label + type + the several tag arrays. */
-private const val CLASSIFY_OUTPUT_TOKENS = 400
-
 /** Exact tokens for re-tagging the item at [imagePath] (fixed CLASSIFY prompt + one image input). */
 @Composable
 fun rememberClassifyCostTokens(imagePath: String?, language: String = "English"): CostTokens? {
@@ -35,7 +33,7 @@ fun rememberClassifyCostTokens(imagePath: String?, language: String = "English")
             val prompt = PromptStore.get(ctx, PromptKey.CLASSIFY).replace("{LANGUAGE}", language)
             CostTokens(
                 inputTokens = TokenEstimator.textTokens(prompt) + TokenEstimator.imageInputTokens(File(path)),
-                outputTokens = CLASSIFY_OUTPUT_TOKENS,
+                outputTokens = TokenEstimator.expectedOutputTokens(UsageCategory.TAGGING),
                 outputIsImage = false,
             )
         }
