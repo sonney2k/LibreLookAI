@@ -580,6 +580,7 @@
     <string name="calendar_empty">No outfit history yet</string>
     <string name="calendar_empty_hint">Wear an outfit from the Outfits tab to start tracking</string>
     <string name="calendar_wear_again">Wear again today</string>
+    <string name="calendar_loved">Loved it</string>
 
     <!-- Gap Analyzer -->
     <string name="gap_description">Discover the 3 missing pieces that would unlock the most new outfit combinations from your existing wardrobe.</string>
@@ -873,6 +874,8 @@
     <string name="ai_consider_age_desc">Include your age (derived from year of birth).</string>
     <string name="ai_consider_preferences">Style preferences</string>
     <string name="ai_consider_preferences_desc">Include your free-text style preferences.</string>
+    <string name="ai_consider_history">Wear history</string>
+    <string name="ai_consider_history_desc">Learn from what you actually wear and have loved.</string>
 
 
 

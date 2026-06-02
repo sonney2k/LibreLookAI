@@ -1072,4 +1072,11 @@
     <string name="ai_error_generic">La richiesta IA non è andata a buon fine. Controlla la connessione e riprova.</string>
     <string name="ai_retry">Riprova</string>
     <string name="ai_dismiss">Chiudi</string>
+
+    <!-- Calendar wear history (loved toggle) -->
+    <string name="calendar_loved">Adorato</string>
+
+    <!-- Wear-history AI consideration toggle -->
+    <string name="ai_consider_history">Cronologia look</string>
+    <string name="ai_consider_history_desc">Impara da ciò che indossi davvero e hai adorato.</string>
 </resources>

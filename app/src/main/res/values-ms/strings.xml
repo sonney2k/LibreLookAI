@@ -1045,4 +1045,11 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <string name="ai_error_generic">Permintaan AI tidak berjaya. Sila semak sambungan anda dan cuba lagi.</string>
     <string name="ai_retry">Cuba lagi</string>
     <string name="ai_dismiss">Tutup</string>
+
+    <!-- Calendar wear history (loved toggle) -->
+    <string name="calendar_loved">Suka sangat</string>
+
+    <!-- Wear-history AI consideration toggle -->
+    <string name="ai_consider_history">Sejarah pemakaian</string>
+    <string name="ai_consider_history_desc">Belajar daripada apa yang anda benar-benar pakai dan suka.</string>
 </resources>

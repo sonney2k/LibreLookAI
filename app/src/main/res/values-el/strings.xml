@@ -1072,4 +1072,11 @@
     <string name="ai_error_generic">Το αίτημα AI δεν ολοκληρώθηκε. Έλεγξε τη σύνδεσή σου και δοκίμασε ξανά.</string>
     <string name="ai_retry">Επανάληψη</string>
     <string name="ai_dismiss">Κλείσιμο</string>
+
+    <!-- Calendar wear history (loved toggle) -->
+    <string name="calendar_loved">Μου άρεσε πολύ</string>
+
+    <!-- Wear-history AI consideration toggle -->
+    <string name="ai_consider_history">Ιστορικό χρήσης</string>
+    <string name="ai_consider_history_desc">Μαθαίνει από αυτά που πραγματικά φοράς και έχεις αγαπήσει.</string>
 </resources>

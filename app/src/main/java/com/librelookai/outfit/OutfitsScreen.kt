@@ -33,6 +33,7 @@ import com.librelookai.AppScreenHeader
 import com.librelookai.LocationButton
 import com.librelookai.R
 import com.librelookai.data.model.Outfit
+import com.librelookai.data.model.WearSource
 import com.librelookai.settings.ProfileViewModel
 import com.librelookai.travel.TripsViewModel
 import com.librelookai.wardrobe.DriveImage
@@ -135,6 +136,15 @@ fun OutfitsScreen(
             activeImages = wardrobeState.images,
         )
     }
+    val outfitImagesById = remember(outfitItems) { outfitItems.associateBy { it.driveId } }
+    val outfitsById = remember(outfitsState.outfits) { outfitsState.outfits.associateBy { it.id } }
+    // Log a calendar wear, capturing today's weather + a tag snapshot as a taste signal.
+    val logWear: (Outfit, WearSource) -> Unit = { outfit, source ->
+        outfitEventsViewModel.recordOutfit(outfit, outfitImagesById, source, weatherState.data)
+    }
+    val logWearById: (String, WearSource) -> Unit = { id, source ->
+        outfitsById[id]?.let { logWear(it, source) }
+    }
 
     // Outfits referencing wardrobe items that no longer exist in ANY closet. Detection runs
     // against the cross-closet snapshot (allLocationImages, includes every closet + shopping)
@@ -217,7 +227,7 @@ fun OutfitsScreen(
                         outfitsViewModel.startEditing(style, wardrobeState.images, profileState.preferences)
                     },
                     onDeleteOutfit = outfitsViewModel::deleteOutfit,
-                    onWearOutfit = outfitEventsViewModel::recordOutfit,
+                    onWearOutfit = { id -> logWearById(id, WearSource.MANUAL) },
                     onSuggestOutfitTags = { o ->
                         outfitsViewModel.suggestTagsForOutfit(o, wardrobeState.images, profileState.preferences)
                     },
@@ -303,7 +313,7 @@ fun OutfitsScreen(
                         outfitsViewModel.clearPrediction()
                         outfitsViewModel.startEditing(o, wardrobeState.images, profileState.preferences)
                     },
-                    onWear = { o -> outfitEventsViewModel.recordOutfit(o.id) },
+                    onWear = { o -> logWear(o, WearSource.AI_SUGGESTED) },
                     onDelete = { o ->
                         outfitsViewModel.deleteOutfit(o.id)
                         if (predictedOutfits.size <= 1) outfitsViewModel.clearPrediction()
@@ -331,7 +341,7 @@ fun OutfitsScreen(
                     .padding(start = 8.dp, end = 8.dp, top = 64.dp),
                 action = {
                     TextButton(onClick = {
-                        outfitEventsViewModel.recordOutfit(styleId)
+                        logWearById(styleId, WearSource.MANUAL)
                         outfitsViewModel.clearPendingWear()
                     }) {
                         Text(stringResource(R.string.outfits_wear_today))

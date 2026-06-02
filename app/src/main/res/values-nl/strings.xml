@@ -1072,4 +1072,11 @@
     <string name="ai_error_generic">Het AI-verzoek is niet gelukt. Controleer je verbinding en probeer het opnieuw.</string>
     <string name="ai_retry">Opnieuw</string>
     <string name="ai_dismiss">Sluiten</string>
+
+    <!-- Calendar wear history (loved toggle) -->
+    <string name="calendar_loved">Geweldig</string>
+
+    <!-- Wear-history AI consideration toggle -->
+    <string name="ai_consider_history">Draaggeschiedenis</string>
+    <string name="ai_consider_history_desc">Leert van wat je echt draagt en geweldig vond.</string>
 </resources>

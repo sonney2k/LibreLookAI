@@ -1045,4 +1045,11 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="ai_error_generic">Az MI-kérés nem ment át. Ellenőrizd a kapcsolatot, és próbáld újra.</string>
     <string name="ai_retry">Újra</string>
     <string name="ai_dismiss">Bezárás</string>
+
+    <!-- Calendar wear history (loved toggle) -->
+    <string name="calendar_loved">Imádtam</string>
+
+    <!-- Wear-history AI consideration toggle -->
+    <string name="ai_consider_history">Viselési előzmények</string>
+    <string name="ai_consider_history_desc">Tanul abból, amit valóban hordasz és imádtál.</string>
 </resources>

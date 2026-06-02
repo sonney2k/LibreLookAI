@@ -1072,4 +1072,11 @@
     <string name="ai_error_generic">AI-begäran gick inte igenom. Kontrollera din anslutning och försök igen.</string>
     <string name="ai_retry">Försök igen</string>
     <string name="ai_dismiss">Stäng</string>
+
+    <!-- Calendar wear history (loved toggle) -->
+    <string name="calendar_loved">Älskade det</string>
+
+    <!-- Wear-history AI consideration toggle -->
+    <string name="ai_consider_history">Användningshistorik</string>
+    <string name="ai_consider_history_desc">Lär av det du faktiskt bär och har älskat.</string>
 </resources>

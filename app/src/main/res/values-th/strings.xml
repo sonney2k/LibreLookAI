@@ -1045,4 +1045,11 @@
     <string name="ai_error_generic">คำขอ AI ไม่สำเร็จ โปรดตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง</string>
     <string name="ai_retry">ลองอีกครั้ง</string>
     <string name="ai_dismiss">ปิด</string>
+
+    <!-- Calendar wear history (loved toggle) -->
+    <string name="calendar_loved">ชอบมาก</string>
+
+    <!-- Wear-history AI consideration toggle -->
+    <string name="ai_consider_history">ประวัติการสวมใส่</string>
+    <string name="ai_consider_history_desc">เรียนรู้จากสิ่งที่คุณสวมใส่จริงและชื่นชอบ</string>
 </resources>

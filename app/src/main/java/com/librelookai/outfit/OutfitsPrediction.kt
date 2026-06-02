@@ -131,6 +131,7 @@ internal fun OutfitsViewModel.doTriggerPrediction(
                 fashionTrends   = fashionTrends,
                 images          = filteredImages,
                 styles          = styles,
+                wearHistory     = setup.wearHistory,
                 feedbackHistory = feedbackHistory,
                 weatherMode     = setup.composerWeatherMode,
                 manualSeason    = setup.composerManualSeason,

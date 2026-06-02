@@ -1045,4 +1045,11 @@
     <string name="ai_error_generic">AI 要求未能完成。請檢查你的連線後再試一次。</string>
     <string name="ai_retry">重試</string>
     <string name="ai_dismiss">關閉</string>
+
+    <!-- Calendar wear history (loved toggle) -->
+    <string name="calendar_loved">很喜歡</string>
+
+    <!-- Wear-history AI consideration toggle -->
+    <string name="ai_consider_history">穿著紀錄</string>
+    <string name="ai_consider_history_desc">從你實際穿過和喜歡的搭配中學習。</string>
 </resources>

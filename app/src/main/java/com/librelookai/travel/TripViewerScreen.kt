@@ -234,7 +234,7 @@ fun TripViewerScreen(
                             } else null,
                             // View mode: log a calendar wear for this day's outfit (write path).
                             onWear = if (outfit != null && !editing && !previewing && !isOffline) {
-                                { outfitEventsViewModel.recordOutfit(outfit.id) }
+                                { outfitEventsViewModel.recordOutfit(outfit, imagesById) }
                             } else null,
                             // Checklist mode: tick items off as packed (and dim the packed ones).
                             packedItemIds = if (checklistMode) trip.packedItemIds else emptySet(),
@@ -332,7 +332,7 @@ fun TripViewerScreen(
                 activeLocationId = locationState.activeLocationId,
                 onDismiss = { viewerOutfitId = null },
                 onEdit = startEditingOutfit,
-                onWear = { o -> outfitEventsViewModel.recordOutfit(o.id) },
+                onWear = { o -> outfitEventsViewModel.recordOutfit(o, imagesById) },
                 onDelete = { o ->
                     outfitsViewModel.deleteOutfit(o.id)
                     if (tripOutfits.size <= 1) viewerOutfitId = null

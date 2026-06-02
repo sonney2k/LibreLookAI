@@ -1072,4 +1072,11 @@
     <string name="ai_error_generic">Yapay zekâ isteği gerçekleşmedi. Lütfen bağlantınızı kontrol edip yeniden deneyin.</string>
     <string name="ai_retry">Yeniden dene</string>
     <string name="ai_dismiss">Kapat</string>
+
+    <!-- Calendar wear history (loved toggle) -->
+    <string name="calendar_loved">Bayıldım</string>
+
+    <!-- Wear-history AI consideration toggle -->
+    <string name="ai_consider_history">Giyim geçmişi</string>
+    <string name="ai_consider_history_desc">Gerçekten giydiklerinden ve beğendiklerinden öğrenir.</string>
 </resources>

@@ -3,6 +3,7 @@ package com.librelookai.outfit
 import android.content.Context
 import com.librelookai.data.model.DayForecast
 import com.librelookai.data.model.Outfit
+import com.librelookai.data.model.OutfitEvent
 import com.librelookai.settings.AiConsiderations
 import com.librelookai.wardrobe.DriveImage
 import kotlinx.coroutines.flow.update
@@ -57,6 +58,11 @@ data class OutfitsUiState(
     val predictionIndex: Int = 0,
     // Refinement feedback (prediction loop)
     val feedbackHistory: List<String> = emptyList(),
+    /**
+     * Calendar wear history (kept in sync from [OutfitEventsViewModel]), fed into the
+     * prediction/composer prompts as a taste signal. See [buildWearHistorySummary].
+     */
+    val wearHistory: List<OutfitEvent> = emptyList(),
     // After saving a style, offer to wear it immediately
     val pendingWearOutfitId: String? = null,
     /** Outfit id the list screen should scroll into view (and briefly highlight) when set. */

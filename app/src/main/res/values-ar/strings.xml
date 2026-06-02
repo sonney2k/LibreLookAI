@@ -1072,4 +1072,11 @@
     <string name="ai_error_generic">لم يتم تنفيذ طلب الذكاء الاصطناعي. يُرجى التحقق من اتصالك والمحاولة مرة أخرى.</string>
     <string name="ai_retry">إعادة المحاولة</string>
     <string name="ai_dismiss">إغلاق</string>
+
+    <!-- Calendar wear history (loved toggle) -->
+    <string name="calendar_loved">أعجبني</string>
+
+    <!-- Wear-history AI consideration toggle -->
+    <string name="ai_consider_history">سجل الارتداء</string>
+    <string name="ai_consider_history_desc">تعلّم مما ترتديه فعلاً وما أعجبك.</string>
 </resources>

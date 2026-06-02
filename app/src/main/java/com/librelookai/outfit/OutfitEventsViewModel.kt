@@ -16,8 +16,12 @@ import com.librelookai.auth.GoogleAuthManager
 import com.librelookai.data.drive.DriveRepository
 import com.librelookai.data.drive.loadOutfitEventsJson
 import com.librelookai.data.drive.saveOutfitEventsJson
+import com.librelookai.data.model.Outfit
 import com.librelookai.data.model.OutfitEvent
+import com.librelookai.data.model.WearSource
 import com.librelookai.util.isNetworkAvailable
+import com.librelookai.wardrobe.DriveImage
+import com.librelookai.weather.WeatherData
 
 data class OutfitEventsUiState(
     val events: List<OutfitEvent> = emptyList(),
@@ -100,9 +104,37 @@ class OutfitEventsViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    fun recordOutfit(outfitId: String) {
-        val event = OutfitEvent(outfitId = outfitId, date = LocalDate.now().toString())
-        val updated = _state.value.events + event
+    /**
+     * Logs a wear of [outfit] on [date] (today by default), capturing a tag/color/weather snapshot
+     * so the wear stays a usable taste signal even if the outfit is later edited or deleted.
+     * [source] records whether the user actively chose the outfit (strong signal) or accepted an
+     * AI suggestion (weak signal). See [buildOutfitEvent] / [buildWearHistorySummary].
+     */
+    fun recordOutfit(
+        outfit: Outfit,
+        imagesById: Map<String, DriveImage>,
+        source: WearSource = WearSource.MANUAL,
+        weather: WeatherData? = null,
+        date: LocalDate = LocalDate.now(),
+    ) {
+        val event = buildOutfitEvent(outfit, imagesById, source, weather, date)
+        persist(_state.value.events + event)
+    }
+
+    /** Toggle the explicit "loved it" feedback on a logged wear. */
+    fun setEventLoved(eventId: String, loved: Boolean) {
+        persist(_state.value.events.map { if (it.id == eventId) it.copy(loved = loved) else it })
+    }
+
+    /**
+     * Set the "loved" flag on every logged wear of an outfit — backs the heart in the aggregated
+     * wear-stats list, where a row represents all wears of one outfit rather than a single event.
+     */
+    fun setOutfitLoved(outfitId: String, loved: Boolean) {
+        persist(_state.value.events.map { if (it.outfitId == outfitId) it.copy(loved = loved) else it })
+    }
+
+    private fun persist(updated: List<OutfitEvent>) {
         viewModelScope.launch {
             val id = folderId ?: allFolderIds?.firstOrNull() ?: return@launch
             runCatching {

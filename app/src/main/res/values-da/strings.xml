@@ -1072,4 +1072,11 @@
     <string name="ai_error_generic">AI-anmodningen gik ikke igennem. Tjek din forbindelse, og prøv igen.</string>
     <string name="ai_retry">Prøv igen</string>
     <string name="ai_dismiss">Luk</string>
+
+    <!-- Calendar wear history (loved toggle) -->
+    <string name="calendar_loved">Elskede det</string>
+
+    <!-- Wear-history AI consideration toggle -->
+    <string name="ai_consider_history">Brugshistorik</string>
+    <string name="ai_consider_history_desc">Lær af det, du faktisk bruger og har elsket.</string>
 </resources>

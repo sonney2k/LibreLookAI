@@ -1072,4 +1072,11 @@
     <string name="ai_error_generic">Požadavek na AI neprošel. Zkontrolujte připojení a zkuste to znovu.</string>
     <string name="ai_retry">Zkusit znovu</string>
     <string name="ai_dismiss">Zavřít</string>
+
+    <!-- Calendar wear history (loved toggle) -->
+    <string name="calendar_loved">Líbilo se mi</string>
+
+    <!-- Wear-history AI consideration toggle -->
+    <string name="ai_consider_history">Historie nošení</string>
+    <string name="ai_consider_history_desc">Učí se z toho, co skutečně nosíš a co se ti líbilo.</string>
 </resources>

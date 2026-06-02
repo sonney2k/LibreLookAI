@@ -1072,4 +1072,11 @@
     <string name="ai_error_generic">Hindi natuloy ang kahilingan sa AI. Pakitingnan ang iyong koneksyon at subukan muli.</string>
     <string name="ai_retry">Subukan muli</string>
     <string name="ai_dismiss">Isara</string>
+
+    <!-- Calendar wear history (loved toggle) -->
+    <string name="calendar_loved">Gustong-gusto</string>
+
+    <!-- Wear-history AI consideration toggle -->
+    <string name="ai_consider_history">Kasaysayan ng suot</string>
+    <string name="ai_consider_history_desc">Matututo mula sa aktwal mong sinusuot at nagustuhan.</string>
 </resources>

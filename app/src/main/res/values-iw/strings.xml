@@ -1076,4 +1076,11 @@
     <string name="ai_error_generic">בקשת ה-AI לא עברה. בדוק את החיבור ונסה שוב.</string>
     <string name="ai_retry">נסה שוב</string>
     <string name="ai_dismiss">סגירה</string>
+
+    <!-- Calendar wear history (loved toggle) -->
+    <string name="calendar_loved">אהבתי</string>
+
+    <!-- Wear-history AI consideration toggle -->
+    <string name="ai_consider_history">היסטוריית לבישה</string>
+    <string name="ai_consider_history_desc">לומד ממה שאתה באמת לובש ואהבת.</string>
 </resources>

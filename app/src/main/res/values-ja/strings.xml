@@ -1072,4 +1072,11 @@
     <string name="ai_error_generic">AI リクエストを実行できませんでした。接続を確認して、もう一度お試しください。</string>
     <string name="ai_retry">再試行</string>
     <string name="ai_dismiss">閉じる</string>
+
+    <!-- Calendar wear history (loved toggle) -->
+    <string name="calendar_loved">お気に入り</string>
+
+    <!-- Wear-history AI consideration toggle -->
+    <string name="ai_consider_history">着用履歴</string>
+    <string name="ai_consider_history_desc">実際に着た服やお気に入りから学びます。</string>
 </resources>

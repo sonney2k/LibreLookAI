@@ -1072,4 +1072,11 @@
     <string name="ai_error_generic">La requête IA n\'a pas abouti. Vérifiez votre connexion et réessayez.</string>
     <string name="ai_retry">Réessayer</string>
     <string name="ai_dismiss">Fermer</string>
+
+    <!-- Calendar wear history (loved toggle) -->
+    <string name="calendar_loved">Adoré</string>
+
+    <!-- Wear-history AI consideration toggle -->
+    <string name="ai_consider_history">Historique de port</string>
+    <string name="ai_consider_history_desc">Apprend de ce que vous portez vraiment et avez adoré.</string>
 </resources>

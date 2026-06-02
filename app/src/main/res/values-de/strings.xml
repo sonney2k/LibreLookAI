@@ -1141,4 +1141,11 @@
     <string name="ai_error_generic">Die KI-Anfrage ist nicht durchgegangen. Bitte prüfe deine Verbindung und versuche es erneut.</string>
     <string name="ai_retry">Erneut versuchen</string>
     <string name="ai_dismiss">Schließen</string>
+
+    <!-- Calendar wear history (loved toggle) -->
+    <string name="calendar_loved">Geliebt</string>
+
+    <!-- Wear-history AI consideration toggle -->
+    <string name="ai_consider_history">Tragehistorie</string>
+    <string name="ai_consider_history_desc">Lernt aus dem, was du wirklich trägst und geliebt hast.</string>
 </resources>

@@ -1072,4 +1072,11 @@
     <string name="ai_error_generic">The AI request didn\'t go through. Please check your connection and try again.</string>
     <string name="ai_retry">Retry</string>
     <string name="ai_dismiss">Dismiss</string>
+
+    <!-- Calendar wear history (loved toggle) -->
+    <string name="calendar_loved">Loved it</string>
+
+    <!-- Wear-history AI consideration toggle -->
+    <string name="ai_consider_history">Wear history</string>
+    <string name="ai_consider_history_desc">Learn from what you actually wear and have loved.</string>
 </resources>

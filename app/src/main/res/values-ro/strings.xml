@@ -1045,4 +1045,11 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="ai_error_generic">Solicitarea IA nu a reușit. Verifică conexiunea și încearcă din nou.</string>
     <string name="ai_retry">Reîncearcă</string>
     <string name="ai_dismiss">Închide</string>
+
+    <!-- Calendar wear history (loved toggle) -->
+    <string name="calendar_loved">Mi-a plăcut</string>
+
+    <!-- Wear-history AI consideration toggle -->
+    <string name="ai_consider_history">Istoric purtare</string>
+    <string name="ai_consider_history_desc">Învață din ce porți cu adevărat și ți-a plăcut.</string>
 </resources>

@@ -244,6 +244,13 @@ internal fun AppContent(activity: ComponentActivity) {
                     val weatherState by weatherViewModel.state.collectAsState()
                     val canTryOn = profileState.tryOnLocalPaths.isNotEmpty()
 
+                    // Feed the calendar wear history into the outfit-suggestion prompt as a taste
+                    // signal (the two VMs are independent; this keeps the prompt-side copy in sync).
+                    val outfitEventsState by outfitEventsViewModel.state.collectAsState()
+                    LaunchedEffect(outfitEventsState.events) {
+                        stylesViewModel.setWearHistory(outfitEventsState.events)
+                    }
+
                     // Reload wardrobe/styles/outfits whenever the active location changes
                     val activeLocationId = locationState.activeLocationId
                     val locationList = locationState.locations

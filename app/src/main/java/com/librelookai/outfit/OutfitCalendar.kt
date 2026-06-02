@@ -24,6 +24,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -57,6 +59,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.librelookai.R
 import com.librelookai.data.model.Outfit
+import com.librelookai.data.model.OutfitEvent
 import com.librelookai.data.model.WornItem
 import com.librelookai.util.LocalIsOffline
 import com.librelookai.wardrobe.DriveImage
@@ -81,14 +84,25 @@ fun OutfitCalendarTab(
     outfitEventsViewModel: OutfitEventsViewModel = viewModel(),
     stylesViewModel: OutfitsViewModel = viewModel(),
     wardrobeViewModel: WardrobeViewModel = viewModel(),
+    weatherViewModel: com.librelookai.weather.WeatherViewModel = viewModel(),
     onEditOutfit: (Outfit) -> Unit,
 ) {
     val outfitEventsState by outfitEventsViewModel.state.collectAsState()
     val outfitsState by stylesViewModel.state.collectAsState()
     val wardrobeState by wardrobeViewModel.state.collectAsState()
+    val weatherState by weatherViewModel.state.collectAsState()
 
     val outfitsById = remember(outfitsState.outfits) { outfitsState.outfits.associateBy { it.id } }
     val imagesById = remember(wardrobeState.images) { wardrobeState.images.associateBy { it.driveId } }
+
+    // One row per logged wear (so the same outfit worn twice in a day shows twice, each with its
+    // own "loved" toggle), resolved against the current outfits.
+    val eventsByDate = remember(outfitEventsState.events) {
+        outfitEventsState.events.mapNotNull { event ->
+            val date = runCatching { LocalDate.parse(event.date) }.getOrNull() ?: return@mapNotNull null
+            date to event
+        }.groupBy({ it.first }, { it.second })
+    }
 
     val wornItems = remember(outfitEventsState.events, outfitsById, imagesById) {
         outfitEventsState.events.flatMap { event ->
@@ -118,8 +132,13 @@ fun OutfitCalendarTab(
     CalendarContent(
         wornItems = wornItems,
         outfitsByDate = outfitsByDate,
+        eventsByDate = eventsByDate,
+        outfitsById = outfitsById,
         imagesById = imagesById,
-        onWearAgainToday = { outfitEventsViewModel.recordOutfit(it) },
+        onWearAgainToday = { outfit ->
+            outfitEventsViewModel.recordOutfit(outfit, imagesById, weather = weatherState.data)
+        },
+        onToggleLoved = { event -> outfitEventsViewModel.setEventLoved(event.id, !event.loved) },
         onEditOutfit = onEditOutfit,
     )
 }
@@ -129,8 +148,11 @@ fun OutfitCalendarTab(
 private fun CalendarContent(
     wornItems: List<WornItem>,
     outfitsByDate: Map<LocalDate, List<Outfit>>,
+    eventsByDate: Map<LocalDate, List<OutfitEvent>>,
+    outfitsById: Map<String, Outfit>,
     imagesById: Map<String, DriveImage>,
-    onWearAgainToday: (String) -> Unit,
+    onWearAgainToday: (Outfit) -> Unit,
+    onToggleLoved: (OutfitEvent) -> Unit,
     onEditOutfit: (Outfit) -> Unit,
 ) {
     var yearMonth by rememberSaveable { mutableStateOf(YearMonth.now()) }
@@ -174,7 +196,12 @@ private fun CalendarContent(
     }
 
     selectedDate?.let { date ->
-        val stylesOnDay = outfitsByDate[date].orEmpty()
+        // One row per logged wear, pairing the event (for the loved toggle) with its outfit.
+        val eventsOnDay = remember(eventsByDate, outfitsById, date) {
+            eventsByDate[date].orEmpty().mapNotNull { event ->
+                outfitsById[event.outfitId]?.let { event to it }
+            }
+        }
         ModalBottomSheet(
             onDismissRequest = { selectedDate = null },
             sheetState = sheetState,
@@ -192,12 +219,14 @@ private fun CalendarContent(
                 )
                 HorizontalDivider()
                 LazyColumn(contentPadding = PaddingValues(vertical = 8.dp)) {
-                    itemsIndexed(stylesOnDay, key = { index, style -> "${date}_${style.id}_$index" }) { index, style ->
+                    itemsIndexed(eventsOnDay, key = { index, (event, _) -> "${date}_${event.id}_$index" }) { index, (event, style) ->
                         OutfitSheetRow(
                             style = style,
+                            loved = event.loved,
                             imagesById = imagesById,
+                            onToggleLoved = { onToggleLoved(event) },
                             onWearAgainToday = {
-                                onWearAgainToday(style.id)
+                                onWearAgainToday(style)
                                 scope.launch { sheetState.hide() }.invokeOnCompletion {
                                     selectedDate = null
                                 }
@@ -209,7 +238,7 @@ private fun CalendarContent(
                                 }
                             },
                         )
-                        if (index < stylesOnDay.lastIndex) HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp))
+                        if (index < eventsOnDay.lastIndex) HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp))
                     }
                 }
             }
@@ -220,7 +249,9 @@ private fun CalendarContent(
 @Composable
 private fun OutfitSheetRow(
     style: Outfit,
+    loved: Boolean,
     imagesById: Map<String, DriveImage>,
+    onToggleLoved: () -> Unit,
     onWearAgainToday: () -> Unit,
     onEditOutfit: () -> Unit,
 ) {
@@ -232,7 +263,24 @@ private fun OutfitSheetRow(
             .padding(horizontal = 20.dp, vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        Text(style.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                style.name,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.weight(1f),
+            )
+            if (!LocalIsOffline.current) {
+                IconButton(onClick = onToggleLoved) {
+                    Icon(
+                        imageVector = if (loved) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                        contentDescription = stringResource(R.string.calendar_loved),
+                        tint = if (loved) MaterialTheme.colorScheme.primary
+                               else MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+        }
         if (style.description.isNotEmpty()) {
             Text(
                 style.description,

@@ -1072,4 +1072,11 @@
     <string name="ai_error_generic">Żądanie AI nie zostało zrealizowane. Sprawdź połączenie i spróbuj ponownie.</string>
     <string name="ai_retry">Ponów</string>
     <string name="ai_dismiss">Zamknij</string>
+
+    <!-- Calendar wear history (loved toggle) -->
+    <string name="calendar_loved">Uwielbiam</string>
+
+    <!-- Wear-history AI consideration toggle -->
+    <string name="ai_consider_history">Historia noszenia</string>
+    <string name="ai_consider_history_desc">Uczy się z tego, co naprawdę nosisz i pokochałeś.</string>
 </resources>

@@ -15,7 +15,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,6 +42,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.librelookai.R
 import com.librelookai.data.model.Outfit
+import com.librelookai.util.LocalIsOffline
 import com.librelookai.wardrobe.DriveImage
 import com.librelookai.wardrobe.WardrobeViewModel
 
@@ -53,6 +59,11 @@ fun OutfitWearStatsTab(
 
     val outfitsById = remember(outfitsState.outfits) { outfitsState.outfits.associateBy { it.id } }
     val imagesById = remember(wardrobeState.images) { wardrobeState.images.associateBy { it.driveId } }
+
+    // Outfits with at least one wear the user marked as "loved" — surfaced with a heart.
+    val lovedOutfitIds = remember(outfitEventsState.events) {
+        outfitEventsState.events.filter { it.loved }.map { it.outfitId }.toSet()
+    }
 
     val topStyles = remember(outfitEventsState.events, outfitsById) {
         outfitEventsState.events
@@ -104,7 +115,15 @@ fun OutfitWearStatsTab(
                 HorizontalDivider()
             }
             itemsIndexed(topStyles) { index, (style, count) ->
-                StyleStatRow(rank = index + 1, style = style, wearCount = count, imagesById = imagesById)
+                val loved = style.id in lovedOutfitIds
+                StyleStatRow(
+                    rank = index + 1,
+                    style = style,
+                    wearCount = count,
+                    loved = loved,
+                    onToggleLoved = { outfitEventsViewModel.setOutfitLoved(style.id, !loved) },
+                    imagesById = imagesById,
+                )
                 if (index < topStyles.lastIndex) HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
             }
         }
@@ -133,6 +152,8 @@ private fun StyleStatRow(
     rank: Int,
     style: Outfit,
     wearCount: Int,
+    loved: Boolean,
+    onToggleLoved: () -> Unit,
     imagesById: Map<String, DriveImage>,
 ) {
     val ctx = LocalContext.current
@@ -162,13 +183,34 @@ private fun StyleStatRow(
         }
 
         Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text(
-                style.name,
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Medium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text(
+                    style.name,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f, fill = false),
+                )
+                if (!LocalIsOffline.current) {
+                    IconButton(onClick = onToggleLoved, modifier = Modifier.size(28.dp)) {
+                        Icon(
+                            imageVector = if (loved) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                            contentDescription = stringResource(R.string.calendar_loved),
+                            tint = if (loved) MaterialTheme.colorScheme.primary
+                                   else MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.size(16.dp),
+                        )
+                    }
+                } else if (loved) {
+                    Icon(
+                        Icons.Filled.Favorite,
+                        contentDescription = stringResource(R.string.calendar_loved),
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(14.dp),
+                    )
+                }
+            }
             if (styleItems.isNotEmpty()) {
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     itemsIndexed(styleItems, key = { index, image -> "${image.driveId}_${index}" }) { _, image ->

@@ -1045,4 +1045,11 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="ai_error_generic">Permintaan AI tidak berhasil. Periksa koneksi Anda dan coba lagi.</string>
     <string name="ai_retry">Coba lagi</string>
     <string name="ai_dismiss">Tutup</string>
+
+    <!-- Calendar wear history (loved toggle) -->
+    <string name="calendar_loved">Suka banget</string>
+
+    <!-- Wear-history AI consideration toggle -->
+    <string name="ai_consider_history">Riwayat pemakaian</string>
+    <string name="ai_consider_history_desc">Belajar dari yang benar-benar kamu pakai dan sukai.</string>
 </resources>

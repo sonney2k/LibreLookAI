@@ -57,6 +57,12 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
         saveFolderId = folderId
     }
 
+    /** Keep the prompt-side copy of the calendar wear history in sync (owned by [OutfitEventsViewModel]). */
+    fun setWearHistory(events: List<com.librelookai.data.model.OutfitEvent>) {
+        if (_state.value.wearHistory == events) return
+        _state.update { it.copy(wearHistory = events) }
+    }
+
     fun setLocation(newFolderId: String) {
         if (folderId == newFolderId && allFolderIds == null) return
         folderId = newFolderId

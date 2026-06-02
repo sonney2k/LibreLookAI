@@ -1045,4 +1045,11 @@
     <string name="ai_error_generic">Запит до ШІ не пройшов. Перевірте підключення та повторіть спробу.</string>
     <string name="ai_retry">Повторити</string>
     <string name="ai_dismiss">Закрити</string>
+
+    <!-- Calendar wear history (loved toggle) -->
+    <string name="calendar_loved">Сподобалось</string>
+
+    <!-- Wear-history AI consideration toggle -->
+    <string name="ai_consider_history">Історія носіння</string>
+    <string name="ai_consider_history_desc">Навчається на тому, що ви справді носите й уподобали.</string>
 </resources>

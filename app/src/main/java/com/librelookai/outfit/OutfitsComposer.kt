@@ -268,6 +268,7 @@ internal fun OutfitsViewModel.enhanceComposerWithAi(
                 suggestionCount  = suggestionCount,
                 considerationsOverride = s.composerConsiderationsOverride,
                 tripContext      = s.composerTripContext,
+                wearHistory      = s.wearHistory,
             )
             Log.d("StylesVM", "Composer prompt length: ${prompt.length} chars")
             val raw = try {

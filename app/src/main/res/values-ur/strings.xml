@@ -1045,4 +1045,11 @@
     <string name="ai_error_generic">AI درخواست مکمل نہیں ہوئی۔ براہ کرم اپنا کنکشن چیک کریں اور دوبارہ کوشش کریں۔</string>
     <string name="ai_retry">دوبارہ کوشش</string>
     <string name="ai_dismiss">بند کریں</string>
+
+    <!-- Calendar wear history (loved toggle) -->
+    <string name="calendar_loved">پسند آیا</string>
+
+    <!-- Wear-history AI consideration toggle -->
+    <string name="ai_consider_history">پہننے کی تاریخ</string>
+    <string name="ai_consider_history_desc">آپ جو واقعی پہنتے اور پسند کرتے ہیں اس سے سیکھیں۔</string>
 </resources>

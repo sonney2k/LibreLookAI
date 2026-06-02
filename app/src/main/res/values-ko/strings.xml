@@ -1072,4 +1072,11 @@
     <string name="ai_error_generic">AI 요청이 처리되지 않았습니다. 연결을 확인한 후 다시 시도하세요.</string>
     <string name="ai_retry">다시 시도</string>
     <string name="ai_dismiss">닫기</string>
+
+    <!-- Calendar wear history (loved toggle) -->
+    <string name="calendar_loved">마음에 들어요</string>
+
+    <!-- Wear-history AI consideration toggle -->
+    <string name="ai_consider_history">착용 기록</string>
+    <string name="ai_consider_history_desc">실제로 입고 마음에 들어한 옷에서 학습합니다.</string>
 </resources>

@@ -3,6 +3,7 @@ package com.librelookai.outfit
 import com.librelookai.data.model.DayForecast
 import com.librelookai.data.model.Location
 import com.librelookai.data.model.Outfit
+import com.librelookai.data.model.OutfitEvent
 import com.librelookai.gemini.FashionTrends
 import com.librelookai.settings.AiConsiderations
 import com.librelookai.settings.AppLanguage
@@ -24,6 +25,7 @@ internal fun buildPredictionPrompt(
     fashionTrends: FashionTrends?,
     images: List<DriveImage>,
     styles: List<Outfit>,
+    wearHistory: List<OutfitEvent> = emptyList(),
     feedbackHistory: List<String> = emptyList(),
     weatherMode: ComposerWeatherMode = ComposerWeatherMode.AUTO,
     manualSeason: String = "",
@@ -119,6 +121,10 @@ internal fun buildPredictionPrompt(
         appendLine("## Existing Styles to Choose From")
         appendLine(stylesJson)
         appendLine()
+        if (c.history) buildWearHistorySummary(wearHistory)?.let {
+            appendLine(it)
+            appendLine()
+        }
         if (feedbackHistory.isNotEmpty()) {
             appendLine("## User Refinement Requests")
             appendLine("The user reviewed a previous suggestion and wants these adjustments (apply all of them):")
@@ -159,6 +165,7 @@ internal fun buildComposerPrompt(
     suggestionCount: Int = 1,
     considerationsOverride: AiConsiderations? = null,
     tripContext: TripContext? = null,
+    wearHistory: List<OutfitEvent> = emptyList(),
 ): String {
     val c = considerationsOverride ?: prefs?.aiConsiderations ?: AiConsiderations()
     val age = prefs?.yearOfBirth?.let { LocalDate.now().year - it }
@@ -244,6 +251,10 @@ internal fun buildComposerPrompt(
         appendLine("## Available wardrobe (id + name + tags)")
         appendLine(wardrobeJson)
         appendLine()
+        if (c.history) buildWearHistorySummary(wearHistory)?.let {
+            appendLine(it)
+            appendLine()
+        }
         if (feedbackHistory.isNotEmpty()) {
             appendLine("## User refinement requests (apply ALL of them)")
             feedbackHistory.forEachIndexed { i, fb -> appendLine("${i + 1}. $fb") }

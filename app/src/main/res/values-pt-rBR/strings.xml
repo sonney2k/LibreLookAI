@@ -1072,4 +1072,11 @@
     <string name="ai_error_generic">A solicitação de IA não foi concluída. Verifique sua conexão e tente novamente.</string>
     <string name="ai_retry">Tentar de novo</string>
     <string name="ai_dismiss">Dispensar</string>
+
+    <!-- Calendar wear history (loved toggle) -->
+    <string name="calendar_loved">Amei</string>
+
+    <!-- Wear-history AI consideration toggle -->
+    <string name="ai_consider_history">Histórico de uso</string>
+    <string name="ai_consider_history_desc">Aprende com o que você realmente usa e amou.</string>
 </resources>

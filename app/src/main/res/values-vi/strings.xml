@@ -1045,4 +1045,11 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="ai_error_generic">Yêu cầu AI không thành công. Vui lòng kiểm tra kết nối và thử lại.</string>
     <string name="ai_retry">Thử lại</string>
     <string name="ai_dismiss">Đóng</string>
+
+    <!-- Calendar wear history (loved toggle) -->
+    <string name="calendar_loved">Rất thích</string>
+
+    <!-- Wear-history AI consideration toggle -->
+    <string name="ai_consider_history">Lịch sử mặc</string>
+    <string name="ai_consider_history_desc">Học từ những gì bạn thực sự mặc và yêu thích.</string>
 </resources>

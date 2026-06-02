@@ -52,6 +52,8 @@ data class AiConsiderations(
     val gender: Boolean = true,
     val age: Boolean = true,
     val preferences: Boolean = true,
+    /** Feed the calendar wear history into the suggestion prompt as a taste signal. */
+    val history: Boolean = true,
     /**
      * Expert option: which item tag dimensions to feed into the wardrobe JSON for outfit creation
      * and gap analysis. `null` means "include every dimension" — this is the back-compat default,
