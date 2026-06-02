@@ -772,31 +772,7 @@
     <string name="ai_consider_preferences">Stijlvoorkeuren</string>
     <string name="ai_consider_preferences_desc">Je vrije stijlvoorkeurstekst meenemen.</string>
 
-    <string name="ai_prompts_title">Prompts</string>
-    <string name="ai_prompts_desc">Elke Gemini-aanroep in de app gebruikt een van onderstaande prompts. Tik om uit te klappen en te bewerken. Lokaal opgeslagen; leeg of standaardtekst wist de aanpassing.</string>
-    <string name="ai_prompts_reset_all">Alles resetten</string>
-    <string name="ai_prompts_reset_all_title">Alle prompts resetten?</string>
-    <string name="ai_prompts_reset_all_text">Hiermee worden alle prompts teruggezet naar de standaardtekst. Je opgeslagen aanpassingen gaan verloren.</string>
-    <string name="ai_prompts_reset_all_confirm">Alles resetten</string>
-    <string name="ai_prompt_reset">Naar standaard resetten</string>
-    <string name="ai_prompt_overridden_badge">aangepast</string>
 
-    <string name="ai_prompt_bg_title">Achtergrondverwijdering</string>
-    <string name="ai_prompt_bg_desc">Wordt met een kledingfoto verzonden om het kledingstuk uit te snijden op een neutrale achtergrond.</string>
-    <string name="ai_prompt_classify_title">Kleding automatisch taggen</string>
-    <string name="ai_prompt_classify_desc">Haalt type, categorie, kleuren, seizoen, pasvorm en andere tags uit een itemfoto. Gebruik de placeholder {LANGUAGE} voor de antwoordtaal.</string>
-    <string name="ai_prompt_prediction_title">Bestaande outfit voorstellen</string>
-    <string name="ai_prompt_prediction_desc">Rol en regels om een van je opgeslagen outfits voor vandaag te kiezen.</string>
-    <string name="ai_prompt_composition_title">Nieuwe outfit samenstellen</string>
-    <string name="ai_prompt_composition_desc">Rol en regels om een gloednieuwe outfit uit je garderobe te componeren.</string>
-    <string name="ai_prompt_composer_title">Outfit-composer</string>
-    <string name="ai_prompt_composer_desc">Rol en regels die door de unified composer worden gebruikt (doellaagaantallen + verplichte items).</string>
-    <string name="ai_prompt_alternatives_title">Item-wisselalternatieven</string>
-    <string name="ai_prompt_alternatives_desc">Rol en regels om tot 10 alternatieven voor één outfit-item te vinden.</string>
-    <string name="ai_prompt_packing_title">Reispaklijst</string>
-    <string name="ai_prompt_packing_desc">Rol en regels om een paklijst op te bouwen uit garderobe + weersverwachting.</string>
-    <string name="ai_prompt_gap_title">Garderobegat-analyse</string>
-    <string name="ai_prompt_gap_desc">Rol en regels om de top ontbrekende stukken in je garderobe voor te stellen.</string>
 
     <!-- Winkelhulp / Gelijkenis-zoeker -->
     <string name="shop_description">Maak een foto van een stuk dat je overweegt en wij tonen de meest visueel gelijkende items die al in je garderobe zitten — volledig op het toestel.</string>

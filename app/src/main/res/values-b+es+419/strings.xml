@@ -772,31 +772,7 @@
     <string name="ai_consider_preferences">Preferencias de estilo</string>
     <string name="ai_consider_preferences_desc">Incluir tus preferencias de estilo en texto libre.</string>
 
-    <string name="ai_prompts_title">Prompts</string>
-    <string name="ai_prompts_desc">Cada llamada a Gemini usa uno de los prompts de abajo. Toca para expandir y editar. Se guardan localmente; dejar vacío restaura el predeterminado.</string>
-    <string name="ai_prompts_reset_all">Restablecer todos</string>
-    <string name="ai_prompts_reset_all_title">¿Restablecer todos los prompts?</string>
-    <string name="ai_prompts_reset_all_text">Esto restaura cada prompt a su texto original. Tus cambios se perderán.</string>
-    <string name="ai_prompts_reset_all_confirm">Restablecer todos</string>
-    <string name="ai_prompt_reset">Restablecer al original</string>
-    <string name="ai_prompt_overridden_badge">editado</string>
 
-    <string name="ai_prompt_bg_title">Eliminación de fondo</string>
-    <string name="ai_prompt_bg_desc">Enviado con una foto de ropa para extraer la prenda a un fondo neutro.</string>
-    <string name="ai_prompt_classify_title">Auto-etiquetar ropa</string>
-    <string name="ai_prompt_classify_desc">Extrae tipo, categoría, colores, temporada, corte y otras etiquetas de una imagen. Usa el marcador {LANGUAGE} para el idioma de respuesta.</string>
-    <string name="ai_prompt_prediction_title">Sugerir un outfit existente</string>
-    <string name="ai_prompt_prediction_desc">Rol y reglas para elegir uno de tus outfits guardados para hoy.</string>
-    <string name="ai_prompt_composition_title">Componer un nuevo outfit</string>
-    <string name="ai_prompt_composition_desc">Rol y reglas para componer un outfit nuevo desde tu closet.</string>
-    <string name="ai_prompt_composer_title">Compositor de outfits</string>
-    <string name="ai_prompt_composer_desc">Rol y reglas usadas por el compositor unificado (conteo de capas + prendas requeridas).</string>
-    <string name="ai_prompt_alternatives_title">Alternativas para cambio de prendas</string>
-    <string name="ai_prompt_alternatives_desc">Rol y reglas para encontrar hasta 10 alternativas para una sola prenda del outfit.</string>
-    <string name="ai_prompt_packing_title">Lista para el viaje</string>
-    <string name="ai_prompt_packing_desc">Rol y reglas para armar una lista de equipaje desde tu closet + pronóstico.</string>
-    <string name="ai_prompt_gap_title">Análisis de vacíos en el closet</string>
-    <string name="ai_prompt_gap_desc">Rol y reglas para sugerir las prendas clave que faltan en tu closet.</string>
 
     <!-- Shopping helper / Similarity Finder -->
     <string name="shop_description">Toma una foto de una prenda que estés considerando y te mostraremos las más similares que ya tienes en tu closet — totalmente en tu dispositivo.</string>

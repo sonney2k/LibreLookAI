@@ -1,40 +1,31 @@
 package com.librelookai.gemini
 import android.content.Context
-import com.librelookai.R
 
 /**
- * User-editable prompts for each Gemini call. Stored device-local in SharedPreferences.
+ * Built-in prompt for each Gemini call.
  *
- * For **static** prompts (background removal, classify) the stored string is the full
+ * For **static** prompts (background removal, classify) the string is the full
  * prompt sent to Gemini — placeholders like `{LANGUAGE}` are substituted at call time.
  *
- * For **dynamic** prompts (style prediction, composition, packing, etc.) the stored
- * string is the role + instructions preamble. The builder inserts the dynamic data
+ * For **dynamic** prompts (style prediction, composition, packing, etc.) the string
+ * is the role + instructions preamble. The builder inserts the dynamic data
  * blocks (wardrobe JSON, weather, user profile, …) and the fixed JSON response schema
- * around it, so response parsing always works even after edits.
+ * around it.
  */
 enum class PromptKey(
-    val titleRes: Int,
-    val descRes: Int,
     val default: String,
 ) {
     BG_REMOVAL(
-        R.string.ai_prompt_bg_title,
-        R.string.ai_prompt_bg_desc,
         """
         Extract the single primary clothing item from the image as a clean catalog-style product photo. The item must be shown in its entirety: every part fully visible inside the frame with comfortable margin on all sides — no cropping of sleeves, hems, collars, straps, laces, or any extremity. For garments with sleeves (t-shirts, shirts, jackets, sweaters, coats, dresses), lay the sleeves out flat and fully extended so both arms are completely shown end-to-end. For items that naturally come as a pair (shoes, boots, sandals, sneakers, gloves, earrings), always render BOTH pieces side by side, even if only one is visible in the source photo — reconstruct the missing piece as a mirrored counterpart. If the source photo clearly identifies a known product, prefer rendering it as a clean studio catalog image of that product (flat-lay or ghost-mannequin style) rather than copying photographic artifacts, hangers, mannequins, hands, or background clutter. Center the item, oriented upright (portrait). Place it on a pure, solid neon green background (Hex #00FF00). Macro product photography, soft even studio lighting, sharp focus, no text, no UI elements, no shadows, no gradients, no checkerboard patterns, no phones, no apps, no website interfaces.
         """.trimIndent(),
     ),
     CLASSIFY(
-        R.string.ai_prompt_classify_title,
-        R.string.ai_prompt_classify_desc,
         """
         Analyze this clothing item and return ONLY a JSON object (no markdown, no explanation) with these fields: "label" (a short descriptive name for the item in {LANGUAGE}, e.g. "Navy Chinos", "White Oxford Shirt", "Black Puffer Jacket"), "type" (concise item name; prefer terms from: T-shirt, Long-sleeve shirt, Polo shirt, Oxford shirt, Button-up shirt, Blouse, Tank top, Crop top, Sweater, Hoodie, Cardigan, Vest, Jacket, Blazer, Coat, Puffer jacket, Trench coat, Jeans, Chinos, Trousers, Shorts, Skirt, Dress, Gown, Jumpsuit, Romper, Suit jacket, Suit trousers, Sneakers, Boots, Loafers, Sandals, Heels, Belt, Bag, Hat, Scarf, Gloves, Sunglasses — use the same concise style for unlisted items), "category" (one of: tops, bottoms, outerwear, footwear, accessories, dress, suit, jumpsuit — use "dress" for gowns and "jumpsuit" for rompers/one-piece overalls), "uses" (array from: casual, formal, business, sport, outdoor, beach, evening), "colors" (array of main colors, lowercase English; use ONLY these exact values — for any other shade pick the single closest one: black, white, cream, beige, tan, brown, khaki, camel, rust, orange, peach, coral, red, burgundy, pink, magenta, purple, lavender, lilac, blue, navy, sky, denim blue, teal, mint, green, olive, forest, yellow, mustard, gold, silver, gray, charcoal, multicolor — e.g. cyan/turquoise→teal, lime→green, maroon→burgundy; use "gray" not "grey"), "seasonality" (array from: spring, summer, fall, winter), "aesthetic" (array from: minimalist, streetwear, preppy, bohemian, classic, sporty, romantic, edgy, business-casual, luxury), "fit" (array from: slim, regular, relaxed, oversized, tailored), "material" (array of detected/inferred materials, e.g. cotton, denim, wool, leather, polyester, linen, silk, knit), "pattern" (array from: solid, stripes, plaid, floral, geometric, animal-print, graphic, camo, abstract). Use empty arrays for fields that cannot be determined.
         """.trimIndent(),
     ),
     PREDICTION(
-        R.string.ai_prompt_prediction_title,
-        R.string.ai_prompt_prediction_desc,
         """
         You are a personal fashion stylist AI. Choose exactly ONE existing style for the user to wear today.
 
@@ -47,8 +38,6 @@ enum class PromptKey(
         """.trimIndent(),
     ),
     COMPOSITION(
-        R.string.ai_prompt_composition_title,
-        R.string.ai_prompt_composition_desc,
         """
         You are a personal fashion stylist AI. Compose a brand-new outfit by selecting items from the user's wardrobe.
 
@@ -79,8 +68,6 @@ enum class PromptKey(
         """.trimIndent(),
     ),
     COMPOSER(
-        R.string.ai_prompt_composer_title,
-        R.string.ai_prompt_composer_desc,
         """
         You are a personal fashion stylist AI. Compose a cohesive outfit from the user's wardrobe that MUST include the required items below and meets the target layer counts.
 
@@ -93,8 +80,6 @@ enum class PromptKey(
         """.trimIndent(),
     ),
     ALTERNATIVES(
-        R.string.ai_prompt_alternatives_title,
-        R.string.ai_prompt_alternatives_desc,
         """
         You are a personal fashion stylist AI. Suggest up to 10 alternative wardrobe items that could replace a specific item in an outfit.
 
@@ -107,8 +92,6 @@ enum class PromptKey(
         """.trimIndent(),
     ),
     PACKING(
-        R.string.ai_prompt_packing_title,
-        R.string.ai_prompt_packing_desc,
         """
         You are a travel packing assistant. Create a packing list from the user's wardrobe for their trip.
 
@@ -120,8 +103,6 @@ enum class PromptKey(
         """.trimIndent(),
     ),
     GAP(
-        R.string.ai_prompt_gap_title,
-        R.string.ai_prompt_gap_desc,
         """
         You are a personal stylist and wardrobe analyst.
 
@@ -139,35 +120,6 @@ enum class PromptKey(
 }
 
 object PromptStore {
-    private const val PREFS_NAME = "librelookai_prompts"
-
-    fun get(context: Context, key: PromptKey): String {
-        val stored = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-            .getString(key.name, null)
-        return if (stored.isNullOrBlank()) key.default else stored
-    }
-
-    fun set(context: Context, key: PromptKey, value: String) {
-        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit()
-        val trimmed = value.trim()
-        if (trimmed.isEmpty() || trimmed == key.default.trim()) {
-            prefs.remove(key.name)
-        } else {
-            prefs.putString(key.name, trimmed)
-        }
-        prefs.apply()
-    }
-
-    fun reset(context: Context, key: PromptKey) {
-        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-            .edit().remove(key.name).apply()
-    }
-
-    fun resetAll(context: Context) {
-        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-            .edit().clear().apply()
-    }
-
-    fun isOverridden(context: Context, key: PromptKey): Boolean =
-        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).contains(key.name)
+    /** Returns the built-in prompt for [key]. Prompts are no longer user-editable. */
+    fun get(@Suppress("UNUSED_PARAMETER") context: Context, key: PromptKey): String = key.default
 }

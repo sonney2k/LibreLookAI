@@ -838,31 +838,7 @@
     <string name="ai_consider_preferences">Stilpräferenzen</string>
     <string name="ai_consider_preferences_desc">Deinen freien Stiltext einbeziehen.</string>
 
-    <string name="ai_prompts_title">Prompts</string>
-    <string name="ai_prompts_desc">Jeder Gemini-Aufruf in der App verwendet einen der Prompts unten. Zum Bearbeiten antippen. Lokal gespeichert; leer oder Standardtext entfernt die Anpassung.</string>
-    <string name="ai_prompts_reset_all">Alle zurücksetzen</string>
-    <string name="ai_prompts_reset_all_title">Alle Prompts zurücksetzen?</string>
-    <string name="ai_prompts_reset_all_text">Stellt alle Prompts auf ihren Standardtext zurück. Deine Anpassungen gehen verloren.</string>
-    <string name="ai_prompts_reset_all_confirm">Zurücksetzen</string>
-    <string name="ai_prompt_reset">Auf Standard zurücksetzen</string>
-    <string name="ai_prompt_overridden_badge">angepasst</string>
 
-    <string name="ai_prompt_bg_title">Hintergrundentfernung</string>
-    <string name="ai_prompt_bg_desc">Wird mit einem Kleidungsfoto geschickt, um das Teil freizustellen.</string>
-    <string name="ai_prompt_classify_title">Automatisch taggen</string>
-    <string name="ai_prompt_classify_desc">Extrahiert Typ, Kategorie, Farben, Saisonalität, Passform und weitere Tags aus einem Teilbild. Nutze {LANGUAGE} als Platzhalter für die Antwortsprache.</string>
-    <string name="ai_prompt_prediction_title">Gespeichertes Outfit vorschlagen</string>
-    <string name="ai_prompt_prediction_desc">Rolle und Regeln, um eines deiner gespeicherten Outfits für heute auszuwählen.</string>
-    <string name="ai_prompt_composition_title">Neues Outfit zusammenstellen</string>
-    <string name="ai_prompt_composition_desc">Rolle und Regeln, um aus deiner Garderobe ein neues Outfit zu komponieren.</string>
-    <string name="ai_prompt_composer_title">Outfit-Komposer</string>
-    <string name="ai_prompt_composer_desc">Rolle und Regeln des vereinheitlichten Komposers (Layer-Ziele + Pflicht-Teile).</string>
-    <string name="ai_prompt_alternatives_title">Alternativen tauschen</string>
-    <string name="ai_prompt_alternatives_desc">Rolle und Regeln, um bis zu 10 Alternativen für ein Outfit-Teil zu finden.</string>
-    <string name="ai_prompt_packing_title">Reise-Packliste</string>
-    <string name="ai_prompt_packing_desc">Rolle und Regeln zum Erstellen einer Packliste aus Garderobe und Wetter.</string>
-    <string name="ai_prompt_gap_title">Garderobenanalyse</string>
-    <string name="ai_prompt_gap_desc">Rolle und Regeln, um die wichtigsten fehlenden Teile in deiner Garderobe vorzuschlagen.</string>
 
     <!-- Einkaufshilfe -->
     <string name="shop_description">Fotografiere ein Teil, das dich interessiert — wir zeigen dir die optisch ähnlichsten Stücke aus deiner Garderobe, komplett auf dem Gerät.</string>

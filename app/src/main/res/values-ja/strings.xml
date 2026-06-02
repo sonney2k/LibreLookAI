@@ -772,31 +772,7 @@
     <string name="ai_consider_preferences">スタイルの好み</string>
     <string name="ai_consider_preferences_desc">フリーテキストで入力したスタイルの好みを含めます。</string>
 
-    <string name="ai_prompts_title">プロンプト</string>
-    <string name="ai_prompts_desc">アプリのすべての Gemini 呼び出しは下のいずれかのプロンプトを使用します。タップで展開・編集できます。ローカルに保存され、空白またはデフォルトテキストでオーバーライドを解除できます。</string>
-    <string name="ai_prompts_reset_all">すべてリセット</string>
-    <string name="ai_prompts_reset_all_title">すべてのプロンプトをリセットしますか?</string>
-    <string name="ai_prompts_reset_all_text">すべてのプロンプトをデフォルトのテキストに戻します。保存されたオーバーライドは失われます。</string>
-    <string name="ai_prompts_reset_all_confirm">すべてリセット</string>
-    <string name="ai_prompt_reset">デフォルトに戻す</string>
-    <string name="ai_prompt_overridden_badge">編集済み</string>
 
-    <string name="ai_prompt_bg_title">背景削除</string>
-    <string name="ai_prompt_bg_desc">衣類写真と一緒に送信し、衣類をニュートラルな背景に抽出します。</string>
-    <string name="ai_prompt_classify_title">衣類自動タグ付け</string>
-    <string name="ai_prompt_classify_desc">アイテム画像からタイプ、カテゴリー、色、季節、フィットなどのタグを抽出します。応答言語にはプレースホルダー {LANGUAGE} を使用します。</string>
-    <string name="ai_prompt_prediction_title">既存のコーデを提案</string>
-    <string name="ai_prompt_prediction_desc">保存されたコーデから今日のコーデを選ぶための役割とルール。</string>
-    <string name="ai_prompt_composition_title">新しいコーデを作成</string>
-    <string name="ai_prompt_composition_desc">クローゼットからまったく新しいコーデを作成するための役割とルール。</string>
-    <string name="ai_prompt_composer_title">コーデコンポーザー</string>
-    <string name="ai_prompt_composer_desc">統合コンポーザーが使用する役割とルール(レイヤー数の目標 + 必須アイテム)。</string>
-    <string name="ai_prompt_alternatives_title">アイテムの代替案</string>
-    <string name="ai_prompt_alternatives_desc">単一のコーデアイテムに対して最大10件の代替案を見つけるための役割とルール。</string>
-    <string name="ai_prompt_packing_title">旅行パッキングリスト</string>
-    <string name="ai_prompt_packing_desc">クローゼット + 予報からパッキングリストを作成するための役割とルール。</string>
-    <string name="ai_prompt_gap_title">クローゼットのギャップ分析</string>
-    <string name="ai_prompt_gap_desc">クローゼットの不足アイテムの上位を提案するための役割とルール。</string>
 
     <!-- ショッピングヘルパー / 類似アイテム検索 -->
     <string name="shop_description">検討中のアイテムを撮影すると、クローゼットの中で見た目が最も似ているアイテムを表示します — すべて端末上で動作します。</string>

@@ -772,31 +772,7 @@
     <string name="ai_consider_preferences">Preferencje stylu</string>
     <string name="ai_consider_preferences_desc">Uwzględnij Twój tekst preferencji stylu.</string>
 
-    <string name="ai_prompts_title">Prompty</string>
-    <string name="ai_prompts_desc">Każde wywołanie Gemini w aplikacji używa jednego z poniższych promptów. Dotknij, aby rozwinąć i edytować. Zapisywane lokalnie; pusty lub domyślny tekst usuwa modyfikację.</string>
-    <string name="ai_prompts_reset_all">Resetuj wszystko</string>
-    <string name="ai_prompts_reset_all_title">Zresetować wszystkie prompty?</string>
-    <string name="ai_prompts_reset_all_text">Przywróci to każdy prompt do tekstu domyślnego. Twoje modyfikacje zostaną utracone.</string>
-    <string name="ai_prompts_reset_all_confirm">Resetuj wszystko</string>
-    <string name="ai_prompt_reset">Resetuj do domyślnego</string>
-    <string name="ai_prompt_overridden_badge">edytowano</string>
 
-    <string name="ai_prompt_bg_title">Usuwanie tła</string>
-    <string name="ai_prompt_bg_desc">Wysyłane ze zdjęciem ubrania, aby wyodrębnić odzież na neutralnym tle.</string>
-    <string name="ai_prompt_classify_title">Automatyczne tagowanie ubrań</string>
-    <string name="ai_prompt_classify_desc">Wyodrębnia typ, kategorię, kolory, sezonowość, krój i inne tagi ze zdjęcia elementu. Użyj zmiennej {LANGUAGE} jako języka odpowiedzi.</string>
-    <string name="ai_prompt_prediction_title">Zaproponuj istniejącą stylizację</string>
-    <string name="ai_prompt_prediction_desc">Rola i zasady wyboru jednej z zapisanych stylizacji na dziś.</string>
-    <string name="ai_prompt_composition_title">Skomponuj nową stylizację</string>
-    <string name="ai_prompt_composition_desc">Rola i zasady komponowania zupełnie nowej stylizacji z garderoby.</string>
-    <string name="ai_prompt_composer_title">Kompozytor stylizacji</string>
-    <string name="ai_prompt_composer_desc">Rola i zasady używane przez ujednolicony kompozytor (cele warstw + wymagane elementy).</string>
-    <string name="ai_prompt_alternatives_title">Alternatywy zamiany elementu</string>
-    <string name="ai_prompt_alternatives_desc">Rola i zasady znajdowania do 10 alternatyw dla pojedynczego elementu stylizacji.</string>
-    <string name="ai_prompt_packing_title">Lista pakowania na podróż</string>
-    <string name="ai_prompt_packing_desc">Rola i zasady budowania listy pakowania z garderoby + prognozy.</string>
-    <string name="ai_prompt_gap_title">Analiza braków w garderobie</string>
-    <string name="ai_prompt_gap_desc">Rola i zasady sugerowania brakujących elementów w garderobie.</string>
 
     <!-- Shopping helper / Similarity Finder -->
     <string name="shop_description">Zrób zdjęcie ubrania, które rozważasz, a my pokażemy najbardziej wizualnie podobne elementy z Twojej garderoby — w pełni na urządzeniu.</string>

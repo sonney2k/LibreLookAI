@@ -733,31 +733,7 @@
     <string name="ai_consider_preferences">העדפות סגנון</string>
     <string name="ai_consider_preferences_desc">כלול את העדפות הסגנון שלך בטקסט חופשי.</string>
 
-    <string name="ai_prompts_title">פראמפטים</string>
-    <string name="ai_prompts_desc">כל קריאת Gemini באפליקציה משתמשת באחד הפראמפטים למטה. לחץ להרחבה ועריכה. נשמר מקומית; טקסט ריק מחזיר לברירת המחדל.</string>
-    <string name="ai_prompts_reset_all">אפס הכל</string>
-    <string name="ai_prompts_reset_all_title">לאפס את כל הפראמפטים?</string>
-    <string name="ai_prompts_reset_all_text">פעולה זו תשחזר כל פראמפט לטקסט ברירת המחדל שלו. שינויים ששמרת יאבדו.</string>
-    <string name="ai_prompts_reset_all_confirm">אפס הכל</string>
-    <string name="ai_prompt_reset">אפס לברירת מחדל</string>
-    <string name="ai_prompt_overridden_badge">נערך</string>
 
-    <string name="ai_prompt_bg_title">הסרת רקע</string>
-    <string name="ai_prompt_bg_desc">נשלח مع צילום בגד כדי לחלץ את הבגד לרקע ניטרלי.</string>
-    <string name="ai_prompt_classify_title">תיוג בגדים אוטומטי</string>
-    <string name="ai_prompt_classify_desc">מחלץ סוג, קטגוריה, צבעים, עונתיות, גזרה ותגיות נוספות מתמונת פריט. השתמש ב-{LANGUAGE} עבור שפת התגובה.</string>
-    <string name="ai_prompt_prediction_title">הצע אאוטפיט קיים</string>
-    <string name="ai_prompt_prediction_desc">תפקיד וכללים לבחירת אחד מהאאוטפיטים השמורים שלך להיום.</string>
-    <string name="ai_prompt_composition_title">הרכב אאוטפיט חדש</string>
-    <string name="ai_prompt_composition_desc">תפקיד וכללים להרכבת אאוטפיט חדש לגמרי מהארון שלך.</string>
-    <string name="ai_prompt_composer_title">מלחין אאוטפיטים</string>
-    <string name="ai_prompt_composer_desc">תפקיד וכללים המשמשים את המלחין המאוחד (מספר שכבות יעד + פריטי חובה).</string>
-    <string name="ai_prompt_alternatives_title">חלופות להחלפת פריט</string>
-    <string name="ai_prompt_alternatives_desc">תפקיד וכללים למציאת עד 10 חלופות לפריט אאוטפיט בודד.</string>
-    <string name="ai_prompt_packing_title">רשימת אריזה לנסיעה</string>
-    <string name="ai_prompt_packing_desc">תפקיד וכללים לבניית רשימת אריזה מהמלתחה + תחזית.</string>
-    <string name="ai_prompt_gap_title">ניתוח חוסרים במלתחה</string>
-    <string name="ai_prompt_gap_desc">תפקיד וכללים להצעת הפריטים העיקריים החסרים במלתחה שלך.</string>
 
     <!-- Shopping helper / Similarity Finder -->
     <string name="shop_description">צלם תמונה של פריט שאתה שוקל לקנות ואנחנו נראה לך את הפריטים הדומים ביותר ויזואלית שכבר נמצאים במלתחה שלך — הכל על המכשיר.</string>

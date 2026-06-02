@@ -772,31 +772,7 @@
     <string name="ai_consider_preferences">Preference stylu</string>
     <string name="ai_consider_preferences_desc">Zahrnout vaše textové preference stylu.</string>
 
-    <string name="ai_prompts_title">Instrukce (Prompty)</string>
-    <string name="ai_prompts_desc">Každé volání Gemini v aplikaci používá jednu z níže uvedených instrukcí. Klepnutím rozbalíte a upravíte. Uloženo lokálně; prázdný nebo výchozí text vymaže přepsání.</string>
-    <string name="ai_prompts_reset_all">Resetovat vše</string>
-    <string name="ai_prompts_reset_all_title">Resetovat všechny instrukce?</string>
-    <string name="ai_prompts_reset_all_text">Tímto obnovíte každou instrukci na její výchozí text. Vaše uložená přepsání budou ztracena.</string>
-    <string name="ai_prompts_reset_all_confirm">Resetovat vše</string>
-    <string name="ai_prompt_reset">Resetovat na výchozí</string>
-    <string name="ai_prompt_overridden_badge">upraveno</string>
 
-    <string name="ai_prompt_bg_title">Odstranění pozadí</string>
-    <string name="ai_prompt_bg_desc">Odesílá se s fotografií oblečení k vyjmutí oděvu na neutrální pozadí.</string>
-    <string name="ai_prompt_classify_title">Automatické označení oblečení</string>
-    <string name="ai_prompt_classify_desc">Extrahuje typ, kategorii, barvy, sezónnost, střih a další štítky z obrázku položky. Použijte zástupný symbol {LANGUAGE} pro jazyk odpovědi.</string>
-    <string name="ai_prompt_prediction_title">Navrhnout stávající outfit</string>
-    <string name="ai_prompt_prediction_desc">Role a pravidla pro výběr jednoho z vašich uložených outfitů pro dnešek.</string>
-    <string name="ai_prompt_composition_title">Sestavit nový outfit</string>
-    <string name="ai_prompt_composition_desc">Role a pravidla pro sestavení zcela nového outfitu z vašeho šatníku.</string>
-    <string name="ai_prompt_composer_title">Sestavovač outfitů</string>
-    <string name="ai_prompt_composer_desc">Role a pravidla používaná sjednoceným sestavovačem (cílové počty vrstev + požadované položky).</string>
-    <string name="ai_prompt_alternatives_title">Alternativy pro výměnu položky</string>
-    <string name="ai_prompt_alternatives_desc">Role a pravidla pro nalezení až 10 alternativ pro jednu položku outfitu.</string>
-    <string name="ai_prompt_packing_title">Cestovní seznam věcí</string>
-    <string name="ai_prompt_packing_desc">Role a pravidla pro vytvoření seznamu věcí ze šatníku + předpovědi.</string>
-    <string name="ai_prompt_gap_title">Analýza mezer v šatníku</string>
-    <string name="ai_prompt_gap_desc">Role a pravidla pro navrhování hlavních chybějících kousků ve vašem šatníku.</string>
 
     <!-- Shopping helper / Similarity Finder -->
     <string name="shop_description">Vyfoťte kousek, o kterém uvažujete, a my vám ukážeme nejvíce vizuálně podobné položky, které už máte ve svém šatníku — vše probíhá přímo v zařízení.</string>

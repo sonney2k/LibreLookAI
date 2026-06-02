@@ -772,31 +772,7 @@
     <string name="ai_consider_preferences">Préférences de style</string>
     <string name="ai_consider_preferences_desc">Inclut tes préférences de style en texte libre.</string>
 
-    <string name="ai_prompts_title">Prompts</string>
-    <string name="ai_prompts_desc">Chaque appel Gemini dans l\'app utilise un des prompts ci-dessous. Touche pour développer et modifier. Stockés localement ; un texte vide ou par défaut efface la surcharge.</string>
-    <string name="ai_prompts_reset_all">Tout réinitialiser</string>
-    <string name="ai_prompts_reset_all_title">Réinitialiser tous les prompts ?</string>
-    <string name="ai_prompts_reset_all_text">Ceci restaure chaque prompt à son texte par défaut. Tes surcharges enregistrées seront perdues.</string>
-    <string name="ai_prompts_reset_all_confirm">Tout réinitialiser</string>
-    <string name="ai_prompt_reset">Réinitialiser par défaut</string>
-    <string name="ai_prompt_overridden_badge">modifié</string>
 
-    <string name="ai_prompt_bg_title">Suppression du fond</string>
-    <string name="ai_prompt_bg_desc">Envoyé avec une photo de vêtement pour extraire le vêtement sur un fond neutre.</string>
-    <string name="ai_prompt_classify_title">Étiquetage automatique de vêtement</string>
-    <string name="ai_prompt_classify_desc">Extrait le type, la catégorie, les couleurs, la saisonnalité, la coupe et autres étiquettes depuis une image d\'article. Utilise le placeholder {LANGUAGE} pour la langue de réponse.</string>
-    <string name="ai_prompt_prediction_title">Suggérer une tenue existante</string>
-    <string name="ai_prompt_prediction_desc">Rôle et règles pour choisir une de tes tenues enregistrées pour aujourd\'hui.</string>
-    <string name="ai_prompt_composition_title">Composer une nouvelle tenue</string>
-    <string name="ai_prompt_composition_desc">Rôle et règles pour composer une toute nouvelle tenue depuis ta garde-robe.</string>
-    <string name="ai_prompt_composer_title">Compositeur de tenue</string>
-    <string name="ai_prompt_composer_desc">Rôle et règles utilisés par le compositeur unifié (objectifs de couches + articles requis).</string>
-    <string name="ai_prompt_alternatives_title">Alternatives d\'échange</string>
-    <string name="ai_prompt_alternatives_desc">Rôle et règles pour trouver jusqu\'à 10 alternatives pour un article d\'une tenue.</string>
-    <string name="ai_prompt_packing_title">Liste de bagages voyage</string>
-    <string name="ai_prompt_packing_desc">Rôle et règles pour créer une liste de bagages depuis la garde-robe et les prévisions.</string>
-    <string name="ai_prompt_gap_title">Analyse des manques de garde-robe</string>
-    <string name="ai_prompt_gap_desc">Rôle et règles pour suggérer les pièces manquantes principales de ta garde-robe.</string>
 
     <!-- Aide aux achats / Recherche par similarité -->
     <string name="shop_description">Prends une photo d\'une pièce qui t\'intéresse et nous afficherons les articles les plus visuellement similaires déjà dans ta garde-robe — entièrement sur l\'appareil.</string>

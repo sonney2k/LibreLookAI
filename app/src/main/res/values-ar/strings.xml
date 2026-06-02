@@ -772,31 +772,7 @@
     <string name="ai_consider_preferences">تفضيلات الستايل</string>
     <string name="ai_consider_preferences_desc">تضمين تفضيلات الستايل النصية الخاصة بك.</string>
 
-    <string name="ai_prompts_title">الإطارات (Prompts)</string>
-    <string name="ai_prompts_desc">كل مكالمة Gemini في التطبيق تستخدم أحد الإطارات أدناه. اضغط للتوسيع والتعديل. يتم تخزينها محليًا؛ النص الفارغ أو الافتراضي يمسح التجاوز.</string>
-    <string name="ai_prompts_reset_all">إعادة ضبط الكل</string>
-    <string name="ai_prompts_reset_all_title">إعادة ضبط جميع الإطارات؟</string>
-    <string name="ai_prompts_reset_all_text">يؤدي هذا إلى استعادة كل إطار إلى نصه الافتراضي. ستفقد التجاوزات المحفوظة.</string>
-    <string name="ai_prompts_reset_all_confirm">إعادة ضبط الكل</string>
-    <string name="ai_prompt_reset">إعادة ضبط للوضع الافتراضي</string>
-    <string name="ai_prompt_overridden_badge">معدل</string>
 
-    <string name="ai_prompt_bg_title">إزالة الخلفية</string>
-    <string name="ai_prompt_bg_desc">يُرسل مع صورة ملابس لاستخراج القطعة على خلفية محايدة.</string>
-    <string name="ai_prompt_classify_title">وسم الملابس تلقائيًا</string>
-    <string name="ai_prompt_classify_desc">يستخرج النوع والفئة والألوان والموسمية والمقاس والوسوم الأخرى من صورة الصنف. استخدم المكان المحجوز {LANGUAGE} للغة الاستجابة.</string>
-    <string name="ai_prompt_prediction_title">اقتراح طقم موجود</string>
-    <string name="ai_prompt_prediction_desc">الدور والقواعد لاختيار أحد أطقمك المحفوظة لليوم.</string>
-    <string name="ai_prompt_composition_title">تكوين طقم جديد</string>
-    <string name="ai_prompt_composition_desc">الدور والقواعد لتكوين طقم جديد تمامًا من خزانة ملابسك.</string>
-    <string name="ai_prompt_composer_title">مكون الأطقم</string>
-    <string name="ai_prompt_composer_desc">الدور والقواعد المستخدمة من قِبل المكون الموحد (أعداد الطبقات المستهدفة + الأصناف المطلوبة).</string>
-    <string name="ai_prompt_alternatives_title">بدائل تبديل الأصناف</string>
-    <string name="ai_prompt_alternatives_desc">الدور والقواعد لإيجاد ما يصل إلى 10 بدائل لصنف طقم واحد.</string>
-    <string name="ai_prompt_packing_title">قائمة توضيب سفر</string>
-    <string name="ai_prompt_packing_desc">الدور والقواعد لبناء قائمة توضيب من الخزانة + التوقعات.</string>
-    <string name="ai_prompt_gap_title">تحليل نواقص الخزانة</string>
-    <string name="ai_prompt_gap_desc">الدور والقواعد لاقتراح أفضل القطع المفقودة في خزانة ملابسك.</string>
 
     <!-- Shopping helper / Similarity Finder -->
     <string name="shop_description">التقط صورة لقطعة تفكر فيها وسنعرض لك الأصناف الأكثر تشابهًا بصريًا الموجودة بالفعل في خزانة ملابسك — بالكامل على الجهاز.</string>

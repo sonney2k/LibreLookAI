@@ -772,31 +772,7 @@
     <string name="ai_consider_preferences">Mga style preference</string>
     <string name="ai_consider_preferences_desc">Isama ang iyong free-text na style preferences.</string>
 
-    <string name="ai_prompts_title">Mga prompt</string>
-    <string name="ai_prompts_desc">Bawat Gemini call sa app ay gumagamit ng isa sa mga prompt sa ibaba. I-tap para palawakin at i-edit. Naka-imbak lokal; ang walang laman o default na text ay nag-aalis ng override.</string>
-    <string name="ai_prompts_reset_all">I-reset lahat</string>
-    <string name="ai_prompts_reset_all_title">I-reset lahat ng prompt?</string>
-    <string name="ai_prompts_reset_all_text">Ibabalik nito ang bawat prompt sa default text. Mawawala ang iyong na-save na mga override.</string>
-    <string name="ai_prompts_reset_all_confirm">I-reset lahat</string>
-    <string name="ai_prompt_reset">I-reset sa default</string>
-    <string name="ai_prompt_overridden_badge">na-edit</string>
 
-    <string name="ai_prompt_bg_title">Pag-aalis ng background</string>
-    <string name="ai_prompt_bg_desc">Ipinapadala kasama ng larawan ng damit para i-extract ang garment sa neutral na background.</string>
-    <string name="ai_prompt_classify_title">Auto-tag clothing</string>
-    <string name="ai_prompt_classify_desc">Kinukuha ang type, category, colors, seasonality, fit, at iba pang tag mula sa item image. Gamitin ang placeholder {LANGUAGE} para sa wika ng tugon.</string>
-    <string name="ai_prompt_prediction_title">Magmungkahi ng umiiral na outfit</string>
-    <string name="ai_prompt_prediction_desc">Role at rules para sa pagpili ng isa sa iyong saved outfits para sa araw na ito.</string>
-    <string name="ai_prompt_composition_title">Bumuo ng bagong outfit</string>
-    <string name="ai_prompt_composition_desc">Role at rules para sa pagbuo ng bagong outfit mula sa iyong wardrobe.</string>
-    <string name="ai_prompt_composer_title">Outfit composer</string>
-    <string name="ai_prompt_composer_desc">Role at rules na ginagamit ng unified composer (target layer counts + kinakailangang item).</string>
-    <string name="ai_prompt_alternatives_title">Item swap alternatives</string>
-    <string name="ai_prompt_alternatives_desc">Role at rules para sa paghahanap ng hanggang 10 alternatibo para sa isang outfit item.</string>
-    <string name="ai_prompt_packing_title">Travel packing list</string>
-    <string name="ai_prompt_packing_desc">Role at rules para sa pagbuo ng packing list mula sa wardrobe + forecast.</string>
-    <string name="ai_prompt_gap_title">Wardrobe gap analysis</string>
-    <string name="ai_prompt_gap_desc">Role at rules para sa pagmumungkahi ng mga pinakanawawalang piraso sa iyong wardrobe.</string>
 
     <!-- Shopping helper / Similarity Finder -->
     <string name="shop_description">Kumuha ng larawan ng piraso na iyong pinag-iisipan at ipapakita namin ang pinakamukhang katulad na mga item sa iyong wardrobe — buong on-device.</string>

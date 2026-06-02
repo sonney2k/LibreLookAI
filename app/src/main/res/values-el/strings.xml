@@ -772,31 +772,7 @@
     <string name="ai_consider_preferences">Προτιμήσεις στιλ</string>
     <string name="ai_consider_preferences_desc">Οι δικές σας προτιμήσεις.</string>
 
-    <string name="ai_prompts_title">Prompts</string>
-    <string name="ai_prompts_desc">Οι οδηγίες που χρησιμοποιεί το Gemini.</string>
-    <string name="ai_prompts_reset_all">Επαναφορά όλων</string>
-    <string name="ai_prompts_reset_all_title">Επαναφορά όλων των prompts;</string>
-    <string name="ai_prompts_reset_all_text">Αυτό θα επαναφέρει όλα τα prompts στις αρχικές οδηγίες.</string>
-    <string name="ai_prompts_reset_all_confirm">Επαναφορά</string>
-    <string name="ai_prompt_reset">Επαναφορά στο αρχικό</string>
-    <string name="ai_prompt_overridden_badge">τροποποιημένο</string>
 
-    <string name="ai_prompt_bg_title">Αφαίρεση φόντου</string>
-    <string name="ai_prompt_bg_desc">Οδηγίες για την εξαγωγή του ρούχου.</string>
-    <string name="ai_prompt_classify_title">Αυτόματη ετικέτα</string>
-    <string name="ai_prompt_classify_desc">Οδηγίες για τον εντοπισμό χαρακτηριστικών.</string>
-    <string name="ai_prompt_prediction_title">Πρόταση συνόλου</string>
-    <string name="ai_prompt_prediction_desc">Οδηγίες για την επιλογή συνόλου.</string>
-    <string name="ai_prompt_composition_title">Σύνθεση συνόλου</string>
-    <string name="ai_prompt_composition_desc">Οδηγίες για τη δημιουργία νέου συνόλου.</string>
-    <string name="ai_prompt_composer_title">Συνθέτης συνόλων</string>
-    <string name="ai_prompt_composer_desc">Οδηγίες για τον ενιαίο συνθέτη.</string>
-    <string name="ai_prompt_alternatives_title">Εναλλακτικές είδους</string>
-    <string name="ai_prompt_alternatives_desc">Οδηγίες για την εύρεση παρόμοιων ειδών.</string>
-    <string name="ai_prompt_packing_title">Λίστα ταξιδιού</string>
-    <string name="ai_prompt_packing_desc">Οδηγίες για το πακετάρισμα.</string>
-    <string name="ai_prompt_gap_title">Ανάλυση ελλείψεων</string>
-    <string name="ai_prompt_gap_desc">Οδηγίες για τον εντοπισμό ελλείψεων στη ντουλάπα.</string>
 
     <!-- Shopping helper / Similarity Finder -->
     <string name="shop_description">Φωτογραφίστε ένα είδος και θα βρούμε τα πιο παρόμοια στη ντουλάπα σας — όλα στη συσκευή σας.</string>

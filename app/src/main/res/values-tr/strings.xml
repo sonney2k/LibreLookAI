@@ -772,31 +772,7 @@
     <string name="ai_consider_preferences">Stil tercihleri</string>
     <string name="ai_consider_preferences_desc">Serbest metin stil tercihlerinizi dahil et.</string>
 
-    <string name="ai_prompts_title">İstemler</string>
-    <string name="ai_prompts_desc">Uygulamadaki her Gemini çağrısı aşağıdaki istemlerden birini kullanır. Genişletmek ve düzenlemek için dokunun. Yerel olarak saklanır; boş veya varsayılan metin geçersiz kılmayı temizler.</string>
-    <string name="ai_prompts_reset_all">Tümünü sıfırla</string>
-    <string name="ai_prompts_reset_all_title">Tüm istemler sıfırlansın mı?</string>
-    <string name="ai_prompts_reset_all_text">Bu, her istemi varsayılan metnine geri döndürür. Kaydedilen geçersiz kılmalarınız kaybolacaktır.</string>
-    <string name="ai_prompts_reset_all_confirm">Tümünü sıfırla</string>
-    <string name="ai_prompt_reset">Varsayılana sıfırla</string>
-    <string name="ai_prompt_overridden_badge">düzenlendi</string>
 
-    <string name="ai_prompt_bg_title">Arka plan kaldırma</string>
-    <string name="ai_prompt_bg_desc">Giysiyi nötr bir arka plana çıkarmak için bir kıyafet fotoğrafıyla birlikte gönderilir.</string>
-    <string name="ai_prompt_classify_title">Kıyafeti otomatik etiketle</string>
-    <string name="ai_prompt_classify_desc">Bir öğe resminden tür, kategori, renkler, mevsimsellik, kalıp ve diğer etiketleri çıkarır. Yanıt dili için {LANGUAGE} yer tutucusunu kullanın.</string>
-    <string name="ai_prompt_prediction_title">Mevcut bir kombini öner</string>
-    <string name="ai_prompt_prediction_desc">Bugün için kaydedilmiş kombinlerinizden birini seçme rolü ve kuralları.</string>
-    <string name="ai_prompt_composition_title">Yeni bir kombin oluştur</string>
-    <string name="ai_prompt_composition_desc">Gardırobunuzdan yepyeni bir kombin oluşturma rolü ve kuralları.</string>
-    <string name="ai_prompt_composer_title">Kombin oluşturucu</string>
-    <string name="ai_prompt_composer_desc">Birleşik oluşturucu tarafından kullanılan rol ve kurallar (hedef katman sayıları + zorunlu ögeler).</string>
-    <string name="ai_prompt_alternatives_title">Öge değiştirme alternatifleri</string>
-    <string name="ai_prompt_alternatives_desc">Tek bir kombin ögesi için 10\'a kadar alternatif bulma rolü ve kuralları.</string>
-    <string name="ai_prompt_packing_title">Seyahat hazırlık listesi</string>
-    <string name="ai_prompt_packing_desc">Gardırop + tahminden bir hazırlık listesi oluşturma rolü ve kuralları.</string>
-    <string name="ai_prompt_gap_title">Gardırop eksik analizi</string>
-    <string name="ai_prompt_gap_desc">Gardırobunuzdaki en önemli eksik parçaları önerme rolü ve kuralları.</string>
 
     <!-- Shopping helper / Similarity Finder -->
     <string name="shop_description">Düşündüğünüz bir parçanın fotoğrafını çekin, biz de tamamen cihaz üzerinde gardırobunuzdaki en çok benzeyen ögeleri gösterelim.</string>

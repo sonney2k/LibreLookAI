@@ -772,31 +772,7 @@
     <string name="ai_consider_preferences">Preferências de estilo</string>
     <string name="ai_consider_preferences_desc">Inclui suas preferências de estilo em texto livre.</string>
 
-    <string name="ai_prompts_title">Prompts</string>
-    <string name="ai_prompts_desc">Toda chamada Gemini no app usa um dos prompts abaixo. Toque para expandir e editar. Armazenados localmente; texto vazio ou padrão limpa a substituição.</string>
-    <string name="ai_prompts_reset_all">Resetar todos</string>
-    <string name="ai_prompts_reset_all_title">Resetar todos os prompts?</string>
-    <string name="ai_prompts_reset_all_text">Isso restaura cada prompt ao texto padrão. Suas substituições salvas serão perdidas.</string>
-    <string name="ai_prompts_reset_all_confirm">Resetar todos</string>
-    <string name="ai_prompt_reset">Restaurar padrão</string>
-    <string name="ai_prompt_overridden_badge">editado</string>
 
-    <string name="ai_prompt_bg_title">Remoção de fundo</string>
-    <string name="ai_prompt_bg_desc">Enviado com uma foto de roupa para extrair a peça em um fundo neutro.</string>
-    <string name="ai_prompt_classify_title">Etiquetar roupas automaticamente</string>
-    <string name="ai_prompt_classify_desc">Extrai tipo, categoria, cores, estação, caimento e outras tags de uma imagem de peça. Use o placeholder {LANGUAGE} para o idioma da resposta.</string>
-    <string name="ai_prompt_prediction_title">Sugerir um look existente</string>
-    <string name="ai_prompt_prediction_desc">Papel e regras para escolher um dos seus looks salvos para hoje.</string>
-    <string name="ai_prompt_composition_title">Compor um novo look</string>
-    <string name="ai_prompt_composition_desc">Papel e regras para compor um look totalmente novo com seu guarda-roupa.</string>
-    <string name="ai_prompt_composer_title">Compositor de looks</string>
-    <string name="ai_prompt_composer_desc">Papel e regras usados pelo compositor unificado (contagens-alvo de camadas + peças obrigatórias).</string>
-    <string name="ai_prompt_alternatives_title">Alternativas de troca de peça</string>
-    <string name="ai_prompt_alternatives_desc">Papel e regras para encontrar até 10 alternativas para uma única peça de look.</string>
-    <string name="ai_prompt_packing_title">Lista de mala de viagem</string>
-    <string name="ai_prompt_packing_desc">Papel e regras para criar uma lista de mala a partir do guarda-roupa + previsão.</string>
-    <string name="ai_prompt_gap_title">Análise de lacunas do guarda-roupa</string>
-    <string name="ai_prompt_gap_desc">Papel e regras para sugerir as principais peças que faltam no seu guarda-roupa.</string>
 
     <!-- Assistente de compras / Busca por similaridade -->
     <string name="shop_description">Tire uma foto de uma peça que você está considerando e nós mostraremos as peças visualmente mais parecidas que já estão no seu guarda-roupa — totalmente no dispositivo.</string>

@@ -772,31 +772,7 @@
     <string name="ai_consider_preferences">Stilpreferanser</string>
     <string name="ai_consider_preferences_desc">Inkluder fritekst-stilpreferansene dine.</string>
 
-    <string name="ai_prompts_title">Prompter</string>
-    <string name="ai_prompts_desc">Hvert Gemini-kall i appen bruker en av promptene nedenfor. Trykk for å utvide og redigere. Lagres lokalt; tom eller standardtekst fjerner tilpasningen.</string>
-    <string name="ai_prompts_reset_all">Tilbakestill alle</string>
-    <string name="ai_prompts_reset_all_title">Tilbakestille alle prompter?</string>
-    <string name="ai_prompts_reset_all_text">Dette gjenoppretter alle prompter til standardteksten. De lagrede tilpasningene dine går tapt.</string>
-    <string name="ai_prompts_reset_all_confirm">Tilbakestill alle</string>
-    <string name="ai_prompt_reset">Tilbakestill til standard</string>
-    <string name="ai_prompt_overridden_badge">redigert</string>
 
-    <string name="ai_prompt_bg_title">Bakgrunnsfjerning</string>
-    <string name="ai_prompt_bg_desc">Sendes med et klesbilde for å trekke ut plagget mot en nøytral bakgrunn.</string>
-    <string name="ai_prompt_classify_title">Auto-tagg klær</string>
-    <string name="ai_prompt_classify_desc">Trekker ut type, kategori, farger, sesong, passform og andre tagger fra et plaggbilde. Bruk plassholderen {LANGUAGE} for svarspråket.</string>
-    <string name="ai_prompt_prediction_title">Foreslå et eksisterende antrekk</string>
-    <string name="ai_prompt_prediction_desc">Rolle og regler for å velge ett av dine lagrede antrekk for i dag.</string>
-    <string name="ai_prompt_composition_title">Komponer et nytt antrekk</string>
-    <string name="ai_prompt_composition_desc">Rolle og regler for å komponere et helt nytt antrekk fra garderoben din.</string>
-    <string name="ai_prompt_composer_title">Antrekk-composer</string>
-    <string name="ai_prompt_composer_desc">Rolle og regler brukt av den forente composeren (mållagstellinger + obligatoriske plagg).</string>
-    <string name="ai_prompt_alternatives_title">Plaggbytte-alternativer</string>
-    <string name="ai_prompt_alternatives_desc">Rolle og regler for å finne opptil 10 alternativer for et enkelt antrekkplagg.</string>
-    <string name="ai_prompt_packing_title">Pakkeliste for reise</string>
-    <string name="ai_prompt_packing_desc">Rolle og regler for å bygge en pakkeliste fra garderobe + prognose.</string>
-    <string name="ai_prompt_gap_title">Garderobehull-analyse</string>
-    <string name="ai_prompt_gap_desc">Rolle og regler for å foreslå de viktigste manglende plaggene i garderoben din.</string>
 
     <!-- Shoppinghjelper / Likhetssøk -->
     <string name="shop_description">Ta et bilde av et plagg du vurderer, så viser vi de mest visuelt like plaggene som allerede er i garderoben din — helt på enheten.</string>

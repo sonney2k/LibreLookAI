@@ -772,31 +772,7 @@
     <string name="ai_consider_preferences">Tyylimieltymykset</string>
     <string name="ai_consider_preferences_desc">Sisällytä vapaatekstiset tyylimieltymyksesi.</string>
 
-    <string name="ai_prompts_title">Kehotteet</string>
-    <string name="ai_prompts_desc">Jokainen Gemini-kutsu sovelluksessa käyttää yhtä alla olevista kehotteista. Napauta laajentaaksesi ja muokataksesi. Tallennetaan paikallisesti; tyhjä tai oletusteksti tyhjentää muokkauksen.</string>
-    <string name="ai_prompts_reset_all">Nollaa kaikki</string>
-    <string name="ai_prompts_reset_all_title">Nollataanko kaikki kehotteet?</string>
-    <string name="ai_prompts_reset_all_text">Tämä palauttaa kaikki kehotteet oletustekstiinsä. Tallennetut mukautuksesi menetetään.</string>
-    <string name="ai_prompts_reset_all_confirm">Nollaa kaikki</string>
-    <string name="ai_prompt_reset">Palauta oletukseen</string>
-    <string name="ai_prompt_overridden_badge">muokattu</string>
 
-    <string name="ai_prompt_bg_title">Taustanpoisto</string>
-    <string name="ai_prompt_bg_desc">Lähetetään vaatekuvan kanssa erottamaan vaate neutraalille taustalle.</string>
-    <string name="ai_prompt_classify_title">Automerkitse vaatteet</string>
-    <string name="ai_prompt_classify_desc">Erottaa tyypin, kategorian, värit, sesongin, istuvuuden ja muut tunnisteet vaatekuvasta. Käytä paikkamerkkiä {LANGUAGE} vastauskieleen.</string>
-    <string name="ai_prompt_prediction_title">Ehdota olemassa olevaa asua</string>
-    <string name="ai_prompt_prediction_desc">Rooli ja säännöt yhden tallennetun asusi valitsemiseen tälle päivälle.</string>
-    <string name="ai_prompt_composition_title">Kokoa uusi asu</string>
-    <string name="ai_prompt_composition_desc">Rooli ja säännöt täysin uuden asun kokoamiseen vaatekaapistasi.</string>
-    <string name="ai_prompt_composer_title">Asukokoaja</string>
-    <string name="ai_prompt_composer_desc">Rooli ja säännöt, joita yhtenäinen kokoaja käyttää (kerrosten kohdemäärät + pakolliset vaatteet).</string>
-    <string name="ai_prompt_alternatives_title">Vaatevaihdon vaihtoehdot</string>
-    <string name="ai_prompt_alternatives_desc">Rooli ja säännöt jopa 10 vaihtoehdon löytämiseen yhdelle asuvaatteelle.</string>
-    <string name="ai_prompt_packing_title">Matkan pakkauslista</string>
-    <string name="ai_prompt_packing_desc">Rooli ja säännöt pakkauslistan rakentamiseen vaatekaapista + ennusteesta.</string>
-    <string name="ai_prompt_gap_title">Vaatekaapin aukkoanalyysi</string>
-    <string name="ai_prompt_gap_desc">Rooli ja säännöt vaatekaappisi tärkeimpien puuttuvien vaatteiden ehdottamiseen.</string>
 
     <!-- Ostosapuri / Samankaltaisuushaku -->
     <string name="shop_description">Ota kuva harkitsemastasi vaatteesta ja näytämme visuaalisesti samankaltaisimmat vaatteet, jotka ovat jo vaatekaapissasi — täysin laitteella.</string>
