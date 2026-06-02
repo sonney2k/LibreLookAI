@@ -374,7 +374,10 @@ private fun IdentityCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
             ) {
-                com.librelookai.billing.CostBadge(com.librelookai.gemini.GeminiActionId.CLASSIFY_CLOTHING)
+                com.librelookai.billing.CostBadge(
+                    com.librelookai.gemini.GeminiActionId.CLASSIFY_CLOTHING,
+                    tokens = com.librelookai.billing.rememberClassifyCostTokens(image.localPath),
+                )
                 Icon(
                     androidx.compose.material.icons.Icons.Default.AutoAwesome,
                     contentDescription = null,

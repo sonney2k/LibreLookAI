@@ -93,6 +93,50 @@ internal fun OutfitsViewModel.submitPresetPrediction(preset: String, prefs: User
         doTriggerPrediction(prefs, weather, images, history)
     }
 
+/**
+ * Pre-tap BYOK cost estimate for a prediction. Reuses [buildPredictionPrompt] with the current
+ * setup state so the token count matches what [doTriggerPrediction] will send — only the
+ * Google-Search trends block is excluded (it is small next to the wardrobe/styles JSON and not
+ * known until the call runs). Pure + cheap enough to run off the main thread per input change.
+ */
+internal fun OutfitsViewModel.estimatePredictionTokens(
+        prefs: UserPreferences?,
+        weather: WeatherData?,
+        images: List<DriveImage>,
+    ): com.librelookai.gemini.CostTokens {
+        val setup = _state.value
+        val styles = setup.outfits
+        val filteredImages = if (setup.composerSourceFolderIds.isEmpty()) images
+            else images.filter { it.folderId in setup.composerSourceFolderIds }
+        val suggestionCount = setup.composerSuggestionCount.coerceIn(1, 10)
+        val prompt = buildPredictionPrompt(
+            preamble        = PromptStore.get(getApplication(), PromptKey.PREDICTION),
+            prefs           = prefs,
+            weather         = weather,
+            cityName        = weather?.cityName,
+            countryCode     = deviceCountryCode(),
+            fashionTrends   = null,
+            images          = filteredImages,
+            styles          = styles,
+            wearHistory     = setup.wearHistory,
+            feedbackHistory = setup.feedbackHistory,
+            weatherMode     = setup.composerWeatherMode,
+            manualSeason    = setup.composerManualSeason,
+            manualTempC     = setup.composerManualTempC,
+            manualPrecip    = setup.composerManualPrecip,
+            vibes           = setup.composerVibes,
+            forecastDate    = setup.composerForecastDate,
+            suggestionCount = suggestionCount,
+            considerationsOverride = setup.composerConsiderationsOverride,
+        )
+        return com.librelookai.gemini.CostTokens(
+            inputTokens = com.librelookai.gemini.TokenEstimator.textTokens(prompt),
+            // Response is {"suggestions":[{outfitId,reason}...]} — scales with the chosen count.
+            outputTokens = 40 + 45 * suggestionCount,
+            outputIsImage = false,
+        )
+    }
+
 internal fun OutfitsViewModel.doTriggerPrediction(
         prefs: UserPreferences?,
         weather: WeatherData?,

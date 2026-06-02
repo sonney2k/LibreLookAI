@@ -212,6 +212,47 @@ internal fun OutfitsViewModel.addComposerTag(tag: String) {
 internal fun OutfitsViewModel.removeComposerTag(tag: String) = _state.update { s -> s.copy(composerTags = s.composerTags - tag) }
 internal fun OutfitsViewModel.updateComposerFeedback(s: String) = _state.update { it.copy(composerFeedback = s) }
 
+/**
+ * Pre-tap BYOK cost estimate for an AI composer suggestion. Reuses [buildComposerPrompt] with the
+ * current draft so the token count matches what [enhanceComposerWithAi] will send, minus the
+ * Google-Search trends block (small vs the wardrobe JSON, unknown until the call runs).
+ */
+internal fun OutfitsViewModel.estimateComposerTokens(
+        prefs: UserPreferences?,
+        weather: WeatherData?,
+        images: List<DriveImage>,
+    ): com.librelookai.gemini.CostTokens {
+        val s = _state.value
+        val suggestionCount = s.composerSuggestionCount.coerceIn(1, 10)
+        val prompt = buildComposerPrompt(
+            preamble         = PromptStore.get(getApplication(), PromptKey.COMPOSER),
+            prefs            = prefs,
+            prefOverride     = prefs?.preferences.orEmpty(),
+            weatherAuto      = if (s.composerWeatherMode == ComposerWeatherMode.AUTO) weather else null,
+            weatherManual    = if (s.composerWeatherMode == ComposerWeatherMode.MANUAL) Triple(
+                s.composerManualSeason, s.composerManualTempC, s.composerManualPrecip
+            ) else null,
+            vibes            = s.composerVibes,
+            slots            = s.composerSlots,
+            images           = images,
+            countryCode      = deviceCountryCode(),
+            cityName         = weather?.cityName,
+            fashionTrends    = null,
+            feedbackHistory  = s.composerFeedbackHistory,
+            language         = prefs?.language ?: AppLanguage.ENGLISH,
+            suggestionCount  = suggestionCount,
+            considerationsOverride = s.composerConsiderationsOverride,
+            tripContext      = s.composerTripContext,
+            wearHistory      = s.wearHistory,
+        )
+        return com.librelookai.gemini.CostTokens(
+            inputTokens = com.librelookai.gemini.TokenEstimator.textTokens(prompt),
+            // Each variant is a slot id list + a short name/description.
+            outputTokens = 60 + 120 * suggestionCount,
+            outputIsImage = false,
+        )
+    }
+
     /** Asks Gemini to complete the composer draft into a full outfit. */
 internal fun OutfitsViewModel.enhanceComposerWithAi(
         prefs: UserPreferences?,

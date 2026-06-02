@@ -60,6 +60,7 @@ internal fun BulkRefineSection(
     /** Selected source-closet names. null hides the picker (e.g. only one closet exists). */
     closetNames: List<String>? = null,
     onPickClosets: () -> Unit = {},
+    tokens: com.librelookai.gemini.CostTokens? = null,
 ) {
     val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
     var text by remember { mutableStateOf("") }
@@ -174,7 +175,10 @@ internal fun BulkRefineSection(
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            com.librelookai.billing.CostBadge(com.librelookai.gemini.GeminiActionId.GENERATE_TEXT)
+            com.librelookai.billing.CostBadge(
+                com.librelookai.gemini.GeminiActionId.GENERATE_TEXT,
+                tokens = tokens,
+            )
             Spacer(Modifier.width(8.dp))
             TripGradientButton(
                 label = stringResource(R.string.trip_bulk_refine_run),

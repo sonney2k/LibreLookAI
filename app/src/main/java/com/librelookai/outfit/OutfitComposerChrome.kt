@@ -214,6 +214,7 @@ internal fun ComposerEditBottomBar(
     onGenerateWithAi: () -> Unit,
     onSave: () -> Unit,
     bottomPadding: Dp,
+    aiTokens: com.librelookai.gemini.CostTokens? = null,
 ) {
     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
     Row(
@@ -232,7 +233,10 @@ internal fun ComposerEditBottomBar(
                 modifier = Modifier.weight(1f).height(48.dp),
                 shape = RoundedCornerShape(24.dp),
             ) {
-                com.librelookai.billing.CostBadge(com.librelookai.gemini.GeminiActionId.OUTFIT_SUGGESTION)
+                com.librelookai.billing.CostBadge(
+                    com.librelookai.gemini.GeminiActionId.OUTFIT_SUGGESTION,
+                    tokens = aiTokens,
+                )
                 Icon(Icons.Default.AutoAwesome, contentDescription = null, modifier = Modifier.size(16.dp))
                 Spacer(Modifier.width(6.dp))
                 Text(

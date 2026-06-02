@@ -29,6 +29,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.librelookai.R
 import com.librelookai.gemini.ApiKeyStore
+import com.librelookai.gemini.CostTokens
 import com.librelookai.gemini.GeminiActionId
 import com.librelookai.gemini.ModelPricingClient
 import com.librelookai.gemini.PricingClient
@@ -46,11 +47,16 @@ import com.librelookai.gemini.PricingClient
  * painted in the primary colour. Long-press → tooltip with the exact value
  * (coin count in managed mode, EUR amount in BYOK). Hidden when no API key
  * and no proxy are configured.
+ *
+ * In BYOK mode the badge prices the **actual upcoming payload** when the caller
+ * passes [tokens] (built via `TokenEstimator` from the real prompt + images);
+ * otherwise it falls back to the coarse per-action [estimateTokensFor] table.
  */
 @Composable
 fun CostBadge(
     action: GeminiActionId,
     bulkCount: Int = 1,
+    tokens: CostTokens? = null,
     modifier: Modifier = Modifier,
 ) {
     val ctx = LocalContext.current
@@ -65,11 +71,13 @@ fun CostBadge(
     val tooltip: String
     when {
         byok -> {
-            val (inT, outT) = estimateTokensFor(action, items)
+            val t = tokens ?: estimateTokensFor(action, items).let { (inT, outT) ->
+                CostTokens(inT, outT, ModelPricingClient.isImageOutputModel(action.model))
+            }
             val eur = rates.ratesFor(action.model)
-                .eurFor(inT, outT, ModelPricingClient.isImageOutputModel(action.model))
+                .eurFor(t.inputTokens, t.outputTokens, t.outputIsImage)
             tier = tierForEur(eur)
-            tooltip = "~€${formatEurBadge(eur)}"
+            tooltip = formatEurBadge(eur)
         }
         managedAvailable -> {
             val perCall = costs[action.key] ?: action.fallbackCost
@@ -136,10 +144,10 @@ fun CostTierLegend(modifier: Modifier = Modifier) {
     val byok = ApiKeyStore.get(ctx).isNotBlank()
     val rows = if (byok) {
         listOf(
-            1 to "≤ €0.005 per call",
-            2 to "≤ €0.05",
-            3 to "≤ €0.50",
-            4 to "> €0.50",
+            1 to "< 1¢ per call",
+            2 to "1–5¢",
+            3 to "5–20¢",
+            4 to "> 20¢",
         )
     } else {
         listOf(
@@ -186,11 +194,15 @@ fun CostTierLegend(modifier: Modifier = Modifier) {
     }
 }
 
-/** Public tier mapping so the Insights legend renders the same scale. */
+/**
+ * Public tier mapping so the legend renders the same scale. Round-cent decades:
+ * `€ <1¢ · €€ 1–5¢ · €€€ 5–20¢ · €€€€ >20¢` per call — cleanly separates text
+ * actions (€), single-image actions (€€€), and bulk/multi-image (€€€€).
+ */
 fun tierForEur(eur: Double): Int = when {
-    eur <= 0.005 -> 1
-    eur <= 0.05 -> 2
-    eur <= 0.50 -> 3
+    eur < 0.01 -> 1
+    eur < 0.05 -> 2
+    eur < 0.20 -> 3
     else -> 4
 }
 
@@ -349,11 +361,10 @@ private fun estimateTokensFor(action: GeminiActionId, items: Int): Pair<Int, Int
     return input to output
 }
 
-/** Format a EUR amount for the badge. Mirrors UsageScreen.formatEur. */
+/** Tooltip text for the BYOK badge — concrete estimate, with a sub-cent floor. */
 private fun formatEurBadge(eur: Double): String = when {
-    eur < 0.01 -> "<0.01"
-    eur < 1.0 -> String.format("%.2f", eur)
-    eur < 100.0 -> String.format("%.2f", eur)
-    else -> String.format("%.0f", eur)
+    eur < 0.01 -> "< €0.01"
+    eur < 100.0 -> "≈ €" + String.format("%.2f", eur)
+    else -> "≈ €" + String.format("%.0f", eur)
 }
 

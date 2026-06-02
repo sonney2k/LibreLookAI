@@ -173,6 +173,51 @@ fun PredictionSetupDialog(
                         )
                     }
                     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                    // Exact BYOK cost: re-derive the real prediction prompt off the main thread
+                    // whenever an input that changes its size changes (wardrobe, styles, prefs,
+                    // suggestion count, source filter, vibes, weather mode).
+                    // Keys must mirror every prompt-affecting input of buildPrediction/ComposerPrompt
+                    // so the estimate refreshes when any Tune-AI pill is tapped — Considers chips and
+                    // Expert-tags (e.g. "only consider color") both live in composerConsiderationsOverride,
+                    // which shrinks per-item JSON and therefore the cost.
+                    val predictionTokens by androidx.compose.runtime.produceState<com.librelookai.gemini.CostTokens?>(
+                        initialValue = null,
+                        crossClosetImages,
+                        s.outfits,
+                        profile.preferences,
+                        weather.data,
+                        s.composerSuggestionCount,
+                        s.composerSourceFolderIds,
+                        s.composerVibes,
+                        s.composerSlots,
+                        s.predictionSetupSource,
+                        s.composerConsiderationsOverride,
+                        s.composerWeatherMode,
+                        s.composerManualSeason,
+                        s.composerManualTempC,
+                        s.composerManualPrecip,
+                        s.composerForecastDate,
+                        s.composerTripContext,
+                        s.wearHistory,
+                    ) {
+                        value = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Default) {
+                            // Generate-with-AI from the composer routes to enhanceComposerWithAi, so
+                            // price the composer prompt; the standalone setup prices the prediction.
+                            if (s.predictionSetupSource == PredictionSetupSource.COMPOSER) {
+                                outfitsViewModel.estimateComposerTokens(
+                                    prefs = profile.preferences,
+                                    weather = weather.data,
+                                    images = crossClosetImages,
+                                )
+                            } else {
+                                outfitsViewModel.estimatePredictionTokens(
+                                    prefs = profile.preferences,
+                                    weather = weather.data,
+                                    images = crossClosetImages,
+                                )
+                            }
+                        }
+                    }
                     TuneAiBottomBar(
                         ctaLabel = stringResource(ctaRes),
                         bulkCount = s.composerSuggestionCount,
@@ -184,6 +229,7 @@ fun PredictionSetupDialog(
                                 images = crossClosetImages,
                             )
                         },
+                        tokens = predictionTokens,
                     )
                 }
             }
@@ -282,6 +328,7 @@ private fun TuneAiBottomBar(
     bulkCount: Int,
     onCancel: () -> Unit,
     onGenerate: () -> Unit,
+    tokens: com.librelookai.gemini.CostTokens? = null,
 ) {
     Row(
         modifier = Modifier
@@ -322,6 +369,7 @@ private fun TuneAiBottomBar(
             com.librelookai.billing.CostBadge(
                 action = com.librelookai.gemini.GeminiActionId.GENERATE_TEXT,
                 bulkCount = bulkCount,
+                tokens = tokens,
             )
             Icon(Icons.Default.AutoAwesome, contentDescription = null, modifier = Modifier.size(16.dp))
             Spacer(Modifier.width(6.dp))

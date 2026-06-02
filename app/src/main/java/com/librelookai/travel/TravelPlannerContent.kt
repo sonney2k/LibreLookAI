@@ -183,6 +183,25 @@ internal fun TravelPlannerContent(
         } // Box
         // Sticky generate button — pinned at the bottom of the planner.
         Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
+            val packingTokens by androidx.compose.runtime.produceState<com.librelookai.gemini.CostTokens?>(
+                initialValue = null,
+                sourceImages,
+                sourceStyles,
+                profileState.preferences,
+                state.days,
+                state.outfitCount,
+                state.goal,
+                state.vibes,
+                state.considerationsOverride,
+            ) {
+                value = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Default) {
+                    travelViewModel.estimatePackingTokens(
+                        prefs = profileState.preferences,
+                        images = sourceImages,
+                        styles = sourceStyles,
+                    )
+                }
+            }
             GenerateButton(
                 hasResult = state.packingList != null,
                 enabled = state.destination.isNotBlank() && !isWorking && !isOffline,
@@ -194,6 +213,7 @@ internal fun TravelPlannerContent(
                         styles = sourceStyles,
                     )
                 },
+                tokens = packingTokens,
             )
         }
     } // Column

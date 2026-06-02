@@ -292,6 +292,29 @@ class TripsViewModel(app: Application) : AndroidViewModel(app) {
      * (e.g. "brighter clothes", "pack lighter — fewer distinct items"). The result is stored as an
      * un-persisted preview ([refinePreview]); nothing is saved until [applyRefinePreview].
      */
+    /**
+     * Pre-tap BYOK cost estimate for a bulk trip refine. Fully exact — the trip (incl. forecast)
+     * and current outfits are already known; reuses [buildBulkRefinePrompt] verbatim.
+     */
+    fun estimateBulkRefineTokens(
+        tripId: String,
+        instruction: String,
+        images: List<DriveImage>,
+        currentOutfits: List<Outfit>,
+        prefs: com.librelookai.settings.UserPreferences? = null,
+    ): com.librelookai.gemini.CostTokens? {
+        val trip = _state.value.trips.find { it.id == tripId } ?: return null
+        val tripOutfits = currentOutfits.filter { it.id in trip.outfitIds }
+        if (tripOutfits.isEmpty()) return null
+        val prompt = buildBulkRefinePrompt(trip, tripOutfits, instruction.trim(), images, prefs)
+        return com.librelookai.gemini.CostTokens(
+            inputTokens = com.librelookai.gemini.TokenEstimator.textTokens(prompt),
+            // One updated record per outfit: id + item ids + name + short description.
+            outputTokens = 40 + 80 * tripOutfits.size,
+            outputIsImage = false,
+        )
+    }
+
     fun refineAllOutfits(
         tripId: String,
         instruction: String,
@@ -377,7 +400,7 @@ class TripsViewModel(app: Application) : AndroidViewModel(app) {
         _state.update { it.copy(refinePreviewTripId = null, refinePreview = emptyMap()) }
 }
 
-private fun buildBulkRefinePrompt(
+internal fun buildBulkRefinePrompt(
     trip: Trip,
     outfits: List<Outfit>,
     instruction: String,

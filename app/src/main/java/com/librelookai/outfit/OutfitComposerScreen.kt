@@ -367,6 +367,34 @@ fun OutfitComposerScreen(
                             val aiCanGenerate = effectiveSlots.any {
                                 !(it.isLocked && it.selectedItemId != null)
                             }
+                            // Exact BYOK cost for the composer suggestion, off the main thread.
+                            // Keys mirror every prompt-affecting input of buildComposerPrompt so the
+                            // badge refreshes on any Tune-AI pill tap (Considers / Expert-tags like
+                            // "only consider color" / weather mode all change the payload size).
+                            val composerAiTokens by androidx.compose.runtime.produceState<com.librelookai.gemini.CostTokens?>(
+                                initialValue = null,
+                                crossClosetImages,
+                                s.composerSlots,
+                                s.composerSuggestionCount,
+                                s.composerVibes,
+                                profile.preferences,
+                                weather.data,
+                                s.composerConsiderationsOverride,
+                                s.composerWeatherMode,
+                                s.composerManualSeason,
+                                s.composerManualTempC,
+                                s.composerManualPrecip,
+                                s.composerTripContext,
+                                s.wearHistory,
+                            ) {
+                                value = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Default) {
+                                    stylesViewModel.estimateComposerTokens(
+                                        prefs = profile.preferences,
+                                        weather = weather.data,
+                                        images = crossClosetImages,
+                                    )
+                                }
+                            }
                             ComposerEditBottomBar(
                                 saveEnabled = effectiveSlots.isNotEmpty() &&
                                     effectiveSlots.all { it.selectedItemId != null },
@@ -384,6 +412,7 @@ fun OutfitComposerScreen(
                                     stylesViewModel.prepareSave()
                                 },
                                 bottomPadding = effectiveBottom,
+                                aiTokens = composerAiTokens,
                             )
                         }
                     }

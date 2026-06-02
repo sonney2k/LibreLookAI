@@ -191,7 +191,13 @@ internal fun TryOnComposerContent(
                 enabled = chosenImages.isNotEmpty() && !state.isGenerating,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                com.librelookai.billing.CostBadge(com.librelookai.gemini.GeminiActionId.TRY_ON_OUTFIT)
+                com.librelookai.billing.CostBadge(
+                    com.librelookai.gemini.GeminiActionId.TRY_ON_OUTFIT,
+                    tokens = com.librelookai.billing.rememberTryOnCostTokens(
+                        personPaths = referencePhotoPaths,
+                        itemPaths = chosenImages.map { it.localPath },
+                    ),
+                )
                 Icon(Icons.Default.AutoAwesome, null, modifier = Modifier.size(18.dp))
                 Spacer(Modifier.width(8.dp))
                 Text(stringResource(R.string.tryon_generate))

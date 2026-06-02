@@ -314,6 +314,7 @@ private fun LocalBgRemovalDialog(
                     ) {
                         com.librelookai.billing.CostBadge(
                             action = com.librelookai.gemini.GeminiActionId.REMOVE_BACKGROUND,
+                            tokens = com.librelookai.billing.rememberRemoveBgCostTokens(rawFilePath),
                         )
                         Text(stringResource(R.string.local_bg_skip))
                     }

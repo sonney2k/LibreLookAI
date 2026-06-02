@@ -47,9 +47,32 @@ internal fun IdentifyGapsTab(
     profileViewModel: ProfileViewModel,
 ) {
     val isOffline = LocalIsOffline.current
+    val ctx = androidx.compose.ui.platform.LocalContext.current
     val state by gapViewModel.state.collectAsState()
     val wardrobeState by wardrobeViewModel.state.collectAsState()
     val profileState by profileViewModel.state.collectAsState()
+
+    // Exact BYOK cost: tokenize the real gap-analysis prompt (wardrobe JSON dominates the input
+    // and scales with closet size) off the main thread; falls back to the per-action table until
+    // the first computation lands. Mirrors WardrobeGapViewModel.buildGapPrompt to avoid drift.
+    val gapTokens by androidx.compose.runtime.produceState<com.librelookai.gemini.CostTokens?>(
+        initialValue = null,
+        wardrobeState.images,
+        profileState.preferences,
+    ) {
+        value = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Default) {
+            val prompt = com.librelookai.wardrobe.buildGapPrompt(
+                com.librelookai.gemini.PromptStore.get(ctx, com.librelookai.gemini.PromptKey.GAP),
+                wardrobeState.images,
+                profileState.preferences,
+            )
+            com.librelookai.gemini.CostTokens(
+                inputTokens = com.librelookai.gemini.TokenEstimator.textTokens(prompt),
+                outputTokens = 600, // suggestions + summary JSON — fixed-ish text output
+                outputIsImage = false,
+            )
+        }
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
@@ -77,7 +100,10 @@ internal fun IdentifyGapsTab(
                         enabled = !state.isAnalyzing && wardrobeState.images.isNotEmpty() && !isOffline,
                         modifier = Modifier.fillMaxWidth(),
                     ) {
-                        com.librelookai.billing.CostBadge(com.librelookai.gemini.GeminiActionId.GENERATE_TEXT)
+                        com.librelookai.billing.CostBadge(
+                            com.librelookai.gemini.GeminiActionId.GENERATE_TEXT,
+                            tokens = gapTokens,
+                        )
                         Icon(Icons.Default.AutoAwesome, contentDescription = null, modifier = Modifier.size(18.dp))
                         Spacer(Modifier.width(8.dp))
                         Text(if (state.analysis != null) stringResource(R.string.gap_reanalyze) else stringResource(R.string.gap_analyze))

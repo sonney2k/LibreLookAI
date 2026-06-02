@@ -9,6 +9,33 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
+/**
+ * The exact text prompt sent for a try-on, given the person/item photo counts. Extracted so the
+ * pre-tap BYOK cost estimate ([com.librelookai.billing.rememberTryOnCostTokens]) can size the real
+ * payload without drifting from what [tryOnOutfit] actually sends.
+ */
+internal fun buildTryOnPrompt(personCount: Int, itemCount: Int, preferences: String): String {
+    val prefsHint = preferences.trim().takeIf { it.isNotEmpty() }
+        ?.let { " The person's style preferences: $it." } ?: ""
+    val personCountHint = when (personCount) {
+        1 -> "a single frontal reference photo of the person"
+        2 -> "two reference photos of the person — the FIRST is the frontal photo (authoritative for the face), the second is an additional angle"
+        else -> "$personCount reference photos of the person — the FIRST is the frontal photo (authoritative for the face), the rest are additional angles"
+    }
+    val itemCountHint = if (itemCount == 1) "this clothing item" else "these $itemCount clothing items"
+    return """
+        You are given $personCountHint, followed by $itemCountHint.
+        Generate a single photorealistic full-body image of the same person wearing $itemCountHint layered realistically as an outfit.
+
+        CRITICAL GARMENT INSTRUCTION: The clothing items must remain completely distinct and separate. Do NOT merge, blend, or fuse different items into a single hybrid garment (e.g., do not fuse an outerwear zipper or jacket with an underlying t-shirt). Maintain distinct layers, physical boundaries, and textures for each individual piece. Dress the person so all provided garments are visible and layered logically.
+
+        CRITICAL IDENTITY INSTRUCTION: The generated face must be as close as possible to the face in the FIRST (frontal) reference photo — match facial structure, features, proportions, eye shape and color, nose, mouth, jawline, eyebrows, skin tone, and hair exactly. Treat the frontal photo as the ground truth for identity; the other photos are only for recovering body shape and side/back details. Do not invent, beautify, age, or restyle the face. Preserve hair, skin tone, and body proportions exactly.
+
+        Use a clean, neutral studio background, soft even lighting, and sharp focus.
+        No text, watermarks, UI, extra people, or extra clothing that was not provided. $prefsHint
+    """.trimIndent()
+}
+
 internal suspend fun GeminiRepository.tryOnOutfit(
         personFiles: List<File>,
         itemFiles: List<File>,
@@ -22,28 +49,7 @@ internal suspend fun GeminiRepository.tryOnOutfit(
         }
         if (personFiles.isEmpty() || itemFiles.isEmpty()) return@withContext null
 
-        val prefsHint = preferences.trim().takeIf { it.isNotEmpty() }
-            ?.let { " The person's style preferences: $it." } ?: ""
-        val personCountHint = when (personFiles.size) {
-            1 -> "a single frontal reference photo of the person"
-            2 -> "two reference photos of the person — the FIRST is the frontal photo (authoritative for the face), the second is an additional angle"
-            else -> "${personFiles.size} reference photos of the person — the FIRST is the frontal photo (authoritative for the face), the rest are additional angles"
-        }
-        val itemCountHint = if (itemFiles.size == 1) "this clothing item" else "these ${itemFiles.size} clothing items"
-        val prompt = """
-            You are given $personCountHint, followed by $itemCountHint.
-            Generate a single photorealistic full-body image of the same person wearing $itemCountHint layered realistically as an outfit.
-
-            CRITICAL GARMENT INSTRUCTION: The clothing items must remain completely distinct and separate. Do NOT merge, blend, or fuse different items into a single hybrid garment (e.g., do not fuse an outerwear zipper or jacket with an underlying t-shirt). Maintain distinct layers, physical boundaries, and textures for each individual piece. Dress the person so all provided garments are visible and layered logically.
-
-            CRITICAL IDENTITY INSTRUCTION: The generated face must be as close as possible to the face in the FIRST (frontal) reference photo — match facial structure, features, proportions, eye shape and color, nose, mouth, jawline, eyebrows, skin tone, and hair exactly. Treat the frontal photo as the ground truth for identity; the other photos are only for recovering body shape and side/back details. Do not invent, beautify, age, or restyle the face. Preserve hair, skin tone, and body proportions exactly.
-
-            Use a clean, neutral studio background, soft even lighting, and sharp focus.
-            No text, watermarks, UI, extra people, or extra clothing that was not provided. $prefsHint
-        """.trimIndent()
-
-
-
+        val prompt = buildTryOnPrompt(personFiles.size, itemFiles.size, preferences)
 
         val parts = mutableListOf<Map<String, Any>>(mapOf("text" to prompt))
         personFiles.forEach { f ->

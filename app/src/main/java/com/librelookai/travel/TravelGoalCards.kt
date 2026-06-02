@@ -213,6 +213,7 @@ internal fun GenerateButton(
     hasResult: Boolean,
     enabled: Boolean,
     onClick: () -> Unit,
+    tokens: com.librelookai.gemini.CostTokens? = null,
 ) {
     val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
     val alpha = if (enabled) 1f else 0.4f
@@ -236,7 +237,10 @@ internal fun GenerateButton(
             // Single-call generation: the packing list returns every outfit in one Gemini
             // round-trip, so the cost barely scales with `outfitCount`. Match the
             // OutfitComposer's "Generate with AI" badge and pass bulkCount = 1.
-            com.librelookai.billing.CostBadge(com.librelookai.gemini.GeminiActionId.GENERATE_TEXT)
+            com.librelookai.billing.CostBadge(
+                com.librelookai.gemini.GeminiActionId.GENERATE_TEXT,
+                tokens = tokens,
+            )
             Icon(
                 Icons.Default.AutoAwesome,
                 contentDescription = null,

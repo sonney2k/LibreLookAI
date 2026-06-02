@@ -345,7 +345,10 @@ internal fun FullScreenViewer(
                             androidx.compose.foundation.layout.Row(
                                 verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
                             ) {
-                                com.librelookai.billing.CostBadge(com.librelookai.gemini.GeminiActionId.CLASSIFY_CLOTHING)
+                                com.librelookai.billing.CostBadge(
+                                    com.librelookai.gemini.GeminiActionId.CLASSIFY_CLOTHING,
+                                    tokens = com.librelookai.billing.rememberClassifyCostTokens(currentImage.localPath),
+                                )
                                 Text(stringResource(R.string.wardrobe_tag_detect))
                             }
                         },
@@ -363,7 +366,10 @@ internal fun FullScreenViewer(
                             androidx.compose.foundation.layout.Row(
                                 verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
                             ) {
-                                com.librelookai.billing.CostBadge(com.librelookai.gemini.GeminiActionId.REMOVE_BACKGROUND)
+                                com.librelookai.billing.CostBadge(
+                                    com.librelookai.gemini.GeminiActionId.REMOVE_BACKGROUND,
+                                    tokens = com.librelookai.billing.rememberRemoveBgCostTokens(currentImage.localPath),
+                                )
                                 Text(stringResource(
                                     if (currentImage.originalDriveId != null) R.string.wardrobe_tag_re_remove_bg
                                     else R.string.wardrobe_tag_remove_bg

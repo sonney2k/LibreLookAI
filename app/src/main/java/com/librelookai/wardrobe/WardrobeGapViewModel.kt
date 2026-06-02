@@ -161,7 +161,7 @@ class WardrobeGapViewModel(app: Application) : AndroidViewModel(app) {
 
 // ---------- Prompt builders ----------
 
-private fun buildGapPrompt(preamble: String, images: List<DriveImage>, prefs: UserPreferences?): String {
+internal fun buildGapPrompt(preamble: String, images: List<DriveImage>, prefs: UserPreferences?): String {
     val c = prefs?.aiConsiderations ?: AiConsiderations()
     val age = prefs?.yearOfBirth?.let { java.time.LocalDate.now().year - it }
 

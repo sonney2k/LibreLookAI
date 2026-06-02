@@ -262,6 +262,27 @@ fun TripViewerScreen(
                         item {
                             Spacer(Modifier.height(8.dp))
                             HorizontalDivider()
+                            val refineImages = if (refineSourceFolders.isEmpty()) wardrobeState.images
+                                else wardrobeState.images.filter { it.folderId in refineSourceFolders }
+                            // Key on the whole `trip` (not trip.id) so toggling its vibe/consideration
+                            // pills — which change buildBulkRefinePrompt's payload — refreshes the badge.
+                            val refineTokens by androidx.compose.runtime.produceState<com.librelookai.gemini.CostTokens?>(
+                                initialValue = null,
+                                trip,
+                                refineImages,
+                                outfitsState.outfits,
+                                profileState.preferences,
+                            ) {
+                                value = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Default) {
+                                    tripsViewModel.estimateBulkRefineTokens(
+                                        tripId = trip.id,
+                                        instruction = "",
+                                        images = refineImages,
+                                        currentOutfits = outfitsState.outfits,
+                                        prefs = profileState.preferences,
+                                    )
+                                }
+                            }
                             BulkRefineSection(
                                 vibes = trip.vibes,
                                 onToggleVibe = { tripsViewModel.toggleTripVibe(trip.id, it) },
@@ -272,9 +293,8 @@ fun TripViewerScreen(
                                 isRefining = isBulkRefining,
                                 closetNames = if (locationState.locations.size >= 2) refineClosetNames else null,
                                 onPickClosets = { showRefineClosetSheet = true },
+                                tokens = refineTokens,
                                 onSubmit = { instruction ->
-                                    val refineImages = if (refineSourceFolders.isEmpty()) wardrobeState.images
-                                        else wardrobeState.images.filter { it.folderId in refineSourceFolders }
                                     tripsViewModel.refineAllOutfits(
                                         tripId          = trip.id,
                                         instruction     = instruction,

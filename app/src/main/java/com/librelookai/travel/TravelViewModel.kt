@@ -178,6 +178,42 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
         doGenerate(prefs, images, styles)
     }
 
+    /**
+     * Pre-tap BYOK cost estimate for the packing list. Reuses [buildPackingPrompt] with the current
+     * setup so the token count matches what [doGenerate] sends, minus the live weather forecast
+     * (resolved only at generate time; small next to the wardrobe/styles JSON).
+     */
+    fun estimatePackingTokens(
+        prefs: UserPreferences?,
+        images: List<DriveImage>,
+        styles: List<Outfit>,
+    ): com.librelookai.gemini.CostTokens {
+        val s = _state.value
+        val effectiveOutfitCount = (s.outfitCount ?: s.days).coerceIn(1, 21)
+        val prompt = buildPackingPrompt(
+            preamble        = PromptStore.get(getApplication(), PromptKey.PACKING),
+            prefs           = prefs,
+            destination     = s.destination.ifBlank { "destination" },
+            startDate       = s.startDate,
+            days            = s.days,
+            outfitCount     = effectiveOutfitCount,
+            goal            = s.goal,
+            vibes           = s.vibes,
+            considerationsOverride = s.considerationsOverride,
+            forecast        = emptyList(),
+            isHistorical    = false,
+            referenceYear   = null,
+            images          = images,
+            styles          = styles,
+        )
+        return com.librelookai.gemini.CostTokens(
+            inputTokens = com.librelookai.gemini.TokenEstimator.textTokens(prompt),
+            // Packing list: grouped outfits + extra-items list, one call regardless of day count.
+            outputTokens = 200 + 60 * effectiveOutfitCount,
+            outputIsImage = false,
+        )
+    }
+
     private fun doGenerate(
         prefs: UserPreferences?,
         images: List<DriveImage>,
@@ -283,7 +319,7 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
 private val DOW_FMT  = DateTimeFormatter.ofPattern("EEE MMM d")
 private val DATE_FMT = DateTimeFormatter.ofPattern("MMM d, yyyy")
 
-private fun buildPackingPrompt(
+internal fun buildPackingPrompt(
     preamble: String,
     prefs: UserPreferences?,
     destination: String,

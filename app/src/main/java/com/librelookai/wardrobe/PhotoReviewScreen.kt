@@ -170,7 +170,10 @@ internal fun PhotoReviewScreen(
                 .padding(end = 24.dp, bottom = 32.dp),
             horizontalAlignment = Alignment.End,
         ) {
-            com.librelookai.billing.CostBadge(com.librelookai.gemini.GeminiActionId.REMOVE_BACKGROUND)
+            com.librelookai.billing.CostBadge(
+                com.librelookai.gemini.GeminiActionId.REMOVE_BACKGROUND,
+                tokens = com.librelookai.billing.rememberRemoveBgCostTokens(bm?.width ?: 0, bm?.height ?: 0),
+            )
             Spacer(Modifier.height(6.dp))
             IconButton(
                 onClick = {
