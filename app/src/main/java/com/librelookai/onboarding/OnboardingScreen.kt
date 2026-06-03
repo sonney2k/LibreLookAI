@@ -347,7 +347,10 @@ fun OnboardingScreen(
 @Composable
 private fun InfoPageContent(page: InfoPage) {
     Column(
-        Modifier.fillMaxSize().padding(horizontal = 32.dp),
+        Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 32.dp, vertical = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
@@ -426,7 +429,10 @@ private fun PhotoPage(
         uri?.let(onPick)
     }
     Column(
-        Modifier.fillMaxSize().padding(horizontal = 32.dp),
+        Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 32.dp, vertical = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
@@ -489,7 +495,10 @@ private fun DriveSignInPage(
         else -> stringResource(R.string.sign_in_error_generic, signInErrorCode)
     }
     Column(
-        Modifier.fillMaxSize().padding(horizontal = 32.dp),
+        Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 32.dp, vertical = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
@@ -576,7 +585,10 @@ private fun BackgroundPermissionPage(
         )
     }
     Column(
-        Modifier.fillMaxSize().padding(horizontal = 32.dp),
+        Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 32.dp, vertical = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
@@ -621,7 +633,10 @@ private fun LocationPermissionPage(
     onAllow: () -> Unit,
 ) {
     Column(
-        Modifier.fillMaxSize().padding(horizontal = 32.dp),
+        Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 32.dp, vertical = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
