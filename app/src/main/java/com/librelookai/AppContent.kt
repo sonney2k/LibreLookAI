@@ -938,6 +938,15 @@ internal fun AppContent(activity: ComponentActivity) {
                         // instead of leaving the user staring at empty screens. It only appears once
                         // real loading activity is observed, so brand-new (empty) accounts never see
                         // it; once settled it never returns (per-process latch).
+                        //
+                        // Gate on `isLoading`, NOT `isSyncing`: every two-phase loader paints from
+                        // the local cache (Phase 1) and clears `isLoading` immediately when that
+                        // cache is non-empty, leaving `isLoading` true through the Drive sync only
+                        // when there was nothing cached — i.e. a genuine first restore. `isSyncing`,
+                        // by contrast, is true on EVERY launch (the routine Phase-2 Drive reconcile
+                        // runs even with a warm cache), so counting it would pop the overlay on every
+                        // cold start. The 700 ms debounce below absorbs the brief Phase-1 disk-read
+                        // blip that warm starts still show.
                         val restoreWardrobe by wardrobeViewModel.state.collectAsState()
                         val restoreOutfits by stylesViewModel.state.collectAsState()
                         val restoreTrips by tripsViewModel.state.collectAsState()
@@ -946,9 +955,9 @@ internal fun AppContent(activity: ComponentActivity) {
                         if (!restoreSettled) {
                             LaunchedEffect(Unit) {
                                 val anyLoading = {
-                                    restoreWardrobe.isLoading || restoreWardrobe.isSyncing ||
+                                    restoreWardrobe.isLoading ||
                                         restoreOutfits.isLoading ||
-                                        shoppingClosetState.isLoading || shoppingClosetState.isSyncing ||
+                                        shoppingClosetState.isLoading ||
                                         restoreTrips.isLoading
                                 }
                                 // Wait briefly for the initial loads to kick off; if nothing actually
@@ -974,7 +983,7 @@ internal fun AppContent(activity: ComponentActivity) {
                                 categories = listOf(
                                     RestoreCategory(
                                         label = stringResource(R.string.nav_wardrobe),
-                                        loading = restoreWardrobe.isLoading || restoreWardrobe.isSyncing,
+                                        loading = restoreWardrobe.isLoading,
                                         detail = if (restoreWardrobe.isSyncing && restoreWardrobe.syncTotal > 0)
                                             stringResource(
                                                 R.string.restore_items_progress,
@@ -987,7 +996,7 @@ internal fun AppContent(activity: ComponentActivity) {
                                     ),
                                     RestoreCategory(
                                         label = stringResource(R.string.nav_shopping),
-                                        loading = shoppingClosetState.isLoading || shoppingClosetState.isSyncing,
+                                        loading = shoppingClosetState.isLoading,
                                     ),
                                     RestoreCategory(
                                         label = stringResource(R.string.nav_travel),
