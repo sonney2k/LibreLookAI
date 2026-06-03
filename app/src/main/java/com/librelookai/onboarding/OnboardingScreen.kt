@@ -45,12 +45,14 @@ import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -215,6 +217,10 @@ fun OnboardingScreen(
         else -> false
     }
 
+    // The root is a plain Box (not a Material `Surface`), so `LocalContentColor` would otherwise
+    // stay at its default of black and any `Text` without an explicit color would be invisible on
+    // a dark palette. Provide the palette's onSurface so uncolored titles/labels stay readable.
+    CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurface) {
     Box(
         modifier
             .fillMaxSize()
@@ -334,6 +340,7 @@ fun OnboardingScreen(
                 }
             }
         }
+    }
     }
 }
 
