@@ -1187,4 +1187,7 @@
     <string name="restore_title">Daten werden wiederhergestellt</string>
     <string name="restore_subtitle">Dein Kleiderschrank wird aus Google Drive geladen…</string>
     <string name="restore_items_progress">%1$d von %2$d Objekten</string>
+
+    <!-- Unify close affordance (action_close) -->
+    <string name="action_close">Schließen</string>
 </resources>

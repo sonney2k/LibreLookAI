@@ -1118,4 +1118,7 @@
     <string name="restore_title">Gjenoppretter dataene dine</string>
     <string name="restore_subtitle">Henter garderoben din fra Google Disk…</string>
     <string name="restore_items_progress">%1$d av %2$d elementer</string>
+
+    <!-- Unify close affordance (action_close) -->
+    <string name="action_close">Lukk</string>
 </resources>

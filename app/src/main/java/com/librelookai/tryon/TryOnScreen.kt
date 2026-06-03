@@ -183,7 +183,7 @@ fun TryOnComposerScreen(
                             state.isHistoryOpen -> tryOnViewModel.closeHistory()
                             else                -> tryOnViewModel.close()
                         }
-                    }) { Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_dismiss)) }
+                    }) { Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_close)) }
                     Text(
                         when {
                             viewing != null         -> stringResource(R.string.tryon_history_detail_title)

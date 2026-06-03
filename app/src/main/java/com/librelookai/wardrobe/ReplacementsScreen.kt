@@ -70,7 +70,7 @@ fun ReplacementsResultDialog(gapViewModel: WardrobeGapViewModel) {
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     IconButton(onClick = gapViewModel::closeReplacements) {
-                        Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_dismiss))
+                        Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_close))
                     }
                     Text(
                         stringResource(R.string.replacements_title, state.replacementsCount),

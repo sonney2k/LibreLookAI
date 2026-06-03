@@ -1091,4 +1091,7 @@
     <string name="restore_title">आपका डेटा पुनर्स्थापित किया जा रहा है</string>
     <string name="restore_subtitle">आपकी अलमारी Google Drive से वापस लाई जा रही है…</string>
     <string name="restore_items_progress">%2$d में से %1$d आइटम</string>
+
+    <!-- Unify close affordance (action_close) -->
+    <string name="action_close">बंद करें</string>
 </resources>

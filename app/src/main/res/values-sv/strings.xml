@@ -1118,4 +1118,7 @@
     <string name="restore_title">Återställer dina data</string>
     <string name="restore_subtitle">Hämtar din garderob från Google Drive…</string>
     <string name="restore_items_progress">%1$d av %2$d objekt</string>
+
+    <!-- Unify close affordance (action_close) -->
+    <string name="action_close">Stäng</string>
 </resources>

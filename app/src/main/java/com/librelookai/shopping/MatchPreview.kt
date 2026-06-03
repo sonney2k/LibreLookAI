@@ -218,7 +218,7 @@ internal fun MatchPreviewDialog(
             ) {
                 Icon(
                     Icons.Default.Close,
-                    contentDescription = stringResource(R.string.action_dismiss),
+                    contentDescription = stringResource(R.string.action_close),
                     tint = Color.White,
                 )
             }

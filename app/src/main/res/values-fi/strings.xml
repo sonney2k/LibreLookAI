@@ -1118,4 +1118,7 @@
     <string name="restore_title">Palautetaan tietojasi</string>
     <string name="restore_subtitle">Haetaan vaatekaappiasi Google Drivesta…</string>
     <string name="restore_items_progress">%1$d / %2$d kohdetta</string>
+
+    <!-- Unify close affordance (action_close) -->
+    <string name="action_close">Sulje</string>
 </resources>

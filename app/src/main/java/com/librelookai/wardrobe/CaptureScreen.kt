@@ -232,15 +232,19 @@ fun CaptureScreen(
                 }
             }
 
-            if (!showImportFabs) {
-                IconButton(
-                    onClick = onCancel,
-                    modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .padding(8.dp),
-                ) {
-                    Icon(Icons.Default.Close, contentDescription = "Cancel", tint = Color.White)
-                }
+            // Close X is always top-left, regardless of capture/import mode, so the
+            // dismiss affordance never changes position (see CLAUDE.md close-affordance rule).
+            IconButton(
+                onClick = onCancel,
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(8.dp),
+            ) {
+                Icon(
+                    Icons.Default.Close,
+                    contentDescription = androidx.compose.ui.res.stringResource(R.string.action_close),
+                    tint = Color.White,
+                )
             }
 
             // Inline closet selector — top-end, visible when 2+ closets
@@ -307,9 +311,6 @@ fun CaptureScreen(
                         }) {
                             Icon(Icons.Default.PhotoLibrary, contentDescription = "Import from gallery")
                         }
-                    }
-                    FloatingActionButton(onClick = onCancel) {
-                        Icon(Icons.Default.Close, contentDescription = "Cancel")
                     }
                 }
             }

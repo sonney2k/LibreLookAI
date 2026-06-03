@@ -118,7 +118,7 @@ fun TripOutfitPickerDialog(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         IconButton(onClick = onDismiss) {
-                            Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_cancel))
+                            Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_close))
                         }
                         Text(
                             stringResource(R.string.tryon_trip_picker_title),

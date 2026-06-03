@@ -179,7 +179,7 @@ internal fun AddItemSheet(
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             IconButton(onClick = onDismiss) {
-                                Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_cancel))
+                                Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_close))
                             }
                             Text(
                                 stringResource(R.string.composer_add_items),

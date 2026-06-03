@@ -1196,4 +1196,7 @@
     <string name="usage_cat_trends">Fashion trends</string>
     <string name="usage_cat_travel">Travel packing</string>
     <string name="usage_cat_other">Other</string>
+
+    <!-- Unify close affordance (action_close) -->
+    <string name="action_close">Close</string>
 </resources>

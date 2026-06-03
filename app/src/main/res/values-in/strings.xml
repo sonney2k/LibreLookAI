@@ -1091,4 +1091,7 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="restore_title">Memulihkan data Anda</string>
     <string name="restore_subtitle">Memuat lemari pakaian Anda dari Google Drive…</string>
     <string name="restore_items_progress">%1$d dari %2$d item</string>
+
+    <!-- Unify close affordance (action_close) -->
+    <string name="action_close">Tutup</string>
 </resources>

@@ -1118,4 +1118,7 @@
     <string name="restore_title">Restoring your data</string>
     <string name="restore_subtitle">Bringing your wardrobe back from Google Drive…</string>
     <string name="restore_items_progress">%1$d of %2$d items</string>
+
+    <!-- Unify close affordance (action_close) -->
+    <string name="action_close">Close</string>
 </resources>

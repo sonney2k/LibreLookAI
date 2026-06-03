@@ -1091,4 +1091,7 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="restore_title">Se restaurează datele tale</string>
     <string name="restore_subtitle">Îți recuperăm garderoba din Google Drive…</string>
     <string name="restore_items_progress">%1$d din %2$d articole</string>
+
+    <!-- Unify close affordance (action_close) -->
+    <string name="action_close">Închide</string>
 </resources>

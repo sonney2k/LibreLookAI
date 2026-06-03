@@ -1118,4 +1118,7 @@
     <string name="restore_title">Obnovování dat</string>
     <string name="restore_subtitle">Načítáme tvůj šatník z Google Disku…</string>
     <string name="restore_items_progress">%1$d z %2$d položek</string>
+
+    <!-- Unify close affordance (action_close) -->
+    <string name="action_close">Zavřít</string>
 </resources>

@@ -109,7 +109,7 @@ fun UrlImportPicker(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     IconButton(onClick = onDismiss) {
-                        Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_cancel))
+                        Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_close))
                     }
                     Spacer(Modifier.width(4.dp))
                     Text(

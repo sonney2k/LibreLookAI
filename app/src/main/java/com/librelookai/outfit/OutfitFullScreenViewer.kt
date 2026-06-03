@@ -272,7 +272,7 @@ internal fun OutfitFullScreenViewer(
                     onClick = onDismiss,
                     modifier = Modifier.align(Alignment.TopStart).padding(8.dp),
                 ) {
-                    Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_dismiss),
+                    Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_close),
                         tint = MaterialTheme.colorScheme.onBackground)
                 }
 

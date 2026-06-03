@@ -132,7 +132,7 @@ internal fun FixCutoutBgDialog(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     IconButton(onClick = onCancel) {
-                        Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_cancel))
+                        Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_close))
                     }
                     Column(modifier = Modifier.weight(1f)) {
                         Text(

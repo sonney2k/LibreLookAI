@@ -1118,4 +1118,7 @@
     <string name="restore_title">Gendanner dine data</string>
     <string name="restore_subtitle">Henter din garderobe fra Google Drev…</string>
     <string name="restore_items_progress">%1$d af %2$d elementer</string>
+
+    <!-- Unify close affordance (action_close) -->
+    <string name="action_close">Luk</string>
 </resources>

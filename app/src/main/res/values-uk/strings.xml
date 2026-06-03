@@ -1091,4 +1091,7 @@
     <string name="restore_title">Відновлення ваших даних</string>
     <string name="restore_subtitle">Завантажуємо вашу гардеробну з Google Диска…</string>
     <string name="restore_items_progress">%1$d з %2$d елементів</string>
+
+    <!-- Unify close affordance (action_close) -->
+    <string name="action_close">Закрити</string>
 </resources>

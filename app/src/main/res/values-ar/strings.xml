@@ -1118,4 +1118,7 @@
     <string name="restore_title">جارٍ استعادة بياناتك</string>
     <string name="restore_subtitle">نُعيد خزانتك من Google Drive…</string>
     <string name="restore_items_progress">%1$d من %2$d عنصر</string>
+
+    <!-- Unify close affordance (action_close) -->
+    <string name="action_close">إغلاق</string>
 </resources>

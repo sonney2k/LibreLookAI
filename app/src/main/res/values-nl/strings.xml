@@ -1118,4 +1118,7 @@
     <string name="restore_title">Je gegevens worden hersteld</string>
     <string name="restore_subtitle">Je garderobe wordt opgehaald uit Google Drive…</string>
     <string name="restore_items_progress">%1$d van %2$d items</string>
+
+    <!-- Unify close affordance (action_close) -->
+    <string name="action_close">Sluiten</string>
 </resources>

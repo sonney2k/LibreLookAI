@@ -1118,4 +1118,7 @@
     <string name="restore_title">데이터 복원 중</string>
     <string name="restore_subtitle">Google 드라이브에서 옷장을 복원하는 중…</string>
     <string name="restore_items_progress">%2$d개 중 %1$d개</string>
+
+    <!-- Unify close affordance (action_close) -->
+    <string name="action_close">닫기</string>
 </resources>

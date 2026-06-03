@@ -1118,4 +1118,7 @@
     <string name="restore_title">Przywracanie danych</string>
     <string name="restore_subtitle">Pobieranie Twojej szafy z Dysku Google…</string>
     <string name="restore_items_progress">%1$d z %2$d elementów</string>
+
+    <!-- Unify close affordance (action_close) -->
+    <string name="action_close">Zamknij</string>
 </resources>

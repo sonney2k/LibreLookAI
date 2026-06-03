@@ -1118,4 +1118,7 @@
     <string name="restore_title">Ibinabalik ang iyong data</string>
     <string name="restore_subtitle">Kinukuha ang iyong wardrobe mula sa Google Drive…</string>
     <string name="restore_items_progress">%1$d ng %2$d item</string>
+
+    <!-- Unify close affordance (action_close) -->
+    <string name="action_close">Isara</string>
 </resources>

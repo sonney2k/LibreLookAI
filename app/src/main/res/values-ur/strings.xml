@@ -1091,4 +1091,7 @@
     <string name="restore_title">آپ کا ڈیٹا بحال کیا جا رہا ہے</string>
     <string name="restore_subtitle">آپ کی الماری Google Drive سے واپس لائی جا رہی ہے…</string>
     <string name="restore_items_progress">%2$d میں سے %1$d آئٹمز</string>
+
+    <!-- Unify close affordance (action_close) -->
+    <string name="action_close">بند کریں</string>
 </resources>

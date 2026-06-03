@@ -1091,4 +1091,7 @@
     <string name="restore_title">กำลังกู้คืนข้อมูลของคุณ</string>
     <string name="restore_subtitle">กำลังดึงตู้เสื้อผ้าของคุณจาก Google Drive…</string>
     <string name="restore_items_progress">%1$d จาก %2$d รายการ</string>
+
+    <!-- Unify close affordance (action_close) -->
+    <string name="action_close">ปิด</string>
 </resources>

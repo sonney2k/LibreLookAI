@@ -237,7 +237,7 @@ internal fun FullScreenViewer(
             onClick = onDismiss,
             modifier = Modifier.align(Alignment.TopStart).padding(8.dp),
         ) {
-            Icon(Icons.Default.Close, contentDescription = "Close", tint = MaterialTheme.colorScheme.onBackground)
+            Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_close), tint = MaterialTheme.colorScheme.onBackground)
         }
 
         // View-original toggle (top-end). Shown only when the item has an original on Drive

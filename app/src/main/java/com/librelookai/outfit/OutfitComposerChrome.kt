@@ -60,7 +60,7 @@ internal fun ComposerHeader(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         IconButton(onClick = onClose, modifier = Modifier.size(40.dp)) {
-            Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_cancel))
+            Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_close))
         }
         Spacer(Modifier.width(4.dp))
         Column(modifier = Modifier.weight(1f)) {

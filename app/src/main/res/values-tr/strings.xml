@@ -1118,4 +1118,7 @@
     <string name="restore_title">Verileriniz geri yükleniyor</string>
     <string name="restore_subtitle">Gardırobunuz Google Drive\'dan geri getiriliyor…</string>
     <string name="restore_items_progress">%2$d öğeden %1$d tanesi</string>
+
+    <!-- Unify close affordance (action_close) -->
+    <string name="action_close">Kapat</string>
 </resources>
