@@ -1113,4 +1113,9 @@
     <string name="usage_cat_trends">패션 트렌드</string>
     <string name="usage_cat_travel">여행 짐 싸기</string>
     <string name="usage_cat_other">기타</string>
+
+    <!-- Restore progress overlay -->
+    <string name="restore_title">데이터 복원 중</string>
+    <string name="restore_subtitle">Google 드라이브에서 옷장을 복원하는 중…</string>
+    <string name="restore_items_progress">%2$d개 중 %1$d개</string>
 </resources>

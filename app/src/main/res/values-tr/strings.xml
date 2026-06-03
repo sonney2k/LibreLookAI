@@ -1113,4 +1113,9 @@
     <string name="usage_cat_trends">Moda trendleri</string>
     <string name="usage_cat_travel">Seyahat valizi</string>
     <string name="usage_cat_other">Diğer</string>
+
+    <!-- Restore progress overlay -->
+    <string name="restore_title">Verileriniz geri yükleniyor</string>
+    <string name="restore_subtitle">Gardırobunuz Google Drive\'dan geri getiriliyor…</string>
+    <string name="restore_items_progress">%2$d öğeden %1$d tanesi</string>
 </resources>

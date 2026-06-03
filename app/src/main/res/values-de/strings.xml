@@ -1182,4 +1182,9 @@
     <string name="usage_cat_trends">Modetrends</string>
     <string name="usage_cat_travel">Reisegepäck</string>
     <string name="usage_cat_other">Sonstiges</string>
+
+    <!-- Restore progress overlay -->
+    <string name="restore_title">Daten werden wiederhergestellt</string>
+    <string name="restore_subtitle">Dein Kleiderschrank wird aus Google Drive geladen…</string>
+    <string name="restore_items_progress">%1$d von %2$d Objekten</string>
 </resources>

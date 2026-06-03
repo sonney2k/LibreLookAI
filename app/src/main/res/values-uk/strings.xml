@@ -1086,4 +1086,9 @@
     <string name="usage_cat_trends">Модні тренди</string>
     <string name="usage_cat_travel">Збори в подорож</string>
     <string name="usage_cat_other">Інше</string>
+
+    <!-- Restore progress overlay -->
+    <string name="restore_title">Відновлення ваших даних</string>
+    <string name="restore_subtitle">Завантажуємо вашу гардеробну з Google Диска…</string>
+    <string name="restore_items_progress">%1$d з %2$d елементів</string>
 </resources>

@@ -1086,4 +1086,9 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="usage_cat_trends">Divattrendek</string>
     <string name="usage_cat_travel">Utazási csomagolás</string>
     <string name="usage_cat_other">Egyéb</string>
+
+    <!-- Restore progress overlay -->
+    <string name="restore_title">Adatok visszaállítása</string>
+    <string name="restore_subtitle">A gardróbod betöltése a Google Drive-ról…</string>
+    <string name="restore_items_progress">%1$d / %2$d elem</string>
 </resources>

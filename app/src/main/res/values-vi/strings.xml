@@ -1086,4 +1086,9 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="usage_cat_trends">Xu hướng thời trang</string>
     <string name="usage_cat_travel">Đóng gói du lịch</string>
     <string name="usage_cat_other">Khác</string>
+
+    <!-- Restore progress overlay -->
+    <string name="restore_title">Đang khôi phục dữ liệu của bạn</string>
+    <string name="restore_subtitle">Đang tải tủ quần áo của bạn từ Google Drive…</string>
+    <string name="restore_items_progress">%1$d trên %2$d mục</string>
 </resources>

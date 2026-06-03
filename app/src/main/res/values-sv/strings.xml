@@ -1113,4 +1113,9 @@
     <string name="usage_cat_trends">Modetrender</string>
     <string name="usage_cat_travel">Packa för resa</string>
     <string name="usage_cat_other">Övrigt</string>
+
+    <!-- Restore progress overlay -->
+    <string name="restore_title">Återställer dina data</string>
+    <string name="restore_subtitle">Hämtar din garderob från Google Drive…</string>
+    <string name="restore_items_progress">%1$d av %2$d objekt</string>
 </resources>

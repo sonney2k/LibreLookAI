@@ -1113,4 +1113,9 @@
     <string name="usage_cat_trends">Mga uso sa fashion</string>
     <string name="usage_cat_travel">Pag-impake sa biyahe</string>
     <string name="usage_cat_other">Iba pa</string>
+
+    <!-- Restore progress overlay -->
+    <string name="restore_title">Ibinabalik ang iyong data</string>
+    <string name="restore_subtitle">Kinukuha ang iyong wardrobe mula sa Google Drive…</string>
+    <string name="restore_items_progress">%1$d ng %2$d item</string>
 </resources>

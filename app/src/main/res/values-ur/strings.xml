@@ -1086,4 +1086,9 @@
     <string name="usage_cat_trends">فیشن رجحانات</string>
     <string name="usage_cat_travel">سفری پیکنگ</string>
     <string name="usage_cat_other">دیگر</string>
+
+    <!-- Restore progress overlay -->
+    <string name="restore_title">آپ کا ڈیٹا بحال کیا جا رہا ہے</string>
+    <string name="restore_subtitle">آپ کی الماری Google Drive سے واپس لائی جا رہی ہے…</string>
+    <string name="restore_items_progress">%2$d میں سے %1$d آئٹمز</string>
 </resources>

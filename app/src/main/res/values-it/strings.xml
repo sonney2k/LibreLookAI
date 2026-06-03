@@ -1113,4 +1113,9 @@
     <string name="usage_cat_trends">Tendenze moda</string>
     <string name="usage_cat_travel">Valigia da viaggio</string>
     <string name="usage_cat_other">Altro</string>
+
+    <!-- Restore progress overlay -->
+    <string name="restore_title">Ripristino dei tuoi dati</string>
+    <string name="restore_subtitle">Recupero del tuo guardaroba da Google Drive…</string>
+    <string name="restore_items_progress">%1$d di %2$d elementi</string>
 </resources>

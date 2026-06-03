@@ -1113,4 +1113,9 @@
     <string name="usage_cat_trends">اتجاهات الموضة</string>
     <string name="usage_cat_travel">حقيبة السفر</string>
     <string name="usage_cat_other">أخرى</string>
+
+    <!-- Restore progress overlay -->
+    <string name="restore_title">جارٍ استعادة بياناتك</string>
+    <string name="restore_subtitle">نُعيد خزانتك من Google Drive…</string>
+    <string name="restore_items_progress">%1$d من %2$d عنصر</string>
 </resources>

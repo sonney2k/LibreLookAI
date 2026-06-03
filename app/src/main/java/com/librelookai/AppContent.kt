@@ -48,6 +48,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -91,6 +92,8 @@ import com.librelookai.util.Analytics
 import com.librelookai.util.LocalIsOffline
 import com.librelookai.util.LocalSystemBarsPadding
 import com.librelookai.util.NetworkMonitor
+import com.librelookai.util.RestoreCategory
+import com.librelookai.util.RestoreProgressOverlay
 import com.librelookai.wardrobe.LocalBgRemovalScreen
 import com.librelookai.wardrobe.LocationViewModel
 import com.librelookai.wardrobe.ReplacementsResultDialog
@@ -105,7 +108,10 @@ import com.librelookai.wardrobe.setCutoutFixShowAll
 import com.librelookai.wardrobe.toggleCutoutFixSelection
 import com.librelookai.weather.WeatherBadge
 import com.librelookai.weather.WeatherViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 
 @Composable
 internal fun AppContent(activity: ComponentActivity) {
@@ -923,6 +929,73 @@ internal fun AppContent(activity: ComponentActivity) {
                                     )
                                 }
                             }
+                        }
+
+                        // Restore-progress overlay — for returning accounts (reinstall / new
+                        // device) the wardrobe, outfits, shopping and trips all reload from Google
+                        // Drive the moment the app remounts after onboarding. Surface one
+                        // consolidated centered progress card until that initial restore settles,
+                        // instead of leaving the user staring at empty screens. It only appears once
+                        // real loading activity is observed, so brand-new (empty) accounts never see
+                        // it; once settled it never returns (per-process latch).
+                        val restoreWardrobe by wardrobeViewModel.state.collectAsState()
+                        val restoreOutfits by stylesViewModel.state.collectAsState()
+                        val restoreTrips by tripsViewModel.state.collectAsState()
+                        var restoreSettled by rememberSaveable { mutableStateOf(false) }
+                        var restoreStarted by remember { mutableStateOf(false) }
+                        if (!restoreSettled) {
+                            LaunchedEffect(Unit) {
+                                val anyLoading = {
+                                    restoreWardrobe.isLoading || restoreWardrobe.isSyncing ||
+                                        restoreOutfits.isLoading ||
+                                        shoppingClosetState.isLoading || shoppingClosetState.isSyncing ||
+                                        restoreTrips.isLoading
+                                }
+                                // Wait briefly for the initial loads to kick off; if nothing actually
+                                // restores within the window, stay hidden and never show again.
+                                val saw = withTimeoutOrNull(5000) {
+                                    snapshotFlow(anyLoading).first { it }
+                                }
+                                // Debounce: a brand-new (empty) account's loads finish almost
+                                // instantly. Only surface the card if the restore is still in
+                                // progress shortly after — i.e. there's a real amount to bring back.
+                                if (saw == true) {
+                                    delay(700)
+                                    if (anyLoading()) {
+                                        restoreStarted = true
+                                        snapshotFlow(anyLoading).first { !it }
+                                    }
+                                }
+                                restoreSettled = true
+                            }
+                        }
+                        if (restoreStarted && !restoreSettled) {
+                            RestoreProgressOverlay(
+                                categories = listOf(
+                                    RestoreCategory(
+                                        label = stringResource(R.string.nav_wardrobe),
+                                        loading = restoreWardrobe.isLoading || restoreWardrobe.isSyncing,
+                                        detail = if (restoreWardrobe.isSyncing && restoreWardrobe.syncTotal > 0)
+                                            stringResource(
+                                                R.string.restore_items_progress,
+                                                restoreWardrobe.syncDone, restoreWardrobe.syncTotal,
+                                            ) else null,
+                                    ),
+                                    RestoreCategory(
+                                        label = stringResource(R.string.nav_styles),
+                                        loading = restoreOutfits.isLoading,
+                                    ),
+                                    RestoreCategory(
+                                        label = stringResource(R.string.nav_shopping),
+                                        loading = shoppingClosetState.isLoading || shoppingClosetState.isSyncing,
+                                    ),
+                                    RestoreCategory(
+                                        label = stringResource(R.string.nav_travel),
+                                        loading = restoreTrips.isLoading,
+                                    ),
+                                ),
+                                modifier = Modifier.fillMaxSize(),
+                            )
                         }
 
                         } // Box

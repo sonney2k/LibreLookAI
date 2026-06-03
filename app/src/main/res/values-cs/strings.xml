@@ -1113,4 +1113,9 @@
     <string name="usage_cat_trends">Módní trendy</string>
     <string name="usage_cat_travel">Balení na cesty</string>
     <string name="usage_cat_other">Ostatní</string>
+
+    <!-- Restore progress overlay -->
+    <string name="restore_title">Obnovování dat</string>
+    <string name="restore_subtitle">Načítáme tvůj šatník z Google Disku…</string>
+    <string name="restore_items_progress">%1$d z %2$d položek</string>
 </resources>

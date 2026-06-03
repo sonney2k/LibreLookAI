@@ -1113,4 +1113,9 @@
     <string name="usage_cat_trends">Modetrends</string>
     <string name="usage_cat_travel">Reisbagage</string>
     <string name="usage_cat_other">Overig</string>
+
+    <!-- Restore progress overlay -->
+    <string name="restore_title">Je gegevens worden hersteld</string>
+    <string name="restore_subtitle">Je garderobe wordt opgehaald uit Google Drive…</string>
+    <string name="restore_items_progress">%1$d van %2$d items</string>
 </resources>

@@ -9,6 +9,11 @@
     <string name="nav_travel">Travel</string>
     <string name="nav_settings">Settings</string>
 
+    <!-- Restore progress (returning account reload from Drive) -->
+    <string name="restore_title">Restoring your data</string>
+    <string name="restore_subtitle">Bringing your closet back from Google Drive…</string>
+    <string name="restore_items_progress">%1$d of %2$d items</string>
+
     <!-- Insights tab -->
     <string name="insights_items_removed">Items no longer in wardrobe</string>
     <string name="insights_tab_calendar">Calendar</string>

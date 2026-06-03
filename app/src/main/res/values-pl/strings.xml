@@ -1113,4 +1113,9 @@
     <string name="usage_cat_trends">Trendy mody</string>
     <string name="usage_cat_travel">Pakowanie na podróż</string>
     <string name="usage_cat_other">Inne</string>
+
+    <!-- Restore progress overlay -->
+    <string name="restore_title">Przywracanie danych</string>
+    <string name="restore_subtitle">Pobieranie Twojej szafy z Dysku Google…</string>
+    <string name="restore_items_progress">%1$d z %2$d elementów</string>
 </resources>

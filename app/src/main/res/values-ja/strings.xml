@@ -1113,4 +1113,9 @@
     <string name="usage_cat_trends">ファッショントレンド</string>
     <string name="usage_cat_travel">旅行パッキング</string>
     <string name="usage_cat_other">その他</string>
+
+    <!-- Restore progress overlay -->
+    <string name="restore_title">データを復元しています</string>
+    <string name="restore_subtitle">Google Drive からワードローブを復元中…</string>
+    <string name="restore_items_progress">%2$d 件中 %1$d 件</string>
 </resources>

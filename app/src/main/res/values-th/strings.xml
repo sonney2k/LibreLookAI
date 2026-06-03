@@ -1086,4 +1086,9 @@
     <string name="usage_cat_trends">เทรนด์แฟชั่น</string>
     <string name="usage_cat_travel">การจัดกระเป๋าเดินทาง</string>
     <string name="usage_cat_other">อื่น ๆ</string>
+
+    <!-- Restore progress overlay -->
+    <string name="restore_title">กำลังกู้คืนข้อมูลของคุณ</string>
+    <string name="restore_subtitle">กำลังดึงตู้เสื้อผ้าของคุณจาก Google Drive…</string>
+    <string name="restore_items_progress">%1$d จาก %2$d รายการ</string>
 </resources>

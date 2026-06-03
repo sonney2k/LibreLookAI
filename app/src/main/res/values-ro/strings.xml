@@ -1086,4 +1086,9 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="usage_cat_trends">Tendințe modă</string>
     <string name="usage_cat_travel">Bagaj de călătorie</string>
     <string name="usage_cat_other">Altele</string>
+
+    <!-- Restore progress overlay -->
+    <string name="restore_title">Se restaurează datele tale</string>
+    <string name="restore_subtitle">Îți recuperăm garderoba din Google Drive…</string>
+    <string name="restore_items_progress">%1$d din %2$d articole</string>
 </resources>
