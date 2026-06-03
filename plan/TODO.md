@@ -1,28 +1,17 @@
 INVESTIGATION
 =============
-  1. cd firebase/functions && npm install && npm run build
-  2. Set up service account in Play Console (View financial data + Manage orders)
-  3. firebase deploy --only functions,firestore:rules
-  4. node lib/seed.js (with GOOGLE_APPLICATION_CREDENTIALS set) — seeds config/pricing; the trigger fires and writes config/publicPricing
-
 similarity search needs improvement
 
 size filter? default sizes in wardrobe? size tag?
-
-Go through all screens again and check that they are really localized. I just found that the Insights screen is not localized
 
 Ensure that no font is smaller than the font in the filter pillow
 
 consistency: the cross to cancel taking a picture in wardrobe is in the lower right. change the cross in similarity search to use the same button and move it from top left also to lower right ??? rotate button color??
 
-security/function relevant parts of a prompts should not be appear in settings. e.g. "Place the clothing item on a pure, solid neon green background (Hex #00FF00).
 
 
 TODO
 ====
-continue with website re onboarding
-
-when opening the wardrobe a tester reports that wardrobe items are missing. they however appear when scrolling down. can you fix that and can you make sure the same principle works for shopping, trips and outfits aswell? Is this related to a usability issue on wardrobe screen: moving item to different closet and then switching to that closet - it won't immediately appear on wardrobe after moving to different closet. it took almost a minute to appear. Can this be sped up? In general, what we want for users is fast & consistent interactions when starting/adding/deleting/modifying likely achieved with a local cache. Re-check the entire flow if this is currently the case and what race conditions we have here (background mode...?!?!). It seems fragile to the user if things appear/disappear/are not found. We need to be consistent to the user at all times.
 
 experiment to verify cost assumptions
 
@@ -30,13 +19,12 @@ create design for onboarding flow
 
 what can we do to reduce cost?
 
-we want all options to work without Gemini so things are cost neutral. create a plan for that.
 
 
 like outfits travel planner should also have an option to say what the AI should use (pattern, ...)
 
 
-create human readable release notes between now and v2.0.0 and release version 2.0.1, git tag commit and upload to testers in firebase
+create human readable release notes between now and v2.0.1 and release version 2.0.2, git tag commit and upload to testers in firebase
 
 Storage:
 - I noticed .jpgs from camera are just 124kB but .pngs are 450kB. Since this is on users drive folders we have to be cautious about size. Let's target 1GB - to allow for 2000-4000 wardrobe items.
@@ -46,13 +34,34 @@ Feedback:
 add way to send feedback via firebase under settings -> feedback
 add a feedback tab under settings move debug setting under this tab
 
-1. the colors when editing tags are not the same that we have in wardrobe filter use only the one from wardrobe filter
 
 Implement new feature: We are working on the refinancing/monetization aspect of the app: I want people to be able to buy coins that I then use to pay gemini cloud costs. would that work with RevenueCat (handles the money/receipts) + Firebase (database and secure Gemini API routing)? In addition, I still want to support the bring your own key option though. What is important is that the user always knows how many coins a certain operation takes (if it involves coins or BYOK tokens). So we need to somehow visually communicate the coin or cost. To be sustainable we need to add 100% to the actual cost. We need to store and use this multiplier securely.
 
 
 IN PROGRESS
 ===========
+we want all options to work without Gemini so things are cost neutral. create a plan for that. options, local model, local gemini models, reduced quality algorithms
+
+the calendar is currently storing outfits of the user over time. this is an indication of the users taste. use this history as an input to the gemini prompt to 
+  suggest outfits the user likes. should we store something in addition in the calendar that would be useful here? 
+
+
+❯ when onboarding ensure that the mandatory settings (google drive sign in & background) are done before the other settings. Then check if a setting does exist 
+  already and load it to adjust e.g. theming personal preference prompt etc. prefill furthcoming on-boarding screens with those settings if exist. This is to avoid 
+  that we overwrite already existing settings with things we fill out in oboarding. 
+
+gemini prompts should not be appear in settings let's remove them again.
+
+Go through all screens again and check that they are really localized. I just found that the Insights screen is not localized
+
+include the sign-on to google drive into the onboarding flow incl the explanation for the background permissions and setup
+
+remove option when editing tags to input custom color
+
+continue with website re onboarding
+
+when opening the wardrobe a tester reports that wardrobe items are missing. they however appear when scrolling down. can you fix that and can you make sure the same principle works for shopping, trips and outfits aswell? Is this related to a usability issue on wardrobe screen: moving item to different closet and then switching to that closet - it won't immediately appear on wardrobe after moving to different closet. it took almost a minute to appear. Can this be sped up? In general, what we want for users is fast & consistent interactions when starting/adding/deleting/modifying likely achieved with a local cache. Re-check the entire flow if this is currently the case and what race conditions we have here (background mode...?!?!). It seems fragile to the user if things appear/disappear/are not found. We need to be consistent to the user at all times.
+
 create accompanying website
 
 create onboarding flow
@@ -71,6 +80,8 @@ Repair & Sync:
 
 DONE
 =====
+the colors when editing tags are not the same that we have in wardrobe filter
+
 is outfit generation sending the entire wardrobe or only the items that match a certain category (e.g. full body suit) that are supposed to be suggested by AI?
 
 Add unit tests to get to 50% test converage

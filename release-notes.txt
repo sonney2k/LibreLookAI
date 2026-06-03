@@ -1,3 +1,30 @@
+### LibreLookAI v2.1.0 Release Notes
+
+#### A smoother first-run setup
+- The welcome tour now walks you through everything in one place: connect Google Drive, allow background processing, optionally enable location for weather-aware suggestions, and add your Gemini API key — each step with clear guidance and links.
+- New finish screen shows a setup summary: Drive, background, API key, and location each with a ✓ or a "Set up" shortcut so nothing important gets missed.
+- Reinstalling or switching to a new device? The tour now reloads your saved profile and style preferences the moment you sign in, so those steps come pre-filled — and finishing no longer wipes your saved theme, language, or AI settings.
+- Your saved theme and font now re-skin the tour live as soon as your settings load.
+
+#### Outfit suggestions that learn from what you actually wear
+- The wear calendar is now a taste signal: outfit suggestions lean toward looks you actually wear and have loved, ease off ones you wore very recently, and account for cold-weather habits.
+- Tap a heart on a calendar day, or on a look in the wear-stats tab, to tell the AI you love it. You can turn this off anytime under the AI considerations.
+
+#### Faster, more economical suggestions
+- Fashion-trend lookups are now cached weekly per location and shared across your devices, so outfit and trip suggestions are quicker and use far fewer AI calls.
+
+#### Clearer AI cost insight (bring-your-own-key)
+- The cost badge on AI buttons now estimates the real cost of the exact request you're about to make — sized from the actual prompt and images and priced at live rates — instead of a fixed table, with a tooltip showing the concrete amount.
+- The AI usage screen adds an "Estimate accuracy" view so you can see how close the pre-call estimates were to actual usage, and the whole usage screen is now fully translated.
+
+#### More helpful when AI can't run
+- When no API key is set, or a call fails, you now get a clear message — with a one-tap "Set up key" shortcut or a "Retry" for the action you just tried — instead of silent failures.
+
+#### Fixes
+- Fixed a crash that could happen when the AI composer response left out some outfit slots.
+
+---
+
 ### LibreLookAI v2.0.2 Release Notes
 
 #### Set up your Gemini key during the welcome tour
