@@ -213,8 +213,41 @@ tbody tr:last-child td{border-bottom:none}
 .cta .btn-primary{background:#fff;color:var(--rose-deep);box-shadow:0 14px 30px -10px rgba(0,0,0,.4)}
 .cta-sub{margin-top:18px;font-size:.9rem;opacity:.85}
 
+/* ---------- LEGAL (Impressum / Datenschutz) ---------- */
+.legal{background:var(--white)}
+.legal-inner{max-width:760px;margin:0 auto}
+.legal h1{font-size:clamp(2rem,4.4vw,3rem);margin-bottom:10px}
+.legal .updated{color:var(--muted);font-size:.9rem;margin-bottom:36px}
+.legal h2{
+  font-size:clamp(1.25rem,2.4vw,1.6rem);margin:38px 0 12px;
+  padding-top:8px;border-top:1px solid var(--line);
+}
+.legal h2:first-of-type{border-top:0;padding-top:0}
+.legal h3{font-size:1.05rem;margin:20px 0 6px}
+.legal p{color:var(--ink);font-size:1rem;margin-bottom:12px}
+.legal a{color:var(--rose-deep);text-decoration:underline;text-underline-offset:2px}
+.legal a:hover{filter:brightness(1.1)}
+.legal ul{list-style:none;margin:8px 0 14px;display:flex;flex-direction:column;gap:8px}
+.legal li{position:relative;padding-left:26px;color:var(--ink)}
+.legal li::before{
+  content:"✓";position:absolute;left:0;top:1px;width:18px;height:18px;border-radius:50%;
+  background:var(--sage);color:#fff;font-size:.62rem;display:grid;place-items:center;
+}
+.legal .addr-box{
+  background:var(--rose-tint);border:1px solid var(--line);border-radius:16px;
+  padding:18px 22px;margin:6px 0 4px;
+}
+.legal .addr-box p{margin:0;line-height:1.7}
+.legal .placeholder{color:var(--rose-deep);font-weight:600}
+
 /* ---------- FOOTER ---------- */
 .footer{text-align:center;padding:50px 20px;background:#2c2226;color:#e8d6da}
 .footer .brand{justify-content:center;color:#fff;margin-bottom:10px}
 .footer p{color:#c9b3b8;font-size:.95rem}
+.footer-links{
+  display:flex;justify-content:center;flex-wrap:wrap;gap:8px 22px;
+  margin:18px 0 4px;font-size:.9rem;
+}
+.footer-links a{color:#e8d6da;transition:color .2s}
+.footer-links a:hover{color:#fff;text-decoration:underline}
 .footer .copy{margin-top:14px;font-size:.82rem;opacity:.6}
