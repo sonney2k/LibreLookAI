@@ -171,10 +171,12 @@ fun OnboardingScreen(
     }
 
     // BYOK key — onboarding's only hard requirement (the app does no AI without it). Persisted to
-    // device-local storage as the user types; the Next button on [apiKeyPage] soft-blocks until the
-    // pasted value looks like an AI Studio key. Top-right "Skip" remains an escape hatch.
+    // device-local storage as the user types; the Next button on [apiKeyPage] soft-blocks until a
+    // plausible key is entered. We only sanity-check length (not an "AIza" prefix) so the gate
+    // matches Settings, which accepts any non-blank key — a too-strict prefix check used to leave
+    // Next greyed out for valid keys. Top-right "Skip" remains an escape hatch.
     var apiKey by remember { mutableStateOf(ApiKeyStore.get(context)) }
-    val apiKeyLooksValid = remember(apiKey) { apiKey.trim().startsWith("AIza") && apiKey.trim().length >= 30 }
+    val apiKeyLooksValid = remember(apiKey) { apiKey.trim().length >= 20 }
 
     // Seeded from the loaded preferences (re-seeds once when the Drive load lands).
     var gender by remember(prefs) { mutableStateOf(prefs.gender) }
@@ -202,6 +204,17 @@ fun OnboardingScreen(
     val pagerState = rememberPagerState(pageCount = { totalPages })
     val scope = rememberCoroutineScope()
 
+    // The three required steps soft-block forward progress until satisfied. This gates both the
+    // Next button *and* swiping — otherwise the user could just swipe past a required page. Using
+    // userScrollEnabled (not drag interception) keeps it correct in RTL locales; the trade-off is
+    // that swiping back off a blocked page also needs the Back button.
+    fun requiredButUnmet(page: Int): Boolean = when (page) {
+        drivePage -> !isSignedIn
+        backgroundPage -> !isBatteryExempt
+        apiKeyPage -> !apiKeyLooksValid
+        else -> false
+    }
+
     Box(
         modifier
             .fillMaxSize()
@@ -227,6 +240,7 @@ fun OnboardingScreen(
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier.weight(1f).fillMaxWidth(),
+                userScrollEnabled = !requiredButUnmet(pagerState.currentPage),
             ) { page ->
                 when (page) {
                     drivePage -> DriveSignInPage(
@@ -310,14 +324,9 @@ fun OnboardingScreen(
                 if (pagerState.currentPage < finishPage) {
                     // Soft-block: required steps keep Next disabled until satisfied — Drive sign-in
                     // until connected, background processing until exempt, API key until pasted.
-                    val nextEnabled = when (pagerState.currentPage) {
-                        drivePage -> isSignedIn
-                        backgroundPage -> isBatteryExempt
-                        apiKeyPage -> apiKeyLooksValid
-                        else -> true
-                    }
+                    // Same gate also disables swiping past the page (see HorizontalPager above).
                     Button(
-                        enabled = nextEnabled,
+                        enabled = !requiredButUnmet(pagerState.currentPage),
                         onClick = {
                             scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) }
                         },
