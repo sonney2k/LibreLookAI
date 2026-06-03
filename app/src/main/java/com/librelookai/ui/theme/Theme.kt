@@ -31,6 +31,19 @@ fun LibreLookAITheme(
             onSurface = palette.text,
             surfaceVariant = palette.surface2,
             onSurfaceVariant = palette.textMuted,
+            // The tonal `surfaceContainer*` ladder (used by default filled Card, ModalBottomSheet,
+            // menus, etc.) is NOT covered by `surface`/`surfaceVariant`; left unset it falls back to
+            // Material's baseline purple. Map it onto the palette so every default M3 surface stays
+            // on-theme. Ordered dimmest→brightest: in dark mode that's bg (darkest) → surface2.
+            surfaceContainerLowest = palette.bg,
+            surfaceContainerLow = palette.surface,
+            surfaceContainer = palette.surface,
+            surfaceContainerHigh = palette.surface2,
+            surfaceContainerHighest = palette.surface2,
+            surfaceBright = palette.surface2,
+            surfaceDim = palette.bg,
+            inverseSurface = palette.toastBg,
+            inverseOnSurface = palette.toastFg,
             outline = palette.border,
             outlineVariant = palette.divider,
             error = palette.error,
@@ -52,6 +65,18 @@ fun LibreLookAITheme(
             onSurface = palette.text,
             surfaceVariant = palette.surface2,
             onSurfaceVariant = palette.textMuted,
+            // See the dark branch above. In light mode the order flips: bg is the brightest tone
+            // and surface2 the dimmest, but the `surfaceContainer*` ladder still runs lowest→highest
+            // as bg → surface2 (lowest = closest to the page background).
+            surfaceContainerLowest = palette.bg,
+            surfaceContainerLow = palette.surface,
+            surfaceContainer = palette.surface,
+            surfaceContainerHigh = palette.surface2,
+            surfaceContainerHighest = palette.surface2,
+            surfaceBright = palette.bg,
+            surfaceDim = palette.surface2,
+            inverseSurface = palette.toastBg,
+            inverseOnSurface = palette.toastFg,
             outline = palette.border,
             outlineVariant = palette.divider,
             error = palette.error,
