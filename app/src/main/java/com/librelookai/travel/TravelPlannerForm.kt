@@ -108,7 +108,11 @@ internal fun PlanTripSection(
                 considerations = considerations,
                 onToggle = onToggleConsideration,
             )
-        }
+            AiTagChips(
+                considerations = considerations,
+                onToggle = onToggleConsideration,
+            )
+}
     }
 }
 

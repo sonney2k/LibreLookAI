@@ -193,12 +193,14 @@ internal fun TravelPlannerContent(
                 state.goal,
                 state.vibes,
                 state.considerationsOverride,
+                outfitsState.wearHistory,
             ) {
                 value = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Default) {
                     travelViewModel.estimatePackingTokens(
                         prefs = profileState.preferences,
                         images = sourceImages,
                         styles = sourceStyles,
+                        wearHistory = outfitsState.wearHistory,
                     )
                 }
             }
@@ -211,6 +213,7 @@ internal fun TravelPlannerContent(
                         prefs  = profileState.preferences,
                         images = sourceImages,
                         styles = sourceStyles,
+                        wearHistory = outfitsState.wearHistory,
                     )
                 },
                 tokens = packingTokens,

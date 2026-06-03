@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Cake
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.WbSunny
@@ -175,8 +176,58 @@ internal fun AiConsidersChips(
                     active = considerations.preferences,
                 ) { onToggle { it.copy(preferences = !it.preferences) } }
             }
+            item {
+                SmallPillChip(
+                    label = stringResource(R.string.ai_consider_history),
+                    icon = Icons.Default.History,
+                    active = considerations.history,
+                ) { onToggle { it.copy(history = !it.history) } }
+            }
         }
     }
+}
+
+/**
+ * Expert option mirroring the outfit composer's [com.librelookai.outfit.ExpertTagsCard]: chooses
+ * which item tag dimensions ([AiConsiderations.TOGGLEABLE_TAGS], e.g. pattern, material) get fed
+ * into the packing prompt. `type`/`category`/`name` are always sent and not shown here. Toggling
+ * routes through the same [onToggle] transform as the considerations chips.
+ */
+@Composable
+internal fun AiTagChips(
+    considerations: com.librelookai.settings.AiConsiderations,
+    onToggle: ((com.librelookai.settings.AiConsiderations) -> com.librelookai.settings.AiConsiderations) -> Unit,
+) {
+    val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Text(
+            stringResource(R.string.composer_section_tags).uppercase(),
+            fontSize = 10.sp,
+            fontWeight = FontWeight.Bold,
+            color = palette.textMuted,
+        )
+        LazyRow(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
+            items(com.librelookai.settings.AiConsiderations.TOGGLEABLE_TAGS) { dim ->
+                val labelRes = tagDimLabelRes(dim) ?: return@items
+                SmallPillChip(
+                    label = stringResource(labelRes),
+                    icon = null,
+                    active = considerations.includesItemTag(dim),
+                ) { onToggle { it.toggleItemTag(dim) } }
+            }
+        }
+    }
+}
+
+private fun tagDimLabelRes(dim: String): Int? = when (dim) {
+    "uses" -> R.string.tag_uses
+    "colors" -> R.string.tag_colors
+    "seasonality" -> R.string.tag_seasonality
+    "aesthetic" -> R.string.tag_aesthetic
+    "fit" -> R.string.tag_fit
+    "material" -> R.string.tag_material
+    "pattern" -> R.string.tag_pattern
+    else -> null
 }
 
 @Composable

@@ -14,6 +14,8 @@ import java.time.format.DateTimeFormatter
 import com.librelookai.data.model.DayForecast
 import com.librelookai.data.model.Outfit
 import com.librelookai.data.model.PackingList
+import com.librelookai.data.model.OutfitEvent
+import com.librelookai.outfit.buildWearHistorySummary
 import com.librelookai.gemini.GeminiRepository
 import com.librelookai.gemini.PromptKey
 import com.librelookai.gemini.PromptStore
@@ -174,8 +176,13 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
         it.copy(sourceFolderIds = next)
     }
 
-    fun generate(prefs: UserPreferences?, images: List<DriveImage>, styles: List<Outfit>) {
-        doGenerate(prefs, images, styles)
+    fun generate(
+        prefs: UserPreferences?,
+        images: List<DriveImage>,
+        styles: List<Outfit>,
+        wearHistory: List<OutfitEvent> = emptyList(),
+    ) {
+        doGenerate(prefs, images, styles, wearHistory)
     }
 
     /**
@@ -187,6 +194,7 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
         prefs: UserPreferences?,
         images: List<DriveImage>,
         styles: List<Outfit>,
+        wearHistory: List<OutfitEvent> = emptyList(),
     ): com.librelookai.gemini.CostTokens {
         val s = _state.value
         val effectiveOutfitCount = (s.outfitCount ?: s.days).coerceIn(1, 21)
@@ -205,6 +213,7 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
             referenceYear   = null,
             images          = images,
             styles          = styles,
+            wearHistory     = wearHistory,
         )
         return com.librelookai.gemini.CostTokens(
             inputTokens = com.librelookai.gemini.TokenEstimator.textTokens(prompt),
@@ -218,6 +227,7 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
         prefs: UserPreferences?,
         images: List<DriveImage>,
         styles: List<Outfit>,
+        wearHistory: List<OutfitEvent>,
     ) {
         val dest      = _state.value.destination.trim()
         val startDate = _state.value.startDate
@@ -227,7 +237,7 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
             return
         }
 
-        com.librelookai.gemini.AiRetry.action = { doGenerate(prefs, images, styles) }
+        com.librelookai.gemini.AiRetry.action = { doGenerate(prefs, images, styles, wearHistory) }
         viewModelScope.launch {
             // Phase 1 — fetch forecast only when input changed
             val currentKey = Triple(dest, startDate, days)
@@ -285,6 +295,7 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
                 referenceYear   = refYear,
                 images          = images,
                 styles          = styles,
+                wearHistory     = wearHistory,
             )
             Log.d("TravelVM", "Packing prompt length: ${prompt.length} chars")
 
@@ -334,6 +345,7 @@ internal fun buildPackingPrompt(
     referenceYear: Int?,
     images: List<DriveImage>,
     styles: List<Outfit>,
+    wearHistory: List<OutfitEvent> = emptyList(),
 ): String {
     val age    = prefs?.yearOfBirth?.let { LocalDate.now().year - it }
     val endDate = startDate.plusDays((days - 1).toLong())
@@ -409,6 +421,10 @@ internal fun buildPackingPrompt(
         if (styles.isNotEmpty()) {
             appendLine("## Saved Styles (pre-built outfits)")
             appendLine(stylesJson)
+            appendLine()
+        }
+        if (c.history) buildWearHistorySummary(wearHistory)?.let {
+            appendLine(it)
             appendLine()
         }
         appendLine("Respond with ONLY a valid JSON object — no markdown, no extra text:")
