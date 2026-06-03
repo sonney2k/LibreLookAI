@@ -58,7 +58,12 @@ section{padding:clamp(56px,9vw,120px) clamp(20px,6vw,90px)}
   -webkit-appearance:none;appearance:none;outline:none;
 }
 .lang-pick select:hover{color:var(--rose-deep)}
-@media(max-width:760px){.nav-links a:not(.nav-cta){display:none}}
+.gh-link{display:inline-flex;align-items:center;gap:7px}
+.gh-link svg{width:18px;height:18px;fill:currentColor;flex:none}
+.nav .gh-nav{color:var(--muted)}
+.nav .gh-nav:hover{color:var(--rose-deep)}
+@media(max-width:760px){.nav-links a:not(.nav-cta):not(.gh-nav){display:none}}
+@media(max-width:760px){.nav .gh-nav span{display:none}}
 @media(max-width:520px){.nav-cta{display:none}}
 
 /* ---------- HERO ---------- */
@@ -250,4 +255,5 @@ tbody tr:last-child td{border-bottom:none}
 }
 .footer-links a{color:#e8d6da;transition:color .2s}
 .footer-links a:hover{color:#fff;text-decoration:underline}
+.footer-links .gh-link svg{width:15px;height:15px}
 .footer .copy{margin-top:14px;font-size:.82rem;opacity:.6}
