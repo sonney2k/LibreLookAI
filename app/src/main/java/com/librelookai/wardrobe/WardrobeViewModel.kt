@@ -228,6 +228,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private var prefetchJob: Job? = null
+    private var snapshotJob: Job? = null
 
     /**
      * Re-attempt the cross-closet prefetch when any configured closet still lacks a local cache.
@@ -267,16 +268,25 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    /** Re-read every configured folder's cache and publish the merged snapshot. */
+    /**
+     * Re-read every configured folder's cache and publish the merged cross-closet snapshot. Reading
+     * + parsing every closet's JSON runs off the main thread (this is called from `saveLocalCache`
+     * on every tag edit and from the restore wiring), then the snapshot is published on the VM scope.
+     */
     internal fun refreshAllLocationImagesState() {
-        val perFolder = allConfiguredFolderIds.map { fid -> fid to readCacheAsImages(fid) }
-        val merged = perFolder.flatMap { it.second }
-        Log.d(TAG, "snapshot: " + perFolder.joinToString { (fid, imgs) ->
-            val state = if (localCacheFile(fid).exists()) "cached" else "no-cache"
-            val kind = if (fid == shoppingFolderId) "(shopping)" else ""
-            "$fid=${imgs.size}/$state$kind"
-        } + " -> total=${merged.size}")
-        _state.update { it.copy(allLocationImages = merged) }
+        // Coalesce rapid refreshes: a newer call supersedes an in-flight one (each reads the latest
+        // cache from disk), so a slow earlier read can't overwrite a fresher snapshot.
+        snapshotJob?.cancel()
+        snapshotJob = viewModelScope.launch(Dispatchers.IO) {
+            val perFolder = allConfiguredFolderIds.map { fid -> fid to readCacheAsImages(fid) }
+            val merged = perFolder.flatMap { it.second }
+            Log.d(TAG, "snapshot: " + perFolder.joinToString { (fid, imgs) ->
+                val state = if (localCacheFile(fid).exists()) "cached" else "no-cache"
+                val kind = if (fid == shoppingFolderId) "(shopping)" else ""
+                "$fid=${imgs.size}/$state$kind"
+            } + " -> total=${merged.size}")
+            _state.update { it.copy(allLocationImages = merged) }
+        }
     }
 
     private fun readCacheAsImages(fid: String): List<DriveImage> {
@@ -383,23 +393,10 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             val ids = allFolderIds
             if (ids != null) {
                 _state.update { it.copy(isLoading = true, error = null) }
-                // Phase 1 — instant: merge caches from all folders
-                val cachedAll = ids.flatMap { fid ->
-                    val cacheFile = localCacheFile(fid)
-                    if (!cacheFile.exists()) return@flatMap emptyList()
-                    runCatching {
-                        val cache = gson.fromJson(cacheFile.readText(), LocalCache::class.java)
-                        cache.items.mapNotNull { entry ->
-                            drive.cachedFile(entry.driveId)?.let { f ->
-                                DriveImage(entry.driveId, f.absolutePath, entry.name, entry.tags,
-                                    originalDriveId = entry.originalDriveId,
-                                    sidecarDriveId = entry.sidecarDriveId,
-                                    folderId = fid,
-                                    createdTimeMs = entry.createdTimeMs)
-                            }
-                        }
-                    }.getOrDefault(emptyList())
-                }
+                // Phase 1 — instant: merge caches from all folders. Read + parse off the main
+                // thread (viewModelScope defaults to Main) so parsing every closet's JSON doesn't
+                // jank the All-locations switch.
+                val cachedAll = withContext(Dispatchers.IO) { ids.flatMap { fid -> readCacheAsImages(fid) } }
                 if (cachedAll.isNotEmpty()) _state.update { it.copy(images = cachedAll, isLoading = false) }
                 // Phase 2 — network: skip when offline
                 _state.update { it.copy(isSyncing = true) }
@@ -499,25 +496,12 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             val id = folderId ?: return@launch
             _state.update { it.copy(isLoading = true, error = null) }
 
-            // Phase 1 — instant: show whatever is already on disk (zero network calls)
-            val cacheFile = localCacheFile(id)
-            if (cacheFile.exists()) {
-                runCatching {
-                    val cache = gson.fromJson(cacheFile.readText(), LocalCache::class.java)
-                    cache.items.mapNotNull { entry ->
-                        drive.cachedFile(entry.driveId)?.let { f ->
-                            DriveImage(entry.driveId, f.absolutePath, entry.name, entry.tags,
-                                originalDriveId = entry.originalDriveId,
-                                sidecarDriveId = entry.sidecarDriveId,
-                                folderId = id,
-                                createdTimeMs = entry.createdTimeMs)
-                        }
-                    }
-                }.onSuccess { items ->
-                    if (items.isNotEmpty()) {
-                        _state.update { it.copy(images = items, isLoading = false) }
-                    }
-                }
+            // Phase 1 — instant: show whatever is already on disk (zero network calls). The cache
+            // read + JSON parse runs off the main thread so switching into a large (warmed) closet
+            // doesn't jank the UI — viewModelScope launches on Main by default.
+            val cachedItems = withContext(Dispatchers.IO) { readCacheAsImages(id) }
+            if (cachedItems.isNotEmpty()) {
+                _state.update { it.copy(images = cachedItems, isLoading = false) }
             }
 
             // Phase 2 — background sync: skip when offline
