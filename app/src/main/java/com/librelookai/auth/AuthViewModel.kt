@@ -26,6 +26,19 @@ class AuthViewModel(app: Application) : AndroidViewModel(app) {
     private val _pendingAuthIntent = MutableStateFlow<PendingIntent?>(null)
     val pendingAuthIntent: StateFlow<PendingIntent?> = _pendingAuthIntent.asStateFlow()
 
+    init {
+        // A revoked / expired Drive authorization (or a deleted OAuth client)
+        // makes getAccessToken fail process-wide. Drop to the sign-in gate so
+        // the user can re-authorize, instead of being stuck behind silent
+        // Drive failures. See AuthEvents.
+        viewModelScope.launch {
+            AuthEvents.sessionExpired.collect {
+                _isSignedIn.value = false
+                _pendingAuthIntent.value = null
+            }
+        }
+    }
+
     fun startSignIn() {
         viewModelScope.launch {
             try {

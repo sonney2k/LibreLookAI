@@ -536,6 +536,24 @@ If either is missing, the Shop screen shows a dev-facing warning. Embedder is re
    Without this, Google Sign-In → Firebase Auth fails on release builds.
 4. **Create the app in Play Console** (package: `com.librelookai`).
 
+### Drive access model & immutable OAuth identity (CRITICAL — read before touching Cloud config)
+
+The app stores everything in a Drive folder (`LibreLookAI/` + subfolders). The scope decision and the OAuth identity are load-bearing for whether users can ever see their data again. Hard-won rules, learned the painful way (June 2026):
+
+- **Scope tradeoff.** Full `drive` (`…/auth/drive`) is **restricted** → public verification needs a **CASA security assessment** (slow + paid). `drive.file` (`…/auth/drive.file`) is **sensitive** → verification **without CASA**, but only grants access to files the app **created** (or that the user hands it via the Google Picker). We are moving toward `drive.file` to avoid CASA.
+- **`drive.file` access is bound to the Cloud *project* identity.** A file is readable under `drive.file` only by the app/project that created it. Picking a folder in the Google Picker grants access to the folder node and files the app creates in it, but **NOT** to pre-existing children created by a different app/project (empirically confirmed — folder-pick is **not** a recursive grant for foreign content). This is also why cross-user Drive *folder sharing* can't work under `drive.file`; sharing must be app-mediated (export/import or a backend), not raw Drive sharing.
+- **What guarantees future access:** *same Google account* + *same Cloud project* (`923211051414`) + *same app OAuth identity* (the signing-key SHA-1s registered in that project). Under those three, app-created files persist across reinstalls / new devices / re-auth (the created-by association is server-side, not device-local).
+- **What broke it (don't repeat):** the original data was created under a **different project's** OAuth client; an OAuth client was **deleted/recreated**; and the **Drive API was disabled** in `923211051414`. Any one of these strands data under `drive.file`.
+
+**Immutable-infra rules:**
+- [ ] **`923211051414` (`librelookai-firebase`) is THE project. Never migrate to a new Firebase/Cloud project** — doing so strands every user's `drive.file` data.
+- [ ] **Never delete/recreate the OAuth clients.** Add SHA-1s; don't churn clients.
+- [ ] **Drive API + Picker API must stay enabled** in the project (`gcloud services enable drive.googleapis.com picker.googleapis.com`). A disabled Drive API makes every Drive REST call 403 → silently empty wardrobe.
+- [ ] **Register ALL signing-key SHA-1s in this one project:** debug, upload, **and the Play App Signing key** (Play Console → App integrity). The Play App Signing key has a *different* SHA-1 than your upload key; if it isn't registered here, production users get `DEVELOPER_ERROR` (code 10) and a different OAuth identity → can't see their data. Google manages/never rotates the App Signing key, so once registered it's stable.
+- Picker API key: restricted to `picker.googleapis.com`, in `local.properties` → `picker.api.key` → `BuildConfig.PICKER_API_KEY` (+ `picker.app.id` = project number for `setAppId`).
+
+**Migration for existing data** (created under the old project/client, invisible to `drive.file`): a one-time **full-`drive`** build server-side-copies (`files.copy`, instant) the legacy folder into a fresh app-owned folder so the copies are created by `923211051414` and become `drive.file`-readable. See `data/drive/DriveMigration.kt`. Belt-and-suspenders: the app should detect *lost access* (stored root folder 404s / expected-but-empty) and offer a **re-link / re-migrate** path rather than silently showing an empty wardrobe.
+
 ### Per-release checklist
 
 **Firebase App Distribution (testers) is automated by `scripts/release.sh <versionName>`** — it does the version bump, notes prepend, signed `assembleRelease`, commit + tag, and `appDistributionUploadRelease` to the `testers` group (`--push` to push, `--dry-run` to preview). The Gradle upload needs Firebase credentials (logged-in `firebase` CLI, `FIREBASE_TOKEN`, or `GOOGLE_APPLICATION_CREDENTIALS`). The manual checklist below still applies for the Play Store track (`bundleRelease` + Play Console upload), which the script does not handle.

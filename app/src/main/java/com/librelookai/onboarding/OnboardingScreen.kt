@@ -76,7 +76,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.librelookai.R
+import com.librelookai.data.drive.migrateLegacyInto
 import com.librelookai.gemini.ApiKeyStore
 import com.librelookai.settings.ProfileViewModel
 import com.librelookai.settings.TryOnSlot
@@ -524,11 +526,65 @@ private fun DriveSignInPage(
         )
         Spacer(Modifier.height(24.dp))
         if (isSignedIn) {
+            val migrationVm: DriveMigrationViewModel = viewModel()
+            val migState by migrationVm.state.collectAsState()
+            var showPicker by remember { mutableStateOf(false) }
+            val migratedRoot = (migState as? MigrationState.Done)?.rootId
+                ?: migrationVm.alreadyMigratedRoot()
+
             Text(
                 stringResource(R.string.onboarding_drive_connected),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary,
             )
+            Spacer(Modifier.height(20.dp))
+            when (val s = migState) {
+                is MigrationState.Running -> {
+                    CircularProgressIndicator()
+                    Spacer(Modifier.height(12.dp))
+                    Text(
+                        stringResource(R.string.onboarding_drive_importing, s.copied, s.total),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                    )
+                }
+                else -> if (migratedRoot != null) {
+                    Text(
+                        stringResource(R.string.onboarding_drive_imported),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                        textAlign = TextAlign.Center,
+                    )
+                } else {
+                    Text(
+                        stringResource(R.string.onboarding_drive_import_hint),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                    )
+                    Spacer(Modifier.height(12.dp))
+                    OutlinedButton(onClick = { showPicker = true }, enabled = !isOffline) {
+                        Text(stringResource(R.string.onboarding_drive_import))
+                    }
+                    if (s is MigrationState.Error) {
+                        Spacer(Modifier.height(12.dp))
+                        Text(
+                            stringResource(R.string.onboarding_drive_import_error),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.error,
+                            textAlign = TextAlign.Center,
+                        )
+                    }
+                }
+            }
+
+            if (showPicker) {
+                DriveFolderPicker(onResult = { legacyId ->
+                    showPicker = false
+                    if (legacyId != null) migrationVm.migrate(legacyId)
+                })
+            }
         } else {
             Button(onClick = onSignIn, enabled = !isOffline) {
                 Text(stringResource(R.string.onboarding_drive_connect))

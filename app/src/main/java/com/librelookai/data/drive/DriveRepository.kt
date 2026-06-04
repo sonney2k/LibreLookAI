@@ -28,11 +28,14 @@ import com.librelookai.data.model.Outfit
 data class DriveFileDto(
     val id: String = "",
     val name: String = "",
+    val mimeType: String? = null,
     val appProperties: Map<String, String>? = null,
     /** Raw Drive API size field (returned as a string); -1 if not requested or unavailable. */
     private val size: String? = null,
     /** ISO-8601 createdTime from Drive (only populated when requested in `fields=`). */
     val createdTime: String? = null,
+    /** ISO-8601 modifiedTime from Drive (only populated when requested in `fields=`). */
+    val modifiedTime: String? = null,
 ) {
     val sizeBytes: Long get() = size?.toLongOrNull() ?: -1L
     val createdTimeMs: Long get() = createdTime?.let {
@@ -48,7 +51,7 @@ internal data class FilesListDto(
 // ---------- Repository ----------
 
 class DriveRepository(
-    context: Context,
+    private val context: Context,
     private val auth: GoogleAuthManager,
 ) {
     companion object {
@@ -147,6 +150,20 @@ class DriveRepository(
 
     internal suspend fun token() = auth.getAccessToken()
 
+    // ---------- Root folder (drive.file) ----------
+    // Under the drive.file scope the app can only see folders it created or that the user handed
+    // it via the Google Picker. A name search for "LibreLookAI" therefore returns nothing for a
+    // pre-existing folder, so we persist the resolved/picked root ID and prefer it.
+    private fun rootPrefs() = context.getSharedPreferences("drive_root", Context.MODE_PRIVATE)
+
+    /** User-picked (or previously resolved) root folder ID, or null if not chosen yet. */
+    fun pickedRootFolderId(): String? = rootPrefs().getString("folder_id", null)?.takeIf { it.isNotBlank() }
+
+    /** Persist the root folder ID (called by the onboarding picker, or after creating a fresh one). */
+    fun setPickedRootFolder(id: String) { rootPrefs().edit().putString("folder_id", id).apply() }
+
+    fun clearPickedRootFolder() { rootPrefs().edit().remove("folder_id").apply() }
+
     /**
      * Fetches all pages from a Drive files.list [baseUrl] (must include all params except
      * pageToken) and returns the concatenated file list.
@@ -166,8 +183,14 @@ class DriveRepository(
         return result
     }
 
-    /** Returns the Drive folder ID, creating the folder if it doesn't exist. */
+    /**
+     * Returns the Drive root folder ID. Prefers a previously picked/resolved ID (the only way to
+     * reach a pre-existing folder under drive.file); otherwise searches by name (works for
+     * app-created folders) and finally creates one. The resolved ID is persisted either way so
+     * subsequent calls short-circuit and never create a duplicate.
+     */
     suspend fun getOrCreateFolder(): String = withContext(Dispatchers.IO) {
+        pickedRootFolderId()?.let { return@withContext it }
         val tok = token()
         val q = URLEncoder.encode(
             "mimeType='application/vnd.google-apps.folder' and name='$FOLDER_NAME' and trashed=false",
@@ -181,6 +204,9 @@ class DriveRepository(
             http.newCall(listReq).await().body!!.string(),
             FilesListDto::class.java,
         )
+        // Found by name: return it, but DON'T claim it as the active root — under full `drive`
+        // (migration build) a name search can match a legacy/orphan folder, and silently adopting
+        // it would skip migration. Only an explicit migration / pick / fresh-create sets the root.
         if (listed.files.isNotEmpty()) return@withContext listed.files[0].id
 
         val meta = """{"name":"$FOLDER_NAME","mimeType":"application/vnd.google-apps.folder"}"""
@@ -192,7 +218,7 @@ class DriveRepository(
         gson.fromJson(
             http.newCall(createReq).await().body!!.string(),
             DriveFileDto::class.java,
-        ).id
+        ).id.also { setPickedRootFolder(it) } // brand-new user: this fresh folder is the root
     }
 
     /**
@@ -379,6 +405,85 @@ class DriveRepository(
         ).files
     }
 
+    /** Lists every non-trashed child (files and folders) of [folderId], with metadata for copying. */
+    suspend fun listAllChildren(folderId: String): List<DriveFileDto> = withContext(Dispatchers.IO) {
+        val tok = token()
+        val q = URLEncoder.encode("'$folderId' in parents and trashed=false", "UTF-8")
+        fetchAllPages(
+            "$API/files?q=$q&fields=files(id,name,mimeType,createdTime,modifiedTime,appProperties),nextPageToken&pageSize=1000",
+            tok,
+        )
+    }
+
+    /**
+     * Server-side copy of [fileId] into [parentFolderId] under [name]. Returns the new file ID.
+     * Carries [createdTime] / [modifiedTime] / [appProperties] so the copy preserves the original's
+     * dates (wardrobe sorts by createdTime) and legacy tag properties — `files.copy` otherwise stamps
+     * the copy with "now" and drops appProperties.
+     */
+    suspend fun copyFile(
+        fileId: String,
+        name: String,
+        parentFolderId: String,
+        createdTime: String? = null,
+        modifiedTime: String? = null,
+        appProperties: Map<String, String>? = null,
+    ): String? = withContext(Dispatchers.IO) {
+        val tok = token()
+        val body = buildString {
+            append("{\"name\":").append(gson.toJson(name))
+            append(",\"parents\":[\"").append(parentFolderId).append("\"]")
+            createdTime?.let { append(",\"createdTime\":").append(gson.toJson(it)) }
+            modifiedTime?.let { append(",\"modifiedTime\":").append(gson.toJson(it)) }
+            appProperties?.takeIf { it.isNotEmpty() }?.let { append(",\"appProperties\":").append(gson.toJson(it)) }
+            append("}")
+        }
+        val resp = http.newCall(
+            Request.Builder()
+                .url("$API/files/$fileId/copy?fields=id")
+                .header("Authorization", "Bearer $tok")
+                .post(body.toRequestBody("application/json".toMediaType()))
+                .build(),
+        ).await()
+        if (!resp.isSuccessful) return@withContext null
+        gson.fromJson(resp.body!!.string(), DriveFileDto::class.java).id
+    }
+
+    /** Creates a new file [name] containing [content] in [parentFolderId]. Returns the new ID. */
+    suspend fun uploadTextFile(parentFolderId: String, name: String, mimeType: String, content: String): String? =
+        withContext(Dispatchers.IO) {
+            val tok = token()
+            val meta = """{"name":${gson.toJson(name)},"parents":["$parentFolderId"],"mimeType":"$mimeType"}"""
+            val createResp = http.newCall(
+                Request.Builder().url("$API/files?fields=id")
+                    .header("Authorization", "Bearer $tok")
+                    .post(meta.toRequestBody("application/json".toMediaType()))
+                    .build(),
+            ).await()
+            if (!createResp.isSuccessful) return@withContext null
+            val id = gson.fromJson(createResp.body!!.string(), DriveFileDto::class.java).id
+            http.newCall(
+                Request.Builder().url("$UPLOAD_API/files/$id?uploadType=media")
+                    .header("Authorization", "Bearer $tok")
+                    .method("PATCH", content.toRequestBody(mimeType.toMediaType()))
+                    .build(),
+            ).await()
+            id
+        }
+
+    /** Overwrites the content of an existing file [fileId] (PATCH media). */
+    suspend fun overwriteFileText(fileId: String, mimeType: String, content: String) =
+        withContext(Dispatchers.IO) {
+            val tok = token()
+            http.newCall(
+                Request.Builder().url("$UPLOAD_API/files/$fileId?uploadType=media")
+                    .header("Authorization", "Bearer $tok")
+                    .method("PATCH", content.toRequestBody(mimeType.toMediaType()))
+                    .build(),
+            ).await()
+            Unit
+        }
+
     /** Returns the number of image files directly inside [folderId]. */
     suspend fun countImages(folderId: String): Int = withContext(Dispatchers.IO) {
         val tok = token()
@@ -417,6 +522,20 @@ class DriveRepository(
             tmp.delete()
             null
         }
+    }
+
+    /** Always creates a NEW top-level folder named [name] in My Drive (no name-dedupe). */
+    suspend fun createRootFolderForced(name: String): String = withContext(Dispatchers.IO) {
+        val tok = token()
+        val meta = """{"name":${gson.toJson(name)},"mimeType":"application/vnd.google-apps.folder"}"""
+        gson.fromJson(
+            http.newCall(Request.Builder()
+                .url("$API/files?fields=id")
+                .header("Authorization", "Bearer $tok")
+                .post(meta.toRequestBody("application/json".toMediaType()))
+                .build()).await().body!!.string(),
+            DriveFileDto::class.java,
+        ).id
     }
 
     /** Creates a subfolder with [name] inside [parentFolderId] and returns its Drive ID. */

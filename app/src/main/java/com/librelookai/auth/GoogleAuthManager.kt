@@ -29,7 +29,11 @@ private const val KEY_SIGNED_IN = "signed_in"
 class GoogleAuthManager(private val context: Context) {
 
     companion object {
-        const val DRIVE_SCOPE = "https://www.googleapis.com/auth/drive"
+        // Migration build uses full `drive` (reads legacy to copy); production ships drive.file.
+        // Selected by the BuildConfig.DRIVE_FULL_SCOPE flag (← local.properties `drive.full.scope`).
+        val DRIVE_SCOPE: String =
+            if (BuildConfig.DRIVE_FULL_SCOPE) "https://www.googleapis.com/auth/drive"
+            else "https://www.googleapis.com/auth/drive.file"
     }
 
     private val credentialManager = CredentialManager.create(context)
@@ -82,10 +86,22 @@ class GoogleAuthManager(private val context: Context) {
         }
     }
 
-    /** Returns a valid OAuth2 access token for the Drive scope. */
+    /**
+     * Returns a valid OAuth2 access token for the Drive scope.
+     *
+     * If the authorization is gone (revoked / expired / OAuth client deleted),
+     * `accessToken` comes back null. Rather than crash with a raw exception on
+     * whatever background coroutine happened to ask for a token, we clear the
+     * signed-in flag, signal the UI to re-authorize via [AuthEvents], and abort
+     * this coroutine cleanly by throwing [ReauthRequiredException] (a
+     * CancellationException — never fatal). See [AuthEvents] for the rationale.
+     */
     suspend fun getAccessToken(): String {
         val result = authorizationClient.authorize(buildAuthRequest()).await()
-        return result.accessToken ?: error("No Drive access token; user must re-authorize")
+        result.accessToken?.let { return it }
+        setSignedIn(false)
+        AuthEvents.emitSessionExpired()
+        throw ReauthRequiredException()
     }
 
     /**
