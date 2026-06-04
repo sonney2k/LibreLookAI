@@ -1,3 +1,14 @@
+### LibreLookAI v2.1.3 Release Notes
+
+#### Never lose sight of your wardrobe
+- The app now automatically finds and reconnects to your Google Drive wardrobe folder if it ever loses track of it — after a reinstall, a new device, or re-signing in — so you no longer land on an empty wardrobe.
+- If you have a wardrobe from an earlier version, the app can now detect it on sign-in and bring it across automatically.
+
+#### Faster and smoother
+- Switching between closets is now noticeably quicker, and the wardrobe loads more smoothly — closet data is prepared in the background instead of briefly freezing the screen.
+
+---
+
 ### LibreLookAI v2.1.2 Release Notes
 
 #### Plan trips with the same AI controls as outfits
