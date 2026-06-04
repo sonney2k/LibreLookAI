@@ -3,6 +3,7 @@
 #### Smoother welcome tour
 - Fixed the "Next" button staying greyed out on the Gemini API key step even after a valid key was entered — any valid key is now accepted.
 - You can no longer accidentally swipe past a required step (Drive sign-in, background processing, API key) before it's done — swiping is blocked until the step is complete, just like the Next button.
+- Fixed tour pages whose buttons (like "Allow background processing") could end up off-screen on smaller displays or with larger font sizes, leaving you unable to continue — every page now scrolls so its buttons are always reachable.
 
 #### See your data come back
 - Reinstalling or signing in on a new device now shows a clear progress card while your wardrobe, outfits, shopping list and trips are restored from Google Drive — including a live item count — instead of leaving you on empty screens.
