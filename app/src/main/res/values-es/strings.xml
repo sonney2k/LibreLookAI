@@ -1121,4 +1121,11 @@
 
     <!-- Unify close affordance (action_close) -->
     <string name="action_close">Cerrar</string>
+
+    <!-- Drive migration: auto-detect import (items 2/3) -->
+    <string name="onboarding_drive_checking">Buscando un armario existente para importar…</string>
+    <string name="onboarding_drive_importing">Importando tu armario existente… %1$d / %2$d</string>
+    <string name="onboarding_drive_imported">Armario importado ✓</string>
+    <string name="onboarding_drive_import_error">No hemos podido importar tu armario existente automáticamente. Puedes volver a intentarlo o elegir la carpeta tú mismo.</string>
+    <string name="onboarding_drive_import_manual">Elegir carpeta manualmente</string>
 </resources>

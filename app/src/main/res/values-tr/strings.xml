@@ -1121,4 +1121,11 @@
 
     <!-- Unify close affordance (action_close) -->
     <string name="action_close">Kapat</string>
+
+    <!-- Drive migration: auto-detect import (items 2/3) -->
+    <string name="onboarding_drive_checking">İçe aktarmak için mevcut bir gardırop aranıyor…</string>
+    <string name="onboarding_drive_importing">Mevcut gardırobunuz içe aktarılıyor… %1$d / %2$d</string>
+    <string name="onboarding_drive_imported">Gardırop içe aktarıldı ✓</string>
+    <string name="onboarding_drive_import_error">Mevcut gardırobunuzu otomatik olarak içe aktaramadık. Tekrar deneyebilir veya klasörü kendiniz seçebilirsiniz.</string>
+    <string name="onboarding_drive_import_manual">Klasörü manuel olarak seç</string>
 </resources>

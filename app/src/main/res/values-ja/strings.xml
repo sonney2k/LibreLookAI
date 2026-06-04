@@ -1121,4 +1121,11 @@
 
     <!-- Unify close affordance (action_close) -->
     <string name="action_close">閉じる</string>
+
+    <!-- Drive migration: auto-detect import (items 2/3) -->
+    <string name="onboarding_drive_checking">インポートできる既存のワードローブを確認しています…</string>
+    <string name="onboarding_drive_importing">既存のワードローブをインポートしています… %1$d / %2$d</string>
+    <string name="onboarding_drive_imported">ワードローブをインポートしました ✓</string>
+    <string name="onboarding_drive_import_error">既存のワードローブを自動的にインポートできませんでした。もう一度お試しいただくか、フォルダをご自分で選択してください。</string>
+    <string name="onboarding_drive_import_manual">フォルダを手動で選択</string>
 </resources>

@@ -1094,4 +1094,11 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
 
     <!-- Unify close affordance (action_close) -->
     <string name="action_close">Đóng</string>
+
+    <!-- Drive migration: auto-detect import (items 2/3) -->
+    <string name="onboarding_drive_checking">Đang tìm tủ quần áo hiện có để nhập…</string>
+    <string name="onboarding_drive_importing">Đang nhập tủ quần áo hiện có của bạn… %1$d / %2$d</string>
+    <string name="onboarding_drive_imported">Đã nhập tủ quần áo ✓</string>
+    <string name="onboarding_drive_import_error">Chúng tôi không thể tự động nhập tủ quần áo hiện có của bạn. Bạn có thể thử lại hoặc tự chọn thư mục.</string>
+    <string name="onboarding_drive_import_manual">Chọn thư mục thủ công</string>
 </resources>

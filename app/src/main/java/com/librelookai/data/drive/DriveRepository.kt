@@ -1,5 +1,7 @@
 package com.librelookai.data.drive
 import android.content.Context
+import android.util.Log
+import com.librelookai.BuildConfig
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import kotlinx.coroutines.Dispatchers
@@ -36,6 +38,8 @@ data class DriveFileDto(
     val createdTime: String? = null,
     /** ISO-8601 modifiedTime from Drive (only populated when requested in `fields=`). */
     val modifiedTime: String? = null,
+    /** Whether the file is in the trash (only populated when `trashed` is requested in `fields=`). */
+    val trashed: Boolean? = null,
 ) {
     val sizeBytes: Long get() = size?.toLongOrNull() ?: -1L
     val createdTimeMs: Long get() = createdTime?.let {
@@ -50,6 +54,8 @@ internal data class FilesListDto(
 
 // ---------- Repository ----------
 
+private const val TAG = "DriveRepository"
+
 class DriveRepository(
     private val context: Context,
     private val auth: GoogleAuthManager,
@@ -58,6 +64,14 @@ class DriveRepository(
         internal const val API = "https://www.googleapis.com/drive/v3"
         internal const val UPLOAD_API = "https://www.googleapis.com/upload/drive/v3"
         internal const val FOLDER_NAME = "LibreLookAI"
+        internal const val FOLDER_MIME = "application/vnd.google-apps.folder"
+        /**
+         * appProperties marker stamped on a root folder THIS app created (fresh-create or migration
+         * target). Lets us tell our own root apart from a legacy/foreign "LibreLookAI" folder, so we
+         * can re-adopt it on reinstall / new device (recovery) and never re-migrate it. See
+         * [getOrCreateFolder] / [findLegacyMigrationSource] and archive § "Drive access model".
+         */
+        internal const val APP_ROOT_PROP = "llaiAppRoot"
         internal const val OUTFITS_FILE_NAME = "_outfits.json"
         internal const val OUTFIT_EVENTS_FILE_NAME = "_outfit_events.json"
         /** Legacy filename from before the Style→Outfit rename. Read-only fallback. */
@@ -156,6 +170,10 @@ class DriveRepository(
     // pre-existing folder, so we persist the resolved/picked root ID and prefer it.
     private fun rootPrefs() = context.getSharedPreferences("drive_root", Context.MODE_PRIVATE)
 
+    // Set once the stored root has been confirmed reachable this session, so we don't pay a HEAD
+    // round-trip on every getOrCreateFolder. Reset implicitly per repo instance.
+    @Volatile private var rootVerified = false
+
     /** User-picked (or previously resolved) root folder ID, or null if not chosen yet. */
     fun pickedRootFolderId(): String? = rootPrefs().getString("folder_id", null)?.takeIf { it.isNotBlank() }
 
@@ -184,42 +202,111 @@ class DriveRepository(
     }
 
     /**
-     * Returns the Drive root folder ID. Prefers a previously picked/resolved ID (the only way to
-     * reach a pre-existing folder under drive.file); otherwise searches by name (works for
-     * app-created folders) and finally creates one. The resolved ID is persisted either way so
-     * subsequent calls short-circuit and never create a duplicate.
+     * Returns the Drive root folder ID, self-healing across reinstalls / lost access:
+     *   1. A stored (picked/resolved) root is reused — but first verified reachable; a stranded
+     *      root (deleted / trashed / wrong identity → 404/403) is dropped so we re-resolve instead
+     *      of silently showing an empty wardrobe (archive § "Drive access model").
+     *   2. Otherwise a name search for [FOLDER_NAME] re-adopts a root THIS app created before
+     *      (carries the [APP_ROOT_PROP] marker) — reinstall / new-device recovery. Under `drive.file`
+     *      any name match is necessarily app-created (the scope can't see foreign files), so an
+     *      unmarked match is back-filled with the marker and adopted too.
+     *   3. A still-unmarked match under full `drive` may be a legacy/foreign folder, so it's returned
+     *      for reads but NOT claimed as the active root (migration must decide — see
+     *      [findLegacyMigrationSource]).
+     *   4. Brand-new account → create a fresh, marked root.
+     * The resolved ID is persisted whenever we're sure it's ours, so subsequent calls short-circuit.
      */
     suspend fun getOrCreateFolder(): String = withContext(Dispatchers.IO) {
-        pickedRootFolderId()?.let { return@withContext it }
         val tok = token()
+        pickedRootFolderId()?.let { stored ->
+            if (rootVerified || folderAccessible(stored, tok)) {
+                rootVerified = true
+                return@withContext stored
+            }
+            Log.w(TAG, "stored root $stored is inaccessible — clearing and re-resolving")
+            clearPickedRootFolder()
+        }
         val q = URLEncoder.encode(
-            "mimeType='application/vnd.google-apps.folder' and name='$FOLDER_NAME' and trashed=false",
+            "mimeType='$FOLDER_MIME' and name='$FOLDER_NAME' and trashed=false",
             "UTF-8",
         )
-        val listReq = Request.Builder()
-            .url("$API/files?q=$q&fields=files(id)")
-            .header("Authorization", "Bearer $tok")
-            .build()
-        val listed = gson.fromJson(
-            http.newCall(listReq).await().body!!.string(),
-            FilesListDto::class.java,
-        )
-        // Found by name: return it, but DON'T claim it as the active root — under full `drive`
-        // (migration build) a name search can match a legacy/orphan folder, and silently adopting
-        // it would skip migration. Only an explicit migration / pick / fresh-create sets the root.
-        if (listed.files.isNotEmpty()) return@withContext listed.files[0].id
-
-        val meta = """{"name":"$FOLDER_NAME","mimeType":"application/vnd.google-apps.folder"}"""
-        val createReq = Request.Builder()
-            .url("$API/files?fields=id")
-            .header("Authorization", "Bearer $tok")
-            .post(meta.toRequestBody("application/json".toMediaType()))
-            .build()
-        gson.fromJson(
-            http.newCall(createReq).await().body!!.string(),
-            DriveFileDto::class.java,
-        ).id.also { setPickedRootFolder(it) } // brand-new user: this fresh folder is the root
+        val matches = fetchAllPages("$API/files?q=$q&fields=files(id,appProperties),nextPageToken", tok)
+        // Re-adopt a root we created earlier (marker present) — survives reinstall / new device.
+        matches.firstOrNull { it.appProperties?.get(APP_ROOT_PROP) == "1" }?.let {
+            setPickedRootFolder(it.id); rootVerified = true
+            return@withContext it.id
+        }
+        matches.firstOrNull()?.let { match ->
+            if (!BuildConfig.DRIVE_FULL_SCOPE) {
+                // drive.file can only see files this app created, so an unmarked name match is ours
+                // (a pre-marker migrated root). Back-fill the marker and adopt it.
+                runCatching { updateAppProperties(match.id, mapOf(APP_ROOT_PROP to "1")) }
+                setPickedRootFolder(match.id); rootVerified = true
+                return@withContext match.id
+            }
+            // Full drive: could be a legacy/foreign folder → readable, but leave migration to claim it.
+            return@withContext match.id
+        }
+        createMarkedRootFolder(FOLDER_NAME, tok).also { setPickedRootFolder(it); rootVerified = true }
     }
+
+    /** True if [folderId] resolves and isn't trashed. A 404/403/trashed means lost or stranded access. */
+    private suspend fun folderAccessible(folderId: String, tok: String): Boolean {
+        val resp = http.newCall(
+            Request.Builder()
+                .url("$API/files/$folderId?fields=id,trashed")
+                .header("Authorization", "Bearer $tok")
+                .build(),
+        ).await()
+        if (!resp.isSuccessful) return false
+        val dto = runCatching { gson.fromJson(resp.body!!.string(), DriveFileDto::class.java) }.getOrNull()
+        return dto != null && dto.id.isNotBlank() && dto.trashed != true
+    }
+
+    /** Creates a fresh top-level [name] folder stamped with the [APP_ROOT_PROP] marker. Returns its ID. */
+    private suspend fun createMarkedRootFolder(name: String, tok: String): String {
+        val meta = """{"name":${gson.toJson(name)},"mimeType":"$FOLDER_MIME","appProperties":{"$APP_ROOT_PROP":"1"}}"""
+        return gson.fromJson(
+            http.newCall(
+                Request.Builder()
+                    .url("$API/files?fields=id")
+                    .header("Authorization", "Bearer $tok")
+                    .post(meta.toRequestBody("application/json".toMediaType()))
+                    .build(),
+            ).await().body!!.string(),
+            DriveFileDto::class.java,
+        ).id
+    }
+
+    /**
+     * Migration build only (full `drive`): finds an existing LibreLookAI data folder eligible for the
+     * one-time legacy→app-folder copy, or null if there's nothing to migrate. "Eligible" = a
+     * non-trashed [FOLDER_NAME] folder that holds genuine LibreLookAI data (a signature metadata JSON
+     * or a known non-closet subfolder) and is NOT one of our own marked roots. Returns null the moment
+     * a root has been picked (migration already ran, or a fresh root was created). Oldest match wins —
+     * the real legacy data predates any stray copies. See [migrateLegacyInto].
+     */
+    suspend fun findLegacyMigrationSource(): String? = withContext(Dispatchers.IO) {
+        if (pickedRootFolderId() != null) return@withContext null
+        val tok = token()
+        val q = URLEncoder.encode(
+            "mimeType='$FOLDER_MIME' and name='$FOLDER_NAME' and trashed=false",
+            "UTF-8",
+        )
+        val candidates = fetchAllPages(
+            "$API/files?q=$q&fields=files(id,appProperties,createdTime),nextPageToken&pageSize=100",
+            tok,
+        ).filter { it.appProperties?.get(APP_ROOT_PROP) != "1" }
+            .sortedBy { it.createdTimeMs }
+        candidates.firstOrNull { holdsLibreLookData(it.id) }?.id
+    }
+
+    /** True if [folderId] contains LibreLookAI's signature data (a system JSON or a known subfolder). */
+    private suspend fun holdsLibreLookData(folderId: String): Boolean =
+        listAllChildren(folderId).any {
+            it.name in SYSTEM_JSON_NAMES ||
+                (it.mimeType == FOLDER_MIME && it.name in NON_CLOSET_SUBFOLDER_NAMES)
+        }
 
     /**
      * Lists wardrobe image files in the given Drive folder, newest first.
@@ -524,18 +611,13 @@ class DriveRepository(
         }
     }
 
-    /** Always creates a NEW top-level folder named [name] in My Drive (no name-dedupe). */
+    /**
+     * Always creates a NEW top-level folder named [name] in My Drive (no name-dedupe), stamped with
+     * the [APP_ROOT_PROP] marker so it's recognised as our own root on later reinstall / recovery.
+     * Used as the migration target ([migrateLegacyInto]).
+     */
     suspend fun createRootFolderForced(name: String): String = withContext(Dispatchers.IO) {
-        val tok = token()
-        val meta = """{"name":${gson.toJson(name)},"mimeType":"application/vnd.google-apps.folder"}"""
-        gson.fromJson(
-            http.newCall(Request.Builder()
-                .url("$API/files?fields=id")
-                .header("Authorization", "Bearer $tok")
-                .post(meta.toRequestBody("application/json".toMediaType()))
-                .build()).await().body!!.string(),
-            DriveFileDto::class.java,
-        ).id
+        createMarkedRootFolder(name, token())
     }
 
     /** Creates a subfolder with [name] inside [parentFolderId] and returns its Drive ID. */

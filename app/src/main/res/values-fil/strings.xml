@@ -1121,4 +1121,11 @@
 
     <!-- Unify close affordance (action_close) -->
     <string name="action_close">Isara</string>
+
+    <!-- Drive migration: auto-detect import (items 2/3) -->
+    <string name="onboarding_drive_checking">Naghahanap ng kasalukuyang wardrobe na i-import…</string>
+    <string name="onboarding_drive_importing">Ini-import ang iyong kasalukuyang wardrobe… %1$d / %2$d</string>
+    <string name="onboarding_drive_imported">Na-import na ang wardrobe ✓</string>
+    <string name="onboarding_drive_import_error">Hindi namin awtomatikong na-import ang iyong kasalukuyang wardrobe. Maaari kang subukan muli o pumili mismo ng folder.</string>
+    <string name="onboarding_drive_import_manual">Pumili ng folder nang manu-mano</string>
 </resources>

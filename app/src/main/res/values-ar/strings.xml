@@ -1121,4 +1121,11 @@
 
     <!-- Unify close affordance (action_close) -->
     <string name="action_close">إغلاق</string>
+
+    <!-- Drive migration: auto-detect import (items 2/3) -->
+    <string name="onboarding_drive_checking">جارٍ البحث عن خزانة ملابس موجودة لاستيرادها…</string>
+    <string name="onboarding_drive_importing">جارٍ استيراد خزانة ملابسك الحالية… %1$d / %2$d</string>
+    <string name="onboarding_drive_imported">تم استيراد خزانة الملابس ✓</string>
+    <string name="onboarding_drive_import_error">تعذّر علينا استيراد خزانة ملابسك الحالية تلقائيًا. يمكنك المحاولة مرة أخرى أو اختيار المجلد بنفسك.</string>
+    <string name="onboarding_drive_import_manual">اختيار المجلد يدويًا</string>
 </resources>

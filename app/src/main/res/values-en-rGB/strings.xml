@@ -1121,4 +1121,11 @@
 
     <!-- Unify close affordance (action_close) -->
     <string name="action_close">Close</string>
+
+    <!-- Drive migration: auto-detect import (items 2/3) -->
+    <string name="onboarding_drive_checking">Checking for an existing wardrobe to import…</string>
+    <string name="onboarding_drive_importing">Importing your existing wardrobe… %1$d / %2$d</string>
+    <string name="onboarding_drive_imported">Wardrobe imported ✓</string>
+    <string name="onboarding_drive_import_error">We couldn\'t import your existing wardrobe automatically. You can try again or pick the folder yourself.</string>
+    <string name="onboarding_drive_import_manual">Choose folder manually</string>
 </resources>

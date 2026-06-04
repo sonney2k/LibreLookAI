@@ -1121,4 +1121,11 @@
 
     <!-- Unify close affordance (action_close) -->
     <string name="action_close">Sluiten</string>
+
+    <!-- Drive migration: auto-detect import (items 2/3) -->
+    <string name="onboarding_drive_checking">Er wordt gezocht naar een bestaande garderobe om te importeren…</string>
+    <string name="onboarding_drive_importing">Je bestaande garderobe wordt geïmporteerd… %1$d / %2$d</string>
+    <string name="onboarding_drive_imported">Garderobe geïmporteerd ✓</string>
+    <string name="onboarding_drive_import_error">We konden je bestaande garderobe niet automatisch importeren. Je kunt het opnieuw proberen of zelf de map kiezen.</string>
+    <string name="onboarding_drive_import_manual">Map handmatig kiezen</string>
 </resources>

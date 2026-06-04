@@ -1094,4 +1094,11 @@
 
     <!-- Unify close affordance (action_close) -->
     <string name="action_close">बंद करें</string>
+
+    <!-- Drive migration: auto-detect import (items 2/3) -->
+    <string name="onboarding_drive_checking">इंपोर्ट करने के लिए मौजूदा वॉर्डरोब खोजा जा रहा है…</string>
+    <string name="onboarding_drive_importing">आपका मौजूदा वॉर्डरोब इंपोर्ट किया जा रहा है… %1$d / %2$d</string>
+    <string name="onboarding_drive_imported">वॉर्डरोब इंपोर्ट हो गया ✓</string>
+    <string name="onboarding_drive_import_error">हम आपका मौजूदा वॉर्डरोब अपने आप इंपोर्ट नहीं कर सके. आप फिर से कोशिश कर सकते हैं या फ़ोल्डर खुद चुन सकते हैं.</string>
+    <string name="onboarding_drive_import_manual">फ़ोल्डर मैन्युअल रूप से चुनें</string>
 </resources>

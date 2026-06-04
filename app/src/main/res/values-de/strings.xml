@@ -1190,4 +1190,11 @@
 
     <!-- Unify close affordance (action_close) -->
     <string name="action_close">Schließen</string>
+
+    <!-- Drive migration: auto-detect import (items 2/3) -->
+    <string name="onboarding_drive_checking">Vorhandene Garderobe zum Importieren wird gesucht…</string>
+    <string name="onboarding_drive_importing">Deine vorhandene Garderobe wird importiert… %1$d / %2$d</string>
+    <string name="onboarding_drive_imported">Garderobe importiert ✓</string>
+    <string name="onboarding_drive_import_error">Wir konnten deine vorhandene Garderobe nicht automatisch importieren. Du kannst es erneut versuchen oder den Ordner selbst auswählen.</string>
+    <string name="onboarding_drive_import_manual">Ordner manuell auswählen</string>
 </resources>

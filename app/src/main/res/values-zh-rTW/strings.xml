@@ -1094,4 +1094,11 @@
 
     <!-- Unify close affordance (action_close) -->
     <string name="action_close">關閉</string>
+
+    <!-- Drive migration: auto-detect import (items 2/3) -->
+    <string name="onboarding_drive_checking">正在尋找可匯入的現有衣櫥…</string>
+    <string name="onboarding_drive_importing">正在匯入您的現有衣櫥… %1$d / %2$d</string>
+    <string name="onboarding_drive_imported">已匯入衣櫥 ✓</string>
+    <string name="onboarding_drive_import_error">我們無法自動匯入您的現有衣櫥。您可以重試或自行選擇資料夾。</string>
+    <string name="onboarding_drive_import_manual">手動選擇資料夾</string>
 </resources>

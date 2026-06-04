@@ -1094,4 +1094,11 @@
 
     <!-- Unify close affordance (action_close) -->
     <string name="action_close">بند کریں</string>
+
+    <!-- Drive migration: auto-detect import (items 2/3) -->
+    <string name="onboarding_drive_checking">درآمد کرنے کے لیے موجودہ وارڈروب تلاش کی جا رہی ہے…</string>
+    <string name="onboarding_drive_importing">آپ کی موجودہ وارڈروب درآمد کی جا رہی ہے… %1$d / %2$d</string>
+    <string name="onboarding_drive_imported">وارڈروب درآمد ہو گئی ✓</string>
+    <string name="onboarding_drive_import_error">ہم آپ کی موجودہ وارڈروب خودکار طور پر درآمد نہیں کر سکے۔ آپ دوبارہ کوشش کر سکتے ہیں یا فولڈر خود منتخب کر سکتے ہیں۔</string>
+    <string name="onboarding_drive_import_manual">فولڈر دستی طور پر منتخب کریں</string>
 </resources>

@@ -1094,4 +1094,11 @@
 
     <!-- Unify close affordance (action_close) -->
     <string name="action_close">Закрити</string>
+
+    <!-- Drive migration: auto-detect import (items 2/3) -->
+    <string name="onboarding_drive_checking">Пошук наявного гардероба для імпорту…</string>
+    <string name="onboarding_drive_importing">Імпорт вашого наявного гардероба… %1$d / %2$d</string>
+    <string name="onboarding_drive_imported">Гардероб імпортовано ✓</string>
+    <string name="onboarding_drive_import_error">Не вдалося автоматично імпортувати ваш наявний гардероб. Ви можете повторити спробу або вибрати папку вручну.</string>
+    <string name="onboarding_drive_import_manual">Вибрати папку вручну</string>
 </resources>

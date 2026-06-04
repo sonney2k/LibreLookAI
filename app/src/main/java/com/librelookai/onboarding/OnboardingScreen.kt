@@ -77,8 +77,8 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.librelookai.BuildConfig
 import com.librelookai.R
-import com.librelookai.data.drive.migrateLegacyInto
 import com.librelookai.gemini.ApiKeyStore
 import com.librelookai.settings.ProfileViewModel
 import com.librelookai.settings.TryOnSlot
@@ -526,64 +526,15 @@ private fun DriveSignInPage(
         )
         Spacer(Modifier.height(24.dp))
         if (isSignedIn) {
-            val migrationVm: DriveMigrationViewModel = viewModel()
-            val migState by migrationVm.state.collectAsState()
-            var showPicker by remember { mutableStateOf(false) }
-            val migratedRoot = (migState as? MigrationState.Done)?.rootId
-                ?: migrationVm.alreadyMigratedRoot()
-
             Text(
                 stringResource(R.string.onboarding_drive_connected),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary,
             )
-            Spacer(Modifier.height(20.dp))
-            when (val s = migState) {
-                is MigrationState.Running -> {
-                    CircularProgressIndicator()
-                    Spacer(Modifier.height(12.dp))
-                    Text(
-                        stringResource(R.string.onboarding_drive_importing, s.copied, s.total),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        textAlign = TextAlign.Center,
-                    )
-                }
-                else -> if (migratedRoot != null) {
-                    Text(
-                        stringResource(R.string.onboarding_drive_imported),
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.primary,
-                        textAlign = TextAlign.Center,
-                    )
-                } else {
-                    Text(
-                        stringResource(R.string.onboarding_drive_import_hint),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        textAlign = TextAlign.Center,
-                    )
-                    Spacer(Modifier.height(12.dp))
-                    OutlinedButton(onClick = { showPicker = true }, enabled = !isOffline) {
-                        Text(stringResource(R.string.onboarding_drive_import))
-                    }
-                    if (s is MigrationState.Error) {
-                        Spacer(Modifier.height(12.dp))
-                        Text(
-                            stringResource(R.string.onboarding_drive_import_error),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.error,
-                            textAlign = TextAlign.Center,
-                        )
-                    }
-                }
-            }
-
-            if (showPicker) {
-                DriveFolderPicker(onResult = { legacyId ->
-                    showPicker = false
-                    if (legacyId != null) migrationVm.migrate(legacyId)
-                })
+            // Migration is a full-`drive` (migration build) concern only — production drive.file
+            // builds have no legacy data to read, so the import section is hidden entirely.
+            if (BuildConfig.DRIVE_FULL_SCOPE) {
+                DriveImportSection(isOffline = isOffline)
             }
         } else {
             Button(onClick = onSignIn, enabled = !isOffline) {
@@ -609,6 +560,81 @@ private fun DriveSignInPage(
             )
         }
     }
+}
+
+/**
+ * Auto-detect-and-import of an existing (legacy) LibreLookAI wardrobe — full-`drive` migration build
+ * only. On entry it asks [DriveMigrationViewModel.detect] to find the legacy folder and start the
+ * copy with no manual folder picker; the picker survives only as an on-error fallback.
+ */
+@Composable
+private fun DriveImportSection(isOffline: Boolean) {
+    val migrationVm: DriveMigrationViewModel = viewModel()
+    val migState by migrationVm.state.collectAsState()
+    var showPicker by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) { migrationVm.detect() }
+
+    Spacer(Modifier.height(20.dp))
+    when (val s = migState) {
+        is MigrationState.Detecting -> {
+            CircularProgressIndicator()
+            Spacer(Modifier.height(12.dp))
+            Text(
+                stringResource(R.string.onboarding_drive_checking),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+            )
+        }
+        is MigrationState.Running -> {
+            CircularProgressIndicator()
+            Spacer(Modifier.height(12.dp))
+            Text(
+                stringResource(R.string.onboarding_drive_importing, s.copied, s.total),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+            )
+        }
+        is MigrationState.Done -> ImportedCheck()
+        is MigrationState.Error -> {
+            Text(
+                stringResource(R.string.onboarding_drive_import_error),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.error,
+                textAlign = TextAlign.Center,
+            )
+            Spacer(Modifier.height(12.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Button(onClick = { migrationVm.retry() }, enabled = !isOffline) {
+                    Text(stringResource(R.string.tryon_try_again))
+                }
+                OutlinedButton(onClick = { showPicker = true }, enabled = !isOffline) {
+                    Text(stringResource(R.string.onboarding_drive_import_manual))
+                }
+            }
+        }
+        // Idle / NothingToMigrate: a brand-new account shows nothing; a re-run after a completed
+        // migration (root already picked) still confirms with the check.
+        else -> if (migrationVm.alreadyMigratedRoot() != null) ImportedCheck()
+    }
+
+    if (showPicker) {
+        DriveFolderPicker(onResult = { legacyId ->
+            showPicker = false
+            if (legacyId != null) migrationVm.migrate(legacyId)
+        })
+    }
+}
+
+@Composable
+private fun ImportedCheck() {
+    Text(
+        stringResource(R.string.onboarding_drive_imported),
+        style = MaterialTheme.typography.titleMedium,
+        color = MaterialTheme.colorScheme.primary,
+        textAlign = TextAlign.Center,
+    )
 }
 
 @Composable

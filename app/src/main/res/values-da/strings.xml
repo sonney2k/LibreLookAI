@@ -1121,4 +1121,11 @@
 
     <!-- Unify close affordance (action_close) -->
     <string name="action_close">Luk</string>
+
+    <!-- Drive migration: auto-detect import (items 2/3) -->
+    <string name="onboarding_drive_checking">Søger efter en eksisterende garderobe at importere…</string>
+    <string name="onboarding_drive_importing">Importerer din eksisterende garderobe… %1$d / %2$d</string>
+    <string name="onboarding_drive_imported">Garderobe importeret ✓</string>
+    <string name="onboarding_drive_import_error">Vi kunne ikke importere din eksisterende garderobe automatisk. Du kan prøve igen eller selv vælge mappen.</string>
+    <string name="onboarding_drive_import_manual">Vælg mappe manuelt</string>
 </resources>

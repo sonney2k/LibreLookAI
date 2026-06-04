@@ -1121,4 +1121,11 @@
 
     <!-- Unify close affordance (action_close) -->
     <string name="action_close">Κλείσιμο</string>
+
+    <!-- Drive migration: auto-detect import (items 2/3) -->
+    <string name="onboarding_drive_checking">Γίνεται αναζήτηση υπάρχουσας γκαρνταρόμπας για εισαγωγή…</string>
+    <string name="onboarding_drive_importing">Εισαγωγή της υπάρχουσας γκαρνταρόμπας σας… %1$d / %2$d</string>
+    <string name="onboarding_drive_imported">Η γκαρνταρόμπα εισήχθη ✓</string>
+    <string name="onboarding_drive_import_error">Δεν μπορέσαμε να εισαγάγουμε αυτόματα την υπάρχουσα γκαρνταρόμπα σας. Μπορείτε να δοκιμάσετε ξανά ή να επιλέξετε μόνοι σας τον φάκελο.</string>
+    <string name="onboarding_drive_import_manual">Μη αυτόματη επιλογή φακέλου</string>
 </resources>

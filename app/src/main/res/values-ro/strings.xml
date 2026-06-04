@@ -1094,4 +1094,11 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
 
     <!-- Unify close affordance (action_close) -->
     <string name="action_close">Închide</string>
+
+    <!-- Drive migration: auto-detect import (items 2/3) -->
+    <string name="onboarding_drive_checking">Se caută o garderobă existentă de importat…</string>
+    <string name="onboarding_drive_importing">Se importă garderoba ta existentă… %1$d / %2$d</string>
+    <string name="onboarding_drive_imported">Garderobă importată ✓</string>
+    <string name="onboarding_drive_import_error">Nu am putut importa automat garderoba ta existentă. Poți încerca din nou sau poți alege singur folderul.</string>
+    <string name="onboarding_drive_import_manual">Alege folderul manual</string>
 </resources>

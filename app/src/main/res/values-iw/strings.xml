@@ -1125,4 +1125,11 @@
 
     <!-- Unify close affordance (action_close) -->
     <string name="action_close">סגור</string>
+
+    <!-- Drive migration: auto-detect import (items 2/3) -->
+    <string name="onboarding_drive_checking">מחפשים ארון בגדים קיים לייבוא…</string>
+    <string name="onboarding_drive_importing">מייבאים את ארון הבגדים הקיים שלך… %1$d / %2$d</string>
+    <string name="onboarding_drive_imported">ארון הבגדים יובא ✓</string>
+    <string name="onboarding_drive_import_error">לא הצלחנו לייבא אוטומטית את ארון הבגדים הקיים שלך. אפשר לנסות שוב או לבחור את התיקייה בעצמך.</string>
+    <string name="onboarding_drive_import_manual">בחירת תיקייה ידנית</string>
 </resources>

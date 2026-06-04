@@ -1094,4 +1094,11 @@
 
     <!-- Unify close affordance (action_close) -->
     <string name="action_close">ปิด</string>
+
+    <!-- Drive migration: auto-detect import (items 2/3) -->
+    <string name="onboarding_drive_checking">กำลังค้นหาตู้เสื้อผ้าที่มีอยู่เพื่อนำเข้า…</string>
+    <string name="onboarding_drive_importing">กำลังนำเข้าตู้เสื้อผ้าที่มีอยู่ของคุณ… %1$d / %2$d</string>
+    <string name="onboarding_drive_imported">นำเข้าตู้เสื้อผ้าแล้ว ✓</string>
+    <string name="onboarding_drive_import_error">เราไม่สามารถนำเข้าตู้เสื้อผ้าที่มีอยู่ของคุณโดยอัตโนมัติได้ คุณสามารถลองอีกครั้งหรือเลือกโฟลเดอร์ด้วยตนเอง</string>
+    <string name="onboarding_drive_import_manual">เลือกโฟลเดอร์ด้วยตนเอง</string>
 </resources>

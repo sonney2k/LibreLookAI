@@ -1121,4 +1121,11 @@
 
     <!-- Unify close affordance (action_close) -->
     <string name="action_close">Sulje</string>
+
+    <!-- Drive migration: auto-detect import (items 2/3) -->
+    <string name="onboarding_drive_checking">Etsitään tuotavaa olemassa olevaa vaatekaappia…</string>
+    <string name="onboarding_drive_importing">Tuodaan olemassa olevaa vaatekaappiasi… %1$d / %2$d</string>
+    <string name="onboarding_drive_imported">Vaatekaappi tuotu ✓</string>
+    <string name="onboarding_drive_import_error">Emme voineet tuoda olemassa olevaa vaatekaappiasi automaattisesti. Voit yrittää uudelleen tai valita kansion itse.</string>
+    <string name="onboarding_drive_import_manual">Valitse kansio manuaalisesti</string>
 </resources>

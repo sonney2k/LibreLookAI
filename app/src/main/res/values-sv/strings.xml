@@ -1121,4 +1121,11 @@
 
     <!-- Unify close affordance (action_close) -->
     <string name="action_close">Stäng</string>
+
+    <!-- Drive migration: auto-detect import (items 2/3) -->
+    <string name="onboarding_drive_checking">Söker efter en befintlig garderob att importera…</string>
+    <string name="onboarding_drive_importing">Importerar din befintliga garderob… %1$d / %2$d</string>
+    <string name="onboarding_drive_imported">Garderob importerad ✓</string>
+    <string name="onboarding_drive_import_error">Vi kunde inte importera din befintliga garderob automatiskt. Du kan försöka igen eller välja mappen själv.</string>
+    <string name="onboarding_drive_import_manual">Välj mapp manuellt</string>
 </resources>

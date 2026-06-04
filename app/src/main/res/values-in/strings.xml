@@ -1094,4 +1094,11 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
 
     <!-- Unify close affordance (action_close) -->
     <string name="action_close">Tutup</string>
+
+    <!-- Drive migration: auto-detect import (items 2/3) -->
+    <string name="onboarding_drive_checking">Mencari lemari pakaian yang ada untuk diimpor…</string>
+    <string name="onboarding_drive_importing">Mengimpor lemari pakaian Anda yang ada… %1$d / %2$d</string>
+    <string name="onboarding_drive_imported">Lemari pakaian diimpor ✓</string>
+    <string name="onboarding_drive_import_error">Kami tidak dapat mengimpor lemari pakaian Anda yang ada secara otomatis. Anda dapat mencoba lagi atau memilih folder sendiri.</string>
+    <string name="onboarding_drive_import_manual">Pilih folder secara manual</string>
 </resources>

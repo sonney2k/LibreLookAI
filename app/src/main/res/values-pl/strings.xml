@@ -1121,4 +1121,11 @@
 
     <!-- Unify close affordance (action_close) -->
     <string name="action_close">Zamknij</string>
+
+    <!-- Drive migration: auto-detect import (items 2/3) -->
+    <string name="onboarding_drive_checking">Wyszukiwanie istniejącej garderoby do zaimportowania…</string>
+    <string name="onboarding_drive_importing">Importowanie Twojej istniejącej garderoby… %1$d / %2$d</string>
+    <string name="onboarding_drive_imported">Garderoba zaimportowana ✓</string>
+    <string name="onboarding_drive_import_error">Nie udało się automatycznie zaimportować Twojej istniejącej garderoby. Możesz spróbować ponownie lub samodzielnie wybrać folder.</string>
+    <string name="onboarding_drive_import_manual">Wybierz folder ręcznie</string>
 </resources>
