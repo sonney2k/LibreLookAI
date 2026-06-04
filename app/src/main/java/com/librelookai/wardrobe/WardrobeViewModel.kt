@@ -374,14 +374,23 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         File(getApplication<Application>().filesDir, "wardrobe_cache_$id.json")
 
     internal fun saveLocalCache(id: String, images: List<DriveImage>) {
+        writeFolderCache(id, images)
+        // Keep the cross-closet snapshot in sync so similarity search reflects the latest items.
+        refreshAllLocationImagesState()
+    }
+
+    /**
+     * Writes [images] to [id]'s per-folder cache file. Unlike [saveLocalCache] this does NOT refresh
+     * the cross-closet snapshot, so a bulk caller (e.g. the All-locations load persisting every
+     * folder at once) can write each folder then refresh the snapshot a single time.
+     */
+    private fun writeFolderCache(id: String, images: List<DriveImage>) {
         runCatching {
             val cache = LocalCache(images.map {
                 LocalCacheEntry(it.driveId, it.name, it.tags, it.originalDriveId, it.sidecarDriveId, it.createdTimeMs)
             })
             localCacheFile(id).writeText(gson.toJson(cache))
         }
-        // Keep the cross-closet snapshot in sync so similarity search reflects the latest items.
-        refreshAllLocationImagesState()
     }
 
     // ---------- Load ----------
@@ -485,6 +494,19 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     allFresh + pendingRaw
                 }.onSuccess { images ->
                     _state.update { it.copy(images = images, isLoading = false, syncTotal = 0, syncDone = 0, isSyncing = false) }
+                    // Persist each closet's freshly-loaded items to its own per-folder cache, so a
+                    // later switch from All → that closet paints instantly from disk (Phase 1)
+                    // instead of re-listing + re-fetching every sidecar over the network. Without
+                    // this, a fresh install that has only ever shown All leaves every per-folder
+                    // cache empty, making the first switch into each closet slow. Write off-main,
+                    // then refresh the cross-closet snapshot once.
+                    withContext(Dispatchers.IO) {
+                        val byFolder = images
+                            .filter { it.name.endsWith(DriveRepository.CUTOUT_SUFFIX) }
+                            .groupBy { it.folderId }
+                        ids.forEach { fid -> writeFolderCache(fid, byFolder[fid].orEmpty()) }
+                    }
+                    refreshAllLocationImagesState()
                 }.onFailure { e ->
                     _state.update { s ->
                         s.copy(isLoading = false, syncTotal = 0, syncDone = 0, isSyncing = false, error = if (s.images.isEmpty()) e.message else null)

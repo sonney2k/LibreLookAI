@@ -174,6 +174,18 @@ fun OnboardingScreen(
         if (isSignedIn) profileViewModel.loadPreferences()
     }
 
+    // Block forward progress while an existing-wardrobe import is detecting/copying (full-`drive`
+    // migration build only). We observe the same activity-scoped VM that [DriveImportSection]
+    // drives, so the Drive step's Next/swipe gate stays disabled until the copy settles — finishing
+    // the tour mid-copy used to race the post-onboarding restore. detect() is idempotent and kicked
+    // the moment sign-in lands so the gate engages without a gap; on the production drive.file build
+    // it resolves to NothingToMigrate instantly and never blocks. Error/Done don't block (the user
+    // can retry/skip past a failed import).
+    val migrationVm: DriveMigrationViewModel = viewModel()
+    val migState by migrationVm.state.collectAsState()
+    LaunchedEffect(isSignedIn) { if (isSignedIn) migrationVm.detect() }
+    val importInProgress = migState is MigrationState.Detecting || migState is MigrationState.Running
+
     // BYOK key — onboarding's only hard requirement (the app does no AI without it). Persisted to
     // device-local storage as the user types; the Next button on [apiKeyPage] soft-blocks until a
     // plausible key is entered. We only sanity-check length (not an "AIza" prefix) so the gate
@@ -208,12 +220,13 @@ fun OnboardingScreen(
     val pagerState = rememberPagerState(pageCount = { totalPages })
     val scope = rememberCoroutineScope()
 
-    // The three required steps soft-block forward progress until satisfied. This gates both the
-    // Next button *and* swiping — otherwise the user could just swipe past a required page. Using
+    // The required steps soft-block forward progress until satisfied (Drive sign-in also stays
+    // blocked while an existing wardrobe is still importing). This gates both the Next button *and*
+    // swiping — otherwise the user could just swipe past a required page. Using
     // userScrollEnabled (not drag interception) keeps it correct in RTL locales; the trade-off is
     // that swiping back off a blocked page also needs the Back button.
     fun requiredButUnmet(page: Int): Boolean = when (page) {
-        drivePage -> !isSignedIn
+        drivePage -> !isSignedIn || importInProgress
         backgroundPage -> !isBatteryExempt
         apiKeyPage -> !apiKeyLooksValid
         else -> false
@@ -331,8 +344,9 @@ fun OnboardingScreen(
                 Spacer(Modifier.weight(1f))
                 if (pagerState.currentPage < finishPage) {
                     // Soft-block: required steps keep Next disabled until satisfied — Drive sign-in
-                    // until connected, background processing until exempt, API key until pasted.
-                    // Same gate also disables swiping past the page (see HorizontalPager above).
+                    // until connected (and until any existing-wardrobe import finishes copying),
+                    // background processing until exempt, API key until pasted. Same gate also
+                    // disables swiping past the page (see HorizontalPager above).
                     Button(
                         enabled = !requiredButUnmet(pagerState.currentPage),
                         onClick = {
