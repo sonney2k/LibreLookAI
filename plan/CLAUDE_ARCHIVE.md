@@ -538,6 +538,8 @@ If either is missing, the Shop screen shows a dev-facing warning. Embedder is re
 
 ### Per-release checklist
 
+**Firebase App Distribution (testers) is automated by `scripts/release.sh <versionName>`** — it does the version bump, notes prepend, signed `assembleRelease`, commit + tag, and `appDistributionUploadRelease` to the `testers` group (`--push` to push, `--dry-run` to preview). The Gradle upload needs Firebase credentials (logged-in `firebase` CLI, `FIREBASE_TOKEN`, or `GOOGLE_APPLICATION_CREDENTIALS`). The manual checklist below still applies for the Play Store track (`bundleRelease` + Play Console upload), which the script does not handle.
+
 - [ ] Increment `versionCode` in `app/build.gradle.kts`
 - [ ] **Update release notes** (always — required for Firebase App Distribution and Play tracks)
 - [ ] `google-services.json` present in `app/`
