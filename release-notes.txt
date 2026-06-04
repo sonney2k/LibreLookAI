@@ -1,3 +1,18 @@
+### LibreLookAI v2.1.2 Release Notes
+
+#### Plan trips with the same AI controls as outfits
+- The travel planner now lets you tune what the AI considers, just like outfit suggestions: a "Wear history" toggle so trip packing leans toward looks you actually wear, plus per-dimension expert item-tag controls (pattern, material, and more). Both start from your saved Settings ▸ AI preferences and can be adjusted per trip.
+
+#### A more consistent look
+- Your chosen color theme now reaches everywhere it should — outfit cards, bottom sheets, menus and pop-ups no longer slip back to a stray default purple. Outfit cards now match the clean outlined style of the travel/trip cards.
+- Fixed onboarding text that could appear black and unreadable on dark color themes — tour titles, the "Your setup" summary and checklist labels now stay legible on every palette.
+
+#### Smoother and tidier
+- The restore-progress card no longer pops up on every app launch — it now appears only during a genuine restore (fresh install, reinstall, or a new device), not on normal startups.
+- Unified the close/back buttons across the app: a back arrow always returns you to the previous screen, and a close "✕" — always in the top-left — dismisses a full-screen task. The camera/import screen's cancel button no longer jumps around between modes.
+
+---
+
 ### LibreLookAI v2.1.1 Release Notes
 
 #### Smoother welcome tour
