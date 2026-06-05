@@ -22,6 +22,18 @@ export { recomputePublicPricing } from "./recomputePublicPricing";
 
 const GEMINI_BASE = "https://generativelanguage.googleapis.com/v1beta/models";
 
+// Allow-list of Gemini models the proxy will route to. The client only ever
+// sends these two (see PricingClient.AiAction / GeminiRepository on Android).
+// Because the charged cost is keyed on the *action*, not the model, an
+// unconstrained X-Gemini-Model header would let a crafted client request an
+// arbitrary/more-expensive model under a cheaper action's price (or manipulate
+// the request URL path). Reject anything off the list before charging.
+// Keep in sync with seed.ts LOCAL_MODEL_PRICING.models + the Android constants.
+const ALLOWED_MODELS = new Set<string>([
+  "gemini-3-flash-preview",
+  "gemini-3.1-flash-image-preview",
+]);
+
 // Credits awarded per in-app product. Server-authoritative; client values
 // in CreditPack.kt must match.
 const CREDITS_PER_PACK: Record<string, number> = {
@@ -80,6 +92,11 @@ export const geminiProxy = onRequest(
     const model = (req.headers["x-gemini-model"] as string) ?? "";
     if (!model) {
       res.status(400).json({ error: "Missing X-Gemini-Model header" });
+      return;
+    }
+    if (!ALLOWED_MODELS.has(model)) {
+      logger.warn("Rejected unsupported model", { uid, action, model });
+      res.status(400).json({ error: `Unsupported model: ${model}` });
       return;
     }
 
