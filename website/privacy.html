@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>App Privacy Policy — LibreLookAI</title>
+  <meta name="description" content="Privacy policy for the LibreLookAI Android app: what data it accesses, how it is used, and who it is shared with. Your photos stay in your own Google Drive." />
+  <link rel="canonical" href="https://librelook.ai/privacy.html" />
+  <link rel="icon" href="assets/logo.png" />
+  <!-- Fonts are self-hosted (DSGVO/GDPR): no request to Google's servers. -->
+  <link rel="stylesheet" href="assets/fonts.css" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- NAV -->
+  <header class="nav">
+    <a class="brand" href="index.html">
+      <img src="assets/logo.png" alt="LibreLookAI logo" />
+      <span>LibreLook<em>AI</em></span>
+    </a>
+    <nav class="nav-links">
+      <a href="index.html#how" data-i18n="nav.how">How it works</a>
+      <a href="index.html#features" data-i18n="nav.features">Features</a>
+      <a class="nav-cta" href="index.html#get" data-i18n="nav.cta">Get the app</a>
+      <a class="gh-nav gh-link" href="https://github.com/sonney2k/LibreLookAI" target="_blank" rel="noopener" aria-label="LibreLookAI on GitHub">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+        <span>GitHub</span>
+      </a>
+
+      <div class="lang-pick">
+        <span class="globe" aria-hidden="true">🌐</span>
+        <select id="langSelect" aria-label="Choose language">
+          <option value="en">English</option>
+          <option value="de">Deutsch</option>
+          <option value="fr">Français</option>
+          <option value="it">Italiano</option>
+          <option value="es">Español</option>
+          <option value="pt">Português</option>
+          <option value="nl">Nederlands</option>
+          <option value="tr">Türkçe</option>
+          <option value="ru">Русский</option>
+          <option value="ja">日本語</option>
+          <option value="ko">한국어</option>
+          <option value="zh">简体中文</option>
+        </select>
+      </div>
+    </nav>
+  </header>
+
+  <!-- APP PRIVACY POLICY -->
+  <section class="legal">
+    <div class="legal-inner">
+      <h1>LibreLookAI — App Privacy Policy</h1>
+      <p class="updated">Last updated: June 2026</p>
+
+      <h2>Scope</h2>
+      <p>This privacy policy explains how the <strong>LibreLookAI</strong> Android app (“the app”, “we”, “us”) accesses, collects, uses, stores, and shares information. It applies to the app distributed on Google Play under the package name <code>com.librelookai</code>. The separate <a href="datenschutz.html">website privacy policy</a> covers visits to librelook.ai. By using the app you agree to the practices described here.</p>
+
+      <h2>Who we are (Controller)</h2>
+      <p>The controller responsible for processing within the meaning of the General Data Protection Regulation (GDPR) is Soeren Sonnenburg (see the <a href="impressum.html">Legal Notice</a> for the full postal address). You can reach us at <a href="mailto:contact@librelook.ai">contact@librelook.ai</a> for any privacy question or data request.</p>
+
+      <h2>Privacy-first design — in short</h2>
+      <p>LibreLookAI is built so that <strong>your wardrobe content lives in your own Google Drive, not on our servers</strong>. We do not run a backend that stores your clothing photos, try-on images, or outfit data. AI features are powered by Google’s Gemini API — either with your own API key (“bring your own key”) or, where offered, with credits processed through our minimal Google&nbsp;Cloud / Firebase backend. We collect a limited amount of account, usage, and diagnostic data to operate, secure, and improve the app, as detailed below.</p>
+
+      <h2>Data stored in your own Google Drive</h2>
+      <p>When you sign in with Google and grant Drive access, the app creates a folder in <strong>your</strong> Google Drive and stores the following there, under your control:</p>
+      <ul>
+        <li>Photos of your clothing and accessories, and the background-removed “cut-out” versions.</li>
+        <li>Virtual try-on images (which may include photos of you, e.g. your face or body).</li>
+        <li>Wardrobe, outfit, trip, and tag metadata (e.g. colour, category, season, your style preferences) stored as small data files.</li>
+      </ul>
+      <p>This content is held in your Google Drive account and governed by <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google’s Privacy Policy</a> and your Drive settings. <strong>We do not keep a copy of it.</strong> The app uses the restricted <code>drive.file</code> scope, meaning it can only see files it created in your Drive — not the rest of your Drive. You can delete this data at any time by deleting the app’s folder in Google Drive or revoking access at <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener">your Google Account permissions</a>.</p>
+
+      <h2>Data the app processes and collects</h2>
+
+      <h3>Account &amp; sign-in data</h3>
+      <p>To sign you in and link your wardrobe to your account, we use Google Sign-In and Firebase Authentication. This processes your Google account identifier and email address. We use it solely for authentication and to associate your Drive folder and (if applicable) your credit balance with you.</p>
+
+      <h3>Photos and images</h3>
+      <p>Photos you capture with the camera or pick from your device are used to build your digital wardrobe and to generate try-on images. To provide AI features (tagging, background removal, outfit suggestions, virtual try-on), the relevant images and text are sent to the Google Gemini API for processing and the result is returned to the app. Images are sent for processing on demand and are not used by us to build advertising profiles.</p>
+
+      <h3>AI processing data (Google Gemini)</h3>
+      <p>AI features call Google’s Gemini API. There are two modes:</p>
+      <ul>
+        <li><strong>Bring your own key (BYOK):</strong> requests go directly from your device to Google using <em>your</em> Gemini API key. Your use is then also governed by your agreement with Google.</li>
+        <li><strong>Managed credits (where offered):</strong> requests are relayed through our Google&nbsp;Cloud / Firebase Cloud Function proxy so credits can be metered, then forwarded to Gemini. The proxy does not retain your images or generated content beyond what is needed to fulfil the request.</li>
+      </ul>
+      <p>Data sent to Gemini is handled under <a href="https://ai.google.dev/gemini-api/terms" target="_blank" rel="noopener">Google’s Gemini API terms</a> and <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">privacy policy</a>.</p>
+
+      <h3>Location (optional)</h3>
+      <p>If you grant the optional <em>approximate (coarse) location</em> permission, the app uses your approximate location to fetch local weather for weather-aware outfit and packing suggestions. The coordinates are sent to the weather provider <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> to retrieve a forecast. We do not store your location on our servers, and the feature is fully optional — the app works without it.</p>
+
+      <h3>Usage &amp; diagnostics</h3>
+      <p>We use Google Firebase Analytics to understand how the app is used and to improve it. This collects app-interaction events (e.g. screens viewed, features used, onboarding progress), along with standard app and device information (such as app version, device model, operating-system version, and Firebase-generated identifiers). It is associated with your account identifier so we can measure core flows. It is <strong>not</strong> used to track you across other companies’ apps or websites, and we do not sell it.</p>
+
+      <h3>Purchases (only if you buy credits)</h3>
+      <p>If a build offers in-app credit purchases, transactions are processed by Google Play Billing. We do not receive or store your full payment-card details. To grant the purchased credits, we verify the purchase with the Google Play Developer API and record a credit ledger entry (purchase token, product, amount, timestamp) tied to your account in Firebase. This is necessary to deliver what you paid for and to prevent fraud.</p>
+
+      <h2>Why we use your data (legal bases)</h2>
+      <ul>
+        <li><strong>To provide the service</strong> you requested — sign-in, storing your wardrobe in your Drive, AI tagging/try-on, weather suggestions, and purchases (Art. 6(1)(b) GDPR, performance of a contract).</li>
+        <li><strong>Legitimate interests</strong> (Art. 6(1)(f) GDPR) — securing the app, preventing abuse/fraud, and improving the product through aggregate usage analytics.</li>
+        <li><strong>Consent</strong> (Art. 6(1)(a) GDPR) — for optional features that require a permission you grant, such as camera and approximate location. You can withdraw consent at any time in your device settings.</li>
+      </ul>
+
+      <h2>Permissions the app requests</h2>
+      <ul>
+        <li><strong>Camera</strong> — to photograph your clothing and capture try-on photos.</li>
+        <li><strong>Approximate location</strong> (optional) — for local weather used in suggestions.</li>
+        <li><strong>Internet / network state</strong> — to sync with your Google Drive and call the AI and weather services.</li>
+        <li><strong>Foreground service &amp; ignore battery optimizations</strong> — to finish background image processing and Drive sync reliably while you keep using your phone.</li>
+      </ul>
+
+      <h2>Who we share data with</h2>
+      <p>We do not sell your personal data. Data is shared only with the service providers needed to run the features above, acting as processors or independent controllers under their own terms:</p>
+      <ul>
+        <li><strong>Google Drive</strong> — stores your wardrobe content in your own account. (<a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy</a>)</li>
+        <li><strong>Google Gemini API</strong> — AI processing of images and text. (<a href="https://ai.google.dev/gemini-api/terms" target="_blank" rel="noopener">Terms</a>)</li>
+        <li><strong>Google Firebase</strong> (Authentication, Analytics, Cloud Functions, Firestore) — sign-in, usage analytics, and the optional credits backend. (<a href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener">Firebase privacy</a>)</li>
+        <li><strong>Google Play Billing / Play Developer API</strong> — only if you make a purchase. (<a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy</a>)</li>
+        <li><strong>Open-Meteo</strong> — approximate location is sent to retrieve weather, only if you enable it. (<a href="https://open-meteo.com/en/terms" target="_blank" rel="noopener">Terms</a>)</li>
+      </ul>
+      <p>We may also disclose data where required by law or to protect our rights, users, or the public.</p>
+
+      <h2>Data retention &amp; deletion</h2>
+      <ul>
+        <li><strong>Your wardrobe content</strong> stays in your Google Drive until you delete it. Remove it by deleting the app’s folder in Drive, or revoke the app’s access via your <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener">Google Account permissions</a>.</li>
+        <li><strong>Account &amp; credit records</strong> in Firebase are kept while your account is active. To delete them, email <a href="mailto:contact@librelook.ai">contact@librelook.ai</a> and we will delete your account data and any credit ledger (subject to any legal retention obligations).</li>
+        <li><strong>Analytics data</strong> is retained for a limited period per Firebase Analytics’ default retention settings, then deleted or aggregated.</li>
+      </ul>
+      <p>You can request deletion of your data at any time at <a href="mailto:contact@librelook.ai">contact@librelook.ai</a>.</p>
+
+      <h2>Data security</h2>
+      <p>Connections to Google Drive, the AI service, and our backend use encrypted HTTPS/TLS. Your API key and credentials are stored on your device. Our backend follows Google&nbsp;Cloud / Firebase security controls. No method of transmission or storage is completely secure, but we take reasonable measures to protect your data.</p>
+
+      <h2>Children</h2>
+      <p>LibreLookAI is not directed to children. The app is intended for users aged 13 and over (and, where a higher age of digital consent applies, that age). We do not knowingly collect personal data from children under 13. If you believe a child has provided us personal data, contact us at <a href="mailto:contact@librelook.ai">contact@librelook.ai</a> and we will delete it.</p>
+
+      <h2>International transfers</h2>
+      <p>The Google services above may process data on servers outside your country, including the United States. These transfers rely on the providers’ safeguards (e.g. Standard Contractual Clauses / adequacy mechanisms) as described in their respective privacy policies.</p>
+
+      <h2>Your rights</h2>
+      <p>Depending on where you live, you have rights over your personal data, including access, rectification, erasure, restriction, portability, and objection. To exercise them, contact <a href="mailto:contact@librelook.ai">contact@librelook.ai</a>. You also have the right to lodge a complaint with your data protection supervisory authority.</p>
+
+      <h2>Changes to this policy</h2>
+      <p>We may update this policy to reflect changes to the app or legal requirements. The current version, with the date shown above, always applies. Material changes will be reflected here.</p>
+
+      <h2>Contact</h2>
+      <p>Questions or requests about your privacy: <a href="mailto:contact@librelook.ai">contact@librelook.ai</a>.</p>
+
+      <p style="margin-top:32px"><a href="index.html" data-i18n="legal.back">← Back to LibreLookAI</a></p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="brand">
+      <img src="assets/logo.png" alt="LibreLookAI logo" />
+      <span>LibreLook<em>AI</em></span>
+    </div>
+    <p data-i18n="footer.tagline">Your closet, styled by AI — and kept private.</p>
+    <nav class="footer-links">
+      <a href="impressum.html" data-i18n="footer.impressum">Legal notice</a>
+      <a href="datenschutz.html" data-i18n="footer.privacy">Privacy</a>
+      <a href="privacy.html" data-i18n="footer.appPrivacy">App privacy</a>
+      <a href="setup.html" data-i18n="nav.setup">API key</a>
+      <a class="gh-link" href="https://github.com/sonney2k/LibreLookAI" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>GitHub</a>
+
+    </nav>
+    <p class="copy" data-i18n="footer.copy">© 2026 LibreLookAI</p>
+  </footer>
+
+  <script src="translations.js"></script>
+  <script src="setup.translations.js"></script>
+  <script src="legal.translations.js"></script>
+  <script src="i18n.js"></script>
+</body>
+</html>

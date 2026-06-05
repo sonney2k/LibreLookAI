@@ -16,6 +16,7 @@
       "meta.dsgTitle": "Privacy Policy — LibreLookAI",
       "footer.impressum": "Legal notice",
       "footer.privacy": "Privacy",
+      "footer.appPrivacy": "App privacy",
       "legal.back": "← Back to LibreLookAI",
 
       /* ---- Impressum ---- */
@@ -76,6 +77,7 @@
       "meta.dsgTitle": "Datenschutzerklärung — LibreLookAI",
       "footer.impressum": "Impressum",
       "footer.privacy": "Datenschutz",
+      "footer.appPrivacy": "App-Datenschutz",
       "legal.back": "← Zurück zu LibreLookAI",
 
       /* ---- Impressum ---- */
@@ -132,16 +134,16 @@
     },
 
     /* Footer link labels only — legal page bodies fall back to English. */
-    fr: { "footer.impressum": "Mentions légales", "footer.privacy": "Confidentialité", "legal.back": "← Retour à LibreLookAI" },
-    it: { "footer.impressum": "Note legali", "footer.privacy": "Privacy", "legal.back": "← Torna a LibreLookAI" },
-    es: { "footer.impressum": "Aviso legal", "footer.privacy": "Privacidad", "legal.back": "← Volver a LibreLookAI" },
-    pt: { "footer.impressum": "Aviso legal", "footer.privacy": "Privacidade", "legal.back": "← Voltar para o LibreLookAI" },
-    nl: { "footer.impressum": "Colofon", "footer.privacy": "Privacy", "legal.back": "← Terug naar LibreLookAI" },
-    tr: { "footer.impressum": "Künye", "footer.privacy": "Gizlilik", "legal.back": "← LibreLookAI'ye dön" },
-    ru: { "footer.impressum": "Правовая информация", "footer.privacy": "Конфиденциальность", "legal.back": "← Назад к LibreLookAI" },
-    ja: { "footer.impressum": "運営者情報", "footer.privacy": "プライバシー", "legal.back": "← LibreLookAI に戻る" },
-    ko: { "footer.impressum": "법적 고지", "footer.privacy": "개인정보", "legal.back": "← LibreLookAI로 돌아가기" },
-    zh: { "footer.impressum": "法律声明", "footer.privacy": "隐私", "legal.back": "← 返回 LibreLookAI" }
+    fr: { "footer.impressum": "Mentions légales", "footer.privacy": "Confidentialité", "footer.appPrivacy": "Confidentialité de l’app", "legal.back": "← Retour à LibreLookAI" },
+    it: { "footer.impressum": "Note legali", "footer.privacy": "Privacy", "footer.appPrivacy": "Privacy app", "legal.back": "← Torna a LibreLookAI" },
+    es: { "footer.impressum": "Aviso legal", "footer.privacy": "Privacidad", "footer.appPrivacy": "Privacidad de la app", "legal.back": "← Volver a LibreLookAI" },
+    pt: { "footer.impressum": "Aviso legal", "footer.privacy": "Privacidade", "footer.appPrivacy": "Privacidade do app", "legal.back": "← Voltar para o LibreLookAI" },
+    nl: { "footer.impressum": "Colofon", "footer.privacy": "Privacy", "footer.appPrivacy": "App-privacy", "legal.back": "← Terug naar LibreLookAI" },
+    tr: { "footer.impressum": "Künye", "footer.privacy": "Gizlilik", "footer.appPrivacy": "Uygulama gizliliği", "legal.back": "← LibreLookAI'ye dön" },
+    ru: { "footer.impressum": "Правовая информация", "footer.privacy": "Конфиденциальность", "footer.appPrivacy": "Конфиденциальность приложения", "legal.back": "← Назад к LibreLookAI" },
+    ja: { "footer.impressum": "運営者情報", "footer.privacy": "プライバシー", "footer.appPrivacy": "アプリのプライバシー", "legal.back": "← LibreLookAI に戻る" },
+    ko: { "footer.impressum": "법적 고지", "footer.privacy": "개인정보", "footer.appPrivacy": "앱 개인정보", "legal.back": "← LibreLookAI로 돌아가기" },
+    zh: { "footer.impressum": "法律声明", "footer.privacy": "隐私", "footer.appPrivacy": "应用隐私", "legal.back": "← 返回 LibreLookAI" }
   };
 
   window.translations = window.translations || {};
