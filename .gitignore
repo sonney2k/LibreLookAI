@@ -31,3 +31,6 @@ firebase/functions/node_modules/
 # Python (scripts/)
 __pycache__/
 *.pyc
+
+# Generated Play Store "What's new" draft (scripts/release.sh)
+play-whatsnew.txt

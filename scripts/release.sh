@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Cut a LibreLookAI release: bump the version, prepend human-readable release
-# notes, build the signed release APK, commit + tag, and distribute to the
-# Firebase App Distribution "testers" group.
+# notes, build the signed release APK *and* the Play Store AAB, commit + tag,
+# distribute the APK to the Firebase App Distribution "testers" group, and write
+# a short Play "What's new" draft (play-whatsnew.txt) for the Play Console.
 #
 # Mirrors the per-release checklist in plan/CLAUDE_ARCHIVE.md § Release process.
 #
@@ -17,6 +18,7 @@
 #                        the "### LibreLookAI vX Release Notes" heading is added
 #                        automatically. If <file> is "-", read from stdin.
 #   --no-upload          Build, commit and tag, but skip the Firebase upload.
+#                        (The Play AAB + What's new draft are still produced.)
 #   --distribute-only    Skip the version bump / notes / commit / tag entirely;
 #                        just build the signed APK for the CURRENT version and
 #                        upload it to the Firebase App Distribution "testers"
@@ -44,9 +46,46 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 GRADLE_FILE="$REPO_ROOT/app/build.gradle.kts"
 NOTES_FILE="$REPO_ROOT/release-notes.txt"
+WHATSNEW_FILE="$REPO_ROOT/play-whatsnew.txt"
+AAB_PATH="$REPO_ROOT/app/build/outputs/bundle/release/app-release.aab"
+PLAY_WHATSNEW_LIMIT=500
 
 die() { echo "✗ $*" >&2; exit 1; }
 info() { echo "→ $*"; }
+
+# Build both signed release artifacts: the APK (Firebase App Distribution) and
+# the AAB (Play Store upload). Caller handles failure (e.g. revert on a cut).
+build_release_artifacts() {
+    info "Building signed release APK + Play AAB …"
+    ./gradlew :app:assembleRelease :app:bundleRelease
+}
+
+# Condense a markdown release-notes body into a Play Store "What's new" draft:
+# plain text, • bullets, no #### headings. Writes $WHATSNEW_FILE and warns if it
+# blows Play's per-language 500-char limit.
+write_whatsnew() {
+    local body="$1"
+    printf '%s\n' "$body" \
+        | sed -E -e 's/^#### *//' -e 's/^[[:space:]]*[-*] +/• /' \
+        > "$WHATSNEW_FILE"
+    local chars; chars="$(wc -m < "$WHATSNEW_FILE" | tr -d ' ')"
+    info "Play 'What's new' draft → $WHATSNEW_FILE ($chars/$PLAY_WHATSNEW_LIMIT chars)"
+    [[ "$chars" -gt "$PLAY_WHATSNEW_LIMIT" ]] && \
+        echo "⚠ over Play's $PLAY_WHATSNEW_LIMIT-char limit — trim before pasting." >&2
+    return 0
+}
+
+# Extract the most recent section body from release-notes.txt: everything
+# between the latest "### … Release Notes" heading and the first '---' divider,
+# with the heading itself stripped. Used by --distribute-only, which has no
+# freshly-gathered notes body of its own.
+latest_notes_body() {
+    awk '
+        /^---[[:space:]]*$/ { exit }
+        /^### .*Release Notes/ { skip=1; next }
+        skip { print }
+    ' "$NOTES_FILE" | sed -e '/./,$!d'
+}
 
 # Portable in-place sed (BSD vs GNU differ on -i).
 sed_inplace() {
@@ -119,15 +158,16 @@ if [[ "$DISTRIBUTE_ONLY" -eq 1 ]]; then
     info "Distribute-only: current build $CUR_NAME (versionCode $CUR_CODE) → Firebase testers."
     info "Release notes come from $NOTES_FILE as-is (no bump, commit, or tag)."
     if [[ "$ASSUME_YES" -ne 1 ]]; then
-        read -rp "Build signed APK and upload to testers? [y/N] " a
+        read -rp "Build signed APK + Play AAB and upload APK to testers? [y/N] " a
         [[ "$a" =~ ^[Yy]$ ]] || { echo "Aborted."; exit 1; }
     fi
-    info "Building signed release APK …"
-    ./gradlew :app:assembleRelease || die "build failed."
+    build_release_artifacts || die "build failed."
     info "Uploading to Firebase App Distribution (group: testers) …"
     ./gradlew :app:appDistributionUploadRelease
+    write_whatsnew "$(latest_notes_body)"
     echo
     info "Done: distributed $CUR_NAME (versionCode $CUR_CODE) to Firebase testers."
+    info "Play AAB ready: $AAB_PATH"
     exit 0
 fi
 
@@ -215,12 +255,18 @@ if [[ "$DRY_RUN" -eq 1 ]]; then
     info "Dry run — diff that would be committed:"
     git --no-pager diff -- "$GRADLE_FILE" "$NOTES_FILE"
     revert_changes
+    echo
+    write_whatsnew "$NOTES_BODY"
+    echo "──────── Play 'What's new' draft ────────"
+    cat "$WHATSNEW_FILE"
+    echo "─────────────────────────────────────────"
+    rm -f "$WHATSNEW_FILE"
     info "Reverted. Nothing built, committed or uploaded."
     exit 0
 fi
 
 if [[ "$ASSUME_YES" -ne 1 ]]; then
-    plan="build signed APK, commit, tag $TAG"
+    plan="build signed APK + Play AAB, commit, tag $TAG"
     [[ "$DO_UPLOAD" -eq 1 ]] && plan="$plan, upload to Firebase testers"
     [[ "$DO_PUSH" -eq 1 ]]   && plan="$plan, push"
     read -rp "Proceed to $plan? [y/N] " a
@@ -230,11 +276,13 @@ fi
 apply_changes
 
 # --- Build (revert version/notes on failure so the tree stays clean) ---------
-info "Building signed release APK …"
-if ! ./gradlew :app:assembleRelease; then
+if ! build_release_artifacts; then
     revert_changes
     die "build failed — reverted version bump + notes."
 fi
+
+# Play "What's new" draft from the notes we just gathered.
+write_whatsnew "$NOTES_BODY"
 
 # --- Commit + tag -------------------------------------------------------------
 info "Committing + tagging $TAG …"
@@ -262,3 +310,5 @@ fi
 
 echo
 info "Done: $NEW_NAME (versionCode $NEW_CODE), tagged $TAG."
+info "Play AAB ready to upload: $AAB_PATH"
+info "Play 'What's new' draft:  $WHATSNEW_FILE"
