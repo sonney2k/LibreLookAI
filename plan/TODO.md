@@ -13,6 +13,34 @@ consistency: the cross to cancel taking a picture in wardrobe is in the lower ri
 TODO
 ====
 
+SECURITY: Add Firebase App Check to the Cloud Functions (defense-in-depth).
+Bundle this with the managed-billing activation work — the proxy/verifyPurchase
+paths are dormant while managed.billing.enabled=false (BYOK-only), so it's not
+end-to-end testable until billing is on. Plan:
+  - GOTCHA: geminiProxy + verifyPurchase are onRequest (HTTP) functions, NOT
+    onCall, so the `enforceAppCheck: true` option does NOT apply. Must verify
+    manually: read the `X-Firebase-AppCheck` header and
+    `await admin.appCheck().verifyToken(token)`, reject on failure. Roll out in
+    MONITOR mode first (verify + log, still allow) and only flip to hard-reject
+    after confirming real clients send valid tokens; gate enforcement behind an
+    env flag (e.g. ENFORCE_APP_CHECK).
+  - Console (manual): Firebase Console → App Check → register the Android app
+    with the Play Integrity provider; register a debug token (the debug provider
+    prints one to logcat) so dev builds aren't locked out.
+  - Android client: add firebase-appcheck-playintegrity (release) +
+    firebase-appcheck-debug (debug) — covered by Firebase BoM 33.7.0; install
+    the provider factory early (beside PricingClient.start in
+    MainActivity.onCreate); attach `X-Firebase-AppCheck: <token>` on both call
+    sites — GeminiRepository.buildRequest (proxy) and CreditRepository
+    (verifyPurchase). Token via
+    FirebaseAppCheck.getInstance().getAppCheckToken(false).await().token.
+  - Why: both functions currently auth on a Firebase ID token only, so any
+    signed-in Google account can script them directly (bounded today by
+    credit-gating). App Check adds app/device attestation.
+  - Also (separate, Cloud Console): confirm the Android API key in
+    google-services.json is restricted to package com.librelookai + our SHA-1s
+    and API-restricted to only the APIs we use (it ships in every APK).
+
 INFRA / DEADLINE: Cloud Functions runtime is Node.js 20, deprecated 2026-04-30,
 **decommissioned 2026-10-30** — after that date `firebase deploy --only functions`
 will fail until upgraded. Before October 2026: bump firebase/functions/package.json
