@@ -123,6 +123,10 @@ data class WardrobeUiState(
     val isRemovingAllBg: Boolean = false,
     val removeBgDone: Int = 0,
     val removeBgTotal: Int = 0,
+    /** Non-zero while the one-shot "Convert images to WebP" maintenance op is running. */
+    val isConverting: Boolean = false,
+    val convertDone: Int = 0,
+    val convertTotal: Int = 0,
     val error: String? = null,
     /** Total images to download during Phase 2 Drive sync (0 = not syncing or unknown). */
     val syncTotal: Int = 0,

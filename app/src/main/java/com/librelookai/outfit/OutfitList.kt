@@ -127,7 +127,7 @@ internal fun OutfitListScreen(
     // Resolve an item's closet by name (legacy outfits store itemNames, not itemIds). Spans every
     // loaded closet so we can tell which closet an outfit's items belong to.
     val folderByName = remember(items) {
-        items.associate { it.name to it.folderId }
+        items.associate { com.librelookai.util.ImageEncoding.itemMatchKey(it.name) to it.folderId }
     }
 
     var selectedTags by remember { mutableStateOf(emptyMap<String, Set<String>>()) }
@@ -158,7 +158,7 @@ internal fun OutfitListScreen(
         styles.filter { style ->
             if (locationFolderId != null) {
                 val resolvedFolders = if (style.itemNames.isNotEmpty())
-                    style.itemNames.mapNotNull { folderByName[it] }
+                    style.itemNames.mapNotNull { folderByName[com.librelookai.util.ImageEncoding.itemMatchKey(it)] }
                 else
                     style.itemIds.mapNotNull { id -> itemsById[id]?.folderId }
                 // Hide only when items resolve and all of them belong to other closets.

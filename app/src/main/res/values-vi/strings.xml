@@ -1101,4 +1101,23 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="onboarding_drive_imported">Đã nhập tủ quần áo ✓</string>
     <string name="onboarding_drive_import_error">Chúng tôi không thể tự động nhập tủ quần áo hiện có của bạn. Bạn có thể thử lại hoặc tự chọn thư mục.</string>
     <string name="onboarding_drive_import_manual">Chọn thư mục thủ công</string>
+
+    <!-- Image quality setting (WebP) -->
+    <string name="settings_image_quality_row">Chất lượng ảnh</string>
+    <string name="settings_image_quality_sub">Cân bằng dung lượng và chi tiết. Áp dụng cho ảnh mới lưu vào Drive của bạn.</string>
+    <string name="settings_image_quality_dialog_title">Chất lượng ảnh</string>
+    <string name="settings_image_quality_balanced">Cân bằng</string>
+    <string name="settings_image_quality_high">Cao</string>
+    <string name="settings_image_quality_maximum">Tối đa</string>
+    <string name="settings_image_quality_balanced_desc">Tệp nhỏ nhất — khuyên dùng (~80 kB)</string>
+    <string name="settings_image_quality_high_desc">Sắc nét hơn, tệp lớn hơn (~150 kB)</string>
+    <string name="settings_image_quality_maximum_desc">Không mất dữ liệu, tệp lớn nhất (~350 kB)</string>
+
+    <!-- Convert images to WebP -->
+    <string name="settings_convert_webp_row">Chuyển ảnh sang WebP</string>
+    <string name="settings_convert_webp_row_sub">Thu nhỏ ảnh JPG/PNG cũ để tiết kiệm dung lượng Drive.</string>
+    <string name="settings_convert_title">Chuyển %1$d ảnh sang WebP?</string>
+    <string name="settings_convert_body">Chúng tôi sẽ lưu lại ảnh JPG/PNG cũ của bạn thành các tệp WebP nhỏ hơn và cập nhật ở mọi nơi chúng được dùng — trang phục, thử đồ và chuyến đi. Không cần AI hay tín dụng.</string>
+    <string name="settings_convert_confirm">Chuyển sang WebP</string>
+    <string name="settings_converting">Đang chuyển %1$d trên %2$d…</string>
 </resources>

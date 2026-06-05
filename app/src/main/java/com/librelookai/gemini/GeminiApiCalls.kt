@@ -60,24 +60,14 @@ internal suspend fun GeminiRepository.tryOnOutfit(
 
         val parts = mutableListOf<Map<String, Any>>(mapOf("text" to prompt))
         personFiles.forEach { f ->
-            val mime = if (f.extension.equals("png", ignoreCase = true)) "image/png" else "image/jpeg"
-            val fmt = if (f.extension.equals("png", ignoreCase = true)) Bitmap.CompressFormat.PNG else Bitmap.CompressFormat.JPEG
-            parts += mapOf(
-                "inline_data" to mapOf(
-                    "mime_type" to mime,
-                    "data" to readAndResizeBase64(f, fmt),
-                ),
-            )
+            // Person photos have no alpha — re-encode (only if >1280px) as JPEG; MIME is sniffed.
+            val (mime, data) = readAndResizeBase64(f, Bitmap.CompressFormat.JPEG)
+            parts += mapOf("inline_data" to mapOf("mime_type" to mime, "data" to data))
         }
         itemFiles.forEach { f ->
-            val mime = if (f.extension.equals("png", ignoreCase = true)) "image/png" else "image/jpeg"
-            val fmt = if (f.extension.equals("png", ignoreCase = true)) Bitmap.CompressFormat.PNG else Bitmap.CompressFormat.JPEG
-            parts += mapOf(
-                "inline_data" to mapOf(
-                    "mime_type" to mime,
-                    "data" to readAndResizeBase64(f, fmt),
-                ),
-            )
+            // Item cutouts may carry alpha — re-encode (only if >1280px) as PNG; MIME is sniffed.
+            val (mime, data) = readAndResizeBase64(f, Bitmap.CompressFormat.PNG)
+            parts += mapOf("inline_data" to mapOf("mime_type" to mime, "data" to data))
         }
 
         val body = gson.toJson(
@@ -142,9 +132,9 @@ internal suspend fun GeminiRepository.classifyClothing(imageFile: File, language
             if (!isConfigured()) return@withContext null
 
             Log.d(GeminiRepository.TAG, "Classifying clothing in ${imageFile.name} via $GeminiRepository.CLASSIFY_MODEL (lang=$language)")
-            val mimeType = if (imageFile.extension == "png") "image/png" else "image/jpeg"
-            val format = if (imageFile.extension == "png") Bitmap.CompressFormat.PNG else Bitmap.CompressFormat.JPEG
-            val imageBase64 = readAndResizeBase64(imageFile, format)
+            // Classify operates on a cutout (may carry alpha) — re-encode (only if >1280px) as
+            // PNG; the actual MIME is sniffed from the bytes (cache may be WebP under a .png name).
+            val (mimeType, imageBase64) = readAndResizeBase64(imageFile, Bitmap.CompressFormat.PNG)
             val prompt = PromptStore.get(app, PromptKey.CLASSIFY).replace("{LANGUAGE}", language)
             val estimate = CostTokens(
                 inputTokens = TokenEstimator.textTokens(prompt) + TokenEstimator.imageInputTokens(imageFile),

@@ -1128,4 +1128,23 @@
     <string name="onboarding_drive_imported">تم استيراد خزانة الملابس ✓</string>
     <string name="onboarding_drive_import_error">تعذّر علينا استيراد خزانة ملابسك الحالية تلقائيًا. يمكنك المحاولة مرة أخرى أو اختيار المجلد بنفسك.</string>
     <string name="onboarding_drive_import_manual">اختيار المجلد يدويًا</string>
+
+    <!-- Image quality setting (WebP) -->
+    <string name="settings_image_quality_row">جودة الصورة</string>
+    <string name="settings_image_quality_sub">وازِن بين المساحة والتفاصيل. يؤثر في الصور الجديدة المحفوظة على Drive.</string>
+    <string name="settings_image_quality_dialog_title">جودة الصورة</string>
+    <string name="settings_image_quality_balanced">متوازنة</string>
+    <string name="settings_image_quality_high">عالية</string>
+    <string name="settings_image_quality_maximum">قصوى</string>
+    <string name="settings_image_quality_balanced_desc">أصغر الملفات — مُوصى به (~80 كيلوبايت)</string>
+    <string name="settings_image_quality_high_desc">أوضح، ملفات أكبر (~150 كيلوبايت)</string>
+    <string name="settings_image_quality_maximum_desc">بدون فقدان، أكبر الملفات (~350 كيلوبايت)</string>
+
+    <!-- Convert images to WebP -->
+    <string name="settings_convert_webp_row">تحويل الصور إلى WebP</string>
+    <string name="settings_convert_webp_row_sub">تصغير صور JPG/PNG القديمة لتوفير مساحة Drive.</string>
+    <string name="settings_convert_title">تحويل %1$d صورة إلى WebP؟</string>
+    <string name="settings_convert_body">سنعيد حفظ صور JPG/PNG القديمة كملفات WebP أصغر ونحدّثها في كل مكان تُستخدم فيه — الإطلالات والتجارب والرحلات. بدون ذكاء اصطناعي أو رصيد.</string>
+    <string name="settings_convert_confirm">تحويل إلى WebP</string>
+    <string name="settings_converting">جارٍ التحويل %1$d من %2$d…</string>
 </resources>

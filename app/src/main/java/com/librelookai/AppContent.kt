@@ -333,6 +333,13 @@ internal fun AppContent(activity: ComponentActivity) {
                         runCatching { EmbeddingService.segmenter.foregroundThreshold = bgRemovalThreshold }
                     }
 
+                    // Mirror the image-quality tier so cutout/original encoders pick it up on the
+                    // next capture/import/bg-removal.
+                    val imageQuality = profileState.preferences.imageQuality
+                    LaunchedEffect(imageQuality) {
+                        com.librelookai.util.ImageEncoding.tier = imageQuality
+                    }
+
                     // Mirror the local-bg-removal pref into the wardrobe VM so camera/gallery
                     // imports route through the on-device segmenter review when enabled.
                     val preferLocalBg = profileState.preferences.preferLocalBgRemoval

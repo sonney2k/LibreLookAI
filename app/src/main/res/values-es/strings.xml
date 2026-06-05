@@ -1128,4 +1128,23 @@
     <string name="onboarding_drive_imported">Armario importado ✓</string>
     <string name="onboarding_drive_import_error">No hemos podido importar tu armario existente automáticamente. Puedes volver a intentarlo o elegir la carpeta tú mismo.</string>
     <string name="onboarding_drive_import_manual">Elegir carpeta manualmente</string>
+
+    <!-- Image quality setting (WebP) -->
+    <string name="settings_image_quality_row">Calidad de imagen</string>
+    <string name="settings_image_quality_sub">Equilibra almacenamiento y detalle. Afecta a las nuevas fotos guardadas en tu Drive.</string>
+    <string name="settings_image_quality_dialog_title">Calidad de imagen</string>
+    <string name="settings_image_quality_balanced">Equilibrada</string>
+    <string name="settings_image_quality_high">Alta</string>
+    <string name="settings_image_quality_maximum">Máxima</string>
+    <string name="settings_image_quality_balanced_desc">Archivos más pequeños — recomendado (~80 kB)</string>
+    <string name="settings_image_quality_high_desc">Más nítido, archivos más grandes (~150 kB)</string>
+    <string name="settings_image_quality_maximum_desc">Sin pérdida, archivos más grandes (~350 kB)</string>
+
+    <!-- Convert images to WebP -->
+    <string name="settings_convert_webp_row">Convertir imágenes a WebP</string>
+    <string name="settings_convert_webp_row_sub">Reduce las fotos JPG/PNG antiguas para ahorrar espacio en Drive.</string>
+    <string name="settings_convert_title">¿Convertir %1$d imágenes a WebP?</string>
+    <string name="settings_convert_body">Volveremos a guardar tus fotos JPG/PNG antiguas como archivos WebP más pequeños y las actualizaremos en todos los sitios donde se usan: looks, pruebas y viajes. Sin IA ni créditos.</string>
+    <string name="settings_convert_confirm">Convertir a WebP</string>
+    <string name="settings_converting">Convirtiendo %1$d de %2$d…</string>
 </resources>

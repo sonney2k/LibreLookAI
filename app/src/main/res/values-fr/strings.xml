@@ -1128,4 +1128,23 @@
     <string name="onboarding_drive_imported">Garde-robe importée ✓</string>
     <string name="onboarding_drive_import_error">Nous n\'avons pas pu importer automatiquement votre garde-robe existante. Vous pouvez réessayer ou choisir le dossier vous-même.</string>
     <string name="onboarding_drive_import_manual">Choisir le dossier manuellement</string>
+
+    <!-- Image quality setting (WebP) -->
+    <string name="settings_image_quality_row">Qualité d\'image</string>
+    <string name="settings_image_quality_sub">Compromis entre stockage et détails. Concerne les nouvelles photos enregistrées sur votre Drive.</string>
+    <string name="settings_image_quality_dialog_title">Qualité d\'image</string>
+    <string name="settings_image_quality_balanced">Équilibré</string>
+    <string name="settings_image_quality_high">Élevée</string>
+    <string name="settings_image_quality_maximum">Maximale</string>
+    <string name="settings_image_quality_balanced_desc">Fichiers les plus petits — recommandé (~80 ko)</string>
+    <string name="settings_image_quality_high_desc">Plus net, fichiers plus gros (~150 ko)</string>
+    <string name="settings_image_quality_maximum_desc">Sans perte, fichiers les plus gros (~350 ko)</string>
+
+    <!-- Convert images to WebP -->
+    <string name="settings_convert_webp_row">Convertir les images en WebP</string>
+    <string name="settings_convert_webp_row_sub">Réduisez les anciennes photos JPG/PNG pour économiser de l\'espace Drive.</string>
+    <string name="settings_convert_title">Convertir %1$d images en WebP ?</string>
+    <string name="settings_convert_body">Nous réenregistrons vos anciennes photos JPG/PNG en fichiers WebP plus légers et les mettons à jour partout où elles sont utilisées — tenues, essayages et voyages. Aucune IA ni crédit nécessaire.</string>
+    <string name="settings_convert_confirm">Convertir en WebP</string>
+    <string name="settings_converting">Conversion %1$d sur %2$d…</string>
 </resources>

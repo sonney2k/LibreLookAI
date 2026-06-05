@@ -1128,4 +1128,23 @@
     <string name="onboarding_drive_imported">Guardaroba importato ✓</string>
     <string name="onboarding_drive_import_error">Non è stato possibile importare automaticamente il tuo guardaroba esistente. Puoi riprovare o scegliere tu stesso la cartella.</string>
     <string name="onboarding_drive_import_manual">Scegli la cartella manualmente</string>
+
+    <!-- Image quality setting (WebP) -->
+    <string name="settings_image_quality_row">Qualità immagine</string>
+    <string name="settings_image_quality_sub">Bilancia spazio e dettaglio. Riguarda le nuove foto salvate sul tuo Drive.</string>
+    <string name="settings_image_quality_dialog_title">Qualità immagine</string>
+    <string name="settings_image_quality_balanced">Bilanciata</string>
+    <string name="settings_image_quality_high">Alta</string>
+    <string name="settings_image_quality_maximum">Massima</string>
+    <string name="settings_image_quality_balanced_desc">File più piccoli — consigliato (~80 kB)</string>
+    <string name="settings_image_quality_high_desc">Più nitido, file più grandi (~150 kB)</string>
+    <string name="settings_image_quality_maximum_desc">Senza perdita, file più grandi (~350 kB)</string>
+
+    <!-- Convert images to WebP -->
+    <string name="settings_convert_webp_row">Converti le immagini in WebP</string>
+    <string name="settings_convert_webp_row_sub">Riduci le vecchie foto JPG/PNG per risparmiare spazio su Drive.</string>
+    <string name="settings_convert_title">Convertire %1$d immagini in WebP?</string>
+    <string name="settings_convert_body">Salveremo di nuovo le tue vecchie foto JPG/PNG come file WebP più piccoli e le aggiorneremo ovunque siano usate — outfit, prove e viaggi. Nessuna IA o credito necessario.</string>
+    <string name="settings_convert_confirm">Converti in WebP</string>
+    <string name="settings_converting">Conversione %1$d di %2$d…</string>
 </resources>

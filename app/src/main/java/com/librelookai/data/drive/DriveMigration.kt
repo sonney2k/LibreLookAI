@@ -73,9 +73,10 @@ suspend fun DriveRepository.migrateLegacyInto(
             }
 
             // 2. Item triplets, anchored on the cutout so the sidecar can be re-keyed to the new ID.
-            for (cut in children.filter { it.name.endsWith(DriveRepository.CUTOUT_SUFFIX) }) {
-                val base = cut.name.removeSuffix(DriveRepository.CUTOUT_SUFFIX)
+            for (cut in children.filter { com.librelookai.util.ImageEncoding.isCutoutName(it.name) }) {
+                val base = com.librelookai.util.ImageEncoding.cutoutIdFromName(cut.name) ?: continue
                 val orig = byName["$base${DriveRepository.ORIGINAL_SUFFIX}"]
+                    ?: byName["$base${com.librelookai.util.ImageEncoding.ORIGINAL_SUFFIX_LEGACY}"]
                 val side = byName["$base${DriveRepository.SIDECAR_SUFFIX}"]
                 handled += cut.name
                 orig?.let { handled += it.name }

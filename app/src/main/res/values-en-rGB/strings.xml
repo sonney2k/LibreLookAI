@@ -1128,4 +1128,23 @@
     <string name="onboarding_drive_imported">Wardrobe imported ✓</string>
     <string name="onboarding_drive_import_error">We couldn\'t import your existing wardrobe automatically. You can try again or pick the folder yourself.</string>
     <string name="onboarding_drive_import_manual">Choose folder manually</string>
+
+    <!-- Image quality setting (WebP) -->
+    <string name="settings_image_quality_row">Image quality</string>
+    <string name="settings_image_quality_sub">Trade storage for detail. Affects new wardrobe photos saved to your Drive.</string>
+    <string name="settings_image_quality_dialog_title">Image quality</string>
+    <string name="settings_image_quality_balanced">Balanced</string>
+    <string name="settings_image_quality_high">High</string>
+    <string name="settings_image_quality_maximum">Maximum</string>
+    <string name="settings_image_quality_balanced_desc">Smallest files — recommended (~80 kB)</string>
+    <string name="settings_image_quality_high_desc">Sharper, larger files (~150 kB)</string>
+    <string name="settings_image_quality_maximum_desc">Lossless, largest files (~350 kB)</string>
+
+    <!-- Convert images to WebP -->
+    <string name="settings_convert_webp_row">Convert images to WebP</string>
+    <string name="settings_convert_webp_row_sub">Shrink older JPG/PNG photos to save Drive space.</string>
+    <string name="settings_convert_title">Convert %1$d images to WebP?</string>
+    <string name="settings_convert_body">We\'ll re-save your older JPG/PNG photos as smaller WebP files and update everywhere they\'re used — outfits, try-ons, and trips. No AI or credits needed.</string>
+    <string name="settings_convert_confirm">Convert to WebP</string>
+    <string name="settings_converting">Converting %1$d of %2$d…</string>
 </resources>

@@ -1101,4 +1101,23 @@
     <string name="onboarding_drive_imported">वॉर्डरोब इंपोर्ट हो गया ✓</string>
     <string name="onboarding_drive_import_error">हम आपका मौजूदा वॉर्डरोब अपने आप इंपोर्ट नहीं कर सके. आप फिर से कोशिश कर सकते हैं या फ़ोल्डर खुद चुन सकते हैं.</string>
     <string name="onboarding_drive_import_manual">फ़ोल्डर मैन्युअल रूप से चुनें</string>
+
+    <!-- Image quality setting (WebP) -->
+    <string name="settings_image_quality_row">इमेज क्वालिटी</string>
+    <string name="settings_image_quality_sub">स्टोरेज और डिटेल के बीच संतुलन। आपके Drive में सेव होने वाली नई फ़ोटो पर लागू।</string>
+    <string name="settings_image_quality_dialog_title">इमेज क्वालिटी</string>
+    <string name="settings_image_quality_balanced">संतुलित</string>
+    <string name="settings_image_quality_high">उच्च</string>
+    <string name="settings_image_quality_maximum">अधिकतम</string>
+    <string name="settings_image_quality_balanced_desc">सबसे छोटी फ़ाइलें — अनुशंसित (~80 kB)</string>
+    <string name="settings_image_quality_high_desc">ज़्यादा साफ़, बड़ी फ़ाइलें (~150 kB)</string>
+    <string name="settings_image_quality_maximum_desc">बिना नुकसान, सबसे बड़ी फ़ाइलें (~350 kB)</string>
+
+    <!-- Convert images to WebP -->
+    <string name="settings_convert_webp_row">इमेज को WebP में बदलें</string>
+    <string name="settings_convert_webp_row_sub">Drive में जगह बचाने के लिए पुरानी JPG/PNG फ़ोटो छोटी करें.</string>
+    <string name="settings_convert_title">%1$d इमेज को WebP में बदलें?</string>
+    <string name="settings_convert_body">हम आपकी पुरानी JPG/PNG फ़ोटो को छोटी WebP फ़ाइलों के रूप में फिर से सहेजेंगे और जहाँ भी वे इस्तेमाल होती हैं — आउटफ़िट, ट्राई-ऑन और ट्रिप — वहाँ अपडेट कर देंगे. कोई AI या क्रेडिट ज़रूरी नहीं.</string>
+    <string name="settings_convert_confirm">WebP में बदलें</string>
+    <string name="settings_converting">%2$d में से %1$d बदल रहे हैं…</string>
 </resources>

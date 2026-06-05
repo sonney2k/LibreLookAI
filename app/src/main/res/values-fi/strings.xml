@@ -1128,4 +1128,23 @@
     <string name="onboarding_drive_imported">Vaatekaappi tuotu ✓</string>
     <string name="onboarding_drive_import_error">Emme voineet tuoda olemassa olevaa vaatekaappiasi automaattisesti. Voit yrittää uudelleen tai valita kansion itse.</string>
     <string name="onboarding_drive_import_manual">Valitse kansio manuaalisesti</string>
+
+    <!-- Image quality setting (WebP) -->
+    <string name="settings_image_quality_row">Kuvanlaatu</string>
+    <string name="settings_image_quality_sub">Tasapainota tallennustila ja yksityiskohdat. Koskee uusia Driveen tallennettuja kuvia.</string>
+    <string name="settings_image_quality_dialog_title">Kuvanlaatu</string>
+    <string name="settings_image_quality_balanced">Tasapainoinen</string>
+    <string name="settings_image_quality_high">Korkea</string>
+    <string name="settings_image_quality_maximum">Maksimi</string>
+    <string name="settings_image_quality_balanced_desc">Pienimmät tiedostot — suositus (~80 kt)</string>
+    <string name="settings_image_quality_high_desc">Terävämpi, suuremmat tiedostot (~150 kt)</string>
+    <string name="settings_image_quality_maximum_desc">Häviötön, suurimmat tiedostot (~350 kt)</string>
+
+    <!-- Convert images to WebP -->
+    <string name="settings_convert_webp_row">Muunna kuvat WebP-muotoon</string>
+    <string name="settings_convert_webp_row_sub">Pienennä vanhempia JPG/PNG-kuvia ja säästä Drive-tilaa.</string>
+    <string name="settings_convert_title">Muunnetaanko %1$d kuvaa WebP-muotoon?</string>
+    <string name="settings_convert_body">Tallennamme vanhemmat JPG/PNG-kuvasi uudelleen pienempinä WebP-tiedostoina ja päivitämme ne kaikkialle, missä niitä käytetään — asuihin, sovituksiin ja matkoihin. Ei tekoälyä eikä krediittejä.</string>
+    <string name="settings_convert_confirm">Muunna WebP-muotoon</string>
+    <string name="settings_converting">Muunnetaan %1$d/%2$d…</string>
 </resources>

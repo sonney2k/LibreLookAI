@@ -326,7 +326,7 @@ private fun LocalBgRemovalDialog(
                             val out = withContext(Dispatchers.IO) {
                                 val cropped = tightCropToAlpha(bm)
                                 val f = File(context.cacheDir, "local_bg_${System.currentTimeMillis()}.png")
-                                f.outputStream().buffered().use { cropped.compress(Bitmap.CompressFormat.PNG, 100, it) }
+                                com.librelookai.util.ImageEncoding.compressCutout(cropped, f)
                                 if (cropped !== bm) cropped.recycle()
                                 f
                             }

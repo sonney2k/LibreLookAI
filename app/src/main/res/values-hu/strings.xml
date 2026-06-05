@@ -1101,4 +1101,23 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="onboarding_drive_imported">Gardrób importálva ✓</string>
     <string name="onboarding_drive_import_error">Nem sikerült automatikusan importálni a meglévő gardróbodat. Megpróbálhatod újra, vagy kiválaszthatod a mappát magad.</string>
     <string name="onboarding_drive_import_manual">Mappa kézi kiválasztása</string>
+
+    <!-- Image quality setting (WebP) -->
+    <string name="settings_image_quality_row">Képminőség</string>
+    <string name="settings_image_quality_sub">Egyensúlyozd a tárhelyet és a részletességet. Az új, Drive-ra mentett fotókra vonatkozik.</string>
+    <string name="settings_image_quality_dialog_title">Képminőség</string>
+    <string name="settings_image_quality_balanced">Kiegyensúlyozott</string>
+    <string name="settings_image_quality_high">Magas</string>
+    <string name="settings_image_quality_maximum">Maximális</string>
+    <string name="settings_image_quality_balanced_desc">Legkisebb fájlok — ajánlott (~80 kB)</string>
+    <string name="settings_image_quality_high_desc">Élesebb, nagyobb fájlok (~150 kB)</string>
+    <string name="settings_image_quality_maximum_desc">Veszteségmentes, legnagyobb fájlok (~350 kB)</string>
+
+    <!-- Convert images to WebP -->
+    <string name="settings_convert_webp_row">Képek átalakítása WebP-re</string>
+    <string name="settings_convert_webp_row_sub">Kicsinyítsd a régebbi JPG/PNG fotókat, hogy helyet spórolj a Drive-on.</string>
+    <string name="settings_convert_title">Átalakítasz %1$d képet WebP-re?</string>
+    <string name="settings_convert_body">A régebbi JPG/PNG fotóidat kisebb WebP fájlokként mentjük újra, és mindenhol frissítjük, ahol használatban vannak — szettek, felpróbálások és utazások. Nincs szükség MI-re vagy kreditre.</string>
+    <string name="settings_convert_confirm">Átalakítás WebP-re</string>
+    <string name="settings_converting">Átalakítás: %1$d / %2$d…</string>
 </resources>

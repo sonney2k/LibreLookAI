@@ -1128,4 +1128,23 @@
     <string name="onboarding_drive_imported">Garderoba zaimportowana ✓</string>
     <string name="onboarding_drive_import_error">Nie udało się automatycznie zaimportować Twojej istniejącej garderoby. Możesz spróbować ponownie lub samodzielnie wybrać folder.</string>
     <string name="onboarding_drive_import_manual">Wybierz folder ręcznie</string>
+
+    <!-- Image quality setting (WebP) -->
+    <string name="settings_image_quality_row">Jakość obrazu</string>
+    <string name="settings_image_quality_sub">Wyważ miejsce i szczegóły. Dotyczy nowych zdjęć zapisywanych na Dysku.</string>
+    <string name="settings_image_quality_dialog_title">Jakość obrazu</string>
+    <string name="settings_image_quality_balanced">Zrównoważona</string>
+    <string name="settings_image_quality_high">Wysoka</string>
+    <string name="settings_image_quality_maximum">Maksymalna</string>
+    <string name="settings_image_quality_balanced_desc">Najmniejsze pliki — zalecane (~80 kB)</string>
+    <string name="settings_image_quality_high_desc">Ostrzejsze, większe pliki (~150 kB)</string>
+    <string name="settings_image_quality_maximum_desc">Bezstratne, największe pliki (~350 kB)</string>
+
+    <!-- Convert images to WebP -->
+    <string name="settings_convert_webp_row">Konwertuj obrazy na WebP</string>
+    <string name="settings_convert_webp_row_sub">Zmniejsz starsze zdjęcia JPG/PNG, aby zaoszczędzić miejsce na Dysku.</string>
+    <string name="settings_convert_title">Przekonwertować %1$d obrazów na WebP?</string>
+    <string name="settings_convert_body">Zapiszemy ponownie Twoje starsze zdjęcia JPG/PNG jako mniejsze pliki WebP i zaktualizujemy je wszędzie, gdzie są używane — w stylizacjach, przymierzaniach i podróżach. Bez AI i kredytów.</string>
+    <string name="settings_convert_confirm">Konwertuj na WebP</string>
+    <string name="settings_converting">Konwertowanie %1$d z %2$d…</string>
 </resources>

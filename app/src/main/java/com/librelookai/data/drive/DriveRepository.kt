@@ -22,6 +22,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import com.librelookai.auth.GoogleAuthManager
 import com.librelookai.gemini.TokenUsageRepository
+import com.librelookai.util.ImageEncoding
 import com.librelookai.data.model.Location
 import com.librelookai.data.model.Outfit
 
@@ -130,14 +131,14 @@ class DriveRepository(
         const val TRYONS_FILE_NAME = "_tryons.json"
 
         /**
-         * Suffix that marks a file as the background-removed cutout variant.
-         * Only files with this suffix are treated as wardrobe items; originals and
-         * raw uploads are excluded from [listFiles] and therefore never shown in the app.
+         * Canonical suffix for NEW cutout uploads (WebP). Files are treated as wardrobe items
+         * when [ImageEncoding.isCutoutName] matches (covers this and the legacy `.png` suffix);
+         * originals and raw uploads are excluded from [listFiles] and never shown in the app.
          */
-        const val CUTOUT_SUFFIX = "_cutout.png"
+        const val CUTOUT_SUFFIX = ImageEncoding.CUTOUT_SUFFIX
 
-        /** Suffix used when archiving the unprocessed original on Drive. */
-        const val ORIGINAL_SUFFIX = "_original.jpg"
+        /** Canonical suffix for NEW archived originals (WebP); legacy `.jpg` still read. */
+        const val ORIGINAL_SUFFIX = ImageEncoding.ORIGINAL_SUFFIX
 
         /** Suffix for per-item metadata sidecar files (named "{cutoutDriveId}.json"). */
         const val SIDECAR_SUFFIX = ".json"
@@ -320,7 +321,7 @@ class DriveRepository(
             "UTF-8",
         )
         val baseUrl = "$API/files?q=$q&fields=files(id,name,appProperties,createdTime),nextPageToken&orderBy=createdTime+desc&pageSize=1000"
-        fetchAllPages(baseUrl, tok).filter { it.name.endsWith(CUTOUT_SUFFIX) }
+        fetchAllPages(baseUrl, tok).filter { ImageEncoding.isCutoutName(it.name) }
     }
 
     /** Uploads a JPEG file to the given Drive folder via multipart/related. */
@@ -389,11 +390,10 @@ class DriveRepository(
     /** Replaces the content of an existing Drive file in-place (preserves ID and metadata). */
     suspend fun updateImage(fileId: String, imageFile: File) = withContext(Dispatchers.IO) {
         val tok = token()
-        val mimeType = if (imageFile.extension == "png") "image/png" else "image/jpeg"
         val req = Request.Builder()
             .url("$UPLOAD_API/files/$fileId?uploadType=media&fields=id")
             .header("Authorization", "Bearer $tok")
-            .method("PATCH", imageFile.readBytes().toRequestBody(mimeType.toMediaType()))
+            .method("PATCH", imageFile.readBytes().toRequestBody("image/webp".toMediaType()))
             .build()
         http.newCall(req).await()
     }
@@ -429,7 +429,7 @@ class DriveRepository(
      * end with [CUTOUT_SUFFIX] and are cached as `.png`; everything else as `.jpg`.
      */
     suspend fun downloadToCache(driveId: String, driveName: String = ""): File? = withContext(Dispatchers.IO) {
-        val ext = if (driveName.endsWith(CUTOUT_SUFFIX)) "png" else "jpg"
+        val ext = if (ImageEncoding.isCutoutName(driveName)) "png" else "jpg"
         val dest = File(cacheDir, "$driveId.$ext")
         if (dest.exists()) return@withContext dest
         val tmp = File(cacheDir, "$driveId.tmp")
@@ -661,13 +661,13 @@ class DriveRepository(
 
     /**
      * Builds a multipart/related body as required by the Drive upload API.
-     * Part 1: JSON metadata, Part 2: JPEG image bytes.
+     * Part 1: JSON metadata, Part 2: WebP image bytes.
      */
     private fun buildMultipartRelated(boundary: String, metaJson: String, imageFile: File): ByteArray {
         val out = ByteArrayOutputStream()
         out.write(
             "--$boundary\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n" +
-                "$metaJson\r\n--$boundary\r\nContent-Type: image/jpeg\r\n\r\n",
+                "$metaJson\r\n--$boundary\r\nContent-Type: image/webp\r\n\r\n",
         )
         imageFile.inputStream().use { it.copyTo(out) }
         out.write("\r\n--$boundary--")

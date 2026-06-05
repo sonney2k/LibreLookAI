@@ -1101,4 +1101,23 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="onboarding_drive_imported">Garderobă importată ✓</string>
     <string name="onboarding_drive_import_error">Nu am putut importa automat garderoba ta existentă. Poți încerca din nou sau poți alege singur folderul.</string>
     <string name="onboarding_drive_import_manual">Alege folderul manual</string>
+
+    <!-- Image quality setting (WebP) -->
+    <string name="settings_image_quality_row">Calitatea imaginii</string>
+    <string name="settings_image_quality_sub">Echilibrează spațiul și detaliile. Afectează noile fotografii salvate pe Drive.</string>
+    <string name="settings_image_quality_dialog_title">Calitatea imaginii</string>
+    <string name="settings_image_quality_balanced">Echilibrată</string>
+    <string name="settings_image_quality_high">Ridicată</string>
+    <string name="settings_image_quality_maximum">Maximă</string>
+    <string name="settings_image_quality_balanced_desc">Cele mai mici fișiere — recomandat (~80 kB)</string>
+    <string name="settings_image_quality_high_desc">Mai clar, fișiere mai mari (~150 kB)</string>
+    <string name="settings_image_quality_maximum_desc">Fără pierderi, cele mai mari fișiere (~350 kB)</string>
+
+    <!-- Convert images to WebP -->
+    <string name="settings_convert_webp_row">Convertește imaginile în WebP</string>
+    <string name="settings_convert_webp_row_sub">Micșorează fotografiile JPG/PNG mai vechi ca să economisești spațiu pe Drive.</string>
+    <string name="settings_convert_title">Convertești %1$d imagini în WebP?</string>
+    <string name="settings_convert_body">Îți salvăm din nou fotografiile JPG/PNG mai vechi ca fișiere WebP mai mici și le actualizăm peste tot unde sunt folosite — ținute, probe și călătorii. Fără IA sau credite.</string>
+    <string name="settings_convert_confirm">Convertește în WebP</string>
+    <string name="settings_converting">Se convertește %1$d din %2$d…</string>
 </resources>

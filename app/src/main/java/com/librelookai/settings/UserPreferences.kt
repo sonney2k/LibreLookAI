@@ -1,4 +1,7 @@
 package com.librelookai.settings
+
+import com.librelookai.util.ImageQuality
+
 data class UserPreferences(
     val gender: String = "",
     val yearOfBirth: Int? = null,
@@ -35,6 +38,9 @@ data class UserPreferences(
     val wardrobeTheme: String = "green-light",
     /** Selected app font id. One of [AppFont.options]. */
     val appFont: String = AppFont.CAVEAT,
+    /** Storage-vs-fidelity trade-off for wardrobe images saved to Drive (WebP). Gson back-fills
+     *  the field for prefs saved before it existed → defaults to [ImageQuality.BALANCED]. */
+    val imageQuality: ImageQuality = ImageQuality.BALANCED,
 )
 
 /** Available font choices for the app typography. */

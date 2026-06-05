@@ -1101,4 +1101,23 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="onboarding_drive_imported">Lemari pakaian diimpor ✓</string>
     <string name="onboarding_drive_import_error">Kami tidak dapat mengimpor lemari pakaian Anda yang ada secara otomatis. Anda dapat mencoba lagi atau memilih folder sendiri.</string>
     <string name="onboarding_drive_import_manual">Pilih folder secara manual</string>
+
+    <!-- Image quality setting (WebP) -->
+    <string name="settings_image_quality_row">Kualitas gambar</string>
+    <string name="settings_image_quality_sub">Seimbangkan penyimpanan dan detail. Berlaku untuk foto baru yang disimpan ke Drive Anda.</string>
+    <string name="settings_image_quality_dialog_title">Kualitas gambar</string>
+    <string name="settings_image_quality_balanced">Seimbang</string>
+    <string name="settings_image_quality_high">Tinggi</string>
+    <string name="settings_image_quality_maximum">Maksimum</string>
+    <string name="settings_image_quality_balanced_desc">File terkecil — disarankan (~80 kB)</string>
+    <string name="settings_image_quality_high_desc">Lebih tajam, file lebih besar (~150 kB)</string>
+    <string name="settings_image_quality_maximum_desc">Tanpa kehilangan kualitas, file terbesar (~350 kB)</string>
+
+    <!-- Convert images to WebP -->
+    <string name="settings_convert_webp_row">Konversi gambar ke WebP</string>
+    <string name="settings_convert_webp_row_sub">Perkecil foto JPG/PNG lama untuk menghemat ruang Drive.</string>
+    <string name="settings_convert_title">Konversi %1$d gambar ke WebP?</string>
+    <string name="settings_convert_body">Kami akan menyimpan ulang foto JPG/PNG lama Anda sebagai file WebP yang lebih kecil dan memperbaruinya di mana pun digunakan — outfit, coba pakai, dan perjalanan. Tanpa AI atau kredit.</string>
+    <string name="settings_convert_confirm">Konversi ke WebP</string>
+    <string name="settings_converting">Mengonversi %1$d dari %2$d…</string>
 </resources>

@@ -1132,4 +1132,23 @@
     <string name="onboarding_drive_imported">ארון הבגדים יובא ✓</string>
     <string name="onboarding_drive_import_error">לא הצלחנו לייבא אוטומטית את ארון הבגדים הקיים שלך. אפשר לנסות שוב או לבחור את התיקייה בעצמך.</string>
     <string name="onboarding_drive_import_manual">בחירת תיקייה ידנית</string>
+
+    <!-- Image quality setting (WebP) -->
+    <string name="settings_image_quality_row">איכות התמונה</string>
+    <string name="settings_image_quality_sub">איזון בין שטח אחסון לבין פרטים. משפיע על תמונות חדשות שנשמרות ב-Drive.</string>
+    <string name="settings_image_quality_dialog_title">איכות התמונה</string>
+    <string name="settings_image_quality_balanced">מאוזנת</string>
+    <string name="settings_image_quality_high">גבוהה</string>
+    <string name="settings_image_quality_maximum">מקסימלית</string>
+    <string name="settings_image_quality_balanced_desc">הקבצים הקטנים ביותר — מומלץ (~80 ק\"ב)</string>
+    <string name="settings_image_quality_high_desc">חד יותר, קבצים גדולים יותר (~150 ק\"ב)</string>
+    <string name="settings_image_quality_maximum_desc">ללא אובדן, הקבצים הגדולים ביותר (~350 ק\"ב)</string>
+
+    <!-- Convert images to WebP -->
+    <string name="settings_convert_webp_row">המרת תמונות ל-WebP</string>
+    <string name="settings_convert_webp_row_sub">כיווץ תמונות JPG/PNG ישנות כדי לחסוך מקום ב-Drive.</string>
+    <string name="settings_convert_title">להמיר %1$d תמונות ל-WebP?</string>
+    <string name="settings_convert_body">נשמור מחדש את תמונות ה-JPG/PNG הישנות שלך כקובצי WebP קטנים יותר ונעדכן אותן בכל מקום שבו הן בשימוש — מערכי לבוש, מדידות וטיולים. ללא AI או קרדיטים.</string>
+    <string name="settings_convert_confirm">המרה ל-WebP</string>
+    <string name="settings_converting">ממיר %1$d מתוך %2$d…</string>
 </resources>

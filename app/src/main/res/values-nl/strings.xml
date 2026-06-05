@@ -1128,4 +1128,23 @@
     <string name="onboarding_drive_imported">Garderobe geïmporteerd ✓</string>
     <string name="onboarding_drive_import_error">We konden je bestaande garderobe niet automatisch importeren. Je kunt het opnieuw proberen of zelf de map kiezen.</string>
     <string name="onboarding_drive_import_manual">Map handmatig kiezen</string>
+
+    <!-- Image quality setting (WebP) -->
+    <string name="settings_image_quality_row">Beeldkwaliteit</string>
+    <string name="settings_image_quality_sub">Weeg opslag af tegen detail. Geldt voor nieuwe foto\'s die op je Drive worden opgeslagen.</string>
+    <string name="settings_image_quality_dialog_title">Beeldkwaliteit</string>
+    <string name="settings_image_quality_balanced">Gebalanceerd</string>
+    <string name="settings_image_quality_high">Hoog</string>
+    <string name="settings_image_quality_maximum">Maximaal</string>
+    <string name="settings_image_quality_balanced_desc">Kleinste bestanden — aanbevolen (~80 kB)</string>
+    <string name="settings_image_quality_high_desc">Scherper, grotere bestanden (~150 kB)</string>
+    <string name="settings_image_quality_maximum_desc">Verliesvrij, grootste bestanden (~350 kB)</string>
+
+    <!-- Convert images to WebP -->
+    <string name="settings_convert_webp_row">Afbeeldingen omzetten naar WebP</string>
+    <string name="settings_convert_webp_row_sub">Verklein oudere JPG/PNG-foto\'s om Drive-ruimte te besparen.</string>
+    <string name="settings_convert_title">%1$d afbeeldingen omzetten naar WebP?</string>
+    <string name="settings_convert_body">We slaan je oudere JPG/PNG-foto\'s opnieuw op als kleinere WebP-bestanden en werken ze overal bij waar ze worden gebruikt — outfits, passessies en reizen. Geen AI of credits nodig.</string>
+    <string name="settings_convert_confirm">Omzetten naar WebP</string>
+    <string name="settings_converting">Bezig met omzetten %1$d van %2$d…</string>
 </resources>

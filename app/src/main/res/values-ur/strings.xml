@@ -1101,4 +1101,23 @@
     <string name="onboarding_drive_imported">وارڈروب درآمد ہو گئی ✓</string>
     <string name="onboarding_drive_import_error">ہم آپ کی موجودہ وارڈروب خودکار طور پر درآمد نہیں کر سکے۔ آپ دوبارہ کوشش کر سکتے ہیں یا فولڈر خود منتخب کر سکتے ہیں۔</string>
     <string name="onboarding_drive_import_manual">فولڈر دستی طور پر منتخب کریں</string>
+
+    <!-- Image quality setting (WebP) -->
+    <string name="settings_image_quality_row">تصویری معیار</string>
+    <string name="settings_image_quality_sub">اسٹوریج اور تفصیل میں توازن رکھیں۔ آپ کے Drive میں محفوظ ہونے والی نئی تصاویر پر لاگو۔</string>
+    <string name="settings_image_quality_dialog_title">تصویری معیار</string>
+    <string name="settings_image_quality_balanced">متوازن</string>
+    <string name="settings_image_quality_high">اعلیٰ</string>
+    <string name="settings_image_quality_maximum">زیادہ سے زیادہ</string>
+    <string name="settings_image_quality_balanced_desc">سب سے چھوٹی فائلیں — تجویز کردہ (~80 kB)</string>
+    <string name="settings_image_quality_high_desc">زیادہ واضح، بڑی فائلیں (~150 kB)</string>
+    <string name="settings_image_quality_maximum_desc">بغیر نقصان، سب سے بڑی فائلیں (~350 kB)</string>
+
+    <!-- Convert images to WebP -->
+    <string name="settings_convert_webp_row">تصاویر کو WebP میں تبدیل کریں</string>
+    <string name="settings_convert_webp_row_sub">Drive کی جگہ بچانے کے لیے پرانی JPG/PNG تصاویر چھوٹی کریں۔</string>
+    <string name="settings_convert_title">%1$d تصاویر کو WebP میں تبدیل کریں؟</string>
+    <string name="settings_convert_body">ہم آپ کی پرانی JPG/PNG تصاویر کو چھوٹی WebP فائلوں کے طور پر دوبارہ محفوظ کریں گے اور جہاں جہاں وہ استعمال ہوتی ہیں — آؤٹ فٹس، ٹرائی آن اور ٹرپس — وہاں اپ ڈیٹ کر دیں گے۔ کوئی AI یا کریڈٹ درکار نہیں۔</string>
+    <string name="settings_convert_confirm">WebP میں تبدیل کریں</string>
+    <string name="settings_converting">تبدیل ہو رہی ہیں %2$d میں سے %1$d…</string>
 </resources>

@@ -1128,4 +1128,23 @@
     <string name="onboarding_drive_imported">Garderobe importeret ✓</string>
     <string name="onboarding_drive_import_error">Vi kunne ikke importere din eksisterende garderobe automatisk. Du kan prøve igen eller selv vælge mappen.</string>
     <string name="onboarding_drive_import_manual">Vælg mappe manuelt</string>
+
+    <!-- Image quality setting (WebP) -->
+    <string name="settings_image_quality_row">Billedkvalitet</string>
+    <string name="settings_image_quality_sub">Afvej lagerplads mod detaljer. Gælder nye tøjfotos, der gemmes på dit Drive.</string>
+    <string name="settings_image_quality_dialog_title">Billedkvalitet</string>
+    <string name="settings_image_quality_balanced">Balanceret</string>
+    <string name="settings_image_quality_high">Høj</string>
+    <string name="settings_image_quality_maximum">Maksimum</string>
+    <string name="settings_image_quality_balanced_desc">Mindste filer — anbefales (~80 kB)</string>
+    <string name="settings_image_quality_high_desc">Skarpere, større filer (~150 kB)</string>
+    <string name="settings_image_quality_maximum_desc">Tabsfri, største filer (~350 kB)</string>
+
+    <!-- Convert images to WebP -->
+    <string name="settings_convert_webp_row">Konvertér billeder til WebP</string>
+    <string name="settings_convert_webp_row_sub">Formindsk ældre JPG/PNG-fotos for at spare plads på Drev.</string>
+    <string name="settings_convert_title">Konvertér %1$d billeder til WebP?</string>
+    <string name="settings_convert_body">Vi gemmer dine ældre JPG/PNG-fotos igen som mindre WebP-filer og opdaterer dem alle steder, de bruges — outfits, prøv på og rejser. Ingen AI eller kreditter nødvendige.</string>
+    <string name="settings_convert_confirm">Konvertér til WebP</string>
+    <string name="settings_converting">Konverterer %1$d af %2$d…</string>
 </resources>

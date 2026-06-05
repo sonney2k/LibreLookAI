@@ -154,6 +154,7 @@
     <string name="settings_data_tags_desc">Re-classify every item in your wardrobe with Gemini. This overwrites any manual tag edits.</string>
     <string name="settings_rescan_button">Re-scan All Tags</string>
     <string name="settings_rescanning">Re-scanning %1$d of %2$d…</string>
+    <string name="settings_converting">Converting %1$d of %2$d…</string>
     <string name="settings_rescan_dialog_title">Re-scan all tags?</string>
     <string name="settings_rescan_dialog_text">Gemini will re-classify every item in your wardrobe. This will overwrite any manual tag edits and may take a while.</string>
     <string name="settings_rescan_confirm">Re-scan</string>
@@ -1079,6 +1080,8 @@
     <string name="settings_advanced_byok_saved_badge">SAVED</string>
     <string name="settings_advanced_byok_change">Change</string>
     <string name="settings_advanced_byok_clear">Clear</string>
+    <string name="settings_convert_webp_row">Convert images to WebP</string>
+    <string name="settings_convert_webp_row_sub">Shrink older JPG/PNG photos to save Drive space.</string>
     <string name="settings_usage_charts_row">See AI usage &amp; cost charts</string>
     <string name="settings_usage_charts_sub">14-day trends for credits spent.</string>
     <string name="settings_dedupe_row">Skip duplicate items on import</string>
@@ -1100,6 +1103,9 @@
     <string name="settings_cutout_title">Fix backgrounds on %1$d items?</string>
     <string name="settings_cutout_body">We\'ll scan your items for cutouts that missed a corner and re-cut the ones that need it.</string>
     <string name="settings_cutout_confirm">Scan &amp; fix</string>
+    <string name="settings_convert_title">Convert %1$d images to WebP?</string>
+    <string name="settings_convert_body">We\'ll re-save your older JPG/PNG photos as smaller WebP files and update everywhere they\'re used — outfits, try-ons, and trips. No AI or credits needed.</string>
+    <string name="settings_convert_confirm">Convert to WebP</string>
     <string name="settings_confirm_takes_about">Takes about</string>
     <string name="settings_confirm_minutes">~%1$d minutes</string>
     <string name="settings_confirm_credits_used">Credits used</string>
@@ -1204,4 +1210,15 @@
 
     <!-- Unify close affordance (action_close) -->
     <string name="action_close">Close</string>
+
+    <!-- Image quality setting (WebP) -->
+    <string name="settings_image_quality_row">Image quality</string>
+    <string name="settings_image_quality_sub">Trade storage for detail. Affects new wardrobe photos saved to your Drive.</string>
+    <string name="settings_image_quality_dialog_title">Image quality</string>
+    <string name="settings_image_quality_balanced">Balanced</string>
+    <string name="settings_image_quality_high">High</string>
+    <string name="settings_image_quality_maximum">Maximum</string>
+    <string name="settings_image_quality_balanced_desc">Smallest files — recommended (~80 kB)</string>
+    <string name="settings_image_quality_high_desc">Sharper, larger files (~150 kB)</string>
+    <string name="settings_image_quality_maximum_desc">Lossless, largest files (~350 kB)</string>
 </resources>

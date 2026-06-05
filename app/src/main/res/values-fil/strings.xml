@@ -1128,4 +1128,23 @@
     <string name="onboarding_drive_imported">Na-import na ang wardrobe ✓</string>
     <string name="onboarding_drive_import_error">Hindi namin awtomatikong na-import ang iyong kasalukuyang wardrobe. Maaari kang subukan muli o pumili mismo ng folder.</string>
     <string name="onboarding_drive_import_manual">Pumili ng folder nang manu-mano</string>
+
+    <!-- Image quality setting (WebP) -->
+    <string name="settings_image_quality_row">Kalidad ng larawan</string>
+    <string name="settings_image_quality_sub">Balansehin ang storage at detalye. Apektado ang mga bagong larawang nase-save sa iyong Drive.</string>
+    <string name="settings_image_quality_dialog_title">Kalidad ng larawan</string>
+    <string name="settings_image_quality_balanced">Balanse</string>
+    <string name="settings_image_quality_high">Mataas</string>
+    <string name="settings_image_quality_maximum">Pinakamataas</string>
+    <string name="settings_image_quality_balanced_desc">Pinakamaliit na file — inirerekomenda (~80 kB)</string>
+    <string name="settings_image_quality_high_desc">Mas malinaw, mas malalaking file (~150 kB)</string>
+    <string name="settings_image_quality_maximum_desc">Walang kawalan, pinakamalalaking file (~350 kB)</string>
+
+    <!-- Convert images to WebP -->
+    <string name="settings_convert_webp_row">I-convert ang mga larawan sa WebP</string>
+    <string name="settings_convert_webp_row_sub">Paliitin ang mga lumang JPG/PNG para makatipid sa Drive.</string>
+    <string name="settings_convert_title">I-convert ang %1$d larawan sa WebP?</string>
+    <string name="settings_convert_body">Ise-save namin muli ang iyong mga lumang JPG/PNG bilang mas maliliit na WebP file at i-update ang mga ito saanman gamitin — mga outfit, try-on, at biyahe. Walang AI o credits na kailangan.</string>
+    <string name="settings_convert_confirm">I-convert sa WebP</string>
+    <string name="settings_converting">Kino-convert %1$d ng %2$d…</string>
 </resources>

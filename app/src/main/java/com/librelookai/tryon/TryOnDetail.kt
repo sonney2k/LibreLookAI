@@ -84,8 +84,9 @@ internal fun TryOnDetailPage(
         onItemTap = onItemTap,
         onRegenerate = {
             Analytics.action("TryOn/Detail", "regenerate")
+            val byKey = combinedImages.associateBy { com.librelookai.util.ImageEncoding.itemMatchKey(it.name) }
             val ids = tryOn.itemNames
-                .mapNotNull { n -> combinedImages.firstOrNull { it.name == n } }
+                .mapNotNull { n -> byKey[com.librelookai.util.ImageEncoding.itemMatchKey(n)] }
                 .map { it.driveId }.toSet()
             tryOnViewModel.openComposer(
                 ids, tryOn.sourceOutfitId,
@@ -111,7 +112,8 @@ private fun TryOnDetailContent(
     var confirmDelete by remember { mutableStateOf(false) }
     val kind = tryOnSourceKindOf(tryOn.sourceKind)
     val items = remember(tryOn.itemNames, wardrobeImages) {
-        tryOn.itemNames.mapNotNull { n -> wardrobeImages.firstOrNull { it.name == n } }
+        val byKey = wardrobeImages.associateBy { com.librelookai.util.ImageEncoding.itemMatchKey(it.name) }
+        tryOn.itemNames.mapNotNull { n -> byKey[com.librelookai.util.ImageEncoding.itemMatchKey(n)] }
     }
 
     Column(modifier = Modifier.fillMaxSize()) {

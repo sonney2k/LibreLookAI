@@ -18,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.AutoFixHigh
+import androidx.compose.material.icons.filled.Compress
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.automirrored.filled.ShowChart
@@ -63,6 +64,7 @@ fun SettingsAdvancedScreen(
     onToggleDedupe: (Boolean) -> Unit,
     onTogglePreferLocalBg: (Boolean) -> Unit,
     onToggleSimilarityPreview: (Boolean) -> Unit,
+    onSelectImageQuality: (com.librelookai.util.ImageQuality) -> Unit,
     onOpenUsage: () -> Unit,
     onSendFeedback: () -> Unit,
     onExportDiagnostics: () -> Unit,
@@ -70,6 +72,14 @@ fun SettingsAdvancedScreen(
 ) {
     val isOffline = LocalIsOffline.current
     val accentTile = aiAccent().copy(alpha = 0.18f)
+    var showQualityDialog by remember { mutableStateOf(false) }
+    if (showQualityDialog) {
+        ImageQualityPickerDialog(
+            current = preferences.imageQuality,
+            onSelect = onSelectImageQuality,
+            onDismiss = { showQualityDialog = false },
+        )
+    }
     Column(modifier = Modifier.fillMaxSize()) {
         AppScreenHeader(
             title = stringResource(R.string.settings_advanced_title),
@@ -150,6 +160,13 @@ fun SettingsAdvancedScreen(
             SecLabel(stringResource(R.string.settings_section_advanced_power))
             SettingsCard {
                 SettingsRow(
+                    icon = Icons.Filled.Compress,
+                    iconBg = accentTile,
+                    label = stringResource(R.string.settings_convert_webp_row),
+                    sub = stringResource(R.string.settings_convert_webp_row_sub),
+                    onClick = if (isOffline) null else ({ onDestructive(DestructiveAction.CONVERT_WEBP) }),
+                )
+                SettingsRow(
                     icon = Icons.AutoMirrored.Filled.ShowChart,
                     label = stringResource(R.string.settings_usage_charts_row),
                     sub = stringResource(R.string.settings_usage_charts_sub),
@@ -168,8 +185,14 @@ fun SettingsAdvancedScreen(
                 SettingsRow(
                     label = stringResource(R.string.settings_similarity_preview_row),
                     sub = stringResource(R.string.settings_similarity_preview_sub),
-                    isLast = true,
                     accessory = RowAccessory.SwitchToggle(preferences.debugSimilarityPreview, onToggleSimilarityPreview),
+                )
+                SettingsRow(
+                    label = stringResource(R.string.settings_image_quality_row),
+                    sub = stringResource(R.string.settings_image_quality_sub),
+                    value = imageQualityLabel(preferences.imageQuality),
+                    isLast = true,
+                    onClick = { showQualityDialog = true },
                 )
             }
 

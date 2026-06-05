@@ -59,8 +59,12 @@ private fun TryOn.provenanceLabel(): String {
     return ctx ?: stringResource(sourceMeta(kind()).labelRes)
 }
 
-private fun resolveItems(tryOn: TryOn, images: List<DriveImage>): List<DriveImage> =
-    tryOn.itemNames.mapNotNull { n -> images.firstOrNull { it.name == n } }
+private fun resolveItems(tryOn: TryOn, images: List<DriveImage>): List<DriveImage> {
+    // Match by an extension-agnostic key so `_cutout.png` itemNames still resolve against
+    // `_cutout.webp` items (and vice versa) across the WebP migration.
+    val byKey = images.associateBy { com.librelookai.util.ImageEncoding.itemMatchKey(it.name) }
+    return tryOn.itemNames.mapNotNull { n -> byKey[com.librelookai.util.ImageEncoding.itemMatchKey(n)] }
+}
 
 /**
  * Past try-ons "hero feed": newest try-on as a large hero card, the next two as a 2-column

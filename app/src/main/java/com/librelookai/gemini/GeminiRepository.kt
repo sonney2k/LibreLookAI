@@ -11,6 +11,7 @@ import com.google.gson.Gson
 import com.librelookai.BuildConfig
 import com.librelookai.R
 import com.librelookai.data.drive.await
+import com.librelookai.util.ImageEncoding
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -190,20 +191,24 @@ class GeminiRepository(internal val app: Application) {
     }
 
     /**
-     * Read [imageFile], downscale so max(width, height) ≤ 1280 if needed,
-     * and return the result as Base64. The [format] determines the compression
-     * used when re-encoding is necessary (JPEG for photos, PNG for cutouts).
+     * Read [imageFile], downscale so max(width, height) ≤ 1280 if needed, and return
+     * `(mimeType, base64)`. The MIME is sniffed from the actual bytes (cache files may be
+     * named `.png`/`.jpg` but hold WebP bytes — Gemini accepts `image/webp`). When a resize
+     * is needed, [format] determines the re-encode (JPEG for photos, PNG for cutouts) and the
+     * MIME follows it.
      */
-    internal fun readAndResizeBase64(imageFile: File, format: Bitmap.CompressFormat): String {
+    internal fun readAndResizeBase64(imageFile: File, format: Bitmap.CompressFormat): Pair<String, String> {
         val opts = BitmapFactory.Options().apply { inJustDecodeBounds = true }
         BitmapFactory.decodeFile(imageFile.absolutePath, opts)
         val maxDim = maxOf(opts.outWidth, opts.outHeight)
         if (maxDim <= 1280) {
-            // Already small enough — skip decode/re-encode
-            return Base64.encodeToString(imageFile.readBytes(), Base64.NO_WRAP)
+            // Already small enough — skip decode/re-encode, pass the original bytes through.
+            return ImageEncoding.detectMimeType(imageFile) to
+                Base64.encodeToString(imageFile.readBytes(), Base64.NO_WRAP)
         }
         val bitmap = BitmapFactory.decodeFile(imageFile.absolutePath)
-            ?: return Base64.encodeToString(imageFile.readBytes(), Base64.NO_WRAP)
+            ?: return ImageEncoding.detectMimeType(imageFile) to
+                Base64.encodeToString(imageFile.readBytes(), Base64.NO_WRAP)
         val scale = 1280f / maxDim
         val newW = (bitmap.width * scale).roundToInt()
         val newH = (bitmap.height * scale).roundToInt()
@@ -212,7 +217,8 @@ class GeminiRepository(internal val app: Application) {
         val baos = ByteArrayOutputStream()
         resized.compress(format, quality, baos)
         Log.d(TAG, "Resized ${opts.outWidth}x${opts.outHeight} → ${newW}x${newH} for Gemini")
-        return Base64.encodeToString(baos.toByteArray(), Base64.NO_WRAP)
+        val mime = if (format == Bitmap.CompressFormat.PNG) "image/png" else "image/jpeg"
+        return mime to Base64.encodeToString(baos.toByteArray(), Base64.NO_WRAP)
     }
 
     /**
@@ -228,7 +234,7 @@ class GeminiRepository(internal val app: Application) {
 
             Log.d(TAG, "Sending ${imageFile.length() / 1024}KB image to Gemini ($BG_MODEL)")
 
-            val imageBase64 = readAndResizeBase64(imageFile, Bitmap.CompressFormat.JPEG)
+            val (imageMime, imageBase64) = readAndResizeBase64(imageFile, Bitmap.CompressFormat.JPEG)
             val bgPrompt = PromptStore.get(app, PromptKey.BG_REMOVAL)
             val estimate = CostTokens(
                 inputTokens = TokenEstimator.textTokens(bgPrompt) + TokenEstimator.imageInputTokens(imageFile),
@@ -245,7 +251,7 @@ class GeminiRepository(internal val app: Application) {
                                 mapOf("text" to bgPrompt),
                                 mapOf(
                                     "inline_data" to mapOf(
-                                        "mime_type" to "image/jpeg",
+                                        "mime_type" to imageMime,
                                         "data" to imageBase64,
                                     ),
                                 ),
@@ -344,7 +350,7 @@ class GeminiRepository(internal val app: Application) {
         mutable.setHasAlpha(true)
 
         val finalBmp = cropAndCap(mutable)
-        outputFile.outputStream().use { finalBmp.compress(Bitmap.CompressFormat.PNG, 100, it) }
+        com.librelookai.util.ImageEncoding.compressCutout(finalBmp, outputFile)
         Log.d(TAG, "Cutout post-processed: ${w}x${h} → ${finalBmp.width}x${finalBmp.height}")
         finalBmp.recycle()
     }

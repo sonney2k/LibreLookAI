@@ -1128,4 +1128,23 @@
     <string name="onboarding_drive_imported">ワードローブをインポートしました ✓</string>
     <string name="onboarding_drive_import_error">既存のワードローブを自動的にインポートできませんでした。もう一度お試しいただくか、フォルダをご自分で選択してください。</string>
     <string name="onboarding_drive_import_manual">フォルダを手動で選択</string>
+
+    <!-- Image quality setting (WebP) -->
+    <string name="settings_image_quality_row">画質</string>
+    <string name="settings_image_quality_sub">保存容量と精細さのバランスを調整します。Drive に保存する新しい写真に適用されます。</string>
+    <string name="settings_image_quality_dialog_title">画質</string>
+    <string name="settings_image_quality_balanced">バランス</string>
+    <string name="settings_image_quality_high">高</string>
+    <string name="settings_image_quality_maximum">最高</string>
+    <string name="settings_image_quality_balanced_desc">最小サイズ — おすすめ（~80 kB）</string>
+    <string name="settings_image_quality_high_desc">より鮮明、ファイルは大きめ（~150 kB）</string>
+    <string name="settings_image_quality_maximum_desc">ロスレス、最大サイズ（~350 kB）</string>
+
+    <!-- Convert images to WebP -->
+    <string name="settings_convert_webp_row">画像を WebP に変換</string>
+    <string name="settings_convert_webp_row_sub">古い JPG/PNG 写真を縮小して Drive の容量を節約します。</string>
+    <string name="settings_convert_title">%1$d 枚の画像を WebP に変換しますか？</string>
+    <string name="settings_convert_body">古い JPG/PNG 写真をより小さい WebP ファイルとして保存し直し、使われている場所すべて（コーディネート、試着、旅行）で更新します。AI もクレジットも不要です。</string>
+    <string name="settings_convert_confirm">WebP に変換</string>
+    <string name="settings_converting">変換中 %1$d/%2$d…</string>
 </resources>

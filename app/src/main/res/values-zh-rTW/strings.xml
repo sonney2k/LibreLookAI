@@ -1101,4 +1101,23 @@
     <string name="onboarding_drive_imported">已匯入衣櫥 ✓</string>
     <string name="onboarding_drive_import_error">我們無法自動匯入您的現有衣櫥。您可以重試或自行選擇資料夾。</string>
     <string name="onboarding_drive_import_manual">手動選擇資料夾</string>
+
+    <!-- Image quality setting (WebP) -->
+    <string name="settings_image_quality_row">圖片品質</string>
+    <string name="settings_image_quality_sub">在儲存空間與細節之間取得平衡。影響儲存到你 Drive 的新照片。</string>
+    <string name="settings_image_quality_dialog_title">圖片品質</string>
+    <string name="settings_image_quality_balanced">平衡</string>
+    <string name="settings_image_quality_high">高</string>
+    <string name="settings_image_quality_maximum">最高</string>
+    <string name="settings_image_quality_balanced_desc">檔案最小 — 建議（~80 kB）</string>
+    <string name="settings_image_quality_high_desc">更清晰、檔案較大（~150 kB）</string>
+    <string name="settings_image_quality_maximum_desc">無損、檔案最大（~350 kB）</string>
+
+    <!-- Convert images to WebP -->
+    <string name="settings_convert_webp_row">將圖片轉換為 WebP</string>
+    <string name="settings_convert_webp_row_sub">縮小較舊的 JPG/PNG 相片以節省雲端硬碟空間。</string>
+    <string name="settings_convert_title">要將 %1$d 張圖片轉換為 WebP 嗎？</string>
+    <string name="settings_convert_body">我們會將你較舊的 JPG/PNG 相片重新存成較小的 WebP 檔案，並在所有用到它們的地方更新——穿搭、試穿和旅行。不需 AI 或點數。</string>
+    <string name="settings_convert_confirm">轉換為 WebP</string>
+    <string name="settings_converting">轉換中 %1$d / %2$d…</string>
 </resources>

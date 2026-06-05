@@ -1101,4 +1101,23 @@
     <string name="onboarding_drive_imported">นำเข้าตู้เสื้อผ้าแล้ว ✓</string>
     <string name="onboarding_drive_import_error">เราไม่สามารถนำเข้าตู้เสื้อผ้าที่มีอยู่ของคุณโดยอัตโนมัติได้ คุณสามารถลองอีกครั้งหรือเลือกโฟลเดอร์ด้วยตนเอง</string>
     <string name="onboarding_drive_import_manual">เลือกโฟลเดอร์ด้วยตนเอง</string>
+
+    <!-- Image quality setting (WebP) -->
+    <string name="settings_image_quality_row">คุณภาพรูปภาพ</string>
+    <string name="settings_image_quality_sub">สมดุลพื้นที่จัดเก็บกับรายละเอียด มีผลกับรูปใหม่ที่บันทึกไปยัง Drive ของคุณ</string>
+    <string name="settings_image_quality_dialog_title">คุณภาพรูปภาพ</string>
+    <string name="settings_image_quality_balanced">สมดุล</string>
+    <string name="settings_image_quality_high">สูง</string>
+    <string name="settings_image_quality_maximum">สูงสุด</string>
+    <string name="settings_image_quality_balanced_desc">ไฟล์เล็กที่สุด — แนะนำ (~80 kB)</string>
+    <string name="settings_image_quality_high_desc">คมชัดขึ้น ไฟล์ใหญ่ขึ้น (~150 kB)</string>
+    <string name="settings_image_quality_maximum_desc">ไม่สูญเสียคุณภาพ ไฟล์ใหญ่ที่สุด (~350 kB)</string>
+
+    <!-- Convert images to WebP -->
+    <string name="settings_convert_webp_row">แปลงรูปภาพเป็น WebP</string>
+    <string name="settings_convert_webp_row_sub">ลดขนาดรูป JPG/PNG เก่าเพื่อประหยัดพื้นที่ใน Drive</string>
+    <string name="settings_convert_title">แปลงรูปภาพ %1$d รูปเป็น WebP ไหม</string>
+    <string name="settings_convert_body">เราจะบันทึกรูป JPG/PNG เก่าของคุณใหม่เป็นไฟล์ WebP ที่เล็กลง และอัปเดตทุกที่ที่ใช้งาน — ชุดเสื้อผ้า การลองสวม และทริป ไม่ต้องใช้ AI หรือเครดิต</string>
+    <string name="settings_convert_confirm">แปลงเป็น WebP</string>
+    <string name="settings_converting">กำลังแปลง %1$d จาก %2$d…</string>
 </resources>

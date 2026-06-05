@@ -1101,4 +1101,23 @@
     <string name="onboarding_drive_imported">Гардероб імпортовано ✓</string>
     <string name="onboarding_drive_import_error">Не вдалося автоматично імпортувати ваш наявний гардероб. Ви можете повторити спробу або вибрати папку вручну.</string>
     <string name="onboarding_drive_import_manual">Вибрати папку вручну</string>
+
+    <!-- Image quality setting (WebP) -->
+    <string name="settings_image_quality_row">Якість зображення</string>
+    <string name="settings_image_quality_sub">Баланс між місцем і деталізацією. Стосується нових фото, що зберігаються на Диску.</string>
+    <string name="settings_image_quality_dialog_title">Якість зображення</string>
+    <string name="settings_image_quality_balanced">Збалансована</string>
+    <string name="settings_image_quality_high">Висока</string>
+    <string name="settings_image_quality_maximum">Максимальна</string>
+    <string name="settings_image_quality_balanced_desc">Найменші файли — рекомендовано (~80 КБ)</string>
+    <string name="settings_image_quality_high_desc">Чіткіше, більші файли (~150 КБ)</string>
+    <string name="settings_image_quality_maximum_desc">Без втрат, найбільші файли (~350 КБ)</string>
+
+    <!-- Convert images to WebP -->
+    <string name="settings_convert_webp_row">Конвертувати зображення у WebP</string>
+    <string name="settings_convert_webp_row_sub">Зменшіть старіші фото JPG/PNG, щоб заощадити місце на Диску.</string>
+    <string name="settings_convert_title">Конвертувати %1$d зображень у WebP?</string>
+    <string name="settings_convert_body">Ми збережемо ваші старіші фото JPG/PNG як менші файли WebP й оновимо їх скрізь, де вони використовуються — образи, приміряння та подорожі. Без ШІ та кредитів.</string>
+    <string name="settings_convert_confirm">Конвертувати у WebP</string>
+    <string name="settings_converting">Конвертування %1$d з %2$d…</string>
 </resources>

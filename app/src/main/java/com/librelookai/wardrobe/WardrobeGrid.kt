@@ -398,6 +398,7 @@ internal fun GridContent(
         // Progress pill
         val retagLabel = if (state.isRetagging) stringResource(R.string.settings_rescanning, state.retagDone + 1, state.retagTotal) else null
         val overlayLabel = when {
+            state.isConverting -> stringResource(R.string.settings_converting, state.convertDone, state.convertTotal)
             state.isRetagging -> retagLabel
             state.isMoving -> stringResource(R.string.wardrobe_progress_moving)
             state.isProcessing && state.batchTotal > 1 ->

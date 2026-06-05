@@ -34,11 +34,13 @@ import com.librelookai.billing.BuyCreditsScreen
 import com.librelookai.billing.CreditsViewModel
 import com.librelookai.data.model.Location
 import com.librelookai.gemini.ApiKeyStore
+import com.librelookai.util.ImageEncoding
 import com.librelookai.settings.ProfileViewModel
 import com.librelookai.settings.UsageCostsTab
 import com.librelookai.util.Analytics
 import com.librelookai.wardrobe.LocationViewModel
 import com.librelookai.wardrobe.WardrobeViewModel
+import com.librelookai.wardrobe.convertImagesToWebp
 import com.librelookai.wardrobe.startCutoutBgFixScan
 
 /** Internal destinations within the Settings surface (no Jetpack Navigation). */
@@ -122,6 +124,7 @@ fun SettingsScreen(
             onToggleDedupe = { profileViewModel.savePreferences(profileState.preferences.copy(dedupeOnImport = it)) },
             onTogglePreferLocalBg = { profileViewModel.savePreferences(profileState.preferences.copy(preferLocalBgRemoval = it)) },
             onToggleSimilarityPreview = { profileViewModel.savePreferences(profileState.preferences.copy(debugSimilarityPreview = it)) },
+            onSelectImageQuality = { profileViewModel.savePreferences(profileState.preferences.copy(imageQuality = it)) },
             onOpenUsage = { push(SettingsRoute.USAGE) },
             onSendFeedback = { sendFeedback(context) },
             onExportDiagnostics = { exportDiagnostics(context) },
@@ -143,9 +146,15 @@ fun SettingsScreen(
 
     // ----- Overlays -----
     pendingAction?.let { action ->
+        val itemCount = when (action) {
+            // Estimate from legacy (non-WebP) cutouts across all closets.
+            DestructiveAction.CONVERT_WEBP ->
+                wardrobeState.allLocationImages.count { it.name.endsWith(ImageEncoding.CUTOUT_SUFFIX_LEGACY) }
+            else -> wardrobeState.images.size
+        }
         DestructiveConfirmDialog(
             action = action,
-            itemCount = wardrobeState.images.size,
+            itemCount = itemCount,
             balance = creditsState.balance,
             onConfirm = {
                 when (action) {
@@ -153,6 +162,8 @@ fun SettingsScreen(
                     DestructiveAction.REMOVE_BG -> wardrobeViewModel.removeAllBackgrounds()
                     DestructiveAction.CUTOUT_FIX ->
                         wardrobeViewModel.startCutoutBgFixScan(locationState.locations.map { it.folderId })
+                    DestructiveAction.CONVERT_WEBP ->
+                        wardrobeViewModel.convertImagesToWebp(locationState.locations.map { it.folderId })
                 }
                 pendingAction = null
             },

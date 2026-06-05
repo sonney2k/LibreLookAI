@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoFixHigh
+import androidx.compose.material.icons.filled.Compress
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.icons.filled.Warning
@@ -72,6 +73,15 @@ enum class DestructiveAction(
         bodyRes = R.string.settings_cutout_body,
         confirmLabelRes = R.string.settings_cutout_confirm,
         perItemCost = CreditPacks.COST_BG_REMOVAL,
+        secondsPerItem = 3,
+    ),
+    CONVERT_WEBP(
+        heroIcon = Icons.Filled.Compress,
+        titleRes = R.string.settings_convert_title,
+        bodyRes = R.string.settings_convert_body,
+        confirmLabelRes = R.string.settings_convert_confirm,
+        // Pure local re-encode + Drive PATCHes — no Gemini, no credits.
+        perItemCost = 0,
         secondsPerItem = 3,
     ),
 }

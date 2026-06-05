@@ -1128,4 +1128,23 @@
     <string name="onboarding_drive_imported">Šatník importován ✓</string>
     <string name="onboarding_drive_import_error">Váš stávající šatník se nepodařilo importovat automaticky. Můžete to zkusit znovu nebo složku vybrat ručně.</string>
     <string name="onboarding_drive_import_manual">Vybrat složku ručně</string>
+
+    <!-- Image quality setting (WebP) -->
+    <string name="settings_image_quality_row">Kvalita obrazu</string>
+    <string name="settings_image_quality_sub">Vyvažte úložiště a detail. Týká se nových fotek ukládaných na Disk.</string>
+    <string name="settings_image_quality_dialog_title">Kvalita obrazu</string>
+    <string name="settings_image_quality_balanced">Vyvážená</string>
+    <string name="settings_image_quality_high">Vysoká</string>
+    <string name="settings_image_quality_maximum">Maximální</string>
+    <string name="settings_image_quality_balanced_desc">Nejmenší soubory — doporučeno (~80 kB)</string>
+    <string name="settings_image_quality_high_desc">Ostřejší, větší soubory (~150 kB)</string>
+    <string name="settings_image_quality_maximum_desc">Bezztrátové, největší soubory (~350 kB)</string>
+
+    <!-- Convert images to WebP -->
+    <string name="settings_convert_webp_row">Převést obrázky do WebP</string>
+    <string name="settings_convert_webp_row_sub">Zmenší starší fotky JPG/PNG a ušetří místo na Disku.</string>
+    <string name="settings_convert_title">Převést %1$d obrázků do WebP?</string>
+    <string name="settings_convert_body">Vaše starší fotky JPG/PNG uložíme znovu jako menší soubory WebP a aktualizujeme je všude, kde se používají — v outfitech, vyzkoušeních i cestách. Bez AI a kreditů.</string>
+    <string name="settings_convert_confirm">Převést do WebP</string>
+    <string name="settings_converting">Převádím %1$d z %2$d…</string>
 </resources>

@@ -253,12 +253,16 @@ private fun bakeRotation(exifNormalBitmap: Bitmap, userRotation: Int, source: Fi
     }
     val outFile = File(source.parent, "capture_${System.currentTimeMillis()}_baked.jpg")
     FileOutputStream(outFile).use { out ->
-        final.compress(Bitmap.CompressFormat.JPEG, 95, out)
+        com.librelookai.util.ImageEncoding.compressOriginal(final, out)
     }
-    // Ensure orientation tag is NORMAL so downstream code never needs to re-read EXIF
-    val exif = ExifInterface(outFile.absolutePath)
-    exif.setAttribute(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL.toString())
-    exif.saveAttributes()
+    // Orientation is already baked into the pixels above. We still try to stamp the EXIF tag
+    // NORMAL for downstream readers, but WebP EXIF writes are only supported on API ≥30 — on
+    // older devices this throws, which is harmless since the pixels are already upright.
+    runCatching {
+        val exif = ExifInterface(outFile.absolutePath)
+        exif.setAttribute(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL.toString())
+        exif.saveAttributes()
+    }
     source.delete()
     return outFile
 }
@@ -314,13 +318,16 @@ internal fun cropToPreviewAndResize(file: File, previewWidth: Int, previewHeight
     }
 
     FileOutputStream(file).use { out ->
-        resized.compress(Bitmap.CompressFormat.JPEG, 95, out)
+        com.librelookai.util.ImageEncoding.compressOriginal(resized, out)
     }
     resized.recycle()
 
-    val exif = ExifInterface(file.absolutePath)
-    exif.setAttribute(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL.toString())
-    exif.saveAttributes()
+    // See note in bakeRotation: orientation is baked into pixels; WebP EXIF writes need API ≥30.
+    runCatching {
+        val exif = ExifInterface(file.absolutePath)
+        exif.setAttribute(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL.toString())
+        exif.saveAttributes()
+    }
 }
 
 /**

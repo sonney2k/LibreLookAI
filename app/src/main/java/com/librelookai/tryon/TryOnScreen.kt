@@ -130,8 +130,10 @@ fun TryOnComposerScreen(
         var detailViewerImage by remember { mutableStateOf<DriveImage?>(null) }
         if (detailViewerImage != null && viewing != null) {
             val items = remember(viewing.itemNames, combinedImages) {
-                viewing.itemNames.mapNotNull { n -> combinedImages.firstOrNull { it.name == n } }
+                val byKey = combinedImages.associateBy { com.librelookai.util.ImageEncoding.itemMatchKey(it.name) }
+                viewing.itemNames.mapNotNull { n -> byKey[com.librelookai.util.ImageEncoding.itemMatchKey(n)] }
             }
+
             val startIdx = items.indexOfFirst { it.driveId == detailViewerImage!!.driveId }.coerceAtLeast(0)
             val allTagCategories = remember(items) { items.tagCategories() }
             FullScreenViewer(
@@ -250,8 +252,9 @@ fun TryOnComposerScreen(
                         onStartTryOn = onStartTryOn,
                         showFab = true,
                         onEditHero = { t ->
+                            val byKey = combinedImages.associateBy { com.librelookai.util.ImageEncoding.itemMatchKey(it.name) }
                             val ids = t.itemNames
-                                .mapNotNull { n -> combinedImages.firstOrNull { it.name == n } }
+                                .mapNotNull { n -> byKey[com.librelookai.util.ImageEncoding.itemMatchKey(n)] }
                                 .map { it.driveId }.toSet()
                             tryOnViewModel.openComposer(
                                 ids, t.sourceOutfitId,

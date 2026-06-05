@@ -32,6 +32,7 @@ import com.librelookai.gemini.classifyClothing
 import com.librelookai.ml.EmbeddingService
 import com.librelookai.service.JobForegroundService
 import com.librelookai.settings.UserPreferences
+import com.librelookai.util.ImageEncoding
 import com.librelookai.util.isNetworkAvailable
 import java.io.File
 import java.util.concurrent.atomic.AtomicInteger
@@ -487,7 +488,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     val freshIds = allFresh.map { it.driveId }.toSet()
                     val pendingRaw = _state.value.images.filter { img ->
                         img.driveId !in freshIds && (
-                            !img.name.endsWith(DriveRepository.CUTOUT_SUFFIX) ||
+                            !ImageEncoding.isCutoutName(img.name) ||
                                 recentlyMovedItems[img.driveId]?.first == img.folderId
                             )
                     }
@@ -502,7 +503,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     // then refresh the cross-closet snapshot once.
                     withContext(Dispatchers.IO) {
                         val byFolder = images
-                            .filter { it.name.endsWith(DriveRepository.CUTOUT_SUFFIX) }
+                            .filter { ImageEncoding.isCutoutName(it.name) }
                             .groupBy { it.folderId }
                         ids.forEach { fid -> writeFolderCache(fid, byFolder[fid].orEmpty()) }
                     }
@@ -610,7 +611,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 val freshIds = freshImages.map { it.driveId }.toSet()
                 val pendingRaw = _state.value.images.filter { img ->
                     img.driveId !in freshIds && (
-                        !img.name.endsWith(DriveRepository.CUTOUT_SUFFIX) ||
+                        !ImageEncoding.isCutoutName(img.name) ||
                             recentlyMovedItems[img.driveId]?.first == id
                         )
                 }
@@ -754,15 +755,15 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
     /**
      * Resolves the Drive ID of a cutout item given its [metaName] (possibly old-format).
-     * Checks by Drive ID directly (new format "{id}_cutout.png") or by filename (old formats).
+     * Checks by Drive ID directly (format "{id}_cutout.webp" or legacy "{id}_cutout.png")
+     * or by filename (old formats).
      */
     private fun resolveCutoutDriveId(
         metaName: String,
         fileByName: Map<String, DriveFileDto>,
         fileById: Map<String, DriveFileDto>,
     ): String? {
-        if (metaName.endsWith(DriveRepository.CUTOUT_SUFFIX)) {
-            val possibleId = metaName.removeSuffix(DriveRepository.CUTOUT_SUFFIX)
+        ImageEncoding.cutoutIdFromName(metaName)?.let { possibleId ->
             if (fileById.containsKey(possibleId)) return possibleId
         }
         return fileByName[metaName]?.id
@@ -1334,8 +1335,9 @@ internal fun rotateBitmapFileBy90(file: File) {
     val bmp = BitmapFactory.decodeFile(file.absolutePath) ?: return
     val matrix = Matrix().apply { postRotate(90f) }
     val rotated = Bitmap.createBitmap(bmp, 0, 0, bmp.width, bmp.height, matrix, true)
-    val format = if (file.extension == "png") Bitmap.CompressFormat.PNG else Bitmap.CompressFormat.JPEG
-    file.outputStream().use { rotated.compress(format, 95, it) }
+    // Re-encode as WebP (alpha-preserving) regardless of the cache file's extension — the
+    // rotated bytes are re-uploaded via DriveRepository.updateImage, which sends image/webp.
+    com.librelookai.util.ImageEncoding.compressCutout(rotated, file)
 }
 
 // ---------- Legacy appProperties → ClothingTags (migration read-path only) ----------

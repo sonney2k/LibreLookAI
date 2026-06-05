@@ -1128,4 +1128,23 @@
     <string name="onboarding_drive_imported">옷장을 가져왔습니다 ✓</string>
     <string name="onboarding_drive_import_error">기존 옷장을 자동으로 가져오지 못했습니다. 다시 시도하거나 폴더를 직접 선택할 수 있습니다.</string>
     <string name="onboarding_drive_import_manual">폴더 직접 선택</string>
+
+    <!-- Image quality setting (WebP) -->
+    <string name="settings_image_quality_row">이미지 품질</string>
+    <string name="settings_image_quality_sub">저장 공간과 디테일의 균형을 맞춥니다. Drive에 저장되는 새 사진에 적용됩니다.</string>
+    <string name="settings_image_quality_dialog_title">이미지 품질</string>
+    <string name="settings_image_quality_balanced">균형</string>
+    <string name="settings_image_quality_high">높음</string>
+    <string name="settings_image_quality_maximum">최대</string>
+    <string name="settings_image_quality_balanced_desc">가장 작은 파일 — 권장 (~80 kB)</string>
+    <string name="settings_image_quality_high_desc">더 선명함, 파일 큼 (~150 kB)</string>
+    <string name="settings_image_quality_maximum_desc">무손실, 가장 큰 파일 (~350 kB)</string>
+
+    <!-- Convert images to WebP -->
+    <string name="settings_convert_webp_row">이미지를 WebP로 변환</string>
+    <string name="settings_convert_webp_row_sub">오래된 JPG/PNG 사진을 줄여 드라이브 공간을 절약하세요.</string>
+    <string name="settings_convert_title">%1$d개의 이미지를 WebP로 변환할까요?</string>
+    <string name="settings_convert_body">오래된 JPG/PNG 사진을 더 작은 WebP 파일로 다시 저장하고, 사용된 모든 곳—코디, 입어보기, 여행—에서 업데이트합니다. AI나 크레딧이 필요 없습니다.</string>
+    <string name="settings_convert_confirm">WebP로 변환</string>
+    <string name="settings_converting">변환 중 %1$d/%2$d…</string>
 </resources>

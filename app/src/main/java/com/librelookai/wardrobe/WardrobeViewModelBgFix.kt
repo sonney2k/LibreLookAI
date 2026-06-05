@@ -31,7 +31,7 @@ internal fun WardrobeViewModel.startCutoutBgFixScan(folderIds: List<String>) {
                 folderIds.forEachIndexed { idx, fid ->
                     val cutouts = runCatching {
                         drive.listAllImageFiles(fid)
-                            .filter { it.name.endsWith(DriveRepository.CUTOUT_SUFFIX) }
+                            .filter { com.librelookai.util.ImageEncoding.isCutoutName(it.name) }
                     }.getOrDefault(emptyList())
                     _state.update { s ->
                         s.copy(cutoutBgFix = s.cutoutBgFix?.copy(

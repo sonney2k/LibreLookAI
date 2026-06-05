@@ -1128,4 +1128,23 @@
     <string name="onboarding_drive_imported">Gardırop içe aktarıldı ✓</string>
     <string name="onboarding_drive_import_error">Mevcut gardırobunuzu otomatik olarak içe aktaramadık. Tekrar deneyebilir veya klasörü kendiniz seçebilirsiniz.</string>
     <string name="onboarding_drive_import_manual">Klasörü manuel olarak seç</string>
+
+    <!-- Image quality setting (WebP) -->
+    <string name="settings_image_quality_row">Görüntü kalitesi</string>
+    <string name="settings_image_quality_sub">Depolama ile ayrıntı arasında denge kurun. Drive\'a kaydedilen yeni fotoğrafları etkiler.</string>
+    <string name="settings_image_quality_dialog_title">Görüntü kalitesi</string>
+    <string name="settings_image_quality_balanced">Dengeli</string>
+    <string name="settings_image_quality_high">Yüksek</string>
+    <string name="settings_image_quality_maximum">En yüksek</string>
+    <string name="settings_image_quality_balanced_desc">En küçük dosyalar — önerilir (~80 kB)</string>
+    <string name="settings_image_quality_high_desc">Daha keskin, daha büyük dosyalar (~150 kB)</string>
+    <string name="settings_image_quality_maximum_desc">Kayıpsız, en büyük dosyalar (~350 kB)</string>
+
+    <!-- Convert images to WebP -->
+    <string name="settings_convert_webp_row">Görüntüleri WebP\'ye dönüştür</string>
+    <string name="settings_convert_webp_row_sub">Drive alanından tasarruf etmek için eski JPG/PNG fotoğrafları küçült.</string>
+    <string name="settings_convert_title">%1$d görüntü WebP\'ye dönüştürülsün mü?</string>
+    <string name="settings_convert_body">Eski JPG/PNG fotoğraflarını daha küçük WebP dosyaları olarak yeniden kaydedip kullanıldıkları her yerde — kombinler, deneme ve seyahatler — güncelleriz. Yapay zekâ veya kredi gerekmez.</string>
+    <string name="settings_convert_confirm">WebP\'ye dönüştür</string>
+    <string name="settings_converting">Dönüştürülüyor %1$d / %2$d…</string>
 </resources>

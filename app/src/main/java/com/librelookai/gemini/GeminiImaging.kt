@@ -261,6 +261,6 @@ internal fun fixCutoutBackground(input: File, output: File, actions: CutoutFixAc
     mutable.setPixels(px, 0, w, 0, 0, w, h)
     mutable.setHasAlpha(true)
     val finalBmp = if (actions.tightCrop) cropAndCap(mutable) else mutable
-    output.outputStream().use { finalBmp.compress(Bitmap.CompressFormat.PNG, 100, it) }
+    com.librelookai.util.ImageEncoding.compressCutout(finalBmp, output)
     finalBmp.recycle()
 }

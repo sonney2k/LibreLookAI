@@ -179,7 +179,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                     // Build a combined name→ID map from all folders so styles whose items have
                     // been moved to a different location can still be resolved.
                     val combinedNameToId: Map<String, String> = ids
-                        .map { id -> async { drive.listFiles(id).associate { it.name to it.id } } }
+                        .map { id -> async { drive.listFiles(id).associate { com.librelookai.util.ImageEncoding.itemMatchKey(it.name) to it.id } } }
                         .awaitAll()
                         .fold(emptyMap()) { acc, m -> acc + m }
                     ids.map { id -> async { loadOutfitsFromFolder(id, combinedNameToId) } }.awaitAll().flatten()
@@ -198,7 +198,8 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private suspend fun loadOutfitsFromFolder(id: String, nameToId: Map<String, String>? = null): List<Outfit> {
-        val resolvedNameToId = nameToId ?: drive.listFiles(id).associate { it.name to it.id }
+        val resolvedNameToId = nameToId
+            ?: drive.listFiles(id).associate { com.librelookai.util.ImageEncoding.itemMatchKey(it.name) to it.id }
         val json = drive.loadOutfitsJson(id)
         val resolved = if (json != null) {
             val type = object : TypeToken<List<Outfit>>() {}.type
@@ -206,7 +207,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             raw.map { style ->
                 style.copy(
                     itemIds = if (style.itemNames.isNotEmpty())
-                        style.itemNames.mapNotNull { resolvedNameToId[it] }
+                        style.itemNames.mapNotNull { resolvedNameToId[com.librelookai.util.ImageEncoding.itemMatchKey(it)] }
                     else style.itemIds,
                     folderId = id,
                 )

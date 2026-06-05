@@ -12,6 +12,7 @@ import com.librelookai.data.drive.upsertSidecar
 import com.librelookai.gemini.ClothingTags
 import com.librelookai.gemini.classifyClothing
 import com.librelookai.ml.EmbeddingService
+import com.librelookai.util.ImageEncoding
 import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.update
@@ -38,8 +39,8 @@ internal fun WardrobeViewModel.startRepairAndRefresh(folderIds: List<String>) {
                         val allImages = drive.listAllImageFiles(fid)
                         val sidecars  = drive.listSidecarFiles(fid)
 
-                        val cutouts   = allImages.filter { it.name.endsWith(DriveRepository.CUTOUT_SUFFIX) }
-                        val originals = allImages.filter { it.name.endsWith(DriveRepository.ORIGINAL_SUFFIX) }
+                        val cutouts   = allImages.filter { ImageEncoding.isCutoutName(it.name) }
+                        val originals = allImages.filter { ImageEncoding.isOriginalName(it.name) }
                         val cutoutIds = cutouts.map { it.id }.toSet()
 
                         // Map cutoutId → sidecar DriveFileDto for content inspection
@@ -48,10 +49,13 @@ internal fun WardrobeViewModel.startRepairAndRefresh(folderIds: List<String>) {
 
                         Log.d(TAG, "Folder $fid: ${cutouts.size} cutout(s), ${originals.size} original(s), ${sidecars.size} sidecar(s)")
 
-                        // Ensure every cutout is named "{id}_cutout.png"
+                        // Ensure each cutout's filename embeds its own Drive ID. Both the new
+                        // "{id}_cutout.webp" and the legacy "{id}_cutout.png" are treated as
+                        // canonical (don't churn legacy PNGs into WebP names); only genuinely
+                        // misnamed files (embedded id ≠ Drive id) are renamed — to the new WebP name.
                         cutouts.forEach { cutout ->
-                            val expected = "${cutout.id}${DriveRepository.CUTOUT_SUFFIX}"
-                            if (cutout.name != expected) {
+                            if (ImageEncoding.cutoutIdFromName(cutout.name) != cutout.id) {
+                                val expected = ImageEncoding.cutoutNameFor(cutout.id)
                                 Log.d(TAG, "Rename ${cutout.name} → $expected")
                                 runCatching { drive.renameFile(cutout.id, expected) }
                                 totalRenamed++
@@ -60,7 +64,7 @@ internal fun WardrobeViewModel.startRepairAndRefresh(folderIds: List<String>) {
 
                         // Check originals: prefix must match a cutout Drive ID
                         originals.forEach { original ->
-                            val prefix = original.name.removeSuffix(DriveRepository.ORIGINAL_SUFFIX)
+                            val prefix = ImageEncoding.originalIdFromName(original.name) ?: original.name
                             if (prefix !in cutoutIds) {
                                 Log.d(TAG, "Orphaned original: ${original.name} (${original.id})")
                                 orphaned.add(AuditItem(fid, original.id, original.name))
@@ -69,8 +73,8 @@ internal fun WardrobeViewModel.startRepairAndRefresh(folderIds: List<String>) {
 
                         // Collect raw/unknown images: not a cutout, not an original
                         allImages.forEach { img ->
-                            if (!img.name.endsWith(DriveRepository.CUTOUT_SUFFIX) &&
-                                !img.name.endsWith(DriveRepository.ORIGINAL_SUFFIX)) {
+                            if (!ImageEncoding.isCutoutName(img.name) &&
+                                !ImageEncoding.isOriginalName(img.name)) {
                                 Log.d(TAG, "Raw/unknown image: ${img.name} (${img.id})")
                                 rawImages.add(AuditItem(fid, img.id, img.name))
                             }
@@ -86,14 +90,14 @@ internal fun WardrobeViewModel.startRepairAndRefresh(folderIds: List<String>) {
                             val sidecar = sidecarByItemId[cutout.id]
                             if (sidecar == null) {
                                 Log.d(TAG, "Missing sidecar for cutout ${cutout.id} (${cutout.name})")
-                                needSidecar.add(AuditCutoutItem(fid, cutout.id, "${cutout.id}${DriveRepository.CUTOUT_SUFFIX}"))
+                                needSidecar.add(AuditCutoutItem(fid, cutout.id, cutout.name))
                             } else {
                                 val bytes = sidecar.sizeBytes
                                 when {
                                     bytes in 1..WardrobeViewModel.SIDECAR_EMPTY_MAX -> {
                                         // Too small to contain tags — skip download
                                         Log.d(TAG, "Empty sidecar for cutout ${cutout.id} (size=${bytes}B)")
-                                        needSidecar.add(AuditCutoutItem(fid, cutout.id, "${cutout.id}${DriveRepository.CUTOUT_SUFFIX}"))
+                                        needSidecar.add(AuditCutoutItem(fid, cutout.id, cutout.name))
                                     }
                                     bytes >= WardrobeViewModel.SIDECAR_FULL_MIN -> {
                                         // Large enough to hold ClothingTags — skip download
@@ -109,7 +113,7 @@ internal fun WardrobeViewModel.startRepairAndRefresh(folderIds: List<String>) {
                                         } ?: false
                                         if (!hasTags) {
                                             Log.d(TAG, "Empty sidecar for cutout ${cutout.id} — content: $content")
-                                            needSidecar.add(AuditCutoutItem(fid, cutout.id, "${cutout.id}${DriveRepository.CUTOUT_SUFFIX}"))
+                                            needSidecar.add(AuditCutoutItem(fid, cutout.id, cutout.name))
                                         } else {
                                             Log.d(TAG, "OK: cutout ${cutout.id} has sidecar with tags")
                                         }
