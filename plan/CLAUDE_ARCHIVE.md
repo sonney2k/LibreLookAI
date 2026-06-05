@@ -566,17 +566,21 @@ The app stores everything in a Drive folder (`LibreLookAI/` + subfolders). The s
 
 ### Per-release checklist
 
-**Firebase App Distribution (testers) is automated by `scripts/release.sh <versionName>`** — it does the version bump, notes prepend, signed `assembleRelease`, commit + tag, and `appDistributionUploadRelease` to the `testers` group (`--push` to push, `--dry-run` to preview). The Gradle upload needs Firebase credentials (logged-in `firebase` CLI, `FIREBASE_TOKEN`, or `GOOGLE_APPLICATION_CREDENTIALS`). The manual checklist below still applies for the Play Store track (`bundleRelease` + Play Console upload), which the script does not handle.
+**Both artifacts are built by `scripts/release.sh <versionName>`** — it does the version bump, notes prepend, signed `assembleRelease` **+ `bundleRelease`** (Play AAB → `app/build/outputs/bundle/release/app-release.aab`), commit + tag, `appDistributionUploadRelease` to the `testers` group (`--push` to push, `--dry-run` to preview), and writes a condensed Play **"What's new" draft** to `play-whatsnew.txt` (markdown notes → `•` bullets, with a 500-char per-language limit check; gitignored, never committed). The Firebase Gradle upload needs Firebase credentials (logged-in `firebase` CLI, `FIREBASE_TOKEN`, or `GOOGLE_APPLICATION_CREDENTIALS`). What the script does **not** do for the Play track: deploy Firebase Functions, register signing SHA-1s, or upload the AAB to the Play Console — see the checklist below.
 
-**Distributing an already-cut version to testers:** `scripts/release.sh --distribute-only` builds the signed APK for the **current** `build.gradle.kts` version and uploads it to `testers` with **no** bump / notes / commit / tag — use it after a version has already been bumped+tagged for the Play track (the normal `release.sh` path refuses because the tag exists). Pass the matching `<versionName>` as an optional sanity check; it aborts on mismatch. Note the testers APK is signed with the **upload key**, not the Play App Signing key, so it can't substitute for a Play-track sign-in/identity test.
+**Distributing an already-cut version to testers:** `scripts/release.sh --distribute-only` builds both signed artifacts (APK + AAB) for the **current** `build.gradle.kts` version, uploads the APK to `testers`, and regenerates `play-whatsnew.txt` from the top section of `release-notes.txt` — all with **no** bump / notes / commit / tag (use it after a version has already been bumped+tagged for the Play track; the normal `release.sh` path refuses because the tag exists). Pass the matching `<versionName>` as an optional sanity check; it aborts on mismatch. Note the testers APK is signed with the **upload key**, not the Play App Signing key, so it can't substitute for a Play-track sign-in/identity test.
 
-- [ ] Increment `versionCode` in `app/build.gradle.kts`
-- [ ] **Update release notes** (always — required for Firebase App Distribution and Play tracks)
-- [ ] `google-services.json` present in `app/`
-- [ ] `firebase.proxy.url` and `firebase.web.client.id` set in `local.properties`
-- [ ] `./gradlew bundleRelease` succeeds
-- [ ] Firebase Functions deployed: `cd firebase && firebase deploy --only functions`
-- [ ] AAB uploaded to Play Console → Testing → Internal testing → Create new release
+Handled by `release.sh` (verify, don't redo):
+- [x] `versionCode` incremented in `app/build.gradle.kts`
+- [x] Release notes prepended to `release-notes.txt` (always — Firebase + Play both use them)
+- [x] Signed APK + AAB built; APK pushed to Firebase `testers`
+- [x] `play-whatsnew.txt` draft generated (trim to ≤ 500 chars if the limit check warned)
+
+Manual (the script does not do these):
+- [ ] `google-services.json` present in `app/`; `firebase.proxy.url` + `firebase.web.client.id` set in `local.properties` (pre-flight, else the build is broken/unsigned)
+- [ ] `drive.full.scope=false` + managed billing off in `local.properties` for a production Play cut (full scope = migration build only — never ship to Play)
+- [ ] Firebase Functions deployed if changed: `cd firebase && firebase deploy --only functions`
+- [ ] AAB (`app/build/outputs/bundle/release/app-release.aab`) uploaded to Play Console → Testing → Internal testing → Create new release; paste `play-whatsnew.txt` into "What's new"
 - [ ] Testers added via the Testers tab; opt-in link sent
 
 ### Testers moving from the Firebase build to Play
