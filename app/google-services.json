@@ -12,7 +12,36 @@
           "package_name": "com.librelookai"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "923211051414-b4vh0te18up39ifbik3tngs9sh1h1hbv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.librelookai",
+            "certificate_hash": "449a7e13d0f69cc1d377f11e30e109f1f34aaae9"
+          }
+        },
+        {
+          "client_id": "923211051414-eruiriq49pktb8js9o1b9gb03eut1b3e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.librelookai",
+            "certificate_hash": "c6173fce3a0d6aa2057dda117d0df798e4f5c8c0"
+          }
+        },
+        {
+          "client_id": "923211051414-inm4e85v634dqf7dkqsg47ks007vk3j0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.librelookai",
+            "certificate_hash": "443f30b2c4e630c6f68a0f91b4f36821e88d8848"
+          }
+        },
+        {
+          "client_id": "923211051414-b636gmr2r5gbci417b61983i7iac0nbj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDqVqgPflsnD-uZhw7UHWpXPkO5IZ6uLJo"
@@ -20,7 +49,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "923211051414-3imk8m6jlpc7av3pco8qmbgvbjhnv9t2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
