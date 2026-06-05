@@ -568,6 +568,8 @@ The app stores everything in a Drive folder (`LibreLookAI/` + subfolders). The s
 
 **Firebase App Distribution (testers) is automated by `scripts/release.sh <versionName>`** — it does the version bump, notes prepend, signed `assembleRelease`, commit + tag, and `appDistributionUploadRelease` to the `testers` group (`--push` to push, `--dry-run` to preview). The Gradle upload needs Firebase credentials (logged-in `firebase` CLI, `FIREBASE_TOKEN`, or `GOOGLE_APPLICATION_CREDENTIALS`). The manual checklist below still applies for the Play Store track (`bundleRelease` + Play Console upload), which the script does not handle.
 
+**Distributing an already-cut version to testers:** `scripts/release.sh --distribute-only` builds the signed APK for the **current** `build.gradle.kts` version and uploads it to `testers` with **no** bump / notes / commit / tag — use it after a version has already been bumped+tagged for the Play track (the normal `release.sh` path refuses because the tag exists). Pass the matching `<versionName>` as an optional sanity check; it aborts on mismatch. Note the testers APK is signed with the **upload key**, not the Play App Signing key, so it can't substitute for a Play-track sign-in/identity test.
+
 - [ ] Increment `versionCode` in `app/build.gradle.kts`
 - [ ] **Update release notes** (always — required for Firebase App Distribution and Play tracks)
 - [ ] `google-services.json` present in `app/`
@@ -576,6 +578,16 @@ The app stores everything in a Drive folder (`LibreLookAI/` + subfolders). The s
 - [ ] Firebase Functions deployed: `cd firebase && firebase deploy --only functions`
 - [ ] AAB uploaded to Play Console → Testing → Internal testing → Create new release
 - [ ] Testers added via the Testers tab; opt-in link sent
+
+### Testers moving from the Firebase build to Play
+
+The Firebase App Distribution APK is signed with the **upload key** (`C6:17:3F:CE…`); the Play build is re-signed by Google with the **Play App Signing key** (`44:3F:30:B2…`). Consequences for a tester who has the Firebase build installed and later wants the Play version:
+
+1. **No in-place update — must uninstall first.** Android blocks an update across different signing certs (`INSTALL_FAILED_UPDATE_INCOMPATIBLE`). The tester uninstalls the Firebase build, then installs from Play.
+2. **Uninstall doesn't lose the wardrobe.** Data lives in Drive; uninstall only wipes local state (`auth` prefs, stored root-folder id, on-disk closet caches), all rebuilt from Drive on next sign-in via the restore-progress flow.
+3. **Cross-identity `drive.file` visibility — verify once.** Whether items *created on the Firebase (upload-key) build* are visible on the Play (app-signing-key) build depends on whether `drive.file` ownership is keyed at the **project** level (then visible — same project `923211051414`, same account, both SHA-1s registered) or the **OAuth-client-ID** level (different per SHA-1 → not visible). Our documented model (§ Drive access model) says project-level, but it's load-bearing: confirm empirically with a throwaway account (Firebase build → add items → uninstall → Play build → sign in → items reappear?) before trusting it for testers' real data. The app-root-marker recovery re-adopts the marked root on reinstall, but only for files the scope can see — so the same check settles recovery too.
+
+**Existing Play users are unaffected:** Play→Play is the same App Signing key and OAuth client — normal update, no uninstall, no visibility question.
 
 ### Giving test credits to testers (managed mode)
 

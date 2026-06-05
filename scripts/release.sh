@@ -17,6 +17,13 @@
 #                        the "### LibreLookAI vX Release Notes" heading is added
 #                        automatically. If <file> is "-", read from stdin.
 #   --no-upload          Build, commit and tag, but skip the Firebase upload.
+#   --distribute-only    Skip the version bump / notes / commit / tag entirely;
+#                        just build the signed APK for the CURRENT version and
+#                        upload it to the Firebase App Distribution "testers"
+#                        group. Use this to push an already-cut release (one
+#                        whose version is committed + tagged for the Play track)
+#                        out to testers. <versionName> is optional here; if given
+#                        it must match the current build (sanity check).
 #   --push               git push main + the new tag after a successful upload.
 #   --yes                Don't prompt for confirmation (needs --notes for the body).
 #   --dry-run            Show the version bump + notes that would be applied, then
@@ -57,34 +64,40 @@ DO_UPLOAD=1
 DO_PUSH=0
 ASSUME_YES=0
 DRY_RUN=0
+DISTRIBUTE_ONLY=0
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
-        --notes)     NOTES_SRC="${2:-}"; shift 2 ;;
-        --no-upload) DO_UPLOAD=0; shift ;;
-        --push)      DO_PUSH=1; shift ;;
-        --yes)       ASSUME_YES=1; shift ;;
-        --dry-run)   DRY_RUN=1; shift ;;
-        -h|--help)   show_help; exit 0 ;;
-        -*)          die "unknown option: $1 (see --help)" ;;
-        *)           [[ -z "$NEW_NAME" ]] && NEW_NAME="$1" || die "unexpected arg: $1"; shift ;;
+        --notes)            NOTES_SRC="${2:-}"; shift 2 ;;
+        --no-upload)        DO_UPLOAD=0; shift ;;
+        --distribute-only)  DISTRIBUTE_ONLY=1; shift ;;
+        --push)             DO_PUSH=1; shift ;;
+        --yes)              ASSUME_YES=1; shift ;;
+        --dry-run)          DRY_RUN=1; shift ;;
+        -h|--help)          show_help; exit 0 ;;
+        -*)                 die "unknown option: $1 (see --help)" ;;
+        *)                  [[ -z "$NEW_NAME" ]] && NEW_NAME="$1" || die "unexpected arg: $1"; shift ;;
     esac
 done
 
-[[ -n "$NEW_NAME" ]]  || { show_help; exit 1; }
 [[ -f "$GRADLE_FILE" ]] || die "$GRADLE_FILE not found"
-[[ "$NEW_NAME" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || die "versionName must look like X.Y.Z (got '$NEW_NAME')"
-
-TAG="v$NEW_NAME"
+if [[ -n "$NEW_NAME" ]]; then
+    [[ "$NEW_NAME" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || die "versionName must look like X.Y.Z (got '$NEW_NAME')"
+    TAG="v$NEW_NAME"
+elif [[ "$DISTRIBUTE_ONLY" -eq 0 ]]; then
+    show_help; exit 1
+fi
 
 # --- Pre-flight ---------------------------------------------------------------
 cd "$REPO_ROOT"
 
-if [[ -n "$(git status --porcelain --untracked-files=no)" ]]; then
-    die "tracked files have uncommitted changes — commit or stash first."
-fi
-if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
-    die "tag $TAG already exists."
+if [[ "$DISTRIBUTE_ONLY" -eq 0 ]]; then
+    if [[ -n "$(git status --porcelain --untracked-files=no)" ]]; then
+        die "tracked files have uncommitted changes — commit or stash first."
+    fi
+    if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
+        die "tag $TAG already exists."
+    fi
 fi
 
 BRANCH="$(git rev-parse --abbrev-ref HEAD)"
@@ -96,6 +109,28 @@ fi
 CUR_CODE="$(grep -E '^[[:space:]]*versionCode[[:space:]]*=' "$GRADLE_FILE" | grep -oE '[0-9]+' | head -1)"
 CUR_NAME="$(grep -E '^[[:space:]]*versionName[[:space:]]*=' "$GRADLE_FILE" | sed -E 's/.*"([^"]+)".*/\1/')"
 [[ -n "$CUR_CODE" ]] || die "could not read versionCode from $GRADLE_FILE"
+
+# --- Distribute-only: upload the CURRENT build to testers, no bump/commit/tag ---
+if [[ "$DISTRIBUTE_ONLY" -eq 1 ]]; then
+    [[ "$DO_UPLOAD" -eq 1 ]] || die "--distribute-only with --no-upload would do nothing."
+    if [[ -n "$NEW_NAME" && "$NEW_NAME" != "$CUR_NAME" ]]; then
+        die "--distribute-only uploads the current build ($CUR_NAME, versionCode $CUR_CODE), but you asked for $NEW_NAME. Drop --distribute-only to cut a new version, or pass $CUR_NAME."
+    fi
+    info "Distribute-only: current build $CUR_NAME (versionCode $CUR_CODE) → Firebase testers."
+    info "Release notes come from $NOTES_FILE as-is (no bump, commit, or tag)."
+    if [[ "$ASSUME_YES" -ne 1 ]]; then
+        read -rp "Build signed APK and upload to testers? [y/N] " a
+        [[ "$a" =~ ^[Yy]$ ]] || { echo "Aborted."; exit 1; }
+    fi
+    info "Building signed release APK …"
+    ./gradlew :app:assembleRelease || die "build failed."
+    info "Uploading to Firebase App Distribution (group: testers) …"
+    ./gradlew :app:appDistributionUploadRelease
+    echo
+    info "Done: distributed $CUR_NAME (versionCode $CUR_CODE) to Firebase testers."
+    exit 0
+fi
+
 NEW_CODE=$((CUR_CODE + 1))
 
 info "Current: $CUR_NAME (versionCode $CUR_CODE)"
