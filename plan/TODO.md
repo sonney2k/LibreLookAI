@@ -13,6 +13,14 @@ consistency: the cross to cancel taking a picture in wardrobe is in the lower ri
 TODO
 ====
 
+INFRA / DEADLINE: Cloud Functions runtime is Node.js 20, deprecated 2026-04-30,
+**decommissioned 2026-10-30** — after that date `firebase deploy --only functions`
+will fail until upgraded. Before October 2026: bump firebase/functions/package.json
+`engines.node` 20 → 22, also upgrade `firebase-functions` to latest (flagged as
+having breaking changes — do deliberately, test geminiProxy/verifyPurchase/
+recomputePublicPricing), then redeploy. (Surfaced as a deploy warning on the
+2026-06 geminiProxy model-allowlist deploy.)
+
 experiment to verify cost assumptions
 
 create design for onboarding flow
