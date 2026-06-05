@@ -1,5 +1,7 @@
 # LibreLookAI
 
+**Website: [librelook.ai](https://librelook.ai)** · **Source: [github.com/sonney2k/LibreLookAI](https://github.com/sonney2k/LibreLookAI)**
+
 **Your closet, styled by AI.** LibreLookAI turns photos of the clothes you already own into a smart
 digital wardrobe: snap each item, let AI remove the background and tag it, then get outfit ideas, try
 looks on yourself, shop the gaps, and pack for trips — all kept **private in your own Google Drive**.
@@ -104,6 +106,11 @@ Off = a pure BYOK release: every coin/purchase surface is hidden and no Firebase
 Flipping it on (with a deployed proxy + Play products) routes AI calls through a Firebase proxy that
 deducts coins. Most people running the app from source will never touch this. Deep rationale:
 `plan/FIN.md`. End-user key walkthrough: `docs/GEMINI_API_KEY.md`.
+
+## Links
+
+- Website: [librelook.ai](https://librelook.ai)
+- Source: [github.com/sonney2k/LibreLookAI](https://github.com/sonney2k/LibreLookAI)
 
 ## License
 
