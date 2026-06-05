@@ -21,6 +21,7 @@ import com.librelookai.gemini.UsageCategory
 import com.librelookai.settings.AiConsiderations
 import com.librelookai.settings.AppLanguage
 import com.librelookai.settings.UserPreferences
+import com.librelookai.util.Analytics
 import com.librelookai.util.isNetworkAvailable
 import com.librelookai.wardrobe.DriveImage
 import com.librelookai.wardrobe.LocalCache
@@ -459,6 +460,12 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             .ifEmpty { s.composerItemIds }
         if (itemIds.isEmpty()) { onDone(false); return }
         val editingId = s.composerEditingOutfitId
+        // Funnel terminal helper: whether the saved outfit used AI suggestions, plus create/edit + size.
+        val aiGenerated = s.composerSuggestions.isNotEmpty()
+        fun logOutfitSaved(mode: String) = Analytics.event(
+            "outfit_saved",
+            mapOf("mode" to mode, "ai_generated" to aiGenerated.toString(), "items" to itemIds.size.toString()),
+        )
         if (editingId == null) {
             saveOutfitDirectly(
                 name        = name.ifBlank { "Outfit ${s.outfits.size + 1}" },
@@ -466,7 +473,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 itemIds     = itemIds,
                 tags        = tags,
             ) { ok ->
-                if (ok) closeComposer()
+                if (ok) { logOutfitSaved("create"); closeComposer() }
                 onDone(ok)
             }
             return
@@ -491,6 +498,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             }.onSuccess {
                 _state.update { it.copy(outfits = updated, pendingWearOutfitId = edited.id) }
                 refreshOutfitsLocalCache()
+                logOutfitSaved("edit")
                 closeComposer()
                 onDone(true)
             }.onFailure { e ->

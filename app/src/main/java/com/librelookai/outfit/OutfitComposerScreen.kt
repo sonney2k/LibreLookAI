@@ -30,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -108,6 +109,8 @@ fun OutfitComposerScreen(
     val isOffline = LocalIsOffline.current
 
     if (!s.isComposerOpen) return
+
+    LaunchedEffect(Unit) { Analytics.screen("OutfitComposer") }
 
     val isEditMode = s.composerMode == ComposerMode.EDIT
     val sourceFolders = s.composerSourceFolderIds

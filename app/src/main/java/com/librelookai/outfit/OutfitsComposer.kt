@@ -10,6 +10,7 @@ import com.librelookai.gemini.UsageCategory
 import com.librelookai.gemini.generateText
 import com.librelookai.settings.AppLanguage
 import com.librelookai.settings.UserPreferences
+import com.librelookai.util.Analytics
 import com.librelookai.wardrobe.DriveImage
 import com.librelookai.weather.WeatherData
 import java.util.UUID
@@ -285,6 +286,7 @@ internal fun OutfitsViewModel.enhanceComposerWithAi(
             val fashionTrends = try {
                 trendsCache.get(region, UsageCategory.OUTFIT_COMPOSE)
             } catch (e: com.librelookai.billing.InsufficientCreditsException) {
+                Analytics.event("outfit_generate", mapOf("result" to "failed", "reason" to "credits"))
                 _state.update { it.copy(isComposerEnhancing = false) }
                 return@launch
             }
@@ -315,16 +317,19 @@ internal fun OutfitsViewModel.enhanceComposerWithAi(
             val raw = try {
                 gemini.generateText(prompt, UsageCategory.OUTFIT_COMPOSE, bulkItems = suggestionCount, notify = true)
             } catch (e: com.librelookai.billing.InsufficientCreditsException) {
+                Analytics.event("outfit_generate", mapOf("result" to "failed", "reason" to "credits"))
                 _state.update { it.copy(isComposerEnhancing = false) }
                 return@launch
             }
             if (raw == null) {
+                Analytics.event("outfit_generate", mapOf("result" to "failed", "reason" to "no_response"))
                 _state.update { it.copy(isComposerEnhancing = false, composerError = "Gemini did not respond.") }
                 return@launch
             }
             val variants = parseComposerVariants(raw, gson)
             if (variants.isEmpty()) {
                 Log.w("StylesVM", "Failed to parse composer response: $raw")
+                Analytics.event("outfit_generate", mapOf("result" to "empty"))
                 _state.update { it.copy(isComposerEnhancing = false, composerError = "Could not parse Gemini response.") }
                 return@launch
             }
@@ -363,6 +368,7 @@ internal fun OutfitsViewModel.enhanceComposerWithAi(
                 )
             }
 
+            Analytics.event("outfit_generate", mapOf("result" to "ok", "count" to composerSuggestions.size.toString()))
             val first = composerSuggestions.first()
             val updatedSlots = applyComposerSuggestionToSlots(currentSlots, first.slotAssignments)
             val mergedIds = updatedSlots.mapNotNull { it.selectedItemId }.distinct()

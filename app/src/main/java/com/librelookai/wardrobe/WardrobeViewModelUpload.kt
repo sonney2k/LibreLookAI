@@ -14,7 +14,7 @@ internal fun WardrobeViewModel.uploadPhoto(rawFile: File) {
             _state.update { it.copy(view = WardrobeView.GRID) }
             return
         }
-        uploadPhotoInternal(rawFile, id, skippableLocalReview = true)
+        uploadPhotoInternal(rawFile, id, skippableLocalReview = true, source = AddSource.CAMERA)
     }
 
     /**
@@ -31,6 +31,7 @@ internal fun WardrobeViewModel.uploadPhotoInternal(
         id: String,
         skippableLocalReview: Boolean,
         forceLocalReview: Boolean = false,
+        source: AddSource = AddSource.CAMERA,
     ) {
         if (dedupeOnImport && EmbeddingService.isModelAvailable()) {
             viewModelScope.launch {
@@ -50,7 +51,7 @@ internal fun WardrobeViewModel.uploadPhotoInternal(
                 }
                 if (resolved.isEmpty()) {
                     sim?.processedPath?.let { runCatching { File(it).delete() } }
-                    routeImportAfterDedupe(rawFile, id, skippableLocalReview, forceLocalReview)
+                    routeImportAfterDedupe(rawFile, id, skippableLocalReview, forceLocalReview, source)
                 } else {
                     _state.update { it.copy(
                         isUploading = false,
@@ -65,16 +66,17 @@ internal fun WardrobeViewModel.uploadPhotoInternal(
                             pHash = sim?.pHash,
                         ),
                     ) }
+                    logWardrobeAdd("dedupe_prompt", source, mapOf("matches" to resolved.size.toString()))
                     // Stash routing for confirmDuplicateImport to resume.
-                    pendingDedupeRouting = DedupeRouting(skippableLocalReview, forceLocalReview)
+                    pendingDedupeRouting = DedupeRouting(skippableLocalReview, forceLocalReview, source)
                 }
             }
             return
         }
-        routeImportAfterDedupe(rawFile, id, skippableLocalReview, forceLocalReview)
+        routeImportAfterDedupe(rawFile, id, skippableLocalReview, forceLocalReview, source)
     }
 
-    private data class DedupeRouting(val skippable: Boolean, val force: Boolean)
+    private data class DedupeRouting(val skippable: Boolean, val force: Boolean, val source: AddSource)
     private var pendingDedupeRouting: DedupeRouting? = null
 
     /** Either enqueue the local-bg review or proceed straight to upload. */
@@ -83,6 +85,7 @@ internal fun WardrobeViewModel.routeImportAfterDedupe(
         id: String,
         skippable: Boolean,
         force: Boolean,
+        source: AddSource = AddSource.CAMERA,
     ) {
         val shouldReview = (force || preferLocalBgRemoval) &&
             EmbeddingService.segmenter.isAvailable()
@@ -93,10 +96,11 @@ internal fun WardrobeViewModel.routeImportAfterDedupe(
                     rawFilePath = rawFile.absolutePath,
                     targetFolderId = id,
                     skippable = skippable,
+                    source = source,
                 ),
             ) }
         } else {
-            proceedWithCameraUpload(rawFile, id)
+            proceedWithCameraUpload(rawFile, id, source = source)
         }
     }
 
@@ -105,9 +109,10 @@ internal fun WardrobeViewModel.confirmDuplicateImport() {
         val dc = _state.value.duplicateCheck ?: return
         dc.processedPath?.let { runCatching { File(it).delete() } }
         _state.update { it.copy(duplicateCheck = null) }
-        val routing = pendingDedupeRouting ?: DedupeRouting(skippable = true, force = false)
+        val routing = pendingDedupeRouting ?: DedupeRouting(skippable = true, force = false, source = AddSource.CAMERA)
         pendingDedupeRouting = null
-        routeImportAfterDedupe(File(dc.rawFilePath), dc.targetFolderId, routing.skippable, routing.force)
+        logWardrobeAdd("dedupe_confirm", routing.source)
+        routeImportAfterDedupe(File(dc.rawFilePath), dc.targetFolderId, routing.skippable, routing.force, routing.source)
     }
 
     /** User cancelled the import — discard the raw file and clear the check. */
@@ -115,6 +120,7 @@ internal fun WardrobeViewModel.cancelDuplicateImport() {
         val dc = _state.value.duplicateCheck ?: return
         runCatching { File(dc.rawFilePath).delete() }
         dc.processedPath?.let { runCatching { File(it).delete() } }
+        logWardrobeAdd("dedupe_cancel", pendingDedupeRouting?.source)
         pendingDedupeRouting = null
         _state.update { it.copy(duplicateCheck = null) }
     }
@@ -124,9 +130,15 @@ internal fun WardrobeViewModel.cancelDuplicateImport() {
      * When [prebuiltCutout] is non-null, it is treated as a pre-rendered cutout PNG produced by
      * the on-device segmenter; the worker will use it instead of running Gemini.
      */
-internal fun WardrobeViewModel.proceedWithCameraUpload(rawFile: File, id: String, prebuiltCutout: File? = null) {
+internal fun WardrobeViewModel.proceedWithCameraUpload(
+        rawFile: File,
+        id: String,
+        prebuiltCutout: File? = null,
+        source: AddSource = AddSource.CAMERA,
+    ) {
         viewModelScope.launch {
             _state.update { it.copy(view = WardrobeView.GRID, isUploading = true, error = null) }
+            logWardrobeAdd("upload_start", source)
             runCatching {
                 val uploaded = drive.uploadImage(id, rawFile)
                 val ext = if (rawFile.extension == "png") "png" else "jpg"
@@ -154,8 +166,9 @@ internal fun WardrobeViewModel.proceedWithCameraUpload(rawFile: File, id: String
                 ) }
                 // No sidecar yet — the item is raw; sidecar is written by processQueuedImage
                 saveLocalCache(id, _state.value.images)
-                workQueue.send(PendingJob(newImage.driveId, id, cutoutForJob?.absolutePath))
+                workQueue.send(PendingJob(newImage.driveId, id, cutoutForJob?.absolutePath, source))
             }.onFailure { e ->
+                logWardrobeAdd("failed", source, mapOf("reason" to "upload"))
                 _state.update { it.copy(isUploading = false, error = e.message) }
             }
         }
@@ -172,7 +185,7 @@ internal fun WardrobeViewModel.applyLocalBgCutout(cutoutFile: File) {
         val head = _state.value.localBgReviewQueue.firstOrNull() ?: return
         val raw = File(head.rawFilePath)
         _state.update { it.copy(localBgReviewQueue = it.localBgReviewQueue.drop(1)) }
-        proceedWithCameraUpload(raw, head.targetFolderId, prebuiltCutout = cutoutFile)
+        proceedWithCameraUpload(raw, head.targetFolderId, prebuiltCutout = cutoutFile, source = head.source)
     }
 
     /** User declined the on-device cutout — fall back to the regular Gemini path. Only valid
@@ -182,7 +195,7 @@ internal fun WardrobeViewModel.skipLocalBgReview() {
         if (!head.skippable) return
         val raw = File(head.rawFilePath)
         _state.update { it.copy(localBgReviewQueue = it.localBgReviewQueue.drop(1)) }
-        proceedWithCameraUpload(raw, head.targetFolderId)
+        proceedWithCameraUpload(raw, head.targetFolderId, source = head.source)
     }
 
     /** User cancelled this import entirely — discard the raw file and advance the queue. */
@@ -252,6 +265,7 @@ internal fun WardrobeViewModel.confirmUrlImportPick(absoluteImageUrl: String) {
                 id = targetId,
                 skippableLocalReview = false,
                 forceLocalReview = true,
+                source = AddSource.URL,
             )
         }
     }
@@ -278,7 +292,7 @@ internal fun WardrobeViewModel.uploadGalleryPhotos(uris: List<Uri>) {
                         tempFile
                     }.onSuccess { f ->
                         // Enqueue for review; uploadPhotoInternal handles dedupe + queue routing.
-                        uploadPhotoInternal(f, id, skippableLocalReview = true)
+                        uploadPhotoInternal(f, id, skippableLocalReview = true, source = AddSource.GALLERY)
                     }.onFailure { e ->
                         _state.update { it.copy(error = "Upload failed: ${e.message}") }
                         runCatching { tempFile.delete() }
@@ -295,6 +309,7 @@ internal fun WardrobeViewModel.uploadGalleryPhotos(uris: List<Uri>) {
             uris.forEachIndexed { index, uri ->
                 _state.update { it.copy(batchDone = index) }
                 val tempFile = File(drive.cacheDir, "gallery_${System.currentTimeMillis()}.jpg")
+                logWardrobeAdd("upload_start", AddSource.GALLERY)
                 runCatching {
                     cr.openInputStream(uri)?.use { it.copyTo(tempFile.outputStream()) }
                     val uploaded = drive.uploadImage(id, tempFile)
@@ -307,8 +322,9 @@ internal fun WardrobeViewModel.uploadGalleryPhotos(uris: List<Uri>) {
                         images = listOf(newImage) + it.images,
                         pendingJobs = it.pendingJobs + 1,
                     ) }
-                    workQueue.send(PendingJob(newImage.driveId, id))
+                    workQueue.send(PendingJob(newImage.driveId, id, source = AddSource.GALLERY))
                 }.onFailure { e ->
+                    logWardrobeAdd("failed", AddSource.GALLERY, mapOf("reason" to "upload"))
                     _state.update { it.copy(error = "Upload failed: ${e.message}") }
                 }
                 tempFile.delete()

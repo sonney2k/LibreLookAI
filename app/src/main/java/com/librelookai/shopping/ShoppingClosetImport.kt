@@ -8,6 +8,7 @@ import com.librelookai.R
 import com.librelookai.data.drive.DriveRepository
 import com.librelookai.data.drive.upsertSidecar
 import com.librelookai.gemini.classifyClothing
+import com.librelookai.util.Analytics
 import com.librelookai.wardrobe.DriveImage
 import com.librelookai.wardrobe.ItemSidecar
 import com.librelookai.wardrobe.UrlImportPickerState
@@ -25,7 +26,7 @@ internal fun ShoppingClosetViewModel.addFromCamera(rawFile: File) {
                 runCatching { rawFile.delete() }
                 return@launch
             }
-            uploadRaw(rawFile, folderId)
+            uploadRaw(rawFile, folderId, "camera")
         }
     }
 
@@ -50,7 +51,7 @@ internal fun ShoppingClosetViewModel.importQuery(queryRawPath: String) {
                 _state.update { it.copy(error = "Failed to import query photo") }
                 return@launch
             }
-            uploadRaw(staged, folderId)
+            uploadRaw(staged, folderId, "similarity")
         }
     }
 
@@ -63,7 +64,7 @@ internal fun ShoppingClosetViewModel.addFromGallery(uris: List<Uri>) {
                 val tempFile = File(drive.cacheDir, "shop_gallery_${System.currentTimeMillis()}.jpg")
                 runCatching {
                     cr.openInputStream(uri)?.use { it.copyTo(tempFile.outputStream()) }
-                    uploadRaw(tempFile, folderId)
+                    uploadRaw(tempFile, folderId, "gallery")
                 }.onFailure { e ->
                     Log.w(ShoppingClosetViewModel.TAG, "gallery import failed", e)
                     _state.update { it.copy(error = "Upload failed: ${e.message}") }
@@ -117,7 +118,7 @@ internal fun ShoppingClosetViewModel.confirmUrlImportPick(absoluteImageUrl: Stri
                 return@launch
             }
             _state.update { it.copy(urlImportPicker = null) }
-            uploadRaw(image, folderId)
+            uploadRaw(image, folderId, "url")
         }
     }
 
@@ -125,8 +126,9 @@ internal fun ShoppingClosetViewModel.cancelUrlImport() {
         _state.update { it.copy(urlImportPicker = null) }
     }
 
-    /** Common path: upload [rawFile] to Drive, queue for bg removal + tagging. */
-internal suspend fun ShoppingClosetViewModel.uploadRaw(rawFile: File, folderId: String) {
+    /** Common path: upload [rawFile] to Drive, queue for bg removal + tagging. [source] attributes
+     *  the origin (camera/gallery/url/similarity) for the shopping-add funnel. */
+internal suspend fun ShoppingClosetViewModel.uploadRaw(rawFile: File, folderId: String, source: String = "camera") {
         _state.update { it.copy(isUploading = true, error = null) }
         runCatching {
             val uploaded = drive.uploadImage(folderId, rawFile)
@@ -138,6 +140,7 @@ internal suspend fun ShoppingClosetViewModel.uploadRaw(rawFile: File, folderId: 
             rawFile.copyTo(File(drive.cacheDir, "${uploaded.id}_original.jpg"), overwrite = true)
             DriveImage(uploaded.id, displayCache.absolutePath, uploaded.name, tags = null, folderId = folderId, createdTimeMs = System.currentTimeMillis())
         }.onSuccess { newImage ->
+            Analytics.event("shopping_item_added", mapOf("source" to source))
             _state.update { it.copy(
                 isUploading = false,
                 items = listOf(newImage) + it.items,

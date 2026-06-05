@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import com.librelookai.ml.EmbeddingService
+import com.librelookai.util.Analytics
 import com.librelookai.wardrobe.DriveImage
 import com.librelookai.R
 import com.librelookai.wardrobe.CaptureScreen
@@ -140,6 +141,7 @@ class ShoppingHelperViewModel(app: Application) : AndroidViewModel(app) {
     fun onCapturedFile(file: File, images: List<DriveImage>, debug: Boolean = false) {
         viewModelScope.launch {
             if (!EmbeddingService.isModelAvailable()) {
+                Analytics.event("shopping_similarity", mapOf("result" to "failed", "reason" to "no_model"))
                 _state.update {
                     it.copy(
                         isCapturing = false,
@@ -180,6 +182,7 @@ class ShoppingHelperViewModel(app: Application) : AndroidViewModel(app) {
                 processedOutputDir = processedDir,
             )
             if (sim == null) {
+                Analytics.event("shopping_similarity", mapOf("result" to "failed", "reason" to "embed"))
                 _state.update {
                     it.copy(
                         isMatching = false,
@@ -195,6 +198,10 @@ class ShoppingHelperViewModel(app: Application) : AndroidViewModel(app) {
                 ShopMatch(image = img, score = m.score)
             }
 
+            Analytics.event("shopping_similarity", mapOf(
+                "result" to if (resolved.isEmpty()) "none" else "matches",
+                "count" to resolved.size.toString(),
+            ))
             _state.update {
                 it.copy(
                     isMatching = false,

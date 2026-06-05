@@ -81,6 +81,12 @@ fun TryOnComposerScreen(
     val state by tryOnViewModel.state.collectAsState()
     if (!state.isComposerOpen) return
 
+    // Screen-view tracking: this Dialog hosts both the try-on composer and the history feed; report
+    // whichever the user is currently looking at (toggling history re-reports).
+    LaunchedEffect(state.isHistoryOpen) {
+        Analytics.screen(if (state.isHistoryOpen) "TryOnHistory" else "TryOnComposer")
+    }
+
     val wardrobeState by wardrobeViewModel.state.collectAsState()
     val profileState by profileViewModel.state.collectAsState()
     val shoppingClosetState by shoppingClosetViewModel.state.collectAsState()

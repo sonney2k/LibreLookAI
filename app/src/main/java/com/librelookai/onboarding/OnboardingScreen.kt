@@ -82,6 +82,7 @@ import com.librelookai.R
 import com.librelookai.gemini.ApiKeyStore
 import com.librelookai.settings.ProfileViewModel
 import com.librelookai.settings.TryOnSlot
+import com.librelookai.util.Analytics
 import com.librelookai.util.LocalSystemBarsPadding
 import kotlinx.coroutines.launch
 
@@ -129,6 +130,19 @@ fun OnboardingScreen(
     val photoPage = infoPages.size + 5
     val finishPage = infoPages.size + 6
     val totalPages = infoPages.size + 7
+
+    // Stable analytics name for each page, independent of the info-page count, so the funnel keeps
+    // working if value-prop pages are added/removed. Info pages are reported as "intro_<n>".
+    fun stepName(page: Int): String = when (page) {
+        drivePage -> "drive_signin"
+        backgroundPage -> "background_permission"
+        locationPage -> "location_permission"
+        apiKeyPage -> "api_key"
+        profilePage -> "profile"
+        photoPage -> "photo"
+        finishPage -> "finish"
+        else -> "intro_$page"
+    }
 
     val context = LocalContext.current
     val state by profileViewModel.state.collectAsState()
@@ -200,6 +214,17 @@ fun OnboardingScreen(
     var style by remember(prefs) { mutableStateOf(prefs.preferences) }
 
     fun finish(goToWardrobe: Boolean) {
+        // Funnel exit: did the user reach the deliberate end (goToWardrobe) or bail via Skip, and
+        // were the required steps — Drive sign-in, background exemption, Gemini key — satisfied?
+        Analytics.event(
+            "onboarding_finish",
+            mapOf(
+                "completed" to goToWardrobe.toString(),
+                "drive_connected" to isSignedIn.toString(),
+                "background_granted" to isBatteryExempt.toString(),
+                "api_key_entered" to apiKeyLooksValid.toString(),
+            ),
+        )
         // Persist the style profile only when the user reaches the end deliberately, we're online,
         // and the existing prefs have finished loading — otherwise the copy below would clobber the
         // account's saved theme / language / AI settings with defaults. We only override the three
@@ -219,6 +244,27 @@ fun OnboardingScreen(
 
     val pagerState = rememberPagerState(pageCount = { totalPages })
     val scope = rememberCoroutineScope()
+
+    // Funnel: one event per onboarding page the user actually reaches, so we can measure drop-off
+    // step-by-step (the API-key step in particular). `step` is a stable name; `index`/`total` give
+    // the absolute position for ordering.
+    LaunchedEffect(pagerState.currentPage) {
+        val page = pagerState.currentPage
+        Analytics.event(
+            "onboarding_step",
+            mapOf(
+                "step" to stepName(page),
+                "index" to page.toString(),
+                "total" to totalPages.toString(),
+            ),
+        )
+    }
+
+    // Key milestone: the user has entered a plausible Gemini API key. Logged once per valid->set
+    // transition so we can see how many of the users who reached the key step actually added one.
+    LaunchedEffect(apiKeyLooksValid) {
+        if (apiKeyLooksValid) Analytics.event("onboarding_api_key_entered")
+    }
 
     // The required steps soft-block forward progress until satisfied (Drive sign-in also stays
     // blocked while an existing wardrobe is still importing). This gates both the Next button *and*

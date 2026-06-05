@@ -468,6 +468,15 @@ internal fun AppContent(activity: ComponentActivity) {
                         var tripViewerTripId: String? by rememberSaveable { mutableStateOf(null) }
                         val hideChrome = selectedTab == 3 && (travelPlannerMode || tripViewerTripId != null)
 
+                        // Travel sub-destinations are full-screen modes within the Travel tab, not
+                        // separate tabs, so report them as their own screen views for funnel tracking.
+                        LaunchedEffect(travelPlannerMode) {
+                            if (travelPlannerMode) Analytics.screen("TravelPlanner")
+                        }
+                        LaunchedEffect(tripViewerTripId) {
+                            if (tripViewerTripId != null) Analytics.screen("TripViewer")
+                        }
+
                         Scaffold(
                             modifier = Modifier.fillMaxSize(),
                             bottomBar = {

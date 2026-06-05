@@ -23,6 +23,7 @@ import com.librelookai.gemini.UsageCategory
 import com.librelookai.gemini.generateText
 import com.librelookai.settings.AiConsiderations
 import com.librelookai.settings.UserPreferences
+import com.librelookai.util.Analytics
 import com.librelookai.wardrobe.DriveImage
 import com.librelookai.wardrobe.toPromptJson
 import com.librelookai.weather.DestinationSuggestion
@@ -107,6 +108,7 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
 
     fun pickDestination(s: DestinationSuggestion) {
         suggestionJob?.cancel()
+        Analytics.event("travel_plan", mapOf("stage" to "destination_set"))
         _state.update {
             it.copy(
                 destination = s.display,
@@ -237,6 +239,12 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
             return
         }
 
+        Analytics.event("travel_plan", mapOf(
+            "stage" to "generate_start",
+            "days" to days.toString(),
+            "outfit_count" to (_state.value.outfitCount ?: days).toString(),
+            "closets" to _state.value.sourceFolderIds.size.toString(),
+        ))
         com.librelookai.gemini.AiRetry.action = { doGenerate(prefs, images, styles, wearHistory) }
         viewModelScope.launch {
             // Phase 1 — fetch forecast only when input changed
@@ -256,6 +264,7 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
                     longitude = _state.value.destinationLongitude,
                 )
                 if (result == null) {
+                    Analytics.event("travel_plan", mapOf("stage" to "failed", "reason" to "forecast"))
                     _state.update { it.copy(isLoadingForecast = false, error = "Could not fetch weather for \"$dest\". Check the destination name.") }
                     return@launch
                 }
@@ -301,6 +310,7 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
 
             val raw = gemini.generateText(prompt, UsageCategory.TRAVEL, notify = true)
             if (raw == null) {
+                Analytics.event("travel_plan", mapOf("stage" to "failed", "reason" to "no_response"))
                 _state.update { it.copy(isGenerating = false, error = "Gemini did not respond.") }
                 return@launch
             }
@@ -311,10 +321,12 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
             val result = runCatching { gson.fromJson(json, PackingList::class.java) }.getOrNull()
             if (result == null || result.outfits.isEmpty()) {
                 Log.w("TravelVM", "Failed to parse packing list: $json")
+                Analytics.event("travel_plan", mapOf("stage" to "failed", "reason" to "empty"))
                 _state.update { it.copy(isGenerating = false, error = "Could not parse Gemini response.") }
                 return@launch
             }
 
+            Analytics.event("travel_plan", mapOf("stage" to "complete", "outfits" to result.outfits.size.toString()))
             _state.update {
                 it.copy(
                     isGenerating = false,

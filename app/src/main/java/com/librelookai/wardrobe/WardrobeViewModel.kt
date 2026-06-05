@@ -776,7 +776,10 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             acquireJobWakeLock()
             try {
                 runCatching { processQueuedImage(job) }
-                    .onFailure { e -> _state.update { it.copy(error = e.message) } }
+                    .onFailure { e ->
+                        logWardrobeAdd("failed", job.source, mapOf("reason" to "exception"))
+                        _state.update { it.copy(error = e.message) }
+                    }
                 _state.update { s ->
                     s.copy(
                         pendingJobs = maxOf(0, s.pendingJobs - 1),
@@ -794,7 +797,10 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
     private suspend fun processQueuedImage(job: PendingJob) {
         val rawFile = File(drive.cacheDir, "${job.driveId}_original.jpg")
-        if (!rawFile.exists()) return
+        if (!rawFile.exists()) {
+            logWardrobeAdd("failed", job.source, mapOf("reason" to "raw_missing"))
+            return
+        }
         _state.update { it.copy(processingImageId = job.driveId) }
         // NOTE: we intentionally do NOT check if job.driveId is still in state — loadImages()
         // may have replaced it with the cutout ID already (race window). We always process.
@@ -807,7 +813,11 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             ?: (gemini.removeBackground(rawFile, drive.cacheDir) ?: rawFile)
 
         // Step 2 — upload cutout, then rename to "{cutoutId}_cutout.png"
-        val cutoutDrive = runCatching { uploadAsCutout(job.folderId, processedFile) }.getOrNull() ?: return
+        val cutoutDrive = runCatching { uploadAsCutout(job.folderId, processedFile) }.getOrNull()
+            ?: run {
+                logWardrobeAdd("failed", job.source, mapOf("reason" to "cutout_upload"))
+                return
+            }
 
         // Step 3 — upload original as "{cutoutId}_original.jpg" (best-effort)
         val originalDriveId = runCatching {
@@ -876,6 +886,9 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         // the stale raw-id entry written at upload time with the final cutout entry.
         _state.value.images.firstOrNull { it.driveId == cutoutDrive.id }
             ?.let { persistItemToCache(job.folderId, it, staleDriveId = job.driveId) }
+
+        // Funnel terminal: the item is fully processed and live in the wardrobe.
+        logWardrobeAdd("item_live", job.source, mapOf("tagged" to (tags != null).toString()))
     }
 
     // ---------- Navigation ----------

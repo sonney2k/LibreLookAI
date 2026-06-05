@@ -12,11 +12,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.librelookai.R
+import com.librelookai.util.Analytics
 
 @Composable
 fun SignInScreen(
@@ -24,6 +26,8 @@ fun SignInScreen(
     signInErrorCode: Int? = null,
     modifier: Modifier = Modifier,
 ) {
+    LaunchedEffect(Unit) { Analytics.screen("SignIn") }
+
     val errorMessage = when (signInErrorCode) {
         null -> null
         10   -> stringResource(R.string.sign_in_error_not_registered)   // DEVELOPER_ERROR

@@ -2,8 +2,30 @@ package com.librelookai.wardrobe
 
 import com.librelookai.gemini.ClothingTags
 import com.librelookai.settings.UserPreferences
+import com.librelookai.util.Analytics
 
 enum class WardrobeView { GRID, CAPTURE, FIND_BY_PHOTO_CAPTURE }
+
+/** Where a wardrobe-add originated. Threaded through the import pipeline so the funnel's terminal
+ *  events ([logWardrobeAdd]) can report which source converts. See docs/FLOW_ANALYTICS.md (Flow 1). */
+enum class AddSource(val tag: String) { CAMERA("camera"), GALLERY("gallery"), URL("url") }
+
+/** Funnel event for the wardrobe-add flow (`wardrobe_add` with a `stage` discriminator). Stages:
+ *  `upload_start`, `dedupe_prompt`/`dedupe_confirm`/`dedupe_cancel`, `item_live`, `failed`. */
+internal fun logWardrobeAdd(
+    stage: String,
+    source: AddSource? = null,
+    extra: Map<String, String> = emptyMap(),
+) {
+    Analytics.event(
+        "wardrobe_add",
+        buildMap {
+            put("stage", stage)
+            source?.let { put("source", it.tag) }
+            putAll(extra)
+        },
+    )
+}
 
 /** A wardrobe item ranked against a "find item by photo" query, with cosine score. */
 data class FindByPhotoMatch(val image: DriveImage, val score: Float)
@@ -154,6 +176,8 @@ data class LocalBgReviewItem(
     val targetFolderId: String,
     /** True when the review can be skipped (camera/gallery). URL imports must complete the review. */
     val skippable: Boolean,
+    /** Origin of this import, carried through the review queue for funnel attribution. */
+    val source: AddSource = AddSource.CAMERA,
 )
 
 /** One candidate file in a paused folder-import preview. */
@@ -308,6 +332,8 @@ internal data class PendingJob(
      *  use directly instead of calling Gemini. The file lives in `drive.cacheDir` and is owned by
      *  the worker once enqueued (it gets copied into `${cutoutId}.png` and then deleted). */
     val prebuiltCutoutPath: String? = null,
+    /** Origin of this import, carried so the queue's terminal funnel events can attribute source. */
+    val source: AddSource = AddSource.CAMERA,
 )
 
 // Internal audit helpers

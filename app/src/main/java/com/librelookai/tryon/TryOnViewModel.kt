@@ -21,6 +21,7 @@ import com.librelookai.data.drive.uploadTryOnImage
 import com.librelookai.data.model.TryOn
 import com.librelookai.gemini.GeminiRepository
 import com.librelookai.gemini.tryOnOutfit
+import com.librelookai.util.Analytics
 import com.librelookai.wardrobe.DriveImage
 
 /** Where a try-on composition was started from. Drives the source banner + history provenance. */
@@ -267,17 +268,21 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
             val snapshotSourceOutfitId = _state.value.sourceOutfitId
             val snapshotSourceKind = _state.value.sourceKind
             val snapshotSourceContext = _state.value.sourceContext ?: ""
+            val source = snapshotSourceKind.serialized()
             val result = try {
                 gemini.tryOnOutfit(personFiles, files, outDir, preferences, notify = true)
             } catch (e: com.librelookai.billing.InsufficientCreditsException) {
                 // The global InsufficientCreditsDialog (installed in MainActivity)
                 // surfaces the buy prompt; here we just reset the loading state.
+                Analytics.event("tryon_generate", mapOf("result" to "failed", "reason" to "credits", "source" to source))
                 _state.update { it.copy(isGenerating = false) }
                 return@launch
             }
             if (result == null) {
+                Analytics.event("tryon_generate", mapOf("result" to "failed", "reason" to "no_response", "source" to source))
                 _state.update { it.copy(isGenerating = false, error = "Generation failed") }
             } else {
+                Analytics.event("tryon_generate", mapOf("result" to "ok", "source" to source, "items" to files.size.toString()))
                 lastGeneratedItemFiles = files
                 lastGeneratedItemIds = ids
                 lastGeneratedSourceOutfitId = snapshotSourceOutfitId
