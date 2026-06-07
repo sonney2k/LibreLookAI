@@ -123,7 +123,9 @@ android {
             firebaseAppDistribution {
                 artifactType = "APK"
                 groups = "testers"
-                releaseNotesFile = rootProject.file("release-notes.txt").absolutePath
+                // Latest section only — release-notes.txt accumulates all history
+                // and eventually blows App Distribution's 16 KB notes limit.
+                releaseNotesFile = rootProject.file("release-notes-latest.txt").absolutePath
             }
         }
     }

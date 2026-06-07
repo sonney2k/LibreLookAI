@@ -46,6 +46,9 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 GRADLE_FILE="$REPO_ROOT/app/build.gradle.kts"
 NOTES_FILE="$REPO_ROOT/release-notes.txt"
+# Latest section only, mirrored on every cut — App Distribution reads this so its
+# notes never blow the 16 KB limit the full accumulating history eventually hits.
+NOTES_LATEST_FILE="$REPO_ROOT/release-notes-latest.txt"
 WHATSNEW_FILE="$REPO_ROOT/play-whatsnew.txt"
 AAB_PATH="$REPO_ROOT/app/build/outputs/bundle/release/app-release.aab"
 PLAY_WHATSNEW_LIMIT=500
@@ -157,6 +160,8 @@ if [[ "$DISTRIBUTE_ONLY" -eq 1 ]]; then
     fi
     info "Distribute-only: current build $CUR_NAME (versionCode $CUR_CODE) → Firebase testers."
     info "Release notes come from $NOTES_FILE as-is (no bump, commit, or tag)."
+    # Refresh the latest-only file App Distribution reads from the top section.
+    { echo "### LibreLookAI v$CUR_NAME Release Notes"; echo; latest_notes_body; } > "$NOTES_LATEST_FILE"
     if [[ "$ASSUME_YES" -ne 1 ]]; then
         read -rp "Build signed APK + Play AAB and upload APK to testers? [y/N] " a
         [[ "$a" =~ ^[Yy]$ ]] || { echo "Aborted."; exit 1; }
@@ -246,9 +251,11 @@ apply_changes() {
     else
         printf '%s\n' "$NEW_SECTION" > "$NOTES_FILE"
     fi
+    # Latest-only mirror for App Distribution (full history overflows its limit).
+    printf '%s\n' "$NEW_SECTION" > "$NOTES_LATEST_FILE"
 }
 
-revert_changes() { git checkout -- "$GRADLE_FILE" "$NOTES_FILE"; }
+revert_changes() { git checkout -- "$GRADLE_FILE" "$NOTES_FILE" "$NOTES_LATEST_FILE"; }
 
 if [[ "$DRY_RUN" -eq 1 ]]; then
     apply_changes
@@ -286,7 +293,7 @@ write_whatsnew "$NOTES_BODY"
 
 # --- Commit + tag -------------------------------------------------------------
 info "Committing + tagging $TAG …"
-git add "$GRADLE_FILE" "$NOTES_FILE"
+git add "$GRADLE_FILE" "$NOTES_FILE" "$NOTES_LATEST_FILE"
 git commit -m "release: $TAG (versionCode $NEW_CODE)"
 git tag "$TAG"
 
