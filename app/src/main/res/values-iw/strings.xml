@@ -1183,4 +1183,7 @@
     <!-- Drive folder picker strings -->
     <string name="drive_picker_failed">לא ניתן להתחבר ל-Google Drive. נסה שוב.</string>
     <string name="drive_picker_opening">פותח את Google Drive…</string>
+
+    <!-- Try-on coverage gate -->
+    <string name="tryon_coverage_blocked">בחרו בגדים שמכסים גם את פלג הגוף העליון וגם את התחתון — או פריט שלם לכל הגוף (שמלה או אוברול) או חולצה יחד עם פריט תחתון. כך המדידה שנוצרת נשארת לבושה לחלוטין.</string>
 </resources>

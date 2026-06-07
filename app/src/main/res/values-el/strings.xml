@@ -1179,4 +1179,7 @@
     <!-- Drive folder picker strings -->
     <string name="drive_picker_failed">Δεν ήταν δυνατή η σύνδεση στο Google Drive. Δοκιμάστε ξανά.</string>
     <string name="drive_picker_opening">Άνοιγμα Google Drive…</string>
+
+    <!-- Try-on coverage gate -->
+    <string name="tryon_coverage_blocked">Διάλεξε ρούχα που καλύπτουν τόσο το πάνω όσο και το κάτω μέρος του σώματος — είτε ένα ολόσωμο ρούχο (φόρεμα ή ολόσωμη φόρμα) είτε ένα πάνω μαζί με ένα κάτω. Έτσι η δοκιμή που δημιουργείται παραμένει πλήρως ντυμένη.</string>
 </resources>

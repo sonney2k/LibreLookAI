@@ -1152,4 +1152,7 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <!-- Drive folder picker strings -->
     <string name="drive_picker_failed">Không thể kết nối với Google Drive. Hãy thử lại.</string>
     <string name="drive_picker_opening">Đang mở Google Drive…</string>
+
+    <!-- Try-on coverage gate -->
+    <string name="tryon_coverage_blocked">Chọn trang phục che cả phần thân trên và thân dưới — có thể là một món đồ liền thân (váy hoặc jumpsuit) hoặc một áo kết hợp với một quần/váy. Điều này giúp ảnh thử đồ được tạo ra luôn mặc đầy đủ.</string>
 </resources>

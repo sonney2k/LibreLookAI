@@ -1152,4 +1152,7 @@
     <!-- Drive folder picker strings -->
     <string name="drive_picker_failed">Не вдалося підключитися до Google Drive. Спробуйте ще раз.</string>
     <string name="drive_picker_opening">Відкриття Google Drive…</string>
+
+    <!-- Try-on coverage gate -->
+    <string name="tryon_coverage_blocked">Вибери одяг, що закриває і верхню, і нижню частину тіла — або суцільний предмет (сукню чи комбінезон), або верх разом із низом. Так згенерована примірка залишається повністю одягненою.</string>
 </resources>

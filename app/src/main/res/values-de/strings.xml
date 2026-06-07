@@ -1246,4 +1246,7 @@
     <!-- Drive folder picker strings -->
     <string name="drive_picker_failed">Verbindung zu Google Drive fehlgeschlagen. Bitte erneut versuchen.</string>
     <string name="drive_picker_opening">Google Drive wird geöffnet…</string>
+
+    <!-- Try-on coverage gate -->
+    <string name="tryon_coverage_blocked">Wähle Kleidung, die sowohl den Ober- als auch den Unterkörper bedeckt – entweder ein Einteiler (Kleid oder Jumpsuit) oder ein Oberteil zusammen mit einem Unterteil. So bleibt deine erzeugte Anprobe vollständig bekleidet.</string>
 </resources>

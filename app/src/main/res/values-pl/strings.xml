@@ -1179,4 +1179,7 @@
     <!-- Drive folder picker strings -->
     <string name="drive_picker_failed">Nie udało się połączyć z Google Drive. Spróbuj ponownie.</string>
     <string name="drive_picker_opening">Otwieranie Google Drive…</string>
+
+    <!-- Try-on coverage gate -->
+    <string name="tryon_coverage_blocked">Wybierz ubrania zakrywające zarówno górną, jak i dolną część ciała — albo strój na całe ciało (sukienkę lub kombinezon), albo górę razem z dołem. Dzięki temu wygenerowana przymiarka pozostaje w pełni ubrana.</string>
 </resources>

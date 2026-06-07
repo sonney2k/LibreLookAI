@@ -1179,4 +1179,7 @@
     <!-- Drive folder picker strings -->
     <string name="drive_picker_failed">تعذّر الاتصال بـ Google Drive. حاول مرة أخرى.</string>
     <string name="drive_picker_opening">جارٍ فتح Google Drive…</string>
+
+    <!-- Try-on coverage gate -->
+    <string name="tryon_coverage_blocked">اختر ملابس تغطي الجزأين العلوي والسفلي من الجسم — إما قطعة لكامل الجسم (فستان أو أفرول) أو قطعة علوية مع قطعة سفلية. هذا يُبقي التجربة المُولَّدة مرتدية ملابس كاملة.</string>
 </resources>

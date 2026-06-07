@@ -1152,4 +1152,7 @@
     <!-- Drive folder picker strings -->
     <string name="drive_picker_failed">เชื่อมต่อ Google Drive ไม่ได้ ลองอีกครั้ง</string>
     <string name="drive_picker_opening">กำลังเปิด Google Drive…</string>
+
+    <!-- Try-on coverage gate -->
+    <string name="tryon_coverage_blocked">เลือกเสื้อผ้าที่ปกปิดทั้งร่างกายส่วนบนและส่วนล่าง — ไม่ว่าจะเป็นชุดเต็มตัว (เดรสหรือจัมป์สูท) หรือเสื้อท่อนบนคู่กับท่อนล่าง วิธีนี้จะทำให้การลองสวมที่สร้างขึ้นแต่งกายครบถ้วน</string>
 </resources>

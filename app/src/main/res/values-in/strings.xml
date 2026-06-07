@@ -1152,4 +1152,7 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <!-- Drive folder picker strings -->
     <string name="drive_picker_failed">Tidak dapat terhubung ke Google Drive. Coba lagi.</string>
     <string name="drive_picker_opening">Membuka Google Drive…</string>
+
+    <!-- Try-on coverage gate -->
+    <string name="tryon_coverage_blocked">Pilih pakaian yang menutupi tubuh bagian atas dan bawah — baik satu potong utuh (gaun atau jumpsuit) maupun atasan bersama bawahan. Ini menjaga try-on yang dihasilkan tetap berpakaian lengkap.</string>
 </resources>

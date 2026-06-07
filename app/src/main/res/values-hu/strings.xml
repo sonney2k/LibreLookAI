@@ -1152,4 +1152,7 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <!-- Drive folder picker strings -->
     <string name="drive_picker_failed">Nem sikerült csatlakozni a Google Drive-hoz. Próbáld újra.</string>
     <string name="drive_picker_opening">Google Drive megnyitása…</string>
+
+    <!-- Try-on coverage gate -->
+    <string name="tryon_coverage_blocked">Válassz olyan ruhákat, amelyek a felső- és az alsótestet egyaránt fedik — vagy egy egyrészes darabot (ruhát vagy overált), vagy egy felsőt egy alsóval együtt. Így a létrehozott felpróbálás teljesen felöltözött marad.</string>
 </resources>

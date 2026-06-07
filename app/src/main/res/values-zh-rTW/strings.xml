@@ -1152,4 +1152,7 @@
     <!-- Drive folder picker strings -->
     <string name="drive_picker_failed">無法連線到 Google Drive。請再試一次。</string>
     <string name="drive_picker_opening">正在開啟 Google Drive…</string>
+
+    <!-- Try-on coverage gate -->
+    <string name="tryon_coverage_blocked">請選擇能同時遮蓋上半身和下半身的衣物——可以是全身式單品（洋裝或連身褲），或是上衣搭配下著。這樣產生的試穿才會完整著裝。</string>
 </resources>

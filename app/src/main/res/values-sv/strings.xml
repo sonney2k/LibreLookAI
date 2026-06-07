@@ -1179,4 +1179,7 @@
     <!-- Drive folder picker strings -->
     <string name="drive_picker_failed">Det gick inte att ansluta till Google Drive. Försök igen.</string>
     <string name="drive_picker_opening">Öppnar Google Drive…</string>
+
+    <!-- Try-on coverage gate -->
+    <string name="tryon_coverage_blocked">Välj kläder som täcker både överkroppen och underkroppen — antingen ett helkroppsplagg (klänning eller jumpsuit) eller en överdel tillsammans med en underdel. Då förblir din genererade provning fullt påklädd.</string>
 </resources>

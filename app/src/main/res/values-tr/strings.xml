@@ -1179,4 +1179,7 @@
     <!-- Drive folder picker strings -->
     <string name="drive_picker_failed">Google Drive\'a bağlanılamadı. Tekrar deneyin.</string>
     <string name="drive_picker_opening">Google Drive açılıyor…</string>
+
+    <!-- Try-on coverage gate -->
+    <string name="tryon_coverage_blocked">Hem vücudun üst hem de alt kısmını örten kıyafetler seç — ya tek parça bir giysi (elbise veya tulum) ya da bir üst ile birlikte bir alt. Böylece oluşturulan deneme tamamen giyinik kalır.</string>
 </resources>

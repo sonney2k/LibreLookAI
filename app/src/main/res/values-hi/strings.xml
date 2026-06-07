@@ -1152,4 +1152,7 @@
     <!-- Drive folder picker strings -->
     <string name="drive_picker_failed">Google Drive से कनेक्ट नहीं हो सका. फिर से प्रयास करें.</string>
     <string name="drive_picker_opening">Google Drive खोला जा रहा है…</string>
+
+    <!-- Try-on coverage gate -->
+    <string name="tryon_coverage_blocked">ऐसे कपड़े चुनें जो शरीर के ऊपरी और निचले दोनों हिस्सों को ढकें — या तो पूरे शरीर का परिधान (ड्रेस या जंपसूट) या एक ऊपरी के साथ एक निचला परिधान। इससे आपका बनाया गया ट्राय-ऑन पूरी तरह कपड़ों में रहता है।</string>
 </resources>

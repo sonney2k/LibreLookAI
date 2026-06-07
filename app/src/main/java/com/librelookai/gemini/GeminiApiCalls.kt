@@ -29,6 +29,10 @@ internal fun buildTryOnPrompt(personCount: Int, itemCount: Int, preferences: Str
 
         CRITICAL GARMENT INSTRUCTION: The clothing items must remain completely distinct and separate. Do NOT merge, blend, or fuse different items into a single hybrid garment (e.g., do not fuse an outerwear zipper or jacket with an underlying t-shirt). Maintain distinct layers, physical boundaries, and textures for each individual piece. Dress the person so all provided garments are visible and layered logically.
 
+        CRITICAL EXACT-ITEMS INSTRUCTION: Dress the person in EXACTLY and ONLY the provided garments — nothing else. Do NOT add, invent, or imagine any clothing that was not provided: no extra shoes or footwear, no socks, no undershirt or t-shirt under a jacket, no hat, belt, scarf, jewellery, or any other accessory unless it was explicitly provided as one of the items. If no footwear was provided, leave the feet bare or out of frame — never add shoes.
+
+        CRITICAL DECENCY INSTRUCTION: The result must be fully clothed with no exposed torso, chest, or underwear. If an outer layer (vest, waistcoat, gilet, jacket, blazer, cardigan, or coat) is provided and there is NO separate top/shirt underneath it among the provided items, fasten and close that outer layer (button or zip it up) so the chest and torso are fully covered. Never depict nudity, bare chest, or exposed midriff.
+
         CRITICAL IDENTITY INSTRUCTION: The generated face must be as close as possible to the face in the FIRST (frontal) reference photo — match facial structure, features, proportions, eye shape and color, nose, mouth, jawline, eyebrows, skin tone, and hair exactly. Treat the frontal photo as the ground truth for identity; the other photos are only for recovering body shape and side/back details. Do not invent, beautify, age, or restyle the face. Preserve hair, skin tone, and body proportions exactly.
 
         Use a clean, neutral studio background, soft even lighting, and sharp focus.

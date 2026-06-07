@@ -1179,4 +1179,7 @@
     <!-- Drive folder picker strings -->
     <string name="drive_picker_failed">Google Drive に接続できませんでした。もう一度お試しください。</string>
     <string name="drive_picker_opening">Google Drive を開いています…</string>
+
+    <!-- Try-on coverage gate -->
+    <string name="tryon_coverage_blocked">上半身と下半身の両方を覆う服を選んでください。全身を覆う一枚もの（ワンピースやジャンプスーツ）か、トップスとボトムスの組み合わせのいずれかです。これにより、生成される試着が完全に着衣の状態に保たれます。</string>
 </resources>

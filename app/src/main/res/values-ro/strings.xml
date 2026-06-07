@@ -1152,4 +1152,7 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <!-- Drive folder picker strings -->
     <string name="drive_picker_failed">Nu s-a putut conecta la Google Drive. Încearcă din nou.</string>
     <string name="drive_picker_opening">Se deschide Google Drive…</string>
+
+    <!-- Try-on coverage gate -->
+    <string name="tryon_coverage_blocked">Alege haine care acoperă atât partea de sus, cât și partea de jos a corpului — fie o piesă integrală (o rochie sau o salopetă), fie o piesă de sus împreună cu una de jos. Astfel, proba generată rămâne complet îmbrăcată.</string>
 </resources>

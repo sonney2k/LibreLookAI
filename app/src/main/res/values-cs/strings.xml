@@ -1179,4 +1179,7 @@
     <!-- Drive folder picker strings -->
     <string name="drive_picker_failed">Nepodařilo se připojit ke Google Drive. Zkuste to znovu.</string>
     <string name="drive_picker_opening">Otevírání Google Drive…</string>
+
+    <!-- Try-on coverage gate -->
+    <string name="tryon_coverage_blocked">Vyber oblečení, které zakryje horní i dolní část těla — buď celotělový kus (šaty nebo overal), nebo horní díl spolu se spodním dílem. Díky tomu zůstane vygenerované vyzkoušení plně oblečené.</string>
 </resources>

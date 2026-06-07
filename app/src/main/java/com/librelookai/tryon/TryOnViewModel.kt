@@ -248,12 +248,23 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
      * The result is only cached locally; it is persisted to Drive via [saveCurrent].
      */
     fun generate(personFiles: List<File>, wardrobeImages: List<DriveImage>, preferences: String) {
-        val itemFiles = wardrobeImages
-            .filter { it.driveId in _state.value.itemIds }
+        val selected = wardrobeImages.filter { it.driveId in _state.value.itemIds }
+        val itemFiles = selected
             .map { it.driveId to File(it.localPath) }
             .filter { (_, f) -> f.exists() }
         if (personFiles.isEmpty() || itemFiles.isEmpty()) {
             _state.update { it.copy(error = "Missing photos or items") }
+            return
+        }
+        // Refuse unless the selection covers both upper and lower body (a full-body piece, or a
+        // top + a bottom) so the generated image is never undressed.
+        if (!selected.tryOnFullyCovered()) {
+            _state.update {
+                it.copy(
+                    error = getApplication<Application>()
+                        .getString(com.librelookai.R.string.tryon_coverage_blocked),
+                )
+            }
             return
         }
         // Register a one-tap retry so the global AI-failure dialog can re-run this generation.

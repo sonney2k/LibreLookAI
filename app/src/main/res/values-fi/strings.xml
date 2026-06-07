@@ -1179,4 +1179,7 @@
     <!-- Drive folder picker strings -->
     <string name="drive_picker_failed">Yhteyttä Google Driveen ei voitu muodostaa. Yritä uudelleen.</string>
     <string name="drive_picker_opening">Avataan Google Drivea…</string>
+
+    <!-- Try-on coverage gate -->
+    <string name="tryon_coverage_blocked">Valitse vaatteet, jotka peittävät sekä ylä- että alavartalon — joko kokovartalon vaate (mekko tai haalari) tai yläosa yhdessä alaosan kanssa. Näin luotu sovitus pysyy täysin puettuna.</string>
 </resources>

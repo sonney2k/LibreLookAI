@@ -665,6 +665,7 @@
     <string name="tryon_uploading">Uploading…</string>
     <string name="tryon_generating">Generating your try-on…</string>
     <string name="tryon_error">Try-on generation failed</string>
+    <string name="tryon_coverage_blocked">Pick clothes that cover both the upper and lower body — either a full-body piece (a dress or jumpsuit) or a top together with a bottom. This keeps your generated try-on fully dressed.</string>
     <string name="tryon_no_photos">Add a try-on photo in Settings → Profile to use this feature.</string>
     <string name="tryon_save_to_gallery">Save to gallery</string>
     <string name="tryon_saved">Saved to Pictures/LibreLookAI</string>

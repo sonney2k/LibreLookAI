@@ -1179,4 +1179,7 @@
     <!-- Drive folder picker strings -->
     <string name="drive_picker_failed">Google Drive에 연결할 수 없습니다. 다시 시도하세요.</string>
     <string name="drive_picker_opening">Google Drive 여는 중…</string>
+
+    <!-- Try-on coverage gate -->
+    <string name="tryon_coverage_blocked">상체와 하체를 모두 가리는 옷을 선택하세요. 전신을 덮는 한 벌(원피스나 점프수트)이거나, 상의와 하의를 함께 선택하면 됩니다. 이렇게 하면 생성된 가상 피팅이 완전히 옷을 갖춘 상태로 유지됩니다.</string>
 </resources>

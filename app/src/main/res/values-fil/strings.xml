@@ -1179,4 +1179,7 @@
     <!-- Drive folder picker strings -->
     <string name="drive_picker_failed">Hindi makakonekta sa Google Drive. Subukang muli.</string>
     <string name="drive_picker_opening">Binubuksan ang Google Drive…</string>
+
+    <!-- Try-on coverage gate -->
+    <string name="tryon_coverage_blocked">Pumili ng mga damit na tumatakip sa itaas at ibabang bahagi ng katawan — isang full-body na piraso (damit o jumpsuit) o isang pang-itaas kasama ang isang pang-ibaba. Pinananatili nitong ganap na nakadamit ang nabuong try-on.</string>
 </resources>

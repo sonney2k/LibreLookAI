@@ -1179,4 +1179,7 @@
     <!-- Drive folder picker strings -->
     <string name="drive_picker_failed">Impossible de se connecter à Google Drive. Réessayez.</string>
     <string name="drive_picker_opening">Ouverture de Google Drive…</string>
+
+    <!-- Try-on coverage gate -->
+    <string name="tryon_coverage_blocked">Choisis des vêtements qui couvrent à la fois le haut et le bas du corps — soit une pièce intégrale (une robe ou une combinaison), soit un haut avec un bas. Ainsi, ton essayage généré reste entièrement habillé.</string>
 </resources>

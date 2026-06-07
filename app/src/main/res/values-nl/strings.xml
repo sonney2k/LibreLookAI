@@ -1179,4 +1179,7 @@
     <!-- Drive folder picker strings -->
     <string name="drive_picker_failed">Kan geen verbinding maken met Google Drive. Probeer het opnieuw.</string>
     <string name="drive_picker_opening">Google Drive openen…</string>
+
+    <!-- Try-on coverage gate -->
+    <string name="tryon_coverage_blocked">Kies kleding die zowel het boven- als het onderlichaam bedekt — een kledingstuk voor het hele lichaam (een jurk of jumpsuit) of een bovenstuk samen met een onderstuk. Zo blijft je gegenereerde pasbeeld volledig gekleed.</string>
 </resources>

@@ -1179,4 +1179,7 @@
     <!-- Drive folder picker strings -->
     <string name="drive_picker_failed">Couldn\'t connect to Google Drive. Try again.</string>
     <string name="drive_picker_opening">Opening Google Drive…</string>
+
+    <!-- Try-on coverage gate -->
+    <string name="tryon_coverage_blocked">Pick clothes that cover both the upper and lower body — either a full-body piece (a dress or jumpsuit) or a top together with a bottom. This keeps your generated try-on fully dressed.</string>
 </resources>
