@@ -1021,11 +1021,23 @@ internal fun AppContent(activity: ComponentActivity) {
                                     RestoreCategory(
                                         label = stringResource(R.string.nav_wardrobe),
                                         loading = restoreWardrobe.isLoading,
-                                        detail = if (restoreWardrobe.isSyncing && restoreWardrobe.syncTotal > 0)
-                                            stringResource(
-                                                R.string.restore_items_progress,
-                                                restoreWardrobe.syncDone, restoreWardrobe.syncTotal,
-                                            ) else null,
+                                        // Name the sub-step so a fresh restore doesn't appear to hang
+                                        // at "196/196" while sidecars download and caches are written.
+                                        detail = when (restoreWardrobe.syncPhase) {
+                                            com.librelookai.wardrobe.WardrobeSyncPhase.DOWNLOADING ->
+                                                if (restoreWardrobe.syncTotal > 0) stringResource(
+                                                    R.string.restore_items_progress,
+                                                    restoreWardrobe.syncDone, restoreWardrobe.syncTotal,
+                                                ) else null
+                                            com.librelookai.wardrobe.WardrobeSyncPhase.DETAILS ->
+                                                if (restoreWardrobe.syncTotal > 0) stringResource(
+                                                    R.string.restore_details_progress,
+                                                    restoreWardrobe.syncDone, restoreWardrobe.syncTotal,
+                                                ) else stringResource(R.string.restore_finishing)
+                                            com.librelookai.wardrobe.WardrobeSyncPhase.FINISHING ->
+                                                stringResource(R.string.restore_finishing)
+                                            com.librelookai.wardrobe.WardrobeSyncPhase.NONE -> null
+                                        },
                                     ),
                                     RestoreCategory(
                                         label = stringResource(R.string.nav_styles),

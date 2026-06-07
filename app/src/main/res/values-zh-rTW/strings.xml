@@ -1155,4 +1155,11 @@
 
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">請選擇能同時遮蓋上半身和下半身的衣物——可以是全身式單品（洋裝或連身褲），或是上衣搭配下著。這樣產生的試穿才會完整著裝。</string>
+
+    <!-- Sync/save progress labelling -->
+    <string name="restore_details_progress">正在載入詳細資料 %1$d / %2$d</string>
+    <string name="restore_finishing">正在完成…</string>
+    <string name="wardrobe_sync_details">正在載入詳細資料: %1$d / %2$d</string>
+    <string name="wardrobe_sync_finishing">正在完成…</string>
+    <string name="outfit_saving">正在儲存穿搭…</string>
 </resources>

@@ -1182,4 +1182,11 @@
 
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">Pick clothes that cover both the upper and lower body — either a full-body piece (a dress or jumpsuit) or a top together with a bottom. This keeps your generated try-on fully dressed.</string>
+
+    <!-- Sync/save progress labelling -->
+    <string name="restore_details_progress">Loading details %1$d / %2$d</string>
+    <string name="restore_finishing">Finishing up…</string>
+    <string name="wardrobe_sync_details">Loading details: %1$d / %2$d</string>
+    <string name="wardrobe_sync_finishing">Finishing up…</string>
+    <string name="outfit_saving">Saving outfit…</string>
 </resources>

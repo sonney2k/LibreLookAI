@@ -1182,4 +1182,11 @@
 
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">Wybierz ubrania zakrywające zarówno górną, jak i dolną część ciała — albo strój na całe ciało (sukienkę lub kombinezon), albo górę razem z dołem. Dzięki temu wygenerowana przymiarka pozostaje w pełni ubrana.</string>
+
+    <!-- Sync/save progress labelling -->
+    <string name="restore_details_progress">Wczytywanie szczegółów %1$d / %2$d</string>
+    <string name="restore_finishing">Kończenie…</string>
+    <string name="wardrobe_sync_details">Wczytywanie szczegółów: %1$d / %2$d</string>
+    <string name="wardrobe_sync_finishing">Kończenie…</string>
+    <string name="outfit_saving">Zapisywanie stylizacji…</string>
 </resources>

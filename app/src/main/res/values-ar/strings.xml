@@ -1182,4 +1182,11 @@
 
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">اختر ملابس تغطي الجزأين العلوي والسفلي من الجسم — إما قطعة لكامل الجسم (فستان أو أفرول) أو قطعة علوية مع قطعة سفلية. هذا يُبقي التجربة المُولَّدة مرتدية ملابس كاملة.</string>
+
+    <!-- Sync/save progress labelling -->
+    <string name="restore_details_progress">تحميل التفاصيل %1$d / %2$d</string>
+    <string name="restore_finishing">جارٍ الإنهاء…</string>
+    <string name="wardrobe_sync_details">تحميل التفاصيل: %1$d / %2$d</string>
+    <string name="wardrobe_sync_finishing">جارٍ الإنهاء…</string>
+    <string name="outfit_saving">جارٍ حفظ الإطلالة…</string>
 </resources>

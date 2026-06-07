@@ -1182,4 +1182,11 @@
 
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">Vyber oblečení, které zakryje horní i dolní část těla — buď celotělový kus (šaty nebo overal), nebo horní díl spolu se spodním dílem. Díky tomu zůstane vygenerované vyzkoušení plně oblečené.</string>
+
+    <!-- Sync/save progress labelling -->
+    <string name="restore_details_progress">Načítání podrobností %1$d / %2$d</string>
+    <string name="restore_finishing">Dokončování…</string>
+    <string name="wardrobe_sync_details">Načítání podrobností: %1$d / %2$d</string>
+    <string name="wardrobe_sync_finishing">Dokončování…</string>
+    <string name="outfit_saving">Ukládání outfitu…</string>
 </resources>

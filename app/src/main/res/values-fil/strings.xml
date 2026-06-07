@@ -1182,4 +1182,11 @@
 
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">Pumili ng mga damit na tumatakip sa itaas at ibabang bahagi ng katawan — isang full-body na piraso (damit o jumpsuit) o isang pang-itaas kasama ang isang pang-ibaba. Pinananatili nitong ganap na nakadamit ang nabuong try-on.</string>
+
+    <!-- Sync/save progress labelling -->
+    <string name="restore_details_progress">Naglo-load ng mga detalye %1$d / %2$d</string>
+    <string name="restore_finishing">Tinatapos…</string>
+    <string name="wardrobe_sync_details">Naglo-load ng mga detalye: %1$d / %2$d</string>
+    <string name="wardrobe_sync_finishing">Tinatapos…</string>
+    <string name="outfit_saving">Sine-save ang outfit…</string>
 </resources>

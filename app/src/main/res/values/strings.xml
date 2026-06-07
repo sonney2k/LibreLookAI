@@ -13,6 +13,8 @@
     <string name="restore_title">Restoring your data</string>
     <string name="restore_subtitle">Bringing your closet back from Google Drive…</string>
     <string name="restore_items_progress">%1$d of %2$d items</string>
+    <string name="restore_details_progress">Loading details %1$d of %2$d</string>
+    <string name="restore_finishing">Finishing up…</string>
 
     <!-- Insights tab -->
     <string name="insights_items_removed">Items no longer in wardrobe</string>
@@ -269,6 +271,8 @@
 
     <!-- Wardrobe -->
     <string name="wardrobe_sync_progress">Restoring wardrobe: %1$d / %2$d</string>
+    <string name="wardrobe_sync_details">Loading details: %1$d / %2$d</string>
+    <string name="wardrobe_sync_finishing">Finishing up…</string>
     <string name="wardrobe_empty_filter">No items match the filter</string>
     <string name="wardrobe_item_count">%1$d items</string>
     <string name="wardrobe_filtered_count">Showing %1$d of %2$d items</string>
@@ -528,6 +532,7 @@
     <string name="outfit_save_dialog_description">Description</string>
     <string name="outfit_save_dialog_tags">Tags</string>
     <string name="outfit_save_dialog_confirm">Save</string>
+    <string name="outfit_saving">Saving outfit…</string>
     <string name="outfit_mode_view">View</string>
     <string name="outfit_mode_edit">Edit</string>
     <string name="outfit_pick_category">Pick a category</string>

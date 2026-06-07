@@ -1182,4 +1182,11 @@
 
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">Hem vücudun üst hem de alt kısmını örten kıyafetler seç — ya tek parça bir giysi (elbise veya tulum) ya da bir üst ile birlikte bir alt. Böylece oluşturulan deneme tamamen giyinik kalır.</string>
+
+    <!-- Sync/save progress labelling -->
+    <string name="restore_details_progress">Ayrıntılar yükleniyor %1$d / %2$d</string>
+    <string name="restore_finishing">Tamamlanıyor…</string>
+    <string name="wardrobe_sync_details">Ayrıntılar yükleniyor: %1$d / %2$d</string>
+    <string name="wardrobe_sync_finishing">Tamamlanıyor…</string>
+    <string name="outfit_saving">Kıyafet kaydediliyor…</string>
 </resources>

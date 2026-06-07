@@ -1249,4 +1249,11 @@
 
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">Wähle Kleidung, die sowohl den Ober- als auch den Unterkörper bedeckt – entweder ein Einteiler (Kleid oder Jumpsuit) oder ein Oberteil zusammen mit einem Unterteil. So bleibt deine erzeugte Anprobe vollständig bekleidet.</string>
+
+    <!-- Sync/save progress labelling -->
+    <string name="restore_details_progress">Details werden geladen %1$d / %2$d</string>
+    <string name="restore_finishing">Wird abgeschlossen…</string>
+    <string name="wardrobe_sync_details">Details werden geladen: %1$d / %2$d</string>
+    <string name="wardrobe_sync_finishing">Wird abgeschlossen…</string>
+    <string name="outfit_saving">Outfit wird gespeichert…</string>
 </resources>

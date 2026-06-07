@@ -1182,4 +1182,11 @@
 
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">Valitse vaatteet, jotka peittävät sekä ylä- että alavartalon — joko kokovartalon vaate (mekko tai haalari) tai yläosa yhdessä alaosan kanssa. Näin luotu sovitus pysyy täysin puettuna.</string>
+
+    <!-- Sync/save progress labelling -->
+    <string name="restore_details_progress">Ladataan tietoja %1$d / %2$d</string>
+    <string name="restore_finishing">Viimeistellään…</string>
+    <string name="wardrobe_sync_details">Ladataan tietoja: %1$d / %2$d</string>
+    <string name="wardrobe_sync_finishing">Viimeistellään…</string>
+    <string name="outfit_saving">Tallennetaan asua…</string>
 </resources>

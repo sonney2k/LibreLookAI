@@ -1182,4 +1182,11 @@
 
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">Διάλεξε ρούχα που καλύπτουν τόσο το πάνω όσο και το κάτω μέρος του σώματος — είτε ένα ολόσωμο ρούχο (φόρεμα ή ολόσωμη φόρμα) είτε ένα πάνω μαζί με ένα κάτω. Έτσι η δοκιμή που δημιουργείται παραμένει πλήρως ντυμένη.</string>
+
+    <!-- Sync/save progress labelling -->
+    <string name="restore_details_progress">Φόρτωση λεπτομερειών %1$d / %2$d</string>
+    <string name="restore_finishing">Ολοκλήρωση…</string>
+    <string name="wardrobe_sync_details">Φόρτωση λεπτομερειών: %1$d / %2$d</string>
+    <string name="wardrobe_sync_finishing">Ολοκλήρωση…</string>
+    <string name="outfit_saving">Αποθήκευση συνόλου…</string>
 </resources>

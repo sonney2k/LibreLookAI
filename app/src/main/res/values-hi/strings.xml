@@ -1155,4 +1155,11 @@
 
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">ऐसे कपड़े चुनें जो शरीर के ऊपरी और निचले दोनों हिस्सों को ढकें — या तो पूरे शरीर का परिधान (ड्रेस या जंपसूट) या एक ऊपरी के साथ एक निचला परिधान। इससे आपका बनाया गया ट्राय-ऑन पूरी तरह कपड़ों में रहता है।</string>
+
+    <!-- Sync/save progress labelling -->
+    <string name="restore_details_progress">विवरण लोड हो रहे हैं %1$d / %2$d</string>
+    <string name="restore_finishing">पूरा हो रहा है…</string>
+    <string name="wardrobe_sync_details">विवरण लोड हो रहे हैं: %1$d / %2$d</string>
+    <string name="wardrobe_sync_finishing">पूरा हो रहा है…</string>
+    <string name="outfit_saving">आउटफ़िट सहेजा जा रहा है…</string>
 </resources>

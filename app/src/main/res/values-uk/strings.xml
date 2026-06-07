@@ -1155,4 +1155,11 @@
 
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">Вибери одяг, що закриває і верхню, і нижню частину тіла — або суцільний предмет (сукню чи комбінезон), або верх разом із низом. Так згенерована примірка залишається повністю одягненою.</string>
+
+    <!-- Sync/save progress labelling -->
+    <string name="restore_details_progress">Завантаження деталей %1$d / %2$d</string>
+    <string name="restore_finishing">Завершення…</string>
+    <string name="wardrobe_sync_details">Завантаження деталей: %1$d / %2$d</string>
+    <string name="wardrobe_sync_finishing">Завершення…</string>
+    <string name="outfit_saving">Збереження образу…</string>
 </resources>

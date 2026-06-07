@@ -1186,4 +1186,11 @@
 
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">בחרו בגדים שמכסים גם את פלג הגוף העליון וגם את התחתון — או פריט שלם לכל הגוף (שמלה או אוברול) או חולצה יחד עם פריט תחתון. כך המדידה שנוצרת נשארת לבושה לחלוטין.</string>
+
+    <!-- Sync/save progress labelling -->
+    <string name="restore_details_progress">טוען פרטים %1$d / %2$d</string>
+    <string name="restore_finishing">מסיים…</string>
+    <string name="wardrobe_sync_details">טוען פרטים: %1$d / %2$d</string>
+    <string name="wardrobe_sync_finishing">מסיים…</string>
+    <string name="outfit_saving">שומר את התלבושת…</string>
 </resources>

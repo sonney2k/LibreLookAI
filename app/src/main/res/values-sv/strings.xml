@@ -1182,4 +1182,11 @@
 
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">Välj kläder som täcker både överkroppen och underkroppen — antingen ett helkroppsplagg (klänning eller jumpsuit) eller en överdel tillsammans med en underdel. Då förblir din genererade provning fullt påklädd.</string>
+
+    <!-- Sync/save progress labelling -->
+    <string name="restore_details_progress">Läser in detaljer %1$d / %2$d</string>
+    <string name="restore_finishing">Slutför…</string>
+    <string name="wardrobe_sync_details">Läser in detaljer: %1$d / %2$d</string>
+    <string name="wardrobe_sync_finishing">Slutför…</string>
+    <string name="outfit_saving">Sparar outfit…</string>
 </resources>

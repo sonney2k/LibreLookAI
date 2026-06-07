@@ -6,6 +6,15 @@ import com.librelookai.util.Analytics
 
 enum class WardrobeView { GRID, CAPTURE, FIND_BY_PHOTO_CAPTURE }
 
+/**
+ * Which step of the Phase-2 Drive sync is currently running, so progress UI can label the work
+ * instead of stalling at "196/196" while sidecars download and caches are written.
+ * - [DOWNLOADING] — fetching the (uncached) image files; counts via syncDone/syncTotal.
+ * - [DETAILS] — loading each item's tag/metadata sidecar; counts via syncDone/syncTotal.
+ * - [FINISHING] — building the item list and writing local caches (no per-item count).
+ */
+enum class WardrobeSyncPhase { NONE, DOWNLOADING, DETAILS, FINISHING }
+
 /** Where a wardrobe-add originated. Threaded through the import pipeline so the funnel's terminal
  *  events ([logWardrobeAdd]) can report which source converts. See docs/FLOW_ANALYTICS.md (Flow 1). */
 enum class AddSource(val tag: String) { CAMERA("camera"), GALLERY("gallery"), URL("url") }
@@ -128,10 +137,12 @@ data class WardrobeUiState(
     val convertDone: Int = 0,
     val convertTotal: Int = 0,
     val error: String? = null,
-    /** Total images to download during Phase 2 Drive sync (0 = not syncing or unknown). */
+    /** Total items in the current Phase 2 sync sub-step (0 = not syncing or unknown). */
     val syncTotal: Int = 0,
-    /** Images downloaded so far during Phase 2 Drive sync. */
+    /** Items processed so far in the current Phase 2 sync sub-step. */
     val syncDone: Int = 0,
+    /** Which sub-step of the Phase 2 Drive sync is running (for progress labelling). */
+    val syncPhase: WardrobeSyncPhase = WardrobeSyncPhase.NONE,
     /** driveId of the image currently being processed by an AI operation, or null. */
     val processingImageId: String? = null,
     val selectedIds: Set<String> = emptySet(),

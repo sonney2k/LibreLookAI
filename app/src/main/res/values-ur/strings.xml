@@ -1155,4 +1155,11 @@
 
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">ایسے کپڑے منتخب کریں جو جسم کے اوپری اور نچلے دونوں حصوں کو ڈھانپیں — یا تو پورے جسم کا لباس (فراک یا جمپ سوٹ) یا ایک اوپری کے ساتھ ایک نچلا۔ اس سے آپ کا تیار کردہ ٹرائی آن مکمل طور پر ملبوس رہتا ہے۔</string>
+
+    <!-- Sync/save progress labelling -->
+    <string name="restore_details_progress">تفصیلات لوڈ ہو رہی ہیں %1$d / %2$d</string>
+    <string name="restore_finishing">مکمل ہو رہا ہے…</string>
+    <string name="wardrobe_sync_details">تفصیلات لوڈ ہو رہی ہیں: %1$d / %2$d</string>
+    <string name="wardrobe_sync_finishing">مکمل ہو رہا ہے…</string>
+    <string name="outfit_saving">آؤٹ فٹ محفوظ ہو رہا ہے…</string>
 </resources>

@@ -1155,4 +1155,11 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
 
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">Pilih pakaian yang menutupi bahagian atas dan bawah badan — sama ada sehelai penuh (gaun atau jumpsuit) atau pakaian atas bersama pakaian bawah. Ini memastikan percubaan yang dijana berpakaian lengkap.</string>
+
+    <!-- Sync/save progress labelling -->
+    <string name="restore_details_progress">Memuatkan butiran %1$d / %2$d</string>
+    <string name="restore_finishing">Menyelesaikan…</string>
+    <string name="wardrobe_sync_details">Memuatkan butiran: %1$d / %2$d</string>
+    <string name="wardrobe_sync_finishing">Menyelesaikan…</string>
+    <string name="outfit_saving">Menyimpan set pakaian…</string>
 </resources>

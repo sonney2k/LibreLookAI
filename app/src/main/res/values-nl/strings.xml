@@ -1182,4 +1182,11 @@
 
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">Kies kleding die zowel het boven- als het onderlichaam bedekt — een kledingstuk voor het hele lichaam (een jurk of jumpsuit) of een bovenstuk samen met een onderstuk. Zo blijft je gegenereerde pasbeeld volledig gekleed.</string>
+
+    <!-- Sync/save progress labelling -->
+    <string name="restore_details_progress">Details laden %1$d / %2$d</string>
+    <string name="restore_finishing">Afronden…</string>
+    <string name="wardrobe_sync_details">Details laden: %1$d / %2$d</string>
+    <string name="wardrobe_sync_finishing">Afronden…</string>
+    <string name="outfit_saving">Outfit opslaan…</string>
 </resources>

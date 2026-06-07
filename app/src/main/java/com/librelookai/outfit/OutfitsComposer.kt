@@ -176,6 +176,7 @@ internal fun OutfitsViewModel.closeComposer() = _state.update {
             composerFeedbackHistory     = emptyList(),
             composerReason              = "",
             composerError               = null,
+            isComposerSaving            = false,
             isSaveDialogOpen            = false,
             composerAiSuggestedName     = "",
             composerAiSuggestedDescription = "",

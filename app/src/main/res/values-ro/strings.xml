@@ -1155,4 +1155,11 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
 
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">Alege haine care acoperă atât partea de sus, cât și partea de jos a corpului — fie o piesă integrală (o rochie sau o salopetă), fie o piesă de sus împreună cu una de jos. Astfel, proba generată rămâne complet îmbrăcată.</string>
+
+    <!-- Sync/save progress labelling -->
+    <string name="restore_details_progress">Se încarcă detaliile %1$d / %2$d</string>
+    <string name="restore_finishing">Se finalizează…</string>
+    <string name="wardrobe_sync_details">Se încarcă detaliile: %1$d / %2$d</string>
+    <string name="wardrobe_sync_finishing">Se finalizează…</string>
+    <string name="outfit_saving">Se salvează ținuta…</string>
 </resources>

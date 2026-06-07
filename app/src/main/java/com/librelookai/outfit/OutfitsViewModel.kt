@@ -461,6 +461,9 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
             .ifEmpty { s.composerItemIds }
         if (itemIds.isEmpty()) { onDone(false); return }
         val editingId = s.composerEditingOutfitId
+        // The Drive write is a network round-trip; surface a "saving" overlay so the user isn't
+        // left staring at the unchanged composer until the list silently reappears.
+        _state.update { it.copy(isComposerSaving = true) }
         // Funnel terminal helper: whether the saved outfit used AI suggestions, plus create/edit + size.
         val aiGenerated = s.composerSuggestions.isNotEmpty()
         fun logOutfitSaved(mode: String) = Analytics.event(
@@ -475,6 +478,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 tags        = tags,
             ) { ok ->
                 if (ok) { logOutfitSaved("create"); closeComposer() }
+                else _state.update { it.copy(isComposerSaving = false) }
                 onDone(ok)
             }
             return
@@ -503,7 +507,7 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
                 closeComposer()
                 onDone(true)
             }.onFailure { e ->
-                _state.update { it.copy(error = e.message) }
+                _state.update { it.copy(error = e.message, isComposerSaving = false) }
                 onDone(false)
             }
         }

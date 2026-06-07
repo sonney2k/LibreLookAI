@@ -1182,4 +1182,11 @@
 
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">Elige prendas que cubran tanto la parte superior como la inferior del cuerpo: una prenda de cuerpo entero (un vestido o un enterizo) o una prenda superior junto con una inferior. Así tu prueba generada queda completamente vestida.</string>
+
+    <!-- Sync/save progress labelling -->
+    <string name="restore_details_progress">Cargando detalles %1$d / %2$d</string>
+    <string name="restore_finishing">Finalizando…</string>
+    <string name="wardrobe_sync_details">Cargando detalles: %1$d / %2$d</string>
+    <string name="wardrobe_sync_finishing">Finalizando…</string>
+    <string name="outfit_saving">Guardando conjunto…</string>
 </resources>

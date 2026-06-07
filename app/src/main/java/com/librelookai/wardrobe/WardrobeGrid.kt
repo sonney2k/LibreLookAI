@@ -348,15 +348,25 @@ internal fun GridContent(
                 }
             }
 
-            // ---- Sync progress bar (Phase 2 downloading, even when cached items visible) ----
-            if (state.syncTotal > 0) {
+            // ---- Sync progress bar (Phase 2, even when cached items visible) ----
+            // Show the bar for every counted sub-step (download → details), plus a "finishing up"
+            // label so the user never sees a full, idle bar while caches are written.
+            if (state.syncTotal > 0 || state.syncPhase == WardrobeSyncPhase.FINISHING) {
                 Column(Modifier.fillMaxWidth()) {
                     LinearProgressIndicator(
-                        progress = { if (state.syncTotal > 0) state.syncDone.toFloat() / state.syncTotal else 0f },
+                        progress = { if (state.syncTotal > 0) state.syncDone.toFloat() / state.syncTotal else 1f },
                         modifier = Modifier.fillMaxWidth(),
                     )
+                    val label = when (state.syncPhase) {
+                        WardrobeSyncPhase.DETAILS ->
+                            stringResource(R.string.wardrobe_sync_details, state.syncDone, state.syncTotal)
+                        WardrobeSyncPhase.FINISHING ->
+                            stringResource(R.string.wardrobe_sync_finishing)
+                        else ->
+                            stringResource(R.string.wardrobe_sync_progress, state.syncDone, state.syncTotal)
+                    }
                     Text(
-                        stringResource(R.string.wardrobe_sync_progress, state.syncDone, state.syncTotal),
+                        label,
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 2.dp),

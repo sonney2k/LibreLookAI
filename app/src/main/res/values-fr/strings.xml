@@ -1182,4 +1182,11 @@
 
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">Choisis des vêtements qui couvrent à la fois le haut et le bas du corps — soit une pièce intégrale (une robe ou une combinaison), soit un haut avec un bas. Ainsi, ton essayage généré reste entièrement habillé.</string>
+
+    <!-- Sync/save progress labelling -->
+    <string name="restore_details_progress">Chargement des détails %1$d / %2$d</string>
+    <string name="restore_finishing">Finalisation…</string>
+    <string name="wardrobe_sync_details">Chargement des détails: %1$d / %2$d</string>
+    <string name="wardrobe_sync_finishing">Finalisation…</string>
+    <string name="outfit_saving">Enregistrement de la tenue…</string>
 </resources>

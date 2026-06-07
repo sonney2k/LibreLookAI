@@ -408,6 +408,10 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 // jank the All-locations switch.
                 val cachedAll = withContext(Dispatchers.IO) { ids.flatMap { fid -> readCacheAsImages(fid) } }
                 if (cachedAll.isNotEmpty()) _state.update { it.copy(images = cachedAll, isLoading = false) }
+                // A cold restore (nothing cached to paint) is the only time we want the verbose
+                // download → details → finishing progress; routine warm-cache reconciles re-fetch
+                // sidecars too but must stay silent (no per-load "loading details" bar).
+                val coldLoad = cachedAll.isEmpty()
                 // Phase 2 — network: skip when offline
                 _state.update { it.copy(isSyncing = true) }
                 if (!getApplication<android.app.Application>().isNetworkAvailable()) {
@@ -430,7 +434,9 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     }.awaitAll()
 
                     val uncachedCount = folderMeta.sumOf { fd -> fd.files.count { drive.cachedFile(it.id) == null } }
-                    if (uncachedCount > 0) _state.update { it.copy(syncTotal = uncachedCount, syncDone = 0) }
+                    if (uncachedCount > 0) _state.update {
+                        it.copy(syncTotal = uncachedCount, syncDone = 0, syncPhase = WardrobeSyncPhase.DOWNLOADING)
+                    }
                     val doneCount = AtomicInteger(0)
 
                     // Download all uncached images in parallel across all folders
@@ -445,12 +451,22 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                         }
                     }.awaitAll()
 
-                    // Load all sidecar content in parallel
+                    // Load all sidecar content in parallel. Each sidecar is a separate Drive fetch,
+                    // so on a fresh restore this is the slow tail after images finish — surface it as
+                    // its own counted "details" step (cold load only) rather than letting the bar sit
+                    // full and idle.
+                    val sidecarTotal = folderMeta.sumOf { it.sidecarFiles.size }
+                    _state.update {
+                        if (coldLoad) it.copy(syncPhase = WardrobeSyncPhase.DETAILS, syncTotal = sidecarTotal, syncDone = 0)
+                        else it.copy(syncPhase = WardrobeSyncPhase.NONE, syncTotal = 0, syncDone = 0)
+                    }
+                    val sidecarDone = AtomicInteger(0)
                     val sidecarContent: Map<String, ItemSidecar> = folderMeta.flatMap { fd ->
                         fd.sidecarFiles.map { sf ->
                             async {
                                 val itemId = sf.name.removeSuffix(DriveRepository.SIDECAR_SUFFIX)
                                 val content = drive.loadFileContent(sf.id)
+                                if (coldLoad) _state.update { it.copy(syncDone = sidecarDone.incrementAndGet()) }
                                 itemId to content?.let {
                                     runCatching { gson.fromJson(it, ItemSidecar::class.java) }.getOrNull()
                                 }
@@ -458,6 +474,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                         }
                     }.awaitAll().mapNotNull { (k, v) -> v?.let { k to it } }.toMap()
 
+                    if (coldLoad) _state.update { it.copy(syncPhase = WardrobeSyncPhase.FINISHING) }
                     // Build DriveImage list per folder
                     val allFresh = folderMeta.flatMap { fd ->
                         val sidecarIdByItemId = fd.sidecarFiles.associate { sf ->
@@ -494,7 +511,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     }
                     allFresh + pendingRaw
                 }.onSuccess { images ->
-                    _state.update { it.copy(images = images, isLoading = false, syncTotal = 0, syncDone = 0, isSyncing = false) }
+                    _state.update { it.copy(images = images, isLoading = false, syncTotal = 0, syncDone = 0, syncPhase = WardrobeSyncPhase.NONE, isSyncing = false) }
                     // Persist each closet's freshly-loaded items to its own per-folder cache, so a
                     // later switch from All → that closet paints instantly from disk (Phase 1)
                     // instead of re-listing + re-fetching every sidecar over the network. Without
@@ -510,7 +527,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     refreshAllLocationImagesState()
                 }.onFailure { e ->
                     _state.update { s ->
-                        s.copy(isLoading = false, syncTotal = 0, syncDone = 0, isSyncing = false, error = if (s.images.isEmpty()) e.message else null)
+                        s.copy(isLoading = false, syncTotal = 0, syncDone = 0, syncPhase = WardrobeSyncPhase.NONE, isSyncing = false, error = if (s.images.isEmpty()) e.message else null)
                     }
                 }
                 return@launch
@@ -526,6 +543,9 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             if (cachedItems.isNotEmpty()) {
                 _state.update { it.copy(images = cachedItems, isLoading = false) }
             }
+            // Only a cold restore (empty cache) shows the verbose details/finishing progress; warm
+            // reconciles re-fetch sidecars silently. See the multi-folder path for rationale.
+            val coldLoad = cachedItems.isEmpty()
 
             // Phase 2 — background sync: skip when offline
             _state.update { it.copy(isSyncing = true) }
@@ -547,7 +567,9 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
                 // Download any uncached image files in parallel, tracking progress
                 val uncachedCount = files.count { drive.cachedFile(it.id) == null }
-                if (uncachedCount > 0) _state.update { it.copy(syncTotal = uncachedCount, syncDone = 0) }
+                if (uncachedCount > 0) _state.update {
+                    it.copy(syncTotal = uncachedCount, syncDone = 0, syncPhase = WardrobeSyncPhase.DOWNLOADING)
+                }
                 val doneCount = AtomicInteger(0)
                 files.map { file ->
                     async {
@@ -558,12 +580,19 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     }
                 }.awaitAll()
 
-                // Load sidecar content in parallel
+                // Load sidecar content in parallel — each is its own Drive fetch, so report it as a
+                // counted "details" step (cold load only) instead of leaving the bar full while it runs.
+                _state.update {
+                    if (coldLoad) it.copy(syncPhase = WardrobeSyncPhase.DETAILS, syncTotal = sidecarFiles.size, syncDone = 0)
+                    else it.copy(syncPhase = WardrobeSyncPhase.NONE, syncTotal = 0, syncDone = 0)
+                }
+                val sidecarDone = AtomicInteger(0)
                 val sidecarContent: Map<String, ItemSidecar> = sidecarFiles
                     .map { sf ->
                         async {
                             val itemId = sf.name.removeSuffix(DriveRepository.SIDECAR_SUFFIX)
                             val content = drive.loadFileContent(sf.id)
+                            if (coldLoad) _state.update { it.copy(syncDone = sidecarDone.incrementAndGet()) }
                             itemId to content?.let {
                                 runCatching { gson.fromJson(it, ItemSidecar::class.java) }.getOrNull()
                             }
@@ -572,6 +601,8 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                     .awaitAll()
                     .mapNotNull { (k, v) -> v?.let { k to it } }
                     .toMap()
+
+                if (coldLoad) _state.update { it.copy(syncPhase = WardrobeSyncPhase.FINISHING) }
 
                 // Legacy metadata fallback — only fetch if no sidecars exist yet (migration)
                 val legacyMeta: Map<String, WardrobeItemMeta> = if (sidecarFiles.isEmpty()) {
@@ -639,12 +670,12 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
 
                 freshImages + pendingRaw
             }.onSuccess { images ->
-                _state.update { it.copy(images = images, isLoading = false, syncTotal = 0, syncDone = 0, isSyncing = false) }
+                _state.update { it.copy(images = images, isLoading = false, syncTotal = 0, syncDone = 0, syncPhase = WardrobeSyncPhase.NONE, isSyncing = false) }
                 saveLocalCache(id, images)
             }.onFailure { e ->
                 // Don't overwrite cached items already shown with an error banner
                 _state.update { s ->
-                    s.copy(isLoading = false, syncTotal = 0, syncDone = 0, isSyncing = false, error = if (s.images.isEmpty()) e.message else null)
+                    s.copy(isLoading = false, syncTotal = 0, syncDone = 0, syncPhase = WardrobeSyncPhase.NONE, isSyncing = false, error = if (s.images.isEmpty()) e.message else null)
                 }
             }
         }

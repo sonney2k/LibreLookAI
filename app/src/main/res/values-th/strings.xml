@@ -1155,4 +1155,11 @@
 
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">เลือกเสื้อผ้าที่ปกปิดทั้งร่างกายส่วนบนและส่วนล่าง — ไม่ว่าจะเป็นชุดเต็มตัว (เดรสหรือจัมป์สูท) หรือเสื้อท่อนบนคู่กับท่อนล่าง วิธีนี้จะทำให้การลองสวมที่สร้างขึ้นแต่งกายครบถ้วน</string>
+
+    <!-- Sync/save progress labelling -->
+    <string name="restore_details_progress">กำลังโหลดรายละเอียด %1$d / %2$d</string>
+    <string name="restore_finishing">กำลังเสร็จสิ้น…</string>
+    <string name="wardrobe_sync_details">กำลังโหลดรายละเอียด: %1$d / %2$d</string>
+    <string name="wardrobe_sync_finishing">กำลังเสร็จสิ้น…</string>
+    <string name="outfit_saving">กำลังบันทึกชุด…</string>
 </resources>

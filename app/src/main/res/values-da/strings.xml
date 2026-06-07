@@ -1182,4 +1182,11 @@
 
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">Vælg tøj, der dækker både overkrop og underkrop — enten et heldragtsstykke (kjole eller buksedragt) eller en overdel sammen med en underdel. Så er din genererede prøvning fuldt påklædt.</string>
+
+    <!-- Sync/save progress labelling -->
+    <string name="restore_details_progress">Indlæser detaljer %1$d / %2$d</string>
+    <string name="restore_finishing">Afslutter…</string>
+    <string name="wardrobe_sync_details">Indlæser detaljer: %1$d / %2$d</string>
+    <string name="wardrobe_sync_finishing">Afslutter…</string>
+    <string name="outfit_saving">Gemmer sæt…</string>
 </resources>

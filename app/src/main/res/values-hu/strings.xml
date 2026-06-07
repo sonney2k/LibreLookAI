@@ -1155,4 +1155,11 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
 
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">Válassz olyan ruhákat, amelyek a felső- és az alsótestet egyaránt fedik — vagy egy egyrészes darabot (ruhát vagy overált), vagy egy felsőt egy alsóval együtt. Így a létrehozott felpróbálás teljesen felöltözött marad.</string>
+
+    <!-- Sync/save progress labelling -->
+    <string name="restore_details_progress">Részletek betöltése %1$d / %2$d</string>
+    <string name="restore_finishing">Befejezés…</string>
+    <string name="wardrobe_sync_details">Részletek betöltése: %1$d / %2$d</string>
+    <string name="wardrobe_sync_finishing">Befejezés…</string>
+    <string name="outfit_saving">Szett mentése…</string>
 </resources>

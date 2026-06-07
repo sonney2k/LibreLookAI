@@ -92,6 +92,8 @@ data class OutfitsUiState(
      */
     val composerSourceFolderIds: Set<String> = emptySet(),
     val isComposerEnhancing: Boolean = false,
+    /** True while a finished outfit is being persisted to Drive (Save tapped → list reappears). */
+    val isComposerSaving: Boolean = false,
     val composerError: String? = null,
     val composerSlots: List<OutfitSlot> = emptyList(),
     /** Snapshot of [composerSlots] selected-item ids at composer open. Used to detect real changes. */

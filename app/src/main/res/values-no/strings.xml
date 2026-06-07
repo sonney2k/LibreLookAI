@@ -1182,4 +1182,11 @@
 
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">Velg klær som dekker både overkroppen og underkroppen — enten et helkroppsplagg (kjole eller buksedress) eller en overdel sammen med en underdel. Slik holder den genererte prøvingen seg fullt påkledd.</string>
+
+    <!-- Sync/save progress labelling -->
+    <string name="restore_details_progress">Laster inn detaljer %1$d / %2$d</string>
+    <string name="restore_finishing">Fullfører…</string>
+    <string name="wardrobe_sync_details">Laster inn detaljer: %1$d / %2$d</string>
+    <string name="wardrobe_sync_finishing">Fullfører…</string>
+    <string name="outfit_saving">Lagrer antrekk…</string>
 </resources>

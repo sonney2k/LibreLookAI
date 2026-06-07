@@ -1182,4 +1182,11 @@
 
     <!-- Try-on coverage gate -->
     <string name="tryon_coverage_blocked">上半身と下半身の両方を覆う服を選んでください。全身を覆う一枚もの（ワンピースやジャンプスーツ）か、トップスとボトムスの組み合わせのいずれかです。これにより、生成される試着が完全に着衣の状態に保たれます。</string>
+
+    <!-- Sync/save progress labelling -->
+    <string name="restore_details_progress">詳細を読み込み中 %1$d / %2$d</string>
+    <string name="restore_finishing">仕上げ中…</string>
+    <string name="wardrobe_sync_details">詳細を読み込み中: %1$d / %2$d</string>
+    <string name="wardrobe_sync_finishing">仕上げ中…</string>
+    <string name="outfit_saving">コーディネートを保存中…</string>
 </resources>
