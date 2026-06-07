@@ -1193,4 +1193,28 @@
     <string name="wardrobe_sync_details">טוען פרטים: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">מסיים…</string>
     <string name="outfit_saving">שומר את התלבושת…</string>
+
+    <!-- Try-on generation failed dialog -->
+    <string name="tryon_generate_failed">היצירה נכשלה</string>
+    <string name="tryon_missing_photos_items">חסרות תמונות או פריטים</string>
+
+    <!-- Shared error messages localization -->
+    <string name="error_save_failed">השמירה נכשלה</string>
+    <string name="error_delete_failed">המחיקה נכשלה</string>
+    <string name="error_upload_failed">ההעלאה נכשלה: %1$s</string>
+    <string name="error_original_unavailable">המקור אינו זמין</string>
+    <string name="error_gemini_no_response">ה-AI לא הגיב.</string>
+    <string name="error_gemini_parse">לא ניתן לקרוא את תגובת ה-AI.</string>
+    <string name="error_import_failed_item">הייבוא של %1$s נכשל: %2$s</string>
+    <string name="error_tag_save_failed">שמירת התגיות ל-Drive נכשלה: %1$s</string>
+    <string name="error_add_items_first">הוסף תחילה פריטים לארון שלך.</string>
+    <string name="error_query_photo_missing">תמונת החיפוש כבר לא קיימת.</string>
+    <string name="error_import_query_failed">ייבוא תמונת החיפוש נכשל.</string>
+    <string name="error_trips_folder_not_ready">תיקיית הנסיעות אינה מוכנה.</string>
+    <string name="error_no_refinement">לא הוחזר שיפור שמיש.</string>
+    <string name="error_enter_destination">אנא הזן יעד.</string>
+    <string name="error_weather_fetch_failed">לא ניתן היה לקבל מזג אוויר עבור \"%1$s\". בדוק את שם היעד.</string>
+    <string name="error_billing">שגיאת חיוב: %1$s</string>
+    <string name="error_purchase_verify_failed">לא ניתן לאמת את הרכישה — פנה לתמיכה.</string>
+    <string name="credits_added">נוספו %1$d קרדיטים!</string>
 </resources>

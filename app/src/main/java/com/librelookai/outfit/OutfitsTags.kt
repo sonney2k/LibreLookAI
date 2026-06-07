@@ -60,7 +60,7 @@ internal fun OutfitsViewModel.suggestTagsForOutfit(outfit: Outfit, images: List<
             }
             if (raw == null) {
                 _state.update {
-                    it.copy(tagSuggestion = it.tagSuggestion?.copy(isLoading = false, error = "Gemini did not respond."))
+                    it.copy(tagSuggestion = it.tagSuggestion?.copy(isLoading = false, error = getApplication<android.app.Application>().getString(com.librelookai.R.string.error_gemini_no_response)))
                 }
                 return@launch
             }
@@ -161,7 +161,7 @@ internal fun OutfitsViewModel.applyTagSuggestions(outfitId: String, tagsToAdd: L
                 _state.update { it.copy(outfits = updatedAll, tagSuggestion = null) }
             }.onFailure { e ->
                 _state.update {
-                    it.copy(tagSuggestion = it.tagSuggestion?.copy(isSaving = false, error = e.message ?: "Save failed"))
+                    it.copy(tagSuggestion = it.tagSuggestion?.copy(isSaving = false, error = e.message ?: getApplication<android.app.Application>().getString(com.librelookai.R.string.error_save_failed)))
                 }
             }
         }

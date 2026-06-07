@@ -1162,4 +1162,28 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <string name="wardrobe_sync_details">Memuatkan butiran: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">Menyelesaikan…</string>
     <string name="outfit_saving">Menyimpan set pakaian…</string>
+
+    <!-- Try-on generation failed dialog -->
+    <string name="tryon_generate_failed">Penjanaan gagal</string>
+    <string name="tryon_missing_photos_items">Foto atau item tiada</string>
+
+    <!-- Shared error messages localization -->
+    <string name="error_save_failed">Gagal menyimpan</string>
+    <string name="error_delete_failed">Gagal memadam</string>
+    <string name="error_upload_failed">Gagal memuat naik: %1$s</string>
+    <string name="error_original_unavailable">Asal tidak tersedia</string>
+    <string name="error_gemini_no_response">AI tidak membalas.</string>
+    <string name="error_gemini_parse">Tidak dapat membaca respons AI.</string>
+    <string name="error_import_failed_item">Import %1$s gagal: %2$s</string>
+    <string name="error_tag_save_failed">Gagal menyimpan tag ke Drive: %1$s</string>
+    <string name="error_add_items_first">Tambah item ke almari pakaian anda dahulu.</string>
+    <string name="error_query_photo_missing">Foto carian tidak wujud lagi.</string>
+    <string name="error_import_query_failed">Gagal mengimport foto carian.</string>
+    <string name="error_trips_folder_not_ready">Folder perjalanan belum sedia.</string>
+    <string name="error_no_refinement">Tiada penambahbaikan yang boleh digunakan dikembalikan.</string>
+    <string name="error_enter_destination">Sila masukkan destinasi.</string>
+    <string name="error_weather_fetch_failed">Tidak dapat mengambil cuaca untuk \"%1$s\". Semak nama destinasi.</string>
+    <string name="error_billing">Ralat pengebilan: %1$s</string>
+    <string name="error_purchase_verify_failed">Tidak dapat mengesahkan pembelian — sila hubungi sokongan.</string>
+    <string name="credits_added">+%1$d kredit ditambah!</string>
 </resources>

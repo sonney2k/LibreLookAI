@@ -155,7 +155,7 @@ class TripsViewModel(app: Application) : AndroidViewModel(app) {
     fun upsertTrip(trip: Trip, onDone: (Boolean) -> Unit = {}) {
         viewModelScope.launch {
             val folderId = _state.value.folderId ?: run {
-                _state.update { it.copy(error = "Trips folder not ready.") }
+                _state.update { it.copy(error = getApplication<Application>().getString(com.librelookai.R.string.error_trips_folder_not_ready)) }
                 onDone(false); return@launch
             }
             runCatching {
@@ -341,7 +341,7 @@ class TripsViewModel(app: Application) : AndroidViewModel(app) {
             }
             if (raw == null) {
                 _bulkRefining.update { it - tripId }
-                _state.update { it.copy(error = "Gemini did not respond.") }
+                _state.update { it.copy(error = getApplication<Application>().getString(com.librelookai.R.string.error_gemini_no_response)) }
                 onDone(false); return@launch
             }
             val json = raw.trim().removePrefix("```json").removePrefix("```").removeSuffix("```").trim()
@@ -356,7 +356,7 @@ class TripsViewModel(app: Application) : AndroidViewModel(app) {
             if (parsed == null || parsed.outfits.isEmpty()) {
                 Log.w(TAG, "bulk-refine parse failed: $json")
                 _bulkRefining.update { it - tripId }
-                _state.update { it.copy(error = "Could not parse Gemini response.") }
+                _state.update { it.copy(error = getApplication<Application>().getString(com.librelookai.R.string.error_gemini_parse)) }
                 onDone(false); return@launch
             }
             val knownItemIds = images.map { it.driveId }.toSet()
@@ -376,7 +376,7 @@ class TripsViewModel(app: Application) : AndroidViewModel(app) {
             }.toMap()
             _bulkRefining.update { it - tripId }
             if (updates.isEmpty()) {
-                _state.update { it.copy(error = "No usable refinement returned.") }
+                _state.update { it.copy(error = getApplication<Application>().getString(com.librelookai.R.string.error_no_refinement)) }
                 onDone(false); return@launch
             }
             // Store as a preview — the user reviews it and explicitly replaces or discards.

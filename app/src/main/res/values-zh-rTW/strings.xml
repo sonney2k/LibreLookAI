@@ -1162,4 +1162,28 @@
     <string name="wardrobe_sync_details">正在載入詳細資料: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">正在完成…</string>
     <string name="outfit_saving">正在儲存穿搭…</string>
+
+    <!-- Try-on generation failed dialog -->
+    <string name="tryon_generate_failed">生成失敗</string>
+    <string name="tryon_missing_photos_items">缺少照片或單品</string>
+
+    <!-- Shared error messages localization -->
+    <string name="error_save_failed">儲存失敗</string>
+    <string name="error_delete_failed">刪除失敗</string>
+    <string name="error_upload_failed">上傳失敗：%1$s</string>
+    <string name="error_original_unavailable">原始檔無法使用</string>
+    <string name="error_gemini_no_response">AI 未回應。</string>
+    <string name="error_gemini_parse">無法讀取 AI 回應。</string>
+    <string name="error_import_failed_item">匯入 %1$s 失敗：%2$s</string>
+    <string name="error_tag_save_failed">將標籤儲存至雲端硬碟失敗：%1$s</string>
+    <string name="error_add_items_first">請先將單品加入你的衣櫥。</string>
+    <string name="error_query_photo_missing">查詢照片已不存在。</string>
+    <string name="error_import_query_failed">匯入查詢照片失敗。</string>
+    <string name="error_trips_folder_not_ready">旅行資料夾尚未就緒。</string>
+    <string name="error_no_refinement">未傳回可用的調整結果。</string>
+    <string name="error_enter_destination">請輸入目的地。</string>
+    <string name="error_weather_fetch_failed">無法取得「%1$s」的天氣。請檢查目的地名稱。</string>
+    <string name="error_billing">帳務錯誤：%1$s</string>
+    <string name="error_purchase_verify_failed">無法驗證購買 — 請聯絡支援。</string>
+    <string name="credits_added">已新增 %1$d 點數！</string>
 </resources>

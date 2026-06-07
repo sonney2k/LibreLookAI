@@ -1189,4 +1189,28 @@
     <string name="wardrobe_sync_details">Loading details: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">Finishing up…</string>
     <string name="outfit_saving">Saving outfit…</string>
+
+    <!-- Try-on generation failed dialog -->
+    <string name="tryon_generate_failed">Generation failed</string>
+    <string name="tryon_missing_photos_items">Missing photos or items</string>
+
+    <!-- Shared error messages localization -->
+    <string name="error_save_failed">Save failed</string>
+    <string name="error_delete_failed">Delete failed</string>
+    <string name="error_upload_failed">Upload failed: %1$s</string>
+    <string name="error_original_unavailable">Original not available</string>
+    <string name="error_gemini_no_response">The AI did not respond.</string>
+    <string name="error_gemini_parse">Could not read the AI response.</string>
+    <string name="error_import_failed_item">Import failed for %1$s: %2$s</string>
+    <string name="error_tag_save_failed">Saving tags to Drive failed: %1$s</string>
+    <string name="error_add_items_first">Add items to your wardrobe first.</string>
+    <string name="error_query_photo_missing">Query photo no longer exists.</string>
+    <string name="error_import_query_failed">Failed to import query photo.</string>
+    <string name="error_trips_folder_not_ready">Trips folder not ready.</string>
+    <string name="error_no_refinement">No usable refinement returned.</string>
+    <string name="error_enter_destination">Please enter a destination.</string>
+    <string name="error_weather_fetch_failed">Could not fetch weather for \"%1$s\". Check the destination name.</string>
+    <string name="error_billing">Billing error: %1$s</string>
+    <string name="error_purchase_verify_failed">Could not verify purchase — please contact support.</string>
+    <string name="credits_added">+%1$d credits added!</string>
 </resources>

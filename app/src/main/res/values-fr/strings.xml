@@ -1189,4 +1189,28 @@
     <string name="wardrobe_sync_details">Chargement des détails: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">Finalisation…</string>
     <string name="outfit_saving">Enregistrement de la tenue…</string>
+
+    <!-- Try-on generation failed dialog -->
+    <string name="tryon_generate_failed">Échec de la génération</string>
+    <string name="tryon_missing_photos_items">Photos ou articles manquants</string>
+
+    <!-- Shared error messages localization -->
+    <string name="error_save_failed">Échec de l\'enregistrement</string>
+    <string name="error_delete_failed">Échec de la suppression</string>
+    <string name="error_upload_failed">Échec de l\'envoi : %1$s</string>
+    <string name="error_original_unavailable">Original non disponible</string>
+    <string name="error_gemini_no_response">L\'IA n\'a pas répondu.</string>
+    <string name="error_gemini_parse">Impossible de lire la réponse de l\'IA.</string>
+    <string name="error_import_failed_item">Échec de l\'import de %1$s : %2$s</string>
+    <string name="error_tag_save_failed">Échec de l\'enregistrement des tags sur Drive : %1$s</string>
+    <string name="error_add_items_first">Ajoutez d\'abord des articles à votre garde-robe.</string>
+    <string name="error_query_photo_missing">La photo de recherche n\'existe plus.</string>
+    <string name="error_import_query_failed">Échec de l\'import de la photo de recherche.</string>
+    <string name="error_trips_folder_not_ready">Le dossier des voyages n\'est pas prêt.</string>
+    <string name="error_no_refinement">Aucun ajustement exploitable renvoyé.</string>
+    <string name="error_enter_destination">Veuillez saisir une destination.</string>
+    <string name="error_weather_fetch_failed">Impossible d\'obtenir la météo pour « %1$s ». Vérifiez le nom de la destination.</string>
+    <string name="error_billing">Erreur de facturation : %1$s</string>
+    <string name="error_purchase_verify_failed">Impossible de vérifier l\'achat — veuillez contacter le support.</string>
+    <string name="credits_added">+%1$d crédits ajoutés !</string>
 </resources>

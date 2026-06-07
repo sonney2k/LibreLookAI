@@ -1162,4 +1162,28 @@
     <string name="wardrobe_sync_details">Завантаження деталей: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">Завершення…</string>
     <string name="outfit_saving">Збереження образу…</string>
+
+    <!-- Try-on generation failed dialog -->
+    <string name="tryon_generate_failed">Не вдалося згенерувати</string>
+    <string name="tryon_missing_photos_items">Немає фото або речей</string>
+
+    <!-- Shared error messages localization -->
+    <string name="error_save_failed">Не вдалося зберегти</string>
+    <string name="error_delete_failed">Не вдалося видалити</string>
+    <string name="error_upload_failed">Не вдалося завантажити: %1$s</string>
+    <string name="error_original_unavailable">Оригінал недоступний</string>
+    <string name="error_gemini_no_response">ШІ не відповів.</string>
+    <string name="error_gemini_parse">Не вдалося прочитати відповідь ШІ.</string>
+    <string name="error_import_failed_item">Не вдалося імпортувати %1$s: %2$s</string>
+    <string name="error_tag_save_failed">Не вдалося зберегти теги на Диск: %1$s</string>
+    <string name="error_add_items_first">Спочатку додайте речі до свого гардероба.</string>
+    <string name="error_query_photo_missing">Фото запиту більше не існує.</string>
+    <string name="error_import_query_failed">Не вдалося імпортувати фото запиту.</string>
+    <string name="error_trips_folder_not_ready">Папка подорожей не готова.</string>
+    <string name="error_no_refinement">Не повернуто придатного уточнення.</string>
+    <string name="error_enter_destination">Введіть пункт призначення.</string>
+    <string name="error_weather_fetch_failed">Не вдалося отримати погоду для \"%1$s\". Перевірте назву пункту призначення.</string>
+    <string name="error_billing">Помилка оплати: %1$s</string>
+    <string name="error_purchase_verify_failed">Не вдалося підтвердити покупку — зверніться до підтримки.</string>
+    <string name="credits_added">Додано +%1$d кредитів!</string>
 </resources>

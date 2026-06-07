@@ -1162,4 +1162,28 @@
     <string name="wardrobe_sync_details">تفصیلات لوڈ ہو رہی ہیں: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">مکمل ہو رہا ہے…</string>
     <string name="outfit_saving">آؤٹ فٹ محفوظ ہو رہا ہے…</string>
+
+    <!-- Try-on generation failed dialog -->
+    <string name="tryon_generate_failed">جنریشن ناکام ہو گیا</string>
+    <string name="tryon_missing_photos_items">تصاویر یا اشیاء غائب ہیں</string>
+
+    <!-- Shared error messages localization -->
+    <string name="error_save_failed">محفوظ کرنا ناکام</string>
+    <string name="error_delete_failed">حذف کرنا ناکام</string>
+    <string name="error_upload_failed">اپ لوڈ ناکام: %1$s</string>
+    <string name="error_original_unavailable">اصل دستیاب نہیں</string>
+    <string name="error_gemini_no_response">AI نے جواب نہیں دیا۔</string>
+    <string name="error_gemini_parse">AI کا جواب پڑھا نہیں جا سکا۔</string>
+    <string name="error_import_failed_item">%1$s کے لیے درآمد ناکام: %2$s</string>
+    <string name="error_tag_save_failed">ٹیگز کو Drive میں محفوظ کرنا ناکام: %1$s</string>
+    <string name="error_add_items_first">پہلے اپنی الماری میں اشیاء شامل کریں۔</string>
+    <string name="error_query_photo_missing">تلاش کی تصویر اب موجود نہیں ہے۔</string>
+    <string name="error_import_query_failed">تلاش کی تصویر درآمد کرنے میں ناکام۔</string>
+    <string name="error_trips_folder_not_ready">سفر کا فولڈر تیار نہیں ہے۔</string>
+    <string name="error_no_refinement">کوئی قابل استعمال بہتری واپس نہیں آئی۔</string>
+    <string name="error_enter_destination">براہ کرم منزل درج کریں۔</string>
+    <string name="error_weather_fetch_failed">\"%1$s\" کے لیے موسم حاصل نہیں ہو سکا۔ منزل کا نام چیک کریں۔</string>
+    <string name="error_billing">بلنگ کی خرابی: %1$s</string>
+    <string name="error_purchase_verify_failed">خریداری کی تصدیق نہیں ہو سکی — براہ کرم سپورٹ سے رابطہ کریں۔</string>
+    <string name="credits_added">+%1$d کریڈٹ شامل ہو گئے!</string>
 </resources>

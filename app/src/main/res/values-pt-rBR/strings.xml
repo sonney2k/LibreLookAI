@@ -1189,4 +1189,28 @@
     <string name="wardrobe_sync_details">Carregando detalhes: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">Concluindo…</string>
     <string name="outfit_saving">Salvando look…</string>
+
+    <!-- Try-on generation failed dialog -->
+    <string name="tryon_generate_failed">Falha na geração</string>
+    <string name="tryon_missing_photos_items">Faltam fotos ou peças</string>
+
+    <!-- Shared error messages localization -->
+    <string name="error_save_failed">Falha ao salvar</string>
+    <string name="error_delete_failed">Falha ao excluir</string>
+    <string name="error_upload_failed">Falha no envio: %1$s</string>
+    <string name="error_original_unavailable">Original não disponível</string>
+    <string name="error_gemini_no_response">A IA não respondeu.</string>
+    <string name="error_gemini_parse">Não foi possível ler a resposta da IA.</string>
+    <string name="error_import_failed_item">Falha ao importar %1$s: %2$s</string>
+    <string name="error_tag_save_failed">Falha ao salvar as tags no Drive: %1$s</string>
+    <string name="error_add_items_first">Adicione peças ao seu guarda-roupa primeiro.</string>
+    <string name="error_query_photo_missing">A foto de busca não existe mais.</string>
+    <string name="error_import_query_failed">Falha ao importar a foto de busca.</string>
+    <string name="error_trips_folder_not_ready">A pasta de viagens não está pronta.</string>
+    <string name="error_no_refinement">Nenhum refinamento utilizável retornado.</string>
+    <string name="error_enter_destination">Insira um destino.</string>
+    <string name="error_weather_fetch_failed">Não foi possível obter o clima para \"%1$s\". Verifique o nome do destino.</string>
+    <string name="error_billing">Erro de cobrança: %1$s</string>
+    <string name="error_purchase_verify_failed">Não foi possível verificar a compra — entre em contato com o suporte.</string>
+    <string name="credits_added">+%1$d créditos adicionados!</string>
 </resources>

@@ -1162,4 +1162,28 @@
     <string name="wardrobe_sync_details">กำลังโหลดรายละเอียด: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">กำลังเสร็จสิ้น…</string>
     <string name="outfit_saving">กำลังบันทึกชุด…</string>
+
+    <!-- Try-on generation failed dialog -->
+    <string name="tryon_generate_failed">การสร้างล้มเหลว</string>
+    <string name="tryon_missing_photos_items">ไม่มีรูปภาพหรือรายการ</string>
+
+    <!-- Shared error messages localization -->
+    <string name="error_save_failed">บันทึกไม่สำเร็จ</string>
+    <string name="error_delete_failed">ลบไม่สำเร็จ</string>
+    <string name="error_upload_failed">อัปโหลดไม่สำเร็จ: %1$s</string>
+    <string name="error_original_unavailable">ไม่มีต้นฉบับ</string>
+    <string name="error_gemini_no_response">AI ไม่ตอบสนอง</string>
+    <string name="error_gemini_parse">ไม่สามารถอ่านการตอบกลับของ AI ได้</string>
+    <string name="error_import_failed_item">นำเข้า %1$s ไม่สำเร็จ: %2$s</string>
+    <string name="error_tag_save_failed">บันทึกแท็กไปยัง Drive ไม่สำเร็จ: %1$s</string>
+    <string name="error_add_items_first">เพิ่มไอเทมลงในตู้เสื้อผ้าของคุณก่อน</string>
+    <string name="error_query_photo_missing">ไม่มีรูปค้นหาอีกต่อไป</string>
+    <string name="error_import_query_failed">นำเข้ารูปค้นหาไม่สำเร็จ</string>
+    <string name="error_trips_folder_not_ready">โฟลเดอร์ทริปยังไม่พร้อม</string>
+    <string name="error_no_refinement">ไม่มีการปรับแต่งที่ใช้ได้กลับมา</string>
+    <string name="error_enter_destination">โปรดป้อนจุดหมายปลายทาง</string>
+    <string name="error_weather_fetch_failed">ไม่สามารถดึงสภาพอากาศสำหรับ \"%1$s\" ได้ ตรวจสอบชื่อจุดหมายปลายทาง</string>
+    <string name="error_billing">ข้อผิดพลาดในการเรียกเก็บเงิน: %1$s</string>
+    <string name="error_purchase_verify_failed">ไม่สามารถยืนยันการซื้อได้ — โปรดติดต่อฝ่ายสนับสนุน</string>
+    <string name="credits_added">เพิ่ม %1$d เครดิตแล้ว!</string>
 </resources>

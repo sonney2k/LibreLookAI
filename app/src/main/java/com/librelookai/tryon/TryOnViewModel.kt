@@ -253,7 +253,12 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
             .map { it.driveId to File(it.localPath) }
             .filter { (_, f) -> f.exists() }
         if (personFiles.isEmpty() || itemFiles.isEmpty()) {
-            _state.update { it.copy(error = "Missing photos or items") }
+            _state.update {
+                it.copy(
+                    error = getApplication<Application>()
+                        .getString(com.librelookai.R.string.tryon_missing_photos_items),
+                )
+            }
             return
         }
         // Refuse unless the selection covers both upper and lower body (a full-body piece, or a
@@ -291,7 +296,13 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
             }
             if (result == null) {
                 Analytics.event("tryon_generate", mapOf("result" to "failed", "reason" to "no_response", "source" to source))
-                _state.update { it.copy(isGenerating = false, error = "Generation failed") }
+                _state.update {
+                    it.copy(
+                        isGenerating = false,
+                        error = getApplication<Application>()
+                            .getString(com.librelookai.R.string.tryon_generate_failed),
+                    )
+                }
             } else {
                 Analytics.event("tryon_generate", mapOf("result" to "ok", "source" to source, "items" to files.size.toString()))
                 lastGeneratedItemFiles = files
@@ -346,7 +357,13 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
                 }
             } catch (e: Exception) {
                 Log.e("TryOnVM", "saveCurrent failed", e)
-                _state.update { it.copy(isSaving = false, error = e.message ?: "Save failed") }
+                _state.update {
+                    it.copy(
+                        isSaving = false,
+                        error = e.message ?: getApplication<Application>()
+                            .getString(com.librelookai.R.string.error_save_failed),
+                    )
+                }
             }
         }
     }
@@ -366,7 +383,12 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
                     )
                 }
             } catch (e: Exception) {
-                _state.update { it.copy(error = e.message ?: "Delete failed") }
+                _state.update {
+                    it.copy(
+                        error = e.message ?: getApplication<Application>()
+                            .getString(com.librelookai.R.string.error_delete_failed),
+                    )
+                }
             }
         }
     }
@@ -395,7 +417,12 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
                     )
                 }
             } catch (e: Exception) {
-                _state.update { it.copy(error = e.message ?: "Delete failed") }
+                _state.update {
+                    it.copy(
+                        error = e.message ?: getApplication<Application>()
+                            .getString(com.librelookai.R.string.error_delete_failed),
+                    )
+                }
             }
         }
     }

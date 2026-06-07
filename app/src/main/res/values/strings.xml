@@ -670,6 +670,8 @@
     <string name="tryon_uploading">Uploading…</string>
     <string name="tryon_generating">Generating your try-on…</string>
     <string name="tryon_error">Try-on generation failed</string>
+    <string name="tryon_generate_failed">Generation failed</string>
+    <string name="tryon_missing_photos_items">Missing photos or items</string>
     <string name="tryon_coverage_blocked">Pick clothes that cover both the upper and lower body — either a full-body piece (a dress or jumpsuit) or a top together with a bottom. This keeps your generated try-on fully dressed.</string>
     <string name="tryon_no_photos">Add a try-on photo in Settings → Profile to use this feature.</string>
     <string name="tryon_save_to_gallery">Save to gallery</string>
@@ -1243,4 +1245,24 @@
 
     <!-- Wardrobe maintenance overflow menu -->
     <string name="wardrobe_maintenance_menu">Maintenance</string>
+
+    <!-- Shared / generic error messages surfaced in dialogs -->
+    <string name="error_save_failed">Save failed</string>
+    <string name="error_delete_failed">Delete failed</string>
+    <string name="error_upload_failed">Upload failed: %1$s</string>
+    <string name="error_original_unavailable">Original not available</string>
+    <string name="error_gemini_no_response">The AI did not respond.</string>
+    <string name="error_gemini_parse">Could not read the AI response.</string>
+    <string name="error_import_failed_item">Import failed for %1$s: %2$s</string>
+    <string name="error_tag_save_failed">Saving tags to Drive failed: %1$s</string>
+    <string name="error_add_items_first">Add items to your wardrobe first.</string>
+    <string name="error_query_photo_missing">Query photo no longer exists.</string>
+    <string name="error_import_query_failed">Failed to import query photo.</string>
+    <string name="error_trips_folder_not_ready">Trips folder not ready.</string>
+    <string name="error_no_refinement">No usable refinement returned.</string>
+    <string name="error_enter_destination">Please enter a destination.</string>
+    <string name="error_weather_fetch_failed">Could not fetch weather for \"%1$s\". Check the destination name.</string>
+    <string name="credits_added">+%1$d credits added!</string>
+    <string name="error_billing">Billing error: %1$s</string>
+    <string name="error_purchase_verify_failed">Could not verify purchase — please contact support.</string>
 </resources>

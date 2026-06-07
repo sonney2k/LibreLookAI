@@ -1189,4 +1189,28 @@
     <string name="wardrobe_sync_details">Läser in detaljer: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">Slutför…</string>
     <string name="outfit_saving">Sparar outfit…</string>
+
+    <!-- Try-on generation failed dialog -->
+    <string name="tryon_generate_failed">Genereringen misslyckades</string>
+    <string name="tryon_missing_photos_items">Foton eller plagg saknas</string>
+
+    <!-- Shared error messages localization -->
+    <string name="error_save_failed">Det gick inte att spara</string>
+    <string name="error_delete_failed">Det gick inte att ta bort</string>
+    <string name="error_upload_failed">Uppladdningen misslyckades: %1$s</string>
+    <string name="error_original_unavailable">Originalet är inte tillgängligt</string>
+    <string name="error_gemini_no_response">AI:n svarade inte.</string>
+    <string name="error_gemini_parse">Det gick inte att läsa AI-svaret.</string>
+    <string name="error_import_failed_item">Importen av %1$s misslyckades: %2$s</string>
+    <string name="error_tag_save_failed">Det gick inte att spara taggar till Drive: %1$s</string>
+    <string name="error_add_items_first">Lägg först till plagg i din garderob.</string>
+    <string name="error_query_photo_missing">Sökfotot finns inte längre.</string>
+    <string name="error_import_query_failed">Det gick inte att importera sökfotot.</string>
+    <string name="error_trips_folder_not_ready">Resmappen är inte klar.</string>
+    <string name="error_no_refinement">Ingen användbar förfining returnerades.</string>
+    <string name="error_enter_destination">Ange ett resmål.</string>
+    <string name="error_weather_fetch_failed">Det gick inte att hämta väder för \"%1$s\". Kontrollera resmålets namn.</string>
+    <string name="error_billing">Faktureringsfel: %1$s</string>
+    <string name="error_purchase_verify_failed">Det gick inte att verifiera köpet — kontakta supporten.</string>
+    <string name="credits_added">+%1$d krediter tillagda!</string>
 </resources>

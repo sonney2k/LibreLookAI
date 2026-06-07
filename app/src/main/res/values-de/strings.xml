@@ -1256,4 +1256,28 @@
     <string name="wardrobe_sync_details">Details werden geladen: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">Wird abgeschlossen…</string>
     <string name="outfit_saving">Outfit wird gespeichert…</string>
+
+    <!-- Try-on generation failed dialog -->
+    <string name="tryon_generate_failed">Generierung fehlgeschlagen</string>
+    <string name="tryon_missing_photos_items">Fotos oder Artikel fehlen</string>
+
+    <!-- Shared error messages localization -->
+    <string name="error_save_failed">Speichern fehlgeschlagen</string>
+    <string name="error_delete_failed">Löschen fehlgeschlagen</string>
+    <string name="error_upload_failed">Upload fehlgeschlagen: %1$s</string>
+    <string name="error_original_unavailable">Original nicht verfügbar</string>
+    <string name="error_gemini_no_response">Die KI hat nicht geantwortet.</string>
+    <string name="error_gemini_parse">Antwort der KI konnte nicht gelesen werden.</string>
+    <string name="error_import_failed_item">Import von %1$s fehlgeschlagen: %2$s</string>
+    <string name="error_tag_save_failed">Speichern der Tags in Drive fehlgeschlagen: %1$s</string>
+    <string name="error_add_items_first">Füge zuerst Teile zu deinem Kleiderschrank hinzu.</string>
+    <string name="error_query_photo_missing">Das Suchfoto existiert nicht mehr.</string>
+    <string name="error_import_query_failed">Suchfoto konnte nicht importiert werden.</string>
+    <string name="error_trips_folder_not_ready">Reise-Ordner ist nicht bereit.</string>
+    <string name="error_no_refinement">Keine brauchbare Verfeinerung erhalten.</string>
+    <string name="error_enter_destination">Bitte ein Ziel eingeben.</string>
+    <string name="error_weather_fetch_failed">Wetter für \"%1$s\" konnte nicht geladen werden. Prüfe den Zielnamen.</string>
+    <string name="error_billing">Abrechnungsfehler: %1$s</string>
+    <string name="error_purchase_verify_failed">Kauf konnte nicht verifiziert werden – bitte kontaktiere den Support.</string>
+    <string name="credits_added">+%1$d Credits hinzugefügt!</string>
 </resources>

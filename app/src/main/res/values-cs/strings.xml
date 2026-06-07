@@ -1189,4 +1189,28 @@
     <string name="wardrobe_sync_details">Načítání podrobností: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">Dokončování…</string>
     <string name="outfit_saving">Ukládání outfitu…</string>
+
+    <!-- Try-on generation failed dialog -->
+    <string name="tryon_generate_failed">Generování selhalo</string>
+    <string name="tryon_missing_photos_items">Chybí fotky nebo položky</string>
+
+    <!-- Shared error messages localization -->
+    <string name="error_save_failed">Uložení selhalo</string>
+    <string name="error_delete_failed">Smazání selhalo</string>
+    <string name="error_upload_failed">Nahrání selhalo: %1$s</string>
+    <string name="error_original_unavailable">Originál není k dispozici</string>
+    <string name="error_gemini_no_response">AI neodpověděla.</string>
+    <string name="error_gemini_parse">Nelze přečíst odpověď AI.</string>
+    <string name="error_import_failed_item">Import %1$s selhal: %2$s</string>
+    <string name="error_tag_save_failed">Uložení štítků na Disk selhalo: %1$s</string>
+    <string name="error_add_items_first">Nejprve přidejte položky do šatníku.</string>
+    <string name="error_query_photo_missing">Fotka dotazu už neexistuje.</string>
+    <string name="error_import_query_failed">Import fotky dotazu selhal.</string>
+    <string name="error_trips_folder_not_ready">Složka cest není připravena.</string>
+    <string name="error_no_refinement">Nebylo vráceno žádné použitelné vylepšení.</string>
+    <string name="error_enter_destination">Zadejte cíl.</string>
+    <string name="error_weather_fetch_failed">Nelze načíst počasí pro „%1$s\". Zkontrolujte název cíle.</string>
+    <string name="error_billing">Chyba účtování: %1$s</string>
+    <string name="error_purchase_verify_failed">Nákup nelze ověřit — kontaktujte podporu.</string>
+    <string name="credits_added">Přidáno +%1$d kreditů!</string>
 </resources>

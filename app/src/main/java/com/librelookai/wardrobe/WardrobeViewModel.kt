@@ -749,7 +749,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 drive.upsertSidecar(id, "$driveId${DriveRepository.SIDECAR_SUFFIX}", sidecarJson)
             } catch (e: Exception) {
                 Log.e("WardrobeVM", "saveSidecar failed for $driveId", e)
-                _state.update { it.copy(error = "Tag save to Drive failed: ${e.message}") }
+                _state.update { it.copy(error = getApplication<Application>().getString(R.string.error_tag_save_failed, e.message ?: "")) }
                 return@launch
             }
             metaMutex.withLock {
@@ -938,7 +938,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             _state.update { it.copy(isProcessing = true, processingImageId = driveId, error = null) }
             val source = resolveOriginalFile(driveId)
                 ?: run {
-                    _state.update { it.copy(isProcessing = false, error = "Original not available") }
+                    _state.update { it.copy(isProcessing = false, error = getApplication<Application>().getString(R.string.error_original_unavailable)) }
                     return@launch
                 }
             val processedFile = try {

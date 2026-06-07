@@ -1162,4 +1162,28 @@
     <string name="wardrobe_sync_details">विवरण लोड हो रहे हैं: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">पूरा हो रहा है…</string>
     <string name="outfit_saving">आउटफ़िट सहेजा जा रहा है…</string>
+
+    <!-- Try-on generation failed dialog -->
+    <string name="tryon_generate_failed">जनरेशन विफल रहा</string>
+    <string name="tryon_missing_photos_items">फ़ोटो या आइटम मौजूद नहीं</string>
+
+    <!-- Shared error messages localization -->
+    <string name="error_save_failed">सहेजना विफल</string>
+    <string name="error_delete_failed">हटाना विफल</string>
+    <string name="error_upload_failed">अपलोड विफल: %1$s</string>
+    <string name="error_original_unavailable">मूल उपलब्ध नहीं</string>
+    <string name="error_gemini_no_response">AI ने जवाब नहीं दिया।</string>
+    <string name="error_gemini_parse">AI की प्रतिक्रिया पढ़ी नहीं जा सकी।</string>
+    <string name="error_import_failed_item">%1$s के लिए आयात विफल: %2$s</string>
+    <string name="error_tag_save_failed">Drive में टैग सहेजना विफल: %1$s</string>
+    <string name="error_add_items_first">पहले अपने वॉर्डरोब में आइटम जोड़ें।</string>
+    <string name="error_query_photo_missing">खोज फ़ोटो अब मौजूद नहीं है।</string>
+    <string name="error_import_query_failed">खोज फ़ोटो आयात करने में विफल।</string>
+    <string name="error_trips_folder_not_ready">यात्राएँ फ़ोल्डर तैयार नहीं है।</string>
+    <string name="error_no_refinement">कोई उपयोगी परिशोधन नहीं मिला।</string>
+    <string name="error_enter_destination">कृपया एक गंतव्य दर्ज करें।</string>
+    <string name="error_weather_fetch_failed">\"%1$s\" के लिए मौसम प्राप्त नहीं हो सका। गंतव्य का नाम जाँचें।</string>
+    <string name="error_billing">बिलिंग त्रुटि: %1$s</string>
+    <string name="error_purchase_verify_failed">खरीद सत्यापित नहीं हो सकी — कृपया सहायता से संपर्क करें।</string>
+    <string name="credits_added">+%1$d क्रेडिट जोड़े गए!</string>
 </resources>

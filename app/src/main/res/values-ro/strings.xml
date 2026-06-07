@@ -1162,4 +1162,28 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="wardrobe_sync_details">Se încarcă detaliile: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">Se finalizează…</string>
     <string name="outfit_saving">Se salvează ținuta…</string>
+
+    <!-- Try-on generation failed dialog -->
+    <string name="tryon_generate_failed">Generarea a eșuat</string>
+    <string name="tryon_missing_photos_items">Lipsesc fotografii sau articole</string>
+
+    <!-- Shared error messages localization -->
+    <string name="error_save_failed">Salvarea a eșuat</string>
+    <string name="error_delete_failed">Ștergerea a eșuat</string>
+    <string name="error_upload_failed">Încărcarea a eșuat: %1$s</string>
+    <string name="error_original_unavailable">Originalul nu este disponibil</string>
+    <string name="error_gemini_no_response">IA nu a răspuns.</string>
+    <string name="error_gemini_parse">Nu s-a putut citi răspunsul IA.</string>
+    <string name="error_import_failed_item">Importul pentru %1$s a eșuat: %2$s</string>
+    <string name="error_tag_save_failed">Salvarea etichetelor în Drive a eșuat: %1$s</string>
+    <string name="error_add_items_first">Adaugă mai întâi articole în garderoba ta.</string>
+    <string name="error_query_photo_missing">Fotografia de căutare nu mai există.</string>
+    <string name="error_import_query_failed">Importul fotografiei de căutare a eșuat.</string>
+    <string name="error_trips_folder_not_ready">Folderul de călătorii nu este pregatit.</string>
+    <string name="error_no_refinement">Nu a fost returnată nicio rafinare utilizabilă.</string>
+    <string name="error_enter_destination">Introdu o destinație.</string>
+    <string name="error_weather_fetch_failed">Nu s-a putut obține vremea pentru „%1$s\". Verifică numele destinației.</string>
+    <string name="error_billing">Eroare de facturare: %1$s</string>
+    <string name="error_purchase_verify_failed">Achiziția nu a putut fi verificată — contactează asistența.</string>
+    <string name="credits_added">+%1$d credite adăugate!</string>
 </resources>

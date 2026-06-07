@@ -1189,4 +1189,28 @@
     <string name="wardrobe_sync_details">Φόρτωση λεπτομερειών: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">Ολοκλήρωση…</string>
     <string name="outfit_saving">Αποθήκευση συνόλου…</string>
+
+    <!-- Try-on generation failed dialog -->
+    <string name="tryon_generate_failed">Η δημιουργία απέτυχε</string>
+    <string name="tryon_missing_photos_items">Λείπουν φωτογραφίες ή είδη</string>
+
+    <!-- Shared error messages localization -->
+    <string name="error_save_failed">Η αποθήκευση απέτυχε</string>
+    <string name="error_delete_failed">Η διαγραφή απέτυχε</string>
+    <string name="error_upload_failed">Η μεταφόρτωση απέτυχε: %1$s</string>
+    <string name="error_original_unavailable">Το πρωτότυπο δεν είναι διαθέσιμο</string>
+    <string name="error_gemini_no_response">Η τεχνητή νοημοσύνη δεν απάντησε.</string>
+    <string name="error_gemini_parse">Δεν ήταν δυνατή η ανάγνωση της απάντησης της τεχνητής νοημοσύνης.</string>
+    <string name="error_import_failed_item">Η εισαγωγή του %1$s απέτυχε: %2$s</string>
+    <string name="error_tag_save_failed">Η αποθήκευση ετικετών στο Drive απέτυχε: %1$s</string>
+    <string name="error_add_items_first">Προσθέστε πρώτα είδη στην γκαρνταρόμπα σας.</string>
+    <string name="error_query_photo_missing">Η φωτογραφία αναζήτησης δεν υπάρχει πλέον.</string>
+    <string name="error_import_query_failed">Αποτυχία εισαγωγής φωτογραφίας αναζήτησης.</string>
+    <string name="error_trips_folder_not_ready">Ο φάκελος ταξιδιών δεν είναι έτοιμος.</string>
+    <string name="error_no_refinement">Δεν επιστράφηκε χρήσιμη βελτίωση.</string>
+    <string name="error_enter_destination">Εισαγάγετε προορισμό.</string>
+    <string name="error_weather_fetch_failed">Δεν ήταν δυνατή η λήψη καιρού για \"%1$s\". Ελέγξτε το όνομα προορισμού.</string>
+    <string name="error_billing">Σφάλμα χρέωσης: %1$s</string>
+    <string name="error_purchase_verify_failed">Δεν ήταν δυνατή η επαλήθευση της αγοράς — επικοινωνήστε με την υποστήριξη.</string>
+    <string name="credits_added">Προστέθηκαν +%1$d πιστώσεις!</string>
 </resources>

@@ -1189,4 +1189,28 @@
     <string name="wardrobe_sync_details">Caricamento dettagli: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">Completamento…</string>
     <string name="outfit_saving">Salvataggio outfit…</string>
+
+    <!-- Try-on generation failed dialog -->
+    <string name="tryon_generate_failed">Generazione non riuscita</string>
+    <string name="tryon_missing_photos_items">Foto o capi mancanti</string>
+
+    <!-- Shared error messages localization -->
+    <string name="error_save_failed">Salvataggio non riuscito</string>
+    <string name="error_delete_failed">Eliminazione non riuscita</string>
+    <string name="error_upload_failed">Caricamento non riuscito: %1$s</string>
+    <string name="error_original_unavailable">Originale non disponibile</string>
+    <string name="error_gemini_no_response">L\'IA non ha risposto.</string>
+    <string name="error_gemini_parse">Impossibile leggere la risposta dell\'IA.</string>
+    <string name="error_import_failed_item">Importazione di %1$s non riuscita: %2$s</string>
+    <string name="error_tag_save_failed">Salvataggio dei tag su Drive non riuscito: %1$s</string>
+    <string name="error_add_items_first">Aggiungi prima dei capi al tuo guardaroba.</string>
+    <string name="error_query_photo_missing">La foto di ricerca non esiste più.</string>
+    <string name="error_import_query_failed">Importazione della foto di ricerca non riuscita.</string>
+    <string name="error_trips_folder_not_ready">La cartella dei viaggi non è pronta.</string>
+    <string name="error_no_refinement">Nessun perfezionamento utilizzabile restituito.</string>
+    <string name="error_enter_destination">Inserisci una destinazione.</string>
+    <string name="error_weather_fetch_failed">Impossibile recuperare il meteo per \"%1$s\". Controlla il nome della destinazione.</string>
+    <string name="error_billing">Errore di fatturazione: %1$s</string>
+    <string name="error_purchase_verify_failed">Impossibile verificare l\'acquisto — contatta l\'assistenza.</string>
+    <string name="credits_added">+%1$d crediti aggiunti!</string>
 </resources>

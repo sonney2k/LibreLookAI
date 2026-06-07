@@ -58,10 +58,11 @@ fun TravelScreen(
     val travelState by travelViewModel.state.collectAsState()
     val wardrobeState by wardrobeViewModel.state.collectAsState()
     val profileState by profileViewModel.state.collectAsState()
+    val context = androidx.compose.ui.platform.LocalContext.current
     LaunchedEffect(travelState.packingList) {
         val packing = travelState.packingList ?: return@LaunchedEffect
         val snapshot = travelState
-        val trip = buildTripFromPlan(packing, snapshot)
+        val trip = buildTripFromPlan(packing, snapshot, context.getString(R.string.trip_no_destination))
         val outfits = buildOutfitsForTrip(packing, trip.id)
         // Persist outfits to the active closet first, then the trip JSON.
         stylesViewModel.addOutfits(outfits) { ok ->
@@ -131,9 +132,9 @@ fun TravelScreen(
 }
 
 /** Default name for an auto-created trip — destination + start date. */
-private fun buildTripFromPlan(packing: PackingList, snapshot: TravelUiState): Trip {
+private fun buildTripFromPlan(packing: PackingList, snapshot: TravelUiState, fallbackName: String): Trip {
     val nameParts = listOf(
-        snapshot.resolvedDestination.ifBlank { snapshot.destination }.takeIf { it.isNotBlank() } ?: "Trip",
+        snapshot.resolvedDestination.ifBlank { snapshot.destination }.takeIf { it.isNotBlank() } ?: fallbackName,
         snapshot.startDate.toString(),
     )
     return Trip(

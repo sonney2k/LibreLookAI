@@ -1189,4 +1189,28 @@
     <string name="wardrobe_sync_details">Wczytywanie szczegółów: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">Kończenie…</string>
     <string name="outfit_saving">Zapisywanie stylizacji…</string>
+
+    <!-- Try-on generation failed dialog -->
+    <string name="tryon_generate_failed">Generowanie nie powiodło się</string>
+    <string name="tryon_missing_photos_items">Brak zdjęć lub ubrań</string>
+
+    <!-- Shared error messages localization -->
+    <string name="error_save_failed">Zapis nie powiódł się</string>
+    <string name="error_delete_failed">Usuwanie nie powiodło się</string>
+    <string name="error_upload_failed">Przesyłanie nie powiodło się: %1$s</string>
+    <string name="error_original_unavailable">Oryginał niedostępny</string>
+    <string name="error_gemini_no_response">AI nie odpowiedziała.</string>
+    <string name="error_gemini_parse">Nie można odczytać odpowiedzi AI.</string>
+    <string name="error_import_failed_item">Import %1$s nie powiódł się: %2$s</string>
+    <string name="error_tag_save_failed">Zapis tagów na Dysku nie powiódł się: %1$s</string>
+    <string name="error_add_items_first">Najpierw dodaj rzeczy do swojej garderoby.</string>
+    <string name="error_query_photo_missing">Zdjęcie zapytania już nie istnieje.</string>
+    <string name="error_import_query_failed">Nie udało się zaimportować zdjęcia zapytania.</string>
+    <string name="error_trips_folder_not_ready">Folder podróży nie jest gotowy.</string>
+    <string name="error_no_refinement">Nie zwrócono użytecznego udoskonalenia.</string>
+    <string name="error_enter_destination">Wprowadź cel podróży.</string>
+    <string name="error_weather_fetch_failed">Nie można pobrać pogody dla „%1$s\". Sprawdź nazwę celu.</string>
+    <string name="error_billing">Błąd płatności: %1$s</string>
+    <string name="error_purchase_verify_failed">Nie można zweryfikować zakupu — skontaktuj się z pomocą techniczną.</string>
+    <string name="credits_added">Dodano +%1$d kredytów!</string>
 </resources>

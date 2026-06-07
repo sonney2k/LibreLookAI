@@ -294,7 +294,7 @@ internal fun WardrobeViewModel.uploadGalleryPhotos(uris: List<Uri>) {
                         // Enqueue for review; uploadPhotoInternal handles dedupe + queue routing.
                         uploadPhotoInternal(f, id, skippableLocalReview = true, source = AddSource.GALLERY)
                     }.onFailure { e ->
-                        _state.update { it.copy(error = "Upload failed: ${e.message}") }
+                        _state.update { it.copy(error = getApplication<Application>().getString(R.string.error_upload_failed, e.message ?: "")) }
                         runCatching { tempFile.delete() }
                     }
                 }
@@ -325,7 +325,7 @@ internal fun WardrobeViewModel.uploadGalleryPhotos(uris: List<Uri>) {
                     workQueue.send(PendingJob(newImage.driveId, id, source = AddSource.GALLERY))
                 }.onFailure { e ->
                     logWardrobeAdd("failed", AddSource.GALLERY, mapOf("reason" to "upload"))
-                    _state.update { it.copy(error = "Upload failed: ${e.message}") }
+                    _state.update { it.copy(error = getApplication<Application>().getString(R.string.error_upload_failed, e.message ?: "")) }
                 }
                 tempFile.delete()
             }

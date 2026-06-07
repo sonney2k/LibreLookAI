@@ -1189,4 +1189,28 @@
     <string name="wardrobe_sync_details">Ladataan tietoja: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">Viimeistellään…</string>
     <string name="outfit_saving">Tallennetaan asua…</string>
+
+    <!-- Try-on generation failed dialog -->
+    <string name="tryon_generate_failed">Luonti epäonnistui</string>
+    <string name="tryon_missing_photos_items">Kuvia tai vaatteita puuttuu</string>
+
+    <!-- Shared error messages localization -->
+    <string name="error_save_failed">Tallennus epäonnistui</string>
+    <string name="error_delete_failed">Poisto epäonnistui</string>
+    <string name="error_upload_failed">Lataus epäonnistui: %1$s</string>
+    <string name="error_original_unavailable">Alkuperäistä ei saatavilla</string>
+    <string name="error_gemini_no_response">Tekoäly ei vastannut.</string>
+    <string name="error_gemini_parse">Tekoälyn vastausta ei voitu lukea.</string>
+    <string name="error_import_failed_item">Kohteen %1$s tuonti epäonnistui: %2$s</string>
+    <string name="error_tag_save_failed">Tunnisteiden tallennus Driveen epäonnistui: %1$s</string>
+    <string name="error_add_items_first">Lisää ensin vaatteita vaatekaappiisi.</string>
+    <string name="error_query_photo_missing">Hakukuvaa ei enää ole.</string>
+    <string name="error_import_query_failed">Hakukuvan tuonti epäonnistui.</string>
+    <string name="error_trips_folder_not_ready">Matkakansio ei ole valmis.</string>
+    <string name="error_no_refinement">Käyttökelpoista hienosäätöä ei palautettu.</string>
+    <string name="error_enter_destination">Anna määränpää.</string>
+    <string name="error_weather_fetch_failed">Säätä kohteelle \"%1$s\" ei voitu hakea. Tarkista määränpään nimi.</string>
+    <string name="error_billing">Laskutusvirhe: %1$s</string>
+    <string name="error_purchase_verify_failed">Ostoa ei voitu vahvistaa — ota yhteyttä tukeen.</string>
+    <string name="credits_added">+%1$d krediittiä lisätty!</string>
 </resources>

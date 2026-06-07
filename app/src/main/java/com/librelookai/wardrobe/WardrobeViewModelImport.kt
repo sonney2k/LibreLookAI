@@ -370,7 +370,7 @@ internal suspend fun WardrobeViewModel.runImportEntries(
                 } else {
                     _state.update { s ->
                         s.copy(
-                            error = "Import failed for ${entry.displayName}: ${e.message}",
+                            error = getApplication<Application>().getString(com.librelookai.R.string.error_import_failed_item, entry.displayName, e.message ?: ""),
                             images = if (placeholderId != null)
                                 s.images.filterNot { it.driveId == placeholderId }
                             else s.images,

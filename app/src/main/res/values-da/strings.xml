@@ -1189,4 +1189,28 @@
     <string name="wardrobe_sync_details">Indlæser detaljer: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">Afslutter…</string>
     <string name="outfit_saving">Gemmer sæt…</string>
+
+    <!-- Try-on generation failed dialog -->
+    <string name="tryon_generate_failed">Generering mislykkedes</string>
+    <string name="tryon_missing_photos_items">Manglende fotos eller varer</string>
+
+    <!-- Shared error messages localization -->
+    <string name="error_save_failed">Lagring mislykkedes</string>
+    <string name="error_delete_failed">Sletning mislykkedes</string>
+    <string name="error_upload_failed">Upload mislykkedes: %1$s</string>
+    <string name="error_original_unavailable">Original ikke tilgængelig</string>
+    <string name="error_gemini_no_response">AI\'en svarede ikke.</string>
+    <string name="error_gemini_parse">Kunne ikke læse AI-svaret.</string>
+    <string name="error_import_failed_item">Import af %1$s mislykkedes: %2$s</string>
+    <string name="error_tag_save_failed">Kunne ikke gemme tags til Drive: %1$s</string>
+    <string name="error_add_items_first">Tilføj først ting til din garderobe.</string>
+    <string name="error_query_photo_missing">Søgefotoet findes ikke længere.</string>
+    <string name="error_import_query_failed">Kunne ikke importere søgefotoet.</string>
+    <string name="error_trips_folder_not_ready">Rejsemappen er ikke klar.</string>
+    <string name="error_no_refinement">Ingen brugbar forfining returneret.</string>
+    <string name="error_enter_destination">Indtast en destination.</string>
+    <string name="error_weather_fetch_failed">Kunne ikke hente vejr for \"%1$s\". Tjek destinationsnavnet.</string>
+    <string name="error_billing">Faktureringsfejl: %1$s</string>
+    <string name="error_purchase_verify_failed">Kunne ikke bekræfte købet — kontakt support.</string>
+    <string name="credits_added">+%1$d kreditter tilføjet!</string>
 </resources>

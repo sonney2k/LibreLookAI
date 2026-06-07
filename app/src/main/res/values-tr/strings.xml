@@ -1189,4 +1189,28 @@
     <string name="wardrobe_sync_details">Ayrıntılar yükleniyor: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">Tamamlanıyor…</string>
     <string name="outfit_saving">Kıyafet kaydediliyor…</string>
+
+    <!-- Try-on generation failed dialog -->
+    <string name="tryon_generate_failed">Oluşturma başarısız</string>
+    <string name="tryon_missing_photos_items">Fotoğraf veya parça eksik</string>
+
+    <!-- Shared error messages localization -->
+    <string name="error_save_failed">Kaydetme başarısız</string>
+    <string name="error_delete_failed">Silme başarısız</string>
+    <string name="error_upload_failed">Yükleme başarısız: %1$s</string>
+    <string name="error_original_unavailable">Orijinal kullanılamıyor</string>
+    <string name="error_gemini_no_response">Yapay zekâ yanıt vermedi.</string>
+    <string name="error_gemini_parse">Yapay zekâ yanıtı okunamadı.</string>
+    <string name="error_import_failed_item">%1$s içe aktarılamadı: %2$s</string>
+    <string name="error_tag_save_failed">Etiketleri Drive\'a kaydetme başarısız: %1$s</string>
+    <string name="error_add_items_first">Önce gardırobunuza parça ekleyin.</string>
+    <string name="error_query_photo_missing">Sorgu fotoğrafı artık mevcut değil.</string>
+    <string name="error_import_query_failed">Sorgu fotoğrafı içe aktarılamadı.</string>
+    <string name="error_trips_folder_not_ready">Geziler klasörü hazır değil.</string>
+    <string name="error_no_refinement">Kullanılabilir bir iyileştirme döndürülmedi.</string>
+    <string name="error_enter_destination">Lütfen bir varış noktası girin.</string>
+    <string name="error_weather_fetch_failed">\"%1$s\" için hava durumu alınamadı. Varış noktası adını kontrol edin.</string>
+    <string name="error_billing">Faturalandırma hatası: %1$s</string>
+    <string name="error_purchase_verify_failed">Satın alma doğrulanamadı — lütfen destekle iletişime geçin.</string>
+    <string name="credits_added">+%1$d kredi eklendi!</string>
 </resources>

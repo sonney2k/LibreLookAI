@@ -1162,4 +1162,28 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="wardrobe_sync_details">Részletek betöltése: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">Befejezés…</string>
     <string name="outfit_saving">Szett mentése…</string>
+
+    <!-- Try-on generation failed dialog -->
+    <string name="tryon_generate_failed">A generálás sikertelen</string>
+    <string name="tryon_missing_photos_items">Hiányzó fotók vagy ruhák</string>
+
+    <!-- Shared error messages localization -->
+    <string name="error_save_failed">A mentés sikertelen</string>
+    <string name="error_delete_failed">A törlés sikertelen</string>
+    <string name="error_upload_failed">A feltöltés sikertelen: %1$s</string>
+    <string name="error_original_unavailable">Az eredeti nem érhető el</string>
+    <string name="error_gemini_no_response">Az MI nem válaszolt.</string>
+    <string name="error_gemini_parse">Az MI válasza nem olvasható.</string>
+    <string name="error_import_failed_item">%1$s importálása sikertelen: %2$s</string>
+    <string name="error_tag_save_failed">A címkék Drive-ra mentése sikertelen: %1$s</string>
+    <string name="error_add_items_first">Először adj hozzá darabokat a gardróbodhoz.</string>
+    <string name="error_query_photo_missing">A keresési fotó már nem létezik.</string>
+    <string name="error_import_query_failed">A keresési fotó importálása sikertelen.</string>
+    <string name="error_trips_folder_not_ready">Az utazások mappa nem áll készen.</string>
+    <string name="error_no_refinement">Nem érkezett használható finomítás.</string>
+    <string name="error_enter_destination">Adj meg egy úti célt.</string>
+    <string name="error_weather_fetch_failed">Nem sikerült lekérni az időjárást ehhez: \"%1$s\". Ellenőrizd az úti cél nevét.</string>
+    <string name="error_billing">Számlázási hiba: %1$s</string>
+    <string name="error_purchase_verify_failed">A vásárlás nem ellenőrizhető — fordulj az ügyfélszolgálathoz.</string>
+    <string name="credits_added">+%1$d kredit hozzáadva!</string>
 </resources>

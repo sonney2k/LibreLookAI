@@ -1189,4 +1189,28 @@
     <string name="wardrobe_sync_details">詳細を読み込み中: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">仕上げ中…</string>
     <string name="outfit_saving">コーディネートを保存中…</string>
+
+    <!-- Try-on generation failed dialog -->
+    <string name="tryon_generate_failed">生成に失敗しました</string>
+    <string name="tryon_missing_photos_items">写真またはアイテムがありません</string>
+
+    <!-- Shared error messages localization -->
+    <string name="error_save_failed">保存に失敗しました</string>
+    <string name="error_delete_failed">削除に失敗しました</string>
+    <string name="error_upload_failed">アップロードに失敗しました: %1$s</string>
+    <string name="error_original_unavailable">オリジナルを利用できません</string>
+    <string name="error_gemini_no_response">AIから応答がありませんでした。</string>
+    <string name="error_gemini_parse">AIの応答を読み取れませんでした。</string>
+    <string name="error_import_failed_item">%1$s のインポートに失敗しました: %2$s</string>
+    <string name="error_tag_save_failed">タグのDriveへの保存に失敗しました: %1$s</string>
+    <string name="error_add_items_first">まずワードローブにアイテムを追加してください。</string>
+    <string name="error_query_photo_missing">検索用の写真は存在しません。</string>
+    <string name="error_import_query_failed">検索用の写真のインポートに失敗しました。</string>
+    <string name="error_trips_folder_not_ready">旅行フォルダの準備ができていません。</string>
+    <string name="error_no_refinement">使用可能な調整結果が返されませんでした。</string>
+    <string name="error_enter_destination">目的地を入力してください。</string>
+    <string name="error_weather_fetch_failed">「%1$s」の天気を取得できませんでした。目的地名を確認してください。</string>
+    <string name="error_billing">課金エラー: %1$s</string>
+    <string name="error_purchase_verify_failed">購入を確認できませんでした — サポートにお問い合わせください。</string>
+    <string name="credits_added">%1$d クレジットを追加しました！</string>
 </resources>

@@ -1189,4 +1189,28 @@
     <string name="wardrobe_sync_details">تحميل التفاصيل: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">جارٍ الإنهاء…</string>
     <string name="outfit_saving">جارٍ حفظ الإطلالة…</string>
+
+    <!-- Try-on generation failed dialog -->
+    <string name="tryon_generate_failed">فشل الإنشاء</string>
+    <string name="tryon_missing_photos_items">صور أو عناصر مفقودة</string>
+
+    <!-- Shared error messages localization -->
+    <string name="error_save_failed">فشل الحفظ</string>
+    <string name="error_delete_failed">فشل الحذف</string>
+    <string name="error_upload_failed">فشل الرفع: %1$s</string>
+    <string name="error_original_unavailable">الصورة الأصلية غير متوفرة</string>
+    <string name="error_gemini_no_response">لم يستجب الذكاء الاصطناعي.</string>
+    <string name="error_gemini_parse">تعذّرت قراءة رد الذكاء الاصطناعي.</string>
+    <string name="error_import_failed_item">فشل استيراد %1$s: %2$s</string>
+    <string name="error_tag_save_failed">فشل حفظ الوسوم في Drive: %1$s</string>
+    <string name="error_add_items_first">أضف عناصر إلى خزانتك أولاً.</string>
+    <string name="error_query_photo_missing">لم تعد صورة البحث موجودة.</string>
+    <string name="error_import_query_failed">فشل استيراد صورة البحث.</string>
+    <string name="error_trips_folder_not_ready">مجلد الرحلات غير جاهز.</string>
+    <string name="error_no_refinement">لم يتم إرجاع تحسين قابل للاستخدام.</string>
+    <string name="error_enter_destination">يرجى إدخال وجهة.</string>
+    <string name="error_weather_fetch_failed">تعذّر جلب الطقس لـ \"%1$s\". تحقق من اسم الوجهة.</string>
+    <string name="error_billing">خطأ في الفوترة: %1$s</string>
+    <string name="error_purchase_verify_failed">تعذّر التحقق من الشراء — يرجى التواصل مع الدعم.</string>
+    <string name="credits_added">تمت إضافة %1$d رصيد!</string>
 </resources>

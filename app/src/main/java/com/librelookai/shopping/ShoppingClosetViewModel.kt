@@ -318,7 +318,7 @@ class ShoppingClosetViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             _state.update { it.copy(processingImageId = driveId, error = null) }
             val source = resolveOriginalFile(driveId)
-                ?: run { _state.update { it.copy(processingImageId = null, error = "Original not available") }; return@launch }
+                ?: run { _state.update { it.copy(processingImageId = null, error = getApplication<Application>().getString(R.string.error_original_unavailable)) }; return@launch }
             val processedFile = gemini.removeBackground(source, drive.cacheDir)
                 ?: run { _state.update { it.copy(processingImageId = null) }; return@launch }
             runCatching {

@@ -1162,4 +1162,28 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="wardrobe_sync_details">Memuat detail: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">Menyelesaikan…</string>
     <string name="outfit_saving">Menyimpan setelan…</string>
+
+    <!-- Try-on generation failed dialog -->
+    <string name="tryon_generate_failed">Pembuatan gagal</string>
+    <string name="tryon_missing_photos_items">Foto atau item tidak ada</string>
+
+    <!-- Shared error messages localization -->
+    <string name="error_save_failed">Gagal menyimpan</string>
+    <string name="error_delete_failed">Gagal menghapus</string>
+    <string name="error_upload_failed">Gagal mengunggah: %1$s</string>
+    <string name="error_original_unavailable">Asli tidak tersedia</string>
+    <string name="error_gemini_no_response">AI tidak merespons.</string>
+    <string name="error_gemini_parse">Tidak dapat membaca respons AI.</string>
+    <string name="error_import_failed_item">Gagal mengimpor %1$s: %2$s</string>
+    <string name="error_tag_save_failed">Gagal menyimpan tag ke Drive: %1$s</string>
+    <string name="error_add_items_first">Tambahkan item ke lemari Anda terlebih dahulu.</string>
+    <string name="error_query_photo_missing">Foto kueri sudah tidak ada.</string>
+    <string name="error_import_query_failed">Gagal mengimpor foto kueri.</string>
+    <string name="error_trips_folder_not_ready">Folder perjalanan belum siap.</string>
+    <string name="error_no_refinement">Tidak ada penyempurnaan yang dapat digunakan.</string>
+    <string name="error_enter_destination">Masukkan tujuan.</string>
+    <string name="error_weather_fetch_failed">Tidak dapat mengambil cuaca untuk \"%1$s\". Periksa nama tujuan.</string>
+    <string name="error_billing">Kesalahan penagihan: %1$s</string>
+    <string name="error_purchase_verify_failed">Tidak dapat memverifikasi pembelian — hubungi dukungan.</string>
+    <string name="credits_added">+%1$d kredit ditambahkan!</string>
 </resources>

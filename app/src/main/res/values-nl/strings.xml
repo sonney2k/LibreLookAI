@@ -1189,4 +1189,28 @@
     <string name="wardrobe_sync_details">Details laden: %1$d / %2$d</string>
     <string name="wardrobe_sync_finishing">Afronden…</string>
     <string name="outfit_saving">Outfit opslaan…</string>
+
+    <!-- Try-on generation failed dialog -->
+    <string name="tryon_generate_failed">Genereren mislukt</string>
+    <string name="tryon_missing_photos_items">Foto\'s of items ontbreken</string>
+
+    <!-- Shared error messages localization -->
+    <string name="error_save_failed">Opslaan mislukt</string>
+    <string name="error_delete_failed">Verwijderen mislukt</string>
+    <string name="error_upload_failed">Uploaden mislukt: %1$s</string>
+    <string name="error_original_unavailable">Origineel niet beschikbaar</string>
+    <string name="error_gemini_no_response">De AI reageerde niet.</string>
+    <string name="error_gemini_parse">Kan het AI-antwoord niet lezen.</string>
+    <string name="error_import_failed_item">Importeren van %1$s mislukt: %2$s</string>
+    <string name="error_tag_save_failed">Tags opslaan naar Drive mislukt: %1$s</string>
+    <string name="error_add_items_first">Voeg eerst items toe aan je garderobe.</string>
+    <string name="error_query_photo_missing">De zoekfoto bestaat niet meer.</string>
+    <string name="error_import_query_failed">Importeren van zoekfoto mislukt.</string>
+    <string name="error_trips_folder_not_ready">Reizenmap is niet gereed.</string>
+    <string name="error_no_refinement">Geen bruikbare verfijning teruggegeven.</string>
+    <string name="error_enter_destination">Voer een bestemming in.</string>
+    <string name="error_weather_fetch_failed">Kan het weer voor \"%1$s\" niet ophalen. Controleer de bestemmingsnaam.</string>
+    <string name="error_billing">Factureringsfout: %1$s</string>
+    <string name="error_purchase_verify_failed">Kan aankoop niet verifiëren — neem contact op met support.</string>
+    <string name="credits_added">+%1$d credits toegevoegd!</string>
 </resources>

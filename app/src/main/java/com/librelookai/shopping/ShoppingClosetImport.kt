@@ -40,7 +40,7 @@ internal fun ShoppingClosetViewModel.importQuery(queryRawPath: String) {
         viewModelScope.launch {
             val source = File(queryRawPath)
             if (!source.exists()) {
-                _state.update { it.copy(error = "Query photo no longer exists") }
+                _state.update { it.copy(error = getApplication<Application>().getString(R.string.error_query_photo_missing)) }
                 return@launch
             }
             val folderId = ensureFolder() ?: return@launch
@@ -48,7 +48,7 @@ internal fun ShoppingClosetViewModel.importQuery(queryRawPath: String) {
                 val tempFile = File(drive.cacheDir, "shop_query_${System.currentTimeMillis()}.jpg")
                 runCatching { source.copyTo(tempFile, overwrite = true) }.getOrNull()
             } ?: run {
-                _state.update { it.copy(error = "Failed to import query photo") }
+                _state.update { it.copy(error = getApplication<Application>().getString(R.string.error_import_query_failed)) }
                 return@launch
             }
             uploadRaw(staged, folderId, "similarity")
@@ -67,7 +67,7 @@ internal fun ShoppingClosetViewModel.addFromGallery(uris: List<Uri>) {
                     uploadRaw(tempFile, folderId, "gallery")
                 }.onFailure { e ->
                     Log.w(ShoppingClosetViewModel.TAG, "gallery import failed", e)
-                    _state.update { it.copy(error = "Upload failed: ${e.message}") }
+                    _state.update { it.copy(error = getApplication<Application>().getString(R.string.error_upload_failed, e.message ?: "")) }
                     runCatching { tempFile.delete() }
                 }
             }
