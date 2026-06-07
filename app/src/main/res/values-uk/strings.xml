@@ -1123,4 +1123,12 @@
 
     <!-- Wardrobe maintenance overflow menu -->
     <string name="wardrobe_maintenance_menu">Обслуговування</string>
+
+    <!-- Calendar move/copy outfit between days -->
+    <string name="calendar_more_options">Інші параметри</string>
+    <string name="calendar_move_to_day">Перемістити на інший день</string>
+    <string name="calendar_copy_to_day">Копіювати на інший день</string>
+
+    <!-- Calendar long-press move prompt -->
+    <string name="calendar_move_prompt">Торкніться дня, щоб перемістити образ</string>
 </resources>

@@ -121,6 +121,47 @@ class OutfitEventsViewModel(app: Application) : AndroidViewModel(app) {
         persist(_state.value.events + event)
     }
 
+    /**
+     * Move a logged wear to [newDate], recomputing whether it is now a future (planned) event so it
+     * is correctly excluded from taste stats while planned and counted once it is in the past.
+     */
+    fun moveEvent(eventId: String, newDate: LocalDate) {
+        persist(_state.value.events.map {
+            if (it.id == eventId) {
+                it.copy(date = newDate.toString(), planned = newDate.isAfter(LocalDate.now()))
+            } else it
+        })
+    }
+
+    /**
+     * Move every wear in [eventIds] to [newDate] in a single persist — used by the calendar's
+     * long-press-then-tap flow, which moves a whole day's outfits at once (a sequence of single
+     * [moveEvent] calls would race, since each reads the pre-update event list).
+     */
+    fun moveEvents(eventIds: Set<String>, newDate: LocalDate) {
+        if (eventIds.isEmpty()) return
+        val planned = newDate.isAfter(LocalDate.now())
+        val ds = newDate.toString()
+        persist(_state.value.events.map {
+            if (it.id in eventIds) it.copy(date = ds, planned = planned) else it
+        })
+    }
+
+    /**
+     * Copy a logged wear to [newDate] as a brand-new event (fresh id), preserving the taste snapshot.
+     * Leaves the original wear in place.
+     */
+    fun copyEvent(eventId: String, newDate: LocalDate) {
+        val src = _state.value.events.firstOrNull { it.id == eventId } ?: return
+        val copy = src.copy(
+            id = java.util.UUID.randomUUID().toString(),
+            date = newDate.toString(),
+            createdAt = System.currentTimeMillis(),
+            planned = newDate.isAfter(LocalDate.now()),
+        )
+        persist(_state.value.events + copy)
+    }
+
     /** Toggle the explicit "loved it" feedback on a logged wear. */
     fun setEventLoved(eventId: String, loved: Boolean) {
         persist(_state.value.events.map { if (it.id == eventId) it.copy(loved = loved) else it })

@@ -1150,4 +1150,12 @@
 
     <!-- Wardrobe maintenance overflow menu -->
     <string name="wardrobe_maintenance_menu">Pagpapanatili</string>
+
+    <!-- Calendar move/copy outfit between days -->
+    <string name="calendar_more_options">Higit pang mga opsyon</string>
+    <string name="calendar_move_to_day">Ilipat sa ibang araw</string>
+    <string name="calendar_copy_to_day">Kopyahin sa ibang araw</string>
+
+    <!-- Calendar long-press move prompt -->
+    <string name="calendar_move_prompt">Mag-tap ng araw para ilipat ang outfit</string>
 </resources>

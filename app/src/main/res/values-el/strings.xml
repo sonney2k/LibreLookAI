@@ -1150,4 +1150,12 @@
 
     <!-- Wardrobe maintenance overflow menu -->
     <string name="wardrobe_maintenance_menu">Συντήρηση</string>
+
+    <!-- Calendar move/copy outfit between days -->
+    <string name="calendar_more_options">Περισσότερες επιλογές</string>
+    <string name="calendar_move_to_day">Μετακίνηση σε άλλη ημέρα</string>
+    <string name="calendar_copy_to_day">Αντιγραφή σε άλλη ημέρα</string>
+
+    <!-- Calendar long-press move prompt -->
+    <string name="calendar_move_prompt">Πατήστε μια ημέρα για να μετακινήσετε το σύνολο</string>
 </resources>

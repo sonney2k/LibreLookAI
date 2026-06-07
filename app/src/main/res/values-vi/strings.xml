@@ -1123,4 +1123,12 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
 
     <!-- Wardrobe maintenance overflow menu -->
     <string name="wardrobe_maintenance_menu">Bảo trì</string>
+
+    <!-- Calendar move/copy outfit between days -->
+    <string name="calendar_more_options">Tùy chọn khác</string>
+    <string name="calendar_move_to_day">Chuyển sang ngày khác</string>
+    <string name="calendar_copy_to_day">Sao chép sang ngày khác</string>
+
+    <!-- Calendar long-press move prompt -->
+    <string name="calendar_move_prompt">Chạm vào một ngày để di chuyển trang phục</string>
 </resources>

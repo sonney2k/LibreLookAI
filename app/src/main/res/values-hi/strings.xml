@@ -1123,4 +1123,12 @@
 
     <!-- Wardrobe maintenance overflow menu -->
     <string name="wardrobe_maintenance_menu">रखरखाव</string>
+
+    <!-- Calendar move/copy outfit between days -->
+    <string name="calendar_more_options">अधिक विकल्प</string>
+    <string name="calendar_move_to_day">किसी अन्य दिन पर ले जाएँ</string>
+    <string name="calendar_copy_to_day">किसी अन्य दिन पर कॉपी करें</string>
+
+    <!-- Calendar long-press move prompt -->
+    <string name="calendar_move_prompt">आउटफ़िट को ले जाने के लिए कोई दिन टैप करें</string>
 </resources>

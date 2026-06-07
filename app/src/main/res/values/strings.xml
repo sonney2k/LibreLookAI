@@ -587,6 +587,10 @@
     <string name="calendar_empty_hint">Wear an outfit from the Outfits tab to start tracking</string>
     <string name="calendar_wear_again">Wear again today</string>
     <string name="calendar_loved">Loved it</string>
+    <string name="calendar_more_options">More options</string>
+    <string name="calendar_move_to_day">Move to another day</string>
+    <string name="calendar_copy_to_day">Copy to another day</string>
+    <string name="calendar_move_prompt">Tap a day to move the outfit</string>
 
     <!-- Gap Analyzer -->
     <string name="gap_description">Discover the 3 missing pieces that would unlock the most new outfit combinations from your existing wardrobe.</string>

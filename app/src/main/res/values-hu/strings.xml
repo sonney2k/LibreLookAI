@@ -1123,4 +1123,12 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
 
     <!-- Wardrobe maintenance overflow menu -->
     <string name="wardrobe_maintenance_menu">Karbantartás</string>
+
+    <!-- Calendar move/copy outfit between days -->
+    <string name="calendar_more_options">További lehetőségek</string>
+    <string name="calendar_move_to_day">Áthelyezés másik napra</string>
+    <string name="calendar_copy_to_day">Másolás másik napra</string>
+
+    <!-- Calendar long-press move prompt -->
+    <string name="calendar_move_prompt">Koppintson egy napra az összeállítás áthelyezéséhez</string>
 </resources>

@@ -1123,4 +1123,12 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
 
     <!-- Wardrobe maintenance overflow menu -->
     <string name="wardrobe_maintenance_menu">Întreținere</string>
+
+    <!-- Calendar move/copy outfit between days -->
+    <string name="calendar_more_options">Mai multe opțiuni</string>
+    <string name="calendar_move_to_day">Mută în altă zi</string>
+    <string name="calendar_copy_to_day">Copiază în altă zi</string>
+
+    <!-- Calendar long-press move prompt -->
+    <string name="calendar_move_prompt">Atinge o zi pentru a muta ținuta</string>
 </resources>

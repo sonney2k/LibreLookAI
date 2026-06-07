@@ -1123,4 +1123,12 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
 
     <!-- Wardrobe maintenance overflow menu -->
     <string name="wardrobe_maintenance_menu">Penyelenggaraan</string>
+
+    <!-- Calendar move/copy outfit between days -->
+    <string name="calendar_more_options">Lagi pilihan</string>
+    <string name="calendar_move_to_day">Alih ke hari lain</string>
+    <string name="calendar_copy_to_day">Salin ke hari lain</string>
+
+    <!-- Calendar long-press move prompt -->
+    <string name="calendar_move_prompt">Ketik hari untuk mengalihkan pakaian</string>
 </resources>

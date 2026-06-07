@@ -1150,4 +1150,12 @@
 
     <!-- Wardrobe maintenance overflow menu -->
     <string name="wardrobe_maintenance_menu">유지 관리</string>
+
+    <!-- Calendar move/copy outfit between days -->
+    <string name="calendar_more_options">추가 옵션</string>
+    <string name="calendar_move_to_day">다른 날로 이동</string>
+    <string name="calendar_copy_to_day">다른 날로 복사</string>
+
+    <!-- Calendar long-press move prompt -->
+    <string name="calendar_move_prompt">옷차림을 옮길 날짜를 탭하세요</string>
 </resources>

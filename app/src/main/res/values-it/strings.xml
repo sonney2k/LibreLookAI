@@ -1150,4 +1150,12 @@
 
     <!-- Wardrobe maintenance overflow menu -->
     <string name="wardrobe_maintenance_menu">Manutenzione</string>
+
+    <!-- Calendar move/copy outfit between days -->
+    <string name="calendar_more_options">Altre opzioni</string>
+    <string name="calendar_move_to_day">Sposta a un altro giorno</string>
+    <string name="calendar_copy_to_day">Copia in un altro giorno</string>
+
+    <!-- Calendar long-press move prompt -->
+    <string name="calendar_move_prompt">Tocca un giorno per spostare l\'outfit</string>
 </resources>

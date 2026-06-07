@@ -1123,4 +1123,12 @@
 
     <!-- Wardrobe maintenance overflow menu -->
     <string name="wardrobe_maintenance_menu">維護</string>
+
+    <!-- Calendar move/copy outfit between days -->
+    <string name="calendar_more_options">更多選項</string>
+    <string name="calendar_move_to_day">移到其他日期</string>
+    <string name="calendar_copy_to_day">複製到其他日期</string>
+
+    <!-- Calendar long-press move prompt -->
+    <string name="calendar_move_prompt">輕觸日期以移動穿搭</string>
 </resources>
