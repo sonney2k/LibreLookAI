@@ -1,4 +1,5 @@
 package com.librelookai.billing
+import com.librelookai.util.localized
 import android.app.Activity
 import android.app.Application
 import android.util.Log
@@ -86,7 +87,7 @@ class CreditsViewModel(app: Application) : AndroidViewModel(app) {
     fun purchase(activity: Activity, productDetails: ProductDetails) {
         val result = billing.launchBillingFlow(activity, productDetails)
         if (result.responseCode != BillingClient.BillingResponseCode.OK) {
-            _state.update { it.copy(error = getApplication<Application>().getString(com.librelookai.R.string.error_billing, result.debugMessage ?: "")) }
+            _state.update { it.copy(error = getApplication<Application>().localized().getString(com.librelookai.R.string.error_billing, result.debugMessage ?: "")) }
         }
     }
 
@@ -98,10 +99,10 @@ class CreditsViewModel(app: Application) : AndroidViewModel(app) {
             val added = credits.verifyPurchase(purchase.purchaseToken, productId)
             if (added > 0) {
                 Log.d(TAG, "Purchase verified: +$added credits for $productId")
-                _state.update { it.copy(isPurchasing = false, successMessage = getApplication<Application>().getString(com.librelookai.R.string.credits_added, added)) }
+                _state.update { it.copy(isPurchasing = false, successMessage = getApplication<Application>().localized().getString(com.librelookai.R.string.credits_added, added)) }
             } else {
                 Log.w(TAG, "Purchase verification returned -1 for $productId")
-                _state.update { it.copy(isPurchasing = false, error = getApplication<Application>().getString(com.librelookai.R.string.error_purchase_verify_failed)) }
+                _state.update { it.copy(isPurchasing = false, error = getApplication<Application>().localized().getString(com.librelookai.R.string.error_purchase_verify_failed)) }
             }
         }
     }

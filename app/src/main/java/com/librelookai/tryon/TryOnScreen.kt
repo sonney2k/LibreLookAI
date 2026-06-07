@@ -331,15 +331,22 @@ fun TryOnComposerScreen(
                     )
                 }
 
-                // Error dialog.
-                state.error?.let { msg ->
+                // Error dialog. Resolve every string HERE (outside the AlertDialog) so it uses
+                // the localized LocalContext: an AlertDialog opens its own window, which severs
+                // the locale override inside its slot lambdas (title/text/buttons) and would
+                // otherwise fall back to the system locale (CLAUDE.md → Window quirks). errorRes
+                // also avoids resolving in the ViewModel (Application = system locale).
+                val errorTitle = stringResource(R.string.tryon_error)
+                val errorOk = stringResource(R.string.action_ok)
+                val errorMsg = state.errorRes?.let { stringResource(it) } ?: state.error
+                errorMsg?.let { msg ->
                     AlertDialog(
                         onDismissRequest = tryOnViewModel::clearError,
-                        title = { Text(stringResource(R.string.tryon_error)) },
+                        title = { Text(errorTitle) },
                         text  = { Text(msg) },
                         confirmButton = {
                             TextButton(onClick = tryOnViewModel::clearError) {
-                                Text(stringResource(R.string.action_ok))
+                                Text(errorOk)
                             }
                         },
                     )

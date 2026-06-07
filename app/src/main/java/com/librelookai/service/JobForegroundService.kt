@@ -11,6 +11,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import java.util.concurrent.atomic.AtomicInteger
 import com.librelookai.R
+import com.librelookai.util.localized
 
 /**
  * Foreground service that prevents the OS from killing the app process during long-running
@@ -100,13 +101,16 @@ class JobForegroundService : Service() {
         }
     }
 
+    // Resolve notification copy in the user's in-app language (Service context is system-locale).
+    private val l10n: android.content.Context get() = localized()
+
     private fun ensureChannel() {
         val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         if (nm.getNotificationChannel(CHANNEL_ID) == null) {
             nm.createNotificationChannel(
                 NotificationChannel(
                     CHANNEL_ID,
-                    getString(R.string.job_notif_channel_name),
+                    l10n.getString(R.string.job_notif_channel_name),
                     NotificationManager.IMPORTANCE_LOW,
                 ).apply { setShowBadge(false) }
             )
@@ -115,8 +119,8 @@ class JobForegroundService : Service() {
 
     private fun buildNotification() =
         NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle(getString(R.string.job_notif_title))
-            .setContentText(getString(R.string.job_notif_text))
+            .setContentTitle(l10n.getString(R.string.job_notif_title))
+            .setContentText(l10n.getString(R.string.job_notif_text))
             .setSmallIcon(R.mipmap.ic_launcher)
             .setOngoing(true)
             .setOnlyAlertOnce(true)

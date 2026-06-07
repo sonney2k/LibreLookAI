@@ -1,4 +1,5 @@
 package com.librelookai.travel
+import com.librelookai.util.localized
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
@@ -236,7 +237,7 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
         val startDate = _state.value.startDate
         val days      = _state.value.days
         if (dest.isEmpty()) {
-            _state.update { it.copy(error = getApplication<Application>().getString(com.librelookai.R.string.error_enter_destination)) }
+            _state.update { it.copy(error = getApplication<Application>().localized().getString(com.librelookai.R.string.error_enter_destination)) }
             return
         }
 
@@ -266,7 +267,7 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
                 )
                 if (result == null) {
                     Analytics.event("travel_plan", mapOf("stage" to "failed", "reason" to "forecast"))
-                    _state.update { it.copy(isLoadingForecast = false, error = getApplication<Application>().getString(com.librelookai.R.string.error_weather_fetch_failed, dest)) }
+                    _state.update { it.copy(isLoadingForecast = false, error = getApplication<Application>().localized().getString(com.librelookai.R.string.error_weather_fetch_failed, dest)) }
                     return@launch
                 }
                 resolvedDest = result.resolvedName
@@ -312,7 +313,7 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
             val raw = gemini.generateText(prompt, UsageCategory.TRAVEL, notify = true)
             if (raw == null) {
                 Analytics.event("travel_plan", mapOf("stage" to "failed", "reason" to "no_response"))
-                _state.update { it.copy(isGenerating = false, error = getApplication<Application>().getString(com.librelookai.R.string.error_gemini_no_response)) }
+                _state.update { it.copy(isGenerating = false, error = getApplication<Application>().localized().getString(com.librelookai.R.string.error_gemini_no_response)) }
                 return@launch
             }
 
@@ -323,7 +324,7 @@ class TravelViewModel(app: Application) : AndroidViewModel(app) {
             if (result == null || result.outfits.isEmpty()) {
                 Log.w("TravelVM", "Failed to parse packing list: $json")
                 Analytics.event("travel_plan", mapOf("stage" to "failed", "reason" to "empty"))
-                _state.update { it.copy(isGenerating = false, error = getApplication<Application>().getString(com.librelookai.R.string.error_gemini_parse)) }
+                _state.update { it.copy(isGenerating = false, error = getApplication<Application>().localized().getString(com.librelookai.R.string.error_gemini_parse)) }
                 return@launch
             }
 

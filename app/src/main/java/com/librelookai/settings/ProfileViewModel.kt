@@ -95,6 +95,16 @@ class ProfileViewModel(app: Application) : AndroidViewModel(app) {
         private const val KEY_THEME = "wardrobe_theme"
         private const val KEY_FONT = "app_font"
 
+        /**
+         * Last-saved UI language, available synchronously to non-Compose layers (ViewModels)
+         * so strings they resolve honour the user's in-app language override rather than the
+         * device locale. Falls back to the best-fit device language. See [Context.localized].
+         */
+        fun cachedLanguage(context: Context): String =
+            context.getSharedPreferences(LANG_PREFS, Context.MODE_PRIVATE)
+                .getString(KEY_LANGUAGE, null)
+                ?: AppLanguage.fromSystemLocale(java.util.Locale.getDefault())
+
         /** Last-saved theme id, available before any user data is loaded from Drive. */
         fun cachedTheme(context: Context): String =
             context.getSharedPreferences(LANG_PREFS, Context.MODE_PRIVATE)

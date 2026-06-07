@@ -89,7 +89,15 @@ data class TryOnUiState(
      */
     val historyDetailIsRoot: Boolean = false,
 
+    /**
+     * Pre-formatted error message (e.g. a raw exception message). Prefer [errorRes] for
+     * localized copy — strings resolved in the ViewModel use the Application context's
+     * *system* locale, which ignores the user's in-app language override. UI-layer
+     * `stringResource(errorRes)` resolves against the localized `LocalContext` instead.
+     */
     val error: String? = null,
+    /** String resource for the error dialog body, resolved in the composable (app locale). */
+    val errorRes: Int? = null,
 )
 
 /**
@@ -147,6 +155,7 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
                 isHistoryOpen = false,
                 viewingTryOn = null,
                 error = null,
+                errorRes = null,
             )
         }
         loadHistory()
@@ -232,6 +241,7 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
                 isResultSaved = false,
                 autoPick = false,
                 error = null,
+                errorRes = null,
             )
         }
         loadHistory()
@@ -241,7 +251,7 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
     fun viewTryOn(t: TryOn) = _state.update { it.copy(viewingTryOn = t, historyDetailIsRoot = false) }
     fun dismissViewingTryOn() = _state.update { it.copy(viewingTryOn = null, historyDetailIsRoot = false) }
 
-    fun clearError() = _state.update { it.copy(error = null) }
+    fun clearError() = _state.update { it.copy(error = null, errorRes = null) }
 
     /**
      * Generate a try-on using the currently selected items and the user's reference photos.
@@ -253,30 +263,20 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
             .map { it.driveId to File(it.localPath) }
             .filter { (_, f) -> f.exists() }
         if (personFiles.isEmpty() || itemFiles.isEmpty()) {
-            _state.update {
-                it.copy(
-                    error = getApplication<Application>()
-                        .getString(com.librelookai.R.string.tryon_missing_photos_items),
-                )
-            }
+            _state.update { it.copy(error = null, errorRes = com.librelookai.R.string.tryon_missing_photos_items) }
             return
         }
         // Refuse unless the selection covers both upper and lower body (a full-body piece, or a
         // top + a bottom) so the generated image is never undressed.
         if (!selected.tryOnFullyCovered()) {
-            _state.update {
-                it.copy(
-                    error = getApplication<Application>()
-                        .getString(com.librelookai.R.string.tryon_coverage_blocked),
-                )
-            }
+            _state.update { it.copy(error = null, errorRes = com.librelookai.R.string.tryon_coverage_blocked) }
             return
         }
         // Register a one-tap retry so the global AI-failure dialog can re-run this generation.
         com.librelookai.gemini.AiRetry.action = { generate(personFiles, wardrobeImages, preferences) }
         viewModelScope.launch {
             _state.update {
-                it.copy(isGenerating = true, error = null, resultPath = null, isResultSaved = false)
+                it.copy(isGenerating = true, error = null, errorRes = null, resultPath = null, isResultSaved = false)
             }
             val outDir = File(drive.cacheDir, "tryon_results").apply { mkdirs() }
             val files = itemFiles.map { it.second }
@@ -297,11 +297,7 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
             if (result == null) {
                 Analytics.event("tryon_generate", mapOf("result" to "failed", "reason" to "no_response", "source" to source))
                 _state.update {
-                    it.copy(
-                        isGenerating = false,
-                        error = getApplication<Application>()
-                            .getString(com.librelookai.R.string.tryon_generate_failed),
-                    )
+                    it.copy(isGenerating = false, error = null, errorRes = com.librelookai.R.string.tryon_generate_failed)
                 }
             } else {
                 Analytics.event("tryon_generate", mapOf("result" to "ok", "source" to source, "items" to files.size.toString()))
@@ -322,7 +318,7 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
         val path = _state.value.resultPath ?: return
         if (_state.value.isResultSaved || _state.value.isSaving) return
         viewModelScope.launch {
-            _state.update { it.copy(isSaving = true, error = null) }
+            _state.update { it.copy(isSaving = true, error = null, errorRes = null) }
             try {
                 val root = ensureRootFolder()
                 val ids = lastGeneratedItemIds
@@ -360,8 +356,8 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
                 _state.update {
                     it.copy(
                         isSaving = false,
-                        error = e.message ?: getApplication<Application>()
-                            .getString(com.librelookai.R.string.error_save_failed),
+                        error = e.message,
+                        errorRes = if (e.message == null) com.librelookai.R.string.error_save_failed else null,
                     )
                 }
             }
@@ -385,8 +381,8 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
             } catch (e: Exception) {
                 _state.update {
                     it.copy(
-                        error = e.message ?: getApplication<Application>()
-                            .getString(com.librelookai.R.string.error_delete_failed),
+                        error = e.message,
+                        errorRes = if (e.message == null) com.librelookai.R.string.error_delete_failed else null,
                     )
                 }
             }
@@ -419,8 +415,8 @@ class TryOnViewModel(app: Application) : AndroidViewModel(app) {
             } catch (e: Exception) {
                 _state.update {
                     it.copy(
-                        error = e.message ?: getApplication<Application>()
-                            .getString(com.librelookai.R.string.error_delete_failed),
+                        error = e.message,
+                        errorRes = if (e.message == null) com.librelookai.R.string.error_delete_failed else null,
                     )
                 }
             }

@@ -1,4 +1,5 @@
 package com.librelookai.wardrobe
+import com.librelookai.util.localized
 
 import android.app.Application
 import android.content.Context
@@ -749,7 +750,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 drive.upsertSidecar(id, "$driveId${DriveRepository.SIDECAR_SUFFIX}", sidecarJson)
             } catch (e: Exception) {
                 Log.e("WardrobeVM", "saveSidecar failed for $driveId", e)
-                _state.update { it.copy(error = getApplication<Application>().getString(R.string.error_tag_save_failed, e.message ?: "")) }
+                _state.update { it.copy(error = getApplication<Application>().localized().getString(R.string.error_tag_save_failed, e.message ?: "")) }
                 return@launch
             }
             metaMutex.withLock {
@@ -938,7 +939,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
             _state.update { it.copy(isProcessing = true, processingImageId = driveId, error = null) }
             val source = resolveOriginalFile(driveId)
                 ?: run {
-                    _state.update { it.copy(isProcessing = false, error = getApplication<Application>().getString(R.string.error_original_unavailable)) }
+                    _state.update { it.copy(isProcessing = false, error = getApplication<Application>().localized().getString(R.string.error_original_unavailable)) }
                     return@launch
                 }
             val processedFile = try {
@@ -1164,7 +1165,7 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
                 s.copy(images = s.images + showHere.filter { it.driveId !in present })
             }
         }
-        _state.update { it.copy(error = getApplication<Application>().getString(R.string.wardrobe_move_failed)) }
+        _state.update { it.copy(error = getApplication<Application>().localized().getString(R.string.wardrobe_move_failed)) }
         refreshAllLocationImagesState()
     }
 

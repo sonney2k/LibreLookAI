@@ -1,4 +1,5 @@
 package com.librelookai.shopping
+import com.librelookai.util.localized
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
@@ -145,7 +146,7 @@ class ShoppingHelperViewModel(app: Application) : AndroidViewModel(app) {
                 _state.update {
                     it.copy(
                         isCapturing = false,
-                        error = getApplication<Application>().getString(R.string.shop_error_model_missing),
+                        error = getApplication<Application>().localized().getString(R.string.shop_error_model_missing),
                     )
                 }
                 return@launch
@@ -186,7 +187,7 @@ class ShoppingHelperViewModel(app: Application) : AndroidViewModel(app) {
                 _state.update {
                     it.copy(
                         isMatching = false,
-                        error = getApplication<Application>().getString(R.string.shop_error_embed_failed),
+                        error = getApplication<Application>().localized().getString(R.string.shop_error_embed_failed),
                     )
                 }
                 return@launch

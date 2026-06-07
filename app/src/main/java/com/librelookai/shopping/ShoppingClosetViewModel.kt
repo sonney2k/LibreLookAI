@@ -1,4 +1,5 @@
 package com.librelookai.shopping
+import com.librelookai.util.localized
 import android.app.Application
 import android.net.Uri
 import android.util.Log
@@ -259,7 +260,7 @@ class ShoppingClosetViewModel(app: Application) : AndroidViewModel(app) {
                 _state.update { s ->
                     val present = s.items.map { it.driveId }.toSet()
                     s.copy(items = s.items + failed.filter { it.driveId !in present },
-                        error = getApplication<Application>().getString(R.string.wardrobe_move_failed))
+                        error = getApplication<Application>().localized().getString(R.string.wardrobe_move_failed))
                 }
                 saveLocalCache(sourceFolderId, _state.value.items)
                 onMoveFailed(failedIds)
@@ -318,7 +319,7 @@ class ShoppingClosetViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             _state.update { it.copy(processingImageId = driveId, error = null) }
             val source = resolveOriginalFile(driveId)
-                ?: run { _state.update { it.copy(processingImageId = null, error = getApplication<Application>().getString(R.string.error_original_unavailable)) }; return@launch }
+                ?: run { _state.update { it.copy(processingImageId = null, error = getApplication<Application>().localized().getString(R.string.error_original_unavailable)) }; return@launch }
             val processedFile = gemini.removeBackground(source, drive.cacheDir)
                 ?: run { _state.update { it.copy(processingImageId = null) }; return@launch }
             runCatching {

@@ -1,4 +1,5 @@
 package com.librelookai.wardrobe
+import com.librelookai.util.localized
 
 import android.app.Application
 import android.net.Uri
@@ -223,7 +224,7 @@ internal fun WardrobeViewModel.importFromUrl(url: String) {
                 _state.update {
                     it.copy(
                         isUploading = false,
-                        error = getApplication<Application>().getString(R.string.url_import_failed),
+                        error = getApplication<Application>().localized().getString(R.string.url_import_failed),
                     )
                 }
                 return@launch
@@ -253,7 +254,7 @@ internal fun WardrobeViewModel.confirmUrlImportPick(absoluteImageUrl: String) {
                 _state.update {
                     it.copy(
                         urlImportPicker = picker.copy(isDownloading = false),
-                        error = getApplication<Application>().getString(R.string.url_import_failed),
+                        error = getApplication<Application>().localized().getString(R.string.url_import_failed),
                     )
                 }
                 return@launch
@@ -294,7 +295,7 @@ internal fun WardrobeViewModel.uploadGalleryPhotos(uris: List<Uri>) {
                         // Enqueue for review; uploadPhotoInternal handles dedupe + queue routing.
                         uploadPhotoInternal(f, id, skippableLocalReview = true, source = AddSource.GALLERY)
                     }.onFailure { e ->
-                        _state.update { it.copy(error = getApplication<Application>().getString(R.string.error_upload_failed, e.message ?: "")) }
+                        _state.update { it.copy(error = getApplication<Application>().localized().getString(R.string.error_upload_failed, e.message ?: "")) }
                         runCatching { tempFile.delete() }
                     }
                 }
@@ -325,7 +326,7 @@ internal fun WardrobeViewModel.uploadGalleryPhotos(uris: List<Uri>) {
                     workQueue.send(PendingJob(newImage.driveId, id, source = AddSource.GALLERY))
                 }.onFailure { e ->
                     logWardrobeAdd("failed", AddSource.GALLERY, mapOf("reason" to "upload"))
-                    _state.update { it.copy(error = getApplication<Application>().getString(R.string.error_upload_failed, e.message ?: "")) }
+                    _state.update { it.copy(error = getApplication<Application>().localized().getString(R.string.error_upload_failed, e.message ?: "")) }
                 }
                 tempFile.delete()
             }

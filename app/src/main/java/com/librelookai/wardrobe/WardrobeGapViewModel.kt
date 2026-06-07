@@ -1,4 +1,5 @@
 package com.librelookai.wardrobe
+import com.librelookai.util.localized
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
@@ -56,7 +57,7 @@ class WardrobeGapViewModel(app: Application) : AndroidViewModel(app) {
 
     fun analyze(images: List<DriveImage>, prefs: UserPreferences?) {
         if (images.isEmpty()) {
-            _state.update { it.copy(error = getApplication<Application>().getString(com.librelookai.R.string.error_add_items_first)) }
+            _state.update { it.copy(error = getApplication<Application>().localized().getString(com.librelookai.R.string.error_add_items_first)) }
             return
         }
 
@@ -76,7 +77,7 @@ class WardrobeGapViewModel(app: Application) : AndroidViewModel(app) {
                 return@launch
             }
             if (raw == null) {
-                _state.update { it.copy(isAnalyzing = false, error = getApplication<Application>().getString(com.librelookai.R.string.error_gemini_no_response)) }
+                _state.update { it.copy(isAnalyzing = false, error = getApplication<Application>().localized().getString(com.librelookai.R.string.error_gemini_no_response)) }
                 return@launch
             }
 
@@ -86,7 +87,7 @@ class WardrobeGapViewModel(app: Application) : AndroidViewModel(app) {
             val result = runCatching { gson.fromJson(json, GapAnalysis::class.java) }.getOrNull()
             if (result == null || result.suggestions.isEmpty()) {
                 Log.w("GapVM", "Failed to parse gap analysis: $json")
-                _state.update { it.copy(isAnalyzing = false, error = getApplication<Application>().getString(com.librelookai.R.string.error_gemini_parse)) }
+                _state.update { it.copy(isAnalyzing = false, error = getApplication<Application>().localized().getString(com.librelookai.R.string.error_gemini_parse)) }
                 return@launch
             }
 

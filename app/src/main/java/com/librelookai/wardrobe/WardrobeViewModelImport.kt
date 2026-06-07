@@ -1,4 +1,5 @@
 package com.librelookai.wardrobe
+import com.librelookai.util.localized
 import com.librelookai.gemini.classifyClothing
 
 import android.app.Application
@@ -370,7 +371,7 @@ internal suspend fun WardrobeViewModel.runImportEntries(
                 } else {
                     _state.update { s ->
                         s.copy(
-                            error = getApplication<Application>().getString(com.librelookai.R.string.error_import_failed_item, entry.displayName, e.message ?: ""),
+                            error = getApplication<Application>().localized().getString(com.librelookai.R.string.error_import_failed_item, entry.displayName, e.message ?: ""),
                             images = if (placeholderId != null)
                                 s.images.filterNot { it.driveId == placeholderId }
                             else s.images,
