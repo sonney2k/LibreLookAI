@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Delete your account &amp; data — LibreLookAI</title>
+  <meta name="description" content="How to delete your LibreLookAI account and associated data: remove your wardrobe content from your Google Drive, revoke app access, and request deletion of your account records." />
+  <link rel="canonical" href="https://librelook.ai/delete-account.html" />
+  <link rel="icon" href="assets/logo.png" />
+  <!-- Fonts are self-hosted (DSGVO/GDPR): no request to Google's servers. -->
+  <link rel="stylesheet" href="assets/fonts.css" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- NAV -->
+  <header class="nav">
+    <a class="brand" href="index.html">
+      <img src="assets/logo.png" alt="LibreLookAI logo" />
+      <span>LibreLook<em>AI</em></span>
+    </a>
+    <nav class="nav-links">
+      <a href="index.html#how" data-i18n="nav.how">How it works</a>
+      <a href="index.html#features" data-i18n="nav.features">Features</a>
+      <a class="nav-cta" href="index.html#get" data-i18n="nav.cta">Get the app</a>
+      <a class="gh-nav gh-link" href="https://github.com/sonney2k/LibreLookAI" target="_blank" rel="noopener" aria-label="LibreLookAI on GitHub">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+        <span>GitHub</span>
+      </a>
+
+      <div class="lang-pick">
+        <span class="globe" aria-hidden="true">🌐</span>
+        <select id="langSelect" aria-label="Choose language">
+          <option value="en">English</option>
+          <option value="de">Deutsch</option>
+          <option value="fr">Français</option>
+          <option value="it">Italiano</option>
+          <option value="es">Español</option>
+          <option value="pt">Português</option>
+          <option value="nl">Nederlands</option>
+          <option value="tr">Türkçe</option>
+          <option value="ru">Русский</option>
+          <option value="ja">日本語</option>
+          <option value="ko">한국어</option>
+          <option value="zh">简体中文</option>
+        </select>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ACCOUNT & DATA DELETION -->
+  <section class="legal">
+    <div class="legal-inner">
+      <h1>Delete your LibreLookAI account &amp; data</h1>
+      <p class="updated">Last updated: June 2026</p>
+
+      <p>This page explains how to delete your account and the data associated with the <strong>LibreLookAI</strong> Android app (package <code>com.librelookai</code>), developed by Soeren Sonnenburg. You can delete everything yourself in a few steps, or email us to do it for you.</p>
+
+      <h2>What gets stored, and where</h2>
+      <p>LibreLookAI is privacy-first: <strong>your wardrobe content lives in your own Google Drive, and we do not run a backend account system.</strong> When you “sign in with Google”, the app only requests permission to access its own folder in <em>your</em> Google Drive — it does <strong>not</strong> create an account on our servers, and we do not store your name, email, or a user profile. Two kinds of data exist:</p>
+      <ul>
+        <li><strong>In your Google Drive</strong> (under your control): photos of your clothing and their background-removed cut-outs, virtual try-on images, and your wardrobe / outfit / trip / tag metadata and style preferences. The app uses the restricted <code>drive.file</code> scope and can only see files it created.</li>
+        <li><strong>Anonymous usage analytics</strong>: app-usage and diagnostics events (e.g. screens viewed, app version, device model) collected via Firebase Analytics. These are <strong>not linked to your identity</strong> — there is no account, email, or user ID associated with them.</li>
+      </ul>
+
+      <h2>Delete your data yourself</h2>
+      <p>Because there is no account on our side, you are in full control and can remove everything in three steps:</p>
+      <ol>
+        <li><strong>Delete your wardrobe content from Google Drive.</strong> Open <a href="https://drive.google.com" target="_blank" rel="noopener">Google Drive</a>, find the <code>LibreLookAI</code> folder, and delete it (then empty Drive’s Trash to remove it permanently). This deletes all of your photos, try-on images, and wardrobe data.</li>
+        <li><strong>Revoke the app’s access to your Google account.</strong> Go to your <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener">Google Account permissions</a>, select <strong>LibreLookAI</strong>, and choose <em>Remove access</em>. This disconnects the app’s Google Drive authorization.</li>
+        <li><strong>Uninstall the app</strong> from your device. This removes locally cached data and your on-device Gemini API key.</li>
+      </ol>
+      <p>These steps remove all content you created. There is no account record on our servers to delete.</p>
+
+      <h2>What is deleted and what is kept</h2>
+      <ul>
+        <li><strong>Deleted:</strong> your wardrobe content in Google Drive (you delete this; it is always solely under your control), and the app’s locally cached data and stored Gemini API key (removed when you uninstall).</li>
+        <li><strong>Anonymous analytics:</strong> Firebase Analytics usage data is not linked to your identity and cannot be tied back to you. It is retained only for the limited period set by our Firebase Analytics retention settings, after which it is automatically deleted or aggregated.</li>
+        <li><strong>No account records:</strong> we do not maintain a backend account, profile, name, or email for you, so there is nothing of that kind to delete on our side.</li>
+      </ul>
+      <p>Note: LibreLookAI uses your own Google Gemini API key (“bring your own key”). Any history held under your Google / Gemini account is governed by Google’s terms — manage or delete it in your own Google account.</p>
+
+      <h2>Need help?</h2>
+      <p>If you would like us to help with deletion or confirm that no identifiable data remains, email <a href="mailto:contact@librelook.ai?subject=Delete%20my%20LibreLookAI%20data">contact@librelook.ai</a> and we will respond within <strong>30 days</strong>.</p>
+
+      <h2>Delete only some of your data</h2>
+      <p>You don’t have to remove everything at once. Within the app you can delete individual wardrobe items, outfits, trips, and try-on images at any time, or delete the entire <code>LibreLookAI</code> folder in Google Drive while keeping the app installed. See the <a href="privacy.html">app privacy policy</a> for details.</p>
+
+      <p style="margin-top:32px"><a href="index.html" data-i18n="legal.back">← Back to LibreLookAI</a></p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="brand">
+      <img src="assets/logo.png" alt="LibreLookAI logo" />
+      <span>LibreLook<em>AI</em></span>
+    </div>
+    <p data-i18n="footer.tagline">Your closet, styled by AI — and kept private.</p>
+    <nav class="footer-links">
+      <a href="impressum.html" data-i18n="footer.impressum">Legal notice</a>
+      <a href="datenschutz.html" data-i18n="footer.privacy">Privacy</a>
+      <a href="privacy.html" data-i18n="footer.appPrivacy">App privacy</a>
+      <a href="setup.html" data-i18n="nav.setup">API key</a>
+      <a class="gh-link" href="https://github.com/sonney2k/LibreLookAI" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>GitHub</a>
+
+    </nav>
+    <p class="copy" data-i18n="footer.copy">© 2026 LibreLookAI</p>
+  </footer>
+
+  <script src="translations.js"></script>
+  <script src="setup.translations.js"></script>
+  <script src="legal.translations.js"></script>
+  <script src="i18n.js"></script>
+</body>
+</html>
