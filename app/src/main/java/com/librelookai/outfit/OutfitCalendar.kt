@@ -4,7 +4,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +19,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -52,16 +53,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -85,6 +83,11 @@ import kotlinx.coroutines.launch
 private const val MONTH_PATTERN = "MMMM yyyy"
 private const val SHEET_DATE_PATTERN = "EEEE, MMMM d"
 private const val MAX_THUMBNAILS = 4
+
+// The month grid is a HorizontalPager over a large, finite range of months so swiping reveals the
+// adjacent month while dragging. The middle page maps to the anchor month captured at first compose.
+private const val MONTH_PAGE_COUNT = 2400
+private const val MONTH_PAGE_ANCHOR = MONTH_PAGE_COUNT / 2
 
 // ============================================================================
 //  Calendar — monthly grid of worn outfits (former Insights "Calendar" tab).
@@ -173,81 +176,78 @@ private fun CalendarContent(
     onCopyEvent: (OutfitEvent, LocalDate) -> Unit,
     onEditOutfit: (Outfit) -> Unit,
 ) {
-    var yearMonth by rememberSaveable { mutableStateOf(YearMonth.now()) }
     val itemsByDate = remember(wornItems) { wornItems.groupBy { it.date } }
-    val weeks = remember(yearMonth) { buildCalendarWeeks(yearMonth) }
     val today = remember { LocalDate.now() }
     var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
     // Long-press a day with outfits to start a move; the next tapped day is the destination.
     var movingDate by remember { mutableStateOf<LocalDate?>(null) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
-    val density = LocalDensity.current
-    val swipeThresholdPx = remember(density) { with(density) { 60.dp.toPx() } }
+
+    // Swipe between months via a pager so the adjacent month slides in under the finger.
+    val anchorMonth = remember { YearMonth.now() }
+    val pagerState = rememberPagerState(initialPage = MONTH_PAGE_ANCHOR) { MONTH_PAGE_COUNT }
+    val currentMonth = remember(pagerState.currentPage) {
+        anchorMonth.plusMonths((pagerState.currentPage - MONTH_PAGE_ANCHOR).toLong())
+    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         MonthHeader(
-            yearMonth = yearMonth,
-            onPrev = { yearMonth = yearMonth.minusMonths(1) },
-            onNext = { yearMonth = yearMonth.plusMonths(1) },
+            yearMonth = currentMonth,
+            onPrev = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage - 1) } },
+            onNext = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) } },
         )
         MoveBanner(active = movingDate != null, onCancel = { movingDate = null })
         DayOfWeekRow()
-        Column(
+        HorizontalPager(
+            state = pagerState,
             modifier = Modifier
-                .fillMaxSize()
-                .pointerInput(Unit) {
-                    var dragAccum = 0f
-                    detectHorizontalDragGestures(
-                        onDragEnd = {
-                            if (dragAccum > swipeThresholdPx) yearMonth = yearMonth.minusMonths(1)
-                            else if (dragAccum < -swipeThresholdPx) yearMonth = yearMonth.plusMonths(1)
-                            dragAccum = 0f
-                        },
-                        onDragCancel = { dragAccum = 0f },
-                    ) { change, dragAmount ->
-                        change.consume()
-                        dragAccum += dragAmount
-                    }
-                },
-        ) {
-            weeks.forEach { week ->
-                Row(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth(),
-                ) {
-                    week.forEach { date ->
-                        val hasStyles = date != null && outfitsByDate[date].orEmpty().isNotEmpty()
-                        val inMoveMode = movingDate != null
-                        DayCell(
-                            date = date,
-                            items = if (date != null) itemsByDate[date].orEmpty() else emptyList(),
-                            isCurrentMonth = date?.month == yearMonth.month,
-                            isToday = date == today,
-                            isMoveSource = date != null && date == movingDate,
-                            onClick = when {
-                                date == null -> null
-                                inMoveMode -> {
-                                    {
-                                        val from = movingDate
-                                        if (from != null && date != from) {
-                                            val ids = eventsByDate[from].orEmpty().map { it.id }.toSet()
-                                            onMoveEvents(ids, date)
+                .weight(1f)
+                .fillMaxWidth(),
+        ) { page ->
+            val pageMonth = remember(page) {
+                anchorMonth.plusMonths((page - MONTH_PAGE_ANCHOR).toLong())
+            }
+            val pageWeeks = remember(pageMonth) { buildCalendarWeeks(pageMonth) }
+            Column(modifier = Modifier.fillMaxSize()) {
+                pageWeeks.forEach { week ->
+                    Row(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth(),
+                    ) {
+                        week.forEach { date ->
+                            val hasStyles = date != null && outfitsByDate[date].orEmpty().isNotEmpty()
+                            val inMoveMode = movingDate != null
+                            DayCell(
+                                date = date,
+                                items = if (date != null) itemsByDate[date].orEmpty() else emptyList(),
+                                isCurrentMonth = date?.month == pageMonth.month,
+                                isToday = date == today,
+                                isMoveSource = date != null && date == movingDate,
+                                onClick = when {
+                                    date == null -> null
+                                    inMoveMode -> {
+                                        {
+                                            val from = movingDate
+                                            if (from != null && date != from) {
+                                                val ids = eventsByDate[from].orEmpty().map { it.id }.toSet()
+                                                onMoveEvents(ids, date)
+                                            }
+                                            movingDate = null
                                         }
-                                        movingDate = null
                                     }
-                                }
-                                hasStyles -> { { selectedDate = date } }
-                                else -> null
-                            },
-                            onLongClick = if (hasStyles && movingDate == null) {
-                                { movingDate = date }
-                            } else null,
-                            modifier = Modifier
-                                .weight(1f)
-                                .fillMaxHeight(),
-                        )
+                                    hasStyles -> { { selectedDate = date } }
+                                    else -> null
+                                },
+                                onLongClick = if (hasStyles && movingDate == null) {
+                                    { movingDate = date }
+                                } else null,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxHeight(),
+                            )
+                        }
                     }
                 }
             }
