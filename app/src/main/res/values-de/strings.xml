@@ -679,8 +679,6 @@
     <string name="tryon_empty_chip_outfit">Aus einem Outfit</string>
     <string name="tryon_empty_chip_wardrobe">Aus Kleiderschrank</string>
     <string name="tryon_empty_chip_shopping">Aus Einkauf</string>
-    <string name="tryon_generating_title">Deine Anprobe wird erstellt</string>
-    <string name="tryon_generating_body">%1$d Teile werden auf deine Referenzfotos gesetzt. Dauert meist 20–40 Sekunden.</string>
     <string name="tryon_result_title">Deine Anprobe</string>
     <string name="tryon_result_zoom_hint">Zum Zoomen ziehen</string>
     <string name="tryon_result_items_worn">Getragene Teile</string>

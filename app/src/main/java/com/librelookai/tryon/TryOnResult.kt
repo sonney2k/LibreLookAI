@@ -409,51 +409,8 @@ internal fun TryOnNoPhotos(onOpenSettings: () -> Unit) {
     }
 }
 
-/** State 5c — generating overlay card (try-on specific; leaves the shared AiProcessingOverlay untouched). */
-@Composable
-internal fun TryOnGeneratingOverlay(itemCount: Int, modifier: Modifier = Modifier) {
-    val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
-    Box(
-        modifier = modifier.background(Color.Black.copy(alpha = 0.55f)),
-        contentAlignment = Alignment.Center,
-    ) {
-        Surface(
-            shape = RoundedCornerShape(22.dp),
-            color = palette.surface,
-            border = androidx.compose.foundation.BorderStroke(1.dp, palette.divider),
-            modifier = Modifier.widthIn(max = 300.dp).padding(horizontal = 24.dp),
-        ) {
-            Column(
-                modifier = Modifier.padding(horizontal = 22.dp, vertical = 22.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(64.dp),
-                        strokeWidth = 3.dp,
-                        color = palette.primary,
-                        trackColor = palette.primaryDim,
-                    )
-                    Icon(Icons.Default.AutoAwesome, null, tint = palette.primary, modifier = Modifier.size(24.dp))
-                }
-                Spacer(Modifier.size(14.dp))
-                Text(
-                    stringResource(R.string.tryon_generating_title),
-                    color = palette.text,
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold,
-                )
-                Spacer(Modifier.size(4.dp))
-                Text(
-                    stringResource(R.string.tryon_generating_body, itemCount),
-                    color = palette.textMuted,
-                    fontSize = 12.sp,
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                )
-            }
-        }
-    }
-}
+// Try-on generation now uses the shared util/AiProcessingOverlay (live upload bar +
+// wait estimate + elapsed counter), so the bespoke generating card was removed.
 
 /** One page of the swipeable history detail pager — resolves the source outfit and wires the
  *  per-try-on actions onto [TryOnDetailContent]. */

@@ -733,8 +733,6 @@
     <string name="tryon_empty_chip_outfit">From an outfit</string>
     <string name="tryon_empty_chip_wardrobe">From wardrobe</string>
     <string name="tryon_empty_chip_shopping">From shopping</string>
-    <string name="tryon_generating_title">Generating your try-on</string>
-    <string name="tryon_generating_body">Composing %1$d items onto your reference photos. Usually 20–40 seconds.</string>
     <string name="tryon_result_title">Your try-on</string>
     <string name="tryon_result_zoom_hint">Pinch to zoom</string>
     <string name="tryon_result_items_worn">Items worn</string>

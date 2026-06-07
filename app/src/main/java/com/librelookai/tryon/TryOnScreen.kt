@@ -51,6 +51,7 @@ import com.librelookai.settings.ProfileViewModel
 import com.librelookai.shopping.MatchPreviewDialog
 import com.librelookai.shopping.ShoppingClosetViewModel
 import com.librelookai.shopping.ShoppingHelperScreen
+import com.librelookai.util.AiProcessingOverlay
 import com.librelookai.util.Analytics
 import com.librelookai.util.rememberDialogBottomInset
 import com.librelookai.wardrobe.DriveImage
@@ -320,10 +321,12 @@ fun TryOnComposerScreen(
                     )
                 }
 
-                // Generating overlay — covers everything.
+                // Generating overlay — covers everything. Uses the shared AI progress
+                // overlay (live upload bar + wait estimate + elapsed counter) so try-on
+                // shows the same progress feedback as every other AI surface.
                 if (state.isGenerating) {
-                    TryOnGeneratingOverlay(
-                        itemCount = state.itemIds.size,
+                    AiProcessingOverlay(
+                        label = stringResource(R.string.tryon_generating),
                         modifier = Modifier.fillMaxSize(),
                     )
                 }
