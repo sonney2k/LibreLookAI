@@ -1131,4 +1131,12 @@
 
     <!-- Calendar long-press move prompt -->
     <string name="calendar_move_prompt">आउटफ़िट को ले जाने के लिए कोई दिन टैप करें</string>
+
+    <!-- Calendar long-press copy mode -->
+    <string name="calendar_copy_prompt">आउटफ़िट कॉपी करने के लिए कोई दिन टैप करें</string>
+    <string name="calendar_mode_move">ले जाएँ</string>
+    <string name="calendar_mode_copy">कॉपी करें</string>
+
+    <!-- Calendar remove outfit from day -->
+    <string name="calendar_remove">इस दिन से हटाएँ</string>
 </resources>

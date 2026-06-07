@@ -1162,4 +1162,12 @@
 
     <!-- Calendar long-press move prompt -->
     <string name="calendar_move_prompt">הקש על יום כדי להעביר את התלבושת</string>
+
+    <!-- Calendar long-press copy mode -->
+    <string name="calendar_copy_prompt">הקש על יום כדי להעתיק את התלבושת</string>
+    <string name="calendar_mode_move">העברה</string>
+    <string name="calendar_mode_copy">העתקה</string>
+
+    <!-- Calendar remove outfit from day -->
+    <string name="calendar_remove">הסרה מהיום הזה</string>
 </resources>

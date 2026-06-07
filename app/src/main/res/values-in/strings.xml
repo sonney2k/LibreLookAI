@@ -1131,4 +1131,12 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
 
     <!-- Calendar long-press move prompt -->
     <string name="calendar_move_prompt">Ketuk hari untuk memindahkan pakaian</string>
+
+    <!-- Calendar long-press copy mode -->
+    <string name="calendar_copy_prompt">Ketuk hari untuk menyalin pakaian</string>
+    <string name="calendar_mode_move">Pindahkan</string>
+    <string name="calendar_mode_copy">Salin</string>
+
+    <!-- Calendar remove outfit from day -->
+    <string name="calendar_remove">Hapus dari hari ini</string>
 </resources>

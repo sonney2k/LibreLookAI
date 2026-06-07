@@ -591,6 +591,10 @@
     <string name="calendar_move_to_day">Move to another day</string>
     <string name="calendar_copy_to_day">Copy to another day</string>
     <string name="calendar_move_prompt">Tap a day to move the outfit</string>
+    <string name="calendar_copy_prompt">Tap a day to copy the outfit</string>
+    <string name="calendar_mode_move">Move</string>
+    <string name="calendar_mode_copy">Copy</string>
+    <string name="calendar_remove">Remove from this day</string>
 
     <!-- Gap Analyzer -->
     <string name="gap_description">Discover the 3 missing pieces that would unlock the most new outfit combinations from your existing wardrobe.</string>

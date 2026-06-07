@@ -1158,4 +1158,12 @@
 
     <!-- Calendar long-press move prompt -->
     <string name="calendar_move_prompt">انقر على يوم لنقل الزي</string>
+
+    <!-- Calendar long-press copy mode -->
+    <string name="calendar_copy_prompt">انقر على يوم لنسخ الزي</string>
+    <string name="calendar_mode_move">نقل</string>
+    <string name="calendar_mode_copy">نسخ</string>
+
+    <!-- Calendar remove outfit from day -->
+    <string name="calendar_remove">إزالة من هذا اليوم</string>
 </resources>

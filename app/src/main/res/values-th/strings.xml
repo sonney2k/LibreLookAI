@@ -1131,4 +1131,12 @@
 
     <!-- Calendar long-press move prompt -->
     <string name="calendar_move_prompt">แตะวันเพื่อย้ายชุด</string>
+
+    <!-- Calendar long-press copy mode -->
+    <string name="calendar_copy_prompt">แตะวันเพื่อคัดลอกชุด</string>
+    <string name="calendar_mode_move">ย้าย</string>
+    <string name="calendar_mode_copy">คัดลอก</string>
+
+    <!-- Calendar remove outfit from day -->
+    <string name="calendar_remove">นำออกจากวันนี้</string>
 </resources>

@@ -1131,4 +1131,12 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
 
     <!-- Calendar long-press move prompt -->
     <string name="calendar_move_prompt">Chạm vào một ngày để di chuyển trang phục</string>
+
+    <!-- Calendar long-press copy mode -->
+    <string name="calendar_copy_prompt">Chạm vào một ngày để sao chép trang phục</string>
+    <string name="calendar_mode_move">Di chuyển</string>
+    <string name="calendar_mode_copy">Sao chép</string>
+
+    <!-- Calendar remove outfit from day -->
+    <string name="calendar_remove">Xóa khỏi ngày này</string>
 </resources>

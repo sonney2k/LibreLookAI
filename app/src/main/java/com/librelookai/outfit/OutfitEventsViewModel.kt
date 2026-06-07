@@ -162,6 +162,31 @@ class OutfitEventsViewModel(app: Application) : AndroidViewModel(app) {
         persist(_state.value.events + copy)
     }
 
+    /**
+     * Copy every wear in [eventIds] to [newDate] as brand-new events (fresh ids) in a single
+     * persist — the copy counterpart of [moveEvents] for the calendar's long-press-then-tap flow.
+     */
+    fun copyEvents(eventIds: Set<String>, newDate: LocalDate) {
+        if (eventIds.isEmpty()) return
+        val planned = newDate.isAfter(LocalDate.now())
+        val ds = newDate.toString()
+        val now = System.currentTimeMillis()
+        val copies = _state.value.events.filter { it.id in eventIds }.map {
+            it.copy(
+                id = java.util.UUID.randomUUID().toString(),
+                date = ds,
+                createdAt = now,
+                planned = planned,
+            )
+        }
+        if (copies.isNotEmpty()) persist(_state.value.events + copies)
+    }
+
+    /** Remove a single logged wear (e.g. delete an outfit from a calendar day). */
+    fun deleteEvent(eventId: String) {
+        persist(_state.value.events.filterNot { it.id == eventId })
+    }
+
     /** Toggle the explicit "loved it" feedback on a logged wear. */
     fun setEventLoved(eventId: String, loved: Boolean) {
         persist(_state.value.events.map { if (it.id == eventId) it.copy(loved = loved) else it })

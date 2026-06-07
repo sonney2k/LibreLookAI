@@ -1131,4 +1131,12 @@
 
     <!-- Calendar long-press move prompt -->
     <string name="calendar_move_prompt">Торкніться дня, щоб перемістити образ</string>
+
+    <!-- Calendar long-press copy mode -->
+    <string name="calendar_copy_prompt">Торкніться дня, щоб скопіювати образ</string>
+    <string name="calendar_mode_move">Перемістити</string>
+    <string name="calendar_mode_copy">Копіювати</string>
+
+    <!-- Calendar remove outfit from day -->
+    <string name="calendar_remove">Видалити з цього дня</string>
 </resources>

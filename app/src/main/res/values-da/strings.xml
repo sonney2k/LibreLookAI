@@ -1158,4 +1158,12 @@
 
     <!-- Calendar long-press move prompt -->
     <string name="calendar_move_prompt">Tryk på en dag for at flytte sættet</string>
+
+    <!-- Calendar long-press copy mode -->
+    <string name="calendar_copy_prompt">Tryk på en dag for at kopiere sættet</string>
+    <string name="calendar_mode_move">Flyt</string>
+    <string name="calendar_mode_copy">Kopiér</string>
+
+    <!-- Calendar remove outfit from day -->
+    <string name="calendar_remove">Fjern fra denne dag</string>
 </resources>

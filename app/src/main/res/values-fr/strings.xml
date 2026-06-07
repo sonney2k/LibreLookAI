@@ -1158,4 +1158,12 @@
 
     <!-- Calendar long-press move prompt -->
     <string name="calendar_move_prompt">Touchez un jour pour déplacer la tenue</string>
+
+    <!-- Calendar long-press copy mode -->
+    <string name="calendar_copy_prompt">Touchez un jour pour copier la tenue</string>
+    <string name="calendar_mode_move">Déplacer</string>
+    <string name="calendar_mode_copy">Copier</string>
+
+    <!-- Calendar remove outfit from day -->
+    <string name="calendar_remove">Retirer de ce jour</string>
 </resources>

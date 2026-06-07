@@ -1158,4 +1158,12 @@
 
     <!-- Calendar long-press move prompt -->
     <string name="calendar_move_prompt">Kombini taşımak için bir güne dokunun</string>
+
+    <!-- Calendar long-press copy mode -->
+    <string name="calendar_copy_prompt">Kombini kopyalamak için bir güne dokunun</string>
+    <string name="calendar_mode_move">Taşı</string>
+    <string name="calendar_mode_copy">Kopyala</string>
+
+    <!-- Calendar remove outfit from day -->
+    <string name="calendar_remove">Bu günden kaldır</string>
 </resources>

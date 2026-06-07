@@ -1158,4 +1158,12 @@
 
     <!-- Calendar long-press move prompt -->
     <string name="calendar_move_prompt">Mag-tap ng araw para ilipat ang outfit</string>
+
+    <!-- Calendar long-press copy mode -->
+    <string name="calendar_copy_prompt">Mag-tap ng araw para kopyahin ang outfit</string>
+    <string name="calendar_mode_move">Ilipat</string>
+    <string name="calendar_mode_copy">Kopyahin</string>
+
+    <!-- Calendar remove outfit from day -->
+    <string name="calendar_remove">Alisin sa araw na ito</string>
 </resources>

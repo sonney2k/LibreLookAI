@@ -1158,4 +1158,12 @@
 
     <!-- Calendar long-press move prompt -->
     <string name="calendar_move_prompt">Πατήστε μια ημέρα για να μετακινήσετε το σύνολο</string>
+
+    <!-- Calendar long-press copy mode -->
+    <string name="calendar_copy_prompt">Πατήστε μια ημέρα για να αντιγράψετε το σύνολο</string>
+    <string name="calendar_mode_move">Μετακίνηση</string>
+    <string name="calendar_mode_copy">Αντιγραφή</string>
+
+    <!-- Calendar remove outfit from day -->
+    <string name="calendar_remove">Αφαίρεση από αυτήν την ημέρα</string>
 </resources>

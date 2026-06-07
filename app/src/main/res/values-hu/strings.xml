@@ -1131,4 +1131,12 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
 
     <!-- Calendar long-press move prompt -->
     <string name="calendar_move_prompt">Koppintson egy napra az összeállítás áthelyezéséhez</string>
+
+    <!-- Calendar long-press copy mode -->
+    <string name="calendar_copy_prompt">Koppintson egy napra az összeállítás másolásához</string>
+    <string name="calendar_mode_move">Áthelyezés</string>
+    <string name="calendar_mode_copy">Másolás</string>
+
+    <!-- Calendar remove outfit from day -->
+    <string name="calendar_remove">Eltávolítás erről a napról</string>
 </resources>

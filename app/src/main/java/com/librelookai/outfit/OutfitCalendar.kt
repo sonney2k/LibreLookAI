@@ -27,6 +27,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.FavoriteBorder
@@ -36,6 +37,7 @@ import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -156,7 +158,9 @@ fun OutfitCalendarTab(
         onToggleLoved = { event -> outfitEventsViewModel.setEventLoved(event.id, !event.loved) },
         onMoveEvent = { event, date -> outfitEventsViewModel.moveEvent(event.id, date) },
         onMoveEvents = { ids, date -> outfitEventsViewModel.moveEvents(ids, date) },
+        onCopyEvents = { ids, date -> outfitEventsViewModel.copyEvents(ids, date) },
         onCopyEvent = { event, date -> outfitEventsViewModel.copyEvent(event.id, date) },
+        onDeleteEvent = { event -> outfitEventsViewModel.deleteEvent(event.id) },
         onEditOutfit = onEditOutfit,
     )
 }
@@ -173,14 +177,17 @@ private fun CalendarContent(
     onToggleLoved: (OutfitEvent) -> Unit,
     onMoveEvent: (OutfitEvent, LocalDate) -> Unit,
     onMoveEvents: (Set<String>, LocalDate) -> Unit,
+    onCopyEvents: (Set<String>, LocalDate) -> Unit,
     onCopyEvent: (OutfitEvent, LocalDate) -> Unit,
+    onDeleteEvent: (OutfitEvent) -> Unit,
     onEditOutfit: (Outfit) -> Unit,
 ) {
     val itemsByDate = remember(wornItems) { wornItems.groupBy { it.date } }
     val today = remember { LocalDate.now() }
     var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
-    // Long-press a day with outfits to start a move; the next tapped day is the destination.
+    // Long-press a day with outfits to arm a move/copy; the next tapped day is the destination.
     var movingDate by remember { mutableStateOf<LocalDate?>(null) }
+    var moveIsCopy by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
 
@@ -197,7 +204,12 @@ private fun CalendarContent(
             onPrev = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage - 1) } },
             onNext = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) } },
         )
-        MoveBanner(active = movingDate != null, onCancel = { movingDate = null })
+        MoveBanner(
+            active = movingDate != null,
+            isCopy = moveIsCopy,
+            onModeChange = { moveIsCopy = it },
+            onCancel = { movingDate = null },
+        )
         DayOfWeekRow()
         HorizontalPager(
             state = pagerState,
@@ -232,7 +244,8 @@ private fun CalendarContent(
                                             val from = movingDate
                                             if (from != null && date != from) {
                                                 val ids = eventsByDate[from].orEmpty().map { it.id }.toSet()
-                                                onMoveEvents(ids, date)
+                                                if (moveIsCopy) onCopyEvents(ids, date)
+                                                else onMoveEvents(ids, date)
                                             }
                                             movingDate = null
                                         }
@@ -241,7 +254,7 @@ private fun CalendarContent(
                                     else -> null
                                 },
                                 onLongClick = if (hasStyles && movingDate == null) {
-                                    { movingDate = date }
+                                    { movingDate = date; moveIsCopy = false }
                                 } else null,
                                 modifier = Modifier
                                     .weight(1f)
@@ -305,6 +318,15 @@ private fun CalendarContent(
                                 },
                                 onMove = { pendingDateAction = event to false },
                                 onCopy = { pendingDateAction = event to true },
+                                onDelete = {
+                                    onDeleteEvent(event)
+                                    // Close the sheet when removing the day's last outfit.
+                                    if (eventsOnDay.size <= 1) {
+                                        scope.launch { sheetState.hide() }.invokeOnCompletion {
+                                            selectedDate = null
+                                        }
+                                    }
+                                },
                                 onEditOutfit = {
                                     scope.launch { sheetState.hide() }.invokeOnCompletion {
                                         selectedDate = null
@@ -372,6 +394,7 @@ private fun OutfitSheetRow(
     onWearAgainToday: () -> Unit,
     onMove: () -> Unit,
     onCopy: () -> Unit,
+    onDelete: () -> Unit,
     onEditOutfit: () -> Unit,
 ) {
     val ctx = LocalContext.current
@@ -422,6 +445,22 @@ private fun OutfitSheetRow(
                             DropdownMenuItem(
                                 text = { Text(stringResource(R.string.calendar_copy_to_day)) },
                                 onClick = { menuOpen = false; onCopy() },
+                            )
+                            DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        stringResource(R.string.calendar_remove),
+                                        color = MaterialTheme.colorScheme.error,
+                                    )
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        Icons.Default.Delete,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.error,
+                                    )
+                                },
+                                onClick = { menuOpen = false; onDelete() },
                             )
                         }
                     }
@@ -511,28 +550,51 @@ private fun MonthHeader(
     }
 }
 
-/** Instruction bar shown while a day's outfit is armed for a long-press move. */
+/**
+ * Instruction bar shown while a day's outfit is armed for a long-press move/copy. Offers a
+ * Move/Copy toggle and a cancel affordance; the next tapped day is the destination.
+ */
 @Composable
-private fun MoveBanner(active: Boolean, onCancel: () -> Unit) {
+private fun MoveBanner(
+    active: Boolean,
+    isCopy: Boolean,
+    onModeChange: (Boolean) -> Unit,
+    onCancel: () -> Unit,
+) {
     if (!active) return
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.primaryContainer)
-            .padding(start = 16.dp, end = 4.dp, top = 4.dp, bottom = 4.dp),
-        verticalAlignment = Alignment.CenterVertically,
+            .padding(start = 16.dp, end = 4.dp, top = 4.dp, bottom = 8.dp),
     ) {
-        Text(
-            text = stringResource(R.string.calendar_move_prompt),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onPrimaryContainer,
-            modifier = Modifier.weight(1f),
-        )
-        IconButton(onClick = onCancel) {
-            Icon(
-                Icons.Default.Close,
-                contentDescription = stringResource(R.string.action_cancel),
-                tint = MaterialTheme.colorScheme.onPrimaryContainer,
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = stringResource(
+                    if (isCopy) R.string.calendar_copy_prompt else R.string.calendar_move_prompt,
+                ),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                modifier = Modifier.weight(1f),
+            )
+            IconButton(onClick = onCancel) {
+                Icon(
+                    Icons.Default.Close,
+                    contentDescription = stringResource(R.string.action_cancel),
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
+            }
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            FilterChip(
+                selected = !isCopy,
+                onClick = { onModeChange(false) },
+                label = { Text(stringResource(R.string.calendar_mode_move)) },
+            )
+            FilterChip(
+                selected = isCopy,
+                onClick = { onModeChange(true) },
+                label = { Text(stringResource(R.string.calendar_mode_copy)) },
             )
         }
     }

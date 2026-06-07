@@ -1158,4 +1158,12 @@
 
     <!-- Calendar long-press move prompt -->
     <string name="calendar_move_prompt">옷차림을 옮길 날짜를 탭하세요</string>
+
+    <!-- Calendar long-press copy mode -->
+    <string name="calendar_copy_prompt">옷차림을 복사할 날짜를 탭하세요</string>
+    <string name="calendar_mode_move">이동</string>
+    <string name="calendar_mode_copy">복사</string>
+
+    <!-- Calendar remove outfit from day -->
+    <string name="calendar_remove">이 날에서 제거</string>
 </resources>
