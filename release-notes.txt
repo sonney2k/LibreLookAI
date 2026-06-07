@@ -1,3 +1,22 @@
+### LibreLookAI v2.3.0 Release Notes
+
+#### A better outfit calendar
+- Swipe smoothly between months, see your outfits as full-cell thumbnails, and tap the new "+" button to add or plan a look for any day.
+- Move or copy an outfit from one day to another, or remove it from a day — all from the calendar.
+#### Plan and favourite your outfits
+- Log a wear on any day, not just today, with a quick date picker.
+- Tap the heart to mark an outfit as a favourite — it stays in sync across your outfit list, the full-screen view and your wear stats — and the AI now leans toward the looks you love when suggesting outfits.
+#### Smarter, clearer try-on
+- Virtual try-on now keeps your whole body in frame and only puts on the items you actually picked.
+- Try-on and other AI actions show live progress — an upload bar and a wait estimate — so you always know what's happening.
+#### Speaks your language
+- Error and status messages now appear in the language you've set the app to.
+#### Smoother sign-in and fixes
+- Returning to the app restores your wardrobe quietly in the background, with clearer feedback when an outfit is saved.
+- Fixed a crash that could happen during the first-run setup tour.
+
+---
+
 ### LibreLookAI v2.2.1 Release Notes
 
 #### A cleaner, simpler interface
