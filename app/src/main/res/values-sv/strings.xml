@@ -1213,4 +1213,19 @@
     <string name="error_billing">Faktureringsfel: %1$s</string>
     <string name="error_purchase_verify_failed">Det gick inte att verifiera köpet — kontakta supporten.</string>
     <string name="credits_added">+%1$d krediter tillagda!</string>
+
+    <!-- Calendar FAB (add/move/copy outfit) -->
+    <string name="calendar_add_to_calendar">Lägg till outfit i kalendern</string>
+    <string name="calendar_add_pick">Välj en outfit</string>
+    <string name="calendar_add_empty">Inga outfits att lägga till ännu</string>
+    <string name="calendar_pick_source_prompt">Tryck på en dag med outfits för att välja den</string>
+
+    <!-- Calendar FAB delete option -->
+    <string name="calendar_delete_from_calendar">Ta bort outfit från kalendern</string>
+    <string name="calendar_delete_prompt">Tryck på en dag för att ta bort dess outfits</string>
+    <string name="calendar_delete_confirm_title">Ta bort outfits?</string>
+    <string name="calendar_delete_confirm_msg">Ta bort alla outfits som bars den %1$s?</string>
+
+    <!-- Calendar add-to-day title -->
+    <string name="calendar_add_pick_for">Lägg till en outfit den %1$s</string>
 </resources>

@@ -1213,4 +1213,19 @@
     <string name="error_billing">Factureringsfout: %1$s</string>
     <string name="error_purchase_verify_failed">Kan aankoop niet verifiëren — neem contact op met support.</string>
     <string name="credits_added">+%1$d credits toegevoegd!</string>
+
+    <!-- Calendar FAB (add/move/copy outfit) -->
+    <string name="calendar_add_to_calendar">Outfit aan agenda toevoegen</string>
+    <string name="calendar_add_pick">Kies een outfit</string>
+    <string name="calendar_add_empty">Nog geen outfits om toe te voegen</string>
+    <string name="calendar_pick_source_prompt">Tik op een dag met outfits om die te selecteren</string>
+
+    <!-- Calendar FAB delete option -->
+    <string name="calendar_delete_from_calendar">Outfit uit agenda verwijderen</string>
+    <string name="calendar_delete_prompt">Tik op een dag om de outfits ervan te verwijderen</string>
+    <string name="calendar_delete_confirm_title">Outfits verwijderen?</string>
+    <string name="calendar_delete_confirm_msg">Alle outfits gedragen op %1$s verwijderen?</string>
+
+    <!-- Calendar add-to-day title -->
+    <string name="calendar_add_pick_for">Outfit toevoegen aan %1$s</string>
 </resources>

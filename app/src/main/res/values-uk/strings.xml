@@ -1186,4 +1186,19 @@
     <string name="error_billing">Помилка оплати: %1$s</string>
     <string name="error_purchase_verify_failed">Не вдалося підтвердити покупку — зверніться до підтримки.</string>
     <string name="credits_added">Додано +%1$d кредитів!</string>
+
+    <!-- Calendar FAB (add/move/copy outfit) -->
+    <string name="calendar_add_to_calendar">Додати образ до календаря</string>
+    <string name="calendar_add_pick">Виберіть образ</string>
+    <string name="calendar_add_empty">Поки немає образів для додавання</string>
+    <string name="calendar_pick_source_prompt">Торкніться дня з образами, щоб вибрати його</string>
+
+    <!-- Calendar FAB delete option -->
+    <string name="calendar_delete_from_calendar">Видалити образ із календаря</string>
+    <string name="calendar_delete_prompt">Торкніться дня, щоб видалити його образи</string>
+    <string name="calendar_delete_confirm_title">Видалити образи?</string>
+    <string name="calendar_delete_confirm_msg">Видалити всі образи, вдягнені %1$s?</string>
+
+    <!-- Calendar add-to-day title -->
+    <string name="calendar_add_pick_for">Додати образ на %1$s</string>
 </resources>

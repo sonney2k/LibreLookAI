@@ -1186,4 +1186,19 @@
     <string name="error_billing">ข้อผิดพลาดในการเรียกเก็บเงิน: %1$s</string>
     <string name="error_purchase_verify_failed">ไม่สามารถยืนยันการซื้อได้ — โปรดติดต่อฝ่ายสนับสนุน</string>
     <string name="credits_added">เพิ่ม %1$d เครดิตแล้ว!</string>
+
+    <!-- Calendar FAB (add/move/copy outfit) -->
+    <string name="calendar_add_to_calendar">เพิ่มชุดลงในปฏิทิน</string>
+    <string name="calendar_add_pick">เลือกชุด</string>
+    <string name="calendar_add_empty">ยังไม่มีชุดให้เพิ่ม</string>
+    <string name="calendar_pick_source_prompt">แตะวันที่มีชุดเพื่อเลือก</string>
+
+    <!-- Calendar FAB delete option -->
+    <string name="calendar_delete_from_calendar">ลบชุดออกจากปฏิทิน</string>
+    <string name="calendar_delete_prompt">แตะวันเพื่อลบชุดของวันนั้น</string>
+    <string name="calendar_delete_confirm_title">ลบชุดไหม?</string>
+    <string name="calendar_delete_confirm_msg">ลบชุดทั้งหมดที่สวมเมื่อ %1$s ไหม?</string>
+
+    <!-- Calendar add-to-day title -->
+    <string name="calendar_add_pick_for">เพิ่มชุดสำหรับ %1$s</string>
 </resources>

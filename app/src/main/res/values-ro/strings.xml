@@ -1186,4 +1186,19 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="error_billing">Eroare de facturare: %1$s</string>
     <string name="error_purchase_verify_failed">Achiziția nu a putut fi verificată — contactează asistența.</string>
     <string name="credits_added">+%1$d credite adăugate!</string>
+
+    <!-- Calendar FAB (add/move/copy outfit) -->
+    <string name="calendar_add_to_calendar">Adaugă ținuta în calendar</string>
+    <string name="calendar_add_pick">Alege o ținută</string>
+    <string name="calendar_add_empty">Încă nu există ținute de adăugat</string>
+    <string name="calendar_pick_source_prompt">Atinge o zi cu ținute pentru a o selecta</string>
+
+    <!-- Calendar FAB delete option -->
+    <string name="calendar_delete_from_calendar">Elimină ținuta din calendar</string>
+    <string name="calendar_delete_prompt">Atinge o zi pentru a-i elimina ținutele</string>
+    <string name="calendar_delete_confirm_title">Elimini ținutele?</string>
+    <string name="calendar_delete_confirm_msg">Elimini toate ținutele purtate pe %1$s?</string>
+
+    <!-- Calendar add-to-day title -->
+    <string name="calendar_add_pick_for">Adaugă o ținută pe %1$s</string>
 </resources>

@@ -1213,4 +1213,19 @@
     <string name="error_billing">Errore di fatturazione: %1$s</string>
     <string name="error_purchase_verify_failed">Impossibile verificare l\'acquisto — contatta l\'assistenza.</string>
     <string name="credits_added">+%1$d crediti aggiunti!</string>
+
+    <!-- Calendar FAB (add/move/copy outfit) -->
+    <string name="calendar_add_to_calendar">Aggiungi l\'outfit al calendario</string>
+    <string name="calendar_add_pick">Scegli un outfit</string>
+    <string name="calendar_add_empty">Nessun outfit da aggiungere</string>
+    <string name="calendar_pick_source_prompt">Tocca un giorno con outfit per selezionarlo</string>
+
+    <!-- Calendar FAB delete option -->
+    <string name="calendar_delete_from_calendar">Rimuovi l\'outfit dal calendario</string>
+    <string name="calendar_delete_prompt">Tocca un giorno per rimuoverne gli outfit</string>
+    <string name="calendar_delete_confirm_title">Rimuovere gli outfit?</string>
+    <string name="calendar_delete_confirm_msg">Rimuovere tutti gli outfit indossati il %1$s?</string>
+
+    <!-- Calendar add-to-day title -->
+    <string name="calendar_add_pick_for">Aggiungi un outfit al %1$s</string>
 </resources>

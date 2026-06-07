@@ -1213,4 +1213,19 @@
     <string name="error_billing">課金エラー: %1$s</string>
     <string name="error_purchase_verify_failed">購入を確認できませんでした — サポートにお問い合わせください。</string>
     <string name="credits_added">%1$d クレジットを追加しました！</string>
+
+    <!-- Calendar FAB (add/move/copy outfit) -->
+    <string name="calendar_add_to_calendar">コーディネートをカレンダーに追加</string>
+    <string name="calendar_add_pick">コーディネートを選択</string>
+    <string name="calendar_add_empty">追加できるコーディネートがありません</string>
+    <string name="calendar_pick_source_prompt">コーディネートのある日をタップして選択</string>
+
+    <!-- Calendar FAB delete option -->
+    <string name="calendar_delete_from_calendar">カレンダーからコーディネートを削除</string>
+    <string name="calendar_delete_prompt">その日のコーディネートを削除するには日付をタップ</string>
+    <string name="calendar_delete_confirm_title">コーディネートを削除しますか？</string>
+    <string name="calendar_delete_confirm_msg">%1$sに着用したコーディネートをすべて削除しますか？</string>
+
+    <!-- Calendar add-to-day title -->
+    <string name="calendar_add_pick_for">%1$sにコーディネートを追加</string>
 </resources>

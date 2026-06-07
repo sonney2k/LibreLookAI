@@ -1213,4 +1213,19 @@
     <string name="error_billing">Błąd płatności: %1$s</string>
     <string name="error_purchase_verify_failed">Nie można zweryfikować zakupu — skontaktuj się z pomocą techniczną.</string>
     <string name="credits_added">Dodano +%1$d kredytów!</string>
+
+    <!-- Calendar FAB (add/move/copy outfit) -->
+    <string name="calendar_add_to_calendar">Dodaj stylizację do kalendarza</string>
+    <string name="calendar_add_pick">Wybierz stylizację</string>
+    <string name="calendar_add_empty">Brak stylizacji do dodania</string>
+    <string name="calendar_pick_source_prompt">Dotknij dnia ze stylizacjami, aby go wybrać</string>
+
+    <!-- Calendar FAB delete option -->
+    <string name="calendar_delete_from_calendar">Usuń stylizację z kalendarza</string>
+    <string name="calendar_delete_prompt">Dotknij dnia, aby usunąć jego stylizacje</string>
+    <string name="calendar_delete_confirm_title">Usunąć stylizacje?</string>
+    <string name="calendar_delete_confirm_msg">Usunąć wszystkie stylizacje noszone %1$s?</string>
+
+    <!-- Calendar add-to-day title -->
+    <string name="calendar_add_pick_for">Dodaj stylizację na %1$s</string>
 </resources>

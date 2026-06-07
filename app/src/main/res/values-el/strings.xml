@@ -1213,4 +1213,19 @@
     <string name="error_billing">Σφάλμα χρέωσης: %1$s</string>
     <string name="error_purchase_verify_failed">Δεν ήταν δυνατή η επαλήθευση της αγοράς — επικοινωνήστε με την υποστήριξη.</string>
     <string name="credits_added">Προστέθηκαν +%1$d πιστώσεις!</string>
+
+    <!-- Calendar FAB (add/move/copy outfit) -->
+    <string name="calendar_add_to_calendar">Προσθήκη συνόλου στο ημερολόγιο</string>
+    <string name="calendar_add_pick">Επίλεξε ένα σύνολο</string>
+    <string name="calendar_add_empty">Δεν υπάρχουν σύνολα για προσθήκη ακόμη</string>
+    <string name="calendar_pick_source_prompt">Πάτησε μια μέρα με σύνολα για να την επιλέξεις</string>
+
+    <!-- Calendar FAB delete option -->
+    <string name="calendar_delete_from_calendar">Αφαίρεση συνόλου από το ημερολόγιο</string>
+    <string name="calendar_delete_prompt">Πάτησε μια μέρα για να αφαιρέσεις τα σύνολά της</string>
+    <string name="calendar_delete_confirm_title">Αφαίρεση συνόλων;</string>
+    <string name="calendar_delete_confirm_msg">Αφαίρεση όλων των συνόλων που φορέθηκαν στις %1$s;</string>
+
+    <!-- Calendar add-to-day title -->
+    <string name="calendar_add_pick_for">Προσθήκη συνόλου στις %1$s</string>
 </resources>

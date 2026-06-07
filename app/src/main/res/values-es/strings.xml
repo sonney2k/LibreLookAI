@@ -1213,4 +1213,19 @@
     <string name="error_billing">Error de facturación: %1$s</string>
     <string name="error_purchase_verify_failed">No se pudo verificar la compra: contacta con soporte.</string>
     <string name="credits_added">¡+%1$d créditos añadidos!</string>
+
+    <!-- Calendar FAB (add/move/copy outfit) -->
+    <string name="calendar_add_to_calendar">Añadir conjunto al calendario</string>
+    <string name="calendar_add_pick">Elige un conjunto</string>
+    <string name="calendar_add_empty">Aún no hay conjuntos para añadir</string>
+    <string name="calendar_pick_source_prompt">Toca un día con conjuntos para seleccionarlo</string>
+
+    <!-- Calendar FAB delete option -->
+    <string name="calendar_delete_from_calendar">Quitar conjunto del calendario</string>
+    <string name="calendar_delete_prompt">Toca un día para quitar sus conjuntos</string>
+    <string name="calendar_delete_confirm_title">¿Quitar conjuntos?</string>
+    <string name="calendar_delete_confirm_msg">¿Quitar todos los conjuntos usados el %1$s?</string>
+
+    <!-- Calendar add-to-day title -->
+    <string name="calendar_add_pick_for">Añadir un conjunto al %1$s</string>
 </resources>

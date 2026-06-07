@@ -3,6 +3,7 @@ package com.librelookai.outfit
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,18 +27,19 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -151,7 +153,11 @@ fun OutfitCalendarTab(
         outfitsByDate = outfitsByDate,
         eventsByDate = eventsByDate,
         outfitsById = outfitsById,
+        allOutfits = outfitsState.outfits,
         imagesById = imagesById,
+        onAddOutfit = { outfit, date ->
+            outfitEventsViewModel.recordOutfit(outfit, imagesById, weather = weatherState.data, date = date)
+        },
         onWearAgainToday = { outfit ->
             outfitEventsViewModel.recordOutfit(outfit, imagesById, weather = weatherState.data)
         },
@@ -161,6 +167,7 @@ fun OutfitCalendarTab(
         onCopyEvents = { ids, date -> outfitEventsViewModel.copyEvents(ids, date) },
         onCopyEvent = { event, date -> outfitEventsViewModel.copyEvent(event.id, date) },
         onDeleteEvent = { event -> outfitEventsViewModel.deleteEvent(event.id) },
+        onDeleteEvents = { ids -> outfitEventsViewModel.deleteEvents(ids) },
         onEditOutfit = onEditOutfit,
     )
 }
@@ -172,7 +179,9 @@ private fun CalendarContent(
     outfitsByDate: Map<LocalDate, List<Outfit>>,
     eventsByDate: Map<LocalDate, List<OutfitEvent>>,
     outfitsById: Map<String, Outfit>,
+    allOutfits: List<Outfit>,
     imagesById: Map<String, DriveImage>,
+    onAddOutfit: (Outfit, LocalDate) -> Unit,
     onWearAgainToday: (Outfit) -> Unit,
     onToggleLoved: (OutfitEvent) -> Unit,
     onMoveEvent: (OutfitEvent, LocalDate) -> Unit,
@@ -180,14 +189,26 @@ private fun CalendarContent(
     onCopyEvents: (Set<String>, LocalDate) -> Unit,
     onCopyEvent: (OutfitEvent, LocalDate) -> Unit,
     onDeleteEvent: (OutfitEvent) -> Unit,
+    onDeleteEvents: (Set<String>) -> Unit,
     onEditOutfit: (Outfit) -> Unit,
 ) {
     val itemsByDate = remember(wornItems) { wornItems.groupBy { it.date } }
     val today = remember { LocalDate.now() }
+    val isOffline = LocalIsOffline.current
     var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
-    // Long-press a day with outfits to arm a move/copy; the next tapped day is the destination.
-    var movingDate by remember { mutableStateOf<LocalDate?>(null) }
-    var moveIsCopy by remember { mutableStateOf(false) }
+    // Long-pressing a day opens the FAB options menu with that day preselected (fabMenuDay); the
+    // menu's copy/move/delete then act on that whole day's outfits, and "add" records onto it.
+    var fabMenuOpen by remember { mutableStateOf(false) }
+    var fabMenuDay by remember { mutableStateOf<LocalDate?>(null) }
+    var showAddSheet by remember { mutableStateOf(false) }
+    // When set, picking an outfit in the add sheet records straight onto this day (skips the picker).
+    var addTargetDay by remember { mutableStateOf<LocalDate?>(null) }
+    // Non-null once an outfit is chosen for a context-less add — shows the date picker.
+    var pendingAddOutfit by remember { mutableStateOf<Outfit?>(null) }
+    // Non-null while a whole day's outfits move/copy to a new date: (source day, isCopy=true → copy).
+    var pendingDayMove by remember { mutableStateOf<Pair<LocalDate, Boolean>?>(null) }
+    // Non-null once a day is picked for deletion — shows the remove-confirm dialog.
+    var pendingDeleteDate by remember { mutableStateOf<LocalDate?>(null) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
 
@@ -198,17 +219,12 @@ private fun CalendarContent(
         anchorMonth.plusMonths((pagerState.currentPage - MONTH_PAGE_ANCHOR).toLong())
     }
 
+    Box(modifier = Modifier.fillMaxSize()) {
     Column(modifier = Modifier.fillMaxSize()) {
         MonthHeader(
             yearMonth = currentMonth,
             onPrev = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage - 1) } },
             onNext = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) } },
-        )
-        MoveBanner(
-            active = movingDate != null,
-            isCopy = moveIsCopy,
-            onModeChange = { moveIsCopy = it },
-            onCancel = { movingDate = null },
         )
         DayOfWeekRow()
         HorizontalPager(
@@ -230,31 +246,16 @@ private fun CalendarContent(
                     ) {
                         week.forEach { date ->
                             val hasStyles = date != null && outfitsByDate[date].orEmpty().isNotEmpty()
-                            val inMoveMode = movingDate != null
                             DayCell(
                                 date = date,
                                 items = if (date != null) itemsByDate[date].orEmpty() else emptyList(),
                                 isCurrentMonth = date?.month == pageMonth.month,
                                 isToday = date == today,
-                                isMoveSource = date != null && date == movingDate,
-                                onClick = when {
-                                    date == null -> null
-                                    inMoveMode -> {
-                                        {
-                                            val from = movingDate
-                                            if (from != null && date != from) {
-                                                val ids = eventsByDate[from].orEmpty().map { it.id }.toSet()
-                                                if (moveIsCopy) onCopyEvents(ids, date)
-                                                else onMoveEvents(ids, date)
-                                            }
-                                            movingDate = null
-                                        }
-                                    }
-                                    hasStyles -> { { selectedDate = date } }
-                                    else -> null
-                                },
-                                onLongClick = if (hasStyles && movingDate == null) {
-                                    { movingDate = date; moveIsCopy = false }
+                                // Tap a day with outfits to inspect it; long-press to open the FAB
+                                // options menu (copy/move/delete) with that day preselected.
+                                onClick = if (date != null && hasStyles) { { selectedDate = date } } else null,
+                                onLongClick = if (date != null && hasStyles && !isOffline) {
+                                    { fabMenuDay = date; fabMenuOpen = true }
                                 } else null,
                                 modifier = Modifier
                                     .weight(1f)
@@ -275,6 +276,77 @@ private fun CalendarContent(
 
     // A pending move/copy keyed by the event; non-null shows the date picker (true = copy).
     var pendingDateAction by remember { mutableStateOf<Pair<OutfitEvent, Boolean>?>(null) }
+
+    // "+" FAB — same standard FloatingActionButton as the Wardrobe/Outfit screens. A tap adds an
+    // outfit to a date of your choosing; long-pressing a calendar day opens this same menu with that
+    // day preselected (fabMenuDay), so copy/move/delete act on that day's outfits. Hidden offline
+    // (every action is a Drive write). The menu opens its own Popup window, so the locale-overridden
+    // context chain is re-provided inside (CLAUDE.md → Dialog quirks).
+    if (!isOffline) {
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(end = 16.dp, bottom = 16.dp),
+        ) {
+            FloatingActionButton(onClick = { addTargetDay = null; showAddSheet = true }) {
+                Icon(
+                    Icons.Default.Add,
+                    contentDescription = stringResource(R.string.calendar_add_to_calendar),
+                )
+            }
+            DropdownMenu(
+                expanded = fabMenuOpen,
+                onDismissRequest = { fabMenuOpen = false; fabMenuDay = null },
+            ) {
+                CompositionLocalProvider(
+                    LocalContext provides parentContext,
+                    LocalConfiguration provides parentConfiguration,
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.calendar_add_to_calendar)) },
+                        onClick = {
+                            addTargetDay = fabMenuDay
+                            fabMenuOpen = false; fabMenuDay = null
+                            showAddSheet = true
+                        },
+                    )
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.calendar_copy_to_day)) },
+                        onClick = {
+                            fabMenuDay?.let { pendingDayMove = it to true }
+                            fabMenuOpen = false; fabMenuDay = null
+                        },
+                    )
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.calendar_move_to_day)) },
+                        onClick = {
+                            fabMenuDay?.let { pendingDayMove = it to false }
+                            fabMenuOpen = false; fabMenuDay = null
+                        },
+                    )
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                stringResource(R.string.calendar_delete_from_calendar),
+                                color = MaterialTheme.colorScheme.error,
+                            )
+                        },
+                        leadingIcon = {
+                            Icon(
+                                Icons.Default.Delete,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.error,
+                            )
+                        },
+                        onClick = {
+                            pendingDeleteDate = fabMenuDay
+                            fabMenuOpen = false; fabMenuDay = null
+                        },
+                    )
+                }
+            }
+        }
+    }
 
     selectedDate?.let { date ->
         // One row per logged wear, pairing the event (for the loved toggle) with its outfit.
@@ -380,6 +452,217 @@ private fun CalendarContent(
                 LocalConfiguration provides parentConfiguration,
             ) {
                 DatePicker(state = datePickerState)
+            }
+        }
+    }
+
+    // FAB ▸ "Add outfit to calendar" — pick any saved outfit, then a date to log it on.
+    if (showAddSheet) {
+        val addSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+        ModalBottomSheet(
+            onDismissRequest = { showAddSheet = false; addTargetDay = null },
+            sheetState = addSheetState,
+        ) {
+            CompositionLocalProvider(
+                LocalContext provides parentContext,
+                LocalConfiguration provides parentConfiguration,
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .navigationBarsPadding()
+                        .padding(bottom = 24.dp),
+                ) {
+                    Text(
+                        text = addTargetDay?.let {
+                            stringResource(
+                                R.string.calendar_add_pick_for,
+                                it.format(DateTimeFormatter.ofPattern(SHEET_DATE_PATTERN, locale)),
+                            )
+                        } ?: stringResource(R.string.calendar_add_pick),
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp),
+                    )
+                    HorizontalDivider()
+                    if (allOutfits.isEmpty()) {
+                        Text(
+                            text = stringResource(R.string.calendar_add_empty),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(20.dp),
+                        )
+                    } else {
+                        LazyColumn(contentPadding = PaddingValues(vertical = 8.dp)) {
+                            itemsIndexed(allOutfits, key = { _, outfit -> outfit.id }) { index, outfit ->
+                                AddOutfitRow(
+                                    style = outfit,
+                                    imagesById = imagesById,
+                                    onClick = {
+                                        // Long-press context (a day) records straight onto it; a
+                                        // context-less add routes through the date picker.
+                                        val target = addTargetDay
+                                        if (target != null) {
+                                            onAddOutfit(outfit, target)
+                                            addTargetDay = null
+                                        } else {
+                                            pendingAddOutfit = outfit
+                                        }
+                                        scope.launch { addSheetState.hide() }
+                                            .invokeOnCompletion { showAddSheet = false }
+                                    },
+                                )
+                                if (index < allOutfits.lastIndex) {
+                                    HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp))
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    pendingAddOutfit?.let { outfit ->
+        WearDatePickerDialog(
+            onDismiss = { pendingAddOutfit = null },
+            onConfirm = { date -> onAddOutfit(outfit, date) },
+        )
+    }
+
+    // FAB ▸ "Copy/Move to another day" — pick the destination date for a whole day's outfits.
+    pendingDayMove?.let { (sourceDay, isCopy) ->
+        val datePickerState = rememberDatePickerState(
+            initialSelectedDateMillis = sourceDay.toEpochDay() * 86_400_000L,
+        )
+        DatePickerDialog(
+            onDismissRequest = { pendingDayMove = null },
+            confirmButton = {
+                CompositionLocalProvider(
+                    LocalContext provides parentContext,
+                    LocalConfiguration provides parentConfiguration,
+                ) {
+                    TextButton(onClick = {
+                        datePickerState.selectedDateMillis?.let {
+                            val target = LocalDate.ofEpochDay(it / 86_400_000L)
+                            val ids = eventsByDate[sourceDay].orEmpty().map { e -> e.id }.toSet()
+                            if (isCopy) onCopyEvents(ids, target) else onMoveEvents(ids, target)
+                        }
+                        pendingDayMove = null
+                    }) { Text(stringResource(R.string.action_ok)) }
+                }
+            },
+            dismissButton = {
+                CompositionLocalProvider(
+                    LocalContext provides parentContext,
+                    LocalConfiguration provides parentConfiguration,
+                ) {
+                    TextButton(onClick = { pendingDayMove = null }) {
+                        Text(stringResource(R.string.action_cancel))
+                    }
+                }
+            },
+        ) {
+            CompositionLocalProvider(
+                LocalContext provides parentContext,
+                LocalConfiguration provides parentConfiguration,
+            ) {
+                DatePicker(state = datePickerState)
+            }
+        }
+    }
+
+    // FAB ▸ "Remove outfit from calendar" — confirm clearing every wear logged on the picked day.
+    pendingDeleteDate?.let { date ->
+        AlertDialog(
+            onDismissRequest = { pendingDeleteDate = null },
+            title = {
+                CompositionLocalProvider(
+                    LocalContext provides parentContext,
+                    LocalConfiguration provides parentConfiguration,
+                ) { Text(stringResource(R.string.calendar_delete_confirm_title)) }
+            },
+            text = {
+                CompositionLocalProvider(
+                    LocalContext provides parentContext,
+                    LocalConfiguration provides parentConfiguration,
+                ) {
+                    Text(
+                        stringResource(
+                            R.string.calendar_delete_confirm_msg,
+                            date.format(DateTimeFormatter.ofPattern(SHEET_DATE_PATTERN, locale)),
+                        ),
+                    )
+                }
+            },
+            confirmButton = {
+                CompositionLocalProvider(
+                    LocalContext provides parentContext,
+                    LocalConfiguration provides parentConfiguration,
+                ) {
+                    TextButton(onClick = {
+                        val ids = eventsByDate[date].orEmpty().map { it.id }.toSet()
+                        onDeleteEvents(ids)
+                        pendingDeleteDate = null
+                    }) {
+                        Text(
+                            stringResource(R.string.action_delete),
+                            color = MaterialTheme.colorScheme.error,
+                        )
+                    }
+                }
+            },
+            dismissButton = {
+                CompositionLocalProvider(
+                    LocalContext provides parentContext,
+                    LocalConfiguration provides parentConfiguration,
+                ) {
+                    TextButton(onClick = { pendingDeleteDate = null }) {
+                        Text(stringResource(R.string.action_cancel))
+                    }
+                }
+            },
+        )
+    }
+    }
+}
+
+@Composable
+private fun AddOutfitRow(
+    style: Outfit,
+    imagesById: Map<String, DriveImage>,
+    onClick: () -> Unit,
+) {
+    val ctx = LocalContext.current
+    val styleItems = style.itemIds.mapNotNull { imagesById[it] }.take(MAX_THUMBNAILS)
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(horizontal = 20.dp, vertical = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Text(
+            text = style.name,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
+        )
+        if (styleItems.isNotEmpty()) {
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                styleItems.forEach { image ->
+                    AsyncImage(
+                        model = remember(image.driveId, image.version) {
+                            ImageRequest.Builder(ctx)
+                                .data(image.localPath)
+                                .memoryCacheKey("${image.driveId}_${image.version}")
+                                .build()
+                        },
+                        contentDescription = image.name,
+                        modifier = Modifier
+                            .size(56.dp)
+                            .clip(MaterialTheme.shapes.small),
+                        contentScale = ContentScale.Crop,
+                    )
+                }
             }
         }
     }
@@ -550,56 +833,6 @@ private fun MonthHeader(
     }
 }
 
-/**
- * Instruction bar shown while a day's outfit is armed for a long-press move/copy. Offers a
- * Move/Copy toggle and a cancel affordance; the next tapped day is the destination.
- */
-@Composable
-private fun MoveBanner(
-    active: Boolean,
-    isCopy: Boolean,
-    onModeChange: (Boolean) -> Unit,
-    onCancel: () -> Unit,
-) {
-    if (!active) return
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.primaryContainer)
-            .padding(start = 16.dp, end = 4.dp, top = 4.dp, bottom = 8.dp),
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = stringResource(
-                    if (isCopy) R.string.calendar_copy_prompt else R.string.calendar_move_prompt,
-                ),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                modifier = Modifier.weight(1f),
-            )
-            IconButton(onClick = onCancel) {
-                Icon(
-                    Icons.Default.Close,
-                    contentDescription = stringResource(R.string.action_cancel),
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                )
-            }
-        }
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            FilterChip(
-                selected = !isCopy,
-                onClick = { onModeChange(false) },
-                label = { Text(stringResource(R.string.calendar_mode_move)) },
-            )
-            FilterChip(
-                selected = isCopy,
-                onClick = { onModeChange(true) },
-                label = { Text(stringResource(R.string.calendar_mode_copy)) },
-            )
-        }
-    }
-}
-
 @Composable
 private fun DayOfWeekRow() {
     val labels = listOf(
@@ -631,7 +864,6 @@ private fun DayCell(
     items: List<WornItem>,
     isCurrentMonth: Boolean,
     isToday: Boolean,
-    isMoveSource: Boolean,
     onClick: (() -> Unit)?,
     onLongClick: (() -> Unit)?,
     modifier: Modifier = Modifier,
@@ -646,10 +878,6 @@ private fun DayCell(
                         onLongClick = onLongClick,
                     )
                 } else Modifier,
-            )
-            .then(
-                if (isMoveSource) Modifier.border(2.dp, MaterialTheme.colorScheme.primary)
-                else Modifier,
             )
             .padding(3.dp),
     ) {

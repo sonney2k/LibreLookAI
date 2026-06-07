@@ -1213,4 +1213,19 @@
     <string name="error_billing">Faturalandırma hatası: %1$s</string>
     <string name="error_purchase_verify_failed">Satın alma doğrulanamadı — lütfen destekle iletişime geçin.</string>
     <string name="credits_added">+%1$d kredi eklendi!</string>
+
+    <!-- Calendar FAB (add/move/copy outfit) -->
+    <string name="calendar_add_to_calendar">Kombini takvime ekle</string>
+    <string name="calendar_add_pick">Bir kombin seç</string>
+    <string name="calendar_add_empty">Henüz eklenecek kombin yok</string>
+    <string name="calendar_pick_source_prompt">Seçmek için kombinlerin olduğu bir güne dokun</string>
+
+    <!-- Calendar FAB delete option -->
+    <string name="calendar_delete_from_calendar">Kombini takvimden kaldır</string>
+    <string name="calendar_delete_prompt">Bir günün kombinlerini kaldırmak için o güne dokun</string>
+    <string name="calendar_delete_confirm_title">Kombinler kaldırılsın mı?</string>
+    <string name="calendar_delete_confirm_msg">%1$s tarihinde giyilen tüm kombinler kaldırılsın mı?</string>
+
+    <!-- Calendar add-to-day title -->
+    <string name="calendar_add_pick_for">%1$s tarihine kombin ekle</string>
 </resources>

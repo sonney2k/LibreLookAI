@@ -1213,4 +1213,19 @@
     <string name="error_billing">Laskutusvirhe: %1$s</string>
     <string name="error_purchase_verify_failed">Ostoa ei voitu vahvistaa — ota yhteyttä tukeen.</string>
     <string name="credits_added">+%1$d krediittiä lisätty!</string>
+
+    <!-- Calendar FAB (add/move/copy outfit) -->
+    <string name="calendar_add_to_calendar">Lisää asu kalenteriin</string>
+    <string name="calendar_add_pick">Valitse asu</string>
+    <string name="calendar_add_empty">Ei vielä lisättäviä asuja</string>
+    <string name="calendar_pick_source_prompt">Valitse päivä napauttamalla päivää, jossa on asuja</string>
+
+    <!-- Calendar FAB delete option -->
+    <string name="calendar_delete_from_calendar">Poista asu kalenterista</string>
+    <string name="calendar_delete_prompt">Poista päivän asut napauttamalla päivää</string>
+    <string name="calendar_delete_confirm_title">Poistetaanko asut?</string>
+    <string name="calendar_delete_confirm_msg">Poistetaanko kaikki %1$s käytetyt asut?</string>
+
+    <!-- Calendar add-to-day title -->
+    <string name="calendar_add_pick_for">Lisää asu päivälle %1$s</string>
 </resources>

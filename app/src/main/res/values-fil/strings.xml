@@ -1213,4 +1213,19 @@
     <string name="error_billing">Error sa pagsingil: %1$s</string>
     <string name="error_purchase_verify_failed">Hindi ma-verify ang pagbili — makipag-ugnayan sa suporta.</string>
     <string name="credits_added">+%1$d credits ang naidagdag!</string>
+
+    <!-- Calendar FAB (add/move/copy outfit) -->
+    <string name="calendar_add_to_calendar">Idagdag ang outfit sa kalendaryo</string>
+    <string name="calendar_add_pick">Pumili ng outfit</string>
+    <string name="calendar_add_empty">Wala pang outfit na maidaragdag</string>
+    <string name="calendar_pick_source_prompt">I-tap ang araw na may mga outfit para piliin ito</string>
+
+    <!-- Calendar FAB delete option -->
+    <string name="calendar_delete_from_calendar">Alisin ang outfit sa kalendaryo</string>
+    <string name="calendar_delete_prompt">I-tap ang araw para alisin ang mga outfit nito</string>
+    <string name="calendar_delete_confirm_title">Alisin ang mga outfit?</string>
+    <string name="calendar_delete_confirm_msg">Alisin ang lahat ng outfit na isinuot noong %1$s?</string>
+
+    <!-- Calendar add-to-day title -->
+    <string name="calendar_add_pick_for">Magdagdag ng outfit sa %1$s</string>
 </resources>

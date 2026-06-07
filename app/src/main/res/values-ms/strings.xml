@@ -1186,4 +1186,19 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <string name="error_billing">Ralat pengebilan: %1$s</string>
     <string name="error_purchase_verify_failed">Tidak dapat mengesahkan pembelian — sila hubungi sokongan.</string>
     <string name="credits_added">+%1$d kredit ditambah!</string>
+
+    <!-- Calendar FAB (add/move/copy outfit) -->
+    <string name="calendar_add_to_calendar">Tambah set pakaian ke kalendar</string>
+    <string name="calendar_add_pick">Pilih set pakaian</string>
+    <string name="calendar_add_empty">Tiada set pakaian untuk ditambah lagi</string>
+    <string name="calendar_pick_source_prompt">Ketik hari yang mempunyai set pakaian untuk memilihnya</string>
+
+    <!-- Calendar FAB delete option -->
+    <string name="calendar_delete_from_calendar">Alih keluar set pakaian dari kalendar</string>
+    <string name="calendar_delete_prompt">Ketik hari untuk mengalih keluar set pakaiannya</string>
+    <string name="calendar_delete_confirm_title">Alih keluar set pakaian?</string>
+    <string name="calendar_delete_confirm_msg">Alih keluar semua set pakaian yang dipakai pada %1$s?</string>
+
+    <!-- Calendar add-to-day title -->
+    <string name="calendar_add_pick_for">Tambah set pakaian ke %1$s</string>
 </resources>

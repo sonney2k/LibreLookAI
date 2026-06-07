@@ -1186,4 +1186,19 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="error_billing">Kesalahan penagihan: %1$s</string>
     <string name="error_purchase_verify_failed">Tidak dapat memverifikasi pembelian — hubungi dukungan.</string>
     <string name="credits_added">+%1$d kredit ditambahkan!</string>
+
+    <!-- Calendar FAB (add/move/copy outfit) -->
+    <string name="calendar_add_to_calendar">Tambahkan setelan ke kalender</string>
+    <string name="calendar_add_pick">Pilih setelan</string>
+    <string name="calendar_add_empty">Belum ada setelan untuk ditambahkan</string>
+    <string name="calendar_pick_source_prompt">Ketuk hari yang berisi setelan untuk memilihnya</string>
+
+    <!-- Calendar FAB delete option -->
+    <string name="calendar_delete_from_calendar">Hapus setelan dari kalender</string>
+    <string name="calendar_delete_prompt">Ketuk hari untuk menghapus setelannya</string>
+    <string name="calendar_delete_confirm_title">Hapus setelan?</string>
+    <string name="calendar_delete_confirm_msg">Hapus semua setelan yang dipakai pada %1$s?</string>
+
+    <!-- Calendar add-to-day title -->
+    <string name="calendar_add_pick_for">Tambahkan setelan ke %1$s</string>
 </resources>

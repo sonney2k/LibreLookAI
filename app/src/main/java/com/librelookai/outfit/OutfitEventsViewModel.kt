@@ -187,6 +187,16 @@ class OutfitEventsViewModel(app: Application) : AndroidViewModel(app) {
         persist(_state.value.events.filterNot { it.id == eventId })
     }
 
+    /**
+     * Remove every wear in [eventIds] in a single persist — used by the calendar's FAB "remove from
+     * calendar" flow, which clears a whole day's outfits at once (the plural counterpart of
+     * [deleteEvent], avoiding the race a sequence of single deletes would hit).
+     */
+    fun deleteEvents(eventIds: Set<String>) {
+        if (eventIds.isEmpty()) return
+        persist(_state.value.events.filterNot { it.id in eventIds })
+    }
+
     /** Toggle the explicit "loved it" feedback on a single logged wear (calendar day sheet). */
     fun setEventLoved(eventId: String, loved: Boolean) {
         persist(_state.value.events.map { if (it.id == eventId) it.copy(loved = loved) else it })

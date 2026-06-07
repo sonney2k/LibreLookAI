@@ -1186,4 +1186,19 @@
     <string name="error_billing">बिलिंग त्रुटि: %1$s</string>
     <string name="error_purchase_verify_failed">खरीद सत्यापित नहीं हो सकी — कृपया सहायता से संपर्क करें।</string>
     <string name="credits_added">+%1$d क्रेडिट जोड़े गए!</string>
+
+    <!-- Calendar FAB (add/move/copy outfit) -->
+    <string name="calendar_add_to_calendar">आउटफ़िट को कैलेंडर में जोड़ें</string>
+    <string name="calendar_add_pick">एक आउटफ़िट चुनें</string>
+    <string name="calendar_add_empty">अभी जोड़ने के लिए कोई आउटफ़िट नहीं</string>
+    <string name="calendar_pick_source_prompt">चुनने के लिए आउटफ़िट वाले दिन पर टैप करें</string>
+
+    <!-- Calendar FAB delete option -->
+    <string name="calendar_delete_from_calendar">कैलेंडर से आउटफ़िट हटाएं</string>
+    <string name="calendar_delete_prompt">किसी दिन के आउटफ़िट हटाने के लिए उस पर टैप करें</string>
+    <string name="calendar_delete_confirm_title">आउटफ़िट हटाएं?</string>
+    <string name="calendar_delete_confirm_msg">%1$s को पहने गए सभी आउटफ़िट हटाएं?</string>
+
+    <!-- Calendar add-to-day title -->
+    <string name="calendar_add_pick_for">%1$s को एक आउटफ़िट जोड़ें</string>
 </resources>

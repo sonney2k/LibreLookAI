@@ -602,6 +602,15 @@
     <string name="calendar_mode_move">Move</string>
     <string name="calendar_mode_copy">Copy</string>
     <string name="calendar_remove">Remove from this day</string>
+    <string name="calendar_add_to_calendar">Add outfit to calendar</string>
+    <string name="calendar_add_pick">Choose an outfit</string>
+    <string name="calendar_add_pick_for">Add an outfit to %1$s</string>
+    <string name="calendar_add_empty">No outfits to add yet</string>
+    <string name="calendar_pick_source_prompt">Tap a day with outfits to select it</string>
+    <string name="calendar_delete_from_calendar">Remove outfit from calendar</string>
+    <string name="calendar_delete_prompt">Tap a day to remove its outfits</string>
+    <string name="calendar_delete_confirm_title">Remove outfits?</string>
+    <string name="calendar_delete_confirm_msg">Remove all outfits worn on %1$s?</string>
 
     <!-- Gap Analyzer -->
     <string name="gap_description">Discover the 3 missing pieces that would unlock the most new outfit combinations from your existing wardrobe.</string>

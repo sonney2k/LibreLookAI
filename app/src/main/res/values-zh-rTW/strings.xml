@@ -1186,4 +1186,19 @@
     <string name="error_billing">帳務錯誤：%1$s</string>
     <string name="error_purchase_verify_failed">無法驗證購買 — 請聯絡支援。</string>
     <string name="credits_added">已新增 %1$d 點數！</string>
+
+    <!-- Calendar FAB (add/move/copy outfit) -->
+    <string name="calendar_add_to_calendar">將穿搭加入日曆</string>
+    <string name="calendar_add_pick">選擇穿搭</string>
+    <string name="calendar_add_empty">尚無可加入的穿搭</string>
+    <string name="calendar_pick_source_prompt">點按有穿搭的日期以選取</string>
+
+    <!-- Calendar FAB delete option -->
+    <string name="calendar_delete_from_calendar">從日曆移除穿搭</string>
+    <string name="calendar_delete_prompt">點按某天以移除當天的穿搭</string>
+    <string name="calendar_delete_confirm_title">要移除穿搭嗎？</string>
+    <string name="calendar_delete_confirm_msg">要移除在 %1$s 穿著的所有穿搭嗎？</string>
+
+    <!-- Calendar add-to-day title -->
+    <string name="calendar_add_pick_for">為 %1$s 加入穿搭</string>
 </resources>

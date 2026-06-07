@@ -1217,4 +1217,19 @@
     <string name="error_billing">שגיאת חיוב: %1$s</string>
     <string name="error_purchase_verify_failed">לא ניתן לאמת את הרכישה — פנה לתמיכה.</string>
     <string name="credits_added">נוספו %1$d קרדיטים!</string>
+
+    <!-- Calendar FAB (add/move/copy outfit) -->
+    <string name="calendar_add_to_calendar">הוסף תלבושת ליומן</string>
+    <string name="calendar_add_pick">בחר תלבושת</string>
+    <string name="calendar_add_empty">אין עדיין תלבושות להוספה</string>
+    <string name="calendar_pick_source_prompt">הקש על יום עם תלבושות כדי לבחור בו</string>
+
+    <!-- Calendar FAB delete option -->
+    <string name="calendar_delete_from_calendar">הסר תלבושת מהיומן</string>
+    <string name="calendar_delete_prompt">הקש על יום כדי להסיר את התלבושות שלו</string>
+    <string name="calendar_delete_confirm_title">להסיר תלבושות?</string>
+    <string name="calendar_delete_confirm_msg">להסיר את כל התלבושות שנלבשו ב-%1$s?</string>
+
+    <!-- Calendar add-to-day title -->
+    <string name="calendar_add_pick_for">הוסף תלבושת ל-%1$s</string>
 </resources>

@@ -8,6 +8,7 @@ Ensure that no font is smaller than the font in the filter pillow
 
 consistency: the cross to cancel taking a picture in wardrobe is in the lower right. change the cross in similarity search to use the same button and move it from top left also to lower right ??? rotate button color??
 
+Add an outfit week planner?
 
 
 TODO
@@ -55,16 +56,28 @@ create design for onboarding flow
 
 what can we do to reduce cost?
 
+onboarding screen. on phones with small screen (large font size) text does not fit on one screen and buttons are below the bottom navigation panel fix that
+
+Move to another day  & copy to another day in calendar not localized. Fix this. also make it possible to long press an outfit in calendar and then allow for moving by tapping the target date. also allow left and right swipe to go through months. also add a bit of padding inside calendar cell
+
+add the heart we have on calendar also directly on outfit view (both detail and list views) so one can favorite it there already
 
 
-like outfits travel planner should also have an option to say what the AI should use (pattern, ...)
+after onboarding when syncing wardrobe - for my 196 items it goes steadily from 0...196 but then it hangs there for a bit and then suddenly done. this is not intuitive for users make the final step transparent (what is taking so long...?)
+
+when creating outfit once outfit is created there is no visual indication of anything for a while. then it jumps back to outfit list and the just created outfit - make this delay clear to users
+
+Instead of wear today in outfits make it "Wear.." and then show the calendar with the outfits and the day when this will be worn is user selectable with the current day pre selected.
+
+
+
+fetching new
+
 
 
 create human readable release notes between now and v2.0.1 and release version 2.0.2, git tag commit and upload to testers in firebase
 
 Storage:
-- I noticed .jpgs from camera are just 124kB but .pngs are 450kB. Since this is on users drive folders we have to be cautious about size. Let's target 1GB - to allow for 2000-4000 wardrobe items.
-
 
 Feedback:
 add way to send feedback via firebase under settings -> feedback
@@ -76,6 +89,8 @@ Implement new feature: We are working on the refinancing/monetization aspect of 
 
 IN PROGRESS
 ===========
+- I noticed .jpgs from camera are just 124kB but .pngs are 450kB. Since this is on users drive folders we have to be cautious about size. Let's target 1GB - to allow for 2000-4000 wardrobe items. Make quality & size target(?) an option in advanced settings.
+
 we want all options to work without Gemini so things are cost neutral. create a plan for that. options, local model, local gemini models, reduced quality algorithms
 
 the calendar is currently storing outfits of the user over time. this is an indication of the users taste. use this history as an input to the gemini prompt to 
@@ -116,6 +131,8 @@ Repair & Sync:
 
 DONE
 =====
+like outfits travel planner should also have an option to say what the AI should use (pattern, ...)
+
 the colors when editing tags are not the same that we have in wardrobe filter
 
 is outfit generation sending the entire wardrobe or only the items that match a certain category (e.g. full body suit) that are supposed to be suggested by AI?

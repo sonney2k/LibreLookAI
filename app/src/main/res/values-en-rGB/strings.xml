@@ -1213,4 +1213,19 @@
     <string name="error_billing">Billing error: %1$s</string>
     <string name="error_purchase_verify_failed">Could not verify purchase — please contact support.</string>
     <string name="credits_added">+%1$d credits added!</string>
+
+    <!-- Calendar FAB (add/move/copy outfit) -->
+    <string name="calendar_add_to_calendar">Add outfit to calendar</string>
+    <string name="calendar_add_pick">Choose an outfit</string>
+    <string name="calendar_add_empty">No outfits to add yet</string>
+    <string name="calendar_pick_source_prompt">Tap a day with outfits to select it</string>
+
+    <!-- Calendar FAB delete option -->
+    <string name="calendar_delete_from_calendar">Remove outfit from calendar</string>
+    <string name="calendar_delete_prompt">Tap a day to remove its outfits</string>
+    <string name="calendar_delete_confirm_title">Remove outfits?</string>
+    <string name="calendar_delete_confirm_msg">Remove all outfits worn on %1$s?</string>
+
+    <!-- Calendar add-to-day title -->
+    <string name="calendar_add_pick_for">Add an outfit to %1$s</string>
 </resources>

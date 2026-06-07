@@ -1186,4 +1186,19 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="error_billing">Számlázási hiba: %1$s</string>
     <string name="error_purchase_verify_failed">A vásárlás nem ellenőrizhető — fordulj az ügyfélszolgálathoz.</string>
     <string name="credits_added">+%1$d kredit hozzáadva!</string>
+
+    <!-- Calendar FAB (add/move/copy outfit) -->
+    <string name="calendar_add_to_calendar">Szett hozzáadása a naptárhoz</string>
+    <string name="calendar_add_pick">Válassz egy szettet</string>
+    <string name="calendar_add_empty">Még nincs hozzáadható szett</string>
+    <string name="calendar_pick_source_prompt">Koppints egy szettet tartalmazó napra a kiválasztáshoz</string>
+
+    <!-- Calendar FAB delete option -->
+    <string name="calendar_delete_from_calendar">Szett eltávolítása a naptárból</string>
+    <string name="calendar_delete_prompt">Koppints egy napra a szettjei eltávolításához</string>
+    <string name="calendar_delete_confirm_title">Eltávolítod a szetteket?</string>
+    <string name="calendar_delete_confirm_msg">Eltávolítod a(z) %1$s viselt összes szettet?</string>
+
+    <!-- Calendar add-to-day title -->
+    <string name="calendar_add_pick_for">Szett hozzáadása ehhez: %1$s</string>
 </resources>

@@ -1186,4 +1186,19 @@
     <string name="error_billing">بلنگ کی خرابی: %1$s</string>
     <string name="error_purchase_verify_failed">خریداری کی تصدیق نہیں ہو سکی — براہ کرم سپورٹ سے رابطہ کریں۔</string>
     <string name="credits_added">+%1$d کریڈٹ شامل ہو گئے!</string>
+
+    <!-- Calendar FAB (add/move/copy outfit) -->
+    <string name="calendar_add_to_calendar">آؤٹ فٹ کو کیلنڈر میں شامل کریں</string>
+    <string name="calendar_add_pick">ایک آؤٹ فٹ منتخب کریں</string>
+    <string name="calendar_add_empty">ابھی شامل کرنے کے لیے کوئی آؤٹ فٹ نہیں</string>
+    <string name="calendar_pick_source_prompt">منتخب کرنے کے لیے آؤٹ فٹ والے دن پر ٹیپ کریں</string>
+
+    <!-- Calendar FAB delete option -->
+    <string name="calendar_delete_from_calendar">آؤٹ فٹ کو کیلنڈر سے ہٹائیں</string>
+    <string name="calendar_delete_prompt">کسی دن کے آؤٹ فٹ ہٹانے کے لیے اس پر ٹیپ کریں</string>
+    <string name="calendar_delete_confirm_title">آؤٹ فٹ ہٹائیں؟</string>
+    <string name="calendar_delete_confirm_msg">%1$s کو پہنے گئے تمام آؤٹ فٹ ہٹائیں؟</string>
+
+    <!-- Calendar add-to-day title -->
+    <string name="calendar_add_pick_for">%1$s کو ایک آؤٹ فٹ شامل کریں</string>
 </resources>
