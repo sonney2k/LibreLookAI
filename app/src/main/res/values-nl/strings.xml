@@ -1147,4 +1147,7 @@
     <string name="settings_convert_body">We slaan je oudere JPG/PNG-foto\'s opnieuw op als kleinere WebP-bestanden en werken ze overal bij waar ze worden gebruikt — outfits, passessies en reizen. Geen AI of credits nodig.</string>
     <string name="settings_convert_confirm">Omzetten naar WebP</string>
     <string name="settings_converting">Bezig met omzetten %1$d van %2$d…</string>
+
+    <!-- Wardrobe maintenance overflow menu -->
+    <string name="wardrobe_maintenance_menu">Onderhoud</string>
 </resources>

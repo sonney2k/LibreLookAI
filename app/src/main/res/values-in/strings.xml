@@ -1120,4 +1120,7 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="settings_convert_body">Kami akan menyimpan ulang foto JPG/PNG lama Anda sebagai file WebP yang lebih kecil dan memperbaruinya di mana pun digunakan — outfit, coba pakai, dan perjalanan. Tanpa AI atau kredit.</string>
     <string name="settings_convert_confirm">Konversi ke WebP</string>
     <string name="settings_converting">Mengonversi %1$d dari %2$d…</string>
+
+    <!-- Wardrobe maintenance overflow menu -->
+    <string name="wardrobe_maintenance_menu">Pemeliharaan</string>
 </resources>

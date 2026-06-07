@@ -1147,4 +1147,7 @@
     <string name="settings_convert_body">Vi lagrer de eldre JPG/PNG-bildene dine på nytt som mindre WebP-filer og oppdaterer dem overalt der de brukes — antrekk, prøving og reiser. Ingen KI eller kreditter nødvendig.</string>
     <string name="settings_convert_confirm">Konverter til WebP</string>
     <string name="settings_converting">Konverterer %1$d av %2$d…</string>
+
+    <!-- Wardrobe maintenance overflow menu -->
+    <string name="wardrobe_maintenance_menu">Vedlikehold</string>
 </resources>

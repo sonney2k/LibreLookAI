@@ -1120,4 +1120,7 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="settings_convert_body">A régebbi JPG/PNG fotóidat kisebb WebP fájlokként mentjük újra, és mindenhol frissítjük, ahol használatban vannak — szettek, felpróbálások és utazások. Nincs szükség MI-re vagy kreditre.</string>
     <string name="settings_convert_confirm">Átalakítás WebP-re</string>
     <string name="settings_converting">Átalakítás: %1$d / %2$d…</string>
+
+    <!-- Wardrobe maintenance overflow menu -->
+    <string name="wardrobe_maintenance_menu">Karbantartás</string>
 </resources>

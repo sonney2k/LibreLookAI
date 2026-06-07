@@ -104,6 +104,7 @@ fun SettingsScreen(
             onAddCloset = { showAddCloset = true },
             onEditCloset = { editingCloset = it },
             onGetMore = { push(SettingsRoute.BUY_CREDITS) },
+            onConvertWebp = { pendingAction = DestructiveAction.CONVERT_WEBP },
             onAdvanced = { push(SettingsRoute.ADVANCED) },
             onHelp = { openUrl(context, "https://github.com/sonney2k/LibreLookAI") },
             onAbout = { push(SettingsRoute.ABOUT) },
@@ -215,6 +216,7 @@ private fun SettingsMain(
     onAddCloset: () -> Unit,
     onEditCloset: (Location) -> Unit,
     onGetMore: () -> Unit,
+    onConvertWebp: () -> Unit,
     onAdvanced: () -> Unit,
     onHelp: () -> Unit,
     onAbout: () -> Unit,
@@ -271,7 +273,14 @@ private fun SettingsMain(
                 item { AiCreditsCard(balance = balance, onGetMore = onGetMore) }
             }
             item { SecLabel(stringResource(R.string.settings_section_more)) }
-            item { MoreCard(onAdvanced = onAdvanced, onHelp = onHelp, onAbout = onAbout) }
+            item {
+                MoreCard(
+                    onConvertWebp = onConvertWebp,
+                    onAdvanced = onAdvanced,
+                    onHelp = onHelp,
+                    onAbout = onAbout,
+                )
+            }
             item {
                 Text(
                     text = stringResource(R.string.settings_footer),

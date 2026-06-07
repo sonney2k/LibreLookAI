@@ -1151,4 +1151,7 @@
     <string name="settings_convert_body">נשמור מחדש את תמונות ה-JPG/PNG הישנות שלך כקובצי WebP קטנים יותר ונעדכן אותן בכל מקום שבו הן בשימוש — מערכי לבוש, מדידות וטיולים. ללא AI או קרדיטים.</string>
     <string name="settings_convert_confirm">המרה ל-WebP</string>
     <string name="settings_converting">ממיר %1$d מתוך %2$d…</string>
+
+    <!-- Wardrobe maintenance overflow menu -->
+    <string name="wardrobe_maintenance_menu">תחזוקה</string>
 </resources>

@@ -1120,4 +1120,7 @@
     <string name="settings_convert_body">我們會將你較舊的 JPG/PNG 相片重新存成較小的 WebP 檔案，並在所有用到它們的地方更新——穿搭、試穿和旅行。不需 AI 或點數。</string>
     <string name="settings_convert_confirm">轉換為 WebP</string>
     <string name="settings_converting">轉換中 %1$d / %2$d…</string>
+
+    <!-- Wardrobe maintenance overflow menu -->
+    <string name="wardrobe_maintenance_menu">維護</string>
 </resources>

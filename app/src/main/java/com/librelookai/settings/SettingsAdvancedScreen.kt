@@ -17,13 +17,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
-import androidx.compose.material.icons.filled.AutoFixHigh
-import androidx.compose.material.icons.filled.Compress
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.automirrored.filled.ShowChart
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -48,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import com.librelookai.AppScreenHeader
 import com.librelookai.R
 import com.librelookai.settings.UserPreferences
+import com.librelookai.util.FeatureFlags
 import com.librelookai.util.LocalIsOffline
 
 /**
@@ -131,22 +129,8 @@ fun SettingsAdvancedScreen(
                     iconBg = accentTile,
                     label = stringResource(R.string.settings_retag_row),
                     sub = stringResource(R.string.settings_retag_row_sub),
-                    onClick = if (isOffline) null else ({ onDestructive(DestructiveAction.RETAG) }),
-                )
-                SettingsRow(
-                    icon = Icons.Filled.AutoFixHigh,
-                    iconBg = accentTile,
-                    label = stringResource(R.string.settings_rebg_row),
-                    sub = stringResource(R.string.settings_rebg_row_sub),
-                    onClick = if (isOffline) null else ({ onDestructive(DestructiveAction.REMOVE_BG) }),
-                )
-                SettingsRow(
-                    icon = Icons.Filled.Tune,
-                    iconBg = accentTile,
-                    label = stringResource(R.string.settings_cutout_row),
-                    sub = stringResource(R.string.settings_cutout_row_sub),
                     isLast = true,
-                    onClick = if (isOffline) null else ({ onDestructive(DestructiveAction.CUTOUT_FIX) }),
+                    onClick = if (isOffline) null else ({ onDestructive(DestructiveAction.RETAG) }),
                 )
             }
 
@@ -159,13 +143,6 @@ fun SettingsAdvancedScreen(
             // POWER OPTIONS
             SecLabel(stringResource(R.string.settings_section_advanced_power))
             SettingsCard {
-                SettingsRow(
-                    icon = Icons.Filled.Compress,
-                    iconBg = accentTile,
-                    label = stringResource(R.string.settings_convert_webp_row),
-                    sub = stringResource(R.string.settings_convert_webp_row_sub),
-                    onClick = if (isOffline) null else ({ onDestructive(DestructiveAction.CONVERT_WEBP) }),
-                )
                 SettingsRow(
                     icon = Icons.AutoMirrored.Filled.ShowChart,
                     label = stringResource(R.string.settings_usage_charts_row),
@@ -180,20 +157,24 @@ fun SettingsAdvancedScreen(
                 SettingsRow(
                     label = stringResource(R.string.settings_local_bg_row),
                     sub = stringResource(R.string.settings_local_bg_sub),
+                    // Diagnostic rows below are power-feature-gated; this is the last row otherwise.
+                    isLast = !FeatureFlags.powerFeatures,
                     accessory = RowAccessory.SwitchToggle(preferences.preferLocalBgRemoval, onTogglePreferLocalBg),
                 )
-                SettingsRow(
-                    label = stringResource(R.string.settings_similarity_preview_row),
-                    sub = stringResource(R.string.settings_similarity_preview_sub),
-                    accessory = RowAccessory.SwitchToggle(preferences.debugSimilarityPreview, onToggleSimilarityPreview),
-                )
-                SettingsRow(
-                    label = stringResource(R.string.settings_image_quality_row),
-                    sub = stringResource(R.string.settings_image_quality_sub),
-                    value = imageQualityLabel(preferences.imageQuality),
-                    isLast = true,
-                    onClick = { showQualityDialog = true },
-                )
+                if (FeatureFlags.powerFeatures) {
+                    SettingsRow(
+                        label = stringResource(R.string.settings_similarity_preview_row),
+                        sub = stringResource(R.string.settings_similarity_preview_sub),
+                        accessory = RowAccessory.SwitchToggle(preferences.debugSimilarityPreview, onToggleSimilarityPreview),
+                    )
+                    SettingsRow(
+                        label = stringResource(R.string.settings_image_quality_row),
+                        sub = stringResource(R.string.settings_image_quality_sub),
+                        value = imageQualityLabel(preferences.imageQuality),
+                        isLast = true,
+                        onClick = { showQualityDialog = true },
+                    )
+                }
             }
 
             // HELP US IMPROVE

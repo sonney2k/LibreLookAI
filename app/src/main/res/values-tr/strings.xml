@@ -1147,4 +1147,7 @@
     <string name="settings_convert_body">Eski JPG/PNG fotoğraflarını daha küçük WebP dosyaları olarak yeniden kaydedip kullanıldıkları her yerde — kombinler, deneme ve seyahatler — güncelleriz. Yapay zekâ veya kredi gerekmez.</string>
     <string name="settings_convert_confirm">WebP\'ye dönüştür</string>
     <string name="settings_converting">Dönüştürülüyor %1$d / %2$d…</string>
+
+    <!-- Wardrobe maintenance overflow menu -->
+    <string name="wardrobe_maintenance_menu">Bakım</string>
 </resources>

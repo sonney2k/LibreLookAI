@@ -1147,4 +1147,7 @@
     <string name="settings_convert_body">古い JPG/PNG 写真をより小さい WebP ファイルとして保存し直し、使われている場所すべて（コーディネート、試着、旅行）で更新します。AI もクレジットも不要です。</string>
     <string name="settings_convert_confirm">WebP に変換</string>
     <string name="settings_converting">変換中 %1$d/%2$d…</string>
+
+    <!-- Wardrobe maintenance overflow menu -->
+    <string name="wardrobe_maintenance_menu">メンテナンス</string>
 </resources>

@@ -1147,4 +1147,7 @@
     <string name="settings_convert_body">Volveremos a guardar tus fotos JPG/PNG antiguas como archivos WebP más pequeños y las actualizaremos en todos lados donde se usan: looks, pruebas y viajes. Sin IA ni créditos.</string>
     <string name="settings_convert_confirm">Convertir a WebP</string>
     <string name="settings_converting">Convirtiendo %1$d de %2$d…</string>
+
+    <!-- Wardrobe maintenance overflow menu -->
+    <string name="wardrobe_maintenance_menu">Mantenimiento</string>
 </resources>

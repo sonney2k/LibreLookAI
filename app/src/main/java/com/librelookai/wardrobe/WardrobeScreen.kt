@@ -31,8 +31,11 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.librelookai.R
+import com.librelookai.billing.CreditsViewModel
 import com.librelookai.outfit.OutfitEventsViewModel
 import com.librelookai.outfit.OutfitsViewModel
+import com.librelookai.settings.DestructiveAction
+import com.librelookai.settings.DestructiveConfirmDialog
 import com.librelookai.settings.ProfileViewModel
 import com.librelookai.shopping.ShoppingClosetViewModel
 import com.librelookai.shopping.importQuery
@@ -48,6 +51,7 @@ fun WardrobeScreen(
     shoppingClosetViewModel: ShoppingClosetViewModel = viewModel(),
     profileViewModel: ProfileViewModel = viewModel(),
     tryOnViewModel: TryOnViewModel = viewModel(),
+    creditsViewModel: CreditsViewModel = viewModel(),
     onCreateOutfitFromSelection: (Set<String>) -> Unit = {},
     onTryOnSelection: (Set<String>) -> Unit = {},
     onSuggestReplacements: (Set<String>) -> Unit = {},
@@ -62,7 +66,31 @@ fun WardrobeScreen(
     val tryOnState    by tryOnViewModel.state.collectAsState()
     val locationState by locationViewModel.state.collectAsState()
     val profileState  by profileViewModel.state.collectAsState()
+    val creditsState  by creditsViewModel.state.collectAsState()
     val context = LocalContext.current
+
+    // Power-feature bulk maintenance ops (re-remove backgrounds / fix leftover cutout pixels),
+    // surfaced behind FeatureFlags.powerFeatures in the Wardrobe header overflow menu. Reuses the
+    // same friendly confirm + credit-cost dialog as the Settings ▸ Advanced "Fix AI mistakes" rows.
+    var pendingMaintenance by remember { mutableStateOf<DestructiveAction?>(null) }
+    pendingMaintenance?.let { action ->
+        DestructiveConfirmDialog(
+            action = action,
+            itemCount = state.images.size,
+            balance = creditsState.balance,
+            onConfirm = {
+                when (action) {
+                    DestructiveAction.REMOVE_BG -> viewModel.removeAllBackgrounds()
+                    DestructiveAction.CUTOUT_FIX ->
+                        viewModel.startCutoutBgFixScan(locationState.locations.map { it.folderId })
+                    else -> Unit
+                }
+                pendingMaintenance = null
+            },
+            onBuyCredits = { pendingMaintenance = null; onSettingsClick() },
+            onDismiss = { pendingMaintenance = null },
+        )
+    }
 
     // driveId → number of calendar wear events that include this item
     val popularityMap = remember(outfitEventsState.events, outfitsState.outfits) {
@@ -168,6 +196,8 @@ fun WardrobeScreen(
             locationError = locationState.error,
             dismissViewerTrigger = dismissViewerTrigger,
             onSettingsClick = onSettingsClick,
+            onBulkRemoveBackgrounds = { pendingMaintenance = DestructiveAction.REMOVE_BG },
+            onBulkFixCutoutBg = { pendingMaintenance = DestructiveAction.CUTOUT_FIX },
             onOpenFindByPhoto = {
                 if (hasCameraPermission) viewModel.openFindByPhoto()
                 else {

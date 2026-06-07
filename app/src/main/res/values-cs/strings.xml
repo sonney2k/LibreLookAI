@@ -1147,4 +1147,7 @@
     <string name="settings_convert_body">Vaše starší fotky JPG/PNG uložíme znovu jako menší soubory WebP a aktualizujeme je všude, kde se používají — v outfitech, vyzkoušeních i cestách. Bez AI a kreditů.</string>
     <string name="settings_convert_confirm">Převést do WebP</string>
     <string name="settings_converting">Převádím %1$d z %2$d…</string>
+
+    <!-- Wardrobe maintenance overflow menu -->
+    <string name="wardrobe_maintenance_menu">Údržba</string>
 </resources>

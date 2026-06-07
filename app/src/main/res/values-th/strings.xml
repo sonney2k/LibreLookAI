@@ -1120,4 +1120,7 @@
     <string name="settings_convert_body">เราจะบันทึกรูป JPG/PNG เก่าของคุณใหม่เป็นไฟล์ WebP ที่เล็กลง และอัปเดตทุกที่ที่ใช้งาน — ชุดเสื้อผ้า การลองสวม และทริป ไม่ต้องใช้ AI หรือเครดิต</string>
     <string name="settings_convert_confirm">แปลงเป็น WebP</string>
     <string name="settings_converting">กำลังแปลง %1$d จาก %2$d…</string>
+
+    <!-- Wardrobe maintenance overflow menu -->
+    <string name="wardrobe_maintenance_menu">การบำรุงรักษา</string>
 </resources>

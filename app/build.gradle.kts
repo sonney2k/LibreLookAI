@@ -90,6 +90,15 @@ android {
             "DRIVE_FULL_SCOPE",
             localProps.getProperty("drive.full.scope", "false").trim().ifEmpty { "false" },
         )
+        // Power/diagnostic features toggle. Default off → the Play release hides the
+        // bulk wardrobe maintenance ops (re-remove backgrounds / fix cutout pixels) and the
+        // diagnostic settings (similarity preview, image-quality picker). Flip
+        // `power.features.enabled=true` in local.properties to surface them.
+        buildConfigField(
+            "boolean",
+            "POWER_FEATURES_ENABLED",
+            localProps.getProperty("power.features.enabled", "false").trim().ifEmpty { "false" },
+        )
         // Git commit hash for debugging
         buildConfigField("String", "GIT_HASH", "\"$gitHash\"")
     }

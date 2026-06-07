@@ -1221,4 +1221,7 @@
     <string name="settings_image_quality_balanced_desc">Smallest files — recommended (~80 kB)</string>
     <string name="settings_image_quality_high_desc">Sharper, larger files (~150 kB)</string>
     <string name="settings_image_quality_maximum_desc">Lossless, largest files (~350 kB)</string>
+
+    <!-- Wardrobe maintenance overflow menu -->
+    <string name="wardrobe_maintenance_menu">Maintenance</string>
 </resources>

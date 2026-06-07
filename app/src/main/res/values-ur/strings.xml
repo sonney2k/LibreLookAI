@@ -1120,4 +1120,7 @@
     <string name="settings_convert_body">ہم آپ کی پرانی JPG/PNG تصاویر کو چھوٹی WebP فائلوں کے طور پر دوبارہ محفوظ کریں گے اور جہاں جہاں وہ استعمال ہوتی ہیں — آؤٹ فٹس، ٹرائی آن اور ٹرپس — وہاں اپ ڈیٹ کر دیں گے۔ کوئی AI یا کریڈٹ درکار نہیں۔</string>
     <string name="settings_convert_confirm">WebP میں تبدیل کریں</string>
     <string name="settings_converting">تبدیل ہو رہی ہیں %2$d میں سے %1$d…</string>
+
+    <!-- Wardrobe maintenance overflow menu -->
+    <string name="wardrobe_maintenance_menu">دیکھ بھال</string>
 </resources>

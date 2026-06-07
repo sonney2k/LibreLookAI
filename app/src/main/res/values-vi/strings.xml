@@ -1120,4 +1120,7 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="settings_convert_body">Chúng tôi sẽ lưu lại ảnh JPG/PNG cũ của bạn thành các tệp WebP nhỏ hơn và cập nhật ở mọi nơi chúng được dùng — trang phục, thử đồ và chuyến đi. Không cần AI hay tín dụng.</string>
     <string name="settings_convert_confirm">Chuyển sang WebP</string>
     <string name="settings_converting">Đang chuyển %1$d trên %2$d…</string>
+
+    <!-- Wardrobe maintenance overflow menu -->
+    <string name="wardrobe_maintenance_menu">Bảo trì</string>
 </resources>

@@ -1147,4 +1147,7 @@
     <string name="settings_convert_body">Tallennamme vanhemmat JPG/PNG-kuvasi uudelleen pienempinä WebP-tiedostoina ja päivitämme ne kaikkialle, missä niitä käytetään — asuihin, sovituksiin ja matkoihin. Ei tekoälyä eikä krediittejä.</string>
     <string name="settings_convert_confirm">Muunna WebP-muotoon</string>
     <string name="settings_converting">Muunnetaan %1$d/%2$d…</string>
+
+    <!-- Wardrobe maintenance overflow menu -->
+    <string name="wardrobe_maintenance_menu">Ylläpito</string>
 </resources>

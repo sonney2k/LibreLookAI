@@ -1120,4 +1120,7 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="settings_convert_body">Îți salvăm din nou fotografiile JPG/PNG mai vechi ca fișiere WebP mai mici și le actualizăm peste tot unde sunt folosite — ținute, probe și călătorii. Fără IA sau credite.</string>
     <string name="settings_convert_confirm">Convertește în WebP</string>
     <string name="settings_converting">Se convertește %1$d din %2$d…</string>
+
+    <!-- Wardrobe maintenance overflow menu -->
+    <string name="wardrobe_maintenance_menu">Întreținere</string>
 </resources>

@@ -2,6 +2,7 @@ package com.librelookai.settings
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.HelpOutline
+import androidx.compose.material.icons.filled.Compress
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.StarOutline
@@ -10,17 +11,27 @@ import androidx.compose.ui.res.stringResource
 import com.librelookai.BuildConfig
 import com.librelookai.LocalStartTour
 import com.librelookai.R
+import com.librelookai.util.LocalIsOffline
 
 /**
- * "More" card — Advanced, Help & FAQ, and About rows. See README §"More" card.
+ * "More" card — Convert-to-WebP maintenance, Advanced, Help & FAQ, and About rows.
+ * See README §"More" card.
  */
 @Composable
 fun MoreCard(
+    onConvertWebp: () -> Unit,
     onAdvanced: () -> Unit,
     onHelp: () -> Unit,
     onAbout: () -> Unit,
 ) {
+    val isOffline = LocalIsOffline.current
     SettingsCard {
+        SettingsRow(
+            icon = Icons.Filled.Compress,
+            label = stringResource(R.string.settings_convert_webp_row),
+            sub = stringResource(R.string.settings_convert_webp_row_sub),
+            onClick = if (isOffline) null else onConvertWebp,
+        )
         SettingsRow(
             icon = Icons.Filled.Settings,
             label = stringResource(R.string.settings_more_advanced),

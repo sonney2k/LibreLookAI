@@ -31,11 +31,15 @@ import androidx.compose.material.icons.filled.Checkroom
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ImageSearch
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.SwapHoriz
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
@@ -71,6 +75,7 @@ import com.librelookai.data.model.TryOn
 import com.librelookai.gemini.ClothingTags
 import com.librelookai.gemini.CutoutFixActions
 import com.librelookai.util.Analytics
+import com.librelookai.util.FeatureFlags
 import com.librelookai.util.LocalIsOffline
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -111,6 +116,8 @@ internal fun GridContent(
     processingImageId: String?,
     dismissViewerTrigger: Int = 0,
     onSettingsClick: () -> Unit = {},
+    onBulkRemoveBackgrounds: () -> Unit = {},
+    onBulkFixCutoutBg: () -> Unit = {},
     onOpenFindByPhoto: () -> Unit = {},
     onSearchByText: (String) -> Unit = {},
     onTextFilter: (String, List<DriveImage>) -> List<DriveImage> = { _, items -> items },
@@ -244,6 +251,45 @@ internal fun GridContent(
                         Icons.Default.BarChart,
                         contentDescription = stringResource(R.string.insights_tab_wardrobe_stats),
                     )
+                }
+                // Power-feature bulk maintenance ops (re-remove backgrounds / fix leftover cutout
+                // pixels). Hidden unless FeatureFlags.powerFeatures; disabled offline (Drive writes).
+                if (FeatureFlags.powerFeatures) {
+                    var maintenanceMenuOpen by remember { mutableStateOf(false) }
+                    Box {
+                        IconButton(
+                            onClick = { maintenanceMenuOpen = true },
+                            enabled = !isOffline,
+                        ) {
+                            Icon(
+                                Icons.Default.MoreVert,
+                                contentDescription = stringResource(R.string.wardrobe_maintenance_menu),
+                            )
+                        }
+                        DropdownMenu(
+                            expanded = maintenanceMenuOpen,
+                            onDismissRequest = { maintenanceMenuOpen = false },
+                        ) {
+                            DropdownMenuItem(
+                                leadingIcon = { Icon(Icons.Default.AutoFixHigh, contentDescription = null) },
+                                text = { Text(stringResource(R.string.settings_rebg_row)) },
+                                onClick = {
+                                    maintenanceMenuOpen = false
+                                    Analytics.action("Wardrobe", "bulk_remove_bg")
+                                    onBulkRemoveBackgrounds()
+                                },
+                            )
+                            DropdownMenuItem(
+                                leadingIcon = { Icon(Icons.Default.Tune, contentDescription = null) },
+                                text = { Text(stringResource(R.string.settings_cutout_row)) },
+                                onClick = {
+                                    maintenanceMenuOpen = false
+                                    Analytics.action("Wardrobe", "bulk_fix_cutout")
+                                    onBulkFixCutoutBg()
+                                },
+                            )
+                        }
+                    }
                 }
                 SortButton(
                     sortBy = sortBy,

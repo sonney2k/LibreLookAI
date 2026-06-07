@@ -1120,4 +1120,7 @@
     <string name="settings_convert_body">Ми збережемо ваші старіші фото JPG/PNG як менші файли WebP й оновимо їх скрізь, де вони використовуються — образи, приміряння та подорожі. Без ШІ та кредитів.</string>
     <string name="settings_convert_confirm">Конвертувати у WebP</string>
     <string name="settings_converting">Конвертування %1$d з %2$d…</string>
+
+    <!-- Wardrobe maintenance overflow menu -->
+    <string name="wardrobe_maintenance_menu">Обслуговування</string>
 </resources>
