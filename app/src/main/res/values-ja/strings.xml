@@ -1170,4 +1170,13 @@
     <!-- Outfit Wear… date picker + favourite heart -->
     <string name="outfits_wear">着用</string>
     <string name="outfits_favorite">お気に入り</string>
+
+    <!-- AI progress overlay (upload bytes + wait timer) -->
+    <string name="ai_progress_uploading">アップロード中 %1$s / %2$s</string>
+    <string name="ai_progress_waiting">AIを待っています…</string>
+    <string name="ai_progress_timing">%1$ds · 通常 20–40s</string>
+
+    <!-- Drive folder picker strings -->
+    <string name="drive_picker_failed">Google Drive に接続できませんでした。もう一度お試しください。</string>
+    <string name="drive_picker_opening">Google Drive を開いています…</string>
 </resources>

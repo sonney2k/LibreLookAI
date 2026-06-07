@@ -1170,4 +1170,13 @@
     <!-- Outfit Wear… date picker + favourite heart -->
     <string name="outfits_wear">Isuot</string>
     <string name="outfits_favorite">Paborito</string>
+
+    <!-- AI progress overlay (upload bytes + wait timer) -->
+    <string name="ai_progress_uploading">Ina-upload %1$s / %2$s</string>
+    <string name="ai_progress_waiting">Naghihintay sa AI…</string>
+    <string name="ai_progress_timing">%1$ds · karaniwang 20–40s</string>
+
+    <!-- Drive folder picker strings -->
+    <string name="drive_picker_failed">Hindi makakonekta sa Google Drive. Subukang muli.</string>
+    <string name="drive_picker_opening">Binubuksan ang Google Drive…</string>
 </resources>

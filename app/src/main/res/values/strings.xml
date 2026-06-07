@@ -629,6 +629,9 @@
 
     <!-- AI overlay -->
     <string name="ai_working">AI is working…</string>
+    <string name="ai_progress_uploading">Uploading %1$s / %2$s</string>
+    <string name="ai_progress_waiting">Waiting for AI…</string>
+    <string name="ai_progress_timing">%1$ds · usually 20–40s</string>
     <string name="ai_fetching_weather">Fetching weather…</string>
     <string name="ai_generating_packing">Generating packing list…</string>
     <string name="ai_analyzing_wardrobe">Analyzing your wardrobe…</string>
@@ -1168,6 +1171,8 @@
     <string name="onboarding_drive_import_error">We couldn\'t import your existing wardrobe automatically. You can try again or pick the folder yourself.</string>
     <string name="onboarding_drive_import_manual">Choose folder manually</string>
     <string name="onboarding_drive_offline">Connect to the internet to sign in with Google.</string>
+    <string name="drive_picker_failed">Couldn\'t connect to Google Drive. Try again.</string>
+    <string name="drive_picker_opening">Opening Google Drive…</string>
     <string name="onboarding_background_title">Allow background processing</string>
     <string name="onboarding_background_body">Importing photos, removing backgrounds and tagging clothes with AI can take a little while. LibreLookAI needs unrestricted background processing so Android doesn\'t kill it mid-task — which could otherwise leave half-imported items, missing tags or corrupted files.\n\nThis only allows the app to finish work you started; it does not run anything on its own.</string>
     <string name="onboarding_background_allow">Allow background processing</string>

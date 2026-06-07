@@ -1143,4 +1143,13 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <!-- Outfit Wear… date picker + favourite heart -->
     <string name="outfits_wear">Viselés</string>
     <string name="outfits_favorite">Kedvenc</string>
+
+    <!-- AI progress overlay (upload bytes + wait timer) -->
+    <string name="ai_progress_uploading">Feltöltés %1$s / %2$s</string>
+    <string name="ai_progress_waiting">Várakozás az AI-ra…</string>
+    <string name="ai_progress_timing">%1$ds · általában 20–40s</string>
+
+    <!-- Drive folder picker strings -->
+    <string name="drive_picker_failed">Nem sikerült csatlakozni a Google Drive-hoz. Próbáld újra.</string>
+    <string name="drive_picker_opening">Google Drive megnyitása…</string>
 </resources>

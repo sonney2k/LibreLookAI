@@ -1170,4 +1170,13 @@
     <!-- Outfit Wear… date picker + favourite heart -->
     <string name="outfits_wear">ارتداء</string>
     <string name="outfits_favorite">المفضلة</string>
+
+    <!-- AI progress overlay (upload bytes + wait timer) -->
+    <string name="ai_progress_uploading">جارٍ الرفع %1$s / %2$s</string>
+    <string name="ai_progress_waiting">بانتظار الذكاء الاصطناعي…</string>
+    <string name="ai_progress_timing">%1$ds · عادةً 20–40s</string>
+
+    <!-- Drive folder picker strings -->
+    <string name="drive_picker_failed">تعذّر الاتصال بـ Google Drive. حاول مرة أخرى.</string>
+    <string name="drive_picker_opening">جارٍ فتح Google Drive…</string>
 </resources>

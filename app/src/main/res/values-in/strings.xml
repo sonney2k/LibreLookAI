@@ -1143,4 +1143,13 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <!-- Outfit Wear… date picker + favourite heart -->
     <string name="outfits_wear">Pakai</string>
     <string name="outfits_favorite">Favorit</string>
+
+    <!-- AI progress overlay (upload bytes + wait timer) -->
+    <string name="ai_progress_uploading">Mengunggah %1$s / %2$s</string>
+    <string name="ai_progress_waiting">Menunggu AI…</string>
+    <string name="ai_progress_timing">%1$ds · biasanya 20–40s</string>
+
+    <!-- Drive folder picker strings -->
+    <string name="drive_picker_failed">Tidak dapat terhubung ke Google Drive. Coba lagi.</string>
+    <string name="drive_picker_opening">Membuka Google Drive…</string>
 </resources>

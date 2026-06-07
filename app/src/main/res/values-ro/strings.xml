@@ -1143,4 +1143,13 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <!-- Outfit Wear… date picker + favourite heart -->
     <string name="outfits_wear">Poartă</string>
     <string name="outfits_favorite">Favorit</string>
+
+    <!-- AI progress overlay (upload bytes + wait timer) -->
+    <string name="ai_progress_uploading">Se încarcă %1$s / %2$s</string>
+    <string name="ai_progress_waiting">Se așteaptă IA…</string>
+    <string name="ai_progress_timing">%1$ds · de obicei 20–40s</string>
+
+    <!-- Drive folder picker strings -->
+    <string name="drive_picker_failed">Nu s-a putut conecta la Google Drive. Încearcă din nou.</string>
+    <string name="drive_picker_opening">Se deschide Google Drive…</string>
 </resources>

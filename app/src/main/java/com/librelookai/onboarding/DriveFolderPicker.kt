@@ -31,11 +31,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.librelookai.BuildConfig
+import com.librelookai.R
 import com.librelookai.auth.GoogleAuthManager
 import com.librelookai.data.drive.DriveRepository
 
@@ -74,18 +76,20 @@ fun DriveFolderPicker(onResult: (folderId: String?) -> Unit) {
             when {
                 failed -> Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        "Couldn't connect to Google Drive. Try again.",
+                        stringResource(R.string.drive_picker_failed),
                         Modifier.padding(24.dp),
                         color = MaterialTheme.colorScheme.error,
                     )
-                    TextButton(onClick = { latestOnResult(null) }) { Text("Close") }
+                    TextButton(onClick = { latestOnResult(null) }) {
+                        Text(stringResource(R.string.action_close))
+                    }
                 }
                 tok == null -> Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
                 ) {
                     CircularProgressIndicator()
-                    Text("Opening Google Drive…", Modifier.padding(top = 16.dp))
+                    Text(stringResource(R.string.drive_picker_opening), Modifier.padding(top = 16.dp))
                 }
                 else -> AndroidView(
                     modifier = Modifier.fillMaxSize(),

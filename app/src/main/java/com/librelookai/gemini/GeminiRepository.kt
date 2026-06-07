@@ -39,6 +39,7 @@ class GeminiRepository(internal val app: Application) {
         .writeTimeout(60, TimeUnit.SECONDS)  // uploading the image bytes
         .readTimeout(120, TimeUnit.SECONDS)  // waiting for Gemini to process
         .callTimeout(300, TimeUnit.SECONDS)  // hard ceiling for the whole call
+        .eventListener(GeminiProgress.Listener)  // drives the AiProcessingOverlay progress bus
         .build()
     internal val gson = Gson()
     private val usage = TokenUsageRepository.get(app)
@@ -131,7 +132,7 @@ class GeminiRepository(internal val app: Application) {
         if (localKey.isNotBlank()) {
             return Request.Builder()
                 .url("$directUrl?key=$localKey")
-                .post(body.toRequestBody("application/json".toMediaType()))
+                .post(GeminiProgress.CountingRequestBody(body.toRequestBody("application/json".toMediaType())))
                 .build()
         }
         val proxyBase = BuildConfig.PROXY_BASE_URL
@@ -145,7 +146,7 @@ class GeminiRepository(internal val app: Application) {
         }
         val builder = Request.Builder()
             .url("$proxyBase/geminiProxy")
-            .post(body.toRequestBody("application/json".toMediaType()))
+            .post(GeminiProgress.CountingRequestBody(body.toRequestBody("application/json".toMediaType())))
             .addHeader("Authorization", "Bearer $token")
             .addHeader("X-AI-Action", action.header)
             .addHeader("X-Gemini-Model", model)

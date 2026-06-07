@@ -1143,4 +1143,13 @@
     <!-- Outfit Wear… date picker + favourite heart -->
     <string name="outfits_wear">สวมใส่</string>
     <string name="outfits_favorite">รายการโปรด</string>
+
+    <!-- AI progress overlay (upload bytes + wait timer) -->
+    <string name="ai_progress_uploading">กำลังอัปโหลด %1$s / %2$s</string>
+    <string name="ai_progress_waiting">กำลังรอ AI…</string>
+    <string name="ai_progress_timing">%1$ds · โดยปกติ 20–40s</string>
+
+    <!-- Drive folder picker strings -->
+    <string name="drive_picker_failed">เชื่อมต่อ Google Drive ไม่ได้ ลองอีกครั้ง</string>
+    <string name="drive_picker_opening">กำลังเปิด Google Drive…</string>
 </resources>

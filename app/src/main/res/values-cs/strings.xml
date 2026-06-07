@@ -1170,4 +1170,13 @@
     <!-- Outfit Wear… date picker + favourite heart -->
     <string name="outfits_wear">Nosit</string>
     <string name="outfits_favorite">Oblíbené</string>
+
+    <!-- AI progress overlay (upload bytes + wait timer) -->
+    <string name="ai_progress_uploading">Nahrávání %1$s / %2$s</string>
+    <string name="ai_progress_waiting">Čekání na AI…</string>
+    <string name="ai_progress_timing">%1$ds · obvykle 20–40s</string>
+
+    <!-- Drive folder picker strings -->
+    <string name="drive_picker_failed">Nepodařilo se připojit ke Google Drive. Zkuste to znovu.</string>
+    <string name="drive_picker_opening">Otevírání Google Drive…</string>
 </resources>

@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
@@ -83,7 +84,6 @@ import com.librelookai.gemini.ApiKeyStore
 import com.librelookai.settings.ProfileViewModel
 import com.librelookai.settings.TryOnSlot
 import com.librelookai.util.Analytics
-import com.librelookai.util.LocalSystemBarsPadding
 import kotlinx.coroutines.launch
 
 private data class InfoPage(val icon: ImageVector, val titleRes: Int, val bodyRes: Int)
@@ -286,7 +286,11 @@ fun OnboardingScreen(
         modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface)
-            .padding(LocalSystemBarsPadding.current),
+            // OnboardingScreen renders directly in AppContent (not inside a Dialog/Sheet window),
+            // so real window insets are reliable here. We must NOT rely on LocalSystemBarsPadding:
+            // it's only provided inside AppContent's full-app branch, so during the onboarding gate
+            // it falls back to 0 and the bottom Back/Next row slides under the system nav bar.
+            .systemBarsPadding(),
     ) {
         Column(Modifier.fillMaxSize()) {
             // Skip — top-right; hidden on the required steps (Drive sign-in, background processing)
@@ -349,7 +353,6 @@ fun OnboardingScreen(
                         onFixBackground = { scope.launch { pagerState.animateScrollToPage(backgroundPage) } },
                         onFixApiKey = { scope.launch { pagerState.animateScrollToPage(apiKeyPage) } },
                         onFixLocation = { locationPermLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION) },
-                        onAddItems = { finish(true) },
                         onExplore = { finish(false) },
                     )
                     else -> InfoPageContent(infoPages[page])
@@ -826,7 +829,11 @@ private fun ApiKeyPage(
 ) {
     val context = LocalContext.current
     fun open(url: String) {
-        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+        // LocalContext here is the locale-override config context (not the activity), so
+        // startActivity needs NEW_TASK — same as BackgroundPermissionPage's intents.
+        context.startActivity(
+            Intent(Intent.ACTION_VIEW, Uri.parse(url)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+        )
     }
     Column(
         Modifier
@@ -914,7 +921,6 @@ private fun FinishPage(
     onFixBackground: () -> Unit,
     onFixApiKey: () -> Unit,
     onFixLocation: () -> Unit,
-    onAddItems: () -> Unit,
     onExplore: () -> Unit,
 ) {
     val anyMissing = !(driveDone && backgroundDone && apiKeyDone && locationDone)
@@ -982,11 +988,7 @@ private fun FinishPage(
         }
 
         Spacer(Modifier.height(24.dp))
-        Button(onClick = onAddItems, modifier = Modifier.fillMaxWidth()) {
-            Text(stringResource(R.string.onboarding_closet_add_items))
-        }
-        Spacer(Modifier.height(8.dp))
-        TextButton(onClick = onExplore, modifier = Modifier.fillMaxWidth()) {
+        Button(onClick = onExplore, modifier = Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.onboarding_closet_explore))
         }
         Spacer(Modifier.height(16.dp))

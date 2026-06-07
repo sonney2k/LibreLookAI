@@ -170,9 +170,29 @@ internal fun AppContent(activity: ComponentActivity) {
                     // First-run (or replayed) tour: the outermost gate. Carries Drive sign-in +
                     // background-permission steps, so it renders even when not yet signed in.
                     showOnboarding -> {
-                        // Re-theme live from the loaded prefs (overriding the cached outer theme)
-                        // so an account with a saved palette/font re-skins the tour the moment the
-                        // post-sign-in prefs reload lands — same pattern as the main-app branch.
+                        // Re-theme AND re-localize live from the loaded prefs (overriding the cached
+                        // outer theme/locale) so an account with a saved palette/font/language
+                        // re-skins and re-languages the tour the moment the post-sign-in prefs reload
+                        // lands — same pattern as the main-app branch.
+                        val onboardingLanguage = profileState.preferences.language
+                        val onboardingBaseContext = LocalContext.current
+                        val onboardingContext = remember(onboardingLanguage) {
+                            val locale = AppLanguage.toLocale(onboardingLanguage)
+                            val config = Configuration(onboardingBaseContext.resources.configuration)
+                            config.setLocale(locale)
+                            onboardingBaseContext.createConfigurationContext(config)
+                        }
+                        CompositionLocalProvider(
+                            LocalContext provides onboardingContext,
+                            LocalConfiguration provides onboardingContext.resources.configuration,
+                            // Overriding LocalContext above breaks the default
+                            // ActivityResultRegistryOwner/back-dispatcher lookup (it walks the
+                            // context chain to the activity, which the config context no longer
+                            // reaches), so re-provide them — same as the main-app branch. Without
+                            // this OnboardingScreen's rememberLauncherForActivityResult crashes.
+                            LocalActivityResultRegistryOwner provides activity,
+                            LocalOnBackPressedDispatcherOwner provides activity,
+                        ) {
                         LibreLookAITheme(
                             paletteId = profileState.preferences.wardrobeTheme,
                             fontId = profileState.preferences.appFont,
@@ -192,6 +212,7 @@ internal fun AppContent(activity: ComponentActivity) {
                                     if (goToWardrobe) { selectedTab = 1; navResetTick++ }
                                 },
                             )
+                        }
                         }
                     }
                     // Returning user who signed out after completing onboarding.

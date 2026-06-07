@@ -1170,4 +1170,13 @@
     <!-- Outfit Wear… date picker + favourite heart -->
     <string name="outfits_wear">Bruk</string>
     <string name="outfits_favorite">Favoritt</string>
+
+    <!-- AI progress overlay (upload bytes + wait timer) -->
+    <string name="ai_progress_uploading">Laster opp %1$s / %2$s</string>
+    <string name="ai_progress_waiting">Venter på AI…</string>
+    <string name="ai_progress_timing">%1$ds · vanligvis 20–40s</string>
+
+    <!-- Drive folder picker strings -->
+    <string name="drive_picker_failed">Kunne ikke koble til Google Drive. Prøv igjen.</string>
+    <string name="drive_picker_opening">Åpner Google Drive…</string>
 </resources>

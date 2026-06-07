@@ -1143,4 +1143,13 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <!-- Outfit Wear… date picker + favourite heart -->
     <string name="outfits_wear">Mặc</string>
     <string name="outfits_favorite">Yêu thích</string>
+
+    <!-- AI progress overlay (upload bytes + wait timer) -->
+    <string name="ai_progress_uploading">Đang tải lên %1$s / %2$s</string>
+    <string name="ai_progress_waiting">Đang chờ AI…</string>
+    <string name="ai_progress_timing">%1$ds · thường mất 20–40s</string>
+
+    <!-- Drive folder picker strings -->
+    <string name="drive_picker_failed">Không thể kết nối với Google Drive. Hãy thử lại.</string>
+    <string name="drive_picker_opening">Đang mở Google Drive…</string>
 </resources>
