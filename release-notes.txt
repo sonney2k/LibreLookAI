@@ -1,3 +1,12 @@
+### LibreLookAI v2.2.1 Release Notes
+
+#### A cleaner, simpler interface
+- Tidied up Settings and the Wardrobe so everyday use feels lighter — advanced maintenance tools are now tucked out of the way.
+#### Account & data deletion
+- Added a page to request deletion of your account and the data held on our side. Your wardrobe stays in your own Google Drive, fully under your control.
+
+---
+
 ### LibreLookAI v2.2.0 Release Notes
 
 #### Smaller Drive footprint
