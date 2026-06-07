@@ -15,6 +15,7 @@ import com.librelookai.data.model.DayForecast
 import com.librelookai.data.model.Outfit
 import com.librelookai.data.model.PackingList
 import com.librelookai.data.model.OutfitEvent
+import com.librelookai.outfit.buildLovedOutfitsSummary
 import com.librelookai.outfit.buildWearHistorySummary
 import com.librelookai.gemini.GeminiRepository
 import com.librelookai.gemini.PromptKey
@@ -433,6 +434,10 @@ internal fun buildPackingPrompt(
         if (styles.isNotEmpty()) {
             appendLine("## Saved Styles (pre-built outfits)")
             appendLine(stylesJson)
+            appendLine()
+        }
+        buildLovedOutfitsSummary(styles, images.associateBy { it.driveId })?.let {
+            appendLine(it)
             appendLine()
         }
         if (c.history) buildWearHistorySummary(wearHistory)?.let {

@@ -1168,6 +1168,6 @@
     <string name="calendar_remove">이 날에서 제거</string>
 
     <!-- Outfit Wear… date picker + favourite heart -->
-    <string name="outfits_wear">착용…</string>
+    <string name="outfits_wear">착용</string>
     <string name="outfits_favorite">즐겨찾기</string>
 </resources>

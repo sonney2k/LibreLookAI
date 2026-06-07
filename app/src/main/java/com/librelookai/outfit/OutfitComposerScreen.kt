@@ -389,6 +389,7 @@ fun OutfitComposerScreen(
                                 s.composerManualPrecip,
                                 s.composerTripContext,
                                 s.wearHistory,
+                                s.outfits.filter { it.loved }.map { it.id },
                             ) {
                                 value = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Default) {
                                     stylesViewModel.estimateComposerTokens(

@@ -1141,6 +1141,6 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="calendar_remove">Elimină din această zi</string>
 
     <!-- Outfit Wear… date picker + favourite heart -->
-    <string name="outfits_wear">Poartă…</string>
+    <string name="outfits_wear">Poartă</string>
     <string name="outfits_favorite">Favorit</string>
 </resources>

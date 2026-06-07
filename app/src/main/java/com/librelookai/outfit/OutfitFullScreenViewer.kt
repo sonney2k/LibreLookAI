@@ -326,7 +326,17 @@ internal fun OutfitFullScreenViewer(
                                 containerColor = MaterialTheme.colorScheme.primaryContainer,
                                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                                 icon = { Icon(Icons.Default.CalendarMonth, contentDescription = null) },
-                                text = { Text(stringResource(R.string.outfits_wear)) },
+                                text = {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Text(stringResource(R.string.outfits_wear))
+                                        Spacer(Modifier.width(4.dp))
+                                        Icon(
+                                            Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                            contentDescription = null,
+                                            modifier = Modifier.size(18.dp),
+                                        )
+                                    }
+                                },
                             )
                             if (canTryOn) {
                                 ExtendedFloatingActionButton(

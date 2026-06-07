@@ -1141,6 +1141,6 @@
     <string name="calendar_remove">นำออกจากวันนี้</string>
 
     <!-- Outfit Wear… date picker + favourite heart -->
-    <string name="outfits_wear">สวมใส่…</string>
+    <string name="outfits_wear">สวมใส่</string>
     <string name="outfits_favorite">รายการโปรด</string>
 </resources>

@@ -187,17 +187,9 @@ class OutfitEventsViewModel(app: Application) : AndroidViewModel(app) {
         persist(_state.value.events.filterNot { it.id == eventId })
     }
 
-    /** Toggle the explicit "loved it" feedback on a logged wear. */
+    /** Toggle the explicit "loved it" feedback on a single logged wear (calendar day sheet). */
     fun setEventLoved(eventId: String, loved: Boolean) {
         persist(_state.value.events.map { if (it.id == eventId) it.copy(loved = loved) else it })
-    }
-
-    /**
-     * Set the "loved" flag on every logged wear of an outfit — backs the heart in the aggregated
-     * wear-stats list, where a row represents all wears of one outfit rather than a single event.
-     */
-    fun setOutfitLoved(outfitId: String, loved: Boolean) {
-        persist(_state.value.events.map { if (it.outfitId == outfitId) it.copy(loved = loved) else it })
     }
 
     private fun persist(updated: List<OutfitEvent>) {

@@ -1141,6 +1141,6 @@
     <string name="calendar_remove">從這一天移除</string>
 
     <!-- Outfit Wear… date picker + favourite heart -->
-    <string name="outfits_wear">穿著…</string>
+    <string name="outfits_wear">穿著</string>
     <string name="outfits_favorite">最愛</string>
 </resources>

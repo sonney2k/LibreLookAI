@@ -60,11 +60,6 @@ fun OutfitWearStatsTab(
     val outfitsById = remember(outfitsState.outfits) { outfitsState.outfits.associateBy { it.id } }
     val imagesById = remember(wardrobeState.images) { wardrobeState.images.associateBy { it.driveId } }
 
-    // Outfits with at least one wear the user marked as "loved" — surfaced with a heart.
-    val lovedOutfitIds = remember(outfitEventsState.events) {
-        outfitEventsState.events.filter { it.loved }.map { it.outfitId }.toSet()
-    }
-
     val topStyles = remember(outfitEventsState.events, outfitsById) {
         outfitEventsState.events
             .groupBy { it.outfitId }
@@ -115,13 +110,14 @@ fun OutfitWearStatsTab(
                 HorizontalDivider()
             }
             itemsIndexed(topStyles) { index, (style, count) ->
-                val loved = style.id in lovedOutfitIds
+                // Outfit-level favourite — the same heart shown on the outfit list/detail views,
+                // backed by Outfit.loved so toggling here stays in sync with those (and vice versa).
                 StyleStatRow(
                     rank = index + 1,
                     style = style,
                     wearCount = count,
-                    loved = loved,
-                    onToggleLoved = { outfitEventsViewModel.setOutfitLoved(style.id, !loved) },
+                    loved = style.loved,
+                    onToggleLoved = { stylesViewModel.setOutfitLoved(style.id, !style.loved) },
                     imagesById = imagesById,
                 )
                 if (index < topStyles.lastIndex) HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))

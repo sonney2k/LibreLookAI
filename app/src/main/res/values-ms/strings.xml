@@ -1141,6 +1141,6 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
     <string name="calendar_remove">Alih keluar daripada hari ini</string>
 
     <!-- Outfit Wear… date picker + favourite heart -->
-    <string name="outfits_wear">Pakai…</string>
+    <string name="outfits_wear">Pakai</string>
     <string name="outfits_favorite">Kegemaran</string>
 </resources>

@@ -1141,6 +1141,6 @@
     <string name="calendar_remove">Видалити з цього дня</string>
 
     <!-- Outfit Wear… date picker + favourite heart -->
-    <string name="outfits_wear">Вдягнути…</string>
+    <string name="outfits_wear">Вдягнути</string>
     <string name="outfits_favorite">Вибране</string>
 </resources>

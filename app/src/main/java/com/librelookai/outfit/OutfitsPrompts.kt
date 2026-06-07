@@ -14,6 +14,40 @@ import com.librelookai.weather.WeatherData
 import com.librelookai.weather.wmoEmoji
 import java.time.LocalDate
 
+// ---------- Loved-outfits taste signal ----------
+
+/**
+ * Compact "favourite outfits" taste block, built **purely from the user's [Outfit.loved] flag** and
+ * deliberately independent of the wear-history signal ([buildWearHistorySummary]). Lists each loved
+ * outfit's name, free-form tags, item types and colours so the model leans toward the looks the user
+ * has explicitly hearted — whether or not they have ever been worn. Returns null when nothing is
+ * loved. Appended to the prediction, composer and travel-packing prompts.
+ */
+internal fun buildLovedOutfitsSummary(
+    styles: List<Outfit>,
+    imagesById: Map<String, DriveImage>,
+    max: Int = 8,
+): String? {
+    val loved = styles.filter { it.loved }.take(max)
+    if (loved.isEmpty()) return null
+    return buildString {
+        appendLine("## Favourite outfits (the user explicitly hearted these — weight them heavily)")
+        appendLine("Lean toward the items, colours and vibes of these favourites; prefer them or close variants when they suit the context.")
+        loved.forEach { o ->
+            val tags = o.itemIds.mapNotNull { imagesById[it]?.tags }
+            val types = tags.mapNotNull { it.type.trim().takeIf { t -> t.isNotEmpty() } }.distinct()
+            val colors = tags.flatMap { it.colors }.map { it.trim() }.filter { it.isNotEmpty() }.distinct()
+            val detail = buildList {
+                o.tags.takeIf { it.isNotEmpty() }?.let { add("tags: ${it.joinToString(", ")}") }
+                types.takeIf { it.isNotEmpty() }?.let { add("items: ${it.joinToString(", ")}") }
+                colors.takeIf { it.isNotEmpty() }?.let { add("colours: ${it.joinToString(", ")}") }
+            }
+            val name = o.name.ifBlank { "(unnamed)" }
+            if (detail.isEmpty()) appendLine("- $name") else appendLine("- $name (${detail.joinToString("; ")})")
+        }
+    }.trimEnd()
+}
+
 // ---------- Prompt builder ----------
 
 internal fun buildPredictionPrompt(
@@ -47,7 +81,7 @@ internal fun buildPredictionPrompt(
 
     val stylesJson = styles.joinToString(",", "[", "]") { s ->
         val items = s.itemIds.joinToString(",", "[", "]") { "\"$it\"" }
-        """{"id":"${s.id}","name":"${s.name}","items":$items}"""
+        """{"id":"${s.id}","name":"${s.name}","loved":${s.loved},"items":$items}"""
     }
 
     val locationStr = listOfNotNull(cityName?.takeIf { it.isNotEmpty() }, countryCode)
@@ -119,8 +153,14 @@ internal fun buildPredictionPrompt(
         appendLine(wardrobeJson)
         appendLine()
         appendLine("## Existing Styles to Choose From")
+        appendLine("(each style carries a \"loved\" flag — true when the user has hearted it as a favourite)")
         appendLine(stylesJson)
         appendLine()
+        buildLovedOutfitsSummary(styles, images.associateBy { it.driveId })?.let {
+            appendLine(it)
+            appendLine("Strongly prefer the outfits above (\"loved\":true) when one of them suits today.")
+            appendLine()
+        }
         if (c.history) buildWearHistorySummary(wearHistory)?.let {
             appendLine(it)
             appendLine()
@@ -166,6 +206,7 @@ internal fun buildComposerPrompt(
     considerationsOverride: AiConsiderations? = null,
     tripContext: TripContext? = null,
     wearHistory: List<OutfitEvent> = emptyList(),
+    lovedOutfits: List<Outfit> = emptyList(),
 ): String {
     val c = considerationsOverride ?: prefs?.aiConsiderations ?: AiConsiderations()
     val age = prefs?.yearOfBirth?.let { LocalDate.now().year - it }
@@ -251,6 +292,10 @@ internal fun buildComposerPrompt(
         appendLine("## Available wardrobe (id + name + tags)")
         appendLine(wardrobeJson)
         appendLine()
+        buildLovedOutfitsSummary(lovedOutfits, images.associateBy { it.driveId })?.let {
+            appendLine(it)
+            appendLine()
+        }
         if (c.history) buildWearHistorySummary(wearHistory)?.let {
             appendLine(it)
             appendLine()

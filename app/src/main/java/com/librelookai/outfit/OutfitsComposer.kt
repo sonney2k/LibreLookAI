@@ -245,6 +245,7 @@ internal fun OutfitsViewModel.estimateComposerTokens(
             considerationsOverride = s.composerConsiderationsOverride,
             tripContext      = s.composerTripContext,
             wearHistory      = s.wearHistory,
+            lovedOutfits     = s.outfits.filter { it.loved },
         )
         return com.librelookai.gemini.CostTokens(
             inputTokens = com.librelookai.gemini.TokenEstimator.textTokens(prompt),

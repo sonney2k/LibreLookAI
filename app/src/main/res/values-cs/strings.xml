@@ -1168,6 +1168,6 @@
     <string name="calendar_remove">Odebrat z tohoto dne</string>
 
     <!-- Outfit Wear… date picker + favourite heart -->
-    <string name="outfits_wear">Nosit…</string>
+    <string name="outfits_wear">Nosit</string>
     <string name="outfits_favorite">Oblíbené</string>
 </resources>

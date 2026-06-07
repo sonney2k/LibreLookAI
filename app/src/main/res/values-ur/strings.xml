@@ -1141,6 +1141,6 @@
     <string name="calendar_remove">اس دن سے ہٹائیں</string>
 
     <!-- Outfit Wear… date picker + favourite heart -->
-    <string name="outfits_wear">پہنیں…</string>
+    <string name="outfits_wear">پہنیں</string>
     <string name="outfits_favorite">پسندیدہ</string>
 </resources>
