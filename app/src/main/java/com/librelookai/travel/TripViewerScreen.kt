@@ -352,7 +352,8 @@ fun TripViewerScreen(
                 activeLocationId = locationState.activeLocationId,
                 onDismiss = { viewerOutfitId = null },
                 onEdit = startEditingOutfit,
-                onWear = { o -> outfitEventsViewModel.recordOutfit(o, imagesById) },
+                onWear = { o, date -> outfitEventsViewModel.recordOutfit(o, imagesById, date = date) },
+                onToggleLoved = { o -> outfitsViewModel.setOutfitLoved(o.id, !o.loved) },
                 onDelete = { o ->
                     outfitsViewModel.deleteOutfit(o.id)
                     if (tripOutfits.size <= 1) viewerOutfitId = null

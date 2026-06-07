@@ -1139,4 +1139,8 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
 
     <!-- Calendar remove outfit from day -->
     <string name="calendar_remove">Eltávolítás erről a napról</string>
+
+    <!-- Outfit Wear… date picker + favourite heart -->
+    <string name="outfits_wear">Viselés…</string>
+    <string name="outfits_favorite">Kedvenc</string>
 </resources>

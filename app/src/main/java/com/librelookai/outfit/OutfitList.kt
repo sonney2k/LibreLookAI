@@ -79,6 +79,7 @@ import com.librelookai.wardrobe.displayLabel
 import com.librelookai.wardrobe.tagCategories
 import com.librelookai.wardrobe.tagStringsForCategory
 import com.librelookai.wardrobe.fuzzyFilterByText
+import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -97,7 +98,8 @@ internal fun OutfitListScreen(
     onSuggestExisting: () -> Unit = {},
     onEditOutfit: (Outfit) -> Unit,
     onDeleteOutfit: (String) -> Unit,
-    onWearOutfit: (String) -> Unit,
+    onWearOutfit: (String, LocalDate) -> Unit,
+    onToggleLovedOutfit: (String) -> Unit = {},
     onSuggestOutfitTags: (Outfit) -> Unit = {},
     onEditOutfitTags: (Outfit) -> Unit = {},
     onToggleOutfitSelection: (String) -> Unit = {},
@@ -498,9 +500,11 @@ internal fun OutfitListScreen(
                                 tripName = style.tripId?.let { tripNamesById[it]?.takeIf { n -> n.isNotBlank() } },
                                 isSelected = style.id in selectedOutfitIds,
                                 isSelectionMode = isSelectionMode,
+                                loved = style.loved,
                                 onEdit = { onEditOutfit(style) },
                                 onDelete = { onDeleteOutfit(style.id) },
-                                onWear = { onWearOutfit(style.id) },
+                                onWear = { date -> onWearOutfit(style.id, date) },
+                                onToggleLoved = { onToggleLovedOutfit(style.id) },
                                 onOpen = { fullscreenStyleId = style.id },
                                 onToggleSelection = { onToggleOutfitSelection(style.id) },
                             )
@@ -626,7 +630,8 @@ internal fun OutfitListScreen(
                     activeLocationId = activeLocationId,
                     onDismiss = { fullscreenStyleId = null },
                     onEdit = { o -> fullscreenStyleId = null; onEditOutfit(o) },
-                    onWear = { o -> onWearOutfit(o.id) },
+                    onWear = { o, date -> onWearOutfit(o.id, date) },
+                    onToggleLoved = { o -> onToggleLovedOutfit(o.id) },
                     onDelete = { o ->
                         onDeleteOutfit(o.id)
                         if (displayedStyles.size <= 1) fullscreenStyleId = null

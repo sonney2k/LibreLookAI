@@ -456,6 +456,8 @@
     <string name="outfits_delete_title">Delete outfit?</string>
     <string name="outfits_delete_text">\"%s\" will be permanently removed.</string>
     <string name="outfits_wear_today">Wear today</string>
+    <string name="outfits_wear">Wear…</string>
+    <string name="outfits_favorite">Favourite</string>
     <string name="outfits_worn_today">Worn today!</string>
     <string name="outfits_missing_items">Items no longer in wardrobe</string>
     <string name="outfits_items_away">%d item(s) at another location</string>

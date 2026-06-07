@@ -1139,4 +1139,8 @@
 
     <!-- Calendar remove outfit from day -->
     <string name="calendar_remove">इस दिन से हटाएँ</string>
+
+    <!-- Outfit Wear… date picker + favourite heart -->
+    <string name="outfits_wear">पहनें…</string>
+    <string name="outfits_favorite">पसंदीदा</string>
 </resources>

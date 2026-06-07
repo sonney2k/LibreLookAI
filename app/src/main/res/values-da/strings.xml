@@ -1166,4 +1166,8 @@
 
     <!-- Calendar remove outfit from day -->
     <string name="calendar_remove">Fjern fra denne dag</string>
+
+    <!-- Outfit Wear… date picker + favourite heart -->
+    <string name="outfits_wear">Bær…</string>
+    <string name="outfits_favorite">Favorit</string>
 </resources>

@@ -1166,4 +1166,8 @@
 
     <!-- Calendar remove outfit from day -->
     <string name="calendar_remove">Αφαίρεση από αυτήν την ημέρα</string>
+
+    <!-- Outfit Wear… date picker + favourite heart -->
+    <string name="outfits_wear">Φόρεσε…</string>
+    <string name="outfits_favorite">Αγαπημένο</string>
 </resources>

@@ -526,6 +526,41 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    // ---------- Favourite ----------
+
+    /**
+     * Toggles the outfit-level "loved"/favourite flag and persists it to Drive. Optimistic: the
+     * in-memory state flips immediately and rolls back if the Drive write fails. Mirrors
+     * [setOutfitTags]'s multi-folder save so an outfit in any closet is written to the right folder.
+     */
+    fun setOutfitLoved(outfitId: String, loved: Boolean) {
+        val outfit = _state.value.outfits.find { it.id == outfitId } ?: return
+        if (outfit.loved == loved) return
+        val updatedAll = _state.value.outfits.map { if (it.id == outfitId) it.copy(loved = loved) else it }
+        val targetFolderId = outfit.folderId.takeIf { it.isNotEmpty() } ?: saveFolderId ?: folderId ?: return
+        _state.update { it.copy(outfits = updatedAll) }
+        viewModelScope.launch {
+            runCatching {
+                val folderIds = updatedAll.map { it.folderId }.filter { it.isNotEmpty() }.toSet() + targetFolderId
+                for (fid in folderIds) {
+                    val perFolder = if (folderIds.size == 1) updatedAll
+                    else updatedAll.filter { it.folderId == fid || (fid == targetFolderId && it.id == outfitId) }
+                    drive.saveOutfitsJson(fid, gson.toJson(perFolder))
+                }
+            }.onSuccess {
+                refreshOutfitsLocalCache()
+            }.onFailure { e ->
+                // Roll back the optimistic flip.
+                _state.update { s ->
+                    s.copy(
+                        outfits = s.outfits.map { if (it.id == outfitId) it.copy(loved = outfit.loved) else it },
+                        error = e.message,
+                    )
+                }
+            }
+        }
+    }
+
     // ---------- Multi-select ----------
 
     fun toggleOutfitSelection(outfitId: String) = _state.update { s ->

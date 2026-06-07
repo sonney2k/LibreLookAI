@@ -1170,4 +1170,8 @@
 
     <!-- Calendar remove outfit from day -->
     <string name="calendar_remove">הסרה מהיום הזה</string>
+
+    <!-- Outfit Wear… date picker + favourite heart -->
+    <string name="outfits_wear">ללבוש…</string>
+    <string name="outfits_favorite">מועדף</string>
 </resources>

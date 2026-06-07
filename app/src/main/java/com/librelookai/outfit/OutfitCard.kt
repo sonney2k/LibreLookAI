@@ -24,9 +24,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FlightTakeoff
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -39,7 +43,9 @@ import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,6 +53,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -61,6 +68,7 @@ import com.librelookai.data.model.Outfit
 import com.librelookai.util.Analytics
 import com.librelookai.util.LocalIsOffline
 import com.librelookai.wardrobe.DriveImage
+import java.time.LocalDate
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 @Composable
@@ -71,14 +79,24 @@ internal fun OutfitCard(
     tripName: String? = null,
     isSelected: Boolean = false,
     isSelectionMode: Boolean = false,
+    loved: Boolean = false,
     onEdit: () -> Unit,
     onDelete: () -> Unit,
-    onWear: () -> Unit,
+    onWear: (LocalDate) -> Unit,
+    onToggleLoved: () -> Unit = {},
     onOpen: () -> Unit = {},
     onToggleSelection: () -> Unit = {},
 ) {
     val isOffline = LocalIsOffline.current
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var showWearPicker by remember { mutableStateOf(false) }
+
+    if (showWearPicker) {
+        WearDatePickerDialog(
+            onDismiss = { showWearPicker = false },
+            onConfirm = { date -> onWear(date); showWearPicker = false },
+        )
+    }
 
     if (showDeleteDialog) {
         AlertDialog(
@@ -237,8 +255,7 @@ internal fun OutfitCard(
                     }
                 }
             }
-            // Bottom action row: Edit (left) | Wear today (right) — hidden in selection mode and offline
-            var wornToday by remember { mutableStateOf(false) }
+            // Bottom action row: Edit (left) | favourite + Wear… (right) — hidden in selection mode and offline
             if (!isSelectionMode && !isOffline) Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -261,26 +278,96 @@ internal fun OutfitCard(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
-                TextButton(
-                    onClick = { onWear(); wornToday = true },
-                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
-                ) {
-                    Icon(
-                        Icons.Default.CalendarMonth,
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp),
-                        tint = if (wornToday) MaterialTheme.colorScheme.primary
-                               else MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(
+                        onClick = {
+                            Analytics.action("Outfits", if (loved) "unlove" else "love")
+                            onToggleLoved()
+                        },
+                        modifier = Modifier.size(32.dp),
+                    ) {
+                        Icon(
+                            imageVector = if (loved) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                            contentDescription = stringResource(R.string.outfits_favorite),
+                            modifier = Modifier.size(18.dp),
+                            tint = if (loved) MaterialTheme.colorScheme.primary
+                                   else MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
                     Spacer(Modifier.width(4.dp))
-                    Text(
-                        if (wornToday) stringResource(R.string.outfits_worn_today) else stringResource(R.string.outfits_wear_today),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = if (wornToday) MaterialTheme.colorScheme.primary
-                                else MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                    TextButton(
+                        onClick = {
+                            Analytics.action("Outfits", "open_wear_picker")
+                            showWearPicker = true
+                        },
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+                    ) {
+                        Icon(
+                            Icons.Default.CalendarMonth,
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Spacer(Modifier.width(4.dp))
+                        Text(
+                            stringResource(R.string.outfits_wear),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
                 }
             }
+        }
+    }
+}
+
+/**
+ * Date picker for choosing which day an outfit is worn (defaults to today). Used by the outfit
+ * list card and the fullscreen viewer's "Wear…" action so the wear can be logged on any day, not
+ * just today. A [DatePickerDialog] opens its own window, severing the locale-overridden context
+ * chain, so LocalContext / LocalConfiguration are re-provided in every slot (CLAUDE.md → Dialog
+ * quirks). Mirrors the calendar's move/copy date picker (epoch-day ⇄ UTC-millis conversion).
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+internal fun WearDatePickerDialog(
+    onDismiss: () -> Unit,
+    onConfirm: (LocalDate) -> Unit,
+) {
+    val parentContext = LocalContext.current
+    val parentConfiguration = LocalConfiguration.current
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = LocalDate.now().toEpochDay() * 86_400_000L,
+    )
+    DatePickerDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            CompositionLocalProvider(
+                LocalContext provides parentContext,
+                LocalConfiguration provides parentConfiguration,
+            ) {
+                TextButton(onClick = {
+                    datePickerState.selectedDateMillis?.let {
+                        onConfirm(LocalDate.ofEpochDay(it / 86_400_000L))
+                    }
+                    onDismiss()
+                }) { Text(stringResource(R.string.action_ok)) }
+            }
+        },
+        dismissButton = {
+            CompositionLocalProvider(
+                LocalContext provides parentContext,
+                LocalConfiguration provides parentConfiguration,
+            ) {
+                TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
+            }
+        },
+    ) {
+        CompositionLocalProvider(
+            LocalContext provides parentContext,
+            LocalConfiguration provides parentConfiguration,
+        ) {
+            DatePicker(state = datePickerState)
         }
     }
 }

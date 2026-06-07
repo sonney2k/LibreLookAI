@@ -26,6 +26,8 @@ import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
@@ -76,7 +78,8 @@ internal fun OutfitFullScreenViewer(
     activeLocationId: String,
     onDismiss: () -> Unit,
     onEdit: (Outfit) -> Unit,
-    onWear: (Outfit) -> Unit,
+    onWear: (Outfit, java.time.LocalDate) -> Unit,
+    onToggleLoved: (Outfit) -> Unit = {},
     onDelete: (Outfit) -> Unit,
     onSuggestTags: (Outfit) -> Unit = {},
     onEditTags: (Outfit) -> Unit = {},
@@ -134,10 +137,18 @@ internal fun OutfitFullScreenViewer(
             )
             var showEditMenu by remember { mutableStateOf(false) }
             var showDeleteDialog by remember { mutableStateOf(false) }
+            var showWearPicker by remember { mutableStateOf(false) }
             var viewerImage by remember { mutableStateOf<DriveImage?>(null) }
             var hideTags by rememberSaveable { mutableStateOf(false) }
 
             val current = outfits[pagerState.currentPage]
+
+            if (showWearPicker) {
+                WearDatePickerDialog(
+                    onDismiss = { showWearPicker = false },
+                    onConfirm = { date -> onWear(current, date); showWearPicker = false },
+                )
+            }
 
             if (showDeleteDialog) {
                 AlertDialog(
@@ -276,6 +287,25 @@ internal fun OutfitFullScreenViewer(
                         tint = MaterialTheme.colorScheme.onBackground)
                 }
 
+                // Favourite heart — top-right, mirrors the calendar/list heart. Write-path, so
+                // hidden offline.
+                if (!isOffline) {
+                    IconButton(
+                        onClick = {
+                            Analytics.action("OutfitViewer", if (current.loved) "unlove" else "love")
+                            onToggleLoved(current)
+                        },
+                        modifier = Modifier.align(Alignment.TopEnd).padding(8.dp),
+                    ) {
+                        Icon(
+                            imageVector = if (current.loved) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                            contentDescription = stringResource(R.string.outfits_favorite),
+                            tint = if (current.loved) MaterialTheme.colorScheme.primary
+                                   else MaterialTheme.colorScheme.onBackground,
+                        )
+                    }
+                }
+
                 // Speed-dial FAB (wear / edit / delete) — hidden offline (writes only).
                 if (!isOffline) {
                     Column(
@@ -289,13 +319,14 @@ internal fun OutfitFullScreenViewer(
                         if (showEditMenu) {
                             ExtendedFloatingActionButton(
                                 onClick = {
-                                    Analytics.action("OutfitViewer", "wear_today")
-                                    onWear(current); showEditMenu = false
+                                    Analytics.action("OutfitViewer", "open_wear_picker")
+                                    showEditMenu = false
+                                    showWearPicker = true
                                 },
                                 containerColor = MaterialTheme.colorScheme.primaryContainer,
                                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                                 icon = { Icon(Icons.Default.CalendarMonth, contentDescription = null) },
-                                text = { Text(stringResource(R.string.outfits_wear_today)) },
+                                text = { Text(stringResource(R.string.outfits_wear)) },
                             )
                             if (canTryOn) {
                                 ExtendedFloatingActionButton(

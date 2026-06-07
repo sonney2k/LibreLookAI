@@ -1139,4 +1139,8 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
 
     <!-- Calendar remove outfit from day -->
     <string name="calendar_remove">Xóa khỏi ngày này</string>
+
+    <!-- Outfit Wear… date picker + favourite heart -->
+    <string name="outfits_wear">Mặc…</string>
+    <string name="outfits_favorite">Yêu thích</string>
 </resources>

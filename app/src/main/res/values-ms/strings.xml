@@ -1139,4 +1139,8 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
 
     <!-- Calendar remove outfit from day -->
     <string name="calendar_remove">Alih keluar daripada hari ini</string>
+
+    <!-- Outfit Wear… date picker + favourite heart -->
+    <string name="outfits_wear">Pakai…</string>
+    <string name="outfits_favorite">Kegemaran</string>
 </resources>
