@@ -12,9 +12,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.CloudDone
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,10 +20,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -152,44 +145,6 @@ internal fun RefinePreviewBar(
                     onClick = onReplace,
                 )
             }
-        }
-    }
-}
-
-/** Speed-dial FAB for the view-only trip: expands to Edit / Delete actions. */
-@Composable
-internal fun TripActionsFab(
-    onEdit: () -> Unit,
-    onDelete: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    var expanded by remember { mutableStateOf(false) }
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.End,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        if (expanded) {
-            ExtendedFloatingActionButton(
-                onClick = { expanded = false; onEdit() },
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                icon = { Icon(Icons.Default.Edit, contentDescription = null) },
-                text = { Text(stringResource(R.string.action_edit)) },
-            )
-            ExtendedFloatingActionButton(
-                onClick = { expanded = false; onDelete() },
-                containerColor = MaterialTheme.colorScheme.error,
-                contentColor = MaterialTheme.colorScheme.onError,
-                icon = { Icon(Icons.Default.Delete, contentDescription = null) },
-                text = { Text(stringResource(R.string.trip_delete)) },
-            )
-        }
-        FloatingActionButton(onClick = { expanded = !expanded }) {
-            Icon(
-                if (expanded) Icons.Default.Close else Icons.Default.Edit,
-                contentDescription = stringResource(R.string.action_edit),
-            )
         }
     }
 }

@@ -22,6 +22,20 @@ class ReauthRequiredException :
     CancellationException("No Drive access token; user must re-authorize")
 
 /**
+ * Thrown by [GoogleAuthManager.getAccessToken] when a token can't be minted
+ * *because the device is offline* — the stored Drive authorization is still
+ * valid, there's simply no network to refresh the access token right now.
+ *
+ * Unlike [ReauthRequiredException] this must NOT bounce the user to sign-in:
+ * offline mode is a supported state. It subclasses [CancellationException] for
+ * the same reason — aborting the in-flight Drive coroutine quietly without
+ * crashing the process — but it neither clears the signed-in flag nor emits
+ * [AuthEvents.sessionExpired].
+ */
+class OfflineTokenException :
+    CancellationException("No network to refresh Drive token; staying signed in (offline)")
+
+/**
  * Process-wide bus for auth signals, mirroring `billing.CreditsEvents`:
  * the producer emits *before* throwing, so the top-level observer
  * ([AuthViewModel]) reacts and routes back to sign-in even if a caller

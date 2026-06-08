@@ -9,17 +9,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.filled.RotateRight
 import androidx.compose.material.icons.filled.AutoFixHigh
 import androidx.compose.material.icons.filled.Close
@@ -32,7 +29,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -63,8 +59,12 @@ import com.librelookai.R
 import com.librelookai.data.model.Location
 import com.librelookai.gemini.ClothingTags
 import com.librelookai.gemini.CutoutFixActions
+import com.librelookai.ui.components.DetailActionBar
+import com.librelookai.ui.components.SelectionAction
+import com.librelookai.ui.theme.LocalWardrobePalette
 import com.librelookai.util.AiProcessingOverlay
 import com.librelookai.util.Analytics
+import com.librelookai.util.FeatureFlags
 import com.librelookai.util.LocalIsOffline
 import com.librelookai.util.LocalSystemBarsPadding
 
@@ -274,7 +274,9 @@ internal fun FullScreenViewer(
             }
         }
 
-        // Edit speed-dial — same style as Wardrobe + FAB. Expands to rotate / detect tags / remove bg.
+        // Item actions hidden under the bottom-end FAB — tap to reveal the shared action bar.
+        // Power-only maintenance ops (detect tags / remove bg / fix cutout) gate behind
+        // FeatureFlags.powerFeatures, mirroring the Wardrobe maintenance gating.
         if (!isOffline && writeMode) {
             val barInsets = LocalSystemBarsPadding.current
             val view = androidx.compose.ui.platform.LocalView.current
@@ -294,154 +296,118 @@ internal fun FullScreenViewer(
                 rootInsetBottomDp,
                 48.dp,
             )
-            Column(
-                modifier = Modifier.align(Alignment.BottomEnd).padding(bottom = effectiveBottom).padding(16.dp),
-                horizontalAlignment = Alignment.End,
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                if (showEditMenu) {
-                    ExtendedFloatingActionButton(
-                        onClick = {
-                            Analytics.action("ItemViewer", "create_style_from_item")
-                            showEditMenu = false
-                            onCreateOutfitFromSelection(setOf(currentImage.driveId))
-                        },
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        icon = { Icon(Icons.Default.AutoFixHigh, contentDescription = null) },
-                        text = {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(stringResource(R.string.wardrobe_create_style))
-                                Spacer(Modifier.width(4.dp))
-                                Icon(
-                                    Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(18.dp),
-                                )
-                            }
-                        },
-                    )
-                    ExtendedFloatingActionButton(
-                        onClick = {
-                            Analytics.action("ItemViewer", "rotate_image")
-                            onRotateImage(currentImage.driveId)
-                            showEditMenu = false
-                        },
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        icon = { Icon(Icons.AutoMirrored.Filled.RotateRight, contentDescription = null) },
-                        text = { Text(stringResource(R.string.wardrobe_tag_rotate)) },
-                    )
-                    ExtendedFloatingActionButton(
-                        onClick = {
+            if (showEditMenu) BackHandler { showEditMenu = false }
+            val palette = LocalWardrobePalette.current
+            val removeBgLabel = stringResource(
+                if (currentImage.originalDriveId != null) R.string.wardrobe_tag_re_remove_bg
+                else R.string.wardrobe_tag_remove_bg,
+            )
+            val actions = buildList {
+                add(
+                    SelectionAction(
+                        label = stringResource(R.string.wardrobe_create_style),
+                        icon = Icons.Default.AutoFixHigh,
+                        kind = SelectionAction.Kind.Primary,
+                    ) {
+                        Analytics.action("ItemViewer", "create_style_from_item")
+                        showEditMenu = false
+                        onCreateOutfitFromSelection(setOf(currentImage.driveId))
+                    },
+                )
+                add(
+                    SelectionAction(
+                        label = stringResource(R.string.wardrobe_tag_rotate),
+                        icon = Icons.AutoMirrored.Filled.RotateRight,
+                    ) {
+                        Analytics.action("ItemViewer", "rotate_image")
+                        showEditMenu = false
+                        onRotateImage(currentImage.driveId)
+                    },
+                )
+                if (FeatureFlags.powerFeatures) {
+                    add(
+                        SelectionAction(
+                            label = stringResource(R.string.wardrobe_tag_detect),
+                            icon = Icons.Default.AutoFixHigh,
+                        ) {
                             Analytics.action("ItemViewer", "tag_image")
+                            showEditMenu = false
                             onTagImage(currentImage.driveId)
-                            showEditMenu = false
-                        },
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        icon = { Icon(Icons.Default.AutoFixHigh, contentDescription = null) },
-                        text = {
-                            androidx.compose.foundation.layout.Row(
-                                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
-                            ) {
-                                com.librelookai.billing.CostBadge(
-                                    com.librelookai.gemini.GeminiActionId.CLASSIFY_CLOTHING,
-                                    tokens = com.librelookai.billing.rememberClassifyCostTokens(currentImage.localPath),
-                                )
-                                Text(stringResource(R.string.wardrobe_tag_detect))
-                            }
                         },
                     )
-                    ExtendedFloatingActionButton(
-                        onClick = {
+                    add(
+                        SelectionAction(
+                            label = removeBgLabel,
+                            icon = Icons.Default.ImageSearch,
+                        ) {
                             Analytics.action("ItemViewer", "remove_background")
+                            showEditMenu = false
                             onRemoveBackground(currentImage.driveId)
-                            showEditMenu = false
-                        },
-                        containerColor = MaterialTheme.colorScheme.error,
-                        contentColor = MaterialTheme.colorScheme.onError,
-                        icon = { Icon(Icons.Default.ImageSearch, contentDescription = null) },
-                        text = {
-                            androidx.compose.foundation.layout.Row(
-                                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
-                            ) {
-                                com.librelookai.billing.CostBadge(
-                                    com.librelookai.gemini.GeminiActionId.REMOVE_BACKGROUND,
-                                    tokens = com.librelookai.billing.rememberRemoveBgCostTokens(currentImage.localPath),
-                                )
-                                Text(stringResource(
-                                    if (currentImage.originalDriveId != null) R.string.wardrobe_tag_re_remove_bg
-                                    else R.string.wardrobe_tag_remove_bg
-                                ))
-                            }
                         },
                     )
-                    ExtendedFloatingActionButton(
-                        onClick = {
+                    add(
+                        SelectionAction(
+                            label = stringResource(R.string.wardrobe_fix_cutout_bg),
+                            icon = Icons.Default.AutoFixHigh,
+                        ) {
                             Analytics.action("ItemViewer", "fix_cutout_bg")
+                            showEditMenu = false
                             showFixCutoutBgDialog = true
-                            showEditMenu = false
                         },
-                        containerColor = MaterialTheme.colorScheme.error,
-                        contentColor = MaterialTheme.colorScheme.onError,
-                        icon = { Icon(Icons.Default.AutoFixHigh, contentDescription = null) },
-                        text = {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(stringResource(R.string.wardrobe_fix_cutout_bg))
-                                Spacer(Modifier.width(4.dp))
-                                Icon(
-                                    Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(18.dp),
-                                )
-                            }
-                        },
-                    )
-                    if (locations.any { it.folderId != currentImage.folderId }) {
-                        ExtendedFloatingActionButton(
-                            onClick = {
-                                Analytics.action("ItemViewer", "open_move_dialog")
-                                showEditMenu = false
-                                showMoveDialog = true
-                            },
-                            containerColor = MaterialTheme.colorScheme.primaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                            icon = { Icon(Icons.Default.Place, contentDescription = null) },
-                            text = {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Text(stringResource(R.string.wardrobe_move_to))
-                                    Spacer(Modifier.width(4.dp))
-                                    Icon(
-                                        Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(18.dp),
-                                    )
-                                }
-                            },
-                        )
-                    }
-                    ExtendedFloatingActionButton(
-                        onClick = {
-                            Analytics.action("ItemViewer", "open_delete_dialog")
-                            showEditMenu = false
-                            // The grid hosts the cascade-aware confirm dialog (it can see the
-                            // affected outfits/try-ons), so delegate rather than confirm here.
-                            onDeleteItem(currentImage.driveId)
-                        },
-                        containerColor = MaterialTheme.colorScheme.error,
-                        contentColor = MaterialTheme.colorScheme.onError,
-                        icon = { Icon(Icons.Default.Delete, contentDescription = null) },
-                        text = { Text(stringResource(R.string.action_delete)) },
                     )
                 }
-                FloatingActionButton(onClick = { showEditMenu = !showEditMenu }) {
+                if (locations.any { it.folderId != currentImage.folderId }) {
+                    add(
+                        SelectionAction(
+                            label = stringResource(R.string.wardrobe_move_to),
+                            icon = Icons.Default.Place,
+                        ) {
+                            Analytics.action("ItemViewer", "open_move_dialog")
+                            showEditMenu = false
+                            showMoveDialog = true
+                        },
+                    )
+                }
+                add(
+                    SelectionAction(
+                        label = stringResource(R.string.action_delete),
+                        icon = Icons.Default.Delete,
+                        kind = SelectionAction.Kind.Danger,
+                    ) {
+                        Analytics.action("ItemViewer", "open_delete_dialog")
+                        showEditMenu = false
+                        // The grid hosts the cascade-aware confirm dialog (it can see the
+                        // affected outfits/try-ons), so delegate rather than confirm here.
+                        onDeleteItem(currentImage.driveId)
+                    },
+                )
+            }
+            val rows = (actions.size + 3) / 4 // ceil(count / 4)
+            val barHeight = 67.dp + ((rows - 1) * 54).dp + effectiveBottom
+            DetailActionBar(
+                actions = actions,
+                visible = showEditMenu,
+                bottomInset = effectiveBottom,
+                maxItemsPerRow = 4,
+                modifier = Modifier.align(Alignment.BottomCenter),
+            )
+            ExtendedFloatingActionButton(
+                onClick = { showEditMenu = !showEditMenu },
+                expanded = true,
+                containerColor = palette.fabBg,
+                contentColor = palette.fabFg,
+                icon = {
                     Icon(
                         if (showEditMenu) Icons.Default.Close else Icons.Default.Edit,
-                        contentDescription = stringResource(R.string.wardrobe_tag_edit),
+                        contentDescription = null,
+                        modifier = Modifier.size(22.dp),
                     )
-                }
-            }
+                },
+                text = { Text(stringResource(if (showEditMenu) R.string.action_close else R.string.action_edit)) },
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(end = 16.dp, bottom = if (showEditMenu) barHeight + 8.dp else effectiveBottom + 16.dp),
+            )
         }
     }
 

@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.tasks.await
 import com.librelookai.data.drive.await
+import com.librelookai.util.isNetworkAvailable
 import com.librelookai.BuildConfig
 
 private const val TAG = "GoogleAuthManager"
@@ -97,8 +98,21 @@ class GoogleAuthManager(private val context: Context) {
      * CancellationException — never fatal). See [AuthEvents] for the rationale.
      */
     suspend fun getAccessToken(): String {
-        val result = authorizationClient.authorize(buildAuthRequest()).await()
+        val result = try {
+            authorizationClient.authorize(buildAuthRequest()).await()
+        } catch (e: ReauthRequiredException) {
+            throw e
+        } catch (e: Exception) {
+            // authorize() needs the network to mint a fresh token. Offline → the
+            // stored authorization is still valid; surface a quiet offline error
+            // instead of treating it as a revoked session (which would bounce the
+            // user to the sign-in gate). See OfflineTokenException.
+            if (!context.isNetworkAvailable()) throw OfflineTokenException()
+            throw e
+        }
         result.accessToken?.let { return it }
+        // Null token while offline is not a revocation — don't sign the user out.
+        if (!context.isNetworkAvailable()) throw OfflineTokenException()
         setSignedIn(false)
         AuthEvents.emitSessionExpired()
         throw ReauthRequiredException()

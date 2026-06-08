@@ -158,8 +158,70 @@ fun SelectionActionBar(
                     actions.forEach { action ->
                         ActionButton(
                             action = action,
-                            weight = if (action.kind == SelectionAction.Kind.Primary) 1.4f else 1f,
-                            modifier = Modifier,
+                            modifier = Modifier.weight(if (action.kind == SelectionAction.Kind.Primary) 1.4f else 1f),
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Bottom-anchored action bar for a **single focused item** in a detail viewer (the outfit detail
+ * pager, the trip detail screen). Shares [SelectionActionBar]'s button design (icon-over-label,
+ * [SelectionAction.Kind] colouring) but drops the multi-select count/clear header — there is only
+ * one subject. Replaces the old per-viewer expanding speed-dial FABs.
+ *
+ * @param bottomInset extra bottom padding for the system nav bar (0 inside a normal screen whose
+ *   Scaffold already insets; pass the viewer's computed inset when hosted in an edge-to-edge Dialog).
+ * @param maxItemsPerRow wrap the buttons onto a new row past this many (default: never wrap —
+ *   one row). Use a smaller value when there are more actions than fit comfortably on one line.
+ */
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+@Composable
+fun DetailActionBar(
+    actions: List<SelectionAction>,
+    modifier: Modifier = Modifier,
+    visible: Boolean = true,
+    bottomInset: androidx.compose.ui.unit.Dp = 0.dp,
+    maxItemsPerRow: Int = Int.MAX_VALUE,
+) {
+    val palette = LocalWardrobePalette.current
+    AnimatedVisibility(
+        visible = visible,
+        enter = slideInVertically { it },
+        exit = slideOutVertically { it },
+        modifier = modifier,
+    ) {
+        Surface(
+            color = palette.surface,
+            shadowElevation = 12.dp,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(start = 14.dp, end = 14.dp, top = 10.dp)
+                    .padding(bottom = maxOf(14.dp, bottomInset)),
+            ) {
+                // Top divider line (matches the multi-select bar).
+                Spacer(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(palette.divider),
+                )
+                Spacer(Modifier.height(10.dp))
+                androidx.compose.foundation.layout.FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    maxItemsInEachRow = maxItemsPerRow,
+                ) {
+                    actions.forEach { action ->
+                        ActionButton(
+                            action = action,
+                            modifier = Modifier.weight(if (action.kind == SelectionAction.Kind.Primary) 1.4f else 1f),
                         )
                     }
                 }
@@ -169,9 +231,8 @@ fun SelectionActionBar(
 }
 
 @Composable
-private fun androidx.compose.foundation.layout.RowScope.ActionButton(
+private fun ActionButton(
     action: SelectionAction,
-    weight: Float,
     modifier: Modifier = Modifier,
 ) {
     val palette = LocalWardrobePalette.current
@@ -196,7 +257,6 @@ private fun androidx.compose.foundation.layout.RowScope.ActionButton(
     val shape = RoundedCornerShape(14.dp)
     Column(
         modifier = modifier
-            .weight(weight)
             .height(46.dp)
             .clip(shape)
             .background(bg)

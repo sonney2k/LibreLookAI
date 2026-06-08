@@ -13,13 +13,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.activity.compose.BackHandler
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FlightTakeoff
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,6 +40,8 @@ import com.librelookai.R
 import com.librelookai.outfit.OutfitsViewModel
 import com.librelookai.settings.ProfileViewModel
 import com.librelookai.ui.components.AppFab
+import com.librelookai.ui.components.SelectionAction
+import com.librelookai.ui.components.SelectionActionBar
 import com.librelookai.ui.components.rememberFabExpanded
 import com.librelookai.util.LocalIsOffline
 import com.librelookai.wardrobe.LocationViewModel
@@ -179,6 +185,19 @@ internal fun TravelOutfitsView(
 
     val hasAnyContent = closetTrips.isNotEmpty() || closetOrphans.isNotEmpty()
 
+    // ---- Multi-select state (long-press a trip to enter) ----
+    var selectedTripIds by remember { mutableStateOf(emptySet<String>()) }
+    // Drop selections whose trip is no longer shown (deleted / filtered out).
+    val visibleTripIds = remember(displayedTrips) { displayedTrips.map { it.id }.toSet() }
+    LaunchedEffect(visibleTripIds) {
+        if (selectedTripIds.any { it !in visibleTripIds }) {
+            selectedTripIds = selectedTripIds intersect visibleTripIds
+        }
+    }
+    val isSelectionMode = selectedTripIds.isNotEmpty()
+    if (isSelectionMode) BackHandler { selectedTripIds = emptySet() }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+
     Column(modifier = modifier.fillMaxSize()) {
         AppScreenHeader(
             title = stringResource(R.string.travel_outfits_section),
@@ -271,6 +290,12 @@ internal fun TravelOutfitsView(
                                     outfitsById = outfitsById,
                                     imagesById = imagesById,
                                     onClick = { onOpenTrip(trip.id) },
+                                    isSelected = trip.id in selectedTripIds,
+                                    isSelectionMode = isSelectionMode,
+                                    onToggleSelection = {
+                                        selectedTripIds = selectedTripIds.toMutableSet()
+                                            .also { if (!it.add(trip.id)) it.remove(trip.id) }
+                                    },
                                 )
                             }
                         }
@@ -306,10 +331,64 @@ internal fun TravelOutfitsView(
                 icon = Icons.Default.FlightTakeoff,
                 onClick = onOpenPlanner,
                 expanded = rememberFabExpanded(tripsListState),
-                visible = !isOffline,
+                visible = !isOffline && !isSelectionMode,
                 modifier = Modifier.align(Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp),
             )
+
+            // Shared selection action bar — Edit (primary, single-select only) · Delete (danger).
+            // Hidden offline (write paths).
+            val tripSelectionActions = buildList {
+                if (!isOffline) {
+                    if (selectedTripIds.size == 1) {
+                        add(
+                            SelectionAction(
+                                label = stringResource(R.string.action_edit),
+                                icon = Icons.Default.Edit,
+                                kind = SelectionAction.Kind.Primary,
+                            ) {
+                                val id = selectedTripIds.first()
+                                selectedTripIds = emptySet()
+                                tripsViewModel.requestEditTrip(id)
+                                onOpenTrip(id)
+                            },
+                        )
+                    }
+                    add(
+                        SelectionAction(
+                            label = stringResource(R.string.action_delete),
+                            icon = Icons.Default.Delete,
+                            kind = SelectionAction.Kind.Danger,
+                        ) { showDeleteDialog = true },
+                    )
+                }
+            }
+            SelectionActionBar(
+                count = selectedTripIds.size,
+                onClear = { selectedTripIds = emptySet() },
+                actions = tripSelectionActions,
+                visible = isSelectionMode && tripSelectionActions.isNotEmpty(),
+                modifier = Modifier.align(Alignment.BottomCenter),
+            )
         }
+    }
+
+    if (showDeleteDialog) {
+        DeleteTripDialog(
+            onDismiss = { showDeleteDialog = false },
+            onCascade = {
+                showDeleteDialog = false
+                val ids = selectedTripIds
+                tripsViewModel.deleteTrips(ids) { outfitIds ->
+                    stylesViewModel.deleteOutfitsByIds(outfitIds)
+                }
+                selectedTripIds = emptySet()
+            },
+            onKeep = {
+                showDeleteDialog = false
+                tripsViewModel.deleteTrips(selectedTripIds) { /* keep outfits */ }
+                selectedTripIds = emptySet()
+            },
+        )
     }
 
     if (filterSheetOpen) {

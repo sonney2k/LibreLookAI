@@ -1,6 +1,7 @@
 package com.librelookai.travel
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -99,12 +100,16 @@ internal fun TripSortButton(
     }
 }
 
+@OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
 @Composable
 internal fun TripCard(
     trip: com.librelookai.data.model.Trip,
     outfitsById: Map<String, com.librelookai.data.model.Outfit>,
     imagesById: Map<String, DriveImage>,
     onClick: () -> Unit,
+    isSelected: Boolean = false,
+    isSelectionMode: Boolean = false,
+    onToggleSelection: () -> Unit = {},
 ) {
     val ctx = LocalContext.current
     val previewImages = remember(trip.outfitIds, outfitsById, imagesById) {
@@ -119,7 +124,13 @@ internal fun TripCard(
     OutlinedCard(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick),
+            .combinedClickable(
+                onClick = { if (isSelectionMode) onToggleSelection() else onClick() },
+                onLongClick = onToggleSelection,
+            ),
+        border = if (isSelected)
+            androidx.compose.foundation.BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
+        else androidx.compose.material3.CardDefaults.outlinedCardBorder(),
     ) {
         Column(
             modifier = Modifier.padding(12.dp),

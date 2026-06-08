@@ -57,6 +57,11 @@ data class TripsUiState(
      */
     val refinePreviewTripId: String? = null,
     val refinePreview: Map<String, com.librelookai.data.model.OutfitRefinement> = emptyMap(),
+    /**
+     * Trip the viewer should open straight into edit mode for (set by the list's "Edit" action on a
+     * single-selected trip). Consumed by the viewer via [TripsViewModel.consumePendingEdit].
+     */
+    val pendingEditTripId: String? = null,
 )
 
 /**
@@ -277,10 +282,39 @@ class TripsViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /**
+     * Deletes every trip in [tripIds] from Drive and state, then returns the union of their
+     * `outfitIds` via [onDeleted] so the caller can optionally cascade-delete the outfits.
+     */
+    fun deleteTrips(tripIds: Collection<String>, onDeleted: (deletedOutfitIds: List<String>) -> Unit = {}) {
+        val targets = _state.value.trips.filter { it.id in tripIds }
+        if (targets.isEmpty()) return
+        viewModelScope.launch {
+            targets.forEach { trip ->
+                val driveFileId = driveIdsByTripId[trip.id]
+                if (driveFileId != null) {
+                    runCatching { drive.deleteTripJson(driveFileId) }
+                        .onFailure { Log.w(TAG, "deleteTripJson failed", it) }
+                    driveIdsByTripId.remove(trip.id)
+                }
+            }
+            val deletedIds = targets.map { it.id }.toSet()
+            _state.update { s -> s.copy(trips = s.trips.filterNot { it.id in deletedIds }) }
+            writeTripsCache(_state.value.trips)
+            onDeleted(targets.flatMap { it.outfitIds }.distinct())
+        }
+    }
+
     /** Convenience: ask the UI to open [tripId] in the viewer. */
     fun openTrip(tripId: String) {
         viewModelScope.launch { _navigateToTrip.emit(tripId) }
     }
+
+    /** Flags [tripId] so the viewer opens directly in edit mode (the list's single-select "Edit"). */
+    fun requestEditTrip(tripId: String) = _state.update { it.copy(pendingEditTripId = tripId) }
+
+    /** Clears the [pendingEditTripId] once the viewer has entered edit mode. */
+    fun consumePendingEdit() = _state.update { it.copy(pendingEditTripId = null) }
 
     fun clearError() = _state.update { it.copy(error = null) }
 

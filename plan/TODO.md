@@ -10,6 +10,9 @@ consistency: the cross to cancel taking a picture in wardrobe is in the lower ri
 
 Add an outfit week planner?
 
+Implement new feature: We are working on the refinancing/monetization aspect of the app: I want people to be able to buy coins that I then use to pay gemini cloud costs. would that work with RevenueCat (handles the money/receipts) + Firebase (database and secure Gemini API routing)? In addition, I still want to support the bring your own key option though. What is important is that the user always knows how many coins a certain operation takes (if it involves coins or BYOK tokens). So we need to somehow visually communicate the coin or cost. To be sustainable we need to add 100% to the actual cost. We need to store and use this multiplier securely.
+
+
 
 TODO
 ====
@@ -42,37 +45,14 @@ end-to-end testable until billing is on. Plan:
     google-services.json is restricted to package com.librelookai + our SHA-1s
     and API-restricted to only the APIs we use (it ships in every APK).
 
-INFRA / DEADLINE: Cloud Functions runtime is Node.js 20, deprecated 2026-04-30,
-**decommissioned 2026-10-30** — after that date `firebase deploy --only functions`
-will fail until upgraded. Before October 2026: bump firebase/functions/package.json
-`engines.node` 20 → 22, also upgrade `firebase-functions` to latest (flagged as
-having breaking changes — do deliberately, test geminiProxy/verifyPurchase/
-recomputePublicPricing), then redeploy. (Surfaced as a deploy warning on the
-2026-06 geminiProxy model-allowlist deploy.)
-
 experiment to verify cost assumptions
 
 create design for onboarding flow
 
 what can we do to reduce cost?
 
-onboarding screen. on phones with small screen (large font size) text does not fit on one screen and buttons are below the bottom navigation panel fix that
 
-Move to another day  & copy to another day in calendar not localized. Fix this. also make it possible to long press an outfit in calendar and then allow for moving by tapping the target date. also allow left and right swipe to go through months. also add a bit of padding inside calendar cell
-
-add the heart we have on calendar also directly on outfit view (both detail and list views) so one can favorite it there already
-
-
-after onboarding when syncing wardrobe - for my 196 items it goes steadily from 0...196 but then it hangs there for a bit and then suddenly done. this is not intuitive for users make the final step transparent (what is taking so long...?)
-
-when creating outfit once outfit is created there is no visual indication of anything for a while. then it jumps back to outfit list and the just created outfit - make this delay clear to users
-
-Instead of wear today in outfits make it "Wear.." and then show the calendar with the outfits and the day when this will be worn is user selectable with the current day pre selected.
-
-
-
-fetching new
-
+rework calendar UI
 
 
 create human readable release notes between now and v2.0.1 and release version 2.0.2, git tag commit and upload to testers in firebase
@@ -83,12 +63,37 @@ Feedback:
 add way to send feedback via firebase under settings -> feedback
 add a feedback tab under settings move debug setting under this tab
 
-
-Implement new feature: We are working on the refinancing/monetization aspect of the app: I want people to be able to buy coins that I then use to pay gemini cloud costs. would that work with RevenueCat (handles the money/receipts) + Firebase (database and secure Gemini API routing)? In addition, I still want to support the bring your own key option though. What is important is that the user always knows how many coins a certain operation takes (if it involves coins or BYOK tokens). So we need to somehow visually communicate the coin or cost. To be sustainable we need to add 100% to the actual cost. We need to store and use this multiplier securely.
-
+the selection bar that shows all (item count) selected (item count) - when the font is too big this line breaks and becomes a huge header - keep it single line
 
 IN PROGRESS
 ===========
+INFRA / DEADLINE: Cloud Functions runtime is Node.js 20, deprecated 2026-04-30,
+**decommissioned 2026-10-30** — after that date `firebase deploy --only functions`
+will fail until upgraded. Before October 2026: bump firebase/functions/package.json
+`engines.node` 20 → 22, also upgrade `firebase-functions` to latest (flagged as
+having breaking changes — do deliberately, test geminiProxy/verifyPurchase/
+recomputePublicPricing), then redeploy. (Surfaced as a deploy warning on the
+2026-06 geminiProxy model-allowlist deploy.)
+
+fix those 2 issues:
+1. after onboarding when syncing wardrobe - for my 196 items it goes steadily from 0...196 but then it hangs there for a bit and then suddenly done. this is not intuitive for users make the final step transparent (what is taking so long...?)
+
+2. when creating outfit once outfit is created there is no visual indication of anything for a while. then it jumps back to outfit list and the just created outfit - make this delay clear to users
+
+only allow try-on when the the upper and lower body parts are fully convered (so einteiler is worn or ober+unterteil) to avoid nudity. refuse to proceed otherwise. once proceeding wear only the exact cloth selected in try-on (e.g. don't invent addition shoes or a shirt). E.g in case of a vest or jacket and there is no layer below close those 
+
+
+onboarding screen. on phones with small screen (large font size) text does not fit on one screen and buttons are below the bottom navigation panel fix that
+
+For all AI calls to gemini you show that AI progress wheel. On all of those show that AI takes 20-40s to come back with an answer in the progress bar and perhaps show how many bytes you did transfer in a bar and how many you expect to receive in a bar.. perhaps even a time?
+use the same AI progress everywhere (e.g. it was not used in try-ons, is it on others, e.g. travel planner, ...?)
+
+On outfits:
+Instead of wear today in outfits make it "Wear.." and then show the calendar with the outfits and the day when this will be worn is user selectable with the current day pre selected.
+add the heart we have on calendar also directly on outfit view (both detail and list views) so one can favorite it there already
+
+Move to another day  & copy to another day in calendar not localized. Fix this. also make it possible to long press an outfit in calendar and then allow for moving by tapping the target date. also allow left and right swipe to go through months. also add a bit of padding inside calendar cell
+
 - I noticed .jpgs from camera are just 124kB but .pngs are 450kB. Since this is on users drive folders we have to be cautious about size. Let's target 1GB - to allow for 2000-4000 wardrobe items. Make quality & size target(?) an option in advanced settings.
 
 we want all options to work without Gemini so things are cost neutral. create a plan for that. options, local model, local gemini models, reduced quality algorithms

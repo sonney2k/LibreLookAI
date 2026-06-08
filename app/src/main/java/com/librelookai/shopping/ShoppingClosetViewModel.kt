@@ -111,15 +111,30 @@ class ShoppingClosetViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, error = null) }
 
-            // Resolve folder (uses Drive — needs network on first run; cached after that).
-            val folderId = runCatching {
-                val rootId = rootFolderId ?: drive.getOrCreateFolder().also { rootFolderId = it }
-                shoppingFolderId ?: drive.getOrCreateShoppingFolder(rootId).also { shoppingFolderId = it }
-            }.onFailure {
-                Log.w(TAG, "shopping folder resolve failed", it)
-                _state.update { s -> s.copy(isLoading = false, error = it.message) }
-            }.getOrNull() ?: return@launch
+            val online = getApplication<Application>().isNetworkAvailable()
 
+            // Resolve the shopping folder ID. Online: via Drive (cached per process after first run),
+            // then persisted so a later offline launch can still find the local cache. Offline: fall
+            // back to the in-memory id or the persisted one — the `_shopping/` folder ID is otherwise
+            // unobtainable without the network, which would leave the cache (keyed by it) unreachable.
+            val folderId = if (online) {
+                runCatching {
+                    val rootId = rootFolderId ?: drive.getOrCreateFolder().also { rootFolderId = it }
+                    shoppingFolderId ?: drive.getOrCreateShoppingFolder(rootId).also { shoppingFolderId = it }
+                }.onFailure {
+                    Log.w(TAG, "shopping folder resolve failed", it)
+                }.getOrNull() ?: shoppingFolderId ?: persistedShoppingFolderId()
+            } else {
+                shoppingFolderId ?: persistedShoppingFolderId()
+            }
+
+            if (folderId == null) {
+                // No way to locate the cache (offline + never resolved). Degrade to empty, no error.
+                _state.update { it.copy(isLoading = false, isSyncing = false) }
+                return@launch
+            }
+            shoppingFolderId = folderId
+            persistShoppingFolderId(folderId)
             _state.update { it.copy(folderId = folderId) }
 
             // Phase 1 — instant: read local cache.
@@ -145,7 +160,7 @@ class ShoppingClosetViewModel(app: Application) : AndroidViewModel(app) {
 
             // Phase 2 — refresh from Drive.
             _state.update { it.copy(isSyncing = true) }
-            if (!getApplication<Application>().isNetworkAvailable()) {
+            if (!online) {
                 _state.update { it.copy(isLoading = false, isSyncing = false) }
                 return@launch
             }
@@ -427,12 +442,28 @@ class ShoppingClosetViewModel(app: Application) : AndroidViewModel(app) {
             val rootId = rootFolderId ?: drive.getOrCreateFolder().also { rootFolderId = it }
             val resolved = shoppingFolderId ?: drive.getOrCreateShoppingFolder(rootId)
             shoppingFolderId = resolved
+            persistShoppingFolderId(resolved)
             _state.update { it.copy(folderId = resolved) }
             resolved
         }.onFailure { e ->
             Log.w(TAG, "ensureFolder failed", e)
             _state.update { it.copy(error = e.message) }
         }.getOrNull()
+    }
+
+    /**
+     * The `_shopping/` Drive folder ID is persisted across launches so an offline cold start can
+     * locate the local cache (which is keyed by this ID). The ID itself is otherwise only
+     * obtainable from Drive, which needs the network.
+     */
+    private fun shoppingPrefs() =
+        getApplication<Application>().getSharedPreferences("shopping_closet", Application.MODE_PRIVATE)
+
+    private fun persistedShoppingFolderId(): String? =
+        shoppingPrefs().getString("folder_id", null)?.takeIf { it.isNotBlank() }
+
+    private fun persistShoppingFolderId(id: String) {
+        shoppingPrefs().edit().putString("folder_id", id).apply()
     }
 
     private fun localCacheFile(id: String) =

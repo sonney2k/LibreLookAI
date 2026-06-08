@@ -10,17 +10,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Close
@@ -30,7 +27,6 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -135,9 +131,11 @@ internal fun OutfitFullScreenViewer(
                 initialPage = initialIndex.coerceIn(0, (outfits.size - 1).coerceAtLeast(0)),
                 pageCount = { outfits.size },
             )
-            var showEditMenu by remember { mutableStateOf(false) }
             var showDeleteDialog by remember { mutableStateOf(false) }
             var showWearPicker by remember { mutableStateOf(false) }
+            // Actions live hidden under the bottom FAB (tap to reveal the shared action bar), like
+            // the create/selection FAB on the list screens.
+            var actionsOpen by remember { mutableStateOf(false) }
             var viewerImage by remember { mutableStateOf<DriveImage?>(null) }
             var hideTags by rememberSaveable { mutableStateOf(false) }
 
@@ -306,112 +304,94 @@ internal fun OutfitFullScreenViewer(
                     }
                 }
 
-                // Speed-dial FAB (wear / edit / delete) — hidden offline (writes only).
+                // Actions hidden under the bottom-end FAB — tapping it reveals the shared action
+                // bar (Wear primary · Try on · Edit · Tags · Delete danger). Hidden offline (writes).
                 if (!isOffline) {
-                    Column(
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .padding(bottom = effectiveBottom)
-                            .padding(16.dp),
-                        horizontalAlignment = Alignment.End,
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        if (showEditMenu) {
-                            ExtendedFloatingActionButton(
-                                onClick = {
+                    // Back collapses the open menu before it closes the viewer.
+                    if (actionsOpen) BackHandler { actionsOpen = false }
+                    val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
+                    val barHeight = 67.dp + effectiveBottom // DetailActionBar chrome + its bottom inset
+                    com.librelookai.ui.components.DetailActionBar(
+                        actions = buildList {
+                            add(
+                                com.librelookai.ui.components.SelectionAction(
+                                    label = stringResource(R.string.outfits_wear),
+                                    icon = Icons.Default.CalendarMonth,
+                                    kind = com.librelookai.ui.components.SelectionAction.Kind.Primary,
+                                ) {
                                     Analytics.action("OutfitViewer", "open_wear_picker")
-                                    showEditMenu = false
+                                    actionsOpen = false
                                     showWearPicker = true
-                                },
-                                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                                icon = { Icon(Icons.Default.CalendarMonth, contentDescription = null) },
-                                text = {
-                                    Row(verticalAlignment = Alignment.CenterVertically) {
-                                        Text(stringResource(R.string.outfits_wear))
-                                        Spacer(Modifier.width(4.dp))
-                                        Icon(
-                                            Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                                            contentDescription = null,
-                                            modifier = Modifier.size(18.dp),
-                                        )
-                                    }
                                 },
                             )
                             if (canTryOn) {
-                                ExtendedFloatingActionButton(
-                                    onClick = {
+                                add(
+                                    com.librelookai.ui.components.SelectionAction(
+                                        label = stringResource(R.string.tryon_fab),
+                                        icon = Icons.Default.AutoAwesome,
+                                    ) {
                                         Analytics.action("OutfitViewer", "try_on")
-                                        showEditMenu = false
+                                        actionsOpen = false
                                         onTryOn(current)
                                     },
-                                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    icon = { Icon(Icons.Default.AutoAwesome, contentDescription = null) },
-                                    text = {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Text(stringResource(R.string.tryon_fab))
-                                    Spacer(Modifier.width(4.dp))
-                                    Icon(
-                                        Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(18.dp),
-                                    )
-                                }
-                            },
                                 )
                             }
-                            ExtendedFloatingActionButton(
-                                onClick = {
+                            add(
+                                com.librelookai.ui.components.SelectionAction(
+                                    label = stringResource(R.string.action_edit),
+                                    icon = Icons.Default.Edit,
+                                ) {
                                     Analytics.action("OutfitViewer", "edit")
-                                    showEditMenu = false
+                                    actionsOpen = false
                                     onEdit(current)
                                 },
-                                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                                icon = { Icon(Icons.Default.Edit, contentDescription = null) },
-                                text = { Text(stringResource(R.string.action_edit)) },
                             )
-                            ExtendedFloatingActionButton(
-                                onClick = {
+                            add(
+                                com.librelookai.ui.components.SelectionAction(
+                                    label = stringResource(R.string.outfits_suggest_tags),
+                                    icon = Icons.Default.AutoAwesome,
+                                ) {
                                     Analytics.action("OutfitViewer", "suggest_tags")
-                                    showEditMenu = false
+                                    actionsOpen = false
                                     onSuggestTags(current)
                                 },
-                                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                                icon = { Icon(Icons.Default.AutoAwesome, contentDescription = null) },
-                                text = {
-                                    Row(verticalAlignment = Alignment.CenterVertically) {
-                                        Text(stringResource(R.string.outfits_suggest_tags))
-                                        Spacer(Modifier.width(4.dp))
-                                        Icon(
-                                            Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                                            contentDescription = null,
-                                            modifier = Modifier.size(18.dp),
-                                        )
-                                    }
-                                },
                             )
-                            ExtendedFloatingActionButton(
-                                onClick = {
+                            add(
+                                com.librelookai.ui.components.SelectionAction(
+                                    label = stringResource(R.string.action_delete),
+                                    icon = Icons.Default.Delete,
+                                    kind = com.librelookai.ui.components.SelectionAction.Kind.Danger,
+                                ) {
                                     Analytics.action("OutfitViewer", "open_delete_dialog")
-                                    showEditMenu = false
+                                    actionsOpen = false
                                     showDeleteDialog = true
                                 },
-                                containerColor = MaterialTheme.colorScheme.error,
-                                contentColor = MaterialTheme.colorScheme.onError,
-                                icon = { Icon(Icons.Default.Delete, contentDescription = null) },
-                                text = { Text(stringResource(R.string.action_delete)) },
                             )
-                        }
-                        FloatingActionButton(onClick = { showEditMenu = !showEditMenu }) {
+                        },
+                        visible = actionsOpen,
+                        bottomInset = effectiveBottom,
+                        modifier = Modifier.align(Alignment.BottomCenter),
+                    )
+                    ExtendedFloatingActionButton(
+                        onClick = {
+                            Analytics.action("OutfitViewer", if (actionsOpen) "close_actions" else "open_actions")
+                            actionsOpen = !actionsOpen
+                        },
+                        expanded = true,
+                        containerColor = palette.fabBg,
+                        contentColor = palette.fabFg,
+                        icon = {
                             Icon(
-                                if (showEditMenu) Icons.Default.Close else Icons.Default.Edit,
-                                contentDescription = stringResource(R.string.action_edit),
+                                if (actionsOpen) Icons.Default.Close else Icons.Default.Edit,
+                                contentDescription = null,
+                                modifier = Modifier.size(22.dp),
                             )
-                        }
-                    }
+                        },
+                        text = { Text(stringResource(if (actionsOpen) R.string.action_close else R.string.action_edit)) },
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(end = 16.dp, bottom = if (actionsOpen) barHeight + 8.dp else effectiveBottom + 16.dp),
+                    )
                 }
             }
 

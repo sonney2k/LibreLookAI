@@ -14,11 +14,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Checklist
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -106,6 +109,15 @@ fun TripViewerScreen(
     var showDeleteDialog by remember { mutableStateOf(false) }
     var viewerOutfitId by remember { mutableStateOf<String?>(null) }
     var editing by remember(tripId) { mutableStateOf(false) }
+    // View-mode actions are hidden under the bottom FAB (tap to reveal the shared action bar).
+    var actionsOpen by remember(tripId) { mutableStateOf(false) }
+    // The list's single-select "Edit" action opens the viewer straight into edit mode.
+    androidx.compose.runtime.LaunchedEffect(tripId, tripsState.pendingEditTripId) {
+        if (tripsState.pendingEditTripId == tripId) {
+            editing = true
+            tripsViewModel.consumePendingEdit()
+        }
+    }
     // View-mode packing checklist: off by default, toggled from the meta row. When on, day-card
     // and extras items show interactive packing ticks.
     var checklistMode by remember(tripId) { mutableStateOf(false) }
@@ -324,12 +336,48 @@ fun TripViewerScreen(
             }
         }
 
-        // View-only edit FAB (speed dial: Edit / Delete) — hidden offline (write paths only).
+        // View-only actions hidden under the bottom-end FAB — tap to reveal the shared action bar
+        // (Edit primary · Delete danger). Hidden offline (writes) and while editing.
         if (!editing && !isOffline) {
-            TripActionsFab(
-                onEdit = { editing = true },
-                onDelete = { showDeleteDialog = true },
-                modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
+            if (actionsOpen) androidx.activity.compose.BackHandler { actionsOpen = false }
+            val palette = com.librelookai.ui.theme.LocalWardrobePalette.current
+            val barHeight = 81.dp // DetailActionBar chrome + its 14.dp bottom padding (no inset here)
+            com.librelookai.ui.components.DetailActionBar(
+                actions = buildList {
+                    add(
+                        com.librelookai.ui.components.SelectionAction(
+                            label = stringResource(R.string.action_edit),
+                            icon = Icons.Default.Edit,
+                            kind = com.librelookai.ui.components.SelectionAction.Kind.Primary,
+                        ) { actionsOpen = false; editing = true },
+                    )
+                    add(
+                        com.librelookai.ui.components.SelectionAction(
+                            label = stringResource(R.string.trip_delete),
+                            icon = Icons.Default.Delete,
+                            kind = com.librelookai.ui.components.SelectionAction.Kind.Danger,
+                        ) { actionsOpen = false; showDeleteDialog = true },
+                    )
+                },
+                visible = actionsOpen,
+                modifier = Modifier.align(Alignment.BottomCenter),
+            )
+            androidx.compose.material3.ExtendedFloatingActionButton(
+                onClick = { actionsOpen = !actionsOpen },
+                expanded = true,
+                containerColor = palette.fabBg,
+                contentColor = palette.fabFg,
+                icon = {
+                    Icon(
+                        if (actionsOpen) Icons.Default.Close else Icons.Default.Edit,
+                        contentDescription = null,
+                        modifier = Modifier.size(22.dp),
+                    )
+                },
+                text = { Text(stringResource(if (actionsOpen) R.string.action_close else R.string.action_edit)) },
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(end = 16.dp, bottom = if (actionsOpen) barHeight + 8.dp else 16.dp),
             )
         }
 
