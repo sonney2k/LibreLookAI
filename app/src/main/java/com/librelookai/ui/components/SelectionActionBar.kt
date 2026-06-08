@@ -147,6 +147,9 @@ fun SelectionActionBar(
                         color = palette.text,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f),
                     )
                 }
                 Spacer(Modifier.height(10.dp))
