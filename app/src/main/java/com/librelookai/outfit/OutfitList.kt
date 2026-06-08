@@ -24,21 +24,24 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.AutoFixHigh
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Warning
+import com.librelookai.ui.components.AppFab
+import com.librelookai.ui.components.SelectionAction
+import com.librelookai.ui.components.SelectionActionBar
+import com.librelookai.ui.components.rememberFabExpanded
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -195,6 +198,9 @@ internal fun OutfitListScreen(
 
     val isSelectionMode = selectedOutfitIds.isNotEmpty()
     if (isSelectionMode) BackHandler(onBack = onClearOutfitSelection)
+
+    // Hoisted so the shared create FAB can collapse on scroll (also used by the LazyColumn below).
+    val outfitsListState = rememberLazyListState()
 
     var fullscreenStyleId by rememberSaveable { mutableStateOf<String?>(null) }
     var showDeleteDialog by remember { mutableStateOf(false) }
@@ -465,7 +471,6 @@ internal fun OutfitListScreen(
                     }
                 }
                 else -> {
-                    val outfitsListState = rememberLazyListState()
                     // Scroll the new outfit into view (and briefly open it) after the user
                     // saves it from the composer. List keys are outfit ids so animateScroll is
                     // safe even though the list is built from a derived state.
@@ -482,7 +487,7 @@ internal fun OutfitListScreen(
                         modifier = Modifier.weight(1f).fillMaxWidth().scrollbar(outfitsListState),
                         contentPadding = PaddingValues(
                             top = 8.dp,
-                            bottom = if (isSelectionMode) 96.dp else 8.dp,
+                            bottom = 96.dp,
                             start = 0.dp,
                             end = 0.dp,
                         ),
@@ -514,88 +519,77 @@ internal fun OutfitListScreen(
             }
         }
 
-        // Selection mode FAB bar
-        if (isSelectionMode) {
-            Column(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(end = 16.dp, bottom = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalAlignment = Alignment.End,
-            ) {
-                if (selectedOutfitIds.size >= 2 && !isOffline) {
-                    ExtendedFloatingActionButton(
-                        onClick = {
+        // Shared create FAB — hidden during selection mode / offline.
+        AppFab(
+            label = stringResource(R.string.fab_outfits_new),
+            icon = Icons.Default.Add,
+            onClick = {
+                Analytics.action("Outfits", "open_create_composer")
+                onOpenCreateComposer()
+            },
+            expanded = rememberFabExpanded(outfitsListState),
+            visible = !isSelectionMode && !isOffline,
+            modifier = Modifier.align(Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp),
+        )
+
+        // Shared selection action bar — Combine (≥2) / Try on (==1) primary · Love · Delete (danger).
+        val outfitSelectionActions = buildList {
+            if (!isOffline) {
+                if (selectedOutfitIds.size >= 2) {
+                    add(
+                        SelectionAction(
+                            label = stringResource(R.string.sel_combine),
+                            icon = Icons.Default.AutoFixHigh,
+                            kind = SelectionAction.Kind.Primary,
+                        ) {
                             Analytics.action("Outfits", "combine_selected", mapOf("count" to selectedOutfitIds.size.toString()))
                             onCombineSelectedStyles()
                         },
-                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                        icon = { Icon(Icons.Default.AutoFixHigh, contentDescription = null) },
-                        text = {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(stringResource(R.string.outfits_combine))
-                                Spacer(Modifier.width(4.dp))
-                                Icon(
-                                    Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(18.dp),
-                                )
-                            }
-                        },
                     )
                 }
-                if (selectedOutfitIds.size == 1 && canTryOn && !isOffline) {
+                if (selectedOutfitIds.size == 1 && canTryOn) {
                     val selectedStyle = styles.firstOrNull { it.id in selectedOutfitIds }
                     if (selectedStyle != null) {
-                        ExtendedFloatingActionButton(
-                            onClick = {
+                        add(
+                            SelectionAction(
+                                label = stringResource(R.string.tryon_fab),
+                                icon = Icons.Default.AutoAwesome,
+                                kind = SelectionAction.Kind.Primary,
+                            ) {
                                 Analytics.action("Outfits", "try_on_selected_style")
                                 onTryOnStyle(selectedStyle)
-                            },
-                            containerColor = MaterialTheme.colorScheme.primaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                            icon = { Icon(Icons.Default.AutoAwesome, contentDescription = null) },
-                            text = {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Text(stringResource(R.string.tryon_fab))
-                                    Spacer(Modifier.width(4.dp))
-                                    Icon(
-                                        Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(18.dp),
-                                    )
-                                }
                             },
                         )
                     }
                 }
-                if (!isOffline) {
-                    ExtendedFloatingActionButton(
-                        onClick = {
-                            Analytics.action("Outfits", "open_delete_dialog", mapOf("count" to selectedOutfitIds.size.toString()))
-                            showDeleteDialog = true
-                        },
-                        containerColor = MaterialTheme.colorScheme.error,
-                        contentColor = MaterialTheme.colorScheme.onError,
-                        icon = { Icon(Icons.Default.Close, contentDescription = null) },
-                        text = { Text(stringResource(R.string.action_delete)) },
-                    )
-                }
-            }
-        } else if (!isOffline) {
-            FloatingActionButton(
-                onClick = {
-                    Analytics.action("Outfits", "open_create_composer")
-                    onOpenCreateComposer()
-                },
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(end = 16.dp, bottom = 16.dp),
-            ) {
-                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.wardrobe_create_style))
+                add(
+                    SelectionAction(
+                        label = stringResource(R.string.sel_love),
+                        icon = Icons.Default.Favorite,
+                    ) {
+                        Analytics.action("Outfits", "love_selected", mapOf("count" to selectedOutfitIds.size.toString()))
+                        selectedOutfitIds.forEach { onToggleLovedOutfit(it) }
+                    },
+                )
+                add(
+                    SelectionAction(
+                        label = stringResource(R.string.action_delete),
+                        icon = Icons.Default.Delete,
+                        kind = SelectionAction.Kind.Danger,
+                    ) {
+                        Analytics.action("Outfits", "open_delete_dialog", mapOf("count" to selectedOutfitIds.size.toString()))
+                        showDeleteDialog = true
+                    },
+                )
             }
         }
+        SelectionActionBar(
+            count = selectedOutfitIds.size,
+            onClear = onClearOutfitSelection,
+            actions = outfitSelectionActions,
+            visible = isSelectionMode && outfitSelectionActions.isNotEmpty(),
+            modifier = Modifier.align(Alignment.BottomCenter),
+        )
 
         if (filterSheetOpen) {
             WardrobeFilterSheet(

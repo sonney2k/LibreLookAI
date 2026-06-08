@@ -1228,4 +1228,21 @@
 
     <!-- Calendar add-to-day title -->
     <string name="calendar_add_pick_for">Προσθήκη συνόλου στις %1$s</string>
+
+    <!-- Shared FAB system (AppFab + SelectionActionBar) -->
+    <string name="fab_outfits_new">Νέο σύνολο</string>
+    <string name="fab_wardrobe_add">Προσθήκη</string>
+    <string name="fab_calendar_log">Καταγραφή συνόλου</string>
+    <string name="fab_shopping_add">Προσθήκη εύρεσης</string>
+    <string name="fab_travel_plan">Σχεδιασμός ταξιδιού</string>
+    <string name="action_clear_selection">Εκκαθάριση επιλογής</string>
+    <string name="sel_count">%1$d επιλεγμένα</string>
+    <string name="sel_style">Στιλ</string>
+    <string name="sel_swap">Αλλαγή</string>
+    <string name="sel_move">Μετακίνηση</string>
+    <string name="sel_combine">Συνδυασμός</string>
+    <string name="sel_love">Αγαπημένο</string>
+    <string name="sel_add_to_closet">Στην ντουλάπα</string>
+    <string name="sel_copy_to_day">Αντιγραφή</string>
+    <string name="sel_remove">Αφαίρεση</string>
 </resources>

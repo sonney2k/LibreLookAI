@@ -1201,4 +1201,21 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
 
     <!-- Calendar add-to-day title -->
     <string name="calendar_add_pick_for">Thêm trang phục cho %1$s</string>
+
+    <!-- Shared FAB system (AppFab + SelectionActionBar) -->
+    <string name="fab_outfits_new">Bộ đồ mới</string>
+    <string name="fab_wardrobe_add">Thêm món</string>
+    <string name="fab_calendar_log">Ghi lại bộ đồ</string>
+    <string name="fab_shopping_add">Thêm món tìm thấy</string>
+    <string name="fab_travel_plan">Lên kế hoạch chuyến đi</string>
+    <string name="action_clear_selection">Xóa lựa chọn</string>
+    <string name="sel_count">Đã chọn %1$d</string>
+    <string name="sel_style">Phối đồ</string>
+    <string name="sel_swap">Đổi</string>
+    <string name="sel_move">Chuyển</string>
+    <string name="sel_combine">Kết hợp</string>
+    <string name="sel_love">Thích</string>
+    <string name="sel_add_to_closet">Vào tủ đồ</string>
+    <string name="sel_copy_to_day">Sao chép</string>
+    <string name="sel_remove">Gỡ</string>
 </resources>

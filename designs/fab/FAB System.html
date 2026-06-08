@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LibreLookAI · Consistent FAB — Design & UX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="ai-shared.jsx"></script>
+<script type="text/babel" src="fab-shared.jsx"></script>
+<script type="text/babel" src="fab-current.jsx"></script>
+<script type="text/babel" src="fab-options.jsx"></script>
+<script type="text/babel" src="fab-system.jsx"></script>
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;height:100%;background:#0E120D;font-family:'Plus Jakarta Sans',sans-serif}
+  ::-webkit-scrollbar{display:none}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const FabApp = () => (
+  <DesignCanvas
+    title="Consistent FAB · Outfits · Calendar · Wardrobe · Shopping · Travel"
+    subtitle="Today each screen floats a corner '+' that does something different — and it fights the raised 'Try on' ✦ button already in the nav, while sitting on top of the last row of clothes. Below: the problem, three placement directions, and the recommended system applied to all five screens."
+    defaultBg="#0E120D">
+
+    <DCSection id="now" title="The problem today"
+      subtitle="One '+' icon, five different behaviors, two floating buttons competing, and the button overlapping the content it sits above.">
+      <DCArtboard id="now1" label="① Corner + overlaps items" width={390} height={844}
+        note="The bottom-right '+' sits directly over the last visible row of clothes, and competes with the raised 'Try on' ✦ in the nav. Two floating buttons, unclear hierarchy.">
+        <FabCurrentWardrobe theme="green-light" />
+      </DCArtboard>
+      <DCArtboard id="now2" label="② Selection speed-dial buries the grid" width={390} height={844}
+        note="In selection mode the actions stack vertically up the right edge — 5 buttons covering the very items the user is trying to multi-select.">
+        <FabCurrentSelection theme="green-light" />
+      </DCArtboard>
+      <DCArtboard id="now3" label="③ Same icon, different job" width={390} height={844}
+        note="On Calendar the identical '+' opens a 4-item dropdown instead of doing one thing — so the icon's meaning is unpredictable screen to screen.">
+        <FabCurrentCalendar theme="green-light" />
+      </DCArtboard>
+    </DCSection>
+
+    <DCSection id="dirs" title="Three placement directions"
+      subtitle="All three fix consistency the same way — one button, brand-green to match the nav 'Try on' ✦, a verb label, and grid padding so the last row always clears it. They differ in WHERE the button lives and how much room it takes.">
+      <DCArtboard id="A" label="A · Scroll-aware Extended FAB (recommended)" width={390} height={844}
+        note="A labeled green pill at rest ('Add item'). The list reserves space so nothing hides under it. Clearest for non-tech users because the action is spelled out.">
+        <OptionA theme="green-light" />
+      </DCArtboard>
+      <DCArtboard id="A2" label="A · collapsed while scrolling" width={390} height={844}
+        note="As you scroll down it shrinks to a 50dp circle to get out of the way, then re-expands to the labeled pill when scrolling stops. Best of both: discoverable + unobtrusive.">
+        <OptionAScroll theme="green-light" />
+      </DCArtboard>
+      <DCArtboard id="B" label="B · Docked to the nav bar" width={390} height={844}
+        note="The button sits on the nav bar's top edge, so it lives in the chrome and never floats over content at all. Most space-efficient, but a smaller tap target and visually busier alongside the center ✦.">
+        <OptionB theme="green-light" />
+      </DCArtboard>
+      <DCArtboard id="C" label="C · Mini FAB + action sheet" width={390} height={844}
+        note="Smallest footprint: a 44dp icon. Good when a screen has several create actions — tap opens a worded sheet (next frame) instead of a cramped speed-dial.">
+        <OptionC theme="green-light" />
+      </DCArtboard>
+      <DCArtboard id="Csheet" label="C · the worded action sheet" width={390} height={844}
+        note="The sheet lists actions in plain language with one-line explanations — friendlier than icon-only mini buttons for the target audience.">
+        <OptionCSheet theme="green-light" />
+      </DCArtboard>
+    </DCSection>
+
+    <DCSection id="sys" title="Recommended system — applied to all five screens"
+      subtitle="Option A everywhere: one green Extended FAB, bottom-right, with a screen-specific verb. Identical size, color, position, and scroll behavior across the app — only the word and icon change. The list padding guarantees the last item is never hidden.">
+      <DCArtboard id="s1" label="Outfits · New outfit" width={390} height={844}
+        note="Verb: 'New outfit'. Opens the outfit composer.">
+        <SysOutfits theme="green-light" />
+      </DCArtboard>
+      <DCArtboard id="s2" label="Wardrobe · Add item" width={390} height={844}
+        note="Verb: 'Add item'. Opens the camera / import.">
+        <SysWardrobe theme="green-light" />
+      </DCArtboard>
+      <DCArtboard id="s3" label="Calendar · Log outfit" width={390} height={844}
+        note="Verb: 'Log outfit'. Replaces the corner dropdown — pick an outfit, then a date. Day-specific copy/move actions move into the day's detail sheet on tap.">
+        <SysCalendar theme="green-light" />
+      </DCArtboard>
+      <DCArtboard id="s4" label="Shopping · Add find" width={390} height={844}
+        note="Verb: 'Add find'. Opens camera / paste-a-link.">
+        <SysShopping theme="green-light" />
+      </DCArtboard>
+      <DCArtboard id="s5" label="Travel · Plan trip" width={390} height={844}
+        note="Verb: 'Plan trip'. Opens the trip planner.">
+        <SysTravel theme="green-light" />
+      </DCArtboard>
+    </DCSection>
+
+    <DCSection id="sel" title="Selection mode — same bar, screen-specific verbs"
+      subtitle="You enter selection mode by long-pressing an item (not by tapping the FAB — the FAB always creates). The FAB then hides and this bottom bar slides up. The container, the count + ✕ on the left, the green primary action first and the red destructive action last are identical everywhere — only the middle verbs change to fit what you've selected.">
+      <DCArtboard id="selW" label="Wardrobe · items selected" width={390} height={844}
+        note="Selected = clothing items. Style (create an outfit from them) is primary; then Swap, Move to closet; Delete last.">
+        <SysSelection theme="green-light" />
+      </DCArtboard>
+      <DCArtboard id="selO" label="Outfits · outfits selected" width={390} height={844}
+        note="Selected = saved outfits. Combine (merge 2+ into a new look) is primary; Love; Delete. Try-on appears when exactly one is selected.">
+        <SysSelectionOutfits theme="green-light" />
+      </DCArtboard>
+      <DCArtboard id="selS" label="Shopping · finds selected" width={390} height={844}
+        note="Selected = shopping finds. Add to closet is primary (move a bought item into the wardrobe); Style; Delete.">
+        <SysSelectionShopping theme="green-light" />
+      </DCArtboard>
+      <DCArtboard id="selC" label="Calendar · a day selected" width={390} height={844}
+        note="Long-pressing a day selects that day's outfits. Copy to day is primary; Move to day; Remove. This replaces the old corner dropdown entirely.">
+        <SysSelectionCalendar theme="green-light" />
+      </DCArtboard>
+      <DCArtboard id="selT" label="Travel · packed outfits selected" width={390} height={844}
+        note="Inside a trip, selected = packed outfits. The shortest bar — Move to trip (to another trip) is primary; Remove. No Style/Swap, because those don't apply here.">
+        <SysSelectionTravel theme="green-light" />
+      </DCArtboard>
+    </DCSection>
+
+    <DCSection id="dark" title="Holds up in dark mode"
+      subtitle="The brand-green FAB token (fabBg) flips with the palette, so the same system reads correctly in every theme.">
+      <DCArtboard id="d1" label="Wardrobe · dark" width={390} height={844}
+        note="Same component, green-dark palette. FAB uses the palette's lighter primary on dark surfaces.">
+        <SysWardrobe theme="green-dark" />
+      </DCArtboard>
+      <DCArtboard id="d2" label="Travel · dark" width={390} height={844}>
+        <SysTravel theme="green-dark" />
+      </DCArtboard>
+    </DCSection>
+
+  </DesignCanvas>
+);
+ReactDOM.createRoot(document.getElementById('root')).render(<FabApp />);
+</script>
+</body>
+</html>

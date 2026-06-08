@@ -1228,4 +1228,21 @@
 
     <!-- Calendar add-to-day title -->
     <string name="calendar_add_pick_for">Lägg till en outfit den %1$s</string>
+
+    <!-- Shared FAB system (AppFab + SelectionActionBar) -->
+    <string name="fab_outfits_new">Ny outfit</string>
+    <string name="fab_wardrobe_add">Lägg till plagg</string>
+    <string name="fab_calendar_log">Logga outfit</string>
+    <string name="fab_shopping_add">Lägg till fynd</string>
+    <string name="fab_travel_plan">Planera resa</string>
+    <string name="action_clear_selection">Rensa markering</string>
+    <string name="sel_count">%1$d valda</string>
+    <string name="sel_style">Styla</string>
+    <string name="sel_swap">Byt</string>
+    <string name="sel_move">Flytta</string>
+    <string name="sel_combine">Kombinera</string>
+    <string name="sel_love">Gilla</string>
+    <string name="sel_add_to_closet">Till garderob</string>
+    <string name="sel_copy_to_day">Kopiera</string>
+    <string name="sel_remove">Ta bort</string>
 </resources>

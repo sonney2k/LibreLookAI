@@ -1201,4 +1201,21 @@
 
     <!-- Calendar add-to-day title -->
     <string name="calendar_add_pick_for">為 %1$s 加入穿搭</string>
+
+    <!-- Shared FAB system (AppFab + SelectionActionBar) -->
+    <string name="fab_outfits_new">新穿搭</string>
+    <string name="fab_wardrobe_add">新增單品</string>
+    <string name="fab_calendar_log">記錄穿搭</string>
+    <string name="fab_shopping_add">新增發現</string>
+    <string name="fab_travel_plan">規劃旅程</string>
+    <string name="action_clear_selection">清除選取</string>
+    <string name="sel_count">已選 %1$d 項</string>
+    <string name="sel_style">搭配</string>
+    <string name="sel_swap">替換</string>
+    <string name="sel_move">移動</string>
+    <string name="sel_combine">合併</string>
+    <string name="sel_love">喜愛</string>
+    <string name="sel_add_to_closet">加入衣櫥</string>
+    <string name="sel_copy_to_day">複製</string>
+    <string name="sel_remove">移除</string>
 </resources>

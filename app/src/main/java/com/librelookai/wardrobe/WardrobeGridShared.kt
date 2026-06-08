@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -197,6 +198,7 @@ internal fun WardrobeZoomableItemGrid(
     locationLookup: (DriveImage) -> String? = { null },
     highlightedDriveId: String? = null,
     processingDriveId: String? = null,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
     var cellSizeDp by rememberSaveable { mutableFloatStateOf(120f) }
     var pinchVisualScale by remember { mutableFloatStateOf(1f) }
@@ -244,6 +246,7 @@ internal fun WardrobeZoomableItemGrid(
             locationLookup = locationLookup,
             highlightedDriveId = highlightedDriveId,
             processingDriveId = processingDriveId,
+            contentPadding = contentPadding,
         )
     }
 }
@@ -267,6 +270,7 @@ internal fun WardrobeItemGrid(
     locationLookup: (DriveImage) -> String? = { null },
     highlightedDriveId: String? = null,
     processingDriveId: String? = null,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
     // Defensive distinctBy: a transient sync race can produce duplicate driveIds in state.images
     // (e.g. local placeholder + Drive-confirmed copy briefly coexisting). LazyVerticalGrid crashes
@@ -279,6 +283,7 @@ internal fun WardrobeItemGrid(
         state = gridState,
         columns = GridCells.Adaptive(cellSizeDp),
         modifier = modifier.scrollbar(gridState),
+        contentPadding = contentPadding,
     ) {
         itemsIndexed(
             uniqueImages,

@@ -1228,4 +1228,21 @@
 
     <!-- Calendar add-to-day title -->
     <string name="calendar_add_pick_for">Dodaj stylizację na %1$s</string>
+
+    <!-- Shared FAB system (AppFab + SelectionActionBar) -->
+    <string name="fab_outfits_new">Nowa stylizacja</string>
+    <string name="fab_wardrobe_add">Dodaj rzecz</string>
+    <string name="fab_calendar_log">Zapisz stylizację</string>
+    <string name="fab_shopping_add">Dodaj znalezisko</string>
+    <string name="fab_travel_plan">Zaplanuj podróż</string>
+    <string name="action_clear_selection">Wyczyść zaznaczenie</string>
+    <string name="sel_count">Wybrano: %1$d</string>
+    <string name="sel_style">Stylizuj</string>
+    <string name="sel_swap">Zamień</string>
+    <string name="sel_move">Przenieś</string>
+    <string name="sel_combine">Połącz</string>
+    <string name="sel_love">Polub</string>
+    <string name="sel_add_to_closet">Do szafy</string>
+    <string name="sel_copy_to_day">Kopiuj</string>
+    <string name="sel_remove">Usuń</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.librelookai.outfit
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -27,11 +28,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import com.librelookai.ui.components.AppFab
+import com.librelookai.ui.components.SelectionAction
+import com.librelookai.ui.components.SelectionActionBar
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
@@ -39,7 +45,6 @@ import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -196,9 +201,8 @@ private fun CalendarContent(
     val today = remember { LocalDate.now() }
     val isOffline = LocalIsOffline.current
     var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
-    // Long-pressing a day opens the FAB options menu with that day preselected (fabMenuDay); the
-    // menu's copy/move/delete then act on that whole day's outfits, and "add" records onto it.
-    var fabMenuOpen by remember { mutableStateOf(false) }
+    // Long-pressing a day selects it (fabMenuDay) and raises the shared SelectionActionBar; its
+    // copy/move/remove then act on that whole day's outfits, and "add" records onto it.
     var fabMenuDay by remember { mutableStateOf<LocalDate?>(null) }
     var showAddSheet by remember { mutableStateOf(false) }
     // When set, picking an outfit in the add sheet records straight onto this day (skips the picker).
@@ -251,11 +255,11 @@ private fun CalendarContent(
                                 items = if (date != null) itemsByDate[date].orEmpty() else emptyList(),
                                 isCurrentMonth = date?.month == pageMonth.month,
                                 isToday = date == today,
-                                // Tap a day with outfits to inspect it; long-press to open the FAB
-                                // options menu (copy/move/delete) with that day preselected.
+                                // Tap a day with outfits to inspect it; long-press to raise the
+                                // shared selection bar (copy/move/remove) for that day's outfits.
                                 onClick = if (date != null && hasStyles) { { selectedDate = date } } else null,
                                 onLongClick = if (date != null && hasStyles && !isOffline) {
-                                    { fabMenuDay = date; fabMenuOpen = true }
+                                    { fabMenuDay = date }
                                 } else null,
                                 modifier = Modifier
                                     .weight(1f)
@@ -277,76 +281,47 @@ private fun CalendarContent(
     // A pending move/copy keyed by the event; non-null shows the date picker (true = copy).
     var pendingDateAction by remember { mutableStateOf<Pair<OutfitEvent, Boolean>?>(null) }
 
-    // "+" FAB — same standard FloatingActionButton as the Wardrobe/Outfit screens. A tap adds an
-    // outfit to a date of your choosing; long-pressing a calendar day opens this same menu with that
-    // day preselected (fabMenuDay), so copy/move/delete act on that day's outfits. Hidden offline
-    // (every action is a Drive write). The menu opens its own Popup window, so the locale-overridden
-    // context chain is re-provided inside (CLAUDE.md → Dialog quirks).
-    if (!isOffline) {
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(end = 16.dp, bottom = 16.dp),
-        ) {
-            FloatingActionButton(onClick = { addTargetDay = null; showAddSheet = true }) {
-                Icon(
-                    Icons.Default.Add,
-                    contentDescription = stringResource(R.string.calendar_add_to_calendar),
-                )
-            }
-            DropdownMenu(
-                expanded = fabMenuOpen,
-                onDismissRequest = { fabMenuOpen = false; fabMenuDay = null },
-            ) {
-                CompositionLocalProvider(
-                    LocalContext provides parentContext,
-                    LocalConfiguration provides parentConfiguration,
-                ) {
-                    DropdownMenuItem(
-                        text = { Text(stringResource(R.string.calendar_add_to_calendar)) },
-                        onClick = {
-                            addTargetDay = fabMenuDay
-                            fabMenuOpen = false; fabMenuDay = null
-                            showAddSheet = true
-                        },
-                    )
-                    DropdownMenuItem(
-                        text = { Text(stringResource(R.string.calendar_copy_to_day)) },
-                        onClick = {
-                            fabMenuDay?.let { pendingDayMove = it to true }
-                            fabMenuOpen = false; fabMenuDay = null
-                        },
-                    )
-                    DropdownMenuItem(
-                        text = { Text(stringResource(R.string.calendar_move_to_day)) },
-                        onClick = {
-                            fabMenuDay?.let { pendingDayMove = it to false }
-                            fabMenuOpen = false; fabMenuDay = null
-                        },
-                    )
-                    DropdownMenuItem(
-                        text = {
-                            Text(
-                                stringResource(R.string.calendar_delete_from_calendar),
-                                color = MaterialTheme.colorScheme.error,
-                            )
-                        },
-                        leadingIcon = {
-                            Icon(
-                                Icons.Default.Delete,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.error,
-                            )
-                        },
-                        onClick = {
-                            pendingDeleteDate = fabMenuDay
-                            fabMenuOpen = false; fabMenuDay = null
-                        },
-                    )
-                }
-            }
-        }
-    }
+    // Shared create FAB — "Log outfit". A tap adds an outfit to a date of your choosing. The
+    // calendar doesn't scroll vertically (it's a month pager), so the pill stays expanded. Hidden
+    // offline (every action is a Drive write) and while a day is selected for actions.
+    AppFab(
+        label = stringResource(R.string.fab_calendar_log),
+        icon = Icons.Default.CalendarMonth,
+        onClick = { addTargetDay = null; showAddSheet = true },
+        expanded = true,
+        visible = !isOffline && fabMenuDay == null,
+        modifier = Modifier.align(Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp),
+    )
+
+    // Long-press a day → shared selection bar for that day's outfits: Copy (primary) · Move · Remove.
+    val daySelected = fabMenuDay
+    if (daySelected != null) BackHandler { fabMenuDay = null }
+    SelectionActionBar(
+        count = daySelected?.let { outfitsByDate[it].orEmpty().size } ?: 0,
+        onClear = { fabMenuDay = null },
+        actions = if (daySelected != null && !isOffline) {
+            listOf(
+                SelectionAction(
+                    label = stringResource(R.string.sel_copy_to_day),
+                    icon = Icons.Default.ContentCopy,
+                    kind = SelectionAction.Kind.Primary,
+                ) { pendingDayMove = daySelected to true; fabMenuDay = null },
+                SelectionAction(
+                    label = stringResource(R.string.sel_move),
+                    icon = Icons.Default.EditCalendar,
+                ) { pendingDayMove = daySelected to false; fabMenuDay = null },
+                SelectionAction(
+                    label = stringResource(R.string.sel_remove),
+                    icon = Icons.Default.Delete,
+                    kind = SelectionAction.Kind.Danger,
+                ) { pendingDeleteDate = daySelected; fabMenuDay = null },
+            )
+        } else {
+            emptyList()
+        },
+        visible = daySelected != null && !isOffline,
+        modifier = Modifier.align(Alignment.BottomCenter),
+    )
 
     selectedDate?.let { date ->
         // One row per logged wear, pairing the event (for the loved toggle) with its outfit.

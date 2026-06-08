@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.AutoFixHigh
@@ -35,14 +34,16 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.filled.Tune
+import com.librelookai.ui.components.AppFab
+import com.librelookai.ui.components.SelectionAction
+import com.librelookai.ui.components.SelectionActionBar
+import com.librelookai.ui.components.rememberFabExpanded
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -446,6 +447,7 @@ internal fun GridContent(
                         },
                         highlightedDriveId = highlightedDriveId,
                         processingDriveId = state.processingImageId,
+                        contentPadding = PaddingValues(bottom = 96.dp),
                     )
                 }
             }
@@ -485,117 +487,68 @@ internal fun GridContent(
             }
         }
 
-        // Speed-dial FAB
-        if (isSelectionMode) {
-            Column(
-                modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalAlignment = Alignment.End,
-            ) {
-                if (!isOffline) {
-                    ExtendedFloatingActionButton(
-                        onClick = { onCreateOutfitFromSelection(state.selectedIds) },
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        icon = { Icon(Icons.Default.AutoFixHigh, contentDescription = null) },
-                        text = {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(stringResource(R.string.wardrobe_create_style))
-                                Spacer(Modifier.width(4.dp))
-                                Icon(
-                                    Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(18.dp),
-                                )
-                            }
-                        },
-                    )
-                    if (canTryOn) {
-                        ExtendedFloatingActionButton(
-                            onClick = { onTryOnSelection(state.selectedIds) },
-                            containerColor = MaterialTheme.colorScheme.primaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                            icon = { Icon(Icons.Default.AutoAwesome, contentDescription = null) },
-                            text = {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Text(stringResource(R.string.tryon_fab))
-                                    Spacer(Modifier.width(4.dp))
-                                    Icon(
-                                        Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(18.dp),
-                                    )
-                                }
-                            },
-                        )
-                    }
-                    ExtendedFloatingActionButton(
-                        onClick = { onSuggestReplacements(state.selectedIds) },
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        icon = { Icon(Icons.Default.SwapHoriz, contentDescription = null) },
-                        text = {
-                            androidx.compose.foundation.layout.Row(
-                                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
-                            ) {
-                                com.librelookai.billing.CostBadge(com.librelookai.gemini.GeminiActionId.GENERATE_TEXT)
-                                Text(stringResource(R.string.wardrobe_suggest_replacements))
-                                Spacer(Modifier.width(4.dp))
-                                Icon(
-                                    Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(18.dp),
-                                )
-                            }
-                        },
-                    )
-                }
-                if (locations.size > 1 && !isOffline) {
-                    ExtendedFloatingActionButton(
-                        onClick = {
+        // Shared create FAB — hidden during selection mode / offline.
+        AppFab(
+            label = stringResource(R.string.fab_wardrobe_add),
+            icon = Icons.Default.Add,
+            onClick = {
+                Analytics.action("Wardrobe", "open_camera")
+                onOpenCamera()
+            },
+            expanded = rememberFabExpanded(gridState),
+            visible = !isSelectionMode && !isOffline,
+            modifier = Modifier.align(Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp),
+        )
+
+        // Shared selection action bar — Style (primary) · Swap · Move · Delete (danger).
+        val selectionActions = buildList {
+            if (!isOffline) {
+                add(
+                    SelectionAction(
+                        label = stringResource(R.string.sel_style),
+                        icon = Icons.Default.AutoFixHigh,
+                        kind = SelectionAction.Kind.Primary,
+                    ) { onCreateOutfitFromSelection(state.selectedIds) },
+                )
+                add(
+                    SelectionAction(
+                        label = stringResource(R.string.sel_swap),
+                        icon = Icons.Default.SwapHoriz,
+                    ) { onSuggestReplacements(state.selectedIds) },
+                )
+                if (locations.size > 1) {
+                    add(
+                        SelectionAction(
+                            label = stringResource(R.string.sel_move),
+                            icon = Icons.Default.Place,
+                        ) {
                             Analytics.action("Wardrobe", "open_move_dialog", mapOf("count" to state.selectedIds.size.toString()))
                             showMoveDialog = true
                         },
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                        icon = { Icon(Icons.Default.Place, contentDescription = null) },
-                        text = {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(stringResource(R.string.wardrobe_move_to))
-                                Spacer(Modifier.width(4.dp))
-                                Icon(
-                                    Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(18.dp),
-                                )
-                            }
-                        },
                     )
                 }
-                if (!isOffline) {
-                    ExtendedFloatingActionButton(
-                        onClick = {
-                            Analytics.action("Wardrobe", "open_delete_dialog", mapOf("count" to state.selectedIds.size.toString()))
-                            pendingDeleteIds = state.selectedIds
-                        },
-                        containerColor = MaterialTheme.colorScheme.error,
-                        contentColor = MaterialTheme.colorScheme.onError,
-                        icon = { Icon(Icons.Default.Delete, contentDescription = null) },
-                        text = { Text(stringResource(R.string.action_delete)) },
-                    )
-                }
-            }
-        } else if (!isOffline) {
-            FloatingActionButton(
-                onClick = {
-                    Analytics.action("Wardrobe", "open_camera")
-                    onOpenCamera()
-                },
-                modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
-            ) {
-                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.wardrobe_add_camera))
+                add(
+                    SelectionAction(
+                        label = stringResource(R.string.action_delete),
+                        icon = Icons.Default.Delete,
+                        kind = SelectionAction.Kind.Danger,
+                    ) {
+                        Analytics.action("Wardrobe", "open_delete_dialog", mapOf("count" to state.selectedIds.size.toString()))
+                        pendingDeleteIds = state.selectedIds
+                    },
+                )
             }
         }
+        SelectionActionBar(
+            count = state.selectedIds.size,
+            onClear = {
+                Analytics.action("Wardrobe", "clear_selection")
+                onClearSelection()
+            },
+            actions = selectionActions,
+            visible = isSelectionMode && selectionActions.isNotEmpty(),
+            modifier = Modifier.align(Alignment.BottomCenter),
+        )
 
         state.error?.let { msg ->
             Snackbar(

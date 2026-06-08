@@ -1201,4 +1201,21 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
 
     <!-- Calendar add-to-day title -->
     <string name="calendar_add_pick_for">Tambah set pakaian ke %1$s</string>
+
+    <!-- Shared FAB system (AppFab + SelectionActionBar) -->
+    <string name="fab_outfits_new">Set baharu</string>
+    <string name="fab_wardrobe_add">Tambah item</string>
+    <string name="fab_calendar_log">Log set</string>
+    <string name="fab_shopping_add">Tambah jumpaan</string>
+    <string name="fab_travel_plan">Rancang perjalanan</string>
+    <string name="action_clear_selection">Kosongkan pilihan</string>
+    <string name="sel_count">%1$d dipilih</string>
+    <string name="sel_style">Gaya</string>
+    <string name="sel_swap">Tukar</string>
+    <string name="sel_move">Alih</string>
+    <string name="sel_combine">Gabung</string>
+    <string name="sel_love">Suka</string>
+    <string name="sel_add_to_closet">Ke almari</string>
+    <string name="sel_copy_to_day">Salin</string>
+    <string name="sel_remove">Buang</string>
 </resources>

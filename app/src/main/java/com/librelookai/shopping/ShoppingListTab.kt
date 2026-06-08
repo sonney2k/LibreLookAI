@@ -17,8 +17,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Close
@@ -27,8 +27,6 @@ import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -56,6 +54,10 @@ import com.librelookai.util.LocalIsOffline
 import com.librelookai.wardrobe.DriveImage
 import com.librelookai.wardrobe.FullScreenViewer
 import com.librelookai.wardrobe.WardrobeFilterSheet
+import com.librelookai.ui.components.AppFab
+import com.librelookai.ui.components.SelectionAction
+import com.librelookai.ui.components.SelectionActionBar
+import com.librelookai.ui.components.rememberFabExpanded
 import com.librelookai.wardrobe.WardrobeZoomableItemGrid
 import com.librelookai.wardrobe.tagCategories
 import com.librelookai.wardrobe.tagStringsForCategory
@@ -75,6 +77,7 @@ internal fun ShoppingListTab(
     val state by shoppingClosetViewModel.state.collectAsState()
     val isOffline = LocalIsOffline.current
     val isSelectionMode = state.selectedIds.isNotEmpty()
+    val shopGridState = rememberLazyGridState()
 
     var showUrlDialog by remember { mutableStateOf(false) }
     var showMoveDialog by remember { mutableStateOf(false) }
@@ -176,6 +179,8 @@ internal fun ShoppingListTab(
                         shoppingClosetViewModel.toggleSelection(image.driveId)
                     },
                     modifier = Modifier.weight(1f).fillMaxWidth(),
+                    gridState = shopGridState,
+                    contentPadding = PaddingValues(bottom = 96.dp),
                 )
             }
         }
@@ -203,113 +208,65 @@ internal fun ShoppingListTab(
             }
         }
 
-        // Speed-dial FAB column
-        if (isSelectionMode) {
-            Column(
-                modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalAlignment = Alignment.End,
-            ) {
-                if (!isOffline) {
-                    ExtendedFloatingActionButton(
-                        onClick = {
-                            Analytics.action("Shopping", "create_outfit_from_selection", mapOf("count" to state.selectedIds.size.toString()))
-                            onCreateOutfitFromSelection(state.selectedIds)
-                        },
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        icon = { Icon(Icons.Default.AutoAwesome, contentDescription = null) },
-                        text = {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(stringResource(R.string.wardrobe_create_style))
-                                Spacer(Modifier.width(4.dp))
-                                Icon(
-                                    Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(18.dp),
-                                )
-                            }
-                        },
-                    )
-                    if (canTryOn) {
-                        ExtendedFloatingActionButton(
-                            onClick = {
-                                Analytics.action("Shopping", "try_on_selection", mapOf("count" to state.selectedIds.size.toString()))
-                                onTryOnSelection(state.selectedIds)
-                            },
-                            containerColor = MaterialTheme.colorScheme.primaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                            icon = { Icon(Icons.Default.AutoAwesome, contentDescription = null) },
-                            text = {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Text(stringResource(R.string.tryon_fab))
-                                    Spacer(Modifier.width(4.dp))
-                                    Icon(
-                                        Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(18.dp),
-                                    )
-                                }
-                            },
-                        )
-                    }
-                }
-                if (locations.isNotEmpty() && !isOffline) {
-                    ExtendedFloatingActionButton(
-                        onClick = {
+        // Shared create FAB — hidden during selection mode / offline.
+        AppFab(
+            label = stringResource(R.string.fab_shopping_add),
+            icon = Icons.Default.Add,
+            onClick = {
+                Analytics.action("Shopping", "open_camera")
+                onCaptureClick()
+            },
+            expanded = rememberFabExpanded(shopGridState),
+            visible = !isSelectionMode && !isOffline,
+            modifier = Modifier.align(Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp),
+        )
+
+        // Shared selection action bar — Add to closet (primary) · Style · Delete (danger).
+        val shopSelectionActions = buildList {
+            if (!isOffline) {
+                if (locations.isNotEmpty()) {
+                    add(
+                        SelectionAction(
+                            label = stringResource(R.string.sel_add_to_closet),
+                            icon = Icons.Default.Place,
+                            kind = SelectionAction.Kind.Primary,
+                        ) {
                             Analytics.action("Shopping", "open_move_to_closet_dialog", mapOf("count" to state.selectedIds.size.toString()))
                             showMoveDialog = true
                         },
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        icon = { Icon(Icons.Default.Place, contentDescription = null) },
-                        text = {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(stringResource(R.string.shop_list_move_to_closet))
-                                Spacer(Modifier.width(4.dp))
-                                Icon(
-                                    Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(18.dp),
-                                )
-                            }
-                        },
                     )
                 }
-                if (!isOffline) {
-                    ExtendedFloatingActionButton(
-                        onClick = {
-                            Analytics.action("Shopping", "open_delete_dialog", mapOf("count" to state.selectedIds.size.toString()))
-                            showDeleteDialog = true
-                        },
-                        containerColor = MaterialTheme.colorScheme.error,
-                        contentColor = MaterialTheme.colorScheme.onError,
-                        icon = { Icon(Icons.Default.Delete, contentDescription = null) },
-                        text = { Text(stringResource(R.string.action_delete)) },
-                    )
-                }
-                ExtendedFloatingActionButton(
-                    onClick = {
-                        Analytics.action("Shopping", "clear_selection")
-                        shoppingClosetViewModel.clearSelection()
+                add(
+                    SelectionAction(
+                        label = stringResource(R.string.sel_style),
+                        icon = Icons.Default.AutoAwesome,
+                    ) {
+                        Analytics.action("Shopping", "create_outfit_from_selection", mapOf("count" to state.selectedIds.size.toString()))
+                        onCreateOutfitFromSelection(state.selectedIds)
                     },
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    icon = { Icon(Icons.Default.Close, contentDescription = null) },
-                    text = { Text(stringResource(R.string.action_cancel)) },
+                )
+                add(
+                    SelectionAction(
+                        label = stringResource(R.string.action_delete),
+                        icon = Icons.Default.Delete,
+                        kind = SelectionAction.Kind.Danger,
+                    ) {
+                        Analytics.action("Shopping", "open_delete_dialog", mapOf("count" to state.selectedIds.size.toString()))
+                        showDeleteDialog = true
+                    },
                 )
             }
-        } else if (!isOffline) {
-            FloatingActionButton(
-                onClick = {
-                    Analytics.action("Shopping", "open_camera")
-                    onCaptureClick()
-                },
-                modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
-            ) {
-                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.shop_list_add_camera))
-            }
         }
+        SelectionActionBar(
+            count = state.selectedIds.size,
+            onClear = {
+                Analytics.action("Shopping", "clear_selection")
+                shoppingClosetViewModel.clearSelection()
+            },
+            actions = shopSelectionActions,
+            visible = isSelectionMode && shopSelectionActions.isNotEmpty(),
+            modifier = Modifier.align(Alignment.BottomCenter),
+        )
 
         state.error?.let { msg ->
             Snackbar(

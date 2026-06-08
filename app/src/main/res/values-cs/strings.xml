@@ -1228,4 +1228,21 @@
 
     <!-- Calendar add-to-day title -->
     <string name="calendar_add_pick_for">Přidat outfit na %1$s</string>
+
+    <!-- Shared FAB system (AppFab + SelectionActionBar) -->
+    <string name="fab_outfits_new">Nový outfit</string>
+    <string name="fab_wardrobe_add">Přidat kus</string>
+    <string name="fab_calendar_log">Zaznamenat outfit</string>
+    <string name="fab_shopping_add">Přidat nález</string>
+    <string name="fab_travel_plan">Naplánovat cestu</string>
+    <string name="action_clear_selection">Zrušit výběr</string>
+    <string name="sel_count">Vybráno: %1$d</string>
+    <string name="sel_style">Styl</string>
+    <string name="sel_swap">Vyměnit</string>
+    <string name="sel_move">Přesunout</string>
+    <string name="sel_combine">Zkombinovat</string>
+    <string name="sel_love">Oblíbit</string>
+    <string name="sel_add_to_closet">Do šatníku</string>
+    <string name="sel_copy_to_day">Kopírovat</string>
+    <string name="sel_remove">Odebrat</string>
 </resources>

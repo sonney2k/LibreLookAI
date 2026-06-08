@@ -12,8 +12,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.FlightTakeoff
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -35,6 +35,8 @@ import com.librelookai.LocationButton
 import com.librelookai.R
 import com.librelookai.outfit.OutfitsViewModel
 import com.librelookai.settings.ProfileViewModel
+import com.librelookai.ui.components.AppFab
+import com.librelookai.ui.components.rememberFabExpanded
 import com.librelookai.util.LocalIsOffline
 import com.librelookai.wardrobe.LocationViewModel
 import com.librelookai.wardrobe.QuickCategoryRow
@@ -93,6 +95,7 @@ internal fun TravelOutfitsView(
     var textQuery by remember { mutableStateOf("") }
     var filterSheetOpen by remember { mutableStateOf(false) }
     var sortBy by remember { mutableStateOf(TripSortOption.DATE_DESC) }
+    val tripsListState = rememberLazyListState()
     val appliedFilterCount = selectedTags.values.sumOf { it.size } + (if (textQuery.isNotBlank()) 1 else 0)
 
     // Tag categories are derived from the wardrobe items referenced by every trip outfit
@@ -256,7 +259,8 @@ internal fun TravelOutfitsView(
                 }
                 else -> {
                     LazyColumn(
-                        contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
+                        state = tripsListState,
+                        contentPadding = PaddingValues(top = 12.dp, bottom = 96.dp, start = 16.dp, end = 16.dp),
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         modifier = Modifier.fillMaxSize(),
                     ) {
@@ -297,16 +301,14 @@ internal fun TravelOutfitsView(
                 }
             }
 
-            if (!isOffline) {
-                androidx.compose.material3.FloatingActionButton(
-                    onClick = onOpenPlanner,
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(16.dp),
-                ) {
-                    Icon(Icons.Default.Add, contentDescription = stringResource(R.string.travel_plan_trip))
-                }
-            }
+            AppFab(
+                label = stringResource(R.string.fab_travel_plan),
+                icon = Icons.Default.FlightTakeoff,
+                onClick = onOpenPlanner,
+                expanded = rememberFabExpanded(tripsListState),
+                visible = !isOffline,
+                modifier = Modifier.align(Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp),
+            )
         }
     }
 

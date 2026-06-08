@@ -494,7 +494,11 @@ internal fun AppContent(activity: ComponentActivity) {
                         var showTripTryOnPicker by remember { mutableStateOf(false) }
                         var travelPlannerMode by rememberSaveable { mutableStateOf(false) }
                         var tripViewerTripId: String? by rememberSaveable { mutableStateOf(null) }
-                        val hideChrome = selectedTab == 3 && (travelPlannerMode || tripViewerTripId != null)
+                        // Hide the nav bar + weather badge in travel full-screen modes, and while a
+                        // SelectionActionBar is up (multi-select) — the selection bar takes the nav
+                        // bar's place at the bottom (see ui/components/SelectionBarVisibility).
+                        val hideChrome = (selectedTab == 3 && (travelPlannerMode || tripViewerTripId != null)) ||
+                            com.librelookai.ui.components.SelectionBarVisibility.isVisible
 
                         // Travel sub-destinations are full-screen modes within the Travel tab, not
                         // separate tabs, so report them as their own screen views for funnel tracking.

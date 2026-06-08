@@ -1228,4 +1228,21 @@
 
     <!-- Calendar add-to-day title -->
     <string name="calendar_add_pick_for">%1$s tarihine kombin ekle</string>
+
+    <!-- Shared FAB system (AppFab + SelectionActionBar) -->
+    <string name="fab_outfits_new">Yeni kombin</string>
+    <string name="fab_wardrobe_add">Parça ekle</string>
+    <string name="fab_calendar_log">Kombini kaydet</string>
+    <string name="fab_shopping_add">Bulgu ekle</string>
+    <string name="fab_travel_plan">Gezi planla</string>
+    <string name="action_clear_selection">Seçimi temizle</string>
+    <string name="sel_count">%1$d seçildi</string>
+    <string name="sel_style">Stil</string>
+    <string name="sel_swap">Değiştir</string>
+    <string name="sel_move">Taşı</string>
+    <string name="sel_combine">Birleştir</string>
+    <string name="sel_love">Beğen</string>
+    <string name="sel_add_to_closet">Dolaba ekle</string>
+    <string name="sel_copy_to_day">Kopyala</string>
+    <string name="sel_remove">Kaldır</string>
 </resources>

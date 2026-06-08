@@ -1228,4 +1228,21 @@
 
     <!-- Calendar add-to-day title -->
     <string name="calendar_add_pick_for">%1$sにコーディネートを追加</string>
+
+    <!-- Shared FAB system (AppFab + SelectionActionBar) -->
+    <string name="fab_outfits_new">新しいコーデ</string>
+    <string name="fab_wardrobe_add">アイテム追加</string>
+    <string name="fab_calendar_log">コーデを記録</string>
+    <string name="fab_shopping_add">見つけた物を追加</string>
+    <string name="fab_travel_plan">旅行を計画</string>
+    <string name="action_clear_selection">選択を解除</string>
+    <string name="sel_count">%1$d件選択中</string>
+    <string name="sel_style">コーデ作成</string>
+    <string name="sel_swap">入れ替え</string>
+    <string name="sel_move">移動</string>
+    <string name="sel_combine">組み合わせ</string>
+    <string name="sel_love">お気に入り</string>
+    <string name="sel_add_to_closet">クローゼットへ</string>
+    <string name="sel_copy_to_day">コピー</string>
+    <string name="sel_remove">削除</string>
 </resources>
