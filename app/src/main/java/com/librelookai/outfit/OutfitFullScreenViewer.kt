@@ -297,7 +297,9 @@ internal fun OutfitFullScreenViewer(
                 }
 
                 // Actions hidden under the bottom-end FAB — tapping it reveals the shared action
-                // bar (Wear primary · Try on · Edit · Delete danger). Hidden offline (writes).
+                // bar (Wear primary · Try on · Edit · [Suggest tags] · Delete danger). Hidden
+                // offline (writes); the AI suggest-tags action gates behind FeatureFlags.powerFeatures,
+                // mirroring the Wardrobe item viewer's power-only maintenance ops.
                 if (!isOffline) {
                     // Back collapses the open menu before it closes the viewer.
                     if (actionsOpen) BackHandler { actionsOpen = false }
@@ -338,6 +340,18 @@ internal fun OutfitFullScreenViewer(
                                     onEdit(current)
                                 },
                             )
+                            if (com.librelookai.util.FeatureFlags.powerFeatures) {
+                                add(
+                                    com.librelookai.ui.components.SelectionAction(
+                                        label = stringResource(R.string.outfits_suggest_tags),
+                                        icon = Icons.Default.AutoAwesome,
+                                    ) {
+                                        Analytics.action("OutfitViewer", "suggest_tags")
+                                        actionsOpen = false
+                                        onSuggestTags(current)
+                                    },
+                                )
+                            }
                             add(
                                 com.librelookai.ui.components.SelectionAction(
                                     label = stringResource(R.string.action_delete),
