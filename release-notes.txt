@@ -1,3 +1,16 @@
+### LibreLookAI v2.4.0 Release Notes
+
+#### What's new
+- Plan and log outfits right on the calendar — tap a day to wear an outfit from a full filter-and-sort picker.
+- Select several calendar days at once to clear planned wears in one go.
+- Send feedback from inside the app, with an optional diagnostics report.
+#### Improvements
+- Consistent, scroll-aware action buttons across all main screens.
+- Cleaner item and outfit detail views with a single shared action bar.
+- The weather badge no longer lingers while scrolling.
+
+---
+
 ### LibreLookAI v2.3.0 Release Notes
 
 #### A better outfit calendar
