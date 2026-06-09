@@ -371,12 +371,6 @@
     <string name="about_ai_title">AI 使用 &amp; 費用</string>
     <string name="about_byok_desc">LibreLookAI 使用你自己的 Gemini API 金鑰運作:\n\n1. 前往 aistudio.google.com\n2. 點按 Get API key → Create API key\n3. 複製金鑰（以 AIza… 開頭）\n4. 貼到設定 → 進階 → Gemini API 金鑰\n\n免費金鑰涵蓋標記與穿搭建議。虛擬試穿與背景移除會生成影像，因此需要已啟用帳單的付費金鑰 — Google 仍只會依你的用量收費。你的金鑰只會儲存在此裝置，並直接與 Google 使用 — 不會有任何資料經過我們的伺服器。</string>
     <string name="about_byok_title">使用自己的金鑰（BYOK）</string>
-    <string name="about_cost_bg_removal">去背：5 點</string>
-    <string name="about_cost_classify">自動標籤：2 點</string>
-    <string name="about_cost_text">穿搭建議：2 點</string>
-    <string name="about_cost_title">每項 AI 操作的費用</string>
-    <string name="about_cost_travel">旅行打包清單／衣櫥缺口分析：2 點</string>
-    <string name="about_cost_tryon">試穿生成：8 點</string>
     <string name="about_credits_desc">對於不想自行建立 API 金鑰的使用者，本 App 提供基於點數的代幣系統。點數可在「點數」頁面購買，並依上方費率扣除。此模式透過伺服器代理路由請求。</string>
     <string name="about_credits_title">點數（託管模式）</string>
     <string name="about_description">LibreLookAI 是一款免費、開源的 AI 衣櫥管理工具。它能協助你整理衣物、提供穿搭建議、規劃旅行打包清單，並找出衣櫥的缺口——一切都由 AI 驅動。</string>
@@ -883,7 +877,6 @@
     <string name="settings_section_your_closets">你的衣櫥</string>
     <string name="settings_section_how_it_looks">外觀</string>
     <string name="settings_section_ai_credits">AI 點數</string>
-    <string name="settings_section_more">更多</string>
     <string name="settings_tryon_photos_title">試穿照片</string>
     <string name="settings_tryon_photos_hint">三張快速的全身照，讓 AI 為你換裝。只有你看得到。</string>
     <string name="settings_tryon_front">正面</string>
@@ -905,20 +898,16 @@
     <string name="settings_credits_friendly_format">足夠約 %1$d 次試穿或 %2$d 個穿搭靈感。</string>
     <string name="settings_credits_get_more">取得更多</string>
     <string name="settings_more_advanced">進階</string>
-    <string name="settings_more_advanced_subtitle">重新掃描標籤 · 重新去背 · API 金鑰 · 診斷</string>
-    <string name="settings_more_help">說明 &amp; 常見問題</string>
+    <string name="settings_more_advanced_subtitle">AI 用量與費用 · API 金鑰 · 進階選項</string>
     <string name="settings_more_about">關於 LibreLookAI</string>
     <string name="settings_profile_edit_title">編輯個人檔案</string>
     <string name="settings_profile_gender">性別 / 代名詞</string>
     <string name="settings_profile_year">出生年份</string>
     <string name="settings_profile_ai_considerations">AI 應考量的內容</string>
     <string name="settings_advanced_title">進階</string>
-    <string name="settings_advanced_rarely_needed_pill">很少需要</string>
-    <string name="settings_advanced_intro">這些工具用來修正 AI 標記資料的問題或改變 AI 的行為。大多數人從不需要使用。</string>
     <string name="settings_section_advanced_fix">修正 AI 的錯誤</string>
-    <string name="settings_section_advanced_byok">省下點數</string>
+    <string name="settings_section_advanced_byok">AI 選項</string>
     <string name="settings_section_advanced_power">進階選項</string>
-    <string name="settings_section_advanced_feedback">幫助我們改進</string>
     <string name="settings_retag_row">重新標記我所有的衣服</string>
     <string name="settings_retag_row_sub">請 AI 重新命名並重新分類所有項目。每件約 2 點數。</string>
     <string name="settings_rebg_row">重新去背</string>
@@ -939,7 +928,6 @@
     <string name="settings_similarity_preview_row">顯示 AI 相似度預覽</string>
     <string name="settings_similarity_preview_sub">以照片尋找功能的診斷。</string>
     <string name="settings_send_feedback">傳送意見回饋</string>
-    <string name="settings_export_diagnostics">匯出診斷</string>
     <string name="settings_retag_title">重新標記全部 %1$d 件衣服？</string>
     <string name="settings_retag_body">AI 會重新檢視每件項目，可能更改其名稱、顏色或類別。你手動改過的名稱將被取代。</string>
     <string name="settings_retag_confirm">重新標記所有衣服</string>
@@ -1224,4 +1212,22 @@
     <string name="calendar_done_wear">已記錄於 %1$s</string>
     <string name="calendar_done_move">已移至 %1$s</string>
     <string name="calendar_done_copy">已複製至 %1$s</string>
+
+    <!-- About: website + source links -->
+    <string name="about_website_label">網站</string>
+    <string name="about_github_label">原始碼</string>
+
+    <!-- About: cost-statistics link -->
+    <string name="about_view_cost_stats">查看費用統計</string>
+
+    <!-- Settings: Help section + feedback email flow -->
+    <string name="settings_section_help">說明</string>
+    <string name="feedback_dialog_body">我們會開啟你的電子郵件應用程式，撰寫寄給 %1$s 的訊息。請告訴我們發生了什麼問題以及你的預期。</string>
+    <string name="feedback_attach_label">附加診斷資訊</string>
+    <string name="feedback_attach_sub">加入一個包含應用程式版本、裝置資訊與近期應用程式記錄的檔案。不含相片、個人資料或 API 金鑰。</string>
+    <string name="feedback_email_prompt">請在此描述問題 — 發生了什麼、你的預期，以及重現步驟。</string>
+    <string name="feedback_email_subject">LibreLookAI 意見回饋 (%1$s)</string>
+
+    <!-- Feedback: no email app fallback -->
+    <string name="feedback_no_email_app">找不到電子郵件應用程式。請手動寄送電子郵件至 %1$s。</string>
 </resources>

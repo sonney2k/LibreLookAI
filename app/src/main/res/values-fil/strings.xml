@@ -616,7 +616,6 @@
     <string name="tryon_cost_line">Nagkakahalaga ng %1$d credits bawat try-on</string>
     <string name="tryon_camera">Camera</string>
     <string name="tryon_gallery">Gallery</string>
-    <string name="about_cost_tryon">Try-on generation: 8 credits</string>
 
     <!-- Try-on composer / history -->
     <string name="action_add">Idagdag</string>
@@ -659,11 +658,6 @@
     <string name="about_open_source">Ang app na ito ay open source at libreng gamitin. Available ang source code sa GitHub.</string>
     <string name="about_ai_title">AI Usage at Gastos</string>
     <string name="about_ai_desc">Umaasa nang husto ang LibreLookAI sa Google Gemini para sa vision at text AI. Bawat AI action (pag-aalis ng background, tagging, mungkahi ng outfit, atbp.) ay nangangailangan ng Gemini API call, na may maliit na gastos.</string>
-    <string name="about_cost_title">Gastos bawat AI action</string>
-    <string name="about_cost_bg_removal">Pag-aalis ng background: 5 credits</string>
-    <string name="about_cost_classify">Auto-tag item: 2 credits</string>
-    <string name="about_cost_text">Mungkahi ng outfit: 2 credits</string>
-    <string name="about_cost_travel">Travel packing list / wardrobe gap analysis: 2 credits</string>
     <string name="about_byok_title">Bring Your Own Key (BYOK)</string>
     <string name="about_byok_desc">Gumagana ang LibreLookAI sa sarili mong Gemini API key:\n\n1. Pumunta sa aistudio.google.com\n2. I-tap ang Get API key → Create API key\n3. Kopyahin ang key (nagsisimula sa AIza…)\n4. I-paste ito sa Mga Setting → Advanced → Gemini API Key\n\nSapat ang libreng key para sa pag-tag at mga suhestiyon sa outfit. Ang virtual try-on at pag-alis ng background ay gumagawa ng mga larawan at nangangailangan ng bayad na key na may naka-enable na billing — sisingilin ka pa rin ng Google ayon sa nagagamit mo. Ang iyong key ay naka-imbak lang sa device na ito at direktang ginagamit sa Google — walang datos na dumadaan sa aming mga server.</string>
     <string name="about_credits_title">Credits (Managed Mode)</string>
@@ -910,7 +904,6 @@
     <string name="settings_section_your_closets">Ang mga aparador mo</string>
     <string name="settings_section_how_it_looks">Hitsura</string>
     <string name="settings_section_ai_credits">Mga AI credit</string>
-    <string name="settings_section_more">Higit pa</string>
     <string name="settings_tryon_photos_title">Mga larawan sa pagsukat</string>
     <string name="settings_tryon_photos_hint">Tatlong mabilis na buong-katawang larawan para mabihisan ka ng AI. Ikaw lang ang nakakakita.</string>
     <string name="settings_tryon_front">Harap</string>
@@ -932,20 +925,16 @@
     <string name="settings_credits_friendly_format">Sapat para sa ~%1$d pagsukat o %2$d ideya ng damit.</string>
     <string name="settings_credits_get_more">Kumuha pa</string>
     <string name="settings_more_advanced">Advanced</string>
-    <string name="settings_more_advanced_subtitle">I-scan muli ang mga tag · Alisin muli ang background · API key · Diagnostics</string>
-    <string name="settings_more_help">Tulong &amp; FAQ</string>
+    <string name="settings_more_advanced_subtitle">Paggamit at gastos ng AI · API key · advanced na opsyon</string>
     <string name="settings_more_about">Tungkol sa LibreLookAI</string>
     <string name="settings_profile_edit_title">I-edit ang profile</string>
     <string name="settings_profile_gender">Kasarian / panghalip</string>
     <string name="settings_profile_year">Taon ng kapanganakan</string>
     <string name="settings_profile_ai_considerations">Ano ang dapat isaalang-alang ng AI</string>
     <string name="settings_advanced_title">Advanced</string>
-    <string name="settings_advanced_rarely_needed_pill">Bihirang kailanganin</string>
-    <string name="settings_advanced_intro">Inaayos ng mga tool na ito ang mga problema sa data na tinatagan ng AI o binabago ang kilos ng AI. Halos walang nangangailangan nito.</string>
     <string name="settings_section_advanced_fix">Ayusin ang mga pagkakamali ng AI</string>
-    <string name="settings_section_advanced_byok">Makatipid sa credit</string>
+    <string name="settings_section_advanced_byok">Mga opsyon ng AI</string>
     <string name="settings_section_advanced_power">Mga advanced na opsyon</string>
-    <string name="settings_section_advanced_feedback">Tulungan kaming gumaling</string>
     <string name="settings_retag_row">I-tag muli ang lahat ng damit ko</string>
     <string name="settings_retag_row_sub">Hilingin sa AI na pangalanan at ikategorya muli ang lahat. ~2 credit kada item.</string>
     <string name="settings_rebg_row">Alisin muli ang mga background</string>
@@ -966,7 +955,6 @@
     <string name="settings_similarity_preview_row">Ipakita ang AI similarity preview</string>
     <string name="settings_similarity_preview_sub">Diagnostics para sa hanapin-gamit-larawan.</string>
     <string name="settings_send_feedback">Magpadala ng feedback</string>
-    <string name="settings_export_diagnostics">I-export ang diagnostics</string>
     <string name="settings_retag_title">I-tag muli ang lahat ng %1$d damit?</string>
     <string name="settings_retag_body">Titingnan muli ng AI ang bawat item at maaaring baguhin ang pangalan, kulay, o kategorya nito. Papalitan ang anumang pinangalanan mo nang manu-mano.</string>
     <string name="settings_retag_confirm">I-tag muli ang lahat ng damit</string>
@@ -1251,4 +1239,22 @@
     <string name="calendar_done_wear">Na-log sa %1$s</string>
     <string name="calendar_done_move">Inilipat sa %1$s</string>
     <string name="calendar_done_copy">Kinopya sa %1$s</string>
+
+    <!-- About: website + source links -->
+    <string name="about_website_label">Website</string>
+    <string name="about_github_label">Source code</string>
+
+    <!-- About: cost-statistics link -->
+    <string name="about_view_cost_stats">Tingnan ang istatistika ng gastos</string>
+
+    <!-- Settings: Help section + feedback email flow -->
+    <string name="settings_section_help">Tulong</string>
+    <string name="feedback_dialog_body">Bubuksan namin ang iyong email app na may mensahe sa %1$s. Sabihin sa amin kung ano ang nangyari at ano ang inaasahan mo.</string>
+    <string name="feedback_attach_label">Ilakip ang diagnostics</string>
+    <string name="feedback_attach_sub">Nagdaragdag ng file na may bersyon ng app, impormasyon ng device at kamakailang app logs. Walang kasamang larawan, personal na data o API key.</string>
+    <string name="feedback_email_prompt">Pakilarawan ang problema dito — kung ano ang nangyari, ang inaasahan mo, at ang mga hakbang para maulit ito.</string>
+    <string name="feedback_email_subject">Feedback ng LibreLookAI (%1$s)</string>
+
+    <!-- Feedback: no email app fallback -->
+    <string name="feedback_no_email_app">Walang nakitang email app. Mag-email sa amin nang manu-mano sa %1$s.</string>
 </resources>

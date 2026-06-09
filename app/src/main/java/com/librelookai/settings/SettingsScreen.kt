@@ -38,6 +38,7 @@ import com.librelookai.util.ImageEncoding
 import com.librelookai.settings.ProfileViewModel
 import com.librelookai.settings.UsageCostsTab
 import com.librelookai.util.Analytics
+import com.librelookai.util.LocalIsOffline
 import com.librelookai.wardrobe.LocationViewModel
 import com.librelookai.wardrobe.WardrobeViewModel
 import com.librelookai.wardrobe.convertImagesToWebp
@@ -79,6 +80,7 @@ fun SettingsScreen(
 
     // Destructive-action confirm + closet/language dialog state.
     var pendingAction by remember { mutableStateOf<DestructiveAction?>(null) }
+    var showFeedback by remember { mutableStateOf(false) }
     var showLanguage by remember { mutableStateOf(false) }
     var showAddCloset by remember { mutableStateOf(false) }
     var editingCloset by remember { mutableStateOf<Location?>(null) }
@@ -106,8 +108,8 @@ fun SettingsScreen(
             onGetMore = { push(SettingsRoute.BUY_CREDITS) },
             onConvertWebp = { pendingAction = DestructiveAction.CONVERT_WEBP },
             onAdvanced = { push(SettingsRoute.ADVANCED) },
-            onHelp = { openUrl(context, "https://github.com/sonney2k/LibreLookAI") },
             onAbout = { push(SettingsRoute.ABOUT) },
+            onSendFeedback = { showFeedback = true },
             onBack = onBack,
             modifier = modifier,
         )
@@ -127,11 +129,12 @@ fun SettingsScreen(
             onToggleSimilarityPreview = { profileViewModel.savePreferences(profileState.preferences.copy(debugSimilarityPreview = it)) },
             onSelectImageQuality = { profileViewModel.savePreferences(profileState.preferences.copy(imageQuality = it)) },
             onOpenUsage = { push(SettingsRoute.USAGE) },
-            onSendFeedback = { sendFeedback(context) },
-            onExportDiagnostics = { exportDiagnostics(context) },
             onBack = ::pop,
         )
-        SettingsRoute.ABOUT -> AboutScreen(onBack = ::pop)
+        SettingsRoute.ABOUT -> AboutScreen(
+            onOpenUsage = { push(SettingsRoute.USAGE) },
+            onBack = ::pop,
+        )
         SettingsRoute.USAGE -> SubScreen(title = stringResource(R.string.settings_usage_charts_row), onBack = ::pop) {
             UsageCostsTab()
         }
@@ -170,6 +173,21 @@ fun SettingsScreen(
             },
             onBuyCredits = { pendingAction = null; push(SettingsRoute.BUY_CREDITS) },
             onDismiss = { pendingAction = null },
+        )
+    }
+    if (showFeedback) {
+        FeedbackDialog(
+            appState = buildFeedbackAppState(
+                locations = locationState.locations,
+                defaultFolderId = locationState.defaultClosetFolderId,
+                itemCounts = closetItemCounts(wardrobeState.allLocationImages, wardrobeState.images),
+                totalItems = wardrobeState.allLocationImages.ifEmpty { wardrobeState.images }.size,
+                pendingJobs = wardrobeState.pendingJobs,
+                balance = creditsState.balance,
+                prefs = profileState.preferences,
+                isOffline = LocalIsOffline.current,
+            ),
+            onDismiss = { showFeedback = false },
         )
     }
     if (showLanguage) {
@@ -218,8 +236,8 @@ private fun SettingsMain(
     onGetMore: () -> Unit,
     onConvertWebp: () -> Unit,
     onAdvanced: () -> Unit,
-    onHelp: () -> Unit,
     onAbout: () -> Unit,
+    onSendFeedback: () -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -272,15 +290,17 @@ private fun SettingsMain(
                 item { SecLabel(stringResource(R.string.settings_section_ai_credits)) }
                 item { AiCreditsCard(balance = balance, onGetMore = onGetMore) }
             }
-            item { SecLabel(stringResource(R.string.settings_section_more)) }
+            item { SecLabel(stringResource(R.string.settings_section_help)) }
             item {
-                MoreCard(
+                HelpCard(
                     onConvertWebp = onConvertWebp,
-                    onAdvanced = onAdvanced,
-                    onHelp = onHelp,
+                    onSendFeedback = onSendFeedback,
                     onAbout = onAbout,
                 )
             }
+            // "Advanced" door pinned to the very bottom, in its own padded section.
+            item { SecLabel(stringResource(R.string.settings_more_advanced)) }
+            item { AdvancedCard(onAdvanced = onAdvanced) }
             item {
                 Text(
                     text = stringResource(R.string.settings_footer),
@@ -332,34 +352,54 @@ private fun closetItemCounts(
     return source.groupingBy { it.folderId }.eachCount()
 }
 
-private fun openUrl(context: android.content.Context, url: String) {
-    runCatching {
-        context.startActivity(android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(url)))
+/**
+ * Human-readable wardrobe + settings snapshot appended to the feedback diagnostics report
+ * (see [buildDiagnostics]). Deliberately excludes any free-text style/preferences prose and
+ * account identity — just structural facts useful for triage.
+ */
+private fun buildFeedbackAppState(
+    locations: List<Location>,
+    defaultFolderId: String?,
+    itemCounts: Map<String, Int>,
+    totalItems: Int,
+    pendingJobs: Int,
+    balance: Int,
+    prefs: UserPreferences,
+    isOffline: Boolean,
+): String = buildString {
+    val defaultName = locations.firstOrNull { it.folderId == defaultFolderId }?.name ?: "—"
+    appendLine("[Wardrobe]")
+    appendLine("  Closets: ${locations.size} (default: $defaultName)")
+    appendLine("  Total items: $totalItems")
+    for (loc in locations) {
+        appendLine("  • ${loc.name}: ${itemCounts[loc.folderId] ?: 0}")
     }
+    appendLine("  Pending background jobs: $pendingJobs")
+    appendLine("  Offline: $isOffline")
+    appendLine()
+
+    val tryOn = listOf(
+        "front" to prefs.tryOnFrontDriveId,
+        "side" to prefs.tryOnSideDriveId,
+        "back" to prefs.tryOnBackDriveId,
+    ).joinToString(" ") { (k, v) -> "$k=${if (v.isNotBlank()) "set" else "–"}" }
+    val ai = prefs.aiConsiderations
+    val considers = listOfNotNull(
+        "weather".takeIf { ai.weather }, "location".takeIf { ai.location },
+        "trends".takeIf { ai.trends }, "gender".takeIf { ai.gender },
+        "age".takeIf { ai.age }, "preferences".takeIf { ai.preferences },
+        "history".takeIf { ai.history },
+    ).joinToString(",").ifBlank { "none" }
+    appendLine("[Preferences]")
+    appendLine("  Theme: ${prefs.wardrobeTheme} · Font: ${prefs.appFont} · Language: ${prefs.language}")
+    appendLine("  Image quality: ${prefs.imageQuality}")
+    appendLine("  Gender: ${prefs.gender.ifBlank { "—" }} · Birth year: ${prefs.yearOfBirth ?: "—"}")
+    appendLine("  Dedupe on import: ${prefs.dedupeOnImport} (threshold ${prefs.dedupeThreshold})")
+    appendLine("  Prefer on-device bg removal: ${prefs.preferLocalBgRemoval}")
+    appendLine("  BG-removal threshold: ${prefs.bgRemovalThreshold}")
+    appendLine("  Try-on photos: $tryOn")
+    appendLine("  AI considerations: $considers")
+    appendLine("  Expert item tags: ${ai.itemTags?.joinToString(",")?.ifBlank { "(none)" } ?: "all"}")
+    appendLine("  Credit balance: $balance")
 }
 
-private fun sendFeedback(context: android.content.Context) {
-    val intent = android.content.Intent(android.content.Intent.ACTION_SENDTO).apply {
-        data = android.net.Uri.parse("mailto:soeren.sonnenburg@gmail.com")
-        putExtra(
-            android.content.Intent.EXTRA_SUBJECT,
-            "LibreLookAI feedback (${com.librelookai.BuildConfig.VERSION_NAME}/${com.librelookai.BuildConfig.GIT_HASH})",
-        )
-    }
-    runCatching { context.startActivity(intent) }
-}
-
-private fun exportDiagnostics(context: android.content.Context) {
-    val body = buildString {
-        appendLine("LibreLookAI diagnostics")
-        appendLine("Version: ${com.librelookai.BuildConfig.VERSION_NAME} (${com.librelookai.BuildConfig.GIT_HASH})")
-        appendLine("Device: ${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}")
-        appendLine("Android: ${android.os.Build.VERSION.RELEASE} (API ${android.os.Build.VERSION.SDK_INT})")
-    }
-    val intent = android.content.Intent(android.content.Intent.ACTION_SEND).apply {
-        type = "text/plain"
-        putExtra(android.content.Intent.EXTRA_SUBJECT, "LibreLookAI diagnostics")
-        putExtra(android.content.Intent.EXTRA_TEXT, body)
-    }
-    runCatching { context.startActivity(android.content.Intent.createChooser(intent, null)) }
-}

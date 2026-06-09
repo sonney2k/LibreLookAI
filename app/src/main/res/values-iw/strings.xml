@@ -612,7 +612,6 @@
     <string name="tryon_cost_line">8 קרדיטים למדידה</string>
     <string name="tryon_camera">מצלמה</string>
     <string name="tryon_gallery">גלריה</string>
-    <string name="about_cost_tryon">יצירת מדידה: 8 קרדיטים</string>
 
     <!-- Try-on composer / history -->
     <string name="action_add">הוסף</string>
@@ -655,11 +654,6 @@
     <string name="about_open_source">האפליקציה בקוד פתוח וחינמית.</string>
     <string name="about_ai_title">AI ועלויות</string>
     <string name="about_ai_desc">משתמש ב-Google Gemini.</string>
-    <string name="about_cost_title">עלות לכל פעולת AI</string>
-    <string name="about_cost_bg_removal">הסרת רקע: 5 קרדיטים</string>
-    <string name="about_cost_classify">תיוג אוטומטי: 2 קרדיטים</string>
-    <string name="about_cost_text">הצעת אאוטפיט: 2 קרדיטים</string>
-    <string name="about_cost_travel">רשימת אריזה / ניתוח: 2 קרדיטים</string>
     <string name="about_byok_title">השתמש במפתח משלך (BYOK)</string>
     <string name="about_byok_desc">LibreLookAI פועל עם מפתח Gemini API שלך:\n\n1. עבור אל aistudio.google.com\n2. הקש Get API key → Create API key\n3. העתק את המפתח (מתחיל ב-AIza…)\n4. הדבק אותו בהגדרות → מתקדם → מפתח Gemini API\n\nמפתח חינמי מכסה תיוג והצעות תלבושות. מדידה וירטואלית והסרת רקע יוצרות תמונות ולכן דורשות מפתח בתשלום עם חיוב מופעל — Google עדיין גובה רק על מה שאתה משתמש. המפתח שלך נשמר במכשיר זה בלבד ומשמש ישירות מול Google — שום נתון לא עובר דרך השרתים שלנו.</string>
     <string name="about_credits_title">קרדיטים (מצב מנוהל)</string>
@@ -914,7 +908,6 @@
     <string name="settings_section_your_closets">הארונות שלך</string>
     <string name="settings_section_how_it_looks">מראה</string>
     <string name="settings_section_ai_credits">קרדיטים של AI</string>
-    <string name="settings_section_more">עוד</string>
     <string name="settings_tryon_photos_title">תמונות מדידה</string>
     <string name="settings_tryon_photos_hint">שלוש תמונות גוף מלא מהירות כדי ש-AI יוכל להלביש אותך. רק אתה רואה אותן.</string>
     <string name="settings_tryon_front">חזית</string>
@@ -936,20 +929,16 @@
     <string name="settings_credits_friendly_format">מספיק ל-~%1$d מדידות או %2$d רעיונות לתלבושת.</string>
     <string name="settings_credits_get_more">השג עוד</string>
     <string name="settings_more_advanced">מתקדם</string>
-    <string name="settings_more_advanced_subtitle">סריקת תגים מחדש · הסרת רקעים מחדש · מפתח API · אבחון</string>
-    <string name="settings_more_help">עזרה &amp; שאלות נפוצות</string>
+    <string name="settings_more_advanced_subtitle">שימוש ועלויות AI · מפתח API · אפשרויות מתקדמות</string>
     <string name="settings_more_about">אודות LibreLookAI</string>
     <string name="settings_profile_edit_title">עריכת פרופיל</string>
     <string name="settings_profile_gender">מגדר / כינויים</string>
     <string name="settings_profile_year">שנת לידה</string>
     <string name="settings_profile_ai_considerations">מה ה-AI צריך לקחת בחשבון</string>
     <string name="settings_advanced_title">מתקדם</string>
-    <string name="settings_advanced_rarely_needed_pill">נדרש לעיתים רחוקות</string>
-    <string name="settings_advanced_intro">כלים אלה מתקנים בעיות בנתונים שתויגו על ידי AI או משנים את התנהגותו. רוב האנשים לא צריכים אותם לעולם.</string>
     <string name="settings_section_advanced_fix">תיקון טעויות של AI</string>
-    <string name="settings_section_advanced_byok">חסוך קרדיטים</string>
+    <string name="settings_section_advanced_byok">אפשרויות AI</string>
     <string name="settings_section_advanced_power">אפשרויות מתקדמות</string>
-    <string name="settings_section_advanced_feedback">עזור לנו להשתפר</string>
     <string name="settings_retag_row">תייג מחדש את כל הבגדים שלי</string>
     <string name="settings_retag_row_sub">בקש מ-AI לתת מחדש שם ולסווג הכול. עולה ~2 קרדיטים לפריט.</string>
     <string name="settings_rebg_row">הסר רקעים מחדש</string>
@@ -970,7 +959,6 @@
     <string name="settings_similarity_preview_row">הצג תצוגה מקדימה של דמיון AI</string>
     <string name="settings_similarity_preview_sub">אבחון עבור חיפוש לפי תמונה.</string>
     <string name="settings_send_feedback">שלח משוב</string>
-    <string name="settings_export_diagnostics">ייצא אבחון</string>
     <string name="settings_retag_title">לתייג מחדש את כל %1$d הבגדים?</string>
     <string name="settings_retag_body">ה-AI יסתכל שוב על כל פריט ועשוי לשנות את שמו, צבעו או הקטגוריה שלו. כל מה ששינית ידנית יוחלף.</string>
     <string name="settings_retag_confirm">תייג מחדש את כל הבגדים</string>
@@ -1255,4 +1243,22 @@
     <string name="calendar_done_wear">נרשם בתאריך %1$s</string>
     <string name="calendar_done_move">הועבר אל %1$s</string>
     <string name="calendar_done_copy">הועתק אל %1$s</string>
+
+    <!-- About: website + source links -->
+    <string name="about_website_label">אתר אינטרנט</string>
+    <string name="about_github_label">קוד המקור</string>
+
+    <!-- About: cost-statistics link -->
+    <string name="about_view_cost_stats">הצג סטטיסטיקת עלויות</string>
+
+    <!-- Settings: Help section + feedback email flow -->
+    <string name="settings_section_help">עזרה</string>
+    <string name="feedback_dialog_body">נפתח את אפליקציית האימייל שלך עם הודעה אל %1$s. ספר לנו מה השתבש ומה ציפית.</string>
+    <string name="feedback_attach_label">צירוף אבחון</string>
+    <string name="feedback_attach_sub">מוסיף קובץ עם גרסת האפליקציה, פרטי המכשיר ויומני אפליקציה אחרונים. ללא תמונות, מידע אישי או מפתחות API.</string>
+    <string name="feedback_email_prompt">תאר כאן את הבעיה — מה קרה, מה ציפית, והשלבים לשחזור.</string>
+    <string name="feedback_email_subject">משוב על LibreLookAI (%1$s)</string>
+
+    <!-- Feedback: no email app fallback -->
+    <string name="feedback_no_email_app">לא נמצאה אפליקציית אימייל. כתבו לנו ידנית לכתובת %1$s.</string>
 </resources>

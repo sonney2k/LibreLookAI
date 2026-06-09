@@ -371,12 +371,6 @@
     <string name="about_ai_title">Sử dụng AI &amp; chi phí</string>
     <string name="about_byok_desc">LibreLookAI chạy bằng khóa API Gemini của riêng bạn:\n\n1. Truy cập aistudio.google.com\n2. Nhấn Get API key → Create API key\n3. Sao chép khóa (bắt đầu bằng AIza…)\n4. Dán vào Cài đặt → Nâng cao → Khóa API Gemini\n\nKhóa miễn phí bao gồm gắn thẻ và gợi ý trang phục. Thử đồ ảo và xóa nền tạo ra hình ảnh nên cần khóa trả phí có bật thanh toán — Google vẫn chỉ tính phí theo mức bạn dùng. Khóa của bạn chỉ được lưu trên thiết bị này và dùng trực tiếp với Google — không có dữ liệu nào đi qua máy chủ của chúng tôi.</string>
     <string name="about_byok_title">Dùng khóa riêng (BYOK)</string>
-    <string name="about_cost_bg_removal">Xóa nền: 5 điểm</string>
-    <string name="about_cost_classify">Tự động gắn thẻ: 2 điểm</string>
-    <string name="about_cost_text">Gợi ý trang phục: 2 điểm</string>
-    <string name="about_cost_title">Chi phí mỗi hành động AI</string>
-    <string name="about_cost_travel">Danh sách đồ du lịch / phân tích thiếu trong tủ: 2 điểm</string>
-    <string name="about_cost_tryon">Tạo ảnh thử đồ: 8 điểm</string>
     <string name="about_credits_desc">Đối với người dùng không muốn tạo khóa API riêng, ứng dụng cung cấp hệ thống điểm dạng xu. Điểm có thể mua trong tab Điểm và được tiêu dùng cho mỗi hành động AI theo mức trên. Chế độ này định tuyến yêu cầu qua proxy phía máy chủ.</string>
     <string name="about_credits_title">Điểm (chế độ quản lý)</string>
     <string name="about_description">LibreLookAI là trình quản lý tủ đồ miễn phí, mã nguồn mở, dùng AI. Nó giúp bạn sắp xếp quần áo, đưa ra gợi ý trang phục, lên danh sách đồ du lịch và phát hiện những món thiếu trong tủ — tất cả nhờ AI.</string>
@@ -883,7 +877,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="settings_section_your_closets">Tủ đồ của bạn</string>
     <string name="settings_section_how_it_looks">Giao diện</string>
     <string name="settings_section_ai_credits">Tín dụng AI</string>
-    <string name="settings_section_more">Thêm</string>
     <string name="settings_tryon_photos_title">Ảnh thử đồ</string>
     <string name="settings_tryon_photos_hint">Ba ảnh toàn thân nhanh để AI có thể mặc đồ cho bạn. Chỉ bạn mới thấy.</string>
     <string name="settings_tryon_front">Trước</string>
@@ -905,20 +898,16 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="settings_credits_friendly_format">Đủ cho ~%1$d lần thử đồ hoặc %2$d ý tưởng trang phục.</string>
     <string name="settings_credits_get_more">Lấy thêm</string>
     <string name="settings_more_advanced">Nâng cao</string>
-    <string name="settings_more_advanced_subtitle">Quét lại thẻ · Xóa lại nền · Khóa API · Chẩn đoán</string>
-    <string name="settings_more_help">Trợ giúp &amp; Câu hỏi thường gặp</string>
+    <string name="settings_more_advanced_subtitle">Mức dùng &amp; chi phí AI · khóa API · tùy chọn nâng cao</string>
     <string name="settings_more_about">Giới thiệu LibreLookAI</string>
     <string name="settings_profile_edit_title">Sửa hồ sơ</string>
     <string name="settings_profile_gender">Giới tính / đại từ</string>
     <string name="settings_profile_year">Năm sinh</string>
     <string name="settings_profile_ai_considerations">Điều AI nên cân nhắc</string>
     <string name="settings_advanced_title">Nâng cao</string>
-    <string name="settings_advanced_rarely_needed_pill">Hiếm khi cần</string>
-    <string name="settings_advanced_intro">Các công cụ này khắc phục sự cố với dữ liệu do AI gắn thẻ hoặc thay đổi cách AI hoạt động. Hầu hết mọi người không bao giờ cần dùng đến.</string>
     <string name="settings_section_advanced_fix">Sửa lỗi của AI</string>
-    <string name="settings_section_advanced_byok">Tiết kiệm tín dụng</string>
+    <string name="settings_section_advanced_byok">Tùy chọn AI</string>
     <string name="settings_section_advanced_power">Tùy chọn nâng cao</string>
-    <string name="settings_section_advanced_feedback">Giúp chúng tôi cải thiện</string>
     <string name="settings_retag_row">Gắn thẻ lại toàn bộ quần áo</string>
     <string name="settings_retag_row_sub">Yêu cầu AI đặt tên và phân loại lại mọi thứ. Tốn ~2 tín dụng mỗi món.</string>
     <string name="settings_rebg_row">Xóa lại nền</string>
@@ -939,7 +928,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="settings_similarity_preview_row">Hiện bản xem trước độ tương đồng AI</string>
     <string name="settings_similarity_preview_sub">Chẩn đoán cho tính năng tìm bằng ảnh.</string>
     <string name="settings_send_feedback">Gửi phản hồi</string>
-    <string name="settings_export_diagnostics">Xuất chẩn đoán</string>
     <string name="settings_retag_title">Gắn thẻ lại toàn bộ %1$d món quần áo?</string>
     <string name="settings_retag_body">AI sẽ xem lại từng món và có thể đổi tên, màu hoặc danh mục của nó. Mọi thứ bạn tự đổi tên sẽ bị thay thế.</string>
     <string name="settings_retag_confirm">Gắn thẻ lại toàn bộ quần áo</string>
@@ -1224,4 +1212,22 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="calendar_done_wear">Đã ghi vào %1$s</string>
     <string name="calendar_done_move">Đã chuyển sang %1$s</string>
     <string name="calendar_done_copy">Đã sao chép sang %1$s</string>
+
+    <!-- About: website + source links -->
+    <string name="about_website_label">Trang web</string>
+    <string name="about_github_label">Mã nguồn</string>
+
+    <!-- About: cost-statistics link -->
+    <string name="about_view_cost_stats">Xem thống kê chi phí</string>
+
+    <!-- Settings: Help section + feedback email flow -->
+    <string name="settings_section_help">Trợ giúp</string>
+    <string name="feedback_dialog_body">Chúng tôi sẽ mở ứng dụng email của bạn với thư gửi đến %1$s. Hãy cho chúng tôi biết điều gì đã xảy ra và bạn mong đợi điều gì.</string>
+    <string name="feedback_attach_label">Đính kèm chẩn đoán</string>
+    <string name="feedback_attach_sub">Thêm một tệp gồm phiên bản ứng dụng, thông tin thiết bị và nhật ký gần đây. Không bao gồm ảnh, dữ liệu cá nhân hay khóa API.</string>
+    <string name="feedback_email_prompt">Vui lòng mô tả sự cố tại đây — điều gì đã xảy ra, bạn mong đợi gì và các bước tái hiện.</string>
+    <string name="feedback_email_subject">Phản hồi LibreLookAI (%1$s)</string>
+
+    <!-- Feedback: no email app fallback -->
+    <string name="feedback_no_email_app">Không tìm thấy ứng dụng email. Vui lòng gửi email cho chúng tôi theo địa chỉ %1$s.</string>
 </resources>

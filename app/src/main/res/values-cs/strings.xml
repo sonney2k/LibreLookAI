@@ -616,7 +616,6 @@
     <string name="tryon_cost_line">Stojí %1$d kreditů za vyzkoušení</string>
     <string name="tryon_camera">Fotoaparát</string>
     <string name="tryon_gallery">Galerie</string>
-    <string name="about_cost_tryon">Generování vyzkoušení: 8 kreditů</string>
 
     <!-- Try-on composer / history -->
     <string name="action_add">Přidat</string>
@@ -659,11 +658,6 @@
     <string name="about_open_source">Tato aplikace je open source a je zdarma k použití. Zdrojový kód je dostupný na GitHubu.</string>
     <string name="about_ai_title">Použití AI a náklady</string>
     <string name="about_ai_desc">LibreLookAI silně spoléhá na Google Gemini pro vizuální a textovou AI. Každá AI akce (odstranění pozadí, tagování, návrhy outfitů atd.) vyžaduje volání Gemini API, které má malé náklady.</string>
-    <string name="about_cost_title">Cena za AI akci</string>
-    <string name="about_cost_bg_removal">Odstranění pozadí: 5 kreditů</string>
-    <string name="about_cost_classify">Automatické označení položky: 2 kredity</string>
-    <string name="about_cost_text">Návrh outfitu: 2 kredity</string>
-    <string name="about_cost_travel">Cestovní seznam / analýza mezer v šatníku: 2 kredity</string>
     <string name="about_byok_title">Vlastní klíč (BYOK)</string>
     <string name="about_byok_desc">LibreLookAI běží na vašem vlastním klíči Gemini API:\n\n1. Přejděte na aistudio.google.com\n2. Klepněte na Get API key → Create API key\n3. Zkopírujte klíč (začíná na AIza…)\n4. Vložte jej v Nastavení → Pokročilé → Klíč Gemini API\n\nBezplatný klíč pokryje označování a návrhy outfitů. Virtuální zkoušení a odstranění pozadí generují obrázky a vyžadují placený klíč s aktivovanou fakturací — Google vám i tak účtuje jen to, co využijete. Váš klíč se ukládá jen do tohoto zařízení a používá se přímo s Googlem — žádná data neprocházejí přes naše servery.</string>
     <string name="about_credits_title">Kredity (Spravovaný režim)</string>
@@ -910,7 +904,6 @@
     <string name="settings_section_your_closets">Tvé šatníky</string>
     <string name="settings_section_how_it_looks">Vzhled</string>
     <string name="settings_section_ai_credits">Kredity AI</string>
-    <string name="settings_section_more">Více</string>
     <string name="settings_tryon_photos_title">Fotky pro zkoušení</string>
     <string name="settings_tryon_photos_hint">Tři rychlé fotky celé postavy, aby tě AI mohla obléct. Vidíš je jen ty.</string>
     <string name="settings_tryon_front">Zepředu</string>
@@ -932,20 +925,16 @@
     <string name="settings_credits_friendly_format">Stačí na ~%1$d zkoušení nebo %2$d nápadů na outfity.</string>
     <string name="settings_credits_get_more">Získat další</string>
     <string name="settings_more_advanced">Pokročilé</string>
-    <string name="settings_more_advanced_subtitle">Znovu skenovat štítky · Znovu odstranit pozadí · Klíč API · Diagnostika</string>
-    <string name="settings_more_help">Nápověda &amp; FAQ</string>
+    <string name="settings_more_advanced_subtitle">Využití a náklady AI · klíč API · pokročilé možnosti</string>
     <string name="settings_more_about">O aplikaci LibreLookAI</string>
     <string name="settings_profile_edit_title">Upravit profil</string>
     <string name="settings_profile_gender">Pohlaví / zájmena</string>
     <string name="settings_profile_year">Rok narození</string>
     <string name="settings_profile_ai_considerations">Co má AI zohlednit</string>
     <string name="settings_advanced_title">Pokročilé</string>
-    <string name="settings_advanced_rarely_needed_pill">Zřídka potřebné</string>
-    <string name="settings_advanced_intro">Tyto nástroje opravují problémy s daty označenými AI nebo mění chování AI. Většina lidí je nikdy nepotřebuje.</string>
     <string name="settings_section_advanced_fix">Opravit chyby AI</string>
-    <string name="settings_section_advanced_byok">Ušetři kredity</string>
+    <string name="settings_section_advanced_byok">Možnosti AI</string>
     <string name="settings_section_advanced_power">Pokročilé možnosti</string>
-    <string name="settings_section_advanced_feedback">Pomoz nám se zlepšit</string>
     <string name="settings_retag_row">Znovu označit veškeré mé oblečení</string>
     <string name="settings_retag_row_sub">Nech AI vše znovu pojmenovat a zařadit. Stojí ~2 kredity za kus.</string>
     <string name="settings_rebg_row">Znovu odstranit pozadí</string>
@@ -966,7 +955,6 @@
     <string name="settings_similarity_preview_row">Zobrazit náhled podobnosti AI</string>
     <string name="settings_similarity_preview_sub">Diagnostika funkce hledání podle fotky.</string>
     <string name="settings_send_feedback">Odeslat zpětnou vazbu</string>
-    <string name="settings_export_diagnostics">Exportovat diagnostiku</string>
     <string name="settings_retag_title">Znovu označit všech %1$d kusů oblečení?</string>
     <string name="settings_retag_body">AI se na každý kus podívá znovu a může změnit jeho název, barvu nebo kategorii. Vše, co jsi přejmenoval ručně, bude nahrazeno.</string>
     <string name="settings_retag_confirm">Znovu označit veškeré oblečení</string>
@@ -1251,4 +1239,22 @@
     <string name="calendar_done_wear">Zaznamenáno na %1$s</string>
     <string name="calendar_done_move">Přesunuto na %1$s</string>
     <string name="calendar_done_copy">Zkopírováno na %1$s</string>
+
+    <!-- About: website + source links -->
+    <string name="about_website_label">Webové stránky</string>
+    <string name="about_github_label">Zdrojový kód</string>
+
+    <!-- About: cost-statistics link -->
+    <string name="about_view_cost_stats">Zobrazit statistiky nákladů</string>
+
+    <!-- Settings: Help section + feedback email flow -->
+    <string name="settings_section_help">Nápověda</string>
+    <string name="feedback_dialog_body">Otevřeme vaši e-mailovou aplikaci se zprávou na %1$s. Napište nám, co se pokazilo a co jste očekávali.</string>
+    <string name="feedback_attach_label">Přiložit diagnostiku</string>
+    <string name="feedback_attach_sub">Přidá soubor s verzí aplikace, informacemi o zařízení a nedávnými protokoly aplikace. Neobsahuje fotky, osobní údaje ani klíče API.</string>
+    <string name="feedback_email_prompt">Popište problém zde — co se stalo, co jste očekávali a kroky k jeho zopakování.</string>
+    <string name="feedback_email_subject">Zpětná vazba LibreLookAI (%1$s)</string>
+
+    <!-- Feedback: no email app fallback -->
+    <string name="feedback_no_email_app">Nebyla nalezena žádná e-mailová aplikace. Napište nám ručně na %1$s.</string>
 </resources>

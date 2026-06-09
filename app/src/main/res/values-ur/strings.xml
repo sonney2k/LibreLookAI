@@ -371,12 +371,6 @@
     <string name="about_ai_title">AI استعمال &amp; اخراجات</string>
     <string name="about_byok_desc">LibreLookAI آپ کی اپنی Gemini API کلید سے چلتا ہے:\n\n1. aistudio.google.com پر جائیں\n2. Get API key → Create API key پر ٹیپ کریں\n3. کلید کاپی کریں (AIza… سے شروع ہوتی ہے)\n4. اسے ترتیبات → جدید → Gemini API کلید میں پیسٹ کریں\n\nمفت کلید ٹیگنگ اور آؤٹ فٹ تجاویز کا احاطہ کرتی ہے۔ ورچوئل ٹرائی آن اور بیک گراؤنڈ ہٹانا تصاویر بناتے ہیں، جن کے لیے بلنگ فعال شدہ ادا شدہ کلید درکار ہے — Google پھر بھی صرف آپ کے استعمال کا معاوضہ لیتا ہے۔ آپ کی کلید صرف اسی ڈیوائس پر محفوظ ہوتی ہے اور براہِ راست Google کے ساتھ استعمال ہوتی ہے — کوئی ڈیٹا ہمارے سرورز سے نہیں گزرتا۔</string>
     <string name="about_byok_title">اپنی کلید لائیں (BYOK)</string>
-    <string name="about_cost_bg_removal">پس منظر ہٹانا: 5 کریڈٹس</string>
-    <string name="about_cost_classify">آٹو-ٹیگ آئٹم: 2 کریڈٹس</string>
-    <string name="about_cost_text">ملبوسات کی تجویز: 2 کریڈٹس</string>
-    <string name="about_cost_title">فی AI عمل لاگت</string>
-    <string name="about_cost_travel">سفر کے سامان کی فہرست / وارڈروب کی کمی کا تجزیہ: 2 کریڈٹس</string>
-    <string name="about_cost_tryon">ٹرائی آن تخلیق: 8 کریڈٹس</string>
     <string name="about_credits_desc">ان صارفین کے لیے جو اپنی API کلید نہیں بنانا چاہتے، ایپ سکّوں پر مبنی کریڈٹ نظام پیش کرتی ہے۔ کریڈٹس کریڈٹس ٹیب میں خریدے جا سکتے ہیں اور اوپر دی گئی شرحوں پر فی AI عمل خرچ ہوتے ہیں۔ یہ موڈ درخواستوں کو سرور سائیڈ پراکسی کے ذریعے روٹ کرتا ہے۔</string>
     <string name="about_credits_title">کریڈٹس (منظم موڈ)</string>
     <string name="about_description">LibreLookAI ایک مفت، اوپن سورس، AI سے چلنے والا وارڈروب مینیجر ہے۔ یہ آپ کے کپڑوں کو منظم کرنے، ملبوسات کی تجاویز حاصل کرنے، سفری سامان کی فہرستیں بنانے اور وارڈروب کی کمیاں دریافت کرنے میں مدد دیتا ہے — سب AI کے ذریعے۔</string>
@@ -883,7 +877,6 @@
     <string name="settings_section_your_closets">آپ کی الماریاں</string>
     <string name="settings_section_how_it_looks">ظاہری شکل</string>
     <string name="settings_section_ai_credits">AI کریڈٹس</string>
-    <string name="settings_section_more">مزید</string>
     <string name="settings_tryon_photos_title">آزمائشی تصاویر</string>
     <string name="settings_tryon_photos_hint">پورے جسم کی تین فوری تصاویر تاکہ AI آپ کو کپڑے پہنا سکے۔ انہیں صرف آپ دیکھتے ہیں۔</string>
     <string name="settings_tryon_front">سامنے</string>
@@ -905,20 +898,16 @@
     <string name="settings_credits_friendly_format">تقریباً %1$d آزمائشوں یا %2$d لباس کے خیالات کے لیے کافی۔</string>
     <string name="settings_credits_get_more">مزید حاصل کریں</string>
     <string name="settings_more_advanced">اعلیٰ</string>
-    <string name="settings_more_advanced_subtitle">ٹیگز دوبارہ اسکین · پس منظر دوبارہ ہٹائیں · API کلید · تشخیص</string>
-    <string name="settings_more_help">مدد &amp; عمومی سوالات</string>
+    <string name="settings_more_advanced_subtitle">اے آئی استعمال اور لاگت · API کلید · جدید اختیارات</string>
     <string name="settings_more_about">LibreLookAI کے بارے میں</string>
     <string name="settings_profile_edit_title">پروفائل میں ترمیم</string>
     <string name="settings_profile_gender">جنس / ضمائر</string>
     <string name="settings_profile_year">سالِ پیدائش</string>
     <string name="settings_profile_ai_considerations">AI کو کیا مدِنظر رکھنا چاہیے</string>
     <string name="settings_advanced_title">اعلیٰ</string>
-    <string name="settings_advanced_rarely_needed_pill">شاذ و نادر ضرورت</string>
-    <string name="settings_advanced_intro">یہ ٹولز AI سے ٹیگ شدہ ڈیٹا کے مسائل ٹھیک کرتے ہیں یا AI کے رویے کو بدلتے ہیں۔ زیادہ تر لوگوں کو کبھی ضرورت نہیں پڑتی۔</string>
     <string name="settings_section_advanced_fix">AI کی غلطیاں ٹھیک کریں</string>
-    <string name="settings_section_advanced_byok">کریڈٹس بچائیں</string>
+    <string name="settings_section_advanced_byok">اے آئی کے اختیارات</string>
     <string name="settings_section_advanced_power">اعلیٰ اختیارات</string>
-    <string name="settings_section_advanced_feedback">بہتری میں ہماری مدد کریں</string>
     <string name="settings_retag_row">میرے تمام کپڑے دوبارہ ٹیگ کریں</string>
     <string name="settings_retag_row_sub">AI سے سب کچھ دوبارہ نام دینے اور درجہ بندی کرنے کو کہیں۔ فی شے ~2 کریڈٹس۔</string>
     <string name="settings_rebg_row">پس منظر دوبارہ ہٹائیں</string>
@@ -939,7 +928,6 @@
     <string name="settings_similarity_preview_row">AI مماثلت کا پیش منظر دکھائیں</string>
     <string name="settings_similarity_preview_sub">تصویر سے تلاش کی خصوصیت کی تشخیص۔</string>
     <string name="settings_send_feedback">تاثرات بھیجیں</string>
-    <string name="settings_export_diagnostics">تشخیص برآمد کریں</string>
     <string name="settings_retag_title">تمام %1$d کپڑے دوبارہ ٹیگ کریں؟</string>
     <string name="settings_retag_body">AI ہر شے کو دوبارہ دیکھے گا اور اس کا نام، رنگ یا زمرہ بدل سکتا ہے۔ جو کچھ آپ نے ہاتھ سے نام بدلا وہ بدل دیا جائے گا۔</string>
     <string name="settings_retag_confirm">تمام کپڑے دوبارہ ٹیگ کریں</string>
@@ -1224,4 +1212,22 @@
     <string name="calendar_done_wear">%1$s کو لاگ کیا گیا</string>
     <string name="calendar_done_move">%1$s پر منتقل کر دیا گیا</string>
     <string name="calendar_done_copy">%1$s پر کاپی کر دیا گیا</string>
+
+    <!-- About: website + source links -->
+    <string name="about_website_label">ویب سائٹ</string>
+    <string name="about_github_label">سورس کوڈ</string>
+
+    <!-- About: cost-statistics link -->
+    <string name="about_view_cost_stats">لاگت کے اعداد و شمار دیکھیں</string>
+
+    <!-- Settings: Help section + feedback email flow -->
+    <string name="settings_section_help">مدد</string>
+    <string name="feedback_dialog_body">ہم آپ کی ای میل ایپ کو %1$s پر پیغام کے ساتھ کھولیں گے۔ ہمیں بتائیں کہ کیا غلط ہوا اور آپ نے کیا توقع کی تھی۔</string>
+    <string name="feedback_attach_label">تشخیص منسلک کریں</string>
+    <string name="feedback_attach_sub">ایپ ورژن، ڈیوائس کی معلومات اور حالیہ ایپ لاگز پر مشتمل فائل شامل کرتا ہے۔ کوئی تصاویر، ذاتی ڈیٹا یا API کیز شامل نہیں ہیں۔</string>
+    <string name="feedback_email_prompt">براہ کرم مسئلے کی یہاں وضاحت کریں — کیا ہوا، آپ نے کیا توقع کی، اور اسے دہرانے کے مراحل۔</string>
+    <string name="feedback_email_subject">LibreLookAI فیڈ بیک (%1$s)</string>
+
+    <!-- Feedback: no email app fallback -->
+    <string name="feedback_no_email_app">کوئی ای میل ایپ نہیں ملی۔ براہ کرم %1$s پر دستی طور پر ای میل کریں۔</string>
 </resources>

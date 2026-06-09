@@ -616,7 +616,6 @@
     <string name="tryon_cost_line">Maksaa %1$d krediittiä per sovitus</string>
     <string name="tryon_camera">Kamera</string>
     <string name="tryon_gallery">Galleria</string>
-    <string name="about_cost_tryon">Sovituksen luominen: 8 krediittiä</string>
 
     <!-- Sovituksen kokoaja / historia -->
     <string name="action_add">Lisää</string>
@@ -659,11 +658,6 @@
     <string name="about_open_source">Tämä sovellus on avointa lähdekoodia ja ilmainen käyttää. Lähdekoodi on saatavilla GitHubissa.</string>
     <string name="about_ai_title">Tekoälyn käyttö &amp; kustannukset</string>
     <string name="about_ai_desc">LibreLookAI nojaa vahvasti Google Geminiin näkö- ja teksti-tekoälyyn. Jokainen tekoälytoiminto (taustanpoisto, merkitseminen, asuehdotukset jne.) vaatii Gemini API-kutsun, jolla on pieni kustannus.</string>
-    <string name="about_cost_title">Kustannus per tekoälytoiminto</string>
-    <string name="about_cost_bg_removal">Taustanpoisto: 5 krediittiä</string>
-    <string name="about_cost_classify">Vaatteen automerkintä: 2 krediittiä</string>
-    <string name="about_cost_text">Asuehdotus: 2 krediittiä</string>
-    <string name="about_cost_travel">Matkan pakkauslista / vaatekaapin aukkoanalyysi: 2 krediittiä</string>
     <string name="about_byok_title">Tuo oma avain (BYOK)</string>
     <string name="about_byok_desc">LibreLookAI toimii omalla Gemini API -avaimellasi:\n\n1. Siirry osoitteeseen aistudio.google.com\n2. Napauta Get API key → Create API key\n3. Kopioi avain (alkaa AIza…)\n4. Liitä se kohtaan Asetukset → Lisäasetukset → Gemini API -avain\n\nIlmainen avain kattaa merkinnät ja asukokonaisuusehdotukset. Virtuaalinen sovitus ja taustanpoisto luovat kuvia ja vaativat maksullisen avaimen, jossa laskutus on käytössä — Google veloittaa silti vain käytöstäsi. Avaimesi tallennetaan vain tähän laitteeseen ja sitä käytetään suoraan Googlen kanssa — mitkään tiedot eivät kulje palvelimiemme kautta.</string>
     <string name="about_credits_title">Krediitit (hallittu tila)</string>
@@ -910,7 +904,6 @@
     <string name="settings_section_your_closets">Vaatekaappisi</string>
     <string name="settings_section_how_it_looks">Ulkoasu</string>
     <string name="settings_section_ai_credits">Tekoälykrediitit</string>
-    <string name="settings_section_more">Lisää</string>
     <string name="settings_tryon_photos_title">Sovituskuvat</string>
     <string name="settings_tryon_photos_hint">Kolme nopeaa kokovartalokuvaa, jotta tekoäly voi pukea sinut. Vain sinä näet ne.</string>
     <string name="settings_tryon_front">Edestä</string>
@@ -932,20 +925,16 @@
     <string name="settings_credits_friendly_format">Riittää ~%1$d sovitukseen tai %2$d asuideaan.</string>
     <string name="settings_credits_get_more">Hanki lisää</string>
     <string name="settings_more_advanced">Lisäasetukset</string>
-    <string name="settings_more_advanced_subtitle">Skannaa tagit uudelleen · Poista taustat uudelleen · API-avain · Diagnostiikka</string>
-    <string name="settings_more_help">Ohje &amp; UKK</string>
+    <string name="settings_more_advanced_subtitle">Tekoälyn käyttö &amp; kustannukset · API-avain · lisäasetukset</string>
     <string name="settings_more_about">Tietoja LibreLookAI:sta</string>
     <string name="settings_profile_edit_title">Muokkaa profiilia</string>
     <string name="settings_profile_gender">Sukupuoli / pronominit</string>
     <string name="settings_profile_year">Syntymävuosi</string>
     <string name="settings_profile_ai_considerations">Mitä tekoälyn tulee huomioida</string>
     <string name="settings_advanced_title">Lisäasetukset</string>
-    <string name="settings_advanced_rarely_needed_pill">Harvoin tarpeen</string>
-    <string name="settings_advanced_intro">Nämä työkalut korjaavat tekoälyn merkitsemän datan ongelmia tai muuttavat tekoälyn toimintaa. Useimmat eivät tarvitse niitä koskaan.</string>
     <string name="settings_section_advanced_fix">Korjaa tekoälyn virheet</string>
-    <string name="settings_section_advanced_byok">Säästä krediitit</string>
+    <string name="settings_section_advanced_byok">Tekoälyasetukset</string>
     <string name="settings_section_advanced_power">Tehoasetukset</string>
-    <string name="settings_section_advanced_feedback">Auta meitä parantamaan</string>
     <string name="settings_retag_row">Merkitse kaikki vaatteeni uudelleen</string>
     <string name="settings_retag_row_sub">Pyydä tekoälyä nimeämään ja luokittelemaan kaikki uudelleen. Maksaa ~2 krediittiä per vaate.</string>
     <string name="settings_rebg_row">Poista taustat uudelleen</string>
@@ -966,7 +955,6 @@
     <string name="settings_similarity_preview_row">Näytä tekoälyn samankaltaisuusesikatselu</string>
     <string name="settings_similarity_preview_sub">Diagnostiikka kuvalla haku -toiminnolle.</string>
     <string name="settings_send_feedback">Lähetä palautetta</string>
-    <string name="settings_export_diagnostics">Vie diagnostiikka</string>
     <string name="settings_retag_title">Merkitäänkö kaikki %1$d vaatetta uudelleen?</string>
     <string name="settings_retag_body">Tekoäly katsoo jokaisen vaatteen uudelleen ja voi muuttaa sen nimeä, väriä tai luokkaa. Kaikki käsin uudelleennimeämäsi korvataan.</string>
     <string name="settings_retag_confirm">Merkitse kaikki vaatteet uudelleen</string>
@@ -1251,4 +1239,22 @@
     <string name="calendar_done_wear">Kirjattu päivälle %1$s</string>
     <string name="calendar_done_move">Siirretty päivälle %1$s</string>
     <string name="calendar_done_copy">Kopioitu päivälle %1$s</string>
+
+    <!-- About: website + source links -->
+    <string name="about_website_label">Verkkosivusto</string>
+    <string name="about_github_label">Lähdekoodi</string>
+
+    <!-- About: cost-statistics link -->
+    <string name="about_view_cost_stats">Näytä kustannustilastot</string>
+
+    <!-- Settings: Help section + feedback email flow -->
+    <string name="settings_section_help">Ohje</string>
+    <string name="feedback_dialog_body">Avaamme sähköpostisovelluksesi viestillä osoitteeseen %1$s. Kerro, mikä meni pieleen ja mitä odotit.</string>
+    <string name="feedback_attach_label">Liitä diagnostiikka</string>
+    <string name="feedback_attach_sub">Lisää tiedoston, jossa on sovellusversio, laitetiedot ja viimeaikaiset sovelluslokit. Ei sisällä valokuvia, henkilötietoja tai API-avaimia.</string>
+    <string name="feedback_email_prompt">Kuvaile ongelma tähän — mitä tapahtui, mitä odotit ja miten sen voi toistaa.</string>
+    <string name="feedback_email_subject">LibreLookAI-palaute (%1$s)</string>
+
+    <!-- Feedback: no email app fallback -->
+    <string name="feedback_no_email_app">Sähköpostisovellusta ei löytynyt. Lähetä meille sähköpostia manuaalisesti osoitteeseen %1$s.</string>
 </resources>

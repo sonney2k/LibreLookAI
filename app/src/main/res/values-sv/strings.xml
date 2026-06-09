@@ -616,7 +616,6 @@
     <string name="tryon_cost_line">Kostar %1$d krediter per provning</string>
     <string name="tryon_camera">Kamera</string>
     <string name="tryon_gallery">Galleri</string>
-    <string name="about_cost_tryon">Provningsgenerering: 8 krediter</string>
 
     <!-- Provningskompositör / historik -->
     <string name="action_add">Lägg till</string>
@@ -659,11 +658,6 @@
     <string name="about_open_source">Denna app är öppen källkod och fri att använda. Källkoden finns tillgänglig på GitHub.</string>
     <string name="about_ai_title">AI-användning &amp; kostnader</string>
     <string name="about_ai_desc">LibreLookAI förlitar sig mycket på Google Gemini för bild- och text-AI. Varje AI-åtgärd (bakgrundsborttagning, taggning, outfitförslag osv.) kräver ett Gemini API-anrop som har en liten kostnad.</string>
-    <string name="about_cost_title">Kostnad per AI-åtgärd</string>
-    <string name="about_cost_bg_removal">Bakgrundsborttagning: 5 krediter</string>
-    <string name="about_cost_classify">Autotagga plagg: 2 krediter</string>
-    <string name="about_cost_text">Outfitförslag: 2 krediter</string>
-    <string name="about_cost_travel">Packlista för resa / garderobsluckanalys: 2 krediter</string>
     <string name="about_byok_title">Använd egen nyckel (BYOK)</string>
     <string name="about_byok_desc">LibreLookAI körs på din egen Gemini API-nyckel:\n\n1. Gå till aistudio.google.com\n2. Tryck på Get API key → Create API key\n3. Kopiera nyckeln (börjar med AIza…)\n4. Klistra in den i Inställningar → Avancerat → Gemini API-nyckel\n\nEn gratis nyckel täcker taggning och outfitförslag. Virtuell provning och bakgrundsborttagning genererar bilder och kräver en betald nyckel med fakturering aktiverad — Google debiterar fortfarande bara för det du använder. Din nyckel lagras bara på den här enheten och används direkt med Google — inga data går via våra servrar.</string>
     <string name="about_credits_title">Krediter (hanterat läge)</string>
@@ -910,7 +904,6 @@
     <string name="settings_section_your_closets">Dina garderober</string>
     <string name="settings_section_how_it_looks">Utseende</string>
     <string name="settings_section_ai_credits">AI-krediter</string>
-    <string name="settings_section_more">Mer</string>
     <string name="settings_tryon_photos_title">Prova-på-foton</string>
     <string name="settings_tryon_photos_hint">Tre snabba helkroppsbilder så att AI kan klä på dig. Bara du ser dem.</string>
     <string name="settings_tryon_front">Fram</string>
@@ -932,20 +925,16 @@
     <string name="settings_credits_friendly_format">Räcker till ~%1$d provningar eller %2$d outfit-idéer.</string>
     <string name="settings_credits_get_more">Skaffa fler</string>
     <string name="settings_more_advanced">Avancerat</string>
-    <string name="settings_more_advanced_subtitle">Skanna taggar igen · Ta bort bakgrunder igen · API-nyckel · Diagnostik</string>
-    <string name="settings_more_help">Hjälp &amp; FAQ</string>
+    <string name="settings_more_advanced_subtitle">AI-användning &amp; kostnader · API-nyckel · avancerade alternativ</string>
     <string name="settings_more_about">Om LibreLookAI</string>
     <string name="settings_profile_edit_title">Redigera profil</string>
     <string name="settings_profile_gender">Kön / pronomen</string>
     <string name="settings_profile_year">Födelseår</string>
     <string name="settings_profile_ai_considerations">Vad AI ska ta hänsyn till</string>
     <string name="settings_advanced_title">Avancerat</string>
-    <string name="settings_advanced_rarely_needed_pill">Sällan nödvändigt</string>
-    <string name="settings_advanced_intro">Dessa verktyg åtgärdar problem med AI-taggad data eller ändrar hur AI fungerar. De flesta behöver aldrig röra dem.</string>
     <string name="settings_section_advanced_fix">Åtgärda AI-misstag</string>
-    <string name="settings_section_advanced_byok">Hoppa över krediterna</string>
+    <string name="settings_section_advanced_byok">AI-alternativ</string>
     <string name="settings_section_advanced_power">Avancerade alternativ</string>
-    <string name="settings_section_advanced_feedback">Hjälp oss bli bättre</string>
     <string name="settings_retag_row">Tagga om alla mina kläder</string>
     <string name="settings_retag_row_sub">Be AI att döpa om och kategorisera om allt. Kostar ~2 krediter per plagg.</string>
     <string name="settings_rebg_row">Ta bort bakgrunder igen</string>
@@ -966,7 +955,6 @@
     <string name="settings_similarity_preview_row">Visa förhandsvisning av AI-likhet</string>
     <string name="settings_similarity_preview_sub">Diagnostik för sök-via-foto.</string>
     <string name="settings_send_feedback">Skicka feedback</string>
-    <string name="settings_export_diagnostics">Exportera diagnostik</string>
     <string name="settings_retag_title">Tagga om alla %1$d plagg?</string>
     <string name="settings_retag_body">AI tittar på varje plagg igen och kan ändra namn, färg eller kategori. Allt du har döpt om för hand ersätts.</string>
     <string name="settings_retag_confirm">Tagga om alla kläder</string>
@@ -1251,4 +1239,22 @@
     <string name="calendar_done_wear">Loggat den %1$s</string>
     <string name="calendar_done_move">Flyttad till %1$s</string>
     <string name="calendar_done_copy">Kopierad till %1$s</string>
+
+    <!-- About: website + source links -->
+    <string name="about_website_label">Webbplats</string>
+    <string name="about_github_label">Källkod</string>
+
+    <!-- About: cost-statistics link -->
+    <string name="about_view_cost_stats">Visa kostnadsstatistik</string>
+
+    <!-- Settings: Help section + feedback email flow -->
+    <string name="settings_section_help">Hjälp</string>
+    <string name="feedback_dialog_body">Vi öppnar din e-postapp med ett meddelande till %1$s. Berätta vad som gick fel och vad du förväntade dig.</string>
+    <string name="feedback_attach_label">Bifoga diagnostik</string>
+    <string name="feedback_attach_sub">Lägger till en fil med appversion, enhetsinfo och senaste applogg. Inga foton, personuppgifter eller API-nycklar inkluderas.</string>
+    <string name="feedback_email_prompt">Beskriv problemet här — vad som hände, vad du förväntade dig och stegen för att återskapa det.</string>
+    <string name="feedback_email_subject">LibreLookAI-feedback (%1$s)</string>
+
+    <!-- Feedback: no email app fallback -->
+    <string name="feedback_no_email_app">Ingen e-postapp hittades. Mejla oss manuellt på %1$s.</string>
 </resources>

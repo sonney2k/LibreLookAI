@@ -371,12 +371,6 @@
     <string name="about_ai_title">การใช้ AI &amp; ค่าใช้จ่าย</string>
     <string name="about_byok_desc">LibreLookAI ทำงานด้วยคีย์ Gemini API ของคุณเอง:\n\n1. ไปที่ aistudio.google.com\n2. แตะ Get API key → Create API key\n3. คัดลอกคีย์ (ขึ้นต้นด้วย AIza…)\n4. วางที่ การตั้งค่า → ขั้นสูง → คีย์ Gemini API\n\nคีย์ฟรีครอบคลุมการติดแท็กและคำแนะนำการแต่งตัว การลองสวมเสมือนจริงและการลบพื้นหลังจะสร้างรูปภาพ จึงต้องใช้คีย์แบบเสียเงินที่เปิดการเรียกเก็บเงิน — Google ยังคงคิดเงินเฉพาะตามการใช้งานเท่านั้น คีย์ของคุณถูกเก็บบนอุปกรณ์นี้เท่านั้นและใช้กับ Google โดยตรง — ไม่มีข้อมูลใดผ่านเซิร์ฟเวอร์ของเรา</string>
     <string name="about_byok_title">ใช้คีย์ของคุณเอง (BYOK)</string>
-    <string name="about_cost_bg_removal">ลบพื้นหลัง: 5 เครดิต</string>
-    <string name="about_cost_classify">แท็กรายการอัตโนมัติ: 2 เครดิต</string>
-    <string name="about_cost_text">แนะนำชุด: 2 เครดิต</string>
-    <string name="about_cost_title">ค่าใช้จ่ายต่อการกระทำ AI</string>
-    <string name="about_cost_travel">รายการของเดินทาง / วิเคราะห์ตู้เสื้อผ้า: 2 เครดิต</string>
-    <string name="about_cost_tryon">สร้างภาพลองชุด: 8 เครดิต</string>
     <string name="about_credits_desc">สำหรับผู้ใช้ที่ไม่ต้องการสร้างคีย์ API เอง แอปนำเสนอระบบเครดิตแบบเหรียญ เครดิตสามารถซื้อได้ในแท็บเครดิตและถูกใช้ตามอัตราด้านบนต่อการกระทำ AI โหมดนี้ส่งคำขอผ่านพร็อกซีฝั่งเซิร์ฟเวอร์</string>
     <string name="about_credits_title">เครดิต (โหมดจัดการ)</string>
     <string name="about_description">LibreLookAI เป็นโปรแกรมจัดการตู้เสื้อผ้าฟรี โอเพ่นซอร์ส ขับเคลื่อนด้วย AI ช่วยจัดระเบียบเสื้อผ้า รับคำแนะนำชุด วางแผนรายการของเดินทาง และค้นพบช่องว่างในตู้เสื้อผ้า — ทั้งหมดด้วย AI</string>
@@ -883,7 +877,6 @@
     <string name="settings_section_your_closets">ตู้เสื้อผ้าของคุณ</string>
     <string name="settings_section_how_it_looks">รูปลักษณ์</string>
     <string name="settings_section_ai_credits">เครดิต AI</string>
-    <string name="settings_section_more">เพิ่มเติม</string>
     <string name="settings_tryon_photos_title">รูปสำหรับลองสวม</string>
     <string name="settings_tryon_photos_hint">รูปเต็มตัวแบบเร็ว 3 รูปเพื่อให้ AI แต่งตัวให้คุณได้ มีแค่คุณที่เห็น</string>
     <string name="settings_tryon_front">ด้านหน้า</string>
@@ -905,20 +898,16 @@
     <string name="settings_credits_friendly_format">พอสำหรับลองสวม ~%1$d ครั้ง หรือไอเดียชุด %2$d แบบ</string>
     <string name="settings_credits_get_more">รับเพิ่ม</string>
     <string name="settings_more_advanced">ขั้นสูง</string>
-    <string name="settings_more_advanced_subtitle">สแกนแท็กใหม่ · ลบพื้นหลังใหม่ · คีย์ API · การวินิจฉัย</string>
-    <string name="settings_more_help">ช่วยเหลือ &amp; คำถามที่พบบ่อย</string>
+    <string name="settings_more_advanced_subtitle">การใช้งานและค่าใช้จ่าย AI · คีย์ API · ตัวเลือกขั้นสูง</string>
     <string name="settings_more_about">เกี่ยวกับ LibreLookAI</string>
     <string name="settings_profile_edit_title">แก้ไขโปรไฟล์</string>
     <string name="settings_profile_gender">เพศ / คำสรรพนาม</string>
     <string name="settings_profile_year">ปีเกิด</string>
     <string name="settings_profile_ai_considerations">สิ่งที่ AI ควรพิจารณา</string>
     <string name="settings_advanced_title">ขั้นสูง</string>
-    <string name="settings_advanced_rarely_needed_pill">แทบไม่จำเป็น</string>
-    <string name="settings_advanced_intro">เครื่องมือเหล่านี้แก้ปัญหาข้อมูลที่ AI ติดแท็กหรือเปลี่ยนพฤติกรรมของ AI คนส่วนใหญ่ไม่จำเป็นต้องใช้</string>
     <string name="settings_section_advanced_fix">แก้ข้อผิดพลาดของ AI</string>
-    <string name="settings_section_advanced_byok">ประหยัดเครดิต</string>
+    <string name="settings_section_advanced_byok">ตัวเลือก AI</string>
     <string name="settings_section_advanced_power">ตัวเลือกขั้นสูง</string>
-    <string name="settings_section_advanced_feedback">ช่วยเราพัฒนา</string>
     <string name="settings_retag_row">ติดแท็กเสื้อผ้าทั้งหมดใหม่</string>
     <string name="settings_retag_row_sub">ให้ AI ตั้งชื่อและจัดหมวดหมู่ใหม่ทั้งหมด คิด ~2 เครดิตต่อชิ้น</string>
     <string name="settings_rebg_row">ลบพื้นหลังใหม่</string>
@@ -939,7 +928,6 @@
     <string name="settings_similarity_preview_row">แสดงตัวอย่างความคล้ายของ AI</string>
     <string name="settings_similarity_preview_sub">การวินิจฉัยสำหรับฟีเจอร์ค้นหาด้วยรูป</string>
     <string name="settings_send_feedback">ส่งความคิดเห็น</string>
-    <string name="settings_export_diagnostics">ส่งออกการวินิจฉัย</string>
     <string name="settings_retag_title">ติดแท็กเสื้อผ้าทั้งหมด %1$d ชิ้นใหม่ไหม?</string>
     <string name="settings_retag_body">AI จะดูแต่ละชิ้นอีกครั้งและอาจเปลี่ยนชื่อ สี หรือหมวดหมู่ สิ่งที่คุณตั้งชื่อเองจะถูกแทนที่</string>
     <string name="settings_retag_confirm">ติดแท็กเสื้อผ้าทั้งหมดใหม่</string>
@@ -1224,4 +1212,22 @@
     <string name="calendar_done_wear">บันทึกเมื่อ %1$s</string>
     <string name="calendar_done_move">ย้ายไปยัง %1$s</string>
     <string name="calendar_done_copy">คัดลอกไปยัง %1$s</string>
+
+    <!-- About: website + source links -->
+    <string name="about_website_label">เว็บไซต์</string>
+    <string name="about_github_label">ซอร์สโค้ด</string>
+
+    <!-- About: cost-statistics link -->
+    <string name="about_view_cost_stats">ดูสถิติค่าใช้จ่าย</string>
+
+    <!-- Settings: Help section + feedback email flow -->
+    <string name="settings_section_help">ความช่วยเหลือ</string>
+    <string name="feedback_dialog_body">เราจะเปิดแอปอีเมลของคุณพร้อมข้อความถึง %1$s บอกเราว่ามีอะไรผิดพลาดและคุณคาดหวังอะไร</string>
+    <string name="feedback_attach_label">แนบข้อมูลวินิจฉัย</string>
+    <string name="feedback_attach_sub">เพิ่มไฟล์ที่มีเวอร์ชันแอป ข้อมูลอุปกรณ์ และบันทึกแอปล่าสุด ไม่มีรูปภาพ ข้อมูลส่วนตัว หรือคีย์ API</string>
+    <string name="feedback_email_prompt">โปรดอธิบายปัญหาที่นี่ — เกิดอะไรขึ้น คุณคาดหวังอะไร และขั้นตอนการทำให้เกิดซ้ำ</string>
+    <string name="feedback_email_subject">ความคิดเห็น LibreLookAI (%1$s)</string>
+
+    <!-- Feedback: no email app fallback -->
+    <string name="feedback_no_email_app">ไม่พบแอปอีเมล โปรดส่งอีเมลถึงเราด้วยตนเองที่ %1$s</string>
 </resources>

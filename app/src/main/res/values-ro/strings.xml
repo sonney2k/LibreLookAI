@@ -370,12 +370,6 @@
     <string name="about_ai_title">Utilizare AI &amp; costuri</string>
     <string name="about_byok_desc">LibreLookAI funcționează cu propria ta cheie API Gemini:\n\n1. Accesează aistudio.google.com\n2. Atinge Get API key → Create API key\n3. Copiază cheia (începe cu AIza…)\n4. Lipește-o în Setări → Avansat → Cheie API Gemini\n\nO cheie gratuită acoperă etichetarea și sugestiile de ținute. Proba virtuală și eliminarea fundalului generează imagini și necesită o cheie plătită cu facturarea activată — Google îți tarifează în continuare doar ce folosești. Cheia ta este păstrată doar pe acest dispozitiv și folosită direct cu Google — niciun fel de date nu trec prin serverele noastre.</string>
     <string name="about_byok_title">Adu-ți propria cheie (BYOK)</string>
-    <string name="about_cost_bg_removal">Eliminare fundal: 5 credite</string>
-    <string name="about_cost_classify">Etichetare automată: 2 credite</string>
-    <string name="about_cost_text">Sugestie ținută: 2 credite</string>
-    <string name="about_cost_title">Cost per acțiune AI</string>
-    <string name="about_cost_travel">Listă de bagaje / analiză lipsuri garderobă: 2 credite</string>
-    <string name="about_cost_tryon">Generare probă: 8 credite</string>
     <string name="about_credits_desc">Pentru utilizatorii care preferă să nu-și creeze propria cheie API, aplicația oferă un sistem de credite pe bază de monede. Creditele pot fi cumpărate în secțiunea Credite și sunt consumate pentru fiecare acțiune AI la tarifele de mai sus. Acest mod direcționează cererile printr-un proxy de pe server.</string>
     <string name="about_credits_title">Credite (mod gestionat)</string>
     <string name="about_description">LibreLookAI este un manager de garderobă gratuit, open-source, alimentat de AI. Te ajută să-ți organizezi hainele, să obții sugestii de ținute, să planifici listele de bagaje pentru călătorii și să descoperi lipsurile din garderobă — totul cu ajutorul AI.</string>
@@ -883,7 +877,6 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="settings_section_your_closets">Dulapurile tale</string>
     <string name="settings_section_how_it_looks">Aspect</string>
     <string name="settings_section_ai_credits">Credite AI</string>
-    <string name="settings_section_more">Mai mult</string>
     <string name="settings_tryon_photos_title">Poze pentru probă</string>
     <string name="settings_tryon_photos_hint">Trei poze rapide din cap până-n picioare, ca AI să te poată îmbrăca. Doar tu le vezi.</string>
     <string name="settings_tryon_front">Față</string>
@@ -905,20 +898,16 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="settings_credits_friendly_format">Suficient pentru ~%1$d probe sau %2$d idei de ținute.</string>
     <string name="settings_credits_get_more">Obține mai multe</string>
     <string name="settings_more_advanced">Avansat</string>
-    <string name="settings_more_advanced_subtitle">Rescanare etichete · Reeliminare fundaluri · Cheie API · Diagnostic</string>
-    <string name="settings_more_help">Ajutor &amp; Întrebări frecvente</string>
+    <string name="settings_more_advanced_subtitle">Utilizare și costuri AI · cheie API · opțiuni avansate</string>
     <string name="settings_more_about">Despre LibreLookAI</string>
     <string name="settings_profile_edit_title">Editează profilul</string>
     <string name="settings_profile_gender">Gen / pronume</string>
     <string name="settings_profile_year">Anul nașterii</string>
     <string name="settings_profile_ai_considerations">Ce ar trebui să ia în calcul AI</string>
     <string name="settings_advanced_title">Avansat</string>
-    <string name="settings_advanced_rarely_needed_pill">Rareori necesar</string>
-    <string name="settings_advanced_intro">Aceste instrumente repară probleme cu datele etichetate de AI sau schimbă comportamentul AI. Majoritatea oamenilor nu au nevoie niciodată de ele.</string>
     <string name="settings_section_advanced_fix">Repară greșelile AI</string>
-    <string name="settings_section_advanced_byok">Economisește credite</string>
+    <string name="settings_section_advanced_byok">Opțiuni AI</string>
     <string name="settings_section_advanced_power">Opțiuni avansate</string>
-    <string name="settings_section_advanced_feedback">Ajută-ne să ne îmbunătățim</string>
     <string name="settings_retag_row">Reetichetează toate hainele mele</string>
     <string name="settings_retag_row_sub">Cere AI să redenumească și să recategorizeze tot. Costă ~2 credite per articol.</string>
     <string name="settings_rebg_row">Reelimină fundalurile</string>
@@ -939,7 +928,6 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="settings_similarity_preview_row">Arată previzualizarea similarității AI</string>
     <string name="settings_similarity_preview_sub">Diagnostic pentru căutarea după poză.</string>
     <string name="settings_send_feedback">Trimite feedback</string>
-    <string name="settings_export_diagnostics">Exportă diagnosticul</string>
     <string name="settings_retag_title">Reetichetezi toate cele %1$d haine?</string>
     <string name="settings_retag_body">AI va privi fiecare articol din nou și îi poate schimba numele, culoarea sau categoria. Tot ce ai redenumit manual va fi înlocuit.</string>
     <string name="settings_retag_confirm">Reetichetează toate hainele</string>
@@ -1224,4 +1212,22 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="calendar_done_wear">Înregistrat pe %1$s</string>
     <string name="calendar_done_move">Mutat pe %1$s</string>
     <string name="calendar_done_copy">Copiat pe %1$s</string>
+
+    <!-- About: website + source links -->
+    <string name="about_website_label">Site web</string>
+    <string name="about_github_label">Cod sursă</string>
+
+    <!-- About: cost-statistics link -->
+    <string name="about_view_cost_stats">Vezi statisticile de cost</string>
+
+    <!-- Settings: Help section + feedback email flow -->
+    <string name="settings_section_help">Ajutor</string>
+    <string name="feedback_dialog_body">Vom deschide aplicația ta de e-mail cu un mesaj către %1$s. Spune-ne ce a mers prost și ce te așteptai.</string>
+    <string name="feedback_attach_label">Atașează diagnosticări</string>
+    <string name="feedback_attach_sub">Adaugă un fișier cu versiunea aplicației, informații despre dispozitiv și jurnale recente. Nu include fotografii, date personale sau chei API.</string>
+    <string name="feedback_email_prompt">Descrie problema aici — ce s-a întâmplat, ce te așteptai și pașii pentru a o reproduce.</string>
+    <string name="feedback_email_subject">Feedback LibreLookAI (%1$s)</string>
+
+    <!-- Feedback: no email app fallback -->
+    <string name="feedback_no_email_app">Nu s-a găsit nicio aplicație de e-mail. Scrieți-ne manual la %1$s.</string>
 </resources>

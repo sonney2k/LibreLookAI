@@ -616,7 +616,6 @@
     <string name="tryon_cost_line">Kost %1$d credits per pasbeurt</string>
     <string name="tryon_camera">Camera</string>
     <string name="tryon_gallery">Galerij</string>
-    <string name="about_cost_tryon">Pasbeurtgeneratie: 8 credits</string>
 
     <!-- Pas-composer / geschiedenis -->
     <string name="action_add">Toevoegen</string>
@@ -659,11 +658,6 @@
     <string name="about_open_source">Deze app is opensource en gratis te gebruiken. De broncode is beschikbaar op GitHub.</string>
     <string name="about_ai_title">AI-gebruik &amp; kosten</string>
     <string name="about_ai_desc">LibreLookAI vertrouwt sterk op Google Gemini voor beeld- en tekst-AI. Elke AI-actie (achtergrondverwijdering, taggen, outfitsuggesties enz.) vereist een Gemini-API-aanroep met een kleine kostprijs.</string>
-    <string name="about_cost_title">Kosten per AI-actie</string>
-    <string name="about_cost_bg_removal">Achtergrondverwijdering: 5 credits</string>
-    <string name="about_cost_classify">Item automatisch taggen: 2 credits</string>
-    <string name="about_cost_text">Outfitsuggestie: 2 credits</string>
-    <string name="about_cost_travel">Reispaklijst / garderobe-gat-analyse: 2 credits</string>
     <string name="about_byok_title">Eigen sleutel gebruiken (BYOK)</string>
     <string name="about_byok_desc">LibreLookAI draait op je eigen Gemini API-sleutel:\n\n1. Ga naar aistudio.google.com\n2. Tik op Get API key → Create API key\n3. Kopieer de sleutel (begint met AIza…)\n4. Plak hem in Instellingen → Geavanceerd → Gemini API-sleutel\n\nEen gratis sleutel dekt taggen en outfitsuggesties. Virtueel passen en achtergrond verwijderen genereren afbeeldingen en vereisen een betaalde sleutel met facturering ingeschakeld — Google rekent nog steeds alleen je gebruik. Je sleutel wordt alleen op dit apparaat bewaard en rechtstreeks met Google gebruikt — er gaan geen gegevens via onze servers.</string>
     <string name="about_credits_title">Credits (Beheerde modus)</string>
@@ -910,7 +904,6 @@
     <string name="settings_section_your_closets">Jouw kasten</string>
     <string name="settings_section_how_it_looks">Uiterlijk</string>
     <string name="settings_section_ai_credits">AI-credits</string>
-    <string name="settings_section_more">Meer</string>
     <string name="settings_tryon_photos_title">Pasfoto’s</string>
     <string name="settings_tryon_photos_hint">Drie snelle foto’s ten voeten uit zodat de AI je kan aankleden. Alleen jij ziet ze.</string>
     <string name="settings_tryon_front">Voorkant</string>
@@ -932,20 +925,16 @@
     <string name="settings_credits_friendly_format">Genoeg voor ~%1$d pasbeurten of %2$d outfit-ideeën.</string>
     <string name="settings_credits_get_more">Meer halen</string>
     <string name="settings_more_advanced">Geavanceerd</string>
-    <string name="settings_more_advanced_subtitle">Tags opnieuw scannen · Achtergronden opnieuw verwijderen · API-sleutel · Diagnostiek</string>
-    <string name="settings_more_help">Help &amp; FAQ</string>
+    <string name="settings_more_advanced_subtitle">AI-gebruik &amp; kosten · API-sleutel · geavanceerde opties</string>
     <string name="settings_more_about">Over LibreLookAI</string>
     <string name="settings_profile_edit_title">Profiel bewerken</string>
     <string name="settings_profile_gender">Geslacht / voornaamwoorden</string>
     <string name="settings_profile_year">Geboortejaar</string>
     <string name="settings_profile_ai_considerations">Waar de AI rekening mee moet houden</string>
     <string name="settings_advanced_title">Geavanceerd</string>
-    <string name="settings_advanced_rarely_needed_pill">Zelden nodig</string>
-    <string name="settings_advanced_intro">Deze tools lossen problemen met door AI getagde gegevens op of veranderen hoe de AI zich gedraagt. De meeste mensen hebben ze nooit nodig.</string>
     <string name="settings_section_advanced_fix">AI-fouten herstellen</string>
-    <string name="settings_section_advanced_byok">Bespaar credits</string>
+    <string name="settings_section_advanced_byok">AI-opties</string>
     <string name="settings_section_advanced_power">Geavanceerde opties</string>
-    <string name="settings_section_advanced_feedback">Help ons verbeteren</string>
     <string name="settings_retag_row">Al mijn kleding opnieuw taggen</string>
     <string name="settings_retag_row_sub">Laat de AI alles opnieuw benoemen en categoriseren. Kost ~2 credits per item.</string>
     <string name="settings_rebg_row">Achtergronden opnieuw verwijderen</string>
@@ -966,7 +955,6 @@
     <string name="settings_similarity_preview_row">AI-gelijkenisvoorbeeld tonen</string>
     <string name="settings_similarity_preview_sub">Diagnostiek voor zoeken op foto.</string>
     <string name="settings_send_feedback">Feedback sturen</string>
-    <string name="settings_export_diagnostics">Diagnostiek exporteren</string>
     <string name="settings_retag_title">Alle %1$d kledingstukken opnieuw taggen?</string>
     <string name="settings_retag_body">De AI bekijkt elk item opnieuw en kan de naam, kleur of categorie wijzigen. Alles wat je met de hand hernoemde, wordt vervangen.</string>
     <string name="settings_retag_confirm">Alle kleding opnieuw taggen</string>
@@ -1251,4 +1239,22 @@
     <string name="calendar_done_wear">Geregistreerd op %1$s</string>
     <string name="calendar_done_move">Verplaatst naar %1$s</string>
     <string name="calendar_done_copy">Gekopieerd naar %1$s</string>
+
+    <!-- About: website + source links -->
+    <string name="about_website_label">Website</string>
+    <string name="about_github_label">Broncode</string>
+
+    <!-- About: cost-statistics link -->
+    <string name="about_view_cost_stats">Kostenstatistieken bekijken</string>
+
+    <!-- Settings: Help section + feedback email flow -->
+    <string name="settings_section_help">Help</string>
+    <string name="feedback_dialog_body">We openen je e-mailapp met een bericht aan %1$s. Vertel ons wat er misging en wat je verwachtte.</string>
+    <string name="feedback_attach_label">Diagnostische gegevens bijvoegen</string>
+    <string name="feedback_attach_sub">Voegt een bestand toe met app-versie, apparaatinfo en recente app-logs. Geen foto\'s, persoonlijke gegevens of API-sleutels.</string>
+    <string name="feedback_email_prompt">Beschrijf het probleem hier — wat er gebeurde, wat je verwachtte en de stappen om het te reproduceren.</string>
+    <string name="feedback_email_subject">LibreLookAI-feedback (%1$s)</string>
+
+    <!-- Feedback: no email app fallback -->
+    <string name="feedback_no_email_app">Geen e-mailapp gevonden. Mail ons handmatig op %1$s.</string>
 </resources>

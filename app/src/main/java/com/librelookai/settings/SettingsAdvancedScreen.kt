@@ -1,8 +1,6 @@
 package com.librelookai.settings
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,12 +14,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.Send
-import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.automirrored.filled.ShowChart
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -36,7 +31,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -64,8 +58,6 @@ fun SettingsAdvancedScreen(
     onToggleSimilarityPreview: (Boolean) -> Unit,
     onSelectImageQuality: (com.librelookai.util.ImageQuality) -> Unit,
     onOpenUsage: () -> Unit,
-    onSendFeedback: () -> Unit,
-    onExportDiagnostics: () -> Unit,
     onBack: () -> Unit,
 ) {
     val isOffline = LocalIsOffline.current
@@ -88,60 +80,23 @@ fun SettingsAdvancedScreen(
             },
         )
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-            // Warning pill + intro
-            Column(modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 4.dp)) {
-                Row(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(999.dp))
-                        .background(aiAccent().copy(alpha = 0.18f))
-                        .padding(horizontal = 10.dp, vertical = 5.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Warning,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(12.dp),
-                    )
-                    Text(
-                        text = stringResource(R.string.settings_advanced_rarely_needed_pill).uppercase(),
-                        fontSize = 10.5.sp,
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = 0.6.sp,
-                        color = MaterialTheme.colorScheme.primary,
+            // FIX AI MISTAKES
+            if (FeatureFlags.powerFeatures) {
+                SecLabel(stringResource(R.string.settings_section_advanced_fix))
+                SettingsCard {
+                    SettingsRow(
+                        icon = Icons.Filled.Refresh,
+                        iconBg = accentTile,
+                        label = stringResource(R.string.settings_retag_row),
+                        sub = stringResource(R.string.settings_retag_row_sub),
+                        isLast = true,
+                        onClick = if (isOffline) null else ({ onDestructive(DestructiveAction.RETAG) }),
                     )
                 }
-                Text(
-                    text = stringResource(R.string.settings_advanced_intro),
-                    fontSize = 13.sp,
-                    lineHeight = 20.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(top = 10.dp),
-                )
             }
 
-            // FIX AI MISTAKES
-            SecLabel(stringResource(R.string.settings_section_advanced_fix))
-            SettingsCard {
-                SettingsRow(
-                    icon = Icons.Filled.Refresh,
-                    iconBg = accentTile,
-                    label = stringResource(R.string.settings_retag_row),
-                    sub = stringResource(R.string.settings_retag_row_sub),
-                    isLast = true,
-                    onClick = if (isOffline) null else ({ onDestructive(DestructiveAction.RETAG) }),
-                )
-            }
-
-            // SKIP THE CREDITS — BYOK
+            // AI OPTIONS — usage/costs + your Gemini key
             SecLabel(stringResource(R.string.settings_section_advanced_byok))
-            SettingsCard {
-                ByokBlock(currentApiKey = currentApiKey, onSaveApiKey = onSaveApiKey)
-            }
-
-            // POWER OPTIONS
-            SecLabel(stringResource(R.string.settings_section_advanced_power))
             SettingsCard {
                 SettingsRow(
                     icon = Icons.AutoMirrored.Filled.ShowChart,
@@ -149,6 +104,12 @@ fun SettingsAdvancedScreen(
                     sub = stringResource(R.string.settings_usage_charts_sub),
                     onClick = onOpenUsage,
                 )
+                ByokBlock(currentApiKey = currentApiKey, onSaveApiKey = onSaveApiKey)
+            }
+
+            // POWER OPTIONS
+            SecLabel(stringResource(R.string.settings_section_advanced_power))
+            SettingsCard {
                 SettingsRow(
                     label = stringResource(R.string.settings_dedupe_row),
                     sub = stringResource(R.string.settings_dedupe_sub),
@@ -177,21 +138,6 @@ fun SettingsAdvancedScreen(
                 }
             }
 
-            // HELP US IMPROVE
-            SecLabel(stringResource(R.string.settings_section_advanced_feedback))
-            SettingsCard {
-                SettingsRow(
-                    icon = Icons.AutoMirrored.Filled.Send,
-                    label = stringResource(R.string.settings_send_feedback),
-                    onClick = onSendFeedback,
-                )
-                SettingsRow(
-                    icon = Icons.Filled.Download,
-                    label = stringResource(R.string.settings_export_diagnostics),
-                    isLast = true,
-                    onClick = onExportDiagnostics,
-                )
-            }
             Spacer(Modifier.height(18.dp))
         }
     }

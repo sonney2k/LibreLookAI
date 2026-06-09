@@ -616,7 +616,6 @@
     <string name="tryon_cost_line">Κοστί %1$d μονάδες ανά δοκιμή</string>
     <string name="tryon_camera">Κάμερα</string>
     <string name="tryon_gallery">Συλλογή</string>
-    <string name="about_cost_tryon">Δημιουργία δοκιμής: 8 μονάδες</string>
 
     <!-- Try-on composer / history -->
     <string name="action_add">Προσθήκη</string>
@@ -659,11 +658,6 @@
     <string name="about_open_source">Η εφαρμογή είναι ανοιχτού κώδικα και διαθέσιμη στο GitHub.</string>
     <string name="about_ai_title">Χρήση AI &amp; Κόστος</string>
     <string name="about_ai_desc">Το LibreLookAI βασίζεται στο Google Gemini. Κάθε ενέργεια AI έχει ένα μικρό κόστος.</string>
-    <string name="about_cost_title">Κόστος ανά ενέργεια AI</string>
-    <string name="about_cost_bg_removal">Αφαίρεση φόντου: 5 μονάδες</string>
-    <string name="about_cost_classify">Αυτόματη ετικέτα: 2 μονάδες</string>
-    <string name="about_cost_text">Πρόταση συνόλου: 2 μονάδες</string>
-    <string name="about_cost_travel">Λίστα ταξιδιού / ανάλυση ελλείψεων: 2 μονάδες</string>
     <string name="about_byok_title">Χρήση Δικού σας Κλειδιού (BYOK)</string>
     <string name="about_byok_desc">Το LibreLookAI λειτουργεί με το δικό σας κλειδί Gemini API:\n\n1. Μεταβείτε στο aistudio.google.com\n2. Πατήστε Get API key → Create API key\n3. Αντιγράψτε το κλειδί (ξεκινά με AIza…)\n4. Επικολλήστε το στις Ρυθμίσεις → Για προχωρημένους → Κλειδί Gemini API\n\nΈνα δωρεάν κλειδί καλύπτει τις ετικέτες και τις προτάσεις συνόλων. Η εικονική δοκιμή και η αφαίρεση φόντου δημιουργούν εικόνες και απαιτούν πληρωμένο κλειδί με ενεργοποιημένη χρέωση — η Google χρεώνει και πάλι μόνο ό,τι χρησιμοποιείτε. Το κλειδί σας αποθηκεύεται μόνο σε αυτή τη συσκευή και χρησιμοποιείται απευθείας με την Google — κανένα δεδομένο δεν περνά από τους διακομιστές μας.</string>
     <string name="about_credits_title">Μονάδες (Managed Mode)</string>
@@ -910,7 +904,6 @@
     <string name="settings_section_your_closets">Οι ντουλάπες σου</string>
     <string name="settings_section_how_it_looks">Εμφάνιση</string>
     <string name="settings_section_ai_credits">Πιστώσεις AI</string>
-    <string name="settings_section_more">Περισσότερα</string>
     <string name="settings_tryon_photos_title">Φωτογραφίες δοκιμής</string>
     <string name="settings_tryon_photos_hint">Τρεις γρήγορες φωτογραφίες ολόσωμες ώστε το AI να σε ντύσει. Μόνο εσύ τις βλέπεις.</string>
     <string name="settings_tryon_front">Μπροστά</string>
@@ -932,20 +925,16 @@
     <string name="settings_credits_friendly_format">Αρκετές για ~%1$d δοκιμές ή %2$d ιδέες εμφάνισης.</string>
     <string name="settings_credits_get_more">Απόκτησε κι άλλες</string>
     <string name="settings_more_advanced">Για προχωρημένους</string>
-    <string name="settings_more_advanced_subtitle">Επανασάρωση ετικετών · Επανααφαίρεση φόντων · Κλειδί API · Διαγνωστικά</string>
-    <string name="settings_more_help">Βοήθεια &amp; Συχνές ερωτήσεις</string>
+    <string name="settings_more_advanced_subtitle">Χρήση &amp; κόστος AI · κλειδί API · προηγμένες επιλογές</string>
     <string name="settings_more_about">Σχετικά με το LibreLookAI</string>
     <string name="settings_profile_edit_title">Επεξεργασία προφίλ</string>
     <string name="settings_profile_gender">Φύλο / αντωνυμίες</string>
     <string name="settings_profile_year">Έτος γέννησης</string>
     <string name="settings_profile_ai_considerations">Τι να λαμβάνει υπόψη το AI</string>
     <string name="settings_advanced_title">Για προχωρημένους</string>
-    <string name="settings_advanced_rarely_needed_pill">Σπάνια χρειάζεται</string>
-    <string name="settings_advanced_intro">Αυτά τα εργαλεία διορθώνουν προβλήματα με δεδομένα που έχει χαρακτηρίσει το AI ή αλλάζουν τη συμπεριφορά του. Οι περισσότεροι δεν τα χρειάζονται ποτέ.</string>
     <string name="settings_section_advanced_fix">Διόρθωση λαθών του AI</string>
-    <string name="settings_section_advanced_byok">Γλίτωσε πιστώσεις</string>
+    <string name="settings_section_advanced_byok">Επιλογές AI</string>
     <string name="settings_section_advanced_power">Επιλογές για προχωρημένους</string>
-    <string name="settings_section_advanced_feedback">Βοήθησέ μας να βελτιωθούμε</string>
     <string name="settings_retag_row">Επανα-ετικετοποίηση όλων των ρούχων μου</string>
     <string name="settings_retag_row_sub">Ζήτα από το AI να μετονομάσει και να κατηγοριοποιήσει ξανά τα πάντα. Κοστίζει ~2 πιστώσεις ανά είδος.</string>
     <string name="settings_rebg_row">Επανααφαίρεση φόντων</string>
@@ -966,7 +955,6 @@
     <string name="settings_similarity_preview_row">Εμφάνιση προεπισκόπησης ομοιότητας AI</string>
     <string name="settings_similarity_preview_sub">Διαγνωστικά για την αναζήτηση με φωτογραφία.</string>
     <string name="settings_send_feedback">Αποστολή σχολίων</string>
-    <string name="settings_export_diagnostics">Εξαγωγή διαγνωστικών</string>
     <string name="settings_retag_title">Επανα-ετικετοποίηση και των %1$d ρούχων;</string>
     <string name="settings_retag_body">Το AI θα δει ξανά κάθε είδος και μπορεί να αλλάξει το όνομα, το χρώμα ή την κατηγορία του. Ό,τι μετονόμασες με το χέρι θα αντικατασταθεί.</string>
     <string name="settings_retag_confirm">Επανα-ετικετοποίηση όλων των ρούχων</string>
@@ -1251,4 +1239,22 @@
     <string name="calendar_done_wear">Καταχωρήθηκε στις %1$s</string>
     <string name="calendar_done_move">Μετακινήθηκε στις %1$s</string>
     <string name="calendar_done_copy">Αντιγράφηκε στις %1$s</string>
+
+    <!-- About: website + source links -->
+    <string name="about_website_label">Ιστότοπος</string>
+    <string name="about_github_label">Πηγαίος κώδικας</string>
+
+    <!-- About: cost-statistics link -->
+    <string name="about_view_cost_stats">Προβολή στατιστικών κόστους</string>
+
+    <!-- Settings: Help section + feedback email flow -->
+    <string name="settings_section_help">Βοήθεια</string>
+    <string name="feedback_dialog_body">Θα ανοίξουμε την εφαρμογή email σας με ένα μήνυμα προς %1$s. Πείτε μας τι πήγε στραβά και τι περιμένατε.</string>
+    <string name="feedback_attach_label">Επισύναψη διαγνωστικών</string>
+    <string name="feedback_attach_sub">Προσθέτει ένα αρχείο με την έκδοση της εφαρμογής, στοιχεία συσκευής και πρόσφατα αρχεία καταγραφής. Δεν περιλαμβάνονται φωτογραφίες, προσωπικά δεδομένα ή κλειδιά API.</string>
+    <string name="feedback_email_prompt">Περιγράψτε το πρόβλημα εδώ — τι συνέβη, τι περιμένατε και τα βήματα αναπαραγωγής.</string>
+    <string name="feedback_email_subject">Σχόλια LibreLookAI (%1$s)</string>
+
+    <!-- Feedback: no email app fallback -->
+    <string name="feedback_no_email_app">Δεν βρέθηκε εφαρμογή email. Στείλτε μας email χειροκίνητα στο %1$s.</string>
 </resources>

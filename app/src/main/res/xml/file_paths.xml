@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- Diagnostics .txt attached to feedback emails (settings/Feedback.kt). -->
+    <cache-path name="feedback" path="feedback/" />
+</paths>

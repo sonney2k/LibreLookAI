@@ -616,7 +616,6 @@
     <string name="tryon_cost_line">Koster %1$d kreditter pr. prøvning</string>
     <string name="tryon_camera">Kamera</string>
     <string name="tryon_gallery">Galleri</string>
-    <string name="about_cost_tryon">Prøvningsgenerering: 8 kreditter</string>
 
     <!-- Prøvnings-composer / historik -->
     <string name="action_add">Tilføj</string>
@@ -659,11 +658,6 @@
     <string name="about_open_source">Denne app er open source og gratis at bruge. Kildekoden er tilgængelig på GitHub.</string>
     <string name="about_ai_title">AI-brug &amp; omkostninger</string>
     <string name="about_ai_desc">LibreLookAI er stærkt afhængig af Google Gemini til billed- og tekst-AI. Hver AI-handling (baggrundsfjernelse, tagging, outfit-forslag osv.) kræver et Gemini API-kald, som har en lille omkostning.</string>
-    <string name="about_cost_title">Omkostning pr. AI-handling</string>
-    <string name="about_cost_bg_removal">Baggrundsfjernelse: 5 kreditter</string>
-    <string name="about_cost_classify">Auto-tag stykke: 2 kreditter</string>
-    <string name="about_cost_text">Outfit-forslag: 2 kreditter</string>
-    <string name="about_cost_travel">Pakkeliste til rejse / garderobehul-analyse: 2 kreditter</string>
     <string name="about_byok_title">Brug din egen nøgle (BYOK)</string>
     <string name="about_byok_desc">LibreLookAI kører på din egen Gemini API-nøgle:\n\n1. Gå til aistudio.google.com\n2. Tryk på Get API key → Create API key\n3. Kopiér nøglen (starter med AIza…)\n4. Indsæt den i Indstillinger → Avanceret → Gemini API-nøgle\n\nEn gratis nøgle dækker tagging og outfit-forslag. Virtuel prøvning og baggrundsfjernelse genererer billeder og kræver en betalt nøgle med fakturering aktiveret — Google opkræver stadig kun for det, du bruger. Din nøgle gemmes kun på denne enhed og bruges direkte med Google — ingen data går via vores servere.</string>
     <string name="about_credits_title">Kreditter (administreret tilstand)</string>
@@ -910,7 +904,6 @@
     <string name="settings_section_your_closets">Dine garderober</string>
     <string name="settings_section_how_it_looks">Udseende</string>
     <string name="settings_section_ai_credits">AI-kreditter</string>
-    <string name="settings_section_more">Mere</string>
     <string name="settings_tryon_photos_title">Prøvefotos</string>
     <string name="settings_tryon_photos_hint">Tre hurtige helkropsbilleder, så AI kan klæde dig på. Kun du ser dem.</string>
     <string name="settings_tryon_front">Forfra</string>
@@ -932,20 +925,16 @@
     <string name="settings_credits_friendly_format">Nok til ~%1$d prøvninger eller %2$d outfit-idéer.</string>
     <string name="settings_credits_get_more">Få flere</string>
     <string name="settings_more_advanced">Avanceret</string>
-    <string name="settings_more_advanced_subtitle">Scan tags igen · Fjern baggrunde igen · API-nøgle · Diagnostik</string>
-    <string name="settings_more_help">Hjælp &amp; FAQ</string>
+    <string name="settings_more_advanced_subtitle">AI-forbrug &amp; omkostninger · API-nøgle · avancerede valg</string>
     <string name="settings_more_about">Om LibreLookAI</string>
     <string name="settings_profile_edit_title">Rediger profil</string>
     <string name="settings_profile_gender">Køn / stedord</string>
     <string name="settings_profile_year">Fødselsår</string>
     <string name="settings_profile_ai_considerations">Hvad AI skal tage højde for</string>
     <string name="settings_advanced_title">Avanceret</string>
-    <string name="settings_advanced_rarely_needed_pill">Sjældent nødvendigt</string>
-    <string name="settings_advanced_intro">Disse værktøjer retter problemer med AI-tagget data eller ændrer, hvordan AI opfører sig. De fleste behøver aldrig at røre dem.</string>
     <string name="settings_section_advanced_fix">Ret AI-fejl</string>
-    <string name="settings_section_advanced_byok">Spar kreditterne</string>
+    <string name="settings_section_advanced_byok">AI-indstillinger</string>
     <string name="settings_section_advanced_power">Avancerede indstillinger</string>
-    <string name="settings_section_advanced_feedback">Hjælp os med at blive bedre</string>
     <string name="settings_retag_row">Tag alt mit tøj igen</string>
     <string name="settings_retag_row_sub">Bed AI om at omdøbe og kategorisere alt igen. Koster ~2 kreditter pr. ting.</string>
     <string name="settings_rebg_row">Fjern baggrunde igen</string>
@@ -966,7 +955,6 @@
     <string name="settings_similarity_preview_row">Vis AI-lighedseksempel</string>
     <string name="settings_similarity_preview_sub">Diagnostik til søg-via-foto.</string>
     <string name="settings_send_feedback">Send feedback</string>
-    <string name="settings_export_diagnostics">Eksportér diagnostik</string>
     <string name="settings_retag_title">Tag alle %1$d stykker tøj igen?</string>
     <string name="settings_retag_body">AI ser på hver ting igen og kan ændre navn, farve eller kategori. Alt, du har omdøbt manuelt, bliver erstattet.</string>
     <string name="settings_retag_confirm">Tag alt tøj igen</string>
@@ -1251,4 +1239,22 @@
     <string name="calendar_done_wear">Registreret den %1$s</string>
     <string name="calendar_done_move">Flyttet til %1$s</string>
     <string name="calendar_done_copy">Kopieret til %1$s</string>
+
+    <!-- About: website + source links -->
+    <string name="about_website_label">Websted</string>
+    <string name="about_github_label">Kildekode</string>
+
+    <!-- About: cost-statistics link -->
+    <string name="about_view_cost_stats">Vis omkostningsstatistik</string>
+
+    <!-- Settings: Help section + feedback email flow -->
+    <string name="settings_section_help">Hjælp</string>
+    <string name="feedback_dialog_body">Vi åbner din mailapp med en besked til %1$s. Fortæl os, hvad der gik galt, og hvad du forventede.</string>
+    <string name="feedback_attach_label">Vedhæft diagnostik</string>
+    <string name="feedback_attach_sub">Tilføjer en fil med app-version, enhedsoplysninger og seneste app-logfiler. Ingen billeder, personlige data eller API-nøgler.</string>
+    <string name="feedback_email_prompt">Beskriv problemet her — hvad der skete, hvad du forventede, og trinene til at gengive det.</string>
+    <string name="feedback_email_subject">LibreLookAI-feedback (%1$s)</string>
+
+    <!-- Feedback: no email app fallback -->
+    <string name="feedback_no_email_app">Ingen e-mailapp fundet. Skriv til os manuelt på %1$s.</string>
 </resources>

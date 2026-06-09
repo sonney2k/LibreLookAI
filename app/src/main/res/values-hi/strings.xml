@@ -371,12 +371,6 @@
     <string name="about_ai_title">AI उपयोग &amp; लागत</string>
     <string name="about_byok_desc">LibreLookAI आपकी अपनी Gemini API कुंजी से चलता है:\n\n1. aistudio.google.com पर जाएँ\n2. Get API key → Create API key पर टैप करें\n3. कुंजी कॉपी करें (AIza… से शुरू होती है)\n4. इसे सेटिंग → उन्नत → Gemini API कुंजी में चिपकाएँ\n\nमुफ़्त कुंजी टैगिंग और आउटफिट सुझावों को कवर करती है। वर्चुअल ट्राई-ऑन और बैकग्राउंड हटाना छवियाँ बनाते हैं, जिनके लिए बिलिंग सक्षम वाली सशुल्क कुंजी चाहिए — Google फिर भी केवल आपके उपयोग का ही शुल्क लेता है। आपकी कुंजी केवल इसी डिवाइस पर रखी जाती है और सीधे Google के साथ उपयोग होती है — कोई डेटा हमारे सर्वर से नहीं गुज़रता।</string>
     <string name="about_byok_title">अपनी खुद की कुंजी लाएं (BYOK)</string>
-    <string name="about_cost_bg_removal">बैकग्राउंड हटाना: 5 क्रेडिट</string>
-    <string name="about_cost_classify">ऑटो-टैग आइटम: 2 क्रेडिट</string>
-    <string name="about_cost_text">आउटफ़िट सुझाव: 2 क्रेडिट</string>
-    <string name="about_cost_title">प्रति AI क्रिया लागत</string>
-    <string name="about_cost_travel">यात्रा पैकिंग सूची / वॉर्डरोब गैप विश्लेषण: 2 क्रेडिट</string>
-    <string name="about_cost_tryon">ट्राय-ऑन निर्माण: 8 क्रेडिट</string>
     <string name="about_credits_desc">जो उपयोगकर्ता अपनी API कुंजी नहीं बनाना चाहते, उनके लिए ऐप सिक्का-आधारित क्रेडिट प्रणाली प्रदान करता है। क्रेडिट्स को क्रेडिट्स टैब में खरीदा जा सकता है और ऊपर दी गई दरों पर प्रति AI क्रिया खर्च होते हैं। यह मोड अनुरोधों को सर्वर-साइड प्रॉक्सी के माध्यम से रूट करता है।</string>
     <string name="about_credits_title">क्रेडिट्स (प्रबंधित मोड)</string>
     <string name="about_description">LibreLookAI एक मुफ्त, ओपन-सोर्स, AI-संचालित वॉर्डरोब प्रबंधक है। यह आपके कपड़ों को व्यवस्थित करने, आउटफ़िट सुझाव पाने, यात्रा पैकिंग सूचियाँ बनाने और वॉर्डरोब की कमियाँ खोजने में मदद करता है — सब कुछ AI से।</string>
@@ -883,7 +877,6 @@
     <string name="settings_section_your_closets">आपकी अलमारियाँ</string>
     <string name="settings_section_how_it_looks">रूप-रंग</string>
     <string name="settings_section_ai_credits">AI क्रेडिट</string>
-    <string name="settings_section_more">और</string>
     <string name="settings_tryon_photos_title">ट्राई-ऑन फ़ोटो</string>
     <string name="settings_tryon_photos_hint">तीन तेज़ पूरे शरीर की तस्वीरें ताकि AI आपको कपड़े पहना सके। इन्हें सिर्फ़ आप देखते हैं।</string>
     <string name="settings_tryon_front">सामने</string>
@@ -905,20 +898,16 @@
     <string name="settings_credits_friendly_format">~%1$d ट्राई-ऑन या %2$d आउटफ़िट आइडिया के लिए पर्याप्त।</string>
     <string name="settings_credits_get_more">और पाएँ</string>
     <string name="settings_more_advanced">उन्नत</string>
-    <string name="settings_more_advanced_subtitle">टैग फिर से स्कैन करें · बैकग्राउंड फिर से हटाएँ · API कुंजी · डायग्नोस्टिक्स</string>
-    <string name="settings_more_help">मदद &amp; सामान्य प्रश्न</string>
+    <string name="settings_more_advanced_subtitle">एआई उपयोग और लागत · API कुंजी · उन्नत विकल्प</string>
     <string name="settings_more_about">LibreLookAI के बारे में</string>
     <string name="settings_profile_edit_title">प्रोफ़ाइल बदलें</string>
     <string name="settings_profile_gender">लिंग / सर्वनाम</string>
     <string name="settings_profile_year">जन्म का वर्ष</string>
     <string name="settings_profile_ai_considerations">AI को क्या ध्यान में रखना चाहिए</string>
     <string name="settings_advanced_title">उन्नत</string>
-    <string name="settings_advanced_rarely_needed_pill">शायद ही कभी ज़रूरत</string>
-    <string name="settings_advanced_intro">ये टूल AI-टैग किए गए डेटा की समस्याएँ ठीक करते हैं या AI का व्यवहार बदलते हैं। ज़्यादातर लोगों को इनकी कभी ज़रूरत नहीं पड़ती।</string>
     <string name="settings_section_advanced_fix">AI की गलतियाँ ठीक करें</string>
-    <string name="settings_section_advanced_byok">क्रेडिट बचाएँ</string>
+    <string name="settings_section_advanced_byok">एआई विकल्प</string>
     <string name="settings_section_advanced_power">उन्नत विकल्प</string>
-    <string name="settings_section_advanced_feedback">हमें बेहतर बनाने में मदद करें</string>
     <string name="settings_retag_row">मेरे सभी कपड़े फिर से टैग करें</string>
     <string name="settings_retag_row_sub">AI से सब कुछ फिर से नाम और श्रेणी देने को कहें। प्रति आइटम ~2 क्रेडिट।</string>
     <string name="settings_rebg_row">बैकग्राउंड फिर से हटाएँ</string>
@@ -939,7 +928,6 @@
     <string name="settings_similarity_preview_row">AI समानता पूर्वावलोकन दिखाएँ</string>
     <string name="settings_similarity_preview_sub">फ़ोटो-से-खोज सुविधा के लिए डायग्नोस्टिक्स।</string>
     <string name="settings_send_feedback">फ़ीडबैक भेजें</string>
-    <string name="settings_export_diagnostics">डायग्नोस्टिक्स निर्यात करें</string>
     <string name="settings_retag_title">सभी %1$d कपड़े फिर से टैग करें?</string>
     <string name="settings_retag_body">AI हर आइटम को फिर से देखेगा और उसका नाम, रंग या श्रेणी बदल सकता है। आपने हाथ से जो कुछ भी नाम बदला है वह बदल दिया जाएगा।</string>
     <string name="settings_retag_confirm">सभी कपड़े फिर से टैग करें</string>
@@ -1224,4 +1212,22 @@
     <string name="calendar_done_wear">%1$s को लॉग किया गया</string>
     <string name="calendar_done_move">%1$s पर ले जाया गया</string>
     <string name="calendar_done_copy">%1$s पर कॉपी किया गया</string>
+
+    <!-- About: website + source links -->
+    <string name="about_website_label">वेबसाइट</string>
+    <string name="about_github_label">सोर्स कोड</string>
+
+    <!-- About: cost-statistics link -->
+    <string name="about_view_cost_stats">लागत आँकड़े देखें</string>
+
+    <!-- Settings: Help section + feedback email flow -->
+    <string name="settings_section_help">सहायता</string>
+    <string name="feedback_dialog_body">हम आपके ईमेल ऐप को %1$s पर संदेश के साथ खोलेंगे. हमें बताएं कि क्या गलत हुआ और आपने क्या उम्मीद की थी.</string>
+    <string name="feedback_attach_label">डायग्नोस्टिक्स संलग्न करें</string>
+    <string name="feedback_attach_sub">ऐप संस्करण, डिवाइस जानकारी और हाल के ऐप लॉग वाली फ़ाइल जोड़ता है. कोई फ़ोटो, व्यक्तिगत डेटा या API कुंजी शामिल नहीं है.</string>
+    <string name="feedback_email_prompt">कृपया समस्या का यहाँ वर्णन करें — क्या हुआ, आपने क्या उम्मीद की थी, और इसे दोहराने के चरण.</string>
+    <string name="feedback_email_subject">LibreLookAI फ़ीडबैक (%1$s)</string>
+
+    <!-- Feedback: no email app fallback -->
+    <string name="feedback_no_email_app">कोई ईमेल ऐप नहीं मिला. कृपया %1$s पर मैन्युअल रूप से ईमेल करें.</string>
 </resources>

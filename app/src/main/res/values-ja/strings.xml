@@ -616,7 +616,6 @@
     <string name="tryon_cost_line">試着1回あたり %1$d クレジット</string>
     <string name="tryon_camera">カメラ</string>
     <string name="tryon_gallery">ギャラリー</string>
-    <string name="about_cost_tryon">試着生成: 8 クレジット</string>
 
     <!-- 試着コンポーザー / 履歴 -->
     <string name="action_add">追加</string>
@@ -659,11 +658,6 @@
     <string name="about_open_source">このアプリはオープンソースで無料です。ソースコードは GitHub で公開されています。</string>
     <string name="about_ai_title">AI 利用とコスト</string>
     <string name="about_ai_desc">LibreLookAI は画像と文字のAIに Google Gemini を大きく利用しています。すべてのAIアクション(背景削除、タグ付け、コーデ提案など)は Gemini API 呼び出しを行い、わずかなコストがかかります。</string>
-    <string name="about_cost_title">AI アクションあたりのコスト</string>
-    <string name="about_cost_bg_removal">背景削除: 5 クレジット</string>
-    <string name="about_cost_classify">自動タグ付け: 2 クレジット</string>
-    <string name="about_cost_text">コーデ提案: 2 クレジット</string>
-    <string name="about_cost_travel">旅行パッキングリスト / クローゼットのギャップ分析: 2 クレジット</string>
     <string name="about_byok_title">自分のキーを使う (BYOK)</string>
     <string name="about_byok_desc">LibreLookAI はあなた自身の Gemini API キーで動作します:\n\n1. aistudio.google.com を開く\n2. Get API key → Create API key をタップ\n3. キーをコピー（AIza… で始まる）\n4. 設定 → 詳細設定 → Gemini API キー に貼り付け\n\n無料キーはタグ付けとコーディネート提案をカバーします。バーチャル試着と背景除去は画像を生成するため、請求を有効にした有料キーが必要です。Google が課金するのは使用した分だけです。キーはこの端末にのみ保存され、Google と直接やり取りします。当社のサーバーを経由するデータはありません。</string>
     <string name="about_credits_title">クレジット(マネージドモード)</string>
@@ -910,7 +904,6 @@
     <string name="settings_section_your_closets">あなたのクローゼット</string>
     <string name="settings_section_how_it_looks">外観</string>
     <string name="settings_section_ai_credits">AIクレジット</string>
-    <string name="settings_section_more">その他</string>
     <string name="settings_tryon_photos_title">試着用の写真</string>
     <string name="settings_tryon_photos_hint">AIが着せ替えできるよう、全身を素早く3枚。見るのはあなただけです。</string>
     <string name="settings_tryon_front">正面</string>
@@ -932,20 +925,16 @@
     <string name="settings_credits_friendly_format">試着 約%1$d回、またはコーデ案 %2$d件分。</string>
     <string name="settings_credits_get_more">もっと入手</string>
     <string name="settings_more_advanced">詳細設定</string>
-    <string name="settings_more_advanced_subtitle">タグの再スキャン · 背景の再削除 · APIキー · 診断</string>
-    <string name="settings_more_help">ヘルプ &amp; よくある質問</string>
+    <string name="settings_more_advanced_subtitle">AIの使用状況とコスト · APIキー · 詳細オプション</string>
     <string name="settings_more_about">LibreLookAIについて</string>
     <string name="settings_profile_edit_title">プロフィールを編集</string>
     <string name="settings_profile_gender">性別 / 代名詞</string>
     <string name="settings_profile_year">生まれ年</string>
     <string name="settings_profile_ai_considerations">AIが考慮すべきこと</string>
     <string name="settings_advanced_title">詳細設定</string>
-    <string name="settings_advanced_rarely_needed_pill">ほとんど不要</string>
-    <string name="settings_advanced_intro">これらのツールはAIがタグ付けしたデータの問題を修正したり、AIの動作を変更したりします。ほとんどの人は触れる必要がありません。</string>
     <string name="settings_section_advanced_fix">AIの間違いを修正</string>
-    <string name="settings_section_advanced_byok">クレジットを節約</string>
+    <string name="settings_section_advanced_byok">AI オプション</string>
     <string name="settings_section_advanced_power">詳細オプション</string>
-    <string name="settings_section_advanced_feedback">改善にご協力ください</string>
     <string name="settings_retag_row">すべての服を再タグ付け</string>
     <string name="settings_retag_row_sub">AIにすべての名前付けと分類をやり直してもらいます。1点あたり約2クレジット。</string>
     <string name="settings_rebg_row">背景を再削除</string>
@@ -966,7 +955,6 @@
     <string name="settings_similarity_preview_row">AI類似度プレビューを表示</string>
     <string name="settings_similarity_preview_sub">写真で探す機能の診断。</string>
     <string name="settings_send_feedback">フィードバックを送信</string>
-    <string name="settings_export_diagnostics">診断をエクスポート</string>
     <string name="settings_retag_title">%1$d点の服をすべて再タグ付けしますか？</string>
     <string name="settings_retag_body">AIは各アイテムを見直し、名前・色・カテゴリを変更する場合があります。手動で変更した名前は置き換えられます。</string>
     <string name="settings_retag_confirm">すべての服を再タグ付け</string>
@@ -1251,4 +1239,22 @@
     <string name="calendar_done_wear">%1$s に記録しました</string>
     <string name="calendar_done_move">%1$s に移動しました</string>
     <string name="calendar_done_copy">%1$s にコピーしました</string>
+
+    <!-- About: website + source links -->
+    <string name="about_website_label">ウェブサイト</string>
+    <string name="about_github_label">ソースコード</string>
+
+    <!-- About: cost-statistics link -->
+    <string name="about_view_cost_stats">コスト統計を表示</string>
+
+    <!-- Settings: Help section + feedback email flow -->
+    <string name="settings_section_help">ヘルプ</string>
+    <string name="feedback_dialog_body">%1$s 宛てのメールアプリを開きます。何が問題だったか、何を期待していたかをお知らせください。</string>
+    <string name="feedback_attach_label">診断情報を添付</string>
+    <string name="feedback_attach_sub">アプリのバージョン、デバイス情報、最近のアプリログを含むファイルを追加します。写真、個人データ、APIキーは含まれません。</string>
+    <string name="feedback_email_prompt">問題をここに記入してください — 何が起きたか、何を期待したか、再現手順。</string>
+    <string name="feedback_email_subject">LibreLookAI フィードバック (%1$s)</string>
+
+    <!-- Feedback: no email app fallback -->
+    <string name="feedback_no_email_app">メールアプリが見つかりません。%1$s まで手動でメールしてください。</string>
 </resources>

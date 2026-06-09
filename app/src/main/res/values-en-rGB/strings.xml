@@ -616,7 +616,6 @@
     <string name="tryon_cost_line">Costs %1$d credits per try-on</string>
     <string name="tryon_camera">Camera</string>
     <string name="tryon_gallery">Gallery</string>
-    <string name="about_cost_tryon">Try-on generation: 8 credits</string>
 
     <!-- Try-on composer / history -->
     <string name="action_add">Add</string>
@@ -659,11 +658,6 @@
     <string name="about_open_source">This app is open source and free to use. The source code is available on GitHub.</string>
     <string name="about_ai_title">AI Usage &amp; Costs</string>
     <string name="about_ai_desc">LibreLookAI relies heavily on Google Gemini for vision and text AI. Every AI action (background removal, tagging, outfit suggestions, etc.) requires a Gemini API call, which has a small cost.</string>
-    <string name="about_cost_title">Cost per AI action</string>
-    <string name="about_cost_bg_removal">Background removal: 5 credits</string>
-    <string name="about_cost_classify">Auto-tag item: 2 credits</string>
-    <string name="about_cost_text">Outfit suggestion: 2 credits</string>
-    <string name="about_cost_travel">Travel packing list / wardrobe gap analysis: 2 credits</string>
     <string name="about_byok_title">Bring Your Own Key (BYOK)</string>
     <string name="about_byok_desc">LibreLookAI runs on your own Gemini API key:\n\n1. Go to aistudio.google.com\n2. Tap Get API key → Create API key\n3. Copy the key (starts with AIza…)\n4. Paste it in Settings → Advanced → Gemini API Key\n\nA free key covers tagging and outfit suggestions. Virtual try-on and background removal generate images, which needs a billing-enabled (paid) key — Google still only charges for what you use. Your key is stored only on this device and used directly with Google — no data passes through our servers.</string>
     <string name="about_credits_title">Credits (Managed Mode)</string>
@@ -910,7 +904,6 @@
     <string name="settings_section_your_closets">Your closets</string>
     <string name="settings_section_how_it_looks">How it looks</string>
     <string name="settings_section_ai_credits">AI credits</string>
-    <string name="settings_section_more">More</string>
     <string name="settings_tryon_photos_title">Try-on photos</string>
     <string name="settings_tryon_photos_hint">Three quick body shots so AI can dress you up. Only you see them.</string>
     <string name="settings_tryon_front">Front</string>
@@ -932,20 +925,16 @@
     <string name="settings_credits_friendly_format">Enough for ~%1$d try-ons or %2$d outfit ideas.</string>
     <string name="settings_credits_get_more">Get more</string>
     <string name="settings_more_advanced">Advanced</string>
-    <string name="settings_more_advanced_subtitle">Re-scan tags · Re-remove backgrounds · API key · Diagnostics</string>
-    <string name="settings_more_help">Help &amp; FAQ</string>
+    <string name="settings_more_advanced_subtitle">AI usage &amp; costs · API key · power options</string>
     <string name="settings_more_about">About LibreLookAI</string>
     <string name="settings_profile_edit_title">Edit profile</string>
     <string name="settings_profile_gender">Gender / pronouns</string>
     <string name="settings_profile_year">Year of birth</string>
     <string name="settings_profile_ai_considerations">What AI should consider</string>
     <string name="settings_advanced_title">Advanced</string>
-    <string name="settings_advanced_rarely_needed_pill">Rarely needed</string>
-    <string name="settings_advanced_intro">These tools fix problems with AI-tagged data or change how AI behaves. Most people never need to touch them.</string>
     <string name="settings_section_advanced_fix">Fix AI mistakes</string>
-    <string name="settings_section_advanced_byok">Skip the credits</string>
+    <string name="settings_section_advanced_byok">AI options</string>
     <string name="settings_section_advanced_power">Power options</string>
-    <string name="settings_section_advanced_feedback">Help us improve</string>
     <string name="settings_retag_row">Re-tag all my clothes</string>
     <string name="settings_retag_row_sub">Ask AI to re-name and re-categorise everything. Costs ~2 credits per item.</string>
     <string name="settings_rebg_row">Re-remove backgrounds</string>
@@ -966,7 +955,6 @@
     <string name="settings_similarity_preview_row">Show AI similarity preview</string>
     <string name="settings_similarity_preview_sub">Diagnostics for the find-by-photo feature.</string>
     <string name="settings_send_feedback">Send feedback</string>
-    <string name="settings_export_diagnostics">Export diagnostics</string>
     <string name="settings_retag_title">Re-tag all %1$d clothes?</string>
     <string name="settings_retag_body">AI will look at every item again and may change its name, colour, or category. Anything you renamed by hand will be replaced.</string>
     <string name="settings_retag_confirm">Re-tag all clothes</string>
@@ -1251,4 +1239,22 @@
     <string name="calendar_done_wear">Logged on %1$s</string>
     <string name="calendar_done_move">Moved to %1$s</string>
     <string name="calendar_done_copy">Copied to %1$s</string>
+
+    <!-- About: website + source links -->
+    <string name="about_website_label">Website</string>
+    <string name="about_github_label">Source code</string>
+
+    <!-- About: cost-statistics link -->
+    <string name="about_view_cost_stats">View cost statistics</string>
+
+    <!-- Settings: Help section + feedback email flow -->
+    <string name="settings_section_help">Help</string>
+    <string name="feedback_dialog_body">We\'ll open your email app with a message to %1$s. Tell us what went wrong and what you expected.</string>
+    <string name="feedback_attach_label">Attach diagnostics</string>
+    <string name="feedback_attach_sub">Adds a file with app version, device info and recent app logs. No photos, personal data or API keys are included.</string>
+    <string name="feedback_email_prompt">Please describe the problem here — what happened, what you expected, and the steps to reproduce it.</string>
+    <string name="feedback_email_subject">LibreLookAI feedback (%1$s)</string>
+
+    <!-- Feedback: no email app fallback -->
+    <string name="feedback_no_email_app">No email app found. Please email %1$s manually.</string>
 </resources>

@@ -372,12 +372,6 @@
     <string name="about_ai_title">Penggunaan AI &amp; biaya</string>
     <string name="about_byok_desc">LibreLookAI berjalan dengan kunci API Gemini Anda sendiri:\n\n1. Buka aistudio.google.com\n2. Ketuk Get API key → Create API key\n3. Salin kunci (diawali AIza…)\n4. Tempel di Setelan → Lanjutan → Kunci API Gemini\n\nKunci gratis mencakup penandaan dan saran outfit. Coba-pakai virtual dan penghapusan latar menghasilkan gambar dan memerlukan kunci berbayar dengan penagihan aktif — Google tetap hanya menagih sesuai pemakaian. Kunci Anda disimpan hanya di perangkat ini dan digunakan langsung dengan Google — tidak ada data yang melewati server kami.</string>
     <string name="about_byok_title">Kunci sendiri (BYOK)</string>
-    <string name="about_cost_bg_removal">Penghapusan latar: 5 kredit</string>
-    <string name="about_cost_classify">Auto-tag item: 2 kredit</string>
-    <string name="about_cost_text">Saran setelan: 2 kredit</string>
-    <string name="about_cost_title">Biaya per aksi AI</string>
-    <string name="about_cost_travel">Daftar bawaan perjalanan / analisis kekurangan lemari: 2 kredit</string>
-    <string name="about_cost_tryon">Pembuatan coba-pakai: 8 kredit</string>
     <string name="about_credits_desc">Bagi pengguna yang tidak ingin membuat kunci API sendiri, app menyediakan sistem kredit berbasis koin. Kredit bisa dibeli di tab Kredit dan dipakai per aksi AI dengan tarif di atas. Mode ini menyalurkan permintaan melalui proxy server.</string>
     <string name="about_credits_title">Kredit (mode terkelola)</string>
     <string name="action_add">Tambah</string>
@@ -883,7 +877,6 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="settings_section_your_closets">Lemari Anda</string>
     <string name="settings_section_how_it_looks">Tampilan</string>
     <string name="settings_section_ai_credits">Kredit AI</string>
-    <string name="settings_section_more">Lainnya</string>
     <string name="settings_tryon_photos_title">Foto coba pakai</string>
     <string name="settings_tryon_photos_hint">Tiga foto cepat seluruh tubuh agar AI bisa mendandani Anda. Hanya Anda yang melihatnya.</string>
     <string name="settings_tryon_front">Depan</string>
@@ -905,20 +898,16 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="settings_credits_friendly_format">Cukup untuk ~%1$d coba pakai atau %2$d ide busana.</string>
     <string name="settings_credits_get_more">Dapatkan lebih</string>
     <string name="settings_more_advanced">Lanjutan</string>
-    <string name="settings_more_advanced_subtitle">Pindai ulang tag · Hapus ulang latar · Kunci API · Diagnostik</string>
-    <string name="settings_more_help">Bantuan &amp; FAQ</string>
+    <string name="settings_more_advanced_subtitle">Penggunaan &amp; biaya AI · kunci API · opsi lanjutan</string>
     <string name="settings_more_about">Tentang LibreLookAI</string>
     <string name="settings_profile_edit_title">Edit profil</string>
     <string name="settings_profile_gender">Gender / kata ganti</string>
     <string name="settings_profile_year">Tahun lahir</string>
     <string name="settings_profile_ai_considerations">Yang harus dipertimbangkan AI</string>
     <string name="settings_advanced_title">Lanjutan</string>
-    <string name="settings_advanced_rarely_needed_pill">Jarang dibutuhkan</string>
-    <string name="settings_advanced_intro">Alat ini memperbaiki masalah pada data yang ditandai AI atau mengubah perilaku AI. Kebanyakan orang tak pernah perlu menyentuhnya.</string>
     <string name="settings_section_advanced_fix">Perbaiki kesalahan AI</string>
-    <string name="settings_section_advanced_byok">Hemat kredit</string>
+    <string name="settings_section_advanced_byok">Opsi AI</string>
     <string name="settings_section_advanced_power">Opsi lanjutan</string>
-    <string name="settings_section_advanced_feedback">Bantu kami berkembang</string>
     <string name="settings_retag_row">Tandai ulang semua pakaian saya</string>
     <string name="settings_retag_row_sub">Minta AI menamai dan mengategorikan ulang semuanya. Biaya ~2 kredit per item.</string>
     <string name="settings_rebg_row">Hapus ulang latar</string>
@@ -939,7 +928,6 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="settings_similarity_preview_row">Tampilkan pratinjau kemiripan AI</string>
     <string name="settings_similarity_preview_sub">Diagnostik untuk fitur cari lewat foto.</string>
     <string name="settings_send_feedback">Kirim masukan</string>
-    <string name="settings_export_diagnostics">Ekspor diagnostik</string>
     <string name="settings_retag_title">Tandai ulang semua %1$d pakaian?</string>
     <string name="settings_retag_body">AI akan melihat setiap item lagi dan mungkin mengubah nama, warna, atau kategorinya. Apa pun yang Anda ganti namanya secara manual akan diganti.</string>
     <string name="settings_retag_confirm">Tandai ulang semua pakaian</string>
@@ -1224,4 +1212,22 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="calendar_done_wear">Dicatat pada %1$s</string>
     <string name="calendar_done_move">Dipindahkan ke %1$s</string>
     <string name="calendar_done_copy">Disalin ke %1$s</string>
+
+    <!-- About: website + source links -->
+    <string name="about_website_label">Situs web</string>
+    <string name="about_github_label">Kode sumber</string>
+
+    <!-- About: cost-statistics link -->
+    <string name="about_view_cost_stats">Lihat statistik biaya</string>
+
+    <!-- Settings: Help section + feedback email flow -->
+    <string name="settings_section_help">Bantuan</string>
+    <string name="feedback_dialog_body">Kami akan membuka aplikasi email Anda dengan pesan ke %1$s. Beri tahu kami apa yang salah dan apa yang Anda harapkan.</string>
+    <string name="feedback_attach_label">Lampirkan diagnostik</string>
+    <string name="feedback_attach_sub">Menambahkan file berisi versi aplikasi, info perangkat, dan log aplikasi terbaru. Tidak menyertakan foto, data pribadi, atau kunci API.</string>
+    <string name="feedback_email_prompt">Jelaskan masalahnya di sini — apa yang terjadi, apa yang Anda harapkan, dan langkah untuk mereproduksinya.</string>
+    <string name="feedback_email_subject">Masukan LibreLookAI (%1$s)</string>
+
+    <!-- Feedback: no email app fallback -->
+    <string name="feedback_no_email_app">Aplikasi email tidak ditemukan. Silakan kirim email secara manual ke %1$s.</string>
 </resources>

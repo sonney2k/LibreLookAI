@@ -618,7 +618,6 @@
     <string name="tryon_cost_line">Kostet %1$d Credits pro Anprobe</string>
     <string name="tryon_camera">Kamera</string>
     <string name="tryon_gallery">Galerie</string>
-    <string name="about_cost_tryon">Anprobe-Erstellung: 8 Credits</string>
 
     <!-- Try-on composer / history -->
     <string name="action_add">Hinzufügen</string>
@@ -714,11 +713,6 @@
     <string name="about_open_source">Diese App ist quelloffen und kostenlos nutzbar. Der Quellcode ist auf GitHub verfügbar.</string>
     <string name="about_ai_title">KI-Nutzung &amp; Kosten</string>
     <string name="about_ai_desc">LibreLookAI basiert stark auf Google Gemini für Bild- und Text-KI. Jede KI-Aktion (Hintergrundentfernung, Tagging, Outfit-Vorschläge usw.) erfordert einen Gemini-API-Aufruf, der geringe Kosten verursacht.</string>
-    <string name="about_cost_title">Kosten pro KI-Aktion</string>
-    <string name="about_cost_bg_removal">Hintergrundentfernung: 5 Credits</string>
-    <string name="about_cost_classify">Automatisches Tagging: 2 Credits</string>
-    <string name="about_cost_text">Outfit-Vorschlag: 2 Credits</string>
-    <string name="about_cost_travel">Reise-Packliste / Garderobe-Lücken-Analyse: 2 Credits</string>
     <string name="about_byok_title">Eigenen Schlüssel verwenden (BYOK)</string>
     <string name="about_byok_desc">LibreLookAI nutzt deinen eigenen Gemini-API-Schlüssel:\n\n1. Gehe zu aistudio.google.com\n2. Tippe auf Get API key → Create API key\n3. Kopiere den Schlüssel (beginnt mit AIza…)\n4. Füge ihn unter Einstellungen → Erweitert → Gemini-API-Schlüssel ein\n\nEin kostenloser Schlüssel deckt Tags und Outfit-Vorschläge ab. Virtuelle Anprobe und Hintergrundentfernung erzeugen Bilder und benötigen einen kostenpflichtigen Schlüssel mit aktivierter Abrechnung — Google berechnet weiterhin nur die tatsächliche Nutzung. Dein Schlüssel wird nur auf diesem Gerät gespeichert und direkt mit Google verwendet — keine Daten laufen über unsere Server.</string>
     <string name="about_credits_title">Credits (Verwalteter Modus)</string>
@@ -977,7 +971,6 @@
     <string name="settings_section_your_closets">Deine Schränke</string>
     <string name="settings_section_how_it_looks">Aussehen</string>
     <string name="settings_section_ai_credits">KI-Credits</string>
-    <string name="settings_section_more">Mehr</string>
     <string name="settings_tryon_photos_title">Anprobe-Fotos</string>
     <string name="settings_tryon_photos_hint">Drei schnelle Ganzkörperfotos, damit die KI dich anziehen kann. Nur du siehst sie.</string>
     <string name="settings_tryon_front">Vorne</string>
@@ -999,20 +992,16 @@
     <string name="settings_credits_friendly_format">Genug für ~%1$d Anproben oder %2$d Outfit-Ideen.</string>
     <string name="settings_credits_get_more">Mehr holen</string>
     <string name="settings_more_advanced">Erweitert</string>
-    <string name="settings_more_advanced_subtitle">Tags neu scannen · Hintergründe neu entfernen · API-Schlüssel · Diagnose</string>
-    <string name="settings_more_help">Hilfe &amp; FAQ</string>
+    <string name="settings_more_advanced_subtitle">KI-Nutzung &amp; Kosten · API-Schlüssel · Power-Optionen</string>
     <string name="settings_more_about">Über LibreLookAI</string>
     <string name="settings_profile_edit_title">Profil bearbeiten</string>
     <string name="settings_profile_gender">Geschlecht / Pronomen</string>
     <string name="settings_profile_year">Geburtsjahr</string>
     <string name="settings_profile_ai_considerations">Was die KI berücksichtigen soll</string>
     <string name="settings_advanced_title">Erweitert</string>
-    <string name="settings_advanced_rarely_needed_pill">Selten nötig</string>
-    <string name="settings_advanced_intro">Diese Werkzeuge beheben Probleme mit KI-getaggten Daten oder ändern das Verhalten der KI. Die meisten brauchen sie nie.</string>
     <string name="settings_section_advanced_fix">KI-Fehler beheben</string>
-    <string name="settings_section_advanced_byok">Credits sparen</string>
+    <string name="settings_section_advanced_byok">KI-Optionen</string>
     <string name="settings_section_advanced_power">Erweiterte Optionen</string>
-    <string name="settings_section_advanced_feedback">Hilf uns, besser zu werden</string>
     <string name="settings_retag_row">Alle Kleidungsstücke neu taggen</string>
     <string name="settings_retag_row_sub">Lass die KI alles neu benennen und kategorisieren. Kostet ~2 Credits pro Artikel.</string>
     <string name="settings_rebg_row">Hintergründe neu entfernen</string>
@@ -1033,7 +1022,6 @@
     <string name="settings_similarity_preview_row">KI-Ähnlichkeitsvorschau anzeigen</string>
     <string name="settings_similarity_preview_sub">Diagnose für die Funktion „Per Foto finden“.</string>
     <string name="settings_send_feedback">Feedback senden</string>
-    <string name="settings_export_diagnostics">Diagnose exportieren</string>
     <string name="settings_retag_title">Alle %1$d Kleidungsstücke neu taggen?</string>
     <string name="settings_retag_body">Die KI sieht sich jeden Artikel erneut an und ändert möglicherweise Name, Farbe oder Kategorie. Alles, was du von Hand umbenannt hast, wird ersetzt.</string>
     <string name="settings_retag_confirm">Alle Kleidungsstücke neu taggen</string>
@@ -1318,4 +1306,22 @@
     <string name="calendar_done_wear">Eingetragen am %1$s</string>
     <string name="calendar_done_move">Verschoben auf %1$s</string>
     <string name="calendar_done_copy">Kopiert auf %1$s</string>
+
+    <!-- About: website + source links -->
+    <string name="about_website_label">Website</string>
+    <string name="about_github_label">Quellcode</string>
+
+    <!-- About: cost-statistics link -->
+    <string name="about_view_cost_stats">Kostenstatistik ansehen</string>
+
+    <!-- Settings: Help section + feedback email flow -->
+    <string name="settings_section_help">Hilfe</string>
+    <string name="feedback_dialog_body">Wir öffnen deine E-Mail-App mit einer Nachricht an %1$s. Sag uns, was schiefgelaufen ist und was du erwartet hast.</string>
+    <string name="feedback_attach_label">Diagnose anhängen</string>
+    <string name="feedback_attach_sub">Fügt eine Datei mit App-Version, Geräteinfos und aktuellen App-Logs hinzu. Keine Fotos, persönlichen Daten oder API-Schlüssel.</string>
+    <string name="feedback_email_prompt">Bitte beschreibe hier das Problem – was passiert ist, was du erwartet hast und wie es sich reproduzieren lässt.</string>
+    <string name="feedback_email_subject">LibreLookAI-Feedback (%1$s)</string>
+
+    <!-- Feedback: no email app fallback -->
+    <string name="feedback_no_email_app">Keine E-Mail-App gefunden. Bitte schreibe uns manuell an %1$s.</string>
 </resources>

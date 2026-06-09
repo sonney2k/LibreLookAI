@@ -616,7 +616,6 @@
     <string name="tryon_cost_line">تكلف %1$d رصيد لكل تجربة</string>
     <string name="tryon_camera">الكاميرا</string>
     <string name="tryon_gallery">المعرض</string>
-    <string name="about_cost_tryon">توليد تجربة: 8 أرصدة</string>
 
     <!-- Try-on composer / history -->
     <string name="action_add">إضافة</string>
@@ -659,11 +658,6 @@
     <string name="about_open_source">هذا التطبيق مفتوح المصدر ومجاني للاستخدام. كود المصدر متاح على GitHub.</string>
     <string name="about_ai_title">استخدام الذكاء الاصطناعي والتكاليف</string>
     <string name="about_ai_desc">يعتمد LibreLookAI بشكل كبير على Google Gemini للذكاء الاصطناعي البصري والنصي. كل إجراء ذكاء اصطناعي (إزالة الخلفية، الوسم، اقتراحات الأطقم، إلخ) يتطلب مكالمة Gemini API، والتي لها تكلفة صغيرة.</string>
-    <string name="about_cost_title">التكلفة لكل إجراء ذكاء اصطناعي</string>
-    <string name="about_cost_bg_removal">إزالة الخلفية: 5 أرصدة</string>
-    <string name="about_cost_classify">وسم الصنف تلقائيًا: رصيدان</string>
-    <string name="about_cost_text">اقتراح طقم: رصيدان</string>
-    <string name="about_cost_travel">قائمة توضيب سفر / تحليل نواقص الخزانة: رصيدان</string>
     <string name="about_byok_title">أحضر مفتاحك الخاص (BYOK)</string>
     <string name="about_byok_desc">يعمل LibreLookAI بمفتاح Gemini API الخاص بك:\n\n1. انتقل إلى aistudio.google.com\n2. اضغط Get API key ← Create API key\n3. انسخ المفتاح (يبدأ بـ AIza…)\n4. الصقه في الإعدادات ← متقدم ← مفتاح Gemini API\n\nالمفتاح المجاني يغطي الوسم واقتراحات الإطلالات. التجربة الافتراضية وإزالة الخلفية تولّدان صورًا وتتطلبان مفتاحًا مدفوعًا مع تفعيل الفوترة — وتظل Google تحاسبك على ما تستخدمه فقط. يُخزَّن مفتاحك على هذا الجهاز فقط ويُستخدم مباشرة مع Google — لا تمر أي بيانات عبر خوادمنا.</string>
     <string name="about_credits_title">الرصيد (الوضع المدار)</string>
@@ -910,7 +904,6 @@
     <string name="settings_section_your_closets">خزاناتك</string>
     <string name="settings_section_how_it_looks">المظهر</string>
     <string name="settings_section_ai_credits">رصيد الذكاء الاصطناعي</string>
-    <string name="settings_section_more">المزيد</string>
     <string name="settings_tryon_photos_title">صور التجربة</string>
     <string name="settings_tryon_photos_hint">ثلاث صور سريعة لكامل الجسم كي يستطيع الذكاء الاصطناعي تلبيسك. أنت وحدك من يراها.</string>
     <string name="settings_tryon_front">أمام</string>
@@ -932,20 +925,16 @@
     <string name="settings_credits_friendly_format">يكفي لـ ~%1$d تجربة أو %2$d فكرة إطلالة.</string>
     <string name="settings_credits_get_more">احصل على المزيد</string>
     <string name="settings_more_advanced">متقدم</string>
-    <string name="settings_more_advanced_subtitle">إعادة فحص الوسوم · إعادة إزالة الخلفيات · مفتاح API · التشخيص</string>
-    <string name="settings_more_help">مساعدة &amp; الأسئلة الشائعة</string>
+    <string name="settings_more_advanced_subtitle">استخدام وتكاليف الذكاء الاصطناعي · مفتاح API · خيارات متقدمة</string>
     <string name="settings_more_about">حول LibreLookAI</string>
     <string name="settings_profile_edit_title">تعديل الملف الشخصي</string>
     <string name="settings_profile_gender">الجنس / الضمائر</string>
     <string name="settings_profile_year">سنة الميلاد</string>
     <string name="settings_profile_ai_considerations">ما الذي يجب أن يأخذه الذكاء الاصطناعي بالحسبان</string>
     <string name="settings_advanced_title">متقدم</string>
-    <string name="settings_advanced_rarely_needed_pill">نادرًا ما يلزم</string>
-    <string name="settings_advanced_intro">تصلح هذه الأدوات مشكلات البيانات الموسومة بالذكاء الاصطناعي أو تغيّر سلوكه. معظم الناس لا يحتاجونها أبدًا.</string>
     <string name="settings_section_advanced_fix">إصلاح أخطاء الذكاء الاصطناعي</string>
-    <string name="settings_section_advanced_byok">وفّر الرصيد</string>
+    <string name="settings_section_advanced_byok">خيارات الذكاء الاصطناعي</string>
     <string name="settings_section_advanced_power">خيارات متقدمة</string>
-    <string name="settings_section_advanced_feedback">ساعدنا على التحسّن</string>
     <string name="settings_retag_row">إعادة وسم كل ملابسي</string>
     <string name="settings_retag_row_sub">اطلب من الذكاء الاصطناعي إعادة تسمية كل شيء وتصنيفه. يكلّف ~2 رصيد لكل عنصر.</string>
     <string name="settings_rebg_row">إعادة إزالة الخلفيات</string>
@@ -966,7 +955,6 @@
     <string name="settings_similarity_preview_row">إظهار معاينة تشابه الذكاء الاصطناعي</string>
     <string name="settings_similarity_preview_sub">تشخيص لميزة البحث بالصورة.</string>
     <string name="settings_send_feedback">إرسال ملاحظات</string>
-    <string name="settings_export_diagnostics">تصدير التشخيص</string>
     <string name="settings_retag_title">إعادة وسم كل الـ %1$d قطعة ملابس؟</string>
     <string name="settings_retag_body">سينظر الذكاء الاصطناعي إلى كل عنصر مجددًا وقد يغيّر اسمه أو لونه أو فئته. سيُستبدل كل ما أعدت تسميته يدويًا.</string>
     <string name="settings_retag_confirm">إعادة وسم كل الملابس</string>
@@ -1251,4 +1239,22 @@
     <string name="calendar_done_wear">تم التسجيل في %1$s</string>
     <string name="calendar_done_move">تم النقل إلى %1$s</string>
     <string name="calendar_done_copy">تم النسخ إلى %1$s</string>
+
+    <!-- About: website + source links -->
+    <string name="about_website_label">الموقع الإلكتروني</string>
+    <string name="about_github_label">الكود المصدري</string>
+
+    <!-- About: cost-statistics link -->
+    <string name="about_view_cost_stats">عرض إحصائيات التكلفة</string>
+
+    <!-- Settings: Help section + feedback email flow -->
+    <string name="settings_section_help">المساعدة</string>
+    <string name="feedback_dialog_body">سنفتح تطبيق البريد لديك برسالة إلى %1$s. أخبرنا بما حدث من خطأ وما الذي توقعته.</string>
+    <string name="feedback_attach_label">إرفاق التشخيصات</string>
+    <string name="feedback_attach_sub">يضيف ملفًا يحتوي على إصدار التطبيق ومعلومات الجهاز والسجلات الأخيرة. لا يتضمن صورًا أو بيانات شخصية أو مفاتيح API.</string>
+    <string name="feedback_email_prompt">يرجى وصف المشكلة هنا — ما الذي حدث، وما الذي توقعته، وخطوات إعادة إنتاجها.</string>
+    <string name="feedback_email_subject">ملاحظات LibreLookAI (%1$s)</string>
+
+    <!-- Feedback: no email app fallback -->
+    <string name="feedback_no_email_app">لم يتم العثور على تطبيق بريد إلكتروني. يرجى مراسلتنا يدويًا على %1$s.</string>
 </resources>

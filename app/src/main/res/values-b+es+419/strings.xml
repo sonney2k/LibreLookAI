@@ -616,7 +616,6 @@
     <string name="tryon_cost_line">Cuesta %1$d créditos por prueba</string>
     <string name="tryon_camera">Cámara</string>
     <string name="tryon_gallery">Galería</string>
-    <string name="about_cost_tryon">Generación de prueba: 8 créditos</string>
 
     <!-- Try-on composer / history -->
     <string name="action_add">Agregar</string>
@@ -659,11 +658,6 @@
     <string name="about_open_source">Esta app es de código abierto y gratuita. El código fuente está disponible en GitHub.</string>
     <string name="about_ai_title">Uso de IA y costos</string>
     <string name="about_ai_desc">LibreLookAI depende de Google Gemini para la IA de visión y texto. Cada acción de IA (quitar fondo, etiquetado, sugerencias, etc.) requiere una llamada a la API de Gemini, lo cual tiene un costo pequeño.</string>
-    <string name="about_cost_title">Costo por acción de IA</string>
-    <string name="about_cost_bg_removal">Eliminación de fondo: 5 créditos</string>
-    <string name="about_cost_classify">Auto-etiquetar prenda: 2 créditos</string>
-    <string name="about_cost_text">Sugerencia de outfit: 2 créditos</string>
-    <string name="about_cost_travel">Lista de viaje / análisis de vacíos: 2 créditos</string>
     <string name="about_byok_title">Usa tu propia clave (BYOK)</string>
     <string name="about_byok_desc">LibreLookAI funciona con tu propia clave de API de Gemini:\n\n1. Entra en aistudio.google.com\n2. Toca Get API key → Create API key\n3. Copia la clave (empieza con AIza…)\n4. Pégala en Ajustes → Avanzado → Clave de API de Gemini\n\nUna clave gratis cubre el etiquetado y las sugerencias de looks. La prueba virtual y la eliminación de fondo generan imágenes y requieren una clave de pago con facturación activada; Google solo te cobra por lo que uses. Tu clave se guarda solo en este dispositivo y se usa directamente con Google: ningún dato pasa por nuestros servidores.</string>
     <string name="about_credits_title">Créditos (Modo gestionado)</string>
@@ -910,7 +904,6 @@
     <string name="settings_section_your_closets">Tus clósets</string>
     <string name="settings_section_how_it_looks">Apariencia</string>
     <string name="settings_section_ai_credits">Créditos de IA</string>
-    <string name="settings_section_more">Más</string>
     <string name="settings_tryon_photos_title">Fotos de prueba</string>
     <string name="settings_tryon_photos_hint">Tres fotos rápidas de cuerpo entero para que la IA pueda vestirte. Solo tú las ves.</string>
     <string name="settings_tryon_front">Frente</string>
@@ -932,20 +925,16 @@
     <string name="settings_credits_friendly_format">Suficiente para ~%1$d pruebas o %2$d ideas de looks.</string>
     <string name="settings_credits_get_more">Conseguir más</string>
     <string name="settings_more_advanced">Avanzado</string>
-    <string name="settings_more_advanced_subtitle">Reescanear etiquetas · Quitar fondos de nuevo · Clave API · Diagnóstico</string>
-    <string name="settings_more_help">Ayuda &amp; preguntas frecuentes</string>
+    <string name="settings_more_advanced_subtitle">Uso y costos de IA · clave API · opciones avanzadas</string>
     <string name="settings_more_about">Acerca de LibreLookAI</string>
     <string name="settings_profile_edit_title">Editar perfil</string>
     <string name="settings_profile_gender">Género / pronombres</string>
     <string name="settings_profile_year">Año de nacimiento</string>
     <string name="settings_profile_ai_considerations">Qué debe tener en cuenta la IA</string>
     <string name="settings_advanced_title">Avanzado</string>
-    <string name="settings_advanced_rarely_needed_pill">Rara vez necesario</string>
-    <string name="settings_advanced_intro">Estas herramientas corrigen problemas con los datos etiquetados por IA o cambian su comportamiento. La mayoría nunca necesita tocarlas.</string>
     <string name="settings_section_advanced_fix">Corregir errores de la IA</string>
-    <string name="settings_section_advanced_byok">Ahorra créditos</string>
+    <string name="settings_section_advanced_byok">Opciones de IA</string>
     <string name="settings_section_advanced_power">Opciones avanzadas</string>
-    <string name="settings_section_advanced_feedback">Ayúdanos a mejorar</string>
     <string name="settings_retag_row">Reetiquetar toda mi ropa</string>
     <string name="settings_retag_row_sub">Pide a la IA que renombre y recategorice todo. Cuesta ~2 créditos por prenda.</string>
     <string name="settings_rebg_row">Quitar fondos de nuevo</string>
@@ -966,7 +955,6 @@
     <string name="settings_similarity_preview_row">Mostrar vista previa de similitud de IA</string>
     <string name="settings_similarity_preview_sub">Diagnóstico de la función buscar por foto.</string>
     <string name="settings_send_feedback">Enviar comentarios</string>
-    <string name="settings_export_diagnostics">Exportar diagnóstico</string>
     <string name="settings_retag_title">¿Reetiquetar las %1$d prendas?</string>
     <string name="settings_retag_body">La IA mirará cada prenda de nuevo y podría cambiar su nombre, color o categoría. Todo lo que renombraste a mano se reemplazará.</string>
     <string name="settings_retag_confirm">Reetiquetar toda la ropa</string>
@@ -1251,4 +1239,22 @@
     <string name="calendar_done_wear">Registrado el %1$s</string>
     <string name="calendar_done_move">Movido a %1$s</string>
     <string name="calendar_done_copy">Copiado a %1$s</string>
+
+    <!-- About: website + source links -->
+    <string name="about_website_label">Sitio web</string>
+    <string name="about_github_label">Código fuente</string>
+
+    <!-- About: cost-statistics link -->
+    <string name="about_view_cost_stats">Ver estadísticas de costos</string>
+
+    <!-- Settings: Help section + feedback email flow -->
+    <string name="settings_section_help">Ayuda</string>
+    <string name="feedback_dialog_body">Abriremos tu app de correo con un mensaje a %1$s. Cuéntanos qué salió mal y qué esperabas.</string>
+    <string name="feedback_attach_label">Adjuntar diagnósticos</string>
+    <string name="feedback_attach_sub">Agrega un archivo con la versión de la app, información del dispositivo y registros recientes. No se incluyen fotos, datos personales ni claves de API.</string>
+    <string name="feedback_email_prompt">Describe el problema aquí: qué ocurrió, qué esperabas y los pasos para reproducirlo.</string>
+    <string name="feedback_email_subject">Comentarios de LibreLookAI (%1$s)</string>
+
+    <!-- Feedback: no email app fallback -->
+    <string name="feedback_no_email_app">No se encontró ninguna app de correo. Escríbenos manualmente a %1$s.</string>
 </resources>

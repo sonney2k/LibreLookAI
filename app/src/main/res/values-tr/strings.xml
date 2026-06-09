@@ -616,7 +616,6 @@
     <string name="tryon_cost_line">Deneme başına %1$d kredi maliyetindedir</string>
     <string name="tryon_camera">Kamera</string>
     <string name="tryon_gallery">Galeri</string>
-    <string name="about_cost_tryon">Deneme oluşturma: 8 kredi</string>
 
     <!-- Try-on composer / history -->
     <string name="action_add">Ekle</string>
@@ -659,11 +658,6 @@
     <string name="about_open_source">Bu uygulama açık kaynaklıdır ve kullanımı ücretsizdir. Kaynak kodu GitHub\'da mevcuttur.</string>
     <string name="about_ai_title">Yapay Zeka Kullanımı ve Maliyetleri</string>
     <string name="about_ai_desc">LibreLookAI, görme ve metin yapay zekası için büyük ölçüde Google Gemini\'ye güvenir. Her yapay zeka eylemi (arka plan kaldırma, etiketleme, kombin önerileri vb.) küçük bir maliyeti olan bir Gemini API çağrısı gerektirir.</string>
-    <string name="about_cost_title">Yapay zeka eylemi başına maliyet</string>
-    <string name="about_cost_bg_removal">Arka plan kaldırma: 5 kredi</string>
-    <string name="about_cost_classify">Ögeyi otomatik etiketle: 2 kredi</string>
-    <string name="about_cost_text">Kombin önerisi: 2 kredi</string>
-    <string name="about_cost_travel">Seyahat hazırlık listesi / gardırop eksik analizi: 2 kredi</string>
     <string name="about_byok_title">Kendi Anahtarını Getir (BYOK)</string>
     <string name="about_byok_desc">LibreLookAI kendi Gemini API anahtarınızla çalışır:\n\n1. aistudio.google.com adresine gidin\n2. Get API key → Create API key öğesine dokunun\n3. Anahtarı kopyalayın (AIza… ile başlar)\n4. Ayarlar → Gelişmiş → Gemini API anahtarı bölümüne yapıştırın\n\nÜcretsiz anahtar etiketleme ve kıyafet önerilerini kapsar. Sanal deneme ve arka plan kaldırma görsel oluşturur ve faturalandırması etkin ücretli bir anahtar gerektirir — Google yine yalnızca kullandığınız kadar ücret alır. Anahtarınız yalnızca bu cihazda saklanır ve doğrudan Google ile kullanılır — hiçbir veri sunucularımızdan geçmez.</string>
     <string name="about_credits_title">Krediler (Yönetilen Mod)</string>
@@ -910,7 +904,6 @@
     <string name="settings_section_your_closets">Dolapların</string>
     <string name="settings_section_how_it_looks">Görünüm</string>
     <string name="settings_section_ai_credits">AI kredileri</string>
-    <string name="settings_section_more">Daha fazla</string>
     <string name="settings_tryon_photos_title">Deneme fotoğrafları</string>
     <string name="settings_tryon_photos_hint">AI seni giydirebilsin diye üç hızlı tam boy fotoğraf. Onları yalnızca sen görürsün.</string>
     <string name="settings_tryon_front">Ön</string>
@@ -932,20 +925,16 @@
     <string name="settings_credits_friendly_format">~%1$d deneme veya %2$d kombin fikri için yeterli.</string>
     <string name="settings_credits_get_more">Daha fazla al</string>
     <string name="settings_more_advanced">Gelişmiş</string>
-    <string name="settings_more_advanced_subtitle">Etiketleri yeniden tara · Arka planları yeniden kaldır · API anahtarı · Tanılama</string>
-    <string name="settings_more_help">Yardım &amp; SSS</string>
+    <string name="settings_more_advanced_subtitle">AI kullanımı ve maliyetleri · API anahtarı · gelişmiş seçenekler</string>
     <string name="settings_more_about">LibreLookAI hakkında</string>
     <string name="settings_profile_edit_title">Profili düzenle</string>
     <string name="settings_profile_gender">Cinsiyet / zamirler</string>
     <string name="settings_profile_year">Doğum yılı</string>
     <string name="settings_profile_ai_considerations">AI neleri dikkate almalı</string>
     <string name="settings_advanced_title">Gelişmiş</string>
-    <string name="settings_advanced_rarely_needed_pill">Nadiren gerekir</string>
-    <string name="settings_advanced_intro">Bu araçlar AI ile etiketlenmiş verilerdeki sorunları düzeltir veya AI’nın davranışını değiştirir. Çoğu kişi bunlara hiç dokunmaz.</string>
     <string name="settings_section_advanced_fix">AI hatalarını düzelt</string>
-    <string name="settings_section_advanced_byok">Kredilerden tasarruf et</string>
+    <string name="settings_section_advanced_byok">AI seçenekleri</string>
     <string name="settings_section_advanced_power">Gelişmiş seçenekler</string>
-    <string name="settings_section_advanced_feedback">Gelişmemize yardım et</string>
     <string name="settings_retag_row">Tüm kıyafetlerimi yeniden etiketle</string>
     <string name="settings_retag_row_sub">AI’dan her şeyi yeniden adlandırmasını ve kategorilere ayırmasını iste. Parça başına ~2 krediye mal olur.</string>
     <string name="settings_rebg_row">Arka planları yeniden kaldır</string>
@@ -966,7 +955,6 @@
     <string name="settings_similarity_preview_row">AI benzerlik önizlemesini göster</string>
     <string name="settings_similarity_preview_sub">Fotoğrafla bul özelliği için tanılama.</string>
     <string name="settings_send_feedback">Geri bildirim gönder</string>
-    <string name="settings_export_diagnostics">Tanılamayı dışa aktar</string>
     <string name="settings_retag_title">%1$d kıyafetin tümü yeniden etiketlensin mi?</string>
     <string name="settings_retag_body">AI her parçaya yeniden bakacak ve adını, rengini veya kategorisini değiştirebilir. Elle yeniden adlandırdığın her şey değiştirilir.</string>
     <string name="settings_retag_confirm">Tüm kıyafetleri yeniden etiketle</string>
@@ -1251,4 +1239,22 @@
     <string name="calendar_done_wear">%1$s tarihine kaydedildi</string>
     <string name="calendar_done_move">%1$s tarihine taşındı</string>
     <string name="calendar_done_copy">%1$s tarihine kopyalandı</string>
+
+    <!-- About: website + source links -->
+    <string name="about_website_label">Web sitesi</string>
+    <string name="about_github_label">Kaynak kodu</string>
+
+    <!-- About: cost-statistics link -->
+    <string name="about_view_cost_stats">Maliyet istatistiklerini görüntüle</string>
+
+    <!-- Settings: Help section + feedback email flow -->
+    <string name="settings_section_help">Yardım</string>
+    <string name="feedback_dialog_body">E-posta uygulamanızı %1$s adresine bir mesajla açacağız. Neyin yanlış gittiğini ve ne beklediğinizi bize bildirin.</string>
+    <string name="feedback_attach_label">Tanılamayı ekle</string>
+    <string name="feedback_attach_sub">Uygulama sürümü, cihaz bilgileri ve son uygulama günlüklerini içeren bir dosya ekler. Fotoğraf, kişisel veri veya API anahtarı içermez.</string>
+    <string name="feedback_email_prompt">Sorunu burada açıklayın — ne olduğunu, ne beklediğinizi ve yeniden oluşturma adımlarını yazın.</string>
+    <string name="feedback_email_subject">LibreLookAI geri bildirimi (%1$s)</string>
+
+    <!-- Feedback: no email app fallback -->
+    <string name="feedback_no_email_app">E-posta uygulaması bulunamadı. Lütfen bize %1$s adresinden manuel olarak e-posta gönderin.</string>
 </resources>
