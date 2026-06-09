@@ -1,3 +1,14 @@
+### LibreLookAI v2.4.1 Release Notes
+
+#### What's new
+- A smoother, branded startup — the app now shows its icon while it loads instead of a progress screen.
+- Long-press any day in the calendar to select it, then add, copy, move or remove outfits from a bottom action bar.
+- Jump straight back to the current month with the new "Today" button.
+#### Improvements
+- The calendar's last week row stays fully visible and tappable above the selection bar and weather badge.
+
+---
+
 ### LibreLookAI v2.4.0 Release Notes
 
 #### What's new
