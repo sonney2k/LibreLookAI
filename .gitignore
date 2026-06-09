@@ -34,3 +34,6 @@ __pycache__/
 
 # Generated Play Store "What's new" draft (scripts/release.sh)
 play-whatsnew.txt
+
+# Large demo/marketing videos — kept on disk, hosted out-of-band, not in git history
+website/videos/
