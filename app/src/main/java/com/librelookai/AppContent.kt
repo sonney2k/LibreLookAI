@@ -51,6 +51,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -559,7 +563,29 @@ internal fun AppContent(activity: ComponentActivity) {
                                     }
                                 }
 
-                                Box(Modifier.fillMaxSize()) {
+                                // Hide the floating weather badge while the active screen is being
+                                // scrolled. The badge is hosted here (over all tabs), not in the
+                                // screens, so we sense scrolling at this wrapper: scroll deltas from
+                                // any inner Lazy list bubble up to this NestedScrollConnection. A
+                                // short debounce after the last delta reveals it again once at rest.
+                                var lastScrollNanos by remember { mutableStateOf(0L) }
+                                var isScrolling by remember { mutableStateOf(false) }
+                                val weatherScrollConn = remember {
+                                    object : NestedScrollConnection {
+                                        override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                                            if (available.y != 0f) lastScrollNanos = System.nanoTime()
+                                            return Offset.Zero
+                                        }
+                                    }
+                                }
+                                LaunchedEffect(lastScrollNanos) {
+                                    if (lastScrollNanos == 0L) return@LaunchedEffect
+                                    isScrolling = true
+                                    delay(600)
+                                    isScrolling = false
+                                }
+
+                                Box(Modifier.fillMaxSize().nestedScroll(weatherScrollConn)) {
                                     val onSettingsClick: () -> Unit = {
                                         Analytics.action("Toolbar", "open_settings")
                                         selectedTab = 5
@@ -706,15 +732,19 @@ internal fun AppContent(activity: ComponentActivity) {
 
                                     // Weather badge — bottom-left, floating above the nav bar.
                                     // Hidden in the travel-planner mode because that screen pins its
-                                    // own Generate button to the bottom and the badge would overlap.
-                                    if (!hideChrome) {
+                                    // own Generate button to the bottom and the badge would overlap,
+                                    // and while the active screen is being scrolled (fades back in
+                                    // shortly after scrolling stops — see weatherScrollConn above).
+                                    androidx.compose.animation.AnimatedVisibility(
+                                        visible = !hideChrome && !isScrolling && weatherState.data != null,
+                                        enter = androidx.compose.animation.fadeIn(),
+                                        exit = androidx.compose.animation.fadeOut(),
+                                        modifier = Modifier
+                                            .align(Alignment.BottomStart)
+                                            .padding(start = 12.dp, bottom = 8.dp),
+                                    ) {
                                         weatherState.data?.let { weather ->
-                                            WeatherBadge(
-                                                data = weather,
-                                                modifier = Modifier
-                                                    .align(Alignment.BottomStart)
-                                                    .padding(start = 12.dp, bottom = 8.dp),
-                                            )
+                                            WeatherBadge(data = weather)
                                         }
                                     }
 

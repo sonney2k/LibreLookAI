@@ -297,7 +297,7 @@ internal fun OutfitFullScreenViewer(
                 }
 
                 // Actions hidden under the bottom-end FAB — tapping it reveals the shared action
-                // bar (Wear primary · Try on · Edit · Tags · Delete danger). Hidden offline (writes).
+                // bar (Wear primary · Try on · Edit · Delete danger). Hidden offline (writes).
                 if (!isOffline) {
                     // Back collapses the open menu before it closes the viewer.
                     if (actionsOpen) BackHandler { actionsOpen = false }
@@ -336,16 +336,6 @@ internal fun OutfitFullScreenViewer(
                                     Analytics.action("OutfitViewer", "edit")
                                     actionsOpen = false
                                     onEdit(current)
-                                },
-                            )
-                            add(
-                                com.librelookai.ui.components.SelectionAction(
-                                    label = stringResource(R.string.outfits_suggest_tags),
-                                    icon = Icons.Default.AutoAwesome,
-                                ) {
-                                    Analytics.action("OutfitViewer", "suggest_tags")
-                                    actionsOpen = false
-                                    onSuggestTags(current)
                                 },
                             )
                             add(
