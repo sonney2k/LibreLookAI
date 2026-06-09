@@ -98,6 +98,7 @@ import com.librelookai.util.LocalSystemBarsPadding
 import com.librelookai.util.NetworkMonitor
 import com.librelookai.util.RestoreCategory
 import com.librelookai.util.RestoreProgressOverlay
+import com.librelookai.util.StartupGate
 import com.librelookai.wardrobe.LocalBgRemovalScreen
 import com.librelookai.wardrobe.LocationViewModel
 import com.librelookai.wardrobe.ReplacementsResultDialog
@@ -168,6 +169,13 @@ internal fun AppContent(activity: ComponentActivity) {
                 // re-launched from Settings via LocalStartTour (which just flips this back on).
                 var showOnboarding by rememberSaveable {
                     mutableStateOf(!OnboardingState.isComplete(activity))
+                }
+
+                // Onboarding / signed-out launches have nothing to restore from Drive, so release the
+                // launch splash as soon as we land on one. The signed-in arm releases it later, once
+                // its restore has settled (see the restore block below).
+                LaunchedEffect(showOnboarding, isSignedIn) {
+                    if (showOnboarding || !isSignedIn) StartupGate.contentReady = true
                 }
 
                 when {
@@ -1049,6 +1057,13 @@ internal fun AppContent(activity: ComponentActivity) {
                                 }
                                 restoreSettled = true
                             }
+                        }
+                        // Release the launch splash once the initial restore has settled, so a
+                        // general cold start stays under the splash until the app is actually ready
+                        // (no flash of the restore card). A long reinstall-restore is released by
+                        // MainActivity's max-duration cap instead, revealing the progress card.
+                        LaunchedEffect(restoreSettled) {
+                            if (restoreSettled) StartupGate.contentReady = true
                         }
                         if (restoreStarted && !restoreSettled) {
                             RestoreProgressOverlay(

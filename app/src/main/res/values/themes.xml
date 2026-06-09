@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.LibreLookAI" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <!-- System launch splash (Android 12+ SplashScreen API, backported by core-splashscreen to
+         API 26+). Matches the default appearance the OS was already drawing — the launcher icon
+         on a white window background — then hands off to the real app theme. MainActivity keeps it
+         on screen a little longer so general cold starts read as a branded splash, not a flash. -->
+    <style name="Theme.LibreLookAI.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@android:color/white</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="postSplashScreenTheme">@style/Theme.LibreLookAI</item>
+    </style>
 </resources>
