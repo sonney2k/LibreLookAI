@@ -1233,4 +1233,8 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
 
     <!-- Calendar multi-day selection -->
     <string name="calendar_delete_confirm_msg_multi">Alih keluar semua set pakaian yang dipakai pada %1$d hari yang dipilih?</string>
+
+    <!-- Calendar: add-outfit day sheet + Today button -->
+    <string name="calendar_add_to_day">Tambah set pakaian</string>
+    <string name="calendar_today">Hari ini</string>
 </resources>

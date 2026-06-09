@@ -1264,4 +1264,8 @@
 
     <!-- Calendar multi-day selection -->
     <string name="calendar_delete_confirm_msg_multi">להסיר את כל התלבושות שנלבשו ב-%1$d הימים שנבחרו?</string>
+
+    <!-- Calendar: add-outfit day sheet + Today button -->
+    <string name="calendar_add_to_day">הוספת תלבושת</string>
+    <string name="calendar_today">היום</string>
 </resources>

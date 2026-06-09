@@ -1233,4 +1233,8 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
 
     <!-- Calendar multi-day selection -->
     <string name="calendar_delete_confirm_msg_multi">Eltávolítja az összes szettet, amelyet a kijelölt %1$d napon viseltek?</string>
+
+    <!-- Calendar: add-outfit day sheet + Today button -->
+    <string name="calendar_add_to_day">Szett hozzáadása</string>
+    <string name="calendar_today">Ma</string>
 </resources>

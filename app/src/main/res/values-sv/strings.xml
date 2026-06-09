@@ -1260,4 +1260,8 @@
 
     <!-- Calendar multi-day selection -->
     <string name="calendar_delete_confirm_msg_multi">Ta bort alla outfits som burits under de %1$d valda dagarna?</string>
+
+    <!-- Calendar: add-outfit day sheet + Today button -->
+    <string name="calendar_add_to_day">Lägg till outfit</string>
+    <string name="calendar_today">Idag</string>
 </resources>

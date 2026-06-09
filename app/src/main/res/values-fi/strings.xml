@@ -1260,4 +1260,8 @@
 
     <!-- Calendar multi-day selection -->
     <string name="calendar_delete_confirm_msg_multi">Poistetaanko kaikki asut, jotka on käytetty %1$d valittuna päivänä?</string>
+
+    <!-- Calendar: add-outfit day sheet + Today button -->
+    <string name="calendar_add_to_day">Lisää asu</string>
+    <string name="calendar_today">Tänään</string>
 </resources>

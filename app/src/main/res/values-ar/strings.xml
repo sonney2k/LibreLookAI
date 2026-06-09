@@ -1260,4 +1260,8 @@
 
     <!-- Calendar multi-day selection -->
     <string name="calendar_delete_confirm_msg_multi">هل تريد إزالة جميع الإطلالات التي تم ارتداؤها في الأيام المحددة (%1$d)؟</string>
+
+    <!-- Calendar: add-outfit day sheet + Today button -->
+    <string name="calendar_add_to_day">إضافة إطلالة</string>
+    <string name="calendar_today">اليوم</string>
 </resources>

@@ -1260,4 +1260,8 @@
 
     <!-- Calendar multi-day selection -->
     <string name="calendar_delete_confirm_msg_multi">Κατάργηση όλων των συνόλων που φορέθηκαν τις %1$d επιλεγμένες ημέρες;</string>
+
+    <!-- Calendar: add-outfit day sheet + Today button -->
+    <string name="calendar_add_to_day">Προσθήκη συνόλου</string>
+    <string name="calendar_today">Σήμερα</string>
 </resources>

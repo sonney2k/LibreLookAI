@@ -1233,4 +1233,8 @@
 
     <!-- Calendar multi-day selection -->
     <string name="calendar_delete_confirm_msg_multi">Видалити всі образи, вдягнені у вибрані дні (%1$d)?</string>
+
+    <!-- Calendar: add-outfit day sheet + Today button -->
+    <string name="calendar_add_to_day">Додати образ</string>
+    <string name="calendar_today">Сьогодні</string>
 </resources>

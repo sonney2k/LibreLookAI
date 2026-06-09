@@ -1233,4 +1233,8 @@
 
     <!-- Calendar multi-day selection -->
     <string name="calendar_delete_confirm_msg_multi">นำชุดทั้งหมดที่สวมในวันที่เลือก %1$d วันออกไหม</string>
+
+    <!-- Calendar: add-outfit day sheet + Today button -->
+    <string name="calendar_add_to_day">เพิ่มชุด</string>
+    <string name="calendar_today">วันนี้</string>
 </resources>

@@ -1260,4 +1260,8 @@
 
     <!-- Calendar multi-day selection -->
     <string name="calendar_delete_confirm_msg_multi">Odebrat všechny outfity nošené ve vybraných dnech (%1$d)?</string>
+
+    <!-- Calendar: add-outfit day sheet + Today button -->
+    <string name="calendar_add_to_day">Přidat outfit</string>
+    <string name="calendar_today">Dnes</string>
 </resources>

@@ -1233,4 +1233,8 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
 
     <!-- Calendar multi-day selection -->
     <string name="calendar_delete_confirm_msg_multi">Xóa tất cả trang phục đã mặc trong %1$d ngày đã chọn?</string>
+
+    <!-- Calendar: add-outfit day sheet + Today button -->
+    <string name="calendar_add_to_day">Thêm trang phục</string>
+    <string name="calendar_today">Hôm nay</string>
 </resources>

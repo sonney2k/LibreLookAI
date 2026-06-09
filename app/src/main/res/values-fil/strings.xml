@@ -1260,4 +1260,8 @@
 
     <!-- Calendar multi-day selection -->
     <string name="calendar_delete_confirm_msg_multi">Alisin ang lahat ng outfit na isinuot sa %1$d napiling araw?</string>
+
+    <!-- Calendar: add-outfit day sheet + Today button -->
+    <string name="calendar_add_to_day">Magdagdag ng outfit</string>
+    <string name="calendar_today">Ngayon</string>
 </resources>

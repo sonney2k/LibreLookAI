@@ -1233,4 +1233,8 @@
 
     <!-- Calendar multi-day selection -->
     <string name="calendar_delete_confirm_msg_multi">移除在所選 %1$d 天穿著的所有穿搭嗎？</string>
+
+    <!-- Calendar: add-outfit day sheet + Today button -->
+    <string name="calendar_add_to_day">新增穿搭</string>
+    <string name="calendar_today">今天</string>
 </resources>

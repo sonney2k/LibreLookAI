@@ -566,14 +566,15 @@ internal fun AppContent(activity: ComponentActivity) {
                                 // Hide the floating weather badge while the active screen is being
                                 // scrolled. The badge is hosted here (over all tabs), not in the
                                 // screens, so we sense scrolling at this wrapper: scroll deltas from
-                                // any inner Lazy list bubble up to this NestedScrollConnection. A
-                                // short debounce after the last delta reveals it again once at rest.
+                                // any inner Lazy list — or a horizontal pager like the calendar's
+                                // month swipe — bubble up to this NestedScrollConnection. A short
+                                // debounce after the last delta reveals it again once at rest.
                                 var lastScrollNanos by remember { mutableStateOf(0L) }
                                 var isScrolling by remember { mutableStateOf(false) }
                                 val weatherScrollConn = remember {
                                     object : NestedScrollConnection {
                                         override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-                                            if (available.y != 0f) lastScrollNanos = System.nanoTime()
+                                            if (available.x != 0f || available.y != 0f) lastScrollNanos = System.nanoTime()
                                             return Offset.Zero
                                         }
                                     }

@@ -1260,4 +1260,8 @@
 
     <!-- Calendar multi-day selection -->
     <string name="calendar_delete_confirm_msg_multi">Seçili %1$d günde giyilen tüm kombinler kaldırılsın mı?</string>
+
+    <!-- Calendar: add-outfit day sheet + Today button -->
+    <string name="calendar_add_to_day">Kıyafet ekle</string>
+    <string name="calendar_today">Bugün</string>
 </resources>

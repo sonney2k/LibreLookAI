@@ -28,12 +28,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Today
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import com.librelookai.ui.components.AppFab
 import com.librelookai.ui.components.SelectionAction
@@ -232,6 +234,8 @@ private fun CalendarContent(
     // copy/move/remove for that day's outfits; multiple days only offer remove.
     var selectedDays by remember { mutableStateOf<Set<LocalDate>>(emptySet()) }
     var showAddSheet by remember { mutableStateOf(false) }
+    // Non-null while the day sheet's "Add outfit" picker is open — logs straight to this day.
+    var addOutfitForDate by remember { mutableStateOf<LocalDate?>(null) }
     // Non-empty once one or more days are picked for deletion — shows the remove-confirm dialog.
     var pendingDeleteDays by remember { mutableStateOf<Set<LocalDate>>(emptySet()) }
     // Active "tap a day to wear/move/copy" request — the calendar grid itself becomes the picker.
@@ -281,6 +285,23 @@ private fun CalendarContent(
     }
     if (pickMode != null) BackHandler { pickMode = null }
 
+    // Long-press / tap-in-selection day handler. Outfit days multi-select; empty days are single-
+    // select and never mix with outfit days. Re-selecting a day removes it, unless it's the last one.
+    val selectDay: (LocalDate) -> Unit = { date ->
+        val dayHasOutfits = outfitsByDate[date].orEmpty().isNotEmpty()
+        val selectionHasOutfitDay = selectedDays.any { outfitsByDate[it].orEmpty().isNotEmpty() }
+        val selectionIsSingleEmpty = selectedDays.size == 1 && !selectionHasOutfitDay
+        selectedDays = when {
+            // Tapping an already-selected day unselects it — except when it's the only one selected.
+            date in selectedDays -> if (selectedDays.size == 1) selectedDays else selectedDays - date
+            // An empty day: replace the selection (single-select), but never alongside outfit days.
+            !dayHasOutfits -> if (selectionHasOutfitDay) selectedDays else setOf(date)
+            // An outfit day: replace a lone empty selection, otherwise add to the outfit-day set.
+            selectionIsSingleEmpty -> setOf(date)
+            else -> selectedDays + date
+        }
+    }
+
     // Swipe between months via a pager so the adjacent month slides in under the finger.
     val anchorMonth = remember { YearMonth.now() }
     val pagerState = rememberPagerState(initialPage = MONTH_PAGE_ANCHOR) { MONTH_PAGE_COUNT }
@@ -318,6 +339,7 @@ private fun CalendarContent(
         }
         MonthHeader(
             yearMonth = currentMonth,
+            onToday = { scope.launch { pagerState.animateScrollToPage(MONTH_PAGE_ANCHOR) } },
             onPrev = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage - 1) } },
             onNext = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) } },
         )
@@ -350,24 +372,20 @@ private fun CalendarContent(
                                 isToday = date == today,
                                 isSelected = date != null && date in selectedDays,
                                 // In pick mode any day completes the wear/move/copy. In selection
-                                // mode tapping a day with outfits toggles it in/out of the selection.
-                                // Otherwise a plain tap on a day with outfits inspects it; long-press
-                                // raises the shared selection bar for that day's outfits.
+                                // mode tapping any day toggles it (via selectDay's rules). Otherwise
+                                // a plain tap on a day with outfits inspects it; a long-press on any
+                                // day (empty or filled) raises the shared bottom selection bar.
                                 onClick = when {
                                     date == null -> null
                                     inPickMode -> { { completePick(date) } }
-                                    inSelectionMode && hasStyles -> {
-                                        {
-                                            selectedDays = if (date in selectedDays) selectedDays - date
-                                                           else selectedDays + date
-                                        }
-                                    }
-                                    inSelectionMode -> null
+                                    inSelectionMode -> { { selectDay(date) } }
                                     hasStyles -> { { selectedDate = date } }
                                     else -> null
                                 },
-                                onLongClick = if (!inPickMode && date != null && hasStyles && !isOffline) {
-                                    { selectedDays = selectedDays + date }
+                                // Long-press any day — empty or filled — raises the bottom selection
+                                // bar (Add outfit for a single day; copy/move/remove for filled ones).
+                                onLongClick = if (!inPickMode && date != null && !isOffline) {
+                                    { selectDay(date) }
                                 } else null,
                                 modifier = Modifier
                                     .weight(1f)
@@ -380,21 +398,22 @@ private fun CalendarContent(
         }
     }
 
-    // Shared create FAB — "Log outfit". A tap adds an outfit to a date of your choosing. The
-    // calendar doesn't scroll vertically (it's a month pager), so the pill stays expanded. Hidden
-    // offline (every action is a Drive write), while a day is selected for actions, or mid-pick.
+    // Shared create FAB — "Log outfit". A tap adds an outfit to a date of your choosing. Collapses
+    // to a circle while swiping between months (like the outfit list FAB while scrolling), expanded
+    // at rest. Hidden offline (every action is a Drive write), while a day is selected, or mid-pick.
     AppFab(
         label = stringResource(R.string.fab_calendar_log),
         icon = Icons.Default.CalendarMonth,
         onClick = { showAddSheet = true },
-        expanded = true,
+        expanded = !pagerState.isScrollInProgress,
         visible = !isOffline && selectedDays.isEmpty() && pickMode == null,
         modifier = Modifier.align(Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp),
     )
 
-    // Long-press a day → shared selection bar. One selected day: Copy (primary) · Move · Remove for
-    // that day's outfits. Multiple selected days: only Remove (move/copy to a single target day make
-    // no sense across many source days).
+    // Long-press a day (empty or filled) → shared bottom selection bar. One selected day: Add outfit
+    // (primary) · plus Copy · Move · Remove if that day already has outfits. Multiple selected days:
+    // Add goes away (it's single-day only) and only Remove remains (move/copy to a single target day
+    // makes no sense across many source days).
     val hasSelection = selectedDays.isNotEmpty()
     if (hasSelection) BackHandler { selectedDays = emptySet() }
     SelectionActionBar(
@@ -406,31 +425,42 @@ private fun CalendarContent(
                 if (single != null) {
                     add(
                         SelectionAction(
-                            label = stringResource(R.string.sel_copy_to_day),
-                            icon = Icons.Default.ContentCopy,
+                            label = stringResource(R.string.calendar_add_to_day),
+                            icon = Icons.Default.Add,
                             kind = SelectionAction.Kind.Primary,
-                        ) {
-                            val ids = eventsByDate[single].orEmpty().map { it.id }.toSet()
-                            pickMode = CalendarPick.CopyEvents(ids); selectedDays = emptySet()
-                        },
+                        ) { addOutfitForDate = single; selectedDays = emptySet() },
                     )
+                    if (eventsByDate[single].orEmpty().isNotEmpty()) {
+                        add(
+                            SelectionAction(
+                                label = stringResource(R.string.sel_copy_to_day),
+                                icon = Icons.Default.ContentCopy,
+                            ) {
+                                val ids = eventsByDate[single].orEmpty().map { it.id }.toSet()
+                                pickMode = CalendarPick.CopyEvents(ids); selectedDays = emptySet()
+                            },
+                        )
+                        add(
+                            SelectionAction(
+                                label = stringResource(R.string.sel_move),
+                                icon = Icons.Default.EditCalendar,
+                            ) {
+                                val ids = eventsByDate[single].orEmpty().map { it.id }.toSet()
+                                pickMode = CalendarPick.MoveEvents(ids); selectedDays = emptySet()
+                            },
+                        )
+                    }
+                }
+                // Remove only matters when some selected day actually has outfits.
+                if (selectedDays.any { eventsByDate[it].orEmpty().isNotEmpty() }) {
                     add(
                         SelectionAction(
-                            label = stringResource(R.string.sel_move),
-                            icon = Icons.Default.EditCalendar,
-                        ) {
-                            val ids = eventsByDate[single].orEmpty().map { it.id }.toSet()
-                            pickMode = CalendarPick.MoveEvents(ids); selectedDays = emptySet()
-                        },
+                            label = stringResource(R.string.sel_remove),
+                            icon = Icons.Default.Delete,
+                            kind = SelectionAction.Kind.Danger,
+                        ) { pendingDeleteDays = selectedDays; selectedDays = emptySet() },
                     )
                 }
-                add(
-                    SelectionAction(
-                        label = stringResource(R.string.sel_remove),
-                        icon = Icons.Default.Delete,
-                        kind = SelectionAction.Kind.Danger,
-                    ) { pendingDeleteDays = selectedDays; selectedDays = emptySet() },
-                )
             }
         } else {
             emptyList()
@@ -528,6 +558,28 @@ private fun CalendarContent(
                 showAddSheet = false
             },
             onDismiss = { showAddSheet = false },
+        )
+    }
+
+    // Day sheet ▸ "Add outfit" — the target day is already known, so pick an outfit and log it
+    // straight onto that day (no grid re-tap), confirming with the same snackbar as a tapped pick.
+    addOutfitForDate?.let { day ->
+        com.librelookai.tryon.OutfitPickerDialog(
+            outfits = allOutfits,
+            wardrobeImages = remember(imagesById) { imagesById.values.toList() },
+            title = stringResource(R.string.calendar_add_pick_for, day.format(sheetDateFormatter)),
+            emptyText = stringResource(R.string.calendar_add_empty),
+            requireAllItemsLoaded = false,
+            showHeaderActions = false,
+            onPick = { outfit ->
+                onAddOutfit(outfit, day, WearSource.MANUAL)
+                addOutfitForDate = null
+                scope.launch {
+                    snackbarHostState.currentSnackbarData?.dismiss()
+                    snackbarHostState.showSnackbar(String.format(doneWearTemplate, day.format(sheetDateFormatter)))
+                }
+            },
+            onDismiss = { addOutfitForDate = null },
         )
     }
 
@@ -742,6 +794,7 @@ private fun OutfitSheetRow(
 @Composable
 private fun MonthHeader(
     yearMonth: YearMonth,
+    onToday: () -> Unit,
     onPrev: () -> Unit,
     onNext: () -> Unit,
 ) {
@@ -756,10 +809,16 @@ private fun MonthHeader(
         IconButton(onClick = onPrev) {
             Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = "Previous month")
         }
-        Text(
-            text = yearMonth.format(DateTimeFormatter.ofPattern(MONTH_PATTERN, locale)),
-            style = MaterialTheme.typography.titleMedium,
-        )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            // Jump straight back to the current month — sits just left of the month label.
+            IconButton(onClick = onToday) {
+                Icon(Icons.Default.Today, contentDescription = stringResource(R.string.calendar_today))
+            }
+            Text(
+                text = yearMonth.format(DateTimeFormatter.ofPattern(MONTH_PATTERN, locale)),
+                style = MaterialTheme.typography.titleMedium,
+            )
+        }
         IconButton(onClick = onNext) {
             Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = "Next month")
         }

@@ -1260,4 +1260,8 @@
 
     <!-- Calendar multi-day selection -->
     <string name="calendar_delete_confirm_msg_multi">選択した %1$d 日間に着用したすべてのコーディネートを削除しますか？</string>
+
+    <!-- Calendar: add-outfit day sheet + Today button -->
+    <string name="calendar_add_to_day">コーデを追加</string>
+    <string name="calendar_today">今日</string>
 </resources>

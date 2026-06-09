@@ -1260,4 +1260,8 @@
 
     <!-- Calendar multi-day selection -->
     <string name="calendar_delete_confirm_msg_multi">Usunąć wszystkie stylizacje noszone w %1$d wybranych dniach?</string>
+
+    <!-- Calendar: add-outfit day sheet + Today button -->
+    <string name="calendar_add_to_day">Dodaj strój</string>
+    <string name="calendar_today">Dziś</string>
 </resources>

@@ -1233,4 +1233,8 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
 
     <!-- Calendar multi-day selection -->
     <string name="calendar_delete_confirm_msg_multi">Eliminați toate ținutele purtate în cele %1$d zile selectate?</string>
+
+    <!-- Calendar: add-outfit day sheet + Today button -->
+    <string name="calendar_add_to_day">Adaugă ținută</string>
+    <string name="calendar_today">Azi</string>
 </resources>

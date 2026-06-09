@@ -1260,4 +1260,8 @@
 
     <!-- Calendar multi-day selection -->
     <string name="calendar_delete_confirm_msg_multi">Remove all outfits worn on the %1$d selected days?</string>
+
+    <!-- Calendar: add-outfit day sheet + Today button -->
+    <string name="calendar_add_to_day">Add outfit</string>
+    <string name="calendar_today">Today</string>
 </resources>

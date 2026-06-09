@@ -1233,4 +1233,8 @@
 
     <!-- Calendar multi-day selection -->
     <string name="calendar_delete_confirm_msg_multi">منتخب کردہ %1$d دنوں میں پہنے گئے تمام آؤٹ فٹس ہٹا دیں؟</string>
+
+    <!-- Calendar: add-outfit day sheet + Today button -->
+    <string name="calendar_add_to_day">آؤٹ فٹ شامل کریں</string>
+    <string name="calendar_today">آج</string>
 </resources>
