@@ -1218,4 +1218,10 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="sel_add_to_closet">Vào tủ đồ</string>
     <string name="sel_copy_to_day">Sao chép</string>
     <string name="sel_remove">Gỡ</string>
+
+    <!-- Calendar in-grid date pick (wear/move/copy) -->
+    <string name="calendar_wear_prompt">Chạm vào một ngày để mặc “%1$s”</string>
+    <string name="calendar_done_wear">Đã ghi vào %1$s</string>
+    <string name="calendar_done_move">Đã chuyển sang %1$s</string>
+    <string name="calendar_done_copy">Đã sao chép sang %1$s</string>
 </resources>

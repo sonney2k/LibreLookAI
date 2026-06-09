@@ -1245,4 +1245,10 @@
     <string name="sel_add_to_closet">옷장에 추가</string>
     <string name="sel_copy_to_day">복사</string>
     <string name="sel_remove">삭제</string>
+
+    <!-- Calendar in-grid date pick (wear/move/copy) -->
+    <string name="calendar_wear_prompt">“%1$s”을(를) 입을 날짜를 탭하세요</string>
+    <string name="calendar_done_wear">%1$s에 기록됨</string>
+    <string name="calendar_done_move">%1$s(으)로 이동됨</string>
+    <string name="calendar_done_copy">%1$s(으)로 복사됨</string>
 </resources>

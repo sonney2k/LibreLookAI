@@ -1249,4 +1249,10 @@
     <string name="sel_add_to_closet">לארון</string>
     <string name="sel_copy_to_day">העתקה</string>
     <string name="sel_remove">הסרה</string>
+
+    <!-- Calendar in-grid date pick (wear/move/copy) -->
+    <string name="calendar_wear_prompt">הקש על יום כדי ללבוש את ”%1$s“</string>
+    <string name="calendar_done_wear">נרשם בתאריך %1$s</string>
+    <string name="calendar_done_move">הועבר אל %1$s</string>
+    <string name="calendar_done_copy">הועתק אל %1$s</string>
 </resources>

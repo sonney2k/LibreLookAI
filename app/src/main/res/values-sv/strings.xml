@@ -1245,4 +1245,10 @@
     <string name="sel_add_to_closet">Till garderob</string>
     <string name="sel_copy_to_day">Kopiera</string>
     <string name="sel_remove">Ta bort</string>
+
+    <!-- Calendar in-grid date pick (wear/move/copy) -->
+    <string name="calendar_wear_prompt">Tryck på en dag för att bära “%1$s”</string>
+    <string name="calendar_done_wear">Loggat den %1$s</string>
+    <string name="calendar_done_move">Flyttad till %1$s</string>
+    <string name="calendar_done_copy">Kopierad till %1$s</string>
 </resources>

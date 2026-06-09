@@ -108,6 +108,8 @@ fun TripViewerScreen(
 
     var showDeleteDialog by remember { mutableStateOf(false) }
     var viewerOutfitId by remember { mutableStateOf<String?>(null) }
+    // Non-null while picking which day to log a wear on (the viewer's Wear action) for a trip outfit.
+    var wearPickerOutfit by remember { mutableStateOf<com.librelookai.data.model.Outfit?>(null) }
     var editing by remember(tripId) { mutableStateOf(false) }
     // View-mode actions are hidden under the bottom FAB (tap to reveal the shared action bar).
     var actionsOpen by remember(tripId) { mutableStateOf(false) }
@@ -400,7 +402,7 @@ fun TripViewerScreen(
                 activeLocationId = locationState.activeLocationId,
                 onDismiss = { viewerOutfitId = null },
                 onEdit = startEditingOutfit,
-                onWear = { o, date -> outfitEventsViewModel.recordOutfit(o, imagesById, date = date) },
+                onWear = { o -> wearPickerOutfit = o },
                 onToggleLoved = { o -> outfitsViewModel.setOutfitLoved(o.id, !o.loved) },
                 onDelete = { o ->
                     outfitsViewModel.deleteOutfit(o.id)
@@ -418,6 +420,17 @@ fun TripViewerScreen(
         } else {
             androidx.compose.runtime.LaunchedEffect(vid) { viewerOutfitId = null }
         }
+    }
+
+    // Wear-day picker for the trip outfit viewer's Wear action (logs onto the chosen day).
+    wearPickerOutfit?.let { o ->
+        com.librelookai.outfit.WearDatePickerDialog(
+            onDismiss = { wearPickerOutfit = null },
+            onConfirm = { date ->
+                outfitEventsViewModel.recordOutfit(o, imagesById, date = date)
+                wearPickerOutfit = null
+            },
+        )
     }
 
     // Tag-edit dialog launched by tapping the tags row in the outfit viewer.

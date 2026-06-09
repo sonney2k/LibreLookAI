@@ -1245,4 +1245,10 @@
     <string name="sel_add_to_closet">إضافة إلى الخزانة</string>
     <string name="sel_copy_to_day">نسخ</string>
     <string name="sel_remove">إزالة</string>
+
+    <!-- Calendar in-grid date pick (wear/move/copy) -->
+    <string name="calendar_wear_prompt">انقر على يوم لارتداء ”%1$s“</string>
+    <string name="calendar_done_wear">تم التسجيل في %1$s</string>
+    <string name="calendar_done_move">تم النقل إلى %1$s</string>
+    <string name="calendar_done_copy">تم النسخ إلى %1$s</string>
 </resources>

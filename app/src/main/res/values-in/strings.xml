@@ -1218,4 +1218,10 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="sel_add_to_closet">Ke lemari</string>
     <string name="sel_copy_to_day">Salin</string>
     <string name="sel_remove">Hapus</string>
+
+    <!-- Calendar in-grid date pick (wear/move/copy) -->
+    <string name="calendar_wear_prompt">Ketuk hari untuk memakai “%1$s”</string>
+    <string name="calendar_done_wear">Dicatat pada %1$s</string>
+    <string name="calendar_done_move">Dipindahkan ke %1$s</string>
+    <string name="calendar_done_copy">Disalin ke %1$s</string>
 </resources>

@@ -239,6 +239,16 @@ class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
 
     fun clearPendingWear() = _state.update { it.copy(pendingWearOutfitId = null) }
 
+    /**
+     * Ask the Calendar sub-tab to enter "tap a day to wear [outfitId]" mode. Set by a Wear action on
+     * the outfit list / detail viewer (the caller also switches to the Calendar tab) so the user
+     * picks the wear day in context. Consumed by [OutfitCalendarTab] via [consumeCalendarWear].
+     */
+    fun requestCalendarWear(outfitId: String, source: com.librelookai.data.model.WearSource = com.librelookai.data.model.WearSource.MANUAL) =
+        _state.update { it.copy(pendingCalendarWearId = outfitId, pendingCalendarWearSource = source) }
+
+    fun consumeCalendarWear() = _state.update { it.copy(pendingCalendarWearId = null) }
+
     /** Called by [OutfitListScreen] after it has scrolled to the requested outfit. */
     fun consumePendingScrollOutfit() = _state.update { it.copy(pendingScrollOutfitId = null) }
 

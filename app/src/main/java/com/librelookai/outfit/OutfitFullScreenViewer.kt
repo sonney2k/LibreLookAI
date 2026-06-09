@@ -74,7 +74,7 @@ internal fun OutfitFullScreenViewer(
     activeLocationId: String,
     onDismiss: () -> Unit,
     onEdit: (Outfit) -> Unit,
-    onWear: (Outfit, java.time.LocalDate) -> Unit,
+    onWear: (Outfit) -> Unit,
     onToggleLoved: (Outfit) -> Unit = {},
     onDelete: (Outfit) -> Unit,
     onSuggestTags: (Outfit) -> Unit = {},
@@ -132,7 +132,6 @@ internal fun OutfitFullScreenViewer(
                 pageCount = { outfits.size },
             )
             var showDeleteDialog by remember { mutableStateOf(false) }
-            var showWearPicker by remember { mutableStateOf(false) }
             // Actions live hidden under the bottom FAB (tap to reveal the shared action bar), like
             // the create/selection FAB on the list screens.
             var actionsOpen by remember { mutableStateOf(false) }
@@ -140,13 +139,6 @@ internal fun OutfitFullScreenViewer(
             var hideTags by rememberSaveable { mutableStateOf(false) }
 
             val current = outfits[pagerState.currentPage]
-
-            if (showWearPicker) {
-                WearDatePickerDialog(
-                    onDismiss = { showWearPicker = false },
-                    onConfirm = { date -> onWear(current, date); showWearPicker = false },
-                )
-            }
 
             if (showDeleteDialog) {
                 AlertDialog(
@@ -319,9 +311,9 @@ internal fun OutfitFullScreenViewer(
                                     icon = Icons.Default.CalendarMonth,
                                     kind = com.librelookai.ui.components.SelectionAction.Kind.Primary,
                                 ) {
-                                    Analytics.action("OutfitViewer", "open_wear_picker")
+                                    Analytics.action("OutfitViewer", "wear_via_calendar")
                                     actionsOpen = false
-                                    showWearPicker = true
+                                    onWear(current)
                                 },
                             )
                             if (canTryOn) {

@@ -1218,4 +1218,10 @@
     <string name="sel_add_to_closet">加入衣櫥</string>
     <string name="sel_copy_to_day">複製</string>
     <string name="sel_remove">移除</string>
+
+    <!-- Calendar in-grid date pick (wear/move/copy) -->
+    <string name="calendar_wear_prompt">輕觸日期以穿著「%1$s」</string>
+    <string name="calendar_done_wear">已記錄於 %1$s</string>
+    <string name="calendar_done_move">已移至 %1$s</string>
+    <string name="calendar_done_copy">已複製至 %1$s</string>
 </resources>

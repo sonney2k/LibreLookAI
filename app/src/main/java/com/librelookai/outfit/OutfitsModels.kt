@@ -4,6 +4,7 @@ import android.content.Context
 import com.librelookai.data.model.DayForecast
 import com.librelookai.data.model.Outfit
 import com.librelookai.data.model.OutfitEvent
+import com.librelookai.data.model.WearSource
 import com.librelookai.settings.AiConsiderations
 import com.librelookai.wardrobe.DriveImage
 import kotlinx.coroutines.flow.update
@@ -67,6 +68,14 @@ data class OutfitsUiState(
     val pendingWearOutfitId: String? = null,
     /** Outfit id the list screen should scroll into view (and briefly highlight) when set. */
     val pendingScrollOutfitId: String? = null,
+    /**
+     * Outfit the calendar should enter "tap a day to wear" mode for — set by a Wear action on the
+     * outfit list / detail viewer, which switches to the Calendar sub-tab so the user picks the day
+     * in context. Resolved + consumed by [OutfitCalendarTab]. [pendingCalendarWearSource] records
+     * whether the user actively chose the outfit (MANUAL) or accepted an AI suggestion.
+     */
+    val pendingCalendarWearId: String? = null,
+    val pendingCalendarWearSource: WearSource = WearSource.MANUAL,
     // Multi-select for bulk actions
     val selectedOutfitIds: Set<String> = emptySet(),
     // Unified style composer

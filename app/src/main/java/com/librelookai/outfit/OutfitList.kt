@@ -82,7 +82,6 @@ import com.librelookai.wardrobe.displayLabel
 import com.librelookai.wardrobe.tagCategories
 import com.librelookai.wardrobe.tagStringsForCategory
 import com.librelookai.wardrobe.fuzzyFilterByText
-import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -101,7 +100,7 @@ internal fun OutfitListScreen(
     onSuggestExisting: () -> Unit = {},
     onEditOutfit: (Outfit) -> Unit,
     onDeleteOutfit: (String) -> Unit,
-    onWearOutfit: (String, LocalDate) -> Unit,
+    onWearOutfit: (String) -> Unit,
     onToggleLovedOutfit: (String) -> Unit = {},
     onSuggestOutfitTags: (Outfit) -> Unit = {},
     onEditOutfitTags: (Outfit) -> Unit = {},
@@ -508,7 +507,7 @@ internal fun OutfitListScreen(
                                 loved = style.loved,
                                 onEdit = { onEditOutfit(style) },
                                 onDelete = { onDeleteOutfit(style.id) },
-                                onWear = { date -> onWearOutfit(style.id, date) },
+                                onWear = { onWearOutfit(style.id) },
                                 onToggleLoved = { onToggleLovedOutfit(style.id) },
                                 onOpen = { fullscreenStyleId = style.id },
                                 onToggleSelection = { onToggleOutfitSelection(style.id) },
@@ -624,7 +623,7 @@ internal fun OutfitListScreen(
                     activeLocationId = activeLocationId,
                     onDismiss = { fullscreenStyleId = null },
                     onEdit = { o -> fullscreenStyleId = null; onEditOutfit(o) },
-                    onWear = { o, date -> onWearOutfit(o.id, date) },
+                    onWear = { o -> onWearOutfit(o.id) },
                     onToggleLoved = { o -> onToggleLovedOutfit(o.id) },
                     onDelete = { o ->
                         onDeleteOutfit(o.id)

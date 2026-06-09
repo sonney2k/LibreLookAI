@@ -1245,4 +1245,10 @@
     <string name="sel_add_to_closet">クローゼットへ</string>
     <string name="sel_copy_to_day">コピー</string>
     <string name="sel_remove">削除</string>
+
+    <!-- Calendar in-grid date pick (wear/move/copy) -->
+    <string name="calendar_wear_prompt">「%1$s」を着る日をタップ</string>
+    <string name="calendar_done_wear">%1$s に記録しました</string>
+    <string name="calendar_done_move">%1$s に移動しました</string>
+    <string name="calendar_done_copy">%1$s にコピーしました</string>
 </resources>

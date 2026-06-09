@@ -1218,4 +1218,10 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="sel_add_to_closet">Szekrénybe</string>
     <string name="sel_copy_to_day">Másolás</string>
     <string name="sel_remove">Eltávolítás</string>
+
+    <!-- Calendar in-grid date pick (wear/move/copy) -->
+    <string name="calendar_wear_prompt">Koppintson egy napra a(z) „%1$s” viseléséhez</string>
+    <string name="calendar_done_wear">Rögzítve: %1$s</string>
+    <string name="calendar_done_move">Áthelyezve ide: %1$s</string>
+    <string name="calendar_done_copy">Másolva ide: %1$s</string>
 </resources>

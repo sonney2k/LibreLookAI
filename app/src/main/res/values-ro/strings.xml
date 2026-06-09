@@ -1218,4 +1218,10 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="sel_add_to_closet">În dulap</string>
     <string name="sel_copy_to_day">Copiază</string>
     <string name="sel_remove">Elimină</string>
+
+    <!-- Calendar in-grid date pick (wear/move/copy) -->
+    <string name="calendar_wear_prompt">Atinge o zi pentru a purta „%1$s”</string>
+    <string name="calendar_done_wear">Înregistrat pe %1$s</string>
+    <string name="calendar_done_move">Mutat pe %1$s</string>
+    <string name="calendar_done_copy">Copiat pe %1$s</string>
 </resources>

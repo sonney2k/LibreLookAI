@@ -1245,4 +1245,10 @@
     <string name="sel_add_to_closet">Do szafy</string>
     <string name="sel_copy_to_day">Kopiuj</string>
     <string name="sel_remove">Usuń</string>
+
+    <!-- Calendar in-grid date pick (wear/move/copy) -->
+    <string name="calendar_wear_prompt">Dotknij dnia, aby założyć „%1$s”</string>
+    <string name="calendar_done_wear">Zapisano w dniu %1$s</string>
+    <string name="calendar_done_move">Przeniesiono na %1$s</string>
+    <string name="calendar_done_copy">Skopiowano na %1$s</string>
 </resources>

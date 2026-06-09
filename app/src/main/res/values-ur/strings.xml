@@ -1218,4 +1218,10 @@
     <string name="sel_add_to_closet">الماری میں</string>
     <string name="sel_copy_to_day">کاپی</string>
     <string name="sel_remove">ہٹا دیں</string>
+
+    <!-- Calendar in-grid date pick (wear/move/copy) -->
+    <string name="calendar_wear_prompt">“%1$s” پہننے کے لیے کسی دن پر تھپتھپائیں</string>
+    <string name="calendar_done_wear">%1$s کو لاگ کیا گیا</string>
+    <string name="calendar_done_move">%1$s پر منتقل کر دیا گیا</string>
+    <string name="calendar_done_copy">%1$s پر کاپی کر دیا گیا</string>
 </resources>

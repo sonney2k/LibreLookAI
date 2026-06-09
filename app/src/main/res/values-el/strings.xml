@@ -1245,4 +1245,10 @@
     <string name="sel_add_to_closet">Στην ντουλάπα</string>
     <string name="sel_copy_to_day">Αντιγραφή</string>
     <string name="sel_remove">Αφαίρεση</string>
+
+    <!-- Calendar in-grid date pick (wear/move/copy) -->
+    <string name="calendar_wear_prompt">Πατήστε μια ημέρα για να φορέσετε «%1$s»</string>
+    <string name="calendar_done_wear">Καταχωρήθηκε στις %1$s</string>
+    <string name="calendar_done_move">Μετακινήθηκε στις %1$s</string>
+    <string name="calendar_done_copy">Αντιγράφηκε στις %1$s</string>
 </resources>

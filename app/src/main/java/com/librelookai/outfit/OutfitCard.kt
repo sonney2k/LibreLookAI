@@ -83,21 +83,13 @@ internal fun OutfitCard(
     loved: Boolean = false,
     onEdit: () -> Unit,
     onDelete: () -> Unit,
-    onWear: (LocalDate) -> Unit,
+    onWear: () -> Unit,
     onToggleLoved: () -> Unit = {},
     onOpen: () -> Unit = {},
     onToggleSelection: () -> Unit = {},
 ) {
     val isOffline = LocalIsOffline.current
     var showDeleteDialog by remember { mutableStateOf(false) }
-    var showWearPicker by remember { mutableStateOf(false) }
-
-    if (showWearPicker) {
-        WearDatePickerDialog(
-            onDismiss = { showWearPicker = false },
-            onConfirm = { date -> onWear(date); showWearPicker = false },
-        )
-    }
 
     if (showDeleteDialog) {
         AlertDialog(
@@ -298,8 +290,8 @@ internal fun OutfitCard(
                     Spacer(Modifier.width(4.dp))
                     TextButton(
                         onClick = {
-                            Analytics.action("Outfits", "open_wear_picker")
-                            showWearPicker = true
+                            Analytics.action("Outfits", "wear_via_calendar")
+                            onWear()
                         },
                         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
                     ) {

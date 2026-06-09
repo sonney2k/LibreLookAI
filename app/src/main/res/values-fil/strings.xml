@@ -1245,4 +1245,10 @@
     <string name="sel_add_to_closet">Sa closet</string>
     <string name="sel_copy_to_day">Kopyahin</string>
     <string name="sel_remove">Alisin</string>
+
+    <!-- Calendar in-grid date pick (wear/move/copy) -->
+    <string name="calendar_wear_prompt">Mag-tap ng araw para isuot ang “%1$s”</string>
+    <string name="calendar_done_wear">Na-log sa %1$s</string>
+    <string name="calendar_done_move">Inilipat sa %1$s</string>
+    <string name="calendar_done_copy">Kinopya sa %1$s</string>
 </resources>

@@ -1218,4 +1218,10 @@
     <string name="sel_add_to_closet">เพิ่มลงตู้เสื้อผ้า</string>
     <string name="sel_copy_to_day">คัดลอก</string>
     <string name="sel_remove">นำออก</string>
+
+    <!-- Calendar in-grid date pick (wear/move/copy) -->
+    <string name="calendar_wear_prompt">แตะวันเพื่อสวม “%1$s”</string>
+    <string name="calendar_done_wear">บันทึกเมื่อ %1$s</string>
+    <string name="calendar_done_move">ย้ายไปยัง %1$s</string>
+    <string name="calendar_done_copy">คัดลอกไปยัง %1$s</string>
 </resources>

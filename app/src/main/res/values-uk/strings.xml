@@ -1218,4 +1218,10 @@
     <string name="sel_add_to_closet">До шафи</string>
     <string name="sel_copy_to_day">Копіювати</string>
     <string name="sel_remove">Видалити</string>
+
+    <!-- Calendar in-grid date pick (wear/move/copy) -->
+    <string name="calendar_wear_prompt">Торкніться дня, щоб одягнути «%1$s»</string>
+    <string name="calendar_done_wear">Записано на %1$s</string>
+    <string name="calendar_done_move">Переміщено на %1$s</string>
+    <string name="calendar_done_copy">Скопійовано на %1$s</string>
 </resources>

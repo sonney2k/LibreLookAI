@@ -43,7 +43,6 @@ import com.librelookai.wardrobe.WardrobeViewModel
 import com.librelookai.wardrobe.displayLabel
 import com.librelookai.wardrobe.tagCategories
 import com.librelookai.weather.WeatherViewModel
-import java.time.LocalDate
 
 internal enum class OutfitSortOption {
     DATE_DESC, DATE_ASC, POPULARITY, NAME_AZ, NAME_ZA, ITEM_COUNT
@@ -146,13 +145,6 @@ fun OutfitsScreen(
     val logWearById: (String, WearSource) -> Unit = { id, source ->
         outfitsById[id]?.let { logWear(it, source) }
     }
-    // Same, but on a user-chosen day (from the "Wear…" date picker on the list/detail views).
-    val logWearOn: (Outfit, WearSource, LocalDate) -> Unit = { outfit, source, date ->
-        outfitEventsViewModel.recordOutfit(outfit, outfitImagesById, source, weatherState.data, date)
-    }
-    val logWearByIdOn: (String, WearSource, LocalDate) -> Unit = { id, source, date ->
-        outfitsById[id]?.let { logWearOn(it, source, date) }
-    }
     val toggleLovedById: (String) -> Unit = { id ->
         outfitsById[id]?.let { outfitsViewModel.setOutfitLoved(id, !it.loved) }
     }
@@ -238,7 +230,12 @@ fun OutfitsScreen(
                         outfitsViewModel.startEditing(style, wardrobeState.images, profileState.preferences)
                     },
                     onDeleteOutfit = outfitsViewModel::deleteOutfit,
-                    onWearOutfit = { id, date -> logWearByIdOn(id, WearSource.MANUAL, date) },
+                    onWearOutfit = { id ->
+                        // Switch to the Calendar sub-tab and let the user tap the wear day there,
+                        // in context of their previously-worn outfits.
+                        outfitsViewModel.requestCalendarWear(id, WearSource.MANUAL)
+                        outfitsTab = 1
+                    },
                     onToggleLovedOutfit = toggleLovedById,
                     onSuggestOutfitTags = { o ->
                         outfitsViewModel.suggestTagsForOutfit(o, wardrobeState.images, profileState.preferences)
@@ -325,7 +322,11 @@ fun OutfitsScreen(
                         outfitsViewModel.clearPrediction()
                         outfitsViewModel.startEditing(o, wardrobeState.images, profileState.preferences)
                     },
-                    onWear = { o, date -> logWearOn(o, WearSource.AI_SUGGESTED, date) },
+                    onWear = { o ->
+                        outfitsViewModel.clearPrediction()
+                        outfitsViewModel.requestCalendarWear(o.id, WearSource.AI_SUGGESTED)
+                        outfitsTab = 1
+                    },
                     onToggleLoved = { o -> outfitsViewModel.setOutfitLoved(o.id, !o.loved) },
                     onDelete = { o ->
                         outfitsViewModel.deleteOutfit(o.id)

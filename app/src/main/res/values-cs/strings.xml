@@ -1245,4 +1245,10 @@
     <string name="sel_add_to_closet">Do šatníku</string>
     <string name="sel_copy_to_day">Kopírovat</string>
     <string name="sel_remove">Odebrat</string>
+
+    <!-- Calendar in-grid date pick (wear/move/copy) -->
+    <string name="calendar_wear_prompt">Klepnutím na den si oblékněte „%1$s“</string>
+    <string name="calendar_done_wear">Zaznamenáno na %1$s</string>
+    <string name="calendar_done_move">Přesunuto na %1$s</string>
+    <string name="calendar_done_copy">Zkopírováno na %1$s</string>
 </resources>

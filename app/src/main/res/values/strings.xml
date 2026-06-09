@@ -599,6 +599,10 @@
     <string name="calendar_copy_to_day">Copy to another day</string>
     <string name="calendar_move_prompt">Tap a day to move the outfit</string>
     <string name="calendar_copy_prompt">Tap a day to copy the outfit</string>
+    <string name="calendar_wear_prompt">Tap a day to wear “%1$s”</string>
+    <string name="calendar_done_wear">Logged on %1$s</string>
+    <string name="calendar_done_move">Moved to %1$s</string>
+    <string name="calendar_done_copy">Copied to %1$s</string>
     <string name="calendar_mode_move">Move</string>
     <string name="calendar_mode_copy">Copy</string>
     <string name="calendar_remove">Remove from this day</string>

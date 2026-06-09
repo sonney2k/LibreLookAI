@@ -1245,4 +1245,10 @@
     <string name="sel_add_to_closet">Dolaba ekle</string>
     <string name="sel_copy_to_day">Kopyala</string>
     <string name="sel_remove">Kaldır</string>
+
+    <!-- Calendar in-grid date pick (wear/move/copy) -->
+    <string name="calendar_wear_prompt">“%1$s” kombinini giymek için bir güne dokunun</string>
+    <string name="calendar_done_wear">%1$s tarihine kaydedildi</string>
+    <string name="calendar_done_move">%1$s tarihine taşındı</string>
+    <string name="calendar_done_copy">%1$s tarihine kopyalandı</string>
 </resources>
