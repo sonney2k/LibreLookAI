@@ -71,6 +71,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -93,6 +95,10 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import kotlinx.coroutines.launch
+
+// Resting bottom inset for the month grid so its last week row only just overlaps the floating
+// weather badge (≈ badge height + margin minus a small overlap) rather than hiding behind it.
+private val CALENDAR_GRID_BOTTOM_INSET = 28.dp
 
 private const val MONTH_PATTERN = "MMMM yyyy"
 private const val SHEET_DATE_PATTERN = "EEEE, MMMM d"
@@ -309,8 +315,16 @@ private fun CalendarContent(
         anchorMonth.plusMonths((pagerState.currentPage - MONTH_PAGE_ANCHOR).toLong())
     }
 
+    // Bottom inset for the month grid. At rest, a small inset keeps the last week row from sitting
+    // fully behind the floating weather badge (it only just overlaps it). While selecting, reserve
+    // the measured selection-bar height instead so the bottom week lifts clear of the bar — and it
+    // falls back to the small inset the moment the selection is cleared (no stale shrink).
+    var selectionBarHeightPx by remember { mutableStateOf(0) }
+    val selectionBarHeight = with(LocalDensity.current) { selectionBarHeightPx.toDp() }
+    val gridBottomInset = if (selectedDays.isNotEmpty()) selectionBarHeight else CALENDAR_GRID_BOTTOM_INSET
+
     Box(modifier = Modifier.fillMaxSize()) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize().padding(bottom = gridBottomInset)) {
         // While a pick is active the grid is the date picker — show a prompt banner with a cancel.
         pickMode?.let { pick ->
             val bannerText = when (pick) {
@@ -466,7 +480,9 @@ private fun CalendarContent(
             emptyList()
         },
         visible = hasSelection && !isOffline,
-        modifier = Modifier.align(Alignment.BottomCenter),
+        modifier = Modifier
+            .align(Alignment.BottomCenter)
+            .onSizeChanged { selectionBarHeightPx = it.height },
     )
 
     selectedDate?.let { date ->
