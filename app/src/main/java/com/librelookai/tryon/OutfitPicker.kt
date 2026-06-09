@@ -67,15 +67,23 @@ internal fun OutfitPickerDialog(
     wardrobeImages: List<DriveImage>,
     onPick: (Outfit) -> Unit,
     onDismiss: () -> Unit,
+    title: String = stringResource(R.string.tryon_outfit_picker_title),
+    emptyText: String = stringResource(R.string.tryon_outfit_picker_empty),
+    // Try-on needs every cutout on disk, so it hides outfits whose items aren't all loaded. Calendar
+    // logging only records an outfit reference, so it shows every outfit (thumbnails degrade).
+    requireAllItemsLoaded: Boolean = true,
+    showHeaderActions: Boolean = true,
 ) {
     val parentContext = LocalContext.current
     val parentConfiguration = LocalConfiguration.current
     // Captured OUTSIDE the Dialog so the nav-bar inset is real (see rememberDialogBottomInset).
     val effectiveBottom = rememberDialogBottomInset()
     val itemsById = remember(wardrobeImages) { wardrobeImages.associateBy { it.driveId } }
-    // Hide outfits whose items aren't all loaded — try-on needs the cutouts on disk.
-    val pickable = remember(outfits, itemsById) {
-        outfits.filter { o -> o.itemIds.isNotEmpty() && o.itemIds.all { it in itemsById } }
+    val pickable = remember(outfits, itemsById, requireAllItemsLoaded) {
+        if (requireAllItemsLoaded)
+            outfits.filter { o -> o.itemIds.isNotEmpty() && o.itemIds.all { it in itemsById } }
+        else
+            outfits
     }
 
     // Filter + sort, mirroring the Outfits screen sub-panel.
@@ -149,19 +157,19 @@ internal fun OutfitPickerDialog(
                             Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_close))
                         }
                         Text(
-                            stringResource(R.string.tryon_outfit_picker_title),
+                            title,
                             style = MaterialTheme.typography.titleMedium,
                             maxLines = 1,
                             overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
                             modifier = Modifier.weight(1f),
                         )
-                        com.librelookai.ViewerHeaderActions(onBeforeNavigate = onDismiss)
+                        if (showHeaderActions) com.librelookai.ViewerHeaderActions(onBeforeNavigate = onDismiss)
                     }
                     HorizontalDivider()
                     if (pickable.isEmpty()) {
                         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                             Text(
-                                stringResource(R.string.tryon_outfit_picker_empty),
+                                emptyText,
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )

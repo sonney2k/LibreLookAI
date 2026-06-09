@@ -231,8 +231,6 @@ private fun CalendarContent(
     // copy/move/remove then act on that whole day's outfits, and "add" records onto it.
     var fabMenuDay by remember { mutableStateOf<LocalDate?>(null) }
     var showAddSheet by remember { mutableStateOf(false) }
-    // When set, picking an outfit in the add sheet records straight onto this day (skips day-pick).
-    var addTargetDay by remember { mutableStateOf<LocalDate?>(null) }
     // Non-null once a day is picked for deletion — shows the remove-confirm dialog.
     var pendingDeleteDate by remember { mutableStateOf<LocalDate?>(null) }
     // Active "tap a day to wear/move/copy" request — the calendar grid itself becomes the picker.
@@ -377,7 +375,7 @@ private fun CalendarContent(
     AppFab(
         label = stringResource(R.string.fab_calendar_log),
         icon = Icons.Default.CalendarMonth,
-        onClick = { addTargetDay = null; showAddSheet = true },
+        onClick = { showAddSheet = true },
         expanded = true,
         visible = !isOffline && fabMenuDay == null && pickMode == null,
         modifier = Modifier.align(Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp),
@@ -491,70 +489,24 @@ private fun CalendarContent(
         }
     }
 
-    // FAB ▸ "Add outfit to calendar" — pick any saved outfit, then tap a day to log it on.
+    // FAB ▸ "Add outfit to calendar" — browse saved outfits in the full Outfits picker (filter +
+    // sort), pick one, then tap a day on the grid to log it. Reuses the shared OutfitPickerDialog;
+    // calendar logging only records a reference, so it shows every outfit (no all-items-loaded gate)
+    // and drops the closet/settings header actions that only make sense on try-on/compose surfaces.
     if (showAddSheet) {
-        val addSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-        ModalBottomSheet(
-            onDismissRequest = { showAddSheet = false; addTargetDay = null },
-            sheetState = addSheetState,
-        ) {
-            CompositionLocalProvider(
-                LocalContext provides parentContext,
-                LocalConfiguration provides parentConfiguration,
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .navigationBarsPadding()
-                        .padding(bottom = 24.dp),
-                ) {
-                    Text(
-                        text = addTargetDay?.let {
-                            stringResource(
-                                R.string.calendar_add_pick_for,
-                                it.format(DateTimeFormatter.ofPattern(SHEET_DATE_PATTERN, locale)),
-                            )
-                        } ?: stringResource(R.string.calendar_add_pick),
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp),
-                    )
-                    HorizontalDivider()
-                    if (allOutfits.isEmpty()) {
-                        Text(
-                            text = stringResource(R.string.calendar_add_empty),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(20.dp),
-                        )
-                    } else {
-                        LazyColumn(contentPadding = PaddingValues(vertical = 8.dp)) {
-                            itemsIndexed(allOutfits, key = { _, outfit -> outfit.id }) { index, outfit ->
-                                AddOutfitRow(
-                                    style = outfit,
-                                    imagesById = imagesById,
-                                    onClick = {
-                                        // Long-press context (a day) records straight onto it; a
-                                        // context-less add enters "tap a day" pick mode on the grid.
-                                        val target = addTargetDay
-                                        if (target != null) {
-                                            onAddOutfit(outfit, target, WearSource.MANUAL)
-                                            addTargetDay = null
-                                        } else {
-                                            pickMode = CalendarPick.Wear(outfit, WearSource.MANUAL)
-                                        }
-                                        scope.launch { addSheetState.hide() }
-                                            .invokeOnCompletion { showAddSheet = false }
-                                    },
-                                )
-                                if (index < allOutfits.lastIndex) {
-                                    HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp))
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        com.librelookai.tryon.OutfitPickerDialog(
+            outfits = allOutfits,
+            wardrobeImages = remember(imagesById) { imagesById.values.toList() },
+            title = stringResource(R.string.calendar_add_pick),
+            emptyText = stringResource(R.string.calendar_add_empty),
+            requireAllItemsLoaded = false,
+            showHeaderActions = false,
+            onPick = { outfit ->
+                pickMode = CalendarPick.Wear(outfit, WearSource.MANUAL)
+                showAddSheet = false
+            },
+            onDismiss = { showAddSheet = false },
+        )
     }
 
     // FAB ▸ "Remove outfit from calendar" — confirm clearing every wear logged on the picked day.
@@ -618,48 +570,6 @@ private fun CalendarContent(
             .navigationBarsPadding()
             .padding(16.dp),
     ) { data -> Snackbar(snackbarData = data) }
-    }
-}
-
-@Composable
-private fun AddOutfitRow(
-    style: Outfit,
-    imagesById: Map<String, DriveImage>,
-    onClick: () -> Unit,
-) {
-    val ctx = LocalContext.current
-    val styleItems = style.itemIds.mapNotNull { imagesById[it] }.take(MAX_THUMBNAILS)
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(horizontal = 20.dp, vertical = 12.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        Text(
-            text = style.name,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.SemiBold,
-        )
-        if (styleItems.isNotEmpty()) {
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                styleItems.forEach { image ->
-                    AsyncImage(
-                        model = remember(image.driveId, image.version) {
-                            ImageRequest.Builder(ctx)
-                                .data(image.localPath)
-                                .memoryCacheKey("${image.driveId}_${image.version}")
-                                .build()
-                        },
-                        contentDescription = image.name,
-                        modifier = Modifier
-                            .size(56.dp)
-                            .clip(MaterialTheme.shapes.small),
-                        contentScale = ContentScale.Crop,
-                    )
-                }
-            }
-        }
     }
 }
 
