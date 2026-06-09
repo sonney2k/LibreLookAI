@@ -1230,4 +1230,7 @@
 
     <!-- Feedback: no email app fallback -->
     <string name="feedback_no_email_app">Поштовий застосунок не знайдено. Напишіть нам вручну на %1$s.</string>
+
+    <!-- Calendar multi-day selection -->
+    <string name="calendar_delete_confirm_msg_multi">Видалити всі образи, вдягнені у вибрані дні (%1$d)?</string>
 </resources>

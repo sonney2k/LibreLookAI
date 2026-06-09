@@ -1230,4 +1230,7 @@ Sila lumpuhkan pengoptimuman bateri untuk LibreLookAI untuk meneruskan.</string>
 
     <!-- Feedback: no email app fallback -->
     <string name="feedback_no_email_app">Tiada apl e-mel ditemui. Sila e-mel kami secara manual di %1$s.</string>
+
+    <!-- Calendar multi-day selection -->
+    <string name="calendar_delete_confirm_msg_multi">Alih keluar semua set pakaian yang dipakai pada %1$d hari yang dipilih?</string>
 </resources>

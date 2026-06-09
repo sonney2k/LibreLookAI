@@ -1230,4 +1230,7 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
 
     <!-- Feedback: no email app fallback -->
     <string name="feedback_no_email_app">Nu s-a găsit nicio aplicație de e-mail. Scrieți-ne manual la %1$s.</string>
+
+    <!-- Calendar multi-day selection -->
+    <string name="calendar_delete_confirm_msg_multi">Eliminați toate ținutele purtate în cele %1$d zile selectate?</string>
 </resources>

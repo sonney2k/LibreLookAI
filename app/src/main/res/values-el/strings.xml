@@ -1257,4 +1257,7 @@
 
     <!-- Feedback: no email app fallback -->
     <string name="feedback_no_email_app">Δεν βρέθηκε εφαρμογή email. Στείλτε μας email χειροκίνητα στο %1$s.</string>
+
+    <!-- Calendar multi-day selection -->
+    <string name="calendar_delete_confirm_msg_multi">Κατάργηση όλων των συνόλων που φορέθηκαν τις %1$d επιλεγμένες ημέρες;</string>
 </resources>

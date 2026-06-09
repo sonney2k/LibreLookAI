@@ -1230,4 +1230,7 @@
 
     <!-- Feedback: no email app fallback -->
     <string name="feedback_no_email_app">کوئی ای میل ایپ نہیں ملی۔ براہ کرم %1$s پر دستی طور پر ای میل کریں۔</string>
+
+    <!-- Calendar multi-day selection -->
+    <string name="calendar_delete_confirm_msg_multi">منتخب کردہ %1$d دنوں میں پہنے گئے تمام آؤٹ فٹس ہٹا دیں؟</string>
 </resources>

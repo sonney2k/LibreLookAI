@@ -1257,4 +1257,7 @@
 
     <!-- Feedback: no email app fallback -->
     <string name="feedback_no_email_app">이메일 앱을 찾을 수 없습니다. %1$s 로 직접 이메일을 보내주세요.</string>
+
+    <!-- Calendar multi-day selection -->
+    <string name="calendar_delete_confirm_msg_multi">선택한 %1$d일에 착용한 모든 코디를 삭제할까요?</string>
 </resources>

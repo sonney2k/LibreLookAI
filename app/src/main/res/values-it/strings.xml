@@ -1257,4 +1257,7 @@
 
     <!-- Feedback: no email app fallback -->
     <string name="feedback_no_email_app">Nessuna app email trovata. Scrivici manualmente a %1$s.</string>
+
+    <!-- Calendar multi-day selection -->
+    <string name="calendar_delete_confirm_msg_multi">Rimuovere tutti gli outfit indossati nei %1$d giorni selezionati?</string>
 </resources>

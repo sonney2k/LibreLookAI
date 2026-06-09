@@ -1257,4 +1257,7 @@
 
     <!-- Feedback: no email app fallback -->
     <string name="feedback_no_email_app">E-posta uygulaması bulunamadı. Lütfen bize %1$s adresinden manuel olarak e-posta gönderin.</string>
+
+    <!-- Calendar multi-day selection -->
+    <string name="calendar_delete_confirm_msg_multi">Seçili %1$d günde giyilen tüm kombinler kaldırılsın mı?</string>
 </resources>

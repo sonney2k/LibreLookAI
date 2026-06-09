@@ -1230,4 +1230,7 @@
 
     <!-- Feedback: no email app fallback -->
     <string name="feedback_no_email_app">ไม่พบแอปอีเมล โปรดส่งอีเมลถึงเราด้วยตนเองที่ %1$s</string>
+
+    <!-- Calendar multi-day selection -->
+    <string name="calendar_delete_confirm_msg_multi">นำชุดทั้งหมดที่สวมในวันที่เลือก %1$d วันออกไหม</string>
 </resources>

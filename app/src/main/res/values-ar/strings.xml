@@ -1257,4 +1257,7 @@
 
     <!-- Feedback: no email app fallback -->
     <string name="feedback_no_email_app">لم يتم العثور على تطبيق بريد إلكتروني. يرجى مراسلتنا يدويًا على %1$s.</string>
+
+    <!-- Calendar multi-day selection -->
+    <string name="calendar_delete_confirm_msg_multi">هل تريد إزالة جميع الإطلالات التي تم ارتداؤها في الأيام المحددة (%1$d)؟</string>
 </resources>

@@ -1257,4 +1257,7 @@
 
     <!-- Feedback: no email app fallback -->
     <string name="feedback_no_email_app">Ingen e-mailapp fundet. Skriv til os manuelt på %1$s.</string>
+
+    <!-- Calendar multi-day selection -->
+    <string name="calendar_delete_confirm_msg_multi">Fjern alle outfits, der er båret på de %1$d valgte dage?</string>
 </resources>

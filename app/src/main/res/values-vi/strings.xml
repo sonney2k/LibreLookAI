@@ -1230,4 +1230,7 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
 
     <!-- Feedback: no email app fallback -->
     <string name="feedback_no_email_app">Không tìm thấy ứng dụng email. Vui lòng gửi email cho chúng tôi theo địa chỉ %1$s.</string>
+
+    <!-- Calendar multi-day selection -->
+    <string name="calendar_delete_confirm_msg_multi">Xóa tất cả trang phục đã mặc trong %1$d ngày đã chọn?</string>
 </resources>

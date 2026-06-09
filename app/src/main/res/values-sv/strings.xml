@@ -1257,4 +1257,7 @@
 
     <!-- Feedback: no email app fallback -->
     <string name="feedback_no_email_app">Ingen e-postapp hittades. Mejla oss manuellt på %1$s.</string>
+
+    <!-- Calendar multi-day selection -->
+    <string name="calendar_delete_confirm_msg_multi">Ta bort alla outfits som burits under de %1$d valda dagarna?</string>
 </resources>

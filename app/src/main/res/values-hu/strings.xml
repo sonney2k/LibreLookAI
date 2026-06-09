@@ -1230,4 +1230,7 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
 
     <!-- Feedback: no email app fallback -->
     <string name="feedback_no_email_app">Nem található e-mail alkalmazás. Írjon nekünk kézzel a %1$s címre.</string>
+
+    <!-- Calendar multi-day selection -->
+    <string name="calendar_delete_confirm_msg_multi">Eltávolítja az összes szettet, amelyet a kijelölt %1$d napon viseltek?</string>
 </resources>

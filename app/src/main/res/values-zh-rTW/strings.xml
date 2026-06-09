@@ -1230,4 +1230,7 @@
 
     <!-- Feedback: no email app fallback -->
     <string name="feedback_no_email_app">找不到電子郵件應用程式。請手動寄送電子郵件至 %1$s。</string>
+
+    <!-- Calendar multi-day selection -->
+    <string name="calendar_delete_confirm_msg_multi">移除在所選 %1$d 天穿著的所有穿搭嗎？</string>
 </resources>

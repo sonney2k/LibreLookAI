@@ -1257,4 +1257,7 @@
 
     <!-- Feedback: no email app fallback -->
     <string name="feedback_no_email_app">Nenhum app de e-mail encontrado. Escreva para nós manualmente em %1$s.</string>
+
+    <!-- Calendar multi-day selection -->
+    <string name="calendar_delete_confirm_msg_multi">Remover todos os looks usados nos %1$d dias selecionados?</string>
 </resources>

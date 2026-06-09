@@ -1257,4 +1257,7 @@
 
     <!-- Feedback: no email app fallback -->
     <string name="feedback_no_email_app">Sähköpostisovellusta ei löytynyt. Lähetä meille sähköpostia manuaalisesti osoitteeseen %1$s.</string>
+
+    <!-- Calendar multi-day selection -->
+    <string name="calendar_delete_confirm_msg_multi">Poistetaanko kaikki asut, jotka on käytetty %1$d valittuna päivänä?</string>
 </resources>

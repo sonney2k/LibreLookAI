@@ -615,6 +615,7 @@
     <string name="calendar_delete_prompt">Tap a day to remove its outfits</string>
     <string name="calendar_delete_confirm_title">Remove outfits?</string>
     <string name="calendar_delete_confirm_msg">Remove all outfits worn on %1$s?</string>
+    <string name="calendar_delete_confirm_msg_multi">Remove all outfits worn on the %1$d selected days?</string>
 
     <!-- Gap Analyzer -->
     <string name="gap_description">Discover the 3 missing pieces that would unlock the most new outfit combinations from your existing wardrobe.</string>

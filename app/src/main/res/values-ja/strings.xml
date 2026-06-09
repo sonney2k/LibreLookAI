@@ -1257,4 +1257,7 @@
 
     <!-- Feedback: no email app fallback -->
     <string name="feedback_no_email_app">メールアプリが見つかりません。%1$s まで手動でメールしてください。</string>
+
+    <!-- Calendar multi-day selection -->
+    <string name="calendar_delete_confirm_msg_multi">選択した %1$d 日間に着用したすべてのコーディネートを削除しますか？</string>
 </resources>

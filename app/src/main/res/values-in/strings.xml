@@ -1230,4 +1230,7 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
 
     <!-- Feedback: no email app fallback -->
     <string name="feedback_no_email_app">Aplikasi email tidak ditemukan. Silakan kirim email secara manual ke %1$s.</string>
+
+    <!-- Calendar multi-day selection -->
+    <string name="calendar_delete_confirm_msg_multi">Hapus semua pakaian yang dikenakan pada %1$d hari yang dipilih?</string>
 </resources>

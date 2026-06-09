@@ -1230,4 +1230,7 @@
 
     <!-- Feedback: no email app fallback -->
     <string name="feedback_no_email_app">कोई ईमेल ऐप नहीं मिला. कृपया %1$s पर मैन्युअल रूप से ईमेल करें.</string>
+
+    <!-- Calendar multi-day selection -->
+    <string name="calendar_delete_confirm_msg_multi">चुने गए %1$d दिनों में पहने गए सभी आउटफ़िट हटाएँ?</string>
 </resources>

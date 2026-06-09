@@ -227,12 +227,13 @@ private fun CalendarContent(
     val today = remember { LocalDate.now() }
     val isOffline = LocalIsOffline.current
     var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
-    // Long-pressing a day selects it (fabMenuDay) and raises the shared SelectionActionBar; its
-    // copy/move/remove then act on that whole day's outfits, and "add" records onto it.
-    var fabMenuDay by remember { mutableStateOf<LocalDate?>(null) }
+    // Long-pressing a day marks it (selectedDays) and raises the shared SelectionActionBar; once in
+    // selection mode, tapping more days toggles them in/out. A single selected day offers
+    // copy/move/remove for that day's outfits; multiple days only offer remove.
+    var selectedDays by remember { mutableStateOf<Set<LocalDate>>(emptySet()) }
     var showAddSheet by remember { mutableStateOf(false) }
-    // Non-null once a day is picked for deletion — shows the remove-confirm dialog.
-    var pendingDeleteDate by remember { mutableStateOf<LocalDate?>(null) }
+    // Non-empty once one or more days are picked for deletion — shows the remove-confirm dialog.
+    var pendingDeleteDays by remember { mutableStateOf<Set<LocalDate>>(emptySet()) }
     // Active "tap a day to wear/move/copy" request — the calendar grid itself becomes the picker.
     var pickMode by remember { mutableStateOf<CalendarPick?>(null) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -273,7 +274,7 @@ private fun CalendarContent(
     LaunchedEffect(externalWear) {
         externalWear?.let { (outfit, source) ->
             selectedDate = null
-            fabMenuDay = null
+            selectedDays = emptySet()
             pickMode = CalendarPick.Wear(outfit, source)
             onExternalWearConsumed()
         }
@@ -341,22 +342,32 @@ private fun CalendarContent(
                         week.forEach { date ->
                             val hasStyles = date != null && outfitsByDate[date].orEmpty().isNotEmpty()
                             val inPickMode = pickMode != null
+                            val inSelectionMode = selectedDays.isNotEmpty()
                             DayCell(
                                 date = date,
                                 items = if (date != null) itemsByDate[date].orEmpty() else emptyList(),
                                 isCurrentMonth = date?.month == pageMonth.month,
                                 isToday = date == today,
-                                // In pick mode any day completes the wear/move/copy. Otherwise tap a
-                                // day with outfits to inspect it; long-press to raise the shared
-                                // selection bar (copy/move/remove) for that day's outfits.
+                                isSelected = date != null && date in selectedDays,
+                                // In pick mode any day completes the wear/move/copy. In selection
+                                // mode tapping a day with outfits toggles it in/out of the selection.
+                                // Otherwise a plain tap on a day with outfits inspects it; long-press
+                                // raises the shared selection bar for that day's outfits.
                                 onClick = when {
                                     date == null -> null
                                     inPickMode -> { { completePick(date) } }
+                                    inSelectionMode && hasStyles -> {
+                                        {
+                                            selectedDays = if (date in selectedDays) selectedDays - date
+                                                           else selectedDays + date
+                                        }
+                                    }
+                                    inSelectionMode -> null
                                     hasStyles -> { { selectedDate = date } }
                                     else -> null
                                 },
                                 onLongClick = if (!inPickMode && date != null && hasStyles && !isOffline) {
-                                    { fabMenuDay = date }
+                                    { selectedDays = selectedDays + date }
                                 } else null,
                                 modifier = Modifier
                                     .weight(1f)
@@ -377,43 +388,54 @@ private fun CalendarContent(
         icon = Icons.Default.CalendarMonth,
         onClick = { showAddSheet = true },
         expanded = true,
-        visible = !isOffline && fabMenuDay == null && pickMode == null,
+        visible = !isOffline && selectedDays.isEmpty() && pickMode == null,
         modifier = Modifier.align(Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp),
     )
 
-    // Long-press a day → shared selection bar for that day's outfits: Copy (primary) · Move · Remove.
-    val daySelected = fabMenuDay
-    if (daySelected != null) BackHandler { fabMenuDay = null }
+    // Long-press a day → shared selection bar. One selected day: Copy (primary) · Move · Remove for
+    // that day's outfits. Multiple selected days: only Remove (move/copy to a single target day make
+    // no sense across many source days).
+    val hasSelection = selectedDays.isNotEmpty()
+    if (hasSelection) BackHandler { selectedDays = emptySet() }
     SelectionActionBar(
-        count = daySelected?.let { outfitsByDate[it].orEmpty().size } ?: 0,
-        onClear = { fabMenuDay = null },
-        actions = if (daySelected != null && !isOffline) {
-            listOf(
-                SelectionAction(
-                    label = stringResource(R.string.sel_copy_to_day),
-                    icon = Icons.Default.ContentCopy,
-                    kind = SelectionAction.Kind.Primary,
-                ) {
-                    val ids = eventsByDate[daySelected].orEmpty().map { it.id }.toSet()
-                    pickMode = CalendarPick.CopyEvents(ids); fabMenuDay = null
-                },
-                SelectionAction(
-                    label = stringResource(R.string.sel_move),
-                    icon = Icons.Default.EditCalendar,
-                ) {
-                    val ids = eventsByDate[daySelected].orEmpty().map { it.id }.toSet()
-                    pickMode = CalendarPick.MoveEvents(ids); fabMenuDay = null
-                },
-                SelectionAction(
-                    label = stringResource(R.string.sel_remove),
-                    icon = Icons.Default.Delete,
-                    kind = SelectionAction.Kind.Danger,
-                ) { pendingDeleteDate = daySelected; fabMenuDay = null },
-            )
+        count = selectedDays.size,
+        onClear = { selectedDays = emptySet() },
+        actions = if (hasSelection && !isOffline) {
+            buildList {
+                val single = selectedDays.singleOrNull()
+                if (single != null) {
+                    add(
+                        SelectionAction(
+                            label = stringResource(R.string.sel_copy_to_day),
+                            icon = Icons.Default.ContentCopy,
+                            kind = SelectionAction.Kind.Primary,
+                        ) {
+                            val ids = eventsByDate[single].orEmpty().map { it.id }.toSet()
+                            pickMode = CalendarPick.CopyEvents(ids); selectedDays = emptySet()
+                        },
+                    )
+                    add(
+                        SelectionAction(
+                            label = stringResource(R.string.sel_move),
+                            icon = Icons.Default.EditCalendar,
+                        ) {
+                            val ids = eventsByDate[single].orEmpty().map { it.id }.toSet()
+                            pickMode = CalendarPick.MoveEvents(ids); selectedDays = emptySet()
+                        },
+                    )
+                }
+                add(
+                    SelectionAction(
+                        label = stringResource(R.string.sel_remove),
+                        icon = Icons.Default.Delete,
+                        kind = SelectionAction.Kind.Danger,
+                    ) { pendingDeleteDays = selectedDays; selectedDays = emptySet() },
+                )
+            }
         } else {
             emptyList()
         },
-        visible = daySelected != null && !isOffline,
+        visible = hasSelection && !isOffline,
         modifier = Modifier.align(Alignment.BottomCenter),
     )
 
@@ -509,10 +531,12 @@ private fun CalendarContent(
         )
     }
 
-    // FAB ▸ "Remove outfit from calendar" — confirm clearing every wear logged on the picked day.
-    pendingDeleteDate?.let { date ->
+    // FAB ▸ "Remove outfit from calendar" — confirm clearing every wear logged on the picked day(s).
+    if (pendingDeleteDays.isNotEmpty()) {
+        val deleteDays = pendingDeleteDays
+        val singleDay = deleteDays.singleOrNull()
         AlertDialog(
-            onDismissRequest = { pendingDeleteDate = null },
+            onDismissRequest = { pendingDeleteDays = emptySet() },
             title = {
                 CompositionLocalProvider(
                     LocalContext provides parentContext,
@@ -525,10 +549,14 @@ private fun CalendarContent(
                     LocalConfiguration provides parentConfiguration,
                 ) {
                     Text(
-                        stringResource(
-                            R.string.calendar_delete_confirm_msg,
-                            date.format(DateTimeFormatter.ofPattern(SHEET_DATE_PATTERN, locale)),
-                        ),
+                        if (singleDay != null) {
+                            stringResource(
+                                R.string.calendar_delete_confirm_msg,
+                                singleDay.format(DateTimeFormatter.ofPattern(SHEET_DATE_PATTERN, locale)),
+                            )
+                        } else {
+                            stringResource(R.string.calendar_delete_confirm_msg_multi, deleteDays.size)
+                        },
                     )
                 }
             },
@@ -538,9 +566,9 @@ private fun CalendarContent(
                     LocalConfiguration provides parentConfiguration,
                 ) {
                     TextButton(onClick = {
-                        val ids = eventsByDate[date].orEmpty().map { it.id }.toSet()
+                        val ids = deleteDays.flatMap { eventsByDate[it].orEmpty() }.map { it.id }.toSet()
                         onDeleteEvents(ids)
-                        pendingDeleteDate = null
+                        pendingDeleteDays = emptySet()
                     }) {
                         Text(
                             stringResource(R.string.action_delete),
@@ -554,7 +582,7 @@ private fun CalendarContent(
                     LocalContext provides parentContext,
                     LocalConfiguration provides parentConfiguration,
                 ) {
-                    TextButton(onClick = { pendingDeleteDate = null }) {
+                    TextButton(onClick = { pendingDeleteDays = emptySet() }) {
                         Text(stringResource(R.string.action_cancel))
                     }
                 }
@@ -769,13 +797,22 @@ private fun DayCell(
     items: List<WornItem>,
     isCurrentMonth: Boolean,
     isToday: Boolean,
+    isSelected: Boolean,
     onClick: (() -> Unit)?,
     onLongClick: (() -> Unit)?,
     modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier
-            .border(0.5.dp, MaterialTheme.colorScheme.outlineVariant)
+            .border(
+                if (isSelected) 2.dp else 0.5.dp,
+                if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant,
+            )
+            .then(
+                if (isSelected) Modifier.background(
+                    MaterialTheme.colorScheme.primary.copy(alpha = 0.18f),
+                ) else Modifier,
+            )
             .then(
                 if (onClick != null || onLongClick != null) {
                     Modifier.combinedClickable(

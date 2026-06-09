@@ -1257,4 +1257,7 @@
 
     <!-- Feedback: no email app fallback -->
     <string name="feedback_no_email_app">Nebyla nalezena žádná e-mailová aplikace. Napište nám ručně na %1$s.</string>
+
+    <!-- Calendar multi-day selection -->
+    <string name="calendar_delete_confirm_msg_multi">Odebrat všechny outfity nošené ve vybraných dnech (%1$d)?</string>
 </resources>

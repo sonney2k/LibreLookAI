@@ -1261,4 +1261,7 @@
 
     <!-- Feedback: no email app fallback -->
     <string name="feedback_no_email_app">לא נמצאה אפליקציית אימייל. כתבו לנו ידנית לכתובת %1$s.</string>
+
+    <!-- Calendar multi-day selection -->
+    <string name="calendar_delete_confirm_msg_multi">להסיר את כל התלבושות שנלבשו ב-%1$d הימים שנבחרו?</string>
 </resources>
