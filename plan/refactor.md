@@ -184,8 +184,16 @@ are easy to violate and have caused real bugs.
    moveItemsToLocation / deleteItems) moved into their adjacent background coroutines, ahead of
    the Drive calls — same ordering, off-main. Invariants are tested in
    `data/local/WardrobeItemStoreTest` (8 JVM tests).
-   **Remaining slices**: outfits (`styles_cache_*.json` + `readOutfitsLocalCache`), outfit
-   events, trips, try-ons, token-usage/trends caches.
+   **Outfits slice LANDED (June 2026).** `data/local/OutfitStore` (Room, DB v2 additive
+   migration): rows hold the `Outfit` as opaque Gson JSON keyed by outfit id, so an outfit is
+   homed in exactly one folder — the legacy `styles_cache_*.json` files duplicated fresh
+   empty-`folderId` outfits into every folder's cache (double entries in the all-locations
+   Phase-1 read). Reads restore the `@Transient Outfit.folderId` from the row (the legacy files
+   lost it entirely); the create/edit save paths now stamp `folderId` (in-memory only — the
+   field never reaches Drive JSON). Legacy files seed once per folder, marker-gated, kept as a
+   downgrade net. Tests: `data/local/OutfitStoreTest`.
+   **Remaining slices**: outfit events (`outfit_events_cache_*.json`), trips
+   (`trips_cache.json`), try-ons (`tryons_cache.json`), token-usage/trends caches.
 3. **Navigation Compose** — add the NavHost, convert Dialog-viewers to destinations one at a
    time; delete each Window-quirk workaround as its screen converts. Scope ViewModels to
    destinations as screens convert.

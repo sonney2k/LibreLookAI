@@ -1,0 +1,26 @@
+package com.librelookai.data.local
+
+import com.librelookai.data.model.Outfit
+
+/**
+ * Local source of truth for cached outfits, per closet folder.
+ *
+ * Replaces the per-folder `styles_cache_{folderId}.json` files OutfitsViewModel read/wrote.
+ * Single-instance (Hilt @Singleton). The primary key is the outfit id, so **an outfit is homed
+ * in exactly one folder** — the old files duplicated freshly created (empty-`folderId`) outfits
+ * into every folder's cache, which surfaced them twice in the all-locations Phase-1 read.
+ *
+ * Unlike the legacy files (which lost the `@Transient` `Outfit.folderId` entirely), reads
+ * return outfits with `folderId` restored from the row, so Phase 1 paints fully-attributed
+ * outfits before the Drive sync.
+ *
+ * On first access per folder the store seeds itself from a legacy JSON cache file if one
+ * exists, so an app upgrade keeps Phase 1 instant with no Drive re-download.
+ */
+interface OutfitStore {
+    /** All cached outfits homed in [folderId], with [Outfit.folderId] restored. */
+    suspend fun outfitsFor(folderId: String): List<Outfit>
+
+    /** Replaces the folder's entire cached outfit list (post-load / post-mutation snapshot). */
+    suspend fun replaceFolder(folderId: String, outfits: List<Outfit>)
+}

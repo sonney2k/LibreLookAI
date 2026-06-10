@@ -45,6 +45,7 @@ class OutfitsViewModel @Inject constructor(
     internal val drive: DriveRepository,
     internal val gemini: GeminiRepository,
     private val itemStore: WardrobeItemStore,
+    private val outfitStore: com.librelookai.data.local.OutfitStore,
 ) : AndroidViewModel(app) {
     /** Weekly, location-specific cache around the expensive Gemini trend lookup. */
     internal val trendsCache = com.librelookai.gemini.FashionTrendsCache(app, drive, gemini)
@@ -127,30 +128,19 @@ class OutfitsViewModel @Inject constructor(
 
     // ---------- Load ----------
 
-    private fun outfitsLocalCacheFile(folderId: String) =
-        java.io.File(getApplication<Application>().filesDir, "styles_cache_${folderId}.json")
-
-    private fun readOutfitsLocalCache(id: String): List<Outfit> {
-        val file = outfitsLocalCacheFile(id)
-        if (!file.exists()) return emptyList()
-        val type = object : TypeToken<List<Outfit>>() {}.type
-        return runCatching { gson.fromJson<List<Outfit>>(file.readText(), type) ?: emptyList() }
-            .getOrDefault(emptyList())
-    }
-
     /**
-     * Mirrors the current outfit list into the per-folder local JSON caches so Phase 1 never
-     * resurrects deleted outfits or loses edits after a relaunch. Call after every successful
-     * mutation (create / edit / delete) — without this, only the Phase 2 loader wrote the cache,
-     * so a kill-after-edit left the cache stale until the next Drive sync. Uses the same
-     * per-folder filter as the Drive writes so the cache matches Drive exactly.
+     * Mirrors the current outfit list into the per-folder local cache ([OutfitStore]) so Phase 1
+     * never resurrects deleted outfits or loses edits after a relaunch. Call after every
+     * successful mutation (create / edit / delete) — without this, only the Phase 2 loader wrote
+     * the cache, so a kill-after-edit left the cache stale until the next Drive sync. Uses the
+     * same per-folder filter as the Drive writes so the cache matches Drive exactly.
      */
-    private fun refreshOutfitsLocalCache() {
+    private suspend fun refreshOutfitsLocalCache() {
         val fids = allFolderIds ?: listOfNotNull(folderId)
         val styles = _state.value.outfits
         fids.forEach { fid ->
             val folderStyles = styles.filter { it.folderId == fid || it.folderId.isEmpty() }
-            runCatching { outfitsLocalCacheFile(fid).writeText(gson.toJson(folderStyles)) }
+            runCatching { outfitStore.replaceFolder(fid, folderStyles) }
         }
     }
 
@@ -158,11 +148,11 @@ class OutfitsViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, error = null) }
             val ids = allFolderIds
-            // Phase 1 — instant: show whatever is in local JSON cache
+            // Phase 1 — instant: show whatever is in the local outfit store
             val cached = if (ids != null) {
-                ids.flatMap { readOutfitsLocalCache(it) }
+                ids.flatMap { outfitStore.outfitsFor(it) }
             } else {
-                folderId?.let { readOutfitsLocalCache(it) } ?: emptyList()
+                folderId?.let { outfitStore.outfitsFor(it) } ?: emptyList()
             }
             if (cached.isNotEmpty()) _state.update { it.copy(outfits = cached, isLoading = false) }
 
@@ -210,7 +200,7 @@ class OutfitsViewModel @Inject constructor(
                 )
             }
         } else emptyList()
-        runCatching { outfitsLocalCacheFile(id).writeText(gson.toJson(resolved)) }
+        runCatching { outfitStore.replaceFolder(id, resolved) }
         return resolved
     }
 
@@ -292,6 +282,10 @@ class OutfitsViewModel @Inject constructor(
                 itemIds = itemIds,
                 itemNames = itemNames,
                 tags = tags,
+                // Stamp the save folder (the field is @Transient, so Drive JSON is unchanged):
+                // the local cache homes each outfit in exactly one folder, and an empty
+                // folderId would leave the fresh outfit mis-homed until the next Drive sync.
+                folderId = id,
             )
             val updated = _state.value.outfits + newOutfit
             runCatching {
@@ -318,7 +312,11 @@ class OutfitsViewModel @Inject constructor(
             val id = saveFolderId ?: folderId ?: run { onDone(false); return@launch }
             val idToName = idToNameAllFolders(listOf(id))
             val resolved = newOutfits.map { o ->
-                o.copy(itemNames = o.itemNames.ifEmpty { o.itemIds.mapNotNull { idToName[it] } })
+                o.copy(
+                    itemNames = o.itemNames.ifEmpty { o.itemIds.mapNotNull { idToName[it] } },
+                    // Home each fresh outfit in its save folder (see saveOutfitDirectly).
+                    folderId = id,
+                )
             }
             val updated = _state.value.outfits + resolved
             runCatching {
@@ -502,6 +500,8 @@ class OutfitsViewModel @Inject constructor(
                 itemIds = itemIds,
                 itemNames = itemNames,
                 tags = tags,
+                // Home the edit in the folder it is written to (see saveOutfitDirectly).
+                folderId = saveId,
             )
             val updated = s.outfits.map { if (it.id == edited.id) edited else it }
             runCatching {
