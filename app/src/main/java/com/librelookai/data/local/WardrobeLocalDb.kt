@@ -86,11 +86,13 @@ interface WardrobeItemDao {
     entities = [
         WardrobeItemEntity::class, WardrobeFolderEntity::class,
         OutfitEntity::class, OutfitFolderEntity::class,
+        OutfitEventEntity::class, OutfitEventFolderEntity::class,
     ],
-    version = 2,
+    version = 3,
     exportSchema = false,
 )
 abstract class LocalDatabase : RoomDatabase() {
     abstract fun wardrobeItemDao(): WardrobeItemDao
     abstract fun outfitDao(): OutfitDao
+    abstract fun outfitEventDao(): OutfitEventDao
 }

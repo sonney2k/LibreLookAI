@@ -1,0 +1,18 @@
+package com.librelookai.data.local
+
+import com.librelookai.data.model.OutfitEvent
+
+/**
+ * Local source of truth for cached calendar wear events, per closet folder.
+ *
+ * Replaces the per-folder `outfit_events_cache_{folderId}.json` files OutfitEventsViewModel
+ * read/wrote. Single-instance (Hilt @Singleton). On first access per folder the store seeds
+ * itself from a legacy JSON cache file if one exists, so an app upgrade keeps the calendar's
+ * Phase-1 paint instant with no Drive re-download.
+ */
+interface OutfitEventStore {
+    suspend fun eventsFor(folderId: String): List<OutfitEvent>
+
+    /** Replaces the folder's entire cached event list (post-load / post-mutation snapshot). */
+    suspend fun replaceFolder(folderId: String, events: List<OutfitEvent>)
+}

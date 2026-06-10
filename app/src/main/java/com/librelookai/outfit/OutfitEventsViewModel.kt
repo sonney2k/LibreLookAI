@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.File
 import java.time.LocalDate
 import com.librelookai.data.drive.DriveRepository
 import com.librelookai.data.drive.loadOutfitEventsJson
@@ -34,6 +33,7 @@ data class OutfitEventsUiState(
 class OutfitEventsViewModel @Inject constructor(
     app: Application,
     private val drive: DriveRepository,
+    private val eventStore: com.librelookai.data.local.OutfitEventStore,
 ) : AndroidViewModel(app) {
     private val gson = Gson()
     private var folderId: String? = null
@@ -42,9 +42,6 @@ class OutfitEventsViewModel @Inject constructor(
     private val _state = MutableStateFlow(OutfitEventsUiState())
     val state: StateFlow<OutfitEventsUiState> = _state.asStateFlow()
     private var loadJob: Job? = null
-
-    private fun eventsLocalCacheFile(id: String) =
-        File(getApplication<Application>().filesDir, "outfit_events_cache_${id}.json")
 
     fun setLocation(newFolderId: String) {
         if (folderId == newFolderId && allFolderIds == null) return
@@ -70,15 +67,7 @@ class OutfitEventsViewModel @Inject constructor(
             _state.update { it.copy(isLoading = true, error = null) }
 
             // Phase 1 — instant: show merged local cache from all folders
-            val cachedAll = ids.flatMap { id ->
-                val cacheFile = eventsLocalCacheFile(id)
-                if (cacheFile.exists()) {
-                    runCatching {
-                        val type = object : TypeToken<List<OutfitEvent>>() {}.type
-                        gson.fromJson<List<OutfitEvent>>(cacheFile.readText(), type) ?: emptyList()
-                    }.getOrDefault(emptyList())
-                } else emptyList()
-            }
+            val cachedAll = ids.flatMap { id -> eventStore.eventsFor(id) }
             if (cachedAll.isNotEmpty()) _state.update { it.copy(events = cachedAll, isLoading = false) }
 
             // Phase 2 — Drive sync: skip when offline
@@ -93,7 +82,7 @@ class OutfitEventsViewModel @Inject constructor(
                         val type = object : TypeToken<List<OutfitEvent>>() {}.type
                         val events: List<OutfitEvent> = gson.fromJson(json, type) ?: emptyList()
                         // Update per-folder cache
-                        runCatching { eventsLocalCacheFile(id).writeText(gson.toJson(events)) }
+                        runCatching { eventStore.replaceFolder(id, events) }
                         events
                     } else emptyList()
                 }
@@ -211,7 +200,7 @@ class OutfitEventsViewModel @Inject constructor(
             runCatching {
                 drive.saveOutfitEventsJson(id, gson.toJson(updated))
             }.onSuccess {
-                runCatching { eventsLocalCacheFile(id).writeText(gson.toJson(updated)) }
+                runCatching { eventStore.replaceFolder(id, updated) }
                 _state.update { it.copy(events = updated) }
             }.onFailure { e ->
                 _state.update { it.copy(error = e.message) }

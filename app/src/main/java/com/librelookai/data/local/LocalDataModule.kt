@@ -27,6 +27,21 @@ private val MIGRATION_1_2 = object : Migration(1, 2) {
     }
 }
 
+/** v3: outfit-events cache tables (`outfit_events_cache_*.json` successor). */
+private val MIGRATION_2_3 = object : Migration(2, 3) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `outfit_events` " +
+                "(`id` TEXT NOT NULL, `folderId` TEXT NOT NULL, `json` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        )
+        db.execSQL("CREATE INDEX IF NOT EXISTS `index_outfit_events_folderId` ON `outfit_events` (`folderId`)")
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `outfit_event_folders` " +
+                "(`folderId` TEXT NOT NULL, PRIMARY KEY(`folderId`))",
+        )
+    }
+}
+
 @Module
 @InstallIn(SingletonComponent::class)
 object LocalDatabaseModule {
@@ -35,7 +50,7 @@ object LocalDatabaseModule {
     @Singleton
     fun provideLocalDatabase(@ApplicationContext context: Context): LocalDatabase =
         Room.databaseBuilder(context, LocalDatabase::class.java, "librelookai.db")
-            .addMigrations(MIGRATION_1_2)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
             .build()
 
     @Provides
@@ -43,6 +58,9 @@ object LocalDatabaseModule {
 
     @Provides
     fun provideOutfitDao(db: LocalDatabase): OutfitDao = db.outfitDao()
+
+    @Provides
+    fun provideOutfitEventDao(db: LocalDatabase): OutfitEventDao = db.outfitEventDao()
 }
 
 @Module
@@ -54,4 +72,7 @@ abstract class LocalStoreModule {
 
     @Binds
     abstract fun bindOutfitStore(impl: RoomOutfitStore): OutfitStore
+
+    @Binds
+    abstract fun bindOutfitEventStore(impl: RoomOutfitEventStore): OutfitEventStore
 }
