@@ -56,6 +56,20 @@ private val MIGRATION_3_4 = object : Migration(3, 4) {
     }
 }
 
+/** v5: try-ons cache tables (`tryons_cache.json` successor). */
+private val MIGRATION_4_5 = object : Migration(4, 5) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `tryons` " +
+                "(`id` TEXT NOT NULL, `json` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        )
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `tryon_markers` " +
+                "(`key` TEXT NOT NULL, PRIMARY KEY(`key`))",
+        )
+    }
+}
+
 @Module
 @InstallIn(SingletonComponent::class)
 object LocalDatabaseModule {
@@ -64,7 +78,7 @@ object LocalDatabaseModule {
     @Singleton
     fun provideLocalDatabase(@ApplicationContext context: Context): LocalDatabase =
         Room.databaseBuilder(context, LocalDatabase::class.java, "librelookai.db")
-            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
             .build()
 
     @Provides
@@ -78,6 +92,9 @@ object LocalDatabaseModule {
 
     @Provides
     fun provideTripDao(db: LocalDatabase): TripDao = db.tripDao()
+
+    @Provides
+    fun provideTryOnDao(db: LocalDatabase): TryOnDao = db.tryOnDao()
 }
 
 @Module
@@ -95,4 +112,7 @@ abstract class LocalStoreModule {
 
     @Binds
     abstract fun bindTripStore(impl: RoomTripStore): TripStore
+
+    @Binds
+    abstract fun bindTryOnStore(impl: RoomTryOnStore): TryOnStore
 }

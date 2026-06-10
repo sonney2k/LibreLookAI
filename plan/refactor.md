@@ -203,7 +203,15 @@ are easy to violate and have caused real bugs.
    once, kept as downgrade net. `TripsViewModel`'s `mutateTrip` synchronous cache write moved
    into its adjacent `viewModelScope.launch`, ahead of the Drive save — same ordering, off-main.
    Tests: `data/local/TripStoreTest`.
-   **Remaining slices**: try-ons (`tryons_cache.json`), token-usage/trends caches.
+   **Try-ons slice LANDED (June 2026).** `data/local/TryOnStore` (Room, DB v5): the single
+   global try-on metadata list as opaque Gson JSON keyed by try-on id, plus a one-row seed
+   marker. Image bytes stay files in the Drive cache dir (`tryon_{imageDriveId}.png`) — the
+   store holds metadata only, same rule as wardrobe. Legacy `tryons_cache.json` seeds once,
+   kept as downgrade net; the ViewModel's `migrateSource` mapping (pre-`sourceKind` entries)
+   applies on store reads exactly as on Drive reads. Tests: `data/local/TryOnStoreTest`.
+   **Remaining slices**: token-usage/trends caches (deliberately deferred — token-usage has
+   its own per-month structure + Drive sync; `trends_cache.json` is the layered
+   disk→Drive→Gemini `FashionTrendsCache`).
 3. **Navigation Compose** — add the NavHost, convert Dialog-viewers to destinations one at a
    time; delete each Window-quirk workaround as its screen converts. Scope ViewModels to
    destinations as screens convert.

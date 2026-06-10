@@ -88,8 +88,9 @@ interface WardrobeItemDao {
         OutfitEntity::class, OutfitFolderEntity::class,
         OutfitEventEntity::class, OutfitEventFolderEntity::class,
         TripEntity::class, TripMarkerEntity::class,
+        TryOnEntity::class, TryOnMarkerEntity::class,
     ],
-    version = 4,
+    version = 5,
     exportSchema = false,
 )
 abstract class LocalDatabase : RoomDatabase() {
@@ -97,4 +98,5 @@ abstract class LocalDatabase : RoomDatabase() {
     abstract fun outfitDao(): OutfitDao
     abstract fun outfitEventDao(): OutfitEventDao
     abstract fun tripDao(): TripDao
+    abstract fun tryOnDao(): TryOnDao
 }

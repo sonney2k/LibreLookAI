@@ -117,6 +117,7 @@ class TryOnViewModel @Inject constructor(
     app: Application,
     private val gemini: GeminiRepository,
     private val drive: DriveRepository,
+    private val tryOnStore: com.librelookai.data.local.TryOnStore,
 ) : AndroidViewModel(app) {
     private val gson = Gson()
 
@@ -408,7 +409,7 @@ class TryOnViewModel @Inject constructor(
                 }
                 val remaining = loadTryOnsEntries(root).filterNot { it.imageDriveId in ids }
                 drive.saveTryOnsJson(root, gson.toJson(remaining))
-                runCatching { historyCacheFile().writeText(gson.toJson(remaining)) }
+                runCatching { tryOnStore.replaceAll(remaining) }
                 _state.update {
                     it.copy(
                         history = it.history.filterNot { h -> h.imageDriveId in ids },
@@ -428,23 +429,17 @@ class TryOnViewModel @Inject constructor(
 
     fun loadHistory() {
         viewModelScope.launch(Dispatchers.IO) {
-            // Phase 1 — instant: paint from the local sidecar cache so the history grid
+            // Phase 1 — instant: paint from the local cache ([TryOnStore]) so the history grid
             // appears immediately when the user opens the Try-Ons tab. Mirrors the
-            // wardrobe two-phase load (CLAUDE.md → Storage / Wardrobe).
+            // wardrobe two-phase load (CLAUDE.md → Storage / Wardrobe). The store holds
+            // metadata only — image bytes stay files in the Drive cache dir.
             runCatching {
-                val cacheFile = historyCacheFile()
-                if (cacheFile.exists()) {
-                    val cached: List<TryOn> = gson.fromJson(
-                        cacheFile.readText(),
-                        object : TypeToken<List<TryOn>>() {}.type,
-                    ) ?: emptyList()
-                    val resolved = cached.mapNotNull { e ->
-                        val f = File(drive.cacheDir, "tryon_${e.imageDriveId}.png")
-                        if (f.exists()) e.copy(localPath = f.absolutePath) else null
-                    }
-                    if (resolved.isNotEmpty()) {
-                        _state.update { it.copy(history = resolved) }
-                    }
+                val resolved = tryOnStore.tryOns().map(::migrateSource).mapNotNull { e ->
+                    val f = File(drive.cacheDir, "tryon_${e.imageDriveId}.png")
+                    if (f.exists()) e.copy(localPath = f.absolutePath) else null
+                }
+                if (resolved.isNotEmpty()) {
+                    _state.update { it.copy(history = resolved) }
                 }
             }
 
@@ -460,15 +455,12 @@ class TryOnViewModel @Inject constructor(
                     e.copy(localPath = cached.absolutePath.takeIf { cached.exists() } ?: "")
                 }
                 _state.update { it.copy(history = resolved) }
-                runCatching { historyCacheFile().writeText(gson.toJson(entries)) }
+                runCatching { tryOnStore.replaceAll(entries) }
             } catch (e: Exception) {
                 Log.w("TryOnVM", "loadHistory failed: ${e.message}")
             }
         }
     }
-
-    private fun historyCacheFile(): File =
-        File(getApplication<Application>().filesDir, "tryons_cache.json")
 
     private suspend fun ensureRootFolder(): String {
         rootFolderId?.let { return it }

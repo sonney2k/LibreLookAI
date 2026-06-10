@@ -35,28 +35,14 @@ global list), `TripsViewModel` rewired (`mutateTrip`'s sync cache write moved in
 ahead of the Drive save; `java.io.File`/`TypeToken` imports dropped), `TripStoreTest` (4 tests),
 `plan/refactor.md` updated.
 
-## Step 4 — Try-ons slice (not started)
+## Step 4 — Try-ons slice ✅ DONE
 
-- Same single-global-list pattern as trips: `TryOnEntity(id PK, json)` — key = `TryOn.id` if
-  the model has one, else `imageDriveId` (confirm in `data/model/TryOn.kt`), plus a
-  `tryon_markers`-style single-row seed marker. Seed from legacy `tryons_cache.json`
-  (bare `List<TryOn>` array). `LocalDatabase` → version 5 + `MIGRATION_4_5`; DAO provide +
-  `@Binds TryOnStore` in `LocalDataModule.kt`.
-- `TryOnViewModel` (`tryon/TryOnViewModel.kt`): inject store.
-  - `loadHistory()` Phase 1 (~line 434): read `store.tryOns()` instead of `historyCacheFile()`;
-    KEEP the existing `localPath` resolution against `drive.cacheDir/tryon_{imageDriveId}.png`
-    (image bytes stay files; the store holds metadata only — same rule as wardrobe).
-  - Phase 2 (~line 463): `runCatching { historyCacheFile().writeText(...) }` →
-    `runCatching { store.replaceAll(entries) }`.
-  - Apply the existing `migrateSource` mapping on store reads exactly as on Drive reads
-    (old entries predate `sourceKind`; item-only try-ons re-read as "wardrobe").
-  - Grep for any other `historyCacheFile()` writers (save/delete paths) and route them
-    through the store; `loadHistory` is the only known one — verify.
-  - Delete `historyCacheFile()`.
-- `TryOnStoreTest`: snapshot, seed-once, corrupt-file (and that `sourceKind` round-trips).
-- Docs: `plan/refactor.md` status + the ONE consolidated CLAUDE.md optimistic-writes edit
-  (extend the wardrobe/outfits cache sentences to "events, trips and try-ons are Room too" —
-  stores seeded once from their legacy JSON files). Commit.
+`TryOnStore`/`RoomTryOnStore`/`TryOnLocalDb` (DB v5, `MIGRATION_4_5`; key = `TryOn.id`,
+single-row seed marker), `TryOnViewModel` rewired (Phase-1 read via store + `migrateSource`,
+`localPath` resolution kept — image bytes stay files; Phase-2 + `deleteTryOns` writes via
+store, the two `historyCacheFile()` writers found by grep; `historyCacheFile()` deleted),
+`TryOnStoreTest` (4 tests), `plan/refactor.md` + consolidated CLAUDE.md optimistic-writes
+edit done.
 
 ## Deferred (later slices, out of scope)
 
