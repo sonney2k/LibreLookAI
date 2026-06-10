@@ -866,6 +866,78 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                             }
                             }
                         }
+
+                        composable<TryOnRoute> {
+                            // TryOnViewModel state is the source of truth: the destination pops
+                            // itself when the open-flag flips false (header ✕, layered system
+                            // back, save-and-close and the Settings/AI-dialog jumps all run
+                            // through tryOnViewModel.close()).
+                            val tryOnUi by tryOnViewModel.state.collectAsState()
+                            LaunchedEffect(tryOnUi.isComposerOpen) {
+                                if (!tryOnUi.isComposerOpen) {
+                                    navController.popBackStack(TryOnRoute, inclusive = true)
+                                }
+                            }
+                            val tryOnStyles by stylesViewModel.state.collectAsState()
+                            CompositionLocalProvider(LocalViewModelStoreOwner provides activity) {
+                                TryOnComposerScreen(
+                                    tryOnViewModel   = tryOnViewModel,
+                                    wardrobeViewModel = wardrobeViewModel,
+                                    profileViewModel  = profileViewModel,
+                                    shoppingClosetViewModel = shoppingClosetViewModel,
+                                    onShowItemInWardrobe = { image ->
+                                        val matchFolder = image.folderId
+                                        val viewingAll = locationState.activeLocationId == LocationViewModel.ALL_LOCATIONS_ID
+                                        if (!viewingAll && matchFolder.isNotEmpty()
+                                            && matchFolder != locationState.activeLocationId
+                                        ) {
+                                            locationViewModel.setActiveLocation(matchFolder)
+                                        }
+                                        wardrobeViewModel.requestScrollToImage(image.driveId)
+                                        goToTab(1)
+                                        navResetTick++
+                                    },
+                                    outfits = tryOnStyles.outfits,
+                                    locations = locationState.locations,
+                                    onOpenSourceOutfit = { outfit ->
+                                        // Close the try-on surface, jump to Outfits, and ask the
+                                        // list to scroll the picked outfit into view + highlight.
+                                        tryOnViewModel.close()
+                                        stylesViewModel.requestScrollToOutfit(outfit.id)
+                                        goToTab(0)
+                                        navResetTick++
+                                    },
+                                    onStartTryOn = { showQuickTryOnSheet = true },
+                                    onOpenProfileSettings = {
+                                        tryOnViewModel.close()
+                                        goToTab(5)
+                                        navResetTick++
+                                    },
+                                )
+                            }
+                        }
+
+                        composable<OutfitComposerRoute> {
+                            // Same state-mirroring contract as TryOnRoute, driven by
+                            // OutfitsViewModel.isComposerOpen (the edit-mode discard-confirm
+                            // still guards every close before the flag flips).
+                            val composerState by stylesViewModel.state.collectAsState()
+                            LaunchedEffect(composerState.isComposerOpen) {
+                                if (!composerState.isComposerOpen) {
+                                    navController.popBackStack(OutfitComposerRoute, inclusive = true)
+                                }
+                            }
+                            CompositionLocalProvider(LocalViewModelStoreOwner provides activity) {
+                                OutfitComposerScreen(
+                                    stylesViewModel   = stylesViewModel,
+                                    wardrobeViewModel = wardrobeViewModel,
+                                    profileViewModel  = profileViewModel,
+                                    weatherViewModel  = weatherViewModel,
+                                    shoppingClosetViewModel = shoppingClosetViewModel,
+                                    locationViewModel = locationViewModel,
+                                )
+                            }
+                        }
                         }
 
                                 val stylesState by stylesViewModel.state.collectAsState()
@@ -885,40 +957,24 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                                     }
                                 }
                                 val tryOnContext = LocalContext.current
-                                TryOnComposerScreen(
-                                    tryOnViewModel   = tryOnViewModel,
-                                    wardrobeViewModel = wardrobeViewModel,
-                                    profileViewModel  = profileViewModel,
-                                    shoppingClosetViewModel = shoppingClosetViewModel,
-                                    onShowItemInWardrobe = { image ->
-                                        val matchFolder = image.folderId
-                                        val viewingAll = locationState.activeLocationId == LocationViewModel.ALL_LOCATIONS_ID
-                                        if (!viewingAll && matchFolder.isNotEmpty()
-                                            && matchFolder != locationState.activeLocationId
-                                        ) {
-                                            locationViewModel.setActiveLocation(matchFolder)
-                                        }
-                                        wardrobeViewModel.requestScrollToImage(image.driveId)
-                                        goToTab(1)
-                                        navResetTick++
-                                    },
-                                    outfits = stylesState.outfits,
-                                    locations = locationState.locations,
-                                    onOpenSourceOutfit = { outfit ->
-                                        // Close the Try-On dialog, jump to Outfits, and ask the
-                                        // list to scroll the picked outfit into view + highlight.
-                                        tryOnViewModel.close()
-                                        stylesViewModel.requestScrollToOutfit(outfit.id)
-                                        goToTab(0)
-                                        navResetTick++
-                                    },
-                                    onStartTryOn = { showQuickTryOnSheet = true },
-                                    onOpenProfileSettings = {
-                                        tryOnViewModel.close()
-                                        goToTab(5)
-                                        navResetTick++
-                                    },
-                                )
+                                // Mirror the composers' VM open-flags into navigation. The flags
+                                // are set by many nav-less call sites (Quick sheet, selection
+                                // bars, viewer/trip edits) — observing them here keeps every
+                                // opener working unchanged. The destinations pop themselves when
+                                // the flags flip false; any path that pops them by other means
+                                // (goToTab) must also close the VM, or the next open won't
+                                // re-navigate (the flag never transitions).
+                                val tryOnUiState by tryOnViewModel.state.collectAsState()
+                                LaunchedEffect(tryOnUiState.isComposerOpen) {
+                                    if (tryOnUiState.isComposerOpen) {
+                                        navController.navigate(TryOnRoute) { launchSingleTop = true }
+                                    }
+                                }
+                                LaunchedEffect(stylesState.isComposerOpen) {
+                                    if (stylesState.isComposerOpen) {
+                                        navController.navigate(OutfitComposerRoute) { launchSingleTop = true }
+                                    }
+                                }
 
                                 // Quick Try-On entry sheet — opened from the center nav button,
                                 // the history FAB, and the empty-state CTA. Hosted here so it
@@ -992,16 +1048,6 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                                         onDismiss = { showTripTryOnPicker = false },
                                     )
                                 }
-
-                                // Unified style composer — opened from any screen that seeds items.
-                                OutfitComposerScreen(
-                                    stylesViewModel   = stylesViewModel,
-                                    wardrobeViewModel = wardrobeViewModel,
-                                    profileViewModel  = profileViewModel,
-                                    weatherViewModel  = weatherViewModel,
-                                    shoppingClosetViewModel = shoppingClosetViewModel,
-                                    locationViewModel = locationViewModel,
-                                )
 
                                 // Prediction-setup dialog — globally hosted so it appears
                                 // regardless of which tab is on top (the composer can be opened

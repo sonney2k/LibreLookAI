@@ -1,5 +1,6 @@
 package com.librelookai.outfit
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -49,9 +51,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
-import androidx.compose.ui.window.DialogWindowProvider
 import com.librelookai.R
 import com.librelookai.data.model.Outfit
 import com.librelookai.settings.ProfileViewModel
@@ -172,312 +171,292 @@ fun OutfitComposerScreen(
     val effectiveSlots = s.composerSlots
     val filledSlots = effectiveSlots.count { it.selectedItemId != null }
 
-    Dialog(
-        onDismissRequest = requestClose,
-        properties = DialogProperties(
-            usePlatformDefaultWidth = false,
-            dismissOnBackPress = true,
-            dismissOnClickOutside = false,
-            decorFitsSystemWindows = false,
-        ),
+    // The destination replaces the old fullscreen Dialog: edit-mode discard-confirm still
+    // guards system back, and the Surface paints full-bleed while the content Box insets
+    // itself below the status bar (effectiveBottom handles the nav-bar edge).
+    BackHandler(onBack = requestClose)
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background,
     ) {
-        val dialogView = androidx.compose.ui.platform.LocalView.current
-        androidx.compose.runtime.SideEffect {
-            val window = (dialogView.parent as? DialogWindowProvider)?.window ?: return@SideEffect
-            window.setLayout(
-                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
-                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
-            )
-            androidx.core.view.WindowCompat.setDecorFitsSystemWindows(window, false)
-        }
-        CompositionLocalProvider(
-            LocalContext provides parentContext,
-            LocalConfiguration provides parentConfiguration,
-        ) {
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = MaterialTheme.colorScheme.background,
-            ) {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    Column(modifier = Modifier.fillMaxSize().imePadding()) {
-                        if (isEditMode) {
-                            ComposerHeader(
-                                filledSlots = filledSlots,
-                                totalSlots = effectiveSlots.size,
-                                onClose = requestClose,
-                                onOpenFullscreen = {
-                                    stylesViewModel.setComposerMode(ComposerMode.VIEW)
-                                },
-                            )
-                        }
+        Box(modifier = Modifier.fillMaxSize().statusBarsPadding()) {
+            Column(modifier = Modifier.fillMaxSize().imePadding()) {
+                if (isEditMode) {
+                    ComposerHeader(
+                        filledSlots = filledSlots,
+                        totalSlots = effectiveSlots.size,
+                        onClose = requestClose,
+                        onOpenFullscreen = {
+                            stylesViewModel.setComposerMode(ComposerMode.VIEW)
+                        },
+                    )
+                }
 
-                        if (isEditMode) {
-                            ComposerStackedView(
-                                slots = s.composerSlots,
-                                byId = byId,
-                                locations = locationState.locations,
-                                isEditMode = true,
-                                onPickItem = { slotId -> exchangeSlotId = slotId },
-                                onToggleLock = { slotId -> stylesViewModel.toggleSlotLock(slotId) },
-                                onRemove = { slotId -> stylesViewModel.removeSlot(slotId) },
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 12.dp, vertical = 8.dp),
-                            )
-                        } else {
-                            // VIEW mode: mirror OutfitFullScreenViewer — show name / description /
-                            // tags above an OutfitPageBody so the composer's fullscreen preview matches
-                            // the saved-outfit viewer.
-                            val draftOutfit = remember(
-                                s.composerName, s.composerAiSuggestedName,
-                                s.composerDescription, s.composerAiSuggestedDescription,
-                                s.composerTags, s.composerAiSuggestedTags,
-                                s.composerSlots,
-                            ) {
-                                Outfit(
-                                    id = "draft",
-                                    name = s.composerName.ifBlank { s.composerAiSuggestedName },
-                                    description = s.composerDescription.ifBlank { s.composerAiSuggestedDescription },
-                                    tags = s.composerTags.ifEmpty { s.composerAiSuggestedTags },
-                                    itemIds = s.composerSlots.mapNotNull { it.selectedItemId },
-                                )
-                            }
-                            val hasMeta = draftOutfit.name.isNotBlank() ||
-                                draftOutfit.description.isNotBlank() ||
-                                draftOutfit.tags.isNotEmpty()
-                            if (hasMeta) {
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(
-                                            top = 8.dp,
-                                            start = 56.dp, end = 56.dp, bottom = 8.dp,
-                                        ),
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                                ) {
-                                    if (draftOutfit.name.isNotBlank()) {
-                                        Text(
-                                            text = draftOutfit.name,
-                                            color = MaterialTheme.colorScheme.onBackground,
-                                            style = MaterialTheme.typography.titleMedium,
-                                            maxLines = 2,
-                                            overflow = TextOverflow.Ellipsis,
-                                        )
-                                    }
-                                    if (draftOutfit.description.isNotBlank()) {
-                                        Text(
-                                            text = draftOutfit.description,
-                                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.85f),
-                                            style = MaterialTheme.typography.bodySmall,
-                                            maxLines = 3,
-                                            overflow = TextOverflow.Ellipsis,
-                                        )
-                                    }
-                                    if (draftOutfit.tags.isNotEmpty()) {
-                                        val maxWidth = LocalConfiguration.current.screenWidthDp.dp * 0.85f
-                                        FlowRow(
-                                            modifier = Modifier.widthIn(max = maxWidth),
-                                            horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
-                                            verticalArrangement = Arrangement.spacedBy(4.dp),
-                                        ) {
-                                            draftOutfit.tags.forEach { OutfitTagChip(it) }
-                                        }
-                                    }
-                                }
-                            } else {
-                                // No metadata: leave room at the top for the close-X overlay.
-                                Spacer(Modifier.height(48.dp))
-                            }
-                            Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
-                                OutfitPageBody(
-                                    outfit = draftOutfit,
-                                    itemsById = byId,
-                                    locations = locationState.locations,
-                                    onItemClick = { viewerImage = it },
-                                    bottomPadding = effectiveBottom,
-                                )
-                            }
-                        }
-
-                        if (isEditMode || s.composerReason.isNotBlank() || s.composerError != null) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 16.dp)
-                                    .padding(bottom = 8.dp),
-                                verticalArrangement = Arrangement.spacedBy(8.dp),
-                            ) {
-                                if (isEditMode && s.composerSuggestions.size > 1) {
-                                    ComposerSuggestionSwiper(
-                                        index = s.composerSuggestionIndex,
-                                        count = s.composerSuggestions.size,
-                                        onPrev = {
-                                            val n = s.composerSuggestions.size
-                                            val target = ((s.composerSuggestionIndex - 1) % n + n) % n
-                                            Analytics.action("OutfitComposer", "suggestion_prev")
-                                            stylesViewModel.showComposerSuggestionAt(target)
-                                        },
-                                        onNext = {
-                                            val n = s.composerSuggestions.size
-                                            val target = (s.composerSuggestionIndex + 1) % n
-                                            Analytics.action("OutfitComposer", "suggestion_next")
-                                            stylesViewModel.showComposerSuggestionAt(target)
-                                        },
-                                        onOpenFullscreen = {
-                                            Analytics.action("OutfitComposer", "suggestions_viewer_reopen")
-                                            stylesViewModel.openComposerSuggestionsViewer()
-                                        },
-                                    )
-                                }
-                                if (isEditMode) {
-                                    TextButton(
-                                        onClick = { showAddSlotSheet = true },
-                                        modifier = Modifier.fillMaxWidth(),
-                                    ) {
-                                        Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(16.dp))
-                                        Spacer(Modifier.width(4.dp))
-                                        Text(stringResource(R.string.outfit_slot_add))
-                                        Spacer(Modifier.width(4.dp))
-                                        Icon(
-                                            Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                                            contentDescription = null,
-                                            modifier = Modifier.size(16.dp),
-                                        )
-                                    }
-                                }
-                                if (s.composerReason.isNotBlank()) {
-                                    Surface(
-                                        shape = RoundedCornerShape(12.dp),
-                                        color = MaterialTheme.colorScheme.surface,
-                                        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-                                        modifier = Modifier.fillMaxWidth(),
-                                    ) {
-                                        Text(
-                                            s.composerReason,
-                                            style = MaterialTheme.typography.bodySmall,
-                                            modifier = Modifier.padding(12.dp),
-                                        )
-                                    }
-                                }
-                                s.composerError?.let {
-                                    Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
-                                }
-                            }
-                        }
-
-                        if (isEditMode) {
-                            // AI can only act on slots that are not (locked AND filled).
-                            // If every slot is locked + has an item, there's nothing for AI to do.
-                            // Collapsed-away empties don't count — a dress outfit can still be complete.
-                            val aiCanGenerate = effectiveSlots.any {
-                                !(it.isLocked && it.selectedItemId != null)
-                            }
-                            // Exact BYOK cost for the composer suggestion, off the main thread.
-                            // Keys mirror every prompt-affecting input of buildComposerPrompt so the
-                            // badge refreshes on any Tune-AI pill tap (Considers / Expert-tags like
-                            // "only consider color" / weather mode all change the payload size).
-                            val composerAiTokens by androidx.compose.runtime.produceState<com.librelookai.gemini.CostTokens?>(
-                                initialValue = null,
-                                crossClosetImages,
-                                s.composerSlots,
-                                s.composerSuggestionCount,
-                                s.composerVibes,
-                                profile.preferences,
-                                weather.data,
-                                s.composerConsiderationsOverride,
-                                s.composerWeatherMode,
-                                s.composerManualSeason,
-                                s.composerManualTempC,
-                                s.composerManualPrecip,
-                                s.composerTripContext,
-                                s.wearHistory,
-                                s.outfits.filter { it.loved }.map { it.id },
-                            ) {
-                                value = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Default) {
-                                    stylesViewModel.estimateComposerTokens(
-                                        prefs = profile.preferences,
-                                        weather = weather.data,
-                                        images = crossClosetImages,
-                                    )
-                                }
-                            }
-                            ComposerEditBottomBar(
-                                saveEnabled = effectiveSlots.isNotEmpty() &&
-                                    effectiveSlots.all { it.selectedItemId != null },
-                                aiEnabled = aiCanGenerate,
-                                isOffline = isOffline,
-                                onGenerateWithAi = {
-                                    Analytics.action("OutfitComposer", "generate_with_ai")
-                                    stylesViewModel.openPredictionSetup(
-                                        defaultSourceFolderId = null,
-                                        source = PredictionSetupSource.COMPOSER,
-                                    )
-                                },
-                                onSave = {
-                                    Analytics.action("OutfitComposer", "save")
-                                    stylesViewModel.prepareSave()
-                                },
-                                bottomPadding = effectiveBottom,
-                                aiTokens = composerAiTokens,
-                            )
-                        }
-                    }
-
-                    if (!isEditMode) {
-                        // Fullscreen view: minimal close X (top-left) to return to edit mode.
-                        IconButton(
-                            onClick = { stylesViewModel.setComposerMode(ComposerMode.EDIT) },
-                            modifier = Modifier
-                                .align(Alignment.TopStart)
-                                .padding(8.dp),
-                        ) {
-                            Icon(
-                                Icons.Default.Close,
-                                contentDescription = stringResource(R.string.action_close),
-                                tint = MaterialTheme.colorScheme.onBackground,
-                            )
-                        }
-                    }
-
-                    if (s.isComposerEnhancing) {
-                        AiProcessingOverlay(
-                            label = stringResource(R.string.composer_enhancing),
-                            modifier = Modifier.fillMaxSize(),
+                if (isEditMode) {
+                    ComposerStackedView(
+                        slots = s.composerSlots,
+                        byId = byId,
+                        locations = locationState.locations,
+                        isEditMode = true,
+                        onPickItem = { slotId -> exchangeSlotId = slotId },
+                        onToggleLock = { slotId -> stylesViewModel.toggleSlotLock(slotId) },
+                        onRemove = { slotId -> stylesViewModel.removeSlot(slotId) },
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth()
+                            .padding(horizontal = 12.dp, vertical = 8.dp),
+                    )
+                } else {
+                    // VIEW mode: mirror OutfitFullScreenViewer — show name / description /
+                    // tags above an OutfitPageBody so the composer's fullscreen preview matches
+                    // the saved-outfit viewer.
+                    val draftOutfit = remember(
+                        s.composerName, s.composerAiSuggestedName,
+                        s.composerDescription, s.composerAiSuggestedDescription,
+                        s.composerTags, s.composerAiSuggestedTags,
+                        s.composerSlots,
+                    ) {
+                        Outfit(
+                            id = "draft",
+                            name = s.composerName.ifBlank { s.composerAiSuggestedName },
+                            description = s.composerDescription.ifBlank { s.composerAiSuggestedDescription },
+                            tags = s.composerTags.ifEmpty { s.composerAiSuggestedTags },
+                            itemIds = s.composerSlots.mapNotNull { it.selectedItemId },
                         )
                     }
-
-                    // While the finished outfit is being written to Drive: a blocking scrim with a
-                    // spinner so the Save → list-reappears gap reads as "saving", not a frozen UI.
-                    if (s.isComposerSaving) {
-                        Box(
+                    val hasMeta = draftOutfit.name.isNotBlank() ||
+                        draftOutfit.description.isNotBlank() ||
+                        draftOutfit.tags.isNotEmpty()
+                    if (hasMeta) {
+                        Column(
                             modifier = Modifier
-                                .fillMaxSize()
-                                .background(Color.Black.copy(alpha = 0.55f))
-                                .clickable(
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    indication = null,
-                                ) {},
-                            contentAlignment = Alignment.Center,
+                                .fillMaxWidth()
+                                .padding(
+                                    top = 8.dp,
+                                    start = 56.dp, end = 56.dp, bottom = 8.dp,
+                                ),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(4.dp),
                         ) {
-                            Surface(
-                                shape = MaterialTheme.shapes.large,
-                                color = MaterialTheme.colorScheme.surface,
-                                tonalElevation = 6.dp,
-                            ) {
-                                Column(
-                                    modifier = Modifier.padding(28.dp),
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.spacedBy(14.dp),
+                            if (draftOutfit.name.isNotBlank()) {
+                                Text(
+                                    text = draftOutfit.name,
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+                            }
+                            if (draftOutfit.description.isNotBlank()) {
+                                Text(
+                                    text = draftOutfit.description,
+                                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.85f),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    maxLines = 3,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+                            }
+                            if (draftOutfit.tags.isNotEmpty()) {
+                                val maxWidth = LocalConfiguration.current.screenWidthDp.dp * 0.85f
+                                FlowRow(
+                                    modifier = Modifier.widthIn(max = maxWidth),
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
+                                    verticalArrangement = Arrangement.spacedBy(4.dp),
                                 ) {
-                                    CircularProgressIndicator()
-                                    Text(
-                                        stringResource(R.string.outfit_saving),
-                                        style = MaterialTheme.typography.bodyMedium,
-                                    )
+                                    draftOutfit.tags.forEach { OutfitTagChip(it) }
                                 }
                             }
+                        }
+                    } else {
+                        // No metadata: leave room at the top for the close-X overlay.
+                        Spacer(Modifier.height(48.dp))
+                    }
+                    Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                        OutfitPageBody(
+                            outfit = draftOutfit,
+                            itemsById = byId,
+                            locations = locationState.locations,
+                            onItemClick = { viewerImage = it },
+                            bottomPadding = effectiveBottom,
+                        )
+                    }
+                }
+
+                if (isEditMode || s.composerReason.isNotBlank() || s.composerError != null) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .padding(bottom = 8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        if (isEditMode && s.composerSuggestions.size > 1) {
+                            ComposerSuggestionSwiper(
+                                index = s.composerSuggestionIndex,
+                                count = s.composerSuggestions.size,
+                                onPrev = {
+                                    val n = s.composerSuggestions.size
+                                    val target = ((s.composerSuggestionIndex - 1) % n + n) % n
+                                    Analytics.action("OutfitComposer", "suggestion_prev")
+                                    stylesViewModel.showComposerSuggestionAt(target)
+                                },
+                                onNext = {
+                                    val n = s.composerSuggestions.size
+                                    val target = (s.composerSuggestionIndex + 1) % n
+                                    Analytics.action("OutfitComposer", "suggestion_next")
+                                    stylesViewModel.showComposerSuggestionAt(target)
+                                },
+                                onOpenFullscreen = {
+                                    Analytics.action("OutfitComposer", "suggestions_viewer_reopen")
+                                    stylesViewModel.openComposerSuggestionsViewer()
+                                },
+                            )
+                        }
+                        if (isEditMode) {
+                            TextButton(
+                                onClick = { showAddSlotSheet = true },
+                                modifier = Modifier.fillMaxWidth(),
+                            ) {
+                                Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(16.dp))
+                                Spacer(Modifier.width(4.dp))
+                                Text(stringResource(R.string.outfit_slot_add))
+                                Spacer(Modifier.width(4.dp))
+                                Icon(
+                                    Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp),
+                                )
+                            }
+                        }
+                        if (s.composerReason.isNotBlank()) {
+                            Surface(
+                                shape = RoundedCornerShape(12.dp),
+                                color = MaterialTheme.colorScheme.surface,
+                                border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                                modifier = Modifier.fillMaxWidth(),
+                            ) {
+                                Text(
+                                    s.composerReason,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    modifier = Modifier.padding(12.dp),
+                                )
+                            }
+                        }
+                        s.composerError?.let {
+                            Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+                        }
+                    }
+                }
+
+                if (isEditMode) {
+                    // AI can only act on slots that are not (locked AND filled).
+                    // If every slot is locked + has an item, there's nothing for AI to do.
+                    // Collapsed-away empties don't count — a dress outfit can still be complete.
+                    val aiCanGenerate = effectiveSlots.any {
+                        !(it.isLocked && it.selectedItemId != null)
+                    }
+                    // Exact BYOK cost for the composer suggestion, off the main thread.
+                    // Keys mirror every prompt-affecting input of buildComposerPrompt so the
+                    // badge refreshes on any Tune-AI pill tap (Considers / Expert-tags like
+                    // "only consider color" / weather mode all change the payload size).
+                    val composerAiTokens by androidx.compose.runtime.produceState<com.librelookai.gemini.CostTokens?>(
+                        initialValue = null,
+                        crossClosetImages,
+                        s.composerSlots,
+                        s.composerSuggestionCount,
+                        s.composerVibes,
+                        profile.preferences,
+                        weather.data,
+                        s.composerConsiderationsOverride,
+                        s.composerWeatherMode,
+                        s.composerManualSeason,
+                        s.composerManualTempC,
+                        s.composerManualPrecip,
+                        s.composerTripContext,
+                        s.wearHistory,
+                        s.outfits.filter { it.loved }.map { it.id },
+                    ) {
+                        value = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Default) {
+                            stylesViewModel.estimateComposerTokens(
+                                prefs = profile.preferences,
+                                weather = weather.data,
+                                images = crossClosetImages,
+                            )
+                        }
+                    }
+                    ComposerEditBottomBar(
+                        saveEnabled = effectiveSlots.isNotEmpty() &&
+                            effectiveSlots.all { it.selectedItemId != null },
+                        aiEnabled = aiCanGenerate,
+                        isOffline = isOffline,
+                        onGenerateWithAi = {
+                            Analytics.action("OutfitComposer", "generate_with_ai")
+                            stylesViewModel.openPredictionSetup(
+                                defaultSourceFolderId = null,
+                                source = PredictionSetupSource.COMPOSER,
+                            )
+                        },
+                        onSave = {
+                            Analytics.action("OutfitComposer", "save")
+                            stylesViewModel.prepareSave()
+                        },
+                        bottomPadding = effectiveBottom,
+                        aiTokens = composerAiTokens,
+                    )
+                }
+            }
+
+            if (!isEditMode) {
+                // Fullscreen view: minimal close X (top-left) to return to edit mode.
+                IconButton(
+                    onClick = { stylesViewModel.setComposerMode(ComposerMode.EDIT) },
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(8.dp),
+                ) {
+                    Icon(
+                        Icons.Default.Close,
+                        contentDescription = stringResource(R.string.action_close),
+                        tint = MaterialTheme.colorScheme.onBackground,
+                    )
+                }
+            }
+
+            if (s.isComposerEnhancing) {
+                AiProcessingOverlay(
+                    label = stringResource(R.string.composer_enhancing),
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
+
+            // While the finished outfit is being written to Drive: a blocking scrim with a
+            // spinner so the Save → list-reappears gap reads as "saving", not a frozen UI.
+            if (s.isComposerSaving) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.55f))
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                        ) {},
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Surface(
+                        shape = MaterialTheme.shapes.large,
+                        color = MaterialTheme.colorScheme.surface,
+                        tonalElevation = 6.dp,
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(28.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(14.dp),
+                        ) {
+                            CircularProgressIndicator()
+                            Text(
+                                stringResource(R.string.outfit_saving),
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
                         }
                     }
                 }

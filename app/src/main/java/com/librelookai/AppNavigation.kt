@@ -67,6 +67,24 @@ internal data class OutfitViewerRoute(
 }
 
 /**
+ * Try-on surface (composer / result / history feed / history detail) — replaces the global
+ * `TryOnComposerScreen` Dialog. Carries no args: `TryOnViewModel` state is the source of truth.
+ * AppContent navigates here when `isComposerOpen` flips true (wherever the open was triggered
+ * from); the destination pops itself when it flips false. System back routes through the same
+ * layered close logic as the header ✕ (detail → feed → composer → close).
+ */
+@Serializable
+internal data object TryOnRoute
+
+/**
+ * Outfit composer (create / edit / AI-suggest) — replaces the global `OutfitComposerScreen`
+ * Dialog. Same state-mirroring contract as [TryOnRoute], driven by
+ * `OutfitsViewModel.isComposerOpen`; the edit-mode discard-confirm still guards every close.
+ */
+@Serializable
+internal data object OutfitComposerRoute
+
+/**
  * Slim offline indicator strip shown above the active screen. Shared by [HomeRoute] (above the
  * tab content) and full-screen destinations, which no longer sit under Home's banner.
  */

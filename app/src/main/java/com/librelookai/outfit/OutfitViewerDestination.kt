@@ -1,5 +1,10 @@
 package com.librelookai.outfit
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -7,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import com.librelookai.OutfitViewerRoute
 import com.librelookai.data.model.Outfit
 import com.librelookai.data.model.Trip
@@ -112,6 +118,14 @@ internal fun OutfitViewerDestination(
     var wearPickerOutfit by remember { mutableStateOf<Outfit?>(null) }
 
     val prefs = profileState.preferences
+    // Full-bleed background with the content inset below the status bar — matches the old
+    // Dialog window, which painted edge-to-edge but laid its content out under the bar.
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .statusBarsPadding(),
+    ) {
     OutfitFullScreenViewer(
         outfits = outfits,
         initialIndex = initialIndex,
@@ -160,6 +174,7 @@ internal fun OutfitViewerDestination(
         canTryOn = if (trip != null) canTryOn && !isOffline else canTryOn,
         wardrobeViewModel = wardrobeViewModel,
     )
+    }
 
     wearPickerOutfit?.let { o ->
         WearDatePickerDialog(

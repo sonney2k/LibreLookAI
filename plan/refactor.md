@@ -245,9 +245,21 @@ are easy to violate and have caused real bugs.
    (one Window-quirk workaround down). The Outfits screen now flips to its Calendar sub-tab
    via a `pendingCalendarWearId` effect rather than only at call sites. This is the pattern
    for the remaining viewer conversions.
-   **Remaining**: convert the Dialog-viewers (`FullScreenViewer` — must follow the composers,
-   it still opens from inside their Dialogs; `TryOnComposerScreen`, `OutfitComposerScreen`,
-   try-on history root); convert the tabs themselves to destinations; merge Settings'
+   **Composer destinations LANDED (June 2026).** `TryOnRoute` (composer / result / history feed
+   / history detail — the "try-on history root" item ships with it) and `OutfitComposerRoute`
+   replaced the two global fullscreen Dialogs. Because their ~15 openers are nav-less VM calls,
+   the conversion is **state-mirrored**: the VM open-flags stay the source of truth, an
+   `AppContent` observer navigates on the false→true transition, and each destination pops
+   itself on true→false; paths that pop by other means (`goToTab`) must also close the VM or
+   the next open won't navigate. System back routes through the VM close via in-screen
+   `BackHandler`s (try-on gained layered back: detail → feed → composer → close — the old
+   Dialog's back closed the whole surface in one step; the outfit composer keeps its
+   discard-confirm). Both screens lost their Dialog wrappers + window plumbing; their sibling
+   pickers/sheets stay window-based and unchanged. The outfit-viewer destination also gained
+   the status-bar inset the Dialog window used to provide.
+   **Remaining**: convert `FullScreenViewer` (mostly unblocked now that the composers are
+   destinations — but audit its window-based hosts first, e.g. `ComposerSuggestionsViewer` is
+   still a Dialog); convert the tabs themselves to destinations; merge Settings'
    `SettingsRoute` enum back-stack; then delete the Window-quirk workarounds +
    per-destination VM scoping.
 4. **Modularize last** — once dependencies are sane, moving packages into Gradle modules is
