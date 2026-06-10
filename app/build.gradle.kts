@@ -4,6 +4,7 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.google.firebase.appdistribution)
     alias(libs.plugins.google.services)
     alias(libs.plugins.hilt)
@@ -196,6 +197,8 @@ dependencies {
     implementation(libs.googleid)
     implementation(libs.play.services.location)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.gson)
     implementation(libs.okhttp)

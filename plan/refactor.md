@@ -189,6 +189,21 @@ are easy to violate and have caused real bugs.
 3. **Navigation Compose** — add the NavHost, convert Dialog-viewers to destinations one at a
    time; delete each Window-quirk workaround as its screen converts. Scope ViewModels to
    destinations as screens convert.
+   **Status: NavHost + first destination LANDED (June 2026).** navigation-compose 2.8.5 with
+   type-safe `@Serializable` routes (`AppNavigation.kt`): `HomeRoute` wraps the whole pre-existing
+   tabbed Scaffold (tabs remain `selectedTab`-driven inside it); `TripViewerRoute(tripId)` replaces
+   the hoisted `tripViewerTripId` fullscreen mode that lived inside `TravelScreen` (system back =
+   pop, `hideChrome` lost its trip-viewer arm). Three load-bearing transition rules (documented in
+   CLAUDE.md § Navigation): global overlay hosts (composer/try-on Dialogs, AI/credits dialogs,
+   restore overlay) moved *outside* the NavHost so they survive any destination; tab jumps from
+   global hosts go through `goToTab()` (pops overlaying destinations back to Home); destinations
+   pin `LocalViewModelStoreOwner provides activity` because a defaulted `viewModel()` inside a
+   destination scopes to the back-stack entry and would fork fresh VM instances (~70 call sites
+   rely on activity scoping).
+   **Remaining**: convert the Dialog-viewers (`FullScreenViewer`, `OutfitFullScreenViewer`,
+   `TryOnComposerScreen`, `OutfitComposerScreen`, try-on history root) and the travel planner
+   mode; convert the tabs themselves to destinations; merge Settings' `SettingsRoute` enum
+   back-stack; then delete the Window-quirk workarounds + per-destination VM scoping.
 4. **Modularize last** — once dependencies are sane, moving packages into Gradle modules is
    mechanical (`scripts/kt_split.py`-style, compiler-driven).
 

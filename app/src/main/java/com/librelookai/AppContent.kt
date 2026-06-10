@@ -13,26 +13,17 @@ import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CloudOff
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -62,7 +53,12 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.librelookai.auth.AuthViewModel
 import com.librelookai.auth.SignInScreen
 import com.librelookai.billing.CreditsViewModel
@@ -396,6 +392,17 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
 
                     val systemBarsPadding = WindowInsets.systemBars.asPaddingValues()
 
+                    // Root nav controller — created above the CompositionLocalProvider so the
+                    // locals' tab-jump lambdas can pop overlaying destinations too.
+                    val navController = rememberNavController()
+                    // Tab jumps from globally hosted dialogs/composers must also pop any
+                    // full-screen destination overlaying Home, or the target tab would change
+                    // invisibly underneath it.
+                    fun goToTab(tab: Int) {
+                        navController.popBackStack(HomeRoute, inclusive = false)
+                        selectedTab = tab
+                    }
+
                     CompositionLocalProvider(
                         LocalContext provides localizedContext,
                         LocalConfiguration provides localizedContext.resources.configuration,
@@ -409,7 +416,7 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                         LocalOpenSettings provides {
                             Analytics.action("Toolbar", "open_settings")
                             tryOnViewModel.close(); stylesViewModel.closeComposer()
-                            selectedTab = 5; navResetTick++
+                            goToTab(5); navResetTick++
                         },
                         LocalClosetSelector provides ClosetSelectorContext(
                             locations = locationList,
@@ -504,22 +511,57 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                         var showQuickTryOnSheet by remember { mutableStateOf(false) }
                         var showTripTryOnPicker by remember { mutableStateOf(false) }
                         var travelPlannerMode by rememberSaveable { mutableStateOf(false) }
-                        var tripViewerTripId: String? by rememberSaveable { mutableStateOf(null) }
-                        // Hide the nav bar + weather badge in travel full-screen modes, and while a
-                        // SelectionActionBar is up (multi-select) — the selection bar takes the nav
-                        // bar's place at the bottom (see ui/components/SelectionBarVisibility).
-                        val hideChrome = (selectedTab == 3 && (travelPlannerMode || tripViewerTripId != null)) ||
+                        // Hide the nav bar + weather badge in the travel planner full-screen mode,
+                        // and while a SelectionActionBar is up (multi-select) — the selection bar
+                        // takes the nav bar's place at the bottom (see ui/components/SelectionBarVisibility).
+                        val hideChrome = (selectedTab == 3 && travelPlannerMode) ||
                             com.librelookai.ui.components.SelectionBarVisibility.isVisible
 
-                        // Travel sub-destinations are full-screen modes within the Travel tab, not
-                        // separate tabs, so report them as their own screen views for funnel tracking.
+                        // The travel planner is a full-screen mode within the Travel tab, not a
+                        // separate tab, so report it as its own screen view for funnel tracking.
                         LaunchedEffect(travelPlannerMode) {
                             if (travelPlannerMode) Analytics.screen("TravelPlanner")
                         }
-                        LaunchedEffect(tripViewerTripId) {
-                            if (tripViewerTripId != null) Analytics.screen("TripViewer")
+
+                        // Shared by Home's tabs and the trip-viewer destination.
+                        val onSettingsClick: () -> Unit = {
+                            Analytics.action("Toolbar", "open_settings")
+                            goToTab(5)
+                            navResetTick++
+                        }
+                        val runTryOn: (Set<String>, String?) -> Unit = { itemIds, sourceOutfitId ->
+                            Analytics.action("TryOn", "open_composer", mapOf("count" to itemIds.size.toString()))
+                            tryOnViewModel.openComposer(itemIds, sourceOutfitId)
+                        }
+                        // Try-on a trip's outfit from the trip viewer — tagged TRAVEL so
+                        // provenance reads "{trip} · Day {n}", matching the Quick-sheet path.
+                        val tripTryOnCtx = LocalContext.current
+                        val runTripOutfitTryOn: (com.librelookai.data.model.Trip, com.librelookai.data.model.Outfit) -> Unit = { trip, outfit ->
+                            Analytics.action("TryOn", "open_composer", mapOf("source" to "travel_trip"))
+                            val day = trip.outfitIds.indexOf(outfit.id) + 1
+                            tryOnViewModel.openComposer(
+                                outfit.itemIds.toSet(),
+                                outfit.id,
+                                com.librelookai.tryon.TryOnSourceKind.TRAVEL,
+                                tripTryOnCtx.getString(R.string.tryon_trip_context, trip.name, day),
+                            )
                         }
 
+                        NavHost(
+                            navController = navController,
+                            startDestination = HomeRoute,
+                            enterTransition = { fadeIn(tween(220)) },
+                            exitTransition = { fadeOut(tween(220)) },
+                            popEnterTransition = { fadeIn(tween(220)) },
+                            popExitTransition = { fadeOut(tween(220)) },
+                        ) {
+                        composable<HomeRoute> {
+                        // Pin VM resolution to the activity: inside a NavHost destination the
+                        // ViewModelStoreOwner is the back-stack entry, so any nested `viewModel()`
+                        // default would silently fork a fresh VM instead of the shared activity
+                        // instance. Per-destination scoping happens deliberately, one converted
+                        // screen at a time (plan/refactor.md phase 3).
+                        CompositionLocalProvider(LocalViewModelStoreOwner provides activity) {
                         Scaffold(
                             modifier = Modifier.fillMaxSize(),
                             bottomBar = {
@@ -545,30 +587,7 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                             },
                         ) { innerPadding ->
                             Column(Modifier.fillMaxSize().padding(innerPadding)) {
-                                // Offline banner
-                                androidx.compose.animation.AnimatedVisibility(visible = isOffline) {
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .background(MaterialTheme.colorScheme.errorContainer)
-                                            .padding(horizontal = 16.dp, vertical = 6.dp),
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.Center,
-                                    ) {
-                                        Icon(
-                                            Icons.Default.CloudOff,
-                                            contentDescription = null,
-                                            modifier = Modifier.size(16.dp),
-                                            tint = MaterialTheme.colorScheme.onErrorContainer,
-                                        )
-                                        Spacer(Modifier.width(8.dp))
-                                        Text(
-                                            stringResource(R.string.offline_banner),
-                                            style = MaterialTheme.typography.labelMedium,
-                                            color = MaterialTheme.colorScheme.onErrorContainer,
-                                        )
-                                    }
-                                }
+                                OfflineBanner(visible = isOffline)
 
                                 // Hide the floating weather badge while the active screen is being
                                 // scrolled. The badge is hosted here (over all tabs), not in the
@@ -594,28 +613,6 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                                 }
 
                                 Box(Modifier.fillMaxSize().nestedScroll(weatherScrollConn)) {
-                                    val onSettingsClick: () -> Unit = {
-                                        Analytics.action("Toolbar", "open_settings")
-                                        selectedTab = 5
-                                        navResetTick++
-                                    }
-                                    val runTryOn: (Set<String>, String?) -> Unit = { itemIds, sourceOutfitId ->
-                                        Analytics.action("TryOn", "open_composer", mapOf("count" to itemIds.size.toString()))
-                                        tryOnViewModel.openComposer(itemIds, sourceOutfitId)
-                                    }
-                                    // Try-on a trip's outfit from the trip viewer — tagged TRAVEL so
-                                    // provenance reads "{trip} · Day {n}", matching the Quick-sheet path.
-                                    val tripTryOnCtx = LocalContext.current
-                                    val runTripOutfitTryOn: (com.librelookai.data.model.Trip, com.librelookai.data.model.Outfit) -> Unit = { trip, outfit ->
-                                        Analytics.action("TryOn", "open_composer", mapOf("source" to "travel_trip"))
-                                        val day = trip.outfitIds.indexOf(outfit.id) + 1
-                                        tryOnViewModel.openComposer(
-                                            outfit.itemIds.toSet(),
-                                            outfit.id,
-                                            com.librelookai.tryon.TryOnSourceKind.TRAVEL,
-                                            tripTryOnCtx.getString(R.string.tryon_trip_context, trip.name, day),
-                                        )
-                                    }
                                     when (selectedTab) {
                                         0 -> OutfitsScreen(
                                             outfitsViewModel = stylesViewModel,
@@ -690,7 +687,7 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                                                     locationViewModel.setActiveLocation(matchFolder)
                                                 }
                                                 wardrobeViewModel.requestScrollToImage(image.driveId)
-                                                selectedTab = 1
+                                                goToTab(1)
                                                 navResetTick++
                                             },
                                             onCreateOutfitFromSelection = { itemIds ->
@@ -722,11 +719,11 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                                             onSettingsClick = onSettingsClick,
                                             plannerMode = travelPlannerMode,
                                             onPlannerModeChange = { travelPlannerMode = it },
-                                            tripViewerTripId = tripViewerTripId,
-                                            onOpenTrip = { tripViewerTripId = it },
-                                            onCloseTripViewer = { tripViewerTripId = null },
-                                            canTryOn = canTryOn,
-                                            onTryOnTripOutfit = runTripOutfitTryOn,
+                                            onOpenTrip = { tripId ->
+                                                navController.navigate(TripViewerRoute(tripId)) {
+                                                    launchSingleTop = true
+                                                }
+                                            },
                                         )
                                         5 -> SettingsScreen(
                                             profileViewModel = profileViewModel,
@@ -761,6 +758,42 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                                     // Rendered inside this Box so it stacks on top of content.
                                     LocalBgRemovalScreen(viewModel = wardrobeViewModel)
                                 }
+                            }
+                        }
+                        }
+                        }
+
+                        composable<TripViewerRoute> { entry ->
+                            val tripId = entry.toRoute<TripViewerRoute>().tripId
+                            LaunchedEffect(Unit) { Analytics.screen("TripViewer") }
+                            // Recreate the environment the viewer had when it rendered inside
+                            // Home's chrome-hidden Scaffold: system-bar insets via a plain
+                            // Scaffold, plus the offline banner strip above the content. VM
+                            // resolution stays activity-pinned — see the HomeRoute comment.
+                            CompositionLocalProvider(LocalViewModelStoreOwner provides activity) {
+                            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                                Column(Modifier.fillMaxSize().padding(innerPadding)) {
+                                    OfflineBanner(visible = isOffline)
+                                    com.librelookai.travel.TripViewerScreen(
+                                        tripId = tripId,
+                                        tripsViewModel = tripsViewModel,
+                                        outfitsViewModel = stylesViewModel,
+                                        wardrobeViewModel = wardrobeViewModel,
+                                        profileViewModel = profileViewModel,
+                                        // Pass the activity-scoped instances explicitly — inside a
+                                        // NavHost destination, a defaulted `viewModel()` would scope
+                                        // to the back-stack entry and silently fork fresh VMs.
+                                        locationViewModel = locationViewModel,
+                                        outfitEventsViewModel = outfitEventsViewModel,
+                                        onClose = { navController.popBackStack() },
+                                        canTryOn = canTryOn,
+                                        onTryOnOutfit = runTripOutfitTryOn,
+                                    )
+                                }
+                            }
+                            }
+                        }
+                        }
 
                                 val stylesState by stylesViewModel.state.collectAsState()
                                 val tripsUiState by tripsViewModel.state.collectAsState()
@@ -793,7 +826,7 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                                             locationViewModel.setActiveLocation(matchFolder)
                                         }
                                         wardrobeViewModel.requestScrollToImage(image.driveId)
-                                        selectedTab = 1
+                                        goToTab(1)
                                         navResetTick++
                                     },
                                     outfits = stylesState.outfits,
@@ -803,13 +836,13 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                                         // list to scroll the picked outfit into view + highlight.
                                         tryOnViewModel.close()
                                         stylesViewModel.requestScrollToOutfit(outfit.id)
-                                        selectedTab = 0
+                                        goToTab(0)
                                         navResetTick++
                                     },
                                     onStartTryOn = { showQuickTryOnSheet = true },
                                     onOpenProfileSettings = {
                                         tryOnViewModel.close()
-                                        selectedTab = 5
+                                        goToTab(5)
                                         navResetTick++
                                     },
                                 )
@@ -927,7 +960,7 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                                         have = ex.have,
                                         onBuy = {
                                             topUpEvent = null
-                                            selectedTab = 5 // Settings → Credits tab
+                                            goToTab(5) // Settings → Credits tab
                                         },
                                         onDismiss = { topUpEvent = null },
                                     )
@@ -970,7 +1003,7 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                                                     // so Settings is actually visible.
                                                     tryOnViewModel.close()
                                                     stylesViewModel.closeComposer()
-                                                    selectedTab = 5 // Settings (BYOK key lives in Advanced)
+                                                    goToTab(5) // Settings (BYOK key lives in Advanced)
                                                 }) { Text(stringResource(R.string.ai_set_up_key)) }
                                                 retry != null -> TextButton(onClick = {
                                                     aiNotice = null
@@ -1007,8 +1040,6 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                                         onCancel = { wardrobeViewModel.continueCutoutBgFix(false) },
                                     )
                                 }
-                            }
-                        }
 
                         // Restore-progress overlay — for returning accounts (reinstall / new
                         // device) the wardrobe, outfits, shopping and trips all reload from Google

@@ -45,11 +45,7 @@ fun TravelScreen(
     onSettingsClick: () -> Unit = {},
     plannerMode: Boolean = false,
     onPlannerModeChange: (Boolean) -> Unit = {},
-    tripViewerTripId: String? = null,
     onOpenTrip: (String) -> Unit = {},
-    onCloseTripViewer: () -> Unit = {},
-    canTryOn: Boolean = false,
-    onTryOnTripOutfit: (Trip, Outfit) -> Unit = { _, _ -> },
     modifier: Modifier = Modifier,
 ) {
     // ---- Auto-create Trip + navigate when planner returns a packing list. ----
@@ -80,29 +76,13 @@ fun TravelScreen(
         if (plannerMode) travelViewModel.seedSourceFolders(locationViewModel.activeFolderId)
     }
 
-    // Open the viewer when TripsViewModel emits a navigate event.
+    // Open the viewer (a NavHost destination above this tab) when TripsViewModel emits a
+    // navigate event.
     LaunchedEffect(Unit) {
         tripsViewModel.navigateToTrip.collect { tripId ->
             onPlannerModeChangeState.value(false)
             onOpenTripState.value(tripId)
         }
-    }
-
-    if (tripViewerTripId != null) {
-        androidx.activity.compose.BackHandler { onCloseTripViewer() }
-        TripViewerScreen(
-            tripId = tripViewerTripId,
-            tripsViewModel = tripsViewModel,
-            outfitsViewModel = stylesViewModel,
-            wardrobeViewModel = wardrobeViewModel,
-            profileViewModel = profileViewModel,
-            locationViewModel = locationViewModel,
-            onClose = onCloseTripViewer,
-            canTryOn = canTryOn,
-            onTryOnOutfit = onTryOnTripOutfit,
-            modifier = modifier,
-        )
-        return
     }
 
     if (!plannerMode) {
