@@ -1,6 +1,8 @@
 package com.librelookai.outfit
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -12,7 +14,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
 import java.time.LocalDate
-import com.librelookai.auth.GoogleAuthManager
 import com.librelookai.data.drive.DriveRepository
 import com.librelookai.data.drive.loadOutfitEventsJson
 import com.librelookai.data.drive.saveOutfitEventsJson
@@ -29,9 +30,11 @@ data class OutfitEventsUiState(
     val error: String? = null,
 )
 
-class OutfitEventsViewModel(app: Application) : AndroidViewModel(app) {
-
-    private val drive = DriveRepository(app, GoogleAuthManager(app))
+@HiltViewModel
+class OutfitEventsViewModel @Inject constructor(
+    app: Application,
+    private val drive: DriveRepository,
+) : AndroidViewModel(app) {
     private val gson = Gson()
     private var folderId: String? = null
     private var allFolderIds: List<String>? = null

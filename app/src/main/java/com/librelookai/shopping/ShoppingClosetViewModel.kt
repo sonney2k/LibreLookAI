@@ -4,6 +4,8 @@ import android.app.Application
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +20,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
-import com.librelookai.auth.GoogleAuthManager
 import com.librelookai.data.drive.DriveRepository
 import com.librelookai.gemini.ClothingTags
 import com.librelookai.gemini.GeminiRepository
@@ -65,12 +66,14 @@ data class ShoppingClosetUiState(
 internal data class ShoppingPendingJob(val driveId: String)
 
 /** Shopping wishlist counterpart to [WardrobeViewModel]. */
-class ShoppingClosetViewModel(app: Application) : AndroidViewModel(app) {
+@HiltViewModel
+class ShoppingClosetViewModel @Inject constructor(
+    app: Application,
+    internal val drive: DriveRepository,
+    internal val gemini: GeminiRepository,
+) : AndroidViewModel(app) {
 
     companion object { internal const val TAG = "ShoppingClosetVM" }
-
-    internal val drive = DriveRepository(app, GoogleAuthManager(app))
-    internal val gemini = GeminiRepository(app)
     internal val gson = Gson()
 
     internal val _state = MutableStateFlow(ShoppingClosetUiState())

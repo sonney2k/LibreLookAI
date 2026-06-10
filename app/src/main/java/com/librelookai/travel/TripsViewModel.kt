@@ -3,6 +3,8 @@ import com.librelookai.util.localized
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -17,7 +19,6 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import com.librelookai.auth.GoogleAuthManager
 import com.librelookai.data.drive.DriveRepository
 import com.librelookai.data.drive.deleteTripJson
 import com.librelookai.data.drive.getOrCreateTripsFolder
@@ -70,12 +71,14 @@ data class TripsUiState(
  * `_outfits.json`. Cascading deletes / outfit creation is orchestrated by [TravelScreen] via
  * the shared [com.librelookai.outfit.OutfitsViewModel].
  */
-class TripsViewModel(app: Application) : AndroidViewModel(app) {
+@HiltViewModel
+class TripsViewModel @Inject constructor(
+    app: Application,
+    private val drive: DriveRepository,
+    private val gemini: GeminiRepository,
+) : AndroidViewModel(app) {
 
     companion object { private const val TAG = "TripsVM" }
-
-    private val drive = DriveRepository(app, GoogleAuthManager(app))
-    private val gemini = GeminiRepository(app)
     private val gson = Gson()
 
     private val _state = MutableStateFlow(TripsUiState())

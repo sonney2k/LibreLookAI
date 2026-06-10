@@ -7,6 +7,8 @@ import android.graphics.Matrix
 import android.media.ExifInterface
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +20,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.io.File
-import com.librelookai.auth.GoogleAuthManager
 import com.librelookai.data.drive.DriveRepository
 import com.librelookai.data.drive.loadPreferencesJson
 import com.librelookai.data.drive.savePreferencesJson
@@ -43,9 +44,11 @@ data class ProfileUiState(
     val tryOnUploading: Set<TryOnSlot> = emptySet(),
 )
 
-class ProfileViewModel(app: Application) : AndroidViewModel(app) {
-
-    private val drive = DriveRepository(app, GoogleAuthManager(app))
+@HiltViewModel
+class ProfileViewModel @Inject constructor(
+    app: Application,
+    private val drive: DriveRepository,
+) : AndroidViewModel(app) {
     private val gson = Gson()
     private var folderId: String? = null
     private val langPrefs = app.getSharedPreferences(LANG_PREFS, Context.MODE_PRIVATE)

@@ -2,9 +2,10 @@ package com.librelookai.onboarding
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
 import com.librelookai.BuildConfig
-import com.librelookai.auth.GoogleAuthManager
 import com.librelookai.data.drive.DriveRepository
 import com.librelookai.data.drive.migrateLegacyInto
 import com.librelookai.service.JobForegroundService
@@ -34,8 +35,11 @@ sealed interface MigrationState {
  * auto-finds the legacy folder ([DriveRepository.findLegacyMigrationSource]) and starts the copy
  * with no manual folder picker. [migrate] stays public for the picker fallback offered on error.
  */
-class DriveMigrationViewModel(app: Application) : AndroidViewModel(app) {
-    private val repo = DriveRepository(app, GoogleAuthManager(app))
+@HiltViewModel
+class DriveMigrationViewModel @Inject constructor(
+    app: Application,
+    private val repo: DriveRepository,
+) : AndroidViewModel(app) {
 
     private val _state = MutableStateFlow<MigrationState>(MigrationState.Idle)
     val state: StateFlow<MigrationState> = _state.asStateFlow()

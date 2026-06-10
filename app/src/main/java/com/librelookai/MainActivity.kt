@@ -6,11 +6,18 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.librelookai.data.drive.DriveRepository
 import com.librelookai.ml.EmbeddingService
 import com.librelookai.util.Analytics
 import com.librelookai.util.StartupGate
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject lateinit var driveRepository: DriveRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         // Install before super/setContent so the system splash (launcher icon on white) is owned by
         // us. Hold it past a brand-moment minimum AND until the first composition reports it's done
@@ -30,7 +37,7 @@ class MainActivity : ComponentActivity() {
         EmbeddingService.init(this)
         com.librelookai.gemini.PricingClient.start(applicationContext)
         com.librelookai.gemini.ModelPricingClient.start(applicationContext)
-        setContent { AppContent(this) }
+        setContent { AppContent(this, driveRepository) }
     }
 
     private companion object {

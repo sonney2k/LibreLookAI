@@ -3,6 +3,8 @@ import com.librelookai.util.localized
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -79,10 +81,13 @@ data class TravelUiState(
     val sourceFolderIds: Set<String> = emptySet(),
 )
 
-class TravelViewModel(app: Application) : AndroidViewModel(app) {
+@HiltViewModel
+class TravelViewModel @Inject constructor(
+    app: Application,
+    private val gemini: GeminiRepository,
+) : AndroidViewModel(app) {
 
     private val weather = WeatherRepository(app)
-    private val gemini  = GeminiRepository(app)
     private val gson    = Gson()
 
     private val _state = MutableStateFlow(TravelUiState())

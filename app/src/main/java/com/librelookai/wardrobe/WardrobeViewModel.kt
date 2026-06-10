@@ -11,11 +11,12 @@ import android.os.PowerManager
 import android.provider.DocumentsContract
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.librelookai.MainActivity
 import com.librelookai.R
-import com.librelookai.auth.GoogleAuthManager
 import com.librelookai.data.drive.DriveFileDto
 import com.librelookai.data.drive.DriveRepository
 import com.librelookai.data.drive.await
@@ -54,7 +55,12 @@ import kotlinx.coroutines.withContext
 
 internal val FUZZY_TOKEN_SPLIT = Regex("[^\\p{L}\\p{Nd}]+")
 
-class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
+@HiltViewModel
+class WardrobeViewModel @Inject constructor(
+    app: Application,
+    internal val drive: DriveRepository,
+    internal val gemini: GeminiRepository,
+) : AndroidViewModel(app) {
 
     companion object {
         internal const val TAG = "RepairAndSync"
@@ -67,9 +73,6 @@ class WardrobeViewModel(app: Application) : AndroidViewModel(app) {
         /** Cache subdir for the processed-query bitmaps fed to the similarity debug preview. */
         internal const val QUERY_DEBUG_DIR = "wardrobe_query_debug"
     }
-
-    internal val drive = DriveRepository(app, GoogleAuthManager(app))
-    internal val gemini = GeminiRepository(app)
     internal val gson = Gson()
 
     private var jobWakeLock: PowerManager.WakeLock? = null

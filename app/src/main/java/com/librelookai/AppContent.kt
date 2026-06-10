@@ -64,7 +64,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.librelookai.auth.AuthViewModel
-import com.librelookai.auth.GoogleAuthManager
 import com.librelookai.auth.SignInScreen
 import com.librelookai.billing.CreditsViewModel
 import com.librelookai.data.drive.DriveRepository
@@ -119,7 +118,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
 
 @Composable
-internal fun AppContent(activity: ComponentActivity) {
+internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepository) {
     LibreLookAITheme(
         paletteId = ProfileViewModel.cachedTheme(activity),
         fontId = ProfileViewModel.cachedFont(activity),
@@ -242,7 +241,7 @@ internal fun AppContent(activity: ComponentActivity) {
                     }
                     else -> {
                     val usageRepo = remember { TokenUsageRepository.get(activity.application) }
-                    val driveRepo = remember { DriveRepository(activity, GoogleAuthManager(activity)) }
+                    val driveRepo = driveRepository
                     val usageScope = rememberCoroutineScope()
                     DisposableEffect(networkMonitor) {
                         val observer = LifecycleEventObserver { _, event ->

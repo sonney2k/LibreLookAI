@@ -5,11 +5,12 @@ import android.content.Context
 import android.telephony.TelephonyManager
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.librelookai.MainActivity
-import com.librelookai.auth.GoogleAuthManager
 import com.librelookai.data.drive.DriveRepository
 import com.librelookai.data.drive.loadOutfitsJson
 import com.librelookai.data.drive.saveOutfitsJson
@@ -38,10 +39,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class OutfitsViewModel(app: Application) : AndroidViewModel(app) {
-
-    internal val drive = DriveRepository(app, GoogleAuthManager(app))
-    internal val gemini = GeminiRepository(app)
+@HiltViewModel
+class OutfitsViewModel @Inject constructor(
+    app: Application,
+    internal val drive: DriveRepository,
+    internal val gemini: GeminiRepository,
+) : AndroidViewModel(app) {
     /** Weekly, location-specific cache around the expensive Gemini trend lookup. */
     internal val trendsCache = com.librelookai.gemini.FashionTrendsCache(app, drive, gemini)
     internal val gson = Gson()

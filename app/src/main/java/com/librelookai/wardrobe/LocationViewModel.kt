@@ -2,6 +2,8 @@ package com.librelookai.wardrobe
 import android.app.Application
 import android.content.Context
 import androidx.lifecycle.AndroidViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -10,7 +12,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import com.librelookai.auth.GoogleAuthManager
 import com.librelookai.data.drive.DriveRepository
 import com.librelookai.data.drive.loadLocationsJson
 import com.librelookai.data.drive.saveLocationsJson
@@ -34,9 +35,11 @@ data class LocationUiState(
     val error: String? = null,
 )
 
-class LocationViewModel(app: Application) : AndroidViewModel(app) {
-
-    private val drive = DriveRepository(app, GoogleAuthManager(app))
+@HiltViewModel
+class LocationViewModel @Inject constructor(
+    app: Application,
+    private val drive: DriveRepository,
+) : AndroidViewModel(app) {
     private val gson = Gson()
     private val prefs = app.getSharedPreferences("librelookai_prefs", Context.MODE_PRIVATE)
     private var rootFolderId: String? = null

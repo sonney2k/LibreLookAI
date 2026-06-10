@@ -2,6 +2,8 @@ package com.librelookai.tryon
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -13,7 +15,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
-import com.librelookai.auth.GoogleAuthManager
 import com.librelookai.data.drive.DriveRepository
 import com.librelookai.data.drive.loadTryOnsJson
 import com.librelookai.data.drive.saveTryOnsJson
@@ -111,10 +112,12 @@ data class TryOnUiState(
  *     [saveCurrent] it to Drive (uploaded to the _tryons subfolder, indexed in _tryons.json).
  *  4. [openHistory] surfaces the user's past try-ons; [viewTryOn] opens one.
  */
-class TryOnViewModel(app: Application) : AndroidViewModel(app) {
-
-    private val gemini = GeminiRepository(app)
-    private val drive = DriveRepository(app, GoogleAuthManager(app))
+@HiltViewModel
+class TryOnViewModel @Inject constructor(
+    app: Application,
+    private val gemini: GeminiRepository,
+    private val drive: DriveRepository,
+) : AndroidViewModel(app) {
     private val gson = Gson()
 
     private val _state = MutableStateFlow(TryOnUiState())

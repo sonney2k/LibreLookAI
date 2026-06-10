@@ -25,6 +25,9 @@ import com.librelookai.gemini.TokenUsageRepository
 import com.librelookai.util.ImageEncoding
 import com.librelookai.data.model.Location
 import com.librelookai.data.model.Outfit
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
 // ---------- DTOs ----------
 
@@ -57,8 +60,9 @@ internal data class FilesListDto(
 
 private const val TAG = "DriveRepository"
 
-class DriveRepository(
-    private val context: Context,
+@Singleton
+class DriveRepository @Inject constructor(
+    @param:ApplicationContext private val context: Context,
     private val auth: GoogleAuthManager,
 ) {
     companion object {

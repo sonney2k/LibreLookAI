@@ -4,6 +4,8 @@ import android.app.PendingIntent
 import android.content.Intent
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.AndroidViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.common.api.ApiException
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,9 +13,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class AuthViewModel(app: Application) : AndroidViewModel(app) {
-
-    private val auth = GoogleAuthManager(app)
+@HiltViewModel
+class AuthViewModel @Inject constructor(
+    app: Application,
+    private val auth: GoogleAuthManager,
+) : AndroidViewModel(app) {
 
     private val _isSignedIn = MutableStateFlow(auth.isSignedIn())
     val isSignedIn: StateFlow<Boolean> = _isSignedIn.asStateFlow()

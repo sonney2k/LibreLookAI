@@ -22,12 +22,18 @@ import kotlinx.coroutines.tasks.await
 import com.librelookai.data.drive.await
 import com.librelookai.util.isNetworkAvailable
 import com.librelookai.BuildConfig
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
 private const val TAG = "GoogleAuthManager"
 private const val PREFS = "auth"
 private const val KEY_SIGNED_IN = "signed_in"
 
-class GoogleAuthManager(private val context: Context) {
+@Singleton
+class GoogleAuthManager @Inject constructor(
+    @param:ApplicationContext private val context: Context,
+) {
 
     companion object {
         // Migration build uses full `drive` (reads legacy to copy); production ships drive.file.

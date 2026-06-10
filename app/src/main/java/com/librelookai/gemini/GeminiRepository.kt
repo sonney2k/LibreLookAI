@@ -15,6 +15,8 @@ import com.librelookai.util.ImageEncoding
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlin.math.roundToInt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
@@ -32,7 +34,8 @@ internal enum class GeminiAction(val header: String) {
     TRY_ON_OUTFIT("tryOnOutfit"),
 }
 
-class GeminiRepository(internal val app: Application) {
+@Singleton
+class GeminiRepository @Inject constructor(internal val app: Application) {
 
     internal val http = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)

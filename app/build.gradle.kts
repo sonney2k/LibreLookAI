@@ -6,6 +6,8 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.firebase.appdistribution)
     alias(libs.plugins.google.services)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.ksp)
 }
 
 // Apply google-services only when google-services.json is present (opt-in for managed-mode builds)
@@ -208,6 +210,8 @@ dependencies {
     implementation(libs.billing.ktx)
     implementation(libs.kotlinx.coroutines.play.services)
     implementation(libs.mediapipe.tasks.vision)
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
 
     testImplementation(libs.junit)
     // JVM-side Compose UI tests via Robolectric (./gradlew testDebugUnitTest — no device needed)

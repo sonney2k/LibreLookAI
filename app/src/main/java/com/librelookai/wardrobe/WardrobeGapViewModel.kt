@@ -3,6 +3,8 @@ import com.librelookai.util.localized
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,9 +35,11 @@ data class WardrobeGapUiState(
     val replacementsError: String? = null,
 )
 
-class WardrobeGapViewModel(app: Application) : AndroidViewModel(app) {
-
-    private val gemini = GeminiRepository(app)
+@HiltViewModel
+class WardrobeGapViewModel @Inject constructor(
+    app: Application,
+    private val gemini: GeminiRepository,
+) : AndroidViewModel(app) {
     private val gson   = Gson()
 
     private val _state = MutableStateFlow(WardrobeGapUiState())
