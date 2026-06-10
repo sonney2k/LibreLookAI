@@ -197,8 +197,13 @@ are easy to violate and have caused real bugs.
    `outfit_events_cache_*.json` seeds once (marker-gated, file kept as downgrade net) — incl.
    the pre-rename `styleId` alias. `OutfitEventsViewModel.persist()` keeps its Drive-first
    ordering. Tests: `data/local/OutfitEventStoreTest`.
-   **Remaining slices**: trips (`trips_cache.json`), try-ons (`tryons_cache.json`),
-   token-usage/trends caches.
+   **Trips slice LANDED (June 2026).** `data/local/TripStore` (Room, DB v4): the single global
+   trips list as opaque Gson JSON keyed by trip id, plus a one-row seed marker (the per-folder
+   marker pattern degenerates to a constant key). Legacy `trips_cache.json` (bare array) seeds
+   once, kept as downgrade net. `TripsViewModel`'s `mutateTrip` synchronous cache write moved
+   into its adjacent `viewModelScope.launch`, ahead of the Drive save — same ordering, off-main.
+   Tests: `data/local/TripStoreTest`.
+   **Remaining slices**: try-ons (`tryons_cache.json`), token-usage/trends caches.
 3. **Navigation Compose** — add the NavHost, convert Dialog-viewers to destinations one at a
    time; delete each Window-quirk workaround as its screen converts. Scope ViewModels to
    destinations as screens convert.

@@ -7,7 +7,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -34,7 +33,6 @@ import com.librelookai.outfit.OutfitsViewModel
 import com.librelookai.util.isNetworkAvailable
 import com.librelookai.wardrobe.DriveImage
 import com.librelookai.weather.wmoEmoji
-import java.io.File
 
 /**
  * Backing state for the trips list and the per-trip viewer. Persisted to
@@ -76,6 +74,7 @@ class TripsViewModel @Inject constructor(
     app: Application,
     private val drive: DriveRepository,
     private val gemini: GeminiRepository,
+    private val tripStore: com.librelookai.data.local.TripStore,
 ) : AndroidViewModel(app) {
 
     companion object { private const val TAG = "TripsVM" }
@@ -96,18 +95,12 @@ class TripsViewModel @Inject constructor(
     private val _navigateToTrip = MutableSharedFlow<String>(extraBufferCapacity = 1)
     val navigateToTrip: SharedFlow<String> = _navigateToTrip.asSharedFlow()
 
-    /** Local JSON snapshot of all trips, so the list paints instantly on cold start. */
-    private fun tripsCacheFile() = File(getApplication<Application>().filesDir, "trips_cache.json")
+    /** Local snapshot of all trips ([TripStore]), so the list paints instantly on cold start. */
+    private suspend fun readTripsCache(): List<Trip> =
+        runCatching { tripStore.trips() }.getOrDefault(emptyList())
 
-    private fun readTripsCache(): List<Trip> = runCatching {
-        val f = tripsCacheFile()
-        if (!f.exists()) return emptyList()
-        val type = object : TypeToken<List<Trip>>() {}.type
-        gson.fromJson<List<Trip>>(f.readText(), type) ?: emptyList()
-    }.getOrDefault(emptyList())
-
-    private fun writeTripsCache(trips: List<Trip>) {
-        runCatching { tripsCacheFile().writeText(gson.toJson(trips)) }
+    private suspend fun writeTripsCache(trips: List<Trip>) {
+        runCatching { tripStore.replaceAll(trips) }
     }
 
     fun loadTrips() {
@@ -216,8 +209,8 @@ class TripsViewModel @Inject constructor(
         val updated = transform(current)
         if (updated == current) return
         _state.update { s -> s.copy(trips = s.trips.map { if (it.id == tripId) updated else it }) }
-        writeTripsCache(_state.value.trips)
         viewModelScope.launch {
+            writeTripsCache(_state.value.trips)
             val folderId = _state.value.folderId ?: return@launch
             runCatching {
                 val fileId = drive.saveTripJson(folderId, updated.id, gson.toJson(updated))

@@ -42,6 +42,20 @@ private val MIGRATION_2_3 = object : Migration(2, 3) {
     }
 }
 
+/** v4: trips cache tables (`trips_cache.json` successor). */
+private val MIGRATION_3_4 = object : Migration(3, 4) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `trips` " +
+                "(`id` TEXT NOT NULL, `json` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        )
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `trip_markers` " +
+                "(`key` TEXT NOT NULL, PRIMARY KEY(`key`))",
+        )
+    }
+}
+
 @Module
 @InstallIn(SingletonComponent::class)
 object LocalDatabaseModule {
@@ -50,7 +64,7 @@ object LocalDatabaseModule {
     @Singleton
     fun provideLocalDatabase(@ApplicationContext context: Context): LocalDatabase =
         Room.databaseBuilder(context, LocalDatabase::class.java, "librelookai.db")
-            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
             .build()
 
     @Provides
@@ -61,6 +75,9 @@ object LocalDatabaseModule {
 
     @Provides
     fun provideOutfitEventDao(db: LocalDatabase): OutfitEventDao = db.outfitEventDao()
+
+    @Provides
+    fun provideTripDao(db: LocalDatabase): TripDao = db.tripDao()
 }
 
 @Module
@@ -75,4 +92,7 @@ abstract class LocalStoreModule {
 
     @Binds
     abstract fun bindOutfitEventStore(impl: RoomOutfitEventStore): OutfitEventStore
+
+    @Binds
+    abstract fun bindTripStore(impl: RoomTripStore): TripStore
 }
