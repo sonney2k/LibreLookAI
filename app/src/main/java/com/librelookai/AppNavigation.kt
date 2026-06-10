@@ -37,6 +37,14 @@ internal data object HomeRoute
 internal data class TripViewerRoute(val tripId: String)
 
 /**
+ * Travel planner — replaces the hoisted `travelPlannerMode` flag that rendered the planner
+ * inside the Travel tab with Home's chrome hidden. Planner-created trips pop this destination
+ * and navigate to [TripViewerRoute].
+ */
+@Serializable
+internal data object TravelPlannerRoute
+
+/**
  * Slim offline indicator strip shown above the active screen. Shared by [HomeRoute] (above the
  * tab content) and full-screen destinations, which no longer sit under Home's banner.
  */

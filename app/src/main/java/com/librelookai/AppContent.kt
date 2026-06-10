@@ -510,18 +510,10 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                         var dismissWardrobeViewerTrigger by remember { mutableIntStateOf(0) }
                         var showQuickTryOnSheet by remember { mutableStateOf(false) }
                         var showTripTryOnPicker by remember { mutableStateOf(false) }
-                        var travelPlannerMode by rememberSaveable { mutableStateOf(false) }
-                        // Hide the nav bar + weather badge in the travel planner full-screen mode,
-                        // and while a SelectionActionBar is up (multi-select) — the selection bar
-                        // takes the nav bar's place at the bottom (see ui/components/SelectionBarVisibility).
-                        val hideChrome = (selectedTab == 3 && travelPlannerMode) ||
-                            com.librelookai.ui.components.SelectionBarVisibility.isVisible
-
-                        // The travel planner is a full-screen mode within the Travel tab, not a
-                        // separate tab, so report it as its own screen view for funnel tracking.
-                        LaunchedEffect(travelPlannerMode) {
-                            if (travelPlannerMode) Analytics.screen("TravelPlanner")
-                        }
+                        // Hide the nav bar + weather badge while a SelectionActionBar is up
+                        // (multi-select) — the selection bar takes the nav bar's place at the
+                        // bottom (see ui/components/SelectionBarVisibility).
+                        val hideChrome = com.librelookai.ui.components.SelectionBarVisibility.isVisible
 
                         // Shared by Home's tabs and the trip-viewer destination.
                         val onSettingsClick: () -> Unit = {
@@ -717,8 +709,11 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                                             stylesViewModel = stylesViewModel,
                                             locationViewModel = locationViewModel,
                                             onSettingsClick = onSettingsClick,
-                                            plannerMode = travelPlannerMode,
-                                            onPlannerModeChange = { travelPlannerMode = it },
+                                            onOpenPlanner = {
+                                                navController.navigate(TravelPlannerRoute) {
+                                                    launchSingleTop = true
+                                                }
+                                            },
                                             onOpenTrip = { tripId ->
                                                 navController.navigate(TripViewerRoute(tripId)) {
                                                     launchSingleTop = true
@@ -736,8 +731,7 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                                     }
 
                                     // Weather badge — bottom-left, floating above the nav bar.
-                                    // Hidden in the travel-planner mode because that screen pins its
-                                    // own Generate button to the bottom and the badge would overlap,
+                                    // Hidden while a selection bar is up (it takes the bottom edge)
                                     // and while the active screen is being scrolled (fades back in
                                     // shortly after scrolling stops — see weatherScrollConn above).
                                     androidx.compose.animation.AnimatedVisibility(
@@ -788,6 +782,36 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                                         onClose = { navController.popBackStack() },
                                         canTryOn = canTryOn,
                                         onTryOnOutfit = runTripOutfitTryOn,
+                                    )
+                                }
+                            }
+                            }
+                        }
+
+                        composable<TravelPlannerRoute> {
+                            // Full-screen mode within the Travel tab, not a separate tab — report
+                            // it as its own screen view for funnel tracking.
+                            LaunchedEffect(Unit) { Analytics.screen("TravelPlanner") }
+                            CompositionLocalProvider(LocalViewModelStoreOwner provides activity) {
+                            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                                Column(Modifier.fillMaxSize().padding(innerPadding)) {
+                                    OfflineBanner(visible = isOffline)
+                                    com.librelookai.travel.TravelPlannerScreen(
+                                        travelViewModel = travelViewModel,
+                                        tripsViewModel = tripsViewModel,
+                                        wardrobeViewModel = wardrobeViewModel,
+                                        profileViewModel = profileViewModel,
+                                        stylesViewModel = stylesViewModel,
+                                        locationViewModel = locationViewModel,
+                                        onBack = { navController.popBackStack() },
+                                        onOpenTrip = { tripId ->
+                                            // Planner-created trip: leave the planner behind so
+                                            // back from the viewer returns to the trips list.
+                                            navController.popBackStack(HomeRoute, inclusive = false)
+                                            navController.navigate(TripViewerRoute(tripId)) {
+                                                launchSingleTop = true
+                                            }
+                                        },
                                     )
                                 }
                             }

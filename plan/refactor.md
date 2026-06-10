@@ -226,10 +226,17 @@ are easy to violate and have caused real bugs.
    pin `LocalViewModelStoreOwner provides activity` because a defaulted `viewModel()` inside a
    destination scopes to the back-stack entry and would fork fresh VM instances (~70 call sites
    rely on activity scoping).
+   **Travel planner destination LANDED (June 2026).** `TravelPlannerRoute` replaces the hoisted
+   `travelPlannerMode` flag (and the `hideChrome` travel arm — `hideChrome` is now purely
+   selection-bar driven). The planner-lifecycle effects (packing-list → trip auto-create,
+   source-closet seeding, `navigateToTrip` collection) moved from `TravelScreen` into the new
+   `travel/TravelPlannerScreen`, because Home — and the Travel tab with it — is not composed
+   while a destination overlays it; a planner-created trip pops back to Home before navigating
+   to `TripViewerRoute`, so back from the viewer lands on the trips list.
    **Remaining**: convert the Dialog-viewers (`FullScreenViewer`, `OutfitFullScreenViewer`,
-   `TryOnComposerScreen`, `OutfitComposerScreen`, try-on history root) and the travel planner
-   mode; convert the tabs themselves to destinations; merge Settings' `SettingsRoute` enum
-   back-stack; then delete the Window-quirk workarounds + per-destination VM scoping.
+   `TryOnComposerScreen`, `OutfitComposerScreen`, try-on history root); convert the tabs
+   themselves to destinations; merge Settings' `SettingsRoute` enum back-stack; then delete the
+   Window-quirk workarounds + per-destination VM scoping.
 4. **Modularize last** — once dependencies are sane, moving packages into Gradle modules is
    mechanical (`scripts/kt_split.py`-style, compiler-driven).
 

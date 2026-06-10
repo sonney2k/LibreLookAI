@@ -43,17 +43,44 @@ fun TravelScreen(
     stylesViewModel: OutfitsViewModel = viewModel(),
     locationViewModel: LocationViewModel = viewModel(),
     onSettingsClick: () -> Unit = {},
-    plannerMode: Boolean = false,
-    onPlannerModeChange: (Boolean) -> Unit = {},
+    onOpenPlanner: () -> Unit = {},
     onOpenTrip: (String) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
-    // ---- Auto-create Trip + navigate when planner returns a packing list. ----
+    TravelOutfitsView(
+        wardrobeViewModel = wardrobeViewModel,
+        profileViewModel = profileViewModel,
+        stylesViewModel = stylesViewModel,
+        tripsViewModel = tripsViewModel,
+        locationViewModel = locationViewModel,
+        onOpenPlanner = onOpenPlanner,
+        onOpenTrip = onOpenTrip,
+        onSettingsClick = onSettingsClick,
+        modifier = modifier,
+    )
+}
+
+/**
+ * The travel planner — content of the `TravelPlannerRoute` NavHost destination (the old
+ * `plannerMode` fullscreen mode inside [TravelScreen]). Owns the planner-lifecycle effects,
+ * which must live here (not in [TravelScreen]) because Home — and the Travel tab with it —
+ * is not composed while this destination overlays it.
+ */
+@Composable
+internal fun TravelPlannerScreen(
+    travelViewModel: TravelViewModel,
+    tripsViewModel: TripsViewModel,
+    wardrobeViewModel: WardrobeViewModel,
+    profileViewModel: ProfileViewModel,
+    stylesViewModel: OutfitsViewModel,
+    locationViewModel: LocationViewModel,
+    onBack: () -> Unit,
+    onOpenTrip: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    // ---- Auto-create Trip + navigate when the planner returns a packing list. ----
     val onOpenTripState = rememberUpdatedState(onOpenTrip)
-    val onPlannerModeChangeState = rememberUpdatedState(onPlannerModeChange)
     val travelState by travelViewModel.state.collectAsState()
-    val wardrobeState by wardrobeViewModel.state.collectAsState()
-    val profileState by profileViewModel.state.collectAsState()
     val context = androidx.compose.ui.platform.LocalContext.current
     LaunchedEffect(travelState.packingList) {
         val packing = travelState.packingList ?: return@LaunchedEffect
@@ -72,41 +99,25 @@ fun TravelScreen(
 
     // Entering the planner defaults its source closets to whatever closet the user is viewing
     // (null = All → all closets). The user can still change this in the closet picker.
-    LaunchedEffect(plannerMode) {
-        if (plannerMode) travelViewModel.seedSourceFolders(locationViewModel.activeFolderId)
+    LaunchedEffect(Unit) {
+        travelViewModel.seedSourceFolders(locationViewModel.activeFolderId)
     }
 
-    // Open the viewer (a NavHost destination above this tab) when TripsViewModel emits a
-    // navigate event.
+    // Open the trip viewer (a sibling destination) when TripsViewModel emits a navigate event
+    // after the created trip is saved.
     LaunchedEffect(Unit) {
         tripsViewModel.navigateToTrip.collect { tripId ->
-            onPlannerModeChangeState.value(false)
             onOpenTripState.value(tripId)
         }
     }
 
-    if (!plannerMode) {
-        TravelOutfitsView(
-            wardrobeViewModel = wardrobeViewModel,
-            profileViewModel = profileViewModel,
-            stylesViewModel = stylesViewModel,
-            tripsViewModel = tripsViewModel,
-            locationViewModel = locationViewModel,
-            onOpenPlanner = { onPlannerModeChange(true) },
-            onOpenTrip = onOpenTrip,
-            onSettingsClick = onSettingsClick,
-            modifier = modifier,
-        )
-        return
-    }
-    androidx.activity.compose.BackHandler { onPlannerModeChange(false) }
     TravelPlannerContent(
         travelViewModel = travelViewModel,
         wardrobeViewModel = wardrobeViewModel,
         profileViewModel = profileViewModel,
         stylesViewModel = stylesViewModel,
         locationViewModel = locationViewModel,
-        onBack = { onPlannerModeChange(false) },
+        onBack = onBack,
         modifier = modifier,
     )
 }
