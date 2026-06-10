@@ -16,6 +16,7 @@ import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.librelookai.MainActivity
+import com.librelookai.data.local.WardrobeItemStore
 import com.librelookai.R
 import com.librelookai.data.drive.DriveFileDto
 import com.librelookai.data.drive.DriveRepository
@@ -60,6 +61,7 @@ class WardrobeViewModel @Inject constructor(
     app: Application,
     internal val drive: DriveRepository,
     internal val gemini: GeminiRepository,
+    internal val itemStore: WardrobeItemStore,
 ) : AndroidViewModel(app) {
 
     companion object {
@@ -243,8 +245,10 @@ class WardrobeViewModel @Inject constructor(
      * closet list changed, leaving the cross-closet snapshot (and thus outfits/trips) empty.
      */
     fun retryPrefetchIfNeeded() {
-        if (allConfiguredFolderIds.any { fid -> !localCacheFile(fid).exists() }) {
-            prefetchUncachedClosets()
+        viewModelScope.launch(Dispatchers.IO) {
+            if (allConfiguredFolderIds.any { fid -> !itemStore.hasFolder(fid) }) {
+                prefetchUncachedClosets()
+            }
         }
     }
 
@@ -258,10 +262,10 @@ class WardrobeViewModel @Inject constructor(
         if (prefetchJob?.isActive == true) return
         val app = getApplication<Application>()
         if (!app.isNetworkAvailable()) return
-        val targets = allConfiguredFolderIds.filter { fid -> !localCacheFile(fid).exists() }
-        Log.d(TAG, "prefetch: configured=${allConfiguredFolderIds.size} uncached=${targets.size}")
-        if (targets.isEmpty()) return
         prefetchJob = viewModelScope.launch(Dispatchers.IO) {
+            val targets = allConfiguredFolderIds.filter { fid -> !itemStore.hasFolder(fid) }
+            Log.d(TAG, "prefetch: configured=${allConfiguredFolderIds.size} uncached=${targets.size}")
+            if (targets.isEmpty()) return@launch
             targets.forEach { fid ->
                 runCatching {
                     val images = loadFolderImages(fid)
@@ -283,10 +287,12 @@ class WardrobeViewModel @Inject constructor(
         // cache from disk), so a slow earlier read can't overwrite a fresher snapshot.
         snapshotJob?.cancel()
         snapshotJob = viewModelScope.launch(Dispatchers.IO) {
-            val perFolder = allConfiguredFolderIds.map { fid -> fid to readCacheAsImages(fid) }
+            val perFolder = allConfiguredFolderIds.map { fid ->
+                Triple(fid, readCacheAsImages(fid), itemStore.hasFolder(fid))
+            }
             val merged = perFolder.flatMap { it.second }
-            Log.d(TAG, "snapshot: " + perFolder.joinToString { (fid, imgs) ->
-                val state = if (localCacheFile(fid).exists()) "cached" else "no-cache"
+            Log.d(TAG, "snapshot: " + perFolder.joinToString { (fid, imgs, cached) ->
+                val state = if (cached) "cached" else "no-cache"
                 val kind = if (fid == shoppingFolderId) "(shopping)" else ""
                 "$fid=${imgs.size}/$state$kind"
             } + " -> total=${merged.size}")
@@ -294,24 +300,18 @@ class WardrobeViewModel @Inject constructor(
         }
     }
 
-    private fun readCacheAsImages(fid: String): List<DriveImage> {
-        val cacheFile = localCacheFile(fid)
-        if (!cacheFile.exists()) return emptyList()
-        return runCatching {
-            val cache = gson.fromJson(cacheFile.readText(), LocalCache::class.java)
-            cache.items.mapNotNull { entry ->
-                drive.cachedFile(entry.driveId)?.let { f ->
-                    DriveImage(
-                        entry.driveId, f.absolutePath, entry.name, entry.tags,
-                        originalDriveId = entry.originalDriveId,
-                        sidecarDriveId = entry.sidecarDriveId,
-                        folderId = fid,
-                        createdTimeMs = entry.createdTimeMs,
-                    )
-                }
+    private suspend fun readCacheAsImages(fid: String): List<DriveImage> =
+        itemStore.itemsFor(fid).mapNotNull { entry ->
+            drive.cachedFile(entry.driveId)?.let { f ->
+                DriveImage(
+                    entry.driveId, f.absolutePath, entry.name, entry.tags,
+                    originalDriveId = entry.originalDriveId,
+                    sidecarDriveId = entry.sidecarDriveId,
+                    folderId = fid,
+                    createdTimeMs = entry.createdTimeMs,
+                )
             }
-        }.getOrDefault(emptyList())
-    }
+        }
 
     /**
      * Moves the given wardrobe items (cutout + original + sidecar) from the current location
@@ -349,7 +349,7 @@ class WardrobeViewModel @Inject constructor(
     fun clearCacheAndRefresh() {
         val id = folderId ?: return
         viewModelScope.launch(Dispatchers.IO) {
-            localCacheFile(id).delete()
+            itemStore.clearFolder(id)
             val dir = getApplication<Application>().filesDir.resolve("wardrobe")
             dir.listFiles()?.forEach { it.delete() }
             withContext(Dispatchers.Main) { loadImages() }
@@ -375,27 +375,19 @@ class WardrobeViewModel @Inject constructor(
         local.absolutePath
     }
 
-    internal fun localCacheFile(id: String) =
-        File(getApplication<Application>().filesDir, "wardrobe_cache_$id.json")
-
-    internal fun saveLocalCache(id: String, images: List<DriveImage>) {
+    internal suspend fun saveLocalCache(id: String, images: List<DriveImage>) {
         writeFolderCache(id, images)
         // Keep the cross-closet snapshot in sync so similarity search reflects the latest items.
         refreshAllLocationImagesState()
     }
 
     /**
-     * Writes [images] to [id]'s per-folder cache file. Unlike [saveLocalCache] this does NOT refresh
+     * Writes [images] as [id]'s cached folder snapshot. Unlike [saveLocalCache] this does NOT refresh
      * the cross-closet snapshot, so a bulk caller (e.g. the All-locations load persisting every
      * folder at once) can write each folder then refresh the snapshot a single time.
      */
-    private fun writeFolderCache(id: String, images: List<DriveImage>) {
-        runCatching {
-            val cache = LocalCache(images.map {
-                LocalCacheEntry(it.driveId, it.name, it.tags, it.originalDriveId, it.sidecarDriveId, it.createdTimeMs)
-            })
-            localCacheFile(id).writeText(gson.toJson(cache))
-        }
+    private suspend fun writeFolderCache(id: String, images: List<DriveImage>) {
+        runCatching { itemStore.replaceFolder(id, images.map { it.toCachedItem() }) }
     }
 
     // ---------- Load ----------
@@ -743,11 +735,11 @@ class WardrobeViewModel @Inject constructor(
         // Resolve the owning folder from the image itself — `folderId` is null when the
         // user is browsing "All locations", but each DriveImage already knows its closet.
         val id = img.folderId.ifEmpty { folderId.orEmpty() }.ifEmpty { return }
-        // Write local cache eagerly so the edit survives restart even if the Drive PATCH
-        // is still in flight or fails. Drive write happens after, and updates the cache
-        // again with the sidecarDriveId once it returns.
-        saveLocalCache(id, _state.value.images.filter { it.folderId == id })
         viewModelScope.launch(Dispatchers.IO) {
+            // Write local cache eagerly (before the Drive PATCH) so the edit survives restart
+            // even if the Drive write is still in flight or fails. The cache is updated again
+            // with the sidecarDriveId once Drive returns.
+            saveLocalCache(id, _state.value.images.filter { it.folderId == id })
             val sidecarJson = gson.toJson(ItemSidecar(img.tags, img.originalDriveId))
             val sidecarFileId = try {
                 drive.upsertSidecar(id, "$driveId${DriveRepository.SIDECAR_SUFFIX}", sidecarJson)
@@ -1116,13 +1108,17 @@ class WardrobeViewModel @Inject constructor(
             s.copy(isMoving = true, selectedIds = emptySet(), error = null,
                 images = s.images.filter { it.driveId !in movingIds })
         }
-        sourceFolderIds.forEach { fid ->
-            saveLocalCache(fid, _state.value.images.filter { it.folderId == fid })
-        }
         notifyItemsMovedTo(targetFolderId, toMove.map { it.copy(folderId = targetFolderId) })
 
         // ---- Sync to Drive in the background; roll back items that fail ----
         viewModelScope.launch {
+            // Cache writes come first (still before any Drive call) so the move survives a
+            // restart; re-homing the items in the target store row removes them from source.
+            withContext(Dispatchers.IO) {
+                sourceFolderIds.forEach { fid ->
+                    saveLocalCache(fid, _state.value.images.filter { it.folderId == fid })
+                }
+            }
             val failed = coroutineScope {
                 toMove.map { item ->
                     async {
@@ -1153,7 +1149,7 @@ class WardrobeViewModel @Inject constructor(
      * the cache files directly rather than rebuilding from `state.images`, since the user may
      * have switched closets while the Drive move was in flight.
      */
-    private fun rollbackMove(failed: List<DriveImage>, targetFolderId: String) {
+    private suspend fun rollbackMove(failed: List<DriveImage>, targetFolderId: String) {
         val ids = failed.map { it.driveId }.toSet()
         ids.forEach { recentlyMovedItems.remove(it) }
         removeFromCacheFile(targetFolderId, ids)
@@ -1172,54 +1168,31 @@ class WardrobeViewModel @Inject constructor(
         refreshAllLocationImagesState()
     }
 
-    /** Removes the given driveIds from a per-folder cache file in place (no-op if absent). */
-    private fun removeFromCacheFile(fid: String, ids: Set<String>) {
-        runCatching {
-            val cacheFile = localCacheFile(fid)
-            if (!cacheFile.exists()) return
-            val existing = gson.fromJson(cacheFile.readText(), LocalCache::class.java).items
-            cacheFile.writeText(gson.toJson(LocalCache(existing.filter { it.driveId !in ids })))
-        }
+    /** Removes the given driveIds from a folder's cache in place (no-op for ids homed elsewhere). */
+    private suspend fun removeFromCacheFile(fid: String, ids: Set<String>) {
+        runCatching { itemStore.remove(fid, ids) }
     }
 
     /**
-     * Upserts a single finished item into its own closet's cache file [fid], directly editing
-     * the file (not rebuilding from `state.images`) so it is correct even if the user switched
+     * Upserts a single finished item into its own closet's cache [fid], editing the store
+     * directly (not rebuilding from `state.images`) so it is correct even if the user switched
      * closets while the item was being processed. Drops any stale entry under [staleDriveId]
-     * (the pre-cutout raw id) and the item's own id before re-adding the fresh entry.
+     * (the pre-cutout raw id) before upserting the fresh entry.
      */
-    internal fun persistItemToCache(fid: String, item: DriveImage, staleDriveId: String? = null) {
-        runCatching {
-            val cacheFile = localCacheFile(fid)
-            val existing: List<LocalCacheEntry> = if (cacheFile.exists())
-                runCatching { gson.fromJson(cacheFile.readText(), LocalCache::class.java).items }.getOrDefault(emptyList())
-            else emptyList()
-            val drop = setOfNotNull(staleDriveId, item.driveId)
-            val entry = LocalCacheEntry(item.driveId, item.name, item.tags, item.originalDriveId, item.sidecarDriveId, item.createdTimeMs)
-            cacheFile.writeText(gson.toJson(LocalCache(existing.filter { it.driveId !in drop } + entry)))
-        }
+    internal suspend fun persistItemToCache(fid: String, item: DriveImage, staleDriveId: String? = null) {
+        runCatching { itemStore.upsert(fid, item.toCachedItem(), staleDriveId) }
         refreshAllLocationImagesState()
     }
 
-    /** Appends the given items to a per-folder cache file, skipping ids already present. */
-    private fun addToCacheFile(fid: String, items: List<DriveImage>) {
-        runCatching {
-            val cacheFile = localCacheFile(fid)
-            val existing: List<LocalCacheEntry> = if (cacheFile.exists())
-                runCatching { gson.fromJson(cacheFile.readText(), LocalCache::class.java).items }.getOrDefault(emptyList())
-            else emptyList()
-            val have = existing.map { it.driveId }.toSet()
-            val additions = items.filter { it.driveId !in have }.map {
-                LocalCacheEntry(it.driveId, it.name, it.tags, it.originalDriveId, it.sidecarDriveId, it.createdTimeMs)
-            }
-            if (additions.isNotEmpty()) cacheFile.writeText(gson.toJson(LocalCache(existing + additions)))
-        }
+    /** Upserts the given items into a folder's cache (each item is re-homed there if elsewhere). */
+    private suspend fun addToCacheFile(fid: String, items: List<DriveImage>) {
+        runCatching { itemStore.addAll(fid, items.map { it.toCachedItem() }) }
     }
 
     /**
      * Records that [items] have been moved into [targetFolderId] (their cutout/original/sidecar
-     * Drive IDs are unchanged, so the local cache files are still valid). Merges them into the
-     * target folder's `wardrobe_cache_*.json` so [setLocation] to that folder shows them in
+     * Drive IDs are unchanged, so the cached image bytes are still valid). Re-homes them into the
+     * target folder in the [WardrobeItemStore] so [setLocation] to that folder shows them in
      * Phase 1 instantly, and remembers them so Phase 2 won't drop them while Drive's listing
      * is still propagating. Callable from other view models (e.g. shopping move-to-closet).
      */
@@ -1227,19 +1200,9 @@ class WardrobeViewModel @Inject constructor(
         if (items.isEmpty() || targetFolderId.isEmpty()) return
         val expiry = System.currentTimeMillis() + recentlyMovedTtlMs
         items.forEach { recentlyMovedItems[it.driveId] = targetFolderId to expiry }
-        runCatching {
-            val cacheFile = localCacheFile(targetFolderId)
-            val existing: List<LocalCacheEntry> = if (cacheFile.exists()) {
-                runCatching { gson.fromJson(cacheFile.readText(), LocalCache::class.java).items }
-                    .getOrDefault(emptyList())
-            } else emptyList()
-            val existingIds = existing.map { it.driveId }.toSet()
-            val additions = items.filter { it.driveId !in existingIds }.map { img ->
-                LocalCacheEntry(img.driveId, img.name, img.tags, img.originalDriveId, img.sidecarDriveId, img.createdTimeMs)
-            }
-            if (additions.isNotEmpty()) {
-                cacheFile.writeText(gson.toJson(LocalCache(existing + additions)))
-            }
+        viewModelScope.launch(Dispatchers.IO) {
+            addToCacheFile(targetFolderId, items)
+            refreshAllLocationImagesState()
         }
         // If the target closet is the one currently shown, splice the items in immediately.
         if (folderId == targetFolderId || allFolderIds?.contains(targetFolderId) == true) {
@@ -1249,7 +1212,6 @@ class WardrobeViewModel @Inject constructor(
                 _state.update { s -> s.copy(images = s.images + toAdd) }
             }
         }
-        refreshAllLocationImagesState()
     }
 
     /**
@@ -1261,9 +1223,11 @@ class WardrobeViewModel @Inject constructor(
     fun undoItemsMovedTo(targetFolderId: String, ids: Set<String>) {
         if (ids.isEmpty() || targetFolderId.isEmpty()) return
         ids.forEach { recentlyMovedItems.remove(it) }
-        removeFromCacheFile(targetFolderId, ids)
         _state.update { s -> s.copy(images = s.images.filter { it.driveId !in ids }) }
-        refreshAllLocationImagesState()
+        viewModelScope.launch(Dispatchers.IO) {
+            removeFromCacheFile(targetFolderId, ids)
+            refreshAllLocationImagesState()
+        }
     }
 
     // ---------- SAF Import ----------
@@ -1346,15 +1310,18 @@ class WardrobeViewModel @Inject constructor(
         // back to the active folder) — a multi-closet selection can span several caches.
         val affectedFolderIds = items.mapNotNull { it.folderId.ifEmpty { folderId } }.toSet()
 
-        // ---- Optimistic local update (synchronous): vanish from the view + every affected
-        // closet cache immediately, so the deletion is instant and consistent across closets. ----
+        // ---- Optimistic local update: vanish from the view + every affected closet cache
+        // immediately, so the deletion is instant and consistent across closets. ----
         driveIds.forEach { recentlyMovedItems.remove(it) }
         _state.update { s -> s.copy(selectedIds = emptySet(), images = s.images.filter { it.driveId !in driveIds }) }
-        affectedFolderIds.forEach { fid -> removeFromCacheFile(fid, driveIds) }
-        refreshAllLocationImagesState()
 
-        // ---- Delete from Drive in the background (best-effort, as before) ----
+        // ---- Delete from Drive in the background (best-effort, as before); the cache writes
+        // come first, still before any Drive call, so the deletion survives a restart. ----
         viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                affectedFolderIds.forEach { fid -> removeFromCacheFile(fid, driveIds) }
+            }
+            refreshAllLocationImagesState()
             items.forEach { img ->
                 runCatching { drive.deleteFile(img.driveId) }
                 img.originalDriveId?.let { origId -> runCatching { drive.deleteFile(origId) } }

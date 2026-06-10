@@ -173,6 +173,19 @@ are easy to violate and have caused real bugs.
    first, then outfits/events, trips, try-ons, shopping), keeping VM-facing APIs stable. Seed
    Room from the existing JSON caches on first launch (no Drive re-download). Delete each
    cache-folder rule from CLAUDE.md as its feature lands.
+   **Status: wardrobe-items slice LANDED (June 2026).** Room 2.8.4 (KSP). The shared
+   `wardrobe_cache_{folderId}.json` files — read/written independently by WardrobeViewModel,
+   OutfitsViewModel and ShoppingClosetViewModel — are replaced by one `@Singleton`
+   `data/local/WardrobeItemStore` (interface) backed by `RoomWardrobeItemStore`/`LocalDatabase`.
+   Items are keyed by Drive ID, so "an item lives in exactly one folder" is now a DB invariant
+   (the JSON files could disagree during moves). Legacy JSON caches are seeded once per folder on
+   first access (no Drive re-download), then ignored; `clearFolder` deletes them. The handful of
+   main-thread synchronous cache writes (shopping move/delete, wardrobe saveSidecar /
+   moveItemsToLocation / deleteItems) moved into their adjacent background coroutines, ahead of
+   the Drive calls — same ordering, off-main. Invariants are tested in
+   `data/local/WardrobeItemStoreTest` (8 JVM tests).
+   **Remaining slices**: outfits (`styles_cache_*.json` + `readOutfitsLocalCache`), outfit
+   events, trips, try-ons, token-usage/trends caches.
 3. **Navigation Compose** — add the NavHost, convert Dialog-viewers to destinations one at a
    time; delete each Window-quirk workaround as its screen converts. Scope ViewModels to
    destinations as screens convert.

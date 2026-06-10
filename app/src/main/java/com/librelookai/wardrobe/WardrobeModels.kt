@@ -1,5 +1,7 @@
 package com.librelookai.wardrobe
 
+import com.librelookai.data.local.CachedWardrobeItem
+import com.librelookai.data.local.WardrobeItemStore
 import com.librelookai.gemini.ClothingTags
 import com.librelookai.settings.UserPreferences
 import com.librelookai.util.Analytics
@@ -109,8 +111,8 @@ data class WardrobeUiState(
     val images: List<DriveImage> = emptyList(),
     /**
      * Cross-closet snapshot of every cached wardrobe item across all configured closets,
-     * regardless of the active location filter applied to [images]. Refreshed from per-folder
-     * `wardrobe_cache_{folderId}.json` files whenever [images] changes or
+     * regardless of the active location filter applied to [images]. Refreshed from the
+     * Room-backed [WardrobeItemStore] whenever [images] changes or
      * `setAllConfiguredLocations` is called. Used by every similarity-search call site so
      * matches always span all wardrobes.
      */
@@ -329,16 +331,18 @@ internal data class WardrobeMetadata(val items: List<WardrobeItemMeta> = emptyLi
 
 // ---------- Local disk cache (instant startup, no network) ----------
 
-/** Full DriveImage snapshot stored on device for zero-latency startup. */
-data class LocalCacheEntry(
-    val driveId: String,
-    val name: String,
-    val tags: ClothingTags?,
-    val originalDriveId: String? = null,
-    val sidecarDriveId: String? = null,
-    val createdTimeMs: Long = 0L,
+/**
+ * Maps a wardrobe item to its Room-backed cache row ([WardrobeItemStore]). The local path is
+ * not persisted — it is re-derived from the Drive download cache on read.
+ */
+fun DriveImage.toCachedItem() = CachedWardrobeItem(
+    driveId = driveId,
+    name = name,
+    tags = tags,
+    originalDriveId = originalDriveId,
+    sidecarDriveId = sidecarDriveId,
+    createdTimeMs = createdTimeMs,
 )
-data class LocalCache(val items: List<LocalCacheEntry> = emptyList())
 
 internal data class PendingJob(
     val driveId: String,

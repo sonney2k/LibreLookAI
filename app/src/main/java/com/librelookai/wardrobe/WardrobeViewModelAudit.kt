@@ -201,7 +201,7 @@ internal fun WardrobeViewModel.continueRepairProcessing(process: Boolean, clearC
             _state.update { it.copy(auditProgress = null) }
             viewModelScope.launch(Dispatchers.IO) {
                 if (clearCache) {
-                    audit.folderIds.forEach { localCacheFile(it).delete() }
+                    audit.folderIds.forEach { itemStore.clearFolder(it) }
                     getApplication<Application>().filesDir.resolve("wardrobe")
                         .listFiles()?.forEach { it.delete() }
                 }
@@ -364,7 +364,7 @@ internal fun WardrobeViewModel.continueRepairProcessing(process: Boolean, clearC
 
                 Log.d(TAG, "Processing complete (clearCache=$clearCache) — reloading")
                 if (clearCache) {
-                    audit.folderIds.forEach { localCacheFile(it).delete() }
+                    audit.folderIds.forEach { itemStore.clearFolder(it) }
                     getApplication<Application>().filesDir.resolve("wardrobe")
                         .listFiles()?.forEach { it.delete() }
                 }

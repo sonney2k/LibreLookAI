@@ -27,6 +27,7 @@ mediapipeTasksVision = "0.10.14"
 robolectric = "4.14.1"
 hilt = "2.59.2"
 ksp = "2.3.9"
+room = "2.8.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -70,6 +71,9 @@ mediapipe-tasks-vision = { group = "com.google.mediapipe", name = "tasks-vision"
 robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

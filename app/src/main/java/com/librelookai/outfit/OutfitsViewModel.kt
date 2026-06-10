@@ -24,8 +24,8 @@ import com.librelookai.settings.AppLanguage
 import com.librelookai.settings.UserPreferences
 import com.librelookai.util.Analytics
 import com.librelookai.util.isNetworkAvailable
+import com.librelookai.data.local.WardrobeItemStore
 import com.librelookai.wardrobe.DriveImage
-import com.librelookai.wardrobe.LocalCache
 import com.librelookai.weather.WeatherData
 import java.util.Locale
 import java.util.UUID
@@ -44,6 +44,7 @@ class OutfitsViewModel @Inject constructor(
     app: Application,
     internal val drive: DriveRepository,
     internal val gemini: GeminiRepository,
+    private val itemStore: WardrobeItemStore,
 ) : AndroidViewModel(app) {
     /** Weekly, location-specific cache around the expensive Gemini trend lookup. */
     internal val trendsCache = com.librelookai.gemini.FashionTrendsCache(app, drive, gemini)
@@ -91,33 +92,26 @@ class OutfitsViewModel @Inject constructor(
     // ---------- Wardrobe image cache (all locations, disk-only) ----------
 
     /**
-     * Reads wardrobe disk caches for all given folder IDs and returns a flat list of
-     * [DriveImage] entries that have a locally cached file.  This is a pure disk read —
-     * no network calls — so it's safe to call from the main thread or from [setAllLocations].
+     * Reads the local wardrobe item store for all given folder IDs and returns a flat list of
+     * [DriveImage] entries that have a locally cached file. This is a pure local read —
+     * no network calls.
      */
-    private fun readWardrobeImagesFromCache(folderIds: List<String>): List<DriveImage> {
-        val filesDir = getApplication<Application>().filesDir
-        return folderIds.flatMap { fid ->
-            val cacheFile = java.io.File(filesDir, "wardrobe_cache_${fid}.json")
-            if (!cacheFile.exists()) return@flatMap emptyList()
-            runCatching {
-                val cache = gson.fromJson(cacheFile.readText(), LocalCache::class.java)
-                cache.items.mapNotNull { entry ->
-                    drive.cachedFile(entry.driveId)?.let { f ->
-                        DriveImage(
-                            driveId = entry.driveId,
-                            localPath = f.absolutePath,
-                            name = entry.name,
-                            tags = entry.tags,
-                            originalDriveId = entry.originalDriveId,
-                            sidecarDriveId = entry.sidecarDriveId,
-                            folderId = fid,
-                        )
-                    }
+    private suspend fun readWardrobeImagesFromCache(folderIds: List<String>): List<DriveImage> =
+        folderIds.flatMap { fid ->
+            itemStore.itemsFor(fid).mapNotNull { entry ->
+                drive.cachedFile(entry.driveId)?.let { f ->
+                    DriveImage(
+                        driveId = entry.driveId,
+                        localPath = f.absolutePath,
+                        name = entry.name,
+                        tags = entry.tags,
+                        originalDriveId = entry.originalDriveId,
+                        sidecarDriveId = entry.sidecarDriveId,
+                        folderId = fid,
+                    )
                 }
-            }.getOrDefault(emptyList())
+            }
         }
-    }
 
     /**
      * Re-reads wardrobe disk caches and updates [OutfitsUiState.wardrobeImages].

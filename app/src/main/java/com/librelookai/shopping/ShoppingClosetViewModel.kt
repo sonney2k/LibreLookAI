@@ -25,11 +25,11 @@ import com.librelookai.gemini.ClothingTags
 import com.librelookai.gemini.GeminiRepository
 import com.librelookai.gemini.classifyClothing
 import com.librelookai.util.isNetworkAvailable
+import com.librelookai.data.local.WardrobeItemStore
 import com.librelookai.wardrobe.DriveImage
 import com.librelookai.wardrobe.ItemSidecar
-import com.librelookai.wardrobe.LocalCache
-import com.librelookai.wardrobe.LocalCacheEntry
 import com.librelookai.wardrobe.UrlImportPickerState
+import com.librelookai.wardrobe.toCachedItem
 import com.librelookai.wardrobe.WebProductFetcher
 import com.librelookai.wardrobe.rotateBitmapFileBy90
 import com.librelookai.R
@@ -71,6 +71,7 @@ class ShoppingClosetViewModel @Inject constructor(
     app: Application,
     internal val drive: DriveRepository,
     internal val gemini: GeminiRepository,
+    private val itemStore: WardrobeItemStore,
 ) : AndroidViewModel(app) {
 
     companion object { internal const val TAG = "ShoppingClosetVM" }
@@ -141,24 +142,20 @@ class ShoppingClosetViewModel @Inject constructor(
             _state.update { it.copy(folderId = folderId) }
 
             // Phase 1 — instant: read local cache.
-            val cacheFile = localCacheFile(folderId)
-            if (cacheFile.exists()) {
-                runCatching {
-                    val cache = gson.fromJson(cacheFile.readText(), LocalCache::class.java)
-                    cache.items.mapNotNull { entry ->
-                        drive.cachedFile(entry.driveId)?.let { f ->
-                            DriveImage(
-                                entry.driveId, f.absolutePath, entry.name, entry.tags,
-                                originalDriveId = entry.originalDriveId,
-                                sidecarDriveId = entry.sidecarDriveId,
-                                folderId = folderId,
-                                createdTimeMs = entry.createdTimeMs,
-                            )
-                        }
+            runCatching {
+                itemStore.itemsFor(folderId).mapNotNull { entry ->
+                    drive.cachedFile(entry.driveId)?.let { f ->
+                        DriveImage(
+                            entry.driveId, f.absolutePath, entry.name, entry.tags,
+                            originalDriveId = entry.originalDriveId,
+                            sidecarDriveId = entry.sidecarDriveId,
+                            folderId = folderId,
+                            createdTimeMs = entry.createdTimeMs,
+                        )
                     }
-                }.onSuccess { items ->
-                    if (items.isNotEmpty()) _state.update { it.copy(items = items, isLoading = false) }
                 }
+            }.onSuccess { items ->
+                if (items.isNotEmpty()) _state.update { it.copy(items = items, isLoading = false) }
             }
 
             // Phase 2 — refresh from Drive.
@@ -249,11 +246,12 @@ class ShoppingClosetViewModel @Inject constructor(
             s.copy(isMoving = true, selectedIds = emptySet(), error = null,
                 items = s.items.filter { it.driveId !in movingIds })
         }
-        saveLocalCache(sourceFolderId, _state.value.items)
         onMoved(toMove.map { it.copy(folderId = targetFolderId) })
 
         // ---- Drive moves in the background; restore items that fail ----
         viewModelScope.launch {
+            // Cache write first — still before any Drive call — so the move survives a restart.
+            saveLocalCache(sourceFolderId, _state.value.items)
             val failed = coroutineScope {
                 toMove.map { item ->
                     async {
@@ -295,8 +293,9 @@ class ShoppingClosetViewModel @Inject constructor(
         // Optimistic: vanish from the view + cache immediately, then delete from Drive in the
         // background (best-effort, matching the previous fault tolerance).
         _state.update { s -> s.copy(selectedIds = emptySet(), error = null, items = s.items.filter { it.driveId !in driveIds }) }
-        saveLocalCache(folderId, _state.value.items)
         viewModelScope.launch {
+            // Cache write first — still before any Drive call — so the delete survives a restart.
+            saveLocalCache(folderId, _state.value.items)
             toDelete.forEach { item ->
                 runCatching {
                     drive.deleteFile(item.driveId)
@@ -469,15 +468,7 @@ class ShoppingClosetViewModel @Inject constructor(
         shoppingPrefs().edit().putString("folder_id", id).apply()
     }
 
-    private fun localCacheFile(id: String) =
-        File(getApplication<Application>().filesDir, "wardrobe_cache_$id.json")
-
-    internal fun saveLocalCache(id: String, items: List<DriveImage>) {
-        runCatching {
-            val cache = LocalCache(items.map {
-                LocalCacheEntry(it.driveId, it.name, it.tags, it.originalDriveId, it.sidecarDriveId, it.createdTimeMs)
-            })
-            localCacheFile(id).writeText(gson.toJson(cache))
-        }
+    internal suspend fun saveLocalCache(id: String, items: List<DriveImage>) {
+        runCatching { itemStore.replaceFolder(id, items.map { it.toCachedItem() }) }
     }
 }
