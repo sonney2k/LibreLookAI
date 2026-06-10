@@ -99,6 +99,10 @@ fun OutfitsScreen(
     canTryOn: Boolean = false,
     onSettingsClick: () -> Unit = {},
     navResetTick: Int = 0,
+    /** Opens the fullscreen viewer destination over the list's filtered outfits. */
+    onOpenOutfitViewer: (outfitIds: List<String>, initialOutfitId: String) -> Unit = { _, _ -> },
+    /** Opens the fullscreen viewer destination over the current prediction suggestions. */
+    onOpenPredictionViewer: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val outfitsState  by outfitsViewModel.state.collectAsState()
@@ -168,6 +172,12 @@ fun OutfitsScreen(
     // Insights "Calendar" / "Calendar Stats" tabs — they're outfit/wear-centric, so they live here.
     var outfitsTab by rememberSaveable { mutableIntStateOf(0) }
     LaunchedEffect(navResetTick) { outfitsTab = 0 }
+    // A pending calendar-wear request pulls the screen to the Calendar sub-tab, wherever it was
+    // filed from (list card, viewer destination, AI suggestion). The calendar resolves and
+    // consumes it (pick mode).
+    LaunchedEffect(outfitsState.pendingCalendarWearId) {
+        if (outfitsState.pendingCalendarWearId != null) outfitsTab = 1
+    }
 
     Box(modifier = modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
@@ -237,10 +247,7 @@ fun OutfitsScreen(
                         outfitsTab = 1
                     },
                     onToggleLovedOutfit = toggleLovedById,
-                    onSuggestOutfitTags = { o ->
-                        outfitsViewModel.suggestTagsForOutfit(o, wardrobeState.images, profileState.preferences)
-                    },
-                    onEditOutfitTags = { o -> outfitsViewModel.openOutfitTagsEditor(o.id) },
+                    onOpenViewer = onOpenOutfitViewer,
                     onToggleOutfitSelection = outfitsViewModel::toggleOutfitSelection,
                     onSelectAllOutfits = outfitsViewModel::selectAllOutfits,
                     onClearOutfitSelection = outfitsViewModel::clearOutfitSelection,
@@ -299,51 +306,18 @@ fun OutfitsScreen(
             )
         }
 
-        // Existing-outfit suggestion: show the picks in the standard detail viewer,
-        // swipe to flip between Gemini's ranked picks.
-        if (outfitsState.predictionSuggestions.isNotEmpty() && !outfitsState.isComposerOpen) {
-            val predictedOutfits = remember(outfitsState.predictionSuggestions, outfitsState.outfits) {
-                outfitsState.predictionSuggestions.mapNotNull { p ->
-                    outfitsState.outfits.find { it.id == p.outfitId }
-                }
+        // Existing-outfit suggestion: open the picks in the fullscreen viewer destination,
+        // swipe to flip between Gemini's ranked picks. The destination resolves the suggestion
+        // list live and clears the prediction on every close path — so this trigger (dead while
+        // the destination overlays Home) can't re-fire when the user comes back.
+        val predictedOutfits = remember(outfitsState.predictionSuggestions, outfitsState.outfits) {
+            outfitsState.predictionSuggestions.mapNotNull { p ->
+                outfitsState.outfits.find { it.id == p.outfitId }
             }
-            if (predictedOutfits.isNotEmpty()) {
-                val itemsById = remember(wardrobeState.images) {
-                    wardrobeState.images.associateBy { it.driveId }
-                }
-                OutfitFullScreenViewer(
-                    outfits = predictedOutfits,
-                    initialIndex = outfitsState.predictionIndex.coerceIn(0, predictedOutfits.lastIndex),
-                    itemsById = itemsById,
-                    locations = locationState.locations,
-                    activeLocationId = locationState.activeLocationId,
-                    onDismiss = outfitsViewModel::clearPrediction,
-                    onEdit = { o ->
-                        outfitsViewModel.clearPrediction()
-                        outfitsViewModel.startEditing(o, wardrobeState.images, profileState.preferences)
-                    },
-                    onWear = { o ->
-                        outfitsViewModel.clearPrediction()
-                        outfitsViewModel.requestCalendarWear(o.id, WearSource.AI_SUGGESTED)
-                        outfitsTab = 1
-                    },
-                    onToggleLoved = { o -> outfitsViewModel.setOutfitLoved(o.id, !o.loved) },
-                    onDelete = { o ->
-                        outfitsViewModel.deleteOutfit(o.id)
-                        if (predictedOutfits.size <= 1) outfitsViewModel.clearPrediction()
-                    },
-                    onSuggestTags = { o ->
-                        outfitsViewModel.suggestTagsForOutfit(o, wardrobeState.images, profileState.preferences)
-                    },
-                    onEditTags = { o -> outfitsViewModel.openOutfitTagsEditor(o.id) },
-                    onTryOn = { o ->
-                        outfitsViewModel.clearPrediction()
-                        onTryOnStyle(o)
-                    },
-                    canTryOn = canTryOn,
-                    wardrobeViewModel = wardrobeViewModel,
-                )
-            }
+        }
+        val showPrediction = predictedOutfits.isNotEmpty() && !outfitsState.isComposerOpen
+        LaunchedEffect(showPrediction) {
+            if (showPrediction) onOpenPredictionViewer()
         }
 
         // After saving a style, offer to wear it immediately

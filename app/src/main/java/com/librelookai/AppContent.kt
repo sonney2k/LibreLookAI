@@ -525,6 +525,12 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                             Analytics.action("TryOn", "open_composer", mapOf("count" to itemIds.size.toString()))
                             tryOnViewModel.openComposer(itemIds, sourceOutfitId)
                         }
+                        // Try-on a saved outfit, preserving the outfit link so the saved try-on
+                        // can jump back to it. Shared by the Outfits tab and the viewer destination.
+                        val runOutfitTryOn: (com.librelookai.data.model.Outfit) -> Unit = { style ->
+                            stylesViewModel.clearOutfitSelection()
+                            runTryOn(style.itemIds.toSet(), style.id)
+                        }
                         // Try-on a trip's outfit from the trip viewer — tagged TRAVEL so
                         // provenance reads "{trip} · Day {n}", matching the Quick-sheet path.
                         val tripTryOnCtx = LocalContext.current
@@ -613,15 +619,24 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                                             profileViewModel = profileViewModel,
                                             weatherViewModel = weatherViewModel,
                                             locationViewModel = locationViewModel,
-                                            onTryOnStyle = { style ->
-                                                stylesViewModel.clearOutfitSelection()
-                                                // Preserve the outfit link so the saved try-on
-                                                // can jump back here from the detail view.
-                                                runTryOn(style.itemIds.toSet(), style.id)
-                                            },
+                                            onTryOnStyle = runOutfitTryOn,
                                             canTryOn = canTryOn,
                                             onSettingsClick = onSettingsClick,
                                             navResetTick = navResetTick,
+                                            onOpenOutfitViewer = { outfitIds, initialOutfitId ->
+                                                navController.navigate(
+                                                    OutfitViewerRoute(
+                                                        source = OutfitViewerRoute.SOURCE_LIST,
+                                                        outfitIds = outfitIds,
+                                                        initialOutfitId = initialOutfitId,
+                                                    ),
+                                                ) { launchSingleTop = true }
+                                            },
+                                            onOpenPredictionViewer = {
+                                                navController.navigate(
+                                                    OutfitViewerRoute(source = OutfitViewerRoute.SOURCE_PREDICTION),
+                                                ) { launchSingleTop = true }
+                                            },
                                         )
                                         1 -> WardrobeScreen(
                                             viewModel = wardrobeViewModel,
@@ -782,9 +797,43 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                                         onClose = { navController.popBackStack() },
                                         canTryOn = canTryOn,
                                         onTryOnOutfit = runTripOutfitTryOn,
+                                        onOpenOutfitViewer = { outfit ->
+                                            navController.navigate(
+                                                OutfitViewerRoute(
+                                                    source = OutfitViewerRoute.SOURCE_TRIP,
+                                                    initialOutfitId = outfit.id,
+                                                    tripId = tripId,
+                                                ),
+                                            ) { launchSingleTop = true }
+                                        },
                                     )
                                 }
                             }
+                            }
+                        }
+
+                        composable<OutfitViewerRoute> { entry ->
+                            val route = entry.toRoute<OutfitViewerRoute>()
+                            LaunchedEffect(Unit) { Analytics.screen("OutfitViewer") }
+                            // Full-bleed, no Scaffold: the viewer is immersive (edge-to-edge,
+                            // like its Dialog predecessor) and handles its own insets.
+                            CompositionLocalProvider(LocalViewModelStoreOwner provides activity) {
+                                com.librelookai.outfit.OutfitViewerDestination(
+                                    source = route.source,
+                                    routeOutfitIds = route.outfitIds,
+                                    initialOutfitId = route.initialOutfitId,
+                                    tripId = route.tripId,
+                                    outfitsViewModel = stylesViewModel,
+                                    wardrobeViewModel = wardrobeViewModel,
+                                    profileViewModel = profileViewModel,
+                                    outfitEventsViewModel = outfitEventsViewModel,
+                                    tripsViewModel = tripsViewModel,
+                                    locationViewModel = locationViewModel,
+                                    canTryOn = canTryOn,
+                                    onClose = { navController.popBackStack() },
+                                    onTryOnStyle = runOutfitTryOn,
+                                    onTryOnTripOutfit = runTripOutfitTryOn,
+                                )
                             }
                         }
 

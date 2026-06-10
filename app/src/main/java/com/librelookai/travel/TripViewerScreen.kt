@@ -40,13 +40,11 @@ import com.librelookai.R
 import com.librelookai.data.model.Outfit
 import com.librelookai.data.model.Trip
 import com.librelookai.outfit.OutfitsViewModel
-import com.librelookai.outfit.TripContext
 import com.librelookai.outfit.applyTagSuggestions
 import com.librelookai.outfit.closeOutfitTagsEditor
 import com.librelookai.outfit.dismissTagSuggestions
-import com.librelookai.outfit.openOutfitTagsEditor
 import com.librelookai.outfit.setOutfitTags
-import com.librelookai.outfit.suggestTagsForOutfit
+import com.librelookai.outfit.startEditingTripOutfit
 import com.librelookai.settings.ProfileViewModel
 import com.librelookai.util.AiProcessingOverlay
 import com.librelookai.util.LocalIsOffline
@@ -65,6 +63,8 @@ fun TripViewerScreen(
     onClose: () -> Unit,
     canTryOn: Boolean = false,
     onTryOnOutfit: (Trip, Outfit) -> Unit = { _, _ -> },
+    /** Opens the fullscreen outfit viewer destination over this trip's day outfits. */
+    onOpenOutfitViewer: (Outfit) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val isOffline = LocalIsOffline.current
@@ -107,9 +107,6 @@ fun TripViewerScreen(
     }
 
     var showDeleteDialog by remember { mutableStateOf(false) }
-    var viewerOutfitId by remember { mutableStateOf<String?>(null) }
-    // Non-null while picking which day to log a wear on (the viewer's Wear action) for a trip outfit.
-    var wearPickerOutfit by remember { mutableStateOf<com.librelookai.data.model.Outfit?>(null) }
     var editing by remember(tripId) { mutableStateOf(false) }
     // View-mode actions are hidden under the bottom FAB (tap to reveal the shared action bar).
     var actionsOpen by remember(tripId) { mutableStateOf(false) }
@@ -147,26 +144,10 @@ fun TripViewerScreen(
         androidx.activity.compose.BackHandler { exitEdit() }
     }
 
-    // Open the composer to edit a specific day's outfit, carrying this trip's context. Shared by
-    // the fullscreen viewer's edit action and the per-day edit pen.
+    // Open the composer to edit a specific day's outfit, carrying this trip's context (the
+    // viewer destination's edit action goes through the same shared helper).
     val startEditingOutfit: (Outfit) -> Unit = { o ->
-        viewerOutfitId = null
-        val dayIdx = trip.outfitIds.indexOf(o.id).coerceAtLeast(0)
-        outfitsViewModel.startEditing(
-            style       = o,
-            images      = wardrobeState.images,
-            prefs       = profileState.preferences,
-            tripContext = TripContext(
-                tripId         = trip.id,
-                tripName       = trip.name,
-                dayIndex       = dayIdx,
-                dayForecast    = trip.forecast.getOrNull(dayIdx),
-                tripStartDate  = trip.startDate,
-                considerations = trip.considerations,
-                vibes          = trip.vibes,
-                goal           = trip.goal,
-            ),
-        )
+        outfitsViewModel.startEditingTripOutfit(trip, o, wardrobeState.images, profileState.preferences)
     }
 
     // One-time "saved" confirmation shown when a freshly generated trip opens.
@@ -241,7 +222,7 @@ fun TripViewerScreen(
                             // While previewing, cards show proposed items; opening the full
                             // viewer (which reads saved items) is disabled to avoid confusion.
                             enabled = outfit != null && !previewing,
-                            onClick = { if (outfit != null) viewerOutfitId = outfit.id },
+                            onClick = { if (outfit != null) onOpenOutfitViewer(outfit) },
                             // Edit pen jumps straight into the composer for this day's outfit.
                             onEdit = if (outfit != null && editing && !previewing) {
                                 { startEditingOutfit(outfit) }
@@ -386,50 +367,6 @@ fun TripViewerScreen(
         SnackbarHost(
             hostState = snackbarHostState,
             modifier = Modifier.align(Alignment.BottomCenter).padding(16.dp),
-        )
-    }
-
-    // Fullscreen outfit viewer — swipe across this trip's outfits. Mirrors the Outfits screen
-    // viewer; editing routes back into the composer with this trip's context preserved.
-    viewerOutfitId?.let { vid ->
-        val startIndex = tripOutfits.indexOfFirst { it.id == vid }
-        if (startIndex >= 0) {
-            com.librelookai.outfit.OutfitFullScreenViewer(
-                outfits = tripOutfits,
-                initialIndex = startIndex,
-                itemsById = imagesById,
-                locations = locationState.locations,
-                activeLocationId = locationState.activeLocationId,
-                onDismiss = { viewerOutfitId = null },
-                onEdit = startEditingOutfit,
-                onWear = { o -> wearPickerOutfit = o },
-                onToggleLoved = { o -> outfitsViewModel.setOutfitLoved(o.id, !o.loved) },
-                onDelete = { o ->
-                    outfitsViewModel.deleteOutfit(o.id)
-                    if (tripOutfits.size <= 1) viewerOutfitId = null
-                },
-                onSuggestTags = { o ->
-                    outfitsViewModel.suggestTagsForOutfit(o, wardrobeState.images, profileState.preferences)
-                },
-                onEditTags = { o -> outfitsViewModel.openOutfitTagsEditor(o.id) },
-                // Try-on the viewed trip outfit — gated by a saved model photo and online state.
-                onTryOn = { o -> onTryOnOutfit(trip, o) },
-                canTryOn = canTryOn && !isOffline,
-                wardrobeViewModel = wardrobeViewModel,
-            )
-        } else {
-            androidx.compose.runtime.LaunchedEffect(vid) { viewerOutfitId = null }
-        }
-    }
-
-    // Wear-day picker for the trip outfit viewer's Wear action (logs onto the chosen day).
-    wearPickerOutfit?.let { o ->
-        com.librelookai.outfit.WearDatePickerDialog(
-            onDismiss = { wearPickerOutfit = null },
-            onConfirm = { date ->
-                outfitEventsViewModel.recordOutfit(o, imagesById, date = date)
-                wearPickerOutfit = null
-            },
         )
     }
 

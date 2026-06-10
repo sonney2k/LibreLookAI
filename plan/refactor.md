@@ -233,10 +233,23 @@ are easy to violate and have caused real bugs.
    `travel/TravelPlannerScreen`, because Home — and the Travel tab with it — is not composed
    while a destination overlays it; a planner-created trip pops back to Home before navigating
    to `TripViewerRoute`, so back from the viewer lands on the trips list.
-   **Remaining**: convert the Dialog-viewers (`FullScreenViewer`, `OutfitFullScreenViewer`,
-   `TryOnComposerScreen`, `OutfitComposerScreen`, try-on history root); convert the tabs
-   themselves to destinations; merge Settings' `SettingsRoute` enum back-stack; then delete the
-   Window-quirk workarounds + per-destination VM scoping.
+   **Outfit viewer destination LANDED (June 2026).** `OutfitViewerRoute(source, outfitIds,
+   initialOutfitId, tripId)` replaced the three `OutfitFullScreenViewer` Dialog hosts (outfit
+   list, prediction result, trip day list). Since lambdas can't ride a route, the per-host
+   callback wiring moved into `outfit/OutfitViewerDestination`, switched on a source
+   discriminator; outfits resolve live from the VMs (deletes/edits during viewing stay
+   correct), every prediction-source close path clears the prediction (so the Outfits screen's
+   navigate trigger can't re-fire on pop), and the viewer-launched tag dialogs + trip
+   wear-date picker are hosted in the destination because the launching surface beneath is
+   not composed while overlaid. The viewer itself lost its Dialog wrapper + window plumbing
+   (one Window-quirk workaround down). The Outfits screen now flips to its Calendar sub-tab
+   via a `pendingCalendarWearId` effect rather than only at call sites. This is the pattern
+   for the remaining viewer conversions.
+   **Remaining**: convert the Dialog-viewers (`FullScreenViewer` — must follow the composers,
+   it still opens from inside their Dialogs; `TryOnComposerScreen`, `OutfitComposerScreen`,
+   try-on history root); convert the tabs themselves to destinations; merge Settings'
+   `SettingsRoute` enum back-stack; then delete the Window-quirk workarounds +
+   per-destination VM scoping.
 4. **Modularize last** — once dependencies are sane, moving packages into Gradle modules is
    mechanical (`scripts/kt_split.py`-style, compiler-driven).
 

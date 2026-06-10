@@ -102,8 +102,8 @@ internal fun OutfitListScreen(
     onDeleteOutfit: (String) -> Unit,
     onWearOutfit: (String) -> Unit,
     onToggleLovedOutfit: (String) -> Unit = {},
-    onSuggestOutfitTags: (Outfit) -> Unit = {},
-    onEditOutfitTags: (Outfit) -> Unit = {},
+    /** Opens the fullscreen viewer destination over the displayed (filtered+sorted) list. */
+    onOpenViewer: (outfitIds: List<String>, initialOutfitId: String) -> Unit = { _, _ -> },
     onToggleOutfitSelection: (String) -> Unit = {},
     onSelectAllOutfits: (List<String>) -> Unit = {},
     onClearOutfitSelection: () -> Unit = {},
@@ -201,7 +201,6 @@ internal fun OutfitListScreen(
     // Hoisted so the shared create FAB can collapse on scroll (also used by the LazyColumn below).
     val outfitsListState = rememberLazyListState()
 
-    var fullscreenStyleId by rememberSaveable { mutableStateOf<String?>(null) }
     var showDeleteDialog by remember { mutableStateOf(false) }
     // Dismissible "broken outfits" banner state + its confirm dialog.
     var brokenBannerDismissed by rememberSaveable { mutableStateOf(false) }
@@ -509,7 +508,7 @@ internal fun OutfitListScreen(
                                 onDelete = { onDeleteOutfit(style.id) },
                                 onWear = { onWearOutfit(style.id) },
                                 onToggleLoved = { onToggleLovedOutfit(style.id) },
-                                onOpen = { fullscreenStyleId = style.id },
+                                onOpen = { onOpenViewer(displayedStyles.map { it.id }, style.id) },
                                 onToggleSelection = { onToggleOutfitSelection(style.id) },
                             )
                         }
@@ -608,39 +607,6 @@ internal fun OutfitListScreen(
                 label = stringResource(R.string.ai_suggesting_style),
                 modifier = Modifier.fillMaxSize(),
             )
-        }
-
-        // Full-screen outfit viewer (pager). Rendered on top of the list so its FAB
-        // overlays and the dialog handles its own back-press.
-        fullscreenStyleId?.let { styleId ->
-            val startIndex = displayedStyles.indexOfFirst { it.id == styleId }
-            if (startIndex >= 0 && displayedStyles.isNotEmpty()) {
-                OutfitFullScreenViewer(
-                    outfits = displayedStyles,
-                    initialIndex = startIndex,
-                    itemsById = itemsById,
-                    locations = locations,
-                    activeLocationId = activeLocationId,
-                    onDismiss = { fullscreenStyleId = null },
-                    onEdit = { o -> fullscreenStyleId = null; onEditOutfit(o) },
-                    onWear = { o -> onWearOutfit(o.id) },
-                    onToggleLoved = { o -> onToggleLovedOutfit(o.id) },
-                    onDelete = { o ->
-                        onDeleteOutfit(o.id)
-                        if (displayedStyles.size <= 1) fullscreenStyleId = null
-                    },
-                    onSuggestTags = onSuggestOutfitTags,
-                    onEditTags = onEditOutfitTags,
-                    onTryOn = { o ->
-                        fullscreenStyleId = null
-                        onTryOnStyle(o)
-                    },
-                    canTryOn = canTryOn,
-                    wardrobeViewModel = wardrobeViewModel,
-                )
-            } else {
-                LaunchedEffect(styleId) { fullscreenStyleId = null }
-            }
         }
 
         // Error snackbar for prediction errors

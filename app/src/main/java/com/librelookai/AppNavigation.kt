@@ -45,6 +45,28 @@ internal data class TripViewerRoute(val tripId: String)
 internal data object TravelPlannerRoute
 
 /**
+ * Fullscreen outfit detail viewer (pager) — replaces the `OutfitFullScreenViewer` Dialog hosts.
+ * Outfits resolve LIVE from the ViewModels at the destination (edits/deletes during viewing stay
+ * correct); the route only carries the viewing context:
+ *  - [SOURCE_LIST]: [outfitIds] = the filtered list in display order, snapshotted at tap time.
+ *  - [SOURCE_PREDICTION]: outfits come from `predictionSuggestions`; closing clears the prediction.
+ *  - [SOURCE_TRIP]: outfits come from [tripId]'s day list (so a day-edit's id swap stays in sync).
+ */
+@Serializable
+internal data class OutfitViewerRoute(
+    val source: String,
+    val outfitIds: List<String> = emptyList(),
+    val initialOutfitId: String? = null,
+    val tripId: String? = null,
+) {
+    companion object {
+        const val SOURCE_LIST = "list"
+        const val SOURCE_PREDICTION = "prediction"
+        const val SOURCE_TRIP = "trip"
+    }
+}
+
+/**
  * Slim offline indicator strip shown above the active screen. Shared by [HomeRoute] (above the
  * tab content) and full-screen destinations, which no longer sit under Home's banner.
  */
