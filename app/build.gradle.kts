@@ -180,6 +180,7 @@ tasks.withType<Test>().configureEach {
 
 dependencies {
     implementation(project(":core:model"))
+    implementation(project(":core:database"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -216,9 +217,6 @@ dependencies {
     implementation(libs.mediapipe.tasks.vision)
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
-    implementation(libs.room.runtime)
-    implementation(libs.room.ktx)
-    ksp(libs.room.compiler)
 
     testImplementation(libs.junit)
     // JVM-side Compose UI tests via Robolectric (./gradlew testDebugUnitTest — no device needed)
