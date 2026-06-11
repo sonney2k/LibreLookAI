@@ -1,18 +1,41 @@
 package com.librelookai.gemini
 
-import androidx.annotation.StringRes
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
 /**
- * Thrown by [GeminiRepository.buildRequest] when no usable AI backend is available — managed mode
- * with no Firebase session, or nothing configured at all. It carries a localized, user-facing string
- * resource so the reason can be shown without the repository (which has no UI locale context)
- * resolving the text itself. Every Gemini method's generic `catch (Exception)` turns it into a
- * graceful `null`, so it never crashes the caller.
+ * Semantic reason for an AI failure, mapped to a localized string at the UI layer (the global
+ * notice dialog in `AppContent`). The repository deliberately emits *reasons*, not string
+ * resources — it has no UI locale context, and keeping `R` out of this layer is what lets it
+ * live below the app module.
  */
-class AiUnavailableException(@param:StringRes val messageRes: Int) : Exception("AI unavailable")
+enum class AiErrorReason {
+    /** No Gemini key (and no managed proxy) is configured. */
+    NOT_CONFIGURED,
+    /** Managed mode without a usable backend (no proxy URL / no Firebase session). */
+    UNAVAILABLE,
+    /** HTTP 429 — quota / rate limit exhausted. */
+    QUOTA,
+    /** HTTP 400 with an invalid-API-key marker. */
+    KEY_INVALID,
+    /** HTTP 403 — key lacks permission (e.g. image generation needs a billing-enabled key). */
+    PERMISSION,
+    /** HTTP 200/0 with a blocked or empty candidate — safety block or parse failure. */
+    BLOCKED,
+    /** HTTP 5xx — Gemini-side server error. */
+    SERVER,
+    /** Anything else. */
+    GENERIC,
+}
+
+/**
+ * Thrown by [GeminiRepository.buildRequest] when no usable AI backend is available — managed mode
+ * with no Firebase session, or nothing configured at all. It carries the semantic [reason] so the
+ * UI layer can show a localized explanation. Every Gemini method's generic `catch (Exception)`
+ * turns it into a graceful `null`, so it never crashes the caller.
+ */
+class AiUnavailableException(val reason: AiErrorReason) : Exception("AI unavailable")
 
 /** What kind of problem an [AiNotice] reports — drives the title, icon and primary action. */
 enum class AiNoticeKind {
@@ -23,13 +46,13 @@ enum class AiNoticeKind {
 }
 
 /**
- * A user-facing AI problem surfaced by the global handler in `AppContent`. Carries a localized
- * [messageRes] (resolved at the UI layer) and, for [AiNoticeKind.FAILED], whether a one-tap retry
- * of the originating action is available (see [AiRetry]).
+ * A user-facing AI problem surfaced by the global handler in `AppContent`. Carries a semantic
+ * [reason] (mapped to a localized string at the UI layer) and, for [AiNoticeKind.FAILED], whether
+ * a one-tap retry of the originating action is available (see [AiRetry]).
  */
 data class AiNotice(
     val kind: AiNoticeKind,
-    @param:StringRes val messageRes: Int,
+    val reason: AiErrorReason,
     val canRetry: Boolean = false,
 )
 
@@ -50,8 +73,8 @@ object AiEvents {
         _notices.tryEmit(notice)
     }
 
-    fun emit(kind: AiNoticeKind, @StringRes messageRes: Int, canRetry: Boolean = false) {
-        emit(AiNotice(kind, messageRes, canRetry))
+    fun emit(kind: AiNoticeKind, reason: AiErrorReason, canRetry: Boolean = false) {
+        emit(AiNotice(kind, reason, canRetry))
     }
 }
 

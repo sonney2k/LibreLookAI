@@ -40,11 +40,6 @@ android {
 
         buildConfigField(
             "String",
-            "GEMINI_API_KEY",
-            "\"${localProps.getProperty("gemini.api.key", "")}\"",
-        )
-        buildConfigField(
-            "String",
             "AMAZON_AFFILIATE_TAG",
             "\"${localProps.getProperty("amazon.affiliate.tag", "")}\"",
         )
@@ -58,14 +53,6 @@ android {
             "String",
             "PROXY_BASE_URL",
             "\"${localProps.getProperty("firebase.proxy.url", "")}\"",
-        )
-        // Master switch for the managed coin economy (purchase/refinancing UI + proxy billing).
-        // Default off → the Play release ships BYOK-only; flip to true (alongside a deployed
-        // proxy + Play products) to light up coin purchases without any code change.
-        buildConfigField(
-            "boolean",
-            "MANAGED_BILLING_ENABLED",
-            localProps.getProperty("managed.billing.enabled", "false").trim().ifEmpty { "false" },
         )
         // Firebase web client ID for Google Sign-In → Firebase Auth linking
         buildConfigField(
@@ -179,6 +166,7 @@ tasks.withType<Test>().configureEach {
 }
 
 dependencies {
+    implementation(project(":core:ai"))
     implementation(project(":core:model"))
     implementation(project(":core:common"))
     implementation(project(":core:database"))

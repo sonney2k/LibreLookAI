@@ -2,7 +2,6 @@ package com.librelookai.gemini
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import com.librelookai.R
 import java.io.File
 import kotlin.math.roundToInt
 
@@ -157,7 +156,7 @@ internal fun cropAndCap(
 
 // ---------- Cutout issue detection + repair ----------
 
-internal data class CutoutIssues(
+data class CutoutIssues(
     val hasBlackBackground: Boolean,
     val hasGreenHalo: Boolean,
 ) {
@@ -173,7 +172,7 @@ internal data class CutoutIssues(
  *  Green-halo detection looks at edge pixels (opaque with at least one transparent
  *  neighbour) where green meaningfully dominates the other channels.
  */
-internal fun detectCutoutIssues(file: File): CutoutIssues {
+fun detectCutoutIssues(file: File): CutoutIssues {
     val bmp = BitmapFactory.decodeFile(file.absolutePath) ?: return CutoutIssues(false, false)
     val w = bmp.width
     val h = bmp.height
@@ -243,7 +242,7 @@ data class CutoutFixActions(
 }
 
 /** Applies the enabled passes from [actions]. Output is written as PNG. */
-internal fun fixCutoutBackground(input: File, output: File, actions: CutoutFixActions) {
+fun fixCutoutBackground(input: File, output: File, actions: CutoutFixActions) {
     val src = BitmapFactory.decodeFile(input.absolutePath)
         ?: run { input.copyTo(output, overwrite = true); return }
     val mutable = src.copy(Bitmap.Config.ARGB_8888, true)

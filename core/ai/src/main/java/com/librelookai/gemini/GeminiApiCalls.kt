@@ -14,7 +14,7 @@ import kotlinx.coroutines.withContext
  * pre-tap BYOK cost estimate ([com.librelookai.billing.rememberTryOnCostTokens]) can size the real
  * payload without drifting from what [tryOnOutfit] actually sends.
  */
-internal fun buildTryOnPrompt(personCount: Int, itemCount: Int, preferences: String): String {
+fun buildTryOnPrompt(personCount: Int, itemCount: Int, preferences: String): String {
     val prefsHint = preferences.trim().takeIf { it.isNotEmpty() }
         ?.let { " The person's style preferences: $it." } ?: ""
     val personCountHint = when (personCount) {
@@ -40,7 +40,7 @@ internal fun buildTryOnPrompt(personCount: Int, itemCount: Int, preferences: Str
     """.trimIndent()
 }
 
-internal suspend fun GeminiRepository.tryOnOutfit(
+suspend fun GeminiRepository.tryOnOutfit(
         personFiles: List<File>,
         itemFiles: List<File>,
         outputDir: File,
@@ -131,7 +131,7 @@ internal suspend fun GeminiRepository.tryOnOutfit(
      * the generated `label` field will be written in that language.
      * Returns [ClothingTags] or null on failure.
      */
-internal suspend fun GeminiRepository.classifyClothing(imageFile: File, language: String = "English"): ClothingTags? =
+suspend fun GeminiRepository.classifyClothing(imageFile: File, language: String = "English"): ClothingTags? =
         withContext(Dispatchers.IO) {
             if (!isConfigured()) return@withContext null
 
@@ -255,7 +255,7 @@ internal suspend fun GeminiRepository.searchFashionTrends(
     /**
      * Sends a text-only prompt to Gemini and returns the raw text response, or null on failure.
      */
-internal suspend fun GeminiRepository.generateText(
+suspend fun GeminiRepository.generateText(
         prompt: String,
         category: UsageCategory = UsageCategory.OTHER,
         bulkItems: Int = 1,

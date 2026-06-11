@@ -8,12 +8,12 @@ deferred and inter-blocking:
 
 | § | Layer | Status |
 |---|-------|--------|
-| 1 | Multi-module Gradle | **Partial** — `:core:model`/`:core:common`/`:core:database`/`:core:ml`/`:core:sync` landed (phase 4); `core/ai` blocked on `GeminiRepository`'s `R.string` ids (§ 6) + `ManagedBilling` flag (§ 7), `core/designsystem` on splitting the 31-locale `res/`, `feature/*` on § 5 |
+| 1 | Multi-module Gradle | **Partial** — `:core:model`/`:core:common`/`:core:database`/`:core:ml`/`:core:sync`/`:core:ai` landed (phase 4); `core/designsystem` blocked on splitting the 31-locale `res/`, `feature/*` on § 5 |
 | 2 | Room as source of truth + SyncEngine | **Partial** — all five JSON-cache slices landed (phase 2), but as opaque-JSON cache rows; real entities, the `PendingMutation` queue and the WorkManager `SyncEngine` are **not started** |
 | 3 | DI + interfaces at the seams | **Partial** — Hilt landed (phase 1); the gemini↔drive↔billing package cycles are broken (June 2026, see phase 1 status), making the layering acyclic; interface extraction at the I/O seams pending; static globals (`ImageEncoding.tier`, `GeminiProgress` slot, `AiRetry.action`) still alive |
 | 4 | Navigation Compose | **Done** (phase 3 complete; per-destination VM scoping deferred to § 5) |
 | 5 | Thin VMs over use-cases | **Not started** — the keystone blocker: gates `feature/*` modules, destination-scoped VMs, and removal of the cross-VM `LaunchedEffect` bridges |
-| 6 | Typed `AiResult` | **Not started** — Gemini still returns `null` on failure |
+| 6 | Typed `AiResult` | **Started** — the notice path carries a semantic `AiErrorReason` enum instead of `R.string` ids (June 2026, the `:core:ai` enabler); the sealed `AiResult<T>` return type is not started — Gemini still returns `null` on failure |
 | 7 | DataStore + Keystore settings | **Not started** |
 | 8 | Testing strategy | **Partial** — store invariant tests landed; fake-based repository/VM tests blocked on § 3 interfaces |
 
@@ -200,6 +200,7 @@ are easy to violate and have caused real bugs.
    `R.string` notice ids + `BuildConfig` key/proxy fields + the fully-qualified
    `billing.ManagedBilling.enabled` read (all § 7-shaped: config/flags behind an interface),
    and the `internal` drive extension functions that would cross a module boundary.
+   *(All three knots were cut in June 2026 — see the `:core:ai` extraction in phase 4.)*
 2. **Room under the repositories** — replace the JSON cache files feature-by-feature (wardrobe
    first, then outfits/events, trips, try-ons, shopping), keeping VM-facing APIs stable. Seed
    Room from the existing JSON caches on first launch (no Drive re-download). Delete each
@@ -370,22 +371,47 @@ are easy to violate and have caused real bugs.
    `internal` visibility (which in a single-module app meant "public") was bumped to public
    where the compiler flagged cross-module callers. Exposes `:core:model` as `api`
    (`DriveRepository` signatures carry `Location`/`Outfit`).
+   **`:core:ai` extraction LANDED (June 2026)**, enabled by cutting the three documented
+   knots first:
+   - *`R.string` notice ids → semantic reasons (a § 6 slice).* `AiNotice` /
+     `AiUnavailableException` now carry an `AiErrorReason` enum (`NOT_CONFIGURED` /
+     `UNAVAILABLE` / `QUOTA` / `KEY_INVALID` / `PERMISSION` / `BLOCKED` / `SERVER` /
+     `GENERIC`); `GeminiRepository.emitFailure` maps HTTP codes to reasons, and the single
+     consumer — the global AI-notice dialog in `AppContent` — maps reasons to localized
+     strings app-side (`aiErrorMessageRes`). The gemini package is `R`-free.
+   - *`BuildConfig` key/proxy fields → module-own `buildConfigField`s* (`GEMINI_API_KEY`,
+     `PROXY_BASE_URL`, `MANAGED_BILLING_ENABLED`), read from the same `local.properties`
+     keys as `:app`'s — the `:core:sync` pattern, values can't drift. `:app` dropped its
+     now-unread `GEMINI_API_KEY` / `MANAGED_BILLING_ENABLED` fields but keeps
+     `PROXY_BASE_URL` (`CreditRepository` / `CostBadge` still read it).
+   - *The `billing` seam classes moved below the AI layer* (original
+     `com.librelookai.billing` package kept): `ManagedBilling` + `CreditsEvents` into
+     `:core:ai` (the repository is `CreditsEvents`' only emitter, and `ManagedBilling` now
+     reads the module's own BuildConfig), `InsufficientCreditsException` into `:core:model`
+     (pure data, the `CreditPacks` precedent).
+   Then the whole `gemini/` package moved (original Kotlin package kept, imports untouched).
+   Module deps: `api(:core:model)` + `api(:core:sync)` (public signatures expose
+   `ClothingTags`/`DriveRepository`), `:core:common`, OkHttp, Firebase auth/firestore, Hilt.
+   The compiler-flagged `internal` extension symbols crossing the new boundary were bumped
+   to public (`generateText`, `classifyClothing`, `tryOnOutfit`, `buildTryOnPrompt`,
+   `CutoutIssues`, `detectCutoutIssues`, `fixCutoutBackground`); `searchFashionTrends`
+   deliberately stays `internal` (callers must go through `FashionTrendsCache`).
+   `UsageDeviationTest` moved with the module; `TagNormalizerTest` stays in `:app` *by
+   design* — it asserts the canonical-color set stays in sync with the app-side
+   `wardrobe/FilterColorKeys` swatch list, a deliberate cross-layer invariant. Two dead
+   upward imports were deleted en route (`TokenUsage` → `MainActivity`, `GeminiImaging` →
+   `R`).
    **What stays in `:app`, and why (the honest remainder):**
-   - `gemini` / `billing`: the package cycles were broken and `data/drive`+`GoogleAuthManager`
-     extracted to `:core:sync` (see above) — what still blocks a `core/ai` extraction is
-     `GeminiRepository`'s `R.string` notice ids (31-locale strings live in the app `res/`;
-     the § 6 typed-error refactor would replace the ids with semantic reasons mapped to
-     strings app-side) and the fully-qualified `billing.ManagedBilling.enabled` read
-     (BuildConfig-driven; § 7 flag inversion). `billing` itself is feature-shaped and waits
-     for `feature/*`.
+   - `billing` (minus the three moved seam classes) is feature-shaped — Play-billing UI,
+     `CreditRepository`, `CostBadge` — and waits for `feature/*`.
    - `core/designsystem` is blocked on resources: `ui/theme` / `ui/components` reference
      `R.string`/`R.font` from the app's single `res/` (31 locales); splitting strings per
      module is its own decision, not a mechanical move.
    - `feature/*` modules are blocked on § 5: every ViewModel is still activity-scoped and
      shared across features (travel reads `OutfitsViewModel`, try-on reads wardrobe+shopping,
      ~25 cross-VM bridges in `AppContent`), so feature boundaries would be cyclic today.
-   Verification: `./gradlew assembleDebug testDebugUnitTest` green — 99 tests across the four
-   modules (60 app / 25 database / 7 common / 7 ml), 0 failures.
+   Verification: `./gradlew assembleDebug testDebugUnitTest` green — 99 tests
+   (52 app / 8 ai / 25 database / 7 common / 7 ml), 0 failures.
 
 ## Verification (per phase)
 

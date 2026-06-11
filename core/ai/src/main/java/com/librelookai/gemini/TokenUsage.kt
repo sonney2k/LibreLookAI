@@ -21,7 +21,6 @@ import java.util.concurrent.TimeUnit
 import com.librelookai.data.drive.DriveRepository
 import com.librelookai.data.drive.loadTokenUsageJsonl
 import com.librelookai.data.drive.saveTokenUsageJsonl
-import com.librelookai.MainActivity
 
 /** Coarse buckets for "where did the tokens go" — surfaced in the Settings → Credits chart. */
 enum class UsageCategory(val storageKey: String) {

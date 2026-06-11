@@ -8,8 +8,7 @@ import android.util.Log
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
-import com.librelookai.BuildConfig
-import com.librelookai.R
+import com.librelookai.core.ai.BuildConfig
 import com.librelookai.data.drive.await
 import com.librelookai.util.ImageEncoding
 import java.io.ByteArrayOutputStream
@@ -140,12 +139,12 @@ class GeminiRepository @Inject constructor(internal val app: Application) {
         }
         val proxyBase = BuildConfig.PROXY_BASE_URL
         if (proxyBase.isBlank() || !com.librelookai.billing.ManagedBilling.enabled) {
-            AiEvents.emit(AiNoticeKind.FAILED, R.string.ai_unavailable, canRetry = true)
-            throw AiUnavailableException(R.string.ai_unavailable)
+            AiEvents.emit(AiNoticeKind.FAILED, AiErrorReason.UNAVAILABLE, canRetry = true)
+            throw AiUnavailableException(AiErrorReason.UNAVAILABLE)
         }
         val token = getFirebaseIdToken() ?: run {
-            AiEvents.emit(AiNoticeKind.FAILED, R.string.ai_unavailable, canRetry = true)
-            throw AiUnavailableException(R.string.ai_unavailable)
+            AiEvents.emit(AiNoticeKind.FAILED, AiErrorReason.UNAVAILABLE, canRetry = true)
+            throw AiUnavailableException(AiErrorReason.UNAVAILABLE)
         }
         val builder = Request.Builder()
             .url("$proxyBase/geminiProxy")
@@ -170,7 +169,7 @@ class GeminiRepository @Inject constructor(internal val app: Application) {
      */
     internal fun ensureConfigured(notify: Boolean): Boolean {
         if (isConfigured()) return true
-        if (notify) AiEvents.emit(AiNoticeKind.NOT_CONFIGURED, R.string.ai_no_key_message)
+        if (notify) AiEvents.emit(AiNoticeKind.NOT_CONFIGURED, AiErrorReason.NOT_CONFIGURED)
         return false
     }
 
@@ -182,16 +181,16 @@ class GeminiRepository @Inject constructor(internal val app: Application) {
      */
     internal fun emitFailure(code: Int, body: String, notify: Boolean) {
         if (!notify) return
-        val res = when {
-            code == 429 -> R.string.ai_error_quota
+        val reason = when {
+            code == 429 -> AiErrorReason.QUOTA
             code == 400 && (body.contains("API_KEY_INVALID") || body.contains("API key not valid")) ->
-                R.string.ai_error_key_invalid
-            code == 403 -> R.string.ai_error_permission
-            code == 200 || code == 0 -> R.string.ai_error_blocked
-            code in 500..599 -> R.string.ai_error_server
-            else -> R.string.ai_error_generic
+                AiErrorReason.KEY_INVALID
+            code == 403 -> AiErrorReason.PERMISSION
+            code == 200 || code == 0 -> AiErrorReason.BLOCKED
+            code in 500..599 -> AiErrorReason.SERVER
+            else -> AiErrorReason.GENERIC
         }
-        AiEvents.emit(AiNoticeKind.FAILED, res, canRetry = true)
+        AiEvents.emit(AiNoticeKind.FAILED, reason, canRetry = true)
     }
 
     /**

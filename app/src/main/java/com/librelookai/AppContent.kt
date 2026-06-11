@@ -1288,7 +1288,7 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                                                 else R.string.ai_error_title,
                                             ))
                                         },
-                                        text = { Text(stringResource(notice.messageRes)) },
+                                        text = { Text(stringResource(aiErrorMessageRes(notice.reason))) },
                                         confirmButton = {
                                             when {
                                                 isNotConfigured -> TextButton(onClick = {
@@ -1436,4 +1436,20 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                     } // else -> arm (signed in + onboarding complete)
                 } // when
     }
+}
+
+/**
+ * Maps the AI layer's semantic [com.librelookai.gemini.AiErrorReason] to the localized message
+ * shown by the global AI-notice dialog. Lives app-side so the gemini package stays free of `R`.
+ */
+@androidx.annotation.StringRes
+private fun aiErrorMessageRes(reason: com.librelookai.gemini.AiErrorReason): Int = when (reason) {
+    com.librelookai.gemini.AiErrorReason.NOT_CONFIGURED -> R.string.ai_no_key_message
+    com.librelookai.gemini.AiErrorReason.UNAVAILABLE -> R.string.ai_unavailable
+    com.librelookai.gemini.AiErrorReason.QUOTA -> R.string.ai_error_quota
+    com.librelookai.gemini.AiErrorReason.KEY_INVALID -> R.string.ai_error_key_invalid
+    com.librelookai.gemini.AiErrorReason.PERMISSION -> R.string.ai_error_permission
+    com.librelookai.gemini.AiErrorReason.BLOCKED -> R.string.ai_error_blocked
+    com.librelookai.gemini.AiErrorReason.SERVER -> R.string.ai_error_server
+    com.librelookai.gemini.AiErrorReason.GENERIC -> R.string.ai_error_generic
 }

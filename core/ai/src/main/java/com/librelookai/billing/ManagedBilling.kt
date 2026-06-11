@@ -1,6 +1,6 @@
 package com.librelookai.billing
 
-import com.librelookai.BuildConfig
+import com.librelookai.core.ai.BuildConfig
 
 /**
  * Single source of truth for whether the managed coin economy is live in this build.
