@@ -69,8 +69,17 @@ class SyncEngineTest {
         }
     }
 
+    private class FakeScheduler : DrainScheduler {
+        var scheduled = 0
+        override fun ensureScheduled() {
+            scheduled++
+        }
+    }
+
+    private val scheduler = FakeScheduler()
+
     private fun engine(store: PendingMutationStore, vararg handlers: MutationHandler) =
-        SyncEngine(store, handlers.toSet())
+        SyncEngine(store, handlers.toSet(), scheduler)
 
     @Test
     fun `drains the whole queue in FIFO order on success`() = runBlocking {
@@ -192,6 +201,28 @@ class SyncEngineTest {
 
         assertTrue(handler.applied.isEmpty())
         assertEquals(1, store.count())
+    }
+
+    @Test
+    fun `a drain over a non-empty queue registers the persistent backstop`() = runBlocking {
+        val store = FakeStore()
+        val handler = ScriptedHandler("k")
+        store.enqueue("k", "t1", null, "{}")
+
+        engine(store, handler).drain()
+
+        // Scheduled while work existed (process death mid-drain must survive), even though
+        // the drain then completed in-process — the no-op worker run is the accepted cost.
+        assertEquals(1, scheduler.scheduled)
+    }
+
+    @Test
+    fun `a drain over an empty queue does not schedule anything`() = runBlocking {
+        val store = FakeStore()
+
+        engine(store, ScriptedHandler("k")).drain()
+
+        assertEquals(0, scheduler.scheduled)
     }
 
     private suspend fun waitUntil(timeoutMs: Long = 2_000, condition: suspend () -> Boolean) {

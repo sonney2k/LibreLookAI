@@ -53,12 +53,12 @@ interface MutationHandler {
 }
 
 /**
- * Drains the [PendingMutationStore] to Drive, strictly oldest-first (refactor § 2). Dark-launched:
- * nothing enqueues yet — write paths convert feature-by-feature, each keeping today's
- * optimistic-write UX (instant local update, Drive syncs behind, rollback on failure) while
- * replacing the in-coroutine inline Drive call with a queued, retryable, process-death-surviving
- * mutation. Triggering (app start / network regain / WorkManager) is wired when the first write
- * path converts.
+ * Drains the [PendingMutationStore] to Drive, strictly oldest-first (refactor § 2). Write paths
+ * convert feature-by-feature, each keeping the optimistic-write UX (instant local update, Drive
+ * syncs behind) while replacing the in-coroutine inline Drive call with a queued, retryable,
+ * process-death-surviving mutation. Triggers: inline post-enqueue, the app-start /
+ * network-regain catch-up in `AppContent`, the in-process backoff re-drain below, and — for
+ * process death with a non-empty queue — the [DrainScheduler] WorkManager backstop.
  *
  * Drain rules, encoded in `SyncEngineTest`:
  * - Strict global FIFO; a [MutationOutcome.Retry] halts the drain so later mutations can't
@@ -72,6 +72,7 @@ interface MutationHandler {
 class SyncEngine @Inject constructor(
     private val store: PendingMutationStore,
     handlers: Set<@JvmSuppressWildcards MutationHandler>,
+    private val scheduler: DrainScheduler,
 ) {
     private val byKind = handlers.associateBy { it.kind }
     private val mutex = Mutex()
@@ -95,6 +96,10 @@ class SyncEngine @Inject constructor(
     suspend fun drain() {
         var haltedTransiently = false
         mutex.withLock {
+            // Persistent backstop while work exists: if the process dies mid-queue (the
+            // in-process triggers die with it), WorkManager re-runs the drain. Never
+            // cancelled here — a drain that empties the queue leaves it to no-op cheaply.
+            if (store.oldest() != null) scheduler.ensureScheduled()
             loop@ while (true) {
                 val mutation = store.oldest() ?: break@loop
                 val handler = byKind[mutation.kind] ?: return

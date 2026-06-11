@@ -395,11 +395,24 @@ are easy to violate and have caused real bugs.
    trends caches stay on their existing paths (deliberate: try-ons are created by an
    online-only Gemini call and saved Drive-first with image bytes; the caches are
    server-reconstructible).
-   Remaining § 2 follow-ups: WorkManager-scheduled drain (so a queue survives process death
-   *without waiting for the next app start*; the in-process triggers — inline post-enqueue,
-   app-start/network-regain catch-up, 30s→10min backoff — already cover the common cases),
-   and the real-entity / Flow-read conversion, which is deliberately coupled to § 5's
-   use-case extraction (converting readers to Flows means restructuring the VMs that poll).
+   **WorkManager drain backstop LANDED (June 2026) — § 2's operational scope is complete.**
+   `data/drive/SyncWork.kt` (`:core:sync`, work-runtime-ktx 2.10.0): the engine now takes a
+   `DrainScheduler` seam (so `SyncEngineTest` stays plain JUnit over a fake; two new tests
+   encode the contract) and calls `ensureScheduled()` whenever a drain starts over a
+   non-empty queue — registering one unique, network-constrained `SyncDrainWorker`
+   (exponential backoff 30s) as the *process-death* path: if the app dies mid-queue, the OS
+   re-runs the drain instead of waiting for the next app start. Design choices: the engine
+   never *cancels* the work (a drain that empties the queue in-process would otherwise
+   cancel the very worker running it — the leftover no-op run is the accepted cost); the
+   worker is a plain `CoroutineWorker` reaching the Hilt graph via an application
+   `EntryPoint` (default reflective factory, no androidx.hilt-work); it returns retry while
+   the queue is non-empty, so a post-downgrade unknown-kind halt rides WorkManager's capped
+   backoff until an upgrade resolves it. Scheduling is best-effort (`runCatching`) — the
+   in-process triggers remain primary.
+   Remaining § 2 follow-up (deliberately coupled to § 5): the real-entity / Flow-read
+   conversion — replacing the opaque-JSON store rows with queryable entities and the VMs'
+   poll-style reads with Room Flows requires restructuring the VMs, i.e. § 5's use-case
+   extraction. Carry it there.
 3. **Navigation Compose** — add the NavHost, convert Dialog-viewers to destinations one at a
    time; delete each Window-quirk workaround as its screen converts. Scope ViewModels to
    destinations as screens convert.
