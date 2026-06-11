@@ -277,7 +277,11 @@ are easy to violate and have caused real bugs.
      sidecar file).
    - **Drain triggers**: inline after each enqueue (the engine mutex makes overlap safe) +
      a catch-up `LaunchedEffect(isOnline)` in `AppContent` on app start and every
-     offline→online transition.
+     offline→online transition + the engine's own backoff re-drain (June 2026): a drain
+     halted by a transient `Retry` self-schedules another drain with exponential backoff
+     (30s → 10min cap) — otherwise a queue stalled by one 503 while the device *stays*
+     online would wait for the next app start. Unknown-kind halts don't self-retry (only
+     an upgrade resolves them).
    - Deliberate behavior change: the immediate `error_tag_save_failed` snackbar on a failed
      sidecar PATCH is gone — transient failures retry silently; after 8 attempts the queue
      gives up (the edit stays local and re-syncs with the next save/load).

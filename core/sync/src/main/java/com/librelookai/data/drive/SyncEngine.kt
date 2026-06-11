@@ -8,6 +8,12 @@ import dagger.hilt.components.SingletonComponent
 import dagger.multibindings.Multibinds
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -70,11 +76,27 @@ class SyncEngine @Inject constructor(
     private val byKind = handlers.associateBy { it.kind }
     private val mutex = Mutex()
 
-    /** Single-flight: concurrent calls queue behind the running drain instead of interleaving. */
+    private val retryScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private var retryJob: Job? = null
+
+    /** Backoff for the self-scheduled re-drain; `internal var` so tests can shrink the waits. */
+    internal var initialRetryDelayMs = 30_000L
+    internal var maxRetryDelayMs = 10 * 60_000L
+    private var nextRetryDelayMs: Long? = null
+
+    /**
+     * Single-flight: concurrent calls queue behind the running drain instead of interleaving.
+     * A drain halted by a transient [MutationOutcome.Retry] self-schedules a re-drain with
+     * exponential backoff (30s → 10min) — otherwise a queue stalled by one 503 while the device
+     * stays online would wait for the next app start / offline→online flip. An unknown-kind halt
+     * does *not* self-retry (only an app upgrade can resolve it); any external [drain] still picks
+     * it up.
+     */
     suspend fun drain() {
+        var haltedTransiently = false
         mutex.withLock {
-            while (true) {
-                val mutation = store.oldest() ?: return
+            loop@ while (true) {
+                val mutation = store.oldest() ?: break@loop
                 val handler = byKind[mutation.kind] ?: return
                 when (val outcome = handler.apply(mutation)) {
                     is MutationOutcome.Success -> store.remove(mutation.id)
@@ -88,11 +110,28 @@ class SyncEngine @Inject constructor(
                             store.remove(mutation.id)
                         } else {
                             store.recordFailure(mutation.id, outcome.error)
-                            return
+                            haltedTransiently = true
+                            break@loop
                         }
                     }
                 }
             }
+        }
+        if (haltedTransiently) {
+            val delayMs = nextRetryDelayMs ?: initialRetryDelayMs
+            nextRetryDelayMs = (delayMs * 2).coerceAtMost(maxRetryDelayMs)
+            retryJob?.cancel()
+            retryJob = retryScope.launch {
+                delay(delayMs)
+                // Clear the handle before re-draining so the nested drain's bookkeeping can't
+                // cancel this very coroutine mid-flight.
+                retryJob = null
+                drain()
+            }
+        } else {
+            nextRetryDelayMs = null
+            retryJob?.cancel()
+            retryJob = null
         }
     }
 

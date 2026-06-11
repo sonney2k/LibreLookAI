@@ -2,6 +2,7 @@ package com.librelookai.data.drive
 
 import com.librelookai.data.local.PendingMutation
 import com.librelookai.data.local.PendingMutationStore
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -161,5 +162,43 @@ class SyncEngineTest {
 
         assertTrue(handler.applied.isEmpty())
         assertEquals(2, store.count())
+    }
+
+    @Test
+    fun `a transiently halted drain self-schedules a backoff re-drain`() = runBlocking {
+        val store = FakeStore()
+        val handler = ScriptedHandler("k")
+        handler.script(MutationOutcome.Retry("HTTP 503"))
+        store.enqueue("k", "t1", null, "{}")
+        val engine = engine(store, handler).apply { initialRetryDelayMs = 10 }
+
+        engine.drain()
+        assertEquals(1, store.count()) // halted
+
+        // The self-scheduled re-drain (scripted outcomes exhausted → Success) empties the queue.
+        waitUntil { store.count() == 0 }
+        assertEquals(listOf("t1", "t1"), handler.applied)
+    }
+
+    @Test
+    fun `an unknown-kind halt does not self-retry`() = runBlocking {
+        val store = FakeStore()
+        val handler = ScriptedHandler("known")
+        store.enqueue("mystery", "t1", null, "{}")
+        val engine = engine(store, handler).apply { initialRetryDelayMs = 10 }
+
+        engine.drain()
+        delay(100)
+
+        assertTrue(handler.applied.isEmpty())
+        assertEquals(1, store.count())
+    }
+
+    private suspend fun waitUntil(timeoutMs: Long = 2_000, condition: suspend () -> Boolean) {
+        val deadline = System.currentTimeMillis() + timeoutMs
+        while (!condition()) {
+            assertTrue("condition not met within ${timeoutMs}ms", System.currentTimeMillis() < deadline)
+            delay(10)
+        }
     }
 }
