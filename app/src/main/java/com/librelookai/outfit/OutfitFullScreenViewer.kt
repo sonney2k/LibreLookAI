@@ -33,7 +33,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,10 +52,6 @@ import com.librelookai.util.Analytics
 import com.librelookai.util.LocalIsOffline
 import com.librelookai.util.LocalSystemBarsPadding
 import com.librelookai.wardrobe.DriveImage
-import com.librelookai.wardrobe.FullScreenViewer
-import com.librelookai.wardrobe.WardrobeViewModel
-import com.librelookai.wardrobe.tagCategories
-import com.librelookai.wardrobe.fixCutoutBgForItem
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 @Composable
@@ -65,7 +60,6 @@ internal fun OutfitFullScreenViewer(
     initialIndex: Int,
     itemsById: Map<String, DriveImage>,
     locations: List<Location>,
-    activeLocationId: String,
     onDismiss: () -> Unit,
     onEdit: (Outfit) -> Unit,
     onWear: (Outfit) -> Unit,
@@ -75,10 +69,9 @@ internal fun OutfitFullScreenViewer(
     onEditTags: (Outfit) -> Unit = {},
     onTryOn: (Outfit) -> Unit = {},
     canTryOn: Boolean = false,
-    wardrobeViewModel: WardrobeViewModel,
+    /** Open the item-viewer destination over this one (the outfit's items, tapped item). */
+    onOpenItemViewer: (List<String>, String) -> Unit = { _, _ -> },
 ) {
-    val wardrobeState by wardrobeViewModel.state.collectAsState()
-    val allTagCategories = remember(itemsById) { itemsById.values.toList().tagCategories() }
     val isOffline = LocalIsOffline.current
     val barInsets = LocalSystemBarsPadding.current
     val parentView = LocalView.current
@@ -110,7 +103,6 @@ internal fun OutfitFullScreenViewer(
     // Actions live hidden under the bottom FAB (tap to reveal the shared action bar), like
     // the create/selection FAB on the list screens.
     var actionsOpen by remember { mutableStateOf(false) }
-    var viewerImage by remember { mutableStateOf<DriveImage?>(null) }
     var hideTags by rememberSaveable { mutableStateOf(false) }
 
     // The pager clamps its page asynchronously when the live outfit list shrinks —
@@ -239,7 +231,7 @@ internal fun OutfitFullScreenViewer(
                     outfit = outfit,
                     itemsById = itemsById,
                     locations = locations,
-                    onItemClick = { viewerImage = it },
+                    onItemClick = { onOpenItemViewer(current.itemIds, it.driveId) },
                     bottomPadding = effectiveBottom,
                 )
             }
@@ -368,32 +360,6 @@ internal fun OutfitFullScreenViewer(
         }
     }
 
-    viewerImage?.let { img ->
-        val viewerImages = remember(current.itemIds, itemsById) {
-            current.itemIds.mapNotNull { itemsById[it] }
-        }
-        val startIdx = viewerImages.indexOfFirst { it.driveId == img.driveId }
-            .coerceAtLeast(0)
-        FullScreenViewer(
-            images = viewerImages,
-            initialIndex = startIdx,
-            allTagCategories = allTagCategories,
-            onDismiss = { viewerImage = null },
-            onTagImage = wardrobeViewModel::tagImage,
-            onRemoveBackground = wardrobeViewModel::reprocessBackground,
-            onRotateImage = wardrobeViewModel::rotateImage,
-            onUpdateTags = wardrobeViewModel::updateTags,
-            onDeleteItem = { driveId -> wardrobeViewModel.deleteItems(setOf(driveId)) },
-            onMoveToLocation = wardrobeViewModel::moveItemsToLocation,
-            onCreateOutfitFromSelection = {},
-            onFixCutoutBg = wardrobeViewModel::fixCutoutBgForItem,
-            onLoadOriginal = wardrobeViewModel::ensureOriginalCached,
-            locations = locations,
-            activeLocationId = activeLocationId,
-            processingImageId = wardrobeState.processingImageId,
-            writeMode = true,
-        )
-    }
 }
 
 /**

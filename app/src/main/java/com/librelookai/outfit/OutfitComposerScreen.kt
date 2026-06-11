@@ -34,7 +34,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -62,7 +61,6 @@ import com.librelookai.util.LocalSystemBarsPadding
 import com.librelookai.wardrobe.DriveImage
 import com.librelookai.wardrobe.LocationViewModel
 import com.librelookai.wardrobe.WardrobeViewModel
-import com.librelookai.wardrobe.tagCategories
 import com.librelookai.wardrobe.fixCutoutBgForItem
 import com.librelookai.wardrobe.findSimilarInCandidates
 import com.librelookai.wardrobe.fuzzyFilterByText
@@ -88,6 +86,8 @@ fun OutfitComposerScreen(
     shoppingClosetViewModel: ShoppingClosetViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
     locationViewModel: LocationViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
     outfitEventsViewModel: OutfitEventsViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    /** Open the item-viewer destination over this one (composer source: items track the slots). */
+    onOpenItemViewer: (String) -> Unit = {},
 ) {
     val s by stylesViewModel.state.collectAsState()
     val wardrobe by wardrobeViewModel.state.collectAsState()
@@ -139,7 +139,6 @@ fun OutfitComposerScreen(
     var showWeatherSheet by remember { mutableStateOf(false) }
     var showClosetSheet by remember { mutableStateOf(false) }
     var showDiscardDialog by remember { mutableStateOf(false) }
-    var viewerImage by remember { mutableStateOf<DriveImage?>(null) }
 
     val hasChanges = s.composerSlots.map { it.selectedItemId } != s.composerInitialItemIds ||
         s.composerVibes.isNotEmpty()
@@ -276,7 +275,7 @@ fun OutfitComposerScreen(
                             outfit = draftOutfit,
                             itemsById = byId,
                             locations = locationState.locations,
-                            onItemClick = { viewerImage = it },
+                            onItemClick = { onOpenItemViewer(it.driveId) },
                             bottomPadding = effectiveBottom,
                         )
                     }
@@ -515,143 +514,81 @@ fun OutfitComposerScreen(
     }
 
     if (s.composerSuggestionsViewerOpen && s.composerSuggestions.size > 1) {
-        CompositionLocalProvider(
-            LocalContext provides parentContext,
-            LocalConfiguration provides parentConfiguration,
-        ) {
-            ComposerSuggestionsViewer(
-                suggestions = s.composerSuggestions,
-                initialIndex = s.composerSuggestionIndex,
-                slots = s.composerSlots,
-                itemsById = byId,
-                locations = locationState.locations,
-                onSelect = { index ->
-                    Analytics.action("OutfitComposer", "suggestion_select_from_viewer")
-                    // Commits the pick and drops the other suggestions — once the user has
-                    // chosen, alternatives just clutter the composer.
-                    stylesViewModel.commitComposerSuggestion(index)
-                },
-                onDismiss = { stylesViewModel.closeComposerSuggestionsViewer() },
-            )
-        }
-    }
-
-    viewerImage?.let { img ->
-        val draftItems = remember(s.composerSlots, byId) {
-            s.composerSlots.mapNotNull { it.selectedItemId?.let(byId::get) }
-        }
-        if (draftItems.isEmpty()) {
-            viewerImage = null
-        } else {
-            val startIdx = draftItems.indexOfFirst { it.driveId == img.driveId }
-                .coerceAtLeast(0)
-            val allTagCategories = remember(byId) { byId.values.toList().tagCategories() }
-            CompositionLocalProvider(
-                LocalContext provides parentContext,
-                LocalConfiguration provides parentConfiguration,
-            ) {
-                com.librelookai.wardrobe.FullScreenViewer(
-                    images = draftItems,
-                    initialIndex = startIdx,
-                    allTagCategories = allTagCategories,
-                    onDismiss = { viewerImage = null },
-                    onTagImage = wardrobeViewModel::tagImage,
-                    onRemoveBackground = wardrobeViewModel::reprocessBackground,
-                    onRotateImage = wardrobeViewModel::rotateImage,
-                    onUpdateTags = wardrobeViewModel::updateTags,
-                    onDeleteItem = { driveId -> wardrobeViewModel.deleteItems(setOf(driveId)) },
-                    onMoveToLocation = wardrobeViewModel::moveItemsToLocation,
-                    onCreateOutfitFromSelection = {},
-                    onFixCutoutBg = wardrobeViewModel::fixCutoutBgForItem,
-                    onLoadOriginal = wardrobeViewModel::ensureOriginalCached,
-                    locations = locationState.locations,
-                    activeLocationId = locationState.activeLocationId,
-                    processingImageId = wardrobe.processingImageId,
-                    writeMode = true,
-                )
-            }
-        }
+        ComposerSuggestionsViewer(
+            suggestions = s.composerSuggestions,
+            initialIndex = s.composerSuggestionIndex,
+            slots = s.composerSlots,
+            itemsById = byId,
+            locations = locationState.locations,
+            onSelect = { index ->
+                Analytics.action("OutfitComposer", "suggestion_select_from_viewer")
+                // Commits the pick and drops the other suggestions — once the user has
+                // chosen, alternatives just clutter the composer.
+                stylesViewModel.commitComposerSuggestion(index)
+            },
+            onDismiss = { stylesViewModel.closeComposerSuggestionsViewer() },
+        )
     }
 
     exchangeSlotId?.let { slotId ->
         val slot = s.composerSlots.find { it.id == slotId }
         if (slot != null) {
-            CompositionLocalProvider(
-                LocalContext provides parentContext,
-                LocalConfiguration provides parentConfiguration,
-            ) {
-                val layerItems = composerImages.filter { layerFor(it) == slot.category }
-                val alreadyChosen = s.composerSlots
-                    .filter { it.id != slotId }
-                    .mapNotNull { it.selectedItemId }
-                    .toSet()
-                AddItemSheet(
-                    allItems = layerItems,
-                    alreadyChosen = alreadyChosen,
-                    locations = locationState.locations,
-                    popularityMap = popularityMap,
-                    onTextFilter = wardrobeViewModel::fuzzyFilterByText,
-                    findSimilarByPhoto = { file, candidates ->
-                        wardrobeViewModel.findSimilarInCandidates(file, candidates)
-                            .associate { it.driveId to it.score }
-                    },
-                    onConfirm = { picked ->
-                        picked.firstOrNull()?.let { stylesViewModel.setSlotItem(slotId, it) }
-                        exchangeSlotId = null
-                    },
-                    onDismiss = { exchangeSlotId = null },
-                )
-            }
+            val layerItems = composerImages.filter { layerFor(it) == slot.category }
+            val alreadyChosen = s.composerSlots
+                .filter { it.id != slotId }
+                .mapNotNull { it.selectedItemId }
+                .toSet()
+            AddItemSheet(
+                allItems = layerItems,
+                alreadyChosen = alreadyChosen,
+                locations = locationState.locations,
+                popularityMap = popularityMap,
+                onTextFilter = wardrobeViewModel::fuzzyFilterByText,
+                findSimilarByPhoto = { file, candidates ->
+                    wardrobeViewModel.findSimilarInCandidates(file, candidates)
+                        .associate { it.driveId to it.score }
+                },
+                onConfirm = { picked ->
+                    picked.firstOrNull()?.let { stylesViewModel.setSlotItem(slotId, it) }
+                    exchangeSlotId = null
+                },
+                onDismiss = { exchangeSlotId = null },
+            )
         }
     }
 
     if (showAddSlotSheet) {
-        CompositionLocalProvider(
-            LocalContext provides parentContext,
-            LocalConfiguration provides parentConfiguration,
-        ) {
-            CategoryPickerSheet(
-                onSelect = { layer ->
-                    stylesViewModel.addSlot(layer)
-                    showAddSlotSheet = false
-                },
-                onDismiss = { showAddSlotSheet = false },
-            )
-        }
+        CategoryPickerSheet(
+            onSelect = { layer ->
+                stylesViewModel.addSlot(layer)
+                showAddSlotSheet = false
+            },
+            onDismiss = { showAddSlotSheet = false },
+        )
     }
 
     if (showWeatherSheet) {
-        CompositionLocalProvider(
-            LocalContext provides parentContext,
-            LocalConfiguration provides parentConfiguration,
-        ) {
-            WeatherPickerSheet(
-                mode = s.composerWeatherMode,
-                onModeChange = { stylesViewModel.setComposerWeatherMode(it) },
-                autoWeather = weather.data,
-                season = s.composerManualSeason,
-                onSeason = { stylesViewModel.setComposerManualSeason(it) },
-                tempC = s.composerManualTempC,
-                onTempC = { stylesViewModel.setComposerManualTempC(it) },
-                precip = s.composerManualPrecip,
-                onPrecip = { stylesViewModel.setComposerManualPrecip(it) },
-                onDismiss = { showWeatherSheet = false },
-            )
-        }
+        WeatherPickerSheet(
+            mode = s.composerWeatherMode,
+            onModeChange = { stylesViewModel.setComposerWeatherMode(it) },
+            autoWeather = weather.data,
+            season = s.composerManualSeason,
+            onSeason = { stylesViewModel.setComposerManualSeason(it) },
+            tempC = s.composerManualTempC,
+            onTempC = { stylesViewModel.setComposerManualTempC(it) },
+            precip = s.composerManualPrecip,
+            onPrecip = { stylesViewModel.setComposerManualPrecip(it) },
+            onDismiss = { showWeatherSheet = false },
+        )
     }
 
     if (showClosetSheet) {
-        CompositionLocalProvider(
-            LocalContext provides parentContext,
-            LocalConfiguration provides parentConfiguration,
-        ) {
-            ClosetPickerSheet(
-                locations = locationState.locations,
-                selected = sourceFolders,
-                onToggle = { stylesViewModel.toggleComposerSourceFolder(it) },
-                onDismiss = { showClosetSheet = false },
-            )
-        }
+        ClosetPickerSheet(
+            locations = locationState.locations,
+            selected = sourceFolders,
+            onToggle = { stylesViewModel.toggleComposerSourceFolder(it) },
+            onDismiss = { showClosetSheet = false },
+        )
     }
 }
 

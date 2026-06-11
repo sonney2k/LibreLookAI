@@ -36,7 +36,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -48,13 +47,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
-import androidx.compose.ui.window.DialogWindowProvider
 import com.librelookai.R
 import com.librelookai.data.model.Location
 import com.librelookai.gemini.ClothingTags
@@ -68,6 +63,11 @@ import com.librelookai.util.FeatureFlags
 import com.librelookai.util.LocalIsOffline
 import com.librelookai.util.LocalSystemBarsPadding
 
+/**
+ * Fullscreen item detail pager. A plain composable since the `ItemViewerRoute` conversion —
+ * hosted by [ItemViewerDestination] (which resolves [images] live from the owning ViewModel
+ * per source and provides the full-bleed background + status-bar inset).
+ */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 internal fun FullScreenViewer(
@@ -85,32 +85,9 @@ internal fun FullScreenViewer(
     onFixCutoutBg: (String, CutoutFixActions) -> Unit = { _, _ -> },
     onLoadOriginal: (suspend (String) -> String?)? = null,
     locations: List<Location>,
-    activeLocationId: String,
     processingImageId: String?,
     writeMode: Boolean = true,
 ) {
-    val parentContext = LocalContext.current
-    val parentConfiguration = LocalConfiguration.current
-    Dialog(
-        onDismissRequest = onDismiss,
-        properties = DialogProperties(
-            usePlatformDefaultWidth = false,
-            decorFitsSystemWindows = false,
-        ),
-    ) {
-        val dialogView = androidx.compose.ui.platform.LocalView.current
-        androidx.compose.runtime.SideEffect {
-            val window = (dialogView.parent as? DialogWindowProvider)?.window ?: return@SideEffect
-            window.setLayout(
-                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
-                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
-            )
-            androidx.core.view.WindowCompat.setDecorFitsSystemWindows(window, false)
-        }
-        CompositionLocalProvider(
-            LocalContext provides parentContext,
-            LocalConfiguration provides parentConfiguration,
-        ) {
     BackHandler(onBack = onDismiss)
 
     val isOffline = LocalIsOffline.current
@@ -476,8 +453,6 @@ internal fun FullScreenViewer(
                 }
             },
         )
-    }
-        }
     }
 }
 

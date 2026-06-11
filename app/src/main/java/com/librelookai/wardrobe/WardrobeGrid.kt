@@ -92,12 +92,6 @@ internal fun GridContent(
     onOpenGallery: () -> Unit,
     onImportUrl: (String) -> Unit = {},
     onDismissError: () -> Unit,
-    onTagImage: (String) -> Unit,
-    onRemoveBackground: (String) -> Unit,
-    onRotateImage: (String) -> Unit,
-    onFixCutoutBg: (String, CutoutFixActions) -> Unit = { _, _ -> },
-    onLoadOriginal: (suspend (String) -> String?)? = null,
-    onUpdateTags: (String, ClothingTags) -> Unit,
     onToggleSelection: (String) -> Unit,
     onSelectAll: (List<String>) -> Unit,
     onClearSelection: () -> Unit,
@@ -115,7 +109,7 @@ internal fun GridContent(
     onDismissBatteryExemption: () -> Unit = {},
     onSetImportTarget: (String) -> Unit = {},
     processingImageId: String?,
-    dismissViewerTrigger: Int = 0,
+    onOpenItemViewer: (List<String>, String) -> Unit = { _, _ -> },
     onSettingsClick: () -> Unit = {},
     onBulkRemoveBackgrounds: () -> Unit = {},
     onBulkFixCutoutBg: () -> Unit = {},
@@ -129,9 +123,8 @@ internal fun GridContent(
     modifier: Modifier = Modifier,
 ) {
     val isOffline = LocalIsOffline.current
-    var selectedIndex by remember { mutableStateOf<Int?>(null) }
-    // Non-null while the delete-confirm dialog is open; holds the item driveIds about to be deleted
-    // (the multi-select set, or a single item from the full-screen viewer).
+    // Non-null while the delete-confirm dialog is open; holds the item driveIds about to be
+    // deleted (the multi-select set; the item-viewer destination hosts its own for singles).
     var pendingDeleteIds by remember { mutableStateOf<Set<String>?>(null) }
     var showMoveDialog by remember { mutableStateOf(false) }
     // Filter + sort state
@@ -143,9 +136,6 @@ internal fun GridContent(
     val appliedFilterCount = selectedTags.values.sumOf { it.size } + (if (textQuery.isNotBlank()) 1 else 0)
 
     val tagCategories = remember(state.images) { state.images.tagCategories() }
-
-    // Close the viewer when the wardrobe nav tab is re-tapped from the nav bar.
-    LaunchedEffect(dismissViewerTrigger) { if (dismissViewerTrigger > 0) selectedIndex = null }
 
     // OR within each category, AND across categories
     val filteredImages = remember(state.images, selectedTags, textQuery) {
@@ -168,9 +158,6 @@ internal fun GridContent(
             SortOption.CATEGORY   -> filteredImages.sortedBy { it.tags?.category?.lowercase() ?: "" }
         }
     }
-
-    // Clear viewer when filter/sort changes to avoid stale index
-    LaunchedEffect(selectedTags, sortBy, textQuery) { selectedIndex = null }
 
     // After find-by-photo (or "Show in wardrobe" from Similarity Finder): scroll the grid to
     // the matched item and pulse a highlight ring on it. The local var seeds either from a
@@ -431,7 +418,7 @@ internal fun GridContent(
                                 onToggleSelection(image.driveId)
                             } else {
                                 Analytics.action("Wardrobe", "open_item_viewer")
-                                selectedIndex = index
+                                onOpenItemViewer(displayedImages.map { it.driveId }, image.driveId)
                             }
                         },
                         onLongClick = { image ->
@@ -579,132 +566,18 @@ internal fun GridContent(
             )
         }
 
-        // Full-screen viewer rendered as the last (topmost) child of the padded Box so that
-        // the Scaffold's bottomBar insets are already consumed — the FAB at BottomEnd appears
-        // above the NavigationBar without any extra manual inset arithmetic.
-        selectedIndex?.let { startIndex ->
-            FullScreenViewer(
-                images = displayedImages,
-                initialIndex = startIndex.coerceIn(0, (displayedImages.size - 1).coerceAtLeast(0)),
-                allTagCategories = tagCategories,
-                onDismiss = { selectedIndex = null },
-                onTagImage = onTagImage,
-                onRemoveBackground = onRemoveBackground,
-                onRotateImage = onRotateImage,
-                onUpdateTags = onUpdateTags,
-                onDeleteItem = { driveId ->
-                    // Route single deletes through the same cascade-aware confirm dialog.
-                    pendingDeleteIds = setOf(driveId)
-                    selectedIndex = null
-                },
-                onMoveToLocation = { ids, folderId ->
-                    onMoveToLocation(ids, folderId)
-                    if (displayedImages.size <= 1) selectedIndex = null
-                },
-                onCreateOutfitFromSelection = onCreateOutfitFromSelection,
-                onFixCutoutBg = onFixCutoutBg,
-                onLoadOriginal = onLoadOriginal,
-                locations = locations,
-                activeLocationId = activeLocationId,
-                processingImageId = processingImageId,
-            )
-        }
     }
 
     pendingDeleteIds?.let { ids ->
-        // Items being deleted, by Drive ID and by stable cutout filename — outfits/try-ons
-        // reference items by both, so match on either.
-        val deletingNames = remember(ids, state.images) {
-            state.images.filter { it.driveId in ids }.map { it.name }.toSet()
-        }
-        val affectedOutfits = remember(ids, deletingNames, outfits) {
-            outfits.filter { o -> o.itemIds.any { it in ids } || o.itemNames.any { it in deletingNames } }
-        }
-        val affectedTryOns = remember(ids, deletingNames, tryOns) {
-            tryOns.filter { t -> t.itemIds.any { it in ids } || t.itemNames.any { it in deletingNames } }
-        }
-        var cascadeOutfits by remember(ids) { mutableStateOf(true) }
-        var cascadeTryOns by remember(ids) { mutableStateOf(true) }
-        // Re-provide parent context/config so the dialog window honours the in-app language
-        // toggle (an AlertDialog opens its own window; see CLAUDE.md → Dialog quirks).
-        val parentContext = LocalContext.current
-        val parentConfiguration = LocalConfiguration.current
-        AlertDialog(
-            onDismissRequest = { pendingDeleteIds = null },
-            title = {
-                CompositionLocalProvider(
-                    LocalContext provides parentContext,
-                    LocalConfiguration provides parentConfiguration,
-                ) { Text(stringResource(R.string.wardrobe_delete_title)) }
-            },
-            text = {
-                CompositionLocalProvider(
-                    LocalContext provides parentContext,
-                    LocalConfiguration provides parentConfiguration,
-                ) {
-                    Column {
-                        Text(stringResource(R.string.wardrobe_delete_text, ids.size))
-                        if (affectedOutfits.isNotEmpty()) {
-                            Spacer(Modifier.height(8.dp))
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable { cascadeOutfits = !cascadeOutfits },
-                            ) {
-                                Checkbox(checked = cascadeOutfits, onCheckedChange = { cascadeOutfits = it })
-                                Text(stringResource(R.string.wardrobe_delete_cascade_outfits, affectedOutfits.size))
-                            }
-                        }
-                        if (affectedTryOns.isNotEmpty()) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable { cascadeTryOns = !cascadeTryOns },
-                            ) {
-                                Checkbox(checked = cascadeTryOns, onCheckedChange = { cascadeTryOns = it })
-                                Text(stringResource(R.string.wardrobe_delete_cascade_tryons, affectedTryOns.size))
-                            }
-                        }
-                    }
-                }
-            },
-            confirmButton = {
-                CompositionLocalProvider(
-                    LocalContext provides parentContext,
-                    LocalConfiguration provides parentConfiguration,
-                ) {
-                    TextButton(
-                        onClick = {
-                            Analytics.action(
-                                "Wardrobe", "confirm_delete_selected",
-                                mapOf(
-                                    "count" to ids.size.toString(),
-                                    "outfits" to (if (cascadeOutfits) affectedOutfits.size else 0).toString(),
-                                    "tryons" to (if (cascadeTryOns) affectedTryOns.size else 0).toString(),
-                                ),
-                            )
-                            onDeleteItems(ids)
-                            if (cascadeOutfits && affectedOutfits.isNotEmpty()) onDeleteOutfits(affectedOutfits.map { it.id })
-                            if (cascadeTryOns && affectedTryOns.isNotEmpty()) onDeleteTryOns(affectedTryOns)
-                            pendingDeleteIds = null
-                        }
-                    ) {
-                        Text(stringResource(R.string.action_delete), color = MaterialTheme.colorScheme.error)
-                    }
-                }
-            },
-            dismissButton = {
-                CompositionLocalProvider(
-                    LocalContext provides parentContext,
-                    LocalConfiguration provides parentConfiguration,
-                ) {
-                    TextButton(onClick = { pendingDeleteIds = null }) {
-                        Text(stringResource(R.string.action_cancel))
-                    }
-                }
-            }
+        DeleteItemsConfirmDialog(
+            ids = ids,
+            images = state.images,
+            outfits = outfits,
+            tryOns = tryOns,
+            onDeleteItems = onDeleteItems,
+            onDeleteOutfits = onDeleteOutfits,
+            onDeleteTryOns = onDeleteTryOns,
+            onDismiss = { pendingDeleteIds = null },
         )
     }
 

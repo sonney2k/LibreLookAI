@@ -58,6 +58,8 @@ internal fun OutfitViewerDestination(
     onClose: () -> Unit,
     onTryOnStyle: (Outfit) -> Unit,
     onTryOnTripOutfit: (Trip, Outfit) -> Unit,
+    /** Open the item-viewer destination over this one (the outfit's items, tapped item). */
+    onOpenItemViewer: (List<String>, String) -> Unit = { _, _ -> },
 ) {
     val isOffline = LocalIsOffline.current
     val outfitsState by outfitsViewModel.state.collectAsState()
@@ -131,7 +133,6 @@ internal fun OutfitViewerDestination(
         initialIndex = initialIndex,
         itemsById = itemsById,
         locations = locationState.locations,
-        activeLocationId = locationState.activeLocationId,
         onDismiss = closeViewer,
         onEdit = { o ->
             closeViewer()
@@ -172,7 +173,7 @@ internal fun OutfitViewerDestination(
             }
         },
         canTryOn = if (trip != null) canTryOn && !isOffline else canTryOn,
-        wardrobeViewModel = wardrobeViewModel,
+        onOpenItemViewer = onOpenItemViewer,
     )
     }
 

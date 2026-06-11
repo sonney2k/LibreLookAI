@@ -19,6 +19,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hasRoute
 import kotlinx.serialization.Serializable
 
 /**
@@ -31,6 +33,71 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 internal data object HomeRoute
+
+/**
+ * Home's five tabs as destinations of the nested tab NavHost inside [HomeRoute]'s Scaffold
+ * (the bottom bar stays put; a tab switch swaps only the content above it). The nested back
+ * stack is kept at a single entry — switching tabs *replaces* rather than stacks, so system
+ * back still leaves the app from any tab (the pre-navigation `selectedTab` behavior).
+ */
+@Serializable
+internal data object OutfitsTabRoute
+
+@Serializable
+internal data object WardrobeTabRoute
+
+@Serializable
+internal data object ShoppingTabRoute
+
+@Serializable
+internal data object TravelTabRoute
+
+@Serializable
+internal data object SettingsTabRoute
+
+/**
+ * Settings sub-screens — nested tab-graph destinations pushed over [SettingsTabRoute]
+ * (replacing the old local `SettingsRoute` enum back-stack, so system back pops them).
+ * They map to nav-slot 5 in [homeTabIndex] so the bar keeps Settings highlighted.
+ */
+@Serializable
+internal data object SettingsProfileEditRoute
+
+@Serializable
+internal data object SettingsAdvancedRoute
+
+@Serializable
+internal data object SettingsAboutRoute
+
+@Serializable
+internal data object SettingsUsageRoute
+
+@Serializable
+internal data object SettingsBuyCreditsRoute
+
+/** Nav-slot index ([AppNavBar]) → tab route. Index 4 is the dead center slot; 5 = Settings. */
+internal fun homeTabRoute(tab: Int): Any = when (tab) {
+    1 -> WardrobeTabRoute
+    2 -> ShoppingTabRoute
+    3 -> TravelTabRoute
+    5 -> SettingsTabRoute
+    else -> OutfitsTabRoute
+}
+
+/** Current nested tab destination → nav-slot index (for the bar's active indicator). */
+internal fun homeTabIndex(destination: NavDestination?): Int = when {
+    destination == null -> 0
+    destination.hasRoute<WardrobeTabRoute>() -> 1
+    destination.hasRoute<ShoppingTabRoute>() -> 2
+    destination.hasRoute<TravelTabRoute>() -> 3
+    destination.hasRoute<SettingsTabRoute>() ||
+        destination.hasRoute<SettingsProfileEditRoute>() ||
+        destination.hasRoute<SettingsAdvancedRoute>() ||
+        destination.hasRoute<SettingsAboutRoute>() ||
+        destination.hasRoute<SettingsUsageRoute>() ||
+        destination.hasRoute<SettingsBuyCreditsRoute>() -> 5
+    else -> 0
+}
 
 /** Trip detail viewer — the first Dialog-era fullscreen mode converted to a destination. */
 @Serializable
@@ -63,6 +130,35 @@ internal data class OutfitViewerRoute(
         const val SOURCE_LIST = "list"
         const val SOURCE_PREDICTION = "prediction"
         const val SOURCE_TRIP = "trip"
+    }
+}
+
+/**
+ * Fullscreen item detail viewer (pager) — replaces the `FullScreenViewer` Dialog hosts
+ * (wardrobe grid / shopping list / try-on detail / outfit-composer stack). Items resolve LIVE
+ * from the ViewModels at the destination (tag edits, deletes and moves during viewing stay
+ * correct); the route only carries the viewing context:
+ *  - [SOURCE_WARDROBE] / [SOURCE_SHOPPING]: [itemIds] = the filtered grid/list in display
+ *    order, snapshotted at tap time, resolved against the owning VM.
+ *  - [SOURCE_TRYON]: [itemIds] = the viewed try-on's items, resolved against the combined
+ *    wardrobe + shopping pool (the try-on feed mixes both).
+ *  - [SOURCE_OUTFIT]: [itemIds] = the viewed outfit's items, resolved against the same item
+ *    pool the outfit viewer renders from.
+ *  - [SOURCE_COMPOSER]: items come live from the composer's slots (a slot swap while viewing
+ *    stays in sync); [itemIds] is unused.
+ */
+@Serializable
+internal data class ItemViewerRoute(
+    val source: String,
+    val itemIds: List<String> = emptyList(),
+    val initialItemId: String? = null,
+) {
+    companion object {
+        const val SOURCE_WARDROBE = "wardrobe"
+        const val SOURCE_SHOPPING = "shopping"
+        const val SOURCE_TRYON = "tryon"
+        const val SOURCE_OUTFIT = "outfit"
+        const val SOURCE_COMPOSER = "composer"
     }
 }
 

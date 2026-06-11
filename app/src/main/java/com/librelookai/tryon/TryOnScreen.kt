@@ -50,10 +50,7 @@ import com.librelookai.util.AiProcessingOverlay
 import com.librelookai.util.Analytics
 import com.librelookai.util.rememberDialogBottomInset
 import com.librelookai.wardrobe.DriveImage
-import com.librelookai.wardrobe.FullScreenViewer
 import com.librelookai.wardrobe.WardrobeViewModel
-import com.librelookai.wardrobe.tagCategories
-import com.librelookai.wardrobe.fixCutoutBgForItem
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -73,6 +70,8 @@ fun TryOnComposerScreen(
     onStartTryOn: () -> Unit = {},
     /** Close the dialog and route the user to Settings → Profile (no-reference-photos state). */
     onOpenProfileSettings: () -> Unit = {},
+    /** Open the item-viewer destination over this one (the try-on's items, tapped item). */
+    onOpenItemViewer: (List<String>, String) -> Unit = { _, _ -> },
 ) {
     val state by tryOnViewModel.state.collectAsState()
     if (!state.isComposerOpen) return
@@ -106,35 +105,15 @@ fun TryOnComposerScreen(
         }
     }
     val viewing = state.viewingTryOn
-    var detailViewerImage by remember { mutableStateOf<DriveImage?>(null) }
-    if (detailViewerImage != null && viewing != null) {
-        val items = remember(viewing.itemNames, combinedImages) {
-            val byKey = combinedImages.associateBy { com.librelookai.util.ImageEncoding.itemMatchKey(it.name) }
-            viewing.itemNames.mapNotNull { n -> byKey[com.librelookai.util.ImageEncoding.itemMatchKey(n)] }
+    // Tapping an item on a try-on detail page opens the item-viewer destination with the
+    // try-on's items (resolved against the combined wardrobe + shopping pool at tap time;
+    // the destination re-resolves them live while it's up).
+    val openItemViewer: (TryOn, DriveImage) -> Unit = { tryOn, img ->
+        val byKey = combinedImages.associateBy { com.librelookai.util.ImageEncoding.itemMatchKey(it.name) }
+        val ids = tryOn.itemNames.mapNotNull { n ->
+            byKey[com.librelookai.util.ImageEncoding.itemMatchKey(n)]?.driveId
         }
-
-        val startIdx = items.indexOfFirst { it.driveId == detailViewerImage!!.driveId }.coerceAtLeast(0)
-        val allTagCategories = remember(items) { items.tagCategories() }
-        FullScreenViewer(
-            images = items,
-            initialIndex = startIdx,
-            allTagCategories = allTagCategories,
-            onDismiss = { detailViewerImage = null },
-            onTagImage = wardrobeViewModel::tagImage,
-            onRemoveBackground = wardrobeViewModel::reprocessBackground,
-            onRotateImage = wardrobeViewModel::rotateImage,
-            onUpdateTags = wardrobeViewModel::updateTags,
-            onDeleteItem = { driveId -> wardrobeViewModel.deleteItems(setOf(driveId)) },
-            onMoveToLocation = wardrobeViewModel::moveItemsToLocation,
-            onCreateOutfitFromSelection = {},
-            onFixCutoutBg = wardrobeViewModel::fixCutoutBgForItem,
-            onLoadOriginal = wardrobeViewModel::ensureOriginalCached,
-            locations = emptyList(),
-            activeLocationId = "",
-            processingImageId = wardrobeState.processingImageId,
-            writeMode = true,
-        )
-        return
+        onOpenItemViewer(ids, img.driveId)
     }
     // Fill the whole dialog window with the theme background so the screen reads as truly
     // full-screen — the underlying app never shows through the status/nav-bar strips. Only
@@ -200,7 +179,7 @@ fun TryOnComposerScreen(
                             combinedImages = combinedImages,
                             outfits = outfits,
                             onOpenSourceOutfit = onOpenSourceOutfit,
-                            onItemTap = { img -> detailViewerImage = img },
+                            onItemTap = { img -> openItemViewer(viewing, img) },
                             tryOnViewModel = tryOnViewModel,
                         )
                     } else {
@@ -217,7 +196,7 @@ fun TryOnComposerScreen(
                                 combinedImages = combinedImages,
                                 outfits = outfits,
                                 onOpenSourceOutfit = onOpenSourceOutfit,
-                                onItemTap = { img -> detailViewerImage = img },
+                                onItemTap = { img -> openItemViewer(history[page], img) },
                                 tryOnViewModel = tryOnViewModel,
                             )
                         }

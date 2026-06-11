@@ -54,7 +54,6 @@ import coil.request.ImageRequest
 import com.librelookai.R
 import com.librelookai.util.LocalSystemBarsPadding
 import com.librelookai.wardrobe.DriveImage
-import com.librelookai.wardrobe.FullScreenViewer
 import java.io.File
 
 @Composable

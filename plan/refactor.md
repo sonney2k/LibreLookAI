@@ -257,11 +257,51 @@ are easy to violate and have caused real bugs.
    discard-confirm). Both screens lost their Dialog wrappers + window plumbing; their sibling
    pickers/sheets stay window-based and unchanged. The outfit-viewer destination also gained
    the status-bar inset the Dialog window used to provide.
-   **Remaining**: convert `FullScreenViewer` (mostly unblocked now that the composers are
-   destinations — but audit its window-based hosts first, e.g. `ComposerSuggestionsViewer` is
-   still a Dialog); convert the tabs themselves to destinations; merge Settings'
-   `SettingsRoute` enum back-stack; then delete the Window-quirk workarounds +
-   per-destination VM scoping.
+   **Item viewer destination LANDED (June 2026).** `ItemViewerRoute(source, itemIds,
+   initialItemId)` replaced the five `FullScreenViewer` Dialog hosts (wardrobe grid, shopping
+   list, try-on detail, outfit-composer stack, and the outfit viewer's per-item tap — the
+   audit found that fifth host inside `OutfitFullScreenViewer`). `wardrobe/ItemViewerDestination`
+   resolves items live per source (wardrobe/shopping = route-id snapshot over the owning VM's
+   list; tryon = combined wardrobe+shopping pool; outfit = the outfit viewer's item pool;
+   composer = live from the slots, so a slot swap stays in sync) and hosts the cascade-aware
+   delete confirm, extracted to `wardrobe/WardrobeDeleteDialog.kt` and shared with the grid's
+   selection delete. Two small deliberate behavior changes: a wardrobe single-item delete now
+   confirms *over* the open viewer instead of closing it first (the dialog lives in the
+   destination, which a pop would unmount), and the nav-bar re-tap viewer dismissal
+   (`dismissWardrobeViewerTrigger`) is gone (the bar isn't reachable under a destination).
+   The viewer lost its Dialog wrapper + window plumbing.
+   **Tabs as destinations LANDED (June 2026).** The `when(selectedTab)` dispatch inside
+   `HomeRoute` became a nested tab NavHost (`OutfitsTabRoute`…`SettingsTabRoute`); the bottom
+   bar stays in the surrounding Scaffold. Semantics were preserved exactly: the nested back
+   stack is single-entry at tab level (`selectTab` replaces via `popUpTo(graph.id){inclusive}`),
+   so system back still exits from any tab; tab switches are transition-free; `selectedTab` is
+   now *derived* from the current nested destination (`homeTabIndex`); `navResetTick` still
+   drives sub-tab resets. The controller is hoisted above the entry gate (tour replay keeps the
+   tab — replacing the old hoisted `rememberSaveable` int), and onboarding's "go to wardrobe"
+   finish sets a `pendingHomeTab` consumed once the graph exists. Each nested tab destination
+   re-pins `LocalViewModelStoreOwner provides activity`.
+   **Settings merge LANDED (June 2026).** The local `SettingsRoute` enum back-stack inside
+   `SettingsScreen` is gone: Profile edit / Advanced / About / Usage / Buy credits are nested
+   tab-graph destinations pushed over `SettingsTabRoute` (`settings/SettingsNavGraph.kt`'s
+   `settingsDestinations`), so system back pops them (it previously exited the app), the bar
+   keeps Settings highlighted (`homeTabIndex` maps sub-routes to slot 5), and a Settings tab
+   re-tap pops to the root page (the old `navResetTick` stack reset). The destructive-op
+   confirm wiring is shared via `SettingsDestructiveConfirmHost` (main page WebP convert +
+   Advanced fix rows; the buy-credits CTA navigates).
+   **Workaround cleanup + VM scoping settled (June 2026).** The Dialog-era workarounds died
+   with each conversion (Dialog wrappers, window `SideEffect`s, in-window context re-providing
+   on converted screens); the last stragglers — `OutfitComposerScreen`'s caller-side
+   `CompositionLocalProvider(parentContext…)` wraps around its child sheets, no-ops once the
+   composer became a destination — were deleted. What remains window-based is so by design
+   (pickers, sheets, `MatchPreviewDialog`, `ComposerSuggestionsViewer`, `TagEditScreen`,
+   AlertDialogs) and still needs the CLAUDE.md window rules; `rememberDialogBottomInset`'s
+   48.dp floor also survives in converted screens as the design's minimum bottom clearance.
+   **Per-destination VM scoping was evaluated and deliberately deferred**: every ViewModel is
+   shared across multiple surfaces (tabs + overlay destinations + global hosts + the cross-VM
+   `LaunchedEffect` bridges in AppContent), so no destination-local candidate exists until the
+   use-case extraction of § 5 breaks those dependencies. Destinations therefore pin the
+   activity as ViewModelStoreOwner, explicitly and uniformly.
+   **Phase 3 COMPLETE.**
 4. **Modularize last** — once dependencies are sane, moving packages into Gradle modules is
    mechanical (`scripts/kt_split.py`-style, compiler-driven).
 

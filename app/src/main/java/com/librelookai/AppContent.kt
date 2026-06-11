@@ -57,6 +57,7 @@ import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.librelookai.auth.AuthViewModel
@@ -79,6 +80,7 @@ import com.librelookai.settings.AppLanguage
 import com.librelookai.settings.FixCutoutBgDialog
 import com.librelookai.settings.ProfileViewModel
 import com.librelookai.settings.SettingsScreen
+import com.librelookai.settings.settingsDestinations
 import com.librelookai.shopping.ShoppingClosetViewModel
 import com.librelookai.shopping.ShoppingHelperScreen
 import com.librelookai.shopping.ShoppingHelperViewModel
@@ -156,7 +158,14 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                 // Hoisted above the entry gate so the onboarding branch can react to it too — the
                 // tour reloads prefs after Drive sign-in and re-themes live as they land.
                 val profileState by profileViewModel.state.collectAsState()
-                var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+                // Controller of the nested Home tab NavHost. Hoisted above the entry gate so a
+                // tour replay (LocalStartTour) doesn't reset the active tab — the controller's
+                // saved back stack survives the full-app branch leaving composition.
+                val tabNavController = rememberNavController()
+                // Tab the nested NavHost should jump to once it's composed — set by surfaces
+                // shown while Home isn't (the onboarding tour), consumed by an effect in the
+                // full-app branch (navigating before the tab graph is set would throw).
+                var pendingHomeTab by rememberSaveable { mutableStateOf<Int?>(null) }
                 // Increments on every nav button tap (incl. re-tap and gear icon)
                 // so screens with sub-tabs can reset to their default tab.
                 var navResetTick by remember { mutableIntStateOf(0) }
@@ -216,7 +225,7 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                                 onFinish = { goToWardrobe ->
                                     OnboardingState.setComplete(activity, true)
                                     showOnboarding = false
-                                    if (goToWardrobe) { selectedTab = 1; navResetTick++ }
+                                    if (goToWardrobe) { pendingHomeTab = 1; navResetTick++ }
                                 },
                             )
                         }
@@ -251,6 +260,29 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                         activity.lifecycle.addObserver(observer)
                         onDispose {
                             activity.lifecycle.removeObserver(observer)
+                        }
+                    }
+
+                    // Active tab derived from the nested tab NavHost (single-entry back stack;
+                    // see AppNavigation.kt). selectTab replaces the stack so system back still
+                    // exits the app from any tab, like the old `selectedTab` int.
+                    val tabBackStackEntry by tabNavController.currentBackStackEntryAsState()
+                    val selectedTab = homeTabIndex(tabBackStackEntry?.destination)
+                    fun selectTab(tab: Int) {
+                        tabNavController.navigate(homeTabRoute(tab)) {
+                            popUpTo(tabNavController.graph.id) { inclusive = true }
+                            launchSingleTop = true
+                        }
+                    }
+                    // Keyed on the back-stack entry too: if the request lands before the nested
+                    // NavHost has composed (no graph yet — e.g. the battery-exemption gate is
+                    // showing), the effect re-runs and consumes it once the graph exists.
+                    LaunchedEffect(pendingHomeTab, tabBackStackEntry) {
+                        pendingHomeTab?.let { tab ->
+                            if (tabNavController.currentDestination != null) {
+                                selectTab(tab)
+                                pendingHomeTab = null
+                            }
                         }
                     }
 
@@ -400,7 +432,7 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                     // invisibly underneath it.
                     fun goToTab(tab: Int) {
                         navController.popBackStack(HomeRoute, inclusive = false)
-                        selectedTab = tab
+                        selectTab(tab)
                     }
 
                     CompositionLocalProvider(
@@ -507,7 +539,6 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                             }
                         }
 
-                        var dismissWardrobeViewerTrigger by remember { mutableIntStateOf(0) }
                         var showQuickTryOnSheet by remember { mutableStateOf(false) }
                         var showTripTryOnPicker by remember { mutableStateOf(false) }
                         // Hide the nav bar + weather badge while a SelectionActionBar is up
@@ -568,12 +599,16 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                                         selectedTab = selectedTab,
                                         onTabSelected = {
                                             Analytics.action("NavBar", "tab_select", mapOf("index" to it.toString()))
-                                            selectedTab = it
+                                            selectTab(it)
                                             navResetTick++
                                         },
                                         onTabReselected = { tab ->
                                             Analytics.action("NavBar", "tab_reselect", mapOf("index" to tab.toString()))
-                                            if (tab == 1) dismissWardrobeViewerTrigger++
+                                            // Re-tapping Settings pops any sub-screen back to
+                                            // the root page (the old navResetTick stack reset).
+                                            if (tab == 5) {
+                                                tabNavController.popBackStack(SettingsTabRoute, inclusive = false)
+                                            }
                                             navResetTick++
                                         },
                                         onCenterClick = {
@@ -611,8 +646,25 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                                 }
 
                                 Box(Modifier.fillMaxSize().nestedScroll(weatherScrollConn)) {
-                                    when (selectedTab) {
-                                        0 -> OutfitsScreen(
+                                    // The tabs are destinations of this nested NavHost (the
+                                    // bottom bar lives in the Scaffold around it). Each tab
+                                    // re-pins VM resolution to the activity — a nested
+                                    // destination's back-stack entry would otherwise fork
+                                    // fresh VMs, same rule as the root destinations.
+                                    NavHost(
+                                        navController = tabNavController,
+                                        startDestination = OutfitsTabRoute,
+                                        // Tab switches were an instant `when(selectedTab)`
+                                        // swap — keep them transition-free.
+                                        enterTransition = { androidx.compose.animation.EnterTransition.None },
+                                        exitTransition = { androidx.compose.animation.ExitTransition.None },
+                                        popEnterTransition = { androidx.compose.animation.EnterTransition.None },
+                                        popExitTransition = { androidx.compose.animation.ExitTransition.None },
+                                        modifier = Modifier.fillMaxSize(),
+                                    ) {
+                                        composable<OutfitsTabRoute> {
+                                        CompositionLocalProvider(LocalViewModelStoreOwner provides activity) {
+                                        OutfitsScreen(
                                             outfitsViewModel = stylesViewModel,
                                             wardrobeViewModel = wardrobeViewModel,
                                             outfitEventsViewModel = outfitEventsViewModel,
@@ -638,7 +690,11 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                                                 ) { launchSingleTop = true }
                                             },
                                         )
-                                        1 -> WardrobeScreen(
+                                        }
+                                        }
+                                        composable<WardrobeTabRoute> {
+                                        CompositionLocalProvider(LocalViewModelStoreOwner provides activity) {
+                                        WardrobeScreen(
                                             viewModel = wardrobeViewModel,
                                             outfitEventsViewModel = outfitEventsViewModel,
                                             stylesViewModel = stylesViewModel,
@@ -673,10 +729,22 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                                                 wardrobeViewModel.clearSelection()
                                             },
                                             canTryOn = canTryOn,
-                                            dismissViewerTrigger = dismissWardrobeViewerTrigger,
+                                            onOpenItemViewer = { itemIds, initialItemId ->
+                                                navController.navigate(
+                                                    ItemViewerRoute(
+                                                        source = ItemViewerRoute.SOURCE_WARDROBE,
+                                                        itemIds = itemIds,
+                                                        initialItemId = initialItemId,
+                                                    ),
+                                                ) { launchSingleTop = true }
+                                            },
                                             onSettingsClick = onSettingsClick,
                                         )
-                                        2 -> ShoppingHelperScreen(
+                                        }
+                                        }
+                                        composable<ShoppingTabRoute> {
+                                        CompositionLocalProvider(LocalViewModelStoreOwner provides activity) {
+                                        ShoppingHelperScreen(
                                             shoppingViewModel = shoppingViewModel,
                                             shoppingClosetViewModel = shoppingClosetViewModel,
                                             wardrobeViewModel = wardrobeViewModel,
@@ -714,9 +782,22 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                                                 shoppingClosetViewModel.clearSelection()
                                             },
                                             canTryOn = canTryOn,
+                                            onOpenItemViewer = { itemIds, initialItemId ->
+                                                navController.navigate(
+                                                    ItemViewerRoute(
+                                                        source = ItemViewerRoute.SOURCE_SHOPPING,
+                                                        itemIds = itemIds,
+                                                        initialItemId = initialItemId,
+                                                    ),
+                                                ) { launchSingleTop = true }
+                                            },
                                             navResetTick = navResetTick,
                                         )
-                                        3 -> TravelScreen(
+                                        }
+                                        }
+                                        composable<TravelTabRoute> {
+                                        CompositionLocalProvider(LocalViewModelStoreOwner provides activity) {
+                                        TravelScreen(
                                             travelViewModel = travelViewModel,
                                             tripsViewModel = tripsViewModel,
                                             wardrobeViewModel = wardrobeViewModel,
@@ -735,13 +816,41 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                                                 }
                                             },
                                         )
-                                        5 -> SettingsScreen(
+                                        }
+                                        }
+                                        composable<SettingsTabRoute> {
+                                        CompositionLocalProvider(LocalViewModelStoreOwner provides activity) {
+                                        SettingsScreen(
                                             profileViewModel = profileViewModel,
                                             wardrobeViewModel = wardrobeViewModel,
                                             locationViewModel = locationViewModel,
                                             creditsViewModel = creditsViewModel,
-                                            onBack = { selectedTab = 1 },
-                                            navResetTick = navResetTick,
+                                            onBack = { selectTab(1) },
+                                            onOpenProfileEdit = {
+                                                tabNavController.navigate(SettingsProfileEditRoute) { launchSingleTop = true }
+                                            },
+                                            onOpenAdvanced = {
+                                                tabNavController.navigate(SettingsAdvancedRoute) { launchSingleTop = true }
+                                            },
+                                            onOpenAbout = {
+                                                tabNavController.navigate(SettingsAboutRoute) { launchSingleTop = true }
+                                            },
+                                            onOpenBuyCredits = {
+                                                tabNavController.navigate(SettingsBuyCreditsRoute) { launchSingleTop = true }
+                                            },
+                                        )
+                                        }
+                                        }
+                                        settingsDestinations(
+                                            activity = activity,
+                                            profileViewModel = profileViewModel,
+                                            wardrobeViewModel = wardrobeViewModel,
+                                            locationViewModel = locationViewModel,
+                                            creditsViewModel = creditsViewModel,
+                                            navigate = { route ->
+                                                tabNavController.navigate(route) { launchSingleTop = true }
+                                            },
+                                            onBack = { tabNavController.popBackStack() },
                                         )
                                     }
 
@@ -833,6 +942,15 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                                     onClose = { navController.popBackStack() },
                                     onTryOnStyle = runOutfitTryOn,
                                     onTryOnTripOutfit = runTripOutfitTryOn,
+                                    onOpenItemViewer = { itemIds, initialItemId ->
+                                        navController.navigate(
+                                            ItemViewerRoute(
+                                                source = ItemViewerRoute.SOURCE_OUTFIT,
+                                                itemIds = itemIds,
+                                                initialItemId = initialItemId,
+                                            ),
+                                        ) { launchSingleTop = true }
+                                    },
                                 )
                             }
                         }
@@ -913,6 +1031,15 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                                         goToTab(5)
                                         navResetTick++
                                     },
+                                    onOpenItemViewer = { itemIds, initialItemId ->
+                                        navController.navigate(
+                                            ItemViewerRoute(
+                                                source = ItemViewerRoute.SOURCE_TRYON,
+                                                itemIds = itemIds,
+                                                initialItemId = initialItemId,
+                                            ),
+                                        ) { launchSingleTop = true }
+                                    },
                                 )
                             }
                         }
@@ -935,6 +1062,54 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                                     weatherViewModel  = weatherViewModel,
                                     shoppingClosetViewModel = shoppingClosetViewModel,
                                     locationViewModel = locationViewModel,
+                                    onOpenItemViewer = { initialItemId ->
+                                        navController.navigate(
+                                            ItemViewerRoute(
+                                                source = ItemViewerRoute.SOURCE_COMPOSER,
+                                                initialItemId = initialItemId,
+                                            ),
+                                        ) { launchSingleTop = true }
+                                    },
+                                )
+                            }
+                        }
+
+                        composable<ItemViewerRoute> { entry ->
+                            val route = entry.toRoute<ItemViewerRoute>()
+                            LaunchedEffect(Unit) { Analytics.screen("ItemViewer") }
+                            // Full-bleed, no Scaffold: the viewer is immersive (edge-to-edge,
+                            // like its Dialog predecessor) and handles its own insets.
+                            CompositionLocalProvider(LocalViewModelStoreOwner provides activity) {
+                                com.librelookai.wardrobe.ItemViewerDestination(
+                                    source = route.source,
+                                    routeItemIds = route.itemIds,
+                                    initialItemId = route.initialItemId,
+                                    wardrobeViewModel = wardrobeViewModel,
+                                    shoppingClosetViewModel = shoppingClosetViewModel,
+                                    outfitsViewModel = stylesViewModel,
+                                    tryOnViewModel = tryOnViewModel,
+                                    locationViewModel = locationViewModel,
+                                    onCreateOutfitFromSelection = { itemIds ->
+                                        when (route.source) {
+                                            // Same wiring as the wardrobe / shopping selection
+                                            // bars; try-on & composer sources keep their old
+                                            // no-op (the hosts never offered this path).
+                                            ItemViewerRoute.SOURCE_WARDROBE,
+                                            ItemViewerRoute.SOURCE_SHOPPING,
+                                            -> {
+                                                Analytics.action("ItemViewer", "create_outfit_from_item")
+                                                stylesViewModel.openComposer(
+                                                    seedItemIds = itemIds,
+                                                    images      = wardrobeViewModel.state.value.images +
+                                                        shoppingClosetViewModel.state.value.items,
+                                                    prefs       = profileViewModel.state.value.preferences,
+                                                    defaultSourceFolderId = locationViewModel.activeFolderId,
+                                                )
+                                            }
+                                            else -> {}
+                                        }
+                                    },
+                                    onClose = { navController.popBackStack() },
                                 )
                             }
                         }

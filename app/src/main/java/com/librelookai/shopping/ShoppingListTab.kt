@@ -52,7 +52,6 @@ import com.librelookai.data.model.Location
 import com.librelookai.util.Analytics
 import com.librelookai.util.LocalIsOffline
 import com.librelookai.wardrobe.DriveImage
-import com.librelookai.wardrobe.FullScreenViewer
 import com.librelookai.wardrobe.WardrobeFilterSheet
 import com.librelookai.ui.components.AppFab
 import com.librelookai.ui.components.SelectionAction
@@ -66,13 +65,13 @@ import com.librelookai.wardrobe.tagStringsForCategory
 internal fun ShoppingListTab(
     shoppingClosetViewModel: ShoppingClosetViewModel,
     locations: List<Location>,
-    activeLocationId: String,
     onCaptureClick: () -> Unit,
     onItemsMovedToCloset: (String, List<DriveImage>) -> Unit,
     onItemsMoveFailed: (String, Set<String>) -> Unit = { _, _ -> },
     onCreateOutfitFromSelection: (Set<String>) -> Unit,
     onTryOnSelection: (Set<String>) -> Unit,
     canTryOn: Boolean,
+    onOpenItemViewer: (List<String>, String) -> Unit = { _, _ -> },
 ) {
     val state by shoppingClosetViewModel.state.collectAsState()
     val isOffline = LocalIsOffline.current
@@ -82,7 +81,6 @@ internal fun ShoppingListTab(
     var showUrlDialog by remember { mutableStateOf(false) }
     var showMoveDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
-    var selectedIndex by remember { mutableStateOf<Int?>(null) }
 
     var selectedTags by remember { mutableStateOf(emptyMap<String, Set<String>>()) }
     var filterSheetOpen by remember { mutableStateOf(false) }
@@ -98,7 +96,6 @@ internal fun ShoppingListTab(
             }
         }
     }
-    LaunchedEffect(selectedTags) { selectedIndex = null }
 
     val galleryLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.PickMultipleVisualMedia(),
@@ -171,7 +168,7 @@ internal fun ShoppingListTab(
                             shoppingClosetViewModel.toggleSelection(image.driveId)
                         } else {
                             Analytics.action("Shopping", "open_item_viewer")
-                            selectedIndex = index
+                            onOpenItemViewer(displayedItems.map { it.driveId }, image.driveId)
                         }
                     },
                     onLongClick = { image ->
@@ -278,37 +275,6 @@ internal fun ShoppingListTab(
             ) { Text(msg) }
         }
 
-        // Full-screen item viewer — same UX as Wardrobe (tag / remove-bg / rotate / edit tags).
-        selectedIndex?.let { startIndex ->
-            FullScreenViewer(
-                images = displayedItems,
-                initialIndex = startIndex.coerceIn(0, (displayedItems.size - 1).coerceAtLeast(0)),
-                allTagCategories = tagCategories,
-                onDismiss = { selectedIndex = null },
-                onTagImage = shoppingClosetViewModel::tagImage,
-                onRemoveBackground = shoppingClosetViewModel::reprocessBackground,
-                onRotateImage = shoppingClosetViewModel::rotateImage,
-                onUpdateTags = shoppingClosetViewModel::updateTags,
-                onDeleteItem = { driveId ->
-                    shoppingClosetViewModel.deleteItems(setOf(driveId))
-                    if (displayedItems.size <= 1) selectedIndex = null
-                },
-                onMoveToLocation = { ids, folderId ->
-                    shoppingClosetViewModel.moveToCloset(
-                        ids, folderId,
-                        onMoved = { moved -> if (moved.isNotEmpty()) onItemsMovedToCloset(folderId, moved) },
-                        onMoveFailed = { failedIds -> onItemsMoveFailed(folderId, failedIds) },
-                    )
-                    if (displayedItems.size <= 1) selectedIndex = null
-                },
-                onCreateOutfitFromSelection = onCreateOutfitFromSelection,
-                onLoadOriginal = shoppingClosetViewModel::ensureOriginalCached,
-                locations = locations,
-                activeLocationId = activeLocationId,
-                processingImageId = state.processingImageId,
-                writeMode = true,
-            )
-        }
     }
 
     if (filterSheetOpen) {

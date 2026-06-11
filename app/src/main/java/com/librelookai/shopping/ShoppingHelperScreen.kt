@@ -48,6 +48,7 @@ fun ShoppingHelperScreen(
     onCreateOutfitFromSelection: (Set<String>) -> Unit = {},
     onTryOnSelection: (Set<String>) -> Unit = {},
     canTryOn: Boolean = false,
+    onOpenItemViewer: (List<String>, String) -> Unit = { _, _ -> },
     navResetTick: Int = 0,
     modifier: Modifier = Modifier,
 ) {
@@ -189,13 +190,13 @@ fun ShoppingHelperScreen(
             0 -> ShoppingListTab(
                 shoppingClosetViewModel = shoppingClosetViewModel,
                 locations = locationState.locations,
-                activeLocationId = locationState.activeLocationId,
                 onCaptureClick = { isClosetCapturing = true },
                 onItemsMovedToCloset = wardrobeViewModel::notifyItemsMovedTo,
                 onItemsMoveFailed = wardrobeViewModel::undoItemsMovedTo,
                 onCreateOutfitFromSelection = onCreateOutfitFromSelection,
                 onTryOnSelection = onTryOnSelection,
                 canTryOn = canTryOn,
+                onOpenItemViewer = onOpenItemViewer,
             )
             1 -> SimilarityFinderTab(
                 shoppingViewModel = shoppingViewModel,
