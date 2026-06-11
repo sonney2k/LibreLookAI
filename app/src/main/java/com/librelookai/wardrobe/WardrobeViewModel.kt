@@ -1321,18 +1321,26 @@ class WardrobeViewModel @Inject constructor(
         driveIds.forEach { recentlyMovedItems.remove(it) }
         _state.update { s -> s.copy(selectedIds = emptySet(), images = s.images.filter { it.driveId !in driveIds }) }
 
-        // ---- Delete from Drive in the background (best-effort, as before); the cache writes
-        // come first, still before any Drive call, so the deletion survives a restart. ----
+        // ---- Queue the Drive deletes (refactor § 2): the cache writes come first, still before
+        // any Drive call, so the deletion survives a restart — and unlike the old fire-and-forget
+        // per-file deletes, a queued [ITEM_DELETE_KIND] mutation retries transient failures
+        // instead of silently orphaning the files on Drive. File ids ride in the payload because
+        // the Room row is gone before the drain runs. ----
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 affectedFolderIds.forEach { fid -> removeFromCacheFile(fid, driveIds) }
+                items.forEach { img ->
+                    val fileIds = listOfNotNull(img.driveId, img.originalDriveId, img.sidecarDriveId)
+                    mutationStore.enqueue(
+                        ITEM_DELETE_KIND,
+                        targetId = img.driveId,
+                        folderId = img.folderId.ifEmpty { folderId },
+                        payload = gson.toJson(DeleteItemPayload(fileIds)),
+                    )
+                }
             }
             refreshAllLocationImagesState()
-            items.forEach { img ->
-                runCatching { drive.deleteFile(img.driveId) }
-                img.originalDriveId?.let { origId -> runCatching { drive.deleteFile(origId) } }
-                img.sidecarDriveId?.let { sId -> runCatching { drive.deleteFile(sId) } }
-            }
+            withContext(Dispatchers.IO) { syncEngine.drain() }
         }
     }
 }

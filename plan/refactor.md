@@ -9,7 +9,7 @@ deferred and inter-blocking:
 | § | Layer | Status |
 |---|-------|--------|
 | 1 | Multi-module Gradle | **Partial** — `:core:model`/`:core:common`/`:core:database`/`:core:ml`/`:core:sync`/`:core:ai` landed (phase 4); `core/designsystem` blocked on splitting the 31-locale `res/`, `feature/*` on § 5 |
-| 2 | Room as source of truth + SyncEngine | **Partial** — all five JSON-cache slices landed (phase 2) as opaque-JSON cache rows; the `PendingMutation` queue + `SyncEngine` are live with the first converted write path (wardrobe sidecar saves, June 2026 — see phase 2 status); remaining write paths, real entities and the WorkManager trigger are not started |
+| 2 | Room as source of truth + SyncEngine | **Partial** — all five JSON-cache slices landed (phase 2) as opaque-JSON cache rows; the `PendingMutation` queue + `SyncEngine` are live with the first converted write paths (wardrobe sidecar saves + item deletes, June 2026 — see phase 2 status); remaining write paths, real entities and the WorkManager trigger are not started |
 | 3 | DI + interfaces at the seams | **Partial** — Hilt landed (phase 1); the gemini↔drive↔billing package cycles are broken (June 2026, see phase 1 status), making the layering acyclic; interface extraction at the I/O seams pending; static globals (`ImageEncoding.tier`, `GeminiProgress` slot, `AiRetry.action`) still alive |
 | 4 | Navigation Compose | **Done** (phase 3 complete; per-destination VM scoping deferred to § 5) |
 | 5 | Thin VMs over use-cases | **Not started** — the keystone blocker: gates `feature/*` modules, destination-scoped VMs, and removal of the cross-VM `LaunchedEffect` bridges |
@@ -281,9 +281,25 @@ are easy to violate and have caused real bugs.
    - Deliberate behavior change: the immediate `error_tag_save_failed` snackbar on a failed
      sidecar PATCH is gone — transient failures retry silently; after 8 attempts the queue
      gives up (the edit stays local and re-syncs with the next save/load).
-   **Next slices**: convert the remaining wardrobe metadata writes (move / delete / outfit
-   `_outfits.json` saves fit the same payload-free re-read pattern), then WorkManager
-   scheduling once a § 5 pipeline needs process-death survival mid-drain.
+   **Slice 2 LANDED (June 2026): wardrobe item deletes go through the queue.**
+   `WardrobeViewModel.deleteItems` keeps its optimistic local update (state + cache vanish
+   first) but replaces the old fire-and-forget per-file `runCatching { drive.deleteFile }`
+   — which silently orphaned the Drive triplet whenever a delete failed or the user was
+   offline — with one `wardrobe.deleteItem` mutation per item. Unlike the sidecar sync this
+   is **payload-carrying** (`{fileIds:[cutout, original?, sidecar?]}`): the Room row is
+   removed before the drain, so there is nothing to re-read at apply time. Handler
+   (`wardrobe/WardrobeDeleteSync.kt`): network failure → `Retry` (re-running is safe —
+   Drive DELETE of an already-deleted file is an ignored 404); no rollback (the deletion is
+   locally committed, exactly like the old best-effort path). Note `deleteFile` ignores
+   HTTP-level errors by design (matching the old semantics); response-code-aware retries
+   can come with the § 3 `DriveService` interface.
+   **Ordering note** (why FIFO matters here): a pending `sidecarSync` enqueued before a
+   delete of the same item drains first, finds the row gone, and skips as `Permanent` —
+   it can never recreate a sidecar for a deleted item.
+   **Next slices**: wardrobe move (optimistic + rollback — the first mutation that needs
+   real `rollback` JSON), the Drive-first outfit/event saves (these *change* semantics from
+   Drive-first to local-first, so they need their `onDone(success)` flows re-examined),
+   then WorkManager scheduling once a § 5 pipeline needs process-death survival mid-drain.
 3. **Navigation Compose** — add the NavHost, convert Dialog-viewers to destinations one at a
    time; delete each Window-quirk workaround as its screen converts. Scope ViewModels to
    destinations as screens convert.
