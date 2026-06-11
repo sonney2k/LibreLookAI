@@ -121,6 +121,14 @@ suspend fun DriveRepository.saveTripJson(tripsFolderId: String, tripId: String, 
 suspend fun DriveRepository.deleteTripJson(fileId: String) = deleteFile(fileId)
 
     /**
+     * Drive file ID of `{tripId}.json` inside [tripsFolderId], or null when absent. Lets the
+     * queued trip-delete handler resolve the file by stable trip id instead of a session-local
+     * Drive-id map (which used to orphan the file when a trip was deleted before Phase 2 load).
+     */
+suspend fun DriveRepository.findTripFileId(tripsFolderId: String, tripId: String): String? =
+        withContext(Dispatchers.IO) { findFileIdByName(tripsFolderId, "$tripId.json", token()) }
+
+    /**
      * Uploads [imageFile] (PNG) into the try-ons subfolder with [name]. Returns the new Drive ID.
      */
 suspend fun DriveRepository.uploadTryOnImage(rootFolderId: String, name: String, imageFile: File): String =

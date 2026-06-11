@@ -19,11 +19,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import com.librelookai.data.drive.DriveRepository
-import com.librelookai.data.drive.deleteTripJson
+import com.librelookai.data.drive.SyncEngine
 import com.librelookai.data.drive.getOrCreateTripsFolder
 import com.librelookai.data.drive.listTripFiles
 import com.librelookai.data.drive.loadTripJson
-import com.librelookai.data.drive.saveTripJson
+import com.librelookai.data.local.PendingMutationStore
 import com.librelookai.data.model.Outfit
 import com.librelookai.data.model.Trip
 import com.librelookai.gemini.GeminiRepository
@@ -75,6 +75,8 @@ class TripsViewModel @Inject constructor(
     private val drive: DriveRepository,
     private val gemini: GeminiRepository,
     private val tripStore: com.librelookai.data.local.TripStore,
+    private val mutationStore: PendingMutationStore,
+    private val syncEngine: SyncEngine,
 ) : AndroidViewModel(app) {
 
     companion object { private const val TAG = "TripsVM" }
@@ -82,9 +84,6 @@ class TripsViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(TripsUiState())
     val state: StateFlow<TripsUiState> = _state.asStateFlow()
-
-    /** Drive file IDs by trip id, so deletes/upserts can target the right file. */
-    private val driveIdsByTripId = mutableMapOf<String, String>()
 
     private var rootFolderId: String? = null
 
@@ -135,16 +134,12 @@ class TripsViewModel @Inject constructor(
                     files.map { file ->
                         async {
                             val json = drive.loadTripJson(file.id) ?: return@async null
-                            val trip = runCatching { gson.fromJson(json, Trip::class.java) }.getOrNull()
-                                ?: return@async null
-                            file.id to trip
+                            runCatching { gson.fromJson(json, Trip::class.java) }.getOrNull()
                         }
                     }.awaitAll().filterNotNull()
                 }
-            }.onSuccess { pairs ->
-                driveIdsByTripId.clear()
-                pairs.forEach { (fileId, trip) -> driveIdsByTripId[trip.id] = fileId }
-                val trips = pairs.map { (_, t) -> t }.sortedByDescending { t -> t.createdAt }
+            }.onSuccess { loaded ->
+                val trips = loaded.sortedByDescending { t -> t.createdAt }
                 _state.update { it.copy(trips = trips, isLoading = false) }
                 writeTripsCache(trips)
             }.onFailure { e ->
@@ -153,28 +148,21 @@ class TripsViewModel @Inject constructor(
         }
     }
 
-    /** Upserts [trip] to Drive and adds/replaces it in state. */
+    /**
+     * Upserts [trip] into state + the trip store; the Drive write rides the sync queue
+     * (refactor § 2 — the [TripSaveSyncHandler] re-reads the store row at apply time and
+     * resolves the trips folder itself, so the save no longer waits for Phase 2's `folderId`).
+     */
     fun upsertTrip(trip: Trip, onDone: (Boolean) -> Unit = {}) {
         viewModelScope.launch {
-            val folderId = _state.value.folderId ?: run {
-                _state.update { it.copy(error = getApplication<Application>().localized().getString(com.librelookai.R.string.error_trips_folder_not_ready)) }
-                onDone(false); return@launch
+            _state.update { s ->
+                val without = s.trips.filterNot { it.id == trip.id }
+                s.copy(trips = (listOf(trip) + without))
             }
-            runCatching {
-                val fileId = drive.saveTripJson(folderId, trip.id, gson.toJson(trip))
-                driveIdsByTripId[trip.id] = fileId
-            }.onSuccess {
-                _state.update { s ->
-                    val without = s.trips.filterNot { it.id == trip.id }
-                    s.copy(trips = (listOf(trip) + without))
-                }
-                writeTripsCache(_state.value.trips)
-                onDone(true)
-            }.onFailure { e ->
-                Log.w(TAG, "saveTripJson failed", e)
-                _state.update { it.copy(error = e.message) }
-                onDone(false)
-            }
+            writeTripsCache(_state.value.trips)
+            mutationStore.enqueue(TRIP_SAVE_KIND, targetId = trip.id, folderId = null, payload = "{}")
+            syncEngine.drain()
+            onDone(true)
         }
     }
 
@@ -211,11 +199,8 @@ class TripsViewModel @Inject constructor(
         _state.update { s -> s.copy(trips = s.trips.map { if (it.id == tripId) updated else it }) }
         viewModelScope.launch {
             writeTripsCache(_state.value.trips)
-            val folderId = _state.value.folderId ?: return@launch
-            runCatching {
-                val fileId = drive.saveTripJson(folderId, updated.id, gson.toJson(updated))
-                driveIdsByTripId[updated.id] = fileId
-            }.onFailure { Log.w(TAG, "mutateTrip save failed", it) }
+            mutationStore.enqueue(TRIP_SAVE_KIND, targetId = tripId, folderId = null, payload = "{}")
+            syncEngine.drain()
         }
     }
 
@@ -266,14 +251,10 @@ class TripsViewModel @Inject constructor(
     fun deleteTrip(tripId: String, onDeleted: (deletedOutfitIds: List<String>) -> Unit = {}) {
         val current = _state.value.trips.find { it.id == tripId } ?: return
         viewModelScope.launch {
-            val driveFileId = driveIdsByTripId[tripId]
-            if (driveFileId != null) {
-                runCatching { drive.deleteTripJson(driveFileId) }
-                    .onFailure { Log.w(TAG, "deleteTripJson failed", it) }
-                driveIdsByTripId.remove(tripId)
-            }
             _state.update { s -> s.copy(trips = s.trips.filterNot { it.id == tripId }) }
             writeTripsCache(_state.value.trips)
+            mutationStore.enqueue(TRIP_DELETE_KIND, targetId = tripId, folderId = null, payload = "{}")
+            syncEngine.drain()
             onDeleted(current.outfitIds)
         }
     }
@@ -286,17 +267,13 @@ class TripsViewModel @Inject constructor(
         val targets = _state.value.trips.filter { it.id in tripIds }
         if (targets.isEmpty()) return
         viewModelScope.launch {
-            targets.forEach { trip ->
-                val driveFileId = driveIdsByTripId[trip.id]
-                if (driveFileId != null) {
-                    runCatching { drive.deleteTripJson(driveFileId) }
-                        .onFailure { Log.w(TAG, "deleteTripJson failed", it) }
-                    driveIdsByTripId.remove(trip.id)
-                }
-            }
             val deletedIds = targets.map { it.id }.toSet()
             _state.update { s -> s.copy(trips = s.trips.filterNot { it.id in deletedIds }) }
             writeTripsCache(_state.value.trips)
+            targets.forEach { trip ->
+                mutationStore.enqueue(TRIP_DELETE_KIND, targetId = trip.id, folderId = null, payload = "{}")
+            }
+            syncEngine.drain()
             onDeleted(targets.flatMap { it.outfitIds }.distinct())
         }
     }

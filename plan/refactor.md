@@ -371,8 +371,35 @@ are easy to violate and have caused real bugs.
    persists into the active folder (or the first of All locations) — same file the old
    Drive-first write targeted. The old "state updates only on Drive success" ordering flipped
    to optimistic, matching every other converted path.
-   After events: trips (same Drive-first analysis), then WorkManager scheduling once a § 5
-   pipeline needs process-death survival mid-drain.
+   **Slice 7 LANDED (June 2026): trip saves/deletes go through the queue.** Trips differ
+   structurally — each trip is its own name-addressed Drive file (`{tripId}.json` in
+   `_trips/`), so the mutations are per-trip, both payload-free (`travel/TripSync.kt`,
+   `TravelSyncModule`):
+   - `trip.save` (targetId = tripId): the handler re-reads the trip's current `TripStore` row
+     at apply time (gone → `Permanent`; the delete queued behind it owns the file) and
+     resolves the trips folder itself via `getOrCreateTripsFolder(getOrCreateFolder())` — so
+     `upsertTrip`/`mutateTrip` no longer need Phase 2's `folderId` to have loaded (the old
+     `error_trips_folder_not_ready` guard and `mutateTrip`'s silent skip are gone; a trip
+     created before the folder resolves still syncs). No per-trip wipe guard needed: a
+     missing row skips, it can never write an empty list over anything.
+   - `trip.delete` (targetId = tripId): resolves the file by stable trip id
+     (`findTripFileId`, new public wrapper over the internal `findFileIdByName`) instead of
+     the session-local `driveIdsByTripId` map — which is now deleted entirely, fixing the old
+     quirk where deleting a trip before Phase 2 load populated the map orphaned the Drive
+     file. Idempotent (file already gone → `Success`).
+   `upsertTrip`/`deleteTrip(s)` flip to local-first (state + `TripStore` + enqueue + drain →
+   `onDone(true)`/`onDeleted(...)`, same locally-committed-means-done semantics as slice 5);
+   the trip-delete cascade thus proceeds on local commit.
+   **Queue conversion COMPLETE for all § 2 entities** — wardrobe items (sidecar/delete/move),
+   shopping, outfits, calendar wears, trips. Try-on metadata writes and the token-usage /
+   trends caches stay on their existing paths (deliberate: try-ons are created by an
+   online-only Gemini call and saved Drive-first with image bytes; the caches are
+   server-reconstructible).
+   Remaining § 2 follow-ups: WorkManager-scheduled drain (so a queue survives process death
+   *without waiting for the next app start*; the in-process triggers — inline post-enqueue,
+   app-start/network-regain catch-up, 30s→10min backoff — already cover the common cases),
+   and the real-entity / Flow-read conversion, which is deliberately coupled to § 5's
+   use-case extraction (converting readers to Flows means restructuring the VMs that poll).
 3. **Navigation Compose** — add the NavHost, convert Dialog-viewers to destinations one at a
    time; delete each Window-quirk workaround as its screen converts. Scope ViewModels to
    destinations as screens convert.
