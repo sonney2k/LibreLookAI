@@ -13,8 +13,6 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import java.io.File
-import com.librelookai.wardrobe.LocalBgRemovalScreen
-import com.librelookai.settings.UserPreferences
 
 /**
  * On-device foreground segmenter (MediaPipe Tasks Vision, Magic Touch model).
@@ -43,7 +41,7 @@ class SegmentationRepository(private val context: Context) {
     @Volatile var debugDumpDir: File? = null
 
     /** Foreground-confidence cutoff used to threshold the per-pixel mask. Mirrors
-     *  [UserPreferences.bgRemovalThreshold]; the AI settings tab writes to this. */
+     *  `UserPreferences.bgRemovalThreshold`; the AI settings tab writes to this. */
     @Volatile var foregroundThreshold: Float = 0.3f
 
     fun isAvailable(): Boolean {
@@ -245,7 +243,7 @@ class SegmentationRepository(private val context: Context) {
     /**
      * Run interactive segmentation seeded at [seedX], [seedY] (absolute pixel coords) and return a
      * new ARGB_8888 bitmap with foreground pixels preserved and background pixels fully transparent.
-     * Used by the import-time local background-removal review (cf. [LocalBgRemovalScreen]).
+     * Used by the import-time local background-removal review (cf. `LocalBgRemovalScreen`).
      *
      * Unlike [segmentForegroundOnBlack], this:
      *  - accepts an arbitrary seed (the user-positioned crosshair),

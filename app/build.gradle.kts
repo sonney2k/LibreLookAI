@@ -182,6 +182,7 @@ dependencies {
     implementation(project(":core:model"))
     implementation(project(":core:common"))
     implementation(project(":core:database"))
+    implementation(project(":core:ml"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -215,7 +216,6 @@ dependencies {
     implementation(libs.firebase.analytics.ktx)
     implementation(libs.billing.ktx)
     implementation(libs.kotlinx.coroutines.play.services)
-    implementation(libs.mediapipe.tasks.vision)
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 

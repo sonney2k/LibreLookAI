@@ -9,7 +9,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 import com.librelookai.wardrobe.DriveImage
-import com.librelookai.MainActivity
 
 /**
  * Process-wide singleton for the on-device similarity stack.
@@ -20,7 +19,7 @@ import com.librelookai.MainActivity
  * duplicates, folder-import preview — funnels through this object so the underlying models
  * are loaded once per process.
  *
- * Call [init] once from [MainActivity.onCreate] (or any boot path) before any feature uses
+ * Call [init] once from `MainActivity.onCreate` (or any boot path) before any feature uses
  * the service. After that, use [findSimilar] for off-disk queries (segments + embeds) and
  * [syncIndex] to keep the wardrobe index up to date.
  */
