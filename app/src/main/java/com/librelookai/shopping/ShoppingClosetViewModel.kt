@@ -25,9 +25,16 @@ import com.librelookai.gemini.ClothingTags
 import com.librelookai.gemini.GeminiRepository
 import com.librelookai.gemini.classifyClothing
 import com.librelookai.util.isNetworkAvailable
+import com.librelookai.data.drive.SyncEngine
+import com.librelookai.data.local.PendingMutationStore
 import com.librelookai.data.local.WardrobeItemStore
+import com.librelookai.wardrobe.DeleteItemPayload
 import com.librelookai.wardrobe.DriveImage
+import com.librelookai.wardrobe.ITEM_DELETE_KIND
+import com.librelookai.wardrobe.ITEM_MOVE_KIND
 import com.librelookai.wardrobe.ItemSidecar
+import com.librelookai.wardrobe.MoveItemPayload
+import com.librelookai.wardrobe.WardrobeMoveSyncHandler
 import com.librelookai.wardrobe.UrlImportPickerState
 import com.librelookai.wardrobe.toCachedItem
 import com.librelookai.wardrobe.WebProductFetcher
@@ -72,6 +79,9 @@ class ShoppingClosetViewModel @Inject constructor(
     internal val drive: DriveRepository,
     internal val gemini: GeminiRepository,
     private val itemStore: WardrobeItemStore,
+    private val mutationStore: PendingMutationStore,
+    private val syncEngine: SyncEngine,
+    moveSync: WardrobeMoveSyncHandler,
 ) : AndroidViewModel(app) {
 
     companion object { internal const val TAG = "ShoppingClosetVM" }
@@ -92,6 +102,35 @@ class ShoppingClosetViewModel @Inject constructor(
 
     init {
         viewModelScope.launch { processQueue() }
+        // SyncEngine feedback: a queued shopping→closet move exhausted its retries and the
+        // handler re-homed the Room row back to the shopping folder — splice the item back
+        // into the wishlist and surface the error (the wardrobe VM's own collector undoes the
+        // optimistic registration on its side).
+        viewModelScope.launch {
+            moveSync.moveRolledBack.collect { rollback ->
+                if (rollback.sourceFolderId != shoppingFolderId) return@collect
+                val restored = itemStore.itemsFor(rollback.sourceFolderId)
+                    .firstOrNull { it.driveId == rollback.driveId }
+                    ?.let { entry ->
+                        drive.cachedFile(entry.driveId)?.let { f ->
+                            DriveImage(
+                                entry.driveId, f.absolutePath, entry.name, entry.tags,
+                                originalDriveId = entry.originalDriveId,
+                                sidecarDriveId = entry.sidecarDriveId,
+                                folderId = rollback.sourceFolderId,
+                                createdTimeMs = entry.createdTimeMs,
+                            )
+                        }
+                    }
+                _state.update { s ->
+                    val pruned = s.items.filter { it.driveId != rollback.driveId }
+                    s.copy(
+                        items = if (restored != null) pruned + restored else pruned,
+                        error = getApplication<Application>().localized().getString(R.string.wardrobe_move_failed),
+                    )
+                }
+            }
+        }
     }
 
     fun setLanguage(geminiName: String) { geminiLanguage = geminiName }
@@ -221,14 +260,15 @@ class ShoppingClosetViewModel @Inject constructor(
      * Moves wishlist items into a real closet. Optimistic: removes them from the shopping view +
      * cache and hands the moved items to [onMoved] (which registers them in the destination
      * wardrobe cache) *before* any Drive call, so they appear in the target closet instantly.
-     * Drive moves run in the background; on failure the items are restored to shopping and
-     * [onMoveFailed] is invoked with their ids so the caller can undo the wardrobe registration.
+     * The Drive moves are queued [ITEM_MOVE_KIND] mutations; a permanently failed move is
+     * undone event-style — the handler re-homes the Room row and both this VM and the wardrobe
+     * VM react to its `moveRolledBack` flow (no failure callback can survive a queued retry
+     * that may complete in a later session).
      */
     fun moveToCloset(
         driveIds: Set<String>,
         targetFolderId: String,
         onMoved: (List<DriveImage>) -> Unit,
-        onMoveFailed: (Set<String>) -> Unit = {},
     ) {
         if (driveIds.isEmpty()) { onMoved(emptyList()); return }
         val sourceFolderId = shoppingFolderId ?: run { onMoved(emptyList()); return }
@@ -248,39 +288,24 @@ class ShoppingClosetViewModel @Inject constructor(
         }
         onMoved(toMove.map { it.copy(folderId = targetFolderId) })
 
-        // ---- Drive moves in the background; restore items that fail ----
+        // ---- Queue the Drive moves (refactor § 2): cache write first — still before any
+        // Drive call — so the move survives a restart; the [ITEM_MOVE_KIND] mutations retry
+        // transient failures, and a permanent failure comes back through the handler's
+        // rollback + the `moveRolledBack` collector in init (the wardrobe VM's own collector
+        // undoes the registration that [onMoved] performed on its side). ----
         viewModelScope.launch {
-            // Cache write first — still before any Drive call — so the move survives a restart.
             saveLocalCache(sourceFolderId, _state.value.items)
-            val failed = coroutineScope {
-                toMove.map { item ->
-                    async {
-                        runCatching {
-                            val moveOriginal = item.originalDriveId?.let { origId ->
-                                async { runCatching { drive.moveFile(origId, sourceFolderId, targetFolderId) } }
-                            }
-                            val moveSidecar = item.sidecarDriveId?.let { sId ->
-                                async { runCatching { drive.moveFile(sId, sourceFolderId, targetFolderId) } }
-                            }
-                            drive.moveFile(item.driveId, sourceFolderId, targetFolderId)
-                            moveOriginal?.await()
-                            moveSidecar?.await()
-                        }.fold(onSuccess = { null }, onFailure = { e ->
-                            Log.w(TAG, "move failed for ${item.driveId}", e); item
-                        })
-                    }
-                }.awaitAll().filterNotNull()
+            toMove.forEach { item ->
+                mutationStore.enqueue(
+                    ITEM_MOVE_KIND,
+                    targetId = item.driveId,
+                    folderId = targetFolderId,
+                    payload = gson.toJson(
+                        MoveItemPayload(sourceFolderId, targetFolderId, item.originalDriveId, item.sidecarDriveId),
+                    ),
+                )
             }
-            if (failed.isNotEmpty()) {
-                val failedIds = failed.map { it.driveId }.toSet()
-                _state.update { s ->
-                    val present = s.items.map { it.driveId }.toSet()
-                    s.copy(items = s.items + failed.filter { it.driveId !in present },
-                        error = getApplication<Application>().localized().getString(R.string.wardrobe_move_failed))
-                }
-                saveLocalCache(sourceFolderId, _state.value.items)
-                onMoveFailed(failedIds)
-            }
+            withContext(Dispatchers.IO) { syncEngine.drain() }
             _state.update { it.copy(isMoving = false) }
         }
     }
@@ -290,19 +315,22 @@ class ShoppingClosetViewModel @Inject constructor(
         val folderId = shoppingFolderId ?: return
         val toDelete = _state.value.items.filter { it.driveId in driveIds }
         if (toDelete.isEmpty()) { _state.update { it.copy(selectedIds = emptySet()) }; return }
-        // Optimistic: vanish from the view + cache immediately, then delete from Drive in the
-        // background (best-effort, matching the previous fault tolerance).
+        // Optimistic: vanish from the view + cache immediately, then queue the Drive deletes
+        // (refactor § 2 — [ITEM_DELETE_KIND] retries instead of orphaning the files on failure).
         _state.update { s -> s.copy(selectedIds = emptySet(), error = null, items = s.items.filter { it.driveId !in driveIds }) }
         viewModelScope.launch {
             // Cache write first — still before any Drive call — so the delete survives a restart.
             saveLocalCache(folderId, _state.value.items)
             toDelete.forEach { item ->
-                runCatching {
-                    drive.deleteFile(item.driveId)
-                    item.originalDriveId?.let { drive.deleteFile(it) }
-                    item.sidecarDriveId?.let { drive.deleteFile(it) }
-                }.onFailure { Log.w(TAG, "delete failed for ${item.driveId}", it) }
+                val fileIds = listOfNotNull(item.driveId, item.originalDriveId, item.sidecarDriveId)
+                mutationStore.enqueue(
+                    ITEM_DELETE_KIND,
+                    targetId = item.driveId,
+                    folderId = folderId,
+                    payload = gson.toJson(DeleteItemPayload(fileIds)),
+                )
             }
+            withContext(Dispatchers.IO) { syncEngine.drain() }
         }
     }
 

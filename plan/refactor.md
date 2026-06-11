@@ -9,7 +9,7 @@ deferred and inter-blocking:
 | § | Layer | Status |
 |---|-------|--------|
 | 1 | Multi-module Gradle | **Partial** — `:core:model`/`:core:common`/`:core:database`/`:core:ml`/`:core:sync`/`:core:ai` landed (phase 4); `core/designsystem` blocked on splitting the 31-locale `res/`, `feature/*` on § 5 |
-| 2 | Room as source of truth + SyncEngine | **Partial** — all five JSON-cache slices landed (phase 2) as opaque-JSON cache rows; the `PendingMutation` queue + `SyncEngine` are live with the wardrobe metadata writes converted (sidecar saves, deletes, moves — June 2026, see phase 2 status); outfit/event/trip writes, real entities and the WorkManager trigger are not started |
+| 2 | Room as source of truth + SyncEngine | **Partial** — all five JSON-cache slices landed (phase 2) as opaque-JSON cache rows; the `PendingMutation` queue + `SyncEngine` are live with the wardrobe **and shopping** metadata writes converted (sidecar saves, deletes, moves — June 2026, see phase 2 status); outfit/event/trip writes, real entities and the WorkManager trigger are not started |
 | 3 | DI + interfaces at the seams | **Partial** — Hilt landed (phase 1); the gemini↔drive↔billing package cycles are broken (June 2026, see phase 1 status), making the layering acyclic; interface extraction at the I/O seams pending; static globals (`ImageEncoding.tier`, `GeminiProgress` slot, `AiRetry.action`) still alive |
 | 4 | Navigation Compose | **Done** (phase 3 complete; per-destination VM scoping deferred to § 5) |
 | 5 | Thin VMs over use-cases | **Not started** — the keystone blocker: gates `feature/*` modules, destination-scoped VMs, and removal of the cross-VM `LaunchedEffect` bridges |
@@ -315,6 +315,18 @@ are easy to violate and have caused real bugs.
    payload-free sidecarSync re-reads the re-homed row). The composition is the payoff:
    sidecar→move→delete of one item drain in enqueue order, each handler re-checking
    reality first. Also deleted the unused Drive-first `moveItemsToFolder` (zero callers).
+   **Slice 4 LANDED (June 2026): the shopping closet's move/delete reuse the same
+   mutations.** `ShoppingClosetViewModel.deleteItems` enqueues `wardrobe.deleteItem`;
+   `moveToCloset` enqueues `wardrobe.moveItem` (same handlers — shopping items live in the
+   same `WardrobeItemStore` under the `_shopping` folder). The interesting change is the
+   failure path: the old `onMoveFailed` callback chain (`ShoppingListTab` →
+   `wardrobeViewModel::undoItemsMovedTo`) **cannot survive a queued retry that may complete
+   in a later session**, so it became event-driven — `MoveRollback` now carries
+   `(driveId, source, target)` and *both* VMs collect `moveRolledBack`: the shopping VM
+   splices the item back into the wishlist + shows the error when the source is the
+   shopping folder; the wardrobe VM drops the optimistic target-homed copy from its view,
+   removes the recently-moved marker and (for wardrobe-internal moves) shows the error.
+   `undoItemsMovedTo` and the `onItemsMoveFailed` param chain were deleted.
    **Next slices**: the Drive-first outfit/event saves (these *change* semantics from
    Drive-first to local-first, so they need their `onDone(success)` flows re-examined),
    then WorkManager scheduling once a § 5 pipeline needs process-death survival mid-drain.

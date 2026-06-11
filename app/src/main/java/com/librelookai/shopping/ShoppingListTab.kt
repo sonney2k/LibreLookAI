@@ -67,7 +67,6 @@ internal fun ShoppingListTab(
     locations: List<Location>,
     onCaptureClick: () -> Unit,
     onItemsMovedToCloset: (String, List<DriveImage>) -> Unit,
-    onItemsMoveFailed: (String, Set<String>) -> Unit = { _, _ -> },
     onCreateOutfitFromSelection: (Set<String>) -> Unit,
     onTryOnSelection: (Set<String>) -> Unit,
     canTryOn: Boolean,
@@ -305,7 +304,6 @@ internal fun ShoppingListTab(
                 shoppingClosetViewModel.moveToCloset(
                     state.selectedIds, folderId,
                     onMoved = { moved -> if (moved.isNotEmpty()) onItemsMovedToCloset(folderId, moved) },
-                    onMoveFailed = { failedIds -> onItemsMoveFailed(folderId, failedIds) },
                 )
             },
             onDismiss = { showMoveDialog = false },

@@ -163,9 +163,6 @@ internal fun ItemViewerDestination(
                         onMoved = { moved ->
                             if (moved.isNotEmpty()) wardrobeViewModel.notifyItemsMovedTo(folderId, moved)
                         },
-                        onMoveFailed = { failedIds ->
-                            wardrobeViewModel.undoItemsMovedTo(folderId, failedIds)
-                        },
                     )
                 } else {
                     wardrobeViewModel.moveItemsToLocation(ids, folderId)

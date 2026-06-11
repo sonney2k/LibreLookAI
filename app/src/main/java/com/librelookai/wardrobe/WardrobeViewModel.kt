@@ -199,22 +199,26 @@ class WardrobeViewModel @Inject constructor(
         }
         // SyncEngine feedback: a queued move exhausted its retries and the handler re-homed the
         // Room row back to its source — undo the UI part of the optimistic move (recently-moved
-        // marker, splice back into the visible view, error banner).
+        // marker, target-view splice, source-view restore, error banner). Also covers
+        // shopping→closet moves (the wardrobe side only registered the item optimistically;
+        // the shopping VM restores its own list and shows its own error).
         viewModelScope.launch {
             moveSync.moveRolledBack.collect { rollback ->
                 recentlyMovedItems.remove(rollback.driveId)
+                // Drop the optimistic target-homed copy from the view, then restore the
+                // source-homed one when the current view covers its closet.
                 val restored = withContext(Dispatchers.IO) { readCacheAsImages(rollback.sourceFolderId) }
                     .firstOrNull { it.driveId == rollback.driveId }
-                if (restored != null &&
+                val showRestored = restored != null &&
                     (folderId == rollback.sourceFolderId || allFolderIds?.contains(rollback.sourceFolderId) == true)
-                ) {
-                    _state.update { s ->
-                        if (s.images.any { it.driveId == rollback.driveId }) s
-                        else s.copy(images = s.images + restored)
-                    }
+                _state.update { s ->
+                    val pruned = s.images.filter { it.driveId != rollback.driveId }
+                    s.copy(images = if (showRestored) pruned + restored!! else pruned)
                 }
-                _state.update {
-                    it.copy(error = getApplication<Application>().localized().getString(R.string.wardrobe_move_failed))
+                if (rollback.sourceFolderId != shoppingFolderId) {
+                    _state.update {
+                        it.copy(error = getApplication<Application>().localized().getString(R.string.wardrobe_move_failed))
+                    }
                 }
                 refreshAllLocationImagesState()
             }
@@ -1180,22 +1184,6 @@ class WardrobeViewModel @Inject constructor(
             if (toAdd.isNotEmpty()) {
                 _state.update { s -> s.copy(images = s.images + toAdd) }
             }
-        }
-    }
-
-    /**
-     * Reverses an optimistic [notifyItemsMovedTo] for items whose move ultimately failed on Drive
-     * (e.g. a shopping→closet move that errored). Drops the recently-moved markers, removes the
-     * items from the target closet's cache + the visible list, and refreshes the snapshot — so a
-     * failed move never leaves a ghost item in the destination closet. Callable from other VMs.
-     */
-    fun undoItemsMovedTo(targetFolderId: String, ids: Set<String>) {
-        if (ids.isEmpty() || targetFolderId.isEmpty()) return
-        ids.forEach { recentlyMovedItems.remove(it) }
-        _state.update { s -> s.copy(images = s.images.filter { it.driveId !in ids }) }
-        viewModelScope.launch(Dispatchers.IO) {
-            removeFromCacheFile(targetFolderId, ids)
-            refreshAllLocationImagesState()
         }
     }
 

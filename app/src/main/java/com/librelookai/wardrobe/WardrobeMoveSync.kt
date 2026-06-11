@@ -30,7 +30,7 @@ internal data class MoveItemPayload(
 )
 
 /** Emitted when a move gave up permanently and the Room re-home was reverted. */
-data class MoveRollback(val driveId: String, val sourceFolderId: String)
+data class MoveRollback(val driveId: String, val sourceFolderId: String, val targetFolderId: String)
 
 /**
  * Drains queued item moves (refactor § 2). The optimistic local re-home (state + Room) already
@@ -85,7 +85,9 @@ class WardrobeMoveSyncHandler @Inject constructor(
         val (currentFolder, item) = items.find(mutation.targetId) ?: return
         if (currentFolder == payload.targetFolderId) {
             items.addAll(payload.sourceFolderId, listOf(item))
-            _moveRolledBack.tryEmit(MoveRollback(mutation.targetId, payload.sourceFolderId))
+            _moveRolledBack.tryEmit(
+                MoveRollback(mutation.targetId, payload.sourceFolderId, payload.targetFolderId),
+            )
         }
     }
 }
