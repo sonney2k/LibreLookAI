@@ -237,7 +237,13 @@ fun buildDiagnostics(context: Context, appState: String = ""): String = buildStr
         val fmt = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US)
         appendLine("  First install: ${fmt.format(Date(pi.firstInstallTime))}")
         appendLine("  Last update: ${fmt.format(Date(pi.lastUpdateTime))}")
-        appendLine("  Installer: ${context.packageManager.getInstallerPackageName(context.packageName) ?: "none (sideload)"}")
+        val installer = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            context.packageManager.getInstallSourceInfo(context.packageName).installingPackageName
+        } else {
+            @Suppress("DEPRECATION")
+            context.packageManager.getInstallerPackageName(context.packageName)
+        }
+        appendLine("  Installer: ${installer ?: "none (sideload)"}")
     }
     runCatching {
         val pm = context.getSystemService(Context.POWER_SERVICE) as android.os.PowerManager
