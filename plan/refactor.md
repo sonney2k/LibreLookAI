@@ -304,6 +304,44 @@ are easy to violate and have caused real bugs.
    **Phase 3 COMPLETE.**
 4. **Modularize last** — once dependencies are sane, moving packages into Gradle modules is
    mechanical (`scripts/kt_split.py`-style, compiler-driven).
+   **Status: core extraction LANDED (June 2026).** First four library modules: `:core:model`,
+   `:core:common`, `:core:database`, `:core:ml` (namespaces `com.librelookai.core.*`). The key
+   mechanic that made this churn-free: **moved code keeps its original Kotlin package** — only
+   `R`/`BuildConfig` references are namespace-bound, and every moved file has none, so the
+   ~hundreds of existing import sites stayed untouched and the diff is almost pure `git mv`.
+   - `:core:model` — `data/model/*` plus three knot-cutting moves of pure data out of feature
+     files (original packages kept): `ClothingTags`/`FashionTrends` out of
+     `gemini/GeminiModels.kt` (the `internal` response DTOs stayed), `AiConsiderations` out of
+     `settings/UserPreferences.kt`, and `DriveImage` out of `wardrobe/WardrobeModels.kt`.
+     Exposes Gson as `api` (consumers' Gson reads the moved classes' annotations at runtime).
+   - `:core:database` — all of `data/local` (Room stores + Hilt modules) and its five
+     Robolectric store-test suites; the app module's Java-21 test-toolchain pin is replicated
+     in the module. Room + its KSP compiler left `:app`'s dependencies entirely.
+   - `:core:common` — `util/`'s R-free, dependency-free helpers: `ImageEncoding` (incl.
+     `ImageQuality`), `NetworkUtils` (`NetworkMonitor`, `LocalIsOffline`,
+     `LocalSystemBarsPadding`, `rememberDialogBottomInset`), `Scrollbar`, `StartupGate`, plus
+     `ImageEncodingTest`. The R-/feature-coupled utils (`AiProcessingOverlay`,
+     `RestoreProgressOverlay`, `LocaleContext`, `FeatureFlags`, `Analytics`) stay in `:app`.
+   - `:core:ml` — the whole `ml/` package + `PHashTest`; its cross-package imports were
+     KDoc-only except `DriveImage` (now in `:core:model`), so the move was pure. The mediapipe
+     dependency moved with it. The `.tflite` assets deliberately **stay in `app/`** so the
+     `androidResources.noCompress("tflite")` mmap guarantee keeps applying at the one place
+     that packages the APK.
+   - Only behavioral-code change: a smart-cast in `ShoppingClosetViewModel.ensureOriginalCached`
+     became a local `val` (smart casts don't cross module boundaries on public properties).
+   **What stays in `:app`, and why (the honest remainder):**
+   - `gemini` / `data/drive` / `auth` / `billing` are mutually cyclic (`TokenUsage` syncs via
+     `DriveRepository`, `DriveRepository` records via `TokenUsageRepository`,
+     `PricingClient` → `CreditPacks`) — extracting `core/ai` + `core/sync` needs the
+     phase-2-deferred interface inversion at those seams first.
+   - `core/designsystem` is blocked on resources: `ui/theme` / `ui/components` reference
+     `R.string`/`R.font` from the app's single `res/` (31 locales); splitting strings per
+     module is its own decision, not a mechanical move.
+   - `feature/*` modules are blocked on § 5: every ViewModel is still activity-scoped and
+     shared across features (travel reads `OutfitsViewModel`, try-on reads wardrobe+shopping,
+     ~25 cross-VM bridges in `AppContent`), so feature boundaries would be cyclic today.
+   Verification: `./gradlew assembleDebug testDebugUnitTest` green — 99 tests across the four
+   modules (60 app / 25 database / 7 common / 7 ml), 0 failures.
 
 ## Verification (per phase)
 
