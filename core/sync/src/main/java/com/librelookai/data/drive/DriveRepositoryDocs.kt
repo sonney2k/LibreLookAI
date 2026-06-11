@@ -11,7 +11,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
  *  imports from `gemini/` (the AI layer references this via `TokenUsageRepository.DRIVE_FILE_NAME`). */
 const val TOKEN_USAGE_DRIVE_FILE_NAME = "_token_usage.jsonl"
 
-internal suspend fun DriveRepository.loadOutfitsJson(folderId: String): String? = withContext(Dispatchers.IO) {
+suspend fun DriveRepository.loadOutfitsJson(folderId: String): String? = withContext(Dispatchers.IO) {
         val tok = token()
         val id = findFileIdByName(folderId, DriveRepository.OUTFITS_FILE_NAME, tok)
             ?: findFileIdByName(folderId, DriveRepository.LEGACY_STYLES_FILE_NAME, tok)
@@ -20,7 +20,7 @@ internal suspend fun DriveRepository.loadOutfitsJson(folderId: String): String? 
     }
 
     /** Creates or overwrites the saved-outfits JSON file in Drive (always writes [DriveRepository.OUTFITS_FILE_NAME]). */
-internal suspend fun DriveRepository.saveOutfitsJson(folderId: String, json: String) = withContext(Dispatchers.IO) {
+suspend fun DriveRepository.saveOutfitsJson(folderId: String, json: String) = withContext(Dispatchers.IO) {
         val tok = token()
         val existingId = findFileIdByName(folderId, DriveRepository.OUTFITS_FILE_NAME, tok)
         val fileId = existingId ?: run {
@@ -45,7 +45,7 @@ internal suspend fun DriveRepository.saveOutfitsJson(folderId: String, json: Str
      * Loads the outfit-events (calendar wear history) JSON from Drive. Falls back to
      * [DriveRepository.LEGACY_OUTFIT_EVENTS_FILE_NAME] if the current filename isn't present yet.
      */
-internal suspend fun DriveRepository.loadOutfitEventsJson(folderId: String): String? = withContext(Dispatchers.IO) {
+suspend fun DriveRepository.loadOutfitEventsJson(folderId: String): String? = withContext(Dispatchers.IO) {
         val tok = token()
         val id = findFileIdByName(folderId, DriveRepository.OUTFIT_EVENTS_FILE_NAME, tok)
             ?: findFileIdByName(folderId, DriveRepository.LEGACY_OUTFIT_EVENTS_FILE_NAME, tok)
@@ -54,7 +54,7 @@ internal suspend fun DriveRepository.loadOutfitEventsJson(folderId: String): Str
     }
 
     /** Creates or overwrites the outfit-events JSON in Drive (always writes [DriveRepository.OUTFIT_EVENTS_FILE_NAME]). */
-internal suspend fun DriveRepository.saveOutfitEventsJson(folderId: String, json: String) = withContext(Dispatchers.IO) {
+suspend fun DriveRepository.saveOutfitEventsJson(folderId: String, json: String) = withContext(Dispatchers.IO) {
         val tok = token()
         val existingId = findFileIdByName(folderId, DriveRepository.OUTFIT_EVENTS_FILE_NAME, tok)
         val fileId = existingId ?: run {
@@ -76,7 +76,7 @@ internal suspend fun DriveRepository.saveOutfitEventsJson(folderId: String, json
     }
 
     /** Loads the user preferences JSON from Drive, or null if not yet saved. */
-internal suspend fun DriveRepository.loadPreferencesJson(folderId: String): String? = withContext(Dispatchers.IO) {
+suspend fun DriveRepository.loadPreferencesJson(folderId: String): String? = withContext(Dispatchers.IO) {
         val tok = token()
         val q = URLEncoder.encode(
             "'$folderId' in parents and name='${DriveRepository.PREFERENCES_FILE_NAME}' and trashed=false", "UTF-8",
@@ -97,7 +97,7 @@ internal suspend fun DriveRepository.loadPreferencesJson(folderId: String): Stri
     }
 
     /** Creates or overwrites the user preferences JSON file in Drive. */
-internal suspend fun DriveRepository.savePreferencesJson(folderId: String, json: String) = withContext(Dispatchers.IO) {
+suspend fun DriveRepository.savePreferencesJson(folderId: String, json: String) = withContext(Dispatchers.IO) {
         val tok = token()
         val q = URLEncoder.encode(
             "'$folderId' in parents and name='${DriveRepository.PREFERENCES_FILE_NAME}' and trashed=false", "UTF-8",
@@ -129,7 +129,7 @@ internal suspend fun DriveRepository.savePreferencesJson(folderId: String, json:
     }
 
     /** Loads the token-usage JSONL log from Drive (returns null if no file exists yet). */
-internal suspend fun DriveRepository.loadTokenUsageJsonl(folderId: String): String? = withContext(Dispatchers.IO) {
+suspend fun DriveRepository.loadTokenUsageJsonl(folderId: String): String? = withContext(Dispatchers.IO) {
         val tok = token()
         val q = URLEncoder.encode(
             "'$folderId' in parents and name='$TOKEN_USAGE_DRIVE_FILE_NAME' and trashed=false", "UTF-8",
@@ -150,7 +150,7 @@ internal suspend fun DriveRepository.loadTokenUsageJsonl(folderId: String): Stri
     }
 
     /** Creates or overwrites the token-usage JSONL file in Drive. */
-internal suspend fun DriveRepository.saveTokenUsageJsonl(folderId: String, content: String) = withContext(Dispatchers.IO) {
+suspend fun DriveRepository.saveTokenUsageJsonl(folderId: String, content: String) = withContext(Dispatchers.IO) {
         val tok = token()
         val name = TOKEN_USAGE_DRIVE_FILE_NAME
         val q = URLEncoder.encode(
@@ -183,7 +183,7 @@ internal suspend fun DriveRepository.saveTokenUsageJsonl(folderId: String, conte
     }
 
     /** Loads the wardrobe metadata JSON string from Drive, or null if not yet created. */
-internal suspend fun DriveRepository.loadWardrobeMetadataJson(folderId: String): String? = withContext(Dispatchers.IO) {
+suspend fun DriveRepository.loadWardrobeMetadataJson(folderId: String): String? = withContext(Dispatchers.IO) {
         val tok = token()
         val q = URLEncoder.encode(
             "'$folderId' in parents and name='${DriveRepository.WARDROBE_METADATA_FILE_NAME}' and trashed=false", "UTF-8",
@@ -204,7 +204,7 @@ internal suspend fun DriveRepository.loadWardrobeMetadataJson(folderId: String):
     }
 
     /** Creates or overwrites the wardrobe metadata JSON file in Drive. */
-internal suspend fun DriveRepository.saveWardrobeMetadataJson(folderId: String, json: String) = withContext(Dispatchers.IO) {
+suspend fun DriveRepository.saveWardrobeMetadataJson(folderId: String, json: String) = withContext(Dispatchers.IO) {
         val tok = token()
         val q = URLEncoder.encode(
             "'$folderId' in parents and name='${DriveRepository.WARDROBE_METADATA_FILE_NAME}' and trashed=false", "UTF-8",
@@ -236,7 +236,7 @@ internal suspend fun DriveRepository.saveWardrobeMetadataJson(folderId: String, 
     }
 
     /** Loads the locations JSON string from the root Drive folder, or null if not yet created. */
-internal suspend fun DriveRepository.loadLocationsJson(rootFolderId: String): String? = withContext(Dispatchers.IO) {
+suspend fun DriveRepository.loadLocationsJson(rootFolderId: String): String? = withContext(Dispatchers.IO) {
         val tok = token()
         val q = URLEncoder.encode(
             "'$rootFolderId' in parents and name='${DriveRepository.LOCATIONS_FILE_NAME}' and trashed=false", "UTF-8",
@@ -257,7 +257,7 @@ internal suspend fun DriveRepository.loadLocationsJson(rootFolderId: String): St
     }
 
     /** Creates or overwrites the locations JSON file in the root Drive folder. */
-internal suspend fun DriveRepository.saveLocationsJson(rootFolderId: String, json: String) = withContext(Dispatchers.IO) {
+suspend fun DriveRepository.saveLocationsJson(rootFolderId: String, json: String) = withContext(Dispatchers.IO) {
         val tok = token()
         val q = URLEncoder.encode(
             "'$rootFolderId' in parents and name='${DriveRepository.LOCATIONS_FILE_NAME}' and trashed=false", "UTF-8",
@@ -289,7 +289,7 @@ internal suspend fun DriveRepository.saveLocationsJson(rootFolderId: String, jso
     }
 
     /** Reads the region-keyed fashion-trends cache JSON from the root Drive folder, or null if absent. */
-internal suspend fun DriveRepository.loadTrendsCacheJson(rootFolderId: String): String? = withContext(Dispatchers.IO) {
+suspend fun DriveRepository.loadTrendsCacheJson(rootFolderId: String): String? = withContext(Dispatchers.IO) {
         val tok = token()
         val q = URLEncoder.encode(
             "'$rootFolderId' in parents and name='${DriveRepository.TRENDS_CACHE_FILE_NAME}' and trashed=false", "UTF-8",
@@ -310,7 +310,7 @@ internal suspend fun DriveRepository.loadTrendsCacheJson(rootFolderId: String): 
     }
 
     /** Creates or overwrites the fashion-trends cache JSON in the root Drive folder. */
-internal suspend fun DriveRepository.saveTrendsCacheJson(rootFolderId: String, json: String) = withContext(Dispatchers.IO) {
+suspend fun DriveRepository.saveTrendsCacheJson(rootFolderId: String, json: String) = withContext(Dispatchers.IO) {
         val tok = token()
         val q = URLEncoder.encode(
             "'$rootFolderId' in parents and name='${DriveRepository.TRENDS_CACHE_FILE_NAME}' and trashed=false", "UTF-8",

@@ -1,7 +1,7 @@
 package com.librelookai.data.drive
 import android.content.Context
 import android.util.Log
-import com.librelookai.BuildConfig
+import com.librelookai.core.sync.BuildConfig
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import kotlinx.coroutines.Dispatchers
@@ -43,7 +43,7 @@ data class DriveFileDto(
     } ?: 0L
 }
 
-internal data class FilesListDto(
+data class FilesListDto(
     val files: List<DriveFileDto> = emptyList(),
     val nextPageToken: String? = null,
 )

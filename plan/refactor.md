@@ -8,7 +8,7 @@ deferred and inter-blocking:
 
 | § | Layer | Status |
 |---|-------|--------|
-| 1 | Multi-module Gradle | **Partial** — `:core:model`/`:core:common`/`:core:database`/`:core:ml` landed (phase 4); `core/ai`+`core/sync` blocked on the remaining § 7-shaped config coupling, `core/designsystem` on splitting the 31-locale `res/`, `feature/*` on § 5 |
+| 1 | Multi-module Gradle | **Partial** — `:core:model`/`:core:common`/`:core:database`/`:core:ml`/`:core:sync` landed (phase 4); `core/ai` blocked on `GeminiRepository`'s `R.string` ids (§ 6) + `ManagedBilling` flag (§ 7), `core/designsystem` on splitting the 31-locale `res/`, `feature/*` on § 5 |
 | 2 | Room as source of truth + SyncEngine | **Partial** — all five JSON-cache slices landed (phase 2), but as opaque-JSON cache rows; real entities, the `PendingMutation` queue and the WorkManager `SyncEngine` are **not started** |
 | 3 | DI + interfaces at the seams | **Partial** — Hilt landed (phase 1); the gemini↔drive↔billing package cycles are broken (June 2026, see phase 1 status), making the layering acyclic; interface extraction at the I/O seams pending; static globals (`ImageEncoding.tier`, `GeminiProgress` slot, `AiRetry.action`) still alive |
 | 4 | Navigation Compose | **Done** (phase 3 complete; per-destination VM scoping deferred to § 5) |
@@ -360,12 +360,24 @@ are easy to violate and have caused real bugs.
      that packages the APK.
    - Only behavioral-code change: a smart-cast in `ShoppingClosetViewModel.ensureOriginalCached`
      became a local `val` (smart casts don't cross module boundaries on public properties).
+   **`:core:sync` extraction LANDED (June 2026)**, enabled by the seam inversion (phase 1
+   status): all of `data/drive` (`DriveRepository` 4-file split + `DriveMigration`) plus the
+   non-UI half of `auth/` (`GoogleAuthManager`, `AuthEvents` — `SignInScreen`/`AuthViewModel`
+   stay in `:app`; same-package split, like `settings/`). The two `BuildConfig` switches the
+   moved code reads (`DRIVE_FULL_SCOPE`, `FIREBASE_WEB_CLIENT_ID`) became module-own
+   `buildConfigField`s read from the same `local.properties`, so values can't drift; the
+   moved files import `com.librelookai.core.sync.BuildConfig`. The drive extension functions'
+   `internal` visibility (which in a single-module app meant "public") was bumped to public
+   where the compiler flagged cross-module callers. Exposes `:core:model` as `api`
+   (`DriveRepository` signatures carry `Location`/`Outfit`).
    **What stays in `:app`, and why (the honest remainder):**
-   - `gemini` / `data/drive` / `auth` / `billing`: the package cycles were broken after the
-     core extraction landed (see phase 1 "Seam inversion started") — what still blocks
-     extracting `core/ai` + `core/sync` is the `R.string`/`BuildConfig`/`ManagedBilling`
-     coupling in `GeminiRepository`/`DriveRepository` (§ 7-shaped config inversion) and the
-     `internal` drive extension functions that would cross a module boundary.
+   - `gemini` / `billing`: the package cycles were broken and `data/drive`+`GoogleAuthManager`
+     extracted to `:core:sync` (see above) — what still blocks a `core/ai` extraction is
+     `GeminiRepository`'s `R.string` notice ids (31-locale strings live in the app `res/`;
+     the § 6 typed-error refactor would replace the ids with semantic reasons mapped to
+     strings app-side) and the fully-qualified `billing.ManagedBilling.enabled` read
+     (BuildConfig-driven; § 7 flag inversion). `billing` itself is feature-shaped and waits
+     for `feature/*`.
    - `core/designsystem` is blocked on resources: `ui/theme` / `ui/components` reference
      `R.string`/`R.font` from the app's single `res/` (31 locales); splitting strings per
      module is its own decision, not a mechanical move.

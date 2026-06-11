@@ -9,7 +9,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 
-internal suspend fun DriveRepository.getOrCreateProfileFolder(rootFolderId: String): String =
+suspend fun DriveRepository.getOrCreateProfileFolder(rootFolderId: String): String =
         createSubfolder(rootFolderId, DriveRepository.PROFILE_FOLDER_NAME)
 
     /**
@@ -17,7 +17,7 @@ internal suspend fun DriveRepository.getOrCreateProfileFolder(rootFolderId: Stri
      * If a file with the same [name] already exists it is replaced in-place (Drive ID preserved).
      * Returns the final Drive file ID.
      */
-internal suspend fun DriveRepository.uploadProfilePhoto(rootFolderId: String, name: String, imageFile: File): String =
+suspend fun DriveRepository.uploadProfilePhoto(rootFolderId: String, name: String, imageFile: File): String =
         withContext(Dispatchers.IO) {
             val profileFolderId = getOrCreateProfileFolder(rootFolderId)
             val tok = token()
@@ -45,7 +45,7 @@ internal suspend fun DriveRepository.uploadProfilePhoto(rootFolderId: String, na
      * Returns the Drive folder ID of the [DriveRepository.TRYONS_FOLDER_NAME] subfolder inside [rootFolderId],
      * creating it if needed.
      */
-internal suspend fun DriveRepository.getOrCreateTryOnsFolder(rootFolderId: String): String =
+suspend fun DriveRepository.getOrCreateTryOnsFolder(rootFolderId: String): String =
         createSubfolder(rootFolderId, DriveRepository.TRYONS_FOLDER_NAME)
 
     /**
@@ -53,18 +53,18 @@ internal suspend fun DriveRepository.getOrCreateTryOnsFolder(rootFolderId: Strin
      * creating it if needed. Items in this folder share the regular closet layout (cutout +
      * original + sidecar) so they can be moved to a real closet by file-move only.
      */
-internal suspend fun DriveRepository.getOrCreateShoppingFolder(rootFolderId: String): String =
+suspend fun DriveRepository.getOrCreateShoppingFolder(rootFolderId: String): String =
         createSubfolder(rootFolderId, DriveRepository.SHOPPING_FOLDER_NAME)
 
     /**
      * Returns the Drive folder ID of the [DriveRepository.TRIPS_FOLDER_NAME] subfolder inside [rootFolderId],
      * creating it if needed. Each trip is `{tripId}.json` inside this folder.
      */
-internal suspend fun DriveRepository.getOrCreateTripsFolder(rootFolderId: String): String =
+suspend fun DriveRepository.getOrCreateTripsFolder(rootFolderId: String): String =
         createSubfolder(rootFolderId, DriveRepository.TRIPS_FOLDER_NAME)
 
     /** Lists trip JSON files directly inside [tripsFolderId]. Returns (driveFileId, name). */
-internal suspend fun DriveRepository.listTripFiles(tripsFolderId: String): List<DriveFileDto> = withContext(Dispatchers.IO) {
+suspend fun DriveRepository.listTripFiles(tripsFolderId: String): List<DriveFileDto> = withContext(Dispatchers.IO) {
         val tok = token()
         val q = URLEncoder.encode(
             "'$tripsFolderId' in parents and mimeType='application/json' and trashed=false",
@@ -82,14 +82,14 @@ internal suspend fun DriveRepository.listTripFiles(tripsFolderId: String): List<
     }
 
     /** Downloads a single trip's JSON by Drive file ID. */
-internal suspend fun DriveRepository.loadTripJson(fileId: String): String? = withContext(Dispatchers.IO) {
+suspend fun DriveRepository.loadTripJson(fileId: String): String? = withContext(Dispatchers.IO) {
         downloadFileText(fileId, token())
     }
 
     /**
      * Creates or overwrites `{tripId}.json` inside [tripsFolderId]. Returns the Drive file ID.
      */
-internal suspend fun DriveRepository.saveTripJson(tripsFolderId: String, tripId: String, json: String): String =
+suspend fun DriveRepository.saveTripJson(tripsFolderId: String, tripId: String, json: String): String =
         withContext(Dispatchers.IO) {
             val tok = token()
             val name = "$tripId.json"
@@ -118,12 +118,12 @@ internal suspend fun DriveRepository.saveTripJson(tripsFolderId: String, tripId:
         }
 
     /** Deletes a trip JSON by Drive file ID. */
-internal suspend fun DriveRepository.deleteTripJson(fileId: String) = deleteFile(fileId)
+suspend fun DriveRepository.deleteTripJson(fileId: String) = deleteFile(fileId)
 
     /**
      * Uploads [imageFile] (PNG) into the try-ons subfolder with [name]. Returns the new Drive ID.
      */
-internal suspend fun DriveRepository.uploadTryOnImage(rootFolderId: String, name: String, imageFile: File): String =
+suspend fun DriveRepository.uploadTryOnImage(rootFolderId: String, name: String, imageFile: File): String =
         withContext(Dispatchers.IO) {
             val folderId = getOrCreateTryOnsFolder(rootFolderId)
             val tok = token()
@@ -145,14 +145,14 @@ internal suspend fun DriveRepository.uploadTryOnImage(rootFolderId: String, name
         }
 
     /** Loads the try-ons index JSON from the root Drive folder, or null if not yet created. */
-internal suspend fun DriveRepository.loadTryOnsJson(rootFolderId: String): String? = withContext(Dispatchers.IO) {
+suspend fun DriveRepository.loadTryOnsJson(rootFolderId: String): String? = withContext(Dispatchers.IO) {
         val tok = token()
         val id = findFileIdByName(rootFolderId, DriveRepository.TRYONS_FILE_NAME, tok) ?: return@withContext null
         downloadFileText(id, tok)
     }
 
     /** Creates or overwrites the try-ons index JSON in the root Drive folder. */
-internal suspend fun DriveRepository.saveTryOnsJson(rootFolderId: String, json: String) = withContext(Dispatchers.IO) {
+suspend fun DriveRepository.saveTryOnsJson(rootFolderId: String, json: String) = withContext(Dispatchers.IO) {
         val tok = token()
         val existingId = findFileIdByName(rootFolderId, DriveRepository.TRYONS_FILE_NAME, tok)
         val fileId = existingId ?: run {
