@@ -51,6 +51,8 @@ android {
 dependencies {
     // DriveRepository's API surface exposes core:model types (Location, Outfit, …).
     api(project(":core:model"))
+    // SyncEngine's MutationHandler signatures expose PendingMutation(Store).
+    api(project(":core:database"))
     implementation(project(":core:common"))
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.play.services)
@@ -63,4 +65,6 @@ dependencies {
     implementation(libs.googleid)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth.ktx)
+
+    testImplementation(libs.junit)
 }

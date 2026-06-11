@@ -70,6 +70,19 @@ private val MIGRATION_4_5 = object : Migration(4, 5) {
     }
 }
 
+/** v6: pending-mutation queue (refactor § 2 — Drive-bound writes drained by the SyncEngine). */
+private val MIGRATION_5_6 = object : Migration(5, 6) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `pending_mutations` " +
+                "(`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `kind` TEXT NOT NULL, " +
+                "`targetId` TEXT NOT NULL, `folderId` TEXT, `payload` TEXT NOT NULL, " +
+                "`rollback` TEXT, `attempts` INTEGER NOT NULL, `lastError` TEXT, " +
+                "`createdMs` INTEGER NOT NULL)",
+        )
+    }
+}
+
 @Module
 @InstallIn(SingletonComponent::class)
 object LocalDatabaseModule {
@@ -78,7 +91,7 @@ object LocalDatabaseModule {
     @Singleton
     fun provideLocalDatabase(@ApplicationContext context: Context): LocalDatabase =
         Room.databaseBuilder(context, LocalDatabase::class.java, "librelookai.db")
-            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6)
             .build()
 
     @Provides
@@ -95,6 +108,9 @@ object LocalDatabaseModule {
 
     @Provides
     fun provideTryOnDao(db: LocalDatabase): TryOnDao = db.tryOnDao()
+
+    @Provides
+    fun providePendingMutationDao(db: LocalDatabase): PendingMutationDao = db.pendingMutationDao()
 }
 
 @Module
@@ -115,4 +131,7 @@ abstract class LocalStoreModule {
 
     @Binds
     abstract fun bindTryOnStore(impl: RoomTryOnStore): TryOnStore
+
+    @Binds
+    abstract fun bindPendingMutationStore(impl: RoomPendingMutationStore): PendingMutationStore
 }

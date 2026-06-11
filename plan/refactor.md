@@ -9,7 +9,7 @@ deferred and inter-blocking:
 | § | Layer | Status |
 |---|-------|--------|
 | 1 | Multi-module Gradle | **Partial** — `:core:model`/`:core:common`/`:core:database`/`:core:ml`/`:core:sync`/`:core:ai` landed (phase 4); `core/designsystem` blocked on splitting the 31-locale `res/`, `feature/*` on § 5 |
-| 2 | Room as source of truth + SyncEngine | **Partial** — all five JSON-cache slices landed (phase 2), but as opaque-JSON cache rows; real entities, the `PendingMutation` queue and the WorkManager `SyncEngine` are **not started** |
+| 2 | Room as source of truth + SyncEngine | **Partial** — all five JSON-cache slices landed (phase 2), but as opaque-JSON cache rows; the `PendingMutation` queue + `SyncEngine` core are **dark-launched** (June 2026, see phase 2 status) — no write path enqueues yet; real entities and the WorkManager trigger are not started |
 | 3 | DI + interfaces at the seams | **Partial** — Hilt landed (phase 1); the gemini↔drive↔billing package cycles are broken (June 2026, see phase 1 status), making the layering acyclic; interface extraction at the I/O seams pending; static globals (`ImageEncoding.tier`, `GeminiProgress` slot, `AiRetry.action`) still alive |
 | 4 | Navigation Compose | **Done** (phase 3 complete; per-destination VM scoping deferred to § 5) |
 | 5 | Thin VMs over use-cases | **Not started** — the keystone blocker: gates `feature/*` modules, destination-scoped VMs, and removal of the cross-VM `LaunchedEffect` bridges |
@@ -244,6 +244,25 @@ are easy to violate and have caused real bugs.
    **Remaining slices**: token-usage/trends caches (deliberately deferred — token-usage has
    its own per-month structure + Drive sync; `trends_cache.json` is the layered
    disk→Drive→Gemini `FashionTrendsCache`).
+   **SyncEngine slice 0 LANDED dark (June 2026).** The queue + engine core exist with zero
+   behavior change — nothing enqueues yet:
+   - `pending_mutations` table (DB v6, additive) + `PendingMutationStore` in `:core:database`
+     (`data/local/PendingMutationDb.kt` / `PendingMutationStore.kt`): strict global FIFO of
+     Drive-bound writes; `payload`/`rollback` are opaque JSON owned by the handler (the
+     cache-row precedent), `targetId`/`folderId` carry identity per the cache-folder rule.
+   - `SyncEngine` + `MutationHandler` in `:core:sync` (`data/drive/SyncEngine.kt`): handlers
+     register feature-side via Hilt `@IntoSet` (a `@Multibinds` declaration permits the
+     current empty set); the engine drains oldest-first under a single-flight mutex. Drain
+     rules (encoded in `SyncEngineTest`, plain JUnit over a fake store — the engine only sees
+     the store *interface*, the first § 3-style seam paying off): `Retry` halts the drain
+     (FIFO — later writes can't overtake), `Permanent` and attempt-exhaustion (8) roll back
+     via the handler and continue, an unknown `kind` (downgrade racing a newer queue row)
+     halts without deleting. `:core:sync` now `api`-depends on `:core:database`.
+   - Tests: `PendingMutationStoreTest` (4, Robolectric/Room) + `SyncEngineTest` (6, JUnit).
+   **Next slices**: pick one wardrobe mutation (tag-edit sidecar save is the narrowest),
+   convert its VM write path to optimistic-Room + enqueue, register its handler, and wire
+   the drain trigger (app start + network regain via `NetworkMonitor`; WorkManager once a
+   pipeline needs process-death survival per § 5).
 3. **Navigation Compose** — add the NavHost, convert Dialog-viewers to destinations one at a
    time; delete each Window-quirk workaround as its screen converts. Scope ViewModels to
    destinations as screens convert.
