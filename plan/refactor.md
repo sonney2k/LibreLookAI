@@ -361,8 +361,18 @@ are easy to violate and have caused real bugs.
      a live Drive read before the local commit — offline-gated surfaces mean it runs online,
      and converting it to a store read is a separate decision. Display order converges
      (handler writes store order, which is the state order the helper just wrote).
-   After outfits: outfit events / trips (same Drive-first analysis), then WorkManager
-   scheduling once a § 5 pipeline needs process-death survival mid-drain.
+   **Slice 6 LANDED (June 2026): calendar wear saves go through the queue.** The events twin
+   of slice 5, and the cheapest conversion yet — `OutfitEventsViewModel.persist()` is the
+   single funnel for all 8 calendar mutations (record/move/copy/delete wears, loved toggle).
+   It now updates state + the active folder's `OutfitEventStore` rows first, then enqueues a
+   payload-free `outfitEvent.syncFolder` (handler `outfit/OutfitEventSync.kt`, registered in
+   `OutfitSyncModule`; `OutfitEventStore.hasFolder()` wipe guard, tests in
+   `OutfitEventStoreTest`). Kept the legacy single-target rule: the whole merged list
+   persists into the active folder (or the first of All locations) — same file the old
+   Drive-first write targeted. The old "state updates only on Drive success" ordering flipped
+   to optimistic, matching every other converted path.
+   After events: trips (same Drive-first analysis), then WorkManager scheduling once a § 5
+   pipeline needs process-death survival mid-drain.
 3. **Navigation Compose** — add the NavHost, convert Dialog-viewers to destinations one at a
    time; delete each Window-quirk workaround as its screen converts. Scope ViewModels to
    destinations as screens convert.

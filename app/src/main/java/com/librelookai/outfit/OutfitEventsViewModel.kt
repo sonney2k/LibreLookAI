@@ -14,8 +14,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import com.librelookai.data.drive.DriveRepository
+import com.librelookai.data.drive.SyncEngine
 import com.librelookai.data.drive.loadOutfitEventsJson
-import com.librelookai.data.drive.saveOutfitEventsJson
+import com.librelookai.data.local.PendingMutationStore
 import com.librelookai.data.model.Outfit
 import com.librelookai.data.model.OutfitEvent
 import com.librelookai.data.model.WearSource
@@ -34,6 +35,8 @@ class OutfitEventsViewModel @Inject constructor(
     app: Application,
     private val drive: DriveRepository,
     private val eventStore: com.librelookai.data.local.OutfitEventStore,
+    private val mutationStore: PendingMutationStore,
+    private val syncEngine: SyncEngine,
 ) : AndroidViewModel(app) {
     private val gson = Gson()
     private var folderId: String? = null
@@ -194,17 +197,22 @@ class OutfitEventsViewModel @Inject constructor(
         persist(_state.value.events.map { if (it.id == eventId) it.copy(loved = loved) else it })
     }
 
+    /**
+     * Local-first save (refactor § 2): the updated event list commits to in-memory state and
+     * the active folder's [OutfitEventStore] rows immediately, then a payload-free
+     * [OUTFIT_EVENT_SYNC_KIND] mutation drains it to Drive — the handler re-reads the store at
+     * apply time, so back-to-back calendar edits coalesce, transient failures retry instead of
+     * silently losing the wear, and the queued row survives process death. Keeps the legacy
+     * single-target rule: the whole list persists into the active folder (or the first of All
+     * locations), the same file the old Drive-first write targeted.
+     */
     private fun persist(updated: List<OutfitEvent>) {
         viewModelScope.launch {
             val id = folderId ?: allFolderIds?.firstOrNull() ?: return@launch
-            runCatching {
-                drive.saveOutfitEventsJson(id, gson.toJson(updated))
-            }.onSuccess {
-                runCatching { eventStore.replaceFolder(id, updated) }
-                _state.update { it.copy(events = updated) }
-            }.onFailure { e ->
-                _state.update { it.copy(error = e.message) }
-            }
+            _state.update { it.copy(events = updated) }
+            runCatching { eventStore.replaceFolder(id, updated) }
+            mutationStore.enqueue(OUTFIT_EVENT_SYNC_KIND, targetId = id, folderId = id, payload = "{}")
+            syncEngine.drain()
         }
     }
 

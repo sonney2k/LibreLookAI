@@ -15,4 +15,12 @@ interface OutfitEventStore {
 
     /** Replaces the folder's entire cached event list (post-load / post-mutation snapshot). */
     suspend fun replaceFolder(folderId: String, events: List<OutfitEvent>)
+
+    /**
+     * Whether [folderId] has ever been cached (marker row written by [replaceFolder] or the
+     * legacy seed). The `outfitEvent.syncFolder` mutation handler refuses to write Drive for a
+     * never-cached folder — an empty read there means "unknown", not "no wears", and writing
+     * `[]` would destroy the user's calendar history.
+     */
+    suspend fun hasFolder(folderId: String): Boolean
 }

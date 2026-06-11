@@ -64,4 +64,8 @@ abstract class OutfitSyncModule {
     @Binds
     @IntoSet
     abstract fun bindOutfitFolderSyncHandler(impl: OutfitFolderSyncHandler): MutationHandler
+
+    @Binds
+    @IntoSet
+    abstract fun bindOutfitEventSyncHandler(impl: OutfitEventSyncHandler): MutationHandler
 }
