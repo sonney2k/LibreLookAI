@@ -1,12 +1,15 @@
 package com.librelookai.data.drive
 
-import com.librelookai.gemini.TokenUsageRepository
 import java.net.URLEncoder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+
+/** Drive file name of the token-usage JSONL log. Defined drive-side so the sync layer never
+ *  imports from `gemini/` (the AI layer references this via `TokenUsageRepository.DRIVE_FILE_NAME`). */
+const val TOKEN_USAGE_DRIVE_FILE_NAME = "_token_usage.jsonl"
 
 internal suspend fun DriveRepository.loadOutfitsJson(folderId: String): String? = withContext(Dispatchers.IO) {
         val tok = token()
@@ -129,7 +132,7 @@ internal suspend fun DriveRepository.savePreferencesJson(folderId: String, json:
 internal suspend fun DriveRepository.loadTokenUsageJsonl(folderId: String): String? = withContext(Dispatchers.IO) {
         val tok = token()
         val q = URLEncoder.encode(
-            "'$folderId' in parents and name='${TokenUsageRepository.DRIVE_FILE_NAME}' and trashed=false", "UTF-8",
+            "'$folderId' in parents and name='$TOKEN_USAGE_DRIVE_FILE_NAME' and trashed=false", "UTF-8",
         )
         val fileId = gson.fromJson(
             http.newCall(Request.Builder()
@@ -149,7 +152,7 @@ internal suspend fun DriveRepository.loadTokenUsageJsonl(folderId: String): Stri
     /** Creates or overwrites the token-usage JSONL file in Drive. */
 internal suspend fun DriveRepository.saveTokenUsageJsonl(folderId: String, content: String) = withContext(Dispatchers.IO) {
         val tok = token()
-        val name = TokenUsageRepository.DRIVE_FILE_NAME
+        val name = TOKEN_USAGE_DRIVE_FILE_NAME
         val q = URLEncoder.encode(
             "'$folderId' in parents and name='$name' and trashed=false", "UTF-8",
         )

@@ -5,23 +5,15 @@ import com.librelookai.BuildConfig
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
-import okhttp3.Call
-import okhttp3.Callback
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.Response
 import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.IOException
 import java.net.URLEncoder
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 import com.librelookai.auth.GoogleAuthManager
-import com.librelookai.gemini.TokenUsageRepository
 import com.librelookai.util.ImageEncoding
 import com.librelookai.data.model.Location
 import com.librelookai.data.model.Outfit
@@ -681,12 +673,5 @@ class DriveRepository @Inject constructor(
     internal fun ByteArrayOutputStream.write(s: String) = write(s.toByteArray(Charsets.UTF_8))
 }
 
-// ---------- OkHttp coroutine bridge ----------
-
-suspend fun Call.await(): Response = suspendCancellableCoroutine { cont ->
-    enqueue(object : Callback {
-        override fun onResponse(call: Call, response: Response) = cont.resume(response)
-        override fun onFailure(call: Call, e: IOException) = cont.resumeWithException(e)
-    })
-    cont.invokeOnCancellation { cancel() }
-}
+// The OkHttp coroutine bridge (Call.await) moved to :core:common
+// (core/common/…/data/drive/OkHttpAwait.kt), same package.

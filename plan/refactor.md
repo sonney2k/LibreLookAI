@@ -169,6 +169,20 @@ are easy to violate and have caused real bugs.
    injected `DriveRepository` instead of remembering an Activity-context-built one.
    *Interface extraction was deferred* — it adds value only when the first fake-based tests
    land (phase 2), and extracting it now would churn the 4-file `DriveRepository` split twice.
+   **Seam inversion started (June 2026).** The wrong-direction package edges that kept
+   `gemini`/`data/drive`/`billing` mutually cyclic are gone: `DriveRepository`'s
+   `TokenUsageRepository` import was dead (deleted); the token-usage Drive file name is now a
+   drive-side constant (`TOKEN_USAGE_DRIVE_FILE_NAME` in `DriveRepositoryDocs.kt`) that
+   `TokenUsageRepository.DRIVE_FILE_NAME` aliases — so the sync layer never imports from
+   `gemini/`; the OkHttp `Call.await()` bridge moved to `:core:common` (it was the *only*
+   `data.drive` symbol gemini/auth/weather imported); and `CreditPacks` (pure product/price
+   constants) moved to `:core:model`, removing the `gemini → billing` edge under
+   `UsageCategory`. Layering is now acyclic: sync (`data/drive`) sits below ai (`gemini`),
+   which keeps its legitimate `TokenUsage`/`FashionTrendsCache` → drive dependencies.
+   Remaining knots for a future `core/ai`/`core/sync` extraction: `GeminiRepository`'s
+   `R.string` notice ids + `BuildConfig` key/proxy fields + the fully-qualified
+   `billing.ManagedBilling.enabled` read (all § 7-shaped: config/flags behind an interface),
+   and the `internal` drive extension functions that would cross a module boundary.
 2. **Room under the repositories** — replace the JSON cache files feature-by-feature (wardrobe
    first, then outfits/events, trips, try-ons, shopping), keeping VM-facing APIs stable. Seed
    Room from the existing JSON caches on first launch (no Drive re-download). Delete each
@@ -330,10 +344,11 @@ are easy to violate and have caused real bugs.
    - Only behavioral-code change: a smart-cast in `ShoppingClosetViewModel.ensureOriginalCached`
      became a local `val` (smart casts don't cross module boundaries on public properties).
    **What stays in `:app`, and why (the honest remainder):**
-   - `gemini` / `data/drive` / `auth` / `billing` are mutually cyclic (`TokenUsage` syncs via
-     `DriveRepository`, `DriveRepository` records via `TokenUsageRepository`,
-     `PricingClient` → `CreditPacks`) — extracting `core/ai` + `core/sync` needs the
-     phase-2-deferred interface inversion at those seams first.
+   - `gemini` / `data/drive` / `auth` / `billing`: the package cycles were broken after the
+     core extraction landed (see phase 1 "Seam inversion started") — what still blocks
+     extracting `core/ai` + `core/sync` is the `R.string`/`BuildConfig`/`ManagedBilling`
+     coupling in `GeminiRepository`/`DriveRepository` (§ 7-shaped config inversion) and the
+     `internal` drive extension functions that would cross a module boundary.
    - `core/designsystem` is blocked on resources: `ui/theme` / `ui/components` reference
      `R.string`/`R.font` from the app's single `res/` (31 locales); splitting strings per
      module is its own decision, not a mechanical move.

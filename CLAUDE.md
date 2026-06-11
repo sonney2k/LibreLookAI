@@ -4,7 +4,7 @@ Compact day-to-day guidance. **Deep architecture, pipelines, rationale, and Dial
 
 ## Repo layout
 - `app/` — Android app (Kotlin/Compose), package `com.librelookai`.
-- `core/` — Gradle library modules (refactor phase 4): `core/model` (pure data: `data/model`, `DriveImage`, `ClothingTags`/`FashionTrends`, `AiConsiderations`), `core/database` (Room `data/local` + store tests), `core/common` (`ImageEncoding`, `NetworkUtils`, `Scrollbar`, `StartupGate`), `core/ml` (`ml/`). **Moved code keeps its original `com.librelookai.*` Kotlin package** (module namespaces are `com.librelookai.core.*`; only `R`/`BuildConfig` are namespace-bound), so imports and the Package-layout map stay valid — check `core/*/src` when a listed package isn't under `app/`.
+- `core/` — Gradle library modules (refactor phase 4): `core/model` (pure data: `data/model`, `DriveImage`, `ClothingTags`/`FashionTrends`, `AiConsiderations`, `CreditPacks`), `core/database` (Room `data/local` + store tests), `core/common` (`ImageEncoding`, `NetworkUtils`, `Scrollbar`, `StartupGate`, OkHttp `Call.await()`), `core/ml` (`ml/`). **Moved code keeps its original `com.librelookai.*` Kotlin package** (module namespaces are `com.librelookai.core.*`; only `R`/`BuildConfig` are namespace-bound), so imports and the Package-layout map stay valid — check `core/*/src` when a listed package isn't under `app/`.
 - `firebase/` — Cloud Functions (`geminiProxy`, `verifyPurchase`, pricing trigger) + Firestore rules.
 - `scripts/` — Python/shell helpers (`add_translations.py`, `translation_status.sh`, `kt_split.py`).
 - `plan/` — long-form docs: `CLAUDE_ARCHIVE.md`, `FIN.md`, `TODO.md`, `TRANSLATION.md`.

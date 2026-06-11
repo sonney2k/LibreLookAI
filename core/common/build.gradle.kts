@@ -28,6 +28,9 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.core.ktx)
+    // Call.await() exposes OkHttp types in its signature.
+    api(libs.okhttp)
+    implementation(libs.kotlinx.coroutines.android)
 
     testImplementation(libs.junit)
 }

@@ -110,7 +110,7 @@ class TokenUsageRepository private constructor(private val app: Application) {
     companion object {
         private const val TAG = "TokenUsage"
         private const val FILE_NAME = "usage.jsonl"
-        const val DRIVE_FILE_NAME = "_token_usage.jsonl"
+        const val DRIVE_FILE_NAME = com.librelookai.data.drive.TOKEN_USAGE_DRIVE_FILE_NAME
         private const val DRIVE_FLUSH_DEBOUNCE_MS = 30_000L
 
         @Volatile private var INSTANCE: TokenUsageRepository? = null
