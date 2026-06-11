@@ -1,5 +1,22 @@
 # LibreLookAI architecture refactor blueprint
 
+## Status at a glance (June 2026)
+
+The four *migration phases* below have all landed their mechanically-possible slices, but the
+real checklist is the eight **Target architecture** sections — several are deliberately
+deferred and inter-blocking:
+
+| § | Layer | Status |
+|---|-------|--------|
+| 1 | Multi-module Gradle | **Partial** — `:core:model`/`:core:common`/`:core:database`/`:core:ml` landed (phase 4); `core/ai`+`core/sync` blocked on the remaining § 7-shaped config coupling, `core/designsystem` on splitting the 31-locale `res/`, `feature/*` on § 5 |
+| 2 | Room as source of truth + SyncEngine | **Partial** — all five JSON-cache slices landed (phase 2), but as opaque-JSON cache rows; real entities, the `PendingMutation` queue and the WorkManager `SyncEngine` are **not started** |
+| 3 | DI + interfaces at the seams | **Partial** — Hilt landed (phase 1); the gemini↔drive↔billing package cycles are broken (June 2026, see phase 1 status), making the layering acyclic; interface extraction at the I/O seams pending; static globals (`ImageEncoding.tier`, `GeminiProgress` slot, `AiRetry.action`) still alive |
+| 4 | Navigation Compose | **Done** (phase 3 complete; per-destination VM scoping deferred to § 5) |
+| 5 | Thin VMs over use-cases | **Not started** — the keystone blocker: gates `feature/*` modules, destination-scoped VMs, and removal of the cross-VM `LaunchedEffect` bridges |
+| 6 | Typed `AiResult` | **Not started** — Gemini still returns `null` on failure |
+| 7 | DataStore + Keystore settings | **Not started** |
+| 8 | Testing strategy | **Partial** — store invariant tests landed; fake-based repository/VM tests blocked on § 3 interfaces |
+
 ## Context
 
 The app works and ships, but its structure shows its growth history: a single Gradle module,
