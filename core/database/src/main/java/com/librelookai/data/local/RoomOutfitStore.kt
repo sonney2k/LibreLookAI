@@ -74,4 +74,9 @@ class RoomOutfitStore @Inject constructor(
         ensureSeeded(folderId)
         dao.replaceFolder(folderId, outfits.map { it.toEntity(folderId) })
     }
+
+    override suspend fun hasFolder(folderId: String): Boolean {
+        ensureSeeded(folderId)
+        return dao.folderExists(folderId)
+    }
 }

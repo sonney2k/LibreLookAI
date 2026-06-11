@@ -8,6 +8,7 @@ import java.io.File
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -97,5 +98,21 @@ class OutfitStoreTest {
     fun `a corrupt legacy file degrades to an empty folder`() = runBlocking {
         File(context.filesDir, "styles_cache_bad.json").writeText("not json {")
         assertTrue(store.outfitsFor("bad").isEmpty())
+    }
+
+    @Test
+    fun `hasFolder is false until the folder is cached - the syncFolder wipe guard`() = runBlocking {
+        // A never-cached folder must read as "unknown", not "no outfits": the outfit.syncFolder
+        // handler refuses to write Drive for it (writing [] would destroy the user's outfits).
+        assertFalse(store.hasFolder("fresh"))
+
+        store.replaceFolder("fresh", emptyList())
+        assertTrue(store.hasFolder("fresh"))
+    }
+
+    @Test
+    fun `hasFolder sees a legacy-seeded folder`() = runBlocking {
+        File(context.filesDir, "styles_cache_seeded.json").writeText("""[{"id":"x"}]""")
+        assertTrue(store.hasFolder("seeded"))
     }
 }

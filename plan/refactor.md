@@ -331,34 +331,36 @@ are easy to violate and have caused real bugs.
    shopping folder; the wardrobe VM drops the optimistic target-homed copy from its view,
    removes the recently-moved marker and (for wardrobe-internal moves) shows the error.
    `undoItemsMovedTo` and the `onItemsMoveFailed` param chain were deleted.
-   **Next slice (designed, not yet built): outfit `_outfits.json` saves.** Findings from the
-   June 2026 examination, for whoever picks this up:
-   - Shape: a payload-free `outfit.syncFolder` mutation (targetId = folderId); the handler
-     reads `OutfitStore.outfitsFor(fid)` and writes `gson.toJson(list)` — `Outfit.folderId`
-     is `@Transient`, so store-row serialization is Drive-file serialization.
-   - `refreshOutfitsLocalCache()` already uses the same per-folder filter as the Drive
-     writes ("the cache matches Drive exactly"), so enqueuers just need Room-write-first
-     ordering: update state → `refreshOutfitsLocalCache()` → enqueue per affected folder →
-     drain → `onDone(true)`.
-   - **Semantic flip to re-examine per call site**: today every outfit save is Drive-first
-     (`runCatching { drive.saveOutfitsJson }.onSuccess { state + cache + onDone(true) }`).
-     ~9 sites in `OutfitsViewModel` (`saveOutfitDirectly`, `addOutfits`,
-     `updateOutfitsRefined`, `updateOutfitItems`, `deleteOutfitsByIds`, `commitOutfit`,
-     `deleteOutfit`, `setOutfitLoved`, `deleteSelectedOutfits`) + 2 in `OutfitsTags.kt`.
-     Each has its own wrinkle: `commitOutfit` drives the `isComposerSaving` overlay,
-     `setOutfitLoved` rolls back its optimistic flip on failure, `deleteOutfitsByIds`'
-     `onDone` gates the trip-delete cascade, `addOutfits`' gates trip auto-create.
-   - The per-site Drive filters differ slightly (`folderId == fid || folderId.isEmpty()`
-     vs `folderId == fid` in `deleteSelectedOutfits` vs the loved-save's special case) —
-     the handler would *unify* them to the `refreshOutfitsLocalCache` filter; check the
-     legacy empty-`folderId` edge cases before accepting that.
-   - **Wipe guard (mandatory)**: a payload-free handler that reads a never-cached folder
-     would write `[]` and destroy the user's outfits. Expose the existing
-     `outfit_folders` marker as `OutfitStore.hasFolder()` and make the handler refuse
-     (`Permanent`) when the folder was never cached.
-   - Outfit display order: Phase 1 already paints store order (no ORDER BY), Phase 2
-     re-imposes file order; the handler writing store order makes them converge. Verify
-     no screen relies on file order before shipping.
+   **Slice 5 LANDED (June 2026): every outfit `_outfits.json` save goes through the queue —
+   the first whole-file (not per-item) conversion.** All 11 Drive-first save sites (9 in
+   `OutfitsViewModel`, 2 in `OutfitsTags.kt`) flipped to local-first: update state →
+   `persistOutfitFolders(affected)` → `onDone(true)`. The helper (which *replaced*
+   `refreshOutfitsLocalCache()`) mirrors the outfit list into the per-folder `OutfitStore`
+   rows — view scope ∪ affected, so an out-of-scope save target is cached too — then
+   enqueues one payload-free `outfit.syncFolder` mutation per affected folder and drains.
+   - Handler (`outfit/OutfitFolderSync.kt`): re-reads `OutfitStore.outfitsFor(fid)` at apply
+     time and writes `gson.toJson(list)` (`Outfit.folderId` is `@Transient`, so store-row
+     serialization ≡ Drive-file serialization). Back-to-back edits coalesce into the latest
+     snapshot; duplicate queued mutations for one folder are idempotent re-writes.
+   - **Wipe guard**: the `outfit_folders` marker is exposed as `OutfitStore.hasFolder()`;
+     the handler refuses (`Permanent`) to write a never-cached folder — an empty read there
+     means "unknown", not "no outfits". Guard tests in `OutfitStoreTest`.
+   - Accepted semantic flips: `onDone(true)` now means *locally committed + queued* (the
+     trip auto-create on `addOutfits` and trip-delete cascade on `deleteOutfitsByIds`
+     proceed on local commit); `setOutfitLoved`'s optimistic-flip rollback and the per-site
+     `error = e.message` surfaces are gone (transient failures retry silently — slice 1's
+     deliberate change); `applyTagSuggestions`' interim `isSaving` state dropped (the save
+     is local-now); `commitOutfit`'s `isComposerSaving` overlay now only spans the
+     pre-commit `listFiles` name resolution.
+   - Accepted filter unification: the handler writes store content, so the loved/tags
+     "rewrite every folder" loops collapsed to the outfit's home folder only (an outfit
+     lives in exactly one folder — no other folder's file changes), and a legacy
+     empty-`folderId` outfit now lands in exactly one folder's Drive file (its store home)
+     instead of being duplicated into every affected file.
+   - Unchanged: pre-commit name resolution (`idToNameAllFolders` / `drive.listFiles`) stays
+     a live Drive read before the local commit — offline-gated surfaces mean it runs online,
+     and converting it to a store read is a separate decision. Display order converges
+     (handler writes store order, which is the state order the helper just wrote).
    After outfits: outfit events / trips (same Drive-first analysis), then WorkManager
    scheduling once a § 5 pipeline needs process-death survival mid-drain.
 3. **Navigation Compose** — add the NavHost, convert Dialog-viewers to destinations one at a

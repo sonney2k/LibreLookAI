@@ -1,6 +1,5 @@
 package com.librelookai.outfit
 import com.librelookai.util.localized
-import com.librelookai.data.drive.saveOutfitsJson
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
@@ -112,19 +111,11 @@ internal fun OutfitsViewModel.setOutfitTags(outfitId: String, newTags: List<Stri
         val updatedOutfit = outfit.copy(tags = cleaned)
         val targetFolderId = outfit.folderId.takeIf { it.isNotEmpty() } ?: saveFolderId ?: folderId ?: return
         val updatedAll = _state.value.outfits.map { if (it.id == outfitId) updatedOutfit else it }
+        // Local-first: Room + the sync queue own the Drive write (refactor § 2); only the
+        // outfit's home folder changed, so only that folder is enqueued.
+        _state.update { it.copy(outfits = updatedAll, tagEditingOutfitId = null) }
         viewModelScope.launch {
-            runCatching {
-                val folderIds = updatedAll.map { it.folderId }.filter { it.isNotEmpty() }.toSet() + targetFolderId
-                for (fid in folderIds) {
-                    val perFolder = if (folderIds.size == 1) updatedAll
-                    else updatedAll.filter { it.folderId == fid || (fid == targetFolderId && it.id == outfitId) }
-                    drive.saveOutfitsJson(fid, gson.toJson(perFolder))
-                }
-            }.onSuccess {
-                _state.update { it.copy(outfits = updatedAll, tagEditingOutfitId = null) }
-            }.onFailure { e ->
-                _state.update { it.copy(tagEditingOutfitId = null, error = e.message) }
-            }
+            persistOutfitFolders(listOf(targetFolderId))
         }
     }
 
@@ -147,24 +138,11 @@ internal fun OutfitsViewModel.applyTagSuggestions(outfitId: String, tagsToAdd: L
         val updatedOutfit = outfit.copy(tags = merged)
         val targetFolderId = outfit.folderId.takeIf { it.isNotEmpty() } ?: saveFolderId ?: folderId ?: return
         val updatedAll = _state.value.outfits.map { if (it.id == outfitId) updatedOutfit else it }
-        _state.update { it.copy(tagSuggestion = it.tagSuggestion?.copy(isSaving = true)) }
+        // Local-first: the save commits to Room immediately and the Drive write rides the sync
+        // queue, so there is no interim isSaving / failure state any more (see setOutfitTags).
+        _state.update { it.copy(outfits = updatedAll, tagSuggestion = null) }
         viewModelScope.launch {
-            runCatching {
-                // Mirror saveOutfit(): write the full outfit list to the target folder. If outfits
-                // span multiple folders, also rewrite each affected sibling folder so nothing is lost.
-                val folderIds = updatedAll.map { it.folderId }.filter { it.isNotEmpty() }.toSet() + targetFolderId
-                for (fid in folderIds) {
-                    val perFolder = if (folderIds.size == 1) updatedAll
-                    else updatedAll.filter { it.folderId == fid || (fid == targetFolderId && it.id == outfitId) }
-                    drive.saveOutfitsJson(fid, gson.toJson(perFolder))
-                }
-            }.onSuccess {
-                _state.update { it.copy(outfits = updatedAll, tagSuggestion = null) }
-            }.onFailure { e ->
-                _state.update {
-                    it.copy(tagSuggestion = it.tagSuggestion?.copy(isSaving = false, error = e.message ?: getApplication<android.app.Application>().localized().getString(com.librelookai.R.string.error_save_failed)))
-                }
-            }
+            persistOutfitFolders(listOf(targetFolderId))
         }
     }
 

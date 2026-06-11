@@ -23,4 +23,12 @@ interface OutfitStore {
 
     /** Replaces the folder's entire cached outfit list (post-load / post-mutation snapshot). */
     suspend fun replaceFolder(folderId: String, outfits: List<Outfit>)
+
+    /**
+     * Whether [folderId] has ever been cached (marker row written by [replaceFolder] or the
+     * legacy seed). The `outfit.syncFolder` mutation handler refuses to write Drive for a
+     * never-cached folder — an empty read there means "unknown", not "no outfits", and writing
+     * `[]` would destroy the user's outfits.
+     */
+    suspend fun hasFolder(folderId: String): Boolean
 }
