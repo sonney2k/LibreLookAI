@@ -67,6 +67,7 @@ class WardrobeViewModel @Inject constructor(
     private val mutationStore: PendingMutationStore,
     private val syncEngine: SyncEngine,
     private val sidecarSync: WardrobeSidecarSyncHandler,
+    private val moveSync: WardrobeMoveSyncHandler,
 ) : AndroidViewModel(app) {
 
     companion object {
@@ -194,6 +195,28 @@ class WardrobeViewModel @Inject constructor(
                         })
                     }
                 }
+            }
+        }
+        // SyncEngine feedback: a queued move exhausted its retries and the handler re-homed the
+        // Room row back to its source — undo the UI part of the optimistic move (recently-moved
+        // marker, splice back into the visible view, error banner).
+        viewModelScope.launch {
+            moveSync.moveRolledBack.collect { rollback ->
+                recentlyMovedItems.remove(rollback.driveId)
+                val restored = withContext(Dispatchers.IO) { readCacheAsImages(rollback.sourceFolderId) }
+                    .firstOrNull { it.driveId == rollback.driveId }
+                if (restored != null &&
+                    (folderId == rollback.sourceFolderId || allFolderIds?.contains(rollback.sourceFolderId) == true)
+                ) {
+                    _state.update { s ->
+                        if (s.images.any { it.driveId == rollback.driveId }) s
+                        else s.copy(images = s.images + restored)
+                    }
+                }
+                _state.update {
+                    it.copy(error = getApplication<Application>().localized().getString(R.string.wardrobe_move_failed))
+                }
+                refreshAllLocationImagesState()
             }
         }
     }
@@ -331,35 +354,6 @@ class WardrobeViewModel @Inject constructor(
             }
         }
 
-    /**
-     * Moves the given wardrobe items (cutout + original + sidecar) from the current location
-     * folder to [toFolderId]. Removed items are dropped from the in-memory state immediately.
-     */
-    fun moveItemsToFolder(
-        itemIds: List<String>,
-        toFolderId: String,
-        onDone: (success: Boolean) -> Unit = {},
-    ) {
-        val fromFolderId = folderId ?: run { onDone(false); return }
-        if (fromFolderId == toFolderId) { onDone(true); return }
-        viewModelScope.launch {
-            val idsSet = itemIds.toSet()
-            val toMove = _state.value.images.filter { it.driveId in idsSet }
-            runCatching {
-                toMove.forEach { item ->
-                    drive.moveFile(item.driveId, fromFolderId, toFolderId)
-                    item.originalDriveId?.let { drive.moveFile(it, fromFolderId, toFolderId) }
-                    item.sidecarDriveId?.let { drive.moveFile(it, fromFolderId, toFolderId) }
-                }
-            }.onSuccess {
-                _state.update { s -> s.copy(images = s.images.filter { it.driveId !in idsSet }) }
-                onDone(true)
-            }.onFailure { e ->
-                _state.update { it.copy(error = e.message) }
-                onDone(false)
-            }
-        }
-    }
 
     // ---------- Cache ----------
 
@@ -1116,62 +1110,31 @@ class WardrobeViewModel @Inject constructor(
         }
         notifyItemsMovedTo(targetFolderId, toMove.map { it.copy(folderId = targetFolderId) })
 
-        // ---- Sync to Drive in the background; roll back items that fail ----
+        // ---- Queue the Drive moves (refactor § 2): cache writes come first (still before any
+        // Drive call) so the move survives a restart; the [ITEM_MOVE_KIND] mutations then retry
+        // transient failures instead of rolling back on the first error, and only give up — via
+        // the handler's rollback + the [WardrobeMoveSyncHandler.moveRolledBack] collector in
+        // init — after the attempts cap. ----
         viewModelScope.launch {
-            // Cache writes come first (still before any Drive call) so the move survives a
-            // restart; re-homing the items in the target store row removes them from source.
             withContext(Dispatchers.IO) {
                 sourceFolderIds.forEach { fid ->
                     saveLocalCache(fid, _state.value.images.filter { it.folderId == fid })
                 }
+                toMove.forEach { item ->
+                    val sourceFolderId = item.folderId.ifEmpty { folderId } ?: return@forEach
+                    mutationStore.enqueue(
+                        ITEM_MOVE_KIND,
+                        targetId = item.driveId,
+                        folderId = targetFolderId,
+                        payload = gson.toJson(
+                            MoveItemPayload(sourceFolderId, targetFolderId, item.originalDriveId, item.sidecarDriveId),
+                        ),
+                    )
+                }
+                syncEngine.drain()
             }
-            val failed = coroutineScope {
-                toMove.map { item ->
-                    async {
-                        val sourceFolderId = item.folderId.ifEmpty { folderId } ?: return@async item
-                        runCatching {
-                            val moveOriginal = item.originalDriveId?.let { origId ->
-                                async { runCatching { drive.moveFile(origId, sourceFolderId, targetFolderId) } }
-                            }
-                            val moveSidecar = item.sidecarDriveId?.let { sId ->
-                                async { runCatching { drive.moveFile(sId, sourceFolderId, targetFolderId) } }
-                            }
-                            drive.moveFile(item.driveId, sourceFolderId, targetFolderId)
-                            moveOriginal?.await()
-                            moveSidecar?.await()
-                        }.fold(onSuccess = { null }, onFailure = { it })?.let { item }
-                    }
-                }.awaitAll().filterNotNull()
-            }
-            if (failed.isNotEmpty()) rollbackMove(failed, targetFolderId)
             _state.update { it.copy(isMoving = false) }
         }
-    }
-
-    /**
-     * Undoes the optimistic part of [moveItemsToLocation] for the [failed] items: removes them
-     * from the target closet's cache + recently-moved markers, restores them to their source
-     * caches, and (when the active view should show them) splices them back into state. Edits
-     * the cache files directly rather than rebuilding from `state.images`, since the user may
-     * have switched closets while the Drive move was in flight.
-     */
-    private suspend fun rollbackMove(failed: List<DriveImage>, targetFolderId: String) {
-        val ids = failed.map { it.driveId }.toSet()
-        ids.forEach { recentlyMovedItems.remove(it) }
-        removeFromCacheFile(targetFolderId, ids)
-        failed.groupBy { it.folderId }.forEach { (sourceFolderId, items) ->
-            if (sourceFolderId.isNotEmpty()) addToCacheFile(sourceFolderId, items)
-        }
-        // Re-show in the current view when it covers a source folder of a failed item.
-        val showHere = failed.filter { folderId == it.folderId || allFolderIds?.contains(it.folderId) == true }
-        if (showHere.isNotEmpty()) {
-            _state.update { s ->
-                val present = s.images.map { it.driveId }.toSet()
-                s.copy(images = s.images + showHere.filter { it.driveId !in present })
-            }
-        }
-        _state.update { it.copy(error = getApplication<Application>().localized().getString(R.string.wardrobe_move_failed)) }
-        refreshAllLocationImagesState()
     }
 
     /** Removes the given driveIds from a folder's cache in place (no-op for ids homed elsewhere). */

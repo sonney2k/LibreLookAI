@@ -9,7 +9,7 @@ deferred and inter-blocking:
 | § | Layer | Status |
 |---|-------|--------|
 | 1 | Multi-module Gradle | **Partial** — `:core:model`/`:core:common`/`:core:database`/`:core:ml`/`:core:sync`/`:core:ai` landed (phase 4); `core/designsystem` blocked on splitting the 31-locale `res/`, `feature/*` on § 5 |
-| 2 | Room as source of truth + SyncEngine | **Partial** — all five JSON-cache slices landed (phase 2) as opaque-JSON cache rows; the `PendingMutation` queue + `SyncEngine` are live with the first converted write paths (wardrobe sidecar saves + item deletes, June 2026 — see phase 2 status); remaining write paths, real entities and the WorkManager trigger are not started |
+| 2 | Room as source of truth + SyncEngine | **Partial** — all five JSON-cache slices landed (phase 2) as opaque-JSON cache rows; the `PendingMutation` queue + `SyncEngine` are live with the wardrobe metadata writes converted (sidecar saves, deletes, moves — June 2026, see phase 2 status); outfit/event/trip writes, real entities and the WorkManager trigger are not started |
 | 3 | DI + interfaces at the seams | **Partial** — Hilt landed (phase 1); the gemini↔drive↔billing package cycles are broken (June 2026, see phase 1 status), making the layering acyclic; interface extraction at the I/O seams pending; static globals (`ImageEncoding.tier`, `GeminiProgress` slot, `AiRetry.action`) still alive |
 | 4 | Navigation Compose | **Done** (phase 3 complete; per-destination VM scoping deferred to § 5) |
 | 5 | Thin VMs over use-cases | **Not started** — the keystone blocker: gates `feature/*` modules, destination-scoped VMs, and removal of the cross-VM `LaunchedEffect` bridges |
@@ -296,8 +296,26 @@ are easy to violate and have caused real bugs.
    **Ordering note** (why FIFO matters here): a pending `sidecarSync` enqueued before a
    delete of the same item drains first, finds the row gone, and skips as `Permanent` —
    it can never recreate a sidecar for a deleted item.
-   **Next slices**: wardrobe move (optimistic + rollback — the first mutation that needs
-   real `rollback` JSON), the Drive-first outfit/event saves (these *change* semantics from
+   **Slice 3 LANDED (June 2026): wardrobe item moves go through the queue — the first
+   mutation with a real rollback.** `moveItemsToLocation` keeps its optimistic re-home
+   (state + recently-moved markers + Room, exactly as before) and enqueues one
+   `wardrobe.moveItem` per item carrying `{source, target, originalDriveId?,
+   sidecarDriveId?}` (the from→to pair must ride along: Drive's PATCH needs the parent
+   being removed, and FIFO makes chained moves correct — A→B always drains before B→C).
+   Handler (`wardrobe/WardrobeMoveSync.kt`): the cutout PATCH decides the outcome,
+   original/sidecar stay best-effort `runCatching` (old semantics); re-running after a
+   client timeout is safe (Drive ignores stale `removeParents`); row gone → `Permanent`
+   (the delete mutation queued behind it removes the files wherever they live). On attempt
+   exhaustion the handler's `rollback` re-homes the Room row back to the source — only if
+   it still sits in *this* mutation's target, so a later move supersedes — and emits
+   `moveRolledBack`; a VM collector undoes the UI half (marker, splice back into view,
+   `wardrobe_move_failed` banner). Two deliberate changes: transient failures now retry
+   for ~8 attempts before rolling back (the old path rolled back on the *first* error),
+   and a pending sidecar of a moved item materializes directly in the target folder (the
+   payload-free sidecarSync re-reads the re-homed row). The composition is the payoff:
+   sidecar→move→delete of one item drain in enqueue order, each handler re-checking
+   reality first. Also deleted the unused Drive-first `moveItemsToFolder` (zero callers).
+   **Next slices**: the Drive-first outfit/event saves (these *change* semantics from
    Drive-first to local-first, so they need their `onDone(success)` flows re-examined),
    then WorkManager scheduling once a § 5 pipeline needs process-death survival mid-drain.
 3. **Navigation Compose** — add the NavHost, convert Dialog-viewers to destinations one at a

@@ -78,4 +78,8 @@ abstract class WardrobeSyncModule {
     @Binds
     @IntoSet
     abstract fun bindDeleteSyncHandler(impl: WardrobeDeleteSyncHandler): MutationHandler
+
+    @Binds
+    @IntoSet
+    abstract fun bindMoveSyncHandler(impl: WardrobeMoveSyncHandler): MutationHandler
 }
