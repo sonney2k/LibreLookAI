@@ -9,7 +9,7 @@ deferred and inter-blocking:
 | § | Layer | Status |
 |---|-------|--------|
 | 1 | Multi-module Gradle | **Partial** — `:core:model`/`:core:common`/`:core:database`/`:core:ml`/`:core:sync`/`:core:ai` landed (phase 4); `core/designsystem` blocked on splitting the 31-locale `res/`, `feature/*` on § 5 |
-| 2 | Room as source of truth + SyncEngine | **Partial** — all five JSON-cache slices landed (phase 2), but as opaque-JSON cache rows; the `PendingMutation` queue + `SyncEngine` core are **dark-launched** (June 2026, see phase 2 status) — no write path enqueues yet; real entities and the WorkManager trigger are not started |
+| 2 | Room as source of truth + SyncEngine | **Partial** — all five JSON-cache slices landed (phase 2) as opaque-JSON cache rows; the `PendingMutation` queue + `SyncEngine` are live with the first converted write path (wardrobe sidecar saves, June 2026 — see phase 2 status); remaining write paths, real entities and the WorkManager trigger are not started |
 | 3 | DI + interfaces at the seams | **Partial** — Hilt landed (phase 1); the gemini↔drive↔billing package cycles are broken (June 2026, see phase 1 status), making the layering acyclic; interface extraction at the I/O seams pending; static globals (`ImageEncoding.tier`, `GeminiProgress` slot, `AiRetry.action`) still alive |
 | 4 | Navigation Compose | **Done** (phase 3 complete; per-destination VM scoping deferred to § 5) |
 | 5 | Thin VMs over use-cases | **Not started** — the keystone blocker: gates `feature/*` modules, destination-scoped VMs, and removal of the cross-VM `LaunchedEffect` bridges |
@@ -259,10 +259,31 @@ are easy to violate and have caused real bugs.
      via the handler and continue, an unknown `kind` (downgrade racing a newer queue row)
      halts without deleting. `:core:sync` now `api`-depends on `:core:database`.
    - Tests: `PendingMutationStoreTest` (4, Robolectric/Room) + `SyncEngineTest` (6, JUnit).
-   **Next slices**: pick one wardrobe mutation (tag-edit sidecar save is the narrowest),
-   convert its VM write path to optimistic-Room + enqueue, register its handler, and wire
-   the drain trigger (app start + network regain via `NetworkMonitor`; WorkManager once a
-   pipeline needs process-death survival per § 5).
+   **Slice 1 LANDED (June 2026): wardrobe sidecar saves go through the queue.**
+   `WardrobeViewModel.saveSidecar` (every tag edit, AI re-tag and bulk re-tag funnels through
+   it) now writes Room first and enqueues a `wardrobe.sidecarSync` mutation instead of calling
+   `drive.upsertSidecar` inline. The pattern pieces:
+   - **Payload-free mutations — Room is the source of truth.** The handler
+     (`wardrobe/WardrobeSidecarSync.kt`, registered `@Binds @IntoSet`) re-reads the item's
+     *current* tags and owning folder from `WardrobeItemStore.find(driveId)` at apply time, so
+     a deferred drain never resurrects stale tags and a move between enqueue and drain lands
+     the sidecar in the new folder. Item gone → `Permanent` (deleted; nothing to undo); any
+     Drive failure → `Retry` (Room already holds the edit, so there is no rollback state —
+     a transient failure now *retries* instead of silently losing the Drive write, and the
+     row survives process death).
+   - **Post-apply feedback**: the handler stamps the new sidecar id onto the Room row
+     (`WardrobeItemStore.setSidecarId`) and emits on its `sidecarSaved` flow; the VM collects
+     it to patch in-memory `sidecarDriveId` (move/delete use it to relocate/remove the
+     sidecar file).
+   - **Drain triggers**: inline after each enqueue (the engine mutex makes overlap safe) +
+     a catch-up `LaunchedEffect(isOnline)` in `AppContent` on app start and every
+     offline→online transition.
+   - Deliberate behavior change: the immediate `error_tag_save_failed` snackbar on a failed
+     sidecar PATCH is gone — transient failures retry silently; after 8 attempts the queue
+     gives up (the edit stays local and re-syncs with the next save/load).
+   **Next slices**: convert the remaining wardrobe metadata writes (move / delete / outfit
+   `_outfits.json` saves fit the same payload-free re-read pattern), then WorkManager
+   scheduling once a § 5 pipeline needs process-death survival mid-drain.
 3. **Navigation Compose** — add the NavHost, convert Dialog-viewers to destinations one at a
    time; delete each Window-quirk workaround as its screen converts. Scope ViewModels to
    destinations as screens convert.

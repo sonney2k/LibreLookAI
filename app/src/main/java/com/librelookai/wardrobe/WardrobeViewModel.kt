@@ -16,10 +16,12 @@ import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.librelookai.MainActivity
+import com.librelookai.data.local.PendingMutationStore
 import com.librelookai.data.local.WardrobeItemStore
 import com.librelookai.R
 import com.librelookai.data.drive.DriveFileDto
 import com.librelookai.data.drive.DriveRepository
+import com.librelookai.data.drive.SyncEngine
 import com.librelookai.data.drive.await
 import com.librelookai.data.drive.loadWardrobeMetadataJson
 import com.librelookai.data.drive.listSidecarFiles
@@ -62,6 +64,9 @@ class WardrobeViewModel @Inject constructor(
     internal val drive: DriveRepository,
     internal val gemini: GeminiRepository,
     internal val itemStore: WardrobeItemStore,
+    private val mutationStore: PendingMutationStore,
+    private val syncEngine: SyncEngine,
+    private val sidecarSync: WardrobeSidecarSyncHandler,
 ) : AndroidViewModel(app) {
 
     companion object {
@@ -178,6 +183,19 @@ class WardrobeViewModel @Inject constructor(
 
     init {
         viewModelScope.launch { processQueue() }
+        // SyncEngine feedback: a drained sidecar save stamped its Drive id onto the Room row;
+        // mirror it into in-memory state so move/delete can relocate/remove the sidecar file.
+        viewModelScope.launch {
+            sidecarSync.sidecarSaved.collect { (driveId, sidecarId) ->
+                metaMutex.withLock {
+                    _state.update { s ->
+                        s.copy(images = s.images.map { i ->
+                            if (i.driveId == driveId) i.copy(sidecarDriveId = sidecarId) else i
+                        })
+                    }
+                }
+            }
+        }
     }
 
     fun setLanguage(geminiName: String) {
@@ -727,8 +745,12 @@ class WardrobeViewModel @Inject constructor(
     }
 
     /**
-     * Saves a per-item sidecar JSON for [driveId] to Drive, and updates local disk cache.
-     * Each item has its own file ("${driveId}.json") — no mutex needed; writes are independent.
+     * Saves a per-item sidecar JSON for [driveId]: writes the edit to Room (the source of
+     * truth), then enqueues a [SIDECAR_SYNC_KIND] mutation the SyncEngine drains to Drive
+     * (refactor § 2 — the first converted write path). The handler re-reads the row at apply
+     * time, so a retried/deferred drain always writes the *current* tags into the item's
+     * *current* folder; transient Drive failures retry instead of silently losing the edit,
+     * and the queued row survives process death.
      */
     internal fun saveSidecar(driveId: String) {
         val img = _state.value.images.find { it.driveId == driveId } ?: return
@@ -736,26 +758,10 @@ class WardrobeViewModel @Inject constructor(
         // user is browsing "All locations", but each DriveImage already knows its closet.
         val id = img.folderId.ifEmpty { folderId.orEmpty() }.ifEmpty { return }
         viewModelScope.launch(Dispatchers.IO) {
-            // Write local cache eagerly (before the Drive PATCH) so the edit survives restart
-            // even if the Drive write is still in flight or fails. The cache is updated again
-            // with the sidecarDriveId once Drive returns.
+            // Room first, so the edit survives restart and the handler reads it back.
             saveLocalCache(id, _state.value.images.filter { it.folderId == id })
-            val sidecarJson = gson.toJson(ItemSidecar(img.tags, img.originalDriveId))
-            val sidecarFileId = try {
-                drive.upsertSidecar(id, "$driveId${DriveRepository.SIDECAR_SUFFIX}", sidecarJson)
-            } catch (e: Exception) {
-                Log.e("WardrobeVM", "saveSidecar failed for $driveId", e)
-                _state.update { it.copy(error = getApplication<Application>().localized().getString(R.string.error_tag_save_failed, e.message ?: "")) }
-                return@launch
-            }
-            metaMutex.withLock {
-                _state.update { s ->
-                    s.copy(images = s.images.map { i ->
-                        if (i.driveId == driveId) i.copy(sidecarDriveId = sidecarFileId) else i
-                    })
-                }
-                saveLocalCache(id, _state.value.images.filter { it.folderId == id })
-            }
+            mutationStore.enqueue(SIDECAR_SYNC_KIND, targetId = driveId, folderId = id, payload = "{}")
+            syncEngine.drain()
         }
     }
 

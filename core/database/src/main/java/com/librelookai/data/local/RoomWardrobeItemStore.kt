@@ -135,6 +135,12 @@ class RoomWardrobeItemStore @Inject constructor(
         ids.chunked(DELETE_CHUNK).forEach { dao.deleteInFolder(folderId, it) }
     }
 
+    override suspend fun find(driveId: String): Pair<String, CachedWardrobeItem>? =
+        dao.itemById(driveId)?.let { it.folderId to it.toItem() }
+
+    override suspend fun setSidecarId(driveId: String, sidecarId: String) =
+        dao.setSidecarId(driveId, sidecarId)
+
     override suspend fun clearFolder(folderId: String) {
         seedMutex.withLock {
             dao.clearFolder(folderId)

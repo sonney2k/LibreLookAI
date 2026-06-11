@@ -64,6 +64,7 @@ import com.librelookai.auth.AuthViewModel
 import com.librelookai.auth.SignInScreen
 import com.librelookai.billing.CreditsViewModel
 import com.librelookai.data.drive.DriveRepository
+import com.librelookai.data.drive.SyncEngine
 import com.librelookai.data.model.Location
 import com.librelookai.data.model.TryOn
 import com.librelookai.gemini.TokenUsageRepository
@@ -110,13 +111,19 @@ import com.librelookai.wardrobe.setCutoutFixShowAll
 import com.librelookai.wardrobe.toggleCutoutFixSelection
 import com.librelookai.weather.WeatherBadge
 import com.librelookai.weather.WeatherViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 
 @Composable
-internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepository) {
+internal fun AppContent(
+    activity: ComponentActivity,
+    driveRepository: DriveRepository,
+    syncEngine: SyncEngine,
+) {
     LibreLookAITheme(
         paletteId = ProfileViewModel.cachedTheme(activity),
         fontId = ProfileViewModel.cachedFont(activity),
@@ -154,6 +161,12 @@ internal fun AppContent(activity: ComponentActivity, driveRepository: DriveRepos
                 }
                 val isOnline by networkMonitor.isOnline.collectAsState()
                 val isOffline = !isOnline
+                // SyncEngine drain trigger (refactor § 2): on app start and every offline→online
+                // transition, drain queued Drive-bound writes (edits made offline / failed in a
+                // previous session). Enqueuers also drain inline; this is the catch-up pass.
+                LaunchedEffect(isOnline) {
+                    if (isOnline) withContext(Dispatchers.IO) { syncEngine.drain() }
+                }
                 val profileViewModel: ProfileViewModel = viewModel()
                 // Hoisted above the entry gate so the onboarding branch can react to it too — the
                 // tour reloads prefs after Drive sign-in and re-themes live as they land.

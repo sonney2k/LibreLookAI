@@ -40,6 +40,12 @@ interface WardrobeItemDao {
     @Query("SELECT * FROM wardrobe_items WHERE folderId = :folderId")
     suspend fun itemsFor(folderId: String): List<WardrobeItemEntity>
 
+    @Query("SELECT * FROM wardrobe_items WHERE driveId = :driveId")
+    suspend fun itemById(driveId: String): WardrobeItemEntity?
+
+    @Query("UPDATE wardrobe_items SET sidecarDriveId = :sidecarId WHERE driveId = :driveId")
+    suspend fun setSidecarId(driveId: String, sidecarId: String)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertAll(items: List<WardrobeItemEntity>)
 

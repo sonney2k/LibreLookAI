@@ -53,6 +53,16 @@ interface WardrobeItemStore {
     /** Removes the given drive IDs from [folderId] only (no-op for ids homed elsewhere). */
     suspend fun remove(folderId: String, ids: Set<String>)
 
+    /**
+     * The cached item homed under [driveId] with its owning folder id, or null when not cached.
+     * Does **not** trigger the per-folder legacy seed (callers are sync paths whose enqueuer
+     * already wrote the row).
+     */
+    suspend fun find(driveId: String): Pair<String, CachedWardrobeItem>?
+
+    /** Stamps the Drive sidecar file id onto the item's row (SyncEngine post-apply feedback). */
+    suspend fun setSidecarId(driveId: String, sidecarId: String)
+
     /** Drops the folder's items and its cached-marker, plus any legacy JSON file (no re-seed). */
     suspend fun clearFolder(folderId: String)
 }

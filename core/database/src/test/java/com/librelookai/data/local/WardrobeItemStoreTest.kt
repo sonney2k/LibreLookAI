@@ -131,4 +131,32 @@ class WardrobeItemStoreTest {
         assertFalse(store.hasFolder("bad"))
         assertNull(store.itemsFor("bad").firstOrNull())
     }
+
+    @Test
+    fun `find returns the item with its owning folder`() = runBlocking {
+        store.replaceFolder("f1", listOf(item("a")))
+        store.replaceFolder("f2", listOf(item("b")))
+
+        val (folderId, found) = store.find("b")!!
+        assertEquals("f2", folderId)
+        assertEquals("b", found.driveId)
+        assertNull(store.find("missing"))
+
+        // A move re-homes the item — find follows it.
+        store.addAll("f1", listOf(item("b")))
+        assertEquals("f1", store.find("b")!!.first)
+    }
+
+    @Test
+    fun `setSidecarId stamps the row without touching other fields`() = runBlocking {
+        store.replaceFolder("f1", listOf(item("a", tags = ClothingTags(type = "jacket"))))
+
+        store.setSidecarId("a", "sc123")
+
+        val (_, found) = store.find("a")!!
+        assertEquals("sc123", found.sidecarDriveId)
+        assertEquals("jacket", found.tags?.type)
+        // Unknown id is a no-op, not a crash.
+        store.setSidecarId("missing", "sc999")
+    }
 }
