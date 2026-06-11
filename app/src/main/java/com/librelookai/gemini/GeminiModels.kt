@@ -2,32 +2,8 @@ package com.librelookai.gemini
 
 import com.google.gson.annotations.SerializedName
 
-// ---------- Public data classes ----------
-
-data class FashionTrends(
-    val region: String = "",
-    @com.google.gson.annotations.SerializedName("trending_colors")
-    val trendingColors: List<String> = emptyList(),
-    @com.google.gson.annotations.SerializedName("trending_aesthetics")
-    val trendingAesthetics: List<String> = emptyList(),
-    @com.google.gson.annotations.SerializedName("must_have_items")
-    val mustHaveItems: List<String> = emptyList(),
-    @com.google.gson.annotations.SerializedName("outdated_items")
-    val outdatedItems: List<String> = emptyList(),
-)
-
-data class ClothingTags(
-    val label: String = "",
-    val type: String = "",
-    val category: String = "",
-    val uses: List<String> = emptyList(),
-    val colors: List<String> = emptyList(),
-    val seasonality: List<String> = emptyList(),
-    val aesthetic: List<String> = emptyList(),
-    val fit: List<String> = emptyList(),
-    val material: List<String> = emptyList(),
-    val pattern: List<String> = emptyList(),
-)
+// Public data classes (FashionTrends, ClothingTags) moved to :core:model
+// (core/model/…/gemini/ClothingTagModels.kt), same package.
 
 // ---------- Response DTOs ----------
 

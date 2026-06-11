@@ -398,10 +398,10 @@ class ShoppingClosetViewModel @Inject constructor(
      *  pre-cutout image path, downloading from Drive if needed. */
     suspend fun ensureOriginalCached(cutoutDriveId: String): String? = withContext(Dispatchers.IO) {
         val item = _state.value.items.find { it.driveId == cutoutDriveId } ?: return@withContext null
-        if (item.originalDriveId == null) return@withContext null
+        val originalDriveId = item.originalDriveId ?: return@withContext null
         val local = File(drive.cacheDir, "${cutoutDriveId}_original.jpg")
         if (local.exists()) return@withContext local.absolutePath
-        val downloaded = runCatching { drive.downloadToCache(item.originalDriveId) }.getOrNull() ?: return@withContext null
+        val downloaded = runCatching { drive.downloadToCache(originalDriveId) }.getOrNull() ?: return@withContext null
         runCatching { downloaded.copyTo(local, overwrite = true) }
         local.absolutePath
     }

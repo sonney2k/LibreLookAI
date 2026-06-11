@@ -24,3 +24,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "LibreLookAI"
 include(":app")
+include(":core:model")

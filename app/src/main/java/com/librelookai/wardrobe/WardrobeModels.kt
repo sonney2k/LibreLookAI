@@ -58,22 +58,7 @@ data class FindByPhoto(
     val pHash: Long? = null,
 )
 
-data class DriveImage(
-    val driveId: String,
-    val localPath: String,
-    val name: String,
-    val tags: ClothingTags? = null,
-    /** Bumped on every local reprocess so Coil knows to reload from disk. */
-    val version: Long = 0L,
-    /** Drive file ID of the unprocessed original, if one was saved to Drive. */
-    val originalDriveId: String? = null,
-    /** Drive file ID of the per-item sidecar JSON (named "{driveId}.json"). */
-    val sidecarDriveId: String? = null,
-    /** Drive folder ID this item actually lives in. */
-    val folderId: String = "",
-    /** Drive's `createdTime` for the cutout file, in millis. 0 when unknown (legacy cache). */
-    val createdTimeMs: Long = 0L,
-)
+// DriveImage moved to :core:model (core/model/…/wardrobe/DriveImage.kt), same package.
 
 /**
  * True when the item has no AI classification yet — tagging failed (e.g. an AI/credits outage at
