@@ -180,6 +180,7 @@ tasks.withType<Test>().configureEach {
 
 dependencies {
     implementation(project(":core:model"))
+    implementation(project(":core:common"))
     implementation(project(":core:database"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
