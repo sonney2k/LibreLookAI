@@ -14,7 +14,7 @@ deferred and inter-blocking:
 | 4 | Navigation Compose | **Done** (phase 3 complete; per-destination VM scoping deferred to § 5) |
 | 5 | Thin VMs over use-cases | **Not started** — the keystone blocker: gates `feature/*` modules, destination-scoped VMs, and removal of the cross-VM `LaunchedEffect` bridges |
 | 6 | Typed `AiResult` | **Started** — the notice path carries a semantic `AiErrorReason` enum instead of `R.string` ids (June 2026, the `:core:ai` enabler); the sealed `AiResult<T>` return type is not started — Gemini still returns `null` on failure |
-| 7 | DataStore + Keystore settings | **Not started** |
+| 7 | DataStore + Keystore settings | **Started** — the BYOK Gemini key is AES-GCM-encrypted at rest via Android Keystore (June 2026; `ApiKeyStore` API unchanged, plaintext pref migrates on first read, graceful plaintext fallback if Keystore is unavailable); DataStore for `UserPreferences`/`OnboardingState`/pricing cache and the flag interface are not started |
 | 8 | Testing strategy | **Partial** — store invariant tests landed; fake-based repository/VM tests blocked on § 3 interfaces |
 
 ## Context
@@ -327,9 +327,36 @@ are easy to violate and have caused real bugs.
    shopping folder; the wardrobe VM drops the optimistic target-homed copy from its view,
    removes the recently-moved marker and (for wardrobe-internal moves) shows the error.
    `undoItemsMovedTo` and the `onItemsMoveFailed` param chain were deleted.
-   **Next slices**: the Drive-first outfit/event saves (these *change* semantics from
-   Drive-first to local-first, so they need their `onDone(success)` flows re-examined),
-   then WorkManager scheduling once a § 5 pipeline needs process-death survival mid-drain.
+   **Next slice (designed, not yet built): outfit `_outfits.json` saves.** Findings from the
+   June 2026 examination, for whoever picks this up:
+   - Shape: a payload-free `outfit.syncFolder` mutation (targetId = folderId); the handler
+     reads `OutfitStore.outfitsFor(fid)` and writes `gson.toJson(list)` — `Outfit.folderId`
+     is `@Transient`, so store-row serialization is Drive-file serialization.
+   - `refreshOutfitsLocalCache()` already uses the same per-folder filter as the Drive
+     writes ("the cache matches Drive exactly"), so enqueuers just need Room-write-first
+     ordering: update state → `refreshOutfitsLocalCache()` → enqueue per affected folder →
+     drain → `onDone(true)`.
+   - **Semantic flip to re-examine per call site**: today every outfit save is Drive-first
+     (`runCatching { drive.saveOutfitsJson }.onSuccess { state + cache + onDone(true) }`).
+     ~9 sites in `OutfitsViewModel` (`saveOutfitDirectly`, `addOutfits`,
+     `updateOutfitsRefined`, `updateOutfitItems`, `deleteOutfitsByIds`, `commitOutfit`,
+     `deleteOutfit`, `setOutfitLoved`, `deleteSelectedOutfits`) + 2 in `OutfitsTags.kt`.
+     Each has its own wrinkle: `commitOutfit` drives the `isComposerSaving` overlay,
+     `setOutfitLoved` rolls back its optimistic flip on failure, `deleteOutfitsByIds`'
+     `onDone` gates the trip-delete cascade, `addOutfits`' gates trip auto-create.
+   - The per-site Drive filters differ slightly (`folderId == fid || folderId.isEmpty()`
+     vs `folderId == fid` in `deleteSelectedOutfits` vs the loved-save's special case) —
+     the handler would *unify* them to the `refreshOutfitsLocalCache` filter; check the
+     legacy empty-`folderId` edge cases before accepting that.
+   - **Wipe guard (mandatory)**: a payload-free handler that reads a never-cached folder
+     would write `[]` and destroy the user's outfits. Expose the existing
+     `outfit_folders` marker as `OutfitStore.hasFolder()` and make the handler refuse
+     (`Permanent`) when the folder was never cached.
+   - Outfit display order: Phase 1 already paints store order (no ORDER BY), Phase 2
+     re-imposes file order; the handler writing store order makes them converge. Verify
+     no screen relies on file order before shipping.
+   After outfits: outfit events / trips (same Drive-first analysis), then WorkManager
+   scheduling once a § 5 pipeline needs process-death survival mid-drain.
 3. **Navigation Compose** — add the NavHost, convert Dialog-viewers to destinations one at a
    time; delete each Window-quirk workaround as its screen converts. Scope ViewModels to
    destinations as screens convert.
