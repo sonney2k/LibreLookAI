@@ -20,6 +20,8 @@ import com.librelookai.data.local.PendingMutationStore
 import com.librelookai.data.local.WardrobeItemStore
 import com.librelookai.data.session.ClosetSession
 import com.librelookai.data.session.ClosetSessionHolder
+import com.librelookai.data.session.UserPreferencesRepository
+import com.librelookai.settings.AppLanguage
 import com.librelookai.R
 import com.librelookai.data.drive.DriveFileDto
 import com.librelookai.data.drive.DriveRepository
@@ -71,6 +73,7 @@ class WardrobeViewModel @Inject constructor(
     private val sidecarSync: WardrobeSidecarSyncHandler,
     private val moveSync: WardrobeMoveSyncHandler,
     session: ClosetSessionHolder,
+    prefsRepo: UserPreferencesRepository,
 ) : AndroidViewModel(app) {
 
     companion object {
@@ -202,6 +205,18 @@ class WardrobeViewModel @Inject constructor(
                 setDefaultImportFolderId(s.defaultImportFolderId)
             }
         }
+        // Mirror the UserPreferences-derived knobs (tagging language, dedupe, bg-removal
+        // routing, similarity debug) from the shared preferences repository — replaces the
+        // per-pref AppContent mirrors (refactor § 5 slice 2).
+        viewModelScope.launch {
+            prefsRepo.preferences.collect { p ->
+                geminiLanguage = AppLanguage.toGeminiName(p.language)
+                dedupeOnImport = p.dedupeOnImport
+                dedupeThreshold = p.dedupeThreshold
+                preferLocalBgRemoval = p.preferLocalBgRemoval
+                debugSimilarityPreview = p.debugSimilarityPreview
+            }
+        }
         // SyncEngine feedback: a drained sidecar save stamped its Drive id onto the Room row;
         // mirror it into in-memory state so move/delete can relocate/remove the sidecar file.
         viewModelScope.launch {
@@ -242,22 +257,6 @@ class WardrobeViewModel @Inject constructor(
             }
         }
     }
-
-    fun setLanguage(geminiName: String) {
-        geminiLanguage = geminiName
-    }
-
-    /** Push UserPreferences-derived similarity settings into the VM. Called from MainActivity. */
-    fun setDedupeSettings(enabled: Boolean, threshold: Float) {
-        dedupeOnImport = enabled
-        dedupeThreshold = threshold
-    }
-
-    /** Push UserPreferences.preferLocalBgRemoval into the VM. Called from MainActivity. */
-    fun setPreferLocalBgRemoval(enabled: Boolean) { preferLocalBgRemoval = enabled }
-
-    /** Push UserPreferences.debugSimilarityPreview into the VM. Called from MainActivity. */
-    fun setDebugSimilarityPreview(enabled: Boolean) { debugSimilarityPreview = enabled }
 
     /** Set the folder that new photo imports target. Null = fall back to the active view folder. */
     fun setDefaultImportFolderId(folderId: String?) {

@@ -699,6 +699,19 @@ wardrobe (language, dedupe pair, `preferLocalBg`, `debugSimilarityPreview`), sho
 started at app startup — the statics themselves survive until § 3, but the *bridges* die.
 Kills the six preference-mirror effects; `openComposer`'s `prefs` parameter goes once its VM
 injects the repository.
+**Status: LANDED (June 2026).** `data/session/UserPreferencesRepository` (`:app`):
+`ProfileViewModel` mirrors `state.preferences` (initial cached language/theme/font, the Drive
+load, every save and try-on-photo update) distinct-until-changed into the singleton; it stays
+the only writer. Wardrobe collects language (the `AppLanguage.toGeminiName` conversion moved
+into the VM) + dedupe pair + `preferLocalBgRemoval` + `debugSimilarityPreview`, shopping
+collects language; the five push-setters (`setLanguage`×2, `setDedupeSettings`,
+`setPreferLocalBgRemoval`, `setDebugSimilarityPreview`) are deleted.
+`data/session/StaticPreferenceMirrors` (started once in `LibreLookAIApp.onCreate`, which
+gained its first `onCreate` body) owns the two legacy-static writes (`ImageEncoding.tier`,
+`EmbeddingService.segmenter.foregroundThreshold` — keeping the old `runCatching` guard).
+Because `ProfileViewModel` is created above the entry gate, the repository is populated
+before the consuming VMs even exist. The `openComposer` `prefs` parameter was left for the
+slice-8/9 composer work (it is part of the open-call contract, not a mirror).
 
 **Slice 3 — prompt inputs become DB reads.** `OutfitsViewModel` derives `wearHistory` by
 collecting `OutfitEventStore.observe*` (scoped via `ClosetSession`) instead of

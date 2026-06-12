@@ -15,6 +15,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -24,6 +26,7 @@ import com.librelookai.data.drive.DriveRepository
 import com.librelookai.data.drive.loadPreferencesJson
 import com.librelookai.data.drive.savePreferencesJson
 import com.librelookai.data.drive.uploadProfilePhoto
+import com.librelookai.data.session.UserPreferencesRepository
 
 /** The three angles of the user's try-on reference photo. */
 enum class TryOnSlot(val fileName: String) {
@@ -48,6 +51,7 @@ data class ProfileUiState(
 class ProfileViewModel @Inject constructor(
     app: Application,
     private val drive: DriveRepository,
+    private val prefsRepo: UserPreferencesRepository,
 ) : AndroidViewModel(app) {
     private val gson = Gson()
     private var folderId: String? = null
@@ -64,7 +68,15 @@ class ProfileViewModel @Inject constructor(
     )
     val state: StateFlow<ProfileUiState> = _state.asStateFlow()
 
-    init { loadPreferences() }
+    init {
+        loadPreferences()
+        // Mirror every preferences snapshot (initial cached values, Drive load, each save)
+        // into the shared read-path repository — consumers collect it instead of being pushed
+        // by AppContent mirrors (refactor § 5 slice 2). This VM stays the only writer.
+        viewModelScope.launch {
+            state.map { it.preferences }.distinctUntilChanged().collect(prefsRepo::publish)
+        }
+    }
 
     /**
      * First-run language defaults to the device locale if it matches a supported [AppLanguage]

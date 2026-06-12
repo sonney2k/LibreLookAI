@@ -29,6 +29,8 @@ import com.librelookai.data.drive.SyncEngine
 import com.librelookai.data.local.PendingMutationStore
 import com.librelookai.data.local.WardrobeItemStore
 import com.librelookai.data.session.ClosetSessionHolder
+import com.librelookai.data.session.UserPreferencesRepository
+import com.librelookai.settings.AppLanguage
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import com.librelookai.wardrobe.DeleteItemPayload
@@ -86,6 +88,7 @@ class ShoppingClosetViewModel @Inject constructor(
     private val syncEngine: SyncEngine,
     moveSync: WardrobeMoveSyncHandler,
     session: ClosetSessionHolder,
+    prefsRepo: UserPreferencesRepository,
 ) : AndroidViewModel(app) {
 
     companion object { internal const val TAG = "ShoppingClosetVM" }
@@ -111,6 +114,11 @@ class ShoppingClosetViewModel @Inject constructor(
         // fan-out bridge keyed on this state field).
         viewModelScope.launch {
             state.map { it.folderId }.distinctUntilChanged().collect(session::setShoppingFolder)
+        }
+        // Mirror the Gemini tagging language from the shared preferences repository —
+        // replaces the AppContent language mirror (refactor § 5 slice 2).
+        viewModelScope.launch {
+            prefsRepo.preferences.collect { geminiLanguage = AppLanguage.toGeminiName(it.language) }
         }
         // SyncEngine feedback: a queued shopping→closet move exhausted its retries and the
         // handler re-homed the Room row back to the shopping folder — splice the item back
@@ -142,8 +150,6 @@ class ShoppingClosetViewModel @Inject constructor(
             }
         }
     }
-
-    fun setLanguage(geminiName: String) { geminiLanguage = geminiName }
 
     fun toggleSelection(driveId: String) {
         _state.update {

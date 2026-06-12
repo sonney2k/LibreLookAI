@@ -68,7 +68,6 @@ import com.librelookai.data.drive.SyncEngine
 import com.librelookai.data.model.Location
 import com.librelookai.data.model.TryOn
 import com.librelookai.gemini.TokenUsageRepository
-import com.librelookai.ml.EmbeddingService
 import com.librelookai.onboarding.OnboardingScreen
 import com.librelookai.onboarding.OnboardingState
 import com.librelookai.outfit.OutfitComposerScreen
@@ -345,12 +344,11 @@ internal fun AppContent(
                         if (isOnline) wardrobeViewModel.retryPrefetchIfNeeded()
                     }
 
-                    // Keep wardrobe tagging language in sync with the profile language
-                    val geminiLanguage = AppLanguage.toGeminiName(profileState.preferences.language)
-                    LaunchedEffect(geminiLanguage) {
-                        wardrobeViewModel.setLanguage(geminiLanguage)
-                        shoppingClosetViewModel.setLanguage(geminiLanguage)
-                    }
+                    // Preference-derived knobs (tagging language, dedupe, bg-removal routing,
+                    // similarity debug, encoder tier, segmenter threshold) flow through the
+                    // UserPreferencesRepository singleton: ProfileViewModel publishes, the
+                    // wardrobe/shopping VMs and StaticPreferenceMirrors collect (refactor § 5
+                    // slice 2 — the old per-pref mirrors here are gone).
 
                     // Pre-warm the Shopping wishlist and Try-On history at app start so that
                     // tapping those tabs paints from the local cache immediately instead of
@@ -360,39 +358,6 @@ internal fun AppContent(
                         shoppingClosetViewModel.loadItems()
                         tryOnViewModel.loadHistory()
                         tripsViewModel.loadTrips()
-                    }
-
-                    // Mirror similarity-check preferences into the wardrobe VM
-                    val dedupeOnImport = profileState.preferences.dedupeOnImport
-                    val dedupeThreshold = profileState.preferences.dedupeThreshold
-                    LaunchedEffect(dedupeOnImport, dedupeThreshold) {
-                        wardrobeViewModel.setDedupeSettings(dedupeOnImport, dedupeThreshold)
-                    }
-
-                    // Mirror the bg-removal threshold into the live segmenter so changes from the
-                    // AI tab take effect immediately on the next capture/import.
-                    val bgRemovalThreshold = profileState.preferences.bgRemovalThreshold
-                    LaunchedEffect(bgRemovalThreshold) {
-                        runCatching { EmbeddingService.segmenter.foregroundThreshold = bgRemovalThreshold }
-                    }
-
-                    // Mirror the image-quality tier so cutout/original encoders pick it up on the
-                    // next capture/import/bg-removal.
-                    val imageQuality = profileState.preferences.imageQuality
-                    LaunchedEffect(imageQuality) {
-                        com.librelookai.util.ImageEncoding.tier = imageQuality
-                    }
-
-                    // Mirror the local-bg-removal pref into the wardrobe VM so camera/gallery
-                    // imports route through the on-device segmenter review when enabled.
-                    val preferLocalBg = profileState.preferences.preferLocalBgRemoval
-                    LaunchedEffect(preferLocalBg) {
-                        wardrobeViewModel.setPreferLocalBgRemoval(preferLocalBg)
-                    }
-
-                    val debugSimilarityPreview = profileState.preferences.debugSimilarityPreview
-                    LaunchedEffect(debugSimilarityPreview) {
-                        wardrobeViewModel.setDebugSimilarityPreview(debugSimilarityPreview)
                     }
 
                     // Apply selected language as the Compose context locale
