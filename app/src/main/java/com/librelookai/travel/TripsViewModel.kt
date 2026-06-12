@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import com.librelookai.data.drive.DriveRepository
@@ -87,6 +88,17 @@ class TripsViewModel @Inject constructor(
 
     private var rootFolderId: String? = null
 
+    init {
+        // Derived read path (refactor § 5 slice 4d): [TripsUiState.trips] is the store's
+        // global trip list, newest-first — every store write (mutators, the Phase-2 reconcile)
+        // lands in the UI via Room invalidation. Mutators no longer splice state.
+        viewModelScope.launch {
+            tripStore.observeTrips()
+                .map { trips -> trips.sortedByDescending { it.createdAt } }
+                .collect { trips -> _state.update { it.copy(trips = trips) } }
+        }
+    }
+
     /**
      * One-shot navigation events emitted when a new trip is created or selected for viewing.
      * The Travel screen / MainActivity observe this to flip the viewer state.
@@ -94,21 +106,17 @@ class TripsViewModel @Inject constructor(
     private val _navigateToTrip = MutableSharedFlow<String>(extraBufferCapacity = 1)
     val navigateToTrip: SharedFlow<String> = _navigateToTrip.asSharedFlow()
 
-    /** Local snapshot of all trips ([TripStore]), so the list paints instantly on cold start. */
-    private suspend fun readTripsCache(): List<Trip> =
-        runCatching { tripStore.trips() }.getOrDefault(emptyList())
-
     private suspend fun writeTripsCache(trips: List<Trip>) {
         runCatching { tripStore.replaceAll(trips) }
     }
 
     fun loadTrips() {
         viewModelScope.launch {
-            // Phase 1 — instant: paint from the local cache (zero network), mirroring the
-            // wardrobe two-phase load so trips are visible immediately on cold start.
-            val cached = readTripsCache()
-            if (cached.isNotEmpty()) {
-                _state.update { it.copy(trips = cached.sortedByDescending { t -> t.createdAt }, isLoading = false) }
+            // Phase 1 — instant: the derived view paints from the store by itself; this probe
+            // only decides whether the cold-load spinner can clear before Drive answers.
+            val hasCache = runCatching { tripStore.trips().isNotEmpty() }.getOrDefault(false)
+            if (hasCache) {
+                _state.update { it.copy(isLoading = false) }
             } else {
                 _state.update { it.copy(isLoading = true, error = null) }
             }
@@ -139,9 +147,10 @@ class TripsViewModel @Inject constructor(
                     }.awaitAll().filterNotNull()
                 }
             }.onSuccess { loaded ->
-                val trips = loaded.sortedByDescending { t -> t.createdAt }
-                _state.update { it.copy(trips = trips, isLoading = false) }
-                writeTripsCache(trips)
+                // Store write first (the derived view follows via invalidation), then clear
+                // the flags — so a cold load never flashes empty.
+                writeTripsCache(loaded.sortedByDescending { t -> t.createdAt })
+                _state.update { it.copy(isLoading = false) }
             }.onFailure { e ->
                 _state.update { s -> s.copy(isLoading = false, error = if (s.trips.isEmpty()) e.message else null) }
             }
@@ -149,17 +158,15 @@ class TripsViewModel @Inject constructor(
     }
 
     /**
-     * Upserts [trip] into state + the trip store; the Drive write rides the sync queue
-     * (refactor § 2 — the [TripSaveSyncHandler] re-reads the store row at apply time and
-     * resolves the trips folder itself, so the save no longer waits for Phase 2's `folderId`).
+     * Upserts [trip] into the trip store (the derived view follows via invalidation); the
+     * Drive write rides the sync queue (refactor § 2 — the [TripSaveSyncHandler] re-reads the
+     * store row at apply time and resolves the trips folder itself, so the save no longer
+     * waits for Phase 2's `folderId`).
      */
     fun upsertTrip(trip: Trip, onDone: (Boolean) -> Unit = {}) {
         viewModelScope.launch {
-            _state.update { s ->
-                val without = s.trips.filterNot { it.id == trip.id }
-                s.copy(trips = (listOf(trip) + without))
-            }
-            writeTripsCache(_state.value.trips)
+            val updated = listOf(trip) + _state.value.trips.filterNot { it.id == trip.id }
+            writeTripsCache(updated)
             mutationStore.enqueue(TRIP_SAVE_KIND, targetId = trip.id, folderId = null, payload = "{}")
             syncEngine.drain()
             onDone(true)
@@ -189,16 +196,17 @@ class TripsViewModel @Inject constructor(
     }
 
     /**
-     * Applies [transform] to [tripId], updates state immediately (no reordering) and persists to
-     * Drive in the background. Used for in-place planner-option edits in the trip editor.
+     * Applies [transform] to [tripId], persists it to the store (the derived view follows via
+     * invalidation, keeping `createdAt` order — no reordering) and queues the Drive write.
+     * Used for in-place planner-option edits in the trip editor.
      */
     private fun mutateTrip(tripId: String, transform: (Trip) -> Trip) {
         val current = _state.value.trips.find { it.id == tripId } ?: return
         val updated = transform(current)
         if (updated == current) return
-        _state.update { s -> s.copy(trips = s.trips.map { if (it.id == tripId) updated else it }) }
+        val trips = _state.value.trips.map { if (it.id == tripId) updated else it }
         viewModelScope.launch {
-            writeTripsCache(_state.value.trips)
+            writeTripsCache(trips)
             mutationStore.enqueue(TRIP_SAVE_KIND, targetId = tripId, folderId = null, payload = "{}")
             syncEngine.drain()
         }
@@ -250,9 +258,9 @@ class TripsViewModel @Inject constructor(
      */
     fun deleteTrip(tripId: String, onDeleted: (deletedOutfitIds: List<String>) -> Unit = {}) {
         val current = _state.value.trips.find { it.id == tripId } ?: return
+        val remaining = _state.value.trips.filterNot { it.id == tripId }
         viewModelScope.launch {
-            _state.update { s -> s.copy(trips = s.trips.filterNot { it.id == tripId }) }
-            writeTripsCache(_state.value.trips)
+            writeTripsCache(remaining)
             mutationStore.enqueue(TRIP_DELETE_KIND, targetId = tripId, folderId = null, payload = "{}")
             syncEngine.drain()
             onDeleted(current.outfitIds)
@@ -268,8 +276,7 @@ class TripsViewModel @Inject constructor(
         if (targets.isEmpty()) return
         viewModelScope.launch {
             val deletedIds = targets.map { it.id }.toSet()
-            _state.update { s -> s.copy(trips = s.trips.filterNot { it.id in deletedIds }) }
-            writeTripsCache(_state.value.trips)
+            writeTripsCache(_state.value.trips.filterNot { it.id in deletedIds })
             targets.forEach { trip ->
                 mutationStore.enqueue(TRIP_DELETE_KIND, targetId = trip.id, folderId = null, payload = "{}")
             }

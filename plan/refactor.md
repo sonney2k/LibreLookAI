@@ -810,7 +810,24 @@ feeding the wardrobe VM's recently-moved markers, its own `addAll` an idempotent
 `deleteItems` drops rows via `remove`, and the `moveRolledBack` collector shrank to the error
 banner (the handler's re-home restores the wishlist via invalidation). Phase 1 of `loadItems`
 is a cold-load probe for `isLoading` only; Phase 2's `replaceFolder` lands before the flags
-clear. Remaining for slice 4: **4d** events/trips/try-ons.
+clear.
+**Status: 4d LANDED (June 2026) — slice 4 complete.** The three remaining list views derive
+from their stores: `OutfitEventsUiState.events` from a session-driven scope flatMapped into
+`OutfitEventStore.observeFolders` (`persist()` keeps the legacy single-target rule — store
+write + queue, no state splice; the event id being the primary key makes the All-locations
+re-home atomic); `TripsUiState.trips` from `TripStore.observeTrips()` sorted
+`createdAt`-desc (`upsertTrip`/`mutateTrip`/`deleteTrip(s)` compute the updated list and
+`replaceAll` it — accepted divergence: an edited trip no longer jumps to the top of the
+list, which only ever held until the next reload anyway); `TryOnUiState.history` from
+`TryOnStore.observeTryOns()` mapped through `migrateSource` + a cached-image-file filter,
+sorted `createdAt`-desc — `saveCurrent` and the singular `deleteTryOn` now write the store
+(previously only `deleteTryOns`/Phase 2 did, leaving it stale until the next `loadHistory`),
+and `loadHistory`'s Phase 1 deleted outright (the derivation paints on subscription; Phase 2
+downloads missing image files then `replaceAll`s, whose invalidation re-runs the file
+filter). Accepted divergences: mutators still read `state` as their base (same ms-lag window
+as 4a–c), and a try-on whose image download failed is skipped instead of shown with an empty
+`localPath`. Try-on saves remain Drive-first (not queued) — converting them is § 2 leftover
+work, not slice 4's.
 
 **Slice 5 — ingestion pipeline use-case.** The `PendingJob` Channel, `drainWorkQueue`,
 dedupe gate, local-bg review queue, wake-lock and `JobForegroundService` acquire/release move

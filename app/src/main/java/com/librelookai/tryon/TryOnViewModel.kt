@@ -11,6 +11,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -125,6 +127,25 @@ class TryOnViewModel @Inject constructor(
     val state: StateFlow<TryOnUiState> = _state.asStateFlow()
 
     private var rootFolderId: String? = null
+
+    init {
+        // Derived read path (refactor § 5 slice 4d): [TryOnUiState.history] is the store's
+        // global try-on list — rows whose image file is in the local Drive cache (an
+        // un-downloaded entry reappears with the store write after Phase 2 fetches it),
+        // newest-first — so every store write lands in the UI via Room invalidation.
+        // Mutators no longer splice `history`.
+        viewModelScope.launch {
+            tryOnStore.observeTryOns()
+                .map { entries ->
+                    entries.map(::migrateSource).mapNotNull { e ->
+                        val f = File(drive.cacheDir, "tryon_${e.imageDriveId}.png")
+                        if (f.exists()) e.copy(localPath = f.absolutePath) else null
+                    }.sortedByDescending { it.createdAt }
+                }
+                .flowOn(Dispatchers.IO)
+                .collect { history -> _state.update { it.copy(history = history) } }
+        }
+    }
     /**
      * Files that were actually sent to Gemini for the current [resultPath], in the same order.
      * Captured so that Save writes the correct itemNames even if the user edits the item
@@ -348,13 +369,9 @@ class TryOnViewModel @Inject constructor(
                 val existing = loadTryOnsEntries(root)
                 val updated = listOf(entry) + existing
                 drive.saveTryOnsJson(root, gson.toJson(updated))
-                _state.update {
-                    it.copy(
-                        isSaving      = false,
-                        isResultSaved = true,
-                        history       = listOf(entry) + it.history,
-                    )
-                }
+                // Store write — the derived history picks the entry up via invalidation.
+                runCatching { tryOnStore.replaceAll(updated) }
+                _state.update { it.copy(isSaving = false, isResultSaved = true) }
             } catch (e: Exception) {
                 Log.e("TryOnVM", "saveCurrent failed", e)
                 _state.update {
@@ -376,10 +393,10 @@ class TryOnViewModel @Inject constructor(
                 File(drive.cacheDir, "tryon_${tryOn.imageDriveId}.png").delete()
                 val remaining = loadTryOnsEntries(root).filterNot { it.imageDriveId == tryOn.imageDriveId }
                 drive.saveTryOnsJson(root, gson.toJson(remaining))
+                runCatching { tryOnStore.replaceAll(remaining) }
                 _state.update {
                     it.copy(
-                        history        = it.history.filterNot { h -> h.imageDriveId == tryOn.imageDriveId },
-                        viewingTryOn   = if (it.viewingTryOn?.imageDriveId == tryOn.imageDriveId) null else it.viewingTryOn,
+                        viewingTryOn = if (it.viewingTryOn?.imageDriveId == tryOn.imageDriveId) null else it.viewingTryOn,
                     )
                 }
             } catch (e: Exception) {
@@ -412,7 +429,6 @@ class TryOnViewModel @Inject constructor(
                 runCatching { tryOnStore.replaceAll(remaining) }
                 _state.update {
                     it.copy(
-                        history = it.history.filterNot { h -> h.imageDriveId in ids },
                         viewingTryOn = if (it.viewingTryOn?.imageDriveId in ids) null else it.viewingTryOn,
                     )
                 }
@@ -429,32 +445,19 @@ class TryOnViewModel @Inject constructor(
 
     fun loadHistory() {
         viewModelScope.launch(Dispatchers.IO) {
-            // Phase 1 — instant: paint from the local cache ([TryOnStore]) so the history grid
-            // appears immediately when the user opens the Try-Ons tab. Mirrors the
-            // wardrobe two-phase load (CLAUDE.md → Storage / Wardrobe). The store holds
-            // metadata only — image bytes stay files in the Drive cache dir.
-            runCatching {
-                val resolved = tryOnStore.tryOns().map(::migrateSource).mapNotNull { e ->
-                    val f = File(drive.cacheDir, "tryon_${e.imageDriveId}.png")
-                    if (f.exists()) e.copy(localPath = f.absolutePath) else null
-                }
-                if (resolved.isNotEmpty()) {
-                    _state.update { it.copy(history = resolved) }
-                }
-            }
-
-            // Phase 2 — refresh from Drive.
+            // Phase 1 is the derived view itself — the store rows paint on subscription
+            // (the store holds metadata only; image bytes stay files in the Drive cache dir).
+            // Phase 2 — refresh from Drive: download missing image files, then write the
+            // store, whose invalidation re-runs the derivation (which now finds the files).
             try {
                 val root = ensureRootFolder()
                 val entries = loadTryOnsEntries(root)
-                val resolved = entries.map { e ->
+                entries.forEach { e ->
                     val cached = File(drive.cacheDir, "tryon_${e.imageDriveId}.png")
                     if (!cached.exists()) {
                         runCatching { drive.downloadFileTo(e.imageDriveId, cached) }
                     }
-                    e.copy(localPath = cached.absolutePath.takeIf { cached.exists() } ?: "")
                 }
-                _state.update { it.copy(history = resolved) }
                 runCatching { tryOnStore.replaceAll(entries) }
             } catch (e: Exception) {
                 Log.w("TryOnVM", "loadHistory failed: ${e.message}")

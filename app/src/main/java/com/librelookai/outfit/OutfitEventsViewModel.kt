@@ -6,10 +6,13 @@ import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -32,6 +35,7 @@ data class OutfitEventsUiState(
     val error: String? = null,
 )
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class OutfitEventsViewModel @Inject constructor(
     app: Application,
@@ -49,7 +53,18 @@ class OutfitEventsViewModel @Inject constructor(
     val state: StateFlow<OutfitEventsUiState> = _state.asStateFlow()
     private var loadJob: Job? = null
 
+    // ---- Derived read path (refactor § 5 slice 4d) ----
+    // [OutfitEventsUiState.events] is *derived*: the scope below flatMaps into
+    // [OutfitEventStore.observeFolders], so every store write — [persist], the Phase-2
+    // reconcile — lands in the UI via Room invalidation. Mutators no longer splice state.
+    private val scope = MutableStateFlow<List<String>>(emptyList())
+
     init {
+        viewModelScope.launch {
+            scope.flatMapLatest { ids ->
+                if (ids.isEmpty()) flowOf(emptyList()) else eventStore.observeFolders(ids)
+            }.collect { events -> _state.update { it.copy(events = events) } }
+        }
         // Derive the load scope from the shared closet session (replaces the AppContent
         // fan-out bridge; same arms it had — an active id that is neither "All" nor a known
         // closet keeps the current scope).
@@ -69,6 +84,7 @@ class OutfitEventsViewModel @Inject constructor(
         folderId = newFolderId
         allFolderIds = null
         _state.update { OutfitEventsUiState(isLoading = true) }
+        scope.value = listOf(newFolderId)
         loadEvents()
     }
 
@@ -77,6 +93,7 @@ class OutfitEventsViewModel @Inject constructor(
         folderId = null
         allFolderIds = folderIds.toList()
         _state.update { OutfitEventsUiState(isLoading = true) }
+        scope.value = folderIds.toList()
         loadEvents()
     }
 
@@ -87,9 +104,12 @@ class OutfitEventsViewModel @Inject constructor(
         loadJob = viewModelScope.launch {
             _state.update { it.copy(isLoading = true, error = null) }
 
-            // Phase 1 — instant: show merged local cache from all folders
-            val cachedAll = ids.flatMap { id -> eventStore.eventsFor(id) }
-            if (cachedAll.isNotEmpty()) _state.update { it.copy(events = cachedAll, isLoading = false) }
+            // Phase 1 — instant: the derived view paints from the store by itself; this probe
+            // only decides whether the cold-load spinner can clear before Drive answers.
+            val hasCache = ids.any { id ->
+                runCatching { eventStore.eventsFor(id).isNotEmpty() }.getOrDefault(false)
+            }
+            if (hasCache) _state.update { it.copy(isLoading = false) }
 
             // Phase 2 — Drive sync: skip when offline
             if (!getApplication<Application>().isNetworkAvailable()) {
@@ -97,18 +117,17 @@ class OutfitEventsViewModel @Inject constructor(
                 return@launch
             }
             runCatching {
-                ids.flatMap { id ->
+                ids.forEach { id ->
                     val json = drive.loadOutfitEventsJson(id)
                     if (json != null) {
                         val type = object : TypeToken<List<OutfitEvent>>() {}.type
                         val events: List<OutfitEvent> = gson.fromJson(json, type) ?: emptyList()
-                        // Update per-folder cache
+                        // Store write — the derived view follows via invalidation.
                         runCatching { eventStore.replaceFolder(id, events) }
-                        events
-                    } else emptyList()
+                    }
                 }
-            }.onSuccess { events ->
-                _state.update { it.copy(events = events, isLoading = false) }
+            }.onSuccess {
+                _state.update { it.copy(isLoading = false) }
             }.onFailure { e ->
                 _state.update { s ->
                     s.copy(isLoading = false, error = if (s.events.isEmpty()) e.message else null)
@@ -216,8 +235,9 @@ class OutfitEventsViewModel @Inject constructor(
     }
 
     /**
-     * Local-first save (refactor § 2): the updated event list commits to in-memory state and
-     * the active folder's [OutfitEventStore] rows immediately, then a payload-free
+     * Local-first save (refactor § 2): the updated event list commits to the active folder's
+     * [OutfitEventStore] rows immediately (the derived view follows via invalidation — the
+     * event id is the primary key, so re-homing is atomic), then a payload-free
      * [OUTFIT_EVENT_SYNC_KIND] mutation drains it to Drive — the handler re-reads the store at
      * apply time, so back-to-back calendar edits coalesce, transient failures retry instead of
      * silently losing the wear, and the queued row survives process death. Keeps the legacy
@@ -227,7 +247,6 @@ class OutfitEventsViewModel @Inject constructor(
     private fun persist(updated: List<OutfitEvent>) {
         viewModelScope.launch {
             val id = folderId ?: allFolderIds?.firstOrNull() ?: return@launch
-            _state.update { it.copy(events = updated) }
             runCatching { eventStore.replaceFolder(id, updated) }
             mutationStore.enqueue(OUTFIT_EVENT_SYNC_KIND, targetId = id, folderId = id, payload = "{}")
             syncEngine.drain()
