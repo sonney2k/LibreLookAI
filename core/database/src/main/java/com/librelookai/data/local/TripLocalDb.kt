@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.Transaction
+import kotlinx.coroutines.flow.Flow
 
 /**
  * A cached trip row. `id` (the trip's UUID) is the primary key; `json` is the Gson-serialized
@@ -31,6 +32,9 @@ data class TripMarkerEntity(@PrimaryKey val key: String)
 interface TripDao {
     @Query("SELECT * FROM trips")
     suspend fun trips(): List<TripEntity>
+
+    @Query("SELECT * FROM trips")
+    fun observeTrips(): Flow<List<TripEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertAll(trips: List<TripEntity>)

@@ -1,6 +1,7 @@
 package com.librelookai.data.local
 
 import com.librelookai.gemini.ClothingTags
+import kotlinx.coroutines.flow.Flow
 
 /**
  * One cached wardrobe item — the Room-backed successor of the per-folder
@@ -37,6 +38,13 @@ interface WardrobeItemStore {
     suspend fun hasFolder(folderId: String): Boolean
 
     suspend fun itemsFor(folderId: String): List<CachedWardrobeItem>
+
+    /**
+     * Live view of the cached items across [folderIds], keyed by owning folder id. Emits the
+     * current rows immediately (running each folder's one-time legacy seed first) and again on
+     * every write to the items table. Folders with no cached items are absent from the map.
+     */
+    fun observeItems(folderIds: List<String>): Flow<Map<String, List<CachedWardrobeItem>>>
 
     /** Replaces the folder's entire cached item list (the post-load full snapshot write). */
     suspend fun replaceFolder(folderId: String, items: List<CachedWardrobeItem>)

@@ -657,6 +657,13 @@ Room stores are poll-read (suspend), never observed.** That is exactly the § 2 
 store maps rows → models exactly like the suspend reads. Nothing collects yet — zero behavior
 change. Tests: extend each store suite with first-emission + write-invalidation assertions
 (Robolectric/Room, like the existing tests).
+**Status: LANDED (June 2026).** Wardrobe items observe as `Flow<Map<folderId,
+List<CachedWardrobeItem>>>` (consumers need folder attribution); outfits/events observe as
+merged lists across the requested folders (outfits with `folderId` restored); trips/try-ons
+observe the global list. Each store flow runs the one-time legacy seed for the requested
+folders before its first emission, short-circuits an empty folder list (no SQL `IN ()`), and
+is `distinctUntilChanged`. +7 store tests (first emission, push on write while collecting,
+seed-through-observe).
 
 **Slice 1 — `ClosetSession`.** A `@Singleton` exposing `StateFlow<ClosetSession>` (locations,
 `activeLocationId`, `activeFolderId`, all closet folder ids, `defaultImportFolderId`,

@@ -10,6 +10,7 @@ import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.RoomDatabase
 import androidx.room.Transaction
+import kotlinx.coroutines.flow.Flow
 
 /**
  * A cached wardrobe item row. `driveId` (the cutout's Drive file ID) is the primary key, so an
@@ -39,6 +40,9 @@ data class WardrobeFolderEntity(@PrimaryKey val folderId: String)
 interface WardrobeItemDao {
     @Query("SELECT * FROM wardrobe_items WHERE folderId = :folderId")
     suspend fun itemsFor(folderId: String): List<WardrobeItemEntity>
+
+    @Query("SELECT * FROM wardrobe_items WHERE folderId IN (:folderIds)")
+    fun observeItems(folderIds: List<String>): Flow<List<WardrobeItemEntity>>
 
     @Query("SELECT * FROM wardrobe_items WHERE driveId = :driveId")
     suspend fun itemById(driveId: String): WardrobeItemEntity?

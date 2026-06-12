@@ -8,6 +8,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.Transaction
+import kotlinx.coroutines.flow.Flow
 
 /**
  * A cached outfit row. `id` (the outfit's UUID) is the primary key, so an outfit is homed in
@@ -35,6 +36,9 @@ data class OutfitFolderEntity(@PrimaryKey val folderId: String)
 interface OutfitDao {
     @Query("SELECT * FROM outfits WHERE folderId = :folderId")
     suspend fun outfitsFor(folderId: String): List<OutfitEntity>
+
+    @Query("SELECT * FROM outfits WHERE folderId IN (:folderIds)")
+    fun observeFolders(folderIds: List<String>): Flow<List<OutfitEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertAll(outfits: List<OutfitEntity>)

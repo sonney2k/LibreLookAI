@@ -5,7 +5,10 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.librelookai.data.model.Trip
 import java.io.File
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeout
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -93,5 +96,21 @@ class TripStoreTest {
     fun `a corrupt legacy file degrades to an empty list`() = runBlocking {
         File(context.filesDir, "trips_cache.json").writeText("not json {")
         assertTrue(store.trips().isEmpty())
+    }
+
+    @Test
+    fun `observeTrips emits the current list and follows writes`() = runBlocking {
+        store.replaceAll(listOf(trip("a")))
+        val flow = store.observeTrips()
+
+        assertEquals(listOf("a"), withTimeout(5_000) { flow.first() }.map { it.id })
+
+        // A write while collecting pushes a fresh emission (Room invalidation).
+        val updated = withTimeout(5_000) {
+            val next = async { flow.first { it.size == 2 } }
+            store.replaceAll(listOf(trip("a"), trip("b")))
+            next.await()
+        }
+        assertEquals(setOf("a", "b"), updated.map { it.id }.toSet())
     }
 }

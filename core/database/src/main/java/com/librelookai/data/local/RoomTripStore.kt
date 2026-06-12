@@ -9,6 +9,11 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -63,6 +68,15 @@ class RoomTripStore @Inject constructor(
     override suspend fun trips(): List<Trip> {
         ensureSeeded()
         return dao.trips().mapNotNull { it.toTrip() }
+    }
+
+    override fun observeTrips(): Flow<List<Trip>> = flow {
+        ensureSeeded()
+        emitAll(
+            dao.observeTrips()
+                .map { rows -> rows.mapNotNull { it.toTrip() } }
+                .distinctUntilChanged(),
+        )
     }
 
     override suspend fun replaceAll(trips: List<Trip>) {

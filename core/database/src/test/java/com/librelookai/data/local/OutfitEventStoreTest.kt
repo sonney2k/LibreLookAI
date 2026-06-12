@@ -6,7 +6,10 @@ import androidx.test.core.app.ApplicationProvider
 import com.librelookai.data.model.OutfitEvent
 import com.librelookai.data.model.WearSource
 import java.io.File
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeout
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -109,5 +112,23 @@ class OutfitEventStoreTest {
     fun `hasFolder sees a legacy-seeded folder`() = runBlocking {
         File(context.filesDir, "outfit_events_cache_seeded.json").writeText("""[{"id":"x"}]""")
         assertTrue(store.hasFolder("seeded"))
+    }
+
+    @Test
+    fun `observeFolders emits the merged events and follows writes`() = runBlocking {
+        store.replaceFolder("f1", listOf(event("e1")))
+        store.replaceFolder("f2", listOf(event("e2")))
+        val flow = store.observeFolders(listOf("f1", "f2"))
+
+        val first = withTimeout(5_000) { flow.first() }
+        assertEquals(setOf("e1", "e2"), first.map { it.id }.toSet())
+
+        // A write while collecting pushes a fresh emission (Room invalidation).
+        val updated = withTimeout(5_000) {
+            val next = async { flow.first { it.size == 3 } }
+            store.replaceFolder("f1", listOf(event("e1"), event("e3")))
+            next.await()
+        }
+        assertEquals(setOf("e1", "e2", "e3"), updated.map { it.id }.toSet())
     }
 }

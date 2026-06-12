@@ -1,6 +1,7 @@
 package com.librelookai.data.local
 
 import com.librelookai.data.model.OutfitEvent
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Local source of truth for cached calendar wear events, per closet folder.
@@ -12,6 +13,13 @@ import com.librelookai.data.model.OutfitEvent
  */
 interface OutfitEventStore {
     suspend fun eventsFor(folderId: String): List<OutfitEvent>
+
+    /**
+     * Live view of the cached events across [folderIds]. Emits the current rows immediately
+     * (running each folder's one-time legacy seed first) and again on every write to the
+     * events table.
+     */
+    fun observeFolders(folderIds: List<String>): Flow<List<OutfitEvent>>
 
     /** Replaces the folder's entire cached event list (post-load / post-mutation snapshot). */
     suspend fun replaceFolder(folderId: String, events: List<OutfitEvent>)

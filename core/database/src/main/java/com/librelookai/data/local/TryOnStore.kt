@@ -1,6 +1,7 @@
 package com.librelookai.data.local
 
 import com.librelookai.data.model.TryOn
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Local source of truth for cached try-on metadata (a single global list — one `_tryons.json`
@@ -14,6 +15,12 @@ import com.librelookai.data.model.TryOn
  */
 interface TryOnStore {
     suspend fun tryOns(): List<TryOn>
+
+    /**
+     * Live view of the cached try-on list. Emits the current rows immediately (running the
+     * one-time legacy seed first) and again on every write to the try-ons table.
+     */
+    fun observeTryOns(): Flow<List<TryOn>>
 
     /** Replaces the entire cached try-on list (post-load / post-mutation snapshot). */
     suspend fun replaceAll(tryOns: List<TryOn>)

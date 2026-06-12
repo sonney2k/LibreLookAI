@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.Transaction
+import kotlinx.coroutines.flow.Flow
 
 /**
  * A cached try-on row. `id` (the try-on's UUID) is the primary key; `json` is the
@@ -32,6 +33,9 @@ data class TryOnMarkerEntity(@PrimaryKey val key: String)
 interface TryOnDao {
     @Query("SELECT * FROM tryons")
     suspend fun tryOns(): List<TryOnEntity>
+
+    @Query("SELECT * FROM tryons")
+    fun observeTryOns(): Flow<List<TryOnEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertAll(tryOns: List<TryOnEntity>)

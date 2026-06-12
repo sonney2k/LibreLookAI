@@ -5,7 +5,10 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.librelookai.data.model.Outfit
 import java.io.File
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeout
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -114,5 +117,23 @@ class OutfitStoreTest {
     fun `hasFolder sees a legacy-seeded folder`() = runBlocking {
         File(context.filesDir, "styles_cache_seeded.json").writeText("""[{"id":"x"}]""")
         assertTrue(store.hasFolder("seeded"))
+    }
+
+    @Test
+    fun `observeFolders emits across folders with folderId restored and follows writes`() = runBlocking {
+        store.replaceFolder("f1", listOf(outfit("a")))
+        store.replaceFolder("f2", listOf(outfit("b")))
+        val flow = store.observeFolders(listOf("f1", "f2"))
+
+        val first = withTimeout(5_000) { flow.first() }
+        assertEquals(setOf("a" to "f1", "b" to "f2"), first.map { it.id to it.folderId }.toSet())
+
+        // A write while collecting pushes a fresh emission (Room invalidation).
+        val updated = withTimeout(5_000) {
+            val next = async { flow.first { it.size == 3 } }
+            store.replaceFolder("f1", listOf(outfit("a"), outfit("c")))
+            next.await()
+        }
+        assertEquals(setOf("a", "b", "c"), updated.map { it.id }.toSet())
     }
 }

@@ -5,7 +5,10 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.librelookai.data.model.TryOn
 import java.io.File
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeout
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -92,5 +95,21 @@ class TryOnStoreTest {
     fun `a corrupt legacy file degrades to an empty list`() = runBlocking {
         File(context.filesDir, "tryons_cache.json").writeText("not json {")
         assertTrue(store.tryOns().isEmpty())
+    }
+
+    @Test
+    fun `observeTryOns emits the current list and follows writes`() = runBlocking {
+        store.replaceAll(listOf(tryOn("a")))
+        val flow = store.observeTryOns()
+
+        assertEquals(listOf("a"), withTimeout(5_000) { flow.first() }.map { it.id })
+
+        // A write while collecting pushes a fresh emission (Room invalidation).
+        val updated = withTimeout(5_000) {
+            val next = async { flow.first { it.size == 2 } }
+            store.replaceAll(listOf(tryOn("a"), tryOn("b")))
+            next.await()
+        }
+        assertEquals(setOf("a", "b"), updated.map { it.id }.toSet())
     }
 }

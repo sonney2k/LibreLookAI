@@ -8,6 +8,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.Transaction
+import kotlinx.coroutines.flow.Flow
 
 /**
  * A cached calendar-wear row. `id` (the event's UUID) is the primary key; `json` is the
@@ -33,6 +34,9 @@ data class OutfitEventFolderEntity(@PrimaryKey val folderId: String)
 interface OutfitEventDao {
     @Query("SELECT * FROM outfit_events WHERE folderId = :folderId")
     suspend fun eventsFor(folderId: String): List<OutfitEventEntity>
+
+    @Query("SELECT * FROM outfit_events WHERE folderId IN (:folderIds)")
+    fun observeFolders(folderIds: List<String>): Flow<List<OutfitEventEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertAll(events: List<OutfitEventEntity>)

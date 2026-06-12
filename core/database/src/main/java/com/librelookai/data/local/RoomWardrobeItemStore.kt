@@ -8,6 +8,12 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -110,6 +116,18 @@ class RoomWardrobeItemStore @Inject constructor(
     override suspend fun itemsFor(folderId: String): List<CachedWardrobeItem> {
         ensureSeeded(folderId)
         return dao.itemsFor(folderId).map { it.toItem() }
+    }
+
+    override fun observeItems(folderIds: List<String>): Flow<Map<String, List<CachedWardrobeItem>>> {
+        if (folderIds.isEmpty()) return flowOf(emptyMap())
+        return flow {
+            folderIds.forEach { ensureSeeded(it) }
+            emitAll(
+                dao.observeItems(folderIds)
+                    .map { rows -> rows.groupBy({ it.folderId }, { it.toItem() }) }
+                    .distinctUntilChanged(),
+            )
+        }
     }
 
     override suspend fun replaceFolder(folderId: String, items: List<CachedWardrobeItem>) {
