@@ -1,7 +1,6 @@
 package com.librelookai.shopping
 import com.librelookai.util.localized
 import android.app.Application
-import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -9,13 +8,17 @@ import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -26,6 +29,7 @@ import com.librelookai.gemini.GeminiRepository
 import com.librelookai.gemini.classifyClothing
 import com.librelookai.util.isNetworkAvailable
 import com.librelookai.data.drive.SyncEngine
+import com.librelookai.data.local.CachedWardrobeItem
 import com.librelookai.data.local.PendingMutationStore
 import com.librelookai.data.local.WardrobeItemStore
 import com.librelookai.data.session.ClosetSessionHolder
@@ -78,12 +82,13 @@ data class ShoppingClosetUiState(
 internal data class ShoppingPendingJob(val driveId: String)
 
 /** Shopping wishlist counterpart to [WardrobeViewModel]. */
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class ShoppingClosetViewModel @Inject constructor(
     app: Application,
     internal val drive: DriveRepository,
     internal val gemini: GeminiRepository,
-    private val itemStore: WardrobeItemStore,
+    internal val itemStore: WardrobeItemStore,
     private val mutationStore: PendingMutationStore,
     private val syncEngine: SyncEngine,
     moveSync: WardrobeMoveSyncHandler,
@@ -104,16 +109,53 @@ class ShoppingClosetViewModel @Inject constructor(
     private var rootFolderId: String? = null
     internal var shoppingFolderId: String? = null
 
+    // ---- Derived read path (refactor § 5 slice 4c) ----
+    // [ShoppingClosetUiState.items] is *derived*: the resolved `_shopping/` folder id flatMaps
+    // into [WardrobeItemStore.observeItems], so every store write — by this VM, a wardrobe-side
+    // re-home or a SyncEngine handler — lands in the UI via Room invalidation. Mutations write
+    // the store; nothing splices `state.items` any more.
+    private val folderScope = MutableStateFlow<String?>(null)
+    /**
+     * Coil cache-buster overlay: bumped whenever an item's image *bytes* change under an
+     * unchanged driveId (rotate, reprocess). Mirrors the wardrobe VM's overlay (§ 5 slice 4a).
+     */
+    internal val imageVersions = MutableStateFlow<Map<String, Long>>(emptyMap())
+
+    internal fun bumpImageVersion(vararg driveIds: String) {
+        val now = System.currentTimeMillis()
+        imageVersions.update { it + driveIds.associateWith { now } }
+    }
+
     /** Background queue for bg-removal + tagging on newly uploaded items. */
     internal val workQueue = Channel<ShoppingPendingJob>(Channel.UNLIMITED)
 
     init {
         viewModelScope.launch { processQueue() }
+        // Derived view (§ 5 slice 4c): the wishlist is the store rows under `_shopping/` (with
+        // a cached image file), newest first — matching Drive's createdTime-desc listing —
+        // stamped with the Coil version overlay. File stats run on IO via flowOn; redundant
+        // emissions are free (StateFlow suppresses equal states).
+        viewModelScope.launch {
+            combine(
+                folderScope.flatMapLatest { id ->
+                    if (id == null) flowOf(emptyMap()) else itemStore.observeItems(listOf(id))
+                },
+                imageVersions,
+            ) { byFolder, versions ->
+                byFolder.flatMap { (fid, items) -> items.mapNotNull { it.toDriveImage(fid, versions) } }
+                    .sortedByDescending { it.createdTimeMs }
+            }
+                .flowOn(Dispatchers.IO)
+                .collect { items -> _state.update { it.copy(items = items) } }
+        }
         // Publish the resolved `_shopping/` folder id into the shared closet session so the
         // wardrobe VM's cross-closet snapshot covers wishlist items (replaces the AppContent
-        // fan-out bridge keyed on this state field).
+        // fan-out bridge keyed on this state field); the same id scopes the derived view above.
         viewModelScope.launch {
-            state.map { it.folderId }.distinctUntilChanged().collect(session::setShoppingFolder)
+            state.map { it.folderId }.distinctUntilChanged().collect { id ->
+                folderScope.value = id
+                session.setShoppingFolder(id)
+            }
         }
         // Mirror the Gemini tagging language from the shared preferences repository —
         // replaces the AppContent language mirror (refactor § 5 slice 2).
@@ -121,35 +163,39 @@ class ShoppingClosetViewModel @Inject constructor(
             prefsRepo.preferences.collect { geminiLanguage = AppLanguage.toGeminiName(it.language) }
         }
         // SyncEngine feedback: a queued shopping→closet move exhausted its retries and the
-        // handler re-homed the Room row back to the shopping folder — splice the item back
-        // into the wishlist and surface the error (the wardrobe VM's own collector undoes the
-        // optimistic registration on its side).
+        // handler re-homed the Room row back to the shopping folder — the derived view
+        // restores the item by itself via invalidation, so only the error banner remains to
+        // raise here (the wardrobe VM's own collector undoes the optimistic registration on
+        // its side).
         viewModelScope.launch {
             moveSync.moveRolledBack.collect { rollback ->
                 if (rollback.sourceFolderId != shoppingFolderId) return@collect
-                val restored = itemStore.itemsFor(rollback.sourceFolderId)
-                    .firstOrNull { it.driveId == rollback.driveId }
-                    ?.let { entry ->
-                        drive.cachedFile(entry.driveId)?.let { f ->
-                            DriveImage(
-                                entry.driveId, f.absolutePath, entry.name, entry.tags,
-                                originalDriveId = entry.originalDriveId,
-                                sidecarDriveId = entry.sidecarDriveId,
-                                folderId = rollback.sourceFolderId,
-                                createdTimeMs = entry.createdTimeMs,
-                            )
-                        }
-                    }
-                _state.update { s ->
-                    val pruned = s.items.filter { it.driveId != rollback.driveId }
-                    s.copy(
-                        items = if (restored != null) pruned + restored else pruned,
-                        error = getApplication<Application>().localized().getString(R.string.wardrobe_move_failed),
-                    )
+                _state.update {
+                    it.copy(error = getApplication<Application>().localized().getString(R.string.wardrobe_move_failed))
                 }
             }
         }
     }
+
+    /**
+     * Maps a store row to its displayable [DriveImage], or null when the image bytes aren't in
+     * the local Drive cache yet (the row reappears with the next store write after download).
+     * The derivation collector in `init` runs this for every row on each invalidation.
+     */
+    private fun CachedWardrobeItem.toDriveImage(
+        fid: String,
+        versions: Map<String, Long> = emptyMap(),
+    ): DriveImage? =
+        drive.cachedFile(driveId)?.let { f ->
+            DriveImage(
+                driveId, f.absolutePath, name, tags,
+                originalDriveId = originalDriveId,
+                sidecarDriveId = sidecarDriveId,
+                folderId = fid,
+                createdTimeMs = createdTimeMs,
+                version = versions[driveId] ?: 0L,
+            )
+        }
 
     fun toggleSelection(driveId: String) {
         _state.update {
@@ -196,22 +242,10 @@ class ShoppingClosetViewModel @Inject constructor(
             persistShoppingFolderId(folderId)
             _state.update { it.copy(folderId = folderId) }
 
-            // Phase 1 — instant: read local cache.
-            runCatching {
-                itemStore.itemsFor(folderId).mapNotNull { entry ->
-                    drive.cachedFile(entry.driveId)?.let { f ->
-                        DriveImage(
-                            entry.driveId, f.absolutePath, entry.name, entry.tags,
-                            originalDriveId = entry.originalDriveId,
-                            sidecarDriveId = entry.sidecarDriveId,
-                            folderId = folderId,
-                            createdTimeMs = entry.createdTimeMs,
-                        )
-                    }
-                }
-            }.onSuccess { items ->
-                if (items.isNotEmpty()) _state.update { it.copy(items = items, isLoading = false) }
-            }
+            // Phase 1 — instant: the derived view paints from the store by itself; this probe
+            // only decides whether the cold-load spinner can clear before Drive answers.
+            val hasCache = runCatching { itemStore.itemsFor(folderId).isNotEmpty() }.getOrDefault(false)
+            if (hasCache) _state.update { it.copy(isLoading = false) }
 
             // Phase 2 — refresh from Drive.
             _state.update { it.copy(isSyncing = true) }
@@ -259,8 +293,10 @@ class ShoppingClosetViewModel @Inject constructor(
                     }
                 }
             }.onSuccess { items ->
-                _state.update { it.copy(items = items, isLoading = false, isSyncing = false) }
+                // Store write first (the derived view follows via invalidation), then clear
+                // the flags — so a cold load never flashes empty.
                 saveLocalCache(folderId, items)
+                _state.update { it.copy(isLoading = false, isSyncing = false) }
             }.onFailure { e ->
                 Log.w(TAG, "shopping load phase 2 failed", e)
                 _state.update { s ->
@@ -273,13 +309,14 @@ class ShoppingClosetViewModel @Inject constructor(
     // ---------- Add ----------
 
     /**
-     * Moves wishlist items into a real closet. Optimistic: removes them from the shopping view +
-     * cache and hands the moved items to [onMoved] (which registers them in the destination
-     * wardrobe cache) *before* any Drive call, so they appear in the target closet instantly.
-     * The Drive moves are queued [ITEM_MOVE_KIND] mutations; a permanently failed move is
-     * undone event-style — the handler re-homes the Room row and both this VM and the wardrobe
-     * VM react to its `moveRolledBack` flow (no failure callback can survive a queued retry
-     * that may complete in a later session).
+     * Moves wishlist items into a real closet. Optimistic: re-homes the store rows into the
+     * target folder *before* any Drive call — the derived wishlist drops them and the target
+     * closet shows them instantly — and hands the moved items to [onMoved] (which sets the
+     * wardrobe VM's recently-moved markers). The Drive moves are queued [ITEM_MOVE_KIND]
+     * mutations; a permanently failed move is undone event-style — the handler re-homes the
+     * Room row back (restoring the wishlist via invalidation) and both this VM and the
+     * wardrobe VM react to its `moveRolledBack` flow (no failure callback can survive a queued
+     * retry that may complete in a later session).
      */
     fun moveToCloset(
         driveIds: Set<String>,
@@ -295,22 +332,23 @@ class ShoppingClosetViewModel @Inject constructor(
 
         val toMove = _state.value.items.filter { it.driveId in driveIds }
         if (toMove.isEmpty()) { onMoved(emptyList()); return }
-        val movingIds = toMove.map { it.driveId }.toSet()
 
-        // ---- Optimistic local update (synchronous, before any network call) ----
-        _state.update { s ->
-            s.copy(isMoving = true, selectedIds = emptySet(), error = null,
-                items = s.items.filter { it.driveId !in movingIds })
-        }
-        onMoved(toMove.map { it.copy(folderId = targetFolderId) })
+        // ---- Optimistic local update (before any network call) ----
+        // Re-home the moved items into the target closet's store rows (the primary key pulls
+        // them out of `_shopping/` atomically) — the derived wishlist drops them and the
+        // target closet shows them via invalidation. [onMoved] still tells the wardrobe VM,
+        // which sets its recently-moved markers (its own addAll is an idempotent repeat).
+        _state.update { s -> s.copy(isMoving = true, selectedIds = emptySet(), error = null) }
+        val moved = toMove.map { it.copy(folderId = targetFolderId) }
+        onMoved(moved)
 
-        // ---- Queue the Drive moves (refactor § 2): cache write first — still before any
+        // ---- Queue the Drive moves (refactor § 2): store write first — still before any
         // Drive call — so the move survives a restart; the [ITEM_MOVE_KIND] mutations retry
         // transient failures, and a permanent failure comes back through the handler's
         // rollback + the `moveRolledBack` collector in init (the wardrobe VM's own collector
         // undoes the registration that [onMoved] performed on its side). ----
         viewModelScope.launch {
-            saveLocalCache(sourceFolderId, _state.value.items)
+            runCatching { itemStore.addAll(targetFolderId, moved.map { it.toCachedItem() }) }
             toMove.forEach { item ->
                 mutationStore.enqueue(
                     ITEM_MOVE_KIND,
@@ -331,12 +369,13 @@ class ShoppingClosetViewModel @Inject constructor(
         val folderId = shoppingFolderId ?: return
         val toDelete = _state.value.items.filter { it.driveId in driveIds }
         if (toDelete.isEmpty()) { _state.update { it.copy(selectedIds = emptySet()) }; return }
-        // Optimistic: vanish from the view + cache immediately, then queue the Drive deletes
-        // (refactor § 2 — [ITEM_DELETE_KIND] retries instead of orphaning the files on failure).
-        _state.update { s -> s.copy(selectedIds = emptySet(), error = null, items = s.items.filter { it.driveId !in driveIds }) }
+        // Optimistic: drop the store rows immediately (the derived view vanishes them via
+        // invalidation), then queue the Drive deletes (refactor § 2 — [ITEM_DELETE_KIND]
+        // retries instead of orphaning the files on failure).
+        _state.update { s -> s.copy(selectedIds = emptySet(), error = null) }
         viewModelScope.launch {
-            // Cache write first — still before any Drive call — so the delete survives a restart.
-            saveLocalCache(folderId, _state.value.items)
+            // Store write first — still before any Drive call — so the delete survives a restart.
+            runCatching { itemStore.remove(folderId, driveIds) }
             toDelete.forEach { item ->
                 val fileIds = listOfNotNull(item.driveId, item.originalDriveId, item.sidecarDriveId)
                 mutationStore.enqueue(
@@ -359,21 +398,19 @@ class ShoppingClosetViewModel @Inject constructor(
                 ?: run { _state.update { it.copy(processingImageId = null) }; return@launch }
             val tags = gemini.classifyClothing(cachedFile, geminiLanguage)
                 ?: run { _state.update { it.copy(processingImageId = null) }; return@launch }
-            _state.update { s ->
-                s.copy(
-                    processingImageId = null,
-                    items = s.items.map { if (it.driveId == driveId) it.copy(tags = tags) else it },
-                )
+            withContext(Dispatchers.IO) {
+                persistItemTags(driveId, tags)
+                saveSidecar(driveId)
             }
-            saveSidecar(driveId)
+            _state.update { it.copy(processingImageId = null) }
         }
     }
 
     fun updateTags(driveId: String, tags: ClothingTags) {
-        _state.update { s ->
-            s.copy(items = s.items.map { if (it.driveId == driveId) it.copy(tags = tags) else it })
+        viewModelScope.launch(Dispatchers.IO) {
+            persistItemTags(driveId, tags)
+            saveSidecar(driveId)
         }
-        saveSidecar(driveId)
     }
 
     fun reprocessBackground(driveId: String) {
@@ -388,17 +425,10 @@ class ShoppingClosetViewModel @Inject constructor(
                 val displayCache = File(drive.cacheDir, "$driveId.png")
                 processedFile.copyTo(displayCache, overwrite = true)
                 displayCache.absolutePath
-            }.onSuccess { newPath ->
-                _state.update { s ->
-                    s.copy(
-                        processingImageId = null,
-                        items = s.items.map {
-                            if (it.driveId == driveId) it.copy(localPath = newPath, version = System.currentTimeMillis())
-                            else it
-                        },
-                    )
-                }
-                shoppingFolderId?.let { fid -> saveLocalCache(fid, _state.value.items) }
+            }.onSuccess {
+                // Same driveId, new bytes — bump the Coil version; the derived view re-emits.
+                bumpImageVersion(driveId)
+                _state.update { it.copy(processingImageId = null) }
             }.onFailure { e ->
                 _state.update { it.copy(processingImageId = null, error = e.message) }
             }
@@ -419,18 +449,14 @@ class ShoppingClosetViewModel @Inject constructor(
                         if (origFile != null) rotateBitmapFileBy90(origFile)
                     }
                 }
-                _state.update { s ->
-                    s.copy(items = s.items.map {
-                        if (it.driveId == driveId) it.copy(version = it.version + 1) else it
-                    })
-                }
+                // Same driveId, new bytes — bump the Coil version; the derived view re-emits.
+                bumpImageVersion(driveId)
                 withContext(Dispatchers.IO) {
                     drive.cachedFile(img.driveId)?.let { drive.updateImage(img.driveId, it) }
                     img.originalDriveId?.let { origId ->
                         drive.cachedFile(origId)?.let { drive.updateImage(origId, it) }
                     }
                 }
-                shoppingFolderId?.let { fid -> saveLocalCache(fid, _state.value.items) }
             } catch (e: Exception) {
                 Log.w(TAG, "rotateImage failed", e)
                 _state.update { it.copy(error = e.message) }
@@ -464,21 +490,24 @@ class ShoppingClosetViewModel @Inject constructor(
         return drive.cachedFile(driveId)
     }
 
-    private fun saveSidecar(driveId: String) {
-        val id = shoppingFolderId ?: return
-        viewModelScope.launch(Dispatchers.IO) {
-            val img = _state.value.items.find { it.driveId == driveId } ?: return@launch
-            val sidecarJson = gson.toJson(ItemSidecar(img.tags, img.originalDriveId))
-            val sidecarFileId = runCatching {
-                drive.upsertSidecar(id, "$driveId${DriveRepository.SIDECAR_SUFFIX}", sidecarJson)
-            }.getOrNull() ?: return@launch
-            _state.update { s ->
-                s.copy(items = s.items.map { i ->
-                    if (i.driveId == driveId) i.copy(sidecarDriveId = sidecarFileId) else i
-                })
-            }
-            saveLocalCache(id, _state.value.items)
-        }
+    /** Store-first tag write for [driveId] (the derived view follows via invalidation). */
+    private suspend fun persistItemTags(driveId: String, tags: ClothingTags) {
+        val (fid, item) = itemStore.find(driveId) ?: return
+        runCatching { itemStore.upsert(fid, item.copy(tags = tags)) }
+    }
+
+    /**
+     * Writes the item's sidecar to Drive from its *store row* (callers must write the row
+     * first — [persistItemTags]), then stamps the resulting sidecar id back onto the row.
+     * Still a direct Drive write, not a § 2 queued mutation — unchanged by slice 4c.
+     */
+    private suspend fun saveSidecar(driveId: String) = withContext(Dispatchers.IO) {
+        val (fid, entry) = itemStore.find(driveId) ?: return@withContext
+        val sidecarJson = gson.toJson(ItemSidecar(entry.tags, entry.originalDriveId))
+        val sidecarFileId = runCatching {
+            drive.upsertSidecar(fid, "$driveId${DriveRepository.SIDECAR_SUFFIX}", sidecarJson)
+        }.getOrNull() ?: return@withContext
+        runCatching { itemStore.setSidecarId(driveId, sidecarFileId) }
     }
 
     // ---------- Helpers ----------

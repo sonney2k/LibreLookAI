@@ -794,6 +794,23 @@ write-path coupling (`addOutfits`, `updateOutfitsRefined`) that stays until the 
 extraction (slices 5–8). Accepted divergence: mutations reach the list via invalidation
 (ms), and concurrent mutators read `state.outfits` as their base exactly as before — the
 pre-existing read-then-persist race window grows by that lag but gains the persist mutex.
+**Status: 4c LANDED (June 2026).** `ShoppingClosetUiState.items` derives from a `folderScope`
+StateFlow (fed by the same `state.folderId` collector that publishes into `ClosetSession`)
+flatMapped into `WardrobeItemStore.observeItems`, combined with an `imageVersions` Coil
+overlay (rotate/reprocess) and sorted `createdTimeMs`-desc to match Drive's listing order;
+the only writer of `items` is the derivation collector. All splices became store writes:
+`uploadRaw` upserts the raw placeholder row, `processQueuedItem` upserts the finished cutout
+under the raw row's `createdTimeMs` (stale raw row dropped via `upsert`'s `staleDriveId`) and
+stamps the sidecar id with `setSidecarId`; `tagImage`/`updateTags` go through a shopping-local
+`persistItemTags`, and `saveSidecar` now reads the *store row* (not state) before its direct
+Drive write — fixing a latent stale-read race — though it still doesn't ride the § 2 queue
+(possible follow-up: reuse `wardrobe.sidecarSync`, whose handler is already folder-agnostic).
+`moveToCloset` re-homes the rows into the target folder itself (`addAll`; `onMoved` keeps
+feeding the wardrobe VM's recently-moved markers, its own `addAll` an idempotent repeat),
+`deleteItems` drops rows via `remove`, and the `moveRolledBack` collector shrank to the error
+banner (the handler's re-home restores the wishlist via invalidation). Phase 1 of `loadItems`
+is a cold-load probe for `isLoading` only; Phase 2's `replaceFolder` lands before the flags
+clear. Remaining for slice 4: **4d** events/trips/try-ons.
 
 **Slice 5 — ingestion pipeline use-case.** The `PendingJob` Channel, `drainWorkQueue`,
 dedupe gate, local-bg review queue, wake-lock and `JobForegroundService` acquire/release move

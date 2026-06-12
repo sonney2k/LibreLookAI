@@ -15,6 +15,7 @@ import com.librelookai.wardrobe.ItemSidecar
 import com.librelookai.wardrobe.UrlImportPickerState
 import com.librelookai.wardrobe.WardrobeViewModel
 import com.librelookai.wardrobe.WebProductFetcher
+import com.librelookai.wardrobe.toCachedItem
 import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.update
@@ -142,12 +143,10 @@ internal suspend fun ShoppingClosetViewModel.uploadRaw(rawFile: File, folderId: 
             DriveImage(uploaded.id, displayCache.absolutePath, uploaded.name, tags = null, folderId = folderId, createdTimeMs = System.currentTimeMillis())
         }.onSuccess { newImage ->
             Analytics.event("shopping_item_added", mapOf("source" to source))
-            _state.update { it.copy(
-                isUploading = false,
-                items = listOf(newImage) + it.items,
-                pendingJobs = it.pendingJobs + 1,
-            ) }
-            saveLocalCache(folderId, _state.value.items)
+            // Raw placeholder row into the store — the derived wishlist shows it via
+            // invalidation; the queue swaps it for the finished cutout entry.
+            runCatching { itemStore.upsert(folderId, newImage.toCachedItem()) }
+            _state.update { it.copy(isUploading = false, pendingJobs = it.pendingJobs + 1) }
             workQueue.send(ShoppingPendingJob(newImage.driveId))
         }.onFailure { e ->
             Log.w(ShoppingClosetViewModel.TAG, "shopping upload failed", e)
@@ -163,7 +162,7 @@ internal suspend fun ShoppingClosetViewModel.processQueue() {
             runCatching { processQueuedItem(job) }
                 .onFailure { e -> _state.update { it.copy(error = e.message) } }
             _state.update { it.copy(pendingJobs = maxOf(0, it.pendingJobs - 1)) }
-            shoppingFolderId?.let { fid -> saveLocalCache(fid, _state.value.items) }
+            // The finished item is persisted to the store inside processQueuedItem.
         }
     }
 
@@ -199,27 +198,27 @@ internal suspend fun ShoppingClosetViewModel.processQueuedItem(job: ShoppingPend
         // Step 5 — delete the temporary raw upload.
         runCatching { drive.deleteFile(job.driveId) }
 
-        // Step 6 — replace the in-memory entry (match raw or cutout id, like wardrobe does).
-        _state.update { s ->
-            s.copy(items = s.items.map { img ->
-                if (img.driveId == job.driveId || img.driveId == cutoutDrive.id) img.copy(
-                    driveId = cutoutDrive.id,
-                    name = cutoutDrive.name,
-                    localPath = localCutout.absolutePath,
-                    version = System.currentTimeMillis(),
-                    originalDriveId = originalDriveId,
-                ) else img
-            })
-        }
+        // Step 6 — make the finished cutout live: replace the raw-id store row with the final
+        // cutout entry (the derived view swaps raw → cutout via invalidation). Keep the raw
+        // row's createdTimeMs so the item holds its sort position.
+        val rawCreated = itemStore.find(job.driveId)?.second?.createdTimeMs
+            ?: System.currentTimeMillis()
+        var finished = DriveImage(
+            driveId = cutoutDrive.id,
+            localPath = localCutout.absolutePath,
+            name = cutoutDrive.name,
+            tags = null,
+            originalDriveId = originalDriveId,
+            folderId = folderId,
+            createdTimeMs = rawCreated,
+        )
+        runCatching { itemStore.upsert(folderId, finished.toCachedItem(), staleDriveId = job.driveId) }
 
         // Step 7 — classify tags.
         val tags = gemini.classifyClothing(localCutout, geminiLanguage)
         if (tags != null) {
-            _state.update { s ->
-                s.copy(items = s.items.map { img ->
-                    if (img.driveId == cutoutDrive.id) img.copy(tags = tags) else img
-                })
-            }
+            finished = finished.copy(tags = tags)
+            runCatching { itemStore.upsert(folderId, finished.toCachedItem()) }
         }
 
         // Step 8 — sidecar.
@@ -229,11 +228,7 @@ internal suspend fun ShoppingClosetViewModel.processQueuedItem(job: ShoppingPend
                 folderId, "${cutoutDrive.id}${DriveRepository.SIDECAR_SUFFIX}", sidecarJson,
             )
         }.onSuccess { sidecarId ->
-            _state.update { s ->
-                s.copy(items = s.items.map { img ->
-                    if (img.driveId == cutoutDrive.id) img.copy(sidecarDriveId = sidecarId) else img
-                })
-            }
+            runCatching { itemStore.setSidecarId(cutoutDrive.id, sidecarId) }
         }
     }
 
