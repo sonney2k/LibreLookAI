@@ -118,12 +118,8 @@ fun OutfitsScreen(
         tripsState.trips.associate { it.id to it.name }
     }
 
-    // Refresh wardrobe image cache for styles once wardrobe Drive sync completes.
-    LaunchedEffect(wardrobeState.isSyncing, outfitsState.isLoading) {
-        if (!wardrobeState.isSyncing && !outfitsState.isLoading) {
-            outfitsViewModel.refreshWardrobeImages()
-        }
-    }
+    // (No wardrobe-image refresh needed: OutfitsUiState.wardrobeImages is store-derived and
+    // follows the wardrobe Drive sync via Room invalidation — refactor § 5 slice 4b.)
 
     // styleId → number of calendar wear events
     val wearCounts = remember(outfitEventsState.events) {

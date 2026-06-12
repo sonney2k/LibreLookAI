@@ -112,10 +112,11 @@ internal fun OutfitsViewModel.setOutfitTags(outfitId: String, newTags: List<Stri
         val targetFolderId = outfit.folderId.takeIf { it.isNotEmpty() } ?: saveFolderId ?: folderId ?: return
         val updatedAll = _state.value.outfits.map { if (it.id == outfitId) updatedOutfit else it }
         // Local-first: Room + the sync queue own the Drive write (refactor § 2); only the
-        // outfit's home folder changed, so only that folder is enqueued.
-        _state.update { it.copy(outfits = updatedAll, tagEditingOutfitId = null) }
+        // outfit's home folder changed, so only that folder is enqueued. The derived outfits
+        // list follows via invalidation (§ 5 slice 4b).
+        _state.update { it.copy(tagEditingOutfitId = null) }
         viewModelScope.launch {
-            persistOutfitFolders(listOf(targetFolderId))
+            persistOutfitFolders(updatedAll, listOf(targetFolderId))
         }
     }
 
@@ -140,9 +141,9 @@ internal fun OutfitsViewModel.applyTagSuggestions(outfitId: String, tagsToAdd: L
         val updatedAll = _state.value.outfits.map { if (it.id == outfitId) updatedOutfit else it }
         // Local-first: the save commits to Room immediately and the Drive write rides the sync
         // queue, so there is no interim isSaving / failure state any more (see setOutfitTags).
-        _state.update { it.copy(outfits = updatedAll, tagSuggestion = null) }
+        _state.update { it.copy(tagSuggestion = null) }
         viewModelScope.launch {
-            persistOutfitFolders(listOf(targetFolderId))
+            persistOutfitFolders(updatedAll, listOf(targetFolderId))
         }
     }
 

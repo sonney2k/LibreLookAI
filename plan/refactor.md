@@ -778,6 +778,22 @@ Drive-listing races during the reconcile behave as before via `recentlyMovedItem
 now guards only the store writes. Manual regression checklist before release: capture +
 batch import (placeholder → cutout swap), closet switch mid-processing, move + offline
 rollback, rotate/reprocess Coil refresh, reinstall-restore progress.
+**Status: 4b LANDED (June 2026).** `OutfitsUiState.outfits` and `.wardrobeImages` derive from
+`outfitsScope` (the all-closets list) flatMapped into `OutfitStore.observeFolders` /
+`WardrobeItemStore.observeItems` — viable without an entity migration because store rows
+carry the resolved `itemIds` (only `Outfit.folderId` is `@Transient`; the slice-3 concern
+applied to *legacy-seeded* rows, which the next Phase-2 reconcile re-resolves anyway).
+`persistOutfitFolders(updated, affected)` now takes the mutation's already-updated list
+(it no longer reads `state.outfits` back) and is mutex-serialized; all 11 mutation sites
+dropped their `copy(outfits = …)` splices and `loadOutfits` keeps flags only —
+`loadOutfitsFromFolder`'s per-folder `replaceFolder` was already the reconcile's store
+write. `refreshWardrobeImages()` and its after-sync `LaunchedEffect` in `OutfitsScreen`
+deleted (invalidation covers it). Travel's `sourceStyles` read is thereby store-backed
+data (closing slice 3's deferral); the remaining `stylesViewModel` parameter threading is
+write-path coupling (`addOutfits`, `updateOutfitsRefined`) that stays until the use-case
+extraction (slices 5–8). Accepted divergence: mutations reach the list via invalidation
+(ms), and concurrent mutators read `state.outfits` as their base exactly as before — the
+pre-existing read-then-persist race window grows by that lag but gains the persist mutex.
 
 **Slice 5 — ingestion pipeline use-case.** The `PendingJob` Channel, `drainWorkQueue`,
 dedupe gate, local-bg review queue, wake-lock and `JobForegroundService` acquire/release move

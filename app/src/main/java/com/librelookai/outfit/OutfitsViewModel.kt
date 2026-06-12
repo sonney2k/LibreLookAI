@@ -32,15 +32,22 @@ import com.librelookai.weather.WeatherData
 import java.util.Locale
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class OutfitsViewModel @Inject constructor(
     app: Application,
@@ -64,7 +71,45 @@ class OutfitsViewModel @Inject constructor(
     internal val _state = MutableStateFlow(OutfitsUiState())
     val state: StateFlow<OutfitsUiState> = _state.asStateFlow()
 
+    // ---- Derived read path (refactor § 5 slice 4b) ----
+    /** The folder ids outfits load from (always every closet — never the closet filter). */
+    private val outfitsScope = MutableStateFlow<List<String>>(emptyList())
+    /** Serializes [persistOutfitFolders] so back-to-back mutations can't interleave store writes. */
+    private val persistMutex = Mutex()
+
     init {
+        // Derived outfits (§ 5 slice 4b): the list is the store rows in scope — store rows
+        // carry resolved itemIds (only folderId is @Transient), so every mutation's
+        // replaceFolder and every Phase-2 reconcile reach the UI via Room invalidation.
+        viewModelScope.launch {
+            outfitsScope.flatMapLatest { ids -> outfitStore.observeFolders(ids) }
+                .collect { outfits -> _state.update { it.copy(outfits = outfits) } }
+        }
+        // Derived wardrobe images for the outfit cards/pickers: the same item-store scope the
+        // old one-shot cache reads used, now refreshed by invalidation (this also retired
+        // refreshWardrobeImages()).
+        viewModelScope.launch {
+            outfitsScope.flatMapLatest { ids -> itemStore.observeItems(ids) }
+                .map { byFolder ->
+                    byFolder.flatMap { (fid, items) ->
+                        items.mapNotNull { entry ->
+                            drive.cachedFile(entry.driveId)?.let { f ->
+                                DriveImage(
+                                    driveId = entry.driveId,
+                                    localPath = f.absolutePath,
+                                    name = entry.name,
+                                    tags = entry.tags,
+                                    originalDriveId = entry.originalDriveId,
+                                    sidecarDriveId = entry.sidecarDriveId,
+                                    folderId = fid,
+                                )
+                            }
+                        }
+                    }
+                }
+                .flowOn(Dispatchers.IO)
+                .collect { images -> _state.update { it.copy(wardrobeImages = images) } }
+        }
         // Derive the load scope and save target from the shared closet session (replaces the
         // AppContent fan-out bridge). Outfits always load from ALL locations — never filtered
         // by the closet filter; the active closet only steers where new outfits save.
@@ -89,87 +134,50 @@ class OutfitsViewModel @Inject constructor(
         folderId = null
         allFolderIds = folderIds.toList()
         _state.update { OutfitsUiState(isLoading = true) }
-        // Read wardrobe disk caches on IO thread in parallel with styles loading.
-        viewModelScope.launch(Dispatchers.IO) {
-            val images = readWardrobeImagesFromCache(folderIds)
-            _state.update { it.copy(wardrobeImages = images) }
-        }
+        outfitsScope.value = folderIds.toList()
         loadOutfits()
-    }
-
-    // ---------- Wardrobe image cache (all locations, disk-only) ----------
-
-    /**
-     * Reads the local wardrobe item store for all given folder IDs and returns a flat list of
-     * [DriveImage] entries that have a locally cached file. This is a pure local read —
-     * no network calls.
-     */
-    private suspend fun readWardrobeImagesFromCache(folderIds: List<String>): List<DriveImage> =
-        folderIds.flatMap { fid ->
-            itemStore.itemsFor(fid).mapNotNull { entry ->
-                drive.cachedFile(entry.driveId)?.let { f ->
-                    DriveImage(
-                        driveId = entry.driveId,
-                        localPath = f.absolutePath,
-                        name = entry.name,
-                        tags = entry.tags,
-                        originalDriveId = entry.originalDriveId,
-                        sidecarDriveId = entry.sidecarDriveId,
-                        folderId = fid,
-                    )
-                }
-            }
-        }
-
-    /**
-     * Re-reads wardrobe disk caches and updates [OutfitsUiState.wardrobeImages].
-     * Call this after wardrobe Drive sync completes so style cards show fresh images.
-     */
-    fun refreshWardrobeImages() {
-        val folderIds = allFolderIds ?: folderId?.let { listOf(it) } ?: return
-        viewModelScope.launch(Dispatchers.IO) {
-            val images = readWardrobeImagesFromCache(folderIds)
-            _state.update { it.copy(wardrobeImages = images) }
-        }
     }
 
     // ---------- Load ----------
 
     /**
-     * Local-first outfit save (refactor § 2): mirrors the current outfit list into the
-     * per-folder local cache ([OutfitStore]) — the view scope plus [affected], so an
-     * out-of-scope save target is cached too — then enqueues one payload-free
-     * [OUTFIT_FOLDER_SYNC_KIND] mutation per affected folder and triggers a drain. Call after
-     * the in-memory state update of every mutation (create / edit / delete): Room is the
-     * source of truth the [OutfitFolderSyncHandler] re-reads at apply time, so back-to-back
-     * edits coalesce into the latest snapshot, a transient Drive failure retries instead of
-     * silently losing the write, and the queued row survives process death.
+     * Local-first outfit save (refactor § 2, derived since § 5 slice 4b): mirrors [styles] —
+     * the mutation's already-updated full list — into the per-folder local cache
+     * ([OutfitStore]) over the view scope plus [affected] (so an out-of-scope save target is
+     * cached too), then enqueues one payload-free [OUTFIT_FOLDER_SYNC_KIND] mutation per
+     * affected folder and triggers a drain. The derived [OutfitsUiState.outfits] follows via
+     * Room invalidation — mutators no longer splice state. Room is the source of truth the
+     * [OutfitFolderSyncHandler] re-reads at apply time, so back-to-back edits coalesce into
+     * the latest snapshot, a transient Drive failure retries instead of silently losing the
+     * write, and the queued row survives process death. Serialized by [persistMutex] so two
+     * rapid mutations can't interleave their store writes.
      */
-    internal suspend fun persistOutfitFolders(affected: Collection<String>) {
-        val affectedIds = affected.filterTo(LinkedHashSet()) { it.isNotEmpty() }
-        val scope = allFolderIds ?: listOfNotNull(folderId)
-        val styles = _state.value.outfits
-        (scope + affectedIds).toSet().forEach { fid ->
-            val folderStyles = styles.filter { it.folderId == fid || it.folderId.isEmpty() }
-            runCatching { outfitStore.replaceFolder(fid, folderStyles) }
+    internal suspend fun persistOutfitFolders(styles: List<Outfit>, affected: Collection<String>) {
+        persistMutex.withLock {
+            val affectedIds = affected.filterTo(LinkedHashSet()) { it.isNotEmpty() }
+            val scope = allFolderIds ?: listOfNotNull(folderId)
+            (scope + affectedIds).toSet().forEach { fid ->
+                val folderStyles = styles.filter { it.folderId == fid || it.folderId.isEmpty() }
+                runCatching { outfitStore.replaceFolder(fid, folderStyles) }
+            }
+            affectedIds.forEach { fid ->
+                mutationStore.enqueue(OUTFIT_FOLDER_SYNC_KIND, targetId = fid, folderId = fid, payload = "{}")
+            }
+            syncEngine.drain()
         }
-        affectedIds.forEach { fid ->
-            mutationStore.enqueue(OUTFIT_FOLDER_SYNC_KIND, targetId = fid, folderId = fid, payload = "{}")
-        }
-        syncEngine.drain()
     }
 
     fun loadOutfits() {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, error = null) }
             val ids = allFolderIds
-            // Phase 1 — instant: show whatever is in the local outfit store
+            // Phase 1 — the derived view paints the store by itself; probe it only for flags.
             val cached = if (ids != null) {
                 ids.flatMap { outfitStore.outfitsFor(it) }
             } else {
                 folderId?.let { outfitStore.outfitsFor(it) } ?: emptyList()
             }
-            if (cached.isNotEmpty()) _state.update { it.copy(outfits = cached, isLoading = false) }
+            if (cached.isNotEmpty()) _state.update { it.copy(isLoading = false) }
 
             // Phase 2 — Drive sync: skip when offline
             if (!getApplication<Application>().isNetworkAvailable()) {
@@ -189,8 +197,9 @@ class OutfitsViewModel @Inject constructor(
                     val id = folderId ?: return@runCatching cached
                     loadOutfitsFromFolder(id)
                 }
-            }.onSuccess { styles ->
-                _state.update { it.copy(outfits = styles, isLoading = false) }
+            }.onSuccess {
+                // loadOutfitsFromFolder wrote each folder's store rows — the view followed.
+                _state.update { it.copy(isLoading = false) }
             }.onFailure { e ->
                 _state.update { s ->
                     s.copy(isLoading = false, error = if (s.outfits.isEmpty()) e.message else null)
@@ -303,8 +312,8 @@ class OutfitsViewModel @Inject constructor(
                 folderId = id,
             )
             val updated = _state.value.outfits + newOutfit
-            _state.update { it.copy(outfits = updated, pendingScrollOutfitId = newOutfit.id) }
-            persistOutfitFolders(listOf(id))
+            _state.update { it.copy(pendingScrollOutfitId = newOutfit.id) }
+            persistOutfitFolders(updated, listOf(id))
             onDone(true)
         }
     }
@@ -327,8 +336,7 @@ class OutfitsViewModel @Inject constructor(
                 )
             }
             val updated = _state.value.outfits + resolved
-            _state.update { it.copy(outfits = updated) }
-            persistOutfitFolders(listOf(id))
+            persistOutfitFolders(updated, listOf(id))
             onDone(true)
         }
     }
@@ -364,8 +372,7 @@ class OutfitsViewModel @Inject constructor(
                     description = ref.description.ifBlank { o.description },
                 )
             }
-            _state.update { it.copy(outfits = updated) }
-            persistOutfitFolders(affectedFolderIds)
+            persistOutfitFolders(updated, affectedFolderIds)
             onDone(true)
         }
     }
@@ -388,8 +395,7 @@ class OutfitsViewModel @Inject constructor(
                     itemNames = newIds.mapNotNull { idToName[it] },
                 )
             }
-            _state.update { it.copy(outfits = updated) }
-            persistOutfitFolders(affectedFolderIds)
+            persistOutfitFolders(updated, affectedFolderIds)
             onDone(true)
         }
     }
@@ -407,8 +413,7 @@ class OutfitsViewModel @Inject constructor(
             deleted.map { it.folderId }.filter { it.isNotEmpty() }.toSet()
         if (affectedFolderIds.isEmpty()) { onDone(true); return }
         viewModelScope.launch {
-            _state.update { it.copy(outfits = updated) }
-            persistOutfitFolders(affectedFolderIds)
+            persistOutfitFolders(updated, affectedFolderIds)
             onDone(true)
         }
     }
@@ -475,8 +480,8 @@ class OutfitsViewModel @Inject constructor(
                 folderId = saveId,
             )
             val updated = s.outfits.map { if (it.id == edited.id) edited else it }
-            _state.update { it.copy(outfits = updated, pendingWearOutfitId = edited.id) }
-            persistOutfitFolders(listOf(saveId))
+            _state.update { it.copy(pendingWearOutfitId = edited.id) }
+            persistOutfitFolders(updated, listOf(saveId))
             logOutfitSaved("edit")
             closeComposer()
             onDone(true)
@@ -489,8 +494,7 @@ class OutfitsViewModel @Inject constructor(
         val updated = _state.value.outfits.filter { it.id != outfitId }
         viewModelScope.launch {
             val id = folderId ?: return@launch
-            _state.update { it.copy(outfits = updated) }
-            persistOutfitFolders(listOf(id))
+            persistOutfitFolders(updated, listOf(id))
         }
     }
 
@@ -507,9 +511,8 @@ class OutfitsViewModel @Inject constructor(
         if (outfit.loved == loved) return
         val updatedAll = _state.value.outfits.map { if (it.id == outfitId) it.copy(loved = loved) else it }
         val targetFolderId = outfit.folderId.takeIf { it.isNotEmpty() } ?: saveFolderId ?: folderId ?: return
-        _state.update { it.copy(outfits = updatedAll) }
         viewModelScope.launch {
-            persistOutfitFolders(listOf(targetFolderId))
+            persistOutfitFolders(updatedAll, listOf(targetFolderId))
         }
     }
 
@@ -539,8 +542,8 @@ class OutfitsViewModel @Inject constructor(
         }
         if (affectedFolderIds.isEmpty()) return
         viewModelScope.launch {
-            _state.update { it.copy(outfits = updated, selectedOutfitIds = emptySet()) }
-            persistOutfitFolders(affectedFolderIds)
+            _state.update { it.copy(selectedOutfitIds = emptySet()) }
+            persistOutfitFolders(updated, affectedFolderIds)
         }
     }
 
