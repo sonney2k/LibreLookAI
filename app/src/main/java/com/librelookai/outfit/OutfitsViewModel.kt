@@ -26,6 +26,7 @@ import com.librelookai.settings.UserPreferences
 import com.librelookai.util.Analytics
 import com.librelookai.util.isNetworkAvailable
 import com.librelookai.data.local.WardrobeItemStore
+import com.librelookai.data.session.ClosetSessionHolder
 import com.librelookai.wardrobe.DriveImage
 import com.librelookai.weather.WeatherData
 import java.util.Locale
@@ -49,6 +50,7 @@ class OutfitsViewModel @Inject constructor(
     private val outfitStore: com.librelookai.data.local.OutfitStore,
     private val mutationStore: PendingMutationStore,
     private val syncEngine: SyncEngine,
+    session: ClosetSessionHolder,
 ) : AndroidViewModel(app) {
     /** Weekly, location-specific cache around the expensive Gemini trend lookup. */
     internal val trendsCache = com.librelookai.gemini.FashionTrendsCache(app, drive, gemini)
@@ -61,9 +63,16 @@ class OutfitsViewModel @Inject constructor(
     internal val _state = MutableStateFlow(OutfitsUiState())
     val state: StateFlow<OutfitsUiState> = _state.asStateFlow()
 
-    /** Called by MainActivity to inform which folder newly created styles should be saved to. */
-    fun updateSaveFolder(folderId: String) {
-        saveFolderId = folderId
+    init {
+        // Derive the load scope and save target from the shared closet session (replaces the
+        // AppContent fan-out bridge). Outfits always load from ALL locations — never filtered
+        // by the closet filter; the active closet only steers where new outfits save.
+        viewModelScope.launch {
+            session.session.collect { s ->
+                setAllLocations(s.closetFolderIds)
+                s.saveFolderId?.let { saveFolderId = it }
+            }
+        }
     }
 
     /** Keep the prompt-side copy of the calendar wear history in sync (owned by [OutfitEventsViewModel]). */
@@ -72,15 +81,7 @@ class OutfitsViewModel @Inject constructor(
         _state.update { it.copy(wearHistory = events) }
     }
 
-    fun setLocation(newFolderId: String) {
-        if (folderId == newFolderId && allFolderIds == null) return
-        folderId = newFolderId
-        allFolderIds = null
-        _state.update { OutfitsUiState(isLoading = true) }
-        loadOutfits()
-    }
-
-    fun setAllLocations(folderIds: List<String>) {
+    private fun setAllLocations(folderIds: List<String>) {
         if (folderId == null && allFolderIds?.toSet() == folderIds.toSet()) return
         folderId = null
         allFolderIds = folderIds.toList()

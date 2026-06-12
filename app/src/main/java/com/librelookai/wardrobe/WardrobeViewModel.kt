@@ -18,6 +18,8 @@ import com.google.gson.Gson
 import com.librelookai.MainActivity
 import com.librelookai.data.local.PendingMutationStore
 import com.librelookai.data.local.WardrobeItemStore
+import com.librelookai.data.session.ClosetSession
+import com.librelookai.data.session.ClosetSessionHolder
 import com.librelookai.R
 import com.librelookai.data.drive.DriveFileDto
 import com.librelookai.data.drive.DriveRepository
@@ -68,6 +70,7 @@ class WardrobeViewModel @Inject constructor(
     private val syncEngine: SyncEngine,
     private val sidecarSync: WardrobeSidecarSyncHandler,
     private val moveSync: WardrobeMoveSyncHandler,
+    session: ClosetSessionHolder,
 ) : AndroidViewModel(app) {
 
     companion object {
@@ -184,6 +187,21 @@ class WardrobeViewModel @Inject constructor(
 
     init {
         viewModelScope.launch { processQueue() }
+        // Derive the load scope, cross-closet snapshot and import target from the shared closet
+        // session (replaces the AppContent fan-out bridge; same call order it used). When the
+        // active id is neither "All" nor a known closet, the current scope is kept — matching
+        // the old bridge's no-op arm.
+        viewModelScope.launch {
+            session.session.collect { s ->
+                setAllConfiguredLocations(s.snapshotFolderIds, s.shoppingFolderId)
+                val active = s.activeFolderId
+                when {
+                    s.activeLocationId == ClosetSession.ALL_LOCATIONS_ID -> setAllLocations(s.closetFolderIds)
+                    active != null -> setLocation(active)
+                }
+                setDefaultImportFolderId(s.defaultImportFolderId)
+            }
+        }
         // SyncEngine feedback: a drained sidecar save stamped its Drive id onto the Room row;
         // mirror it into in-memory state so move/delete can relocate/remove the sidecar file.
         viewModelScope.launch {
@@ -247,7 +265,7 @@ class WardrobeViewModel @Inject constructor(
         _state.update { it.copy(importTargetFolderId = folderId) }
     }
 
-    fun setLocation(newFolderId: String) {
+    private fun setLocation(newFolderId: String) {
         if (folderId == newFolderId && allFolderIds == null) return
         folderId = newFolderId
         allFolderIds = null
@@ -257,7 +275,7 @@ class WardrobeViewModel @Inject constructor(
         loadImages()
     }
 
-    fun setAllLocations(folderIds: List<String>) {
+    private fun setAllLocations(folderIds: List<String>) {
         if (folderId == null && allFolderIds?.toSet() == folderIds.toSet()) return
         folderId = null
         allFolderIds = folderIds.toList()
@@ -267,11 +285,11 @@ class WardrobeViewModel @Inject constructor(
 
     /**
      * Tell the VM about every configured closet so it can keep [WardrobeUiState.allLocationImages]
-     * in sync. Called by `MainActivity` whenever the locations list changes. The snapshot is
-     * read from each per-folder cache file (no Drive calls); folders not yet downloaded simply
-     * contribute zero items until the user visits them.
+     * in sync. Driven by the [ClosetSessionHolder] collector whenever the locations list changes.
+     * The snapshot is read from each per-folder cache file (no Drive calls); folders not yet
+     * downloaded simply contribute zero items until the user visits them.
      */
-    fun setAllConfiguredLocations(folderIds: List<String>, shoppingFolderId: String? = null) {
+    private fun setAllConfiguredLocations(folderIds: List<String>, shoppingFolderId: String? = null) {
         if (allConfiguredFolderIds.toSet() == folderIds.toSet() && this.shoppingFolderId == shoppingFolderId) return
         allConfiguredFolderIds = folderIds.toList()
         this.shoppingFolderId = shoppingFolderId

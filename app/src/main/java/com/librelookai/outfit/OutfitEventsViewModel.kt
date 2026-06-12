@@ -18,6 +18,8 @@ import com.librelookai.data.drive.SyncEngine
 import com.librelookai.data.drive.loadOutfitEventsJson
 import com.librelookai.data.local.PendingMutationStore
 import com.librelookai.data.model.Outfit
+import com.librelookai.data.session.ClosetSession
+import com.librelookai.data.session.ClosetSessionHolder
 import com.librelookai.data.model.OutfitEvent
 import com.librelookai.data.model.WearSource
 import com.librelookai.util.isNetworkAvailable
@@ -37,6 +39,7 @@ class OutfitEventsViewModel @Inject constructor(
     private val eventStore: com.librelookai.data.local.OutfitEventStore,
     private val mutationStore: PendingMutationStore,
     private val syncEngine: SyncEngine,
+    session: ClosetSessionHolder,
 ) : AndroidViewModel(app) {
     private val gson = Gson()
     private var folderId: String? = null
@@ -46,7 +49,22 @@ class OutfitEventsViewModel @Inject constructor(
     val state: StateFlow<OutfitEventsUiState> = _state.asStateFlow()
     private var loadJob: Job? = null
 
-    fun setLocation(newFolderId: String) {
+    init {
+        // Derive the load scope from the shared closet session (replaces the AppContent
+        // fan-out bridge; same arms it had — an active id that is neither "All" nor a known
+        // closet keeps the current scope).
+        viewModelScope.launch {
+            session.session.collect { s ->
+                val active = s.activeFolderId
+                when {
+                    s.activeLocationId == ClosetSession.ALL_LOCATIONS_ID -> setAllLocations(s.closetFolderIds)
+                    active != null -> setLocation(active)
+                }
+            }
+        }
+    }
+
+    private fun setLocation(newFolderId: String) {
         if (folderId == newFolderId && allFolderIds == null) return
         folderId = newFolderId
         allFolderIds = null
@@ -54,7 +72,7 @@ class OutfitEventsViewModel @Inject constructor(
         loadEvents()
     }
 
-    fun setAllLocations(folderIds: List<String>) {
+    private fun setAllLocations(folderIds: List<String>) {
         if (folderId == null && allFolderIds?.toSet() == folderIds.toSet()) return
         folderId = null
         allFolderIds = folderIds.toList()

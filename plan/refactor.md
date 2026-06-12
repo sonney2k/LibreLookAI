@@ -675,6 +675,20 @@ methods. Risk: VMs are created lazily per tab, so collectors must tolerate a not
 session (emit-on-subscribe with the empty default, exactly like today's pre-fan-out window).
 Acceptance: closet switch, All-locations mode, default-closet import targeting, and the
 shopping folder's inclusion in the similarity snapshot behave identically.
+**Status: LANDED (June 2026).** `data/session/ClosetSession.kt` (`:app`): the data class owns
+the derived rules the bridge computed inline (`activeFolderId` — null for All/unknown ids,
+`snapshotFolderIds` = closets + shopping, `defaultImportFolderId` / `saveFolderId` fallbacks),
+unit-tested in `ClosetSessionTest` (5). `LocationViewModel` mirrors its whole state into the
+holder from `init` (covers add/rename/delete/default changes); `ShoppingClosetViewModel`
+publishes `state.folderId` distinct-until-changed. Consumers collect in `init` with the same
+call order and no-op guards the bridge relied on; the bridge's silent arm (active id neither
+"All" nor a known closet → keep current scope) is preserved explicitly. The 7 setters:
+`setLocation`/`setAllLocations`/`setAllConfiguredLocations` (wardrobe), `setAllLocations`
+(outfits, events), `setLocation` (events) went `private`; `OutfitsViewModel.setLocation` was
+dead (never called) and `updateSaveFolder` folded into the collector — both deleted.
+`WardrobeViewModel.setDefaultImportFolderId` stays public (the capture-screen import-target
+picker calls it). `ALL_LOCATIONS_ID` now lives on `ClosetSession`; `LocationViewModel`'s
+constant aliases it so call sites stay valid.
 
 **Slice 2 — `UserPreferencesRepository` (read path).** A `@Singleton`
 `StateFlow<UserPreferences>`; `ProfileViewModel` writes through it (it remains the only

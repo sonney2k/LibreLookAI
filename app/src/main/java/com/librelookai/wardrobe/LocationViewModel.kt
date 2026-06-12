@@ -16,6 +16,8 @@ import com.librelookai.data.drive.DriveRepository
 import com.librelookai.data.drive.loadLocationsJson
 import com.librelookai.data.drive.saveLocationsJson
 import com.librelookai.data.model.Location
+import com.librelookai.data.session.ClosetSession
+import com.librelookai.data.session.ClosetSessionHolder
 
 data class LocationUiState(
     val locations: List<Location> = emptyList(),
@@ -39,6 +41,7 @@ data class LocationUiState(
 class LocationViewModel @Inject constructor(
     app: Application,
     private val drive: DriveRepository,
+    private val session: ClosetSessionHolder,
 ) : AndroidViewModel(app) {
     private val gson = Gson()
     private val prefs = app.getSharedPreferences("librelookai_prefs", Context.MODE_PRIVATE)
@@ -69,6 +72,13 @@ class LocationViewModel @Inject constructor(
         restoreFromCache()
         // Phase 2: refresh from Drive in the background.
         loadLocations()
+        // Publish the closet topology into the shared session — consumers (wardrobe / outfits /
+        // events VMs) derive their load scope from it instead of being pushed by AppContent.
+        viewModelScope.launch {
+            state.collect { s ->
+                session.setClosets(s.locations, s.activeLocationId, s.defaultClosetFolderId)
+            }
+        }
     }
 
     /**
@@ -256,6 +266,6 @@ class LocationViewModel @Inject constructor(
         private const val PREF_DEFAULT_CLOSET_ID = "default_closet_folder_id"
         private const val PREF_ROOT_FOLDER_ID = "root_folder_id"
         private const val PREF_LOCATIONS_JSON = "locations_json"
-        const val ALL_LOCATIONS_ID = "all_locations"
+        const val ALL_LOCATIONS_ID = ClosetSession.ALL_LOCATIONS_ID
     }
 }

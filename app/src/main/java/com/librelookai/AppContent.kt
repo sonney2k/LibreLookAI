@@ -330,43 +330,13 @@ internal fun AppContent(
                         stylesViewModel.setWearHistory(outfitEventsState.events)
                     }
 
-                    // Reload wardrobe/styles/outfits whenever the active location changes
+                    // Closet topology (locations, active filter, default closet, shopping folder)
+                    // flows through the ClosetSessionHolder singleton: LocationViewModel and
+                    // ShoppingClosetViewModel publish, the wardrobe/outfits/events VMs collect it
+                    // in init (refactor § 5 slice 1 — the old fan-out bridge here is gone).
                     val activeLocationId = locationState.activeLocationId
                     val locationList = locationState.locations
-                    val activeFolderId = if (activeLocationId != LocationViewModel.ALL_LOCATIONS_ID && activeLocationId.isNotEmpty())
-                        locationList.find { it.folderId == activeLocationId }?.folderId else null
                     val shoppingClosetState by shoppingClosetViewModel.state.collectAsState()
-                    LaunchedEffect(activeLocationId, locationList, locationState.defaultClosetFolderId, shoppingClosetState.folderId) {
-                        val closetFolderIds = locationList.map { it.folderId }
-                        // Always tell the wardrobe VM about every configured closet — and the
-                        // shopping closet — so the cross-closet snapshot (used by all
-                        // similarity-search call sites) covers wishlist items too. The shopping
-                        // folder is never a Location and never appears in `closetFolderIds`.
-                        val folderIds = closetFolderIds
-                        val snapshotFolderIds = shoppingClosetState.folderId
-                            ?.let { closetFolderIds + it } ?: closetFolderIds
-                        wardrobeViewModel.setAllConfiguredLocations(snapshotFolderIds, shoppingClosetState.folderId)
-                        // Styles always loads from ALL locations — never filtered by the settings default.
-                        stylesViewModel.setAllLocations(folderIds)
-                        // Track which folder new styles should be saved to.
-                        val saveTarget = activeFolderId ?: folderIds.firstOrNull()
-                        if (saveTarget != null) stylesViewModel.updateSaveFolder(saveTarget)
-                        if (activeLocationId == LocationViewModel.ALL_LOCATIONS_ID) {
-                            wardrobeViewModel.setAllLocations(folderIds)
-                            outfitEventsViewModel.setAllLocations(folderIds)
-                        } else {
-                            activeFolderId?.let { folderId ->
-                                wardrobeViewModel.setLocation(folderId)
-                                outfitEventsViewModel.setLocation(folderId)
-                            }
-                        }
-                        // Imports go to the persisted default closet (Settings → Data/Closets),
-                        // independent of the closet filter. Falls back to the first location.
-                        val defaultClosetId = locationState.defaultClosetFolderId
-                            ?.takeIf { id -> folderIds.contains(id) }
-                            ?: folderIds.firstOrNull()
-                        wardrobeViewModel.setDefaultImportFolderId(defaultClosetId)
-                    }
 
                     // Retry the cross-closet prefetch whenever connectivity returns. The initial
                     // prefetch bails when offline; without this an early network blip would leave

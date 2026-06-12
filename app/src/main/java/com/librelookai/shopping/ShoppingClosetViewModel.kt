@@ -28,6 +28,9 @@ import com.librelookai.util.isNetworkAvailable
 import com.librelookai.data.drive.SyncEngine
 import com.librelookai.data.local.PendingMutationStore
 import com.librelookai.data.local.WardrobeItemStore
+import com.librelookai.data.session.ClosetSessionHolder
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import com.librelookai.wardrobe.DeleteItemPayload
 import com.librelookai.wardrobe.DriveImage
 import com.librelookai.wardrobe.ITEM_DELETE_KIND
@@ -82,6 +85,7 @@ class ShoppingClosetViewModel @Inject constructor(
     private val mutationStore: PendingMutationStore,
     private val syncEngine: SyncEngine,
     moveSync: WardrobeMoveSyncHandler,
+    session: ClosetSessionHolder,
 ) : AndroidViewModel(app) {
 
     companion object { internal const val TAG = "ShoppingClosetVM" }
@@ -102,6 +106,12 @@ class ShoppingClosetViewModel @Inject constructor(
 
     init {
         viewModelScope.launch { processQueue() }
+        // Publish the resolved `_shopping/` folder id into the shared closet session so the
+        // wardrobe VM's cross-closet snapshot covers wishlist items (replaces the AppContent
+        // fan-out bridge keyed on this state field).
+        viewModelScope.launch {
+            state.map { it.folderId }.distinctUntilChanged().collect(session::setShoppingFolder)
+        }
         // SyncEngine feedback: a queued shopping→closet move exhausted its retries and the
         // handler re-homed the Room row back to the shopping folder — splice the item back
         // into the wishlist and surface the error (the wardrobe VM's own collector undoes the
