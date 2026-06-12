@@ -752,6 +752,32 @@ gap-analysis input, the trip viewer's item resolution) become store reads; the C
 "cache-folder rule" prose reduces to "write the store; UI follows". Risk: the recently-moved
 markers and rollback collectors must reconcile with Flow emissions — verify against
 `WardrobeItemStoreTest` invariants plus the manual move/offline checklist.
+**Status: 4a LANDED (June 2026).** Two store-observing collectors in `WardrobeViewModel.init`
+are now the only writers of `WardrobeUiState.images` / `allLocationImages`
+(`viewScope`/`configuredScope` StateFlows → `observeItems` → `combine` with two overlays →
+`flowOn(IO)`); every state splice across the VM + its five extension files became a store
+write, and `refreshAllLocationImagesState`/`snapshotJob`, the `sidecarSaved` collector and
+the `moveRolledBack` splice/restore logic were deleted (the handlers' Room writes reach the
+view via invalidation). Two overlays ride the derivation: `transientItems` (import
+placeholders with synthetic ids — no Drive file, so no store row; filtered to the view
+scope) and `imageVersions` (the Coil cache-buster `DriveImage.version` used to live in
+spliced state — bumped on rotate/reprocess/cutout-fix/convert). Key conversions:
+`saveSidecar` no longer rebuilds folder rows from `state.images` (callers write the row
+first — `persistItemTags` — then `enqueueSidecarSync`); `processQueuedImage` builds the
+finished item locally and upserts it (keeping the raw row's `createdTimeMs` for sort
+stability); upload paths upsert raw placeholder rows instead of full-folder rebuilds —
+which also fixes a latent cache-folder-rule violation (uploading from All-locations used
+to `replaceFolder(target, whole view)`, re-homing every visible item into the import
+folder); import's `replaceExisting` drops rows per owning folder; the All-locations
+reconcile now persists raw in-flight rows too (the old cutout-only filter would have
+erased them from the derived view). Phase-1 cache reads survive only as cold-load probes
+for the `isLoading`/restore flags; Phase-2 store writes land *before* the flags clear so a
+cold load never flashes empty. Accepted divergences: tag edits and rollback restores reach
+the grid via invalidation (a few ms later than the old synchronous splices); transient
+Drive-listing races during the reconcile behave as before via `recentlyMovedItems`, which
+now guards only the store writes. Manual regression checklist before release: capture +
+batch import (placeholder → cutout swap), closet switch mid-processing, move + offline
+rollback, rotate/reprocess Coil refresh, reinstall-restore progress.
 
 **Slice 5 — ingestion pipeline use-case.** The `PendingJob` Channel, `drainWorkQueue`,
 dedupe gate, local-bg review queue, wake-lock and `JobForegroundService` acquire/release move

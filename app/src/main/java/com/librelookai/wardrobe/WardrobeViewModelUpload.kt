@@ -37,7 +37,7 @@ internal fun WardrobeViewModel.uploadPhotoInternal(
         if (dedupeOnImport && EmbeddingService.isModelAvailable()) {
             viewModelScope.launch {
                 _state.update { it.copy(view = WardrobeView.GRID, isUploading = true, error = null) }
-                refreshAllLocationImagesState()
+                // The cross-closet snapshot is store-derived and always current (§ 5 slice 4a).
                 val crossClosetImages = _state.value.allLocationImages
                 EmbeddingService.syncIndex(crossClosetImages, drive.cacheDir)
                 val sim = EmbeddingService.findSimilarWithDebug(
@@ -160,13 +160,13 @@ internal fun WardrobeViewModel.proceedWithCameraUpload(
                     dest.takeIf { it.exists() }
                 }
                 val newImage = DriveImage(uploadedId, displayCache.absolutePath, uploadedName, tags = null, folderId = id, createdTimeMs = System.currentTimeMillis())
+                // Raw row into the store — the derived view shows it immediately; no sidecar
+                // yet (processQueuedImage swaps it for the finished cutout entry).
+                persistItemToCache(id, newImage)
                 _state.update { it.copy(
                     isUploading = false,
-                    images = listOf(newImage) + it.images,
                     pendingJobs = it.pendingJobs + 1,
                 ) }
-                // No sidecar yet — the item is raw; sidecar is written by processQueuedImage
-                saveLocalCache(id, _state.value.images)
                 workQueue.send(PendingJob(newImage.driveId, id, cutoutForJob?.absolutePath, source))
             }.onFailure { e ->
                 logWardrobeAdd("failed", source, mapOf("reason" to "upload"))
@@ -319,10 +319,9 @@ internal fun WardrobeViewModel.uploadGalleryPhotos(uris: List<Uri>) {
                     tempFile.copyTo(File(drive.cacheDir, "${uploaded.id}_original.jpg"), overwrite = true)
                     DriveImage(uploaded.id, displayCache.absolutePath, uploaded.name, tags = null, folderId = id, createdTimeMs = System.currentTimeMillis())
                 }.onSuccess { newImage ->
-                    _state.update { it.copy(
-                        images = listOf(newImage) + it.images,
-                        pendingJobs = it.pendingJobs + 1,
-                    ) }
+                    // Raw row into the store — sidecars are written per item by processQueuedImage.
+                    persistItemToCache(id, newImage)
+                    _state.update { it.copy(pendingJobs = it.pendingJobs + 1) }
                     workQueue.send(PendingJob(newImage.driveId, id, source = AddSource.GALLERY))
                 }.onFailure { e ->
                     logWardrobeAdd("failed", AddSource.GALLERY, mapOf("reason" to "upload"))
@@ -331,8 +330,6 @@ internal fun WardrobeViewModel.uploadGalleryPhotos(uris: List<Uri>) {
                 tempFile.delete()
             }
             _state.update { it.copy(batchTotal = 0, batchDone = 0, isUploading = false) }
-            // Sidecars are written per item by processQueuedImage; just save local cache
-            saveLocalCache(id, _state.value.images)
         }
     }
 

@@ -390,7 +390,7 @@ internal suspend fun WardrobeViewModel.detectDuplicateCutouts(folderIds: List<St
         if (!EmbeddingService.isModelAvailable()) return emptyList()
         // Use the cross-closet snapshot so the duplicate scan covers every configured closet
         // (matches the contract with [startRepairAndRefresh], which passes every folderId).
-        refreshAllLocationImagesState()
+        // The snapshot is store-derived and always current (§ 5 slice 4a).
         val crossClosetImages = _state.value.allLocationImages
             .filter { folderIds.isEmpty() || it.folderId in folderIds }
         EmbeddingService.syncIndex(crossClosetImages, drive.cacheDir)

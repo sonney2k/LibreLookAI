@@ -164,15 +164,14 @@ internal fun WardrobeViewModel.convertImagesToWebp(closetFolderIds: List<String>
                 }.onFailure { Log.w(WardrobeViewModel.TAG, "rewrite try-ons failed: ${it.message}") }
             }
 
-            // ---- Refresh in-memory wardrobe (active closet) + its cache; bump version for Coil ----
+            // ---- Stamp the renamed filenames onto the store rows (the derived view follows)
+            // and bump versions for Coil ----
             if (cutoutNameMap.isNotEmpty()) {
-                _state.update { s ->
-                    s.copy(images = s.images.map { img ->
-                        cutoutNameMap[img.name]?.let { img.copy(name = it, version = img.version + 1) } ?: img
-                    })
-                }
-                _state.value.images.groupBy { it.folderId }.forEach { (f, imgs) ->
-                    if (f.isNotBlank()) saveLocalCache(f, imgs)
+                _state.value.images.forEach { img ->
+                    val newName = cutoutNameMap[img.name] ?: return@forEach
+                    val fid = img.folderId.ifEmpty { return@forEach }
+                    persistItemToCache(fid, img.copy(name = newName))
+                    bumpImageVersion(img.driveId)
                 }
             }
             // Outfit/try-on caches are intentionally left in place: their cached entries carry the

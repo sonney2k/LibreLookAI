@@ -169,7 +169,7 @@ internal suspend fun WardrobeViewModel.kickoffImport(
                 targetFolderId = targetFolderId,
                 options = options,
             )) }
-            refreshAllLocationImagesState()
+            // The cross-closet snapshot is store-derived and always current (§ 5 slice 4a).
             val crossClosetImages = _state.value.allLocationImages
             EmbeddingService.syncIndex(crossClosetImages, drive.cacheDir)
             val byId = crossClosetImages.associateBy { it.driveId }
@@ -257,14 +257,24 @@ internal suspend fun WardrobeViewModel.runImportEntries(
         options: ImportOptions,
         entries: List<ImportPreviewEntry>,
     ) {
-        if (options.replaceExisting) {
-            val toDelete = _state.value.images.map { it.driveId }
-            _state.update { it.copy(isImporting = true, importDone = 0, importTotal = entries.size, images = emptyList(), error = null) }
-            toDelete.forEach { driveId -> runCatching { drive.deleteFile(driveId) } }
+        val replaced: List<DriveImage> = if (options.replaceExisting) {
+            val toDelete = _state.value.images
+            _state.update { it.copy(isImporting = true, importDone = 0, importTotal = entries.size, error = null) }
+            // Drop the rows first so the derived view empties immediately, then delete on Drive.
+            toDelete.groupBy { it.folderId.ifEmpty { id } }.forEach { (fid, items) ->
+                runCatching { itemStore.remove(fid, items.mapTo(HashSet()) { it.driveId }) }
+            }
+            toDelete.forEach { img -> runCatching { drive.deleteFile(img.driveId) } }
+            toDelete
         } else {
             _state.update { it.copy(isImporting = true, importDone = 0, importTotal = entries.size, error = null) }
+            emptyList()
         }
-        val existingByName: Map<String, DriveImage> = _state.value.images.associateBy { it.name }
+        // The derived state may not have caught up with the removes yet — exclude the replaced
+        // items from the duplicate map explicitly instead of re-reading state.
+        val replacedIds = replaced.mapTo(HashSet()) { it.driveId }
+        val existingByName: Map<String, DriveImage> =
+            _state.value.images.filterNot { it.driveId in replacedIds }.associateBy { it.name }
         // Set when any item in the loop hits a 402 — short-circuits the rest so we
         // don't make N pointless proxy calls. Global dialog still appears via
         // CreditsEvents emitted from throwIf402.
@@ -281,18 +291,18 @@ internal suspend fun WardrobeViewModel.runImportEntries(
             val placeholderId: String? = if (duplicate == null)
                 "__importing_${index}_${System.nanoTime()}" else null
             if (placeholderId != null) {
-                _state.update { s ->
-                    s.copy(
-                        images = s.images + DriveImage(
-                            driveId = placeholderId,
-                            localPath = entry.cachedFilePath,
-                            name = entry.displayName,
-                            folderId = id,
-                            createdTimeMs = System.currentTimeMillis(),
-                        ),
-                        processingImageId = placeholderId,
+                // Synthetic-id placeholder — rides the transient overlay, not the store (its
+                // bytes live at an arbitrary temp path no cachedFile lookup would find).
+                transientItems.update {
+                    it + DriveImage(
+                        driveId = placeholderId,
+                        localPath = entry.cachedFilePath,
+                        name = entry.displayName,
+                        folderId = id,
+                        createdTimeMs = System.currentTimeMillis(),
                     )
                 }
+                _state.update { it.copy(processingImageId = placeholderId) }
             } else {
                 _state.update { it.copy(processingImageId = duplicate!!.driveId) }
             }
@@ -323,16 +333,12 @@ internal suspend fun WardrobeViewModel.runImportEntries(
                         orig.copyTo(File(drive.cacheDir, "${duplicate.driveId}_original.jpg"), overwrite = true)
                         oid
                     } ?: originalDriveId ?: duplicate.originalDriveId
-                    _state.update { s ->
-                        s.copy(images = s.images.map { img ->
-                            if (img.driveId == duplicate.driveId) img.copy(
-                                localPath = displayCache.absolutePath,
-                                tags = tags,
-                                version = System.currentTimeMillis(),
-                                originalDriveId = finalOriginalId,
-                            ) else img
-                        })
-                    }
+                    // Same driveId, new bytes + metadata: store write + Coil version bump.
+                    persistItemToCache(
+                        duplicate.folderId.ifEmpty { id },
+                        duplicate.copy(tags = tags, originalDriveId = finalOriginalId),
+                    )
+                    bumpImageVersion(duplicate.driveId)
                 } else {
                     val cutoutUploaded = uploadAsCutout(id, imageToUpload)
                     val displayCache = File(drive.cacheDir, "${cutoutUploaded.id}.png")
@@ -351,30 +357,25 @@ internal suspend fun WardrobeViewModel.runImportEntries(
                         folderId = id,
                         createdTimeMs = System.currentTimeMillis(),
                     )
-                    _state.update { s ->
-                        s.copy(images = if (placeholderId != null)
-                            s.images.map { if (it.driveId == placeholderId) newImage else it }
-                        else s.images + newImage)
+                    // Persist the real item, then retire its placeholder (the derived view
+                    // swaps them in back-to-back emissions).
+                    persistItemToCache(id, newImage)
+                    if (placeholderId != null) {
+                        transientItems.update { t -> t.filterNot { it.driveId == placeholderId } }
                     }
                 }
             }.onFailure { e ->
+                if (placeholderId != null) {
+                    transientItems.update { t -> t.filterNot { it.driveId == placeholderId } }
+                }
                 if (e is com.librelookai.billing.InsufficientCreditsException) {
-                    // Abort the rest of the bulk; the import that failed already
-                    // had its placeholder rolled back below. No `error` text — the
-                    // global dialog tells the user what happened.
+                    // Abort the rest of the bulk; the placeholder was rolled back above. No
+                    // `error` text — the global dialog tells the user what happened.
                     creditsExhausted = true
-                    _state.update { s ->
-                        s.copy(images = if (placeholderId != null)
-                            s.images.filterNot { it.driveId == placeholderId }
-                        else s.images)
-                    }
                 } else {
-                    _state.update { s ->
-                        s.copy(
+                    _state.update {
+                        it.copy(
                             error = getApplication<Application>().localized().getString(com.librelookai.R.string.error_import_failed_item, entry.displayName, e.message ?: ""),
-                            images = if (placeholderId != null)
-                                s.images.filterNot { it.driveId == placeholderId }
-                            else s.images,
                         )
                     }
                 }
@@ -383,6 +384,10 @@ internal suspend fun WardrobeViewModel.runImportEntries(
             runCatching { tempFile.delete() }
         }
         _state.update { it.copy(isImporting = false, importDone = 0, importTotal = 0) }
-        _state.value.images.forEach { img -> if (img.sidecarDriveId == null) saveSidecar(img.driveId) }
+        // Queue sidecar syncs for anything without one. Read the target folder from the store
+        // too — the derived state may lag the items persisted moments ago.
+        val viewMissing = _state.value.images.filter { it.sidecarDriveId == null }.map { it.driveId }
+        val importedMissing = itemStore.itemsFor(id).filter { it.sidecarDriveId == null }.map { it.driveId }
+        (viewMissing + importedMissing).distinct().forEach { saveSidecar(it) }
     }
 

@@ -93,13 +93,17 @@ data class DuplicateCheck(
 
 data class WardrobeUiState(
     val view: WardrobeView = WardrobeView.GRID,
+    /**
+     * The items in the current view scope — **derived** from the Room-backed
+     * [WardrobeItemStore] (refactor § 5 slice 4a): a store-observing collector in the VM's
+     * `init` is the only writer. Mutations write the store; the view follows via invalidation.
+     */
     val images: List<DriveImage> = emptyList(),
     /**
-     * Cross-closet snapshot of every cached wardrobe item across all configured closets,
-     * regardless of the active location filter applied to [images]. Refreshed from the
-     * Room-backed [WardrobeItemStore] whenever [images] changes or
-     * `setAllConfiguredLocations` is called. Used by every similarity-search call site so
-     * matches always span all wardrobes.
+     * Cross-closet snapshot of every cached wardrobe item across all configured closets
+     * (incl. shopping), regardless of the active location filter applied to [images] —
+     * **derived** from the same store over the configured-closets scope, so it is always
+     * current. Used by every similarity-search call site so matches span all wardrobes.
      */
     val allLocationImages: List<DriveImage> = emptyList(),
     val isLoading: Boolean = false,

@@ -32,8 +32,8 @@ internal fun WardrobeViewModel.onFindByPhotoCaptured(rawFile: File) {
                 findByPhoto = FindByPhoto(queryPath = rawFile.absolutePath, matches = emptyList(), isSearching = true),
             ) }
             // Always search across every configured closet so matches are not artificially
-            // limited by the active location filter.
-            refreshAllLocationImagesState()
+            // limited by the active location filter. The snapshot is store-derived and
+            // always current (§ 5 slice 4a).
             val crossClosetImages = _state.value.allLocationImages
             EmbeddingService.syncIndex(crossClosetImages, drive.cacheDir)
             val sim = EmbeddingService.findSimilarWithDebug(
@@ -102,7 +102,7 @@ internal fun WardrobeViewModel.searchByText(query: String) {
                 view = WardrobeView.GRID,
                 findByPhoto = FindByPhoto(textQuery = q, matches = emptyList(), isSearching = true),
             ) }
-            refreshAllLocationImagesState()
+            // The cross-closet snapshot is store-derived and always current (§ 5 slice 4a).
             val pool = _state.value.allLocationImages
             val matches = withContext(Dispatchers.Default) { fuzzyMatchByTags(q, pool) }
             _state.update {

@@ -138,12 +138,7 @@ internal fun WardrobeViewModel.continueCutoutBgFix(process: Boolean) {
                     }
                 }
                 // Bump version on every fixed item so Coil reloads from the updated local cache.
-                val fixedIds = toFix.map { it.driveId }.toSet()
-                _state.update { s ->
-                    s.copy(images = s.images.map {
-                        if (it.driveId in fixedIds) it.copy(version = it.version + 1) else it
-                    })
-                }
+                bumpImageVersion(*toFix.map { it.driveId }.toTypedArray())
                 _state.update { s ->
                     s.copy(cutoutBgFix = s.cutoutBgFix?.copy(
                         isProcessing = false,
@@ -230,11 +225,7 @@ internal fun WardrobeViewModel.fixCutoutBgForItem(
                 val cached = File(drive.cacheDir, "${driveId}.png")
                 tmp.copyTo(cached, overwrite = true)
                 tmp.delete()
-                _state.update { s ->
-                    s.copy(images = s.images.map {
-                        if (it.driveId == driveId) it.copy(version = it.version + 1) else it
-                    })
-                }
+                bumpImageVersion(driveId)
             } catch (e: Exception) {
                 Log.w(WardrobeViewModel.TAG, "Single-item cutout bg-fix failed for $driveId: ${e.message}", e)
                 _state.update { it.copy(error = e.message) }
