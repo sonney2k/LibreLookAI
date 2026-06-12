@@ -234,7 +234,7 @@ internal fun WardrobeViewModel.continueRepairProcessing(process: Boolean, clearC
                         val cutoutFile = gemini.removeBackground(localOriginal, drive.cacheDir)
                             ?: localOriginal.also { Log.w(TAG, "BG removal failed for ${item.driveId} — using original") }
                         Log.d(TAG, "Cutout file: ${cutoutFile.absolutePath}")
-                        val cutoutDrive = uploadAsCutout(item.folderId, cutoutFile)
+                        val cutoutDrive = drive.uploadAsCutout(item.folderId, cutoutFile)
                         Log.d(TAG, "Cutout uploaded as ${cutoutDrive.id}")
                         // Upload original to Drive with correct name before deleteFile, which also
                         // removes the local cache file for item.driveId (= localOriginal).
@@ -281,7 +281,7 @@ internal fun WardrobeViewModel.continueRepairProcessing(process: Boolean, clearC
                         val cutoutFile = gemini.removeBackground(localOriginal, drive.cacheDir)
                             ?: localOriginal.also { Log.w(TAG, "BG removal failed for ${item.driveId} — using original") }
                         Log.d(TAG, "Cutout file: ${cutoutFile.absolutePath}")
-                        val cutoutDrive = uploadAsCutout(item.folderId, cutoutFile)
+                        val cutoutDrive = drive.uploadAsCutout(item.folderId, cutoutFile)
                         Log.d(TAG, "Cutout uploaded as ${cutoutDrive.id}")
                         // Upload original to Drive with correct name before deleteFile, which also
                         // removes the local cache file for item.driveId (= localOriginal).

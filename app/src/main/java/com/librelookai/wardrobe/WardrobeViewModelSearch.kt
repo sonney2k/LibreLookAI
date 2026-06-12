@@ -40,7 +40,7 @@ internal fun WardrobeViewModel.onFindByPhotoCaptured(rawFile: File) {
                 file = rawFile,
                 threshold = -1f,
                 topK = if (debugSimilarityPreview) 50 else 12,
-                processedOutputDir = File(getApplication<Application>().cacheDir, WardrobeViewModel.QUERY_DEBUG_DIR),
+                processedOutputDir = File(getApplication<Application>().cacheDir, QUERY_DEBUG_DIR),
             )
             val byId = crossClosetImages.associateBy { it.driveId }
             val resolved = sim?.matches.orEmpty().mapNotNull { m ->

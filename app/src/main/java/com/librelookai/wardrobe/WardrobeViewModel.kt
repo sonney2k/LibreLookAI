@@ -7,7 +7,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
-import android.os.PowerManager
 import android.provider.DocumentsContract
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
@@ -39,8 +38,7 @@ import com.librelookai.gemini.GeminiRepository
 import com.librelookai.gemini.detectCutoutIssues
 import com.librelookai.gemini.fixCutoutBackground
 import com.librelookai.gemini.classifyClothing
-import com.librelookai.ml.EmbeddingService
-import com.librelookai.service.JobForegroundService
+import com.librelookai.service.JobLock
 import com.librelookai.settings.UserPreferences
 import com.librelookai.util.ImageEncoding
 import com.librelookai.util.isNetworkAvailable
@@ -51,7 +49,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -76,6 +73,8 @@ class WardrobeViewModel @Inject constructor(
     private val mutationStore: PendingMutationStore,
     private val syncEngine: SyncEngine,
     private val moveSync: WardrobeMoveSyncHandler,
+    internal val pipeline: ItemIngestionPipeline,
+    private val jobLock: JobLock,
     session: ClosetSessionHolder,
     prefsRepo: UserPreferencesRepository,
 ) : AndroidViewModel(app) {
@@ -88,46 +87,17 @@ class WardrobeViewModel @Inject constructor(
         internal const val SIDECAR_EMPTY_MAX = 20L
         /** Sidecars at or above this size always contain a ClothingTags object. */
         internal const val SIDECAR_FULL_MIN  = 100L
-        /** Cache subdir for the processed-query bitmaps fed to the similarity debug preview. */
-        internal const val QUERY_DEBUG_DIR = "wardrobe_query_debug"
     }
     internal val gson = Gson()
 
-    private var jobWakeLock: PowerManager.WakeLock? = null
-    private val activeJobCount = AtomicInteger(0)
+    // Process keepalive moved to the shared [JobLock] singleton (refactor § 5 slice 5) so the
+    // ingestion pipeline and the VM's remaining bulk workflows share one refcount. These thin
+    // delegates keep the extension-file call sites (audit / bg-fix / convert / import) intact.
+    internal fun acquireJobWakeLock() = jobLock.acquire()
 
-    internal fun acquireJobWakeLock() {
-        if (activeJobCount.getAndIncrement() == 0) {
-            // Foreground service keeps the process alive while any job is running
-            JobForegroundService.acquire(getApplication())
-            // Wake lock keeps the CPU awake if the screen turns off mid-job
-            val pm = getApplication<Application>().getSystemService(Context.POWER_SERVICE) as PowerManager
-            if (jobWakeLock == null) {
-                jobWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "LibreLookAI:Jobs")
-                    .also { it.setReferenceCounted(false) }
-            }
-            jobWakeLock!!.acquire(30 * 60 * 1000L) // 30-minute safety timeout
-            Log.d(TAG, "Wake lock acquired")
-            // Warn the user if battery optimization is not disabled — on many devices (especially
-            // OEM-customized ROMs) the OS will kill even foreground services unless the app is
-            // explicitly exempted from battery optimization.
-            if (!pm.isIgnoringBatteryOptimizations(getApplication<Application>().packageName)) {
-                _state.update { it.copy(needsBatteryExemption = true) }
-            }
-        }
-    }
+    internal fun releaseJobWakeLock() = jobLock.release()
 
-    fun dismissBatteryExemptionWarning() {
-        _state.update { it.copy(needsBatteryExemption = false) }
-    }
-
-    internal fun releaseJobWakeLock() {
-        if (activeJobCount.decrementAndGet() == 0) {
-            jobWakeLock?.let { if (it.isHeld) it.release() }
-            JobForegroundService.release(getApplication())
-            Log.d(TAG, "Wake lock released")
-        }
-    }
+    fun dismissBatteryExemptionWarning() = jobLock.dismissBatteryWarning()
 
     internal val _state = MutableStateFlow(WardrobeUiState())
     val state: StateFlow<WardrobeUiState> = _state.asStateFlow()
@@ -211,14 +181,54 @@ class WardrobeViewModel @Inject constructor(
         recentlyMovedItems.entries.removeAll { it.value.second < now }
     }
 
-    /**
-     * Background processing queue. Each item represents one uploaded photo that needs
-     * bg removal + classification. Processed serially so metadata writes are consistent.
-     */
-    internal val workQueue = Channel<PendingJob>(Channel.UNLIMITED)
-
     init {
-        viewModelScope.launch { processQueue() }
+        // Mirror the ingestion pipeline's progress into WardrobeUiState (§ 5 slice 5 — the
+        // pipeline owns the queue; this keeps the existing UI contract until slice 7).
+        // Pipeline-owned fields copy through; `isUploading` / `processingImageId` are shared
+        // with the VM's own per-item ops, so only the pipeline's *transitions* are applied —
+        // each transition corresponds to exactly one pre-extraction in-VM write, including
+        // the guarded swap/clear semantics the queue worker used.
+        viewModelScope.launch {
+            var prev = IngestionProgress()
+            pipeline.progress.collect { p ->
+                _state.update { s ->
+                    s.copy(
+                        pendingJobs = p.pendingJobs,
+                        batchDone = p.batchDone,
+                        batchTotal = p.batchTotal,
+                        duplicateCheck = p.duplicateCheck,
+                        localBgReviewQueue = p.localBgReviewQueue,
+                        // Return to the grid exactly when the old code flipped it (dedupe
+                        // pass / upload start — not gallery batches, which may run under
+                        // the capture screen).
+                        view = if (p.gridReturnTick != prev.gridReturnTick) WardrobeView.GRID else s.view,
+                        isUploading = if (p.isUploading != prev.isUploading) p.isUploading else s.isUploading,
+                        processingImageId = when {
+                            // No pipeline transition — leave whatever a per-item op set.
+                            p.processingImageId == prev.processingImageId -> s.processingImageId
+                            // Queue finished its item: guarded clear (old loop-end / step-8 clear).
+                            p.processingImageId == null ->
+                                if (s.processingImageId == prev.processingImageId) null else s.processingImageId
+                            // Queue picked up a job: unconditional (old worker-start write).
+                            prev.processingImageId == null -> p.processingImageId
+                            // Raw → cutout id swap: guarded (old step-6 write).
+                            else ->
+                                if (s.processingImageId == prev.processingImageId) p.processingImageId else s.processingImageId
+                        },
+                    )
+                }
+                prev = p
+            }
+        }
+        // Pipeline failures land in the same error slot the in-VM writes used (null = clear).
+        viewModelScope.launch {
+            pipeline.errors.collect { msg -> _state.update { it.copy(error = msg) } }
+        }
+        viewModelScope.launch {
+            jobLock.needsBatteryExemption.collect { needs ->
+                _state.update { it.copy(needsBatteryExemption = needs) }
+            }
+        }
         // Derived view (§ 5 slice 4a): the grid's items are the store rows in the current view
         // scope (with a cached image file), plus any in-scope import placeholders, stamped with
         // the Coil version overlay. File stats run on IO via flowOn; redundant emissions are
@@ -807,25 +817,8 @@ class WardrobeViewModel @Inject constructor(
     }
 
     // ---------- Naming helpers ----------
-
-    /**
-     * Uploads [imageFile] to [folderId], then immediately renames it to
-     * "{driveId}_cutout.png" (where driveId is the Drive-assigned ID).
-     * Returns the DriveFileDto with [name] already set to the final name.
-     */
-    internal suspend fun uploadAsCutout(folderId: String, imageFile: File): DriveFileDto {
-        val uploaded = drive.uploadImage(folderId, imageFile)
-        val finalName = "${uploaded.id}${DriveRepository.CUTOUT_SUFFIX}"
-        runCatching { drive.renameFile(uploaded.id, finalName) }
-        return uploaded.copy(name = finalName)
-    }
-
-    /**
-     * Uploads [imageFile] to [folderId] with filename "{cutoutDriveId}_original.jpg".
-     * Returns the new Drive file ID.
-     */
-    internal suspend fun uploadAsOriginal(folderId: String, imageFile: File, cutoutDriveId: String): String =
-        drive.uploadImageWithName(folderId, imageFile, "$cutoutDriveId${DriveRepository.ORIGINAL_SUFFIX}").id
+    // (uploadAsCutout / uploadAsOriginal are DriveRepository extensions in
+    // ItemIngestionPipeline.kt now — shared by the pipeline and the audit/import workflows.)
 
     /**
      * Resolves the Drive ID of a cutout item given its [metaName] (possibly old-format).
@@ -844,119 +837,8 @@ class WardrobeViewModel @Inject constructor(
     }
 
     // ---------- Background processing queue ----------
-
-    /** Drains [workQueue] serially — bg removal + tagging for each newly uploaded photo. */
-    private suspend fun processQueue() {
-        for (job in workQueue) {
-            acquireJobWakeLock()
-            try {
-                runCatching { processQueuedImage(job) }
-                    .onFailure { e ->
-                        logWardrobeAdd("failed", job.source, mapOf("reason" to "exception"))
-                        _state.update { it.copy(error = e.message) }
-                    }
-                _state.update { s ->
-                    s.copy(
-                        pendingJobs = maxOf(0, s.pendingJobs - 1),
-                        processingImageId = if (s.processingImageId == job.driveId)
-                            null else s.processingImageId,
-                    )
-                }
-                // The finished item is persisted to its own closet cache inside
-                // processQueuedImage (keyed off job.folderId), so nothing to do here.
-            } finally {
-                releaseJobWakeLock()
-            }
-        }
-    }
-
-    private suspend fun processQueuedImage(job: PendingJob) {
-        val rawFile = File(drive.cacheDir, "${job.driveId}_original.jpg")
-        if (!rawFile.exists()) {
-            logWardrobeAdd("failed", job.source, mapOf("reason" to "raw_missing"))
-            return
-        }
-        _state.update { it.copy(processingImageId = job.driveId) }
-        // NOTE: we intentionally do NOT check if job.driveId is still in state — loadImages()
-        // may have replaced it with the cutout ID already (race window). We always process.
-
-        // Step 1 — background removal. If the user produced a local cutout via the on-device
-        // segmenter review (LocalBgRemovalScreen), use it as-is and skip the paid Gemini call.
-        val processedFile: File = job.prebuiltCutoutPath
-            ?.let { File(it) }
-            ?.takeIf { it.exists() }
-            ?: (gemini.removeBackground(rawFile, drive.cacheDir) ?: rawFile)
-
-        // Step 2 — upload cutout, then rename to "{cutoutId}_cutout.png"
-        val cutoutDrive = runCatching { uploadAsCutout(job.folderId, processedFile) }.getOrNull()
-            ?: run {
-                logWardrobeAdd("failed", job.source, mapOf("reason" to "cutout_upload"))
-                return
-            }
-
-        // Step 3 — upload original as "{cutoutId}_original.jpg" (best-effort)
-        val originalDriveId = runCatching {
-            uploadAsOriginal(job.folderId, rawFile, cutoutDrive.id)
-        }.getOrNull()
-
-        // Step 4 — write cutout to local cache; also cache original for fast future reprocessing
-        // (must happen before deleteFile, which also removes the local _original.jpg)
-        val localCutout = File(drive.cacheDir, "${cutoutDrive.id}.png")
-        if (processedFile.absolutePath != localCutout.absolutePath) {
-            processedFile.copyTo(localCutout, overwrite = true)
-        }
-        rawFile.copyTo(File(drive.cacheDir, "${cutoutDrive.id}_original.jpg"), overwrite = true)
-
-        // Step 5 — delete the temporary raw upload
-        runCatching { drive.deleteFile(job.driveId) }
-
-        // Step 6 — make the finished cutout live: replace the raw-id store row with the final
-        // cutout entry, keyed off job.folderId (correct even if the user switched closets
-        // mid-job). The derived view swaps raw → cutout via invalidation. Keep the raw row's
-        // createdTimeMs so the item holds its sort position.
-        val rawCreated = itemStore.find(job.driveId)?.second?.createdTimeMs
-            ?: System.currentTimeMillis()
-        var finished = DriveImage(
-            driveId = cutoutDrive.id,
-            localPath = localCutout.absolutePath,
-            name = cutoutDrive.name,          // "{cutoutId}_cutout.png"
-            tags = null,
-            originalDriveId = originalDriveId,
-            folderId = job.folderId,
-            createdTimeMs = rawCreated,
-        )
-        persistItemToCache(job.folderId, finished, staleDriveId = job.driveId)
-        _state.update { s ->
-            s.copy(
-                processingImageId = if (s.processingImageId == job.driveId)
-                    cutoutDrive.id else s.processingImageId,
-            )
-        }
-
-        // Step 7 — classify clothing tags
-        val tags = gemini.classifyClothing(localCutout, geminiLanguage)
-        if (tags != null) {
-            finished = finished.copy(tags = tags)
-            persistItemToCache(job.folderId, finished)
-        }
-
-        // Step 8 — save sidecar (includes tags even if null, so item is discoverable on next load)
-        val sidecarJson = gson.toJson(ItemSidecar(tags, originalDriveId))
-        runCatching {
-            drive.upsertSidecar(
-                job.folderId, "${cutoutDrive.id}${DriveRepository.SIDECAR_SUFFIX}", sidecarJson,
-            )
-        }.onSuccess { sidecarId ->
-            itemStore.setSidecarId(cutoutDrive.id, sidecarId)
-        }
-        _state.update { s ->
-            if (s.processingImageId == cutoutDrive.id || s.processingImageId == job.driveId)
-                s.copy(processingImageId = null) else s
-        }
-
-        // Funnel terminal: the item is fully processed and live in the wardrobe.
-        logWardrobeAdd("item_live", job.source, mapOf("tagged" to (tags != null).toString()))
-    }
+    // (The queue worker lives in [ItemIngestionPipeline] now — § 5 slice 5. The collector in
+    // `init` mirrors its progress into this state.)
 
     // ---------- Navigation ----------
 

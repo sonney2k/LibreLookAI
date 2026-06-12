@@ -5,208 +5,40 @@ import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.viewModelScope
 import com.librelookai.R
-import com.librelookai.ml.EmbeddingService
 import java.io.File
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+
+// The upload / dedupe / local-bg-review machinery lives in [ItemIngestionPipeline]
+// (§ 5 slice 5). These extensions keep the screens' existing VM-facing API: they resolve
+// the target folder (VM state) and delegate; progress comes back via the init collector.
 
 internal fun WardrobeViewModel.uploadPhoto(rawFile: File) {
         val id = (defaultImportFolderId ?: folderId) ?: run {
             _state.update { it.copy(view = WardrobeView.GRID) }
             return
         }
-        uploadPhotoInternal(rawFile, id, skippableLocalReview = true, source = AddSource.CAMERA)
-    }
-
-    /**
-     * Shared body for camera + gallery + URL imports. Runs the dedupe gate, then either opens the
-     * local-bg review queue (when wired) or proceeds straight to upload.
-     *
-     * @param skippableLocalReview true for camera/gallery (user can decline local cutout and fall
-     *   back to Gemini); false for URL imports, where the review is mandatory.
-     * @param forceLocalReview true to always enqueue the review even when [preferLocalBgRemoval]
-     *   is off — set by URL imports.
-     */
-internal fun WardrobeViewModel.uploadPhotoInternal(
-        rawFile: File,
-        id: String,
-        skippableLocalReview: Boolean,
-        forceLocalReview: Boolean = false,
-        source: AddSource = AddSource.CAMERA,
-    ) {
-        if (dedupeOnImport && EmbeddingService.isModelAvailable()) {
-            viewModelScope.launch {
-                _state.update { it.copy(view = WardrobeView.GRID, isUploading = true, error = null) }
-                // The cross-closet snapshot is store-derived and always current (§ 5 slice 4a).
-                val crossClosetImages = _state.value.allLocationImages
-                EmbeddingService.syncIndex(crossClosetImages, drive.cacheDir)
-                val sim = EmbeddingService.findSimilarWithDebug(
-                    file = rawFile,
-                    threshold = dedupeThreshold,
-                    topK = if (debugSimilarityPreview) 50 else 8,
-                    processedOutputDir = File(getApplication<Application>().cacheDir, WardrobeViewModel.QUERY_DEBUG_DIR),
-                )
-                val byId = crossClosetImages.associateBy { it.driveId }
-                val resolved = sim?.matches.orEmpty().mapNotNull { m ->
-                    byId[m.driveId]?.let { DuplicateMatch(it, m.score) }
-                }
-                if (resolved.isEmpty()) {
-                    sim?.processedPath?.let { runCatching { File(it).delete() } }
-                    routeImportAfterDedupe(rawFile, id, skippableLocalReview, forceLocalReview, source)
-                } else {
-                    _state.update { it.copy(
-                        isUploading = false,
-                        duplicateCheck = DuplicateCheck(
-                            rawFilePath = rawFile.absolutePath,
-                            targetFolderId = id,
-                            matches = resolved,
-                            processedPath = sim?.processedPath,
-                            segmented = sim?.segmented ?: false,
-                            hist = sim?.hist,
-                            vec = sim?.vec,
-                            pHash = sim?.pHash,
-                        ),
-                    ) }
-                    logWardrobeAdd("dedupe_prompt", source, mapOf("matches" to resolved.size.toString()))
-                    // Stash routing for confirmDuplicateImport to resume.
-                    pendingDedupeRouting = DedupeRouting(skippableLocalReview, forceLocalReview, source)
-                }
-            }
-            return
-        }
-        routeImportAfterDedupe(rawFile, id, skippableLocalReview, forceLocalReview, source)
-    }
-
-    private data class DedupeRouting(val skippable: Boolean, val force: Boolean, val source: AddSource)
-    private var pendingDedupeRouting: DedupeRouting? = null
-
-    /** Either enqueue the local-bg review or proceed straight to upload. */
-internal fun WardrobeViewModel.routeImportAfterDedupe(
-        rawFile: File,
-        id: String,
-        skippable: Boolean,
-        force: Boolean,
-        source: AddSource = AddSource.CAMERA,
-    ) {
-        val shouldReview = (force || preferLocalBgRemoval) &&
-            EmbeddingService.segmenter.isAvailable()
-        if (shouldReview) {
-            _state.update { it.copy(
-                isUploading = false,
-                localBgReviewQueue = it.localBgReviewQueue + LocalBgReviewItem(
-                    rawFilePath = rawFile.absolutePath,
-                    targetFolderId = id,
-                    skippable = skippable,
-                    source = source,
-                ),
-            ) }
-        } else {
-            proceedWithCameraUpload(rawFile, id, source = source)
-        }
+        pipeline.ingest(rawFile, id, skippableLocalReview = true, source = AddSource.CAMERA)
     }
 
     /** User confirmed they want to import despite a similarity match. */
-internal fun WardrobeViewModel.confirmDuplicateImport() {
-        val dc = _state.value.duplicateCheck ?: return
-        dc.processedPath?.let { runCatching { File(it).delete() } }
-        _state.update { it.copy(duplicateCheck = null) }
-        val routing = pendingDedupeRouting ?: DedupeRouting(skippable = true, force = false, source = AddSource.CAMERA)
-        pendingDedupeRouting = null
-        logWardrobeAdd("dedupe_confirm", routing.source)
-        routeImportAfterDedupe(File(dc.rawFilePath), dc.targetFolderId, routing.skippable, routing.force, routing.source)
-    }
+internal fun WardrobeViewModel.confirmDuplicateImport() = pipeline.confirmDuplicateImport()
 
     /** User cancelled the import — discard the raw file and clear the check. */
-internal fun WardrobeViewModel.cancelDuplicateImport() {
-        val dc = _state.value.duplicateCheck ?: return
-        runCatching { File(dc.rawFilePath).delete() }
-        dc.processedPath?.let { runCatching { File(it).delete() } }
-        logWardrobeAdd("dedupe_cancel", pendingDedupeRouting?.source)
-        pendingDedupeRouting = null
-        _state.update { it.copy(duplicateCheck = null) }
-    }
-
-    /**
-     * The original [uploadPhoto] body, extracted so the dedupe gate can call it once cleared.
-     * When [prebuiltCutout] is non-null, it is treated as a pre-rendered cutout PNG produced by
-     * the on-device segmenter; the worker will use it instead of running Gemini.
-     */
-internal fun WardrobeViewModel.proceedWithCameraUpload(
-        rawFile: File,
-        id: String,
-        prebuiltCutout: File? = null,
-        source: AddSource = AddSource.CAMERA,
-    ) {
-        viewModelScope.launch {
-            _state.update { it.copy(view = WardrobeView.GRID, isUploading = true, error = null) }
-            logWardrobeAdd("upload_start", source)
-            runCatching {
-                val uploaded = drive.uploadImage(id, rawFile)
-                val ext = if (rawFile.extension == "png") "png" else "jpg"
-                val displayCache = File(drive.cacheDir, "${uploaded.id}.$ext")
-                if (rawFile.absolutePath != displayCache.absolutePath) {
-                    rawFile.copyTo(displayCache, overwrite = true)
-                }
-                rawFile.copyTo(File(drive.cacheDir, "${uploaded.id}_original.jpg"), overwrite = true)
-                Triple(uploaded.id, uploaded.name, displayCache)
-            }.onSuccess { (uploadedId, uploadedName, displayCache) ->
-                // Stash the local cutout under a stable per-job filename so processQueuedImage can
-                // find it after the raw upload completes — the final destination filename uses the
-                // *cutout's* drive ID, which we don't know yet.
-                val cutoutForJob = prebuiltCutout?.let { src ->
-                    val dest = File(drive.cacheDir, "${uploadedId}_local_cutout.png")
-                    runCatching { src.copyTo(dest, overwrite = true) }.getOrNull()
-                    runCatching { src.delete() }
-                    dest.takeIf { it.exists() }
-                }
-                val newImage = DriveImage(uploadedId, displayCache.absolutePath, uploadedName, tags = null, folderId = id, createdTimeMs = System.currentTimeMillis())
-                // Raw row into the store — the derived view shows it immediately; no sidecar
-                // yet (processQueuedImage swaps it for the finished cutout entry).
-                persistItemToCache(id, newImage)
-                _state.update { it.copy(
-                    isUploading = false,
-                    pendingJobs = it.pendingJobs + 1,
-                ) }
-                workQueue.send(PendingJob(newImage.driveId, id, cutoutForJob?.absolutePath, source))
-            }.onFailure { e ->
-                logWardrobeAdd("failed", source, mapOf("reason" to "upload"))
-                _state.update { it.copy(isUploading = false, error = e.message) }
-            }
-        }
-    }
+internal fun WardrobeViewModel.cancelDuplicateImport() = pipeline.cancelDuplicateImport()
 
     // ---------- Local background-removal review ----------
 
-    /**
-     * User accepted the on-device cutout for the head item of the review queue. The cutout file
-     * has already been written to [cutoutFile] by the review screen; we hand both raw + cutout off
-     * to the regular upload pipeline, then advance the queue.
-     */
-internal fun WardrobeViewModel.applyLocalBgCutout(cutoutFile: File) {
-        val head = _state.value.localBgReviewQueue.firstOrNull() ?: return
-        val raw = File(head.rawFilePath)
-        _state.update { it.copy(localBgReviewQueue = it.localBgReviewQueue.drop(1)) }
-        proceedWithCameraUpload(raw, head.targetFolderId, prebuiltCutout = cutoutFile, source = head.source)
-    }
+    /** User accepted the on-device cutout for the head item of the review queue. */
+internal fun WardrobeViewModel.applyLocalBgCutout(cutoutFile: File) = pipeline.applyLocalBgCutout(cutoutFile)
 
-    /** User declined the on-device cutout — fall back to the regular Gemini path. Only valid
-     *  for entries with `skippable = true` (camera + gallery; not URL). */
-internal fun WardrobeViewModel.skipLocalBgReview() {
-        val head = _state.value.localBgReviewQueue.firstOrNull() ?: return
-        if (!head.skippable) return
-        val raw = File(head.rawFilePath)
-        _state.update { it.copy(localBgReviewQueue = it.localBgReviewQueue.drop(1)) }
-        proceedWithCameraUpload(raw, head.targetFolderId, source = head.source)
-    }
+    /** User declined the on-device cutout — fall back to the regular Gemini path. */
+internal fun WardrobeViewModel.skipLocalBgReview() = pipeline.skipLocalBgReview()
 
     /** User cancelled this import entirely — discard the raw file and advance the queue. */
-internal fun WardrobeViewModel.cancelLocalBgReview() {
-        val head = _state.value.localBgReviewQueue.firstOrNull() ?: return
-        runCatching { File(head.rawFilePath).delete() }
-        _state.update { it.copy(localBgReviewQueue = it.localBgReviewQueue.drop(1)) }
-    }
+internal fun WardrobeViewModel.cancelLocalBgReview() = pipeline.cancelLocalBgReview()
 
-    // ---------- Upload from gallery ----------
+    // ---------- Upload from URL ----------
 
     /**
      * Fetches the hero product image from a shopping URL and runs it through the standard
@@ -261,9 +93,9 @@ internal fun WardrobeViewModel.confirmUrlImportPick(absoluteImageUrl: String) {
             }
             _state.update { it.copy(urlImportPicker = null) }
             // URL imports always go through on-device review so the user can refine the seed.
-            uploadPhotoInternal(
+            pipeline.ingest(
                 rawFile = image,
-                id = targetId,
+                folderId = targetId,
                 skippableLocalReview = false,
                 forceLocalReview = true,
                 source = AddSource.URL,
@@ -275,61 +107,10 @@ internal fun WardrobeViewModel.cancelUrlImport() {
         _state.update { it.copy(urlImportPicker = null) }
     }
 
+    // ---------- Upload from gallery ----------
+
 internal fun WardrobeViewModel.uploadGalleryPhotos(uris: List<Uri>) {
         if (uris.isEmpty()) return
         val id = (defaultImportFolderId ?: folderId) ?: return
-        // When local-bg review is enabled, route each gallery item through the same uploadPhoto
-        // pipeline so it is enqueued for the review screen one at a time. Otherwise stick with
-        // the original direct-upload path (faster, no per-item user interaction).
-        if (preferLocalBgRemoval && EmbeddingService.segmenter.isAvailable()) {
-            viewModelScope.launch {
-                _state.update { it.copy(batchTotal = uris.size, batchDone = 0, isUploading = true, error = null) }
-                val cr = getApplication<Application>().contentResolver
-                uris.forEachIndexed { index, uri ->
-                    _state.update { it.copy(batchDone = index) }
-                    val tempFile = File(drive.cacheDir, "gallery_${System.currentTimeMillis()}_$index.jpg")
-                    runCatching {
-                        cr.openInputStream(uri)?.use { it.copyTo(tempFile.outputStream()) }
-                        tempFile
-                    }.onSuccess { f ->
-                        // Enqueue for review; uploadPhotoInternal handles dedupe + queue routing.
-                        uploadPhotoInternal(f, id, skippableLocalReview = true, source = AddSource.GALLERY)
-                    }.onFailure { e ->
-                        _state.update { it.copy(error = getApplication<Application>().localized().getString(R.string.error_upload_failed, e.message ?: "")) }
-                        runCatching { tempFile.delete() }
-                    }
-                }
-                _state.update { it.copy(batchTotal = 0, batchDone = 0, isUploading = false) }
-            }
-            return
-        }
-
-        viewModelScope.launch {
-            _state.update { it.copy(batchTotal = uris.size, batchDone = 0, isUploading = true, error = null) }
-            val cr = getApplication<Application>().contentResolver
-            uris.forEachIndexed { index, uri ->
-                _state.update { it.copy(batchDone = index) }
-                val tempFile = File(drive.cacheDir, "gallery_${System.currentTimeMillis()}.jpg")
-                logWardrobeAdd("upload_start", AddSource.GALLERY)
-                runCatching {
-                    cr.openInputStream(uri)?.use { it.copyTo(tempFile.outputStream()) }
-                    val uploaded = drive.uploadImage(id, tempFile)
-                    val displayCache = File(drive.cacheDir, "${uploaded.id}.jpg")
-                    tempFile.copyTo(displayCache, overwrite = true)
-                    tempFile.copyTo(File(drive.cacheDir, "${uploaded.id}_original.jpg"), overwrite = true)
-                    DriveImage(uploaded.id, displayCache.absolutePath, uploaded.name, tags = null, folderId = id, createdTimeMs = System.currentTimeMillis())
-                }.onSuccess { newImage ->
-                    // Raw row into the store — sidecars are written per item by processQueuedImage.
-                    persistItemToCache(id, newImage)
-                    _state.update { it.copy(pendingJobs = it.pendingJobs + 1) }
-                    workQueue.send(PendingJob(newImage.driveId, id, source = AddSource.GALLERY))
-                }.onFailure { e ->
-                    logWardrobeAdd("failed", AddSource.GALLERY, mapOf("reason" to "upload"))
-                    _state.update { it.copy(error = getApplication<Application>().localized().getString(R.string.error_upload_failed, e.message ?: "")) }
-                }
-                tempFile.delete()
-            }
-            _state.update { it.copy(batchTotal = 0, batchDone = 0, isUploading = false) }
-        }
+        pipeline.uploadGalleryPhotos(uris, id)
     }
-

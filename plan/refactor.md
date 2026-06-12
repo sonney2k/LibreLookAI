@@ -839,6 +839,23 @@ without VM involvement. Zero behavior change (decision 4). **5b (optional, separ
 persist job specs in a Room table (the captured file is already on disk) and drain via
 WorkManager expedited work — retiring the wake-lock + foreground service for ingestion, the
 same pattern as § 2's `SyncDrainWorker` backstop.
+**Status: 5 LANDED (June 2026).** `wardrobe/ItemIngestionPipeline` (@Singleton, own
+process-long scope — the foreground service + wake lock already promised that lifetime, now
+the coroutines deliver it) owns the dedupe gate, local-bg review queue, raw upload, gallery
+batch and the serial worker queue, exposing `StateFlow<IngestionProgress>` plus a nullable
+`errors` SharedFlow (null = the old `error = null` clears). The dedupe snapshot became a
+store read over `session.snapshotFolderIds` (no VM state). The wake-lock/foreground-service
+refcount moved to a shared `service/JobLock` @Singleton (with the battery-exemption
+StateFlow); the VM's `acquireJobWakeLock`/`releaseJobWakeLock` are thin delegates so the
+audit/bg-fix/convert/import extensions are untouched until slice 6. The VM mirrors progress
+into `WardrobeUiState` in `init`: pipeline-owned fields copy through; the shared
+`isUploading`/`processingImageId` apply *transitions only* (replicating the old guarded
+swap/clear writes — per-item ops keep last-writer-wins), and a `gridReturnTick` reproduces
+the exact old `view = GRID` flip sites (dedupe pass / upload start — NOT gallery batches,
+which may run under the capture screen). `…Upload.kt` shrank to folder-resolving delegates +
+the URL-import picker; `uploadAsCutout`/`uploadAsOriginal` became `DriveRepository`
+extensions (in the pipeline file) shared with audit/import; `QUERY_DEBUG_DIR` is a
+top-level const. UI API unchanged (screens still call the VM extensions).
 
 **Slice 6 — bulk maintenance use-cases.** One per extension file, same recipe as slice 5:
 `RetagAllUseCase`, `RemoveAllBackgroundsUseCase`, `CutoutBgFixUseCase` (the

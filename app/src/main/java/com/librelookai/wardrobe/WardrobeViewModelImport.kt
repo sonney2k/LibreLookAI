@@ -329,7 +329,7 @@ internal suspend fun WardrobeViewModel.runImportEntries(
                     val displayCache = File(drive.cacheDir, "${duplicate.driveId}.png")
                     imageToUpload.copyTo(displayCache, overwrite = true)
                     val finalOriginalId = rawOriginalFile?.let { orig ->
-                        val oid = runCatching { uploadAsOriginal(id, orig, duplicate.driveId) }.getOrNull()
+                        val oid = runCatching { drive.uploadAsOriginal(id, orig, duplicate.driveId) }.getOrNull()
                         orig.copyTo(File(drive.cacheDir, "${duplicate.driveId}_original.jpg"), overwrite = true)
                         oid
                     } ?: originalDriveId ?: duplicate.originalDriveId
@@ -340,11 +340,11 @@ internal suspend fun WardrobeViewModel.runImportEntries(
                     )
                     bumpImageVersion(duplicate.driveId)
                 } else {
-                    val cutoutUploaded = uploadAsCutout(id, imageToUpload)
+                    val cutoutUploaded = drive.uploadAsCutout(id, imageToUpload)
                     val displayCache = File(drive.cacheDir, "${cutoutUploaded.id}.png")
                     imageToUpload.copyTo(displayCache, overwrite = true)
                     val finalOriginalId = rawOriginalFile?.let { orig ->
-                        val oid = runCatching { uploadAsOriginal(id, orig, cutoutUploaded.id) }.getOrNull()
+                        val oid = runCatching { drive.uploadAsOriginal(id, orig, cutoutUploaded.id) }.getOrNull()
                         orig.copyTo(File(drive.cacheDir, "${cutoutUploaded.id}_original.jpg"), overwrite = true)
                         oid
                     } ?: originalDriveId
