@@ -12,7 +12,7 @@ deferred and inter-blocking:
 | 2 | Room as source of truth + SyncEngine | **Operationally complete** (June 2026) — all five JSON-cache slices landed (phase 2) as opaque-JSON cache rows; the `PendingMutation` queue + `SyncEngine` drain **every converted metadata write**: wardrobe (sidecar/delete/move), shopping, outfits (`outfit.syncFolder`), calendar wears (`outfitEvent.syncFolder`), trips (`trip.save`/`trip.delete`), plus the WorkManager process-death backstop (see phase 2 status). The real-entity / Flow-read conversion is deliberately carried into § 5 |
 | 3 | DI + interfaces at the seams | **Partial** — Hilt landed (phase 1); the gemini↔drive↔billing package cycles are broken (June 2026, see phase 1 status), making the layering acyclic; interface extraction at the I/O seams pending; static globals (`ImageEncoding.tier`, `GeminiProgress` slot, `AiRetry.action`) still alive |
 | 4 | Navigation Compose | **Done** (phase 3 complete; per-destination VM scoping deferred to § 5) |
-| 5 | Thin VMs over use-cases | **Not started** — the keystone blocker: gates `feature/*` modules, destination-scoped VMs, and removal of the cross-VM `LaunchedEffect` bridges |
+| 5 | Thin VMs over use-cases | **Planned** (June 2026) — the keystone blocker: gates `feature/*` modules, destination-scoped VMs, and removal of the cross-VM `LaunchedEffect` bridges. Execution plan below (phase 5) |
 | 6 | Typed `AiResult` | **Started** — the notice path carries a semantic `AiErrorReason` enum instead of `R.string` ids (June 2026, the `:core:ai` enabler); the sealed `AiResult<T>` return type is not started — Gemini still returns `null` on failure |
 | 7 | DataStore + Keystore settings | **Started** — the BYOK Gemini key is AES-GCM-encrypted at rest via Android Keystore (June 2026; `ApiKeyStore` API unchanged, plaintext pref migrates on first read, graceful plaintext fallback if Keystore is unavailable); DataStore for `UserPreferences`/`OnboardingState`/pricing cache and the flag interface are not started |
 | 8 | Testing strategy | **Partial** — store invariant tests landed; fake-based repository/VM tests blocked on § 3 interfaces |
@@ -504,7 +504,8 @@ are easy to violate and have caused real bugs.
    activity as ViewModelStoreOwner, explicitly and uniformly.
    **Phase 3 COMPLETE.**
 4. **Modularize last** — once dependencies are sane, moving packages into Gradle modules is
-   mechanical (`scripts/kt_split.py`-style, compiler-driven).
+   mechanical (`scripts/kt_split.py`-style, compiler-driven). *(A fifth phase — § 5's thin-VM
+   conversion — was added in June 2026; its execution plan is the dedicated section below.)*
    **Status: core extraction LANDED (June 2026).** First four library modules: `:core:model`,
    `:core:common`, `:core:database`, `:core:ml` (namespaces `com.librelookai.core.*`). The key
    mechanic that made this churn-free: **moved code keeps its original Kotlin package** — only
@@ -581,6 +582,189 @@ are easy to violate and have caused real bugs.
      ~25 cross-VM bridges in `AppContent`), so feature boundaries would be cyclic today.
    Verification: `./gradlew assembleDebug testDebugUnitTest` green — 99 tests
    (52 app / 8 ai / 25 database / 7 common / 7 ml), 0 failures.
+
+## Phase 5 execution plan: thin ViewModels over use-cases (§ 5)
+
+### Ground truth (June 2026 — what this phase is actually up against)
+
+15 ViewModels, all activity-scoped, ~7.3k lines total. `WardrobeViewModel` is 1326 lines plus
+five same-package `internal fun ViewModel.x()` extension files (Audit 460 / Import 388 /
+Upload 338 / BgFix 255 / Search 221 / Convert 187) ≈ 3.2k lines orbiting one `_state`
+`MutableStateFlow` and ~15 `internal var`s (`folderId`, `geminiLanguage`, `dedupeOnImport`,
+`pendingAudit`, the `workQueue` Channel, a wake-lock, …). `WardrobeUiState` carries ~9
+independent pipeline-progress clusters (`isRetagging`/`retagDone`/`retagTotal`,
+`isImporting`/…, `isRemovingAllBg`/…, `isConverting`/…, sync phase, audit, cutout-fix, batch,
+pendingJobs) beside the actual grid state.
+
+The wiring lives in `AppContent` as ~25 `LaunchedEffect` bridges, falling into families:
+
+- **Closet-topology fan-out** (the big one): one effect keyed on
+  `activeLocationId/locationList/defaultClosetFolderId/shoppingFolderId` pushing 7 setter calls
+  into 3 VMs (`setAllConfiguredLocations`, `setAllLocations`, `setLocation`,
+  `updateSaveFolder`, `setDefaultImportFolderId`).
+- **Preference mirrors** (6): language → wardrobe + shopping; dedupe pair, `preferLocalBg`,
+  `debugSimilarityPreview` → wardrobe; `bgRemovalThreshold` → the
+  `EmbeddingService.segmenter` static; `imageQuality` → the `ImageEncoding.tier` static.
+- **Data mirrors**: `outfitEventsState.events` → `stylesViewModel.setWearHistory` (the
+  taste-signal copy).
+- **Pre-warm loads**: `loadItems()` / `loadHistory()` / `loadTrips()` at start.
+- **Connectivity**: `retryPrefetchIfNeeded` + the sync-engine catch-up drain.
+- **Composer open-flag ↔ navigation mirrors** (by design from phase 3; they die last).
+- **Restore-overlay aggregation** polling four VMs' `isLoading`.
+
+On top of the bridges, screens and call sites read *other* VMs' state imperatively:
+`openComposer(images = wardrobeVM.state.value.images + shoppingState.items, prefs =
+profileVM.state.value.preferences)`, `travelTryOnAvailable` derived from trips + outfits +
+wardrobe images, `TripViewerScreen` / `TravelPlannerScreen` / `TryOnComposerScreen` each taking
+5–7 VM parameters.
+
+The root cause is single: **wardrobe items, outfits, events and trips live in VM memory; the
+Room stores are poll-read (suspend), never observed.** That is exactly the § 2 carry-over
+("real-entity / Flow-read conversion"), which is why it executes here.
+
+### Design decisions (recorded up front)
+
+1. **Flow reads do NOT require the real-entity conversion.** Room invalidation is per-table; a
+   DAO can return `Flow<List<row>>` over the existing opaque-JSON rows, with the Gson mapping
+   staying in the store impl. Queryable columns get added later, per column, only when an
+   actual query needs them — not as a precondition. This unblocks all of § 5 without an entity
+   migration or DB version bump.
+2. **Use-cases are plain `@Singleton` classes** with suspend entry points and a `StateFlow`
+   progress/state property, injected into VMs. No `UseCase<P, R>` base class, no framework.
+   They write to the stores (+ enqueue sync mutations), never back into a VM's state — the UI
+   updates via Room invalidation.
+3. **App-scope session state gets one home**: a new `data/session` package in `:app`
+   (`ClosetSession`, `UserPreferencesRepository`). Module placement is decided at
+   feature-extraction time, not now (the phase-4 "modularize last" rule).
+4. **Pipelines move first, persist second** — the § 2 slice pattern. Each pipeline is first
+   extracted *as-is* into a singleton (keeping `JobForegroundService` + wake-lock semantics,
+   zero behavior change), and only then optionally gets WorkManager process-death persistence.
+5. **Each bridge dies when its consumer stops needing it**, inside the slice that converts the
+   consumer — never as a separate "cleanup" pass that could drift from the conversions.
+6. **Small cohesive VMs are out of scope**: `AuthViewModel`, `WeatherViewModel`,
+   `CreditsViewModel`, `ShoppingHelperViewModel`, `WardrobeGapViewModel`,
+   `DriveMigrationViewModel` stay as they are (converted only opportunistically if a slice
+   touches them anyway).
+7. **Don't break tested signatures**: the Robolectric `*Content` composable contracts and the
+   store invariant suites are the regression net; splits stay same-package (the CLAUDE.md
+   file-splitting rules).
+
+### Slices (each independently shippable, in order)
+
+**Slice 0 — observable stores (dark).** Add `observe*` Flow APIs to the five stores
+(`WardrobeItemStore.observeItems(folderIds)`, `OutfitStore.observeFolders(folderIds)`,
+`OutfitEventStore`, `TripStore`, `TryOnStore`): DAO returns `Flow` over the existing rows, the
+store maps rows → models exactly like the suspend reads. Nothing collects yet — zero behavior
+change. Tests: extend each store suite with first-emission + write-invalidation assertions
+(Robolectric/Room, like the existing tests).
+
+**Slice 1 — `ClosetSession`.** A `@Singleton` exposing `StateFlow<ClosetSession>` (locations,
+`activeLocationId`, `activeFolderId`, all closet folder ids, `defaultImportFolderId`,
+shopping folder id, the derived similarity-snapshot id set). `LocationViewModel` and
+`ShoppingClosetViewModel` *publish* into it (they stay the owners of how the values are
+computed); `WardrobeViewModel` / `OutfitsViewModel` / `OutfitEventsViewModel` collect it in
+`init` instead of being pushed. Deletes the closet-topology fan-out bridge and all 7 setter
+methods. Risk: VMs are created lazily per tab, so collectors must tolerate a not-yet-populated
+session (emit-on-subscribe with the empty default, exactly like today's pre-fan-out window).
+Acceptance: closet switch, All-locations mode, default-closet import targeting, and the
+shopping folder's inclusion in the similarity snapshot behave identically.
+
+**Slice 2 — `UserPreferencesRepository` (read path).** A `@Singleton`
+`StateFlow<UserPreferences>`; `ProfileViewModel` writes through it (it remains the only
+writer — full DataStore conversion stays § 7). Consumers collect instead of being mirrored:
+wardrobe (language, dedupe pair, `preferLocalBg`, `debugSimilarityPreview`), shopping
+(language). The two static mirrors (`ImageEncoding.tier`,
+`EmbeddingService.segmenter.foregroundThreshold`) move out of composition into one collector
+started at app startup — the statics themselves survive until § 3, but the *bridges* die.
+Kills the six preference-mirror effects; `openComposer`'s `prefs` parameter goes once its VM
+injects the repository.
+
+**Slice 3 — prompt inputs become DB reads.** `OutfitsViewModel` derives `wearHistory` by
+collecting `OutfitEventStore.observe*` (scoped via `ClosetSession`) instead of
+`setWearHistory`; `TravelViewModel` reads outfits/events through the stores instead of having
+`OutfitsUiState` threaded into the planner. Correctness note: the events VM persists
+locally-first (§ 2 slice 6), so Room is already current at prompt-build time — the mirror was
+pure plumbing. Kills the events→styles data mirror and the travel↔outfits VM coupling.
+
+**Slice 4 — wardrobe read path on Room Flows (the § 2 carry-over, biggest slice).**
+`WardrobeUiState.images` becomes *derived*: the store Flow for the active scope (from
+`ClosetSession`) combined with filters/sort; `allLocationImages` likewise derives from the
+snapshot-id-set Flow. The two-phase load becomes "paint from the Room Flow; the Drive
+reconcile mutates Room; UI follows via invalidation" — the manual `persistItemToCache` +
+state-splice pairs collapse into plain store writes (most of the optimistic-splice code
+*deletes*, since Room is already written first everywhere after § 2). Sub-slices, each
+shippable: **4a** wardrobe items, **4b** outfits, **4c** shopping, **4d** events/trips/try-ons.
+Consequences: the pre-warm bridge dies (first composition collects from Room instantly; the
+Drive reconcile triggers on first subscription); the connectivity bridges
+(`retryPrefetchIfNeeded`, catch-up drain) move into the engine/prefetch logic itself via an
+injected `NetworkMonitor`; cross-VM image reads (`openComposer` images, `travelTryOnAvailable`,
+gap-analysis input, the trip viewer's item resolution) become store reads; the CLAUDE.md
+"cache-folder rule" prose reduces to "write the store; UI follows". Risk: the recently-moved
+markers and rollback collectors must reconcile with Flow emissions — verify against
+`WardrobeItemStoreTest` invariants plus the manual move/offline checklist.
+
+**Slice 5 — ingestion pipeline use-case.** The `PendingJob` Channel, `drainWorkQueue`,
+dedupe gate, local-bg review queue, wake-lock and `JobForegroundService` acquire/release move
+from `WardrobeViewModel`(+`…Upload.kt`) into a `@Singleton` `wardrobe/ItemIngestionPipeline`
+exposing `StateFlow<IngestionProgress>` (`pendingJobs`, `batchDone/Total`,
+`processingImageId`, duplicate-check / bg-review pauses). The VM delegates enqueues and
+re-exposes the progress Flow; completed items land in the store (slice 4), so the grid updates
+without VM involvement. Zero behavior change (decision 4). **5b (optional, separate release):**
+persist job specs in a Room table (the captured file is already on disk) and drain via
+WorkManager expedited work — retiring the wake-lock + foreground service for ingestion, the
+same pattern as § 2's `SyncDrainWorker` backstop.
+
+**Slice 6 — bulk maintenance use-cases.** One per extension file, same recipe as slice 5:
+`RetagAllUseCase`, `RemoveAllBackgroundsUseCase`, `CutoutBgFixUseCase` (the
+scan → review → apply state machine behind `FixCutoutBgDialog`), `WebpConvertUseCase`,
+`RepairAuditUseCase` (owns `pendingAudit`), `FolderImportUseCase`. Each owns its progress/
+confirmation `StateFlow`; the globally-hosted dialogs/overlays read it through a thin VM
+passthrough (or directly via `hiltViewModel` once slice 9 lands). Similarity *search* stays
+interactive VM logic (`…Search.kt` shrinks but isn't a pipeline). This deletes the
+`internal var` soup and most of the extension-file pattern; `WardrobeViewModel` lands at grid
+state + selection + thin delegations.
+
+**Slice 7 — UiState slimming + sealed events.** Prune the migrated pipeline-progress clusters
+out of `WardrobeUiState`; introduce per-screen `sealed interface XEvent` one-shots for the
+imperative request fields (`pendingScrollDriveId`, `requestScrollToOutfit`,
+`pendingCalendarWearId` stays — it's navigation state by design). The restore overlay
+aggregates engine/use-case sync state instead of polling four VMs' `isLoading` — delivering
+§ 2's "restore = initial sync pass with progress from the engine" and deleting the
+latch/debounce effect.
+
+**Slice 8 — VM splits per screen.** Now mechanical: `OutfitsViewModel` →
+`OutfitsListViewModel` + `OutfitComposerViewModel` + `PredictionViewModel`
+(`OutfitsUiState` is already partitioned along these lines); `TryOnViewModel` → composer vs
+history. Same-package splits; the shared pieces (save funnel `persistOutfitFolders`, prompt
+builders) are already standalone. Each split verified by the existing Robolectric flow tests.
+
+**Slice 9 — destination-scoped VMs + real composer navigation** (closes the phase-3/4
+deferral). With cross-VM dependencies gone: the viewer destinations
+(`ItemViewerRoute`/`OutfitViewerRoute`/`TripViewerRoute`) get destination-scoped
+`hiltViewModel()` instances resolving content from the stores by route ids; the state-mirrored
+composer routes become plain navigation — openers `navigate(OutfitComposerRoute(seedItemIds))`
+instead of flipping VM open-flags (images resolve from the store, prefs from the repository),
+deleting the open-flag mirror effects and the "any path that pops must also close the VM"
+rule. The `LocalViewModelStoreOwner provides activity` pins drop per converted destination.
+
+### Exit criteria (what done looks like)
+
+- `AppContent` hosts navigation, global dialog observers and theme — no data bridges; the
+  surviving `LaunchedEffect`s are navigation-semantic only.
+- No screen receives another feature's ViewModel as a parameter; shared data flows through
+  `core/database` Flows + the two session objects.
+- `WardrobeViewModel` ≤ ~400 lines, no extension files, no `internal var` shared state.
+- Unblocked and ready to start: `feature/*` module extraction (§ 1, mechanical phase-4-style
+  moves), § 3 interface extraction at the now-injectable seams, § 8 fake-based VM/use-case
+  tests.
+
+### Verification (per slice)
+
+`./gradlew :app:assembleDebug testDebugUnitTest` green; new tests ride each slice
+(store-Flow invalidation, `ClosetSession` fan-in, each use-case's progress contract); manual
+regression list per slice from the phase checklist — closet switch, offline mode, capture +
+import batch, move/rollback, reinstall-restore, calendar pick mode. Update CLAUDE.md (bridges,
+cache-folder rule, VM split sections) as each slice lands, per the working agreement.
 
 ## Verification (per phase)
 
