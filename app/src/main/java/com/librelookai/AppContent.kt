@@ -322,12 +322,10 @@ internal fun AppContent(
                     val weatherState by weatherViewModel.state.collectAsState()
                     val canTryOn = profileState.tryOnLocalPaths.isNotEmpty()
 
-                    // Feed the calendar wear history into the outfit-suggestion prompt as a taste
-                    // signal (the two VMs are independent; this keeps the prompt-side copy in sync).
-                    val outfitEventsState by outfitEventsViewModel.state.collectAsState()
-                    LaunchedEffect(outfitEventsState.events) {
-                        stylesViewModel.setWearHistory(outfitEventsState.events)
-                    }
+                    // The calendar wear history reaches the outfit/travel prompts as a DB read:
+                    // OutfitsViewModel and TravelViewModel collect wearHistoryFlow (the event
+                    // store scoped by the closet session) in init — refactor § 5 slice 3; the
+                    // old events→styles state mirror here is gone.
 
                     // Closet topology (locations, active filter, default closet, shopping folder)
                     // flows through the ClosetSessionHolder singleton: LocationViewModel and

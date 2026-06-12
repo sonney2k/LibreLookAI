@@ -8,18 +8,23 @@ import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import com.librelookai.data.local.OutfitEventStore
 import com.librelookai.data.model.DayForecast
 import com.librelookai.data.model.Outfit
 import com.librelookai.data.model.PackingList
 import com.librelookai.data.model.OutfitEvent
+import com.librelookai.data.session.ClosetSessionHolder
 import com.librelookai.outfit.buildLovedOutfitsSummary
 import com.librelookai.outfit.buildWearHistorySummary
+import com.librelookai.outfit.wearHistoryFlow
 import com.librelookai.gemini.GeminiRepository
 import com.librelookai.gemini.PromptKey
 import com.librelookai.gemini.PromptStore
@@ -85,6 +90,8 @@ data class TravelUiState(
 class TravelViewModel @Inject constructor(
     app: Application,
     private val gemini: GeminiRepository,
+    session: ClosetSessionHolder,
+    eventStore: OutfitEventStore,
 ) : AndroidViewModel(app) {
 
     private val weather = WeatherRepository(app)
@@ -92,6 +99,16 @@ class TravelViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(TravelUiState())
     val state: StateFlow<TravelUiState> = _state.asStateFlow()
+
+    /**
+     * Calendar wear history in the current closet scope, observed straight from the store
+     * (refactor § 5 slice 3) — the packing prompt's taste signal no longer rides in from
+     * OutfitsViewModel state through the planner UI. Exposed so the planner's cost estimate
+     * can recompute when it changes.
+     */
+    val wearHistory: StateFlow<List<OutfitEvent>> =
+        wearHistoryFlow(session, eventStore)
+            .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     private var suggestionJob: Job? = null
 
@@ -189,9 +206,8 @@ class TravelViewModel @Inject constructor(
         prefs: UserPreferences?,
         images: List<DriveImage>,
         styles: List<Outfit>,
-        wearHistory: List<OutfitEvent> = emptyList(),
     ) {
-        doGenerate(prefs, images, styles, wearHistory)
+        doGenerate(prefs, images, styles)
     }
 
     /**
@@ -203,7 +219,6 @@ class TravelViewModel @Inject constructor(
         prefs: UserPreferences?,
         images: List<DriveImage>,
         styles: List<Outfit>,
-        wearHistory: List<OutfitEvent> = emptyList(),
     ): com.librelookai.gemini.CostTokens {
         val s = _state.value
         val effectiveOutfitCount = (s.outfitCount ?: s.days).coerceIn(1, 21)
@@ -222,7 +237,7 @@ class TravelViewModel @Inject constructor(
             referenceYear   = null,
             images          = images,
             styles          = styles,
-            wearHistory     = wearHistory,
+            wearHistory     = wearHistory.value,
         )
         return com.librelookai.gemini.CostTokens(
             inputTokens = com.librelookai.gemini.TokenEstimator.textTokens(prompt),
@@ -236,7 +251,6 @@ class TravelViewModel @Inject constructor(
         prefs: UserPreferences?,
         images: List<DriveImage>,
         styles: List<Outfit>,
-        wearHistory: List<OutfitEvent>,
     ) {
         val dest      = _state.value.destination.trim()
         val startDate = _state.value.startDate
@@ -252,7 +266,7 @@ class TravelViewModel @Inject constructor(
             "outfit_count" to (_state.value.outfitCount ?: days).toString(),
             "closets" to _state.value.sourceFolderIds.size.toString(),
         ))
-        com.librelookai.gemini.AiRetry.action = { doGenerate(prefs, images, styles, wearHistory) }
+        com.librelookai.gemini.AiRetry.action = { doGenerate(prefs, images, styles) }
         viewModelScope.launch {
             // Phase 1 — fetch forecast only when input changed
             val currentKey = Triple(dest, startDate, days)
@@ -311,7 +325,7 @@ class TravelViewModel @Inject constructor(
                 referenceYear   = refYear,
                 images          = images,
                 styles          = styles,
-                wearHistory     = wearHistory,
+                wearHistory     = wearHistory.value,
             )
             Log.d("TravelVM", "Packing prompt length: ${prompt.length} chars")
 

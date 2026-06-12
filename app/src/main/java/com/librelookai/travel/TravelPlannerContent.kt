@@ -58,6 +58,9 @@ internal fun TravelPlannerContent(
     val profileState  by profileViewModel.state.collectAsState()
     val outfitsState   by stylesViewModel.state.collectAsState()
     val locationState by locationViewModel.state.collectAsState()
+    // Wear history comes from the travel VM's own store-backed flow (refactor § 5 slice 3);
+    // collected here only so the cost estimate below recomputes when it changes.
+    val wearHistory by travelViewModel.wearHistory.collectAsState()
 
     val isWorking = state.isLoadingForecast || state.isGenerating
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -193,14 +196,13 @@ internal fun TravelPlannerContent(
                 state.goal,
                 state.vibes,
                 state.considerationsOverride,
-                outfitsState.wearHistory,
+                wearHistory,
             ) {
                 value = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Default) {
                     travelViewModel.estimatePackingTokens(
                         prefs = profileState.preferences,
                         images = sourceImages,
                         styles = sourceStyles,
-                        wearHistory = outfitsState.wearHistory,
                     )
                 }
             }
@@ -213,7 +215,6 @@ internal fun TravelPlannerContent(
                         prefs  = profileState.preferences,
                         images = sourceImages,
                         styles = sourceStyles,
-                        wearHistory = outfitsState.wearHistory,
                     )
                 },
                 tokens = packingTokens,

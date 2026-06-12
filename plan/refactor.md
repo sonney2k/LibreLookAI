@@ -719,6 +719,22 @@ collecting `OutfitEventStore.observe*` (scoped via `ClosetSession`) instead of
 `OutfitsUiState` threaded into the planner. Correctness note: the events VM persists
 locally-first (§ 2 slice 6), so Room is already current at prompt-build time — the mirror was
 pure plumbing. Kills the events→styles data mirror and the travel↔outfits VM coupling.
+**Status: LANDED (June 2026)** for the events half. One shared `wearHistoryFlow(session,
+eventStore)` in `outfit/WearHistory.kt` (the file that owns wear-history logic) maps the
+closet session to the events scope with the same arms `OutfitEventsViewModel` uses — incl.
+the silent unknown-active arm, encoded in `WearHistoryFlowTest` (3, over a fake store) —
+and `flatMapLatest`s into the store. `OutfitsViewModel` collects it into
+`OutfitsUiState.wearHistory` (`setWearHistory` deleted, AppContent mirror gone);
+`TravelViewModel` exposes its own `wearHistory: StateFlow` (stateIn Eagerly) and the
+`wearHistory` parameters dropped out of `generate`/`estimatePackingTokens`/`doGenerate` —
+the planner UI now collects the travel VM's flow only as a recompute key for the cost
+estimate. Two accepted improvements: wear history now paints from the store without waiting
+for the events VM's Drive phase, and an event duplicated across folder caches by the legacy
+single-target persist rule counts once (single home, the outfit-store precedent). **The
+outfits half of the travel decoupling (`sourceStyles` from `OutfitsUiState.outfits`) is
+deliberately deferred to slice 4b**: store-read outfits lack the load-time
+`itemNames`→`itemIds` resolution against the live wardrobe, which is exactly the read-path
+conversion slice 4 owns.
 
 **Slice 4 — wardrobe read path on Room Flows (the § 2 carry-over, biggest slice).**
 `WardrobeUiState.images` becomes *derived*: the store Flow for the active scope (from

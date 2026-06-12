@@ -1,13 +1,21 @@
 package com.librelookai.outfit
 
+import com.librelookai.data.local.OutfitEventStore
 import com.librelookai.data.model.Outfit
 import com.librelookai.data.model.OutfitEvent
 import com.librelookai.data.model.WearSource
+import com.librelookai.data.session.ClosetSession
+import com.librelookai.data.session.ClosetSessionHolder
 import com.librelookai.gemini.ClothingTags
 import com.librelookai.wardrobe.DriveImage
 import com.librelookai.weather.WeatherData
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.mapNotNull
 
 // ============================================================================
 //  Calendar wear history → taste signal.
@@ -19,6 +27,31 @@ import java.time.temporal.ChronoUnit
 //  these helpers build that snapshot and condense the history into a compact prompt
 //  block. See CLAUDE.md § "Calendar wear history".
 // ============================================================================
+
+/**
+ * Live wear-history feed for the prompt builders (refactor § 5 slice 3): the calendar events
+ * in the current closet scope, observed straight from the Room store. The scope follows the
+ * closet session with the same arms [OutfitEventsViewModel] uses — All locations → every
+ * closet, an active closet → that folder only, an unknown active id → keep observing the
+ * previous scope. The events VM persists locally-first (§ 2), so the store is current at
+ * prompt-build time; collecting this replaced the old events→styles state mirror in
+ * AppContent and the planner UI's `OutfitsUiState.wearHistory` threading.
+ */
+@OptIn(ExperimentalCoroutinesApi::class)
+internal fun wearHistoryFlow(
+    session: ClosetSessionHolder,
+    store: OutfitEventStore,
+): Flow<List<OutfitEvent>> = session.session
+    .mapNotNull { s ->
+        val active = s.activeFolderId
+        when {
+            s.activeLocationId == ClosetSession.ALL_LOCATIONS_ID -> s.closetFolderIds
+            active != null -> listOf(active)
+            else -> null
+        }
+    }
+    .distinctUntilChanged()
+    .flatMapLatest(store::observeFolders)
 
 /**
  * Builds an [OutfitEvent] with a tag/color/weather snapshot taken at wear time.

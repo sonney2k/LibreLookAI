@@ -60,8 +60,8 @@ data class OutfitsUiState(
     // Refinement feedback (prediction loop)
     val feedbackHistory: List<String> = emptyList(),
     /**
-     * Calendar wear history (kept in sync from [OutfitEventsViewModel]), fed into the
-     * prediction/composer prompts as a taste signal. See [buildWearHistorySummary].
+     * Calendar wear history (collected from the event store via [wearHistoryFlow]), fed into
+     * the prediction/composer prompts as a taste signal. See [buildWearHistorySummary].
      */
     val wearHistory: List<OutfitEvent> = emptyList(),
     // After saving a style, offer to wear it immediately

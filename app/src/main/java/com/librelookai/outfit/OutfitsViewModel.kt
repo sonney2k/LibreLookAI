@@ -51,6 +51,7 @@ class OutfitsViewModel @Inject constructor(
     private val mutationStore: PendingMutationStore,
     private val syncEngine: SyncEngine,
     session: ClosetSessionHolder,
+    eventStore: com.librelookai.data.local.OutfitEventStore,
 ) : AndroidViewModel(app) {
     /** Weekly, location-specific cache around the expensive Gemini trend lookup. */
     internal val trendsCache = com.librelookai.gemini.FashionTrendsCache(app, drive, gemini)
@@ -73,12 +74,14 @@ class OutfitsViewModel @Inject constructor(
                 s.saveFolderId?.let { saveFolderId = it }
             }
         }
-    }
-
-    /** Keep the prompt-side copy of the calendar wear history in sync (owned by [OutfitEventsViewModel]). */
-    fun setWearHistory(events: List<com.librelookai.data.model.OutfitEvent>) {
-        if (_state.value.wearHistory == events) return
-        _state.update { it.copy(wearHistory = events) }
+        // Wear history is a DB read (refactor § 5 slice 3): collect the calendar events in
+        // the current closet scope straight from the store — replaces the events→styles
+        // mirror AppContent used to run.
+        viewModelScope.launch {
+            wearHistoryFlow(session, eventStore).collect { events ->
+                _state.update { it.copy(wearHistory = events) }
+            }
+        }
     }
 
     private fun setAllLocations(folderIds: List<String>) {
