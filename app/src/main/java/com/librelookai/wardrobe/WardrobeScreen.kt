@@ -202,7 +202,7 @@ fun WardrobeScreen(
             onSearchByText = viewModel::searchByText,
             onTextFilter = viewModel::fuzzyFilterByText,
             onDismissFindByPhoto = viewModel::dismissFindByPhoto,
-            onConsumePendingScroll = viewModel::consumePendingScroll,
+            scrollEvents = viewModel.events,
             onAddMatchToShoppingList = shoppingClosetViewModel::importQuery,
             debugSimilarityPreview = profileState.preferences.debugSimilarityPreview,
             modifier = modifier,

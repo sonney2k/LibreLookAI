@@ -49,6 +49,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -57,6 +58,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -306,7 +308,7 @@ class WardrobeViewModel @Inject constructor(
         allFolderIds = null
         // Preserve [allLocationImages] across the location switch so similarity search keeps
         // working immediately — it is independent of the active filter.
-        _state.update { WardrobeUiState(isLoading = true, allLocationImages = it.allLocationImages, pendingScrollDriveId = it.pendingScrollDriveId) }
+        _state.update { WardrobeUiState(isLoading = true, allLocationImages = it.allLocationImages) }
         viewScope.value = listOf(newFolderId)
         loadImages()
     }
@@ -315,7 +317,7 @@ class WardrobeViewModel @Inject constructor(
         if (folderId == null && allFolderIds?.toSet() == folderIds.toSet()) return
         folderId = null
         allFolderIds = folderIds.toList()
-        _state.update { WardrobeUiState(isLoading = true, allLocationImages = it.allLocationImages, pendingScrollDriveId = it.pendingScrollDriveId) }
+        _state.update { WardrobeUiState(isLoading = true, allLocationImages = it.allLocationImages) }
         viewScope.value = folderIds.toList()
         loadImages()
     }
@@ -822,11 +824,14 @@ class WardrobeViewModel @Inject constructor(
 
     // ---------- Navigation ----------
 
-    fun requestScrollToImage(driveId: String) =
-        _state.update { it.copy(pendingScrollDriveId = driveId) }
+    /** One-shot events the grid consumes (scroll-to-item); buffered so a cross-tab request fired
+     *  before the grid mounts (Similarity Finder / shopping "Show in wardrobe") still lands. */
+    private val _events = Channel<WardrobeEvent>(Channel.BUFFERED)
+    val events = _events.receiveAsFlow()
 
-    /** Consumed by the wardrobe screen after it has scrolled to the pending target. */
-    fun consumePendingScroll() = _state.update { it.copy(pendingScrollDriveId = null) }
+    fun requestScrollToImage(driveId: String) {
+        _events.trySend(WardrobeEvent.ScrollToItem(driveId))
+    }
 
     // ---------- Upload from camera ----------
 

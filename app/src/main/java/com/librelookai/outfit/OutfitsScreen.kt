@@ -255,8 +255,7 @@ fun OutfitsScreen(
                         )
                     },
                     onClearPredictionError = outfitsViewModel::clearPrediction,
-                    pendingScrollOutfitId = outfitsState.pendingScrollOutfitId,
-                    onConsumePendingScrollOutfit = outfitsViewModel::consumePendingScrollOutfit,
+                    scrollEvents = outfitsViewModel.events,
                     onTryOnStyle = onTryOnStyle,
                     canTryOn = canTryOn,
                     brokenOutfits = brokenOutfits,

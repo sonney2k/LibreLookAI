@@ -32,6 +32,7 @@ import com.librelookai.weather.WeatherData
 import java.util.Locale
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -42,6 +43,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -260,15 +262,18 @@ class OutfitsViewModel @Inject constructor(
 
     fun consumeCalendarWear() = _state.update { it.copy(pendingCalendarWearId = null) }
 
-    /** Called by [OutfitListScreen] after it has scrolled to the requested outfit. */
-    fun consumePendingScrollOutfit() = _state.update { it.copy(pendingScrollOutfitId = null) }
+    /** One-shot events the list consumes (scroll-to-outfit); buffered so a cross-tab request
+     *  fired before the list mounts (Try-On "View outfit") still lands. */
+    private val _events = Channel<OutfitsEvent>(Channel.BUFFERED)
+    val events = _events.receiveAsFlow()
 
     /**
-     * Ask the Outfits list to scroll the given outfit into view next time it composes.
-     * Used by the Try-On detail view's "View outfit" jump-back action.
+     * Ask the Outfits list to scroll the given outfit into view. Used by the Try-On detail view's
+     * "View outfit" jump-back action and after saving a freshly-composed outfit.
      */
-    fun requestScrollToOutfit(outfitId: String) =
-        _state.update { it.copy(pendingScrollOutfitId = outfitId) }
+    fun requestScrollToOutfit(outfitId: String) {
+        _events.trySend(OutfitsEvent.ScrollToOutfit(outfitId))
+    }
 
     /**
      * Saves a style directly without going through the draft editing flow.
@@ -312,7 +317,7 @@ class OutfitsViewModel @Inject constructor(
                 folderId = id,
             )
             val updated = _state.value.outfits + newOutfit
-            _state.update { it.copy(pendingScrollOutfitId = newOutfit.id) }
+            requestScrollToOutfit(newOutfit.id)
             persistOutfitFolders(updated, listOf(id))
             onDone(true)
         }

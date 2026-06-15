@@ -110,8 +110,7 @@ internal fun OutfitListScreen(
     onDeleteSelectedStyles: () -> Unit = {},
     onCombineSelectedStyles: () -> Unit = {},
     onClearPredictionError: () -> Unit,
-    pendingScrollOutfitId: String? = null,
-    onConsumePendingScrollOutfit: () -> Unit = {},
+    scrollEvents: kotlinx.coroutines.flow.Flow<OutfitsEvent> = kotlinx.coroutines.flow.emptyFlow(),
     onTryOnStyle: (Outfit) -> Unit = {},
     canTryOn: Boolean = false,
     brokenOutfits: List<Outfit> = emptyList(),
@@ -200,6 +199,16 @@ internal fun OutfitListScreen(
 
     // Hoisted so the shared create FAB can collapse on scroll (also used by the LazyColumn below).
     val outfitsListState = rememberLazyListState()
+
+    // Scroll-to-outfit requests arrive as one-shot events (§ 5 slice 7) — buffered so a cross-tab
+    // request (Try-On "View outfit") fired before this list mounts still lands. The in-branch
+    // effect below retries on `displayedStyles` until the target is in view, then clears it.
+    var pendingScrollOutfitId by remember { mutableStateOf<String?>(null) }
+    LaunchedEffect(Unit) {
+        scrollEvents.collect { event ->
+            if (event is OutfitsEvent.ScrollToOutfit) pendingScrollOutfitId = event.outfitId
+        }
+    }
 
     var showDeleteDialog by remember { mutableStateOf(false) }
     // Dismissible "broken outfits" banner state + its confirm dialog.
@@ -477,7 +486,7 @@ internal fun OutfitListScreen(
                         val idx = displayedStyles.indexOfFirst { it.id == target }
                         if (idx >= 0) {
                             runCatching { outfitsListState.animateScrollToItem(idx) }
-                            onConsumePendingScrollOutfit()
+                            pendingScrollOutfitId = null
                         }
                     }
                     LazyColumn(

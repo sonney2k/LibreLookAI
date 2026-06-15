@@ -117,7 +117,7 @@ internal fun GridContent(
     onSearchByText: (String) -> Unit = {},
     onTextFilter: (String, List<DriveImage>) -> List<DriveImage> = { _, items -> items },
     onDismissFindByPhoto: () -> Unit = {},
-    onConsumePendingScroll: () -> Unit = {},
+    scrollEvents: kotlinx.coroutines.flow.Flow<WardrobeEvent> = kotlinx.coroutines.flow.emptyFlow(),
     onAddMatchToShoppingList: (String) -> Unit = {},
     debugSimilarityPreview: Boolean = false,
     modifier: Modifier = Modifier,
@@ -165,10 +165,10 @@ internal fun GridContent(
     val gridState = androidx.compose.foundation.lazy.grid.rememberLazyGridState()
     var pendingScrollDriveId by remember { mutableStateOf<String?>(null) }
     var highlightedDriveId by remember { mutableStateOf<String?>(null) }
-    LaunchedEffect(state.pendingScrollDriveId) {
-        val external = state.pendingScrollDriveId ?: return@LaunchedEffect
-        pendingScrollDriveId = external
-        onConsumePendingScroll()
+    LaunchedEffect(Unit) {
+        scrollEvents.collect { event ->
+            if (event is WardrobeEvent.ScrollToItem) pendingScrollDriveId = event.driveId
+        }
     }
     LaunchedEffect(pendingScrollDriveId, displayedImages) {
         val target = pendingScrollDriveId ?: return@LaunchedEffect

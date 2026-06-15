@@ -66,8 +66,6 @@ data class OutfitsUiState(
     val wearHistory: List<OutfitEvent> = emptyList(),
     // After saving a style, offer to wear it immediately
     val pendingWearOutfitId: String? = null,
-    /** Outfit id the list screen should scroll into view (and briefly highlight) when set. */
-    val pendingScrollOutfitId: String? = null,
     /**
      * Outfit the calendar should enter "tap a day to wear" mode for — set by a Wear action on the
      * outfit list / detail viewer, which switches to the Calendar sub-tab so the user picks the day
@@ -148,6 +146,17 @@ data class OutfitsUiState(
      */
     val composerTripContext: TripContext? = null,
 )
+
+/**
+ * One-shot events the outfits VM fires at the list (refactor § 5 slice 7). Delivered over a
+ * buffered `Channel` (consumed exactly once, survives a cross-tab `goToTab` because the buffer
+ * holds the event until the list's collector subscribes) — replaces the old `pendingScrollOutfitId`
+ * state field + explicit `consumePendingScrollOutfit`.
+ */
+sealed interface OutfitsEvent {
+    /** Scroll the list to [outfitId] and pulse a highlight once it is in the displayed list. */
+    data class ScrollToOutfit(val outfitId: String) : OutfitsEvent
+}
 
 /** Transient state for the "Suggest tags" action in the outfit detail viewer. */
 data class TagSuggestionState(

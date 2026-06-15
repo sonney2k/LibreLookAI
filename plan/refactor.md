@@ -891,6 +891,28 @@ imperative request fields (`pendingScrollDriveId`, `requestScrollToOutfit`,
 aggregates engine/use-case sync state instead of polling four VMs' `isLoading` — delivering
 § 2's "restore = initial sync pass with progress from the engine" and deleting the
 latch/debounce effect.
+**Status: sealed-events part LANDED (June 2026); the other two parts deferred.**
+- *Sealed one-shot events (done):* `pendingScrollDriveId` → `WardrobeEvent.ScrollToItem`
+  (wardrobe) and `pendingScrollOutfitId` → `OutfitsEvent.ScrollToOutfit` (outfits) are now
+  buffered `Channel`/`receiveAsFlow()` one-shots the grid/list collect into a local var (which
+  the existing retry-on-`displayedImages`/`displayedStyles` effect drains once the target is in
+  view). The `Channel` buffer is what makes them safe for the **cross-tab** callers
+  (`requestScrollTo…` then `goToTab`, where the target screen's collector subscribes *after* the
+  emit): the event waits in the buffer, is consumed exactly once, and never re-fires on tab
+  revisit — so the old state-field + `consumePendingScroll*` + the `setLocation`/`setAllLocations`
+  preservation hack are all gone. (`pendingCalendarWearId` stays state, per plan.)
+- *UiState progress prune — DEFERRED to slice 9.* On inspection the "migrated pipeline-progress
+  clusters" don't extract cleanly: `processingImageId`/`isUploading`/`isProcessing` are written by
+  **both** the slice-5/6 mirrors **and** the VM's own per-item ops (`tagImage`/`reprocess`/
+  `fixCutoutBgForItem`/`moveItems`), so they straddle the VM↔use-case boundary rather than being
+  pure derivations; and the whole cluster is consumed as one interleaved unit (the grid overlay's
+  single label `when`) read across ~9 files incl. `AppContent`'s restore overlay (`sync*`) and the
+  `FixCutoutBgDialog` host (`cutoutBgFix`). Relocating it now is high-churn on delicate wiring for
+  value that's largely cosmetic until slice 9 gives those surfaces direct `hiltViewModel()` reads —
+  at which point the straddling shared state is the only residue. Folded into slice 9.
+- *Restore-overlay engine aggregation — DEFERRED.* `SyncEngine` exposes only `drain()` (no
+  sync-state flow); the current latch/debounce/`isLoading`-gating restore path is deliberately
+  tuned. Revisit alongside the slice-9 work / a future `SyncEngine` sync-state surface.
 
 **Slice 8 — VM splits per screen.** Now mechanical: `OutfitsViewModel` →
 `OutfitsListViewModel` + `OutfitComposerViewModel` + `PredictionViewModel`
@@ -906,7 +928,12 @@ composer routes become plain navigation — openers `navigate(OutfitComposerRout
 instead of flipping VM open-flags (images resolve from the store, prefs from the repository),
 deleting the open-flag mirror effects and the "any path that pops must also close the VM"
 rule. The `LocalViewModelStoreOwner provides activity` pins drop per converted destination.
-
+**Also folded in from slice 7:** the `WardrobeUiState` progress-cluster prune (deferred here
+because the cluster is consumed across ~9 surfaces — incl. `AppContent`'s restore overlay and the
+`FixCutoutBgDialog` host — that only get direct `hiltViewModel()` reads at this slice; once they
+do, the only residue is the `processingImageId`/`isUploading`/`isProcessing` shared-state straddle,
+which stays VM-managed). Optionally pair with adding a `SyncEngine` sync-state flow so the restore
+overlay aggregates engine progress instead of polling VMs' `isLoading` (slice 7 part 3).
 ### Exit criteria (what done looks like)
 
 - `AppContent` hosts navigation, global dialog observers and theme — no data bridges; the

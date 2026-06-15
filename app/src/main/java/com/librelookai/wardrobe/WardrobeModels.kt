@@ -149,10 +149,6 @@ data class WardrobeUiState(
     val duplicateCheck: DuplicateCheck? = null,
     /** Non-null while the user is reviewing matches from a "find item by photo" capture. */
     val findByPhoto: FindByPhoto? = null,
-    /** Non-null when something outside the wardrobe screen (e.g. Similarity Finder's
-     *  "Show in wardrobe") has asked the grid to scroll to and pulse a specific item. The
-     *  wardrobe screen consumes this in a LaunchedEffect once the item is in the displayed list. */
-    val pendingScrollDriveId: String? = null,
     /** Queue of imports waiting for the on-device background-removal review screen. The head item
      *  is shown; on Apply / Skip / Cancel it is popped and the next (if any) is shown. Camera and
      *  URL imports always enqueue a single item; gallery imports enqueue every selected URI when
@@ -161,6 +157,17 @@ data class WardrobeUiState(
     /** Non-null while the user is choosing an image from a pasted shopping URL. */
     val urlImportPicker: UrlImportPickerState? = null,
 )
+
+/**
+ * One-shot events the wardrobe VM fires at the grid (refactor § 5 slice 7). Delivered over a
+ * buffered `Channel` (consumed exactly once, survives a cross-tab `goToTab` because the buffer
+ * holds the event until the grid's collector subscribes) — replaces the old `pendingScrollDriveId`
+ * state field + explicit `consumePendingScroll`, including its preservation across location loads.
+ */
+sealed interface WardrobeEvent {
+    /** Scroll the grid to [driveId] and pulse a highlight ring once it is in the displayed list. */
+    data class ScrollToItem(val driveId: String) : WardrobeEvent
+}
 
 /** State for the URL-import picker dialog (candidate grid + WebView fallback). */
 data class UrlImportPickerState(
