@@ -937,10 +937,21 @@ keeps all UI state (isLoading/error/composer/prediction/selection) + the mutator
 the funnel to the repo), and exposes `folderId`/`saveFolderId`/`persistOutfitFolders` as thin
 delegators so the VM extensions (composer/prediction/tags) needed **zero changes**. This makes the
 eventual 3-way VM split and slice 9's destination-scoped VMs mechanical (each VM reads the repo's
-flows + calls its funnel). **Still to do (carry into slice 9 or a follow-up):** the actual
-`OutfitsViewModel` → list/composer/prediction split and the `TryOnViewModel` → composer/history
-split (the latter is self-contained — composer `generate`/`saveCurrent` vs history
-`loadHistory`/`deleteTryOn` sharing only `_state.history` + the save→history flow).
+flows + calls its funnel). A pure-logic unit test (`OutfitsRepositoryTest`) covers the
+correctness-critical bits factored out for it — `resolveOutfits` (extension-agnostic
+`itemNames`→`itemIds` resolution that survives the WebP rename + cross-closet moves) and
+`foldersToWrite`/`outfitsHomedIn` (the single-home write selection); the repo itself can't yet be
+constructed in a plain test (concrete `DriveRepository` dep — awaits § 3 interfaces). **Still to do
+— folded into slice 9 (both are entangled with its navigation rework, NOT mechanical):**
+- *`OutfitsViewModel` → list/composer/prediction:* the three concerns still share `_state`; the
+  composer/prediction open-flags are mirrored in `AppContent` (slice 9 deletes that wiring).
+- *`TryOnViewModel` → composer/history:* on closer reading these are **not** separable screens —
+  they're one layered modal sharing a nav-flag state machine (`isComposerOpen`/`isHistoryOpen`/
+  `historyIsRoot`/`historyDetailIsRoot`/`viewingTryOn`), and `openComposer`/`openHistoryRoot`/
+  `openHistoryDetail` each set composer **and** history flags together, so a split needs cross-VM
+  coordination on every open. There's also no heavy save funnel to extract as a foundation (the
+  history feed is already a thin `TryOnStore.observeTryOns()` derivation, § 5 slice 4d). The split
+  therefore waits on slice 9's `TryOnRoute` navigation rework rather than a foundation step.
 
 **Slice 9 — destination-scoped VMs + real composer navigation** (closes the phase-3/4
 deferral). With cross-VM dependencies gone: the viewer destinations
