@@ -140,14 +140,7 @@ class OutfitsRepository @Inject constructor(
         val resolved = if (json != null) {
             val type = object : TypeToken<List<Outfit>>() {}.type
             val raw: List<Outfit> = gson.fromJson(json, type) ?: emptyList()
-            raw.map { style ->
-                style.copy(
-                    itemIds = if (style.itemNames.isNotEmpty())
-                        style.itemNames.mapNotNull { resolvedNameToId[ImageEncoding.itemMatchKey(it)] }
-                    else style.itemIds,
-                    folderId = id,
-                )
-            }
+            resolveOutfits(raw, id, resolvedNameToId)
         } else emptyList()
         runCatching { outfitStore.replaceFolder(id, resolved) }
         return resolved
@@ -175,16 +168,44 @@ class OutfitsRepository @Inject constructor(
      */
     suspend fun persistOutfitFolders(styles: List<Outfit>, affected: Collection<String>) {
         persistMutex.withLock {
-            val affectedIds = affected.filterTo(LinkedHashSet()) { it.isNotEmpty() }
-            val s = allFolderIds ?: listOfNotNull(folderId)
-            (s + affectedIds).toSet().forEach { fid ->
-                val folderStyles = styles.filter { it.folderId == fid || it.folderId.isEmpty() }
-                runCatching { outfitStore.replaceFolder(fid, folderStyles) }
+            val scope = allFolderIds ?: listOfNotNull(folderId)
+            foldersToWrite(scope, affected).forEach { fid ->
+                runCatching { outfitStore.replaceFolder(fid, outfitsHomedIn(fid, styles)) }
             }
-            affectedIds.forEach { fid ->
+            affected.filter { it.isNotEmpty() }.toSet().forEach { fid ->
                 mutationStore.enqueue(OUTFIT_FOLDER_SYNC_KIND, targetId = fid, folderId = fid, payload = "{}")
             }
             syncEngine.drain()
         }
     }
 }
+
+// ---- Pure decision logic (unit-tested in OutfitsRepositoryTest; no Drive/Room deps) ----
+
+/**
+ * Resolves a folder's parsed [raw] outfits' `itemIds` from their persisted `itemNames` against the
+ * folder's live [nameToId] map, **extension-agnostic** via [ImageEncoding.itemMatchKey] (so a
+ * `_cutout.png` itemName resolves against a `_cutout.webp` item, and an item moved to another closet
+ * still resolves through the combined map), and stamps the home [folderId]. Outfits with no
+ * `itemNames` (legacy / freshly composed) keep their existing `itemIds`.
+ */
+internal fun resolveOutfits(raw: List<Outfit>, folderId: String, nameToId: Map<String, String>): List<Outfit> =
+    raw.map { style ->
+        style.copy(
+            itemIds = if (style.itemNames.isNotEmpty())
+                style.itemNames.mapNotNull { nameToId[ImageEncoding.itemMatchKey(it)] }
+            else style.itemIds,
+            folderId = folderId,
+        )
+    }
+
+/** The folders [persistOutfitFolders] rewrites for a save: the load [scope] plus any explicitly
+ *  [affected] (out-of-scope) save targets; blank ids dropped. */
+internal fun foldersToWrite(scope: List<String>, affected: Collection<String>): Set<String> =
+    (scope + affected.filter { it.isNotEmpty() }).filter { it.isNotEmpty() }.toSet()
+
+/** The outfits written into folder [fid]: those homed there, plus any not-yet-homed (empty
+ *  `folderId`) fresh outfits. [OutfitStore.replaceFolder]'s outfit-id primary key then resolves the
+ *  final single home, so an empty-`folderId` outfit lands in exactly one folder, not duplicated. */
+internal fun outfitsHomedIn(fid: String, styles: List<Outfit>): List<Outfit> =
+    styles.filter { it.folderId == fid || it.folderId.isEmpty() }
