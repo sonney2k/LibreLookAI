@@ -75,18 +75,17 @@ class WardrobeViewModel @Inject constructor(
     private val moveSync: WardrobeMoveSyncHandler,
     internal val pipeline: ItemIngestionPipeline,
     private val jobLock: JobLock,
+    private val itemVersions: ItemVersions,
+    private val retagUseCase: RetagAllUseCase,
+    private val removeBgUseCase: RemoveAllBackgroundsUseCase,
+    internal val webpConvertUseCase: WebpConvertUseCase,
+    internal val cutoutFixUseCase: CutoutBgFixUseCase,
     session: ClosetSessionHolder,
     prefsRepo: UserPreferencesRepository,
 ) : AndroidViewModel(app) {
 
     companion object {
         internal const val TAG = "RepairAndSync"
-        /** Stricter floor for the Repair & Sync duplicate scan. */
-        internal const val REPAIR_DUPE_THRESHOLD = 0.97f
-        /** Sidecars at or below this size are {} or {"tags":null} — definitely no tags. */
-        internal const val SIDECAR_EMPTY_MAX = 20L
-        /** Sidecars at or above this size always contain a ClothingTags object. */
-        internal const val SIDECAR_FULL_MIN  = 100L
     }
     internal val gson = Gson()
 
@@ -114,23 +113,9 @@ class WardrobeViewModel @Inject constructor(
     private val viewScope = MutableStateFlow<List<String>>(emptyList())
     /** Every configured closet + shopping — the cross-closet similarity-snapshot scope. */
     private val configuredScope = MutableStateFlow<List<String>>(emptyList())
-    /**
-     * In-view items that are deliberately NOT store rows: import placeholders with synthetic
-     * `__importing_*` ids (no Drive file, no cacheable bytes). Appended to the derived view
-     * while their folder is in scope; the import loop swaps them for real persisted items.
-     */
-    internal val transientItems = MutableStateFlow<List<DriveImage>>(emptyList())
-    /**
-     * Coil cache-buster overlay: bumped whenever an item's image *bytes* change under an
-     * unchanged driveId (rotate, reprocess, cutout-fix, WebP convert). The store doesn't hold
-     * versions — they are per-process display state — so the derivation merges this map in.
-     */
-    internal val imageVersions = MutableStateFlow<Map<String, Long>>(emptyMap())
-
-    internal fun bumpImageVersion(vararg driveIds: String) {
-        val now = System.currentTimeMillis()
-        imageVersions.update { it + driveIds.associateWith { now } }
-    }
+    // The Coil-version overlay is a shared singleton now ([ItemVersions], § 5 slice 6) so the
+    // bulk use-cases can write it; the derivation collectors below merge it in unchanged.
+    internal fun bumpImageVersion(vararg driveIds: String) = itemVersions.bump(*driveIds)
 
     /**
      * Every closet folderId the user has configured, regardless of which one is currently
@@ -144,19 +129,9 @@ class WardrobeViewModel @Inject constructor(
     internal var geminiLanguage: String = "English"
     /** When non-null, all new photo imports target this folder instead of the active view folder. */
     internal var defaultImportFolderId: String? = null
-    /** Mirrors UserPreferences.dedupeOnImport — flips capture/import similarity gate on/off. */
-    internal var dedupeOnImport: Boolean = false
-    /** Mirrors UserPreferences.dedupeThreshold — cosine cutoff for "this is probably already in your wardrobe". */
-    internal var dedupeThreshold: Float = 0.88f
-    /** Mirrors UserPreferences.preferLocalBgRemoval — when true, camera/gallery imports route through
-     *  the on-device segmenter review screen. URL imports always do. */
-    internal var preferLocalBgRemoval: Boolean = false
     /** Mirrors UserPreferences.debugSimilarityPreview — when on, similarity searches return up to
      *  50 matches so the debug breakdown has more candidates to scroll through. */
     internal var debugSimilarityPreview: Boolean = false
-
-    /** Holds the audit scan results while waiting for the user to confirm processing. */
-    internal var pendingAudit: AuditIntermediate? = null
 
     /** Active loadImages coroutine — cancelled when a new location is selected. */
     private var loadJob: Job? = null
@@ -229,21 +204,37 @@ class WardrobeViewModel @Inject constructor(
                 _state.update { it.copy(needsBatteryExemption = needs) }
             }
         }
+        // Mirror the bulk-maintenance use-cases' progress into the UiState fields the overlay
+        // already reads (§ 5 slice 6). Each is an independent field cluster (no shared slot
+        // like the pipeline's processingImageId), so a straight copy-through preserves the old
+        // write timing.
+        viewModelScope.launch {
+            retagUseCase.progress.collect { p ->
+                _state.update { it.copy(isRetagging = p.isRunning, retagDone = p.done, retagTotal = p.total) }
+            }
+        }
+        viewModelScope.launch {
+            removeBgUseCase.progress.collect { p ->
+                _state.update { it.copy(isRemovingAllBg = p.isRunning, removeBgDone = p.done, removeBgTotal = p.total) }
+            }
+        }
+        viewModelScope.launch {
+            webpConvertUseCase.progress.collect { p ->
+                _state.update { it.copy(isConverting = p.isConverting, convertDone = p.done, convertTotal = p.total) }
+            }
+        }
+        viewModelScope.launch {
+            cutoutFixUseCase.progress.collect { p -> _state.update { it.copy(cutoutBgFix = p) } }
+        }
         // Derived view (§ 5 slice 4a): the grid's items are the store rows in the current view
-        // scope (with a cached image file), plus any in-scope import placeholders, stamped with
-        // the Coil version overlay. File stats run on IO via flowOn; redundant emissions are
-        // free (StateFlow suppresses equal states).
+        // scope (with a cached image file), stamped with the Coil version overlay. File stats run
+        // on IO via flowOn; redundant emissions are free (StateFlow suppresses equal states).
         viewModelScope.launch {
             combine(
-                viewScope.flatMapLatest { ids -> itemStore.observeItems(ids).map { ids to it } },
-                transientItems,
-                imageVersions,
-            ) { (scopeIds, byFolder), transient, versions ->
-                val stored = byFolder.flatMap { (fid, items) ->
-                    items.mapNotNull { it.toDriveImage(fid, versions) }
-                }
-                val storedIds = stored.mapTo(HashSet()) { it.driveId }
-                stored + transient.filter { it.folderId in scopeIds && it.driveId !in storedIds }
+                viewScope.flatMapLatest { ids -> itemStore.observeItems(ids) },
+                itemVersions.versions,
+            ) { byFolder, versions ->
+                byFolder.flatMap { (fid, items) -> items.mapNotNull { it.toDriveImage(fid, versions) } }
             }
                 .flowOn(Dispatchers.IO)
                 .collect { images -> _state.update { it.copy(images = images) } }
@@ -254,7 +245,7 @@ class WardrobeViewModel @Inject constructor(
         viewModelScope.launch {
             combine(
                 configuredScope.flatMapLatest { ids -> itemStore.observeItems(ids) },
-                imageVersions,
+                itemVersions.versions,
             ) { byFolder, versions ->
                 byFolder.flatMap { (fid, items) -> items.mapNotNull { it.toDriveImage(fid, versions) } }
             }
@@ -276,15 +267,12 @@ class WardrobeViewModel @Inject constructor(
                 setDefaultImportFolderId(s.defaultImportFolderId)
             }
         }
-        // Mirror the UserPreferences-derived knobs (tagging language, dedupe, bg-removal
-        // routing, similarity debug) from the shared preferences repository — replaces the
-        // per-pref AppContent mirrors (refactor § 5 slice 2).
+        // Mirror the UserPreferences-derived knobs (tagging language, similarity debug) from the
+        // shared preferences repository — replaces the per-pref AppContent mirrors (§ 5 slice 2).
+        // The dedupe / on-device-bg-review knobs live on [ItemIngestionPipeline] now (slice 5).
         viewModelScope.launch {
             prefsRepo.preferences.collect { p ->
                 geminiLanguage = AppLanguage.toGeminiName(p.language)
-                dedupeOnImport = p.dedupeOnImport
-                dedupeThreshold = p.dedupeThreshold
-                preferLocalBgRemoval = p.preferLocalBgRemoval
                 debugSimilarityPreview = p.debugSimilarityPreview
             }
         }
@@ -425,15 +413,9 @@ class WardrobeViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Scans [folderIds] on Drive:
-     *  1. Renames cutout/original files that don't match the expected naming scheme.
-     *  2. Collects originals with no matching cutout (need full AI processing).
-     *  3. Collects cutouts missing a tag sidecar (need tagging only).
-     * After scanning, pauses with [AuditProgress.awaitingConfirmation] so the UI can
-     * show the user what was found before proceeding. Call [continueRepairProcessing]
-     * to either process the findings or just reload.
-     */
+    /** Ensures the pre-cutout original for [cutoutDriveId] is cached at the canonical
+     *  `${cutoutDriveId}_original.jpg` path and returns its absolute path, or null if no
+     *  original exists or the download failed. */
     suspend fun ensureOriginalCached(cutoutDriveId: String): String? = withContext(Dispatchers.IO) {
         val image = _state.value.images.firstOrNull { it.driveId == cutoutDriveId } ?: return@withContext null
         val origId = image.originalDriveId ?: return@withContext null
@@ -562,9 +544,8 @@ class WardrobeViewModel @Inject constructor(
                         }
                     }
                     val freshIds = allFresh.map { it.driveId }.toSet()
-                    val transientIds = transientItems.value.mapTo(HashSet()) { it.driveId }
                     val pendingRaw = _state.value.images.filter { img ->
-                        img.driveId !in freshIds && img.driveId !in transientIds && (
+                        img.driveId !in freshIds && (
                             !ImageEncoding.isCutoutName(img.name) ||
                                 recentlyMovedItems[img.driveId]?.first == img.folderId
                             )
@@ -699,9 +680,8 @@ class WardrobeViewModel @Inject constructor(
                 // cutouts, plus items recently moved into this folder whose new parent Drive
                 // hasn't propagated to `q='<id>' in parents` yet (eventual consistency).
                 val freshIds = freshImages.map { it.driveId }.toSet()
-                val transientIds = transientItems.value.mapTo(HashSet()) { it.driveId }
                 val pendingRaw = _state.value.images.filter { img ->
-                    img.driveId !in freshIds && img.driveId !in transientIds && (
+                    img.driveId !in freshIds && (
                         !ImageEncoding.isCutoutName(img.name) ||
                             recentlyMovedItems[img.driveId]?.first == id
                         )
@@ -903,49 +883,8 @@ class WardrobeViewModel @Inject constructor(
         return drive.cachedFile(driveId)
     }
 
-    fun removeAllBackgrounds() {
-        val images = _state.value.images
-        if (images.isEmpty() || _state.value.isRemovingAllBg) return
-        viewModelScope.launch {
-            acquireJobWakeLock()
-            try {
-                _state.update { it.copy(isRemovingAllBg = true, removeBgDone = 0, removeBgTotal = images.size) }
-                try {
-                images.forEachIndexed { index, image ->
-                    _state.update { it.copy(removeBgDone = index) }
-                    val source = resolveOriginalFile(image.driveId) ?: return@forEachIndexed
-                    val processedFile = gemini.removeBackground(source, drive.cacheDir) ?: return@forEachIndexed
-
-                    // Upload original to Drive if not already stored there
-                    val id = folderId ?: return@forEachIndexed
-                    val originalDriveId = image.originalDriveId ?: runCatching {
-                        drive.uploadImage(id, source).id
-                    }.getOrNull()
-
-                    runCatching {
-                        drive.updateImage(image.driveId, processedFile)
-                        val displayCache = File(drive.cacheDir, "${image.driveId}.png")
-                        processedFile.copyTo(displayCache, overwrite = true)
-                        // Store-first: stamp the (possibly new) original id onto the row, then
-                        // bust the Coil cache — the derived view re-emits both.
-                        withContext(Dispatchers.IO) {
-                            itemStore.find(image.driveId)?.let { (fid, row) ->
-                                itemStore.upsert(fid, row.copy(originalDriveId = originalDriveId ?: row.originalDriveId))
-                            }
-                        }
-                        bumpImageVersion(image.driveId)
-                    }
-                }
-                images.forEach { img -> saveSidecar(img.driveId) }
-                } catch (e: com.librelookai.billing.InsufficientCreditsException) {
-                    // Global dialog appears via CreditsEvents; just abort the bulk.
-                }
-                _state.update { it.copy(isRemovingAllBg = false, removeBgDone = 0, removeBgTotal = 0) }
-            } finally {
-                releaseJobWakeLock()
-            }
-        }
-    }
+    /** Delegates to the [RemoveAllBackgroundsUseCase]; its progress mirrors into state in `init`. */
+    fun removeAllBackgrounds() = removeBgUseCase.start(_state.value.images, folderId)
 
     fun tagImage(driveId: String) {
         viewModelScope.launch {
@@ -973,30 +912,8 @@ class WardrobeViewModel @Inject constructor(
         }
     }
 
-    fun retagAll() {
-        val images = _state.value.images
-        if (images.isEmpty() || _state.value.isRetagging) return
-        viewModelScope.launch {
-            acquireJobWakeLock()
-            try {
-            _state.update { it.copy(isRetagging = true, retagDone = 0, retagTotal = images.size) }
-            try {
-                images.forEachIndexed { index, image ->
-                    _state.update { it.copy(retagDone = index) }
-                    val cachedFile = drive.cachedFile(image.driveId) ?: return@forEachIndexed
-                    val tags = gemini.classifyClothing(cachedFile, geminiLanguage) ?: return@forEachIndexed
-                    withContext(Dispatchers.IO) { persistItemTags(image.driveId, tags) }
-                }
-                images.forEach { img -> saveSidecar(img.driveId) }
-            } catch (e: com.librelookai.billing.InsufficientCreditsException) {
-                // Global dialog appears via CreditsEvents; abort the bulk.
-            }
-            _state.update { it.copy(isRetagging = false, retagDone = 0, retagTotal = 0) }
-            } finally {
-                releaseJobWakeLock()
-            }
-        }
-    }
+    /** Delegates to the [RetagAllUseCase]; its progress mirrors into state in `init`. */
+    fun retagAll() = retagUseCase.start(_state.value.images)
 
     // ---------- Move to another location ----------
 

@@ -866,6 +866,23 @@ passthrough (or directly via `hiltViewModel` once slice 9 lands). Similarity *se
 interactive VM logic (`…Search.kt` shrinks but isn't a pipeline). This deletes the
 `internal var` soup and most of the extension-file pattern; `WardrobeViewModel` lands at grid
 state + selection + thin delegations.
+**Status: LANDED (June 2026).** Four live use-cases extracted (`RetagAllUseCase` +
+`RemoveAllBackgroundsUseCase` in `WardrobeBulkAiUseCases.kt`, `WebpConvertUseCase`,
+`CutoutBgFixUseCase`), each a `@Singleton` with its own progress `StateFlow` mirrored into
+`WardrobeUiState` in the VM's `init`; the VM/extension entry points are thin delegates so screen
+wiring is unchanged. The single-item `fixCutoutBgForItem` stays on the VM (writes the shared
+`processingImageId`/`error`). Shared singletons moved to `ItemVersions.kt`: `ItemVersions` (the
+Coil cache-buster, ex-`imageVersions`) + `SidecarSyncQueue`. **`RepairAuditUseCase` and
+`FolderImportUseCase` were NOT extracted — the Repair & Sync audit and the SAF/Drive folder
+import they wrapped turned out to be dead code with no UI host anywhere (`startRepairAndRefresh`/
+`importFromFolder` were never wired into any screen). Per the user's call they were deleted
+instead**: `WardrobeViewModelAudit.kt`/`…Import.kt`, the `AuditProgress`/`ImportPreview` model
+clusters + UiState fields, `pendingAudit`, the now-writerless transient-placeholder overlay
+(`TransientItems`), the `REPAIR_DUPE_THRESHOLD`/`SIDECAR_*` consts, and the
+dedupe/`preferLocalBgRemoval` VM pref-mirrors (the pipeline owns its own copies). `…Convert.kt`
+shrank to a one-line delegate; `…Bgfix.kt` to single-item fix + delegates. The VM is ~1126 lines
+(load/cache/sidecar core + search + setters/CRUD remain for slice 8's per-screen split).
+`./gradlew :app:assembleDebug testDebugUnitTest` green.
 
 **Slice 7 — UiState slimming + sealed events.** Prune the migrated pipeline-progress clusters
 out of `WardrobeUiState`; introduce per-screen `sealed interface XEvent` one-shots for the

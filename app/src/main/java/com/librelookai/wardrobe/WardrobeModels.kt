@@ -139,8 +139,6 @@ data class WardrobeUiState(
     val selectedIds: Set<String> = emptySet(),
     /** Number of photos queued or actively running background processing (bg removal + tagging). */
     val pendingJobs: Int = 0,
-    /** Non-null while a repair-and-sync audit is in progress or awaiting user input. */
-    val auditProgress: AuditProgress? = null,
     /** Non-null while the "Fix cutout backgrounds" flow is scanning, awaiting confirmation, or processing. */
     val cutoutBgFix: CutoutBgFixProgress? = null,
     /** True when a job is starting and the app is not exempt from battery optimization. */
@@ -155,8 +153,6 @@ data class WardrobeUiState(
      *  "Show in wardrobe") has asked the grid to scroll to and pulse a specific item. The
      *  wardrobe screen consumes this in a LaunchedEffect once the item is in the displayed list. */
     val pendingScrollDriveId: String? = null,
-    /** Non-null while a folder import is paused awaiting the user's review of pre-scanned candidates. */
-    val importPreview: ImportPreview? = null,
     /** Queue of imports waiting for the on-device background-removal review screen. The head item
      *  is shown; on Apply / Skip / Cancel it is popped and the next (if any) is shown. Camera and
      *  URL imports always enqueue a single item; gallery imports enqueue every selected URI when
@@ -184,94 +180,6 @@ data class LocalBgReviewItem(
     val skippable: Boolean,
     /** Origin of this import, carried through the review queue for funnel attribution. */
     val source: AddSource = AddSource.CAMERA,
-)
-
-/** One candidate file in a paused folder-import preview. */
-data class ImportPreviewEntry(
-    /** Stable key within this preview (used for selection state). */
-    val key: String,
-    /** Display name for the preview tile. */
-    val displayName: String,
-    /** Local file path the source has been copied / downloaded into; reused for the actual upload. */
-    val cachedFilePath: String,
-    /** Wardrobe items above the dedupe threshold against this candidate, most-similar first. */
-    val similar: List<DuplicateMatch> = emptyList(),
-    /** Tags carried over from a `_wardrobe_metadata.json` sidecar in the source folder, if any. */
-    val srcMetaTags: ClothingTags? = null,
-    /** `originalDriveId` carried over from a `_wardrobe_metadata.json` sidecar, if any. */
-    val srcMetaOriginalDriveId: String? = null,
-)
-
-/** Options the user picked in the import dialog, captured at preview time so resume uses the same flags. */
-data class ImportOptions(
-    val removeBackground: Boolean,
-    val autoTag: Boolean,
-    val replaceExisting: Boolean,
-    val overwriteDuplicates: Boolean,
-)
-
-/** State of a folder-import scan paused for user confirmation. */
-data class ImportPreview(
-    val entries: List<ImportPreviewEntry>,
-    val selectedKeys: Set<String>,
-    val isScanning: Boolean = false,
-    val scanDone: Int = 0,
-    val scanTotal: Int = 0,
-    val targetFolderId: String,
-    val options: ImportOptions,
-)
-
-// ---------- Audit / repair progress ----------
-
-data class AuditProgress(
-    val isScanning: Boolean = false,
-    val scannedFolders: Int = 0,
-    val totalFolders: Int = 0,
-    /** Files renamed on Drive during the scan to match the expected naming scheme. */
-    val renamedCount: Int = 0,
-    /** Scan finished — waiting for user confirmation before processing. */
-    val awaitingConfirmation: Boolean = false,
-    /** Originals with no matching cutout that need full AI processing. */
-    val orphanedOriginals: Int = 0,
-    /** Unrecognised raw images (non-cutout, non-original) needing full AI processing. */
-    val rawImages: Int = 0,
-    /** Cutouts that are missing a tag sidecar and need tagging. */
-    val sidecarNeeded: Int = 0,
-    /** Cutouts that have at least one visually-similar peer in the wardrobe. */
-    val duplicates: Int = 0,
-    /** True while the duplicate-detection pass is still running after the file scan. */
-    val isScanningDuplicates: Boolean = false,
-    /** All audit findings as preview-grid entries; same items counted in the fields above. */
-    val items: List<AuditFileEntry> = emptyList(),
-    /** Drive IDs the user has selected for processing. Defaults to all items when scan completes. */
-    val selectedAuditIds: Set<String> = emptySet(),
-    val isProcessing: Boolean = false,
-    val processDone: Int = 0,
-    val processTotal: Int = 0,
-    val isDone: Boolean = false,
-)
-
-/** Kind of finding for a single audited file — drives processing path + section grouping in the UI. */
-enum class AuditKind { ORPHANED_ORIGINAL, RAW, NEEDS_SIDECAR, DUPLICATE }
-
-/**
- * One entry in the Repair & Sync preview grid. For [AuditKind.NEEDS_SIDECAR] the [driveId] points
- * at the existing cutout; for [AuditKind.DUPLICATE] it points at a cutout that has at least one
- * visually-similar peer (listed in [similarTo]); otherwise it's the orphaned original / raw image
- * awaiting processing.
- *
- * Selecting a [AuditKind.DUPLICATE] entry means "delete it from Drive" — duplicates do not consume
- * credits.
- */
-data class AuditFileEntry(
-    val driveId: String,
-    val name: String,
-    val folderId: String,
-    val kind: AuditKind,
-    /** For [AuditKind.DUPLICATE], wardrobe Drive IDs the entry is similar to (best match first). */
-    val similarTo: List<String> = emptyList(),
-    /** For [AuditKind.DUPLICATE], cosine score against the closest peer in [similarTo]. */
-    val topScore: Float = 0f,
 )
 
 // ---------- Cutout background fix progress ----------
@@ -342,23 +250,5 @@ internal data class PendingJob(
     val prebuiltCutoutPath: String? = null,
     /** Origin of this import, carried so the queue's terminal funnel events can attribute source. */
     val source: AddSource = AddSource.CAMERA,
-)
-
-// Internal audit helpers
-internal data class AuditItem(val folderId: String, val driveId: String, val name: String)
-internal data class AuditCutoutItem(val folderId: String, val cutoutDriveId: String, val cutoutName: String)
-internal data class AuditDuplicateItem(
-    val folderId: String,
-    val cutoutDriveId: String,
-    val cutoutName: String,
-    val similarTo: List<String>,
-    val topScore: Float,
-)
-internal data class AuditIntermediate(
-    val folderIds: List<String>,
-    val orphanedOriginals: List<AuditItem>,
-    val rawImages: List<AuditItem>,
-    val cutoutsNeedingSidecar: List<AuditCutoutItem>,
-    val duplicates: List<AuditDuplicateItem> = emptyList(),
 )
 
