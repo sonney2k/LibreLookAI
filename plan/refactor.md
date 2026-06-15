@@ -919,6 +919,28 @@ latch/debounce effect.
 (`OutfitsUiState` is already partitioned along these lines); `TryOnViewModel` → composer vs
 history. Same-package splits; the shared pieces (save funnel `persistOutfitFolders`, prompt
 builders) are already standalone. Each split verified by the existing Robolectric flow tests.
+**Status: OutfitsRepository foundation LANDED (June 2026); the actual VM splits deferred.**
+On inspection the "mechanical" framing didn't hold: the `OutfitsUiState` *fields* are partitioned
+but the *methods* aren't — every mutator funnels through the shared `_state.value.outfits` list +
+the `persistOutfitFolders` save funnel + the store-derived `outfits`/`wardrobeImages` collectors,
+and the VM is referenced pervasively outside itself (`AppContent` composer/prediction open-flags,
+Travel's `saveOutfitDirectly`/`addOutfits`/`updateOutfitsRefined`, TryOn). A clean three-way split
+needs somewhere shared to hold that data + funnel, and the composer/prediction navigation it
+touches is exactly slice 9's rework. So per the user's call we did the **foundation** first:
+`outfit/OutfitsRepository` (`@Singleton`) now owns the cross-closet scope, the store-derived
+`outfits`/`wardrobeImages` `StateFlow`s (§ 5 slice 4b derivation, `stateIn` on a process-long
+scope), the Drive load helpers (`cachedOutfits`/`syncOutfitsFromDrive`/`idToNameAllFolders`) and
+the local-first `persistOutfitFolders` funnel (+ its mutex). `OutfitsViewModel` is now a thin
+consumer: it drives the scope via `repo.setScope` from the closet session, mirrors
+`repo.outfits`/`repo.wardrobeImages` into `OutfitsUiState` (so screen consumers are unchanged),
+keeps all UI state (isLoading/error/composer/prediction/selection) + the mutators (which delegate
+the funnel to the repo), and exposes `folderId`/`saveFolderId`/`persistOutfitFolders` as thin
+delegators so the VM extensions (composer/prediction/tags) needed **zero changes**. This makes the
+eventual 3-way VM split and slice 9's destination-scoped VMs mechanical (each VM reads the repo's
+flows + calls its funnel). **Still to do (carry into slice 9 or a follow-up):** the actual
+`OutfitsViewModel` → list/composer/prediction split and the `TryOnViewModel` → composer/history
+split (the latter is self-contained — composer `generate`/`saveCurrent` vs history
+`loadHistory`/`deleteTryOn` sharing only `_state.history` + the save→history flow).
 
 **Slice 9 — destination-scoped VMs + real composer navigation** (closes the phase-3/4
 deferral). With cross-VM dependencies gone: the viewer destinations
