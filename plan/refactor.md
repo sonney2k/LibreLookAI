@@ -943,8 +943,23 @@ correctness-critical bits factored out for it — `resolveOutfits` (extension-ag
 `foldersToWrite`/`outfitsHomedIn` (the single-home write selection); the repo itself can't yet be
 constructed in a plain test (concrete `DriveRepository` dep — awaits § 3 interfaces). **Still to do
 — folded into slice 9 (both are entangled with its navigation rework, NOT mechanical):**
-- *`OutfitsViewModel` → list/composer/prediction:* the three concerns still share `_state`; the
-  composer/prediction open-flags are mirrored in `AppContent` (slice 9 deletes that wiring).
+- *`OutfitsViewModel` → list + generation (2-way, NOT the planned 3-way):* confirmed that composer
+  and prediction are **one shared AI-generation state machine** — the composer's `generate` flow and
+  the prediction setup both read *and* write the same `composer*` generation-parameter cluster
+  through the same setters (`setComposerWeatherMode`/`setComposerForecastDate`/
+  `setComposerConsideration`/vibes/manual-weather/source-folders/suggestion-count), so they can't be
+  two faithful VMs. Plan revised to a 2-way split (user's call): `OutfitsViewModel` stays the **list**
+  VM (list/selection/delete/loved/calendar-wear/wear-history + the save mutators Travel/TryOn call —
+  keeping the widely-used API so those ~19 consumers don't churn), and a new
+  `OutfitGenerationViewModel` owns composer + prediction (their shared state + the `OutfitsComposer`/
+  `OutfitsPrediction`/`OutfitsTags` extension files). Execution sequence: (1) shared *new-outfit save*
+  moves to `OutfitsRepository.saveOutfit(...)` so both VMs persist without a cross-VM call; (2) the
+  scroll-to-outfit one-shot moves to the repo (generation's `commitOutfit` emits, the list collects)
+  to handle the save→scroll hand-off; (3) split `OutfitsUiState` → list fields stay,
+  composer/prediction fields move to `OutfitGenerationUiState`; (4) rewire the generation consumers
+  (composer screens, prediction screens, `AppContent` open-flag/nav, the two viewer destinations).
+  The composer/prediction open-flags it mirrors in `AppContent` collapse into the destination-scoping
+  work below.
 - *`TryOnViewModel` → composer/history:* on closer reading these are **not** separable screens —
   they're one layered modal sharing a nav-flag state machine (`isComposerOpen`/`isHistoryOpen`/
   `historyIsRoot`/`historyDetailIsRoot`/`viewingTryOn`), and `openComposer`/`openHistoryRoot`/
