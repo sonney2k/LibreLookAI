@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.asStateFlow
  * bulk workflows share one refcount.
  */
 @Singleton
-class JobLock @Inject constructor(@ApplicationContext private val context: Context) {
+class JobLock @Inject constructor(@param:ApplicationContext private val context: Context) {
 
     companion object { private const val TAG = "JobLock" }
 

@@ -94,7 +94,7 @@ internal suspend fun DriveRepository.uploadAsOriginal(folderId: String, imageFil
  */
 @Singleton
 class ItemIngestionPipeline @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     private val drive: DriveRepository,
     private val gemini: GeminiRepository,
     private val itemStore: WardrobeItemStore,
