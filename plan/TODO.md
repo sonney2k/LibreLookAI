@@ -51,22 +51,29 @@ create design for onboarding flow
 
 what can we do to reduce cost?
 
-
-rework calendar UI
-
-
 create human readable release notes between now and v2.0.1 and release version 2.0.2, git tag commit and upload to testers in firebase
 
-Storage:
-
-Feedback:
-add way to send feedback via firebase under settings -> feedback
-add a feedback tab under settings move debug setting under this tab
-
-the selection bar that shows all (item count) selected (item count) - when the font is too big this line breaks and becomes a huge header - keep it single line
+when setting a filter and then viewing an individual item, then going back the filter is reset
 
 IN PROGRESS
 ===========
+Feedback:
+add way to send feedback via firebase under settings -> feedback
+add a feedback tab under settings move debug setting under this tab
+rework calendar UI
+
+2 fixes: 1. hide weather icon while scrolling 2. when viewing an outfit call the button options and when the options are shown remove the Tags mit KI vorschlagen option.
+
+drop Hilfe & FAQ from settings, remove the selten noetig and Diese Wekzeuge beheben Probleme... message at the top of Erweitert. rename Save Credits - AI Options. move the AI costs under the gemini key. move the Hilf uns besser zu werden to the bottom of the main settings page
+replace the Kosten pro KI Aktion with the Kostenstufen thing and add a link to the cost statistics. 
+
+when long pressing a trip select it and add way to select multiple. add option to delete the selected. the selected will delete the trip but if the users says so also   
+  the outfits under the trip                                                                                                                                               
+
+from outfit detail view when editing remove the option tags mit KI vorschlagen
+
+the selection bar that shows all (item count) selected (item count) - when the font is too big this line breaks and becomes a huge header - keep it single line
+
 INFRA / DEADLINE: Cloud Functions runtime is Node.js 20, deprecated 2026-04-30,
 **decommissioned 2026-10-30** — after that date `firebase deploy --only functions`
 will fail until upgraded. Before October 2026: bump firebase/functions/package.json
