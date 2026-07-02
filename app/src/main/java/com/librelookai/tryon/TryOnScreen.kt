@@ -9,9 +9,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
@@ -34,24 +32,113 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.librelookai.R
 import com.librelookai.data.model.Location
 import com.librelookai.data.model.Outfit
 import com.librelookai.data.model.TryOn
-import com.librelookai.outfit.AddItemSheet
 import com.librelookai.settings.ProfileViewModel
-import com.librelookai.shopping.MatchPreviewDialog
 import com.librelookai.shopping.ShoppingClosetViewModel
-import com.librelookai.shopping.ShoppingHelperScreen
 import com.librelookai.util.AiProcessingOverlay
 import com.librelookai.util.Analytics
 import com.librelookai.util.rememberDialogBottomInset
 import com.librelookai.wardrobe.DriveImage
 import com.librelookai.wardrobe.WardrobeViewModel
 
+/**
+ * Shared full-bleed chrome for the three try-on destinations (composer / history feed /
+ * history detail — § 5 slice 9 split the old single layered surface into real routes).
+ * Fills the window with the theme background so the underlying app never shows through the
+ * status/nav-bar strips; only the Scaffold *content* is inset to the safe area. Scaffold's
+ * default contentWindowInsets would double-add insets here — disabled (WindowInsets(0)).
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TryOnPageScaffold(
+    title: String,
+    onClose: () -> Unit,
+    content: @Composable () -> Unit,
+) {
+    val effectiveBottom = rememberDialogBottomInset()
+    Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+        Scaffold(
+            modifier = Modifier.fillMaxSize().statusBarsPadding().padding(bottom = effectiveBottom),
+            containerColor = Color.Transparent,
+            contentWindowInsets = WindowInsets(0),
+            topBar = {
+                // Mirror the sibling picker dialogs (AddItemSheet / OutfitPickerDialog /
+                // TripOutfitPickerDialog) exactly — 4.dp top/bottom, no divider — so the slim top
+                // header is consistent across every try-on surface regardless of entry source.
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 4.dp, end = 16.dp, top = 4.dp, bottom = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    IconButton(onClick = onClose) {
+                        Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_close))
+                    }
+                    Text(
+                        title,
+                        style = MaterialTheme.typography.titleMedium,
+                        maxLines = 1,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f),
+                    )
+                }
+            },
+        ) { innerPadding ->
+            Box(Modifier.fillMaxSize().padding(innerPadding)) { content() }
+        }
+    }
+}
+
+/**
+ * Error dialog for the try-on flows. Resolve every string HERE (outside the AlertDialog) so it
+ * uses the localized LocalContext: an AlertDialog opens its own window, which severs the locale
+ * override inside its slot lambdas (title/text/buttons) and would otherwise fall back to the
+ * system locale (CLAUDE.md → Window quirks). errorRes also avoids resolving in the ViewModel
+ * (Application = system locale).
+ */
+@Composable
+private fun TryOnErrorDialog(state: TryOnUiState, onClearError: () -> Unit) {
+    val errorTitle = stringResource(R.string.tryon_error)
+    val errorOk = stringResource(R.string.action_ok)
+    val errorMsg = state.errorRes?.let { stringResource(it) } ?: state.error
+    errorMsg?.let { msg ->
+        AlertDialog(
+            onDismissRequest = onClearError,
+            title = { Text(errorTitle) },
+            text  = { Text(msg) },
+            confirmButton = {
+                TextButton(onClick = onClearError) { Text(errorOk) }
+            },
+        )
+    }
+}
+
+/** The wardrobe + shopping item pool try-on surfaces resolve ids/names against — the FAB is
+ *  available in both screens, so lookups must succeed regardless of source. */
+@Composable
+private fun rememberTryOnItemPool(
+    wardrobeViewModel: WardrobeViewModel,
+    shoppingClosetViewModel: ShoppingClosetViewModel,
+): List<DriveImage> {
+    val wardrobeState by wardrobeViewModel.state.collectAsState()
+    val shoppingClosetState by shoppingClosetViewModel.state.collectAsState()
+    return remember(wardrobeState.images, shoppingClosetState.items) {
+        wardrobeState.images + shoppingClosetState.items
+    }
+}
+
+/**
+ * Content of the `TryOnRoute` destination: the try-on composer (assemble items → generate →
+ * result preview), plus the no-reference-photos empty state. Real navigation (§ 5 slice 9):
+ * openers seed the draft via [TryOnViewModel.openComposer] then navigate; the header ✕ and
+ * system back clear the draft ([TryOnViewModel.close]) and pop through [onClose]. The history
+ * feed and detail views are separate destinations (`TryOnHistoryRoute` / `TryOnDetailRoute`).
+ */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun TryOnComposerScreen(
@@ -59,55 +146,215 @@ fun TryOnComposerScreen(
     wardrobeViewModel: WardrobeViewModel,
     profileViewModel: ProfileViewModel,
     shoppingClosetViewModel: ShoppingClosetViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
-    onShowItemInWardrobe: (DriveImage) -> Unit = {},
     /** Outfits available to pick as the basis of a new try-on. Empty disables the "Use an outfit" path. */
     outfits: List<Outfit> = emptyList(),
-    /** Locations passed through to [AddItemSheet] so it can show closet badges in the picker. */
+    /** Locations passed through to [com.librelookai.outfit.AddItemSheet] so it can show closet badges. */
     locations: List<Location> = emptyList(),
-    /** Open the saved outfit linked from a try-on detail view. Hidden when null. */
-    onOpenSourceOutfit: ((Outfit) -> Unit)? = null,
-    /** Open the Quick Try-On sheet (history FAB + empty-state CTA). */
+    /** Open the Quick Try-On sheet (source-swap affordance). */
     onStartTryOn: () -> Unit = {},
-    /** Close the dialog and route the user to Settings → Profile (no-reference-photos state). */
+    /** Close the surface and route the user to Settings → Profile (no-reference-photos state). */
     onOpenProfileSettings: () -> Unit = {},
-    /** Open the item-viewer destination over this one (the try-on's items, tapped item). */
-    onOpenItemViewer: (List<String>, String) -> Unit = { _, _ -> },
+    /** Pops the TryOnRoute destination. */
+    onClose: () -> Unit = {},
 ) {
     val state by tryOnViewModel.state.collectAsState()
-    if (!state.isComposerOpen) return
-
-    // Screen-view tracking: this Dialog hosts both the try-on composer and the history feed; report
-    // whichever the user is currently looking at (toggling history re-reports).
-    LaunchedEffect(state.isHistoryOpen) {
-        Analytics.screen(if (state.isHistoryOpen) "TryOnHistory" else "TryOnComposer")
-    }
-
-    val wardrobeState by wardrobeViewModel.state.collectAsState()
     val profileState by profileViewModel.state.collectAsState()
-    val shoppingClosetState by shoppingClosetViewModel.state.collectAsState()
-    // Try-on must resolve item IDs that originate from either the wardrobe or the shopping
-    // closet (FAB available in both screens). Merge so id lookups succeed regardless of source.
-    val combinedImages = remember(wardrobeState.images, shoppingClosetState.items) {
-        wardrobeState.images + shoppingClosetState.items
-    }
+    val combinedImages = rememberTryOnItemPool(wardrobeViewModel, shoppingClosetViewModel)
 
-    val effectiveBottom = rememberDialogBottomInset()
-    // Layered system back, same logic as the header ✕: history detail → history feed →
-    // composer → close. (The old Dialog's back press closed the whole surface in one step.)
+    LaunchedEffect(Unit) { Analytics.screen("TryOnComposer") }
+
     BackHandler {
         Analytics.action("TryOn", "back")
+        tryOnViewModel.close()
+        onClose()
+    }
+    TryOnPageScaffold(
+        title = stringResource(R.string.tryon_title),
+        onClose = {
+            Analytics.action("TryOn", "close")
+            tryOnViewModel.close()
+            onClose()
+        },
+    ) {
         when {
-            state.viewingTryOn != null && state.historyDetailIsRoot -> tryOnViewModel.close()
-            state.viewingTryOn != null -> tryOnViewModel.dismissViewingTryOn()
-            state.isHistoryOpen && state.historyIsRoot -> tryOnViewModel.close()
-            state.isHistoryOpen -> tryOnViewModel.closeHistory()
-            else -> tryOnViewModel.close()
+            state.resultPath != null -> TryOnResultContent(
+                state = state,
+                onSave = {
+                    Analytics.action("TryOn/Result", "save")
+                    tryOnViewModel.saveCurrent(combinedImages)
+                },
+                onTryAgain = {
+                    Analytics.action("TryOn/Result", "try_again")
+                    tryOnViewModel.generate(
+                        personFiles     = profileViewModel.tryOnFiles(),
+                        wardrobeImages  = combinedImages,
+                        preferences     = profileState.preferences.preferences,
+                    )
+                },
+                onChangeItems = {
+                    Analytics.action("TryOn/Result", "change_items")
+                    tryOnViewModel.openComposer(state.itemIds, state.sourceOutfitId, state.sourceKind, state.sourceContext)
+                },
+                wardrobeImages = combinedImages,
+            )
+
+            profileState.tryOnLocalPaths.isEmpty() -> TryOnNoPhotos(
+                onOpenSettings = onOpenProfileSettings,
+            )
+
+            else -> TryOnComposerContent(
+                state = state,
+                wardrobeImages = combinedImages,
+                outfits = outfits,
+                locations = locations,
+                referencePhotoPaths = profileState.tryOnLocalPaths.values.toList(),
+                wardrobeViewModel = wardrobeViewModel,
+                onRemoveItem = tryOnViewModel::removeItem,
+                onAddItems = { ids -> ids.forEach(tryOnViewModel::addItem) },
+                onPickOutfit = tryOnViewModel::selectOutfit,
+                onConsumeAutoPick = tryOnViewModel::consumeAutoPick,
+                onSwapSource = {
+                    Analytics.action("TryOn/Composer", "source_swap")
+                    onStartTryOn()
+                },
+                onEditReferencePhotos = onOpenProfileSettings,
+                onCancelEmpty = {
+                    Analytics.action("TryOn/Composer", "cancel_empty")
+                    tryOnViewModel.close()
+                    onClose()
+                },
+                onGenerate = {
+                    Analytics.action("TryOn/Composer", "generate", mapOf("count" to state.itemIds.size.toString()))
+                    tryOnViewModel.generate(
+                        personFiles     = profileViewModel.tryOnFiles(),
+                        wardrobeImages  = combinedImages,
+                        preferences     = profileState.preferences.preferences,
+                    )
+                },
+            )
+        }
+
+        // Generating overlay — covers everything. Uses the shared AI progress overlay (live
+        // upload bar + wait estimate + elapsed counter) so try-on shows the same progress
+        // feedback as every other AI surface.
+        if (state.isGenerating) {
+            AiProcessingOverlay(
+                label = stringResource(R.string.tryon_generating),
+                modifier = Modifier.fillMaxSize(),
+            )
+        }
+
+        TryOnErrorDialog(state, tryOnViewModel::clearError)
+
+        // The InsufficientCreditsDialog for 402s is installed globally in MainActivity — it
+        // listens on CreditsEvents.topUp and routes "Buy" to the Settings tab. We only need to
+        // reset isGenerating here, which TryOnViewModel.generate() handles.
+    }
+}
+
+/**
+ * Content of the `TryOnHistoryRoute` destination: the past-try-ons hero feed. Tapping a tile
+ * navigates to `TryOnDetailRoute`; the hero's edit action seeds the composer draft and
+ * navigates to `TryOnRoute` (so back returns to the feed).
+ */
+@Composable
+fun TryOnHistoryDestination(
+    tryOnViewModel: TryOnViewModel,
+    wardrobeViewModel: WardrobeViewModel,
+    shoppingClosetViewModel: ShoppingClosetViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    /** Open the detail destination for a tapped try-on. */
+    onOpenDetail: (TryOn) -> Unit,
+    /** Open the Quick Try-On sheet (feed FAB + empty-state CTA). */
+    onStartTryOn: () -> Unit,
+    /** Navigate to the composer destination after the hero's edit action seeds the draft. */
+    onOpenComposer: () -> Unit,
+    /** Pops the TryOnHistoryRoute destination. */
+    onClose: () -> Unit,
+) {
+    val state by tryOnViewModel.state.collectAsState()
+    val combinedImages = rememberTryOnItemPool(wardrobeViewModel, shoppingClosetViewModel)
+
+    LaunchedEffect(Unit) {
+        Analytics.screen("TryOnHistory")
+        tryOnViewModel.loadHistory()
+    }
+
+    TryOnPageScaffold(
+        title = stringResource(R.string.tryon_history_title),
+        onClose = {
+            Analytics.action("TryOn", "close")
+            onClose()
+        },
+    ) {
+        TryOnHistoryFeed(
+            history = state.history,
+            wardrobeImages = combinedImages,
+            onOpen = onOpenDetail,
+            onStartTryOn = onStartTryOn,
+            showFab = true,
+            onEditHero = { t ->
+                val byKey = combinedImages.associateBy { com.librelookai.util.ImageEncoding.itemMatchKey(it.name) }
+                val ids = t.itemNames
+                    .mapNotNull { n -> byKey[com.librelookai.util.ImageEncoding.itemMatchKey(n)] }
+                    .map { it.driveId }.toSet()
+                tryOnViewModel.openComposer(
+                    ids, t.sourceOutfitId,
+                    tryOnSourceKindOf(t.sourceKind),
+                    t.sourceContext.takeIf { it.isNotBlank() },
+                )
+                onOpenComposer()
+            },
+        )
+    }
+}
+
+/**
+ * Content of the `TryOnDetailRoute` destination: swipe left/right between past try-ons. The
+ * pager spans the live derived history (deletes shrink it in place; deleting the last entry
+ * pops the destination). Regenerate seeds the composer draft and navigates to `TryOnRoute`.
+ */
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun TryOnDetailDestination(
+    initialImageDriveId: String?,
+    tryOnViewModel: TryOnViewModel,
+    wardrobeViewModel: WardrobeViewModel,
+    shoppingClosetViewModel: ShoppingClosetViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    /** Outfits pool for resolving a try-on's source-outfit link. */
+    outfits: List<Outfit> = emptyList(),
+    /** Open the saved outfit linked from the detail view. Hidden when null. */
+    onOpenSourceOutfit: ((Outfit) -> Unit)? = null,
+    /** Navigate to the composer destination after Regenerate seeds the draft. */
+    onOpenComposer: () -> Unit = {},
+    /** Open the item-viewer destination over this one (the try-on's items, tapped item). */
+    onOpenItemViewer: (List<String>, String) -> Unit = { _, _ -> },
+    /** Pops the TryOnDetailRoute destination. */
+    onClose: () -> Unit,
+) {
+    val state by tryOnViewModel.state.collectAsState()
+    val combinedImages = rememberTryOnItemPool(wardrobeViewModel, shoppingClosetViewModel)
+    val history = state.history
+
+    LaunchedEffect(Unit) { Analytics.screen("TryOnDetail") }
+
+    // Every close path funnels through here exactly once: deleting the last try-on both empties
+    // the live history (the LaunchedEffect below) and could race a header close — the latch
+    // keeps a double pop from dismissing the screen underneath as well.
+    var closed by remember { mutableStateOf(false) }
+    val closeViewer: () -> Unit = {
+        if (!closed) {
+            closed = true
+            onClose()
         }
     }
-    val viewing = state.viewingTryOn
-    // Tapping an item on a try-on detail page opens the item-viewer destination with the
-    // try-on's items (resolved against the combined wardrobe + shopping pool at tap time;
-    // the destination re-resolves them live while it's up).
+    LaunchedEffect(history.isEmpty()) {
+        if (history.isEmpty()) closeViewer()
+    }
+    if (history.isEmpty()) return
+
+    // Tapping an item on a detail page opens the item-viewer destination with the try-on's
+    // items (resolved against the combined wardrobe + shopping pool at tap time; the
+    // destination re-resolves them live while it's up).
     val openItemViewer: (TryOn, DriveImage) -> Unit = { tryOn, img ->
         val byKey = combinedImages.associateBy { com.librelookai.util.ImageEncoding.itemMatchKey(it.name) }
         val ids = tryOn.itemNames.mapNotNull { n ->
@@ -115,206 +362,36 @@ fun TryOnComposerScreen(
         }
         onOpenItemViewer(ids, img.driveId)
     }
-    // Fill the whole dialog window with the theme background so the screen reads as truly
-    // full-screen — the underlying app never shows through the status/nav-bar strips. Only
-    // the Scaffold *content* is inset to the safe area via padding(effectiveBottom); the Scaffold
-    // container itself is transparent so the full-bleed background behind it shows edge-to-edge.
-    //
-    // Scaffold's contentWindowInsets defaults to consuming WindowInsets.systemBars itself —
-    // applied again inside the dialog window that double-adds insets and clips the bottom
-    // action row. Disable it (set WindowInsets(0)).
-    Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
-    Scaffold(
-        // The destination is full-bleed (the Box behind paints edge-to-edge); inset the
-        // content to the safe area itself — status bar on top, nav bar on the bottom.
-        modifier = Modifier.fillMaxSize().statusBarsPadding().padding(bottom = effectiveBottom),
-        containerColor = Color.Transparent,
-        contentWindowInsets = WindowInsets(0),
-        topBar = {
-            // Mirror the sibling picker dialogs (AddItemSheet / OutfitPickerDialog /
-            // TripOutfitPickerDialog) exactly — 4.dp top/bottom, no divider — so the slim top
-            // header is consistent across every try-on surface regardless of entry source.
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 4.dp, end = 16.dp, top = 4.dp, bottom = 4.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                IconButton(onClick = {
-                    Analytics.action("TryOn", "close")
-                    when {
-                        viewing != null && state.historyDetailIsRoot -> tryOnViewModel.close()
-                        viewing != null     -> tryOnViewModel.dismissViewingTryOn()
-                        state.isHistoryOpen && state.historyIsRoot -> tryOnViewModel.close()
-                        state.isHistoryOpen -> tryOnViewModel.closeHistory()
-                        else                -> tryOnViewModel.close()
-                    }
-                }) { Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_close)) }
-                Text(
-                    when {
-                        viewing != null         -> stringResource(R.string.tryon_history_detail_title)
-                        state.isHistoryOpen     -> stringResource(R.string.tryon_history_title)
-                        else                    -> stringResource(R.string.tryon_title)
-                    },
-                    style = MaterialTheme.typography.titleMedium,
-                    maxLines = 1,
-                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
-                    modifier = Modifier.weight(1f),
-                )
-            }
+
+    TryOnPageScaffold(
+        title = stringResource(R.string.tryon_history_detail_title),
+        onClose = {
+            Analytics.action("TryOn", "close")
+            closeViewer()
         },
-    ) { innerPadding ->
-        Box(Modifier.fillMaxSize().padding(innerPadding)) {
-            when {
-                viewing != null -> {
-                    // Swipe left/right between past try-ons. The pager spans the full history;
-                    // settling on a page syncs viewingTryOn so delete/regenerate act on it.
-                    val history = state.history
-                    val startIndex = history
-                        .indexOfFirst { it.imageDriveId == viewing.imageDriveId }
-                        .coerceAtLeast(0)
-                    if (history.isEmpty()) {
-                        TryOnDetailPage(
-                            tryOn = viewing,
-                            combinedImages = combinedImages,
-                            outfits = outfits,
-                            onOpenSourceOutfit = onOpenSourceOutfit,
-                            onItemTap = { img -> openItemViewer(viewing, img) },
-                            tryOnViewModel = tryOnViewModel,
-                        )
-                    } else {
-                        val pagerState = rememberPagerState(
-                            initialPage = startIndex.coerceIn(0, history.lastIndex),
-                            pageCount = { history.size },
-                        )
-                        LaunchedEffect(pagerState.currentPage, history) {
-                            history.getOrNull(pagerState.currentPage)?.let { tryOnViewModel.viewTryOn(it) }
-                        }
-                        HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
-                            TryOnDetailPage(
-                                tryOn = history[page],
-                                combinedImages = combinedImages,
-                                outfits = outfits,
-                                onOpenSourceOutfit = onOpenSourceOutfit,
-                                onItemTap = { img -> openItemViewer(history[page], img) },
-                                tryOnViewModel = tryOnViewModel,
-                            )
-                        }
-                    }
-                }
-
-                state.isHistoryOpen -> TryOnHistoryFeed(
-                    history = state.history,
-                    wardrobeImages = combinedImages,
-                    onOpen = { tryOnViewModel.viewTryOn(it) },
-                    onStartTryOn = onStartTryOn,
-                    showFab = true,
-                    onEditHero = { t ->
-                        val byKey = combinedImages.associateBy { com.librelookai.util.ImageEncoding.itemMatchKey(it.name) }
-                        val ids = t.itemNames
-                            .mapNotNull { n -> byKey[com.librelookai.util.ImageEncoding.itemMatchKey(n)] }
-                            .map { it.driveId }.toSet()
-                        tryOnViewModel.openComposer(
-                            ids, t.sourceOutfitId,
-                            tryOnSourceKindOf(t.sourceKind),
-                            t.sourceContext.takeIf { it.isNotBlank() },
-                        )
-                    },
-                )
-
-                state.resultPath != null -> TryOnResultContent(
-                    state = state,
-                    onSave = {
-                        Analytics.action("TryOn/Result", "save")
-                        tryOnViewModel.saveCurrent(combinedImages)
-                    },
-                    onTryAgain = {
-                        Analytics.action("TryOn/Result", "try_again")
-                        tryOnViewModel.generate(
-                            personFiles     = profileViewModel.tryOnFiles(),
-                            wardrobeImages  = combinedImages,
-                            preferences     = profileState.preferences.preferences,
-                        )
-                    },
-                    onChangeItems = {
-                        Analytics.action("TryOn/Result", "change_items")
-                        tryOnViewModel.openComposer(state.itemIds, state.sourceOutfitId, state.sourceKind, state.sourceContext)
-                    },
-                    wardrobeImages = combinedImages,
-                )
-
-                profileState.tryOnLocalPaths.isEmpty() -> TryOnNoPhotos(
-                    onOpenSettings = onOpenProfileSettings,
-                )
-
-                else -> TryOnComposerContent(
-                    state = state,
-                    wardrobeImages = combinedImages,
-                    outfits = outfits,
-                    locations = locations,
-                    referencePhotoPaths = profileState.tryOnLocalPaths.values.toList(),
-                    wardrobeViewModel = wardrobeViewModel,
-                    onRemoveItem = tryOnViewModel::removeItem,
-                    onAddItems = { ids -> ids.forEach(tryOnViewModel::addItem) },
-                    onPickOutfit = tryOnViewModel::selectOutfit,
-                    onConsumeAutoPick = tryOnViewModel::consumeAutoPick,
-                    onSwapSource = {
-                        Analytics.action("TryOn/Composer", "source_swap")
-                        onStartTryOn()
-                    },
-                    onEditReferencePhotos = onOpenProfileSettings,
-                    onCancelEmpty = {
-                        Analytics.action("TryOn/Composer", "cancel_empty")
-                        tryOnViewModel.close()
-                    },
-                    onGenerate = {
-                        Analytics.action("TryOn/Composer", "generate", mapOf("count" to state.itemIds.size.toString()))
-                        tryOnViewModel.generate(
-                            personFiles     = profileViewModel.tryOnFiles(),
-                            wardrobeImages  = combinedImages,
-                            preferences     = profileState.preferences.preferences,
-                        )
-                    },
-                )
-            }
-
-            // Generating overlay — covers everything. Uses the shared AI progress
-            // overlay (live upload bar + wait estimate + elapsed counter) so try-on
-            // shows the same progress feedback as every other AI surface.
-            if (state.isGenerating) {
-                AiProcessingOverlay(
-                    label = stringResource(R.string.tryon_generating),
-                    modifier = Modifier.fillMaxSize(),
-                )
-            }
-
-            // Error dialog. Resolve every string HERE (outside the AlertDialog) so it uses
-            // the localized LocalContext: an AlertDialog opens its own window, which severs
-            // the locale override inside its slot lambdas (title/text/buttons) and would
-            // otherwise fall back to the system locale (CLAUDE.md → Window quirks). errorRes
-            // also avoids resolving in the ViewModel (Application = system locale).
-            val errorTitle = stringResource(R.string.tryon_error)
-            val errorOk = stringResource(R.string.action_ok)
-            val errorMsg = state.errorRes?.let { stringResource(it) } ?: state.error
-            errorMsg?.let { msg ->
-                AlertDialog(
-                    onDismissRequest = tryOnViewModel::clearError,
-                    title = { Text(errorTitle) },
-                    text  = { Text(msg) },
-                    confirmButton = {
-                        TextButton(onClick = tryOnViewModel::clearError) {
-                            Text(errorOk)
-                        }
-                    },
-                )
-            }
-
-            // The InsufficientCreditsDialog for 402s is installed globally
-            // in MainActivity — it listens on CreditsEvents.topUp and routes
-            // "Buy" to the Settings tab. We only need to reset isGenerating
-            // here, which TryOnViewModel.generate() handles.
+    ) {
+        // First-composition snapshot — the pager only reads its initial page once.
+        val startIndex = remember {
+            history.indexOfFirst { it.imageDriveId == initialImageDriveId }.coerceAtLeast(0)
         }
-    }
+        val pagerState = rememberPagerState(
+            initialPage = startIndex.coerceIn(0, history.lastIndex),
+            pageCount = { history.size },
+        )
+        HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
+            history.getOrNull(page)?.let { tryOn ->
+                TryOnDetailPage(
+                    tryOn = tryOn,
+                    combinedImages = combinedImages,
+                    outfits = outfits,
+                    onOpenSourceOutfit = onOpenSourceOutfit,
+                    onItemTap = { img -> openItemViewer(tryOn, img) },
+                    tryOnViewModel = tryOnViewModel,
+                    onOpenComposer = onOpenComposer,
+                )
+            }
+        }
+
+        TryOnErrorDialog(state, tryOnViewModel::clearError)
     }
 }
-

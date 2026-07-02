@@ -389,9 +389,8 @@ internal fun AppContent(
                         LocalOnBackPressedDispatcherOwner provides activity,
                         LocalIsOffline provides isOffline,
                         LocalSystemBarsPadding provides systemBarsPadding,
-                        // The Settings opener closes the try-on composer (state-mirrored — its
-                        // destination pops on the flag) and clears the outfit composer's draft
-                        // (its route pops via goToTab; closeComposer is state hygiene, § 5 slice 9).
+                        // The Settings opener clears both composers' drafts (their routes pop
+                        // via goToTab; close()/closeComposer() are state hygiene, § 5 slice 9).
                         LocalOpenSettings provides {
                             Analytics.action("Toolbar", "open_settings")
                             tryOnViewModel.close(); outfitGenerationViewModel.closeComposer()
@@ -502,6 +501,7 @@ internal fun AppContent(
                         val runTryOn: (Set<String>, String?) -> Unit = { itemIds, sourceOutfitId ->
                             Analytics.action("TryOn", "open_composer", mapOf("count" to itemIds.size.toString()))
                             tryOnViewModel.openComposer(itemIds, sourceOutfitId)
+                            navController.navigate(TryOnRoute) { launchSingleTop = true }
                         }
                         // Try-on a saved outfit, preserving the outfit link so the saved try-on
                         // can jump back to it. Shared by the Outfits tab and the viewer destination.
@@ -521,6 +521,7 @@ internal fun AppContent(
                                 com.librelookai.tryon.TryOnSourceKind.TRAVEL,
                                 tripTryOnCtx.getString(R.string.tryon_trip_context, trip.name, day),
                             )
+                            navController.navigate(TryOnRoute) { launchSingleTop = true }
                         }
 
                         NavHost(
@@ -951,16 +952,9 @@ internal fun AppContent(
                         }
 
                         composable<TryOnRoute> {
-                            // TryOnViewModel state is the source of truth: the destination pops
-                            // itself when the open-flag flips false (header ✕, layered system
-                            // back, save-and-close and the Settings/AI-dialog jumps all run
-                            // through tryOnViewModel.close()).
-                            val tryOnUi by tryOnViewModel.state.collectAsState()
-                            LaunchedEffect(tryOnUi.isComposerOpen) {
-                                if (!tryOnUi.isComposerOpen) {
-                                    navController.popBackStack(TryOnRoute, inclusive = true)
-                                }
-                            }
+                            // Real navigation (§ 5 slice 9): openers seed the try-on draft then
+                            // navigate here; the header ✕ / system back clear the draft and pop
+                            // through onClose. History feed + detail are sibling destinations.
                             val tryOnStyles by stylesViewModel.state.collectAsState()
                             CompositionLocalProvider(LocalViewModelStoreOwner provides activity) {
                                 TryOnComposerScreen(
@@ -968,33 +962,62 @@ internal fun AppContent(
                                     wardrobeViewModel = wardrobeViewModel,
                                     profileViewModel  = profileViewModel,
                                     shoppingClosetViewModel = shoppingClosetViewModel,
-                                    onShowItemInWardrobe = { image ->
-                                        val matchFolder = image.folderId
-                                        val viewingAll = locationState.activeLocationId == LocationViewModel.ALL_LOCATIONS_ID
-                                        if (!viewingAll && matchFolder.isNotEmpty()
-                                            && matchFolder != locationState.activeLocationId
-                                        ) {
-                                            locationViewModel.setActiveLocation(matchFolder)
-                                        }
-                                        wardrobeViewModel.requestScrollToImage(image.driveId)
-                                        goToTab(1)
-                                        navResetTick++
-                                    },
                                     outfits = tryOnStyles.outfits,
                                     locations = locationState.locations,
-                                    onOpenSourceOutfit = { outfit ->
-                                        // Close the try-on surface, jump to Outfits, and ask the
-                                        // list to scroll the picked outfit into view + highlight.
-                                        tryOnViewModel.close()
-                                        stylesViewModel.requestScrollToOutfit(outfit.id)
-                                        goToTab(0)
-                                        navResetTick++
-                                    },
                                     onStartTryOn = { showQuickTryOnSheet = true },
                                     onOpenProfileSettings = {
                                         tryOnViewModel.close()
                                         goToTab(5)
                                         navResetTick++
+                                    },
+                                    onClose = {
+                                        navController.popBackStack(TryOnRoute, inclusive = true)
+                                    },
+                                )
+                            }
+                        }
+
+                        composable<TryOnHistoryRoute> {
+                            CompositionLocalProvider(LocalViewModelStoreOwner provides activity) {
+                                com.librelookai.tryon.TryOnHistoryDestination(
+                                    tryOnViewModel = tryOnViewModel,
+                                    wardrobeViewModel = wardrobeViewModel,
+                                    shoppingClosetViewModel = shoppingClosetViewModel,
+                                    onOpenDetail = { tryOn ->
+                                        navController.navigate(
+                                            TryOnDetailRoute(imageDriveId = tryOn.imageDriveId),
+                                        ) { launchSingleTop = true }
+                                    },
+                                    onStartTryOn = { showQuickTryOnSheet = true },
+                                    onOpenComposer = {
+                                        navController.navigate(TryOnRoute) { launchSingleTop = true }
+                                    },
+                                    onClose = {
+                                        navController.popBackStack(TryOnHistoryRoute, inclusive = true)
+                                    },
+                                )
+                            }
+                        }
+
+                        composable<TryOnDetailRoute> { entry ->
+                            val route = entry.toRoute<TryOnDetailRoute>()
+                            val tryOnStyles by stylesViewModel.state.collectAsState()
+                            CompositionLocalProvider(LocalViewModelStoreOwner provides activity) {
+                                com.librelookai.tryon.TryOnDetailDestination(
+                                    initialImageDriveId = route.imageDriveId,
+                                    tryOnViewModel = tryOnViewModel,
+                                    wardrobeViewModel = wardrobeViewModel,
+                                    shoppingClosetViewModel = shoppingClosetViewModel,
+                                    outfits = tryOnStyles.outfits,
+                                    onOpenSourceOutfit = { outfit ->
+                                        // Leave the try-on surfaces, jump to Outfits, and ask the
+                                        // list to scroll the picked outfit into view + highlight.
+                                        stylesViewModel.requestScrollToOutfit(outfit.id)
+                                        goToTab(0)
+                                        navResetTick++
+                                    },
+                                    onOpenComposer = {
+                                        navController.navigate(TryOnRoute) { launchSingleTop = true }
                                     },
                                     onOpenItemViewer = { itemIds, initialItemId ->
                                         navController.navigate(
@@ -1005,6 +1028,7 @@ internal fun AppContent(
                                             ),
                                         ) { launchSingleTop = true }
                                     },
+                                    onClose = { navController.popBackStack() },
                                 )
                             }
                         }
@@ -1097,20 +1121,6 @@ internal fun AppContent(
                                     }
                                 }
                                 val tryOnContext = LocalContext.current
-                                // Mirror the try-on composer's VM open-flag into navigation. The
-                                // flag is set by many nav-less call sites (Quick sheet, selection
-                                // bars, trip picker) — observing it here keeps every opener
-                                // working unchanged. The destination pops itself when the flag
-                                // flips false; any path that pops it by other means (goToTab)
-                                // must also close the VM, or the next open won't re-navigate.
-                                // (The outfit composer converted to real navigation — § 5 slice 9.)
-                                val tryOnUiState by tryOnViewModel.state.collectAsState()
-                                LaunchedEffect(tryOnUiState.isComposerOpen) {
-                                    if (tryOnUiState.isComposerOpen) {
-                                        navController.navigate(TryOnRoute) { launchSingleTop = true }
-                                    }
-                                }
-
                                 // Quick Try-On entry sheet — opened from the center nav button,
                                 // the history FAB, and the empty-state CTA. Hosted here so it
                                 // floats above whatever destination / dialog is on top.
@@ -1125,6 +1135,7 @@ internal fun AppContent(
                                                 com.librelookai.tryon.TryOnSourceKind.OUTFIT,
                                                 autoPick = true,
                                             )
+                                            navController.navigate(TryOnRoute) { launchSingleTop = true }
                                         },
                                         onPickWardrobe = {
                                             Analytics.action("TryOn/QuickSheet", "pick_source", mapOf("source" to "wardrobe"))
@@ -1134,6 +1145,7 @@ internal fun AppContent(
                                                 com.librelookai.tryon.TryOnSourceKind.WARDROBE,
                                                 autoPick = true,
                                             )
+                                            navController.navigate(TryOnRoute) { launchSingleTop = true }
                                         },
                                         onPickShopping = {
                                             Analytics.action("TryOn/QuickSheet", "pick_source", mapOf("source" to "shopping"))
@@ -1143,6 +1155,7 @@ internal fun AppContent(
                                                 com.librelookai.tryon.TryOnSourceKind.SHOPPING,
                                                 autoPick = true,
                                             )
+                                            navController.navigate(TryOnRoute) { launchSingleTop = true }
                                         },
                                         onPickTravel = {
                                             Analytics.action("TryOn/QuickSheet", "pick_source", mapOf("source" to "travel"))
@@ -1152,7 +1165,7 @@ internal fun AppContent(
                                         onSeeHistory = {
                                             Analytics.action("TryOn/QuickSheet", "pick_source", mapOf("source" to "history"))
                                             showQuickTryOnSheet = false
-                                            tryOnViewModel.openHistoryRoot()
+                                            navController.navigate(TryOnHistoryRoute) { launchSingleTop = true }
                                         },
                                         onDismiss = {
                                             Analytics.action("TryOn/QuickSheet", "dismiss")
@@ -1179,6 +1192,7 @@ internal fun AppContent(
                                                 com.librelookai.tryon.TryOnSourceKind.TRAVEL,
                                                 tryOnContext.getString(R.string.tryon_trip_context, tripName, day),
                                             )
+                                            navController.navigate(TryOnRoute) { launchSingleTop = true }
                                         },
                                         onDismiss = { showTripTryOnPicker = false },
                                     )
@@ -1253,8 +1267,7 @@ internal fun AppContent(
                                             when {
                                                 isNotConfigured -> TextButton(onClick = {
                                                     aiNotice = null
-                                                    // Close the try-on composer (state-mirrored) and clear
-                                                    // the outfit composer's draft; goToTab pops the routes.
+                                                    // Clear both composers' drafts; goToTab pops the routes.
                                                     tryOnViewModel.close()
                                                     outfitGenerationViewModel.closeComposer()
                                                     goToTab(5) // Settings (BYOK key lives in Advanced)

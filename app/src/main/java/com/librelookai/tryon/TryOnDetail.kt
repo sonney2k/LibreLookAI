@@ -71,6 +71,8 @@ internal fun TryOnDetailPage(
     onOpenSourceOutfit: ((Outfit) -> Unit)?,
     onItemTap: (DriveImage) -> Unit,
     tryOnViewModel: TryOnViewModel,
+    /** Navigate to the composer destination after Regenerate seeds the draft (§ 5 slice 9). */
+    onOpenComposer: () -> Unit = {},
 ) {
     val sourceOutfit = remember(tryOn.sourceOutfitId, outfits) {
         tryOn.sourceOutfitId?.let { id -> outfits.firstOrNull { it.id == id } }
@@ -93,6 +95,7 @@ internal fun TryOnDetailPage(
                 tryOnSourceKindOf(tryOn.sourceKind),
                 tryOn.sourceContext.takeIf { it.isNotBlank() },
             )
+            onOpenComposer()
         },
     )
 }

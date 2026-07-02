@@ -1000,8 +1000,20 @@ navigate inline; `OutfitsScreen` / the two viewer destinations / `TripViewerScre
 save-success via `commitOutfit`'s `onDone`) call `closeComposer()` + `onClose()`. Both
 `AppContent` mirror effects for the outfit composer are gone; `goToTab` jumps still call
 `closeComposer()` for draft hygiene only. Process-death restore shows an empty draft instead of
-the old blank-then-pop. `TryOnRoute` remains state-mirrored (below). Remaining work: with
-cross-VM dependencies gone: the viewer destinations
+the old blank-then-pop. **`TryOnRoute` converted too (July 2026):** the layered flag machine
+(`isComposerOpen`/`isHistoryOpen`/`historyIsRoot`/`historyDetailIsRoot`/`viewingTryOn`) is gone —
+`TryOnUiState` is composer draft + derived history only, and the surface split into three real
+routes: `TryOnRoute` (composer/result/no-photos), `TryOnHistoryRoute` (feed),
+`TryOnDetailRoute(imageDriveId)` (pager over live history, pops when it empties). Dead code from
+the removed Try-Ons sub-tab was deleted along the way (`openHistory`/`openHistoryRoot`/
+`openHistoryDetail`/`requestSwapSource`/`closeHistory`/`viewTryOn`/`dismissViewingTryOn` — the
+first two replaced by navigation, the rest had no callers). `TryOnScreen.kt` now hosts the three
+destination composables over a shared `TryOnPageScaffold` chrome + `TryOnErrorDialog`. Back-stack
+semantics improved intentionally: feed-hero edit / detail Regenerate push the composer (back
+returns to the feed/detail; the flag machine closed everything). The "any pop must close the VM"
+rule is fully retired — `close()`/`closeComposer()` on the Settings/AI-notice jumps are draft
+hygiene only. The TryOn composer/history **VM split is now unblocked** (no shared nav flags) but
+not yet done. Remaining work: with cross-VM dependencies gone: the viewer destinations
 (`ItemViewerRoute`/`OutfitViewerRoute`/`TripViewerRoute`) get destination-scoped
 `hiltViewModel()` instances resolving content from the stores by route ids; the state-mirrored
 composer routes become plain navigation — openers `navigate(OutfitComposerRoute(seedItemIds))`

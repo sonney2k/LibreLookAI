@@ -46,8 +46,9 @@ fun tryOnSourceKindOf(token: String?): TryOnSourceKind = when (token) {
 }
 
 data class TryOnUiState(
-    /** Unified composer: open when the user is assembling / generating / previewing a try-on. */
-    val isComposerOpen: Boolean = false,
+    // There are no open/layer flags any more (§ 5 slice 9): the composer, history feed and
+    // history detail are real navigation destinations (TryOnRoute / TryOnHistoryRoute /
+    // TryOnDetailRoute) — this state is the composer draft + the derived history.
     /** Drive IDs of the wardrobe items currently included in the composition. */
     val itemIds: Set<String> = emptySet(),
     /** Where the current composition originated — renders the composer's source banner. */
@@ -76,21 +77,6 @@ data class TryOnUiState(
 
     /** Past try-ons loaded from Drive, newest-first. */
     val history: List<TryOn> = emptyList(),
-    val isHistoryOpen: Boolean = false,
-    /**
-     * True when the history feed itself is the dialog root (opened from the Quick sheet's
-     * "See past try-ons" shortcut or the history FAB). Back from the feed then closes the
-     * whole dialog instead of falling through to an empty composer.
-     */
-    val historyIsRoot: Boolean = false,
-    /** Non-null when the user is viewing a past try-on from history. */
-    val viewingTryOn: TryOn? = null,
-    /**
-     * True when the detail view was opened directly as the dialog root (e.g. from the
-     * Outfits → Try-Ons sub-tab). In that case the back/close action should close the
-     * whole dialog rather than fall back to the in-dialog history grid.
-     */
-    val historyDetailIsRoot: Boolean = false,
 
     /**
      * Pre-formatted error message (e.g. a raw exception message). Prefer [errorRes] for
@@ -112,7 +98,8 @@ data class TryOnUiState(
  *  2. [generate] sends the current items + the user's reference photos to Gemini.
  *  3. The generated PNG lives in the app cache; the user can zoom it, regenerate, or
  *     [saveCurrent] it to Drive (uploaded to the _tryons subfolder, indexed in _tryons.json).
- *  4. [openHistory] surfaces the user's past try-ons; [viewTryOn] opens one.
+ *  4. History (feed + detail) is served by the derived [TryOnUiState.history]; the feed and
+ *     detail surfaces are their own navigation destinations (§ 5 slice 9).
  */
 @HiltViewModel
 class TryOnViewModel @Inject constructor(
@@ -159,7 +146,8 @@ class TryOnViewModel @Inject constructor(
     private var lastGeneratedSourceKind: TryOnSourceKind = TryOnSourceKind.NONE
     private var lastGeneratedSourceContext: String = ""
 
-    /** Open the composer with an initial set of wardrobe items. Loads history lazily. */
+    /** Seed the composer draft with an initial set of wardrobe items (callers navigate to
+     *  [com.librelookai.TryOnRoute] themselves — § 5 slice 9). Loads history lazily. */
     fun openComposer(
         seedItemIds: Set<String>,
         sourceOutfitId: String? = null,
@@ -169,7 +157,6 @@ class TryOnViewModel @Inject constructor(
     ) {
         _state.update {
             it.copy(
-                isComposerOpen = true,
                 itemIds = seedItemIds,
                 sourceOutfitId = sourceOutfitId,
                 sourceKind = sourceKind,
@@ -177,8 +164,6 @@ class TryOnViewModel @Inject constructor(
                 autoPick = autoPick,
                 resultPath = null,
                 isResultSaved = false,
-                isHistoryOpen = false,
-                viewingTryOn = null,
                 error = null,
                 errorRes = null,
             )
@@ -188,11 +173,6 @@ class TryOnViewModel @Inject constructor(
 
     /** Consume the one-shot [TryOnUiState.autoPick] flag once the composer has opened its picker. */
     fun consumeAutoPick() = _state.update { it.copy(autoPick = false) }
-
-    /** Reopen the Quick sheet flow from the composer's Swap button by clearing the composer. */
-    fun requestSwapSource() = _state.update {
-        it.copy(isComposerOpen = false, autoPick = false)
-    }
 
     /**
      * Replace the current composition with the items from [outfit] and remember the link so
@@ -209,27 +189,8 @@ class TryOnViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Open the composer dialog directly into history-detail view for [tryOn].
-     * Used by the Outfits → Try-Ons sub-tab: tapping a tile lands on the detail
-     * page; dismissing detail returns to the in-dialog history grid; closing
-     * the dialog returns the user to the sub-tab.
-     */
-    fun openHistoryDetail(tryOn: TryOn) {
-        _state.update {
-            it.copy(
-                isComposerOpen = true,
-                isHistoryOpen  = true,
-                viewingTryOn   = tryOn,
-                historyDetailIsRoot = true,
-                itemIds        = emptySet(),
-                resultPath     = null,
-                isResultSaved  = false,
-                error          = null,
-            )
-        }
-    }
-
+    /** Clears the composer draft (composition / result / errors); the route pops separately
+     *  (§ 5 slice 9 — this is state hygiene, not navigation). */
     fun close() {
         _state.value = TryOnUiState(history = _state.value.history)
     }
@@ -250,31 +211,6 @@ class TryOnViewModel @Inject constructor(
     fun setItems(ids: Set<String>) = _state.update {
         it.copy(itemIds = ids, sourceOutfitId = null, sourceKind = demoteSourceOnEdit(it.sourceKind))
     }
-
-    fun openHistory() = _state.update { it.copy(isHistoryOpen = true, viewingTryOn = null, historyDetailIsRoot = false) }
-
-    /** Open the dialog straight into the history hero feed (Quick sheet shortcut / FAB). */
-    fun openHistoryRoot() {
-        _state.update {
-            it.copy(
-                isComposerOpen = true,
-                isHistoryOpen = true,
-                historyIsRoot = true,
-                historyDetailIsRoot = false,
-                viewingTryOn = null,
-                resultPath = null,
-                isResultSaved = false,
-                autoPick = false,
-                error = null,
-                errorRes = null,
-            )
-        }
-        loadHistory()
-    }
-
-    fun closeHistory() = _state.update { it.copy(isHistoryOpen = false, historyIsRoot = false, viewingTryOn = null, historyDetailIsRoot = false) }
-    fun viewTryOn(t: TryOn) = _state.update { it.copy(viewingTryOn = t, historyDetailIsRoot = false) }
-    fun dismissViewingTryOn() = _state.update { it.copy(viewingTryOn = null, historyDetailIsRoot = false) }
 
     fun clearError() = _state.update { it.copy(error = null, errorRes = null) }
 
@@ -394,11 +330,6 @@ class TryOnViewModel @Inject constructor(
                 val remaining = loadTryOnsEntries(root).filterNot { it.imageDriveId == tryOn.imageDriveId }
                 drive.saveTryOnsJson(root, gson.toJson(remaining))
                 runCatching { tryOnStore.replaceAll(remaining) }
-                _state.update {
-                    it.copy(
-                        viewingTryOn = if (it.viewingTryOn?.imageDriveId == tryOn.imageDriveId) null else it.viewingTryOn,
-                    )
-                }
             } catch (e: Exception) {
                 _state.update {
                     it.copy(
@@ -427,11 +358,6 @@ class TryOnViewModel @Inject constructor(
                 val remaining = loadTryOnsEntries(root).filterNot { it.imageDriveId in ids }
                 drive.saveTryOnsJson(root, gson.toJson(remaining))
                 runCatching { tryOnStore.replaceAll(remaining) }
-                _state.update {
-                    it.copy(
-                        viewingTryOn = if (it.viewingTryOn?.imageDriveId in ids) null else it.viewingTryOn,
-                    )
-                }
             } catch (e: Exception) {
                 _state.update {
                     it.copy(

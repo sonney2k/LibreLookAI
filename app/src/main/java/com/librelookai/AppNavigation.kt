@@ -163,14 +163,23 @@ internal data class ItemViewerRoute(
 }
 
 /**
- * Try-on surface (composer / result / history feed / history detail) — replaces the global
- * `TryOnComposerScreen` Dialog. Carries no args: `TryOnViewModel` state is the source of truth.
- * AppContent navigates here when `isComposerOpen` flips true (wherever the open was triggered
- * from); the destination pops itself when it flips false. System back routes through the same
- * layered close logic as the header ✕ (detail → feed → composer → close).
+ * Try-on composer (assemble items → generate → result preview, plus the no-photos empty
+ * state). **Real navigation** (§ 5 slice 9 — the old single layered Dialog/route split into
+ * three destinations): openers seed `TryOnViewModel`'s draft (`openComposer`) then navigate
+ * here; the header ✕ / system back clear the draft (`close()`) and pop.
  */
 @Serializable
 internal data object TryOnRoute
+
+/** Past-try-ons hero feed. Tapping a tile pushes [TryOnDetailRoute]; the hero's edit action
+ *  seeds the composer draft and pushes [TryOnRoute] (back returns to the feed). */
+@Serializable
+internal data object TryOnHistoryRoute
+
+/** Fullscreen pager over the (live, store-derived) try-on history, starting at
+ *  [imageDriveId]. Deleting the last entry pops the destination. */
+@Serializable
+internal data class TryOnDetailRoute(val imageDriveId: String)
 
 /**
  * Outfit composer (create / edit / AI-suggest) — replaces the global `OutfitComposerScreen`
