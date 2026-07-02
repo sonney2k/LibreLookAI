@@ -97,6 +97,8 @@ fun OutfitsScreen(
     locationViewModel: LocationViewModel = viewModel(),
     tripsViewModel: TripsViewModel = viewModel(),
     onTryOnStyle: (Outfit) -> Unit = {},
+    /** Navigates to the composer destination — callers seed the generation VM first (§ 5 slice 9). */
+    onOpenComposer: () -> Unit = {},
     canTryOn: Boolean = false,
     onSettingsClick: () -> Unit = {},
     navResetTick: Int = 0,
@@ -228,6 +230,7 @@ fun OutfitsScreen(
                             // Default to the closet the user is currently viewing (null = All).
                             defaultSourceFolderId = locationViewModel.activeFolderId,
                         )
+                        onOpenComposer()
                     },
                     onSuggestExisting = {
                         generationViewModel.openPredictionSetup(
@@ -236,6 +239,7 @@ fun OutfitsScreen(
                     },
                     onEditOutfit = { style ->
                         generationViewModel.startEditing(style, wardrobeState.images, profileState.preferences)
+                        onOpenComposer()
                     },
                     onDeleteOutfit = outfitsViewModel::deleteOutfit,
                     onWearOutfit = { id ->
@@ -251,12 +255,17 @@ fun OutfitsScreen(
                     onClearOutfitSelection = outfitsViewModel::clearOutfitSelection,
                     onDeleteSelectedStyles = outfitsViewModel::deleteSelectedOutfits,
                     onCombineSelectedStyles = {
-                        generationViewModel.openComposerFromSelectedOutfits(
-                            selected = outfitsState.outfits.filter { it.id in outfitsState.selectedOutfitIds },
-                            images = wardrobeState.images,
-                            prefs  = profileState.preferences,
-                        )
-                        outfitsViewModel.clearOutfitSelection()
+                        val selected = outfitsState.outfits.filter { it.id in outfitsState.selectedOutfitIds }
+                        // The seed helper no-ops below 2 outfits — don't navigate to an unseeded composer.
+                        if (selected.size >= 2) {
+                            generationViewModel.openComposerFromSelectedOutfits(
+                                selected = selected,
+                                images = wardrobeState.images,
+                                prefs  = profileState.preferences,
+                            )
+                            outfitsViewModel.clearOutfitSelection()
+                            onOpenComposer()
+                        }
                     },
                     onClearPredictionError = generationViewModel::clearPrediction,
                     scrollEvents = outfitsViewModel.events,
@@ -274,6 +283,7 @@ fun OutfitsScreen(
                     wardrobeViewModel = wardrobeViewModel,
                     onEditOutfit = { style ->
                         generationViewModel.startEditing(style, wardrobeState.images, profileState.preferences)
+                        onOpenComposer()
                     },
                 )
                 2 -> OutfitWearStatsTab(
@@ -314,7 +324,7 @@ fun OutfitsScreen(
                 outfitsState.outfits.find { it.id == p.outfitId }
             }
         }
-        val showPrediction = predictedOutfits.isNotEmpty() && !generationState.isComposerOpen
+        val showPrediction = predictedOutfits.isNotEmpty()
         LaunchedEffect(showPrediction) {
             if (showPrediction) onOpenPredictionViewer()
         }

@@ -50,6 +50,8 @@ internal fun OutfitViewerDestination(
     tripId: String?,
     outfitsViewModel: OutfitsViewModel,
     generationViewModel: OutfitGenerationViewModel,
+    /** Navigates to the composer destination after Edit seeds the generation VM (§ 5 slice 9). */
+    onOpenComposer: () -> Unit,
     wardrobeViewModel: WardrobeViewModel,
     profileViewModel: ProfileViewModel,
     outfitEventsViewModel: OutfitEventsViewModel,
@@ -143,6 +145,7 @@ internal fun OutfitViewerDestination(
             } else {
                 generationViewModel.startEditing(o, wardrobeState.images, prefs)
             }
+            onOpenComposer()
         },
         onWear = { o ->
             when {

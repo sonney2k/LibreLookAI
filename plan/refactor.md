@@ -991,8 +991,17 @@ constructed in a plain test (concrete `DriveRepository` dep — awaits § 3 inte
   therefore waits on slice 9's `TryOnRoute` navigation rework rather than a foundation step.
 
 **Slice 9 — destination-scoped VMs + real composer navigation** (closes the phase-3/4
-deferral). **Status: the folded-in slice-8 VM split landed (July 2026, above); the navigation
-rework below is the remaining work.** With cross-VM dependencies gone: the viewer destinations
+deferral). **Status: the folded-in slice-8 VM split landed (July 2026, above), and
+`OutfitComposerRoute` converted to real navigation (July 2026):** `OutfitGenerationUiState` has
+no `isComposerOpen` — openers seed the draft then navigate (the three `AppContent` seed sites
+navigate inline; `OutfitsScreen` / the two viewer destinations / `TripViewerScreen` /
+`TravelScreen`→`TravelOutfitsView` get an `onOpenComposer` callback), the destination passes
+`onClose` (pop) into `OutfitComposerScreen`, whose close paths (requestClose / discard-confirm /
+save-success via `commitOutfit`'s `onDone`) call `closeComposer()` + `onClose()`. Both
+`AppContent` mirror effects for the outfit composer are gone; `goToTab` jumps still call
+`closeComposer()` for draft hygiene only. Process-death restore shows an empty draft instead of
+the old blank-then-pop. `TryOnRoute` remains state-mirrored (below). Remaining work: with
+cross-VM dependencies gone: the viewer destinations
 (`ItemViewerRoute`/`OutfitViewerRoute`/`TripViewerRoute`) get destination-scoped
 `hiltViewModel()` instances resolving content from the stores by route ids; the state-mirrored
 composer routes become plain navigation — openers `navigate(OutfitComposerRoute(seedItemIds))`

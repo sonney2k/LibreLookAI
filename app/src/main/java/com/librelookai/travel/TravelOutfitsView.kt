@@ -58,6 +58,7 @@ internal fun TravelOutfitsView(
     profileViewModel: ProfileViewModel,
     stylesViewModel: OutfitsViewModel,
     generationViewModel: com.librelookai.outfit.OutfitGenerationViewModel,
+    onOpenComposer: () -> Unit = {},
     tripsViewModel: TripsViewModel,
     locationViewModel: LocationViewModel,
     onOpenPlanner: () -> Unit,
@@ -319,6 +320,7 @@ internal fun TravelOutfitsView(
                                             wardrobeState.images,
                                             profileState.preferences,
                                         )
+                                        onOpenComposer()
                                     },
                                 )
                             }

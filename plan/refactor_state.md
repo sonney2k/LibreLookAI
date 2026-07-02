@@ -10,11 +10,11 @@ detail lives in `plan/refactor.md`; this is the short "where we left off" note.
   the unpushed **v2.4.1 (versionCode 30)** release commit.
 - **`refactor-phase5-rest`** — **the active branch**, rebased onto `main` (2026-07-02, clean).
   Carries slice 6 (complete), the events-half of slice 7, the slice-8 `OutfitsRepository`
-  foundation, **and the first slice-9 increment: the 2-way `OutfitsViewModel` split**
-  (uncommitted in tree as of this note — `OutfitGenerationViewModel` + `OutfitGenerationUiState`,
-  `OutfitsRepository.saveOutfit` / repo-owned scroll one-shot + `pendingWearOutfitId`, all
-  generation consumers rewired). Build: `:app:assembleDebug` + `testDebugUnitTest` (app + all
-  `core/*`) green.
+  foundation, and the first slice-9 increments: the **2-way `OutfitsViewModel` split**
+  (`fa0c5e8` — `OutfitGenerationViewModel` + `OutfitGenerationUiState`,
+  `OutfitsRepository.saveOutfit` / repo-owned scroll one-shot + `pendingWearOutfitId`) and the
+  **`OutfitComposerRoute` real-navigation conversion**. Build: `:app:assembleDebug` +
+  `testDebugUnitTest` (app + all `core/*`) green.
 
 ## Where the refactor stands (the big picture)
 
@@ -31,7 +31,7 @@ plus the cross-cutting arch sections.
 | 6 — bulk-maintenance use-cases | ✅ on branch | four use-cases extracted; dead audit/folder-import deleted |
 | 7 — UiState slimming + sealed events | ◑ | scroll one-shots done; `WardrobeUiState` progress prune + restore-overlay engine aggregation deferred → slice 9 |
 | 8 — VM splits | ✅ on branch | `OutfitsRepository` foundation **and the 2-way split landed**: `OutfitsViewModel` = list only (~230 lines, private state), `OutfitGenerationViewModel` = composer + prediction + tag flows (`OutfitsComposer`/`OutfitsPrediction`/`OutfitsTags` extensions retargeted). Repo owns `saveOutfit`, the scroll one-shot and `pendingWearOutfitId` — the VMs never call each other. `TryOnViewModel` split waits on slice-9 nav. |
-| 9 — destination-scoped VMs + real composer nav | ◑ started | VM-split precondition done. Remaining: viewer destinations get destination-scoped `hiltViewModel()`; `OutfitComposerRoute`/`TryOnRoute` become plain navigation (kill the open-flag mirror effects + "any pop must close the VM" rule); drop the `LocalViewModelStoreOwner provides activity` pins per converted destination; the folded-in slice-7 `WardrobeUiState` progress prune; TryOn composer/history split. |
+| 9 — destination-scoped VMs + real composer nav | ◑ in progress | VM split done; **`OutfitComposerRoute` is real navigation** (no `isComposerOpen`; openers seed + navigate, closes clear + pop; both AppContent mirror effects deleted). Remaining: `TryOnRoute` real nav (+ TryOn composer/history VM split); viewer destinations get destination-scoped `hiltViewModel()`; drop the `LocalViewModelStoreOwner provides activity` pins per converted destination; the folded-in slice-7 `WardrobeUiState` progress prune. |
 
 ## Cross-cutting arch sections still open (from `refactor.md` § status table)
 
@@ -49,11 +49,12 @@ plus the cross-cutting arch sections.
 
 ## Resume plan
 
-1. On `refactor-phase5-rest`: commit the 2-way split if not yet committed; confirm green.
-2. Continue slice 9's navigation rework (see the slice-9 status in `refactor.md`): convert
-   `OutfitComposerRoute` to real navigation first (the generation VM is now the only open-flag
-   owner), then `TryOnRoute` (+ its VM split), then destination-scope the viewers and drop the
-   activity pins; finish with the `WardrobeUiState` progress prune.
+1. On `refactor-phase5-rest`: confirm green (`./gradlew :app:assembleDebug testDebugUnitTest`).
+2. Continue slice 9's navigation rework (see the slice-9 status in `refactor.md`): next is
+   `TryOnRoute` real nav (+ its composer/history VM split — the layered
+   `isComposerOpen`/`isHistoryOpen`/`historyIsRoot`/`historyDetailIsRoot` flag machine becomes
+   routes), then destination-scope the viewers and drop the activity pins; finish with the
+   `WardrobeUiState` progress prune.
 3. §6/§7 are independent — can land anytime without blocking the spine.
 4. Exit criteria (from `refactor.md`): `AppContent` has no data bridges; no screen takes another
    feature's VM as a param; `WardrobeViewModel` ≤ ~400 lines.

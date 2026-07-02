@@ -389,9 +389,9 @@ internal fun AppContent(
                         LocalOnBackPressedDispatcherOwner provides activity,
                         LocalIsOffline provides isOffline,
                         LocalSystemBarsPadding provides systemBarsPadding,
-                        // The Settings opener also closes the try-on + outfit composers (both hosted
-                        // outside `when(selectedTab)`, so a tab switch alone wouldn't dismiss them or
-                        // their picker dialogs).
+                        // The Settings opener closes the try-on composer (state-mirrored — its
+                        // destination pops on the flag) and clears the outfit composer's draft
+                        // (its route pops via goToTab; closeComposer is state hygiene, § 5 slice 9).
                         LocalOpenSettings provides {
                             Analytics.action("Toolbar", "open_settings")
                             tryOnViewModel.close(); outfitGenerationViewModel.closeComposer()
@@ -614,6 +614,9 @@ internal fun AppContent(
                                         OutfitsScreen(
                                             outfitsViewModel = stylesViewModel,
                                             generationViewModel = outfitGenerationViewModel,
+                                            onOpenComposer = {
+                                                navController.navigate(OutfitComposerRoute) { launchSingleTop = true }
+                                            },
                                             wardrobeViewModel = wardrobeViewModel,
                                             outfitEventsViewModel = outfitEventsViewModel,
                                             profileViewModel = profileViewModel,
@@ -659,6 +662,7 @@ internal fun AppContent(
                                                     // Default to the currently selected closet (null = All).
                                                     defaultSourceFolderId = locationViewModel.activeFolderId,
                                                 )
+                                                navController.navigate(OutfitComposerRoute) { launchSingleTop = true }
                                                 wardrobeViewModel.clearSelection()
                                             },
                                             onTryOnSelection = { itemIds ->
@@ -723,6 +727,7 @@ internal fun AppContent(
                                                     // Default to the currently selected closet (null = All).
                                                     defaultSourceFolderId = locationViewModel.activeFolderId,
                                                 )
+                                                navController.navigate(OutfitComposerRoute) { launchSingleTop = true }
                                                 shoppingClosetViewModel.clearSelection()
                                             },
                                             onTryOnSelection = { itemIds ->
@@ -752,6 +757,9 @@ internal fun AppContent(
                                             profileViewModel = profileViewModel,
                                             stylesViewModel = stylesViewModel,
                                             generationViewModel = outfitGenerationViewModel,
+                                            onOpenComposer = {
+                                                navController.navigate(OutfitComposerRoute) { launchSingleTop = true }
+                                            },
                                             locationViewModel = locationViewModel,
                                             onSettingsClick = onSettingsClick,
                                             onOpenPlanner = {
@@ -846,6 +854,9 @@ internal fun AppContent(
                                         tripsViewModel = tripsViewModel,
                                         outfitsViewModel = stylesViewModel,
                                         generationViewModel = outfitGenerationViewModel,
+                                        onOpenComposer = {
+                                            navController.navigate(OutfitComposerRoute) { launchSingleTop = true }
+                                        },
                                         wardrobeViewModel = wardrobeViewModel,
                                         profileViewModel = profileViewModel,
                                         // Pass the activity-scoped instances explicitly — inside a
@@ -884,6 +895,9 @@ internal fun AppContent(
                                     tripId = route.tripId,
                                     outfitsViewModel = stylesViewModel,
                                     generationViewModel = outfitGenerationViewModel,
+                                    onOpenComposer = {
+                                        navController.navigate(OutfitComposerRoute) { launchSingleTop = true }
+                                    },
                                     wardrobeViewModel = wardrobeViewModel,
                                     profileViewModel = profileViewModel,
                                     outfitEventsViewModel = outfitEventsViewModel,
@@ -996,18 +1010,16 @@ internal fun AppContent(
                         }
 
                         composable<OutfitComposerRoute> {
-                            // Same state-mirroring contract as TryOnRoute, driven by
-                            // OutfitGenerationViewModel.isComposerOpen (the edit-mode
-                            // discard-confirm still guards every close before the flag flips).
-                            val composerState by outfitGenerationViewModel.state.collectAsState()
-                            LaunchedEffect(composerState.isComposerOpen) {
-                                if (!composerState.isComposerOpen) {
-                                    navController.popBackStack(OutfitComposerRoute, inclusive = true)
-                                }
-                            }
+                            // Real navigation (§ 5 slice 9): openers seed the generation VM's
+                            // draft then navigate here; every close path (X / system back via
+                            // the discard-confirm / save success) clears the draft and pops
+                            // through onClose. No open-flag mirror any more.
                             CompositionLocalProvider(LocalViewModelStoreOwner provides activity) {
                                 OutfitComposerScreen(
                                     generationViewModel = outfitGenerationViewModel,
+                                    onClose = {
+                                        navController.popBackStack(OutfitComposerRoute, inclusive = true)
+                                    },
                                     wardrobeViewModel = wardrobeViewModel,
                                     profileViewModel  = profileViewModel,
                                     weatherViewModel  = weatherViewModel,
@@ -1057,6 +1069,7 @@ internal fun AppContent(
                                                     prefs       = profileViewModel.state.value.preferences,
                                                     defaultSourceFolderId = locationViewModel.activeFolderId,
                                                 )
+                                                navController.navigate(OutfitComposerRoute) { launchSingleTop = true }
                                             }
                                             else -> {}
                                         }
@@ -1084,23 +1097,17 @@ internal fun AppContent(
                                     }
                                 }
                                 val tryOnContext = LocalContext.current
-                                // Mirror the composers' VM open-flags into navigation. The flags
-                                // are set by many nav-less call sites (Quick sheet, selection
-                                // bars, viewer/trip edits) — observing them here keeps every
-                                // opener working unchanged. The destinations pop themselves when
-                                // the flags flip false; any path that pops them by other means
-                                // (goToTab) must also close the VM, or the next open won't
-                                // re-navigate (the flag never transitions).
+                                // Mirror the try-on composer's VM open-flag into navigation. The
+                                // flag is set by many nav-less call sites (Quick sheet, selection
+                                // bars, trip picker) — observing it here keeps every opener
+                                // working unchanged. The destination pops itself when the flag
+                                // flips false; any path that pops it by other means (goToTab)
+                                // must also close the VM, or the next open won't re-navigate.
+                                // (The outfit composer converted to real navigation — § 5 slice 9.)
                                 val tryOnUiState by tryOnViewModel.state.collectAsState()
                                 LaunchedEffect(tryOnUiState.isComposerOpen) {
                                     if (tryOnUiState.isComposerOpen) {
                                         navController.navigate(TryOnRoute) { launchSingleTop = true }
-                                    }
-                                }
-                                val generationUiState by outfitGenerationViewModel.state.collectAsState()
-                                LaunchedEffect(generationUiState.isComposerOpen) {
-                                    if (generationUiState.isComposerOpen) {
-                                        navController.navigate(OutfitComposerRoute) { launchSingleTop = true }
                                     }
                                 }
 
@@ -1246,8 +1253,8 @@ internal fun AppContent(
                                             when {
                                                 isNotConfigured -> TextButton(onClick = {
                                                     aiNotice = null
-                                                    // Dismiss the composers hosted outside when(selectedTab)
-                                                    // so Settings is actually visible.
+                                                    // Close the try-on composer (state-mirrored) and clear
+                                                    // the outfit composer's draft; goToTab pops the routes.
                                                     tryOnViewModel.close()
                                                     outfitGenerationViewModel.closeComposer()
                                                     goToTab(5) // Settings (BYOK key lives in Advanced)

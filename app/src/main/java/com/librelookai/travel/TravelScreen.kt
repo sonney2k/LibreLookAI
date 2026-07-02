@@ -42,6 +42,8 @@ fun TravelScreen(
     profileViewModel: ProfileViewModel = viewModel(),
     stylesViewModel: OutfitsViewModel = viewModel(),
     generationViewModel: com.librelookai.outfit.OutfitGenerationViewModel = viewModel(),
+    /** Navigates to the composer destination after an orphan-outfit edit seeds the VM (§ 5 slice 9). */
+    onOpenComposer: () -> Unit = {},
     locationViewModel: LocationViewModel = viewModel(),
     onSettingsClick: () -> Unit = {},
     onOpenPlanner: () -> Unit = {},
@@ -53,6 +55,7 @@ fun TravelScreen(
         profileViewModel = profileViewModel,
         stylesViewModel = stylesViewModel,
         generationViewModel = generationViewModel,
+        onOpenComposer = onOpenComposer,
         tripsViewModel = tripsViewModel,
         locationViewModel = locationViewModel,
         onOpenPlanner = onOpenPlanner,

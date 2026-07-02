@@ -97,8 +97,9 @@ data class OutfitGenerationUiState(
     val predictionIndex: Int = 0,
     // Refinement feedback (prediction loop)
     val feedbackHistory: List<String> = emptyList(),
-    // Unified style composer
-    val isComposerOpen: Boolean = false,
+    // Unified style composer. There is no isComposerOpen flag any more (§ 5 slice 9):
+    // the composer is a real navigation destination — openers seed this draft state, then
+    // navigate OutfitComposerRoute; visibility is route presence.
     /** Non-null when the composer is editing an existing saved style (update-in-place). */
     val composerEditingOutfitId: String? = null,
     val composerItemIds: List<String> = emptyList(),

@@ -109,7 +109,6 @@ internal fun OutfitGenerationViewModel.openComposer(
         val seedVibes   = tripContext?.vibes ?: emptySet()
         _state.update {
             it.copy(
-                isComposerOpen              = true,
                 composerEditingOutfitId      = editingStyleId,
                 composerItemIds             = ids,
                 composerSlots               = slots,
@@ -166,7 +165,6 @@ internal fun OutfitGenerationViewModel.openComposerFromSelectedOutfits(selected:
 
 internal fun OutfitGenerationViewModel.closeComposer() = _state.update {
         it.copy(
-            isComposerOpen              = false,
             composerEditingOutfitId      = null,
             composerItemIds             = emptyList(),
             composerSlots               = emptyList(),

@@ -88,6 +88,9 @@ fun OutfitComposerScreen(
     outfitEventsViewModel: OutfitEventsViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
     /** Open the item-viewer destination over this one (composer source: items track the slots). */
     onOpenItemViewer: (String) -> Unit = {},
+    /** Pops the OutfitComposerRoute destination (§ 5 slice 9 — the composer is real navigation;
+     *  every close path clears the VM draft via closeComposer, then pops through here). */
+    onClose: () -> Unit = {},
 ) {
     val s by generationViewModel.state.collectAsState()
     val wardrobe by wardrobeViewModel.state.collectAsState()
@@ -110,8 +113,6 @@ fun OutfitComposerScreen(
     val parentContext = LocalContext.current
     val parentConfiguration = LocalConfiguration.current
     val isOffline = LocalIsOffline.current
-
-    if (!s.isComposerOpen) return
 
     LaunchedEffect(Unit) { Analytics.screen("OutfitComposer") }
 
@@ -147,6 +148,7 @@ fun OutfitComposerScreen(
         else {
             Analytics.action("OutfitComposer", "close")
             generationViewModel.closeComposer()
+            onClose()
         }
     }
 
@@ -470,6 +472,7 @@ fun OutfitComposerScreen(
             onConfirm = {
                 Analytics.action("OutfitComposer", "close")
                 generationViewModel.closeComposer()
+                onClose()
             },
             onDismiss = { showDiscardDialog = false },
         )
@@ -507,7 +510,11 @@ fun OutfitComposerScreen(
             parentConfiguration = parentConfiguration,
             onConfirm = { name, description, tags ->
                 generationViewModel.dismissSaveDialog()
-                generationViewModel.commitOutfit(name, description, tags)
+                // A successful save closes the composer (commitOutfit clears the draft) —
+                // pop the destination; a failed save leaves it up with the error state.
+                generationViewModel.commitOutfit(name, description, tags) { ok ->
+                    if (ok) onClose()
+                }
             },
             onDismiss = { generationViewModel.dismissSaveDialog() },
         )

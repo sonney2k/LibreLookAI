@@ -174,8 +174,10 @@ internal data object TryOnRoute
 
 /**
  * Outfit composer (create / edit / AI-suggest) — replaces the global `OutfitComposerScreen`
- * Dialog. Same state-mirroring contract as [TryOnRoute], driven by
- * `OutfitsViewModel.isComposerOpen`; the edit-mode discard-confirm still guards every close.
+ * Dialog. **Real navigation** (§ 5 slice 9, unlike [TryOnRoute]'s state mirror): openers seed
+ * `OutfitGenerationViewModel`'s draft state (`openComposer`/`startEditing`), then navigate here;
+ * every close path (header ✕ / system back — both behind the edit-mode discard-confirm — and a
+ * successful save) clears the draft via `closeComposer()` and pops the destination.
  */
 @Serializable
 internal data object OutfitComposerRoute

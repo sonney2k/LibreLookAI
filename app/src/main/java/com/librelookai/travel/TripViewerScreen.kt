@@ -58,6 +58,8 @@ fun TripViewerScreen(
     tripsViewModel: TripsViewModel,
     outfitsViewModel: OutfitsViewModel,
     generationViewModel: OutfitGenerationViewModel,
+    /** Navigates to the composer destination after a day-edit seeds the generation VM (§ 5 slice 9). */
+    onOpenComposer: () -> Unit = {},
     wardrobeViewModel: WardrobeViewModel,
     profileViewModel: ProfileViewModel,
     locationViewModel: com.librelookai.wardrobe.LocationViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
@@ -151,6 +153,7 @@ fun TripViewerScreen(
     // viewer destination's edit action goes through the same shared helper).
     val startEditingOutfit: (Outfit) -> Unit = { o ->
         generationViewModel.startEditingTripOutfit(trip, o, wardrobeState.images, profileState.preferences)
+        onOpenComposer()
     }
 
     // One-time "saved" confirmation shown when a freshly generated trip opens.
