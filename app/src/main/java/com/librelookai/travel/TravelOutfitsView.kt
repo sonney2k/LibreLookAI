@@ -57,6 +57,7 @@ internal fun TravelOutfitsView(
     wardrobeViewModel: WardrobeViewModel,
     profileViewModel: ProfileViewModel,
     stylesViewModel: OutfitsViewModel,
+    generationViewModel: com.librelookai.outfit.OutfitGenerationViewModel,
     tripsViewModel: TripsViewModel,
     locationViewModel: LocationViewModel,
     onOpenPlanner: () -> Unit,
@@ -313,7 +314,7 @@ internal fun TravelOutfitsView(
                                     outfit = outfit,
                                     imagesById = imagesById,
                                     onClick = {
-                                        stylesViewModel.startEditing(
+                                        generationViewModel.startEditing(
                                             outfit,
                                             wardrobeState.images,
                                             profileState.preferences,

@@ -308,6 +308,7 @@ internal fun AppContent(
                     }
                     val locationViewModel: LocationViewModel = viewModel()
                     val stylesViewModel: OutfitsViewModel = viewModel()
+                    val outfitGenerationViewModel: com.librelookai.outfit.OutfitGenerationViewModel = viewModel()
                     val wardrobeViewModel: WardrobeViewModel = viewModel()
                     val outfitEventsViewModel: OutfitEventsViewModel = viewModel()
                     val weatherViewModel: WeatherViewModel = viewModel()
@@ -393,7 +394,7 @@ internal fun AppContent(
                         // their picker dialogs).
                         LocalOpenSettings provides {
                             Analytics.action("Toolbar", "open_settings")
-                            tryOnViewModel.close(); stylesViewModel.closeComposer()
+                            tryOnViewModel.close(); outfitGenerationViewModel.closeComposer()
                             goToTab(5); navResetTick++
                         },
                         LocalClosetSelector provides ClosetSelectorContext(
@@ -612,6 +613,7 @@ internal fun AppContent(
                                         CompositionLocalProvider(LocalViewModelStoreOwner provides activity) {
                                         OutfitsScreen(
                                             outfitsViewModel = stylesViewModel,
+                                            generationViewModel = outfitGenerationViewModel,
                                             wardrobeViewModel = wardrobeViewModel,
                                             outfitEventsViewModel = outfitEventsViewModel,
                                             profileViewModel = profileViewModel,
@@ -650,7 +652,7 @@ internal fun AppContent(
                                             tryOnViewModel = tryOnViewModel,
                                             onCreateOutfitFromSelection = { itemIds ->
                                                 Analytics.action("Wardrobe", "create_outfit_from_selection", mapOf("count" to itemIds.size.toString()))
-                                                stylesViewModel.openComposer(
+                                                outfitGenerationViewModel.openComposer(
                                                     seedItemIds = itemIds,
                                                     images      = wardrobeViewModel.state.value.images,
                                                     prefs       = profileViewModel.state.value.preferences,
@@ -713,7 +715,7 @@ internal fun AppContent(
                                             },
                                             onCreateOutfitFromSelection = { itemIds ->
                                                 Analytics.action("Shopping", "create_outfit_from_selection", mapOf("count" to itemIds.size.toString()))
-                                                stylesViewModel.openComposer(
+                                                outfitGenerationViewModel.openComposer(
                                                     seedItemIds = itemIds,
                                                     images      = wardrobeViewModel.state.value.images +
                                                         shoppingClosetState.items,
@@ -749,6 +751,7 @@ internal fun AppContent(
                                             wardrobeViewModel = wardrobeViewModel,
                                             profileViewModel = profileViewModel,
                                             stylesViewModel = stylesViewModel,
+                                            generationViewModel = outfitGenerationViewModel,
                                             locationViewModel = locationViewModel,
                                             onSettingsClick = onSettingsClick,
                                             onOpenPlanner = {
@@ -842,6 +845,7 @@ internal fun AppContent(
                                         tripId = tripId,
                                         tripsViewModel = tripsViewModel,
                                         outfitsViewModel = stylesViewModel,
+                                        generationViewModel = outfitGenerationViewModel,
                                         wardrobeViewModel = wardrobeViewModel,
                                         profileViewModel = profileViewModel,
                                         // Pass the activity-scoped instances explicitly — inside a
@@ -879,6 +883,7 @@ internal fun AppContent(
                                     initialOutfitId = route.initialOutfitId,
                                     tripId = route.tripId,
                                     outfitsViewModel = stylesViewModel,
+                                    generationViewModel = outfitGenerationViewModel,
                                     wardrobeViewModel = wardrobeViewModel,
                                     profileViewModel = profileViewModel,
                                     outfitEventsViewModel = outfitEventsViewModel,
@@ -992,9 +997,9 @@ internal fun AppContent(
 
                         composable<OutfitComposerRoute> {
                             // Same state-mirroring contract as TryOnRoute, driven by
-                            // OutfitsViewModel.isComposerOpen (the edit-mode discard-confirm
-                            // still guards every close before the flag flips).
-                            val composerState by stylesViewModel.state.collectAsState()
+                            // OutfitGenerationViewModel.isComposerOpen (the edit-mode
+                            // discard-confirm still guards every close before the flag flips).
+                            val composerState by outfitGenerationViewModel.state.collectAsState()
                             LaunchedEffect(composerState.isComposerOpen) {
                                 if (!composerState.isComposerOpen) {
                                     navController.popBackStack(OutfitComposerRoute, inclusive = true)
@@ -1002,7 +1007,7 @@ internal fun AppContent(
                             }
                             CompositionLocalProvider(LocalViewModelStoreOwner provides activity) {
                                 OutfitComposerScreen(
-                                    stylesViewModel   = stylesViewModel,
+                                    generationViewModel = outfitGenerationViewModel,
                                     wardrobeViewModel = wardrobeViewModel,
                                     profileViewModel  = profileViewModel,
                                     weatherViewModel  = weatherViewModel,
@@ -1033,6 +1038,7 @@ internal fun AppContent(
                                     wardrobeViewModel = wardrobeViewModel,
                                     shoppingClosetViewModel = shoppingClosetViewModel,
                                     outfitsViewModel = stylesViewModel,
+                                    generationViewModel = outfitGenerationViewModel,
                                     tryOnViewModel = tryOnViewModel,
                                     locationViewModel = locationViewModel,
                                     onCreateOutfitFromSelection = { itemIds ->
@@ -1044,7 +1050,7 @@ internal fun AppContent(
                                             ItemViewerRoute.SOURCE_SHOPPING,
                                             -> {
                                                 Analytics.action("ItemViewer", "create_outfit_from_item")
-                                                stylesViewModel.openComposer(
+                                                outfitGenerationViewModel.openComposer(
                                                     seedItemIds = itemIds,
                                                     images      = wardrobeViewModel.state.value.images +
                                                         shoppingClosetViewModel.state.value.items,
@@ -1091,8 +1097,9 @@ internal fun AppContent(
                                         navController.navigate(TryOnRoute) { launchSingleTop = true }
                                     }
                                 }
-                                LaunchedEffect(stylesState.isComposerOpen) {
-                                    if (stylesState.isComposerOpen) {
+                                val generationUiState by outfitGenerationViewModel.state.collectAsState()
+                                LaunchedEffect(generationUiState.isComposerOpen) {
+                                    if (generationUiState.isComposerOpen) {
                                         navController.navigate(OutfitComposerRoute) { launchSingleTop = true }
                                     }
                                 }
@@ -1175,7 +1182,7 @@ internal fun AppContent(
                                 // from Wardrobe and ask for AI suggestions before the user has
                                 // ever visited the Outfits tab).
                                 com.librelookai.outfit.PredictionSetupDialog(
-                                    outfitsViewModel  = stylesViewModel,
+                                    generationViewModel = outfitGenerationViewModel,
                                     profileViewModel  = profileViewModel,
                                     weatherViewModel  = weatherViewModel,
                                     locationViewModel = locationViewModel,
@@ -1242,7 +1249,7 @@ internal fun AppContent(
                                                     // Dismiss the composers hosted outside when(selectedTab)
                                                     // so Settings is actually visible.
                                                     tryOnViewModel.close()
-                                                    stylesViewModel.closeComposer()
+                                                    outfitGenerationViewModel.closeComposer()
                                                     goToTab(5) // Settings (BYOK key lives in Advanced)
                                                 }) { Text(stringResource(R.string.ai_set_up_key)) }
                                                 retry != null -> TextButton(onClick = {

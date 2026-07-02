@@ -20,8 +20,10 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -68,6 +70,24 @@ class OutfitsRepository @Inject constructor(
     private val _scope = MutableStateFlow<List<String>>(emptyList())
     /** Serializes [persistOutfitFolders] so back-to-back mutations can't interleave store writes. */
     private val persistMutex = Mutex()
+
+    /** One-shot events the outfits list consumes (scroll-to-outfit). Lives here (§ 5 slice 9) so
+     *  the generation side can emit on save without a cross-VM call; buffered so a cross-tab
+     *  request fired before the list mounts (Try-On "View outfit") still lands. */
+    private val _events = Channel<OutfitsEvent>(Channel.BUFFERED)
+    val events = _events.receiveAsFlow()
+
+    /** Ask the Outfits list to scroll the given outfit into view. */
+    fun requestScrollToOutfit(outfitId: String) {
+        _events.trySend(OutfitsEvent.ScrollToOutfit(outfitId))
+    }
+
+    private val _pendingWearOutfitId = MutableStateFlow<String?>(null)
+    /** After an edit-save, the outfit the list surface should offer to wear immediately (its
+     *  snackbar clears it). Stateful, not a one-shot: it shows until acted on / dismissed. */
+    val pendingWearOutfitId: StateFlow<String?> = _pendingWearOutfitId
+
+    fun setPendingWearOutfit(outfitId: String?) { _pendingWearOutfitId.value = outfitId }
 
     /**
      * Derived outfits (§ 5 slice 4b): the store rows in scope — rows carry resolved itemIds (only
@@ -157,6 +177,37 @@ class OutfitsRepository @Inject constructor(
             .map { f -> async { drive.listFiles(f).associate { it.id to it.name } } }
             .awaitAll()
             .fold(emptyMap<String, String>()) { acc, m -> acc + m }
+    }
+
+    /**
+     * Persists a brand-new outfit into the active save folder (§ 5 slice 9): resolves its
+     * `itemNames` across every loaded closet (a composed outfit may span folders — see
+     * [idToNameAllFolders]), stamps the home folder (the field is @Transient, so Drive JSON is
+     * unchanged; the local cache homes each outfit in exactly one folder, and an empty folderId
+     * would leave it mis-homed until the next Drive sync), fires the scroll-to-outfit one-shot
+     * for the list, and routes the write through [persistOutfitFolders]. Returns the saved
+     * outfit, or null when no save target is resolvable (no closet session yet).
+     */
+    suspend fun saveOutfit(
+        name: String,
+        description: String,
+        itemIds: List<String>,
+        tags: List<String> = emptyList(),
+    ): Outfit? {
+        if (itemIds.isEmpty()) return null
+        val id = saveFolderId ?: folderId ?: return null
+        val idToName = idToNameAllFolders(listOf(id))
+        val newOutfit = Outfit(
+            name = name,
+            description = description,
+            itemIds = itemIds,
+            itemNames = itemIds.mapNotNull { idToName[it] },
+            tags = tags,
+            folderId = id,
+        )
+        requestScrollToOutfit(newOutfit.id)
+        persistOutfitFolders(outfits.value + newOutfit, listOf(id))
+        return newOutfit
     }
 
     /**

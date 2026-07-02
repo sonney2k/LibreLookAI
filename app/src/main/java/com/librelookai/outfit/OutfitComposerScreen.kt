@@ -79,7 +79,7 @@ private fun DriveImage.displayLabel(): String =
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun OutfitComposerScreen(
-    stylesViewModel: OutfitsViewModel,
+    generationViewModel: OutfitGenerationViewModel,
     wardrobeViewModel: WardrobeViewModel,
     profileViewModel: ProfileViewModel,
     weatherViewModel: WeatherViewModel,
@@ -89,7 +89,7 @@ fun OutfitComposerScreen(
     /** Open the item-viewer destination over this one (composer source: items track the slots). */
     onOpenItemViewer: (String) -> Unit = {},
 ) {
-    val s by stylesViewModel.state.collectAsState()
+    val s by generationViewModel.state.collectAsState()
     val wardrobe by wardrobeViewModel.state.collectAsState()
     val profile by profileViewModel.state.collectAsState()
     val weather by weatherViewModel.state.collectAsState()
@@ -146,7 +146,7 @@ fun OutfitComposerScreen(
         if (isEditMode && hasChanges) showDiscardDialog = true
         else {
             Analytics.action("OutfitComposer", "close")
-            stylesViewModel.closeComposer()
+            generationViewModel.closeComposer()
         }
     }
 
@@ -186,7 +186,7 @@ fun OutfitComposerScreen(
                         totalSlots = effectiveSlots.size,
                         onClose = requestClose,
                         onOpenFullscreen = {
-                            stylesViewModel.setComposerMode(ComposerMode.VIEW)
+                            generationViewModel.setComposerMode(ComposerMode.VIEW)
                         },
                     )
                 }
@@ -198,8 +198,8 @@ fun OutfitComposerScreen(
                         locations = locationState.locations,
                         isEditMode = true,
                         onPickItem = { slotId -> exchangeSlotId = slotId },
-                        onToggleLock = { slotId -> stylesViewModel.toggleSlotLock(slotId) },
-                        onRemove = { slotId -> stylesViewModel.removeSlot(slotId) },
+                        onToggleLock = { slotId -> generationViewModel.toggleSlotLock(slotId) },
+                        onRemove = { slotId -> generationViewModel.removeSlot(slotId) },
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxWidth()
@@ -297,17 +297,17 @@ fun OutfitComposerScreen(
                                     val n = s.composerSuggestions.size
                                     val target = ((s.composerSuggestionIndex - 1) % n + n) % n
                                     Analytics.action("OutfitComposer", "suggestion_prev")
-                                    stylesViewModel.showComposerSuggestionAt(target)
+                                    generationViewModel.showComposerSuggestionAt(target)
                                 },
                                 onNext = {
                                     val n = s.composerSuggestions.size
                                     val target = (s.composerSuggestionIndex + 1) % n
                                     Analytics.action("OutfitComposer", "suggestion_next")
-                                    stylesViewModel.showComposerSuggestionAt(target)
+                                    generationViewModel.showComposerSuggestionAt(target)
                                 },
                                 onOpenFullscreen = {
                                     Analytics.action("OutfitComposer", "suggestions_viewer_reopen")
-                                    stylesViewModel.openComposerSuggestionsViewer()
+                                    generationViewModel.openComposerSuggestionsViewer()
                                 },
                             )
                         }
@@ -376,7 +376,7 @@ fun OutfitComposerScreen(
                         s.outfits.filter { it.loved }.map { it.id },
                     ) {
                         value = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Default) {
-                            stylesViewModel.estimateComposerTokens(
+                            generationViewModel.estimateComposerTokens(
                                 prefs = profile.preferences,
                                 weather = weather.data,
                                 images = crossClosetImages,
@@ -390,14 +390,14 @@ fun OutfitComposerScreen(
                         isOffline = isOffline,
                         onGenerateWithAi = {
                             Analytics.action("OutfitComposer", "generate_with_ai")
-                            stylesViewModel.openPredictionSetup(
+                            generationViewModel.openPredictionSetup(
                                 defaultSourceFolderId = null,
                                 source = PredictionSetupSource.COMPOSER,
                             )
                         },
                         onSave = {
                             Analytics.action("OutfitComposer", "save")
-                            stylesViewModel.prepareSave()
+                            generationViewModel.prepareSave()
                         },
                         bottomPadding = effectiveBottom,
                         aiTokens = composerAiTokens,
@@ -408,7 +408,7 @@ fun OutfitComposerScreen(
             if (!isEditMode) {
                 // Fullscreen view: minimal close X (top-left) to return to edit mode.
                 IconButton(
-                    onClick = { stylesViewModel.setComposerMode(ComposerMode.EDIT) },
+                    onClick = { generationViewModel.setComposerMode(ComposerMode.EDIT) },
                     modifier = Modifier
                         .align(Alignment.TopStart)
                         .padding(8.dp),
@@ -469,7 +469,7 @@ fun OutfitComposerScreen(
             parentConfiguration = parentConfiguration,
             onConfirm = {
                 Analytics.action("OutfitComposer", "close")
-                stylesViewModel.closeComposer()
+                generationViewModel.closeComposer()
             },
             onDismiss = { showDiscardDialog = false },
         )
@@ -506,10 +506,10 @@ fun OutfitComposerScreen(
             parentContext = parentContext,
             parentConfiguration = parentConfiguration,
             onConfirm = { name, description, tags ->
-                stylesViewModel.dismissSaveDialog()
-                stylesViewModel.commitOutfit(name, description, tags)
+                generationViewModel.dismissSaveDialog()
+                generationViewModel.commitOutfit(name, description, tags)
             },
-            onDismiss = { stylesViewModel.dismissSaveDialog() },
+            onDismiss = { generationViewModel.dismissSaveDialog() },
         )
     }
 
@@ -524,9 +524,9 @@ fun OutfitComposerScreen(
                 Analytics.action("OutfitComposer", "suggestion_select_from_viewer")
                 // Commits the pick and drops the other suggestions — once the user has
                 // chosen, alternatives just clutter the composer.
-                stylesViewModel.commitComposerSuggestion(index)
+                generationViewModel.commitComposerSuggestion(index)
             },
-            onDismiss = { stylesViewModel.closeComposerSuggestionsViewer() },
+            onDismiss = { generationViewModel.closeComposerSuggestionsViewer() },
         )
     }
 
@@ -549,7 +549,7 @@ fun OutfitComposerScreen(
                         .associate { it.driveId to it.score }
                 },
                 onConfirm = { picked ->
-                    picked.firstOrNull()?.let { stylesViewModel.setSlotItem(slotId, it) }
+                    picked.firstOrNull()?.let { generationViewModel.setSlotItem(slotId, it) }
                     exchangeSlotId = null
                 },
                 onDismiss = { exchangeSlotId = null },
@@ -560,7 +560,7 @@ fun OutfitComposerScreen(
     if (showAddSlotSheet) {
         CategoryPickerSheet(
             onSelect = { layer ->
-                stylesViewModel.addSlot(layer)
+                generationViewModel.addSlot(layer)
                 showAddSlotSheet = false
             },
             onDismiss = { showAddSlotSheet = false },
@@ -570,14 +570,14 @@ fun OutfitComposerScreen(
     if (showWeatherSheet) {
         WeatherPickerSheet(
             mode = s.composerWeatherMode,
-            onModeChange = { stylesViewModel.setComposerWeatherMode(it) },
+            onModeChange = { generationViewModel.setComposerWeatherMode(it) },
             autoWeather = weather.data,
             season = s.composerManualSeason,
-            onSeason = { stylesViewModel.setComposerManualSeason(it) },
+            onSeason = { generationViewModel.setComposerManualSeason(it) },
             tempC = s.composerManualTempC,
-            onTempC = { stylesViewModel.setComposerManualTempC(it) },
+            onTempC = { generationViewModel.setComposerManualTempC(it) },
             precip = s.composerManualPrecip,
-            onPrecip = { stylesViewModel.setComposerManualPrecip(it) },
+            onPrecip = { generationViewModel.setComposerManualPrecip(it) },
             onDismiss = { showWeatherSheet = false },
         )
     }
@@ -586,7 +586,7 @@ fun OutfitComposerScreen(
         ClosetPickerSheet(
             locations = locationState.locations,
             selected = sourceFolders,
-            onToggle = { stylesViewModel.toggleComposerSourceFolder(it) },
+            onToggle = { generationViewModel.toggleComposerSourceFolder(it) },
             onDismiss = { showClosetSheet = false },
         )
     }

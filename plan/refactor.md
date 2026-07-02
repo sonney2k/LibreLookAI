@@ -941,8 +941,8 @@ flows + calls its funnel). A pure-logic unit test (`OutfitsRepositoryTest`) cove
 correctness-critical bits factored out for it — `resolveOutfits` (extension-agnostic
 `itemNames`→`itemIds` resolution that survives the WebP rename + cross-closet moves) and
 `foldersToWrite`/`outfitsHomedIn` (the single-home write selection); the repo itself can't yet be
-constructed in a plain test (concrete `DriveRepository` dep — awaits § 3 interfaces). **Still to do
-— folded into slice 9 (both are entangled with its navigation rework, NOT mechanical):**
+constructed in a plain test (concrete `DriveRepository` dep — awaits § 3 interfaces).
+**The 2-way VM split LANDED (July 2026, first slice-9 increment — see slice 9 status):**
 - *`OutfitsViewModel` → list + generation (2-way, NOT the planned 3-way):* confirmed that composer
   and prediction are **one shared AI-generation state machine** — the composer's `generate` flow and
   the prediction setup both read *and* write the same `composer*` generation-parameter cluster
@@ -960,6 +960,28 @@ constructed in a plain test (concrete `DriveRepository` dep — awaits § 3 inte
   (composer screens, prediction screens, `AppContent` open-flag/nav, the two viewer destinations).
   The composer/prediction open-flags it mirrors in `AppContent` collapse into the destination-scoping
   work below.
+  **Status: steps (1)–(4) LANDED (July 2026).** `OutfitsRepository.saveOutfit(name, description,
+  itemIds, tags)` is the one create path (resolves cross-closet `itemNames`, stamps the home
+  folder, fires the scroll one-shot, funnels through `persistOutfitFolders`; returns null when no
+  save target). The scroll-to-outfit `Channel` moved onto the repo (`repo.events` /
+  `requestScrollToOutfit` — the list VM re-exposes both, so Try-On's "View outfit" caller is
+  unchanged), and the post-edit-save "wear it now" hand-off became `repo.pendingWearOutfitId`
+  (a StateFlow, not a one-shot — the snackbar shows until acted on; generation's `commitOutfit`
+  sets it, the list VM mirrors it into `OutfitsUiState.pendingWearOutfitId`, `clearPendingWear`
+  clears it on the repo). `OutfitGenerationUiState` carries the whole `composer*` cluster +
+  prediction + the tag-suggestion/tag-edit flow, plus read-only `outfits`/`wearHistory` mirrors
+  (prompt taste signals + edit-save lookup; the generation VM collects `repo.outfits` and
+  `wearHistoryFlow` itself — no cross-VM read). `OutfitGenerationViewModel` owns `trendsCache`,
+  `commitOutfit`, `prepareSave`/`dismissSaveDialog`, `startEditing` (+ `startEditingTripOutfit`)
+  and `deviceCountryCode`; the three extension files retarget it verbatim except
+  `openComposerFromSelectedOutfits(selected, …)`, which now takes the selection from the caller
+  (OutfitsScreen passes it and clears selection on the list VM — selection is list state).
+  Consumers rewired: `OutfitComposerScreen` + `PredictionSetupDialog` take only the generation VM;
+  `OutfitsScreen`, the two viewer destinations, `TripViewerScreen`, `TravelScreen`/
+  `TravelOutfitsView` and `ItemViewerDestination` take both; `AppContent` declares
+  `outfitGenerationViewModel`, its composer open-flag observer + every `openComposer`/
+  `closeComposer` site target it. `OutfitsViewModel` is ~230 lines of pure list surface
+  (`_state`/`folderId`/`persistOutfitFolders` now `private` — no extensions target it).
 - *`TryOnViewModel` → composer/history:* on closer reading these are **not** separable screens —
   they're one layered modal sharing a nav-flag state machine (`isComposerOpen`/`isHistoryOpen`/
   `historyIsRoot`/`historyDetailIsRoot`/`viewingTryOn`), and `openComposer`/`openHistoryRoot`/
@@ -969,7 +991,8 @@ constructed in a plain test (concrete `DriveRepository` dep — awaits § 3 inte
   therefore waits on slice 9's `TryOnRoute` navigation rework rather than a foundation step.
 
 **Slice 9 — destination-scoped VMs + real composer navigation** (closes the phase-3/4
-deferral). With cross-VM dependencies gone: the viewer destinations
+deferral). **Status: the folded-in slice-8 VM split landed (July 2026, above); the navigation
+rework below is the remaining work.** With cross-VM dependencies gone: the viewer destinations
 (`ItemViewerRoute`/`OutfitViewerRoute`/`TripViewerRoute`) get destination-scoped
 `hiltViewModel()` instances resolving content from the stores by route ids; the state-mirrored
 composer routes become plain navigation — openers `navigate(OutfitComposerRoute(seedItemIds))`

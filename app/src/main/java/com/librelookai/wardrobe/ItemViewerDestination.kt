@@ -42,6 +42,7 @@ internal fun ItemViewerDestination(
     wardrobeViewModel: WardrobeViewModel,
     shoppingClosetViewModel: ShoppingClosetViewModel,
     outfitsViewModel: OutfitsViewModel,
+    generationViewModel: com.librelookai.outfit.OutfitGenerationViewModel,
     tryOnViewModel: TryOnViewModel,
     locationViewModel: LocationViewModel,
     onCreateOutfitFromSelection: (Set<String>) -> Unit,
@@ -50,6 +51,7 @@ internal fun ItemViewerDestination(
     val wardrobeState by wardrobeViewModel.state.collectAsState()
     val shoppingState by shoppingClosetViewModel.state.collectAsState()
     val outfitsState by outfitsViewModel.state.collectAsState()
+    val generationState by generationViewModel.state.collectAsState()
     val tryOnState by tryOnViewModel.state.collectAsState()
     val locationState by locationViewModel.state.collectAsState()
 
@@ -57,7 +59,7 @@ internal fun ItemViewerDestination(
 
     val images = remember(
         source, routeItemIds, wardrobeState.images, wardrobeState.allLocationImages,
-        shoppingState.items, outfitsState.composerSlots, outfitsState.wardrobeImages,
+        shoppingState.items, generationState.composerSlots, outfitsState.wardrobeImages,
     ) {
         when (source) {
             ItemViewerRoute.SOURCE_SHOPPING -> {
@@ -84,7 +86,7 @@ internal fun ItemViewerDestination(
                 val crossCloset = wardrobeState.allLocationImages.ifEmpty { wardrobeState.images }
                 val byId = (crossCloset + wardrobeState.images + shoppingState.items)
                     .associateBy { it.driveId }
-                outfitsState.composerSlots.mapNotNull { it.selectedItemId?.let(byId::get) }
+                generationState.composerSlots.mapNotNull { it.selectedItemId?.let(byId::get) }
             }
             else -> {
                 val byId = wardrobeState.images.associateBy { it.driveId }

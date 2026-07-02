@@ -14,7 +14,7 @@ import java.util.Locale
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-internal fun OutfitsViewModel.suggestTagsForOutfit(outfit: Outfit, images: List<DriveImage>, prefs: UserPreferences?) {
+internal fun OutfitGenerationViewModel.suggestTagsForOutfit(outfit: Outfit, images: List<DriveImage>, prefs: UserPreferences?) {
         _state.update { it.copy(tagSuggestion = TagSuggestionState(outfitId = outfit.id, isLoading = true)) }
         viewModelScope.launch {
             val itemsById = images.associateBy { it.driveId }
@@ -92,13 +92,13 @@ internal fun OutfitsViewModel.suggestTagsForOutfit(outfit: Outfit, images: List<
         }
     }
 
-internal fun OutfitsViewModel.dismissTagSuggestions() = _state.update { it.copy(tagSuggestion = null) }
+internal fun OutfitGenerationViewModel.dismissTagSuggestions() = _state.update { it.copy(tagSuggestion = null) }
 
-internal fun OutfitsViewModel.openOutfitTagsEditor(outfitId: String) = _state.update { it.copy(tagEditingOutfitId = outfitId) }
-internal fun OutfitsViewModel.closeOutfitTagsEditor() = _state.update { it.copy(tagEditingOutfitId = null) }
+internal fun OutfitGenerationViewModel.openOutfitTagsEditor(outfitId: String) = _state.update { it.copy(tagEditingOutfitId = outfitId) }
+internal fun OutfitGenerationViewModel.closeOutfitTagsEditor() = _state.update { it.copy(tagEditingOutfitId = null) }
 
     /** Replaces the tag list of an existing outfit and persists the change to Drive. */
-internal fun OutfitsViewModel.setOutfitTags(outfitId: String, newTags: List<String>) {
+internal fun OutfitGenerationViewModel.setOutfitTags(outfitId: String, newTags: List<String>) {
         val outfit = _state.value.outfits.find { it.id == outfitId } ?: return
         val cleaned = newTags
             .map { it.trim() }
@@ -121,7 +121,7 @@ internal fun OutfitsViewModel.setOutfitTags(outfitId: String, newTags: List<Stri
     }
 
     /** Merges [tagsToAdd] into the outfit's existing tags and persists the change to Drive. */
-internal fun OutfitsViewModel.applyTagSuggestions(outfitId: String, tagsToAdd: List<String>) {
+internal fun OutfitGenerationViewModel.applyTagSuggestions(outfitId: String, tagsToAdd: List<String>) {
         val outfit = _state.value.outfits.find { it.id == outfitId } ?: return
         if (tagsToAdd.isEmpty()) {
             _state.update { it.copy(tagSuggestion = null) }

@@ -1,60 +1,39 @@
 package com.librelookai.outfit
 
 import android.app.Application
-import android.content.Context
-import android.telephony.TelephonyManager
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
-import com.google.gson.Gson
-import com.librelookai.MainActivity
-import com.librelookai.data.drive.DriveRepository
 import com.librelookai.data.model.Outfit
-import com.librelookai.gemini.GeminiRepository
-import com.librelookai.gemini.PromptKey
-import com.librelookai.gemini.PromptStore
-import com.librelookai.gemini.UsageCategory
-import com.librelookai.settings.AiConsiderations
-import com.librelookai.settings.AppLanguage
-import com.librelookai.settings.UserPreferences
-import com.librelookai.util.Analytics
 import com.librelookai.util.isNetworkAvailable
 import com.librelookai.data.session.ClosetSessionHolder
-import com.librelookai.wardrobe.DriveImage
-import com.librelookai.weather.WeatherData
-import java.util.Locale
-import java.util.UUID
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * The outfits **list** VM (refactor § 5 slice 9 — 2-way split): grid data, selection, delete /
+ * loved / calendar-wear hand-off, plus the save mutators Travel / Try-On call. The AI composer +
+ * prediction live on [OutfitGenerationViewModel]; shared data and the save funnel live on
+ * [OutfitsRepository], so the two VMs never call each other.
+ */
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class OutfitsViewModel @Inject constructor(
     app: Application,
-    internal val drive: DriveRepository,
-    internal val gemini: GeminiRepository,
     private val outfitsRepo: OutfitsRepository,
     session: ClosetSessionHolder,
     eventStore: com.librelookai.data.local.OutfitEventStore,
 ) : AndroidViewModel(app) {
-    /** Weekly, location-specific cache around the expensive Gemini trend lookup. */
-    internal val trendsCache = com.librelookai.gemini.FashionTrendsCache(app, drive, gemini)
-    internal val gson = Gson()
-    /** Active load scope + save target live on [outfitsRepo] now (§ 5 slice 8); exposed read-only
-     *  for the VM extensions (composer / prediction / tags) and the mutators that read them. */
-    internal val folderId: String? get() = outfitsRepo.folderId
-    internal val saveFolderId: String? get() = outfitsRepo.saveFolderId
+    /** Active load scope + save target live on [outfitsRepo] (§ 5 slice 8). */
+    private val folderId: String? get() = outfitsRepo.folderId
+    private val saveFolderId: String? get() = outfitsRepo.saveFolderId
 
-    internal val _state = MutableStateFlow(OutfitsUiState())
+    private val _state = MutableStateFlow(OutfitsUiState())
     val state: StateFlow<OutfitsUiState> = _state.asStateFlow()
 
     init {
@@ -84,6 +63,13 @@ class OutfitsViewModel @Inject constructor(
                 _state.update { it.copy(wearHistory = events) }
             }
         }
+        // Post-save "wear it now" offer: the generation VM's edit-save sets it on the repo, the
+        // list surface shows the snackbar (§ 5 slice 9 — replaces the in-VM state write).
+        viewModelScope.launch {
+            outfitsRepo.pendingWearOutfitId.collect { id ->
+                _state.update { it.copy(pendingWearOutfitId = id) }
+            }
+        }
     }
 
     private fun setAllLocations(folderIds: List<String>) {
@@ -95,9 +81,9 @@ class OutfitsViewModel @Inject constructor(
 
     // ---------- Load ----------
 
-    /** Thin delegator to [OutfitsRepository.persistOutfitFolders] — the VM extensions (composer /
-     *  prediction / tags) and mutators call this; the funnel + serialization live in the repo. */
-    internal suspend fun persistOutfitFolders(styles: List<Outfit>, affected: Collection<String>) =
+    /** Thin delegator to [OutfitsRepository.persistOutfitFolders] — every mutator routes its
+     *  write through it; the funnel + serialization live in the repo. */
+    private suspend fun persistOutfitFolders(styles: List<Outfit>, affected: Collection<String>) =
         outfitsRepo.persistOutfitFolders(styles, affected)
 
     fun loadOutfits() {
@@ -127,25 +113,7 @@ class OutfitsViewModel @Inject constructor(
 
     // ---------- Create flow ----------
 
-    /** Opens the unified composer for an existing saved style (update-in-place on save). */
-    fun startEditing(
-        style: Outfit,
-        images: List<DriveImage>,
-        prefs: UserPreferences?,
-        tripContext: TripContext? = null,
-    ) {
-        openComposer(
-            seedItemIds        = style.itemIds.toSet(),
-            images             = images,
-            prefs              = prefs,
-            initialName        = style.name,
-            initialDescription = style.description,
-            editingStyleId     = style.id,
-            tripContext        = tripContext,
-        )
-    }
-
-    fun clearPendingWear() = _state.update { it.copy(pendingWearOutfitId = null) }
+    fun clearPendingWear() = outfitsRepo.setPendingWearOutfit(null)
 
     /**
      * Ask the Calendar sub-tab to enter "tap a day to wear [outfitId]" mode. Set by a Wear action on
@@ -157,23 +125,16 @@ class OutfitsViewModel @Inject constructor(
 
     fun consumeCalendarWear() = _state.update { it.copy(pendingCalendarWearId = null) }
 
-    /** One-shot events the list consumes (scroll-to-outfit); buffered so a cross-tab request
-     *  fired before the list mounts (Try-On "View outfit") still lands. */
-    private val _events = Channel<OutfitsEvent>(Channel.BUFFERED)
-    val events = _events.receiveAsFlow()
+    /** One-shot events the list consumes (scroll-to-outfit). Owned by [OutfitsRepository]
+     *  (§ 5 slice 9) so the generation side can emit on save without a cross-VM call. */
+    val events = outfitsRepo.events
 
     /**
      * Ask the Outfits list to scroll the given outfit into view. Used by the Try-On detail view's
      * "View outfit" jump-back action and after saving a freshly-composed outfit.
      */
-    fun requestScrollToOutfit(outfitId: String) {
-        _events.trySend(OutfitsEvent.ScrollToOutfit(outfitId))
-    }
+    fun requestScrollToOutfit(outfitId: String) = outfitsRepo.requestScrollToOutfit(outfitId)
 
-    /**
-     * Saves a style directly without going through the draft editing flow.
-     * Used by Travel screen to persist packing outfits as styles.
-     */
     /**
      * Builds a Drive-ID → filename map across **every** loaded closet folder, not just the save
      * target. Travel/composer outfits can reference items from multiple closets; resolving names
@@ -183,6 +144,11 @@ class OutfitsViewModel @Inject constructor(
     private suspend fun idToNameAllFolders(fallbackFolderIds: Collection<String>): Map<String, String> =
         outfitsRepo.idToNameAllFolders(fallbackFolderIds)
 
+    /**
+     * Saves a style directly without going through the draft editing flow. Used by the Travel
+     * screen to persist packing outfits as styles. The save itself lives on
+     * [OutfitsRepository.saveOutfit] (§ 5 slice 9 — the composer's create path calls it too).
+     */
     fun saveOutfitDirectly(
         name: String,
         description: String,
@@ -192,24 +158,8 @@ class OutfitsViewModel @Inject constructor(
     ) {
         if (itemIds.isEmpty()) return
         viewModelScope.launch {
-            val id = saveFolderId ?: folderId ?: run { onDone(false); return@launch }
-            val idToName = idToNameAllFolders(listOf(id))
-            val itemNames = itemIds.mapNotNull { idToName[it] }
-            val newOutfit = Outfit(
-                name = name.ifBlank { "Travel style" },
-                description = description,
-                itemIds = itemIds,
-                itemNames = itemNames,
-                tags = tags,
-                // Stamp the save folder (the field is @Transient, so Drive JSON is unchanged):
-                // the local cache homes each outfit in exactly one folder, and an empty
-                // folderId would leave the fresh outfit mis-homed until the next Drive sync.
-                folderId = id,
-            )
-            val updated = _state.value.outfits + newOutfit
-            requestScrollToOutfit(newOutfit.id)
-            persistOutfitFolders(updated, listOf(id))
-            onDone(true)
+            val saved = outfitsRepo.saveOutfit(name.ifBlank { "Travel style" }, description, itemIds, tags)
+            onDone(saved != null)
         }
     }
 
@@ -313,76 +263,6 @@ class OutfitsViewModel @Inject constructor(
         }
     }
 
-    // ---------- Unified style composer ----------
-
-    /**
-     * Opens the composer prefilled with [seedItemIds]. The user supplies a preference string
-     * prefilled from [prefs]; weather mode defaults to AUTO.
-     */
-    fun prepareSave() = _state.update { s ->
-        val existingOutfit = s.composerEditingOutfitId?.let { id -> s.outfits.find { it.id == id } }
-        s.copy(
-            isSaveDialogOpen = true,
-            composerName = s.composerName.ifBlank { existingOutfit?.name ?: s.composerAiSuggestedName },
-            composerDescription = s.composerDescription.ifBlank { existingOutfit?.description ?: s.composerAiSuggestedDescription },
-            composerTags = s.composerTags.ifEmpty { existingOutfit?.tags ?: s.composerAiSuggestedTags },
-        )
-    }
-
-    fun dismissSaveDialog() = _state.update { it.copy(isSaveDialogOpen = false) }
-
-    fun commitOutfit(name: String, description: String, tags: List<String>, onDone: (Boolean) -> Unit = {}) {
-        val s = _state.value
-        val itemIds = s.composerSlots.mapNotNull { it.selectedItemId }.distinct()
-            .ifEmpty { s.composerItemIds }
-        if (itemIds.isEmpty()) { onDone(false); return }
-        val editingId = s.composerEditingOutfitId
-        // The Drive write is a network round-trip; surface a "saving" overlay so the user isn't
-        // left staring at the unchanged composer until the list silently reappears.
-        _state.update { it.copy(isComposerSaving = true) }
-        // Funnel terminal helper: whether the saved outfit used AI suggestions, plus create/edit + size.
-        val aiGenerated = s.composerSuggestions.isNotEmpty()
-        fun logOutfitSaved(mode: String) = Analytics.event(
-            "outfit_saved",
-            mapOf("mode" to mode, "ai_generated" to aiGenerated.toString(), "items" to itemIds.size.toString()),
-        )
-        if (editingId == null) {
-            saveOutfitDirectly(
-                name        = name.ifBlank { "Outfit ${s.outfits.size + 1}" },
-                description = description,
-                itemIds     = itemIds,
-                tags        = tags,
-            ) { ok ->
-                if (ok) { logOutfitSaved("create"); closeComposer() }
-                else _state.update { it.copy(isComposerSaving = false) }
-                onDone(ok)
-            }
-            return
-        }
-        val existing = s.outfits.find { it.id == editingId } ?: run { onDone(false); return }
-        val resolvedName = name.ifBlank { existing.name }
-        viewModelScope.launch {
-            val saveId = existing.folderId.ifEmpty { saveFolderId ?: folderId ?: run { onDone(false); return@launch } }
-            val idToName = drive.listFiles(saveId).associate { it.id to it.name }
-            val itemNames = itemIds.mapNotNull { idToName[it] }
-            val edited = existing.copy(
-                name = resolvedName,
-                description = description,
-                itemIds = itemIds,
-                itemNames = itemNames,
-                tags = tags,
-                // Home the edit in the folder it is written to (see saveOutfitDirectly).
-                folderId = saveId,
-            )
-            val updated = s.outfits.map { if (it.id == edited.id) edited else it }
-            _state.update { it.copy(pendingWearOutfitId = edited.id) }
-            persistOutfitFolders(updated, listOf(saveId))
-            logOutfitSaved("edit")
-            closeComposer()
-            onDone(true)
-        }
-    }
-
     // ---------- Delete ----------
 
     fun deleteOutfit(outfitId: String) {
@@ -442,32 +322,5 @@ class OutfitsViewModel @Inject constructor(
         }
     }
 
-    // ---------- Outfit prediction ----------
-
-    /**
-     * Asks Gemini to pick the best existing style for today, given the user's profile,
-     * current weather, and trending topics fetched from Google Trends.
-     *
-     * @param prefs   user preferences loaded from Drive (may be null if not yet set)
-     * @param weather current weather reading (may be null if location not yet available)
-     * @param images  full wardrobe list with tags
-     */
-
-    /**
-     * Opens the "Find with AI" setup dialog. The dialog collects a free-text goal, weather
-     * override, closet filter, and vibe chips (reusing composer state). Submitting it triggers
-     * the prediction via [submitPredictionSetup].
-     */
     fun clearError() = _state.update { it.copy(error = null) }
-
-    // ---------- AI tag suggestions (outfit detail viewer) ----------
-
-    internal fun deviceCountryCode(): String {
-        val tel = getApplication<Application>()
-            .getSystemService(Context.TELEPHONY_SERVICE) as? TelephonyManager
-        return tel?.networkCountryIso?.uppercase()?.takeIf { it.isNotEmpty() }
-            ?: tel?.simCountryIso?.uppercase()?.takeIf { it.isNotEmpty() }
-            ?: Locale.getDefault().country.takeIf { it.isNotEmpty() }
-            ?: "US"
-    }
 }

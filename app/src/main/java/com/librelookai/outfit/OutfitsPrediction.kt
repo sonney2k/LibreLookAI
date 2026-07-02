@@ -13,7 +13,7 @@ import com.librelookai.weather.WeatherData
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-internal fun OutfitsViewModel.openPredictionSetup(
+internal fun OutfitGenerationViewModel.openPredictionSetup(
         defaultSourceFolderId: String?,
         source: PredictionSetupSource = PredictionSetupSource.OUTFITS_LIST,
     ) {
@@ -42,17 +42,17 @@ internal fun OutfitsViewModel.openPredictionSetup(
      * Seeds the override from [prefsDefault] on first interaction so unchanged fields keep
      * matching the user's saved settings.
      */
-internal fun OutfitsViewModel.setComposerConsideration(prefsDefault: AiConsiderations, transform: (AiConsiderations) -> AiConsiderations) {
+internal fun OutfitGenerationViewModel.setComposerConsideration(prefsDefault: AiConsiderations, transform: (AiConsiderations) -> AiConsiderations) {
         _state.update {
             val base = it.composerConsiderationsOverride ?: prefsDefault
             it.copy(composerConsiderationsOverride = transform(base))
         }
     }
 
-internal fun OutfitsViewModel.closePredictionSetup() = _state.update { it.copy(isPredictionSetupOpen = false) }
+internal fun OutfitGenerationViewModel.closePredictionSetup() = _state.update { it.copy(isPredictionSetupOpen = false) }
 
     /** Reset every field steered by the Tune-AI dialog back to its default. */
-internal fun OutfitsViewModel.resetComposerAi() = _state.update {
+internal fun OutfitGenerationViewModel.resetComposerAi() = _state.update {
         it.copy(
             composerFeedback              = "",
             composerVibes                 = emptySet(),
@@ -69,7 +69,7 @@ internal fun OutfitsViewModel.resetComposerAi() = _state.update {
      * Called from the prediction-setup dialog's "Find" CTA. Snapshots the user's goal text as
      * the first refinement entry so the rest of the prediction/refinement loop uses one path.
      */
-internal fun OutfitsViewModel.submitPredictionSetup(prefs: UserPreferences?, weather: WeatherData?, images: List<DriveImage>) {
+internal fun OutfitGenerationViewModel.submitPredictionSetup(prefs: UserPreferences?, weather: WeatherData?, images: List<DriveImage>) {
         val s = _state.value
         val goal = s.composerFeedback.trim()
         val history = if (goal.isNotEmpty()) listOf(goal) else emptyList()
@@ -87,7 +87,7 @@ internal fun OutfitsViewModel.submitPredictionSetup(prefs: UserPreferences?, wea
         }
     }
 
-internal fun OutfitsViewModel.submitPresetPrediction(preset: String, prefs: UserPreferences?, weather: WeatherData?, images: List<DriveImage>) {
+internal fun OutfitGenerationViewModel.submitPresetPrediction(preset: String, prefs: UserPreferences?, weather: WeatherData?, images: List<DriveImage>) {
         val history = _state.value.feedbackHistory + preset
         _state.update { it.copy(feedbackHistory = history) }
         doTriggerPrediction(prefs, weather, images, history)
@@ -99,7 +99,7 @@ internal fun OutfitsViewModel.submitPresetPrediction(preset: String, prefs: User
  * Google-Search trends block is excluded (it is small next to the wardrobe/styles JSON and not
  * known until the call runs). Pure + cheap enough to run off the main thread per input change.
  */
-internal fun OutfitsViewModel.estimatePredictionTokens(
+internal fun OutfitGenerationViewModel.estimatePredictionTokens(
         prefs: UserPreferences?,
         weather: WeatherData?,
         images: List<DriveImage>,
@@ -137,7 +137,7 @@ internal fun OutfitsViewModel.estimatePredictionTokens(
         )
     }
 
-internal fun OutfitsViewModel.doTriggerPrediction(
+internal fun OutfitGenerationViewModel.doTriggerPrediction(
         prefs: UserPreferences?,
         weather: WeatherData?,
         images: List<DriveImage>,
@@ -248,7 +248,7 @@ internal fun OutfitsViewModel.doTriggerPrediction(
         }
     }
 
-internal fun OutfitsViewModel.clearPrediction() = _state.update {
+internal fun OutfitGenerationViewModel.clearPrediction() = _state.update {
         it.copy(
             prediction = null,
             predictionError = null,
@@ -263,7 +263,7 @@ internal fun OutfitsViewModel.clearPrediction() = _state.update {
      * Swiping/arrowing through suggestions re-opens the editing view for that pick
      * and discards any in-progress edits (acceptable since this is a browse flow).
      */
-internal fun OutfitsViewModel.showPredictionAt(index: Int) {
+internal fun OutfitGenerationViewModel.showPredictionAt(index: Int) {
         val list = _state.value.predictionSuggestions
         if (index !in list.indices) return
         val pred = list[index]

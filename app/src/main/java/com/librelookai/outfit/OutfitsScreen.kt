@@ -89,6 +89,7 @@ internal fun outfitItemPool(
 @Composable
 fun OutfitsScreen(
     outfitsViewModel: OutfitsViewModel = viewModel(),
+    generationViewModel: OutfitGenerationViewModel = viewModel(),
     wardrobeViewModel: WardrobeViewModel = viewModel(),
     outfitEventsViewModel: OutfitEventsViewModel = viewModel(),
     profileViewModel: ProfileViewModel = viewModel(),
@@ -106,6 +107,7 @@ fun OutfitsScreen(
     modifier: Modifier = Modifier,
 ) {
     val outfitsState  by outfitsViewModel.state.collectAsState()
+    val generationState by generationViewModel.state.collectAsState()
     val wardrobeState by wardrobeViewModel.state.collectAsState()
     val profileState by profileViewModel.state.collectAsState()
     val weatherState by weatherViewModel.state.collectAsState()
@@ -212,14 +214,14 @@ fun OutfitsScreen(
                     items = outfitItems,
                     wearCounts = wearCounts,
                     isLoading = outfitsState.isLoading || wardrobeState.isLoading,
-                    isPredicting = outfitsState.isPredicting,
+                    isPredicting = generationState.isPredicting,
                     locations = locationState.locations,
                     activeLocationId = locationState.activeLocationId,
                     tripNamesById = tripNamesById,
-                    predictionError = outfitsState.predictionError,
+                    predictionError = generationState.predictionError,
                     selectedOutfitIds = outfitsState.selectedOutfitIds,
                     onOpenCreateComposer = {
-                        outfitsViewModel.openComposer(
+                        generationViewModel.openComposer(
                             seedItemIds = emptySet(),
                             images      = wardrobeState.images,
                             prefs       = profileState.preferences,
@@ -228,12 +230,12 @@ fun OutfitsScreen(
                         )
                     },
                     onSuggestExisting = {
-                        outfitsViewModel.openPredictionSetup(
+                        generationViewModel.openPredictionSetup(
                             defaultSourceFolderId = locationViewModel.activeFolderId,
                         )
                     },
                     onEditOutfit = { style ->
-                        outfitsViewModel.startEditing(style, wardrobeState.images, profileState.preferences)
+                        generationViewModel.startEditing(style, wardrobeState.images, profileState.preferences)
                     },
                     onDeleteOutfit = outfitsViewModel::deleteOutfit,
                     onWearOutfit = { id ->
@@ -249,12 +251,14 @@ fun OutfitsScreen(
                     onClearOutfitSelection = outfitsViewModel::clearOutfitSelection,
                     onDeleteSelectedStyles = outfitsViewModel::deleteSelectedOutfits,
                     onCombineSelectedStyles = {
-                        outfitsViewModel.openComposerFromSelectedOutfits(
+                        generationViewModel.openComposerFromSelectedOutfits(
+                            selected = outfitsState.outfits.filter { it.id in outfitsState.selectedOutfitIds },
                             images = wardrobeState.images,
                             prefs  = profileState.preferences,
                         )
+                        outfitsViewModel.clearOutfitSelection()
                     },
-                    onClearPredictionError = outfitsViewModel::clearPrediction,
+                    onClearPredictionError = generationViewModel::clearPrediction,
                     scrollEvents = outfitsViewModel.events,
                     onTryOnStyle = onTryOnStyle,
                     canTryOn = canTryOn,
@@ -269,7 +273,7 @@ fun OutfitsScreen(
                     stylesViewModel = outfitsViewModel,
                     wardrobeViewModel = wardrobeViewModel,
                     onEditOutfit = { style ->
-                        outfitsViewModel.startEditing(style, wardrobeState.images, profileState.preferences)
+                        generationViewModel.startEditing(style, wardrobeState.images, profileState.preferences)
                     },
                 )
                 2 -> OutfitWearStatsTab(
@@ -281,23 +285,23 @@ fun OutfitsScreen(
         }
 
         // Tag-edit dialog launched by tapping the tags row in the outfit detail viewer.
-        outfitsState.tagEditingOutfitId?.let { editId ->
+        generationState.tagEditingOutfitId?.let { editId ->
             val target = outfitsState.outfits.find { it.id == editId }
             if (target != null) {
                 EditOutfitTagsDialog(
                     initialTags = target.tags,
-                    onDismiss = outfitsViewModel::closeOutfitTagsEditor,
-                    onSave = { newTags -> outfitsViewModel.setOutfitTags(editId, newTags) },
+                    onDismiss = generationViewModel::closeOutfitTagsEditor,
+                    onSave = { newTags -> generationViewModel.setOutfitTags(editId, newTags) },
                 )
             }
         }
 
         // AI tag-suggestion dialog launched from the outfit detail viewer.
-        outfitsState.tagSuggestion?.let { sugg ->
+        generationState.tagSuggestion?.let { sugg ->
             SuggestTagsDialog(
                 state = sugg,
-                onDismiss = outfitsViewModel::dismissTagSuggestions,
-                onApply = { selected -> outfitsViewModel.applyTagSuggestions(sugg.outfitId, selected) },
+                onDismiss = generationViewModel::dismissTagSuggestions,
+                onApply = { selected -> generationViewModel.applyTagSuggestions(sugg.outfitId, selected) },
             )
         }
 
@@ -305,12 +309,12 @@ fun OutfitsScreen(
         // swipe to flip between Gemini's ranked picks. The destination resolves the suggestion
         // list live and clears the prediction on every close path — so this trigger (dead while
         // the destination overlays Home) can't re-fire when the user comes back.
-        val predictedOutfits = remember(outfitsState.predictionSuggestions, outfitsState.outfits) {
-            outfitsState.predictionSuggestions.mapNotNull { p ->
+        val predictedOutfits = remember(generationState.predictionSuggestions, outfitsState.outfits) {
+            generationState.predictionSuggestions.mapNotNull { p ->
                 outfitsState.outfits.find { it.id == p.outfitId }
             }
         }
-        val showPrediction = predictedOutfits.isNotEmpty() && !outfitsState.isComposerOpen
+        val showPrediction = predictedOutfits.isNotEmpty() && !generationState.isComposerOpen
         LaunchedEffect(showPrediction) {
             if (showPrediction) onOpenPredictionViewer()
         }

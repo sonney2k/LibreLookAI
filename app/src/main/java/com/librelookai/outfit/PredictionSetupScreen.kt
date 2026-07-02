@@ -62,13 +62,13 @@ import com.librelookai.weather.WeatherViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PredictionSetupDialog(
-    outfitsViewModel: OutfitsViewModel,
+    generationViewModel: OutfitGenerationViewModel,
     profileViewModel: ProfileViewModel,
     weatherViewModel: WeatherViewModel,
     locationViewModel: LocationViewModel,
     wardrobeViewModel: WardrobeViewModel,
 ) {
-    val s by outfitsViewModel.state.collectAsState()
+    val s by generationViewModel.state.collectAsState()
     val profile by profileViewModel.state.collectAsState()
     val weather by weatherViewModel.state.collectAsState()
     val locationState by locationViewModel.state.collectAsState()
@@ -102,7 +102,7 @@ fun PredictionSetupDialog(
     val effectiveConsiderations = s.composerConsiderationsOverride ?: prefsConsiderations
 
     Dialog(
-        onDismissRequest = { outfitsViewModel.closePredictionSetup() },
+        onDismissRequest = { generationViewModel.closePredictionSetup() },
         properties = DialogProperties(usePlatformDefaultWidth = false, dismissOnBackPress = true, dismissOnClickOutside = true),
     ) {
         CompositionLocalProvider(
@@ -120,8 +120,8 @@ fun PredictionSetupDialog(
                     TuneAiHeader(
                         title = stringResource(titleRes),
                         subtitle = stringResource(R.string.composer_ai_subtitle),
-                        onClose = { outfitsViewModel.closePredictionSetup() },
-                        onReset = { outfitsViewModel.resetComposerAi() },
+                        onClose = { generationViewModel.closePredictionSetup() },
+                        onReset = { generationViewModel.resetComposerAi() },
                     )
                     Column(
                         modifier = Modifier
@@ -133,32 +133,32 @@ fun PredictionSetupDialog(
                     ) {
                         OccasionCard(
                             goal = s.composerFeedback,
-                            onGoalChange = outfitsViewModel::updateComposerFeedback,
+                            onGoalChange = generationViewModel::updateComposerFeedback,
                         )
                         WeatherCard(
                             weatherMode = s.composerWeatherMode,
                             autoWeather = weather.data,
                             manualTempC = s.composerManualTempC,
                             manualPrecip = s.composerManualPrecip,
-                            onModeChange = outfitsViewModel::setComposerWeatherMode,
-                            onTempChange = outfitsViewModel::setComposerManualTempC,
-                            onPrecipChange = outfitsViewModel::setComposerManualPrecip,
+                            onModeChange = generationViewModel::setComposerWeatherMode,
+                            onTempChange = generationViewModel::setComposerManualTempC,
+                            onPrecipChange = generationViewModel::setComposerManualPrecip,
                             onOpenForecastPicker = { showWeatherSheet = true },
                         )
                         StyleVibeCard(
                             selected = s.composerVibes,
-                            onToggle = outfitsViewModel::toggleComposerVibe,
+                            onToggle = generationViewModel::toggleComposerVibe,
                         )
                         ConsidersCard(
                             considerations = effectiveConsiderations,
                             onToggle = { transform ->
-                                outfitsViewModel.setComposerConsideration(prefsConsiderations, transform)
+                                generationViewModel.setComposerConsideration(prefsConsiderations, transform)
                             },
                         )
                         ExpertTagsCard(
                             considerations = effectiveConsiderations,
                             onToggleTag = { dim ->
-                                outfitsViewModel.setComposerConsideration(prefsConsiderations) { it.toggleItemTag(dim) }
+                                generationViewModel.setComposerConsideration(prefsConsiderations) { it.toggleItemTag(dim) }
                             },
                         )
                         if (locationState.locations.size >= 2) {
@@ -169,7 +169,7 @@ fun PredictionSetupDialog(
                         }
                         SuggestionCountSelector(
                             count = s.composerSuggestionCount,
-                            onCountChange = outfitsViewModel::setComposerSuggestionCount,
+                            onCountChange = generationViewModel::setComposerSuggestionCount,
                         )
                     }
                     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
@@ -204,13 +204,13 @@ fun PredictionSetupDialog(
                             // Generate-with-AI from the composer routes to enhanceComposerWithAi, so
                             // price the composer prompt; the standalone setup prices the prediction.
                             if (s.predictionSetupSource == PredictionSetupSource.COMPOSER) {
-                                outfitsViewModel.estimateComposerTokens(
+                                generationViewModel.estimateComposerTokens(
                                     prefs = profile.preferences,
                                     weather = weather.data,
                                     images = crossClosetImages,
                                 )
                             } else {
-                                outfitsViewModel.estimatePredictionTokens(
+                                generationViewModel.estimatePredictionTokens(
                                     prefs = profile.preferences,
                                     weather = weather.data,
                                     images = crossClosetImages,
@@ -221,9 +221,9 @@ fun PredictionSetupDialog(
                     TuneAiBottomBar(
                         ctaLabel = stringResource(ctaRes),
                         bulkCount = s.composerSuggestionCount,
-                        onCancel = { outfitsViewModel.closePredictionSetup() },
+                        onCancel = { generationViewModel.closePredictionSetup() },
                         onGenerate = {
-                            outfitsViewModel.submitPredictionSetup(
+                            generationViewModel.submitPredictionSetup(
                                 prefs = profile.preferences,
                                 weather = weather.data,
                                 images = crossClosetImages,
@@ -243,22 +243,22 @@ fun PredictionSetupDialog(
             selectedDate = s.composerForecastDate,
             weatherMode = s.composerWeatherMode,
             onModeChange = { mode ->
-                outfitsViewModel.setComposerWeatherMode(mode)
+                generationViewModel.setComposerWeatherMode(mode)
                 if (mode == com.librelookai.outfit.ComposerWeatherMode.MANUAL) {
                     // Manual override invalidates any picked future date.
-                    outfitsViewModel.setComposerForecastDate(null)
+                    generationViewModel.setComposerForecastDate(null)
                 }
             },
             manualSeason = s.composerManualSeason,
-            onManualSeason = outfitsViewModel::setComposerManualSeason,
+            onManualSeason = generationViewModel::setComposerManualSeason,
             manualTempC = s.composerManualTempC,
-            onManualTempC = outfitsViewModel::setComposerManualTempC,
+            onManualTempC = generationViewModel::setComposerManualTempC,
             manualPrecip = s.composerManualPrecip,
-            onManualPrecip = outfitsViewModel::setComposerManualPrecip,
+            onManualPrecip = generationViewModel::setComposerManualPrecip,
             onSelect = { date ->
                 // Picking a forecast day implies leaving manual mode.
-                outfitsViewModel.setComposerWeatherMode(com.librelookai.outfit.ComposerWeatherMode.AUTO)
-                outfitsViewModel.setComposerForecastDate(date)
+                generationViewModel.setComposerWeatherMode(com.librelookai.outfit.ComposerWeatherMode.AUTO)
+                generationViewModel.setComposerForecastDate(date)
                 showWeatherSheet = false
             },
             onDismiss = { showWeatherSheet = false },
@@ -268,7 +268,7 @@ fun PredictionSetupDialog(
         ClosetPickerSheet(
             locations = locationState.locations,
             selected = s.composerSourceFolderIds,
-            onToggle = outfitsViewModel::toggleComposerSourceFolder,
+            onToggle = generationViewModel::toggleComposerSourceFolder,
             onDismiss = { showClosetSheet = false },
         )
     }

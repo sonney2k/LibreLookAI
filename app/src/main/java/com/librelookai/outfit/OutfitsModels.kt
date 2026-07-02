@@ -45,26 +45,23 @@ data class TripContext(
 )
 
 
+/**
+ * UI state of the outfits **list** surface (grid, selection, calendar-wear hand-off). The
+ * composer/prediction generation cluster lives on [OutfitGenerationUiState] (refactor § 5
+ * slice 9 — the 2-way VM split): both VMs derive shared data from [OutfitsRepository].
+ */
 data class OutfitsUiState(
     val outfits: List<Outfit> = emptyList(),
     /** All wardrobe images across all locations, for resolving style item icons. */
     val wardrobeImages: List<DriveImage> = emptyList(),
     val isLoading: Boolean = false,
-    // Predict existing style
-    val isPredicting: Boolean = false,
-    val prediction: OutfitPrediction? = null,
-    val predictionError: String? = null,
-    /** When Gemini returns several outfit picks the user can slide through, the full list lives here. */
-    val predictionSuggestions: List<OutfitPrediction> = emptyList(),
-    val predictionIndex: Int = 0,
-    // Refinement feedback (prediction loop)
-    val feedbackHistory: List<String> = emptyList(),
     /**
      * Calendar wear history (collected from the event store via [wearHistoryFlow]), fed into
      * the prediction/composer prompts as a taste signal. See [buildWearHistorySummary].
      */
     val wearHistory: List<OutfitEvent> = emptyList(),
-    // After saving a style, offer to wear it immediately
+    // After saving a style, offer to wear it immediately (mirrored from
+    // OutfitsRepository.pendingWearOutfitId — the generation VM's edit-save sets it).
     val pendingWearOutfitId: String? = null,
     /**
      * Outfit the calendar should enter "tap a day to wear" mode for — set by a Wear action on the
@@ -76,6 +73,30 @@ data class OutfitsUiState(
     val pendingCalendarWearSource: WearSource = WearSource.MANUAL,
     // Multi-select for bulk actions
     val selectedOutfitIds: Set<String> = emptySet(),
+    val error: String? = null,
+)
+
+/**
+ * UI state of the AI **generation** side — the unified composer and the "Find with AI"
+ * prediction share one state machine (they read and write the same `composer*`
+ * generation-parameter cluster), so they live on one VM ([OutfitGenerationViewModel]).
+ * [outfits] and [wearHistory] are read-only mirrors of the shared repository data the
+ * prompts/save paths need — the list VM holds its own copies for the list surface.
+ */
+data class OutfitGenerationUiState(
+    /** Mirror of [OutfitsRepository.outfits] (prompt taste signals + edit-save lookup). */
+    val outfits: List<Outfit> = emptyList(),
+    /** Mirror of [wearHistoryFlow] (prompt taste signal). */
+    val wearHistory: List<OutfitEvent> = emptyList(),
+    // Predict existing style
+    val isPredicting: Boolean = false,
+    val prediction: OutfitPrediction? = null,
+    val predictionError: String? = null,
+    /** When Gemini returns several outfit picks the user can slide through, the full list lives here. */
+    val predictionSuggestions: List<OutfitPrediction> = emptyList(),
+    val predictionIndex: Int = 0,
+    // Refinement feedback (prediction loop)
+    val feedbackHistory: List<String> = emptyList(),
     // Unified style composer
     val isComposerOpen: Boolean = false,
     /** Non-null when the composer is editing an existing saved style (update-in-place). */
@@ -135,7 +156,6 @@ data class OutfitsUiState(
      * mutate the override instead of reverting to settings on every render.
      */
     val composerConsiderationsOverride: AiConsiderations? = null,
-    val error: String? = null,
     /** AI tag-suggestion flow launched from the outfit detail viewer. */
     val tagSuggestion: TagSuggestionState? = null,
     /** Outfit currently being tag-edited from the detail viewer (chips clicked). */

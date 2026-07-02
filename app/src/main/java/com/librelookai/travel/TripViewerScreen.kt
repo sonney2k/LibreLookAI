@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import com.librelookai.R
 import com.librelookai.data.model.Outfit
 import com.librelookai.data.model.Trip
+import com.librelookai.outfit.OutfitGenerationViewModel
 import com.librelookai.outfit.OutfitsViewModel
 import com.librelookai.outfit.applyTagSuggestions
 import com.librelookai.outfit.closeOutfitTagsEditor
@@ -56,6 +57,7 @@ fun TripViewerScreen(
     tripId: String,
     tripsViewModel: TripsViewModel,
     outfitsViewModel: OutfitsViewModel,
+    generationViewModel: OutfitGenerationViewModel,
     wardrobeViewModel: WardrobeViewModel,
     profileViewModel: ProfileViewModel,
     locationViewModel: com.librelookai.wardrobe.LocationViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
@@ -70,6 +72,7 @@ fun TripViewerScreen(
     val isOffline = LocalIsOffline.current
     val tripsState by tripsViewModel.state.collectAsState()
     val outfitsState by outfitsViewModel.state.collectAsState()
+    val generationState by generationViewModel.state.collectAsState()
     val wardrobeState by wardrobeViewModel.state.collectAsState()
     val profileState by profileViewModel.state.collectAsState()
     val locationState by locationViewModel.state.collectAsState()
@@ -147,7 +150,7 @@ fun TripViewerScreen(
     // Open the composer to edit a specific day's outfit, carrying this trip's context (the
     // viewer destination's edit action goes through the same shared helper).
     val startEditingOutfit: (Outfit) -> Unit = { o ->
-        outfitsViewModel.startEditingTripOutfit(trip, o, wardrobeState.images, profileState.preferences)
+        generationViewModel.startEditingTripOutfit(trip, o, wardrobeState.images, profileState.preferences)
     }
 
     // One-time "saved" confirmation shown when a freshly generated trip opens.
@@ -371,22 +374,22 @@ fun TripViewerScreen(
     }
 
     // Tag-edit dialog launched by tapping the tags row in the outfit viewer.
-    outfitsState.tagEditingOutfitId?.let { editId ->
+    generationState.tagEditingOutfitId?.let { editId ->
         outfitsState.outfits.find { it.id == editId }?.let { target ->
             com.librelookai.outfit.EditOutfitTagsDialog(
                 initialTags = target.tags,
-                onDismiss = outfitsViewModel::closeOutfitTagsEditor,
-                onSave = { newTags -> outfitsViewModel.setOutfitTags(editId, newTags) },
+                onDismiss = generationViewModel::closeOutfitTagsEditor,
+                onSave = { newTags -> generationViewModel.setOutfitTags(editId, newTags) },
             )
         }
     }
 
     // AI tag-suggestion dialog launched from the outfit viewer.
-    outfitsState.tagSuggestion?.let { sugg ->
+    generationState.tagSuggestion?.let { sugg ->
         com.librelookai.outfit.SuggestTagsDialog(
             state = sugg,
-            onDismiss = outfitsViewModel::dismissTagSuggestions,
-            onApply = { selected -> outfitsViewModel.applyTagSuggestions(sugg.outfitId, selected) },
+            onDismiss = generationViewModel::dismissTagSuggestions,
+            onApply = { selected -> generationViewModel.applyTagSuggestions(sugg.outfitId, selected) },
         )
     }
 

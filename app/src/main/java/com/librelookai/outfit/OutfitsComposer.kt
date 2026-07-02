@@ -68,7 +68,7 @@ internal fun parseComposerVariants(raw: String, gson: Gson = Gson()): List<Compo
     return variants.filter { !it.slots.isNullOrEmpty() || !it.itemIds.isNullOrEmpty() }
 }
 
-internal fun OutfitsViewModel.openComposer(
+internal fun OutfitGenerationViewModel.openComposer(
         seedItemIds: Set<String>,
         images: List<DriveImage>,
         prefs: UserPreferences?,
@@ -141,7 +141,7 @@ internal fun OutfitsViewModel.openComposer(
     }
 
     /** Toggle whether [folderId] is included in the composer's source-closet filter. */
-internal fun OutfitsViewModel.toggleComposerSourceFolder(folderId: String) {
+internal fun OutfitGenerationViewModel.toggleComposerSourceFolder(folderId: String) {
         _state.update { s ->
             val next = s.composerSourceFolderIds.toMutableSet()
             if (!next.add(folderId)) next.remove(folderId)
@@ -149,9 +149,9 @@ internal fun OutfitsViewModel.toggleComposerSourceFolder(folderId: String) {
         }
     }
 
-    /** Opens the composer seeded with the union of all items from the currently-selected styles. */
-internal fun OutfitsViewModel.openComposerFromSelectedOutfits(images: List<DriveImage>, prefs: UserPreferences?) {
-        val selected = _state.value.outfits.filter { it.id in _state.value.selectedOutfitIds }
+    /** Opens the composer seeded with the union of all items from [selected] (the list surface's
+     *  current selection — the caller clears the selection on its own VM, § 5 slice 9). */
+internal fun OutfitGenerationViewModel.openComposerFromSelectedOutfits(selected: List<Outfit>, images: List<DriveImage>, prefs: UserPreferences?) {
         if (selected.size < 2) return
         val unionIds = selected.flatMap { it.itemIds }.toSet()
         val suggestedName = selected.joinToString(" + ") { it.name.ifBlank { "Outfit" } }
@@ -162,10 +162,9 @@ internal fun OutfitsViewModel.openComposerFromSelectedOutfits(images: List<Drive
             prefs = prefs,
             initialName = suggestedName,
         )
-        _state.update { it.copy(selectedOutfitIds = emptySet()) }
     }
 
-internal fun OutfitsViewModel.closeComposer() = _state.update {
+internal fun OutfitGenerationViewModel.closeComposer() = _state.update {
         it.copy(
             isComposerOpen              = false,
             composerEditingOutfitId      = null,
@@ -188,22 +187,22 @@ internal fun OutfitsViewModel.closeComposer() = _state.update {
         )
     }
 
-internal fun OutfitsViewModel.toggleComposerVibe(vibe: String) = _state.update { s ->
+internal fun OutfitGenerationViewModel.toggleComposerVibe(vibe: String) = _state.update { s ->
         val next = s.composerVibes.toMutableSet()
         if (!next.add(vibe)) next.remove(vibe)
         s.copy(composerVibes = next)
     }
-internal fun OutfitsViewModel.setComposerWeatherMode(mode: ComposerWeatherMode) = _state.update { it.copy(composerWeatherMode = mode) }
-internal fun OutfitsViewModel.setComposerManualSeason(season: String) = _state.update { it.copy(composerManualSeason = season) }
-internal fun OutfitsViewModel.setComposerManualTempC(tempC: Int?) = _state.update { it.copy(composerManualTempC = tempC) }
-internal fun OutfitsViewModel.setComposerManualPrecip(p: String) = _state.update { it.copy(composerManualPrecip = p) }
-internal fun OutfitsViewModel.setComposerForecastDate(date: String?) = _state.update { it.copy(composerForecastDate = date) }
-internal fun OutfitsViewModel.setComposerSuggestionCount(n: Int) = _state.update {
+internal fun OutfitGenerationViewModel.setComposerWeatherMode(mode: ComposerWeatherMode) = _state.update { it.copy(composerWeatherMode = mode) }
+internal fun OutfitGenerationViewModel.setComposerManualSeason(season: String) = _state.update { it.copy(composerManualSeason = season) }
+internal fun OutfitGenerationViewModel.setComposerManualTempC(tempC: Int?) = _state.update { it.copy(composerManualTempC = tempC) }
+internal fun OutfitGenerationViewModel.setComposerManualPrecip(p: String) = _state.update { it.copy(composerManualPrecip = p) }
+internal fun OutfitGenerationViewModel.setComposerForecastDate(date: String?) = _state.update { it.copy(composerForecastDate = date) }
+internal fun OutfitGenerationViewModel.setComposerSuggestionCount(n: Int) = _state.update {
         it.copy(composerSuggestionCount = n.coerceIn(1, 10))
     }
-internal fun OutfitsViewModel.updateComposerName(s: String) = _state.update { it.copy(composerName = s) }
-internal fun OutfitsViewModel.updateComposerDescription(s: String) = _state.update { it.copy(composerDescription = s) }
-internal fun OutfitsViewModel.addComposerTag(tag: String) {
+internal fun OutfitGenerationViewModel.updateComposerName(s: String) = _state.update { it.copy(composerName = s) }
+internal fun OutfitGenerationViewModel.updateComposerDescription(s: String) = _state.update { it.copy(composerDescription = s) }
+internal fun OutfitGenerationViewModel.addComposerTag(tag: String) {
         val t = tag.trim()
         if (t.isEmpty()) return
         _state.update { s ->
@@ -211,15 +210,15 @@ internal fun OutfitsViewModel.addComposerTag(tag: String) {
             else s.copy(composerTags = s.composerTags + t)
         }
     }
-internal fun OutfitsViewModel.removeComposerTag(tag: String) = _state.update { s -> s.copy(composerTags = s.composerTags - tag) }
-internal fun OutfitsViewModel.updateComposerFeedback(s: String) = _state.update { it.copy(composerFeedback = s) }
+internal fun OutfitGenerationViewModel.removeComposerTag(tag: String) = _state.update { s -> s.copy(composerTags = s.composerTags - tag) }
+internal fun OutfitGenerationViewModel.updateComposerFeedback(s: String) = _state.update { it.copy(composerFeedback = s) }
 
 /**
  * Pre-tap BYOK cost estimate for an AI composer suggestion. Reuses [buildComposerPrompt] with the
  * current draft so the token count matches what [enhanceComposerWithAi] will send, minus the
  * Google-Search trends block (small vs the wardrobe JSON, unknown until the call runs).
  */
-internal fun OutfitsViewModel.estimateComposerTokens(
+internal fun OutfitGenerationViewModel.estimateComposerTokens(
         prefs: UserPreferences?,
         weather: WeatherData?,
         images: List<DriveImage>,
@@ -257,7 +256,7 @@ internal fun OutfitsViewModel.estimateComposerTokens(
     }
 
     /** Asks Gemini to complete the composer draft into a full outfit. */
-internal fun OutfitsViewModel.enhanceComposerWithAi(
+internal fun OutfitGenerationViewModel.enhanceComposerWithAi(
         prefs: UserPreferences?,
         weather: WeatherData?,
         images: List<DriveImage>,
@@ -392,8 +391,8 @@ internal fun OutfitsViewModel.enhanceComposerWithAi(
         }
     }
 
-internal fun OutfitsViewModel.closeComposerSuggestionsViewer() = _state.update { it.copy(composerSuggestionsViewerOpen = false) }
-internal fun OutfitsViewModel.openComposerSuggestionsViewer() = _state.update {
+internal fun OutfitGenerationViewModel.closeComposerSuggestionsViewer() = _state.update { it.copy(composerSuggestionsViewerOpen = false) }
+internal fun OutfitGenerationViewModel.openComposerSuggestionsViewer() = _state.update {
         if (it.composerSuggestions.size > 1) it.copy(composerSuggestionsViewerOpen = true) else it
     }
 
@@ -403,7 +402,7 @@ internal fun OutfitsViewModel.openComposerSuggestionsViewer() = _state.update {
      * alternatives so the inline swiper / re-open affordance disappear. The user has chosen
      * the one to keep — the rest are noise from here on.
      */
-internal fun OutfitsViewModel.commitComposerSuggestion(index: Int) {
+internal fun OutfitGenerationViewModel.commitComposerSuggestion(index: Int) {
         val s = _state.value
         if (index !in s.composerSuggestions.indices) return
         val pick = s.composerSuggestions[index]
@@ -429,7 +428,7 @@ internal fun OutfitsViewModel.commitComposerSuggestion(index: Int) {
      * (so the user can lock a piece they like, then keep browsing). Empty slots in the chosen
      * variant remain empty.
      */
-internal fun OutfitsViewModel.showComposerSuggestionAt(index: Int) {
+internal fun OutfitGenerationViewModel.showComposerSuggestionAt(index: Int) {
         val s = _state.value
         if (index !in s.composerSuggestions.indices) return
         val pick = s.composerSuggestions[index]
@@ -448,7 +447,7 @@ internal fun OutfitsViewModel.showComposerSuggestionAt(index: Int) {
         }
     }
 
-internal fun OutfitsViewModel.applyComposerSuggestionToSlots(
+internal fun OutfitGenerationViewModel.applyComposerSuggestionToSlots(
         slots: List<OutfitSlot>,
         assignments: Map<String, String>,
     ): List<OutfitSlot> = slots.map { slot ->
@@ -463,22 +462,22 @@ internal fun OutfitsViewModel.applyComposerSuggestionToSlots(
         // model assigned without dropping either side.
     }
 
-internal fun OutfitsViewModel.clearComposerError() = _state.update { it.copy(composerError = null) }
+internal fun OutfitGenerationViewModel.clearComposerError() = _state.update { it.copy(composerError = null) }
 
-internal fun OutfitsViewModel.setComposerMode(mode: ComposerMode) = _state.update { it.copy(composerMode = mode) }
+internal fun OutfitGenerationViewModel.setComposerMode(mode: ComposerMode) = _state.update { it.copy(composerMode = mode) }
 
-internal fun OutfitsViewModel.addSlot(category: Layer) = _state.update { s ->
+internal fun OutfitGenerationViewModel.addSlot(category: Layer) = _state.update { s ->
         s.copy(composerSlots = s.composerSlots + OutfitSlot(UUID.randomUUID().toString(), category, null, false))
     }
 
-internal fun OutfitsViewModel.removeSlot(slotId: String) = _state.update { s ->
+internal fun OutfitGenerationViewModel.removeSlot(slotId: String) = _state.update { s ->
         val slot = s.composerSlots.find { it.id == slotId }
         val newSlots = s.composerSlots.filter { it.id != slotId }
         val newIds = slot?.selectedItemId?.let { id -> s.composerItemIds - id } ?: s.composerItemIds
         s.copy(composerSlots = newSlots, composerItemIds = newIds)
     }
 
-internal fun OutfitsViewModel.setSlotItem(slotId: String, itemId: String?) = _state.update { s ->
+internal fun OutfitGenerationViewModel.setSlotItem(slotId: String, itemId: String?) = _state.update { s ->
         // A one-piece (dress) and a separate top/bottom may coexist — layering is allowed — so
         // filling a slot no longer clears any other slot.
         val newSlots = s.composerSlots.map { slot ->
@@ -489,7 +488,7 @@ internal fun OutfitsViewModel.setSlotItem(slotId: String, itemId: String?) = _st
         s.copy(composerSlots = newSlots, composerItemIds = slotItemIds)
     }
 
-internal fun OutfitsViewModel.toggleSlotLock(slotId: String) = _state.update { s ->
+internal fun OutfitGenerationViewModel.toggleSlotLock(slotId: String) = _state.update { s ->
         s.copy(composerSlots = s.composerSlots.map { slot ->
             if (slot.id == slotId && slot.selectedItemId != null) slot.copy(isLocked = !slot.isLocked)
             else slot

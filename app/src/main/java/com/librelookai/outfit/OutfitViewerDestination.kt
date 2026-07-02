@@ -28,7 +28,7 @@ import com.librelookai.wardrobe.WardrobeViewModel
 /**
  * Content of the [OutfitViewerRoute] NavHost destination — the fullscreen outfit pager that
  * replaced the per-host `OutfitFullScreenViewer` Dialogs (outfit list / prediction result /
- * trip day list). Outfits resolve LIVE from [OutfitsViewModel] (and the trip's day list for
+ * trip day list). Outfits resolve LIVE from [OutfitsViewModel] / [OutfitGenerationViewModel] (and the trip's day list for
  * the trip source) so edits, deletes and day-outfit replacements during viewing stay correct;
  * the route only pins the viewing context.
  *
@@ -49,6 +49,7 @@ internal fun OutfitViewerDestination(
     initialOutfitId: String?,
     tripId: String?,
     outfitsViewModel: OutfitsViewModel,
+    generationViewModel: OutfitGenerationViewModel,
     wardrobeViewModel: WardrobeViewModel,
     profileViewModel: ProfileViewModel,
     outfitEventsViewModel: OutfitEventsViewModel,
@@ -63,6 +64,7 @@ internal fun OutfitViewerDestination(
 ) {
     val isOffline = LocalIsOffline.current
     val outfitsState by outfitsViewModel.state.collectAsState()
+    val generationState by generationViewModel.state.collectAsState()
     val wardrobeState by wardrobeViewModel.state.collectAsState()
     val profileState by profileViewModel.state.collectAsState()
     val locationState by locationViewModel.state.collectAsState()
@@ -83,10 +85,10 @@ internal fun OutfitViewerDestination(
     val trip = if (source == OutfitViewerRoute.SOURCE_TRIP)
         tripsState.trips.find { it.id == tripId } else null
 
-    val outfits = remember(source, routeOutfitIds, outfitsById, outfitsState.predictionSuggestions, trip) {
+    val outfits = remember(source, routeOutfitIds, outfitsById, generationState.predictionSuggestions, trip) {
         when (source) {
             OutfitViewerRoute.SOURCE_PREDICTION ->
-                outfitsState.predictionSuggestions.mapNotNull { outfitsById[it.outfitId] }
+                generationState.predictionSuggestions.mapNotNull { outfitsById[it.outfitId] }
             OutfitViewerRoute.SOURCE_TRIP ->
                 trip?.outfitIds.orEmpty().mapNotNull { outfitsById[it] }
             else -> routeOutfitIds.mapNotNull { outfitsById[it] }
@@ -95,7 +97,7 @@ internal fun OutfitViewerDestination(
     // First-composition snapshot — the pager only reads its initial page once.
     val initialIndex = remember {
         when (source) {
-            OutfitViewerRoute.SOURCE_PREDICTION -> outfitsState.predictionIndex
+            OutfitViewerRoute.SOURCE_PREDICTION -> generationState.predictionIndex
             else -> outfits.indexOfFirst { it.id == initialOutfitId }
         }.coerceAtLeast(0)
     }
@@ -107,7 +109,7 @@ internal fun OutfitViewerDestination(
     val closeViewer: () -> Unit = {
         if (!closed) {
             closed = true
-            if (source == OutfitViewerRoute.SOURCE_PREDICTION) outfitsViewModel.clearPrediction()
+            if (source == OutfitViewerRoute.SOURCE_PREDICTION) generationViewModel.clearPrediction()
             onClose()
         }
     }
@@ -137,9 +139,9 @@ internal fun OutfitViewerDestination(
         onEdit = { o ->
             closeViewer()
             if (trip != null) {
-                outfitsViewModel.startEditingTripOutfit(trip, o, wardrobeState.images, prefs)
+                generationViewModel.startEditingTripOutfit(trip, o, wardrobeState.images, prefs)
             } else {
-                outfitsViewModel.startEditing(o, wardrobeState.images, prefs)
+                generationViewModel.startEditing(o, wardrobeState.images, prefs)
             }
         },
         onWear = { o ->
@@ -160,9 +162,9 @@ internal fun OutfitViewerDestination(
             if (outfits.size <= 1) closeViewer()
         },
         onSuggestTags = { o ->
-            outfitsViewModel.suggestTagsForOutfit(o, wardrobeState.images, prefs)
+            generationViewModel.suggestTagsForOutfit(o, wardrobeState.images, prefs)
         },
-        onEditTags = { o -> outfitsViewModel.openOutfitTagsEditor(o.id) },
+        onEditTags = { o -> generationViewModel.openOutfitTagsEditor(o.id) },
         onTryOn = { o ->
             if (trip != null) {
                 // Try-on composer overlays the viewer; closing it returns here (old behavior).
@@ -188,22 +190,22 @@ internal fun OutfitViewerDestination(
     }
 
     // Tag-edit dialog launched by tapping the tags row in the viewer.
-    outfitsState.tagEditingOutfitId?.let { editId ->
+    generationState.tagEditingOutfitId?.let { editId ->
         outfitsState.outfits.find { it.id == editId }?.let { target ->
             EditOutfitTagsDialog(
                 initialTags = target.tags,
-                onDismiss = outfitsViewModel::closeOutfitTagsEditor,
-                onSave = { newTags -> outfitsViewModel.setOutfitTags(editId, newTags) },
+                onDismiss = generationViewModel::closeOutfitTagsEditor,
+                onSave = { newTags -> generationViewModel.setOutfitTags(editId, newTags) },
             )
         }
     }
 
     // AI tag-suggestion dialog launched from the viewer.
-    outfitsState.tagSuggestion?.let { sugg ->
+    generationState.tagSuggestion?.let { sugg ->
         SuggestTagsDialog(
             state = sugg,
-            onDismiss = outfitsViewModel::dismissTagSuggestions,
-            onApply = { selected -> outfitsViewModel.applyTagSuggestions(sugg.outfitId, selected) },
+            onDismiss = generationViewModel::dismissTagSuggestions,
+            onApply = { selected -> generationViewModel.applyTagSuggestions(sugg.outfitId, selected) },
         )
     }
 }
@@ -212,7 +214,7 @@ internal fun OutfitViewerDestination(
  * Opens the composer to edit [outfit] as [trip]'s day outfit, carrying the trip's context.
  * Shared by the viewer destination's Edit action and the trip viewer's per-day edit pen.
  */
-internal fun OutfitsViewModel.startEditingTripOutfit(
+internal fun OutfitGenerationViewModel.startEditingTripOutfit(
     trip: Trip,
     outfit: Outfit,
     images: List<DriveImage>,
