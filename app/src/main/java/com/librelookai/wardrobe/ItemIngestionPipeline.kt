@@ -38,8 +38,10 @@ import kotlinx.coroutines.launch
 internal const val QUERY_DEBUG_DIR = "wardrobe_query_debug"
 
 /**
- * Live progress of the photo-ingestion pipeline. The wardrobe VM mirrors it into
- * [WardrobeUiState] (the existing UI contract); slice 7 will let surfaces read it directly.
+ * Live progress of the photo-ingestion pipeline. Surfaces read it directly via the wardrobe
+ * VM's `ingestionProgress` passthrough (§ 5 slice 7 prune); only the fields shared with the
+ * VM's own per-item ops ([isUploading] / [processingImageId]) and [gridReturnTick] still feed
+ * [WardrobeUiState] through the transitions-only collector in `WardrobeViewModel.init`.
  */
 data class IngestionProgress(
     /** Photos queued or actively running background processing (bg removal + tagging). */

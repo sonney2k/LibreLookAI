@@ -76,8 +76,8 @@ import com.librelookai.MainActivity
  */
 @Composable
 fun LocalBgRemovalScreen(viewModel: WardrobeViewModel = viewModel()) {
-    val state by viewModel.state.collectAsState()
-    val head = state.localBgReviewQueue.firstOrNull() ?: return
+    val ingestion by viewModel.ingestionProgress.collectAsState()
+    val head = ingestion.localBgReviewQueue.firstOrNull() ?: return
     LocalBgRemovalDialog(
         rawFilePath = head.rawFilePath,
         skippable = head.skippable,

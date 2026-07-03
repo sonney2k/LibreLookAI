@@ -61,6 +61,10 @@ fun WardrobeScreen(
     modifier: Modifier = Modifier,
 ) {
     val state         by viewModel.state.collectAsState()
+    // Progress flows read straight off the owning singletons (§ 5 slice 7 prune).
+    val ingestion     by viewModel.ingestionProgress.collectAsState()
+    val retag         by viewModel.retagProgress.collectAsState()
+    val convert       by viewModel.convertProgress.collectAsState()
     val outfitEventsState  by outfitEventsViewModel.state.collectAsState()
     val outfitsState   by stylesViewModel.state.collectAsState()
     val tryOnState    by tryOnHistoryViewModel.state.collectAsState()
@@ -136,7 +140,7 @@ fun WardrobeScreen(
         showUrlImportDialog = true
     }
 
-    state.duplicateCheck?.let { check ->
+    ingestion.duplicateCheck?.let { check ->
         DuplicateCheckSheet(
             check = check,
             debugSimilarityPreview = profileState.preferences.debugSimilarityPreview,
@@ -156,6 +160,9 @@ fun WardrobeScreen(
     when (state.view) {
         WardrobeView.GRID -> GridContent(
             state = state,
+            ingestion = ingestion,
+            retag = retag,
+            convert = convert,
             popularityMap = popularityMap,
             locations = locationState.locations,
             activeLocationId = locationState.activeLocationId,

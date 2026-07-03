@@ -115,7 +115,7 @@ fun SettingsScreen(
                 defaultFolderId = locationState.defaultClosetFolderId,
                 itemCounts = closetItemCounts(wardrobeState.allLocationImages, wardrobeState.images),
                 totalItems = wardrobeState.allLocationImages.ifEmpty { wardrobeState.images }.size,
-                pendingJobs = wardrobeState.pendingJobs,
+                pendingJobs = wardrobeViewModel.ingestionProgress.collectAsState().value.pendingJobs,
                 balance = creditsState.balance,
                 prefs = profileState.preferences,
                 isOffline = LocalIsOffline.current,

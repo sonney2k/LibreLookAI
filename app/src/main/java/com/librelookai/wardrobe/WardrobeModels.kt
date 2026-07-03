@@ -108,25 +108,15 @@ data class WardrobeUiState(
     val allLocationImages: List<DriveImage> = emptyList(),
     val isLoading: Boolean = false,
     val isSyncing: Boolean = false,
+    // The pipeline / bulk-op progress clusters that used to sit here (batch counts, retag /
+    // remove-bg / convert progress, pendingJobs, duplicateCheck, localBgReviewQueue,
+    // cutoutBgFix) were pruned in refactor § 5 slice 7/9: surfaces read the owning
+    // singleton's StateFlow through the VM's passthrough properties (`ingestionProgress`,
+    // `retagProgress`, `convertProgress`, `cutoutBgFixProgress`). Only the fields shared
+    // with the VM's own per-item ops stay (isProcessing / isUploading / processingImageId).
     val isProcessing: Boolean = false,
     val isUploading: Boolean = false,
     val isMoving: Boolean = false,
-    /** Number of items in the current batch (0 = single-item flow). */
-    val batchTotal: Int = 0,
-    val batchDone: Int = 0,
-    val isRetagging: Boolean = false,
-    val retagDone: Int = 0,
-    val retagTotal: Int = 0,
-    val isImporting: Boolean = false,
-    val importDone: Int = 0,
-    val importTotal: Int = 0,
-    val isRemovingAllBg: Boolean = false,
-    val removeBgDone: Int = 0,
-    val removeBgTotal: Int = 0,
-    /** Non-zero while the one-shot "Convert images to WebP" maintenance op is running. */
-    val isConverting: Boolean = false,
-    val convertDone: Int = 0,
-    val convertTotal: Int = 0,
     val error: String? = null,
     /** Total items in the current Phase 2 sync sub-step (0 = not syncing or unknown). */
     val syncTotal: Int = 0,
@@ -137,23 +127,12 @@ data class WardrobeUiState(
     /** driveId of the image currently being processed by an AI operation, or null. */
     val processingImageId: String? = null,
     val selectedIds: Set<String> = emptySet(),
-    /** Number of photos queued or actively running background processing (bg removal + tagging). */
-    val pendingJobs: Int = 0,
-    /** Non-null while the "Fix cutout backgrounds" flow is scanning, awaiting confirmation, or processing. */
-    val cutoutBgFix: CutoutBgFixProgress? = null,
     /** True when a job is starting and the app is not exempt from battery optimization. */
     val needsBatteryExemption: Boolean = false,
     /** Drive folder ID that new photos will be uploaded to. */
     val importTargetFolderId: String? = null,
-    /** Non-null while a captured photo is paused for duplicate confirmation. */
-    val duplicateCheck: DuplicateCheck? = null,
     /** Non-null while the user is reviewing matches from a "find item by photo" capture. */
     val findByPhoto: FindByPhoto? = null,
-    /** Queue of imports waiting for the on-device background-removal review screen. The head item
-     *  is shown; on Apply / Skip / Cancel it is popped and the next (if any) is shown. Camera and
-     *  URL imports always enqueue a single item; gallery imports enqueue every selected URI when
-     *  [UserPreferences.preferLocalBgRemoval] is on. */
-    val localBgReviewQueue: List<LocalBgReviewItem> = emptyList(),
     /** Non-null while the user is choosing an image from a pasted shopping URL. */
     val urlImportPicker: UrlImportPickerState? = null,
 )

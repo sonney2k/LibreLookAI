@@ -901,15 +901,21 @@ latch/debounce effect.
   emit): the event waits in the buffer, is consumed exactly once, and never re-fires on tab
   revisit — so the old state-field + `consumePendingScroll*` + the `setLocation`/`setAllLocations`
   preservation hack are all gone. (`pendingCalendarWearId` stays state, per plan.)
-- *UiState progress prune — DEFERRED to slice 9.* On inspection the "migrated pipeline-progress
-  clusters" don't extract cleanly: `processingImageId`/`isUploading`/`isProcessing` are written by
-  **both** the slice-5/6 mirrors **and** the VM's own per-item ops (`tagImage`/`reprocess`/
-  `fixCutoutBgForItem`/`moveItems`), so they straddle the VM↔use-case boundary rather than being
-  pure derivations; and the whole cluster is consumed as one interleaved unit (the grid overlay's
-  single label `when`) read across ~9 files incl. `AppContent`'s restore overlay (`sync*`) and the
-  `FixCutoutBgDialog` host (`cutoutBgFix`). Relocating it now is high-churn on delicate wiring for
-  value that's largely cosmetic until slice 9 gives those surfaces direct `hiltViewModel()` reads —
-  at which point the straddling shared state is the only residue. Folded into slice 9.
+- *UiState progress prune — LANDED (July 2026, executed as the slice-9 fold-in).* The pruned
+  clusters left `WardrobeUiState` entirely: retag / remove-bg / convert progress, `pendingJobs`,
+  `batchDone`/`batchTotal`, `duplicateCheck`, `localBgReviewQueue`, `cutoutBgFix`, plus the dead
+  `isImporting`/`importDone`/`importTotal` (leftovers of the slice-6 folder-import deletion) and
+  the never-read `isRemovingAllBg` cluster. Instead of relocating consumers to `hiltViewModel()`
+  reads, the VM exposes **passthrough properties** (`ingestionProgress`, `retagProgress`,
+  `convertProgress`, `cutoutBgFixProgress` — the owning singletons' StateFlows, no copy, no
+  collectors), which is the "thin VM passthrough" option the slice text named. Consumers:
+  `WardrobeScreen` collects all three and hands snapshots into `GridContent` (new `ingestion`/
+  `retag`/`convert` params feeding the overlay-label `when`), the `DuplicateCheckSheet` gate reads
+  `ingestion.duplicateCheck`, `LocalBgRemovalScreen` reads `ingestion.localBgReviewQueue`, the
+  Settings feedback dialog reads `ingestion.pendingJobs`, and `AppContent`'s `FixCutoutBgDialog`
+  host reads `cutoutBgFixProgress`. What stays on `WardrobeUiState`, per the straddle analysis:
+  `isProcessing`/`isUploading`/`processingImageId` (written by both the pipeline transitions and
+  the VM's per-item ops) and the `sync*` restore-overlay fields (part-3 deferral below).
 - *Restore-overlay engine aggregation — DEFERRED.* `SyncEngine` exposes only `drain()` (no
   sync-state flow); the current latch/debounce/`isLoading`-gating restore path is deliberately
   tuned. Revisit alongside the slice-9 work / a future `SyncEngine` sync-state surface.

@@ -1297,7 +1297,7 @@ internal fun AppContent(
                                 // Cutout-background fix confirmation — globally hosted so it
                                 // appears whether the scan was started from Wardrobe header or
                                 // Settings → Data.
-                                val cutoutBgFix = wardrobeViewModel.state.collectAsState().value.cutoutBgFix
+                                val cutoutBgFix = wardrobeViewModel.cutoutBgFixProgress.collectAsState().value
                                 if (cutoutBgFix?.awaitingConfirmation == true) {
                                     FixCutoutBgDialog(
                                         state = cutoutBgFix,

@@ -11,8 +11,8 @@ import kotlinx.coroutines.launch
 
 // The scan → review → apply state machine lives in [CutoutBgFixUseCase] now (§ 5 slice 6); these
 // extensions stay as the public surface so the `FixCutoutBgDialog` host's `viewModel::method`
-// wiring is unchanged, delegating to the use-case. Progress mirrors back into
-// [WardrobeUiState.cutoutBgFix] via the collector in `WardrobeViewModel.init`.
+// wiring is unchanged, delegating to the use-case. The host reads progress straight off the
+// VM's `cutoutBgFixProgress` passthrough (§ 5 slice 7 prune).
 
 internal fun WardrobeViewModel.startCutoutBgFixScan(folderIds: List<String>) =
     cutoutFixUseCase.startScan(folderIds)

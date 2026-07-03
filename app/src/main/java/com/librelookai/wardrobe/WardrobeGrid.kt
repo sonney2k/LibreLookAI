@@ -83,6 +83,11 @@ import com.librelookai.util.LocalIsOffline
 @Composable
 internal fun GridContent(
     state: WardrobeUiState,
+    // Progress read straight off the owning singletons' flows (§ 5 slice 7 prune) — the
+    // screen collects the VM's passthrough properties and hands the snapshots down.
+    ingestion: IngestionProgress = IngestionProgress(),
+    retag: BulkAiProgress = BulkAiProgress(),
+    convert: ConvertProgress = ConvertProgress(),
     popularityMap: Map<String, Int> = emptyMap(),
     locations: List<Location> = emptyList(),
     activeLocationId: String = "",
@@ -441,18 +446,18 @@ internal fun GridContent(
         }
 
         // Progress pill
-        val retagLabel = if (state.isRetagging) stringResource(R.string.settings_rescanning, state.retagDone + 1, state.retagTotal) else null
+        val retagLabel = if (retag.isRunning) stringResource(R.string.settings_rescanning, retag.done + 1, retag.total) else null
         val overlayLabel = when {
-            state.isConverting -> stringResource(R.string.settings_converting, state.convertDone, state.convertTotal)
-            state.isRetagging -> retagLabel
+            convert.isConverting -> stringResource(R.string.settings_converting, convert.done, convert.total)
+            retag.isRunning -> retagLabel
             state.isMoving -> stringResource(R.string.wardrobe_progress_moving)
-            state.isProcessing && state.batchTotal > 1 ->
-                stringResource(R.string.wardrobe_progress_removing_bg_batch, state.batchDone + 1, state.batchTotal)
-            state.isUploading && state.batchTotal > 1 ->
-                stringResource(R.string.wardrobe_progress_uploading_batch, state.batchDone + 1, state.batchTotal)
+            state.isProcessing && ingestion.batchTotal > 1 ->
+                stringResource(R.string.wardrobe_progress_removing_bg_batch, ingestion.batchDone + 1, ingestion.batchTotal)
+            state.isUploading && ingestion.batchTotal > 1 ->
+                stringResource(R.string.wardrobe_progress_uploading_batch, ingestion.batchDone + 1, ingestion.batchTotal)
             state.isProcessing -> stringResource(R.string.wardrobe_progress_removing_bg)
             state.isUploading  -> stringResource(R.string.wardrobe_progress_uploading)
-            state.pendingJobs > 0 -> stringResource(R.string.wardrobe_processing_photos, state.pendingJobs)
+            ingestion.pendingJobs > 0 -> stringResource(R.string.wardrobe_processing_photos, ingestion.pendingJobs)
             else -> null
         }
         if (overlayLabel != null) {

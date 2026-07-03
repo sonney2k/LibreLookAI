@@ -103,6 +103,15 @@ class WardrobeViewModel @Inject constructor(
     internal val _state = MutableStateFlow(WardrobeUiState())
     val state: StateFlow<WardrobeUiState> = _state.asStateFlow()
 
+    // ---- Progress passthroughs (§ 5 slice 7 prune) ----
+    // The pipeline / bulk-op progress used to be mirrored into [WardrobeUiState]; surfaces now
+    // read the owning singleton's StateFlow directly through these (no copy, no collectors).
+    // [RemoveAllBackgroundsUseCase]'s progress has no UI reader, so it isn't exposed.
+    val ingestionProgress: StateFlow<IngestionProgress> = pipeline.progress
+    val retagProgress: StateFlow<BulkAiProgress> = retagUseCase.progress
+    val convertProgress: StateFlow<ConvertProgress> = webpConvertUseCase.progress
+    val cutoutBgFixProgress: StateFlow<CutoutBgFixProgress?> = cutoutFixUseCase.progress
+
     internal var folderId: String? = null
     private var allFolderIds: List<String>? = null
 
@@ -159,22 +168,17 @@ class WardrobeViewModel @Inject constructor(
     }
 
     init {
-        // Mirror the ingestion pipeline's progress into WardrobeUiState (§ 5 slice 5 — the
-        // pipeline owns the queue; this keeps the existing UI contract until slice 7).
-        // Pipeline-owned fields copy through; `isUploading` / `processingImageId` are shared
-        // with the VM's own per-item ops, so only the pipeline's *transitions* are applied —
-        // each transition corresponds to exactly one pre-extraction in-VM write, including
-        // the guarded swap/clear semantics the queue worker used.
+        // The pipeline's own progress fields are read straight off [ingestionProgress] since
+        // the § 5 slice 7 prune; only the fields *shared* with the VM's own per-item ops
+        // (`isUploading` / `processingImageId`) plus the grid-return flip still land in
+        // [WardrobeUiState], applied as *transitions* — each transition corresponds to exactly
+        // one pre-extraction in-VM write, including the guarded swap/clear semantics the queue
+        // worker used.
         viewModelScope.launch {
             var prev = IngestionProgress()
             pipeline.progress.collect { p ->
                 _state.update { s ->
                     s.copy(
-                        pendingJobs = p.pendingJobs,
-                        batchDone = p.batchDone,
-                        batchTotal = p.batchTotal,
-                        duplicateCheck = p.duplicateCheck,
-                        localBgReviewQueue = p.localBgReviewQueue,
                         // Return to the grid exactly when the old code flipped it (dedupe
                         // pass / upload start — not gallery batches, which may run under
                         // the capture screen).
@@ -206,28 +210,9 @@ class WardrobeViewModel @Inject constructor(
                 _state.update { it.copy(needsBatteryExemption = needs) }
             }
         }
-        // Mirror the bulk-maintenance use-cases' progress into the UiState fields the overlay
-        // already reads (§ 5 slice 6). Each is an independent field cluster (no shared slot
-        // like the pipeline's processingImageId), so a straight copy-through preserves the old
-        // write timing.
-        viewModelScope.launch {
-            retagUseCase.progress.collect { p ->
-                _state.update { it.copy(isRetagging = p.isRunning, retagDone = p.done, retagTotal = p.total) }
-            }
-        }
-        viewModelScope.launch {
-            removeBgUseCase.progress.collect { p ->
-                _state.update { it.copy(isRemovingAllBg = p.isRunning, removeBgDone = p.done, removeBgTotal = p.total) }
-            }
-        }
-        viewModelScope.launch {
-            webpConvertUseCase.progress.collect { p ->
-                _state.update { it.copy(isConverting = p.isConverting, convertDone = p.done, convertTotal = p.total) }
-            }
-        }
-        viewModelScope.launch {
-            cutoutFixUseCase.progress.collect { p -> _state.update { it.copy(cutoutBgFix = p) } }
-        }
+        // (The four bulk-maintenance progress mirrors are gone — § 5 slice 7 prune: the grid
+        // overlay and the FixCutoutBgDialog host read the use-cases' flows via the passthrough
+        // properties above.)
         // Derived view (§ 5 slice 4a): the grid's items are the store rows in the current view
         // scope (with a cached image file), stamped with the Coil version overlay. File stats run
         // on IO via flowOn; redundant emissions are free (StateFlow suppresses equal states).
