@@ -11,7 +11,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -79,8 +78,6 @@ data class ShoppingClosetUiState(
     val urlImportPicker: UrlImportPickerState? = null,
 )
 
-internal data class ShoppingPendingJob(val driveId: String)
-
 /** Shopping wishlist counterpart to [WardrobeViewModel]. */
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
@@ -91,6 +88,7 @@ class ShoppingClosetViewModel @Inject constructor(
     internal val itemStore: WardrobeItemStore,
     private val mutationStore: PendingMutationStore,
     private val syncEngine: SyncEngine,
+    internal val ingestionQueue: ShoppingIngestionQueue,
     moveSync: WardrobeMoveSyncHandler,
     session: ClosetSessionHolder,
     prefsRepo: UserPreferencesRepository,
@@ -126,11 +124,16 @@ class ShoppingClosetViewModel @Inject constructor(
         imageVersions.update { it + driveIds.associateWith { now } }
     }
 
-    /** Background queue for bg-removal + tagging on newly uploaded items. */
-    internal val workQueue = Channel<ShoppingPendingJob>(Channel.UNLIMITED)
-
     init {
-        viewModelScope.launch { processQueue() }
+        // The bg-removal + tagging worker is the shared [ShoppingIngestionQueue] singleton
+        // (§ 5 slice 9 — a forked VM must not start a duplicate queue); mirror its progress
+        // and failures into this instance's UI state.
+        viewModelScope.launch {
+            ingestionQueue.pendingJobs.collect { n -> _state.update { it.copy(pendingJobs = n) } }
+        }
+        viewModelScope.launch {
+            ingestionQueue.errors.collect { msg -> _state.update { it.copy(error = msg) } }
+        }
         // Derived view (§ 5 slice 4c): the wishlist is the store rows under `_shopping/` (with
         // a cached image file), newest first — matching Drive's createdTime-desc listing —
         // stamped with the Coil version overlay. File stats run on IO via flowOn; redundant

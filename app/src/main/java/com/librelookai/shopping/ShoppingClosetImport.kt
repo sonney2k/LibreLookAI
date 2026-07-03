@@ -7,11 +7,8 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.librelookai.R
 import com.librelookai.data.drive.DriveRepository
-import com.librelookai.data.drive.upsertSidecar
-import com.librelookai.gemini.classifyClothing
 import com.librelookai.util.Analytics
 import com.librelookai.wardrobe.DriveImage
-import com.librelookai.wardrobe.ItemSidecar
 import com.librelookai.wardrobe.UrlImportPickerState
 import com.librelookai.wardrobe.WardrobeViewModel
 import com.librelookai.wardrobe.WebProductFetcher
@@ -146,8 +143,8 @@ internal suspend fun ShoppingClosetViewModel.uploadRaw(rawFile: File, folderId: 
             // Raw placeholder row into the store — the derived wishlist shows it via
             // invalidation; the queue swaps it for the finished cutout entry.
             runCatching { itemStore.upsert(folderId, newImage.toCachedItem()) }
-            _state.update { it.copy(isUploading = false, pendingJobs = it.pendingJobs + 1) }
-            workQueue.send(ShoppingPendingJob(newImage.driveId))
+            _state.update { it.copy(isUploading = false) }
+            ingestionQueue.enqueue(newImage.driveId, folderId)
         }.onFailure { e ->
             Log.w(ShoppingClosetViewModel.TAG, "shopping upload failed", e)
             _state.update { it.copy(isUploading = false, error = e.message) }
@@ -155,82 +152,8 @@ internal suspend fun ShoppingClosetViewModel.uploadRaw(rawFile: File, folderId: 
         }
     }
 
-    // ---------- Background processing ----------
-
-internal suspend fun ShoppingClosetViewModel.processQueue() {
-        for (job in workQueue) {
-            runCatching { processQueuedItem(job) }
-                .onFailure { e -> _state.update { it.copy(error = e.message) } }
-            _state.update { it.copy(pendingJobs = maxOf(0, it.pendingJobs - 1)) }
-            // The finished item is persisted to the store inside processQueuedItem.
-        }
-    }
-
-internal suspend fun ShoppingClosetViewModel.processQueuedItem(job: ShoppingPendingJob) {
-        val folderId = shoppingFolderId ?: return
-        val rawFile = File(drive.cacheDir, "${job.driveId}_original.jpg")
-        if (!rawFile.exists()) return
-
-        // Step 1 — bg removal (fall back to raw on failure).
-        val processedFile = gemini.removeBackground(rawFile, drive.cacheDir) ?: rawFile
-
-        // Step 2 — upload cutout, rename to "{cutoutId}_cutout.png".
-        val cutoutDrive = runCatching {
-            val uploaded = drive.uploadImage(folderId, processedFile)
-            drive.renameFile(uploaded.id, "${uploaded.id}${DriveRepository.CUTOUT_SUFFIX}")
-            uploaded.copy(name = "${uploaded.id}${DriveRepository.CUTOUT_SUFFIX}")
-        }.getOrNull() ?: return
-
-        // Step 3 — upload original as "{cutoutId}_original.jpg" (best effort).
-        val originalDriveId = runCatching {
-            drive.uploadImageWithName(
-                folderId, rawFile, "${cutoutDrive.id}${DriveRepository.ORIGINAL_SUFFIX}",
-            ).id
-        }.getOrNull()
-
-        // Step 4 — local caches: cutout + original (must precede deleteFile, which clears the local _original.jpg).
-        val localCutout = File(drive.cacheDir, "${cutoutDrive.id}.png")
-        if (processedFile.absolutePath != localCutout.absolutePath) {
-            processedFile.copyTo(localCutout, overwrite = true)
-        }
-        rawFile.copyTo(File(drive.cacheDir, "${cutoutDrive.id}_original.jpg"), overwrite = true)
-
-        // Step 5 — delete the temporary raw upload.
-        runCatching { drive.deleteFile(job.driveId) }
-
-        // Step 6 — make the finished cutout live: replace the raw-id store row with the final
-        // cutout entry (the derived view swaps raw → cutout via invalidation). Keep the raw
-        // row's createdTimeMs so the item holds its sort position.
-        val rawCreated = itemStore.find(job.driveId)?.second?.createdTimeMs
-            ?: System.currentTimeMillis()
-        var finished = DriveImage(
-            driveId = cutoutDrive.id,
-            localPath = localCutout.absolutePath,
-            name = cutoutDrive.name,
-            tags = null,
-            originalDriveId = originalDriveId,
-            folderId = folderId,
-            createdTimeMs = rawCreated,
-        )
-        runCatching { itemStore.upsert(folderId, finished.toCachedItem(), staleDriveId = job.driveId) }
-
-        // Step 7 — classify tags.
-        val tags = gemini.classifyClothing(localCutout, geminiLanguage)
-        if (tags != null) {
-            finished = finished.copy(tags = tags)
-            runCatching { itemStore.upsert(folderId, finished.toCachedItem()) }
-        }
-
-        // Step 8 — sidecar.
-        val sidecarJson = gson.toJson(ItemSidecar(tags, originalDriveId))
-        runCatching {
-            drive.upsertSidecar(
-                folderId, "${cutoutDrive.id}${DriveRepository.SIDECAR_SUFFIX}", sidecarJson,
-            )
-        }.onSuccess { sidecarId ->
-            runCatching { itemStore.setSidecarId(cutoutDrive.id, sidecarId) }
-        }
-    }
+    // (The background bg-removal + tagging worker is the [ShoppingIngestionQueue] singleton —
+    // § 5 slice 9; [uploadRaw] enqueues, the VM mirrors `pendingJobs`/`errors` in init.)
 
     // ---------- Move + delete ----------
 
