@@ -506,8 +506,13 @@ internal fun AppContent(
                         // Pin VM resolution to the activity: inside a NavHost destination the
                         // ViewModelStoreOwner is the back-stack entry, so any nested `viewModel()`
                         // default would silently fork a fresh VM instead of the shared activity
-                        // instance. Per-destination scoping happens deliberately, one converted
-                        // screen at a time (plan/refactor.md phase 3).
+                        // instance. Only Home / the tab destinations / the Settings sub-screens
+                        // still pin — their subtrees resolve defaulted activity-scoped VMs
+                        // (e.g. OutfitsScreen's tripsViewModel, OutfitCalendarTab's
+                        // weatherViewModel, UsageScreen's UsageViewModel). The overlay
+                        // destinations dropped their pins (§ 5 slice 9): their screens take
+                        // every VM as a required parameter, so a defaulted `viewModel()` can't
+                        // appear there without a signature change.
                         CompositionLocalProvider(LocalViewModelStoreOwner provides activity) {
                         Scaffold(
                             modifier = Modifier.fillMaxSize(),
@@ -819,19 +824,19 @@ internal fun AppContent(
                             val tripId = route.tripId
                             LaunchedEffect(Unit) { Analytics.screen("TripViewer") }
                             // Destination-scoped trips VM (§ 5 slice 9): resolved against this
-                            // back-stack entry BEFORE the activity pin below, so its transient
-                            // viewer state (refine preview, bulk-refine flags) dies with the
-                            // destination. Safe to fork because trips derive from the shared
-                            // TripsRepository (mutations reach the Travel tab's instance via
-                            // store invalidation; the init pre-warm joins the single-flight
-                            // reconcile instead of re-listing Drive).
+                            // back-stack entry, so its transient viewer state (refine preview,
+                            // bulk-refine flags) dies with the destination. Safe to fork because
+                            // trips derive from the shared TripsRepository (mutations reach the
+                            // Travel tab's instance via store invalidation; the init pre-warm
+                            // joins the single-flight reconcile instead of re-listing Drive).
                             val tripViewerTripsViewModel: TripsViewModel =
                                 androidx.hilt.navigation.compose.hiltViewModel(entry)
+                            // No activity pin here: the screen takes every VM as a required
+                            // parameter (no defaulted `viewModel()` in this subtree), so the
+                            // activity-scoped instances are passed explicitly below.
                             // Recreate the environment the viewer had when it rendered inside
                             // Home's chrome-hidden Scaffold: system-bar insets via a plain
-                            // Scaffold, plus the offline banner strip above the content. The
-                            // remaining VMs stay activity-pinned — see the HomeRoute comment.
-                            CompositionLocalProvider(LocalViewModelStoreOwner provides activity) {
+                            // Scaffold, plus the offline banner strip above the content.
                             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                                 Column(Modifier.fillMaxSize().padding(innerPadding)) {
                                     OfflineBanner(visible = isOffline)
@@ -847,9 +852,6 @@ internal fun AppContent(
                                         },
                                         wardrobeViewModel = wardrobeViewModel,
                                         profileViewModel = profileViewModel,
-                                        // Pass the activity-scoped instances explicitly — inside a
-                                        // NavHost destination, a defaulted `viewModel()` would scope
-                                        // to the back-stack entry and silently fork fresh VMs.
                                         locationViewModel = locationViewModel,
                                         outfitEventsViewModel = outfitEventsViewModel,
                                         onClose = { navController.popBackStack() },
@@ -867,64 +869,63 @@ internal fun AppContent(
                                     )
                                 }
                             }
-                            }
                         }
 
                         composable<OutfitViewerRoute> { entry ->
                             val route = entry.toRoute<OutfitViewerRoute>()
                             LaunchedEffect(Unit) { Analytics.screen("OutfitViewer") }
                             // Destination-scoped outfits + trips VMs (§ 5 slice 9): resolved
-                            // against this back-stack entry BEFORE the activity pin. Safe to
-                            // fork because both mirror repo-derived data (OutfitsRepository /
-                            // TripsRepository); the cross-tab hand-offs the viewer fires
-                            // (requestCalendarWear, scroll one-shots, pendingWear) live on the
-                            // repos, so they still reach the tab instances. The generation VM
-                            // stays activity-scoped — the prediction source resolves outfits
-                            // from its shared state, and composer seeds must survive the pop.
+                            // against this back-stack entry. Safe to fork because both mirror
+                            // repo-derived data (OutfitsRepository / TripsRepository); the
+                            // cross-tab hand-offs the viewer fires (requestCalendarWear, scroll
+                            // one-shots, pendingWear) live on the repos, so they still reach the
+                            // tab instances. The generation VM stays activity-scoped — the
+                            // prediction source resolves outfits from its shared state, and
+                            // composer seeds must survive the pop. No activity pin: every VM in
+                            // this subtree is a required parameter, passed explicitly below.
                             val viewerOutfitsViewModel: OutfitsViewModel =
                                 androidx.hilt.navigation.compose.hiltViewModel(entry)
                             val viewerTripsViewModel: TripsViewModel =
                                 androidx.hilt.navigation.compose.hiltViewModel(entry)
                             // Full-bleed, no Scaffold: the viewer is immersive (edge-to-edge,
                             // like its Dialog predecessor) and handles its own insets.
-                            CompositionLocalProvider(LocalViewModelStoreOwner provides activity) {
-                                com.librelookai.outfit.OutfitViewerDestination(
-                                    source = route.source,
-                                    routeOutfitIds = route.outfitIds,
-                                    initialOutfitId = route.initialOutfitId,
-                                    tripId = route.tripId,
-                                    outfitsViewModel = viewerOutfitsViewModel,
-                                    generationViewModel = outfitGenerationViewModel,
-                                    onOpenComposer = {
-                                        navController.navigate(OutfitComposerRoute) { launchSingleTop = true }
-                                    },
-                                    wardrobeViewModel = wardrobeViewModel,
-                                    profileViewModel = profileViewModel,
-                                    outfitEventsViewModel = outfitEventsViewModel,
-                                    tripsViewModel = viewerTripsViewModel,
-                                    locationViewModel = locationViewModel,
-                                    canTryOn = canTryOn,
-                                    onClose = { navController.popBackStack() },
-                                    onTryOnStyle = runOutfitTryOn,
-                                    onTryOnTripOutfit = runTripOutfitTryOn,
-                                    onOpenItemViewer = { itemIds, initialItemId ->
-                                        navController.navigate(
-                                            ItemViewerRoute(
-                                                source = ItemViewerRoute.SOURCE_OUTFIT,
-                                                itemIds = itemIds,
-                                                initialItemId = initialItemId,
-                                            ),
-                                        ) { launchSingleTop = true }
-                                    },
-                                )
-                            }
+                            com.librelookai.outfit.OutfitViewerDestination(
+                                source = route.source,
+                                routeOutfitIds = route.outfitIds,
+                                initialOutfitId = route.initialOutfitId,
+                                tripId = route.tripId,
+                                outfitsViewModel = viewerOutfitsViewModel,
+                                generationViewModel = outfitGenerationViewModel,
+                                onOpenComposer = {
+                                    navController.navigate(OutfitComposerRoute) { launchSingleTop = true }
+                                },
+                                wardrobeViewModel = wardrobeViewModel,
+                                profileViewModel = profileViewModel,
+                                outfitEventsViewModel = outfitEventsViewModel,
+                                tripsViewModel = viewerTripsViewModel,
+                                locationViewModel = locationViewModel,
+                                canTryOn = canTryOn,
+                                onClose = { navController.popBackStack() },
+                                onTryOnStyle = runOutfitTryOn,
+                                onTryOnTripOutfit = runTripOutfitTryOn,
+                                onOpenItemViewer = { itemIds, initialItemId ->
+                                    navController.navigate(
+                                        ItemViewerRoute(
+                                            source = ItemViewerRoute.SOURCE_OUTFIT,
+                                            itemIds = itemIds,
+                                            initialItemId = initialItemId,
+                                        ),
+                                    ) { launchSingleTop = true }
+                                },
+                            )
                         }
 
                         composable<TravelPlannerRoute> {
                             // Full-screen mode within the Travel tab, not a separate tab — report
                             // it as its own screen view for funnel tracking.
                             LaunchedEffect(Unit) { Analytics.screen("TravelPlanner") }
-                            CompositionLocalProvider(LocalViewModelStoreOwner provides activity) {
+                            // No activity pin: the planner takes every VM as a required
+                            // parameter (no defaulted `viewModel()` in this subtree).
                             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                                 Column(Modifier.fillMaxSize().padding(innerPadding)) {
                                     OfflineBanner(visible = isOffline)
@@ -949,135 +950,130 @@ internal fun AppContent(
                                     )
                                 }
                             }
-                            }
                         }
 
                         composable<TryOnRoute> {
                             // Real navigation (§ 5 slice 9): openers seed the try-on draft then
                             // navigate here; the header ✕ / system back clear the draft and pop
                             // through onClose. History feed + detail are sibling destinations.
+                            // No activity pin on the three try-on routes: their screens take
+                            // every VM as a required parameter, passed explicitly.
                             val tryOnStyles by stylesViewModel.state.collectAsState()
-                            CompositionLocalProvider(LocalViewModelStoreOwner provides activity) {
-                                TryOnComposerScreen(
-                                    tryOnViewModel   = tryOnViewModel,
-                                    wardrobeViewModel = wardrobeViewModel,
-                                    profileViewModel  = profileViewModel,
-                                    shoppingClosetViewModel = shoppingClosetViewModel,
-                                    outfits = tryOnStyles.outfits,
-                                    locations = locationState.locations,
-                                    onStartTryOn = { showQuickTryOnSheet = true },
-                                    onOpenProfileSettings = {
-                                        tryOnViewModel.close()
-                                        goToTab(5)
-                                        navResetTick++
-                                    },
-                                    onClose = {
-                                        navController.popBackStack(TryOnRoute, inclusive = true)
-                                    },
-                                )
-                            }
+                            TryOnComposerScreen(
+                                tryOnViewModel   = tryOnViewModel,
+                                wardrobeViewModel = wardrobeViewModel,
+                                profileViewModel  = profileViewModel,
+                                shoppingClosetViewModel = shoppingClosetViewModel,
+                                outfits = tryOnStyles.outfits,
+                                locations = locationState.locations,
+                                onStartTryOn = { showQuickTryOnSheet = true },
+                                onOpenProfileSettings = {
+                                    tryOnViewModel.close()
+                                    goToTab(5)
+                                    navResetTick++
+                                },
+                                onClose = {
+                                    navController.popBackStack(TryOnRoute, inclusive = true)
+                                },
+                            )
                         }
 
                         composable<TryOnHistoryRoute> {
-                            CompositionLocalProvider(LocalViewModelStoreOwner provides activity) {
-                                com.librelookai.tryon.TryOnHistoryDestination(
-                                    tryOnViewModel = tryOnViewModel,
-                                    historyViewModel = tryOnHistoryViewModel,
-                                    wardrobeViewModel = wardrobeViewModel,
-                                    shoppingClosetViewModel = shoppingClosetViewModel,
-                                    onOpenDetail = { tryOn ->
-                                        navController.navigate(
-                                            TryOnDetailRoute(imageDriveId = tryOn.imageDriveId),
-                                        ) { launchSingleTop = true }
-                                    },
-                                    onStartTryOn = { showQuickTryOnSheet = true },
-                                    onOpenComposer = {
-                                        navController.navigate(TryOnRoute) { launchSingleTop = true }
-                                    },
-                                    onClose = {
-                                        navController.popBackStack(TryOnHistoryRoute, inclusive = true)
-                                    },
-                                )
-                            }
+                            com.librelookai.tryon.TryOnHistoryDestination(
+                                tryOnViewModel = tryOnViewModel,
+                                historyViewModel = tryOnHistoryViewModel,
+                                wardrobeViewModel = wardrobeViewModel,
+                                shoppingClosetViewModel = shoppingClosetViewModel,
+                                onOpenDetail = { tryOn ->
+                                    navController.navigate(
+                                        TryOnDetailRoute(imageDriveId = tryOn.imageDriveId),
+                                    ) { launchSingleTop = true }
+                                },
+                                onStartTryOn = { showQuickTryOnSheet = true },
+                                onOpenComposer = {
+                                    navController.navigate(TryOnRoute) { launchSingleTop = true }
+                                },
+                                onClose = {
+                                    navController.popBackStack(TryOnHistoryRoute, inclusive = true)
+                                },
+                            )
                         }
 
                         composable<TryOnDetailRoute> { entry ->
                             val route = entry.toRoute<TryOnDetailRoute>()
                             val tryOnStyles by stylesViewModel.state.collectAsState()
-                            CompositionLocalProvider(LocalViewModelStoreOwner provides activity) {
-                                com.librelookai.tryon.TryOnDetailDestination(
-                                    initialImageDriveId = route.imageDriveId,
-                                    tryOnViewModel = tryOnViewModel,
-                                    historyViewModel = tryOnHistoryViewModel,
-                                    wardrobeViewModel = wardrobeViewModel,
-                                    shoppingClosetViewModel = shoppingClosetViewModel,
-                                    outfits = tryOnStyles.outfits,
-                                    onOpenSourceOutfit = { outfit ->
-                                        // Leave the try-on surfaces, jump to Outfits, and ask the
-                                        // list to scroll the picked outfit into view + highlight.
-                                        stylesViewModel.requestScrollToOutfit(outfit.id)
-                                        goToTab(0)
-                                        navResetTick++
-                                    },
-                                    onOpenComposer = {
-                                        navController.navigate(TryOnRoute) { launchSingleTop = true }
-                                    },
-                                    onOpenItemViewer = { itemIds, initialItemId ->
-                                        navController.navigate(
-                                            ItemViewerRoute(
-                                                source = ItemViewerRoute.SOURCE_TRYON,
-                                                itemIds = itemIds,
-                                                initialItemId = initialItemId,
-                                            ),
-                                        ) { launchSingleTop = true }
-                                    },
-                                    onClose = { navController.popBackStack() },
-                                )
-                            }
+                            com.librelookai.tryon.TryOnDetailDestination(
+                                initialImageDriveId = route.imageDriveId,
+                                tryOnViewModel = tryOnViewModel,
+                                historyViewModel = tryOnHistoryViewModel,
+                                wardrobeViewModel = wardrobeViewModel,
+                                shoppingClosetViewModel = shoppingClosetViewModel,
+                                outfits = tryOnStyles.outfits,
+                                onOpenSourceOutfit = { outfit ->
+                                    // Leave the try-on surfaces, jump to Outfits, and ask the
+                                    // list to scroll the picked outfit into view + highlight.
+                                    stylesViewModel.requestScrollToOutfit(outfit.id)
+                                    goToTab(0)
+                                    navResetTick++
+                                },
+                                onOpenComposer = {
+                                    navController.navigate(TryOnRoute) { launchSingleTop = true }
+                                },
+                                onOpenItemViewer = { itemIds, initialItemId ->
+                                    navController.navigate(
+                                        ItemViewerRoute(
+                                            source = ItemViewerRoute.SOURCE_TRYON,
+                                            itemIds = itemIds,
+                                            initialItemId = initialItemId,
+                                        ),
+                                    ) { launchSingleTop = true }
+                                },
+                                onClose = { navController.popBackStack() },
+                            )
                         }
 
                         composable<OutfitComposerRoute> {
                             // Real navigation (§ 5 slice 9): openers seed the generation VM's
                             // draft then navigate here; every close path (X / system back via
                             // the discard-confirm / save success) clears the draft and pops
-                            // through onClose. No open-flag mirror any more.
-                            CompositionLocalProvider(LocalViewModelStoreOwner provides activity) {
-                                OutfitComposerScreen(
-                                    generationViewModel = outfitGenerationViewModel,
-                                    onClose = {
-                                        navController.popBackStack(OutfitComposerRoute, inclusive = true)
-                                    },
-                                    wardrobeViewModel = wardrobeViewModel,
-                                    profileViewModel  = profileViewModel,
-                                    weatherViewModel  = weatherViewModel,
-                                    shoppingClosetViewModel = shoppingClosetViewModel,
-                                    locationViewModel = locationViewModel,
-                                    onOpenItemViewer = { initialItemId ->
-                                        navController.navigate(
-                                            ItemViewerRoute(
-                                                source = ItemViewerRoute.SOURCE_COMPOSER,
-                                                initialItemId = initialItemId,
-                                            ),
-                                        ) { launchSingleTop = true }
-                                    },
-                                )
-                            }
+                            // through onClose. No open-flag mirror any more. No activity pin:
+                            // the composer takes every VM as a required parameter.
+                            OutfitComposerScreen(
+                                generationViewModel = outfitGenerationViewModel,
+                                onClose = {
+                                    navController.popBackStack(OutfitComposerRoute, inclusive = true)
+                                },
+                                wardrobeViewModel = wardrobeViewModel,
+                                profileViewModel  = profileViewModel,
+                                weatherViewModel  = weatherViewModel,
+                                shoppingClosetViewModel = shoppingClosetViewModel,
+                                locationViewModel = locationViewModel,
+                                outfitEventsViewModel = outfitEventsViewModel,
+                                onOpenItemViewer = { initialItemId ->
+                                    navController.navigate(
+                                        ItemViewerRoute(
+                                            source = ItemViewerRoute.SOURCE_COMPOSER,
+                                            initialItemId = initialItemId,
+                                        ),
+                                    ) { launchSingleTop = true }
+                                },
+                            )
                         }
 
                         composable<ItemViewerRoute> { entry ->
                             val route = entry.toRoute<ItemViewerRoute>()
                             LaunchedEffect(Unit) { Analytics.screen("ItemViewer") }
                             // Destination-scoped wardrobe / shopping / outfits / try-on-history
-                            // VMs (§ 5 slice 9): resolved against this back-stack entry BEFORE
-                            // the activity pin. Safe to fork since the slice-9 load-core
-                            // extractions — all four mirror repo-derived data
-                            // (WardrobeRepository / ShoppingRepository / OutfitsRepository /
-                            // TryOnRepository), their init pre-warms are once-per-process on
-                            // the repos, and the shopping upload worker is the
-                            // ShoppingIngestionQueue singleton. The generation VM stays
+                            // VMs (§ 5 slice 9): resolved against this back-stack entry. Safe
+                            // to fork since the slice-9 load-core extractions — all four mirror
+                            // repo-derived data (WardrobeRepository / ShoppingRepository /
+                            // OutfitsRepository / TryOnRepository), their init pre-warms are
+                            // once-per-process on the repos, and the shopping upload worker is
+                            // the ShoppingIngestionQueue singleton. The generation VM stays
                             // activity-scoped (the composer source resolves items from its
                             // shared slots; composer seeds must survive the pop), and the
-                            // location VM publishes the closet session.
+                            // location VM publishes the closet session. No activity pin: every
+                            // VM in this subtree is a required parameter, passed explicitly.
                             val viewerWardrobeViewModel: com.librelookai.wardrobe.WardrobeViewModel =
                                 androidx.hilt.navigation.compose.hiltViewModel(entry)
                             val viewerShoppingViewModel: com.librelookai.shopping.ShoppingClosetViewModel =
@@ -1088,41 +1084,39 @@ internal fun AppContent(
                                 androidx.hilt.navigation.compose.hiltViewModel(entry)
                             // Full-bleed, no Scaffold: the viewer is immersive (edge-to-edge,
                             // like its Dialog predecessor) and handles its own insets.
-                            CompositionLocalProvider(LocalViewModelStoreOwner provides activity) {
-                                com.librelookai.wardrobe.ItemViewerDestination(
-                                    source = route.source,
-                                    routeItemIds = route.itemIds,
-                                    initialItemId = route.initialItemId,
-                                    wardrobeViewModel = viewerWardrobeViewModel,
-                                    shoppingClosetViewModel = viewerShoppingViewModel,
-                                    outfitsViewModel = viewerOutfitsViewModel,
-                                    generationViewModel = outfitGenerationViewModel,
-                                    tryOnHistoryViewModel = viewerTryOnHistoryViewModel,
-                                    locationViewModel = locationViewModel,
-                                    onCreateOutfitFromSelection = { itemIds ->
-                                        when (route.source) {
-                                            // Same wiring as the wardrobe / shopping selection
-                                            // bars; try-on & composer sources keep their old
-                                            // no-op (the hosts never offered this path).
-                                            ItemViewerRoute.SOURCE_WARDROBE,
-                                            ItemViewerRoute.SOURCE_SHOPPING,
-                                            -> {
-                                                Analytics.action("ItemViewer", "create_outfit_from_item")
-                                                outfitGenerationViewModel.openComposer(
-                                                    seedItemIds = itemIds,
-                                                    images      = viewerWardrobeViewModel.state.value.images +
-                                                        viewerShoppingViewModel.state.value.items,
-                                                    prefs       = profileViewModel.state.value.preferences,
-                                                    defaultSourceFolderId = locationViewModel.activeFolderId,
-                                                )
-                                                navController.navigate(OutfitComposerRoute) { launchSingleTop = true }
-                                            }
-                                            else -> {}
+                            com.librelookai.wardrobe.ItemViewerDestination(
+                                source = route.source,
+                                routeItemIds = route.itemIds,
+                                initialItemId = route.initialItemId,
+                                wardrobeViewModel = viewerWardrobeViewModel,
+                                shoppingClosetViewModel = viewerShoppingViewModel,
+                                outfitsViewModel = viewerOutfitsViewModel,
+                                generationViewModel = outfitGenerationViewModel,
+                                tryOnHistoryViewModel = viewerTryOnHistoryViewModel,
+                                locationViewModel = locationViewModel,
+                                onCreateOutfitFromSelection = { itemIds ->
+                                    when (route.source) {
+                                        // Same wiring as the wardrobe / shopping selection
+                                        // bars; try-on & composer sources keep their old
+                                        // no-op (the hosts never offered this path).
+                                        ItemViewerRoute.SOURCE_WARDROBE,
+                                        ItemViewerRoute.SOURCE_SHOPPING,
+                                        -> {
+                                            Analytics.action("ItemViewer", "create_outfit_from_item")
+                                            outfitGenerationViewModel.openComposer(
+                                                seedItemIds = itemIds,
+                                                images      = viewerWardrobeViewModel.state.value.images +
+                                                    viewerShoppingViewModel.state.value.items,
+                                                prefs       = profileViewModel.state.value.preferences,
+                                                defaultSourceFolderId = locationViewModel.activeFolderId,
+                                            )
+                                            navController.navigate(OutfitComposerRoute) { launchSingleTop = true }
                                         }
-                                    },
-                                    onClose = { navController.popBackStack() },
-                                )
-                            }
+                                        else -> {}
+                                    }
+                                },
+                                onClose = { navController.popBackStack() },
+                            )
                         }
                         }
 

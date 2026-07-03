@@ -145,7 +145,7 @@ fun TryOnComposerScreen(
     tryOnViewModel: TryOnViewModel,
     wardrobeViewModel: WardrobeViewModel,
     profileViewModel: ProfileViewModel,
-    shoppingClosetViewModel: ShoppingClosetViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    shoppingClosetViewModel: ShoppingClosetViewModel,
     /** Outfits available to pick as the basis of a new try-on. Empty disables the "Use an outfit" path. */
     outfits: List<Outfit> = emptyList(),
     /** Locations passed through to [com.librelookai.outfit.AddItemSheet] so it can show closet badges. */
@@ -262,7 +262,7 @@ fun TryOnHistoryDestination(
     tryOnViewModel: TryOnViewModel,
     historyViewModel: TryOnHistoryViewModel,
     wardrobeViewModel: WardrobeViewModel,
-    shoppingClosetViewModel: ShoppingClosetViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    shoppingClosetViewModel: ShoppingClosetViewModel,
     /** Open the detail destination for a tapped try-on. */
     onOpenDetail: (TryOn) -> Unit,
     /** Open the Quick Try-On sheet (feed FAB + empty-state CTA). */
@@ -321,7 +321,7 @@ fun TryOnDetailDestination(
     tryOnViewModel: TryOnViewModel,
     historyViewModel: TryOnHistoryViewModel,
     wardrobeViewModel: WardrobeViewModel,
-    shoppingClosetViewModel: ShoppingClosetViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    shoppingClosetViewModel: ShoppingClosetViewModel,
     /** Outfits pool for resolving a try-on's source-outfit link. */
     outfits: List<Outfit> = emptyList(),
     /** Open the saved outfit linked from the detail view. Hidden when null. */

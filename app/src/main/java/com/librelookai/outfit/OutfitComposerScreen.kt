@@ -80,9 +80,9 @@ fun OutfitComposerScreen(
     wardrobeViewModel: WardrobeViewModel,
     profileViewModel: ProfileViewModel,
     weatherViewModel: WeatherViewModel,
-    shoppingClosetViewModel: ShoppingClosetViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
-    locationViewModel: LocationViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
-    outfitEventsViewModel: OutfitEventsViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    shoppingClosetViewModel: ShoppingClosetViewModel,
+    locationViewModel: LocationViewModel,
+    outfitEventsViewModel: OutfitEventsViewModel,
     /** Open the item-viewer destination over this one (composer source: items track the slots). */
     onOpenItemViewer: (String) -> Unit = {},
     /** Pops the OutfitComposerRoute destination (§ 5 slice 9 — the composer is real navigation;

@@ -12,7 +12,7 @@ deferred and inter-blocking:
 | 2 | Room as source of truth + SyncEngine | **Operationally complete** (June 2026) — all five JSON-cache slices landed (phase 2) as opaque-JSON cache rows; the `PendingMutation` queue + `SyncEngine` drain **every converted metadata write**: wardrobe (sidecar/delete/move), shopping, outfits (`outfit.syncFolder`), calendar wears (`outfitEvent.syncFolder`), trips (`trip.save`/`trip.delete`), plus the WorkManager process-death backstop (see phase 2 status). The real-entity / Flow-read conversion is deliberately carried into § 5 |
 | 3 | DI + interfaces at the seams | **Partial** — Hilt landed (phase 1); the gemini↔drive↔billing package cycles are broken (June 2026, see phase 1 status), making the layering acyclic; interface extraction at the I/O seams pending; static globals (`ImageEncoding.tier`, `GeminiProgress` slot, `AiRetry.action`) still alive |
 | 4 | Navigation Compose | **Done** (phase 3 complete; per-destination VM scoping deferred to § 5) |
-| 5 | Thin VMs over use-cases | **In progress** (July 2026) — slices 0–8 landed + slice 9 largely landed: all five repos extracted (outfits/try-on/trips/**wardrobe** + the § 4a–d derivations), both composers + all VM splits done, the `WardrobeUiState` progress prune and the connectivity/pre-warm bridge kills landed, `TripViewerRoute`/`OutfitViewerRoute` have destination-scoped VMs. All three viewer destinations (`TripViewerRoute`/`OutfitViewerRoute`/`ItemViewerRoute`) have destination-scoped VMs over the five repos, and the `WardrobeViewModel` slimming landed (no extension files, no `internal var` shared state, per-item ops on `WardrobeItemOps`, ~520 lines of mirrors + UI state + delegates). Remaining: the `LocalViewModelStoreOwner provides activity` pin drops per fully-converted destination, restore-overlay engine aggregation (slice 7 part 3) |
+| 5 | Thin VMs over use-cases | **In progress** (July 2026) — slices 0–8 landed + slice 9 largely landed: all five repos extracted (outfits/try-on/trips/**wardrobe** + the § 4a–d derivations), both composers + all VM splits done, the `WardrobeUiState` progress prune and the connectivity/pre-warm bridge kills landed, `TripViewerRoute`/`OutfitViewerRoute` have destination-scoped VMs. All three viewer destinations (`TripViewerRoute`/`OutfitViewerRoute`/`ItemViewerRoute`) have destination-scoped VMs over the five repos, and the `WardrobeViewModel` slimming landed (no extension files, no `internal var` shared state, per-item ops on `WardrobeItemOps`, ~520 lines of mirrors + UI state + delegates). The overlay-destination `LocalViewModelStoreOwner` pin drops landed (July 2026 — see slice 9 status); slice 9 is **complete**. Only deliberate deferral left: restore-overlay engine aggregation (slice 7 part 3, waits on a `SyncEngine` sync-state surface) |
 | 6 | Typed `AiResult` | **Started** — the notice path carries a semantic `AiErrorReason` enum instead of `R.string` ids (June 2026, the `:core:ai` enabler); the sealed `AiResult<T>` return type is not started — Gemini still returns `null` on failure |
 | 7 | DataStore + Keystore settings | **Started** — the BYOK Gemini key is AES-GCM-encrypted at rest via Android Keystore (June 2026; `ApiKeyStore` API unchanged, plaintext pref migrates on first read, graceful plaintext fallback if Keystore is unavailable); DataStore for `UserPreferences`/`OnboardingState`/pricing cache and the flag interface are not started |
 | 8 | Testing strategy | **Partial** — store invariant tests landed; fake-based repository/VM tests blocked on § 3 interfaces |
@@ -1154,11 +1154,28 @@ and the unused deps (`GeminiRepository`/`WardrobeItemStore`/`PendingMutationStor
 files pre-§ 5) — above the aspirational ~400 because it keeps ~30 one-line delegates + the
 mirror collectors, but it is now exactly the target *shape*: state mirrors + per-instance UI
 state + thin delegation, nothing long-lived.
-Also remaining: the
-`LocalViewModelStoreOwner provides activity` pins drop per fully-converted destination (the
-converted ones still receive activity-scoped VMs for their remaining dependencies, so every
-pin stays for now); and optionally a `SyncEngine` sync-state flow so the restore overlay
-aggregates engine progress instead of polling VMs' `isLoading` (slice 7 part 3). *(The other
+**The overlay-destination pin drops LANDED (July 2026), closing slice 9.** The evaluation:
+a pin is load-bearing only where a *defaulted* `viewModel()` resolution happens in the
+destination's subtree. Sweeping every defaulted resolution in the app showed exactly one
+live use under an overlay destination — `OutfitComposerRoute` omitted `outfitEventsViewModel`
+at its call site, so the screen's param default resolved through the pin. Fix + hardening:
+that VM is now passed explicitly, and **every VM param default on the overlay-hosted screens
+was removed** (`OutfitComposerScreen` ×3, `TripViewerScreen` ×2, the three try-on
+destinations ×1 each), so the compiler proves the pins dead — all eight overlay pins dropped
+(`TripViewerRoute`, `OutfitViewerRoute`, `TravelPlannerRoute`, `TryOnRoute`,
+`TryOnHistoryRoute`, `TryOnDetailRoute`, `OutfitComposerRoute`, `ItemViewerRoute`), and a
+future omission is a compile error instead of a silent activity-fork or entry-fork. The
+Home / nested-tab / Settings-graph pins **stay — they are load-bearing**: those subtrees
+still resolve defaulted activity-scoped VMs (`OutfitsScreen`'s `tripsViewModel`,
+`OutfitCalendarTab`'s `weatherViewModel`, `UsageScreen`/`UsageSection`'s inline
+`UsageViewModel`, plus the `settingsDestinations` sub-screens).
+Still deliberately deferred (not slice-9-blocking): a `SyncEngine` sync-state flow so the
+restore overlay aggregates engine progress instead of polling VMs' `isLoading` (slice 7
+part 3). Re-evaluated July 2026 and kept as-is: the `isLoading` flags encode each VM's
+two-phase load orchestration (clear on non-empty Phase-1 cache, hold through the Drive sync
+otherwise), only `WardrobeRepository` exposes a sync-status flow, and relocating those tuned
+semantics into the outfits/shopping/trips repos would churn a deliberately-tuned UX path for
+no user-visible gain. Revisit if/when `SyncEngine` grows a sync-state surface. *(The other
 two items that used to sit here landed: the composer routes became plain navigation — see the
 slice-9 status above — and the slice-7 `WardrobeUiState` progress-cluster prune landed July
 2026 via the VM's passthrough-property flows, see the slice 7 status.)*
