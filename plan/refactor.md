@@ -12,7 +12,7 @@ deferred and inter-blocking:
 | 2 | Room as source of truth + SyncEngine | **Operationally complete** (June 2026) — all five JSON-cache slices landed (phase 2) as opaque-JSON cache rows; the `PendingMutation` queue + `SyncEngine` drain **every converted metadata write**: wardrobe (sidecar/delete/move), shopping, outfits (`outfit.syncFolder`), calendar wears (`outfitEvent.syncFolder`), trips (`trip.save`/`trip.delete`), plus the WorkManager process-death backstop (see phase 2 status). The real-entity / Flow-read conversion is deliberately carried into § 5 |
 | 3 | DI + interfaces at the seams | **Partial** — Hilt landed (phase 1); the gemini↔drive↔billing package cycles are broken (June 2026, see phase 1 status), making the layering acyclic; interface extraction at the I/O seams pending; static globals (`ImageEncoding.tier`, `GeminiProgress` slot, `AiRetry.action`) still alive |
 | 4 | Navigation Compose | **Done** (phase 3 complete; per-destination VM scoping deferred to § 5) |
-| 5 | Thin VMs over use-cases | **Planned** (June 2026) — the keystone blocker: gates `feature/*` modules, destination-scoped VMs, and removal of the cross-VM `LaunchedEffect` bridges. Execution plan below (phase 5) |
+| 5 | Thin VMs over use-cases | **In progress** (July 2026) — slices 0–8 landed + slice 9 largely landed: all four repos extracted (outfits/try-on/trips + the § 4b–d derivations), both composers + all VM splits done, the `WardrobeUiState` progress prune and the connectivity/pre-warm bridge kills landed, `TripViewerRoute`/`OutfitViewerRoute` have destination-scoped VMs. Remaining: `ItemViewerRoute` scoping (blocked on a wardrobe/shopping repo foundation — see slice 9 status), the wardrobe load-core extraction (`WardrobeViewModel` ≤ ~400 lines exit criterion), restore-overlay engine aggregation (slice 7 part 3) |
 | 6 | Typed `AiResult` | **Started** — the notice path carries a semantic `AiErrorReason` enum instead of `R.string` ids (June 2026, the `:core:ai` enabler); the sealed `AiResult<T>` return type is not started — Gemini still returns `null` on failure |
 | 7 | DataStore + Keystore settings | **Started** — the BYOK Gemini key is AES-GCM-encrypted at rest via Android Keystore (June 2026; `ApiKeyStore` API unchanged, plaintext pref migrates on first read, graceful plaintext fallback if Keystore is unavailable); DataStore for `UserPreferences`/`OnboardingState`/pricing cache and the flag interface are not started |
 | 8 | Testing strategy | **Partial** — store invariant tests landed; fake-based repository/VM tests blocked on § 3 interfaces |
@@ -1092,17 +1092,26 @@ duplicate reconcile, no state reset). The generation VM deliberately stays activ
 the prediction source resolves outfits from its shared state, and composer seeds must survive
 the destination pop.
 Remaining work: `ItemViewerRoute` (the last viewer destination) gets destination-scoped
-`hiltViewModel()` instances resolving content from the stores by route ids; the state-mirrored
-composer routes become plain navigation — openers `navigate(OutfitComposerRoute(seedItemIds))`
-instead of flipping VM open-flags (images resolve from the store, prefs from the repository),
-deleting the open-flag mirror effects and the "any path that pops must also close the VM"
-rule. The `LocalViewModelStoreOwner provides activity` pins drop per converted destination.
-**Also folded in from slice 7:** the `WardrobeUiState` progress-cluster prune (deferred here
-because the cluster is consumed across ~9 surfaces — incl. `AppContent`'s restore overlay and the
-`FixCutoutBgDialog` host — that only get direct `hiltViewModel()` reads at this slice; once they
-do, the only residue is the `processingImageId`/`isUploading`/`isProcessing` shared-state straddle,
-which stays VM-managed). Optionally pair with adding a `SyncEngine` sync-state flow so the restore
-overlay aggregates engine progress instead of polling VMs' `isLoading` (slice 7 part 3).
+`hiltViewModel()` instances — **blocked on a wardrobe/shopping repo foundation** (July 2026
+analysis): of its six VMs, `OutfitsViewModel`/`TryOnHistoryViewModel` are fork-safe today
+(repo-derived), `OutfitGenerationViewModel`/`LocationViewModel` must stay activity-scoped
+(composer seeds survive the pop; the location VM *publishes* the closet session), but
+`WardrobeViewModel`'s scope guards are instance fields (`folderId`/`allFolderIds`), so a
+fork's session collector always misses them and re-runs the full two-phase `loadImages()`
+Drive load per viewer open, and a forked `ShoppingClosetViewModel` would start a duplicate
+upload worker queue (`processQueue` in init). The prerequisite is the wardrobe load-core
+extraction (a `WardrobeRepository` owning scope + two-phase load + sync flags — also the path
+to the "`WardrobeViewModel` ≤ ~400 lines" exit criterion) and moving shopping's worker into
+`ItemIngestionPipeline` or its own singleton. A partial fork (outfits + try-on history only)
+was deliberately skipped — the destination would still pin the activity for the heavy VMs.
+Also remaining: the
+`LocalViewModelStoreOwner provides activity` pins drop per fully-converted destination (the
+converted ones still receive activity-scoped VMs for their remaining dependencies, so every
+pin stays for now); and optionally a `SyncEngine` sync-state flow so the restore overlay
+aggregates engine progress instead of polling VMs' `isLoading` (slice 7 part 3). *(The other
+two items that used to sit here landed: the composer routes became plain navigation — see the
+slice-9 status above — and the slice-7 `WardrobeUiState` progress-cluster prune landed July
+2026 via the VM's passthrough-property flows, see the slice 7 status.)*
 ### Exit criteria (what done looks like)
 
 - `AppContent` hosts navigation, global dialog observers and theme — no data bridges; the
