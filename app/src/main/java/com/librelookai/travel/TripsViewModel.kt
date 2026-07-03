@@ -97,6 +97,10 @@ class TripsViewModel @Inject constructor(
                 .map { trips -> trips.sortedByDescending { it.createdAt } }
                 .collect { trips -> _state.update { it.copy(trips = trips) } }
         }
+        // Pre-warm on creation (the VM is activity-scoped, created at app start) so the Travel
+        // tab paints instantly — replaces the AppContent pre-warm bridge (§ 5). Two-phase:
+        // the derivation above paints the store, loadTrips runs the Drive reconcile.
+        loadTrips()
     }
 
     /**

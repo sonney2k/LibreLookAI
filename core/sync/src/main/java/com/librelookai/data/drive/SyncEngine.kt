@@ -1,8 +1,11 @@
 package com.librelookai.data.drive
 
+import android.app.Application
 import com.librelookai.data.local.PendingMutation
 import com.librelookai.data.local.PendingMutationStore
+import com.librelookai.util.NetworkMonitor
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import dagger.multibindings.Multibinds
@@ -57,7 +60,7 @@ interface MutationHandler {
  * convert feature-by-feature, each keeping the optimistic-write UX (instant local update, Drive
  * syncs behind) while replacing the in-coroutine inline Drive call with a queued, retryable,
  * process-death-surviving mutation. Triggers: inline post-enqueue, the app-start /
- * network-regain catch-up in `AppContent`, the in-process backoff re-drain below, and — for
+ * network-regain [SyncConnectivityCatchUp], the in-process backoff re-drain below, and — for
  * process death with a non-empty queue — the [DrainScheduler] WorkManager backstop.
  *
  * Drain rules, encoded in `SyncEngineTest`:
@@ -151,4 +154,42 @@ class SyncEngine @Inject constructor(
 abstract class SyncEngineModule {
     @Multibinds
     abstract fun mutationHandlers(): Set<MutationHandler>
+}
+
+/**
+ * The one process-wide [NetworkMonitor] (its callback registration lives for the process — the
+ * composition-scoped instance it replaces re-registered per activity). `AppContent` reads it for
+ * `LocalIsOffline`, [SyncConnectivityCatchUp] and the wardrobe prefetch retry collect it.
+ */
+@Module
+@InstallIn(SingletonComponent::class)
+object NetworkMonitorModule {
+    @Provides
+    @Singleton
+    fun networkMonitor(app: Application): NetworkMonitor = NetworkMonitor(app)
+}
+
+/**
+ * The app-start / network-regain catch-up drain (refactor § 2): collects
+ * [NetworkMonitor.isOnline] on a process-long scope and [SyncEngine.drain]s on subscription
+ * (StateFlow replays the current value — the app-start pass) and on every offline→online flip —
+ * replacing the `LaunchedEffect(isOnline)` bridge in `AppContent` (§ 5). Kept outside
+ * [SyncEngine] so the engine stays constructible in plain-JUnit tests. Started once from the
+ * Application's `onCreate` (the `StaticPreferenceMirrors` pattern).
+ */
+@Singleton
+class SyncConnectivityCatchUp @Inject constructor(
+    private val engine: SyncEngine,
+    private val networkMonitor: NetworkMonitor,
+) {
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private var started = false
+
+    fun start() {
+        if (started) return
+        started = true
+        scope.launch {
+            networkMonitor.isOnline.collect { online -> if (online) engine.drain() }
+        }
+    }
 }

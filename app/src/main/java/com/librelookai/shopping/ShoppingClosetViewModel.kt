@@ -175,6 +175,10 @@ class ShoppingClosetViewModel @Inject constructor(
                 }
             }
         }
+        // Pre-warm on creation (the VM is activity-scoped, created at app start) so the Shopping
+        // tab paints instantly — replaces the AppContent pre-warm bridge (§ 5). Two-phase: the
+        // derivation above paints the store, loadItems resolves the folder + runs the reconcile.
+        loadItems()
     }
 
     /**

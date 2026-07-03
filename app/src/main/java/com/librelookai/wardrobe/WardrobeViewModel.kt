@@ -1,4 +1,5 @@
 package com.librelookai.wardrobe
+import com.librelookai.util.NetworkMonitor
 import com.librelookai.util.localized
 
 import android.app.Application
@@ -78,6 +79,7 @@ class WardrobeViewModel @Inject constructor(
     internal val pipeline: ItemIngestionPipeline,
     private val jobLock: JobLock,
     private val itemVersions: ItemVersions,
+    private val networkMonitor: NetworkMonitor,
     private val retagUseCase: RetagAllUseCase,
     private val removeBgUseCase: RemoveAllBackgroundsUseCase,
     internal val webpConvertUseCase: WebpConvertUseCase,
@@ -254,6 +256,14 @@ class WardrobeViewModel @Inject constructor(
                 setDefaultImportFolderId(s.defaultImportFolderId)
             }
         }
+        // Retry the cross-closet prefetch on start and whenever connectivity returns (replaces
+        // the AppContent bridge, § 5): the initial prefetch bails when offline; without this an
+        // early network blip would leave some closets permanently uncached (empty snapshot →
+        // outfits/trips hidden). StateFlow replays the current value, so an online start also
+        // fires once.
+        viewModelScope.launch {
+            networkMonitor.isOnline.collect { online -> if (online) retryPrefetchIfNeeded() }
+        }
         // Mirror the UserPreferences-derived knobs (tagging language, similarity debug) from the
         // shared preferences repository — replaces the per-pref AppContent mirrors (§ 5 slice 2).
         // The dedupe / on-device-bg-review knobs live on [ItemIngestionPipeline] now (slice 5).
@@ -330,7 +340,7 @@ class WardrobeViewModel @Inject constructor(
      * initial prefetch that bailed on a momentary network blip would never run again until the
      * closet list changed, leaving the cross-closet snapshot (and thus outfits/trips) empty.
      */
-    fun retryPrefetchIfNeeded() {
+    private fun retryPrefetchIfNeeded() {
         viewModelScope.launch(Dispatchers.IO) {
             if (allConfiguredFolderIds.any { fid -> !itemStore.hasFolder(fid) }) {
                 prefetchUncachedClosets()

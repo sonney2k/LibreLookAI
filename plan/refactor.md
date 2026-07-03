@@ -276,8 +276,11 @@ are easy to violate and have caused real bugs.
      it to patch in-memory `sidecarDriveId` (move/delete use it to relocate/remove the
      sidecar file).
    - **Drain triggers**: inline after each enqueue (the engine mutex makes overlap safe) +
-     a catch-up `LaunchedEffect(isOnline)` in `AppContent` on app start and every
-     offline→online transition + the engine's own backoff re-drain (June 2026): a drain
+     a catch-up on app start and every offline→online transition (originally a
+     `LaunchedEffect(isOnline)` in `AppContent`; since the § 5 bridge kill it is
+     `SyncConnectivityCatchUp` in `core/sync` — a process-long `NetworkMonitor.isOnline`
+     collector started from `LibreLookAIApp.onCreate`, the monitor now a Hilt `@Singleton`
+     provided in `core/sync`) + the engine's own backoff re-drain (June 2026): a drain
      halted by a transient `Retry` self-schedules another drain with exponential backoff
      (30s → 10min cap) — otherwise a queue stalled by one 503 while the device *stays*
      online would wait for the next app start. Unknown-kind halts don't self-retry (only
@@ -828,6 +831,20 @@ filter). Accepted divergences: mutators still read `state` as their base (same m
 as 4a–c), and a try-on whose image download failed is skipped instead of shown with an empty
 `localPath`. Try-on saves remain Drive-first (not queued) — converting them is § 2 leftover
 work, not slice 4's.
+**The deferred slice-4 consequences LANDED (July 2026): the connectivity + pre-warm bridges
+are gone.** `NetworkMonitor` became a Hilt `@Singleton` (provided in `core/sync`, passed into
+`AppContent` from `MainActivity` — the composition-scoped `remember { NetworkMonitor(...) }` +
+unregister-on-dispose is gone; the ON_RESUME `recheck()` stays). The SyncEngine catch-up drain
+moved into `SyncConnectivityCatchUp` (`core/sync`, started from `LibreLookAIApp.onCreate` —
+kept outside the engine class so `SyncEngineTest` stays plain JUnit); the wardrobe prefetch
+retry became a `networkMonitor.isOnline` collector in `WardrobeViewModel.init`
+(`retryPrefetchIfNeeded` went private); the three remaining pre-warm loads moved into their
+owning VMs' `init` (`ShoppingClosetViewModel.loadItems`, `TryOnHistoryViewModel.refresh`,
+`TripsViewModel.loadTrips` — all activity-scoped, created at app start, so the timing is
+unchanged; a tour replay no longer re-fires them, which only skipped a redundant Drive
+refresh). Accepted divergence: the catch-up drain now starts at process start rather than
+first full-app composition — a signed-out user has an empty queue, so the earlier trigger is
+inert there.
 
 **Slice 5 — ingestion pipeline use-case.** The `PendingJob` Channel, `drainWorkQueue`,
 dedupe gate, local-bg review queue, wake-lock and `JobForegroundService` acquire/release move

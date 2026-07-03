@@ -41,6 +41,10 @@ class TryOnHistoryViewModel @Inject constructor(
         viewModelScope.launch {
             repo.history.collect { history -> _state.update { it.copy(history = history) } }
         }
+        // Pre-warm on creation (the VM is activity-scoped, created at app start) so the history
+        // feed paints instantly — replaces the AppContent pre-warm bridge (§ 5). The derived
+        // history paints the store by itself; this runs the Phase-2 Drive refresh.
+        refresh()
     }
 
     /** Phase-2 Drive refresh (the derived history paints the store by itself — Phase 1). */

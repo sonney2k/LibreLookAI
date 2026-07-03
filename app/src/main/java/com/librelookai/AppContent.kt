@@ -64,7 +64,6 @@ import com.librelookai.auth.AuthViewModel
 import com.librelookai.auth.SignInScreen
 import com.librelookai.billing.CreditsViewModel
 import com.librelookai.data.drive.DriveRepository
-import com.librelookai.data.drive.SyncEngine
 import com.librelookai.data.model.Location
 import com.librelookai.data.model.TryOn
 import com.librelookai.gemini.TokenUsageRepository
@@ -110,18 +109,16 @@ import com.librelookai.wardrobe.setCutoutFixShowAll
 import com.librelookai.wardrobe.toggleCutoutFixSelection
 import com.librelookai.weather.WeatherBadge
 import com.librelookai.weather.WeatherViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 
 @Composable
 internal fun AppContent(
     activity: ComponentActivity,
     driveRepository: DriveRepository,
-    syncEngine: SyncEngine,
+    networkMonitor: NetworkMonitor,
 ) {
     LibreLookAITheme(
         paletteId = ProfileViewModel.cachedTheme(activity),
@@ -151,21 +148,12 @@ internal fun AppContent(
                     }
                 }
 
-                // Hoisted above the entry gate so the first-run onboarding tour — which now owns
-                // the Google Drive sign-in and background-permission setup — can render *before*
-                // the sign-in check and still write to Drive / drive navigation once connected.
-                val networkMonitor = remember { NetworkMonitor(activity) }
-                DisposableEffect(networkMonitor) {
-                    onDispose { networkMonitor.unregister() }
-                }
+                // The injected process-wide monitor (provided in :core:sync, started for the
+                // process life — no per-activity register/unregister). The SyncEngine catch-up
+                // drain and the wardrobe prefetch retry collect it themselves now
+                // (SyncConnectivityCatchUp / the VM's init collector, § 5) — no bridges here.
                 val isOnline by networkMonitor.isOnline.collectAsState()
                 val isOffline = !isOnline
-                // SyncEngine drain trigger (refactor § 2): on app start and every offline→online
-                // transition, drain queued Drive-bound writes (edits made offline / failed in a
-                // previous session). Enqueuers also drain inline; this is the catch-up pass.
-                LaunchedEffect(isOnline) {
-                    if (isOnline) withContext(Dispatchers.IO) { syncEngine.drain() }
-                }
                 val profileViewModel: ProfileViewModel = viewModel()
                 // Hoisted above the entry gate so the onboarding branch can react to it too — the
                 // tour reloads prefs after Drive sign-in and re-themes live as they land.
@@ -337,28 +325,14 @@ internal fun AppContent(
                     val locationList = locationState.locations
                     val shoppingClosetState by shoppingClosetViewModel.state.collectAsState()
 
-                    // Retry the cross-closet prefetch whenever connectivity returns. The initial
-                    // prefetch bails when offline; without this an early network blip would leave
-                    // some closets permanently uncached (empty snapshot → outfits/trips hidden).
-                    LaunchedEffect(isOnline) {
-                        if (isOnline) wardrobeViewModel.retryPrefetchIfNeeded()
-                    }
-
                     // Preference-derived knobs (tagging language, dedupe, bg-removal routing,
                     // similarity debug, encoder tier, segmenter threshold) flow through the
                     // UserPreferencesRepository singleton: ProfileViewModel publishes, the
                     // wardrobe/shopping VMs and StaticPreferenceMirrors collect (refactor § 5
-                    // slice 2 — the old per-pref mirrors here are gone).
-
-                    // Pre-warm the Shopping wishlist and Try-On history at app start so that
-                    // tapping those tabs paints from the local cache immediately instead of
-                    // kicking off the load on first composition. Both view models are
-                    // two-phase (local cache → Drive refresh), so this is cheap.
-                    LaunchedEffect(Unit) {
-                        shoppingClosetViewModel.loadItems()
-                        tryOnHistoryViewModel.refresh()
-                        tripsViewModel.loadTrips()
-                    }
+                    // slice 2 — the old per-pref mirrors here are gone). The connectivity
+                    // retry (wardrobe prefetch) and the shopping / try-on-history / trips
+                    // pre-warm loads live in the owning VMs' `init` now (§ 5 — the old
+                    // LaunchedEffect bridges here are gone).
 
                     // Apply selected language as the Compose context locale
                     val language = profileState.preferences.language
