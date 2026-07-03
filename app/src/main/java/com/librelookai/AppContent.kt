@@ -317,6 +317,7 @@ internal fun AppContent(
                     val gapViewModel: WardrobeGapViewModel = viewModel()
                     val creditsViewModel: CreditsViewModel = viewModel()
                     val tryOnViewModel: TryOnViewModel = viewModel()
+                    val tryOnHistoryViewModel: com.librelookai.tryon.TryOnHistoryViewModel = viewModel()
                     val shoppingViewModel: ShoppingHelperViewModel = viewModel()
                     val shoppingClosetViewModel: ShoppingClosetViewModel = viewModel()
                     val locationState by locationViewModel.state.collectAsState()
@@ -355,7 +356,7 @@ internal fun AppContent(
                     // two-phase (local cache → Drive refresh), so this is cheap.
                     LaunchedEffect(Unit) {
                         shoppingClosetViewModel.loadItems()
-                        tryOnViewModel.loadHistory()
+                        tryOnHistoryViewModel.refresh()
                         tripsViewModel.loadTrips()
                     }
 
@@ -653,7 +654,7 @@ internal fun AppContent(
                                             locationViewModel = locationViewModel,
                                             shoppingClosetViewModel = shoppingClosetViewModel,
                                             profileViewModel = profileViewModel,
-                                            tryOnViewModel = tryOnViewModel,
+                                            tryOnHistoryViewModel = tryOnHistoryViewModel,
                                             onCreateOutfitFromSelection = { itemIds ->
                                                 Analytics.action("Wardrobe", "create_outfit_from_selection", mapOf("count" to itemIds.size.toString()))
                                                 outfitGenerationViewModel.openComposer(
@@ -981,6 +982,7 @@ internal fun AppContent(
                             CompositionLocalProvider(LocalViewModelStoreOwner provides activity) {
                                 com.librelookai.tryon.TryOnHistoryDestination(
                                     tryOnViewModel = tryOnViewModel,
+                                    historyViewModel = tryOnHistoryViewModel,
                                     wardrobeViewModel = wardrobeViewModel,
                                     shoppingClosetViewModel = shoppingClosetViewModel,
                                     onOpenDetail = { tryOn ->
@@ -1006,6 +1008,7 @@ internal fun AppContent(
                                 com.librelookai.tryon.TryOnDetailDestination(
                                     initialImageDriveId = route.imageDriveId,
                                     tryOnViewModel = tryOnViewModel,
+                                    historyViewModel = tryOnHistoryViewModel,
                                     wardrobeViewModel = wardrobeViewModel,
                                     shoppingClosetViewModel = shoppingClosetViewModel,
                                     outfits = tryOnStyles.outfits,
@@ -1075,7 +1078,7 @@ internal fun AppContent(
                                     shoppingClosetViewModel = shoppingClosetViewModel,
                                     outfitsViewModel = stylesViewModel,
                                     generationViewModel = outfitGenerationViewModel,
-                                    tryOnViewModel = tryOnViewModel,
+                                    tryOnHistoryViewModel = tryOnHistoryViewModel,
                                     locationViewModel = locationViewModel,
                                     onCreateOutfitFromSelection = { itemIds ->
                                         when (route.source) {

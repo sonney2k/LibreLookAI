@@ -43,7 +43,7 @@ internal fun ItemViewerDestination(
     shoppingClosetViewModel: ShoppingClosetViewModel,
     outfitsViewModel: OutfitsViewModel,
     generationViewModel: com.librelookai.outfit.OutfitGenerationViewModel,
-    tryOnViewModel: TryOnViewModel,
+    tryOnHistoryViewModel: com.librelookai.tryon.TryOnHistoryViewModel,
     locationViewModel: LocationViewModel,
     onCreateOutfitFromSelection: (Set<String>) -> Unit,
     onClose: () -> Unit,
@@ -52,7 +52,7 @@ internal fun ItemViewerDestination(
     val shoppingState by shoppingClosetViewModel.state.collectAsState()
     val outfitsState by outfitsViewModel.state.collectAsState()
     val generationState by generationViewModel.state.collectAsState()
-    val tryOnState by tryOnViewModel.state.collectAsState()
+    val tryOnState by tryOnHistoryViewModel.state.collectAsState()
     val locationState by locationViewModel.state.collectAsState()
 
     val isShopping = source == ItemViewerRoute.SOURCE_SHOPPING
@@ -191,7 +191,7 @@ internal fun ItemViewerDestination(
             tryOns = tryOnState.history,
             onDeleteItems = wardrobeViewModel::deleteItems,
             onDeleteOutfits = outfitsViewModel::deleteOutfitsByIds,
-            onDeleteTryOns = tryOnViewModel::deleteTryOns,
+            onDeleteTryOns = tryOnHistoryViewModel::deleteTryOns,
             onDismiss = { pendingDeleteIds = null },
         )
     }

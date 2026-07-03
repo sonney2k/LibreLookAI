@@ -62,13 +62,13 @@ fun UsageCostsTab(
     wardrobeViewModel: WardrobeViewModel = viewModel(),
     stylesViewModel: OutfitsViewModel = viewModel(),
     outfitEventsViewModel: OutfitEventsViewModel = viewModel(),
-    tryOnViewModel: TryOnViewModel = viewModel(),
+    tryOnHistoryViewModel: com.librelookai.tryon.TryOnHistoryViewModel = viewModel(),
 ) {
     val usageVm: UsageViewModel = viewModel()
     val wardrobe by wardrobeViewModel.state.collectAsState()
     val outfits by stylesViewModel.state.collectAsState()
     val outfitEvents by outfitEventsViewModel.state.collectAsState()
-    val tryOnState by tryOnViewModel.state.collectAsState()
+    val tryOnState by tryOnHistoryViewModel.state.collectAsState()
     val usageEvents by usageVm.events.collectAsState()
 
     val days = 14

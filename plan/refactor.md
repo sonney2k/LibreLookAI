@@ -1012,8 +1012,20 @@ destination composables over a shared `TryOnPageScaffold` chrome + `TryOnErrorDi
 semantics improved intentionally: feed-hero edit / detail Regenerate push the composer (back
 returns to the feed/detail; the flag machine closed everything). The "any pop must close the VM"
 rule is fully retired — `close()`/`closeComposer()` on the Settings/AI-notice jumps are draft
-hygiene only. The TryOn composer/history **VM split is now unblocked** (no shared nav flags) but
-not yet done. Remaining work: with cross-VM dependencies gone: the viewer destinations
+hygiene only. **The TryOn composer/history VM split LANDED (July 2026)**, mirroring the outfits
+split: a `@Singleton` `tryon/TryOnRepository` owns the store-derived `history` StateFlow (the
+§ 5 slice 4d derivation moved off the VM), the `_tryons.json` read/write (`loadEntries`/
+`writeAll` — Drive write + store mirror in one funnel), the Phase-2 `refreshFromDrive` (download
+missing image files, then store write → invalidation re-runs the cached-file filter), the
+batch `deleteTryOns`, and the cache-file naming + root-folder memo. `TryOnViewModel` is the
+composer half (draft/generate/`saveCurrent` through `repo.writeAll`); the new
+`TryOnHistoryViewModel` (`TryOnHistoryUiState`: history + error) owns refresh/deletes. The two
+never call each other — a composer save reaches the feed via the repo flow. Consumers rewired:
+the feed/detail destinations take both VMs (composer seeds stay on `TryOnViewModel`; delete +
+error dialog move to the history VM), `WardrobeScreen`/`ItemViewerDestination` cascade deletes
+and `UsageCostsTab` take the history VM, `AppContent`'s pre-warm calls `historyViewModel
+.refresh()`. Try-on writes stay Drive-first (deliberate § 2 leftover), now in one place.
+Remaining work: with cross-VM dependencies gone: the viewer destinations
 (`ItemViewerRoute`/`OutfitViewerRoute`/`TripViewerRoute`) get destination-scoped
 `hiltViewModel()` instances resolving content from the stores by route ids; the state-mirrored
 composer routes become plain navigation — openers `navigate(OutfitComposerRoute(seedItemIds))`

@@ -71,6 +71,8 @@ internal fun TryOnDetailPage(
     onOpenSourceOutfit: ((Outfit) -> Unit)?,
     onItemTap: (DriveImage) -> Unit,
     tryOnViewModel: TryOnViewModel,
+    /** Deletes the try-on (lives on [TryOnHistoryViewModel] since the § 5 slice 9 VM split). */
+    onDelete: (TryOn) -> Unit = {},
     /** Navigate to the composer destination after Regenerate seeds the draft (§ 5 slice 9). */
     onOpenComposer: () -> Unit = {},
 ) {
@@ -82,7 +84,7 @@ internal fun TryOnDetailPage(
         wardrobeImages = combinedImages,
         sourceOutfit = sourceOutfit,
         onOpenSourceOutfit = onOpenSourceOutfit?.let { open -> { sourceOutfit?.let(open) } },
-        onDelete = { tryOnViewModel.deleteTryOn(tryOn) },
+        onDelete = { onDelete(tryOn) },
         onItemTap = onItemTap,
         onRegenerate = {
             Analytics.action("TryOn/Detail", "regenerate")

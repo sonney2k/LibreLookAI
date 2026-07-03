@@ -50,7 +50,7 @@ fun WardrobeScreen(
     locationViewModel: LocationViewModel = viewModel(),
     shoppingClosetViewModel: ShoppingClosetViewModel = viewModel(),
     profileViewModel: ProfileViewModel = viewModel(),
-    tryOnViewModel: TryOnViewModel = viewModel(),
+    tryOnHistoryViewModel: com.librelookai.tryon.TryOnHistoryViewModel = viewModel(),
     creditsViewModel: CreditsViewModel = viewModel(),
     onCreateOutfitFromSelection: (Set<String>) -> Unit = {},
     onTryOnSelection: (Set<String>) -> Unit = {},
@@ -63,7 +63,7 @@ fun WardrobeScreen(
     val state         by viewModel.state.collectAsState()
     val outfitEventsState  by outfitEventsViewModel.state.collectAsState()
     val outfitsState   by stylesViewModel.state.collectAsState()
-    val tryOnState    by tryOnViewModel.state.collectAsState()
+    val tryOnState    by tryOnHistoryViewModel.state.collectAsState()
     val locationState by locationViewModel.state.collectAsState()
     val profileState  by profileViewModel.state.collectAsState()
     val creditsState  by creditsViewModel.state.collectAsState()
@@ -176,7 +176,7 @@ fun WardrobeScreen(
             outfits = outfitsState.outfits,
             tryOns = tryOnState.history,
             onDeleteOutfits = { ids -> stylesViewModel.deleteOutfitsByIds(ids) },
-            onDeleteTryOns = { tryOns -> tryOnViewModel.deleteTryOns(tryOns) },
+            onDeleteTryOns = { tryOns -> tryOnHistoryViewModel.deleteTryOns(tryOns) },
             onMoveToLocation = viewModel::moveItemsToLocation,
             onSetActiveLocation = locationViewModel::setActiveLocation,
             onCreateOutfitFromSelection = onCreateOutfitFromSelection,

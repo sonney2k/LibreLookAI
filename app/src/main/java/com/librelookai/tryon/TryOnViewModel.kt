@@ -5,21 +5,13 @@ import androidx.lifecycle.AndroidViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
 import com.librelookai.data.drive.DriveRepository
-import com.librelookai.data.drive.loadTryOnsJson
-import com.librelookai.data.drive.saveTryOnsJson
 import com.librelookai.data.drive.uploadTryOnImage
 import com.librelookai.data.model.TryOn
 import com.librelookai.gemini.GeminiRepository
@@ -75,9 +67,6 @@ data class TryOnUiState(
     val isResultSaved: Boolean = false,
     val isSaving: Boolean = false,
 
-    /** Past try-ons loaded from Drive, newest-first. */
-    val history: List<TryOn> = emptyList(),
-
     /**
      * Pre-formatted error message (e.g. a raw exception message). Prefer [errorRes] for
      * localized copy — strings resolved in the ViewModel use the Application context's
@@ -90,49 +79,28 @@ data class TryOnUiState(
 )
 
 /**
- * Unified Try-on orchestration.
+ * The **composer** half of the try-on VM split (refactor § 5 slice 9): assemble a composition,
+ * generate, preview, save. History (feed + detail) lives on [TryOnHistoryViewModel]; both go
+ * through [TryOnRepository] so the two VMs never call each other.
  *
  * Flow:
  *  1. [openComposer] seeds with wardrobe item Drive IDs; the UI shows a composer where the
  *     user can add/remove items.
  *  2. [generate] sends the current items + the user's reference photos to Gemini.
  *  3. The generated PNG lives in the app cache; the user can zoom it, regenerate, or
- *     [saveCurrent] it to Drive (uploaded to the _tryons subfolder, indexed in _tryons.json).
- *  4. History (feed + detail) is served by the derived [TryOnUiState.history]; the feed and
- *     detail surfaces are their own navigation destinations (§ 5 slice 9).
+ *     [saveCurrent] it to Drive (uploaded to the _tryons subfolder, indexed in _tryons.json —
+ *     the repo's store write carries it into the derived history).
  */
 @HiltViewModel
 class TryOnViewModel @Inject constructor(
     app: Application,
     private val gemini: GeminiRepository,
     private val drive: DriveRepository,
-    private val tryOnStore: com.librelookai.data.local.TryOnStore,
+    private val repo: TryOnRepository,
 ) : AndroidViewModel(app) {
-    private val gson = Gson()
-
     private val _state = MutableStateFlow(TryOnUiState())
     val state: StateFlow<TryOnUiState> = _state.asStateFlow()
 
-    private var rootFolderId: String? = null
-
-    init {
-        // Derived read path (refactor § 5 slice 4d): [TryOnUiState.history] is the store's
-        // global try-on list — rows whose image file is in the local Drive cache (an
-        // un-downloaded entry reappears with the store write after Phase 2 fetches it),
-        // newest-first — so every store write lands in the UI via Room invalidation.
-        // Mutators no longer splice `history`.
-        viewModelScope.launch {
-            tryOnStore.observeTryOns()
-                .map { entries ->
-                    entries.map(::migrateSource).mapNotNull { e ->
-                        val f = File(drive.cacheDir, "tryon_${e.imageDriveId}.png")
-                        if (f.exists()) e.copy(localPath = f.absolutePath) else null
-                    }.sortedByDescending { it.createdAt }
-                }
-                .flowOn(Dispatchers.IO)
-                .collect { history -> _state.update { it.copy(history = history) } }
-        }
-    }
     /**
      * Files that were actually sent to Gemini for the current [resultPath], in the same order.
      * Captured so that Save writes the correct itemNames even if the user edits the item
@@ -168,7 +136,6 @@ class TryOnViewModel @Inject constructor(
                 errorRes = null,
             )
         }
-        loadHistory()
     }
 
     /** Consume the one-shot [TryOnUiState.autoPick] flag once the composer has opened its picker. */
@@ -192,7 +159,7 @@ class TryOnViewModel @Inject constructor(
     /** Clears the composer draft (composition / result / errors); the route pops separately
      *  (§ 5 slice 9 — this is state hygiene, not navigation). */
     fun close() {
-        _state.value = TryOnUiState(history = _state.value.history)
+        _state.value = TryOnUiState()
     }
 
     // Manual edits clear sourceOutfitId — once the user diverges from the picked outfit,
@@ -281,14 +248,14 @@ class TryOnViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isSaving = true, error = null, errorRes = null) }
             try {
-                val root = ensureRootFolder()
+                val root = repo.ensureRootFolder()
                 val ids = lastGeneratedItemIds
                 val names = ids.mapNotNull { id -> wardrobeImages.firstOrNull { it.driveId == id }?.name }
                 val file = File(path)
                 val driveName = "tryon_${System.currentTimeMillis()}.png"
                 val driveId = drive.uploadTryOnImage(root, driveName, file)
                 // Cache the uploaded image under the Drive ID so future reloads pick it up.
-                val cached = File(drive.cacheDir, "tryon_$driveId.png")
+                val cached = repo.cacheFile(driveId)
                 runCatching { file.copyTo(cached, overwrite = true) }
 
                 val entry = TryOn(
@@ -302,11 +269,9 @@ class TryOnViewModel @Inject constructor(
                     itemIds        = ids,
                     localPath      = cached.absolutePath,
                 )
-                val existing = loadTryOnsEntries(root)
-                val updated = listOf(entry) + existing
-                drive.saveTryOnsJson(root, gson.toJson(updated))
-                // Store write — the derived history picks the entry up via invalidation.
-                runCatching { tryOnStore.replaceAll(updated) }
+                // Index write + store mirror — the derived history picks the entry up via
+                // invalidation (the history VM's feed follows without a cross-VM call).
+                repo.writeAll(listOf(entry) + repo.loadEntries())
                 _state.update { it.copy(isSaving = false, isResultSaved = true) }
             } catch (e: Exception) {
                 Log.e("TryOnVM", "saveCurrent failed", e)
@@ -321,92 +286,4 @@ class TryOnViewModel @Inject constructor(
         }
     }
 
-    fun deleteTryOn(tryOn: TryOn) {
-        viewModelScope.launch {
-            try {
-                val root = ensureRootFolder()
-                runCatching { drive.deleteFile(tryOn.imageDriveId) }
-                File(drive.cacheDir, "tryon_${tryOn.imageDriveId}.png").delete()
-                val remaining = loadTryOnsEntries(root).filterNot { it.imageDriveId == tryOn.imageDriveId }
-                drive.saveTryOnsJson(root, gson.toJson(remaining))
-                runCatching { tryOnStore.replaceAll(remaining) }
-            } catch (e: Exception) {
-                _state.update {
-                    it.copy(
-                        error = e.message,
-                        errorRes = if (e.message == null) com.librelookai.R.string.error_delete_failed else null,
-                    )
-                }
-            }
-        }
-    }
-
-    /**
-     * Batch-deletes [tryOns] in a single Drive JSON write. Used when wardrobe items are deleted
-     * and the user opts to cascade the removal to try-ons that wore those items.
-     */
-    fun deleteTryOns(tryOns: List<TryOn>) {
-        if (tryOns.isEmpty()) return
-        val ids = tryOns.map { it.imageDriveId }.toSet()
-        viewModelScope.launch {
-            try {
-                val root = ensureRootFolder()
-                tryOns.forEach { t ->
-                    runCatching { drive.deleteFile(t.imageDriveId) }
-                    File(drive.cacheDir, "tryon_${t.imageDriveId}.png").delete()
-                }
-                val remaining = loadTryOnsEntries(root).filterNot { it.imageDriveId in ids }
-                drive.saveTryOnsJson(root, gson.toJson(remaining))
-                runCatching { tryOnStore.replaceAll(remaining) }
-            } catch (e: Exception) {
-                _state.update {
-                    it.copy(
-                        error = e.message,
-                        errorRes = if (e.message == null) com.librelookai.R.string.error_delete_failed else null,
-                    )
-                }
-            }
-        }
-    }
-
-    fun loadHistory() {
-        viewModelScope.launch(Dispatchers.IO) {
-            // Phase 1 is the derived view itself — the store rows paint on subscription
-            // (the store holds metadata only; image bytes stay files in the Drive cache dir).
-            // Phase 2 — refresh from Drive: download missing image files, then write the
-            // store, whose invalidation re-runs the derivation (which now finds the files).
-            try {
-                val root = ensureRootFolder()
-                val entries = loadTryOnsEntries(root)
-                entries.forEach { e ->
-                    val cached = File(drive.cacheDir, "tryon_${e.imageDriveId}.png")
-                    if (!cached.exists()) {
-                        runCatching { drive.downloadFileTo(e.imageDriveId, cached) }
-                    }
-                }
-                runCatching { tryOnStore.replaceAll(entries) }
-            } catch (e: Exception) {
-                Log.w("TryOnVM", "loadHistory failed: ${e.message}")
-            }
-        }
-    }
-
-    private suspend fun ensureRootFolder(): String {
-        rootFolderId?.let { return it }
-        return withContext(Dispatchers.IO) { drive.getOrCreateFolder() }.also { rootFolderId = it }
-    }
-
-    private suspend fun loadTryOnsEntries(rootFolderId: String): List<TryOn> {
-        val json = drive.loadTryOnsJson(rootFolderId) ?: return emptyList()
-        return runCatching {
-            gson.fromJson<List<TryOn>>(json, object : TypeToken<List<TryOn>>() {}.type) ?: emptyList()
-        }.getOrElse { emptyList() }.map(::migrateSource)
-    }
-
-    // Old entries predate sourceKind: Gson fills the default "outfit", but an item-by-item
-    // try-on (no sourceOutfitId) was really a wardrobe source. Infer it so provenance reads right.
-    private fun migrateSource(t: TryOn): TryOn =
-        if (t.sourceOutfitId == null && t.sourceKind == "outfit")
-            t.copy(sourceKind = "wardrobe")
-        else t
 }

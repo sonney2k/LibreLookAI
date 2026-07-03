@@ -102,10 +102,10 @@ private fun TryOnPageScaffold(
  * (Application = system locale).
  */
 @Composable
-private fun TryOnErrorDialog(state: TryOnUiState, onClearError: () -> Unit) {
+private fun TryOnErrorDialog(error: String?, errorRes: Int?, onClearError: () -> Unit) {
     val errorTitle = stringResource(R.string.tryon_error)
     val errorOk = stringResource(R.string.action_ok)
-    val errorMsg = state.errorRes?.let { stringResource(it) } ?: state.error
+    val errorMsg = errorRes?.let { stringResource(it) } ?: error
     errorMsg?.let { msg ->
         AlertDialog(
             onDismissRequest = onClearError,
@@ -244,7 +244,7 @@ fun TryOnComposerScreen(
             )
         }
 
-        TryOnErrorDialog(state, tryOnViewModel::clearError)
+        TryOnErrorDialog(state.error, state.errorRes, tryOnViewModel::clearError)
 
         // The InsufficientCreditsDialog for 402s is installed globally in MainActivity — it
         // listens on CreditsEvents.topUp and routes "Buy" to the Settings tab. We only need to
@@ -260,6 +260,7 @@ fun TryOnComposerScreen(
 @Composable
 fun TryOnHistoryDestination(
     tryOnViewModel: TryOnViewModel,
+    historyViewModel: TryOnHistoryViewModel,
     wardrobeViewModel: WardrobeViewModel,
     shoppingClosetViewModel: ShoppingClosetViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
     /** Open the detail destination for a tapped try-on. */
@@ -271,12 +272,12 @@ fun TryOnHistoryDestination(
     /** Pops the TryOnHistoryRoute destination. */
     onClose: () -> Unit,
 ) {
-    val state by tryOnViewModel.state.collectAsState()
+    val historyState by historyViewModel.state.collectAsState()
     val combinedImages = rememberTryOnItemPool(wardrobeViewModel, shoppingClosetViewModel)
 
     LaunchedEffect(Unit) {
         Analytics.screen("TryOnHistory")
-        tryOnViewModel.loadHistory()
+        historyViewModel.refresh()
     }
 
     TryOnPageScaffold(
@@ -287,7 +288,7 @@ fun TryOnHistoryDestination(
         },
     ) {
         TryOnHistoryFeed(
-            history = state.history,
+            history = historyState.history,
             wardrobeImages = combinedImages,
             onOpen = onOpenDetail,
             onStartTryOn = onStartTryOn,
@@ -318,6 +319,7 @@ fun TryOnHistoryDestination(
 fun TryOnDetailDestination(
     initialImageDriveId: String?,
     tryOnViewModel: TryOnViewModel,
+    historyViewModel: TryOnHistoryViewModel,
     wardrobeViewModel: WardrobeViewModel,
     shoppingClosetViewModel: ShoppingClosetViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
     /** Outfits pool for resolving a try-on's source-outfit link. */
@@ -331,9 +333,9 @@ fun TryOnDetailDestination(
     /** Pops the TryOnDetailRoute destination. */
     onClose: () -> Unit,
 ) {
-    val state by tryOnViewModel.state.collectAsState()
+    val historyState by historyViewModel.state.collectAsState()
     val combinedImages = rememberTryOnItemPool(wardrobeViewModel, shoppingClosetViewModel)
-    val history = state.history
+    val history = historyState.history
 
     LaunchedEffect(Unit) { Analytics.screen("TryOnDetail") }
 
@@ -387,11 +389,12 @@ fun TryOnDetailDestination(
                     onOpenSourceOutfit = onOpenSourceOutfit,
                     onItemTap = { img -> openItemViewer(tryOn, img) },
                     tryOnViewModel = tryOnViewModel,
+                    onDelete = historyViewModel::deleteTryOn,
                     onOpenComposer = onOpenComposer,
                 )
             }
         }
 
-        TryOnErrorDialog(state, tryOnViewModel::clearError)
+        TryOnErrorDialog(historyState.error, historyState.errorRes, historyViewModel::clearError)
     }
 }
