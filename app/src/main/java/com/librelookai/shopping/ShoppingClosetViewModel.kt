@@ -8,16 +8,9 @@ import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -28,14 +21,10 @@ import com.librelookai.gemini.GeminiRepository
 import com.librelookai.gemini.classifyClothing
 import com.librelookai.util.isNetworkAvailable
 import com.librelookai.data.drive.SyncEngine
-import com.librelookai.data.local.CachedWardrobeItem
 import com.librelookai.data.local.PendingMutationStore
 import com.librelookai.data.local.WardrobeItemStore
-import com.librelookai.data.session.ClosetSessionHolder
 import com.librelookai.data.session.UserPreferencesRepository
 import com.librelookai.settings.AppLanguage
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
 import com.librelookai.wardrobe.DeleteItemPayload
 import com.librelookai.wardrobe.DriveImage
 import com.librelookai.wardrobe.ITEM_DELETE_KIND
@@ -47,14 +36,10 @@ import com.librelookai.wardrobe.UrlImportPickerState
 import com.librelookai.wardrobe.toCachedItem
 import com.librelookai.wardrobe.WebProductFetcher
 import com.librelookai.wardrobe.rotateBitmapFileBy90
+import com.librelookai.wardrobe.ItemVersions
 import com.librelookai.R
-import com.librelookai.data.drive.await
-import com.librelookai.data.drive.getOrCreateShoppingFolder
-import com.librelookai.data.drive.listSidecarFiles
-import com.librelookai.data.drive.loadFileContent
 import com.librelookai.data.drive.upsertSidecar
 import com.librelookai.data.model.Location
-import com.librelookai.MainActivity
 import com.librelookai.wardrobe.WardrobeViewModel
 
 /**
@@ -79,7 +64,6 @@ data class ShoppingClosetUiState(
 )
 
 /** Shopping wishlist counterpart to [WardrobeViewModel]. */
-@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class ShoppingClosetViewModel @Inject constructor(
     app: Application,
@@ -89,8 +73,9 @@ class ShoppingClosetViewModel @Inject constructor(
     private val mutationStore: PendingMutationStore,
     private val syncEngine: SyncEngine,
     internal val ingestionQueue: ShoppingIngestionQueue,
+    internal val repo: ShoppingRepository,
+    private val itemVersions: ItemVersions,
     moveSync: WardrobeMoveSyncHandler,
-    session: ClosetSessionHolder,
     prefsRepo: UserPreferencesRepository,
 ) : AndroidViewModel(app) {
 
@@ -100,29 +85,12 @@ class ShoppingClosetViewModel @Inject constructor(
     internal val _state = MutableStateFlow(ShoppingClosetUiState())
     val state: StateFlow<ShoppingClosetUiState> = _state.asStateFlow()
 
-    /** Gemini-facing language name for classifyClothing. Pushed in by MainActivity. */
+    /** Gemini-facing language name for classifyClothing, mirrored from the shared prefs repo. */
     internal var geminiLanguage: String = "English"
 
-    /** Resolved once on first load. */
-    private var rootFolderId: String? = null
-    internal var shoppingFolderId: String? = null
-
-    // ---- Derived read path (refactor § 5 slice 4c) ----
-    // [ShoppingClosetUiState.items] is *derived*: the resolved `_shopping/` folder id flatMaps
-    // into [WardrobeItemStore.observeItems], so every store write — by this VM, a wardrobe-side
-    // re-home or a SyncEngine handler — lands in the UI via Room invalidation. Mutations write
-    // the store; nothing splices `state.items` any more.
-    private val folderScope = MutableStateFlow<String?>(null)
-    /**
-     * Coil cache-buster overlay: bumped whenever an item's image *bytes* change under an
-     * unchanged driveId (rotate, reprocess). Mirrors the wardrobe VM's overlay (§ 5 slice 4a).
-     */
-    internal val imageVersions = MutableStateFlow<Map<String, Long>>(emptyMap())
-
-    internal fun bumpImageVersion(vararg driveIds: String) {
-        val now = System.currentTimeMillis()
-        imageVersions.update { it + driveIds.associateWith { now } }
-    }
+    // The Coil-version overlay is the shared wardrobe [ItemVersions] singleton (§ 5 slice 9)
+    // so byte bumps reach every derived view (wishlist + the cross-closet snapshot alike).
+    internal fun bumpImageVersion(vararg driveIds: String) = itemVersions.bump(*driveIds)
 
     init {
         // The bg-removal + tagging worker is the shared [ShoppingIngestionQueue] singleton
@@ -134,31 +102,14 @@ class ShoppingClosetViewModel @Inject constructor(
         viewModelScope.launch {
             ingestionQueue.errors.collect { msg -> _state.update { it.copy(error = msg) } }
         }
-        // Derived view (§ 5 slice 4c): the wishlist is the store rows under `_shopping/` (with
-        // a cached image file), newest first — matching Drive's createdTime-desc listing —
-        // stamped with the Coil version overlay. File stats run on IO via flowOn; redundant
-        // emissions are free (StateFlow suppresses equal states).
+        // Derived read path (§ 5 slice 4c, on [ShoppingRepository] since slice 9): mirror the
+        // repo's store-derived wishlist + resolved folder id into this instance's UI state.
+        // Mutations write the store; nothing splices `state.items` any more.
         viewModelScope.launch {
-            combine(
-                folderScope.flatMapLatest { id ->
-                    if (id == null) flowOf(emptyMap()) else itemStore.observeItems(listOf(id))
-                },
-                imageVersions,
-            ) { byFolder, versions ->
-                byFolder.flatMap { (fid, items) -> items.mapNotNull { it.toDriveImage(fid, versions) } }
-                    .sortedByDescending { it.createdTimeMs }
-            }
-                .flowOn(Dispatchers.IO)
-                .collect { items -> _state.update { it.copy(items = items) } }
+            repo.items.collect { items -> _state.update { it.copy(items = items) } }
         }
-        // Publish the resolved `_shopping/` folder id into the shared closet session so the
-        // wardrobe VM's cross-closet snapshot covers wishlist items (replaces the AppContent
-        // fan-out bridge keyed on this state field); the same id scopes the derived view above.
         viewModelScope.launch {
-            state.map { it.folderId }.distinctUntilChanged().collect { id ->
-                folderScope.value = id
-                session.setShoppingFolder(id)
-            }
+            repo.folderId.collect { id -> _state.update { it.copy(folderId = id) } }
         }
         // Mirror the Gemini tagging language from the shared preferences repository —
         // replaces the AppContent language mirror (refactor § 5 slice 2).
@@ -172,37 +123,17 @@ class ShoppingClosetViewModel @Inject constructor(
         // its side).
         viewModelScope.launch {
             moveSync.moveRolledBack.collect { rollback ->
-                if (rollback.sourceFolderId != shoppingFolderId) return@collect
+                if (rollback.sourceFolderId != repo.folderId.value) return@collect
                 _state.update {
                     it.copy(error = getApplication<Application>().localized().getString(R.string.wardrobe_move_failed))
                 }
             }
         }
-        // Pre-warm on creation (the VM is activity-scoped, created at app start) so the Shopping
-        // tab paints instantly — replaces the AppContent pre-warm bridge (§ 5). Two-phase: the
-        // derivation above paints the store, loadItems resolves the folder + runs the reconcile.
-        loadItems()
+        // Pre-warm on creation so the Shopping tab paints instantly — replaces the AppContent
+        // pre-warm bridge (§ 5). Two-phase: the repo derivation paints the store; the reconcile
+        // is the once-per-process variant, so a destination-scoped fork never re-lists Drive.
+        loadItems(initialPreWarm = true)
     }
-
-    /**
-     * Maps a store row to its displayable [DriveImage], or null when the image bytes aren't in
-     * the local Drive cache yet (the row reappears with the next store write after download).
-     * The derivation collector in `init` runs this for every row on each invalidation.
-     */
-    private fun CachedWardrobeItem.toDriveImage(
-        fid: String,
-        versions: Map<String, Long> = emptyMap(),
-    ): DriveImage? =
-        drive.cachedFile(driveId)?.let { f ->
-            DriveImage(
-                driveId, f.absolutePath, name, tags,
-                originalDriveId = originalDriveId,
-                sidecarDriveId = sidecarDriveId,
-                folderId = fid,
-                createdTimeMs = createdTimeMs,
-                version = versions[driveId] ?: 0L,
-            )
-        }
 
     fun toggleSelection(driveId: String) {
         _state.update {
@@ -218,36 +149,23 @@ class ShoppingClosetViewModel @Inject constructor(
 
     // ---------- Load ----------
 
-    /** Resolves the shopping folder and loads its items. Two-phase like wardrobe. */
-    fun loadItems() {
+    /**
+     * Resolves the shopping folder and loads its items. Two-phase like wardrobe — the load
+     * machinery lives on [ShoppingRepository]; this settles the per-instance flags around it.
+     * [initialPreWarm] = the VM-init call: the reconcile is skipped when one already succeeded
+     * this process (a fork never re-lists Drive); the Shopping tab's per-visit call re-syncs.
+     */
+    fun loadItems(initialPreWarm: Boolean = false) {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, error = null) }
 
             val online = getApplication<Application>().isNetworkAvailable()
-
-            // Resolve the shopping folder ID. Online: via Drive (cached per process after first run),
-            // then persisted so a later offline launch can still find the local cache. Offline: fall
-            // back to the in-memory id or the persisted one — the `_shopping/` folder ID is otherwise
-            // unobtainable without the network, which would leave the cache (keyed by it) unreachable.
-            val folderId = if (online) {
-                runCatching {
-                    val rootId = rootFolderId ?: drive.getOrCreateFolder().also { rootFolderId = it }
-                    shoppingFolderId ?: drive.getOrCreateShoppingFolder(rootId).also { shoppingFolderId = it }
-                }.onFailure {
-                    Log.w(TAG, "shopping folder resolve failed", it)
-                }.getOrNull() ?: shoppingFolderId ?: persistedShoppingFolderId()
-            } else {
-                shoppingFolderId ?: persistedShoppingFolderId()
-            }
-
+            val folderId = repo.resolveFolder(online)
             if (folderId == null) {
                 // No way to locate the cache (offline + never resolved). Degrade to empty, no error.
                 _state.update { it.copy(isLoading = false, isSyncing = false) }
                 return@launch
             }
-            shoppingFolderId = folderId
-            persistShoppingFolderId(folderId)
-            _state.update { it.copy(folderId = folderId) }
 
             // Phase 1 — instant: the derived view paints from the store by itself; this probe
             // only decides whether the cold-load spinner can clear before Drive answers.
@@ -261,55 +179,16 @@ class ShoppingClosetViewModel @Inject constructor(
                 return@launch
             }
 
-            runCatching {
-                val files = drive.listFiles(folderId)
-                val sidecarFiles = drive.listSidecarFiles(folderId)
-                val sidecarIdByItemId = sidecarFiles.associate { sf ->
-                    sf.name.removeSuffix(DriveRepository.SIDECAR_SUFFIX) to sf.id
+            runCatching { repo.refreshFromDrive(once = initialPreWarm) }
+                .onSuccess {
+                    _state.update { it.copy(isLoading = false, isSyncing = false) }
                 }
-
-                // Download uncached cutouts in parallel.
-                files.map { file ->
-                    async {
-                        drive.cachedFile(file.id) ?: drive.downloadToCache(file.id, file.name)
-                    }
-                }.awaitAll()
-
-                // Load sidecar contents in parallel.
-                val sidecarContent: Map<String, ItemSidecar> = sidecarFiles.map { sf ->
-                    async {
-                        val itemId = sf.name.removeSuffix(DriveRepository.SIDECAR_SUFFIX)
-                        val content = drive.loadFileContent(sf.id)
-                        itemId to content?.let { runCatching { gson.fromJson(it, ItemSidecar::class.java) }.getOrNull() }
-                    }
-                }.awaitAll().mapNotNull { (k, v) -> v?.let { k to it } }.toMap()
-
-                files.mapNotNull { file ->
-                    drive.cachedFile(file.id)?.let { cached ->
-                        val sidecar = sidecarContent[file.id]
-                        DriveImage(
-                            driveId = file.id,
-                            localPath = cached.absolutePath,
-                            name = file.name,
-                            tags = sidecar?.tags,
-                            originalDriveId = sidecar?.originalDriveId,
-                            sidecarDriveId = sidecarIdByItemId[file.id],
-                            folderId = folderId,
-                            createdTimeMs = file.createdTimeMs,
-                        )
+                .onFailure { e ->
+                    Log.w(TAG, "shopping load phase 2 failed", e)
+                    _state.update { s ->
+                        s.copy(isLoading = false, isSyncing = false, error = if (s.items.isEmpty()) e.message else null)
                     }
                 }
-            }.onSuccess { items ->
-                // Store write first (the derived view follows via invalidation), then clear
-                // the flags — so a cold load never flashes empty.
-                saveLocalCache(folderId, items)
-                _state.update { it.copy(isLoading = false, isSyncing = false) }
-            }.onFailure { e ->
-                Log.w(TAG, "shopping load phase 2 failed", e)
-                _state.update { s ->
-                    s.copy(isLoading = false, isSyncing = false, error = if (s.items.isEmpty()) e.message else null)
-                }
-            }
         }
     }
 
@@ -331,7 +210,7 @@ class ShoppingClosetViewModel @Inject constructor(
         onMoved: (List<DriveImage>) -> Unit,
     ) {
         if (driveIds.isEmpty()) { onMoved(emptyList()); return }
-        val sourceFolderId = shoppingFolderId ?: run { onMoved(emptyList()); return }
+        val sourceFolderId = repo.folderId.value ?: run { onMoved(emptyList()); return }
         if (sourceFolderId == targetFolderId) {
             onMoved(_state.value.items.filter { it.driveId in driveIds })
             return
@@ -373,7 +252,7 @@ class ShoppingClosetViewModel @Inject constructor(
 
     fun deleteItems(driveIds: Set<String>) {
         if (driveIds.isEmpty()) return
-        val folderId = shoppingFolderId ?: return
+        val folderId = repo.folderId.value ?: return
         val toDelete = _state.value.items.filter { it.driveId in driveIds }
         if (toDelete.isEmpty()) { _state.update { it.copy(selectedIds = emptySet()) }; return }
         // Optimistic: drop the store rows immediately (the derived view vanishes them via
@@ -519,36 +398,12 @@ class ShoppingClosetViewModel @Inject constructor(
 
     // ---------- Helpers ----------
 
-    internal suspend fun ensureFolder(): String? = withContext(Dispatchers.IO) {
-        runCatching {
-            val rootId = rootFolderId ?: drive.getOrCreateFolder().also { rootFolderId = it }
-            val resolved = shoppingFolderId ?: drive.getOrCreateShoppingFolder(rootId)
-            shoppingFolderId = resolved
-            persistShoppingFolderId(resolved)
-            _state.update { it.copy(folderId = resolved) }
-            resolved
-        }.onFailure { e ->
-            Log.w(TAG, "ensureFolder failed", e)
-            _state.update { it.copy(error = e.message) }
-        }.getOrNull()
-    }
-
-    /**
-     * The `_shopping/` Drive folder ID is persisted across launches so an offline cold start can
-     * locate the local cache (which is keyed by this ID). The ID itself is otherwise only
-     * obtainable from Drive, which needs the network.
-     */
-    private fun shoppingPrefs() =
-        getApplication<Application>().getSharedPreferences("shopping_closet", Application.MODE_PRIVATE)
-
-    private fun persistedShoppingFolderId(): String? =
-        shoppingPrefs().getString("folder_id", null)?.takeIf { it.isNotBlank() }
-
-    private fun persistShoppingFolderId(id: String) {
-        shoppingPrefs().edit().putString("folder_id", id).apply()
-    }
-
-    internal suspend fun saveLocalCache(id: String, items: List<DriveImage>) {
-        runCatching { itemStore.replaceFolder(id, items.map { it.toCachedItem() }) }
-    }
+    /** Online-only folder resolve for the import paths — failures surface as the error banner. */
+    internal suspend fun ensureFolder(): String? =
+        runCatching { repo.ensureFolder() }
+            .onFailure { e ->
+                Log.w(TAG, "ensureFolder failed", e)
+                _state.update { it.copy(error = e.message) }
+            }
+            .getOrNull()
 }

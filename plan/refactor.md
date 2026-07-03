@@ -12,7 +12,7 @@ deferred and inter-blocking:
 | 2 | Room as source of truth + SyncEngine | **Operationally complete** (June 2026) — all five JSON-cache slices landed (phase 2) as opaque-JSON cache rows; the `PendingMutation` queue + `SyncEngine` drain **every converted metadata write**: wardrobe (sidecar/delete/move), shopping, outfits (`outfit.syncFolder`), calendar wears (`outfitEvent.syncFolder`), trips (`trip.save`/`trip.delete`), plus the WorkManager process-death backstop (see phase 2 status). The real-entity / Flow-read conversion is deliberately carried into § 5 |
 | 3 | DI + interfaces at the seams | **Partial** — Hilt landed (phase 1); the gemini↔drive↔billing package cycles are broken (June 2026, see phase 1 status), making the layering acyclic; interface extraction at the I/O seams pending; static globals (`ImageEncoding.tier`, `GeminiProgress` slot, `AiRetry.action`) still alive |
 | 4 | Navigation Compose | **Done** (phase 3 complete; per-destination VM scoping deferred to § 5) |
-| 5 | Thin VMs over use-cases | **In progress** (July 2026) — slices 0–8 landed + slice 9 largely landed: all five repos extracted (outfits/try-on/trips/**wardrobe** + the § 4a–d derivations), both composers + all VM splits done, the `WardrobeUiState` progress prune and the connectivity/pre-warm bridge kills landed, `TripViewerRoute`/`OutfitViewerRoute` have destination-scoped VMs. Remaining: `ItemViewerRoute` scoping (blocked on the shopping upload-worker move only — the wardrobe load core landed as `WardrobeRepository`), the `WardrobeViewModel` ≤ ~400 lines / no-extension-files exit criterion (now at ~520 + 4 extension files), restore-overlay engine aggregation (slice 7 part 3) |
+| 5 | Thin VMs over use-cases | **In progress** (July 2026) — slices 0–8 landed + slice 9 largely landed: all five repos extracted (outfits/try-on/trips/**wardrobe** + the § 4a–d derivations), both composers + all VM splits done, the `WardrobeUiState` progress prune and the connectivity/pre-warm bridge kills landed, `TripViewerRoute`/`OutfitViewerRoute` have destination-scoped VMs. Remaining: `ItemViewerRoute` scoping (unblocked — wardrobe + shopping load cores landed as `WardrobeRepository`/`ShoppingRepository` + `ShoppingIngestionQueue`), the `WardrobeViewModel` ≤ ~400 lines / no-extension-files exit criterion (now at ~520 + 4 extension files), restore-overlay engine aggregation (slice 7 part 3) |
 | 6 | Typed `AiResult` | **Started** — the notice path carries a semantic `AiErrorReason` enum instead of `R.string` ids (June 2026, the `:core:ai` enabler); the sealed `AiResult<T>` return type is not started — Gemini still returns `null` on failure |
 | 7 | DataStore + Keystore settings | **Started** — the BYOK Gemini key is AES-GCM-encrypted at rest via Android Keystore (June 2026; `ApiKeyStore` API unchanged, plaintext pref migrates on first read, graceful plaintext fallback if Keystore is unavailable); DataStore for `UserPreferences`/`OnboardingState`/pricing cache and the flag interface are not started |
 | 8 | Testing strategy | **Partial** — store invariant tests landed; fake-based repository/VM tests blocked on § 3 interfaces |
@@ -1107,15 +1107,24 @@ banner, and a repo `scopeChanges` tick replaces the old wholesale `setLocation` 
 (per-scope UI state only; mirrored fields carry over). Dead code deleted along the way:
 `clearCacheAndRefresh`, `persistItemToCache`, `resolveCutoutDriveId` (no callers). Verified
 on-device (fresh install → restore → grid, closet switches).
+**The shopping load core LANDED too (July 2026)** — two extractions closing the shopping half
+of the `ItemViewerRoute` blocker: the `@Singleton` `shopping/ShoppingIngestionQueue` (the
+`ItemIngestionPipeline` pattern — jobs carry their owning folder, process-long scope, the VM
+mirrors `pendingJobs`/`errors`; a forked VM can no longer start a duplicate worker) and the
+`@Singleton` `shopping/ShoppingRepository` (folder resolution memo + persisted fallback, now
+publishing into `ClosetSession` itself; the § 4c store-derived `items` flow — over the
+**shared wardrobe `ItemVersions`** overlay, so a viewer-fork rotate/reprocess bump reaches
+every derived view, fixing the old per-instance-overlay staleness; and the single-flight
+Phase-2 `refreshFromDrive`, memoized-on-success only for the VM-init pre-warm arm so a fork
+never re-lists Drive while the Shopping tab's per-visit `loadItems` keeps re-syncing).
+`ShoppingClosetViewModel` (~550 → ~410 lines) mirrors `items`/`folderId` and keeps
+flags/selection/per-item ops.
 Remaining work: `ItemViewerRoute` (the last viewer destination) gets destination-scoped
-`hiltViewModel()` instances — **now blocked only on the shopping worker move** (July 2026
-analysis): of its six VMs, `OutfitsViewModel`/`TryOnHistoryViewModel`/`WardrobeViewModel`
-are fork-safe (repo-derived), `OutfitGenerationViewModel`/`LocationViewModel` must stay
+`hiltViewModel()` instances — **now unblocked**: of its six VMs,
+`OutfitsViewModel`/`TryOnHistoryViewModel`/`WardrobeViewModel`/`ShoppingClosetViewModel` are
+fork-safe (repo-derived), while `OutfitGenerationViewModel`/`LocationViewModel` must stay
 activity-scoped (composer seeds survive the pop; the location VM *publishes* the closet
-session), but a forked `ShoppingClosetViewModel` would start a duplicate upload worker queue
-(`processQueue` in init) — the prerequisite is moving shopping's worker into
-`ItemIngestionPipeline` or its own singleton. A partial fork (outfits + try-on history only)
-was deliberately skipped — the destination would still pin the activity for the heavy VMs.
+session).
 Also remaining: the
 `LocalViewModelStoreOwner provides activity` pins drop per fully-converted destination (the
 converted ones still receive activity-scoped VMs for their remaining dependencies, so every
