@@ -43,6 +43,7 @@ class TripsRepository @Inject constructor(
     private var rootFolderId: String? = null
     private var tripsFolderId: String? = null
     private var refresh: Deferred<Unit>? = null
+    private var refreshSucceeded = false
 
     /**
      * Derived read path (§ 5 slice 4d): the store's global trip list, newest-first — every
@@ -59,10 +60,14 @@ class TripsRepository @Inject constructor(
     /**
      * Phase-2 Drive reconcile: list `_trips/`, parse every `{tripId}.json`, `replaceAll` the
      * store (the derived [trips] follows via invalidation). Single-flight — a call while a
-     * refresh is in flight joins it instead of listing Drive twice (two VM instances share one
-     * reconcile). Throws on failure so the calling VM can surface its own error flag.
+     * refresh is in flight joins it instead of listing Drive twice — and **memoized on
+     * success**: exactly one successful reconcile per process (the old app-start pre-warm
+     * semantics), so a destination-scoped VM's init pre-warm never re-lists Drive per viewer
+     * open. A failed reconcile retries on the next call. Throws on failure so the calling VM
+     * can surface its own error flag.
      */
     suspend fun refreshFromDrive() {
+        if (refreshSucceeded) return
         val shared = refresh?.takeIf { it.isActive } ?: scope.async {
             val folderId = tripsFolderId ?: run {
                 val rootId = rootFolderId ?: drive.getOrCreateFolder().also { rootFolderId = it }
@@ -84,6 +89,7 @@ class TripsRepository @Inject constructor(
         }.also { refresh = it }
         // await rethrows the shared refresh's failure to every joiner.
         shared.await()
+        refreshSucceeded = true
     }
 
     /**

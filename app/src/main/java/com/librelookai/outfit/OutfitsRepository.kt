@@ -10,6 +10,7 @@ import com.librelookai.data.local.OutfitStore
 import com.librelookai.data.local.PendingMutationStore
 import com.librelookai.data.local.WardrobeItemStore
 import com.librelookai.data.model.Outfit
+import com.librelookai.data.model.WearSource
 import com.librelookai.util.ImageEncoding
 import com.librelookai.wardrobe.DriveImage
 import javax.inject.Inject
@@ -88,6 +89,21 @@ class OutfitsRepository @Inject constructor(
     val pendingWearOutfitId: StateFlow<String?> = _pendingWearOutfitId
 
     fun setPendingWearOutfit(outfitId: String?) { _pendingWearOutfitId.value = outfitId }
+
+    /** A "wear this outfit" request headed for the calendar's pick mode. */
+    data class PendingCalendarWear(val outfitId: String, val source: WearSource)
+
+    private val _pendingCalendarWear = MutableStateFlow<PendingCalendarWear?>(null)
+    /** Cross-tab "pick the wear day in the calendar" hand-off (§ 5 slice 9 — lives here so a
+     *  destination-scoped viewer VM's request still reaches the Outfits tab's instance).
+     *  Stateful, not a one-shot: `OutfitCalendarTab` resolves it into pick mode and consumes it. */
+    val pendingCalendarWear: StateFlow<PendingCalendarWear?> = _pendingCalendarWear
+
+    fun requestCalendarWear(outfitId: String, source: WearSource) {
+        _pendingCalendarWear.value = PendingCalendarWear(outfitId, source)
+    }
+
+    fun consumeCalendarWear() { _pendingCalendarWear.value = null }
 
     /**
      * Derived outfits (§ 5 slice 4b): the store rows in scope — rows carry resolved itemIds (only

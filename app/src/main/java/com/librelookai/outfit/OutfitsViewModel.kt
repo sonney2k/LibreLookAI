@@ -70,6 +70,20 @@ class OutfitsViewModel @Inject constructor(
                 _state.update { it.copy(pendingWearOutfitId = id) }
             }
         }
+        // Cross-tab calendar-wear hand-off: repo-owned (§ 5 slice 9) so a destination-scoped
+        // viewer VM's request reaches the tab's instance; mirrored so consumers are unchanged.
+        // The source keeps its last value while no request is pending (a null mirror arm would
+        // race the calendar's consume-then-read of the source).
+        viewModelScope.launch {
+            outfitsRepo.pendingCalendarWear.collect { pending ->
+                _state.update {
+                    it.copy(
+                        pendingCalendarWearId = pending?.outfitId,
+                        pendingCalendarWearSource = pending?.source ?: it.pendingCalendarWearSource,
+                    )
+                }
+            }
+        }
     }
 
     private fun setAllLocations(folderIds: List<String>) {
@@ -119,11 +133,14 @@ class OutfitsViewModel @Inject constructor(
      * Ask the Calendar sub-tab to enter "tap a day to wear [outfitId]" mode. Set by a Wear action on
      * the outfit list / detail viewer (the caller also switches to the Calendar tab) so the user
      * picks the wear day in context. Consumed by [OutfitCalendarTab] via [consumeCalendarWear].
+     * The pending request lives on [OutfitsRepository] (§ 5 slice 9) so a destination-scoped
+     * viewer VM's request still reaches the Outfits tab's instance; the `init` mirror keeps
+     * screen consumers on `state.pendingCalendarWearId`/`Source` unchanged.
      */
     fun requestCalendarWear(outfitId: String, source: com.librelookai.data.model.WearSource = com.librelookai.data.model.WearSource.MANUAL) =
-        _state.update { it.copy(pendingCalendarWearId = outfitId, pendingCalendarWearSource = source) }
+        outfitsRepo.requestCalendarWear(outfitId, source)
 
-    fun consumeCalendarWear() = _state.update { it.copy(pendingCalendarWearId = null) }
+    fun consumeCalendarWear() = outfitsRepo.consumeCalendarWear()
 
     /** One-shot events the list consumes (scroll-to-outfit). Owned by [OutfitsRepository]
      *  (§ 5 slice 9) so the generation side can emit on save without a cross-VM call. */

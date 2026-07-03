@@ -1078,8 +1078,20 @@ across recreation). The dead `openTrip` helper went with them (`navigateToTrip` 
 only by `createAndOpenTrip`, whose single collector is the planner's). The other VMs the trip
 viewer takes (outfits/generation/wardrobe/profile/location/events) stay activity-pinned for
 now.
-Remaining work: with cross-VM dependencies gone: the viewer destinations
-(`ItemViewerRoute`/`OutfitViewerRoute` — `TripViewerRoute` is done, above) get destination-scoped
+**`OutfitViewerRoute` destination-scoped VMs LANDED (July 2026).** The destination resolves its
+own `OutfitsViewModel` + `TripsViewModel` via `hiltViewModel(entry)` before the activity pin.
+Two enablers: (1) the cross-tab **calendar-wear hand-off moved onto `OutfitsRepository`**
+(`pendingCalendarWear` StateFlow + `requestCalendarWear`/`consumeCalendarWear`; each VM
+instance mirrors it into `pendingCalendarWearId`/`Source`, so screen consumers are unchanged
+and a viewer-VM request reaches the Outfits tab's instance — the `pendingWearOutfitId`
+pattern); (2) `TripsRepository.refreshFromDrive` became **memoized-on-success** (exactly one
+successful reconcile per process — the old pre-warm semantics; a failure still retries), so a
+forked VM's init pre-warm truly never re-lists Drive. The outfits fork's session collector is
+inert by construction (the `setAllLocations` guard sees the repo scope already set — no
+duplicate reconcile, no state reset). The generation VM deliberately stays activity-scoped:
+the prediction source resolves outfits from its shared state, and composer seeds must survive
+the destination pop.
+Remaining work: `ItemViewerRoute` (the last viewer destination) gets destination-scoped
 `hiltViewModel()` instances resolving content from the stores by route ids; the state-mirrored
 composer routes become plain navigation — openers `navigate(OutfitComposerRoute(seedItemIds))`
 instead of flipping VM open-flags (images resolve from the store, prefs from the repository),

@@ -879,6 +879,18 @@ internal fun AppContent(
                         composable<OutfitViewerRoute> { entry ->
                             val route = entry.toRoute<OutfitViewerRoute>()
                             LaunchedEffect(Unit) { Analytics.screen("OutfitViewer") }
+                            // Destination-scoped outfits + trips VMs (§ 5 slice 9): resolved
+                            // against this back-stack entry BEFORE the activity pin. Safe to
+                            // fork because both mirror repo-derived data (OutfitsRepository /
+                            // TripsRepository); the cross-tab hand-offs the viewer fires
+                            // (requestCalendarWear, scroll one-shots, pendingWear) live on the
+                            // repos, so they still reach the tab instances. The generation VM
+                            // stays activity-scoped — the prediction source resolves outfits
+                            // from its shared state, and composer seeds must survive the pop.
+                            val viewerOutfitsViewModel: OutfitsViewModel =
+                                androidx.hilt.navigation.compose.hiltViewModel(entry)
+                            val viewerTripsViewModel: TripsViewModel =
+                                androidx.hilt.navigation.compose.hiltViewModel(entry)
                             // Full-bleed, no Scaffold: the viewer is immersive (edge-to-edge,
                             // like its Dialog predecessor) and handles its own insets.
                             CompositionLocalProvider(LocalViewModelStoreOwner provides activity) {
@@ -887,7 +899,7 @@ internal fun AppContent(
                                     routeOutfitIds = route.outfitIds,
                                     initialOutfitId = route.initialOutfitId,
                                     tripId = route.tripId,
-                                    outfitsViewModel = stylesViewModel,
+                                    outfitsViewModel = viewerOutfitsViewModel,
                                     generationViewModel = outfitGenerationViewModel,
                                     onOpenComposer = {
                                         navController.navigate(OutfitComposerRoute) { launchSingleTop = true }
@@ -895,7 +907,7 @@ internal fun AppContent(
                                     wardrobeViewModel = wardrobeViewModel,
                                     profileViewModel = profileViewModel,
                                     outfitEventsViewModel = outfitEventsViewModel,
-                                    tripsViewModel = tripsViewModel,
+                                    tripsViewModel = viewerTripsViewModel,
                                     locationViewModel = locationViewModel,
                                     canTryOn = canTryOn,
                                     onClose = { navController.popBackStack() },
