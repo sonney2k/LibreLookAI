@@ -1073,6 +1073,25 @@ internal fun AppContent(
                         composable<ItemViewerRoute> { entry ->
                             val route = entry.toRoute<ItemViewerRoute>()
                             LaunchedEffect(Unit) { Analytics.screen("ItemViewer") }
+                            // Destination-scoped wardrobe / shopping / outfits / try-on-history
+                            // VMs (§ 5 slice 9): resolved against this back-stack entry BEFORE
+                            // the activity pin. Safe to fork since the slice-9 load-core
+                            // extractions — all four mirror repo-derived data
+                            // (WardrobeRepository / ShoppingRepository / OutfitsRepository /
+                            // TryOnRepository), their init pre-warms are once-per-process on
+                            // the repos, and the shopping upload worker is the
+                            // ShoppingIngestionQueue singleton. The generation VM stays
+                            // activity-scoped (the composer source resolves items from its
+                            // shared slots; composer seeds must survive the pop), and the
+                            // location VM publishes the closet session.
+                            val viewerWardrobeViewModel: com.librelookai.wardrobe.WardrobeViewModel =
+                                androidx.hilt.navigation.compose.hiltViewModel(entry)
+                            val viewerShoppingViewModel: com.librelookai.shopping.ShoppingClosetViewModel =
+                                androidx.hilt.navigation.compose.hiltViewModel(entry)
+                            val viewerOutfitsViewModel: OutfitsViewModel =
+                                androidx.hilt.navigation.compose.hiltViewModel(entry)
+                            val viewerTryOnHistoryViewModel: com.librelookai.tryon.TryOnHistoryViewModel =
+                                androidx.hilt.navigation.compose.hiltViewModel(entry)
                             // Full-bleed, no Scaffold: the viewer is immersive (edge-to-edge,
                             // like its Dialog predecessor) and handles its own insets.
                             CompositionLocalProvider(LocalViewModelStoreOwner provides activity) {
@@ -1080,11 +1099,11 @@ internal fun AppContent(
                                     source = route.source,
                                     routeItemIds = route.itemIds,
                                     initialItemId = route.initialItemId,
-                                    wardrobeViewModel = wardrobeViewModel,
-                                    shoppingClosetViewModel = shoppingClosetViewModel,
-                                    outfitsViewModel = stylesViewModel,
+                                    wardrobeViewModel = viewerWardrobeViewModel,
+                                    shoppingClosetViewModel = viewerShoppingViewModel,
+                                    outfitsViewModel = viewerOutfitsViewModel,
                                     generationViewModel = outfitGenerationViewModel,
-                                    tryOnHistoryViewModel = tryOnHistoryViewModel,
+                                    tryOnHistoryViewModel = viewerTryOnHistoryViewModel,
                                     locationViewModel = locationViewModel,
                                     onCreateOutfitFromSelection = { itemIds ->
                                         when (route.source) {
@@ -1097,8 +1116,8 @@ internal fun AppContent(
                                                 Analytics.action("ItemViewer", "create_outfit_from_item")
                                                 outfitGenerationViewModel.openComposer(
                                                     seedItemIds = itemIds,
-                                                    images      = wardrobeViewModel.state.value.images +
-                                                        shoppingClosetViewModel.state.value.items,
+                                                    images      = viewerWardrobeViewModel.state.value.images +
+                                                        viewerShoppingViewModel.state.value.items,
                                                     prefs       = profileViewModel.state.value.preferences,
                                                     defaultSourceFolderId = locationViewModel.activeFolderId,
                                                 )

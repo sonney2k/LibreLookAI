@@ -11,8 +11,10 @@ import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flowOn
@@ -75,20 +77,32 @@ class TryOnRepository @Inject constructor(
         runCatching { tryOnStore.replaceAll(entries) }
     }
 
+    private var refresh: Deferred<Unit>? = null
+    private var refreshSucceeded = false
+
     /**
      * Phase-2 refresh: re-read `_tryons.json`, download any missing image files, then write the
      * store — its invalidation re-runs the [history] derivation (which now finds the files).
-     * Phase 1 is the derived flow itself (store rows paint on subscription).
+     * Phase 1 is the derived flow itself (store rows paint on subscription). Single-flight —
+     * a call while a refresh is in flight joins it. [once] = the VM-init pre-warm semantics:
+     * skip entirely when a refresh already succeeded this process, so a destination-scoped
+     * fork's init never re-reads Drive (the history feed's per-visit refresh passes false).
      */
-    suspend fun refreshFromDrive() {
-        val entries = loadEntries()
-        entries.forEach { e ->
-            val cached = cacheFile(e.imageDriveId)
-            if (!cached.exists()) {
-                runCatching { drive.downloadFileTo(e.imageDriveId, cached) }
+    suspend fun refreshFromDrive(once: Boolean = false) {
+        if (once && refreshSucceeded) return
+        val shared = refresh?.takeIf { it.isActive } ?: scope.async {
+            val entries = loadEntries()
+            entries.forEach { e ->
+                val cached = cacheFile(e.imageDriveId)
+                if (!cached.exists()) {
+                    runCatching { drive.downloadFileTo(e.imageDriveId, cached) }
+                }
             }
-        }
-        runCatching { tryOnStore.replaceAll(entries) }
+            runCatching { tryOnStore.replaceAll(entries) }
+            Unit
+        }.also { refresh = it }
+        shared.await()
+        refreshSucceeded = true
     }
 
     /**

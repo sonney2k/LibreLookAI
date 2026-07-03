@@ -41,17 +41,21 @@ class TryOnHistoryViewModel @Inject constructor(
         viewModelScope.launch {
             repo.history.collect { history -> _state.update { it.copy(history = history) } }
         }
-        // Pre-warm on creation (the VM is activity-scoped, created at app start) so the history
-        // feed paints instantly — replaces the AppContent pre-warm bridge (§ 5). The derived
-        // history paints the store by itself; this runs the Phase-2 Drive refresh.
-        refresh()
+        // Pre-warm on creation so the history feed paints instantly — replaces the AppContent
+        // pre-warm bridge (§ 5). The derived history paints the store by itself; the reconcile
+        // is the once-per-process variant, so a destination-scoped fork never re-reads Drive.
+        refresh(initialPreWarm = true)
     }
 
-    /** Phase-2 Drive refresh (the derived history paints the store by itself — Phase 1). */
-    fun refresh() {
+    /**
+     * Phase-2 Drive refresh (the derived history paints the store by itself — Phase 1).
+     * [initialPreWarm] = the VM-init call: skipped when one already succeeded this process;
+     * the history feed's per-visit call re-syncs.
+     */
+    fun refresh(initialPreWarm: Boolean = false) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                repo.refreshFromDrive()
+                repo.refreshFromDrive(once = initialPreWarm)
             } catch (e: Exception) {
                 Log.w("TryOnHistoryVM", "refresh failed: ${e.message}")
             }
