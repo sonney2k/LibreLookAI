@@ -7,24 +7,14 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import com.librelookai.data.drive.DriveRepository
-import com.librelookai.data.drive.SyncEngine
-import com.librelookai.data.drive.getOrCreateTripsFolder
-import com.librelookai.data.drive.listTripFiles
-import com.librelookai.data.drive.loadTripJson
-import com.librelookai.data.local.PendingMutationStore
 import com.librelookai.data.model.Outfit
 import com.librelookai.data.model.Trip
 import com.librelookai.gemini.GeminiRepository
@@ -43,8 +33,6 @@ data class TripsUiState(
     val trips: List<Trip> = emptyList(),
     val isLoading: Boolean = false,
     val error: String? = null,
-    /** Drive folder ID of `_trips/` once resolved. */
-    val folderId: String? = null,
     /**
      * ID of a trip that was just created+saved, so the viewer can show a one-time "saved"
      * confirmation. Cleared via [TripsViewModel.consumeJustSaved] once shown.
@@ -65,19 +53,18 @@ data class TripsUiState(
 )
 
 /**
- * Owns the collection of saved [Trip]s. Trip persistence is independent of outfit persistence:
- * the [Trip] only references outfit IDs and the outfits themselves live in their closet's
- * `_outfits.json`. Cascading deletes / outfit creation is orchestrated by [TravelScreen] via
- * the shared [com.librelookai.outfit.OutfitsViewModel].
+ * The trips **UI surface** over the shared [TripsRepository] (which owns the store-derived
+ * trips flow, the Drive reconcile and the save/delete funnels — § 5 slice 9 foundation).
+ * Trip persistence is independent of outfit persistence: the [Trip] only references outfit
+ * IDs and the outfits themselves live in their closet's `_outfits.json`. Cascading deletes /
+ * outfit creation is orchestrated by [TravelScreen] via the shared
+ * [com.librelookai.outfit.OutfitsViewModel].
  */
 @HiltViewModel
 class TripsViewModel @Inject constructor(
     app: Application,
-    private val drive: DriveRepository,
     private val gemini: GeminiRepository,
-    private val tripStore: com.librelookai.data.local.TripStore,
-    private val mutationStore: PendingMutationStore,
-    private val syncEngine: SyncEngine,
+    private val repo: TripsRepository,
 ) : AndroidViewModel(app) {
 
     companion object { private const val TAG = "TripsVM" }
@@ -86,16 +73,13 @@ class TripsViewModel @Inject constructor(
     private val _state = MutableStateFlow(TripsUiState())
     val state: StateFlow<TripsUiState> = _state.asStateFlow()
 
-    private var rootFolderId: String? = null
-
     init {
-        // Derived read path (refactor § 5 slice 4d): [TripsUiState.trips] is the store's
-        // global trip list, newest-first — every store write (mutators, the Phase-2 reconcile)
-        // lands in the UI via Room invalidation. Mutators no longer splice state.
+        // Derived read path (refactor § 5 slice 4d, via the repo since the slice-9 foundation):
+        // [TripsUiState.trips] mirrors the store-derived repo flow — every store write
+        // (mutators, the Phase-2 reconcile) lands in the UI via Room invalidation. Mutators
+        // never splice state.
         viewModelScope.launch {
-            tripStore.observeTrips()
-                .map { trips -> trips.sortedByDescending { it.createdAt } }
-                .collect { trips -> _state.update { it.copy(trips = trips) } }
+            repo.trips.collect { trips -> _state.update { it.copy(trips = trips) } }
         }
         // Pre-warm on creation (the VM is activity-scoped, created at app start) so the Travel
         // tab paints instantly — replaces the AppContent pre-warm bridge (§ 5). Two-phase:
@@ -110,16 +94,11 @@ class TripsViewModel @Inject constructor(
     private val _navigateToTrip = MutableSharedFlow<String>(extraBufferCapacity = 1)
     val navigateToTrip: SharedFlow<String> = _navigateToTrip.asSharedFlow()
 
-    private suspend fun writeTripsCache(trips: List<Trip>) {
-        runCatching { tripStore.replaceAll(trips) }
-    }
-
     fun loadTrips() {
         viewModelScope.launch {
             // Phase 1 — instant: the derived view paints from the store by itself; this probe
             // only decides whether the cold-load spinner can clear before Drive answers.
-            val hasCache = runCatching { tripStore.trips().isNotEmpty() }.getOrDefault(false)
-            if (hasCache) {
+            if (repo.hasCache()) {
                 _state.update { it.copy(isLoading = false) }
             } else {
                 _state.update { it.copy(isLoading = true, error = null) }
@@ -131,33 +110,15 @@ class TripsViewModel @Inject constructor(
                 return@launch
             }
 
-            val folderId = runCatching {
-                val rootId = rootFolderId ?: drive.getOrCreateFolder().also { rootFolderId = it }
-                _state.value.folderId ?: drive.getOrCreateTripsFolder(rootId)
-            }.onFailure {
-                Log.w(TAG, "trips folder resolve failed", it)
-                _state.update { s -> s.copy(isLoading = false, error = if (s.trips.isEmpty()) it.message else null) }
-            }.getOrNull() ?: return@launch
-            _state.update { it.copy(folderId = folderId) }
-
-            runCatching {
-                val files = drive.listTripFiles(folderId)
-                coroutineScope {
-                    files.map { file ->
-                        async {
-                            val json = drive.loadTripJson(file.id) ?: return@async null
-                            runCatching { gson.fromJson(json, Trip::class.java) }.getOrNull()
-                        }
-                    }.awaitAll().filterNotNull()
+            // The repo's reconcile is single-flight (a second VM instance joins the same
+            // listing); the store write inside it lands before the flags clear, so a cold
+            // load never flashes empty.
+            runCatching { repo.refreshFromDrive() }
+                .onSuccess { _state.update { it.copy(isLoading = false) } }
+                .onFailure { e ->
+                    Log.w(TAG, "trips refresh failed", e)
+                    _state.update { s -> s.copy(isLoading = false, error = if (s.trips.isEmpty()) e.message else null) }
                 }
-            }.onSuccess { loaded ->
-                // Store write first (the derived view follows via invalidation), then clear
-                // the flags — so a cold load never flashes empty.
-                writeTripsCache(loaded.sortedByDescending { t -> t.createdAt })
-                _state.update { it.copy(isLoading = false) }
-            }.onFailure { e ->
-                _state.update { s -> s.copy(isLoading = false, error = if (s.trips.isEmpty()) e.message else null) }
-            }
         }
     }
 
@@ -169,10 +130,7 @@ class TripsViewModel @Inject constructor(
      */
     fun upsertTrip(trip: Trip, onDone: (Boolean) -> Unit = {}) {
         viewModelScope.launch {
-            val updated = listOf(trip) + _state.value.trips.filterNot { it.id == trip.id }
-            writeTripsCache(updated)
-            mutationStore.enqueue(TRIP_SAVE_KIND, targetId = trip.id, folderId = null, payload = "{}")
-            syncEngine.drain()
+            repo.saveTrip(trip)
             onDone(true)
         }
     }
@@ -208,12 +166,7 @@ class TripsViewModel @Inject constructor(
         val current = _state.value.trips.find { it.id == tripId } ?: return
         val updated = transform(current)
         if (updated == current) return
-        val trips = _state.value.trips.map { if (it.id == tripId) updated else it }
-        viewModelScope.launch {
-            writeTripsCache(trips)
-            mutationStore.enqueue(TRIP_SAVE_KIND, targetId = tripId, folderId = null, payload = "{}")
-            syncEngine.drain()
-        }
+        viewModelScope.launch { repo.saveTrip(updated) }
     }
 
     fun toggleTripVibe(tripId: String, vibe: String) = mutateTrip(tripId) { trip ->
@@ -261,14 +214,8 @@ class TripsViewModel @Inject constructor(
      * so the caller can decide whether to cascade-delete the outfits.
      */
     fun deleteTrip(tripId: String, onDeleted: (deletedOutfitIds: List<String>) -> Unit = {}) {
-        val current = _state.value.trips.find { it.id == tripId } ?: return
-        val remaining = _state.value.trips.filterNot { it.id == tripId }
-        viewModelScope.launch {
-            writeTripsCache(remaining)
-            mutationStore.enqueue(TRIP_DELETE_KIND, targetId = tripId, folderId = null, payload = "{}")
-            syncEngine.drain()
-            onDeleted(current.outfitIds)
-        }
+        if (_state.value.trips.none { it.id == tripId }) return
+        viewModelScope.launch { onDeleted(repo.deleteTrips(listOf(tripId))) }
     }
 
     /**
@@ -276,17 +223,8 @@ class TripsViewModel @Inject constructor(
      * `outfitIds` via [onDeleted] so the caller can optionally cascade-delete the outfits.
      */
     fun deleteTrips(tripIds: Collection<String>, onDeleted: (deletedOutfitIds: List<String>) -> Unit = {}) {
-        val targets = _state.value.trips.filter { it.id in tripIds }
-        if (targets.isEmpty()) return
-        viewModelScope.launch {
-            val deletedIds = targets.map { it.id }.toSet()
-            writeTripsCache(_state.value.trips.filterNot { it.id in deletedIds })
-            targets.forEach { trip ->
-                mutationStore.enqueue(TRIP_DELETE_KIND, targetId = trip.id, folderId = null, payload = "{}")
-            }
-            syncEngine.drain()
-            onDeleted(targets.flatMap { it.outfitIds }.distinct())
-        }
+        if (_state.value.trips.none { it.id in tripIds }) return
+        viewModelScope.launch { onDeleted(repo.deleteTrips(tripIds)) }
     }
 
     /** Convenience: ask the UI to open [tripId] in the viewer. */

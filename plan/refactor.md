@@ -1048,6 +1048,19 @@ the feed/detail destinations take both VMs (composer seeds stay on `TryOnViewMod
 error dialog move to the history VM), `WardrobeScreen`/`ItemViewerDestination` cascade deletes
 and `UsageCostsTab` take the history VM, `AppContent`'s pre-warm calls `historyViewModel
 .refresh()`. Try-on writes stay Drive-first (deliberate § 2 leftover), now in one place.
+**`TripsRepository` foundation LANDED (July 2026)** — the third repo extraction
+(`OutfitsRepository`/`TryOnRepository` pattern), prerequisite for a destination-scoped
+trip-viewer VM: the `@Singleton` `travel/TripsRepository` owns the store-derived `trips`
+StateFlow (§ 5 slice 4d derivation moved off the VM), the Drive Phase-2 reconcile
+(`refreshFromDrive` — **single-flight** via a shared `Deferred`, so a second VM instance joins
+the running listing instead of double-listing Drive), and the local-first `saveTrip`/
+`deleteTrips` funnels (store `replaceAll` + queued `trip.save`/`trip.delete` per § 2 slice 7;
+`deleteTrips` returns the deleted trips' outfit-id union for the cascade choice).
+`TripsViewModel` keeps the UI flags (`isLoading`/`error`), the `justSaved`/`pendingEdit`
+hand-offs, the navigate one-shot and the bulk-refine machinery; `TripsUiState.folderId` was
+dropped (repo-internal memo now). All trip mutators route through `repo.saveTrip` — store
+order stopped mattering when the derivation began sorting `createdAt`-desc, so `mutateTrip`'s
+"no reordering" replaceAll collapsed into the same funnel.
 Remaining work: with cross-VM dependencies gone: the viewer destinations
 (`ItemViewerRoute`/`OutfitViewerRoute`/`TripViewerRoute`) get destination-scoped
 `hiltViewModel()` instances resolving content from the stores by route ids; the state-mirrored
