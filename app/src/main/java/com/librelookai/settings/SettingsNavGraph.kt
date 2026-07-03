@@ -35,8 +35,6 @@ import com.librelookai.util.Analytics
 import com.librelookai.util.ImageEncoding
 import com.librelookai.wardrobe.LocationViewModel
 import com.librelookai.wardrobe.WardrobeViewModel
-import com.librelookai.wardrobe.convertImagesToWebp
-import com.librelookai.wardrobe.startCutoutBgFixScan
 
 /**
  * Settings sub-screens as destinations of the nested Home tab NavHost — pushed over

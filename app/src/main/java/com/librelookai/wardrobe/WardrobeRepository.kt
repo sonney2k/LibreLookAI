@@ -4,8 +4,10 @@ import android.content.Context
 import android.util.Log
 import com.google.gson.Gson
 import com.librelookai.data.drive.DriveRepository
+import com.librelookai.data.drive.SyncEngine
 import com.librelookai.data.drive.listSidecarFiles
 import com.librelookai.data.local.CachedWardrobeItem
+import com.librelookai.data.local.PendingMutationStore
 import com.librelookai.data.local.WardrobeItemStore
 import com.librelookai.data.session.ClosetSession
 import com.librelookai.data.session.ClosetSessionHolder
@@ -30,6 +32,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * The wardrobe Phase-2 sync flags, published by [WardrobeRepository.syncStatus] and mirrored
@@ -63,6 +66,8 @@ class WardrobeRepository @Inject constructor(
     @param:ApplicationContext internal val context: Context,
     internal val drive: DriveRepository,
     internal val itemStore: WardrobeItemStore,
+    private val mutationStore: PendingMutationStore,
+    private val syncEngine: SyncEngine,
     itemVersions: ItemVersions,
     networkMonitor: NetworkMonitor,
     session: ClosetSessionHolder,
@@ -242,6 +247,55 @@ class WardrobeRepository @Inject constructor(
     /** Drops the recently-moved markers for [driveIds] (item deleted / move rolled back). */
     fun forgetRecentlyMoved(driveIds: Collection<String>) {
         driveIds.forEach { recentlyMovedItems.remove(it) }
+    }
+
+    // ---------- Queued mutations (refactor § 2) ----------
+
+    /**
+     * Queues one [ITEM_MOVE_KIND] mutation per item of an already-applied local move (callers
+     * run [notifyItemsMovedTo] first — the store re-home survives a restart) and drains. The
+     * mutations retry transient Drive failures instead of rolling back on the first error, and
+     * only give up — via the handler's re-home + `moveRolledBack` — after the attempts cap.
+     */
+    suspend fun enqueueMoves(toMove: List<DriveImage>, targetFolderId: String) = withContext(Dispatchers.IO) {
+        toMove.forEach { item ->
+            val sourceFolderId = item.folderId.ifEmpty { folderId } ?: return@forEach
+            mutationStore.enqueue(
+                ITEM_MOVE_KIND,
+                targetId = item.driveId,
+                folderId = targetFolderId,
+                payload = gson.toJson(
+                    MoveItemPayload(sourceFolderId, targetFolderId, item.originalDriveId, item.sidecarDriveId),
+                ),
+            )
+        }
+        syncEngine.drain()
+    }
+
+    /**
+     * Deletes [items] locally (store removes — the derived views drop them from every affected
+     * closet at once) and queues one [ITEM_DELETE_KIND] mutation per item; the cache writes come
+     * first, still before any Drive call, so the deletion survives a restart, and the queued
+     * mutations retry transient failures instead of silently orphaning the files on Drive.
+     * File ids ride in the payload because the Room row is gone before the drain runs.
+     */
+    suspend fun deleteItems(items: List<DriveImage>) = withContext(Dispatchers.IO) {
+        val driveIds = items.map { it.driveId }.toSet()
+        forgetRecentlyMoved(driveIds)
+        // Resolve each item's owning closet (folderId is empty in All-locations mode, so fall
+        // back to the active folder) — a multi-closet selection can span several caches.
+        val affectedFolderIds = items.mapNotNull { it.folderId.ifEmpty { folderId } }.toSet()
+        affectedFolderIds.forEach { fid -> runCatching { itemStore.remove(fid, driveIds) } }
+        items.forEach { img ->
+            val fileIds = listOfNotNull(img.driveId, img.originalDriveId, img.sidecarDriveId)
+            mutationStore.enqueue(
+                ITEM_DELETE_KIND,
+                targetId = img.driveId,
+                folderId = img.folderId.ifEmpty { folderId },
+                payload = gson.toJson(DeleteItemPayload(fileIds)),
+            )
+        }
+        syncEngine.drain()
     }
 
     // ---------- Cache ----------

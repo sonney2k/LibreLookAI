@@ -61,9 +61,6 @@ import com.librelookai.util.LocalSystemBarsPadding
 import com.librelookai.wardrobe.DriveImage
 import com.librelookai.wardrobe.LocationViewModel
 import com.librelookai.wardrobe.WardrobeViewModel
-import com.librelookai.wardrobe.fixCutoutBgForItem
-import com.librelookai.wardrobe.findSimilarInCandidates
-import com.librelookai.wardrobe.fuzzyFilterByText
 import com.librelookai.weather.WeatherViewModel
 
 private fun DriveImage.displayLabel(): String =

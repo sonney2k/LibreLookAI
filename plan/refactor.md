@@ -12,7 +12,7 @@ deferred and inter-blocking:
 | 2 | Room as source of truth + SyncEngine | **Operationally complete** (June 2026) — all five JSON-cache slices landed (phase 2) as opaque-JSON cache rows; the `PendingMutation` queue + `SyncEngine` drain **every converted metadata write**: wardrobe (sidecar/delete/move), shopping, outfits (`outfit.syncFolder`), calendar wears (`outfitEvent.syncFolder`), trips (`trip.save`/`trip.delete`), plus the WorkManager process-death backstop (see phase 2 status). The real-entity / Flow-read conversion is deliberately carried into § 5 |
 | 3 | DI + interfaces at the seams | **Partial** — Hilt landed (phase 1); the gemini↔drive↔billing package cycles are broken (June 2026, see phase 1 status), making the layering acyclic; interface extraction at the I/O seams pending; static globals (`ImageEncoding.tier`, `GeminiProgress` slot, `AiRetry.action`) still alive |
 | 4 | Navigation Compose | **Done** (phase 3 complete; per-destination VM scoping deferred to § 5) |
-| 5 | Thin VMs over use-cases | **In progress** (July 2026) — slices 0–8 landed + slice 9 largely landed: all five repos extracted (outfits/try-on/trips/**wardrobe** + the § 4a–d derivations), both composers + all VM splits done, the `WardrobeUiState` progress prune and the connectivity/pre-warm bridge kills landed, `TripViewerRoute`/`OutfitViewerRoute` have destination-scoped VMs. All three viewer destinations (`TripViewerRoute`/`OutfitViewerRoute`/`ItemViewerRoute`) have destination-scoped VMs over the five repos. Remaining: the `LocalViewModelStoreOwner provides activity` pin drops per fully-converted destination, the `WardrobeViewModel` ≤ ~400 lines / no-extension-files exit criterion (now at ~520 + 4 extension files), restore-overlay engine aggregation (slice 7 part 3) |
+| 5 | Thin VMs over use-cases | **In progress** (July 2026) — slices 0–8 landed + slice 9 largely landed: all five repos extracted (outfits/try-on/trips/**wardrobe** + the § 4a–d derivations), both composers + all VM splits done, the `WardrobeUiState` progress prune and the connectivity/pre-warm bridge kills landed, `TripViewerRoute`/`OutfitViewerRoute` have destination-scoped VMs. All three viewer destinations (`TripViewerRoute`/`OutfitViewerRoute`/`ItemViewerRoute`) have destination-scoped VMs over the five repos, and the `WardrobeViewModel` slimming landed (no extension files, no `internal var` shared state, per-item ops on `WardrobeItemOps`, ~520 lines of mirrors + UI state + delegates). Remaining: the `LocalViewModelStoreOwner provides activity` pin drops per fully-converted destination, restore-overlay engine aggregation (slice 7 part 3) |
 | 6 | Typed `AiResult` | **Started** — the notice path carries a semantic `AiErrorReason` enum instead of `R.string` ids (June 2026, the `:core:ai` enabler); the sealed `AiResult<T>` return type is not started — Gemini still returns `null` on failure |
 | 7 | DataStore + Keystore settings | **Started** — the BYOK Gemini key is AES-GCM-encrypted at rest via Android Keystore (June 2026; `ApiKeyStore` API unchanged, plaintext pref migrates on first read, graceful plaintext fallback if Keystore is unavailable); DataStore for `UserPreferences`/`OnboardingState`/pricing cache and the flag interface are not started |
 | 8 | Testing strategy | **Partial** — store invariant tests landed; fake-based repository/VM tests blocked on § 3 interfaces |
@@ -1128,6 +1128,32 @@ and `LocationViewModel` publishes the closet session). Enabler folded in:
 (the `TripsRepository`/`ShoppingRepository` semantics) — the history VM's init pre-warm passes
 `once = true` so a fork never re-reads `_tryons.json`, while the feed's per-visit refresh
 still re-syncs.
+**The `WardrobeViewModel` slimming LANDED (July 2026)** — the extension-file pattern is gone:
+the four `internal fun WardrobeViewModel.x()` files (Upload/BgFix/Convert/Search) were folded
+away. Two extractions carried the weight: (1) the per-item ops became the `@Singleton`
+`wardrobe/WardrobeItemOps` (reprocess-bg / detect-tags / tag-write / rotate / single-item
+cutout fix / `ensureOriginalCached` + `rotateBitmapFileBy90`), resolving items from their
+*store row* instead of `state.images` (works from any scope) and running on a process-long
+scope — an op started from a destination-scoped viewer VM now survives the pop, and its
+`ItemOpProgress`/`errors` mirror into every VM instance's shared
+`isProcessing`/`isUploading`/`processingImageId`/`error` slots via the same transitions-only
+collector pattern as the pipeline (last-writer-wins, matching the old in-VM writes; tag writes
+go through the § 6 `SidecarSyncQueue`); (2) the § 2 move/delete queue enqueues moved onto
+`WardrobeRepository` (`enqueueMoves`/`deleteItems` — the repo gained the
+`PendingMutationStore`/`SyncEngine` deps; the VM keeps the optimistic-UI halves: selection
+clear, `isMoving`, the `notifyItemsMovedTo` re-home call). The pure search logic became
+top-level functions in `WardrobeTextSearch.kt` (`fuzzyMatchByTags` + scoring helpers,
+`findByPhotoSearch`, `searchSimilarInCandidates`, `localizedSearchContext`); the remaining
+entry points (ingestion, URL-import picker, find-by-photo, bulk delegates) are plain VM
+members, so every cross-package call site kept its syntax (only extension imports were
+dropped). All VM members are `private` — the `internal var` soup criterion is met. Dead code
+deleted: the never-called `saveSidecar`/`enqueueSidecarSync`/`persistItemTags` VM copies, the
+wake-lock delegates (`JobLock` is acquired by the singletons themselves), `deleteSelected`,
+and the unused deps (`GeminiRepository`/`WardrobeItemStore`/`PendingMutationStore`/
+`SyncEngine`/`ItemVersions`/`Gson`). The VM landed at ~520 lines (from 1391 + 5 extension
+files pre-§ 5) — above the aspirational ~400 because it keeps ~30 one-line delegates + the
+mirror collectors, but it is now exactly the target *shape*: state mirrors + per-instance UI
+state + thin delegation, nothing long-lived.
 Also remaining: the
 `LocalViewModelStoreOwner provides activity` pins drop per fully-converted destination (the
 converted ones still receive activity-scoped VMs for their remaining dependencies, so every
@@ -1143,6 +1169,8 @@ slice-9 status above — and the slice-7 `WardrobeUiState` progress-cluster prun
 - No screen receives another feature's ViewModel as a parameter; shared data flows through
   `core/database` Flows + the two session objects.
 - `WardrobeViewModel` ≤ ~400 lines, no extension files, no `internal var` shared state.
+  *(Landed July 2026 at ~520 lines — the shape criteria hold (no extension files, all members
+  private, mirrors + UI state + delegates only); the line count carries the delegate surface.)*
 - Unblocked and ready to start: `feature/*` module extraction (§ 1, mechanical phase-4-style
   moves), § 3 interface extraction at the now-injectable seams, § 8 fake-based VM/use-case
   tests.

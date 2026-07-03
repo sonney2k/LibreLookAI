@@ -81,7 +81,6 @@ import com.librelookai.wardrobe.WardrobeViewModel
 import com.librelookai.wardrobe.displayLabel
 import com.librelookai.wardrobe.tagCategories
 import com.librelookai.wardrobe.tagStringsForCategory
-import com.librelookai.wardrobe.fuzzyFilterByText
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
