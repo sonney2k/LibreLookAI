@@ -34,22 +34,15 @@ data class TripsUiState(
     val isLoading: Boolean = false,
     val error: String? = null,
     /**
-     * ID of a trip that was just created+saved, so the viewer can show a one-time "saved"
-     * confirmation. Cleared via [TripsViewModel.consumeJustSaved] once shown.
-     */
-    val justSavedTripId: String? = null,
-    /**
      * Pending (un-persisted) bulk-refine result for [refinePreviewTripId]: outfitId → proposed
      * items + new name/description. The viewer renders this as a preview until the user replaces
      * or discards it.
      */
     val refinePreviewTripId: String? = null,
     val refinePreview: Map<String, com.librelookai.data.model.OutfitRefinement> = emptyMap(),
-    /**
-     * Trip the viewer should open straight into edit mode for (set by the list's "Edit" action on a
-     * single-selected trip). Consumed by the viewer via [TripsViewModel.consumePendingEdit].
-     */
-    val pendingEditTripId: String? = null,
+    // The old `justSavedTripId` / `pendingEditTripId` cross-surface hand-offs are
+    // `TripViewerRoute` arguments now (§ 5 slice 9 — the viewer's trips VM is
+    // destination-scoped, so a state-field hand-off could no longer reach it).
 )
 
 /**
@@ -136,21 +129,16 @@ class TripsViewModel @Inject constructor(
     }
 
     /**
-     * Creates [trip] and immediately emits a navigate event so the UI opens its viewer.
+     * Creates [trip] and immediately emits a navigate event so the UI opens its viewer (the
+     * planner's collector navigates with `justSaved = true` for the one-time confirmation).
      * The caller is responsible for persisting the trip's outfits (via [com.librelookai.outfit.OutfitsViewModel])
      * before calling this — at that point [trip.outfitIds] should already be populated.
      */
     fun createAndOpenTrip(trip: Trip) {
         upsertTrip(trip) { ok ->
-            if (ok) {
-                _state.update { it.copy(justSavedTripId = trip.id) }
-                viewModelScope.launch { _navigateToTrip.emit(trip.id) }
-            }
+            if (ok) viewModelScope.launch { _navigateToTrip.emit(trip.id) }
         }
     }
-
-    /** Clears the one-time "just saved" flag after the viewer has shown its confirmation. */
-    fun consumeJustSaved() = _state.update { it.copy(justSavedTripId = null) }
 
     fun renameTrip(tripId: String, newName: String) {
         val current = _state.value.trips.find { it.id == tripId } ?: return
@@ -226,17 +214,6 @@ class TripsViewModel @Inject constructor(
         if (_state.value.trips.none { it.id in tripIds }) return
         viewModelScope.launch { onDeleted(repo.deleteTrips(tripIds)) }
     }
-
-    /** Convenience: ask the UI to open [tripId] in the viewer. */
-    fun openTrip(tripId: String) {
-        viewModelScope.launch { _navigateToTrip.emit(tripId) }
-    }
-
-    /** Flags [tripId] so the viewer opens directly in edit mode (the list's single-select "Edit"). */
-    fun requestEditTrip(tripId: String) = _state.update { it.copy(pendingEditTripId = tripId) }
-
-    /** Clears the [pendingEditTripId] once the viewer has entered edit mode. */
-    fun consumePendingEdit() = _state.update { it.copy(pendingEditTripId = null) }
 
     fun clearError() = _state.update { it.copy(error = null) }
 

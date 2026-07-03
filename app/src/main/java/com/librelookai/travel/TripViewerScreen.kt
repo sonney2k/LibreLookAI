@@ -55,6 +55,10 @@ import com.librelookai.wardrobe.WardrobeViewModel
 @Composable
 fun TripViewerScreen(
     tripId: String,
+    /** Open straight in edit mode (`TripViewerRoute.startInEdit` — the list's "Edit" action). */
+    startInEdit: Boolean = false,
+    /** Show the one-time "saved" confirmation (`TripViewerRoute.justSaved` — planner-created trip). */
+    justSaved: Boolean = false,
     tripsViewModel: TripsViewModel,
     outfitsViewModel: OutfitsViewModel,
     generationViewModel: OutfitGenerationViewModel,
@@ -112,16 +116,11 @@ fun TripViewerScreen(
     }
 
     var showDeleteDialog by remember { mutableStateOf(false) }
-    var editing by remember(tripId) { mutableStateOf(false) }
+    // The list's single-select "Edit" action opens the viewer straight into edit mode
+    // (a route argument since § 5 slice 9 — the trips VM is destination-scoped).
+    var editing by remember(tripId) { mutableStateOf(startInEdit) }
     // View-mode actions are hidden under the bottom FAB (tap to reveal the shared action bar).
     var actionsOpen by remember(tripId) { mutableStateOf(false) }
-    // The list's single-select "Edit" action opens the viewer straight into edit mode.
-    androidx.compose.runtime.LaunchedEffect(tripId, tripsState.pendingEditTripId) {
-        if (tripsState.pendingEditTripId == tripId) {
-            editing = true
-            tripsViewModel.consumePendingEdit()
-        }
-    }
     // View-mode packing checklist: off by default, toggled from the meta row. When on, day-card
     // and extras items show interactive packing ticks.
     var checklistMode by remember(tripId) { mutableStateOf(false) }
@@ -156,13 +155,17 @@ fun TripViewerScreen(
         onOpenComposer()
     }
 
-    // One-time "saved" confirmation shown when a freshly generated trip opens.
+    // One-time "saved" confirmation shown when a freshly generated trip opens (a route argument
+    // since § 5 slice 9; the rememberSaveable consume keeps it one-time across recreation).
     val snackbarHostState = remember { SnackbarHostState() }
     val savedMessage = stringResource(R.string.trip_saved_confirmation)
-    androidx.compose.runtime.LaunchedEffect(tripsState.justSavedTripId) {
-        if (tripsState.justSavedTripId == tripId) {
+    var pendingSavedConfirmation by androidx.compose.runtime.saveable.rememberSaveable(tripId) {
+        androidx.compose.runtime.mutableStateOf(justSaved)
+    }
+    androidx.compose.runtime.LaunchedEffect(pendingSavedConfirmation) {
+        if (pendingSavedConfirmation) {
+            pendingSavedConfirmation = false
             snackbarHostState.showSnackbar(savedMessage)
-            tripsViewModel.consumeJustSaved()
         }
     }
 

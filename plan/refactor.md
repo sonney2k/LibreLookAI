@@ -1061,8 +1061,25 @@ hand-offs, the navigate one-shot and the bulk-refine machinery; `TripsUiState.fo
 dropped (repo-internal memo now). All trip mutators route through `repo.saveTrip` — store
 order stopped mattering when the derivation began sorting `createdAt`-desc, so `mutateTrip`'s
 "no reordering" replaceAll collapsed into the same funnel.
+**First destination-scoped VM LANDED (July 2026): `TripViewerRoute`'s `TripsViewModel`.**
+The destination resolves its own instance via `hiltViewModel(entry)` (new
+`androidx.hilt:hilt-navigation-compose` dependency) *before* the activity
+`LocalViewModelStoreOwner` pin, so the viewer's transient state (refine preview, bulk-refine
+flags, isLoading/error) dies with the destination. What made the fork safe: trips derive from
+the shared `TripsRepository` (mutations from either instance reach the other via store
+invalidation), and the VM-init pre-warm joins the repo's single-flight reconcile instead of
+re-listing Drive. The two cross-surface state hand-offs became **route arguments** —
+`TripViewerRoute(tripId, startInEdit, justSaved)`: the trips list's single-select "Edit" now
+calls an `onEditTrip` callback navigating with `startInEdit = true`
+(`requestEditTrip`/`pendingEditTripId`/`consumePendingEdit` deleted), and the planner's
+created-trip navigation passes `justSaved = true` for the viewer's one-time "saved" snackbar
+(`justSavedTripId`/`consumeJustSaved` deleted; a `rememberSaveable` consume keeps it one-time
+across recreation). The dead `openTrip` helper went with them (`navigateToTrip` is now emitted
+only by `createAndOpenTrip`, whose single collector is the planner's). The other VMs the trip
+viewer takes (outfits/generation/wardrobe/profile/location/events) stay activity-pinned for
+now.
 Remaining work: with cross-VM dependencies gone: the viewer destinations
-(`ItemViewerRoute`/`OutfitViewerRoute`/`TripViewerRoute`) get destination-scoped
+(`ItemViewerRoute`/`OutfitViewerRoute` — `TripViewerRoute` is done, above) get destination-scoped
 `hiltViewModel()` instances resolving content from the stores by route ids; the state-mirrored
 composer routes become plain navigation — openers `navigate(OutfitComposerRoute(seedItemIds))`
 instead of flipping VM open-flags (images resolve from the store, prefs from the repository),

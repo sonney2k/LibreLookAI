@@ -99,9 +99,19 @@ internal fun homeTabIndex(destination: NavDestination?): Int = when {
     else -> 0
 }
 
-/** Trip detail viewer — the first Dialog-era fullscreen mode converted to a destination. */
+/**
+ * Trip detail viewer — the first Dialog-era fullscreen mode converted to a destination, and
+ * the first with a **destination-scoped** trips VM (§ 5 slice 9). The cross-surface hand-offs
+ * that used to ride `TripsUiState` state fields are route arguments now: [startInEdit] (the
+ * trips list's single-select "Edit" action) and [justSaved] (the planner's auto-created trip
+ * shows a one-time "saved" confirmation).
+ */
 @Serializable
-internal data class TripViewerRoute(val tripId: String)
+internal data class TripViewerRoute(
+    val tripId: String,
+    val startInEdit: Boolean = false,
+    val justSaved: Boolean = false,
+)
 
 /**
  * Travel planner — replaces the hoisted `travelPlannerMode` flag that rendered the planner

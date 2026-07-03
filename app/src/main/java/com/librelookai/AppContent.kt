@@ -85,6 +85,7 @@ import com.librelookai.shopping.ShoppingHelperScreen
 import com.librelookai.shopping.ShoppingHelperViewModel
 import com.librelookai.travel.TravelScreen
 import com.librelookai.travel.TravelViewModel
+import com.librelookai.travel.TripsViewModel
 import com.librelookai.tryon.TryOnComposerScreen
 import com.librelookai.tryon.TryOnViewModel
 import com.librelookai.ui.theme.LibreLookAITheme
@@ -748,6 +749,11 @@ internal fun AppContent(
                                                     launchSingleTop = true
                                                 }
                                             },
+                                            onEditTrip = { tripId ->
+                                                navController.navigate(
+                                                    TripViewerRoute(tripId, startInEdit = true),
+                                                ) { launchSingleTop = true }
+                                            },
                                         )
                                         }
                                         }
@@ -815,19 +821,31 @@ internal fun AppContent(
                         }
 
                         composable<TripViewerRoute> { entry ->
-                            val tripId = entry.toRoute<TripViewerRoute>().tripId
+                            val route = entry.toRoute<TripViewerRoute>()
+                            val tripId = route.tripId
                             LaunchedEffect(Unit) { Analytics.screen("TripViewer") }
+                            // Destination-scoped trips VM (§ 5 slice 9): resolved against this
+                            // back-stack entry BEFORE the activity pin below, so its transient
+                            // viewer state (refine preview, bulk-refine flags) dies with the
+                            // destination. Safe to fork because trips derive from the shared
+                            // TripsRepository (mutations reach the Travel tab's instance via
+                            // store invalidation; the init pre-warm joins the single-flight
+                            // reconcile instead of re-listing Drive).
+                            val tripViewerTripsViewModel: TripsViewModel =
+                                androidx.hilt.navigation.compose.hiltViewModel(entry)
                             // Recreate the environment the viewer had when it rendered inside
                             // Home's chrome-hidden Scaffold: system-bar insets via a plain
-                            // Scaffold, plus the offline banner strip above the content. VM
-                            // resolution stays activity-pinned — see the HomeRoute comment.
+                            // Scaffold, plus the offline banner strip above the content. The
+                            // remaining VMs stay activity-pinned — see the HomeRoute comment.
                             CompositionLocalProvider(LocalViewModelStoreOwner provides activity) {
                             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                                 Column(Modifier.fillMaxSize().padding(innerPadding)) {
                                     OfflineBanner(visible = isOffline)
                                     com.librelookai.travel.TripViewerScreen(
                                         tripId = tripId,
-                                        tripsViewModel = tripsViewModel,
+                                        startInEdit = route.startInEdit,
+                                        justSaved = route.justSaved,
+                                        tripsViewModel = tripViewerTripsViewModel,
                                         outfitsViewModel = stylesViewModel,
                                         generationViewModel = outfitGenerationViewModel,
                                         onOpenComposer = {
@@ -915,10 +933,12 @@ internal fun AppContent(
                                         onOpenTrip = { tripId ->
                                             // Planner-created trip: leave the planner behind so
                                             // back from the viewer returns to the trips list.
+                                            // justSaved shows the one-time "saved" confirmation
+                                            // (a route arg since § 5 slice 9).
                                             navController.popBackStack(HomeRoute, inclusive = false)
-                                            navController.navigate(TripViewerRoute(tripId)) {
-                                                launchSingleTop = true
-                                            }
+                                            navController.navigate(
+                                                TripViewerRoute(tripId, justSaved = true),
+                                            ) { launchSingleTop = true }
                                         },
                                     )
                                 }

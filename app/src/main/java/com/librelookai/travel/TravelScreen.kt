@@ -48,6 +48,8 @@ fun TravelScreen(
     onSettingsClick: () -> Unit = {},
     onOpenPlanner: () -> Unit = {},
     onOpenTrip: (String) -> Unit = {},
+    /** Opens the trip viewer straight in edit mode (route arg — § 5 slice 9). */
+    onEditTrip: (String) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     TravelOutfitsView(
@@ -60,6 +62,7 @@ fun TravelScreen(
         locationViewModel = locationViewModel,
         onOpenPlanner = onOpenPlanner,
         onOpenTrip = onOpenTrip,
+        onEditTrip = onEditTrip,
         onSettingsClick = onSettingsClick,
         modifier = modifier,
     )

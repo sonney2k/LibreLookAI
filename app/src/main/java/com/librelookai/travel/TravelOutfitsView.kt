@@ -63,6 +63,8 @@ internal fun TravelOutfitsView(
     locationViewModel: LocationViewModel,
     onOpenPlanner: () -> Unit,
     onOpenTrip: (String) -> Unit,
+    /** Opens the trip viewer straight in edit mode (route arg — § 5 slice 9). */
+    onEditTrip: (String) -> Unit,
     onSettingsClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -351,8 +353,7 @@ internal fun TravelOutfitsView(
                             ) {
                                 val id = selectedTripIds.first()
                                 selectedTripIds = emptySet()
-                                tripsViewModel.requestEditTrip(id)
-                                onOpenTrip(id)
+                                onEditTrip(id)
                             },
                         )
                     }
