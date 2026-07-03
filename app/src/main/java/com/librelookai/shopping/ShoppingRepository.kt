@@ -4,9 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.google.gson.Gson
 import com.librelookai.data.drive.DriveRepository
-import com.librelookai.data.drive.getOrCreateShoppingFolder
-import com.librelookai.data.drive.listSidecarFiles
-import com.librelookai.data.drive.loadFileContent
+import com.librelookai.data.drive.DriveService
 import com.librelookai.data.local.CachedWardrobeItem
 import com.librelookai.data.local.WardrobeItemStore
 import com.librelookai.data.session.ClosetSessionHolder
@@ -51,7 +49,7 @@ import kotlinx.coroutines.withContext
 @Singleton
 class ShoppingRepository @Inject constructor(
     @param:ApplicationContext private val context: Context,
-    private val drive: DriveRepository,
+    private val drive: DriveService,
     private val itemStore: WardrobeItemStore,
     itemVersions: ItemVersions,
     session: ClosetSessionHolder,

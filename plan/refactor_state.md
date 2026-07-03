@@ -10,9 +10,9 @@ detail lives in `plan/refactor.md`; this is the short "where we left off" note.
   the unpushed **v2.4.1 (versionCode 30)** release commit.
 - **`refactor-phase5-rest`** — **the active branch**, rebased onto `main` (2026-07-02, clean).
   Carries slice 6 (complete), slice 7 (events + progress prune), the slice-8
-  `OutfitsRepository` foundation, and **all of slice 9** (see below) — including the final
-  increment, the overlay-destination `LocalViewModelStoreOwner` pin drops (2026-07-03,
-  uncommitted at the time of writing). Build: `:app:assembleDebug` + `testDebugUnitTest`
+  `OutfitsRepository` foundation, **all of slice 9** (closed by the overlay-destination
+  `LocalViewModelStoreOwner` pin drops, `74253bf`), and the start of **§ 3** (the
+  `DriveService` repo seam, 2026-07-03). Build: `:app:assembleDebug` + `testDebugUnitTest`
   (app + all `core/*`) green.
 
 ## Where the refactor stands (the big picture)
@@ -37,11 +37,19 @@ now unblocked.
 ## Cross-cutting arch sections still open (from `refactor.md` § status table)
 
 - **§1 Multi-module** — `core/*` libs landed; `feature/*` modules **now unblocked** (slice 9 done).
-- **§3 DI interfaces** — no repository interfaces at the I/O seams yet (blocks fake-based tests).
-  Static globals still alive: `ImageEncoding.tier`, `GeminiProgress` slot, `AiRetry.action`.
+- **§3 DI interfaces** — **started (2026-07-03, see the § 3 execution plan in `refactor.md`)**:
+  slice 1 landed — `DriveService` interface at the repo seam (the five § 5 repos depend on it;
+  `DriveRepository` implements, absorbed extensions renamed `internal *Impl` with one-line
+  member delegates; Hilt `@Binds`). Next: slice 2 (sync handlers), slice 3 (pipeline/use-cases/
+  VMs), slice 4 (`AiClient`), slice 5 (static-global kills: `ImageEncoding.tier`,
+  `GeminiProgress` slot, `AiRetry.action`).
 - **§6 Typed `AiResult`** — only `AiErrorReason` landed; Gemini still returns `null` on failure.
 - **§7 DataStore** — `UserPreferences`/`OnboardingState`/pricing-cache still SharedPrefs.
-- **§8 Testing** — store invariant tests landed; fake-based repo/VM tests blocked on §3.
+- **§8 Testing** — store invariant tests landed; **fake-based repo tests started**:
+  `TripsRepositoryTest` over the shared `FakeDriveService` (`app/src/test/…/testing/`) covers
+  reconcile / single-flight / memoization / save+delete funnels. The other four repos follow
+  the same pattern; VM tests want the § 3 `AiClient` seam. New test dep:
+  `kotlinx-coroutines-test` (virtual-time Main for the repos' `Main.immediate` scopes).
 
 ## §2 SyncEngine leftovers (small, independent)
 
@@ -50,10 +58,10 @@ now unblocked.
 
 ## Resume plan
 
-1. On `refactor-phase5-rest`: the § 5 spine is done — next is choosing among the unblocked
-   sections: §1 `feature/*` module extraction (mechanical phase-4-style moves), §3 interface
-   extraction at the now-injectable seams (unblocks §8 fake-based tests), or the independent
-   §6/§7.
+1. On `refactor-phase5-rest`: § 5 is done and § 3 is the active workstream — continue with
+   § 3 slice 2 (sync handlers onto `DriveService`, + their § 8 drain/retry/rollback tests),
+   then slice 3 (pipeline/use-cases/VMs), slice 4 (`AiClient`), slice 5 (static globals).
+   §1 `feature/*` modules and §6/§7 stay independent alternatives.
 2. The §2 leftovers above are small and can ride any slice.
 3. Manual regression before merging the branch to `main`: closet switch, offline mode,
    capture + import batch, move/rollback, reinstall-restore, calendar pick mode, and the

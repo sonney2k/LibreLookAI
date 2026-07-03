@@ -3,9 +3,8 @@ package com.librelookai.wardrobe
 import android.content.Context
 import android.util.Log
 import com.google.gson.Gson
-import com.librelookai.data.drive.DriveRepository
+import com.librelookai.data.drive.DriveService
 import com.librelookai.data.drive.SyncEngine
-import com.librelookai.data.drive.listSidecarFiles
 import com.librelookai.data.local.CachedWardrobeItem
 import com.librelookai.data.local.PendingMutationStore
 import com.librelookai.data.local.WardrobeItemStore
@@ -64,7 +63,7 @@ data class WardrobeSyncStatus(
 @Singleton
 class WardrobeRepository @Inject constructor(
     @param:ApplicationContext internal val context: Context,
-    internal val drive: DriveRepository,
+    internal val drive: DriveService,
     internal val itemStore: WardrobeItemStore,
     private val mutationStore: PendingMutationStore,
     private val syncEngine: SyncEngine,

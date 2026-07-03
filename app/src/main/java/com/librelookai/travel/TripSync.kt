@@ -6,7 +6,6 @@ import com.librelookai.data.drive.MutationHandler
 import com.librelookai.data.drive.MutationOutcome
 import com.librelookai.data.drive.deleteTripJson
 import com.librelookai.data.drive.findTripFileId
-import com.librelookai.data.drive.getOrCreateTripsFolder
 import com.librelookai.data.drive.saveTripJson
 import com.librelookai.data.local.PendingMutation
 import com.librelookai.data.local.TripStore

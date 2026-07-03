@@ -53,18 +53,18 @@ suspend fun DriveRepository.getOrCreateTryOnsFolder(rootFolderId: String): Strin
      * creating it if needed. Items in this folder share the regular closet layout (cutout +
      * original + sidecar) so they can be moved to a real closet by file-move only.
      */
-suspend fun DriveRepository.getOrCreateShoppingFolder(rootFolderId: String): String =
+internal suspend fun DriveRepository.getOrCreateShoppingFolderImpl(rootFolderId: String): String =
         createSubfolder(rootFolderId, DriveRepository.SHOPPING_FOLDER_NAME)
 
     /**
      * Returns the Drive folder ID of the [DriveRepository.TRIPS_FOLDER_NAME] subfolder inside [rootFolderId],
      * creating it if needed. Each trip is `{tripId}.json` inside this folder.
      */
-suspend fun DriveRepository.getOrCreateTripsFolder(rootFolderId: String): String =
+internal suspend fun DriveRepository.getOrCreateTripsFolderImpl(rootFolderId: String): String =
         createSubfolder(rootFolderId, DriveRepository.TRIPS_FOLDER_NAME)
 
     /** Lists trip JSON files directly inside [tripsFolderId]. Returns (driveFileId, name). */
-suspend fun DriveRepository.listTripFiles(tripsFolderId: String): List<DriveFileDto> = withContext(Dispatchers.IO) {
+internal suspend fun DriveRepository.listTripFilesImpl(tripsFolderId: String): List<DriveFileDto> = withContext(Dispatchers.IO) {
         val tok = token()
         val q = URLEncoder.encode(
             "'$tripsFolderId' in parents and mimeType='application/json' and trashed=false",
@@ -82,7 +82,7 @@ suspend fun DriveRepository.listTripFiles(tripsFolderId: String): List<DriveFile
     }
 
     /** Downloads a single trip's JSON by Drive file ID. */
-suspend fun DriveRepository.loadTripJson(fileId: String): String? = withContext(Dispatchers.IO) {
+internal suspend fun DriveRepository.loadTripJsonImpl(fileId: String): String? = withContext(Dispatchers.IO) {
         downloadFileText(fileId, token())
     }
 
@@ -153,14 +153,14 @@ suspend fun DriveRepository.uploadTryOnImage(rootFolderId: String, name: String,
         }
 
     /** Loads the try-ons index JSON from the root Drive folder, or null if not yet created. */
-suspend fun DriveRepository.loadTryOnsJson(rootFolderId: String): String? = withContext(Dispatchers.IO) {
+internal suspend fun DriveRepository.loadTryOnsJsonImpl(rootFolderId: String): String? = withContext(Dispatchers.IO) {
         val tok = token()
         val id = findFileIdByName(rootFolderId, DriveRepository.TRYONS_FILE_NAME, tok) ?: return@withContext null
         downloadFileText(id, tok)
     }
 
     /** Creates or overwrites the try-ons index JSON in the root Drive folder. */
-suspend fun DriveRepository.saveTryOnsJson(rootFolderId: String, json: String) = withContext(Dispatchers.IO) {
+internal suspend fun DriveRepository.saveTryOnsJsonImpl(rootFolderId: String, json: String) = withContext(Dispatchers.IO) {
         val tok = token()
         val existingId = findFileIdByName(rootFolderId, DriveRepository.TRYONS_FILE_NAME, tok)
         val fileId = existingId ?: run {

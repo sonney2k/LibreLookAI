@@ -11,7 +11,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
  *  imports from `gemini/` (the AI layer references this via `TokenUsageRepository.DRIVE_FILE_NAME`). */
 const val TOKEN_USAGE_DRIVE_FILE_NAME = "_token_usage.jsonl"
 
-suspend fun DriveRepository.loadOutfitsJson(folderId: String): String? = withContext(Dispatchers.IO) {
+internal suspend fun DriveRepository.loadOutfitsJsonImpl(folderId: String): String? = withContext(Dispatchers.IO) {
         val tok = token()
         val id = findFileIdByName(folderId, DriveRepository.OUTFITS_FILE_NAME, tok)
             ?: findFileIdByName(folderId, DriveRepository.LEGACY_STYLES_FILE_NAME, tok)
@@ -183,7 +183,7 @@ suspend fun DriveRepository.saveTokenUsageJsonl(folderId: String, content: Strin
     }
 
     /** Loads the wardrobe metadata JSON string from Drive, or null if not yet created. */
-suspend fun DriveRepository.loadWardrobeMetadataJson(folderId: String): String? = withContext(Dispatchers.IO) {
+internal suspend fun DriveRepository.loadWardrobeMetadataJsonImpl(folderId: String): String? = withContext(Dispatchers.IO) {
         val tok = token()
         val q = URLEncoder.encode(
             "'$folderId' in parents and name='${DriveRepository.WARDROBE_METADATA_FILE_NAME}' and trashed=false", "UTF-8",

@@ -10,12 +10,12 @@ deferred and inter-blocking:
 |---|-------|--------|
 | 1 | Multi-module Gradle | **Partial** — `:core:model`/`:core:common`/`:core:database`/`:core:ml`/`:core:sync`/`:core:ai` landed (phase 4); `core/designsystem` blocked on splitting the 31-locale `res/`, `feature/*` on § 5 |
 | 2 | Room as source of truth + SyncEngine | **Operationally complete** (June 2026) — all five JSON-cache slices landed (phase 2) as opaque-JSON cache rows; the `PendingMutation` queue + `SyncEngine` drain **every converted metadata write**: wardrobe (sidecar/delete/move), shopping, outfits (`outfit.syncFolder`), calendar wears (`outfitEvent.syncFolder`), trips (`trip.save`/`trip.delete`), plus the WorkManager process-death backstop (see phase 2 status). The real-entity / Flow-read conversion is deliberately carried into § 5 |
-| 3 | DI + interfaces at the seams | **Partial** — Hilt landed (phase 1); the gemini↔drive↔billing package cycles are broken (June 2026, see phase 1 status), making the layering acyclic; interface extraction at the I/O seams pending; static globals (`ImageEncoding.tier`, `GeminiProgress` slot, `AiRetry.action`) still alive |
+| 3 | DI + interfaces at the seams | **In progress** — Hilt landed (phase 1); the gemini↔drive↔billing package cycles are broken (June 2026, see phase 1 status), making the layering acyclic; **`DriveService` landed at the repo seam** (July 2026, § 3 slice 1 — see the § 3 execution plan): the five § 5 repos depend on the interface, `DriveRepository` implements it (absorbed extensions delegate to `internal *Impl`), Hilt `@Binds`-bound; handler/pipeline/VM seams + `AiClient` pending; static globals (`ImageEncoding.tier`, `GeminiProgress` slot, `AiRetry.action`) still alive |
 | 4 | Navigation Compose | **Done** (phase 3 complete; per-destination VM scoping deferred to § 5) |
 | 5 | Thin VMs over use-cases | **In progress** (July 2026) — slices 0–8 landed + slice 9 largely landed: all five repos extracted (outfits/try-on/trips/**wardrobe** + the § 4a–d derivations), both composers + all VM splits done, the `WardrobeUiState` progress prune and the connectivity/pre-warm bridge kills landed, `TripViewerRoute`/`OutfitViewerRoute` have destination-scoped VMs. All three viewer destinations (`TripViewerRoute`/`OutfitViewerRoute`/`ItemViewerRoute`) have destination-scoped VMs over the five repos, and the `WardrobeViewModel` slimming landed (no extension files, no `internal var` shared state, per-item ops on `WardrobeItemOps`, ~520 lines of mirrors + UI state + delegates). The overlay-destination `LocalViewModelStoreOwner` pin drops landed (July 2026 — see slice 9 status); slice 9 is **complete**. Only deliberate deferral left: restore-overlay engine aggregation (slice 7 part 3, waits on a `SyncEngine` sync-state surface) |
 | 6 | Typed `AiResult` | **Started** — the notice path carries a semantic `AiErrorReason` enum instead of `R.string` ids (June 2026, the `:core:ai` enabler); the sealed `AiResult<T>` return type is not started — Gemini still returns `null` on failure |
 | 7 | DataStore + Keystore settings | **Started** — the BYOK Gemini key is AES-GCM-encrypted at rest via Android Keystore (June 2026; `ApiKeyStore` API unchanged, plaintext pref migrates on first read, graceful plaintext fallback if Keystore is unavailable); DataStore for `UserPreferences`/`OnboardingState`/pricing cache and the flag interface are not started |
-| 8 | Testing strategy | **Partial** — store invariant tests landed; fake-based repository/VM tests blocked on § 3 interfaces |
+| 8 | Testing strategy | **In progress** — store invariant tests landed; **fake-based repository tests started** (July 2026): `TripsRepositoryTest` over the shared `FakeDriveService` (`app/src/test/…/testing/`) covers the reconcile, single-flight + memoized-on-success, and the local-first save/delete funnels; the other four repos + VM tests follow the same pattern (VM tests still want the § 3 `AiClient` seam) |
 
 ## Context
 
@@ -1199,6 +1199,67 @@ slice-9 status above — and the slice-7 `WardrobeUiState` progress-cluster prun
 regression list per slice from the phase checklist — closet switch, offline mode, capture +
 import batch, move/rollback, reinstall-restore, calendar pick mode. Update CLAUDE.md (bridges,
 cache-folder rule, VM split sections) as each slice lands, per the working agreement.
+
+## § 3 execution plan: interfaces at the seams (started July 2026)
+
+### Ground truth (July 2026)
+
+- `DriveRepository` (677 lines, ~24 member funs) + **4 same-package extension files**
+  (`DriveRepositoryDocs`/`…TripsTryOn`/`…Wardrobe`/`DriveMigration`, ~37 extension funs).
+  **Extension functions resolve statically, so behavior in extensions is un-fakeable** — any
+  method a repo calls must become a *virtual* interface member before fake-based tests work.
+- The five § 5 repos consume a small union of that surface (~18 methods): `cacheDir` /
+  `cachedFile` / `getOrCreateFolder` / `listFiles` / `downloadToCache` / `downloadFileTo` /
+  `deleteFile` (members) + `getOrCreateTripsFolder` / `getOrCreateShoppingFolder` /
+  `listTripFiles` / `loadTripJson` / `loadTryOnsJson` / `saveTryOnsJson` / `loadOutfitsJson` /
+  `loadWardrobeMetadataJson` / `listSidecarFiles` / `loadFileContent` / `upsertSidecar`
+  (extensions).
+- The stores (`TripStore`, `WardrobeItemStore`, …), `PendingMutationStore` and `DrainScheduler`
+  are already interfaces; `SyncEngine` is a plain constructible class — so once the Drive seam
+  is virtual, repo tests are plain JUnit with fakes (plus `Dispatchers.setMain` for the repos'
+  `Main.immediate` scopes).
+
+### Design decisions (recorded up front)
+
+- **One `DriveService` interface, grown incrementally** — not per-repo role interfaces. The
+  repos' method sets overlap heavily (`listFiles`/`cachedFile`/`downloadToCache`), one fake
+  serves every repo test, and it matches the § 1 target layout (`sync/ DriveService interface
+  + DriveRepository impl`). Start with the repo-seam union; widen per consumer slice.
+- **Extension bodies stay in their domain files** (file-size rule): each extension the
+  interface absorbs is renamed `<name>Impl` + made `internal`, and `DriveRepository` gains a
+  one-line `override` delegate. Call sites don't change — the same-named member now shadows
+  the old extension everywhere.
+- **Default args live on the interface** (`downloadToCache(driveName = "")`); overrides drop
+  them (Kotlin rule).
+- **Fakes start next to their first consumer** (`app/src/test`), promoted to a shared fixture
+  when a second module needs them.
+
+### Slices
+
+1. **`DriveService` at the repo seam** — the interface (repo-seam union), `DriveRepository :
+   DriveService`, extension renames + delegates, the five repos' constructors take
+   `DriveService`, Hilt `@Binds`, and the first fake-based repo test
+   (`TripsRepositoryTest`: reconcile replaces the store, single-flight + memoized-on-success,
+   save/delete funnels enqueue + drain). **LANDED July 2026** — see status table.
+2. **Sync handlers onto `DriveService`** — widen the interface with the handler surface
+   (`moveFile`, `saveOutfitsJson`, `saveOutfitEventsJson`, `saveTripJson`/`deleteTripJson`/
+   `findTripFileId`, `rewriteSidecar`, …); handler tests become § 8's queued-mutation
+   invariants (drain / retry / rollback with a fake Drive).
+3. **Pipeline / use-cases / VMs onto `DriveService`** — the upload surface (`uploadImage`,
+   `uploadImageWithName`, `updateImage`, `renameFile`, `copyFile`, `uploadTextFile`,
+   `overwriteFileText`, `countImages`, subfolder ops); after this the concrete type is
+   Hilt-graph + `AppContent` only.
+4. **`AiClient` interface for the Gemini seam** — same pattern (`GeminiApiCalls`/
+   `GeminiImaging` are extension files too); enables fake-based generation/try-on VM tests.
+   Pairs naturally with § 6's typed `AiResult`.
+5. **Static-global kills** (each independent): `ImageEncoding.tier` mirror, `GeminiProgress`
+   single slot, `AiRetry.action` holder → injected `@Singleton`s exposing Flows.
+
+### Verification (per slice)
+
+`./gradlew :app:assembleDebug testDebugUnitTest` green; each slice ships its fake-based tests;
+no Drive-format or behavior change intended anywhere in § 3 (pure seam work), so the manual
+regression pass is a smoke check of the touched feature areas.
 
 ## Verification (per phase)
 

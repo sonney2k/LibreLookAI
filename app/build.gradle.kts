@@ -210,6 +210,9 @@ dependencies {
     ksp(libs.hilt.compiler)
 
     testImplementation(libs.junit)
+    // Fake-based repository tests (refactor § 3/§ 8): virtual-time Main dispatcher for the
+    // repos' `Dispatchers.Main.immediate` scopes.
+    testImplementation(libs.kotlinx.coroutines.test)
     // JVM-side Compose UI tests via Robolectric (./gradlew testDebugUnitTest — no device needed)
     testImplementation(libs.robolectric)
     testImplementation(libs.androidx.junit)

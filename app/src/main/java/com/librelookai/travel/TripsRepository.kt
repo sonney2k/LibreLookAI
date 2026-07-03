@@ -1,11 +1,8 @@
 package com.librelookai.travel
 
 import com.google.gson.Gson
-import com.librelookai.data.drive.DriveRepository
+import com.librelookai.data.drive.DriveService
 import com.librelookai.data.drive.SyncEngine
-import com.librelookai.data.drive.getOrCreateTripsFolder
-import com.librelookai.data.drive.listTripFiles
-import com.librelookai.data.drive.loadTripJson
 import com.librelookai.data.local.PendingMutationStore
 import com.librelookai.data.local.TripStore
 import com.librelookai.data.model.Trip
@@ -33,7 +30,7 @@ import kotlinx.coroutines.flow.stateIn
  */
 @Singleton
 class TripsRepository @Inject constructor(
-    private val drive: DriveRepository,
+    private val drive: DriveService,
     private val tripStore: TripStore,
     private val mutationStore: PendingMutationStore,
     private val syncEngine: SyncEngine,

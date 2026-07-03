@@ -38,7 +38,6 @@ import com.librelookai.wardrobe.WebProductFetcher
 import com.librelookai.wardrobe.rotateBitmapFileBy90
 import com.librelookai.wardrobe.ItemVersions
 import com.librelookai.R
-import com.librelookai.data.drive.upsertSidecar
 import com.librelookai.data.model.Location
 import com.librelookai.wardrobe.WardrobeViewModel
 

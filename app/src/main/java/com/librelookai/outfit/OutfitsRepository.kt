@@ -3,9 +3,8 @@ package com.librelookai.outfit
 import android.app.Application
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.librelookai.data.drive.DriveRepository
+import com.librelookai.data.drive.DriveService
 import com.librelookai.data.drive.SyncEngine
-import com.librelookai.data.drive.loadOutfitsJson
 import com.librelookai.data.local.OutfitStore
 import com.librelookai.data.local.PendingMutationStore
 import com.librelookai.data.local.WardrobeItemStore
@@ -50,7 +49,7 @@ import kotlinx.coroutines.sync.withLock
 @Singleton
 class OutfitsRepository @Inject constructor(
     private val app: Application,
-    private val drive: DriveRepository,
+    private val drive: DriveService,
     private val itemStore: WardrobeItemStore,
     private val outfitStore: OutfitStore,
     private val mutationStore: PendingMutationStore,

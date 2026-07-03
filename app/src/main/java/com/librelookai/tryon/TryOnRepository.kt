@@ -2,9 +2,7 @@ package com.librelookai.tryon
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.librelookai.data.drive.DriveRepository
-import com.librelookai.data.drive.loadTryOnsJson
-import com.librelookai.data.drive.saveTryOnsJson
+import com.librelookai.data.drive.DriveService
 import com.librelookai.data.local.TryOnStore
 import com.librelookai.data.model.TryOn
 import java.io.File
@@ -32,7 +30,7 @@ import kotlinx.coroutines.withContext
  */
 @Singleton
 class TryOnRepository @Inject constructor(
-    private val drive: DriveRepository,
+    private val drive: DriveService,
     private val tryOnStore: TryOnStore,
 ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)

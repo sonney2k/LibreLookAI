@@ -56,7 +56,7 @@ private const val TAG = "DriveRepository"
 class DriveRepository @Inject constructor(
     @param:ApplicationContext private val context: Context,
     private val auth: GoogleAuthManager,
-) {
+) : DriveService {
     companion object {
         internal const val API = "https://www.googleapis.com/drive/v3"
         internal const val UPLOAD_API = "https://www.googleapis.com/upload/drive/v3"
@@ -157,7 +157,7 @@ class DriveRepository @Inject constructor(
     internal val gson = Gson()
 
     /** App-private persistent cache for wardrobe images. */
-    val cacheDir: File = File(context.filesDir, "wardrobe").also { it.mkdirs() }
+    override val cacheDir: File = File(context.filesDir, "wardrobe").also { it.mkdirs() }
 
     internal suspend fun token() = auth.getAccessToken()
 
@@ -213,7 +213,7 @@ class DriveRepository @Inject constructor(
      *   4. Brand-new account → create a fresh, marked root.
      * The resolved ID is persisted whenever we're sure it's ours, so subsequent calls short-circuit.
      */
-    suspend fun getOrCreateFolder(): String = withContext(Dispatchers.IO) {
+    override suspend fun getOrCreateFolder(): String = withContext(Dispatchers.IO) {
         val tok = token()
         pickedRootFolderId()?.let { stored ->
             if (rootVerified || folderAccessible(stored, tok)) {
@@ -310,7 +310,7 @@ class DriveRepository @Inject constructor(
      * Only returns files whose name ends with [CUTOUT_SUFFIX] — originals and raw uploads
      * are excluded so they never appear as wardrobe items.
      */
-    suspend fun listFiles(folderId: String): List<DriveFileDto> = withContext(Dispatchers.IO) {
+    override suspend fun listFiles(folderId: String): List<DriveFileDto> = withContext(Dispatchers.IO) {
         val tok = token()
         val q = URLEncoder.encode(
             "'$folderId' in parents and mimeType contains 'image/' and trashed=false",
@@ -407,7 +407,7 @@ class DriveRepository @Inject constructor(
     }
 
     /** Permanently deletes a file from Drive and local cache. */
-    suspend fun deleteFile(fileId: String) = withContext(Dispatchers.IO) {
+    override suspend fun deleteFile(fileId: String) = withContext(Dispatchers.IO) {
         val tok = token()
         val req = Request.Builder()
             .url("$API/files/$fileId")
@@ -417,6 +417,7 @@ class DriveRepository @Inject constructor(
         http.newCall(req).await()
         cachedFile(fileId)?.delete()
         File(cacheDir, "${fileId}_original.jpg").takeIf { it.exists() }?.delete()
+        Unit
     }
 
     /**
@@ -424,7 +425,7 @@ class DriveRepository @Inject constructor(
      * Pass [driveName] (the Drive filename) to preserve the correct extension — cutout files
      * end with [CUTOUT_SUFFIX] and are cached as `.png`; everything else as `.jpg`.
      */
-    suspend fun downloadToCache(driveId: String, driveName: String = ""): File? = withContext(Dispatchers.IO) {
+    override suspend fun downloadToCache(driveId: String, driveName: String): File? = withContext(Dispatchers.IO) {
         val ext = if (ImageEncoding.isCutoutName(driveName)) "png" else "jpg"
         val dest = File(cacheDir, "$driveId.$ext")
         if (dest.exists()) return@withContext dest
@@ -588,7 +589,7 @@ class DriveRepository @Inject constructor(
      * Downloads Drive file [fileId] directly to [dest] (bypasses the standard [cacheDir] naming).
      * Returns null on error.
      */
-    suspend fun downloadFileTo(fileId: String, dest: File): File? = withContext(Dispatchers.IO) {
+    override suspend fun downloadFileTo(fileId: String, dest: File): File? = withContext(Dispatchers.IO) {
         val tmp = File(dest.parent, "${dest.name}.tmp")
         return@withContext try {
             val tok = token()
@@ -648,10 +649,46 @@ class DriveRepository @Inject constructor(
      * Returns the Drive folder ID of the [PROFILE_FOLDER_NAME] subfolder inside [rootFolderId],
      * creating it if it does not yet exist.
      */
-    fun cachedFile(driveId: String): File? =
+    override fun cachedFile(driveId: String): File? =
         sequenceOf("$driveId.png", "$driveId.jpg")
             .map { File(cacheDir, it) }
             .firstOrNull { it.exists() }
+
+    // ---------- DriveService seam (refactor § 3 slice 1) ----------
+    // The methods below were same-package extension functions; extensions resolve statically
+    // and can't be faked, so the interface members delegate to the renamed `internal`
+    // `<name>Impl` extensions — the bodies stay in their domain files (file-size rule).
+
+    override suspend fun getOrCreateTripsFolder(rootFolderId: String): String =
+        getOrCreateTripsFolderImpl(rootFolderId)
+
+    override suspend fun getOrCreateShoppingFolder(rootFolderId: String): String =
+        getOrCreateShoppingFolderImpl(rootFolderId)
+
+    override suspend fun listTripFiles(tripsFolderId: String): List<DriveFileDto> =
+        listTripFilesImpl(tripsFolderId)
+
+    override suspend fun loadTripJson(fileId: String): String? = loadTripJsonImpl(fileId)
+
+    override suspend fun loadTryOnsJson(rootFolderId: String): String? =
+        loadTryOnsJsonImpl(rootFolderId)
+
+    override suspend fun saveTryOnsJson(rootFolderId: String, json: String) {
+        saveTryOnsJsonImpl(rootFolderId, json)
+    }
+
+    override suspend fun loadOutfitsJson(folderId: String): String? = loadOutfitsJsonImpl(folderId)
+
+    override suspend fun loadWardrobeMetadataJson(folderId: String): String? =
+        loadWardrobeMetadataJsonImpl(folderId)
+
+    override suspend fun listSidecarFiles(folderId: String): List<DriveFileDto> =
+        listSidecarFilesImpl(folderId)
+
+    override suspend fun loadFileContent(fileId: String): String? = loadFileContentImpl(fileId)
+
+    override suspend fun upsertSidecar(folderId: String, name: String, json: String): String =
+        upsertSidecarImpl(folderId, name, json)
 
     // ---------- Helpers ----------
 

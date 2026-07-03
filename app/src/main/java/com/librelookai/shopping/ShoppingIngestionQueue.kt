@@ -2,7 +2,6 @@ package com.librelookai.shopping
 
 import com.google.gson.Gson
 import com.librelookai.data.drive.DriveRepository
-import com.librelookai.data.drive.upsertSidecar
 import com.librelookai.data.local.WardrobeItemStore
 import com.librelookai.data.session.UserPreferencesRepository
 import com.librelookai.gemini.GeminiRepository

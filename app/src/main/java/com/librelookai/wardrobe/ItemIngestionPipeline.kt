@@ -8,7 +8,6 @@ import com.google.gson.Gson
 import com.librelookai.R
 import com.librelookai.data.drive.DriveFileDto
 import com.librelookai.data.drive.DriveRepository
-import com.librelookai.data.drive.upsertSidecar
 import com.librelookai.data.local.WardrobeItemStore
 import com.librelookai.data.session.ClosetSessionHolder
 import com.librelookai.data.session.UserPreferencesRepository

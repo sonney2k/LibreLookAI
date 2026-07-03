@@ -16,7 +16,7 @@ suspend fun DriveRepository.listAllImageFiles(folderId: String): List<DriveFileD
     }
 
     /** Lists per-item sidecar JSON files in [folderId], excluding system metadata files. */
-suspend fun DriveRepository.listSidecarFiles(folderId: String): List<DriveFileDto> = withContext(Dispatchers.IO) {
+internal suspend fun DriveRepository.listSidecarFilesImpl(folderId: String): List<DriveFileDto> = withContext(Dispatchers.IO) {
         val tok = token()
         val q = URLEncoder.encode(
             "'$folderId' in parents and mimeType='application/json' and trashed=false",
@@ -27,7 +27,7 @@ suspend fun DriveRepository.listSidecarFiles(folderId: String): List<DriveFileDt
     }
 
     /** Downloads and returns the text content of Drive file [fileId], or null on failure. */
-suspend fun DriveRepository.loadFileContent(fileId: String): String? = withContext(Dispatchers.IO) {
+internal suspend fun DriveRepository.loadFileContentImpl(fileId: String): String? = withContext(Dispatchers.IO) {
         val tok = token()
         val resp = http.newCall(
             Request.Builder()
@@ -42,7 +42,7 @@ suspend fun DriveRepository.loadFileContent(fileId: String): String? = withConte
      * Creates or updates a JSON sidecar file named [name] in [folderId] with content [json].
      * Returns the Drive file ID of the sidecar.
      */
-suspend fun DriveRepository.upsertSidecar(folderId: String, name: String, json: String): String =
+internal suspend fun DriveRepository.upsertSidecarImpl(folderId: String, name: String, json: String): String =
         withContext(Dispatchers.IO) {
             val tok = token()
             val escapedName = name.replace("\\", "\\\\").replace("'", "\\'")

@@ -4,7 +4,6 @@ import com.google.gson.Gson
 import com.librelookai.data.drive.DriveRepository
 import com.librelookai.data.drive.MutationHandler
 import com.librelookai.data.drive.MutationOutcome
-import com.librelookai.data.drive.upsertSidecar
 import com.librelookai.data.local.PendingMutation
 import com.librelookai.data.local.WardrobeItemStore
 import dagger.Binds
