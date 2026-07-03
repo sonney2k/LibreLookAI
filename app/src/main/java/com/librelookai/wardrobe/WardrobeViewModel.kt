@@ -1,64 +1,34 @@
 package com.librelookai.wardrobe
-import com.librelookai.util.NetworkMonitor
 import com.librelookai.util.localized
 
 import android.app.Application
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
-import android.net.Uri
-import android.provider.DocumentsContract
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
-import com.librelookai.MainActivity
-import com.librelookai.data.local.CachedWardrobeItem
 import com.librelookai.data.local.PendingMutationStore
 import com.librelookai.data.local.WardrobeItemStore
-import com.librelookai.data.session.ClosetSession
-import com.librelookai.data.session.ClosetSessionHolder
 import com.librelookai.data.session.UserPreferencesRepository
 import com.librelookai.settings.AppLanguage
 import com.librelookai.R
-import com.librelookai.data.drive.DriveFileDto
 import com.librelookai.data.drive.DriveRepository
 import com.librelookai.data.drive.SyncEngine
-import com.librelookai.data.drive.await
-import com.librelookai.data.drive.loadWardrobeMetadataJson
-import com.librelookai.data.drive.listSidecarFiles
-import com.librelookai.data.drive.loadFileContent
-import com.librelookai.data.drive.upsertSidecar
 import com.librelookai.gemini.ClothingTags
-import com.librelookai.gemini.CutoutFixActions
-import com.librelookai.gemini.CutoutIssues
 import com.librelookai.gemini.GeminiRepository
-import com.librelookai.gemini.detectCutoutIssues
-import com.librelookai.gemini.fixCutoutBackground
 import com.librelookai.gemini.classifyClothing
 import com.librelookai.service.JobLock
-import com.librelookai.settings.UserPreferences
-import com.librelookai.util.ImageEncoding
-import com.librelookai.util.isNetworkAvailable
 import java.io.File
-import java.util.concurrent.atomic.AtomicInteger
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -66,7 +36,13 @@ import kotlinx.coroutines.withContext
 
 internal val FUZZY_TOKEN_SPLIT = Regex("[^\\p{L}\\p{Nd}]+")
 
-@OptIn(ExperimentalCoroutinesApi::class)
+/**
+ * The wardrobe grid's UI surface (refactor § 5 slice 9): the load core — scope, two-phase
+ * Drive load, sync flags, derived item flows, prefetch, recently-moved markers — lives on the
+ * shared [WardrobeRepository]; this VM mirrors the repo flows into [WardrobeUiState] and keeps
+ * the per-instance UI state (selection, view, find-by-photo) plus the per-item mutation entry
+ * points (all store-first, § 5 slice 4a — the derived view follows via Room invalidation).
+ */
 @HiltViewModel
 class WardrobeViewModel @Inject constructor(
     app: Application,
@@ -79,12 +55,11 @@ class WardrobeViewModel @Inject constructor(
     internal val pipeline: ItemIngestionPipeline,
     private val jobLock: JobLock,
     private val itemVersions: ItemVersions,
-    private val networkMonitor: NetworkMonitor,
+    internal val repo: WardrobeRepository,
     private val retagUseCase: RetagAllUseCase,
     private val removeBgUseCase: RemoveAllBackgroundsUseCase,
     internal val webpConvertUseCase: WebpConvertUseCase,
     internal val cutoutFixUseCase: CutoutBgFixUseCase,
-    session: ClosetSessionHolder,
     prefsRepo: UserPreferencesRepository,
 ) : AndroidViewModel(app) {
 
@@ -95,7 +70,7 @@ class WardrobeViewModel @Inject constructor(
 
     // Process keepalive moved to the shared [JobLock] singleton (refactor § 5 slice 5) so the
     // ingestion pipeline and the VM's remaining bulk workflows share one refcount. These thin
-    // delegates keep the extension-file call sites (audit / bg-fix / convert / import) intact.
+    // delegates keep the extension-file call sites (bg-fix / convert) intact.
     internal fun acquireJobWakeLock() = jobLock.acquire()
 
     internal fun releaseJobWakeLock() = jobLock.release()
@@ -114,60 +89,23 @@ class WardrobeViewModel @Inject constructor(
     val convertProgress: StateFlow<ConvertProgress> = webpConvertUseCase.progress
     val cutoutBgFixProgress: StateFlow<CutoutBgFixProgress?> = cutoutFixUseCase.progress
 
-    internal var folderId: String? = null
-    private var allFolderIds: List<String>? = null
+    // ---- Load-core delegates (§ 5 slice 9) ----
+    // Scope + import target live on the shared [WardrobeRepository]; the extension files and
+    // the per-item ops read them through these.
+    /** The active closet's folder id, or null in All-locations mode. */
+    internal val folderId: String? get() = repo.folderId
+    /** When non-null, all new photo imports target this folder instead of the active view folder. */
+    internal val defaultImportFolderId: String? get() = repo.importTargetFolderId.value
 
-    // ---- Derived read path (refactor § 5 slice 4a) ----
-    // [WardrobeUiState.images] and [WardrobeUiState.allLocationImages] are *derived*: the two
-    // scope flows below flatMap into [WardrobeItemStore.observeItems], so every store write —
-    // by this VM, the shopping VM or a SyncEngine handler — lands in the UI via Room
-    // invalidation. Mutations write the store; nothing splices `state.images` any more.
-    /** The folder ids the grid currently shows (active closet, or every closet in All mode). */
-    private val viewScope = MutableStateFlow<List<String>>(emptyList())
-    /** Every configured closet + shopping — the cross-closet similarity-snapshot scope. */
-    private val configuredScope = MutableStateFlow<List<String>>(emptyList())
-    // The Coil-version overlay is a shared singleton now ([ItemVersions], § 5 slice 6) so the
-    // bulk use-cases can write it; the derivation collectors below merge it in unchanged.
-    internal fun bumpImageVersion(vararg driveIds: String) = itemVersions.bump(*driveIds)
-
-    /**
-     * Every closet folderId the user has configured, regardless of which one is currently
-     * displayed. Driven by the [ClosetSessionHolder] collector. Used to scope the cross-closet
-     * [WardrobeUiState.allLocationImages] snapshot for similarity search.
-     */
-    private var allConfiguredFolderIds: List<String> = emptyList()
-    /** The `_shopping` folder id within [allConfiguredFolderIds], if any — for diagnostic labelling only. */
-    private var shoppingFolderId: String? = null
     /** Gemini-facing language name (e.g. "English", "German") for label generation. */
     internal var geminiLanguage: String = "English"
-    /** When non-null, all new photo imports target this folder instead of the active view folder. */
-    internal var defaultImportFolderId: String? = null
     /** Mirrors UserPreferences.debugSimilarityPreview — when on, similarity searches return up to
      *  50 matches so the debug breakdown has more candidates to scroll through. */
     internal var debugSimilarityPreview: Boolean = false
 
-    /** Active loadImages coroutine — cancelled when a new location is selected. */
-    private var loadJob: Job? = null
-
-    /**
-     * Tracks items recently moved into another closet. Drive's `q='<folder>' in parents` query
-     * is eventually consistent — after a move PATCH both the destination and the source folder
-     * listings can lag for minutes. We use this map to (a) re-inject moved items into the TARGET
-     * folder's Phase 2 results while Drive catches up, so they don't briefly disappear after
-     * [setLocation] to the target, and (b) suppress them from the SOURCE folder's Phase 2 results,
-     * so the just-moved item doesn't flicker back into the closet it left (or appear in both).
-     * Keyed by cutout driveId → (targetFolderId, expiresAtMs).
-     */
-    private val recentlyMovedItems = java.util.concurrent.ConcurrentHashMap<String, Pair<String, Long>>()
-    // Drive's `'<folder>' in parents` listing can lag well past a minute — testers have seen a
-    // moved item still listed in its old parent for ~5 min. Keep the suppression window generous
-    // so the item never flickers back into the source closet before Drive catches up.
-    private val recentlyMovedTtlMs: Long = 10 * 60 * 1000L
-
-    private fun pruneRecentlyMoved() {
-        val now = System.currentTimeMillis()
-        recentlyMovedItems.entries.removeAll { it.value.second < now }
-    }
+    // The Coil-version overlay is a shared singleton ([ItemVersions], § 5 slice 6) so the
+    // bulk use-cases can write it; the repo's derivations merge it in.
+    internal fun bumpImageVersion(vararg driveIds: String) = itemVersions.bump(*driveIds)
 
     init {
         // The pipeline's own progress fields are read straight off [ingestionProgress] since
@@ -212,77 +150,73 @@ class WardrobeViewModel @Inject constructor(
                 _state.update { it.copy(needsBatteryExemption = needs) }
             }
         }
-        // (The four bulk-maintenance progress mirrors are gone — § 5 slice 7 prune: the grid
-        // overlay and the FixCutoutBgDialog host read the use-cases' flows via the passthrough
-        // properties above.)
-        // Derived view (§ 5 slice 4a): the grid's items are the store rows in the current view
-        // scope (with a cached image file), stamped with the Coil version overlay. File stats run
-        // on IO via flowOn; redundant emissions are free (StateFlow suppresses equal states).
+        // Derived read path (§ 5 slice 4a, on the repo since slice 9): mirror the repo's
+        // store-derived flows into this instance's UI state.
         viewModelScope.launch {
-            combine(
-                viewScope.flatMapLatest { ids -> itemStore.observeItems(ids) },
-                itemVersions.versions,
-            ) { byFolder, versions ->
-                byFolder.flatMap { (fid, items) -> items.mapNotNull { it.toDriveImage(fid, versions) } }
-            }
-                .flowOn(Dispatchers.IO)
-                .collect { images -> _state.update { it.copy(images = images) } }
+            repo.images.collect { images -> _state.update { it.copy(images = images) } }
         }
-        // Derived cross-closet snapshot: same pipeline over every configured closet + shopping.
-        // Replaces the refreshAllLocationImagesState()/snapshotJob rebuilds — any store write
-        // (incl. the shopping VM's and the sync handlers') refreshes it via invalidation.
         viewModelScope.launch {
-            combine(
-                configuredScope.flatMapLatest { ids -> itemStore.observeItems(ids) },
-                itemVersions.versions,
-            ) { byFolder, versions ->
-                byFolder.flatMap { (fid, items) -> items.mapNotNull { it.toDriveImage(fid, versions) } }
-            }
-                .flowOn(Dispatchers.IO)
-                .collect { merged -> _state.update { it.copy(allLocationImages = merged) } }
+            repo.allLocationImages.collect { merged -> _state.update { it.copy(allLocationImages = merged) } }
         }
-        // Derive the load scope, cross-closet snapshot and import target from the shared closet
-        // session (replaces the AppContent fan-out bridge; same call order it used). When the
-        // active id is neither "All" nor a known closet, the current scope is kept — matching
-        // the old bridge's no-op arm.
         viewModelScope.launch {
-            session.session.collect { s ->
-                setAllConfiguredLocations(s.snapshotFolderIds, s.shoppingFolderId)
-                val active = s.activeFolderId
-                when {
-                    s.activeLocationId == ClosetSession.ALL_LOCATIONS_ID -> setAllLocations(s.closetFolderIds)
-                    active != null -> setLocation(active)
+            repo.importTargetFolderId.collect { id -> _state.update { it.copy(importTargetFolderId = id) } }
+        }
+        // Phase-2 sync flags. The repo's load error lands in the shared `error` slot as a
+        // *transition* (new failures only), so it can't resurrect a banner a per-item op or
+        // clearError already dismissed.
+        viewModelScope.launch {
+            var prevError: String? = null
+            repo.syncStatus.collect { st ->
+                _state.update { s ->
+                    s.copy(
+                        isLoading = st.isLoading,
+                        isSyncing = st.isSyncing,
+                        syncTotal = st.syncTotal,
+                        syncDone = st.syncDone,
+                        syncPhase = st.syncPhase,
+                        error = if (st.error != null && st.error != prevError) st.error else s.error,
+                    )
                 }
-                setDefaultImportFolderId(s.defaultImportFolderId)
+                prevError = st.error
             }
         }
-        // Retry the cross-closet prefetch on start and whenever connectivity returns (replaces
-        // the AppContent bridge, § 5): the initial prefetch bails when offline; without this an
-        // early network blip would leave some closets permanently uncached (empty snapshot →
-        // outfits/trips hidden). StateFlow replays the current value, so an online start also
-        // fires once.
+        // A closet switch resets the per-scope UI state (selection, find-by-photo, capture
+        // view, transient flags) — the VM half of the old wholesale `setLocation` state reset;
+        // the mirrored repo fields are carried over (the repo blanks/repaints them itself).
         viewModelScope.launch {
-            networkMonitor.isOnline.collect { online -> if (online) retryPrefetchIfNeeded() }
+            repo.scopeChanges.drop(1).collect {
+                _state.update { s ->
+                    WardrobeUiState(
+                        images = s.images,
+                        allLocationImages = s.allLocationImages,
+                        isLoading = s.isLoading,
+                        isSyncing = s.isSyncing,
+                        syncTotal = s.syncTotal,
+                        syncDone = s.syncDone,
+                        syncPhase = s.syncPhase,
+                        needsBatteryExemption = s.needsBatteryExemption,
+                        importTargetFolderId = s.importTargetFolderId,
+                    )
+                }
+            }
         }
         // Mirror the UserPreferences-derived knobs (tagging language, similarity debug) from the
         // shared preferences repository — replaces the per-pref AppContent mirrors (§ 5 slice 2).
-        // The dedupe / on-device-bg-review knobs live on [ItemIngestionPipeline] now (slice 5).
+        // The dedupe / on-device-bg-review knobs live on [ItemIngestionPipeline] (slice 5).
         viewModelScope.launch {
             prefsRepo.preferences.collect { p ->
                 geminiLanguage = AppLanguage.toGeminiName(p.language)
                 debugSimilarityPreview = p.debugSimilarityPreview
             }
         }
-        // (The old sidecarSaved collector is gone: the handler stamps the new sidecar id onto
-        // the Room row, and the derived view picks it up via invalidation.)
         // SyncEngine feedback: a queued move exhausted its retries and the handler re-homed the
         // Room row back to its source — the derived view restores/prunes the item by itself, so
         // only the recently-moved marker and the error banner remain to undo here. Also covers
         // shopping→closet moves (the shopping VM restores its own list and shows its own error).
         viewModelScope.launch {
             moveSync.moveRolledBack.collect { rollback ->
-                recentlyMovedItems.remove(rollback.driveId)
-                if (rollback.sourceFolderId != shoppingFolderId) {
+                repo.forgetRecentlyMoved(listOf(rollback.driveId))
+                if (rollback.sourceFolderId != repo.shoppingFolderId) {
                     _state.update {
                         it.copy(error = getApplication<Application>().localized().getString(R.string.wardrobe_move_failed))
                     }
@@ -293,122 +227,11 @@ class WardrobeViewModel @Inject constructor(
 
     /** Set the folder that new photo imports target. Null = fall back to the active view folder. */
     fun setDefaultImportFolderId(folderId: String?) {
-        defaultImportFolderId = folderId
+        repo.setDefaultImportFolderId(folderId)
         _state.update { it.copy(importTargetFolderId = folderId) }
     }
 
-    private fun setLocation(newFolderId: String) {
-        if (folderId == newFolderId && allFolderIds == null) return
-        folderId = newFolderId
-        allFolderIds = null
-        // Preserve [allLocationImages] across the location switch so similarity search keeps
-        // working immediately — it is independent of the active filter.
-        _state.update { WardrobeUiState(isLoading = true, allLocationImages = it.allLocationImages) }
-        viewScope.value = listOf(newFolderId)
-        loadImages()
-    }
-
-    private fun setAllLocations(folderIds: List<String>) {
-        if (folderId == null && allFolderIds?.toSet() == folderIds.toSet()) return
-        folderId = null
-        allFolderIds = folderIds.toList()
-        _state.update { WardrobeUiState(isLoading = true, allLocationImages = it.allLocationImages) }
-        viewScope.value = folderIds.toList()
-        loadImages()
-    }
-
-    /**
-     * Tell the VM about every configured closet so it can keep [WardrobeUiState.allLocationImages]
-     * in sync. Driven by the [ClosetSessionHolder] collector whenever the locations list changes.
-     * The snapshot is read from each per-folder cache file (no Drive calls); folders not yet
-     * downloaded simply contribute zero items until the user visits them.
-     */
-    private fun setAllConfiguredLocations(folderIds: List<String>, shoppingFolderId: String? = null) {
-        if (allConfiguredFolderIds.toSet() == folderIds.toSet() && this.shoppingFolderId == shoppingFolderId) return
-        allConfiguredFolderIds = folderIds.toList()
-        this.shoppingFolderId = shoppingFolderId
-        configuredScope.value = folderIds.toList()
-        prefetchUncachedClosets()
-    }
-
-    private var prefetchJob: Job? = null
-
-    /**
-     * Re-attempt the cross-closet prefetch when any configured closet still lacks a local cache.
-     * Safe to call repeatedly (app foreground, connectivity returning) — it no-ops when everything
-     * is already cached, when offline, or when a prefetch is in flight. Without this retry an
-     * initial prefetch that bailed on a momentary network blip would never run again until the
-     * closet list changed, leaving the cross-closet snapshot (and thus outfits/trips) empty.
-     */
-    private fun retryPrefetchIfNeeded() {
-        viewModelScope.launch(Dispatchers.IO) {
-            if (allConfiguredFolderIds.any { fid -> !itemStore.hasFolder(fid) }) {
-                prefetchUncachedClosets()
-            }
-        }
-    }
-
-    /**
-     * For every configured closet that doesn't have a local cache yet, fetch its files +
-     * sidecars from Drive in the background and write the per-folder cache. This ensures
-     * similarity search covers all closets on first run, not just the one the user has visited.
-     * Skips folders that already have a cache file (those will refresh via normal loadImages).
-     */
-    private fun prefetchUncachedClosets() {
-        if (prefetchJob?.isActive == true) return
-        val app = getApplication<Application>()
-        if (!app.isNetworkAvailable()) return
-        prefetchJob = viewModelScope.launch(Dispatchers.IO) {
-            val targets = allConfiguredFolderIds.filter { fid -> !itemStore.hasFolder(fid) }
-            Log.d(TAG, "prefetch: configured=${allConfiguredFolderIds.size} uncached=${targets.size}")
-            if (targets.isEmpty()) return@launch
-            targets.forEach { fid ->
-                runCatching {
-                    val images = loadFolderImages(fid)
-                    saveLocalCache(fid, images)
-                    Log.d(TAG, "prefetch: folder=$fid downloaded=${images.size}")
-                }.onFailure { Log.w(TAG, "prefetch: folder=$fid FAILED", it) }
-            }
-        }
-    }
-
-    /**
-     * Maps a store row to its displayable [DriveImage], or null when the image bytes aren't in
-     * the local Drive cache yet (the row reappears with the next store write after download).
-     * The derivation collectors in `init` run this for every row on each invalidation.
-     */
-    private fun CachedWardrobeItem.toDriveImage(
-        fid: String,
-        versions: Map<String, Long> = emptyMap(),
-    ): DriveImage? =
-        drive.cachedFile(driveId)?.let { f ->
-            DriveImage(
-                driveId, f.absolutePath, name, tags,
-                originalDriveId = originalDriveId,
-                sidecarDriveId = sidecarDriveId,
-                folderId = fid,
-                createdTimeMs = createdTimeMs,
-                version = versions[driveId] ?: 0L,
-            )
-        }
-
-    /** Reads a folder's currently-paintable items once (Phase-1 cold-load probes). */
-    private suspend fun readCacheAsImages(fid: String): List<DriveImage> =
-        itemStore.itemsFor(fid).mapNotNull { it.toDriveImage(fid) }
-
-
     // ---------- Cache ----------
-
-    /** Deletes all locally-cached image files and the JSON index, then re-fetches from Drive. */
-    fun clearCacheAndRefresh() {
-        val id = folderId ?: return
-        viewModelScope.launch(Dispatchers.IO) {
-            itemStore.clearFolder(id)
-            val dir = getApplication<Application>().filesDir.resolve("wardrobe")
-            dir.listFiles()?.forEach { it.delete() }
-            withContext(Dispatchers.Main) { loadImages() }
-        }
-    }
 
     /** Ensures the pre-cutout original for [cutoutDriveId] is cached at the canonical
      *  `${cutoutDriveId}_original.jpg` path and returns its absolute path, or null if no
@@ -423,346 +246,7 @@ class WardrobeViewModel @Inject constructor(
         local.absolutePath
     }
 
-    /**
-     * Writes [images] as [id]'s cached folder snapshot. The derived view and cross-closet
-     * snapshot follow via Room invalidation — there is no separate refresh step any more.
-     */
-    internal suspend fun saveLocalCache(id: String, images: List<DriveImage>) {
-        runCatching { itemStore.replaceFolder(id, images.map { it.toCachedItem() }) }
-    }
-
-    // ---------- Load ----------
-
-    fun loadImages() {
-        loadJob?.cancel()
-        pruneRecentlyMoved()
-        loadJob = viewModelScope.launch {
-            val ids = allFolderIds
-            if (ids != null) {
-                _state.update { it.copy(isLoading = true, error = null) }
-                // Phase 1 — instant: merge caches from all folders. Read + parse off the main
-                // thread (viewModelScope defaults to Main) so parsing every closet's JSON doesn't
-                // jank the All-locations switch.
-                val cachedAll = withContext(Dispatchers.IO) { ids.flatMap { fid -> readCacheAsImages(fid) } }
-                // The derived view paints the cache by itself; this read only settles the flags.
-                if (cachedAll.isNotEmpty()) _state.update { it.copy(isLoading = false) }
-                // A cold restore (nothing cached to paint) is the only time we want the verbose
-                // download → details → finishing progress; routine warm-cache reconciles re-fetch
-                // sidecars too but must stay silent (no per-load "loading details" bar).
-                val coldLoad = cachedAll.isEmpty()
-                // Phase 2 — network: skip when offline
-                _state.update { it.copy(isSyncing = true) }
-                if (!getApplication<android.app.Application>().isNetworkAvailable()) {
-                    _state.update { it.copy(isLoading = false, isSyncing = false) }
-                    return@launch
-                }
-                runCatching {
-                    // Fetch file + sidecar lists for all folders in parallel
-                    data class FolderMeta(
-                        val id: String,
-                        val files: List<DriveFileDto>,
-                        val sidecarFiles: List<DriveFileDto>,
-                    )
-                    val folderMeta = ids.map { fid ->
-                        async {
-                            val files = async { drive.listFiles(fid) }
-                            val sidecars = async { drive.listSidecarFiles(fid) }
-                            FolderMeta(fid, files.await(), sidecars.await())
-                        }
-                    }.awaitAll()
-
-                    val uncachedCount = folderMeta.sumOf { fd -> fd.files.count { drive.cachedFile(it.id) == null } }
-                    if (uncachedCount > 0) _state.update {
-                        it.copy(syncTotal = uncachedCount, syncDone = 0, syncPhase = WardrobeSyncPhase.DOWNLOADING)
-                    }
-                    val doneCount = AtomicInteger(0)
-
-                    // Download all uncached images in parallel across all folders
-                    folderMeta.flatMap { fd ->
-                        fd.files.map { file ->
-                            async {
-                                val cached = drive.cachedFile(file.id)
-                                val r = cached ?: drive.downloadToCache(file.id, file.name)
-                                if (cached == null) _state.update { it.copy(syncDone = doneCount.incrementAndGet()) }
-                                r
-                            }
-                        }
-                    }.awaitAll()
-
-                    // Load all sidecar content in parallel. Each sidecar is a separate Drive fetch,
-                    // so on a fresh restore this is the slow tail after images finish — surface it as
-                    // its own counted "details" step (cold load only) rather than letting the bar sit
-                    // full and idle.
-                    val sidecarTotal = folderMeta.sumOf { it.sidecarFiles.size }
-                    _state.update {
-                        if (coldLoad) it.copy(syncPhase = WardrobeSyncPhase.DETAILS, syncTotal = sidecarTotal, syncDone = 0)
-                        else it.copy(syncPhase = WardrobeSyncPhase.NONE, syncTotal = 0, syncDone = 0)
-                    }
-                    val sidecarDone = AtomicInteger(0)
-                    val sidecarContent: Map<String, ItemSidecar> = folderMeta.flatMap { fd ->
-                        fd.sidecarFiles.map { sf ->
-                            async {
-                                val itemId = sf.name.removeSuffix(DriveRepository.SIDECAR_SUFFIX)
-                                val content = drive.loadFileContent(sf.id)
-                                if (coldLoad) _state.update { it.copy(syncDone = sidecarDone.incrementAndGet()) }
-                                itemId to content?.let {
-                                    runCatching { gson.fromJson(it, ItemSidecar::class.java) }.getOrNull()
-                                }
-                            }
-                        }
-                    }.awaitAll().mapNotNull { (k, v) -> v?.let { k to it } }.toMap()
-
-                    if (coldLoad) _state.update { it.copy(syncPhase = WardrobeSyncPhase.FINISHING) }
-                    // Build DriveImage list per folder
-                    val allFresh = folderMeta.flatMap { fd ->
-                        val sidecarIdByItemId = fd.sidecarFiles.associate { sf ->
-                            sf.name.removeSuffix(DriveRepository.SIDECAR_SUFFIX) to sf.id
-                        }
-                        fd.files.mapNotNull { file ->
-                            // Suppress an item that was just moved to a DIFFERENT folder — Drive's
-                            // per-folder listing is eventually consistent and may still return it
-                            // from its old parent for minutes, which would otherwise resurrect the
-                            // stale copy in the source closet (and duplicate it across closets).
-                            val movedTo = recentlyMovedItems[file.id]?.first
-                            if (movedTo != null && movedTo != fd.id) return@mapNotNull null
-                            drive.cachedFile(file.id)?.let { cached ->
-                                val sidecar = sidecarContent[file.id]
-                                DriveImage(
-                                    driveId = file.id,
-                                    localPath = cached.absolutePath,
-                                    name = file.name,
-                                    tags = sidecar?.tags ?: file.appProperties?.toClothingTags(),
-                                    originalDriveId = sidecar?.originalDriveId,
-                                    sidecarDriveId = sidecarIdByItemId[file.id],
-                                    folderId = fd.id,
-                                    createdTimeMs = file.createdTimeMs,
-                                )
-                            }
-                        }
-                    }
-                    val freshIds = allFresh.map { it.driveId }.toSet()
-                    val pendingRaw = _state.value.images.filter { img ->
-                        img.driveId !in freshIds && (
-                            !ImageEncoding.isCutoutName(img.name) ||
-                                recentlyMovedItems[img.driveId]?.first == img.folderId
-                            )
-                    }
-                    allFresh + pendingRaw
-                }.onSuccess { images ->
-                    // Persist each closet's reconciled items to its own per-folder store rows —
-                    // the derived view repaints from them, and a later switch from All → one
-                    // closet paints instantly from disk (Phase 1) instead of re-listing + re-
-                    // fetching every sidecar. Raw in-flight uploads ride along (non-cutout rows
-                    // survive the next reconcile via pendingRaw, exactly like the single-folder
-                    // path always cached them). Store writes land before the flags clear so a
-                    // cold load never flashes an empty grid.
-                    withContext(Dispatchers.IO) {
-                        val byFolder = images.groupBy { it.folderId }
-                        ids.forEach { fid -> saveLocalCache(fid, byFolder[fid].orEmpty()) }
-                    }
-                    _state.update { it.copy(isLoading = false, syncTotal = 0, syncDone = 0, syncPhase = WardrobeSyncPhase.NONE, isSyncing = false) }
-                }.onFailure { e ->
-                    _state.update { s ->
-                        s.copy(isLoading = false, syncTotal = 0, syncDone = 0, syncPhase = WardrobeSyncPhase.NONE, isSyncing = false, error = if (s.images.isEmpty()) e.message else null)
-                    }
-                }
-                return@launch
-            }
-
-            val id = folderId ?: return@launch
-            _state.update { it.copy(isLoading = true, error = null) }
-
-            // Phase 1 — instant: show whatever is already on disk (zero network calls). The cache
-            // read + JSON parse runs off the main thread so switching into a large (warmed) closet
-            // doesn't jank the UI — viewModelScope launches on Main by default.
-            val cachedItems = withContext(Dispatchers.IO) { readCacheAsImages(id) }
-            // The derived view paints the cache by itself; this read only settles the flags.
-            if (cachedItems.isNotEmpty()) {
-                _state.update { it.copy(isLoading = false) }
-            }
-            // Only a cold restore (empty cache) shows the verbose details/finishing progress; warm
-            // reconciles re-fetch sidecars silently. See the multi-folder path for rationale.
-            val coldLoad = cachedItems.isEmpty()
-
-            // Phase 2 — background sync: skip when offline
-            _state.update { it.copy(isSyncing = true) }
-            if (!getApplication<android.app.Application>().isNetworkAvailable()) {
-                _state.update { it.copy(isLoading = false, isSyncing = false) }
-                return@launch
-            }
-
-            runCatching {
-                val filesDeferred = async { drive.listFiles(id) }
-                val sidecarFilesDeferred = async { drive.listSidecarFiles(id) }
-                val files = filesDeferred.await()
-                val sidecarFiles = sidecarFilesDeferred.await()
-
-                // Map cutout Drive ID → sidecar file ID (sidecar is named "{cutoutId}.json")
-                val sidecarIdByItemId: Map<String, String> = sidecarFiles.associate { sf ->
-                    sf.name.removeSuffix(DriveRepository.SIDECAR_SUFFIX) to sf.id
-                }
-
-                // Download any uncached image files in parallel, tracking progress
-                val uncachedCount = files.count { drive.cachedFile(it.id) == null }
-                if (uncachedCount > 0) _state.update {
-                    it.copy(syncTotal = uncachedCount, syncDone = 0, syncPhase = WardrobeSyncPhase.DOWNLOADING)
-                }
-                val doneCount = AtomicInteger(0)
-                files.map { file ->
-                    async {
-                        val cached = drive.cachedFile(file.id)
-                        val r = cached ?: drive.downloadToCache(file.id, file.name)
-                        if (cached == null) _state.update { it.copy(syncDone = doneCount.incrementAndGet()) }
-                        r
-                    }
-                }.awaitAll()
-
-                // Load sidecar content in parallel — each is its own Drive fetch, so report it as a
-                // counted "details" step (cold load only) instead of leaving the bar full while it runs.
-                _state.update {
-                    if (coldLoad) it.copy(syncPhase = WardrobeSyncPhase.DETAILS, syncTotal = sidecarFiles.size, syncDone = 0)
-                    else it.copy(syncPhase = WardrobeSyncPhase.NONE, syncTotal = 0, syncDone = 0)
-                }
-                val sidecarDone = AtomicInteger(0)
-                val sidecarContent: Map<String, ItemSidecar> = sidecarFiles
-                    .map { sf ->
-                        async {
-                            val itemId = sf.name.removeSuffix(DriveRepository.SIDECAR_SUFFIX)
-                            val content = drive.loadFileContent(sf.id)
-                            if (coldLoad) _state.update { it.copy(syncDone = sidecarDone.incrementAndGet()) }
-                            itemId to content?.let {
-                                runCatching { gson.fromJson(it, ItemSidecar::class.java) }.getOrNull()
-                            }
-                        }
-                    }
-                    .awaitAll()
-                    .mapNotNull { (k, v) -> v?.let { k to it } }
-                    .toMap()
-
-                if (coldLoad) _state.update { it.copy(syncPhase = WardrobeSyncPhase.FINISHING) }
-
-                // Legacy metadata fallback — only fetch if no sidecars exist yet (migration)
-                val legacyMeta: Map<String, WardrobeItemMeta> = if (sidecarFiles.isEmpty()) {
-                    drive.loadWardrobeMetadataJson(id)?.let { json ->
-                        runCatching {
-                            gson.fromJson(json, WardrobeMetadata::class.java).items.associateBy { it.name }
-                        }.getOrDefault(emptyMap())
-                    } ?: emptyMap()
-                } else emptyMap()
-
-                val freshImages = files.mapNotNull { file ->
-                    // Suppress an item just moved to a different folder (see All-locations note):
-                    // Drive may still list it here until removeParents propagates.
-                    val movedTo = recentlyMovedItems[file.id]?.first
-                    if (movedTo != null && movedTo != id) return@mapNotNull null
-                    drive.cachedFile(file.id)?.let { cached ->
-                        val sidecar = sidecarContent[file.id]
-                        val legacy = legacyMeta[file.name]
-                        val tags = sidecar?.tags ?: legacy?.tags ?: file.appProperties?.toClothingTags()
-                        val originalId = sidecar?.originalDriveId ?: legacy?.originalDriveId
-                        DriveImage(
-                            driveId = file.id,
-                            localPath = cached.absolutePath,
-                            name = file.name,
-                            tags = tags,
-                            originalDriveId = originalId,
-                            sidecarDriveId = sidecarIdByItemId[file.id],
-                            folderId = id,
-                            createdTimeMs = file.createdTimeMs,
-                        )
-                    }
-                }
-
-                // Preserve raw/pending uploads that are in the queue but not yet on Drive as
-                // cutouts, plus items recently moved into this folder whose new parent Drive
-                // hasn't propagated to `q='<id>' in parents` yet (eventual consistency).
-                val freshIds = freshImages.map { it.driveId }.toSet()
-                val pendingRaw = _state.value.images.filter { img ->
-                    img.driveId !in freshIds && (
-                        !ImageEncoding.isCutoutName(img.name) ||
-                            recentlyMovedItems[img.driveId]?.first == id
-                        )
-                }
-
-                // Migrate legacy items to sidecars fire-and-forget; the new sidecar id is
-                // stamped onto the Room row and reaches the view via invalidation.
-                if (legacyMeta.isNotEmpty()) {
-                    viewModelScope.launch(Dispatchers.IO) {
-                        freshImages.filter { it.sidecarDriveId == null }.forEach { img ->
-                            runCatching {
-                                val sidecar = ItemSidecar(img.tags, img.originalDriveId)
-                                val sidecarFileId = drive.upsertSidecar(
-                                    id, "${img.driveId}${DriveRepository.SIDECAR_SUFFIX}",
-                                    gson.toJson(sidecar),
-                                )
-                                itemStore.setSidecarId(img.driveId, sidecarFileId)
-                            }
-                        }
-                    }
-                }
-
-                freshImages + pendingRaw
-            }.onSuccess { images ->
-                // Store write before the flags clear, so a cold load never flashes empty.
-                withContext(Dispatchers.IO) { saveLocalCache(id, images) }
-                _state.update { it.copy(isLoading = false, syncTotal = 0, syncDone = 0, syncPhase = WardrobeSyncPhase.NONE, isSyncing = false) }
-            }.onFailure { e ->
-                // Don't overwrite cached items already shown with an error banner
-                _state.update { s ->
-                    s.copy(isLoading = false, syncTotal = 0, syncDone = 0, syncPhase = WardrobeSyncPhase.NONE, isSyncing = false, error = if (s.images.isEmpty()) e.message else null)
-                }
-            }
-        }
-    }
-
-    /** Loads images from a single Drive folder (Phase 2 network only, no legacy migration). */
-    private suspend fun loadFolderImages(id: String): List<DriveImage> = coroutineScope {
-        val filesDeferred = async { drive.listFiles(id) }
-        val sidecarFilesDeferred = async { drive.listSidecarFiles(id) }
-        val files = filesDeferred.await()
-        val sidecarFiles = sidecarFilesDeferred.await()
-
-        val sidecarIdByItemId: Map<String, String> = sidecarFiles.associate { sf ->
-            sf.name.removeSuffix(DriveRepository.SIDECAR_SUFFIX) to sf.id
-        }
-
-        files.map { file ->
-            async { drive.cachedFile(file.id) ?: drive.downloadToCache(file.id, file.name) }
-        }.awaitAll()
-
-        val sidecarContent: Map<String, ItemSidecar> = sidecarFiles
-            .map { sf ->
-                async {
-                    val itemId = sf.name.removeSuffix(DriveRepository.SIDECAR_SUFFIX)
-                    val content = drive.loadFileContent(sf.id)
-                    itemId to content?.let {
-                        runCatching { gson.fromJson(it, ItemSidecar::class.java) }.getOrNull()
-                    }
-                }
-            }
-            .awaitAll()
-            .mapNotNull { (k, v) -> v?.let { k to it } }
-            .toMap()
-
-        files.mapNotNull { file ->
-            val movedTo = recentlyMovedItems[file.id]?.first
-            if (movedTo != null && movedTo != id) return@mapNotNull null
-            drive.cachedFile(file.id)?.let { cached ->
-                val sidecar = sidecarContent[file.id]
-                val tags = sidecar?.tags ?: file.appProperties?.toClothingTags()
-                val originalId = sidecar?.originalDriveId
-                DriveImage(
-                    driveId = file.id,
-                    localPath = cached.absolutePath,
-                    name = file.name,
-                    tags = tags,
-                    originalDriveId = originalId,
-                    sidecarDriveId = sidecarIdByItemId[file.id],
-                    folderId = id,
-                )
-            }
-        }
-    }
+    // ---------- Sidecar / tag writes ----------
 
     /**
      * Saves a per-item sidecar JSON for [driveId]: writes the edit to Room (the source of
@@ -793,30 +277,6 @@ class WardrobeViewModel @Inject constructor(
         runCatching { itemStore.upsert(fid, item.copy(tags = tags)) }
     }
 
-    // ---------- Naming helpers ----------
-    // (uploadAsCutout / uploadAsOriginal are DriveRepository extensions in
-    // ItemIngestionPipeline.kt now — shared by the pipeline and the audit/import workflows.)
-
-    /**
-     * Resolves the Drive ID of a cutout item given its [metaName] (possibly old-format).
-     * Checks by Drive ID directly (format "{id}_cutout.webp" or legacy "{id}_cutout.png")
-     * or by filename (old formats).
-     */
-    private fun resolveCutoutDriveId(
-        metaName: String,
-        fileByName: Map<String, DriveFileDto>,
-        fileById: Map<String, DriveFileDto>,
-    ): String? {
-        ImageEncoding.cutoutIdFromName(metaName)?.let { possibleId ->
-            if (fileById.containsKey(possibleId)) return possibleId
-        }
-        return fileByName[metaName]?.id
-    }
-
-    // ---------- Background processing queue ----------
-    // (The queue worker lives in [ItemIngestionPipeline] now — § 5 slice 5. The collector in
-    // `init` mirrors its progress into this state.)
-
     // ---------- Navigation ----------
 
     /** One-shot events the grid consumes (scroll-to-item); buffered so a cross-tab request fired
@@ -828,7 +288,7 @@ class WardrobeViewModel @Inject constructor(
         _events.trySend(WardrobeEvent.ScrollToItem(driveId))
     }
 
-    // ---------- Upload from camera ----------
+    // ---------- Per-item AI ops ----------
 
     fun reprocessBackground(driveId: String) {
         viewModelScope.launch {
@@ -883,7 +343,7 @@ class WardrobeViewModel @Inject constructor(
         return drive.cachedFile(driveId)
     }
 
-    /** Delegates to the [RemoveAllBackgroundsUseCase]; its progress mirrors into state in `init`. */
+    /** Delegates to the [RemoveAllBackgroundsUseCase] (progress has no UI reader). */
     fun removeAllBackgrounds() = removeBgUseCase.start(_state.value.images, folderId)
 
     fun tagImage(driveId: String) {
@@ -912,7 +372,7 @@ class WardrobeViewModel @Inject constructor(
         }
     }
 
-    /** Delegates to the [RetagAllUseCase]; its progress mirrors into state in `init`. */
+    /** Delegates to the [RetagAllUseCase]; surfaces read its progress via [retagProgress]. */
     fun retagAll() = retagUseCase.start(_state.value.images)
 
     // ---------- Move to another location ----------
@@ -955,58 +415,14 @@ class WardrobeViewModel @Inject constructor(
         }
     }
 
-    /** Removes the given driveIds from a folder's cache in place (no-op for ids homed elsewhere). */
-    private suspend fun removeFromCacheFile(fid: String, ids: Set<String>) {
-        runCatching { itemStore.remove(fid, ids) }
-    }
-
     /**
-     * Upserts a single finished item into its own closet's cache [fid], editing the store
-     * directly (not rebuilding from `state.images`) so it is correct even if the user switched
-     * closets while the item was being processed. Drops any stale entry under [staleDriveId]
-     * (the pre-cutout raw id) before upserting the fresh entry.
+     * Records that [items] have been moved into [targetFolderId] — delegates to the shared
+     * [WardrobeRepository] (store re-home + eventual-consistency suppression marker).
+     * Callable from other view models (e.g. shopping move-to-closet).
      */
-    internal suspend fun persistItemToCache(fid: String, item: DriveImage, staleDriveId: String? = null) {
-        runCatching { itemStore.upsert(fid, item.toCachedItem(), staleDriveId) }
-    }
+    fun notifyItemsMovedTo(targetFolderId: String, items: List<DriveImage>) =
+        repo.notifyItemsMovedTo(targetFolderId, items)
 
-    /** Upserts the given items into a folder's cache (each item is re-homed there if elsewhere). */
-    private suspend fun addToCacheFile(fid: String, items: List<DriveImage>) {
-        runCatching { itemStore.addAll(fid, items.map { it.toCachedItem() }) }
-    }
-
-    /**
-     * Records that [items] have been moved into [targetFolderId] (their cutout/original/sidecar
-     * Drive IDs are unchanged, so the cached image bytes are still valid). Re-homes them into the
-     * target folder in the [WardrobeItemStore] so [setLocation] to that folder shows them in
-     * Phase 1 instantly, and remembers them so Phase 2 won't drop them while Drive's listing
-     * is still propagating. Callable from other view models (e.g. shopping move-to-closet).
-     */
-    fun notifyItemsMovedTo(targetFolderId: String, items: List<DriveImage>) {
-        if (items.isEmpty() || targetFolderId.isEmpty()) return
-        val expiry = System.currentTimeMillis() + recentlyMovedTtlMs
-        items.forEach { recentlyMovedItems[it.driveId] = targetFolderId to expiry }
-        // The store re-home is the whole local move: the derived view drops the items from
-        // their source closet and shows them in the target via invalidation.
-        viewModelScope.launch(Dispatchers.IO) {
-            addToCacheFile(targetFolderId, items)
-        }
-    }
-
-    // ---------- SAF Import ----------
-
-    /**
-     * Imports all images from [treeUri] into the current wardrobe folder.
-     *
-     * Images are always uploaded/updated and immediately visible — AI processing is optional.
-     *
-     * [removeBackground]   — run Gemini BG removal on each image (5 credits/item).
-     * [autoTag]            — classify clothing tags with Gemini (2 credits/item).
-     * [replaceExisting]    — delete all current wardrobe items before importing (fresh start).
-     * [overwriteDuplicates]— when false (default) images whose filename already exists are
-     *                        skipped; when true the existing Drive file is replaced in-place.
-     *                        Ignored when [replaceExisting] is true.
-     */
     fun clearError() = _state.update { it.copy(error = null) }
 
     // ---------- Selection & Delete ----------
@@ -1070,7 +486,7 @@ class WardrobeViewModel @Inject constructor(
 
         // ---- Optimistic local update: the store removes below vanish the items from every
         // affected closet's derived view at once. ----
-        driveIds.forEach { recentlyMovedItems.remove(it) }
+        repo.forgetRecentlyMoved(driveIds)
         _state.update { it.copy(selectedIds = emptySet()) }
 
         // ---- Queue the Drive deletes (refactor § 2): the cache writes come first, still before
@@ -1080,7 +496,7 @@ class WardrobeViewModel @Inject constructor(
         // the Room row is gone before the drain runs. ----
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                affectedFolderIds.forEach { fid -> removeFromCacheFile(fid, driveIds) }
+                affectedFolderIds.forEach { fid -> runCatching { itemStore.remove(fid, driveIds) } }
                 items.forEach { img ->
                     val fileIds = listOfNotNull(img.driveId, img.originalDriveId, img.sidecarDriveId)
                     mutationStore.enqueue(
@@ -1105,22 +521,4 @@ internal fun rotateBitmapFileBy90(file: File) {
     // Re-encode as WebP (alpha-preserving) regardless of the cache file's extension — the
     // rotated bytes are re-uploaded via DriveRepository.updateImage, which sends image/webp.
     com.librelookai.util.ImageEncoding.compressCutout(rotated, file)
-}
-
-// ---------- Legacy appProperties → ClothingTags (migration read-path only) ----------
-
-private fun Map<String, String>.toClothingTags(): ClothingTags? {
-    val type = getOrDefault("clothing_type", "")
-    if (type.isEmpty()) return null
-    return ClothingTags(
-        type        = type,
-        category    = getOrDefault("clothing_category", ""),
-        uses        = getOrDefault("clothing_uses",        "").split(",").filter { it.isNotBlank() },
-        colors      = getOrDefault("clothing_colors",      "").split(",").filter { it.isNotBlank() },
-        seasonality = getOrDefault("clothing_seasonality", "").split(",").filter { it.isNotBlank() },
-        aesthetic   = getOrDefault("clothing_aesthetic",   "").split(",").filter { it.isNotBlank() },
-        fit         = getOrDefault("clothing_fit",         "").split(",").filter { it.isNotBlank() },
-        material    = getOrDefault("clothing_material",    "").split(",").filter { it.isNotBlank() },
-        pattern     = getOrDefault("clothing_pattern",     "").split(",").filter { it.isNotBlank() },
-    )
 }

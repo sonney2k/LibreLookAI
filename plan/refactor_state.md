@@ -1,6 +1,6 @@
 # Refactor — state (resume here)
 
-**Updated 2026-07-02** (originally parked 2026-06-15). The full blueprint + per-slice status
+**Updated 2026-07-03** (originally parked 2026-06-15). The full blueprint + per-slice status
 detail lives in `plan/refactor.md`; this is the short "where we left off" note.
 
 ## Branch / commit layout
@@ -32,7 +32,7 @@ plus the cross-cutting arch sections.
 | 6 — bulk-maintenance use-cases | ✅ on branch | four use-cases extracted; dead audit/folder-import deleted |
 | 7 — UiState slimming + sealed events | ◑ | scroll one-shots done; `WardrobeUiState` progress prune + restore-overlay engine aggregation deferred → slice 9 |
 | 8 — VM splits | ✅ on branch | `OutfitsRepository` foundation **and the 2-way split landed**: `OutfitsViewModel` = list only (~230 lines, private state), `OutfitGenerationViewModel` = composer + prediction + tag flows (`OutfitsComposer`/`OutfitsPrediction`/`OutfitsTags` extensions retargeted). Repo owns `saveOutfit`, the scroll one-shot and `pendingWearOutfitId` — the VMs never call each other. `TryOnViewModel` split waits on slice-9 nav. |
-| 9 — destination-scoped VMs + real composer nav | ◑ in progress | VM split done; **both composers are real navigation** — `OutfitComposerRoute` (no `isComposerOpen`) and the try-on surface, split into `TryOnRoute`/`TryOnHistoryRoute`/`TryOnDetailRoute` (layered flag machine deleted; every mirror effect gone; "any pop must close the VM" rule retired). Remaining: TryOn composer/history VM split (now unblocked); viewer destinations get destination-scoped `hiltViewModel()`; drop the `LocalViewModelStoreOwner provides activity` pins per converted destination; the folded-in slice-7 `WardrobeUiState` progress prune. |
+| 9 — destination-scoped VMs + real composer nav | ◑ in progress | VM splits done (outfits 2-way, try-on 2-way over `TryOnRepository`); **both composers are real navigation**; `TripsRepository` + destination-scoped VMs for `TripViewerRoute`/`OutfitViewerRoute` landed; **`WardrobeRepository` load core landed** (2026-07-03 — scope + two-phase load + sync flags + derived flows off the VM; `WardrobeViewModel` 1126 → ~520 lines; on-device verified). Remaining: move shopping's upload worker off `ShoppingClosetViewModel` (last `ItemViewerRoute` blocker), then destination-scope `ItemViewerRoute`; drop the `LocalViewModelStoreOwner provides activity` pins per fully-converted destination; restore-overlay engine aggregation (slice 7 part 3). |
 
 ## Cross-cutting arch sections still open (from `refactor.md` § status table)
 
@@ -51,9 +51,9 @@ plus the cross-cutting arch sections.
 ## Resume plan
 
 1. On `refactor-phase5-rest`: confirm green (`./gradlew :app:assembleDebug testDebugUnitTest`).
-2. Continue slice 9 (see the slice-9 status in `refactor.md`): next is the TryOn
-   composer/history VM split (now unblocked — no shared nav flags), then destination-scope the
-   viewers and drop the activity pins; finish with the `WardrobeUiState` progress prune.
+2. Continue slice 9 (see the slice-9 status in `refactor.md`): next is moving shopping's
+   upload worker into `ItemIngestionPipeline`/its own singleton, then destination-scope
+   `ItemViewerRoute` and drop the activity pins per fully-converted destination.
 3. §6/§7 are independent — can land anytime without blocking the spine.
 4. Exit criteria (from `refactor.md`): `AppContent` has no data bridges; no screen takes another
    feature's VM as a param; `WardrobeViewModel` ≤ ~400 lines.
