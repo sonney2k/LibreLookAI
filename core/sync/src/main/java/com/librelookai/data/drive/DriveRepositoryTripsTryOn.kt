@@ -17,7 +17,7 @@ suspend fun DriveRepository.getOrCreateProfileFolder(rootFolderId: String): Stri
      * If a file with the same [name] already exists it is replaced in-place (Drive ID preserved).
      * Returns the final Drive file ID.
      */
-suspend fun DriveRepository.uploadProfilePhoto(rootFolderId: String, name: String, imageFile: File): String =
+internal suspend fun DriveRepository.uploadProfilePhotoImpl(rootFolderId: String, name: String, imageFile: File): String =
         withContext(Dispatchers.IO) {
             val profileFolderId = getOrCreateProfileFolder(rootFolderId)
             val tok = token()
@@ -124,7 +124,7 @@ internal suspend fun DriveRepository.findTripFileIdImpl(tripsFolderId: String, t
     /**
      * Uploads [imageFile] (PNG) into the try-ons subfolder with [name]. Returns the new Drive ID.
      */
-suspend fun DriveRepository.uploadTryOnImage(rootFolderId: String, name: String, imageFile: File): String =
+internal suspend fun DriveRepository.uploadTryOnImageImpl(rootFolderId: String, name: String, imageFile: File): String =
         withContext(Dispatchers.IO) {
             val folderId = getOrCreateTryOnsFolder(rootFolderId)
             val tok = token()

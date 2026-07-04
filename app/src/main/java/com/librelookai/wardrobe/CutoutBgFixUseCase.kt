@@ -1,8 +1,7 @@
 package com.librelookai.wardrobe
 
 import android.util.Log
-import com.librelookai.data.drive.DriveRepository
-import com.librelookai.data.drive.listAllImageFiles
+import com.librelookai.data.drive.DriveService
 import com.librelookai.gemini.CutoutFixActions
 import com.librelookai.gemini.CutoutIssues
 import com.librelookai.gemini.detectCutoutIssues
@@ -32,7 +31,7 @@ import kotlinx.coroutines.withContext
  */
 @Singleton
 class CutoutBgFixUseCase @Inject constructor(
-    private val drive: DriveRepository,
+    private val drive: DriveService,
     private val versions: ItemVersions,
     private val jobLock: JobLock,
 ) {

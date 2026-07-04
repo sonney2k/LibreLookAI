@@ -6,7 +6,7 @@ import android.telephony.TelephonyManager
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
-import com.librelookai.data.drive.DriveRepository
+import com.librelookai.data.drive.DriveService
 import com.librelookai.data.model.Outfit
 import com.librelookai.data.session.ClosetSessionHolder
 import com.librelookai.gemini.GeminiRepository
@@ -37,7 +37,7 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class OutfitGenerationViewModel @Inject constructor(
     app: Application,
-    internal val drive: DriveRepository,
+    internal val drive: DriveService,
     internal val gemini: GeminiRepository,
     private val outfitsRepo: OutfitsRepository,
     session: ClosetSessionHolder,

@@ -8,6 +8,7 @@ import com.google.gson.Gson
 import com.librelookai.R
 import com.librelookai.data.drive.DriveFileDto
 import com.librelookai.data.drive.DriveRepository
+import com.librelookai.data.drive.DriveService
 import com.librelookai.data.local.WardrobeItemStore
 import com.librelookai.data.session.ClosetSessionHolder
 import com.librelookai.data.session.UserPreferencesRepository
@@ -68,7 +69,7 @@ data class IngestionProgress(
  * Uploads [imageFile] to [folderId], then immediately renames it to "{driveId}_cutout.png"
  * (where driveId is the Drive-assigned ID). Returns the [DriveFileDto] with the final name.
  */
-internal suspend fun DriveRepository.uploadAsCutout(folderId: String, imageFile: File): DriveFileDto {
+internal suspend fun DriveService.uploadAsCutout(folderId: String, imageFile: File): DriveFileDto {
     val uploaded = uploadImage(folderId, imageFile)
     val finalName = "${uploaded.id}${DriveRepository.CUTOUT_SUFFIX}"
     runCatching { renameFile(uploaded.id, finalName) }
@@ -79,7 +80,7 @@ internal suspend fun DriveRepository.uploadAsCutout(folderId: String, imageFile:
  * Uploads [imageFile] to [folderId] with filename "{cutoutDriveId}_original.jpg".
  * Returns the new Drive file ID.
  */
-internal suspend fun DriveRepository.uploadAsOriginal(folderId: String, imageFile: File, cutoutDriveId: String): String =
+internal suspend fun DriveService.uploadAsOriginal(folderId: String, imageFile: File, cutoutDriveId: String): String =
     uploadImageWithName(folderId, imageFile, "$cutoutDriveId${DriveRepository.ORIGINAL_SUFFIX}").id
 
 /**
@@ -96,7 +97,7 @@ internal suspend fun DriveRepository.uploadAsOriginal(folderId: String, imageFil
 @Singleton
 class ItemIngestionPipeline @Inject constructor(
     @param:ApplicationContext private val context: Context,
-    private val drive: DriveRepository,
+    private val drive: DriveService,
     private val gemini: GeminiRepository,
     private val itemStore: WardrobeItemStore,
     private val session: ClosetSessionHolder,

@@ -5,9 +5,7 @@ import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import com.google.gson.reflect.TypeToken
-import com.librelookai.data.drive.DriveRepository
-import com.librelookai.data.drive.loadTrendsCacheJson
-import com.librelookai.data.drive.saveTrendsCacheJson
+import com.librelookai.data.drive.DriveService
 import java.io.File
 import java.util.Locale
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +31,7 @@ private data class CachedTrends(
  */
 class FashionTrendsCache(
     private val context: Context,
-    private val drive: DriveRepository,
+    private val drive: DriveService,
     private val gemini: GeminiRepository,
 ) {
     private val gson = Gson()

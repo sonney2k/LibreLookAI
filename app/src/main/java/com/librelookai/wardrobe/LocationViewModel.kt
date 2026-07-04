@@ -12,9 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import com.librelookai.data.drive.DriveRepository
-import com.librelookai.data.drive.loadLocationsJson
-import com.librelookai.data.drive.saveLocationsJson
+import com.librelookai.data.drive.DriveService
 import com.librelookai.data.model.Location
 import com.librelookai.data.session.ClosetSession
 import com.librelookai.data.session.ClosetSessionHolder
@@ -40,7 +38,7 @@ data class LocationUiState(
 @HiltViewModel
 class LocationViewModel @Inject constructor(
     app: Application,
-    private val drive: DriveRepository,
+    private val drive: DriveService,
     private val session: ClosetSessionHolder,
 ) : AndroidViewModel(app) {
     private val gson = Gson()

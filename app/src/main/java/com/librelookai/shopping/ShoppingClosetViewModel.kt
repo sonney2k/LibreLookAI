@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import com.librelookai.data.drive.DriveRepository
+import com.librelookai.data.drive.DriveService
 import com.librelookai.gemini.ClothingTags
 import com.librelookai.gemini.GeminiRepository
 import com.librelookai.gemini.classifyClothing
@@ -66,7 +67,7 @@ data class ShoppingClosetUiState(
 @HiltViewModel
 class ShoppingClosetViewModel @Inject constructor(
     app: Application,
-    internal val drive: DriveRepository,
+    internal val drive: DriveService,
     internal val gemini: GeminiRepository,
     internal val itemStore: WardrobeItemStore,
     private val mutationStore: PendingMutationStore,

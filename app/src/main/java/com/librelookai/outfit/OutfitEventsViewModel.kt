@@ -16,9 +16,8 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import com.librelookai.data.drive.DriveRepository
+import com.librelookai.data.drive.DriveService
 import com.librelookai.data.drive.SyncEngine
-import com.librelookai.data.drive.loadOutfitEventsJson
 import com.librelookai.data.local.PendingMutationStore
 import com.librelookai.data.model.Outfit
 import com.librelookai.data.session.ClosetSession
@@ -39,7 +38,7 @@ data class OutfitEventsUiState(
 @HiltViewModel
 class OutfitEventsViewModel @Inject constructor(
     app: Application,
-    private val drive: DriveRepository,
+    private val drive: DriveService,
     private val eventStore: com.librelookai.data.local.OutfitEventStore,
     private val mutationStore: PendingMutationStore,
     private val syncEngine: SyncEngine,

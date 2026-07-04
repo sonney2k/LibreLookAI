@@ -121,4 +121,65 @@ open class FakeDriveService : DriveService {
 
     override suspend fun findTripFileId(tripsFolderId: String, tripId: String): String? =
         "file-$tripId".takeIf { tripJsonById.containsKey(it) }
+
+    // --- § 3 slice 3: the pipeline / use-case / VM surface ---
+
+    /** `(folderId, fileName)` for every [uploadImage] / [uploadImageWithName] call, in order. */
+    val uploadedImages = mutableListOf<Pair<String, String>>()
+
+    /** `(fileId, newName)` for every [renameFile] call, in order. */
+    val renamedFiles = mutableListOf<Pair<String, String>>()
+
+    /** File ids passed to [updateImage], in order. */
+    val updatedImageIds = mutableListOf<String>()
+
+    private var uploadSeq = 0
+
+    override suspend fun uploadImage(folderId: String, imageFile: File): DriveFileDto {
+        uploadedImages += folderId to imageFile.name
+        return DriveFileDto(id = "upload-${++uploadSeq}", name = imageFile.name)
+    }
+
+    override suspend fun uploadImageWithName(folderId: String, imageFile: File, name: String): DriveFileDto {
+        uploadedImages += folderId to name
+        return DriveFileDto(id = "upload-${++uploadSeq}", name = name)
+    }
+
+    override suspend fun updateImage(fileId: String, imageFile: File) {
+        updatedImageIds += fileId
+    }
+
+    override suspend fun renameFile(fileId: String, newName: String) {
+        renamedFiles += fileId to newName
+    }
+
+    override suspend fun listSubfolders(parentFolderId: String): List<DriveFileDto> = emptyList()
+
+    override suspend fun createSubfolder(parentFolderId: String, name: String): String = "subfolder-$name"
+
+    override suspend fun listAllImageFiles(folderId: String): List<DriveFileDto> = emptyList()
+
+    override suspend fun loadOutfitEventsJson(folderId: String): String? = null
+
+    override suspend fun loadPreferencesJson(folderId: String): String? = null
+
+    override suspend fun savePreferencesJson(folderId: String, json: String) {}
+
+    override suspend fun loadLocationsJson(rootFolderId: String): String? = null
+
+    override suspend fun saveLocationsJson(rootFolderId: String, json: String) {}
+
+    override suspend fun loadTokenUsageJsonl(folderId: String): String? = null
+
+    override suspend fun saveTokenUsageJsonl(folderId: String, content: String) {}
+
+    override suspend fun loadTrendsCacheJson(rootFolderId: String): String? = null
+
+    override suspend fun saveTrendsCacheJson(rootFolderId: String, json: String) {}
+
+    override suspend fun uploadTryOnImage(rootFolderId: String, name: String, imageFile: File): String =
+        "tryon-upload-${++uploadSeq}"
+
+    override suspend fun uploadProfilePhoto(rootFolderId: String, name: String, imageFile: File): String =
+        "profile-upload-${++uploadSeq}"
 }

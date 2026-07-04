@@ -2,6 +2,7 @@ package com.librelookai.shopping
 
 import com.google.gson.Gson
 import com.librelookai.data.drive.DriveRepository
+import com.librelookai.data.drive.DriveService
 import com.librelookai.data.local.WardrobeItemStore
 import com.librelookai.data.session.UserPreferencesRepository
 import com.librelookai.gemini.GeminiRepository
@@ -36,7 +37,7 @@ import kotlinx.coroutines.launch
  */
 @Singleton
 class ShoppingIngestionQueue @Inject constructor(
-    private val drive: DriveRepository,
+    private val drive: DriveService,
     private val gemini: GeminiRepository,
     private val itemStore: WardrobeItemStore,
     prefsRepo: UserPreferencesRepository,

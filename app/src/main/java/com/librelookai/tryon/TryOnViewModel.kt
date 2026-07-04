@@ -11,8 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
-import com.librelookai.data.drive.DriveRepository
-import com.librelookai.data.drive.uploadTryOnImage
+import com.librelookai.data.drive.DriveService
 import com.librelookai.data.model.TryOn
 import com.librelookai.gemini.GeminiRepository
 import com.librelookai.gemini.tryOnOutfit
@@ -95,7 +94,7 @@ data class TryOnUiState(
 class TryOnViewModel @Inject constructor(
     app: Application,
     private val gemini: GeminiRepository,
-    private val drive: DriveRepository,
+    private val drive: DriveService,
     private val repo: TryOnRepository,
 ) : AndroidViewModel(app) {
     private val _state = MutableStateFlow(TryOnUiState())

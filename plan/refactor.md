@@ -10,7 +10,7 @@ deferred and inter-blocking:
 |---|-------|--------|
 | 1 | Multi-module Gradle | **Partial** — `:core:model`/`:core:common`/`:core:database`/`:core:ml`/`:core:sync`/`:core:ai` landed (phase 4); `core/designsystem` blocked on splitting the 31-locale `res/`, `feature/*` on § 5 |
 | 2 | Room as source of truth + SyncEngine | **Operationally complete** (June 2026) — all five JSON-cache slices landed (phase 2) as opaque-JSON cache rows; the `PendingMutation` queue + `SyncEngine` drain **every converted metadata write**: wardrobe (sidecar/delete/move), shopping, outfits (`outfit.syncFolder`), calendar wears (`outfitEvent.syncFolder`), trips (`trip.save`/`trip.delete`), plus the WorkManager process-death backstop (see phase 2 status). The real-entity / Flow-read conversion is deliberately carried into § 5 |
-| 3 | DI + interfaces at the seams | **In progress** — Hilt landed (phase 1); the gemini↔drive↔billing package cycles are broken (June 2026, see phase 1 status), making the layering acyclic; **`DriveService` landed at the repo seam** (July 2026, § 3 slice 1 — see the § 3 execution plan): the five § 5 repos depend on the interface, `DriveRepository` implements it (absorbed extensions delegate to `internal *Impl`), Hilt `@Binds`-bound; **the six § 2 sync handlers are on the interface too** (July 2026, § 3 slice 2 — handler surface absorbed, drain/retry/rollback/wipe-guard invariants fake-tested); pipeline/use-case/VM seams (slice 3) + `AiClient` (slice 4) pending; static globals (`ImageEncoding.tier`, `GeminiProgress` slot, `AiRetry.action`) still alive |
+| 3 | DI + interfaces at the seams | **In progress** — Hilt landed (phase 1); the gemini↔drive↔billing package cycles are broken (June 2026, see phase 1 status), making the layering acyclic; **`DriveService` landed at the repo seam** (July 2026, § 3 slice 1 — see the § 3 execution plan): the five § 5 repos depend on the interface, `DriveRepository` implements it (absorbed extensions delegate to `internal *Impl`), Hilt `@Binds`-bound; **the six § 2 sync handlers are on the interface too** (July 2026, § 3 slice 2 — handler surface absorbed, drain/retry/rollback/wipe-guard invariants fake-tested); **the pipeline / use-case / VM seams flipped as well** (July 2026, § 3 slice 3 — every app- and `:core:ai`-side consumer takes the interface; concrete type remains only in the Hilt graph, `AppContent` threading and the deliberate `DriveMigrationViewModel` exception); `AiClient` (slice 4) pending; static globals (`ImageEncoding.tier`, `GeminiProgress` slot, `AiRetry.action`) still alive |
 | 4 | Navigation Compose | **Done** (phase 3 complete; per-destination VM scoping deferred to § 5) |
 | 5 | Thin VMs over use-cases | **In progress** (July 2026) — slices 0–8 landed + slice 9 largely landed: all five repos extracted (outfits/try-on/trips/**wardrobe** + the § 4a–d derivations), both composers + all VM splits done, the `WardrobeUiState` progress prune and the connectivity/pre-warm bridge kills landed, `TripViewerRoute`/`OutfitViewerRoute` have destination-scoped VMs. All three viewer destinations (`TripViewerRoute`/`OutfitViewerRoute`/`ItemViewerRoute`) have destination-scoped VMs over the five repos, and the `WardrobeViewModel` slimming landed (no extension files, no `internal var` shared state, per-item ops on `WardrobeItemOps`, ~520 lines of mirrors + UI state + delegates). The overlay-destination `LocalViewModelStoreOwner` pin drops landed (July 2026 — see slice 9 status); slice 9 is **complete**. Only deliberate deferral left: restore-overlay engine aggregation (slice 7 part 3, waits on a `SyncEngine` sync-state surface) |
 | 6 | Typed `AiResult` | **Started** — the notice path carries a semantic `AiErrorReason` enum instead of `R.string` ids (June 2026, the `:core:ai` enabler); the sealed `AiResult<T>` return type is not started — Gemini still returns `null` on failure |
@@ -1269,6 +1269,29 @@ cache-folder rule, VM split sections) as each slice lands, per the working agree
    `uploadImageWithName`, `updateImage`, `renameFile`, `copyFile`, `uploadTextFile`,
    `overwriteFileText`, `countImages`, subfolder ops); after this the concrete type is
    Hilt-graph + `AppContent` only.
+   **LANDED (July 2026).** Every pipeline / use-case / VM consumer flipped: `ItemIngestionPipeline`
+   (incl. its `uploadAsCutout`/`uploadAsOriginal` extensions, now `DriveService`-receivered),
+   `ShoppingIngestionQueue`, `WardrobeItemOps`, the bulk use-cases (`RetagAll`/
+   `RemoveAllBackgrounds`/`CutoutBgFix`/`WebpConvert`), and the eight remaining Drive-touching
+   VMs (`Wardrobe`/`ShoppingCloset`(+`…Import`)/`TryOn`/`OutfitEvents`/`OutfitGeneration`/
+   `Profile`/`Location`), plus the two `:core:ai` consumers (`FashionTrendsCache`;
+   `TokenUsageRepository.syncWithDrive`/`flushToDrive` take the interface). The interface grew
+   the 18 methods those consumers actually call — 6 member lifts (`uploadImage`,
+   `uploadImageWithName`, `updateImage`/`renameFile` with returns pinned to `Unit` (the
+   `moveFile` precedent), `listSubfolders`, `createSubfolder`) and 12 extension absorptions via
+   the `internal *Impl` rename (`listAllImageFiles`, `loadOutfitEventsJson`,
+   `load`/`savePreferencesJson`, `load`/`saveLocationsJson`, `load`/`saveTokenUsageJsonl`,
+   `load`/`saveTrendsCacheJson`, `uploadTryOnImage`, `uploadProfilePhoto`). The sketched
+   `copyFile`/`uploadTextFile`/`overwriteFileText`/`countImages` lifts were dropped — zero
+   interface-consumer callers (the design rule: never speculatively). `FakeDriveService` grew
+   matching recording stubs (`uploadedImages`/`renamedFiles`/`updatedImageIds`). **Honest
+   remainder on the concrete type**: the Hilt graph + `MainActivity`/`AppContent` threading (as
+   planned), companion-constant reads (`DriveRepository.CUTOUT_SUFFIX` et al — constants, not
+   behavior), and `DriveMigrationViewModel`/`DriveFolderPicker` (deliberate: the one-time
+   legacy-migration surface — `migrateLegacyInto`, `findLegacyMigrationSource`,
+   `pickedRootFolderId`/`setPickedRootFolder` — has no fake-test consumer, so absorbing it
+   would be speculative widening). Fake-based pipeline/use-case/VM *tests* wait on slice 4:
+   those classes' other hard dependency is `GeminiRepository`, i.e. the `AiClient` seam.
 4. **`AiClient` interface for the Gemini seam** — same pattern (`GeminiApiCalls`/
    `GeminiImaging` are extension files too); enables fake-based generation/try-on VM tests.
    Pairs naturally with § 6's typed `AiResult`.

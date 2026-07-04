@@ -18,9 +18,7 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.concurrent.TimeUnit
-import com.librelookai.data.drive.DriveRepository
-import com.librelookai.data.drive.loadTokenUsageJsonl
-import com.librelookai.data.drive.saveTokenUsageJsonl
+import com.librelookai.data.drive.DriveService
 
 /** Coarse buckets for "where did the tokens go" — surfaced in the Settings → Credits chart. */
 enum class UsageCategory(val storageKey: String) {
@@ -194,7 +192,7 @@ class TokenUsageRepository private constructor(private val app: Application) {
      * Pulls remote usage from Drive, merges with local, writes union back. Idempotent: safe to
      * call repeatedly. Called on app start/resume by MainActivity once Drive auth is ready.
      */
-    suspend fun syncWithDrive(drive: DriveRepository) = withContext(Dispatchers.IO) {
+    suspend fun syncWithDrive(drive: DriveService) = withContext(Dispatchers.IO) {
         try {
             val rootFolderId = drive.getOrCreateFolder()
             val remote = drive.loadTokenUsageJsonl(rootFolderId)
@@ -223,7 +221,7 @@ class TokenUsageRepository private constructor(private val app: Application) {
     }
 
     /** Forces an immediate Drive write of the current local log. */
-    suspend fun flushToDrive(drive: DriveRepository) = withContext(Dispatchers.IO) {
+    suspend fun flushToDrive(drive: DriveService) = withContext(Dispatchers.IO) {
         if (!dirtySinceLastDriveFlush) return@withContext
         try {
             val rootFolderId = drive.getOrCreateFolder()

@@ -8,6 +8,7 @@ import android.util.Log
 import com.librelookai.R
 import com.librelookai.billing.InsufficientCreditsException
 import com.librelookai.data.drive.DriveRepository
+import com.librelookai.data.drive.DriveService
 import com.librelookai.data.local.WardrobeItemStore
 import com.librelookai.data.session.UserPreferencesRepository
 import com.librelookai.gemini.ClothingTags
@@ -62,7 +63,7 @@ data class ItemOpProgress(
 @Singleton
 class WardrobeItemOps @Inject constructor(
     @param:ApplicationContext private val context: Context,
-    private val drive: DriveRepository,
+    private val drive: DriveService,
     private val gemini: GeminiRepository,
     private val itemStore: WardrobeItemStore,
     private val sidecarQueue: SidecarSyncQueue,

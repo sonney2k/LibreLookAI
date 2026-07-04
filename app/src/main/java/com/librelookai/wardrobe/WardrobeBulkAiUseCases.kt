@@ -1,6 +1,6 @@
 package com.librelookai.wardrobe
 
-import com.librelookai.data.drive.DriveRepository
+import com.librelookai.data.drive.DriveService
 import com.librelookai.data.local.WardrobeItemStore
 import com.librelookai.data.session.UserPreferencesRepository
 import com.librelookai.gemini.ClothingTags
@@ -35,7 +35,7 @@ data class BulkAiProgress(
  */
 @Singleton
 class RetagAllUseCase @Inject constructor(
-    private val drive: DriveRepository,
+    private val drive: DriveService,
     private val gemini: GeminiRepository,
     private val itemStore: WardrobeItemStore,
     private val sidecarSync: SidecarSyncQueue,
@@ -91,7 +91,7 @@ class RetagAllUseCase @Inject constructor(
  */
 @Singleton
 class RemoveAllBackgroundsUseCase @Inject constructor(
-    private val drive: DriveRepository,
+    private val drive: DriveService,
     private val gemini: GeminiRepository,
     private val itemStore: WardrobeItemStore,
     private val sidecarSync: SidecarSyncQueue,

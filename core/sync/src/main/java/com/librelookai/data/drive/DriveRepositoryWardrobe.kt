@@ -7,7 +7,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 
-suspend fun DriveRepository.listAllImageFiles(folderId: String): List<DriveFileDto> = withContext(Dispatchers.IO) {
+internal suspend fun DriveRepository.listAllImageFilesImpl(folderId: String): List<DriveFileDto> = withContext(Dispatchers.IO) {
         val tok = token()
         val q = URLEncoder.encode(
             "'$folderId' in parents and mimeType contains 'image/' and trashed=false", "UTF-8",

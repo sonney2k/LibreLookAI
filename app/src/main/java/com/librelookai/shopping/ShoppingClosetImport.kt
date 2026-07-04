@@ -6,7 +6,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.librelookai.R
-import com.librelookai.data.drive.DriveRepository
+import com.librelookai.data.drive.DriveService
 import com.librelookai.util.Analytics
 import com.librelookai.wardrobe.DriveImage
 import com.librelookai.wardrobe.UrlImportPickerState

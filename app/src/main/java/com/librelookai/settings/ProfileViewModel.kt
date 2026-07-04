@@ -22,10 +22,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.io.File
-import com.librelookai.data.drive.DriveRepository
-import com.librelookai.data.drive.loadPreferencesJson
-import com.librelookai.data.drive.savePreferencesJson
-import com.librelookai.data.drive.uploadProfilePhoto
+import com.librelookai.data.drive.DriveService
 import com.librelookai.data.session.UserPreferencesRepository
 
 /** The three angles of the user's try-on reference photo. */
@@ -50,7 +47,7 @@ data class ProfileUiState(
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     app: Application,
-    private val drive: DriveRepository,
+    private val drive: DriveService,
     private val prefsRepo: UserPreferencesRepository,
 ) : AndroidViewModel(app) {
     private val gson = Gson()

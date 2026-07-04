@@ -102,6 +102,62 @@ interface DriveService {
      * Drive-id map (which used to orphan the file when a trip was deleted before Phase 2 load).
      */
     suspend fun findTripFileId(tripsFolderId: String, tripId: String): String?
+
+    // --- § 3 slice 3: the pipeline / use-case / VM surface ---
+
+    /** Uploads an image file into [folderId] under its local file name. */
+    suspend fun uploadImage(folderId: String, imageFile: File): DriveFileDto
+
+    /** Like [uploadImage] but uses [name] as the Drive filename instead of the local file name. */
+    suspend fun uploadImageWithName(folderId: String, imageFile: File, name: String): DriveFileDto
+
+    /** Replaces the content of an existing Drive file in-place (preserves ID and metadata). */
+    suspend fun updateImage(fileId: String, imageFile: File)
+
+    /** Renames a Drive file in-place (metadata PATCH only — no content re-upload, ID unchanged). */
+    suspend fun renameFile(fileId: String, newName: String)
+
+    /** Immediate subfolders of [parentFolderId], sorted by name. */
+    suspend fun listSubfolders(parentFolderId: String): List<DriveFileDto>
+
+    /** Creates (or finds an existing) subfolder [name] inside [parentFolderId]; returns its ID. */
+    suspend fun createSubfolder(parentFolderId: String, name: String): String
+
+    /** Every image file inside [folderId] (cutouts, originals, legacy formats). */
+    suspend fun listAllImageFiles(folderId: String): List<DriveFileDto>
+
+    /** The outfit-events (calendar wears) JSON of [folderId], or null if absent. */
+    suspend fun loadOutfitEventsJson(folderId: String): String?
+
+    /** The user-preferences JSON from the root folder, or null if not yet created. */
+    suspend fun loadPreferencesJson(folderId: String): String?
+
+    /** Creates or overwrites the user-preferences JSON in the root folder. */
+    suspend fun savePreferencesJson(folderId: String, json: String)
+
+    /** The closet-locations JSON from the root folder, or null if not yet created. */
+    suspend fun loadLocationsJson(rootFolderId: String): String?
+
+    /** Creates or overwrites the closet-locations JSON in the root folder. */
+    suspend fun saveLocationsJson(rootFolderId: String, json: String)
+
+    /** The token-usage JSONL from the root folder, or null if not yet created. */
+    suspend fun loadTokenUsageJsonl(folderId: String): String?
+
+    /** Creates or overwrites the token-usage JSONL in the root folder. */
+    suspend fun saveTokenUsageJsonl(folderId: String, content: String)
+
+    /** The shared fashion-trends cache JSON from the root folder, or null if not yet created. */
+    suspend fun loadTrendsCacheJson(rootFolderId: String): String?
+
+    /** Creates or overwrites the shared fashion-trends cache JSON in the root folder. */
+    suspend fun saveTrendsCacheJson(rootFolderId: String, json: String)
+
+    /** Uploads a try-on result image into `_tryons/` under [rootFolderId]; returns its Drive ID. */
+    suspend fun uploadTryOnImage(rootFolderId: String, name: String, imageFile: File): String
+
+    /** Uploads/replaces a profile photo in `_profile/` under [rootFolderId]; returns its Drive ID. */
+    suspend fun uploadProfilePhoto(rootFolderId: String, name: String, imageFile: File): String
 }
 
 @Module

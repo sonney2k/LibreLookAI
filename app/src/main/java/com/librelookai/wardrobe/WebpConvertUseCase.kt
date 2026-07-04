@@ -5,7 +5,7 @@ import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.librelookai.data.drive.DriveRepository
-import com.librelookai.data.drive.listAllImageFiles
+import com.librelookai.data.drive.DriveService
 import com.librelookai.data.local.WardrobeItemStore
 import com.librelookai.data.model.Outfit
 import com.librelookai.data.model.TryOn
@@ -49,7 +49,7 @@ data class ConvertProgress(
  */
 @Singleton
 class WebpConvertUseCase @Inject constructor(
-    private val drive: DriveRepository,
+    private val drive: DriveService,
     private val itemStore: WardrobeItemStore,
     private val versions: ItemVersions,
     private val jobLock: JobLock,

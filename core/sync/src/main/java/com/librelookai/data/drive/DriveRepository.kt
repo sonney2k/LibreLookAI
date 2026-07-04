@@ -321,7 +321,7 @@ class DriveRepository @Inject constructor(
     }
 
     /** Uploads a JPEG file to the given Drive folder via multipart/related. */
-    suspend fun uploadImage(folderId: String, imageFile: File): DriveFileDto = withContext(Dispatchers.IO) {
+    override suspend fun uploadImage(folderId: String, imageFile: File): DriveFileDto = withContext(Dispatchers.IO) {
         val tok = token()
         val boundary = "llai_${System.currentTimeMillis()}"
         val meta = """{"name":"${imageFile.name}","parents":["$folderId"]}"""
@@ -338,7 +338,7 @@ class DriveRepository @Inject constructor(
     }
 
     /** Like [uploadImage] but uses [name] as the Drive filename instead of the local file name. */
-    suspend fun uploadImageWithName(folderId: String, imageFile: File, name: String): DriveFileDto =
+    override suspend fun uploadImageWithName(folderId: String, imageFile: File, name: String): DriveFileDto =
         withContext(Dispatchers.IO) {
             val tok = token()
             val boundary = "llai_${System.currentTimeMillis()}"
@@ -372,7 +372,7 @@ class DriveRepository @Inject constructor(
     /**
      * Renames a Drive file in-place (PATCH metadata only — no content re-upload, Drive ID unchanged).
      */
-    suspend fun renameFile(fileId: String, newName: String) = withContext(Dispatchers.IO) {
+    override suspend fun renameFile(fileId: String, newName: String) = withContext(Dispatchers.IO) {
         val tok = token()
         val body = """{"name":"$newName"}"""
         http.newCall(
@@ -382,10 +382,11 @@ class DriveRepository @Inject constructor(
                 .method("PATCH", body.toRequestBody("application/json".toMediaType()))
                 .build()
         ).await()
+        Unit
     }
 
     /** Replaces the content of an existing Drive file in-place (preserves ID and metadata). */
-    suspend fun updateImage(fileId: String, imageFile: File) = withContext(Dispatchers.IO) {
+    override suspend fun updateImage(fileId: String, imageFile: File) = withContext(Dispatchers.IO) {
         val tok = token()
         val req = Request.Builder()
             .url("$UPLOAD_API/files/$fileId?uploadType=media&fields=id")
@@ -393,6 +394,7 @@ class DriveRepository @Inject constructor(
             .method("PATCH", imageFile.readBytes().toRequestBody("image/webp".toMediaType()))
             .build()
         http.newCall(req).await()
+        Unit
     }
 
     /** Merges [props] into the file's appProperties (PATCH — does not erase existing keys). */
@@ -474,7 +476,7 @@ class DriveRepository @Inject constructor(
      * falls back to the pre-rename [LEGACY_STYLES_FILE_NAME] so users who haven't re-saved yet
      * still see their outfits. Returns null if neither file exists.
      */
-    suspend fun listSubfolders(parentFolderId: String): List<DriveFileDto> = withContext(Dispatchers.IO) {
+    override suspend fun listSubfolders(parentFolderId: String): List<DriveFileDto> = withContext(Dispatchers.IO) {
         val tok = token()
         val q = URLEncoder.encode(
             "mimeType='application/vnd.google-apps.folder' and '$parentFolderId' in parents and trashed=false",
@@ -619,7 +621,7 @@ class DriveRepository @Inject constructor(
     }
 
     /** Creates a subfolder with [name] inside [parentFolderId] and returns its Drive ID. */
-    suspend fun createSubfolder(parentFolderId: String, name: String): String = withContext(Dispatchers.IO) {
+    override suspend fun createSubfolder(parentFolderId: String, name: String): String = withContext(Dispatchers.IO) {
         val tok = token()
         val escapedName = name.replace("\\", "\\\\").replace("'", "\\'")
         val q = URLEncoder.encode(
@@ -708,6 +710,48 @@ class DriveRepository @Inject constructor(
 
     override suspend fun findTripFileId(tripsFolderId: String, tripId: String): String? =
         findTripFileIdImpl(tripsFolderId, tripId)
+
+    // --- § 3 slice 3: the pipeline / use-case / VM surface (member overrides in place above) ---
+
+    override suspend fun listAllImageFiles(folderId: String): List<DriveFileDto> =
+        listAllImageFilesImpl(folderId)
+
+    override suspend fun loadOutfitEventsJson(folderId: String): String? =
+        loadOutfitEventsJsonImpl(folderId)
+
+    override suspend fun loadPreferencesJson(folderId: String): String? =
+        loadPreferencesJsonImpl(folderId)
+
+    override suspend fun savePreferencesJson(folderId: String, json: String) {
+        savePreferencesJsonImpl(folderId, json)
+    }
+
+    override suspend fun loadLocationsJson(rootFolderId: String): String? =
+        loadLocationsJsonImpl(rootFolderId)
+
+    override suspend fun saveLocationsJson(rootFolderId: String, json: String) {
+        saveLocationsJsonImpl(rootFolderId, json)
+    }
+
+    override suspend fun loadTokenUsageJsonl(folderId: String): String? =
+        loadTokenUsageJsonlImpl(folderId)
+
+    override suspend fun saveTokenUsageJsonl(folderId: String, content: String) {
+        saveTokenUsageJsonlImpl(folderId, content)
+    }
+
+    override suspend fun loadTrendsCacheJson(rootFolderId: String): String? =
+        loadTrendsCacheJsonImpl(rootFolderId)
+
+    override suspend fun saveTrendsCacheJson(rootFolderId: String, json: String) {
+        saveTrendsCacheJsonImpl(rootFolderId, json)
+    }
+
+    override suspend fun uploadTryOnImage(rootFolderId: String, name: String, imageFile: File): String =
+        uploadTryOnImageImpl(rootFolderId, name, imageFile)
+
+    override suspend fun uploadProfilePhoto(rootFolderId: String, name: String, imageFile: File): String =
+        uploadProfilePhotoImpl(rootFolderId, name, imageFile)
 
     // ---------- Helpers ----------
 

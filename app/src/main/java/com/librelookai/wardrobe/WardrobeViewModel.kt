@@ -5,7 +5,7 @@ import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.librelookai.R
-import com.librelookai.data.drive.DriveRepository
+import com.librelookai.data.drive.DriveService
 import com.librelookai.data.session.UserPreferencesRepository
 import com.librelookai.gemini.ClothingTags
 import com.librelookai.gemini.CutoutFixActions
@@ -39,7 +39,7 @@ import kotlinx.coroutines.withContext
 @HiltViewModel
 class WardrobeViewModel @Inject constructor(
     app: Application,
-    private val drive: DriveRepository,
+    private val drive: DriveService,
     private val pipeline: ItemIngestionPipeline,
     private val itemOps: WardrobeItemOps,
     private val repo: WardrobeRepository,
