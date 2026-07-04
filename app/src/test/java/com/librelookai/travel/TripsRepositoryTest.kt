@@ -5,14 +5,12 @@ import com.librelookai.data.drive.DrainScheduler
 import com.librelookai.data.drive.SyncEngine
 import com.librelookai.data.local.PendingMutation
 import com.librelookai.data.local.PendingMutationStore
-import com.librelookai.data.local.TripStore
 import com.librelookai.data.model.Trip
 import com.librelookai.testing.FakeDriveService
+import com.librelookai.testing.FakeTripStore
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -33,15 +31,6 @@ import org.junit.Test
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class TripsRepositoryTest {
-
-    private class FakeTripStore : TripStore {
-        val flow = MutableStateFlow<List<Trip>>(emptyList())
-        override suspend fun trips(): List<Trip> = flow.value
-        override fun observeTrips(): Flow<List<Trip>> = flow
-        override suspend fun replaceAll(trips: List<Trip>) {
-            flow.value = trips
-        }
-    }
 
     private class FakeMutationStore : PendingMutationStore {
         val rows = mutableListOf<PendingMutation>()

@@ -10,12 +10,12 @@ deferred and inter-blocking:
 |---|-------|--------|
 | 1 | Multi-module Gradle | **Partial** — `:core:model`/`:core:common`/`:core:database`/`:core:ml`/`:core:sync`/`:core:ai` landed (phase 4); `core/designsystem` blocked on splitting the 31-locale `res/`, `feature/*` on § 5 |
 | 2 | Room as source of truth + SyncEngine | **Operationally complete** (June 2026) — all five JSON-cache slices landed (phase 2) as opaque-JSON cache rows; the `PendingMutation` queue + `SyncEngine` drain **every converted metadata write**: wardrobe (sidecar/delete/move), shopping, outfits (`outfit.syncFolder`), calendar wears (`outfitEvent.syncFolder`), trips (`trip.save`/`trip.delete`), plus the WorkManager process-death backstop (see phase 2 status). The real-entity / Flow-read conversion is deliberately carried into § 5 |
-| 3 | DI + interfaces at the seams | **In progress** — Hilt landed (phase 1); the gemini↔drive↔billing package cycles are broken (June 2026, see phase 1 status), making the layering acyclic; **`DriveService` landed at the repo seam** (July 2026, § 3 slice 1 — see the § 3 execution plan): the five § 5 repos depend on the interface, `DriveRepository` implements it (absorbed extensions delegate to `internal *Impl`), Hilt `@Binds`-bound; handler/pipeline/VM seams + `AiClient` pending; static globals (`ImageEncoding.tier`, `GeminiProgress` slot, `AiRetry.action`) still alive |
+| 3 | DI + interfaces at the seams | **In progress** — Hilt landed (phase 1); the gemini↔drive↔billing package cycles are broken (June 2026, see phase 1 status), making the layering acyclic; **`DriveService` landed at the repo seam** (July 2026, § 3 slice 1 — see the § 3 execution plan): the five § 5 repos depend on the interface, `DriveRepository` implements it (absorbed extensions delegate to `internal *Impl`), Hilt `@Binds`-bound; **the six § 2 sync handlers are on the interface too** (July 2026, § 3 slice 2 — handler surface absorbed, drain/retry/rollback/wipe-guard invariants fake-tested); pipeline/use-case/VM seams (slice 3) + `AiClient` (slice 4) pending; static globals (`ImageEncoding.tier`, `GeminiProgress` slot, `AiRetry.action`) still alive |
 | 4 | Navigation Compose | **Done** (phase 3 complete; per-destination VM scoping deferred to § 5) |
 | 5 | Thin VMs over use-cases | **In progress** (July 2026) — slices 0–8 landed + slice 9 largely landed: all five repos extracted (outfits/try-on/trips/**wardrobe** + the § 4a–d derivations), both composers + all VM splits done, the `WardrobeUiState` progress prune and the connectivity/pre-warm bridge kills landed, `TripViewerRoute`/`OutfitViewerRoute` have destination-scoped VMs. All three viewer destinations (`TripViewerRoute`/`OutfitViewerRoute`/`ItemViewerRoute`) have destination-scoped VMs over the five repos, and the `WardrobeViewModel` slimming landed (no extension files, no `internal var` shared state, per-item ops on `WardrobeItemOps`, ~520 lines of mirrors + UI state + delegates). The overlay-destination `LocalViewModelStoreOwner` pin drops landed (July 2026 — see slice 9 status); slice 9 is **complete**. Only deliberate deferral left: restore-overlay engine aggregation (slice 7 part 3, waits on a `SyncEngine` sync-state surface) |
 | 6 | Typed `AiResult` | **Started** — the notice path carries a semantic `AiErrorReason` enum instead of `R.string` ids (June 2026, the `:core:ai` enabler); the sealed `AiResult<T>` return type is not started — Gemini still returns `null` on failure |
 | 7 | DataStore + Keystore settings | **Started** — the BYOK Gemini key is AES-GCM-encrypted at rest via Android Keystore (June 2026; `ApiKeyStore` API unchanged, plaintext pref migrates on first read, graceful plaintext fallback if Keystore is unavailable); DataStore for `UserPreferences`/`OnboardingState`/pricing cache and the flag interface are not started |
-| 8 | Testing strategy | **In progress** — store invariant tests landed; **fake-based repository tests started** (July 2026): `TripsRepositoryTest` over the shared `FakeDriveService` (`app/src/test/…/testing/`) covers the reconcile, single-flight + memoized-on-success, and the local-first save/delete funnels; the other four repos + VM tests follow the same pattern (VM tests still want the § 3 `AiClient` seam) |
+| 8 | Testing strategy | **In progress** — store invariant tests landed; **fake-based repository tests started** (July 2026): `TripsRepositoryTest` over the shared `FakeDriveService` (`app/src/test/…/testing/`) covers the reconcile, single-flight + memoized-on-success, and the local-first save/delete funnels; **the queued-mutation invariants are tested** (July 2026, § 3 slice 2): all six § 2 handlers' drain/retry/rollback/wipe-guard rules in `WardrobeSyncHandlersTest`/`OutfitSyncHandlersTest`/`TripSyncHandlersTest` over `FakeDriveService` + the shared `testing/FakeStores.kt` fakes; the other four repos + VM tests follow the same pattern (VM tests still want the § 3 `AiClient` seam) |
 
 ## Context
 
@@ -1245,6 +1245,26 @@ cache-folder rule, VM split sections) as each slice lands, per the working agree
    (`moveFile`, `saveOutfitsJson`, `saveOutfitEventsJson`, `saveTripJson`/`deleteTripJson`/
    `findTripFileId`, `rewriteSidecar`, …); handler tests become § 8's queued-mutation
    invariants (drain / retry / rollback with a fake Drive).
+   **LANDED (July 2026).** All six § 2 handlers (wardrobe sidecar/delete/move, outfit folder,
+   outfit events, trip save/delete) now take `DriveService`; the interface grew exactly the
+   six methods they consume — `moveFile` (already a `DriveRepository` member, now `override`
+   with its return pinned to `Unit`), `saveOutfitsJson` / `saveOutfitEventsJson` /
+   `saveTripJson` / `findTripFileId` (absorbed via the `internal *Impl` rename pattern), and
+   `deleteTripJson` (a pure alias — its extension was deleted outright; the override
+   delegates to `deleteFile` directly). The sketched `rewriteSidecar` wasn't needed: the
+   sidecar handler already rides slice 1's `upsertSidecar`. `WebpConvertUseCase`'s
+   `saveOutfitsJson` call now resolves through the member (extension import dropped; the
+   use-case itself stays on concrete `DriveRepository` until slice 3). Tests — the § 8
+   queued-mutation invariants, 25 across three plain-JUnit suites over `FakeDriveService` +
+   new shared in-memory store fakes (`testing/FakeStores.kt`; `FakeTripStore` promoted out
+   of `TripsRepositoryTest`): `WardrobeSyncHandlersTest` (payload-free tag re-read lands in
+   the owning folder + sidecar-id stamp-back, delete file-id replay + unparseable-payload
+   `Permanent`, move triplet replay / best-effort original+sidecar / rollback re-homes only
+   while the row still sits in this move's target), `OutfitSyncHandlersTest` (store re-read,
+   the never-cached-folder wipe guard vs. a cached-but-empty folder's legitimate `[]` write,
+   `Retry` on Drive failure), `TripSyncHandlersTest` (coalescing store re-read, trip-gone
+   `Permanent`, stable-id delete idempotency — already-gone file succeeds without a delete
+   call).
 3. **Pipeline / use-cases / VMs onto `DriveService`** — the upload surface (`uploadImage`,
    `uploadImageWithName`, `updateImage`, `renameFile`, `copyFile`, `uploadTextFile`,
    `overwriteFileText`, `countImages`, subfolder ops); after this the concrete type is

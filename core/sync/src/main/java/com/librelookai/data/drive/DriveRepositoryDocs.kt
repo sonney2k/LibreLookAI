@@ -20,7 +20,7 @@ internal suspend fun DriveRepository.loadOutfitsJsonImpl(folderId: String): Stri
     }
 
     /** Creates or overwrites the saved-outfits JSON file in Drive (always writes [DriveRepository.OUTFITS_FILE_NAME]). */
-suspend fun DriveRepository.saveOutfitsJson(folderId: String, json: String) = withContext(Dispatchers.IO) {
+internal suspend fun DriveRepository.saveOutfitsJsonImpl(folderId: String, json: String) = withContext(Dispatchers.IO) {
         val tok = token()
         val existingId = findFileIdByName(folderId, DriveRepository.OUTFITS_FILE_NAME, tok)
         val fileId = existingId ?: run {
@@ -54,7 +54,7 @@ suspend fun DriveRepository.loadOutfitEventsJson(folderId: String): String? = wi
     }
 
     /** Creates or overwrites the outfit-events JSON in Drive (always writes [DriveRepository.OUTFIT_EVENTS_FILE_NAME]). */
-suspend fun DriveRepository.saveOutfitEventsJson(folderId: String, json: String) = withContext(Dispatchers.IO) {
+internal suspend fun DriveRepository.saveOutfitEventsJsonImpl(folderId: String, json: String) = withContext(Dispatchers.IO) {
         val tok = token()
         val existingId = findFileIdByName(folderId, DriveRepository.OUTFIT_EVENTS_FILE_NAME, tok)
         val fileId = existingId ?: run {

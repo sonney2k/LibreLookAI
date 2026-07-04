@@ -1,7 +1,7 @@
 package com.librelookai.wardrobe
 
 import com.google.gson.Gson
-import com.librelookai.data.drive.DriveRepository
+import com.librelookai.data.drive.DriveService
 import com.librelookai.data.drive.MutationHandler
 import com.librelookai.data.drive.MutationOutcome
 import com.librelookai.data.local.PendingMutation
@@ -48,7 +48,7 @@ data class MoveRollback(val driveId: String, val sourceFolderId: String, val tar
  */
 @Singleton
 class WardrobeMoveSyncHandler @Inject constructor(
-    private val drive: DriveRepository,
+    private val drive: DriveService,
     private val items: WardrobeItemStore,
 ) : MutationHandler {
 

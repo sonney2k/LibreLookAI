@@ -2,6 +2,7 @@ package com.librelookai.wardrobe
 
 import com.google.gson.Gson
 import com.librelookai.data.drive.DriveRepository
+import com.librelookai.data.drive.DriveService
 import com.librelookai.data.drive.MutationHandler
 import com.librelookai.data.drive.MutationOutcome
 import com.librelookai.data.local.PendingMutation
@@ -35,7 +36,7 @@ const val SIDECAR_SYNC_KIND = "wardrobe.sidecarSync"
  */
 @Singleton
 class WardrobeSidecarSyncHandler @Inject constructor(
-    private val drive: DriveRepository,
+    private val drive: DriveService,
     private val items: WardrobeItemStore,
 ) : MutationHandler {
 

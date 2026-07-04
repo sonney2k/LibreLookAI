@@ -13,9 +13,9 @@ import java.io.File
  * resolve statically), so each absorbed method is an interface member delegating to the
  * renamed `internal` `<name>Impl` extension in its domain file.
  *
- * Grown incrementally per consumer slice (§ 3 slice 2: sync handlers; slice 3: pipeline /
- * use-cases / VMs) — add a method the moment a consumer of the *interface* needs it, never
- * speculatively.
+ * Grown incrementally per consumer slice (§ 3 slice 2 added the sync-handler surface; slice 3:
+ * pipeline / use-cases / VMs) — add a method the moment a consumer of the *interface* needs it,
+ * never speculatively.
  */
 interface DriveService {
 
@@ -75,6 +75,33 @@ interface DriveService {
 
     /** Creates or overwrites the sidecar [name] inside [folderId]. Returns its Drive file ID. */
     suspend fun upsertSidecar(folderId: String, name: String, json: String): String
+
+    // --- § 3 slice 2: the sync-handler surface ---
+
+    /**
+     * Moves [fileId] from [fromFolderId] to [toFolderId] via a single parent-change PATCH.
+     * Drive ID, content, and name are all preserved — no re-upload.
+     */
+    suspend fun moveFile(fileId: String, fromFolderId: String, toFolderId: String)
+
+    /** Creates or overwrites the saved-outfits JSON (`_outfits.json`) of [folderId]. */
+    suspend fun saveOutfitsJson(folderId: String, json: String)
+
+    /** Creates or overwrites the outfit-events (calendar wears) JSON of [folderId]. */
+    suspend fun saveOutfitEventsJson(folderId: String, json: String)
+
+    /** Creates or overwrites `{tripId}.json` inside [tripsFolderId]. Returns the Drive file ID. */
+    suspend fun saveTripJson(tripsFolderId: String, tripId: String, json: String): String
+
+    /** Deletes a trip JSON by Drive file ID. */
+    suspend fun deleteTripJson(fileId: String)
+
+    /**
+     * Drive file ID of `{tripId}.json` inside [tripsFolderId], or null when absent. Lets the
+     * queued trip-delete handler resolve the file by stable trip id instead of a session-local
+     * Drive-id map (which used to orphan the file when a trip was deleted before Phase 2 load).
+     */
+    suspend fun findTripFileId(tripsFolderId: String, tripId: String): String?
 }
 
 @Module

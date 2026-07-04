@@ -356,7 +356,7 @@ class DriveRepository @Inject constructor(
      * Moves [fileId] from [fromFolderId] to [toFolderId] via a single PATCH (changes parents).
      * Drive ID, content, and name are all preserved — no re-upload.
      */
-    suspend fun moveFile(fileId: String, fromFolderId: String, toFolderId: String) =
+    override suspend fun moveFile(fileId: String, fromFolderId: String, toFolderId: String) =
         withContext(Dispatchers.IO) {
             val tok = token()
             http.newCall(
@@ -366,6 +366,7 @@ class DriveRepository @Inject constructor(
                     .method("PATCH", "{}".toRequestBody("application/json".toMediaType()))
                     .build()
             ).await()
+            Unit
         }
 
     /**
@@ -689,6 +690,24 @@ class DriveRepository @Inject constructor(
 
     override suspend fun upsertSidecar(folderId: String, name: String, json: String): String =
         upsertSidecarImpl(folderId, name, json)
+
+    // --- § 3 slice 2: the sync-handler surface (moveFile overrides in place above) ---
+
+    override suspend fun saveOutfitsJson(folderId: String, json: String) {
+        saveOutfitsJsonImpl(folderId, json)
+    }
+
+    override suspend fun saveOutfitEventsJson(folderId: String, json: String) {
+        saveOutfitEventsJsonImpl(folderId, json)
+    }
+
+    override suspend fun saveTripJson(tripsFolderId: String, tripId: String, json: String): String =
+        saveTripJsonImpl(tripsFolderId, tripId, json)
+
+    override suspend fun deleteTripJson(fileId: String) = deleteFile(fileId)
+
+    override suspend fun findTripFileId(tripsFolderId: String, tripId: String): String? =
+        findTripFileIdImpl(tripsFolderId, tripId)
 
     // ---------- Helpers ----------
 

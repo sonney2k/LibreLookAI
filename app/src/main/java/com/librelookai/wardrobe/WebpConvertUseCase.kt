@@ -6,7 +6,6 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.librelookai.data.drive.DriveRepository
 import com.librelookai.data.drive.listAllImageFiles
-import com.librelookai.data.drive.saveOutfitsJson
 import com.librelookai.data.local.WardrobeItemStore
 import com.librelookai.data.model.Outfit
 import com.librelookai.data.model.TryOn

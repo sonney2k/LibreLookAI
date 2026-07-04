@@ -26,6 +26,15 @@ open class FakeDriveService : DriveService {
     /** Sidecars upserted via [upsertSidecar]: "folderId/name" → json. */
     val upsertedSidecars = linkedMapOf<String, String>()
 
+    /** `(fileId, fromFolderId, toFolderId)` for every [moveFile] call, in order. */
+    val movedFiles = mutableListOf<Triple<String, String, String>>()
+
+    /** Outfits JSON written per folder id via [saveOutfitsJson]. */
+    val outfitsJsonByFolder = linkedMapOf<String, String>()
+
+    /** Outfit-events JSON written per folder id via [saveOutfitEventsJson]. */
+    val outfitEventsJsonByFolder = linkedMapOf<String, String>()
+
     /** Try-ons index JSON per root folder id (read/write). */
     val tryOnsJsonByRoot = mutableMapOf<String, String>()
 
@@ -87,4 +96,29 @@ open class FakeDriveService : DriveService {
         upsertedSidecars["$folderId/$name"] = json
         return "sidecar-$name"
     }
+
+    override suspend fun moveFile(fileId: String, fromFolderId: String, toFolderId: String) {
+        movedFiles += Triple(fileId, fromFolderId, toFolderId)
+    }
+
+    override suspend fun saveOutfitsJson(folderId: String, json: String) {
+        outfitsJsonByFolder[folderId] = json
+    }
+
+    override suspend fun saveOutfitEventsJson(folderId: String, json: String) {
+        outfitEventsJsonByFolder[folderId] = json
+    }
+
+    override suspend fun saveTripJson(tripsFolderId: String, tripId: String, json: String): String {
+        tripJsonById["file-$tripId"] = json
+        return "file-$tripId"
+    }
+
+    override suspend fun deleteTripJson(fileId: String) {
+        deleteFile(fileId)
+        tripJsonById.remove(fileId)
+    }
+
+    override suspend fun findTripFileId(tripsFolderId: String, tripId: String): String? =
+        "file-$tripId".takeIf { tripJsonById.containsKey(it) }
 }

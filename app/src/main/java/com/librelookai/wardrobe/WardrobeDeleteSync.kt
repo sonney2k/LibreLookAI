@@ -1,7 +1,7 @@
 package com.librelookai.wardrobe
 
 import com.google.gson.Gson
-import com.librelookai.data.drive.DriveRepository
+import com.librelookai.data.drive.DriveService
 import com.librelookai.data.drive.MutationHandler
 import com.librelookai.data.drive.MutationOutcome
 import com.librelookai.data.local.PendingMutation
@@ -30,7 +30,7 @@ internal data class DeleteItemPayload(val fileIds: List<String>)
  */
 @Singleton
 class WardrobeDeleteSyncHandler @Inject constructor(
-    private val drive: DriveRepository,
+    private val drive: DriveService,
 ) : MutationHandler {
 
     private val gson = Gson()

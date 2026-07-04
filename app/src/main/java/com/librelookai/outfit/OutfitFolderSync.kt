@@ -1,10 +1,9 @@
 package com.librelookai.outfit
 
 import com.google.gson.Gson
-import com.librelookai.data.drive.DriveRepository
+import com.librelookai.data.drive.DriveService
 import com.librelookai.data.drive.MutationHandler
 import com.librelookai.data.drive.MutationOutcome
-import com.librelookai.data.drive.saveOutfitsJson
 import com.librelookai.data.local.OutfitStore
 import com.librelookai.data.local.PendingMutation
 import dagger.Binds
@@ -34,7 +33,7 @@ const val OUTFIT_FOLDER_SYNC_KIND = "outfit.syncFolder"
  */
 @Singleton
 class OutfitFolderSyncHandler @Inject constructor(
-    private val drive: DriveRepository,
+    private val drive: DriveService,
     private val outfits: OutfitStore,
 ) : MutationHandler {
 

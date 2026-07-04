@@ -1,12 +1,9 @@
 package com.librelookai.travel
 
 import com.google.gson.Gson
-import com.librelookai.data.drive.DriveRepository
+import com.librelookai.data.drive.DriveService
 import com.librelookai.data.drive.MutationHandler
 import com.librelookai.data.drive.MutationOutcome
-import com.librelookai.data.drive.deleteTripJson
-import com.librelookai.data.drive.findTripFileId
-import com.librelookai.data.drive.saveTripJson
 import com.librelookai.data.local.PendingMutation
 import com.librelookai.data.local.TripStore
 import dagger.Binds
@@ -35,7 +32,7 @@ const val TRIP_DELETE_KIND = "trip.delete"
  */
 @Singleton
 class TripSaveSyncHandler @Inject constructor(
-    private val drive: DriveRepository,
+    private val drive: DriveService,
     private val trips: TripStore,
 ) : MutationHandler {
 
@@ -58,14 +55,13 @@ class TripSaveSyncHandler @Inject constructor(
 
 /**
  * Drains queued trip deletes. Resolves the Drive file by the stable trip id
- * ([com.librelookai.data.drive.findTripFileId]) instead of the old session-local
- * `driveIdsByTripId` map — so a trip deleted before Phase 2 load populated the map no longer
- * orphans its Drive file, and re-running after a timeout is idempotent (file already gone →
- * [MutationOutcome.Success]).
+ * ([DriveService.findTripFileId]) instead of the old session-local `driveIdsByTripId` map — so
+ * a trip deleted before Phase 2 load populated the map no longer orphans its Drive file, and
+ * re-running after a timeout is idempotent (file already gone → [MutationOutcome.Success]).
  */
 @Singleton
 class TripDeleteSyncHandler @Inject constructor(
-    private val drive: DriveRepository,
+    private val drive: DriveService,
 ) : MutationHandler {
 
     override val kind: String = TRIP_DELETE_KIND

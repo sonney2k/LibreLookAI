@@ -89,7 +89,7 @@ internal suspend fun DriveRepository.loadTripJsonImpl(fileId: String): String? =
     /**
      * Creates or overwrites `{tripId}.json` inside [tripsFolderId]. Returns the Drive file ID.
      */
-suspend fun DriveRepository.saveTripJson(tripsFolderId: String, tripId: String, json: String): String =
+internal suspend fun DriveRepository.saveTripJsonImpl(tripsFolderId: String, tripId: String, json: String): String =
         withContext(Dispatchers.IO) {
             val tok = token()
             val name = "$tripId.json"
@@ -117,15 +117,8 @@ suspend fun DriveRepository.saveTripJson(tripsFolderId: String, tripId: String, 
             fileId
         }
 
-    /** Deletes a trip JSON by Drive file ID. */
-suspend fun DriveRepository.deleteTripJson(fileId: String) = deleteFile(fileId)
-
-    /**
-     * Drive file ID of `{tripId}.json` inside [tripsFolderId], or null when absent. Lets the
-     * queued trip-delete handler resolve the file by stable trip id instead of a session-local
-     * Drive-id map (which used to orphan the file when a trip was deleted before Phase 2 load).
-     */
-suspend fun DriveRepository.findTripFileId(tripsFolderId: String, tripId: String): String? =
+    /** Drive file ID of `{tripId}.json` inside [tripsFolderId], or null when absent. */
+internal suspend fun DriveRepository.findTripFileIdImpl(tripsFolderId: String, tripId: String): String? =
         withContext(Dispatchers.IO) { findFileIdByName(tripsFolderId, "$tripId.json", token()) }
 
     /**
