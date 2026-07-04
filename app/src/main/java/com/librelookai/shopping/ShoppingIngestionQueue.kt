@@ -5,8 +5,7 @@ import com.librelookai.data.drive.DriveRepository
 import com.librelookai.data.drive.DriveService
 import com.librelookai.data.local.WardrobeItemStore
 import com.librelookai.data.session.UserPreferencesRepository
-import com.librelookai.gemini.GeminiRepository
-import com.librelookai.gemini.classifyClothing
+import com.librelookai.gemini.AiClient
 import com.librelookai.settings.AppLanguage
 import com.librelookai.wardrobe.DriveImage
 import com.librelookai.wardrobe.ItemSidecar
@@ -38,7 +37,7 @@ import kotlinx.coroutines.launch
 @Singleton
 class ShoppingIngestionQueue @Inject constructor(
     private val drive: DriveService,
-    private val gemini: GeminiRepository,
+    private val gemini: AiClient,
     private val itemStore: WardrobeItemStore,
     prefsRepo: UserPreferencesRepository,
 ) {

@@ -9,7 +9,7 @@ import com.google.gson.Gson
 import com.librelookai.data.drive.DriveService
 import com.librelookai.data.model.Outfit
 import com.librelookai.data.session.ClosetSessionHolder
-import com.librelookai.gemini.GeminiRepository
+import com.librelookai.gemini.AiClient
 import com.librelookai.settings.UserPreferences
 import com.librelookai.util.Analytics
 import com.librelookai.wardrobe.DriveImage
@@ -38,13 +38,13 @@ import kotlinx.coroutines.launch
 class OutfitGenerationViewModel @Inject constructor(
     app: Application,
     internal val drive: DriveService,
-    internal val gemini: GeminiRepository,
+    internal val gemini: AiClient,
     private val outfitsRepo: OutfitsRepository,
     session: ClosetSessionHolder,
     eventStore: com.librelookai.data.local.OutfitEventStore,
-) : AndroidViewModel(app) {
     /** Weekly, location-specific cache around the expensive Gemini trend lookup. */
-    internal val trendsCache = com.librelookai.gemini.FashionTrendsCache(app, drive, gemini)
+    internal val trendsCache: com.librelookai.gemini.FashionTrendsCache,
+) : AndroidViewModel(app) {
     internal val gson = Gson()
     /** Load scope + save target live on [outfitsRepo]; exposed read-only for the extensions. */
     internal val folderId: String? get() = outfitsRepo.folderId

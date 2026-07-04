@@ -13,8 +13,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 import com.librelookai.data.drive.DriveService
 import com.librelookai.data.model.TryOn
-import com.librelookai.gemini.GeminiRepository
-import com.librelookai.gemini.tryOnOutfit
+import com.librelookai.gemini.AiClient
 import com.librelookai.util.Analytics
 import com.librelookai.wardrobe.DriveImage
 
@@ -93,7 +92,7 @@ data class TryOnUiState(
 @HiltViewModel
 class TryOnViewModel @Inject constructor(
     app: Application,
-    private val gemini: GeminiRepository,
+    private val gemini: AiClient,
     private val drive: DriveService,
     private val repo: TryOnRepository,
 ) : AndroidViewModel(app) {

@@ -34,7 +34,7 @@ internal enum class GeminiAction(val header: String) {
 }
 
 @Singleton
-class GeminiRepository @Inject constructor(internal val app: Application) {
+class GeminiRepository @Inject constructor(internal val app: Application) : AiClient {
 
     internal val http = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
@@ -228,7 +228,7 @@ class GeminiRepository @Inject constructor(internal val app: Application) {
      * Sends [imageFile] to Gemini and returns a PNG with the background removed.
      * Returns null on any failure — callers should fall back to the original.
      */
-    suspend fun removeBackground(imageFile: File, outputDir: File, notify: Boolean = false): File? =
+    override suspend fun removeBackground(imageFile: File, outputDir: File, notify: Boolean): File? =
         withContext(Dispatchers.IO) {
             if (!ensureConfigured(notify)) {
                 Log.w(TAG, "API key not set — skipping background removal")
@@ -357,4 +357,28 @@ class GeminiRepository @Inject constructor(internal val app: Application) {
         Log.d(TAG, "Cutout post-processed: ${w}x${h} → ${finalBmp.width}x${finalBmp.height}")
         finalBmp.recycle()
     }
+
+    // ---------- AiClient seam (refactor § 3 slice 4) ----------
+    // The methods below were same-package extension functions; extensions resolve statically
+    // and can't be faked, so the interface members delegate to the renamed `internal`
+    // `<name>Impl` extensions — the bodies stay in their domain files (file-size rule).
+    // removeBackground overrides in place above.
+
+    override suspend fun generateText(
+        prompt: String,
+        category: UsageCategory,
+        bulkItems: Int,
+        notify: Boolean,
+    ): String? = generateTextImpl(prompt, category, bulkItems, notify)
+
+    override suspend fun classifyClothing(imageFile: File, language: String): ClothingTags? =
+        classifyClothingImpl(imageFile, language)
+
+    override suspend fun tryOnOutfit(
+        personFiles: List<File>,
+        itemFiles: List<File>,
+        outputDir: File,
+        preferences: String,
+        notify: Boolean,
+    ): File? = tryOnOutfitImpl(personFiles, itemFiles, outputDir, preferences, notify)
 }

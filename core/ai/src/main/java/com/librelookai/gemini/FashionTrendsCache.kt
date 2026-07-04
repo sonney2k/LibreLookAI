@@ -6,8 +6,11 @@ import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import com.google.gson.reflect.TypeToken
 import com.librelookai.data.drive.DriveService
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.util.Locale
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -29,8 +32,9 @@ private data class CachedTrends(
  * Cache key is the normalised [region] string, so each location keeps its own trends. On a Gemini
  * failure we fall back to a stale cached entry when one exists (better than no trends at all).
  */
-class FashionTrendsCache(
-    private val context: Context,
+@Singleton
+class FashionTrendsCache @Inject constructor(
+    @param:ApplicationContext private val context: Context,
     private val drive: DriveService,
     private val gemini: GeminiRepository,
 ) {

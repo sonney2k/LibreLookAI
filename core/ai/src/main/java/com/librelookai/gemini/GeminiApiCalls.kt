@@ -40,7 +40,7 @@ fun buildTryOnPrompt(personCount: Int, itemCount: Int, preferences: String): Str
     """.trimIndent()
 }
 
-suspend fun GeminiRepository.tryOnOutfit(
+internal suspend fun GeminiRepository.tryOnOutfitImpl(
         personFiles: List<File>,
         itemFiles: List<File>,
         outputDir: File,
@@ -131,7 +131,7 @@ suspend fun GeminiRepository.tryOnOutfit(
      * the generated `label` field will be written in that language.
      * Returns [ClothingTags] or null on failure.
      */
-suspend fun GeminiRepository.classifyClothing(imageFile: File, language: String = "English"): ClothingTags? =
+internal suspend fun GeminiRepository.classifyClothingImpl(imageFile: File, language: String = "English"): ClothingTags? =
         withContext(Dispatchers.IO) {
             if (!isConfigured()) return@withContext null
 
@@ -255,7 +255,7 @@ internal suspend fun GeminiRepository.searchFashionTrends(
     /**
      * Sends a text-only prompt to Gemini and returns the raw text response, or null on failure.
      */
-suspend fun GeminiRepository.generateText(
+internal suspend fun GeminiRepository.generateTextImpl(
         prompt: String,
         category: UsageCategory = UsageCategory.OTHER,
         bulkItems: Int = 1,

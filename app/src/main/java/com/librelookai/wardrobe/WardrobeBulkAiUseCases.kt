@@ -4,8 +4,7 @@ import com.librelookai.data.drive.DriveService
 import com.librelookai.data.local.WardrobeItemStore
 import com.librelookai.data.session.UserPreferencesRepository
 import com.librelookai.gemini.ClothingTags
-import com.librelookai.gemini.GeminiRepository
-import com.librelookai.gemini.classifyClothing
+import com.librelookai.gemini.AiClient
 import com.librelookai.service.JobLock
 import com.librelookai.settings.AppLanguage
 import java.io.File
@@ -36,7 +35,7 @@ data class BulkAiProgress(
 @Singleton
 class RetagAllUseCase @Inject constructor(
     private val drive: DriveService,
-    private val gemini: GeminiRepository,
+    private val gemini: AiClient,
     private val itemStore: WardrobeItemStore,
     private val sidecarSync: SidecarSyncQueue,
     private val jobLock: JobLock,
@@ -92,7 +91,7 @@ class RetagAllUseCase @Inject constructor(
 @Singleton
 class RemoveAllBackgroundsUseCase @Inject constructor(
     private val drive: DriveService,
-    private val gemini: GeminiRepository,
+    private val gemini: AiClient,
     private val itemStore: WardrobeItemStore,
     private val sidecarSync: SidecarSyncQueue,
     private val versions: ItemVersions,

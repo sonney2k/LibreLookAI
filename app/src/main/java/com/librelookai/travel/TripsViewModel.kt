@@ -17,9 +17,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import com.librelookai.data.model.Outfit
 import com.librelookai.data.model.Trip
-import com.librelookai.gemini.GeminiRepository
+import com.librelookai.gemini.AiClient
 import com.librelookai.gemini.UsageCategory
-import com.librelookai.gemini.generateText
 import com.librelookai.outfit.OutfitsViewModel
 import com.librelookai.util.isNetworkAvailable
 import com.librelookai.wardrobe.DriveImage
@@ -56,7 +55,7 @@ data class TripsUiState(
 @HiltViewModel
 class TripsViewModel @Inject constructor(
     app: Application,
-    private val gemini: GeminiRepository,
+    private val gemini: AiClient,
     private val repo: TripsRepository,
 ) : AndroidViewModel(app) {
 

@@ -13,11 +13,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import com.librelookai.data.model.GapAnalysis
-import com.librelookai.gemini.GeminiRepository
+import com.librelookai.gemini.AiClient
 import com.librelookai.gemini.PromptKey
 import com.librelookai.gemini.PromptStore
 import com.librelookai.gemini.UsageCategory
-import com.librelookai.gemini.generateText
 import com.librelookai.settings.AiConsiderations
 import com.librelookai.settings.UserPreferences
 import com.librelookai.settings.AppLanguage
@@ -38,7 +37,7 @@ data class WardrobeGapUiState(
 @HiltViewModel
 class WardrobeGapViewModel @Inject constructor(
     app: Application,
-    private val gemini: GeminiRepository,
+    private val gemini: AiClient,
 ) : AndroidViewModel(app) {
     private val gson   = Gson()
 

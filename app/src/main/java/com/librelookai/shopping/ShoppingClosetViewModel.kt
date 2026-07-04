@@ -18,8 +18,7 @@ import java.io.File
 import com.librelookai.data.drive.DriveRepository
 import com.librelookai.data.drive.DriveService
 import com.librelookai.gemini.ClothingTags
-import com.librelookai.gemini.GeminiRepository
-import com.librelookai.gemini.classifyClothing
+import com.librelookai.gemini.AiClient
 import com.librelookai.util.isNetworkAvailable
 import com.librelookai.data.drive.SyncEngine
 import com.librelookai.data.local.PendingMutationStore
@@ -68,7 +67,7 @@ data class ShoppingClosetUiState(
 class ShoppingClosetViewModel @Inject constructor(
     app: Application,
     internal val drive: DriveService,
-    internal val gemini: GeminiRepository,
+    internal val gemini: AiClient,
     internal val itemStore: WardrobeItemStore,
     private val mutationStore: PendingMutationStore,
     private val syncEngine: SyncEngine,

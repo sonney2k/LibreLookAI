@@ -12,8 +12,7 @@ import com.librelookai.data.drive.DriveService
 import com.librelookai.data.local.WardrobeItemStore
 import com.librelookai.data.session.ClosetSessionHolder
 import com.librelookai.data.session.UserPreferencesRepository
-import com.librelookai.gemini.GeminiRepository
-import com.librelookai.gemini.classifyClothing
+import com.librelookai.gemini.AiClient
 import com.librelookai.ml.EmbeddingService
 import com.librelookai.service.JobLock
 import com.librelookai.settings.AppLanguage
@@ -98,7 +97,7 @@ internal suspend fun DriveService.uploadAsOriginal(folderId: String, imageFile: 
 class ItemIngestionPipeline @Inject constructor(
     @param:ApplicationContext private val context: Context,
     private val drive: DriveService,
-    private val gemini: GeminiRepository,
+    private val gemini: AiClient,
     private val itemStore: WardrobeItemStore,
     private val session: ClosetSessionHolder,
     prefsRepo: UserPreferencesRepository,

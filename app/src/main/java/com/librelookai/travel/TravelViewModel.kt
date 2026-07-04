@@ -25,11 +25,10 @@ import com.librelookai.data.session.ClosetSessionHolder
 import com.librelookai.outfit.buildLovedOutfitsSummary
 import com.librelookai.outfit.buildWearHistorySummary
 import com.librelookai.outfit.wearHistoryFlow
-import com.librelookai.gemini.GeminiRepository
+import com.librelookai.gemini.AiClient
 import com.librelookai.gemini.PromptKey
 import com.librelookai.gemini.PromptStore
 import com.librelookai.gemini.UsageCategory
-import com.librelookai.gemini.generateText
 import com.librelookai.settings.AiConsiderations
 import com.librelookai.settings.UserPreferences
 import com.librelookai.util.Analytics
@@ -89,7 +88,7 @@ data class TravelUiState(
 @HiltViewModel
 class TravelViewModel @Inject constructor(
     app: Application,
-    private val gemini: GeminiRepository,
+    private val gemini: AiClient,
     session: ClosetSessionHolder,
     eventStore: OutfitEventStore,
 ) : AndroidViewModel(app) {

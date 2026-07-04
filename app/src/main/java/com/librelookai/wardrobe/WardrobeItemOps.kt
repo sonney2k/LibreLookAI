@@ -13,8 +13,7 @@ import com.librelookai.data.local.WardrobeItemStore
 import com.librelookai.data.session.UserPreferencesRepository
 import com.librelookai.gemini.ClothingTags
 import com.librelookai.gemini.CutoutFixActions
-import com.librelookai.gemini.GeminiRepository
-import com.librelookai.gemini.classifyClothing
+import com.librelookai.gemini.AiClient
 import com.librelookai.gemini.fixCutoutBackground
 import com.librelookai.service.JobLock
 import com.librelookai.settings.AppLanguage
@@ -64,7 +63,7 @@ data class ItemOpProgress(
 class WardrobeItemOps @Inject constructor(
     @param:ApplicationContext private val context: Context,
     private val drive: DriveService,
-    private val gemini: GeminiRepository,
+    private val gemini: AiClient,
     private val itemStore: WardrobeItemStore,
     private val sidecarQueue: SidecarSyncQueue,
     private val itemVersions: ItemVersions,
