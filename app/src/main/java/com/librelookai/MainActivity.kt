@@ -19,6 +19,8 @@ class MainActivity : ComponentActivity() {
 
     @Inject lateinit var driveRepository: DriveRepository
     @Inject lateinit var networkMonitor: NetworkMonitor
+    @Inject lateinit var aiRetry: com.librelookai.gemini.AiRetry
+    @Inject lateinit var geminiProgress: com.librelookai.gemini.GeminiProgress
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // Install before super/setContent so the system splash (launcher icon on white) is owned by
@@ -39,7 +41,7 @@ class MainActivity : ComponentActivity() {
         EmbeddingService.init(this)
         com.librelookai.gemini.PricingClient.start(applicationContext)
         com.librelookai.gemini.ModelPricingClient.start(applicationContext)
-        setContent { AppContent(this, driveRepository, networkMonitor) }
+        setContent { AppContent(this, driveRepository, networkMonitor, aiRetry, geminiProgress) }
     }
 
     private companion object {

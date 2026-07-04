@@ -26,6 +26,7 @@ import com.librelookai.outfit.buildLovedOutfitsSummary
 import com.librelookai.outfit.buildWearHistorySummary
 import com.librelookai.outfit.wearHistoryFlow
 import com.librelookai.gemini.AiClient
+import com.librelookai.gemini.AiRetry
 import com.librelookai.gemini.PromptKey
 import com.librelookai.gemini.PromptStore
 import com.librelookai.gemini.UsageCategory
@@ -89,6 +90,7 @@ data class TravelUiState(
 class TravelViewModel @Inject constructor(
     app: Application,
     private val gemini: AiClient,
+    private val aiRetry: AiRetry,
     session: ClosetSessionHolder,
     eventStore: OutfitEventStore,
 ) : AndroidViewModel(app) {
@@ -265,7 +267,7 @@ class TravelViewModel @Inject constructor(
             "outfit_count" to (_state.value.outfitCount ?: days).toString(),
             "closets" to _state.value.sourceFolderIds.size.toString(),
         ))
-        com.librelookai.gemini.AiRetry.action = { doGenerate(prefs, images, styles) }
+        aiRetry.action = { doGenerate(prefs, images, styles) }
         viewModelScope.launch {
             // Phase 1 — fetch forecast only when input changed
             val currentKey = Triple(dest, startDate, days)

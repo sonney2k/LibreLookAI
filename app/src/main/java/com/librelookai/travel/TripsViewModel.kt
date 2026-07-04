@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 import com.librelookai.data.model.Outfit
 import com.librelookai.data.model.Trip
 import com.librelookai.gemini.AiClient
+import com.librelookai.gemini.AiRetry
 import com.librelookai.gemini.UsageCategory
 import com.librelookai.outfit.OutfitsViewModel
 import com.librelookai.util.isNetworkAvailable
@@ -56,6 +57,7 @@ data class TripsUiState(
 class TripsViewModel @Inject constructor(
     app: Application,
     private val gemini: AiClient,
+    private val aiRetry: AiRetry,
     private val repo: TripsRepository,
 ) : AndroidViewModel(app) {
 
@@ -260,7 +262,7 @@ class TripsViewModel @Inject constructor(
         val trip = _state.value.trips.find { it.id == tripId } ?: run { onDone(false); return }
         val tripOutfits = currentOutfits.filter { it.id in trip.outfitIds }
         if (tripOutfits.isEmpty()) { onDone(false); return }
-        com.librelookai.gemini.AiRetry.action =
+        aiRetry.action =
             { refineAllOutfits(tripId, instruction, images, currentOutfits, prefs, onDone) }
         viewModelScope.launch {
             _bulkRefining.update { it + tripId }

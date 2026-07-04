@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import com.librelookai.data.model.GapAnalysis
 import com.librelookai.gemini.AiClient
+import com.librelookai.gemini.AiRetry
 import com.librelookai.gemini.PromptKey
 import com.librelookai.gemini.PromptStore
 import com.librelookai.gemini.UsageCategory
@@ -38,6 +39,7 @@ data class WardrobeGapUiState(
 class WardrobeGapViewModel @Inject constructor(
     app: Application,
     private val gemini: AiClient,
+    private val aiRetry: AiRetry,
 ) : AndroidViewModel(app) {
     private val gson   = Gson()
 
@@ -64,7 +66,7 @@ class WardrobeGapViewModel @Inject constructor(
             return
         }
 
-        com.librelookai.gemini.AiRetry.action = { analyze(images, prefs) }
+        aiRetry.action = { analyze(images, prefs) }
         viewModelScope.launch {
             _state.update { it.copy(isAnalyzing = true, analysis = null, error = null) }
 
@@ -105,7 +107,7 @@ class WardrobeGapViewModel @Inject constructor(
     ) {
         if (selected.isEmpty()) return
 
-        com.librelookai.gemini.AiRetry.action = { suggestReplacements(selected, allImages, prefs) }
+        aiRetry.action = { suggestReplacements(selected, allImages, prefs) }
         // Open the dialog immediately so the user sees a loading state.
         _state.update {
             it.copy(

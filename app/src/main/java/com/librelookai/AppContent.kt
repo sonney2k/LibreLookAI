@@ -114,6 +114,8 @@ internal fun AppContent(
     activity: ComponentActivity,
     driveRepository: DriveRepository,
     networkMonitor: NetworkMonitor,
+    aiRetry: com.librelookai.gemini.AiRetry,
+    geminiProgress: com.librelookai.gemini.GeminiProgress,
 ) {
     LibreLookAITheme(
         paletteId = ProfileViewModel.cachedTheme(activity),
@@ -358,6 +360,7 @@ internal fun AppContent(
                         LocalActivityResultRegistryOwner provides activity,
                         LocalOnBackPressedDispatcherOwner provides activity,
                         LocalIsOffline provides isOffline,
+                        LocalGeminiProgress provides geminiProgress,
                         LocalSystemBarsPadding provides systemBarsPadding,
                         // The Settings opener clears both composers' drafts (their routes pop
                         // via goToTab; close()/closeComposer() are state hygiene, § 5 slice 9).
@@ -1262,7 +1265,7 @@ internal fun AppContent(
                                 LaunchedEffect(Unit) {
                                     com.librelookai.gemini.AiEvents.notices.collect { notice ->
                                         aiRetryAction =
-                                            if (notice.canRetry) com.librelookai.gemini.AiRetry.action else null
+                                            if (notice.canRetry) aiRetry.action else null
                                         aiNotice = notice
                                     }
                                 }

@@ -34,14 +34,17 @@ internal enum class GeminiAction(val header: String) {
 }
 
 @Singleton
-class GeminiRepository @Inject constructor(internal val app: Application) : AiClient {
+class GeminiRepository @Inject constructor(
+    internal val app: Application,
+    internal val progress: GeminiProgress,
+) : AiClient {
 
     internal val http = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
         .writeTimeout(60, TimeUnit.SECONDS)  // uploading the image bytes
         .readTimeout(120, TimeUnit.SECONDS)  // waiting for Gemini to process
         .callTimeout(300, TimeUnit.SECONDS)  // hard ceiling for the whole call
-        .eventListener(GeminiProgress.Listener)  // drives the AiProcessingOverlay progress bus
+        .eventListener(progress.listener)  // drives the AiProcessingOverlay progress bus
         .build()
     internal val gson = Gson()
     private val usage = TokenUsageRepository.get(app)
@@ -134,7 +137,7 @@ class GeminiRepository @Inject constructor(internal val app: Application) : AiCl
         if (localKey.isNotBlank()) {
             return Request.Builder()
                 .url("$directUrl?key=$localKey")
-                .post(GeminiProgress.CountingRequestBody(body.toRequestBody("application/json".toMediaType())))
+                .post(progress.CountingRequestBody(body.toRequestBody("application/json".toMediaType())))
                 .build()
         }
         val proxyBase = BuildConfig.PROXY_BASE_URL
@@ -148,7 +151,7 @@ class GeminiRepository @Inject constructor(internal val app: Application) : AiCl
         }
         val builder = Request.Builder()
             .url("$proxyBase/geminiProxy")
-            .post(GeminiProgress.CountingRequestBody(body.toRequestBody("application/json".toMediaType())))
+            .post(progress.CountingRequestBody(body.toRequestBody("application/json".toMediaType())))
             .addHeader("Authorization", "Bearer $token")
             .addHeader("X-AI-Action", action.header)
             .addHeader("X-Gemini-Model", model)

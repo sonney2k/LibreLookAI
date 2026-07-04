@@ -36,7 +36,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.librelookai.R
-import com.librelookai.gemini.GeminiProgress
 import kotlin.math.exp
 import kotlinx.coroutines.delay
 
@@ -58,8 +57,10 @@ fun AiProcessingOverlay(label: String = stringResource(R.string.ai_working), mod
         label = "pulse",
     )
 
-    // Live network progress for the in-flight Gemini call (null until it starts / after it ends).
-    val progress by GeminiProgress.state.collectAsState()
+    // Live network progress for the in-flight Gemini call (null until it starts / after it
+    // ends). The bus arrives via LocalGeminiProgress (injected @Singleton, § 3 slice 5); an
+    // unprovided Local (previews/tests) degrades to the time-based estimate only.
+    val progress = com.librelookai.LocalGeminiProgress.current?.state?.collectAsState()?.value
     // Ticking monotonic clock so the elapsed counter and the time-based wait bar advance.
     val composeStart = remember { SystemClock.elapsedRealtime() }
     var nowMillis by remember { mutableLongStateOf(SystemClock.elapsedRealtime()) }

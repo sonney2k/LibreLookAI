@@ -267,7 +267,7 @@ internal fun OutfitGenerationViewModel.enhanceComposerWithAi(
         val history = if (feedbackAdd.isNotEmpty()) s.composerFeedbackHistory + feedbackAdd else s.composerFeedbackHistory
         val suggestionCount = s.composerSuggestionCount.coerceIn(1, 10)
         // Register a one-tap retry so the global AI-failure dialog can re-run the composition.
-        com.librelookai.gemini.AiRetry.action = { enhanceComposerWithAi(prefs, weather, images) }
+        aiRetry.action = { enhanceComposerWithAi(prefs, weather, images) }
         _state.update {
             it.copy(
                 isComposerEnhancing     = true,

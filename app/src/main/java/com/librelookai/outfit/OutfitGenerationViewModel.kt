@@ -39,6 +39,7 @@ class OutfitGenerationViewModel @Inject constructor(
     app: Application,
     internal val drive: DriveService,
     internal val gemini: AiClient,
+    internal val aiRetry: com.librelookai.gemini.AiRetry,
     private val outfitsRepo: OutfitsRepository,
     session: ClosetSessionHolder,
     eventStore: com.librelookai.data.local.OutfitEventStore,

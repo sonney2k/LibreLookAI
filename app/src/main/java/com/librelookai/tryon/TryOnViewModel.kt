@@ -14,6 +14,7 @@ import java.io.File
 import com.librelookai.data.drive.DriveService
 import com.librelookai.data.model.TryOn
 import com.librelookai.gemini.AiClient
+import com.librelookai.gemini.AiRetry
 import com.librelookai.util.Analytics
 import com.librelookai.wardrobe.DriveImage
 
@@ -93,6 +94,7 @@ data class TryOnUiState(
 class TryOnViewModel @Inject constructor(
     app: Application,
     private val gemini: AiClient,
+    private val aiRetry: AiRetry,
     private val drive: DriveService,
     private val repo: TryOnRepository,
 ) : AndroidViewModel(app) {
@@ -199,7 +201,7 @@ class TryOnViewModel @Inject constructor(
             return
         }
         // Register a one-tap retry so the global AI-failure dialog can re-run this generation.
-        com.librelookai.gemini.AiRetry.action = { generate(personFiles, wardrobeImages, preferences) }
+        aiRetry.action = { generate(personFiles, wardrobeImages, preferences) }
         viewModelScope.launch {
             _state.update {
                 it.copy(isGenerating = true, error = null, errorRes = null, resultPath = null, isResultSaved = false)

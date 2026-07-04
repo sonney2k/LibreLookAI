@@ -15,17 +15,23 @@ import okio.ForwardingSink
 import okio.buffer
 
 /**
- * Global, single-slot progress bus for the in-flight Gemini HTTP call. The
- * [com.librelookai.util.AiProcessingOverlay] collects [state] to show real
- * upload-byte progress and, once the request body is sent, a time-based
- * "waiting for AI" estimate (Gemini typically takes 20–40s to answer).
+ * Single-slot progress bus for the in-flight Gemini HTTP call. The
+ * [com.librelookai.util.AiProcessingOverlay] collects [state] (via the app's
+ * `LocalGeminiProgress` CompositionLocal) to show real upload-byte progress
+ * and, once the request body is sent, a time-based "waiting for AI" estimate
+ * (Gemini typically takes 20–40s to answer).
  *
- * Driven by [Listener] (wired onto [GeminiRepository.http]) for the call
+ * Driven by [listener] (wired onto [GeminiRepository.http]) for the call
  * lifecycle plus [CountingRequestBody] for incremental upload bytes. Only ever
  * reflects the most recent call; an overlapping bulk call (which shows no
  * overlay) may overwrite the slot harmlessly.
+ *
+ * An injected `@Singleton` (refactor § 3 slice 5 — formerly a static `object`
+ * slot): [GeminiRepository] owns the write side, the UI receives the same
+ * instance through `MainActivity`.
  */
-object GeminiProgress {
+@javax.inject.Singleton
+class GeminiProgress @javax.inject.Inject constructor() {
     data class State(
         /** Monotonic call-start time ([SystemClock.elapsedRealtime]). */
         val startedAtMillis: Long,
@@ -66,7 +72,7 @@ object GeminiProgress {
     }
 
     /** OkHttp lifecycle hook: opens the slot on call start, clears it on completion/failure. */
-    internal object Listener : EventListener() {
+    internal val listener: EventListener = object : EventListener() {
         override fun callStart(call: Call) = start()
         override fun requestBodyEnd(call: Call, byteCount: Long) = uploadDone()
         override fun callEnd(call: Call) = finish()
@@ -75,7 +81,7 @@ object GeminiProgress {
     }
 
     /** Wraps a request body to report bytes as they are written to the socket. */
-    internal class CountingRequestBody(private val delegate: RequestBody) : RequestBody() {
+    internal inner class CountingRequestBody(private val delegate: RequestBody) : RequestBody() {
         override fun contentType(): MediaType? = delegate.contentType()
         override fun contentLength(): Long = delegate.contentLength()
         override fun writeTo(sink: BufferedSink) {

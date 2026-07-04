@@ -84,8 +84,13 @@ object AiEvents {
  * triggering ViewModel/UI sets [action] right before launching; it is cleared once consumed.
  * Only single, user-tapped actions register here — bulk/automatic operations leave it null so the
  * failure dialog shows a reason without a misleading "retry the batch" button.
+ *
+ * An injected `@Singleton` (refactor § 3 slice 5 — formerly a static `object` holder): the
+ * triggering VMs take it as a constructor param, the global dialog in `AppContent` receives the
+ * same instance through `MainActivity`.
  */
-object AiRetry {
+@javax.inject.Singleton
+class AiRetry @javax.inject.Inject constructor() {
     @Volatile
     var action: (() -> Unit)? = null
 }

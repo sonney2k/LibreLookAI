@@ -26,6 +26,15 @@ val LocalOpenSettings = androidx.compose.runtime.compositionLocalOf<(() -> Unit)
 val LocalStartTour = androidx.compose.runtime.compositionLocalOf<(() -> Unit)?> { null }
 
 /**
+ * The injected Gemini call-progress bus ([com.librelookai.gemini.GeminiProgress], refactor § 3
+ * slice 5 — formerly a static object) for [com.librelookai.util.AiProcessingOverlay]'s live
+ * upload bar. Provided by [AppContent] from the Hilt graph; null (previews / tests) degrades
+ * the overlay to its time-based estimate.
+ */
+val LocalGeminiProgress =
+    androidx.compose.runtime.staticCompositionLocalOf<com.librelookai.gemini.GeminiProgress?> { null }
+
+/**
  * Active-closet selector state surfaced to fullscreen Dialog viewers / the try-on composer so they
  * can render the same interactive closet dropdown as [AppScreenHeader]. Null hides the dropdown.
  */

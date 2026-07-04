@@ -151,7 +151,7 @@ internal fun OutfitGenerationViewModel.doTriggerPrediction(
         val filteredImages = if (setup.composerSourceFolderIds.isEmpty()) images
             else images.filter { it.folderId in setup.composerSourceFolderIds }
         // Register a one-tap retry so the global AI-failure dialog can re-run this prediction.
-        com.librelookai.gemini.AiRetry.action = { doTriggerPrediction(prefs, weather, images, feedbackHistory) }
+        aiRetry.action = { doTriggerPrediction(prefs, weather, images, feedbackHistory) }
         viewModelScope.launch {
             _state.update { it.copy(isPredicting = true, prediction = null, predictionSuggestions = emptyList(), predictionIndex = 0, predictionError = null) }
 
