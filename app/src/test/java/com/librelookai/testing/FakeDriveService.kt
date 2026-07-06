@@ -194,11 +194,19 @@ open class FakeDriveService : DriveService {
         renamedFiles += fileId to newName
     }
 
-    override suspend fun listSubfolders(parentFolderId: String): List<DriveFileDto> = emptyList()
+    /** Subfolders served per parent folder id by [listSubfolders]. */
+    val subfoldersByFolder = mutableMapOf<String, List<DriveFileDto>>()
+
+    /** Image files served per folder id by [listAllImageFiles] (the paginated bulk listing). */
+    val allImageFilesByFolder = mutableMapOf<String, List<DriveFileDto>>()
+
+    override suspend fun listSubfolders(parentFolderId: String): List<DriveFileDto> =
+        subfoldersByFolder[parentFolderId].orEmpty()
 
     override suspend fun createSubfolder(parentFolderId: String, name: String): String = "subfolder-$name"
 
-    override suspend fun listAllImageFiles(folderId: String): List<DriveFileDto> = emptyList()
+    override suspend fun listAllImageFiles(folderId: String): List<DriveFileDto> =
+        allImageFilesByFolder[folderId].orEmpty()
 
     override suspend fun loadOutfitEventsJson(folderId: String): String? = null
 
