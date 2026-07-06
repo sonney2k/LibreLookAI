@@ -8,7 +8,7 @@ deferred and inter-blocking:
 
 | § | Layer | Status |
 |---|-------|--------|
-| 1 | Multi-module Gradle | **Partial** — `:core:model`/`:core:common`/`:core:database`/`:core:ml`/`:core:sync`/`:core:ai` landed (phase 4); `core/designsystem` blocked on splitting the 31-locale `res/`, `feature/*` on § 5 |
+| 1 | Multi-module Gradle | **In progress** — `:core:model`/`:core:common`/`:core:database`/`:core:ml`/`:core:sync`/`:core:ai` landed (phase 4). § 5's completion unblocked `feature/*`, and the ground truth is measured (July 2026 — see the § 1 execution plan): the feature packages are still cyclic at the screen/plumbing level (multi-feature host files, shared plumbing homed in `wardrobe/`, settings data types read by everyone), so the plan sinks shared code down / lifts hosts into the shell first, then extracts leaf-first (`weather`/`auth`/`billing` are genuine leaves). `core/designsystem` rides slice 4 with the recorded res-split decision (module-scoped `R` for shared-UI strings, no key renames) |
 | 2 | Room as source of truth + SyncEngine | **Operationally complete** (June 2026) — all five JSON-cache slices landed (phase 2) as opaque-JSON cache rows; the `PendingMutation` queue + `SyncEngine` drain **every converted metadata write**: wardrobe (sidecar/delete/move), shopping, outfits (`outfit.syncFolder`), calendar wears (`outfitEvent.syncFolder`), trips (`trip.save`/`trip.delete`), try-ons (`tryon.syncIndex` + reused `wardrobe.deleteItem` — the last leftover, converted July 2026; only the image *byte* uploads stay direct), plus the WorkManager process-death backstop (see phase 2 status). The real-entity / Flow-read conversion is deliberately carried into § 5 |
 | 3 | DI + interfaces at the seams | **Done** (July 2026 — slices 1–5 landed; the one deferred sub-item, the `ImageEncoding.tier` static kill, was resolved by § 7's recorded reduced-scope decision: it *stays* on the `StaticPreferenceMirrors` mechanism, revisit only if the pref gains a cross-process or observe-for-change requirement). The trail: Hilt landed (phase 1); the gemini↔drive↔billing package cycles are broken (June 2026, see phase 1 status), making the layering acyclic; **`DriveService` landed at the repo seam** (July 2026, § 3 slice 1 — see the § 3 execution plan): the five § 5 repos depend on the interface, `DriveRepository` implements it (absorbed extensions delegate to `internal *Impl`), Hilt `@Binds`-bound; **the § 2 sync handlers are on the interface too** (July 2026, § 3 slice 2, all seven incl. the later try-on index handler — handler surface absorbed, drain/retry/rollback/wipe-guard invariants fake-tested); **the pipeline / use-case / VM seams flipped as well** (July 2026, § 3 slice 3 — every app- and `:core:ai`-side consumer takes the interface; concrete type remains only in the Hilt graph, `AppContent` threading and the deliberate `DriveMigrationViewModel` exception); **`AiClient` landed at the Gemini seam** (July 2026, § 3 slice 4 — the four consumer-called ops virtual, all ten AI consumers on the interface, first fake-based use-case tests via `FakeAiClient`); **`AiRetry` + `GeminiProgress` are injected `@Singleton`s** (July 2026, § 3 slice 5 — two of the three static globals killed; `ImageEncoding.tier` deferred to § 7's settings seam) |
 | 4 | Navigation Compose | **Done** (phase 3 complete; per-destination VM scoping deferred to § 5) |
@@ -1349,6 +1349,108 @@ cache-folder rule, VM split sections) as each slice lands, per the working agree
 `./gradlew :app:assembleDebug testDebugUnitTest` green; each slice ships its fake-based tests;
 no Drive-format or behavior change intended anywhere in § 3 (pure seam work), so the manual
 regression pass is a smoke check of the touched feature areas.
+
+## § 1 execution plan: feature modules + designsystem (drafted July 2026)
+
+### Ground truth (measured July 2026 — import scan over `app/src/main`, core-module symbols excluded)
+
+§ 5's completion removed the *VM-scoping* blocker (no cross-VM `LaunchedEffect` bridges, repos
+own cross-feature data), but the feature packages are still **cyclic at the screen/plumbing
+level**: wardrobe↔shopping, wardrobe↔outfit, wardrobe↔tryon, settings↔wardrobe,
+settings↔outfit, settings↔tryon, outfit↔travel, tryon↔shopping. The edges fall into three
+categories:
+
+- **(A) Multi-feature host files** — screens/destinations that thread several features' VMs
+  as required params (the § 5 no-default rule): `wardrobe/ItemViewerDestination` (outfits +
+  shopping + try-on VMs), `wardrobe/WardrobeScreen` (outfit/shopping/tryon VMs),
+  `wardrobe/ReplacementsScreen` (hosts `OutfitComposerScreen` + `TryOnComposerScreen`),
+  `settings/UsageScreen` (four features' VMs), `settings/SettingsScreen`+`SettingsNavGraph`
+  (wardrobe/location VMs), `settings/FixCutoutBgDialog` (wardrobe progress models),
+  `tryon/TryOnScreen` + `outfit/OutfitComposerScreen` (shopping VM),
+  `outfit/OutfitsScreen`+`OutfitViewerDestination` (trips VM), and the shopping-helper
+  cluster (`shopping/ShoppingHelperScreen`/`IdentifyGapsTab`/`SimilarityFinderTab` ↔
+  `wardrobe/WardrobeGapScreen`/`CaptureScreen`/`UrlImportPicker`/gap VMs).
+- **(B) Shared plumbing homed in `wardrobe/`, consumed by shopping** — `ItemSidecar` +
+  `toCachedItem` (repos + both ingestion workers), `ItemVersions` + `SidecarSyncQueue`,
+  the § 2 move/delete mutation kinds + payloads (`ITEM_DELETE_KIND`/`ITEM_MOVE_KIND`/
+  `DeleteItemPayload`/`MoveItemPayload`/`WardrobeMoveSyncHandler`), the URL-import machinery
+  (`WebProductFetcher`, `UrlImportPickerState`, `rotateBitmapFileBy90`), the tag taxonomy +
+  filter UI (`tagCategories`/`tagStringsForCategory`/`TagCategory`/`QuickCategoryRow`/
+  `WardrobeFilterSheet`/`WardrobeZoomableItemGrid`, also consumed by outfit/travel/tryon),
+  and `DriveImage.toPromptJson` (pure — `AiConsiderations` param, no `R`; consumed by
+  outfit/travel).
+- **(C) Settings data types read by everyone** — `UserPreferences`/`AppLanguage`/`AppFont`
+  (+ `TryOnSlot` on `ProfileViewModel`), imported by outfit/travel/shopping/tryon/wardrobe/
+  onboarding/util/ui/data. `ProfileViewModel` itself is threaded into most features as the
+  prefs surface even though `data/session/UserPreferencesRepository` is the sanctioned read
+  path (§ 5 slice 2).
+
+**Genuine leaves** (no outbound feature imports): `weather`, `auth`, `billing`, `service`
+(the latter core-shaped: `JobLock`/`JobForegroundService`). `onboarding` is near-leaf
+(→ settings `ProfileViewModel`/`TryOnSlot`, → `service`).
+
+### Design decisions (recorded up front)
+
+- **Sink shared code down before extracting anything** — every slice that moves symbols out
+  of a feature package is independently useful (kills a CLAUDE.md placement-prose rule by
+  making it structural) even if feature modules never land. Extraction order is
+  leaf-first; a feature extracts only when its outbound edges are already gone.
+- **Moved code keeps its original `com.librelookai.*` package** (the phase-4 rule) so
+  imports and tests stay valid.
+- **Multi-feature hosts lift *up* into the app shell** (they are NavHost destination hosts /
+  cross-tab surfaces — app-shaped by definition), they do not force merged feature modules.
+- **`res/` split decision (gates `core/designsystem`)**: shared composables reference
+  `R.string` across 31 locales. Decision: move shared-UI strings into the designsystem
+  module's own `res/` (module-scoped `R`), leaving feature strings in `:app` — the
+  `add_translations.py` tooling gains a `--module` arg. **No string key renames** (release
+  notes / translations tooling depend on them). Do this once, for the designsystem slice
+  only — feature modules keep using `:app` resources until they extract (feature `res/`
+  moves ride each feature's own slice).
+- **`ProfileViewModel` stays feature/settings-internal at the end state**: feature consumers
+  needing prefs read `UserPreferencesRepository` (which sinks to core with `data/session`);
+  screens that genuinely need profile *actions* keep taking the VM as a param threaded from
+  the shell (a shell concern, not a feature→settings import).
+
+### Slices (dependency-ordered; each verified with `assembleDebug testDebugUnitTest`)
+
+1. **Sink pure data + pure logic (mechanical, no behavior change).**
+   `UserPreferences`/`AppLanguage`/`AppFont`/`TryOnSlot` → `core/model` (original packages
+   kept); tag-taxonomy *data* (`TagCategory`, `tagCategories`, `tagStringsForCategory`,
+   label helpers minus composables) → `core/model`; `PromptItemJson.kt` → `core/model`
+   (next to `DriveImage`; pure). Kills every category-(C) edge that isn't `ProfileViewModel`.
+2. **Sink the shared item plumbing.** `ItemSidecar` + `toCachedItem` → `core/model` /
+   `core/database` boundary; `ItemVersions` → `data/session`-shaped core home;
+   `SidecarSyncQueue` + the move/delete kinds/payloads (+ their handlers if the compiler
+   pulls them) → `core/sync`; the URL-import machinery (`WebProductFetcher`,
+   `UrlImportPickerState`, `rotateBitmapFileBy90`) → a shared non-feature home (candidate:
+   `core/common` for the pure parts; the Compose picker stays app-side until slice 4).
+   Kills the shopping→wardrobe repo/worker edges (category B) — after this, both ingestion
+   workers and all repos are feature-import-free.
+3. **Lift the multi-feature hosts into the app shell** (`ItemViewerDestination`, the
+   `UsageScreen` wiring, `ReplacementsScreen`, the WardrobeScreen↔shopping-helper cluster
+   wiring, `FixCutoutBgDialog`) — mechanical file moves + param threading; the § 5
+   "no VM param defaults" rule already makes these safe.
+4. **`core/designsystem`** — the res-split (per the recorded decision) + move
+   `ui/theme`, `ui/components` (AppFab/SelectionActionBar/DetailActionBar), and the shared
+   item-UI (`WardrobeFilterSheet`, `WardrobeZoomableItemGrid`/`WardrobeItemGrid`,
+   `QuickCategoryRow`, `MatchPreviewDialog`/`MatchRow`, `DestructiveConfirmDialog`,
+   `Scrollbar` stays `core/common`).
+5. **Extract leaf features** — `feature/weather`, `feature/auth`, `feature/billing`
+   (+ `service` → core home). Mechanical phase-4-style moves; each gets its own module
+   `res/` for its strings.
+6. **Extract the remaining features leaf-first as their edges reach zero** — expected order:
+   onboarding → tryon/travel → shopping → outfit → wardrobe → settings last (settings hosts
+   the cross-feature Usage/Advanced surfaces until slice 3 lands them in the shell).
+   Travel↔outfit is the hardest knot (trip outfits *are* outfits: generation VM, wear-history
+   builders) — re-assess after slice 3 whether travel folds its outfit reads onto
+   `OutfitsRepository`/`core` flows or the two extract together.
+
+### Verification (per slice)
+
+`./gradlew :app:assembleDebug testDebugUnitTest` green; no Drive-format or behavior change
+anywhere in § 1 (pure moves + module boundaries); CLAUDE.md package-layout map updated per
+slice (the working agreement).
+
 
 ## Verification (per phase)
 
