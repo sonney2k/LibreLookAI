@@ -50,21 +50,20 @@ class GeminiRepository @Inject constructor(
     private val usage = TokenUsageRepository.get(app)
 
     /**
-     * If the proxy returned HTTP 402, parse `{ needed, have }` and raise
-     * [com.librelookai.billing.InsufficientCreditsException] so the caller
-     * can route the user to the buy-credits screen. No-op for any other code.
+     * If the proxy returned HTTP 402, parse `{ needed, have }`, emit the global top-up event
+     * (which renders the InsufficientCreditsDialog regardless of what the caller does with the
+     * result) and return the typed [AiResult.InsufficientCredits] for the caller to return.
+     * Null for any other code.
      */
-    internal fun throwIf402(code: Int, body: String) {
-        if (code != 402) return
+    internal fun creditsIf402(code: Int, body: String): AiResult.InsufficientCredits? {
+        if (code != 402) return null
         val obj = try { gson.fromJson(body, Map::class.java) as? Map<*, *> } catch (_: Exception) { null }
         val needed = (obj?.get("needed") as? Number)?.toInt() ?: 0
         val have = (obj?.get("have") as? Number)?.toInt() ?: 0
-        val ex = com.librelookai.billing.InsufficientCreditsException(needed, have)
-        // Emit on the global bus first so the top-level observer renders the
-        // InsufficientCreditsDialog even when the caller's generic
-        // `catch (Exception)` block swallows the throw.
-        com.librelookai.billing.CreditsEvents.emitTopUp(ex)
-        throw ex
+        com.librelookai.billing.CreditsEvents.emitTopUp(
+            com.librelookai.billing.InsufficientCreditsException(needed, have),
+        )
+        return AiResult.InsufficientCredits(needed, have)
     }
 
     /**
@@ -168,7 +167,8 @@ class GeminiRepository @Inject constructor(
      * Pre-flight key/backend check shared by every Gemini call. Returns true when a call may
      * proceed. When nothing is configured it returns false and — for [notify] (user-initiated)
      * calls only — emits a [AiNoticeKind.NOT_CONFIGURED] notice so the global handler can offer to
-     * set up a key. Automatic/bulk calls pass `notify = false` and simply degrade to null.
+     * set up a key. Automatic/bulk calls pass `notify = false` and simply degrade
+     * (the caller sees the typed [AiResult.NotConfigured]).
      */
     internal fun ensureConfigured(notify: Boolean): Boolean {
         if (isConfigured()) return true
@@ -177,13 +177,13 @@ class GeminiRepository @Inject constructor(
     }
 
     /**
-     * Maps a failed Gemini outcome to a user-facing reason and, for [notify] calls, emits a
-     * retryable [AiNoticeKind.FAILED] notice. [code] is the HTTP status (0 for a network/parse
-     * exception); [body] is the (possibly empty) response body used to disambiguate 400s and
-     * detect a blocked/empty 200.
+     * Maps a failed Gemini outcome to a user-facing reason and returns it as the typed
+     * [AiResult.Failure] for the caller to return; for [notify] calls it also emits a retryable
+     * [AiNoticeKind.FAILED] notice. [code] is the HTTP status (0 for a network/parse exception);
+     * [body] is the (possibly empty) response body used to disambiguate 400s and detect a
+     * blocked/empty 200.
      */
-    internal fun emitFailure(code: Int, body: String, notify: Boolean) {
-        if (!notify) return
+    internal fun failure(code: Int, body: String, notify: Boolean): AiResult.Failure {
         val reason = when {
             code == 429 -> AiErrorReason.QUOTA
             code == 400 && (body.contains("API_KEY_INVALID") || body.contains("API key not valid")) ->
@@ -193,7 +193,8 @@ class GeminiRepository @Inject constructor(
             code in 500..599 -> AiErrorReason.SERVER
             else -> AiErrorReason.GENERIC
         }
-        AiEvents.emit(AiNoticeKind.FAILED, reason, canRetry = true)
+        if (notify) AiEvents.emit(AiNoticeKind.FAILED, reason, canRetry = true)
+        return AiResult.Failure(reason)
     }
 
     /**
@@ -229,13 +230,13 @@ class GeminiRepository @Inject constructor(
 
     /**
      * Sends [imageFile] to Gemini and returns a PNG with the background removed.
-     * Returns null on any failure — callers should fall back to the original.
+     * On any non-[AiResult.Success] outcome callers should fall back to the original.
      */
-    override suspend fun removeBackground(imageFile: File, outputDir: File, notify: Boolean): File? =
+    override suspend fun removeBackground(imageFile: File, outputDir: File, notify: Boolean): AiResult<File> =
         withContext(Dispatchers.IO) {
             if (!ensureConfigured(notify)) {
                 Log.w(TAG, "API key not set — skipping background removal")
-                return@withContext null
+                return@withContext AiResult.NotConfigured
             }
 
             Log.d(TAG, "Sending ${imageFile.length() / 1024}KB image to Gemini ($BG_MODEL)")
@@ -278,12 +279,11 @@ class GeminiRepository @Inject constructor(
                 Log.d(TAG, "HTTP ${response.code}")
                 // Log full body (may be large; truncate for readability)
                 Log.d(TAG, "Response: ${responseBody.take(2000)}")
-                throwIf402(response.code, responseBody)
+                creditsIf402(response.code, responseBody)?.let { return@withContext it }
 
                 if (!response.isSuccessful) {
                     Log.e(TAG, "Non-2xx response — falling back to original")
-                    emitFailure(response.code, responseBody, notify)
-                    return@withContext null
+                    return@withContext failure(response.code, responseBody, notify)
                 }
 
                 val parsed = gson.fromJson(responseBody, GeminiResponse::class.java)
@@ -300,8 +300,7 @@ class GeminiRepository @Inject constructor(
                         ?.mapNotNull { it.text }?.joinToString(" ")
                     Log.w(TAG, "No image part in response. Text parts: $textParts")
                     Log.w(TAG, "Finish reason: ${parsed.candidates?.firstOrNull()?.finishReason}")
-                    emitFailure(200, responseBody, notify)
-                    return@withContext null
+                    return@withContext failure(200, responseBody, notify)
                 }
 
                 val rawFile = File(outputDir, "${imageFile.nameWithoutExtension}_cutout_raw.png")
@@ -310,22 +309,19 @@ class GeminiRepository @Inject constructor(
                 removeGreenScreen(rawFile, outFile)
                 rawFile.delete()
                 Log.d(TAG, "Background removed — saved ${outFile.length() / 1024}KB PNG")
-                outFile
-            } catch (e: com.librelookai.billing.InsufficientCreditsException) {
-                throw e
+                AiResult.Success(outFile)
             } catch (e: AiUnavailableException) {
-                null // buildRequest already emitted the notice
+                AiResult.Failure(e.reason) // buildRequest already emitted the notice
             } catch (e: Exception) {
                 Log.e(TAG, "Exception during Gemini call: ${e.message}", e)
-                emitFailure(0, "", notify)
-                null
+                failure(0, "", notify)
             }
         }
 
     /**
      * Sends the user's person photos in [personFiles] together with the clothing items in
      * [itemFiles] to the Gemini image-generation model and returns a single composited image
-     * that shows the person wearing those items. Returns null on any failure.
+     * that shows the person wearing those items.
      *
      * [outputDir] is used as the destination for the generated PNG.
      * [preferences] is optional free-text the user has set in their profile; it is woven
@@ -372,9 +368,9 @@ class GeminiRepository @Inject constructor(
         category: UsageCategory,
         bulkItems: Int,
         notify: Boolean,
-    ): String? = generateTextImpl(prompt, category, bulkItems, notify)
+    ): AiResult<String> = generateTextImpl(prompt, category, bulkItems, notify)
 
-    override suspend fun classifyClothing(imageFile: File, language: String): ClothingTags? =
+    override suspend fun classifyClothing(imageFile: File, language: String): AiResult<ClothingTags> =
         classifyClothingImpl(imageFile, language)
 
     override suspend fun tryOnOutfit(
@@ -383,5 +379,5 @@ class GeminiRepository @Inject constructor(
         outputDir: File,
         preferences: String,
         notify: Boolean,
-    ): File? = tryOnOutfitImpl(personFiles, itemFiles, outputDir, preferences, notify)
+    ): AiResult<File> = tryOnOutfitImpl(personFiles, itemFiles, outputDir, preferences, notify)
 }

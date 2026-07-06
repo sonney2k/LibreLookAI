@@ -4,10 +4,10 @@ import android.app.Application
 import androidx.test.core.app.ApplicationProvider
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.librelookai.billing.InsufficientCreditsException
 import com.librelookai.data.drive.DrainScheduler
 import com.librelookai.data.drive.SyncEngine
 import com.librelookai.data.model.TryOn
+import com.librelookai.gemini.AiResult
 import com.librelookai.gemini.AiRetry
 import com.librelookai.gemini.ClothingTags
 import com.librelookai.testing.FakeAiClient
@@ -199,7 +199,7 @@ class TryOnViewModelTest {
 
     @Test
     fun `insufficient credits reset the loading state without a local error (global dialog owns it)`() = runTest {
-        gemini.error = InsufficientCreditsException(needed = 10, have = 2)
+        gemini.outcome = AiResult.InsufficientCredits(needed = 10, have = 2)
         val vm = vm()
         vm.openComposer(setOf("d1"))
 

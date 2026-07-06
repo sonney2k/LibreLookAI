@@ -14,7 +14,9 @@ import java.io.File
 import com.librelookai.data.drive.DriveService
 import com.librelookai.data.model.TryOn
 import com.librelookai.gemini.AiClient
+import com.librelookai.gemini.AiResult
 import com.librelookai.gemini.AiRetry
+import com.librelookai.gemini.getOrNull
 import com.librelookai.util.Analytics
 import com.librelookai.wardrobe.DriveImage
 
@@ -213,15 +215,15 @@ class TryOnViewModel @Inject constructor(
             val snapshotSourceKind = _state.value.sourceKind
             val snapshotSourceContext = _state.value.sourceContext ?: ""
             val source = snapshotSourceKind.serialized()
-            val result = try {
-                gemini.tryOnOutfit(personFiles, files, outDir, preferences, notify = true)
-            } catch (e: com.librelookai.billing.InsufficientCreditsException) {
+            val outcome = gemini.tryOnOutfit(personFiles, files, outDir, preferences, notify = true)
+            if (outcome is AiResult.InsufficientCredits) {
                 // The global InsufficientCreditsDialog (installed in MainActivity)
                 // surfaces the buy prompt; here we just reset the loading state.
                 Analytics.event("tryon_generate", mapOf("result" to "failed", "reason" to "credits", "source" to source))
                 _state.update { it.copy(isGenerating = false) }
                 return@launch
             }
+            val result = outcome.getOrNull()
             if (result == null) {
                 Analytics.event("tryon_generate", mapOf("result" to "failed", "reason" to "no_response", "source" to source))
                 _state.update {

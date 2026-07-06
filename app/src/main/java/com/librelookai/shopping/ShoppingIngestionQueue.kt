@@ -6,6 +6,7 @@ import com.librelookai.data.drive.DriveService
 import com.librelookai.data.local.WardrobeItemStore
 import com.librelookai.data.session.UserPreferencesRepository
 import com.librelookai.gemini.AiClient
+import com.librelookai.gemini.getOrNull
 import com.librelookai.settings.AppLanguage
 import com.librelookai.wardrobe.DriveImage
 import com.librelookai.wardrobe.ItemSidecar
@@ -84,7 +85,7 @@ class ShoppingIngestionQueue @Inject constructor(
         if (!rawFile.exists()) return
 
         // Step 1 — bg removal (fall back to raw on failure).
-        val processedFile = gemini.removeBackground(rawFile, drive.cacheDir) ?: rawFile
+        val processedFile = gemini.removeBackground(rawFile, drive.cacheDir).getOrNull() ?: rawFile
 
         // Step 2 — upload cutout, rename to "{cutoutId}_cutout.png".
         val cutoutDrive = runCatching {
@@ -127,7 +128,7 @@ class ShoppingIngestionQueue @Inject constructor(
         runCatching { itemStore.upsert(folderId, finished.toCachedItem(), staleDriveId = job.driveId) }
 
         // Step 7 — classify tags.
-        val tags = gemini.classifyClothing(localCutout, geminiLanguage)
+        val tags = gemini.classifyClothing(localCutout, geminiLanguage).getOrNull()
         if (tags != null) {
             finished = finished.copy(tags = tags)
             runCatching { itemStore.upsert(folderId, finished.toCachedItem()) }

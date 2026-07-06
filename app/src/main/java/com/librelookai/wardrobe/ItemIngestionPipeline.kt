@@ -13,6 +13,7 @@ import com.librelookai.data.local.WardrobeItemStore
 import com.librelookai.data.session.ClosetSessionHolder
 import com.librelookai.data.session.UserPreferencesRepository
 import com.librelookai.gemini.AiClient
+import com.librelookai.gemini.getOrNull
 import com.librelookai.ml.EmbeddingService
 import com.librelookai.service.JobLock
 import com.librelookai.settings.AppLanguage
@@ -436,7 +437,7 @@ class ItemIngestionPipeline @Inject constructor(
         val processedFile: File = job.prebuiltCutoutPath
             ?.let { File(it) }
             ?.takeIf { it.exists() }
-            ?: (gemini.removeBackground(rawFile, drive.cacheDir) ?: rawFile)
+            ?: (gemini.removeBackground(rawFile, drive.cacheDir).getOrNull() ?: rawFile)
 
         // Step 2 — upload cutout, then rename to "{cutoutId}_cutout.png"
         val cutoutDrive = runCatching { drive.uploadAsCutout(job.folderId, processedFile) }.getOrNull()
@@ -485,7 +486,7 @@ class ItemIngestionPipeline @Inject constructor(
         }
 
         // Step 7 — classify clothing tags
-        val tags = gemini.classifyClothing(localCutout, geminiLanguage)
+        val tags = gemini.classifyClothing(localCutout, geminiLanguage).getOrNull()
         if (tags != null) {
             finished = finished.copy(tags = tags)
             runCatching { itemStore.upsert(job.folderId, finished.toCachedItem()) }

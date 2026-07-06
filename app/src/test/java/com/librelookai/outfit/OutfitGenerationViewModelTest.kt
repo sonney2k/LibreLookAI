@@ -2,12 +2,12 @@ package com.librelookai.outfit
 
 import android.app.Application
 import androidx.test.core.app.ApplicationProvider
-import com.librelookai.billing.InsufficientCreditsException
 import com.librelookai.data.drive.DrainScheduler
 import com.librelookai.data.drive.DriveFileDto
 import com.librelookai.data.drive.SyncEngine
 import com.librelookai.data.model.Outfit
 import com.librelookai.data.session.ClosetSessionHolder
+import com.librelookai.gemini.AiResult
 import com.librelookai.gemini.AiRetry
 import com.librelookai.gemini.ClothingTags
 import com.librelookai.gemini.FashionTrendsCache
@@ -199,7 +199,7 @@ class OutfitGenerationViewModelTest {
         val images = listOf(item("top-1", "tops"))
         val vm = vm()
         vm.openComposer(seedItemIds = emptySet(), images = images, prefs = null)
-        gemini.error = InsufficientCreditsException(needed = 10, have = 2)
+        gemini.outcome = AiResult.InsufficientCredits(needed = 10, have = 2)
 
         vm.enhanceComposerWithAi(prefs = null, weather = null, images = images)
 

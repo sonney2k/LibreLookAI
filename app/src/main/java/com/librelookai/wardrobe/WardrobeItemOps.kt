@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.util.Log
 import com.librelookai.R
-import com.librelookai.billing.InsufficientCreditsException
 import com.librelookai.data.drive.DriveRepository
 import com.librelookai.data.drive.DriveService
 import com.librelookai.data.local.WardrobeItemStore
@@ -14,6 +13,8 @@ import com.librelookai.data.session.UserPreferencesRepository
 import com.librelookai.gemini.ClothingTags
 import com.librelookai.gemini.CutoutFixActions
 import com.librelookai.gemini.AiClient
+import com.librelookai.gemini.AiResult
+import com.librelookai.gemini.getOrNull
 import com.librelookai.gemini.fixCutoutBackground
 import com.librelookai.service.JobLock
 import com.librelookai.settings.AppLanguage
@@ -148,12 +149,13 @@ class WardrobeItemOps @Inject constructor(
             _progress.update { it.copy(processingImageId = driveId) }
             val cachedFile = drive.cachedFile(driveId)
                 ?: run { _progress.update { it.copy(processingImageId = null) }; return@launch }
-            val tags = try {
-                gemini.classifyClothing(cachedFile, geminiLanguage)
-            } catch (e: InsufficientCreditsException) {
+            val result = gemini.classifyClothing(cachedFile, geminiLanguage)
+            if (result is AiResult.InsufficientCredits) {
                 _progress.update { it.copy(processingImageId = null) }
                 return@launch
-            } ?: run { _progress.update { it.copy(processingImageId = null) }; return@launch }
+            }
+            val tags = result.getOrNull()
+                ?: run { _progress.update { it.copy(processingImageId = null) }; return@launch }
             _progress.update { it.copy(processingImageId = null) }
             withContext(Dispatchers.IO) {
                 persistItemTags(driveId, tags)
@@ -175,12 +177,13 @@ class WardrobeItemOps @Inject constructor(
                     _errors.emit(context.localized().getString(R.string.error_original_unavailable))
                     return@launch
                 }
-            val processedFile = try {
-                gemini.removeBackground(source, drive.cacheDir)
-            } catch (e: InsufficientCreditsException) {
+            val result = gemini.removeBackground(source, drive.cacheDir)
+            if (result is AiResult.InsufficientCredits) {
                 _progress.update { it.copy(isProcessing = false, processingImageId = null) }
                 return@launch
-            } ?: run { _progress.update { it.copy(isProcessing = false, processingImageId = null) }; return@launch }
+            }
+            val processedFile = result.getOrNull()
+                ?: run { _progress.update { it.copy(isProcessing = false, processingImageId = null) }; return@launch }
 
             _progress.update { it.copy(isProcessing = false, isUploading = true) }
             runCatching {

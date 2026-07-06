@@ -1233,7 +1233,7 @@ internal fun AppContent(
                                 ReplacementsResultDialog(gapViewModel = gapViewModel)
 
                                 // Global insufficient-credits handler — listens for 402s emitted
-                                // by GeminiRepository.throwIf402 and shows the dialog regardless
+                                // by GeminiRepository.creditsIf402 and shows the dialog regardless
                                 // of which ViewModel triggered the call. "Buy" jumps to Settings.
                                 var topUpEvent by remember {
                                     mutableStateOf<com.librelookai.billing.InsufficientCreditsException?>(null)

@@ -26,7 +26,9 @@ import com.librelookai.outfit.buildLovedOutfitsSummary
 import com.librelookai.outfit.buildWearHistorySummary
 import com.librelookai.outfit.wearHistoryFlow
 import com.librelookai.gemini.AiClient
+import com.librelookai.gemini.AiResult
 import com.librelookai.gemini.AiRetry
+import com.librelookai.gemini.getOrNull
 import com.librelookai.gemini.PromptKey
 import com.librelookai.gemini.PromptStore
 import com.librelookai.gemini.UsageCategory
@@ -330,7 +332,15 @@ class TravelViewModel @Inject constructor(
             )
             Log.d("TravelVM", "Packing prompt length: ${prompt.length} chars")
 
-            val raw = gemini.generateText(prompt, UsageCategory.TRAVEL, notify = true)
+            val outcome = gemini.generateText(prompt, UsageCategory.TRAVEL, notify = true)
+            if (outcome is AiResult.InsufficientCredits) {
+                // The global InsufficientCreditsDialog surfaces the buy prompt; just reset.
+                // (Pre-§ 6 this path *threw* through the coroutine — a latent crash.)
+                Analytics.event("travel_plan", mapOf("stage" to "failed", "reason" to "credits"))
+                _state.update { it.copy(isGenerating = false) }
+                return@launch
+            }
+            val raw = outcome.getOrNull()
             if (raw == null) {
                 Analytics.event("travel_plan", mapOf("stage" to "failed", "reason" to "no_response"))
                 _state.update { it.copy(isGenerating = false, error = getApplication<Application>().localized().getString(com.librelookai.R.string.error_gemini_no_response)) }

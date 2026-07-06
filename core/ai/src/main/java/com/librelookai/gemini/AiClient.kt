@@ -14,9 +14,12 @@ import java.io.File
  * so each absorbed method is an interface member delegating to the renamed `internal`
  * `<name>Impl` extension in its domain file.
  *
- * Return semantics are unchanged: **every call returns null on failure** and callers degrade
- * gracefully (the sealed `AiResult` conversion is § 6, a separate slice). `searchFashionTrends`
- * is deliberately absent — callers must go through [FashionTrendsCache].
+ * Every call returns a sealed [AiResult] (refactor § 6): [AiResult.Success] carries the value;
+ * [AiResult.InsufficientCredits] replaced the old thrown
+ * `InsufficientCreditsException` (the global top-up dialog still fires repo-side); everything
+ * else degrades to [AiResult.NotConfigured] / [AiResult.Failure]. Callers that only degrade use
+ * `getOrNull()`. `searchFashionTrends` is deliberately absent — callers must go through
+ * [FashionTrendsCache].
  *
  * Grown incrementally — add a method the moment a consumer of the *interface* needs it,
  * never speculatively.
@@ -32,16 +35,16 @@ interface AiClient {
         category: UsageCategory = UsageCategory.OTHER,
         bulkItems: Int = 1,
         notify: Boolean = false,
-    ): String?
+    ): AiResult<String>
 
     /** Clothing-tag classification of a single item image, in [language]. */
-    suspend fun classifyClothing(imageFile: File, language: String = "English"): ClothingTags?
+    suspend fun classifyClothing(imageFile: File, language: String = "English"): AiResult<ClothingTags>
 
     /**
-     * Sends [imageFile] to Gemini and returns a PNG in [outputDir] with the background removed,
-     * or null on any failure — callers fall back to the original.
+     * Sends [imageFile] to Gemini and returns a PNG in [outputDir] with the background removed —
+     * on any non-[AiResult.Success] outcome callers fall back to the original.
      */
-    suspend fun removeBackground(imageFile: File, outputDir: File, notify: Boolean = false): File?
+    suspend fun removeBackground(imageFile: File, outputDir: File, notify: Boolean = false): AiResult<File>
 
     /** Virtual try-on: renders [personFiles] wearing [itemFiles] into [outputDir]. */
     suspend fun tryOnOutfit(
@@ -50,7 +53,7 @@ interface AiClient {
         outputDir: File,
         preferences: String = "",
         notify: Boolean = false,
-    ): File?
+    ): AiResult<File>
 }
 
 @Module

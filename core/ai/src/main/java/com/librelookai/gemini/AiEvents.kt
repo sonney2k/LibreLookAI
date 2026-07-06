@@ -32,8 +32,8 @@ enum class AiErrorReason {
 /**
  * Thrown by [GeminiRepository.buildRequest] when no usable AI backend is available — managed mode
  * with no Firebase session, or nothing configured at all. It carries the semantic [reason] so the
- * UI layer can show a localized explanation. Every Gemini method's generic `catch (Exception)`
- * turns it into a graceful `null`, so it never crashes the caller.
+ * UI layer can show a localized explanation. Every Gemini method catches it into a typed
+ * [AiResult.Failure] (refactor § 6), so it never crosses the [AiClient] seam.
  */
 class AiUnavailableException(val reason: AiErrorReason) : Exception("AI unavailable")
 
@@ -59,8 +59,8 @@ data class AiNotice(
 /**
  * Process-wide event bus for "AI couldn't run" signals, mirroring
  * [com.librelookai.billing.CreditsEvents]. The repository emits a notice for **user-initiated**
- * calls (the `notify` flag) before returning null, so even though callers swallow the failure into
- * a null result, the top-level observer in `AppContent` still surfaces the reason and the
+ * calls (the `notify` flag) before returning the typed [AiResult] failure, so even when the
+ * caller just degrades, the top-level observer in `AppContent` still surfaces the reason and the
  * appropriate action (set up a key, or retry).
  *
  * Replay 0 (only current collectors see it); extraBuffer 4 so concurrent calls don't drop events.

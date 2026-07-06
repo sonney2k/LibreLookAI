@@ -14,7 +14,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import com.librelookai.data.model.GapAnalysis
 import com.librelookai.gemini.AiClient
+import com.librelookai.gemini.AiResult
 import com.librelookai.gemini.AiRetry
+import com.librelookai.gemini.getOrNull
 import com.librelookai.gemini.PromptKey
 import com.librelookai.gemini.PromptStore
 import com.librelookai.gemini.UsageCategory
@@ -73,14 +75,14 @@ class WardrobeGapViewModel @Inject constructor(
             val prompt = buildGapPrompt(PromptStore.get(getApplication(), PromptKey.GAP), images, prefs)
             Log.d("GapVM", "Gap prompt length: ${prompt.length} chars")
 
-            val raw = try {
-                gemini.generateText(prompt, UsageCategory.GAP_ANALYSIS, notify = true)
-            } catch (e: com.librelookai.billing.InsufficientCreditsException) {
+            val outcome = gemini.generateText(prompt, UsageCategory.GAP_ANALYSIS, notify = true)
+            if (outcome is AiResult.InsufficientCredits) {
                 // Global InsufficientCreditsDialog in MainActivity shows the prompt;
                 // here we just reset the analyzing flag.
                 _state.update { it.copy(isAnalyzing = false) }
                 return@launch
             }
+            val raw = outcome.getOrNull()
             if (raw == null) {
                 _state.update { it.copy(isAnalyzing = false, error = getApplication<Application>().localized().getString(com.librelookai.R.string.error_gemini_no_response)) }
                 return@launch
@@ -124,12 +126,12 @@ class WardrobeGapViewModel @Inject constructor(
             val prompt = buildReplacementsPrompt(selected, remaining, prefs)
             Log.d("GapVM", "Replacements prompt length: ${prompt.length} chars")
 
-            val raw = try {
-                gemini.generateText(prompt, UsageCategory.REPLACEMENTS, notify = true)
-            } catch (e: com.librelookai.billing.InsufficientCreditsException) {
+            val outcome = gemini.generateText(prompt, UsageCategory.REPLACEMENTS, notify = true)
+            if (outcome is AiResult.InsufficientCredits) {
                 _state.update { it.copy(isSuggestingReplacements = false) }
                 return@launch
             }
+            val raw = outcome.getOrNull()
             if (raw == null) {
                 _state.update {
                     it.copy(

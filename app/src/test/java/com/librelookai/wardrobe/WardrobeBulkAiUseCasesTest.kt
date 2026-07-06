@@ -5,6 +5,7 @@ import com.librelookai.data.drive.DrainScheduler
 import com.librelookai.data.drive.SyncEngine
 import com.librelookai.data.local.CachedWardrobeItem
 import com.librelookai.data.session.UserPreferencesRepository
+import com.librelookai.gemini.AiResult
 import com.librelookai.gemini.ClothingTags
 import com.librelookai.service.JobLock
 import com.librelookai.testing.FakeAiClient
@@ -120,7 +121,7 @@ class WardrobeBulkAiUseCasesTest {
         items.addAll("f1", listOf(row("i1"), row("i2")))
         drive.cached["i1"] = cacheFile("i1.png")
         drive.cached["i2"] = cacheFile("i2.png")
-        ai.error = com.librelookai.billing.InsufficientCreditsException(20, 0)
+        ai.outcome = AiResult.InsufficientCredits(needed = 20, have = 0)
 
         val useCase = retagAll()
         useCase.start(listOf(image("i1"), image("i2")))

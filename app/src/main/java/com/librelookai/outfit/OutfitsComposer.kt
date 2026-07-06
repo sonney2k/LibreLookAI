@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.librelookai.data.model.Outfit
+import com.librelookai.gemini.AiResult
+import com.librelookai.gemini.getOrNull
 import com.librelookai.gemini.PromptKey
 import com.librelookai.gemini.PromptStore
 import com.librelookai.gemini.UsageCategory
@@ -281,13 +283,9 @@ internal fun OutfitGenerationViewModel.enhanceComposerWithAi(
         viewModelScope.launch {
             val countryCode = deviceCountryCode()
             val region = listOfNotNull(weather?.cityName?.takeIf { it.isNotEmpty() }, countryCode).joinToString(", ")
-            val fashionTrends = try {
-                trendsCache.get(region, UsageCategory.OUTFIT_COMPOSE)
-            } catch (e: com.librelookai.billing.InsufficientCreditsException) {
-                Analytics.event("outfit_generate", mapOf("result" to "failed", "reason" to "credits"))
-                _state.update { it.copy(isComposerEnhancing = false) }
-                return@launch
-            }
+            // Trends degrade to stale/null on any failure incl. credits exhaustion (§ 6) — the
+            // main generateText below is what surfaces InsufficientCredits to this flow.
+            val fashionTrends = trendsCache.get(region, UsageCategory.OUTFIT_COMPOSE)
             val prefString = prefs?.preferences.orEmpty()
             val slots = s.composerSlots
             val prompt = buildComposerPrompt(
@@ -312,13 +310,13 @@ internal fun OutfitGenerationViewModel.enhanceComposerWithAi(
                 wearHistory      = s.wearHistory,
             )
             Log.d("StylesVM", "Composer prompt length: ${prompt.length} chars")
-            val raw = try {
-                gemini.generateText(prompt, UsageCategory.OUTFIT_COMPOSE, bulkItems = suggestionCount, notify = true)
-            } catch (e: com.librelookai.billing.InsufficientCreditsException) {
+            val outcome = gemini.generateText(prompt, UsageCategory.OUTFIT_COMPOSE, bulkItems = suggestionCount, notify = true)
+            if (outcome is AiResult.InsufficientCredits) {
                 Analytics.event("outfit_generate", mapOf("result" to "failed", "reason" to "credits"))
                 _state.update { it.copy(isComposerEnhancing = false) }
                 return@launch
             }
+            val raw = outcome.getOrNull()
             if (raw == null) {
                 Analytics.event("outfit_generate", mapOf("result" to "failed", "reason" to "no_response"))
                 _state.update { it.copy(isComposerEnhancing = false, composerError = "Gemini did not respond.") }

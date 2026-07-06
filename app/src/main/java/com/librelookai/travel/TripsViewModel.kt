@@ -18,7 +18,9 @@ import kotlinx.coroutines.launch
 import com.librelookai.data.model.Outfit
 import com.librelookai.data.model.Trip
 import com.librelookai.gemini.AiClient
+import com.librelookai.gemini.AiResult
 import com.librelookai.gemini.AiRetry
+import com.librelookai.gemini.getOrNull
 import com.librelookai.gemini.UsageCategory
 import com.librelookai.outfit.OutfitsViewModel
 import com.librelookai.util.isNetworkAvailable
@@ -268,12 +270,12 @@ class TripsViewModel @Inject constructor(
             _bulkRefining.update { it + tripId }
             val prompt = buildBulkRefinePrompt(trip, tripOutfits, instr, images, prefs)
             Log.d(TAG, "Bulk-refine prompt length: ${prompt.length} chars")
-            val raw = try {
-                gemini.generateText(prompt, UsageCategory.TRAVEL, bulkItems = tripOutfits.size, notify = true)
-            } catch (e: com.librelookai.billing.InsufficientCreditsException) {
+            val outcome = gemini.generateText(prompt, UsageCategory.TRAVEL, bulkItems = tripOutfits.size, notify = true)
+            if (outcome is AiResult.InsufficientCredits) {
                 _bulkRefining.update { it - tripId }
                 onDone(false); return@launch
             }
+            val raw = outcome.getOrNull()
             if (raw == null) {
                 _bulkRefining.update { it - tripId }
                 _state.update { it.copy(error = getApplication<Application>().localized().getString(com.librelookai.R.string.error_gemini_no_response)) }

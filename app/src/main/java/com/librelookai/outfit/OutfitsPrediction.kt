@@ -2,6 +2,8 @@ package com.librelookai.outfit
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.librelookai.gemini.AiResult
+import com.librelookai.gemini.getOrNull
 import com.librelookai.gemini.PromptKey
 import com.librelookai.gemini.PromptStore
 import com.librelookai.gemini.UsageCategory
@@ -157,12 +159,9 @@ internal fun OutfitGenerationViewModel.doTriggerPrediction(
 
             val countryCode = deviceCountryCode()
             val region = listOfNotNull(weather?.cityName?.takeIf { it.isNotEmpty() }, countryCode).joinToString(", ")
-            val fashionTrends = try {
-                trendsCache.get(region, UsageCategory.OUTFIT_PREDICT)
-            } catch (e: com.librelookai.billing.InsufficientCreditsException) {
-                _state.update { it.copy(isPredicting = false) }
-                return@launch
-            }
+            // Trends degrade to stale/null on any failure incl. credits exhaustion (§ 6) — the
+            // main generateText below is what surfaces InsufficientCredits to this flow.
+            val fashionTrends = trendsCache.get(region, UsageCategory.OUTFIT_PREDICT)
 
             val suggestionCount = setup.composerSuggestionCount.coerceIn(1, 10)
             val prompt = buildPredictionPrompt(
@@ -190,12 +189,12 @@ internal fun OutfitGenerationViewModel.doTriggerPrediction(
                 Log.d("StylesVM", "Prompt[$i]: $chunk")
             }
 
-            val raw = try {
-                gemini.generateText(prompt, UsageCategory.OUTFIT_PREDICT, bulkItems = suggestionCount, notify = true)
-            } catch (e: com.librelookai.billing.InsufficientCreditsException) {
+            val outcome = gemini.generateText(prompt, UsageCategory.OUTFIT_PREDICT, bulkItems = suggestionCount, notify = true)
+            if (outcome is AiResult.InsufficientCredits) {
                 _state.update { it.copy(isPredicting = false) }
                 return@launch
             }
+            val raw = outcome.getOrNull()
             if (raw == null) {
                 _state.update { it.copy(isPredicting = false, predictionError = "Gemini did not respond.") }
                 return@launch

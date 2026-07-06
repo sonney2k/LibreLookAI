@@ -19,6 +19,7 @@ import com.librelookai.data.drive.DriveRepository
 import com.librelookai.data.drive.DriveService
 import com.librelookai.gemini.ClothingTags
 import com.librelookai.gemini.AiClient
+import com.librelookai.gemini.getOrNull
 import com.librelookai.util.isNetworkAvailable
 import com.librelookai.data.drive.SyncEngine
 import com.librelookai.data.local.PendingMutationStore
@@ -282,7 +283,7 @@ class ShoppingClosetViewModel @Inject constructor(
             _state.update { it.copy(processingImageId = driveId) }
             val cachedFile = drive.cachedFile(driveId)
                 ?: run { _state.update { it.copy(processingImageId = null) }; return@launch }
-            val tags = gemini.classifyClothing(cachedFile, geminiLanguage)
+            val tags = gemini.classifyClothing(cachedFile, geminiLanguage).getOrNull()
                 ?: run { _state.update { it.copy(processingImageId = null) }; return@launch }
             withContext(Dispatchers.IO) {
                 persistItemTags(driveId, tags)
@@ -304,7 +305,7 @@ class ShoppingClosetViewModel @Inject constructor(
             _state.update { it.copy(processingImageId = driveId, error = null) }
             val source = resolveOriginalFile(driveId)
                 ?: run { _state.update { it.copy(processingImageId = null, error = getApplication<Application>().localized().getString(R.string.error_original_unavailable)) }; return@launch }
-            val processedFile = gemini.removeBackground(source, drive.cacheDir)
+            val processedFile = gemini.removeBackground(source, drive.cacheDir).getOrNull()
                 ?: run { _state.update { it.copy(processingImageId = null) }; return@launch }
             runCatching {
                 drive.updateImage(driveId, processedFile)

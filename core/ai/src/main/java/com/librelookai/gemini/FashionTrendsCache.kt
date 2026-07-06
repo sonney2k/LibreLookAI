@@ -44,7 +44,9 @@ class FashionTrendsCache @Inject constructor(
     /**
      * Returns trends for [region], serving a fresh cached copy when available and otherwise
      * fetching from Gemini and persisting the result. Returns null only when there is no cache
-     * and the Gemini call fails / is unconfigured. Propagates [InsufficientCreditsException].
+     * and the Gemini call fails / is unconfigured — including credits exhaustion (refactor § 6):
+     * a 402 raises the global top-up dialog but degrades to stale/null here, and the caller's
+     * main generateText call is what returns the typed [AiResult.InsufficientCredits].
      */
     suspend fun get(
         region: String,

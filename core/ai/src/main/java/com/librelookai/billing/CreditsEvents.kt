@@ -9,10 +9,10 @@ import kotlinx.coroutines.flow.asSharedFlow
  * may want to react to without plumbing callbacks.
  *
  * Currently surfaces one event: `topUp` — a 402 from the Gemini proxy.
- * [GeminiRepository.throwIf402] emits here *before* throwing, so even if a
- * caller swallows the `InsufficientCreditsException` in its generic
- * `catch (e: Exception)` block, the top-level observer in `MainActivity`
- * still gets the event and shows [InsufficientCreditsDialog].
+ * `GeminiRepository.creditsIf402` emits here *before* returning the typed
+ * `AiResult.InsufficientCredits` (refactor § 6), so the top-level observer in
+ * `MainActivity` shows [InsufficientCreditsDialog] regardless of what the
+ * caller does with the result.
  *
  * Replay buffer of 0: the dialog is only shown to whoever is currently
  * collecting. Extra buffer = 4 so simultaneous calls don't drop events.

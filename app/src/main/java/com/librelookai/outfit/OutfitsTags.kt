@@ -5,6 +5,8 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.google.gson.reflect.TypeToken
 import com.librelookai.data.model.Outfit
+import com.librelookai.gemini.AiResult
+import com.librelookai.gemini.getOrNull
 import com.librelookai.gemini.UsageCategory
 import com.librelookai.settings.AppLanguage
 import com.librelookai.settings.UserPreferences
@@ -49,14 +51,14 @@ internal fun OutfitGenerationViewModel.suggestTagsForOutfit(outfit: Outfit, imag
                 itemDescriptors.forEach { appendLine(it) }
             }
             Log.d("StylesVM", "Suggest tags prompt:\n$prompt")
-            val raw = try {
-                gemini.generateText(prompt, UsageCategory.OTHER)
-            } catch (e: com.librelookai.billing.InsufficientCreditsException) {
+            val outcome = gemini.generateText(prompt, UsageCategory.OTHER)
+            if (outcome is AiResult.InsufficientCredits) {
                 _state.update {
                     it.copy(tagSuggestion = it.tagSuggestion?.copy(isLoading = false))
                 }
                 return@launch
             }
+            val raw = outcome.getOrNull()
             if (raw == null) {
                 _state.update {
                     it.copy(tagSuggestion = it.tagSuggestion?.copy(isLoading = false, error = getApplication<android.app.Application>().localized().getString(com.librelookai.R.string.error_gemini_no_response)))

@@ -2,11 +2,11 @@ package com.librelookai.travel
 
 import android.app.Application
 import androidx.test.core.app.ApplicationProvider
-import com.librelookai.billing.InsufficientCreditsException
 import com.librelookai.data.drive.DrainScheduler
 import com.librelookai.data.drive.SyncEngine
 import com.librelookai.data.model.Outfit
 import com.librelookai.data.model.Trip
+import com.librelookai.gemini.AiResult
 import com.librelookai.gemini.AiRetry
 import com.librelookai.gemini.ClothingTags
 import com.librelookai.testing.FakeAiClient
@@ -194,7 +194,7 @@ class TripsViewModelTest {
         tripStore.replaceAll(listOf(trip("t1", outfitIds = listOf("o1"))))
         val vm = vm()
         vm.state.first { it.trips.size == 1 }
-        gemini.error = InsufficientCreditsException(needed = 10, have = 2)
+        gemini.outcome = AiResult.InsufficientCredits(needed = 10, have = 2)
         var done: Boolean? = null
 
         vm.refineAllOutfits("t1", "brighter", listOf(item("i1")), listOf(Outfit(id = "o1", itemIds = listOf("i1")))) { done = it }
