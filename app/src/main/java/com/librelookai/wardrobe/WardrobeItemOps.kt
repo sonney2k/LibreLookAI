@@ -173,7 +173,9 @@ class WardrobeItemOps @Inject constructor(
             _errors.emit(null)
             val source = resolveOriginalFile(driveId)
                 ?: run {
-                    _progress.update { it.copy(isProcessing = false) }
+                    // Reset the id too (parity with the failure paths below) — leaving it set
+                    // kept the item tile's spinner stuck after the error banner.
+                    _progress.update { it.copy(isProcessing = false, processingImageId = null) }
                     _errors.emit(context.localized().getString(R.string.error_original_unavailable))
                     return@launch
                 }
