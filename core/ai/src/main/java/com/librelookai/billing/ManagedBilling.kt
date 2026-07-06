@@ -16,7 +16,14 @@ import com.librelookai.core.ai.BuildConfig
  * Play products — to re-enable the coin economy with no code change. Managed mode still
  * additionally requires a configured proxy URL, Firebase, and a blank user key at runtime
  * (see `CreditRepository.isManagedMode`).
+ *
+ * [enabledOverride] is the § 7 pinnable seam: tests (and a future debug screen) set it to
+ * force either state at runtime; null falls through to the BuildConfig default. Same
+ * no-DI-interface decision as `FeatureFlags` — see plan/refactor.md § 7.
  */
 object ManagedBilling {
-    val enabled: Boolean get() = BuildConfig.MANAGED_BILLING_ENABLED
+    @Volatile
+    var enabledOverride: Boolean? = null
+
+    val enabled: Boolean get() = enabledOverride ?: BuildConfig.MANAGED_BILLING_ENABLED
 }

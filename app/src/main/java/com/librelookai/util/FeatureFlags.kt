@@ -12,7 +12,16 @@ import com.librelookai.BuildConfig
  *
  * Backed by [BuildConfig.POWER_FEATURES_ENABLED] (`power.features.enabled` in
  * local.properties, default `false`). The Play release ships with it off.
+ *
+ * [powerFeaturesOverride] is the § 7 pinnable seam: tests (and a future debug screen) set it
+ * to force either state at runtime; null falls through to the BuildConfig default. A full DI
+ * interface was deliberately not used — most read sites are composables, where constructor
+ * injection can't reach without a CompositionLocal layer (decision recorded in
+ * plan/refactor.md § 7).
  */
 object FeatureFlags {
-    val powerFeatures: Boolean get() = BuildConfig.POWER_FEATURES_ENABLED
+    @Volatile
+    var powerFeaturesOverride: Boolean? = null
+
+    val powerFeatures: Boolean get() = powerFeaturesOverride ?: BuildConfig.POWER_FEATURES_ENABLED
 }
