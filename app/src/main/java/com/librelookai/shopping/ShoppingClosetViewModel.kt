@@ -29,8 +29,8 @@ import com.librelookai.wardrobe.DeleteItemPayload
 import com.librelookai.wardrobe.DriveImage
 import com.librelookai.wardrobe.ITEM_DELETE_KIND
 import com.librelookai.wardrobe.ITEM_MOVE_KIND
-import com.librelookai.wardrobe.ItemSidecar
 import com.librelookai.wardrobe.MoveItemPayload
+import com.librelookai.wardrobe.SidecarSyncQueue
 import com.librelookai.wardrobe.WardrobeMoveSyncHandler
 import com.librelookai.wardrobe.UrlImportPickerState
 import com.librelookai.wardrobe.toCachedItem
@@ -74,6 +74,7 @@ class ShoppingClosetViewModel @Inject constructor(
     internal val ingestionQueue: ShoppingIngestionQueue,
     internal val repo: ShoppingRepository,
     private val itemVersions: ItemVersions,
+    private val sidecarSync: SidecarSyncQueue,
     moveSync: WardrobeMoveSyncHandler,
     prefsRepo: UserPreferencesRepository,
 ) : AndroidViewModel(app) {
@@ -285,7 +286,7 @@ class ShoppingClosetViewModel @Inject constructor(
                 ?: run { _state.update { it.copy(processingImageId = null) }; return@launch }
             withContext(Dispatchers.IO) {
                 persistItemTags(driveId, tags)
-                saveSidecar(driveId)
+                sidecarSync.enqueue(driveId)
             }
             _state.update { it.copy(processingImageId = null) }
         }
@@ -294,7 +295,7 @@ class ShoppingClosetViewModel @Inject constructor(
     fun updateTags(driveId: String, tags: ClothingTags) {
         viewModelScope.launch(Dispatchers.IO) {
             persistItemTags(driveId, tags)
-            saveSidecar(driveId)
+            sidecarSync.enqueue(driveId)
         }
     }
 
@@ -379,20 +380,6 @@ class ShoppingClosetViewModel @Inject constructor(
     private suspend fun persistItemTags(driveId: String, tags: ClothingTags) {
         val (fid, item) = itemStore.find(driveId) ?: return
         runCatching { itemStore.upsert(fid, item.copy(tags = tags)) }
-    }
-
-    /**
-     * Writes the item's sidecar to Drive from its *store row* (callers must write the row
-     * first — [persistItemTags]), then stamps the resulting sidecar id back onto the row.
-     * Still a direct Drive write, not a § 2 queued mutation — unchanged by slice 4c.
-     */
-    private suspend fun saveSidecar(driveId: String) = withContext(Dispatchers.IO) {
-        val (fid, entry) = itemStore.find(driveId) ?: return@withContext
-        val sidecarJson = gson.toJson(ItemSidecar(entry.tags, entry.originalDriveId))
-        val sidecarFileId = runCatching {
-            drive.upsertSidecar(fid, "$driveId${DriveRepository.SIDECAR_SUFFIX}", sidecarJson)
-        }.getOrNull() ?: return@withContext
-        runCatching { itemStore.setSidecarId(driveId, sidecarFileId) }
     }
 
     // ---------- Helpers ----------

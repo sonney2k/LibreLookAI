@@ -56,7 +56,9 @@ small § 2 leftovers below.
 ## §2 SyncEngine leftovers (small, independent)
 
 - Try-on saves are still Drive-first (not queued).
-- Shopping `saveSidecar` writes Drive directly instead of riding `wardrobe.sidecarSync`.
+- ~~Shopping `saveSidecar` writes Drive directly~~ — **done 2026-07-06**: both shopping tag
+  paths enqueue via the shared `SidecarSyncQueue` (`ShoppingClosetViewModelTest`, the first
+  § 8 fake-based VM suite, proves the funnel end-to-end with the real handler registered).
 
 ## Resume plan
 

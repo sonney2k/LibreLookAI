@@ -808,6 +808,9 @@ stamps the sidecar id with `setSidecarId`; `tagImage`/`updateTags` go through a 
 `persistItemTags`, and `saveSidecar` now reads the *store row* (not state) before its direct
 Drive write — fixing a latent stale-read race — though it still doesn't ride the § 2 queue
 (possible follow-up: reuse `wardrobe.sidecarSync`, whose handler is already folder-agnostic).
+*(Follow-up done, July 2026: the direct-write `saveSidecar` was deleted — both paths enqueue
+via the shared `SidecarSyncQueue`; funnel tested end-to-end in `ShoppingClosetViewModelTest`,
+the first § 8 fake-based VM suite.)*
 `moveToCloset` re-homes the rows into the target folder itself (`addAll`; `onMoved` keeps
 feeding the wardrobe VM's recently-moved markers, its own `addAll` an idempotent repeat),
 `deleteItems` drops rows via `remove`, and the `moveRolledBack` collector shrank to the error
