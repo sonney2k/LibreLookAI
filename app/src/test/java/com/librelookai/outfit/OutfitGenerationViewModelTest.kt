@@ -7,6 +7,8 @@ import com.librelookai.data.drive.DriveFileDto
 import com.librelookai.data.drive.SyncEngine
 import com.librelookai.data.model.Outfit
 import com.librelookai.data.session.ClosetSessionHolder
+import com.librelookai.billing.CreditsEvents
+import com.librelookai.gemini.AiEvents
 import com.librelookai.gemini.AiResult
 import com.librelookai.gemini.AiRetry
 import com.librelookai.gemini.ClothingTags
@@ -65,7 +67,8 @@ class OutfitGenerationViewModelTest {
     })
     private val session = ClosetSessionHolder()
     private val repo = OutfitsRepository(drive, itemStore, outfitStore, mutationStore, syncEngine)
-    private val trendsCache = FashionTrendsCache(app, drive, GeminiRepository(app, GeminiProgress()))
+    private val trendsCache =
+        FashionTrendsCache(app, drive, GeminiRepository(app, GeminiProgress(), AiEvents(), CreditsEvents()))
 
     private fun vm() = OutfitGenerationViewModel(app, drive, gemini, aiRetry, repo, session, eventStore, trendsCache)
 

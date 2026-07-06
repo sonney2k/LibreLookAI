@@ -16,8 +16,14 @@ import kotlinx.coroutines.flow.asSharedFlow
  *
  * Replay buffer of 0: the dialog is only shown to whoever is currently
  * collecting. Extra buffer = 4 so simultaneous calls don't drop events.
+ *
+ * An injected `@Singleton` (refactor § 6 slice 2 — formerly a static `object`,
+ * mirroring `AiEvents`): `GeminiRepository` takes it as a constructor param,
+ * and the dialog observer in `AppContent` receives the same instance through
+ * `MainActivity`.
  */
-object CreditsEvents {
+@javax.inject.Singleton
+class CreditsEvents @javax.inject.Inject constructor() {
     private val _topUp = MutableSharedFlow<InsufficientCreditsException>(
         replay = 0,
         extraBufferCapacity = 4,

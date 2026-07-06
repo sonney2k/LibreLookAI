@@ -37,6 +37,8 @@ internal enum class GeminiAction(val header: String) {
 class GeminiRepository @Inject constructor(
     internal val app: Application,
     internal val progress: GeminiProgress,
+    internal val events: AiEvents,
+    internal val creditsEvents: com.librelookai.billing.CreditsEvents,
 ) : AiClient {
 
     internal val http = OkHttpClient.Builder()
@@ -60,9 +62,7 @@ class GeminiRepository @Inject constructor(
         val obj = try { gson.fromJson(body, Map::class.java) as? Map<*, *> } catch (_: Exception) { null }
         val needed = (obj?.get("needed") as? Number)?.toInt() ?: 0
         val have = (obj?.get("have") as? Number)?.toInt() ?: 0
-        com.librelookai.billing.CreditsEvents.emitTopUp(
-            com.librelookai.billing.InsufficientCreditsException(needed, have),
-        )
+        creditsEvents.emitTopUp(com.librelookai.billing.InsufficientCreditsException(needed, have))
         return AiResult.InsufficientCredits(needed, have)
     }
 
@@ -141,11 +141,11 @@ class GeminiRepository @Inject constructor(
         }
         val proxyBase = BuildConfig.PROXY_BASE_URL
         if (proxyBase.isBlank() || !com.librelookai.billing.ManagedBilling.enabled) {
-            AiEvents.emit(AiNoticeKind.FAILED, AiErrorReason.UNAVAILABLE, canRetry = true)
+            events.emit(AiNoticeKind.FAILED, AiErrorReason.UNAVAILABLE, canRetry = true)
             throw AiUnavailableException(AiErrorReason.UNAVAILABLE)
         }
         val token = getFirebaseIdToken() ?: run {
-            AiEvents.emit(AiNoticeKind.FAILED, AiErrorReason.UNAVAILABLE, canRetry = true)
+            events.emit(AiNoticeKind.FAILED, AiErrorReason.UNAVAILABLE, canRetry = true)
             throw AiUnavailableException(AiErrorReason.UNAVAILABLE)
         }
         val builder = Request.Builder()
@@ -172,7 +172,7 @@ class GeminiRepository @Inject constructor(
      */
     internal fun ensureConfigured(notify: Boolean): Boolean {
         if (isConfigured()) return true
-        if (notify) AiEvents.emit(AiNoticeKind.NOT_CONFIGURED, AiErrorReason.NOT_CONFIGURED)
+        if (notify) events.emit(AiNoticeKind.NOT_CONFIGURED, AiErrorReason.NOT_CONFIGURED)
         return false
     }
 
@@ -193,7 +193,7 @@ class GeminiRepository @Inject constructor(
             code in 500..599 -> AiErrorReason.SERVER
             else -> AiErrorReason.GENERIC
         }
-        if (notify) AiEvents.emit(AiNoticeKind.FAILED, reason, canRetry = true)
+        if (notify) events.emit(AiNoticeKind.FAILED, reason, canRetry = true)
         return AiResult.Failure(reason)
     }
 

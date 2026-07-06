@@ -64,8 +64,14 @@ data class AiNotice(
  * appropriate action (set up a key, or retry).
  *
  * Replay 0 (only current collectors see it); extraBuffer 4 so concurrent calls don't drop events.
+ *
+ * An injected `@Singleton` (refactor § 6 slice 2 — formerly a static `object`, the same
+ * conversion § 3 slice 5 gave [AiRetry] / [GeminiProgress]): [GeminiRepository] takes it as a
+ * constructor param, and the global dialog in `AppContent` receives the same instance through
+ * `MainActivity`.
  */
-object AiEvents {
+@javax.inject.Singleton
+class AiEvents @javax.inject.Inject constructor() {
     private val _notices = MutableSharedFlow<AiNotice>(replay = 0, extraBufferCapacity = 4)
     val notices: SharedFlow<AiNotice> = _notices.asSharedFlow()
 

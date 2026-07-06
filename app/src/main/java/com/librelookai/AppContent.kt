@@ -116,6 +116,8 @@ internal fun AppContent(
     networkMonitor: NetworkMonitor,
     aiRetry: com.librelookai.gemini.AiRetry,
     geminiProgress: com.librelookai.gemini.GeminiProgress,
+    aiEvents: com.librelookai.gemini.AiEvents,
+    creditsEvents: com.librelookai.billing.CreditsEvents,
 ) {
     LibreLookAITheme(
         paletteId = ProfileViewModel.cachedTheme(activity),
@@ -1239,7 +1241,7 @@ internal fun AppContent(
                                     mutableStateOf<com.librelookai.billing.InsufficientCreditsException?>(null)
                                 }
                                 LaunchedEffect(Unit) {
-                                    com.librelookai.billing.CreditsEvents.topUp.collect { topUpEvent = it }
+                                    creditsEvents.topUp.collect { topUpEvent = it }
                                 }
                                 topUpEvent?.let { ex ->
                                     com.librelookai.billing.InsufficientCreditsDialog(
@@ -1263,7 +1265,7 @@ internal fun AppContent(
                                 }
                                 var aiRetryAction by remember { mutableStateOf<(() -> Unit)?>(null) }
                                 LaunchedEffect(Unit) {
-                                    com.librelookai.gemini.AiEvents.notices.collect { notice ->
+                                    aiEvents.notices.collect { notice ->
                                         aiRetryAction =
                                             if (notice.canRetry) aiRetry.action else null
                                         aiNotice = notice
