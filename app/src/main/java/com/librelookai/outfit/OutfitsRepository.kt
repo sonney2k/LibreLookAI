@@ -1,6 +1,5 @@
 package com.librelookai.outfit
 
-import android.app.Application
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.librelookai.data.drive.DriveService
@@ -48,7 +47,6 @@ import kotlinx.coroutines.sync.withLock
 @OptIn(ExperimentalCoroutinesApi::class)
 @Singleton
 class OutfitsRepository @Inject constructor(
-    private val app: Application,
     private val drive: DriveService,
     private val itemStore: WardrobeItemStore,
     private val outfitStore: OutfitStore,

@@ -4,13 +4,12 @@ import androidx.test.core.app.ApplicationProvider
 import com.librelookai.data.drive.DrainScheduler
 import com.librelookai.data.drive.SyncEngine
 import com.librelookai.data.local.CachedWardrobeItem
-import com.librelookai.data.local.PendingMutation
-import com.librelookai.data.local.PendingMutationStore
 import com.librelookai.data.session.UserPreferencesRepository
 import com.librelookai.gemini.ClothingTags
 import com.librelookai.service.JobLock
 import com.librelookai.testing.FakeAiClient
 import com.librelookai.testing.FakeDriveService
+import com.librelookai.testing.FakeMutationStore
 import com.librelookai.testing.FakeWardrobeItemStore
 import java.io.File
 import kotlinx.coroutines.Dispatchers
@@ -40,39 +39,8 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class WardrobeBulkAiUseCasesTest {
 
-    private class FakeMutationStore : PendingMutationStore {
-        val rows = mutableListOf<PendingMutation>()
-        private var nextId = 1L
-        override suspend fun enqueue(
-            kind: String,
-            targetId: String,
-            folderId: String?,
-            payload: String,
-            rollback: String?,
-        ): Long {
-            val id = nextId++
-            rows += PendingMutation(id, kind, targetId, folderId, payload, rollback, 0, null, id)
-            return id
-        }
-
-        override suspend fun oldest(): PendingMutation? = rows.minByOrNull { it.id }
-        override suspend fun all(): List<PendingMutation> = rows.sortedBy { it.id }
-        override suspend fun remove(id: Long) {
-            rows.removeAll { it.id == id }
-        }
-
-        override suspend fun recordFailure(id: Long, error: String) {}
-        override suspend fun count(): Int = rows.size
-    }
-
-    /** [FakeDriveService] whose local-cache lookup is scriptable per drive id. */
-    private class CachingFakeDrive : FakeDriveService() {
-        val cached = mutableMapOf<String, File>()
-        override fun cachedFile(driveId: String): File? = cached[driveId]
-    }
-
     private val dispatcher = StandardTestDispatcher()
-    private val drive = CachingFakeDrive()
+    private val drive = FakeDriveService()
     private val ai = FakeAiClient()
     private val items = FakeWardrobeItemStore()
     private val mutations = FakeMutationStore()

@@ -23,13 +23,28 @@ open class FakeDriveService : DriveService {
     /** Trip file id → JSON content; listed by [listTripFiles], read by [loadTripJson]. */
     val tripJsonById = linkedMapOf<String, String>()
 
+    /** Scriptable local-cache lookup: driveId → file. [downloadToCache] registers here too. */
+    val cached = mutableMapOf<String, File>()
+
+    /** Image files served per folder id by [listFiles]. */
+    val filesByFolder = mutableMapOf<String, List<DriveFileDto>>()
+
+    /** Sidecar files served per folder id by [listSidecarFiles]. */
+    val sidecarFilesByFolder = mutableMapOf<String, List<DriveFileDto>>()
+
+    /** File contents served by [loadFileContent] (sidecar JSON etc.), keyed by file id. */
+    val fileContents = mutableMapOf<String, String>()
+
+    /** File ids fetched via [downloadFileTo], in order. */
+    val downloadedFileIds = mutableListOf<String>()
+
     /** Sidecars upserted via [upsertSidecar]: "folderId/name" → json. */
     val upsertedSidecars = linkedMapOf<String, String>()
 
     /** `(fileId, fromFolderId, toFolderId)` for every [moveFile] call, in order. */
     val movedFiles = mutableListOf<Triple<String, String, String>>()
 
-    /** Outfits JSON written per folder id via [saveOutfitsJson]. */
+    /** Outfits JSON per folder id: read by [loadOutfitsJson], written by [saveOutfitsJson]. */
     val outfitsJsonByFolder = linkedMapOf<String, String>()
 
     /** Outfit-events JSON written per folder id via [saveOutfitEventsJson]. */
@@ -47,20 +62,41 @@ open class FakeDriveService : DriveService {
     /** Hook run at the top of [listTripFiles] — gate it or throw to fault-inject. */
     var onListTripFiles: suspend () -> Unit = {}
 
+    var listFilesCalls = 0
+        private set
+
+    /** Hook run at the top of [listFiles] — gate it or throw to fault-inject. */
+    var onListFiles: suspend () -> Unit = {}
+
+    var loadTryOnsJsonCalls = 0
+        private set
+
+    /** Hook run at the top of [loadTryOnsJson] — gate it or throw to fault-inject. */
+    var onLoadTryOnsJson: suspend () -> Unit = {}
+
     /** Registers a trip's JSON under a deterministic file id. */
     fun putTripJson(tripId: String, json: String) {
         tripJsonById["file-$tripId"] = json
     }
 
-    override fun cachedFile(driveId: String): File? = null
+    override fun cachedFile(driveId: String): File? = cached[driveId]
 
     override suspend fun getOrCreateFolder(): String = rootFolderId
 
-    override suspend fun listFiles(folderId: String): List<DriveFileDto> = emptyList()
+    override suspend fun listFiles(folderId: String): List<DriveFileDto> {
+        listFilesCalls++
+        onListFiles()
+        return filesByFolder[folderId].orEmpty()
+    }
 
-    override suspend fun downloadToCache(driveId: String, driveName: String): File? = null
+    override suspend fun downloadToCache(driveId: String, driveName: String): File? =
+        File(cacheDir, driveId).apply { writeText("img-$driveId") }.also { cached[driveId] = it }
 
-    override suspend fun downloadFileTo(fileId: String, dest: File): File? = null
+    override suspend fun downloadFileTo(fileId: String, dest: File): File? {
+        downloadedFileIds += fileId
+        dest.writeText("img-$fileId")
+        return dest
+    }
 
     override suspend fun deleteFile(fileId: String) {
         deletedFileIds += fileId
@@ -78,19 +114,24 @@ open class FakeDriveService : DriveService {
 
     override suspend fun loadTripJson(fileId: String): String? = tripJsonById[fileId]
 
-    override suspend fun loadTryOnsJson(rootFolderId: String): String? = tryOnsJsonByRoot[rootFolderId]
+    override suspend fun loadTryOnsJson(rootFolderId: String): String? {
+        loadTryOnsJsonCalls++
+        onLoadTryOnsJson()
+        return tryOnsJsonByRoot[rootFolderId]
+    }
 
     override suspend fun saveTryOnsJson(rootFolderId: String, json: String) {
         tryOnsJsonByRoot[rootFolderId] = json
     }
 
-    override suspend fun loadOutfitsJson(folderId: String): String? = null
+    override suspend fun loadOutfitsJson(folderId: String): String? = outfitsJsonByFolder[folderId]
 
     override suspend fun loadWardrobeMetadataJson(folderId: String): String? = null
 
-    override suspend fun listSidecarFiles(folderId: String): List<DriveFileDto> = emptyList()
+    override suspend fun listSidecarFiles(folderId: String): List<DriveFileDto> =
+        sidecarFilesByFolder[folderId].orEmpty()
 
-    override suspend fun loadFileContent(fileId: String): String? = null
+    override suspend fun loadFileContent(fileId: String): String? = fileContents[fileId]
 
     override suspend fun upsertSidecar(folderId: String, name: String, json: String): String {
         upsertedSidecars["$folderId/$name"] = json
