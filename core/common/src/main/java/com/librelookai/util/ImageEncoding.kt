@@ -5,11 +5,8 @@ import android.os.Build
 import java.io.File
 import java.io.OutputStream
 
-/**
- * User-selectable trade-off between Drive storage size and image fidelity.
- * Persisted in `UserPreferences.imageQuality`; mirrored into [ImageEncoding.tier].
- */
-enum class ImageQuality { BALANCED, HIGH, MAXIMUM }
+// ImageQuality moved to :core:model (core/model/…/util/ImageQuality.kt), same package —
+// `UserPreferences.imageQuality` carries it, and :core:model sits below this module.
 
 /**
  * Single owner of how wardrobe images are encoded for storage on the user's Drive.

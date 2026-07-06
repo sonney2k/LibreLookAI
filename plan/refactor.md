@@ -8,7 +8,7 @@ deferred and inter-blocking:
 
 | § | Layer | Status |
 |---|-------|--------|
-| 1 | Multi-module Gradle | **In progress** — `:core:model`/`:core:common`/`:core:database`/`:core:ml`/`:core:sync`/`:core:ai` landed (phase 4). § 5's completion unblocked `feature/*`, and the ground truth is measured (July 2026 — see the § 1 execution plan): the feature packages are still cyclic at the screen/plumbing level (multi-feature host files, shared plumbing homed in `wardrobe/`, settings data types read by everyone), so the plan sinks shared code down / lifts hosts into the shell first, then extracts leaf-first (`weather`/`auth`/`billing` are genuine leaves). `core/designsystem` rides slice 4 with the recorded res-split decision (module-scoped `R` for shared-UI strings, no key renames) |
+| 1 | Multi-module Gradle | **In progress** — `:core:model`/`:core:common`/`:core:database`/`:core:ml`/`:core:sync`/`:core:ai` landed (phase 4). § 5's completion unblocked `feature/*`, and the ground truth is measured (July 2026 — see the § 1 execution plan): the feature packages are still cyclic at the screen/plumbing level (multi-feature host files, shared plumbing homed in `wardrobe/`, settings data types read by everyone), so the plan sinks shared code down / lifts hosts into the shell first, then extracts leaf-first (`weather`/`auth`/`billing` are genuine leaves). `core/designsystem` rides slice 4 with the recorded res-split decision (module-scoped `R` for shared-UI strings, no key renames). **Slice 1 LANDED** (July 2026): `UserPreferences`+`AppFont`/`AppLanguage`/`TryOnSlot`/`ImageQuality`/`PromptItemJson` sank to `core/model` (packages kept; `core/common` gained `api(:core:model)`); the taxonomy data half was re-scoped to slice 4 (normalizer + color-order deps — see the slice notes) |
 | 2 | Room as source of truth + SyncEngine | **Operationally complete** (June 2026) — all five JSON-cache slices landed (phase 2) as opaque-JSON cache rows; the `PendingMutation` queue + `SyncEngine` drain **every converted metadata write**: wardrobe (sidecar/delete/move), shopping, outfits (`outfit.syncFolder`), calendar wears (`outfitEvent.syncFolder`), trips (`trip.save`/`trip.delete`), try-ons (`tryon.syncIndex` + reused `wardrobe.deleteItem` — the last leftover, converted July 2026; only the image *byte* uploads stay direct), plus the WorkManager process-death backstop (see phase 2 status). The real-entity / Flow-read conversion is deliberately carried into § 5 |
 | 3 | DI + interfaces at the seams | **Done** (July 2026 — slices 1–5 landed; the one deferred sub-item, the `ImageEncoding.tier` static kill, was resolved by § 7's recorded reduced-scope decision: it *stays* on the `StaticPreferenceMirrors` mechanism, revisit only if the pref gains a cross-process or observe-for-change requirement). The trail: Hilt landed (phase 1); the gemini↔drive↔billing package cycles are broken (June 2026, see phase 1 status), making the layering acyclic; **`DriveService` landed at the repo seam** (July 2026, § 3 slice 1 — see the § 3 execution plan): the five § 5 repos depend on the interface, `DriveRepository` implements it (absorbed extensions delegate to `internal *Impl`), Hilt `@Binds`-bound; **the § 2 sync handlers are on the interface too** (July 2026, § 3 slice 2, all seven incl. the later try-on index handler — handler surface absorbed, drain/retry/rollback/wipe-guard invariants fake-tested); **the pipeline / use-case / VM seams flipped as well** (July 2026, § 3 slice 3 — every app- and `:core:ai`-side consumer takes the interface; concrete type remains only in the Hilt graph, `AppContent` threading and the deliberate `DriveMigrationViewModel` exception); **`AiClient` landed at the Gemini seam** (July 2026, § 3 slice 4 — the four consumer-called ops virtual, all ten AI consumers on the interface, first fake-based use-case tests via `FakeAiClient`); **`AiRetry` + `GeminiProgress` are injected `@Singleton`s** (July 2026, § 3 slice 5 — two of the three static globals killed; `ImageEncoding.tier` deferred to § 7's settings seam) |
 | 4 | Navigation Compose | **Done** (phase 3 complete; per-destination VM scoping deferred to § 5) |
@@ -1415,9 +1415,19 @@ categories:
 
 1. **Sink pure data + pure logic (mechanical, no behavior change).**
    `UserPreferences`/`AppLanguage`/`AppFont`/`TryOnSlot` → `core/model` (original packages
-   kept); tag-taxonomy *data* (`TagCategory`, `tagCategories`, `tagStringsForCategory`,
-   label helpers minus composables) → `core/model`; `PromptItemJson.kt` → `core/model`
-   (next to `DriveImage`; pure). Kills every category-(C) edge that isn't `ProfileViewModel`.
+   kept); `PromptItemJson.kt` → `core/model` (next to `DriveImage`; pure). Kills every
+   category-(C) edge that isn't `ProfileViewModel`.
+   **LANDED (July 2026).** `settings/UserPreferences.kt` (incl. `AppFont`) + `AppLanguage.kt`
+   moved wholesale; `TryOnSlot` extracted out of `ProfileViewModel.kt` into its own
+   `core/model` file; `ImageQuality` moved from `core/common`'s `ImageEncoding.kt` to
+   `core/model` (`com.librelookai.util` package kept) because `UserPreferences.imageQuality`
+   carries the type and `:core:model` sits below `:core:common` — which gained
+   `api(":core:model")` (`ImageEncoding.tier` exposes the type). *Scope correction, recorded:*
+   the tag-taxonomy data half originally sketched here **moves in slice 4 instead** — it
+   depends on the `gemini` normalizers (`core/ai`, which sits *above* `core/model`) and on
+   `sortedByColorOrder`/`FilterColorKeys` (a deliberate app-side invariant asserted by
+   `TagNormalizerTest`), and its cross-feature consumers all need the filter-UI composables
+   anyway, so the taxonomy moves with the shared item-UI once the designsystem home exists.
 2. **Sink the shared item plumbing.** `ItemSidecar` + `toCachedItem` → `core/model` /
    `core/database` boundary; `ItemVersions` → `data/session`-shaped core home;
    `SidecarSyncQueue` + the move/delete kinds/payloads (+ their handlers if the compiler

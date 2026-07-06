@@ -25,12 +25,7 @@ import java.io.File
 import com.librelookai.data.drive.DriveService
 import com.librelookai.data.session.UserPreferencesRepository
 
-/** The three angles of the user's try-on reference photo. */
-enum class TryOnSlot(val fileName: String) {
-    FRONT("front.jpg"),
-    SIDE("side.jpg"),
-    BACK("back.jpg"),
-}
+// TryOnSlot moved to :core:model (core/model/…/settings/TryOnSlot.kt), same package.
 
 data class ProfileUiState(
     val preferences: UserPreferences = UserPreferences(),
