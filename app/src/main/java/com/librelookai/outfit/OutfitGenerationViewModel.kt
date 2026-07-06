@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.librelookai.data.drive.DriveService
 import com.librelookai.data.model.Outfit
+import com.librelookai.data.model.Trip
 import com.librelookai.data.session.ClosetSessionHolder
 import com.librelookai.gemini.AiClient
 import com.librelookai.settings.UserPreferences
@@ -168,4 +169,33 @@ class OutfitGenerationViewModel @Inject constructor(
             ?: Locale.getDefault().country.takeIf { it.isNotEmpty() }
             ?: "US"
     }
+}
+
+/**
+ * Opens the composer to edit [outfit] as [trip]'s day outfit, carrying the trip's context.
+ * Shared by the outfit-viewer destination's Edit action and the trip viewer's per-day edit pen
+ * (moved here from the viewer destination when it lifted to the app shell, § 1 slice 3).
+ */
+internal fun OutfitGenerationViewModel.startEditingTripOutfit(
+    trip: Trip,
+    outfit: Outfit,
+    images: List<DriveImage>,
+    prefs: UserPreferences?,
+) {
+    val dayIdx = trip.outfitIds.indexOf(outfit.id).coerceAtLeast(0)
+    startEditing(
+        style       = outfit,
+        images      = images,
+        prefs       = prefs,
+        tripContext = TripContext(
+            tripId         = trip.id,
+            tripName       = trip.name,
+            dayIndex       = dayIdx,
+            dayForecast    = trip.forecast.getOrNull(dayIdx),
+            tripStartDate  = trip.startDate,
+            considerations = trip.considerations,
+            vibes          = trip.vibes,
+            goal           = trip.goal,
+        ),
+    )
 }

@@ -1,4 +1,4 @@
-package com.librelookai.outfit
+package com.librelookai
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -13,8 +13,24 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.librelookai.OutfitViewerRoute
 import com.librelookai.data.model.Outfit
+import com.librelookai.outfit.OutfitEventsViewModel
+import com.librelookai.outfit.OutfitFullScreenViewer
+import com.librelookai.outfit.OutfitGenerationViewModel
+import com.librelookai.outfit.OutfitsViewModel
+import com.librelookai.outfit.EditOutfitTagsDialog
+import com.librelookai.outfit.SuggestTagsDialog
+import com.librelookai.outfit.TripContext
+import com.librelookai.outfit.WearDatePickerDialog
+import com.librelookai.outfit.applyTagSuggestions
+import com.librelookai.outfit.clearPrediction
+import com.librelookai.outfit.closeOutfitTagsEditor
+import com.librelookai.outfit.dismissTagSuggestions
+import com.librelookai.outfit.openOutfitTagsEditor
+import com.librelookai.outfit.outfitItemPool
+import com.librelookai.outfit.setOutfitTags
+import com.librelookai.outfit.startEditingTripOutfit
+import com.librelookai.outfit.suggestTagsForOutfit
 import com.librelookai.data.model.Trip
 import com.librelookai.data.model.WearSource
 import com.librelookai.settings.ProfileViewModel
@@ -211,32 +227,4 @@ internal fun OutfitViewerDestination(
             onApply = { selected -> generationViewModel.applyTagSuggestions(sugg.outfitId, selected) },
         )
     }
-}
-
-/**
- * Opens the composer to edit [outfit] as [trip]'s day outfit, carrying the trip's context.
- * Shared by the viewer destination's Edit action and the trip viewer's per-day edit pen.
- */
-internal fun OutfitGenerationViewModel.startEditingTripOutfit(
-    trip: Trip,
-    outfit: Outfit,
-    images: List<DriveImage>,
-    prefs: UserPreferences?,
-) {
-    val dayIdx = trip.outfitIds.indexOf(outfit.id).coerceAtLeast(0)
-    startEditing(
-        style       = outfit,
-        images      = images,
-        prefs       = prefs,
-        tripContext = TripContext(
-            tripId         = trip.id,
-            tripName       = trip.name,
-            dayIndex       = dayIdx,
-            dayForecast    = trip.forecast.getOrNull(dayIdx),
-            tripStartDate  = trip.startDate,
-            considerations = trip.considerations,
-            vibes          = trip.vibes,
-            goal           = trip.goal,
-        ),
-    )
 }

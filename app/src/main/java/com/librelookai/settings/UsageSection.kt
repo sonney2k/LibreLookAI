@@ -34,6 +34,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.librelookai.R
+import com.librelookai.gemini.TokenUsageRepository
+import androidx.lifecycle.AndroidViewModel
+import android.app.Application
 import com.librelookai.data.model.Outfit
 import com.librelookai.gemini.DeviationStat
 import com.librelookai.gemini.UsageAggregator
@@ -42,6 +45,11 @@ import com.librelookai.gemini.UsageWindowTotals
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.TimeUnit
+
+class UsageViewModel(app: Application) : AndroidViewModel(app) {
+    val repo: TokenUsageRepository = TokenUsageRepository.get(app)
+    val events = repo.events
+}
 
 @Composable
 fun UsageSection(modifier: Modifier = Modifier) {

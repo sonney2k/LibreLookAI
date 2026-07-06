@@ -1,4 +1,4 @@
-package com.librelookai.wardrobe
+package com.librelookai
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -13,8 +13,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.librelookai.ItemViewerRoute
 import com.librelookai.outfit.OutfitsViewModel
+import com.librelookai.wardrobe.DeleteItemsConfirmDialog
+import com.librelookai.wardrobe.FullScreenViewer
+import com.librelookai.wardrobe.LocationViewModel
+import com.librelookai.wardrobe.WardrobeViewModel
+import com.librelookai.wardrobe.tagCategories
 import com.librelookai.shopping.ShoppingClosetViewModel
 import com.librelookai.tryon.TryOnViewModel
 

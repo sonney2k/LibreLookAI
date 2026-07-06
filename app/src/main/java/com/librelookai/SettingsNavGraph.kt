@@ -1,4 +1,4 @@
-package com.librelookai.settings
+package com.librelookai
 
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Column
@@ -21,14 +21,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.librelookai.AppScreenHeader
-import com.librelookai.R
-import com.librelookai.SettingsAboutRoute
-import com.librelookai.SettingsAdvancedRoute
-import com.librelookai.SettingsBuyCreditsRoute
-import com.librelookai.SettingsProfileEditRoute
-import com.librelookai.SettingsUsageRoute
 import com.librelookai.billing.BuyCreditsScreen
+import com.librelookai.settings.AboutScreen
+import com.librelookai.settings.DestructiveAction
+import com.librelookai.settings.ProfileEditScreen
+import com.librelookai.settings.ProfileViewModel
+import com.librelookai.settings.SettingsAdvancedScreen
+import com.librelookai.settings.SettingsDestructiveConfirmHost
+import com.librelookai.settings.rememberDisplayName
 import com.librelookai.billing.CreditsViewModel
 import com.librelookai.gemini.ApiKeyStore
 import com.librelookai.util.Analytics
@@ -145,48 +145,6 @@ internal fun NavGraphBuilder.settingsDestinations(
             }
         }
     }
-}
-
-/**
- * The destructive-op confirm dialog with its count / dispatch wiring — shared by the
- * Advanced destination's "Fix AI mistakes" rows and the main page's WebP conversion.
- */
-@Composable
-internal fun SettingsDestructiveConfirmHost(
-    action: DestructiveAction,
-    wardrobeViewModel: WardrobeViewModel,
-    locationViewModel: LocationViewModel,
-    creditsViewModel: CreditsViewModel,
-    onBuyCredits: () -> Unit,
-    onDismiss: () -> Unit,
-) {
-    val wardrobeState by wardrobeViewModel.state.collectAsState()
-    val locationState by locationViewModel.state.collectAsState()
-    val creditsState by creditsViewModel.state.collectAsState()
-    val itemCount = when (action) {
-        // Estimate from legacy (non-WebP) cutouts across all closets.
-        DestructiveAction.CONVERT_WEBP ->
-            wardrobeState.allLocationImages.count { it.name.endsWith(ImageEncoding.CUTOUT_SUFFIX_LEGACY) }
-        else -> wardrobeState.images.size
-    }
-    DestructiveConfirmDialog(
-        action = action,
-        itemCount = itemCount,
-        balance = creditsState.balance,
-        onConfirm = {
-            when (action) {
-                DestructiveAction.RETAG -> wardrobeViewModel.retagAll()
-                DestructiveAction.REMOVE_BG -> wardrobeViewModel.removeAllBackgrounds()
-                DestructiveAction.CUTOUT_FIX ->
-                    wardrobeViewModel.startCutoutBgFixScan(locationState.locations.map { it.folderId })
-                DestructiveAction.CONVERT_WEBP ->
-                    wardrobeViewModel.convertImagesToWebp(locationState.locations.map { it.folderId })
-            }
-            onDismiss()
-        },
-        onBuyCredits = onBuyCredits,
-        onDismiss = onDismiss,
-    )
 }
 
 /** Wraps a parameter-free child screen (Usage / Buy credits) with a back header. */

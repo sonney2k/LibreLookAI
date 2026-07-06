@@ -1,4 +1,4 @@
-package com.librelookai.settings
+package com.librelookai
 
 import android.app.Application
 import androidx.compose.foundation.Canvas
@@ -35,7 +35,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.librelookai.R
+import com.librelookai.settings.UsageSection
+import com.librelookai.settings.UsageViewModel
 import com.librelookai.gemini.TokenUsageRepository
 import com.librelookai.gemini.UsageCategory
 import com.librelookai.outfit.OutfitEventsViewModel
@@ -46,10 +47,7 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.util.concurrent.TimeUnit
 
-class UsageViewModel(app: Application) : AndroidViewModel(app) {
-    val repo: TokenUsageRepository = TokenUsageRepository.get(app)
-    val events = repo.events
-}
+// UsageViewModel lives in settings/UsageSection.kt (its settings-side consumer).
 
 // ============================================================================
 //  Usage & costs — activity counts + 14-day charts + Gemini token usage.

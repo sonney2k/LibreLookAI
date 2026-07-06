@@ -79,7 +79,6 @@ import com.librelookai.settings.AppLanguage
 import com.librelookai.wardrobe.FixCutoutBgDialog
 import com.librelookai.settings.ProfileViewModel
 import com.librelookai.settings.SettingsScreen
-import com.librelookai.settings.settingsDestinations
 import com.librelookai.shopping.ShoppingClosetViewModel
 import com.librelookai.shopping.ShoppingHelperScreen
 import com.librelookai.shopping.ShoppingHelperViewModel
@@ -894,7 +893,7 @@ internal fun AppContent(
                                 androidx.hilt.navigation.compose.hiltViewModel(entry)
                             // Full-bleed, no Scaffold: the viewer is immersive (edge-to-edge,
                             // like its Dialog predecessor) and handles its own insets.
-                            com.librelookai.outfit.OutfitViewerDestination(
+                            OutfitViewerDestination(
                                 source = route.source,
                                 routeOutfitIds = route.outfitIds,
                                 initialOutfitId = route.initialOutfitId,
@@ -1089,7 +1088,7 @@ internal fun AppContent(
                                 androidx.hilt.navigation.compose.hiltViewModel(entry)
                             // Full-bleed, no Scaffold: the viewer is immersive (edge-to-edge,
                             // like its Dialog predecessor) and handles its own insets.
-                            com.librelookai.wardrobe.ItemViewerDestination(
+                            ItemViewerDestination(
                                 source = route.source,
                                 routeItemIds = route.itemIds,
                                 initialItemId = route.initialItemId,
