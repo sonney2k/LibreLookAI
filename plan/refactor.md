@@ -1436,6 +1436,15 @@ categories:
    `core/common` for the pure parts; the Compose picker stays app-side until slice 4).
    Kills the shopping→wardrobe repo/worker edges (category B) — after this, both ingestion
    workers and all repos are feature-import-free.
+   **LANDED (July 2026).** The three wardrobe-item § 2 handler files moved wholesale to
+   `core/sync` (`WardrobeSidecarSync`/`…DeleteSync`/`…MoveSync` — kinds, payloads (bumped
+   public) and the Hilt `@IntoSet` module ride along; they already depended only on
+   core modules), with `SidecarSyncQueue` extracted next to them; `ItemSidecar` +
+   `UrlImportPickerState` → `core/model`; `DriveImage.toCachedItem` + `ItemVersions` →
+   `core/database` (they ride the store-derived views; `core/common` lacks javax.inject);
+   `WebProductFetcher` + `rotateBitmapFileBy90` → `core/common`. All original
+   `com.librelookai.wardrobe` packages kept — zero import churn, the app compiled unmodified
+   on first pass.
 3. **Lift the multi-feature hosts into the app shell** (`ItemViewerDestination`, the
    `UsageScreen` wiring, `ReplacementsScreen`, the WardrobeScreen↔shopping-helper cluster
    wiring, `FixCutoutBgDialog`) — mechanical file moves + param threading; the § 5

@@ -16,7 +16,7 @@ const val ITEM_DELETE_KIND = "wardrobe.deleteItem"
  * must carry its file ids: the optimistic local update removes the item's Room row *before*
  * the drain, so there is nothing left to re-read at apply time.
  */
-internal data class DeleteItemPayload(val fileIds: List<String>)
+data class DeleteItemPayload(val fileIds: List<String>)
 
 /**
  * Drains queued item deletions (refactor § 2). The old inline path was fire-and-forget

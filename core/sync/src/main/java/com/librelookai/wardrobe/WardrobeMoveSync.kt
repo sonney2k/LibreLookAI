@@ -22,7 +22,7 @@ const val ITEM_MOVE_KIND = "wardrobe.moveItem"
  * `sidecarSync` rides as null here — that earlier mutation drains first and, re-reading the
  * already re-homed row, creates the sidecar directly in the target folder.
  */
-internal data class MoveItemPayload(
+data class MoveItemPayload(
     val sourceFolderId: String,
     val targetFolderId: String,
     val originalDriveId: String? = null,

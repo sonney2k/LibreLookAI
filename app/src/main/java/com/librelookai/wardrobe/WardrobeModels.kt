@@ -1,7 +1,5 @@
 package com.librelookai.wardrobe
 
-import com.librelookai.data.local.CachedWardrobeItem
-import com.librelookai.data.local.WardrobeItemStore
 import com.librelookai.gemini.ClothingTags
 import com.librelookai.settings.UserPreferences
 import com.librelookai.util.Analytics
@@ -148,13 +146,7 @@ sealed interface WardrobeEvent {
     data class ScrollToItem(val driveId: String) : WardrobeEvent
 }
 
-/** State for the URL-import picker dialog (candidate grid + WebView fallback). */
-data class UrlImportPickerState(
-    val pageUrl: String,
-    val candidates: List<String>,
-    val targetFolderId: String? = null,
-    val isDownloading: Boolean = false,
-)
+// UrlImportPickerState moved to :core:model (core/model/…/wardrobe/), same package.
 
 /** One pending entry in the on-device bg-removal review queue. */
 data class LocalBgReviewItem(
@@ -203,29 +195,13 @@ data class CutoutFixEntry(
     val hasGreenHalo: Boolean,
 )
 
-// ---------- Per-item sidecar metadata ----------
-
-internal data class ItemSidecar(val tags: ClothingTags? = null, val originalDriveId: String? = null)
+// ItemSidecar moved to :core:model, DriveImage.toCachedItem to :core:database (same package,
+// § 1 slice 2 — the § 2 handlers and both ingestion workers consume them from below).
 
 // ---------- Legacy bulk metadata (read-only, migration fallback) ----------
 
 internal data class WardrobeItemMeta(val name: String, val tags: ClothingTags?, val originalDriveId: String? = null)
 internal data class WardrobeMetadata(val items: List<WardrobeItemMeta> = emptyList())
-
-// ---------- Local disk cache (instant startup, no network) ----------
-
-/**
- * Maps a wardrobe item to its Room-backed cache row ([WardrobeItemStore]). The local path is
- * not persisted — it is re-derived from the Drive download cache on read.
- */
-fun DriveImage.toCachedItem() = CachedWardrobeItem(
-    driveId = driveId,
-    name = name,
-    tags = tags,
-    originalDriveId = originalDriveId,
-    sidecarDriveId = sidecarDriveId,
-    createdTimeMs = createdTimeMs,
-)
 
 internal data class PendingJob(
     val driveId: String,
