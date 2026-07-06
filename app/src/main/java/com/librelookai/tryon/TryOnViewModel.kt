@@ -269,8 +269,10 @@ class TryOnViewModel @Inject constructor(
                     itemIds        = ids,
                     localPath      = cached.absolutePath,
                 )
-                // Index write + store mirror — the derived history picks the entry up via
-                // invalidation (the history VM's feed follows without a cross-VM call).
+                // Store write + queued index sync (§ 2) — the derived history picks the entry
+                // up via invalidation (the history VM's feed follows without a cross-VM call).
+                // The merge base stays a *Drive* read: the store may still be pre-warm-empty
+                // here, and the image upload above just proved we're online.
                 repo.writeAll(listOf(entry) + repo.loadEntries())
                 _state.update { it.copy(isSaving = false, isResultSaved = true) }
             } catch (e: Exception) {

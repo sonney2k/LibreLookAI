@@ -65,7 +65,8 @@ class TryOnHistoryViewModel @Inject constructor(
     fun deleteTryOn(tryOn: TryOn) = deleteTryOns(listOf(tryOn))
 
     /**
-     * Batch-deletes [tryOns] in a single Drive JSON write. Also used when wardrobe items are
+     * Batch-deletes [tryOns] local-first (the Drive file deletes + index rewrite ride the § 2
+     * queue — the error catch only covers the local commit). Also used when wardrobe items are
      * deleted and the user opts to cascade the removal to try-ons that wore those items.
      */
     fun deleteTryOns(tryOns: List<TryOn>) {

@@ -3,8 +3,12 @@ package com.librelookai.tryon
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.librelookai.data.drive.DriveService
+import com.librelookai.data.drive.SyncEngine
+import com.librelookai.data.local.PendingMutationStore
 import com.librelookai.data.local.TryOnStore
 import com.librelookai.data.model.TryOn
+import com.librelookai.wardrobe.DeleteItemPayload
+import com.librelookai.wardrobe.ITEM_DELETE_KIND
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -24,14 +28,18 @@ import kotlinx.coroutines.withContext
  * Shared try-on data + persistence (refactor § 5 slice 9 — the TryOn VM split): the composer VM
  * ([TryOnViewModel]) saves through it and [TryOnHistoryViewModel] reads/deletes through it, so
  * the two never call each other. Owns the store-derived [history] flow (§ 5 slice 4d), the
- * `_tryons.json` Drive read/write, and the image-file cache naming. Saves/deletes stay
- * Drive-first (not queued through the § 2 SyncEngine — deliberate, see `plan/refactor.md`); every
- * write ends in [writeAll], whose store write reaches the UI via Room invalidation.
+ * `_tryons.json` Drive read/write, and the image-file cache naming. Index writes and deletes
+ * are **local-first over the § 2 queue** (the last § 2 leftover, converted July 2026): every
+ * write ends in [writeAll] — store write (the UI follows via Room invalidation) + one queued
+ * [TRYON_INDEX_SYNC_KIND] mutation. Only the image *byte* uploads stay direct (they mint the
+ * `imageDriveId` identity, and the user is necessarily online right after generating).
  */
 @Singleton
 class TryOnRepository @Inject constructor(
     private val drive: DriveService,
     private val tryOnStore: TryOnStore,
+    private val mutationStore: PendingMutationStore,
+    private val syncEngine: SyncEngine,
 ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private val gson = Gson()
@@ -69,10 +77,17 @@ class TryOnRepository @Inject constructor(
         }.getOrElse { emptyList() }.map(::migrateSource)
     }
 
-    /** Rewrites `_tryons.json` and mirrors it into the store (the derived [history] follows). */
+    /**
+     * Local-first index write (refactor § 2): mirrors [entries] into the store (the derived
+     * [history] follows via invalidation) and enqueues one payload-free [TRYON_INDEX_SYNC_KIND]
+     * mutation — the handler re-serializes the *store* at apply time, so back-to-back writes
+     * coalesce and a transient Drive failure retries instead of dropping the entry. Returning
+     * means *locally committed + queued*, not Drive-confirmed.
+     */
     suspend fun writeAll(entries: List<TryOn>) {
-        drive.saveTryOnsJson(ensureRootFolder(), gson.toJson(entries))
-        runCatching { tryOnStore.replaceAll(entries) }
+        tryOnStore.replaceAll(entries)
+        mutationStore.enqueue(TRYON_INDEX_SYNC_KIND, targetId = "_tryons", folderId = null, payload = "{}")
+        syncEngine.drain()
     }
 
     private var refresh: Deferred<Unit>? = null
@@ -104,17 +119,26 @@ class TryOnRepository @Inject constructor(
     }
 
     /**
-     * Deletes [tryOns] (Drive image files + cache files) and rewrites the index in a single
-     * JSON write. Throws on an index-write failure so the caller can surface the error.
+     * Deletes [tryOns] local-first (refactor § 2): cache files and store rows go immediately
+     * (the derived feed drops them via invalidation), one payload-carrying [ITEM_DELETE_KIND]
+     * per image file rides the queue (same funnel as wardrobe deletes — the entry is gone from
+     * the store before the drain, so the file id travels in the payload; a retried delete no
+     * longer orphans the Drive file), and the index rewrite rides [writeAll]'s queued sync.
+     * The FIFO drain deletes the files before rewriting the index, matching the old order.
      */
     suspend fun deleteTryOns(tryOns: List<TryOn>) {
         if (tryOns.isEmpty()) return
         val ids = tryOns.map { it.imageDriveId }.toSet()
         tryOns.forEach { t ->
-            runCatching { drive.deleteFile(t.imageDriveId) }
             cacheFile(t.imageDriveId).delete()
+            mutationStore.enqueue(
+                ITEM_DELETE_KIND,
+                targetId = t.imageDriveId,
+                folderId = null,
+                payload = gson.toJson(DeleteItemPayload(listOf(t.imageDriveId))),
+            )
         }
-        writeAll(loadEntries().filterNot { it.imageDriveId in ids })
+        writeAll(tryOnStore.tryOns().filterNot { it.imageDriveId in ids })
     }
 }
 

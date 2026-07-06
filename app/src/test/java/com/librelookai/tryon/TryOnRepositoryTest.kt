@@ -1,10 +1,14 @@
 package com.librelookai.tryon
 
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import com.librelookai.data.drive.DrainScheduler
+import com.librelookai.data.drive.SyncEngine
 import com.librelookai.data.model.TryOn
 import com.librelookai.testing.FakeDriveService
+import com.librelookai.testing.FakeMutationStore
 import com.librelookai.testing.FakeTryOnStore
+import com.librelookai.wardrobe.DeleteItemPayload
+import com.librelookai.wardrobe.ITEM_DELETE_KIND
 import java.io.File
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
@@ -27,8 +31,8 @@ import org.junit.Test
  * Fake-based [TryOnRepository] tests (refactor § 8, the `TripsRepositoryTest` pattern): the
  * cached-image-file filter on the derived [TryOnRepository.history], the legacy source
  * migration, the Phase-2 refresh (missing-image download + store mirror, `once` pre-warm
- * memoization, single-flight) and the Drive-first delete's index rewrite become tested
- * invariants.
+ * memoization, single-flight) and the § 2 local-first write/delete queue funnels become
+ * tested invariants (handler behavior is [TryOnSyncHandlersTest]'s concern).
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class TryOnRepositoryTest {
@@ -36,8 +40,14 @@ class TryOnRepositoryTest {
     private val gson = Gson()
     private val drive = FakeDriveService()
     private val store = FakeTryOnStore()
+    private val mutationStore = FakeMutationStore()
+    // No handlers registered: drain() halts on the unknown kind, leaving the queued rows
+    // observable (the § 2 engine contract — unknown kinds halt without data loss).
+    private val syncEngine = SyncEngine(mutationStore, emptySet(), object : DrainScheduler {
+        override fun ensureScheduled() {}
+    })
 
-    private fun repo() = TryOnRepository(drive, store)
+    private fun repo() = TryOnRepository(drive, store, mutationStore, syncEngine)
 
     private fun tryOn(
         imageDriveId: String,
@@ -56,9 +66,6 @@ class TryOnRepositoryTest {
     /** Puts [imageDriveId]'s image bytes into the local Drive cache (the derivation's filter). */
     private fun cacheImage(imageDriveId: String): File =
         File(drive.cacheDir, "tryon_$imageDriveId.png").apply { writeText("bytes") }
-
-    private fun indexJson(rootFolderId: String = drive.rootFolderId): List<TryOn> =
-        gson.fromJson(drive.tryOnsJsonByRoot[rootFolderId], object : TypeToken<List<TryOn>>() {}.type)
 
     @Before
     fun setUp() {
@@ -151,11 +158,12 @@ class TryOnRepositoryTest {
     }
 
     @Test
-    fun `writeAll rewrites the index and mirrors the store`() = runTest {
+    fun `writeAll is local-first — store mirror plus one queued index sync, no direct Drive write`() = runTest {
         repo().writeAll(listOf(tryOn("a")))
 
-        assertEquals(listOf("tryon-a"), indexJson().map { it.id })
         assertEquals(listOf("tryon-a"), store.flow.value.map { it.id })
+        assertEquals(listOf(TRYON_INDEX_SYNC_KIND), mutationStore.rows.map { it.kind })
+        assertTrue(drive.tryOnsJsonByRoot.isEmpty())
     }
 
     @Test
@@ -166,17 +174,21 @@ class TryOnRepositoryTest {
     }
 
     @Test
-    fun `deleteTryOns deletes files and rewrites the index without the deleted entries`() = runTest {
-        drive.tryOnsJsonByRoot[drive.rootFolderId] =
-            gson.toJson(listOf(tryOn("dead"), tryOn("keep")))
+    fun `deleteTryOns is local-first — cache file and store row go now, file delete then index sync ride the queue`() = runTest {
+        store.replaceAll(listOf(tryOn("dead"), tryOn("keep")))
         cacheImage("dead")
         val repo = repo()
 
         repo.deleteTryOns(listOf(tryOn("dead")))
 
-        assertEquals(listOf("dead"), drive.deletedFileIds)
         assertFalse(repo.cacheFile("dead").exists())
-        assertEquals(listOf("keep"), indexJson().map { it.imageDriveId })
         assertEquals(listOf("keep"), store.flow.value.map { it.imageDriveId })
+        // FIFO: the file delete drains before the index rewrite, matching the old order.
+        assertEquals(listOf(ITEM_DELETE_KIND, TRYON_INDEX_SYNC_KIND), mutationStore.rows.map { it.kind })
+        val payload = gson.fromJson(mutationStore.rows.first().payload, DeleteItemPayload::class.java)
+        assertEquals(listOf("dead"), payload.fileIds)
+        // Nothing touches Drive until the drain applies the queued mutations.
+        assertTrue(drive.deletedFileIds.isEmpty())
+        assertTrue(drive.tryOnsJsonByRoot.isEmpty())
     }
 }
