@@ -139,7 +139,7 @@ class FakeTripStore : TripStore {
     }
 }
 
-class FakeTryOnStore : TryOnStore {
+open class FakeTryOnStore : TryOnStore {
     val flow = MutableStateFlow<List<TryOn>>(emptyList())
 
     override suspend fun tryOns(): List<TryOn> = flow.value
