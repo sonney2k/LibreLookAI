@@ -76,7 +76,7 @@ import com.librelookai.outfit.OutfitsViewModel
 import com.librelookai.outfit.closeComposer
 import com.librelookai.outfit.openComposer
 import com.librelookai.settings.AppLanguage
-import com.librelookai.settings.FixCutoutBgDialog
+import com.librelookai.wardrobe.FixCutoutBgDialog
 import com.librelookai.settings.ProfileViewModel
 import com.librelookai.settings.SettingsScreen
 import com.librelookai.settings.settingsDestinations

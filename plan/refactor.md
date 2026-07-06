@@ -1449,6 +1449,12 @@ categories:
    `UsageScreen` wiring, `ReplacementsScreen`, the WardrobeScreen↔shopping-helper cluster
    wiring, `FixCutoutBgDialog`) — mechanical file moves + param threading; the § 5
    "no VM param defaults" rule already makes these safe.
+   **Started (July 2026):** `FixCutoutBgDialog.kt` moved settings→wardrobe (it is
+   wardrobe-maintenance UI over the wardrobe progress models; its host is `AppContent`) —
+   the settings→wardrobe *model* edge is gone. Note for the rest: `UsageScreen` (and any
+   host that a feature's nav graph composes) can't simply move to the app root — the
+   settings nav graph would then import upward. The nav-graph *registration* has to lift
+   with it (shell-registered destinations), so scope each host with its wiring.
 4. **`core/designsystem`** — the res-split (per the recorded decision) + move
    `ui/theme`, `ui/components` (AppFab/SelectionActionBar/DetailActionBar), and the shared
    item-UI (`WardrobeFilterSheet`, `WardrobeZoomableItemGrid`/`WardrobeItemGrid`,

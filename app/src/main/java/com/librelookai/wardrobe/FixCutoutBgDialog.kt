@@ -1,4 +1,4 @@
-package com.librelookai.settings
+package com.librelookai.wardrobe
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -52,8 +52,6 @@ import androidx.compose.ui.window.DialogWindowProvider
 import coil.compose.AsyncImage
 import com.librelookai.R
 import com.librelookai.util.LocalSystemBarsPadding
-import com.librelookai.wardrobe.CutoutBgFixProgress
-import com.librelookai.wardrobe.CutoutFixEntry
 import java.io.File
 
 @Composable
