@@ -1591,6 +1591,17 @@ categories:
    applies); (c) root `AppScreenHeader` (app shell — slot/lift decision). The § 1 open
    question stands: fold travel's outfit reads onto `OutfitsRepository`/core flows, or
    extract travel+outfit together. Resolve before starting the travel slice.
+   **Resolved: travel extracts alone** (July 2026) — co-extraction would produce one
+   oversized module and abandon leaf-first; the composer hand-offs are shell-threadable
+   callbacks (the openers already just seed the generation VM then navigate). **Travel
+   enabler 1 landed**: new **`core:outfit`** (deps: api model/database/session/weather) —
+   `WearHistory.kt` moved wholesale (package kept, `wearHistoryFlow`/`buildOutfitEvent`/
+   `buildWearHistorySummary` public now) and `buildLovedOutfitsSummary` extracted out of
+   `OutfitsPrompts.kt` into it (both files were already core-clean; no existing core module
+   had the model+database+session+weather dep combination, and the eventual `feature:outfit`
+   slice needs this domain home anyway). `AppScreenHeader.kt` sank to designsystem
+   (root package kept; used by every tab screen — also serves the shopping/outfit/wardrobe
+   extractions).
 
 ### Verification (per slice)
 

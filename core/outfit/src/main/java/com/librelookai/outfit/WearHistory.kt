@@ -38,7 +38,7 @@ import kotlinx.coroutines.flow.mapNotNull
  * AppContent and the planner UI's `OutfitsUiState.wearHistory` threading.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
-internal fun wearHistoryFlow(
+fun wearHistoryFlow(
     session: ClosetSessionHolder,
     store: OutfitEventStore,
 ): Flow<List<OutfitEvent>> = session.session
@@ -58,7 +58,7 @@ internal fun wearHistoryFlow(
  * [source] weights the taste signal (manual = strong, AI-accepted = weak); [date]
  * defaults to today and flips [OutfitEvent.planned] on when it is in the future.
  */
-internal fun buildOutfitEvent(
+fun buildOutfitEvent(
     outfit: Outfit,
     imagesById: Map<String, DriveImage>,
     source: WearSource = WearSource.MANUAL,
@@ -92,7 +92,7 @@ internal fun buildOutfitEvent(
  * a bonus. Recently worn outfits are surfaced separately so the model can avoid
  * repeating them, and cold-weather wears are called out so suggestions stay practical.
  */
-internal fun buildWearHistorySummary(
+fun buildWearHistorySummary(
     events: List<OutfitEvent>,
     today: LocalDate = LocalDate.now(),
     recentDays: Long = 7,
@@ -148,5 +148,39 @@ internal fun buildWearHistorySummary(
         if (coldTypes.isNotEmpty()) appendLine("- In cold weather tends to wear: ${coldTypes.joinToString(", ")}")
         if (recent.isNotEmpty())
             appendLine("- Worn in the last $recentDays days (avoid repeating unless it is the clear best pick): ${recent.joinToString(", ")}")
+    }.trimEnd()
+}
+
+// ---------- Loved-outfits taste signal ----------
+
+/**
+ * Compact "favourite outfits" taste block, built **purely from the user's [Outfit.loved] flag** and
+ * deliberately independent of the wear-history signal ([buildWearHistorySummary]). Lists each loved
+ * outfit's name, free-form tags, item types and colours so the model leans toward the looks the user
+ * has explicitly hearted — whether or not they have ever been worn. Returns null when nothing is
+ * loved. Appended to the prediction, composer and travel-packing prompts.
+ */
+fun buildLovedOutfitsSummary(
+    styles: List<Outfit>,
+    imagesById: Map<String, DriveImage>,
+    max: Int = 8,
+): String? {
+    val loved = styles.filter { it.loved }.take(max)
+    if (loved.isEmpty()) return null
+    return buildString {
+        appendLine("## Favourite outfits (the user explicitly hearted these — weight them heavily)")
+        appendLine("Lean toward the items, colours and vibes of these favourites; prefer them or close variants when they suit the context.")
+        loved.forEach { o ->
+            val tags = o.itemIds.mapNotNull { imagesById[it]?.tags }
+            val types = tags.mapNotNull { it.type.trim().takeIf { t -> t.isNotEmpty() } }.distinct()
+            val colors = tags.flatMap { it.colors }.map { it.trim() }.filter { it.isNotEmpty() }.distinct()
+            val detail = buildList {
+                o.tags.takeIf { it.isNotEmpty() }?.let { add("tags: ${it.joinToString(", ")}") }
+                types.takeIf { it.isNotEmpty() }?.let { add("items: ${it.joinToString(", ")}") }
+                colors.takeIf { it.isNotEmpty() }?.let { add("colours: ${it.joinToString(", ")}") }
+            }
+            val name = o.name.ifBlank { "(unnamed)" }
+            if (detail.isEmpty()) appendLine("- $name") else appendLine("- $name (${detail.joinToString("; ")})")
+        }
     }.trimEnd()
 }

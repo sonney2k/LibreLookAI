@@ -157,6 +157,7 @@ dependencies {
     implementation(project(":core:weather"))
     implementation(project(":core:service"))
     implementation(project(":core:session"))
+    implementation(project(":core:outfit"))
     implementation(project(":feature:auth"))
     implementation(project(":feature:billing"))
     implementation(project(":feature:onboarding"))
