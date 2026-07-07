@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Travel strings (moved from :app in the feature:travel slice) -->
+    <string name="outfits_worn_today">تم ارتداؤه اليوم!</string>
+    <string name="travel_destination_placeholder">مثلاً: باريس، طوكيو، نيويورك</string>
+    <string name="travel_goal_placeholder">مثلاً: اجتماعات عمل + عشاء مسائي</string>
+    <string name="travel_generate">توليد قائمة التوضيب</string>
+    <string name="travel_regenerate">إعادة توليد</string>
+    <string name="travel_extra_items">وضب أيضًا (ليست في الخزانة)</string>
+    <string name="travel_historical_note">تواريخ الرحلة خارج نافذة التوقعات المباشرة — يتم عرض بيانات المناخ التاريخية.</string>
+    <string name="ai_fetching_weather">جاري جلب الطقس…</string>
+    <string name="ai_generating_packing">جاري توليد قائمة التوضيب…</string>
+    <string name="trip_planned_title">رحلة مخطط لها</string>
+    <string name="trip_saved_label">تم الحفظ</string>
+    <string name="trip_saved_confirmation">تم حفظ الرحلة والإطلالات</string>
+    <string name="trip_not_found">Trip not found.</string>
+    <string name="trip_day_header">اليوم %1$d</string>
+    <string name="trip_packed">مُعبأ</string>
+    <string name="trip_no_destination">Untitled trip</string>
+    <string name="trip_meta_dates">البدء %1$s • %2$d أيام</string>
+    <string name="trip_checklist">قائمة</string>
+    <string name="trip_rename">Rename</string>
+    <string name="trip_modify_outfit">Modify outfit</string>
+    <string name="trip_section_other_outfits">Other travel outfits</string>
+    <string name="trip_delete">حذف الرحلة</string>
+    <string name="trip_delete_confirm_title">حذف هذه الرحلة؟</string>
+    <string name="trip_delete_confirm_body">اختر ما إذا كنت تريد أيضًا حذف الإطلالات التي أُنشئت لهذه الرحلة.</string>
+    <string name="trip_delete_with_outfits">حذف الرحلة والإطلالات</string>
+    <string name="trip_delete_keep_outfits">الاحتفاظ بالإطلالات</string>
+    <string name="trip_bulk_refining">جارٍ تحسين كل الإطلالات…</string>
+    <string name="trip_bulk_refine_action">تحسين كل الإطلالات</string>
+    <string name="trip_bulk_refine_hint">مثل ألوان أزهى، عناصر أقل، أنسب للمساء…</string>
+    <string name="trip_bulk_refine_run">تطبيق بالذكاء الاصطناعي</string>
+    <string name="trip_bulk_refine_brighter">ألوان أزهى</string>
+    <string name="trip_bulk_refine_lighter">حقيبة أخف</string>
+    <string name="trip_bulk_refine_formal">أمسيات أكثر رسمية</string>
+    <string name="trip_bulk_refine_skip_jacket">بدون سترة</string>
+    <string name="trip_refine_preview_note">معاينة — غير محفوظة</string>
+    <string name="trip_refine_discard">تجاهل</string>
+    <string name="trip_refine_replace">استبدال إطلالات الرحلة</string>
+    <string name="error_no_refinement">لم يتم إرجاع تحسين قابل للاستخدام.</string>
+    <string name="error_enter_destination">يرجى إدخال وجهة.</string>
+    <string name="error_weather_fetch_failed">تعذّر جلب الطقس لـ \"%1$s\". تحقق من اسم الوجهة.</string>
+    <string name="fab_travel_plan">تخطيط رحلة</string>
+</resources>

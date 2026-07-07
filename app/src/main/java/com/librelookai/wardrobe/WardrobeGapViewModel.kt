@@ -84,7 +84,7 @@ class WardrobeGapViewModel @Inject constructor(
             }
             val raw = outcome.getOrNull()
             if (raw == null) {
-                _state.update { it.copy(isAnalyzing = false, error = getApplication<Application>().localized().getString(com.librelookai.R.string.error_gemini_no_response)) }
+                _state.update { it.copy(isAnalyzing = false, error = getApplication<Application>().localized().getString(com.librelookai.core.designsystem.R.string.error_gemini_no_response)) }
                 return@launch
             }
 
@@ -94,7 +94,7 @@ class WardrobeGapViewModel @Inject constructor(
             val result = runCatching { gson.fromJson(json, GapAnalysis::class.java) }.getOrNull()
             if (result == null || result.suggestions.isEmpty()) {
                 Log.w("GapVM", "Failed to parse gap analysis: $json")
-                _state.update { it.copy(isAnalyzing = false, error = getApplication<Application>().localized().getString(com.librelookai.R.string.error_gemini_parse)) }
+                _state.update { it.copy(isAnalyzing = false, error = getApplication<Application>().localized().getString(com.librelookai.core.designsystem.R.string.error_gemini_parse)) }
                 return@launch
             }
 

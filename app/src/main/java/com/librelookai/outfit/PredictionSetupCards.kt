@@ -213,14 +213,14 @@ internal fun WeatherCard(
 // ─── 3) Style vibe ───────────────────────────────────────────────────────────
 
 private val TUNE_VIBES: List<Pair<String, Int>> = listOf(
-    "Casual" to R.string.composer_vibe_casual,
-    "Sporty" to R.string.composer_vibe_sporty,
-    "Formal" to R.string.composer_vibe_formal,
-    "Business" to R.string.composer_vibe_business,
-    "Streetwear" to R.string.composer_vibe_streetwear,
-    "Minimalist" to R.string.composer_vibe_minimalist,
-    "Classic" to R.string.composer_vibe_classic,
-    "Elegant" to R.string.composer_vibe_elegant,
+    "Casual" to DsR.string.composer_vibe_casual,
+    "Sporty" to DsR.string.composer_vibe_sporty,
+    "Formal" to DsR.string.composer_vibe_formal,
+    "Business" to DsR.string.composer_vibe_business,
+    "Streetwear" to DsR.string.composer_vibe_streetwear,
+    "Minimalist" to DsR.string.composer_vibe_minimalist,
+    "Classic" to DsR.string.composer_vibe_classic,
+    "Elegant" to DsR.string.composer_vibe_elegant,
 )
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -255,13 +255,13 @@ internal fun ConsidersCard(
     onToggle: ((AiConsiderations) -> AiConsiderations) -> Unit,
 ) {
     val rows = listOf(
-        ConsiderationRow(R.string.ai_consider_weather, Icons.Default.WbSunny, considerations.weather) { onToggle { it.copy(weather = !it.weather) } },
-        ConsiderationRow(R.string.ai_consider_location, Icons.Default.Place, considerations.location) { onToggle { it.copy(location = !it.location) } },
-        ConsiderationRow(R.string.ai_consider_trends, Icons.AutoMirrored.Filled.TrendingUp, considerations.trends) { onToggle { it.copy(trends = !it.trends) } },
-        ConsiderationRow(R.string.ai_consider_gender, Icons.Default.Person, considerations.gender) { onToggle { it.copy(gender = !it.gender) } },
-        ConsiderationRow(R.string.ai_consider_age, Icons.Default.Cake, considerations.age) { onToggle { it.copy(age = !it.age) } },
-        ConsiderationRow(R.string.ai_consider_preferences, Icons.Default.Favorite, considerations.preferences) { onToggle { it.copy(preferences = !it.preferences) } },
-        ConsiderationRow(R.string.ai_consider_history, Icons.Default.History, considerations.history) { onToggle { it.copy(history = !it.history) } },
+        ConsiderationRow(DsR.string.ai_consider_weather, Icons.Default.WbSunny, considerations.weather) { onToggle { it.copy(weather = !it.weather) } },
+        ConsiderationRow(DsR.string.ai_consider_location, Icons.Default.Place, considerations.location) { onToggle { it.copy(location = !it.location) } },
+        ConsiderationRow(DsR.string.ai_consider_trends, Icons.AutoMirrored.Filled.TrendingUp, considerations.trends) { onToggle { it.copy(trends = !it.trends) } },
+        ConsiderationRow(DsR.string.ai_consider_gender, Icons.Default.Person, considerations.gender) { onToggle { it.copy(gender = !it.gender) } },
+        ConsiderationRow(DsR.string.ai_consider_age, Icons.Default.Cake, considerations.age) { onToggle { it.copy(age = !it.age) } },
+        ConsiderationRow(DsR.string.ai_consider_preferences, Icons.Default.Favorite, considerations.preferences) { onToggle { it.copy(preferences = !it.preferences) } },
+        ConsiderationRow(DsR.string.ai_consider_history, Icons.Default.History, considerations.history) { onToggle { it.copy(history = !it.history) } },
     )
     SectionCard(
         icon = Icons.AutoMirrored.Filled.TrendingUp,
@@ -283,45 +283,9 @@ internal fun ConsidersCard(
 }
 
 // ─── 4b) Expert: which item details to weigh ─────────────────────────────────
-
-/** Maps each [AiConsiderations.TOGGLEABLE_TAGS] dimension to its (already-translated) chip label. */
-private val TAG_DIM_LABELS = mapOf(
-    "uses" to DsR.string.tag_uses,
-    "colors" to DsR.string.tag_colors,
-    "seasonality" to DsR.string.tag_seasonality,
-    "aesthetic" to DsR.string.tag_aesthetic,
-    "fit" to DsR.string.tag_fit,
-    "material" to DsR.string.tag_material,
-    "pattern" to DsR.string.tag_pattern,
-)
-
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-internal fun ExpertTagsCard(
-    considerations: AiConsiderations,
-    onToggleTag: (String) -> Unit,
-) {
-    SectionCard(
-        icon = Icons.Default.Tune,
-        title = stringResource(R.string.composer_section_tags),
-        hint = stringResource(R.string.composer_tags_hint),
-    ) {
-        FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp),
-        ) {
-            AiConsiderations.TOGGLEABLE_TAGS.forEach { dim ->
-                val labelRes = TAG_DIM_LABELS[dim] ?: return@forEach
-                SmallPillChip(
-                    label = stringResource(labelRes),
-                    icon = null,
-                    active = considerations.includesItemTag(dim),
-                    onClick = { onToggleTag(dim) },
-                )
-            }
-        }
-    }
-}
+// ExpertTagsCard (+ its TAG_DIM_LABELS) sank to core/designsystem in the feature:travel
+// slice so travel can reach it without an app dependency (com.librelookai.outfit package
+// kept, so app callers resolve it unchanged).
 
 private data class ConsiderationRow(
     val labelRes: Int,
@@ -429,7 +393,7 @@ internal fun ClosetChipRow(
     onClick: () -> Unit,
 ) {
     val label = closetNames.takeIf { it.isNotEmpty() }?.joinToString(" · ")
-        ?: stringResource(R.string.composer_closets_all)
+        ?: stringResource(DsR.string.composer_closets_all)
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -438,7 +402,7 @@ internal fun ClosetChipRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Text(
-            stringResource(R.string.composer_section_sources),
+            stringResource(DsR.string.composer_section_sources),
             fontSize = 11.sp,
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onSurfaceVariant,

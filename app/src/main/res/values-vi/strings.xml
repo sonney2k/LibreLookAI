@@ -61,7 +61,6 @@
 
     <!-- Common actions -->
     <string name="action_save">Lưu</string>
-    <string name="action_edit">Sửa</string>
     <string name="action_saving">Đang lưu…</string>
     <string name="cd_ai_suggestion">Gợi ý từ AI</string>
     <string name="cd_refine">Tinh chỉnh</string>
@@ -177,7 +176,6 @@
 
     <!-- Tag values -->
     <!-- Outfits -->
-    <string name="outfits_empty">Chưa có bộ đồ nào</string>
     <string name="outfits_empty_hint">Chạm + để phối bộ đồ từ tủ đồ của bạn</string>
     <string name="outfits_sort_most_worn">Mặc nhiều nhất</string>
     <string name="outfits_create_manual">Tạo bộ đồ thủ công</string>
@@ -196,8 +194,6 @@
     <string name="outfits_composing">Đang phối bộ đồ…</string>
     <string name="outfits_delete_title">Xóa bộ đồ?</string>
     <string name="outfits_delete_text">\"%s\" sẽ bị xóa vĩnh viễn.</string>
-    <string name="outfits_wear_today">Mặc hôm nay</string>
-    <string name="outfits_worn_today">Đã mặc hôm nay!</string>
     <string name="outfits_suggested_title">Gợi ý cho hôm nay</string>
     <string name="outfits_composed_title">Phối cho riêng bạn</string>
     <string name="outfits_name_dialog_title">Đặt tên cho bộ đồ</string>
@@ -221,8 +217,6 @@
     <string name="travel_outfit_count">Trang phục</string>
     <string name="travel_outfit_count_reset">Khớp số ngày</string>
     <string name="travel_goal">Trọng tâm chuyến đi</string>
-    <string name="travel_goal_placeholder">vd. họp + tiệc tối</string>
-    <string name="travel_generate">Tạo danh sách</string>
     <string name="travel_packing_list">Danh sách mang đồ</string>
     <string name="travel_clear">Xóa sạch</string>
     <string name="travel_empty">Nhập điểm đến để bắt đầu</string>
@@ -247,8 +241,6 @@
     <string name="gap_reanalyze">Phân tích lại</string>
 
     <!-- AI overlay -->
-    <string name="ai_fetching_weather">Đang lấy thời tiết…</string>
-    <string name="ai_generating_packing">Đang tạo danh sách đồ…</string>
     <string name="ai_analyzing_wardrobe">Đang phân tích tủ đồ của bạn…</string>
     <string name="ai_suggesting_style">Đang gợi ý bộ đồ…</string>
     <string name="ai_composing_outfit">Đang phối bộ đồ…</string>
@@ -304,17 +296,11 @@
     <string name="about_description">LibreLookAI là trình quản lý tủ đồ miễn phí, mã nguồn mở, dùng AI. Nó giúp bạn sắp xếp quần áo, đưa ra gợi ý trang phục, lên danh sách đồ du lịch và phát hiện những món thiếu trong tủ — tất cả nhờ AI.</string>
     <string name="action_back">Quay lại</string>
     <string name="action_search">Tìm</string>
-    <string name="ai_consider_age">Tuổi</string>
     <string name="ai_consider_age_desc">Cân nhắc tuổi của bạn (tính từ năm sinh).</string>
-    <string name="ai_consider_gender">Giới tính</string>
     <string name="ai_consider_gender_desc">Cân nhắc giới tính trong hồ sơ của bạn.</string>
-    <string name="ai_consider_location">Vị trí</string>
     <string name="ai_consider_location_desc">Cân nhắc thành phố, quốc gia và bối cảnh thành thị/nông thôn.</string>
-    <string name="ai_consider_preferences">Sở thích phong cách</string>
     <string name="ai_consider_preferences_desc">Cân nhắc sở thích phong cách bạn viết tự do.</string>
-    <string name="ai_consider_trends">Xu hướng thời trang</string>
     <string name="ai_consider_trends_desc">Cân nhắc màu, thẩm mỹ và món must-have đang thịnh hành tại khu vực của bạn.</string>
-    <string name="ai_consider_weather">Thời tiết</string>
     <string name="ai_consider_weather_desc">Cân nhắc nhiệt độ và điều kiện hôm nay.</string>
     <string name="ai_considerations_desc">Những gì AI nên cân nhắc khi gợi ý hoặc tạo trang phục. Thay đổi áp dụng cho dự đoán, sáng tạo, đóng gói và phân tích thiếu trong tủ.</string>
     <string name="ai_considerations_title">Tiêu chí mặc định</string>
@@ -327,8 +313,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="battery_exempt_title">Cần xử lý nền</string>
     <string name="calendar_empty_hint">Mặc một trang phục từ tab Trang phục để bắt đầu theo dõi</string>
     <string name="composer_add_selected">Thêm món đã chọn</string>
-    <string name="composer_closets_all">Tất cả tủ</string>
-    <string name="composer_closets_title">Tủ</string>
     <string name="composer_desc_placeholder">Mô tả ngắn (tùy chọn)</string>
     <string name="composer_discard_confirm">Bỏ</string>
     <string name="composer_discard_message">Lựa chọn của bạn sẽ bị mất.</string>
@@ -363,24 +347,14 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="composer_section_items">Món đồ</string>
     <string name="composer_section_name">Tên &amp; mô tả</string>
     <string name="composer_section_quick_start">Bắt đầu nhanh</string>
-    <string name="composer_section_sources">Tủ nguồn</string>
     <string name="composer_section_targets">Bố cục</string>
     <string name="composer_section_vibe">Phong cách</string>
     <string name="composer_section_weather">Thời tiết</string>
     <string name="composer_see_all_count">Tất cả %1$d</string>
-    <string name="composer_sheet_done">Xong</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_tags_optional">Thẻ (tùy chọn)</string>
     <string name="composer_targets_hint">Đặt số món của mỗi lớp được dùng. Để 0 để AI tự quyết.</string>
-    <string name="composer_vibe_business">Business</string>
-    <string name="composer_vibe_casual">Năng động</string>
-    <string name="composer_vibe_classic">Cổ điển</string>
-    <string name="composer_vibe_elegant">Thanh lịch</string>
-    <string name="composer_vibe_formal">Trang trọng</string>
-    <string name="composer_vibe_minimalist">Tối giản</string>
-    <string name="composer_vibe_sporty">Thể thao</string>
-    <string name="composer_vibe_streetwear">Streetwear</string>
     <string name="composer_weather_precip">Mưa/tuyết</string>
     <string name="composer_weather_season">Mùa</string>
     <string name="composer_weather_temp">Nhiệt độ</string>
@@ -430,7 +404,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="outfits_description_placeholder">Mô tả (tùy chọn)</string>
     <string name="outfits_items_away">%d món ở vị trí khác</string>
     <string name="outfits_items_label">Món trong trang phục</string>
-    <string name="outfits_missing_items">Món không còn trong tủ</string>
     <string name="outfits_prediction_indicator">%1$d / %2$d</string>
     <string name="outfits_prediction_next">Gợi ý tiếp</string>
     <string name="outfits_prediction_prev">Gợi ý trước</string>
@@ -577,9 +550,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="shop_your_photo">Ảnh của bạn</string>
     <string name="tag_category_placeholder">áo trên, áo dưới, áo khoác, giày dép, phụ kiện, đầm, vest</string>
     <string name="tag_type_placeholder">vd. Áo thun, Quần Chinos, Áo phao</string>
-    <string name="travel_destination_placeholder">vd. Paris, Tokyo, New York</string>
-    <string name="travel_extra_items">Mang thêm (không có trong tủ)</string>
-    <string name="travel_historical_note">Ngày đi nằm ngoài khoảng dự báo trực tiếp — hiển thị dữ liệu khí hậu lịch sử.</string>
     <string name="travel_move_done">Đã chuyển các món vào vị trí Du lịch</string>
     <string name="travel_move_error">Không thể chuyển các món</string>
     <string name="travel_move_to_travel">Chuyển tất cả vào vị trí Du lịch</string>
@@ -589,7 +559,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="travel_refine_lighter">Đóng gói nhẹ hơn</string>
     <string name="travel_refine_rain">Hợp với trời mưa hơn</string>
     <string name="travel_refine_reuse">Tối đa hóa tái sử dụng trang phục</string>
-    <string name="travel_regenerate">Tạo lại</string>
     <string name="tryon_add_items_title">Thêm món từ tủ</string>
     <string name="tryon_add_photo">Thêm ảnh %1$s</string>
     <string name="tryon_cost_line">Tốn %1$d điểm mỗi lần thử đồ</string>
@@ -620,34 +589,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="wardrobe_view_original">Xem ảnh gốc</string>
 
     <!-- Trips -->
-    <string name="trip_planned_title">Chuyến đi đã lên kế hoạch</string>
-    <string name="trip_saved_label">Đã lưu</string>
-    <string name="trip_saved_confirmation">Đã lưu chuyến đi và trang phục</string>
-    <string name="trip_not_found">Trip not found.</string>
-    <string name="trip_day_header">Ngày %1$d</string>
-    <string name="trip_packed">Đã đóng gói</string>
-    <string name="trip_no_destination">Untitled trip</string>
-    <string name="trip_meta_dates">Bắt đầu %1$s • %2$d ngày</string>
-    <string name="trip_checklist">Danh sách</string>
-    <string name="trip_rename">Rename</string>
-    <string name="trip_modify_outfit">Modify outfit</string>
-    <string name="trip_section_other_outfits">Other travel outfits</string>
-    <string name="trip_delete">Xóa chuyến đi</string>
-    <string name="trip_delete_confirm_title">Xóa chuyến đi này?</string>
-    <string name="trip_delete_confirm_body">Chọn xem có xóa luôn các trang phục đã tạo cho chuyến đi này không.</string>
-    <string name="trip_delete_with_outfits">Xóa chuyến đi + trang phục</string>
-    <string name="trip_delete_keep_outfits">Giữ trang phục</string>
-    <string name="trip_bulk_refining">Đang tinh chỉnh tất cả trang phục…</string>
-    <string name="trip_bulk_refine_action">Tinh chỉnh tất cả trang phục</string>
-    <string name="trip_bulk_refine_hint">vd. màu tươi hơn, ít món hơn, hợp buổi tối hơn…</string>
-    <string name="trip_bulk_refine_run">Áp dụng bằng AI</string>
-    <string name="trip_bulk_refine_brighter">Màu tươi hơn</string>
-    <string name="trip_bulk_refine_lighter">Đóng gói gọn hơn</string>
-    <string name="trip_bulk_refine_formal">Buổi tối trang trọng hơn</string>
-    <string name="trip_bulk_refine_skip_jacket">Bỏ áo khoác</string>
-    <string name="trip_refine_preview_note">Xem trước — chưa lưu</string>
-    <string name="trip_refine_discard">Hủy bỏ</string>
-    <string name="trip_refine_replace">Thay trang phục chuyến đi</string>
     <string name="wardrobe_delete_cascade_outfits">Cũng xóa %d trang phục dùng các món này</string>
     <string name="wardrobe_delete_cascade_tryons">Cũng xóa %d lần thử đồ có các món này</string>
     <string name="outfits_broken_banner">%d trang phục dùng các món không còn trong tủ đồ của bạn.</string>
@@ -715,8 +656,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="settings_similarity_preview_sub">Chẩn đoán cho tính năng tìm bằng ảnh.</string>
     <string name="settings_send_feedback">Gửi phản hồi</string>
     <!-- Expert: item tag dimensions for outfit AI -->
-    <string name="composer_section_tags">Chi tiết trang phục cần cân nhắc</string>
-    <string name="composer_tags_hint">Chọn những thuộc tính trang phục mà AI cân nhắc. Ít chi tiết hơn = gợi ý nhanh hơn, rẻ hơn và tập trung hơn.</string>
 
     <!-- Onboarding tour -->
     <string name="onboarding_closet_add_items">Thêm quần áo ngay</string>
@@ -751,7 +690,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="calendar_loved">Rất thích</string>
 
     <!-- Wear-history AI consideration toggle -->
-    <string name="ai_consider_history">Lịch sử mặc</string>
     <string name="ai_consider_history_desc">Học từ những gì bạn thực sự mặc và yêu thích.</string>
 
     <!-- Usage estimate-accuracy table -->
@@ -851,17 +789,12 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <!-- Shared error messages localization -->
     <string name="error_upload_failed">Tải lên không thành công: %1$s</string>
     <string name="error_original_unavailable">Bản gốc không khả dụng</string>
-    <string name="error_gemini_no_response">AI không phản hồi.</string>
-    <string name="error_gemini_parse">Không thể đọc phản hồi của AI.</string>
     <string name="error_import_failed_item">Nhập %1$s không thành công: %2$s</string>
     <string name="error_tag_save_failed">Lưu thẻ vào Drive không thành công: %1$s</string>
     <string name="error_add_items_first">Hãy thêm trang phục vào tủ đồ của bạn trước.</string>
     <string name="error_query_photo_missing">Ảnh tìm kiếm không còn tồn tại.</string>
     <string name="error_import_query_failed">Nhập ảnh tìm kiếm không thành công.</string>
     <string name="error_trips_folder_not_ready">Thư mục chuyến đi chưa sẵn sàng.</string>
-    <string name="error_no_refinement">Không có tinh chỉnh nào khả dụng được trả về.</string>
-    <string name="error_enter_destination">Vui lòng nhập điểm đến.</string>
-    <string name="error_weather_fetch_failed">Không thể lấy thời tiết cho \"%1$s\". Kiểm tra tên điểm đến.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Thêm trang phục vào lịch</string>
     <string name="calendar_add_pick">Chọn một trang phục</string>
@@ -882,7 +815,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="fab_wardrobe_add">Thêm món</string>
     <string name="fab_calendar_log">Ghi lại bộ đồ</string>
     <string name="fab_shopping_add">Thêm món tìm thấy</string>
-    <string name="fab_travel_plan">Lên kế hoạch chuyến đi</string>
     <string name="sel_style">Phối đồ</string>
     <string name="sel_swap">Đổi</string>
     <string name="sel_move">Chuyển</string>

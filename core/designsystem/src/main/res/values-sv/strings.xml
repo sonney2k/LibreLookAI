@@ -188,4 +188,32 @@
     <string name="travel_day">Dag %d</string>
     <string name="trip_viewer_title">Trip</string>
     <string name="tryon_add_item">Lägg till plagg</string>
+    <!-- Sunk from :app in the feature:travel slice (shared outfit/settings vocabulary) -->
+    <string name="action_edit">Redigera</string>
+    <string name="outfits_empty">Inga outfits ännu</string>
+    <string name="outfits_wear_today">Bär idag</string>
+    <string name="outfits_missing_items">Plagg finns inte längre i garderoben</string>
+    <string name="composer_closets_all">Alla garderober</string>
+    <string name="composer_closets_title">Garderober</string>
+    <string name="composer_sheet_done">Klar</string>
+    <string name="composer_section_sources">Källgarderober</string>
+    <string name="composer_vibe_casual">Avslappnad</string>
+    <string name="composer_vibe_sporty">Sportig</string>
+    <string name="composer_vibe_formal">Formell</string>
+    <string name="composer_vibe_business">Business</string>
+    <string name="composer_vibe_streetwear">Streetwear</string>
+    <string name="composer_vibe_minimalist">Minimalistisk</string>
+    <string name="composer_vibe_classic">Klassisk</string>
+    <string name="composer_vibe_elegant">Elegant</string>
+    <string name="ai_consider_weather">Väder</string>
+    <string name="ai_consider_location">Plats</string>
+    <string name="ai_consider_trends">Modetrender</string>
+    <string name="ai_consider_gender">Kön</string>
+    <string name="ai_consider_age">Ålder</string>
+    <string name="ai_consider_preferences">Stilpreferenser</string>
+    <string name="composer_section_tags">Plaggdetaljer att väga in</string>
+    <string name="composer_tags_hint">Välj vilka klädattribut AI:n väger in. Färre detaljer = snabbare, billigare och mer fokuserade förslag.</string>
+    <string name="ai_consider_history">Användningshistorik</string>
+    <string name="error_gemini_no_response">AI:n svarade inte.</string>
+    <string name="error_gemini_parse">Det gick inte att läsa AI-svaret.</string>
 </resources>

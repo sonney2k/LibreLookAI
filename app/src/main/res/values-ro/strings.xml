@@ -61,7 +61,6 @@
 
     <!-- Common actions -->
     <string name="action_save">Salvează</string>
-    <string name="action_edit">Editează</string>
     <string name="action_saving">Se salvează…</string>
     <string name="cd_ai_suggestion">Sugestie AI</string>
     <string name="cd_refine">Rafinează</string>
@@ -176,7 +175,6 @@
 
     <!-- Tag values -->
     <!-- Outfits -->
-    <string name="outfits_empty">Nicio ținută încă</string>
     <string name="outfits_empty_hint">Apasă + pentru a crea o ținută din garderobă</string>
     <string name="outfits_sort_most_worn">Cele mai purtate</string>
     <string name="outfits_create_manual">Creează ținută manual</string>
@@ -195,8 +193,6 @@
     <string name="outfits_composing">Se compune ținuta…</string>
     <string name="outfits_delete_title">Ștergi ținuta?</string>
     <string name="outfits_delete_text">\"%s\" va fi eliminată definitiv.</string>
-    <string name="outfits_wear_today">Poartă azi</string>
-    <string name="outfits_worn_today">Purtată azi!</string>
     <string name="outfits_suggested_title">Sugestie pentru azi</string>
     <string name="outfits_composed_title">Compusă pentru tine</string>
     <string name="outfits_name_dialog_title">Numește această ținută</string>
@@ -220,8 +216,6 @@
     <string name="travel_outfit_count">Ținute</string>
     <string name="travel_outfit_count_reset">Câte zile</string>
     <string name="travel_goal">Focus călătorie</string>
-    <string name="travel_goal_placeholder">ex. ședințe + cine seara</string>
-    <string name="travel_generate">Generează Listă Bagaj</string>
     <string name="travel_packing_list">Listă Bagaj</string>
     <string name="travel_clear">Șterge</string>
     <string name="travel_empty">Introdu o destinație pentru a începe</string>
@@ -246,8 +240,6 @@
     <string name="gap_reanalyze">Re-analizează</string>
 
     <!-- AI overlay -->
-    <string name="ai_fetching_weather">Se preia vremea…</string>
-    <string name="ai_generating_packing">Se generează lista…</string>
     <string name="ai_analyzing_wardrobe">Se analizează garderoba ta…</string>
     <string name="ai_suggesting_style">Se sugerează o ținută…</string>
     <string name="ai_composing_outfit">Se compune ținuta…</string>
@@ -303,17 +295,11 @@
     <string name="about_description">LibreLookAI este un manager de garderobă gratuit, open-source, alimentat de AI. Te ajută să-ți organizezi hainele, să obții sugestii de ținute, să planifici listele de bagaje pentru călătorii și să descoperi lipsurile din garderobă — totul cu ajutorul AI.</string>
     <string name="action_back">Înapoi</string>
     <string name="action_search">Caută</string>
-    <string name="ai_consider_age">Vârstă</string>
     <string name="ai_consider_age_desc">Include vârsta ta (calculată din anul nașterii).</string>
-    <string name="ai_consider_gender">Gen</string>
     <string name="ai_consider_gender_desc">Include genul din profilul tău.</string>
-    <string name="ai_consider_location">Locație</string>
     <string name="ai_consider_location_desc">Include orașul, țara și contextul urban/rural.</string>
-    <string name="ai_consider_preferences">Preferințe de stil</string>
     <string name="ai_consider_preferences_desc">Include preferințele tale de stil în text liber.</string>
-    <string name="ai_consider_trends">Tendințe modă</string>
     <string name="ai_consider_trends_desc">Include culori, estetici și piese esențiale la modă în regiunea ta.</string>
-    <string name="ai_consider_weather">Vreme</string>
     <string name="ai_consider_weather_desc">Include temperatura și condițiile de azi.</string>
     <string name="ai_considerations_desc">Ce trebuie să ia în considerare AI atunci când sugerează sau compune ținute. Modificările se aplică la predicție, compunere, bagaje și prompturile pentru lipsuri în garderobă.</string>
     <string name="ai_considerations_title">Criterii implicite</string>
@@ -326,8 +312,6 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="battery_exempt_title">Procesare în fundal necesară</string>
     <string name="calendar_empty_hint">Poartă o ținută din tabul Ținute pentru a începe urmărirea</string>
     <string name="composer_add_selected">Adaugă selecția</string>
-    <string name="composer_closets_all">Toate dulapurile</string>
-    <string name="composer_closets_title">Dulapuri</string>
     <string name="composer_desc_placeholder">Descriere scurtă (opțional)</string>
     <string name="composer_discard_confirm">Renunță</string>
     <string name="composer_discard_message">Selecțiile tale se vor pierde.</string>
@@ -362,24 +346,14 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="composer_section_items">Articole</string>
     <string name="composer_section_name">Nume &amp; descriere</string>
     <string name="composer_section_quick_start">Start rapid</string>
-    <string name="composer_section_sources">Dulapuri sursă</string>
     <string name="composer_section_targets">Compoziție</string>
     <string name="composer_section_vibe">Stil &amp; atmosferă</string>
     <string name="composer_section_weather">Vreme</string>
     <string name="composer_see_all_count">Toate %1$d</string>
-    <string name="composer_sheet_done">Gata</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_tags_optional">Etichete (opțional)</string>
     <string name="composer_targets_hint">Setează câte din fiecare strat să fie incluse. Lasă la 0 pentru ca AI să decidă.</string>
-    <string name="composer_vibe_business">Business</string>
-    <string name="composer_vibe_casual">Casual</string>
-    <string name="composer_vibe_classic">Clasic</string>
-    <string name="composer_vibe_elegant">Elegant</string>
-    <string name="composer_vibe_formal">Formal</string>
-    <string name="composer_vibe_minimalist">Minimalist</string>
-    <string name="composer_vibe_sporty">Sportiv</string>
-    <string name="composer_vibe_streetwear">Streetwear</string>
     <string name="composer_weather_precip">Precipitații</string>
     <string name="composer_weather_season">Anotimp</string>
     <string name="composer_weather_temp">Temperatură</string>
@@ -429,7 +403,6 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="outfits_description_placeholder">Descriere (opțional)</string>
     <string name="outfits_items_away">%d articol(e) la altă locație</string>
     <string name="outfits_items_label">Articole din ținută</string>
-    <string name="outfits_missing_items">Articole care nu mai există în garderobă</string>
     <string name="outfits_prediction_indicator">%1$d / %2$d</string>
     <string name="outfits_prediction_next">Sugestia următoare</string>
     <string name="outfits_prediction_prev">Sugestia anterioară</string>
@@ -577,9 +550,6 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="shop_your_photo">Fotografia ta</string>
     <string name="tag_category_placeholder">topuri, inferioare, geci, încălțăminte, accesorii, rochie, costum</string>
     <string name="tag_type_placeholder">ex. Tricou, Chinos, Geacă matlasată</string>
-    <string name="travel_destination_placeholder">ex. Paris, Tokio, New York</string>
-    <string name="travel_extra_items">De împachetat suplimentar (nu sunt în garderobă)</string>
-    <string name="travel_historical_note">Datele călătoriei sunt în afara ferestrei de prognoză live — se afișează date climatice istorice.</string>
     <string name="travel_move_done">Articolele au fost mutate în locația Travel</string>
     <string name="travel_move_error">Nu s-au putut muta articolele</string>
     <string name="travel_move_to_travel">Mută toate în locația Travel</string>
@@ -589,7 +559,6 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="travel_refine_lighter">Împachetează mai puțin</string>
     <string name="travel_refine_rain">Mai potrivit pentru ploaie</string>
     <string name="travel_refine_reuse">Maximizează refolosirea ținutelor</string>
-    <string name="travel_regenerate">Re-generează</string>
     <string name="tryon_add_items_title">Adaugă articole din garderobă</string>
     <string name="tryon_add_photo">Adaugă fotografie %1$s</string>
     <string name="tryon_cost_line">Costă %1$d credite per probă</string>
@@ -620,34 +589,6 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="wardrobe_view_original">Vezi originalul</string>
 
     <!-- Trips -->
-    <string name="trip_planned_title">Călătorie planificată</string>
-    <string name="trip_saved_label">Salvat</string>
-    <string name="trip_saved_confirmation">Călătoria și ținutele au fost salvate</string>
-    <string name="trip_not_found">Trip not found.</string>
-    <string name="trip_day_header">Ziua %1$d</string>
-    <string name="trip_packed">Împachetat</string>
-    <string name="trip_no_destination">Untitled trip</string>
-    <string name="trip_meta_dates">Start %1$s • %2$d zile</string>
-    <string name="trip_checklist">Listă</string>
-    <string name="trip_rename">Rename</string>
-    <string name="trip_modify_outfit">Modify outfit</string>
-    <string name="trip_section_other_outfits">Other travel outfits</string>
-    <string name="trip_delete">Șterge călătoria</string>
-    <string name="trip_delete_confirm_title">Ștergi această călătorie?</string>
-    <string name="trip_delete_confirm_body">Alege dacă să ștergi și ținutele create pentru această călătorie.</string>
-    <string name="trip_delete_with_outfits">Șterge călătoria + ținutele</string>
-    <string name="trip_delete_keep_outfits">Păstrează ținutele</string>
-    <string name="trip_bulk_refining">Se rafinează toate ținutele…</string>
-    <string name="trip_bulk_refine_action">Rafinează toate ținutele</string>
-    <string name="trip_bulk_refine_hint">ex.: culori mai vii, mai puține articole, mai potrivit seara…</string>
-    <string name="trip_bulk_refine_run">Aplică cu IA</string>
-    <string name="trip_bulk_refine_brighter">Culori mai vii</string>
-    <string name="trip_bulk_refine_lighter">Bagaj mai ușor</string>
-    <string name="trip_bulk_refine_formal">Seri mai elegante</string>
-    <string name="trip_bulk_refine_skip_jacket">Fără jachetă</string>
-    <string name="trip_refine_preview_note">Previzualizare — nesalvat</string>
-    <string name="trip_refine_discard">Renunță</string>
-    <string name="trip_refine_replace">Înlocuiește ținutele călătoriei</string>
     <string name="wardrobe_delete_cascade_outfits">Șterge și %d ținută/ținute care folosesc aceste articole</string>
     <string name="wardrobe_delete_cascade_tryons">Șterge și %d probă/probe cu aceste articole</string>
     <string name="outfits_broken_banner">%d ținute folosesc articole care nu mai sunt în garderoba ta.</string>
@@ -715,8 +656,6 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="settings_similarity_preview_sub">Diagnostic pentru căutarea după poză.</string>
     <string name="settings_send_feedback">Trimite feedback</string>
     <!-- Expert: item tag dimensions for outfit AI -->
-    <string name="composer_section_tags">Detalii articole de luat în calcul</string>
-    <string name="composer_tags_hint">Alege ce atribute ale hainelor ia în calcul AI-ul. Mai puține detalii = sugestii mai rapide, ieftine și precise.</string>
 
     <!-- Onboarding tour -->
     <string name="onboarding_closet_add_items">Adaugă haine acum</string>
@@ -751,7 +690,6 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="calendar_loved">Mi-a plăcut</string>
 
     <!-- Wear-history AI consideration toggle -->
-    <string name="ai_consider_history">Istoric purtare</string>
     <string name="ai_consider_history_desc">Învață din ce porți cu adevărat și ți-a plăcut.</string>
 
     <!-- Usage estimate-accuracy table -->
@@ -851,17 +789,12 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <!-- Shared error messages localization -->
     <string name="error_upload_failed">Încărcarea a eșuat: %1$s</string>
     <string name="error_original_unavailable">Originalul nu este disponibil</string>
-    <string name="error_gemini_no_response">IA nu a răspuns.</string>
-    <string name="error_gemini_parse">Nu s-a putut citi răspunsul IA.</string>
     <string name="error_import_failed_item">Importul pentru %1$s a eșuat: %2$s</string>
     <string name="error_tag_save_failed">Salvarea etichetelor în Drive a eșuat: %1$s</string>
     <string name="error_add_items_first">Adaugă mai întâi articole în garderoba ta.</string>
     <string name="error_query_photo_missing">Fotografia de căutare nu mai există.</string>
     <string name="error_import_query_failed">Importul fotografiei de căutare a eșuat.</string>
     <string name="error_trips_folder_not_ready">Folderul de călătorii nu este pregatit.</string>
-    <string name="error_no_refinement">Nu a fost returnată nicio rafinare utilizabilă.</string>
-    <string name="error_enter_destination">Introdu o destinație.</string>
-    <string name="error_weather_fetch_failed">Nu s-a putut obține vremea pentru „%1$s\". Verifică numele destinației.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Adaugă ținuta în calendar</string>
     <string name="calendar_add_pick">Alege o ținută</string>
@@ -882,7 +815,6 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="fab_wardrobe_add">Adaugă articol</string>
     <string name="fab_calendar_log">Înregistrează ținuta</string>
     <string name="fab_shopping_add">Adaugă găsire</string>
-    <string name="fab_travel_plan">Planifică călătoria</string>
     <string name="sel_style">Stil</string>
     <string name="sel_swap">Schimbă</string>
     <string name="sel_move">Mută</string>

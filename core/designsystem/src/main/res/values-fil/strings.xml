@@ -188,4 +188,32 @@
     <string name="travel_day">Araw %d</string>
     <string name="trip_viewer_title">Trip</string>
     <string name="tryon_add_item">Magdagdag ng item</string>
+    <!-- Sunk from :app in the feature:travel slice (shared outfit/settings vocabulary) -->
+    <string name="action_edit">I-edit</string>
+    <string name="outfits_empty">Walang outfit pa</string>
+    <string name="outfits_wear_today">Isuot ngayon</string>
+    <string name="outfits_missing_items">Mga item na wala na sa wardrobe</string>
+    <string name="composer_closets_all">Lahat ng closet</string>
+    <string name="composer_closets_title">Mga closet</string>
+    <string name="composer_sheet_done">Tapos na</string>
+    <string name="composer_section_sources">Mga source closet</string>
+    <string name="composer_vibe_casual">Casual</string>
+    <string name="composer_vibe_sporty">Sporty</string>
+    <string name="composer_vibe_formal">Pormal</string>
+    <string name="composer_vibe_business">Business</string>
+    <string name="composer_vibe_streetwear">Streetwear</string>
+    <string name="composer_vibe_minimalist">Minimalist</string>
+    <string name="composer_vibe_classic">Classic</string>
+    <string name="composer_vibe_elegant">Elegante</string>
+    <string name="ai_consider_weather">Weather</string>
+    <string name="ai_consider_location">Lokasyon</string>
+    <string name="ai_consider_trends">Mga fashion trend</string>
+    <string name="ai_consider_gender">Kasarian</string>
+    <string name="ai_consider_age">Edad</string>
+    <string name="ai_consider_preferences">Mga style preference</string>
+    <string name="composer_section_tags">Mga detalye ng item na isasaalang-alang</string>
+    <string name="composer_tags_hint">Piliin kung aling mga katangian ng damit ang isinasaalang-alang ng AI. Mas kaunting detalye = mas mabilis, mas mura, at mas tutok na mga mungkahi.</string>
+    <string name="ai_consider_history">Kasaysayan ng suot</string>
+    <string name="error_gemini_no_response">Hindi tumugon ang AI.</string>
+    <string name="error_gemini_parse">Hindi mabasa ang tugon ng AI.</string>
 </resources>

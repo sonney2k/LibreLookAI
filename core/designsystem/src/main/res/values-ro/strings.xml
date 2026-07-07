@@ -188,4 +188,32 @@
     <string name="travel_day">Ziua %d</string>
     <string name="trip_viewer_title">Trip</string>
     <string name="tryon_add_item">Adaugă articol</string>
+    <!-- Sunk from :app in the feature:travel slice (shared outfit/settings vocabulary) -->
+    <string name="action_edit">Editează</string>
+    <string name="outfits_empty">Nicio ținută încă</string>
+    <string name="outfits_wear_today">Poartă azi</string>
+    <string name="ai_consider_age">Vârstă</string>
+    <string name="ai_consider_gender">Gen</string>
+    <string name="ai_consider_location">Locație</string>
+    <string name="ai_consider_preferences">Preferințe de stil</string>
+    <string name="ai_consider_trends">Tendințe modă</string>
+    <string name="ai_consider_weather">Vreme</string>
+    <string name="composer_closets_all">Toate dulapurile</string>
+    <string name="composer_closets_title">Dulapuri</string>
+    <string name="composer_section_sources">Dulapuri sursă</string>
+    <string name="composer_sheet_done">Gata</string>
+    <string name="composer_vibe_business">Business</string>
+    <string name="composer_vibe_casual">Casual</string>
+    <string name="composer_vibe_classic">Clasic</string>
+    <string name="composer_vibe_elegant">Elegant</string>
+    <string name="composer_vibe_formal">Formal</string>
+    <string name="composer_vibe_minimalist">Minimalist</string>
+    <string name="composer_vibe_sporty">Sportiv</string>
+    <string name="composer_vibe_streetwear">Streetwear</string>
+    <string name="outfits_missing_items">Articole care nu mai există în garderobă</string>
+    <string name="composer_section_tags">Detalii articole de luat în calcul</string>
+    <string name="composer_tags_hint">Alege ce atribute ale hainelor ia în calcul AI-ul. Mai puține detalii = sugestii mai rapide, ieftine și precise.</string>
+    <string name="ai_consider_history">Istoric purtare</string>
+    <string name="error_gemini_no_response">IA nu a răspuns.</string>
+    <string name="error_gemini_parse">Nu s-a putut citi răspunsul IA.</string>
 </resources>

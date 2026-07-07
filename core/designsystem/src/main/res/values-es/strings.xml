@@ -188,4 +188,32 @@
     <string name="travel_day">Día %d</string>
     <string name="trip_viewer_title">Trip</string>
     <string name="tryon_add_item">Añadir prenda</string>
+    <!-- Sunk from :app in the feature:travel slice (shared outfit/settings vocabulary) -->
+    <string name="action_edit">Editar</string>
+    <string name="outfits_empty">Aún no hay outfits</string>
+    <string name="outfits_wear_today">Llevar hoy</string>
+    <string name="outfits_missing_items">Prendas que ya no están en el armario</string>
+    <string name="composer_closets_all">Todos los armarios</string>
+    <string name="composer_closets_title">Armarios</string>
+    <string name="composer_sheet_done">Hecho</string>
+    <string name="composer_section_sources">Armarios de origen</string>
+    <string name="composer_vibe_casual">Casual</string>
+    <string name="composer_vibe_sporty">Deportivo</string>
+    <string name="composer_vibe_formal">Formal</string>
+    <string name="composer_vibe_business">Trabajo</string>
+    <string name="composer_vibe_streetwear">Streetwear</string>
+    <string name="composer_vibe_minimalist">Minimalista</string>
+    <string name="composer_vibe_classic">Clásico</string>
+    <string name="composer_vibe_elegant">Elegante</string>
+    <string name="ai_consider_weather">Tiempo</string>
+    <string name="ai_consider_location">Ubicación</string>
+    <string name="ai_consider_trends">Tendencias de moda</string>
+    <string name="ai_consider_gender">Género</string>
+    <string name="ai_consider_age">Edad</string>
+    <string name="ai_consider_preferences">Preferencias de estilo</string>
+    <string name="composer_section_tags">Detalles de prendas a considerar</string>
+    <string name="composer_tags_hint">Elige qué atributos de la ropa tiene en cuenta la IA. Menos detalles = sugerencias más rápidas, económicas y precisas.</string>
+    <string name="ai_consider_history">Historial de uso</string>
+    <string name="error_gemini_no_response">La IA no respondió.</string>
+    <string name="error_gemini_parse">No se pudo leer la respuesta de la IA.</string>
 </resources>

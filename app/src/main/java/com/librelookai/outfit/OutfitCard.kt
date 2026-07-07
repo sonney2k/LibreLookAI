@@ -198,7 +198,7 @@ internal fun OutfitCard(
             val styleItems = style.itemIds.mapNotNull { itemsById[it] }
             if (styleItems.isEmpty()) {
                 Text(
-                    stringResource(R.string.outfits_missing_items),
+                    stringResource(DsR.string.outfits_missing_items),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.outline,
                 )
@@ -267,7 +267,7 @@ internal fun OutfitCard(
                     )
                     Spacer(Modifier.width(4.dp))
                     Text(
-                        stringResource(R.string.action_edit),
+                        stringResource(DsR.string.action_edit),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )

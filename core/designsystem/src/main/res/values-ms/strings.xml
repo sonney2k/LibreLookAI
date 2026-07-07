@@ -188,4 +188,32 @@
     <string name="travel_day">Hari %d</string>
     <string name="trip_viewer_title">Trip</string>
     <string name="tryon_add_item">Tambah item</string>
+    <!-- Sunk from :app in the feature:travel slice (shared outfit/settings vocabulary) -->
+    <string name="action_edit">Edit</string>
+    <string name="outfits_empty">Tiada pakaian lagi</string>
+    <string name="outfits_wear_today">Pakai hari ini</string>
+    <string name="ai_consider_age">Umur</string>
+    <string name="ai_consider_gender">Jantina</string>
+    <string name="ai_consider_location">Lokasi</string>
+    <string name="ai_consider_preferences">Pilihan gaya</string>
+    <string name="ai_consider_trends">Trend fesyen</string>
+    <string name="ai_consider_weather">Cuaca</string>
+    <string name="composer_closets_all">Semua almari</string>
+    <string name="composer_closets_title">Almari</string>
+    <string name="composer_section_sources">Almari sumber</string>
+    <string name="composer_sheet_done">Selesai</string>
+    <string name="composer_vibe_business">Business</string>
+    <string name="composer_vibe_casual">Kasual</string>
+    <string name="composer_vibe_classic">Klasik</string>
+    <string name="composer_vibe_elegant">Elegan</string>
+    <string name="composer_vibe_formal">Formal</string>
+    <string name="composer_vibe_minimalist">Minimalis</string>
+    <string name="composer_vibe_sporty">Sporty</string>
+    <string name="composer_vibe_streetwear">Streetwear</string>
+    <string name="outfits_missing_items">Item yang tiada lagi dalam almari</string>
+    <string name="composer_section_tags">Butiran item untuk ditimbang</string>
+    <string name="composer_tags_hint">Pilih ciri pakaian yang dipertimbangkan AI. Kurang butiran = cadangan lebih pantas, murah dan fokus.</string>
+    <string name="ai_consider_history">Sejarah pemakaian</string>
+    <string name="error_gemini_no_response">AI tidak membalas.</string>
+    <string name="error_gemini_parse">Tidak dapat membaca respons AI.</string>
 </resources>

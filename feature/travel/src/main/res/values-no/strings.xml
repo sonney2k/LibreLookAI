@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Travel strings (moved from :app in the feature:travel slice) -->
+    <string name="outfits_worn_today">Brukt i dag!</string>
+    <string name="travel_destination_placeholder">f.eks. Paris, Tokyo, New York</string>
+    <string name="travel_goal_placeholder">f.eks. møter + middager</string>
+    <string name="travel_generate">Generer pakkeliste</string>
+    <string name="travel_regenerate">Generer på nytt</string>
+    <string name="travel_extra_items">Pakk også (ikke i garderoben)</string>
+    <string name="travel_historical_note">Reisedatoene er utenfor prognosens vindu — viser historiske klimadata.</string>
+    <string name="ai_fetching_weather">Henter vær…</string>
+    <string name="ai_generating_packing">Genererer pakkeliste…</string>
+    <string name="trip_planned_title">Planlagt reise</string>
+    <string name="trip_saved_label">Lagret</string>
+    <string name="trip_saved_confirmation">Reise og antrekk lagret</string>
+    <string name="trip_not_found">Trip not found.</string>
+    <string name="trip_day_header">Dag %1$d</string>
+    <string name="trip_packed">Pakket</string>
+    <string name="trip_no_destination">Untitled trip</string>
+    <string name="trip_meta_dates">Start %1$s • %2$d dager</string>
+    <string name="trip_checklist">Sjekkliste</string>
+    <string name="trip_rename">Rename</string>
+    <string name="trip_modify_outfit">Modify outfit</string>
+    <string name="trip_section_other_outfits">Other travel outfits</string>
+    <string name="trip_delete">Slett reise</string>
+    <string name="trip_delete_confirm_title">Slette denne reisen?</string>
+    <string name="trip_delete_confirm_body">Velg om antrekkene som er laget for denne reisen, også skal slettes.</string>
+    <string name="trip_delete_with_outfits">Slett reise + antrekk</string>
+    <string name="trip_delete_keep_outfits">Behold antrekk</string>
+    <string name="trip_bulk_refining">Forfiner alle antrekk…</string>
+    <string name="trip_bulk_refine_action">Forfin alle antrekk</string>
+    <string name="trip_bulk_refine_hint">f.eks. klarere farger, færre plagg, kveldsvennlig…</string>
+    <string name="trip_bulk_refine_run">Bruk med KI</string>
+    <string name="trip_bulk_refine_brighter">Klarere farger</string>
+    <string name="trip_bulk_refine_lighter">Pakk lettere</string>
+    <string name="trip_bulk_refine_formal">Mer formelle kvelder</string>
+    <string name="trip_bulk_refine_skip_jacket">Uten jakke</string>
+    <string name="trip_refine_preview_note">Forhåndsvisning – ikke lagret</string>
+    <string name="trip_refine_discard">Forkast</string>
+    <string name="trip_refine_replace">Bytt ut reiseantrekk</string>
+    <string name="error_no_refinement">Ingen brukbar forbedring returnert.</string>
+    <string name="error_enter_destination">Skriv inn et reisemål.</string>
+    <string name="error_weather_fetch_failed">Kunne ikke hente vær for \"%1$s\". Sjekk navnet på reisemålet.</string>
+    <string name="fab_travel_plan">Planlegg reise</string>
+</resources>

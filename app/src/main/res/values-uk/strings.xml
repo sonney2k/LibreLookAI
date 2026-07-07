@@ -61,7 +61,6 @@
 
     <!-- Common actions -->
     <string name="action_save">Зберегти</string>
-    <string name="action_edit">Редагувати</string>
     <string name="action_saving">Збереження…</string>
     <string name="cd_ai_suggestion">Пропозиція ШІ</string>
     <string name="cd_refine">Уточнити</string>
@@ -177,7 +176,6 @@
 
     <!-- Tag values -->
     <!-- Outfits -->
-    <string name="outfits_empty">Образів ще немає</string>
     <string name="outfits_empty_hint">Натисніть +, щоб скласти образ із речей гардероба</string>
     <string name="outfits_sort_most_worn">Найчастіше ношені</string>
     <string name="outfits_create_manual">Створити образ вручну</string>
@@ -196,8 +194,6 @@
     <string name="outfits_composing">Складаю образ…</string>
     <string name="outfits_delete_title">Видалити образ?</string>
     <string name="outfits_delete_text">\"%s\" буде видалено назавжди.</string>
-    <string name="outfits_wear_today">Одягнути сьогодні</string>
-    <string name="outfits_worn_today">Одягнено сьогодні!</string>
     <string name="outfits_suggested_title">Радимо на сьогодні</string>
     <string name="outfits_composed_title">Складено для вас</string>
     <string name="outfits_name_dialog_title">Назвіть цей образ</string>
@@ -221,8 +217,6 @@
     <string name="travel_outfit_count">Образи</string>
     <string name="travel_outfit_count_reset">За кількістю днів</string>
     <string name="travel_goal">Фокус поїздки</string>
-    <string name="travel_goal_placeholder">напр. ділові зустрічі + вечері</string>
-    <string name="travel_generate">Згенерувати список</string>
     <string name="travel_packing_list">Список речей</string>
     <string name="travel_clear">Очистити</string>
     <string name="travel_empty">Введіть напрямок, щоб почати</string>
@@ -247,8 +241,6 @@
     <string name="gap_reanalyze">Повторний аналіз</string>
 
     <!-- AI overlay -->
-    <string name="ai_fetching_weather">Отримання погоди…</string>
-    <string name="ai_generating_packing">Створення списку речей…</string>
     <string name="ai_analyzing_wardrobe">Аналіз вашого гардероба…</string>
     <string name="ai_suggesting_style">Підбір образу…</string>
     <string name="ai_composing_outfit">Складання образу…</string>
@@ -304,17 +296,11 @@
     <string name="about_description">LibreLookAI — це безкоштовний менеджер гардероба з відкритим кодом на основі ШІ. Він допомагає організувати одяг, отримати поради щодо образів, спланувати список речей для подорожі та виявити прогалини в гардеробі — усе завдяки ШІ.</string>
     <string name="action_back">Назад</string>
     <string name="action_search">Пошук</string>
-    <string name="ai_consider_age">Вік</string>
     <string name="ai_consider_age_desc">Враховувати ваш вік (обчислений із року народження).</string>
-    <string name="ai_consider_gender">Стать</string>
     <string name="ai_consider_gender_desc">Враховувати стать із вашого профілю.</string>
-    <string name="ai_consider_location">Локація</string>
     <string name="ai_consider_location_desc">Враховувати місто, країну та контекст (місто/село).</string>
-    <string name="ai_consider_preferences">Стильові вподобання</string>
     <string name="ai_consider_preferences_desc">Враховувати ваші стильові вподобання у вільному тексті.</string>
-    <string name="ai_consider_trends">Модні тенденції</string>
     <string name="ai_consider_trends_desc">Враховувати трендові кольори, естетику та must-have для вашого регіону.</string>
-    <string name="ai_consider_weather">Погода</string>
     <string name="ai_consider_weather_desc">Враховувати сьогоднішню температуру та умови.</string>
     <string name="ai_considerations_desc">Що ШІ має враховувати при складанні чи компонуванні образів. Зміни застосовуються до прогнозу, компонування, списків для подорожі та промптів для прогалин у гардеробі.</string>
     <string name="ai_considerations_title">Стандартні критерії</string>
@@ -327,8 +313,6 @@
     <string name="battery_exempt_title">Потрібна фонова обробка</string>
     <string name="calendar_empty_hint">Одягніть образ із вкладки Образи, щоб почати відстеження</string>
     <string name="composer_add_selected">Додати вибране</string>
-    <string name="composer_closets_all">Усі гардероби</string>
-    <string name="composer_closets_title">Гардероби</string>
     <string name="composer_desc_placeholder">Короткий опис (необов’язково)</string>
     <string name="composer_discard_confirm">Відкинути</string>
     <string name="composer_discard_message">Ваш вибір буде втрачено.</string>
@@ -363,24 +347,14 @@
     <string name="composer_section_items">Речі</string>
     <string name="composer_section_name">Назва &amp; опис</string>
     <string name="composer_section_quick_start">Швидкий старт</string>
-    <string name="composer_section_sources">Гардероби-джерела</string>
     <string name="composer_section_targets">Композиція</string>
     <string name="composer_section_vibe">Стиль &amp; настрій</string>
     <string name="composer_section_weather">Погода</string>
     <string name="composer_see_all_count">Усі %1$d</string>
-    <string name="composer_sheet_done">Готово</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_tags_optional">Теги (необов’язково)</string>
     <string name="composer_targets_hint">Налаштуйте, скільки речей із кожного шару включити. Залиште 0, щоб ШІ вирішив сам.</string>
-    <string name="composer_vibe_business">Бізнес</string>
-    <string name="composer_vibe_casual">Кежуал</string>
-    <string name="composer_vibe_classic">Класичний</string>
-    <string name="composer_vibe_elegant">Елегантний</string>
-    <string name="composer_vibe_formal">Формальний</string>
-    <string name="composer_vibe_minimalist">Мінімалістичний</string>
-    <string name="composer_vibe_sporty">Спортивний</string>
-    <string name="composer_vibe_streetwear">Стрітвір</string>
     <string name="composer_weather_precip">Опади</string>
     <string name="composer_weather_season">Сезон</string>
     <string name="composer_weather_temp">Температура</string>
@@ -430,7 +404,6 @@
     <string name="outfits_description_placeholder">Опис (необов’язково)</string>
     <string name="outfits_items_away">%d річ(ей) в іншій локації</string>
     <string name="outfits_items_label">Речі образу</string>
-    <string name="outfits_missing_items">Речі, яких більше немає в гардеробі</string>
     <string name="outfits_prediction_indicator">%1$d / %2$d</string>
     <string name="outfits_prediction_next">Наступна порада</string>
     <string name="outfits_prediction_prev">Попередня порада</string>
@@ -577,9 +550,6 @@
     <string name="shop_your_photo">Ваше фото</string>
     <string name="tag_category_placeholder">верх, низ, верхній одяг, взуття, аксесуари, сукня, костюм</string>
     <string name="tag_type_placeholder">напр. Футболка, Чіноси, Куртка пуховик</string>
-    <string name="travel_destination_placeholder">напр. Париж, Токіо, Нью-Йорк</string>
-    <string name="travel_extra_items">Спакувати додатково (немає в гардеробі)</string>
-    <string name="travel_historical_note">Дати подорожі поза вікном прогнозу — показано історичні кліматичні дані.</string>
     <string name="travel_move_done">Речі переміщено в локацію Подорож</string>
     <string name="travel_move_error">Не вдалося перемістити речі</string>
     <string name="travel_move_to_travel">Перемістити все в локацію Подорож</string>
@@ -589,7 +559,6 @@
     <string name="travel_refine_lighter">Спакувати легше</string>
     <string name="travel_refine_rain">Краще для дощу</string>
     <string name="travel_refine_reuse">Максимум повторного використання образів</string>
-    <string name="travel_regenerate">Перегенерувати</string>
     <string name="tryon_add_items_title">Додати речі з гардероба</string>
     <string name="tryon_add_photo">Додати фото %1$s</string>
     <string name="tryon_cost_line">Коштує %1$d кредитів за приміряння</string>
@@ -620,34 +589,6 @@
     <string name="wardrobe_view_original">Дивитися оригінал</string>
 
     <!-- Trips -->
-    <string name="trip_planned_title">Запланована подорож</string>
-    <string name="trip_saved_label">Збережено</string>
-    <string name="trip_saved_confirmation">Подорож і образи збережено</string>
-    <string name="trip_not_found">Trip not found.</string>
-    <string name="trip_day_header">День %1$d</string>
-    <string name="trip_packed">Спаковано</string>
-    <string name="trip_no_destination">Untitled trip</string>
-    <string name="trip_meta_dates">Початок %1$s • %2$d дн.</string>
-    <string name="trip_checklist">Список</string>
-    <string name="trip_rename">Rename</string>
-    <string name="trip_modify_outfit">Modify outfit</string>
-    <string name="trip_section_other_outfits">Other travel outfits</string>
-    <string name="trip_delete">Видалити подорож</string>
-    <string name="trip_delete_confirm_title">Видалити цю подорож?</string>
-    <string name="trip_delete_confirm_body">Виберіть, чи видаляти також образи, створені для цієї подорожі.</string>
-    <string name="trip_delete_with_outfits">Видалити подорож і образи</string>
-    <string name="trip_delete_keep_outfits">Зберегти образи</string>
-    <string name="trip_bulk_refining">Удосконалення всіх образів…</string>
-    <string name="trip_bulk_refine_action">Удосконалити всі образи</string>
-    <string name="trip_bulk_refine_hint">напр. яскравіші кольори, менше речей, доречніше на вечір…</string>
-    <string name="trip_bulk_refine_run">Застосувати з ШІ</string>
-    <string name="trip_bulk_refine_brighter">Яскравіші кольори</string>
-    <string name="trip_bulk_refine_lighter">Зібратися легше</string>
-    <string name="trip_bulk_refine_formal">Більш офіційні вечори</string>
-    <string name="trip_bulk_refine_skip_jacket">Без куртки</string>
-    <string name="trip_refine_preview_note">Попередній перегляд — не збережено</string>
-    <string name="trip_refine_discard">Відхилити</string>
-    <string name="trip_refine_replace">Замінити образи подорожі</string>
     <string name="wardrobe_delete_cascade_outfits">Також видалити %d образ(ів), що використовують ці речі</string>
     <string name="wardrobe_delete_cascade_tryons">Також видалити %d примірку(и) з цими речами</string>
     <string name="outfits_broken_banner">%d образів використовують речі, яких більше немає у вашому гардеробі.</string>
@@ -715,8 +656,6 @@
     <string name="settings_similarity_preview_sub">Діагностика для пошуку за фото.</string>
     <string name="settings_send_feedback">Надіслати відгук</string>
     <!-- Expert: item tag dimensions for outfit AI -->
-    <string name="composer_section_tags">Деталі речей для врахування</string>
-    <string name="composer_tags_hint">Обери, які характеристики одягу враховує ШІ. Менше деталей = швидші, дешевші й точніші пропозиції.</string>
 
     <!-- Onboarding tour -->
     <string name="onboarding_closet_add_items">Додати одяг зараз</string>
@@ -751,7 +690,6 @@
     <string name="calendar_loved">Сподобалось</string>
 
     <!-- Wear-history AI consideration toggle -->
-    <string name="ai_consider_history">Історія носіння</string>
     <string name="ai_consider_history_desc">Навчається на тому, що ви справді носите й уподобали.</string>
 
     <!-- Usage estimate-accuracy table -->
@@ -851,17 +789,12 @@
     <!-- Shared error messages localization -->
     <string name="error_upload_failed">Не вдалося завантажити: %1$s</string>
     <string name="error_original_unavailable">Оригінал недоступний</string>
-    <string name="error_gemini_no_response">ШІ не відповів.</string>
-    <string name="error_gemini_parse">Не вдалося прочитати відповідь ШІ.</string>
     <string name="error_import_failed_item">Не вдалося імпортувати %1$s: %2$s</string>
     <string name="error_tag_save_failed">Не вдалося зберегти теги на Диск: %1$s</string>
     <string name="error_add_items_first">Спочатку додайте речі до свого гардероба.</string>
     <string name="error_query_photo_missing">Фото запиту більше не існує.</string>
     <string name="error_import_query_failed">Не вдалося імпортувати фото запиту.</string>
     <string name="error_trips_folder_not_ready">Папка подорожей не готова.</string>
-    <string name="error_no_refinement">Не повернуто придатного уточнення.</string>
-    <string name="error_enter_destination">Введіть пункт призначення.</string>
-    <string name="error_weather_fetch_failed">Не вдалося отримати погоду для \"%1$s\". Перевірте назву пункту призначення.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Додати образ до календаря</string>
     <string name="calendar_add_pick">Виберіть образ</string>
@@ -882,7 +815,6 @@
     <string name="fab_wardrobe_add">Додати річ</string>
     <string name="fab_calendar_log">Записати образ</string>
     <string name="fab_shopping_add">Додати знахідку</string>
-    <string name="fab_travel_plan">Спланувати подорож</string>
     <string name="sel_style">Стиль</string>
     <string name="sel_swap">Замінити</string>
     <string name="sel_move">Перемістити</string>

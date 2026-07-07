@@ -127,14 +127,14 @@ internal fun ContextStrip(
         }
     }
     val vibes = listOf(
-        "Casual" to R.string.composer_vibe_casual,
-        "Business" to R.string.composer_vibe_business,
-        "Formal" to R.string.composer_vibe_formal,
-        "Streetwear" to R.string.composer_vibe_streetwear,
-        "Minimalist" to R.string.composer_vibe_minimalist,
-        "Sporty" to R.string.composer_vibe_sporty,
-        "Elegant" to R.string.composer_vibe_elegant,
-        "Classic" to R.string.composer_vibe_classic,
+        "Casual" to DsR.string.composer_vibe_casual,
+        "Business" to DsR.string.composer_vibe_business,
+        "Formal" to DsR.string.composer_vibe_formal,
+        "Streetwear" to DsR.string.composer_vibe_streetwear,
+        "Minimalist" to DsR.string.composer_vibe_minimalist,
+        "Sporty" to DsR.string.composer_vibe_sporty,
+        "Elegant" to DsR.string.composer_vibe_elegant,
+        "Classic" to DsR.string.composer_vibe_classic,
     )
     Row(
         modifier = Modifier
@@ -152,7 +152,7 @@ internal fun ContextStrip(
         if (closetPickerAvailable) {
             ContextChip(
                 label = closetNames.takeIf { it.isNotEmpty() }?.joinToString(" · ")
-                    ?: stringResource(R.string.composer_closets_all),
+                    ?: stringResource(DsR.string.composer_closets_all),
                 icon = Icons.Default.Place,
                 active = closetNames.isNotEmpty(),
                 onClick = onClickCloset,

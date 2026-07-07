@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Travel strings (moved from :app in the feature:travel slice) -->
+    <string name="outfits_worn_today">Naisuot na ngayon!</string>
+    <string name="travel_destination_placeholder">hal. Paris, Tokyo, New York</string>
+    <string name="travel_goal_placeholder">hal. business meetings + dinner</string>
+    <string name="travel_generate">Bumuo ng Packing List</string>
+    <string name="travel_regenerate">Bumuo muli</string>
+    <string name="travel_extra_items">Dalhin din (wala sa wardrobe)</string>
+    <string name="travel_historical_note">Ang mga petsa ng biyahe ay nasa labas ng live forecast window — ipinapakita ang historical climate data.</string>
+    <string name="ai_fetching_weather">Kinukuha ang weather…</string>
+    <string name="ai_generating_packing">Bumubuo ng packing list…</string>
+    <string name="trip_planned_title">Planadong biyahe</string>
+    <string name="trip_saved_label">Na-save</string>
+    <string name="trip_saved_confirmation">Na-save ang biyahe at mga outfit</string>
+    <string name="trip_not_found">Trip not found.</string>
+    <string name="trip_day_header">Araw %1$d</string>
+    <string name="trip_packed">Nakaimpake</string>
+    <string name="trip_no_destination">Untitled trip</string>
+    <string name="trip_meta_dates">Simula %1$s • %2$d araw</string>
+    <string name="trip_checklist">Checklist</string>
+    <string name="trip_rename">Rename</string>
+    <string name="trip_modify_outfit">Modify outfit</string>
+    <string name="trip_section_other_outfits">Other travel outfits</string>
+    <string name="trip_delete">Tanggalin ang biyahe</string>
+    <string name="trip_delete_confirm_title">Tanggalin ang biyaheng ito?</string>
+    <string name="trip_delete_confirm_body">Piliin kung tatanggalin din ang mga outfit na ginawa para sa biyaheng ito.</string>
+    <string name="trip_delete_with_outfits">Tanggalin ang biyahe + outfit</string>
+    <string name="trip_delete_keep_outfits">Itago ang mga outfit</string>
+    <string name="trip_bulk_refining">Pinipino ang lahat ng outfit…</string>
+    <string name="trip_bulk_refine_action">Pinuhin ang lahat ng outfit</string>
+    <string name="trip_bulk_refine_hint">hal. mas matitingkad na kulay, mas kaunting piraso, mas bagay sa gabi…</string>
+    <string name="trip_bulk_refine_run">Ilapat gamit ang AI</string>
+    <string name="trip_bulk_refine_brighter">Mas matingkad na kulay</string>
+    <string name="trip_bulk_refine_lighter">Mas magaan na bitbit</string>
+    <string name="trip_bulk_refine_formal">Mas pormal na gabi</string>
+    <string name="trip_bulk_refine_skip_jacket">Walang jacket</string>
+    <string name="trip_refine_preview_note">Preview — hindi naka-save</string>
+    <string name="trip_refine_discard">Itapon</string>
+    <string name="trip_refine_replace">Palitan ang mga outfit ng biyahe</string>
+    <string name="error_no_refinement">Walang nagamit na refinement na naibalik.</string>
+    <string name="error_enter_destination">Maglagay ng destinasyon.</string>
+    <string name="error_weather_fetch_failed">Hindi makuha ang panahon para sa \"%1$s\". Suriin ang pangalan ng destinasyon.</string>
+    <string name="fab_travel_plan">Magplano ng biyahe</string>
+</resources>

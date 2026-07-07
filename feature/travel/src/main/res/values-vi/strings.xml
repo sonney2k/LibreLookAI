@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Travel strings (moved from :app in the feature:travel slice) -->
+    <string name="outfits_worn_today">Đã mặc hôm nay!</string>
+    <string name="travel_goal_placeholder">vd. họp + tiệc tối</string>
+    <string name="travel_generate">Tạo danh sách</string>
+    <string name="ai_fetching_weather">Đang lấy thời tiết…</string>
+    <string name="ai_generating_packing">Đang tạo danh sách đồ…</string>
+    <string name="travel_destination_placeholder">vd. Paris, Tokyo, New York</string>
+    <string name="travel_extra_items">Mang thêm (không có trong tủ)</string>
+    <string name="travel_historical_note">Ngày đi nằm ngoài khoảng dự báo trực tiếp — hiển thị dữ liệu khí hậu lịch sử.</string>
+    <string name="travel_regenerate">Tạo lại</string>
+    <string name="trip_planned_title">Chuyến đi đã lên kế hoạch</string>
+    <string name="trip_saved_label">Đã lưu</string>
+    <string name="trip_saved_confirmation">Đã lưu chuyến đi và trang phục</string>
+    <string name="trip_not_found">Trip not found.</string>
+    <string name="trip_day_header">Ngày %1$d</string>
+    <string name="trip_packed">Đã đóng gói</string>
+    <string name="trip_no_destination">Untitled trip</string>
+    <string name="trip_meta_dates">Bắt đầu %1$s • %2$d ngày</string>
+    <string name="trip_checklist">Danh sách</string>
+    <string name="trip_rename">Rename</string>
+    <string name="trip_modify_outfit">Modify outfit</string>
+    <string name="trip_section_other_outfits">Other travel outfits</string>
+    <string name="trip_delete">Xóa chuyến đi</string>
+    <string name="trip_delete_confirm_title">Xóa chuyến đi này?</string>
+    <string name="trip_delete_confirm_body">Chọn xem có xóa luôn các trang phục đã tạo cho chuyến đi này không.</string>
+    <string name="trip_delete_with_outfits">Xóa chuyến đi + trang phục</string>
+    <string name="trip_delete_keep_outfits">Giữ trang phục</string>
+    <string name="trip_bulk_refining">Đang tinh chỉnh tất cả trang phục…</string>
+    <string name="trip_bulk_refine_action">Tinh chỉnh tất cả trang phục</string>
+    <string name="trip_bulk_refine_hint">vd. màu tươi hơn, ít món hơn, hợp buổi tối hơn…</string>
+    <string name="trip_bulk_refine_run">Áp dụng bằng AI</string>
+    <string name="trip_bulk_refine_brighter">Màu tươi hơn</string>
+    <string name="trip_bulk_refine_lighter">Đóng gói gọn hơn</string>
+    <string name="trip_bulk_refine_formal">Buổi tối trang trọng hơn</string>
+    <string name="trip_bulk_refine_skip_jacket">Bỏ áo khoác</string>
+    <string name="trip_refine_preview_note">Xem trước — chưa lưu</string>
+    <string name="trip_refine_discard">Hủy bỏ</string>
+    <string name="trip_refine_replace">Thay trang phục chuyến đi</string>
+    <string name="error_no_refinement">Không có tinh chỉnh nào khả dụng được trả về.</string>
+    <string name="error_enter_destination">Vui lòng nhập điểm đến.</string>
+    <string name="error_weather_fetch_failed">Không thể lấy thời tiết cho \"%1$s\". Kiểm tra tên điểm đến.</string>
+    <string name="fab_travel_plan">Lên kế hoạch chuyến đi</string>
+</resources>

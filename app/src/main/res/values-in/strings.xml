@@ -61,7 +61,6 @@
 
     <!-- Common actions -->
     <string name="action_save">Simpan</string>
-    <string name="action_edit">Edit</string>
     <string name="action_saving">Menyimpan…</string>
     <string name="cd_ai_suggestion">Saran AI</string>
     <string name="cd_refine">Pertajam</string>
@@ -177,7 +176,6 @@
 
     <!-- Tag values -->
     <!-- Outfits -->
-    <string name="outfits_empty">Belum ada setelan</string>
     <string name="outfits_empty_hint">Ketuk + untuk membangun setelan dari lemari Anda</string>
     <string name="outfits_sort_most_worn">Paling sering dipakai</string>
     <string name="outfits_create_manual">Buat setelan manual</string>
@@ -196,8 +194,6 @@
     <string name="outfits_composing">Menyusun setelan…</string>
     <string name="outfits_delete_title">Hapus setelan?</string>
     <string name="outfits_delete_text">\"%s\" akan dihapus permanen.</string>
-    <string name="outfits_wear_today">Pakai hari ini</string>
-    <string name="outfits_worn_today">Dipakai hari ini!</string>
     <string name="outfits_suggested_title">Disarankan untuk hari ini</string>
     <string name="outfits_composed_title">Disusun untuk Anda</string>
     <string name="outfits_name_dialog_title">Namai setelan ini</string>
@@ -221,8 +217,6 @@
     <string name="travel_outfit_count">Setelan</string>
     <string name="travel_outfit_count_reset">Sesuaikan hari</string>
     <string name="travel_goal">Fokus perjalanan</string>
-    <string name="travel_goal_placeholder">mis. rapat bisnis + makan malam</string>
-    <string name="travel_generate">Buat Daftar Kemasan</string>
     <string name="travel_packing_list">Daftar Kemasan</string>
     <string name="travel_clear">Bersihkan</string>
     <string name="travel_empty">Masukkan tujuan untuk memulai</string>
@@ -247,8 +241,6 @@
     <string name="gap_reanalyze">Analisis Ulang</string>
 
     <!-- AI overlay -->
-    <string name="ai_fetching_weather">Mengambil cuaca…</string>
-    <string name="ai_generating_packing">Membuat daftar kemasan…</string>
     <string name="ai_analyzing_wardrobe">Menganalisis lemari Anda…</string>
     <string name="ai_suggesting_style">Menyarankan setelan…</string>
     <string name="ai_composing_outfit">Menyusun setelan…</string>
@@ -304,17 +296,11 @@
     <string name="about_credits_title">Kredit (mode terkelola)</string>
     <string name="action_back">Kembali</string>
     <string name="action_search">Cari</string>
-    <string name="ai_consider_age">Usia</string>
     <string name="ai_consider_age_desc">Sertakan usiamu (dihitung dari tahun lahir).</string>
-    <string name="ai_consider_gender">Jenis kelamin</string>
     <string name="ai_consider_gender_desc">Sertakan jenis kelamin dari profilmu.</string>
-    <string name="ai_consider_location">Lokasi</string>
     <string name="ai_consider_location_desc">Sertakan kota, negara, dan konteks kota/desa.</string>
-    <string name="ai_consider_preferences">Preferensi gaya</string>
     <string name="ai_consider_preferences_desc">Sertakan preferensi gaya teks bebasmu.</string>
-    <string name="ai_consider_trends">Tren mode</string>
     <string name="ai_consider_trends_desc">Sertakan warna, estetika, dan must-have yang sedang tren di daerahmu.</string>
-    <string name="ai_consider_weather">Cuaca</string>
     <string name="ai_consider_weather_desc">Sertakan suhu dan kondisi hari ini.</string>
     <string name="ai_considerations_desc">Apa yang harus dipertimbangkan AI saat menyarankan atau menyusun setelan. Perubahan berlaku untuk prediksi, penyusunan, daftar bawaan, dan prompt kekurangan lemari.</string>
     <string name="ai_considerations_title">Pertimbangan default</string>
@@ -327,8 +313,6 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="battery_exempt_title">Pemrosesan latar diperlukan</string>
     <string name="calendar_empty_hint">Pakai setelan dari tab Setelan untuk mulai melacak</string>
     <string name="composer_add_selected">Tambah yang dipilih</string>
-    <string name="composer_closets_all">Semua lemari</string>
-    <string name="composer_closets_title">Lemari</string>
     <string name="composer_desc_placeholder">Deskripsi singkat (opsional)</string>
     <string name="composer_discard_confirm">Buang</string>
     <string name="composer_discard_message">Pilihanmu akan hilang.</string>
@@ -363,24 +347,14 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="composer_section_items">Item</string>
     <string name="composer_section_name">Nama &amp; deskripsi</string>
     <string name="composer_section_quick_start">Mulai cepat</string>
-    <string name="composer_section_sources">Lemari sumber</string>
     <string name="composer_section_targets">Komposisi</string>
     <string name="composer_section_vibe">Vibe gaya</string>
     <string name="composer_section_weather">Cuaca</string>
     <string name="composer_see_all_count">Semua %1$d</string>
-    <string name="composer_sheet_done">Selesai</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_tags_optional">Tag (opsional)</string>
     <string name="composer_targets_hint">Atur jumlah setiap lapisan yang ingin disertakan. Biarkan 0 agar AI yang memutuskan.</string>
-    <string name="composer_vibe_business">Business</string>
-    <string name="composer_vibe_casual">Kasual</string>
-    <string name="composer_vibe_classic">Klasik</string>
-    <string name="composer_vibe_elegant">Elegan</string>
-    <string name="composer_vibe_formal">Formal</string>
-    <string name="composer_vibe_minimalist">Minimalis</string>
-    <string name="composer_vibe_sporty">Sporty</string>
-    <string name="composer_vibe_streetwear">Streetwear</string>
     <string name="composer_weather_precip">Hujan/salju</string>
     <string name="composer_weather_season">Musim</string>
     <string name="composer_weather_temp">Suhu</string>
@@ -430,7 +404,6 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="outfits_description_placeholder">Deskripsi (opsional)</string>
     <string name="outfits_items_away">%d item di lokasi lain</string>
     <string name="outfits_items_label">Item setelan</string>
-    <string name="outfits_missing_items">Item yang sudah tidak ada di lemari</string>
     <string name="outfits_prediction_indicator">%1$d / %2$d</string>
     <string name="outfits_prediction_next">Saran berikutnya</string>
     <string name="outfits_prediction_prev">Saran sebelumnya</string>
@@ -577,9 +550,6 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="shop_your_photo">Fotomu</string>
     <string name="tag_category_placeholder">atasan, bawahan, outerwear, alas kaki, aksesori, dress, setelan jas</string>
     <string name="tag_type_placeholder">mis. Kaos, Chinos, Jaket puffer</string>
-    <string name="travel_destination_placeholder">mis. Paris, Tokyo, New York</string>
-    <string name="travel_extra_items">Bawa juga (tidak ada di lemari)</string>
-    <string name="travel_historical_note">Tanggal perjalanan di luar jendela prakiraan live — menampilkan data iklim historis.</string>
     <string name="travel_move_done">Item dipindahkan ke lokasi Perjalanan</string>
     <string name="travel_move_error">Tidak bisa memindahkan item</string>
     <string name="travel_move_to_travel">Pindahkan semua ke lokasi Perjalanan</string>
@@ -589,7 +559,6 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="travel_refine_lighter">Kemasi lebih ringan</string>
     <string name="travel_refine_rain">Lebih cocok untuk hujan</string>
     <string name="travel_refine_reuse">Maksimalkan penggunaan ulang setelan</string>
-    <string name="travel_regenerate">Buat ulang</string>
     <string name="tryon_add_items_title">Tambah item dari lemari</string>
     <string name="tryon_add_photo">Tambah foto %1$s</string>
     <string name="tryon_cost_line">Biaya %1$d kredit per coba-pakai</string>
@@ -620,34 +589,6 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="wardrobe_view_original">Lihat asli</string>
 
     <!-- Trips -->
-    <string name="trip_planned_title">Perjalanan terencana</string>
-    <string name="trip_saved_label">Tersimpan</string>
-    <string name="trip_saved_confirmation">Perjalanan &amp; pakaian tersimpan</string>
-    <string name="trip_not_found">Trip not found.</string>
-    <string name="trip_day_header">Hari %1$d</string>
-    <string name="trip_packed">Sudah dikemas</string>
-    <string name="trip_no_destination">Untitled trip</string>
-    <string name="trip_meta_dates">Mulai %1$s • %2$d hari</string>
-    <string name="trip_checklist">Daftar</string>
-    <string name="trip_rename">Rename</string>
-    <string name="trip_modify_outfit">Modify outfit</string>
-    <string name="trip_section_other_outfits">Other travel outfits</string>
-    <string name="trip_delete">Hapus perjalanan</string>
-    <string name="trip_delete_confirm_title">Hapus perjalanan ini?</string>
-    <string name="trip_delete_confirm_body">Pilih apakah pakaian yang dibuat untuk perjalanan ini juga dihapus.</string>
-    <string name="trip_delete_with_outfits">Hapus perjalanan + pakaian</string>
-    <string name="trip_delete_keep_outfits">Simpan pakaian</string>
-    <string name="trip_bulk_refining">Menyempurnakan semua pakaian…</string>
-    <string name="trip_bulk_refine_action">Sempurnakan semua pakaian</string>
-    <string name="trip_bulk_refine_hint">mis. warna lebih cerah, lebih sedikit barang, lebih cocok untuk malam…</string>
-    <string name="trip_bulk_refine_run">Terapkan dengan AI</string>
-    <string name="trip_bulk_refine_brighter">Warna lebih cerah</string>
-    <string name="trip_bulk_refine_lighter">Bawa lebih ringan</string>
-    <string name="trip_bulk_refine_formal">Malam lebih formal</string>
-    <string name="trip_bulk_refine_skip_jacket">Tanpa jaket</string>
-    <string name="trip_refine_preview_note">Pratinjau — belum disimpan</string>
-    <string name="trip_refine_discard">Buang</string>
-    <string name="trip_refine_replace">Ganti pakaian perjalanan</string>
     <string name="wardrobe_delete_cascade_outfits">Hapus juga %d outfit yang memakai item ini</string>
     <string name="wardrobe_delete_cascade_tryons">Hapus juga %d coba-pakai dengan item ini</string>
     <string name="outfits_broken_banner">%d outfit memakai item yang tidak ada lagi di lemari kamu.</string>
@@ -715,8 +656,6 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="settings_similarity_preview_sub">Diagnostik untuk fitur cari lewat foto.</string>
     <string name="settings_send_feedback">Kirim masukan</string>
     <!-- Expert: item tag dimensions for outfit AI -->
-    <string name="composer_section_tags">Detail item yang dipertimbangkan</string>
-    <string name="composer_tags_hint">Pilih atribut pakaian yang dipertimbangkan AI. Lebih sedikit detail = saran lebih cepat, murah, dan terfokus.</string>
 
     <!-- Onboarding tour -->
     <string name="onboarding_closet_add_items">Tambahkan pakaian sekarang</string>
@@ -751,7 +690,6 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="calendar_loved">Suka banget</string>
 
     <!-- Wear-history AI consideration toggle -->
-    <string name="ai_consider_history">Riwayat pemakaian</string>
     <string name="ai_consider_history_desc">Belajar dari yang benar-benar kamu pakai dan sukai.</string>
 
     <!-- Usage estimate-accuracy table -->
@@ -851,17 +789,12 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <!-- Shared error messages localization -->
     <string name="error_upload_failed">Gagal mengunggah: %1$s</string>
     <string name="error_original_unavailable">Asli tidak tersedia</string>
-    <string name="error_gemini_no_response">AI tidak merespons.</string>
-    <string name="error_gemini_parse">Tidak dapat membaca respons AI.</string>
     <string name="error_import_failed_item">Gagal mengimpor %1$s: %2$s</string>
     <string name="error_tag_save_failed">Gagal menyimpan tag ke Drive: %1$s</string>
     <string name="error_add_items_first">Tambahkan item ke lemari Anda terlebih dahulu.</string>
     <string name="error_query_photo_missing">Foto kueri sudah tidak ada.</string>
     <string name="error_import_query_failed">Gagal mengimpor foto kueri.</string>
     <string name="error_trips_folder_not_ready">Folder perjalanan belum siap.</string>
-    <string name="error_no_refinement">Tidak ada penyempurnaan yang dapat digunakan.</string>
-    <string name="error_enter_destination">Masukkan tujuan.</string>
-    <string name="error_weather_fetch_failed">Tidak dapat mengambil cuaca untuk \"%1$s\". Periksa nama tujuan.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Tambahkan setelan ke kalender</string>
     <string name="calendar_add_pick">Pilih setelan</string>
@@ -882,7 +815,6 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="fab_wardrobe_add">Tambah item</string>
     <string name="fab_calendar_log">Catat outfit</string>
     <string name="fab_shopping_add">Tambah temuan</string>
-    <string name="fab_travel_plan">Rencanakan perjalanan</string>
     <string name="sel_style">Gaya</string>
     <string name="sel_swap">Tukar</string>
     <string name="sel_move">Pindah</string>

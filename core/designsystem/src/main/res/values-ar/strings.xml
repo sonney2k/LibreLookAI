@@ -188,4 +188,32 @@
     <string name="travel_day">اليوم %d</string>
     <string name="trip_viewer_title">Trip</string>
     <string name="tryon_add_item">إضافة صنف</string>
+    <!-- Sunk from :app in the feature:travel slice (shared outfit/settings vocabulary) -->
+    <string name="action_edit">تعديل</string>
+    <string name="outfits_empty">لا توجد أطقم بعد</string>
+    <string name="outfits_wear_today">ارتداء اليوم</string>
+    <string name="outfits_missing_items">أصناف لم تعد في الخزانة</string>
+    <string name="composer_closets_all">جميع الخزائن</string>
+    <string name="composer_closets_title">الخزائن</string>
+    <string name="composer_sheet_done">تم</string>
+    <string name="composer_section_sources">خزائن المصدر</string>
+    <string name="composer_vibe_casual">كاجوال</string>
+    <string name="composer_vibe_sporty">رياضي</string>
+    <string name="composer_vibe_formal">رسمي</string>
+    <string name="composer_vibe_business">عمل</string>
+    <string name="composer_vibe_streetwear">ملابس الشارع</string>
+    <string name="composer_vibe_minimalist">بسيط</string>
+    <string name="composer_vibe_classic">كلاسيكي</string>
+    <string name="composer_vibe_elegant">أنيق</string>
+    <string name="ai_consider_weather">الطقس</string>
+    <string name="ai_consider_location">الموقع</string>
+    <string name="ai_consider_trends">صيحات الموضة</string>
+    <string name="ai_consider_gender">الجنس</string>
+    <string name="ai_consider_age">العمر</string>
+    <string name="ai_consider_preferences">تفضيلات الستايل</string>
+    <string name="composer_section_tags">تفاصيل العناصر التي تؤخذ في الاعتبار</string>
+    <string name="composer_tags_hint">اختر سمات الملابس التي يراعيها الذكاء الاصطناعي. تفاصيل أقل = اقتراحات أسرع وأرخص وأكثر تركيزًا.</string>
+    <string name="ai_consider_history">سجل الارتداء</string>
+    <string name="error_gemini_no_response">لم يستجب الذكاء الاصطناعي.</string>
+    <string name="error_gemini_parse">تعذّرت قراءة رد الذكاء الاصطناعي.</string>
 </resources>

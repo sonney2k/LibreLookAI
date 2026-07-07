@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Travel strings (moved from :app in the feature:travel slice) -->
+    <string name="outfits_worn_today">आज पहना गया!</string>
+    <string name="travel_goal_placeholder">जैसे बिज़नेस मीटिंग + डिनर</string>
+    <string name="travel_generate">पैकिंग लिस्ट बनाएं</string>
+    <string name="ai_fetching_weather">मौसम की जानकारी ली जा रही है…</string>
+    <string name="ai_generating_packing">पैकिंग लिस्ट बनाई जा रही है…</string>
+    <string name="travel_destination_placeholder">उदा. पेरिस, टोक्यो, न्यूयॉर्क</string>
+    <string name="travel_extra_items">साथ ले जाएं (वॉर्डरोब में नहीं)</string>
+    <string name="travel_historical_note">यात्रा की तारीखें लाइव पूर्वानुमान सीमा से बाहर हैं — ऐतिहासिक जलवायु डेटा दिखाया जा रहा है।</string>
+    <string name="travel_regenerate">पुनः बनाएं</string>
+    <string name="trip_planned_title">नियोजित यात्रा</string>
+    <string name="trip_saved_label">सहेजा गया</string>
+    <string name="trip_saved_confirmation">यात्रा और आउटफ़िट सहेजे गए</string>
+    <string name="trip_not_found">Trip not found.</string>
+    <string name="trip_day_header">दिन %1$d</string>
+    <string name="trip_packed">पैक किया गया</string>
+    <string name="trip_no_destination">Untitled trip</string>
+    <string name="trip_meta_dates">प्रारंभ %1$s • %2$d दिन</string>
+    <string name="trip_checklist">चेकलिस्ट</string>
+    <string name="trip_rename">Rename</string>
+    <string name="trip_modify_outfit">Modify outfit</string>
+    <string name="trip_section_other_outfits">Other travel outfits</string>
+    <string name="trip_delete">यात्रा हटाएँ</string>
+    <string name="trip_delete_confirm_title">क्या यह यात्रा हटाएँ?</string>
+    <string name="trip_delete_confirm_body">चुनें कि इस यात्रा के लिए बनाए गए आउटफ़िट भी हटाने हैं या नहीं।</string>
+    <string name="trip_delete_with_outfits">यात्रा + आउटफ़िट हटाएँ</string>
+    <string name="trip_delete_keep_outfits">आउटफ़िट रखें</string>
+    <string name="trip_bulk_refining">सभी आउटफ़िट परिष्कृत किए जा रहे हैं…</string>
+    <string name="trip_bulk_refine_action">सभी आउटफ़िट परिष्कृत करें</string>
+    <string name="trip_bulk_refine_hint">जैसे चमकीले रंग, कम चीज़ें, शाम के लिए बेहतर…</string>
+    <string name="trip_bulk_refine_run">AI से लागू करें</string>
+    <string name="trip_bulk_refine_brighter">चमकीले रंग</string>
+    <string name="trip_bulk_refine_lighter">हल्का पैक करें</string>
+    <string name="trip_bulk_refine_formal">अधिक औपचारिक शामें</string>
+    <string name="trip_bulk_refine_skip_jacket">जैकेट छोड़ें</string>
+    <string name="trip_refine_preview_note">पूर्वावलोकन — सहेजा नहीं गया</string>
+    <string name="trip_refine_discard">खारिज करें</string>
+    <string name="trip_refine_replace">यात्रा के आउटफ़िट बदलें</string>
+    <string name="error_no_refinement">कोई उपयोगी परिशोधन नहीं मिला।</string>
+    <string name="error_enter_destination">कृपया एक गंतव्य दर्ज करें।</string>
+    <string name="error_weather_fetch_failed">\"%1$s\" के लिए मौसम प्राप्त नहीं हो सका। गंतव्य का नाम जाँचें।</string>
+    <string name="fab_travel_plan">यात्रा प्लान करें</string>
+</resources>

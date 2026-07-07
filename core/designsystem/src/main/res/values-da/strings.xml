@@ -188,4 +188,32 @@
     <string name="travel_day">Dag %d</string>
     <string name="trip_viewer_title">Trip</string>
     <string name="tryon_add_item">Tilføj stykke</string>
+    <!-- Sunk from :app in the feature:travel slice (shared outfit/settings vocabulary) -->
+    <string name="action_edit">Redigér</string>
+    <string name="outfits_empty">Ingen outfits endnu</string>
+    <string name="outfits_wear_today">Bær i dag</string>
+    <string name="outfits_missing_items">Stykker ikke længere i garderoben</string>
+    <string name="composer_closets_all">Alle garderober</string>
+    <string name="composer_closets_title">Garderober</string>
+    <string name="composer_sheet_done">Færdig</string>
+    <string name="composer_section_sources">Kildegarderober</string>
+    <string name="composer_vibe_casual">Casual</string>
+    <string name="composer_vibe_sporty">Sporty</string>
+    <string name="composer_vibe_formal">Formel</string>
+    <string name="composer_vibe_business">Business</string>
+    <string name="composer_vibe_streetwear">Streetwear</string>
+    <string name="composer_vibe_minimalist">Minimalistisk</string>
+    <string name="composer_vibe_classic">Klassisk</string>
+    <string name="composer_vibe_elegant">Elegant</string>
+    <string name="ai_consider_weather">Vejr</string>
+    <string name="ai_consider_location">Placering</string>
+    <string name="ai_consider_trends">Modetrends</string>
+    <string name="ai_consider_gender">Køn</string>
+    <string name="ai_consider_age">Alder</string>
+    <string name="ai_consider_preferences">Stilpræferencer</string>
+    <string name="composer_section_tags">Vægt på tøjdetaljer</string>
+    <string name="composer_tags_hint">Vælg, hvilke tøjegenskaber AI\'en vægter. Færre detaljer = hurtigere, billigere og mere fokuserede forslag.</string>
+    <string name="ai_consider_history">Brugshistorik</string>
+    <string name="error_gemini_no_response">AI\'en svarede ikke.</string>
+    <string name="error_gemini_parse">Kunne ikke læse AI-svaret.</string>
 </resources>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Travel strings (moved from :app in the feature:travel slice) -->
+    <string name="outfits_worn_today">Indossato oggi!</string>
+    <string name="travel_destination_placeholder">es. Parigi, Tokyo, New York</string>
+    <string name="travel_goal_placeholder">es. riunioni di lavoro + cene</string>
+    <string name="travel_generate">Genera lista valigia</string>
+    <string name="travel_regenerate">Rigenera</string>
+    <string name="travel_extra_items">Da portare anche (non nel guardaroba)</string>
+    <string name="travel_historical_note">Le date del viaggio sono fuori dalla finestra di previsione — vengono mostrati dati climatici storici.</string>
+    <string name="ai_fetching_weather">Recupero meteo…</string>
+    <string name="ai_generating_packing">Generazione lista valigia…</string>
+    <string name="trip_planned_title">Viaggio pianificato</string>
+    <string name="trip_saved_label">Salvato</string>
+    <string name="trip_saved_confirmation">Viaggio e look salvati</string>
+    <string name="trip_not_found">Trip not found.</string>
+    <string name="trip_day_header">Giorno %1$d</string>
+    <string name="trip_packed">In valigia</string>
+    <string name="trip_no_destination">Untitled trip</string>
+    <string name="trip_meta_dates">Inizio %1$s • %2$d giorni</string>
+    <string name="trip_checklist">Lista</string>
+    <string name="trip_rename">Rename</string>
+    <string name="trip_modify_outfit">Modify outfit</string>
+    <string name="trip_section_other_outfits">Other travel outfits</string>
+    <string name="trip_delete">Elimina viaggio</string>
+    <string name="trip_delete_confirm_title">Eliminare questo viaggio?</string>
+    <string name="trip_delete_confirm_body">Scegli se eliminare anche i look creati per questo viaggio.</string>
+    <string name="trip_delete_with_outfits">Elimina viaggio e look</string>
+    <string name="trip_delete_keep_outfits">Mantieni i look</string>
+    <string name="trip_bulk_refining">Perfezionamento di tutti i look…</string>
+    <string name="trip_bulk_refine_action">Perfeziona tutti i look</string>
+    <string name="trip_bulk_refine_hint">es. colori più vivaci, meno capi, più adatto alla sera…</string>
+    <string name="trip_bulk_refine_run">Applica con l\'IA</string>
+    <string name="trip_bulk_refine_brighter">Colori più vivaci</string>
+    <string name="trip_bulk_refine_lighter">Bagaglio più leggero</string>
+    <string name="trip_bulk_refine_formal">Serate più eleganti</string>
+    <string name="trip_bulk_refine_skip_jacket">Senza giacca</string>
+    <string name="trip_refine_preview_note">Anteprima – non salvata</string>
+    <string name="trip_refine_discard">Scarta</string>
+    <string name="trip_refine_replace">Sostituisci i look del viaggio</string>
+    <string name="error_no_refinement">Nessun perfezionamento utilizzabile restituito.</string>
+    <string name="error_enter_destination">Inserisci una destinazione.</string>
+    <string name="error_weather_fetch_failed">Impossibile recuperare il meteo per \"%1$s\". Controlla il nome della destinazione.</string>
+    <string name="fab_travel_plan">Pianifica viaggio</string>
+</resources>

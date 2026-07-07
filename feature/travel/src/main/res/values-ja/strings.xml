@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Travel strings (moved from :app in the feature:travel slice) -->
+    <string name="outfits_worn_today">今日着用しました!</string>
+    <string name="travel_destination_placeholder">例: パリ、東京、ニューヨーク</string>
+    <string name="travel_goal_placeholder">例: 会議 + ディナー</string>
+    <string name="travel_generate">パッキングリストを生成</string>
+    <string name="travel_regenerate">再生成</string>
+    <string name="travel_extra_items">追加で持っていくもの(クローゼットにない)</string>
+    <string name="travel_historical_note">旅行日が予報期間外です — 過去の気象データを表示しています。</string>
+    <string name="ai_fetching_weather">天気情報を取得中…</string>
+    <string name="ai_generating_packing">パッキングリストを生成中…</string>
+    <string name="trip_planned_title">予定した旅行</string>
+    <string name="trip_saved_label">保存済み</string>
+    <string name="trip_saved_confirmation">旅行とコーデを保存しました</string>
+    <string name="trip_not_found">Trip not found.</string>
+    <string name="trip_day_header">%1$d日目</string>
+    <string name="trip_packed">荷造り済み</string>
+    <string name="trip_no_destination">Untitled trip</string>
+    <string name="trip_meta_dates">開始 %1$s • %2$d日間</string>
+    <string name="trip_checklist">チェックリスト</string>
+    <string name="trip_rename">Rename</string>
+    <string name="trip_modify_outfit">Modify outfit</string>
+    <string name="trip_section_other_outfits">Other travel outfits</string>
+    <string name="trip_delete">旅行を削除</string>
+    <string name="trip_delete_confirm_title">この旅行を削除しますか？</string>
+    <string name="trip_delete_confirm_body">この旅行用に作成したコーデも削除するか選択してください。</string>
+    <string name="trip_delete_with_outfits">旅行とコーデを削除</string>
+    <string name="trip_delete_keep_outfits">コーデを残す</string>
+    <string name="trip_bulk_refining">すべてのコーデを調整中…</string>
+    <string name="trip_bulk_refine_action">すべてのコーデを調整</string>
+    <string name="trip_bulk_refine_hint">例：明るい色、アイテム少なめ、夜向け…</string>
+    <string name="trip_bulk_refine_run">AIで適用</string>
+    <string name="trip_bulk_refine_brighter">明るい色</string>
+    <string name="trip_bulk_refine_lighter">軽めの荷造り</string>
+    <string name="trip_bulk_refine_formal">よりフォーマルな夜</string>
+    <string name="trip_bulk_refine_skip_jacket">ジャケットなし</string>
+    <string name="trip_refine_preview_note">プレビュー — 未保存</string>
+    <string name="trip_refine_discard">破棄</string>
+    <string name="trip_refine_replace">旅行のコーデを置き換え</string>
+    <string name="error_no_refinement">使用可能な調整結果が返されませんでした。</string>
+    <string name="error_enter_destination">目的地を入力してください。</string>
+    <string name="error_weather_fetch_failed">「%1$s」の天気を取得できませんでした。目的地名を確認してください。</string>
+    <string name="fab_travel_plan">旅行を計画</string>
+</resources>

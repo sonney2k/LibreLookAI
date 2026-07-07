@@ -188,4 +188,32 @@
     <string name="travel_day">%d. den</string>
     <string name="trip_viewer_title">Trip</string>
     <string name="tryon_add_item">Přidat položku</string>
+    <!-- Sunk from :app in the feature:travel slice (shared outfit/settings vocabulary) -->
+    <string name="action_edit">Upravit</string>
+    <string name="outfits_empty">Zatím žádné outfity</string>
+    <string name="outfits_wear_today">Obléknout dnes</string>
+    <string name="outfits_missing_items">Položky již nejsou v šatníku</string>
+    <string name="composer_closets_all">Všechny šatníky</string>
+    <string name="composer_closets_title">Šatníky</string>
+    <string name="composer_sheet_done">Hotovo</string>
+    <string name="composer_section_sources">Zdrojové šatníky</string>
+    <string name="composer_vibe_casual">Ležérní</string>
+    <string name="composer_vibe_sporty">Sportovní</string>
+    <string name="composer_vibe_formal">Formální</string>
+    <string name="composer_vibe_business">Business</string>
+    <string name="composer_vibe_streetwear">Streetwear</string>
+    <string name="composer_vibe_minimalist">Minimalistický</string>
+    <string name="composer_vibe_classic">Klasický</string>
+    <string name="composer_vibe_elegant">Elegantní</string>
+    <string name="ai_consider_weather">Počasí</string>
+    <string name="ai_consider_location">Umístění</string>
+    <string name="ai_consider_trends">Módní trendy</string>
+    <string name="ai_consider_gender">Pohlaví</string>
+    <string name="ai_consider_age">Věk</string>
+    <string name="ai_consider_preferences">Preference stylu</string>
+    <string name="composer_section_tags">Detaily položek k zohlednění</string>
+    <string name="composer_tags_hint">Vyber, které vlastnosti oblečení AI zohlední. Méně detailů = rychlejší, levnější a cílenější návrhy.</string>
+    <string name="ai_consider_history">Historie nošení</string>
+    <string name="error_gemini_no_response">AI neodpověděla.</string>
+    <string name="error_gemini_parse">Nelze přečíst odpověď AI.</string>
 </resources>

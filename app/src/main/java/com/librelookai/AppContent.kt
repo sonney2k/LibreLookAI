@@ -73,8 +73,13 @@ import com.librelookai.outfit.OutfitComposerScreen
 import com.librelookai.outfit.OutfitEventsViewModel
 import com.librelookai.outfit.OutfitsScreen
 import com.librelookai.outfit.OutfitsViewModel
+import com.librelookai.outfit.applyTagSuggestions
 import com.librelookai.outfit.closeComposer
+import com.librelookai.outfit.closeOutfitTagsEditor
+import com.librelookai.outfit.dismissTagSuggestions
 import com.librelookai.outfit.openComposer
+import com.librelookai.outfit.setOutfitTags
+import com.librelookai.outfit.startEditingTripOutfit
 import com.librelookai.settings.AppLanguage
 import com.librelookai.wardrobe.FixCutoutBgDialog
 import com.librelookai.settings.ProfileViewModel
@@ -391,6 +396,14 @@ internal fun AppContent(
                                     personPaths = personPaths,
                                     itemPaths = itemPaths,
                                 ),
+                            )
+                        },
+                        // Travel planner / trip bulk-refine generate-cost badge — same
+                        // feature/billing bridge as the try-on badge (feature→feature is forbidden).
+                        com.librelookai.travel.LocalTravelCostBadge provides { tokens ->
+                            com.librelookai.billing.CostBadge(
+                                com.librelookai.gemini.GeminiActionId.GENERATE_TEXT,
+                                tokens = tokens,
                             )
                         },
                         LocalStartTour provides { showOnboarding = true },
@@ -748,17 +761,30 @@ internal fun AppContent(
                                         }
                                         composable<TravelTabRoute> {
                                         CompositionLocalProvider(LocalViewModelStoreOwner provides activity) {
+                                        // Travel takes data + funnel callbacks, no cross-feature
+                                        // VM types (§ 1 slice 6 — the try-on/onboarding precedent).
+                                        val travelOutfitsState by stylesViewModel.state.collectAsState()
+                                        val travelWardrobeState by wardrobeViewModel.state.collectAsState()
                                         TravelScreen(
                                             travelViewModel = travelViewModel,
                                             tripsViewModel = tripsViewModel,
-                                            wardrobeViewModel = wardrobeViewModel,
-                                            profileViewModel = profileViewModel,
-                                            stylesViewModel = stylesViewModel,
-                                            generationViewModel = outfitGenerationViewModel,
-                                            onOpenComposer = {
+                                            outfits = travelOutfitsState.outfits,
+                                            wardrobeImages = travelWardrobeState.images,
+                                            allLocationImages = travelWardrobeState.allLocationImages,
+                                            preferences = profileState.preferences,
+                                            locations = locationState.locations,
+                                            activeLocationId = locationState.activeLocationId,
+                                            activeFolderId = locationViewModel.activeFolderId,
+                                            onSetActiveLocation = locationViewModel::setActiveLocation,
+                                            onEditOutfit = { outfit ->
+                                                outfitGenerationViewModel.startEditing(
+                                                    outfit,
+                                                    travelWardrobeState.images,
+                                                    profileState.preferences,
+                                                )
                                                 navController.navigate(OutfitComposerRoute) { launchSingleTop = true }
                                             },
-                                            locationViewModel = locationViewModel,
+                                            onDeleteOutfits = { ids -> stylesViewModel.deleteOutfitsByIds(ids) },
                                             onSettingsClick = onSettingsClick,
                                             onOpenPlanner = {
                                                 navController.navigate(TravelPlannerRoute) {
@@ -853,9 +879,12 @@ internal fun AppContent(
                             // joins the single-flight reconcile instead of re-listing Drive).
                             val tripViewerTripsViewModel: TripsViewModel =
                                 androidx.hilt.navigation.compose.hiltViewModel(entry)
-                            // No activity pin here: the screen takes every VM as a required
-                            // parameter (no defaulted `viewModel()` in this subtree), so the
-                            // activity-scoped instances are passed explicitly below.
+                            // No activity pin here: the screen takes data + funnel callbacks
+                            // (§ 1 slice 6 — no cross-feature VM types cross into travel); the
+                            // activity-scoped VMs are read/called only in this block.
+                            val viewerOutfitsState by stylesViewModel.state.collectAsState()
+                            val viewerWardrobeState by wardrobeViewModel.state.collectAsState()
+                            val viewerGenerationState by outfitGenerationViewModel.state.collectAsState()
                             // Recreate the environment the viewer had when it rendered inside
                             // Home's chrome-hidden Scaffold: system-bar insets via a plain
                             // Scaffold, plus the offline banner strip above the content.
@@ -867,15 +896,25 @@ internal fun AppContent(
                                         startInEdit = route.startInEdit,
                                         justSaved = route.justSaved,
                                         tripsViewModel = tripViewerTripsViewModel,
-                                        outfitsViewModel = stylesViewModel,
-                                        generationViewModel = outfitGenerationViewModel,
-                                        onOpenComposer = {
+                                        outfits = viewerOutfitsState.outfits,
+                                        wardrobeImages = viewerWardrobeState.images,
+                                        allLocationImages = viewerWardrobeState.allLocationImages,
+                                        preferences = profileState.preferences,
+                                        locations = locationState.locations,
+                                        onEditTripOutfit = { trip, outfit ->
+                                            outfitGenerationViewModel.startEditingTripOutfit(
+                                                trip,
+                                                outfit,
+                                                viewerWardrobeState.images,
+                                                profileState.preferences,
+                                            )
                                             navController.navigate(OutfitComposerRoute) { launchSingleTop = true }
                                         },
-                                        wardrobeViewModel = wardrobeViewModel,
-                                        profileViewModel = profileViewModel,
-                                        locationViewModel = locationViewModel,
-                                        outfitEventsViewModel = outfitEventsViewModel,
+                                        onDeleteOutfits = { ids -> stylesViewModel.deleteOutfitsByIds(ids) },
+                                        onUpdateOutfitsRefined = stylesViewModel::updateOutfitsRefined,
+                                        onRecordWear = { outfit, imagesById ->
+                                            outfitEventsViewModel.recordOutfit(outfit, imagesById)
+                                        },
                                         onClose = { navController.popBackStack() },
                                         canTryOn = canTryOn,
                                         onTryOnOutfit = runTripOutfitTryOn,
@@ -890,6 +929,30 @@ internal fun AppContent(
                                         },
                                     )
                                 }
+                            }
+
+                            // Tag-edit / AI tag-suggestion dialogs driven by the generation VM
+                            // (launched from the outfit viewer over a trip day) — hosted here
+                            // since § 1 slice 6 so travel carries no outfit-VM type.
+                            viewerGenerationState.tagEditingOutfitId?.let { editId ->
+                                viewerOutfitsState.outfits.find { it.id == editId }?.let { target ->
+                                    com.librelookai.outfit.EditOutfitTagsDialog(
+                                        initialTags = target.tags,
+                                        onDismiss = outfitGenerationViewModel::closeOutfitTagsEditor,
+                                        onSave = { newTags ->
+                                            outfitGenerationViewModel.setOutfitTags(editId, newTags)
+                                        },
+                                    )
+                                }
+                            }
+                            viewerGenerationState.tagSuggestion?.let { sugg ->
+                                com.librelookai.outfit.SuggestTagsDialog(
+                                    state = sugg,
+                                    onDismiss = outfitGenerationViewModel::dismissTagSuggestions,
+                                    onApply = { selected ->
+                                        outfitGenerationViewModel.applyTagSuggestions(sugg.outfitId, selected)
+                                    },
+                                )
                             }
                         }
 
@@ -946,18 +1009,22 @@ internal fun AppContent(
                             // Full-screen mode within the Travel tab, not a separate tab — report
                             // it as its own screen view for funnel tracking.
                             LaunchedEffect(Unit) { Analytics.screen("TravelPlanner") }
-                            // No activity pin: the planner takes every VM as a required
-                            // parameter (no defaulted `viewModel()` in this subtree).
+                            // No activity pin: the planner takes data + funnel callbacks
+                            // (§ 1 slice 6 — no cross-feature VM types cross into travel).
+                            val plannerOutfitsState by stylesViewModel.state.collectAsState()
+                            val plannerWardrobeState by wardrobeViewModel.state.collectAsState()
                             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                                 Column(Modifier.fillMaxSize().padding(innerPadding)) {
                                     OfflineBanner(visible = isOffline)
                                     com.librelookai.travel.TravelPlannerScreen(
                                         travelViewModel = travelViewModel,
                                         tripsViewModel = tripsViewModel,
-                                        wardrobeViewModel = wardrobeViewModel,
-                                        profileViewModel = profileViewModel,
-                                        stylesViewModel = stylesViewModel,
-                                        locationViewModel = locationViewModel,
+                                        outfits = plannerOutfitsState.outfits,
+                                        wardrobeImages = plannerWardrobeState.images,
+                                        preferences = profileState.preferences,
+                                        locations = locationState.locations,
+                                        activeFolderId = locationViewModel.activeFolderId,
+                                        onAddOutfits = stylesViewModel::addOutfits,
                                         onBack = { navController.popBackStack() },
                                         onOpenTrip = { tripId ->
                                             // Planner-created trip: leave the planner behind so

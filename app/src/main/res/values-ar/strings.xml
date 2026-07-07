@@ -61,7 +61,6 @@
 
     <!-- Common actions -->
     <string name="action_save">حفظ</string>
-    <string name="action_edit">تعديل</string>
     <string name="action_saving">جاري الحفظ…</string>
     <string name="cd_ai_suggestion">اقتراح ذكاء اصطناعي</string>
     <string name="cd_refine">تحسين</string>
@@ -267,7 +266,6 @@
     <!-- Tag value translations (stored in English; displayed in UI language) -->
     <!-- Colors -->
     <!-- Outfits -->
-    <string name="outfits_empty">لا توجد أطقم بعد</string>
     <string name="outfits_empty_hint">اضغط على + لإنشاء طقم من خزانة ملابسك</string>
     <string name="outfits_sort_most_worn">الأكثر ارتداءً</string>
     <string name="outfits_create_manual">إنشاء طقم يدويًا</string>
@@ -290,9 +288,6 @@
     <string name="outfits_composing">جاري تكوين طقم…</string>
     <string name="outfits_delete_title">حذف الطقم؟</string>
     <string name="outfits_delete_text">سيتم حذف \"%s\" نهائيًا.</string>
-    <string name="outfits_wear_today">ارتداء اليوم</string>
-    <string name="outfits_worn_today">تم ارتداؤه اليوم!</string>
-    <string name="outfits_missing_items">أصناف لم تعد في الخزانة</string>
     <string name="outfits_items_away">%d صنف(أصناف) في موقع آخر</string>
     <string name="outfits_suggested_title">مقترح لليوم</string>
     <string name="outfits_composed_title">تم تكوينه لك</string>
@@ -352,20 +347,14 @@
     <!-- Travel -->
     <string name="travel_title">قائمة توضيب السفر</string>
     <string name="travel_destination">الوجهة</string>
-    <string name="travel_destination_placeholder">مثلاً: باريس، طوكيو، نيويورك</string>
     <string name="travel_duration">المدة</string>
     <string name="travel_start_date">تاريخ البدء</string>
     <string name="travel_outfit_count">عدد الأطقم</string>
     <string name="travel_outfit_count_reset">مطابقة الأيام</string>
     <string name="travel_goal">تركيز الرحلة</string>
-    <string name="travel_goal_placeholder">مثلاً: اجتماعات عمل + عشاء مسائي</string>
-    <string name="travel_generate">توليد قائمة التوضيب</string>
-    <string name="travel_regenerate">إعادة توليد</string>
     <string name="travel_packing_list">قائمة التوضيب</string>
     <string name="travel_clear">مسح</string>
-    <string name="travel_extra_items">وضب أيضًا (ليست في الخزانة)</string>
     <string name="travel_empty">أدخل وجهة للبدء</string>
-    <string name="travel_historical_note">تواريخ الرحلة خارج نافذة التوقعات المباشرة — يتم عرض بيانات المناخ التاريخية.</string>
     <string name="travel_refine_lighter">توضيب أخف</string>
     <string name="travel_refine_formal">خيارات أكثر رسمية</string>
     <string name="travel_refine_casual">خيارات أكثر كاجوال</string>
@@ -409,8 +398,6 @@
 
     <!-- Credits / Managed Mode -->
     <!-- AI overlay -->
-    <string name="ai_fetching_weather">جاري جلب الطقس…</string>
-    <string name="ai_generating_packing">جاري توليد قائمة التوضيب…</string>
     <string name="ai_analyzing_wardrobe">جاري تحليل خزانة ملابسك…</string>
     <string name="ai_suggesting_style">جاري اقتراح طقم…</string>
     <string name="ai_composing_outfit">جاري تكوين طقم…</string>
@@ -475,11 +462,8 @@
     <string name="composer_header_subtitle">%1$d من 5 طبقات · اضغط للتبديل</string>
     <string name="composer_fill_missing">ملء المفقود</string>
     <string name="composer_see_all_count">الكل %1$d</string>
-    <string name="composer_closets_all">جميع الخزائن</string>
     <string name="composer_layer_picked_count">تم اختيار %1$d</string>
     <string name="composer_weather_title">الطقس</string>
-    <string name="composer_closets_title">الخزائن</string>
-    <string name="composer_sheet_done">تم</string>
     <string name="composer_save">حفظ</string>
     <string name="composer_section_goal">ما هي المناسبة؟</string>
     <string name="composer_goal_placeholder">مثلاً: عشاء في لشبونة، أمسية دافئة</string>
@@ -492,7 +476,6 @@
     <string name="composer_chip_travel">سفر</string>
     <string name="composer_chip_date">موعد</string>
     <string name="composer_section_quick_start">بداية سريعة</string>
-    <string name="composer_section_sources">خزائن المصدر</string>
     <string name="composer_section_items">الأصناف</string>
     <string name="composer_section_weather">الطقس</string>
     <string name="composer_section_vibe">جو الستايل</string>
@@ -515,14 +498,6 @@
     <string name="composer_precip_none">لا يوجد</string>
     <string name="composer_precip_light">خفيف</string>
     <string name="composer_precip_heavy">غزير</string>
-    <string name="composer_vibe_casual">كاجوال</string>
-    <string name="composer_vibe_sporty">رياضي</string>
-    <string name="composer_vibe_formal">رسمي</string>
-    <string name="composer_vibe_business">عمل</string>
-    <string name="composer_vibe_streetwear">ملابس الشارع</string>
-    <string name="composer_vibe_minimalist">بسيط</string>
-    <string name="composer_vibe_classic">كلاسيكي</string>
-    <string name="composer_vibe_elegant">أنيق</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_layer_top">الطبقة العلوية الأساسية</string>
@@ -553,17 +528,11 @@
     <string name="settings_tab_ai">ذكاء اصطناعي</string>
     <string name="ai_considerations_title">اعتبارات افتراضية</string>
     <string name="ai_considerations_desc">ما يجب أن يأخذه الذكاء الاصطناعي في الاعتبار عند اقتراح أو تكوين الأطقم. تنطبق التغييرات على توقعات الأطقم وتكوينها وتوضيب السفر وتحليلات نواقص الخزانة.</string>
-    <string name="ai_consider_weather">الطقس</string>
     <string name="ai_consider_weather_desc">تضمين درجة حرارة وظروف اليوم.</string>
-    <string name="ai_consider_location">الموقع</string>
     <string name="ai_consider_location_desc">تضمين المدينة والبلد والسياق الحضري/الريفي.</string>
-    <string name="ai_consider_trends">صيحات الموضة</string>
     <string name="ai_consider_trends_desc">تضمين الألوان الدارجة والجماليات والقطع التي يجب اقتناؤها لمنطقتك.</string>
-    <string name="ai_consider_gender">الجنس</string>
     <string name="ai_consider_gender_desc">تضمين الجنس في ملفك الشخصي.</string>
-    <string name="ai_consider_age">العمر</string>
     <string name="ai_consider_age_desc">تضمين عمرك (المستمد من سنة الميلاد).</string>
-    <string name="ai_consider_preferences">تفضيلات الستايل</string>
     <string name="ai_consider_preferences_desc">تضمين تفضيلات الستايل النصية الخاصة بك.</string>
 
 
@@ -644,34 +613,6 @@
     <string name="coins_balance_label">الرصيد: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">تستخدم مفتاح Gemini الخاص بك — لا يتم إنفاق أي أرصدة.</string>
     <!-- Trips -->
-    <string name="trip_planned_title">رحلة مخطط لها</string>
-    <string name="trip_saved_label">تم الحفظ</string>
-    <string name="trip_saved_confirmation">تم حفظ الرحلة والإطلالات</string>
-    <string name="trip_not_found">Trip not found.</string>
-    <string name="trip_day_header">اليوم %1$d</string>
-    <string name="trip_packed">مُعبأ</string>
-    <string name="trip_no_destination">Untitled trip</string>
-    <string name="trip_meta_dates">البدء %1$s • %2$d أيام</string>
-    <string name="trip_checklist">قائمة</string>
-    <string name="trip_rename">Rename</string>
-    <string name="trip_modify_outfit">Modify outfit</string>
-    <string name="trip_section_other_outfits">Other travel outfits</string>
-    <string name="trip_delete">حذف الرحلة</string>
-    <string name="trip_delete_confirm_title">حذف هذه الرحلة؟</string>
-    <string name="trip_delete_confirm_body">اختر ما إذا كنت تريد أيضًا حذف الإطلالات التي أُنشئت لهذه الرحلة.</string>
-    <string name="trip_delete_with_outfits">حذف الرحلة والإطلالات</string>
-    <string name="trip_delete_keep_outfits">الاحتفاظ بالإطلالات</string>
-    <string name="trip_bulk_refining">جارٍ تحسين كل الإطلالات…</string>
-    <string name="trip_bulk_refine_action">تحسين كل الإطلالات</string>
-    <string name="trip_bulk_refine_hint">مثل ألوان أزهى، عناصر أقل، أنسب للمساء…</string>
-    <string name="trip_bulk_refine_run">تطبيق بالذكاء الاصطناعي</string>
-    <string name="trip_bulk_refine_brighter">ألوان أزهى</string>
-    <string name="trip_bulk_refine_lighter">حقيبة أخف</string>
-    <string name="trip_bulk_refine_formal">أمسيات أكثر رسمية</string>
-    <string name="trip_bulk_refine_skip_jacket">بدون سترة</string>
-    <string name="trip_refine_preview_note">معاينة — غير محفوظة</string>
-    <string name="trip_refine_discard">تجاهل</string>
-    <string name="trip_refine_replace">استبدال إطلالات الرحلة</string>
     <string name="wardrobe_delete_cascade_outfits">احذف أيضًا %d إطلالة تستخدم هذه العناصر</string>
     <string name="wardrobe_delete_cascade_tryons">احذف أيضًا %d تجربة تحتوي على هذه العناصر</string>
     <string name="outfits_broken_banner">%d إطلالة تستخدم عناصر لم تعد موجودة في خزانتك.</string>
@@ -739,8 +680,6 @@
     <string name="settings_similarity_preview_sub">تشخيص لميزة البحث بالصورة.</string>
     <string name="settings_send_feedback">إرسال ملاحظات</string>
     <!-- Expert: item tag dimensions for outfit AI -->
-    <string name="composer_section_tags">تفاصيل العناصر التي تؤخذ في الاعتبار</string>
-    <string name="composer_tags_hint">اختر سمات الملابس التي يراعيها الذكاء الاصطناعي. تفاصيل أقل = اقتراحات أسرع وأرخص وأكثر تركيزًا.</string>
 
     <!-- Onboarding tour -->
     <string name="onboarding_closet_add_items">أضف ملابس الآن</string>
@@ -775,7 +714,6 @@
     <string name="calendar_loved">أعجبني</string>
 
     <!-- Wear-history AI consideration toggle -->
-    <string name="ai_consider_history">سجل الارتداء</string>
     <string name="ai_consider_history_desc">تعلّم مما ترتديه فعلاً وما أعجبك.</string>
 
     <!-- Usage estimate-accuracy table -->
@@ -875,17 +813,12 @@
     <!-- Shared error messages localization -->
     <string name="error_upload_failed">فشل الرفع: %1$s</string>
     <string name="error_original_unavailable">الصورة الأصلية غير متوفرة</string>
-    <string name="error_gemini_no_response">لم يستجب الذكاء الاصطناعي.</string>
-    <string name="error_gemini_parse">تعذّرت قراءة رد الذكاء الاصطناعي.</string>
     <string name="error_import_failed_item">فشل استيراد %1$s: %2$s</string>
     <string name="error_tag_save_failed">فشل حفظ الوسوم في Drive: %1$s</string>
     <string name="error_add_items_first">أضف عناصر إلى خزانتك أولاً.</string>
     <string name="error_query_photo_missing">لم تعد صورة البحث موجودة.</string>
     <string name="error_import_query_failed">فشل استيراد صورة البحث.</string>
     <string name="error_trips_folder_not_ready">مجلد الرحلات غير جاهز.</string>
-    <string name="error_no_refinement">لم يتم إرجاع تحسين قابل للاستخدام.</string>
-    <string name="error_enter_destination">يرجى إدخال وجهة.</string>
-    <string name="error_weather_fetch_failed">تعذّر جلب الطقس لـ \"%1$s\". تحقق من اسم الوجهة.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">أضف الزي إلى التقويم</string>
     <string name="calendar_add_pick">اختر زيًا</string>
@@ -906,7 +839,6 @@
     <string name="fab_wardrobe_add">إضافة قطعة</string>
     <string name="fab_calendar_log">تسجيل إطلالة</string>
     <string name="fab_shopping_add">إضافة منتج</string>
-    <string name="fab_travel_plan">تخطيط رحلة</string>
     <string name="sel_style">تنسيق</string>
     <string name="sel_swap">استبدال</string>
     <string name="sel_move">نقل</string>

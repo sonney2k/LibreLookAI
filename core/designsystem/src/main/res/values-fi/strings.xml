@@ -188,4 +188,32 @@
     <string name="travel_day">Päivä %d</string>
     <string name="trip_viewer_title">Trip</string>
     <string name="tryon_add_item">Lisää vaate</string>
+    <!-- Sunk from :app in the feature:travel slice (shared outfit/settings vocabulary) -->
+    <string name="action_edit">Muokkaa</string>
+    <string name="outfits_empty">Ei vielä asuja</string>
+    <string name="outfits_wear_today">Käytä tänään</string>
+    <string name="outfits_missing_items">Vaatteita ei ole enää vaatekaapissa</string>
+    <string name="composer_closets_all">Kaikki vaatekaapit</string>
+    <string name="composer_closets_title">Vaatekaapit</string>
+    <string name="composer_sheet_done">Valmis</string>
+    <string name="composer_section_sources">Lähdevaatekaapit</string>
+    <string name="composer_vibe_casual">Rento</string>
+    <string name="composer_vibe_sporty">Urheilullinen</string>
+    <string name="composer_vibe_formal">Muodollinen</string>
+    <string name="composer_vibe_business">Business</string>
+    <string name="composer_vibe_streetwear">Streetwear</string>
+    <string name="composer_vibe_minimalist">Minimalistinen</string>
+    <string name="composer_vibe_classic">Klassinen</string>
+    <string name="composer_vibe_elegant">Elegantti</string>
+    <string name="ai_consider_weather">Sää</string>
+    <string name="ai_consider_location">Sijainti</string>
+    <string name="ai_consider_trends">Muotitrendit</string>
+    <string name="ai_consider_gender">Sukupuoli</string>
+    <string name="ai_consider_age">Ikä</string>
+    <string name="ai_consider_preferences">Tyylimieltymykset</string>
+    <string name="composer_section_tags">Huomioitavat vaatetiedot</string>
+    <string name="composer_tags_hint">Valitse, mitä vaatteiden ominaisuuksia tekoäly painottaa. Vähemmän yksityiskohtia = nopeampia, edullisempia ja tarkempia ehdotuksia.</string>
+    <string name="ai_consider_history">Käyttöhistoria</string>
+    <string name="error_gemini_no_response">Tekoäly ei vastannut.</string>
+    <string name="error_gemini_parse">Tekoälyn vastausta ei voitu lukea.</string>
 </resources>

@@ -1602,6 +1602,102 @@ categories:
    slice needs this domain home anyway). `AppScreenHeader.kt` sank to designsystem
    (root package kept; used by every tab screen — also serves the shopping/outfit/wardrobe
    extractions).
+   **Travel enabler 2 landed** (July 2026): every travel surface takes **data + funnel
+   callbacks, no cross-feature VM types** (the tryon/onboarding narrowing precedent).
+   `TravelScreen`/`TravelOutfitsView`/`TravelPlannerScreen`/`TravelPlannerContent`/
+   `TripViewerScreen` now take `outfits`/`wardrobeImages`(+`allLocationImages`)/
+   `preferences`/`locations`(+`activeLocationId`/`activeFolderId`) plus callbacks threaded
+   from `AppContent`: `onEditOutfit`/`onEditTripOutfit` (shell seeds the generation VM —
+   `startEditing`/`startEditingTripOutfit` — then navigates `OutfitComposerRoute`),
+   `onDeleteOutfits` (cascade trip delete → `deleteOutfitsByIds`), `onAddOutfits`
+   (planner-created trip → `addOutfits`), `onUpdateOutfitsRefined` (bulk-refine apply —
+   `TripsViewModel.applyRefinePreview` takes the funnel callback, not the outfits VM),
+   `onRecordWear` (day-card wear → `OutfitEventsViewModel.recordOutfit`),
+   `onSetActiveLocation`. The generation-VM tag-edit/suggest dialogs the trip viewer hosted
+   moved to `AppContent`'s `TripViewerRoute` block. Remaining non-core edges are
+   composables only, to resolve in the extraction slice: `outfit/ClosetPickerSheet` +
+   `outfit/ExpertTagsCard` (sink or thread), and `billing/CostBadge` on the planner/refine
+   token badges (feature→feature — needs the `LocalRemoveBgCostBadge`-style CompositionLocal
+   treatment). The wardrobe filter/taxonomy UI travel uses is already in designsystem.
+
+   **`feature:travel` LANDED** (July 2026) — the extraction followed the plan below with two
+   noted deviations: (a) `ExpertTagsCard`'s private helpers (`SectionCard`/`SmallPillChip`/
+   `TAG_DIM_LABELS`) are **shared** app-side (used by every prediction-setup card), so rather
+   than move them, the designsystem `OutfitExpertTagsCard.kt` carries its own **file-private
+   copies** — the app keeps its `internal SectionCard`/`private SmallPillChip` untouched (no
+   `feature:outfit`-scope churn; `private` top-level is file-scoped so no cross-module clash).
+   (b) `ExpertTagsCard` turned out to be referenced by travel **only in a doc comment** (travel
+   uses its own `AiTagChips`), so sinking it was forward-looking for `feature:outfit`, not a
+   travel compile dependency; `ClosetPickerSheet` is the real shared edge. Results: 14 kt files
+   `git mv`'d to `feature/travel` (package kept); **53 travel-only keys** → `feature/travel/res`
+   (all 31 locales), **27 shared keys** sunk to designsystem res (24 measured shared +
+   `composer_closets_title`/`composer_sheet_done`/`composer_tags_hint` the sunk composables own),
+   ~16 app files flipped to `DsR`; `LocalTravelCostBadge` (in `travel/`, provided by `AppContent`)
+   broke the `billing/CostBadge` edge; `TravelPlannerScreen` `internal`→public was the only
+   visibility bump the compiler flagged (VMs/repo/handlers were already public, no test internals
+   used). `add_translations.py --module travel` + `translation_status.sh` aggregate the eighth res
+   root (still 1180 keys). `./gradlew :app:assembleDebug testDebugUnitTest` green; the three travel
+   suites (19 tests) pass unchanged.
+
+   **`feature:travel` extraction plan (executed; enablers 1+2 landed):**
+   1. **Sink the two outfit composables to `core:designsystem`** (both are already
+      designsystem-clean — deps are `Location`/`AiConsiderations` (core:model) + DsR keys):
+      `ClosetPickerSheet` (out of `OutfitComposerSheets.kt`; `internal` → public) and
+      `ExpertTagsCard` (out of `PredictionSetupCards.kt`), original `com.librelookai.outfit`
+      package kept (designsystem already hosts `outfit/` files). Move only the composables +
+      any private helpers they own; their strings move with them if still app-owned.
+   2. **Break the `billing/CostBadge` edge** with a CompositionLocal defined **in
+      `feature:travel`** (not designsystem — the consumer is travel-only and the slot's
+      `CostTokens` param comes from core:ai, which travel already depends on):
+      `LocalTravelCostBadge: (@Composable (CostTokens?) -> Unit)?`, read by the two badge
+      sites (`TravelGoalCards.kt:292`, `TripRefine.kt:179`; unprovided → no badge), provided
+      by `AppContent` from `feature/billing`'s `CostBadge` (mirror the exact current args).
+   3. **Create the module** from the `feature/tryon` template (`git show d53cb87 --stat`
+      is the shape): namespace `com.librelookai.feature.travel`, no BuildConfig fields.
+      Deps: `api(core:model)` (Trip/Outfit/PackingList/DriveImage/UserPreferences/Location
+      in public signatures), impl `core:sync` (DriveService + SyncEngine/MutationHandler),
+      `core:database` (TripStore + PendingMutationStore), `core:ai` (AiClient/AiResult/
+      AiRetry/UsageCategory/CostTokens), `core:common`, `core:session` + `core:outfit`
+      (wearHistoryFlow + prompt summaries), `core:weather` (wmoEmoji/WeatherData),
+      `core:designsystem`. Register in `settings.gradle.kts`; app adds
+      `implementation(project(":feature:travel"))`.
+   4. **Move `app/src/main/java/com/librelookai/travel/` wholesale** (14 files incl.
+      `TripsRepository`/`TripSync` — the trip mutation handlers register via Hilt
+      `@Binds @IntoSet` multibinding, so the Hilt module moves with them, the
+      `TryOnIndexSyncHandler` precedent). Kotlin package `com.librelookai.travel` kept.
+      Visibility: `TravelPlannerScreen` `internal` → public (AppContent calls it); bump
+      whatever else AppContent / the app-side test suites reference — compiler is the
+      source of truth.
+   5. **Res split**: travel-only keys (`travel_*`/`trip_*`/`packing_*` …) move
+      `app/src/main/res/values*/strings.xml` → `feature/travel/src/main/res` across **all
+      31 locales** (no renames). Keys travel uses that app-side code (outfit/settings)
+      also uses **sink to the designsystem vocabulary instead** — travel cannot read app
+      `R` — measured set: `ai_consider_*`, `composer_vibe_*`, `composer_section_*`,
+      `composer_closets_all`, `outfits_empty`/`outfits_missing_items`/`outfits_wear_today`,
+      `error_gemini_no_response`/`error_gemini_parse`, `action_edit` (+ re-verify:
+      inventory with a grep that excludes `DsR.string.` matches — plain `R\.string\.`
+      false-positives on the `DsR` alias). Flip app-side call sites of sunk keys to `DsR`.
+      Add `travel` to `scripts/add_translations.py --module`; confirm
+      `scripts/translation_status.sh` picks up the new res root.
+   6. **Tests stay in `app/src/test`** against the module's public API (the tryon
+      precedent): `TripsViewModelTest`, `TripsRepositoryTest`, `TripSyncHandlersTest`
+      keep using the shared fakes; only visibility bumps, no test moves.
+   7. **Verify**: `./gradlew :app:assembleDebug testDebugUnitTest` green (JDK-21 test
+      toolchain is app-side only — no new wiring needed since tests don't move),
+      `scripts/translation_status.sh` clean. Update CLAUDE.md (repo-layout map, Package
+      layout, module list) + this file when it lands.
+
+   **After travel (§ 1 slice 6 remaining, leaf-first, re-measure each before starting):**
+   `feature:shopping` (needs the shopping↔wardrobe VM edges measured; `ShoppingRepository`/
+   `ShoppingIngestionQueue` are already singleton-shaped) → `feature:outfit` (largest;
+   `core:outfit` domain home exists, the composer/generation VM split is done — the knot is
+   the app-shell hosts `OutfitViewerDestination`/calendar and the prediction surfaces) →
+   `feature:wardrobe` (after outfit — the shared grid/viewer chrome is already in
+   designsystem; `FullScreenViewer`/`ItemViewerDestination` stay app-shell) →
+   `feature:settings` last (hosts cross-feature reporting + the VMs everything narrows
+   against). Each slice repeats this template: measure edges → narrow VM params to
+   data+callbacks (enabler) → sink shared composables/strings to designsystem → move the
+   package + Hilt modules → res split → visibility bumps → verify + docs.
 
 ### Verification (per slice)
 

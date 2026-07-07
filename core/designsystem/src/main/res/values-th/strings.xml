@@ -188,4 +188,32 @@
     <string name="travel_day">วันที่ %d</string>
     <string name="trip_viewer_title">Trip</string>
     <string name="tryon_add_item">เพิ่มรายการ</string>
+    <!-- Sunk from :app in the feature:travel slice (shared outfit/settings vocabulary) -->
+    <string name="action_edit">แก้ไข</string>
+    <string name="outfits_empty">ยังไม่มีชุดแต่งกาย</string>
+    <string name="outfits_wear_today">ใส่ชุดนี้วันนี้</string>
+    <string name="ai_consider_age">อายุ</string>
+    <string name="ai_consider_gender">เพศ</string>
+    <string name="ai_consider_location">ที่ตั้ง</string>
+    <string name="ai_consider_preferences">ความชอบสไตล์</string>
+    <string name="ai_consider_trends">เทรนด์แฟชั่น</string>
+    <string name="ai_consider_weather">สภาพอากาศ</string>
+    <string name="composer_closets_all">ตู้เสื้อผ้าทั้งหมด</string>
+    <string name="composer_closets_title">ตู้เสื้อผ้า</string>
+    <string name="composer_section_sources">ตู้แหล่งที่มา</string>
+    <string name="composer_sheet_done">เสร็จ</string>
+    <string name="composer_vibe_business">ธุรกิจ</string>
+    <string name="composer_vibe_casual">ลำลอง</string>
+    <string name="composer_vibe_classic">คลาสสิก</string>
+    <string name="composer_vibe_elegant">หรูหรา</string>
+    <string name="composer_vibe_formal">เป็นทางการ</string>
+    <string name="composer_vibe_minimalist">มินิมัล</string>
+    <string name="composer_vibe_sporty">สปอร์ต</string>
+    <string name="composer_vibe_streetwear">สตรีท</string>
+    <string name="outfits_missing_items">ไม่มีในตู้แล้ว</string>
+    <string name="composer_section_tags">รายละเอียดไอเท็มที่จะพิจารณา</string>
+    <string name="composer_tags_hint">เลือกว่าจะให้ AI พิจารณาคุณสมบัติใดของเสื้อผ้า รายละเอียดน้อยลง = คำแนะนำที่เร็วขึ้น ถูกลง และตรงจุดมากขึ้น</string>
+    <string name="ai_consider_history">ประวัติการสวมใส่</string>
+    <string name="error_gemini_no_response">AI ไม่ตอบสนอง</string>
+    <string name="error_gemini_parse">ไม่สามารถอ่านการตอบกลับของ AI ได้</string>
 </resources>

@@ -1,0 +1,409 @@
+package com.librelookai.travel
+import com.librelookai.util.localized
+import android.app.Application
+import android.util.Log
+import androidx.lifecycle.AndroidViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import com.librelookai.data.model.Outfit
+import com.librelookai.data.model.Trip
+import com.librelookai.gemini.AiClient
+import com.librelookai.gemini.AiResult
+import com.librelookai.gemini.AiRetry
+import com.librelookai.gemini.getOrNull
+import com.librelookai.gemini.UsageCategory
+import com.librelookai.util.isNetworkAvailable
+import com.librelookai.wardrobe.DriveImage
+import com.librelookai.weather.wmoEmoji
+
+/**
+ * Backing state for the trips list and the per-trip viewer. Persisted to
+ * `LibreLookAI/_trips/{tripId}.json` (one file per trip).
+ */
+data class TripsUiState(
+    val trips: List<Trip> = emptyList(),
+    val isLoading: Boolean = false,
+    val error: String? = null,
+    /**
+     * Pending (un-persisted) bulk-refine result for [refinePreviewTripId]: outfitId → proposed
+     * items + new name/description. The viewer renders this as a preview until the user replaces
+     * or discards it.
+     */
+    val refinePreviewTripId: String? = null,
+    val refinePreview: Map<String, com.librelookai.data.model.OutfitRefinement> = emptyMap(),
+    // The old `justSavedTripId` / `pendingEditTripId` cross-surface hand-offs are
+    // `TripViewerRoute` arguments now (§ 5 slice 9 — the viewer's trips VM is
+    // destination-scoped, so a state-field hand-off could no longer reach it).
+)
+
+/**
+ * The trips **UI surface** over the shared [TripsRepository] (which owns the store-derived
+ * trips flow, the Drive reconcile and the save/delete funnels — § 5 slice 9 foundation).
+ * Trip persistence is independent of outfit persistence: the [Trip] only references outfit
+ * IDs and the outfits themselves live in their closet's `_outfits.json`. Cascading deletes /
+ * outfit creation is orchestrated by [TravelScreen] via outfits-side funnel callbacks the
+ * app shell threads in (§ 1 slice 6 — travel carries no outfit-VM type).
+ */
+@HiltViewModel
+class TripsViewModel @Inject constructor(
+    app: Application,
+    private val gemini: AiClient,
+    private val aiRetry: AiRetry,
+    private val repo: TripsRepository,
+) : AndroidViewModel(app) {
+
+    companion object { private const val TAG = "TripsVM" }
+    private val gson = Gson()
+
+    private val _state = MutableStateFlow(TripsUiState())
+    val state: StateFlow<TripsUiState> = _state.asStateFlow()
+
+    init {
+        // Derived read path (refactor § 5 slice 4d, via the repo since the slice-9 foundation):
+        // [TripsUiState.trips] mirrors the store-derived repo flow — every store write
+        // (mutators, the Phase-2 reconcile) lands in the UI via Room invalidation. Mutators
+        // never splice state.
+        viewModelScope.launch {
+            repo.trips.collect { trips -> _state.update { it.copy(trips = trips) } }
+        }
+        // Pre-warm on creation (the VM is activity-scoped, created at app start) so the Travel
+        // tab paints instantly — replaces the AppContent pre-warm bridge (§ 5). Two-phase:
+        // the derivation above paints the store, loadTrips runs the Drive reconcile.
+        loadTrips()
+    }
+
+    /**
+     * One-shot navigation events emitted when a new trip is created or selected for viewing.
+     * The Travel screen / MainActivity observe this to flip the viewer state.
+     */
+    private val _navigateToTrip = MutableSharedFlow<String>(extraBufferCapacity = 1)
+    val navigateToTrip: SharedFlow<String> = _navigateToTrip.asSharedFlow()
+
+    fun loadTrips() {
+        viewModelScope.launch {
+            // Phase 1 — instant: the derived view paints from the store by itself; this probe
+            // only decides whether the cold-load spinner can clear before Drive answers.
+            if (repo.hasCache()) {
+                _state.update { it.copy(isLoading = false) }
+            } else {
+                _state.update { it.copy(isLoading = true, error = null) }
+            }
+
+            // Phase 2 — Drive sync: skip when offline (the cache stays on screen).
+            if (!getApplication<Application>().isNetworkAvailable()) {
+                _state.update { it.copy(isLoading = false) }
+                return@launch
+            }
+
+            // The repo's reconcile is single-flight (a second VM instance joins the same
+            // listing); the store write inside it lands before the flags clear, so a cold
+            // load never flashes empty.
+            runCatching { repo.refreshFromDrive() }
+                .onSuccess { _state.update { it.copy(isLoading = false) } }
+                .onFailure { e ->
+                    Log.w(TAG, "trips refresh failed", e)
+                    _state.update { s -> s.copy(isLoading = false, error = if (s.trips.isEmpty()) e.message else null) }
+                }
+        }
+    }
+
+    /**
+     * Upserts [trip] into the trip store (the derived view follows via invalidation); the
+     * Drive write rides the sync queue (refactor § 2 — the [TripSaveSyncHandler] re-reads the
+     * store row at apply time and resolves the trips folder itself, so the save no longer
+     * waits for Phase 2's `folderId`).
+     */
+    fun upsertTrip(trip: Trip, onDone: (Boolean) -> Unit = {}) {
+        viewModelScope.launch {
+            repo.saveTrip(trip)
+            onDone(true)
+        }
+    }
+
+    /**
+     * Creates [trip] and immediately emits a navigate event so the UI opens its viewer (the
+     * planner's collector navigates with `justSaved = true` for the one-time confirmation).
+     * The caller is responsible for persisting the trip's outfits (via the outfits-side
+     * persist funnel the shell threads in) before calling this — at that point
+     * [trip.outfitIds] should already be populated.
+     */
+    fun createAndOpenTrip(trip: Trip) {
+        upsertTrip(trip) { ok ->
+            if (ok) viewModelScope.launch { _navigateToTrip.emit(trip.id) }
+        }
+    }
+
+    fun renameTrip(tripId: String, newName: String) {
+        val current = _state.value.trips.find { it.id == tripId } ?: return
+        upsertTrip(current.copy(name = newName))
+    }
+
+    /**
+     * Applies [transform] to [tripId], persists it to the store (the derived view follows via
+     * invalidation, keeping `createdAt` order — no reordering) and queues the Drive write.
+     * Used for in-place planner-option edits in the trip editor.
+     */
+    private fun mutateTrip(tripId: String, transform: (Trip) -> Trip) {
+        val current = _state.value.trips.find { it.id == tripId } ?: return
+        val updated = transform(current)
+        if (updated == current) return
+        viewModelScope.launch { repo.saveTrip(updated) }
+    }
+
+    fun toggleTripVibe(tripId: String, vibe: String) = mutateTrip(tripId) { trip ->
+        val next = trip.vibes.toMutableSet()
+        if (!next.remove(vibe)) next.add(vibe)
+        trip.copy(vibes = next)
+    }
+
+    fun setTripConsiderations(tripId: String, considerations: com.librelookai.settings.AiConsiderations) =
+        mutateTrip(tripId) { it.copy(considerations = considerations) }
+
+    /** Toggle a wardrobe item's packed state in the trip's packing checklist. */
+    fun toggleTripPackedItem(tripId: String, driveId: String) = mutateTrip(tripId) { trip ->
+        val next = trip.packedItemIds.toMutableSet()
+        if (!next.remove(driveId)) next.add(driveId)
+        trip.copy(packedItemIds = next)
+    }
+
+    /** Toggle an extra item's packed state in the trip's packing checklist. */
+    fun toggleTripPackedExtra(tripId: String, extra: String) = mutateTrip(tripId) { trip ->
+        val next = trip.packedExtras.toMutableSet()
+        if (!next.remove(extra)) next.add(extra)
+        trip.copy(packedExtras = next)
+    }
+
+    /** Replace the trip's additional/extra packing items (also drops stale packed entries). */
+    fun updateTripExtras(tripId: String, extras: List<String>) = mutateTrip(tripId) { trip ->
+        val cleaned = extras.map { it.trim() }.filter { it.isNotEmpty() }.distinct()
+        trip.copy(extraItems = cleaned, packedExtras = trip.packedExtras intersect cleaned.toSet())
+    }
+
+    /** Replaces `outfitIds[dayIndex]` with [newOutfitId] (used after editing a day's outfit). */
+    fun replaceOutfitAtDay(tripId: String, dayIndex: Int, newOutfitId: String) {
+        val current = _state.value.trips.find { it.id == tripId } ?: return
+        if (dayIndex !in current.outfitIds.indices) return
+        if (current.outfitIds[dayIndex] == newOutfitId) return
+        val updated = current.copy(
+            outfitIds = current.outfitIds.toMutableList().also { it[dayIndex] = newOutfitId },
+        )
+        upsertTrip(updated)
+    }
+
+    /**
+     * Deletes the trip from Drive and state. Returns the deleted trip's `outfitIds` via [onDeleted]
+     * so the caller can decide whether to cascade-delete the outfits.
+     */
+    fun deleteTrip(tripId: String, onDeleted: (deletedOutfitIds: List<String>) -> Unit = {}) {
+        if (_state.value.trips.none { it.id == tripId }) return
+        viewModelScope.launch { onDeleted(repo.deleteTrips(listOf(tripId))) }
+    }
+
+    /**
+     * Deletes every trip in [tripIds] from Drive and state, then returns the union of their
+     * `outfitIds` via [onDeleted] so the caller can optionally cascade-delete the outfits.
+     */
+    fun deleteTrips(tripIds: Collection<String>, onDeleted: (deletedOutfitIds: List<String>) -> Unit = {}) {
+        if (_state.value.trips.none { it.id in tripIds }) return
+        viewModelScope.launch { onDeleted(repo.deleteTrips(tripIds)) }
+    }
+
+    fun clearError() = _state.update { it.copy(error = null) }
+
+    /** Per-trip transient state for the bulk-refine bar. */
+    private val _bulkRefining = MutableStateFlow<Set<String>>(emptySet())
+    val bulkRefining: StateFlow<Set<String>> = _bulkRefining.asStateFlow()
+
+    /**
+     * One Gemini call that re-assigns items for every outfit in [tripId] subject to [instruction]
+     * (e.g. "brighter clothes", "pack lighter — fewer distinct items"). The result is stored as an
+     * un-persisted preview ([refinePreview]); nothing is saved until [applyRefinePreview].
+     */
+    /**
+     * Pre-tap BYOK cost estimate for a bulk trip refine. Fully exact — the trip (incl. forecast)
+     * and current outfits are already known; reuses [buildBulkRefinePrompt] verbatim.
+     */
+    fun estimateBulkRefineTokens(
+        tripId: String,
+        instruction: String,
+        images: List<DriveImage>,
+        currentOutfits: List<Outfit>,
+        prefs: com.librelookai.settings.UserPreferences? = null,
+    ): com.librelookai.gemini.CostTokens? {
+        val trip = _state.value.trips.find { it.id == tripId } ?: return null
+        val tripOutfits = currentOutfits.filter { it.id in trip.outfitIds }
+        if (tripOutfits.isEmpty()) return null
+        val prompt = buildBulkRefinePrompt(trip, tripOutfits, instruction.trim(), images, prefs)
+        return com.librelookai.gemini.CostTokens(
+            inputTokens = com.librelookai.gemini.TokenEstimator.textTokens(prompt),
+            outputTokens = com.librelookai.gemini.TokenEstimator
+                .expectedOutputTokens(UsageCategory.TRAVEL, tripOutfits.size),
+            outputIsImage = false,
+        )
+    }
+
+    fun refineAllOutfits(
+        tripId: String,
+        instruction: String,
+        images: List<DriveImage>,
+        currentOutfits: List<Outfit>,
+        prefs: com.librelookai.settings.UserPreferences? = null,
+        onDone: (Boolean) -> Unit = {},
+    ) {
+        val instr = instruction.trim()
+        val trip = _state.value.trips.find { it.id == tripId } ?: run { onDone(false); return }
+        val tripOutfits = currentOutfits.filter { it.id in trip.outfitIds }
+        if (tripOutfits.isEmpty()) { onDone(false); return }
+        aiRetry.action =
+            { refineAllOutfits(tripId, instruction, images, currentOutfits, prefs, onDone) }
+        viewModelScope.launch {
+            _bulkRefining.update { it + tripId }
+            val prompt = buildBulkRefinePrompt(trip, tripOutfits, instr, images, prefs)
+            Log.d(TAG, "Bulk-refine prompt length: ${prompt.length} chars")
+            val outcome = gemini.generateText(prompt, UsageCategory.TRAVEL, bulkItems = tripOutfits.size, notify = true)
+            if (outcome is AiResult.InsufficientCredits) {
+                _bulkRefining.update { it - tripId }
+                onDone(false); return@launch
+            }
+            val raw = outcome.getOrNull()
+            if (raw == null) {
+                _bulkRefining.update { it - tripId }
+                _state.update { it.copy(error = getApplication<Application>().localized().getString(com.librelookai.core.designsystem.R.string.error_gemini_no_response)) }
+                onDone(false); return@launch
+            }
+            val json = raw.trim().removePrefix("```json").removePrefix("```").removeSuffix("```").trim()
+            data class OutfitUpdate(
+                val id: String = "",
+                val itemIds: List<String> = emptyList(),
+                val name: String = "",
+                val description: String = "",
+            )
+            data class BulkResp(val outfits: List<OutfitUpdate> = emptyList())
+            val parsed = runCatching { gson.fromJson(json, BulkResp::class.java) }.getOrNull()
+            if (parsed == null || parsed.outfits.isEmpty()) {
+                Log.w(TAG, "bulk-refine parse failed: $json")
+                _bulkRefining.update { it - tripId }
+                _state.update { it.copy(error = getApplication<Application>().localized().getString(com.librelookai.core.designsystem.R.string.error_gemini_parse)) }
+                onDone(false); return@launch
+            }
+            val knownItemIds = images.map { it.driveId }.toSet()
+            val tripOutfitIds = trip.outfitIds.toSet()
+            val existingById = tripOutfits.associateBy { it.id }
+            val updates = parsed.outfits.mapNotNull { up ->
+                if (up.id !in tripOutfitIds) return@mapNotNull null
+                val cleaned = up.itemIds.filter { it in knownItemIds }
+                if (cleaned.isEmpty()) return@mapNotNull null
+                val prev = existingById[up.id]
+                up.id to com.librelookai.data.model.OutfitRefinement(
+                    itemIds = cleaned,
+                    // Fall back to the existing name/description if Gemini omitted them.
+                    name = up.name.trim().ifBlank { prev?.name ?: "" },
+                    description = up.description.trim().ifBlank { prev?.description ?: "" },
+                )
+            }.toMap()
+            _bulkRefining.update { it - tripId }
+            if (updates.isEmpty()) {
+                _state.update { it.copy(error = getApplication<Application>().localized().getString(com.librelookai.feature.travel.R.string.error_no_refinement)) }
+                onDone(false); return@launch
+            }
+            // Store as a preview — the user reviews it and explicitly replaces or discards.
+            _state.update { it.copy(refinePreviewTripId = tripId, refinePreview = updates) }
+            onDone(true)
+        }
+    }
+
+    /**
+     * Persists the pending [refinePreview] (items + name/description) and clears it.
+     * [updateOutfits] is the outfits-side persist funnel (OutfitsViewModel.updateOutfitsRefined),
+     * threaded as a callback so travel carries no outfit-VM type (§ 1 slice 6).
+     */
+    fun applyRefinePreview(
+        updateOutfits: (Map<String, com.librelookai.data.model.OutfitRefinement>, (Boolean) -> Unit) -> Unit,
+        onDone: (Boolean) -> Unit = {},
+    ) {
+        val updates = _state.value.refinePreview
+        if (updates.isEmpty()) { onDone(false); return }
+        updateOutfits(updates) { ok ->
+            if (ok) _state.update { it.copy(refinePreviewTripId = null, refinePreview = emptyMap()) }
+            onDone(ok)
+        }
+    }
+
+    /** Drops the pending [refinePreview] without persisting. */
+    fun discardRefinePreview() =
+        _state.update { it.copy(refinePreviewTripId = null, refinePreview = emptyMap()) }
+}
+
+internal fun buildBulkRefinePrompt(
+    trip: Trip,
+    outfits: List<Outfit>,
+    instruction: String,
+    images: List<DriveImage>,
+    prefs: com.librelookai.settings.UserPreferences? = null,
+): String = buildString {
+    val c = trip.considerations
+    appendLine("You are helping the user refine ALL outfits in a multi-day trip in one shot.")
+    appendLine("Keep the same number of days and the same weather — only re-style the outfits. The")
+    appendLine("current outfits below are your starting point; adjust them to honour the settings.")
+    appendLine()
+    appendLine("## Trip")
+    appendLine("- Name: ${trip.name}")
+    if (c.location) appendLine("- Destination: ${trip.destination}")
+    appendLine("- Days: ${trip.days}")
+    if (trip.goal.isNotBlank()) appendLine("- Goal/notes: ${trip.goal}")
+    if (trip.vibes.isNotEmpty()) appendLine("- Vibes: ${trip.vibes.joinToString(", ")}")
+    if (c.weather && trip.forecast.isNotEmpty()) {
+        appendLine("- Forecast:")
+        trip.forecast.forEachIndexed { i, f ->
+            appendLine("  - Day ${i + 1}: ${f.minTempC.toInt()}–${f.maxTempC.toInt()}°C, WMO ${f.weatherCode} ${wmoEmoji(f.weatherCode)}")
+        }
+    }
+    val age = prefs?.yearOfBirth?.let { java.time.LocalDate.now().year - it }
+    val profileLines = buildList {
+        if (c.gender) add("- Gender: ${prefs?.gender?.takeIf { it.isNotEmpty() } ?: "not specified"}")
+        if (c.age) add("- Age: ${age?.toString() ?: "not specified"}")
+        if (c.preferences) add("- Outfit preferences: ${prefs?.preferences?.takeIf { it.isNotEmpty() } ?: "none provided"}")
+    }
+    if (profileLines.isNotEmpty()) {
+        appendLine("## User profile")
+        profileLines.forEach { appendLine(it) }
+    }
+    if (c.trends) appendLine("- Favour currently fashionable, travel-friendly pieces over short-lived fads.")
+    appendLine()
+    appendLine("## User instruction (apply to ALL outfits)")
+    appendLine(instruction.ifBlank { "Refresh the outfits to best reflect the trip settings above." })
+    appendLine()
+    appendLine("## Current outfits (id, day, current items)")
+    outfits.forEachIndexed { i, o ->
+        val items = o.itemIds.joinToString(",", "[", "]") { "\"$it\"" }
+        appendLine("""{"id":"${o.id}","day":${i + 1},"name":"${o.name}","items":$items}""")
+    }
+    appendLine()
+    appendLine("## Available wardrobe (id, name, tags)")
+    val wardrobeJson = images.joinToString(",", "[", "]") { img ->
+        val t = img.tags
+        if (t == null) """{"id":"${img.driveId}","name":"${img.name}","tags":null}"""
+        else """{"id":"${img.driveId}","name":"${img.name}","tags":{"type":"${t.type}","category":"${t.category}","colors":${t.colors.joinToString(",", "[", "]") { "\"$it\"" }}}}"""
+    }
+    appendLine(wardrobeJson)
+    appendLine()
+    appendLine("For each outfit also write a fresh, short name (2–4 words) and a one-sentence")
+    appendLine("description reflecting the re-styled look.")
+    appendLine(
+        "IMPORTANT: Write the name and description in " +
+            "${com.librelookai.settings.AppLanguage.toGeminiName(prefs?.language ?: com.librelookai.settings.AppLanguage.ENGLISH)}.",
+    )
+    appendLine("Return ONLY a JSON object — no markdown, no extra text — keeping the same outfit ids:")
+    append("""{"outfits":[{"id":"<existingOutfitId>","itemIds":["<wardrobeItemId>"],"name":"<short name>","description":"<one sentence>"}]}""")
+}
+

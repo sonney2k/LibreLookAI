@@ -188,4 +188,32 @@
     <string name="travel_day">Dzień %d</string>
     <string name="trip_viewer_title">Trip</string>
     <string name="tryon_add_item">Dodaj element</string>
+    <!-- Sunk from :app in the feature:travel slice (shared outfit/settings vocabulary) -->
+    <string name="action_edit">Edytuj</string>
+    <string name="outfits_empty">Brak stylizacji</string>
+    <string name="outfits_wear_today">Załóż dziś</string>
+    <string name="outfits_missing_items">Elementy nie są już w garderobie</string>
+    <string name="composer_closets_all">Wszystkie szafy</string>
+    <string name="composer_closets_title">Szafy</string>
+    <string name="composer_sheet_done">Gotowe</string>
+    <string name="composer_section_sources">Szafy źródłowe</string>
+    <string name="composer_vibe_casual">Casual</string>
+    <string name="composer_vibe_sporty">Sportowy</string>
+    <string name="composer_vibe_formal">Formalny</string>
+    <string name="composer_vibe_business">Biznesowy</string>
+    <string name="composer_vibe_streetwear">Streetwear</string>
+    <string name="composer_vibe_minimalist">Minimalistyczny</string>
+    <string name="composer_vibe_classic">Klasyczny</string>
+    <string name="composer_vibe_elegant">Elegancki</string>
+    <string name="ai_consider_weather">Pogoda</string>
+    <string name="ai_consider_location">Lokalizacja</string>
+    <string name="ai_consider_trends">Trendy mody</string>
+    <string name="ai_consider_gender">Płeć</string>
+    <string name="ai_consider_age">Wiek</string>
+    <string name="ai_consider_preferences">Preferencje stylu</string>
+    <string name="composer_section_tags">Szczegóły ubrań do uwzględnienia</string>
+    <string name="composer_tags_hint">Wybierz, które cechy ubrań uwzględnia AI. Mniej szczegółów = szybsze, tańsze i trafniejsze propozycje.</string>
+    <string name="ai_consider_history">Historia noszenia</string>
+    <string name="error_gemini_no_response">AI nie odpowiedziała.</string>
+    <string name="error_gemini_parse">Nie można odczytać odpowiedzi AI.</string>
 </resources>

@@ -188,4 +188,32 @@
     <string name="travel_day">Ngày %d</string>
     <string name="trip_viewer_title">Trip</string>
     <string name="tryon_add_item">Thêm món</string>
+    <!-- Sunk from :app in the feature:travel slice (shared outfit/settings vocabulary) -->
+    <string name="action_edit">Sửa</string>
+    <string name="outfits_empty">Chưa có bộ đồ nào</string>
+    <string name="outfits_wear_today">Mặc hôm nay</string>
+    <string name="ai_consider_age">Tuổi</string>
+    <string name="ai_consider_gender">Giới tính</string>
+    <string name="ai_consider_location">Vị trí</string>
+    <string name="ai_consider_preferences">Sở thích phong cách</string>
+    <string name="ai_consider_trends">Xu hướng thời trang</string>
+    <string name="ai_consider_weather">Thời tiết</string>
+    <string name="composer_closets_all">Tất cả tủ</string>
+    <string name="composer_closets_title">Tủ</string>
+    <string name="composer_section_sources">Tủ nguồn</string>
+    <string name="composer_sheet_done">Xong</string>
+    <string name="composer_vibe_business">Business</string>
+    <string name="composer_vibe_casual">Năng động</string>
+    <string name="composer_vibe_classic">Cổ điển</string>
+    <string name="composer_vibe_elegant">Thanh lịch</string>
+    <string name="composer_vibe_formal">Trang trọng</string>
+    <string name="composer_vibe_minimalist">Tối giản</string>
+    <string name="composer_vibe_sporty">Thể thao</string>
+    <string name="composer_vibe_streetwear">Streetwear</string>
+    <string name="outfits_missing_items">Món không còn trong tủ</string>
+    <string name="composer_section_tags">Chi tiết trang phục cần cân nhắc</string>
+    <string name="composer_tags_hint">Chọn những thuộc tính trang phục mà AI cân nhắc. Ít chi tiết hơn = gợi ý nhanh hơn, rẻ hơn và tập trung hơn.</string>
+    <string name="ai_consider_history">Lịch sử mặc</string>
+    <string name="error_gemini_no_response">AI không phản hồi.</string>
+    <string name="error_gemini_parse">Không thể đọc phản hồi của AI.</string>
 </resources>

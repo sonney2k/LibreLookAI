@@ -381,7 +381,7 @@ internal fun FullScreenViewer(
                         modifier = Modifier.size(22.dp),
                     )
                 },
-                text = { Text(stringResource(if (showEditMenu) DsR.string.action_close else R.string.action_edit)) },
+                text = { Text(stringResource(if (showEditMenu) DsR.string.action_close else DsR.string.action_edit)) },
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(end = 16.dp, bottom = if (showEditMenu) barHeight + 8.dp else effectiveBottom + 16.dp),

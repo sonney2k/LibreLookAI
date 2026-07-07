@@ -188,4 +188,32 @@
     <string name="travel_day">دن %d</string>
     <string name="trip_viewer_title">Trip</string>
     <string name="tryon_add_item">آئٹم شامل کریں</string>
+    <!-- Sunk from :app in the feature:travel slice (shared outfit/settings vocabulary) -->
+    <string name="action_edit">ترمیم کریں</string>
+    <string name="outfits_empty">ابھی تک کوئی لباس نہیں</string>
+    <string name="outfits_wear_today">آج پہنیں</string>
+    <string name="ai_consider_age">عمر</string>
+    <string name="ai_consider_gender">جنس</string>
+    <string name="ai_consider_location">مقام</string>
+    <string name="ai_consider_preferences">اسٹائل کی ترجیحات</string>
+    <string name="ai_consider_trends">فیشن رجحانات</string>
+    <string name="ai_consider_weather">موسم</string>
+    <string name="composer_closets_all">تمام الماریاں</string>
+    <string name="composer_closets_title">الماریاں</string>
+    <string name="composer_section_sources">ماخذ الماریاں</string>
+    <string name="composer_sheet_done">مکمل</string>
+    <string name="composer_vibe_business">بزنس</string>
+    <string name="composer_vibe_casual">کیژوئل</string>
+    <string name="composer_vibe_classic">کلاسک</string>
+    <string name="composer_vibe_elegant">نفیس</string>
+    <string name="composer_vibe_formal">رسمی</string>
+    <string name="composer_vibe_minimalist">مِنیمل</string>
+    <string name="composer_vibe_sporty">اسپورٹی</string>
+    <string name="composer_vibe_streetwear">اسٹریٹ ویئر</string>
+    <string name="outfits_missing_items">اب وارڈروب میں نہیں</string>
+    <string name="composer_section_tags">غور کرنے کے لیے آئٹم کی تفصیلات</string>
+    <string name="composer_tags_hint">منتخب کریں کہ AI لباس کی کن خصوصیات کو مدنظر رکھے۔ کم تفصیلات = تیز، سستی اور زیادہ مرتکز تجاویز۔</string>
+    <string name="ai_consider_history">پہننے کی تاریخ</string>
+    <string name="error_gemini_no_response">AI نے جواب نہیں دیا۔</string>
+    <string name="error_gemini_parse">AI کا جواب پڑھا نہیں جا سکا۔</string>
 </resources>

@@ -61,7 +61,6 @@
 
     <!-- Common actions -->
     <string name="action_save">บันทึก</string>
-    <string name="action_edit">แก้ไข</string>
     <string name="action_saving">กำลังบันทึก…</string>
     <string name="cd_ai_suggestion">คำแนะนำจาก AI</string>
     <string name="cd_refine">ปรับแต่ง</string>
@@ -177,7 +176,6 @@
 
     <!-- Tag values -->
     <!-- Outfits -->
-    <string name="outfits_empty">ยังไม่มีชุดแต่งกาย</string>
     <string name="outfits_empty_hint">แตะ + เพื่อสร้างชุดจากตู้เสื้อผ้าของคุณ</string>
     <string name="outfits_sort_most_worn">สวมใส่บ่อยที่สุด</string>
     <string name="outfits_create_manual">สร้างชุดด้วยตนเอง</string>
@@ -196,8 +194,6 @@
     <string name="outfits_composing">กำลังสร้างชุด…</string>
     <string name="outfits_delete_title">ลบชุดแต่งกาย?</string>
     <string name="outfits_delete_text">\"%s\" จะถูกลบออกอย่างถาวร</string>
-    <string name="outfits_wear_today">ใส่ชุดนี้วันนี้</string>
-    <string name="outfits_worn_today">ใส่แล้ววันนี้!</string>
     <string name="outfits_suggested_title">แนะนำสำหรับวันนี้</string>
     <string name="outfits_composed_title">สร้างขึ้นเพื่อคุณ</string>
     <string name="outfits_name_dialog_title">ตั้งชื่อชุดนี้</string>
@@ -221,8 +217,6 @@
     <string name="travel_outfit_count">จำนวนชุด</string>
     <string name="travel_outfit_count_reset">ตามจำนวนวัน</string>
     <string name="travel_goal">จุดเน้นของทริป</string>
-    <string name="travel_goal_placeholder">เช่น ประชุมธุรกิจ + ดินเนอร์</string>
-    <string name="travel_generate">สร้างรายการจัดกระเป๋า</string>
     <string name="travel_packing_list">รายการจัดกระเป๋า</string>
     <string name="travel_clear">ล้าง</string>
     <string name="travel_empty">ใส่จุดหมายเพื่อเริ่ม</string>
@@ -247,8 +241,6 @@
     <string name="gap_reanalyze">วิเคราะห์ใหม่</string>
 
     <!-- AI overlay -->
-    <string name="ai_fetching_weather">กำลังดึงข้อมูลสภาพอากาศ…</string>
-    <string name="ai_generating_packing">กำลังสร้างรายการจัดกระเป๋า…</string>
     <string name="ai_analyzing_wardrobe">กำลังวิเคราะห์ตู้เสื้อผ้าของคุณ…</string>
     <string name="ai_suggesting_style">กำลังแนะนำชุด…</string>
     <string name="ai_composing_outfit">กำลังสร้างชุด…</string>
@@ -304,17 +296,11 @@
     <string name="about_description">LibreLookAI เป็นโปรแกรมจัดการตู้เสื้อผ้าฟรี โอเพ่นซอร์ส ขับเคลื่อนด้วย AI ช่วยจัดระเบียบเสื้อผ้า รับคำแนะนำชุด วางแผนรายการของเดินทาง และค้นพบช่องว่างในตู้เสื้อผ้า — ทั้งหมดด้วย AI</string>
     <string name="action_back">ย้อนกลับ</string>
     <string name="action_search">ค้นหา</string>
-    <string name="ai_consider_age">อายุ</string>
     <string name="ai_consider_age_desc">รวมอายุของคุณ (คำนวณจากปีเกิด)</string>
-    <string name="ai_consider_gender">เพศ</string>
     <string name="ai_consider_gender_desc">รวมเพศจากโปรไฟล์ของคุณ</string>
-    <string name="ai_consider_location">ที่ตั้ง</string>
     <string name="ai_consider_location_desc">รวมเมือง ประเทศ และบริบทเมือง/ชนบท</string>
-    <string name="ai_consider_preferences">ความชอบสไตล์</string>
     <string name="ai_consider_preferences_desc">รวมความชอบสไตล์ที่คุณเขียนอิสระ</string>
-    <string name="ai_consider_trends">เทรนด์แฟชั่น</string>
     <string name="ai_consider_trends_desc">รวมสี สุนทรียะ และของต้องมีที่กำลังเป็นเทรนด์ในภูมิภาคของคุณ</string>
-    <string name="ai_consider_weather">สภาพอากาศ</string>
     <string name="ai_consider_weather_desc">รวมอุณหภูมิและสภาพวันนี้</string>
     <string name="ai_considerations_desc">สิ่งที่ AI ควรคำนึงถึงเมื่อแนะนำหรือจัดชุด การเปลี่ยนแปลงจะใช้กับการทำนาย การจัดชุด การแพ็ค และพรอมต์ช่องว่างในตู้เสื้อผ้า</string>
     <string name="ai_considerations_title">เกณฑ์เริ่มต้น</string>
@@ -327,8 +313,6 @@
     <string name="battery_exempt_title">ต้องการการประมวลผลพื้นหลัง</string>
     <string name="calendar_empty_hint">สวมชุดจากแท็บชุดเพื่อเริ่มติดตาม</string>
     <string name="composer_add_selected">เพิ่มที่เลือก</string>
-    <string name="composer_closets_all">ตู้เสื้อผ้าทั้งหมด</string>
-    <string name="composer_closets_title">ตู้เสื้อผ้า</string>
     <string name="composer_desc_placeholder">คำอธิบายสั้น (ไม่บังคับ)</string>
     <string name="composer_discard_confirm">ยกเลิก</string>
     <string name="composer_discard_message">การเลือกของคุณจะสูญหาย</string>
@@ -363,24 +347,14 @@
     <string name="composer_section_items">รายการ</string>
     <string name="composer_section_name">ชื่อ &amp; คำอธิบาย</string>
     <string name="composer_section_quick_start">เริ่มเร็ว</string>
-    <string name="composer_section_sources">ตู้แหล่งที่มา</string>
     <string name="composer_section_targets">องค์ประกอบ</string>
     <string name="composer_section_vibe">อารมณ์สไตล์</string>
     <string name="composer_section_weather">สภาพอากาศ</string>
     <string name="composer_see_all_count">ทั้งหมด %1$d</string>
-    <string name="composer_sheet_done">เสร็จ</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_tags_optional">แท็ก (ไม่บังคับ)</string>
     <string name="composer_targets_hint">กำหนดจำนวนของแต่ละชั้นที่จะรวม ปล่อย 0 เพื่อให้ AI ตัดสิน</string>
-    <string name="composer_vibe_business">ธุรกิจ</string>
-    <string name="composer_vibe_casual">ลำลอง</string>
-    <string name="composer_vibe_classic">คลาสสิก</string>
-    <string name="composer_vibe_elegant">หรูหรา</string>
-    <string name="composer_vibe_formal">เป็นทางการ</string>
-    <string name="composer_vibe_minimalist">มินิมัล</string>
-    <string name="composer_vibe_sporty">สปอร์ต</string>
-    <string name="composer_vibe_streetwear">สตรีท</string>
     <string name="composer_weather_precip">ฝน/หิมะ</string>
     <string name="composer_weather_season">ฤดู</string>
     <string name="composer_weather_temp">อุณหภูมิ</string>
@@ -430,7 +404,6 @@
     <string name="outfits_description_placeholder">คำอธิบาย (ไม่บังคับ)</string>
     <string name="outfits_items_away">%d รายการอยู่ที่อื่น</string>
     <string name="outfits_items_label">รายการชุด</string>
-    <string name="outfits_missing_items">ไม่มีในตู้แล้ว</string>
     <string name="outfits_prediction_indicator">%1$d / %2$d</string>
     <string name="outfits_prediction_next">คำแนะนำถัดไป</string>
     <string name="outfits_prediction_prev">คำแนะนำก่อนหน้า</string>
@@ -577,9 +550,6 @@
     <string name="shop_your_photo">ภาพของคุณ</string>
     <string name="tag_category_placeholder">เสื้อบน, กางเกง/กระโปรง, เสื้อคลุม, รองเท้า, แอ็คเซสซอรี่, เดรส, สูท</string>
     <string name="tag_type_placeholder">เช่น เสื้อยืด, ชิโน่, แจ็คเก็ตหนา</string>
-    <string name="travel_destination_placeholder">เช่น ปารีส โตเกียว นิวยอร์ก</string>
-    <string name="travel_extra_items">ของที่ต้องแพ็คเพิ่ม (ไม่อยู่ในตู้)</string>
-    <string name="travel_historical_note">วันที่เดินทางนอกช่วงพยากรณ์สด — แสดงข้อมูลภูมิอากาศย้อนหลัง</string>
     <string name="travel_move_done">ย้ายรายการไปยังสถานที่เดินทางแล้ว</string>
     <string name="travel_move_error">ย้ายรายการไม่ได้</string>
     <string name="travel_move_to_travel">ย้ายทั้งหมดไปสถานที่เดินทาง</string>
@@ -589,7 +559,6 @@
     <string name="travel_refine_lighter">แพ็คเบาขึ้น</string>
     <string name="travel_refine_rain">เหมาะกับฝนมากขึ้น</string>
     <string name="travel_refine_reuse">ใช้ชุดซ้ำให้คุ้มที่สุด</string>
-    <string name="travel_regenerate">สร้างใหม่</string>
     <string name="tryon_add_items_title">เพิ่มรายการจากตู้</string>
     <string name="tryon_add_photo">เพิ่มภาพ %1$s</string>
     <string name="tryon_cost_line">%1$d เครดิตต่อการลอง</string>
@@ -620,34 +589,6 @@
     <string name="wardrobe_view_original">ดูต้นฉบับ</string>
 
     <!-- Trips -->
-    <string name="trip_planned_title">ทริปที่วางแผนไว้</string>
-    <string name="trip_saved_label">บันทึกแล้ว</string>
-    <string name="trip_saved_confirmation">บันทึกทริปและชุดแล้ว</string>
-    <string name="trip_not_found">Trip not found.</string>
-    <string name="trip_day_header">วันที่ %1$d</string>
-    <string name="trip_packed">แพ็คแล้ว</string>
-    <string name="trip_no_destination">Untitled trip</string>
-    <string name="trip_meta_dates">เริ่ม %1$s • %2$d วัน</string>
-    <string name="trip_checklist">รายการ</string>
-    <string name="trip_rename">Rename</string>
-    <string name="trip_modify_outfit">Modify outfit</string>
-    <string name="trip_section_other_outfits">Other travel outfits</string>
-    <string name="trip_delete">ลบทริป</string>
-    <string name="trip_delete_confirm_title">ลบทริปนี้ไหม?</string>
-    <string name="trip_delete_confirm_body">เลือกว่าจะลบชุดที่สร้างสำหรับทริปนี้ด้วยหรือไม่</string>
-    <string name="trip_delete_with_outfits">ลบทริปและชุด</string>
-    <string name="trip_delete_keep_outfits">เก็บชุดไว้</string>
-    <string name="trip_bulk_refining">กำลังปรับชุดทั้งหมด…</string>
-    <string name="trip_bulk_refine_action">ปรับชุดทั้งหมด</string>
-    <string name="trip_bulk_refine_hint">เช่น สีสดขึ้น ชิ้นน้อยลง เหมาะกับตอนเย็น…</string>
-    <string name="trip_bulk_refine_run">ใช้ด้วย AI</string>
-    <string name="trip_bulk_refine_brighter">สีสดขึ้น</string>
-    <string name="trip_bulk_refine_lighter">จัดกระเป๋าให้เบาลง</string>
-    <string name="trip_bulk_refine_formal">ค่ำคืนที่ทางการขึ้น</string>
-    <string name="trip_bulk_refine_skip_jacket">ไม่เอาแจ็กเก็ต</string>
-    <string name="trip_refine_preview_note">ตัวอย่าง — ยังไม่บันทึก</string>
-    <string name="trip_refine_discard">ละทิ้ง</string>
-    <string name="trip_refine_replace">แทนที่ชุดของทริป</string>
     <string name="wardrobe_delete_cascade_outfits">ลบชุด %d ชุดที่ใช้ไอเท็มเหล่านี้ด้วย</string>
     <string name="wardrobe_delete_cascade_tryons">ลบการลองสวม %d ครั้งที่มีไอเท็มเหล่านี้ด้วย</string>
     <string name="outfits_broken_banner">%d ชุดใช้ไอเท็มที่ไม่มีอยู่ในตู้เสื้อผ้าของคุณแล้ว</string>
@@ -715,8 +656,6 @@
     <string name="settings_similarity_preview_sub">การวินิจฉัยสำหรับฟีเจอร์ค้นหาด้วยรูป</string>
     <string name="settings_send_feedback">ส่งความคิดเห็น</string>
     <!-- Expert: item tag dimensions for outfit AI -->
-    <string name="composer_section_tags">รายละเอียดไอเท็มที่จะพิจารณา</string>
-    <string name="composer_tags_hint">เลือกว่าจะให้ AI พิจารณาคุณสมบัติใดของเสื้อผ้า รายละเอียดน้อยลง = คำแนะนำที่เร็วขึ้น ถูกลง และตรงจุดมากขึ้น</string>
 
     <!-- Onboarding tour -->
     <string name="onboarding_closet_add_items">เพิ่มเสื้อผ้าตอนนี้</string>
@@ -751,7 +690,6 @@
     <string name="calendar_loved">ชอบมาก</string>
 
     <!-- Wear-history AI consideration toggle -->
-    <string name="ai_consider_history">ประวัติการสวมใส่</string>
     <string name="ai_consider_history_desc">เรียนรู้จากสิ่งที่คุณสวมใส่จริงและชื่นชอบ</string>
 
     <!-- Usage estimate-accuracy table -->
@@ -851,17 +789,12 @@
     <!-- Shared error messages localization -->
     <string name="error_upload_failed">อัปโหลดไม่สำเร็จ: %1$s</string>
     <string name="error_original_unavailable">ไม่มีต้นฉบับ</string>
-    <string name="error_gemini_no_response">AI ไม่ตอบสนอง</string>
-    <string name="error_gemini_parse">ไม่สามารถอ่านการตอบกลับของ AI ได้</string>
     <string name="error_import_failed_item">นำเข้า %1$s ไม่สำเร็จ: %2$s</string>
     <string name="error_tag_save_failed">บันทึกแท็กไปยัง Drive ไม่สำเร็จ: %1$s</string>
     <string name="error_add_items_first">เพิ่มไอเทมลงในตู้เสื้อผ้าของคุณก่อน</string>
     <string name="error_query_photo_missing">ไม่มีรูปค้นหาอีกต่อไป</string>
     <string name="error_import_query_failed">นำเข้ารูปค้นหาไม่สำเร็จ</string>
     <string name="error_trips_folder_not_ready">โฟลเดอร์ทริปยังไม่พร้อม</string>
-    <string name="error_no_refinement">ไม่มีการปรับแต่งที่ใช้ได้กลับมา</string>
-    <string name="error_enter_destination">โปรดป้อนจุดหมายปลายทาง</string>
-    <string name="error_weather_fetch_failed">ไม่สามารถดึงสภาพอากาศสำหรับ \"%1$s\" ได้ ตรวจสอบชื่อจุดหมายปลายทาง</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">เพิ่มชุดลงในปฏิทิน</string>
     <string name="calendar_add_pick">เลือกชุด</string>
@@ -882,7 +815,6 @@
     <string name="fab_wardrobe_add">เพิ่มไอเทม</string>
     <string name="fab_calendar_log">บันทึกลุค</string>
     <string name="fab_shopping_add">เพิ่มรายการที่พบ</string>
-    <string name="fab_travel_plan">วางแผนทริป</string>
     <string name="sel_style">จัดลุค</string>
     <string name="sel_swap">สลับ</string>
     <string name="sel_move">ย้าย</string>

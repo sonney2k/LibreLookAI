@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Travel strings (moved from :app in the feature:travel slice) -->
+    <string name="outfits_worn_today">Käytetty tänään!</string>
+    <string name="travel_destination_placeholder">esim. Pariisi, Tokio, New York</string>
+    <string name="travel_goal_placeholder">esim. kokoukset + illalliset</string>
+    <string name="travel_generate">Luo pakkauslista</string>
+    <string name="travel_regenerate">Luo uudelleen</string>
+    <string name="travel_extra_items">Pakkaa myös (ei vaatekaapissa)</string>
+    <string name="travel_historical_note">Matkan päivämäärät ovat ennusteikkunan ulkopuolella — näytetään historiallinen ilmastodata.</string>
+    <string name="ai_fetching_weather">Haetaan säätä…</string>
+    <string name="ai_generating_packing">Luodaan pakkauslistaa…</string>
+    <string name="trip_planned_title">Suunniteltu matka</string>
+    <string name="trip_saved_label">Tallennettu</string>
+    <string name="trip_saved_confirmation">Matka ja asut tallennettu</string>
+    <string name="trip_not_found">Trip not found.</string>
+    <string name="trip_day_header">Päivä %1$d</string>
+    <string name="trip_packed">Pakattu</string>
+    <string name="trip_no_destination">Untitled trip</string>
+    <string name="trip_meta_dates">Alkaa %1$s • %2$d päivää</string>
+    <string name="trip_checklist">Lista</string>
+    <string name="trip_rename">Rename</string>
+    <string name="trip_modify_outfit">Modify outfit</string>
+    <string name="trip_section_other_outfits">Other travel outfits</string>
+    <string name="trip_delete">Poista matka</string>
+    <string name="trip_delete_confirm_title">Poistetaanko tämä matka?</string>
+    <string name="trip_delete_confirm_body">Valitse, poistetaanko myös tälle matkalle luodut asut.</string>
+    <string name="trip_delete_with_outfits">Poista matka ja asut</string>
+    <string name="trip_delete_keep_outfits">Säilytä asut</string>
+    <string name="trip_bulk_refining">Hiotaan kaikkia asuja…</string>
+    <string name="trip_bulk_refine_action">Hio kaikkia asuja</string>
+    <string name="trip_bulk_refine_hint">esim. kirkkaammat värit, vähemmän vaatteita, illanviettoon sopivampi…</string>
+    <string name="trip_bulk_refine_run">Käytä tekoälyllä</string>
+    <string name="trip_bulk_refine_brighter">Kirkkaammat värit</string>
+    <string name="trip_bulk_refine_lighter">Pakkaa kevyemmin</string>
+    <string name="trip_bulk_refine_formal">Juhlavammat illat</string>
+    <string name="trip_bulk_refine_skip_jacket">Ilman takkia</string>
+    <string name="trip_refine_preview_note">Esikatselu – ei tallennettu</string>
+    <string name="trip_refine_discard">Hylkää</string>
+    <string name="trip_refine_replace">Korvaa matkan asut</string>
+    <string name="error_no_refinement">Käyttökelpoista hienosäätöä ei palautettu.</string>
+    <string name="error_enter_destination">Anna määränpää.</string>
+    <string name="error_weather_fetch_failed">Säätä kohteelle \"%1$s\" ei voitu hakea. Tarkista määränpään nimi.</string>
+    <string name="fab_travel_plan">Suunnittele matka</string>
+</resources>

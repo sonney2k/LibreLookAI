@@ -61,7 +61,6 @@
 
     <!-- Yleiset toiminnot -->
     <string name="action_save">Tallenna</string>
-    <string name="action_edit">Muokkaa</string>
     <string name="action_saving">Tallennetaan…</string>
     <string name="cd_ai_suggestion">Tekoälyehdotus</string>
     <string name="cd_refine">Tarkenna</string>
@@ -267,7 +266,6 @@
     <!-- Tunnistearvojen käännökset (tallennetaan englanniksi; näytetään käyttöliittymän kielellä) -->
     <!-- Värit -->
     <!-- Asut -->
-    <string name="outfits_empty">Ei vielä asuja</string>
     <string name="outfits_empty_hint">Napauta +-painiketta rakentaaksesi asun vaatekaapistasi</string>
     <string name="outfits_sort_most_worn">Eniten käytetyt</string>
     <string name="outfits_create_manual">Luo asu manuaalisesti</string>
@@ -290,9 +288,6 @@
     <string name="outfits_composing">Kootaan asua…</string>
     <string name="outfits_delete_title">Poistetaanko asu?</string>
     <string name="outfits_delete_text">\"%s\" poistetaan pysyvästi.</string>
-    <string name="outfits_wear_today">Käytä tänään</string>
-    <string name="outfits_worn_today">Käytetty tänään!</string>
-    <string name="outfits_missing_items">Vaatteita ei ole enää vaatekaapissa</string>
     <string name="outfits_items_away">%d vaate(tta) toisessa sijainnissa</string>
     <string name="outfits_suggested_title">Ehdotettu tänään</string>
     <string name="outfits_composed_title">Sinulle koottu</string>
@@ -352,20 +347,14 @@
     <!-- Matka -->
     <string name="travel_title">Matkan pakkauslista</string>
     <string name="travel_destination">Kohde</string>
-    <string name="travel_destination_placeholder">esim. Pariisi, Tokio, New York</string>
     <string name="travel_duration">Kesto</string>
     <string name="travel_start_date">Aloituspäivä</string>
     <string name="travel_outfit_count">Asukokonaisuudet</string>
     <string name="travel_outfit_count_reset">Päivien mukaan</string>
     <string name="travel_goal">Matkan fokus</string>
-    <string name="travel_goal_placeholder">esim. kokoukset + illalliset</string>
-    <string name="travel_generate">Luo pakkauslista</string>
-    <string name="travel_regenerate">Luo uudelleen</string>
     <string name="travel_packing_list">Pakkauslista</string>
     <string name="travel_clear">Tyhjennä</string>
-    <string name="travel_extra_items">Pakkaa myös (ei vaatekaapissa)</string>
     <string name="travel_empty">Anna kohde aloittaaksesi</string>
-    <string name="travel_historical_note">Matkan päivämäärät ovat ennusteikkunan ulkopuolella — näytetään historiallinen ilmastodata.</string>
     <string name="travel_refine_lighter">Pakkaa kevyemmin</string>
     <string name="travel_refine_formal">Muodollisempia vaihtoehtoja</string>
     <string name="travel_refine_casual">Rennompi</string>
@@ -409,8 +398,6 @@
 
     <!-- Krediitit / Hallittu tila -->
     <!-- Tekoälyn peittokuva -->
-    <string name="ai_fetching_weather">Haetaan säätä…</string>
-    <string name="ai_generating_packing">Luodaan pakkauslistaa…</string>
     <string name="ai_analyzing_wardrobe">Analysoidaan vaatekaappiasi…</string>
     <string name="ai_suggesting_style">Ehdotetaan asua…</string>
     <string name="ai_composing_outfit">Kootaan asua…</string>
@@ -475,11 +462,8 @@
     <string name="composer_header_subtitle">%1$d / 5 kerroksesta · napauta vaihtaaksesi</string>
     <string name="composer_fill_missing">Täytä puuttuvat</string>
     <string name="composer_see_all_count">Kaikki %1$d</string>
-    <string name="composer_closets_all">Kaikki vaatekaapit</string>
     <string name="composer_layer_picked_count">%1$d valittu</string>
     <string name="composer_weather_title">Sää</string>
-    <string name="composer_closets_title">Vaatekaapit</string>
-    <string name="composer_sheet_done">Valmis</string>
     <string name="composer_save">Tallenna</string>
     <string name="composer_section_goal">Mikä on tilaisuus?</string>
     <string name="composer_goal_placeholder">esim. Illallinen Lissabonissa, lämmin ilta</string>
@@ -492,7 +476,6 @@
     <string name="composer_chip_travel">Matka</string>
     <string name="composer_chip_date">Treffit</string>
     <string name="composer_section_quick_start">Pika-aloitus</string>
-    <string name="composer_section_sources">Lähdevaatekaapit</string>
     <string name="composer_section_items">Vaatteet</string>
     <string name="composer_section_weather">Sää</string>
     <string name="composer_section_vibe">Tyylitunnelma</string>
@@ -515,14 +498,6 @@
     <string name="composer_precip_none">Ei</string>
     <string name="composer_precip_light">Kevyt</string>
     <string name="composer_precip_heavy">Voimakas</string>
-    <string name="composer_vibe_casual">Rento</string>
-    <string name="composer_vibe_sporty">Urheilullinen</string>
-    <string name="composer_vibe_formal">Muodollinen</string>
-    <string name="composer_vibe_business">Business</string>
-    <string name="composer_vibe_streetwear">Streetwear</string>
-    <string name="composer_vibe_minimalist">Minimalistinen</string>
-    <string name="composer_vibe_classic">Klassinen</string>
-    <string name="composer_vibe_elegant">Elegantti</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_layer_top">Perusyläosa</string>
@@ -553,17 +528,11 @@
     <string name="settings_tab_ai">Tekoäly</string>
     <string name="ai_considerations_title">Oletushuomioon otettavat</string>
     <string name="ai_considerations_desc">Mitä tekoälyn tulee ottaa huomioon asuja ehdottaessaan tai kootessaan. Muutokset koskevat ennustetta, koostamista, pakkausta ja vaatekaapin aukko-kehotteita.</string>
-    <string name="ai_consider_weather">Sää</string>
     <string name="ai_consider_weather_desc">Sisällytä tämän päivän lämpötila ja olosuhteet.</string>
-    <string name="ai_consider_location">Sijainti</string>
     <string name="ai_consider_location_desc">Sisällytä kaupunki, maa ja kaupunki/maaseutu-konteksti.</string>
-    <string name="ai_consider_trends">Muotitrendit</string>
     <string name="ai_consider_trends_desc">Sisällytä trendikkäät värit, estetiikka ja must-have-tuotteet alueellesi.</string>
-    <string name="ai_consider_gender">Sukupuoli</string>
     <string name="ai_consider_gender_desc">Sisällytä profiilisi sukupuoli.</string>
-    <string name="ai_consider_age">Ikä</string>
     <string name="ai_consider_age_desc">Sisällytä ikäsi (johdettu syntymävuodesta).</string>
-    <string name="ai_consider_preferences">Tyylimieltymykset</string>
     <string name="ai_consider_preferences_desc">Sisällytä vapaatekstiset tyylimieltymyksesi.</string>
 
 
@@ -644,34 +613,6 @@
     <string name="coins_balance_label">Saldo: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Käytät omaa Gemini-avaintasi — krediittejä ei kuluteta.</string>
     <!-- Trips -->
-    <string name="trip_planned_title">Suunniteltu matka</string>
-    <string name="trip_saved_label">Tallennettu</string>
-    <string name="trip_saved_confirmation">Matka ja asut tallennettu</string>
-    <string name="trip_not_found">Trip not found.</string>
-    <string name="trip_day_header">Päivä %1$d</string>
-    <string name="trip_packed">Pakattu</string>
-    <string name="trip_no_destination">Untitled trip</string>
-    <string name="trip_meta_dates">Alkaa %1$s • %2$d päivää</string>
-    <string name="trip_checklist">Lista</string>
-    <string name="trip_rename">Rename</string>
-    <string name="trip_modify_outfit">Modify outfit</string>
-    <string name="trip_section_other_outfits">Other travel outfits</string>
-    <string name="trip_delete">Poista matka</string>
-    <string name="trip_delete_confirm_title">Poistetaanko tämä matka?</string>
-    <string name="trip_delete_confirm_body">Valitse, poistetaanko myös tälle matkalle luodut asut.</string>
-    <string name="trip_delete_with_outfits">Poista matka ja asut</string>
-    <string name="trip_delete_keep_outfits">Säilytä asut</string>
-    <string name="trip_bulk_refining">Hiotaan kaikkia asuja…</string>
-    <string name="trip_bulk_refine_action">Hio kaikkia asuja</string>
-    <string name="trip_bulk_refine_hint">esim. kirkkaammat värit, vähemmän vaatteita, illanviettoon sopivampi…</string>
-    <string name="trip_bulk_refine_run">Käytä tekoälyllä</string>
-    <string name="trip_bulk_refine_brighter">Kirkkaammat värit</string>
-    <string name="trip_bulk_refine_lighter">Pakkaa kevyemmin</string>
-    <string name="trip_bulk_refine_formal">Juhlavammat illat</string>
-    <string name="trip_bulk_refine_skip_jacket">Ilman takkia</string>
-    <string name="trip_refine_preview_note">Esikatselu – ei tallennettu</string>
-    <string name="trip_refine_discard">Hylkää</string>
-    <string name="trip_refine_replace">Korvaa matkan asut</string>
     <string name="wardrobe_delete_cascade_outfits">Poista myös %d asu(a), jotka käyttävät näitä vaatteita</string>
     <string name="wardrobe_delete_cascade_tryons">Poista myös %d sovitus(ta), joissa on näitä vaatteita</string>
     <string name="outfits_broken_banner">%d asua käyttää vaatteita, joita ei ole enää vaatekaapissasi.</string>
@@ -739,8 +680,6 @@
     <string name="settings_similarity_preview_sub">Diagnostiikka kuvalla haku -toiminnolle.</string>
     <string name="settings_send_feedback">Lähetä palautetta</string>
     <!-- Expert: item tag dimensions for outfit AI -->
-    <string name="composer_section_tags">Huomioitavat vaatetiedot</string>
-    <string name="composer_tags_hint">Valitse, mitä vaatteiden ominaisuuksia tekoäly painottaa. Vähemmän yksityiskohtia = nopeampia, edullisempia ja tarkempia ehdotuksia.</string>
 
     <!-- Onboarding tour -->
     <string name="onboarding_closet_add_items">Lisää vaatteita nyt</string>
@@ -775,7 +714,6 @@
     <string name="calendar_loved">Ihastuin</string>
 
     <!-- Wear-history AI consideration toggle -->
-    <string name="ai_consider_history">Käyttöhistoria</string>
     <string name="ai_consider_history_desc">Oppii siitä, mitä todella käytät ja olet ihastunut.</string>
 
     <!-- Usage estimate-accuracy table -->
@@ -875,17 +813,12 @@
     <!-- Shared error messages localization -->
     <string name="error_upload_failed">Lataus epäonnistui: %1$s</string>
     <string name="error_original_unavailable">Alkuperäistä ei saatavilla</string>
-    <string name="error_gemini_no_response">Tekoäly ei vastannut.</string>
-    <string name="error_gemini_parse">Tekoälyn vastausta ei voitu lukea.</string>
     <string name="error_import_failed_item">Kohteen %1$s tuonti epäonnistui: %2$s</string>
     <string name="error_tag_save_failed">Tunnisteiden tallennus Driveen epäonnistui: %1$s</string>
     <string name="error_add_items_first">Lisää ensin vaatteita vaatekaappiisi.</string>
     <string name="error_query_photo_missing">Hakukuvaa ei enää ole.</string>
     <string name="error_import_query_failed">Hakukuvan tuonti epäonnistui.</string>
     <string name="error_trips_folder_not_ready">Matkakansio ei ole valmis.</string>
-    <string name="error_no_refinement">Käyttökelpoista hienosäätöä ei palautettu.</string>
-    <string name="error_enter_destination">Anna määränpää.</string>
-    <string name="error_weather_fetch_failed">Säätä kohteelle \"%1$s\" ei voitu hakea. Tarkista määränpään nimi.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Lisää asu kalenteriin</string>
     <string name="calendar_add_pick">Valitse asu</string>
@@ -906,7 +839,6 @@
     <string name="fab_wardrobe_add">Lisää vaate</string>
     <string name="fab_calendar_log">Kirjaa asu</string>
     <string name="fab_shopping_add">Lisää löytö</string>
-    <string name="fab_travel_plan">Suunnittele matka</string>
     <string name="sel_style">Tyyli</string>
     <string name="sel_swap">Vaihda</string>
     <string name="sel_move">Siirrä</string>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Travel strings (moved from :app in the feature:travel slice) -->
+    <string name="outfits_worn_today">Одягнено сьогодні!</string>
+    <string name="travel_goal_placeholder">напр. ділові зустрічі + вечері</string>
+    <string name="travel_generate">Згенерувати список</string>
+    <string name="ai_fetching_weather">Отримання погоди…</string>
+    <string name="ai_generating_packing">Створення списку речей…</string>
+    <string name="travel_destination_placeholder">напр. Париж, Токіо, Нью-Йорк</string>
+    <string name="travel_extra_items">Спакувати додатково (немає в гардеробі)</string>
+    <string name="travel_historical_note">Дати подорожі поза вікном прогнозу — показано історичні кліматичні дані.</string>
+    <string name="travel_regenerate">Перегенерувати</string>
+    <string name="trip_planned_title">Запланована подорож</string>
+    <string name="trip_saved_label">Збережено</string>
+    <string name="trip_saved_confirmation">Подорож і образи збережено</string>
+    <string name="trip_not_found">Trip not found.</string>
+    <string name="trip_day_header">День %1$d</string>
+    <string name="trip_packed">Спаковано</string>
+    <string name="trip_no_destination">Untitled trip</string>
+    <string name="trip_meta_dates">Початок %1$s • %2$d дн.</string>
+    <string name="trip_checklist">Список</string>
+    <string name="trip_rename">Rename</string>
+    <string name="trip_modify_outfit">Modify outfit</string>
+    <string name="trip_section_other_outfits">Other travel outfits</string>
+    <string name="trip_delete">Видалити подорож</string>
+    <string name="trip_delete_confirm_title">Видалити цю подорож?</string>
+    <string name="trip_delete_confirm_body">Виберіть, чи видаляти також образи, створені для цієї подорожі.</string>
+    <string name="trip_delete_with_outfits">Видалити подорож і образи</string>
+    <string name="trip_delete_keep_outfits">Зберегти образи</string>
+    <string name="trip_bulk_refining">Удосконалення всіх образів…</string>
+    <string name="trip_bulk_refine_action">Удосконалити всі образи</string>
+    <string name="trip_bulk_refine_hint">напр. яскравіші кольори, менше речей, доречніше на вечір…</string>
+    <string name="trip_bulk_refine_run">Застосувати з ШІ</string>
+    <string name="trip_bulk_refine_brighter">Яскравіші кольори</string>
+    <string name="trip_bulk_refine_lighter">Зібратися легше</string>
+    <string name="trip_bulk_refine_formal">Більш офіційні вечори</string>
+    <string name="trip_bulk_refine_skip_jacket">Без куртки</string>
+    <string name="trip_refine_preview_note">Попередній перегляд — не збережено</string>
+    <string name="trip_refine_discard">Відхилити</string>
+    <string name="trip_refine_replace">Замінити образи подорожі</string>
+    <string name="error_no_refinement">Не повернуто придатного уточнення.</string>
+    <string name="error_enter_destination">Введіть пункт призначення.</string>
+    <string name="error_weather_fetch_failed">Не вдалося отримати погоду для \"%1$s\". Перевірте назву пункту призначення.</string>
+    <string name="fab_travel_plan">Спланувати подорож</string>
+</resources>

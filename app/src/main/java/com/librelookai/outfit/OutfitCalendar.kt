@@ -801,7 +801,7 @@ private fun OutfitSheetRow(
                     onClick = onEditOutfit,
                     modifier = Modifier.weight(1f),
                 ) {
-                    Text(stringResource(R.string.action_edit))
+                    Text(stringResource(DsR.string.action_edit))
                 }
             }
         }

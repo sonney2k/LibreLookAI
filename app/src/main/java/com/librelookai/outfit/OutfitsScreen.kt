@@ -342,7 +342,7 @@ fun OutfitsScreen(
                         logWearById(styleId, WearSource.MANUAL)
                         outfitsViewModel.clearPendingWear()
                     }) {
-                        Text(stringResource(R.string.outfits_wear_today))
+                        Text(stringResource(DsR.string.outfits_wear_today))
                     }
                 },
                 dismissAction = {

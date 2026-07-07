@@ -61,7 +61,6 @@
 
     <!-- Algemene acties -->
     <string name="action_save">Opslaan</string>
-    <string name="action_edit">Bewerken</string>
     <string name="action_saving">Opslaan…</string>
     <string name="cd_ai_suggestion">AI-suggestie</string>
     <string name="cd_refine">Verfijnen</string>
@@ -267,7 +266,6 @@
     <!-- Tag-waarde vertalingen (opgeslagen in het Engels; weergegeven in UI-taal) -->
     <!-- Kleuren -->
     <!-- Outfits -->
-    <string name="outfits_empty">Nog geen outfits</string>
     <string name="outfits_empty_hint">Tik op + om een outfit uit je garderobe te maken</string>
     <string name="outfits_sort_most_worn">Meest gedragen</string>
     <string name="outfits_create_manual">Outfit handmatig maken</string>
@@ -290,9 +288,6 @@
     <string name="outfits_composing">Outfit samenstellen…</string>
     <string name="outfits_delete_title">Outfit verwijderen?</string>
     <string name="outfits_delete_text">\"%s\" wordt definitief verwijderd.</string>
-    <string name="outfits_wear_today">Vandaag dragen</string>
-    <string name="outfits_worn_today">Vandaag gedragen!</string>
-    <string name="outfits_missing_items">Items niet meer in de garderobe</string>
     <string name="outfits_items_away">%d item(s) op een andere locatie</string>
     <string name="outfits_suggested_title">Voorgesteld voor vandaag</string>
     <string name="outfits_composed_title">Voor jou samengesteld</string>
@@ -352,20 +347,14 @@
     <!-- Reis -->
     <string name="travel_title">Reispaklijst</string>
     <string name="travel_destination">Bestemming</string>
-    <string name="travel_destination_placeholder">bv. Parijs, Tokio, New York</string>
     <string name="travel_duration">Duur</string>
     <string name="travel_start_date">Startdatum</string>
     <string name="travel_outfit_count">Outfits</string>
     <string name="travel_outfit_count_reset">Aan dagen koppelen</string>
     <string name="travel_goal">Reisfocus</string>
-    <string name="travel_goal_placeholder">bv. zakelijke meetings + diners</string>
-    <string name="travel_generate">Paklijst genereren</string>
-    <string name="travel_regenerate">Opnieuw genereren</string>
     <string name="travel_packing_list">Paklijst</string>
     <string name="travel_clear">Wissen</string>
-    <string name="travel_extra_items">Ook inpakken (niet in garderobe)</string>
     <string name="travel_empty">Voer een bestemming in om te starten</string>
-    <string name="travel_historical_note">De reisdata liggen buiten de live-voorspellingsperiode — historische klimaatgegevens worden getoond.</string>
     <string name="travel_refine_lighter">Lichter inpakken</string>
     <string name="travel_refine_formal">Formelere opties</string>
     <string name="travel_refine_casual">Casualer</string>
@@ -409,8 +398,6 @@
 
     <!-- Credits / Managed Mode -->
     <!-- AI-overlay -->
-    <string name="ai_fetching_weather">Weer ophalen…</string>
-    <string name="ai_generating_packing">Paklijst genereren…</string>
     <string name="ai_analyzing_wardrobe">Je garderobe analyseren…</string>
     <string name="ai_suggesting_style">Outfit voorstellen…</string>
     <string name="ai_composing_outfit">Outfit samenstellen…</string>
@@ -475,11 +462,8 @@
     <string name="composer_header_subtitle">%1$d van 5 lagen · tik om te wisselen</string>
     <string name="composer_fill_missing">Ontbrekende vullen</string>
     <string name="composer_see_all_count">Alle %1$d</string>
-    <string name="composer_closets_all">Alle kasten</string>
     <string name="composer_layer_picked_count">%1$d gekozen</string>
     <string name="composer_weather_title">Weer</string>
-    <string name="composer_closets_title">Kasten</string>
-    <string name="composer_sheet_done">Klaar</string>
     <string name="composer_save">Opslaan</string>
     <string name="composer_section_goal">Wat is de gelegenheid?</string>
     <string name="composer_goal_placeholder">bv. Diner in Lissabon, warme avond</string>
@@ -492,7 +476,6 @@
     <string name="composer_chip_travel">Reis</string>
     <string name="composer_chip_date">Date</string>
     <string name="composer_section_quick_start">Snelle start</string>
-    <string name="composer_section_sources">Bronkasten</string>
     <string name="composer_section_items">Items</string>
     <string name="composer_section_weather">Weer</string>
     <string name="composer_section_vibe">Stijlsfeer</string>
@@ -515,14 +498,6 @@
     <string name="composer_precip_none">Geen</string>
     <string name="composer_precip_light">Licht</string>
     <string name="composer_precip_heavy">Zwaar</string>
-    <string name="composer_vibe_casual">Casual</string>
-    <string name="composer_vibe_sporty">Sportief</string>
-    <string name="composer_vibe_formal">Formeel</string>
-    <string name="composer_vibe_business">Business</string>
-    <string name="composer_vibe_streetwear">Streetwear</string>
-    <string name="composer_vibe_minimalist">Minimalistisch</string>
-    <string name="composer_vibe_classic">Klassiek</string>
-    <string name="composer_vibe_elegant">Elegant</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_layer_top">Basistop</string>
@@ -553,17 +528,11 @@
     <string name="settings_tab_ai">AI</string>
     <string name="ai_considerations_title">Standaardoverwegingen</string>
     <string name="ai_considerations_desc">Wat de AI moet meewegen bij het voorstellen of samenstellen van outfits. Wijzigingen gelden voor voorspelling, compositie, paklijst en garderobegat-prompts.</string>
-    <string name="ai_consider_weather">Weer</string>
     <string name="ai_consider_weather_desc">Huidige temperatuur en omstandigheden meenemen.</string>
-    <string name="ai_consider_location">Locatie</string>
     <string name="ai_consider_location_desc">Stad, land en stedelijke/landelijke context meenemen.</string>
-    <string name="ai_consider_trends">Modetrends</string>
     <string name="ai_consider_trends_desc">Trendkleuren, esthetiek en must-haves voor je regio meenemen.</string>
-    <string name="ai_consider_gender">Geslacht</string>
     <string name="ai_consider_gender_desc">Geslacht uit profiel meenemen.</string>
-    <string name="ai_consider_age">Leeftijd</string>
     <string name="ai_consider_age_desc">Leeftijd (afgeleid van geboortejaar) meenemen.</string>
-    <string name="ai_consider_preferences">Stijlvoorkeuren</string>
     <string name="ai_consider_preferences_desc">Je vrije stijlvoorkeurstekst meenemen.</string>
 
 
@@ -644,34 +613,6 @@
     <string name="coins_balance_label">Saldo: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Eigen Gemini-sleutel — er worden geen credits gebruikt.</string>
     <!-- Trips -->
-    <string name="trip_planned_title">Geplande reis</string>
-    <string name="trip_saved_label">Opgeslagen</string>
-    <string name="trip_saved_confirmation">Reis en outfits opgeslagen</string>
-    <string name="trip_not_found">Trip not found.</string>
-    <string name="trip_day_header">Dag %1$d</string>
-    <string name="trip_packed">Ingepakt</string>
-    <string name="trip_no_destination">Untitled trip</string>
-    <string name="trip_meta_dates">Start %1$s • %2$d dagen</string>
-    <string name="trip_checklist">Checklist</string>
-    <string name="trip_rename">Rename</string>
-    <string name="trip_modify_outfit">Modify outfit</string>
-    <string name="trip_section_other_outfits">Other travel outfits</string>
-    <string name="trip_delete">Reis verwijderen</string>
-    <string name="trip_delete_confirm_title">Deze reis verwijderen?</string>
-    <string name="trip_delete_confirm_body">Kies of de voor deze reis gemaakte outfits ook verwijderd moeten worden.</string>
-    <string name="trip_delete_with_outfits">Reis + outfits verwijderen</string>
-    <string name="trip_delete_keep_outfits">Outfits behouden</string>
-    <string name="trip_bulk_refining">Alle outfits verfijnen…</string>
-    <string name="trip_bulk_refine_action">Alle outfits verfijnen</string>
-    <string name="trip_bulk_refine_hint">bijv. fellere kleuren, minder items, geschikter voor de avond…</string>
-    <string name="trip_bulk_refine_run">Toepassen met AI</string>
-    <string name="trip_bulk_refine_brighter">Fellere kleuren</string>
-    <string name="trip_bulk_refine_lighter">Lichter pakken</string>
-    <string name="trip_bulk_refine_formal">Chiquere avonden</string>
-    <string name="trip_bulk_refine_skip_jacket">Zonder jas</string>
-    <string name="trip_refine_preview_note">Voorbeeld — niet opgeslagen</string>
-    <string name="trip_refine_discard">Weggooien</string>
-    <string name="trip_refine_replace">Reisoutfits vervangen</string>
     <string name="wardrobe_delete_cascade_outfits">Verwijder ook %d outfit(s) die deze items gebruiken</string>
     <string name="wardrobe_delete_cascade_tryons">Verwijder ook %d try-on(s) met deze items</string>
     <string name="outfits_broken_banner">%d outfits gebruiken items die niet meer in je garderobe staan.</string>
@@ -739,8 +680,6 @@
     <string name="settings_similarity_preview_sub">Diagnostiek voor zoeken op foto.</string>
     <string name="settings_send_feedback">Feedback sturen</string>
     <!-- Expert: item tag dimensions for outfit AI -->
-    <string name="composer_section_tags">Itemdetails om mee te wegen</string>
-    <string name="composer_tags_hint">Kies welke kledingkenmerken de AI meeweegt. Minder details = snellere, goedkopere en gerichtere suggesties.</string>
 
     <!-- Onboarding tour -->
     <string name="onboarding_closet_add_items">Nu kleding toevoegen</string>
@@ -775,7 +714,6 @@
     <string name="calendar_loved">Geweldig</string>
 
     <!-- Wear-history AI consideration toggle -->
-    <string name="ai_consider_history">Draaggeschiedenis</string>
     <string name="ai_consider_history_desc">Leert van wat je echt draagt en geweldig vond.</string>
 
     <!-- Usage estimate-accuracy table -->
@@ -875,17 +813,12 @@
     <!-- Shared error messages localization -->
     <string name="error_upload_failed">Uploaden mislukt: %1$s</string>
     <string name="error_original_unavailable">Origineel niet beschikbaar</string>
-    <string name="error_gemini_no_response">De AI reageerde niet.</string>
-    <string name="error_gemini_parse">Kan het AI-antwoord niet lezen.</string>
     <string name="error_import_failed_item">Importeren van %1$s mislukt: %2$s</string>
     <string name="error_tag_save_failed">Tags opslaan naar Drive mislukt: %1$s</string>
     <string name="error_add_items_first">Voeg eerst items toe aan je garderobe.</string>
     <string name="error_query_photo_missing">De zoekfoto bestaat niet meer.</string>
     <string name="error_import_query_failed">Importeren van zoekfoto mislukt.</string>
     <string name="error_trips_folder_not_ready">Reizenmap is niet gereed.</string>
-    <string name="error_no_refinement">Geen bruikbare verfijning teruggegeven.</string>
-    <string name="error_enter_destination">Voer een bestemming in.</string>
-    <string name="error_weather_fetch_failed">Kan het weer voor \"%1$s\" niet ophalen. Controleer de bestemmingsnaam.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Outfit aan agenda toevoegen</string>
     <string name="calendar_add_pick">Kies een outfit</string>
@@ -906,7 +839,6 @@
     <string name="fab_wardrobe_add">Item toevoegen</string>
     <string name="fab_calendar_log">Outfit loggen</string>
     <string name="fab_shopping_add">Vondst toevoegen</string>
-    <string name="fab_travel_plan">Reis plannen</string>
     <string name="sel_style">Stylen</string>
     <string name="sel_swap">Wisselen</string>
     <string name="sel_move">Verplaatsen</string>

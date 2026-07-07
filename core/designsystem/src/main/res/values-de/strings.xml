@@ -188,4 +188,32 @@
     <string name="travel_day">Tag %d</string>
     <string name="trip_viewer_title">Trip</string>
     <string name="tryon_add_item">Teil hinzufügen</string>
+    <!-- Sunk from :app in the feature:travel slice (shared outfit/settings vocabulary) -->
+    <string name="action_edit">Bearbeiten</string>
+    <string name="outfits_empty">Noch keine Outfits</string>
+    <string name="outfits_wear_today">Heute tragen</string>
+    <string name="outfits_missing_items">Artikel nicht mehr in der Garderobe</string>
+    <string name="composer_closets_all">Alle Kleiderschränke</string>
+    <string name="composer_closets_title">Kleiderschränke</string>
+    <string name="composer_sheet_done">Fertig</string>
+    <string name="composer_section_sources">Quell-Schränke</string>
+    <string name="composer_vibe_casual">Lässig</string>
+    <string name="composer_vibe_sporty">Sportlich</string>
+    <string name="composer_vibe_formal">Formell</string>
+    <string name="composer_vibe_business">Business</string>
+    <string name="composer_vibe_streetwear">Streetwear</string>
+    <string name="composer_vibe_minimalist">Minimalistisch</string>
+    <string name="composer_vibe_classic">Klassisch</string>
+    <string name="composer_vibe_elegant">Elegant</string>
+    <string name="ai_consider_weather">Wetter</string>
+    <string name="ai_consider_location">Ort</string>
+    <string name="ai_consider_trends">Modetrends</string>
+    <string name="ai_consider_gender">Geschlecht</string>
+    <string name="ai_consider_age">Alter</string>
+    <string name="ai_consider_preferences">Stilpräferenzen</string>
+    <string name="composer_section_tags">Welche Artikel-Details zählen</string>
+    <string name="composer_tags_hint">Wähle, welche Kleidungsmerkmale die KI berücksichtigt. Weniger Details = schnellere, günstigere und gezieltere Vorschläge.</string>
+    <string name="ai_consider_history">Tragehistorie</string>
+    <string name="error_gemini_no_response">Die KI hat nicht geantwortet.</string>
+    <string name="error_gemini_parse">Antwort der KI konnte nicht gelesen werden.</string>
 </resources>

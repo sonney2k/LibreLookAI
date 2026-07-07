@@ -40,19 +40,19 @@ fun AiConsiderationsStrip(
             horizontalArrangement = Arrangement.spacedBy(6.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
-            ConsiderationChip(R.string.ai_consider_location, considerations.location) {
+            ConsiderationChip(DsR.string.ai_consider_location, considerations.location) {
                 onToggle { it.copy(location = !it.location) }
             }
-            ConsiderationChip(R.string.ai_consider_trends, considerations.trends) {
+            ConsiderationChip(DsR.string.ai_consider_trends, considerations.trends) {
                 onToggle { it.copy(trends = !it.trends) }
             }
-            ConsiderationChip(R.string.ai_consider_gender, considerations.gender) {
+            ConsiderationChip(DsR.string.ai_consider_gender, considerations.gender) {
                 onToggle { it.copy(gender = !it.gender) }
             }
-            ConsiderationChip(R.string.ai_consider_age, considerations.age) {
+            ConsiderationChip(DsR.string.ai_consider_age, considerations.age) {
                 onToggle { it.copy(age = !it.age) }
             }
-            ConsiderationChip(R.string.ai_consider_preferences, considerations.preferences) {
+            ConsiderationChip(DsR.string.ai_consider_preferences, considerations.preferences) {
                 onToggle { it.copy(preferences = !it.preferences) }
             }
         }
@@ -73,12 +73,12 @@ fun ExpertTagsStrip(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         Text(
-            stringResource(R.string.composer_section_tags),
+            stringResource(DsR.string.composer_section_tags),
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Text(
-            stringResource(R.string.composer_tags_hint),
+            stringResource(DsR.string.composer_tags_hint),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )

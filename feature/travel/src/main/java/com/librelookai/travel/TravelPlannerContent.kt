@@ -1,0 +1,233 @@
+package com.librelookai.travel
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import com.librelookai.feature.travel.R
+import com.librelookai.core.designsystem.R as DsR
+import com.librelookai.data.model.Trip
+import com.librelookai.data.model.Location
+import com.librelookai.data.model.Outfit
+import com.librelookai.settings.UserPreferences
+import com.librelookai.wardrobe.DriveImage
+import com.librelookai.util.AiProcessingOverlay
+import com.librelookai.util.LocalIsOffline
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@Composable
+internal fun TravelPlannerContent(
+    travelViewModel: TravelViewModel,
+    outfits: List<Outfit>,
+    wardrobeImages: List<DriveImage>,
+    preferences: UserPreferences,
+    locations: List<Location>,
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val isOffline = LocalIsOffline.current
+    val state        by travelViewModel.state.collectAsState()
+    // Wear history comes from the travel VM's own store-backed flow (refactor § 5 slice 3);
+    // collected here only so the cost estimate below recomputes when it changes.
+    val wearHistory by travelViewModel.wearHistory.collectAsState()
+
+    val isWorking = state.isLoadingForecast || state.isGenerating
+    val keyboardController = LocalSoftwareKeyboardController.current
+    var showClosetSheet by remember { mutableStateOf(false) }
+
+    // Restrict the item pool (and inspiration styles) to the chosen closets. Empty = all.
+    val sourceImages = remember(wardrobeImages, state.sourceFolderIds) {
+        if (state.sourceFolderIds.isEmpty()) wardrobeImages
+        else wardrobeImages.filter { it.folderId in state.sourceFolderIds }
+    }
+    val sourceStyles = remember(outfits, state.sourceFolderIds) {
+        if (state.sourceFolderIds.isEmpty()) outfits
+        else outfits.filter { it.folderId in state.sourceFolderIds }
+    }
+    val selectedClosetNames = remember(state.sourceFolderIds, locations) {
+        locations.filter { it.folderId in state.sourceFolderIds }.map { it.name }
+    }
+
+    Column(modifier = modifier.fillMaxSize()) {
+        PlannerHeader(onClose = onBack)
+        Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
+        LazyColumn(
+            contentPadding = PaddingValues(bottom = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(0.dp),
+        ) {
+            // ---- Plan-a-trip input section ----
+            item {
+                val geoLanguage = com.librelookai.settings.AppLanguage.toBcp47(preferences.language)
+                val prefsConsiderations = preferences.aiConsiderations
+                val effectiveConsiderations = state.considerationsOverride ?: prefsConsiderations
+                PlanTripSection(
+                    state = state,
+                    considerations = effectiveConsiderations,
+                    geoLanguage = geoLanguage,
+                    onUpdateDestination = travelViewModel::updateDestination,
+                    onPickSuggestion = {
+                        travelViewModel.pickDestination(it)
+                        keyboardController?.hide()
+                    },
+                    onClearDestinationSuggestions = travelViewModel::clearDestinationSuggestions,
+                    onUpdateDays = travelViewModel::updateDays,
+                    onUpdateStartDate = travelViewModel::updateStartDate,
+                    onUpdateOutfitCount = travelViewModel::updateOutfitCount,
+                    onUpdateGoal = travelViewModel::updateGoal,
+                    onToggleVibe = travelViewModel::toggleVibe,
+                    onToggleConsideration = { transform ->
+                        travelViewModel.setConsideration(prefsConsiderations, transform)
+                    },
+                )
+            }
+
+            // ---- Source-closet selector (only when there's more than one closet) ----
+            if (locations.size >= 2) {
+                item {
+                    SourceClosetRow(
+                        closetNames = selectedClosetNames,
+                        onClick = { showClosetSheet = true },
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+                    )
+                }
+            }
+
+            // ---- Forecast strip ----
+            if (state.forecast.isNotEmpty()) {
+                item {
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        HorizontalDivider()
+                        Text(
+                            if (state.isHistoricalForecast && state.historicalReferenceYear != null)
+                                "Historical climate (${state.historicalReferenceYear}) — ${state.resolvedDestination}"
+                            else
+                                "${state.resolvedDestination}",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                        )
+                        if (state.isHistoricalForecast) {
+                            Text(
+                                stringResource(R.string.travel_historical_note),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.padding(horizontal = 16.dp).padding(bottom = 4.dp),
+                            )
+                        }
+                        LazyRow(
+                            contentPadding = PaddingValues(horizontal = 16.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            itemsIndexed(state.forecast) { index, day ->
+                                ForecastDayChip(dayIndex = index + 1, forecast = day)
+                            }
+                        }
+                        Spacer(Modifier.height(8.dp))
+                    }
+                }
+            }
+
+            // Note: The generated packing list is no longer rendered inline. Generate now
+            // auto-creates a Trip + outfits and navigates to the Trip viewer (see TravelScreen).
+        }
+
+        // AI processing overlay
+        if (isWorking) {
+            AiProcessingOverlay(
+                label = when {
+                    state.isLoadingForecast -> stringResource(R.string.ai_fetching_weather)
+                    else                   -> stringResource(R.string.ai_generating_packing)
+                },
+                modifier = Modifier.fillMaxSize(),
+            )
+        }
+
+        // Error snackbar
+        state.error?.let { msg ->
+            Snackbar(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .statusBarsPadding()
+                    .padding(start = 8.dp, end = 8.dp, top = 64.dp),
+                action = { TextButton(onClick = travelViewModel::clearError) { Text(stringResource(DsR.string.action_ok)) } },
+            ) { Text(msg) }
+        }
+        } // Box
+        // Sticky generate button — pinned at the bottom of the planner.
+        Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
+            val packingTokens by androidx.compose.runtime.produceState<com.librelookai.gemini.CostTokens?>(
+                initialValue = null,
+                sourceImages,
+                sourceStyles,
+                preferences,
+                state.days,
+                state.outfitCount,
+                state.goal,
+                state.vibes,
+                state.considerationsOverride,
+                wearHistory,
+            ) {
+                value = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Default) {
+                    travelViewModel.estimatePackingTokens(
+                        prefs = preferences,
+                        images = sourceImages,
+                        styles = sourceStyles,
+                    )
+                }
+            }
+            GenerateButton(
+                hasResult = state.packingList != null,
+                enabled = state.destination.isNotBlank() && !isWorking && !isOffline,
+                onClick = {
+                    keyboardController?.hide()
+                    travelViewModel.generate(
+                        prefs  = preferences,
+                        images = sourceImages,
+                        styles = sourceStyles,
+                    )
+                },
+                tokens = packingTokens,
+            )
+        }
+    } // Column
+
+    if (showClosetSheet) {
+        com.librelookai.outfit.ClosetPickerSheet(
+            locations = locations,
+            selected = state.sourceFolderIds,
+            onToggle = travelViewModel::toggleSourceFolder,
+            onDismiss = { showClosetSheet = false },
+        )
+    }
+}
+
+// ---------- Travel-outfits list view ----------
+

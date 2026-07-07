@@ -61,7 +61,6 @@
 
     <!-- Common actions -->
     <string name="action_save">Αποθήκευση</string>
-    <string name="action_edit">Επεξεργασία</string>
     <string name="action_saving">Αποθήκευση…</string>
     <string name="cd_ai_suggestion">Πρόταση AI</string>
     <string name="cd_refine">Βελτίωση</string>
@@ -267,7 +266,6 @@
     <!-- Tag value translations (stored in English; displayed in UI language) -->
     <!-- Colors -->
     <!-- Outfits -->
-    <string name="outfits_empty">Δεν υπάρχουν σύνολα ακόμα</string>
     <string name="outfits_empty_hint">Πατήστε + για να δημιουργήσετε ένα σύνολο από τη ντουλάπα σας</string>
     <string name="outfits_sort_most_worn">Πιο φορεμένα</string>
     <string name="outfits_create_manual">Χειροκίνητη δημιουργία συνόλου</string>
@@ -290,9 +288,6 @@
     <string name="outfits_composing">Σύνθεση συνόλου…</string>
     <string name="outfits_delete_title">Διαγραφή συνόλου;</string>
     <string name="outfits_delete_text">Το \"%s\" θα αφαιρεθεί οριστικά.</string>
-    <string name="outfits_wear_today">Φορέστε το σήμερα</string>
-    <string name="outfits_worn_today">Φορέθηκε σήμερα!</string>
-    <string name="outfits_missing_items">Είδη που δεν υπάρχουν πια στη ντουλάπα</string>
     <string name="outfits_items_away">%d είδη σε άλλη τοποθεσία</string>
     <string name="outfits_suggested_title">Πρόταση για σήμερα</string>
     <string name="outfits_composed_title">Σύνθεση για εσάς</string>
@@ -352,20 +347,14 @@
     <!-- Travel -->
     <string name="travel_title">Λίστα Ταξιδιού</string>
     <string name="travel_destination">Προορισμός</string>
-    <string name="travel_destination_placeholder">π.χ. Παρίσι, Τόκιο, Νέα Υόρκη</string>
     <string name="travel_duration">Διάρκεια</string>
     <string name="travel_start_date">Ημερομηνία έναρξης</string>
     <string name="travel_outfit_count">Σύνολα</string>
     <string name="travel_outfit_count_reset">Όσες οι ημέρες</string>
     <string name="travel_goal">Εστίαση ταξιδιού</string>
-    <string name="travel_goal_placeholder">π.χ. συναντήσεις + δείπνα</string>
-    <string name="travel_generate">Δημιουργία Λίστας</string>
-    <string name="travel_regenerate">Επαναδημιουργία</string>
     <string name="travel_packing_list">Λίστα Πακεταρίσματος</string>
     <string name="travel_clear">Καθαρισμός</string>
-    <string name="travel_extra_items">Επιπλέον είδη (όχι στη ντουλάπα)</string>
     <string name="travel_empty">Εισαγάγετε προορισμό για να ξεκινήσετε</string>
-    <string name="travel_historical_note">Οι ημερομηνίες είναι εκτός πρόβλεψης — εμφανίζονται ιστορικά δεδομένα.</string>
     <string name="travel_refine_lighter">Πιο ελαφρύ πακετάρισμα</string>
     <string name="travel_refine_formal">Πιο επίσημες επιλογές</string>
     <string name="travel_refine_casual">Πιο casual επιλογές</string>
@@ -409,8 +398,6 @@
 
     <!-- Credits / Managed Mode -->
     <!-- AI overlay -->
-    <string name="ai_fetching_weather">Λήψη καιρού…</string>
-    <string name="ai_generating_packing">Δημιουργία λίστας…</string>
     <string name="ai_analyzing_wardrobe">Ανάλυση ντουλάπας…</string>
     <string name="ai_suggesting_style">Πρόταση συνόλου…</string>
     <string name="ai_composing_outfit">Σύνθεση συνόλου…</string>
@@ -475,11 +462,8 @@
     <string name="composer_header_subtitle">%1$d από 5 επίπεδα</string>
     <string name="composer_fill_missing">Συμπλήρωση κενών</string>
     <string name="composer_see_all_count">Όλα %1$d</string>
-    <string name="composer_closets_all">Όλες οι ντουλάπες</string>
     <string name="composer_layer_picked_count">%1$d επιλέχθηκαν</string>
     <string name="composer_weather_title">Καιρός</string>
-    <string name="composer_closets_title">Ντουλάπες</string>
-    <string name="composer_sheet_done">Τέλος</string>
     <string name="composer_save">Αποθήκευση</string>
     <string name="composer_section_goal">Ποια είναι η περίσταση;</string>
     <string name="composer_goal_placeholder">π.χ. Δείπνο στη Λισαβόνα, ζεστό βράδυ</string>
@@ -492,7 +476,6 @@
     <string name="composer_chip_travel">Ταξίδι</string>
     <string name="composer_chip_date">Ραντεβού</string>
     <string name="composer_section_quick_start">Γρήγορη εκκίνηση</string>
-    <string name="composer_section_sources">Πηγές</string>
     <string name="composer_section_items">Είδη</string>
     <string name="composer_section_weather">Καιρός</string>
     <string name="composer_section_vibe">Στιλ</string>
@@ -515,14 +498,6 @@
     <string name="composer_precip_none">Καμία</string>
     <string name="composer_precip_light">Ελαφριά</string>
     <string name="composer_precip_heavy">Έντονη</string>
-    <string name="composer_vibe_casual">Casual</string>
-    <string name="composer_vibe_sporty">Αθλητικό</string>
-    <string name="composer_vibe_formal">Επίσημο</string>
-    <string name="composer_vibe_business">Επαγγελματικό</string>
-    <string name="composer_vibe_streetwear">Streetwear</string>
-    <string name="composer_vibe_minimalist">Μινιμαλιστικό</string>
-    <string name="composer_vibe_classic">Κλασικό</string>
-    <string name="composer_vibe_elegant">Κομψό</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_layer_top">Μπλούζα βάσης</string>
@@ -553,17 +528,11 @@
     <string name="settings_tab_ai">AI</string>
     <string name="ai_considerations_title">Προεπιλεγμένες παράμετροι</string>
     <string name="ai_considerations_desc">Τι πρέπει να λαμβάνει υπόψη η AI.</string>
-    <string name="ai_consider_weather">Καιρός</string>
     <string name="ai_consider_weather_desc">Θερμοκρασία και συνθήκες.</string>
-    <string name="ai_consider_location">Τοποθεσία</string>
     <string name="ai_consider_location_desc">Πόλη και χώρα.</string>
-    <string name="ai_consider_trends">Τάσεις μόδας</string>
     <string name="ai_consider_trends_desc">Χρώματα και αισθητική.</string>
-    <string name="ai_consider_gender">Φύλο</string>
     <string name="ai_consider_gender_desc">Το φύλο του προφίλ σας.</string>
-    <string name="ai_consider_age">Ηλικία</string>
     <string name="ai_consider_age_desc">Η ηλικία σας.</string>
-    <string name="ai_consider_preferences">Προτιμήσεις στιλ</string>
     <string name="ai_consider_preferences_desc">Οι δικές σας προτιμήσεις.</string>
 
 
@@ -644,34 +613,6 @@
     <string name="coins_balance_label">Υπόλοιπο: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Χρησιμοποιείτε το δικό σας κλειδί Gemini — δεν δαπανώνται πιστώσεις.</string>
     <!-- Trips -->
-    <string name="trip_planned_title">Προγραμματισμένο ταξίδι</string>
-    <string name="trip_saved_label">Αποθηκεύτηκε</string>
-    <string name="trip_saved_confirmation">Το ταξίδι και τα σύνολα αποθηκεύτηκαν</string>
-    <string name="trip_not_found">Trip not found.</string>
-    <string name="trip_day_header">Ημέρα %1$d</string>
-    <string name="trip_packed">Πακεταρισμένο</string>
-    <string name="trip_no_destination">Untitled trip</string>
-    <string name="trip_meta_dates">Έναρξη %1$s • %2$d ημέρες</string>
-    <string name="trip_checklist">Λίστα</string>
-    <string name="trip_rename">Rename</string>
-    <string name="trip_modify_outfit">Modify outfit</string>
-    <string name="trip_section_other_outfits">Other travel outfits</string>
-    <string name="trip_delete">Διαγραφή ταξιδιού</string>
-    <string name="trip_delete_confirm_title">Διαγραφή αυτού του ταξιδιού;</string>
-    <string name="trip_delete_confirm_body">Επίλεξε αν θα διαγραφούν και τα σύνολα που δημιουργήθηκαν για αυτό το ταξίδι.</string>
-    <string name="trip_delete_with_outfits">Διαγραφή ταξιδιού + συνόλων</string>
-    <string name="trip_delete_keep_outfits">Διατήρηση συνόλων</string>
-    <string name="trip_bulk_refining">Βελτίωση όλων των συνόλων…</string>
-    <string name="trip_bulk_refine_action">Βελτίωση όλων των συνόλων</string>
-    <string name="trip_bulk_refine_hint">π.χ. πιο ζωηρά χρώματα, λιγότερα κομμάτια, πιο βραδινά…</string>
-    <string name="trip_bulk_refine_run">Εφαρμογή με AI</string>
-    <string name="trip_bulk_refine_brighter">Πιο ζωηρά χρώματα</string>
-    <string name="trip_bulk_refine_lighter">Ελαφρύτερη βαλίτσα</string>
-    <string name="trip_bulk_refine_formal">Πιο επίσημα βράδια</string>
-    <string name="trip_bulk_refine_skip_jacket">Χωρίς σακάκι</string>
-    <string name="trip_refine_preview_note">Προεπισκόπηση — δεν αποθηκεύτηκε</string>
-    <string name="trip_refine_discard">Απόρριψη</string>
-    <string name="trip_refine_replace">Αντικατάσταση συνόλων ταξιδιού</string>
     <string name="wardrobe_delete_cascade_outfits">Διαγραφή επίσης %d συνόλου/-ων που χρησιμοποιούν αυτά τα αντικείμενα</string>
     <string name="wardrobe_delete_cascade_tryons">Διαγραφή επίσης %d δοκιμής/-ών με αυτά τα αντικείμενα</string>
     <string name="outfits_broken_banner">%d σύνολα χρησιμοποιούν αντικείμενα που δεν υπάρχουν πλέον στην γκαρνταρόμπα σου.</string>
@@ -739,8 +680,6 @@
     <string name="settings_similarity_preview_sub">Διαγνωστικά για την αναζήτηση με φωτογραφία.</string>
     <string name="settings_send_feedback">Αποστολή σχολίων</string>
     <!-- Expert: item tag dimensions for outfit AI -->
-    <string name="composer_section_tags">Λεπτομέρειες ρούχων προς αξιολόγηση</string>
-    <string name="composer_tags_hint">Επίλεξε ποια χαρακτηριστικά των ρούχων λαμβάνει υπόψη η AI. Λιγότερες λεπτομέρειες = ταχύτερες, φθηνότερες και πιο στοχευμένες προτάσεις.</string>
 
     <!-- Onboarding tour -->
     <string name="onboarding_closet_add_items">Προσθήκη ρούχων τώρα</string>
@@ -775,7 +714,6 @@
     <string name="calendar_loved">Μου άρεσε πολύ</string>
 
     <!-- Wear-history AI consideration toggle -->
-    <string name="ai_consider_history">Ιστορικό χρήσης</string>
     <string name="ai_consider_history_desc">Μαθαίνει από αυτά που πραγματικά φοράς και έχεις αγαπήσει.</string>
 
     <!-- Usage estimate-accuracy table -->
@@ -875,17 +813,12 @@
     <!-- Shared error messages localization -->
     <string name="error_upload_failed">Η μεταφόρτωση απέτυχε: %1$s</string>
     <string name="error_original_unavailable">Το πρωτότυπο δεν είναι διαθέσιμο</string>
-    <string name="error_gemini_no_response">Η τεχνητή νοημοσύνη δεν απάντησε.</string>
-    <string name="error_gemini_parse">Δεν ήταν δυνατή η ανάγνωση της απάντησης της τεχνητής νοημοσύνης.</string>
     <string name="error_import_failed_item">Η εισαγωγή του %1$s απέτυχε: %2$s</string>
     <string name="error_tag_save_failed">Η αποθήκευση ετικετών στο Drive απέτυχε: %1$s</string>
     <string name="error_add_items_first">Προσθέστε πρώτα είδη στην γκαρνταρόμπα σας.</string>
     <string name="error_query_photo_missing">Η φωτογραφία αναζήτησης δεν υπάρχει πλέον.</string>
     <string name="error_import_query_failed">Αποτυχία εισαγωγής φωτογραφίας αναζήτησης.</string>
     <string name="error_trips_folder_not_ready">Ο φάκελος ταξιδιών δεν είναι έτοιμος.</string>
-    <string name="error_no_refinement">Δεν επιστράφηκε χρήσιμη βελτίωση.</string>
-    <string name="error_enter_destination">Εισαγάγετε προορισμό.</string>
-    <string name="error_weather_fetch_failed">Δεν ήταν δυνατή η λήψη καιρού για \"%1$s\". Ελέγξτε το όνομα προορισμού.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Προσθήκη συνόλου στο ημερολόγιο</string>
     <string name="calendar_add_pick">Επίλεξε ένα σύνολο</string>
@@ -906,7 +839,6 @@
     <string name="fab_wardrobe_add">Προσθήκη</string>
     <string name="fab_calendar_log">Καταγραφή συνόλου</string>
     <string name="fab_shopping_add">Προσθήκη εύρεσης</string>
-    <string name="fab_travel_plan">Σχεδιασμός ταξιδιού</string>
     <string name="sel_style">Στιλ</string>
     <string name="sel_swap">Αλλαγή</string>
     <string name="sel_move">Μετακίνηση</string>

@@ -188,4 +188,32 @@
     <string name="travel_day">יום %d</string>
     <string name="trip_viewer_title">Trip</string>
     <string name="tryon_add_item">הוסף פריט</string>
+    <!-- Sunk from :app in the feature:travel slice (shared outfit/settings vocabulary) -->
+    <string name="action_edit">ערוך</string>
+    <string name="outfits_empty">אין אאוטפיטים עדיין</string>
+    <string name="outfits_wear_today">לבש היום</string>
+    <string name="outfits_missing_items">הפריטים כבר לא במלתחה</string>
+    <string name="composer_section_sources">ארונות מקור</string>
+    <string name="ai_consider_weather">מזג אוויר</string>
+    <string name="ai_consider_location">מיקום</string>
+    <string name="ai_consider_trends">טרנדים של אופנה</string>
+    <string name="ai_consider_gender">מין</string>
+    <string name="ai_consider_age">גיל</string>
+    <string name="ai_consider_preferences">העדפות סגנון</string>
+    <string name="composer_closets_all">כל הארונות</string>
+    <string name="composer_closets_title">ארונות</string>
+    <string name="composer_sheet_done">בוצע</string>
+    <string name="composer_vibe_casual">יומיומי</string>
+    <string name="composer_vibe_sporty">ספורטיבי</string>
+    <string name="composer_vibe_formal">רשמי</string>
+    <string name="composer_vibe_business">עסקים</string>
+    <string name="composer_vibe_streetwear">סטריט-וור</string>
+    <string name="composer_vibe_minimalist">מינימליסטי</string>
+    <string name="composer_vibe_classic">קלאסי</string>
+    <string name="composer_vibe_elegant">אלגנטי</string>
+    <string name="composer_section_tags">פרטי הפריט שיש לשקלל</string>
+    <string name="composer_tags_hint">בחר אילו מאפייני לבוש ה-AI שוקל. פחות פרטים = הצעות מהירות, זולות וממוקדות יותר.</string>
+    <string name="ai_consider_history">היסטוריית לבישה</string>
+    <string name="error_gemini_no_response">ה-AI לא הגיב.</string>
+    <string name="error_gemini_parse">לא ניתן לקרוא את תגובת ה-AI.</string>
 </resources>

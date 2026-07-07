@@ -29,7 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.librelookai.R
-import com.librelookai.data.model.Location
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.data.model.Outfit
 import com.librelookai.weather.WeatherData
 import com.librelookai.weather.wmoEmoji
@@ -207,7 +207,7 @@ internal fun WeatherPickerSheet(
                         style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier.weight(1f),
                     )
-                    TextButton(onClick = onDismiss) { Text(stringResource(R.string.composer_sheet_done)) }
+                    TextButton(onClick = onDismiss) { Text(stringResource(DsR.string.composer_sheet_done)) }
                 }
                 WeatherSection(
                     mode = mode,
@@ -220,63 +220,6 @@ internal fun WeatherPickerSheet(
                     precip = precip,
                     onPrecip = onPrecip,
                 )
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
-@Composable
-internal fun ClosetPickerSheet(
-    locations: List<Location>,
-    selected: Set<String>,
-    onToggle: (String) -> Unit,
-    onDismiss: () -> Unit,
-) {
-    val parentContext = LocalContext.current
-    val parentConfiguration = LocalConfiguration.current
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-    ) {
-        CompositionLocalProvider(
-            LocalContext provides parentContext,
-            LocalConfiguration provides parentConfiguration,
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .navigationBarsPadding()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        stringResource(R.string.composer_closets_title),
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.weight(1f),
-                    )
-                    TextButton(onClick = onDismiss) { Text(stringResource(R.string.composer_sheet_done)) }
-                }
-                FlowRow(
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                    verticalArrangement = Arrangement.spacedBy(6.dp),
-                ) {
-                    FilterChip(
-                        selected = selected.isEmpty(),
-                        onClick = {
-                            if (selected.isNotEmpty()) selected.forEach { onToggle(it) }
-                        },
-                        label = { Text(stringResource(R.string.composer_closets_all)) },
-                    )
-                    locations.forEach { loc ->
-                        FilterChip(
-                            selected = loc.folderId in selected,
-                            onClick = { onToggle(loc.folderId) },
-                            label = { Text(loc.name) },
-                        )
-                    }
-                }
             }
         }
     }

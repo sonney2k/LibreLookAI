@@ -188,4 +188,32 @@
     <string name="travel_day">Jour %d</string>
     <string name="trip_viewer_title">Trip</string>
     <string name="tryon_add_item">Ajouter un article</string>
+    <!-- Sunk from :app in the feature:travel slice (shared outfit/settings vocabulary) -->
+    <string name="action_edit">Modifier</string>
+    <string name="outfits_empty">Aucune tenue pour le moment</string>
+    <string name="outfits_wear_today">Porter aujourd\'hui</string>
+    <string name="outfits_missing_items">Articles n\'étant plus dans la garde-robe</string>
+    <string name="composer_closets_all">Toutes les garde-robes</string>
+    <string name="composer_closets_title">Garde-robes</string>
+    <string name="composer_sheet_done">Terminé</string>
+    <string name="composer_section_sources">Garde-robes sources</string>
+    <string name="composer_vibe_casual">Décontracté</string>
+    <string name="composer_vibe_sporty">Sportif</string>
+    <string name="composer_vibe_formal">Formel</string>
+    <string name="composer_vibe_business">Business</string>
+    <string name="composer_vibe_streetwear">Streetwear</string>
+    <string name="composer_vibe_minimalist">Minimaliste</string>
+    <string name="composer_vibe_classic">Classique</string>
+    <string name="composer_vibe_elegant">Élégant</string>
+    <string name="ai_consider_weather">Météo</string>
+    <string name="ai_consider_location">Lieu</string>
+    <string name="ai_consider_trends">Tendances mode</string>
+    <string name="ai_consider_gender">Genre</string>
+    <string name="ai_consider_age">Âge</string>
+    <string name="ai_consider_preferences">Préférences de style</string>
+    <string name="composer_section_tags">Détails des articles à prendre en compte</string>
+    <string name="composer_tags_hint">Choisissez les attributs vestimentaires que l\'IA prend en compte. Moins de détails = des suggestions plus rapides, moins chères et plus ciblées.</string>
+    <string name="ai_consider_history">Historique de port</string>
+    <string name="error_gemini_no_response">L\'IA n\'a pas répondu.</string>
+    <string name="error_gemini_parse">Impossible de lire la réponse de l\'IA.</string>
 </resources>

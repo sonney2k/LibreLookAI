@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Travel strings (moved from :app in the feature:travel slice) -->
+    <string name="outfits_worn_today">Dipakai hari ini!</string>
+    <string name="travel_goal_placeholder">mis. rapat bisnis + makan malam</string>
+    <string name="travel_generate">Buat Daftar Kemasan</string>
+    <string name="ai_fetching_weather">Mengambil cuaca…</string>
+    <string name="ai_generating_packing">Membuat daftar kemasan…</string>
+    <string name="travel_destination_placeholder">mis. Paris, Tokyo, New York</string>
+    <string name="travel_extra_items">Bawa juga (tidak ada di lemari)</string>
+    <string name="travel_historical_note">Tanggal perjalanan di luar jendela prakiraan live — menampilkan data iklim historis.</string>
+    <string name="travel_regenerate">Buat ulang</string>
+    <string name="trip_planned_title">Perjalanan terencana</string>
+    <string name="trip_saved_label">Tersimpan</string>
+    <string name="trip_saved_confirmation">Perjalanan &amp; pakaian tersimpan</string>
+    <string name="trip_not_found">Trip not found.</string>
+    <string name="trip_day_header">Hari %1$d</string>
+    <string name="trip_packed">Sudah dikemas</string>
+    <string name="trip_no_destination">Untitled trip</string>
+    <string name="trip_meta_dates">Mulai %1$s • %2$d hari</string>
+    <string name="trip_checklist">Daftar</string>
+    <string name="trip_rename">Rename</string>
+    <string name="trip_modify_outfit">Modify outfit</string>
+    <string name="trip_section_other_outfits">Other travel outfits</string>
+    <string name="trip_delete">Hapus perjalanan</string>
+    <string name="trip_delete_confirm_title">Hapus perjalanan ini?</string>
+    <string name="trip_delete_confirm_body">Pilih apakah pakaian yang dibuat untuk perjalanan ini juga dihapus.</string>
+    <string name="trip_delete_with_outfits">Hapus perjalanan + pakaian</string>
+    <string name="trip_delete_keep_outfits">Simpan pakaian</string>
+    <string name="trip_bulk_refining">Menyempurnakan semua pakaian…</string>
+    <string name="trip_bulk_refine_action">Sempurnakan semua pakaian</string>
+    <string name="trip_bulk_refine_hint">mis. warna lebih cerah, lebih sedikit barang, lebih cocok untuk malam…</string>
+    <string name="trip_bulk_refine_run">Terapkan dengan AI</string>
+    <string name="trip_bulk_refine_brighter">Warna lebih cerah</string>
+    <string name="trip_bulk_refine_lighter">Bawa lebih ringan</string>
+    <string name="trip_bulk_refine_formal">Malam lebih formal</string>
+    <string name="trip_bulk_refine_skip_jacket">Tanpa jaket</string>
+    <string name="trip_refine_preview_note">Pratinjau — belum disimpan</string>
+    <string name="trip_refine_discard">Buang</string>
+    <string name="trip_refine_replace">Ganti pakaian perjalanan</string>
+    <string name="error_no_refinement">Tidak ada penyempurnaan yang dapat digunakan.</string>
+    <string name="error_enter_destination">Masukkan tujuan.</string>
+    <string name="error_weather_fetch_failed">Tidak dapat mengambil cuaca untuk \"%1$s\". Periksa nama tujuan.</string>
+    <string name="fab_travel_plan">Rencanakan perjalanan</string>
+</resources>

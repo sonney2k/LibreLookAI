@@ -61,7 +61,6 @@
 
     <!-- Common actions -->
     <string name="action_save">Uložit</string>
-    <string name="action_edit">Upravit</string>
     <string name="action_saving">Ukládání…</string>
     <string name="cd_ai_suggestion">Návrh AI</string>
     <string name="cd_refine">Vylepšit</string>
@@ -267,7 +266,6 @@
     <!-- Tag value translations (stored in English; displayed in UI language) -->
     <!-- Colors -->
     <!-- Outfits -->
-    <string name="outfits_empty">Zatím žádné outfity</string>
     <string name="outfits_empty_hint">Klepnutím na + sestavte outfit ze svého šatníku</string>
     <string name="outfits_sort_most_worn">Nejvíc nošené</string>
     <string name="outfits_create_manual">Vytvořit outfit ručně</string>
@@ -290,9 +288,6 @@
     <string name="outfits_composing">Sestavuji outfit…</string>
     <string name="outfits_delete_title">Smazat outfit?</string>
     <string name="outfits_delete_text">\"%s\" bude trvale odstraněn.</string>
-    <string name="outfits_wear_today">Obléknout dnes</string>
-    <string name="outfits_worn_today">Dnes nošeno!</string>
-    <string name="outfits_missing_items">Položky již nejsou v šatníku</string>
     <string name="outfits_items_away">%d položek je na jiném místě</string>
     <string name="outfits_suggested_title">Navrženo pro dnešek</string>
     <string name="outfits_composed_title">Sestaveno pro vás</string>
@@ -352,20 +347,14 @@
     <!-- Travel -->
     <string name="travel_title">Cestovní seznam</string>
     <string name="travel_destination">Cíl</string>
-    <string name="travel_destination_placeholder">např. Paříž, Tokio, New York</string>
     <string name="travel_duration">Doba trvání</string>
     <string name="travel_start_date">Datum zahájení</string>
     <string name="travel_outfit_count">Outfity</string>
     <string name="travel_outfit_count_reset">Podle dní</string>
     <string name="travel_goal">Zaměření cesty</string>
-    <string name="travel_goal_placeholder">např. obchodní schůzky + večeře</string>
-    <string name="travel_generate">Generovat seznam</string>
-    <string name="travel_regenerate">Znovu generovat</string>
     <string name="travel_packing_list">Seznam věcí</string>
     <string name="travel_clear">Vymazat</string>
-    <string name="travel_extra_items">Také zabalit (není v šatníku)</string>
     <string name="travel_empty">Zadejte cíl a začněte</string>
-    <string name="travel_historical_note">Data cesty jsou mimo okno živé předpovědi — zobrazují se historická klimatická data.</string>
     <string name="travel_refine_lighter">Zabalit méně věcí</string>
     <string name="travel_refine_formal">Více formálních možností</string>
     <string name="travel_refine_casual">Více ležérních možností</string>
@@ -409,8 +398,6 @@
 
     <!-- Credits / Managed Mode -->
     <!-- AI overlay -->
-    <string name="ai_fetching_weather">Zjišťování počasí…</string>
-    <string name="ai_generating_packing">Generování seznamu věcí…</string>
     <string name="ai_analyzing_wardrobe">Analyzování vašeho šatníku…</string>
     <string name="ai_suggesting_style">Navrhování outfitu…</string>
     <string name="ai_composing_outfit">Sestavování outfitu…</string>
@@ -475,11 +462,8 @@
     <string name="composer_header_subtitle">%1$d z 5 vrstev · klepnutím vyměňte</string>
     <string name="composer_fill_missing">Doplnit chybějící</string>
     <string name="composer_see_all_count">Všech %1$d</string>
-    <string name="composer_closets_all">Všechny šatníky</string>
     <string name="composer_layer_picked_count">%1$d vybráno</string>
     <string name="composer_weather_title">Počasí</string>
-    <string name="composer_closets_title">Šatníky</string>
-    <string name="composer_sheet_done">Hotovo</string>
     <string name="composer_save">Uložit</string>
     <string name="composer_section_goal">Jaká je příležitost?</string>
     <string name="composer_goal_placeholder">např. Večeře v Lisabonu, teplý večer</string>
@@ -492,7 +476,6 @@
     <string name="composer_chip_travel">Cestování</string>
     <string name="composer_chip_date">Rande</string>
     <string name="composer_section_quick_start">Rychlý start</string>
-    <string name="composer_section_sources">Zdrojové šatníky</string>
     <string name="composer_section_items">Položky</string>
     <string name="composer_section_weather">Počasí</string>
     <string name="composer_section_vibe">Styl</string>
@@ -515,14 +498,6 @@
     <string name="composer_precip_none">Žádné</string>
     <string name="composer_precip_light">Mírné</string>
     <string name="composer_precip_heavy">Silné</string>
-    <string name="composer_vibe_casual">Ležérní</string>
-    <string name="composer_vibe_sporty">Sportovní</string>
-    <string name="composer_vibe_formal">Formální</string>
-    <string name="composer_vibe_business">Business</string>
-    <string name="composer_vibe_streetwear">Streetwear</string>
-    <string name="composer_vibe_minimalist">Minimalistický</string>
-    <string name="composer_vibe_classic">Klasický</string>
-    <string name="composer_vibe_elegant">Elegantní</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_layer_top">Základní vršek</string>
@@ -553,17 +528,11 @@
     <string name="settings_tab_ai">AI</string>
     <string name="ai_considerations_title">Výchozí aspekty</string>
     <string name="ai_considerations_desc">Co by měla AI zohlednit při navrhování nebo sestavování outfitů. Změny se týkají předpovědí, sestavování, balení a analýz mezer v šatníku.</string>
-    <string name="ai_consider_weather">Počasí</string>
     <string name="ai_consider_weather_desc">Zahrnout dnešní teplotu a podmínky.</string>
-    <string name="ai_consider_location">Umístění</string>
     <string name="ai_consider_location_desc">Zahrnout město, zemi a městský/venkovský kontext.</string>
-    <string name="ai_consider_trends">Módní trendy</string>
     <string name="ai_consider_trends_desc">Zahrnout trendy barvy, estetiku a věci, které musíte mít ve vašem regionu.</string>
-    <string name="ai_consider_gender">Pohlaví</string>
     <string name="ai_consider_gender_desc">Zahrnout vaše pohlaví z profilu.</string>
-    <string name="ai_consider_age">Věk</string>
     <string name="ai_consider_age_desc">Zahrnout váš věk (odvozený z roku narození).</string>
-    <string name="ai_consider_preferences">Preference stylu</string>
     <string name="ai_consider_preferences_desc">Zahrnout vaše textové preference stylu.</string>
 
 
@@ -644,34 +613,6 @@
     <string name="coins_balance_label">Zůstatek: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Používáte vlastní klíč Gemini — žádné kredity se neutrácí.</string>
     <!-- Trips -->
-    <string name="trip_planned_title">Naplánovaný výlet</string>
-    <string name="trip_saved_label">Uloženo</string>
-    <string name="trip_saved_confirmation">Výlet a outfity uloženy</string>
-    <string name="trip_not_found">Trip not found.</string>
-    <string name="trip_day_header">Den %1$d</string>
-    <string name="trip_packed">Sbaleno</string>
-    <string name="trip_no_destination">Untitled trip</string>
-    <string name="trip_meta_dates">Začátek %1$s • %2$d dní</string>
-    <string name="trip_checklist">Seznam</string>
-    <string name="trip_rename">Rename</string>
-    <string name="trip_modify_outfit">Modify outfit</string>
-    <string name="trip_section_other_outfits">Other travel outfits</string>
-    <string name="trip_delete">Smazat výlet</string>
-    <string name="trip_delete_confirm_title">Smazat tento výlet?</string>
-    <string name="trip_delete_confirm_body">Vyber, zda se mají smazat i outfity vytvořené pro tento výlet.</string>
-    <string name="trip_delete_with_outfits">Smazat výlet i outfity</string>
-    <string name="trip_delete_keep_outfits">Ponechat outfity</string>
-    <string name="trip_bulk_refining">Vylepšuji všechny outfity…</string>
-    <string name="trip_bulk_refine_action">Vylepšit všechny outfity</string>
-    <string name="trip_bulk_refine_hint">např. výraznější barvy, méně kusů, vhodnější na večer…</string>
-    <string name="trip_bulk_refine_run">Použít s AI</string>
-    <string name="trip_bulk_refine_brighter">Výraznější barvy</string>
-    <string name="trip_bulk_refine_lighter">Sbalit lehčeji</string>
-    <string name="trip_bulk_refine_formal">Formálnější večery</string>
-    <string name="trip_bulk_refine_skip_jacket">Bez bundy</string>
-    <string name="trip_refine_preview_note">Náhled – neuloženo</string>
-    <string name="trip_refine_discard">Zahodit</string>
-    <string name="trip_refine_replace">Nahradit outfity výletu</string>
     <string name="wardrobe_delete_cascade_outfits">Smazat také %d outfit(ů), které používají tyto kousky</string>
     <string name="wardrobe_delete_cascade_tryons">Smazat také %d zkoušku/zkoušek s těmito kousky</string>
     <string name="outfits_broken_banner">%d outfitů používá kousky, které už nejsou ve tvém šatníku.</string>
@@ -739,8 +680,6 @@
     <string name="settings_similarity_preview_sub">Diagnostika funkce hledání podle fotky.</string>
     <string name="settings_send_feedback">Odeslat zpětnou vazbu</string>
     <!-- Expert: item tag dimensions for outfit AI -->
-    <string name="composer_section_tags">Detaily položek k zohlednění</string>
-    <string name="composer_tags_hint">Vyber, které vlastnosti oblečení AI zohlední. Méně detailů = rychlejší, levnější a cílenější návrhy.</string>
 
     <!-- Onboarding tour -->
     <string name="onboarding_closet_add_items">Přidat oblečení</string>
@@ -775,7 +714,6 @@
     <string name="calendar_loved">Líbilo se mi</string>
 
     <!-- Wear-history AI consideration toggle -->
-    <string name="ai_consider_history">Historie nošení</string>
     <string name="ai_consider_history_desc">Učí se z toho, co skutečně nosíš a co se ti líbilo.</string>
 
     <!-- Usage estimate-accuracy table -->
@@ -875,17 +813,12 @@
     <!-- Shared error messages localization -->
     <string name="error_upload_failed">Nahrání selhalo: %1$s</string>
     <string name="error_original_unavailable">Originál není k dispozici</string>
-    <string name="error_gemini_no_response">AI neodpověděla.</string>
-    <string name="error_gemini_parse">Nelze přečíst odpověď AI.</string>
     <string name="error_import_failed_item">Import %1$s selhal: %2$s</string>
     <string name="error_tag_save_failed">Uložení štítků na Disk selhalo: %1$s</string>
     <string name="error_add_items_first">Nejprve přidejte položky do šatníku.</string>
     <string name="error_query_photo_missing">Fotka dotazu už neexistuje.</string>
     <string name="error_import_query_failed">Import fotky dotazu selhal.</string>
     <string name="error_trips_folder_not_ready">Složka cest není připravena.</string>
-    <string name="error_no_refinement">Nebylo vráceno žádné použitelné vylepšení.</string>
-    <string name="error_enter_destination">Zadejte cíl.</string>
-    <string name="error_weather_fetch_failed">Nelze načíst počasí pro „%1$s\". Zkontrolujte název cíle.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Přidat outfit do kalendáře</string>
     <string name="calendar_add_pick">Vyberte outfit</string>
@@ -906,7 +839,6 @@
     <string name="fab_wardrobe_add">Přidat kus</string>
     <string name="fab_calendar_log">Zaznamenat outfit</string>
     <string name="fab_shopping_add">Přidat nález</string>
-    <string name="fab_travel_plan">Naplánovat cestu</string>
     <string name="sel_style">Styl</string>
     <string name="sel_swap">Vyměnit</string>
     <string name="sel_move">Přesunout</string>

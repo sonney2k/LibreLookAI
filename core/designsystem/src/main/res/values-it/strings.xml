@@ -188,4 +188,32 @@
     <string name="travel_day">Giorno %d</string>
     <string name="trip_viewer_title">Trip</string>
     <string name="tryon_add_item">Aggiungi capo</string>
+    <!-- Sunk from :app in the feature:travel slice (shared outfit/settings vocabulary) -->
+    <string name="action_edit">Modifica</string>
+    <string name="outfits_empty">Nessun outfit ancora</string>
+    <string name="outfits_wear_today">Indossa oggi</string>
+    <string name="outfits_missing_items">Capi non più nel guardaroba</string>
+    <string name="composer_closets_all">Tutti i guardaroba</string>
+    <string name="composer_closets_title">Guardaroba</string>
+    <string name="composer_sheet_done">Fatto</string>
+    <string name="composer_section_sources">Guardaroba sorgenti</string>
+    <string name="composer_vibe_casual">Casual</string>
+    <string name="composer_vibe_sporty">Sportivo</string>
+    <string name="composer_vibe_formal">Formale</string>
+    <string name="composer_vibe_business">Business</string>
+    <string name="composer_vibe_streetwear">Streetwear</string>
+    <string name="composer_vibe_minimalist">Minimalista</string>
+    <string name="composer_vibe_classic">Classico</string>
+    <string name="composer_vibe_elegant">Elegante</string>
+    <string name="ai_consider_weather">Meteo</string>
+    <string name="ai_consider_location">Posizione</string>
+    <string name="ai_consider_trends">Tendenze moda</string>
+    <string name="ai_consider_gender">Genere</string>
+    <string name="ai_consider_age">Età</string>
+    <string name="ai_consider_preferences">Preferenze di stile</string>
+    <string name="composer_section_tags">Dettagli capi da valutare</string>
+    <string name="composer_tags_hint">Scegli quali attributi dei capi considera l\'IA. Meno dettagli = suggerimenti più rapidi, economici e mirati.</string>
+    <string name="ai_consider_history">Cronologia look</string>
+    <string name="error_gemini_no_response">L\'IA non ha risposto.</string>
+    <string name="error_gemini_parse">Impossibile leggere la risposta dell\'IA.</string>
 </resources>

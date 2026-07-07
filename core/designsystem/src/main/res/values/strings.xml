@@ -188,4 +188,32 @@
     <string name="travel_day">Day %d</string>
     <string name="trip_viewer_title">Trip</string>
     <string name="tryon_add_item">Add item</string>
+    <!-- Sunk from :app in the feature:travel slice (shared outfit/settings vocabulary) -->
+    <string name="action_edit">Edit</string>
+    <string name="outfits_empty">No outfits yet</string>
+    <string name="outfits_wear_today">Wear today</string>
+    <string name="outfits_missing_items">Items no longer in wardrobe</string>
+    <string name="composer_closets_all">All closets</string>
+    <string name="composer_closets_title">Closets</string>
+    <string name="composer_sheet_done">Done</string>
+    <string name="composer_section_sources">Source closets</string>
+    <string name="composer_vibe_casual">Casual</string>
+    <string name="composer_vibe_sporty">Sporty</string>
+    <string name="composer_vibe_formal">Formal</string>
+    <string name="composer_vibe_business">Business</string>
+    <string name="composer_vibe_streetwear">Streetwear</string>
+    <string name="composer_vibe_minimalist">Minimalist</string>
+    <string name="composer_vibe_classic">Classic</string>
+    <string name="composer_vibe_elegant">Elegant</string>
+    <string name="composer_section_tags">Item details to weigh</string>
+    <string name="composer_tags_hint">Pick which clothing attributes the AI weighs. Fewer details = faster, cheaper, more focused suggestions.</string>
+    <string name="ai_consider_weather">Weather</string>
+    <string name="ai_consider_location">Location</string>
+    <string name="ai_consider_trends">Fashion trends</string>
+    <string name="ai_consider_gender">Gender</string>
+    <string name="ai_consider_age">Age</string>
+    <string name="ai_consider_preferences">Style preferences</string>
+    <string name="ai_consider_history">Wear history</string>
+    <string name="error_gemini_no_response">The AI did not respond.</string>
+    <string name="error_gemini_parse">Could not read the AI response.</string>
 </resources>

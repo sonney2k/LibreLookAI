@@ -188,4 +188,32 @@
     <string name="travel_day">第 %d 天</string>
     <string name="trip_viewer_title">Trip</string>
     <string name="tryon_add_item">新增單品</string>
+    <!-- Sunk from :app in the feature:travel slice (shared outfit/settings vocabulary) -->
+    <string name="action_edit">編輯</string>
+    <string name="outfits_empty">目前沒有穿搭</string>
+    <string name="outfits_wear_today">今天穿這套</string>
+    <string name="ai_consider_age">年齡</string>
+    <string name="ai_consider_gender">性別</string>
+    <string name="ai_consider_location">位置</string>
+    <string name="ai_consider_preferences">風格偏好</string>
+    <string name="ai_consider_trends">時尚趨勢</string>
+    <string name="ai_consider_weather">天氣</string>
+    <string name="composer_closets_all">所有衣櫥</string>
+    <string name="composer_closets_title">衣櫥</string>
+    <string name="composer_section_sources">來源衣櫥</string>
+    <string name="composer_sheet_done">完成</string>
+    <string name="composer_vibe_business">商務</string>
+    <string name="composer_vibe_casual">休閒</string>
+    <string name="composer_vibe_classic">經典</string>
+    <string name="composer_vibe_elegant">優雅</string>
+    <string name="composer_vibe_formal">正式</string>
+    <string name="composer_vibe_minimalist">極簡</string>
+    <string name="composer_vibe_sporty">運動</string>
+    <string name="composer_vibe_streetwear">街頭</string>
+    <string name="outfits_missing_items">已不在衣櫥中的單品</string>
+    <string name="composer_section_tags">要納入考量的單品細節</string>
+    <string name="composer_tags_hint">選擇 AI 要考量哪些服裝屬性。細節越少 = 建議越快、越省、越精準。</string>
+    <string name="ai_consider_history">穿著紀錄</string>
+    <string name="error_gemini_no_response">AI 未回應。</string>
+    <string name="error_gemini_parse">無法讀取 AI 回應。</string>
 </resources>

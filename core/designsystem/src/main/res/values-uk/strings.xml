@@ -188,4 +188,32 @@
     <string name="travel_day">День %d</string>
     <string name="trip_viewer_title">Trip</string>
     <string name="tryon_add_item">Додати річ</string>
+    <!-- Sunk from :app in the feature:travel slice (shared outfit/settings vocabulary) -->
+    <string name="action_edit">Редагувати</string>
+    <string name="outfits_empty">Образів ще немає</string>
+    <string name="outfits_wear_today">Одягнути сьогодні</string>
+    <string name="ai_consider_age">Вік</string>
+    <string name="ai_consider_gender">Стать</string>
+    <string name="ai_consider_location">Локація</string>
+    <string name="ai_consider_preferences">Стильові вподобання</string>
+    <string name="ai_consider_trends">Модні тенденції</string>
+    <string name="ai_consider_weather">Погода</string>
+    <string name="composer_closets_all">Усі гардероби</string>
+    <string name="composer_closets_title">Гардероби</string>
+    <string name="composer_section_sources">Гардероби-джерела</string>
+    <string name="composer_sheet_done">Готово</string>
+    <string name="composer_vibe_business">Бізнес</string>
+    <string name="composer_vibe_casual">Кежуал</string>
+    <string name="composer_vibe_classic">Класичний</string>
+    <string name="composer_vibe_elegant">Елегантний</string>
+    <string name="composer_vibe_formal">Формальний</string>
+    <string name="composer_vibe_minimalist">Мінімалістичний</string>
+    <string name="composer_vibe_sporty">Спортивний</string>
+    <string name="composer_vibe_streetwear">Стрітвір</string>
+    <string name="outfits_missing_items">Речі, яких більше немає в гардеробі</string>
+    <string name="composer_section_tags">Деталі речей для врахування</string>
+    <string name="composer_tags_hint">Обери, які характеристики одягу враховує ШІ. Менше деталей = швидші, дешевші й точніші пропозиції.</string>
+    <string name="ai_consider_history">Історія носіння</string>
+    <string name="error_gemini_no_response">ШІ не відповів.</string>
+    <string name="error_gemini_parse">Не вдалося прочитати відповідь ШІ.</string>
 </resources>

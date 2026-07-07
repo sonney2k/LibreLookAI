@@ -302,7 +302,7 @@ internal fun OutfitFullScreenViewer(
                     }
                     add(
                         com.librelookai.ui.components.SelectionAction(
-                            label = stringResource(R.string.action_edit),
+                            label = stringResource(DsR.string.action_edit),
                             icon = Icons.Default.Edit,
                         ) {
                             Analytics.action("OutfitViewer", "edit")
@@ -353,7 +353,7 @@ internal fun OutfitFullScreenViewer(
                         modifier = Modifier.size(22.dp),
                     )
                 },
-                text = { Text(stringResource(if (actionsOpen) DsR.string.action_close else R.string.action_edit)) },
+                text = { Text(stringResource(if (actionsOpen) DsR.string.action_close else DsR.string.action_edit)) },
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(end = 16.dp, bottom = if (actionsOpen) barHeight + 8.dp else effectiveBottom + 16.dp),

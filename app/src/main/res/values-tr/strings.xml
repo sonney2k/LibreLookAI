@@ -61,7 +61,6 @@
 
     <!-- Common actions -->
     <string name="action_save">Kaydet</string>
-    <string name="action_edit">Düzenle</string>
     <string name="action_saving">Kaydediliyor…</string>
     <string name="cd_ai_suggestion">Yapay zeka önerisi</string>
     <string name="cd_refine">İyileştir</string>
@@ -267,7 +266,6 @@
     <!-- Tag value translations (stored in English; displayed in UI language) -->
     <!-- Colors -->
     <!-- Outfits -->
-    <string name="outfits_empty">Henüz kombin yok</string>
     <string name="outfits_empty_hint">Gardırobunuzdan bir kombin oluşturmak için +\'ya dokunun</string>
     <string name="outfits_sort_most_worn">En çok giyilen</string>
     <string name="outfits_create_manual">Manuel kombin oluştur</string>
@@ -290,9 +288,6 @@
     <string name="outfits_composing">Kombin oluşturuluyor…</string>
     <string name="outfits_delete_title">Kombin silinsin mi?</string>
     <string name="outfits_delete_text">\"%s\" kalıcı olarak kaldırılacaktır.</string>
-    <string name="outfits_wear_today">Bugün giy</string>
-    <string name="outfits_worn_today">Bugün giyildi!</string>
-    <string name="outfits_missing_items">Ögeler artık gardıropta değil</string>
     <string name="outfits_items_away">%d öge başka bir konumda</string>
     <string name="outfits_suggested_title">Bugün için önerilen</string>
     <string name="outfits_composed_title">Sizin için oluşturulan</string>
@@ -352,20 +347,14 @@
     <!-- Travel -->
     <string name="travel_title">Seyahat Hazırlık Listesi</string>
     <string name="travel_destination">Varış Noktası</string>
-    <string name="travel_destination_placeholder">örn. Paris, Tokyo, New York</string>
     <string name="travel_duration">Süre</string>
     <string name="travel_start_date">Başlangıç tarihi</string>
     <string name="travel_outfit_count">Kombinler</string>
     <string name="travel_outfit_count_reset">Gün sayısıyla eşle</string>
     <string name="travel_goal">Seyahat odağı</string>
-    <string name="travel_goal_placeholder">ör. iş toplantıları + akşam yemekleri</string>
-    <string name="travel_generate">Hazırlık Listesi Oluştur</string>
-    <string name="travel_regenerate">Yeniden oluştur</string>
     <string name="travel_packing_list">Hazırlık Listesi</string>
     <string name="travel_clear">Temizle</string>
-    <string name="travel_extra_items">Ayrıca paketleyin (gardıropta değil)</string>
     <string name="travel_empty">Başlamak için bir varış noktası girin</string>
-    <string name="travel_historical_note">Seyahat tarihleri canlı tahmin penceresinin dışında — tarihsel iklim verileri gösteriliyor.</string>
     <string name="travel_refine_lighter">Daha hafif paketle</string>
     <string name="travel_refine_formal">Daha fazla resmi seçenek</string>
     <string name="travel_refine_casual">Daha fazla günlük seçenek</string>
@@ -409,8 +398,6 @@
 
     <!-- Credits / Managed Mode -->
     <!-- AI overlay -->
-    <string name="ai_fetching_weather">Hava durumu alınıyor…</string>
-    <string name="ai_generating_packing">Hazırlık listesi oluşturuluyor…</string>
     <string name="ai_analyzing_wardrobe">Gardırobunuz analiz ediliyor…</string>
     <string name="ai_suggesting_style">Kombin öneriliyor…</string>
     <string name="ai_composing_outfit">Kombin oluşturuluyor…</string>
@@ -475,11 +462,8 @@
     <string name="composer_header_subtitle">5 katmandan %1$d tanesi · değiştirmek için dokunun</string>
     <string name="composer_fill_missing">Eksikleri doldur</string>
     <string name="composer_see_all_count">Hepsi %1$d</string>
-    <string name="composer_closets_all">Tüm gardıroplar</string>
     <string name="composer_layer_picked_count">%1$d seçildi</string>
     <string name="composer_weather_title">Hava Durumu</string>
-    <string name="composer_closets_title">Gardıroplar</string>
-    <string name="composer_sheet_done">Tamam</string>
     <string name="composer_save">Kaydet</string>
     <string name="composer_section_goal">Durum nedir?</string>
     <string name="composer_goal_placeholder">örn. Lizbon\'da akşam yemeği, sıcak akşam</string>
@@ -492,7 +476,6 @@
     <string name="composer_chip_travel">Seyahat</string>
     <string name="composer_chip_date">Randevu</string>
     <string name="composer_section_quick_start">Hızlı başlangıç</string>
-    <string name="composer_section_sources">Kaynak gardıroplar</string>
     <string name="composer_section_items">Ögeler</string>
     <string name="composer_section_weather">Hava Durumu</string>
     <string name="composer_section_vibe">Stil havası</string>
@@ -515,14 +498,6 @@
     <string name="composer_precip_none">Yok</string>
     <string name="composer_precip_light">Hafif</string>
     <string name="composer_precip_heavy">Şiddetli</string>
-    <string name="composer_vibe_casual">Günlük</string>
-    <string name="composer_vibe_sporty">Sportif</string>
-    <string name="composer_vibe_formal">Resmi</string>
-    <string name="composer_vibe_business">İş</string>
-    <string name="composer_vibe_streetwear">Sokak Stili</string>
-    <string name="composer_vibe_minimalist">Minimalist</string>
-    <string name="composer_vibe_classic">Klasik</string>
-    <string name="composer_vibe_elegant">Zarif</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_layer_top">Temel üst</string>
@@ -553,17 +528,11 @@
     <string name="settings_tab_ai">Yapay Zeka</string>
     <string name="ai_considerations_title">Varsayılan hususlar</string>
     <string name="ai_considerations_desc">Kombin önerirken veya oluştururken yapay zekanın neleri dikkate alması gerektiği. Değişiklikler tahmin, kompozisyon, hazırlık ve gardırop eksikliği istemleri için geçerlidir.</string>
-    <string name="ai_consider_weather">Hava Durumu</string>
     <string name="ai_consider_weather_desc">Bugünün sıcaklığını ve koşullarını dahil et.</string>
-    <string name="ai_consider_location">Konum</string>
     <string name="ai_consider_location_desc">Şehir, ülke ve kentsel/kırsal bağlamı dahil et.</string>
-    <string name="ai_consider_trends">Moda trendleri</string>
     <string name="ai_consider_trends_desc">Bölgeniz için trend olan renkleri, estetiği ve olmazsa olmazları dahil et.</string>
-    <string name="ai_consider_gender">Cinsiyet</string>
     <string name="ai_consider_gender_desc">Profil cinsiyetinizi dahil et.</string>
-    <string name="ai_consider_age">Yaş</string>
     <string name="ai_consider_age_desc">Yaşınızı (doğum yılından türetilen) dahil et.</string>
-    <string name="ai_consider_preferences">Stil tercihleri</string>
     <string name="ai_consider_preferences_desc">Serbest metin stil tercihlerinizi dahil et.</string>
 
 
@@ -644,34 +613,6 @@
     <string name="coins_balance_label">Bakiye: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Kendi Gemini anahtarınızı kullanıyorsunuz — kredi harcanmaz.</string>
     <!-- Trips -->
-    <string name="trip_planned_title">Planlanan gezi</string>
-    <string name="trip_saved_label">Kaydedildi</string>
-    <string name="trip_saved_confirmation">Gezi ve kombinler kaydedildi</string>
-    <string name="trip_not_found">Trip not found.</string>
-    <string name="trip_day_header">%1$d. Gün</string>
-    <string name="trip_packed">Bavulda</string>
-    <string name="trip_no_destination">Untitled trip</string>
-    <string name="trip_meta_dates">Başlangıç %1$s • %2$d gün</string>
-    <string name="trip_checklist">Liste</string>
-    <string name="trip_rename">Rename</string>
-    <string name="trip_modify_outfit">Modify outfit</string>
-    <string name="trip_section_other_outfits">Other travel outfits</string>
-    <string name="trip_delete">Geziyi sil</string>
-    <string name="trip_delete_confirm_title">Bu gezi silinsin mi?</string>
-    <string name="trip_delete_confirm_body">Bu gezi için oluşturulan kombinlerin de silinip silinmeyeceğini seç.</string>
-    <string name="trip_delete_with_outfits">Geziyi ve kombinleri sil</string>
-    <string name="trip_delete_keep_outfits">Kombinleri koru</string>
-    <string name="trip_bulk_refining">Tüm kombinler iyileştiriliyor…</string>
-    <string name="trip_bulk_refine_action">Tüm kombinleri iyileştir</string>
-    <string name="trip_bulk_refine_hint">ör. daha canlı renkler, daha az parça, akşama daha uygun…</string>
-    <string name="trip_bulk_refine_run">Yapay zekâ ile uygula</string>
-    <string name="trip_bulk_refine_brighter">Daha canlı renkler</string>
-    <string name="trip_bulk_refine_lighter">Daha hafif valiz</string>
-    <string name="trip_bulk_refine_formal">Daha resmi akşamlar</string>
-    <string name="trip_bulk_refine_skip_jacket">Ceketsiz</string>
-    <string name="trip_refine_preview_note">Önizleme — kaydedilmedi</string>
-    <string name="trip_refine_discard">Vazgeç</string>
-    <string name="trip_refine_replace">Gezi kombinlerini değiştir</string>
     <string name="wardrobe_delete_cascade_outfits">Bu parçaları kullanan %d kombini de sil</string>
     <string name="wardrobe_delete_cascade_tryons">Bu parçaların olduğu %d provayı da sil</string>
     <string name="outfits_broken_banner">%d kombin, gardırobunda artık bulunmayan parçaları kullanıyor.</string>
@@ -739,8 +680,6 @@
     <string name="settings_similarity_preview_sub">Fotoğrafla bul özelliği için tanılama.</string>
     <string name="settings_send_feedback">Geri bildirim gönder</string>
     <!-- Expert: item tag dimensions for outfit AI -->
-    <string name="composer_section_tags">Değerlendirilecek ürün detayları</string>
-    <string name="composer_tags_hint">Yapay zekânın hangi giysi özelliklerini dikkate alacağını seç. Daha az detay = daha hızlı, daha ucuz ve daha odaklı öneriler.</string>
 
     <!-- Onboarding tour -->
     <string name="onboarding_closet_add_items">Şimdi kıyafet ekle</string>
@@ -775,7 +714,6 @@
     <string name="calendar_loved">Bayıldım</string>
 
     <!-- Wear-history AI consideration toggle -->
-    <string name="ai_consider_history">Giyim geçmişi</string>
     <string name="ai_consider_history_desc">Gerçekten giydiklerinden ve beğendiklerinden öğrenir.</string>
 
     <!-- Usage estimate-accuracy table -->
@@ -875,17 +813,12 @@
     <!-- Shared error messages localization -->
     <string name="error_upload_failed">Yükleme başarısız: %1$s</string>
     <string name="error_original_unavailable">Orijinal kullanılamıyor</string>
-    <string name="error_gemini_no_response">Yapay zekâ yanıt vermedi.</string>
-    <string name="error_gemini_parse">Yapay zekâ yanıtı okunamadı.</string>
     <string name="error_import_failed_item">%1$s içe aktarılamadı: %2$s</string>
     <string name="error_tag_save_failed">Etiketleri Drive\'a kaydetme başarısız: %1$s</string>
     <string name="error_add_items_first">Önce gardırobunuza parça ekleyin.</string>
     <string name="error_query_photo_missing">Sorgu fotoğrafı artık mevcut değil.</string>
     <string name="error_import_query_failed">Sorgu fotoğrafı içe aktarılamadı.</string>
     <string name="error_trips_folder_not_ready">Geziler klasörü hazır değil.</string>
-    <string name="error_no_refinement">Kullanılabilir bir iyileştirme döndürülmedi.</string>
-    <string name="error_enter_destination">Lütfen bir varış noktası girin.</string>
-    <string name="error_weather_fetch_failed">\"%1$s\" için hava durumu alınamadı. Varış noktası adını kontrol edin.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Kombini takvime ekle</string>
     <string name="calendar_add_pick">Bir kombin seç</string>
@@ -906,7 +839,6 @@
     <string name="fab_wardrobe_add">Parça ekle</string>
     <string name="fab_calendar_log">Kombini kaydet</string>
     <string name="fab_shopping_add">Bulgu ekle</string>
-    <string name="fab_travel_plan">Gezi planla</string>
     <string name="sel_style">Stil</string>
     <string name="sel_swap">Değiştir</string>
     <string name="sel_move">Taşı</string>

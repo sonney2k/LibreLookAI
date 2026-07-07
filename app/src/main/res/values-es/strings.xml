@@ -61,7 +61,6 @@
 
     <!-- Acciones comunes -->
     <string name="action_save">Guardar</string>
-    <string name="action_edit">Editar</string>
     <string name="action_saving">Guardando…</string>
     <string name="cd_ai_suggestion">Sugerencia de IA</string>
     <string name="cd_refine">Refinar</string>
@@ -267,7 +266,6 @@
     <!-- Traducciones de valores de etiqueta (almacenadas en inglés; mostradas en el idioma de la interfaz) -->
     <!-- Colores -->
     <!-- Outfits -->
-    <string name="outfits_empty">Aún no hay outfits</string>
     <string name="outfits_empty_hint">Toca + para crear un outfit con tu armario</string>
     <string name="outfits_sort_most_worn">Más usados</string>
     <string name="outfits_create_manual">Crear outfit manualmente</string>
@@ -290,9 +288,6 @@
     <string name="outfits_composing">Componiendo outfit…</string>
     <string name="outfits_delete_title">¿Eliminar outfit?</string>
     <string name="outfits_delete_text">\"%s\" se eliminará permanentemente.</string>
-    <string name="outfits_wear_today">Llevar hoy</string>
-    <string name="outfits_worn_today">¡Llevado hoy!</string>
-    <string name="outfits_missing_items">Prendas que ya no están en el armario</string>
     <string name="outfits_items_away">%d prenda(s) en otra ubicación</string>
     <string name="outfits_suggested_title">Sugerido para hoy</string>
     <string name="outfits_composed_title">Compuesto para ti</string>
@@ -352,20 +347,14 @@
     <!-- Viaje -->
     <string name="travel_title">Lista de equipaje</string>
     <string name="travel_destination">Destino</string>
-    <string name="travel_destination_placeholder">p. ej. París, Tokio, Nueva York</string>
     <string name="travel_duration">Duración</string>
     <string name="travel_start_date">Fecha de inicio</string>
     <string name="travel_outfit_count">Outfits</string>
     <string name="travel_outfit_count_reset">Igualar días</string>
     <string name="travel_goal">Foco del viaje</string>
-    <string name="travel_goal_placeholder">p. ej. reuniones de negocios + cenas</string>
-    <string name="travel_generate">Generar lista de equipaje</string>
-    <string name="travel_regenerate">Regenerar</string>
     <string name="travel_packing_list">Lista de equipaje</string>
     <string name="travel_clear">Borrar</string>
-    <string name="travel_extra_items">Llevar también (fuera del armario)</string>
     <string name="travel_empty">Indica un destino para empezar</string>
-    <string name="travel_historical_note">Las fechas del viaje están fuera del horizonte de pronóstico en directo — se muestran datos climáticos históricos.</string>
     <string name="travel_refine_lighter">Equipaje más ligero</string>
     <string name="travel_refine_formal">Más opciones formales</string>
     <string name="travel_refine_casual">Más casual</string>
@@ -409,8 +398,6 @@
 
     <!-- Créditos / Modo gestionado -->
     <!-- Capa superpuesta de IA -->
-    <string name="ai_fetching_weather">Obteniendo el tiempo…</string>
-    <string name="ai_generating_packing">Generando lista de equipaje…</string>
     <string name="ai_analyzing_wardrobe">Analizando tu armario…</string>
     <string name="ai_suggesting_style">Sugiriendo outfit…</string>
     <string name="ai_composing_outfit">Componiendo outfit…</string>
@@ -475,11 +462,8 @@
     <string name="composer_header_subtitle">%1$d de 5 capas · toca para cambiar</string>
     <string name="composer_fill_missing">Rellenar lo que falta</string>
     <string name="composer_see_all_count">Todas %1$d</string>
-    <string name="composer_closets_all">Todos los armarios</string>
     <string name="composer_layer_picked_count">%1$d elegidas</string>
     <string name="composer_weather_title">Tiempo</string>
-    <string name="composer_closets_title">Armarios</string>
-    <string name="composer_sheet_done">Hecho</string>
     <string name="composer_save">Guardar</string>
     <string name="composer_section_goal">¿Cuál es la ocasión?</string>
     <string name="composer_goal_placeholder">p. ej. Cena en Lisboa, noche cálida</string>
@@ -492,7 +476,6 @@
     <string name="composer_chip_travel">Viaje</string>
     <string name="composer_chip_date">Cita</string>
     <string name="composer_section_quick_start">Inicio rápido</string>
-    <string name="composer_section_sources">Armarios de origen</string>
     <string name="composer_section_items">Prendas</string>
     <string name="composer_section_weather">Tiempo</string>
     <string name="composer_section_vibe">Estilo</string>
@@ -515,14 +498,6 @@
     <string name="composer_precip_none">Ninguna</string>
     <string name="composer_precip_light">Ligera</string>
     <string name="composer_precip_heavy">Fuerte</string>
-    <string name="composer_vibe_casual">Casual</string>
-    <string name="composer_vibe_sporty">Deportivo</string>
-    <string name="composer_vibe_formal">Formal</string>
-    <string name="composer_vibe_business">Trabajo</string>
-    <string name="composer_vibe_streetwear">Streetwear</string>
-    <string name="composer_vibe_minimalist">Minimalista</string>
-    <string name="composer_vibe_classic">Clásico</string>
-    <string name="composer_vibe_elegant">Elegante</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_layer_top">Top base</string>
@@ -553,17 +528,11 @@
     <string name="settings_tab_ai">IA</string>
     <string name="ai_considerations_title">Consideraciones por defecto</string>
     <string name="ai_considerations_desc">Lo que la IA debe tener en cuenta al sugerir o componer outfits. Los cambios se aplican a los prompts de predicción, composición, equipaje y carencias.</string>
-    <string name="ai_consider_weather">Tiempo</string>
     <string name="ai_consider_weather_desc">Incluir la temperatura y las condiciones de hoy.</string>
-    <string name="ai_consider_location">Ubicación</string>
     <string name="ai_consider_location_desc">Incluir ciudad, país y contexto urbano/rural.</string>
-    <string name="ai_consider_trends">Tendencias de moda</string>
     <string name="ai_consider_trends_desc">Incluir colores, estéticas e imprescindibles de tendencia en tu región.</string>
-    <string name="ai_consider_gender">Género</string>
     <string name="ai_consider_gender_desc">Incluir el género de tu perfil.</string>
-    <string name="ai_consider_age">Edad</string>
     <string name="ai_consider_age_desc">Incluir tu edad (calculada a partir del año de nacimiento).</string>
-    <string name="ai_consider_preferences">Preferencias de estilo</string>
     <string name="ai_consider_preferences_desc">Incluir tus preferencias de estilo en texto libre.</string>
 
 
@@ -644,34 +613,6 @@
     <string name="coins_balance_label">Saldo: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Usando tu propia clave de Gemini — no se gastan créditos.</string>
     <!-- Trips -->
-    <string name="trip_planned_title">Viaje planificado</string>
-    <string name="trip_saved_label">Guardado</string>
-    <string name="trip_saved_confirmation">Viaje y conjuntos guardados</string>
-    <string name="trip_not_found">Trip not found.</string>
-    <string name="trip_day_header">Día %1$d</string>
-    <string name="trip_packed">Empaquetado</string>
-    <string name="trip_no_destination">Untitled trip</string>
-    <string name="trip_meta_dates">Inicio %1$s • %2$d días</string>
-    <string name="trip_checklist">Lista</string>
-    <string name="trip_rename">Rename</string>
-    <string name="trip_modify_outfit">Modify outfit</string>
-    <string name="trip_section_other_outfits">Other travel outfits</string>
-    <string name="trip_delete">Eliminar viaje</string>
-    <string name="trip_delete_confirm_title">¿Eliminar este viaje?</string>
-    <string name="trip_delete_confirm_body">Elige si también quieres eliminar los conjuntos creados para este viaje.</string>
-    <string name="trip_delete_with_outfits">Eliminar viaje y conjuntos</string>
-    <string name="trip_delete_keep_outfits">Conservar conjuntos</string>
-    <string name="trip_bulk_refining">Refinando todos los conjuntos…</string>
-    <string name="trip_bulk_refine_action">Refinar todos los conjuntos</string>
-    <string name="trip_bulk_refine_hint">p. ej. colores más vivos, menos prendas, más elegante de noche…</string>
-    <string name="trip_bulk_refine_run">Aplicar con IA</string>
-    <string name="trip_bulk_refine_brighter">Colores más vivos</string>
-    <string name="trip_bulk_refine_lighter">Llevar menos equipaje</string>
-    <string name="trip_bulk_refine_formal">Noches más formales</string>
-    <string name="trip_bulk_refine_skip_jacket">Sin chaqueta</string>
-    <string name="trip_refine_preview_note">Vista previa: sin guardar</string>
-    <string name="trip_refine_discard">Descartar</string>
-    <string name="trip_refine_replace">Reemplazar conjuntos del viaje</string>
     <string name="wardrobe_delete_cascade_outfits">Eliminar también %d conjunto(s) que usan estas prendas</string>
     <string name="wardrobe_delete_cascade_tryons">Eliminar también %d prueba(s) con estas prendas</string>
     <string name="outfits_broken_banner">%d conjuntos usan prendas que ya no están en tu armario.</string>
@@ -739,8 +680,6 @@
     <string name="settings_similarity_preview_sub">Diagnóstico de la función buscar por foto.</string>
     <string name="settings_send_feedback">Enviar comentarios</string>
     <!-- Expert: item tag dimensions for outfit AI -->
-    <string name="composer_section_tags">Detalles de prendas a considerar</string>
-    <string name="composer_tags_hint">Elige qué atributos de la ropa tiene en cuenta la IA. Menos detalles = sugerencias más rápidas, económicas y precisas.</string>
 
     <!-- Onboarding tour -->
     <string name="onboarding_closet_add_items">Añadir ropa ahora</string>
@@ -775,7 +714,6 @@
     <string name="calendar_loved">Me encantó</string>
 
     <!-- Wear-history AI consideration toggle -->
-    <string name="ai_consider_history">Historial de uso</string>
     <string name="ai_consider_history_desc">Aprende de lo que realmente usas y te ha encantado.</string>
 
     <!-- Usage estimate-accuracy table -->
@@ -875,17 +813,12 @@
     <!-- Shared error messages localization -->
     <string name="error_upload_failed">Error al subir: %1$s</string>
     <string name="error_original_unavailable">Original no disponible</string>
-    <string name="error_gemini_no_response">La IA no respondió.</string>
-    <string name="error_gemini_parse">No se pudo leer la respuesta de la IA.</string>
     <string name="error_import_failed_item">Error al importar %1$s: %2$s</string>
     <string name="error_tag_save_failed">No se pudieron guardar las etiquetas en Drive: %1$s</string>
     <string name="error_add_items_first">Primero añade prendas a tu armario.</string>
     <string name="error_query_photo_missing">La foto de búsqueda ya no existe.</string>
     <string name="error_import_query_failed">No se pudo importar la foto de búsqueda.</string>
     <string name="error_trips_folder_not_ready">La carpeta de viajes no está lista.</string>
-    <string name="error_no_refinement">No se devolvió ningún ajuste útil.</string>
-    <string name="error_enter_destination">Introduce un destino.</string>
-    <string name="error_weather_fetch_failed">No se pudo obtener el tiempo de \"%1$s\". Comprueba el nombre del destino.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Añadir conjunto al calendario</string>
     <string name="calendar_add_pick">Elige un conjunto</string>
@@ -906,7 +839,6 @@
     <string name="fab_wardrobe_add">Añadir prenda</string>
     <string name="fab_calendar_log">Registrar look</string>
     <string name="fab_shopping_add">Añadir hallazgo</string>
-    <string name="fab_travel_plan">Planear viaje</string>
     <string name="sel_style">Estilo</string>
     <string name="sel_swap">Cambiar</string>
     <string name="sel_move">Mover</string>

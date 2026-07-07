@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Travel strings (moved from :app in the feature:travel slice) -->
+    <string name="outfits_worn_today">آج پہنا گیا!</string>
+    <string name="travel_goal_placeholder">مثلاً میٹنگز + شام کے کھانے</string>
+    <string name="travel_generate">سامان کی فہرست بنائیں</string>
+    <string name="ai_fetching_weather">موسم کی معلومات لی جا رہی ہے…</string>
+    <string name="ai_generating_packing">سامان کی فہرست بن رہی ہے…</string>
+    <string name="travel_destination_placeholder">مثلاً پیرس، ٹوکیو، نیویارک</string>
+    <string name="travel_extra_items">اضافی سامان (وارڈروب میں نہیں)</string>
+    <string name="travel_historical_note">سفر کی تاریخیں براہ راست پیش گوئی سے باہر ہیں — تاریخی موسمیاتی ڈیٹا دکھایا جا رہا ہے۔</string>
+    <string name="travel_regenerate">دوبارہ بنائیں</string>
+    <string name="trip_planned_title">منصوبہ بند سفر</string>
+    <string name="trip_saved_label">محفوظ</string>
+    <string name="trip_saved_confirmation">سفر اور آؤٹ فٹس محفوظ ہو گئے</string>
+    <string name="trip_not_found">Trip not found.</string>
+    <string name="trip_day_header">دن %1$d</string>
+    <string name="trip_packed">پیک ہو گیا</string>
+    <string name="trip_no_destination">Untitled trip</string>
+    <string name="trip_meta_dates">آغاز %1$s • %2$d دن</string>
+    <string name="trip_checklist">فہرست</string>
+    <string name="trip_rename">Rename</string>
+    <string name="trip_modify_outfit">Modify outfit</string>
+    <string name="trip_section_other_outfits">Other travel outfits</string>
+    <string name="trip_delete">سفر حذف کریں</string>
+    <string name="trip_delete_confirm_title">یہ سفر حذف کریں؟</string>
+    <string name="trip_delete_confirm_body">منتخب کریں کہ آیا اس سفر کے لیے بنائے گئے آؤٹ فٹس بھی حذف کیے جائیں۔</string>
+    <string name="trip_delete_with_outfits">سفر اور آؤٹ فٹس حذف کریں</string>
+    <string name="trip_delete_keep_outfits">آؤٹ فٹس رکھیں</string>
+    <string name="trip_bulk_refining">تمام آؤٹ فٹس کو بہتر بنایا جا رہا ہے…</string>
+    <string name="trip_bulk_refine_action">تمام آؤٹ فٹس بہتر بنائیں</string>
+    <string name="trip_bulk_refine_hint">مثلاً زیادہ شوخ رنگ، کم اشیاء، شام کے لیے بہتر…</string>
+    <string name="trip_bulk_refine_run">AI سے لاگو کریں</string>
+    <string name="trip_bulk_refine_brighter">زیادہ شوخ رنگ</string>
+    <string name="trip_bulk_refine_lighter">ہلکا سامان باندھیں</string>
+    <string name="trip_bulk_refine_formal">زیادہ رسمی شامیں</string>
+    <string name="trip_bulk_refine_skip_jacket">جیکٹ کے بغیر</string>
+    <string name="trip_refine_preview_note">پیش منظر — محفوظ نہیں</string>
+    <string name="trip_refine_discard">رد کریں</string>
+    <string name="trip_refine_replace">سفر کے آؤٹ فٹس بدلیں</string>
+    <string name="error_no_refinement">کوئی قابل استعمال بہتری واپس نہیں آئی۔</string>
+    <string name="error_enter_destination">براہ کرم منزل درج کریں۔</string>
+    <string name="error_weather_fetch_failed">\"%1$s\" کے لیے موسم حاصل نہیں ہو سکا۔ منزل کا نام چیک کریں۔</string>
+    <string name="fab_travel_plan">سفر کا منصوبہ</string>
+</resources>

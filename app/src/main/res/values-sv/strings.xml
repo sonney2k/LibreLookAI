@@ -61,7 +61,6 @@
 
     <!-- Vanliga åtgärder -->
     <string name="action_save">Spara</string>
-    <string name="action_edit">Redigera</string>
     <string name="action_saving">Sparar…</string>
     <string name="cd_ai_suggestion">AI-förslag</string>
     <string name="cd_refine">Förfina</string>
@@ -267,7 +266,6 @@
     <!-- Taggvärdesöversättningar (lagras på engelska; visas på UI-språk) -->
     <!-- Färger -->
     <!-- Outfits -->
-    <string name="outfits_empty">Inga outfits ännu</string>
     <string name="outfits_empty_hint">Tryck på + för att bygga en outfit från din garderob</string>
     <string name="outfits_sort_most_worn">Mest burna</string>
     <string name="outfits_create_manual">Skapa outfit manuellt</string>
@@ -290,9 +288,6 @@
     <string name="outfits_composing">Komponerar outfit…</string>
     <string name="outfits_delete_title">Ta bort outfit?</string>
     <string name="outfits_delete_text">\"%s\" tas bort permanent.</string>
-    <string name="outfits_wear_today">Bär idag</string>
-    <string name="outfits_worn_today">Buren idag!</string>
-    <string name="outfits_missing_items">Plagg finns inte längre i garderoben</string>
     <string name="outfits_items_away">%d plagg på en annan plats</string>
     <string name="outfits_suggested_title">Föreslagen för idag</string>
     <string name="outfits_composed_title">Komponerad åt dig</string>
@@ -352,20 +347,14 @@
     <!-- Resa -->
     <string name="travel_title">Packlista för resa</string>
     <string name="travel_destination">Destination</string>
-    <string name="travel_destination_placeholder">t.ex. Paris, Tokyo, New York</string>
     <string name="travel_duration">Varaktighet</string>
     <string name="travel_start_date">Startdatum</string>
     <string name="travel_outfit_count">Outfits</string>
     <string name="travel_outfit_count_reset">Som antal dagar</string>
     <string name="travel_goal">Resans fokus</string>
-    <string name="travel_goal_placeholder">t.ex. möten + middagar</string>
-    <string name="travel_generate">Generera packlista</string>
-    <string name="travel_regenerate">Generera om</string>
     <string name="travel_packing_list">Packlista</string>
     <string name="travel_clear">Rensa</string>
-    <string name="travel_extra_items">Packa även (finns inte i garderoben)</string>
     <string name="travel_empty">Ange en destination för att komma igång</string>
-    <string name="travel_historical_note">Resedatumen ligger utanför prognosfönstret — visar historisk klimatdata.</string>
     <string name="travel_refine_lighter">Packa lättare</string>
     <string name="travel_refine_formal">Mer formella alternativ</string>
     <string name="travel_refine_casual">Mer avslappnad</string>
@@ -409,8 +398,6 @@
 
     <!-- Krediter / Hanterat läge -->
     <!-- AI-overlay -->
-    <string name="ai_fetching_weather">Hämtar väder…</string>
-    <string name="ai_generating_packing">Genererar packlista…</string>
     <string name="ai_analyzing_wardrobe">Analyserar din garderob…</string>
     <string name="ai_suggesting_style">Föreslår outfit…</string>
     <string name="ai_composing_outfit">Komponerar outfit…</string>
@@ -475,11 +462,8 @@
     <string name="composer_header_subtitle">%1$d av 5 lager · tryck för att byta</string>
     <string name="composer_fill_missing">Fyll saknade</string>
     <string name="composer_see_all_count">Alla %1$d</string>
-    <string name="composer_closets_all">Alla garderober</string>
     <string name="composer_layer_picked_count">%1$d valda</string>
     <string name="composer_weather_title">Väder</string>
-    <string name="composer_closets_title">Garderober</string>
-    <string name="composer_sheet_done">Klar</string>
     <string name="composer_save">Spara</string>
     <string name="composer_section_goal">Vad är tillfället?</string>
     <string name="composer_goal_placeholder">t.ex. Middag i Lissabon, varm kväll</string>
@@ -492,7 +476,6 @@
     <string name="composer_chip_travel">Resa</string>
     <string name="composer_chip_date">Dejt</string>
     <string name="composer_section_quick_start">Snabbstart</string>
-    <string name="composer_section_sources">Källgarderober</string>
     <string name="composer_section_items">Plagg</string>
     <string name="composer_section_weather">Väder</string>
     <string name="composer_section_vibe">Stilkänsla</string>
@@ -515,14 +498,6 @@
     <string name="composer_precip_none">Ingen</string>
     <string name="composer_precip_light">Lätt</string>
     <string name="composer_precip_heavy">Kraftig</string>
-    <string name="composer_vibe_casual">Avslappnad</string>
-    <string name="composer_vibe_sporty">Sportig</string>
-    <string name="composer_vibe_formal">Formell</string>
-    <string name="composer_vibe_business">Business</string>
-    <string name="composer_vibe_streetwear">Streetwear</string>
-    <string name="composer_vibe_minimalist">Minimalistisk</string>
-    <string name="composer_vibe_classic">Klassisk</string>
-    <string name="composer_vibe_elegant">Elegant</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_layer_top">Basöverdel</string>
@@ -553,17 +528,11 @@
     <string name="settings_tab_ai">AI</string>
     <string name="ai_considerations_title">Standardhänsynstaganden</string>
     <string name="ai_considerations_desc">Vad AI ska ta hänsyn till vid förslag eller komposition av outfits. Ändringar gäller för prediktion, komposition, packlista och garderobsluck-prompter.</string>
-    <string name="ai_consider_weather">Väder</string>
     <string name="ai_consider_weather_desc">Ta med dagens temperatur och förhållanden.</string>
-    <string name="ai_consider_location">Plats</string>
     <string name="ai_consider_location_desc">Ta med stad, land och urban/landsbygdkontext.</string>
-    <string name="ai_consider_trends">Modetrender</string>
     <string name="ai_consider_trends_desc">Ta med trendfärger, estetik och must-haves för din region.</string>
-    <string name="ai_consider_gender">Kön</string>
     <string name="ai_consider_gender_desc">Ta med kön från din profil.</string>
-    <string name="ai_consider_age">Ålder</string>
     <string name="ai_consider_age_desc">Ta med din ålder (härledd från födelseår).</string>
-    <string name="ai_consider_preferences">Stilpreferenser</string>
     <string name="ai_consider_preferences_desc">Ta med din fritext-stilpreferens.</string>
 
 
@@ -644,34 +613,6 @@
     <string name="coins_balance_label">Saldo: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Använder din egen Gemini-nyckel — inga krediter förbrukas.</string>
     <!-- Trips -->
-    <string name="trip_planned_title">Planerad resa</string>
-    <string name="trip_saved_label">Sparad</string>
-    <string name="trip_saved_confirmation">Resa och outfits sparade</string>
-    <string name="trip_not_found">Trip not found.</string>
-    <string name="trip_day_header">Dag %1$d</string>
-    <string name="trip_packed">Packat</string>
-    <string name="trip_no_destination">Untitled trip</string>
-    <string name="trip_meta_dates">Start %1$s • %2$d dagar</string>
-    <string name="trip_checklist">Checklista</string>
-    <string name="trip_rename">Rename</string>
-    <string name="trip_modify_outfit">Modify outfit</string>
-    <string name="trip_section_other_outfits">Other travel outfits</string>
-    <string name="trip_delete">Ta bort resa</string>
-    <string name="trip_delete_confirm_title">Ta bort den här resan?</string>
-    <string name="trip_delete_confirm_body">Välj om outfitsen som skapats för den här resan också ska tas bort.</string>
-    <string name="trip_delete_with_outfits">Ta bort resa + outfits</string>
-    <string name="trip_delete_keep_outfits">Behåll outfits</string>
-    <string name="trip_bulk_refining">Finjusterar alla outfits…</string>
-    <string name="trip_bulk_refine_action">Finjustera alla outfits</string>
-    <string name="trip_bulk_refine_hint">t.ex. klarare färger, färre plagg, kvällsvänligare…</string>
-    <string name="trip_bulk_refine_run">Använd med AI</string>
-    <string name="trip_bulk_refine_brighter">Klarare färger</string>
-    <string name="trip_bulk_refine_lighter">Packa lättare</string>
-    <string name="trip_bulk_refine_formal">Mer formella kvällar</string>
-    <string name="trip_bulk_refine_skip_jacket">Utan jacka</string>
-    <string name="trip_refine_preview_note">Förhandsvisning – inte sparad</string>
-    <string name="trip_refine_discard">Släng</string>
-    <string name="trip_refine_replace">Ersätt resans outfits</string>
     <string name="wardrobe_delete_cascade_outfits">Ta även bort %d outfit(s) som använder dessa plagg</string>
     <string name="wardrobe_delete_cascade_tryons">Ta även bort %d provning(ar) med dessa plagg</string>
     <string name="outfits_broken_banner">%d outfits använder plagg som inte längre finns i din garderob.</string>
@@ -739,8 +680,6 @@
     <string name="settings_similarity_preview_sub">Diagnostik för sök-via-foto.</string>
     <string name="settings_send_feedback">Skicka feedback</string>
     <!-- Expert: item tag dimensions for outfit AI -->
-    <string name="composer_section_tags">Plaggdetaljer att väga in</string>
-    <string name="composer_tags_hint">Välj vilka klädattribut AI:n väger in. Färre detaljer = snabbare, billigare och mer fokuserade förslag.</string>
 
     <!-- Onboarding tour -->
     <string name="onboarding_closet_add_items">Lägg till kläder nu</string>
@@ -775,7 +714,6 @@
     <string name="calendar_loved">Älskade det</string>
 
     <!-- Wear-history AI consideration toggle -->
-    <string name="ai_consider_history">Användningshistorik</string>
     <string name="ai_consider_history_desc">Lär av det du faktiskt bär och har älskat.</string>
 
     <!-- Usage estimate-accuracy table -->
@@ -875,17 +813,12 @@
     <!-- Shared error messages localization -->
     <string name="error_upload_failed">Uppladdningen misslyckades: %1$s</string>
     <string name="error_original_unavailable">Originalet är inte tillgängligt</string>
-    <string name="error_gemini_no_response">AI:n svarade inte.</string>
-    <string name="error_gemini_parse">Det gick inte att läsa AI-svaret.</string>
     <string name="error_import_failed_item">Importen av %1$s misslyckades: %2$s</string>
     <string name="error_tag_save_failed">Det gick inte att spara taggar till Drive: %1$s</string>
     <string name="error_add_items_first">Lägg först till plagg i din garderob.</string>
     <string name="error_query_photo_missing">Sökfotot finns inte längre.</string>
     <string name="error_import_query_failed">Det gick inte att importera sökfotot.</string>
     <string name="error_trips_folder_not_ready">Resmappen är inte klar.</string>
-    <string name="error_no_refinement">Ingen användbar förfining returnerades.</string>
-    <string name="error_enter_destination">Ange ett resmål.</string>
-    <string name="error_weather_fetch_failed">Det gick inte att hämta väder för \"%1$s\". Kontrollera resmålets namn.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Lägg till outfit i kalendern</string>
     <string name="calendar_add_pick">Välj en outfit</string>
@@ -906,7 +839,6 @@
     <string name="fab_wardrobe_add">Lägg till plagg</string>
     <string name="fab_calendar_log">Logga outfit</string>
     <string name="fab_shopping_add">Lägg till fynd</string>
-    <string name="fab_travel_plan">Planera resa</string>
     <string name="sel_style">Styla</string>
     <string name="sel_swap">Byt</string>
     <string name="sel_move">Flytta</string>

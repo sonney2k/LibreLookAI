@@ -188,4 +188,32 @@
     <string name="travel_day">Ημέρα %d</string>
     <string name="trip_viewer_title">Trip</string>
     <string name="tryon_add_item">Προσθήκη είδους</string>
+    <!-- Sunk from :app in the feature:travel slice (shared outfit/settings vocabulary) -->
+    <string name="action_edit">Επεξεργασία</string>
+    <string name="outfits_empty">Δεν υπάρχουν σύνολα ακόμα</string>
+    <string name="outfits_wear_today">Φορέστε το σήμερα</string>
+    <string name="outfits_missing_items">Είδη που δεν υπάρχουν πια στη ντουλάπα</string>
+    <string name="composer_closets_all">Όλες οι ντουλάπες</string>
+    <string name="composer_closets_title">Ντουλάπες</string>
+    <string name="composer_sheet_done">Τέλος</string>
+    <string name="composer_section_sources">Πηγές</string>
+    <string name="composer_vibe_casual">Casual</string>
+    <string name="composer_vibe_sporty">Αθλητικό</string>
+    <string name="composer_vibe_formal">Επίσημο</string>
+    <string name="composer_vibe_business">Επαγγελματικό</string>
+    <string name="composer_vibe_streetwear">Streetwear</string>
+    <string name="composer_vibe_minimalist">Μινιμαλιστικό</string>
+    <string name="composer_vibe_classic">Κλασικό</string>
+    <string name="composer_vibe_elegant">Κομψό</string>
+    <string name="ai_consider_weather">Καιρός</string>
+    <string name="ai_consider_location">Τοποθεσία</string>
+    <string name="ai_consider_trends">Τάσεις μόδας</string>
+    <string name="ai_consider_gender">Φύλο</string>
+    <string name="ai_consider_age">Ηλικία</string>
+    <string name="ai_consider_preferences">Προτιμήσεις στιλ</string>
+    <string name="composer_section_tags">Λεπτομέρειες ρούχων προς αξιολόγηση</string>
+    <string name="composer_tags_hint">Επίλεξε ποια χαρακτηριστικά των ρούχων λαμβάνει υπόψη η AI. Λιγότερες λεπτομέρειες = ταχύτερες, φθηνότερες και πιο στοχευμένες προτάσεις.</string>
+    <string name="ai_consider_history">Ιστορικό χρήσης</string>
+    <string name="error_gemini_no_response">Η τεχνητή νοημοσύνη δεν απάντησε.</string>
+    <string name="error_gemini_parse">Δεν ήταν δυνατή η ανάγνωση της απάντησης της τεχνητής νοημοσύνης.</string>
 </resources>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Travel strings (moved from :app in the feature:travel slice) -->
+    <string name="outfits_worn_today">Założono dziś!</string>
+    <string name="travel_destination_placeholder">np. Paryż, Tokio, Nowy Jork</string>
+    <string name="travel_goal_placeholder">np. spotkania + kolacje</string>
+    <string name="travel_generate">Wygeneruj listę pakowania</string>
+    <string name="travel_regenerate">Wygeneruj ponownie</string>
+    <string name="travel_extra_items">Spakuj też (nie w garderobie)</string>
+    <string name="travel_historical_note">Daty wycieczki są poza oknem prognozy na żywo — pokazujemy historyczne dane klimatyczne.</string>
+    <string name="ai_fetching_weather">Pobieranie pogody…</string>
+    <string name="ai_generating_packing">Generowanie listy pakowania…</string>
+    <string name="trip_planned_title">Zaplanowana podróż</string>
+    <string name="trip_saved_label">Zapisano</string>
+    <string name="trip_saved_confirmation">Zapisano podróż i stylizacje</string>
+    <string name="trip_not_found">Trip not found.</string>
+    <string name="trip_day_header">Dzień %1$d</string>
+    <string name="trip_packed">Spakowane</string>
+    <string name="trip_no_destination">Untitled trip</string>
+    <string name="trip_meta_dates">Start %1$s • %2$d dni</string>
+    <string name="trip_checklist">Lista</string>
+    <string name="trip_rename">Rename</string>
+    <string name="trip_modify_outfit">Modify outfit</string>
+    <string name="trip_section_other_outfits">Other travel outfits</string>
+    <string name="trip_delete">Usuń podróż</string>
+    <string name="trip_delete_confirm_title">Usunąć tę podróż?</string>
+    <string name="trip_delete_confirm_body">Wybierz, czy usunąć także stylizacje utworzone dla tej podróży.</string>
+    <string name="trip_delete_with_outfits">Usuń podróż i stylizacje</string>
+    <string name="trip_delete_keep_outfits">Zachowaj stylizacje</string>
+    <string name="trip_bulk_refining">Dopracowywanie wszystkich stylizacji…</string>
+    <string name="trip_bulk_refine_action">Dopracuj wszystkie stylizacje</string>
+    <string name="trip_bulk_refine_hint">np. żywsze kolory, mniej rzeczy, lepsze na wieczór…</string>
+    <string name="trip_bulk_refine_run">Zastosuj z AI</string>
+    <string name="trip_bulk_refine_brighter">Żywsze kolory</string>
+    <string name="trip_bulk_refine_lighter">Spakuj lżej</string>
+    <string name="trip_bulk_refine_formal">Bardziej eleganckie wieczory</string>
+    <string name="trip_bulk_refine_skip_jacket">Bez kurtki</string>
+    <string name="trip_refine_preview_note">Podgląd — niezapisane</string>
+    <string name="trip_refine_discard">Odrzuć</string>
+    <string name="trip_refine_replace">Zamień stylizacje podróży</string>
+    <string name="error_no_refinement">Nie zwrócono użytecznego udoskonalenia.</string>
+    <string name="error_enter_destination">Wprowadź cel podróży.</string>
+    <string name="error_weather_fetch_failed">Nie można pobrać pogody dla „%1$s\". Sprawdź nazwę celu.</string>
+    <string name="fab_travel_plan">Zaplanuj podróż</string>
+</resources>

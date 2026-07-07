@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Travel strings (moved from :app in the feature:travel slice) -->
+    <string name="outfits_worn_today">Dnes nošeno!</string>
+    <string name="travel_destination_placeholder">např. Paříž, Tokio, New York</string>
+    <string name="travel_goal_placeholder">např. obchodní schůzky + večeře</string>
+    <string name="travel_generate">Generovat seznam</string>
+    <string name="travel_regenerate">Znovu generovat</string>
+    <string name="travel_extra_items">Také zabalit (není v šatníku)</string>
+    <string name="travel_historical_note">Data cesty jsou mimo okno živé předpovědi — zobrazují se historická klimatická data.</string>
+    <string name="ai_fetching_weather">Zjišťování počasí…</string>
+    <string name="ai_generating_packing">Generování seznamu věcí…</string>
+    <string name="trip_planned_title">Naplánovaný výlet</string>
+    <string name="trip_saved_label">Uloženo</string>
+    <string name="trip_saved_confirmation">Výlet a outfity uloženy</string>
+    <string name="trip_not_found">Trip not found.</string>
+    <string name="trip_day_header">Den %1$d</string>
+    <string name="trip_packed">Sbaleno</string>
+    <string name="trip_no_destination">Untitled trip</string>
+    <string name="trip_meta_dates">Začátek %1$s • %2$d dní</string>
+    <string name="trip_checklist">Seznam</string>
+    <string name="trip_rename">Rename</string>
+    <string name="trip_modify_outfit">Modify outfit</string>
+    <string name="trip_section_other_outfits">Other travel outfits</string>
+    <string name="trip_delete">Smazat výlet</string>
+    <string name="trip_delete_confirm_title">Smazat tento výlet?</string>
+    <string name="trip_delete_confirm_body">Vyber, zda se mají smazat i outfity vytvořené pro tento výlet.</string>
+    <string name="trip_delete_with_outfits">Smazat výlet i outfity</string>
+    <string name="trip_delete_keep_outfits">Ponechat outfity</string>
+    <string name="trip_bulk_refining">Vylepšuji všechny outfity…</string>
+    <string name="trip_bulk_refine_action">Vylepšit všechny outfity</string>
+    <string name="trip_bulk_refine_hint">např. výraznější barvy, méně kusů, vhodnější na večer…</string>
+    <string name="trip_bulk_refine_run">Použít s AI</string>
+    <string name="trip_bulk_refine_brighter">Výraznější barvy</string>
+    <string name="trip_bulk_refine_lighter">Sbalit lehčeji</string>
+    <string name="trip_bulk_refine_formal">Formálnější večery</string>
+    <string name="trip_bulk_refine_skip_jacket">Bez bundy</string>
+    <string name="trip_refine_preview_note">Náhled – neuloženo</string>
+    <string name="trip_refine_discard">Zahodit</string>
+    <string name="trip_refine_replace">Nahradit outfity výletu</string>
+    <string name="error_no_refinement">Nebylo vráceno žádné použitelné vylepšení.</string>
+    <string name="error_enter_destination">Zadejte cíl.</string>
+    <string name="error_weather_fetch_failed">Nelze načíst počasí pro „%1$s\". Zkontrolujte název cíle.</string>
+    <string name="fab_travel_plan">Naplánovat cestu</string>
+</resources>

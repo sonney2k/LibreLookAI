@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Travel strings (moved from :app in the feature:travel slice) -->
+    <string name="outfits_worn_today">Heute getragen!</string>
+    <string name="travel_destination_placeholder">z.B. Paris, Tokio, New York</string>
+    <string name="travel_goal_placeholder">z. B. Geschäftstermine + Abendessen</string>
+    <string name="travel_generate">Packliste erstellen</string>
+    <string name="travel_regenerate">Neu erstellen</string>
+    <string name="travel_extra_items">Auch einpacken (nicht in der Garderobe)</string>
+    <string name="travel_historical_note">Reisedaten liegen außerhalb des Live-Vorhersagefensters — historische Klimadaten werden angezeigt.</string>
+    <string name="travel_plan_eyebrow">Reise planen</string>
+    <string name="travel_plan_title">Neue Reise</string>
+    <string name="travel_label_destination">Reiseziel</string>
+    <string name="travel_label_dates">Daten</string>
+    <string name="travel_label_days">Tage</string>
+    <string name="travel_label_outfits">Outfits planen</string>
+    <string name="travel_label_vibe">Stil</string>
+    <string name="travel_label_ai_considers">KI berücksichtigt</string>
+    <string name="travel_label_about">Worum geht es auf der Reise?</string>
+    <string name="travel_outfit_count_summary">%1$d Looks · ~%2$s Tage je Look</string>
+    <string name="travel_outfits_section">Reise-Outfits</string>
+    <string name="travel_outfits_empty_hint">Tippe +, um eine Reise zu planen und Outfits mit dem Tag „travel\" zu speichern.</string>
+    <string name="ai_fetching_weather">Wetter wird geladen…</string>
+    <string name="ai_generating_packing">Packliste wird erstellt…</string>
+    <string name="trip_planned_title">Geplante Reise</string>
+    <string name="trip_saved_label">Gespeichert</string>
+    <string name="trip_saved_confirmation">Reise &amp; Outfits gespeichert</string>
+    <string name="trip_not_found">Trip not found.</string>
+    <string name="trip_day_header">Tag %1$d</string>
+    <string name="trip_packed">Eingepackt</string>
+    <string name="trip_no_destination">Untitled trip</string>
+    <string name="trip_meta_dates">Start %1$s • %2$d Tage</string>
+    <string name="trip_checklist">Checkliste</string>
+    <string name="trip_rename">Rename</string>
+    <string name="trip_modify_outfit">Modify outfit</string>
+    <string name="trip_section_other_outfits">Other travel outfits</string>
+    <string name="trip_delete">Reise löschen</string>
+    <string name="trip_delete_confirm_title">Diese Reise löschen?</string>
+    <string name="trip_delete_confirm_body">Wähle, ob die für diese Reise erstellten Outfits ebenfalls gelöscht werden sollen.</string>
+    <string name="trip_delete_with_outfits">Reise + Outfits löschen</string>
+    <string name="trip_delete_keep_outfits">Outfits behalten</string>
+    <string name="trip_bulk_refining">Alle Outfits werden verfeinert…</string>
+    <string name="trip_bulk_refine_action">Alle Outfits verfeinern</string>
+    <string name="trip_bulk_refine_hint">z. B. kräftigere Farben, weniger Teile, abendtauglicher…</string>
+    <string name="trip_bulk_refine_run">Mit KI anwenden</string>
+    <string name="trip_bulk_refine_brighter">Kräftigere Farben</string>
+    <string name="trip_bulk_refine_lighter">Leichter packen</string>
+    <string name="trip_bulk_refine_formal">Festlichere Abende</string>
+    <string name="trip_bulk_refine_skip_jacket">Jacke weglassen</string>
+    <string name="trip_refine_preview_note">Vorschau – nicht gespeichert</string>
+    <string name="trip_refine_discard">Verwerfen</string>
+    <string name="trip_refine_replace">Reise-Outfits ersetzen</string>
+    <string name="error_no_refinement">Keine brauchbare Verfeinerung erhalten.</string>
+    <string name="error_enter_destination">Bitte ein Ziel eingeben.</string>
+    <string name="error_weather_fetch_failed">Wetter für \"%1$s\" konnte nicht geladen werden. Prüfe den Zielnamen.</string>
+    <string name="fab_travel_plan">Reise planen</string>
+</resources>

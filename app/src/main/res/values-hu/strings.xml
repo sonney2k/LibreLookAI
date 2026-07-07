@@ -61,7 +61,6 @@
 
     <!-- Common actions -->
     <string name="action_save">Mentés</string>
-    <string name="action_edit">Szerkesztés</string>
     <string name="action_saving">Mentés…</string>
     <string name="cd_ai_suggestion">AI javaslat</string>
     <string name="cd_refine">Finomítás</string>
@@ -177,7 +176,6 @@
 
     <!-- Tag values -->
     <!-- Outfits -->
-    <string name="outfits_empty">Még nincsenek szettek</string>
     <string name="outfits_empty_hint">Koppints a + gombra egy szett összeállításához</string>
     <string name="outfits_sort_most_worn">Legtöbbet hordott</string>
     <string name="outfits_create_manual">Szett létrehozása manuálisan</string>
@@ -196,8 +194,6 @@
     <string name="outfits_composing">Szett összeállítása…</string>
     <string name="outfits_delete_title">Szett törlése?</string>
     <string name="outfits_delete_text">A(z) \"%s\" véglegesen törlődik.</string>
-    <string name="outfits_wear_today">Mai viselet</string>
-    <string name="outfits_worn_today">Ma hordva!</string>
     <string name="outfits_suggested_title">Javaslat mára</string>
     <string name="outfits_composed_title">Neked összeállítva</string>
     <string name="outfits_name_dialog_title">Nevezd el a szettet</string>
@@ -221,8 +217,6 @@
     <string name="travel_outfit_count">Szettek</string>
     <string name="travel_outfit_count_reset">Napokhoz igazítás</string>
     <string name="travel_goal">Utazás fókusza</string>
-    <string name="travel_goal_placeholder">pl. üzleti megbeszélések + vacsorák</string>
-    <string name="travel_generate">Pakolólista generálása</string>
     <string name="travel_packing_list">Pakolólista</string>
     <string name="travel_clear">Törlés</string>
     <string name="travel_empty">Adj meg egy úticélt a kezdéshez</string>
@@ -247,8 +241,6 @@
     <string name="gap_reanalyze">Újraelemzés</string>
 
     <!-- AI overlay -->
-    <string name="ai_fetching_weather">Időjárás lekérése…</string>
-    <string name="ai_generating_packing">Pakolólista generálása…</string>
     <string name="ai_analyzing_wardrobe">Gardrób elemzése…</string>
     <string name="ai_suggesting_style">Szett javaslása…</string>
     <string name="ai_composing_outfit">Szett összeállítása…</string>
@@ -304,17 +296,11 @@
     <string name="about_description">A LibreLookAI egy ingyenes, nyílt forráskódú, AI-alapú gardróbkezelő. Segít rendszerezni a ruhákat, szettjavaslatokat ad, utazási csomagolási listát tervez és felfedezi a gardróbhiányokat — mindezt AI-vel.</string>
     <string name="action_back">Vissza</string>
     <string name="action_search">Keresés</string>
-    <string name="ai_consider_age">Életkor</string>
     <string name="ai_consider_age_desc">Vegye figyelembe az életkorodat (a születési évből számítva).</string>
-    <string name="ai_consider_gender">Nem</string>
     <string name="ai_consider_gender_desc">Vegye figyelembe a profilodban megadott nemet.</string>
-    <string name="ai_consider_location">Hely</string>
     <string name="ai_consider_location_desc">Vegye figyelembe a várost, országot és a városi/vidéki kontextust.</string>
-    <string name="ai_consider_preferences">Stíluspreferenciák</string>
     <string name="ai_consider_preferences_desc">Vegye figyelembe a szabad szöveges stíluspreferenciáidat.</string>
-    <string name="ai_consider_trends">Divattrendek</string>
     <string name="ai_consider_trends_desc">Vegye figyelembe a régiódban trendi színeket, esztétikákat és must-have darabokat.</string>
-    <string name="ai_consider_weather">Időjárás</string>
     <string name="ai_consider_weather_desc">Vegye figyelembe a mai hőmérsékletet és a viszonyokat.</string>
     <string name="ai_considerations_desc">Mit vegyen figyelembe az AI a szettek javaslásánál vagy összeállításánál. A módosítások a predikció-, összeállítás-, csomagolási- és gardróbhiány-promptokra is érvényesek.</string>
     <string name="ai_considerations_title">Alapértelmezett szempontok</string>
@@ -327,8 +313,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="battery_exempt_title">Háttér-feldolgozás szükséges</string>
     <string name="calendar_empty_hint">Viselj egy szettet a Szettek lapról a követés elindításához</string>
     <string name="composer_add_selected">Kiválasztottak hozzáadása</string>
-    <string name="composer_closets_all">Minden gardrób</string>
-    <string name="composer_closets_title">Gardróbok</string>
     <string name="composer_desc_placeholder">Rövid leírás (opcionális)</string>
     <string name="composer_discard_confirm">Elvetés</string>
     <string name="composer_discard_message">A választásaid elvesznek.</string>
@@ -363,24 +347,14 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="composer_section_items">Darabok</string>
     <string name="composer_section_name">Név &amp; leírás</string>
     <string name="composer_section_quick_start">Gyors kezdés</string>
-    <string name="composer_section_sources">Forrás-gardróbok</string>
     <string name="composer_section_targets">Összeállítás</string>
     <string name="composer_section_vibe">Stílushangulat</string>
     <string name="composer_section_weather">Időjárás</string>
     <string name="composer_see_all_count">Mind a %1$d</string>
-    <string name="composer_sheet_done">Kész</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_tags_optional">Címkék (opcionális)</string>
     <string name="composer_targets_hint">Állítsd be, hány darabot vegyen fel az AI rétegenként. Hagyd 0-n, hogy az AI döntsön.</string>
-    <string name="composer_vibe_business">Business</string>
-    <string name="composer_vibe_casual">Hétköznapi</string>
-    <string name="composer_vibe_classic">Klasszikus</string>
-    <string name="composer_vibe_elegant">Elegáns</string>
-    <string name="composer_vibe_formal">Hivatalos</string>
-    <string name="composer_vibe_minimalist">Minimalista</string>
-    <string name="composer_vibe_sporty">Sportos</string>
-    <string name="composer_vibe_streetwear">Streetwear</string>
     <string name="composer_weather_precip">Csapadék</string>
     <string name="composer_weather_season">Évszak</string>
     <string name="composer_weather_temp">Hőmérséklet</string>
@@ -430,7 +404,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="outfits_description_placeholder">Leírás (opcionális)</string>
     <string name="outfits_items_away">%d darab másik helyen</string>
     <string name="outfits_items_label">Szettelemek</string>
-    <string name="outfits_missing_items">A gardróbban már nem található darabok</string>
     <string name="outfits_prediction_indicator">%1$d / %2$d</string>
     <string name="outfits_prediction_next">Következő javaslat</string>
     <string name="outfits_prediction_prev">Előző javaslat</string>
@@ -577,9 +550,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="shop_your_photo">A te fotód</string>
     <string name="tag_category_placeholder">felsők, alsók, felsőkabát, lábbeli, kiegészítők, ruha, öltöny</string>
     <string name="tag_type_placeholder">pl. Póló, Chinos, Tollkabát</string>
-    <string name="travel_destination_placeholder">pl. Párizs, Tokió, New York</string>
-    <string name="travel_extra_items">További csomagolnivaló (nincs a gardróbban)</string>
-    <string name="travel_historical_note">Az utazás dátumai az élő előrejelzésen kívül esnek — történelmi klímaadatok jelennek meg.</string>
     <string name="travel_move_done">A darabok az Utazás helyszínre lettek áthelyezve</string>
     <string name="travel_move_error">Nem sikerült áthelyezni a darabokat</string>
     <string name="travel_move_to_travel">Mindent áthelyez az Utazás helyszínre</string>
@@ -589,7 +559,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="travel_refine_lighter">Csomagolj könnyebben</string>
     <string name="travel_refine_rain">Esőre alkalmasabb</string>
     <string name="travel_refine_reuse">Szettek újrafelhasználásának maximalizálása</string>
-    <string name="travel_regenerate">Újragenerálás</string>
     <string name="tryon_add_items_title">Darabok hozzáadása a gardróbból</string>
     <string name="tryon_add_photo">%1$s fotó hozzáadása</string>
     <string name="tryon_cost_line">Felpróbálásonként %1$d kredit</string>
@@ -620,34 +589,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="wardrobe_view_original">Eredeti megtekintése</string>
 
     <!-- Trips -->
-    <string name="trip_planned_title">Tervezett utazás</string>
-    <string name="trip_saved_label">Mentve</string>
-    <string name="trip_saved_confirmation">Utazás és szettek mentve</string>
-    <string name="trip_not_found">Trip not found.</string>
-    <string name="trip_day_header">%1$d. nap</string>
-    <string name="trip_packed">Becsomagolva</string>
-    <string name="trip_no_destination">Untitled trip</string>
-    <string name="trip_meta_dates">Kezdés %1$s • %2$d nap</string>
-    <string name="trip_checklist">Lista</string>
-    <string name="trip_rename">Rename</string>
-    <string name="trip_modify_outfit">Modify outfit</string>
-    <string name="trip_section_other_outfits">Other travel outfits</string>
-    <string name="trip_delete">Utazás törlése</string>
-    <string name="trip_delete_confirm_title">Törlöd ezt az utazást?</string>
-    <string name="trip_delete_confirm_body">Válaszd ki, hogy az utazáshoz létrehozott szettek is törlődjenek-e.</string>
-    <string name="trip_delete_with_outfits">Utazás és szettek törlése</string>
-    <string name="trip_delete_keep_outfits">Szettek megtartása</string>
-    <string name="trip_bulk_refining">Az összes szett finomítása…</string>
-    <string name="trip_bulk_refine_action">Összes szett finomítása</string>
-    <string name="trip_bulk_refine_hint">pl. élénkebb színek, kevesebb darab, estére alkalmasabb…</string>
-    <string name="trip_bulk_refine_run">Alkalmazás MI-vel</string>
-    <string name="trip_bulk_refine_brighter">Élénkebb színek</string>
-    <string name="trip_bulk_refine_lighter">Könnyebb csomagolás</string>
-    <string name="trip_bulk_refine_formal">Elegánsabb esték</string>
-    <string name="trip_bulk_refine_skip_jacket">Kabát nélkül</string>
-    <string name="trip_refine_preview_note">Előnézet – nincs mentve</string>
-    <string name="trip_refine_discard">Elvetés</string>
-    <string name="trip_refine_replace">Utazási szettek cseréje</string>
     <string name="wardrobe_delete_cascade_outfits">Törölj %d szettet is, amelyek ezeket a darabokat használják</string>
     <string name="wardrobe_delete_cascade_tryons">Törölj %d felpróbálást is ezekkel a darabokkal</string>
     <string name="outfits_broken_banner">%d szett olyan darabokat használ, amelyek már nincsenek a ruhatáradban.</string>
@@ -715,8 +656,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="settings_similarity_preview_sub">Diagnosztika a fotó-alapú kereséshez.</string>
     <string name="settings_send_feedback">Visszajelzés küldése</string>
     <!-- Expert: item tag dimensions for outfit AI -->
-    <string name="composer_section_tags">Figyelembe veendő ruhajellemzők</string>
-    <string name="composer_tags_hint">Válaszd ki, mely ruhajellemzőket veszi figyelembe az MI. Kevesebb részlet = gyorsabb, olcsóbb és célzottabb javaslatok.</string>
 
     <!-- Onboarding tour -->
     <string name="onboarding_closet_add_items">Ruhák hozzáadása most</string>
@@ -751,7 +690,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="calendar_loved">Imádtam</string>
 
     <!-- Wear-history AI consideration toggle -->
-    <string name="ai_consider_history">Viselési előzmények</string>
     <string name="ai_consider_history_desc">Tanul abból, amit valóban hordasz és imádtál.</string>
 
     <!-- Usage estimate-accuracy table -->
@@ -851,17 +789,12 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <!-- Shared error messages localization -->
     <string name="error_upload_failed">A feltöltés sikertelen: %1$s</string>
     <string name="error_original_unavailable">Az eredeti nem érhető el</string>
-    <string name="error_gemini_no_response">Az MI nem válaszolt.</string>
-    <string name="error_gemini_parse">Az MI válasza nem olvasható.</string>
     <string name="error_import_failed_item">%1$s importálása sikertelen: %2$s</string>
     <string name="error_tag_save_failed">A címkék Drive-ra mentése sikertelen: %1$s</string>
     <string name="error_add_items_first">Először adj hozzá darabokat a gardróbodhoz.</string>
     <string name="error_query_photo_missing">A keresési fotó már nem létezik.</string>
     <string name="error_import_query_failed">A keresési fotó importálása sikertelen.</string>
     <string name="error_trips_folder_not_ready">Az utazások mappa nem áll készen.</string>
-    <string name="error_no_refinement">Nem érkezett használható finomítás.</string>
-    <string name="error_enter_destination">Adj meg egy úti célt.</string>
-    <string name="error_weather_fetch_failed">Nem sikerült lekérni az időjárást ehhez: \"%1$s\". Ellenőrizd az úti cél nevét.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Szett hozzáadása a naptárhoz</string>
     <string name="calendar_add_pick">Válassz egy szettet</string>
@@ -882,7 +815,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="fab_wardrobe_add">Tárgy hozzáadása</string>
     <string name="fab_calendar_log">Szett rögzítése</string>
     <string name="fab_shopping_add">Talált tárgy</string>
-    <string name="fab_travel_plan">Utazás tervezése</string>
     <string name="sel_style">Stílus</string>
     <string name="sel_swap">Csere</string>
     <string name="sel_move">Áthelyezés</string>

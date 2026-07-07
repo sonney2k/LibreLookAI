@@ -61,7 +61,6 @@
 
     <!-- 共通アクション -->
     <string name="action_save">保存</string>
-    <string name="action_edit">編集</string>
     <string name="action_saving">保存中…</string>
     <string name="cd_ai_suggestion">AIの提案</string>
     <string name="cd_refine">調整</string>
@@ -267,7 +266,6 @@
     <!-- タグ値の翻訳(英語で保存; UI言語で表示) -->
     <!-- 色 -->
     <!-- コーデ -->
-    <string name="outfits_empty">まだコーデがありません</string>
     <string name="outfits_empty_hint">+ をタップしてクローゼットからコーデを作成</string>
     <string name="outfits_sort_most_worn">着用回数順</string>
     <string name="outfits_create_manual">コーデを手動で作成</string>
@@ -290,9 +288,6 @@
     <string name="outfits_composing">コーデを作成中…</string>
     <string name="outfits_delete_title">コーデを削除しますか?</string>
     <string name="outfits_delete_text">「%s」は完全に削除されます。</string>
-    <string name="outfits_wear_today">今日着る</string>
-    <string name="outfits_worn_today">今日着用しました!</string>
-    <string name="outfits_missing_items">クローゼットにないアイテム</string>
     <string name="outfits_items_away">%d 件のアイテムが別の場所にあります</string>
     <string name="outfits_suggested_title">今日のおすすめ</string>
     <string name="outfits_composed_title">あなたのために作成</string>
@@ -352,20 +347,14 @@
     <!-- 旅行 -->
     <string name="travel_title">旅行用パッキングリスト</string>
     <string name="travel_destination">目的地</string>
-    <string name="travel_destination_placeholder">例: パリ、東京、ニューヨーク</string>
     <string name="travel_duration">期間</string>
     <string name="travel_start_date">開始日</string>
     <string name="travel_outfit_count">コーデ数</string>
     <string name="travel_outfit_count_reset">日数に合わせる</string>
     <string name="travel_goal">旅行の目的</string>
-    <string name="travel_goal_placeholder">例: 会議 + ディナー</string>
-    <string name="travel_generate">パッキングリストを生成</string>
-    <string name="travel_regenerate">再生成</string>
     <string name="travel_packing_list">パッキングリスト</string>
     <string name="travel_clear">クリア</string>
-    <string name="travel_extra_items">追加で持っていくもの(クローゼットにない)</string>
     <string name="travel_empty">目的地を入力して始めましょう</string>
-    <string name="travel_historical_note">旅行日が予報期間外です — 過去の気象データを表示しています。</string>
     <string name="travel_refine_lighter">もっと軽量に</string>
     <string name="travel_refine_formal">もっとフォーマルなオプション</string>
     <string name="travel_refine_casual">もっとカジュアル</string>
@@ -409,8 +398,6 @@
 
     <!-- クレジット / マネージドモード -->
     <!-- AI オーバーレイ -->
-    <string name="ai_fetching_weather">天気情報を取得中…</string>
-    <string name="ai_generating_packing">パッキングリストを生成中…</string>
     <string name="ai_analyzing_wardrobe">クローゼットを分析中…</string>
     <string name="ai_suggesting_style">コーデを提案中…</string>
     <string name="ai_composing_outfit">コーデを作成中…</string>
@@ -475,11 +462,8 @@
     <string name="composer_header_subtitle">5レイヤー中 %1$d · タップで入れ替え</string>
     <string name="composer_fill_missing">不足を埋める</string>
     <string name="composer_see_all_count">すべて %1$d</string>
-    <string name="composer_closets_all">すべてのクローゼット</string>
     <string name="composer_layer_picked_count">%1$d 件選択中</string>
     <string name="composer_weather_title">天気</string>
-    <string name="composer_closets_title">クローゼット</string>
-    <string name="composer_sheet_done">完了</string>
     <string name="composer_save">保存</string>
     <string name="composer_section_goal">どんな場面ですか?</string>
     <string name="composer_goal_placeholder">例: リスボンでのディナー、暖かい夜</string>
@@ -492,7 +476,6 @@
     <string name="composer_chip_travel">旅行</string>
     <string name="composer_chip_date">デート</string>
     <string name="composer_section_quick_start">クイックスタート</string>
-    <string name="composer_section_sources">参照クローゼット</string>
     <string name="composer_section_items">アイテム</string>
     <string name="composer_section_weather">天気</string>
     <string name="composer_section_vibe">スタイルの雰囲気</string>
@@ -515,14 +498,6 @@
     <string name="composer_precip_none">なし</string>
     <string name="composer_precip_light">小雨</string>
     <string name="composer_precip_heavy">大雨</string>
-    <string name="composer_vibe_casual">カジュアル</string>
-    <string name="composer_vibe_sporty">スポーティ</string>
-    <string name="composer_vibe_formal">フォーマル</string>
-    <string name="composer_vibe_business">ビジネス</string>
-    <string name="composer_vibe_streetwear">ストリート</string>
-    <string name="composer_vibe_minimalist">ミニマリスト</string>
-    <string name="composer_vibe_classic">クラシック</string>
-    <string name="composer_vibe_elegant">エレガント</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_layer_top">ベーストップ</string>
@@ -553,17 +528,11 @@
     <string name="settings_tab_ai">AI</string>
     <string name="ai_considerations_title">デフォルトの考慮事項</string>
     <string name="ai_considerations_desc">AI がコーデを提案・作成するときに考慮すべきこと。予測、作成、パッキング、ギャップ分析のプロンプトに適用されます。</string>
-    <string name="ai_consider_weather">天気</string>
     <string name="ai_consider_weather_desc">今日の気温と天候を含めます。</string>
-    <string name="ai_consider_location">場所</string>
     <string name="ai_consider_location_desc">都市、国、都市/田舎のコンテキストを含めます。</string>
-    <string name="ai_consider_trends">ファッショントレンド</string>
     <string name="ai_consider_trends_desc">あなたの地域のトレンドの色、美学、必須アイテムを含めます。</string>
-    <string name="ai_consider_gender">性別</string>
     <string name="ai_consider_gender_desc">プロフィールの性別を含めます。</string>
-    <string name="ai_consider_age">年齢</string>
     <string name="ai_consider_age_desc">あなたの年齢(生年から算出)を含めます。</string>
-    <string name="ai_consider_preferences">スタイルの好み</string>
     <string name="ai_consider_preferences_desc">フリーテキストで入力したスタイルの好みを含めます。</string>
 
 
@@ -644,34 +613,6 @@
     <string name="coins_balance_label">残高: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">ご自身の Gemini キーを使用中 — クレジットは消費されません。</string>
     <!-- Trips -->
-    <string name="trip_planned_title">予定した旅行</string>
-    <string name="trip_saved_label">保存済み</string>
-    <string name="trip_saved_confirmation">旅行とコーデを保存しました</string>
-    <string name="trip_not_found">Trip not found.</string>
-    <string name="trip_day_header">%1$d日目</string>
-    <string name="trip_packed">荷造り済み</string>
-    <string name="trip_no_destination">Untitled trip</string>
-    <string name="trip_meta_dates">開始 %1$s • %2$d日間</string>
-    <string name="trip_checklist">チェックリスト</string>
-    <string name="trip_rename">Rename</string>
-    <string name="trip_modify_outfit">Modify outfit</string>
-    <string name="trip_section_other_outfits">Other travel outfits</string>
-    <string name="trip_delete">旅行を削除</string>
-    <string name="trip_delete_confirm_title">この旅行を削除しますか？</string>
-    <string name="trip_delete_confirm_body">この旅行用に作成したコーデも削除するか選択してください。</string>
-    <string name="trip_delete_with_outfits">旅行とコーデを削除</string>
-    <string name="trip_delete_keep_outfits">コーデを残す</string>
-    <string name="trip_bulk_refining">すべてのコーデを調整中…</string>
-    <string name="trip_bulk_refine_action">すべてのコーデを調整</string>
-    <string name="trip_bulk_refine_hint">例：明るい色、アイテム少なめ、夜向け…</string>
-    <string name="trip_bulk_refine_run">AIで適用</string>
-    <string name="trip_bulk_refine_brighter">明るい色</string>
-    <string name="trip_bulk_refine_lighter">軽めの荷造り</string>
-    <string name="trip_bulk_refine_formal">よりフォーマルな夜</string>
-    <string name="trip_bulk_refine_skip_jacket">ジャケットなし</string>
-    <string name="trip_refine_preview_note">プレビュー — 未保存</string>
-    <string name="trip_refine_discard">破棄</string>
-    <string name="trip_refine_replace">旅行のコーデを置き換え</string>
     <string name="wardrobe_delete_cascade_outfits">これらのアイテムを使う %d 件のコーデも削除</string>
     <string name="wardrobe_delete_cascade_tryons">これらのアイテムを使った %d 件の試着も削除</string>
     <string name="outfits_broken_banner">%d 件のコーデが、ワードローブにないアイテムを使っています。</string>
@@ -739,8 +680,6 @@
     <string name="settings_similarity_preview_sub">写真で探す機能の診断。</string>
     <string name="settings_send_feedback">フィードバックを送信</string>
     <!-- Expert: item tag dimensions for outfit AI -->
-    <string name="composer_section_tags">考慮するアイテムの詳細</string>
-    <string name="composer_tags_hint">AIが考慮する服の属性を選びます。詳細が少ないほど、速く、安く、的を絞った提案になります。</string>
 
     <!-- Onboarding tour -->
     <string name="onboarding_closet_add_items">今すぐ服を追加</string>
@@ -775,7 +714,6 @@
     <string name="calendar_loved">お気に入り</string>
 
     <!-- Wear-history AI consideration toggle -->
-    <string name="ai_consider_history">着用履歴</string>
     <string name="ai_consider_history_desc">実際に着た服やお気に入りから学びます。</string>
 
     <!-- Usage estimate-accuracy table -->
@@ -875,17 +813,12 @@
     <!-- Shared error messages localization -->
     <string name="error_upload_failed">アップロードに失敗しました: %1$s</string>
     <string name="error_original_unavailable">オリジナルを利用できません</string>
-    <string name="error_gemini_no_response">AIから応答がありませんでした。</string>
-    <string name="error_gemini_parse">AIの応答を読み取れませんでした。</string>
     <string name="error_import_failed_item">%1$s のインポートに失敗しました: %2$s</string>
     <string name="error_tag_save_failed">タグのDriveへの保存に失敗しました: %1$s</string>
     <string name="error_add_items_first">まずワードローブにアイテムを追加してください。</string>
     <string name="error_query_photo_missing">検索用の写真は存在しません。</string>
     <string name="error_import_query_failed">検索用の写真のインポートに失敗しました。</string>
     <string name="error_trips_folder_not_ready">旅行フォルダの準備ができていません。</string>
-    <string name="error_no_refinement">使用可能な調整結果が返されませんでした。</string>
-    <string name="error_enter_destination">目的地を入力してください。</string>
-    <string name="error_weather_fetch_failed">「%1$s」の天気を取得できませんでした。目的地名を確認してください。</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">コーディネートをカレンダーに追加</string>
     <string name="calendar_add_pick">コーディネートを選択</string>
@@ -906,7 +839,6 @@
     <string name="fab_wardrobe_add">アイテム追加</string>
     <string name="fab_calendar_log">コーデを記録</string>
     <string name="fab_shopping_add">見つけた物を追加</string>
-    <string name="fab_travel_plan">旅行を計画</string>
     <string name="sel_style">コーデ作成</string>
     <string name="sel_swap">入れ替え</string>
     <string name="sel_move">移動</string>

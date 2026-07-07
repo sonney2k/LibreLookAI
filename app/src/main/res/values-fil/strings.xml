@@ -61,7 +61,6 @@
 
     <!-- Common actions -->
     <string name="action_save">I-save</string>
-    <string name="action_edit">I-edit</string>
     <string name="action_saving">Sina-save…</string>
     <string name="cd_ai_suggestion">Mungkahi ng AI</string>
     <string name="cd_refine">Pinuhin</string>
@@ -267,7 +266,6 @@
     <!-- Tag value translations (stored in English; displayed in UI language) -->
     <!-- Colors -->
     <!-- Outfits -->
-    <string name="outfits_empty">Walang outfit pa</string>
     <string name="outfits_empty_hint">I-tap ang + para bumuo ng outfit mula sa iyong wardrobe</string>
     <string name="outfits_sort_most_worn">Pinakamadalas isuot</string>
     <string name="outfits_create_manual">Gumawa ng outfit manually</string>
@@ -290,9 +288,6 @@
     <string name="outfits_composing">Bumubuo ng outfit…</string>
     <string name="outfits_delete_title">Tanggalin ang outfit?</string>
     <string name="outfits_delete_text">\"%s\" ay permanenteng aalisin.</string>
-    <string name="outfits_wear_today">Isuot ngayon</string>
-    <string name="outfits_worn_today">Naisuot na ngayon!</string>
-    <string name="outfits_missing_items">Mga item na wala na sa wardrobe</string>
     <string name="outfits_items_away">%d item sa ibang lokasyon</string>
     <string name="outfits_suggested_title">Iminumungkahi para ngayong araw</string>
     <string name="outfits_composed_title">Binuo para sa iyo</string>
@@ -352,20 +347,14 @@
     <!-- Travel -->
     <string name="travel_title">Travel Packing List</string>
     <string name="travel_destination">Destinasyon</string>
-    <string name="travel_destination_placeholder">hal. Paris, Tokyo, New York</string>
     <string name="travel_duration">Tagal</string>
     <string name="travel_start_date">Petsa ng simula</string>
     <string name="travel_outfit_count">Mga outfit</string>
     <string name="travel_outfit_count_reset">Itugma sa araw</string>
     <string name="travel_goal">Pokus ng biyahe</string>
-    <string name="travel_goal_placeholder">hal. business meetings + dinner</string>
-    <string name="travel_generate">Bumuo ng Packing List</string>
-    <string name="travel_regenerate">Bumuo muli</string>
     <string name="travel_packing_list">Packing List</string>
     <string name="travel_clear">I-clear</string>
-    <string name="travel_extra_items">Dalhin din (wala sa wardrobe)</string>
     <string name="travel_empty">Maglagay ng destinasyon para magsimula</string>
-    <string name="travel_historical_note">Ang mga petsa ng biyahe ay nasa labas ng live forecast window — ipinapakita ang historical climate data.</string>
     <string name="travel_refine_lighter">Mas magaan na pack</string>
     <string name="travel_refine_formal">Mas pormal na opsyon</string>
     <string name="travel_refine_casual">Mas casual</string>
@@ -409,8 +398,6 @@
 
     <!-- Credits / Managed Mode -->
     <!-- AI overlay -->
-    <string name="ai_fetching_weather">Kinukuha ang weather…</string>
-    <string name="ai_generating_packing">Bumubuo ng packing list…</string>
     <string name="ai_analyzing_wardrobe">Sinusuri ang iyong wardrobe…</string>
     <string name="ai_suggesting_style">Nagmumungkahi ng outfit…</string>
     <string name="ai_composing_outfit">Bumubuo ng outfit…</string>
@@ -475,11 +462,8 @@
     <string name="composer_header_subtitle">%1$d ng 5 layer · i-tap para palitan</string>
     <string name="composer_fill_missing">Punan ang nawawala</string>
     <string name="composer_see_all_count">Lahat %1$d</string>
-    <string name="composer_closets_all">Lahat ng closet</string>
     <string name="composer_layer_picked_count">%1$d napili</string>
     <string name="composer_weather_title">Weather</string>
-    <string name="composer_closets_title">Mga closet</string>
-    <string name="composer_sheet_done">Tapos na</string>
     <string name="composer_save">I-save</string>
     <string name="composer_section_goal">Anong okasyon?</string>
     <string name="composer_goal_placeholder">hal. Hapunan sa Lisbon, mainit na gabi</string>
@@ -492,7 +476,6 @@
     <string name="composer_chip_travel">Biyahe</string>
     <string name="composer_chip_date">Date</string>
     <string name="composer_section_quick_start">Mabilis na simula</string>
-    <string name="composer_section_sources">Mga source closet</string>
     <string name="composer_section_items">Mga item</string>
     <string name="composer_section_weather">Weather</string>
     <string name="composer_section_vibe">Style vibe</string>
@@ -515,14 +498,6 @@
     <string name="composer_precip_none">Wala</string>
     <string name="composer_precip_light">Magaan</string>
     <string name="composer_precip_heavy">Malakas</string>
-    <string name="composer_vibe_casual">Casual</string>
-    <string name="composer_vibe_sporty">Sporty</string>
-    <string name="composer_vibe_formal">Pormal</string>
-    <string name="composer_vibe_business">Business</string>
-    <string name="composer_vibe_streetwear">Streetwear</string>
-    <string name="composer_vibe_minimalist">Minimalist</string>
-    <string name="composer_vibe_classic">Classic</string>
-    <string name="composer_vibe_elegant">Elegante</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_layer_top">Base top</string>
@@ -553,17 +528,11 @@
     <string name="settings_tab_ai">AI</string>
     <string name="ai_considerations_title">Mga default na konsiderasyon</string>
     <string name="ai_considerations_desc">Ano ang dapat isaalang-alang ng AI kapag nagmumungkahi o bumubuo ng outfit. Ang mga pagbabago ay nalalapat sa prediction, composition, packing, at wardrobe-gap prompts.</string>
-    <string name="ai_consider_weather">Weather</string>
     <string name="ai_consider_weather_desc">Isama ang temperatura at kondisyon ngayong araw.</string>
-    <string name="ai_consider_location">Lokasyon</string>
     <string name="ai_consider_location_desc">Isama ang lungsod, bansa, at urban/rural context.</string>
-    <string name="ai_consider_trends">Mga fashion trend</string>
     <string name="ai_consider_trends_desc">Isama ang mga trending na kulay, aesthetic, at must-have para sa iyong rehiyon.</string>
-    <string name="ai_consider_gender">Kasarian</string>
     <string name="ai_consider_gender_desc">Isama ang iyong profile gender.</string>
-    <string name="ai_consider_age">Edad</string>
     <string name="ai_consider_age_desc">Isama ang iyong edad (nakuha mula sa taon ng kapanganakan).</string>
-    <string name="ai_consider_preferences">Mga style preference</string>
     <string name="ai_consider_preferences_desc">Isama ang iyong free-text na style preferences.</string>
 
 
@@ -644,34 +613,6 @@
     <string name="coins_balance_label">Balanse: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">Ginagamit ang sarili mong Gemini key — walang ginagastos na credit.</string>
     <!-- Trips -->
-    <string name="trip_planned_title">Planadong biyahe</string>
-    <string name="trip_saved_label">Na-save</string>
-    <string name="trip_saved_confirmation">Na-save ang biyahe at mga outfit</string>
-    <string name="trip_not_found">Trip not found.</string>
-    <string name="trip_day_header">Araw %1$d</string>
-    <string name="trip_packed">Nakaimpake</string>
-    <string name="trip_no_destination">Untitled trip</string>
-    <string name="trip_meta_dates">Simula %1$s • %2$d araw</string>
-    <string name="trip_checklist">Checklist</string>
-    <string name="trip_rename">Rename</string>
-    <string name="trip_modify_outfit">Modify outfit</string>
-    <string name="trip_section_other_outfits">Other travel outfits</string>
-    <string name="trip_delete">Tanggalin ang biyahe</string>
-    <string name="trip_delete_confirm_title">Tanggalin ang biyaheng ito?</string>
-    <string name="trip_delete_confirm_body">Piliin kung tatanggalin din ang mga outfit na ginawa para sa biyaheng ito.</string>
-    <string name="trip_delete_with_outfits">Tanggalin ang biyahe + outfit</string>
-    <string name="trip_delete_keep_outfits">Itago ang mga outfit</string>
-    <string name="trip_bulk_refining">Pinipino ang lahat ng outfit…</string>
-    <string name="trip_bulk_refine_action">Pinuhin ang lahat ng outfit</string>
-    <string name="trip_bulk_refine_hint">hal. mas matitingkad na kulay, mas kaunting piraso, mas bagay sa gabi…</string>
-    <string name="trip_bulk_refine_run">Ilapat gamit ang AI</string>
-    <string name="trip_bulk_refine_brighter">Mas matingkad na kulay</string>
-    <string name="trip_bulk_refine_lighter">Mas magaan na bitbit</string>
-    <string name="trip_bulk_refine_formal">Mas pormal na gabi</string>
-    <string name="trip_bulk_refine_skip_jacket">Walang jacket</string>
-    <string name="trip_refine_preview_note">Preview — hindi naka-save</string>
-    <string name="trip_refine_discard">Itapon</string>
-    <string name="trip_refine_replace">Palitan ang mga outfit ng biyahe</string>
     <string name="wardrobe_delete_cascade_outfits">Tanggalin din ang %d (na) outfit na gumagamit ng mga item na ito</string>
     <string name="wardrobe_delete_cascade_tryons">Tanggalin din ang %d (na) try-on na may mga item na ito</string>
     <string name="outfits_broken_banner">May %d outfit na gumagamit ng mga item na wala na sa iyong wardrobe.</string>
@@ -739,8 +680,6 @@
     <string name="settings_similarity_preview_sub">Diagnostics para sa hanapin-gamit-larawan.</string>
     <string name="settings_send_feedback">Magpadala ng feedback</string>
     <!-- Expert: item tag dimensions for outfit AI -->
-    <string name="composer_section_tags">Mga detalye ng item na isasaalang-alang</string>
-    <string name="composer_tags_hint">Piliin kung aling mga katangian ng damit ang isinasaalang-alang ng AI. Mas kaunting detalye = mas mabilis, mas mura, at mas tutok na mga mungkahi.</string>
 
     <!-- Onboarding tour -->
     <string name="onboarding_closet_add_items">Magdagdag ng damit ngayon</string>
@@ -775,7 +714,6 @@
     <string name="calendar_loved">Gustong-gusto</string>
 
     <!-- Wear-history AI consideration toggle -->
-    <string name="ai_consider_history">Kasaysayan ng suot</string>
     <string name="ai_consider_history_desc">Matututo mula sa aktwal mong sinusuot at nagustuhan.</string>
 
     <!-- Usage estimate-accuracy table -->
@@ -875,17 +813,12 @@
     <!-- Shared error messages localization -->
     <string name="error_upload_failed">Nabigo ang pag-upload: %1$s</string>
     <string name="error_original_unavailable">Hindi available ang orihinal</string>
-    <string name="error_gemini_no_response">Hindi tumugon ang AI.</string>
-    <string name="error_gemini_parse">Hindi mabasa ang tugon ng AI.</string>
     <string name="error_import_failed_item">Nabigo ang pag-import ng %1$s: %2$s</string>
     <string name="error_tag_save_failed">Nabigo ang pag-save ng mga tag sa Drive: %1$s</string>
     <string name="error_add_items_first">Magdagdag muna ng mga item sa iyong wardrobe.</string>
     <string name="error_query_photo_missing">Wala na ang query photo.</string>
     <string name="error_import_query_failed">Nabigong i-import ang query photo.</string>
     <string name="error_trips_folder_not_ready">Hindi pa handa ang folder ng mga biyahe.</string>
-    <string name="error_no_refinement">Walang nagamit na refinement na naibalik.</string>
-    <string name="error_enter_destination">Maglagay ng destinasyon.</string>
-    <string name="error_weather_fetch_failed">Hindi makuha ang panahon para sa \"%1$s\". Suriin ang pangalan ng destinasyon.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">Idagdag ang outfit sa kalendaryo</string>
     <string name="calendar_add_pick">Pumili ng outfit</string>
@@ -906,7 +839,6 @@
     <string name="fab_wardrobe_add">Magdagdag</string>
     <string name="fab_calendar_log">I-log ang outfit</string>
     <string name="fab_shopping_add">Magdagdag ng nahanap</string>
-    <string name="fab_travel_plan">Magplano ng biyahe</string>
     <string name="sel_style">I-style</string>
     <string name="sel_swap">Palitan</string>
     <string name="sel_move">Ilipat</string>

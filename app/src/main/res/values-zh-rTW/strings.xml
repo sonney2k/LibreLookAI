@@ -61,7 +61,6 @@
 
     <!-- Common actions -->
     <string name="action_save">儲存</string>
-    <string name="action_edit">編輯</string>
     <string name="action_saving">儲存中…</string>
     <string name="cd_ai_suggestion">AI 建議</string>
     <string name="cd_refine">優化</string>
@@ -177,7 +176,6 @@
 
     <!-- Tag values -->
     <!-- Outfits -->
-    <string name="outfits_empty">目前沒有穿搭</string>
     <string name="outfits_empty_hint">點擊 + 從衣櫥建立穿搭</string>
     <string name="outfits_sort_most_worn">穿著次數最多</string>
     <string name="outfits_create_manual">手動建立穿搭</string>
@@ -196,8 +194,6 @@
     <string name="outfits_composing">正在組合穿搭…</string>
     <string name="outfits_delete_title">刪除穿搭？</string>
     <string name="outfits_delete_text">\"%s\" 將被永久移除。</string>
-    <string name="outfits_wear_today">今天穿這套</string>
-    <string name="outfits_worn_today">今天穿過了！</string>
     <string name="outfits_suggested_title">今日建議</string>
     <string name="outfits_composed_title">為您組合</string>
     <string name="outfits_name_dialog_title">為此穿搭命名</string>
@@ -221,8 +217,6 @@
     <string name="travel_outfit_count">套裝數量</string>
     <string name="travel_outfit_count_reset">與天數一致</string>
     <string name="travel_goal">行程重點</string>
-    <string name="travel_goal_placeholder">例如商務會議 + 晚餐</string>
-    <string name="travel_generate">生成打包清單</string>
     <string name="travel_packing_list">打包清單</string>
     <string name="travel_clear">清除</string>
     <string name="travel_empty">輸入目的地以開始</string>
@@ -247,8 +241,6 @@
     <string name="gap_reanalyze">重新分析</string>
 
     <!-- AI overlay -->
-    <string name="ai_fetching_weather">正在獲取天氣…</string>
-    <string name="ai_generating_packing">正在生成打包清單…</string>
     <string name="ai_analyzing_wardrobe">正在分析您的衣櫥…</string>
     <string name="ai_suggesting_style">正在建議穿搭…</string>
     <string name="ai_composing_outfit">正在組合穿搭…</string>
@@ -304,17 +296,11 @@
     <string name="about_description">LibreLookAI 是一款免費、開源的 AI 衣櫥管理工具。它能協助你整理衣物、提供穿搭建議、規劃旅行打包清單，並找出衣櫥的缺口——一切都由 AI 驅動。</string>
     <string name="action_back">返回</string>
     <string name="action_search">搜尋</string>
-    <string name="ai_consider_age">年齡</string>
     <string name="ai_consider_age_desc">納入你的年齡（依出生年份計算）。</string>
-    <string name="ai_consider_gender">性別</string>
     <string name="ai_consider_gender_desc">納入個人資料中的性別。</string>
-    <string name="ai_consider_location">位置</string>
     <string name="ai_consider_location_desc">納入城市、國家以及都市／鄉村背景。</string>
-    <string name="ai_consider_preferences">風格偏好</string>
     <string name="ai_consider_preferences_desc">納入你以自由文字描述的風格偏好。</string>
-    <string name="ai_consider_trends">時尚趨勢</string>
     <string name="ai_consider_trends_desc">納入你所在地區的流行色、美學與必備單品。</string>
-    <string name="ai_consider_weather">天氣</string>
     <string name="ai_consider_weather_desc">納入今日的氣溫與狀況。</string>
     <string name="ai_considerations_desc">AI 在建議或組合穿搭時應考慮的內容。變更會套用至預測、組合、打包與衣櫥缺口提示。</string>
     <string name="ai_considerations_title">預設考慮項目</string>
@@ -327,8 +313,6 @@
     <string name="battery_exempt_title">需要背景處理權限</string>
     <string name="calendar_empty_hint">從「穿搭」頁面選一套穿搭來開始記錄</string>
     <string name="composer_add_selected">新增已選</string>
-    <string name="composer_closets_all">所有衣櫥</string>
-    <string name="composer_closets_title">衣櫥</string>
     <string name="composer_desc_placeholder">簡短描述（選填）</string>
     <string name="composer_discard_confirm">捨棄</string>
     <string name="composer_discard_message">你的選擇將會遺失。</string>
@@ -363,24 +347,14 @@
     <string name="composer_section_items">單品</string>
     <string name="composer_section_name">名稱 &amp; 描述</string>
     <string name="composer_section_quick_start">快速開始</string>
-    <string name="composer_section_sources">來源衣櫥</string>
     <string name="composer_section_targets">組合</string>
     <string name="composer_section_vibe">風格氛圍</string>
     <string name="composer_section_weather">天氣</string>
     <string name="composer_see_all_count">全部 %1$d 件</string>
-    <string name="composer_sheet_done">完成</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_tags_optional">標籤（選填）</string>
     <string name="composer_targets_hint">設定每一層的件數。設為 0 則由 AI 決定。</string>
-    <string name="composer_vibe_business">商務</string>
-    <string name="composer_vibe_casual">休閒</string>
-    <string name="composer_vibe_classic">經典</string>
-    <string name="composer_vibe_elegant">優雅</string>
-    <string name="composer_vibe_formal">正式</string>
-    <string name="composer_vibe_minimalist">極簡</string>
-    <string name="composer_vibe_sporty">運動</string>
-    <string name="composer_vibe_streetwear">街頭</string>
     <string name="composer_weather_precip">降水</string>
     <string name="composer_weather_season">季節</string>
     <string name="composer_weather_temp">氣溫</string>
@@ -430,7 +404,6 @@
     <string name="outfits_description_placeholder">描述（選填）</string>
     <string name="outfits_items_away">%d 件單品在其他地點</string>
     <string name="outfits_items_label">穿搭單品</string>
-    <string name="outfits_missing_items">已不在衣櫥中的單品</string>
     <string name="outfits_prediction_indicator">%1$d / %2$d</string>
     <string name="outfits_prediction_next">下一個建議</string>
     <string name="outfits_prediction_prev">上一個建議</string>
@@ -577,9 +550,6 @@
     <string name="shop_your_photo">你的相片</string>
     <string name="tag_category_placeholder">上身、下身、外套、鞋款、配件、洋裝、套裝</string>
     <string name="tag_type_placeholder">例如：T 恤、Chino 褲、鋪棉外套</string>
-    <string name="travel_destination_placeholder">例如：巴黎、東京、紐約</string>
-    <string name="travel_extra_items">另外要打包（不在衣櫥中）</string>
-    <string name="travel_historical_note">行程日期超出即時預報範圍——顯示歷史氣候資料。</string>
     <string name="travel_move_done">單品已移至「旅行」地點</string>
     <string name="travel_move_error">無法移動單品</string>
     <string name="travel_move_to_travel">全部移至「旅行」地點</string>
@@ -589,7 +559,6 @@
     <string name="travel_refine_lighter">打包輕一點</string>
     <string name="travel_refine_rain">更適合雨天</string>
     <string name="travel_refine_reuse">最大化穿搭重複使用</string>
-    <string name="travel_regenerate">重新生成</string>
     <string name="tryon_add_items_title">新增衣櫥單品</string>
     <string name="tryon_add_photo">新增 %1$s 相片</string>
     <string name="tryon_cost_line">每次試穿 %1$d 點</string>
@@ -620,34 +589,6 @@
     <string name="wardrobe_view_original">檢視原圖</string>
 
     <!-- Trips -->
-    <string name="trip_planned_title">已規劃的行程</string>
-    <string name="trip_saved_label">已儲存</string>
-    <string name="trip_saved_confirmation">行程與穿搭已儲存</string>
-    <string name="trip_not_found">Trip not found.</string>
-    <string name="trip_day_header">第 %1$d 天</string>
-    <string name="trip_packed">已打包</string>
-    <string name="trip_no_destination">Untitled trip</string>
-    <string name="trip_meta_dates">開始 %1$s • %2$d 天</string>
-    <string name="trip_checklist">清單</string>
-    <string name="trip_rename">Rename</string>
-    <string name="trip_modify_outfit">Modify outfit</string>
-    <string name="trip_section_other_outfits">Other travel outfits</string>
-    <string name="trip_delete">刪除行程</string>
-    <string name="trip_delete_confirm_title">刪除這個行程？</string>
-    <string name="trip_delete_confirm_body">選擇是否一併刪除為這個行程建立的穿搭。</string>
-    <string name="trip_delete_with_outfits">刪除行程與穿搭</string>
-    <string name="trip_delete_keep_outfits">保留穿搭</string>
-    <string name="trip_bulk_refining">正在優化所有穿搭…</string>
-    <string name="trip_bulk_refine_action">優化所有穿搭</string>
-    <string name="trip_bulk_refine_hint">例如更鮮亮的顏色、更少單品、更適合晚間…</string>
-    <string name="trip_bulk_refine_run">用 AI 套用</string>
-    <string name="trip_bulk_refine_brighter">更鮮亮的顏色</string>
-    <string name="trip_bulk_refine_lighter">輕便打包</string>
-    <string name="trip_bulk_refine_formal">更正式的夜晚</string>
-    <string name="trip_bulk_refine_skip_jacket">不要外套</string>
-    <string name="trip_refine_preview_note">預覽 — 尚未儲存</string>
-    <string name="trip_refine_discard">捨棄</string>
-    <string name="trip_refine_replace">替換行程穿搭</string>
     <string name="wardrobe_delete_cascade_outfits">同時刪除使用這些單品的 %d 套穿搭</string>
     <string name="wardrobe_delete_cascade_tryons">同時刪除含這些單品的 %d 次試穿</string>
     <string name="outfits_broken_banner">%d 套穿搭使用了已不在你衣櫥中的單品。</string>
@@ -715,8 +656,6 @@
     <string name="settings_similarity_preview_sub">以照片尋找功能的診斷。</string>
     <string name="settings_send_feedback">傳送意見回饋</string>
     <!-- Expert: item tag dimensions for outfit AI -->
-    <string name="composer_section_tags">要納入考量的單品細節</string>
-    <string name="composer_tags_hint">選擇 AI 要考量哪些服裝屬性。細節越少 = 建議越快、越省、越精準。</string>
 
     <!-- Onboarding tour -->
     <string name="onboarding_closet_add_items">立即加入衣物</string>
@@ -751,7 +690,6 @@
     <string name="calendar_loved">很喜歡</string>
 
     <!-- Wear-history AI consideration toggle -->
-    <string name="ai_consider_history">穿著紀錄</string>
     <string name="ai_consider_history_desc">從你實際穿過和喜歡的搭配中學習。</string>
 
     <!-- Usage estimate-accuracy table -->
@@ -851,17 +789,12 @@
     <!-- Shared error messages localization -->
     <string name="error_upload_failed">上傳失敗：%1$s</string>
     <string name="error_original_unavailable">原始檔無法使用</string>
-    <string name="error_gemini_no_response">AI 未回應。</string>
-    <string name="error_gemini_parse">無法讀取 AI 回應。</string>
     <string name="error_import_failed_item">匯入 %1$s 失敗：%2$s</string>
     <string name="error_tag_save_failed">將標籤儲存至雲端硬碟失敗：%1$s</string>
     <string name="error_add_items_first">請先將單品加入你的衣櫥。</string>
     <string name="error_query_photo_missing">查詢照片已不存在。</string>
     <string name="error_import_query_failed">匯入查詢照片失敗。</string>
     <string name="error_trips_folder_not_ready">旅行資料夾尚未就緒。</string>
-    <string name="error_no_refinement">未傳回可用的調整結果。</string>
-    <string name="error_enter_destination">請輸入目的地。</string>
-    <string name="error_weather_fetch_failed">無法取得「%1$s」的天氣。請檢查目的地名稱。</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">將穿搭加入日曆</string>
     <string name="calendar_add_pick">選擇穿搭</string>
@@ -882,7 +815,6 @@
     <string name="fab_wardrobe_add">新增單品</string>
     <string name="fab_calendar_log">記錄穿搭</string>
     <string name="fab_shopping_add">新增發現</string>
-    <string name="fab_travel_plan">規劃旅程</string>
     <string name="sel_style">搭配</string>
     <string name="sel_swap">替換</string>
     <string name="sel_move">移動</string>

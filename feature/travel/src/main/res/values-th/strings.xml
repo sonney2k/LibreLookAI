@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Travel strings (moved from :app in the feature:travel slice) -->
+    <string name="outfits_worn_today">ใส่แล้ววันนี้!</string>
+    <string name="travel_goal_placeholder">เช่น ประชุมธุรกิจ + ดินเนอร์</string>
+    <string name="travel_generate">สร้างรายการจัดกระเป๋า</string>
+    <string name="ai_fetching_weather">กำลังดึงข้อมูลสภาพอากาศ…</string>
+    <string name="ai_generating_packing">กำลังสร้างรายการจัดกระเป๋า…</string>
+    <string name="travel_destination_placeholder">เช่น ปารีส โตเกียว นิวยอร์ก</string>
+    <string name="travel_extra_items">ของที่ต้องแพ็คเพิ่ม (ไม่อยู่ในตู้)</string>
+    <string name="travel_historical_note">วันที่เดินทางนอกช่วงพยากรณ์สด — แสดงข้อมูลภูมิอากาศย้อนหลัง</string>
+    <string name="travel_regenerate">สร้างใหม่</string>
+    <string name="trip_planned_title">ทริปที่วางแผนไว้</string>
+    <string name="trip_saved_label">บันทึกแล้ว</string>
+    <string name="trip_saved_confirmation">บันทึกทริปและชุดแล้ว</string>
+    <string name="trip_not_found">Trip not found.</string>
+    <string name="trip_day_header">วันที่ %1$d</string>
+    <string name="trip_packed">แพ็คแล้ว</string>
+    <string name="trip_no_destination">Untitled trip</string>
+    <string name="trip_meta_dates">เริ่ม %1$s • %2$d วัน</string>
+    <string name="trip_checklist">รายการ</string>
+    <string name="trip_rename">Rename</string>
+    <string name="trip_modify_outfit">Modify outfit</string>
+    <string name="trip_section_other_outfits">Other travel outfits</string>
+    <string name="trip_delete">ลบทริป</string>
+    <string name="trip_delete_confirm_title">ลบทริปนี้ไหม?</string>
+    <string name="trip_delete_confirm_body">เลือกว่าจะลบชุดที่สร้างสำหรับทริปนี้ด้วยหรือไม่</string>
+    <string name="trip_delete_with_outfits">ลบทริปและชุด</string>
+    <string name="trip_delete_keep_outfits">เก็บชุดไว้</string>
+    <string name="trip_bulk_refining">กำลังปรับชุดทั้งหมด…</string>
+    <string name="trip_bulk_refine_action">ปรับชุดทั้งหมด</string>
+    <string name="trip_bulk_refine_hint">เช่น สีสดขึ้น ชิ้นน้อยลง เหมาะกับตอนเย็น…</string>
+    <string name="trip_bulk_refine_run">ใช้ด้วย AI</string>
+    <string name="trip_bulk_refine_brighter">สีสดขึ้น</string>
+    <string name="trip_bulk_refine_lighter">จัดกระเป๋าให้เบาลง</string>
+    <string name="trip_bulk_refine_formal">ค่ำคืนที่ทางการขึ้น</string>
+    <string name="trip_bulk_refine_skip_jacket">ไม่เอาแจ็กเก็ต</string>
+    <string name="trip_refine_preview_note">ตัวอย่าง — ยังไม่บันทึก</string>
+    <string name="trip_refine_discard">ละทิ้ง</string>
+    <string name="trip_refine_replace">แทนที่ชุดของทริป</string>
+    <string name="error_no_refinement">ไม่มีการปรับแต่งที่ใช้ได้กลับมา</string>
+    <string name="error_enter_destination">โปรดป้อนจุดหมายปลายทาง</string>
+    <string name="error_weather_fetch_failed">ไม่สามารถดึงสภาพอากาศสำหรับ \"%1$s\" ได้ ตรวจสอบชื่อจุดหมายปลายทาง</string>
+    <string name="fab_travel_plan">วางแผนทริป</string>
+</resources>

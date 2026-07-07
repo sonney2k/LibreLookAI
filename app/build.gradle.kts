@@ -162,6 +162,7 @@ dependencies {
     implementation(project(":feature:billing"))
     implementation(project(":feature:onboarding"))
     implementation(project(":feature:tryon"))
+    implementation(project(":feature:travel"))
     implementation(project(":core:database"))
     implementation(project(":core:ml"))
     implementation(project(":core:sync"))

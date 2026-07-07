@@ -188,4 +188,32 @@
     <string name="travel_day">Hari %d</string>
     <string name="trip_viewer_title">Trip</string>
     <string name="tryon_add_item">Tambah item</string>
+    <!-- Sunk from :app in the feature:travel slice (shared outfit/settings vocabulary) -->
+    <string name="action_edit">Edit</string>
+    <string name="outfits_empty">Belum ada setelan</string>
+    <string name="outfits_wear_today">Pakai hari ini</string>
+    <string name="ai_consider_age">Usia</string>
+    <string name="ai_consider_gender">Jenis kelamin</string>
+    <string name="ai_consider_location">Lokasi</string>
+    <string name="ai_consider_preferences">Preferensi gaya</string>
+    <string name="ai_consider_trends">Tren mode</string>
+    <string name="ai_consider_weather">Cuaca</string>
+    <string name="composer_closets_all">Semua lemari</string>
+    <string name="composer_closets_title">Lemari</string>
+    <string name="composer_section_sources">Lemari sumber</string>
+    <string name="composer_sheet_done">Selesai</string>
+    <string name="composer_vibe_business">Business</string>
+    <string name="composer_vibe_casual">Kasual</string>
+    <string name="composer_vibe_classic">Klasik</string>
+    <string name="composer_vibe_elegant">Elegan</string>
+    <string name="composer_vibe_formal">Formal</string>
+    <string name="composer_vibe_minimalist">Minimalis</string>
+    <string name="composer_vibe_sporty">Sporty</string>
+    <string name="composer_vibe_streetwear">Streetwear</string>
+    <string name="outfits_missing_items">Item yang sudah tidak ada di lemari</string>
+    <string name="composer_section_tags">Detail item yang dipertimbangkan</string>
+    <string name="composer_tags_hint">Pilih atribut pakaian yang dipertimbangkan AI. Lebih sedikit detail = saran lebih cepat, murah, dan terfokus.</string>
+    <string name="ai_consider_history">Riwayat pemakaian</string>
+    <string name="error_gemini_no_response">AI tidak merespons.</string>
+    <string name="error_gemini_parse">Tidak dapat membaca respons AI.</string>
 </resources>

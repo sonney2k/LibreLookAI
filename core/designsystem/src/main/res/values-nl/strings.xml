@@ -188,4 +188,32 @@
     <string name="travel_day">Dag %d</string>
     <string name="trip_viewer_title">Trip</string>
     <string name="tryon_add_item">Item toevoegen</string>
+    <!-- Sunk from :app in the feature:travel slice (shared outfit/settings vocabulary) -->
+    <string name="action_edit">Bewerken</string>
+    <string name="outfits_empty">Nog geen outfits</string>
+    <string name="outfits_wear_today">Vandaag dragen</string>
+    <string name="outfits_missing_items">Items niet meer in de garderobe</string>
+    <string name="composer_closets_all">Alle kasten</string>
+    <string name="composer_closets_title">Kasten</string>
+    <string name="composer_sheet_done">Klaar</string>
+    <string name="composer_section_sources">Bronkasten</string>
+    <string name="composer_vibe_casual">Casual</string>
+    <string name="composer_vibe_sporty">Sportief</string>
+    <string name="composer_vibe_formal">Formeel</string>
+    <string name="composer_vibe_business">Business</string>
+    <string name="composer_vibe_streetwear">Streetwear</string>
+    <string name="composer_vibe_minimalist">Minimalistisch</string>
+    <string name="composer_vibe_classic">Klassiek</string>
+    <string name="composer_vibe_elegant">Elegant</string>
+    <string name="ai_consider_weather">Weer</string>
+    <string name="ai_consider_location">Locatie</string>
+    <string name="ai_consider_trends">Modetrends</string>
+    <string name="ai_consider_gender">Geslacht</string>
+    <string name="ai_consider_age">Leeftijd</string>
+    <string name="ai_consider_preferences">Stijlvoorkeuren</string>
+    <string name="composer_section_tags">Itemdetails om mee te wegen</string>
+    <string name="composer_tags_hint">Kies welke kledingkenmerken de AI meeweegt. Minder details = snellere, goedkopere en gerichtere suggesties.</string>
+    <string name="ai_consider_history">Draaggeschiedenis</string>
+    <string name="error_gemini_no_response">De AI reageerde niet.</string>
+    <string name="error_gemini_parse">Kan het AI-antwoord niet lezen.</string>
 </resources>

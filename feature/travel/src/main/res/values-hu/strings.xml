@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Travel strings (moved from :app in the feature:travel slice) -->
+    <string name="outfits_worn_today">Ma hordva!</string>
+    <string name="travel_goal_placeholder">pl. üzleti megbeszélések + vacsorák</string>
+    <string name="travel_generate">Pakolólista generálása</string>
+    <string name="ai_fetching_weather">Időjárás lekérése…</string>
+    <string name="ai_generating_packing">Pakolólista generálása…</string>
+    <string name="travel_destination_placeholder">pl. Párizs, Tokió, New York</string>
+    <string name="travel_extra_items">További csomagolnivaló (nincs a gardróbban)</string>
+    <string name="travel_historical_note">Az utazás dátumai az élő előrejelzésen kívül esnek — történelmi klímaadatok jelennek meg.</string>
+    <string name="travel_regenerate">Újragenerálás</string>
+    <string name="trip_planned_title">Tervezett utazás</string>
+    <string name="trip_saved_label">Mentve</string>
+    <string name="trip_saved_confirmation">Utazás és szettek mentve</string>
+    <string name="trip_not_found">Trip not found.</string>
+    <string name="trip_day_header">%1$d. nap</string>
+    <string name="trip_packed">Becsomagolva</string>
+    <string name="trip_no_destination">Untitled trip</string>
+    <string name="trip_meta_dates">Kezdés %1$s • %2$d nap</string>
+    <string name="trip_checklist">Lista</string>
+    <string name="trip_rename">Rename</string>
+    <string name="trip_modify_outfit">Modify outfit</string>
+    <string name="trip_section_other_outfits">Other travel outfits</string>
+    <string name="trip_delete">Utazás törlése</string>
+    <string name="trip_delete_confirm_title">Törlöd ezt az utazást?</string>
+    <string name="trip_delete_confirm_body">Válaszd ki, hogy az utazáshoz létrehozott szettek is törlődjenek-e.</string>
+    <string name="trip_delete_with_outfits">Utazás és szettek törlése</string>
+    <string name="trip_delete_keep_outfits">Szettek megtartása</string>
+    <string name="trip_bulk_refining">Az összes szett finomítása…</string>
+    <string name="trip_bulk_refine_action">Összes szett finomítása</string>
+    <string name="trip_bulk_refine_hint">pl. élénkebb színek, kevesebb darab, estére alkalmasabb…</string>
+    <string name="trip_bulk_refine_run">Alkalmazás MI-vel</string>
+    <string name="trip_bulk_refine_brighter">Élénkebb színek</string>
+    <string name="trip_bulk_refine_lighter">Könnyebb csomagolás</string>
+    <string name="trip_bulk_refine_formal">Elegánsabb esték</string>
+    <string name="trip_bulk_refine_skip_jacket">Kabát nélkül</string>
+    <string name="trip_refine_preview_note">Előnézet – nincs mentve</string>
+    <string name="trip_refine_discard">Elvetés</string>
+    <string name="trip_refine_replace">Utazási szettek cseréje</string>
+    <string name="error_no_refinement">Nem érkezett használható finomítás.</string>
+    <string name="error_enter_destination">Adj meg egy úti célt.</string>
+    <string name="error_weather_fetch_failed">Nem sikerült lekérni az időjárást ehhez: \"%1$s\". Ellenőrizd az úti cél nevét.</string>
+    <string name="fab_travel_plan">Utazás tervezése</string>
+</resources>

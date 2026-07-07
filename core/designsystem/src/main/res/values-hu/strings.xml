@@ -188,4 +188,32 @@
     <string name="travel_day">%d. nap</string>
     <string name="trip_viewer_title">Trip</string>
     <string name="tryon_add_item">Darab hozzáadása</string>
+    <!-- Sunk from :app in the feature:travel slice (shared outfit/settings vocabulary) -->
+    <string name="action_edit">Szerkesztés</string>
+    <string name="outfits_empty">Még nincsenek szettek</string>
+    <string name="outfits_wear_today">Mai viselet</string>
+    <string name="ai_consider_age">Életkor</string>
+    <string name="ai_consider_gender">Nem</string>
+    <string name="ai_consider_location">Hely</string>
+    <string name="ai_consider_preferences">Stíluspreferenciák</string>
+    <string name="ai_consider_trends">Divattrendek</string>
+    <string name="ai_consider_weather">Időjárás</string>
+    <string name="composer_closets_all">Minden gardrób</string>
+    <string name="composer_closets_title">Gardróbok</string>
+    <string name="composer_section_sources">Forrás-gardróbok</string>
+    <string name="composer_sheet_done">Kész</string>
+    <string name="composer_vibe_business">Business</string>
+    <string name="composer_vibe_casual">Hétköznapi</string>
+    <string name="composer_vibe_classic">Klasszikus</string>
+    <string name="composer_vibe_elegant">Elegáns</string>
+    <string name="composer_vibe_formal">Hivatalos</string>
+    <string name="composer_vibe_minimalist">Minimalista</string>
+    <string name="composer_vibe_sporty">Sportos</string>
+    <string name="composer_vibe_streetwear">Streetwear</string>
+    <string name="outfits_missing_items">A gardróbban már nem található darabok</string>
+    <string name="composer_section_tags">Figyelembe veendő ruhajellemzők</string>
+    <string name="composer_tags_hint">Válaszd ki, mely ruhajellemzőket veszi figyelembe az MI. Kevesebb részlet = gyorsabb, olcsóbb és célzottabb javaslatok.</string>
+    <string name="ai_consider_history">Viselési előzmények</string>
+    <string name="error_gemini_no_response">Az MI nem válaszolt.</string>
+    <string name="error_gemini_parse">Az MI válasza nem olvasható.</string>
 </resources>

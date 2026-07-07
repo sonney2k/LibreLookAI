@@ -188,4 +188,32 @@
     <string name="travel_day">दिन %d</string>
     <string name="trip_viewer_title">Trip</string>
     <string name="tryon_add_item">आइटम जोड़ें</string>
+    <!-- Sunk from :app in the feature:travel slice (shared outfit/settings vocabulary) -->
+    <string name="action_edit">संपादित करें</string>
+    <string name="outfits_empty">अभी तक कोई आउटफ़िट नहीं</string>
+    <string name="outfits_wear_today">आज पहनें</string>
+    <string name="ai_consider_age">उम्र</string>
+    <string name="ai_consider_gender">लिंग</string>
+    <string name="ai_consider_location">स्थान</string>
+    <string name="ai_consider_preferences">स्टाइल वरीयताएँ</string>
+    <string name="ai_consider_trends">फ़ैशन ट्रेंड</string>
+    <string name="ai_consider_weather">मौसम</string>
+    <string name="composer_closets_all">सभी क्लोज़ेट</string>
+    <string name="composer_closets_title">क्लोज़ेट</string>
+    <string name="composer_section_sources">स्रोत क्लोज़ेट</string>
+    <string name="composer_sheet_done">हो गया</string>
+    <string name="composer_vibe_business">बिज़नेस</string>
+    <string name="composer_vibe_casual">कैज़ुअल</string>
+    <string name="composer_vibe_classic">क्लासिक</string>
+    <string name="composer_vibe_elegant">एलिगेंट</string>
+    <string name="composer_vibe_formal">फ़ॉर्मल</string>
+    <string name="composer_vibe_minimalist">मिनिमलिस्ट</string>
+    <string name="composer_vibe_sporty">स्पोर्टी</string>
+    <string name="composer_vibe_streetwear">स्ट्रीटवियर</string>
+    <string name="outfits_missing_items">अब वॉर्डरोब में नहीं हैं</string>
+    <string name="composer_section_tags">विचार करने योग्य आइटम विवरण</string>
+    <string name="composer_tags_hint">चुनें कि AI कपड़ों की किन विशेषताओं को ध्यान में रखे। कम विवरण = तेज़, सस्ते और अधिक केंद्रित सुझाव।</string>
+    <string name="ai_consider_history">पहनने का इतिहास</string>
+    <string name="error_gemini_no_response">AI ने जवाब नहीं दिया।</string>
+    <string name="error_gemini_parse">AI की प्रतिक्रिया पढ़ी नहीं जा सकी।</string>
 </resources>

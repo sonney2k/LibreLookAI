@@ -188,4 +188,32 @@
     <string name="travel_day">%d. Gün</string>
     <string name="trip_viewer_title">Trip</string>
     <string name="tryon_add_item">Öge ekle</string>
+    <!-- Sunk from :app in the feature:travel slice (shared outfit/settings vocabulary) -->
+    <string name="action_edit">Düzenle</string>
+    <string name="outfits_empty">Henüz kombin yok</string>
+    <string name="outfits_wear_today">Bugün giy</string>
+    <string name="outfits_missing_items">Ögeler artık gardıropta değil</string>
+    <string name="composer_closets_all">Tüm gardıroplar</string>
+    <string name="composer_closets_title">Gardıroplar</string>
+    <string name="composer_sheet_done">Tamam</string>
+    <string name="composer_section_sources">Kaynak gardıroplar</string>
+    <string name="composer_vibe_casual">Günlük</string>
+    <string name="composer_vibe_sporty">Sportif</string>
+    <string name="composer_vibe_formal">Resmi</string>
+    <string name="composer_vibe_business">İş</string>
+    <string name="composer_vibe_streetwear">Sokak Stili</string>
+    <string name="composer_vibe_minimalist">Minimalist</string>
+    <string name="composer_vibe_classic">Klasik</string>
+    <string name="composer_vibe_elegant">Zarif</string>
+    <string name="ai_consider_weather">Hava Durumu</string>
+    <string name="ai_consider_location">Konum</string>
+    <string name="ai_consider_trends">Moda trendleri</string>
+    <string name="ai_consider_gender">Cinsiyet</string>
+    <string name="ai_consider_age">Yaş</string>
+    <string name="ai_consider_preferences">Stil tercihleri</string>
+    <string name="composer_section_tags">Değerlendirilecek ürün detayları</string>
+    <string name="composer_tags_hint">Yapay zekânın hangi giysi özelliklerini dikkate alacağını seç. Daha az detay = daha hızlı, daha ucuz ve daha odaklı öneriler.</string>
+    <string name="ai_consider_history">Giyim geçmişi</string>
+    <string name="error_gemini_no_response">Yapay zekâ yanıt vermedi.</string>
+    <string name="error_gemini_parse">Yapay zekâ yanıtı okunamadı.</string>
 </resources>

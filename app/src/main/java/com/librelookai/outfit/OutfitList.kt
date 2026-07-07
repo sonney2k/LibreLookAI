@@ -463,7 +463,7 @@ internal fun OutfitListScreen(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center,
                         ) {
-                            Text(stringResource(R.string.outfits_empty), style = MaterialTheme.typography.bodyLarge)
+                            Text(stringResource(DsR.string.outfits_empty), style = MaterialTheme.typography.bodyLarge)
                             Spacer(Modifier.height(4.dp))
                             Text(
                                 stringResource(R.string.outfits_empty_hint),

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Travel strings (moved from :app in the feature:travel slice) -->
+    <string name="outfits_worn_today">נלבש היום!</string>
+    <string name="travel_destination_placeholder">למשל פריז, טוקיו, ניו יורק</string>
+    <string name="travel_goal_placeholder">למשל פגישות + ארוחות ערב</string>
+    <string name="travel_generate">צור רשימת אריזה</string>
+    <string name="travel_regenerate">צור מחדש</string>
+    <string name="travel_extra_items">ארוז בנוסף (לא מהמלתחה)</string>
+    <string name="travel_historical_note">התאריכים מחוץ לטווח התחזית — מוצגים נתונים היסטוריים.</string>
+    <string name="ai_fetching_weather">מקבל תחזית מזג אוויר…</string>
+    <string name="ai_generating_packing">מכין רשימת אריזה…</string>
+    <string name="trip_planned_title">טיול מתוכנן</string>
+    <string name="trip_saved_label">נשמר</string>
+    <string name="trip_saved_confirmation">הטיול והתלבושות נשמרו</string>
+    <string name="trip_not_found">Trip not found.</string>
+    <string name="trip_day_header">יום %1$d</string>
+    <string name="trip_packed">ארוז</string>
+    <string name="trip_no_destination">Untitled trip</string>
+    <string name="trip_meta_dates">התחלה %1$s • %2$d ימים</string>
+    <string name="trip_checklist">רשימה</string>
+    <string name="trip_rename">Rename</string>
+    <string name="trip_modify_outfit">Modify outfit</string>
+    <string name="trip_section_other_outfits">Other travel outfits</string>
+    <string name="trip_delete">מחיקת הטיול</string>
+    <string name="trip_delete_confirm_title">למחוק את הטיול הזה?</string>
+    <string name="trip_delete_confirm_body">בחר אם למחוק גם את התלבושות שנוצרו עבור הטיול הזה.</string>
+    <string name="trip_delete_with_outfits">מחיקת הטיול והתלבושות</string>
+    <string name="trip_delete_keep_outfits">שמירת התלבושות</string>
+    <string name="trip_bulk_refining">משפר את כל התלבושות…</string>
+    <string name="trip_bulk_refine_action">שיפור כל התלבושות</string>
+    <string name="trip_bulk_refine_hint">למשל צבעים בהירים יותר, פחות פריטים, מתאים יותר לערב…</string>
+    <string name="trip_bulk_refine_run">החל עם AI</string>
+    <string name="trip_bulk_refine_brighter">צבעים בהירים יותר</string>
+    <string name="trip_bulk_refine_lighter">לארוז קל יותר</string>
+    <string name="trip_bulk_refine_formal">ערבים רשמיים יותר</string>
+    <string name="trip_bulk_refine_skip_jacket">בלי מעיל</string>
+    <string name="trip_refine_preview_note">תצוגה מקדימה — לא נשמר</string>
+    <string name="trip_refine_discard">השלך</string>
+    <string name="trip_refine_replace">החלף את תלבושות הטיול</string>
+    <string name="error_no_refinement">לא הוחזר שיפור שמיש.</string>
+    <string name="error_enter_destination">אנא הזן יעד.</string>
+    <string name="error_weather_fetch_failed">לא ניתן היה לקבל מזג אוויר עבור \"%1$s\". בדוק את שם היעד.</string>
+    <string name="fab_travel_plan">תכנון טיול</string>
+</resources>

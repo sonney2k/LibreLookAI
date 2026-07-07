@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Travel strings (moved from :app in the feature:travel slice) -->
+    <string name="outfits_worn_today">今天穿過了！</string>
+    <string name="travel_goal_placeholder">例如商務會議 + 晚餐</string>
+    <string name="travel_generate">生成打包清單</string>
+    <string name="ai_fetching_weather">正在獲取天氣…</string>
+    <string name="ai_generating_packing">正在生成打包清單…</string>
+    <string name="travel_destination_placeholder">例如：巴黎、東京、紐約</string>
+    <string name="travel_extra_items">另外要打包（不在衣櫥中）</string>
+    <string name="travel_historical_note">行程日期超出即時預報範圍——顯示歷史氣候資料。</string>
+    <string name="travel_regenerate">重新生成</string>
+    <string name="trip_planned_title">已規劃的行程</string>
+    <string name="trip_saved_label">已儲存</string>
+    <string name="trip_saved_confirmation">行程與穿搭已儲存</string>
+    <string name="trip_not_found">Trip not found.</string>
+    <string name="trip_day_header">第 %1$d 天</string>
+    <string name="trip_packed">已打包</string>
+    <string name="trip_no_destination">Untitled trip</string>
+    <string name="trip_meta_dates">開始 %1$s • %2$d 天</string>
+    <string name="trip_checklist">清單</string>
+    <string name="trip_rename">Rename</string>
+    <string name="trip_modify_outfit">Modify outfit</string>
+    <string name="trip_section_other_outfits">Other travel outfits</string>
+    <string name="trip_delete">刪除行程</string>
+    <string name="trip_delete_confirm_title">刪除這個行程？</string>
+    <string name="trip_delete_confirm_body">選擇是否一併刪除為這個行程建立的穿搭。</string>
+    <string name="trip_delete_with_outfits">刪除行程與穿搭</string>
+    <string name="trip_delete_keep_outfits">保留穿搭</string>
+    <string name="trip_bulk_refining">正在優化所有穿搭…</string>
+    <string name="trip_bulk_refine_action">優化所有穿搭</string>
+    <string name="trip_bulk_refine_hint">例如更鮮亮的顏色、更少單品、更適合晚間…</string>
+    <string name="trip_bulk_refine_run">用 AI 套用</string>
+    <string name="trip_bulk_refine_brighter">更鮮亮的顏色</string>
+    <string name="trip_bulk_refine_lighter">輕便打包</string>
+    <string name="trip_bulk_refine_formal">更正式的夜晚</string>
+    <string name="trip_bulk_refine_skip_jacket">不要外套</string>
+    <string name="trip_refine_preview_note">預覽 — 尚未儲存</string>
+    <string name="trip_refine_discard">捨棄</string>
+    <string name="trip_refine_replace">替換行程穿搭</string>
+    <string name="error_no_refinement">未傳回可用的調整結果。</string>
+    <string name="error_enter_destination">請輸入目的地。</string>
+    <string name="error_weather_fetch_failed">無法取得「%1$s」的天氣。請檢查目的地名稱。</string>
+    <string name="fab_travel_plan">規劃旅程</string>
+</resources>

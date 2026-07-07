@@ -61,7 +61,6 @@
 
     <!-- 공통 액션 -->
     <string name="action_save">저장</string>
-    <string name="action_edit">편집</string>
     <string name="action_saving">저장 중…</string>
     <string name="cd_ai_suggestion">AI 제안</string>
     <string name="cd_refine">세부 조정</string>
@@ -267,7 +266,6 @@
     <!-- 태그 값 번역 (영어로 저장; UI 언어로 표시) -->
     <!-- 색상 -->
     <!-- 코디 -->
-    <string name="outfits_empty">아직 코디가 없습니다</string>
     <string name="outfits_empty_hint">+를 탭하여 옷장에서 코디를 만드세요</string>
     <string name="outfits_sort_most_worn">착용 빈도순</string>
     <string name="outfits_create_manual">수동으로 코디 만들기</string>
@@ -290,9 +288,6 @@
     <string name="outfits_composing">코디 만드는 중…</string>
     <string name="outfits_delete_title">코디를 삭제하시겠습니까?</string>
     <string name="outfits_delete_text">\"%s\"이(가) 영구적으로 삭제됩니다.</string>
-    <string name="outfits_wear_today">오늘 입기</string>
-    <string name="outfits_worn_today">오늘 입었습니다!</string>
-    <string name="outfits_missing_items">더 이상 옷장에 없는 아이템</string>
     <string name="outfits_items_away">다른 위치에 %d개 아이템</string>
     <string name="outfits_suggested_title">오늘의 제안</string>
     <string name="outfits_composed_title">당신을 위해 만든 코디</string>
@@ -352,20 +347,14 @@
     <!-- 여행 -->
     <string name="travel_title">여행 패킹 리스트</string>
     <string name="travel_destination">목적지</string>
-    <string name="travel_destination_placeholder">예: 파리, 도쿄, 뉴욕</string>
     <string name="travel_duration">기간</string>
     <string name="travel_start_date">시작일</string>
     <string name="travel_outfit_count">코디 수</string>
     <string name="travel_outfit_count_reset">일수에 맞춤</string>
     <string name="travel_goal">여행 포커스</string>
-    <string name="travel_goal_placeholder">예: 비즈니스 미팅 + 저녁 식사</string>
-    <string name="travel_generate">패킹 리스트 생성</string>
-    <string name="travel_regenerate">다시 생성</string>
     <string name="travel_packing_list">패킹 리스트</string>
     <string name="travel_clear">지우기</string>
-    <string name="travel_extra_items">추가로 챙길 것 (옷장에 없음)</string>
     <string name="travel_empty">시작하려면 목적지를 입력하세요</string>
-    <string name="travel_historical_note">여행 날짜가 실시간 예보 범위를 벗어났습니다 — 과거 기후 데이터를 표시합니다.</string>
     <string name="travel_refine_lighter">더 가볍게 챙기기</string>
     <string name="travel_refine_formal">더 포멀한 옵션</string>
     <string name="travel_refine_casual">더 캐주얼하게</string>
@@ -409,8 +398,6 @@
 
     <!-- 크레딧 / 관리 모드 -->
     <!-- AI 오버레이 -->
-    <string name="ai_fetching_weather">날씨 가져오는 중…</string>
-    <string name="ai_generating_packing">패킹 리스트 생성 중…</string>
     <string name="ai_analyzing_wardrobe">옷장 분석 중…</string>
     <string name="ai_suggesting_style">코디 제안 중…</string>
     <string name="ai_composing_outfit">코디 만드는 중…</string>
@@ -475,11 +462,8 @@
     <string name="composer_header_subtitle">5개 레이어 중 %1$d · 탭하여 교체</string>
     <string name="composer_fill_missing">누락 채우기</string>
     <string name="composer_see_all_count">모두 %1$d</string>
-    <string name="composer_closets_all">모든 옷장</string>
     <string name="composer_layer_picked_count">%1$d개 선택됨</string>
     <string name="composer_weather_title">날씨</string>
-    <string name="composer_closets_title">옷장</string>
-    <string name="composer_sheet_done">완료</string>
     <string name="composer_save">저장</string>
     <string name="composer_section_goal">어떤 상황인가요?</string>
     <string name="composer_goal_placeholder">예: 리스본 저녁식사, 따뜻한 저녁</string>
@@ -492,7 +476,6 @@
     <string name="composer_chip_travel">여행</string>
     <string name="composer_chip_date">데이트</string>
     <string name="composer_section_quick_start">빠른 시작</string>
-    <string name="composer_section_sources">소스 옷장</string>
     <string name="composer_section_items">아이템</string>
     <string name="composer_section_weather">날씨</string>
     <string name="composer_section_vibe">스타일 바이브</string>
@@ -515,14 +498,6 @@
     <string name="composer_precip_none">없음</string>
     <string name="composer_precip_light">약함</string>
     <string name="composer_precip_heavy">강함</string>
-    <string name="composer_vibe_casual">캐주얼</string>
-    <string name="composer_vibe_sporty">스포티</string>
-    <string name="composer_vibe_formal">포멀</string>
-    <string name="composer_vibe_business">비즈니스</string>
-    <string name="composer_vibe_streetwear">스트리트</string>
-    <string name="composer_vibe_minimalist">미니멀</string>
-    <string name="composer_vibe_classic">클래식</string>
-    <string name="composer_vibe_elegant">엘레강트</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_layer_top">베이스 상의</string>
@@ -553,17 +528,11 @@
     <string name="settings_tab_ai">AI</string>
     <string name="ai_considerations_title">기본 고려 사항</string>
     <string name="ai_considerations_desc">AI가 코디를 제안하거나 만들 때 고려해야 할 사항. 예측, 작성, 패킹, 옷장 갭 프롬프트에 적용됩니다.</string>
-    <string name="ai_consider_weather">날씨</string>
     <string name="ai_consider_weather_desc">오늘의 온도와 날씨를 포함합니다.</string>
-    <string name="ai_consider_location">위치</string>
     <string name="ai_consider_location_desc">도시, 국가, 도시/시골 상황을 포함합니다.</string>
-    <string name="ai_consider_trends">패션 트렌드</string>
     <string name="ai_consider_trends_desc">지역의 트렌드 색상, 스타일, 머스트해브를 포함합니다.</string>
-    <string name="ai_consider_gender">성별</string>
     <string name="ai_consider_gender_desc">프로필 성별을 포함합니다.</string>
-    <string name="ai_consider_age">나이</string>
     <string name="ai_consider_age_desc">나이를 포함합니다 (출생 연도에서 계산).</string>
-    <string name="ai_consider_preferences">스타일 선호</string>
     <string name="ai_consider_preferences_desc">자유 텍스트 스타일 선호 사항을 포함합니다.</string>
 
 
@@ -644,34 +613,6 @@
     <string name="coins_balance_label">잔액: %1$d 🪙</string>
     <string name="coins_byok_no_spend_note">본인의 Gemini 키 사용 중 — 크레딧이 소모되지 않습니다.</string>
     <!-- Trips -->
-    <string name="trip_planned_title">예정된 여행</string>
-    <string name="trip_saved_label">저장됨</string>
-    <string name="trip_saved_confirmation">여행과 옷차림이 저장되었습니다</string>
-    <string name="trip_not_found">Trip not found.</string>
-    <string name="trip_day_header">%1$d일 차</string>
-    <string name="trip_packed">짐 챙김</string>
-    <string name="trip_no_destination">Untitled trip</string>
-    <string name="trip_meta_dates">시작 %1$s • %2$d일</string>
-    <string name="trip_checklist">체크리스트</string>
-    <string name="trip_rename">Rename</string>
-    <string name="trip_modify_outfit">Modify outfit</string>
-    <string name="trip_section_other_outfits">Other travel outfits</string>
-    <string name="trip_delete">여행 삭제</string>
-    <string name="trip_delete_confirm_title">이 여행을 삭제할까요?</string>
-    <string name="trip_delete_confirm_body">이 여행을 위해 만든 옷차림도 함께 삭제할지 선택하세요.</string>
-    <string name="trip_delete_with_outfits">여행 + 옷차림 삭제</string>
-    <string name="trip_delete_keep_outfits">옷차림 유지</string>
-    <string name="trip_bulk_refining">모든 옷차림을 다듬는 중…</string>
-    <string name="trip_bulk_refine_action">모든 옷차림 다듬기</string>
-    <string name="trip_bulk_refine_hint">예: 밝은 색상, 적은 아이템, 저녁에 어울리게…</string>
-    <string name="trip_bulk_refine_run">AI로 적용</string>
-    <string name="trip_bulk_refine_brighter">밝은 색상</string>
-    <string name="trip_bulk_refine_lighter">가볍게 챙기기</string>
-    <string name="trip_bulk_refine_formal">더 격식 있는 저녁</string>
-    <string name="trip_bulk_refine_skip_jacket">재킷 생략</string>
-    <string name="trip_refine_preview_note">미리보기 — 저장되지 않음</string>
-    <string name="trip_refine_discard">버리기</string>
-    <string name="trip_refine_replace">여행 옷차림 교체</string>
     <string name="wardrobe_delete_cascade_outfits">이 아이템을 사용하는 %d개의 코디도 삭제</string>
     <string name="wardrobe_delete_cascade_tryons">이 아이템이 포함된 %d개의 가상 피팅도 삭제</string>
     <string name="outfits_broken_banner">%d개의 코디가 옷장에 더 이상 없는 아이템을 사용합니다.</string>
@@ -739,8 +680,6 @@
     <string name="settings_similarity_preview_sub">사진으로 찾기 기능 진단.</string>
     <string name="settings_send_feedback">피드백 보내기</string>
     <!-- Expert: item tag dimensions for outfit AI -->
-    <string name="composer_section_tags">고려할 항목 세부 정보</string>
-    <string name="composer_tags_hint">AI가 고려할 의류 속성을 선택하세요. 세부 정보가 적을수록 더 빠르고 저렴하며 집중된 제안이 됩니다.</string>
 
     <!-- Onboarding tour -->
     <string name="onboarding_closet_add_items">지금 옷 추가</string>
@@ -775,7 +714,6 @@
     <string name="calendar_loved">마음에 들어요</string>
 
     <!-- Wear-history AI consideration toggle -->
-    <string name="ai_consider_history">착용 기록</string>
     <string name="ai_consider_history_desc">실제로 입고 마음에 들어한 옷에서 학습합니다.</string>
 
     <!-- Usage estimate-accuracy table -->
@@ -875,17 +813,12 @@
     <!-- Shared error messages localization -->
     <string name="error_upload_failed">업로드 실패: %1$s</string>
     <string name="error_original_unavailable">원본을 사용할 수 없음</string>
-    <string name="error_gemini_no_response">AI가 응답하지 않았습니다.</string>
-    <string name="error_gemini_parse">AI 응답을 읽을 수 없습니다.</string>
     <string name="error_import_failed_item">%1$s 가져오기 실패: %2$s</string>
     <string name="error_tag_save_failed">태그를 Drive에 저장하지 못했습니다: %1$s</string>
     <string name="error_add_items_first">먼저 옷장에 아이템을 추가하세요.</string>
     <string name="error_query_photo_missing">검색 사진이 더 이상 존재하지 않습니다.</string>
     <string name="error_import_query_failed">검색 사진을 가져오지 못했습니다.</string>
     <string name="error_trips_folder_not_ready">여행 폴더가 준비되지 않았습니다.</string>
-    <string name="error_no_refinement">사용 가능한 개선 결과가 없습니다.</string>
-    <string name="error_enter_destination">목적지를 입력하세요.</string>
-    <string name="error_weather_fetch_failed">\"%1$s\"의 날씨를 가져올 수 없습니다. 목적지 이름을 확인하세요.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">코디를 캘린더에 추가</string>
     <string name="calendar_add_pick">코디 선택</string>
@@ -906,7 +839,6 @@
     <string name="fab_wardrobe_add">아이템 추가</string>
     <string name="fab_calendar_log">코디 기록</string>
     <string name="fab_shopping_add">발견 추가</string>
-    <string name="fab_travel_plan">여행 계획</string>
     <string name="sel_style">코디</string>
     <string name="sel_swap">교체</string>
     <string name="sel_move">이동</string>

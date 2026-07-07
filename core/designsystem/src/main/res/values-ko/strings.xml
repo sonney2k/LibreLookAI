@@ -188,4 +188,32 @@
     <string name="travel_day">%d일째</string>
     <string name="trip_viewer_title">Trip</string>
     <string name="tryon_add_item">아이템 추가</string>
+    <!-- Sunk from :app in the feature:travel slice (shared outfit/settings vocabulary) -->
+    <string name="action_edit">편집</string>
+    <string name="outfits_empty">아직 코디가 없습니다</string>
+    <string name="outfits_wear_today">오늘 입기</string>
+    <string name="outfits_missing_items">더 이상 옷장에 없는 아이템</string>
+    <string name="composer_closets_all">모든 옷장</string>
+    <string name="composer_closets_title">옷장</string>
+    <string name="composer_sheet_done">완료</string>
+    <string name="composer_section_sources">소스 옷장</string>
+    <string name="composer_vibe_casual">캐주얼</string>
+    <string name="composer_vibe_sporty">스포티</string>
+    <string name="composer_vibe_formal">포멀</string>
+    <string name="composer_vibe_business">비즈니스</string>
+    <string name="composer_vibe_streetwear">스트리트</string>
+    <string name="composer_vibe_minimalist">미니멀</string>
+    <string name="composer_vibe_classic">클래식</string>
+    <string name="composer_vibe_elegant">엘레강트</string>
+    <string name="ai_consider_weather">날씨</string>
+    <string name="ai_consider_location">위치</string>
+    <string name="ai_consider_trends">패션 트렌드</string>
+    <string name="ai_consider_gender">성별</string>
+    <string name="ai_consider_age">나이</string>
+    <string name="ai_consider_preferences">스타일 선호</string>
+    <string name="composer_section_tags">고려할 항목 세부 정보</string>
+    <string name="composer_tags_hint">AI가 고려할 의류 속성을 선택하세요. 세부 정보가 적을수록 더 빠르고 저렴하며 집중된 제안이 됩니다.</string>
+    <string name="ai_consider_history">착용 기록</string>
+    <string name="error_gemini_no_response">AI가 응답하지 않았습니다.</string>
+    <string name="error_gemini_parse">AI 응답을 읽을 수 없습니다.</string>
 </resources>

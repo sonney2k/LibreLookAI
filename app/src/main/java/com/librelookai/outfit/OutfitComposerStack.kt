@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.data.model.Location
 import com.librelookai.wardrobe.DriveImage
 
@@ -71,7 +72,7 @@ internal fun ComposerStackedView(
     BoxWithConstraints(modifier = modifier) {
         if (visibleSlots.isEmpty()) {
             Text(
-                stringResource(R.string.outfits_missing_items),
+                stringResource(DsR.string.outfits_missing_items),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.outline,
                 modifier = Modifier.align(Alignment.Center),

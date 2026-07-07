@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Travel strings (moved from :app in the feature:travel slice) -->
+    <string name="outfits_worn_today">Purtată azi!</string>
+    <string name="travel_goal_placeholder">ex. ședințe + cine seara</string>
+    <string name="travel_generate">Generează Listă Bagaj</string>
+    <string name="ai_fetching_weather">Se preia vremea…</string>
+    <string name="ai_generating_packing">Se generează lista…</string>
+    <string name="travel_destination_placeholder">ex. Paris, Tokio, New York</string>
+    <string name="travel_extra_items">De împachetat suplimentar (nu sunt în garderobă)</string>
+    <string name="travel_historical_note">Datele călătoriei sunt în afara ferestrei de prognoză live — se afișează date climatice istorice.</string>
+    <string name="travel_regenerate">Re-generează</string>
+    <string name="trip_planned_title">Călătorie planificată</string>
+    <string name="trip_saved_label">Salvat</string>
+    <string name="trip_saved_confirmation">Călătoria și ținutele au fost salvate</string>
+    <string name="trip_not_found">Trip not found.</string>
+    <string name="trip_day_header">Ziua %1$d</string>
+    <string name="trip_packed">Împachetat</string>
+    <string name="trip_no_destination">Untitled trip</string>
+    <string name="trip_meta_dates">Start %1$s • %2$d zile</string>
+    <string name="trip_checklist">Listă</string>
+    <string name="trip_rename">Rename</string>
+    <string name="trip_modify_outfit">Modify outfit</string>
+    <string name="trip_section_other_outfits">Other travel outfits</string>
+    <string name="trip_delete">Șterge călătoria</string>
+    <string name="trip_delete_confirm_title">Ștergi această călătorie?</string>
+    <string name="trip_delete_confirm_body">Alege dacă să ștergi și ținutele create pentru această călătorie.</string>
+    <string name="trip_delete_with_outfits">Șterge călătoria + ținutele</string>
+    <string name="trip_delete_keep_outfits">Păstrează ținutele</string>
+    <string name="trip_bulk_refining">Se rafinează toate ținutele…</string>
+    <string name="trip_bulk_refine_action">Rafinează toate ținutele</string>
+    <string name="trip_bulk_refine_hint">ex.: culori mai vii, mai puține articole, mai potrivit seara…</string>
+    <string name="trip_bulk_refine_run">Aplică cu IA</string>
+    <string name="trip_bulk_refine_brighter">Culori mai vii</string>
+    <string name="trip_bulk_refine_lighter">Bagaj mai ușor</string>
+    <string name="trip_bulk_refine_formal">Seri mai elegante</string>
+    <string name="trip_bulk_refine_skip_jacket">Fără jachetă</string>
+    <string name="trip_refine_preview_note">Previzualizare — nesalvat</string>
+    <string name="trip_refine_discard">Renunță</string>
+    <string name="trip_refine_replace">Înlocuiește ținutele călătoriei</string>
+    <string name="error_no_refinement">Nu a fost returnată nicio rafinare utilizabilă.</string>
+    <string name="error_enter_destination">Introdu o destinație.</string>
+    <string name="error_weather_fetch_failed">Nu s-a putut obține vremea pentru „%1$s\". Verifică numele destinației.</string>
+    <string name="fab_travel_plan">Planifică călătoria</string>
+</resources>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Travel strings (moved from :app in the feature:travel slice) -->
+    <string name="outfits_worn_today">Φορέθηκε σήμερα!</string>
+    <string name="travel_destination_placeholder">π.χ. Παρίσι, Τόκιο, Νέα Υόρκη</string>
+    <string name="travel_goal_placeholder">π.χ. συναντήσεις + δείπνα</string>
+    <string name="travel_generate">Δημιουργία Λίστας</string>
+    <string name="travel_regenerate">Επαναδημιουργία</string>
+    <string name="travel_extra_items">Επιπλέον είδη (όχι στη ντουλάπα)</string>
+    <string name="travel_historical_note">Οι ημερομηνίες είναι εκτός πρόβλεψης — εμφανίζονται ιστορικά δεδομένα.</string>
+    <string name="ai_fetching_weather">Λήψη καιρού…</string>
+    <string name="ai_generating_packing">Δημιουργία λίστας…</string>
+    <string name="trip_planned_title">Προγραμματισμένο ταξίδι</string>
+    <string name="trip_saved_label">Αποθηκεύτηκε</string>
+    <string name="trip_saved_confirmation">Το ταξίδι και τα σύνολα αποθηκεύτηκαν</string>
+    <string name="trip_not_found">Trip not found.</string>
+    <string name="trip_day_header">Ημέρα %1$d</string>
+    <string name="trip_packed">Πακεταρισμένο</string>
+    <string name="trip_no_destination">Untitled trip</string>
+    <string name="trip_meta_dates">Έναρξη %1$s • %2$d ημέρες</string>
+    <string name="trip_checklist">Λίστα</string>
+    <string name="trip_rename">Rename</string>
+    <string name="trip_modify_outfit">Modify outfit</string>
+    <string name="trip_section_other_outfits">Other travel outfits</string>
+    <string name="trip_delete">Διαγραφή ταξιδιού</string>
+    <string name="trip_delete_confirm_title">Διαγραφή αυτού του ταξιδιού;</string>
+    <string name="trip_delete_confirm_body">Επίλεξε αν θα διαγραφούν και τα σύνολα που δημιουργήθηκαν για αυτό το ταξίδι.</string>
+    <string name="trip_delete_with_outfits">Διαγραφή ταξιδιού + συνόλων</string>
+    <string name="trip_delete_keep_outfits">Διατήρηση συνόλων</string>
+    <string name="trip_bulk_refining">Βελτίωση όλων των συνόλων…</string>
+    <string name="trip_bulk_refine_action">Βελτίωση όλων των συνόλων</string>
+    <string name="trip_bulk_refine_hint">π.χ. πιο ζωηρά χρώματα, λιγότερα κομμάτια, πιο βραδινά…</string>
+    <string name="trip_bulk_refine_run">Εφαρμογή με AI</string>
+    <string name="trip_bulk_refine_brighter">Πιο ζωηρά χρώματα</string>
+    <string name="trip_bulk_refine_lighter">Ελαφρύτερη βαλίτσα</string>
+    <string name="trip_bulk_refine_formal">Πιο επίσημα βράδια</string>
+    <string name="trip_bulk_refine_skip_jacket">Χωρίς σακάκι</string>
+    <string name="trip_refine_preview_note">Προεπισκόπηση — δεν αποθηκεύτηκε</string>
+    <string name="trip_refine_discard">Απόρριψη</string>
+    <string name="trip_refine_replace">Αντικατάσταση συνόλων ταξιδιού</string>
+    <string name="error_no_refinement">Δεν επιστράφηκε χρήσιμη βελτίωση.</string>
+    <string name="error_enter_destination">Εισαγάγετε προορισμό.</string>
+    <string name="error_weather_fetch_failed">Δεν ήταν δυνατή η λήψη καιρού για \"%1$s\". Ελέγξτε το όνομα προορισμού.</string>
+    <string name="fab_travel_plan">Σχεδιασμός ταξιδιού</string>
+</resources>

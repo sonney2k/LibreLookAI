@@ -61,7 +61,6 @@
 
     <!-- Common actions -->
     <string name="action_save">שמור</string>
-    <string name="action_edit">ערוך</string>
     <string name="action_saving">שומר…</string>
     <string name="cd_ai_suggestion">הצעת בינה מלאכותית</string>
     <string name="cd_refine">דייק</string>
@@ -263,7 +262,6 @@
     <!-- Tag value translations (stored in English; displayed in UI language) -->
     <!-- Colors -->
     <!-- Outfits -->
-    <string name="outfits_empty">אין אאוטפיטים עדיין</string>
     <string name="outfits_empty_hint">הקש על + כדי לבנות אאוטפיט מהמלתחה שלך</string>
     <string name="outfits_sort_most_worn">הנלבשים ביותר</string>
     <string name="outfits_create_manual">צור אאוטפיט ידנית</string>
@@ -286,9 +284,6 @@
     <string name="outfits_composing">מרכיב אאוטפיט…</string>
     <string name="outfits_delete_title">למחוק אאוטפיט?</string>
     <string name="outfits_delete_text">\"%s\" יוסר לצמיתות.</string>
-    <string name="outfits_wear_today">לבש היום</string>
-    <string name="outfits_worn_today">נלבש היום!</string>
-    <string name="outfits_missing_items">הפריטים כבר לא במלתחה</string>
     <string name="outfits_items_away">%d פריטים במיקום אחר</string>
     <string name="outfits_suggested_title">הצעה להיום</string>
     <string name="outfits_composed_title">הורכב עבורך</string>
@@ -348,20 +343,14 @@
     <!-- Travel -->
     <string name="travel_title">רשימת אריזה</string>
     <string name="travel_destination">יעד</string>
-    <string name="travel_destination_placeholder">למשל פריז, טוקיו, ניו יורק</string>
     <string name="travel_duration">משך זמן</string>
     <string name="travel_start_date">תאריך התחלה</string>
     <string name="travel_outfit_count">תלבושות</string>
     <string name="travel_outfit_count_reset">כמספר הימים</string>
     <string name="travel_goal">מיקוד הטיול</string>
-    <string name="travel_goal_placeholder">למשל פגישות + ארוחות ערב</string>
-    <string name="travel_generate">צור רשימת אריזה</string>
-    <string name="travel_regenerate">צור מחדש</string>
     <string name="travel_packing_list">רשימת אריזה</string>
     <string name="travel_clear">נקה</string>
-    <string name="travel_extra_items">ארוז בנוסף (לא מהמלתחה)</string>
     <string name="travel_empty">הזן יעד כדי להתחיל</string>
-    <string name="travel_historical_note">התאריכים מחוץ לטווח התחזית — מוצגים נתונים היסטוריים.</string>
     <string name="travel_refine_lighter">ארוז קל יותר</string>
     <string name="travel_refine_formal">יותר אפשרויות רשמיות</string>
     <string name="travel_refine_casual">יותר אפשרויות יומיומיות</string>
@@ -405,8 +394,6 @@
 
     <!-- Credits / Managed Mode -->
     <!-- AI overlay -->
-    <string name="ai_fetching_weather">מקבל תחזית מזג אוויר…</string>
-    <string name="ai_generating_packing">מכין רשימת אריזה…</string>
     <string name="ai_analyzing_wardrobe">מנתח את המלתחה שלך…</string>
     <string name="ai_suggesting_style">מציע אאוטפיט…</string>
     <string name="ai_composing_outfit">מרכיב אאוטפיט…</string>
@@ -477,7 +464,6 @@
     <string name="composer_chip_travel">נסיעה</string>
     <string name="composer_chip_date">דייט</string>
     <string name="composer_section_quick_start">התחלה מהירה</string>
-    <string name="composer_section_sources">ארונות מקור</string>
     <string name="composer_section_items">פריטים</string>
     <string name="composer_section_weather">מזג אוויר</string>
     <string name="composer_section_vibe">סגנון ואווירה</string>
@@ -514,17 +500,11 @@
     <string name="settings_tab_ai">AI</string>
     <string name="ai_considerations_title">שיקולי ברירת מחדל</string>
     <string name="ai_considerations_desc">מה על ה-AI לקחת בחשבון בעת הצעה או הרכבת אאוטפיטים. השינויים חלים על תחזיות, הרכבות, אריזה וניתוח חוסרים.</string>
-    <string name="ai_consider_weather">מזג אוויר</string>
     <string name="ai_consider_weather_desc">כלול את הטמפרטורה והתנאים של היום.</string>
-    <string name="ai_consider_location">מיקום</string>
     <string name="ai_consider_location_desc">כלול עיר, מדינה והקשר עירוני/כפרי.</string>
-    <string name="ai_consider_trends">טרנדים של אופנה</string>
     <string name="ai_consider_trends_desc">כלול צבעים פופולריים, אסתטיקה ופריטי חובה לאזור שלך.</string>
-    <string name="ai_consider_gender">מין</string>
     <string name="ai_consider_gender_desc">כלול את המין מהפרופיל שלך.</string>
-    <string name="ai_consider_age">גיל</string>
     <string name="ai_consider_age_desc">כלול את גילך (נגזר משנת הלידה).</string>
-    <string name="ai_consider_preferences">העדפות סגנון</string>
     <string name="ai_consider_preferences_desc">כלול את העדפות הסגנון שלך בטקסט חופשי.</string>
 
 
@@ -609,11 +589,8 @@
     <string name="composer_header_subtitle">%1$d מתוך 5 שכבות · הקש כדי להחליף</string>
     <string name="composer_fill_missing">מלא חסר</string>
     <string name="composer_see_all_count">הכל %1$d</string>
-    <string name="composer_closets_all">כל הארונות</string>
     <string name="composer_layer_picked_count">%1$d נבחרו</string>
     <string name="composer_weather_title">מזג אוויר</string>
-    <string name="composer_closets_title">ארונות</string>
-    <string name="composer_sheet_done">בוצע</string>
 
     <!-- Monetization / cost badges -->
     <string name="cost_badge_tokens_estimate">~%1$s טוקנים</string>
@@ -628,14 +605,6 @@
     <string name="composer_precip_none">אין</string>
     <string name="composer_precip_light">קל</string>
     <string name="composer_precip_heavy">חזק</string>
-    <string name="composer_vibe_casual">יומיומי</string>
-    <string name="composer_vibe_sporty">ספורטיבי</string>
-    <string name="composer_vibe_formal">רשמי</string>
-    <string name="composer_vibe_business">עסקים</string>
-    <string name="composer_vibe_streetwear">סטריט-וור</string>
-    <string name="composer_vibe_minimalist">מינימליסטי</string>
-    <string name="composer_vibe_classic">קלאסי</string>
-    <string name="composer_vibe_elegant">אלגנטי</string>
     <string name="composer_stepper_decrement">−</string>
     <string name="composer_stepper_increment">+</string>
     <string name="composer_layer_top">חלק עליון</string>
@@ -648,34 +617,6 @@
     <string name="composer_feedback_placeholder">ספר ל-AI מה לשנות או למה לכוון…</string>
     <string name="composer_feedback_history">%1$d בקשות קודמות נשמרות בהקשר</string>
     <!-- Trips -->
-    <string name="trip_planned_title">טיול מתוכנן</string>
-    <string name="trip_saved_label">נשמר</string>
-    <string name="trip_saved_confirmation">הטיול והתלבושות נשמרו</string>
-    <string name="trip_not_found">Trip not found.</string>
-    <string name="trip_day_header">יום %1$d</string>
-    <string name="trip_packed">ארוז</string>
-    <string name="trip_no_destination">Untitled trip</string>
-    <string name="trip_meta_dates">התחלה %1$s • %2$d ימים</string>
-    <string name="trip_checklist">רשימה</string>
-    <string name="trip_rename">Rename</string>
-    <string name="trip_modify_outfit">Modify outfit</string>
-    <string name="trip_section_other_outfits">Other travel outfits</string>
-    <string name="trip_delete">מחיקת הטיול</string>
-    <string name="trip_delete_confirm_title">למחוק את הטיול הזה?</string>
-    <string name="trip_delete_confirm_body">בחר אם למחוק גם את התלבושות שנוצרו עבור הטיול הזה.</string>
-    <string name="trip_delete_with_outfits">מחיקת הטיול והתלבושות</string>
-    <string name="trip_delete_keep_outfits">שמירת התלבושות</string>
-    <string name="trip_bulk_refining">משפר את כל התלבושות…</string>
-    <string name="trip_bulk_refine_action">שיפור כל התלבושות</string>
-    <string name="trip_bulk_refine_hint">למשל צבעים בהירים יותר, פחות פריטים, מתאים יותר לערב…</string>
-    <string name="trip_bulk_refine_run">החל עם AI</string>
-    <string name="trip_bulk_refine_brighter">צבעים בהירים יותר</string>
-    <string name="trip_bulk_refine_lighter">לארוז קל יותר</string>
-    <string name="trip_bulk_refine_formal">ערבים רשמיים יותר</string>
-    <string name="trip_bulk_refine_skip_jacket">בלי מעיל</string>
-    <string name="trip_refine_preview_note">תצוגה מקדימה — לא נשמר</string>
-    <string name="trip_refine_discard">השלך</string>
-    <string name="trip_refine_replace">החלף את תלבושות הטיול</string>
     <string name="wardrobe_delete_cascade_outfits">מחק גם %d לוקים שמשתמשים בפריטים האלה</string>
     <string name="wardrobe_delete_cascade_tryons">מחק גם %d מדידות עם הפריטים האלה</string>
     <string name="outfits_broken_banner">%d לוקים משתמשים בפריטים שכבר לא נמצאים בארון שלך.</string>
@@ -743,8 +684,6 @@
     <string name="settings_similarity_preview_sub">אבחון עבור חיפוש לפי תמונה.</string>
     <string name="settings_send_feedback">שלח משוב</string>
     <!-- Expert: item tag dimensions for outfit AI -->
-    <string name="composer_section_tags">פרטי הפריט שיש לשקלל</string>
-    <string name="composer_tags_hint">בחר אילו מאפייני לבוש ה-AI שוקל. פחות פרטים = הצעות מהירות, זולות וממוקדות יותר.</string>
 
     <!-- Onboarding tour -->
     <string name="onboarding_closet_add_items">הוסף בגדים עכשיו</string>
@@ -779,7 +718,6 @@
     <string name="calendar_loved">אהבתי</string>
 
     <!-- Wear-history AI consideration toggle -->
-    <string name="ai_consider_history">היסטוריית לבישה</string>
     <string name="ai_consider_history_desc">לומד ממה שאתה באמת לובש ואהבת.</string>
 
     <!-- Usage estimate-accuracy table -->
@@ -879,17 +817,12 @@
     <!-- Shared error messages localization -->
     <string name="error_upload_failed">ההעלאה נכשלה: %1$s</string>
     <string name="error_original_unavailable">המקור אינו זמין</string>
-    <string name="error_gemini_no_response">ה-AI לא הגיב.</string>
-    <string name="error_gemini_parse">לא ניתן לקרוא את תגובת ה-AI.</string>
     <string name="error_import_failed_item">הייבוא של %1$s נכשל: %2$s</string>
     <string name="error_tag_save_failed">שמירת התגיות ל-Drive נכשלה: %1$s</string>
     <string name="error_add_items_first">הוסף תחילה פריטים לארון שלך.</string>
     <string name="error_query_photo_missing">תמונת החיפוש כבר לא קיימת.</string>
     <string name="error_import_query_failed">ייבוא תמונת החיפוש נכשל.</string>
     <string name="error_trips_folder_not_ready">תיקיית הנסיעות אינה מוכנה.</string>
-    <string name="error_no_refinement">לא הוחזר שיפור שמיש.</string>
-    <string name="error_enter_destination">אנא הזן יעד.</string>
-    <string name="error_weather_fetch_failed">לא ניתן היה לקבל מזג אוויר עבור \"%1$s\". בדוק את שם היעד.</string>
     <!-- Calendar FAB (add/move/copy outfit) -->
     <string name="calendar_add_to_calendar">הוסף תלבושת ליומן</string>
     <string name="calendar_add_pick">בחר תלבושת</string>
@@ -910,7 +843,6 @@
     <string name="fab_wardrobe_add">הוספת פריט</string>
     <string name="fab_calendar_log">תיעוד תלבושת</string>
     <string name="fab_shopping_add">הוספת מציאה</string>
-    <string name="fab_travel_plan">תכנון טיול</string>
     <string name="sel_style">סטיילינג</string>
     <string name="sel_swap">החלפה</string>
     <string name="sel_move">העברה</string>

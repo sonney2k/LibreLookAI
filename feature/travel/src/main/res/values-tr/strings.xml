@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Travel strings (moved from :app in the feature:travel slice) -->
+    <string name="outfits_worn_today">Bugün giyildi!</string>
+    <string name="travel_destination_placeholder">örn. Paris, Tokyo, New York</string>
+    <string name="travel_goal_placeholder">ör. iş toplantıları + akşam yemekleri</string>
+    <string name="travel_generate">Hazırlık Listesi Oluştur</string>
+    <string name="travel_regenerate">Yeniden oluştur</string>
+    <string name="travel_extra_items">Ayrıca paketleyin (gardıropta değil)</string>
+    <string name="travel_historical_note">Seyahat tarihleri canlı tahmin penceresinin dışında — tarihsel iklim verileri gösteriliyor.</string>
+    <string name="ai_fetching_weather">Hava durumu alınıyor…</string>
+    <string name="ai_generating_packing">Hazırlık listesi oluşturuluyor…</string>
+    <string name="trip_planned_title">Planlanan gezi</string>
+    <string name="trip_saved_label">Kaydedildi</string>
+    <string name="trip_saved_confirmation">Gezi ve kombinler kaydedildi</string>
+    <string name="trip_not_found">Trip not found.</string>
+    <string name="trip_day_header">%1$d. Gün</string>
+    <string name="trip_packed">Bavulda</string>
+    <string name="trip_no_destination">Untitled trip</string>
+    <string name="trip_meta_dates">Başlangıç %1$s • %2$d gün</string>
+    <string name="trip_checklist">Liste</string>
+    <string name="trip_rename">Rename</string>
+    <string name="trip_modify_outfit">Modify outfit</string>
+    <string name="trip_section_other_outfits">Other travel outfits</string>
+    <string name="trip_delete">Geziyi sil</string>
+    <string name="trip_delete_confirm_title">Bu gezi silinsin mi?</string>
+    <string name="trip_delete_confirm_body">Bu gezi için oluşturulan kombinlerin de silinip silinmeyeceğini seç.</string>
+    <string name="trip_delete_with_outfits">Geziyi ve kombinleri sil</string>
+    <string name="trip_delete_keep_outfits">Kombinleri koru</string>
+    <string name="trip_bulk_refining">Tüm kombinler iyileştiriliyor…</string>
+    <string name="trip_bulk_refine_action">Tüm kombinleri iyileştir</string>
+    <string name="trip_bulk_refine_hint">ör. daha canlı renkler, daha az parça, akşama daha uygun…</string>
+    <string name="trip_bulk_refine_run">Yapay zekâ ile uygula</string>
+    <string name="trip_bulk_refine_brighter">Daha canlı renkler</string>
+    <string name="trip_bulk_refine_lighter">Daha hafif valiz</string>
+    <string name="trip_bulk_refine_formal">Daha resmi akşamlar</string>
+    <string name="trip_bulk_refine_skip_jacket">Ceketsiz</string>
+    <string name="trip_refine_preview_note">Önizleme — kaydedilmedi</string>
+    <string name="trip_refine_discard">Vazgeç</string>
+    <string name="trip_refine_replace">Gezi kombinlerini değiştir</string>
+    <string name="error_no_refinement">Kullanılabilir bir iyileştirme döndürülmedi.</string>
+    <string name="error_enter_destination">Lütfen bir varış noktası girin.</string>
+    <string name="error_weather_fetch_failed">\"%1$s\" için hava durumu alınamadı. Varış noktası adını kontrol edin.</string>
+    <string name="fab_travel_plan">Gezi planla</string>
+</resources>

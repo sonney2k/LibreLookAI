@@ -61,7 +61,7 @@ internal fun OutfitGenerationViewModel.suggestTagsForOutfit(outfit: Outfit, imag
             val raw = outcome.getOrNull()
             if (raw == null) {
                 _state.update {
-                    it.copy(tagSuggestion = it.tagSuggestion?.copy(isLoading = false, error = getApplication<android.app.Application>().localized().getString(com.librelookai.R.string.error_gemini_no_response)))
+                    it.copy(tagSuggestion = it.tagSuggestion?.copy(isLoading = false, error = getApplication<android.app.Application>().localized().getString(com.librelookai.core.designsystem.R.string.error_gemini_no_response)))
                 }
                 return@launch
             }

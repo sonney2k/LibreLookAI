@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Travel strings (moved from :app in the feature:travel slice) -->
+    <string name="outfits_worn_today">Worn today!</string>
+    <string name="travel_destination_placeholder">e.g. Paris, Tokyo, New York</string>
+    <string name="travel_goal_placeholder">e.g. business meetings + evening dinners</string>
+    <string name="travel_generate">Generate Packing List</string>
+    <string name="travel_regenerate">Re-generate</string>
+    <string name="travel_extra_items">Also pack (not in wardrobe)</string>
+    <string name="travel_historical_note">Trip dates are outside the live forecast window — showing historical climate data.</string>
+    <string name="ai_fetching_weather">Fetching weather…</string>
+    <string name="ai_generating_packing">Generating packing list…</string>
+    <string name="trip_planned_title">Planned Trip</string>
+    <string name="trip_saved_label">Saved</string>
+    <string name="trip_saved_confirmation">Trip &amp; outfits saved</string>
+    <string name="trip_not_found">Trip not found.</string>
+    <string name="trip_day_header">Day %1$d</string>
+    <string name="trip_packed">Packed</string>
+    <string name="trip_no_destination">Untitled trip</string>
+    <string name="trip_meta_dates">Start %1$s • %2$d days</string>
+    <string name="trip_checklist">Checklist</string>
+    <string name="trip_rename">Rename</string>
+    <string name="trip_modify_outfit">Modify outfit</string>
+    <string name="trip_section_other_outfits">Other travel outfits</string>
+    <string name="trip_delete">Delete trip</string>
+    <string name="trip_delete_confirm_title">Delete this trip?</string>
+    <string name="trip_delete_confirm_body">Choose whether to also delete the outfits created for this trip.</string>
+    <string name="trip_delete_with_outfits">Delete trip + outfits</string>
+    <string name="trip_delete_keep_outfits">Keep outfits</string>
+    <string name="trip_bulk_refining">Refining all outfits…</string>
+    <string name="trip_bulk_refine_action">Refine all outfits</string>
+    <string name="trip_bulk_refine_hint">e.g. brighter colours, fewer items, smarter for evenings…</string>
+    <string name="trip_bulk_refine_run">Apply with AI</string>
+    <string name="trip_bulk_refine_brighter">Brighter colours</string>
+    <string name="trip_bulk_refine_lighter">Pack lighter</string>
+    <string name="trip_bulk_refine_formal">More formal evenings</string>
+    <string name="trip_bulk_refine_skip_jacket">Skip jacket</string>
+    <string name="trip_refine_preview_note">Preview — not saved</string>
+    <string name="trip_refine_discard">Discard</string>
+    <string name="trip_refine_replace">Replace trip outfits</string>
+    <string name="error_no_refinement">No usable refinement returned.</string>
+    <string name="error_enter_destination">Please enter a destination.</string>
+    <string name="error_weather_fetch_failed">Could not fetch weather for \"%1$s\". Check the destination name.</string>
+    <string name="fab_travel_plan">Plan trip</string>
+</resources>

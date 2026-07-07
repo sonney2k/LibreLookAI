@@ -185,7 +185,7 @@ class TripsViewModelTest {
 
         val s = vm.state.first { it.error != null }
         assertEquals(false, done)
-        assertEquals(app.getString(com.librelookai.R.string.error_gemini_no_response), s.error)
+        assertEquals(app.getString(com.librelookai.core.designsystem.R.string.error_gemini_no_response), s.error)
         assertTrue(vm.bulkRefining.value.isEmpty())
     }
 
