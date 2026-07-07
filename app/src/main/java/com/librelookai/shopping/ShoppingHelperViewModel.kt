@@ -16,7 +16,6 @@ import com.librelookai.ml.EmbeddingService
 import com.librelookai.util.Analytics
 import com.librelookai.wardrobe.DriveImage
 import com.librelookai.R
-import com.librelookai.wardrobe.CaptureScreen
 
 /** One wardrobe item ranked against the live query, with its cosine score. */
 data class ShopMatch(
@@ -135,7 +134,7 @@ class ShoppingHelperViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /**
-     * Called after [CaptureScreen] hands us a cropped photo. Moves the file into our own cache
+     * Called after the wardrobe capture screen hands us a cropped photo. Moves the file into our own cache
      * subdir, runs segmentation + prep manually so the debug preview can show the same pixels
      * we hand to the embedder, embeds, searches the index, and publishes [matches].
      */

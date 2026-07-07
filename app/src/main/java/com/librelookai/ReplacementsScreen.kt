@@ -1,4 +1,4 @@
-package com.librelookai.wardrobe
+package com.librelookai
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,16 +33,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.librelookai.util.AiProcessingOverlay
-import com.librelookai.R
-import com.librelookai.MainActivity
-import com.librelookai.outfit.OutfitComposerScreen
-import com.librelookai.tryon.TryOnComposerScreen
+import com.librelookai.wardrobe.GapSuggestionCard
+import com.librelookai.wardrobe.WardrobeGapViewModel
 
 /**
  * Full-screen dialog hosting the "Suggest replacements" result for a set of wardrobe items
  * the user has selected to retire. Mirrors the loading/error UX of the Identify Gaps tab and
- * is hosted at the [MainActivity] level (consistent with [OutfitComposerScreen] /
- * [TryOnComposerScreen]).
+ * is hosted at the [MainActivity] level (consistent with the composer routes).
  */
 @Composable
 fun ReplacementsResultDialog(gapViewModel: WardrobeGapViewModel) {

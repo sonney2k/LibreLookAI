@@ -1,4 +1,4 @@
-package com.librelookai.shopping
+package com.librelookai
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -48,6 +48,12 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.librelookai.R
+import com.librelookai.shopping.MatchPreviewDialog
+import com.librelookai.shopping.MatchRow
+import com.librelookai.shopping.ShoppingClosetViewModel
+import com.librelookai.shopping.ShoppingHelperUiState
+import com.librelookai.shopping.ShoppingHelperViewModel
+import com.librelookai.shopping.importQuery
 import com.librelookai.settings.ProfileViewModel
 import com.librelookai.util.Analytics
 import com.librelookai.util.scrollbar

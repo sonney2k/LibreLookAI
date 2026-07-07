@@ -1,4 +1,4 @@
-package com.librelookai.shopping
+package com.librelookai
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -23,6 +23,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.librelookai.AppScreenHeader
+import com.librelookai.shopping.ShopUrlImportDialog
+import com.librelookai.shopping.ShoppingClosetViewModel
+import com.librelookai.shopping.ShoppingHelperViewModel
+import com.librelookai.shopping.ShoppingListTab
+import com.librelookai.shopping.addFromCamera
+import com.librelookai.shopping.addFromGallery
+import com.librelookai.shopping.addFromUrl
+import com.librelookai.shopping.cancelUrlImport
+import com.librelookai.shopping.confirmUrlImportPick
 import com.librelookai.LocationButton
 import com.librelookai.R
 import com.librelookai.settings.ProfileViewModel

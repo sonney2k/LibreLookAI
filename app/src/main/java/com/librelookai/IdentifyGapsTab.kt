@@ -1,4 +1,4 @@
-package com.librelookai.shopping
+package com.librelookai
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

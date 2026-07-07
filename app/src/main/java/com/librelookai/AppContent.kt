@@ -80,7 +80,6 @@ import com.librelookai.wardrobe.FixCutoutBgDialog
 import com.librelookai.settings.ProfileViewModel
 import com.librelookai.settings.SettingsScreen
 import com.librelookai.shopping.ShoppingClosetViewModel
-import com.librelookai.shopping.ShoppingHelperScreen
 import com.librelookai.shopping.ShoppingHelperViewModel
 import com.librelookai.travel.TravelScreen
 import com.librelookai.travel.TravelViewModel
@@ -97,7 +96,6 @@ import com.librelookai.util.RestoreProgressOverlay
 import com.librelookai.util.StartupGate
 import com.librelookai.wardrobe.LocalBgRemovalScreen
 import com.librelookai.wardrobe.LocationViewModel
-import com.librelookai.wardrobe.ReplacementsResultDialog
 import com.librelookai.wardrobe.WardrobeGapViewModel
 import com.librelookai.wardrobe.WardrobeScreen
 import com.librelookai.wardrobe.WardrobeViewModel

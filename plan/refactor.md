@@ -1449,12 +1449,26 @@ categories:
    `UsageScreen` wiring, `ReplacementsScreen`, the WardrobeScreen↔shopping-helper cluster
    wiring, `FixCutoutBgDialog`) — mechanical file moves + param threading; the § 5
    "no VM param defaults" rule already makes these safe.
-   **Started (July 2026):** `FixCutoutBgDialog.kt` moved settings→wardrobe (it is
-   wardrobe-maintenance UI over the wardrobe progress models; its host is `AppContent`) —
-   the settings→wardrobe *model* edge is gone. Note for the rest: `UsageScreen` (and any
-   host that a feature's nav graph composes) can't simply move to the app root — the
-   settings nav graph would then import upward. The nav-graph *registration* has to lift
-   with it (shell-registered destinations), so scope each host with its wiring.
+   **LANDED (July 2026).** `FixCutoutBgDialog.kt` moved settings→wardrobe (wardrobe-
+   maintenance UI; its host is `AppContent`). Then the lifts to the root package:
+   `ItemViewerDestination` + `OutfitViewerDestination` (the shared trip-outfit composer-open
+   helper `startEditingTripOutfit` stayed feature-side, moved into
+   `OutfitGenerationViewModel.kt` — travel calls it too); `settingsDestinations` +
+   `SettingsSubScreen` (nav-graph registration is shell wiring — the recorded gotcha:
+   a host composed by a feature's nav graph must lift *with* its registration or the graph
+   imports upward; `SettingsDestructiveConfirmHost` stayed in settings, own file, since
+   `SettingsScreen` shares it); `UsageCostsTab` (+ private chart helpers; `UsageViewModel`
+   stayed in `settings/UsageSection.kt` beside its settings consumer);
+   `ReplacementsResultDialog`; and the shopping-helper cluster
+   (`ShoppingHelperScreen`/`IdentifyGapsTab`/`SimilarityFinderTab` — a genuinely
+   cross-feature surface; `ShoppingHelperViewModel` stayed in shopping). Two comment-only
+   edges deleted en route (`WardrobeGapScreen`→helper, helper-VM→`CaptureScreen`).
+   **Post-slice measurement:** the remaining feature→feature edges are (a) screen-signature
+   VM threading (slices 5/6 decide per feature), (b) the shared taxonomy/filter/match-preview
+   UI + `DestructiveConfirmDialog` (slice 4), and (c) **weather** — consumed as *data*
+   (`WeatherData`/`wmoEmoji`/`WeatherRepository`) by outfit/travel throughout, and absent
+   from the § 1 target's `feature/*` list: weather is core-shaped, so slice 5 sinks it to a
+   core home instead of extracting a feature module.
 4. **`core/designsystem`** — the res-split (per the recorded decision) + move
    `ui/theme`, `ui/components` (AppFab/SelectionActionBar/DetailActionBar), and the shared
    item-UI (`WardrobeFilterSheet`, `WardrobeZoomableItemGrid`/`WardrobeItemGrid`,

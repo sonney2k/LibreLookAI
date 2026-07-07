@@ -36,7 +36,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.librelookai.data.model.GapSuggestion
 import com.librelookai.R
-import com.librelookai.shopping.ShoppingHelperScreen
 import com.librelookai.BuildConfig
 
 // Note: the screen-level entry composable lived here; it has been folded into
