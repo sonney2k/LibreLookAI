@@ -156,4 +156,22 @@
     <string name="tryon_try_again">נסה שוב</string>
     <string name="settings_profile_gender">מגדר / כינויים</string>
     <string name="settings_profile_year">שנת לידה</string>
+    <string name="ai_progress_timing">%1$ds · בדרך כלל 20–40s</string>
+    <string name="ai_progress_uploading">מעלה %1$s / %2$s</string>
+    <string name="ai_progress_waiting">ממתין ל-AI…</string>
+    <string name="ai_working">הבינה המלאכותית עובדת…</string>
+    <string name="shop_crosshair_hint">מרכז את הפריט בכוונת</string>
+    <string name="action_add">הוסף</string>
+    <string name="composer_add_items">הוסף פריטים מהמלתחה</string>
+    <string name="wardrobe_search">חפש במלתחה</string>
+    <string name="outfits_tag_add">הוסף תגית</string>
+    <string name="outfits_tag_add_placeholder">למשל יום הולדת, נסיעה</string>
+    <string name="outfits_tag_remove">הסר תגית %s</string>
+    <string name="outfit_layer_outerwear">בגד עליון</string>
+    <string name="outfit_layer_tops">חלק עליון</string>
+    <string name="outfit_layer_onepiece">חלק אחד</string>
+    <string name="outfit_layer_bottoms">חלק תחתון</string>
+    <string name="outfit_layer_footwear">נעליים</string>
+    <string name="outfit_layer_accessories">אביזרים</string>
+    <string name="outfit_layer_other">אחר</string>
 </resources>

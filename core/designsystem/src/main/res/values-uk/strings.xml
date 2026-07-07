@@ -156,4 +156,22 @@
     <string name="tryon_try_again">Спробувати знову</string>
     <string name="settings_profile_gender">Стать / займенники</string>
     <string name="settings_profile_year">Рік народження</string>
+    <string name="ai_progress_timing">%1$ds · зазвичай 20–40s</string>
+    <string name="ai_progress_uploading">Завантаження %1$s / %2$s</string>
+    <string name="ai_progress_waiting">Очікування ШІ…</string>
+    <string name="ai_working">ШІ працює…</string>
+    <string name="shop_crosshair_hint">Розмістіть річ у прицілі</string>
+    <string name="action_add">Додати</string>
+    <string name="composer_add_items">Додати речі з гардероба</string>
+    <string name="wardrobe_search">Шукати в гардеробі</string>
+    <string name="outfits_tag_add">Додати тег</string>
+    <string name="outfits_tag_add_placeholder">напр. день народження, подорож</string>
+    <string name="outfits_tag_remove">Прибрати тег %s</string>
+    <string name="outfit_layer_outerwear">Верхній одяг</string>
+    <string name="outfit_layer_tops">Верх</string>
+    <string name="outfit_layer_onepiece">Суцільний</string>
+    <string name="outfit_layer_bottoms">Низ</string>
+    <string name="outfit_layer_footwear">Взуття</string>
+    <string name="outfit_layer_accessories">Аксесуари</string>
+    <string name="outfit_layer_other">Інше</string>
 </resources>

@@ -215,7 +215,6 @@
     <string name="outfits_add_item">Darab hozzáadása</string>
     <string name="outfits_tags_label">Címkék</string>
     <string name="composer_select_suggestion">Ezt a szettet választom</string>
-    <string name="outfits_tag_add">Címke hozzáadása</string>
     <string name="outfits_saved_wear_today">Szett elmentve! Hordod ma?</string>
     <string name="outfits_combine">Kombinálás AI-val</string>
     <string name="outfit_generate_with_ai">Generálás AI-val</string>
@@ -257,7 +256,6 @@
     <string name="gap_reanalyze">Újraelemzés</string>
 
     <!-- AI overlay -->
-    <string name="ai_working">Az AI dolgozik…</string>
     <string name="ai_fetching_weather">Időjárás lekérése…</string>
     <string name="ai_generating_packing">Pakolólista generálása…</string>
     <string name="ai_analyzing_wardrobe">Gardrób elemzése…</string>
@@ -316,7 +314,6 @@
     <string name="about_credits_desc">Azoknak a felhasználóknak, akik nem szeretnének saját API-kulcsot létrehozni, az app érmealapú kreditrendszert kínál. A krediteket a Kreditek lapon lehet megvásárolni, és a fenti díjak szerint fogynak AI-műveletenként. Ez a mód szerveroldali proxyn keresztül továbbítja a kéréseket.</string>
     <string name="about_credits_title">Kreditek (kezelt mód)</string>
     <string name="about_description">A LibreLookAI egy ingyenes, nyílt forráskódú, AI-alapú gardróbkezelő. Segít rendszerezni a ruhákat, szettjavaslatokat ad, utazási csomagolási listát tervez és felfedezi a gardróbhiányokat — mindezt AI-vel.</string>
-    <string name="action_add">Hozzáadás</string>
     <string name="action_back">Vissza</string>
     <string name="action_search">Keresés</string>
     <string name="ai_consider_age">Életkor</string>
@@ -341,7 +338,6 @@ Ezen engedély nélkül az Android leállíthatja az appot folyamat közben, ami
 Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folytatáshoz.</string>
     <string name="battery_exempt_title">Háttér-feldolgozás szükséges</string>
     <string name="calendar_empty_hint">Viselj egy szettet a Szettek lapról a követés elindításához</string>
-    <string name="composer_add_items">Darabok hozzáadása a gardróbból</string>
     <string name="composer_add_selected">Kiválasztottak hozzáadása</string>
     <string name="composer_closets_all">Minden gardrób</string>
     <string name="composer_closets_title">Gardróbok</string>
@@ -430,13 +426,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="outfit_discard_changes_body">A mentetlen változtatások elvesznek.</string>
     <string name="outfit_discard_changes_confirm">Elvetés</string>
     <string name="outfit_discard_changes_title">Változtatások elvetése?</string>
-    <string name="outfit_layer_accessories">Kiegészítők</string>
-    <string name="outfit_layer_bottoms">Alsók</string>
-    <string name="outfit_layer_footwear">Lábbeli</string>
-    <string name="outfit_layer_onepiece">Egyrészes</string>
-    <string name="outfit_layer_other">Egyéb</string>
-    <string name="outfit_layer_outerwear">Felsőkabát</string>
-    <string name="outfit_layer_tops">Felsők</string>
     <string name="outfit_mode_edit">Szerkesztés</string>
     <string name="outfit_mode_view">Megtekintés</string>
     <string name="outfit_pick_category">Válassz kategóriát</string>
@@ -478,8 +467,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="outfits_suggest_tags_loading">Címkék javaslása…</string>
     <string name="outfits_suggest_tags_title">Javasolt címkék</string>
     <string name="outfits_swap_item_for">Csere: %s</string>
-    <string name="outfits_tag_add_placeholder">pl. születésnap, utazás</string>
-    <string name="outfits_tag_remove">%s címke eltávolítása</string>
     <string name="outfits_unnamed">Névtelen szett</string>
     <string name="prediction_setup_weather_pick_day">Válassz napot</string>
     <string name="repair_duplicate_of">Hasonló ehhez: %1$s</string>
@@ -590,7 +577,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="settings_tab_ai">AI</string>
     <string name="settings_tab_feedback">Visszajelzés</string>
     <string name="shop_clear">Törlés</string>
-    <string name="shop_crosshair_hint">Igazítsd a darabot a célkeresztre</string>
     <string name="shop_description">Készíts fotót egy darabról, amit fontolgatsz, és megmutatjuk a vizuálisan leginkább hasonló darabokat a gardróbodból — teljesen az eszközön.</string>
     <string name="shop_error_embed_failed">Nem sikerült elemezni a fotót. Próbálj másikat.</string>
     <string name="shop_error_model_missing">A vizuális keresési modell nincs telepítve.</string>
@@ -659,7 +645,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="wardrobe_fix_cutout_bg_clean">Nem észlelhető maradék háttér — nincs mit javítani.</string>
     <string name="wardrobe_fix_cutout_bg_done">A kivágás háttere javítva.</string>
     <string name="wardrobe_imported_on">Importálva: %1$s</string>
-    <string name="wardrobe_search">Keresés a gardróbban</string>
     <string name="wardrobe_search_hint">Írd be, mit keresel, vagy keress fotó alapján.</string>
     <string name="wardrobe_search_text_results">Keresési eredmények</string>
     <string name="wardrobe_search_title">Keresés a gardróbban</string>
@@ -885,9 +870,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="outfits_favorite">Kedvenc</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
-    <string name="ai_progress_uploading">Feltöltés %1$s / %2$s</string>
-    <string name="ai_progress_waiting">Várakozás az AI-ra…</string>
-    <string name="ai_progress_timing">%1$ds · általában 20–40s</string>
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->

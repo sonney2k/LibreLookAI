@@ -326,23 +326,13 @@
     <string name="outfits_prediction_next">Další návrh</string>
     <string name="outfits_prediction_indicator">%1$d / %2$d</string>
     <string name="composer_select_suggestion">Použít tento outfit</string>
-    <string name="outfits_tag_add">Přidat štítek</string>
-    <string name="outfits_tag_add_placeholder">např. narozeniny, cestování</string>
     <string name="outfits_suggest_tags">Navrhnout štítky pomocí AI</string>
     <string name="outfits_suggest_tags_title">Navržené štítky</string>
     <string name="outfits_suggest_tags_loading">Navrhování štítků…</string>
     <string name="outfits_suggest_tags_empty">Nebyly navrženy žádné nové štítky.</string>
     <string name="outfits_suggest_tags_apply">Přidat vybrané</string>
     <string name="outfits_suggest_tags_hint">Klepnutím přepnete štítky. Vybrané štítky budou přidány k tomuto outfitu.</string>
-    <string name="outfits_tag_remove">Odstranit štítek %s</string>
     <string name="outfits_unnamed">Outfit bez názvu</string>
-    <string name="outfit_layer_outerwear">Svrchní oblečení</string>
-    <string name="outfit_layer_tops">Vršky</string>
-    <string name="outfit_layer_onepiece">Jednodílné</string>
-    <string name="outfit_layer_bottoms">Spodky</string>
-    <string name="outfit_layer_footwear">Obuv</string>
-    <string name="outfit_layer_accessories">Doplňky</string>
-    <string name="outfit_layer_other">Ostatní</string>
     <string name="outfits_swap_item_for">Vyměnit: %s</string>
     <string name="outfits_suggest_alternatives">Navrhnout 10 alternativ</string>
     <string name="outfits_select_item">Vybrat</string>
@@ -430,7 +420,6 @@
 
     <!-- Credits / Managed Mode -->
     <!-- AI overlay -->
-    <string name="ai_working">AI pracuje…</string>
     <string name="ai_fetching_weather">Zjišťování počasí…</string>
     <string name="ai_generating_packing">Generování seznamu věcí…</string>
     <string name="ai_analyzing_wardrobe">Analyzování vašeho šatníku…</string>
@@ -469,7 +458,6 @@
     <string name="tryon_gallery">Galerie</string>
 
     <!-- Try-on composer / history -->
-    <string name="action_add">Přidat</string>
     <string name="tryon_composer_explain">Všechny níže zobrazené položky budou v generovaném vyzkoušení nošeny společně. Klepnutím na položku ji odstraníte; klepnutím na \"+\" přidáte další.</string>
     <string name="tryon_composer_items_title">Položky v tomto vyzkoušení (%1$d)</string>
     <string name="tryon_add_item">Přidat položku</string>
@@ -582,7 +570,6 @@
     <string name="composer_feedback_history">V kontextu zachováno %1$d dřívějších požadavků</string>
     <string name="composer_enhance">Vylepšit pomocí AI</string>
     <string name="composer_enhancing">Ptám se Gemini…</string>
-    <string name="composer_add_items">Přidat položky ze šatníku</string>
     <string name="composer_picked_count">%1$d vybráno</string>
     <string name="composer_add_selected">Přidat vybrané</string>
     <string name="composer_factors_label">Použití</string>
@@ -629,7 +616,6 @@
     <string name="shop_model_missing">Model v zařízení chybí. Umístěte efficientnet_lite0.tflite do app/src/main/assets/embedder/ a magic_touch.tflite do app/src/main/assets/segmenter/.</string>
     <string name="shop_error_model_missing">Model pro vizuální vyhledávání není nainstalován.</string>
     <string name="shop_error_embed_failed">Tuto fotografii se nepodařilo analyzovat. Zkuste jinou.</string>
-    <string name="shop_crosshair_hint">Vycentrujte položku na zaměřovač</string>
 
     <!-- Similarity check (capture / import / Repair & Sync) -->
     <string name="settings_dedupe_title">Kontrola podobnosti</string>
@@ -667,7 +653,6 @@
     <string name="wardrobe_find_by_photo_searching">Hledání shod…</string>
 
     <!-- Wardrobe search (text or photo) -->
-    <string name="wardrobe_search">Hledat v šatníku</string>
     <string name="wardrobe_search_title">Hledat v šatníku</string>
     <string name="wardrobe_search_hint">Napište, co hledáte, nebo hledejte podle fotky.</string>
     <string name="wardrobe_search_use_photo">Místo toho hledat podle fotky</string>
@@ -909,9 +894,6 @@
     <string name="outfits_favorite">Oblíbené</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
-    <string name="ai_progress_uploading">Nahrávání %1$s / %2$s</string>
-    <string name="ai_progress_waiting">Čekání na AI…</string>
-    <string name="ai_progress_timing">%1$ds · obvykle 20–40s</string>
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->

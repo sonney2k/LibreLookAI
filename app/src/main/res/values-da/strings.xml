@@ -326,23 +326,13 @@
     <string name="outfits_prediction_next">Næste forslag</string>
     <string name="outfits_prediction_indicator">%1$d / %2$d</string>
     <string name="composer_select_suggestion">Brug dette outfit</string>
-    <string name="outfits_tag_add">Tilføj tag</string>
-    <string name="outfits_tag_add_placeholder">f.eks. fødselsdag, rejse</string>
     <string name="outfits_suggest_tags">Foreslå tags med AI</string>
     <string name="outfits_suggest_tags_title">Foreslåede tags</string>
     <string name="outfits_suggest_tags_loading">Foreslår tags…</string>
     <string name="outfits_suggest_tags_empty">Ingen nye tags foreslået.</string>
     <string name="outfits_suggest_tags_apply">Tilføj valgte</string>
     <string name="outfits_suggest_tags_hint">Tryk på tags for at skifte. Valgte tags tilføjes til dette outfit.</string>
-    <string name="outfits_tag_remove">Fjern tag %s</string>
     <string name="outfits_unnamed">Unavngivet outfit</string>
-    <string name="outfit_layer_outerwear">Overtøj</string>
-    <string name="outfit_layer_tops">Overdele</string>
-    <string name="outfit_layer_onepiece">Heldragter</string>
-    <string name="outfit_layer_bottoms">Underdele</string>
-    <string name="outfit_layer_footwear">Sko</string>
-    <string name="outfit_layer_accessories">Accessories</string>
-    <string name="outfit_layer_other">Øvrigt</string>
     <string name="outfits_swap_item_for">Skift: %s</string>
     <string name="outfits_suggest_alternatives">Foreslå 10 alternativer</string>
     <string name="outfits_select_item">Vælg</string>
@@ -430,7 +420,6 @@
 
     <!-- Kreditter / Administreret tilstand -->
     <!-- AI-overlay -->
-    <string name="ai_working">AI arbejder…</string>
     <string name="ai_fetching_weather">Henter vejr…</string>
     <string name="ai_generating_packing">Genererer pakkeliste…</string>
     <string name="ai_analyzing_wardrobe">Analyserer din garderobe…</string>
@@ -469,7 +458,6 @@
     <string name="tryon_gallery">Galleri</string>
 
     <!-- Prøvnings-composer / historik -->
-    <string name="action_add">Tilføj</string>
     <string name="tryon_composer_explain">Alle stykker vist nedenfor bæres sammen i den genererede prøvning. Tryk på et stykke for at fjerne det; tryk på \"+\" for at tilføje flere.</string>
     <string name="tryon_composer_items_title">Stykker i denne prøvning (%1$d)</string>
     <string name="tryon_add_item">Tilføj stykke</string>
@@ -582,7 +570,6 @@
     <string name="composer_feedback_history">%1$d tidligere anmodning(er) bevaret i konteksten</string>
     <string name="composer_enhance">Forbedr med AI</string>
     <string name="composer_enhancing">Spørger Gemini…</string>
-    <string name="composer_add_items">Tilføj stykker fra garderoben</string>
     <string name="composer_picked_count">%1$d valgt</string>
     <string name="composer_add_selected">Tilføj valgte</string>
     <string name="composer_factors_label">Bruger</string>
@@ -629,7 +616,6 @@
     <string name="shop_model_missing">Lokal model mangler. Placér efficientnet_lite0.tflite under app/src/main/assets/embedder/ og magic_touch.tflite under app/src/main/assets/segmenter/.</string>
     <string name="shop_error_model_missing">Visuel søgemodel er ikke installeret.</string>
     <string name="shop_error_embed_failed">Kunne ikke analysere fotoet. Prøv et andet.</string>
-    <string name="shop_crosshair_hint">Centrér stykket på trådkorset</string>
 
     <!-- Lighedscheck (optagelse / import / Reparér &amp; synkronisér) -->
     <string name="settings_dedupe_title">Lighedscheck</string>
@@ -667,7 +653,6 @@
     <string name="wardrobe_find_by_photo_searching">Søger efter matches…</string>
 
     <!-- Garderobesøgning (tekst eller foto) -->
-    <string name="wardrobe_search">Søg i garderobe</string>
     <string name="wardrobe_search_title">Søg i garderobe</string>
     <string name="wardrobe_search_hint">Skriv hvad du leder efter, eller søg via foto.</string>
     <string name="wardrobe_search_use_photo">Søg via foto i stedet</string>
@@ -909,9 +894,6 @@
     <string name="outfits_favorite">Favorit</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
-    <string name="ai_progress_uploading">Uploader %1$s / %2$s</string>
-    <string name="ai_progress_waiting">Venter på AI…</string>
-    <string name="ai_progress_timing">%1$ds · normalt 20–40s</string>
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->

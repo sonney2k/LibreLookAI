@@ -187,7 +187,7 @@ internal fun OutfitFullScreenViewer(
                             }
                         } else if (!isOffline) {
                             Text(
-                                text = stringResource(R.string.outfits_tag_add),
+                                text = stringResource(DsR.string.outfits_tag_add),
                                 modifier = Modifier.clickable {
                                     Analytics.action("OutfitViewer", "edit_tags_empty")
                                     onEditTags(current)

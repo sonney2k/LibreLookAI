@@ -1,6 +1,7 @@
 package com.librelookai.outfit
 
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.wardrobe.DriveImage
 
 /** Garment layers, in display order top→bottom in the look board. */
@@ -8,12 +9,12 @@ enum class Layer(
     val labelRes: Int,
     val iconRes: Int,
 ) {
-    Outerwear(R.string.outfit_layer_outerwear, R.drawable.ic_layer_jacket),
-    Top(R.string.outfit_layer_tops,            R.drawable.ic_layer_shirt),
-    OnePiece(R.string.outfit_layer_onepiece,   R.drawable.ic_layer_dress),
-    Bottom(R.string.outfit_layer_bottoms,      R.drawable.ic_layer_pants),
-    Footwear(R.string.outfit_layer_footwear,   R.drawable.ic_layer_shoe),
-    Accessory(R.string.outfit_layer_accessories, R.drawable.ic_layer_bag),
+    Outerwear(DsR.string.outfit_layer_outerwear, R.drawable.ic_layer_jacket),
+    Top(DsR.string.outfit_layer_tops,            R.drawable.ic_layer_shirt),
+    OnePiece(DsR.string.outfit_layer_onepiece,   R.drawable.ic_layer_dress),
+    Bottom(DsR.string.outfit_layer_bottoms,      R.drawable.ic_layer_pants),
+    Footwear(DsR.string.outfit_layer_footwear,   R.drawable.ic_layer_shoe),
+    Accessory(DsR.string.outfit_layer_accessories, R.drawable.ic_layer_bag),
 }
 
 /** Map a wardrobe item to a layer slot using its category (best-effort). */

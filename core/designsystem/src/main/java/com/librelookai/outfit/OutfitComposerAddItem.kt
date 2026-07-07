@@ -45,8 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.DialogWindowProvider
-import com.librelookai.R
-import com.librelookai.core.designsystem.R as DsR
+import com.librelookai.core.designsystem.R
 import com.librelookai.data.model.Location
 import com.librelookai.util.AiProcessingOverlay
 import com.librelookai.util.Analytics
@@ -58,7 +57,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun AddItemSheet(
+fun AddItemSheet(
     allItems: List<DriveImage>,
     alreadyChosen: Set<String>,
     locations: List<com.librelookai.data.model.Location>,
@@ -180,7 +179,7 @@ internal fun AddItemSheet(
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             IconButton(onClick = onDismiss) {
-                                Icon(Icons.Default.Close, contentDescription = stringResource(DsR.string.action_close))
+                                Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_close))
                             }
                             Text(
                                 stringResource(R.string.composer_add_items),
@@ -291,7 +290,7 @@ internal fun AddItemSheet(
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-internal fun OutfitTagsEditor(
+fun OutfitTagsEditor(
     tags: List<String>,
     onAdd: (String) -> Unit,
     onRemove: (String) -> Unit,

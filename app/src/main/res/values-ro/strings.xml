@@ -214,7 +214,6 @@
     <string name="outfits_add_item">Adaugă articol</string>
     <string name="outfits_tags_label">Etichete</string>
     <string name="composer_select_suggestion">Folosește această ținută</string>
-    <string name="outfits_tag_add">Adaugă etichetă</string>
     <string name="outfits_saved_wear_today">Ținută salvată! O porți azi?</string>
     <string name="outfits_combine">Combină cu AI</string>
     <string name="outfit_generate_with_ai">Generează cu AI</string>
@@ -256,7 +255,6 @@
     <string name="gap_reanalyze">Re-analizează</string>
 
     <!-- AI overlay -->
-    <string name="ai_working">AI lucrează…</string>
     <string name="ai_fetching_weather">Se preia vremea…</string>
     <string name="ai_generating_packing">Se generează lista…</string>
     <string name="ai_analyzing_wardrobe">Se analizează garderoba ta…</string>
@@ -315,7 +313,6 @@
     <string name="about_credits_desc">Pentru utilizatorii care preferă să nu-și creeze propria cheie API, aplicația oferă un sistem de credite pe bază de monede. Creditele pot fi cumpărate în secțiunea Credite și sunt consumate pentru fiecare acțiune AI la tarifele de mai sus. Acest mod direcționează cererile printr-un proxy de pe server.</string>
     <string name="about_credits_title">Credite (mod gestionat)</string>
     <string name="about_description">LibreLookAI este un manager de garderobă gratuit, open-source, alimentat de AI. Te ajută să-ți organizezi hainele, să obții sugestii de ținute, să planifici listele de bagaje pentru călătorii și să descoperi lipsurile din garderobă — totul cu ajutorul AI.</string>
-    <string name="action_add">Adaugă</string>
     <string name="action_back">Înapoi</string>
     <string name="action_search">Caută</string>
     <string name="ai_consider_age">Vârstă</string>
@@ -340,7 +337,6 @@ Fără această permisiune, Android poate închide aplicația în timpul proces�
 Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a continua.</string>
     <string name="battery_exempt_title">Procesare în fundal necesară</string>
     <string name="calendar_empty_hint">Poartă o ținută din tabul Ținute pentru a începe urmărirea</string>
-    <string name="composer_add_items">Adaugă articole din garderobă</string>
     <string name="composer_add_selected">Adaugă selecția</string>
     <string name="composer_closets_all">Toate dulapurile</string>
     <string name="composer_closets_title">Dulapuri</string>
@@ -429,13 +425,6 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="outfit_discard_changes_body">Modificările nesalvate vor fi pierdute.</string>
     <string name="outfit_discard_changes_confirm">Renunță</string>
     <string name="outfit_discard_changes_title">Renunți la modificări?</string>
-    <string name="outfit_layer_accessories">Accesorii</string>
-    <string name="outfit_layer_bottoms">Inferioare</string>
-    <string name="outfit_layer_footwear">Încălțăminte</string>
-    <string name="outfit_layer_onepiece">Dintr-o piesă</string>
-    <string name="outfit_layer_other">Altele</string>
-    <string name="outfit_layer_outerwear">Geacă/palton</string>
-    <string name="outfit_layer_tops">Superioare</string>
     <string name="outfit_mode_edit">Editare</string>
     <string name="outfit_mode_view">Vizualizare</string>
     <string name="outfit_pick_category">Alege o categorie</string>
@@ -477,8 +466,6 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="outfits_suggest_tags_loading">Se sugerează etichete…</string>
     <string name="outfits_suggest_tags_title">Etichete sugerate</string>
     <string name="outfits_swap_item_for">Schimbă: %s</string>
-    <string name="outfits_tag_add_placeholder">ex. aniversare, călătorie</string>
-    <string name="outfits_tag_remove">Elimină eticheta %s</string>
     <string name="outfits_unnamed">Ținută fără titlu</string>
     <string name="prediction_setup_weather_pick_day">Alege o zi</string>
     <string name="repair_duplicate_of">Similar cu %1$s</string>
@@ -590,7 +577,6 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="settings_tab_ai">AI</string>
     <string name="settings_tab_feedback">Feedback</string>
     <string name="shop_clear">Șterge</string>
-    <string name="shop_crosshair_hint">Centrează articolul pe reticul</string>
     <string name="shop_description">Fă o fotografie a unei piese pe care o ai în vedere și îți vom arăta cele mai similare vizual articole pe care le ai deja în garderobă — totul direct pe dispozitiv.</string>
     <string name="shop_error_embed_failed">Nu s-a putut analiza fotografia. Încearcă alta.</string>
     <string name="shop_error_model_missing">Modelul de căutare vizuală nu este instalat.</string>
@@ -659,7 +645,6 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="wardrobe_fix_cutout_bg_clean">Niciun fundal rămas detectat — nimic de reparat.</string>
     <string name="wardrobe_fix_cutout_bg_done">Fundalul decupajului a fost reparat.</string>
     <string name="wardrobe_imported_on">Importat %1$s</string>
-    <string name="wardrobe_search">Caută în garderobă</string>
     <string name="wardrobe_search_hint">Scrie ce cauți sau caută după fotografie.</string>
     <string name="wardrobe_search_text_results">Rezultate căutare</string>
     <string name="wardrobe_search_title">Caută în garderobă</string>
@@ -885,9 +870,6 @@ Te rugăm să dezactivezi optimizarea bateriei pentru LibreLookAI pentru a conti
     <string name="outfits_favorite">Favorit</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
-    <string name="ai_progress_uploading">Se încarcă %1$s / %2$s</string>
-    <string name="ai_progress_waiting">Se așteaptă IA…</string>
-    <string name="ai_progress_timing">%1$ds · de obicei 20–40s</string>
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->

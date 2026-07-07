@@ -215,7 +215,6 @@
     <string name="outfits_add_item">添加單品</string>
     <string name="outfits_tags_label">標籤</string>
     <string name="composer_select_suggestion">使用此穿搭</string>
-    <string name="outfits_tag_add">添加標籤</string>
     <string name="outfits_saved_wear_today">穿搭已儲存！今天穿這套嗎？</string>
     <string name="outfits_combine">使用 AI 結合</string>
     <string name="outfit_generate_with_ai">使用 AI 生成</string>
@@ -257,7 +256,6 @@
     <string name="gap_reanalyze">重新分析</string>
 
     <!-- AI overlay -->
-    <string name="ai_working">AI 正在工作…</string>
     <string name="ai_fetching_weather">正在獲取天氣…</string>
     <string name="ai_generating_packing">正在生成打包清單…</string>
     <string name="ai_analyzing_wardrobe">正在分析您的衣櫥…</string>
@@ -316,7 +314,6 @@
     <string name="about_credits_desc">對於不想自行建立 API 金鑰的使用者，本 App 提供基於點數的代幣系統。點數可在「點數」頁面購買，並依上方費率扣除。此模式透過伺服器代理路由請求。</string>
     <string name="about_credits_title">點數（託管模式）</string>
     <string name="about_description">LibreLookAI 是一款免費、開源的 AI 衣櫥管理工具。它能協助你整理衣物、提供穿搭建議、規劃旅行打包清單，並找出衣櫥的缺口——一切都由 AI 驅動。</string>
-    <string name="action_add">新增</string>
     <string name="action_back">返回</string>
     <string name="action_search">搜尋</string>
     <string name="ai_consider_age">年齡</string>
@@ -341,7 +338,6 @@
 請關閉 LibreLookAI 的電池最佳化以繼續。</string>
     <string name="battery_exempt_title">需要背景處理權限</string>
     <string name="calendar_empty_hint">從「穿搭」頁面選一套穿搭來開始記錄</string>
-    <string name="composer_add_items">從衣櫥新增單品</string>
     <string name="composer_add_selected">新增已選</string>
     <string name="composer_closets_all">所有衣櫥</string>
     <string name="composer_closets_title">衣櫥</string>
@@ -430,13 +426,6 @@
     <string name="outfit_discard_changes_body">未儲存的變更將會遺失。</string>
     <string name="outfit_discard_changes_confirm">捨棄</string>
     <string name="outfit_discard_changes_title">捨棄變更？</string>
-    <string name="outfit_layer_accessories">配件</string>
-    <string name="outfit_layer_bottoms">下身</string>
-    <string name="outfit_layer_footwear">鞋款</string>
-    <string name="outfit_layer_onepiece">連身</string>
-    <string name="outfit_layer_other">其他</string>
-    <string name="outfit_layer_outerwear">外套</string>
-    <string name="outfit_layer_tops">上身</string>
     <string name="outfit_mode_edit">編輯</string>
     <string name="outfit_mode_view">檢視</string>
     <string name="outfit_pick_category">選擇類別</string>
@@ -478,8 +467,6 @@
     <string name="outfits_suggest_tags_loading">正在建議標籤…</string>
     <string name="outfits_suggest_tags_title">建議標籤</string>
     <string name="outfits_swap_item_for">替換：%s</string>
-    <string name="outfits_tag_add_placeholder">例如：生日、旅行</string>
-    <string name="outfits_tag_remove">移除標籤 %s</string>
     <string name="outfits_unnamed">未命名穿搭</string>
     <string name="prediction_setup_weather_pick_day">選擇日期</string>
     <string name="repair_duplicate_of">類似 %1$s</string>
@@ -590,7 +577,6 @@
     <string name="settings_tab_ai">AI</string>
     <string name="settings_tab_feedback">回饋</string>
     <string name="shop_clear">清除</string>
-    <string name="shop_crosshair_hint">把單品置於十字準星中央</string>
     <string name="shop_description">拍下你正在考慮的單品，我們會顯示衣櫥中視覺最相似的單品——完全在裝置上運作。</string>
     <string name="shop_error_embed_failed">無法分析此相片。請試試其他相片。</string>
     <string name="shop_error_model_missing">未安裝視覺搜尋模型。</string>
@@ -659,7 +645,6 @@
     <string name="wardrobe_fix_cutout_bg_clean">未偵測到殘留背景——無需修復。</string>
     <string name="wardrobe_fix_cutout_bg_done">剪裁背景已修復。</string>
     <string name="wardrobe_imported_on">匯入時間 %1$s</string>
-    <string name="wardrobe_search">搜尋衣櫥</string>
     <string name="wardrobe_search_hint">輸入你要找的東西，或以相片搜尋。</string>
     <string name="wardrobe_search_text_results">搜尋結果</string>
     <string name="wardrobe_search_title">搜尋衣櫥</string>
@@ -885,9 +870,6 @@
     <string name="outfits_favorite">最愛</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
-    <string name="ai_progress_uploading">上傳中 %1$s / %2$s</string>
-    <string name="ai_progress_waiting">等待 AI…</string>
-    <string name="ai_progress_timing">%1$ds · 通常 20–40s</string>
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->

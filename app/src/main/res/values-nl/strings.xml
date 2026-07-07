@@ -326,23 +326,13 @@
     <string name="outfits_prediction_next">Volgende suggestie</string>
     <string name="outfits_prediction_indicator">%1$d / %2$d</string>
     <string name="composer_select_suggestion">Deze outfit gebruiken</string>
-    <string name="outfits_tag_add">Tag toevoegen</string>
-    <string name="outfits_tag_add_placeholder">bv. verjaardag, reis</string>
     <string name="outfits_suggest_tags">Tags voorstellen met AI</string>
     <string name="outfits_suggest_tags_title">Voorgestelde tags</string>
     <string name="outfits_suggest_tags_loading">Tags voorstellen…</string>
     <string name="outfits_suggest_tags_empty">Geen nieuwe tags voorgesteld.</string>
     <string name="outfits_suggest_tags_apply">Selectie toevoegen</string>
     <string name="outfits_suggest_tags_hint">Tik op tags om aan/uit te zetten. Geselecteerde tags worden aan deze outfit toegevoegd.</string>
-    <string name="outfits_tag_remove">Tag %s verwijderen</string>
     <string name="outfits_unnamed">Naamloze outfit</string>
-    <string name="outfit_layer_outerwear">Bovenkleding</string>
-    <string name="outfit_layer_tops">Tops</string>
-    <string name="outfit_layer_onepiece">Eendelig</string>
-    <string name="outfit_layer_bottoms">Broeken</string>
-    <string name="outfit_layer_footwear">Schoenen</string>
-    <string name="outfit_layer_accessories">Accessoires</string>
-    <string name="outfit_layer_other">Overig</string>
     <string name="outfits_swap_item_for">Wissel: %s</string>
     <string name="outfits_suggest_alternatives">10 alternatieven voorstellen</string>
     <string name="outfits_select_item">Selecteren</string>
@@ -430,7 +420,6 @@
 
     <!-- Credits / Managed Mode -->
     <!-- AI-overlay -->
-    <string name="ai_working">AI is bezig…</string>
     <string name="ai_fetching_weather">Weer ophalen…</string>
     <string name="ai_generating_packing">Paklijst genereren…</string>
     <string name="ai_analyzing_wardrobe">Je garderobe analyseren…</string>
@@ -469,7 +458,6 @@
     <string name="tryon_gallery">Galerij</string>
 
     <!-- Pas-composer / geschiedenis -->
-    <string name="action_add">Toevoegen</string>
     <string name="tryon_composer_explain">Alle items hieronder worden samen gedragen in de gegenereerde pasbeurt. Tik op een item om het te verwijderen; tik op \"+\" om meer toe te voegen.</string>
     <string name="tryon_composer_items_title">Items in deze pasbeurt (%1$d)</string>
     <string name="tryon_add_item">Item toevoegen</string>
@@ -582,7 +570,6 @@
     <string name="composer_feedback_history">%1$d eerdere verzoek(en) in context bewaard</string>
     <string name="composer_enhance">Verbeteren met AI</string>
     <string name="composer_enhancing">Gemini vragen…</string>
-    <string name="composer_add_items">Items uit garderobe toevoegen</string>
     <string name="composer_picked_count">%1$d gekozen</string>
     <string name="composer_add_selected">Selectie toevoegen</string>
     <string name="composer_factors_label">Gebruikt</string>
@@ -629,7 +616,6 @@
     <string name="shop_model_missing">Lokaal model ontbreekt. Plaats efficientnet_lite0.tflite onder app/src/main/assets/embedder/ en magic_touch.tflite onder app/src/main/assets/segmenter/.</string>
     <string name="shop_error_model_missing">Visueel-zoekmodel is niet geïnstalleerd.</string>
     <string name="shop_error_embed_failed">Foto kon niet geanalyseerd worden. Probeer een andere.</string>
-    <string name="shop_crosshair_hint">Plaats het item op het dradenkruis</string>
 
     <!-- Gelijkeniscontrole (opname / import / Reparatie &amp; Sync) -->
     <string name="settings_dedupe_title">Gelijkeniscontrole</string>
@@ -667,7 +653,6 @@
     <string name="wardrobe_find_by_photo_searching">Matches zoeken…</string>
 
     <!-- Garderobe doorzoeken (tekst of foto) -->
-    <string name="wardrobe_search">Garderobe doorzoeken</string>
     <string name="wardrobe_search_title">Garderobe doorzoeken</string>
     <string name="wardrobe_search_hint">Typ waar je naar zoekt, of zoek via foto.</string>
     <string name="wardrobe_search_use_photo">In plaats daarvan via foto zoeken</string>
@@ -909,9 +894,6 @@
     <string name="outfits_favorite">Favoriet</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
-    <string name="ai_progress_uploading">Uploaden %1$s / %2$s</string>
-    <string name="ai_progress_waiting">Wachten op AI…</string>
-    <string name="ai_progress_timing">%1$ds · gewoonlijk 20–40s</string>
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->

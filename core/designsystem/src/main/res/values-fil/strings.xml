@@ -156,4 +156,22 @@
     <string name="tryon_try_again">Subukan muli</string>
     <string name="settings_profile_gender">Kasarian / panghalip</string>
     <string name="settings_profile_year">Taon ng kapanganakan</string>
+    <string name="ai_progress_timing">%1$ds · karaniwang 20–40s</string>
+    <string name="ai_progress_uploading">Ina-upload %1$s / %2$s</string>
+    <string name="ai_progress_waiting">Naghihintay sa AI…</string>
+    <string name="ai_working">Nagta-trabaho ang AI…</string>
+    <string name="shop_crosshair_hint">Igitnaan ang item sa crosshair</string>
+    <string name="action_add">Idagdag</string>
+    <string name="composer_add_items">Magdagdag ng item mula sa wardrobe</string>
+    <string name="wardrobe_search">Maghanap sa wardrobe</string>
+    <string name="outfits_tag_add">Magdagdag ng tag</string>
+    <string name="outfits_tag_add_placeholder">hal. kaarawan, biyahe</string>
+    <string name="outfits_tag_remove">Alisin ang tag %s</string>
+    <string name="outfit_layer_outerwear">Outerwear</string>
+    <string name="outfit_layer_tops">Tops</string>
+    <string name="outfit_layer_onepiece">One-piece</string>
+    <string name="outfit_layer_bottoms">Bottoms</string>
+    <string name="outfit_layer_footwear">Footwear</string>
+    <string name="outfit_layer_accessories">Accessories</string>
+    <string name="outfit_layer_other">Iba pa</string>
 </resources>

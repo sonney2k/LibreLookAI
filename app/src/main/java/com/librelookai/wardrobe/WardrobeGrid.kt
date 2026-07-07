@@ -234,7 +234,7 @@ internal fun GridContent(
                 }) {
                     Icon(
                         Icons.Default.ImageSearch,
-                        contentDescription = stringResource(R.string.wardrobe_search),
+                        contentDescription = stringResource(DsR.string.wardrobe_search),
                     )
                 }
                 IconButton(onClick = {

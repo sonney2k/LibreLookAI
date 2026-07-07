@@ -156,4 +156,22 @@
     <string name="tryon_try_again">다시 시도</string>
     <string name="settings_profile_gender">성별 / 대명사</string>
     <string name="settings_profile_year">출생 연도</string>
+    <string name="ai_progress_timing">%1$ds · 보통 20–40s</string>
+    <string name="ai_progress_uploading">업로드 중 %1$s / %2$s</string>
+    <string name="ai_progress_waiting">AI 대기 중…</string>
+    <string name="ai_working">AI 작업 중…</string>
+    <string name="shop_crosshair_hint">십자선에 아이템을 맞추세요</string>
+    <string name="action_add">추가</string>
+    <string name="composer_add_items">옷장에서 아이템 추가</string>
+    <string name="wardrobe_search">옷장 검색</string>
+    <string name="outfits_tag_add">태그 추가</string>
+    <string name="outfits_tag_add_placeholder">예: 생일, 여행</string>
+    <string name="outfits_tag_remove">태그 제거 %s</string>
+    <string name="outfit_layer_outerwear">아우터</string>
+    <string name="outfit_layer_tops">상의</string>
+    <string name="outfit_layer_onepiece">원피스</string>
+    <string name="outfit_layer_bottoms">하의</string>
+    <string name="outfit_layer_footwear">신발</string>
+    <string name="outfit_layer_accessories">액세서리</string>
+    <string name="outfit_layer_other">기타</string>
 </resources>

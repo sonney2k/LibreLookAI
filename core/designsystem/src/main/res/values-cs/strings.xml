@@ -156,4 +156,22 @@
     <string name="tryon_try_again">Zkusit znovu</string>
     <string name="settings_profile_gender">Pohlaví / zájmena</string>
     <string name="settings_profile_year">Rok narození</string>
+    <string name="ai_progress_timing">%1$ds · obvykle 20–40s</string>
+    <string name="ai_progress_uploading">Nahrávání %1$s / %2$s</string>
+    <string name="ai_progress_waiting">Čekání na AI…</string>
+    <string name="ai_working">AI pracuje…</string>
+    <string name="shop_crosshair_hint">Vycentrujte položku na zaměřovač</string>
+    <string name="action_add">Přidat</string>
+    <string name="composer_add_items">Přidat položky ze šatníku</string>
+    <string name="wardrobe_search">Hledat v šatníku</string>
+    <string name="outfits_tag_add">Přidat štítek</string>
+    <string name="outfits_tag_add_placeholder">např. narozeniny, cestování</string>
+    <string name="outfits_tag_remove">Odstranit štítek %s</string>
+    <string name="outfit_layer_outerwear">Svrchní oblečení</string>
+    <string name="outfit_layer_tops">Vršky</string>
+    <string name="outfit_layer_onepiece">Jednodílné</string>
+    <string name="outfit_layer_bottoms">Spodky</string>
+    <string name="outfit_layer_footwear">Obuv</string>
+    <string name="outfit_layer_accessories">Doplňky</string>
+    <string name="outfit_layer_other">Ostatní</string>
 </resources>

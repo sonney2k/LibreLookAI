@@ -156,4 +156,22 @@
     <string name="tryon_try_again">Thử lại</string>
     <string name="settings_profile_gender">Giới tính / đại từ</string>
     <string name="settings_profile_year">Năm sinh</string>
+    <string name="ai_progress_timing">%1$ds · thường mất 20–40s</string>
+    <string name="ai_progress_uploading">Đang tải lên %1$s / %2$s</string>
+    <string name="ai_progress_waiting">Đang chờ AI…</string>
+    <string name="ai_working">AI đang làm việc…</string>
+    <string name="shop_crosshair_hint">Đặt món ở giữa dấu chữ thập</string>
+    <string name="action_add">Thêm</string>
+    <string name="composer_add_items">Thêm món từ tủ</string>
+    <string name="wardrobe_search">Tìm trong tủ</string>
+    <string name="outfits_tag_add">Thêm thẻ</string>
+    <string name="outfits_tag_add_placeholder">vd. sinh nhật, du lịch</string>
+    <string name="outfits_tag_remove">Xóa thẻ %s</string>
+    <string name="outfit_layer_outerwear">Áo khoác</string>
+    <string name="outfit_layer_tops">Trên</string>
+    <string name="outfit_layer_onepiece">Liền thân</string>
+    <string name="outfit_layer_bottoms">Dưới</string>
+    <string name="outfit_layer_footwear">Giày dép</string>
+    <string name="outfit_layer_accessories">Phụ kiện</string>
+    <string name="outfit_layer_other">Khác</string>
 </resources>

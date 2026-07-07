@@ -156,4 +156,22 @@
     <string name="tryon_try_again">फिर कोशिश करें</string>
     <string name="settings_profile_gender">लिंग / सर्वनाम</string>
     <string name="settings_profile_year">जन्म का वर्ष</string>
+    <string name="ai_progress_timing">%1$ds · आम तौर पर 20–40s</string>
+    <string name="ai_progress_uploading">अपलोड हो रहा है %1$s / %2$s</string>
+    <string name="ai_progress_waiting">AI की प्रतीक्षा…</string>
+    <string name="ai_working">AI काम कर रहा है…</string>
+    <string name="shop_crosshair_hint">आइटम को क्रॉसहेयर पर केंद्रित करें</string>
+    <string name="action_add">जोड़ें</string>
+    <string name="composer_add_items">वॉर्डरोब से आइटम जोड़ें</string>
+    <string name="wardrobe_search">वॉर्डरोब में खोजें</string>
+    <string name="outfits_tag_add">टैग जोड़ें</string>
+    <string name="outfits_tag_add_placeholder">उदा. जन्मदिन, यात्रा</string>
+    <string name="outfits_tag_remove">टैग %s हटाएं</string>
+    <string name="outfit_layer_outerwear">ऊपरी कपड़े</string>
+    <string name="outfit_layer_tops">ऊपर के कपड़े</string>
+    <string name="outfit_layer_onepiece">वन-पीस</string>
+    <string name="outfit_layer_bottoms">नीचे के कपड़े</string>
+    <string name="outfit_layer_footwear">जूते</string>
+    <string name="outfit_layer_accessories">एक्सेसरीज़</string>
+    <string name="outfit_layer_other">अन्य</string>
 </resources>

@@ -1541,6 +1541,27 @@ categories:
    (billing+onboarding), `tryon_try_again`/`settings_profile_gender|year`/
    `settings_style_prefs` (app+onboarding) all moved in this slice. Remaining:
    tryon/travel → shopping → outfit → wardrobe → settings.
+   **tryon enabler landed (July 2026) — the shared chrome/capture/picker UI sank to
+   `core/designsystem`** (measured first: tryon's only real feature edges were
+   `outfit.AddItemSheet`/`bucketFor`/`OutfitItemBucket` plus VM params in
+   `TryOnScreen`/`TryOnComposer`; everything else it imports already lives in core under
+   the kept packages). Moved wholesale, packages kept: `util/AiProcessingOverlay`
+   (+ its 4 `ai_progress_*`/`ai_working` keys), `wardrobe/CaptureScreen` (+
+   `shop_crosshair_hint`, CameraX/activity-compose/lifecycle-compose deps) with its
+   private `wardrobe/PhotoReviewScreen` rider, `outfit/OutfitComposerAddItem.kt`
+   (`AddItemSheet` + `OutfitTagsEditor`, made public) and the extracted
+   `outfit/OutfitItemBucket`+`bucketFor` (out of `OutfitViewerParts.kt`; `OutfitSlot.kt`'s
+   separate drawable-carrying enum stays app-side on `DsR` keys), and the new
+   `SharedChrome.kt` (root package): `ViewerHeaderActions`+`LocationButton` (ex
+   `MainCompositionLocals.kt`/`AppScreenHeader.kt`; `LocationViewModel.ALL_LOCATIONS_ID`
+   reads swapped to `ClosetSession.ALL_LOCATIONS_ID` — designsystem gained
+   `:core:session`) plus `LocalOpenSettings`/`LocalGeminiProgress`/`LocalClosetSelector`;
+   only `LocalStartTour` stays app-side. 18 string keys moved app→designsystem res across
+   all 32 locale dirs (scripted whole-element cut+append; no renames). **New bridge
+   pattern, recorded**: `PhotoReviewScreen`'s confirm-cost badge comes from
+   `feature/billing` (above core), so designsystem exposes `LocalRemoveBgCostBadge`
+   (null → hidden) and `AppContent` provides it from billing — the same
+   provide-high/self-hide contract as the other chrome Locals.
 
 ### Verification (per slice)
 

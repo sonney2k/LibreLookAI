@@ -418,7 +418,7 @@ internal fun ExtrasCard(
                     )
                     Spacer(Modifier.width(4.dp))
                     IconButton(onClick = { addDraft(); keyboardController?.hide() }, enabled = draft.isNotBlank()) {
-                        Icon(Icons.Default.Add, contentDescription = stringResource(R.string.action_add))
+                        Icon(Icons.Default.Add, contentDescription = stringResource(DsR.string.action_add))
                     }
                 }
             } else if (checklist) {

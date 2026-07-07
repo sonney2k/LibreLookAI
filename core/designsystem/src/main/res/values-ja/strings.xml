@@ -156,4 +156,22 @@
     <string name="tryon_try_again">もう一度</string>
     <string name="settings_profile_gender">性別 / 代名詞</string>
     <string name="settings_profile_year">生まれ年</string>
+    <string name="ai_progress_timing">%1$ds · 通常 20–40s</string>
+    <string name="ai_progress_uploading">アップロード中 %1$s / %2$s</string>
+    <string name="ai_progress_waiting">AIを待っています…</string>
+    <string name="ai_working">AI が処理中…</string>
+    <string name="shop_crosshair_hint">十字にアイテムを合わせてください</string>
+    <string name="action_add">追加</string>
+    <string name="composer_add_items">クローゼットからアイテムを追加</string>
+    <string name="wardrobe_search">クローゼットを検索</string>
+    <string name="outfits_tag_add">タグを追加</string>
+    <string name="outfits_tag_add_placeholder">例: 誕生日、旅行</string>
+    <string name="outfits_tag_remove">タグを削除 %s</string>
+    <string name="outfit_layer_outerwear">アウター</string>
+    <string name="outfit_layer_tops">トップス</string>
+    <string name="outfit_layer_onepiece">ワンピース</string>
+    <string name="outfit_layer_bottoms">ボトムス</string>
+    <string name="outfit_layer_footwear">シューズ</string>
+    <string name="outfit_layer_accessories">アクセサリー</string>
+    <string name="outfit_layer_other">その他</string>
 </resources>

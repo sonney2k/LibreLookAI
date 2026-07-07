@@ -326,23 +326,13 @@
     <string name="outfits_prediction_next">다음 제안</string>
     <string name="outfits_prediction_indicator">%1$d / %2$d</string>
     <string name="composer_select_suggestion">이 코디 사용</string>
-    <string name="outfits_tag_add">태그 추가</string>
-    <string name="outfits_tag_add_placeholder">예: 생일, 여행</string>
     <string name="outfits_suggest_tags">AI로 태그 제안</string>
     <string name="outfits_suggest_tags_title">제안된 태그</string>
     <string name="outfits_suggest_tags_loading">태그 제안 중…</string>
     <string name="outfits_suggest_tags_empty">새로 제안된 태그가 없습니다.</string>
     <string name="outfits_suggest_tags_apply">선택 추가</string>
     <string name="outfits_suggest_tags_hint">태그를 탭하여 전환하세요. 선택된 태그가 이 코디에 추가됩니다.</string>
-    <string name="outfits_tag_remove">태그 제거 %s</string>
     <string name="outfits_unnamed">제목 없는 코디</string>
-    <string name="outfit_layer_outerwear">아우터</string>
-    <string name="outfit_layer_tops">상의</string>
-    <string name="outfit_layer_onepiece">원피스</string>
-    <string name="outfit_layer_bottoms">하의</string>
-    <string name="outfit_layer_footwear">신발</string>
-    <string name="outfit_layer_accessories">액세서리</string>
-    <string name="outfit_layer_other">기타</string>
     <string name="outfits_swap_item_for">교체: %s</string>
     <string name="outfits_suggest_alternatives">10개 대안 제안</string>
     <string name="outfits_select_item">선택</string>
@@ -430,7 +420,6 @@
 
     <!-- 크레딧 / 관리 모드 -->
     <!-- AI 오버레이 -->
-    <string name="ai_working">AI 작업 중…</string>
     <string name="ai_fetching_weather">날씨 가져오는 중…</string>
     <string name="ai_generating_packing">패킹 리스트 생성 중…</string>
     <string name="ai_analyzing_wardrobe">옷장 분석 중…</string>
@@ -469,7 +458,6 @@
     <string name="tryon_gallery">갤러리</string>
 
     <!-- 착용 시뮬레이션 컴포저 / 기록 -->
-    <string name="action_add">추가</string>
     <string name="tryon_composer_explain">아래에 표시된 모든 아이템은 생성된 착용 시뮬레이션에서 함께 착용됩니다. 아이템을 탭하여 제거하거나 \"+\"를 탭하여 더 추가하세요.</string>
     <string name="tryon_composer_items_title">이 시뮬레이션의 아이템 (%1$d)</string>
     <string name="tryon_add_item">아이템 추가</string>
@@ -582,7 +570,6 @@
     <string name="composer_feedback_history">컨텍스트에 유지된 이전 요청 %1$d개</string>
     <string name="composer_enhance">AI로 향상</string>
     <string name="composer_enhancing">Gemini에 묻는 중…</string>
-    <string name="composer_add_items">옷장에서 아이템 추가</string>
     <string name="composer_picked_count">%1$d개 선택됨</string>
     <string name="composer_add_selected">선택 추가</string>
     <string name="composer_factors_label">사용 중</string>
@@ -629,7 +616,6 @@
     <string name="shop_model_missing">기기 내 모델 없음. efficientnet_lite0.tflite를 app/src/main/assets/embedder/에, magic_touch.tflite를 app/src/main/assets/segmenter/에 배치하세요.</string>
     <string name="shop_error_model_missing">비주얼 검색 모델이 설치되지 않았습니다.</string>
     <string name="shop_error_embed_failed">이 사진을 분석할 수 없습니다. 다른 사진을 시도해 보세요.</string>
-    <string name="shop_crosshair_hint">십자선에 아이템을 맞추세요</string>
 
     <!-- 유사도 검사 (캡처 / 가져오기 / 복구 및 동기화) -->
     <string name="settings_dedupe_title">유사도 검사</string>
@@ -667,7 +653,6 @@
     <string name="wardrobe_find_by_photo_searching">매치 검색 중…</string>
 
     <!-- 옷장 검색 (텍스트 또는 사진) -->
-    <string name="wardrobe_search">옷장 검색</string>
     <string name="wardrobe_search_title">옷장 검색</string>
     <string name="wardrobe_search_hint">찾는 것을 입력하거나 사진으로 검색하세요.</string>
     <string name="wardrobe_search_use_photo">대신 사진으로 검색</string>
@@ -909,9 +894,6 @@
     <string name="outfits_favorite">즐겨찾기</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
-    <string name="ai_progress_uploading">업로드 중 %1$s / %2$s</string>
-    <string name="ai_progress_waiting">AI 대기 중…</string>
-    <string name="ai_progress_timing">%1$ds · 보통 20–40s</string>
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->

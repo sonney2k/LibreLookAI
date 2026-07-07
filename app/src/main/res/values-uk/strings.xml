@@ -215,7 +215,6 @@
     <string name="outfits_add_item">Додати річ</string>
     <string name="outfits_tags_label">Теги</string>
     <string name="composer_select_suggestion">Використати цей образ</string>
-    <string name="outfits_tag_add">Додати тег</string>
     <string name="outfits_saved_wear_today">Образ збережено! Одягнете сьогодні?</string>
     <string name="outfits_combine">Об’єднати за допомогою ШІ</string>
     <string name="outfit_generate_with_ai">Згенерувати через ШІ</string>
@@ -257,7 +256,6 @@
     <string name="gap_reanalyze">Повторний аналіз</string>
 
     <!-- AI overlay -->
-    <string name="ai_working">ШІ працює…</string>
     <string name="ai_fetching_weather">Отримання погоди…</string>
     <string name="ai_generating_packing">Створення списку речей…</string>
     <string name="ai_analyzing_wardrobe">Аналіз вашого гардероба…</string>
@@ -316,7 +314,6 @@
     <string name="about_credits_desc">Для користувачів, які не хочуть створювати власний ключ API, додаток пропонує систему кредитів. Кредити можна купити у вкладці Кредити, вони витрачаються за кожну дію ШІ за тарифами вище. Цей режим спрямовує запити через серверний проксі.</string>
     <string name="about_credits_title">Кредити (керований режим)</string>
     <string name="about_description">LibreLookAI — це безкоштовний менеджер гардероба з відкритим кодом на основі ШІ. Він допомагає організувати одяг, отримати поради щодо образів, спланувати список речей для подорожі та виявити прогалини в гардеробі — усе завдяки ШІ.</string>
-    <string name="action_add">Додати</string>
     <string name="action_back">Назад</string>
     <string name="action_search">Пошук</string>
     <string name="ai_consider_age">Вік</string>
@@ -341,7 +338,6 @@
 Вимкніть оптимізацію батареї для LibreLookAI, щоб продовжити.</string>
     <string name="battery_exempt_title">Потрібна фонова обробка</string>
     <string name="calendar_empty_hint">Одягніть образ із вкладки Образи, щоб почати відстеження</string>
-    <string name="composer_add_items">Додати речі з гардероба</string>
     <string name="composer_add_selected">Додати вибране</string>
     <string name="composer_closets_all">Усі гардероби</string>
     <string name="composer_closets_title">Гардероби</string>
@@ -430,13 +426,6 @@
     <string name="outfit_discard_changes_body">Незбережені зміни буде втрачено.</string>
     <string name="outfit_discard_changes_confirm">Відкинути</string>
     <string name="outfit_discard_changes_title">Відкинути зміни?</string>
-    <string name="outfit_layer_accessories">Аксесуари</string>
-    <string name="outfit_layer_bottoms">Низ</string>
-    <string name="outfit_layer_footwear">Взуття</string>
-    <string name="outfit_layer_onepiece">Суцільний</string>
-    <string name="outfit_layer_other">Інше</string>
-    <string name="outfit_layer_outerwear">Верхній одяг</string>
-    <string name="outfit_layer_tops">Верх</string>
     <string name="outfit_mode_edit">Редагувати</string>
     <string name="outfit_mode_view">Перегляд</string>
     <string name="outfit_pick_category">Оберіть категорію</string>
@@ -478,8 +467,6 @@
     <string name="outfits_suggest_tags_loading">Підбір тегів…</string>
     <string name="outfits_suggest_tags_title">Запропоновані теги</string>
     <string name="outfits_swap_item_for">Замінити: %s</string>
-    <string name="outfits_tag_add_placeholder">напр. день народження, подорож</string>
-    <string name="outfits_tag_remove">Прибрати тег %s</string>
     <string name="outfits_unnamed">Образ без назви</string>
     <string name="prediction_setup_weather_pick_day">Оберіть день</string>
     <string name="repair_duplicate_of">Схоже на %1$s</string>
@@ -590,7 +577,6 @@
     <string name="settings_tab_ai">ШІ</string>
     <string name="settings_tab_feedback">Відгук</string>
     <string name="shop_clear">Очистити</string>
-    <string name="shop_crosshair_hint">Розмістіть річ у прицілі</string>
     <string name="shop_description">Зробіть фото речі, яку розглядаєте, і ми покажемо найбільш візуально схожі речі з вашого гардероба — повністю на пристрої.</string>
     <string name="shop_error_embed_failed">Не вдалося проаналізувати фото. Спробуйте інше.</string>
     <string name="shop_error_model_missing">Модель візуального пошуку не встановлена.</string>
@@ -659,7 +645,6 @@
     <string name="wardrobe_fix_cutout_bg_clean">Залишків фону не виявлено — нічого виправляти.</string>
     <string name="wardrobe_fix_cutout_bg_done">Фон вирізання виправлено.</string>
     <string name="wardrobe_imported_on">Імпортовано %1$s</string>
-    <string name="wardrobe_search">Шукати в гардеробі</string>
     <string name="wardrobe_search_hint">Введіть, що шукаєте, або шукайте за фото.</string>
     <string name="wardrobe_search_text_results">Результати пошуку</string>
     <string name="wardrobe_search_title">Шукати в гардеробі</string>
@@ -885,9 +870,6 @@
     <string name="outfits_favorite">Вибране</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
-    <string name="ai_progress_uploading">Завантаження %1$s / %2$s</string>
-    <string name="ai_progress_waiting">Очікування ШІ…</string>
-    <string name="ai_progress_timing">%1$ds · зазвичай 20–40s</string>
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->

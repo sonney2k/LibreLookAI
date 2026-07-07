@@ -156,4 +156,22 @@
     <string name="tryon_try_again">Coba lagi</string>
     <string name="settings_profile_gender">Gender / kata ganti</string>
     <string name="settings_profile_year">Tahun lahir</string>
+    <string name="ai_progress_timing">%1$ds · biasanya 20–40s</string>
+    <string name="ai_progress_uploading">Mengunggah %1$s / %2$s</string>
+    <string name="ai_progress_waiting">Menunggu AI…</string>
+    <string name="ai_working">AI sedang bekerja…</string>
+    <string name="shop_crosshair_hint">Letakkan item di tengah crosshair</string>
+    <string name="action_add">Tambah</string>
+    <string name="composer_add_items">Tambah item dari lemari</string>
+    <string name="wardrobe_search">Cari di lemari</string>
+    <string name="outfits_tag_add">Tambah tag</string>
+    <string name="outfits_tag_add_placeholder">mis. ulang tahun, perjalanan</string>
+    <string name="outfits_tag_remove">Hapus tag %s</string>
+    <string name="outfit_layer_outerwear">Outerwear</string>
+    <string name="outfit_layer_tops">Atasan</string>
+    <string name="outfit_layer_onepiece">Terusan</string>
+    <string name="outfit_layer_bottoms">Bawahan</string>
+    <string name="outfit_layer_footwear">Alas kaki</string>
+    <string name="outfit_layer_accessories">Aksesori</string>
+    <string name="outfit_layer_other">Lainnya</string>
 </resources>

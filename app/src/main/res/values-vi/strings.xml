@@ -215,7 +215,6 @@
     <string name="outfits_add_item">Thêm món đồ</string>
     <string name="outfits_tags_label">Thẻ</string>
     <string name="composer_select_suggestion">Sử dụng bộ đồ này</string>
-    <string name="outfits_tag_add">Thêm thẻ</string>
     <string name="outfits_saved_wear_today">Đã lưu bộ đồ! Mặc ngay hôm nay?</string>
     <string name="outfits_combine">Kết hợp bằng AI</string>
     <string name="outfit_generate_with_ai">Tạo bằng AI</string>
@@ -257,7 +256,6 @@
     <string name="gap_reanalyze">Phân tích lại</string>
 
     <!-- AI overlay -->
-    <string name="ai_working">AI đang làm việc…</string>
     <string name="ai_fetching_weather">Đang lấy thời tiết…</string>
     <string name="ai_generating_packing">Đang tạo danh sách đồ…</string>
     <string name="ai_analyzing_wardrobe">Đang phân tích tủ đồ của bạn…</string>
@@ -316,7 +314,6 @@
     <string name="about_credits_desc">Đối với người dùng không muốn tạo khóa API riêng, ứng dụng cung cấp hệ thống điểm dạng xu. Điểm có thể mua trong tab Điểm và được tiêu dùng cho mỗi hành động AI theo mức trên. Chế độ này định tuyến yêu cầu qua proxy phía máy chủ.</string>
     <string name="about_credits_title">Điểm (chế độ quản lý)</string>
     <string name="about_description">LibreLookAI là trình quản lý tủ đồ miễn phí, mã nguồn mở, dùng AI. Nó giúp bạn sắp xếp quần áo, đưa ra gợi ý trang phục, lên danh sách đồ du lịch và phát hiện những món thiếu trong tủ — tất cả nhờ AI.</string>
-    <string name="action_add">Thêm</string>
     <string name="action_back">Quay lại</string>
     <string name="action_search">Tìm</string>
     <string name="ai_consider_age">Tuổi</string>
@@ -341,7 +338,6 @@ Không có quyền này, Android có thể tắt ứng dụng giữa chừng, d�
 Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="battery_exempt_title">Cần xử lý nền</string>
     <string name="calendar_empty_hint">Mặc một trang phục từ tab Trang phục để bắt đầu theo dõi</string>
-    <string name="composer_add_items">Thêm món từ tủ</string>
     <string name="composer_add_selected">Thêm món đã chọn</string>
     <string name="composer_closets_all">Tất cả tủ</string>
     <string name="composer_closets_title">Tủ</string>
@@ -430,13 +426,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="outfit_discard_changes_body">Các thay đổi chưa lưu sẽ bị mất.</string>
     <string name="outfit_discard_changes_confirm">Bỏ</string>
     <string name="outfit_discard_changes_title">Bỏ thay đổi?</string>
-    <string name="outfit_layer_accessories">Phụ kiện</string>
-    <string name="outfit_layer_bottoms">Dưới</string>
-    <string name="outfit_layer_footwear">Giày dép</string>
-    <string name="outfit_layer_onepiece">Liền thân</string>
-    <string name="outfit_layer_other">Khác</string>
-    <string name="outfit_layer_outerwear">Áo khoác</string>
-    <string name="outfit_layer_tops">Trên</string>
     <string name="outfit_mode_edit">Chỉnh sửa</string>
     <string name="outfit_mode_view">Xem</string>
     <string name="outfit_pick_category">Chọn danh mục</string>
@@ -478,8 +467,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="outfits_suggest_tags_loading">Đang gợi ý thẻ…</string>
     <string name="outfits_suggest_tags_title">Thẻ gợi ý</string>
     <string name="outfits_swap_item_for">Đổi: %s</string>
-    <string name="outfits_tag_add_placeholder">vd. sinh nhật, du lịch</string>
-    <string name="outfits_tag_remove">Xóa thẻ %s</string>
     <string name="outfits_unnamed">Trang phục chưa đặt tên</string>
     <string name="prediction_setup_weather_pick_day">Chọn ngày</string>
     <string name="repair_duplicate_of">Tương tự %1$s</string>
@@ -590,7 +577,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="settings_tab_ai">AI</string>
     <string name="settings_tab_feedback">Phản hồi</string>
     <string name="shop_clear">Xóa</string>
-    <string name="shop_crosshair_hint">Đặt món ở giữa dấu chữ thập</string>
     <string name="shop_description">Chụp ảnh một món bạn đang cân nhắc, và chúng tôi sẽ hiển thị các món trông tương tự nhất trong tủ — hoàn toàn trên thiết bị.</string>
     <string name="shop_error_embed_failed">Không thể phân tích ảnh đó. Hãy thử ảnh khác.</string>
     <string name="shop_error_model_missing">Mô hình tìm kiếm hình ảnh chưa cài đặt.</string>
@@ -659,7 +645,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="wardrobe_fix_cutout_bg_clean">Không phát hiện nền còn sót — không cần sửa.</string>
     <string name="wardrobe_fix_cutout_bg_done">Đã sửa nền phần cắt.</string>
     <string name="wardrobe_imported_on">Nhập ngày %1$s</string>
-    <string name="wardrobe_search">Tìm trong tủ</string>
     <string name="wardrobe_search_hint">Nhập điều bạn muốn tìm, hoặc tìm bằng ảnh.</string>
     <string name="wardrobe_search_text_results">Kết quả tìm kiếm</string>
     <string name="wardrobe_search_title">Tìm trong tủ</string>
@@ -885,9 +870,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="outfits_favorite">Yêu thích</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
-    <string name="ai_progress_uploading">Đang tải lên %1$s / %2$s</string>
-    <string name="ai_progress_waiting">Đang chờ AI…</string>
-    <string name="ai_progress_timing">%1$ds · thường mất 20–40s</string>
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->

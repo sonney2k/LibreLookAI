@@ -376,6 +376,14 @@ internal fun AppContent(
                             activeLocationId = activeLocationId,
                             onSetActiveLocation = locationViewModel::setActiveLocation,
                         ),
+                        // PhotoReviewScreen's confirm-cost badge — the badge composable lives in
+                        // feature/billing, above core/designsystem, so the shell bridges it.
+                        LocalRemoveBgCostBadge provides { width, height ->
+                            com.librelookai.billing.CostBadge(
+                                com.librelookai.gemini.GeminiActionId.REMOVE_BACKGROUND,
+                                tokens = com.librelookai.billing.rememberRemoveBgCostTokens(width, height),
+                            )
+                        },
                         LocalStartTour provides { showOnboarding = true },
                     ) { LibreLookAITheme(
                         paletteId = profileState.preferences.wardrobeTheme,

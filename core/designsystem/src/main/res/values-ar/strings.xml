@@ -156,4 +156,22 @@
     <string name="tryon_try_again">المحاولة مرة أخرى</string>
     <string name="settings_profile_gender">الجنس / الضمائر</string>
     <string name="settings_profile_year">سنة الميلاد</string>
+    <string name="ai_progress_timing">%1$ds · عادةً 20–40s</string>
+    <string name="ai_progress_uploading">جارٍ الرفع %1$s / %2$s</string>
+    <string name="ai_progress_waiting">بانتظار الذكاء الاصطناعي…</string>
+    <string name="ai_working">الذكاء الاصطناعي يعمل…</string>
+    <string name="shop_crosshair_hint">وسط الصنف على علامة التقاطع</string>
+    <string name="action_add">إضافة</string>
+    <string name="composer_add_items">إضافة أصناف من الخزانة</string>
+    <string name="wardrobe_search">البحث في الخزانة</string>
+    <string name="outfits_tag_add">إضافة وسم</string>
+    <string name="outfits_tag_add_placeholder">مثلاً: عيد ميلاد، سفر</string>
+    <string name="outfits_tag_remove">إزالة الوسم %s</string>
+    <string name="outfit_layer_outerwear">ملابس خارجية</string>
+    <string name="outfit_layer_tops">بلايز</string>
+    <string name="outfit_layer_onepiece">قطعة واحدة</string>
+    <string name="outfit_layer_bottoms">بناطيل</string>
+    <string name="outfit_layer_footwear">أحذية</string>
+    <string name="outfit_layer_accessories">إكسسوارات</string>
+    <string name="outfit_layer_other">أخرى</string>
 </resources>

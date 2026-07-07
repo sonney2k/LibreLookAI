@@ -326,23 +326,13 @@
     <string name="outfits_prediction_next">Next suggestion</string>
     <string name="outfits_prediction_indicator">%1$d / %2$d</string>
     <string name="composer_select_suggestion">Use this outfit</string>
-    <string name="outfits_tag_add">Add tag</string>
-    <string name="outfits_tag_add_placeholder">e.g. birthday, travel</string>
     <string name="outfits_suggest_tags">Suggest tags with AI</string>
     <string name="outfits_suggest_tags_title">Suggested tags</string>
     <string name="outfits_suggest_tags_loading">Suggesting tags…</string>
     <string name="outfits_suggest_tags_empty">No new tags suggested.</string>
     <string name="outfits_suggest_tags_apply">Add selected</string>
     <string name="outfits_suggest_tags_hint">Tap tags to toggle. Selected tags are added to this outfit.</string>
-    <string name="outfits_tag_remove">Remove tag %s</string>
     <string name="outfits_unnamed">Untitled outfit</string>
-    <string name="outfit_layer_outerwear">Outerwear</string>
-    <string name="outfit_layer_tops">Tops</string>
-    <string name="outfit_layer_onepiece">One-piece</string>
-    <string name="outfit_layer_bottoms">Bottoms</string>
-    <string name="outfit_layer_footwear">Footwear</string>
-    <string name="outfit_layer_accessories">Accessories</string>
-    <string name="outfit_layer_other">Other</string>
     <string name="outfits_swap_item_for">Swap: %s</string>
     <string name="outfits_suggest_alternatives">Suggest 10 alternatives</string>
     <string name="outfits_select_item">Select</string>
@@ -430,7 +420,6 @@
 
     <!-- Credits / Managed Mode -->
     <!-- AI overlay -->
-    <string name="ai_working">AI is working…</string>
     <string name="ai_fetching_weather">Fetching weather…</string>
     <string name="ai_generating_packing">Generating packing list…</string>
     <string name="ai_analyzing_wardrobe">Analysing your wardrobe…</string>
@@ -469,7 +458,6 @@
     <string name="tryon_gallery">Gallery</string>
 
     <!-- Try-on composer / history -->
-    <string name="action_add">Add</string>
     <string name="tryon_composer_explain">All items shown below will be worn together in the generated try-on. Tap an item to remove it; tap \"+\" to add more.</string>
     <string name="tryon_composer_items_title">Items in this try-on (%1$d)</string>
     <string name="tryon_add_item">Add item</string>
@@ -582,7 +570,6 @@
     <string name="composer_feedback_history">%1$d earlier request(s) kept in context</string>
     <string name="composer_enhance">Enhance with AI</string>
     <string name="composer_enhancing">Asking Gemini…</string>
-    <string name="composer_add_items">Add items from wardrobe</string>
     <string name="composer_picked_count">%1$d picked</string>
     <string name="composer_add_selected">Add selected</string>
     <string name="composer_factors_label">Using</string>
@@ -629,7 +616,6 @@
     <string name="shop_model_missing">On-device model missing. Place efficientnet_lite0.tflite under app/src/main/assets/embedder/ and magic_touch.tflite under app/src/main/assets/segmenter/.</string>
     <string name="shop_error_model_missing">Visual search model is not installed.</string>
     <string name="shop_error_embed_failed">Could not analyse that photo. Try another one.</string>
-    <string name="shop_crosshair_hint">Centre the item on the crosshair</string>
 
     <!-- Similarity check (capture / import / Repair &amp; Sync) -->
     <string name="settings_dedupe_title">Similarity check</string>
@@ -667,7 +653,6 @@
     <string name="wardrobe_find_by_photo_searching">Looking for matches…</string>
 
     <!-- Wardrobe search (text or photo) -->
-    <string name="wardrobe_search">Search wardrobe</string>
     <string name="wardrobe_search_title">Search wardrobe</string>
     <string name="wardrobe_search_hint">Type what you\'re looking for, or search by photo.</string>
     <string name="wardrobe_search_use_photo">Search by photo instead</string>
@@ -909,9 +894,6 @@
     <string name="outfits_favorite">Favourite</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
-    <string name="ai_progress_uploading">Uploading %1$s / %2$s</string>
-    <string name="ai_progress_waiting">Waiting for AI…</string>
-    <string name="ai_progress_timing">%1$ds · usually 20–40s</string>
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->

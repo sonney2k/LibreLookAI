@@ -156,4 +156,22 @@
     <string name="tryon_try_again">Tekrar dene</string>
     <string name="settings_profile_gender">Cinsiyet / zamirler</string>
     <string name="settings_profile_year">Doğum yılı</string>
+    <string name="ai_progress_timing">%1$ds · genellikle 20–40s</string>
+    <string name="ai_progress_uploading">Yükleniyor %1$s / %2$s</string>
+    <string name="ai_progress_waiting">Yapay zeka bekleniyor…</string>
+    <string name="ai_working">Yapay zeka çalışıyor…</string>
+    <string name="shop_crosshair_hint">Ögeyi artı işaretinin ortasına getirin</string>
+    <string name="action_add">Ekle</string>
+    <string name="composer_add_items">Gardırobdan öge ekle</string>
+    <string name="wardrobe_search">Gardıropta ara</string>
+    <string name="outfits_tag_add">Etiket ekle</string>
+    <string name="outfits_tag_add_placeholder">örn. doğum günü, seyahat</string>
+    <string name="outfits_tag_remove">%s etiketini kaldır</string>
+    <string name="outfit_layer_outerwear">Dış Giyim</string>
+    <string name="outfit_layer_tops">Üst Giyim</string>
+    <string name="outfit_layer_onepiece">Tek parça</string>
+    <string name="outfit_layer_bottoms">Alt Giyim</string>
+    <string name="outfit_layer_footwear">Ayakkabı</string>
+    <string name="outfit_layer_accessories">Aksesuar</string>
+    <string name="outfit_layer_other">Diğer</string>
 </resources>

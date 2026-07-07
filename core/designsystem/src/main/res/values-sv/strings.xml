@@ -156,4 +156,22 @@
     <string name="tryon_try_again">Försök igen</string>
     <string name="settings_profile_gender">Kön / pronomen</string>
     <string name="settings_profile_year">Födelseår</string>
+    <string name="ai_progress_timing">%1$ds · vanligtvis 20–40s</string>
+    <string name="ai_progress_uploading">Laddar upp %1$s / %2$s</string>
+    <string name="ai_progress_waiting">Väntar på AI…</string>
+    <string name="ai_working">AI arbetar…</string>
+    <string name="shop_crosshair_hint">Centrera plagget på hårkorset</string>
+    <string name="action_add">Lägg till</string>
+    <string name="composer_add_items">Lägg till plagg från garderoben</string>
+    <string name="wardrobe_search">Sök i garderob</string>
+    <string name="outfits_tag_add">Lägg till tagg</string>
+    <string name="outfits_tag_add_placeholder">t.ex. födelsedag, resa</string>
+    <string name="outfits_tag_remove">Ta bort tagg %s</string>
+    <string name="outfit_layer_outerwear">Ytterkläder</string>
+    <string name="outfit_layer_tops">Överdelar</string>
+    <string name="outfit_layer_onepiece">Heldelat</string>
+    <string name="outfit_layer_bottoms">Underdelar</string>
+    <string name="outfit_layer_footwear">Skor</string>
+    <string name="outfit_layer_accessories">Accessoarer</string>
+    <string name="outfit_layer_other">Övrigt</string>
 </resources>

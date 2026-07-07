@@ -326,23 +326,13 @@
     <string name="outfits_prediction_next">الاقتراح التالي</string>
     <string name="outfits_prediction_indicator">%1$d / %2$d</string>
     <string name="composer_select_suggestion">استخدام هذا الطقم</string>
-    <string name="outfits_tag_add">إضافة وسم</string>
-    <string name="outfits_tag_add_placeholder">مثلاً: عيد ميلاد، سفر</string>
     <string name="outfits_suggest_tags">اقتراح وسوم بالذكاء الاصطناعي</string>
     <string name="outfits_suggest_tags_title">وسوم مقترحة</string>
     <string name="outfits_suggest_tags_loading">جاري اقتراح الوسوم…</string>
     <string name="outfits_suggest_tags_empty">لا توجد وسوم جديدة مقترحة.</string>
     <string name="outfits_suggest_tags_apply">إضافة المختار</string>
     <string name="outfits_suggest_tags_hint">اضغط على الوسوم للتبديل. سيتم إضافة الوسوم المختارة لهذا الطقم.</string>
-    <string name="outfits_tag_remove">إزالة الوسم %s</string>
     <string name="outfits_unnamed">طقم بدون عنوان</string>
-    <string name="outfit_layer_outerwear">ملابس خارجية</string>
-    <string name="outfit_layer_tops">بلايز</string>
-    <string name="outfit_layer_onepiece">قطعة واحدة</string>
-    <string name="outfit_layer_bottoms">بناطيل</string>
-    <string name="outfit_layer_footwear">أحذية</string>
-    <string name="outfit_layer_accessories">إكسسوارات</string>
-    <string name="outfit_layer_other">أخرى</string>
     <string name="outfits_swap_item_for">تبديل: %s</string>
     <string name="outfits_suggest_alternatives">اقتراح 10 بدائل</string>
     <string name="outfits_select_item">اختيار</string>
@@ -430,7 +420,6 @@
 
     <!-- Credits / Managed Mode -->
     <!-- AI overlay -->
-    <string name="ai_working">الذكاء الاصطناعي يعمل…</string>
     <string name="ai_fetching_weather">جاري جلب الطقس…</string>
     <string name="ai_generating_packing">جاري توليد قائمة التوضيب…</string>
     <string name="ai_analyzing_wardrobe">جاري تحليل خزانة ملابسك…</string>
@@ -469,7 +458,6 @@
     <string name="tryon_gallery">المعرض</string>
 
     <!-- Try-on composer / history -->
-    <string name="action_add">إضافة</string>
     <string name="tryon_composer_explain">سيتم ارتداء جميع الأصناف الموضحة أدناه معًا في التجربة المولدة. اضغط على صنف لإزالته؛ اضغط على \"+\" لإضافة المزيد.</string>
     <string name="tryon_composer_items_title">الأصناف في هذه التجربة (%1$d)</string>
     <string name="tryon_add_item">إضافة صنف</string>
@@ -582,7 +570,6 @@
     <string name="composer_feedback_history">تم الاحتفاظ بـ %1$d طلب سابق في السياق</string>
     <string name="composer_enhance">تحسين بالذكاء الاصطناعي</string>
     <string name="composer_enhancing">جاري سؤال Gemini…</string>
-    <string name="composer_add_items">إضافة أصناف من الخزانة</string>
     <string name="composer_picked_count">تم اختيار %1$d</string>
     <string name="composer_add_selected">إضافة المختار</string>
     <string name="composer_factors_label">استخدام</string>
@@ -629,7 +616,6 @@
     <string name="shop_model_missing">النموذج الموجود على الجهاز مفقود. ضع efficientnet_lite0.tflite تحت app/src/main/assets/embedder/ و magic_touch.tflite تحت app/src/main/assets/segmenter/.</string>
     <string name="shop_error_model_missing">نموذج البحث البصري غير مثبت.</string>
     <string name="shop_error_embed_failed">تعذر تحليل تلك الصورة. جرب صورة أخرى.</string>
-    <string name="shop_crosshair_hint">وسط الصنف على علامة التقاطع</string>
 
     <!-- Similarity check (capture / import / Repair & Sync) -->
     <string name="settings_dedupe_title">فحص التشابه</string>
@@ -667,7 +653,6 @@
     <string name="wardrobe_find_by_photo_searching">جاري البحث عن مطابقات…</string>
 
     <!-- Wardrobe search (text or photo) -->
-    <string name="wardrobe_search">البحث في الخزانة</string>
     <string name="wardrobe_search_title">البحث في الخزانة</string>
     <string name="wardrobe_search_hint">اكتب ما تبحث عنه، أو ابحث بالصورة.</string>
     <string name="wardrobe_search_use_photo">البحث بالصورة بدلاً من ذلك</string>
@@ -909,9 +894,6 @@
     <string name="outfits_favorite">المفضلة</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
-    <string name="ai_progress_uploading">جارٍ الرفع %1$s / %2$s</string>
-    <string name="ai_progress_waiting">بانتظار الذكاء الاصطناعي…</string>
-    <string name="ai_progress_timing">%1$ds · عادةً 20–40s</string>
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->

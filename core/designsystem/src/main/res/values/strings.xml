@@ -156,4 +156,22 @@
     <string name="tryon_try_again">Try again</string>
     <string name="settings_profile_gender">Gender / pronouns</string>
     <string name="settings_profile_year">Year of birth</string>
+    <string name="ai_progress_timing">%1$ds · usually 20–40s</string>
+    <string name="ai_progress_uploading">Uploading %1$s / %2$s</string>
+    <string name="ai_progress_waiting">Waiting for AI…</string>
+    <string name="ai_working">AI is working…</string>
+    <string name="shop_crosshair_hint">Center the item on the crosshair</string>
+    <string name="action_add">Add</string>
+    <string name="composer_add_items">Add items from wardrobe</string>
+    <string name="wardrobe_search">Search wardrobe</string>
+    <string name="outfits_tag_add">Add tag</string>
+    <string name="outfits_tag_add_placeholder">e.g. birthday, travel</string>
+    <string name="outfits_tag_remove">Remove tag %s</string>
+    <string name="outfit_layer_outerwear">Outerwear</string>
+    <string name="outfit_layer_tops">Tops</string>
+    <string name="outfit_layer_onepiece">One-piece</string>
+    <string name="outfit_layer_bottoms">Bottoms</string>
+    <string name="outfit_layer_footwear">Footwear</string>
+    <string name="outfit_layer_accessories">Accessories</string>
+    <string name="outfit_layer_other">Other</string>
 </resources>

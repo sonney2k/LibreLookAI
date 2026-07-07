@@ -156,4 +156,22 @@
     <string name="tryon_try_again">Yritä uudelleen</string>
     <string name="settings_profile_gender">Sukupuoli / pronominit</string>
     <string name="settings_profile_year">Syntymävuosi</string>
+    <string name="ai_progress_timing">%1$ds · yleensä 20–40s</string>
+    <string name="ai_progress_uploading">Lähetetään %1$s / %2$s</string>
+    <string name="ai_progress_waiting">Odotetaan tekoälyä…</string>
+    <string name="ai_working">Tekoäly työskentelee…</string>
+    <string name="shop_crosshair_hint">Keskitä vaate ristikkoon</string>
+    <string name="action_add">Lisää</string>
+    <string name="composer_add_items">Lisää vaatteita vaatekaapista</string>
+    <string name="wardrobe_search">Etsi vaatekaapista</string>
+    <string name="outfits_tag_add">Lisää tunniste</string>
+    <string name="outfits_tag_add_placeholder">esim. syntymäpäivä, matka</string>
+    <string name="outfits_tag_remove">Poista tunniste %s</string>
+    <string name="outfit_layer_outerwear">Päällysvaatteet</string>
+    <string name="outfit_layer_tops">Yläosat</string>
+    <string name="outfit_layer_onepiece">Yksiosaiset</string>
+    <string name="outfit_layer_bottoms">Alaosat</string>
+    <string name="outfit_layer_footwear">Jalkineet</string>
+    <string name="outfit_layer_accessories">Asusteet</string>
+    <string name="outfit_layer_other">Muut</string>
 </resources>

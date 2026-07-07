@@ -326,23 +326,13 @@
     <string name="outfits_prediction_next">Sonraki öneri</string>
     <string name="outfits_prediction_indicator">%1$d / %2$d</string>
     <string name="composer_select_suggestion">Bu kombini kullan</string>
-    <string name="outfits_tag_add">Etiket ekle</string>
-    <string name="outfits_tag_add_placeholder">örn. doğum günü, seyahat</string>
     <string name="outfits_suggest_tags">Yapay zeka ile etiket öner</string>
     <string name="outfits_suggest_tags_title">Önerilen etiketler</string>
     <string name="outfits_suggest_tags_loading">Etiketler öneriliyor…</string>
     <string name="outfits_suggest_tags_empty">Yeni etiket önerilmedi.</string>
     <string name="outfits_suggest_tags_apply">Seçilenleri ekle</string>
     <string name="outfits_suggest_tags_hint">Etiketleri değiştirmek için dokunun. Seçilen etiketler bu kombine eklenir.</string>
-    <string name="outfits_tag_remove">%s etiketini kaldır</string>
     <string name="outfits_unnamed">Adsız kombin</string>
-    <string name="outfit_layer_outerwear">Dış Giyim</string>
-    <string name="outfit_layer_tops">Üst Giyim</string>
-    <string name="outfit_layer_onepiece">Tek parça</string>
-    <string name="outfit_layer_bottoms">Alt Giyim</string>
-    <string name="outfit_layer_footwear">Ayakkabı</string>
-    <string name="outfit_layer_accessories">Aksesuar</string>
-    <string name="outfit_layer_other">Diğer</string>
     <string name="outfits_swap_item_for">Değiştir: %s</string>
     <string name="outfits_suggest_alternatives">10 alternatif öner</string>
     <string name="outfits_select_item">Seç</string>
@@ -430,7 +420,6 @@
 
     <!-- Credits / Managed Mode -->
     <!-- AI overlay -->
-    <string name="ai_working">Yapay zeka çalışıyor…</string>
     <string name="ai_fetching_weather">Hava durumu alınıyor…</string>
     <string name="ai_generating_packing">Hazırlık listesi oluşturuluyor…</string>
     <string name="ai_analyzing_wardrobe">Gardırobunuz analiz ediliyor…</string>
@@ -469,7 +458,6 @@
     <string name="tryon_gallery">Galeri</string>
 
     <!-- Try-on composer / history -->
-    <string name="action_add">Ekle</string>
     <string name="tryon_composer_explain">Aşağıda gösterilen tüm ögeler, oluşturulan denemede birlikte giyilecektir. Bir ögeyi kaldırmak için üzerine dokunun; daha fazlasını eklemek için \"+\"\'ya dokunun.</string>
     <string name="tryon_composer_items_title">Bu denemedeki ögeler (%1$d)</string>
     <string name="tryon_add_item">Öge ekle</string>
@@ -582,7 +570,6 @@
     <string name="composer_feedback_history">%1$d önceki istek bağlamda tutuluyor</string>
     <string name="composer_enhance">Yapay zeka ile geliştir</string>
     <string name="composer_enhancing">Gemini\'ye soruluyor…</string>
-    <string name="composer_add_items">Gardırobdan öge ekle</string>
     <string name="composer_picked_count">%1$d seçildi</string>
     <string name="composer_add_selected">Seçilenleri ekle</string>
     <string name="composer_factors_label">Kullanılanlar</string>
@@ -629,7 +616,6 @@
     <string name="shop_model_missing">Cihaz içi model eksik. efficientnet_lite0.tflite dosyasını app/src/main/assets/embedder/ altına ve magic_touch.tflite dosyasını app/src/main/assets/segmenter/ altına yerleştirin.</string>
     <string name="shop_error_model_missing">Görsel arama modeli yüklü değil.</string>
     <string name="shop_error_embed_failed">Bu fotoğraf analiz edilemedi. Başka bir tane deneyin.</string>
-    <string name="shop_crosshair_hint">Ögeyi artı işaretinin ortasına getirin</string>
 
     <!-- Similarity check (capture / import / Repair & Sync) -->
     <string name="settings_dedupe_title">Benzerlik kontrolü</string>
@@ -667,7 +653,6 @@
     <string name="wardrobe_find_by_photo_searching">Eşleşmeler aranıyor…</string>
 
     <!-- Wardrobe search (text or photo) -->
-    <string name="wardrobe_search">Gardıropta ara</string>
     <string name="wardrobe_search_title">Gardıropta ara</string>
     <string name="wardrobe_search_hint">Aradığınızı yazın veya fotoğraf ile arayın.</string>
     <string name="wardrobe_search_use_photo">Bunun yerine fotoğraf ile ara</string>
@@ -909,9 +894,6 @@
     <string name="outfits_favorite">Favori</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
-    <string name="ai_progress_uploading">Yükleniyor %1$s / %2$s</string>
-    <string name="ai_progress_waiting">Yapay zeka bekleniyor…</string>
-    <string name="ai_progress_timing">%1$ds · genellikle 20–40s</string>
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->

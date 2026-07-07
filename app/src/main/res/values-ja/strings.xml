@@ -326,23 +326,13 @@
     <string name="outfits_prediction_next">次の提案</string>
     <string name="outfits_prediction_indicator">%1$d / %2$d</string>
     <string name="composer_select_suggestion">このコーデを使用</string>
-    <string name="outfits_tag_add">タグを追加</string>
-    <string name="outfits_tag_add_placeholder">例: 誕生日、旅行</string>
     <string name="outfits_suggest_tags">AIでタグを提案</string>
     <string name="outfits_suggest_tags_title">提案されたタグ</string>
     <string name="outfits_suggest_tags_loading">タグを提案中…</string>
     <string name="outfits_suggest_tags_empty">新しいタグの提案はありません。</string>
     <string name="outfits_suggest_tags_apply">選択を追加</string>
     <string name="outfits_suggest_tags_hint">タグをタップで切替。選択したタグがこのコーデに追加されます。</string>
-    <string name="outfits_tag_remove">タグを削除 %s</string>
     <string name="outfits_unnamed">無題のコーデ</string>
-    <string name="outfit_layer_outerwear">アウター</string>
-    <string name="outfit_layer_tops">トップス</string>
-    <string name="outfit_layer_onepiece">ワンピース</string>
-    <string name="outfit_layer_bottoms">ボトムス</string>
-    <string name="outfit_layer_footwear">シューズ</string>
-    <string name="outfit_layer_accessories">アクセサリー</string>
-    <string name="outfit_layer_other">その他</string>
     <string name="outfits_swap_item_for">入れ替え: %s</string>
     <string name="outfits_suggest_alternatives">10件の代替案を提案</string>
     <string name="outfits_select_item">選択</string>
@@ -430,7 +420,6 @@
 
     <!-- クレジット / マネージドモード -->
     <!-- AI オーバーレイ -->
-    <string name="ai_working">AI が処理中…</string>
     <string name="ai_fetching_weather">天気情報を取得中…</string>
     <string name="ai_generating_packing">パッキングリストを生成中…</string>
     <string name="ai_analyzing_wardrobe">クローゼットを分析中…</string>
@@ -469,7 +458,6 @@
     <string name="tryon_gallery">ギャラリー</string>
 
     <!-- 試着コンポーザー / 履歴 -->
-    <string name="action_add">追加</string>
     <string name="tryon_composer_explain">以下に表示されたアイテムはすべて生成される試着で一緒に着用されます。アイテムをタップで削除、「+」で追加できます。</string>
     <string name="tryon_composer_items_title">この試着のアイテム (%1$d)</string>
     <string name="tryon_add_item">アイテムを追加</string>
@@ -582,7 +570,6 @@
     <string name="composer_feedback_history">%1$d 件の以前のリクエストをコンテキストに保持</string>
     <string name="composer_enhance">AI で強化</string>
     <string name="composer_enhancing">Gemini に問い合わせ中…</string>
-    <string name="composer_add_items">クローゼットからアイテムを追加</string>
     <string name="composer_picked_count">%1$d 件選択中</string>
     <string name="composer_add_selected">選択を追加</string>
     <string name="composer_factors_label">使用中</string>
@@ -629,7 +616,6 @@
     <string name="shop_model_missing">端末のモデルが見つかりません。efficientnet_lite0.tflite を app/src/main/assets/embedder/ に、magic_touch.tflite を app/src/main/assets/segmenter/ に配置してください。</string>
     <string name="shop_error_model_missing">ビジュアル検索モデルがインストールされていません。</string>
     <string name="shop_error_embed_failed">この写真を分析できませんでした。別のものを試してください。</string>
-    <string name="shop_crosshair_hint">十字にアイテムを合わせてください</string>
 
     <!-- 類似性チェック(キャプチャ / インポート / 修復と同期) -->
     <string name="settings_dedupe_title">類似性チェック</string>
@@ -667,7 +653,6 @@
     <string name="wardrobe_find_by_photo_searching">マッチを検索中…</string>
 
     <!-- クローゼット検索(テキストまたは写真) -->
-    <string name="wardrobe_search">クローゼットを検索</string>
     <string name="wardrobe_search_title">クローゼットを検索</string>
     <string name="wardrobe_search_hint">探しているものを入力するか、写真で検索してください。</string>
     <string name="wardrobe_search_use_photo">代わりに写真で検索</string>
@@ -909,9 +894,6 @@
     <string name="outfits_favorite">お気に入り</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
-    <string name="ai_progress_uploading">アップロード中 %1$s / %2$s</string>
-    <string name="ai_progress_waiting">AIを待っています…</string>
-    <string name="ai_progress_timing">%1$ds · 通常 20–40s</string>
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->

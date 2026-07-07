@@ -215,7 +215,6 @@
     <string name="outfits_add_item">Tambah item</string>
     <string name="outfits_tags_label">Tag</string>
     <string name="composer_select_suggestion">Gunakan setelan ini</string>
-    <string name="outfits_tag_add">Tambah tag</string>
     <string name="outfits_saved_wear_today">Setelan disimpan! Pakai hari ini?</string>
     <string name="outfits_combine">Gabungkan dengan AI</string>
     <string name="outfit_generate_with_ai">Hasilkan dengan AI</string>
@@ -257,7 +256,6 @@
     <string name="gap_reanalyze">Analisis Ulang</string>
 
     <!-- AI overlay -->
-    <string name="ai_working">AI sedang bekerja…</string>
     <string name="ai_fetching_weather">Mengambil cuaca…</string>
     <string name="ai_generating_packing">Membuat daftar kemasan…</string>
     <string name="ai_analyzing_wardrobe">Menganalisis lemari Anda…</string>
@@ -316,7 +314,6 @@
     <string name="about_byok_title">Kunci sendiri (BYOK)</string>
     <string name="about_credits_desc">Bagi pengguna yang tidak ingin membuat kunci API sendiri, app menyediakan sistem kredit berbasis koin. Kredit bisa dibeli di tab Kredit dan dipakai per aksi AI dengan tarif di atas. Mode ini menyalurkan permintaan melalui proxy server.</string>
     <string name="about_credits_title">Kredit (mode terkelola)</string>
-    <string name="action_add">Tambah</string>
     <string name="action_back">Kembali</string>
     <string name="action_search">Cari</string>
     <string name="ai_consider_age">Usia</string>
@@ -341,7 +338,6 @@ Tanpa izin ini, Android dapat menghentikan app di tengah proses, yang dapat meny
 Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</string>
     <string name="battery_exempt_title">Pemrosesan latar diperlukan</string>
     <string name="calendar_empty_hint">Pakai setelan dari tab Setelan untuk mulai melacak</string>
-    <string name="composer_add_items">Tambah item dari lemari</string>
     <string name="composer_add_selected">Tambah yang dipilih</string>
     <string name="composer_closets_all">Semua lemari</string>
     <string name="composer_closets_title">Lemari</string>
@@ -430,13 +426,6 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="outfit_discard_changes_body">Perubahan yang belum disimpan akan hilang.</string>
     <string name="outfit_discard_changes_confirm">Buang</string>
     <string name="outfit_discard_changes_title">Buang perubahan?</string>
-    <string name="outfit_layer_accessories">Aksesori</string>
-    <string name="outfit_layer_bottoms">Bawahan</string>
-    <string name="outfit_layer_footwear">Alas kaki</string>
-    <string name="outfit_layer_onepiece">Terusan</string>
-    <string name="outfit_layer_other">Lainnya</string>
-    <string name="outfit_layer_outerwear">Outerwear</string>
-    <string name="outfit_layer_tops">Atasan</string>
     <string name="outfit_mode_edit">Edit</string>
     <string name="outfit_mode_view">Lihat</string>
     <string name="outfit_pick_category">Pilih kategori</string>
@@ -478,8 +467,6 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="outfits_suggest_tags_loading">Menyarankan tag…</string>
     <string name="outfits_suggest_tags_title">Tag yang disarankan</string>
     <string name="outfits_swap_item_for">Tukar: %s</string>
-    <string name="outfits_tag_add_placeholder">mis. ulang tahun, perjalanan</string>
-    <string name="outfits_tag_remove">Hapus tag %s</string>
     <string name="outfits_unnamed">Setelan tanpa nama</string>
     <string name="prediction_setup_weather_pick_day">Pilih hari</string>
     <string name="repair_duplicate_of">Mirip dengan %1$s</string>
@@ -590,7 +577,6 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="settings_tab_ai">AI</string>
     <string name="settings_tab_feedback">Feedback</string>
     <string name="shop_clear">Bersihkan</string>
-    <string name="shop_crosshair_hint">Letakkan item di tengah crosshair</string>
     <string name="shop_description">Foto sebuah item yang sedang kamu pertimbangkan, dan kami akan tunjukkan item paling mirip secara visual di lemarimu — sepenuhnya di perangkat.</string>
     <string name="shop_error_embed_failed">Tidak bisa menganalisis foto itu. Coba foto lain.</string>
     <string name="shop_error_model_missing">Model pencarian visual belum terpasang.</string>
@@ -659,7 +645,6 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="wardrobe_fix_cutout_bg_clean">Tidak terdeteksi sisa latar — tidak ada yang perlu diperbaiki.</string>
     <string name="wardrobe_fix_cutout_bg_done">Latar potongan diperbaiki.</string>
     <string name="wardrobe_imported_on">Diimpor %1$s</string>
-    <string name="wardrobe_search">Cari di lemari</string>
     <string name="wardrobe_search_hint">Ketik yang kamu cari, atau cari lewat foto.</string>
     <string name="wardrobe_search_text_results">Hasil pencarian</string>
     <string name="wardrobe_search_title">Cari di lemari</string>
@@ -885,9 +870,6 @@ Mohon nonaktifkan pengoptimalan baterai untuk LibreLookAI agar bisa lanjut.</str
     <string name="outfits_favorite">Favorit</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
-    <string name="ai_progress_uploading">Mengunggah %1$s / %2$s</string>
-    <string name="ai_progress_waiting">Menunggu AI…</string>
-    <string name="ai_progress_timing">%1$ds · biasanya 20–40s</string>
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->

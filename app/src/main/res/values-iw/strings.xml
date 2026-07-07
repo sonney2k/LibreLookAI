@@ -322,23 +322,13 @@
     <string name="outfits_prediction_next">הצעה הבאה</string>
     <string name="outfits_prediction_indicator">%1$d / %2$d</string>
     <string name="composer_select_suggestion">השתמש באאוטפיט זה</string>
-    <string name="outfits_tag_add">הוסף תגית</string>
-    <string name="outfits_tag_add_placeholder">למשל יום הולדת, נסיעה</string>
     <string name="outfits_suggest_tags">הצע תגיות עם בינה מלאכותית</string>
     <string name="outfits_suggest_tags_title">תגיות מוצעות</string>
     <string name="outfits_suggest_tags_loading">מציע תגיות…</string>
     <string name="outfits_suggest_tags_empty">אין תגיות חדשות.</string>
     <string name="outfits_suggest_tags_apply">הוסף את הנבחרים</string>
     <string name="outfits_suggest_tags_hint">לחץ כדי לשנות. התגיות יתווספו לאאוטפיט.</string>
-    <string name="outfits_tag_remove">הסר תגית %s</string>
     <string name="outfits_unnamed">אאוטפיט ללא שם</string>
-    <string name="outfit_layer_outerwear">בגד עליון</string>
-    <string name="outfit_layer_tops">חלק עליון</string>
-    <string name="outfit_layer_onepiece">חלק אחד</string>
-    <string name="outfit_layer_bottoms">חלק תחתון</string>
-    <string name="outfit_layer_footwear">נעליים</string>
-    <string name="outfit_layer_accessories">אביזרים</string>
-    <string name="outfit_layer_other">אחר</string>
     <string name="outfits_swap_item_for">החלף: %s</string>
     <string name="outfits_suggest_alternatives">הצע 10 חלופות</string>
     <string name="outfits_select_item">בחר</string>
@@ -426,7 +416,6 @@
 
     <!-- Credits / Managed Mode -->
     <!-- AI overlay -->
-    <string name="ai_working">הבינה המלאכותית עובדת…</string>
     <string name="ai_fetching_weather">מקבל תחזית מזג אוויר…</string>
     <string name="ai_generating_packing">מכין רשימת אריזה…</string>
     <string name="ai_analyzing_wardrobe">מנתח את המלתחה שלך…</string>
@@ -465,7 +454,6 @@
     <string name="tryon_gallery">גלריה</string>
 
     <!-- Try-on composer / history -->
-    <string name="action_add">הוסף</string>
     <string name="tryon_composer_explain">כל הפריטים שנבחרו יולבשו יחד בתמונה.</string>
     <string name="tryon_composer_items_title">פריטים (%1$d)</string>
     <string name="tryon_add_item">הוסף פריט</string>
@@ -543,7 +531,6 @@
     <string name="composer_enhancing">שואל את Gemini…</string>
 
     <!-- Final strings to reach 791 -->
-    <string name="composer_add_items">הוסף פריטים מהמלתחה</string>
     <string name="composer_picked_count">%1$d נבחרו</string>
     <string name="composer_add_selected">הוסף בחירה</string>
     <string name="composer_factors_label">משתמש ב-</string>
@@ -590,7 +577,6 @@
     <string name="shop_model_missing">דגם במכשיר חסר. הנח את efficientnet_lite0.tflite תחת app/src/main/assets/embedder/ ואת magic_touch.tflite תחת app/src/main/assets/segmenter/.</string>
     <string name="shop_error_model_missing">מודל החיפוש הוויזואלי לא מותקן.</string>
     <string name="shop_error_embed_failed">לא ניתן לנתח את התמונה הזו. נסה תמונה אחרת.</string>
-    <string name="shop_crosshair_hint">מרכז את הפריט בכוונת</string>
 
     <!-- Similarity check (capture / import / Repair & Sync) -->
     <string name="settings_dedupe_title">בדיקת דמיון</string>
@@ -628,7 +614,6 @@
     <string name="wardrobe_find_by_photo_searching">מחפש התאמות…</string>
 
     <!-- Wardrobe search (text or photo) -->
-    <string name="wardrobe_search">חפש במלתחה</string>
     <string name="wardrobe_search_title">חפש במלתחה</string>
     <string name="wardrobe_search_hint">הקלד את מה שאתה מחפש, או חפש לפי תמונה.</string>
     <string name="wardrobe_search_use_photo">חפש לפי תמונה במקום זאת</string>
@@ -913,9 +898,6 @@
     <string name="outfits_favorite">מועדף</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
-    <string name="ai_progress_uploading">מעלה %1$s / %2$s</string>
-    <string name="ai_progress_waiting">ממתין ל-AI…</string>
-    <string name="ai_progress_timing">%1$ds · בדרך כלל 20–40s</string>
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->

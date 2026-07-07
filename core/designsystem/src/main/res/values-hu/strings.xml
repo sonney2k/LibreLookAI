@@ -156,4 +156,22 @@
     <string name="tryon_try_again">Próbáld újra</string>
     <string name="settings_profile_gender">Nem / névmások</string>
     <string name="settings_profile_year">Születési év</string>
+    <string name="ai_progress_timing">%1$ds · általában 20–40s</string>
+    <string name="ai_progress_uploading">Feltöltés %1$s / %2$s</string>
+    <string name="ai_progress_waiting">Várakozás az AI-ra…</string>
+    <string name="ai_working">Az AI dolgozik…</string>
+    <string name="shop_crosshair_hint">Igazítsd a darabot a célkeresztre</string>
+    <string name="action_add">Hozzáadás</string>
+    <string name="composer_add_items">Darabok hozzáadása a gardróbból</string>
+    <string name="wardrobe_search">Keresés a gardróbban</string>
+    <string name="outfits_tag_add">Címke hozzáadása</string>
+    <string name="outfits_tag_add_placeholder">pl. születésnap, utazás</string>
+    <string name="outfits_tag_remove">%s címke eltávolítása</string>
+    <string name="outfit_layer_outerwear">Felsőkabát</string>
+    <string name="outfit_layer_tops">Felsők</string>
+    <string name="outfit_layer_onepiece">Egyrészes</string>
+    <string name="outfit_layer_bottoms">Alsók</string>
+    <string name="outfit_layer_footwear">Lábbeli</string>
+    <string name="outfit_layer_accessories">Kiegészítők</string>
+    <string name="outfit_layer_other">Egyéb</string>
 </resources>

@@ -49,7 +49,7 @@ import kotlin.math.roundToInt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import com.librelookai.core.designsystem.R as DsR
+import com.librelookai.core.designsystem.R
 
 @Composable
 internal fun PhotoReviewScreen(
@@ -109,7 +109,7 @@ internal fun PhotoReviewScreen(
                 .align(Alignment.TopStart)
                 .padding(8.dp),
         ) {
-            Icon(Icons.Default.Close, contentDescription = androidx.compose.ui.res.stringResource(DsR.string.action_close), tint = Color.White)
+            Icon(Icons.Default.Close, contentDescription = androidx.compose.ui.res.stringResource(R.string.action_close), tint = Color.White)
         }
 
         // Inline closet selector — top-center, visible when 2+ closets
@@ -171,11 +171,12 @@ internal fun PhotoReviewScreen(
                 .padding(end = 24.dp, bottom = 32.dp),
             horizontalAlignment = Alignment.End,
         ) {
-            com.librelookai.billing.CostBadge(
-                com.librelookai.gemini.GeminiActionId.REMOVE_BACKGROUND,
-                tokens = com.librelookai.billing.rememberRemoveBgCostTokens(bm?.width ?: 0, bm?.height ?: 0),
-            )
-            Spacer(Modifier.height(6.dp))
+            // The badge composable lives in feature/billing (above this module), so the app
+            // shell provides it via LocalRemoveBgCostBadge; unprovided hides the badge.
+            com.librelookai.LocalRemoveBgCostBadge.current?.let { badge ->
+                badge(bm?.width ?: 0, bm?.height ?: 0)
+                Spacer(Modifier.height(6.dp))
+            }
             IconButton(
                 onClick = {
                     if (!isProcessing && bm != null) {

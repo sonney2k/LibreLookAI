@@ -326,23 +326,13 @@
     <string name="outfits_prediction_next">Επόμενη πρόταση</string>
     <string name="outfits_prediction_indicator">%1$d / %2$d</string>
     <string name="composer_select_suggestion">Χρήση αυτού του συνόλου</string>
-    <string name="outfits_tag_add">Προσθήκη ετικέτας</string>
-    <string name="outfits_tag_add_placeholder">π.χ. γενέθλια, ταξίδι</string>
     <string name="outfits_suggest_tags">Πρόταση ετικετών με AI</string>
     <string name="outfits_suggest_tags_title">Προτεινόμενες ετικέτες</string>
     <string name="outfits_suggest_tags_loading">Πρόταση ετικετών…</string>
     <string name="outfits_suggest_tags_empty">Δεν προτάθηκαν νέες ετικέτες.</string>
     <string name="outfits_suggest_tags_apply">Προσθήκη επιλεγμένων</string>
     <string name="outfits_suggest_tags_hint">Πατήστε για εναλλαγή. Οι επιλεγμένες θα προστεθούν στο σύνολο.</string>
-    <string name="outfits_tag_remove">Αφαίρεση ετικέτας %s</string>
     <string name="outfits_unnamed">Σύνολο χωρίς όνομα</string>
-    <string name="outfit_layer_outerwear">Πανωφόρια</string>
-    <string name="outfit_layer_tops">Μπλούζες</string>
-    <string name="outfit_layer_onepiece">Ολόσωμα</string>
-    <string name="outfit_layer_bottoms">Παντελόνια</string>
-    <string name="outfit_layer_footwear">Παπούτσια</string>
-    <string name="outfit_layer_accessories">Αξεσουάρ</string>
-    <string name="outfit_layer_other">Άλλα</string>
     <string name="outfits_swap_item_for">Αλλαγή: %s</string>
     <string name="outfits_suggest_alternatives">Πρόταση 10 εναλλακτικών</string>
     <string name="outfits_select_item">Επιλογή</string>
@@ -430,7 +420,6 @@
 
     <!-- Credits / Managed Mode -->
     <!-- AI overlay -->
-    <string name="ai_working">Η AI εργάζεται…</string>
     <string name="ai_fetching_weather">Λήψη καιρού…</string>
     <string name="ai_generating_packing">Δημιουργία λίστας…</string>
     <string name="ai_analyzing_wardrobe">Ανάλυση ντουλάπας…</string>
@@ -469,7 +458,6 @@
     <string name="tryon_gallery">Συλλογή</string>
 
     <!-- Try-on composer / history -->
-    <string name="action_add">Προσθήκη</string>
     <string name="tryon_composer_explain">Όλα τα είδη παρακάτω θα φορεθούν μαζί στη δοκιμή. Πατήστε για αφαίρεση, + για προσθήκη.</string>
     <string name="tryon_composer_items_title">Είδη στη δοκιμή (%1$d)</string>
     <string name="tryon_add_item">Προσθήκη είδους</string>
@@ -582,7 +570,6 @@
     <string name="composer_feedback_history">%1$d προηγούμενα αιτήματα στο πλαίσιο</string>
     <string name="composer_enhance">Βελτίωση με AI</string>
     <string name="composer_enhancing">Ερώτηση στο Gemini…</string>
-    <string name="composer_add_items">Προσθήκη από ντουλάπα</string>
     <string name="composer_picked_count">%1$d επιλέχθηκαν</string>
     <string name="composer_add_selected">Προσθήκη επιλεγμένων</string>
     <string name="composer_factors_label">Χρήση</string>
@@ -629,7 +616,6 @@
     <string name="shop_model_missing">Λείπει το μοντέλο από τη συσκευή.</string>
     <string name="shop_error_model_missing">Το μοντέλο οπτικής αναζήτησης δεν είναι εγκατεστημένο.</string>
     <string name="shop_error_embed_failed">Αδυναμία ανάλυσης φωτογραφίας.</string>
-    <string name="shop_crosshair_hint">Κεντράρετε το είδος στο στόχαστρο</string>
 
     <!-- Similarity check (capture / import / Repair & Sync) -->
     <string name="settings_dedupe_title">Έλεγχος ομοιότητας</string>
@@ -667,7 +653,6 @@
     <string name="wardrobe_find_by_photo_searching">Αναζήτηση…</string>
 
     <!-- Wardrobe search (text or photo) -->
-    <string name="wardrobe_search">Αναζήτηση στη ντουλάπα</string>
     <string name="wardrobe_search_title">Αναζήτηση στη ντουλάπα</string>
     <string name="wardrobe_search_hint">Πληκτρολογήστε ή αναζητήστε με φωτό.</string>
     <string name="wardrobe_search_use_photo">Αναζήτηση με φωτογραφία</string>
@@ -909,9 +894,6 @@
     <string name="outfits_favorite">Αγαπημένο</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
-    <string name="ai_progress_uploading">Μεταφόρτωση %1$s / %2$s</string>
-    <string name="ai_progress_waiting">Αναμονή για AI…</string>
-    <string name="ai_progress_timing">%1$ds · συνήθως 20–40s</string>
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->

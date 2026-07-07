@@ -156,4 +156,22 @@
     <string name="tryon_try_again">Opnieuw proberen</string>
     <string name="settings_profile_gender">Geslacht / voornaamwoorden</string>
     <string name="settings_profile_year">Geboortejaar</string>
+    <string name="ai_progress_timing">%1$ds · gewoonlijk 20–40s</string>
+    <string name="ai_progress_uploading">Uploaden %1$s / %2$s</string>
+    <string name="ai_progress_waiting">Wachten op AI…</string>
+    <string name="ai_working">AI is bezig…</string>
+    <string name="shop_crosshair_hint">Plaats het item op het dradenkruis</string>
+    <string name="action_add">Toevoegen</string>
+    <string name="composer_add_items">Items uit garderobe toevoegen</string>
+    <string name="wardrobe_search">Garderobe doorzoeken</string>
+    <string name="outfits_tag_add">Tag toevoegen</string>
+    <string name="outfits_tag_add_placeholder">bv. verjaardag, reis</string>
+    <string name="outfits_tag_remove">Tag %s verwijderen</string>
+    <string name="outfit_layer_outerwear">Bovenkleding</string>
+    <string name="outfit_layer_tops">Tops</string>
+    <string name="outfit_layer_onepiece">Eendelig</string>
+    <string name="outfit_layer_bottoms">Broeken</string>
+    <string name="outfit_layer_footwear">Schoenen</string>
+    <string name="outfit_layer_accessories">Accessoires</string>
+    <string name="outfit_layer_other">Overig</string>
 </resources>

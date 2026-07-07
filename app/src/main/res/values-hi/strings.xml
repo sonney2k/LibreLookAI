@@ -215,7 +215,6 @@
     <string name="outfits_add_item">आइटम जोड़ें</string>
     <string name="outfits_tags_label">टैग</string>
     <string name="composer_select_suggestion">यह आउटफ़िट उपयोग करें</string>
-    <string name="outfits_tag_add">टैग जोड़ें</string>
     <string name="outfits_saved_wear_today">आउटफ़िट सहेजा गया! आज पहनें?</string>
     <string name="outfits_combine">AI के साथ मिलाएं</string>
     <string name="outfit_generate_with_ai">AI के साथ जनरेट करें</string>
@@ -257,7 +256,6 @@
     <string name="gap_reanalyze">फिर से विश्लेषण करें</string>
 
     <!-- AI overlay -->
-    <string name="ai_working">AI काम कर रहा है…</string>
     <string name="ai_fetching_weather">मौसम की जानकारी ली जा रही है…</string>
     <string name="ai_generating_packing">पैकिंग लिस्ट बनाई जा रही है…</string>
     <string name="ai_analyzing_wardrobe">आपके वॉर्डरोब का विश्लेषण किया जा रहा है…</string>
@@ -316,7 +314,6 @@
     <string name="about_credits_desc">जो उपयोगकर्ता अपनी API कुंजी नहीं बनाना चाहते, उनके लिए ऐप सिक्का-आधारित क्रेडिट प्रणाली प्रदान करता है। क्रेडिट्स को क्रेडिट्स टैब में खरीदा जा सकता है और ऊपर दी गई दरों पर प्रति AI क्रिया खर्च होते हैं। यह मोड अनुरोधों को सर्वर-साइड प्रॉक्सी के माध्यम से रूट करता है।</string>
     <string name="about_credits_title">क्रेडिट्स (प्रबंधित मोड)</string>
     <string name="about_description">LibreLookAI एक मुफ्त, ओपन-सोर्स, AI-संचालित वॉर्डरोब प्रबंधक है। यह आपके कपड़ों को व्यवस्थित करने, आउटफ़िट सुझाव पाने, यात्रा पैकिंग सूचियाँ बनाने और वॉर्डरोब की कमियाँ खोजने में मदद करता है — सब कुछ AI से।</string>
-    <string name="action_add">जोड़ें</string>
     <string name="action_back">वापस</string>
     <string name="action_search">खोजें</string>
     <string name="ai_consider_age">उम्र</string>
@@ -341,7 +338,6 @@
 जारी रखने के लिए कृपया LibreLookAI के लिए बैटरी ऑप्टिमाइज़ेशन अक्षम करें।</string>
     <string name="battery_exempt_title">बैकग्राउंड प्रोसेसिंग आवश्यक</string>
     <string name="calendar_empty_hint">ट्रैकिंग शुरू करने के लिए आउटफ़िट टैब से एक आउटफ़िट पहनें</string>
-    <string name="composer_add_items">वॉर्डरोब से आइटम जोड़ें</string>
     <string name="composer_add_selected">चयनित जोड़ें</string>
     <string name="composer_closets_all">सभी क्लोज़ेट</string>
     <string name="composer_closets_title">क्लोज़ेट</string>
@@ -430,13 +426,6 @@
     <string name="outfit_discard_changes_body">असहेजे बदलाव खो जाएंगे।</string>
     <string name="outfit_discard_changes_confirm">त्यागें</string>
     <string name="outfit_discard_changes_title">बदलाव त्यागें?</string>
-    <string name="outfit_layer_accessories">एक्सेसरीज़</string>
-    <string name="outfit_layer_bottoms">नीचे के कपड़े</string>
-    <string name="outfit_layer_footwear">जूते</string>
-    <string name="outfit_layer_onepiece">वन-पीस</string>
-    <string name="outfit_layer_other">अन्य</string>
-    <string name="outfit_layer_outerwear">ऊपरी कपड़े</string>
-    <string name="outfit_layer_tops">ऊपर के कपड़े</string>
     <string name="outfit_mode_edit">संपादन</string>
     <string name="outfit_mode_view">देखें</string>
     <string name="outfit_pick_category">श्रेणी चुनें</string>
@@ -478,8 +467,6 @@
     <string name="outfits_suggest_tags_loading">टैग सुझाए जा रहे हैं…</string>
     <string name="outfits_suggest_tags_title">सुझाए गए टैग्स</string>
     <string name="outfits_swap_item_for">बदलें: %s</string>
-    <string name="outfits_tag_add_placeholder">उदा. जन्मदिन, यात्रा</string>
-    <string name="outfits_tag_remove">टैग %s हटाएं</string>
     <string name="outfits_unnamed">अनाम आउटफ़िट</string>
     <string name="prediction_setup_weather_pick_day">दिन चुनें</string>
     <string name="repair_duplicate_of">%1$s के समान</string>
@@ -590,7 +577,6 @@
     <string name="settings_tab_ai">AI</string>
     <string name="settings_tab_feedback">फ़ीडबैक</string>
     <string name="shop_clear">साफ़ करें</string>
-    <string name="shop_crosshair_hint">आइटम को क्रॉसहेयर पर केंद्रित करें</string>
     <string name="shop_description">जिस टुकड़े पर विचार कर रहे हैं उसकी तस्वीर लें, और हम आपके वॉर्डरोब में पहले से मौजूद सबसे दृश्य रूप से समान आइटम दिखाएंगे — पूरी तरह डिवाइस पर।</string>
     <string name="shop_error_embed_failed">उस फ़ोटो का विश्लेषण नहीं हो सका। दूसरी आज़माएँ।</string>
     <string name="shop_error_model_missing">विज़ुअल खोज मॉडल इंस्टॉल नहीं है।</string>
@@ -659,7 +645,6 @@
     <string name="wardrobe_fix_cutout_bg_clean">कोई बचा बैकग्राउंड नहीं — कुछ ठीक करने को नहीं।</string>
     <string name="wardrobe_fix_cutout_bg_done">कटआउट बैकग्राउंड ठीक किया गया।</string>
     <string name="wardrobe_imported_on">आयात %1$s</string>
-    <string name="wardrobe_search">वॉर्डरोब में खोजें</string>
     <string name="wardrobe_search_hint">जो खोज रहे हैं वह लिखें, या फ़ोटो से खोजें।</string>
     <string name="wardrobe_search_text_results">खोज परिणाम</string>
     <string name="wardrobe_search_title">वॉर्डरोब में खोजें</string>
@@ -885,9 +870,6 @@
     <string name="outfits_favorite">पसंदीदा</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
-    <string name="ai_progress_uploading">अपलोड हो रहा है %1$s / %2$s</string>
-    <string name="ai_progress_waiting">AI की प्रतीक्षा…</string>
-    <string name="ai_progress_timing">%1$ds · आम तौर पर 20–40s</string>
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->

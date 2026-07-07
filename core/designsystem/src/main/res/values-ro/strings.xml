@@ -156,4 +156,22 @@
     <string name="tryon_try_again">Încearcă din nou</string>
     <string name="settings_profile_gender">Gen / pronume</string>
     <string name="settings_profile_year">Anul nașterii</string>
+    <string name="ai_progress_timing">%1$ds · de obicei 20–40s</string>
+    <string name="ai_progress_uploading">Se încarcă %1$s / %2$s</string>
+    <string name="ai_progress_waiting">Se așteaptă IA…</string>
+    <string name="ai_working">AI lucrează…</string>
+    <string name="shop_crosshair_hint">Centrează articolul pe reticul</string>
+    <string name="action_add">Adaugă</string>
+    <string name="composer_add_items">Adaugă articole din garderobă</string>
+    <string name="wardrobe_search">Caută în garderobă</string>
+    <string name="outfits_tag_add">Adaugă etichetă</string>
+    <string name="outfits_tag_add_placeholder">ex. aniversare, călătorie</string>
+    <string name="outfits_tag_remove">Elimină eticheta %s</string>
+    <string name="outfit_layer_outerwear">Geacă/palton</string>
+    <string name="outfit_layer_tops">Superioare</string>
+    <string name="outfit_layer_onepiece">Dintr-o piesă</string>
+    <string name="outfit_layer_bottoms">Inferioare</string>
+    <string name="outfit_layer_footwear">Încălțăminte</string>
+    <string name="outfit_layer_accessories">Accesorii</string>
+    <string name="outfit_layer_other">Altele</string>
 </resources>

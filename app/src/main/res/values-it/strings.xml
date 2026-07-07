@@ -326,23 +326,13 @@
     <string name="outfits_prediction_next">Suggerimento successivo</string>
     <string name="outfits_prediction_indicator">%1$d / %2$d</string>
     <string name="composer_select_suggestion">Usa questo outfit</string>
-    <string name="outfits_tag_add">Aggiungi etichetta</string>
-    <string name="outfits_tag_add_placeholder">es. compleanno, viaggio</string>
     <string name="outfits_suggest_tags">Suggerisci etichette con IA</string>
     <string name="outfits_suggest_tags_title">Etichette suggerite</string>
     <string name="outfits_suggest_tags_loading">Suggerimento etichette…</string>
     <string name="outfits_suggest_tags_empty">Nessuna nuova etichetta suggerita.</string>
     <string name="outfits_suggest_tags_apply">Aggiungi selezionate</string>
     <string name="outfits_suggest_tags_hint">Tocca le etichette per attivare/disattivare. Le etichette selezionate vengono aggiunte a questo outfit.</string>
-    <string name="outfits_tag_remove">Rimuovi etichetta %s</string>
     <string name="outfits_unnamed">Outfit senza titolo</string>
-    <string name="outfit_layer_outerwear">Capispalla</string>
-    <string name="outfit_layer_tops">Tops</string>
-    <string name="outfit_layer_onepiece">Capo intero</string>
-    <string name="outfit_layer_bottoms">Bottoms</string>
-    <string name="outfit_layer_footwear">Scarpe</string>
-    <string name="outfit_layer_accessories">Accessori</string>
-    <string name="outfit_layer_other">Altro</string>
     <string name="outfits_swap_item_for">Scambia: %s</string>
     <string name="outfits_suggest_alternatives">Suggerisci 10 alternative</string>
     <string name="outfits_select_item">Seleziona</string>
@@ -430,7 +420,6 @@
 
     <!-- Crediti / Modalità gestita -->
     <!-- Overlay IA -->
-    <string name="ai_working">L\'IA sta lavorando…</string>
     <string name="ai_fetching_weather">Recupero meteo…</string>
     <string name="ai_generating_packing">Generazione lista valigia…</string>
     <string name="ai_analyzing_wardrobe">Analisi del tuo guardaroba…</string>
@@ -469,7 +458,6 @@
     <string name="tryon_gallery">Galleria</string>
 
     <!-- Compositore prove / cronologia -->
-    <string name="action_add">Aggiungi</string>
     <string name="tryon_composer_explain">Tutti i capi mostrati sotto verranno indossati insieme nella prova generata. Tocca un capo per rimuoverlo; tocca \"+\" per aggiungerne altri.</string>
     <string name="tryon_composer_items_title">Capi in questa prova (%1$d)</string>
     <string name="tryon_add_item">Aggiungi capo</string>
@@ -582,7 +570,6 @@
     <string name="composer_feedback_history">%1$d richiesta/e precedente/i mantenuta/e in contesto</string>
     <string name="composer_enhance">Migliora con IA</string>
     <string name="composer_enhancing">Chiedo a Gemini…</string>
-    <string name="composer_add_items">Aggiungi capi dal guardaroba</string>
     <string name="composer_picked_count">%1$d scelti</string>
     <string name="composer_add_selected">Aggiungi selezionati</string>
     <string name="composer_factors_label">Sto usando</string>
@@ -629,7 +616,6 @@
     <string name="shop_model_missing">Modello sul dispositivo mancante. Posiziona efficientnet_lite0.tflite in app/src/main/assets/embedder/ e magic_touch.tflite in app/src/main/assets/segmenter/.</string>
     <string name="shop_error_model_missing">Modello di ricerca visiva non installato.</string>
     <string name="shop_error_embed_failed">Impossibile analizzare quella foto. Provane un\'altra.</string>
-    <string name="shop_crosshair_hint">Centra il capo sul mirino</string>
 
     <!-- Controllo similarità (cattura / import / Ripara e sincronizza) -->
     <string name="settings_dedupe_title">Controllo similarità</string>
@@ -667,7 +653,6 @@
     <string name="wardrobe_find_by_photo_searching">Ricerca corrispondenze…</string>
 
     <!-- Ricerca guardaroba (testo o foto) -->
-    <string name="wardrobe_search">Cerca nel guardaroba</string>
     <string name="wardrobe_search_title">Cerca nel guardaroba</string>
     <string name="wardrobe_search_hint">Scrivi cosa stai cercando, o cerca con una foto.</string>
     <string name="wardrobe_search_use_photo">Cerca con foto invece</string>
@@ -909,9 +894,6 @@
     <string name="outfits_favorite">Preferito</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
-    <string name="ai_progress_uploading">Caricamento %1$s / %2$s</string>
-    <string name="ai_progress_waiting">In attesa dell’IA…</string>
-    <string name="ai_progress_timing">%1$ds · di solito 20–40s</string>
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->

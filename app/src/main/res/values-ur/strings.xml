@@ -215,7 +215,6 @@
     <string name="outfits_add_item">شے شامل کریں</string>
     <string name="outfits_tags_label">ٹیگز</string>
     <string name="composer_select_suggestion">یہ لباس استعمال کریں</string>
-    <string name="outfits_tag_add">ٹیگ شامل کریں</string>
     <string name="outfits_saved_wear_today">لباس محفوظ ہو گیا! آج پہنیں؟</string>
     <string name="outfits_combine">AI کے ساتھ ملائیں</string>
     <string name="outfit_generate_with_ai">AI کے ساتھ بنائیں</string>
@@ -257,7 +256,6 @@
     <string name="gap_reanalyze">دوبارہ تجزیہ کریں</string>
 
     <!-- AI overlay -->
-    <string name="ai_working">AI کام کر رہا ہے…</string>
     <string name="ai_fetching_weather">موسم کی معلومات لی جا رہی ہے…</string>
     <string name="ai_generating_packing">سامان کی فہرست بن رہی ہے…</string>
     <string name="ai_analyzing_wardrobe">آپ کے وارڈروب کا تجزیہ ہو رہا ہے…</string>
@@ -316,7 +314,6 @@
     <string name="about_credits_desc">ان صارفین کے لیے جو اپنی API کلید نہیں بنانا چاہتے، ایپ سکّوں پر مبنی کریڈٹ نظام پیش کرتی ہے۔ کریڈٹس کریڈٹس ٹیب میں خریدے جا سکتے ہیں اور اوپر دی گئی شرحوں پر فی AI عمل خرچ ہوتے ہیں۔ یہ موڈ درخواستوں کو سرور سائیڈ پراکسی کے ذریعے روٹ کرتا ہے۔</string>
     <string name="about_credits_title">کریڈٹس (منظم موڈ)</string>
     <string name="about_description">LibreLookAI ایک مفت، اوپن سورس، AI سے چلنے والا وارڈروب مینیجر ہے۔ یہ آپ کے کپڑوں کو منظم کرنے، ملبوسات کی تجاویز حاصل کرنے، سفری سامان کی فہرستیں بنانے اور وارڈروب کی کمیاں دریافت کرنے میں مدد دیتا ہے — سب AI کے ذریعے۔</string>
-    <string name="action_add">شامل کریں</string>
     <string name="action_back">واپس</string>
     <string name="action_search">تلاش</string>
     <string name="ai_consider_age">عمر</string>
@@ -341,7 +338,6 @@
 جاری رکھنے کے لیے براہ کرم LibreLookAI کے لیے بیٹری آپٹیمائزیشن غیر فعال کریں۔</string>
     <string name="battery_exempt_title">پس منظر پروسیسنگ درکار</string>
     <string name="calendar_empty_hint">ٹریکنگ شروع کرنے کے لیے ملبوسات ٹیب سے ایک ملبوسات پہنیں</string>
-    <string name="composer_add_items">وارڈروب سے آئٹمز شامل کریں</string>
     <string name="composer_add_selected">منتخب شدہ شامل کریں</string>
     <string name="composer_closets_all">تمام الماریاں</string>
     <string name="composer_closets_title">الماریاں</string>
@@ -430,13 +426,6 @@
     <string name="outfit_discard_changes_body">غیر محفوظ شدہ تبدیلیاں ضائع ہو جائیں گی۔</string>
     <string name="outfit_discard_changes_confirm">ترک کریں</string>
     <string name="outfit_discard_changes_title">تبدیلیاں ترک کریں؟</string>
-    <string name="outfit_layer_accessories">لوازم</string>
-    <string name="outfit_layer_bottoms">نچلے ملبوسات</string>
-    <string name="outfit_layer_footwear">جوتے</string>
-    <string name="outfit_layer_onepiece">ون پیس</string>
-    <string name="outfit_layer_other">دیگر</string>
-    <string name="outfit_layer_outerwear">اوپری لباس</string>
-    <string name="outfit_layer_tops">اوپر کے ملبوسات</string>
     <string name="outfit_mode_edit">ترمیم</string>
     <string name="outfit_mode_view">دیکھیں</string>
     <string name="outfit_pick_category">زمرہ منتخب کریں</string>
@@ -478,8 +467,6 @@
     <string name="outfits_suggest_tags_loading">ٹیگز تجویز کیے جا رہے ہیں…</string>
     <string name="outfits_suggest_tags_title">تجویز کردہ ٹیگز</string>
     <string name="outfits_swap_item_for">تبدیل کریں: %s</string>
-    <string name="outfits_tag_add_placeholder">مثلاً سالگرہ، سفر</string>
-    <string name="outfits_tag_remove">ٹیگ %s ہٹائیں</string>
     <string name="outfits_unnamed">بے نام ملبوسات</string>
     <string name="prediction_setup_weather_pick_day">دن منتخب کریں</string>
     <string name="repair_duplicate_of">%1$s سے ملتا جلتا</string>
@@ -590,7 +577,6 @@
     <string name="settings_tab_ai">AI</string>
     <string name="settings_tab_feedback">رائے</string>
     <string name="shop_clear">صاف کریں</string>
-    <string name="shop_crosshair_hint">آئٹم کو کراس ہیئر پر مرکوز کریں</string>
     <string name="shop_description">جس ٹکڑے پر غور کر رہے ہیں اس کی تصویر لیں، اور ہم آپ کے وارڈروب میں سب سے زیادہ بصری طور پر ملتے جلتے آئٹم دکھائیں گے — مکمل طور پر ڈیوائس پر۔</string>
     <string name="shop_error_embed_failed">اس تصویر کا تجزیہ نہیں ہو سکا۔ کوئی اور آزمائیں۔</string>
     <string name="shop_error_model_missing">بصری تلاش کا ماڈل انسٹال نہیں ہے۔</string>
@@ -659,7 +645,6 @@
     <string name="wardrobe_fix_cutout_bg_clean">بقیہ پس منظر نہیں ملا — کچھ درست کرنے کو نہیں۔</string>
     <string name="wardrobe_fix_cutout_bg_done">کٹ آؤٹ پس منظر درست ہو گیا۔</string>
     <string name="wardrobe_imported_on">درآمد %1$s</string>
-    <string name="wardrobe_search">وارڈروب میں تلاش</string>
     <string name="wardrobe_search_hint">جو تلاش کر رہے ہیں ٹائپ کریں، یا تصویر سے تلاش کریں۔</string>
     <string name="wardrobe_search_text_results">تلاش کے نتائج</string>
     <string name="wardrobe_search_title">وارڈروب میں تلاش</string>
@@ -885,9 +870,6 @@
     <string name="outfits_favorite">پسندیدہ</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
-    <string name="ai_progress_uploading">اپ لوڈ ہو رہا ہے %1$s / %2$s</string>
-    <string name="ai_progress_waiting">AI کا انتظار…</string>
-    <string name="ai_progress_timing">%1$ds · عام طور پر 20–40s</string>
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->

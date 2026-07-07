@@ -326,23 +326,13 @@
     <string name="outfits_prediction_next">Seuraava ehdotus</string>
     <string name="outfits_prediction_indicator">%1$d / %2$d</string>
     <string name="composer_select_suggestion">Käytä tätä asua</string>
-    <string name="outfits_tag_add">Lisää tunniste</string>
-    <string name="outfits_tag_add_placeholder">esim. syntymäpäivä, matka</string>
     <string name="outfits_suggest_tags">Ehdota tunnisteita tekoälyllä</string>
     <string name="outfits_suggest_tags_title">Ehdotetut tunnisteet</string>
     <string name="outfits_suggest_tags_loading">Ehdotetaan tunnisteita…</string>
     <string name="outfits_suggest_tags_empty">Uusia tunnisteita ei ehdoteta.</string>
     <string name="outfits_suggest_tags_apply">Lisää valitut</string>
     <string name="outfits_suggest_tags_hint">Napauta tunnisteita vaihtaaksesi. Valitut tunnisteet lisätään tähän asuun.</string>
-    <string name="outfits_tag_remove">Poista tunniste %s</string>
     <string name="outfits_unnamed">Nimetön asu</string>
-    <string name="outfit_layer_outerwear">Päällysvaatteet</string>
-    <string name="outfit_layer_tops">Yläosat</string>
-    <string name="outfit_layer_onepiece">Yksiosaiset</string>
-    <string name="outfit_layer_bottoms">Alaosat</string>
-    <string name="outfit_layer_footwear">Jalkineet</string>
-    <string name="outfit_layer_accessories">Asusteet</string>
-    <string name="outfit_layer_other">Muut</string>
     <string name="outfits_swap_item_for">Vaihda: %s</string>
     <string name="outfits_suggest_alternatives">Ehdota 10 vaihtoehtoa</string>
     <string name="outfits_select_item">Valitse</string>
@@ -430,7 +420,6 @@
 
     <!-- Krediitit / Hallittu tila -->
     <!-- Tekoälyn peittokuva -->
-    <string name="ai_working">Tekoäly työskentelee…</string>
     <string name="ai_fetching_weather">Haetaan säätä…</string>
     <string name="ai_generating_packing">Luodaan pakkauslistaa…</string>
     <string name="ai_analyzing_wardrobe">Analysoidaan vaatekaappiasi…</string>
@@ -469,7 +458,6 @@
     <string name="tryon_gallery">Galleria</string>
 
     <!-- Sovituksen kokoaja / historia -->
-    <string name="action_add">Lisää</string>
     <string name="tryon_composer_explain">Kaikki alla näytetyt vaatteet käytetään yhdessä luodussa sovituksessa. Napauta vaatetta poistaaksesi sen; napauta \"+\" lisätäksesi lisää.</string>
     <string name="tryon_composer_items_title">Vaatteet tässä sovituksessa (%1$d)</string>
     <string name="tryon_add_item">Lisää vaate</string>
@@ -582,7 +570,6 @@
     <string name="composer_feedback_history">%1$d aikaisempi pyyntöä säilytetty kontekstissa</string>
     <string name="composer_enhance">Paranna tekoälyllä</string>
     <string name="composer_enhancing">Kysytään Geminiltä…</string>
-    <string name="composer_add_items">Lisää vaatteita vaatekaapista</string>
     <string name="composer_picked_count">%1$d valittu</string>
     <string name="composer_add_selected">Lisää valitut</string>
     <string name="composer_factors_label">Käytetään</string>
@@ -629,7 +616,6 @@
     <string name="shop_model_missing">Laitteen malli puuttuu. Sijoita efficientnet_lite0.tflite kohtaan app/src/main/assets/embedder/ ja magic_touch.tflite kohtaan app/src/main/assets/segmenter/.</string>
     <string name="shop_error_model_missing">Visuaalisen haun mallia ei ole asennettu.</string>
     <string name="shop_error_embed_failed">Kuvaa ei voitu analysoida. Kokeile toista.</string>
-    <string name="shop_crosshair_hint">Keskitä vaate ristikkoon</string>
 
     <!-- Samankaltaisuustarkistus (kuvaus / tuonti / Korjaa &amp; synkronoi) -->
     <string name="settings_dedupe_title">Samankaltaisuustarkistus</string>
@@ -667,7 +653,6 @@
     <string name="wardrobe_find_by_photo_searching">Etsitään osumia…</string>
 
     <!-- Vaatekaappihaku (teksti tai kuva) -->
-    <string name="wardrobe_search">Etsi vaatekaapista</string>
     <string name="wardrobe_search_title">Etsi vaatekaapista</string>
     <string name="wardrobe_search_hint">Kirjoita mitä etsit, tai etsi kuvalla.</string>
     <string name="wardrobe_search_use_photo">Etsi kuvalla sen sijaan</string>
@@ -909,9 +894,6 @@
     <string name="outfits_favorite">Suosikki</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
-    <string name="ai_progress_uploading">Lähetetään %1$s / %2$s</string>
-    <string name="ai_progress_waiting">Odotetaan tekoälyä…</string>
-    <string name="ai_progress_timing">%1$ds · yleensä 20–40s</string>
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->

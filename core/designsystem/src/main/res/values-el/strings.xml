@@ -156,4 +156,22 @@
     <string name="tryon_try_again">Δοκιμάστε ξανά</string>
     <string name="settings_profile_gender">Φύλο / αντωνυμίες</string>
     <string name="settings_profile_year">Έτος γέννησης</string>
+    <string name="ai_progress_timing">%1$ds · συνήθως 20–40s</string>
+    <string name="ai_progress_uploading">Μεταφόρτωση %1$s / %2$s</string>
+    <string name="ai_progress_waiting">Αναμονή για AI…</string>
+    <string name="ai_working">Η AI εργάζεται…</string>
+    <string name="shop_crosshair_hint">Κεντράρετε το είδος στο στόχαστρο</string>
+    <string name="action_add">Προσθήκη</string>
+    <string name="composer_add_items">Προσθήκη από ντουλάπα</string>
+    <string name="wardrobe_search">Αναζήτηση στη ντουλάπα</string>
+    <string name="outfits_tag_add">Προσθήκη ετικέτας</string>
+    <string name="outfits_tag_add_placeholder">π.χ. γενέθλια, ταξίδι</string>
+    <string name="outfits_tag_remove">Αφαίρεση ετικέτας %s</string>
+    <string name="outfit_layer_outerwear">Πανωφόρια</string>
+    <string name="outfit_layer_tops">Μπλούζες</string>
+    <string name="outfit_layer_onepiece">Ολόσωμα</string>
+    <string name="outfit_layer_bottoms">Παντελόνια</string>
+    <string name="outfit_layer_footwear">Παπούτσια</string>
+    <string name="outfit_layer_accessories">Αξεσουάρ</string>
+    <string name="outfit_layer_other">Άλλα</string>
 </resources>

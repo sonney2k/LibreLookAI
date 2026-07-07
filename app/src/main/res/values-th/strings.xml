@@ -215,7 +215,6 @@
     <string name="outfits_add_item">เพิ่มรายการ</string>
     <string name="outfits_tags_label">แท็ก</string>
     <string name="composer_select_suggestion">ใช้ชุดนี้</string>
-    <string name="outfits_tag_add">เพิ่มแท็ก</string>
     <string name="outfits_saved_wear_today">บันทึกชุดแล้ว! จะใส่ชุดนี้วันนี้ไหม?</string>
     <string name="outfits_combine">รวมชุดด้วย AI</string>
     <string name="outfit_generate_with_ai">สร้างด้วย AI</string>
@@ -257,7 +256,6 @@
     <string name="gap_reanalyze">วิเคราะห์ใหม่</string>
 
     <!-- AI overlay -->
-    <string name="ai_working">AI กำลังทำงาน…</string>
     <string name="ai_fetching_weather">กำลังดึงข้อมูลสภาพอากาศ…</string>
     <string name="ai_generating_packing">กำลังสร้างรายการจัดกระเป๋า…</string>
     <string name="ai_analyzing_wardrobe">กำลังวิเคราะห์ตู้เสื้อผ้าของคุณ…</string>
@@ -316,7 +314,6 @@
     <string name="about_credits_desc">สำหรับผู้ใช้ที่ไม่ต้องการสร้างคีย์ API เอง แอปนำเสนอระบบเครดิตแบบเหรียญ เครดิตสามารถซื้อได้ในแท็บเครดิตและถูกใช้ตามอัตราด้านบนต่อการกระทำ AI โหมดนี้ส่งคำขอผ่านพร็อกซีฝั่งเซิร์ฟเวอร์</string>
     <string name="about_credits_title">เครดิต (โหมดจัดการ)</string>
     <string name="about_description">LibreLookAI เป็นโปรแกรมจัดการตู้เสื้อผ้าฟรี โอเพ่นซอร์ส ขับเคลื่อนด้วย AI ช่วยจัดระเบียบเสื้อผ้า รับคำแนะนำชุด วางแผนรายการของเดินทาง และค้นพบช่องว่างในตู้เสื้อผ้า — ทั้งหมดด้วย AI</string>
-    <string name="action_add">เพิ่ม</string>
     <string name="action_back">ย้อนกลับ</string>
     <string name="action_search">ค้นหา</string>
     <string name="ai_consider_age">อายุ</string>
@@ -341,7 +338,6 @@
 กรุณาปิดการปรับให้แบตเตอรี่เหมาะสมสำหรับ LibreLookAI เพื่อดำเนินการต่อ</string>
     <string name="battery_exempt_title">ต้องการการประมวลผลพื้นหลัง</string>
     <string name="calendar_empty_hint">สวมชุดจากแท็บชุดเพื่อเริ่มติดตาม</string>
-    <string name="composer_add_items">เพิ่มรายการจากตู้เสื้อผ้า</string>
     <string name="composer_add_selected">เพิ่มที่เลือก</string>
     <string name="composer_closets_all">ตู้เสื้อผ้าทั้งหมด</string>
     <string name="composer_closets_title">ตู้เสื้อผ้า</string>
@@ -430,13 +426,6 @@
     <string name="outfit_discard_changes_body">การเปลี่ยนแปลงที่ยังไม่บันทึกจะสูญหาย</string>
     <string name="outfit_discard_changes_confirm">ยกเลิก</string>
     <string name="outfit_discard_changes_title">ยกเลิกการเปลี่ยนแปลง?</string>
-    <string name="outfit_layer_accessories">แอ็คเซสซอรี่</string>
-    <string name="outfit_layer_bottoms">ล่าง</string>
-    <string name="outfit_layer_footwear">รองเท้า</string>
-    <string name="outfit_layer_onepiece">ชิ้นเดียว</string>
-    <string name="outfit_layer_other">อื่นๆ</string>
-    <string name="outfit_layer_outerwear">เสื้อคลุม</string>
-    <string name="outfit_layer_tops">บน</string>
     <string name="outfit_mode_edit">แก้ไข</string>
     <string name="outfit_mode_view">ดู</string>
     <string name="outfit_pick_category">เลือกหมวด</string>
@@ -478,8 +467,6 @@
     <string name="outfits_suggest_tags_loading">กำลังแนะนำแท็ก…</string>
     <string name="outfits_suggest_tags_title">แท็กแนะนำ</string>
     <string name="outfits_swap_item_for">แทนที่: %s</string>
-    <string name="outfits_tag_add_placeholder">เช่น วันเกิด การเดินทาง</string>
-    <string name="outfits_tag_remove">ลบแท็ก %s</string>
     <string name="outfits_unnamed">ชุดไม่มีชื่อ</string>
     <string name="prediction_setup_weather_pick_day">เลือกวัน</string>
     <string name="repair_duplicate_of">คล้ายกับ %1$s</string>
@@ -590,7 +577,6 @@
     <string name="settings_tab_ai">AI</string>
     <string name="settings_tab_feedback">ฟีดแบ็ค</string>
     <string name="shop_clear">ล้าง</string>
-    <string name="shop_crosshair_hint">วางรายการให้ตรงกลางกากบาท</string>
     <string name="shop_description">ถ่ายภาพชิ้นที่คุณกำลังพิจารณา และเราจะแสดงรายการในตู้ที่คล้ายที่สุดทางสายตา — ทำงานในเครื่องทั้งหมด</string>
     <string name="shop_error_embed_failed">วิเคราะห์ภาพนั้นไม่ได้ ลองภาพอื่น</string>
     <string name="shop_error_model_missing">ยังไม่ได้ติดตั้งโมเดลค้นหาด้วยภาพ</string>
@@ -659,7 +645,6 @@
     <string name="wardrobe_fix_cutout_bg_clean">ไม่พบพื้นหลังเหลือ — ไม่มีอะไรต้องแก้</string>
     <string name="wardrobe_fix_cutout_bg_done">แก้พื้นหลังการตัดแล้ว</string>
     <string name="wardrobe_imported_on">นำเข้า %1$s</string>
-    <string name="wardrobe_search">ค้นหาในตู้</string>
     <string name="wardrobe_search_hint">พิมพ์สิ่งที่คุณค้นหา หรือค้นหาด้วยภาพ</string>
     <string name="wardrobe_search_text_results">ผลการค้นหา</string>
     <string name="wardrobe_search_title">ค้นหาในตู้</string>
@@ -885,9 +870,6 @@
     <string name="outfits_favorite">รายการโปรด</string>
 
     <!-- AI progress overlay (upload bytes + wait timer) -->
-    <string name="ai_progress_uploading">กำลังอัปโหลด %1$s / %2$s</string>
-    <string name="ai_progress_waiting">กำลังรอ AI…</string>
-    <string name="ai_progress_timing">%1$ds · โดยปกติ 20–40s</string>
 
     <!-- Drive folder picker strings -->
     <!-- Try-on coverage gate -->

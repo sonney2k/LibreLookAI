@@ -156,4 +156,22 @@
     <string name="tryon_try_again">ลองอีกครั้ง</string>
     <string name="settings_profile_gender">เพศ / คำสรรพนาม</string>
     <string name="settings_profile_year">ปีเกิด</string>
+    <string name="ai_progress_timing">%1$ds · โดยปกติ 20–40s</string>
+    <string name="ai_progress_uploading">กำลังอัปโหลด %1$s / %2$s</string>
+    <string name="ai_progress_waiting">กำลังรอ AI…</string>
+    <string name="ai_working">AI กำลังทำงาน…</string>
+    <string name="shop_crosshair_hint">วางรายการให้ตรงกลางกากบาท</string>
+    <string name="action_add">เพิ่ม</string>
+    <string name="composer_add_items">เพิ่มรายการจากตู้เสื้อผ้า</string>
+    <string name="wardrobe_search">ค้นหาในตู้</string>
+    <string name="outfits_tag_add">เพิ่มแท็ก</string>
+    <string name="outfits_tag_add_placeholder">เช่น วันเกิด การเดินทาง</string>
+    <string name="outfits_tag_remove">ลบแท็ก %s</string>
+    <string name="outfit_layer_outerwear">เสื้อคลุม</string>
+    <string name="outfit_layer_tops">บน</string>
+    <string name="outfit_layer_onepiece">ชิ้นเดียว</string>
+    <string name="outfit_layer_bottoms">ล่าง</string>
+    <string name="outfit_layer_footwear">รองเท้า</string>
+    <string name="outfit_layer_accessories">แอ็คเซสซอรี่</string>
+    <string name="outfit_layer_other">อื่นๆ</string>
 </resources>
