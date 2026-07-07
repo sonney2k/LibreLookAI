@@ -51,6 +51,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.data.model.Outfit
 import com.librelookai.settings.ProfileViewModel
 import com.librelookai.shopping.ShoppingClosetViewModel
@@ -414,7 +415,7 @@ fun OutfitComposerScreen(
                 ) {
                     Icon(
                         Icons.Default.Close,
-                        contentDescription = stringResource(R.string.action_close),
+                        contentDescription = stringResource(DsR.string.action_close),
                         tint = MaterialTheme.colorScheme.onBackground,
                     )
                 }

@@ -51,6 +51,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.data.model.Location
 import com.librelookai.gemini.ClothingTags
 import com.librelookai.gemini.CutoutFixActions
@@ -214,7 +215,7 @@ internal fun FullScreenViewer(
             onClick = onDismiss,
             modifier = Modifier.align(Alignment.TopStart).padding(8.dp),
         ) {
-            Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_close), tint = MaterialTheme.colorScheme.onBackground)
+            Icon(Icons.Default.Close, contentDescription = stringResource(DsR.string.action_close), tint = MaterialTheme.colorScheme.onBackground)
         }
 
         // View-original toggle (top-end). Shown only when the item has an original on Drive
@@ -380,7 +381,7 @@ internal fun FullScreenViewer(
                         modifier = Modifier.size(22.dp),
                     )
                 },
-                text = { Text(stringResource(if (showEditMenu) R.string.action_close else R.string.action_edit)) },
+                text = { Text(stringResource(if (showEditMenu) DsR.string.action_close else R.string.action_edit)) },
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(end = 16.dp, bottom = if (showEditMenu) barHeight + 8.dp else effectiveBottom + 16.dp),
@@ -449,7 +450,7 @@ internal fun FullScreenViewer(
             confirmButton = {},
             dismissButton = {
                 TextButton(onClick = { showMoveDialog = false }) {
-                    Text(stringResource(R.string.action_cancel))
+                    Text(stringResource(DsR.string.action_cancel))
                 }
             },
         )

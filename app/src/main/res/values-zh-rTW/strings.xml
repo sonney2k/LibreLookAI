@@ -63,19 +63,16 @@
 
     <!-- Common actions -->
     <string name="action_ok">確定</string>
-    <string name="action_cancel">取消</string>
     <string name="action_dismiss">關閉</string>
     <string name="action_delete">刪除</string>
     <string name="action_save">儲存</string>
     <string name="action_edit">編輯</string>
     <string name="action_saving">儲存中…</string>
-    <string name="action_clear">清除</string>
     <string name="action_sort">排序</string>
     <string name="action_remove">移除</string>
     <string name="cd_ai_suggestion">AI 建議</string>
     <string name="cd_refine">優化</string>
     <string name="filter_location">位置</string>
-    <string name="filter_all_locations">全部</string>
     <string name="wardrobe_processing_photos">正在處理 %1$d 張照片…</string>
     <string name="wardrobe_progress_uploading">正在上傳照片…</string>
     <string name="wardrobe_progress_uploading_batch">正在上傳第 %1$d / %2$d 張照片…</string>
@@ -108,9 +105,6 @@
     <string name="settings_display_font_desc">選擇應用程式使用的字體。</string>
     <string name="font_default">系統預設</string>
     <string name="font_caveat">Caveat（手寫體）</string>
-    <string name="wardrobe_filters">篩選</string>
-    <string name="wardrobe_filters_apply">套用 (%1$d)</string>
-    <string name="wardrobe_filters_reset">重設</string>
     <string name="settings_tab_data">數據</string>
     <string name="settings_tab_credits">點數</string>
     <string name="settings_language">語言</string>
@@ -179,12 +173,6 @@
     <string name="wardrobe_delete_text">您確定要刪除 %d 件選擇的單品嗎？此操作無法撤銷。</string>
     <string name="wardrobe_move_to">移至</string>
     <string name="wardrobe_move_to_title">將 %d 件單品移至</string>
-    <string name="wardrobe_sort">排序</string>
-    <string name="wardrobe_sort_newest">最新優先</string>
-    <string name="wardrobe_sort_oldest">最舊優先</string>
-    <string name="wardrobe_sort_most_worn">穿著次數最多</string>
-    <string name="wardrobe_sort_type">類型</string>
-    <string name="wardrobe_sort_category">類別</string>
     <string name="wardrobe_tag_detect">自動偵測標籤</string>
     <string name="wardrobe_tag_remove_bg">移除背景</string>
     <string name="wardrobe_tag_re_remove_bg">重新移除背景</string>
@@ -203,32 +191,9 @@
     <string name="action_continue">繼續</string>
     <string name="tag_label">名稱</string>
     <string name="tag_label_placeholder">例如：海軍藍卡其褲、白色牛津襯衫</string>
-    <string name="tag_type">類型</string>
-    <string name="tag_category">類別</string>
-    <string name="tag_uses">場合</string>
-    <string name="tag_colors">顏色</string>
-    <string name="tag_seasonality">季節性</string>
-    <string name="tag_aesthetic">風格</string>
-    <string name="tag_fit">版型</string>
-    <string name="tag_material">材質</string>
-    <string name="tag_pattern">圖案</string>
     <string name="tag_add_custom">添加自定義…</string>
 
     <!-- Tag values -->
-    <string name="tag_val_casual">休閒</string>
-    <string name="tag_val_formal">正式</string>
-    <string name="tag_val_business">商務</string>
-    <string name="tag_val_sport">運動</string>
-    <string name="tag_val_spring">春季</string>
-    <string name="tag_val_summer">夏季</string>
-    <string name="tag_val_fall">秋季</string>
-    <string name="tag_val_winter">冬季</string>
-    <string name="tag_val_tops">上衣</string>
-    <string name="tag_val_bottoms">下著</string>
-    <string name="tag_val_outerwear">外套</string>
-    <string name="tag_val_footwear">鞋履</string>
-    <string name="tag_val_accessories">配件</string>
-
     <!-- Outfits -->
     <string name="outfits_empty">目前沒有穿搭</string>
     <string name="outfits_empty_hint">點擊 + 從衣櫥建立穿搭</string>
@@ -662,7 +627,6 @@
     <string name="settings_repair_preview_title">修復 &amp; 同步——預覽</string>
     <string name="settings_tab_ai">AI</string>
     <string name="settings_tab_feedback">回饋</string>
-    <string name="shop_add_to_shopping_list">加入購物清單</string>
     <string name="shop_clear">清除</string>
     <string name="shop_crosshair_hint">把單品置於十字準星中央</string>
     <string name="shop_description">拍下你正在考慮的單品，我們會顯示衣櫥中視覺最相似的單品——完全在裝置上運作。</string>
@@ -670,99 +634,15 @@
     <string name="shop_error_model_missing">未安裝視覺搜尋模型。</string>
     <string name="shop_index_size">已索引 %1$d 件單品</string>
     <string name="shop_indexing">索引衣櫥中… %1$d / %2$d</string>
-    <string name="shop_match_score">相似度：%1$d%%</string>
     <string name="shop_matches_title">最相符（%1$d）</string>
     <string name="shop_matching">與衣櫥比對中…</string>
     <string name="shop_model_missing">裝置上的模型遺失。請將 efficientnet_lite0.tflite 放到 app/src/main/assets/embedder/，magic_touch.tflite 放到 app/src/main/assets/segmenter/。</string>
     <string name="shop_no_matches">目前沒有相符項。試試更近、光線更好的照片。</string>
-    <string name="shop_show_in_wardrobe">在衣櫥中顯示</string>
     <string name="shop_take_another">再拍一張</string>
     <string name="shop_take_photo">拍照</string>
     <string name="shop_your_photo">你的相片</string>
     <string name="tag_category_placeholder">上身、下身、外套、鞋款、配件、洋裝、套裝</string>
     <string name="tag_type_placeholder">例如：T 恤、Chino 褲、鋪棉外套</string>
-    <string name="tag_val_abstract">抽象</string>
-    <string name="tag_val_animal_print">動物紋</string>
-    <string name="tag_val_beach">海灘</string>
-    <string name="tag_val_beige">米色</string>
-    <string name="tag_val_black">黑色</string>
-    <string name="tag_val_blue">藍色</string>
-    <string name="tag_val_blush">淡粉</string>
-    <string name="tag_val_bohemian">波希米亞</string>
-    <string name="tag_val_brown">棕色</string>
-    <string name="tag_val_burgundy">酒紅</string>
-    <string name="tag_val_business_casual">商務休閒</string>
-    <string name="tag_val_camel">駝色</string>
-    <string name="tag_val_camo">迷彩</string>
-    <string name="tag_val_charcoal">炭灰</string>
-    <string name="tag_val_classic">經典</string>
-    <string name="tag_val_cobalt">鈷藍</string>
-    <string name="tag_val_coral">珊瑚色</string>
-    <string name="tag_val_cotton">棉</string>
-    <string name="tag_val_cream">奶油色</string>
-    <string name="tag_val_denim">丹寧</string>
-    <string name="tag_val_denim_blue">丹寧藍</string>
-    <string name="tag_val_dress">洋裝</string>
-    <string name="tag_val_edgy">前衛</string>
-    <string name="tag_val_emerald">翡翠綠</string>
-    <string name="tag_val_evening">晚宴</string>
-    <string name="tag_val_floral">花卉</string>
-    <string name="tag_val_forest">森林綠</string>
-    <string name="tag_val_fuchsia">桃紅</string>
-    <string name="tag_val_geometric">幾何</string>
-    <string name="tag_val_gold">金色</string>
-    <string name="tag_val_graphic">圖案</string>
-    <string name="tag_val_gray">灰色</string>
-    <string name="tag_val_green">綠色</string>
-    <string name="tag_val_grey">灰色</string>
-    <string name="tag_val_ivory">象牙白</string>
-    <string name="tag_val_jumpsuit">連身褲</string>
-    <string name="tag_val_khaki">卡其</string>
-    <string name="tag_val_knit">針織</string>
-    <string name="tag_val_lavender">薰衣草</string>
-    <string name="tag_val_leather">皮革</string>
-    <string name="tag_val_lilac">丁香紫</string>
-    <string name="tag_val_linen">亞麻</string>
-    <string name="tag_val_luxury">奢華</string>
-    <string name="tag_val_magenta">洋紅</string>
-    <string name="tag_val_minimalist">極簡</string>
-    <string name="tag_val_mint">薄荷</string>
-    <string name="tag_val_multicolor">多色</string>
-    <string name="tag_val_mustard">芥末黃</string>
-    <string name="tag_val_navy">藏青</string>
-    <string name="tag_val_olive">橄欖</string>
-    <string name="tag_val_orange">橘色</string>
-    <string name="tag_val_outdoor">戶外</string>
-    <string name="tag_val_oversized">寬鬆</string>
-    <string name="tag_val_pink">粉色</string>
-    <string name="tag_val_plaid">格紋</string>
-    <string name="tag_val_polyester">聚酯</string>
-    <string name="tag_val_preppy">學院</string>
-    <string name="tag_val_printed">印花</string>
-    <string name="tag_val_purple">紫色</string>
-    <string name="tag_val_red">紅色</string>
-    <string name="tag_val_regular">標準</string>
-    <string name="tag_val_relaxed">寬鬆</string>
-    <string name="tag_val_romantic">浪漫</string>
-    <string name="tag_val_rust">鏽紅</string>
-    <string name="tag_val_sage">鼠尾草綠</string>
-    <string name="tag_val_silk">絲綢</string>
-    <string name="tag_val_silver">銀色</string>
-    <string name="tag_val_sky">天空藍</string>
-    <string name="tag_val_slim">合身</string>
-    <string name="tag_val_solid">純色</string>
-    <string name="tag_val_sporty">運動</string>
-    <string name="tag_val_streetwear">街頭</string>
-    <string name="tag_val_stripes">條紋</string>
-    <string name="tag_val_suit">套裝</string>
-    <string name="tag_val_tailored">剪裁</string>
-    <string name="tag_val_tan">淺褐</string>
-    <string name="tag_val_teal">藍綠</string>
-    <string name="tag_val_violet">紫羅蘭</string>
-    <string name="tag_val_white">白色</string>
-    <string name="tag_val_wine">酒紅</string>
-    <string name="tag_val_wool">羊毛</string>
-    <string name="tag_val_yellow">黃色</string>
     <string name="travel_destination_placeholder">例如：巴黎、東京、紐約</string>
     <string name="travel_extra_items">另外要打包（不在衣櫥中）</string>
     <string name="travel_historical_note">行程日期超出即時預報範圍——顯示歷史氣候資料。</string>
@@ -810,8 +690,6 @@
     <string name="tryon_try_again">再試一次</string>
     <string name="tryon_use_outfit">使用穿搭</string>
     <string name="tryon_view_source_outfit">檢視穿搭</string>
-    <string name="viewer_hide_tags">隱藏標籤</string>
-    <string name="viewer_show_tags">顯示標籤</string>
     <string name="wardrobe_create_style">建立穿搭</string>
     <string name="wardrobe_find_by_photo">以相片尋找單品</string>
     <string name="wardrobe_find_by_photo_empty">找不到相似的單品。</string>
@@ -822,7 +700,6 @@
     <string name="wardrobe_imported_on">匯入時間 %1$s</string>
     <string name="wardrobe_search">搜尋衣櫥</string>
     <string name="wardrobe_search_hint">輸入你要找的東西，或以相片搜尋。</string>
-    <string name="wardrobe_search_placeholder">例如：紅色棉質襯衫</string>
     <string name="wardrobe_search_text_results">搜尋結果</string>
     <string name="wardrobe_search_title">搜尋衣櫥</string>
     <string name="wardrobe_search_use_photo">改以相片搜尋</string>
@@ -928,22 +805,6 @@
     <string name="settings_similarity_preview_row">顯示 AI 相似度預覽</string>
     <string name="settings_similarity_preview_sub">以照片尋找功能的診斷。</string>
     <string name="settings_send_feedback">傳送意見回饋</string>
-    <string name="settings_retag_title">重新標記全部 %1$d 件衣服？</string>
-    <string name="settings_retag_body">AI 會重新檢視每件項目，可能更改其名稱、顏色或類別。你手動改過的名稱將被取代。</string>
-    <string name="settings_retag_confirm">重新標記所有衣服</string>
-    <string name="settings_rebg_confirm_title">重新去除 %1$d 件項目的背景？</string>
-    <string name="settings_rebg_body">AI 會從原始照片重新裁切每件項目。你手動修正過的裁切將被取代。</string>
-    <string name="settings_rebg_dialog_confirm">重新去背</string>
-    <string name="settings_cutout_title">修正 %1$d 件項目的背景？</string>
-    <string name="settings_cutout_body">我們會掃描你的項目，找出漏掉角落的裁切，並重新裁切需要的項目。</string>
-    <string name="settings_cutout_confirm">掃描 &amp; 修正</string>
-    <string name="settings_confirm_takes_about">約需</string>
-    <string name="settings_confirm_minutes">約 %1$d 分鐘</string>
-    <string name="settings_confirm_credits_used">已用點數</string>
-    <string name="settings_confirm_credits_value">%1$d / 剩 %2$d</string>
-    <string name="settings_confirm_short_format">你還差 %1$d 點數。請先儲值。</string>
-    <string name="settings_confirm_buy_and_continue">購買點數 &amp; 繼續</string>
-
     <!-- Expert: item tag dimensions for outfit AI -->
     <string name="composer_section_tags">要納入考量的單品細節</string>
     <string name="composer_tags_hint">選擇 AI 要考量哪些服裝屬性。細節越少 = 建議越快、越省、越精準。</string>
@@ -982,8 +843,6 @@
     <string name="ai_unavailable">AI 功能目前無法使用。請確認您已登入並再試一次。</string>
 
     <!-- Needs-tagging badge -->
-    <string name="wardrobe_needs_tagging">需要標記</string>
-
     <!-- BYOK API-key onboarding step -->
     <string name="onboarding_apikey_title">新增你的 Gemini API 金鑰</string>
     <string name="onboarding_apikey_body">LibreLookAI 使用你自己的 API 金鑰在 Google Gemini 上運作。金鑰僅儲存在此裝置，並直接與 Google 使用，不會經過我們的伺服器。</string>
@@ -1081,8 +940,6 @@
     <string name="restore_items_progress">%2$d 件中的 %1$d 件</string>
 
     <!-- Unify close affordance (action_close) -->
-    <string name="action_close">關閉</string>
-
     <!-- Drive migration: auto-detect import (items 2/3) -->
     <string name="onboarding_drive_checking">正在尋找可匯入的現有衣櫥…</string>
     <string name="onboarding_drive_importing">正在匯入您的現有衣櫥… %1$d / %2$d</string>
@@ -1104,9 +961,6 @@
     <!-- Convert images to WebP -->
     <string name="settings_convert_webp_row">將圖片轉換為 WebP</string>
     <string name="settings_convert_webp_row_sub">縮小較舊的 JPG/PNG 相片以節省雲端硬碟空間。</string>
-    <string name="settings_convert_title">要將 %1$d 張圖片轉換為 WebP 嗎？</string>
-    <string name="settings_convert_body">我們會將你較舊的 JPG/PNG 相片重新存成較小的 WebP 檔案，並在所有用到它們的地方更新——穿搭、試穿和旅行。不需 AI 或點數。</string>
-    <string name="settings_convert_confirm">轉換為 WebP</string>
     <string name="settings_converting">轉換中 %1$d / %2$d…</string>
 
     <!-- Wardrobe maintenance overflow menu -->
@@ -1196,8 +1050,6 @@
     <string name="fab_calendar_log">記錄穿搭</string>
     <string name="fab_shopping_add">新增發現</string>
     <string name="fab_travel_plan">規劃旅程</string>
-    <string name="action_clear_selection">清除選取</string>
-    <string name="sel_count">已選 %1$d 項</string>
     <string name="sel_style">搭配</string>
     <string name="sel_swap">替換</string>
     <string name="sel_move">移動</string>

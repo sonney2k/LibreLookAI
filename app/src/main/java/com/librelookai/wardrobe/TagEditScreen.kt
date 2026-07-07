@@ -62,6 +62,7 @@ import androidx.compose.ui.window.DialogWindowProvider
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.gemini.ClothingTags
 import com.librelookai.gemini.normalize
 import com.librelookai.util.AiProcessingOverlay
@@ -199,7 +200,7 @@ private fun TagEditScreenContent(
                 IconButton(onClick = onDismiss, modifier = Modifier.size(40.dp)) {
                     Icon(
                         androidx.compose.material.icons.Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(R.string.action_cancel),
+                        contentDescription = stringResource(DsR.string.action_cancel),
                         tint = scheme.onSurface,
                     )
                 }
@@ -337,7 +338,7 @@ private fun IdentityCard(
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         SubField(
                             modifier = Modifier.weight(1f),
-                            label = stringResource(R.string.tag_type),
+                            label = stringResource(DsR.string.tag_type),
                             value = tags.type,
                             editing = editingType,
                             onStartEdit = { editingType = true },
@@ -346,7 +347,7 @@ private fun IdentityCard(
                         )
                         SubField(
                             modifier = Modifier.weight(1f),
-                            label = stringResource(R.string.tag_category),
+                            label = stringResource(DsR.string.tag_category),
                             value = tags.category.replaceFirstChar { it.uppercase() },
                             editing = editingCategory,
                             onStartEdit = { editingCategory = true },
@@ -455,12 +456,12 @@ internal data class TagRowSpec(
 )
 
 internal val TAG_ROWS = listOf(
-    TagRowSpec("colors",      R.string.tag_colors,      "Colors",      emptyList(),         isColor = true),
-    TagRowSpec("uses",        R.string.tag_uses,        "Uses",        PRESET_USES),
-    TagRowSpec("seasonality", R.string.tag_seasonality, "Seasonality", PRESET_SEASONALITY),
-    TagRowSpec("aesthetic",   R.string.tag_aesthetic,   "Aesthetic",   PRESET_AESTHETIC),
-    TagRowSpec("fit",         R.string.tag_fit,         "Fit",         PRESET_FIT),
-    TagRowSpec("material",    R.string.tag_material,    "Material",    PRESET_MATERIAL),
-    TagRowSpec("pattern",     R.string.tag_pattern,     "Pattern",     PRESET_PATTERN),
+    TagRowSpec("colors",      DsR.string.tag_colors,      "Colors",      emptyList(),         isColor = true),
+    TagRowSpec("uses",        DsR.string.tag_uses,        "Uses",        PRESET_USES),
+    TagRowSpec("seasonality", DsR.string.tag_seasonality, "Seasonality", PRESET_SEASONALITY),
+    TagRowSpec("aesthetic",   DsR.string.tag_aesthetic,   "Aesthetic",   PRESET_AESTHETIC),
+    TagRowSpec("fit",         DsR.string.tag_fit,         "Fit",         PRESET_FIT),
+    TagRowSpec("material",    DsR.string.tag_material,    "Material",    PRESET_MATERIAL),
+    TagRowSpec("pattern",     DsR.string.tag_pattern,     "Pattern",     PRESET_PATTERN),
 )
 

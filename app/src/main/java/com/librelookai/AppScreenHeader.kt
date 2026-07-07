@@ -43,6 +43,7 @@ import com.librelookai.data.model.Location
 import com.librelookai.settings.AppFont
 import com.librelookai.wardrobe.LocationViewModel
 import com.librelookai.wardrobe.SortButton
+import com.librelookai.core.designsystem.R as DsR
 
 /**
  * Consistent top header bar used across all main screens.
@@ -123,7 +124,7 @@ fun LocationButton(
 ) {
     if (locations.size < 2) return
     var expanded by remember { mutableStateOf(false) }
-    val allLocationsLabel = stringResource(R.string.filter_all_locations)
+    val allLocationsLabel = stringResource(DsR.string.filter_all_locations)
     val activeName = when (activeLocationId) {
         LocationViewModel.ALL_LOCATIONS_ID -> allLocationsLabel
         else -> locations.find { it.folderId == activeLocationId }?.name ?: allLocationsLabel

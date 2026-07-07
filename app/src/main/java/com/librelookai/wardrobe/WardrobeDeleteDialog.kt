@@ -24,6 +24,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.data.model.Outfit
 import com.librelookai.data.model.TryOn
 import com.librelookai.util.Analytics
@@ -134,7 +135,7 @@ internal fun DeleteItemsConfirmDialog(
                 LocalConfiguration provides parentConfiguration,
             ) {
                 TextButton(onClick = onDismiss) {
-                    Text(stringResource(R.string.action_cancel))
+                    Text(stringResource(DsR.string.action_cancel))
                 }
             }
         }

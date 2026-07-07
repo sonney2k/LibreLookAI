@@ -17,12 +17,6 @@ import com.librelookai.util.Analytics
 import com.librelookai.wardrobe.DriveImage
 import com.librelookai.R
 
-/** One wardrobe item ranked against the live query, with its cosine score. */
-data class ShopMatch(
-    val image: DriveImage,
-    val score: Float,
-)
-
 data class ShoppingHelperUiState(
     /** User is on the camera screen. */
     val isCapturing: Boolean = false,

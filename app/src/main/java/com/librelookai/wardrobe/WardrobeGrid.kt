@@ -70,6 +70,7 @@ import androidx.compose.ui.window.Dialog
 import com.librelookai.AppScreenHeader
 import com.librelookai.LocationButton
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.data.model.Location
 import com.librelookai.data.model.Outfit
 import com.librelookai.data.model.TryOn
@@ -622,7 +623,7 @@ internal fun GridContent(
             },
             dismissButton = {
                 TextButton(onClick = onDismissBatteryExemption) {
-                    Text(stringResource(R.string.action_cancel))
+                    Text(stringResource(DsR.string.action_cancel))
                 }
             },
         )
@@ -669,7 +670,7 @@ internal fun GridContent(
             confirmButton = {},
             dismissButton = {
                 TextButton(onClick = { showMoveDialog = false }) {
-                    Text(stringResource(R.string.action_cancel))
+                    Text(stringResource(DsR.string.action_cancel))
                 }
             },
         )

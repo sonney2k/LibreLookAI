@@ -67,6 +67,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.data.model.Location
 import com.librelookai.data.model.Outfit
 import com.librelookai.util.AiProcessingOverlay
@@ -274,7 +275,7 @@ internal fun OutfitListScreen(
                     LocalContext provides parentContext,
                     LocalConfiguration provides parentConfiguration,
                 ) {
-                    TextButton(onClick = { showBrokenDeleteDialog = false }) { Text(stringResource(R.string.action_cancel)) }
+                    TextButton(onClick = { showBrokenDeleteDialog = false }) { Text(stringResource(DsR.string.action_cancel)) }
                 }
             },
         )
@@ -317,7 +318,7 @@ internal fun OutfitListScreen(
                     LocalContext provides parentContext,
                     LocalConfiguration provides parentConfiguration,
                 ) {
-                    TextButton(onClick = { showDeleteDialog = false }) { Text(stringResource(R.string.action_cancel)) }
+                    TextButton(onClick = { showDeleteDialog = false }) { Text(stringResource(DsR.string.action_cancel)) }
                 }
             },
         )
@@ -444,7 +445,7 @@ internal fun OutfitListScreen(
                         IconButton(onClick = { brokenBannerDismissed = true }) {
                             Icon(
                                 Icons.Default.Close,
-                                contentDescription = stringResource(R.string.action_cancel),
+                                contentDescription = stringResource(DsR.string.action_cancel),
                                 tint = MaterialTheme.colorScheme.onErrorContainer,
                             )
                         }

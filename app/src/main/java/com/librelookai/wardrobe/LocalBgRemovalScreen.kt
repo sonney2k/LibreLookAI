@@ -59,6 +59,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import com.librelookai.ml.EmbeddingService
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.MainActivity
 
 /**
@@ -170,7 +171,7 @@ private fun LocalBgRemovalDialog(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 IconButton(onClick = onCancel) {
-                    Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_close))
+                    Icon(Icons.Default.Close, contentDescription = stringResource(DsR.string.action_close))
                 }
                 Spacer(Modifier.width(4.dp))
                 Text(

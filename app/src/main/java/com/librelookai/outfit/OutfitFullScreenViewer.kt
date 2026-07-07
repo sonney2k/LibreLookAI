@@ -46,6 +46,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.data.model.Location
 import com.librelookai.data.model.Outfit
 import com.librelookai.util.Analytics
@@ -124,7 +125,7 @@ internal fun OutfitFullScreenViewer(
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) { Text(stringResource(R.string.action_cancel)) }
+                TextButton(onClick = { showDeleteDialog = false }) { Text(stringResource(DsR.string.action_cancel)) }
             },
         )
     }
@@ -242,7 +243,7 @@ internal fun OutfitFullScreenViewer(
             onClick = onDismiss,
             modifier = Modifier.align(Alignment.TopStart).padding(8.dp),
         ) {
-            Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_close),
+            Icon(Icons.Default.Close, contentDescription = stringResource(DsR.string.action_close),
                 tint = MaterialTheme.colorScheme.onBackground)
         }
 
@@ -352,7 +353,7 @@ internal fun OutfitFullScreenViewer(
                         modifier = Modifier.size(22.dp),
                     )
                 },
-                text = { Text(stringResource(if (actionsOpen) R.string.action_close else R.string.action_edit)) },
+                text = { Text(stringResource(if (actionsOpen) DsR.string.action_close else R.string.action_edit)) },
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(end = 16.dp, bottom = if (actionsOpen) barHeight + 8.dp else effectiveBottom + 16.dp),

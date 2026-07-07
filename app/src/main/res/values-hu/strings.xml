@@ -63,19 +63,16 @@
 
     <!-- Common actions -->
     <string name="action_ok">OK</string>
-    <string name="action_cancel">Mégse</string>
     <string name="action_dismiss">Bezárás</string>
     <string name="action_delete">Törlés</string>
     <string name="action_save">Mentés</string>
     <string name="action_edit">Szerkesztés</string>
     <string name="action_saving">Mentés…</string>
-    <string name="action_clear">Törlés</string>
     <string name="action_sort">Rendezés</string>
     <string name="action_remove">Eltávolítás</string>
     <string name="cd_ai_suggestion">AI javaslat</string>
     <string name="cd_refine">Finomítás</string>
     <string name="filter_location">Helyszín</string>
-    <string name="filter_all_locations">Összes</string>
     <string name="wardrobe_processing_photos">%1$d fotó feldolgozása…</string>
     <string name="wardrobe_progress_uploading">Fotó feltöltése…</string>
     <string name="wardrobe_progress_uploading_batch">Fotó feltöltése: %1$d / %2$d…</string>
@@ -108,9 +105,6 @@
     <string name="settings_display_font_desc">Válaszd ki az alkalmazásban használt betűtípust.</string>
     <string name="font_default">Rendszer alapértelmezett</string>
     <string name="font_caveat">Caveat (kézírásos)</string>
-    <string name="wardrobe_filters">Szűrők</string>
-    <string name="wardrobe_filters_apply">Alkalmaz (%1$d)</string>
-    <string name="wardrobe_filters_reset">Visszaállítás</string>
     <string name="settings_tab_data">Adatok</string>
     <string name="settings_tab_credits">Kreditek</string>
     <string name="settings_language">Nyelv</string>
@@ -179,12 +173,6 @@
     <string name="wardrobe_delete_text">Biztosan törlöd a kijelölt %d darabot? Ezt nem lehet visszavonni.</string>
     <string name="wardrobe_move_to">Mozgatás</string>
     <string name="wardrobe_move_to_title">%d darab mozgatása ide:</string>
-    <string name="wardrobe_sort">Rendezés</string>
-    <string name="wardrobe_sort_newest">Legújabb előre</string>
-    <string name="wardrobe_sort_oldest">Legrégebbi előre</string>
-    <string name="wardrobe_sort_most_worn">Legtöbbet hordott</string>
-    <string name="wardrobe_sort_type">Típus</string>
-    <string name="wardrobe_sort_category">Kategória</string>
     <string name="wardrobe_tag_detect">Címkék felismerése</string>
     <string name="wardrobe_tag_remove_bg">Háttér törlése</string>
     <string name="wardrobe_tag_re_remove_bg">Háttér újratörlése</string>
@@ -203,32 +191,9 @@
     <string name="action_continue">Folytatás</string>
     <string name="tag_label">Név</string>
     <string name="tag_label_placeholder">pl. Sötétkék Chino, Fehér Oxford ing</string>
-    <string name="tag_type">Típus</string>
-    <string name="tag_category">Kategória</string>
-    <string name="tag_uses">Használat</string>
-    <string name="tag_colors">Színek</string>
-    <string name="tag_seasonality">Szezonalitás</string>
-    <string name="tag_aesthetic">Stílus</string>
-    <string name="tag_fit">Fazon</string>
-    <string name="tag_material">Anyag</string>
-    <string name="tag_pattern">Minta</string>
     <string name="tag_add_custom">Egyéni hozzáadása…</string>
 
     <!-- Tag values -->
-    <string name="tag_val_casual">Hétköznapi</string>
-    <string name="tag_val_formal">Alkalmi</string>
-    <string name="tag_val_business">Üzleti</string>
-    <string name="tag_val_sport">Sport</string>
-    <string name="tag_val_spring">Tavasz</string>
-    <string name="tag_val_summer">Nyár</string>
-    <string name="tag_val_fall">Ősz</string>
-    <string name="tag_val_winter">Tél</string>
-    <string name="tag_val_tops">Felsők</string>
-    <string name="tag_val_bottoms">Alsók</string>
-    <string name="tag_val_outerwear">Felsőruházat</string>
-    <string name="tag_val_footwear">Lábbeli</string>
-    <string name="tag_val_accessories">Kiegészítők</string>
-
     <!-- Outfits -->
     <string name="outfits_empty">Még nincsenek szettek</string>
     <string name="outfits_empty_hint">Koppints a + gombra egy szett összeállításához</string>
@@ -662,7 +627,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="settings_repair_preview_title">Javítás &amp; szinkron — Előnézet</string>
     <string name="settings_tab_ai">AI</string>
     <string name="settings_tab_feedback">Visszajelzés</string>
-    <string name="shop_add_to_shopping_list">Hozzáadás a vásárlási listához</string>
     <string name="shop_clear">Törlés</string>
     <string name="shop_crosshair_hint">Igazítsd a darabot a célkeresztre</string>
     <string name="shop_description">Készíts fotót egy darabról, amit fontolgatsz, és megmutatjuk a vizuálisan leginkább hasonló darabokat a gardróbodból — teljesen az eszközön.</string>
@@ -670,99 +634,15 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="shop_error_model_missing">A vizuális keresési modell nincs telepítve.</string>
     <string name="shop_index_size">%1$d darab indexelve</string>
     <string name="shop_indexing">Gardrób indexelése… %1$d / %2$d</string>
-    <string name="shop_match_score">Hasonlóság: %1$d%%</string>
     <string name="shop_matches_title">Top találatok (%1$d)</string>
     <string name="shop_matching">Összehasonlítás a gardróbbal…</string>
     <string name="shop_model_missing">Az eszközön lévő modell hiányzik. Helyezd az efficientnet_lite0.tflite fájlt az app/src/main/assets/embedder/ alá, a magic_touch.tflite fájlt pedig az app/src/main/assets/segmenter/ alá.</string>
     <string name="shop_no_matches">Még nincs találat. Próbálj közelebbi, jobban megvilágított fotót.</string>
-    <string name="shop_show_in_wardrobe">Mutasd a gardróbban</string>
     <string name="shop_take_another">Másik fotó készítése</string>
     <string name="shop_take_photo">Fotó készítése</string>
     <string name="shop_your_photo">A te fotód</string>
     <string name="tag_category_placeholder">felsők, alsók, felsőkabát, lábbeli, kiegészítők, ruha, öltöny</string>
     <string name="tag_type_placeholder">pl. Póló, Chinos, Tollkabát</string>
-    <string name="tag_val_abstract">Absztrakt</string>
-    <string name="tag_val_animal_print">Állatminta</string>
-    <string name="tag_val_beach">Strand</string>
-    <string name="tag_val_beige">Bézs</string>
-    <string name="tag_val_black">Fekete</string>
-    <string name="tag_val_blue">Kék</string>
-    <string name="tag_val_blush">Halvány rózsaszín</string>
-    <string name="tag_val_bohemian">Bohém</string>
-    <string name="tag_val_brown">Barna</string>
-    <string name="tag_val_burgundy">Burgundi</string>
-    <string name="tag_val_business_casual">Business-casual</string>
-    <string name="tag_val_camel">Teve</string>
-    <string name="tag_val_camo">Terepminta</string>
-    <string name="tag_val_charcoal">Sötétszürke</string>
-    <string name="tag_val_classic">Klasszikus</string>
-    <string name="tag_val_cobalt">Kobalt</string>
-    <string name="tag_val_coral">Korall</string>
-    <string name="tag_val_cotton">Pamut</string>
-    <string name="tag_val_cream">Krém</string>
-    <string name="tag_val_denim">Farmer</string>
-    <string name="tag_val_denim_blue">Farmerkék</string>
-    <string name="tag_val_dress">Ruha</string>
-    <string name="tag_val_edgy">Merész</string>
-    <string name="tag_val_emerald">Smaragd</string>
-    <string name="tag_val_evening">Estélyi</string>
-    <string name="tag_val_floral">Virágos</string>
-    <string name="tag_val_forest">Fenyőzöld</string>
-    <string name="tag_val_fuchsia">Fukszia</string>
-    <string name="tag_val_geometric">Geometrikus</string>
-    <string name="tag_val_gold">Arany</string>
-    <string name="tag_val_graphic">Grafikus</string>
-    <string name="tag_val_gray">Szürke</string>
-    <string name="tag_val_green">Zöld</string>
-    <string name="tag_val_grey">Szürke</string>
-    <string name="tag_val_ivory">Elefántcsont</string>
-    <string name="tag_val_jumpsuit">Overall</string>
-    <string name="tag_val_khaki">Khaki</string>
-    <string name="tag_val_knit">Kötött</string>
-    <string name="tag_val_lavender">Levendula</string>
-    <string name="tag_val_leather">Bőr</string>
-    <string name="tag_val_lilac">Orgona</string>
-    <string name="tag_val_linen">Vászon</string>
-    <string name="tag_val_luxury">Luxus</string>
-    <string name="tag_val_magenta">Magenta</string>
-    <string name="tag_val_minimalist">Minimalista</string>
-    <string name="tag_val_mint">Menta</string>
-    <string name="tag_val_multicolor">Többszínű</string>
-    <string name="tag_val_mustard">Mustár</string>
-    <string name="tag_val_navy">Sötétkék</string>
-    <string name="tag_val_olive">Olíva</string>
-    <string name="tag_val_orange">Narancs</string>
-    <string name="tag_val_outdoor">Szabadtéri</string>
-    <string name="tag_val_oversized">Oversize</string>
-    <string name="tag_val_pink">Rózsaszín</string>
-    <string name="tag_val_plaid">Kockás</string>
-    <string name="tag_val_polyester">Poliészter</string>
-    <string name="tag_val_preppy">Preppy</string>
-    <string name="tag_val_printed">Mintás</string>
-    <string name="tag_val_purple">Lila</string>
-    <string name="tag_val_red">Piros</string>
-    <string name="tag_val_regular">Normál</string>
-    <string name="tag_val_relaxed">Laza</string>
-    <string name="tag_val_romantic">Romantikus</string>
-    <string name="tag_val_rust">Rozsda</string>
-    <string name="tag_val_sage">Zsálya</string>
-    <string name="tag_val_silk">Selyem</string>
-    <string name="tag_val_silver">Ezüst</string>
-    <string name="tag_val_sky">Égkék</string>
-    <string name="tag_val_slim">Slim</string>
-    <string name="tag_val_solid">Egyszínű</string>
-    <string name="tag_val_sporty">Sportos</string>
-    <string name="tag_val_streetwear">Streetwear</string>
-    <string name="tag_val_stripes">Csíkos</string>
-    <string name="tag_val_suit">Öltöny</string>
-    <string name="tag_val_tailored">Szabott</string>
-    <string name="tag_val_tan">Halvány bézs</string>
-    <string name="tag_val_teal">Pávakék</string>
-    <string name="tag_val_violet">Ibolyalila</string>
-    <string name="tag_val_white">Fehér</string>
-    <string name="tag_val_wine">Bordó</string>
-    <string name="tag_val_wool">Gyapjú</string>
-    <string name="tag_val_yellow">Sárga</string>
     <string name="travel_destination_placeholder">pl. Párizs, Tokió, New York</string>
     <string name="travel_extra_items">További csomagolnivaló (nincs a gardróbban)</string>
     <string name="travel_historical_note">Az utazás dátumai az élő előrejelzésen kívül esnek — történelmi klímaadatok jelennek meg.</string>
@@ -810,8 +690,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="tryon_try_again">Próbáld újra</string>
     <string name="tryon_use_outfit">Szett használata</string>
     <string name="tryon_view_source_outfit">Szett megtekintése</string>
-    <string name="viewer_hide_tags">Címkék elrejtése</string>
-    <string name="viewer_show_tags">Címkék mutatása</string>
     <string name="wardrobe_create_style">Szett létrehozása</string>
     <string name="wardrobe_find_by_photo">Darab keresése fotó alapján</string>
     <string name="wardrobe_find_by_photo_empty">Nincs hasonló darab.</string>
@@ -822,7 +700,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="wardrobe_imported_on">Importálva: %1$s</string>
     <string name="wardrobe_search">Keresés a gardróbban</string>
     <string name="wardrobe_search_hint">Írd be, mit keresel, vagy keress fotó alapján.</string>
-    <string name="wardrobe_search_placeholder">pl. piros pamutpóló</string>
     <string name="wardrobe_search_text_results">Keresési eredmények</string>
     <string name="wardrobe_search_title">Keresés a gardróbban</string>
     <string name="wardrobe_search_use_photo">Keresés fotó alapján</string>
@@ -928,22 +805,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="settings_similarity_preview_row">AI-hasonlóság előnézet megjelenítése</string>
     <string name="settings_similarity_preview_sub">Diagnosztika a fotó-alapú kereséshez.</string>
     <string name="settings_send_feedback">Visszajelzés küldése</string>
-    <string name="settings_retag_title">Mind a(z) %1$d ruhát újracímkézed?</string>
-    <string name="settings_retag_body">Az AI újra megnézi minden darabot, és módosíthatja a nevét, színét vagy kategóriáját. Minden, amit kézzel átneveztél, felülíródik.</string>
-    <string name="settings_retag_confirm">Minden ruha újracímkézése</string>
-    <string name="settings_rebg_confirm_title">Újra eltávolítod a hátteret %1$d darabnál?</string>
-    <string name="settings_rebg_body">Az AI minden darabot újra kivág az eredeti fotójából. A kézzel javított kivágások felülíródnak.</string>
-    <string name="settings_rebg_dialog_confirm">Hátterek újraeltávolítása</string>
-    <string name="settings_cutout_title">Kijavítod a hátteret %1$d darabnál?</string>
-    <string name="settings_cutout_body">Átvizsgáljuk a darabjaidat olyan kivágások után, amelyek kihagytak egy sarkot, és újravágjuk azokat, amelyeknek szükséges.</string>
-    <string name="settings_cutout_confirm">Szkennelés &amp; javítás</string>
-    <string name="settings_confirm_takes_about">Körülbelül ennyi ideig tart</string>
-    <string name="settings_confirm_minutes">~%1$d perc</string>
-    <string name="settings_confirm_credits_used">Felhasznált kreditek</string>
-    <string name="settings_confirm_credits_value">%1$d / %2$d maradt</string>
-    <string name="settings_confirm_short_format">%1$d kredit hiányzik. Tölts fel előbb.</string>
-    <string name="settings_confirm_buy_and_continue">Kreditek vásárlása &amp; folytatás</string>
-
     <!-- Expert: item tag dimensions for outfit AI -->
     <string name="composer_section_tags">Figyelembe veendő ruhajellemzők</string>
     <string name="composer_tags_hint">Válaszd ki, mely ruhajellemzőket veszi figyelembe az MI. Kevesebb részlet = gyorsabb, olcsóbb és célzottabb javaslatok.</string>
@@ -982,8 +843,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="ai_unavailable">Az AI-funkciók jelenleg nem érhetők el. Győződj meg róla, hogy be vagy jelentkezve, és próbáld újra.</string>
 
     <!-- Needs-tagging badge -->
-    <string name="wardrobe_needs_tagging">Címkézés szükséges</string>
-
     <!-- BYOK API-key onboarding step -->
     <string name="onboarding_apikey_title">Adja meg a Gemini API-kulcsát</string>
     <string name="onboarding_apikey_body">A LibreLookAI a Google Gemini szolgáltatáson fut a saját API-kulcsával. Csak ezen az eszközön tárolódik, és közvetlenül a Google-lel használjuk — semmi sem halad át a szervereinken.</string>
@@ -1081,8 +940,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="restore_items_progress">%1$d / %2$d elem</string>
 
     <!-- Unify close affordance (action_close) -->
-    <string name="action_close">Bezárás</string>
-
     <!-- Drive migration: auto-detect import (items 2/3) -->
     <string name="onboarding_drive_checking">Meglévő gardrób keresése importáláshoz…</string>
     <string name="onboarding_drive_importing">A meglévő gardróbod importálása… %1$d / %2$d</string>
@@ -1104,9 +961,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <!-- Convert images to WebP -->
     <string name="settings_convert_webp_row">Képek átalakítása WebP-re</string>
     <string name="settings_convert_webp_row_sub">Kicsinyítsd a régebbi JPG/PNG fotókat, hogy helyet spórolj a Drive-on.</string>
-    <string name="settings_convert_title">Átalakítasz %1$d képet WebP-re?</string>
-    <string name="settings_convert_body">A régebbi JPG/PNG fotóidat kisebb WebP fájlokként mentjük újra, és mindenhol frissítjük, ahol használatban vannak — szettek, felpróbálások és utazások. Nincs szükség MI-re vagy kreditre.</string>
-    <string name="settings_convert_confirm">Átalakítás WebP-re</string>
     <string name="settings_converting">Átalakítás: %1$d / %2$d…</string>
 
     <!-- Wardrobe maintenance overflow menu -->
@@ -1196,8 +1050,6 @@ Kérjük, kapcsold ki az akkumulátoroptimalizálást a LibreLookAI-hoz a folyta
     <string name="fab_calendar_log">Szett rögzítése</string>
     <string name="fab_shopping_add">Talált tárgy</string>
     <string name="fab_travel_plan">Utazás tervezése</string>
-    <string name="action_clear_selection">Kijelölés törlése</string>
-    <string name="sel_count">%1$d kijelölve</string>
     <string name="sel_style">Stílus</string>
     <string name="sel_swap">Csere</string>
     <string name="sel_move">Áthelyezés</string>

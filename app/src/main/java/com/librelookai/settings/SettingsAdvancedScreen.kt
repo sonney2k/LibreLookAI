@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.librelookai.AppScreenHeader
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.settings.UserPreferences
 import com.librelookai.util.FeatureFlags
 import com.librelookai.util.LocalIsOffline
@@ -183,7 +184,7 @@ private fun ByokBlock(
                 ) {
                     if (currentApiKey.isNotBlank()) {
                         TextButton(onClick = { draft = currentApiKey; editing = false }) {
-                            Text(stringResource(R.string.action_cancel))
+                            Text(stringResource(DsR.string.action_cancel))
                         }
                     }
                     TextButton(onClick = { onSaveApiKey(draft.trim()); editing = false }) {

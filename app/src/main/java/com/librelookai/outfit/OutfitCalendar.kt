@@ -84,6 +84,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.data.model.Outfit
 import com.librelookai.data.model.OutfitEvent
 import com.librelookai.data.model.WearSource
@@ -346,7 +347,7 @@ private fun CalendarContent(
                         modifier = Modifier.weight(1f),
                     )
                     TextButton(onClick = { pickMode = null }) {
-                        Text(stringResource(R.string.action_cancel))
+                        Text(stringResource(DsR.string.action_cancel))
                     }
                 }
             }
@@ -651,7 +652,7 @@ private fun CalendarContent(
                     LocalConfiguration provides parentConfiguration,
                 ) {
                     TextButton(onClick = { pendingDeleteDays = emptySet() }) {
-                        Text(stringResource(R.string.action_cancel))
+                        Text(stringResource(DsR.string.action_cancel))
                     }
                 }
             },

@@ -63,19 +63,16 @@
 
     <!-- Common actions -->
     <string name="action_ok">אישור</string>
-    <string name="action_cancel">ביטול</string>
     <string name="action_dismiss">סגור</string>
     <string name="action_delete">מחק</string>
     <string name="action_save">שמור</string>
     <string name="action_edit">ערוך</string>
     <string name="action_saving">שומר…</string>
-    <string name="action_clear">נקה</string>
     <string name="action_sort">מיין</string>
     <string name="action_remove">הסר</string>
     <string name="cd_ai_suggestion">הצעת בינה מלאכותית</string>
     <string name="cd_refine">דייק</string>
     <string name="filter_location">מיקום</string>
-    <string name="filter_all_locations">הכל</string>
     <string name="wardrobe_processing_photos">מעבד %1$d תמונות…</string>
     <string name="wardrobe_progress_uploading">מעלה תמונה…</string>
     <string name="wardrobe_progress_uploading_batch">מעלה תמונה %1$d מתוך %2$d…</string>
@@ -108,9 +105,6 @@
     <string name="settings_display_font_desc">בחר את הגופן המשמש בכל האפליקציה.</string>
     <string name="font_default">ברירת מחדל של המערכת</string>
     <string name="font_caveat">Caveat (כתב יד)</string>
-    <string name="wardrobe_filters">מסננים</string>
-    <string name="wardrobe_filters_apply">החל (%1$d)</string>
-    <string name="wardrobe_filters_reset">איפוס</string>
     <string name="settings_tab_data">נתונים</string>
     <string name="settings_tab_credits">קרדיטים</string>
     <string name="settings_language">שפה</string>
@@ -262,12 +256,6 @@
     <string name="wardrobe_delete_text">האם אתה בטוח שברצונך למחוק את %d הפריטים שנבחרו? לא ניתן לבטל פעולה זו.</string>
     <string name="wardrobe_move_to">העבר ל</string>
     <string name="wardrobe_move_to_title">העבר %d פריטים ל</string>
-    <string name="wardrobe_sort">מיין</string>
-    <string name="wardrobe_sort_newest">החדש ביותר קודם</string>
-    <string name="wardrobe_sort_oldest">הישן ביותר קודם</string>
-    <string name="wardrobe_sort_most_worn">הכי הרבה לבישות</string>
-    <string name="wardrobe_sort_type">סוג</string>
-    <string name="wardrobe_sort_category">קטגוריה</string>
     <string name="wardrobe_tag_detect">זהה תגיות</string>
     <string name="wardrobe_tag_remove_bg">הסר רקע</string>
     <string name="wardrobe_tag_re_remove_bg">הסר רקע מחדש</string>
@@ -286,117 +274,12 @@
     <string name="action_continue">המשך</string>
     <string name="tag_label">שם</string>
     <string name="tag_label_placeholder">למשל צ\'ינו נייבי, חולצת אוקספורד לבנה</string>
-    <string name="tag_type">סוג</string>
-    <string name="tag_category">קטגוריה</string>
-    <string name="tag_uses">שימושים</string>
-    <string name="tag_colors">צבעים</string>
-    <string name="tag_seasonality">עונה</string>
-    <string name="tag_aesthetic">אסתטיקה</string>
-    <string name="tag_fit">גזרה</string>
-    <string name="tag_material">חומר</string>
-    <string name="tag_pattern">דפס</string>
     <string name="tag_add_custom">הוסף מותאם אישית…</string>
     <string name="tag_type_placeholder">למשל חולצת טי, צ\'ינו, ג\'קט</string>
     <string name="tag_category_placeholder">tops, bottoms, outerwear, footwear, accessories, dress, suit</string>
 
     <!-- Tag value translations (stored in English; displayed in UI language) -->
-    <string name="tag_val_casual">יומיומי</string>
-    <string name="tag_val_formal">רשמי</string>
-    <string name="tag_val_business">עסקים</string>
-    <string name="tag_val_sport">ספורט</string>
-    <string name="tag_val_outdoor">חוץ</string>
-    <string name="tag_val_beach">ים</string>
-    <string name="tag_val_evening">ערב</string>
-    <string name="tag_val_spring">אביב</string>
-    <string name="tag_val_summer">קיץ</string>
-    <string name="tag_val_fall">סתיו</string>
-    <string name="tag_val_winter">חורף</string>
-    <string name="tag_val_minimalist">מינימליסטי</string>
-    <string name="tag_val_streetwear">סטריט-וור</string>
-    <string name="tag_val_preppy">פרפי</string>
-    <string name="tag_val_bohemian">בוהמי</string>
-    <string name="tag_val_classic">קלאסי</string>
-    <string name="tag_val_sporty">ספורטיבי</string>
-    <string name="tag_val_romantic">רומנטי</string>
-    <string name="tag_val_edgy">אדג\'י</string>
-    <string name="tag_val_business_casual">ביזנס-קז\'ואל</string>
-    <string name="tag_val_luxury">יוקרה</string>
-    <string name="tag_val_slim">סלים</string>
-    <string name="tag_val_regular">רגיל</string>
-    <string name="tag_val_relaxed">משוחרר</string>
-    <string name="tag_val_oversized">אוברסייז</string>
-    <string name="tag_val_tailored">מחויט</string>
-    <string name="tag_val_cotton">כותנה</string>
-    <string name="tag_val_denim">דנים</string>
-    <string name="tag_val_wool">צמר</string>
-    <string name="tag_val_leather">עור</string>
-    <string name="tag_val_polyester">פוליאסטר</string>
-    <string name="tag_val_linen">פשתן</string>
-    <string name="tag_val_silk">משי</string>
-    <string name="tag_val_knit">סריג</string>
-    <string name="tag_val_solid">חלק</string>
-    <string name="tag_val_stripes">פסים</string>
-    <string name="tag_val_plaid">משבצות</string>
-    <string name="tag_val_floral">פרחוני</string>
-    <string name="tag_val_geometric">גיאומטרי</string>
-    <string name="tag_val_animal_print">הדפס חיות</string>
-    <string name="tag_val_graphic">גרפי</string>
-    <string name="tag_val_camo">הסוואה</string>
-    <string name="tag_val_abstract">מופשט</string>
-    <string name="tag_val_tops">חלקים עליונים</string>
-    <string name="tag_val_bottoms">חלקים תחתונים</string>
-    <string name="tag_val_outerwear">בגדים עליונים</string>
-    <string name="tag_val_footwear">נעליים</string>
-    <string name="tag_val_accessories">אביזרים</string>
-    <string name="tag_val_dress">שמלה</string>
-    <string name="tag_val_suit">חליפה</string>
-    <string name="tag_val_jumpsuit">אוברול</string>
     <!-- Colors -->
-    <string name="tag_val_black">שחור</string>
-    <string name="tag_val_white">לבן</string>
-    <string name="tag_val_grey">אפור</string>
-    <string name="tag_val_gray">אפור</string>
-    <string name="tag_val_charcoal">אפור פחם</string>
-    <string name="tag_val_brown">חום</string>
-    <string name="tag_val_beige">בז\'</string>
-    <string name="tag_val_cream">שמנת</string>
-    <string name="tag_val_ivory">שנהב</string>
-    <string name="tag_val_tan">חום בהיר</string>
-    <string name="tag_val_camel">קאמל</string>
-    <string name="tag_val_red">אדום</string>
-    <string name="tag_val_burgundy">בורדו</string>
-    <string name="tag_val_wine">צבע יין</string>
-    <string name="tag_val_coral">קורל</string>
-    <string name="tag_val_pink">ורוד</string>
-    <string name="tag_val_blush">ורוד פודרה</string>
-    <string name="tag_val_magenta">מג\'נטה</string>
-    <string name="tag_val_fuchsia">פוקסיה</string>
-    <string name="tag_val_orange">כתום</string>
-    <string name="tag_val_rust">חלודה</string>
-    <string name="tag_val_yellow">צהוב</string>
-    <string name="tag_val_mustard">חרדל</string>
-    <string name="tag_val_gold">זהב</string>
-    <string name="tag_val_green">ירוק</string>
-    <string name="tag_val_olive">זית</string>
-    <string name="tag_val_khaki">חאקי</string>
-    <string name="tag_val_sage">מרווה</string>
-    <string name="tag_val_mint">מנטה</string>
-    <string name="tag_val_emerald">אזמרגד</string>
-    <string name="tag_val_forest">ירוק יער</string>
-    <string name="tag_val_teal">כחול-ירוק</string>
-    <string name="tag_val_blue">כחול</string>
-    <string name="tag_val_navy">נייבי</string>
-    <string name="tag_val_cobalt">קובלט</string>
-    <string name="tag_val_sky">שמיים</string>
-    <string name="tag_val_denim_blue">כחול דנים</string>
-    <string name="tag_val_purple">סגול</string>
-    <string name="tag_val_lavender">לבנדר</string>
-    <string name="tag_val_violet">ויולט</string>
-    <string name="tag_val_lilac">לילך</string>
-    <string name="tag_val_silver">כסף</string>
-    <string name="tag_val_multicolor">צבעוני</string>
-    <string name="tag_val_printed">מודפס</string>
-
     <!-- Outfits -->
     <string name="outfits_empty">אין אאוטפיטים עדיין</string>
     <string name="outfits_empty_hint">הקש על + כדי לבנות אאוטפיט מהמלתחה שלך</string>
@@ -707,9 +590,6 @@
     <string name="wardrobe_imported_on">יובא ב-%1$s</string>
     <string name="wardrobe_view_original">צפה במקור</string>
     <string name="wardrobe_view_cutout">צפה בקט-אאוט</string>
-    <string name="viewer_hide_tags">הסתר תגיות</string>
-    <string name="viewer_show_tags">הצג תגיות</string>
-
     <!-- AI tab -->
     <string name="settings_tab_ai">AI</string>
     <string name="ai_considerations_title">שיקולי ברירת מחדל</string>
@@ -738,7 +618,6 @@
     <string name="shop_matching">משווה מול המלתחה שלך…</string>
     <string name="shop_matches_title">התאמות מובילות (%1$d)</string>
     <string name="shop_no_matches">אין התאמות עדיין. נסה צילום קרוב יותר ובתאורה טובה יותר.</string>
-    <string name="shop_match_score">דמיון: %1$d%%</string>
     <string name="shop_indexing">מכין אינדקס למלתחה… %1$d / %2$d</string>
     <string name="shop_index_size">%1$d פריטים אונדקסו</string>
     <string name="shop_model_missing">דגם במכשיר חסר. הנח את efficientnet_lite0.tflite תחת app/src/main/assets/embedder/ ואת magic_touch.tflite תחת app/src/main/assets/segmenter/.</string>
@@ -769,8 +648,6 @@
     <string name="settings_debug_similarity_desc">בעת פתיחת התאמה בחיפוש דומים, הצג פירוט לפי ערוץ (תמונות ממוזערות מסוגמנטות, קוסינוס הטבעה/היסטוגרמה, היסטוגרמות גוון) במקום התמונה הרגילה הניתנת להגדלה.</string>
 
     <!-- Match preview dialog -->
-    <string name="shop_show_in_wardrobe">הצג במלתחה</string>
-    <string name="shop_add_to_shopping_list">הוסף לרשימת קניות</string>
     <string name="dedupe_dialog_title">כפילות אפשרית</string>
     <string name="dedupe_dialog_desc">מצאנו %1$d פריטים במלתחה שלך שנראים דומים מאוד לתמונה זו.</string>
     <string name="dedupe_dialog_import_anyway">ייבא בכל זאת</string>
@@ -787,7 +664,6 @@
     <string name="wardrobe_search">חפש במלתחה</string>
     <string name="wardrobe_search_title">חפש במלתחה</string>
     <string name="wardrobe_search_hint">הקלד את מה שאתה מחפש, או חפש לפי תמונה.</string>
-    <string name="wardrobe_search_placeholder">למשל חולצת כותנה אדומה</string>
     <string name="wardrobe_search_use_photo">חפש לפי תמונה במקום זאת</string>
     <string name="wardrobe_search_text_results">תוצאות חיפוש</string>
     <string name="action_search">חפש</string>
@@ -959,22 +835,6 @@
     <string name="settings_similarity_preview_row">הצג תצוגה מקדימה של דמיון AI</string>
     <string name="settings_similarity_preview_sub">אבחון עבור חיפוש לפי תמונה.</string>
     <string name="settings_send_feedback">שלח משוב</string>
-    <string name="settings_retag_title">לתייג מחדש את כל %1$d הבגדים?</string>
-    <string name="settings_retag_body">ה-AI יסתכל שוב על כל פריט ועשוי לשנות את שמו, צבעו או הקטגוריה שלו. כל מה ששינית ידנית יוחלף.</string>
-    <string name="settings_retag_confirm">תייג מחדש את כל הבגדים</string>
-    <string name="settings_rebg_confirm_title">להסיר מחדש את הרקע מ-%1$d פריטים?</string>
-    <string name="settings_rebg_body">ה-AI יחתוך מחדש כל פריט מהתמונה המקורית שלו. חיתוכים שתיקנת ידנית יוחלפו.</string>
-    <string name="settings_rebg_dialog_confirm">הסר רקעים מחדש</string>
-    <string name="settings_cutout_title">לתקן את הרקע ב-%1$d פריטים?</string>
-    <string name="settings_cutout_body">נסרוק את הפריטים שלך לחיתוכים שפספסו פינה ונחתוך מחדש את אלה שצריך.</string>
-    <string name="settings_cutout_confirm">סרוק &amp; תקן</string>
-    <string name="settings_confirm_takes_about">לוקח בערך</string>
-    <string name="settings_confirm_minutes">~%1$d דקות</string>
-    <string name="settings_confirm_credits_used">קרדיטים שנוצלו</string>
-    <string name="settings_confirm_credits_value">%1$d / %2$d נותרו</string>
-    <string name="settings_confirm_short_format">חסרים לך %1$d קרדיטים. טען קודם.</string>
-    <string name="settings_confirm_buy_and_continue">קנה קרדיטים &amp; המשך</string>
-
     <!-- Expert: item tag dimensions for outfit AI -->
     <string name="composer_section_tags">פרטי הפריט שיש לשקלל</string>
     <string name="composer_tags_hint">בחר אילו מאפייני לבוש ה-AI שוקל. פחות פרטים = הצעות מהירות, זולות וממוקדות יותר.</string>
@@ -1013,8 +873,6 @@
     <string name="ai_unavailable">תכונות הבינה המלאכותית אינן זמינות כעת. ודא שאתה מחובר ונסה שוב.</string>
 
     <!-- Needs-tagging badge -->
-    <string name="wardrobe_needs_tagging">דרוש תיוג</string>
-
     <!-- BYOK API-key onboarding step -->
     <string name="onboarding_apikey_title">הוסף את מפתח Gemini API שלך</string>
     <string name="onboarding_apikey_body">LibreLookAI פועל על Google Gemini באמצעות מפתח ה-API שלך. הוא נשמר במכשיר זה בלבד ומשמש ישירות מול Google — שום דבר לא עובר דרך השרתים שלנו.</string>
@@ -1112,8 +970,6 @@
     <string name="restore_items_progress">%1$d מתוך %2$d פריטים</string>
 
     <!-- Unify close affordance (action_close) -->
-    <string name="action_close">סגור</string>
-
     <!-- Drive migration: auto-detect import (items 2/3) -->
     <string name="onboarding_drive_checking">מחפשים ארון בגדים קיים לייבוא…</string>
     <string name="onboarding_drive_importing">מייבאים את ארון הבגדים הקיים שלך… %1$d / %2$d</string>
@@ -1135,9 +991,6 @@
     <!-- Convert images to WebP -->
     <string name="settings_convert_webp_row">המרת תמונות ל-WebP</string>
     <string name="settings_convert_webp_row_sub">כיווץ תמונות JPG/PNG ישנות כדי לחסוך מקום ב-Drive.</string>
-    <string name="settings_convert_title">להמיר %1$d תמונות ל-WebP?</string>
-    <string name="settings_convert_body">נשמור מחדש את תמונות ה-JPG/PNG הישנות שלך כקובצי WebP קטנים יותר ונעדכן אותן בכל מקום שבו הן בשימוש — מערכי לבוש, מדידות וטיולים. ללא AI או קרדיטים.</string>
-    <string name="settings_convert_confirm">המרה ל-WebP</string>
     <string name="settings_converting">ממיר %1$d מתוך %2$d…</string>
 
     <!-- Wardrobe maintenance overflow menu -->
@@ -1227,8 +1080,6 @@
     <string name="fab_calendar_log">תיעוד תלבושת</string>
     <string name="fab_shopping_add">הוספת מציאה</string>
     <string name="fab_travel_plan">תכנון טיול</string>
-    <string name="action_clear_selection">ניקוי הבחירה</string>
-    <string name="sel_count">%1$d נבחרו</string>
     <string name="sel_style">סטיילינג</string>
     <string name="sel_swap">החלפה</string>
     <string name="sel_move">העברה</string>

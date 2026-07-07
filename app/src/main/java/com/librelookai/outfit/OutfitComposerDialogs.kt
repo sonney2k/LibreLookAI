@@ -38,6 +38,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -137,7 +138,7 @@ internal fun SaveOutfitDialog(
         dismissButton = {
             locale {
                 TextButton(onClick = onDismiss) {
-                    Text(stringResource(R.string.action_cancel))
+                    Text(stringResource(DsR.string.action_cancel))
                 }
             }
         },
@@ -173,7 +174,7 @@ internal fun DiscardChangesDialog(
         dismissButton = {
             locale {
                 TextButton(onClick = onDismiss) {
-                    Text(stringResource(R.string.action_cancel))
+                    Text(stringResource(DsR.string.action_cancel))
                 }
             }
         },

@@ -38,6 +38,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.librelookai.BuildConfig
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.auth.GoogleAuthManager
 import com.librelookai.data.drive.DriveRepository
 
@@ -81,7 +82,7 @@ fun DriveFolderPicker(onResult: (folderId: String?) -> Unit) {
                         color = MaterialTheme.colorScheme.error,
                     )
                     TextButton(onClick = { latestOnResult(null) }) {
-                        Text(stringResource(R.string.action_close))
+                        Text(stringResource(DsR.string.action_close))
                     }
                 }
                 tok == null -> Column(

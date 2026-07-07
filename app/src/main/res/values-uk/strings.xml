@@ -63,19 +63,16 @@
 
     <!-- Common actions -->
     <string name="action_ok">OK</string>
-    <string name="action_cancel">Скасувати</string>
     <string name="action_dismiss">Закрити</string>
     <string name="action_delete">Видалити</string>
     <string name="action_save">Зберегти</string>
     <string name="action_edit">Редагувати</string>
     <string name="action_saving">Збереження…</string>
-    <string name="action_clear">Очистити</string>
     <string name="action_sort">Сортувати</string>
     <string name="action_remove">Прибрати</string>
     <string name="cd_ai_suggestion">Пропозиція ШІ</string>
     <string name="cd_refine">Уточнити</string>
     <string name="filter_location">Місце</string>
-    <string name="filter_all_locations">Всі</string>
     <string name="wardrobe_processing_photos">Обробка %1$d фото…</string>
     <string name="wardrobe_progress_uploading">Завантаження фото…</string>
     <string name="wardrobe_progress_uploading_batch">Завантаження фото %1$d з %2$d…</string>
@@ -108,9 +105,6 @@
     <string name="settings_display_font_desc">Оберіть шрифт для додатка.</string>
     <string name="font_default">Системний</string>
     <string name="font_caveat">Caveat (рукописний)</string>
-    <string name="wardrobe_filters">Фільтри</string>
-    <string name="wardrobe_filters_apply">Застосувати (%1$d)</string>
-    <string name="wardrobe_filters_reset">Скинути</string>
     <string name="settings_tab_data">Дані</string>
     <string name="settings_tab_credits">Кредити</string>
     <string name="settings_language">Мова</string>
@@ -179,12 +173,6 @@
     <string name="wardrobe_delete_text">Ви впевнені, що хочете видалити %d вибраних речей? Це неможливо скасувати.</string>
     <string name="wardrobe_move_to">Перемістити до</string>
     <string name="wardrobe_move_to_title">Перемістити %d речей до</string>
-    <string name="wardrobe_sort">Сортувати</string>
-    <string name="wardrobe_sort_newest">Спочатку нові</string>
-    <string name="wardrobe_sort_oldest">Спочатку старі</string>
-    <string name="wardrobe_sort_most_worn">Найчастіше ношені</string>
-    <string name="wardrobe_sort_type">За типом</string>
-    <string name="wardrobe_sort_category">За категорією</string>
     <string name="wardrobe_tag_detect">Розпізнати теги</string>
     <string name="wardrobe_tag_remove_bg">Прибрати фон</string>
     <string name="wardrobe_tag_re_remove_bg">Переприбрати фон</string>
@@ -203,32 +191,9 @@
     <string name="action_continue">Продовжити</string>
     <string name="tag_label">Назва</string>
     <string name="tag_label_placeholder">напр. Сині чіноси, Біла сорочка</string>
-    <string name="tag_type">Тип</string>
-    <string name="tag_category">Категорія</string>
-    <string name="tag_uses">Призначення</string>
-    <string name="tag_colors">Кольори</string>
-    <string name="tag_seasonality">Сезонність</string>
-    <string name="tag_aesthetic">Стиль</string>
-    <string name="tag_fit">Крій</string>
-    <string name="tag_material">Матеріал</string>
-    <string name="tag_pattern">Принт</string>
     <string name="tag_add_custom">Додати свій тег…</string>
 
     <!-- Tag values -->
-    <string name="tag_val_casual">Повсякденний</string>
-    <string name="tag_val_formal">Офіційний</string>
-    <string name="tag_val_business">Діловий</string>
-    <string name="tag_val_sport">Спортивний</string>
-    <string name="tag_val_spring">Весна</string>
-    <string name="tag_val_summer">Літо</string>
-    <string name="tag_val_fall">Осінь</string>
-    <string name="tag_val_winter">Зима</string>
-    <string name="tag_val_tops">Верх</string>
-    <string name="tag_val_bottoms">Низ</string>
-    <string name="tag_val_outerwear">Верхній одяг</string>
-    <string name="tag_val_footwear">Взуття</string>
-    <string name="tag_val_accessories">Аксесуари</string>
-
     <!-- Outfits -->
     <string name="outfits_empty">Образів ще немає</string>
     <string name="outfits_empty_hint">Натисніть +, щоб скласти образ із речей гардероба</string>
@@ -662,7 +627,6 @@
     <string name="settings_repair_preview_title">Ремонт &amp; Синхронізація — Перегляд</string>
     <string name="settings_tab_ai">ШІ</string>
     <string name="settings_tab_feedback">Відгук</string>
-    <string name="shop_add_to_shopping_list">Додати до списку покупок</string>
     <string name="shop_clear">Очистити</string>
     <string name="shop_crosshair_hint">Розмістіть річ у прицілі</string>
     <string name="shop_description">Зробіть фото речі, яку розглядаєте, і ми покажемо найбільш візуально схожі речі з вашого гардероба — повністю на пристрої.</string>
@@ -670,99 +634,15 @@
     <string name="shop_error_model_missing">Модель візуального пошуку не встановлена.</string>
     <string name="shop_index_size">%1$d речей проіндексовано</string>
     <string name="shop_indexing">Індексація гардероба… %1$d / %2$d</string>
-    <string name="shop_match_score">Схожість: %1$d%%</string>
     <string name="shop_matches_title">Найкращі збіги (%1$d)</string>
     <string name="shop_matching">Порівняння з гардеробом…</string>
     <string name="shop_model_missing">Модель на пристрої відсутня. Розмістіть efficientnet_lite0.tflite у app/src/main/assets/embedder/ та magic_touch.tflite у app/src/main/assets/segmenter/.</string>
     <string name="shop_no_matches">Збігів поки немає. Спробуйте ближче, краще освітлене фото.</string>
-    <string name="shop_show_in_wardrobe">Показати в гардеробі</string>
     <string name="shop_take_another">Зробити ще одне фото</string>
     <string name="shop_take_photo">Зробити фото</string>
     <string name="shop_your_photo">Ваше фото</string>
     <string name="tag_category_placeholder">верх, низ, верхній одяг, взуття, аксесуари, сукня, костюм</string>
     <string name="tag_type_placeholder">напр. Футболка, Чіноси, Куртка пуховик</string>
-    <string name="tag_val_abstract">Абстрактний</string>
-    <string name="tag_val_animal_print">Анімалістичний принт</string>
-    <string name="tag_val_beach">Пляж</string>
-    <string name="tag_val_beige">Бежевий</string>
-    <string name="tag_val_black">Чорний</string>
-    <string name="tag_val_blue">Синій</string>
-    <string name="tag_val_blush">Рум’яний</string>
-    <string name="tag_val_bohemian">Бохо</string>
-    <string name="tag_val_brown">Коричневий</string>
-    <string name="tag_val_burgundy">Бордовий</string>
-    <string name="tag_val_business_casual">Бізнес-кежуал</string>
-    <string name="tag_val_camel">Кемел</string>
-    <string name="tag_val_camo">Камуфляж</string>
-    <string name="tag_val_charcoal">Графітовий</string>
-    <string name="tag_val_classic">Класичний</string>
-    <string name="tag_val_cobalt">Кобальтовий</string>
-    <string name="tag_val_coral">Кораловий</string>
-    <string name="tag_val_cotton">Бавовна</string>
-    <string name="tag_val_cream">Кремовий</string>
-    <string name="tag_val_denim">Денім</string>
-    <string name="tag_val_denim_blue">Деніловий синій</string>
-    <string name="tag_val_dress">Сукня</string>
-    <string name="tag_val_edgy">Зухвалий</string>
-    <string name="tag_val_emerald">Смарагдовий</string>
-    <string name="tag_val_evening">Вечір</string>
-    <string name="tag_val_floral">Квітковий</string>
-    <string name="tag_val_forest">Темно-зелений</string>
-    <string name="tag_val_fuchsia">Фуксія</string>
-    <string name="tag_val_geometric">Геометричний</string>
-    <string name="tag_val_gold">Золотий</string>
-    <string name="tag_val_graphic">Графічний</string>
-    <string name="tag_val_gray">Сірий</string>
-    <string name="tag_val_green">Зелений</string>
-    <string name="tag_val_grey">Сірий</string>
-    <string name="tag_val_ivory">Слонова кістка</string>
-    <string name="tag_val_jumpsuit">Комбінезон</string>
-    <string name="tag_val_khaki">Хакі</string>
-    <string name="tag_val_knit">Трикотаж</string>
-    <string name="tag_val_lavender">Лавандовий</string>
-    <string name="tag_val_leather">Шкіра</string>
-    <string name="tag_val_lilac">Бузковий</string>
-    <string name="tag_val_linen">Льон</string>
-    <string name="tag_val_luxury">Люкс</string>
-    <string name="tag_val_magenta">Маджента</string>
-    <string name="tag_val_minimalist">Мінімалістичний</string>
-    <string name="tag_val_mint">М’ятний</string>
-    <string name="tag_val_multicolor">Багатоколірний</string>
-    <string name="tag_val_mustard">Гірчичний</string>
-    <string name="tag_val_navy">Темно-синій</string>
-    <string name="tag_val_olive">Оливковий</string>
-    <string name="tag_val_orange">Помаранчевий</string>
-    <string name="tag_val_outdoor">Активний відпочинок</string>
-    <string name="tag_val_oversized">Оверсайз</string>
-    <string name="tag_val_pink">Рожевий</string>
-    <string name="tag_val_plaid">Клітинка</string>
-    <string name="tag_val_polyester">Поліестер</string>
-    <string name="tag_val_preppy">Преппі</string>
-    <string name="tag_val_printed">З принтом</string>
-    <string name="tag_val_purple">Фіолетовий</string>
-    <string name="tag_val_red">Червоний</string>
-    <string name="tag_val_regular">Звичайний</string>
-    <string name="tag_val_relaxed">Вільний</string>
-    <string name="tag_val_romantic">Романтичний</string>
-    <string name="tag_val_rust">Іржавий</string>
-    <string name="tag_val_sage">Шавлієвий</string>
-    <string name="tag_val_silk">Шовк</string>
-    <string name="tag_val_silver">Срібний</string>
-    <string name="tag_val_sky">Небесно-блакитний</string>
-    <string name="tag_val_slim">Слім</string>
-    <string name="tag_val_solid">Однотонний</string>
-    <string name="tag_val_sporty">Спортивний</string>
-    <string name="tag_val_streetwear">Стрітвір</string>
-    <string name="tag_val_stripes">Смужки</string>
-    <string name="tag_val_suit">Костюм</string>
-    <string name="tag_val_tailored">Приталений</string>
-    <string name="tag_val_tan">Світло-бежевий</string>
-    <string name="tag_val_teal">Бірюзовий</string>
-    <string name="tag_val_violet">Бузково-фіолетовий</string>
-    <string name="tag_val_white">Білий</string>
-    <string name="tag_val_wine">Винний</string>
-    <string name="tag_val_wool">Вовна</string>
-    <string name="tag_val_yellow">Жовтий</string>
     <string name="travel_destination_placeholder">напр. Париж, Токіо, Нью-Йорк</string>
     <string name="travel_extra_items">Спакувати додатково (немає в гардеробі)</string>
     <string name="travel_historical_note">Дати подорожі поза вікном прогнозу — показано історичні кліматичні дані.</string>
@@ -810,8 +690,6 @@
     <string name="tryon_try_again">Спробувати знову</string>
     <string name="tryon_use_outfit">Використати образ</string>
     <string name="tryon_view_source_outfit">Переглянути образ</string>
-    <string name="viewer_hide_tags">Сховати теги</string>
-    <string name="viewer_show_tags">Показати теги</string>
     <string name="wardrobe_create_style">Створити образ</string>
     <string name="wardrobe_find_by_photo">Знайти річ за фото</string>
     <string name="wardrobe_find_by_photo_empty">Схожих речей не знайдено.</string>
@@ -822,7 +700,6 @@
     <string name="wardrobe_imported_on">Імпортовано %1$s</string>
     <string name="wardrobe_search">Шукати в гардеробі</string>
     <string name="wardrobe_search_hint">Введіть, що шукаєте, або шукайте за фото.</string>
-    <string name="wardrobe_search_placeholder">напр. червона бавовняна сорочка</string>
     <string name="wardrobe_search_text_results">Результати пошуку</string>
     <string name="wardrobe_search_title">Шукати в гардеробі</string>
     <string name="wardrobe_search_use_photo">Шукати за фото</string>
@@ -928,22 +805,6 @@
     <string name="settings_similarity_preview_row">Показувати попередній перегляд схожості ШІ</string>
     <string name="settings_similarity_preview_sub">Діагностика для пошуку за фото.</string>
     <string name="settings_send_feedback">Надіслати відгук</string>
-    <string name="settings_retag_title">Перерозмітити всі %1$d речі?</string>
-    <string name="settings_retag_body">ШІ знову перегляне кожну річ і може змінити її назву, колір чи категорію. Усе, що ви перейменували вручну, буде замінено.</string>
-    <string name="settings_retag_confirm">Перерозмітити весь одяг</string>
-    <string name="settings_rebg_confirm_title">Заново прибрати фон у %1$d речей?</string>
-    <string name="settings_rebg_body">ШІ заново виріже кожну річ з її оригінального фото. Вирізки, виправлені вручну, буде замінено.</string>
-    <string name="settings_rebg_dialog_confirm">Заново прибрати фони</string>
-    <string name="settings_cutout_title">Виправити фон у %1$d речей?</string>
-    <string name="settings_cutout_body">Ми проскануємо ваші речі на вирізки, що пропустили кут, і заново виріжемо ті, яким це потрібно.</string>
-    <string name="settings_cutout_confirm">Сканувати &amp; виправити</string>
-    <string name="settings_confirm_takes_about">Триватиме близько</string>
-    <string name="settings_confirm_minutes">~%1$d хвилин</string>
-    <string name="settings_confirm_credits_used">Використано кредитів</string>
-    <string name="settings_confirm_credits_value">%1$d / %2$d лишилось</string>
-    <string name="settings_confirm_short_format">Бракує %1$d кредитів. Спершу поповніть.</string>
-    <string name="settings_confirm_buy_and_continue">Купити кредити &amp; продовжити</string>
-
     <!-- Expert: item tag dimensions for outfit AI -->
     <string name="composer_section_tags">Деталі речей для врахування</string>
     <string name="composer_tags_hint">Обери, які характеристики одягу враховує ШІ. Менше деталей = швидші, дешевші й точніші пропозиції.</string>
@@ -982,8 +843,6 @@
     <string name="ai_unavailable">Функції ШІ наразі недоступні. Переконайтеся, що ви ввійшли, і повторіть спробу.</string>
 
     <!-- Needs-tagging badge -->
-    <string name="wardrobe_needs_tagging">Потрібні теги</string>
-
     <!-- BYOK API-key onboarding step -->
     <string name="onboarding_apikey_title">Додайте свій ключ API Gemini</string>
     <string name="onboarding_apikey_body">LibreLookAI працює на Google Gemini з вашим власним ключем API. Він зберігається лише на цьому пристрої та використовується безпосередньо з Google — нічого не проходить через наші сервери.</string>
@@ -1081,8 +940,6 @@
     <string name="restore_items_progress">%1$d з %2$d елементів</string>
 
     <!-- Unify close affordance (action_close) -->
-    <string name="action_close">Закрити</string>
-
     <!-- Drive migration: auto-detect import (items 2/3) -->
     <string name="onboarding_drive_checking">Пошук наявного гардероба для імпорту…</string>
     <string name="onboarding_drive_importing">Імпорт вашого наявного гардероба… %1$d / %2$d</string>
@@ -1104,9 +961,6 @@
     <!-- Convert images to WebP -->
     <string name="settings_convert_webp_row">Конвертувати зображення у WebP</string>
     <string name="settings_convert_webp_row_sub">Зменшіть старіші фото JPG/PNG, щоб заощадити місце на Диску.</string>
-    <string name="settings_convert_title">Конвертувати %1$d зображень у WebP?</string>
-    <string name="settings_convert_body">Ми збережемо ваші старіші фото JPG/PNG як менші файли WebP й оновимо їх скрізь, де вони використовуються — образи, приміряння та подорожі. Без ШІ та кредитів.</string>
-    <string name="settings_convert_confirm">Конвертувати у WebP</string>
     <string name="settings_converting">Конвертування %1$d з %2$d…</string>
 
     <!-- Wardrobe maintenance overflow menu -->
@@ -1196,8 +1050,6 @@
     <string name="fab_calendar_log">Записати образ</string>
     <string name="fab_shopping_add">Додати знахідку</string>
     <string name="fab_travel_plan">Спланувати подорож</string>
-    <string name="action_clear_selection">Очистити вибір</string>
-    <string name="sel_count">Вибрано: %1$d</string>
     <string name="sel_style">Стиль</string>
     <string name="sel_swap">Замінити</string>
     <string name="sel_move">Перемістити</string>

@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Report translation completeness for every values-<locale>/strings.xml,
-# measured against the default app/src/main/res/values/strings.xml.
+# measured against the default values/strings.xml — aggregated across every
+# module that owns string resources (:app and :core:designsystem after the
+# § 1 res-split).
 #
 # Usage:
 #   scripts/translation_status.sh            # table sorted by completeness (worst first)
@@ -13,51 +15,70 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-RES_DIR="$REPO_ROOT/app/src/main/res"
-DEFAULT_FILE="$RES_DIR/values/strings.xml"
+RES_DIRS=(
+    "$REPO_ROOT/app/src/main/res"
+    "$REPO_ROOT/core/designsystem/src/main/res"
+)
 
-if [ ! -f "$DEFAULT_FILE" ]; then
-    echo "error: $DEFAULT_FILE not found — run from repo root" >&2
-    exit 1
-fi
+for d in "${RES_DIRS[@]}"; do
+    if [ ! -f "$d/values/strings.xml" ]; then
+        echo "error: $d/values/strings.xml not found — run from repo root" >&2
+        exit 1
+    fi
+done
 
-extract_keys() {
-    grep -oE 'name="[^"]+"' "$1" | sort -u
+# Union of keys across the module res roots for one values dir (e.g. "values-de").
+keys_for_dir() {
+    local values_dir="$1"
+    local found=""
+    for d in "${RES_DIRS[@]}"; do
+        [ -f "$d/$values_dir/strings.xml" ] && found="$found $d/$values_dir/strings.xml"
+    done
+    [ -n "$found" ] || return 0
+    # shellcheck disable=SC2086
+    grep -hoE 'name="[^"]+"' $found | sort -u
 }
 
-base_keys() { extract_keys "$DEFAULT_FILE"; }
-base_count() { base_keys | wc -l | tr -d ' '; }
+base_count() { keys_for_dir values | wc -l | tr -d ' '; }
+
+# All values-* dirs present in any module res root.
+locale_dirs() {
+    for d in "${RES_DIRS[@]}"; do
+        for f in "$d"/values-*/strings.xml; do
+            [ -e "$f" ] && basename "$(dirname "$f")"
+        done
+    done | sort -u
+}
 
 print_one_locale_missing() {
     local loc="$1"
-    local file="$RES_DIR/values-$loc/strings.xml"
-    if [ ! -f "$file" ]; then
-        echo "error: $file not found" >&2
+    local present
+    present=$(keys_for_dir "values-$loc" | wc -l | tr -d ' ')
+    if [ "$present" -eq 0 ]; then
+        echo "error: no strings.xml for values-$loc in any module" >&2
         exit 1
     fi
     local base
     base=$(base_count)
-    local present
-    present=$(extract_keys "$file" | wc -l | tr -d ' ')
     echo "Locale: $loc"
     echo "Strings: $present / $base ($((present * 100 / base))%)"
     echo "Missing keys:"
-    comm -23 <(base_keys) <(extract_keys "$file") | sed 's/^name="/  /; s/"$//'
+    comm -23 <(keys_for_dir values) <(keys_for_dir "values-$loc") | sed 's/^name="/  /; s/"$//'
 }
 
 print_table() {
     local filter="${1:-all}"
     local base
     base=$(base_count)
-    printf "Default: %d strings (%s)\n\n" "$base" "$DEFAULT_FILE"
+    printf "Default: %d strings (%s)\n\n" "$base" "${RES_DIRS[*]}"
     printf "%-12s %6s  %5s  %8s\n" "locale" "count" "pct" "missing"
     printf -- '------------ ------  -----  --------\n'
     {
-        for f in "$RES_DIR"/values-*/strings.xml; do
+        locale_dirs | while read -r vd; do
             local loc
-            loc=$(basename "$(dirname "$f")" | sed 's/values-//')
+            loc=${vd#values-}
             local n
-            n=$(extract_keys "$f" | wc -l | tr -d ' ')
+            n=$(keys_for_dir "$vd" | wc -l | tr -d ' ')
             local pct=$((n * 100 / base))
             local missing=$((base - n))
             case "$filter" in
@@ -74,7 +95,7 @@ case "${1:-}" in
     --done)   print_table done ;;
     --todo)   print_table todo ;;
     -h|--help)
-        sed -n '2,11p' "$0" | sed 's/^# \{0,1\}//'
+        sed -n '2,13p' "$0" | sed 's/^# \{0,1\}//'
         ;;
     *)        print_one_locale_missing "$1" ;;
 esac

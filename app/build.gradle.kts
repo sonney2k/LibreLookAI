@@ -169,6 +169,7 @@ dependencies {
     implementation(project(":core:ai"))
     implementation(project(":core:model"))
     implementation(project(":core:common"))
+    implementation(project(":core:designsystem"))
     implementation(project(":core:database"))
     implementation(project(":core:ml"))
     implementation(project(":core:sync"))

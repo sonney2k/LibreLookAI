@@ -38,6 +38,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.core.content.FileProvider
 import com.librelookai.BuildConfig
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.billing.ManagedBilling
 import com.librelookai.gemini.ApiKeyStore
 import com.librelookai.util.FeatureFlags
@@ -113,7 +114,7 @@ fun FeedbackDialog(appState: String = "", onDismiss: () -> Unit) {
                             .padding(top = 8.dp),
                         horizontalArrangement = Arrangement.End,
                     ) {
-                        TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
+                        TextButton(onClick = onDismiss) { Text(stringResource(DsR.string.action_cancel)) }
                         TextButton(onClick = { sendFeedbackEmail(context, attach, appState); onDismiss() }) {
                             Text(stringResource(R.string.settings_send_feedback))
                         }

@@ -63,19 +63,16 @@
 
     <!-- Common actions -->
     <string name="action_ok">Tamam</string>
-    <string name="action_cancel">İptal</string>
     <string name="action_dismiss">Kapat</string>
     <string name="action_delete">Sil</string>
     <string name="action_save">Kaydet</string>
     <string name="action_edit">Düzenle</string>
     <string name="action_saving">Kaydediliyor…</string>
-    <string name="action_clear">Temizle</string>
     <string name="action_sort">Sırala</string>
     <string name="action_remove">Kaldır</string>
     <string name="cd_ai_suggestion">Yapay zeka önerisi</string>
     <string name="cd_refine">İyileştir</string>
     <string name="filter_location">Konum</string>
-    <string name="filter_all_locations">Tümü</string>
     <string name="wardrobe_processing_photos">%1$d fotoğraf işleniyor…</string>
     <string name="wardrobe_progress_uploading">Fotoğraf yükleniyor…</string>
     <string name="wardrobe_progress_uploading_batch">Fotoğraf yükleniyor: %1$d / %2$d…</string>
@@ -108,9 +105,6 @@
     <string name="settings_display_font_desc">Uygulama genelinde kullanılacak yazı tipini seçin.</string>
     <string name="font_default">Sistem varsayılanı</string>
     <string name="font_caveat">Caveat (el yazısı)</string>
-    <string name="wardrobe_filters">Filtreler</string>
-    <string name="wardrobe_filters_apply">Uygula (%1$d)</string>
-    <string name="wardrobe_filters_reset">Sıfırla</string>
     <string name="settings_tab_data">Veri</string>
     <string name="settings_tab_credits">Krediler</string>
     <string name="settings_language">Dil</string>
@@ -263,12 +257,6 @@
     <string name="wardrobe_delete_text">Seçili %d ögeyi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.</string>
     <string name="wardrobe_move_to">Şuraya taşı</string>
     <string name="wardrobe_move_to_title">%d ögeyi şuraya taşı</string>
-    <string name="wardrobe_sort">Sırala</string>
-    <string name="wardrobe_sort_newest">En yeni önce</string>
-    <string name="wardrobe_sort_oldest">En eski önce</string>
-    <string name="wardrobe_sort_most_worn">En çok giyilen</string>
-    <string name="wardrobe_sort_type">Tür</string>
-    <string name="wardrobe_sort_category">Kategori</string>
     <string name="wardrobe_tag_detect">Etiketleri algıla</string>
     <string name="wardrobe_tag_remove_bg">Arka planı kaldır</string>
     <string name="wardrobe_tag_re_remove_bg">Arka planı yeniden kaldır</string>
@@ -290,117 +278,12 @@
     <string name="action_continue">Devam et</string>
     <string name="tag_label">İsim</string>
     <string name="tag_label_placeholder">örn. Lacivert Kanvas Pantolon, Beyaz Oxford Gömlek</string>
-    <string name="tag_type">Tür</string>
-    <string name="tag_category">Kategori</string>
-    <string name="tag_uses">Kullanım Alanları</string>
-    <string name="tag_colors">Renkler</string>
-    <string name="tag_seasonality">Mevsimsellik</string>
-    <string name="tag_aesthetic">Estetik</string>
-    <string name="tag_fit">Kalıp</string>
-    <string name="tag_material">Malzeme</string>
-    <string name="tag_pattern">Desen</string>
     <string name="tag_add_custom">Özel ekle…</string>
     <string name="tag_type_placeholder">örn. Tişört, Kanvas pantolon, Şişme ceket</string>
     <string name="tag_category_placeholder">üst giyim, alt giyim, dış giyim, ayakkabı, aksesuar, elbise, takım elbise</string>
 
     <!-- Tag value translations (stored in English; displayed in UI language) -->
-    <string name="tag_val_casual">Günlük</string>
-    <string name="tag_val_formal">Resmi</string>
-    <string name="tag_val_business">İş</string>
-    <string name="tag_val_sport">Spor</string>
-    <string name="tag_val_outdoor">Dış Mekan</string>
-    <string name="tag_val_beach">Plaj</string>
-    <string name="tag_val_evening">Gece</string>
-    <string name="tag_val_spring">İlkbahar</string>
-    <string name="tag_val_summer">Yaz</string>
-    <string name="tag_val_fall">Sonbahar</string>
-    <string name="tag_val_winter">Kış</string>
-    <string name="tag_val_minimalist">Minimalist</string>
-    <string name="tag_val_streetwear">Sokak Stili</string>
-    <string name="tag_val_preppy">Preppy</string>
-    <string name="tag_val_bohemian">Bohem</string>
-    <string name="tag_val_classic">Klasik</string>
-    <string name="tag_val_sporty">Sportif</string>
-    <string name="tag_val_romantic">Romantik</string>
-    <string name="tag_val_edgy">Aykırı</string>
-    <string name="tag_val_business_casual">İş-Günlük</string>
-    <string name="tag_val_luxury">Lüks</string>
-    <string name="tag_val_slim">Dar</string>
-    <string name="tag_val_regular">Normal</string>
-    <string name="tag_val_relaxed">Rahat</string>
-    <string name="tag_val_oversized">Büyük Beden</string>
-    <string name="tag_val_tailored">Terzi Dikimi</string>
-    <string name="tag_val_cotton">Pamuk</string>
-    <string name="tag_val_denim">Kot</string>
-    <string name="tag_val_wool">Yün</string>
-    <string name="tag_val_leather">Deri</string>
-    <string name="tag_val_polyester">Polyester</string>
-    <string name="tag_val_linen">Keten</string>
-    <string name="tag_val_silk">İpek</string>
-    <string name="tag_val_knit">Örme</string>
-    <string name="tag_val_solid">Düz</string>
-    <string name="tag_val_stripes">Çizgili</string>
-    <string name="tag_val_plaid">Ekose</string>
-    <string name="tag_val_floral">Çiçekli</string>
-    <string name="tag_val_geometric">Geometrik</string>
-    <string name="tag_val_animal_print">Hayvan Desenli</string>
-    <string name="tag_val_graphic">Grafik</string>
-    <string name="tag_val_camo">Kamuflaj</string>
-    <string name="tag_val_abstract">Soyut</string>
-    <string name="tag_val_tops">Üst Giyim</string>
-    <string name="tag_val_bottoms">Alt Giyim</string>
-    <string name="tag_val_outerwear">Dış Giyim</string>
-    <string name="tag_val_footwear">Ayakkabı</string>
-    <string name="tag_val_accessories">Aksesuar</string>
-    <string name="tag_val_dress">Elbise</string>
-    <string name="tag_val_suit">Takım Elbise</string>
-    <string name="tag_val_jumpsuit">Tulum</string>
     <!-- Colors -->
-    <string name="tag_val_black">Siyah</string>
-    <string name="tag_val_white">Beyaz</string>
-    <string name="tag_val_grey">Gri</string>
-    <string name="tag_val_gray">Gri</string>
-    <string name="tag_val_charcoal">Kömür Grisi</string>
-    <string name="tag_val_brown">Kahverengi</string>
-    <string name="tag_val_beige">Bej</string>
-    <string name="tag_val_cream">Krem</string>
-    <string name="tag_val_ivory">Fildişi</string>
-    <string name="tag_val_tan">Taba</string>
-    <string name="tag_val_camel">Deve Tüyü</string>
-    <string name="tag_val_red">Kırmızı</string>
-    <string name="tag_val_burgundy">Bordo</string>
-    <string name="tag_val_wine">Şarap Rengi</string>
-    <string name="tag_val_coral">Mercan</string>
-    <string name="tag_val_pink">Pembe</string>
-    <string name="tag_val_blush">Toz Pembe</string>
-    <string name="tag_val_magenta">Macenta</string>
-    <string name="tag_val_fuchsia">Fuşya</string>
-    <string name="tag_val_orange">Turuncu</string>
-    <string name="tag_val_rust">Pas Rengi</string>
-    <string name="tag_val_yellow">Sarı</string>
-    <string name="tag_val_mustard">Hardal</string>
-    <string name="tag_val_gold">Altın</string>
-    <string name="tag_val_green">Yeşil</string>
-    <string name="tag_val_olive">Zeytin Yeşili</string>
-    <string name="tag_val_khaki">Haki</string>
-    <string name="tag_val_sage">Adaçayı Yeşili</string>
-    <string name="tag_val_mint">Nane Yeşili</string>
-    <string name="tag_val_emerald">Zümrüt Yeşili</string>
-    <string name="tag_val_forest">Orman Yeşili</string>
-    <string name="tag_val_teal">Camgöbeği</string>
-    <string name="tag_val_blue">Mavi</string>
-    <string name="tag_val_navy">Lacivert</string>
-    <string name="tag_val_cobalt">Kobalt Mavi</string>
-    <string name="tag_val_sky">Gök Mavisi</string>
-    <string name="tag_val_denim_blue">Kot Mavisi</string>
-    <string name="tag_val_purple">Mor</string>
-    <string name="tag_val_lavender">Lavanta</string>
-    <string name="tag_val_violet">Menekşe</string>
-    <string name="tag_val_lilac">Leylak</string>
-    <string name="tag_val_silver">Gümüş</string>
-    <string name="tag_val_multicolor">Çok Renkli</string>
-    <string name="tag_val_printed">Baskılı</string>
-
     <!-- Outfits -->
     <string name="outfits_empty">Henüz kombin yok</string>
     <string name="outfits_empty_hint">Gardırobunuzdan bir kombin oluşturmak için +\'ya dokunun</string>
@@ -746,9 +629,6 @@
     <string name="wardrobe_imported_on">%1$s tarihinde içe aktarıldı</string>
     <string name="wardrobe_view_original">Orijinali görüntüle</string>
     <string name="wardrobe_view_cutout">Kesiti görüntüle</string>
-    <string name="viewer_hide_tags">Etiketleri gizle</string>
-    <string name="viewer_show_tags">Etiketleri göster</string>
-
     <!-- AI tab -->
     <string name="settings_tab_ai">Yapay Zeka</string>
     <string name="ai_considerations_title">Varsayılan hususlar</string>
@@ -777,7 +657,6 @@
     <string name="shop_matching">Gardırobunuzla eşleştiriliyor…</string>
     <string name="shop_matches_title">En iyi eşleşmeler (%1$d)</string>
     <string name="shop_no_matches">Henüz eşleşme yok. Daha yakından, daha iyi aydınlatılmış bir fotoğraf deneyin.</string>
-    <string name="shop_match_score">Benzerlik: %%%1$d</string>
     <string name="shop_indexing">Gardırop endeksleniyor… %1$d / %2$d</string>
     <string name="shop_index_size">%1$d öge endekslendi</string>
     <string name="shop_model_missing">Cihaz içi model eksik. efficientnet_lite0.tflite dosyasını app/src/main/assets/embedder/ altına ve magic_touch.tflite dosyasını app/src/main/assets/segmenter/ altına yerleştirin.</string>
@@ -808,8 +687,6 @@
     <string name="settings_debug_similarity_desc">Bir Benzerlik Bulucu eşleşmesini açarken, varsayılan yakınlaştırılabilir resim yerine kanal başına dökümü (kesitli küçük resimler, yerleştirme/histogram kosinüsü, ton histogramları) gösterin.</string>
 
     <!-- Match preview dialog -->
-    <string name="shop_show_in_wardrobe">Gardıropta göster</string>
-    <string name="shop_add_to_shopping_list">Alışveriş listesine ekle</string>
     <string name="dedupe_dialog_title">Olası kopya</string>
     <string name="dedupe_dialog_desc">Gardırobunuzda bu fotoğrafa çok benzeyen %1$d öge bulduk.</string>
     <string name="dedupe_dialog_import_anyway">Yine de içe aktar</string>
@@ -826,7 +703,6 @@
     <string name="wardrobe_search">Gardıropta ara</string>
     <string name="wardrobe_search_title">Gardıropta ara</string>
     <string name="wardrobe_search_hint">Aradığınızı yazın veya fotoğraf ile arayın.</string>
-    <string name="wardrobe_search_placeholder">örn. kırmızı pamuklu gömlek</string>
     <string name="wardrobe_search_use_photo">Bunun yerine fotoğraf ile ara</string>
     <string name="wardrobe_search_text_results">Arama sonuçları</string>
     <string name="action_search">Ara</string>
@@ -955,22 +831,6 @@
     <string name="settings_similarity_preview_row">AI benzerlik önizlemesini göster</string>
     <string name="settings_similarity_preview_sub">Fotoğrafla bul özelliği için tanılama.</string>
     <string name="settings_send_feedback">Geri bildirim gönder</string>
-    <string name="settings_retag_title">%1$d kıyafetin tümü yeniden etiketlensin mi?</string>
-    <string name="settings_retag_body">AI her parçaya yeniden bakacak ve adını, rengini veya kategorisini değiştirebilir. Elle yeniden adlandırdığın her şey değiştirilir.</string>
-    <string name="settings_retag_confirm">Tüm kıyafetleri yeniden etiketle</string>
-    <string name="settings_rebg_confirm_title">%1$d parçanın arka planı yeniden kaldırılsın mı?</string>
-    <string name="settings_rebg_body">AI her parçayı orijinal fotoğrafından yeniden kesecek. Elle düzelttiğin kesimler değiştirilir.</string>
-    <string name="settings_rebg_dialog_confirm">Arka planları yeniden kaldır</string>
-    <string name="settings_cutout_title">%1$d parçanın arka planı düzeltilsin mi?</string>
-    <string name="settings_cutout_body">Parçalarını bir köşeyi kaçıran kesimler için tarar ve gerekenleri yeniden keseriz.</string>
-    <string name="settings_cutout_confirm">Tara &amp; düzelt</string>
-    <string name="settings_confirm_takes_about">Yaklaşık sürer</string>
-    <string name="settings_confirm_minutes">~%1$d dakika</string>
-    <string name="settings_confirm_credits_used">Kullanılan kredi</string>
-    <string name="settings_confirm_credits_value">%1$d / %2$d kaldı</string>
-    <string name="settings_confirm_short_format">%1$d kredin eksik. Önce yükle.</string>
-    <string name="settings_confirm_buy_and_continue">Kredi al &amp; devam et</string>
-
     <!-- Expert: item tag dimensions for outfit AI -->
     <string name="composer_section_tags">Değerlendirilecek ürün detayları</string>
     <string name="composer_tags_hint">Yapay zekânın hangi giysi özelliklerini dikkate alacağını seç. Daha az detay = daha hızlı, daha ucuz ve daha odaklı öneriler.</string>
@@ -1009,8 +869,6 @@
     <string name="ai_unavailable">Yapay zeka özellikleri şu anda kullanılamıyor. Lütfen oturum açtığınızdan emin olun ve tekrar deneyin.</string>
 
     <!-- Needs-tagging badge -->
-    <string name="wardrobe_needs_tagging">Etiket gerekli</string>
-
     <!-- BYOK API-key onboarding step -->
     <string name="onboarding_apikey_title">Gemini API anahtarınızı ekleyin</string>
     <string name="onboarding_apikey_body">LibreLookAI, kendi API anahtarınızla Google Gemini üzerinde çalışır. Anahtar yalnızca bu cihazda saklanır ve doğrudan Google ile kullanılır — hiçbir şey sunucularımızdan geçmez.</string>
@@ -1108,8 +966,6 @@
     <string name="restore_items_progress">%2$d öğeden %1$d tanesi</string>
 
     <!-- Unify close affordance (action_close) -->
-    <string name="action_close">Kapat</string>
-
     <!-- Drive migration: auto-detect import (items 2/3) -->
     <string name="onboarding_drive_checking">İçe aktarmak için mevcut bir gardırop aranıyor…</string>
     <string name="onboarding_drive_importing">Mevcut gardırobunuz içe aktarılıyor… %1$d / %2$d</string>
@@ -1131,9 +987,6 @@
     <!-- Convert images to WebP -->
     <string name="settings_convert_webp_row">Görüntüleri WebP\'ye dönüştür</string>
     <string name="settings_convert_webp_row_sub">Drive alanından tasarruf etmek için eski JPG/PNG fotoğrafları küçült.</string>
-    <string name="settings_convert_title">%1$d görüntü WebP\'ye dönüştürülsün mü?</string>
-    <string name="settings_convert_body">Eski JPG/PNG fotoğraflarını daha küçük WebP dosyaları olarak yeniden kaydedip kullanıldıkları her yerde — kombinler, deneme ve seyahatler — güncelleriz. Yapay zekâ veya kredi gerekmez.</string>
-    <string name="settings_convert_confirm">WebP\'ye dönüştür</string>
     <string name="settings_converting">Dönüştürülüyor %1$d / %2$d…</string>
 
     <!-- Wardrobe maintenance overflow menu -->
@@ -1223,8 +1076,6 @@
     <string name="fab_calendar_log">Kombini kaydet</string>
     <string name="fab_shopping_add">Bulgu ekle</string>
     <string name="fab_travel_plan">Gezi planla</string>
-    <string name="action_clear_selection">Seçimi temizle</string>
-    <string name="sel_count">%1$d seçildi</string>
     <string name="sel_style">Stil</string>
     <string name="sel_swap">Değiştir</string>
     <string name="sel_move">Taşı</string>

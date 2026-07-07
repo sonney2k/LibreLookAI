@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.data.model.Location
 
 /**
@@ -91,7 +92,7 @@ fun ClosetEditDialog(
                             androidx.compose.foundation.layout.Spacer(Modifier)
                         }
                         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                            TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
+                            TextButton(onClick = onDismiss) { Text(stringResource(DsR.string.action_cancel)) }
                             TextButton(
                                 enabled = name.isNotBlank(),
                                 onClick = { onSave(name.trim(), city.trim()); onDismiss() },

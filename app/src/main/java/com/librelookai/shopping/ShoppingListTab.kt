@@ -48,6 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.data.model.Location
 import com.librelookai.util.Analytics
 import com.librelookai.util.LocalIsOffline
@@ -324,7 +325,7 @@ internal fun ShoppingListTab(
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = false }) {
-                    Text(stringResource(R.string.action_cancel))
+                    Text(stringResource(DsR.string.action_cancel))
                 }
             },
         )
@@ -365,7 +366,7 @@ internal fun ShopUrlImportDialog(
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
+            TextButton(onClick = onDismiss) { Text(stringResource(DsR.string.action_cancel)) }
         },
     )
 }
@@ -410,7 +411,7 @@ private fun MoveToClosetDialog(
             ) { Text(stringResource(R.string.action_continue)) }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
+            TextButton(onClick = onDismiss) { Text(stringResource(DsR.string.action_cancel)) }
         },
     )
 }

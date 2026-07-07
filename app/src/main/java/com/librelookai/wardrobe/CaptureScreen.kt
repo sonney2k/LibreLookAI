@@ -65,6 +65,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.data.model.Location
 import com.librelookai.util.Analytics
 import java.io.File
@@ -242,7 +243,7 @@ fun CaptureScreen(
             ) {
                 Icon(
                     Icons.Default.Close,
-                    contentDescription = androidx.compose.ui.res.stringResource(R.string.action_close),
+                    contentDescription = androidx.compose.ui.res.stringResource(DsR.string.action_close),
                     tint = Color.White,
                 )
             }

@@ -46,6 +46,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.DialogWindowProvider
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.data.model.Location
 import com.librelookai.util.AiProcessingOverlay
 import com.librelookai.util.Analytics
@@ -179,7 +180,7 @@ internal fun AddItemSheet(
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             IconButton(onClick = onDismiss) {
-                                Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_close))
+                                Icon(Icons.Default.Close, contentDescription = stringResource(DsR.string.action_close))
                             }
                             Text(
                                 stringResource(R.string.composer_add_items),

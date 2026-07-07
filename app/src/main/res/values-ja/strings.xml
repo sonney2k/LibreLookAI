@@ -63,19 +63,16 @@
 
     <!-- 共通アクション -->
     <string name="action_ok">OK</string>
-    <string name="action_cancel">キャンセル</string>
     <string name="action_dismiss">閉じる</string>
     <string name="action_delete">削除</string>
     <string name="action_save">保存</string>
     <string name="action_edit">編集</string>
     <string name="action_saving">保存中…</string>
-    <string name="action_clear">クリア</string>
     <string name="action_sort">並び替え</string>
     <string name="action_remove">削除</string>
     <string name="cd_ai_suggestion">AIの提案</string>
     <string name="cd_refine">調整</string>
     <string name="filter_location">場所</string>
-    <string name="filter_all_locations">すべて</string>
     <string name="wardrobe_processing_photos">%1$d 枚の写真を処理中…</string>
     <string name="wardrobe_progress_uploading">写真をアップロード中…</string>
     <string name="wardrobe_progress_uploading_batch">写真 %1$d / %2$d をアップロード中…</string>
@@ -108,9 +105,6 @@
     <string name="settings_display_font_desc">アプリで使用するフォントを選択します。</string>
     <string name="font_default">システムデフォルト</string>
     <string name="font_caveat">Caveat(手書き)</string>
-    <string name="wardrobe_filters">フィルター</string>
-    <string name="wardrobe_filters_apply">適用 (%1$d)</string>
-    <string name="wardrobe_filters_reset">リセット</string>
     <string name="settings_tab_data">データ</string>
     <string name="settings_tab_credits">クレジット</string>
     <string name="settings_language">言語</string>
@@ -263,12 +257,6 @@
     <string name="wardrobe_delete_text">選択した %d 件のアイテムを削除しますか? この操作は取り消せません。</string>
     <string name="wardrobe_move_to">移動先</string>
     <string name="wardrobe_move_to_title">%d 件のアイテムを移動</string>
-    <string name="wardrobe_sort">並び替え</string>
-    <string name="wardrobe_sort_newest">新しい順</string>
-    <string name="wardrobe_sort_oldest">古い順</string>
-    <string name="wardrobe_sort_most_worn">着用回数順</string>
-    <string name="wardrobe_sort_type">タイプ</string>
-    <string name="wardrobe_sort_category">カテゴリー</string>
     <string name="wardrobe_tag_detect">タグを検出</string>
     <string name="wardrobe_tag_remove_bg">背景を削除</string>
     <string name="wardrobe_tag_re_remove_bg">背景を再削除</string>
@@ -290,117 +278,12 @@
     <string name="action_continue">続ける</string>
     <string name="tag_label">名前</string>
     <string name="tag_label_placeholder">例: ネイビーチノパン、白オックスフォードシャツ</string>
-    <string name="tag_type">タイプ</string>
-    <string name="tag_category">カテゴリー</string>
-    <string name="tag_uses">用途</string>
-    <string name="tag_colors">色</string>
-    <string name="tag_seasonality">季節</string>
-    <string name="tag_aesthetic">テイスト</string>
-    <string name="tag_fit">フィット</string>
-    <string name="tag_material">素材</string>
-    <string name="tag_pattern">柄</string>
     <string name="tag_add_custom">カスタム追加…</string>
     <string name="tag_type_placeholder">例: Tシャツ、チノパン、ダウンジャケット</string>
     <string name="tag_category_placeholder">トップス、ボトムス、アウター、シューズ、アクセサリー、ドレス、スーツ</string>
 
     <!-- タグ値の翻訳(英語で保存; UI言語で表示) -->
-    <string name="tag_val_casual">カジュアル</string>
-    <string name="tag_val_formal">フォーマル</string>
-    <string name="tag_val_business">ビジネス</string>
-    <string name="tag_val_sport">スポーツ</string>
-    <string name="tag_val_outdoor">アウトドア</string>
-    <string name="tag_val_beach">ビーチ</string>
-    <string name="tag_val_evening">イブニング</string>
-    <string name="tag_val_spring">春</string>
-    <string name="tag_val_summer">夏</string>
-    <string name="tag_val_fall">秋</string>
-    <string name="tag_val_winter">冬</string>
-    <string name="tag_val_minimalist">ミニマリスト</string>
-    <string name="tag_val_streetwear">ストリート</string>
-    <string name="tag_val_preppy">プレッピー</string>
-    <string name="tag_val_bohemian">ボヘミアン</string>
-    <string name="tag_val_classic">クラシック</string>
-    <string name="tag_val_sporty">スポーティ</string>
-    <string name="tag_val_romantic">ロマンティック</string>
-    <string name="tag_val_edgy">エッジー</string>
-    <string name="tag_val_business_casual">ビジネスカジュアル</string>
-    <string name="tag_val_luxury">ラグジュアリー</string>
-    <string name="tag_val_slim">スリム</string>
-    <string name="tag_val_regular">レギュラー</string>
-    <string name="tag_val_relaxed">リラックス</string>
-    <string name="tag_val_oversized">オーバーサイズ</string>
-    <string name="tag_val_tailored">テーラード</string>
-    <string name="tag_val_cotton">コットン</string>
-    <string name="tag_val_denim">デニム</string>
-    <string name="tag_val_wool">ウール</string>
-    <string name="tag_val_leather">レザー</string>
-    <string name="tag_val_polyester">ポリエステル</string>
-    <string name="tag_val_linen">リネン</string>
-    <string name="tag_val_silk">シルク</string>
-    <string name="tag_val_knit">ニット</string>
-    <string name="tag_val_solid">無地</string>
-    <string name="tag_val_stripes">ストライプ</string>
-    <string name="tag_val_plaid">チェック</string>
-    <string name="tag_val_floral">花柄</string>
-    <string name="tag_val_geometric">幾何学</string>
-    <string name="tag_val_animal_print">アニマル柄</string>
-    <string name="tag_val_graphic">グラフィック</string>
-    <string name="tag_val_camo">カモフラ</string>
-    <string name="tag_val_abstract">アブストラクト</string>
-    <string name="tag_val_tops">トップス</string>
-    <string name="tag_val_bottoms">ボトムス</string>
-    <string name="tag_val_outerwear">アウター</string>
-    <string name="tag_val_footwear">シューズ</string>
-    <string name="tag_val_accessories">アクセサリー</string>
-    <string name="tag_val_dress">ドレス</string>
-    <string name="tag_val_suit">スーツ</string>
-    <string name="tag_val_jumpsuit">ジャンプスーツ</string>
     <!-- 色 -->
-    <string name="tag_val_black">ブラック</string>
-    <string name="tag_val_white">ホワイト</string>
-    <string name="tag_val_grey">グレー</string>
-    <string name="tag_val_gray">グレー</string>
-    <string name="tag_val_charcoal">チャコール</string>
-    <string name="tag_val_brown">ブラウン</string>
-    <string name="tag_val_beige">ベージュ</string>
-    <string name="tag_val_cream">クリーム</string>
-    <string name="tag_val_ivory">アイボリー</string>
-    <string name="tag_val_tan">タン</string>
-    <string name="tag_val_camel">キャメル</string>
-    <string name="tag_val_red">レッド</string>
-    <string name="tag_val_burgundy">バーガンディ</string>
-    <string name="tag_val_wine">ワイン</string>
-    <string name="tag_val_coral">コーラル</string>
-    <string name="tag_val_pink">ピンク</string>
-    <string name="tag_val_blush">ブラッシュ</string>
-    <string name="tag_val_magenta">マゼンタ</string>
-    <string name="tag_val_fuchsia">フューシャ</string>
-    <string name="tag_val_orange">オレンジ</string>
-    <string name="tag_val_rust">ラスト</string>
-    <string name="tag_val_yellow">イエロー</string>
-    <string name="tag_val_mustard">マスタード</string>
-    <string name="tag_val_gold">ゴールド</string>
-    <string name="tag_val_green">グリーン</string>
-    <string name="tag_val_olive">オリーブ</string>
-    <string name="tag_val_khaki">カーキ</string>
-    <string name="tag_val_sage">セージ</string>
-    <string name="tag_val_mint">ミント</string>
-    <string name="tag_val_emerald">エメラルド</string>
-    <string name="tag_val_forest">フォレストグリーン</string>
-    <string name="tag_val_teal">ティール</string>
-    <string name="tag_val_blue">ブルー</string>
-    <string name="tag_val_navy">ネイビー</string>
-    <string name="tag_val_cobalt">コバルト</string>
-    <string name="tag_val_sky">スカイブルー</string>
-    <string name="tag_val_denim_blue">デニムブルー</string>
-    <string name="tag_val_purple">パープル</string>
-    <string name="tag_val_lavender">ラベンダー</string>
-    <string name="tag_val_violet">バイオレット</string>
-    <string name="tag_val_lilac">ライラック</string>
-    <string name="tag_val_silver">シルバー</string>
-    <string name="tag_val_multicolor">マルチカラー</string>
-    <string name="tag_val_printed">プリント</string>
-
     <!-- コーデ -->
     <string name="outfits_empty">まだコーデがありません</string>
     <string name="outfits_empty_hint">+ をタップしてクローゼットからコーデを作成</string>
@@ -746,9 +629,6 @@
     <string name="wardrobe_imported_on">%1$s にインポート</string>
     <string name="wardrobe_view_original">オリジナルを表示</string>
     <string name="wardrobe_view_cutout">切り抜きを表示</string>
-    <string name="viewer_hide_tags">タグを隠す</string>
-    <string name="viewer_show_tags">タグを表示</string>
-
     <!-- AI タブ -->
     <string name="settings_tab_ai">AI</string>
     <string name="ai_considerations_title">デフォルトの考慮事項</string>
@@ -777,7 +657,6 @@
     <string name="shop_matching">クローゼットと照合中…</string>
     <string name="shop_matches_title">トップマッチ (%1$d)</string>
     <string name="shop_no_matches">まだマッチがありません。より近く、明るい写真を試してください。</string>
-    <string name="shop_match_score">類似度: %1$d%%</string>
     <string name="shop_indexing">クローゼットをインデックス中… %1$d / %2$d</string>
     <string name="shop_index_size">%1$d 件のアイテムをインデックス済み</string>
     <string name="shop_model_missing">端末のモデルが見つかりません。efficientnet_lite0.tflite を app/src/main/assets/embedder/ に、magic_touch.tflite を app/src/main/assets/segmenter/ に配置してください。</string>
@@ -808,8 +687,6 @@
     <string name="settings_debug_similarity_desc">類似性検索の結果を開くときに、デフォルトのズーム画像の代わりにチャンネルごとの内訳(セグメンテーションサムネイル、埋め込み/ヒストグラムのコサイン、色相ヒストグラム)を表示します。</string>
 
     <!-- マッチプレビューダイアログ -->
-    <string name="shop_show_in_wardrobe">クローゼットで表示</string>
-    <string name="shop_add_to_shopping_list">ショッピングリストに追加</string>
     <string name="dedupe_dialog_title">重複の可能性</string>
     <string name="dedupe_dialog_desc">この写真と非常によく似たアイテムがクローゼットに %1$d 件見つかりました。</string>
     <string name="dedupe_dialog_import_anyway">それでもインポート</string>
@@ -826,7 +703,6 @@
     <string name="wardrobe_search">クローゼットを検索</string>
     <string name="wardrobe_search_title">クローゼットを検索</string>
     <string name="wardrobe_search_hint">探しているものを入力するか、写真で検索してください。</string>
-    <string name="wardrobe_search_placeholder">例: 赤いコットンシャツ</string>
     <string name="wardrobe_search_use_photo">代わりに写真で検索</string>
     <string name="wardrobe_search_text_results">検索結果</string>
     <string name="action_search">検索</string>
@@ -955,22 +831,6 @@
     <string name="settings_similarity_preview_row">AI類似度プレビューを表示</string>
     <string name="settings_similarity_preview_sub">写真で探す機能の診断。</string>
     <string name="settings_send_feedback">フィードバックを送信</string>
-    <string name="settings_retag_title">%1$d点の服をすべて再タグ付けしますか？</string>
-    <string name="settings_retag_body">AIは各アイテムを見直し、名前・色・カテゴリを変更する場合があります。手動で変更した名前は置き換えられます。</string>
-    <string name="settings_retag_confirm">すべての服を再タグ付け</string>
-    <string name="settings_rebg_confirm_title">%1$d点の背景を再削除しますか？</string>
-    <string name="settings_rebg_body">AIは各アイテムを元の写真から切り抜き直します。手動で修正した切り抜きは置き換えられます。</string>
-    <string name="settings_rebg_dialog_confirm">背景を再削除</string>
-    <string name="settings_cutout_title">%1$d点の背景を修正しますか？</string>
-    <string name="settings_cutout_body">角を取り逃した切り抜きをアイテムからスキャンし、必要なものを切り抜き直します。</string>
-    <string name="settings_cutout_confirm">スキャン &amp; 修正</string>
-    <string name="settings_confirm_takes_about">所要時間の目安</string>
-    <string name="settings_confirm_minutes">約%1$d分</string>
-    <string name="settings_confirm_credits_used">使用クレジット</string>
-    <string name="settings_confirm_credits_value">%1$d / 残り%2$d</string>
-    <string name="settings_confirm_short_format">%1$dクレジット不足です。まずチャージしてください。</string>
-    <string name="settings_confirm_buy_and_continue">クレジットを購入 &amp; 続行</string>
-
     <!-- Expert: item tag dimensions for outfit AI -->
     <string name="composer_section_tags">考慮するアイテムの詳細</string>
     <string name="composer_tags_hint">AIが考慮する服の属性を選びます。詳細が少ないほど、速く、安く、的を絞った提案になります。</string>
@@ -1009,8 +869,6 @@
     <string name="ai_unavailable">AI機能は現在利用できません。サインインしているか確認して、もう一度お試しください。</string>
 
     <!-- Needs-tagging badge -->
-    <string name="wardrobe_needs_tagging">タグ付けが必要</string>
-
     <!-- BYOK API-key onboarding step -->
     <string name="onboarding_apikey_title">Gemini API キーを追加</string>
     <string name="onboarding_apikey_body">LibreLookAI はあなた自身の API キーで Google Gemini 上で動作します。キーはこの端末にのみ保存され、Google と直接やり取りします。当社のサーバーを経由することはありません。</string>
@@ -1108,8 +966,6 @@
     <string name="restore_items_progress">%2$d 件中 %1$d 件</string>
 
     <!-- Unify close affordance (action_close) -->
-    <string name="action_close">閉じる</string>
-
     <!-- Drive migration: auto-detect import (items 2/3) -->
     <string name="onboarding_drive_checking">インポートできる既存のワードローブを確認しています…</string>
     <string name="onboarding_drive_importing">既存のワードローブをインポートしています… %1$d / %2$d</string>
@@ -1131,9 +987,6 @@
     <!-- Convert images to WebP -->
     <string name="settings_convert_webp_row">画像を WebP に変換</string>
     <string name="settings_convert_webp_row_sub">古い JPG/PNG 写真を縮小して Drive の容量を節約します。</string>
-    <string name="settings_convert_title">%1$d 枚の画像を WebP に変換しますか？</string>
-    <string name="settings_convert_body">古い JPG/PNG 写真をより小さい WebP ファイルとして保存し直し、使われている場所すべて（コーディネート、試着、旅行）で更新します。AI もクレジットも不要です。</string>
-    <string name="settings_convert_confirm">WebP に変換</string>
     <string name="settings_converting">変換中 %1$d/%2$d…</string>
 
     <!-- Wardrobe maintenance overflow menu -->
@@ -1223,8 +1076,6 @@
     <string name="fab_calendar_log">コーデを記録</string>
     <string name="fab_shopping_add">見つけた物を追加</string>
     <string name="fab_travel_plan">旅行を計画</string>
-    <string name="action_clear_selection">選択を解除</string>
-    <string name="sel_count">%1$d件選択中</string>
     <string name="sel_style">コーデ作成</string>
     <string name="sel_swap">入れ替え</string>
     <string name="sel_move">移動</string>

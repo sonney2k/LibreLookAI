@@ -47,6 +47,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -269,7 +270,7 @@ internal fun DeleteTripDialog(
                         Text(stringResource(R.string.trip_delete_keep_outfits))
                     }
                     TextButton(onClick = onDismiss) {
-                        Text(stringResource(R.string.action_cancel))
+                        Text(stringResource(DsR.string.action_cancel))
                     }
                 }
             }

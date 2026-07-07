@@ -63,19 +63,16 @@
 
     <!-- Common actions -->
     <string name="action_ok">OK</string>
-    <string name="action_cancel">Anuluj</string>
     <string name="action_dismiss">Odrzuć</string>
     <string name="action_delete">Usuń</string>
     <string name="action_save">Zapisz</string>
     <string name="action_edit">Edytuj</string>
     <string name="action_saving">Zapisywanie…</string>
-    <string name="action_clear">Wyczyść</string>
     <string name="action_sort">Sortuj</string>
     <string name="action_remove">Usuń</string>
     <string name="cd_ai_suggestion">Sugestia AI</string>
     <string name="cd_refine">Dopracuj</string>
     <string name="filter_location">Lokalizacja</string>
-    <string name="filter_all_locations">Wszystkie</string>
     <string name="wardrobe_processing_photos">Przetwarzanie %1$d zdjęć…</string>
     <string name="wardrobe_progress_uploading">Przesyłanie zdjęcia…</string>
     <string name="wardrobe_progress_uploading_batch">Przesyłanie zdjęcia %1$d z %2$d…</string>
@@ -108,9 +105,6 @@
     <string name="settings_display_font_desc">Wybierz krój pisma używany w całej aplikacji.</string>
     <string name="font_default">Systemowa domyślna</string>
     <string name="font_caveat">Caveat (odręczna)</string>
-    <string name="wardrobe_filters">Filtry</string>
-    <string name="wardrobe_filters_apply">Zastosuj (%1$d)</string>
-    <string name="wardrobe_filters_reset">Resetuj</string>
     <string name="settings_tab_data">Dane</string>
     <string name="settings_tab_credits">Kredyty</string>
     <string name="settings_language">Język</string>
@@ -263,12 +257,6 @@
     <string name="wardrobe_delete_text">Czy na pewno usunąć %d wybranych elementów? Tej operacji nie można cofnąć.</string>
     <string name="wardrobe_move_to">Przenieś do</string>
     <string name="wardrobe_move_to_title">Przenieś %d elementów do</string>
-    <string name="wardrobe_sort">Sortuj</string>
-    <string name="wardrobe_sort_newest">Najnowsze najpierw</string>
-    <string name="wardrobe_sort_oldest">Najstarsze najpierw</string>
-    <string name="wardrobe_sort_most_worn">Najczęściej noszone</string>
-    <string name="wardrobe_sort_type">Typ</string>
-    <string name="wardrobe_sort_category">Kategoria</string>
     <string name="wardrobe_tag_detect">Wykryj tagi</string>
     <string name="wardrobe_tag_remove_bg">Usuń tło</string>
     <string name="wardrobe_tag_re_remove_bg">Usuń tło ponownie</string>
@@ -290,117 +278,12 @@
     <string name="action_continue">Dalej</string>
     <string name="tag_label">Nazwa</string>
     <string name="tag_label_placeholder">np. Granatowe chinosy, Biała koszula oxford</string>
-    <string name="tag_type">Typ</string>
-    <string name="tag_category">Kategoria</string>
-    <string name="tag_uses">Zastosowanie</string>
-    <string name="tag_colors">Kolory</string>
-    <string name="tag_seasonality">Sezonowość</string>
-    <string name="tag_aesthetic">Estetyka</string>
-    <string name="tag_fit">Krój</string>
-    <string name="tag_material">Materiał</string>
-    <string name="tag_pattern">Wzór</string>
     <string name="tag_add_custom">Dodaj własny…</string>
     <string name="tag_type_placeholder">np. T-shirt, Chinosy, Puchowa kurtka</string>
     <string name="tag_category_placeholder">tops, bottoms, outerwear, footwear, accessories, dress, suit</string>
 
     <!-- Tag value translations (stored in English; displayed in UI language) -->
-    <string name="tag_val_casual">Casual</string>
-    <string name="tag_val_formal">Formalny</string>
-    <string name="tag_val_business">Biznesowy</string>
-    <string name="tag_val_sport">Sportowy</string>
-    <string name="tag_val_outdoor">Outdoor</string>
-    <string name="tag_val_beach">Plażowy</string>
-    <string name="tag_val_evening">Wieczorowy</string>
-    <string name="tag_val_spring">Wiosna</string>
-    <string name="tag_val_summer">Lato</string>
-    <string name="tag_val_fall">Jesień</string>
-    <string name="tag_val_winter">Zima</string>
-    <string name="tag_val_minimalist">Minimalistyczny</string>
-    <string name="tag_val_streetwear">Streetwear</string>
-    <string name="tag_val_preppy">Preppy</string>
-    <string name="tag_val_bohemian">Bohema</string>
-    <string name="tag_val_classic">Klasyczny</string>
-    <string name="tag_val_sporty">Sportowy</string>
-    <string name="tag_val_romantic">Romantyczny</string>
-    <string name="tag_val_edgy">Edgy</string>
-    <string name="tag_val_business_casual">Business-Casual</string>
-    <string name="tag_val_luxury">Luksusowy</string>
-    <string name="tag_val_slim">Slim</string>
-    <string name="tag_val_regular">Regular</string>
-    <string name="tag_val_relaxed">Luźny</string>
-    <string name="tag_val_oversized">Oversize</string>
-    <string name="tag_val_tailored">Skrojony</string>
-    <string name="tag_val_cotton">Bawełna</string>
-    <string name="tag_val_denim">Denim</string>
-    <string name="tag_val_wool">Wełna</string>
-    <string name="tag_val_leather">Skóra</string>
-    <string name="tag_val_polyester">Poliester</string>
-    <string name="tag_val_linen">Len</string>
-    <string name="tag_val_silk">Jedwab</string>
-    <string name="tag_val_knit">Dzianina</string>
-    <string name="tag_val_solid">Gładki</string>
-    <string name="tag_val_stripes">Paski</string>
-    <string name="tag_val_plaid">Krata</string>
-    <string name="tag_val_floral">Kwiatowy</string>
-    <string name="tag_val_geometric">Geometryczny</string>
-    <string name="tag_val_animal_print">Wzór zwierzęcy</string>
-    <string name="tag_val_graphic">Graficzny</string>
-    <string name="tag_val_camo">Moro</string>
-    <string name="tag_val_abstract">Abstrakcyjny</string>
-    <string name="tag_val_tops">Góra</string>
-    <string name="tag_val_bottoms">Dół</string>
-    <string name="tag_val_outerwear">Okrycia wierzchnie</string>
-    <string name="tag_val_footwear">Obuwie</string>
-    <string name="tag_val_accessories">Akcesoria</string>
-    <string name="tag_val_dress">Sukienka</string>
-    <string name="tag_val_suit">Garnitur</string>
-    <string name="tag_val_jumpsuit">Kombinezon</string>
     <!-- Colors -->
-    <string name="tag_val_black">Czarny</string>
-    <string name="tag_val_white">Biały</string>
-    <string name="tag_val_grey">Szary</string>
-    <string name="tag_val_gray">Szary</string>
-    <string name="tag_val_charcoal">Antracytowy</string>
-    <string name="tag_val_brown">Brązowy</string>
-    <string name="tag_val_beige">Beżowy</string>
-    <string name="tag_val_cream">Kremowy</string>
-    <string name="tag_val_ivory">Kość słoniowa</string>
-    <string name="tag_val_tan">Jasnobrązowy</string>
-    <string name="tag_val_camel">Wielbłądzi</string>
-    <string name="tag_val_red">Czerwony</string>
-    <string name="tag_val_burgundy">Bordowy</string>
-    <string name="tag_val_wine">Winny</string>
-    <string name="tag_val_coral">Koralowy</string>
-    <string name="tag_val_pink">Różowy</string>
-    <string name="tag_val_blush">Pudrowy róż</string>
-    <string name="tag_val_magenta">Magenta</string>
-    <string name="tag_val_fuchsia">Fuksja</string>
-    <string name="tag_val_orange">Pomarańczowy</string>
-    <string name="tag_val_rust">Rdzawy</string>
-    <string name="tag_val_yellow">Żółty</string>
-    <string name="tag_val_mustard">Musztardowy</string>
-    <string name="tag_val_gold">Złoty</string>
-    <string name="tag_val_green">Zielony</string>
-    <string name="tag_val_olive">Oliwkowy</string>
-    <string name="tag_val_khaki">Khaki</string>
-    <string name="tag_val_sage">Szałwiowy</string>
-    <string name="tag_val_mint">Miętowy</string>
-    <string name="tag_val_emerald">Szmaragdowy</string>
-    <string name="tag_val_forest">Leśna zieleń</string>
-    <string name="tag_val_teal">Morski</string>
-    <string name="tag_val_blue">Niebieski</string>
-    <string name="tag_val_navy">Granatowy</string>
-    <string name="tag_val_cobalt">Kobaltowy</string>
-    <string name="tag_val_sky">Błękitny</string>
-    <string name="tag_val_denim_blue">Dżinsowy niebieski</string>
-    <string name="tag_val_purple">Fioletowy</string>
-    <string name="tag_val_lavender">Lawendowy</string>
-    <string name="tag_val_violet">Fiołkowy</string>
-    <string name="tag_val_lilac">Liliowy</string>
-    <string name="tag_val_silver">Srebrny</string>
-    <string name="tag_val_multicolor">Wielokolorowy</string>
-    <string name="tag_val_printed">Z nadrukiem</string>
-
     <!-- Outfits -->
     <string name="outfits_empty">Brak stylizacji</string>
     <string name="outfits_empty_hint">Dotknij +, aby zbudować stylizację z garderoby</string>
@@ -746,9 +629,6 @@
     <string name="wardrobe_imported_on">Zaimportowano %1$s</string>
     <string name="wardrobe_view_original">Pokaż oryginał</string>
     <string name="wardrobe_view_cutout">Pokaż wycinek</string>
-    <string name="viewer_hide_tags">Ukryj tagi</string>
-    <string name="viewer_show_tags">Pokaż tagi</string>
-
     <!-- AI tab -->
     <string name="settings_tab_ai">AI</string>
     <string name="ai_considerations_title">Domyślne kryteria</string>
@@ -777,7 +657,6 @@
     <string name="shop_matching">Dopasowywanie do garderoby…</string>
     <string name="shop_matches_title">Najlepsze trafienia (%1$d)</string>
     <string name="shop_no_matches">Brak trafień. Spróbuj bliższego, lepiej oświetlonego zdjęcia.</string>
-    <string name="shop_match_score">Podobieństwo: %1$d%%</string>
     <string name="shop_indexing">Indeksowanie garderoby… %1$d / %2$d</string>
     <string name="shop_index_size">%1$d zaindeksowanych elementów</string>
     <string name="shop_model_missing">Brak lokalnego modelu. Umieść efficientnet_lite0.tflite w app/src/main/assets/embedder/ oraz magic_touch.tflite w app/src/main/assets/segmenter/.</string>
@@ -808,8 +687,6 @@
     <string name="settings_debug_similarity_desc">Po otwarciu trafienia w wyszukiwarce podobieństw pokaż rozbicie na kanały (segmentowane miniatury, embedding/cosinus histogramu, histogramy hue) zamiast domyślnego obrazu z zoomem.</string>
 
     <!-- Match preview dialog -->
-    <string name="shop_show_in_wardrobe">Pokaż w garderobie</string>
-    <string name="shop_add_to_shopping_list">Dodaj do listy zakupów</string>
     <string name="dedupe_dialog_title">Możliwy duplikat</string>
     <string name="dedupe_dialog_desc">Znaleziono %1$d element(ów) w garderobie, które wyglądają bardzo podobnie do tego zdjęcia.</string>
     <string name="dedupe_dialog_import_anyway">Importuj mimo to</string>
@@ -826,7 +703,6 @@
     <string name="wardrobe_search">Przeszukaj garderobę</string>
     <string name="wardrobe_search_title">Przeszukaj garderobę</string>
     <string name="wardrobe_search_hint">Wpisz, czego szukasz, lub szukaj po zdjęciu.</string>
-    <string name="wardrobe_search_placeholder">np. czerwona bawełniana koszula</string>
     <string name="wardrobe_search_use_photo">Szukaj po zdjęciu zamiast tego</string>
     <string name="wardrobe_search_text_results">Wyniki wyszukiwania</string>
     <string name="action_search">Szukaj</string>
@@ -955,22 +831,6 @@
     <string name="settings_similarity_preview_row">Pokaż podgląd podobieństwa AI</string>
     <string name="settings_similarity_preview_sub">Diagnostyka funkcji wyszukiwania po zdjęciu.</string>
     <string name="settings_send_feedback">Wyślij opinię</string>
-    <string name="settings_retag_title">Otagować ponownie wszystkie %1$d ubrania?</string>
-    <string name="settings_retag_body">AI obejrzy każdą rzecz ponownie i może zmienić jej nazwę, kolor lub kategorię. Wszystko, co zmieniłeś ręcznie, zostanie zastąpione.</string>
-    <string name="settings_retag_confirm">Otaguj ponownie wszystkie ubrania</string>
-    <string name="settings_rebg_confirm_title">Ponownie usunąć tło dla %1$d rzeczy?</string>
-    <string name="settings_rebg_body">AI ponownie wytnie każdą rzecz z oryginalnego zdjęcia. Wycięcia poprawione ręcznie zostaną zastąpione.</string>
-    <string name="settings_rebg_dialog_confirm">Ponownie usuń tła</string>
-    <string name="settings_cutout_title">Poprawić tło dla %1$d rzeczy?</string>
-    <string name="settings_cutout_body">Przeskanujemy Twoje rzeczy w poszukiwaniu wycięć z pominiętym narożnikiem i wytniemy ponownie te, które tego wymagają.</string>
-    <string name="settings_cutout_confirm">Skanuj &amp; popraw</string>
-    <string name="settings_confirm_takes_about">Zajmuje około</string>
-    <string name="settings_confirm_minutes">~%1$d minut</string>
-    <string name="settings_confirm_credits_used">Użyte kredyty</string>
-    <string name="settings_confirm_credits_value">%1$d / %2$d pozostało</string>
-    <string name="settings_confirm_short_format">Brakuje Ci %1$d kredytów. Najpierw doładuj.</string>
-    <string name="settings_confirm_buy_and_continue">Kup kredyty &amp; kontynuuj</string>
-
     <!-- Expert: item tag dimensions for outfit AI -->
     <string name="composer_section_tags">Szczegóły ubrań do uwzględnienia</string>
     <string name="composer_tags_hint">Wybierz, które cechy ubrań uwzględnia AI. Mniej szczegółów = szybsze, tańsze i trafniejsze propozycje.</string>
@@ -1009,8 +869,6 @@
     <string name="ai_unavailable">Funkcje AI są obecnie niedostępne. Upewnij się, że jesteś zalogowany, i spróbuj ponownie.</string>
 
     <!-- Needs-tagging badge -->
-    <string name="wardrobe_needs_tagging">Wymaga oznaczenia</string>
-
     <!-- BYOK API-key onboarding step -->
     <string name="onboarding_apikey_title">Dodaj swój klucz API Gemini</string>
     <string name="onboarding_apikey_body">LibreLookAI działa na Google Gemini z Twoim własnym kluczem API. Jest przechowywany tylko na tym urządzeniu i używany bezpośrednio z Google — nic nie przechodzi przez nasze serwery.</string>
@@ -1108,8 +966,6 @@
     <string name="restore_items_progress">%1$d z %2$d elementów</string>
 
     <!-- Unify close affordance (action_close) -->
-    <string name="action_close">Zamknij</string>
-
     <!-- Drive migration: auto-detect import (items 2/3) -->
     <string name="onboarding_drive_checking">Wyszukiwanie istniejącej garderoby do zaimportowania…</string>
     <string name="onboarding_drive_importing">Importowanie Twojej istniejącej garderoby… %1$d / %2$d</string>
@@ -1131,9 +987,6 @@
     <!-- Convert images to WebP -->
     <string name="settings_convert_webp_row">Konwertuj obrazy na WebP</string>
     <string name="settings_convert_webp_row_sub">Zmniejsz starsze zdjęcia JPG/PNG, aby zaoszczędzić miejsce na Dysku.</string>
-    <string name="settings_convert_title">Przekonwertować %1$d obrazów na WebP?</string>
-    <string name="settings_convert_body">Zapiszemy ponownie Twoje starsze zdjęcia JPG/PNG jako mniejsze pliki WebP i zaktualizujemy je wszędzie, gdzie są używane — w stylizacjach, przymierzaniach i podróżach. Bez AI i kredytów.</string>
-    <string name="settings_convert_confirm">Konwertuj na WebP</string>
     <string name="settings_converting">Konwertowanie %1$d z %2$d…</string>
 
     <!-- Wardrobe maintenance overflow menu -->
@@ -1223,8 +1076,6 @@
     <string name="fab_calendar_log">Zapisz stylizację</string>
     <string name="fab_shopping_add">Dodaj znalezisko</string>
     <string name="fab_travel_plan">Zaplanuj podróż</string>
-    <string name="action_clear_selection">Wyczyść zaznaczenie</string>
-    <string name="sel_count">Wybrano: %1$d</string>
     <string name="sel_style">Stylizuj</string>
     <string name="sel_swap">Zamień</string>
     <string name="sel_move">Przenieś</string>

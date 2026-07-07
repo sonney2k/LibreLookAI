@@ -64,6 +64,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.data.model.Location
 import com.librelookai.data.model.Outfit
 import com.librelookai.util.Analytics
@@ -105,7 +106,7 @@ internal fun OutfitCard(
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) { Text(stringResource(R.string.action_cancel)) }
+                TextButton(onClick = { showDeleteDialog = false }) { Text(stringResource(DsR.string.action_cancel)) }
             },
         )
     }
@@ -358,7 +359,7 @@ internal fun WearDatePickerDialog(
                 LocalContext provides parentContext,
                 LocalConfiguration provides parentConfiguration,
             ) {
-                TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
+                TextButton(onClick = onDismiss) { Text(stringResource(DsR.string.action_cancel)) }
             }
         },
     ) {

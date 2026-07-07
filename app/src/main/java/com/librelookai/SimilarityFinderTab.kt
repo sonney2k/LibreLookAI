@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.shopping.MatchPreviewDialog
 import com.librelookai.shopping.MatchRow
 import com.librelookai.shopping.ShoppingClosetViewModel
@@ -158,7 +159,7 @@ internal fun SimilarityFinderTab(
                             ) {
                                 Icon(Icons.Default.ShoppingBag, contentDescription = null, modifier = Modifier.size(18.dp))
                                 Spacer(Modifier.width(8.dp))
-                                Text(stringResource(R.string.shop_add_to_shopping_list))
+                                Text(stringResource(DsR.string.shop_add_to_shopping_list))
                             }
                         }
                     }

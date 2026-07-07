@@ -47,6 +47,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.DialogWindowProvider
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.data.model.Location
 import com.librelookai.data.model.Outfit
 import com.librelookai.util.LocalSystemBarsPadding
@@ -252,7 +253,7 @@ internal fun ComposerSuggestionsViewer(
                     ) {
                         Icon(
                             Icons.Default.Close,
-                            contentDescription = stringResource(R.string.action_close),
+                            contentDescription = stringResource(DsR.string.action_close),
                             tint = MaterialTheme.colorScheme.onBackground,
                         )
                     }

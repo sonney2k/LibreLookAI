@@ -63,19 +63,16 @@
 
     <!-- Common actions -->
     <string name="action_ok">موافق</string>
-    <string name="action_cancel">إلغاء</string>
     <string name="action_dismiss">تجاهل</string>
     <string name="action_delete">حذف</string>
     <string name="action_save">حفظ</string>
     <string name="action_edit">تعديل</string>
     <string name="action_saving">جاري الحفظ…</string>
-    <string name="action_clear">مسح</string>
     <string name="action_sort">فرز</string>
     <string name="action_remove">إزالة</string>
     <string name="cd_ai_suggestion">اقتراح ذكاء اصطناعي</string>
     <string name="cd_refine">تحسين</string>
     <string name="filter_location">الموقع</string>
-    <string name="filter_all_locations">الكل</string>
     <string name="wardrobe_processing_photos">جاري معالجة %1$d صورة…</string>
     <string name="wardrobe_progress_uploading">جاري رفع الصورة…</string>
     <string name="wardrobe_progress_uploading_batch">جاري رفع الصورة %1$d من %2$d…</string>
@@ -108,9 +105,6 @@
     <string name="settings_display_font_desc">اختر نوع الخط المستخدم في جميع أنحاء التطبيق.</string>
     <string name="font_default">افتراضي النظام</string>
     <string name="font_caveat">Caveat (يدوي)</string>
-    <string name="wardrobe_filters">الفلاتر</string>
-    <string name="wardrobe_filters_apply">تطبيق (%1$d)</string>
-    <string name="wardrobe_filters_reset">إعادة ضبط</string>
     <string name="settings_tab_data">البيانات</string>
     <string name="settings_tab_credits">الرصيد</string>
     <string name="settings_language">اللغة</string>
@@ -263,12 +257,6 @@
     <string name="wardrobe_delete_text">هل أنت متأكد من رغبتك في حذف %d صنف مختار؟ لا يمكن التراجع عن هذا الإجراء.</string>
     <string name="wardrobe_move_to">نقل إلى</string>
     <string name="wardrobe_move_to_title">نقل %d صنف إلى</string>
-    <string name="wardrobe_sort">فرز</string>
-    <string name="wardrobe_sort_newest">الأحدث أولاً</string>
-    <string name="wardrobe_sort_oldest">الأقدم أولاً</string>
-    <string name="wardrobe_sort_most_worn">الأكثر ارتداءً</string>
-    <string name="wardrobe_sort_type">النوع</string>
-    <string name="wardrobe_sort_category">الفئة</string>
     <string name="wardrobe_tag_detect">اكتشاف الوسوم</string>
     <string name="wardrobe_tag_remove_bg">إزالة الخلفية</string>
     <string name="wardrobe_tag_re_remove_bg">إعادة إزالة الخلفية</string>
@@ -290,117 +278,12 @@
     <string name="action_continue">متابعة</string>
     <string name="tag_label">الاسم</string>
     <string name="tag_label_placeholder">مثلاً: بنطال تشينو كحلي، قميص أكسفورد أبيض</string>
-    <string name="tag_type">النوع</string>
-    <string name="tag_category">الفئة</string>
-    <string name="tag_uses">الاستخدامات</string>
-    <string name="tag_colors">الألوان</string>
-    <string name="tag_seasonality">الموسمية</string>
-    <string name="tag_aesthetic">الجمالية</string>
-    <string name="tag_fit">المقاس/القصة</string>
-    <string name="tag_material">المادة</string>
-    <string name="tag_pattern">النقشة</string>
     <string name="tag_add_custom">إضافة مخصص…</string>
     <string name="tag_type_placeholder">مثلاً: تي شيرت، بنطال تشينو، سترة منفوخة</string>
     <string name="tag_category_placeholder">بلايز، بناطيل، ملابس خارجية، أحذية، إكسسوارات، فساتين، بدل</string>
 
     <!-- Tag value translations (stored in English; displayed in UI language) -->
-    <string name="tag_val_casual">كاجوال</string>
-    <string name="tag_val_formal">رسمي</string>
-    <string name="tag_val_business">عمل</string>
-    <string name="tag_val_sport">رياضة</string>
-    <string name="tag_val_outdoor">خارجي</string>
-    <string name="tag_val_beach">شاطئ</string>
-    <string name="tag_val_evening">مسائي</string>
-    <string name="tag_val_spring">الربيع</string>
-    <string name="tag_val_summer">الصيف</string>
-    <string name="tag_val_fall">الخريف</string>
-    <string name="tag_val_winter">الشتاء</string>
-    <string name="tag_val_minimalist">بسيط</string>
-    <string name="tag_val_streetwear">ملابس الشارع</string>
-    <string name="tag_val_preppy">بريبي</string>
-    <string name="tag_val_bohemian">بوهيمي</string>
-    <string name="tag_val_classic">كلاسيكي</string>
-    <string name="tag_val_sporty">رياضي</string>
-    <string name="tag_val_romantic">رومانسي</string>
-    <string name="tag_val_edgy">جريء</string>
-    <string name="tag_val_business_casual">بيزنس كاجوال</string>
-    <string name="tag_val_luxury">فاخر</string>
-    <string name="tag_val_slim">ضيق (سليم)</string>
-    <string name="tag_val_regular">عادي</string>
-    <string name="tag_val_relaxed">مريح</string>
-    <string name="tag_val_oversized">أوفراسايز</string>
-    <string name="tag_val_tailored">مفصل</string>
-    <string name="tag_val_cotton">قطن</string>
-    <string name="tag_val_denim">دينيم (جينز)</string>
-    <string name="tag_val_wool">صوف</string>
-    <string name="tag_val_leather">جلد</string>
-    <string name="tag_val_polyester">بوليستر</string>
-    <string name="tag_val_linen">كتان</string>
-    <string name="tag_val_silk">حرير</string>
-    <string name="tag_val_knit">تريكو</string>
-    <string name="tag_val_solid">سادة</string>
-    <string name="tag_val_stripes">مخطط</string>
-    <string name="tag_val_plaid">كاروهات</string>
-    <string name="tag_val_floral">مشجر/زهور</string>
-    <string name="tag_val_geometric">هندسي</string>
-    <string name="tag_val_animal_print">نقشة حيوانات</string>
-    <string name="tag_val_graphic">رسومات</string>
-    <string name="tag_val_camo">تمويه</string>
-    <string name="tag_val_abstract">تجريدي</string>
-    <string name="tag_val_tops">بلايز</string>
-    <string name="tag_val_bottoms">بناطيل</string>
-    <string name="tag_val_outerwear">ملابس خارجية</string>
-    <string name="tag_val_footwear">أحذية</string>
-    <string name="tag_val_accessories">إكسسوارات</string>
-    <string name="tag_val_dress">فساتين</string>
-    <string name="tag_val_suit">بدل</string>
-    <string name="tag_val_jumpsuit">بدلة قطعة واحدة</string>
     <!-- Colors -->
-    <string name="tag_val_black">أسود</string>
-    <string name="tag_val_white">أبيض</string>
-    <string name="tag_val_grey">رمادي</string>
-    <string name="tag_val_gray">رمادي</string>
-    <string name="tag_val_charcoal">فحمي</string>
-    <string name="tag_val_brown">بني</string>
-    <string name="tag_val_beige">بيج</string>
-    <string name="tag_val_cream">كريمي</string>
-    <string name="tag_val_ivory">عاجي</string>
-    <string name="tag_val_tan">تان</string>
-    <string name="tag_val_camel">جملي</string>
-    <string name="tag_val_red">أحمر</string>
-    <string name="tag_val_burgundy">برغندي</string>
-    <string name="tag_val_wine">خمري</string>
-    <string name="tag_val_coral">مرجاني</string>
-    <string name="tag_val_pink">وردي</string>
-    <string name="tag_val_blush">وردي فاتح</string>
-    <string name="tag_val_magenta">ماجنتا</string>
-    <string name="tag_val_fuchsia">فوشيا</string>
-    <string name="tag_val_orange">برتقالي</string>
-    <string name="tag_val_rust">صدئي</string>
-    <string name="tag_val_yellow">أصفر</string>
-    <string name="tag_val_mustard">خردلي</string>
-    <string name="tag_val_gold">ذهبي</string>
-    <string name="tag_val_green">أخضر</string>
-    <string name="tag_val_olive">زيتوني</string>
-    <string name="tag_val_khaki">كاكي</string>
-    <string name="tag_val_sage">مرمري</string>
-    <string name="tag_val_mint">نعناعي</string>
-    <string name="tag_val_emerald">زمردي</string>
-    <string name="tag_val_forest">أخضر غامق</string>
-    <string name="tag_val_teal">تركواز غامق</string>
-    <string name="tag_val_blue">أزرق</string>
-    <string name="tag_val_navy">كحلي</string>
-    <string name="tag_val_cobalt">كوبالت</string>
-    <string name="tag_val_sky">أزرق سماوي</string>
-    <string name="tag_val_denim_blue">أزرق جينز</string>
-    <string name="tag_val_purple">أرجواني</string>
-    <string name="tag_val_lavender">لافندر</string>
-    <string name="tag_val_violet">بنفسجي</string>
-    <string name="tag_val_lilac">ليلكي</string>
-    <string name="tag_val_silver">فضي</string>
-    <string name="tag_val_multicolor">متعدد الألوان</string>
-    <string name="tag_val_printed">مطبوع</string>
-
     <!-- Outfits -->
     <string name="outfits_empty">لا توجد أطقم بعد</string>
     <string name="outfits_empty_hint">اضغط على + لإنشاء طقم من خزانة ملابسك</string>
@@ -746,9 +629,6 @@
     <string name="wardrobe_imported_on">تم الاستيراد في %1$s</string>
     <string name="wardrobe_view_original">عرض الأصل</string>
     <string name="wardrobe_view_cutout">عرض القصة</string>
-    <string name="viewer_hide_tags">إخفاء الوسوم</string>
-    <string name="viewer_show_tags">إظهار الوسوم</string>
-
     <!-- AI tab -->
     <string name="settings_tab_ai">ذكاء اصطناعي</string>
     <string name="ai_considerations_title">اعتبارات افتراضية</string>
@@ -777,7 +657,6 @@
     <string name="shop_matching">جاري المطابقة مع خزانة ملابسك…</string>
     <string name="shop_matches_title">أفضل المطابقات (%1$d)</string>
     <string name="shop_no_matches">لا توجد مطابقات بعد. جرب صورة أقرب وبإضاءة أفضل.</string>
-    <string name="shop_match_score">التشابه: %1$d%%</string>
     <string name="shop_indexing">جاري فهرسة الخزانة… %1$d / %2$d</string>
     <string name="shop_index_size">تم فهرسة %1$d صنف</string>
     <string name="shop_model_missing">النموذج الموجود على الجهاز مفقود. ضع efficientnet_lite0.tflite تحت app/src/main/assets/embedder/ و magic_touch.tflite تحت app/src/main/assets/segmenter/.</string>
@@ -808,8 +687,6 @@
     <string name="settings_debug_similarity_desc">عند فتح مطابقة في البحث عن شبيه، اظهر التفصيل لكل قناة (مصغرات مقصوصة، جيب تمام التضمين/المدرج التكراري، مدرجات تكرار درجة اللون) بدلاً من الصورة الافتراضية القابلة للتكبير.</string>
 
     <!-- Match preview dialog -->
-    <string name="shop_show_in_wardrobe">إظهار في الخزانة</string>
-    <string name="shop_add_to_shopping_list">إضافة إلى قائمة التسوق</string>
     <string name="dedupe_dialog_title">مكرر محتمل</string>
     <string name="dedupe_dialog_desc">وجدنا %1$d صنف(أصناف) في خزانة ملابسك تبدو مشابهة جدًا لهذه الصورة.</string>
     <string name="dedupe_dialog_import_anyway">استيراد على أي حال</string>
@@ -826,7 +703,6 @@
     <string name="wardrobe_search">البحث في الخزانة</string>
     <string name="wardrobe_search_title">البحث في الخزانة</string>
     <string name="wardrobe_search_hint">اكتب ما تبحث عنه، أو ابحث بالصورة.</string>
-    <string name="wardrobe_search_placeholder">مثلاً: قميص قطني أحمر</string>
     <string name="wardrobe_search_use_photo">البحث بالصورة بدلاً من ذلك</string>
     <string name="wardrobe_search_text_results">نتائج البحث</string>
     <string name="action_search">بحث</string>
@@ -955,22 +831,6 @@
     <string name="settings_similarity_preview_row">إظهار معاينة تشابه الذكاء الاصطناعي</string>
     <string name="settings_similarity_preview_sub">تشخيص لميزة البحث بالصورة.</string>
     <string name="settings_send_feedback">إرسال ملاحظات</string>
-    <string name="settings_retag_title">إعادة وسم كل الـ %1$d قطعة ملابس؟</string>
-    <string name="settings_retag_body">سينظر الذكاء الاصطناعي إلى كل عنصر مجددًا وقد يغيّر اسمه أو لونه أو فئته. سيُستبدل كل ما أعدت تسميته يدويًا.</string>
-    <string name="settings_retag_confirm">إعادة وسم كل الملابس</string>
-    <string name="settings_rebg_confirm_title">إعادة إزالة الخلفية لـ %1$d عنصر؟</string>
-    <string name="settings_rebg_body">سيعيد الذكاء الاصطناعي قص كل عنصر من صورته الأصلية. ستُستبدل عمليات القص التي أصلحتها يدويًا.</string>
-    <string name="settings_rebg_dialog_confirm">إعادة إزالة الخلفيات</string>
-    <string name="settings_cutout_title">إصلاح الخلفية في %1$d عنصر؟</string>
-    <string name="settings_cutout_body">سنفحص عناصرك بحثًا عن عمليات قص أغفلت زاوية ونعيد قص ما يحتاج منها.</string>
-    <string name="settings_cutout_confirm">فحص &amp; إصلاح</string>
-    <string name="settings_confirm_takes_about">يستغرق نحو</string>
-    <string name="settings_confirm_minutes">~%1$d دقيقة</string>
-    <string name="settings_confirm_credits_used">الرصيد المستخدم</string>
-    <string name="settings_confirm_credits_value">%1$d / %2$d متبقٍ</string>
-    <string name="settings_confirm_short_format">ينقصك %1$d رصيد. اشحن أولاً.</string>
-    <string name="settings_confirm_buy_and_continue">شراء رصيد &amp; متابعة</string>
-
     <!-- Expert: item tag dimensions for outfit AI -->
     <string name="composer_section_tags">تفاصيل العناصر التي تؤخذ في الاعتبار</string>
     <string name="composer_tags_hint">اختر سمات الملابس التي يراعيها الذكاء الاصطناعي. تفاصيل أقل = اقتراحات أسرع وأرخص وأكثر تركيزًا.</string>
@@ -1009,8 +869,6 @@
     <string name="ai_unavailable">ميزات الذكاء الاصطناعي غير متوفرة حاليًا. يرجى التأكد من تسجيل الدخول والمحاولة مرة أخرى.</string>
 
     <!-- Needs-tagging badge -->
-    <string name="wardrobe_needs_tagging">بحاجة إلى تصنيف</string>
-
     <!-- BYOK API-key onboarding step -->
     <string name="onboarding_apikey_title">أضف مفتاح Gemini API</string>
     <string name="onboarding_apikey_body">يعمل LibreLookAI على Google Gemini باستخدام مفتاح API الخاص بك. يُخزَّن على هذا الجهاز فقط ويُستخدم مباشرة مع Google — لا يمر أي شيء عبر خوادمنا.</string>
@@ -1108,8 +966,6 @@
     <string name="restore_items_progress">%1$d من %2$d عنصر</string>
 
     <!-- Unify close affordance (action_close) -->
-    <string name="action_close">إغلاق</string>
-
     <!-- Drive migration: auto-detect import (items 2/3) -->
     <string name="onboarding_drive_checking">جارٍ البحث عن خزانة ملابس موجودة لاستيرادها…</string>
     <string name="onboarding_drive_importing">جارٍ استيراد خزانة ملابسك الحالية… %1$d / %2$d</string>
@@ -1131,9 +987,6 @@
     <!-- Convert images to WebP -->
     <string name="settings_convert_webp_row">تحويل الصور إلى WebP</string>
     <string name="settings_convert_webp_row_sub">تصغير صور JPG/PNG القديمة لتوفير مساحة Drive.</string>
-    <string name="settings_convert_title">تحويل %1$d صورة إلى WebP؟</string>
-    <string name="settings_convert_body">سنعيد حفظ صور JPG/PNG القديمة كملفات WebP أصغر ونحدّثها في كل مكان تُستخدم فيه — الإطلالات والتجارب والرحلات. بدون ذكاء اصطناعي أو رصيد.</string>
-    <string name="settings_convert_confirm">تحويل إلى WebP</string>
     <string name="settings_converting">جارٍ التحويل %1$d من %2$d…</string>
 
     <!-- Wardrobe maintenance overflow menu -->
@@ -1223,8 +1076,6 @@
     <string name="fab_calendar_log">تسجيل إطلالة</string>
     <string name="fab_shopping_add">إضافة منتج</string>
     <string name="fab_travel_plan">تخطيط رحلة</string>
-    <string name="action_clear_selection">مسح التحديد</string>
-    <string name="sel_count">%1$d محدد</string>
     <string name="sel_style">تنسيق</string>
     <string name="sel_swap">استبدال</string>
     <string name="sel_move">نقل</string>

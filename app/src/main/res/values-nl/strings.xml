@@ -63,19 +63,16 @@
 
     <!-- Algemene acties -->
     <string name="action_ok">OK</string>
-    <string name="action_cancel">Annuleren</string>
     <string name="action_dismiss">Negeren</string>
     <string name="action_delete">Verwijderen</string>
     <string name="action_save">Opslaan</string>
     <string name="action_edit">Bewerken</string>
     <string name="action_saving">Opslaan…</string>
-    <string name="action_clear">Wissen</string>
     <string name="action_sort">Sorteren</string>
     <string name="action_remove">Verwijderen</string>
     <string name="cd_ai_suggestion">AI-suggestie</string>
     <string name="cd_refine">Verfijnen</string>
     <string name="filter_location">Locatie</string>
-    <string name="filter_all_locations">Alles</string>
     <string name="wardrobe_processing_photos">%1$d foto(\'s) verwerken…</string>
     <string name="wardrobe_progress_uploading">Foto uploaden…</string>
     <string name="wardrobe_progress_uploading_batch">Foto %1$d van %2$d uploaden…</string>
@@ -108,9 +105,6 @@
     <string name="settings_display_font_desc">Kies het lettertype voor de hele app.</string>
     <string name="font_default">Systeemstandaard</string>
     <string name="font_caveat">Caveat (handgeschreven)</string>
-    <string name="wardrobe_filters">Filters</string>
-    <string name="wardrobe_filters_apply">Toepassen (%1$d)</string>
-    <string name="wardrobe_filters_reset">Reset</string>
     <string name="settings_tab_data">Gegevens</string>
     <string name="settings_tab_credits">Credits</string>
     <string name="settings_language">Taal</string>
@@ -263,12 +257,6 @@
     <string name="wardrobe_delete_text">Weet je zeker dat je %d geselecteerde items wilt verwijderen? Dit kan niet ongedaan gemaakt worden.</string>
     <string name="wardrobe_move_to">Verplaatsen naar</string>
     <string name="wardrobe_move_to_title">%d item(s) verplaatsen naar</string>
-    <string name="wardrobe_sort">Sorteren</string>
-    <string name="wardrobe_sort_newest">Nieuwste eerst</string>
-    <string name="wardrobe_sort_oldest">Oudste eerst</string>
-    <string name="wardrobe_sort_most_worn">Meest gedragen</string>
-    <string name="wardrobe_sort_type">Type</string>
-    <string name="wardrobe_sort_category">Categorie</string>
     <string name="wardrobe_tag_detect">Tags detecteren</string>
     <string name="wardrobe_tag_remove_bg">Achtergrond verwijderen</string>
     <string name="wardrobe_tag_re_remove_bg">Achtergrond opnieuw verwijderen</string>
@@ -290,117 +278,12 @@
     <string name="action_continue">Doorgaan</string>
     <string name="tag_label">Naam</string>
     <string name="tag_label_placeholder">bv. Marineblauwe chino, Wit Oxford-overhemd</string>
-    <string name="tag_type">Type</string>
-    <string name="tag_category">Categorie</string>
-    <string name="tag_uses">Gelegenheid</string>
-    <string name="tag_colors">Kleuren</string>
-    <string name="tag_seasonality">Seizoen</string>
-    <string name="tag_aesthetic">Esthetiek</string>
-    <string name="tag_fit">Pasvorm</string>
-    <string name="tag_material">Materiaal</string>
-    <string name="tag_pattern">Patroon</string>
     <string name="tag_add_custom">Aangepast toevoegen…</string>
     <string name="tag_type_placeholder">bv. T-shirt, chino, donsjack</string>
     <string name="tag_category_placeholder">tops, bottoms, outerwear, footwear, accessories, dress, suit</string>
 
     <!-- Tag-waarde vertalingen (opgeslagen in het Engels; weergegeven in UI-taal) -->
-    <string name="tag_val_casual">Casual</string>
-    <string name="tag_val_formal">Formeel</string>
-    <string name="tag_val_business">Business</string>
-    <string name="tag_val_sport">Sport</string>
-    <string name="tag_val_outdoor">Outdoor</string>
-    <string name="tag_val_beach">Strand</string>
-    <string name="tag_val_evening">Avond</string>
-    <string name="tag_val_spring">Lente</string>
-    <string name="tag_val_summer">Zomer</string>
-    <string name="tag_val_fall">Herfst</string>
-    <string name="tag_val_winter">Winter</string>
-    <string name="tag_val_minimalist">Minimalistisch</string>
-    <string name="tag_val_streetwear">Streetwear</string>
-    <string name="tag_val_preppy">Preppy</string>
-    <string name="tag_val_bohemian">Bohémien</string>
-    <string name="tag_val_classic">Klassiek</string>
-    <string name="tag_val_sporty">Sportief</string>
-    <string name="tag_val_romantic">Romantisch</string>
-    <string name="tag_val_edgy">Edgy</string>
-    <string name="tag_val_business_casual">Business-Casual</string>
-    <string name="tag_val_luxury">Luxe</string>
-    <string name="tag_val_slim">Slim</string>
-    <string name="tag_val_regular">Regular</string>
-    <string name="tag_val_relaxed">Ruim</string>
-    <string name="tag_val_oversized">Oversized</string>
-    <string name="tag_val_tailored">Getailleerd</string>
-    <string name="tag_val_cotton">Katoen</string>
-    <string name="tag_val_denim">Denim</string>
-    <string name="tag_val_wool">Wol</string>
-    <string name="tag_val_leather">Leer</string>
-    <string name="tag_val_polyester">Polyester</string>
-    <string name="tag_val_linen">Linnen</string>
-    <string name="tag_val_silk">Zijde</string>
-    <string name="tag_val_knit">Gebreid</string>
-    <string name="tag_val_solid">Effen</string>
-    <string name="tag_val_stripes">Strepen</string>
-    <string name="tag_val_plaid">Ruit</string>
-    <string name="tag_val_floral">Bloemen</string>
-    <string name="tag_val_geometric">Geometrisch</string>
-    <string name="tag_val_animal_print">Dierenprint</string>
-    <string name="tag_val_graphic">Grafisch</string>
-    <string name="tag_val_camo">Camouflage</string>
-    <string name="tag_val_abstract">Abstract</string>
-    <string name="tag_val_tops">Tops</string>
-    <string name="tag_val_bottoms">Broeken</string>
-    <string name="tag_val_outerwear">Bovenkleding</string>
-    <string name="tag_val_footwear">Schoenen</string>
-    <string name="tag_val_accessories">Accessoires</string>
-    <string name="tag_val_dress">Jurk</string>
-    <string name="tag_val_suit">Pak</string>
-    <string name="tag_val_jumpsuit">Jumpsuit</string>
     <!-- Kleuren -->
-    <string name="tag_val_black">Zwart</string>
-    <string name="tag_val_white">Wit</string>
-    <string name="tag_val_grey">Grijs</string>
-    <string name="tag_val_gray">Grijs</string>
-    <string name="tag_val_charcoal">Antraciet</string>
-    <string name="tag_val_brown">Bruin</string>
-    <string name="tag_val_beige">Beige</string>
-    <string name="tag_val_cream">Crème</string>
-    <string name="tag_val_ivory">Ivoor</string>
-    <string name="tag_val_tan">Lichtbruin</string>
-    <string name="tag_val_camel">Camel</string>
-    <string name="tag_val_red">Rood</string>
-    <string name="tag_val_burgundy">Bordeauxrood</string>
-    <string name="tag_val_wine">Wijnrood</string>
-    <string name="tag_val_coral">Koraal</string>
-    <string name="tag_val_pink">Roze</string>
-    <string name="tag_val_blush">Zachtroze</string>
-    <string name="tag_val_magenta">Magenta</string>
-    <string name="tag_val_fuchsia">Fuchsia</string>
-    <string name="tag_val_orange">Oranje</string>
-    <string name="tag_val_rust">Roestbruin</string>
-    <string name="tag_val_yellow">Geel</string>
-    <string name="tag_val_mustard">Mosterdgeel</string>
-    <string name="tag_val_gold">Goud</string>
-    <string name="tag_val_green">Groen</string>
-    <string name="tag_val_olive">Olijfgroen</string>
-    <string name="tag_val_khaki">Kaki</string>
-    <string name="tag_val_sage">Saliegroen</string>
-    <string name="tag_val_mint">Mintgroen</string>
-    <string name="tag_val_emerald">Smaragdgroen</string>
-    <string name="tag_val_forest">Bosgroen</string>
-    <string name="tag_val_teal">Petrol</string>
-    <string name="tag_val_blue">Blauw</string>
-    <string name="tag_val_navy">Marineblauw</string>
-    <string name="tag_val_cobalt">Kobaltblauw</string>
-    <string name="tag_val_sky">Hemelsblauw</string>
-    <string name="tag_val_denim_blue">Spijkerblauw</string>
-    <string name="tag_val_purple">Paars</string>
-    <string name="tag_val_lavender">Lavendel</string>
-    <string name="tag_val_violet">Violet</string>
-    <string name="tag_val_lilac">Lila</string>
-    <string name="tag_val_silver">Zilver</string>
-    <string name="tag_val_multicolor">Meerkleurig</string>
-    <string name="tag_val_printed">Bedrukt</string>
-
     <!-- Outfits -->
     <string name="outfits_empty">Nog geen outfits</string>
     <string name="outfits_empty_hint">Tik op + om een outfit uit je garderobe te maken</string>
@@ -746,9 +629,6 @@
     <string name="wardrobe_imported_on">Geïmporteerd op %1$s</string>
     <string name="wardrobe_view_original">Origineel bekijken</string>
     <string name="wardrobe_view_cutout">Uitsnede bekijken</string>
-    <string name="viewer_hide_tags">Tags verbergen</string>
-    <string name="viewer_show_tags">Tags tonen</string>
-
     <!-- AI-tab -->
     <string name="settings_tab_ai">AI</string>
     <string name="ai_considerations_title">Standaardoverwegingen</string>
@@ -777,7 +657,6 @@
     <string name="shop_matching">Vergelijken met je garderobe…</string>
     <string name="shop_matches_title">Topmatches (%1$d)</string>
     <string name="shop_no_matches">Nog geen matches. Probeer een dichterbije, beter belichte foto.</string>
-    <string name="shop_match_score">Gelijkenis: %1$d%%</string>
     <string name="shop_indexing">Garderobe indexeren… %1$d / %2$d</string>
     <string name="shop_index_size">%1$d items geïndexeerd</string>
     <string name="shop_model_missing">Lokaal model ontbreekt. Plaats efficientnet_lite0.tflite onder app/src/main/assets/embedder/ en magic_touch.tflite onder app/src/main/assets/segmenter/.</string>
@@ -808,8 +687,6 @@
     <string name="settings_debug_similarity_desc">Bij het openen van een Gelijkenis-zoeker-match de per-kanaal-uitsplitsing tonen (gesegmenteerde miniaturen, embedding/histogram-cosinus, hue-histogrammen) in plaats van de standaard zoombare afbeelding.</string>
 
     <!-- Matchvoorbeeld-dialoog -->
-    <string name="shop_show_in_wardrobe">Tonen in garderobe</string>
-    <string name="shop_add_to_shopping_list">Toevoegen aan winkellijst</string>
     <string name="dedupe_dialog_title">Mogelijk duplicaat</string>
     <string name="dedupe_dialog_desc">We vonden %1$d item(s) in je garderobe die erg op deze foto lijken.</string>
     <string name="dedupe_dialog_import_anyway">Toch importeren</string>
@@ -826,7 +703,6 @@
     <string name="wardrobe_search">Garderobe doorzoeken</string>
     <string name="wardrobe_search_title">Garderobe doorzoeken</string>
     <string name="wardrobe_search_hint">Typ waar je naar zoekt, of zoek via foto.</string>
-    <string name="wardrobe_search_placeholder">bv. rood katoenen hemd</string>
     <string name="wardrobe_search_use_photo">In plaats daarvan via foto zoeken</string>
     <string name="wardrobe_search_text_results">Zoekresultaten</string>
     <string name="action_search">Zoeken</string>
@@ -955,22 +831,6 @@
     <string name="settings_similarity_preview_row">AI-gelijkenisvoorbeeld tonen</string>
     <string name="settings_similarity_preview_sub">Diagnostiek voor zoeken op foto.</string>
     <string name="settings_send_feedback">Feedback sturen</string>
-    <string name="settings_retag_title">Alle %1$d kledingstukken opnieuw taggen?</string>
-    <string name="settings_retag_body">De AI bekijkt elk item opnieuw en kan de naam, kleur of categorie wijzigen. Alles wat je met de hand hernoemde, wordt vervangen.</string>
-    <string name="settings_retag_confirm">Alle kleding opnieuw taggen</string>
-    <string name="settings_rebg_confirm_title">Achtergrond van %1$d items opnieuw verwijderen?</string>
-    <string name="settings_rebg_body">De AI knipt elk item opnieuw uit de originele foto. Met de hand gecorrigeerde uitsnedes worden vervangen.</string>
-    <string name="settings_rebg_dialog_confirm">Achtergronden opnieuw verwijderen</string>
-    <string name="settings_cutout_title">Achtergrond van %1$d items corrigeren?</string>
-    <string name="settings_cutout_body">We scannen je items op uitsnedes die een hoek hebben gemist en knippen de items die het nodig hebben opnieuw uit.</string>
-    <string name="settings_cutout_confirm">Scannen &amp; corrigeren</string>
-    <string name="settings_confirm_takes_about">Duurt ongeveer</string>
-    <string name="settings_confirm_minutes">~%1$d minuten</string>
-    <string name="settings_confirm_credits_used">Gebruikte credits</string>
-    <string name="settings_confirm_credits_value">%1$d / %2$d over</string>
-    <string name="settings_confirm_short_format">Je komt %1$d credits tekort. Eerst opwaarderen.</string>
-    <string name="settings_confirm_buy_and_continue">Credits kopen &amp; doorgaan</string>
-
     <!-- Expert: item tag dimensions for outfit AI -->
     <string name="composer_section_tags">Itemdetails om mee te wegen</string>
     <string name="composer_tags_hint">Kies welke kledingkenmerken de AI meeweegt. Minder details = snellere, goedkopere en gerichtere suggesties.</string>
@@ -1009,8 +869,6 @@
     <string name="ai_unavailable">AI-functies zijn momenteel niet beschikbaar. Zorg ervoor dat je bent ingelogd en probeer het opnieuw.</string>
 
     <!-- Needs-tagging badge -->
-    <string name="wardrobe_needs_tagging">Labels nodig</string>
-
     <!-- BYOK API-key onboarding step -->
     <string name="onboarding_apikey_title">Voeg je Gemini API-sleutel toe</string>
     <string name="onboarding_apikey_body">LibreLookAI draait op Google Gemini met je eigen API-sleutel. Die wordt alleen op dit apparaat opgeslagen en rechtstreeks met Google gebruikt — er gaat niets via onze servers.</string>
@@ -1108,8 +966,6 @@
     <string name="restore_items_progress">%1$d van %2$d items</string>
 
     <!-- Unify close affordance (action_close) -->
-    <string name="action_close">Sluiten</string>
-
     <!-- Drive migration: auto-detect import (items 2/3) -->
     <string name="onboarding_drive_checking">Er wordt gezocht naar een bestaande garderobe om te importeren…</string>
     <string name="onboarding_drive_importing">Je bestaande garderobe wordt geïmporteerd… %1$d / %2$d</string>
@@ -1131,9 +987,6 @@
     <!-- Convert images to WebP -->
     <string name="settings_convert_webp_row">Afbeeldingen omzetten naar WebP</string>
     <string name="settings_convert_webp_row_sub">Verklein oudere JPG/PNG-foto\'s om Drive-ruimte te besparen.</string>
-    <string name="settings_convert_title">%1$d afbeeldingen omzetten naar WebP?</string>
-    <string name="settings_convert_body">We slaan je oudere JPG/PNG-foto\'s opnieuw op als kleinere WebP-bestanden en werken ze overal bij waar ze worden gebruikt — outfits, passessies en reizen. Geen AI of credits nodig.</string>
-    <string name="settings_convert_confirm">Omzetten naar WebP</string>
     <string name="settings_converting">Bezig met omzetten %1$d van %2$d…</string>
 
     <!-- Wardrobe maintenance overflow menu -->
@@ -1223,8 +1076,6 @@
     <string name="fab_calendar_log">Outfit loggen</string>
     <string name="fab_shopping_add">Vondst toevoegen</string>
     <string name="fab_travel_plan">Reis plannen</string>
-    <string name="action_clear_selection">Selectie wissen</string>
-    <string name="sel_count">%1$d geselecteerd</string>
     <string name="sel_style">Stylen</string>
     <string name="sel_swap">Wisselen</string>
     <string name="sel_move">Verplaatsen</string>

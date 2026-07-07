@@ -63,19 +63,16 @@
 
     <!-- Common actions -->
     <string name="action_ok">OK</string>
-    <string name="action_cancel">Hủy</string>
     <string name="action_dismiss">Đóng</string>
     <string name="action_delete">Xóa</string>
     <string name="action_save">Lưu</string>
     <string name="action_edit">Sửa</string>
     <string name="action_saving">Đang lưu…</string>
-    <string name="action_clear">Xóa sạch</string>
     <string name="action_sort">Sắp xếp</string>
     <string name="action_remove">Gỡ bỏ</string>
     <string name="cd_ai_suggestion">Gợi ý từ AI</string>
     <string name="cd_refine">Tinh chỉnh</string>
     <string name="filter_location">Vị trí</string>
-    <string name="filter_all_locations">Tất cả</string>
     <string name="wardrobe_processing_photos">Đang xử lý %1$d ảnh…</string>
     <string name="wardrobe_progress_uploading">Đang tải ảnh lên…</string>
     <string name="wardrobe_progress_uploading_batch">Tải ảnh %1$d / %2$d…</string>
@@ -108,9 +105,6 @@
     <string name="settings_display_font_desc">Chọn kiểu chữ cho ứng dụng.</string>
     <string name="font_default">Mặc định hệ thống</string>
     <string name="font_caveat">Caveat (viết tay)</string>
-    <string name="wardrobe_filters">Bộ lọc</string>
-    <string name="wardrobe_filters_apply">Áp dụng (%1$d)</string>
-    <string name="wardrobe_filters_reset">Đặt lại</string>
     <string name="settings_tab_data">Dữ liệu</string>
     <string name="settings_tab_credits">Tín dụng</string>
     <string name="settings_language">Ngôn ngữ</string>
@@ -179,12 +173,6 @@
     <string name="wardrobe_delete_text">Bạn có chắc muốn xóa %d món đồ đã chọn? Thao tác này không thể hoàn tác.</string>
     <string name="wardrobe_move_to">Chuyển đến</string>
     <string name="wardrobe_move_to_title">Chuyển %d món đồ đến</string>
-    <string name="wardrobe_sort">Sắp xếp</string>
-    <string name="wardrobe_sort_newest">Mới nhất</string>
-    <string name="wardrobe_sort_oldest">Cũ nhất</string>
-    <string name="wardrobe_sort_most_worn">Mặc nhiều nhất</string>
-    <string name="wardrobe_sort_type">Loại</string>
-    <string name="wardrobe_sort_category">Danh mục</string>
     <string name="wardrobe_tag_detect">Nhận diện thẻ</string>
     <string name="wardrobe_tag_remove_bg">Xóa nền</string>
     <string name="wardrobe_tag_re_remove_bg">Xóa lại nền</string>
@@ -203,32 +191,9 @@
     <string name="action_continue">Tiếp tục</string>
     <string name="tag_label">Tên</string>
     <string name="tag_label_placeholder">vd: Quần Chino xanh navy, Áo sơ mi Oxford trắng</string>
-    <string name="tag_type">Kiểu dáng</string>
-    <string name="tag_category">Danh mục</string>
-    <string name="tag_uses">Công dụng</string>
-    <string name="tag_colors">Màu sắc</string>
-    <string name="tag_seasonality">Mùa</string>
-    <string name="tag_aesthetic">Thẩm mỹ</string>
-    <string name="tag_fit">Phom dáng</string>
-    <string name="tag_material">Chất liệu</string>
-    <string name="tag_pattern">Họa tiết</string>
     <string name="tag_add_custom">Thêm thẻ tùy chỉnh…</string>
 
     <!-- Tag values -->
-    <string name="tag_val_casual">Thường ngày</string>
-    <string name="tag_val_formal">Trang trọng</string>
-    <string name="tag_val_business">Công sở</string>
-    <string name="tag_val_sport">Thể thao</string>
-    <string name="tag_val_spring">Mùa xuân</string>
-    <string name="tag_val_summer">Mùa hè</string>
-    <string name="tag_val_fall">Mùa thu</string>
-    <string name="tag_val_winter">Mùa đông</string>
-    <string name="tag_val_tops">Áo</string>
-    <string name="tag_val_bottoms">Quần/Váy</string>
-    <string name="tag_val_outerwear">Áo khoác</string>
-    <string name="tag_val_footwear">Giày dép</string>
-    <string name="tag_val_accessories">Phụ kiện</string>
-
     <!-- Outfits -->
     <string name="outfits_empty">Chưa có bộ đồ nào</string>
     <string name="outfits_empty_hint">Chạm + để phối bộ đồ từ tủ đồ của bạn</string>
@@ -662,7 +627,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="settings_repair_preview_title">Sửa &amp; Đồng bộ — Xem trước</string>
     <string name="settings_tab_ai">AI</string>
     <string name="settings_tab_feedback">Phản hồi</string>
-    <string name="shop_add_to_shopping_list">Thêm vào danh sách mua sắm</string>
     <string name="shop_clear">Xóa</string>
     <string name="shop_crosshair_hint">Đặt món ở giữa dấu chữ thập</string>
     <string name="shop_description">Chụp ảnh một món bạn đang cân nhắc, và chúng tôi sẽ hiển thị các món trông tương tự nhất trong tủ — hoàn toàn trên thiết bị.</string>
@@ -670,99 +634,15 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="shop_error_model_missing">Mô hình tìm kiếm hình ảnh chưa cài đặt.</string>
     <string name="shop_index_size">Đã lập chỉ mục %1$d món</string>
     <string name="shop_indexing">Đang lập chỉ mục tủ… %1$d / %2$d</string>
-    <string name="shop_match_score">Tương đồng: %1$d%%</string>
     <string name="shop_matches_title">Kết quả khớp nhất (%1$d)</string>
     <string name="shop_matching">Đang so khớp với tủ của bạn…</string>
     <string name="shop_model_missing">Mô hình trên thiết bị bị thiếu. Đặt efficientnet_lite0.tflite vào app/src/main/assets/embedder/ và magic_touch.tflite vào app/src/main/assets/segmenter/.</string>
     <string name="shop_no_matches">Chưa có kết quả khớp. Thử ảnh gần hơn và sáng hơn.</string>
-    <string name="shop_show_in_wardrobe">Hiển thị trong tủ</string>
     <string name="shop_take_another">Chụp ảnh khác</string>
     <string name="shop_take_photo">Chụp ảnh</string>
     <string name="shop_your_photo">Ảnh của bạn</string>
     <string name="tag_category_placeholder">áo trên, áo dưới, áo khoác, giày dép, phụ kiện, đầm, vest</string>
     <string name="tag_type_placeholder">vd. Áo thun, Quần Chinos, Áo phao</string>
-    <string name="tag_val_abstract">Trừu tượng</string>
-    <string name="tag_val_animal_print">Họa tiết da thú</string>
-    <string name="tag_val_beach">Biển</string>
-    <string name="tag_val_beige">Be</string>
-    <string name="tag_val_black">Đen</string>
-    <string name="tag_val_blue">Xanh dương</string>
-    <string name="tag_val_blush">Hồng phấn</string>
-    <string name="tag_val_bohemian">Bohemian</string>
-    <string name="tag_val_brown">Nâu</string>
-    <string name="tag_val_burgundy">Đỏ booc-đô</string>
-    <string name="tag_val_business_casual">Business-casual</string>
-    <string name="tag_val_camel">Camel</string>
-    <string name="tag_val_camo">Rằn ri</string>
-    <string name="tag_val_charcoal">Xám đậm</string>
-    <string name="tag_val_classic">Cổ điển</string>
-    <string name="tag_val_cobalt">Xanh cobalt</string>
-    <string name="tag_val_coral">Cam san hô</string>
-    <string name="tag_val_cotton">Cotton</string>
-    <string name="tag_val_cream">Kem</string>
-    <string name="tag_val_denim">Denim</string>
-    <string name="tag_val_denim_blue">Xanh denim</string>
-    <string name="tag_val_dress">Đầm</string>
-    <string name="tag_val_edgy">Cá tính</string>
-    <string name="tag_val_emerald">Xanh ngọc lục bảo</string>
-    <string name="tag_val_evening">Dạ tiệc</string>
-    <string name="tag_val_floral">Họa tiết hoa</string>
-    <string name="tag_val_forest">Xanh rừng</string>
-    <string name="tag_val_fuchsia">Hồng cánh sen</string>
-    <string name="tag_val_geometric">Hình học</string>
-    <string name="tag_val_gold">Vàng kim</string>
-    <string name="tag_val_graphic">Đồ họa</string>
-    <string name="tag_val_gray">Xám</string>
-    <string name="tag_val_green">Xanh lá</string>
-    <string name="tag_val_grey">Xám</string>
-    <string name="tag_val_ivory">Trắng ngà</string>
-    <string name="tag_val_jumpsuit">Jumpsuit</string>
-    <string name="tag_val_khaki">Kaki</string>
-    <string name="tag_val_knit">Dệt kim</string>
-    <string name="tag_val_lavender">Tím oải hương</string>
-    <string name="tag_val_leather">Da</string>
-    <string name="tag_val_lilac">Tử đinh hương</string>
-    <string name="tag_val_linen">Linen</string>
-    <string name="tag_val_luxury">Sang trọng</string>
-    <string name="tag_val_magenta">Hồng đậm</string>
-    <string name="tag_val_minimalist">Tối giản</string>
-    <string name="tag_val_mint">Bạc hà</string>
-    <string name="tag_val_multicolor">Nhiều màu</string>
-    <string name="tag_val_mustard">Vàng mù tạt</string>
-    <string name="tag_val_navy">Xanh navy</string>
-    <string name="tag_val_olive">Xanh ô liu</string>
-    <string name="tag_val_orange">Cam</string>
-    <string name="tag_val_outdoor">Ngoài trời</string>
-    <string name="tag_val_oversized">Oversize</string>
-    <string name="tag_val_pink">Hồng</string>
-    <string name="tag_val_plaid">Caro</string>
-    <string name="tag_val_polyester">Polyester</string>
-    <string name="tag_val_preppy">Preppy</string>
-    <string name="tag_val_printed">Có họa tiết</string>
-    <string name="tag_val_purple">Tím</string>
-    <string name="tag_val_red">Đỏ</string>
-    <string name="tag_val_regular">Vừa</string>
-    <string name="tag_val_relaxed">Rộng</string>
-    <string name="tag_val_romantic">Lãng mạn</string>
-    <string name="tag_val_rust">Đỏ gỉ</string>
-    <string name="tag_val_sage">Xanh xô thơm</string>
-    <string name="tag_val_silk">Lụa</string>
-    <string name="tag_val_silver">Bạc</string>
-    <string name="tag_val_sky">Xanh da trời</string>
-    <string name="tag_val_slim">Ôm</string>
-    <string name="tag_val_solid">Trơn</string>
-    <string name="tag_val_sporty">Năng động</string>
-    <string name="tag_val_streetwear">Streetwear</string>
-    <string name="tag_val_stripes">Sọc</string>
-    <string name="tag_val_suit">Bộ vest</string>
-    <string name="tag_val_tailored">Cắt may</string>
-    <string name="tag_val_tan">Nâu nhạt</string>
-    <string name="tag_val_teal">Xanh mòng két</string>
-    <string name="tag_val_violet">Tím violet</string>
-    <string name="tag_val_white">Trắng</string>
-    <string name="tag_val_wine">Đỏ rượu</string>
-    <string name="tag_val_wool">Len</string>
-    <string name="tag_val_yellow">Vàng</string>
     <string name="travel_destination_placeholder">vd. Paris, Tokyo, New York</string>
     <string name="travel_extra_items">Mang thêm (không có trong tủ)</string>
     <string name="travel_historical_note">Ngày đi nằm ngoài khoảng dự báo trực tiếp — hiển thị dữ liệu khí hậu lịch sử.</string>
@@ -810,8 +690,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="tryon_try_again">Thử lại</string>
     <string name="tryon_use_outfit">Dùng trang phục</string>
     <string name="tryon_view_source_outfit">Xem trang phục</string>
-    <string name="viewer_hide_tags">Ẩn thẻ</string>
-    <string name="viewer_show_tags">Hiện thẻ</string>
     <string name="wardrobe_create_style">Tạo trang phục</string>
     <string name="wardrobe_find_by_photo">Tìm món bằng ảnh</string>
     <string name="wardrobe_find_by_photo_empty">Không tìm thấy món tương tự.</string>
@@ -822,7 +700,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="wardrobe_imported_on">Nhập ngày %1$s</string>
     <string name="wardrobe_search">Tìm trong tủ</string>
     <string name="wardrobe_search_hint">Nhập điều bạn muốn tìm, hoặc tìm bằng ảnh.</string>
-    <string name="wardrobe_search_placeholder">vd. áo sơ mi cotton đỏ</string>
     <string name="wardrobe_search_text_results">Kết quả tìm kiếm</string>
     <string name="wardrobe_search_title">Tìm trong tủ</string>
     <string name="wardrobe_search_use_photo">Tìm bằng ảnh</string>
@@ -928,22 +805,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="settings_similarity_preview_row">Hiện bản xem trước độ tương đồng AI</string>
     <string name="settings_similarity_preview_sub">Chẩn đoán cho tính năng tìm bằng ảnh.</string>
     <string name="settings_send_feedback">Gửi phản hồi</string>
-    <string name="settings_retag_title">Gắn thẻ lại toàn bộ %1$d món quần áo?</string>
-    <string name="settings_retag_body">AI sẽ xem lại từng món và có thể đổi tên, màu hoặc danh mục của nó. Mọi thứ bạn tự đổi tên sẽ bị thay thế.</string>
-    <string name="settings_retag_confirm">Gắn thẻ lại toàn bộ quần áo</string>
-    <string name="settings_rebg_confirm_title">Xóa lại nền cho %1$d món?</string>
-    <string name="settings_rebg_body">AI sẽ cắt lại từng món từ ảnh gốc. Phần cắt bạn tự sửa sẽ bị thay thế.</string>
-    <string name="settings_rebg_dialog_confirm">Xóa lại nền</string>
-    <string name="settings_cutout_title">Sửa nền cho %1$d món?</string>
-    <string name="settings_cutout_body">Chúng tôi sẽ quét các món tìm phần cắt sót một góc và cắt lại những món cần thiết.</string>
-    <string name="settings_cutout_confirm">Quét &amp; sửa</string>
-    <string name="settings_confirm_takes_about">Mất khoảng</string>
-    <string name="settings_confirm_minutes">~%1$d phút</string>
-    <string name="settings_confirm_credits_used">Tín dụng đã dùng</string>
-    <string name="settings_confirm_credits_value">%1$d / còn %2$d</string>
-    <string name="settings_confirm_short_format">Bạn thiếu %1$d tín dụng. Hãy nạp thêm trước.</string>
-    <string name="settings_confirm_buy_and_continue">Mua tín dụng &amp; tiếp tục</string>
-
     <!-- Expert: item tag dimensions for outfit AI -->
     <string name="composer_section_tags">Chi tiết trang phục cần cân nhắc</string>
     <string name="composer_tags_hint">Chọn những thuộc tính trang phục mà AI cân nhắc. Ít chi tiết hơn = gợi ý nhanh hơn, rẻ hơn và tập trung hơn.</string>
@@ -982,8 +843,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="ai_unavailable">Các tính năng AI hiện không khả dụng. Vui lòng đảm bảo bạn đã đăng nhập và thử lại.</string>
 
     <!-- Needs-tagging badge -->
-    <string name="wardrobe_needs_tagging">Cần gắn thẻ</string>
-
     <!-- BYOK API-key onboarding step -->
     <string name="onboarding_apikey_title">Thêm khóa API Gemini của bạn</string>
     <string name="onboarding_apikey_body">LibreLookAI chạy trên Google Gemini bằng khóa API của riêng bạn. Khóa chỉ được lưu trên thiết bị này và dùng trực tiếp với Google — không có gì đi qua máy chủ của chúng tôi.</string>
@@ -1081,8 +940,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="restore_items_progress">%1$d trên %2$d mục</string>
 
     <!-- Unify close affordance (action_close) -->
-    <string name="action_close">Đóng</string>
-
     <!-- Drive migration: auto-detect import (items 2/3) -->
     <string name="onboarding_drive_checking">Đang tìm tủ quần áo hiện có để nhập…</string>
     <string name="onboarding_drive_importing">Đang nhập tủ quần áo hiện có của bạn… %1$d / %2$d</string>
@@ -1104,9 +961,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <!-- Convert images to WebP -->
     <string name="settings_convert_webp_row">Chuyển ảnh sang WebP</string>
     <string name="settings_convert_webp_row_sub">Thu nhỏ ảnh JPG/PNG cũ để tiết kiệm dung lượng Drive.</string>
-    <string name="settings_convert_title">Chuyển %1$d ảnh sang WebP?</string>
-    <string name="settings_convert_body">Chúng tôi sẽ lưu lại ảnh JPG/PNG cũ của bạn thành các tệp WebP nhỏ hơn và cập nhật ở mọi nơi chúng được dùng — trang phục, thử đồ và chuyến đi. Không cần AI hay tín dụng.</string>
-    <string name="settings_convert_confirm">Chuyển sang WebP</string>
     <string name="settings_converting">Đang chuyển %1$d trên %2$d…</string>
 
     <!-- Wardrobe maintenance overflow menu -->
@@ -1196,8 +1050,6 @@ Vui lòng tắt tối ưu pin cho LibreLookAI để tiếp tục.</string>
     <string name="fab_calendar_log">Ghi lại bộ đồ</string>
     <string name="fab_shopping_add">Thêm món tìm thấy</string>
     <string name="fab_travel_plan">Lên kế hoạch chuyến đi</string>
-    <string name="action_clear_selection">Xóa lựa chọn</string>
-    <string name="sel_count">Đã chọn %1$d</string>
     <string name="sel_style">Phối đồ</string>
     <string name="sel_swap">Đổi</string>
     <string name="sel_move">Chuyển</string>

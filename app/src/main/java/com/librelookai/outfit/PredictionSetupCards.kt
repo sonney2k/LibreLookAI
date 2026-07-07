@@ -51,6 +51,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.settings.AiConsiderations
 
 @Composable
@@ -285,13 +286,13 @@ internal fun ConsidersCard(
 
 /** Maps each [AiConsiderations.TOGGLEABLE_TAGS] dimension to its (already-translated) chip label. */
 private val TAG_DIM_LABELS = mapOf(
-    "uses" to R.string.tag_uses,
-    "colors" to R.string.tag_colors,
-    "seasonality" to R.string.tag_seasonality,
-    "aesthetic" to R.string.tag_aesthetic,
-    "fit" to R.string.tag_fit,
-    "material" to R.string.tag_material,
-    "pattern" to R.string.tag_pattern,
+    "uses" to DsR.string.tag_uses,
+    "colors" to DsR.string.tag_colors,
+    "seasonality" to DsR.string.tag_seasonality,
+    "aesthetic" to DsR.string.tag_aesthetic,
+    "fit" to DsR.string.tag_fit,
+    "material" to DsR.string.tag_material,
+    "pattern" to DsR.string.tag_pattern,
 )
 
 @OptIn(ExperimentalLayoutApi::class)

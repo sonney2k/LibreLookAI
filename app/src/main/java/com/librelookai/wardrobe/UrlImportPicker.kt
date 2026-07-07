@@ -53,6 +53,7 @@ import androidx.compose.ui.window.DialogWindowProvider
 import coil.compose.AsyncImage
 import com.librelookai.util.LocalSystemBarsPadding
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 
 /**
  * Fullscreen picker for URL imports. Opens in candidate-grid mode if [candidates] is non-empty,
@@ -109,7 +110,7 @@ fun UrlImportPicker(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     IconButton(onClick = onDismiss) {
-                        Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_close))
+                        Icon(Icons.Default.Close, contentDescription = stringResource(DsR.string.action_close))
                     }
                     Spacer(Modifier.width(4.dp))
                     Text(

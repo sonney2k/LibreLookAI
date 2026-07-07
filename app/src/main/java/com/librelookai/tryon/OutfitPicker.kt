@@ -51,6 +51,7 @@ import androidx.compose.ui.window.DialogWindowProvider
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.data.model.Outfit
 import com.librelookai.util.rememberDialogBottomInset
 import com.librelookai.wardrobe.DriveImage
@@ -154,7 +155,7 @@ internal fun OutfitPickerDialog(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         IconButton(onClick = onDismiss) {
-                            Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_close))
+                            Icon(Icons.Default.Close, contentDescription = stringResource(DsR.string.action_close))
                         }
                         Text(
                             title,

@@ -53,6 +53,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -126,7 +127,7 @@ internal fun PlannerHeader(onClose: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         IconButton(onClick = onClose, modifier = Modifier.size(40.dp)) {
-            Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_close))
+            Icon(Icons.Default.Close, contentDescription = stringResource(DsR.string.action_close))
         }
         Spacer(Modifier.width(4.dp))
         Column(modifier = Modifier.weight(1f)) {
@@ -368,7 +369,7 @@ private fun DatesAndDaysCard(
                 }) { Text(stringResource(R.string.action_ok)) }
             },
             dismissButton = {
-                TextButton(onClick = { showDialog = false }) { Text(stringResource(R.string.action_cancel)) }
+                TextButton(onClick = { showDialog = false }) { Text(stringResource(DsR.string.action_cancel)) }
             },
         ) {
             DatePicker(state = datePickerState)

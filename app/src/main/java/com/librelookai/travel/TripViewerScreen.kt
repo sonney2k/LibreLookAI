@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.data.model.Outfit
 import com.librelookai.data.model.Trip
 import com.librelookai.outfit.OutfitGenerationViewModel
@@ -366,7 +367,7 @@ fun TripViewerScreen(
                         modifier = Modifier.size(22.dp),
                     )
                 },
-                text = { Text(stringResource(if (actionsOpen) R.string.action_close else R.string.action_edit)) },
+                text = { Text(stringResource(if (actionsOpen) DsR.string.action_close else R.string.action_edit)) },
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(end = 16.dp, bottom = if (actionsOpen) barHeight + 8.dp else 16.dp),

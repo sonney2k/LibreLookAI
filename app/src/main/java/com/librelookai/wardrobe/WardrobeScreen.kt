@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.billing.CreditsViewModel
 import com.librelookai.outfit.OutfitEventsViewModel
 import com.librelookai.outfit.OutfitsViewModel
@@ -291,7 +292,7 @@ fun WardrobeScreen(
             },
             dismissButton = {
                 TextButton(onClick = { showGalleryClosetPicker = false }) {
-                    Text(stringResource(R.string.action_cancel))
+                    Text(stringResource(DsR.string.action_cancel))
                 }
             },
         )

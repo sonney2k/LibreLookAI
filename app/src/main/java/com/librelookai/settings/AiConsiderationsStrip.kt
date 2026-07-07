@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 
 /**
  * FlowRow of FilterChips for the five Settings → AI "standard criteria" toggles. Used by any
@@ -94,13 +95,13 @@ fun ExpertTagsStrip(
 }
 
 private fun tagDimLabelRes(dim: String): Int? = when (dim) {
-    "uses" -> R.string.tag_uses
-    "colors" -> R.string.tag_colors
-    "seasonality" -> R.string.tag_seasonality
-    "aesthetic" -> R.string.tag_aesthetic
-    "fit" -> R.string.tag_fit
-    "material" -> R.string.tag_material
-    "pattern" -> R.string.tag_pattern
+    "uses" -> DsR.string.tag_uses
+    "colors" -> DsR.string.tag_colors
+    "seasonality" -> DsR.string.tag_seasonality
+    "aesthetic" -> DsR.string.tag_aesthetic
+    "fit" -> DsR.string.tag_fit
+    "material" -> DsR.string.tag_material
+    "pattern" -> DsR.string.tag_pattern
     else -> null
 }
 

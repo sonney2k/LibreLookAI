@@ -51,6 +51,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.DialogWindowProvider
 import coil.compose.AsyncImage
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.util.LocalSystemBarsPadding
 import java.io.File
 
@@ -130,7 +131,7 @@ internal fun FixCutoutBgDialog(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     IconButton(onClick = onCancel) {
-                        Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_close))
+                        Icon(Icons.Default.Close, contentDescription = stringResource(DsR.string.action_close))
                     }
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
@@ -256,7 +257,7 @@ internal fun FixCutoutBgDialog(
                 ) {
                     Spacer(Modifier.weight(1f))
                     TextButton(onClick = onCancel) {
-                        Text(stringResource(R.string.action_cancel))
+                        Text(stringResource(DsR.string.action_cancel))
                     }
                     Spacer(Modifier.size(4.dp))
                     val anyAction = state.applyBlackToAlpha || state.applyDespillGreen ||

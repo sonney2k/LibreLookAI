@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.data.model.Location
 import com.librelookai.data.model.Outfit
 import com.librelookai.data.model.TryOn
@@ -77,7 +78,7 @@ private fun TryOnPageScaffold(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     IconButton(onClick = onClose) {
-                        Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_close))
+                        Icon(Icons.Default.Close, contentDescription = stringResource(DsR.string.action_close))
                     }
                     Text(
                         title,

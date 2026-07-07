@@ -8,7 +8,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -38,7 +38,7 @@ class TagFilterBarTest {
 
     // Resolve the localized "Clear" label from resources rather than hardcoding display text.
     private val clearLabel: String =
-        RuntimeEnvironment.getApplication().getString(R.string.action_clear)
+        RuntimeEnvironment.getApplication().getString(DsR.string.action_clear)
 
     @Test
     fun selectingAndClearingTags_drivesCallbackAndChipBadge() {

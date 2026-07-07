@@ -63,19 +63,16 @@
 
     <!-- Common actions -->
     <string name="action_ok">OK</string>
-    <string name="action_cancel">Ακύρωση</string>
     <string name="action_dismiss">Παράβλεψη</string>
     <string name="action_delete">Διαγραφή</string>
     <string name="action_save">Αποθήκευση</string>
     <string name="action_edit">Επεξεργασία</string>
     <string name="action_saving">Αποθήκευση…</string>
-    <string name="action_clear">Καθαρισμός</string>
     <string name="action_sort">Ταξινόμηση</string>
     <string name="action_remove">Αφαίρεση</string>
     <string name="cd_ai_suggestion">Πρόταση AI</string>
     <string name="cd_refine">Βελτίωση</string>
     <string name="filter_location">Τοποθεσία</string>
-    <string name="filter_all_locations">Όλες</string>
     <string name="wardrobe_processing_photos">Επεξεργασία %1$d φωτογραφιών…</string>
     <string name="wardrobe_progress_uploading">Μεταφόρτωση φωτογραφίας…</string>
     <string name="wardrobe_progress_uploading_batch">Μεταφόρτωση φωτογραφίας %1$d από %2$d…</string>
@@ -108,9 +105,6 @@
     <string name="settings_display_font_desc">Επιλέξτε τη γραμματοσειρά που θα χρησιμοποιείται στην εφαρμογή.</string>
     <string name="font_default">Προεπιλογή συστήματος</string>
     <string name="font_caveat">Caveat (χειρόγραφη)</string>
-    <string name="wardrobe_filters">Φίλτρα</string>
-    <string name="wardrobe_filters_apply">Εφαρμογή (%1$d)</string>
-    <string name="wardrobe_filters_reset">Επαναφορά</string>
     <string name="settings_tab_data">Δεδομένα</string>
     <string name="settings_tab_credits">Μονάδες</string>
     <string name="settings_language">Γλώσσα</string>
@@ -263,12 +257,6 @@
     <string name="wardrobe_delete_text">Είστε σίγουροι ότι θέλετε να διαγράψετε τα %d επιλεγμένα είδη; Αυτή η ενέργεια δεν αναιρείται.</string>
     <string name="wardrobe_move_to">Μετακίνηση σε</string>
     <string name="wardrobe_move_to_title">Μετακίνηση %d ειδών σε</string>
-    <string name="wardrobe_sort">Ταξινόμηση</string>
-    <string name="wardrobe_sort_newest">Πιο πρόσφατα</string>
-    <string name="wardrobe_sort_oldest">Παλαιότερα</string>
-    <string name="wardrobe_sort_most_worn">Πιο φορεμένα</string>
-    <string name="wardrobe_sort_type">Τύπος</string>
-    <string name="wardrobe_sort_category">Κατηγορία</string>
     <string name="wardrobe_tag_detect">Εντοπισμός ετικετών</string>
     <string name="wardrobe_tag_remove_bg">Αφαίρεση φόντου</string>
     <string name="wardrobe_tag_re_remove_bg">Επαναφορά αφαίρεσης φόντου</string>
@@ -290,117 +278,12 @@
     <string name="action_continue">Συνέχεια</string>
     <string name="tag_label">Όνομα</string>
     <string name="tag_label_placeholder">π.χ. Μπλε Chino Παντελόνι, Λευκό Πουκάμισο</string>
-    <string name="tag_type">Τύπος</string>
-    <string name="tag_category">Κατηγορία</string>
-    <string name="tag_uses">Χρήσεις</string>
-    <string name="tag_colors">Χρώματα</string>
-    <string name="tag_seasonality">Εποχή</string>
-    <string name="tag_aesthetic">Αισθητική</string>
-    <string name="tag_fit">Εφαρμογή</string>
-    <string name="tag_material">Υλικό</string>
-    <string name="tag_pattern">Σχέδιο</string>
     <string name="tag_add_custom">Προσθήκη δικού σας…</string>
     <string name="tag_type_placeholder">π.χ. T-shirt, Chinos, Μπουφάν</string>
     <string name="tag_category_placeholder">μπλούζες, παντελόνια, πανωφόρια, παπούτσια, αξεσουάρ, φορέματα, κοστούμια</string>
 
     <!-- Tag value translations (stored in English; displayed in UI language) -->
-    <string name="tag_val_casual">Casual</string>
-    <string name="tag_val_formal">Επίσημο</string>
-    <string name="tag_val_business">Επαγγελματικό</string>
-    <string name="tag_val_sport">Αθλητικό</string>
-    <string name="tag_val_outdoor">Εξωτερικού χώρου</string>
-    <string name="tag_val_beach">Παραλίας</string>
-    <string name="tag_val_evening">Βραδινό</string>
-    <string name="tag_val_spring">Άνοιξη</string>
-    <string name="tag_val_summer">Καλοκαίρι</string>
-    <string name="tag_val_fall">Φθινόπωρο</string>
-    <string name="tag_val_winter">Χειμώνας</string>
-    <string name="tag_val_minimalist">Μινιμαλιστικό</string>
-    <string name="tag_val_streetwear">Streetwear</string>
-    <string name="tag_val_preppy">Preppy</string>
-    <string name="tag_val_bohemian">Bohemian</string>
-    <string name="tag_val_classic">Κλασικό</string>
-    <string name="tag_val_sporty">Σπορ</string>
-    <string name="tag_val_romantic">Ρομαντικό</string>
-    <string name="tag_val_edgy">Edgy</string>
-    <string name="tag_val_business_casual">Business-Casual</string>
-    <string name="tag_val_luxury">Πολυτελείας</string>
-    <string name="tag_val_slim">Slim</string>
-    <string name="tag_val_regular">Regular</string>
-    <string name="tag_val_relaxed">Relaxed</string>
-    <string name="tag_val_oversized">Oversized</string>
-    <string name="tag_val_tailored">Tailored</string>
-    <string name="tag_val_cotton">Βαμβακερό</string>
-    <string name="tag_val_denim">Denim</string>
-    <string name="tag_val_wool">Μάλλινο</string>
-    <string name="tag_val_leather">Δερμάτινο</string>
-    <string name="tag_val_polyester">Πολυεστέρας</string>
-    <string name="tag_val_linen">Λινό</string>
-    <string name="tag_val_silk">Μεταξωτό</string>
-    <string name="tag_val_knit">Πλεκτό</string>
-    <string name="tag_val_solid">Μονόχρωμο</string>
-    <string name="tag_val_stripes">Ριγέ</string>
-    <string name="tag_val_plaid">Καρό</string>
-    <string name="tag_val_floral">Φλοράλ</string>
-    <string name="tag_val_geometric">Γεωμετρικό</string>
-    <string name="tag_val_animal_print">Animal Print</string>
-    <string name="tag_val_graphic">Graphic</string>
-    <string name="tag_val_camo">Παραλλαγή</string>
-    <string name="tag_val_abstract">Αφηρημένο</string>
-    <string name="tag_val_tops">Μπλούζες</string>
-    <string name="tag_val_bottoms">Παντελόνια</string>
-    <string name="tag_val_outerwear">Πανωφόρια</string>
-    <string name="tag_val_footwear">Παπούτσια</string>
-    <string name="tag_val_accessories">Αξεσουάρ</string>
-    <string name="tag_val_dress">Φόρεμα</string>
-    <string name="tag_val_suit">Κοστούμι</string>
-    <string name="tag_val_jumpsuit">Ολόσωμη φόρμα</string>
     <!-- Colors -->
-    <string name="tag_val_black">Μαύρο</string>
-    <string name="tag_val_white">Λευκό</string>
-    <string name="tag_val_grey">Γκρι</string>
-    <string name="tag_val_gray">Γκρι</string>
-    <string name="tag_val_charcoal">Ανθρακί</string>
-    <string name="tag_val_brown">Καφέ</string>
-    <string name="tag_val_beige">Μπεζ</string>
-    <string name="tag_val_cream">Κρεμ</string>
-    <string name="tag_val_ivory">Ελεφαντόδοντο</string>
-    <string name="tag_val_tan">Tan</string>
-    <string name="tag_val_camel">Κάμελ</string>
-    <string name="tag_val_red">Κόκκινο</string>
-    <string name="tag_val_burgundy">Μπορντό</string>
-    <string name="tag_val_wine">Βυσσινί</string>
-    <string name="tag_val_coral">Κοραλί</string>
-    <string name="tag_val_pink">Ροζ</string>
-    <string name="tag_val_blush">Blush</string>
-    <string name="tag_val_magenta">Ματζέντα</string>
-    <string name="tag_val_fuchsia">Φούξια</string>
-    <string name="tag_val_orange">Πορτοκαλί</string>
-    <string name="tag_val_rust">Σκουριά</string>
-    <string name="tag_val_yellow">Κίτρινο</string>
-    <string name="tag_val_mustard">Μουστάρδα</string>
-    <string name="tag_val_gold">Χρυσό</string>
-    <string name="tag_val_green">Πράσινο</string>
-    <string name="tag_val_olive">Λαδί</string>
-    <string name="tag_val_khaki">Χακί</string>
-    <string name="tag_val_sage">Σασκί</string>
-    <string name="tag_val_mint">Μέντα</string>
-    <string name="tag_val_emerald">Σμαραγδί</string>
-    <string name="tag_val_forest">Πράσινο του δάσους</string>
-    <string name="tag_val_teal">Πετρόλ</string>
-    <string name="tag_val_blue">Μπλε</string>
-    <string name="tag_val_navy">Σκούρο Μπλε</string>
-    <string name="tag_val_cobalt">Κοβάλτιο</string>
-    <string name="tag_val_sky">Γαλάζιο</string>
-    <string name="tag_val_denim_blue">Denim Blue</string>
-    <string name="tag_val_purple">Μοβ</string>
-    <string name="tag_val_lavender">Λεβάντα</string>
-    <string name="tag_val_violet">Βιολετί</string>
-    <string name="tag_val_lilac">Λιλά</string>
-    <string name="tag_val_silver">Ασημί</string>
-    <string name="tag_val_multicolor">Πολύχρωμο</string>
-    <string name="tag_val_printed">Εμπριμέ</string>
-
     <!-- Outfits -->
     <string name="outfits_empty">Δεν υπάρχουν σύνολα ακόμα</string>
     <string name="outfits_empty_hint">Πατήστε + για να δημιουργήσετε ένα σύνολο από τη ντουλάπα σας</string>
@@ -746,9 +629,6 @@
     <string name="wardrobe_imported_on">Εισήχθη στις %1$s</string>
     <string name="wardrobe_view_original">Προβολή πρωτοτύπου</string>
     <string name="wardrobe_view_cutout">Προβολή αποκόμματος</string>
-    <string name="viewer_hide_tags">Απόκρυψη ετικετών</string>
-    <string name="viewer_show_tags">Εμφάνιση ετικετών</string>
-
     <!-- AI tab -->
     <string name="settings_tab_ai">AI</string>
     <string name="ai_considerations_title">Προεπιλεγμένες παράμετροι</string>
@@ -777,7 +657,6 @@
     <string name="shop_matching">Αναζήτηση στη ντουλάπα…</string>
     <string name="shop_matches_title">Καλύτερα αποτελέσματα (%1$d)</string>
     <string name="shop_no_matches">Δεν βρέθηκαν αποτελέσματα. Δοκιμάστε καλύτερο φωτισμό.</string>
-    <string name="shop_match_score">Ομοιότητα: %1$d%%</string>
     <string name="shop_indexing">Ευρετηρίαση ντουλάπας… %1$d / %2$d</string>
     <string name="shop_index_size">%1$d είδη ευρετηριάστηκαν</string>
     <string name="shop_model_missing">Λείπει το μοντέλο από τη συσκευή.</string>
@@ -808,8 +687,6 @@
     <string name="settings_debug_similarity_desc">Εμφάνιση τεχνικών λεπτομερειών στην ομοιότητα.</string>
 
     <!-- Match preview dialog -->
-    <string name="shop_show_in_wardrobe">Προβολή στη ντουλάπα</string>
-    <string name="shop_add_to_shopping_list">Προσθήκη στη λίστα αγορών</string>
     <string name="dedupe_dialog_title">Πιθανό διπλότυπο</string>
     <string name="dedupe_dialog_desc">Βρέθηκαν %1$d είδη που μοιάζουν πολύ.</string>
     <string name="dedupe_dialog_import_anyway">Εισαγωγή παρ\' όλα αυτά</string>
@@ -826,7 +703,6 @@
     <string name="wardrobe_search">Αναζήτηση στη ντουλάπα</string>
     <string name="wardrobe_search_title">Αναζήτηση στη ντουλάπα</string>
     <string name="wardrobe_search_hint">Πληκτρολογήστε ή αναζητήστε με φωτό.</string>
-    <string name="wardrobe_search_placeholder">π.χ. κόκκινο πουκάμισο</string>
     <string name="wardrobe_search_use_photo">Αναζήτηση με φωτογραφία</string>
     <string name="wardrobe_search_text_results">Αποτελέσματα αναζήτησης</string>
     <string name="action_search">Αναζήτηση</string>
@@ -955,22 +831,6 @@
     <string name="settings_similarity_preview_row">Εμφάνιση προεπισκόπησης ομοιότητας AI</string>
     <string name="settings_similarity_preview_sub">Διαγνωστικά για την αναζήτηση με φωτογραφία.</string>
     <string name="settings_send_feedback">Αποστολή σχολίων</string>
-    <string name="settings_retag_title">Επανα-ετικετοποίηση και των %1$d ρούχων;</string>
-    <string name="settings_retag_body">Το AI θα δει ξανά κάθε είδος και μπορεί να αλλάξει το όνομα, το χρώμα ή την κατηγορία του. Ό,τι μετονόμασες με το χέρι θα αντικατασταθεί.</string>
-    <string name="settings_retag_confirm">Επανα-ετικετοποίηση όλων των ρούχων</string>
-    <string name="settings_rebg_confirm_title">Επανααφαίρεση φόντου για %1$d είδη;</string>
-    <string name="settings_rebg_body">Το AI θα επανακόψει κάθε είδος από την αρχική του φωτογραφία. Οι αποκοπές που διόρθωσες με το χέρι θα αντικατασταθούν.</string>
-    <string name="settings_rebg_dialog_confirm">Επανααφαίρεση φόντων</string>
-    <string name="settings_cutout_title">Διόρθωση φόντου σε %1$d είδη;</string>
-    <string name="settings_cutout_body">Θα σαρώσουμε τα είδη σου για αποκοπές που έχασαν μια γωνία και θα επανακόψουμε όσα το χρειάζονται.</string>
-    <string name="settings_cutout_confirm">Σάρωση &amp; διόρθωση</string>
-    <string name="settings_confirm_takes_about">Διαρκεί περίπου</string>
-    <string name="settings_confirm_minutes">~%1$d λεπτά</string>
-    <string name="settings_confirm_credits_used">Πιστώσεις που χρησιμοποιήθηκαν</string>
-    <string name="settings_confirm_credits_value">%1$d / %2$d απομένουν</string>
-    <string name="settings_confirm_short_format">Σου λείπουν %1$d πιστώσεις. Γέμισε πρώτα.</string>
-    <string name="settings_confirm_buy_and_continue">Αγορά πιστώσεων &amp; συνέχεια</string>
-
     <!-- Expert: item tag dimensions for outfit AI -->
     <string name="composer_section_tags">Λεπτομέρειες ρούχων προς αξιολόγηση</string>
     <string name="composer_tags_hint">Επίλεξε ποια χαρακτηριστικά των ρούχων λαμβάνει υπόψη η AI. Λιγότερες λεπτομέρειες = ταχύτερες, φθηνότερες και πιο στοχευμένες προτάσεις.</string>
@@ -1009,8 +869,6 @@
     <string name="ai_unavailable">Οι λειτουργίες AI δεν είναι διαθέσιμες αυτή τη στιγμή. Βεβαιωθείτε ότι έχετε συνδεθεί και δοκιμάστε ξανά.</string>
 
     <!-- Needs-tagging badge -->
-    <string name="wardrobe_needs_tagging">Χρειάζεται ετικέτες</string>
-
     <!-- BYOK API-key onboarding step -->
     <string name="onboarding_apikey_title">Προσθέστε το κλειδί Gemini API</string>
     <string name="onboarding_apikey_body">Το LibreLookAI λειτουργεί με το Google Gemini χρησιμοποιώντας το δικό σας κλειδί API. Αποθηκεύεται μόνο σε αυτή τη συσκευή και χρησιμοποιείται απευθείας με την Google — τίποτα δεν περνά από τους διακομιστές μας.</string>
@@ -1108,8 +966,6 @@
     <string name="restore_items_progress">%1$d από %2$d στοιχεία</string>
 
     <!-- Unify close affordance (action_close) -->
-    <string name="action_close">Κλείσιμο</string>
-
     <!-- Drive migration: auto-detect import (items 2/3) -->
     <string name="onboarding_drive_checking">Γίνεται αναζήτηση υπάρχουσας γκαρνταρόμπας για εισαγωγή…</string>
     <string name="onboarding_drive_importing">Εισαγωγή της υπάρχουσας γκαρνταρόμπας σας… %1$d / %2$d</string>
@@ -1131,9 +987,6 @@
     <!-- Convert images to WebP -->
     <string name="settings_convert_webp_row">Μετατροπή εικόνων σε WebP</string>
     <string name="settings_convert_webp_row_sub">Σμίκρυνση παλιότερων φωτογραφιών JPG/PNG για εξοικονόμηση χώρου στο Drive.</string>
-    <string name="settings_convert_title">Μετατροπή %1$d εικόνων σε WebP;</string>
-    <string name="settings_convert_body">Θα αποθηκεύσουμε ξανά τις παλιότερες φωτογραφίες JPG/PNG ως μικρότερα αρχεία WebP και θα τις ενημερώσουμε παντού όπου χρησιμοποιούνται — σύνολα, δοκιμές και ταξίδια. Χωρίς AI ή μονάδες.</string>
-    <string name="settings_convert_confirm">Μετατροπή σε WebP</string>
     <string name="settings_converting">Μετατροπή %1$d από %2$d…</string>
 
     <!-- Wardrobe maintenance overflow menu -->
@@ -1223,8 +1076,6 @@
     <string name="fab_calendar_log">Καταγραφή συνόλου</string>
     <string name="fab_shopping_add">Προσθήκη εύρεσης</string>
     <string name="fab_travel_plan">Σχεδιασμός ταξιδιού</string>
-    <string name="action_clear_selection">Εκκαθάριση επιλογής</string>
-    <string name="sel_count">%1$d επιλεγμένα</string>
     <string name="sel_style">Στιλ</string>
     <string name="sel_swap">Αλλαγή</string>
     <string name="sel_move">Μετακίνηση</string>

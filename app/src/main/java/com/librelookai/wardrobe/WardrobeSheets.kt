@@ -56,6 +56,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.data.model.Location
 import com.librelookai.gemini.CutoutFixActions
 import com.librelookai.shopping.MatchPreviewDialog
@@ -124,7 +125,7 @@ internal fun UrlImportDialog(
             ) { Text(stringResource(R.string.action_continue)) }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
+            TextButton(onClick = onDismiss) { Text(stringResource(DsR.string.action_cancel)) }
         },
     )
 }
@@ -308,7 +309,7 @@ internal fun FindByPhotoResultsSheet(
                     onValueChange = { queryDraft = it },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
-                    placeholder = { Text(stringResource(R.string.wardrobe_search_placeholder)) },
+                    placeholder = { Text(stringResource(DsR.string.wardrobe_search_placeholder)) },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                     keyboardActions = KeyboardActions(onSearch = {
                         val q = queryDraft.trim()
@@ -378,7 +379,7 @@ internal fun FindByPhotoResultsSheet(
                         ) {
                             Icon(Icons.Default.ShoppingBag, contentDescription = null, modifier = Modifier.size(18.dp))
                             Spacer(Modifier.width(8.dp))
-                            Text(stringResource(R.string.shop_add_to_shopping_list))
+                            Text(stringResource(DsR.string.shop_add_to_shopping_list))
                         }
                     }
                 }
@@ -489,7 +490,7 @@ internal fun FixCutoutBgItemDialog(
                 LocalContext provides parentContext,
                 LocalConfiguration provides parentConfiguration,
             ) {
-                TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
+                TextButton(onClick = onDismiss) { Text(stringResource(DsR.string.action_cancel)) }
             }
         },
     )

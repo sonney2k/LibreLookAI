@@ -54,6 +54,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.settings.ProfileViewModel
 import com.librelookai.wardrobe.LocationViewModel
 import com.librelookai.wardrobe.WardrobeViewModel
@@ -290,7 +291,7 @@ private fun TuneAiHeader(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         IconButton(onClick = onClose, modifier = Modifier.size(40.dp)) {
-            Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_close))
+            Icon(Icons.Default.Close, contentDescription = stringResource(DsR.string.action_close))
         }
         Spacer(Modifier.width(4.dp))
         Column(modifier = Modifier.weight(1f)) {
@@ -349,7 +350,7 @@ private fun TuneAiBottomBar(
             contentAlignment = Alignment.Center,
         ) {
             Text(
-                stringResource(R.string.action_cancel),
+                stringResource(DsR.string.action_cancel),
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,

@@ -35,6 +35,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.librelookai.util.AiProcessingOverlay
 import com.librelookai.wardrobe.GapSuggestionCard
 import com.librelookai.wardrobe.WardrobeGapViewModel
+import com.librelookai.core.designsystem.R as DsR
 
 /**
  * Full-screen dialog hosting the "Suggest replacements" result for a set of wardrobe items
@@ -67,7 +68,7 @@ fun ReplacementsResultDialog(gapViewModel: WardrobeGapViewModel) {
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     IconButton(onClick = gapViewModel::closeReplacements) {
-                        Icon(Icons.Default.Close, contentDescription = stringResource(R.string.action_close))
+                        Icon(Icons.Default.Close, contentDescription = stringResource(DsR.string.action_close))
                     }
                     Text(
                         stringResource(R.string.replacements_title, state.replacementsCount),

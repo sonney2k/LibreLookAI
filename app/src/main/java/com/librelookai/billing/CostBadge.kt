@@ -28,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.gemini.ApiKeyStore
 import com.librelookai.gemini.CostTokens
 import com.librelookai.gemini.GeminiActionId
@@ -290,7 +291,7 @@ fun ConfirmSpendDialog(
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
+            TextButton(onClick = onDismiss) { Text(stringResource(DsR.string.action_cancel)) }
         },
     )
 }
@@ -317,7 +318,7 @@ fun InsufficientCreditsDialog(
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
+            TextButton(onClick = onDismiss) { Text(stringResource(DsR.string.action_cancel)) }
         },
     )
 }

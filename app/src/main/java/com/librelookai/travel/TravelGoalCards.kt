@@ -40,6 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 
 @Composable
 internal fun GoalAiCard(
@@ -220,13 +221,13 @@ internal fun AiTagChips(
 }
 
 private fun tagDimLabelRes(dim: String): Int? = when (dim) {
-    "uses" -> R.string.tag_uses
-    "colors" -> R.string.tag_colors
-    "seasonality" -> R.string.tag_seasonality
-    "aesthetic" -> R.string.tag_aesthetic
-    "fit" -> R.string.tag_fit
-    "material" -> R.string.tag_material
-    "pattern" -> R.string.tag_pattern
+    "uses" -> DsR.string.tag_uses
+    "colors" -> DsR.string.tag_colors
+    "seasonality" -> DsR.string.tag_seasonality
+    "aesthetic" -> DsR.string.tag_aesthetic
+    "fit" -> DsR.string.tag_fit
+    "material" -> DsR.string.tag_material
+    "pattern" -> DsR.string.tag_pattern
     else -> null
 }
 

@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.librelookai.R
+import com.librelookai.core.designsystem.R as DsR
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -130,7 +131,7 @@ internal fun SuggestTagsDialog(
             ) {
                 if (state.suggestions.isNotEmpty()) {
                     TextButton(onClick = onDismiss, enabled = !state.isSaving) {
-                        Text(stringResource(R.string.action_cancel))
+                        Text(stringResource(DsR.string.action_cancel))
                     }
                 }
             }
@@ -186,7 +187,7 @@ internal fun EditOutfitTagsDialog(
                 LocalConfiguration provides parentConfiguration,
             ) {
                 TextButton(onClick = onDismiss) {
-                    Text(stringResource(R.string.action_cancel))
+                    Text(stringResource(DsR.string.action_cancel))
                 }
             }
         },

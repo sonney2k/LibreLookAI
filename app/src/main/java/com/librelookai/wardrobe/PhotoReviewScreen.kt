@@ -49,6 +49,7 @@ import kotlin.math.roundToInt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import com.librelookai.core.designsystem.R as DsR
 
 @Composable
 internal fun PhotoReviewScreen(
@@ -108,7 +109,7 @@ internal fun PhotoReviewScreen(
                 .align(Alignment.TopStart)
                 .padding(8.dp),
         ) {
-            Icon(Icons.Default.Close, contentDescription = androidx.compose.ui.res.stringResource(com.librelookai.R.string.action_close), tint = Color.White)
+            Icon(Icons.Default.Close, contentDescription = androidx.compose.ui.res.stringResource(DsR.string.action_close), tint = Color.White)
         }
 
         // Inline closet selector — top-center, visible when 2+ closets
