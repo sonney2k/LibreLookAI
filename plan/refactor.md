@@ -1580,6 +1580,17 @@ categories:
    `OutfitPickerDialog` bumped public for the calendar's cross-module call). Tooling:
    `--module tryon`; `translation_status.sh` aggregates the seventh res root (still 1180
    keys). Remaining: travel → shopping → outfit → wardrobe → settings.
+   **travel re-measured post-tryon (July 2026), decision pending.** The chrome sink already
+   killed travel's `LocationButton`/`OutfitTagsEditor` edges; what's left is the real knot:
+   (a) `outfit/` — `OutfitsViewModel` + `OutfitGenerationViewModel` and its composer
+   extension entry points (`startEditingTripOutfit`/`setOutfitTags`/`applyTagSuggestions`/
+   `dismissTagSuggestions`/`closeOutfitTagsEditor`), plus the prompt/history builders
+   (`wearHistoryFlow`, `buildWearHistorySummary`, `buildLovedOutfitsSummary` — pure-ish over
+   core types, sinkable if a core home is picked); (b) the usual screen-signature VMs
+   (`WardrobeViewModel`/`LocationViewModel`/`ProfileViewModel` — the narrowing precedent
+   applies); (c) root `AppScreenHeader` (app shell — slot/lift decision). The § 1 open
+   question stands: fold travel's outfit reads onto `OutfitsRepository`/core flows, or
+   extract travel+outfit together. Resolve before starting the travel slice.
 
 ### Verification (per slice)
 
