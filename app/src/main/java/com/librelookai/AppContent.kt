@@ -973,10 +973,15 @@ internal fun AppContent(
                             // every VM as a required parameter, passed explicitly.
                             val tryOnStyles by stylesViewModel.state.collectAsState()
                             TryOnComposerScreen(
-                                tryOnViewModel   = tryOnViewModel,
-                                wardrobeViewModel = wardrobeViewModel,
-                                profileViewModel  = profileViewModel,
-                                shoppingClosetViewModel = shoppingClosetViewModel,
+                                tryOnViewModel = tryOnViewModel,
+                                itemPool = rememberTryOnItemPool(wardrobeViewModel, shoppingClosetViewModel),
+                                profileState = profileViewModel.state,
+                                tryOnFiles = profileViewModel::tryOnFiles,
+                                onTextFilter = wardrobeViewModel::fuzzyFilterByText,
+                                findSimilarByPhoto = { file, candidates ->
+                                    wardrobeViewModel.findSimilarInCandidates(file, candidates)
+                                        .associate { it.driveId to it.score }
+                                },
                                 outfits = tryOnStyles.outfits,
                                 locations = locationState.locations,
                                 onStartTryOn = { showQuickTryOnSheet = true },
@@ -995,8 +1000,7 @@ internal fun AppContent(
                             com.librelookai.tryon.TryOnHistoryDestination(
                                 tryOnViewModel = tryOnViewModel,
                                 historyViewModel = tryOnHistoryViewModel,
-                                wardrobeViewModel = wardrobeViewModel,
-                                shoppingClosetViewModel = shoppingClosetViewModel,
+                                itemPool = rememberTryOnItemPool(wardrobeViewModel, shoppingClosetViewModel),
                                 onOpenDetail = { tryOn ->
                                     navController.navigate(
                                         TryOnDetailRoute(imageDriveId = tryOn.imageDriveId),
@@ -1019,8 +1023,7 @@ internal fun AppContent(
                                 initialImageDriveId = route.imageDriveId,
                                 tryOnViewModel = tryOnViewModel,
                                 historyViewModel = tryOnHistoryViewModel,
-                                wardrobeViewModel = wardrobeViewModel,
-                                shoppingClosetViewModel = shoppingClosetViewModel,
+                                itemPool = rememberTryOnItemPool(wardrobeViewModel, shoppingClosetViewModel),
                                 outfits = tryOnStyles.outfits,
                                 onOpenSourceOutfit = { outfit ->
                                     // Leave the try-on surfaces, jump to Outfits, and ask the
@@ -1454,4 +1457,19 @@ private fun aiErrorMessageRes(reason: com.librelookai.gemini.AiErrorReason): Int
     com.librelookai.gemini.AiErrorReason.BLOCKED -> R.string.ai_error_blocked
     com.librelookai.gemini.AiErrorReason.SERVER -> R.string.ai_error_server
     com.librelookai.gemini.AiErrorReason.GENERIC -> R.string.ai_error_generic
+}
+
+/** The wardrobe + shopping item pool the try-on destinations resolve ids/names against — the
+ *  try-on FAB is reachable from both tabs, so lookups must succeed regardless of source.
+ *  Composed shell-side (§ 1 slice 6) so the try-on feature takes plain data, not the VMs. */
+@Composable
+private fun rememberTryOnItemPool(
+    wardrobeViewModel: WardrobeViewModel,
+    shoppingClosetViewModel: ShoppingClosetViewModel,
+): List<com.librelookai.wardrobe.DriveImage> {
+    val wardrobeState by wardrobeViewModel.state.collectAsState()
+    val shoppingClosetState by shoppingClosetViewModel.state.collectAsState()
+    return remember(wardrobeState.images, shoppingClosetState.items) {
+        wardrobeState.images + shoppingClosetState.items
+    }
 }

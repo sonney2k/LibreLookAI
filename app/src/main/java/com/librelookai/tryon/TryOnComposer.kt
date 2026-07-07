@@ -63,7 +63,6 @@ import com.librelookai.outfit.OutfitItemBucket
 import com.librelookai.outfit.bucketFor
 import com.librelookai.util.Analytics
 import com.librelookai.wardrobe.DriveImage
-import com.librelookai.wardrobe.WardrobeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -73,7 +72,10 @@ internal fun TryOnComposerContent(
     outfits: List<Outfit>,
     locations: List<Location>,
     referencePhotoPaths: List<String>,
-    wardrobeViewModel: WardrobeViewModel,
+    /** Fuzzy text filter over the picker's candidates (wardrobe search). */
+    onTextFilter: (String, List<DriveImage>) -> List<DriveImage>,
+    /** Find-by-photo scorer for the picker: file + candidates -> driveId->score. */
+    findSimilarByPhoto: suspend (java.io.File, List<DriveImage>) -> Map<String, Float>,
     onRemoveItem: (String) -> Unit,
     onAddItems: (Set<String>) -> Unit,
     onPickOutfit: (Outfit) -> Unit,
@@ -210,11 +212,8 @@ internal fun TryOnComposerContent(
             allItems = wardrobeImages,
             alreadyChosen = state.itemIds,
             locations = locations,
-            onTextFilter = wardrobeViewModel::fuzzyFilterByText,
-            findSimilarByPhoto = { file, candidates ->
-                wardrobeViewModel.findSimilarInCandidates(file, candidates)
-                    .associate { it.driveId to it.score }
-            },
+            onTextFilter = onTextFilter,
+            findSimilarByPhoto = findSimilarByPhoto,
             allowMultiSelect = true,
             onConfirm = { ids ->
                 onAddItems(ids)

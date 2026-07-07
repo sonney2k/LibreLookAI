@@ -39,13 +39,13 @@ import com.librelookai.core.designsystem.R as DsR
 import com.librelookai.data.model.Location
 import com.librelookai.data.model.Outfit
 import com.librelookai.data.model.TryOn
-import com.librelookai.settings.ProfileViewModel
-import com.librelookai.shopping.ShoppingClosetViewModel
+import com.librelookai.settings.ProfileUiState
 import com.librelookai.util.AiProcessingOverlay
 import com.librelookai.util.Analytics
 import com.librelookai.util.rememberDialogBottomInset
 import com.librelookai.wardrobe.DriveImage
-import com.librelookai.wardrobe.WardrobeViewModel
+import java.io.File
+import kotlinx.coroutines.flow.StateFlow
 
 /**
  * Shared full-bleed chrome for the three try-on destinations (composer / history feed /
@@ -119,34 +119,31 @@ private fun TryOnErrorDialog(error: String?, errorRes: Int?, onClearError: () ->
     }
 }
 
-/** The wardrobe + shopping item pool try-on surfaces resolve ids/names against — the FAB is
- *  available in both screens, so lookups must succeed regardless of source. */
-@Composable
-private fun rememberTryOnItemPool(
-    wardrobeViewModel: WardrobeViewModel,
-    shoppingClosetViewModel: ShoppingClosetViewModel,
-): List<DriveImage> {
-    val wardrobeState by wardrobeViewModel.state.collectAsState()
-    val shoppingClosetState by shoppingClosetViewModel.state.collectAsState()
-    return remember(wardrobeState.images, shoppingClosetState.items) {
-        wardrobeState.images + shoppingClosetState.items
-    }
-}
-
 /**
  * Content of the `TryOnRoute` destination: the try-on composer (assemble items → generate →
  * result preview), plus the no-reference-photos empty state. Real navigation (§ 5 slice 9):
  * openers seed the draft via [TryOnViewModel.openComposer] then navigate; the header ✕ and
  * system back clear the draft ([TryOnViewModel.close]) and pop through [onClose]. The history
  * feed and detail views are separate destinations (`TryOnHistoryRoute` / `TryOnDetailRoute`).
+ *
+ * Takes the combined wardrobe+shopping [itemPool] and the profile surface as narrowed
+ * data + callbacks threaded from AppContent (§ 1 slice 6, the onboarding precedent) — no
+ * wardrobe/shopping/profile VM types cross into the try-on feature.
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun TryOnComposerScreen(
     tryOnViewModel: TryOnViewModel,
-    wardrobeViewModel: WardrobeViewModel,
-    profileViewModel: ProfileViewModel,
-    shoppingClosetViewModel: ShoppingClosetViewModel,
+    /** The combined wardrobe + shopping pool try-on surfaces resolve ids/names against. */
+    itemPool: List<DriveImage>,
+    /** The profile surface (reference-photo paths + style prefs), read-only. */
+    profileState: StateFlow<ProfileUiState>,
+    /** Resolves the user's reference photos as local files at generate time. */
+    tryOnFiles: () -> List<File>,
+    /** Fuzzy text filter over the picker's candidates (wardrobe search). */
+    onTextFilter: (String, List<DriveImage>) -> List<DriveImage>,
+    /** Find-by-photo scorer for the picker: file + candidates → driveId→score. */
+    findSimilarByPhoto: suspend (File, List<DriveImage>) -> Map<String, Float>,
     /** Outfits available to pick as the basis of a new try-on. Empty disables the "Use an outfit" path. */
     outfits: List<Outfit> = emptyList(),
     /** Locations passed through to [com.librelookai.outfit.AddItemSheet] so it can show closet badges. */
@@ -159,8 +156,8 @@ fun TryOnComposerScreen(
     onClose: () -> Unit = {},
 ) {
     val state by tryOnViewModel.state.collectAsState()
-    val profileState by profileViewModel.state.collectAsState()
-    val combinedImages = rememberTryOnItemPool(wardrobeViewModel, shoppingClosetViewModel)
+    val profile by profileState.collectAsState()
+    val combinedImages = itemPool
 
     LaunchedEffect(Unit) { Analytics.screen("TryOnComposer") }
 
@@ -187,9 +184,9 @@ fun TryOnComposerScreen(
                 onTryAgain = {
                     Analytics.action("TryOn/Result", "try_again")
                     tryOnViewModel.generate(
-                        personFiles     = profileViewModel.tryOnFiles(),
+                        personFiles     = tryOnFiles(),
                         wardrobeImages  = combinedImages,
-                        preferences     = profileState.preferences.preferences,
+                        preferences     = profile.preferences.preferences,
                     )
                 },
                 onChangeItems = {
@@ -199,7 +196,7 @@ fun TryOnComposerScreen(
                 wardrobeImages = combinedImages,
             )
 
-            profileState.tryOnLocalPaths.isEmpty() -> TryOnNoPhotos(
+            profile.tryOnLocalPaths.isEmpty() -> TryOnNoPhotos(
                 onOpenSettings = onOpenProfileSettings,
             )
 
@@ -208,8 +205,9 @@ fun TryOnComposerScreen(
                 wardrobeImages = combinedImages,
                 outfits = outfits,
                 locations = locations,
-                referencePhotoPaths = profileState.tryOnLocalPaths.values.toList(),
-                wardrobeViewModel = wardrobeViewModel,
+                referencePhotoPaths = profile.tryOnLocalPaths.values.toList(),
+                onTextFilter = onTextFilter,
+                findSimilarByPhoto = findSimilarByPhoto,
                 onRemoveItem = tryOnViewModel::removeItem,
                 onAddItems = { ids -> ids.forEach(tryOnViewModel::addItem) },
                 onPickOutfit = tryOnViewModel::selectOutfit,
@@ -227,9 +225,9 @@ fun TryOnComposerScreen(
                 onGenerate = {
                     Analytics.action("TryOn/Composer", "generate", mapOf("count" to state.itemIds.size.toString()))
                     tryOnViewModel.generate(
-                        personFiles     = profileViewModel.tryOnFiles(),
+                        personFiles     = tryOnFiles(),
                         wardrobeImages  = combinedImages,
-                        preferences     = profileState.preferences.preferences,
+                        preferences     = profile.preferences.preferences,
                     )
                 },
             )
@@ -262,8 +260,8 @@ fun TryOnComposerScreen(
 fun TryOnHistoryDestination(
     tryOnViewModel: TryOnViewModel,
     historyViewModel: TryOnHistoryViewModel,
-    wardrobeViewModel: WardrobeViewModel,
-    shoppingClosetViewModel: ShoppingClosetViewModel,
+    /** The combined wardrobe + shopping pool try-on surfaces resolve ids/names against. */
+    itemPool: List<DriveImage>,
     /** Open the detail destination for a tapped try-on. */
     onOpenDetail: (TryOn) -> Unit,
     /** Open the Quick Try-On sheet (feed FAB + empty-state CTA). */
@@ -274,7 +272,7 @@ fun TryOnHistoryDestination(
     onClose: () -> Unit,
 ) {
     val historyState by historyViewModel.state.collectAsState()
-    val combinedImages = rememberTryOnItemPool(wardrobeViewModel, shoppingClosetViewModel)
+    val combinedImages = itemPool
 
     LaunchedEffect(Unit) {
         Analytics.screen("TryOnHistory")
@@ -321,8 +319,8 @@ fun TryOnDetailDestination(
     initialImageDriveId: String?,
     tryOnViewModel: TryOnViewModel,
     historyViewModel: TryOnHistoryViewModel,
-    wardrobeViewModel: WardrobeViewModel,
-    shoppingClosetViewModel: ShoppingClosetViewModel,
+    /** The combined wardrobe + shopping pool try-on surfaces resolve ids/names against. */
+    itemPool: List<DriveImage>,
     /** Outfits pool for resolving a try-on's source-outfit link. */
     outfits: List<Outfit> = emptyList(),
     /** Open the saved outfit linked from the detail view. Hidden when null. */
@@ -335,7 +333,7 @@ fun TryOnDetailDestination(
     onClose: () -> Unit,
 ) {
     val historyState by historyViewModel.state.collectAsState()
-    val combinedImages = rememberTryOnItemPool(wardrobeViewModel, shoppingClosetViewModel)
+    val combinedImages = itemPool
     val history = historyState.history
 
     LaunchedEffect(Unit) { Analytics.screen("TryOnDetail") }
